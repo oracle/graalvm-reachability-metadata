@@ -93,6 +93,7 @@ from ai_workflows.core.workflow_strategy import (
     RUN_STATUS_SUCCESS,
     SUCCESS_WITH_INTERVENTION_STATUS,
 )
+from ai_workflows.agents.agent import AgentTimeoutError
 from ai_workflows.agents.codex_agent import extract_codex_token_usage
 from ai_workflows.agents.agent_runtime import (
     analysis_agent_run,
@@ -153,6 +154,7 @@ from utility_scripts.continuation_marker import (
 from utility_scripts.dynamic_access_report import load_dynamic_access_coverage_report
 from utility_scripts.fixture_github import FixtureGitHubState, load_fixture_github_state
 from utility_scripts.gradle_environment import gradle_command_environment
+from utility_scripts.logged_command import run_logged_command
 from utility_scripts.library_stats import resolve_stats_file_path
 from utility_scripts.library_preparation_preflight import (
     LIBRARY_PREPARATION_PREFLIGHT_FILENAME,
@@ -5150,18 +5152,18 @@ def _prepare_library_update_dynamic_access_report(claimed_issue: ClaimedIssue) -
 
 def _generate_dispatcher_dynamic_access_report(claimed_issue: ClaimedIssue) -> None:
     """Generate or refresh the dynamic-access report used for dispatcher chunking."""
-    result = subprocess.run(
+    result = run_logged_command(
         [
             "./gradlew",
             "generateDynamicAccessCoverageReport",
             f"-Pcoordinates={claimed_issue.issue_coordinates}",
         ],
         cwd=claimed_issue.worktree_path,
+        task_type="dynamic-access-report",
+        subject=claimed_issue.issue_coordinates,
+        action="generateDynamicAccessCoverageReport",
         env=gradle_command_environment(claimed_issue.worktree_path),
-        stdout=subprocess.PIPE,
-        stderr=subprocess.STDOUT,
-        text=True,
-        check=False,
+        stage="dynamic-access",
     )
     if result.returncode != 0:
         log_stage(
@@ -6238,11 +6240,15 @@ def fetch_issue_base_commit(repo_path: str) -> str:
     remote-tracking ref supplies repository state for issue work
     (§FS-forge-run-requirements.2).
     """
+    log_stage(
+        "claim",
+        f"Fetching newest origin/{DEFAULT_WORKTREE_BASE_REF} for the next issue claim",
+    )
     remote_tracking_ref = fetch_default_base_ref(repo_path, "issue claim")
     commit = resolve_git_commit(repo_path, remote_tracking_ref)
     log_stage(
-        "issue-base",
-        f"Pinned origin/{DEFAULT_WORKTREE_BASE_REF} at {commit[:12]} for the next issue claim",
+        "claim",
+        f"Pinned origin/{DEFAULT_WORKTREE_BASE_REF} at {commit[:12]}",
     )
     return commit
 
@@ -6330,6 +6336,10 @@ def create_issue_workspace(
 
     §FS-forge-run-requirements.4
     """
+    log_stage(
+        "claim",
+        f"Creating workspace for issue #{issue_number} from {issue_base_commit}",
+    )
     repo_root = get_repo_root()
     worktrees_root = os.path.join(repo_root, "local_repositories", SCRATCH_WORKTREE_DIRNAME)
     os.makedirs(worktrees_root, exist_ok=True)
@@ -6348,6 +6358,10 @@ def create_issue_workspace(
     except SystemExit:
         remove_worktree(base_reachability_metadata_path, worktree_path)
         raise
+    log_stage(
+        "claim",
+        f"Workspace created for issue #{issue_number}: {os.path.relpath(worktree_path, repo_root)}",
+    )
 
     scratch_metrics_repo_path = os.path.join(worktree_path, get_forge_subdir_name())
     del canonical_metrics_repo_path, issue_number
@@ -6384,11 +6398,6 @@ def cleanup_issue_workspace(claimed_issue: ClaimedIssue, canonical_metrics_repo_
             )
 
 
-@pipeline_step(
-    PHASE_CLAIM,
-    STEP_CHECK_ISSUE_FORM,
-    operand=lambda arguments: f"issue #{arguments['issue']['number']}",
-)
 def build_claim_metadata(
         issue: dict,
         label: str,
@@ -6659,7 +6668,16 @@ class IssueFormVerdict:
 ISSUE_FORM_ACCEPTED = IssueFormVerdict()
 
 
-def check_issue_form(issue: dict, label: str, reachability_metadata_path: str) -> IssueFormVerdict:
+@pipeline_step(
+    PHASE_CLAIM,
+    STEP_CHECK_ISSUE_FORM,
+    operand=lambda arguments: f"issue #{arguments['issue']['number']}",
+)
+def check_issue_form(
+        issue: dict,
+        label: str,
+        reachability_metadata_path: str,
+) -> IssueFormVerdict:
     """Decide every issue-form rule from the payload and the repository.
 
     Runs inside the pinned issue-base worktree while the exclusive claim is held.
@@ -6669,6 +6687,7 @@ def check_issue_form(issue: dict, label: str, reachability_metadata_path: str) -
     (§FS-forge-run-requirements.3, §root/PRCPL-verify-inputs).
     """
     issue_number = issue["number"]
+    log_stage("claim", f"Checking issue #{issue_number} against the pinned issue workspace")
 
     workflow_labels = sorted(
         label_name for label_name in get_issue_label_names(issue) if label_name in PIPELINE_LABELS
@@ -6756,6 +6775,7 @@ def check_issue_form(issue: dict, label: str, reachability_metadata_path: str) -
             ),
         ))
 
+    log_stage("claim", f"Issue #{issue_number} accepted: {label} for {coordinate}")
     return ISSUE_FORM_ACCEPTED
 
 
@@ -6900,18 +6920,23 @@ def claim_issue_for_processing(
     §FS-forge-run-requirements.4).
     """
     enter_phase(PHASE_CLAIM)
+    issue_number = issue["number"]
+    log_stage("claim", f"Claiming issue #{issue_number}")
     if not refresh_issue_payload_for_claim(issue, label, authenticated_user):
+        log_stage("claim", f"Issue #{issue_number} not claimed: live issue state is no longer eligible")
         return None
 
     try:
         issue_base_commit = fetch_issue_base_commit(base_reachability_metadata_path)
     except BaseException as exc:
         if isinstance(exc, Exception):
+            log_stage("claim", f"Issue #{issue_number} not claimed: newest origin/master could not be pinned")
             return None
         raise
 
     item_id = try_claim_issue(issue, authenticated_user, label, take_blocked_issues)
     if not item_id:
+        log_stage("claim", f"Issue #{issue_number} not claimed: live claimability check did not pass")
         return None
 
     worktree_path: str | None = None
@@ -7188,11 +7213,16 @@ def run_claimed_issue(
             raise KeyboardInterrupt from exc
         # The location the step annotated onto the exception leads its detail.
         # §FS-forge-run-location-reporting.3
+        error_detail = str(exc) if isinstance(exc, AgentTimeoutError) else (
+            f"Issue #{claimed_issue.issue['number']} workflow raised an exception: {exc!r}"
+        )
         report_run_failure(
             resolve_failure_location(exc),
-            f"ERROR: Issue #{claimed_issue.issue['number']} workflow raised an exception: {exc!r}",
+            error_detail,
+            log_path=exc.log_path if isinstance(exc, AgentTimeoutError) else None,
         )
-        traceback.print_exc()
+        if not isinstance(exc, AgentTimeoutError):
+            traceback.print_exc()
         success = False
         failure_was_external = is_external_failure_exception(exc)
     if is_user_interrupt_requested():
@@ -8650,7 +8680,7 @@ def try_claim_issue_with_local_lock(
             )
         ])
         print()
-        log_stage("issue-claim", f"Claimed issue #{number} (-> In Progress)")
+        log_stage("claim", f"Issue #{number} claimed; project status is In Progress")
         return item_id
     except BaseException as exc:
         revert_issue_claim_if_still_owned_by_user(
@@ -9443,6 +9473,7 @@ def require_host_requirements(args: argparse.Namespace, reachability_metadata_pa
     checkout this run selected, which `--reachability-metadata-path` can move away from
     the checkout that contains Forge (§FS-forge-host-requirements).
     """
+    log_stage("startup", "Checking host requirements")
     ensure_host_requirements(
         FORGE_DIR,
         requirements=resolve_host_requirement_queues(args),
@@ -9450,6 +9481,7 @@ def require_host_requirements(args: argparse.Namespace, reachability_metadata_pa
         repo_dir=reachability_metadata_path,
         test_strategy_names=resolve_host_requirement_strategy_names(args),
     )
+    log_stage("startup", "Host requirements passed")
 
 
 def main() -> None:

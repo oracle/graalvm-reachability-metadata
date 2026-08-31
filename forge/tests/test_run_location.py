@@ -131,7 +131,10 @@ class FailureLocationTests(unittest.TestCase):
         _, stderr = _captured(fail)
         lines = [line for line in stderr.splitlines() if line]
         self.assertEqual(lines[0], "run failed in explore/generate_tests()[com.acme.Thing]")
-        self.assertEqual(lines[1], "ERROR: boom")
+        self.assertEqual(lines[1], "Phase failed: explore")
+        self.assertEqual(lines[2], "Step failed: generate_tests()")
+        self.assertEqual(lines[3], "Class: com.acme.Thing")
+        self.assertEqual(lines[4], "Error: boom")
 
     def test_innermost_step_wins_and_survives_an_intermediate_handler(self) -> None:
         def fail() -> None:

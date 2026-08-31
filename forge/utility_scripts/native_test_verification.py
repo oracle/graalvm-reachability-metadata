@@ -58,7 +58,7 @@ _LOG_TASK_TYPE = "native-test-verify"
 _EXIT_VALUE_PATTERN = re.compile(r"exit\s+value\s+(\d+)", re.IGNORECASE)
 _TRACE_SENTINEL_FILE_NAMES = frozenset({"binary-exit-code"})
 _AGGREGATED_METADATA_FILE_NAME = "reachability-metadata.json"
-_FAILURE_LOG_TAIL_LINE_LIMIT = 300
+_FAILURE_LOG_TAIL_LINE_LIMIT = 20
 _FAILED_TASK_PATTERN = re.compile(r"> Task :(\S+) FAILED")
 
 
@@ -924,11 +924,6 @@ def _print_collected_metadata(run_dir: str, cycle_number: int) -> None:
         f"cycle {cycle_number}: collected metadata from {len(metadata_files)} file(s) ({run_dir})",
         indent_level=1,
     )
-    for metadata_file in metadata_files:
-        relative = os.path.relpath(metadata_file, run_dir)
-        log_stage(_GATE_STAGE, f"{relative}:", indent_level=2)
-        for line in _format_metadata_file(metadata_file).splitlines():
-            log_stage(_GATE_STAGE, line, indent_level=3)
 
 
 def _print_failure_log_tail(log_path: str, cycle_number: int) -> None:
@@ -1169,32 +1164,24 @@ def _merge_metadata_dirs(
         f"-PinputDirs={','.join(input_dirs)}",
         f"-PoutputDir={output_dir}",
     ]
-    log_stage(_GATE_STAGE, f"$ {' '.join(cmd)}", indent_level=1)
-    try:
-        result = subprocess.run(
-            cmd,
-            cwd=reachability_repo_path,
-            env=env or gradle_command_environment(reachability_repo_path),
-            check=False,
-            timeout=_MERGE_TIMEOUT_SECONDS,
-        )
-        if result.returncode != 0:
-            log_stage(
-                _GATE_STAGE,
-                f"mergeNativeTraceMetadata failed with exit code {result.returncode}",
-                indent_level=1,
-            )
-            return False
-        if print_output_path:
-            _print_aggregated_metadata_path(output_dir)
-        return True
-    except subprocess.TimeoutExpired:
+    merge_log_path = _gate_log_path("native-trace", 0, "mergeNativeTraceMetadata")
+    result = _run_logged_gradle_command(
+        reachability_repo_path=reachability_repo_path,
+        cmd=cmd,
+        log_path=merge_log_path,
+        timeout_seconds=_MERGE_TIMEOUT_SECONDS,
+        env=env or gradle_command_environment(reachability_repo_path),
+    )
+    if result.returncode != 0:
         log_stage(
             _GATE_STAGE,
-            f"mergeNativeTraceMetadata exceeded {_MERGE_TIMEOUT_SECONDS}s timeout",
+            f"mergeNativeTraceMetadata failed with exit code {result.returncode}",
             indent_level=1,
         )
         return False
+    if print_output_path:
+        _print_aggregated_metadata_path(output_dir)
+    return True
 
 
 def _print_aggregated_metadata_path(output_dir: str) -> None:

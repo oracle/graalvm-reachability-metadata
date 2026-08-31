@@ -6,6 +6,7 @@
 import os
 import subprocess
 
+from ai_workflows.agents.agent import send_agent_prompt
 from ai_workflows.core.workflow_strategy import (
     RUN_STATUS_CHUNK_READY,
     RUN_STATUS_FAILURE,
@@ -163,7 +164,11 @@ class DynamicAccessIterativeStrategy(WorkflowStrategy):
         prompt_iterations = 1
         with run_step(RUN_PHASE_EXPLORE, STEP_GENERATE_TESTS, operand="reporter-requested metadata"):
             self._print_issue_requested_metadata_message("agent: running reporter-requested metadata prompt")
-            agent.send_prompt(self._render_prompt("issue-requested-metadata"))
+            send_agent_prompt(
+                agent,
+                self._render_prompt("issue-requested-metadata"),
+                "issue_requested_metadata()",
+            )
             self._print_issue_requested_metadata_message("agent: complete")
 
         last_test_output = ""
@@ -193,11 +198,13 @@ class DynamicAccessIterativeStrategy(WorkflowStrategy):
             self._print_issue_requested_metadata_message(
                 "agent: test failed before nativeTest; sending failure output back to agent"
             )
-            agent.send_prompt(
+            send_agent_prompt(
+                agent,
                 "When `./gradlew test -Pcoordinates={library}` is ran this is the error:\n{error_output}".format(
                     library=self.library,
                     error_output=test_output,
-                )
+                ),
+                "feedback_fix()",
             )
             self._print_issue_requested_metadata_message("agent: complete")
             prompt_iterations += 1
@@ -394,7 +401,7 @@ class DynamicAccessIterativeStrategy(WorkflowStrategy):
                 )
                 with run_step(RUN_PHASE_EXPLORE, STEP_GENERATE_TESTS, operand=class_name):
                     self._print_dynamic_access_detail("agent: running dynamic-access prompt", indent_level=2)
-                    agent.send_prompt(dynamic_prompt)
+                    send_agent_prompt(agent, dynamic_prompt, "dynamic_access_iteration()")
                     self._print_dynamic_access_detail("agent: complete", indent_level=2)
                 prompt_iterations += 1
                 save_phase_update(
@@ -432,11 +439,13 @@ class DynamicAccessIterativeStrategy(WorkflowStrategy):
                         "agent: test failed before nativeTest; sending failure output back to agent",
                         indent_level=2,
                     )
-                    agent.send_prompt(
+                    send_agent_prompt(
+                        agent,
                         "When `./gradlew test -Pcoordinates={library}` is ran this is the error:\n{error_output}".format(
                             library=self.library,
                             error_output=test_output,
-                        )
+                        ),
+                        "feedback_fix()",
                     )
                     self._print_dynamic_access_detail("agent: complete", indent_level=2)
                     prompt_iterations += 1
@@ -1122,7 +1131,6 @@ class DynamicAccessIterativeStrategy(WorkflowStrategy):
                 indent_level=indent_level,
                 exit_code=result.returncode,
             )
-            print(result.stdout)
             return None
         try:
             report = load_dynamic_access_coverage_report(

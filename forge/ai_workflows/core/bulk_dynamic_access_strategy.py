@@ -6,6 +6,7 @@
 import os
 import subprocess
 
+from ai_workflows.agents.agent import send_agent_prompt
 from ai_workflows.core.workflow_strategy import (
     RUN_STATUS_CHUNK_READY,
     RUN_STATUS_FAILURE,
@@ -161,7 +162,7 @@ class BulkDynamicAccessStrategy(WorkflowStrategy):
             )
             with run_step(RUN_PHASE_EXPLORE, STEP_GENERATE_TESTS, operand=self.library):
                 self._print_detail("agent: sending bulk prompt")
-                agent.send_prompt(prompt)
+                send_agent_prompt(agent, prompt, "bulk_dynamic_access_iteration()")
                 self._print_detail("agent: complete")
             prompt_iterations += 1
 
@@ -192,11 +193,13 @@ class BulkDynamicAccessStrategy(WorkflowStrategy):
                     reached_native_test = True
                     break
                 self._print_detail("agent: test failed; sending failure output back", indent_level=2)
-                agent.send_prompt(
+                send_agent_prompt(
+                    agent,
                     "When `./gradlew test -Pcoordinates={library}` is ran this is the error:\n{error_output}".format(
                         library=self.library,
                         error_output=test_output,
-                    )
+                    ),
+                    "feedback_fix()",
                 )
                 self._print_detail("agent: complete", indent_level=2)
                 prompt_iterations += 1
@@ -393,7 +396,6 @@ class BulkDynamicAccessStrategy(WorkflowStrategy):
                 issue=self._summarize_gradle_issue(result.stdout),
                 exit_code=result.returncode,
             )
-            print(result.stdout)
             return None
         try:
             report = load_dynamic_access_coverage_report(

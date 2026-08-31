@@ -12,7 +12,7 @@ from collections.abc import Callable
 from dataclasses import dataclass, replace
 import os
 
-from ai_workflows.agents.agent import Agent
+from ai_workflows.agents.agent import Agent, send_agent_prompt
 from utility_scripts.task_logs import build_task_log_path
 
 
@@ -313,7 +313,8 @@ def run_agent_task(
         environment=environment,
     )
     try:
-        response = agent.send_prompt(prompt)
+        action = f"{task_type.replace('-', '_')}()"
+        response = send_agent_prompt(agent, prompt, action)
     except (OSError, RuntimeError) as exc:
         timed_out = "timed out" in str(exc).lower()
         with open(log_path, "a", encoding="utf-8") as log_file:

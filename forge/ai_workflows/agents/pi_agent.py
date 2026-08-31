@@ -7,7 +7,7 @@ import json
 import os
 from datetime import datetime, timezone
 
-from ai_workflows.agents.agent import Agent
+from ai_workflows.agents.agent import Agent, AgentTimeoutError
 from ai_workflows.agents.agent_runtime import agent_process_environment
 from ai_workflows.agents.pi_rpc_client import PiRpcClient, PiRpcError, PromptResult
 from utility_scripts.gradle_test_runner import run_gradle_test_command
@@ -95,27 +95,33 @@ class PiAgent(Agent):
         return result
 
     def send_prompt(self, prompt: str) -> str:
-        original_session_path = self._session_path
-        try:
-            result = self._rpc_client.run_prompt(
-                prompt,
-                session=self._session_path,
-                progress_callback=lambda detail: self._print_live_status("Pi", detail),
-            )
-        except PiRpcError as exc:
-            self._ensure_failure_log_path()
-            self._print_session_log_once("Pi", self._session_log_path)
-            self._write_failure_log(original_session_path, prompt, exc)
-            raise
-        finally:
-            self._clear_live_status()
-        self._session_path = result.session_file
-        if self._session_log_path is None or self._session_path != original_session_path:
-            self._set_session_log_path(self._build_generation_log_path())
-        self._update_token_counters(result.session_stats)
+        self._ensure_failure_log_path()
         self._print_session_log_once("Pi", self._session_log_path)
-        self._write_turn_log(self._session_path or original_session_path, prompt, result)
-        return result.text
+        with self._agent_activity("Pi"):
+            original_session_path = self._session_path
+            try:
+                result = self._rpc_client.run_prompt(
+                    prompt,
+                    session=self._session_path,
+                    progress_callback=lambda detail: self._print_live_status("Pi", detail),
+                )
+            except (PiRpcError, RuntimeError) as exc:
+                logged_error = exc if isinstance(exc, PiRpcError) else PiRpcError(str(exc))
+                self._write_failure_log(original_session_path, prompt, logged_error)
+                if "timed out" in str(exc).lower():
+                    raise AgentTimeoutError(
+                        self._current_agent_action(), self._timeout, self._session_log_path,
+                    ) from exc
+                raise
+            finally:
+                self._clear_live_status()
+            self._session_path = result.session_file
+            if self._session_path != original_session_path:
+                self._set_session_log_path(self._build_generation_log_path())
+            self._update_token_counters(result.session_stats)
+            self._print_session_log_once("Pi", self._session_log_path)
+            self._write_turn_log(self._session_path or original_session_path, prompt, result)
+            return result.text
 
     def fork(self, prompt: str) -> "PiAgent":
         if self._session_path is None:

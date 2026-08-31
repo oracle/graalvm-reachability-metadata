@@ -28,6 +28,7 @@ from utility_scripts.continuation_marker import (
 from utility_scripts.workflow_setup import build_graalvm_environment
 from utility_scripts.gradle_environment import gradle_command_environment
 from utility_scripts.gradle_test_runner import run_gradle_test_command
+from utility_scripts.logged_command import LoggedCommandResult, run_logged_command
 from utility_scripts.run_location import (
     PHASE_FINALIZATION as RUN_PHASE_FINALIZATION,
     STEP_AGENT_FIX,
@@ -396,24 +397,24 @@ class WorkflowStrategy(ABC):
             libraries.append(metadata_library)
         return libraries
 
-    def _run_gradle_command_with_output(self, command: list[str]) -> subprocess.CompletedProcess[str]:
-        """Run a Gradle command in the reachability repo and capture combined output."""
+    def _run_gradle_command_with_output(self, command: list[str]) -> LoggedCommandResult:
+        """Run a Gradle command quietly and retain complete durable output."""
         require_complete_reachability_repo(self.reachability_repo_path)
-        return subprocess.run(
+        action = command[1] if len(command) > 1 else "gradle"
+        return run_logged_command(
             command,
             cwd=self.reachability_repo_path,
+            task_type="gradle",
+            subject=self.library,
+            action=action,
             env=gradle_command_environment(self.reachability_repo_path),
-            stdout=subprocess.PIPE,
-            stderr=subprocess.STDOUT,
-            text=True,
-            check=False,
+            stage="gradle",
         )
 
     def _run_gradle_command(self, command: list[str]) -> bool:
         """Run a Gradle command in the reachability repo, returning True on success."""
         result = self._run_gradle_command_with_output(command)
         if result.returncode != 0:
-            print(result.stdout)
             return False
         return True
 
@@ -525,11 +526,9 @@ class WorkflowStrategy(ABC):
             new_packages = missing_packages - seen_packages
             if not new_packages:
                 log_stage("check-metadata-files", "No new TypeReached packages found in checkMetadataFiles output")
-                print(result.stdout)
                 return False
             log_stage("allowed-packages", f"Adding allowed-packages for {library}: {', '.join(sorted(new_packages))}")
             if not self._append_allowed_packages_to_metadata_index(new_packages):
-                print(result.stdout)
                 return False
             seen_packages.update(new_packages)
 

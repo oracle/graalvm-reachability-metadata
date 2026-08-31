@@ -3,6 +3,7 @@
 # You should have received a copy of the CC0 legalcode along with this
 # work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 
+from ai_workflows.agents.agent import send_agent_prompt
 from ai_workflows.core.workflow_strategy import RUN_STATUS_FAILURE, RUN_STATUS_SUCCESS, WorkflowStrategy
 from utility_scripts.continuation_marker import PHASE_EXPLORE, PHASE_FIX, save_phase_update
 from utility_scripts.run_location import (
@@ -108,7 +109,11 @@ class _JavaTestFixIterativeBase(WorkflowStrategy):
             self._print_message("running initial gradle test to collect errors")
             initial_error = agent.run_test_command(f"./gradlew test -Pcoordinates={self.library}")
             self._print_message("running agent...")
-            agent.send_prompt(self._render_prompt("initial", initial_error=initial_error))
+            send_agent_prompt(
+                agent,
+                self._render_prompt("initial", initial_error=initial_error),
+                "initial_fix()",
+            )
             self._print_message("agent complete")
         global_iterations = 1
 
@@ -151,8 +156,10 @@ class _JavaTestFixIterativeBase(WorkflowStrategy):
                 self._retry_detail_message,
                 indent_level=2,
             )
-            agent.send_prompt(
-                f"{self._retry_prompt_title}\n./gradlew test -Pcoordinates={self.library}\n\nOutput:\n{test_output}"
+            send_agent_prompt(
+                agent,
+                f"{self._retry_prompt_title}\n./gradlew test -Pcoordinates={self.library}\n\nOutput:\n{test_output}",
+                "feedback_fix()",
             )
             self._print_detail("agent: complete", indent_level=2)
 

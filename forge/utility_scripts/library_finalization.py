@@ -6,11 +6,11 @@
 import json
 import os
 import re
-import subprocess
 import sys
 
 from ai_workflows.agents.agent_runtime import analysis_agent_run, get_analysis_agent
 from utility_scripts.gradle_environment import gradle_command_environment
+from utility_scripts.logged_command import LoggedCommandResult, run_logged_command
 from utility_scripts.metadata_index import find_index_entry_for_version
 from utility_scripts.style_checks import run_style_fix_and_checks
 from utility_scripts.native_image_config_policy import (
@@ -30,17 +30,22 @@ CHECK_METADATA_FIX_TIMEOUT_SECONDS = 1200
 MAX_CHECK_METADATA_FIX_ATTEMPTS = 3
 
 
-def _run_gradle_command_with_output(repo_path: str, command: list[str]) -> subprocess.CompletedProcess[str]:
-    """Run a Gradle command in the reachability repo and capture combined output."""
+def _run_gradle_command_with_output(repo_path: str, command: list[str]) -> LoggedCommandResult:
+    """Run a finalization Gradle command quietly with durable output."""
     require_complete_reachability_repo(repo_path)
-    return subprocess.run(
+    action = command[1] if len(command) > 1 else "gradle"
+    coordinate_argument = next(
+        (argument for argument in command if argument.startswith("-Pcoordinates=")),
+        "-Pcoordinates=unknown",
+    )
+    return run_logged_command(
         command,
         cwd=repo_path,
+        task_type="finalization",
+        subject=coordinate_argument.removeprefix("-Pcoordinates="),
+        action=action,
         env=gradle_command_environment(repo_path),
-        stdout=subprocess.PIPE,
-        stderr=subprocess.STDOUT,
-        text=True,
-        check=False,
+        stage="finalization",
     )
 
 
@@ -48,7 +53,6 @@ def _run_gradle_command(repo_path: str, command: list[str]) -> bool:
     """Run a Gradle command in the reachability repo, returning True on success."""
     result = _run_gradle_command_with_output(repo_path, command)
     if result.returncode != 0:
-        print(result.stdout)
         return False
     return True
 
@@ -213,7 +217,6 @@ def _run_check_metadata_files_with_allowed_packages_fix(
         new_packages = missing_packages - seen_packages
         if not new_packages:
             log_stage(log_stage_name, "No new TypeReached packages found in checkMetadataFiles output")
-            print(metadata_output)
             return (False, metadata_output)
         log_stage("allowed-packages", f"Adding allowed-packages for {library}: {', '.join(sorted(new_packages))}")
         if not _append_allowed_packages_to_metadata_index(
@@ -224,7 +227,6 @@ def _run_check_metadata_files_with_allowed_packages_fix(
             library_version=library_version,
             packages=new_packages,
         ):
-            print(metadata_output)
             return (False, metadata_output)
         seen_packages.update(new_packages)
 

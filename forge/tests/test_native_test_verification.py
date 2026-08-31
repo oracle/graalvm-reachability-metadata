@@ -96,7 +96,7 @@ class ReadExitFileTests(unittest.TestCase):
 class FailureLogTailTests(unittest.TestCase):
     """Native failure diagnostics print the tail of the Gradle log."""
 
-    def test_extracts_last_300_lines(self) -> None:
+    def test_extracts_last_20_lines(self) -> None:
         fd, path = tempfile.mkstemp(suffix=".log")
         os.close(fd)
         self.addCleanup(os.unlink, path)
@@ -107,8 +107,8 @@ class FailureLogTailTests(unittest.TestCase):
 
         excerpt = ntv._extract_failure_log_tail(path)
 
-        self.assertNotIn("line-49", excerpt)
-        self.assertIn("line-50", excerpt)
+        self.assertNotIn("line-329", excerpt)
+        self.assertIn("line-330", excerpt)
         self.assertIn("line-349", excerpt)
 
 
@@ -417,7 +417,7 @@ class MetadataAggregationTests(unittest.TestCase):
 class PrintCollectedMetadataTests(unittest.TestCase):
     """Readable logging of per-cycle trace metadata."""
 
-    def test_prints_pretty_json_metadata(self) -> None:
+    def test_prints_metadata_summary_without_json_contents(self) -> None:
         run_dir = tempfile.mkdtemp(prefix="trace-run-")
         self.addCleanup(_rmtree, run_dir)
         metadata_file = Path(run_dir) / "reachability-metadata.json"
@@ -432,8 +432,8 @@ class PrintCollectedMetadataTests(unittest.TestCase):
 
         printed = output.getvalue()
         self.assertIn("cycle 2: collected metadata from 1 file(s)", printed)
-        self.assertIn("reachability-metadata.json:", printed)
-        self.assertIn('"type": "com.example.Foo"', printed)
+        self.assertNotIn("reachability-metadata.json:", printed)
+        self.assertNotIn('"type": "com.example.Foo"', printed)
 
     def test_prints_none_for_empty_trace_dir(self) -> None:
         run_dir = tempfile.mkdtemp(prefix="trace-run-")
@@ -1016,12 +1016,13 @@ class GateRoutingTests(unittest.TestCase):
         self.assertEqual(result.status, ntv.STATUS_PASSED_WITH_INTERVENTION)
         self.assertEqual(result.iterations_used, 1)
         printed = output.getvalue()
-        self.assertIn("reachability-metadata.json:", printed)
-        self.assertIn("{}", printed)
+        self.assertIn("collected metadata from 1 file(s)", printed)
+        self.assertNotIn("reachability-metadata.json:", printed)
+        self.assertNotIn("{}", printed)
         self.assertIn("produced no usable trace metadata", printed)
-        self.assertIn("failure log tail (last 300 lines)", printed)
-        self.assertNotIn("native log line 5\n", printed)
-        self.assertIn("native log line 6\n", printed)
+        self.assertIn("failure log tail (last 20 lines)", printed)
+        self.assertNotIn("native log line 285\n", printed)
+        self.assertIn("native log line 286\n", printed)
         self.assertIn("MissingResourceRegistrationError: missing resource", printed)
 
     def test_routes_to_codex_when_budget_exhausted_with_only_172(self) -> None:

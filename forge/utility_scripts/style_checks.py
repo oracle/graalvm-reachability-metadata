@@ -3,11 +3,11 @@
 # You should have received a copy of the CC0 legalcode along with this
 # work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 
-import subprocess
 import sys
 
 from ai_workflows.agents.agent_runtime import analysis_agent_run, get_analysis_agent
 from utility_scripts.gradle_environment import gradle_command_environment
+from utility_scripts.logged_command import LoggedCommandResult, run_logged_command
 from utility_scripts.repo_path_resolver import require_complete_reachability_repo
 from utility_scripts.task_logs import build_timestamped_task_log_path, display_log_path
 
@@ -17,49 +17,40 @@ MAX_TEST_OUTPUT_CHARS = 12000
 MAX_CHECKSTYLE_FIX_ATTEMPTS = 3
 
 
-def _run_gradle_task(repo_path: str, command: list[str]) -> bool:
+def _run_logged_style_command(repo_path: str, command: list[str]) -> LoggedCommandResult:
     require_complete_reachability_repo(repo_path)
-    result = subprocess.run(
+    coordinate_argument = next(
+        (argument for argument in command if argument.startswith("-Pcoordinates=")),
+        "-Pcoordinates=unknown",
+    )
+    return run_logged_command(
         command,
         cwd=repo_path,
+        task_type="style-checks",
+        subject=coordinate_argument.removeprefix("-Pcoordinates="),
+        action=command[1],
         env=gradle_command_environment(repo_path),
-        stdout=subprocess.PIPE,
-        stderr=subprocess.STDOUT,
-        text=True,
-        check=False,
+        stage="style-checks",
     )
-    if result.returncode == 0:
-        return True
-    print(f"ERROR: Gradle command failed: {' '.join(command)}", file=sys.stderr)
-    print(result.stdout)
-    return False
 
 
-def _run_checkstyle(repo_path: str, coordinate_arg: str) -> subprocess.CompletedProcess:
-    """Run the checkstyle Gradle task and return the CompletedProcess."""
-    require_complete_reachability_repo(repo_path)
-    return subprocess.run(
+def _run_gradle_task(repo_path: str, command: list[str]) -> bool:
+    return _run_logged_style_command(repo_path, command).returncode == 0
+
+
+def _run_checkstyle(repo_path: str, coordinate_arg: str) -> LoggedCommandResult:
+    """Run the checkstyle Gradle task and return its logged result."""
+    return _run_logged_style_command(
+        repo_path,
         ["./gradlew", "checkstyle", coordinate_arg],
-        cwd=repo_path,
-        env=gradle_command_environment(repo_path),
-        stdout=subprocess.PIPE,
-        stderr=subprocess.STDOUT,
-        text=True,
-        check=False,
     )
 
 
-def _run_test(repo_path: str, coordinate_arg: str) -> subprocess.CompletedProcess:
-    """Run the test Gradle task and return the CompletedProcess."""
-    require_complete_reachability_repo(repo_path)
-    return subprocess.run(
+def _run_test(repo_path: str, coordinate_arg: str) -> LoggedCommandResult:
+    """Run the test Gradle task and return its logged result."""
+    return _run_logged_style_command(
+        repo_path,
         ["./gradlew", "test", coordinate_arg],
-        cwd=repo_path,
-        env=gradle_command_environment(repo_path),
-        stdout=subprocess.PIPE,
-        stderr=subprocess.STDOUT,
-        text=True,
-        check=False,
     )
 
 
@@ -238,7 +229,6 @@ def run_style_fix_and_checks(
         retry_test_result = _run_test(repo_path, coordinate_arg)
         if retry_test_result.returncode != 0:
             print("ERROR: ./gradlew test still fails after post-Checkstyle repair.", file=sys.stderr)
-            print(retry_test_result.stdout)
             return False
 
         checkstyle_result = _run_checkstyle(repo_path, coordinate_arg)
@@ -247,5 +237,4 @@ def run_style_fix_and_checks(
             return True
 
     print("[checkstyle] ERROR: Checkstyle still fails after analysis repair.", file=sys.stderr)
-    print(checkstyle_result.stdout)
     return False

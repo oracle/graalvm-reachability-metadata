@@ -4,12 +4,27 @@
 # work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 
 from abc import ABC, abstractmethod
+from contextlib import contextmanager
 import os
 import shutil
+import sys
 import tempfile
+import threading
+import time
+from collections.abc import Iterator
 
 from utility_scripts.stage_logger import log_stage
 from utility_scripts.task_logs import display_log_path, resolve_task_log_dir
+
+
+class AgentTimeoutError(RuntimeError):
+    """Agent timeout carrying the action and durable log needed by failure output."""
+
+    def __init__(self, action: str, timeout_seconds: int, log_path: str | None) -> None:
+        self.action = action
+        self.timeout_seconds = timeout_seconds
+        self.log_path = log_path
+        super().__init__(f"Agent {action} timed out after {_format_elapsed(timeout_seconds)}")
 
 
 class Agent(ABC):
@@ -92,14 +107,23 @@ class Agent(ABC):
         """Print the session log location once per agent instance."""
         if getattr(self, "_session_log_announced", False):
             return
-        print(f"[{agent_name} session log: {display_log_path(log_path)}]", flush=True)
+        log_stage("agent", f"{agent_name} session log: {display_log_path(log_path)}")
         self._session_log_announced = True
 
     def _print_live_status(self, agent_name: str, detail: str) -> None:
-        """Render a single-line live status update without advancing the console."""
+        """Render one quiet elapsed-time heartbeat for an active agent turn."""
+        del detail
+        if not self._live_status_enabled():
+            return
+        action = self._current_agent_action()
+        started_at = float(getattr(self, "_agent_activity_started_at", time.monotonic()))
+        elapsed_seconds = int(time.monotonic() - started_at)
+        if elapsed_seconds == getattr(self, "_last_live_status_second", None):
+            return
+        self._last_live_status_second = elapsed_seconds
         terminal_width = shutil.get_terminal_size(fallback=(120, 20)).columns
         max_message_length = max(terminal_width - 1, 20)
-        message = f"[{agent_name}] {detail}".replace("\n", " ").strip()
+        message = f"[agent] Running {action} — {_format_elapsed(elapsed_seconds)}"
         if len(message) > max_message_length:
             message = f"{message[:max_message_length - 3]}..."
         previous_length = int(getattr(self, "_live_status_length", 0) or 0)
@@ -114,6 +138,94 @@ class Agent(ABC):
             return
         print(f"\r{' ' * previous_length}\r", end="", flush=True)
         self._live_status_length = 0
+        self._last_live_status_second = None
+
+    def send_prompt_for_action(self, prompt: str, action: str) -> str:
+        """Send one prompt with the workflow action shown in live progress."""
+        previous_action = getattr(self, "_pending_agent_action", None)
+        self._pending_agent_action = action
+        try:
+            return self.send_prompt(prompt)
+        finally:
+            self._pending_agent_action = previous_action
+
+    @contextmanager
+    def _agent_activity(self, agent_name: str) -> Iterator[None]:
+        """Announce one agent turn and collapse its live output into a heartbeat.
+
+        Full prompts and responses remain in the durable session log while the
+        terminal shows only start, elapsed time, and outcome.
+        §FS-forge-run-output-legibility.3 §FS-durable-generation-logs
+        """
+        action = self._current_agent_action()
+        self._agent_activity_started_at = time.monotonic()
+        log_path = getattr(self, "_session_log_path", None)
+        log_suffix = f" (log: {display_log_path(log_path)})" if log_path else ""
+        log_stage("agent", f"Running {action}{log_suffix}")
+        heartbeat_stop, heartbeat = self._start_heartbeat(agent_name)
+        try:
+            yield
+        except Exception as exc:
+            elapsed_seconds = int(time.monotonic() - self._agent_activity_started_at)
+            self._stop_heartbeat(heartbeat_stop, heartbeat)
+            self._clear_live_status()
+            outcome = "timed out" if _is_timeout_exception(exc) else "failed"
+            current_log_path = getattr(self, "_session_log_path", None)
+            current_log_suffix = (
+                f" (log: {display_log_path(current_log_path)})" if current_log_path else ""
+            )
+            log_stage(
+                "agent",
+                f"{action} {outcome} after {_format_elapsed(elapsed_seconds)}{current_log_suffix}",
+            )
+            raise
+        else:
+            elapsed_seconds = int(time.monotonic() - self._agent_activity_started_at)
+            self._stop_heartbeat(heartbeat_stop, heartbeat)
+            self._clear_live_status()
+            current_log_path = getattr(self, "_session_log_path", None)
+            current_log_suffix = (
+                f" (log: {display_log_path(current_log_path)})" if current_log_path else ""
+            )
+            log_stage(
+                "agent",
+                f"{action} completed in {_format_elapsed(elapsed_seconds)}{current_log_suffix}",
+            )
+
+    def _current_agent_action(self) -> str:
+        configured = getattr(self, "_pending_agent_action", None)
+        if isinstance(configured, str) and configured:
+            return configured
+        task_type = str(getattr(self, "_task_type", "agent-task"))
+        return f"{task_type.replace('-', '_')}()"
+
+    @staticmethod
+    def _live_status_enabled() -> bool:
+        try:
+            parallelism = int(os.environ.get("FORGE_PARALLELISM", "1"))
+        except ValueError:
+            parallelism = 1
+        return sys.stdout.isatty() and parallelism == 1
+
+    def _start_heartbeat(self, agent_name: str) -> tuple[threading.Event | None, threading.Thread | None]:
+        if not self._live_status_enabled():
+            return None, None
+        stop = threading.Event()
+
+        def heartbeat() -> None:
+            while not stop.wait(1):
+                self._print_live_status(agent_name, "")
+
+        thread = threading.Thread(target=heartbeat, daemon=True)
+        thread.start()
+        return stop, thread
+
+    @staticmethod
+    def _stop_heartbeat(stop: threading.Event | None, thread: threading.Thread | None) -> None:
+        if stop is None or thread is None:
+            return
+        stop.set()
+        thread.join(timeout=2)
 
     @abstractmethod
     def send_prompt(self, prompt: str) -> str:
@@ -150,3 +262,33 @@ class Agent(ABC):
             result = self.send_prompt(f"/graphify {extra_dir} --update")
         log_stage("graphify", "Knowledge graph context initialized")
         return result
+
+
+def send_agent_prompt(agent: object, prompt: str, action: str) -> str:
+    """Send a prompt with an action name when the adapter supports it."""
+    send_for_action = getattr(agent, "send_prompt_for_action", None)
+    if callable(send_for_action):
+        return str(send_for_action(prompt, action))
+    send_prompt = getattr(agent, "send_prompt")
+    return str(send_prompt(prompt))
+
+
+def _format_elapsed(seconds: int | float) -> str:
+    total_seconds = max(int(seconds), 0)
+    hours, remainder = divmod(total_seconds, 3600)
+    minutes, remaining_seconds = divmod(remainder, 60)
+    if hours:
+        return f"{hours:02d}:{minutes:02d}:{remaining_seconds:02d}"
+    return f"{minutes:02d}:{remaining_seconds:02d}"
+
+
+def _is_timeout_exception(exc: BaseException) -> bool:
+    current: BaseException | None = exc
+    while current is not None:
+        if isinstance(current, (AgentTimeoutError, TimeoutError)):
+            return True
+        if "timed out" in str(current).lower():
+            return True
+        cause = current.__cause__
+        current = cause if isinstance(cause, BaseException) else None
+    return False

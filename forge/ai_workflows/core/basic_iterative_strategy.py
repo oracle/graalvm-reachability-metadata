@@ -6,6 +6,7 @@
 import os
 import subprocess
 
+from ai_workflows.agents.agent import send_agent_prompt
 from ai_workflows.core.workflow_strategy import RUN_STATUS_FAILURE, RUN_STATUS_SUCCESS, WorkflowStrategy
 from utility_scripts.continuation_marker import PHASE_EXPLORE, PHASE_FIX, save_phase_update
 from utility_scripts.run_location import (
@@ -190,11 +191,17 @@ class BasicIterativeStrategy(WorkflowStrategy):
             with run_step(RUN_PHASE_EXPLORE, STEP_GENERATE_TESTS, operand=self.library):
                 if failed_iterations > 0:
                     self._print_detail("agent: running failed-iteration prompt")
-                    agent.send_prompt(self.prompt_after_failed)
+                    send_agent_prompt(
+                        agent, self.prompt_after_failed, "failed_iteration()",
+                    )
                 else:
                     prompt_name = "initial" if unittest_number < 1 else "successful-iteration"
                     self._print_detail(f"agent: running {prompt_name} prompt")
-                    agent.send_prompt(self.prompt_initial if unittest_number < 1 else self.prompt_after_success)
+                    send_agent_prompt(
+                        agent,
+                        self.prompt_initial if unittest_number < 1 else self.prompt_after_success,
+                        "initial_generation()" if unittest_number < 1 else "successful_iteration()",
+                    )
                 self._print_detail("agent: complete")
 
             global_iterations += 1
@@ -242,8 +249,10 @@ class BasicIterativeStrategy(WorkflowStrategy):
                     "agent: test failed before nativeTest; sending failure output back to agent",
                     indent_level=2,
                 )
-                agent.send_prompt(
-                    f"The following test command failed:\n./gradlew test -Pcoordinates={self.library}\n\nOutput:\n{test_output}"
+                send_agent_prompt(
+                    agent,
+                    f"The following test command failed:\n./gradlew test -Pcoordinates={self.library}\n\nOutput:\n{test_output}",
+                    "feedback_fix()",
                 )
                 self._print_detail("agent: complete", indent_level=2)
                 global_iterations += 1

@@ -2,14 +2,18 @@
 
 from __future__ import annotations
 
+import contextlib
+import io
 import json
 import os
 import shlex
+import subprocess
 import tempfile
 import unittest
 from unittest.mock import patch
 
 from ai_workflows.agents import Agent
+from ai_workflows.agents.agent import AgentTimeoutError
 from ai_workflows.agents.claude_code_agent import ClaudeCodeAgent
 from ai_workflows.agents.codex_agent import CodexAgent
 from ai_workflows.agents.codex_app_server import CodexAppServerClient
@@ -39,6 +43,28 @@ class AgentRuntimeTests(unittest.TestCase):
             set(SUPPORTED_AGENT_BACKENDS),
             {name for name in SUPPORTED_AGENT_BACKENDS if Agent.get_class(name)},
         )
+
+    def test_agent_timeout_prints_named_quiet_activity_and_log(self) -> None:
+        with tempfile.TemporaryDirectory() as work_dir:
+            agent = CodexAgent(
+                model_name="gpt-5.6-luna",
+                working_dir=work_dir,
+                timeout=1200,
+                library="org.example:demo:1.0.0",
+                task_type="add-new-library-support",
+            )
+            timeout = subprocess.TimeoutExpired(["codex"], 1200, output="partial private output")
+            output = io.StringIO()
+            with patch.object(agent, "_run_codex_command", side_effect=timeout), \
+                    contextlib.redirect_stdout(output), self.assertRaises(AgentTimeoutError) as raised:
+                agent.send_prompt_for_action("prompt", "dynamic_access_iteration()")
+
+        rendered = output.getvalue()
+        self.assertIn("Running dynamic_access_iteration()", rendered)
+        self.assertIn("dynamic_access_iteration() timed out", rendered)
+        self.assertIn("log:", rendered)
+        self.assertNotIn("partial private output", rendered)
+        self.assertEqual(raised.exception.timeout_seconds, 1200)
 
     def test_the_environment_selects_the_analysis_role_only(self) -> None:
         """The worker configures analysis; a bundle owns the test role it declares."""
