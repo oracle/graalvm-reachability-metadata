@@ -10,6 +10,8 @@ from unittest.mock import patch
 
 from ai_workflows.drivers import add_new_library_support, fix_ni_run, java_fail_workflow
 from utility_scripts.logged_command import LoggedCommandResult, run_logged_command
+from utility_scripts.continuation_marker import PHASE_SETUP
+from utility_scripts.run_location import enter_phase, reset_run_location
 
 
 class LoggedCommandTests(unittest.TestCase):
@@ -17,6 +19,9 @@ class LoggedCommandTests(unittest.TestCase):
 
     §FS-forge-run-output-legibility.4 §FS-durable-generation-logs
     """
+
+    def tearDown(self) -> None:
+        reset_run_location()
 
     def test_success_keeps_command_output_out_of_terminal_and_in_log(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
@@ -68,6 +73,83 @@ class LoggedCommandTests(unittest.TestCase):
         self.assertEqual(result.returncode, 0)
         self.assertIn("live debug output", terminal.getvalue())
         self.assertIn("live debug output", durable_output)
+
+    def test_compact_setup_hides_success_but_keeps_failure_and_log(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            log_path = os.path.join(temp_dir, "command.log")
+            terminal = io.StringIO()
+            enter_phase(PHASE_SETUP)
+            with patch(
+                    "utility_scripts.logged_command.build_timestamped_task_log_path",
+                    return_value=log_path,
+            ), contextlib.redirect_stdout(terminal):
+                result = run_logged_command(
+                    [sys.executable, "-c", "raise SystemExit(7)"],
+                    cwd=temp_dir,
+                    task_type="setup-test",
+                    subject="org.example:demo:1.0.0",
+                    action="failingSetup",
+                )
+
+        self.assertEqual(result.returncode, 7)
+        self.assertNotIn("Running failingSetup", terminal.getvalue())
+        self.assertIn("failingSetup failed with exit code 7", terminal.getvalue())
+        self.assertIn("command.log", terminal.getvalue())
+
+    def test_compact_setup_hides_a_failure_the_caller_handles(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            log_path = os.path.join(temp_dir, "command.log")
+            terminal = io.StringIO()
+            enter_phase(PHASE_SETUP)
+            with patch(
+                    "utility_scripts.logged_command.build_timestamped_task_log_path",
+                    return_value=log_path,
+            ), contextlib.redirect_stdout(terminal):
+                result = run_logged_command(
+                    [sys.executable, "-c", "raise SystemExit(1)"],
+                    cwd=temp_dir,
+                    task_type="setup-test",
+                    subject="org.example:demo:1.0.0",
+                    action="handledSetup",
+                    failure_is_detail=True,
+                )
+
+        self.assertEqual(result.returncode, 1)
+        self.assertEqual("", terminal.getvalue())
+
+    def test_scaffold_only_reports_unhandled_failure_in_compact_setup(self) -> None:
+        already_exists = LoggedCommandResult(
+            args=["./gradlew"],
+            returncode=1,
+            stdout="metadata already exists. Use --force to overwrite existing metadata",
+            log_path="/tmp/scaffold.log",
+            timed_out=False,
+            duration_seconds=1.0,
+        )
+        terminal = io.StringIO()
+        enter_phase(PHASE_SETUP)
+        with patch.object(add_new_library_support, "require_complete_reachability_repo"), \
+                patch.object(add_new_library_support, "run_logged_command", return_value=already_exists), \
+                contextlib.redirect_stdout(terminal):
+            self.assertFalse(add_new_library_support.run_scaffold("g:a:1.0"))
+        self.assertEqual("", terminal.getvalue())
+
+        failed = LoggedCommandResult(
+            args=["./gradlew"],
+            returncode=1,
+            stdout="unexpected scaffold failure",
+            log_path="/tmp/scaffold.log",
+            timed_out=False,
+            duration_seconds=1.0,
+        )
+        terminal = io.StringIO()
+        with patch.object(add_new_library_support, "require_complete_reachability_repo"), \
+                patch.object(add_new_library_support, "run_logged_command", return_value=failed), \
+                contextlib.redirect_stdout(terminal), \
+                self.assertRaises(add_new_library_support.ScaffoldError):
+            add_new_library_support.run_scaffold("g:a:1.0")
+        self.assertIn("scaffold failed with exit code 1", terminal.getvalue())
+        self.assertIn("scaffold.log", terminal.getvalue())
 
     def test_remaining_driver_gradle_commands_use_durable_logging(self) -> None:
         successful_result = LoggedCommandResult(

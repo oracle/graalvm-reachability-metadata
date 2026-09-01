@@ -5,6 +5,7 @@
 
 import os
 import sys
+import threading
 from typing import TextIO
 
 
@@ -15,6 +16,16 @@ ANSI_BOLD_CYAN = "\033[1;36m"
 BANNER_WIDTH = 88
 DEBUG_LOGGING_ENV_VAR = "FORGE_DEBUG_LOGGING"
 VERBOSE_LOGGING_ENV_VAR = "FORGE_VERBOSE"
+
+
+class _NarrationState(threading.local):
+    """Per-run phase state deciding whether normal detail is suppressed."""
+
+    def __init__(self) -> None:
+        self.compact: bool = False
+
+
+_NARRATION_STATE = _NarrationState()
 
 
 def _environment_flag_enabled(variable: str) -> bool:
@@ -39,6 +50,18 @@ def log_stage(stage: str, message: str, indent_level: int = 0) -> None:
     """Print a workflow log line that starts with the current stage."""
     indent = "  " * indent_level
     print(f"[{stage}] {indent}{message}")
+
+
+def set_compact_narration(compact: bool) -> None:
+    """Select whether the current thread's announced phase hides detail."""
+    _NARRATION_STATE.compact = compact
+
+
+def log_detail(stage: str, message: str, indent_level: int = 0) -> None:
+    """Print narration unless the current compact phase hides it."""
+    if _NARRATION_STATE.compact and not debug_logging_enabled():
+        return
+    log_stage(stage, message, indent_level)
 
 
 def log_debug(stage: str, message: str, indent_level: int = 0) -> None:

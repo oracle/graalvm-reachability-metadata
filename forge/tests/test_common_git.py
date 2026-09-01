@@ -23,6 +23,44 @@ class ForgeRevisionSectionTests(unittest.TestCase):
         self.assertIn("- Forge commit hash: `abc123`", section)
 
 
+class QuietBranchSwitchTests(unittest.TestCase):
+    def test_compact_output_hides_git_switch_narration(self) -> None:
+        result = subprocess.CompletedProcess(
+            ["git"],
+            0,
+            stdout="Switched to a new branch 'ai/test'\n",
+            stderr="",
+        )
+        with patch.object(common_git.subprocess, "run", return_value=result) as run, \
+                patch.dict(os.environ, {"FORGE_VERBOSE": "0", "FORGE_DEBUG_LOGGING": "0"}), \
+                patch("sys.stdout", new_callable=io.StringIO) as stdout:
+            common_git.switch_branch_quietly("ai/test", cwd="/repo")
+
+        self.assertEqual("", stdout.getvalue())
+        run.assert_called_once_with(
+            ["git", "switch", "-C", "ai/test"],
+            cwd="/repo",
+            stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT,
+            text=True,
+            check=True,
+        )
+
+    def test_verbose_output_replays_git_switch_narration(self) -> None:
+        result = subprocess.CompletedProcess(
+            ["git"],
+            0,
+            stdout="Reset branch 'ai/test'\n",
+            stderr="",
+        )
+        with patch.object(common_git.subprocess, "run", return_value=result), \
+                patch.dict(os.environ, {"FORGE_VERBOSE": "1"}), \
+                patch("sys.stdout", new_callable=io.StringIO) as stdout:
+            common_git.switch_branch_quietly("ai/test")
+
+        self.assertEqual("Reset branch 'ai/test'\n", stdout.getvalue())
+
+
 class IssueLookupTests(unittest.TestCase):
     def test_find_issue_for_coordinates_uses_exact_coordinate_match(self) -> None:
         completed_process = subprocess.CompletedProcess(

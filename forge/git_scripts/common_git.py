@@ -12,6 +12,7 @@ import sys
 import time
 from typing import Any, Callable, Iterable, List
 from utility_scripts.library_stats import load_library_stats_entry
+from utility_scripts.stage_logger import debug_logging_enabled
 from utility_scripts.strategy_loader import load_strategy_by_name
 
 
@@ -475,6 +476,23 @@ def build_ai_branch_name(branch_suffix: str, cwd=None) -> str:
     """Build an AI branch name scoped to the authenticated GitHub login."""
     authenticated_login = get_authenticated_login(cwd=cwd)
     return f"ai/{authenticated_login}/{branch_suffix}"
+
+
+def switch_branch_quietly(branch: str, cwd: str | None = None) -> None:
+    """Reset a branch without leaking Git narration in compact output.
+
+    §FS-forge-run-output-legibility.5
+    """
+    result = subprocess.run(
+        ["git", "switch", "-C", branch],
+        cwd=cwd,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT,
+        text=True,
+        check=True,
+    )
+    if debug_logging_enabled() and result.stdout:
+        print(result.stdout, end="")
 
 
 def git_remote_branch_exists(branch: str, remote: str = "origin", cwd: str | None = None) -> bool:

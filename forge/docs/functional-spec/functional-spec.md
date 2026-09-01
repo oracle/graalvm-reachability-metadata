@@ -491,6 +491,14 @@ does. This is the live counterpart of the durable record required by
    concise progress and outcome lines. A failed gate prints the detail needed
    to diagnose that failure even when verbose mode is off.
 
+For `setup`, normal output reduces the phase to three visible states under the
+registered positions: library preflight starts and reports its decision,
+deterministic workspace preparation names its current unit and reports it
+ready, and workflow-engine dispatch names the strategy it starts. Agent session
+paths, command start/success lines, branch commands, source downloads,
+checkpoints, and report refreshes are verbose narration. A failed command or a
+degraded preflight remains visible with its cause and durable log path.
+
 ## FS-forge-run-metrics: Per-run metrics record
 §GOAL-minimize-generation-cost
 

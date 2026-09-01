@@ -15,7 +15,13 @@ from utility_scripts.metadata_index import (
     resolve_test_dir,
 )
 from ai_workflows.agents.agent_runtime import AgentRunResult, get_setup_agent, setup_agent_run
-from utility_scripts.stage_logger import log_stage
+from utility_scripts.run_location import (
+    PHASE_SETUP,
+    STEP_NEURAL_SETUP,
+    log_step_progress,
+)
+from utility_scripts.stage_logger import log_detail
+from utility_scripts.task_logs import display_log_path
 
 LIBRARY_PREPARATION_PREFLIGHT_FILENAME = ".library_preparation_preflight.json"
 NO_LIBRARY_PREPARATION_PREFLIGHT_CONTEXT = (
@@ -425,10 +431,29 @@ def _write_and_log_preflight(claimed_issue: Any, record: dict[str, Any]) -> str:
     failure_reason = record.get("failure_reason")
     if failure_reason:
         detail += f" reason={failure_reason}"
-    log_stage(
+    log_detail(
         "library-preflight",
         f"Preflight decision for issue #{record.get('issue_number')}: {detail}",
     )
+    library = str(record.get("library") or "unknown library")
+    if record.get("status") == "completed":
+        outcome = str(record.get("action") or "no_action").replace("_", " ")
+        if setup_count:
+            outcome += f", {setup_count} deterministic setup item(s)"
+        log_step_progress(
+            PHASE_SETUP,
+            STEP_NEURAL_SETUP,
+            f"Library preflight completed for {library}: {outcome}",
+        )
+    else:
+        log_path = record.get("session_log_path")
+        log_suffix = f" (log: {display_log_path(str(log_path))})" if log_path else ""
+        failure_text = str(failure_reason or "no usable decision")
+        log_step_progress(
+            PHASE_SETUP,
+            STEP_NEURAL_SETUP,
+            f"Library preflight degraded for {library}: {failure_text}{log_suffix}",
+        )
     return write_library_preparation_preflight(_preflight_artifact_root(claimed_issue), record)
 
 
@@ -448,7 +473,12 @@ def run_library_preparation_preflight(
         claimed_issue,
         issue_body_provider,
     )
-    log_stage(
+    log_step_progress(
+        PHASE_SETUP,
+        STEP_NEURAL_SETUP,
+        f"Running library preflight for {input_bundle.get('library')}",
+    )
+    log_detail(
         "library-preflight",
         (
             f"Running preflight for issue #{claimed_issue.issue['number']} "
@@ -709,7 +739,7 @@ def prepare_library_preparation_preflight(
                 f"{item.get('kind')}:{item.get('result')}"
                 for item in applied if isinstance(item, dict)
             )
-            log_stage("library-preflight", f"Applied deterministic setup: {summary}")
+            log_detail("library-preflight", f"Applied deterministic setup: {summary}")
     context = format_library_preparation_preflight_context(preflight)
     return preflight, context
 

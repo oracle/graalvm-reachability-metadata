@@ -986,9 +986,12 @@ boundary nearest the error owns the line and the rest add nothing.
 process-wide verbose level, enabled by `--verbose`/`FORGE_VERBOSE`; the older
 `FORGE_DEBUG_LOGGING` switch remains an alias. The worker forwards the setting
 to its host-check and workflow-driver processes rather than threading a boolean
-through workflow functions. Git commands capture their output and replay it
-only on failure or under verbose output, so the default failed-run output is the
-location, the error, and the preserved branch
+through workflow functions. Normal detail follows the phase most recently
+announced by `enter_phase()`, rather than the outer Python call stack, because
+`run_workflow_engine()` changes from compact `setup` into `fix` or `explore`
+before returning to its driver. Git commands capture their output and replay it
+only on failure or under verbose output, so the default failed-run output is
+the location, the error, and the preserved branch
 (§FS-forge-run-location-reporting.4, §FS-forge-run-output-legibility.5).
 
 ## AR-forge-control-plane: Worker loop and dispatcher own queue control

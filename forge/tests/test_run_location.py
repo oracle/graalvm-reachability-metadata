@@ -23,6 +23,7 @@ from utility_scripts.run_location import (
     PHASE_SETUP,
     STEP_CHECK_HOST_REQUIREMENTS,
     STEP_GENERATE_TESTS,
+    STEP_NORMAL_SETUP,
     STEP_NATIVE_TRACE_GATE,
     STEP_PUBLISH_BRANCH,
     UNLOCATED_FAILURE_DEFECT,
@@ -43,6 +44,7 @@ from utility_scripts.run_location import (
     run_step,
     step_position,
 )
+from utility_scripts.stage_logger import log_detail
 
 
 def _captured(callable_under_test):
@@ -131,6 +133,59 @@ class ProgressOutputTests(unittest.TestCase):
 
         self.assertIn(f"Running step {STEP_CHECK_HOST_REQUIREMENTS}", stdout)
         self.assertIn("[claim] Checking host requirements", stdout)
+
+    def test_compact_setup_hides_detail_but_keeps_state_and_count(self) -> None:
+        def enter() -> None:
+            with run_step(PHASE_SETUP, STEP_NORMAL_SETUP, operand="org.example:lib:1.0.0"):
+                log_step_progress(
+                    PHASE_SETUP,
+                    STEP_NORMAL_SETUP,
+                    "Scaffolding org.example:lib:1.0.0",
+                )
+                log_detail("scaffold", "internal setup narration")
+
+        with patch.dict(
+                "os.environ",
+                {"FORGE_VERBOSE": "0", "FORGE_DEBUG_LOGGING": "0"},
+        ):
+            stdout, _ = _captured(enter)
+
+        position, total = step_position(PHASE_SETUP, STEP_NORMAL_SETUP)
+        self.assertIn(f"[setup] Scaffolding org.example:lib:1.0.0 ({position}/{total})", stdout)
+        self.assertNotIn(f"Running step {STEP_NORMAL_SETUP}", stdout)
+        self.assertNotIn("internal setup narration", stdout)
+
+    def test_verbose_setup_restores_detail_and_registered_step(self) -> None:
+        def enter() -> None:
+            with run_step(PHASE_SETUP, STEP_NORMAL_SETUP, operand="org.example:lib:1.0.0"):
+                log_step_progress(
+                    PHASE_SETUP,
+                    STEP_NORMAL_SETUP,
+                    "Scaffolding org.example:lib:1.0.0",
+                )
+                log_detail("scaffold", "internal setup narration")
+
+        with patch.dict("os.environ", {"FORGE_VERBOSE": "1"}):
+            stdout, _ = _captured(enter)
+
+        self.assertIn(f"Running step {STEP_NORMAL_SETUP}", stdout)
+        self.assertIn("internal setup narration", stdout)
+
+    def test_entering_explore_restores_normal_detail_after_setup(self) -> None:
+        def transition() -> None:
+            run_location.enter_phase(PHASE_SETUP)
+            log_detail("setup-detail", "hidden setup detail")
+            run_location.enter_phase(PHASE_EXPLORE)
+            log_detail("explore-detail", "visible explore detail")
+
+        with patch.dict(
+                "os.environ",
+                {"FORGE_VERBOSE": "0", "FORGE_DEBUG_LOGGING": "0"},
+        ):
+            stdout, _ = _captured(transition)
+
+        self.assertNotIn("hidden setup detail", stdout)
+        self.assertIn("visible explore detail", stdout)
 
     def test_phase_banner_prints_once_per_transition(self) -> None:
         bind_run_context("issue #1412 org.example:demo:1.0.0")

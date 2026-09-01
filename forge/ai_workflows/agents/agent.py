@@ -13,7 +13,7 @@ import threading
 import time
 from collections.abc import Iterator
 
-from utility_scripts.stage_logger import log_stage
+from utility_scripts.stage_logger import log_detail, log_stage
 from utility_scripts.task_logs import display_log_path, resolve_task_log_dir
 
 
@@ -120,7 +120,7 @@ class Agent(ABC):
         """Print the session log location once per agent instance."""
         if getattr(self, "_session_log_announced", False):
             return
-        log_stage("agent", f"{agent_name} session log: {display_log_path(log_path)}")
+        log_detail("agent", f"{agent_name} session log: {display_log_path(log_path)}")
         self._session_log_announced = True
 
     def _print_live_status(self, agent_name: str, detail: str) -> None:
@@ -174,7 +174,7 @@ class Agent(ABC):
         self._agent_activity_started_at = time.monotonic()
         log_path = getattr(self, "_session_log_path", None)
         log_suffix = f" (log: {display_log_path(log_path)})" if log_path else ""
-        log_stage("agent", f"Running {action}{log_suffix}")
+        log_detail("agent", f"Running {action}{log_suffix}")
         heartbeat_stop, heartbeat = self._start_heartbeat(agent_name)
         try:
             yield
@@ -200,7 +200,7 @@ class Agent(ABC):
             current_log_suffix = (
                 f" (log: {display_log_path(current_log_path)})" if current_log_path else ""
             )
-            log_stage(
+            log_detail(
                 "agent",
                 f"{action} completed in {_format_elapsed(elapsed_seconds)}{current_log_suffix}",
             )
@@ -268,12 +268,12 @@ class Agent(ABC):
         """Send graphify prompts to the agent session to build a merged knowledge graph context."""
         if not source_dirs:
             return ""
-        log_stage("graphify", f"Initializing knowledge graph context for {len(source_dirs)} source(s)")
+        log_detail("graphify", f"Initializing knowledge graph context for {len(source_dirs)} source(s)")
         result = self.send_prompt(f"/graphify {source_dirs[0]} --include-local")
         for extra_dir in source_dirs[1:]:
-            log_stage("graphify", f"Merging graph from {display_log_path(extra_dir)}")
+            log_detail("graphify", f"Merging graph from {display_log_path(extra_dir)}")
             result = self.send_prompt(f"/graphify {extra_dir} --update")
-        log_stage("graphify", "Knowledge graph context initialized")
+        log_detail("graphify", "Knowledge graph context initialized")
         return result
 
 

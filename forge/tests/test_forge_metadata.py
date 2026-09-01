@@ -316,6 +316,59 @@ class FinalizeSuccessfulIssueTests(unittest.TestCase):
 
 
 class LibraryUpdateIssueTests(unittest.TestCase):
+    def test_compact_preflight_reports_completed_decision(self) -> None:
+        from utility_scripts import library_preparation_preflight as preflight_module
+
+        with tempfile.TemporaryDirectory() as temp_dir:
+            claimed_issue = SimpleNamespace(
+                scratch_metrics_repo_path=temp_dir,
+                preflight_info_path=temp_dir,
+            )
+            record = {
+                "status": "completed",
+                "action": "no_action",
+                "issue_number": 1412,
+                "library": "org.example:lib:1.0.0",
+                "deterministic_setup": [],
+            }
+            stdout = io.StringIO()
+            run_location.enter_phase(PHASE_SETUP)
+            with contextlib.redirect_stdout(stdout):
+                preflight_module._write_and_log_preflight(claimed_issue, record)
+            run_location.reset_run_location()
+
+        self.assertIn(
+            "[setup] Library preflight completed for org.example:lib:1.0.0: no action (1/3)",
+            stdout.getvalue(),
+        )
+        self.assertNotIn("Preflight decision", stdout.getvalue())
+
+    def test_degraded_preflight_keeps_cause_and_log_in_compact_output(self) -> None:
+        from utility_scripts import library_preparation_preflight as preflight_module
+
+        with tempfile.TemporaryDirectory() as temp_dir:
+            claimed_issue = SimpleNamespace(
+                scratch_metrics_repo_path=temp_dir,
+                preflight_info_path=temp_dir,
+            )
+            record = {
+                "status": "degraded",
+                "action": "no_action",
+                "issue_number": 1412,
+                "library": "org.example:lib:1.0.0",
+                "deterministic_setup": [],
+                "failure_reason": "Agent timed out",
+                "session_log_path": "/tmp/preflight-session.log",
+            }
+            stdout = io.StringIO()
+            run_location.enter_phase(PHASE_SETUP)
+            with contextlib.redirect_stdout(stdout):
+                preflight_module._write_and_log_preflight(claimed_issue, record)
+            run_location.reset_run_location()
+
+        self.assertIn("Library preflight degraded for org.example:lib:1.0.0: Agent timed out", stdout.getvalue())
+        self.assertIn("preflight-session.log", stdout.getvalue())
+
     def test_library_preflight_dispatches_without_a_strategy(self) -> None:
         claimed_issue = forge_metadata.ClaimedIssue(
             issue={"number": 1412, "title": "Update org.example:lib:1.0.0"},

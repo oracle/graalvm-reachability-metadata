@@ -203,6 +203,7 @@ from utility_scripts.run_location import (
     STEP_CLAIM_ISSUE,
     STEP_CREATE_ISSUE_WORKSPACE,
     STEP_NEURAL_SETUP,
+    STEP_NORMAL_SETUP,
     STEP_PUBLISH_BRANCH,
     STEP_ROUTE_TO_DRIVER,
     RunLocation,
@@ -224,6 +225,7 @@ from utility_scripts.stage_logger import (
     debug_logging_enabled,
     enable_verbose_logging,
     log_debug,
+    log_detail,
     log_failure_banner,
     log_stage,
     log_success_banner,
@@ -5170,7 +5172,7 @@ def _generate_dispatcher_dynamic_access_report(claimed_issue: ClaimedIssue) -> N
         stage="dynamic-access",
     )
     if result.returncode != 0:
-        log_stage(
+        log_detail(
             "dynamic-access-chunking",
             (
                 "Dispatcher dynamic-access report refresh failed for "
@@ -5242,7 +5244,7 @@ def _prepare_dispatcher_dynamic_access_report(claimed_issue: ClaimedIssue) -> bo
     built (§FS-forge-chunked-dynamic-access).
     """
     if _continuation_resumes_existing_tree(claimed_issue.continuation_marker):
-        log_stage(
+        log_detail(
             "dynamic-access-chunking",
             (
                 f"Issue #{claimed_issue.issue['number']} resumes a preserved tree; "
@@ -5296,7 +5298,7 @@ def prepare_dynamic_access_chunking(
         chunk_boundary: int = threshold
         if active_chunk_remaining_budget is not None:
             chunk_boundary = min(chunk_boundary, active_chunk_remaining_budget)
-        log_stage(
+        log_detail(
             "dynamic-access-chunking",
             "Deferring chunk selection for '{strategy}' until its bulk phase completes; "
             "uncovered_classes={uncovered}, class_boundary={boundary}.".format(
@@ -5309,7 +5311,7 @@ def prepare_dynamic_access_chunking(
 
     report = _load_dispatcher_dynamic_access_report(claimed_issue)
     if report is None:
-        log_stage(
+        log_detail(
             "dynamic-access-chunking",
             (
                 f"No dispatcher dynamic-access report for issue #{claimed_issue.issue['number']} "
@@ -5335,7 +5337,7 @@ def prepare_dynamic_access_chunking(
         claimed_issue.continuation_marker,
     )
     if not already_chunked and len(current_uncovered_classes) <= threshold:
-        log_stage(
+        log_detail(
             "dynamic-access-chunking",
             (
                 f"Chunking not selected for issue #{claimed_issue.issue['number']}: "
@@ -5353,7 +5355,7 @@ def prepare_dynamic_access_chunking(
     if active_chunk_remaining_budget is not None:
         current_chunk_class_count = min(current_chunk_class_count, active_chunk_remaining_budget)
     if current_chunk_class_count <= 0:
-        log_stage(
+        log_detail(
             "dynamic-access-chunking",
             (
                 f"No chunk selected for issue #{claimed_issue.issue['number']}: "
@@ -5373,7 +5375,7 @@ def prepare_dynamic_access_chunking(
         add_issue_label(claimed_issue.issue["number"], LABEL_CHUNKED_DYNAMIC_ACCESS)
         add_issue_label_to_payload(claimed_issue.issue, LABEL_CHUNKED_DYNAMIC_ACCESS)
 
-    log_stage(
+    log_detail(
         "dynamic-access-chunking",
         "Chunked dynamic-access selected for issue #{issue_number}: "
         "already_chunked={already_chunked}, total_uncovered_classes={uncovered_count}, "
@@ -5828,9 +5830,14 @@ def invoke_pipeline(
             claimed_issue,
             marker,
         )
-        log_stage(
+        log_detail(
             "continuation",
             f"Issue #{claimed_issue.issue['number']} skips completed setup preflight.",
+        )
+        log_step_progress(
+            PHASE_SETUP,
+            STEP_NEURAL_SETUP,
+            f"Reusing completed library preflight for {claimed_issue.issue_coordinates}",
         )
     else:
         # The preflight agent is the run's neural setup, and it runs before the
@@ -5852,10 +5859,29 @@ def invoke_pipeline(
                     and library_update_route.selected_driver == ROUTE_IMPROVE_COVERAGE
             )
     ):
-        chunk_class_count = prepare_dynamic_access_chunking(
-            claimed_issue,
-            run_strategy_name,
-        )
+        with run_step(PHASE_SETUP, STEP_NORMAL_SETUP, operand=claimed_issue.issue_coordinates):
+            log_step_progress(
+                PHASE_SETUP,
+                STEP_NORMAL_SETUP,
+                f"Inspecting dynamic access for {claimed_issue.issue_coordinates}",
+            )
+            chunk_class_count = prepare_dynamic_access_chunking(
+                claimed_issue,
+                run_strategy_name,
+            )
+            uncovered_classes = _dispatcher_uncovered_class_count(claimed_issue)
+            budget_suffix = f", class budget {chunk_class_count}" if chunk_class_count is not None else ""
+            inspection_result = (
+                "report unavailable"
+                if uncovered_classes == "unavailable"
+                else f"{uncovered_classes} uncovered classes{budget_suffix}"
+            )
+            log_step_progress(
+                PHASE_SETUP,
+                STEP_NORMAL_SETUP,
+                f"Dynamic-access inspection ready for {claimed_issue.issue_coordinates}: "
+                f"{inspection_result}",
+            )
     invocation = build_workflow_driver_invocation(
             claimed_issue,
             strategy_override,
@@ -5868,8 +5894,7 @@ def invoke_pipeline(
     if debug_logging_enabled() and "--verbose" not in invocation.argv:
         invocation.argv.append("--verbose")
 
-    print()
-    log_stage(invocation.log_stage_name, invocation.log_message)
+    log_detail(invocation.log_stage_name, invocation.log_message)
     if is_fixture_testing_enabled():
         display_argv = list(invocation.argv)
         if "--issue-requested-metadata-context" in display_argv:

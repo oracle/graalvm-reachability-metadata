@@ -20,7 +20,7 @@ import sys
 import threading
 import time
 
-from utility_scripts.stage_logger import debug_logging_enabled, log_stage
+from utility_scripts.stage_logger import debug_logging_enabled, log_detail, log_stage
 from utility_scripts.task_logs import build_timestamped_task_log_path, display_log_path
 
 
@@ -46,11 +46,12 @@ def run_logged_command(
         env: dict[str, str] | None = None,
         timeout_seconds: int | None = None,
         stage: str = "command",
+        failure_is_detail: bool = False,
 ) -> LoggedCommandResult:
     """Run one command quietly, teeing live output only in debug mode."""
     log_path = build_timestamped_task_log_path(task_type, subject, action)
     displayed_log_path = display_log_path(log_path)
-    log_stage(stage, f"Running {action} (log: {displayed_log_path})")
+    log_detail(stage, f"Running {action} (log: {displayed_log_path})")
     started_at = time.monotonic()
     output_chunks: list[str] = []
     timed_out = False
@@ -74,7 +75,8 @@ def run_logged_command(
             message = f"Failed to start command: {exc}\n"
             log_file.write(message)
             duration_seconds = time.monotonic() - started_at
-            log_stage(stage, f"{action} failed to start (log: {displayed_log_path})")
+            failure_logger = log_detail if failure_is_detail else log_stage
+            failure_logger(stage, f"{action} failed to start (log: {displayed_log_path})")
             return LoggedCommandResult(
                 command, 1, message, log_path, False, duration_seconds,
             )
@@ -117,10 +119,11 @@ def run_logged_command(
     output = "".join(output_chunks)
     duration = _format_duration(duration_seconds)
     if returncode == 0 and not timed_out:
-        log_stage(stage, f"{action} completed in {duration} (log: {displayed_log_path})")
+        log_detail(stage, f"{action} completed in {duration} (log: {displayed_log_path})")
     else:
         reason = "timed out" if timed_out else f"failed with exit code {returncode}"
-        log_stage(stage, f"{action} {reason} after {duration} (log: {displayed_log_path})")
+        failure_logger = log_detail if failure_is_detail else log_stage
+        failure_logger(stage, f"{action} {reason} after {duration} (log: {displayed_log_path})")
     return LoggedCommandResult(
         command, returncode, output, log_path, timed_out, duration_seconds,
     )

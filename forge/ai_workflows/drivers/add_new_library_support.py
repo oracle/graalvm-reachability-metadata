@@ -41,7 +41,11 @@ from ai_workflows.core.workflow_strategy import (
     strategy_skips_initial_fix_phase,
 )
 from ai_workflows.core.workflow_strategy import WorkflowStrategy
-from git_scripts.common_git import build_ai_branch_name, delete_remote_branch_if_exists
+from git_scripts.common_git import (
+    build_ai_branch_name,
+    delete_remote_branch_if_exists,
+    switch_branch_quietly,
+)
 from utility_scripts import metrics_writer
 from utility_scripts.continuation_marker import (
     PHASE_FINALIZATION,
@@ -62,6 +66,8 @@ from utility_scripts.repo_path_resolver import require_complete_reachability_rep
 from utility_scripts.run_location import (
     STEP_NORMAL_SETUP,
     STEP_RUN_WORKFLOW_ENGINE,
+    enter_phase,
+    log_step_progress,
     record_step_failure,
     report_run_failure,
     resolve_failure_location,
@@ -75,7 +81,8 @@ from utility_scripts.source_context import (
     prepare_source_contexts,
     resolve_test_source_layout,
 )
-from utility_scripts.stage_logger import log_stage
+from utility_scripts.stage_logger import log_detail, log_stage
+from utility_scripts.task_logs import display_log_path
 from utility_scripts.test_quality_checks import (
     cleanup_scaffold_placeholder_tests,
     collect_generated_test_validity_issues,
@@ -259,10 +266,7 @@ def create_feature_branch_for_library(group, artifact, library_version):
 
     new_branch = build_ai_branch_name(f"add-lib-support-{group}-{artifact}-{library_version}")
     delete_remote_branch_if_exists(new_branch)
-    subprocess.run(
-        ["git", "switch", "-C", new_branch],
-        check=True,
-    )
+    switch_branch_quietly(new_branch)
 
 
 def prepare_native_image_eligible_artifact(reachability_repo_path: str, library: str) -> bool:
@@ -318,11 +322,17 @@ def run_scaffold(library: str) -> bool:
         action="scaffold",
         env=gradle_command_environment(repo_path),
         stage="scaffold",
+        failure_is_detail=True,
     )
     if scaffold_proc.returncode == 0:
         return True
     if _metadata_already_exists(scaffold_proc):
         return False
+    log_stage(
+        "scaffold",
+        f"scaffold failed with exit code {scaffold_proc.returncode} "
+        f"(log: {display_log_path(scaffold_proc.log_path)})",
+    )
     raise ScaffoldError(scaffold_proc.stdout or "Gradle scaffold task failed")
 
 
@@ -350,7 +360,7 @@ def init_agent(
         print("ERROR: Strategy is missing required field: agent", file=sys.stderr)
         sys.exit(1)
 
-    log_stage("init-agent", f"Initializing {strategy_agent} agent")
+    log_detail("init-agent", f"Initializing {strategy_agent} agent")
     agent_class = Agent.get_class(strategy_agent)
     return agent_class(
         model_name=model_name,
@@ -467,6 +477,7 @@ def main(argv=None):
     resume_from = None if continuation_marker is None else continuation_marker.continue_from
     resume_existing_tree = resume_from in {"fix", "explore", PHASE_FINALIZATION, "publication"}
     resume_finalization = resume_from == PHASE_FINALIZATION
+    enter_phase(PHASE_SETUP)
 
     # Resolve repository locations (possibly cloning)
     reachability_repo_path, metrics_repo_dir, metrics_repo_root = resolve_workflow_repo_paths(
@@ -492,7 +503,7 @@ def main(argv=None):
         )
     resolve_graalvm_java_home()
 
-    log_stage("setup", f"Selected strategy: {strategy_name}")
+    log_detail("setup", f"Selected strategy: {strategy_name}")
     model_name = strategy.get("model") or DEFAULT_MODEL_NAME
     workflow_name = strategy.get("workflow")
     if not workflow_name:
@@ -506,6 +517,7 @@ def main(argv=None):
         # Branching and scaffolding is the run's model-free setup.
         # §FS-forge-run-location-reporting.2
         with run_step(PHASE_SETUP, STEP_NORMAL_SETUP, operand=library):
+            log_step_progress(PHASE_SETUP, STEP_NORMAL_SETUP, f"Scaffolding {library}")
             create_feature_branch_for_library(package, artifact, library_version)
             try:
                 if not prepare_native_image_eligible_artifact(reachability_repo_path, library):
@@ -526,7 +538,8 @@ def main(argv=None):
                 ),
             )
     else:
-        log_stage("continuation", f"Resuming {library} from preserved branch at phase {resume_from}")
+        log_detail("continuation", f"Resuming {library} from preserved branch at phase {resume_from}")
+        log_step_progress(PHASE_SETUP, STEP_NORMAL_SETUP, f"Reusing prepared workspace for {library}")
     source_context_types = normalize_source_context_types(strategy.get("parameters", {}).get("source-context-types"))
     prepared_source_context = prepare_source_contexts(
         repo_root=get_repo_root(),
@@ -582,7 +595,7 @@ def main(argv=None):
         subprocess.run(["git", "add", directory_path, index_json_path, *docker_setup_targets], check=False)
         subprocess.run(["git", "commit", "-m", f"Scaffold {library}"], check=False, capture_output=True, text=True)
     checkpoint_commit_hash = subprocess.check_output(["git", "rev-parse", "HEAD"], text=True).strip()
-    log_stage("scaffold", f"Checkpoint at {checkpoint_commit_hash}")
+    log_detail("scaffold", f"Checkpoint at {checkpoint_commit_hash}")
 
     editable_files = list_all_files(test_source_layout.source_root)
     build_gradle_file = os.path.join(
@@ -620,12 +633,23 @@ def main(argv=None):
         ]
         agent.graphify(graphify_dirs)
 
+    log_step_progress(PHASE_SETUP, STEP_NORMAL_SETUP, f"Setup ready for {library}")
     if resume_finalization:
+        log_step_progress(
+            PHASE_SETUP,
+            STEP_RUN_WORKFLOW_ENGINE,
+            f"Reusing completed workflow for {strategy_name}",
+        )
         workflow_status = RUN_STATUS_SUCCESS
         global_iterations = 0
         unittest_number = 1
     else:
         with run_step(PHASE_SETUP, STEP_RUN_WORKFLOW_ENGINE, operand=strategy_name):
+            log_step_progress(
+                PHASE_SETUP,
+                STEP_RUN_WORKFLOW_ENGINE,
+                f"Starting workflow {strategy_name} for {library}",
+            )
             workflow_status, global_iterations, unittest_number = strategy_obj.run(
                 agent=agent,
                 checkpoint_commit_hash=checkpoint_commit_hash,

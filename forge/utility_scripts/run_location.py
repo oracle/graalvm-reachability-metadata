@@ -29,7 +29,12 @@ from utility_scripts.continuation_marker import (
     ContinuationMarker,
     save_phase_update,
 )
-from utility_scripts.stage_logger import log_debug, log_phase_banner, log_stage
+from utility_scripts.stage_logger import (
+    log_debug,
+    log_phase_banner,
+    log_stage,
+    set_compact_narration,
+)
 from utility_scripts.task_logs import display_log_path
 
 # The dispatcher-side segment that runs before a run — and therefore before any
@@ -103,7 +108,7 @@ PHASE_STEPS: dict[str, tuple[str, ...]] = {
 
 # Phases move to concise output one at a time. Their registered method-style
 # announcement remains available under --verbose. §FS-forge-run-output-legibility.5
-COMPACT_OUTPUT_PHASES: tuple[str, ...] = (PHASE_CLAIM,)
+COMPACT_OUTPUT_PHASES: tuple[str, ...] = (PHASE_CLAIM, PHASE_SETUP)
 
 UNLOCATED_STEP = "<unlocated-step>"
 LOCATION_ATTRIBUTE = "forge_run_location"
@@ -205,6 +210,7 @@ def reset_run_location() -> None:
     _STATE.phase = None
     _STATE.context = None
     _STATE.reported = False
+    set_compact_narration(False)
 
 
 def enter_phase(phase: str) -> None:
@@ -217,6 +223,7 @@ def enter_phase(phase: str) -> None:
     if _STATE.phase == phase:
         return
     _STATE.phase = phase
+    set_compact_narration(phase in COMPACT_OUTPUT_PHASES)
     log_phase_banner(phase, context=_STATE.context)
 
 
