@@ -34,6 +34,8 @@ from utility_scripts.run_location import (
     PHASE_FINALIZATION as RUN_PHASE_FINALIZATION,
     STEP_AGENT_FIX,
     STEP_FINALIZE_RUN,
+    current_run_location,
+    log_step_progress,
     record_step_failure,
     run_step,
 )
@@ -54,7 +56,7 @@ from utility_scripts.issue_requested_metadata import NO_REPORTER_METADATA_CONTEX
 from utility_scripts.task_logs import display_log_path
 from utility_scripts.library_preparation_preflight import NO_LIBRARY_PREPARATION_PREFLIGHT_CONTEXT
 from utility_scripts.repo_path_resolver import require_complete_reachability_repo
-from utility_scripts.stage_logger import log_stage
+from utility_scripts.stage_logger import log_detail, log_stage
 from utility_scripts.strategy_loader import load_persistent_instructions, load_prompt_template
 
 RUN_STATUS_SUCCESS = "success"
@@ -182,7 +184,15 @@ class WorkflowStrategy(ABC):
     ) -> bool:
         """Run the shared native-test gate (§FS-native-test-verification-gate)."""
         label_suffix: str = f" for {label}" if label else ""
-        log_stage(
+        gate_target = label or self.library
+        location = current_run_location()
+        if location is not None:
+            log_step_progress(
+                location.phase,
+                location.step,
+                f"Running native trace gate for {gate_target}",
+            )
+        log_detail(
             "native-test-verify",
             f"native-test gate: starting{label_suffix} output_dir={output_dir} "
             f"budget={self.max_native_test_verification_iterations}",
@@ -196,7 +206,24 @@ class WorkflowStrategy(ABC):
         )
         if result.status == NATIVE_TEST_GATE_FAILED:
             log_path: str = result.last_native_test_log_path or "(none)"
-            log_stage(
+            last_exit: str = (
+                str(result.last_native_test_exit_code)
+                if result.last_native_test_exit_code is not None
+                else "unknown"
+            )
+            failure_cause = result.failure_detail or (
+                f"native test did not pass after {result.iterations_used} cycles; "
+                f"last binary exit {last_exit}"
+            )
+            if location is not None:
+                displayed_log = display_log_path(log_path) if log_path != "(none)" else log_path
+                log_step_progress(
+                    location.phase,
+                    location.step,
+                    f"Native trace gate failed for {gate_target}: {failure_cause} "
+                    f"(log: {displayed_log})",
+                )
+            log_detail(
                 "native-test-verify",
                 f"native-test gate FAILED{label_suffix} after {result.iterations_used} cycles "
                 f"(last log: {log_path})",
@@ -209,7 +236,14 @@ class WorkflowStrategy(ABC):
                     result.failure_log_path,
                 )
             return False
-        log_stage(
+        status_text = result.status.lower().replace("_", " ")
+        if location is not None:
+            log_step_progress(
+                location.phase,
+                location.step,
+                f"Native trace gate {status_text} for {gate_target}",
+            )
+        log_detail(
             "native-test-verify",
             f"native-test gate {result.status}{label_suffix} after {result.iterations_used} cycles",
         )

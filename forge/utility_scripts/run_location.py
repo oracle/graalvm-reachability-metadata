@@ -108,7 +108,12 @@ PHASE_STEPS: dict[str, tuple[str, ...]] = {
 
 # Phases move to concise output one at a time. Their registered method-style
 # announcement remains available under --verbose. §FS-forge-run-output-legibility.5
-COMPACT_OUTPUT_PHASES: tuple[str, ...] = (PHASE_CLAIM, PHASE_SETUP)
+COMPACT_OUTPUT_PHASES: tuple[str, ...] = (
+    PHASE_CLAIM,
+    PHASE_SETUP,
+    PHASE_FIX,
+    PHASE_EXPLORE,
+)
 
 UNLOCATED_STEP = "<unlocated-step>"
 LOCATION_ATTRIBUTE = "forge_run_location"
@@ -262,10 +267,15 @@ def announce_step(phase: str, step: str, operand: str | None = None) -> RunLocat
     return RunLocation(phase=phase, step=step, operand=operand)
 
 
-def log_step_progress(phase: str, step: str, message: str) -> None:
+def log_step_progress(
+        phase: str,
+        step: str,
+        message: str,
+        indent_level: int = 0,
+) -> None:
     """Print one concise step transition with its derived phase position."""
     position, total = step_position(phase, step)
-    log_stage(phase, f"{message} ({position}/{total})")
+    log_stage(phase, f"{message} ({position}/{total})", indent_level=indent_level)
 
 
 def pipeline_step(

@@ -15,12 +15,13 @@ from utility_scripts.run_location import (
     STEP_NATIVE_TRACE_GATE,
     RunLocation,
     enter_phase,
+    log_step_progress,
     record_step_failure,
     run_step,
 )
 from utility_scripts.metadata_index import resolve_test_version
 from utility_scripts.native_test_verification import global_output_dir
-from utility_scripts.stage_logger import log_stage
+from utility_scripts.stage_logger import log_detail
 
 
 BASIC_ITERATIVE_PERSISTENT_INSTRUCTIONS_PATH = "prompt_templates/persistent/basic_iterative_rules.md"
@@ -118,11 +119,11 @@ class BasicIterativeStrategy(WorkflowStrategy):
 
     @staticmethod
     def _print_message(message: str) -> None:
-        log_stage("basic-iterative", message)
+        log_detail("basic-iterative", message)
 
     @classmethod
     def _print_detail(cls, message: str, indent_level: int = 1) -> None:
-        log_stage("basic-iterative", message, indent_level=indent_level)
+        log_detail("basic-iterative", message, indent_level=indent_level)
 
     def _commit_test_sources(self, message: str) -> str:
         tests_dir = os.path.join(
@@ -180,6 +181,17 @@ class BasicIterativeStrategy(WorkflowStrategy):
         unittest_number = 0
 
         while failed_iterations < self.max_failed_generations and unittest_number < self.max_successful_generations:
+            generation_number = unittest_number + 1
+            generation_label = (
+                f"retry after failed generation {failed_iterations}/{self.max_failed_generations}"
+                if failed_iterations > 0
+                else f"generation {generation_number}/{self.max_successful_generations}"
+            )
+            log_step_progress(
+                RUN_PHASE_EXPLORE,
+                STEP_GENERATE_TESTS,
+                f"Generating tests: unguided {generation_label}",
+            )
             self._print_message(
                 "successful generation {generation}/{max_generations}, failed attempts {attempt}/{max_attempts}".format(
                     generation=unittest_number,
@@ -211,6 +223,12 @@ class BasicIterativeStrategy(WorkflowStrategy):
             )
             reached_native_test = False
             for test_iter in range(self.max_test_iterations):
+                log_step_progress(
+                    RUN_PHASE_EXPLORE,
+                    STEP_GENERATE_TESTS,
+                    f"Running test {test_iter + 1}/{self.max_test_iterations}",
+                    indent_level=1,
+                )
                 self._print_detail(
                     "test {test_iteration}/{max_test_iterations}".format(
                         test_iteration=test_iter + 1,
@@ -225,6 +243,18 @@ class BasicIterativeStrategy(WorkflowStrategy):
                 )
                 test_output = agent.run_test_command(f"./gradlew test -Pcoordinates={self.library}")
                 failed_task = self._get_first_failed_task(test_output)
+                if failed_task == "nativeTest":
+                    test_outcome = "reached nativeTest"
+                elif failed_task is None:
+                    test_outcome = "passed"
+                else:
+                    test_outcome = f"failed at {failed_task}"
+                log_step_progress(
+                    RUN_PHASE_EXPLORE,
+                    STEP_GENERATE_TESTS,
+                    f"Test {test_iter + 1}/{self.max_test_iterations} {test_outcome}",
+                    indent_level=1,
+                )
                 self._print_detail(
                     "test: complete (failed task: {failed_task})".format(
                         failed_task=failed_task or "none",
@@ -249,6 +279,12 @@ class BasicIterativeStrategy(WorkflowStrategy):
                     "agent: test failed before nativeTest; sending failure output back to agent",
                     indent_level=2,
                 )
+                log_step_progress(
+                    RUN_PHASE_EXPLORE,
+                    STEP_GENERATE_TESTS,
+                    f"Running feedback fix after {failed_task}",
+                    indent_level=2,
+                )
                 send_agent_prompt(
                     agent,
                     f"The following test command failed:\n./gradlew test -Pcoordinates={self.library}\n\nOutput:\n{test_output}",
@@ -262,6 +298,11 @@ class BasicIterativeStrategy(WorkflowStrategy):
                 continue
 
             failed_iterations += 1
+            log_step_progress(
+                RUN_PHASE_EXPLORE,
+                STEP_GENERATE_TESTS,
+                "Generation failed before nativeTest; reverting generated tests",
+            )
             self._print_detail("result: failed before reaching nativeTest, reverting to checkpoint")
             subprocess.run(["git", "reset", "--hard", checkpoint_commit_hash], check=False)
 

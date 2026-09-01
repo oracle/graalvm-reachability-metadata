@@ -20,6 +20,7 @@ from utility_scripts.run_location import (
     STEP_NATIVE_TRACE_GATE,
     RunLocation,
     enter_phase,
+    log_step_progress,
     record_step_failure,
     run_step,
 )
@@ -33,7 +34,7 @@ from utility_scripts.dynamic_access_report import (
 from utility_scripts.dynamic_access_exhaust_report import DynamicAccessExhaustReport
 from utility_scripts.metadata_index import resolve_test_version
 from utility_scripts.native_test_verification import global_output_dir
-from utility_scripts.stage_logger import log_detail, log_stage
+from utility_scripts.stage_logger import log_detail
 from utility_scripts.strategy_loader import load_strategy_by_name
 
 
@@ -138,12 +139,25 @@ class BulkDynamicAccessStrategy(WorkflowStrategy):
 
         for iteration in range(self.max_bulk_iterations):
             agent.clear_context()
+            uncovered_calls = current_report.total_calls - current_report.covered_calls
+            uncovered_classes = sum(1 for c in current_report.classes if c.uncovered_calls > 0)
+            log_step_progress(
+                RUN_PHASE_EXPLORE,
+                STEP_GENERATE_TESTS,
+                "Generating tests: bulk iteration {current}/{maximum}, "
+                "{calls} uncovered across {classes} classes".format(
+                    current=iteration + 1,
+                    maximum=self.max_bulk_iterations,
+                    calls=uncovered_calls,
+                    classes=uncovered_classes,
+                ),
+            )
             self._print_message(
                 "iteration {current}/{max} — {uncovered} uncovered across {classes} classes".format(
                     current=iteration + 1,
                     max=self.max_bulk_iterations,
-                    uncovered=current_report.total_calls - current_report.covered_calls,
-                    classes=sum(1 for c in current_report.classes if c.uncovered_calls > 0),
+                    uncovered=uncovered_calls,
+                    classes=uncovered_classes,
                 )
             )
 
@@ -171,6 +185,12 @@ class BulkDynamicAccessStrategy(WorkflowStrategy):
             last_test_output = ""
             last_failed_task = None
             for test_iteration in range(self.max_test_iterations):
+                log_step_progress(
+                    RUN_PHASE_EXPLORE,
+                    STEP_GENERATE_TESTS,
+                    f"Running test {test_iteration + 1}/{self.max_test_iterations}",
+                    indent_level=1,
+                )
                 self._print_detail(
                     "test {current}/{max}: running ./gradlew test -Pcoordinates={library}".format(
                         current=test_iteration + 1,
@@ -183,6 +203,18 @@ class BulkDynamicAccessStrategy(WorkflowStrategy):
                 failed_task = self._get_first_failed_task(test_output)
                 last_test_output = test_output
                 last_failed_task = failed_task
+                if failed_task == "nativeTest":
+                    test_outcome = "reached nativeTest"
+                elif failed_task is None:
+                    test_outcome = "passed"
+                else:
+                    test_outcome = f"failed at {failed_task}"
+                log_step_progress(
+                    RUN_PHASE_EXPLORE,
+                    STEP_GENERATE_TESTS,
+                    f"Test {test_iteration + 1}/{self.max_test_iterations} {test_outcome}",
+                    indent_level=1,
+                )
                 self._print_detail(
                     "test: complete (failed task: {failed_task})".format(
                         failed_task=failed_task or "none",
@@ -192,6 +224,12 @@ class BulkDynamicAccessStrategy(WorkflowStrategy):
                 if failed_task in {"nativeTest", None}:
                     reached_native_test = True
                     break
+                log_step_progress(
+                    RUN_PHASE_EXPLORE,
+                    STEP_GENERATE_TESTS,
+                    f"Running feedback fix after {failed_task}",
+                    indent_level=2,
+                )
                 self._print_detail("agent: test failed; sending failure output back", indent_level=2)
                 send_agent_prompt(
                     agent,
@@ -205,6 +243,11 @@ class BulkDynamicAccessStrategy(WorkflowStrategy):
                 prompt_iterations += 1
 
             if not reached_native_test:
+                log_step_progress(
+                    RUN_PHASE_EXPLORE,
+                    STEP_GENERATE_TESTS,
+                    f"Bulk iteration {iteration + 1} failed before nativeTest",
+                )
                 self._print_detail("result: failed, reverting to checkpoint")
                 self._print_failure_analysis(
                     "gradle_test_failed",
@@ -219,6 +262,13 @@ class BulkDynamicAccessStrategy(WorkflowStrategy):
             if current_report is None:
                 self._print_detail("result: dynamic-access report unavailable after test run")
                 break
+
+            log_step_progress(
+                RUN_PHASE_EXPLORE,
+                STEP_GENERATE_TESTS,
+                f"Bulk iteration {iteration + 1} completed: "
+                f"{current_report.covered_calls}/{current_report.total_calls} covered",
+            )
 
             self._commit_test_sources(
                 "Bulk dynamic-access coverage ({covered}/{total})".format(
@@ -468,7 +518,7 @@ class BulkDynamicAccessStrategy(WorkflowStrategy):
 
     @staticmethod
     def _print_message(message: str) -> None:
-        log_stage("bulk-da", message)
+        log_detail("bulk-da", message)
 
     @classmethod
     def _print_detail(cls, message: str, indent_level: int = 1) -> None:

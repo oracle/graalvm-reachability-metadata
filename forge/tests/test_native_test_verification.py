@@ -29,6 +29,12 @@ _FORGE_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(_FORGE_ROOT))
 
 from utility_scripts import native_test_verification as ntv  # noqa: E402
+from utility_scripts.run_location import (  # noqa: E402
+    PHASE_EXPLORE,
+    STEP_NATIVE_TRACE_GATE,
+    reset_run_location,
+    run_step,
+)
 
 
 class ParseBinaryExitCodeTests(unittest.TestCase):
@@ -417,6 +423,11 @@ class MetadataAggregationTests(unittest.TestCase):
 class PrintCollectedMetadataTests(unittest.TestCase):
     """Readable logging of per-cycle trace metadata."""
 
+    def setUp(self) -> None:
+        verbose = patch.dict(os.environ, {"FORGE_VERBOSE": "1"})
+        verbose.start()
+        self.addCleanup(verbose.stop)
+
     def test_prints_metadata_summary_without_json_contents(self) -> None:
         run_dir = tempfile.mkdtemp(prefix="trace-run-")
         self.addCleanup(_rmtree, run_dir)
@@ -467,6 +478,11 @@ class GateRoutingTests(unittest.TestCase):
     """
 
     def setUp(self) -> None:
+        verbose = patch.dict(os.environ, {"FORGE_VERBOSE": "1"})
+        verbose.start()
+        self.addCleanup(verbose.stop)
+        reset_run_location()
+        self.addCleanup(reset_run_location)
         self.repo = tempfile.mkdtemp(prefix="repo-")
         self.addCleanup(_rmtree, self.repo)
         _make_complete_reachability_repo(self.repo)
@@ -1134,6 +1150,76 @@ class GateRoutingTests(unittest.TestCase):
         self.assertEqual(len([call for call in calls if "runNativeTraceImage" in call]), 1)
         self.assertEqual(len(result.intervention_records), 1)
         self.assertEqual(result.intervention_records[0].kind, "codex")
+
+    def test_concise_output_names_the_native_trace_agent_fix(self) -> None:
+        fake, _calls = self._fake_run_factory([1])
+        output = io.StringIO()
+        with patch.dict(
+                os.environ,
+                {"FORGE_VERBOSE": "0", "FORGE_DEBUG_LOGGING": "0"},
+        ), patch(
+                "utility_scripts.native_test_verification.subprocess.run",
+                side_effect=fake,
+        ), patch(
+                "utility_scripts.native_test_verification.run_native_test_fix",
+                return_value=(0, "/tmp/codex.log", False, None),
+        ), redirect_stdout(output):
+            with run_step(
+                    PHASE_EXPLORE,
+                    STEP_NATIVE_TRACE_GATE,
+                    operand="g:a:1.0",
+            ):
+                result = ntv.verify_native_test_passes(
+                    reachability_repo_path=self.repo,
+                    coordinate="g:a:1.0",
+                    output_dir=self.output_dir,
+                    max_iterations=5,
+                )
+
+        self.assertEqual(result.status, ntv.STATUS_PASSED_WITH_INTERVENTION)
+        printed = output.getvalue()
+        self.assertIn(
+            "[explore] Running native-trace agent fix for g:a:1.0:",
+            printed,
+        )
+        self.assertIn(
+            "[explore] Native-trace agent fix completed for g:a:1.0 (3/3)",
+            printed,
+        )
+        self.assertNotIn("[native-test-verify]", printed)
+        self.assertNotIn("./gradlew", printed)
+
+    def test_concise_agent_fix_failure_keeps_error_and_log(self) -> None:
+        fake, _calls = self._fake_run_factory([1])
+        output = io.StringIO()
+        with patch.dict(
+                os.environ,
+                {"FORGE_VERBOSE": "0", "FORGE_DEBUG_LOGGING": "0"},
+        ), patch(
+                "utility_scripts.native_test_verification.subprocess.run",
+                side_effect=fake,
+        ), patch(
+                "utility_scripts.native_test_verification.run_native_test_fix",
+                return_value=(2, "/tmp/codex.log", False, "Agent repair failed"),
+        ), redirect_stdout(output):
+            with run_step(
+                    PHASE_EXPLORE,
+                    STEP_NATIVE_TRACE_GATE,
+                    operand="g:a:1.0",
+            ):
+                result = ntv.verify_native_test_passes(
+                    reachability_repo_path=self.repo,
+                    coordinate="g:a:1.0",
+                    output_dir=self.output_dir,
+                    max_iterations=5,
+                )
+
+        self.assertEqual(result.status, ntv.STATUS_FAILED)
+        self.assertIn(
+            "[explore] Native-trace agent fix failed for g:a:1.0: "
+            "Agent repair failed (log: ../../codex.log) (3/3)",
+            output.getvalue(),
+        )
 
     def test_routes_to_codex_with_same_graalvm_home_as_gate_commands(self) -> None:
         graalvm_home = tempfile.mkdtemp(prefix="gate-graalvm-")

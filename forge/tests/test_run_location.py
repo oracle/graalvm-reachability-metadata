@@ -88,12 +88,13 @@ class ProgressOutputTests(unittest.TestCase):
     def tearDown(self) -> None:
         reset_run_location()
 
-    def test_step_entry_prints_the_running_step_line(self) -> None:
+    def test_verbose_explore_prints_the_registered_step_line(self) -> None:
         def enter() -> None:
             with run_step(PHASE_EXPLORE, STEP_NATIVE_TRACE_GATE, operand="com.acme.Thing"):
                 pass
 
-        stdout, _ = _captured(enter)
+        with patch.dict("os.environ", {"FORGE_VERBOSE": "1"}):
+            stdout, _ = _captured(enter)
         position, total = step_position(PHASE_EXPLORE, STEP_NATIVE_TRACE_GATE)
         self.assertIn(
             f"Running step {STEP_NATIVE_TRACE_GATE} ({position}/{total}) of phase {PHASE_EXPLORE} on com.acme.Thing",
@@ -171,12 +172,14 @@ class ProgressOutputTests(unittest.TestCase):
         self.assertIn(f"Running step {STEP_NORMAL_SETUP}", stdout)
         self.assertIn("internal setup narration", stdout)
 
-    def test_entering_explore_restores_normal_detail_after_setup(self) -> None:
+    def test_entering_finalization_restores_normal_detail_after_compact_phases(self) -> None:
         def transition() -> None:
             run_location.enter_phase(PHASE_SETUP)
             log_detail("setup-detail", "hidden setup detail")
             run_location.enter_phase(PHASE_EXPLORE)
-            log_detail("explore-detail", "visible explore detail")
+            log_detail("explore-detail", "hidden explore detail")
+            run_location.enter_phase(PHASE_FINALIZATION)
+            log_detail("finalization-detail", "visible finalization detail")
 
         with patch.dict(
                 "os.environ",
@@ -185,7 +188,8 @@ class ProgressOutputTests(unittest.TestCase):
             stdout, _ = _captured(transition)
 
         self.assertNotIn("hidden setup detail", stdout)
-        self.assertIn("visible explore detail", stdout)
+        self.assertNotIn("hidden explore detail", stdout)
+        self.assertIn("visible finalization detail", stdout)
 
     def test_phase_banner_prints_once_per_transition(self) -> None:
         bind_run_context("issue #1412 org.example:demo:1.0.0")

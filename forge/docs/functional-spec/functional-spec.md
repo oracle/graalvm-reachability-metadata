@@ -499,6 +499,18 @@ paths, command start/success lines, branch commands, source downloads,
 checkpoints, and report refreshes are verbose narration. A failed command or a
 degraded preflight remains visible with its cause and durable log path.
 
+For `fix` and `explore`, normal output names the diagram step and only the unit
+that advances it. Test generation identifies either the selected class and its
+`current/total` class position, a bulk iteration, or an unguided generation
+attempt. Beneath that state, tests report their bounded attempt, terminal task,
+and whether `nativeTest` was reached; an agent retry is one indented `feedback
+fix` state. The native-trace gate reports start, terminal status, and a nested
+`agent_fix` state only when deterministic tracing cannot converge. Agent session
+announcements, static start/completion lines, Gradle commands, report refreshes,
+trace directories, metadata paths, cycle internals, and failure-log excerpts
+are verbose narration. The in-place agent heartbeat remains the normal live
+timer. Terminal failures still name their cause and durable log.
+
 ## FS-forge-run-metrics: Per-run metrics record
 §GOAL-minimize-generation-cost
 
