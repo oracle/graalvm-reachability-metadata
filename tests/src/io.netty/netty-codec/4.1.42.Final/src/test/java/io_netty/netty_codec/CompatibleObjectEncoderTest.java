@@ -8,6 +8,7 @@ package io_netty.netty_codec;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufInputStream;
+import io.netty.buffer.UnpooledByteBufAllocator;
 import io.netty.channel.embedded.EmbeddedChannel;
 import io.netty.handler.codec.serialization.CompatibleObjectEncoder;
 import org.junit.jupiter.api.Test;
@@ -24,6 +25,7 @@ public class CompatibleObjectEncoderTest {
     void writesSerializableMessagesWithStandardObjectOutputStream() throws Exception {
         String expectedMessage = "netty compatible serialization";
         EmbeddedChannel channel = new EmbeddedChannel(new CompatibleObjectEncoder());
+        channel.config().setAllocator(UnpooledByteBufAllocator.DEFAULT);
         ByteBuf encodedMessage = null;
 
         try {
