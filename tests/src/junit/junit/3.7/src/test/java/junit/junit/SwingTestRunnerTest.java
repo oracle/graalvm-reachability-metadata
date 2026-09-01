@@ -6,14 +6,15 @@
  */
 package junit.junit;
 
+import java.awt.Component;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.concurrent.TimeUnit;
 
 import javax.swing.JLabel;
 
+import junit.framework.TestFailure;
 import junit.runner.FailureDetailView;
-import junit.swingui.DefaultFailureDetailView;
 import junit.swingui.TestRunner;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
@@ -27,7 +28,7 @@ public class SwingTestRunnerTest {
     void createsConfiguredFailureViewAndLogo(@TempDir Path temporaryHome) throws Exception {
         Files.writeString(
                 temporaryHome.resolve("junit.properties"),
-                "FailureViewClass=junit.swingui.DefaultFailureDetailView\n");
+                "FailureViewClass=" + ConfiguredFailureView.class.getName() + "\n");
         String originalHome = System.getProperty("user.home");
         System.setProperty("user.home", temporaryHome.toString());
         try {
@@ -36,7 +37,7 @@ public class SwingTestRunnerTest {
             FailureDetailView failureView = runner.newFailureDetailView();
             JLabel logo = runner.newLogo();
 
-            assertThat(failureView).isInstanceOf(DefaultFailureDetailView.class);
+            assertThat(failureView).isInstanceOf(ConfiguredFailureView.class);
             assertThat(logo.getIcon()).isNotNull();
         } finally {
             if (originalHome == null) {
@@ -44,6 +45,25 @@ public class SwingTestRunnerTest {
             } else {
                 System.setProperty("user.home", originalHome);
             }
+        }
+    }
+
+    public static class ConfiguredFailureView implements FailureDetailView {
+        private final JLabel component = new JLabel("Failure details");
+
+        @Override
+        public Component getComponent() {
+            return component;
+        }
+
+        @Override
+        public void showFailure(TestFailure failure) {
+            component.setText(failure.toString());
+        }
+
+        @Override
+        public void clear() {
+            component.setText("");
         }
     }
 
