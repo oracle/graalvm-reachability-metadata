@@ -301,11 +301,10 @@ class HostRequirements:
         """Return whether this run operates on a checkout other than the one holding Forge."""
         return os.path.realpath(self.repo_dir) != os.path.realpath(self.forge_repo_dir)
 
-    def run(self) -> bool:
-        """Run all selected checks, print the report, and return whether they passed."""
+    def run(self, verbose: bool = False) -> bool:
+        """Run selected checks, printing details when requested or work is blocked."""
         if self.requirements.issue_work and self.graalvm_version_check != "off":
             self.graalvm_versions = self._resolve_graalvm_versions()
-        self._print_manifest()
         self._check_tools()
         self._check_environment()
         self._check_write_permissions()
@@ -313,8 +312,13 @@ class HostRequirements:
         self._check_github()
         self._check_selected_agents()
         self._check_docker()
-        self._print_results()
-        return not any(result.blocks_work for result in self.results)
+        passed = not any(result.blocks_work for result in self.results)
+        if verbose or not passed:
+            self._print_manifest()
+            self._print_results()
+        elif any(result.status == "WARN" for result in self.results):
+            self._print_warnings()
+        return passed
 
     def _print_manifest(self) -> None:
         issue_text = "enabled" if self.requirements.issue_work else "disabled"
@@ -1288,6 +1292,14 @@ query($owner: String!, $name: String!, $project: Int!) {
         else:
             print("[forge-host] PASS: all required host checks succeeded; work may start.")
 
+    def _print_warnings(self) -> None:
+        """Print only non-blocking warnings when the successful report is compact."""
+        warnings = [result for result in self.results if result.status == "WARN"]
+        print("[forge-host] Host requirement warnings:")
+        for result in warnings:
+            print(f"  [WARN] {result.category}: {result.name} — {result.detail}")
+        print(f"[forge-host] PASS with {len(warnings)} warning(s); work may start.")
+
 
 def check_graalvm_installation(
         graalvm_home: str,
@@ -1399,6 +1411,7 @@ def verify_host_requirements(
         repo_dir: str | None = None,
         test_strategy_name: str | None = None,
         test_strategy_names: Sequence[str] | None = None,
+        verbose: bool = False,
 ) -> bool:
     """Run every host requirement selected by this run and report whether work may start.
 
@@ -1415,7 +1428,7 @@ def verify_host_requirements(
         test_strategy_name=test_strategy_name,
         test_strategy_names=test_strategy_names,
     )
-    return host_requirements.run()
+    return host_requirements.run(verbose=verbose)
 
 
 def ensure_host_requirements(
@@ -1427,6 +1440,7 @@ def ensure_host_requirements(
         repo_dir: str | None = None,
         test_strategy_name: str | None = None,
         test_strategy_names: Sequence[str] | None = None,
+        verbose: bool = False,
 ) -> None:
     """Stop the process with a non-zero exit when a required host capability is missing.
 
@@ -1441,6 +1455,7 @@ def ensure_host_requirements(
         repo_dir,
         test_strategy_name,
         test_strategy_names,
+        verbose,
     )
     if not passed:
         sys.exit(1)
@@ -1883,6 +1898,7 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--setup-model", default=None)
     parser.add_argument("--setup-provider", default=None)
     parser.add_argument("--test-strategy", action="append", default=None)
+    parser.add_argument("-v", "--verbose", action="store_true", help="Print the complete host report.")
     parser.add_argument(
         "--graalvm-version-check",
         choices=GRAALVM_VERSION_CHECK_MODES,
@@ -1925,7 +1941,7 @@ def main(argv: Sequence[str] | None = None) -> int:
             file=sys.stderr,
         )
         return 1
-    return 0 if host_requirements.run() else 1
+    return 0 if host_requirements.run(verbose=args.verbose) else 1
 
 
 if __name__ == "__main__":

@@ -461,11 +461,14 @@ does. This is the live counterpart of the durable record required by
 §FS-durable-generation-logs, and it keeps the loop short as called for by
 §GOAL-shorten-issue-to-shipped-metadata.
 
-1. **Every step announces itself once.** On entering a pipeline step, the run
-   prints one line naming the phase and the step (`setup/neural_setup`,
-   `explore/native_trace_gate`, `finalization/local_ci_check`, …) and the
-   operand it is working on. The reader must never have to infer the current
-   step from incidental output such as a Gradle banner or an agent's prose.
+1. **Every step locates its state.** On entering a pipeline step, the normal
+   output prints one concise line naming the phase, the work and its operand,
+   plus the step's derived position as `(n/total)`
+   (`setup/neural_setup`, `explore/native_trace_gate`,
+   `finalization/local_ci_check`, …). A completed step or unit adds one outcome
+   line under the same position instead of narrating its intermediate work. The
+   reader must never have to infer the current step from incidental output such
+   as a Gradle banner or an agent's prose.
 2. **Every failure names its location and its cause.** A failing run states the
    phase, the step, the operand, and the concrete reason it stopped, in that
    order, before any surrounding detail — the same pair required everywhere a
@@ -482,6 +485,11 @@ does. This is the live counterpart of the durable record required by
    run output prints the path to the relevant log instead of reproducing it, so
    a maintainer can escalate from the summary to the evidence in one step
    (§FS-durable-generation-logs).
+5. **Verbose mode restores narration.** `--verbose` adds the intermediate
+   operations hidden by normal output, including the registered method-style
+   step announcement and deterministic setup details. It never replaces the
+   concise progress and outcome lines. A failed gate prints the detail needed
+   to diagnose that failure even when verbose mode is off.
 
 ## FS-forge-run-metrics: Per-run metrics record
 §GOAL-minimize-generation-cost

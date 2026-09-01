@@ -210,6 +210,7 @@ from utility_scripts.run_location import (
     bind_run_context,
     enter_phase,
     format_run_failure_line,
+    log_step_progress,
     marker_failure_location,
     pipeline_step,
     record_step_failure,
@@ -219,7 +220,14 @@ from utility_scripts.run_location import (
     run_step,
 )
 from utility_scripts.source_context import GradleBootstrapFailure
-from utility_scripts.stage_logger import log_debug, log_failure_banner, log_stage, log_success_banner
+from utility_scripts.stage_logger import (
+    debug_logging_enabled,
+    enable_verbose_logging,
+    log_debug,
+    log_failure_banner,
+    log_stage,
+    log_success_banner,
+)
 from utility_scripts.shutdown_signal import get_active_shutdown_signal_path, is_shutdown_requested
 from utility_scripts.strategy_loader import load_strategy_by_name, require_strategy_by_name
 from utility_scripts.task_logs import (
@@ -1823,9 +1831,8 @@ def get_project_item_state(issue_number: int) -> tuple[str | None, str | None]:
         STATUS_FIELD_NAME,
     )
     if item_id:
-        print()
         status_text = status if status is not None else "unknown"
-        log_stage(
+        log_debug(
             "project-item",
             (
                 f"Issue #{issue_number} is linked to GitHub project item {item_id} "
@@ -2157,13 +2164,11 @@ def resolve_authenticated_user(authenticated_user: str | None = None) -> str:
     if authenticated_user is not None:
         return authenticated_user
     if is_fixture_testing_enabled():
-        print()
-        log_stage("github-auth", f"Fixture authenticated as: {FIXTURE_AUTHENTICATED_USER}")
+        log_debug("github-auth", f"Fixture authenticated as: {FIXTURE_AUTHENTICATED_USER}")
         return FIXTURE_AUTHENTICATED_USER
     ensure_gh_authenticated()
     resolved_user = get_authenticated_user()
-    print()
-    log_stage("github-auth", f"Authenticated as: {resolved_user}")
+    log_debug("github-auth", f"Authenticated as: {resolved_user}")
     return resolved_user
 
 
@@ -3483,8 +3488,7 @@ def set_item_status(item_id: str, status: str) -> None:
     """
     Update the Status field of a project item to the given status option name.
     """
-    print()
-    log_stage("project-status", f"Setting project item {item_id} -> {status}")
+    log_debug("project-status", f"Setting project item {item_id} -> {status}")
     project_node_id, field_id, option_ids = get_cached_field_info()
     option_id = option_ids.get(status)
     run_github_command_with_retries(
@@ -5768,6 +5772,12 @@ def invoke_pipeline(
     (§AR-forge-workflow-boundary), receiving resolved coordinates, paths,
     strategy names, and chunk context.
     """
+    issue_number = claimed_issue.issue["number"]
+    log_step_progress(
+        PHASE_CLAIM,
+        STEP_ROUTE_TO_DRIVER,
+        f"Routing issue #{issue_number} to its workflow driver",
+    )
     require_claimed_issue_worktree(claimed_issue, "workflow execution")
     strategy_override = strategy_name
     if claimed_issue.continuation_marker is not None:
@@ -5790,6 +5800,11 @@ def invoke_pipeline(
         claimed_issue,
         library_update_route,
         strategy_override,
+    )
+    log_step_progress(
+        PHASE_CLAIM,
+        STEP_ROUTE_TO_DRIVER,
+        f"Issue #{issue_number} routed to {claimed_issue.label} with strategy {run_strategy_name}",
     )
     continuation_path = create_or_load_run_continuation_marker(
         claimed_issue,
@@ -5850,6 +5865,8 @@ def invoke_pipeline(
             library_update_route,
             continuation_path,
         )
+    if debug_logging_enabled() and "--verbose" not in invocation.argv:
+        invocation.argv.append("--verbose")
 
     print()
     log_stage(invocation.log_stage_name, invocation.log_message)
@@ -6086,8 +6103,14 @@ def get_review_queue_configs_from_environment() -> list[ReviewQueueConfig]:
     ]
 
 
+@pipeline_step(PHASE_CLAIM, STEP_CHECK_STRATEGY_AND_MODEL)
 def validate_work_queue_strategies(queue_configs: list[WorkQueueConfig]) -> None:
     """Validate strategy names configured for enabled issue queues."""
+    log_step_progress(
+        PHASE_CLAIM,
+        STEP_CHECK_STRATEGY_AND_MODEL,
+        "Checking configured strategies",
+    )
     seen_strategy_names: set[str] = set()
     for queue_config in queue_configs:
         strategy_name = queue_config.strategy_name
@@ -6095,6 +6118,11 @@ def validate_work_queue_strategies(queue_configs: list[WorkQueueConfig]) -> None
             continue
         require_strategy_by_name(strategy_name)
         seen_strategy_names.add(strategy_name)
+    log_step_progress(
+        PHASE_CLAIM,
+        STEP_CHECK_STRATEGY_AND_MODEL,
+        f"Configured strategies accepted: {len(seen_strategy_names)}",
+    )
 
 
 def run_pull_request_review_loop(
@@ -6240,13 +6268,13 @@ def fetch_issue_base_commit(repo_path: str) -> str:
     remote-tracking ref supplies repository state for issue work
     (§FS-forge-run-requirements.2).
     """
-    log_stage(
+    log_debug(
         "claim",
         f"Fetching newest origin/{DEFAULT_WORKTREE_BASE_REF} for the next issue claim",
     )
     remote_tracking_ref = fetch_default_base_ref(repo_path, "issue claim")
     commit = resolve_git_commit(repo_path, remote_tracking_ref)
-    log_stage(
+    log_debug(
         "claim",
         f"Pinned origin/{DEFAULT_WORKTREE_BASE_REF} at {commit[:12]}",
     )
@@ -6336,9 +6364,14 @@ def create_issue_workspace(
 
     §FS-forge-run-requirements.4
     """
-    log_stage(
+    log_step_progress(
+        PHASE_CLAIM,
+        STEP_CREATE_ISSUE_WORKSPACE,
+        f"Creating workspace for issue #{issue_number} from newest master {issue_base_commit[:12]}",
+    )
+    log_debug(
         "claim",
-        f"Creating workspace for issue #{issue_number} from {issue_base_commit}",
+        f"Workspace base for issue #{issue_number}: {issue_base_commit}",
     )
     repo_root = get_repo_root()
     worktrees_root = os.path.join(repo_root, "local_repositories", SCRATCH_WORKTREE_DIRNAME)
@@ -6358,8 +6391,9 @@ def create_issue_workspace(
     except SystemExit:
         remove_worktree(base_reachability_metadata_path, worktree_path)
         raise
-    log_stage(
-        "claim",
+    log_step_progress(
+        PHASE_CLAIM,
+        STEP_CREATE_ISSUE_WORKSPACE,
         f"Workspace created for issue #{issue_number}: {os.path.relpath(worktree_path, repo_root)}",
     )
 
@@ -6687,7 +6721,11 @@ def check_issue_form(
     (§FS-forge-run-requirements.3, §root/PRCPL-verify-inputs).
     """
     issue_number = issue["number"]
-    log_stage("claim", f"Checking issue #{issue_number} against the pinned issue workspace")
+    log_step_progress(
+        PHASE_CLAIM,
+        STEP_CHECK_ISSUE_FORM,
+        f"Checking issue #{issue_number} against newest master in its pinned workspace",
+    )
 
     workflow_labels = sorted(
         label_name for label_name in get_issue_label_names(issue) if label_name in PIPELINE_LABELS
@@ -6775,7 +6813,11 @@ def check_issue_form(
             ),
         ))
 
-    log_stage("claim", f"Issue #{issue_number} accepted: {label} for {coordinate}")
+    log_step_progress(
+        PHASE_CLAIM,
+        STEP_CHECK_ISSUE_FORM,
+        f"Issue #{issue_number} accepted: {label} for {coordinate}",
+    )
     return ISSUE_FORM_ACCEPTED
 
 
@@ -6921,22 +6963,34 @@ def claim_issue_for_processing(
     """
     enter_phase(PHASE_CLAIM)
     issue_number = issue["number"]
-    log_stage("claim", f"Claiming issue #{issue_number}")
+    log_step_progress(PHASE_CLAIM, STEP_CLAIM_ISSUE, f"Claiming issue #{issue_number}")
     if not refresh_issue_payload_for_claim(issue, label, authenticated_user):
-        log_stage("claim", f"Issue #{issue_number} not claimed: live issue state is no longer eligible")
+        log_step_progress(
+            PHASE_CLAIM,
+            STEP_CLAIM_ISSUE,
+            f"Issue #{issue_number} not claimed: live issue state is no longer eligible",
+        )
         return None
 
     try:
         issue_base_commit = fetch_issue_base_commit(base_reachability_metadata_path)
     except BaseException as exc:
         if isinstance(exc, Exception):
-            log_stage("claim", f"Issue #{issue_number} not claimed: newest origin/master could not be pinned")
+            log_step_progress(
+                PHASE_CLAIM,
+                STEP_CLAIM_ISSUE,
+                f"Issue #{issue_number} not claimed: newest origin/master could not be pinned",
+            )
             return None
         raise
 
     item_id = try_claim_issue(issue, authenticated_user, label, take_blocked_issues)
     if not item_id:
-        log_stage("claim", f"Issue #{issue_number} not claimed: live claimability check did not pass")
+        log_step_progress(
+            PHASE_CLAIM,
+            STEP_CLAIM_ISSUE,
+            f"Issue #{issue_number} not claimed: live claimability check did not pass",
+        )
         return None
 
     worktree_path: str | None = None
@@ -8646,21 +8700,18 @@ def try_claim_issue_with_local_lock(
 
     try:
         # SET ourselves as the sole assignee
-        print()
-        log_stage("issue-claim", f"Setting issue #{number} assignee to {authenticated_user}")
+        log_debug("issue-claim", f"Setting issue #{number} assignee to {authenticated_user}")
         set_issue_assignee(number, authenticated_user)
 
         # Random wait so concurrent runners' SETs have time to land.
         backoff = random.uniform(CLAIM_BACKOFF_MIN, CLAIM_BACKOFF_MAX)
-        print()
-        log_stage("issue-claim", f"Waiting {backoff:.1f}s before verifying claim on issue #{number}")
+        log_debug("issue-claim", f"Waiting {backoff:.1f}s before verifying claim on issue #{number}")
         time.sleep(backoff)
 
         # Verify we are still the assignee
         assignees = get_issue_assignees(number)
         if assignees != [authenticated_user]:
-            print()
-            log_stage("issue-claim", f"Issue #{number}: assignee is now {assignees}, not us. Backing off.")
+            log_debug("issue-claim", f"Issue #{number}: assignee is now {assignees}, not us. Backing off.")
             if assignees:
                 record_issue_claim_cache_observations([
                     IssueClaimCacheObservation(
@@ -8679,8 +8730,8 @@ def try_claim_issue_with_local_lock(
                 project_status=STATUS_IN_PROGRESS,
             )
         ])
-        print()
-        log_stage("claim", f"Issue #{number} claimed; project status is In Progress")
+        log_step_progress(PHASE_CLAIM, STEP_CLAIM_ISSUE, f"Issue #{number} claimed")
+        log_debug("claim", f"Issue #{number} claimed; project status is In Progress")
         return item_id
     except BaseException as exc:
         revert_issue_claim_if_still_owned_by_user(
@@ -8738,8 +8789,7 @@ def log_issue_scan_start(label: str, offset: int, priority: str | None = None) -
         position = "draining the high, priority, then normal tiers in turn"
     else:
         position = f"from offset {offset}"
-    print()
-    log_stage("issue-scan", f"Starting issue scan for label '{label}' {position}")
+    log_debug("issue-scan", f"Starting issue scan for label '{label}' {position}")
 
 
 def log_issue_scan_progress(
@@ -8752,8 +8802,7 @@ def log_issue_scan_progress(
 ) -> None:
     """Log issue scan progress after another interval of candidates was inspected."""
     position = format_issue_scan_position(offset, current_offset, scan_state, priority)
-    print()
-    log_stage(
+    log_debug(
         "issue-scan",
         f"Looked through {scanned_count} issue(s) for label '{label}' ({position})",
     )
@@ -9059,8 +9108,7 @@ def process_issues_with_label(
     finally:
         executor.shutdown(wait=False, cancel_futures=True)
 
-    print()
-    log_stage("issue-scan", f"Scanned {scanned_count} issue(s) for label '{label}'")
+    log_debug("issue-scan", f"Scanned {scanned_count} issue(s) for label '{label}'")
     return processed_count
 
 
@@ -9113,12 +9161,10 @@ def process_work_queues(
             )
             return
         if queue_config.limit <= 0:
-            print()
-            log_stage("work-queue", f"Skipping issue queue '{queue_config.label}' because its limit is 0")
+            log_debug("work-queue", f"Skipping issue queue '{queue_config.label}' because its limit is 0")
             continue
 
-        print()
-        log_stage(
+        log_debug(
             "work-queue",
             f"Processing up to {queue_config.limit} issue(s) for label '{queue_config.label}'",
         )
@@ -9144,8 +9190,7 @@ def process_work_queues(
                 user_requested_only=user_requested_only,
                 **priority_kwargs,
             )
-            print()
-            log_stage(
+            log_debug(
                 "issue-scan",
                 f"Selected random start offset {issue_scan_offset} for label '{queue_config.label}'",
             )
@@ -9173,8 +9218,7 @@ def process_work_queues(
             )
             return
         if review_queue_config.limit <= 0:
-            print()
-            log_stage("work-queue", f"Skipping review queue '{review_queue_config.label}' because its limit is 0")
+            log_debug("work-queue", f"Skipping review queue '{review_queue_config.label}' because its limit is 0")
             continue
 
         authenticated_user = resolve_authenticated_user(authenticated_user)
@@ -9325,6 +9369,11 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         default=DEFAULT_TAKE_BLOCKED_ISSUES,
         help="Claim issues even when GitHub shows open blocking issues. Defaults to disabled.",
     )
+    parser.add_argument(
+        "-v", "--verbose",
+        action="store_true",
+        help="Show narration hidden by the compact default output.",
+    )
 
     args = parser.parse_args(argv)
     if args.period is not None and args.review_pr is None:
@@ -9375,8 +9424,7 @@ def process_single_issue(
     validate_issue_processing_environment()
 
     issue, label = get_issue_by_number(issue_number)
-    print()
-    log_stage("issue-scan", f"Issue #{issue_number} matched pipeline label: {label}")
+    log_debug("issue-scan", f"Issue #{issue_number} matched pipeline label: {label}")
 
     if is_fixture_testing_enabled():
         with fixture_issue_run_log(issue_number):
@@ -9473,15 +9521,24 @@ def require_host_requirements(args: argparse.Namespace, reachability_metadata_pa
     checkout this run selected, which `--reachability-metadata-path` can move away from
     the checkout that contains Forge (§FS-forge-host-requirements).
     """
-    log_stage("startup", "Checking host requirements")
+    log_step_progress(
+        PHASE_CLAIM,
+        STEP_CHECK_HOST_REQUIREMENTS,
+        "Checking host requirements",
+    )
     ensure_host_requirements(
         FORGE_DIR,
         requirements=resolve_host_requirement_queues(args),
         graalvm_version_check=resolve_graalvm_version_check(args.graalvm_version_check),
         repo_dir=reachability_metadata_path,
         test_strategy_names=resolve_host_requirement_strategy_names(args),
+        verbose=args.verbose or debug_logging_enabled(),
     )
-    log_stage("startup", "Host requirements passed")
+    log_step_progress(
+        PHASE_CLAIM,
+        STEP_CHECK_HOST_REQUIREMENTS,
+        "Host requirements passed",
+    )
 
 
 def main() -> None:
@@ -9489,6 +9546,8 @@ def main() -> None:
     previous_sigint_handler = signal.getsignal(signal.SIGINT)
     signal.signal(signal.SIGINT, _handle_sigint)
     args = parse_args()
+    if args.verbose:
+        enable_verbose_logging()
     normal_exit = False
 
     try:
@@ -9519,7 +9578,17 @@ def main() -> None:
         require_host_requirements(args, reachability_metadata_path)
         if args.strategy_name:
             with run_step(PHASE_CLAIM, STEP_CHECK_STRATEGY_AND_MODEL, operand=args.strategy_name):
+                log_step_progress(
+                    PHASE_CLAIM,
+                    STEP_CHECK_STRATEGY_AND_MODEL,
+                    f"Checking strategy {args.strategy_name}",
+                )
                 require_strategy_by_name(args.strategy_name)
+                log_step_progress(
+                    PHASE_CLAIM,
+                    STEP_CHECK_STRATEGY_AND_MODEL,
+                    f"Strategy {args.strategy_name} accepted",
+                )
         metrics_repo_path = resolve_metrics_repo_root(reachability_metadata_path, None)
 
         if not PROJECT_NUMBER:
@@ -9579,8 +9648,10 @@ def main() -> None:
                     priority=args.priority,
                     user_requested_only=user_requested_only,
                 )
-                print()
-                log_stage("issue-scan", f"Selected random start offset {issue_scan_offset} for label '{args.label}'")
+                log_debug(
+                    "issue-scan",
+                    f"Selected random start offset {issue_scan_offset} for label '{args.label}'",
+                )
             process_issues_with_label(
                 args.label,
                 args.limit,

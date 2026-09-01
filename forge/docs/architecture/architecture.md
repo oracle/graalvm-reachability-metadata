@@ -937,8 +937,10 @@ because more than one phase runs `generate_tests()` and `native_trace_gate()`.
 
 **Steps are marked, not narrated.** A step is entered through the `run_step()`
 context manager — or the `pipeline_step()` decorator, which is the same thing
-applied to a whole function. Entering prints the progress line and pushes the
-location onto a run-local stack; leaving pops it. Nothing at a raise site
+applied to a whole function. Entering pushes the location onto a run-local
+stack; leaving pops it. A compact phase prints its normal start and outcome
+through `log_step_progress()`, which derives `(n/total)` from the same table,
+while the method-style entry line is verbose narration. Nothing at a raise site
 mentions a step name, because a raise site does not know which step it is in.
 The decorator resolves its operand from the call's arguments **by parameter
 name**, binding the wrapped signature rather than indexing `args`, so a keyword
@@ -980,12 +982,14 @@ several boundaries on the way out — the driver's status code, the workflow run
 result, the failed-issue handler. The reporter is idempotent for the run, so the
 boundary nearest the error owns the line and the rest add nothing.
 
-**Debug narration is separate from failure output.** `stage_logger` gains a
-debug level, enabled by `FORGE_DEBUG_LOGGING`, and the human-intervention
-handoff's git narration moves onto it. The git commands themselves capture their
-output and replay it only on failure or under debug, so the default failed-run
-output is the location, the error, and the preserved branch
-(§FS-forge-run-location-reporting.4).
+**Verbose narration is separate from failure output.** `stage_logger` owns the
+process-wide verbose level, enabled by `--verbose`/`FORGE_VERBOSE`; the older
+`FORGE_DEBUG_LOGGING` switch remains an alias. The worker forwards the setting
+to its host-check and workflow-driver processes rather than threading a boolean
+through workflow functions. Git commands capture their output and replay it
+only on failure or under verbose output, so the default failed-run output is the
+location, the error, and the preserved branch
+(§FS-forge-run-location-reporting.4, §FS-forge-run-output-legibility.5).
 
 ## AR-forge-control-plane: Worker loop and dispatcher own queue control
 

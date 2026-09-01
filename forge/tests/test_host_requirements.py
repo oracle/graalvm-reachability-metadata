@@ -57,6 +57,11 @@ def _graalvm_home(native_image: bool = True, schema: bool = True) -> Iterator[st
 
 
 class HostRequirementsTests(unittest.TestCase):
+    def test_host_cli_accepts_verbose_output(self) -> None:
+        args = parse_args(["--forge-dir", "/repo/forge", "--verbose"])
+
+        self.assertTrue(args.verbose)
+
     def test_invalid_queue_limit_prints_one_actionable_fix(self) -> None:
         stdout = io.StringIO()
         stderr = io.StringIO()
@@ -683,6 +688,36 @@ class HostRequirementsTests(unittest.TestCase):
         self.assertIn("No work was started", stdout.getvalue())
         self.assertEqual("", stderr.getvalue())
 
+    def test_successful_host_report_is_quiet_unless_verbose(self) -> None:
+        def run_host(verbose: bool) -> str:
+            host_requirements = HostRequirements(
+                "/repo/forge",
+                "python3",
+                {},
+                requirements=QueueRequirements(
+                    issue_work=False,
+                    review_work=False,
+                    github_work=False,
+                ),
+            )
+            stdout = io.StringIO()
+            with patch.object(host_requirements, "_check_tools"), \
+                    patch.object(host_requirements, "_check_environment"), \
+                    patch.object(host_requirements, "_check_write_permissions"), \
+                    patch.object(host_requirements, "_check_network"), \
+                    patch.object(host_requirements, "_check_github"), \
+                    patch.object(host_requirements, "_check_selected_agents"), \
+                    patch.object(host_requirements, "_check_docker"), \
+                    redirect_stdout(stdout):
+                self.assertTrue(host_requirements.run(verbose=verbose))
+            return stdout.getvalue()
+
+        self.assertEqual("", run_host(verbose=False))
+        verbose_output = run_host(verbose=True)
+        self.assertIn("[forge-host] Deterministic host requirements", verbose_output)
+        self.assertIn("[forge-host] Check results:", verbose_output)
+        self.assertIn("PASS: all required host checks succeeded", verbose_output)
+
     @patch("utility_scripts.host_requirements.resolve_executable", return_value="/usr/bin/docker")
     @patch("utility_scripts.host_requirements.run_command")
     def test_docker_daemon_check_does_not_require_docker_specific_template_fields(
@@ -887,6 +922,7 @@ class HostRequirementsTests(unittest.TestCase):
 
                 environment = dict(os.environ)
                 environment.pop("FORGE_TAKE_BLOCKED_ISSUES", None)
+                environment.pop("FORGE_VERBOSE", None)
                 environment.update({
                     "PYTHON_BIN": fake_python,
                     "PATH": f"{temp_dir}{os.pathsep}{environment['PATH']}",
@@ -918,6 +954,8 @@ class HostRequirementsTests(unittest.TestCase):
         self.assertNotIn("--take-blocked-issues", run_worker([]))
         self.assertIn("--take-blocked-issues", run_worker(["--take-blocked-issues"]))
         self.assertIn("--take-blocked-issues", run_worker([], "1"))
+        self.assertNotIn("--verbose", run_worker([]))
+        self.assertIn("--verbose", run_worker(["--verbose"]))
 
     def test_worker_propagates_the_analysis_role_selection(self) -> None:
         worker_path = Path(__file__).resolve().parents[1] / "do_up_to_date_work.sh"

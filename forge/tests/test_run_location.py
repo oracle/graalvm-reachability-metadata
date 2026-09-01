@@ -7,6 +7,7 @@ import contextlib
 import io
 import tempfile
 import unittest
+from unittest.mock import patch
 
 from utility_scripts import run_location
 from utility_scripts.continuation_marker import (
@@ -32,6 +33,7 @@ from utility_scripts.run_location import (
     bind_run_context,
     clear_recorded_failure,
     format_run_failure_line,
+    log_step_progress,
     marker_failure_location,
     pipeline_step,
     record_step_failure,
@@ -95,6 +97,40 @@ class ProgressOutputTests(unittest.TestCase):
             f"Running step {STEP_NATIVE_TRACE_GATE} ({position}/{total}) of phase {PHASE_EXPLORE} on com.acme.Thing",
             stdout,
         )
+
+    def test_compact_claim_progress_keeps_the_derived_step_count(self) -> None:
+        def enter() -> None:
+            with run_step(PHASE_CLAIM, STEP_CHECK_HOST_REQUIREMENTS):
+                log_step_progress(
+                    PHASE_CLAIM,
+                    STEP_CHECK_HOST_REQUIREMENTS,
+                    "Checking host requirements",
+                )
+
+        with patch.dict(
+                "os.environ",
+                {"FORGE_VERBOSE": "0", "FORGE_DEBUG_LOGGING": "0"},
+        ):
+            stdout, _ = _captured(enter)
+
+        position, total = step_position(PHASE_CLAIM, STEP_CHECK_HOST_REQUIREMENTS)
+        self.assertIn(f"[claim] Checking host requirements ({position}/{total})", stdout)
+        self.assertNotIn(f"Running step {STEP_CHECK_HOST_REQUIREMENTS}", stdout)
+
+    def test_verbose_claim_progress_restores_the_registered_step_line(self) -> None:
+        def enter() -> None:
+            with run_step(PHASE_CLAIM, STEP_CHECK_HOST_REQUIREMENTS):
+                log_step_progress(
+                    PHASE_CLAIM,
+                    STEP_CHECK_HOST_REQUIREMENTS,
+                    "Checking host requirements",
+                )
+
+        with patch.dict("os.environ", {"FORGE_VERBOSE": "1"}):
+            stdout, _ = _captured(enter)
+
+        self.assertIn(f"Running step {STEP_CHECK_HOST_REQUIREMENTS}", stdout)
+        self.assertIn("[claim] Checking host requirements", stdout)
 
     def test_phase_banner_prints_once_per_transition(self) -> None:
         bind_run_context("issue #1412 org.example:demo:1.0.0")

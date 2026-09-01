@@ -2595,6 +2595,17 @@ class WorkQueueSchedulerTests(unittest.TestCase):
         self.assertFalse(default_args.take_blocked_issues)
         self.assertTrue(override_args.take_blocked_issues)
 
+    def test_verbose_output_is_disabled_by_default(self) -> None:
+        default_args = forge_metadata.parse_args(["--label", forge_metadata.LABEL_LIBRARY_NEW])
+        verbose_args = forge_metadata.parse_args([
+            "--label",
+            forge_metadata.LABEL_LIBRARY_NEW,
+            "--verbose",
+        ])
+
+        self.assertFalse(default_args.verbose)
+        self.assertTrue(verbose_args.verbose)
+
     def test_issue_queue_modes_accept_priority_tiers(self) -> None:
         for priority in forge_metadata.PRIORITY_CHOICES:
             with self.subTest(priority=priority):
@@ -3285,7 +3296,7 @@ class IssueClaimCacheTests(unittest.TestCase):
             ],
         )
 
-    def test_process_loop_logs_scan_start_and_progress(self) -> None:
+    def test_verbose_process_loop_logs_scan_start_and_progress(self) -> None:
         issues = [
             {
                 "number": issue_number,
@@ -3309,6 +3320,7 @@ class IssueClaimCacheTests(unittest.TestCase):
                         "claim_issue_for_processing",
                         return_value=None,
                     ), \
+                    patch.dict(os.environ, {"FORGE_VERBOSE": "1"}), \
                     patch("sys.stdout", new_callable=io.StringIO) as stdout:
                 self.assertEqual(
                     forge_metadata.process_issues_with_label(
@@ -3402,12 +3414,13 @@ class ProjectItemStatusTests(unittest.TestCase):
 
         gh_json.assert_called_once()
 
-    def test_forge_project_item_state_uses_combined_lookup(self) -> None:
+    def test_forge_project_item_state_is_quiet_in_compact_output(self) -> None:
         with patch.object(
                 forge_metadata,
                 "get_issue_project_item_status",
                 return_value=("project-item", forge_metadata.STATUS_TODO),
         ) as get_issue_project_item_status, \
+                patch.dict(os.environ, {"FORGE_VERBOSE": "0", "FORGE_DEBUG_LOGGING": "0"}), \
                 patch("sys.stdout", new_callable=io.StringIO) as stdout:
             self.assertEqual(
                 forge_metadata.get_project_item_state(1412),
@@ -3420,6 +3433,17 @@ class ProjectItemStatusTests(unittest.TestCase):
             1412,
             forge_metadata.STATUS_FIELD_NAME,
         )
+        self.assertEqual("", stdout.getvalue())
+
+    def test_forge_project_item_state_is_available_in_verbose_output(self) -> None:
+        with patch.object(
+                forge_metadata,
+                "get_issue_project_item_status",
+                return_value=("project-item", forge_metadata.STATUS_TODO),
+        ), patch.dict(os.environ, {"FORGE_VERBOSE": "1"}), \
+                patch("sys.stdout", new_callable=io.StringIO) as stdout:
+            forge_metadata.get_project_item_state(1412)
+
         self.assertIn(
             (
                 "[project-item] Issue #1412 is linked to GitHub project item project-item "
@@ -3542,7 +3566,9 @@ class IssueClaimLockTests(unittest.TestCase):
                     patch.object(forge_metadata, "set_issue_assignee") as set_issue_assignee, \
                     patch.object(forge_metadata, "set_item_status") as set_item_status, \
                     patch.object(forge_metadata.random, "uniform", return_value=0), \
-                    patch.object(forge_metadata.time, "sleep"):
+                    patch.object(forge_metadata.time, "sleep"), \
+                    patch.dict(os.environ, {"FORGE_VERBOSE": "0", "FORGE_DEBUG_LOGGING": "0"}), \
+                    patch("sys.stdout", new_callable=io.StringIO) as stdout:
                 self.assertEqual(
                     forge_metadata.try_claim_issue(issue, "automation-user"),
                     "project-item",
@@ -3550,6 +3576,9 @@ class IssueClaimLockTests(unittest.TestCase):
 
         set_issue_assignee.assert_called_once_with(1412, "automation-user")
         set_item_status.assert_called_once_with("project-item", forge_metadata.STATUS_IN_PROGRESS)
+        self.assertIn("[claim] Issue #1412 claimed (3/6)", stdout.getvalue())
+        self.assertNotIn("Setting issue #1412 assignee", stdout.getvalue())
+        self.assertNotIn("Waiting", stdout.getvalue())
 
     def test_try_claim_issue_skips_chunked_dynamic_access_when_in_progress(self) -> None:
         issue = _search_issue(1412, [forge_metadata.LABEL_CHUNKED_DYNAMIC_ACCESS])

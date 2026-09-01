@@ -29,7 +29,7 @@ from utility_scripts.continuation_marker import (
     ContinuationMarker,
     save_phase_update,
 )
-from utility_scripts.stage_logger import log_phase_banner, log_stage
+from utility_scripts.stage_logger import log_debug, log_phase_banner, log_stage
 from utility_scripts.task_logs import display_log_path
 
 # The dispatcher-side segment that runs before a run — and therefore before any
@@ -100,6 +100,10 @@ PHASE_STEPS: dict[str, tuple[str, ...]] = {
         STEP_LOCAL_CI_CHECK,
     ),
 }
+
+# Phases move to concise output one at a time. Their registered method-style
+# announcement remains available under --verbose. §FS-forge-run-output-legibility.5
+COMPACT_OUTPUT_PHASES: tuple[str, ...] = (PHASE_CLAIM,)
 
 UNLOCATED_STEP = "<unlocated-step>"
 LOCATION_ATTRIBUTE = "forge_run_location"
@@ -243,8 +247,18 @@ def announce_step(phase: str, step: str, operand: str | None = None) -> RunLocat
     position, total = step_position(phase, step)
     enter_phase(phase)
     suffix = "" if operand is None else f" on {operand}"
-    log_stage(phase, f"Running step {step} ({position}/{total}) of phase {phase}{suffix}")
+    message = f"Running step {step} ({position}/{total}) of phase {phase}{suffix}"
+    if phase in COMPACT_OUTPUT_PHASES:
+        log_debug(phase, message)
+    else:
+        log_stage(phase, message)
     return RunLocation(phase=phase, step=step, operand=operand)
+
+
+def log_step_progress(phase: str, step: str, message: str) -> None:
+    """Print one concise step transition with its derived phase position."""
+    position, total = step_position(phase, step)
+    log_stage(phase, f"{message} ({position}/{total})")
 
 
 def pipeline_step(
