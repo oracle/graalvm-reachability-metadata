@@ -64,6 +64,16 @@ def log_detail(stage: str, message: str, indent_level: int = 0) -> None:
     log_stage(stage, message, indent_level)
 
 
+def log_plain_detail(message: str) -> None:
+    """Print unprefixed narration unless the compact phase hides it.
+
+    §FS-forge-run-output-legibility.5
+    """
+    if _NARRATION_STATE.compact and not debug_logging_enabled():
+        return
+    print(message)
+
+
 def log_debug(stage: str, message: str, indent_level: int = 0) -> None:
     """Print verbose narration that is debugging detail, not normal run output.
 

@@ -113,6 +113,7 @@ COMPACT_OUTPUT_PHASES: tuple[str, ...] = (
     PHASE_SETUP,
     PHASE_FIX,
     PHASE_EXPLORE,
+    PHASE_FINALIZATION,
 )
 
 UNLOCATED_STEP = "<unlocated-step>"

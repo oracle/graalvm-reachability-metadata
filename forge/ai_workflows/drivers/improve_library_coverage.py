@@ -943,9 +943,9 @@ def main(argv=None) -> int:
         )
     else:
         if workflow_status == SUCCESS_WITH_INTERVENTION_STATUS:
-            log_stage("status", "Coverage improvement produced PR-eligible post-generation intervention output")
+            log_detail("status", "Coverage improvement produced PR-eligible post-generation intervention output")
         else:
-            log_stage("status", "Coverage improvement succeeded")
+            log_detail("status", "Coverage improvement succeeded")
         run_metrics = metrics_writer.create_run_metrics_output_json(
             repo_path=reachability_repo_path,
             package=group,

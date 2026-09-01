@@ -44,7 +44,7 @@ from utility_scripts.run_location import (
     run_step,
     step_position,
 )
-from utility_scripts.stage_logger import log_detail
+from utility_scripts.stage_logger import log_detail, log_plain_detail
 
 
 def _captured(callable_under_test):
@@ -144,6 +144,7 @@ class ProgressOutputTests(unittest.TestCase):
                     "Scaffolding org.example:lib:1.0.0",
                 )
                 log_detail("scaffold", "internal setup narration")
+                log_plain_detail("plain setup narration")
 
         with patch.dict(
                 "os.environ",
@@ -155,6 +156,7 @@ class ProgressOutputTests(unittest.TestCase):
         self.assertIn(f"[setup] Scaffolding org.example:lib:1.0.0 ({position}/{total})", stdout)
         self.assertNotIn(f"Running step {STEP_NORMAL_SETUP}", stdout)
         self.assertNotIn("internal setup narration", stdout)
+        self.assertNotIn("plain setup narration", stdout)
 
     def test_verbose_setup_restores_detail_and_registered_step(self) -> None:
         def enter() -> None:
@@ -165,21 +167,27 @@ class ProgressOutputTests(unittest.TestCase):
                     "Scaffolding org.example:lib:1.0.0",
                 )
                 log_detail("scaffold", "internal setup narration")
+                log_plain_detail("plain setup narration")
 
         with patch.dict("os.environ", {"FORGE_VERBOSE": "1"}):
             stdout, _ = _captured(enter)
 
         self.assertIn(f"Running step {STEP_NORMAL_SETUP}", stdout)
         self.assertIn("internal setup narration", stdout)
+        self.assertIn("plain setup narration", stdout)
+        self.assertNotIn("[] plain setup narration", stdout)
 
-    def test_entering_finalization_restores_normal_detail_after_compact_phases(self) -> None:
+    def test_finalization_is_compact_and_publication_restores_detail(self) -> None:
         def transition() -> None:
             run_location.enter_phase(PHASE_SETUP)
             log_detail("setup-detail", "hidden setup detail")
             run_location.enter_phase(PHASE_EXPLORE)
             log_detail("explore-detail", "hidden explore detail")
             run_location.enter_phase(PHASE_FINALIZATION)
-            log_detail("finalization-detail", "visible finalization detail")
+            log_detail("finalization-detail", "hidden finalization detail")
+            log_plain_detail("hidden plain finalization detail")
+            run_location.enter_phase(PHASE_PUBLICATION)
+            log_detail("publication-detail", "visible publication detail")
 
         with patch.dict(
                 "os.environ",
@@ -189,7 +197,9 @@ class ProgressOutputTests(unittest.TestCase):
 
         self.assertNotIn("hidden setup detail", stdout)
         self.assertNotIn("hidden explore detail", stdout)
-        self.assertIn("visible finalization detail", stdout)
+        self.assertNotIn("hidden finalization detail", stdout)
+        self.assertNotIn("hidden plain finalization detail", stdout)
+        self.assertIn("visible publication detail", stdout)
 
     def test_phase_banner_prints_once_per_transition(self) -> None:
         bind_run_context("issue #1412 org.example:demo:1.0.0")

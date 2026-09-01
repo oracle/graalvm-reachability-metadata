@@ -511,6 +511,17 @@ trace directories, metadata paths, cycle internals, and failure-log excerpts
 are verbose narration. The in-place agent heartbeat remains the normal live
 timer. Terminal failures still name their cause and durable log.
 
+For `finalization`, normal output shows the terminal native-trace gate, then
+the three native-test lanes with their `current/total` lane position, toolchain,
+and Native Image mode. The remaining deterministic production work is one
+`final repository checks` state per coordinate, followed by the finalization
+outcome. An agent entered by a failed native lane, metadata check, or Checkstyle
+check is reported as the separate `agent_fix` step with its attempt and target.
+Metadata splitting, individual validation and style tasks, statistics and
+metrics generation, schema validation, Gradle commands, paths, and timings are
+verbose narration. A failed command or agent remains visible with its cause and
+durable log path.
+
 ## FS-forge-run-metrics: Per-run metrics record
 §GOAL-minimize-generation-cost
 

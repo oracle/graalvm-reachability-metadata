@@ -394,9 +394,9 @@ def write_add_new_library_support_metrics(run_metrics, metrics_repo_dir, is_benc
     record instead of appending a run entry.
     """
     if not is_benchmark_mode:
-        log_stage("schema-validation", "Validating schema")
+        log_detail("schema-validation", "Validating schema")
         metrics_writer.write_workflow_run_metrics(run_metrics, metrics_repo_dir, metrics_repo_root, METRICS_TASK_TYPE)
-        log_stage("schema-validation", "Schema validated")
+        log_detail("schema-validation", "Schema validated")
         return
 
     metrics_json = os.path.join(metrics_repo_dir, f"{METRICS_TASK_TYPE}.json")
@@ -426,9 +426,9 @@ def write_add_new_library_support_metrics(run_metrics, metrics_repo_dir, is_benc
         json.dump(data, f, indent=2, ensure_ascii=False)
         f.write("\n")
 
-    log_stage("schema-validation", "Validating schema")
+    log_detail("schema-validation", "Validating schema")
     validate_benchmark_run_metrics(metrics_json)
-    log_stage("schema-validation", "Schema validated")
+    log_detail("schema-validation", "Schema validated")
 
 
 def _should_create_failure_run_metrics(
@@ -710,9 +710,9 @@ def main(argv=None):
 
     ending_commit_hash = subprocess.check_output(["git", "rev-parse", "HEAD"], text=True).strip()
     if workflow_status == RUN_STATUS_SUCCESS:
-        log_stage("status", "Test generation successful")
+        log_detail("status", "Test generation successful")
     elif workflow_status == SUCCESS_WITH_INTERVENTION_STATUS:
-        log_stage("status", "Test generation produced PR-eligible post-generation intervention output")
+        log_detail("status", "Test generation produced PR-eligible post-generation intervention output")
     else:
         log_stage("status", "Test generation failed")
 

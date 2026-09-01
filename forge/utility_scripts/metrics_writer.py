@@ -25,6 +25,7 @@ from utility_scripts.native_image_config_policy import (
     format_legacy_test_native_image_config_error,
 )
 from utility_scripts.source_context import resolve_test_source_layout
+from utility_scripts.stage_logger import log_plain_detail
 from utility_scripts.strategy_loader import load_strategy_by_name
 from git_scripts.common_git import GitTransportError, git_remote_exists, run_git_transport
 
@@ -398,8 +399,15 @@ def collect_and_print_metrics(
     if test_only_metadata_entries > 0:
         test_metadata_suffix = f" Test-Only Metadata Entries: {test_only_metadata_entries}"
 
-    print(
-        f"Iterations: {global_iterations}  Input Tokens: {input_tokens_used}{cached_tokens_suffix} Output Tokens: {output_tokens_used} Metadata Entries: {total_entries}{test_metadata_suffix} Coverage: {coverage_percent:.2f}% Generated LOC: {generated_loc} Cost: {total_cost_usd:.4f} Library lines covered: {lines_covered}")
+    # Persisted metrics stay available without becoming finalization progress.
+    # §FS-forge-run-output-legibility.5
+    log_plain_detail(
+        f"Iterations: {global_iterations}  Input Tokens: {input_tokens_used}"
+        f"{cached_tokens_suffix} Output Tokens: {output_tokens_used} "
+        f"Metadata Entries: {total_entries}{test_metadata_suffix} "
+        f"Coverage: {coverage_percent:.2f}% Generated LOC: {generated_loc} "
+        f"Cost: {total_cost_usd:.4f} Library lines covered: {lines_covered}",
+    )
 
     metrics = {
         "coverage_percent": coverage_percent,

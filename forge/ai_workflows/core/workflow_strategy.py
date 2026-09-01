@@ -311,16 +311,33 @@ class WorkflowStrategy(ABC):
         repo_path = getattr(self, "reachability_repo_path", os.getcwd())
         final_status = RUN_STATUS_SUCCESS
 
+        # Lanes are the visible units; their commands remain verbose narration.
+        # §FS-forge-run-output-legibility.1 §FS-forge-run-output-legibility.5
         def run_lane(
+                lane_number: int,
+                lane_name: str,
                 stage_name: str,
                 command_runner: Callable[[], str],
                 reproduction_command: str,
                 command_env: dict[str, str] | None,
         ) -> str:
-            log_stage("post-generation-test", f"Running {stage_name} for {library}")
+            lane_target = f"native-test lane {lane_number}/3 for {library}: {lane_name}"
+            log_step_progress(
+                RUN_PHASE_FINALIZATION,
+                STEP_FINALIZE_RUN,
+                f"Running {lane_target}",
+                indent_level=1,
+            )
+            log_detail("post-generation-test", f"Running {stage_name} for {library}")
             test_output = command_runner()
             if self._get_first_failed_task(test_output) is None:
-                log_stage("post-generation-test", f"{stage_name} passed for {library}")
+                log_step_progress(
+                    RUN_PHASE_FINALIZATION,
+                    STEP_FINALIZE_RUN,
+                    f"Passed {lane_target}",
+                    indent_level=1,
+                )
+                log_detail("post-generation-test", f"{stage_name} passed for {library}")
                 return RUN_STATUS_SUCCESS
 
             def record_lane_failure() -> str:
@@ -331,7 +348,12 @@ class WorkflowStrategy(ABC):
             # Repairing a failed post-generation lane is the finalization phase's
             # agent fix. §FS-forge-run-location-reporting.2
             with run_step(RUN_PHASE_FINALIZATION, STEP_AGENT_FIX, operand=f"{library} {stage_name}"):
-                log_stage("metadata-fix", f"Running metadata fix workflow for {library} after {stage_name} failure")
+                log_step_progress(
+                    RUN_PHASE_FINALIZATION,
+                    STEP_AGENT_FIX,
+                    f"Running agent fix for {lane_target}",
+                )
+                log_detail("metadata-fix", f"Running metadata fix workflow for {library} after {stage_name} failure")
                 codex_env = gradle_command_environment(repo_path, command_env)
                 codex_rc, codex_log_path, codex_timed_out = run_metadata_fix(
                     repo_path,
@@ -344,10 +366,26 @@ class WorkflowStrategy(ABC):
                 if not codex_timed_out and codex_rc == 0:
                     recovery_test_output = command_runner()
                     if self._get_first_failed_task(recovery_test_output) is None:
-                        log_stage("post-generation-test", f"{stage_name} passed for {library} after metadata fix")
+                        log_step_progress(
+                            RUN_PHASE_FINALIZATION,
+                            STEP_AGENT_FIX,
+                            f"Agent fix passed {lane_target}",
+                        )
+                        log_detail(
+                            "post-generation-test",
+                            f"{stage_name} passed for {library} after metadata fix",
+                        )
                         return RUN_STATUS_SUCCESS
 
-                log_stage("post-generation-fix", f"Running post generation fix for {library} after {stage_name} failure")
+                log_step_progress(
+                    RUN_PHASE_FINALIZATION,
+                    STEP_AGENT_FIX,
+                    f"Retrying agent fix for {lane_target}",
+                )
+                log_detail(
+                    "post-generation-fix",
+                    f"Running post generation fix for {library} after {stage_name} failure",
+                )
                 pi_rc, intervention_path, pi_timed_out = run_post_generation_fix(
                     reachability_metadata_path=repo_path,
                     coordinates=library,
@@ -363,11 +401,28 @@ class WorkflowStrategy(ABC):
                     ),
                 )
                 if pi_timed_out or pi_rc != 0:
+                    reason = "timed out" if pi_timed_out else f"failed with exit code {pi_rc}"
+                    log_step_progress(
+                        RUN_PHASE_FINALIZATION,
+                        STEP_AGENT_FIX,
+                        f"Agent fix for {lane_target} {reason} "
+                        f"(log: {display_log_path(intervention_path)})",
+                    )
                     return record_lane_failure()
 
                 rerun_output = command_runner()
                 if self._get_first_failed_task(rerun_output) is not None:
+                    log_step_progress(
+                        RUN_PHASE_FINALIZATION,
+                        STEP_AGENT_FIX,
+                        f"Agent fix did not pass {lane_target}",
+                    )
                     return record_lane_failure()
+                log_step_progress(
+                    RUN_PHASE_FINALIZATION,
+                    STEP_AGENT_FIX,
+                    f"Agent fix passed {lane_target}",
+                )
 
             with open(intervention_path, "r", encoding="utf-8") as intervention_file:
                 intervention_markdown = intervention_file.read().strip()
@@ -383,6 +438,8 @@ class WorkflowStrategy(ABC):
             return SUCCESS_WITH_INTERVENTION_STATUS
 
         regular_status = run_lane(
+            1,
+            "latest GraalVM, current defaults",
             "current-defaults latest GRAALVM test",
             lambda: self._run_command_with_env(test_cmd),
             test_cmd,
@@ -396,6 +453,8 @@ class WorkflowStrategy(ABC):
         future_defaults_env = dict(os.environ)
         future_defaults_env["GVM_TCK_NATIVE_IMAGE_MODE"] = "future-defaults-all"
         future_defaults_status = run_lane(
+            2,
+            "latest GraalVM, future defaults",
             "future-defaults latest GRAALVM test",
             lambda: self._run_command_with_env(test_cmd, future_defaults_env),
             f"GVM_TCK_NATIVE_IMAGE_MODE=future-defaults-all {test_cmd}",
@@ -415,6 +474,8 @@ class WorkflowStrategy(ABC):
         current_defaults_25_env = build_graalvm_environment(os.environ["GRAALVM_HOME_25_0"])
         current_defaults_25_env.pop("GVM_TCK_NATIVE_IMAGE_MODE", None)
         current_defaults_25_status = run_lane(
+            3,
+            "GraalVM 25, current defaults",
             "current-defaults GraalVM 25 test",
             lambda: self._run_command_with_env(test_cmd, current_defaults_25_env),
             f'GRAALVM_HOME="$GRAALVM_HOME_25_0" JAVA_HOME="$GRAALVM_HOME_25_0" {test_cmd}',
@@ -592,6 +653,17 @@ class WorkflowStrategy(ABC):
         # it still names its location. §FS-forge-run-location-reporting.2
         with run_step(RUN_PHASE_FINALIZATION, STEP_FINALIZE_RUN, operand=self.library):
             finalize_status, _ = self._finalize_successful_iteration(base_commit=base_commit)
+            if finalize_status == SUCCESS_WITH_INTERVENTION_STATUS:
+                outcome = f"Finalization completed with agent intervention for {self.library}"
+            elif finalize_status == RUN_STATUS_SUCCESS:
+                outcome = f"Finalization completed for {self.library}"
+            else:
+                outcome = f"Finalization failed for {self.library}"
+            log_step_progress(
+                RUN_PHASE_FINALIZATION,
+                STEP_FINALIZE_RUN,
+                outcome,
+            )
         finalize_succeeded = finalize_status in {RUN_STATUS_SUCCESS, SUCCESS_WITH_INTERVENTION_STATUS}
         if not finalize_succeeded:
             record_step_failure(operand=self.library)
@@ -640,6 +712,12 @@ class WorkflowStrategy(ABC):
             group, artifact, library_version = coordinate_parts(library)
             if library_version is None:
                 return RUN_STATUS_FAILURE, None
+            log_step_progress(
+                RUN_PHASE_FINALIZATION,
+                STEP_FINALIZE_RUN,
+                f"Running final repository checks for {library}",
+                indent_level=1,
+            )
             if not run_library_finalization(
                 repo_path=self.reachability_repo_path,
                 library=library,
@@ -648,8 +726,20 @@ class WorkflowStrategy(ABC):
                 library_version=library_version,
                 base_commit=base_commit,
             ):
+                log_step_progress(
+                    RUN_PHASE_FINALIZATION,
+                    STEP_FINALIZE_RUN,
+                    f"Final repository checks failed for {library}",
+                    indent_level=1,
+                )
                 return RUN_STATUS_FAILURE, None
-        log_stage("commit-iteration", f"Running commit iteration for {self.library}")
+            log_step_progress(
+                RUN_PHASE_FINALIZATION,
+                STEP_FINALIZE_RUN,
+                f"Final repository checks passed for {library}",
+                indent_level=1,
+            )
+        log_detail("commit-iteration", f"Running commit iteration for {self.library}")
         if not self._commit_library_iteration():
             return RUN_STATUS_FAILURE, None
         checkpoint_commit_hash = subprocess.check_output(["git", "rev-parse", "HEAD"], text=True).strip()

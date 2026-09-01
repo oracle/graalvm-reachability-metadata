@@ -989,9 +989,10 @@ to its host-check and workflow-driver processes rather than threading a boolean
 through workflow functions. Normal detail follows the phase most recently
 announced by `enter_phase()`, rather than the outer Python call stack, because
 `run_workflow_engine()` changes from compact `setup` into `fix` or `explore`
-before returning to its driver. Git commands capture their output and replay it
-only on failure or under verbose output, so the default failed-run output is
-the location, the error, and the preserved branch
+before returning to its driver, and every successful driver later enters compact
+`finalization`. Git commands capture their output and replay it only on failure
+or under verbose output, so the default failed-run output is the location, the
+error, and the preserved branch
 (§FS-forge-run-location-reporting.4, §FS-forge-run-output-legibility.5).
 
 ## AR-forge-control-plane: Worker loop and dispatcher own queue control
