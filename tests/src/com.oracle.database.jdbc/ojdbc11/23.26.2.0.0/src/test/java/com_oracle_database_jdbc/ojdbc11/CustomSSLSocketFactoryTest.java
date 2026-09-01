@@ -7,19 +7,20 @@
 package com_oracle_database_jdbc.ojdbc11;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import java.io.IOException;
+import java.net.ConnectException;
+import java.net.InetAddress;
+import java.net.ServerSocket;
 import java.nio.file.Path;
 import java.security.Provider;
 import java.security.Security;
+import java.sql.SQLException;
 import java.util.Arrays;
-import java.util.LinkedHashSet;
 import java.util.Properties;
-import java.util.Set;
-import javax.net.ssl.SSLSocketFactory;
 import oracle.jdbc.OracleConnection;
-import oracle.jdbc.diagnostics.CommonDiagnosable;
-import oracle.net.nt.CustomSSLSocketFactory;
-import oracle.security.pki.OraclePKIProvider;
+import oracle.jdbc.OracleDriver;
 import oracle.security.pki.OracleWallet;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
@@ -29,8 +30,8 @@ public class CustomSSLSocketFactoryTest {
     Path walletDirectory;
 
     @Test
-    void loadsKnownProviderForAnAutoLoginWallet() throws Exception {
-        char[] password = "wallet-password".toCharArray();
+    void loadsKnownProviderForAnAutoLoginKeyAndTrustStore() throws Exception {
+        char[] password = "wallet-password-01".toCharArray();
         try {
             OracleWallet wallet = new OracleWallet();
             wallet.create(password);
@@ -38,25 +39,37 @@ public class CustomSSLSocketFactoryTest {
             wallet.createSSO();
             wallet.saveSSO();
 
+            Path autoLoginWallet = walletDirectory.resolve("cwallet.sso");
+            assertThat(autoLoginWallet).isRegularFile();
+
             Properties properties = new Properties();
             properties.setProperty(
                     OracleConnection.CONNECTION_PROPERTY_THIN_JAVAX_NET_SSL_KEYSTORE,
-                    walletDirectory.resolve("cwallet.sso").toString());
+                    autoLoginWallet.toString());
             properties.setProperty(
                     OracleConnection.CONNECTION_PROPERTY_THIN_JAVAX_NET_SSL_KEYSTORETYPE,
                     "SSO");
+            properties.setProperty(
+                    OracleConnection.CONNECTION_PROPERTY_THIN_JAVAX_NET_SSL_TRUSTSTORE,
+                    autoLoginWallet.toString());
+            properties.setProperty(
+                    OracleConnection.CONNECTION_PROPERTY_THIN_JAVAX_NET_SSL_TRUSTSTORETYPE,
+                    "SSO");
+            properties.setProperty(
+                    OracleConnection.CONNECTION_PROPERTY_THIN_NET_CONNECT_TIMEOUT, "10000");
+            properties.setProperty(
+                    OracleConnection.CONNECTION_PROPERTY_THIN_READ_TIMEOUT, "10000");
 
-            String oraclePkiProviderName = new OraclePKIProvider().getName();
-            ProviderRegistration[] registrations =
-                    removeProvidersFor("KeyStore.SSO", oraclePkiProviderName);
+            ProviderRegistration[] registrations = removeProvidersFor("KeyStore.SSO");
             try {
                 assertThat(Security.getProviders("KeyStore.SSO")).isNull();
+                int port = reserveUnusedLoopbackPort();
+                String url = "jdbc:oracle:thin:@tcps://127.0.0.1:" + port + "/service";
 
-                SSLSocketFactory socketFactory = CustomSSLSocketFactory.getSSLSocketFactory(
-                        properties, null, CommonDiagnosable.getInstance());
-
-                assertThat(socketFactory.getDefaultCipherSuites()).isNotEmpty();
-                assertThat(Security.getProvider(oraclePkiProviderName)).isNull();
+                assertThatThrownBy(() -> new OracleDriver().connect(url, properties))
+                        .isInstanceOf(SQLException.class)
+                        .hasRootCauseInstanceOf(ConnectException.class);
+                assertThat(Security.getProviders("KeyStore.SSO")).isNull();
             } finally {
                 restoreProviders(registrations);
             }
@@ -65,22 +78,23 @@ public class CustomSSLSocketFactoryTest {
         }
     }
 
-    private static ProviderRegistration[] removeProvidersFor(
-            String filter, String knownProviderName) {
-        Set<Provider> providers = new LinkedHashSet<>();
-        Provider[] providersForFilter = Security.getProviders(filter);
-        if (providersForFilter != null) {
-            providers.addAll(Arrays.asList(providersForFilter));
+    private static int reserveUnusedLoopbackPort() throws IOException {
+        try (ServerSocket serverSocket =
+                new ServerSocket(0, 1, InetAddress.getLoopbackAddress())) {
+            return serverSocket.getLocalPort();
         }
-        Provider knownProvider = Security.getProvider(knownProviderName);
-        if (knownProvider != null) {
-            providers.add(knownProvider);
+    }
+
+    private static ProviderRegistration[] removeProvidersFor(String filter) {
+        Provider[] providers = Security.getProviders(filter);
+        if (providers == null) {
+            return new ProviderRegistration[0];
         }
 
-        ProviderRegistration[] registrations = new ProviderRegistration[providers.size()];
-        int index = 0;
-        for (Provider provider : providers) {
-            registrations[index++] =
+        ProviderRegistration[] registrations = new ProviderRegistration[providers.length];
+        for (int index = 0; index < providers.length; index++) {
+            Provider provider = providers[index];
+            registrations[index] =
                     new ProviderRegistration(provider, providerPosition(provider.getName()));
         }
         for (Provider provider : providers) {
