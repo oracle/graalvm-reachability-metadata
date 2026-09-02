@@ -41,6 +41,21 @@ public class Json_maskerTest {
     }
 
     @Test
+    void matchesTargetKeysEncodedWithUnicodeEscapes() {
+        JsonMasker masker = JsonMasker.getMasker(
+                Set.of("secret", "caf\u00E9", "\u6A5F\u5BC6", "\uD83D\uDD12"));
+        String input = "{\"secr\\u0065t\":\"alpha\",\"caf\\u00E9\":\"bravo\","
+                + "\"\\u6A5F\\u5BC6\":\"charlie\",\"\\uD83D\\uDD12\":\"delta\",\"public\":\"visible\"}";
+
+        String masked = masker.mask(input);
+
+        assertThat(masked)
+                .isEqualTo("{\"secr\\u0065t\":\"***\",\"caf\\u00E9\":\"***\","
+                        + "\"\\u6A5F\\u5BC6\":\"***\",\"\\uD83D\\uDD12\":\"***\","
+                        + "\"public\":\"visible\"}");
+    }
+
+    @Test
     void appliesCaseSensitiveTypePreservingMasksToByteArrays() {
         JsonMaskingConfig config = JsonMaskingConfig.builder()
                 .maskKeys("text", "number", "flag")
