@@ -9,17 +9,19 @@ package org_apache_activemq.activemq_broker;
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.apache.activemq.broker.BrokerService;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
 
 import jakarta.jms.Connection;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class ActivemqBrokerTest {
+public class ActivemqBrokerTest {
 
     private static final String BROKER_URL_BASE = "vm://" + UUID.randomUUID().toString().replaceAll("-", "") + "?broker.persistent=false";
 
     @Test
+    @Timeout(30)
     void testEmbeddedBrokerConnection() throws Exception {
         BrokerService brokerService = new BrokerService();
         brokerService.addConnector(BROKER_URL_BASE);
@@ -28,15 +30,18 @@ class ActivemqBrokerTest {
         brokerService.setUseShutdownHook(false);
         brokerService.setPersistent(false);
         brokerService.setBrokerName("embedded-broker");
-        brokerService.start();
-        brokerService.waitUntilStarted();
 
-        ActiveMQConnectionFactory connectionFactory = new ActiveMQConnectionFactory(BROKER_URL_BASE);
-        try (Connection connection = connectionFactory.createConnection()) {
-            assertThat(connection).isNotNull();
+        try {
+            brokerService.start();
+            brokerService.waitUntilStarted();
+
+            ActiveMQConnectionFactory connectionFactory = new ActiveMQConnectionFactory(BROKER_URL_BASE);
+            try (Connection connection = connectionFactory.createConnection()) {
+                assertThat(connection).isNotNull();
+            }
+        } finally {
+            brokerService.stop();
+            brokerService.waitUntilStopped();
         }
-
-        brokerService.stop();
-        brokerService.waitUntilStopped();
     }
 }
