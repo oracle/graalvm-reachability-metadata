@@ -8,6 +8,8 @@ package org_eclipse_jetty.jetty_util;
 
 import java.io.FilePermission;
 import java.security.PrivilegedAction;
+import java.util.concurrent.Callable;
+import javax.security.auth.Subject;
 
 import org.eclipse.jetty.util.security.SecurityUtils;
 import org.junit.jupiter.api.Test;
@@ -25,10 +27,26 @@ public class SecurityUtilsTest {
         assertThat(value).isEqualTo("privileged value");
     }
 
+    @Test
+    void runsCallableAsSubject() {
+        Subject subject = new Subject();
+
+        Subject currentSubject = SecurityUtils.doAs(subject, new CurrentSubjectCallable());
+
+        assertThat(currentSubject).isSameAs(subject);
+    }
+
     private static final class ConstantAction implements PrivilegedAction<String> {
         @Override
         public String run() {
             return "privileged value";
+        }
+    }
+
+    private static final class CurrentSubjectCallable implements Callable<Subject> {
+        @Override
+        public Subject call() {
+            return Subject.current();
         }
     }
 }
