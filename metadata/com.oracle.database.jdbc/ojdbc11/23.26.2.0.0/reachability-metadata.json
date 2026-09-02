@@ -428,6 +428,12 @@
     },
     {
       "condition" : {
+        "typeReached" : "oracle.net.ano.AuthenticationService"
+      },
+      "type" : "com.sun.security.jgss.Extender"
+    },
+    {
+      "condition" : {
         "typeReached" : "oracle.jdbc.diagnostics.OracleDiagnosticsMXBean"
       },
       "type" : "double[]"
@@ -947,9 +953,27 @@
     },
     {
       "condition" : {
+        "typeReached" : "oracle.jdbc.proxy.oracle$1jdbc$1replay$1driver$1NonTxnReplayableConnection$2java$1sql$1Connection$$$Proxy"
+      },
+      "type" : "java.sql.Connection"
+    },
+    {
+      "condition" : {
         "typeReached" : "oracle.jdbc.proxy.oracle$1jdbc$1replay$1driver$1TxnReplayableConnection$2oracle$1jdbc$1internal$1OracleConnection$$$Proxy"
       },
       "type" : "java.sql.Connection"
+    },
+    {
+      "condition" : {
+        "typeReached" : "oracle.jdbc.replay.driver.NonTxnReplayableBase"
+      },
+      "type" : "java.sql.Connection",
+      "methods" : [
+        {
+          "name" : "getCatalog",
+          "parameterTypes" : [ ]
+        }
+      ]
     },
     {
       "condition" : {
@@ -1110,6 +1134,12 @@
     {
       "condition" : {
         "typeReached" : "oracle.jdbc.proxy.oracle$1jdbc$1driver$1AbstractTrueCachePreparedStatement$2oracle$1jdbc$1internal$1OraclePreparedStatement$$$Proxy"
+      },
+      "type" : "java.sql.Wrapper"
+    },
+    {
+      "condition" : {
+        "typeReached" : "oracle.jdbc.proxy.oracle$1jdbc$1replay$1driver$1NonTxnReplayableConnection$2java$1sql$1Connection$$$Proxy"
       },
       "type" : "java.sql.Wrapper"
     },
@@ -1390,6 +1420,18 @@
       "condition" : {
         "typeReached" : "oracle.net.ano.AuthenticationService"
       },
+      "type" : "javax.security.auth.Subject",
+      "methods" : [
+        {
+          "name" : "current",
+          "parameterTypes" : [ ]
+        }
+      ]
+    },
+    {
+      "condition" : {
+        "typeReached" : "oracle.net.ano.AuthenticationService"
+      },
       "type" : "javax.security.auth.kerberos.KerberosCredMessage"
     },
     {
@@ -1484,6 +1526,12 @@
     },
     {
       "condition" : {
+        "typeReached" : "oracle.jdbc.driver.LiveDMSFactory"
+      },
+      "type" : "oracle.core.ojdl.MessageType"
+    },
+    {
+      "condition" : {
         "typeReached" : "oracle.jdbc.internal.OracleConnection"
       },
       "type" : "oracle.dms.AbstractParameterDescriptor"
@@ -1492,7 +1540,13 @@
       "condition" : {
         "typeReached" : "oracle.jdbc.driver.LiveDMSFactory"
       },
-      "type" : "oracle.core.ojdl.MessageType"
+      "type" : "oracle.dms.clock.SimpleClock",
+      "methods" : [
+        {
+          "name" : "<init>",
+          "parameterTypes" : [ ]
+        }
+      ]
     },
     {
       "condition" : {
@@ -9477,6 +9531,24 @@
     },
     {
       "condition" : {
+        "typeReached" : "oracle.jdbc.driver.LiveDMSFactory"
+      },
+      "glob" : "oracle/dms/util/dms.properties"
+    },
+    {
+      "condition" : {
+        "typeReached" : "oracle.jdbc.driver.LiveDMSFactory"
+      },
+      "glob" : "oracle/dms/util/dms_en.properties"
+    },
+    {
+      "condition" : {
+        "typeReached" : "oracle.jdbc.driver.LiveDMSFactory"
+      },
+      "glob" : "oracle/dms/util/dms_en_US.properties"
+    },
+    {
+      "condition" : {
         "typeReached" : "oracle.jdbc.driver.OracleDriver"
       },
       "glob" : "oracle/jdbc/OracleConnectionCopy.txt"
@@ -9615,11 +9687,10 @@
       "glob" : "jdk/jfr/internal/query/view.ini"
     },
     {
-      "condition" : {
-        "typeReached" : "oracle.net.ano.AuthenticationService"
-      },
-      "module" : "java.base",
-      "bundle" : "sun.security.util.resources.security"
+      "bundle" : "oracle.dms.context.ContextResourceBundle"
+    },
+    {
+      "bundle" : "oracle.dms.util.dms"
     },
     {
       "bundle" : "oracle.jdbc.driver.ErrorMessages"
@@ -9641,6 +9712,15 @@
     },
     {
       "bundle" : "oracle.ucp.util.UCPMessages"
+    },
+    {
+      "bundle" : "sun.security.util.resources.security"
+    },
+    {
+      "condition" : {
+        "typeReached" : "oracle.net.ano.AuthenticationService"
+      },
+      "bundle" : "sun.security.util.resources.security"
     }
   ]
 }
