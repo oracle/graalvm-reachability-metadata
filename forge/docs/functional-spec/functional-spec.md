@@ -710,6 +710,11 @@ Forge may proceed without a coordinate-local exhaust report and use
 `explore.exhaustedClasses` from the marker as the processed-class set for the
 resumed run (§FS-forge-run-continuation.2).
 
+When a non-final chunk PR merges, Forge releases the linked issue for the next
+chunk by moving it to `Todo`, clearing its assignees, and removing the
+`human-intervention` and `resumable` labels when present. It retains the
+`chunked-dynamic-access` label so the next claim stays in chunked mode.
+
 Chunk PRs use `Refs: #<issue>` until the final chunk. Only the final chunk PR
 may use `Fixes: #<issue>` and move the issue to `Done`. Non-final chunk PRs
 must commit enough exhaust-report state for the next run to skip classes already
