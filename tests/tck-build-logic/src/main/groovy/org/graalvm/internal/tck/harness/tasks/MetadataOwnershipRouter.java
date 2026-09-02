@@ -29,6 +29,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.jar.JarFile;
+import java.util.zip.ZipFile;
 
 /**
  * Relocates foreign-condition metadata to an exact supported owner/version.
@@ -181,7 +182,12 @@ final class MetadataOwnershipRouter {
     }
 
     private boolean jarContains(Path jarFile, String classEntry) {
-        try (JarFile jar = new JarFile(jarFile.toFile())) {
+        try (JarFile jar = new JarFile(
+                jarFile.toFile(),
+                true,
+                ZipFile.OPEN_READ,
+                JarFile.runtimeVersion()
+        )) {
             return jar.getJarEntry(classEntry) != null;
         } catch (IOException exception) {
             throw new GradleException("Cannot inspect resolved dependency JAR " + jarFile, exception);
