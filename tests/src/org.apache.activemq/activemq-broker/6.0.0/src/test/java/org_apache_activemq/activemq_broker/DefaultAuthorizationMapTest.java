@@ -31,7 +31,7 @@ public class DefaultAuthorizationMapTest {
     public static final class SetterPrincipal implements Principal {
         private String name;
 
-        public SetterPrincipal() {}
+        public SetterPrincipal() { }
 
         @Override
         public String getName() {

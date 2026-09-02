@@ -32,7 +32,7 @@ public class ManagementContextTest {
 
     @Test
     @Timeout(30)
-    void createsAndClosesLocalJmxRegistry() throws Exception {
+    void createsLocalJmxRegistryWhenConnectorIsEnabled() throws Exception {
         ManagementContext context = new ManagementContext();
         context.setConnectorHost("127.0.0.1");
         context.setConnectorPort(availablePort());
