@@ -13,7 +13,7 @@ import org.junit.jupiter.api.Test;
 
 public class ReflectionHackInnerJava8Test {
     @Test
-    void roundTripsPackageVisibleAccessorsThroughTheRegisteredModule() throws Exception {
+    void roundTripsPackageVisibleBeanThroughTheRegisteredModule() throws Exception {
         PackageVisibleBean value = CrossLoaderAccessTest.MAPPER.readValue(
                 """
                 { "code": "private-lookup" }
@@ -28,7 +28,7 @@ public class ReflectionHackInnerJava8Test {
     public static final class PackageVisibleBean {
         private String code;
 
-        public PackageVisibleBean() {
+        PackageVisibleBean() {
         }
 
         @JsonProperty("code")
