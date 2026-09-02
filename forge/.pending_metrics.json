@@ -1,0 +1,55 @@
+{
+  "timestamp": "2026-09-02T16:11:40.314758Z",
+  "library": "tools.jackson.module:jackson-module-blackbird:3.1.5",
+  "starting_commit": "6d1e9ec9233693285100a1599a588f4b51d18f76",
+  "ending_commit": "30e3d11b2f78a822cff815587d5b10b75d8d65cb",
+  "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-sol",
+  "agent": "pi",
+  "model": "gpt-5.6-sol",
+  "status": "failure",
+  "library_preparation_preflight": {
+    "status": "completed",
+    "action": "advisory_preparation",
+    "issue_number": 9697,
+    "issue_label": "library-new-request",
+    "library": "tools.jackson.module:jackson-module-blackbird:3.1.5",
+    "summary": "No extra dependency or Docker image is needed; meaningful coverage requires registering BlackbirdModule with a Jackson mapper.",
+    "deterministic_setup": [],
+    "agent_guidance": "Build a JsonMapper/ObjectMapper with new BlackbirdModule(), then exercise method-based POJO serialization and deserialization, including primitive, String, reference, setter, constructor, and @JsonCreator paths. Keep native tests enabled: Blackbird 3.1.5 intentionally skips optimizer registration in Native Image, so JVM tests exercise LambdaMetafactory paths while native tests validate the supported no-op path. Use a single mapper instance.",
+    "risks": [
+      "Blackbird dynamically creates accessors on the JVM; modulepath or unusual class-loader scenarios may require custom lookup handling.",
+      "Each BlackbirdModule/ObjectMapper instance can retain generated lambda classes for its class loader."
+    ],
+    "applied_setup": [],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#9697 Support for tools.jackson.module:jackson-module-blackbird:3.1.5; label=library-new-request; body_chars=39"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "0 existing test file path(s) included"
+      }
+    ],
+    "model": "gpt-5.6-luna",
+    "input_tokens_used": 1289949,
+    "output_tokens_used": 7810,
+    "prompt_path": "library-preflight-prompt.txt",
+    "raw_response_path": "library-preflight-response.txt",
+    "session_log_path": "/home/mihailo/git/graalvm-reachability-metadata/forge/logs/tools.jackson.module:jackson-module-blackbird:3.1.5/library-preparation-preflight/codex-session-opg8mekb.log"
+  },
+  "metrics": {
+    "input_tokens_used": 443470,
+    "cached_input_tokens_used": 5282304,
+    "output_tokens_used": 45644,
+    "iterations": 6,
+    "cost_usd": 6.2278,
+    "generated_loc": 0,
+    "tested_library_loc": 0,
+    "metadata_entries": 0,
+    "code_coverage_percent": 0.0
+  },
+  "artifacts": {
+    "metadata_file": "None"
+  }
+}
