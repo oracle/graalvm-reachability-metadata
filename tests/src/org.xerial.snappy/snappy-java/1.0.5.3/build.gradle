@@ -1,0 +1,78 @@
+/*
+ * Copyright and related rights waived via CC0
+ *
+ * You should have received a copy of the CC0 legalcode along with this
+ * work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
+ */
+plugins {
+    id "org.graalvm.internal.tck"
+}
+
+String libraryVersion = tck.testedLibraryVersion.get()
+String nativeOs = translateOsName(System.getProperty('os.name'))
+String nativeArch = translateArchName(System.getProperty('os.arch'))
+String nativeLibraryFolder = "${nativeOs}/${nativeArch}"
+Provider<Directory> nativeLibraryDirectory = layout.buildDirectory.dir('snappy-native-library')
+
+dependencies {
+    testImplementation "org.xerial.snappy:snappy-java:$libraryVersion"
+    testImplementation 'org.assertj:assertj-core:3.22.0'
+}
+
+tasks.register('extractSnappyNativeLibrary', Copy) {
+    String nativeLibraryName = System.mapLibraryName('snappyjava')
+    String nativeLibraryResource = "org/xerial/snappy/native/${nativeLibraryFolder}/${nativeLibraryName}"
+    from({
+        File snappyJavaJar = configurations.testRuntimeClasspath.find { it.name == "snappy-java-${libraryVersion}.jar" }
+        zipTree(snappyJavaJar)
+    }) {
+        include nativeLibraryResource
+        eachFile { details ->
+            details.path = details.name
+        }
+        includeEmptyDirs = false
+    }
+    into nativeLibraryDirectory
+    doLast {
+        file("${nativeLibraryDirectory.get().asFile}/${nativeLibraryName}").setExecutable(true, false)
+    }
+}
+
+tasks.withType(Test).configureEach {
+    dependsOn tasks.named('extractSnappyNativeLibrary')
+    jvmArgs "--add-opens=java.base/java.lang=ALL-UNNAMED",
+            "-Djava.library.path=${nativeLibraryDirectory.get().asFile.absolutePath}"
+}
+
+graalvmNative {
+    agent {
+        defaultMode = "conditional"
+        modes {
+            conditional {
+                userCodeFilterPath = "user-code-filter.json"
+            }
+        }
+    }
+    binaries {
+        all {
+            buildArgs.add("--add-opens=java.base/java.lang=ALL-UNNAMED")
+        }
+    }
+}
+
+String translateOsName(String osName) {
+    if (osName.contains('Windows')) {
+        return 'Windows'
+    }
+    if (osName.contains('Mac')) {
+        return 'Mac'
+    }
+    if (osName.contains('Linux')) {
+        return 'Linux'
+    }
+    return osName.replaceAll('\\W', '')
+}
+
+String translateArchName(String archName) {
+    return archName.replaceAll('\\W', '')
+}
