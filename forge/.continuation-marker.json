@@ -1,0 +1,157 @@
+{
+  "continueFrom": "publication",
+  "coordinate": "io.github.microcks:microcks-testcontainers:0.5.0",
+  "failure": {
+    "operand": "io.github.microcks:microcks-testcontainers:0.5.0",
+    "phase": "publication",
+    "step": "local_ci_check()"
+  },
+  "issueNumber": 9686,
+  "label": "library-new-request",
+  "libraryPreparationPreflight": {
+    "action": "advisory_preparation",
+    "agent_guidance": "No extra Maven dependency, environment variable, or system property is required for baseline coverage. Start and cleanly stop the prepared MicrocksContainer, import a small classpath OpenAPI fixture, then exercise mock endpoint lookup, HTTP access, invocation verification, and TestRequest/TestResult APIs. Postman and asynchronous ensemble paths require additional optional runtime containers or brokers and should not be assumed for the initial scaffold.",
+    "applied_setup": [],
+    "deterministic_setup": [
+      {
+        "image": "quay.io/microcks/microcks-uber:1.14.0",
+        "kind": "docker_image",
+        "reason": "The published artifact depends on Testcontainers but not on a Microcks server; its documented usage constructs and starts a Microcks Uber container. Version 0.5.0 webhook support requires Microcks 1.14.0 or later. [POM](https://repo.maven.apache.org/maven2/io/github/microcks/microcks-testcontainers/\n...[truncated]",
+        "slug": "microcks_uber"
+      }
+    ],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#9686 Support for io.github.microcks:microcks-testcontainers:0.5.0; label=library-new-request; body_chars=39"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "0 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 1198300,
+    "issue_label": "library-new-request",
+    "issue_number": 9686,
+    "library": "io.github.microcks:microcks-testcontainers:0.5.0",
+    "model": "gpt-5.6-luna",
+    "output_tokens_used": 8265,
+    "prompt_path": "library-preflight-prompt.txt",
+    "raw_response_path": "library-preflight-response.txt",
+    "risks": [
+      "Container startup is relatively slow and requires Docker; use bounded readiness and test timeouts.",
+      "Native Image verification may expose unsupported Testcontainers or HTTP/reflection paths; local Gradle and Native Image results remain authoritative."
+    ],
+    "session_log_path": "/home/mihailo/git/graalvm-reachability-metadata/forge/logs/io.github.microcks:microcks-testcontainers:0.5.0/library-preparation-preflight/codex-session-j7_gwg1c.log",
+    "status": "completed",
+    "summary": "Meaningful coverage requires starting Microcks in its Uber Docker distribution."
+  },
+  "libraryUpdateRoute": null,
+  "newVersion": null,
+  "phases": {
+    "explore": {
+      "chunkClassCount": null,
+      "chunkProcessedClassCount": 0,
+      "exhaustedClasses": [],
+      "iteration": 2,
+      "status": "completed"
+    },
+    "finalization": {
+      "status": "completed"
+    },
+    "fix": {
+      "iteration": null,
+      "status": "skipped"
+    },
+    "publication": {
+      "branch": "ai/kimeta/add-lib-support-io.github.microcks-microcks-testcontainers-0.5.0-forge-9686-20260902204601474301-7378d7050eec",
+      "coverageFollowUpIssueNumber": null,
+      "isPushed": false,
+      "publicationId": "forge-9686-20260902204601474301-7378d7050eec",
+      "publicationTimestamp": "2026-09-02T20:46:01.474301Z",
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": true,
+      "status": "completed"
+    }
+  },
+  "preservedBranch": "ai/kimeta/human-intervention/issue-9686-library-new-request-io.github.microcks-microcks-testcontainers-0.5.0-dbdabf17",
+  "publicationMetrics": {
+    "extras": {
+      "local_ci_verification": {
+        "base_commit": "origin/master",
+        "commands": [
+          {
+            "command": [
+              "./gradlew",
+              "generateChangedIndexFileCoordinatesList",
+              "-PbaseCommit=origin/master",
+              "-PnewCommit=HEAD"
+            ],
+            "env": {
+              "GITHUB_OUTPUT": "/tmp/tmpkmm8y2at"
+            },
+            "gate": "changed-index-coordinates",
+            "log_path": "logs/changed-index-coordinates/local-ci/gradlew-2026-09-02T20-46-07-133644Z.log",
+            "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :generateChangedIndexFileCoordinatesList\n\n[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9686-007efba5/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 2s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+            "returncode": 0
+          },
+          {
+            "command": [
+              "./gradlew",
+              "validateIndexFiles",
+              "-Pcoordinates=io.github.microcks:microcks-testcontainers"
+            ],
+            "env": {},
+            "gate": "index-file-validation",
+            "log_path": "logs/index-file-validation/local-ci/gradlew-2026-09-02T20-46-09-944727Z.log",
+            "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :validateIndexFiles\n\u2705 metadata/io.github.microcks/microcks-testcontainers/index.json: Valid\n\n[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9686-007efba5/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 1s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+            "returncode": 0
+          },
+          {
+            "command": [
+              "./gradlew",
+              "checkAllowedDockerImages",
+              "--baseCommit=origin/master",
+              "--newCommit=HEAD"
+            ],
+            "env": {},
+            "gate": "docker-image-scan",
+            "log_path": "logs/docker-image-scan/local-ci/gradlew-2026-09-02T20-46-11-620920Z.log",
+            "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :checkAllowedDockerImages\nGenerating info for docker image: quay.io/microcks/microcks-uber:1.14.0\n[0000]  WARN current database is invalid error=the vulnerability database was built 8 weeks ago (max allowed age is 5 days)\nfatal: path 'tests/tck-build-logic/src/main/resources/allowed-docker-images/Dockerfile-microcks_uber' exists on disk, but not in 'origin/master'\n\n> Task :checkAllowedDockerImages FAILED\n\n[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9686-007efba5/build/reports/problems/problems-report.html\n\nFAILURE: Build failed with an exception.\n\n* What went wrong:\nExecution failed for task ':checkAllowedDockerImages'.\n> Process 'command 'git'' finished with non-zero exit value 128\n\n* Try:\n> Run with --stacktrace option to get the stack trace.\n> Run with --info or --debug option to get more log output.\n> Run with --scan to generate a Build Scan (Powered by Develocity).\n> Get more help at https://help.gradle.org.\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD FAILED in 1m 27s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+            "returncode": 1
+          }
+        ],
+        "failure_command": [
+          "./gradlew",
+          "checkAllowedDockerImages",
+          "--baseCommit=origin/master",
+          "--newCommit=HEAD"
+        ],
+        "failure_gate": "docker-image-scan",
+        "final_commit": "45bdca320d72281bdbf754ecff423613c99a9baa",
+        "fixups": [
+          {
+            "changed_paths": [],
+            "command": [
+              "pi",
+              "gpt-5.6-sol"
+            ],
+            "commit": null,
+            "gate": "docker-image-scan",
+            "log_path": "logs/io.github.microcks:microcks-testcontainers:0.5.0/local-ci-fixup/pi.log"
+          }
+        ],
+        "human_intervention_required": false,
+        "repo_fix_paths": [],
+        "status": "failure"
+      }
+    },
+    "library": "io.github.microcks:microcks-testcontainers:0.5.0",
+    "timestamp": "2026-09-02T20:46:01.474301Z"
+  },
+  "schemaVersion": 1,
+  "strategyName": "optimistic_dynamic_access_iterative_pi_gpt-5.6-sol"
+}

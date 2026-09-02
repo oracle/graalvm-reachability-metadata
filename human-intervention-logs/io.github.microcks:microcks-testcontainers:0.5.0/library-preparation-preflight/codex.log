@@ -1,0 +1,17 @@
+{
+  "action": "advisory_preparation",
+  "summary": "Meaningful coverage requires starting Microcks in its Uber Docker distribution.",
+  "deterministic_setup": [
+    {
+      "kind": "docker_image",
+      "image": "quay.io/microcks/microcks-uber:1.14.0",
+      "slug": "microcks_uber",
+      "reason": "The published artifact depends on Testcontainers but not on a Microcks server; its documented usage constructs and starts a Microcks Uber container. Version 0.5.0 webhook support requires Microcks 1.14.0 or later. [POM](https://repo.maven.apache.org/maven2/io/github/microcks/microcks-testcontainers/0.5.0/microcks-testcontainers-0.5.0.pom) [usage documentation](https://microcks.io/documentation/guides/usage/developing-testcontainers/)"
+    }
+  ],
+  "agent_guidance": "No extra Maven dependency, environment variable, or system property is required for baseline coverage. Start and cleanly stop the prepared MicrocksContainer, import a small classpath OpenAPI fixture, then exercise mock endpoint lookup, HTTP access, invocation verification, and TestRequest/TestResult APIs. Postman and asynchronous ensemble paths require additional optional runtime containers or brokers and should not be assumed for the initial scaffold.",
+  "risks": [
+    "Container startup is relatively slow and requires Docker; use bounded readiness and test timeouts.",
+    "Native Image verification may expose unsupported Testcontainers or HTTP/reflection paths; local Gradle and Native Image results remain authoritative."
+  ]
+}

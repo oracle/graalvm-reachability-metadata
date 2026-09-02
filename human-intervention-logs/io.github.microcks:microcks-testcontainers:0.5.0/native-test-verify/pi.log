@@ -1,0 +1,14 @@
+Implemented and verified the fix.
+
+Root cause from the full stack trace: malformed generated `reachability-metadata.json` at line 2855, not missing metadata or unsupported runtime behavior.
+
+Changes:
+- Replaced malformed metadata with valid agent-generated metadata.
+- Split test-only entries into test resources.
+- Retained the native-compatible file-based public API test path instead of class-loader-dependent resource imports.
+
+Verification with the required GraalVM:
+- Exact reproduction command: **passed**
+- `checkMetadataFiles validateIndexFiles checkstyle`: **passed**
+- `spotlessCheck`: **passed**
+- JSON and diff checks: **passed**
