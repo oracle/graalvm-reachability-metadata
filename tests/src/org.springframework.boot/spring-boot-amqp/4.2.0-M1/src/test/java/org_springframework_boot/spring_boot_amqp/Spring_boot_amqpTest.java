@@ -7,19 +7,18 @@
 package org_springframework_boot.spring_boot_amqp;
 
 import java.time.Duration;
-import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.junit.jupiter.api.Test;
 
-import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
-import org.springframework.amqp.rabbit.connection.ConnectionFactory;
-import org.springframework.amqp.rabbit.core.RabbitTemplate;
-import org.springframework.boot.amqp.autoconfigure.ConnectionFactoryCustomizer;
-import org.springframework.boot.amqp.autoconfigure.RabbitAutoConfiguration;
-import org.springframework.boot.amqp.autoconfigure.RabbitConnectionDetails;
-import org.springframework.boot.amqp.autoconfigure.RabbitProperties;
-import org.springframework.boot.amqp.autoconfigure.RabbitTemplateCustomizer;
+import org.springframework.amqp.client.AmqpClient;
+import org.springframework.amqp.client.AmqpConnectionFactory;
+import org.springframework.amqp.client.SingleAmqpConnectionFactory;
+import org.springframework.boot.amqp.autoconfigure.AmqpAutoConfiguration;
+import org.springframework.boot.amqp.autoconfigure.AmqpClientCustomizer;
+import org.springframework.boot.amqp.autoconfigure.AmqpConnectionDetails;
+import org.springframework.boot.amqp.autoconfigure.AmqpProperties;
+import org.springframework.boot.amqp.autoconfigure.ConnectionOptionsCustomizer;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 
@@ -28,54 +27,50 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class Spring_boot_amqpTest {
 
     private final ApplicationContextRunner contextRunner = new ApplicationContextRunner()
-            .withConfiguration(AutoConfigurations.of(RabbitAutoConfiguration.class));
+            .withConfiguration(AutoConfigurations.of(AmqpAutoConfiguration.class));
 
     @Test
-    void rabbitPropertiesExposeConnectionAndTemplateSettings() {
-        RabbitProperties properties = new RabbitProperties();
+    void amqpPropertiesExposeConnectionAndClientSettings() {
+        AmqpProperties properties = new AmqpProperties();
 
         assertThat(properties.getHost()).isEqualTo("localhost");
-        assertThat(properties.getPort()).isNull();
-        assertThat(properties.determinePort()).isEqualTo(5672);
-        assertThat(properties.getUsername()).isEqualTo("guest");
-        assertThat(properties.getPassword()).isEqualTo("guest");
-        assertThat(properties.getTemplate().getRoutingKey()).isEmpty();
-        assertThat(properties.getTemplate().getReplyTimeout()).isNull();
+        assertThat(properties.getPort()).isEqualTo(5672);
+        assertThat(properties.getUsername()).isNull();
+        assertThat(properties.getPassword()).isNull();
+        assertThat(properties.getClient().getDefaultToAddress()).isNull();
+        assertThat(properties.getClient().getCompletionTimeout()).isEqualTo(Duration.ofSeconds(60));
 
         properties.setHost("broker.example.test");
         properties.setPort(5678);
         properties.setUsername("alice");
         properties.setPassword("secret");
-        properties.getTemplate().setRoutingKey("orders.created");
-        properties.getTemplate().setReplyTimeout(Duration.ofMillis(750));
+        properties.getClient().setDefaultToAddress("orders.created");
+        properties.getClient().setCompletionTimeout(Duration.ofMillis(750));
 
         assertThat(properties.getHost()).isEqualTo("broker.example.test");
         assertThat(properties.getPort()).isEqualTo(5678);
-        assertThat(properties.determinePort()).isEqualTo(5678);
         assertThat(properties.getUsername()).isEqualTo("alice");
         assertThat(properties.getPassword()).isEqualTo("secret");
-        assertThat(properties.getTemplate().getRoutingKey()).isEqualTo("orders.created");
-        assertThat(properties.getTemplate().getReplyTimeout()).isEqualTo(Duration.ofMillis(750));
+        assertThat(properties.getClient().getDefaultToAddress()).isEqualTo("orders.created");
+        assertThat(properties.getClient().getCompletionTimeout()).isEqualTo(Duration.ofMillis(750));
     }
 
     @Test
-    void rabbitConnectionDetailsAddressRecordAndDefaultsAreUsable() {
-        RabbitConnectionDetails.Address address = new RabbitConnectionDetails.Address("broker.example.test", 5679);
-        RabbitConnectionDetails details = () -> List.of(address);
+    void amqpConnectionDetailsAddressRecordAndDefaultsAreUsable() {
+        AmqpConnectionDetails.Address address = new AmqpConnectionDetails.Address("broker.example.test", 5679);
+        AmqpConnectionDetails details = () -> address;
 
-        assertThat(details.getAddresses()).containsExactly(address);
-        assertThat(details.getFirstAddress()).isEqualTo(address);
-        assertThat(details.getFirstAddress().host()).isEqualTo("broker.example.test");
-        assertThat(details.getFirstAddress().port()).isEqualTo(5679);
+        assertThat(details.getAddress()).isEqualTo(address);
+        assertThat(details.getAddress().host()).isEqualTo("broker.example.test");
+        assertThat(details.getAddress().port()).isEqualTo(5679);
         assertThat(details.getUsername()).isNull();
         assertThat(details.getPassword()).isNull();
-        assertThat(details.getVirtualHost()).isNull();
 
-        RabbitConnectionDetails authenticatedDetails = new RabbitConnectionDetails() {
+        AmqpConnectionDetails authenticatedDetails = new AmqpConnectionDetails() {
 
             @Override
-            public List<RabbitConnectionDetails.Address> getAddresses() {
-                return List.of(address);
+            public AmqpConnectionDetails.Address getAddress() {
+                return address;
             }
 
             @Override
@@ -88,56 +83,51 @@ public class Spring_boot_amqpTest {
                 return "secret";
             }
 
-            @Override
-            public String getVirtualHost() {
-                return "orders";
-            }
-
         };
 
-        assertThat(authenticatedDetails.getFirstAddress()).isSameAs(address);
+        assertThat(authenticatedDetails.getAddress()).isSameAs(address);
         assertThat(authenticatedDetails.getUsername()).isEqualTo("alice");
         assertThat(authenticatedDetails.getPassword()).isEqualTo("secret");
-        assertThat(authenticatedDetails.getVirtualHost()).isEqualTo("orders");
     }
 
     @Test
-    void autoConfigurationCreatesConnectionFactoryTemplateAndAppliesCustomizers() {
-        AtomicBoolean connectionFactoryCustomizerInvoked = new AtomicBoolean();
-        AtomicBoolean templateCustomizerInvoked = new AtomicBoolean();
+    void autoConfigurationCreatesConnectionFactoryClientAndAppliesCustomizers() {
+        AtomicBoolean connectionOptionsCustomizerInvoked = new AtomicBoolean();
+        AtomicBoolean clientCustomizerInvoked = new AtomicBoolean();
 
         this.contextRunner
-                .withPropertyValues("spring.rabbitmq.host=broker.example.test", "spring.rabbitmq.port=5679",
-                        "spring.rabbitmq.username=alice", "spring.rabbitmq.password=secret",
-                        "spring.rabbitmq.template.routing-key=orders.created",
-                        "spring.rabbitmq.template.reply-timeout=750ms")
-                .withBean(ConnectionFactoryCustomizer.class,
-                        () -> (connectionFactory) -> connectionFactoryCustomizerInvoked.set(true))
-                .withBean(RabbitTemplateCustomizer.class, () -> (template) -> templateCustomizerInvoked.set(true))
+                .withPropertyValues("spring.amqp.host=broker.example.test", "spring.amqp.port=5679",
+                        "spring.amqp.username=alice", "spring.amqp.password=secret",
+                        "spring.amqp.client.default-to-address=orders.created",
+                        "spring.amqp.client.completion-timeout=750ms")
+                .withBean(ConnectionOptionsCustomizer.class,
+                        () -> (connectionOptions) -> connectionOptionsCustomizerInvoked.set(true))
+                .withBean(AmqpClientCustomizer.class, () -> (builder) -> clientCustomizerInvoked.set(true))
                 .run((context) -> {
-                    assertThat(context).hasSingleBean(RabbitProperties.class);
-                    assertThat(context).hasSingleBean(RabbitConnectionDetails.class);
-                    assertThat(context).hasSingleBean(ConnectionFactory.class);
-                    assertThat(context).hasSingleBean(RabbitTemplate.class);
+                    assertThat(context).hasSingleBean(AmqpProperties.class);
+                    assertThat(context).hasSingleBean(AmqpConnectionDetails.class);
+                    assertThat(context).hasSingleBean(AmqpConnectionFactory.class);
+                    assertThat(context).hasSingleBean(AmqpClient.class);
 
-                    RabbitProperties properties = context.getBean(RabbitProperties.class);
+                    AmqpProperties properties = context.getBean(AmqpProperties.class);
                     assertThat(properties.getHost()).isEqualTo("broker.example.test");
                     assertThat(properties.getPort()).isEqualTo(5679);
                     assertThat(properties.getUsername()).isEqualTo("alice");
                     assertThat(properties.getPassword()).isEqualTo("secret");
-                    assertThat(properties.getTemplate().getRoutingKey()).isEqualTo("orders.created");
-                    assertThat(properties.getTemplate().getReplyTimeout()).isEqualTo(Duration.ofMillis(750));
+                    assertThat(properties.getClient().getDefaultToAddress()).isEqualTo("orders.created");
+                    assertThat(properties.getClient().getCompletionTimeout()).isEqualTo(Duration.ofMillis(750));
 
-                    RabbitConnectionDetails connectionDetails = context.getBean(RabbitConnectionDetails.class);
-                    assertThat(connectionDetails.getFirstAddress().host()).isEqualTo("broker.example.test");
-                    assertThat(connectionDetails.getFirstAddress().port()).isEqualTo(5679);
+                    AmqpConnectionDetails connectionDetails = context.getBean(AmqpConnectionDetails.class);
+                    assertThat(connectionDetails.getAddress().host()).isEqualTo("broker.example.test");
+                    assertThat(connectionDetails.getAddress().port()).isEqualTo(5679);
                     assertThat(connectionDetails.getUsername()).isEqualTo("alice");
                     assertThat(connectionDetails.getPassword()).isEqualTo("secret");
 
-                    assertThat(context.getBean(ConnectionFactory.class)).isInstanceOf(CachingConnectionFactory.class);
-                    assertThat(context.getBean(RabbitTemplate.class)).isNotNull();
-                    assertThat(connectionFactoryCustomizerInvoked).isTrue();
-                    assertThat(templateCustomizerInvoked).isTrue();
+                    assertThat(context.getBean(AmqpConnectionFactory.class))
+                            .isInstanceOf(SingleAmqpConnectionFactory.class);
+                    assertThat(context.getBean(AmqpClient.class)).isNotNull();
+                    assertThat(connectionOptionsCustomizerInvoked).isTrue();
+                    assertThat(clientCustomizerInvoked).isTrue();
                 });
     }
 
