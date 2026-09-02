@@ -25,7 +25,7 @@ public class ReflectionHackInnerJava8Test {
                 .isEqualTo("{\"code\":\"private-lookup\"}");
     }
 
-    public static final class PackageVisibleBean {
+    static final class PackageVisibleBean {
         private String code;
 
         PackageVisibleBean() {
