@@ -32,6 +32,7 @@ public class SubQueueSelectorCacheBrokerTest {
         try {
             cacheBroker = new SubQueueSelectorCacheBroker(
                     brokerService.getBroker(), cacheFile.toFile());
+            Thread.sleep(1_000);
             cacheBroker.stop();
             cacheBroker = null;
 

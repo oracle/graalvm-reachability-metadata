@@ -35,7 +35,7 @@ public class DestinationsViewFilterAnonymous2Test {
             brokerView.addQueue("zeta");
 
             String result = brokerView.queryQueues(
-                    "{\"sortColumn\":\"name\",\"sortOrder\":\"desc\"}", 1, 1);
+                    "{\"filter\":\"\",\"sortColumn\":\"name\",\"sortOrder\":\"desc\"}", 1, 1);
 
             assertThat(result).contains("destinationName=zeta").doesNotContain("destinationName=alpha");
         } finally {

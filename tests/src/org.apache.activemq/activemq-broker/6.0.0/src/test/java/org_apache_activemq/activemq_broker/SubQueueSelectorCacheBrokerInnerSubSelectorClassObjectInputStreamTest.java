@@ -8,7 +8,13 @@ package org_apache_activemq.activemq_broker;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.io.ObjectOutputStream;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 import org.apache.activemq.broker.BrokerService;
 import org.apache.activemq.plugin.SubQueueSelectorCacheBroker;
@@ -26,24 +32,29 @@ public class SubQueueSelectorCacheBrokerInnerSubSelectorClassObjectInputStreamTe
     void restoresPersistedSelectorCache() throws Exception {
         BrokerService brokerService = startBroker("selector-cache-restore-broker");
         Path cacheFile = temporaryDirectory.resolve("selectors.dat");
-        SubQueueSelectorCacheBroker writer = null;
+        String destination = "queue://orders";
+        String selector = "region = 'west'";
+        writeSelectorCache(cacheFile, destination, selector);
         SubQueueSelectorCacheBroker reader = null;
 
         try {
-            writer = new SubQueueSelectorCacheBroker(brokerService.getBroker(), cacheFile.toFile());
-            writer.stop();
-            writer = null;
-
             reader = new SubQueueSelectorCacheBroker(brokerService.getBroker(), cacheFile.toFile());
-            assertThat(reader.getSelectorsForDestination("queue://orders")).isEmpty();
+
+            assertThat(reader.getSelectorsForDestination(destination)).containsExactly(selector);
         } finally {
             if (reader != null) {
                 reader.stop();
             }
-            if (writer != null) {
-                writer.stop();
-            }
             brokerService.stop();
+        }
+    }
+
+    private static void writeSelectorCache(Path cacheFile, String destination, String selector)
+            throws Exception {
+        ConcurrentMap<String, Set<String>> cache = new ConcurrentHashMap<>();
+        cache.put(destination, new HashSet<>(Set.of(selector)));
+        try (ObjectOutputStream output = new ObjectOutputStream(Files.newOutputStream(cacheFile))) {
+            output.writeObject(cache);
         }
     }
 

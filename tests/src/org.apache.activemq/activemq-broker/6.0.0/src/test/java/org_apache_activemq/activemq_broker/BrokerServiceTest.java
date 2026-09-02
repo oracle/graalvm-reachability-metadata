@@ -60,6 +60,7 @@ public class BrokerServiceTest {
         brokerService.setUseJmx(false);
         brokerService.setUseShutdownHook(false);
         brokerService.setPersistent(true);
+        brokerService.setSchedulerSupport(true);
         return brokerService;
     }
 }
