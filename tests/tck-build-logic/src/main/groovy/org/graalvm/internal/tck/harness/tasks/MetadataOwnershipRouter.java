@@ -28,14 +28,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
-import java.util.stream.Stream;
+import java.util.jar.JarFile;
 
 /**
  * Relocates foreign-condition metadata to an exact supported owner/version.
  *
- * Owner discovery uses checked-in {@code allowed-packages} and
- * {@code tested-versions}; it never guesses support or deletes unresolved
- * evidence. Shared buckets are forked before the new entry is added.
+ * Owner discovery locates {@code typeReached} in the tested library's resolved
+ * runtime dependency JARs. Checked-in {@code tested-versions} then decides
+ * whether that exact dependency version has a supported destination.
  * §FS-metadata
  */
 final class MetadataOwnershipRouter {
@@ -59,9 +59,13 @@ final class MetadataOwnershipRouter {
         this.logger = logger;
     }
 
-    Set<String> route(Path metadataRoot, Coordinates sourceCoordinates, ObjectNode sourceMetadata) throws IOException {
+    Set<String> route(
+            Path metadataRoot,
+            Coordinates sourceCoordinates,
+            ObjectNode sourceMetadata,
+            List<ResolvedDependencyArtifact> dependencyArtifacts
+    ) throws IOException {
         SourceSupport sourceSupport = resolveSourceSupport(metadataRoot, sourceCoordinates);
-        List<OwnerCandidate> ownerCatalog = loadOwnerCatalog(metadataRoot, sourceCoordinates.version());
         Map<OwnerKey, OwnerPlan> plans = new LinkedHashMap<>();
         List<ForeignEntry> foreignEntries = new ArrayList<>();
 
@@ -75,7 +79,13 @@ final class MetadataOwnershipRouter {
                     continue;
                 }
                 String typeReached = Objects.requireNonNull(MetadataEntryOwnership.typeReached(entry));
-                OwnerCandidate owner = resolveOwner(ownerCatalog, sourceCoordinates, typeReached, entry);
+                ResolvedDependencyArtifact dependencyOwner = resolveDependencyOwner(
+                        dependencyArtifacts,
+                        sourceCoordinates,
+                        typeReached,
+                        entry
+                );
+                OwnerCandidate owner = resolveSupportedOwner(metadataRoot, dependencyOwner.coordinate(), typeReached);
                 OwnerKey key = new OwnerKey(owner.artifactDirectory(), owner.entryIndex());
                 OwnerPlan plan = plans.computeIfAbsent(key, ignored -> new OwnerPlan(owner));
                 plan.add(sectionPath, entry);
@@ -89,13 +99,13 @@ final class MetadataOwnershipRouter {
 
         Set<String> touchedCoordinates = new LinkedHashSet<>();
         for (OwnerPlan plan : plans.values()) {
-            Destination destination = prepareDestination(plan.owner(), sourceCoordinates.version());
+            Destination destination = prepareDestination(plan.owner());
             mergeEntries(destination.metadata(), plan.entriesBySection());
             writeJson(destination.metadataFile(), destination.metadata());
             if (destination.indexChanged()) {
                 writeJson(destination.indexFile(), destination.index());
             }
-            String ownerCoordinate = plan.owner().group() + ":" + plan.owner().artifact() + ":" + sourceCoordinates.version();
+            String ownerCoordinate = plan.owner().coordinate();
             touchedCoordinates.add(ownerCoordinate);
             logger.lifecycle(
                     "Relocated {} foreign metadata entr{} from {} to {}",
@@ -125,85 +135,109 @@ final class MetadataOwnershipRouter {
         throw new GradleException("No index entry in " + indexFile + " supports " + coordinates.version());
     }
 
-    private List<OwnerCandidate> loadOwnerCatalog(Path metadataRoot, String testedVersion) throws IOException {
-        List<OwnerCandidate> candidates = new ArrayList<>();
-        if (!Files.isDirectory(metadataRoot)) {
-            return candidates;
-        }
-        try (Stream<Path> paths = Files.walk(metadataRoot, 3)) {
-            for (Path indexFile : paths
-                    .filter(path -> INDEX_FILE.equals(path.getFileName().toString()))
-                    .sorted()
-                    .toList()) {
-                Path artifactDirectory = indexFile.getParent();
-                Path relative = metadataRoot.relativize(artifactDirectory);
-                if (relative.getNameCount() != 2) {
-                    continue;
-                }
-                ArrayNode index = requireArray(objectMapper.readTree(indexFile.toFile()), indexFile);
-                for (int entryIndex = 0; entryIndex < index.size(); entryIndex++) {
-                    JsonNode rawEntry = index.get(entryIndex);
-                    if (!(rawEntry instanceof ObjectNode entry) || !supportsVersion(entry, testedVersion)) {
-                        continue;
-                    }
-                    List<String> allowedPackages = readStringArray(entry.get("allowed-packages"), "allowed-packages", indexFile);
-                    String metadataVersion = requiredText(entry, "metadata-version", indexFile);
-                    candidates.add(new OwnerCandidate(
-                            relative.getName(0).toString(),
-                            relative.getName(1).toString(),
-                            artifactDirectory,
-                            indexFile,
-                            index,
-                            entryIndex,
-                            entry,
-                            metadataVersion,
-                            allowedPackages
-                    ));
-                }
-            }
-        }
-        return candidates;
-    }
-
-    private OwnerCandidate resolveOwner(
-            List<OwnerCandidate> ownerCatalog,
+    private ResolvedDependencyArtifact resolveDependencyOwner(
+            List<ResolvedDependencyArtifact> dependencyArtifacts,
             Coordinates sourceCoordinates,
             String typeReached,
             JsonNode entry
-    ) {
-        List<OwnerCandidate> matches = ownerCatalog.stream()
-                .filter(candidate -> !candidate.group().equals(sourceCoordinates.group())
-                        || !candidate.artifact().equals(sourceCoordinates.artifact()))
-                .filter(candidate -> MetadataEntryOwnership.matchesAllowedPackage(typeReached, candidate.allowedPackages()))
+    ) throws IOException {
+        String classEntry = typeReached.replace('.', '/') + ".class";
+        List<ResolvedDependencyArtifact> matches = dependencyArtifacts.stream()
+                .filter(artifact -> jarContains(artifact.file(), classEntry))
                 .toList();
-        if (matches.size() == 1) {
-            return matches.getFirst();
+        Map<String, ResolvedDependencyArtifact> matchesByCoordinate = new LinkedHashMap<>();
+        for (ResolvedDependencyArtifact match : matches) {
+            matchesByCoordinate.putIfAbsent(match.coordinate(), match);
+        }
+        if (matchesByCoordinate.size() == 1) {
+            ResolvedDependencyArtifact owner = matchesByCoordinate.values().iterator().next();
+            Coordinates parsedOwner = Coordinates.parse(owner.coordinate());
+            if (parsedOwner.group().equals(sourceCoordinates.group())
+                    && parsedOwner.artifact().equals(sourceCoordinates.artifact())) {
+                throw new GradleException(
+                        "Foreign metadata entry " + MetadataEntryOwnership.describeEntry(entry)
+                                + " resolves to the source artifact " + owner.coordinate()
+                                + "; repair its allowed-packages instead of routing it"
+                );
+            }
+            return owner;
         }
 
         String entryDescription = MetadataEntryOwnership.describeEntry(entry);
-        if (matches.isEmpty()) {
+        if (matchesByCoordinate.isEmpty()) {
             throw new GradleException(
-                    "Cannot relocate metadata entry " + entryDescription + ": no supported artifact maps "
-                            + typeReached + " for tested version " + sourceCoordinates.version()
+                    "Cannot relocate metadata entry " + entryDescription
+                            + ": no resolved runtime dependency JAR contains " + typeReached
             );
         }
-        String owners = matches.stream()
-                .map(candidate -> candidate.group() + ":" + candidate.artifact())
-                .distinct()
+        String owners = matchesByCoordinate.keySet().stream()
                 .sorted()
                 .reduce((left, right) -> left + ", " + right)
                 .orElse("<none>");
         throw new GradleException(
                 "Cannot relocate metadata entry " + entryDescription + ": " + typeReached
-                        + " has multiple supported owners for tested version " + sourceCoordinates.version() + ": " + owners
+                        + " occurs in multiple resolved runtime dependencies: " + owners
         );
     }
 
-    private Destination prepareDestination(OwnerCandidate owner, String testedVersion) throws IOException {
+    private boolean jarContains(Path jarFile, String classEntry) {
+        try (JarFile jar = new JarFile(jarFile.toFile())) {
+            return jar.getJarEntry(classEntry) != null;
+        } catch (IOException exception) {
+            throw new GradleException("Cannot inspect resolved dependency JAR " + jarFile, exception);
+        }
+    }
+
+    private OwnerCandidate resolveSupportedOwner(
+            Path metadataRoot,
+            String ownerCoordinate,
+            String typeReached
+    ) throws IOException {
+        Coordinates owner = Coordinates.parse(ownerCoordinate);
+        Path artifactDirectory = metadataRoot.resolve(owner.group()).resolve(owner.artifact());
+        Path indexFile = artifactDirectory.resolve(INDEX_FILE);
+        if (!Files.isRegularFile(indexFile)) {
+            throw new UnsupportedMetadataOwnerException("owner-library-unsupported", ownerCoordinate);
+        }
+
+        ArrayNode index = requireArray(objectMapper.readTree(indexFile.toFile()), indexFile);
+        for (int entryIndex = 0; entryIndex < index.size(); entryIndex++) {
+            JsonNode rawEntry = index.get(entryIndex);
+            if (!(rawEntry instanceof ObjectNode entry) || !supportsVersion(entry, owner.version())) {
+                continue;
+            }
+            List<String> allowedPackages = readStringArray(entry.get("allowed-packages"), "allowed-packages", indexFile);
+            if (!MetadataEntryOwnership.matchesAllowedPackage(typeReached, allowedPackages)) {
+                throw new GradleException(
+                        "Resolved owner " + ownerCoordinate + " does not allow condition type " + typeReached
+                );
+            }
+            return new OwnerCandidate(
+                    ownerCoordinate,
+                    owner.group(),
+                    owner.artifact(),
+                    owner.version(),
+                    artifactDirectory,
+                    indexFile,
+                    index,
+                    entryIndex,
+                    entry,
+                    requiredText(entry, "metadata-version", indexFile)
+            );
+        }
+        throw new UnsupportedMetadataOwnerException("owner-version-unsupported", ownerCoordinate);
+    }
+
+    private Destination prepareDestination(OwnerCandidate owner) throws IOException {
+        String testedVersion = owner.version();
         List<String> testedVersions = readStringArray(owner.entry().get("tested-versions"), "tested-versions", owner.indexFile());
         Path inheritedMetadataFile = owner.artifactDirectory().resolve(owner.metadataVersion()).resolve(METADATA_FILE);
         ObjectNode inheritedMetadata = readMetadata(inheritedMetadataFile);
-        if (testedVersions.size() == 1) {
+        int splitIndex = testedVersions.indexOf(testedVersion);
+        if (splitIndex < 0) {
+            throw new GradleException("Owner index no longer contains tested version " + testedVersion);
+        }
+        if (splitIndex == 0) {
             return new Destination(
                     inheritedMetadataFile,
                     inheritedMetadata,
@@ -212,13 +246,6 @@ final class MetadataOwnershipRouter {
                     false
             );
         }
-        if (owner.metadataVersion().equals(testedVersion)) {
-            throw new GradleException(
-                    "Cannot isolate " + testedVersion + " in shared metadata bucket " + owner.metadataVersion()
-                            + " for " + owner.group() + ":" + owner.artifact()
-            );
-        }
-
         Path exactMetadataFile = owner.artifactDirectory().resolve(testedVersion).resolve(METADATA_FILE);
         if (Files.exists(exactMetadataFile) || hasMetadataVersion(owner.index(), testedVersion)) {
             throw new GradleException(
@@ -229,7 +256,8 @@ final class MetadataOwnershipRouter {
 
         ObjectNode exactEntry = owner.entry().deepCopy();
         exactEntry.put("metadata-version", testedVersion);
-        exactEntry.putArray("tested-versions").add(testedVersion);
+        ArrayNode transferredVersions = exactEntry.putArray("tested-versions");
+        testedVersions.subList(splitIndex, testedVersions.size()).forEach(transferredVersions::add);
         if (!exactEntry.hasNonNull("test-version")) {
             exactEntry.put("test-version", owner.metadataVersion());
         }
@@ -240,9 +268,7 @@ final class MetadataOwnershipRouter {
         }
 
         ArrayNode retainedVersions = objectMapper.createArrayNode();
-        testedVersions.stream()
-                .filter(version -> !version.equals(testedVersion))
-                .forEach(retainedVersions::add);
+        testedVersions.subList(0, splitIndex).forEach(retainedVersions::add);
         owner.entry().set("tested-versions", retainedVersions);
         owner.index().insert(owner.entryIndex() + 1, exactEntry);
 
@@ -377,15 +403,16 @@ final class MetadataOwnershipRouter {
     }
 
     private record OwnerCandidate(
+            String coordinate,
             String group,
             String artifact,
+            String version,
             Path artifactDirectory,
             Path indexFile,
             ArrayNode index,
             int entryIndex,
             ObjectNode entry,
-            String metadataVersion,
-            List<String> allowedPackages
+            String metadataVersion
     ) {
     }
 

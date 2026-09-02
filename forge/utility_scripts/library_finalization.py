@@ -10,6 +10,11 @@ import sys
 from collections.abc import Callable
 
 from ai_workflows.agents.agent_runtime import analysis_agent_run, get_analysis_agent
+from utility_scripts.foreign_metadata_owner_issue import (
+    ForeignMetadataOwnerFailure,
+    ensure_foreign_metadata_owner_issue,
+    load_foreign_metadata_owner_failure,
+)
 from utility_scripts.gradle_environment import gradle_command_environment
 from utility_scripts.logged_command import LoggedCommandResult, run_logged_command
 from utility_scripts.metadata_index import find_index_entry_for_version
@@ -99,6 +104,46 @@ def _run_gradle_command(repo_path: str, command: list[str]) -> bool:
     if result.returncode != 0:
         return False
     return True
+
+
+def _run_route_foreign_metadata(repo_path: str, library: str) -> LoggedCommandResult:
+    """Run ownership routing while retaining its output for agent evidence."""
+    return _run_gradle_command_with_output(
+        repo_path,
+        ["./gradlew", "routeForeignMetadata", f"-Pcoordinates={library}"],
+    )
+
+
+def _unsupported_owner_agent_evidence(
+        failure: ForeignMetadataOwnerFailure,
+        issue_url: str,
+        routing_output: str,
+) -> str:
+    """Format the deterministic owner-resolution evidence for metadata repair."""
+    return "\n".join([
+        "routeForeignMetadata failed after resolving the foreign condition owner.",
+        f"Reason: {failure.reason}",
+        f"Resolved dependency coordinate: {failure.coordinate}",
+        f"Follow-up issue: {issue_url}",
+        "Do not add the resolved dependency package to the source artifact's allowed-packages.",
+        "",
+        "Captured routeForeignMetadata output:",
+        "```text",
+        routing_output,
+        "```",
+    ])
+
+
+def _routing_failure_agent_evidence(routing_output: str) -> str:
+    """Format a routing failure that did not resolve one unsupported owner."""
+    return "\n".join([
+        "routeForeignMetadata failed without a supported resolved dependency owner.",
+        "",
+        "Captured routeForeignMetadata output:",
+        "```text",
+        routing_output,
+        "```",
+    ])
 
 
 def _run_check_metadata_fix(repo_path: str, library: str, failure_output: str) -> bool:
@@ -322,9 +367,12 @@ def run_library_finalization(
         library,
         "check-metadata-files",
     )
+    routing_failure_evidence: str | None = None
+    unsupported_owner_reported = False
     if not metadata_valid:
         log_detail("route-foreign-metadata", f"Running routeForeignMetadata after validation failed for {library}")
-        if _run_gradle_command(repo_path, ["./gradlew", "routeForeignMetadata", f"-Pcoordinates={library}"]):
+        route_result = _run_route_foreign_metadata(repo_path, library)
+        if route_result.returncode == 0:
             metadata_valid, metadata_failure_output = _run_check_metadata_files_with_allowed_packages_fix(
                 repo_path=repo_path,
                 library=library,
@@ -333,28 +381,48 @@ def run_library_finalization(
                 library_version=library_version,
                 log_stage_name="check-metadata-files",
             )
+        else:
+            owner_failure = load_foreign_metadata_owner_failure(repo_path, library)
+            if owner_failure is not None:
+                issue_url = ensure_foreign_metadata_owner_issue(repo_path, library, owner_failure)
+                routing_failure_evidence = _unsupported_owner_agent_evidence(
+                    owner_failure,
+                    issue_url,
+                    route_result.stdout,
+                )
+                unsupported_owner_reported = True
+            else:
+                routing_failure_evidence = _routing_failure_agent_evidence(route_result.stdout)
     if not metadata_valid:
         for attempt in range(1, MAX_CHECK_METADATA_FIX_ATTEMPTS + 1):
             log_detail(
                 "check-metadata-files",
                 f"Running analysis metadata fix attempt {attempt}/{MAX_CHECK_METADATA_FIX_ATTEMPTS} for {library}",
             )
+            agent_evidence = "\n\n".join(filter(None, [metadata_failure_output, routing_failure_evidence]))
             if not _run_finalization_agent_fix(
                     library,
                     "metadata validation",
                     attempt,
                     MAX_CHECK_METADATA_FIX_ATTEMPTS,
-                    lambda: _run_check_metadata_fix(repo_path, library, metadata_failure_output),
+                    lambda: _run_check_metadata_fix(repo_path, library, agent_evidence),
             ):
                 continue
-            metadata_valid, metadata_failure_output = _run_check_metadata_files_with_allowed_packages_fix(
-                repo_path=repo_path,
-                library=library,
-                group=group,
-                artifact=artifact,
-                library_version=library_version,
-                log_stage_name="check-metadata-files",
-            )
+            if not unsupported_owner_reported:
+                metadata_valid, metadata_failure_output = _run_check_metadata_files_with_allowed_packages_fix(
+                    repo_path=repo_path,
+                    library=library,
+                    group=group,
+                    artifact=artifact,
+                    library_version=library_version,
+                    log_stage_name="check-metadata-files",
+                )
+            else:
+                metadata_valid, metadata_failure_output = _run_check_metadata_files(
+                    repo_path,
+                    library,
+                    "check-metadata-files",
+                )
             if metadata_valid:
                 break
         else:
