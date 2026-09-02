@@ -1,0 +1,93 @@
+{
+  "continueFrom": "finalization",
+  "coordinate": "org.apache.activemq:activemq-broker:6.0.0",
+  "failure": {
+    "operand": "org.apache.activemq:activemq-broker:6.0.0",
+    "phase": "finalization",
+    "step": "finalize_run()"
+  },
+  "issueNumber": 8927,
+  "label": "library-update-request",
+  "libraryPreparationPreflight": {
+    "action": "no_action",
+    "agent_guidance": "No environment variables or system properties are required. Exercise BrokerService in-process over vm:// with persistence and JMX disabled, using unique broker names/URLs.",
+    "applied_setup": [],
+    "deterministic_setup": [],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#8927 Update existing library: org.apache.activemq:activemq-broker:6.0.0; label=library-update-request; body_chars=169"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "8 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 923735,
+    "issue_label": "library-update-request",
+    "issue_number": 8927,
+    "library": "org.apache.activemq:activemq-broker:6.0.0",
+    "model": "gpt-5.6-luna",
+    "output_tokens_used": 7353,
+    "prompt_path": "library-preflight-prompt.txt",
+    "raw_response_path": "library-preflight-response.txt",
+    "risks": [
+      "Persistence coverage would require an appropriate store module; XML/XBean configuration would require additional configuration modules."
+    ],
+    "session_log_path": "/home/mihailo/git/graalvm-reachability-metadata-copy/forge/logs/org.apache.activemq:activemq-broker:6.0.0/library-preparation-preflight/codex-session-jquef5cj.log",
+    "status": "completed",
+    "summary": "ActiveMQ 6.0.0 resolves its required runtime dependencies transitively, and official guidance supports embedded, non-persistent VM brokers for tests ([POM](https://repo1.maven.org/maven2/org/apache/activemq/activemq-broker/6.0.0/activemq-broker-6.0.0.pom), [unit-test guidance](https://activemq.apache.org/components/classic/documentation/how-to-unit-test-jms-code))."
+  },
+  "libraryUpdateRoute": {
+    "baseline_coordinates": null,
+    "new_version": "6.0.0",
+    "selected_driver": "improve_library_coverage"
+  },
+  "newVersion": null,
+  "phases": {
+    "explore": {
+      "chunkClassCount": 4,
+      "chunkProcessedClassCount": 4,
+      "exhaustedClasses": [
+        "org.apache.activemq.broker.BrokerService",
+        "org.apache.activemq.broker.PropertiesBrokerFactory",
+        "org.apache.activemq.broker.jmx.AnnotatedMBean",
+        "org.apache.activemq.broker.jmx.DestinationsViewFilter$2",
+        "org.apache.activemq.broker.jmx.Log4JConfigView",
+        "org.apache.activemq.broker.jmx.ManagementContext",
+        "org.apache.activemq.plugin.SubQueueSelectorCacheBroker",
+        "org.apache.activemq.plugin.SubQueueSelectorCacheBroker$SubSelectorClassObjectInputStream",
+        "org.apache.activemq.security.DefaultAuthorizationMap",
+        "org.apache.activemq.security.DefaultAuthorizationMap$WildcardAwareSet",
+        "org.apache.activemq.security.JaasAuthenticationPlugin",
+        "org.apache.activemq.util.LogWriterFinder"
+      ],
+      "iteration": 18,
+      "status": "completed"
+    },
+    "finalization": {
+      "status": "running"
+    },
+    "fix": {
+      "iteration": null,
+      "status": "skipped"
+    },
+    "publication": {
+      "branch": null,
+      "coverageFollowUpIssueNumber": null,
+      "isPushed": false,
+      "publicationId": null,
+      "publicationTimestamp": null,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": true,
+      "status": "completed"
+    }
+  },
+  "preservedBranch": "ai/kimeta/human-intervention/issue-8927-library-update-request-org.apache.activemq-activemq-broker-6.0.0-034add44",
+  "publicationMetrics": null,
+  "schemaVersion": 1,
+  "strategyName": "library_update_optimistic_pi_gpt-5.6-sol"
+}
