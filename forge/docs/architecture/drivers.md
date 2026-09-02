@@ -304,6 +304,15 @@ staging only artifact-scoped paths would drop them, and the next checkpoint rese
 would delete them. Test sources and stats stay scoped to the target coordinate.
 
 Per-coordinate finalization repairs missing allowed-packages deterministically.
+After `checkMetadataFiles` fails, it first runs `routeForeignMetadata`. When
+routing resolves an owner whose artifact is absent from repository metadata,
+Forge creates or reuses a `library-new-request`; when the artifact exists but
+the resolved version is unsupported, it creates or reuses a
+`library-update-request`. Routing remains failed, and Forge gives the original
+check output, routing output, resolved coordinate, and issue URL to the analysis
+agent. A passing initial metadata check does not run ownership routing.
+§FS-foreign-metadata-owner-follow-ups
+
 If metadata validation still fails, Forge gives its command and captured output
 to the analysis agent up to three times, rerunning validation after each repair
 and letting each deterministic result decide whether another attempt is needed.

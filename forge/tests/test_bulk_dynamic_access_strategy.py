@@ -3,7 +3,10 @@
 # You should have received a copy of the CC0 legalcode along with this
 # work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 
+import io
+import os
 import unittest
+from contextlib import redirect_stdout
 from unittest.mock import patch
 
 from ai_workflows.core.increase_dynamic_access_coverage_strategy import (
@@ -18,6 +21,7 @@ from utility_scripts.dynamic_access_report import (
     DynamicAccessCoverageReport,
     compute_bulk_dynamic_access_progress,
 )
+from utility_scripts.run_location import reset_run_location
 
 
 class BulkDynamicAccessChunkTests(unittest.TestCase):
@@ -244,9 +248,22 @@ class BulkDynamicAccessChunkTests(unittest.TestCase):
 class BulkDynamicAccessRunTests(unittest.TestCase):
     """The bulk loop must run on the report the run prepared for it."""
 
+    def setUp(self) -> None:
+        reset_run_location()
+
+    def tearDown(self) -> None:
+        reset_run_location()
+
     def test_usable_report_starts_bulk_iterations_without_a_fallback(self) -> None:
         strategy, agent = self._runnable_strategy(reports=[self._usable_report()])
-        with patch.object(strategy, "_run_basic_iterative_fallback") as fallback:
+        output = io.StringIO()
+        with patch.dict(
+                os.environ,
+                {"FORGE_VERBOSE": "0", "FORGE_DEBUG_LOGGING": "0"},
+        ), patch.object(
+                strategy,
+                "_run_basic_iterative_fallback",
+        ) as fallback, redirect_stdout(output):
             status, iterations, generations = strategy.run(agent)
 
         fallback.assert_not_called()
@@ -254,6 +271,16 @@ class BulkDynamicAccessRunTests(unittest.TestCase):
         self.assertEqual(generations, 1)
         self.assertEqual(iterations, 1)
         self.assertEqual(len(agent.prompts), 1)
+        printed = output.getvalue()
+        self.assertIn(
+            "[explore] Generating tests: bulk iteration 1/3, "
+            "0 uncovered across 0 classes (1/3)",
+            printed,
+        )
+        self.assertIn("[explore]   Running test 1/2 (1/3)", printed)
+        self.assertIn("[explore]   Test 1/2 passed (1/3)", printed)
+        self.assertNotIn("[bulk-da]", printed)
+        self.assertNotIn("./gradlew", printed)
 
     def test_empty_report_bootstraps_through_the_fallback_then_runs_bulk(self) -> None:
         # A report only becomes usable once tests exist; the fallback creates

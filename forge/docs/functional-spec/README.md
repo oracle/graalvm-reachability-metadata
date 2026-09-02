@@ -18,6 +18,7 @@ contract in [strategies.md](strategies.md), the benchmark contract in
 | [§FS-forge-functional-spec](functional-spec.md#fs-forge-functional-spec-forge-functional-specification) | Forge functional specification |
 | [§FS-forge-issue-resolution-goal](functional-spec.md#fs-forge-issue-resolution-goal-forge-issue-resolution-goal) | Forge issue resolution goal |
 | [§FS-forge-scope](functional-spec.md#fs-forge-scope-supported-issue-queues) | Supported issue queues |
+| [§FS-foreign-metadata-owner-follow-ups](functional-spec.md#fs-foreign-metadata-owner-follow-ups-foreign-metadata-owner-follow-ups) | Foreign metadata owner follow-ups |
 | [§FS-forge-glossary](functional-spec.md#fs-forge-glossary-glossary) | Glossary |
 | [§FS-forge-requirements](functional-spec.md#fs-forge-requirements-requirement-gates) | Requirement gates |
 | [§FS-forge-host-requirements](functional-spec.md#fs-forge-host-requirements-host-requirements) | Host requirements |

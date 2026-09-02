@@ -1,10 +1,10 @@
 {
-  "base_commit": "32f17b503a7f7c35e85ca2fd0fa6419161ed3768",
-  "branch": "ai/kimeta/add-lib-support-com.oracle.database.jdbc-ojdbc11-23.26.2.0.0-chunked-forge-9528-20260831230437917800-e53f380c59b3",
+  "base_commit": "2ad96e116df5632204efd990003d0ba2a477776d",
+  "branch": "ai/kimeta/add-lib-support-com.oracle.database.jdbc-ojdbc11-23.26.2.0.0-chunked-forge-9528-20260902045431527659-c58bed399048",
   "follow_ups": [],
   "forge": {
-    "branch": "mm/concise-forge-console-output",
-    "commit": "c578761485277826b6bd3378b309b4645ca0a1d6",
+    "branch": "ai/kimeta/add-lib-support-junit-junit-3.7-chunked-forge-995-20260901035125981525-b7b2cba573f3",
+    "commit": "ade849e9686bef4e63a7fa21a2ff0e23f8f4cacc",
     "monitored_branch": "origin/mm/concise-forge-console-output"
   },
   "issue_number": 9528,
@@ -15,11 +15,11 @@
     "version": "23.26.2.0.0"
   },
   "local_ci_verification": {
-    "base_commit": "32f17b503a7f7c35e85ca2fd0fa6419161ed3768",
+    "base_commit": "2ad96e116df5632204efd990003d0ba2a477776d",
     "commands": [],
     "failure_command": null,
     "failure_gate": null,
-    "final_commit": "dbe660b6b6997c375405c6aefb1dd8dd970cb153",
+    "final_commit": "12400e18867c2b8f4659abb9651095543453e73c",
     "fixups": [],
     "human_intervention_required": false,
     "repo_fix_paths": [],
@@ -35,7 +35,7 @@
     "model": "gpt-5.6-sol",
     "published_tree": "verified",
     "repair_reverted": false,
-    "review_comment": "Reviewed the base-to-head diff and local evidence for com.oracle.database.jdbc:ojdbc11:23.26.2.0.0. The diff remains scoped to one library, uses only reachability-metadata.json metadata files, keeps tests in a separate package, and contains library-specific tests with no native-image skips, bare Error catches, scaffold placeholders, or exact-version assertions. The reported 134/177 dynamic-access coverage is credible and the 134 covered calls do not trigger the metadata-entry mismatch check against 2,668 reported entries. Local gate status is successful. No enumerated-rule violation was found.",
+    "review_comment": "Reviewed the specified commit range and local evidence against Review Signals #1-#11. The diff remains scoped to com.oracle.database.jdbc:ojdbc11:23.26.2.0.0 and supporting test files; tests are library-specific, run through the native lane, avoid target-version pinning and native-only skips, and use a separate test package. Only reachability-metadata.json metadata files are present. Reported dynamic-access coverage is 138/177 (77.97%), the 0/0 exception is not applicable, and 138 covered calls do not trigger the mismatch threshold against 2,721 reported metadata entries. Local gate evidence reports success with no human intervention required. No enumerated-rule violation found.",
     "session_log_path": "logs/com.oracle.database.jdbc:ojdbc11:23.26.2.0.0/local-branch-review/pi.log",
     "status": "completed"
   },
@@ -44,98 +44,28 @@
     "model": "gpt-5.6-sol",
     "path": "stats/com.oracle.database.jdbc/ojdbc11/23.26.2.0.0/execution-metrics.json",
     "summary": {
-      "cached_input_tokens_used": 57550848,
-      "code_coverage_percent": 7.9,
-      "cost_usd": 53.6025,
-      "generated_loc": 2360,
-      "input_tokens_used": 3635747,
-      "iterations": 36,
-      "metadata_entries": 2532,
-      "output_tokens_used": 221613,
-      "test_only_metadata_entries": 136,
-      "tested_library_loc": 12844
+      "cached_input_tokens_used": 64688640,
+      "code_coverage_percent": 8.15,
+      "cost_usd": 53.2853,
+      "generated_loc": 2716,
+      "input_tokens_used": 2938503,
+      "iterations": 31,
+      "metadata_entries": 2571,
+      "output_tokens_used": 208282,
+      "test_only_metadata_entries": 150,
+      "tested_library_loc": 13251
     },
-    "timestamp": "2026-08-31T23:04:37.917800Z"
+    "timestamp": "2026-09-02T04:54:31.527659Z"
   },
   "modifiers": {
-    "chunk_final": false,
+    "chunk_final": true,
     "chunked_dynamic_access": true,
     "human_intervention": false
   },
   "producer": "kimeta",
-  "publication_id": "forge-9528-20260831230437917800-e53f380c59b3",
+  "publication_id": "forge-9528-20260902045431527659-c58bed399048",
   "render": {
-    "dynamic_access": {
-      "classThreshold": 15,
-      "completedClasses": [
-        "oracle.jdbc.OracleConnectionWrapper",
-        "oracle.jdbc.OracleConnectionWrapper$CloseInvocationHandler",
-        "oracle.jdbc.downloadmanager.DependencyDownloader",
-        "oracle.jdbc.driver.ErrorMessageFramework",
-        "oracle.jdbc.driver.GeneratedPhysicalConnection$1",
-        "oracle.jdbc.driver.OracleDriver",
-        "oracle.jdbc.driver.cli.urlbuilder.BuildUrlCommand",
-        "oracle.jdbc.driver.configuration.OracleConfigurationFileProvider",
-        "oracle.jdbc.driver.json.Jsonp",
-        "oracle.jdbc.driver.json.OracleJsonExceptions",
-        "oracle.jdbc.driver.json.binary.OsonAbstractArray",
-        "oracle.jdbc.internal.OpaqueString",
-        "oracle.jdbc.oracore.OracleTypeADT",
-        "oracle.jdbc.oracore.OracleTypeCOLLECTION",
-        "oracle.jdbc.oracore.OracleTypeUPT",
-        "oracle.jdbc.oracore.Util",
-        "oracle.jdbc.proxy.ProxyFactory",
-        "oracle.net.jdbc.nl.NetStrings",
-        "oracle.net.ns.NetErrorMessage",
-        "oracle.sql.CharacterSet$CharacterSetNamesMapHolder",
-        "oracle.sql.ConverterArchive",
-        "oracle.sql.OPAQUE",
-        "oracle.sql.TypeDescriptor",
-        "oracle.jdbc.driver.JavaToJavaConverter",
-        "oracle.jdbc.driver.OracleRef",
-        "oracle.jdbc.driver.T4CDriverExtension",
-        "oracle.jdbc.driver.cli.TcpFastOpenLibraryInstaller",
-        "oracle.jdbc.replay.driver.TxnReplayableConnection",
-        "oracle.jdbc.replay.driver.TxnReplayableRef",
-        "oracle.jdbc.replay.driver.TxnReplayableResultSet",
-        "oracle.jdbc.replay.driver.TxnReplayableStatement",
-        "oracle.net.ano.Ano",
-        "oracle.jdbc.util.OracleServerProcessWrapper",
-        "oracle.jdbc.driver.OracleArray",
-        "oracle.jdbc.driver.OracleStruct",
-        "oracle.jdbc.pool.OraclePooledConnection",
-        "oracle.sql.ARRAY",
-        "oracle.sql.STRUCT",
-        "oracle.jdbc.driver.BufferCache",
-        "oracle.jdbc.oracore.OracleTypeOPAQUE",
-        "oracle.net.ano.RadiusAuthenticationService",
-        "oracle.net.nt.CustomSSLSocketFactory"
-      ],
-      "coordinate": "com.oracle.database.jdbc:ojdbc11:23.26.2.0.0",
-      "currentChunkClassCount": 15,
-      "exhaustedClasses": [
-        "oracle.jdbc.driver.AbstractShardingPreparedStatement",
-        "oracle.jdbc.driver.AbstractTrueCachePreparedStatement",
-        "oracle.jdbc.driver.AbstractShardingStatement",
-        "oracle.jdbc.driver.AbstractShardingConnection",
-        "oracle.jdbc.driver.PhysicalConnection",
-        "oracle.jdbc.driver.T4CConnection",
-        "oracle.jdbc.nativeimage.Target_oracle_jdbc_proxy_ProxyFactory",
-        "oracle.jdbc.proxy.AnnotationsRegistry$Value",
-        "oracle.jdbc.proxy.GeneratedProxiesRegistry$Key",
-        "oracle.net.nt.SdpNTAdapter",
-        "oracle.jdbc.TcpFastOpenLibraryInstaller",
-        "oracle.jdbc.driver.DMSFactory",
-        "oracle.jdbc.driver.DirectPathBufferMarshaler"
-      ],
-      "failedClasses": [],
-      "issueNumber": 9528,
-      "latestChunkBranch": "ai/kimeta/add-lib-support-com.oracle.database.jdbc-ojdbc11-23.26.2.0.0-chunked-forge-9528-20260831230437917800-e53f380c59b3",
-      "latestChunkCommit": null,
-      "latestChunkPublicationId": "forge-9528-20260831230437917800-e53f380c59b3",
-      "latestChunkPullRequest": null,
-      "skippedClasses": []
-    },
+    "dynamic_access": null,
     "dynamic_access_evidence": {
       "covered_call_sites": [
         "[reflection] java.lang.Class#forName(java.lang.String) <- oracle.jdbc.driver.PhysicalConnection.classForNameAndSchema(PhysicalConnection.java:7431) (line 7431)",
@@ -146,7 +76,7 @@
         "[reflection] java.lang.reflect.Field#get(java.lang.Object) <- oracle.jdbc.driver.PhysicalConnection.getProperties(PhysicalConnection.java:2287) (line 2287)",
         "[reflection] java.lang.reflect.Field#get(java.lang.Object) <- oracle.jdbc.driver.PhysicalConnection.getProperties(PhysicalConnection.java:2308) (line 2308)",
         "[reflection] java.lang.reflect.Field#get(java.lang.Object) <- oracle.jdbc.driver.PhysicalConnection.getProperties(PhysicalConnection.java:2327) (line 2327)",
-        "... and 126 more"
+        "... and 130 more"
       ],
       "metadata_rules": [
         "when `oracle.jdbc.diagnostics.OracleDiagnosticsMXBean` is reached, make `boolean[]` available for reflection",
@@ -157,15 +87,15 @@
         "when `oracle.jdbc.diagnostics.OracleDiagnosticsMXBean` is reached, make `char[]` available for reflection",
         "when `oracle.jdbc.driver.BufferCache` is reached, make `char[]` available for reflection",
         "when `oracle.jdbc.driver.OracleDriver` is reached, make `char[]` available for reflection",
-        "... and 469 more"
+        "... and 493 more"
       ]
     },
     "library_stats": {
       "dynamicAccess": {
         "breakdown": {
           "reflection": {
-            "coverageRatio": 0.746988,
-            "coveredCalls": 124,
+            "coverageRatio": 0.771084,
+            "coveredCalls": 128,
             "totalCalls": 166
           },
           "resources": {
@@ -174,27 +104,27 @@
             "totalCalls": 11
           }
         },
-        "coverageRatio": 0.757062,
-        "coveredCalls": 134,
+        "coverageRatio": 0.779661,
+        "coveredCalls": 138,
         "totalCalls": 177
       },
       "libraryCoverage": {
         "instruction": {
-          "covered": 92553,
-          "missed": 1396174,
-          "ratio": 0.062169,
+          "covered": 95085,
+          "missed": 1393642,
+          "ratio": 0.06387,
           "total": 1488727
         },
         "line": {
-          "covered": 12844,
-          "missed": 149795,
-          "ratio": 0.078972,
+          "covered": 13251,
+          "missed": 149388,
+          "ratio": 0.081475,
           "total": 162639
         },
         "method": {
-          "covered": 2158,
-          "missed": 36308,
-          "ratio": 0.056101,
+          "covered": 2228,
+          "missed": 36238,
+          "ratio": 0.057921,
           "total": 38466
         }
       },
@@ -205,5 +135,5 @@
   "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-sol",
   "task_type": "library-new-request",
   "template_type": "library-new-request",
-  "timestamp": "2026-08-31T23:04:37.917800Z"
+  "timestamp": "2026-09-02T04:54:31.527659Z"
 }

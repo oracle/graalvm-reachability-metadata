@@ -8,7 +8,7 @@ import json
 import os
 import subprocess
 
-from ai_workflows.agents.agent import Agent
+from ai_workflows.agents.agent import Agent, AgentTimeoutError
 from ai_workflows.agents.agent_runtime import agent_process_environment
 from utility_scripts.gradle_test_runner import run_gradle_test_command
 
@@ -91,7 +91,8 @@ class OpenCodeAgent(Agent):
         return self._cached_input_tokens_used
 
     def send_prompt(self, prompt: str) -> str:
-        return self._run_prompt(prompt, fork=False)
+        with self._agent_activity("OpenCode"):
+            return self._run_prompt(prompt, fork=False)
 
     def _run_prompt(self, prompt: str, fork: bool) -> str:
         self._print_session_log_once("OpenCode", self._session_log_path)
@@ -120,7 +121,9 @@ class OpenCodeAgent(Agent):
             )
         except subprocess.TimeoutExpired as exc:
             self._append_log(prompt, exc.stdout or "")
-            raise RuntimeError("OpenCode prompt timed out.") from exc
+            raise AgentTimeoutError(
+                self._current_agent_action(), self._timeout, self._session_log_path,
+            ) from exc
         self._append_log(prompt, result.stdout)
         if result.returncode != 0:
             raise RuntimeError(f"OpenCode command failed with exit code {result.returncode}.")

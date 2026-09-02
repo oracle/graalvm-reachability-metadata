@@ -55,7 +55,7 @@ class LibraryUpdateAliasSplitTests(unittest.TestCase):
                 return_value=gradle_environment,
             ),
             patch(
-                "utility_scripts.library_update_alias_split.subprocess.run",
+                "utility_scripts.library_update_alias_split.run_logged_command",
                 side_effect=record_stats_generation,
             ) as run_command,
         ):
@@ -80,8 +80,11 @@ class LibraryUpdateAliasSplitTests(unittest.TestCase):
                 f"-Pcoordinates={successor_coordinates}",
             ],
             cwd="/repo",
+            task_type="library-update-alias-split",
+            subject=successor_coordinates,
+            action="generateLibraryStats",
             env=gradle_environment,
-            check=True,
+            stage="generate-library-stats",
         )
 
 

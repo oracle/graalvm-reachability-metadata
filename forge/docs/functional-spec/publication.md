@@ -552,8 +552,12 @@ from the phase that failed instead of regenerating from scratch
 
 Forge review automation processes open pull requests by their PR labels only
 after CI has completed successfully. A pull request with running checks waits;
-a pull request with failed checks is handled by deterministic CI-failure
-follow-up and must not launch a review agent. A generated branch is reviewed
+a pull request with failed checks must not launch a review agent. For every
+failed GitHub Actions workflow run on the current pull-request head, Forge
+reruns the failed jobs only while `run_attempt` is less than `3`. At attempt
+`3` or above, Forge skips review and takes no other action: it does not label
+the pull request, change a linked issue's status or assignees, or distinguish a
+chunked pull request from any other pull request. A generated branch is reviewed
 locally before the push, against evidence a post-push reviewer cannot see
 (§FS-local-branch-review). The published-PR workflow either reuses a trusted,
 current-head attestation of that approval or launches the existing second

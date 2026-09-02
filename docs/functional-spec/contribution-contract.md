@@ -54,9 +54,11 @@ the backstop (§PRCPL-prefer-algorithmic).
   `metadata/<group>/<artifact>/index.json`,
   `stats/<group>/<artifact>/<version>/` (stats and execution metrics), and
   `tests/src/<group>/<artifact>/<version>/`, plus an allowed-Docker-image
-  entry only when the test requires it. Build logic, workflows, other
-  coordinates, and generated sources outside the target test directory do not
-  belong in the contribution.
+  entry only when the test requires it. A Forge-generated contribution may also
+  update `forge/FINDINGS.md` when it records that contribution's local review
+  finding (§forge/FS-local-branch-review). No other Forge path belongs in the
+  contribution. Build logic, workflows, other coordinates, and generated
+  sources outside the target test directory do not belong in the contribution.
 - **Single metadata format.** The only accepted metadata file is
   `reachability-metadata.json`. Legacy split-config files (`reflect-config.json`,
   `resource-config.json`, `proxy-config.json`, `serialization-config.json`,

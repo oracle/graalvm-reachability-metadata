@@ -37,6 +37,7 @@ from utility_scripts.host_requirements import (
     resolve_graalvm_version_check,
     resolve_https_proxy,
     resolve_queue_requirements,
+    run_command,
 )
 
 
@@ -57,6 +58,11 @@ def _graalvm_home(native_image: bool = True, schema: bool = True) -> Iterator[st
 
 
 class HostRequirementsTests(unittest.TestCase):
+    def test_host_cli_accepts_verbose_output(self) -> None:
+        args = parse_args(["--forge-dir", "/repo/forge", "--verbose"])
+
+        self.assertTrue(args.verbose)
+
     def test_invalid_queue_limit_prints_one_actionable_fix(self) -> None:
         stdout = io.StringIO()
         stderr = io.StringIO()
@@ -644,6 +650,129 @@ class HostRequirementsTests(unittest.TestCase):
         self.assertTrue(push_target.passed)
         self.assertIn("oracle/graalvm-reachability-metadata", push_target.detail)
 
+    @patch("utility_scripts.host_requirements.uuid.uuid4", return_value=Mock(hex="probe-id"))
+    @patch("utility_scripts.host_requirements.find_remote_for_github_repo", return_value="upstream")
+    @patch("utility_scripts.host_requirements.run_command")
+    def test_build_work_requires_dry_run_push_to_publication_remote(
+            self,
+            command: Mock,
+            find_remote: Mock,
+            _uuid: Mock,
+    ) -> None:
+        command.side_effect = [
+            subprocess.CompletedProcess(
+                ["git", "remote", "get-url", "--push", "upstream"],
+                0,
+                "https://github.com/oracle/graalvm-reachability-metadata.git\n",
+                "",
+            ),
+            subprocess.CompletedProcess(
+                ["git", "push", "--dry-run"],
+                128,
+                "",
+                "fatal: Authentication failed",
+            ),
+        ]
+        host_requirements = HostRequirements(
+            "/repo/forge",
+            "python3",
+            {},
+            requirements=COVERAGE_REQUIREMENTS,
+        )
+
+        host_requirements._check_generated_branch_push_access()
+
+        result = host_requirements.results[-1]
+        self.assertTrue(result.required)
+        self.assertFalse(result.passed)
+        self.assertIn("remote=upstream", result.detail)
+        self.assertIn("dry-run push=failed", result.detail)
+        self.assertIn("gh auth setup-git --hostname github.com", result.remediation)
+        find_remote.assert_called_once_with(
+            "oracle/graalvm-reachability-metadata",
+            cwd="/repo",
+        )
+        push_call = command.call_args_list[-1]
+        self.assertEqual(
+            [
+                "git", "-C", "/repo",
+                "push", "--dry-run", "--no-verify", "--porcelain",
+                "upstream", "HEAD:refs/heads/ai/forge-host-check-probe-id",
+            ],
+            push_call.args[0],
+        )
+        self.assertEqual(60, push_call.kwargs["timeout"])
+
+    @patch("utility_scripts.host_requirements.uuid.uuid4", return_value=Mock(hex="probe-id"))
+    @patch("utility_scripts.host_requirements.find_remote_for_github_repo", return_value="origin")
+    @patch("utility_scripts.host_requirements.run_command")
+    def test_dry_run_push_probe_supports_ssh(
+            self,
+            command: Mock,
+            _find_remote: Mock,
+            _uuid: Mock,
+    ) -> None:
+        command.side_effect = [
+            subprocess.CompletedProcess(
+                ["git", "remote", "get-url", "--push", "origin"],
+                0,
+                "git@github.com:oracle/graalvm-reachability-metadata.git\n",
+                "",
+            ),
+            subprocess.CompletedProcess(
+                ["git", "push", "--dry-run"],
+                0,
+                "To github.com:oracle/graalvm-reachability-metadata.git\n",
+                "",
+            ),
+        ]
+        host_requirements = HostRequirements(
+            "/repo/forge",
+            "python3",
+            {},
+            requirements=COVERAGE_REQUIREMENTS,
+        )
+
+        host_requirements._check_generated_branch_push_access()
+
+        result = host_requirements.results[-1]
+        self.assertTrue(result.passed)
+        self.assertIn("protocol=ssh", result.detail)
+        self.assertIn("dry-run push=passed", result.detail)
+
+    @patch(
+        "utility_scripts.host_requirements.find_remote_for_github_repo",
+        side_effect=RuntimeError("missing"),
+    )
+    @patch("utility_scripts.host_requirements.run_command")
+    def test_push_probe_requires_remote_for_target_repository(
+            self,
+            command: Mock,
+            _find_remote: Mock,
+    ) -> None:
+        host_requirements = HostRequirements(
+            "/repo/forge",
+            "python3",
+            {},
+            requirements=COVERAGE_REQUIREMENTS,
+        )
+
+        host_requirements._check_generated_branch_push_access()
+
+        result = host_requirements.results[-1]
+        self.assertFalse(result.passed)
+        self.assertIn("remote=unavailable", result.detail)
+        command.assert_not_called()
+
+    @patch("utility_scripts.host_requirements.subprocess.run")
+    def test_probe_commands_disable_git_terminal_prompts(self, command: Mock) -> None:
+        command.return_value = subprocess.CompletedProcess(["git"], 1, "", "failed")
+
+        run_command(["git", "push", "--dry-run"], {})
+
+        environment = command.call_args.kwargs["env"]
+        self.assertEqual("0", environment["GIT_TERMINAL_PROMPT"])
+
     def test_required_failure_stops_before_work_and_prints_remediation(self) -> None:
         environment = {
             "FORGE_JAVAC_WORK_LIMIT": "0",
@@ -682,6 +811,36 @@ class HostRequirementsTests(unittest.TestCase):
         self.assertIn("Fix: Install gh.", stdout.getvalue())
         self.assertIn("No work was started", stdout.getvalue())
         self.assertEqual("", stderr.getvalue())
+
+    def test_successful_host_report_is_quiet_unless_verbose(self) -> None:
+        def run_host(verbose: bool) -> str:
+            host_requirements = HostRequirements(
+                "/repo/forge",
+                "python3",
+                {},
+                requirements=QueueRequirements(
+                    issue_work=False,
+                    review_work=False,
+                    github_work=False,
+                ),
+            )
+            stdout = io.StringIO()
+            with patch.object(host_requirements, "_check_tools"), \
+                    patch.object(host_requirements, "_check_environment"), \
+                    patch.object(host_requirements, "_check_write_permissions"), \
+                    patch.object(host_requirements, "_check_network"), \
+                    patch.object(host_requirements, "_check_github"), \
+                    patch.object(host_requirements, "_check_selected_agents"), \
+                    patch.object(host_requirements, "_check_docker"), \
+                    redirect_stdout(stdout):
+                self.assertTrue(host_requirements.run(verbose=verbose))
+            return stdout.getvalue()
+
+        self.assertEqual("", run_host(verbose=False))
+        verbose_output = run_host(verbose=True)
+        self.assertIn("[forge-host] Deterministic host requirements", verbose_output)
+        self.assertIn("[forge-host] Check results:", verbose_output)
+        self.assertIn("PASS: all required host checks succeeded", verbose_output)
 
     @patch("utility_scripts.host_requirements.resolve_executable", return_value="/usr/bin/docker")
     @patch("utility_scripts.host_requirements.run_command")
@@ -887,6 +1046,7 @@ class HostRequirementsTests(unittest.TestCase):
 
                 environment = dict(os.environ)
                 environment.pop("FORGE_TAKE_BLOCKED_ISSUES", None)
+                environment.pop("FORGE_VERBOSE", None)
                 environment.update({
                     "PYTHON_BIN": fake_python,
                     "PATH": f"{temp_dir}{os.pathsep}{environment['PATH']}",
@@ -918,6 +1078,8 @@ class HostRequirementsTests(unittest.TestCase):
         self.assertNotIn("--take-blocked-issues", run_worker([]))
         self.assertIn("--take-blocked-issues", run_worker(["--take-blocked-issues"]))
         self.assertIn("--take-blocked-issues", run_worker([], "1"))
+        self.assertNotIn("--verbose", run_worker([]))
+        self.assertIn("--verbose", run_worker(["--verbose"]))
 
     def test_worker_propagates_the_analysis_role_selection(self) -> None:
         worker_path = Path(__file__).resolve().parents[1] / "do_up_to_date_work.sh"

@@ -20,6 +20,7 @@ import tomllib
 import urllib.error
 import urllib.parse
 import urllib.request
+import uuid
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Mapping, Sequence
@@ -37,6 +38,7 @@ from ai_workflows.agents.agent_runtime import (  # noqa: E402
     default_model_for_backend,
     normalize_backend_name,
 )
+from git_scripts.common_git import find_remote_for_github_repo  # noqa: E402
 from utility_scripts.native_image_artifact import ARTIFACT_REPOSITORY_URLS  # noqa: E402
 from utility_scripts.strategy_loader import (  # noqa: E402
     apply_test_agent_alias,
@@ -301,11 +303,10 @@ class HostRequirements:
         """Return whether this run operates on a checkout other than the one holding Forge."""
         return os.path.realpath(self.repo_dir) != os.path.realpath(self.forge_repo_dir)
 
-    def run(self) -> bool:
-        """Run all selected checks, print the report, and return whether they passed."""
+    def run(self, verbose: bool = False) -> bool:
+        """Run selected checks, printing details when requested or work is blocked."""
         if self.requirements.issue_work and self.graalvm_version_check != "off":
             self.graalvm_versions = self._resolve_graalvm_versions()
-        self._print_manifest()
         self._check_tools()
         self._check_environment()
         self._check_write_permissions()
@@ -313,8 +314,13 @@ class HostRequirements:
         self._check_github()
         self._check_selected_agents()
         self._check_docker()
-        self._print_results()
-        return not any(result.blocks_work for result in self.results)
+        passed = not any(result.blocks_work for result in self.results)
+        if verbose or not passed:
+            self._print_manifest()
+            self._print_results()
+        elif any(result.status == "WARN" for result in self.results):
+            self._print_warnings()
+        return passed
 
     def _print_manifest(self) -> None:
         issue_text = "enabled" if self.requirements.issue_work else "disabled"
@@ -981,6 +987,97 @@ class HostRequirements:
             self.separate_repository,
             f"{self.repo_dir} is the checkout that contains Forge; covered by the Forge self-update check",
         )
+        self._check_generated_branch_push_access()
+
+    def _check_generated_branch_push_access(self) -> None:
+        """Verify a dry-run push through the remote publication will use.
+
+        A fetch can succeed anonymously, so it does not prove that the later
+        generated-branch push can authenticate and write
+        (§FS-forge-host-requirements).
+        """
+        name: str = "generated-branch push access"
+        required: bool = self.requirements.build_work and self.requirements.github_work
+        if not required:
+            self._add(
+                "github",
+                name,
+                False,
+                None,
+                "this run does not publish a generated branch",
+            )
+            return
+
+        repository: str = f"{REPOSITORY_OWNER}/{REPOSITORY_NAME}"
+        try:
+            publication_remote: str = find_remote_for_github_repo(
+                repository,
+                cwd=self.repo_dir,
+            )
+        except (OSError, RuntimeError, subprocess.CalledProcessError):
+            self._add(
+                "github",
+                name,
+                True,
+                False,
+                f"checkout={self.repo_dir}, repository={repository}, remote=unavailable",
+                f"Configure a Git remote that points to `{repository}`.",
+            )
+            return
+
+        push_url_result: subprocess.CompletedProcess[str] = run_command(
+            [
+                "git", "-C", self.repo_dir,
+                "remote", "get-url", "--push", publication_remote,
+            ],
+            self.environment,
+        )
+        push_url: str = (
+            first_output_line(push_url_result)
+            if push_url_result.returncode == 0
+            else ""
+        )
+        parsed_url: urllib.parse.ParseResult = urllib.parse.urlparse(push_url)
+        if parsed_url.scheme == "https" and parsed_url.hostname == "github.com":
+            protocol: str = "https"
+            remediation: str = (
+                "Run `gh auth setup-git --hostname github.com` for an account "
+                f"with write access to `{repository}`."
+            )
+        elif push_url.startswith("git@github.com:") or parsed_url.scheme == "ssh":
+            protocol = "ssh"
+            remediation = (
+                "Load a GitHub-authorized SSH key for an account with write access "
+                f"to `{repository}`."
+            )
+        else:
+            protocol = "configured"
+            remediation = (
+                f"Configure remote `{publication_remote}` with noninteractive write "
+                f"access to `{repository}`."
+            )
+
+        target_ref: str = f"refs/heads/ai/forge-host-check-{uuid.uuid4().hex}"
+        push_result: subprocess.CompletedProcess[str] = run_command(
+            [
+                "git", "-C", self.repo_dir,
+                "push", "--dry-run", "--no-verify", "--porcelain",
+                publication_remote, f"HEAD:{target_ref}",
+            ],
+            self.environment,
+            timeout=60,
+        )
+        passed: bool = push_result.returncode == 0
+        self._add(
+            "github",
+            name,
+            True,
+            passed,
+            f"checkout={self.repo_dir}, repository={repository}, "
+            f"remote={publication_remote}, protocol={protocol}, "
+            f"dry-run push={'passed' if passed else 'failed'}",
+            remediation,
+        )
 
     def _check_git_remote(self, name: str, checkout: str, required: bool, skip_detail: str) -> None:
         """Check that one checkout reaches the monitored branch through its own origin remote."""
@@ -1288,6 +1385,14 @@ query($owner: String!, $name: String!, $project: Int!) {
         else:
             print("[forge-host] PASS: all required host checks succeeded; work may start.")
 
+    def _print_warnings(self) -> None:
+        """Print only non-blocking warnings when the successful report is compact."""
+        warnings = [result for result in self.results if result.status == "WARN"]
+        print("[forge-host] Host requirement warnings:")
+        for result in warnings:
+            print(f"  [WARN] {result.category}: {result.name} — {result.detail}")
+        print(f"[forge-host] PASS with {len(warnings)} warning(s); work may start.")
+
 
 def check_graalvm_installation(
         graalvm_home: str,
@@ -1399,6 +1504,7 @@ def verify_host_requirements(
         repo_dir: str | None = None,
         test_strategy_name: str | None = None,
         test_strategy_names: Sequence[str] | None = None,
+        verbose: bool = False,
 ) -> bool:
     """Run every host requirement selected by this run and report whether work may start.
 
@@ -1415,7 +1521,7 @@ def verify_host_requirements(
         test_strategy_name=test_strategy_name,
         test_strategy_names=test_strategy_names,
     )
-    return host_requirements.run()
+    return host_requirements.run(verbose=verbose)
 
 
 def ensure_host_requirements(
@@ -1427,6 +1533,7 @@ def ensure_host_requirements(
         repo_dir: str | None = None,
         test_strategy_name: str | None = None,
         test_strategy_names: Sequence[str] | None = None,
+        verbose: bool = False,
 ) -> None:
     """Stop the process with a non-zero exit when a required host capability is missing.
 
@@ -1441,6 +1548,7 @@ def ensure_host_requirements(
         repo_dir,
         test_strategy_name,
         test_strategy_names,
+        verbose,
     )
     if not passed:
         sys.exit(1)
@@ -1509,6 +1617,7 @@ def run_command(
     command_environment = dict(environment)
     command_environment["GH_PROMPT_DISABLED"] = "1"
     command_environment["GH_PAGER"] = ""
+    command_environment["GIT_TERMINAL_PROMPT"] = "0"
     try:
         return subprocess.run(
             list(command),
@@ -1883,6 +1992,7 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--setup-model", default=None)
     parser.add_argument("--setup-provider", default=None)
     parser.add_argument("--test-strategy", action="append", default=None)
+    parser.add_argument("-v", "--verbose", action="store_true", help="Print the complete host report.")
     parser.add_argument(
         "--graalvm-version-check",
         choices=GRAALVM_VERSION_CHECK_MODES,
@@ -1925,7 +2035,7 @@ def main(argv: Sequence[str] | None = None) -> int:
             file=sys.stderr,
         )
         return 1
-    return 0 if host_requirements.run() else 1
+    return 0 if host_requirements.run(verbose=args.verbose) else 1
 
 
 if __name__ == "__main__":

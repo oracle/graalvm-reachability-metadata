@@ -4,7 +4,6 @@
 # work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 
 import os
-import subprocess
 import sys
 
 from utility_scripts.gradle_environment import gradle_command_environment, pin_gradle_java_home
@@ -14,6 +13,7 @@ from utility_scripts.host_requirements import (
     require_graalvm_home_env,
 )
 from utility_scripts.library_finalization import run_library_finalization
+from utility_scripts.logged_command import LoggedCommandResult, run_logged_command
 from utility_scripts.repo_path_resolver import require_complete_reachability_repo, resolve_repo_roots
 from utility_scripts.stage_logger import log_stage
 
@@ -86,17 +86,17 @@ def build_graalvm_environment(graalvm_home: str, base_env: dict[str, str] | None
     return env
 
 
-def run_gradle_test_with_graalvm(repo_path: str, library: str, graalvm_home: str) -> subprocess.CompletedProcess[str]:
+def run_gradle_test_with_graalvm(repo_path: str, library: str, graalvm_home: str) -> LoggedCommandResult:
     """Run the library test task with a specific GraalVM/JAVA_HOME."""
     require_complete_reachability_repo(repo_path)
-    return subprocess.run(
+    return run_logged_command(
         ["./gradlew", "test", f"-Pcoordinates={library}"],
         cwd=repo_path,
+        task_type="post-generation-test",
+        subject=library,
+        action="test",
         env=gradle_command_environment(repo_path, build_graalvm_environment(graalvm_home)),
-        stdout=subprocess.PIPE,
-        stderr=subprocess.STDOUT,
-        text=True,
-        check=False,
+        stage="post-generation-test",
     )
 
 
@@ -130,7 +130,6 @@ def run_metadata_fix_until_tests_pass(
                     return False
             return True
 
-        print(result.stdout)
         if attempt == max_attempts:
             break
 

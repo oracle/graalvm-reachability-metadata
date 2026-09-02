@@ -1,0 +1,111 @@
+{
+  "base_commit": "2ad96e116df5632204efd990003d0ba2a477776d",
+  "branch": "ai/kimeta/fix-javac-org.springframework.amqp-spring-rabbitmq-client-4.2.0-M1-forge-9467-20260902043016705022-2d8de5811d1b",
+  "follow_ups": [],
+  "forge": {
+    "branch": "mm/concise-forge-console-output",
+    "commit": "7e761d8b435315ed8d2e79b5cd2a0c8052b691cf",
+    "monitored_branch": "origin/mm/concise-forge-console-output"
+  },
+  "issue_number": 9467,
+  "library": {
+    "artifact": "spring-rabbitmq-client",
+    "coordinates": "org.springframework.amqp:spring-rabbitmq-client:4.2.0-M1",
+    "group": "org.springframework.amqp",
+    "version": "4.2.0-M1"
+  },
+  "local_ci_verification": {
+    "base_commit": "2ad96e116df5632204efd990003d0ba2a477776d",
+    "commands": [
+      {
+        "command": [
+          "./gradlew",
+          "generateChangedIndexFileCoordinatesList",
+          "-PbaseCommit=origin/master",
+          "-PnewCommit=HEAD"
+        ],
+        "env": {
+          "GITHUB_OUTPUT": "/tmp/tmptdaqeclc"
+        },
+        "gate": "changed-index-coordinates",
+        "log_path": "logs/changed-index-coordinates/local-ci/gradlew-2026-09-02T04-40-42-236413Z.log",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :generateChangedIndexFileCoordinatesList\n\n[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata-copy/forge/local_repositories/forge_worktrees/9467-bb837b81/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 2s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      },
+      {
+        "command": [
+          "./gradlew",
+          "validateIndexFiles",
+          "-Pcoordinates=org.springframework.amqp:spring-rabbitmq-client"
+        ],
+        "env": {},
+        "gate": "index-file-validation",
+        "log_path": "logs/index-file-validation/local-ci/gradlew-2026-09-02T04-40-44-693385Z.log",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :validateIndexFiles\n✅ metadata/org.springframework.amqp/spring-rabbitmq-client/index.json: Valid\n\n[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata-copy/forge/local_repositories/forge_worktrees/9467-bb837b81/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 1s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      }
+    ],
+    "failure_command": null,
+    "failure_gate": null,
+    "final_commit": "7c526a31d1ef8cea7d5a70e9dc5c7fc95248b75b",
+    "fixups": [],
+    "human_intervention_required": false,
+    "repo_fix_paths": [],
+    "status": "success"
+  },
+  "local_review": {
+    "changed_paths": [
+      "tests/src/org.springframework.amqp/spring-rabbitmq-client/4.2.0-M1/src/test/java/org_springframework_amqp/spring_rabbitmq_client/Spring_rabbitmq_clientTest.java"
+    ],
+    "decision": "approved",
+    "failed_step": null,
+    "finding_body": "In tests/src/org.springframework.amqp/spring-rabbitmq-client/4.2.0-M1/src/test/java/org_springframework_amqp/spring_rabbitmq_client/Spring_rabbitmq_clientTest.java, the newly added test project configured 250 ms publish, completion, request, and graceful-shutdown timeouts and used 1-second bounded waits. These explicit messaging/client timeouts are below the mandatory 10-second minimum in §FS-test-contract.1.7.",
+    "finding_title": "Test messaging timeouts violate the 10-second floor",
+    "fix_note": "Approved after correction. I raised the affected publish, completion, request, graceful-shutdown, future, and latch timeout values to 10 seconds and updated the corresponding assertions. The correction preserves behavior while satisfying the timeout floor; focused metadata, style, compilation, and JVM test gates pass.",
+    "model": "gpt-5.6-sol",
+    "published_tree": "repaired",
+    "repair_reverted": false,
+    "review_comment": "Reviewed the complete eventual PR diff and local evidence for org.springframework.amqp:spring-rabbitmq-client:4.2.0-M1. The change is confined to the target coordinate, adds only the accepted metadata format, preserves the 4.1.0 test behavior while implementing the new consumerTimeout(Duration) API, and contains no test weakening, native-image dodge, reflection shortcut, version-pinned assertion, or legacy metadata. Dynamic-access coverage passes the ordered repair gate because both 4.1.0 and 4.2.0-M1 report 0/0 overall with no breakdown scopes. After the timeout correction, checkMetadataFiles, checkstyle, compileTestJava, and javaTest all pass locally, so the resulting tree is approved.",
+    "session_log_path": "logs/org.springframework.amqp:spring-rabbitmq-client:4.2.0-M1/local-branch-review/pi.log",
+    "status": "completed"
+  },
+  "metrics": {
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "path": "stats/org.springframework.amqp/spring-rabbitmq-client/4.2.0-M1/execution-metrics.json",
+    "summary": {
+      "cached_input_tokens_used": 532480,
+      "code_coverage_percent": 38.01,
+      "cost_usd": 0.6873,
+      "input_tokens_used": 61661,
+      "iterations": 1,
+      "metadata_entries": 12,
+      "output_tokens_used": 3759,
+      "previous_library_coverage_percent": 39.94,
+      "previous_library_metadata_entries": 12,
+      "previous_library_test_only_metadata_entries": 6,
+      "test_only_metadata_entries": 6,
+      "tested_library_loc": 401
+    },
+    "timestamp": "2026-09-02T04:30:16.705022Z"
+  },
+  "modifiers": {
+    "chunk_final": true,
+    "chunked_dynamic_access": false,
+    "human_intervention": false
+  },
+  "previous_library": {
+    "artifact": "spring-rabbitmq-client",
+    "coordinates": "org.springframework.amqp:spring-rabbitmq-client:4.1.0",
+    "group": "org.springframework.amqp",
+    "version": "4.1.0"
+  },
+  "producer": "kimeta",
+  "publication_id": "forge-9467-20260902043016705022-2d8de5811d1b",
+  "render": {},
+  "schema_version": 1,
+  "strategy_name": "javac_iterative_with_coverage_sources_pi_gpt-5.6-sol",
+  "task_type": "fixes-javac-fail",
+  "template_type": "fixes-javac-fail",
+  "timestamp": "2026-09-02T04:30:16.705022Z"
+}

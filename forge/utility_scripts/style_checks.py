@@ -3,12 +3,22 @@
 # You should have received a copy of the CC0 legalcode along with this
 # work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 
-import subprocess
 import sys
+from collections.abc import Callable
 
 from ai_workflows.agents.agent_runtime import analysis_agent_run, get_analysis_agent
 from utility_scripts.gradle_environment import gradle_command_environment
+from utility_scripts.logged_command import LoggedCommandResult, run_logged_command
 from utility_scripts.repo_path_resolver import require_complete_reachability_repo
+from utility_scripts.run_location import (
+    PHASE_FINALIZATION,
+    STEP_AGENT_FIX,
+    current_run_location,
+    log_step_progress,
+    record_step_failure,
+    run_step,
+)
+from utility_scripts.stage_logger import log_detail
 from utility_scripts.task_logs import build_timestamped_task_log_path, display_log_path
 
 DEFAULT_STYLE_FIX_TIMEOUT_SECONDS = 600
@@ -17,49 +27,75 @@ MAX_TEST_OUTPUT_CHARS = 12000
 MAX_CHECKSTYLE_FIX_ATTEMPTS = 3
 
 
-def _run_gradle_task(repo_path: str, command: list[str]) -> bool:
+def _run_finalization_agent_fix(
+        coordinates: str,
+        target: str,
+        attempt: int,
+        terminal_on_failure: bool,
+        operation: Callable[[], bool],
+) -> bool:
+    """Run one style repair with concise finalization progress when bound.
+
+    §FS-forge-run-output-legibility.1 §FS-forge-run-output-legibility.5
+    """
+    location = current_run_location()
+    if location is None or location.phase != PHASE_FINALIZATION:
+        return operation()
+
+    with run_step(PHASE_FINALIZATION, STEP_AGENT_FIX, operand=f"{coordinates} {target}"):
+        log_step_progress(
+            PHASE_FINALIZATION,
+            STEP_AGENT_FIX,
+            f"Running agent fix for {target} on {coordinates} "
+            f"(attempt {attempt}/{MAX_CHECKSTYLE_FIX_ATTEMPTS})",
+        )
+        fixed = operation()
+        outcome = "completed" if fixed else "failed"
+        log_step_progress(
+            PHASE_FINALIZATION,
+            STEP_AGENT_FIX,
+            f"Agent fix {outcome} for {target} on {coordinates} "
+            f"(attempt {attempt}/{MAX_CHECKSTYLE_FIX_ATTEMPTS})",
+        )
+        if not fixed and terminal_on_failure:
+            record_step_failure()
+        return fixed
+
+
+def _run_logged_style_command(repo_path: str, command: list[str]) -> LoggedCommandResult:
     require_complete_reachability_repo(repo_path)
-    result = subprocess.run(
+    coordinate_argument = next(
+        (argument for argument in command if argument.startswith("-Pcoordinates=")),
+        "-Pcoordinates=unknown",
+    )
+    return run_logged_command(
         command,
         cwd=repo_path,
+        task_type="style-checks",
+        subject=coordinate_argument.removeprefix("-Pcoordinates="),
+        action=command[1],
         env=gradle_command_environment(repo_path),
-        stdout=subprocess.PIPE,
-        stderr=subprocess.STDOUT,
-        text=True,
-        check=False,
+        stage="style-checks",
     )
-    if result.returncode == 0:
-        return True
-    print(f"ERROR: Gradle command failed: {' '.join(command)}", file=sys.stderr)
-    print(result.stdout)
-    return False
 
 
-def _run_checkstyle(repo_path: str, coordinate_arg: str) -> subprocess.CompletedProcess:
-    """Run the checkstyle Gradle task and return the CompletedProcess."""
-    require_complete_reachability_repo(repo_path)
-    return subprocess.run(
+def _run_gradle_task(repo_path: str, command: list[str]) -> bool:
+    return _run_logged_style_command(repo_path, command).returncode == 0
+
+
+def _run_checkstyle(repo_path: str, coordinate_arg: str) -> LoggedCommandResult:
+    """Run the checkstyle Gradle task and return its logged result."""
+    return _run_logged_style_command(
+        repo_path,
         ["./gradlew", "checkstyle", coordinate_arg],
-        cwd=repo_path,
-        env=gradle_command_environment(repo_path),
-        stdout=subprocess.PIPE,
-        stderr=subprocess.STDOUT,
-        text=True,
-        check=False,
     )
 
 
-def _run_test(repo_path: str, coordinate_arg: str) -> subprocess.CompletedProcess:
-    """Run the test Gradle task and return the CompletedProcess."""
-    require_complete_reachability_repo(repo_path)
-    return subprocess.run(
+def _run_test(repo_path: str, coordinate_arg: str) -> LoggedCommandResult:
+    """Run the test Gradle task and return its logged result."""
+    return _run_logged_style_command(
+        repo_path,
         ["./gradlew", "test", coordinate_arg],
-        cwd=repo_path,
-        env=gradle_command_environment(repo_path),
-        stdout=subprocess.PIPE,
-        stderr=subprocess.STDOUT,
-        text=True,
-        check=False,
     )
 
 
@@ -193,20 +229,27 @@ def run_style_fix_and_checks(
 
     print(f"[checkstyle] Gradle command failed: ./gradlew checkstyle {coordinate_arg}", file=sys.stderr)
     log_path = _build_checkstyle_log_path(coordinates)
-    print(f"[checkstyle] Analysis-agent output: {display_log_path(log_path)}")
+    log_detail("checkstyle", f"Analysis-agent output: {display_log_path(log_path)}")
 
     for attempt in range(1, MAX_CHECKSTYLE_FIX_ATTEMPTS + 1):
-        print(
-            "[checkstyle] Attempting analysis-agent Checkstyle fix "
-            f"({attempt}/{MAX_CHECKSTYLE_FIX_ATTEMPTS})..."
+        log_detail(
+            "checkstyle",
+            "Attempting analysis-agent Checkstyle fix "
+            f"({attempt}/{MAX_CHECKSTYLE_FIX_ATTEMPTS})...",
         )
-        if not _run_analysis_checkstyle_fix(
-            repo_path,
+        if not _run_finalization_agent_fix(
             coordinates,
-            checkstyle_result.stdout,
-            log_path,
+            "Checkstyle",
             attempt,
-            timeout_seconds,
+            attempt == MAX_CHECKSTYLE_FIX_ATTEMPTS,
+            lambda: _run_analysis_checkstyle_fix(
+                repo_path,
+                coordinates,
+                checkstyle_result.stdout,
+                log_path,
+                attempt,
+                timeout_seconds,
+            ),
         ):
             continue
 
@@ -216,7 +259,7 @@ def run_style_fix_and_checks(
 
         test_result = _run_test(repo_path, coordinate_arg)
         if test_result.returncode == 0:
-            print("[checkstyle] Analysis-agent Checkstyle fix succeeded")
+            log_detail("checkstyle", "Analysis-agent Checkstyle fix succeeded")
             return True
 
         print(
@@ -224,28 +267,32 @@ def run_style_fix_and_checks(
             "attempting analysis-agent recovery...",
             file=sys.stderr,
         )
-        if not _run_analysis_test_fix_after_checkstyle(
-            repo_path=repo_path,
-            coordinates=coordinates,
-            checkstyle_output=checkstyle_result.stdout,
-            test_output=test_result.stdout,
-            log_path=log_path,
-            attempt=attempt,
-            timeout_seconds=timeout_seconds,
+        if not _run_finalization_agent_fix(
+            coordinates,
+            "test after Checkstyle repair",
+            attempt,
+            True,
+            lambda: _run_analysis_test_fix_after_checkstyle(
+                repo_path=repo_path,
+                coordinates=coordinates,
+                checkstyle_output=checkstyle_result.stdout,
+                test_output=test_result.stdout,
+                log_path=log_path,
+                attempt=attempt,
+                timeout_seconds=timeout_seconds,
+            ),
         ):
             return False
 
         retry_test_result = _run_test(repo_path, coordinate_arg)
         if retry_test_result.returncode != 0:
             print("ERROR: ./gradlew test still fails after post-Checkstyle repair.", file=sys.stderr)
-            print(retry_test_result.stdout)
             return False
 
         checkstyle_result = _run_checkstyle(repo_path, coordinate_arg)
         if checkstyle_result.returncode == 0:
-            print("[checkstyle] Analysis-agent Checkstyle fix succeeded")
+            log_detail("checkstyle", "Analysis-agent Checkstyle fix succeeded")
             return True
 
     print("[checkstyle] ERROR: Checkstyle still fails after analysis repair.", file=sys.stderr)
-    print(checkstyle_result.stdout)
     return False

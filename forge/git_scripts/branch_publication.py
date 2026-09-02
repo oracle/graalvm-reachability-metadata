@@ -41,6 +41,7 @@ from utility_scripts.local_ci_verification import (
     fetch_pr_base_ref,
     run_local_ci_verification,
 )
+from utility_scripts.logged_command import run_logged_command
 from utility_scripts.continuation_marker import (
     CONTINUATION_MARKER_FILENAME,
     PHASE_PUBLICATION,
@@ -196,22 +197,23 @@ def _prepare_unpushed_publication_resume_branch(
 def _run_post_review_gradle_test(
         repo_path: str,
         coordinates: str,
+        lane_name: str,
         environment: dict[str, str],
 ) -> bool:
-    """Run one deterministic native test lane after a reviewer edit."""
-    result = subprocess.run(
+    """Run one post-review lane with output kept in its durable log.
+
+    §FS-forge-run-output-legibility.4 §FS-durable-generation-logs
+    """
+    result = run_logged_command(
         ["./gradlew", "test", f"-Pcoordinates={coordinates}"],
         cwd=repo_path,
         env=gradle_command_environment(repo_path, environment),
-        stdout=subprocess.PIPE,
-        stderr=subprocess.STDOUT,
-        text=True,
-        check=False,
+        task_type="post-review-finalization",
+        subject=coordinates,
+        action=lane_name,
+        stage="finalization",
     )
-    if result.returncode != 0:
-        print(result.stdout)
-        return False
-    return True
+    return result.returncode == 0
 
 
 def _run_standard_post_review_finalization(
@@ -235,12 +237,17 @@ def _run_standard_post_review_finalization(
     graalvm_25_environment["GRAALVM_HOME"] = graalvm_25_home
     graalvm_25_environment["JAVA_HOME"] = graalvm_25_home
     graalvm_25_environment.pop("GVM_TCK_NATIVE_IMAGE_MODE", None)
-    for environment in (
-            current_environment,
-            future_defaults_environment,
-            graalvm_25_environment,
+    for lane_name, environment in (
+            ("post-review current-defaults latest GraalVM test", current_environment),
+            ("post-review future-defaults latest GraalVM test", future_defaults_environment),
+            ("post-review current-defaults GraalVM 25 test", graalvm_25_environment),
     ):
-        if not _run_post_review_gradle_test(repo_path, coordinates, environment):
+        if not _run_post_review_gradle_test(
+                repo_path,
+                coordinates,
+                lane_name,
+                environment,
+        ):
             return False
 
     group, artifact, version = coordinates.split(":")

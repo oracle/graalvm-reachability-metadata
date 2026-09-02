@@ -37,7 +37,7 @@ from ai_workflows.agents.agent_runtime import (
 from utility_scripts.gradle_environment import gradle_command_environment
 from utility_scripts.metadata_index import find_index_entry_for_version, is_not_for_native_image_entry
 from utility_scripts.repo_path_resolver import require_complete_reachability_repo
-from utility_scripts.stage_logger import log_stage
+from utility_scripts.stage_logger import log_detail
 from utility_scripts.task_logs import build_task_log_path, display_log_path
 
 SOURCE_CONTEXT_FIELD_BY_TYPE = {
@@ -268,7 +268,7 @@ def populate_artifact_urls(
     require_complete_reachability_repo(reachability_repo_path)
     log_path = build_task_log_path("populate-artifact-urls", coordinate, "populate_artifact_urls.log")
     log_path_display = display_log_path(log_path)
-    log_stage("populate-artifact-urls", f"Populating artifact URLs for {coordinate}; output: {log_path_display}")
+    log_detail("populate-artifact-urls", f"Populating artifact URLs for {coordinate}; output: {log_path_display}")
     command = [
         "./gradlew",
         "populateArtifactURLs",
@@ -292,7 +292,7 @@ def populate_artifact_urls(
             file=sys.stderr,
         )
         raise SystemExit(1)
-    log_stage("populate-artifact-urls", f"Artifact URLs populated for {coordinate}")
+    log_detail("populate-artifact-urls", f"Artifact URLs populated for {coordinate}")
 
 
 def source_context_urls_available(
@@ -328,7 +328,7 @@ def discover_artifact_metadata(
     require_complete_reachability_repo(reachability_repo_path)
     log_path = build_task_log_path("discover-artifact-metadata", coordinate, "discover_artifact_metadata.log")
     log_path_display = display_log_path(log_path)
-    log_stage("discover-artifact-metadata", f"Discovering artifact metadata for {coordinate}; output: {log_path_display}")
+    log_detail("discover-artifact-metadata", f"Discovering artifact metadata for {coordinate}; output: {log_path_display}")
     effective_agent_command = _effective_agent_command(agent_command)
     command = _discover_artifact_metadata_command(coordinate, effective_agent_command)
     command_env = agent_process_environment(gradle_command_environment(reachability_repo_path))
@@ -342,7 +342,7 @@ def discover_artifact_metadata(
             effective_agent_command,
             diagnostics=True,
         )
-        log_stage(
+        log_detail(
             "discover-artifact-metadata",
             (
                 f"Gradle bootstrap failed for {coordinate}; retrying once with "
@@ -366,7 +366,7 @@ def discover_artifact_metadata(
             file=sys.stderr,
         )
         raise SystemExit(1)
-    log_stage("discover-artifact-metadata", f"Artifact metadata discovered for {coordinate}")
+    log_detail("discover-artifact-metadata", f"Artifact metadata discovered for {coordinate}")
 
 
 def _discover_artifact_metadata_command(
@@ -481,7 +481,7 @@ def prepare_source_contexts(
         field_name = SOURCE_CONTEXT_FIELD_BY_TYPE[source_type]
         url = render_url_template(normalize_url_value(index_entry.get(field_name)), requested_version)
         if url is None:
-            log_stage("source-context", f"{source_type}: unavailable, no URL in index.json")
+            log_detail("source-context", f"{source_type}: unavailable, no URL in index.json")
             artifacts.append(SourceArtifactContext(source_type, None, None, [], False, "no URL in index.json"))
             continue
         artifacts.append(download_source_artifact(base_dir, source_type, url))
@@ -492,7 +492,7 @@ def prepare_source_contexts(
         artifacts=artifacts,
     )
     available_artifacts = [artifact for artifact in prepared_context.artifacts if artifact.available]
-    log_stage(
+    log_detail(
         "source-context",
         "Ready for {coordinate}: {available}/{total} artifact types available".format(
             coordinate=coordinate,
@@ -589,7 +589,7 @@ def render_url_template(url: str | None, version: str) -> str | None:
 
 
 def download_source_artifact(base_dir: str, source_type: str, url: str) -> SourceArtifactContext:
-    log_stage("source-context", f"Downloading {source_type} from {url}")
+    log_detail("source-context", f"Downloading {source_type} from {url}")
     target_dir = os.path.join(base_dir, source_type)
     if os.path.isdir(target_dir):
         shutil.rmtree(target_dir)
@@ -600,10 +600,10 @@ def download_source_artifact(base_dir: str, source_type: str, url: str) -> Sourc
         headers = _download_file(url, download_path)
         extracted_files = extract_downloaded_artifact(download_path, target_dir, headers)
     except Exception as exc:  # noqa: BLE001
-        log_stage("source-context", f"{source_type}: unavailable ({exc})")
+        log_detail("source-context", f"{source_type}: unavailable ({exc})")
         return SourceArtifactContext(source_type, url, None, [], False, str(exc))
 
-    log_stage(
+    log_detail(
         "source-context",
         "{source_type}: ready with {count} files at {target_dir}".format(
             source_type=source_type,

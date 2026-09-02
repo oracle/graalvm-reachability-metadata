@@ -20,7 +20,11 @@ from ai_workflows.core.workflow_strategy import (
     WorkflowStrategy,
 )
 from ai_workflows.drivers.improve_library_coverage import prepare_library_update_target
-from git_scripts.common_git import build_ai_branch_name, delete_remote_branch_if_exists
+from git_scripts.common_git import (
+    build_ai_branch_name,
+    delete_remote_branch_if_exists,
+    switch_branch_quietly,
+)
 from utility_scripts import metrics_writer
 from utility_scripts.continuation_marker import (
     PHASE_EXPLORE,
@@ -35,6 +39,7 @@ from utility_scripts.gradle_environment import gradle_command_environment
 from utility_scripts.library_preparation_preflight import (
     prepare_library_preparation_preflight,
 )
+from utility_scripts.logged_command import LoggedCommandResult, run_logged_command
 from utility_scripts.metadata_index import resolve_metadata_version, resolve_test_version
 from utility_scripts.metrics_writer import create_failure_run_metrics_output
 from utility_scripts.native_test_verification import global_output_dir
@@ -43,6 +48,8 @@ from utility_scripts.run_location import (
     STEP_NORMAL_SETUP,
     STEP_RUN_WORKFLOW_ENGINE,
     clear_recorded_failure,
+    enter_phase,
+    log_step_progress,
     record_step_failure,
     run_step,
 )
@@ -52,7 +59,7 @@ from utility_scripts.source_context import (
     prepare_source_contexts,
     resolve_test_source_layout,
 )
-from utility_scripts.stage_logger import log_stage
+from utility_scripts.stage_logger import log_detail, log_stage
 from utility_scripts.strategy_loader import require_strategy_by_name
 from utility_scripts.workflow_setup import (
     list_all_files,
@@ -125,28 +132,33 @@ def run_fix_test_native_image_run(
         reachability_metadata_path: str,
         current_coordinates: str,
         new_version: str,
-) -> subprocess.CompletedProcess[str]:
-    """Run the fixTestNativeImageRun Gradle task."""
+) -> LoggedCommandResult:
+    """Run the fixTestNativeImageRun task with durable quiet output.
+
+    §FS-forge-run-output-legibility §FS-durable-generation-logs
+    """
     require_complete_reachability_repo(reachability_metadata_path)
-    return subprocess.run(
+    group, artifact, _ = current_coordinates.split(":", 2)
+    library = f"{group}:{artifact}:{new_version}"
+    return run_logged_command(
         [
             "./gradlew", "fixTestNativeImageRun",
             f"-PtestLibraryCoordinates={current_coordinates}",
             f"-PnewLibraryVersion={new_version}",
         ],
         cwd=reachability_metadata_path,
+        task_type="native-image-run-fix",
+        subject=library,
+        action="fixTestNativeImageRun",
         env=gradle_command_environment(reachability_metadata_path),
+        stage="native-image-run-fix",
     )
 
 
 def create_or_switch_branch(reachability_metadata_path: str, branch: str) -> None:
     """Reset the workflow branch to the current detached HEAD."""
     delete_remote_branch_if_exists(branch, cwd=reachability_metadata_path)
-    subprocess.run(
-        ["git", "switch", "-C", branch],
-        cwd=reachability_metadata_path,
-        check=True,
-    )
+    switch_branch_quietly(branch, cwd=reachability_metadata_path)
 
 
 def commit_checkpoint(reachability_metadata_path: str, library: str) -> str:
@@ -175,20 +187,23 @@ def commit_checkpoint(reachability_metadata_path: str, library: str) -> str:
 def run_dynamic_access_coverage_report(
         reachability_metadata_path: str,
         library: str,
-) -> subprocess.CompletedProcess[str]:
-    """Generate the dynamic-access coverage report for the new coordinate."""
+) -> LoggedCommandResult:
+    """Generate the dynamic-access report with durable quiet output.
+
+    §FS-forge-run-output-legibility §FS-durable-generation-logs
+    """
     require_complete_reachability_repo(reachability_metadata_path)
-    return subprocess.run(
+    return run_logged_command(
         [
             "./gradlew", "generateDynamicAccessCoverageReport",
             f"-Pcoordinates={library}",
         ],
         cwd=reachability_metadata_path,
+        task_type="dynamic-access-report",
+        subject=library,
+        action="generateDynamicAccessCoverageReport",
         env=gradle_command_environment(reachability_metadata_path),
-        stdout=subprocess.PIPE,
-        stderr=subprocess.STDOUT,
-        text=True,
-        check=False,
+        stage="dynamic-access",
     )
 
 
@@ -203,8 +218,7 @@ def should_explore_new_version(reachability_metadata_path: str, group: str, arti
     library = f"{group}:{artifact}:{version}"
     result = run_dynamic_access_coverage_report(reachability_metadata_path, library)
     if result.returncode != 0:
-        log_stage("coverage-gate", f"Dynamic-access report unavailable for {library}; skipping exploration")
-        print(result.stdout)
+        log_detail("coverage-gate", f"Dynamic-access report unavailable for {library}; skipping exploration")
         return False
 
     test_version = resolve_test_version(reachability_metadata_path, group, artifact, version)
@@ -216,12 +230,12 @@ def should_explore_new_version(reachability_metadata_path: str, group: str, arti
     try:
         report = load_dynamic_access_coverage_report(report_path)
     except FileNotFoundError:
-        log_stage("coverage-gate", f"Dynamic-access report file missing for {library}; skipping exploration")
+        log_detail("coverage-gate", f"Dynamic-access report file missing for {library}; skipping exploration")
         return False
 
     uncovered_calls = max(report.total_calls - report.covered_calls, 0)
     if not report.has_dynamic_access or report.total_calls == 0 or uncovered_calls == 0:
-        log_stage(
+        log_detail(
             "coverage-gate",
             "No uncovered dynamic-access calls for {library} "
             "(hasDynamicAccess={has}, {covered}/{total} covered); skipping exploration".format(
@@ -233,7 +247,7 @@ def should_explore_new_version(reachability_metadata_path: str, group: str, arti
         )
         return False
 
-    log_stage(
+    log_detail(
         "coverage-gate",
         "{uncovered} uncovered dynamic-access call(s) for {library}; preparing exploration".format(
             uncovered=uncovered_calls,
@@ -353,6 +367,7 @@ def main(argv=None) -> int:
     resume_from = None if continuation_marker is None else continuation_marker.continue_from
     resume_existing_tree = resume_from in {"fix", PHASE_EXPLORE, PHASE_FINALIZATION, "publication"}
     resume_finalization = resume_from == PHASE_FINALIZATION
+    enter_phase(PHASE_SETUP)
     # Apply deterministic preflight setup into the resolved worktree before
     # generation; only advisory guidance reaches the prompt context.
     library_preparation_preflight, library_preparation_preflight_context = (
@@ -370,8 +385,8 @@ def main(argv=None) -> int:
             ),
         )
     if library_preparation_preflight is not None:
-        print("[pipeline] Library preparation preflight:")
-        print(library_preparation_preflight_context)
+        log_detail("pipeline", "Library preparation preflight:")
+        log_detail("pipeline", library_preparation_preflight_context)
 
     resolve_graalvm_java_home()
     validate_repo_paths(reachability_metadata_path, metrics_repo_dir)
@@ -387,14 +402,23 @@ def main(argv=None) -> int:
     agent: Agent | None = None
     model_name: str | None = None
     tests_root: str | None = None
+    setup_action = (
+        "Reusing prepared native-image workspace"
+        if resume_existing_tree
+        else "Preparing native-image workspace"
+    )
+    log_step_progress(PHASE_SETUP, STEP_NORMAL_SETUP, f"{setup_action} for {library}")
     if not resume_existing_tree:
         # Branching and the deterministic native-image fix are the run's
         # model-free setup. §FS-forge-run-location-reporting.2
         with run_step(PHASE_SETUP, STEP_NORMAL_SETUP, operand=library):
-            print(f"[pipeline] Creating branch: {branch}")
+            log_detail("pipeline", f"Creating branch: {branch}")
             create_or_switch_branch(reachability_metadata_path, branch)
 
-            print(f"[pipeline] Running fixTestNativeImageRun for: {current_coordinates} -> {new_version}")
+            log_detail(
+                "pipeline",
+                f"Running fixTestNativeImageRun for: {current_coordinates} -> {new_version}",
+            )
             result = run_fix_test_native_image_run(
                 reachability_metadata_path=reachability_metadata_path,
                 current_coordinates=current_coordinates,
@@ -447,13 +471,13 @@ def main(argv=None) -> int:
                 ),
             )
     else:
-        log_stage("continuation", f"Resuming {library} from preserved branch at phase {resume_from}")
+        log_detail("continuation", f"Resuming {library} from preserved branch at phase {resume_from}")
         checkpoint = subprocess.check_output(["git", "rev-parse", "HEAD"], text=True).strip()
 
     # Coverage gate: explore only when the new version has uncovered calls.
     explore = not resume_finalization and should_explore_new_version(reachability_metadata_path, group, artifact, new_version)
     if explore:
-        print(f"[pipeline] Preparing version-specific test-suite for {library}")
+        log_detail("pipeline", f"Preparing version-specific test-suite for {library}")
         prepare_library_update_target(reachability_metadata_path, group, artifact, new_version)
 
     if strategy_obj is None or explore:
@@ -471,11 +495,16 @@ def main(argv=None) -> int:
     assert agent is not None
     assert model_name is not None
     assert tests_root is not None
+    log_step_progress(PHASE_SETUP, STEP_NORMAL_SETUP, f"Setup ready for {library}")
 
     iterations = 0
     if explore:
-        print(f"[pipeline] Running dynamic-access exploration for {library}")
         with run_step(PHASE_SETUP, STEP_RUN_WORKFLOW_ENGINE, operand=args.strategy_name):
+            log_step_progress(
+                PHASE_SETUP,
+                STEP_RUN_WORKFLOW_ENGINE,
+                f"Starting workflow {args.strategy_name} for {library}",
+            )
             run_result = strategy_obj.run(agent=agent, checkpoint_commit_hash=checkpoint)
         explore_status, iterations = run_result[0], run_result[1]
         # Best-effort: a partial or failed explore must not abort. The seed is
@@ -499,6 +528,11 @@ def main(argv=None) -> int:
                 continuation_marker_path=args.continuation_marker_path,
             )
     else:
+        log_step_progress(
+            PHASE_SETUP,
+            STEP_RUN_WORKFLOW_ENGINE,
+            f"Dynamic-access workflow not needed for {library}",
+        )
         save_phase_update(
             args.continuation_marker_path,
             lambda marker: marker.mark_phase_skipped(PHASE_EXPLORE),

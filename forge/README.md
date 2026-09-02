@@ -19,11 +19,13 @@ script before the next cycle.
 §AR-do-work-loop
 
 Before self-update or queue processing, and again at the start of every
-work-starting `forge_metadata.py` invocation, Forge prints and validates the
-deterministic host requirements for the tools, environment variables, filesystem
-and network permissions, GitHub repository/project access, Docker, and agent
-authentication its mode needs. A failed required check exits before Forge claims
-or reviews anything; a `--review-pr` run is never asked for a GraalVM.
+work-starting `forge_metadata.py` invocation, Forge validates the deterministic
+host requirements for the tools, environment variables, filesystem and network
+permissions, GitHub repository/project access, Docker, and agent authentication
+its mode needs. Normal output prints only the check's start and outcome;
+`--verbose` or a failure prints the complete report. A failed required check
+exits before Forge claims or reviews anything; a `--review-pr` run is never
+asked for a GraalVM.
 §FS-forge-host-requirements
 
 The 25.0.x validation lane is pinned in `graalvm-versions.json`; update that
@@ -55,6 +57,8 @@ Common options:
 - `--graalvm-version-check {strict,warn,off}`: how a GraalVM version mismatch is treated. Default: `strict`.
 - `--once`: run a single update/work cycle through `do_up_to_date_work.sh` and exit.
 - `--fail-fast`: return nonzero on the first unsuccessful work cycle.
+- `-v`, `--verbose`: restore deterministic narration hidden by compact output
+  and enable verbose output in the selected workflow agents.
 - `--analysis-agent COMMAND --analysis-family FAMILY`: choose the analysis executable and adapter family.
 - `--setup-agent COMMAND --setup-family FAMILY`: choose the executable and adapter family for artifact-URL
   discovery and library preflight, independently of the analysis role.

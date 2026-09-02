@@ -393,11 +393,6 @@ states. Bulk can attribute only classes proven completed by its baseline/final
 report comparison and records only those; a composite carries the union of the
 states its two phases can attribute.
 
-If a non-final chunk PR has failing CI and no eligible job remains to rerun,
-Forge releases the linked issue so a replacement chunk can be generated —
-otherwise the coordinate would be stranded mid-sequence behind a chunk nobody
-will fix.
-
 Each chunk also records its publication identity and unique head branch in the
 exhaust report before the verified push, which is how a later chunk resolves the
 preceding PR without committing a GitHub-assigned number back to the branch. The

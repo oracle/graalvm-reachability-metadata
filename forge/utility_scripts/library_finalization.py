@@ -6,11 +6,17 @@
 import json
 import os
 import re
-import subprocess
 import sys
+from collections.abc import Callable
 
 from ai_workflows.agents.agent_runtime import analysis_agent_run, get_analysis_agent
+from utility_scripts.foreign_metadata_owner_issue import (
+    ForeignMetadataOwnerFailure,
+    ensure_foreign_metadata_owner_issue,
+    load_foreign_metadata_owner_failure,
+)
 from utility_scripts.gradle_environment import gradle_command_environment
+from utility_scripts.logged_command import LoggedCommandResult, run_logged_command
 from utility_scripts.metadata_index import find_index_entry_for_version
 from utility_scripts.style_checks import run_style_fix_and_checks
 from utility_scripts.native_image_config_policy import (
@@ -19,7 +25,15 @@ from utility_scripts.native_image_config_policy import (
     format_legacy_test_native_image_config_error,
 )
 from utility_scripts.repo_path_resolver import require_complete_reachability_repo
-from utility_scripts.stage_logger import log_stage
+from utility_scripts.run_location import (
+    PHASE_FINALIZATION,
+    STEP_AGENT_FIX,
+    current_run_location,
+    log_step_progress,
+    record_step_failure,
+    run_step,
+)
+from utility_scripts.stage_logger import log_detail, log_stage
 from utility_scripts.task_logs import display_log_path
 from utility_scripts.test_quality_checks import (
     collect_generated_test_validity_issues,
@@ -30,17 +44,57 @@ CHECK_METADATA_FIX_TIMEOUT_SECONDS = 1200
 MAX_CHECK_METADATA_FIX_ATTEMPTS = 3
 
 
-def _run_gradle_command_with_output(repo_path: str, command: list[str]) -> subprocess.CompletedProcess[str]:
-    """Run a Gradle command in the reachability repo and capture combined output."""
+def _run_finalization_agent_fix(
+        library: str,
+        target: str,
+        attempt: int,
+        maximum_attempts: int,
+        operation: Callable[[], bool],
+) -> bool:
+    """Run one repair with concise finalization progress when phase-bound.
+
+    §FS-forge-run-output-legibility.1 §FS-forge-run-output-legibility.5
+    """
+    location = current_run_location()
+    if location is None or location.phase != PHASE_FINALIZATION:
+        return operation()
+
+    with run_step(PHASE_FINALIZATION, STEP_AGENT_FIX, operand=f"{library} {target}"):
+        log_step_progress(
+            PHASE_FINALIZATION,
+            STEP_AGENT_FIX,
+            f"Running agent fix for {target} on {library} "
+            f"(attempt {attempt}/{maximum_attempts})",
+        )
+        fixed = operation()
+        outcome = "completed" if fixed else "failed"
+        log_step_progress(
+            PHASE_FINALIZATION,
+            STEP_AGENT_FIX,
+            f"Agent fix {outcome} for {target} on {library} "
+            f"(attempt {attempt}/{maximum_attempts})",
+        )
+        if not fixed and attempt == maximum_attempts:
+            record_step_failure()
+        return fixed
+
+
+def _run_gradle_command_with_output(repo_path: str, command: list[str]) -> LoggedCommandResult:
+    """Run a finalization Gradle command quietly with durable output."""
     require_complete_reachability_repo(repo_path)
-    return subprocess.run(
+    action = command[1] if len(command) > 1 else "gradle"
+    coordinate_argument = next(
+        (argument for argument in command if argument.startswith("-Pcoordinates=")),
+        "-Pcoordinates=unknown",
+    )
+    return run_logged_command(
         command,
         cwd=repo_path,
+        task_type="finalization",
+        subject=coordinate_argument.removeprefix("-Pcoordinates="),
+        action=action,
         env=gradle_command_environment(repo_path),
-        stdout=subprocess.PIPE,
-        stderr=subprocess.STDOUT,
-        text=True,
-        check=False,
+        stage="finalization",
     )
 
 
@@ -48,9 +102,48 @@ def _run_gradle_command(repo_path: str, command: list[str]) -> bool:
     """Run a Gradle command in the reachability repo, returning True on success."""
     result = _run_gradle_command_with_output(repo_path, command)
     if result.returncode != 0:
-        print(result.stdout)
         return False
     return True
+
+
+def _run_route_foreign_metadata(repo_path: str, library: str) -> LoggedCommandResult:
+    """Run ownership routing while retaining its output for agent evidence."""
+    return _run_gradle_command_with_output(
+        repo_path,
+        ["./gradlew", "routeForeignMetadata", f"-Pcoordinates={library}"],
+    )
+
+
+def _unsupported_owner_agent_evidence(
+        failure: ForeignMetadataOwnerFailure,
+        issue_url: str,
+        routing_output: str,
+) -> str:
+    """Format the deterministic owner-resolution evidence for metadata repair."""
+    return "\n".join([
+        "routeForeignMetadata failed after resolving the foreign condition owner.",
+        f"Reason: {failure.reason}",
+        f"Resolved dependency coordinate: {failure.coordinate}",
+        f"Follow-up issue: {issue_url}",
+        "Do not add the resolved dependency package to the source artifact's allowed-packages.",
+        "",
+        "Captured routeForeignMetadata output:",
+        "```text",
+        routing_output,
+        "```",
+    ])
+
+
+def _routing_failure_agent_evidence(routing_output: str) -> str:
+    """Format a routing failure that did not resolve one unsupported owner."""
+    return "\n".join([
+        "routeForeignMetadata failed without a supported resolved dependency owner.",
+        "",
+        "Captured routeForeignMetadata output:",
+        "```text",
+        routing_output,
+        "```",
+    ])
 
 
 def _run_check_metadata_fix(repo_path: str, library: str, failure_output: str) -> bool:
@@ -187,7 +280,7 @@ def _append_allowed_packages_to_metadata_index(
         json.dump(index_entries, index_file, indent=2)
         index_file.write("\n")
 
-    log_stage("allowed-packages", f"Updated {index_path_display}: {', '.join(added_packages)}")
+    log_detail("allowed-packages", f"Updated {index_path_display}: {', '.join(added_packages)}")
     return True
 
 
@@ -200,22 +293,21 @@ def _run_check_metadata_files_with_allowed_packages_fix(
         log_stage_name: str,
 ) -> tuple[bool, str]:
     """Run checkMetadataFiles and update missing allowed-packages when the task reports them."""
-    log_stage(log_stage_name, f"Running checkMetadataFiles for {library}")
+    log_detail(log_stage_name, f"Running checkMetadataFiles for {library}")
     seen_packages: set[str] = set()
     for attempt in range(1, 4):
-        log_stage(log_stage_name, f"Running checkMetadataFiles attempt {attempt}/3 for {library}")
+        log_detail(log_stage_name, f"Running checkMetadataFiles attempt {attempt}/3 for {library}")
         metadata_valid, metadata_output = _run_check_metadata_files(repo_path, library, log_stage_name)
         if metadata_valid:
             return (True, metadata_output)
 
-        log_stage(log_stage_name, f"checkMetadataFiles failed for {library}; resolving missing allowed-packages")
+            log_detail(log_stage_name, f"checkMetadataFiles failed for {library}; resolving missing allowed-packages")
         missing_packages = _extract_missing_allowed_packages(metadata_output)
         new_packages = missing_packages - seen_packages
         if not new_packages:
-            log_stage(log_stage_name, "No new TypeReached packages found in checkMetadataFiles output")
-            print(metadata_output)
+            log_detail(log_stage_name, "No new TypeReached packages found in checkMetadataFiles output")
             return (False, metadata_output)
-        log_stage("allowed-packages", f"Adding allowed-packages for {library}: {', '.join(sorted(new_packages))}")
+        log_detail("allowed-packages", f"Adding allowed-packages for {library}: {', '.join(sorted(new_packages))}")
         if not _append_allowed_packages_to_metadata_index(
             repo_path=repo_path,
             library=library,
@@ -224,7 +316,6 @@ def _run_check_metadata_files_with_allowed_packages_fix(
             library_version=library_version,
             packages=new_packages,
         ):
-            print(metadata_output)
             return (False, metadata_output)
         seen_packages.update(new_packages)
 
@@ -239,7 +330,7 @@ def _run_check_metadata_files(repo_path: str, library: str, log_stage_name: str)
         ["./gradlew", "checkMetadataFiles", f"-Pcoordinates={library}"],
     )
     if result.returncode == 0:
-        log_stage(log_stage_name, f"checkMetadataFiles passed for {library}")
+        log_detail(log_stage_name, f"checkMetadataFiles passed for {library}")
         return (True, result.stdout)
     return (False, result.stdout)
 
@@ -258,7 +349,7 @@ def run_library_finalization(
     §AR-forge-driver-finalization
     """
     del log_prefix
-    log_stage("split-test-only-metadata", f"Running splitTestOnlyMetadata for {library}")
+    log_detail("split-test-only-metadata", f"Running splitTestOnlyMetadata for {library}")
     if not _run_gradle_command(repo_path, ["./gradlew", "splitTestOnlyMetadata", f"-Pcoordinates={library}"]):
         return False
     legacy_test_config_paths = set(
@@ -276,9 +367,12 @@ def run_library_finalization(
         library,
         "check-metadata-files",
     )
+    routing_failure_evidence: str | None = None
+    unsupported_owner_reported = False
     if not metadata_valid:
-        log_stage("route-foreign-metadata", f"Running routeForeignMetadata after validation failed for {library}")
-        if _run_gradle_command(repo_path, ["./gradlew", "routeForeignMetadata", f"-Pcoordinates={library}"]):
+        log_detail("route-foreign-metadata", f"Running routeForeignMetadata after validation failed for {library}")
+        route_result = _run_route_foreign_metadata(repo_path, library)
+        if route_result.returncode == 0:
             metadata_valid, metadata_failure_output = _run_check_metadata_files_with_allowed_packages_fix(
                 repo_path=repo_path,
                 library=library,
@@ -287,27 +381,53 @@ def run_library_finalization(
                 library_version=library_version,
                 log_stage_name="check-metadata-files",
             )
+        else:
+            owner_failure = load_foreign_metadata_owner_failure(repo_path, library)
+            if owner_failure is not None:
+                issue_url = ensure_foreign_metadata_owner_issue(repo_path, library, owner_failure)
+                routing_failure_evidence = _unsupported_owner_agent_evidence(
+                    owner_failure,
+                    issue_url,
+                    route_result.stdout,
+                )
+                unsupported_owner_reported = True
+            else:
+                routing_failure_evidence = _routing_failure_agent_evidence(route_result.stdout)
     if not metadata_valid:
         for attempt in range(1, MAX_CHECK_METADATA_FIX_ATTEMPTS + 1):
-            log_stage(
+            log_detail(
                 "check-metadata-files",
                 f"Running analysis metadata fix attempt {attempt}/{MAX_CHECK_METADATA_FIX_ATTEMPTS} for {library}",
             )
-            if not _run_check_metadata_fix(repo_path, library, metadata_failure_output):
+            agent_evidence = "\n\n".join(filter(None, [metadata_failure_output, routing_failure_evidence]))
+            if not _run_finalization_agent_fix(
+                    library,
+                    "metadata validation",
+                    attempt,
+                    MAX_CHECK_METADATA_FIX_ATTEMPTS,
+                    lambda: _run_check_metadata_fix(repo_path, library, agent_evidence),
+            ):
                 continue
-            metadata_valid, metadata_failure_output = _run_check_metadata_files_with_allowed_packages_fix(
-                repo_path=repo_path,
-                library=library,
-                group=group,
-                artifact=artifact,
-                library_version=library_version,
-                log_stage_name="check-metadata-files",
-            )
+            if not unsupported_owner_reported:
+                metadata_valid, metadata_failure_output = _run_check_metadata_files_with_allowed_packages_fix(
+                    repo_path=repo_path,
+                    library=library,
+                    group=group,
+                    artifact=artifact,
+                    library_version=library_version,
+                    log_stage_name="check-metadata-files",
+                )
+            else:
+                metadata_valid, metadata_failure_output = _run_check_metadata_files(
+                    repo_path,
+                    library,
+                    "check-metadata-files",
+                )
             if metadata_valid:
                 break
         else:
             return False
-    log_stage("style-checks", f"Running style checks for {library}")
+    log_detail("style-checks", f"Running style checks for {library}")
     if not run_style_fix_and_checks(repo_path, library):
         return False
     test_source_root = os.path.join(repo_path, "tests", "src", group, artifact, library_version, "src", "test")
@@ -320,7 +440,7 @@ def run_library_finalization(
                 f"{format_generated_test_validity_issue(issue, repo_path)}",
             )
         return False
-    log_stage("generate-library-stats", f"Running generateLibraryStats for {library}")
+    log_detail("generate-library-stats", f"Running generateLibraryStats for {library}")
     if not _run_gradle_command(repo_path, ["./gradlew", "generateLibraryStats", f"-Pcoordinates={library}"]):
         return False
     return True
