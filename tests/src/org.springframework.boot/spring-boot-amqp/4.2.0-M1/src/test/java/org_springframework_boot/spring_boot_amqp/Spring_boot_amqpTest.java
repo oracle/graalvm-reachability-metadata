@@ -45,14 +45,14 @@ public class Spring_boot_amqpTest {
         properties.setUsername("alice");
         properties.setPassword("secret");
         properties.getClient().setDefaultToAddress("orders.created");
-        properties.getClient().setCompletionTimeout(Duration.ofMillis(750));
+        properties.getClient().setCompletionTimeout(Duration.ofSeconds(10));
 
         assertThat(properties.getHost()).isEqualTo("broker.example.test");
         assertThat(properties.getPort()).isEqualTo(5678);
         assertThat(properties.getUsername()).isEqualTo("alice");
         assertThat(properties.getPassword()).isEqualTo("secret");
         assertThat(properties.getClient().getDefaultToAddress()).isEqualTo("orders.created");
-        assertThat(properties.getClient().getCompletionTimeout()).isEqualTo(Duration.ofMillis(750));
+        assertThat(properties.getClient().getCompletionTimeout()).isEqualTo(Duration.ofSeconds(10));
     }
 
     @Test
@@ -99,7 +99,7 @@ public class Spring_boot_amqpTest {
                 .withPropertyValues("spring.amqp.host=broker.example.test", "spring.amqp.port=5679",
                         "spring.amqp.username=alice", "spring.amqp.password=secret",
                         "spring.amqp.client.default-to-address=orders.created",
-                        "spring.amqp.client.completion-timeout=750ms")
+                        "spring.amqp.client.completion-timeout=10s")
                 .withBean(ConnectionOptionsCustomizer.class,
                         () -> (connectionOptions) -> connectionOptionsCustomizerInvoked.set(true))
                 .withBean(AmqpClientCustomizer.class, () -> (builder) -> clientCustomizerInvoked.set(true))
@@ -115,7 +115,7 @@ public class Spring_boot_amqpTest {
                     assertThat(properties.getUsername()).isEqualTo("alice");
                     assertThat(properties.getPassword()).isEqualTo("secret");
                     assertThat(properties.getClient().getDefaultToAddress()).isEqualTo("orders.created");
-                    assertThat(properties.getClient().getCompletionTimeout()).isEqualTo(Duration.ofMillis(750));
+                    assertThat(properties.getClient().getCompletionTimeout()).isEqualTo(Duration.ofSeconds(10));
 
                     AmqpConnectionDetails connectionDetails = context.getBean(AmqpConnectionDetails.class);
                     assertThat(connectionDetails.getAddress().host()).isEqualTo("broker.example.test");
