@@ -8,29 +8,50 @@ package org_apache_activemq.activemq_broker;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import javax.management.MBeanOperationInfo;
 import javax.management.ObjectName;
 
 import org.apache.activemq.broker.jmx.AnnotatedMBean;
+import org.apache.activemq.broker.jmx.MBeanInfo;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.ResourceLock;
 
 public class AnnotatedMBeanTest {
 
     @Test
-    void invokesOperationWithReferenceParameter() throws Exception {
-        Echo implementation = new Echo();
-        AnnotatedMBean mBean = new AnnotatedMBean(
-                implementation,
-                EchoMBean.class,
-                new ObjectName("org.example:type=Echo,name=standard"));
+    @ResourceLock("activemq-audit-configuration")
+    void describesAndInvokesOperationWithReferenceParameter() throws Exception {
+        String previousAuditSetting = System.setProperty("org.apache.activemq.audit", "entry");
+        try {
+            Echo implementation = new Echo();
+            AnnotatedMBean mBean = new AnnotatedMBean(
+                    implementation,
+                    EchoMBean.class,
+                    new ObjectName("org.example:type=Echo,name=standard"));
 
-        Object result = mBean.invoke(
-                "echo", new Object[] {"message"}, new String[] {String.class.getName()});
+            MBeanOperationInfo operation = mBean.getMBeanInfo().getOperations()[0];
+            Object result = mBean.invoke(
+                    "echo", new Object[] {"message"}, new String[] {String.class.getName()});
 
-        assertThat(result).isEqualTo("echo:message");
+            assertThat(operation.getDescription()).isEqualTo("Echoes a value");
+            assertThat(operation.getSignature()[0].getName()).isEqualTo("value");
+            assertThat(result).isEqualTo("echo:message");
+        } finally {
+            restoreProperty("org.apache.activemq.audit", previousAuditSetting);
+        }
+    }
+
+    private static void restoreProperty(String name, String value) {
+        if (value == null) {
+            System.clearProperty(name);
+        } else {
+            System.setProperty(name, value);
+        }
     }
 
     public interface EchoMBean {
-        String echo(String value);
+        @MBeanInfo("Echoes a value")
+        String echo(@MBeanInfo("value") String value);
     }
 
     public static final class Echo implements EchoMBean {

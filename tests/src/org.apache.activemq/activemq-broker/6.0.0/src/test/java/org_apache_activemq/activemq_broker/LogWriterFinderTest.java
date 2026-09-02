@@ -16,14 +16,20 @@ import org.junit.jupiter.api.Test;
 public class LogWriterFinderTest {
 
     @Test
-    void loadsDefaultLogWriterFromServiceDescriptor() throws Exception {
-        LogWriterFinder finder =
-                new LogWriterFinder("META-INF/services/org/apache/activemq/transport/logwriters/");
+    void loadsDefaultLogWriterFromLibraryServiceDescriptor() throws Exception {
+        ClassLoader originalClassLoader = Thread.currentThread().getContextClassLoader();
+        Thread.currentThread().setContextClassLoader(ClassLoader.getPlatformClassLoader());
+        try {
+            LogWriterFinder finder =
+                    new LogWriterFinder("META-INF/services/org/apache/activemq/transport/logwriters/");
 
-        LogWriter writer = finder.newInstance("default");
-        writer.setPrefix("broker-test: ");
+            LogWriter writer = finder.newInstance("default");
+            writer.setPrefix("broker-test: ");
 
-        assertThat(writer).isInstanceOf(DefaultLogWriter.class);
-        assertThat(finder.newInstance("default")).isNotSameAs(writer);
+            assertThat(writer).isInstanceOf(DefaultLogWriter.class);
+            assertThat(finder.newInstance("default")).isNotSameAs(writer);
+        } finally {
+            Thread.currentThread().setContextClassLoader(originalClassLoader);
+        }
     }
 }

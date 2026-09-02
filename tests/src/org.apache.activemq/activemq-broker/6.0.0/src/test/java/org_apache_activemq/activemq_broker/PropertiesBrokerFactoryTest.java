@@ -17,15 +17,21 @@ import org.junit.jupiter.api.Test;
 public class PropertiesBrokerFactoryTest {
 
     @Test
-    void configuresBrokerFromClasspathProperties() throws Exception {
-        PropertiesBrokerFactory factory = new PropertiesBrokerFactory();
+    void configuresBrokerFromLibraryClasspathProperties() throws Exception {
+        ClassLoader originalClassLoader = Thread.currentThread().getContextClassLoader();
+        Thread.currentThread().setContextClassLoader(ClassLoader.getPlatformClassLoader());
+        try {
+            PropertiesBrokerFactory factory = new PropertiesBrokerFactory();
 
-        BrokerService brokerService =
-                factory.createBroker(new URI("properties:activemq-broker-test.properties"));
+            BrokerService brokerService =
+                    factory.createBroker(new URI("properties:activemq-broker-test.properties"));
 
-        assertThat(brokerService.getBrokerName()).isEqualTo("properties-broker");
-        assertThat(brokerService.isPersistent()).isFalse();
-        assertThat(brokerService.isUseJmx()).isFalse();
-        assertThat(brokerService.isUseShutdownHook()).isFalse();
+            assertThat(brokerService.getBrokerName()).isEqualTo("properties-broker");
+            assertThat(brokerService.isPersistent()).isFalse();
+            assertThat(brokerService.isUseJmx()).isFalse();
+            assertThat(brokerService.isUseShutdownHook()).isFalse();
+        } finally {
+            Thread.currentThread().setContextClassLoader(originalClassLoader);
+        }
     }
 }

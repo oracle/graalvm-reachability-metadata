@@ -10,49 +10,88 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.UUID;
 
+import jakarta.jms.Connection;
+import jakarta.jms.MessageConsumer;
+import jakarta.jms.Session;
+
+import org.apache.activemq.ActiveMQConnectionFactory;
+import org.apache.activemq.broker.BrokerPlugin;
 import org.apache.activemq.broker.BrokerService;
+import org.apache.activemq.command.ActiveMQQueue;
 import org.apache.activemq.plugin.SubQueueSelectorCacheBroker;
+import org.apache.activemq.plugin.SubQueueSelectorCacheBrokerPlugin;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 import org.junit.jupiter.api.io.TempDir;
 
 public class SubQueueSelectorCacheBrokerTest {
 
+    static final String QUEUE_NAME = "selector.orders";
+    static final String SELECTOR = "priority = 9";
+
     @TempDir
     Path temporaryDirectory;
 
     @Test
     @Timeout(30)
-    void persistsSelectorCacheOnShutdown() throws Exception {
-        BrokerService brokerService = startBroker("selector-cache-persist-broker");
+    void reloadsPersistedSelectorCache() throws Exception {
         Path cacheFile = temporaryDirectory.resolve("selectors.dat");
-        SubQueueSelectorCacheBroker cacheBroker = null;
+        BrokerService firstBroker = startBroker(cacheFile);
 
         try {
-            cacheBroker = new SubQueueSelectorCacheBroker(
-                    brokerService.getBroker(), cacheFile.toFile());
-            Thread.sleep(1_000);
-            cacheBroker.stop();
-            cacheBroker = null;
-
-            assertThat(cacheFile).isRegularFile();
-            assertThat(Files.size(cacheFile)).isPositive();
+            addSelectorConsumer(firstBroker);
+            assertThat(selectorCache(firstBroker).getSelectorsForDestination(qualifiedQueueName()))
+                    .containsExactly(SELECTOR);
         } finally {
-            if (cacheBroker != null) {
-                cacheBroker.stop();
-            }
-            brokerService.stop();
+            firstBroker.stop();
+        }
+
+        assertThat(cacheFile).isRegularFile();
+        assertThat(Files.size(cacheFile)).isPositive();
+
+        BrokerService secondBroker = startBroker(cacheFile);
+        try {
+            assertThat(selectorCache(secondBroker).getSelectorsForDestination(qualifiedQueueName()))
+                    .containsExactly(SELECTOR);
+        } finally {
+            secondBroker.stop();
         }
     }
 
-    private static BrokerService startBroker(String name) throws Exception {
+    static BrokerService startBroker(Path cacheFile) throws Exception {
+        SubQueueSelectorCacheBrokerPlugin plugin = new SubQueueSelectorCacheBrokerPlugin();
+        plugin.setPersistFile(cacheFile.toFile());
+
         BrokerService brokerService = new BrokerService();
-        brokerService.setBrokerName(name);
+        brokerService.setBrokerName("selector-cache-" + UUID.randomUUID().toString().replace("-", ""));
         brokerService.setPersistent(false);
         brokerService.setUseJmx(false);
         brokerService.setUseShutdownHook(false);
+        brokerService.setPlugins(new BrokerPlugin[] {plugin});
         brokerService.start();
         return brokerService;
+    }
+
+    static void addSelectorConsumer(BrokerService brokerService) throws Exception {
+        ActiveMQConnectionFactory connectionFactory =
+                new ActiveMQConnectionFactory("vm://" + brokerService.getBrokerName() + "?create=false");
+        try (Connection connection = connectionFactory.createConnection();
+                Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+                MessageConsumer consumer = session.createConsumer(
+                        session.createQueue(QUEUE_NAME), SELECTOR)) {
+            connection.start();
+            assertThat(consumer.getMessageSelector()).isEqualTo(SELECTOR);
+        }
+    }
+
+    static SubQueueSelectorCacheBroker selectorCache(BrokerService brokerService) throws Exception {
+        return (SubQueueSelectorCacheBroker) brokerService.getBroker()
+                .getAdaptor(SubQueueSelectorCacheBroker.class);
+    }
+
+    static String qualifiedQueueName() {
+        return new ActiveMQQueue(QUEUE_NAME).getQualifiedName();
     }
 }
