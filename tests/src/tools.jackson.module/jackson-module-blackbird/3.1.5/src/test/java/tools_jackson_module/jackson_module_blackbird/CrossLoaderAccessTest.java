@@ -26,14 +26,13 @@ import tools.jackson.module.blackbird.BlackbirdModule;
 
 public class CrossLoaderAccessTest {
     private static final int CONCURRENT_TYPE_COUNT = 16;
-    private static final MethodHandles.Lookup PACKAGE_LOOKUP = MethodHandles.lookup()
-            .dropLookupMode(MethodHandles.Lookup.PRIVATE);
     private static final List<String> CONCURRENT_JSON;
 
     static final ObjectMapper MAPPER;
 
     static {
-        PackageLookupSupplier lookupSupplier = new PackageLookupSupplier(CONCURRENT_TYPE_COUNT);
+        PackageLookupSupplier lookupSupplier = new PackageLookupSupplier(
+                CONCURRENT_TYPE_COUNT, LookupAnchor.packageLookup());
         ObjectMapper mapper = JsonMapper.builder()
                 .addModule(new PackageLookupBlackbirdModule(lookupSupplier))
                 .build();
@@ -117,6 +116,12 @@ public class CrossLoaderAccessTest {
                 new ConcurrentMessage16("message-16"));
     }
 
+    private static final class LookupAnchor {
+        private static MethodHandles.Lookup packageLookup() {
+            return MethodHandles.lookup().dropLookupMode(MethodHandles.Lookup.PRIVATE);
+        }
+    }
+
     public static final class PackageLookupBlackbirdModule extends BlackbirdModule {
         private final Supplier<MethodHandles.Lookup> lookupSupplier;
 
@@ -131,17 +136,19 @@ public class CrossLoaderAccessTest {
     }
 
     private static final class PackageLookupSupplier implements Supplier<MethodHandles.Lookup> {
+        private final MethodHandles.Lookup lookup;
         private final CountDownLatch participants;
         private final CountDownLatch release = new CountDownLatch(1);
 
-        PackageLookupSupplier(int participantCount) {
+        PackageLookupSupplier(int participantCount, MethodHandles.Lookup lookup) {
             participants = new CountDownLatch(participantCount);
+            this.lookup = lookup;
         }
 
         @Override
         public MethodHandles.Lookup get() {
             if (participants.getCount() == 0) {
-                return PACKAGE_LOOKUP;
+                return lookup;
             }
             participants.countDown();
             if (participants.getCount() == 0) {
@@ -155,7 +162,7 @@ public class CrossLoaderAccessTest {
                 Thread.currentThread().interrupt();
                 throw new IllegalStateException("Interrupted while coordinating lookup requests", e);
             }
-            return PACKAGE_LOOKUP;
+            return lookup;
         }
     }
 
