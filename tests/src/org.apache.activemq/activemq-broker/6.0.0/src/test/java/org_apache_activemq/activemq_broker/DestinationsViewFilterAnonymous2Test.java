@@ -12,15 +12,12 @@ import org.apache.activemq.broker.BrokerService;
 import org.apache.activemq.broker.jmx.BrokerView;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
-import org.junit.jupiter.api.parallel.ResourceLock;
 
 public class DestinationsViewFilterAnonymous2Test {
 
     @Test
     @Timeout(30)
-    @ResourceLock("activemq-audit-configuration")
     void sortsAndPagesDestinationViewsByGetterValue() throws Exception {
-        String previousAuditSetting = System.setProperty("org.apache.activemq.audit", "entry");
         BrokerService brokerService = new BrokerService();
         brokerService.setBrokerName("destination-view-filter-broker");
         brokerService.setPersistent(false);
@@ -36,7 +33,7 @@ public class DestinationsViewFilterAnonymous2Test {
 
             String result = adminView.queryQueues(
                     """
-                    {"sortColumn":"name","sortOrder":"desc"}
+                    {"filter":"","sortColumn":"name","sortOrder":"desc"}
                     """,
                     1,
                     1);
@@ -45,15 +42,6 @@ public class DestinationsViewFilterAnonymous2Test {
             assertThat(result).doesNotContain("alpha.orders");
         } finally {
             brokerService.stop();
-            restoreProperty("org.apache.activemq.audit", previousAuditSetting);
-        }
-    }
-
-    private static void restoreProperty(String name, String value) {
-        if (value == null) {
-            System.clearProperty(name);
-        } else {
-            System.setProperty(name, value);
         }
     }
 }
