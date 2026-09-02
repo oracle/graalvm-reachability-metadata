@@ -37,6 +37,7 @@ from utility_scripts.host_requirements import (
     resolve_graalvm_version_check,
     resolve_https_proxy,
     resolve_queue_requirements,
+    run_command,
 )
 
 
@@ -648,6 +649,129 @@ class HostRequirementsTests(unittest.TestCase):
         push_target = result_by_name["generated-branch push target"]
         self.assertTrue(push_target.passed)
         self.assertIn("oracle/graalvm-reachability-metadata", push_target.detail)
+
+    @patch("utility_scripts.host_requirements.uuid.uuid4", return_value=Mock(hex="probe-id"))
+    @patch("utility_scripts.host_requirements.find_remote_for_github_repo", return_value="upstream")
+    @patch("utility_scripts.host_requirements.run_command")
+    def test_build_work_requires_dry_run_push_to_publication_remote(
+            self,
+            command: Mock,
+            find_remote: Mock,
+            _uuid: Mock,
+    ) -> None:
+        command.side_effect = [
+            subprocess.CompletedProcess(
+                ["git", "remote", "get-url", "--push", "upstream"],
+                0,
+                "https://github.com/oracle/graalvm-reachability-metadata.git\n",
+                "",
+            ),
+            subprocess.CompletedProcess(
+                ["git", "push", "--dry-run"],
+                128,
+                "",
+                "fatal: Authentication failed",
+            ),
+        ]
+        host_requirements = HostRequirements(
+            "/repo/forge",
+            "python3",
+            {},
+            requirements=COVERAGE_REQUIREMENTS,
+        )
+
+        host_requirements._check_generated_branch_push_access()
+
+        result = host_requirements.results[-1]
+        self.assertTrue(result.required)
+        self.assertFalse(result.passed)
+        self.assertIn("remote=upstream", result.detail)
+        self.assertIn("dry-run push=failed", result.detail)
+        self.assertIn("gh auth setup-git --hostname github.com", result.remediation)
+        find_remote.assert_called_once_with(
+            "oracle/graalvm-reachability-metadata",
+            cwd="/repo",
+        )
+        push_call = command.call_args_list[-1]
+        self.assertEqual(
+            [
+                "git", "-C", "/repo",
+                "push", "--dry-run", "--no-verify", "--porcelain",
+                "upstream", "HEAD:refs/heads/ai/forge-host-check-probe-id",
+            ],
+            push_call.args[0],
+        )
+        self.assertEqual(60, push_call.kwargs["timeout"])
+
+    @patch("utility_scripts.host_requirements.uuid.uuid4", return_value=Mock(hex="probe-id"))
+    @patch("utility_scripts.host_requirements.find_remote_for_github_repo", return_value="origin")
+    @patch("utility_scripts.host_requirements.run_command")
+    def test_dry_run_push_probe_supports_ssh(
+            self,
+            command: Mock,
+            _find_remote: Mock,
+            _uuid: Mock,
+    ) -> None:
+        command.side_effect = [
+            subprocess.CompletedProcess(
+                ["git", "remote", "get-url", "--push", "origin"],
+                0,
+                "git@github.com:oracle/graalvm-reachability-metadata.git\n",
+                "",
+            ),
+            subprocess.CompletedProcess(
+                ["git", "push", "--dry-run"],
+                0,
+                "To github.com:oracle/graalvm-reachability-metadata.git\n",
+                "",
+            ),
+        ]
+        host_requirements = HostRequirements(
+            "/repo/forge",
+            "python3",
+            {},
+            requirements=COVERAGE_REQUIREMENTS,
+        )
+
+        host_requirements._check_generated_branch_push_access()
+
+        result = host_requirements.results[-1]
+        self.assertTrue(result.passed)
+        self.assertIn("protocol=ssh", result.detail)
+        self.assertIn("dry-run push=passed", result.detail)
+
+    @patch(
+        "utility_scripts.host_requirements.find_remote_for_github_repo",
+        side_effect=RuntimeError("missing"),
+    )
+    @patch("utility_scripts.host_requirements.run_command")
+    def test_push_probe_requires_remote_for_target_repository(
+            self,
+            command: Mock,
+            _find_remote: Mock,
+    ) -> None:
+        host_requirements = HostRequirements(
+            "/repo/forge",
+            "python3",
+            {},
+            requirements=COVERAGE_REQUIREMENTS,
+        )
+
+        host_requirements._check_generated_branch_push_access()
+
+        result = host_requirements.results[-1]
+        self.assertFalse(result.passed)
+        self.assertIn("remote=unavailable", result.detail)
+        command.assert_not_called()
+
+    @patch("utility_scripts.host_requirements.subprocess.run")
+    def test_probe_commands_disable_git_terminal_prompts(self, command: Mock) -> None:
+        command.return_value = subprocess.CompletedProcess(["git"], 1, "", "failed")
+
+        run_command(["git", "push", "--dry-run"], {})
+
+        environment = command.call_args.kwargs["env"]
+        self.assertEqual("0", environment["GIT_TERMINAL_PROMPT"])
 
     def test_required_failure_stops_before_work_and_prints_remediation(self) -> None:
         environment = {

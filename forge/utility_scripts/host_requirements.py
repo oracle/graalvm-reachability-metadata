@@ -20,6 +20,7 @@ import tomllib
 import urllib.error
 import urllib.parse
 import urllib.request
+import uuid
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Mapping, Sequence
@@ -37,6 +38,7 @@ from ai_workflows.agents.agent_runtime import (  # noqa: E402
     default_model_for_backend,
     normalize_backend_name,
 )
+from git_scripts.common_git import find_remote_for_github_repo  # noqa: E402
 from utility_scripts.native_image_artifact import ARTIFACT_REPOSITORY_URLS  # noqa: E402
 from utility_scripts.strategy_loader import (  # noqa: E402
     apply_test_agent_alias,
@@ -985,6 +987,97 @@ class HostRequirements:
             self.separate_repository,
             f"{self.repo_dir} is the checkout that contains Forge; covered by the Forge self-update check",
         )
+        self._check_generated_branch_push_access()
+
+    def _check_generated_branch_push_access(self) -> None:
+        """Verify a dry-run push through the remote publication will use.
+
+        A fetch can succeed anonymously, so it does not prove that the later
+        generated-branch push can authenticate and write
+        (§FS-forge-host-requirements).
+        """
+        name: str = "generated-branch push access"
+        required: bool = self.requirements.build_work and self.requirements.github_work
+        if not required:
+            self._add(
+                "github",
+                name,
+                False,
+                None,
+                "this run does not publish a generated branch",
+            )
+            return
+
+        repository: str = f"{REPOSITORY_OWNER}/{REPOSITORY_NAME}"
+        try:
+            publication_remote: str = find_remote_for_github_repo(
+                repository,
+                cwd=self.repo_dir,
+            )
+        except (OSError, RuntimeError, subprocess.CalledProcessError):
+            self._add(
+                "github",
+                name,
+                True,
+                False,
+                f"checkout={self.repo_dir}, repository={repository}, remote=unavailable",
+                f"Configure a Git remote that points to `{repository}`.",
+            )
+            return
+
+        push_url_result: subprocess.CompletedProcess[str] = run_command(
+            [
+                "git", "-C", self.repo_dir,
+                "remote", "get-url", "--push", publication_remote,
+            ],
+            self.environment,
+        )
+        push_url: str = (
+            first_output_line(push_url_result)
+            if push_url_result.returncode == 0
+            else ""
+        )
+        parsed_url: urllib.parse.ParseResult = urllib.parse.urlparse(push_url)
+        if parsed_url.scheme == "https" and parsed_url.hostname == "github.com":
+            protocol: str = "https"
+            remediation: str = (
+                "Run `gh auth setup-git --hostname github.com` for an account "
+                f"with write access to `{repository}`."
+            )
+        elif push_url.startswith("git@github.com:") or parsed_url.scheme == "ssh":
+            protocol = "ssh"
+            remediation = (
+                "Load a GitHub-authorized SSH key for an account with write access "
+                f"to `{repository}`."
+            )
+        else:
+            protocol = "configured"
+            remediation = (
+                f"Configure remote `{publication_remote}` with noninteractive write "
+                f"access to `{repository}`."
+            )
+
+        target_ref: str = f"refs/heads/ai/forge-host-check-{uuid.uuid4().hex}"
+        push_result: subprocess.CompletedProcess[str] = run_command(
+            [
+                "git", "-C", self.repo_dir,
+                "push", "--dry-run", "--no-verify", "--porcelain",
+                publication_remote, f"HEAD:{target_ref}",
+            ],
+            self.environment,
+            timeout=60,
+        )
+        passed: bool = push_result.returncode == 0
+        self._add(
+            "github",
+            name,
+            True,
+            passed,
+            f"checkout={self.repo_dir}, repository={repository}, "
+            f"remote={publication_remote}, protocol={protocol}, "
+            f"dry-run push={'passed' if passed else 'failed'}",
+            remediation,
+        )
 
     def _check_git_remote(self, name: str, checkout: str, required: bool, skip_detail: str) -> None:
         """Check that one checkout reaches the monitored branch through its own origin remote."""
@@ -1524,6 +1617,7 @@ def run_command(
     command_environment = dict(environment)
     command_environment["GH_PROMPT_DISABLED"] = "1"
     command_environment["GH_PAGER"] = ""
+    command_environment["GIT_TERMINAL_PROMPT"] = "0"
     try:
         return subprocess.run(
             list(command),
