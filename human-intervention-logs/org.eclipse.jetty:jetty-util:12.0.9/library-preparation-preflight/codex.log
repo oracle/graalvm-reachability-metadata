@@ -1,0 +1,10 @@
+{
+  "action": "no_action",
+  "summary": "No extra setup is needed. Jetty Util 12.0.9 declares only SLF4J API as a runtime dependency; its other published dependencies are test-only. Its APIs use standard JDK facilities and can be exercised with the existing scaffold. [Maven Central](https://central.sonatype.com/artifact/org.eclipse.jetty/jetty-util/12.0.9) [Jetty API](https://javadoc.jetty.org/jetty-12/org/eclipse/jetty/util/package-summary.html)",
+  "deterministic_setup": [],
+  "agent_guidance": "Exercise the public utility APIs directly using deterministic JDK temporary files, URIs, classpath resources, and standard concurrency primitives. Do not add a logging provider solely for SLF4J.",
+  "risks": [
+    "The low coverage is due to the minimal existing test, not missing runtime setup.",
+    "Native-image tests involving Jetty's special resource: URL scheme may require in-test URLResourceFactory registration; ordinary file, jar, and jrt coverage does not."
+  ]
+}
