@@ -15,7 +15,7 @@ import org.junit.jupiter.api.Test;
 public class CreatorOptimizerTest {
     @Test
     void deserializesWithAnAnnotatedConstructor() throws Exception {
-        ConstructorValue value = BBSerializerModifierTest.MAPPER.readValue(
+        ConstructorValue value = CrossLoaderAccessTest.MAPPER.readValue(
                 """
                 { "id": 41, "label": "constructor" }
                 """,
@@ -27,7 +27,7 @@ public class CreatorOptimizerTest {
 
     @Test
     void deserializesWithAnAnnotatedStaticFactory() throws Exception {
-        FactoryValue value = BBSerializerModifierTest.MAPPER.readValue(
+        FactoryValue value = CrossLoaderAccessTest.MAPPER.readValue(
                 """
                 { "id": 42, "label": "factory" }
                 """,

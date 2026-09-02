@@ -13,7 +13,7 @@ import org.junit.jupiter.api.Test;
 public class BBDeserializerModifierTest {
     @Test
     void deserializesMethodBackedPrimitiveStringAndReferenceProperties() throws Exception {
-        MutableBean bean = BBSerializerModifierTest.MAPPER.readValue(
+        MutableBean bean = CrossLoaderAccessTest.MAPPER.readValue(
                 """
                 {
                   "count": 23,

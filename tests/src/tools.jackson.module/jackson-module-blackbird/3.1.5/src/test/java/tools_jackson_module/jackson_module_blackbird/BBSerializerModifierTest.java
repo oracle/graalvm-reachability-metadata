@@ -10,15 +10,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.Test;
 import tools.jackson.databind.JsonNode;
-import tools.jackson.databind.ObjectMapper;
-import tools.jackson.databind.json.JsonMapper;
-import tools.jackson.module.blackbird.BlackbirdModule;
 
 public class BBSerializerModifierTest {
-    static final ObjectMapper MAPPER = JsonMapper.builder()
-            .addModule(new BlackbirdModule())
-            .build();
-
     @Test
     void serializesMethodBackedPrimitiveStringAndReferenceProperties() throws Exception {
         SerializableBean bean = new SerializableBean(
@@ -28,7 +21,8 @@ public class BBSerializerModifierTest {
                 "blackbird",
                 new Detail("optimized"));
 
-        JsonNode json = MAPPER.readTree(MAPPER.writeValueAsString(bean));
+        JsonNode json = CrossLoaderAccessTest.MAPPER.readTree(
+                CrossLoaderAccessTest.MAPPER.writeValueAsString(bean));
 
         assertThat(json.get("count").asInt()).isEqualTo(17);
         assertThat(json.get("sequence").asLong()).isEqualTo(9_000_000_001L);

@@ -14,14 +14,14 @@ import org.junit.jupiter.api.Test;
 public class ReflectionHackInnerJava8Test {
     @Test
     void roundTripsPackageVisibleAccessorsThroughTheRegisteredModule() throws Exception {
-        PackageVisibleBean value = BBSerializerModifierTest.MAPPER.readValue(
+        PackageVisibleBean value = CrossLoaderAccessTest.MAPPER.readValue(
                 """
                 { "code": "private-lookup" }
                 """,
                 PackageVisibleBean.class);
 
         assertThat(value.readCode()).isEqualTo("private-lookup");
-        assertThat(BBSerializerModifierTest.MAPPER.writeValueAsString(value))
+        assertThat(CrossLoaderAccessTest.MAPPER.writeValueAsString(value))
                 .isEqualTo("{\"code\":\"private-lookup\"}");
     }
 
