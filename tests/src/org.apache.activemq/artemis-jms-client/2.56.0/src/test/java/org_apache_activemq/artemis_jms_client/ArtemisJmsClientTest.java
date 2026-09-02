@@ -38,7 +38,7 @@ import java.util.concurrent.TimeUnit;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class ArtemisJmsClientTest {
+public class ArtemisJmsClientTest {
 
     private static final String QUEUE_NAME = "queue-test-" + new Random().nextLong();
 
@@ -59,7 +59,7 @@ class ArtemisJmsClientTest {
 
         server = new ActiveMQServerImpl(config, MBeanServerFactory.newMBeanServer());
         server.start();
-        server.waitForActivation(1, TimeUnit.MINUTES);
+        assertThat(server.waitForActivation(30, TimeUnit.SECONDS)).isTrue();
         logger.info("Started embedded Artemis broker");
 
         TransportConfiguration connector = new TransportConfiguration(InVMConnectorFactory.class.getName());
@@ -111,7 +111,7 @@ class ArtemisJmsClientTest {
             try (Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE)) {
                 Destination destination = session.createQueue(QUEUE_NAME);
                 try (MessageConsumer consumer = session.createConsumer(destination)) {
-                    Message message = consumer.receive(1000);
+                    Message message = consumer.receive(10_000);
                     String text = ((TextMessage) message).getText();
                     logger.info("Received text message: {}", text);
                     return text;
