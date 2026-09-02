@@ -1,0 +1,10 @@
+Fixed the missing test-only proxy serialization metadata in:
+
+`tests/src/org.eclipse.jetty/jetty-util/12.0.9/src/test/resources/META-INF/native-image/reachability-metadata.json`
+
+Root cause was a direct `MissingSerializationRegistrationError`; there were no `Caused by:` lines. The serializable proxy lacked the required active registration.
+
+Verification:
+- Exact reproduction command: **13/13 tests passed**
+- `checkMetadataFiles`: **passed**
+- Existing unrelated worktree changes were preserved.

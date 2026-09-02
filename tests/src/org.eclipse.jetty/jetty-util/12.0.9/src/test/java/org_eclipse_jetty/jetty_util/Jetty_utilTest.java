@@ -9,7 +9,7 @@ package org_eclipse_jetty.jetty_util;
 import org.junit.jupiter.api.Test;
 import org.eclipse.jetty.util.ClassMatcher;
 
-class Jetty_utilTest {
+public class Jetty_utilTest {
 
     @Test
     void classMatcherCanBeCreated() throws Exception {

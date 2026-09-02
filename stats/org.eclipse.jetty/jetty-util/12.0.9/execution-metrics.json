@@ -1,0 +1,57 @@
+{
+  "improve_library_coverage:2026-09-02": {
+    "timestamp": "2026-09-02T03:00:09.217248Z",
+    "library": "org.eclipse.jetty:jetty-util:12.0.9",
+    "starting_commit": "6d7ab3462f39c00d1394e34ee37b7476e7c2b1be",
+    "ending_commit": "6d7ab3462f39c00d1394e34ee37b7476e7c2b1be",
+    "strategy_name": "library_update_optimistic_pi_gpt-5.6-sol",
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "status": "failure",
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "no_action",
+      "issue_number": 8928,
+      "issue_label": "library-update-request",
+      "library": "org.eclipse.jetty:jetty-util:12.0.9",
+      "summary": "No extra setup is needed. Jetty Util 12.0.9 declares only SLF4J API as a runtime dependency; its other published dependencies are test-only. Its APIs use standard JDK facilities and can be exercised with the existing scaffold. [Maven Central](https://central.sonatype.com/artifact/org.eclipse.jetty/jetty-util/12.0.9) [Jetty API](https://javadoc.jetty.org/jetty-12/org/eclipse/jetty/util/package-summary.html)",
+      "deterministic_setup": [],
+      "agent_guidance": "Exercise the public utility APIs directly using deterministic JDK temporary files, URIs, classpath resources, and standard concurrency primitives. Do not add a logging provider solely for SLF4J.",
+      "risks": [
+        "The low coverage is due to the minimal existing test, not missing runtime setup.",
+        "Native-image tests involving Jetty's special resource: URL scheme may require in-test URLResourceFactory registration; ordinary file, jar, and jrt coverage does not."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#8928 Update existing library: org.eclipse.jetty:jetty-util:12.0.9; label=library-update-request; body_chars=169"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "5 existing test file path(s) included"
+        }
+      ],
+      "model": "gpt-5.6-luna",
+      "input_tokens_used": 3851007,
+      "output_tokens_used": 13179,
+      "prompt_path": "library-preflight-prompt.txt",
+      "raw_response_path": "library-preflight-response.txt",
+      "session_log_path": "/home/mihailo/git/graalvm-reachability-metadata-copy/forge/logs/org.eclipse.jetty:jetty-util:12.0.9/library-preparation-preflight/codex-session-6l5iyagl.log"
+    },
+    "metrics": {
+      "input_tokens_used": 334447,
+      "cached_input_tokens_used": 2106368,
+      "output_tokens_used": 34807,
+      "iterations": 8,
+      "cost_usd": 3.7696,
+      "generated_loc": 0,
+      "tested_library_loc": 0,
+      "metadata_entries": 0,
+      "code_coverage_percent": 0.0
+    },
+    "artifacts": {
+      "metadata_file": "None"
+    }
+  }
+}
