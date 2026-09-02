@@ -71,6 +71,23 @@ the stage that broke (`fails-javac-compile`, `fails-java-run`,
 issues; it never opens them. The producer's contract is the reachability repo's
 Library version update automation (§root/FS-library-version-update-automation).
 
+## FS-foreign-metadata-owner-follow-ups: Foreign metadata owner follow-ups
+
+§FS-forge-scope §root/FS-metadata
+
+When metadata finalization resolves a foreign condition to one runtime
+dependency coordinate that the reachability repo cannot yet host, Forge must
+create or reuse an open issue targeting that exact coordinate. A missing
+artifact uses `library-new-request`; an existing artifact missing the resolved
+version uses `library-update-request`.
+
+The routing operation and original metadata check remain failed. Forge gives
+the analysis agent their captured output, the resolved coordinate, the failure
+reason, and the follow-up issue URL. It must not treat the dependency package as
+owned by the source artifact. If ownership is absent or ambiguous, Forge creates
+no issue and gives the unresolved routing failure to the agent. A passing
+initial metadata check performs none of this work.
+
 ## FS-forge-glossary: Glossary
 
 | Term | Definition |

@@ -14,6 +14,7 @@ import org.graalvm.internal.tck.utils.NativeImageConfigUtils
 import org.graalvm.buildtools.gradle.tasks.BuildNativeImageTask
 import org.graalvm.buildtools.gradle.tasks.NativeRunTask
 import org.gradle.api.artifacts.ResolvedArtifact
+import org.gradle.api.artifacts.ResolvedDependency
 import org.gradle.api.file.Directory
 import org.gradle.api.provider.Provider
 import org.gradle.api.tasks.PathSensitivity
@@ -411,6 +412,48 @@ Closure<List<File>> resolveTestedLibraryJars = {
     return resolveTestedLibraryArtifacts().collect { ResolvedArtifact artifact -> artifact.file }
 }
 
+Closure<List<Map<String, String>>> resolveTestedLibraryDependencyArtifacts = {
+    String[] coordinates = libraryGAV.split(":")
+    if (coordinates.length < 3) {
+        throw new GradleException("Cannot resolve runtime dependencies without tested library coordinates.")
+    }
+
+    Set<ResolvedDependency> firstLevelDependencies =
+            configurations.testRuntimeClasspath.resolvedConfiguration.firstLevelModuleDependencies
+    ResolvedDependency testedLibrary = firstLevelDependencies.find { ResolvedDependency dependency ->
+        dependency.moduleGroup == coordinates[0] && dependency.moduleName == coordinates[1]
+    }
+    if (testedLibrary == null) {
+        testedLibrary = firstLevelDependencies.find { ResolvedDependency dependency ->
+            dependency.moduleName == coordinates[1] && dependency.moduleVersion == coordinates[2]
+        }
+    }
+    if (testedLibrary == null) {
+        throw new GradleException("Cannot find resolved runtime dependency root for ${libraryGAV}.")
+    }
+
+    List<ResolvedDependency> pending = [testedLibrary]
+    Set<String> visited = new LinkedHashSet<>()
+    List<Map<String, String>> artifacts = []
+    while (!pending.isEmpty()) {
+        ResolvedDependency dependency = pending.removeFirst()
+        String coordinate = "${dependency.moduleGroup}:${dependency.moduleName}:${dependency.moduleVersion}"
+        if (!visited.add(coordinate)) {
+            continue
+        }
+        dependency.moduleArtifacts
+                .findAll { ResolvedArtifact artifact -> artifact.file.isFile() && artifact.file.name.endsWith(".jar") }
+                .sort { ResolvedArtifact artifact -> artifact.file.absolutePath }
+                .each { ResolvedArtifact artifact ->
+                    artifacts.add([coordinate: coordinate, file: artifact.file.absolutePath])
+                }
+        pending.addAll(dependency.children.sort { ResolvedDependency child ->
+            "${child.moduleGroup}:${child.moduleName}:${child.moduleVersion}"
+        })
+    }
+    return artifacts
+}
+
 Closure<List<File>> resolveTestedLibraryMainJars = {
     List<ResolvedArtifact> mainArtifacts = resolveTestedLibraryArtifacts().findAll { ResolvedArtifact artifact ->
         JarUtils.isUnclassifiedMainJar(artifact.extension, artifact.classifier)
@@ -648,6 +691,16 @@ tasks.register("listLibraryJars") { task ->
     task.doLast {
         resolveTestedLibraryJars().each { File file ->
             println file.absolutePath
+        }
+    }
+}
+
+tasks.register("listRuntimeDependencyArtifacts") { task ->
+    task.setDescription("Lists resolved tested-library dependency artifacts for metadata ownership routing")
+    task.setGroup(JavaBasePlugin.VERIFICATION_GROUP)
+    task.doLast {
+        resolveTestedLibraryDependencyArtifacts().each { Map<String, String> artifact ->
+            println "TCK_RUNTIME_DEPENDENCY=${JsonOutput.toJson(artifact)}"
         }
     }
 }

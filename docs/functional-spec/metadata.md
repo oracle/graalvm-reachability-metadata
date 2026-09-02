@@ -94,22 +94,28 @@ Native tracing can observe an entry whose `condition.typeReached` belongs to a
 different artifact than the coordinate under test. After `checkMetadataFiles`
 reports such an entry outside the source artifact's `allowed-packages`, the
 metadata finalization flow invokes deterministic ownership routing before any
-allowed-package repair. The router resolves candidate owners from checked-in
-`allowed-packages`, and may move the entry only when the same tested version is
-mapped by exactly one supported artifact. If that tested version shares a
-metadata bucket with other versions, the task forks an exact version bucket by
-copying the inherited metadata before adding the new entry; older tested
-versions keep their original bucket unchanged. A successful metadata check
-never invokes ownership routing. When routing creates an exact metadata-version
-bucket, finalization also generates and commits that owner's matching library
-statistics using the bucket's resolved test version. If the inherited owner
-bucket is marked `latest`, the exact bucket takes ownership of `latest` and its
-automation fields; the inherited bucket relinquishes them.
+allowed-package repair. The router resolves the tested library's runtime
+dependency closure and locates `typeReached` in the runtime-visible view of
+those JARs. It may move the entry only when exactly one resolved dependency
+coordinate owns the class and that exact dependency version is listed in the
+owner's metadata index with a compatible `allowed-packages` entry.
 
-An entry with no unique supported owner remains untouched and routing fails.
-The router never deletes an entry merely because its condition is foreign, and
-`checkMetadataFiles` remains the independent, read-only enforcement gate that
-is rerun after a successful relocation.
+The resolved dependency version, rather than the source artifact's version,
+selects the destination. When it sits inside a shared metadata bucket, the task
+splits the bucket at that version's existing `tested-versions` position: earlier
+versions keep the inherited metadata, while the resolved version and every
+later list entry move together to a copied exact-version bucket. Finalization
+generates and commits that destination's matching library statistics using its
+resolved test version. If the inherited bucket is marked `latest`, the later
+bucket takes ownership of `latest` and its automation fields.
+
+A uniquely resolved owner whose artifact or exact version is unsupported is
+reported with that coordinate and remains untouched. An entry with no unique
+resolved owner also remains untouched, but carries no unsupported-owner report.
+Both cases fail routing. A successful metadata check never invokes ownership
+routing, the router never deletes an entry merely because its condition is
+foreign, and `checkMetadataFiles` remains the independent, read-only enforcement
+gate rerun after a successful relocation.
 §FS-repository-functional-spec.5.1
 
 ## 3. Provenance
