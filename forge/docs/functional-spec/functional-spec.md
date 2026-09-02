@@ -2,7 +2,8 @@
 
 This spec realizes the Forge direction set out in §GOAL-forge-direction, in
 service of §GOAL-maximize-library-coverage and
-§GOAL-shorten-issue-to-shipped-metadata.
+§GOAL-shorten-issue-to-shipped-metadata. Repository-specific terms used by the
+spec are defined in §FS-forge-glossary.
 
 ## FS-forge-issue-resolution-goal: Forge issue resolution goal
 
@@ -452,44 +453,53 @@ the current implementation is §ROADMAP-forge-dispatcher-owned-run-preconditions
 
 ### FS-forge-run-output-legibility: Legible run output
 
-The run's own output is an output of the run. Whoever is running generation
-watches it live, so it must answer two questions at a glance: which concrete
-step the run is in right now, and — when the run stops — what exactly failed.
-Clarity is the requirement, not volume: a wall of text that has to be read
-backwards to locate the current step fails this section as surely as silence
-does. This is the live counterpart of the durable record required by
-§FS-durable-generation-logs, and it keeps the loop short as called for by
-§GOAL-shorten-issue-to-shipped-metadata.
+The run's own output is one of the run outputs defined by §FS-forge-outputs.
+Whoever is running generation watches it live, so it must answer two questions
+at a glance: which concrete step the run is in right now, and — when the run
+stops — what exactly failed. Clarity is the requirement, not volume: a wall of
+text that has to be read backwards to locate the current step fails this section
+as surely as silence does. This is the live counterpart of the durable record
+required by §FS-durable-generation-logs, and it keeps the loop short as called
+for by §GOAL-shorten-issue-to-shipped-metadata.
 
-1. **Every step locates its state.** On entering a pipeline step, the normal
-   output prints one concise line naming the phase, the work and its operand,
-   plus the step's derived position as `(n/total)`
-   (`setup/neural_setup`, `explore/native_trace_gate`,
-   `finalization/local_ci_check`, …). A completed step or unit adds one outcome
-   line under the same position instead of narrating its intermediate work. The
-   reader must never have to infer the current step from incidental output such
-   as a Gradle banner or an agent's prose.
-2. **Every failure names its location and its cause.** A failing run states the
-   phase, the step, the operand, and the concrete reason it stopped, in that
-   order, before any surrounding detail — the same pair required everywhere a
-   failure surfaces by §ROADMAP-forge-failure-locates-phase-and-step. A failure
-   reported only as a status, a stack trace, or a generic message does not
-   satisfy this requirement.
-3. **The inside of a step stays quiet.** Work within a step is reported by
-   outcome, not by narration: one line per completed unit (a generated class, a
-   passed gate, a trace cycle) and nothing per intermediate operation. Repeated
-   or retried work says that it is a retry and which attempt it is, so a
-   stalled loop is visible as a loop.
-4. **Detail lives in the logs, not in the terminal.** Full agent conversations,
-   Gradle output, and native-image output are written to the durable logs; the
-   run output prints the path to the relevant log instead of reproducing it, so
-   a maintainer can escalate from the summary to the evidence in one step
-   (§FS-durable-generation-logs).
-5. **Verbose mode restores narration.** `--verbose` adds the intermediate
-   operations hidden by normal output, including the registered method-style
-   step announcement and deterministic setup details. It never replaces the
-   concise progress and outcome lines. A failed gate prints the detail needed
-   to diagnose that failure even when verbose mode is off.
+#### 1. Every step locates its state
+
+On entering a pipeline step, the normal output prints one concise line naming
+the phase, the work and its operand, plus the step's derived position as
+`(n/total)` (`setup/neural_setup`, `explore/native_trace_gate`,
+`finalization/local_ci_check`, …). A completed step or unit adds one outcome
+line under the same position instead of narrating its intermediate work. The
+reader must never have to infer the current step from incidental output such as
+a Gradle banner or an agent's prose.
+
+#### 2. Every failure names its location and its cause
+
+A failing run states the phase, the step, the operand, and the concrete reason
+it stopped, in that order, before any surrounding detail — the same pair
+required everywhere a failure surfaces by
+§ROADMAP-forge-failure-locates-phase-and-step. A failure reported only as a
+status, a stack trace, or a generic message does not satisfy this requirement.
+
+#### 3. The inside of a step stays quiet
+
+Work within a step is reported by outcome, not by narration: one line per
+completed unit (a generated class, a passed gate, a trace cycle) and nothing per
+intermediate operation. Repeated or retried work says that it is a retry and
+which attempt it is, so a stalled loop is visible as a loop.
+
+#### 4. Detail lives in the logs, not in the terminal
+
+Full agent conversations, Gradle output, and native-image output are written to
+the durable logs; the run output prints the path to the relevant log instead of
+reproducing it, so a maintainer can escalate from the summary to the evidence in
+one step (§FS-durable-generation-logs).
+
+#### 5. Verbose mode restores narration
+
+`--verbose` adds the intermediate operations hidden by normal output, including
+the registered method-style step announcement and deterministic setup details.
+It never replaces the concise progress and outcome lines. A failed gate prints
+the detail needed to diagnose that failure even when verbose mode is off.
 
 For `setup`, normal output reduces the phase to three visible states under the
 registered positions: library preflight starts and reports its decision,
