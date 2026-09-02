@@ -735,6 +735,12 @@ public class Spring_rabbitmq_clientTest {
         }
 
         @Override
+        public QuorumQueueSpecification consumerTimeout(Duration timeout) {
+            this.arguments.put("x-consumer-timeout", timeout);
+            return this;
+        }
+
+        @Override
         public FakeQueueSpecification initialMemberCount(int count) {
             this.arguments.put("x-initial-member-count", count);
             return this;
