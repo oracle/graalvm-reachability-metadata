@@ -44,8 +44,8 @@ public class SnappyLoaderTest {
             System.setProperty(CHILD_TEMPDIR_PROPERTY, tempDir.resolve("child-loader").toString());
             assertThat(runCallableProvider(SystemLibraryCallable.class.getName())).isTrue();
             assertThat(runCallableProvider(BundledLibraryCallable.class.getName())).isTrue();
-        } catch (Throwable throwable) {
-            rethrowUnlessUnsupportedFeatureError(throwable);
+        } catch (Error error) {
+            rethrowUnlessUnsupportedFeatureError(error);
         } finally {
             clearSnappyProperties();
             System.clearProperty(CHILD_TEMPDIR_PROPERTY);
@@ -92,38 +92,13 @@ public class SnappyLoaderTest {
         System.clearProperty(SnappyLoader.KEY_SNAPPY_LIB_NAME);
     }
 
-    private static void rethrowUnlessUnsupportedFeatureError(Throwable throwable) {
-        for (Throwable current = throwable; current != null; current = current.getCause()) {
-            if (current instanceof Error error && NativeImageSupport.isUnsupportedFeatureError(error)) {
+    private static void rethrowUnlessUnsupportedFeatureError(Error error) {
+        for (Throwable current = error; current != null; current = current.getCause()) {
+            if (current instanceof Error cause && NativeImageSupport.isUnsupportedFeatureError(cause)) {
                 return;
             }
         }
-        if (hasUnsupportedSnappyNativeLoaderFailure(throwable)) {
-            return;
-        }
-        if (throwable instanceof Exception exception) {
-            throw new RuntimeException(exception);
-        }
-        throw (Error) throwable;
-    }
-
-    private static boolean hasUnsupportedSnappyNativeLoaderFailure(Throwable throwable) {
-        if (!"runtime".equals(System.getProperty("org.graalvm.nativeimage.imagecode"))) {
-            return false;
-        }
-
-        for (Throwable current = throwable; current != null; current = current.getCause()) {
-            if (!current.getClass().getName().equals("org.xerial.snappy.SnappyError")) {
-                continue;
-            }
-            for (StackTraceElement stackTraceElement : current.getStackTrace()) {
-                if (stackTraceElement.getClassName().equals("org.xerial.snappy.SnappyLoader")
-                        && stackTraceElement.getMethodName().equals("injectSnappyNativeLoader")) {
-                    return true;
-                }
-            }
-        }
-        return false;
+        throw error;
     }
 
     private static final class ChildFirstClassLoader extends URLClassLoader {
