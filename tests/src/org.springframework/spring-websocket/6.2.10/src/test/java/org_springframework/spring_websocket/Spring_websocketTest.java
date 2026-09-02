@@ -16,6 +16,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.junit.jupiter.api.Test;
@@ -38,10 +43,12 @@ import org.springframework.web.socket.WebSocketExtension;
 import org.springframework.web.socket.WebSocketHttpHeaders;
 import org.springframework.web.socket.WebSocketMessage;
 import org.springframework.web.socket.WebSocketSession;
+import org.springframework.web.socket.handler.ConcurrentWebSocketSessionDecorator;
 import org.springframework.web.socket.handler.LoggingWebSocketHandlerDecorator;
 import org.springframework.web.socket.handler.PerConnectionWebSocketHandler;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 import org.springframework.web.socket.handler.WebSocketHandlerDecorator;
+import org.springframework.web.socket.handler.WebSocketSessionDecorator;
 import org.springframework.web.socket.messaging.DefaultSimpUserRegistry;
 import org.springframework.web.socket.messaging.SessionConnectedEvent;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
@@ -143,6 +150,59 @@ public class Spring_websocketTest {
                         "error:1:first=transport",
                         "closed:1:first=1000",
                         "closed:2:second=1001");
+    }
+
+    @Test
+    void concurrentSessionDecoratorDropsOldestBufferedMessageOnOverflow() throws Exception {
+        CountDownLatch firstSendStarted = new CountDownLatch(1);
+        CountDownLatch releaseFirstSend = new CountDownLatch(1);
+        TestWebSocketSession delegate = new TestWebSocketSession("concurrent", "chat");
+        BlockingWebSocketSession blockingSession =
+                new BlockingWebSocketSession(delegate, firstSendStarted, releaseFirstSend);
+        ConcurrentWebSocketSessionDecorator session =
+                new ConcurrentWebSocketSessionDecorator(
+                        blockingSession,
+                        30_000,
+                        6,
+                        ConcurrentWebSocketSessionDecorator.OverflowStrategy.DROP);
+        List<WebSocketMessage<?>> bufferedMessages = new CopyOnWriteArrayList<>();
+        session.setMessageCallback(bufferedMessages::add);
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        TextMessage first = new TextMessage("first");
+        TextMessage second = new TextMessage("second");
+        TextMessage third = new TextMessage("third");
+
+        Future<Void> firstSend =
+                executor.submit(
+                        () -> {
+                            session.sendMessage(first);
+                            return null;
+                        });
+        try {
+            assertThat(firstSendStarted.await(10, TimeUnit.SECONDS)).isTrue();
+
+            session.sendMessage(second);
+            assertThat(session.getBufferSize()).isEqualTo(second.getPayloadLength());
+
+            session.sendMessage(third);
+
+            assertThat(session.getSendTimeLimit()).isEqualTo(30_000);
+            assertThat(session.getBufferSizeLimit()).isEqualTo(6);
+            assertThat(session.getOverflowStrategy())
+                    .isEqualTo(ConcurrentWebSocketSessionDecorator.OverflowStrategy.DROP);
+            assertThat(session.getBufferSize()).isEqualTo(third.getPayloadLength());
+            assertThat(bufferedMessages).containsExactly(first, second, third);
+
+            releaseFirstSend.countDown();
+            firstSend.get(10, TimeUnit.SECONDS);
+
+            assertThat(delegate.sentMessages).containsExactly(first, third);
+            assertThat(session.getBufferSize()).isZero();
+        } finally {
+            releaseFirstSend.countDown();
+            executor.shutdownNow();
+            assertThat(executor.awaitTermination(10, TimeUnit.SECONDS)).isTrue();
+        }
     }
 
     @Test
@@ -353,6 +413,38 @@ public class Spring_websocketTest {
                             + session.getId()
                             + "="
                             + status.getCode());
+        }
+    }
+
+    private static final class BlockingWebSocketSession extends WebSocketSessionDecorator {
+        private final CountDownLatch firstSendStarted;
+        private final CountDownLatch releaseFirstSend;
+        private final AtomicInteger sendCount = new AtomicInteger();
+
+        private BlockingWebSocketSession(
+                WebSocketSession delegate,
+                CountDownLatch firstSendStarted,
+                CountDownLatch releaseFirstSend) {
+            super(delegate);
+            this.firstSendStarted = firstSendStarted;
+            this.releaseFirstSend = releaseFirstSend;
+        }
+
+        @Override
+        public void sendMessage(WebSocketMessage<?> message) throws IOException {
+            if (this.sendCount.incrementAndGet() == 1) {
+                this.firstSendStarted.countDown();
+                try {
+                    if (!this.releaseFirstSend.await(10, TimeUnit.SECONDS)) {
+                        throw new IOException("Timed out waiting to release the first send");
+                    }
+                } catch (InterruptedException exception) {
+                    Thread.currentThread().interrupt();
+                    throw new IOException(
+                            "Interrupted while waiting to release the first send", exception);
+                }
+            }
+            super.sendMessage(message);
         }
     }
 
