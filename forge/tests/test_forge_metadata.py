@@ -4733,14 +4733,59 @@ class PullRequestReviewTests(unittest.TestCase):
         with patch.object(forge_metadata, "get_pull_request_changed_index_files", return_value=[]), \
                 patch.object(forge_metadata, "gh"), \
                 patch.object(forge_metadata, "get_project_item_id", return_value="project-item"), \
+                patch.object(
+                    forge_metadata,
+                    "get_issue_claim_payload",
+                    return_value={
+                        "labels": [
+                            {"name": forge_metadata.LABEL_CHUNKED_DYNAMIC_ACCESS},
+                            {"name": forge_metadata.LABEL_HUMAN_INTERVENTION},
+                            {"name": forge_metadata.LABEL_RESUMABLE},
+                        ],
+                    },
+                ), \
+                patch.object(forge_metadata, "remove_issue_label") as remove_issue_label, \
                 patch.object(forge_metadata, "set_item_status") as set_item_status, \
                 patch.object(forge_metadata, "clear_issue_assignees") as clear_issue_assignees, \
                 patch.object(forge_metadata, "invalidate_issue_claim_cache_entry") as invalidate_cache:
             forge_metadata.merge_pull_request(pr, "/repo")
 
+        self.assertEqual(
+            remove_issue_label.call_args_list,
+            [
+                call(1412, forge_metadata.LABEL_HUMAN_INTERVENTION),
+                call(1412, forge_metadata.LABEL_RESUMABLE),
+            ],
+        )
         set_item_status.assert_called_once_with("project-item", forge_metadata.STATUS_TODO)
         clear_issue_assignees.assert_called_once_with(1412)
         invalidate_cache.assert_called_once_with(1412)
+
+    def test_merge_pull_request_keeps_clean_chunk_issue_labels(self) -> None:
+        pr = {
+            "number": 3513,
+            "url": "https://github.com/oracle/graalvm-reachability-metadata/pull/3513",
+            "headRefOid": "abc123",
+            "body": "Refs: #1412\n\nSummary:\n- Chunked dynamic-access: yes\n",
+        }
+
+        with patch.object(forge_metadata, "get_pull_request_changed_index_files", return_value=[]), \
+                patch.object(forge_metadata, "gh"), \
+                patch.object(forge_metadata, "get_project_item_id", return_value="project-item"), \
+                patch.object(
+                    forge_metadata,
+                    "get_issue_claim_payload",
+                    return_value={
+                        "labels": [{"name": forge_metadata.LABEL_CHUNKED_DYNAMIC_ACCESS}],
+                    },
+                ), \
+                patch.object(forge_metadata, "remove_issue_label") as remove_issue_label, \
+                patch.object(forge_metadata, "set_item_status"), \
+                patch.object(forge_metadata, "clear_issue_assignees"), \
+                patch.object(forge_metadata, "invalidate_issue_claim_cache_entry"):
+            forge_metadata.merge_pull_request(pr, "/repo")
+
+        remove_issue_label.assert_not_called()
 
     def test_merge_pull_request_does_not_release_final_chunked_dynamic_access_issue(self) -> None:
         pr = {
@@ -4841,6 +4886,41 @@ class PullRequestReviewTests(unittest.TestCase):
         rerun_failed_jobs.assert_called_once_with(3513, "abc123")
         merge_pull_request.assert_not_called()
 
+    def test_reconcile_failed_ci_treats_chunked_and_regular_prs_the_same_after_cap(self) -> None:
+        outputs: list[str] = []
+        pull_request_bodies = (
+            "",
+            "Refs: #1412\n\nSummary:\n- Chunked dynamic-access: yes\n",
+        )
+
+        for body in pull_request_bodies:
+            pull_request = {
+                "number": 3513,
+                "headRefOid": "abc123",
+                "body": body,
+                "statusCheckRollup": {"state": "FAILURE"},
+            }
+            output = io.StringIO()
+            with self.subTest(body=body), contextlib.redirect_stdout(output), \
+                    patch.object(
+                        forge_metadata,
+                        "rerun_failed_pull_request_workflow_jobs",
+                        return_value=0,
+                    ) as rerun_failed_jobs, \
+                    patch.object(forge_metadata, "add_pull_request_label") as add_label, \
+                    patch.object(forge_metadata, "set_item_status") as set_item_status, \
+                    patch.object(forge_metadata, "clear_issue_assignees") as clear_assignees:
+                forge_metadata.reconcile_failed_ci_pull_request(pull_request)
+
+            rerun_failed_jobs.assert_called_once_with(3513, "abc123")
+            add_label.assert_not_called()
+            set_item_status.assert_not_called()
+            clear_assignees.assert_not_called()
+            outputs.append(output.getvalue())
+
+        self.assertEqual(outputs[0], outputs[1])
+        self.assertIn("Skipping review for PR #3513", outputs[0])
+
     def test_reconcile_approved_conflicting_pr_resolves_the_conflict_instead_of_merging(self) -> None:
         pr = {
             "number": 3513,
@@ -4909,6 +4989,7 @@ class PullRequestReviewTests(unittest.TestCase):
             {"id": 103, "conclusion": "failure", "run_attempt": 3},
             {"id": 104, "conclusion": "success", "run_attempt": 1},
             {"id": 105, "conclusion": None, "run_attempt": 1},
+            {"id": 106, "conclusion": "failure", "run_attempt": 4},
         ]
 
         with patch.object(forge_metadata, "get_pull_request_workflow_runs", return_value=workflow_runs), \

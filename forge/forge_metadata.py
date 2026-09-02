@@ -2426,7 +2426,10 @@ def get_pull_request_workflow_runs(head_sha: str) -> list[dict]:
 
 
 def get_rerunnable_failed_workflow_run_ids(workflow_runs: list[dict]) -> list[int]:
-    """Return failed GitHub Actions run IDs below the automated rerun limit."""
+    """Return failed GitHub Actions run IDs below the automated rerun limit.
+
+    §FS-automated-pr-review
+    """
     run_ids: list[int] = []
     for workflow_run in workflow_runs:
         if not isinstance(workflow_run, dict):
@@ -2650,11 +2653,14 @@ def resolve_non_final_chunked_dynamic_access_issue(pr: dict) -> int | None:
     return int(match.group(1))
 
 
-def release_non_final_chunked_dynamic_access_issue(pr: dict, reason: str) -> int | None:
-    """Move a non-final chunk issue back to Todo and return the issue number."""
+def apply_chunked_dynamic_access_merge_follow_up(pr: dict) -> None:
+    """Restore a merged non-final chunk issue for a clean next chunk.
+
+    §FS-forge-chunked-dynamic-access
+    """
     issue_number = resolve_non_final_chunked_dynamic_access_issue(pr)
     if issue_number is None:
-        return None
+        return
 
     item_id = get_project_item_id(issue_number)
     if item_id is None:
@@ -2662,36 +2668,17 @@ def release_non_final_chunked_dynamic_access_issue(pr: dict, reason: str) -> int
             f"Chunked dynamic-access PR #{pr.get('number')} references issue #{issue_number}, "
             f"but the issue is not linked to project {PROJECT_NUMBER}."
         )
+    issue: dict = get_issue_claim_payload(issue_number)
+    for label_name in (LABEL_HUMAN_INTERVENTION, LABEL_RESUMABLE):
+        if issue_has_label(issue, label_name):
+            remove_issue_label(issue_number, label_name)
     set_item_status(item_id, STATUS_TODO)
     clear_issue_assignees(issue_number)
     invalidate_issue_claim_cache_entry(issue_number)
     log_stage(
         "chunked-dynamic-access",
-        f"Released issue #{issue_number} for the next chunk after PR #{pr.get('number')} {reason}.",
+        f"Released issue #{issue_number} for the next chunk after PR #{pr.get('number')} merged.",
     )
-    return issue_number
-
-
-def apply_chunked_dynamic_access_merge_follow_up(pr: dict) -> None:
-    """Move a merged non-final chunk issue back to Todo for the next chunk."""
-    release_non_final_chunked_dynamic_access_issue(pr, "merged")
-
-
-def apply_chunked_dynamic_access_failed_ci_follow_up(pr: dict) -> None:
-    """Release a non-final chunk issue when its PR has failed CI and no rerun remains."""
-    issue_number = release_non_final_chunked_dynamic_access_issue(pr, "failed CI")
-    if issue_number is None:
-        return
-    pr_number = pr.get("number")
-    if isinstance(pr_number, int):
-        add_pull_request_label(pr_number, LABEL_HUMAN_INTERVENTION)
-        log_stage(
-            "chunked-dynamic-access",
-            (
-                f"Marked failed non-final chunk PR #{pr_number} as "
-                f"'{LABEL_HUMAN_INTERVENTION}' after releasing issue #{issue_number}."
-            ),
-        )
 
 
 def apply_unblocked_issue_merge_follow_up(pr: dict) -> None:
@@ -2859,7 +2846,10 @@ def resolve_pull_request_merge_conflict(
 
 
 def reconcile_failed_ci_pull_request(pull_request: dict) -> None:
-    """Handle failed CI deterministically without launching a review agent."""
+    """Rerun failed CI below attempt three, otherwise skip review.
+
+    §FS-automated-pr-review
+    """
     pr_number = pull_request.get("number")
     head_sha = pull_request.get("headRefOid")
     if not isinstance(pr_number, int) or not isinstance(head_sha, str) or not head_sha:
@@ -2870,23 +2860,12 @@ def reconcile_failed_ci_pull_request(pull_request: dict) -> None:
         print(f"[Skipping failed-CI follow-up for PR #{pr_number}: CI state changed.]")
         return
 
-    chunked_issue = resolve_non_final_chunked_dynamic_access_issue(pull_request)
     rerun_count = rerun_failed_pull_request_workflow_jobs(pr_number, head_sha)
     if rerun_count:
-        if chunked_issue is not None:
-            print(
-                f"[Reran failed GitHub Actions job(s) in {rerun_count} workflow run(s) "
-                f"for chunked PR #{pr_number}; keeping the backing issue in progress for this pass.]"
-            )
-        else:
-            print(
-                f"[Reran failed GitHub Actions job(s) in {rerun_count} workflow run(s) "
-                f"for PR #{pr_number}; review waits for successful CI.]"
-            )
-        return
-
-    if chunked_issue is not None:
-        apply_chunked_dynamic_access_failed_ci_follow_up(pull_request)
+        print(
+            f"[Reran failed GitHub Actions job(s) in {rerun_count} workflow run(s) "
+            f"for PR #{pr_number}; review waits for successful CI.]"
+        )
         return
 
     print(
