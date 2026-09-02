@@ -3,6 +3,12 @@
 Rendered by Forge from the pre-push branch review of §FS-local-branch-review.
 Newest entry first; every non-approval is recorded, including one a repair later cleared.
 
+## 2026-09-02 — org.springframework:spring-test:7.0.0 (#9401)
+
+**Missing test-only metadata breaks the native test lane**
+
+The required native test lane failed in SpringJUnit4ClassRunnerTest because Spring 7 loads org.springframework.test.context.aot.AotTestContextInitializers__Generated reflectively, but tests/src/org.springframework/spring-test/7.0.0/src/test/resources/META-INF/native-image/reachability-metadata.json did not register that generated test helper and its map methods. The native executable therefore failed with ClassNotFoundException instead of completing the test suite.
+
 ## 2026-09-02 — org.eclipse.jetty:jetty-util:12.0.9 (#8928)
 
 **Test-only resource bundle shipped as library metadata**
