@@ -9,6 +9,8 @@ package org_apache_activemq.activemq_broker;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.nio.file.Path;
+import java.security.Provider;
+import java.security.Security;
 
 import org.apache.activemq.broker.BrokerService;
 import org.apache.activemq.store.PersistenceAdapter;
@@ -23,6 +25,16 @@ public class BrokerServiceTest {
 
     @TempDir
     Path temporaryDirectory;
+
+    @Test
+    void registersAvailableBouncyCastleProvider() {
+        new BrokerService();
+
+        Provider provider = Security.getProvider("BC");
+
+        assertThat(provider).isNotNull();
+        assertThat(provider.getInfo()).contains("BouncyCastle Security Provider");
+    }
 
     @Test
     @Timeout(30)
