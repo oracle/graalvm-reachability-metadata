@@ -6,8 +6,13 @@
  */
 package org_apache_activemq.artemis_jms_client;
 
+import org.apache.activemq.artemis.api.core.TransportConfiguration;
+import org.apache.activemq.artemis.api.jms.ActiveMQJMSClient;
+import org.apache.activemq.artemis.api.jms.JMSFactoryType;
 import org.apache.activemq.artemis.core.config.Configuration;
 import org.apache.activemq.artemis.core.config.impl.ConfigurationImpl;
+import org.apache.activemq.artemis.core.remoting.impl.invm.InVMAcceptorFactory;
+import org.apache.activemq.artemis.core.remoting.impl.invm.InVMConnectorFactory;
 import org.apache.activemq.artemis.core.server.ActiveMQServer;
 import org.apache.activemq.artemis.core.server.impl.ActiveMQServerImpl;
 import org.apache.activemq.artemis.jms.client.ActiveMQConnectionFactory;
@@ -26,6 +31,7 @@ import javax.jms.MessageConsumer;
 import javax.jms.MessageProducer;
 import javax.jms.Session;
 import javax.jms.TextMessage;
+import javax.management.MBeanServerFactory;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
@@ -46,15 +52,18 @@ class ArtemisJmsClientTest {
     void beforeAll() throws Exception {
         logger.info("Starting embedded Artemis broker ...");
         Configuration config = new ConfigurationImpl();
-        config.addAcceptorConfiguration("tcp", "tcp://127.0.0.1:61616");
+        config.addAcceptorConfiguration(new TransportConfiguration(InVMAcceptorFactory.class.getName()));
         config.setSecurityEnabled(false);
+        config.setJMXManagementEnabled(false);
+        config.setPersistenceEnabled(false);
 
-        server = new ActiveMQServerImpl(config);
+        server = new ActiveMQServerImpl(config, MBeanServerFactory.newMBeanServer());
         server.start();
         server.waitForActivation(1, TimeUnit.MINUTES);
         logger.info("Started embedded Artemis broker");
 
-        connectionFactory = new ActiveMQConnectionFactory();
+        TransportConfiguration connector = new TransportConfiguration(InVMConnectorFactory.class.getName());
+        connectionFactory = ActiveMQJMSClient.createConnectionFactoryWithoutHA(JMSFactoryType.CF, connector);
     }
 
     @AfterAll
