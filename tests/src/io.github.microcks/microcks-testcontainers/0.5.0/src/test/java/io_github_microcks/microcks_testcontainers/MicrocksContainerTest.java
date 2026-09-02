@@ -9,21 +9,24 @@ package io_github_microcks.microcks_testcontainers;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.github.dockerjava.api.command.InspectContainerResponse;
 import io.github.microcks.testcontainers.MicrocksContainer;
 import io.github.microcks.testcontainers.model.ServiceRef;
 import io.github.microcks.testcontainers.model.TestRequest;
 import io.github.microcks.testcontainers.model.TestResult;
 import io.github.microcks.testcontainers.model.TestRunnerType;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URI;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.time.Duration;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
+import org.junit.jupiter.api.io.TempDir;
 
 @Timeout(60)
 public class MicrocksContainerTest {
@@ -37,10 +40,14 @@ public class MicrocksContainerTest {
     private static final int IO_TIMEOUT_MILLIS = 10_000;
 
     @Test
-    void importsClasspathResourcesAndExercisesMockAndTestApis() throws Exception {
-        try (FallbackResourceMicrocksContainer microcks =
-                new FallbackResourceMicrocksContainer()) {
+    void importsFilesAndExercisesMockAndTestApis(@TempDir Path tempDir) throws Exception {
+        try (MicrocksContainer microcks = new MicrocksContainer(IMAGE)) {
+            File snapshot = copyResourceToFile(tempDir, SNAPSHOT);
+            File openApi = copyResourceToFile(tempDir, OPEN_API);
+
             microcks.start();
+            microcks.importSnapshot(snapshot);
+            microcks.importAsMainArtifact(openApi);
 
             List<ServiceRef> services = microcks.getServices();
             assertThat(services)
@@ -84,6 +91,17 @@ public class MicrocksContainerTest {
         }
     }
 
+    private static File copyResourceToFile(Path tempDir, String resource) throws IOException {
+        Path target = tempDir.resolve(Path.of(resource).getFileName());
+        try (InputStream input = MicrocksContainerTest.class
+                .getClassLoader()
+                .getResourceAsStream(resource)) {
+            assertThat(input).isNotNull();
+            Files.copy(input, target);
+        }
+        return target.toFile();
+    }
+
     private static String get(String endpoint) throws IOException {
         HttpURLConnection connection =
                 (HttpURLConnection) URI.create(endpoint).toURL().openConnection();
@@ -108,23 +126,4 @@ public class MicrocksContainerTest {
         }
     }
 
-    private static final class FallbackResourceMicrocksContainer extends MicrocksContainer {
-        private FallbackResourceMicrocksContainer() {
-            super(IMAGE);
-            withSnapshots(SNAPSHOT);
-            withMainArtifacts(OPEN_API);
-        }
-
-        @Override
-        protected void containerIsStarted(InspectContainerResponse containerInfo) {
-            Thread thread = Thread.currentThread();
-            ClassLoader originalClassLoader = thread.getContextClassLoader();
-            thread.setContextClassLoader(ClassLoader.getPlatformClassLoader());
-            try {
-                super.containerIsStarted(containerInfo);
-            } finally {
-                thread.setContextClassLoader(originalClassLoader);
-            }
-        }
-    }
 }
