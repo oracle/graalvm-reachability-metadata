@@ -2645,7 +2645,10 @@ def resolve_non_final_chunked_dynamic_access_issue(pr: dict) -> int | None:
 
 
 def apply_chunked_dynamic_access_merge_follow_up(pr: dict) -> None:
-    """Move a merged non-final chunk issue back to Todo for the next chunk."""
+    """Restore a merged non-final chunk issue for a clean next chunk.
+
+    §FS-forge-chunked-dynamic-access
+    """
     issue_number = resolve_non_final_chunked_dynamic_access_issue(pr)
     if issue_number is None:
         return
@@ -2656,6 +2659,10 @@ def apply_chunked_dynamic_access_merge_follow_up(pr: dict) -> None:
             f"Chunked dynamic-access PR #{pr.get('number')} references issue #{issue_number}, "
             f"but the issue is not linked to project {PROJECT_NUMBER}."
         )
+    issue: dict = get_issue_claim_payload(issue_number)
+    for label_name in (LABEL_HUMAN_INTERVENTION, LABEL_RESUMABLE):
+        if issue_has_label(issue, label_name):
+            remove_issue_label(issue_number, label_name)
     set_item_status(item_id, STATUS_TODO)
     clear_issue_assignees(issue_number)
     invalidate_issue_claim_cache_entry(issue_number)
