@@ -4759,6 +4759,41 @@ class PullRequestReviewTests(unittest.TestCase):
         rerun_failed_jobs.assert_called_once_with(3513, "abc123")
         merge_pull_request.assert_not_called()
 
+    def test_reconcile_failed_ci_treats_chunked_and_regular_prs_the_same_after_cap(self) -> None:
+        outputs: list[str] = []
+        pull_request_bodies = (
+            "",
+            "Refs: #1412\n\nSummary:\n- Chunked dynamic-access: yes\n",
+        )
+
+        for body in pull_request_bodies:
+            pull_request = {
+                "number": 3513,
+                "headRefOid": "abc123",
+                "body": body,
+                "statusCheckRollup": {"state": "FAILURE"},
+            }
+            output = io.StringIO()
+            with self.subTest(body=body), contextlib.redirect_stdout(output), \
+                    patch.object(
+                        forge_metadata,
+                        "rerun_failed_pull_request_workflow_jobs",
+                        return_value=0,
+                    ) as rerun_failed_jobs, \
+                    patch.object(forge_metadata, "add_pull_request_label") as add_label, \
+                    patch.object(forge_metadata, "set_item_status") as set_item_status, \
+                    patch.object(forge_metadata, "clear_issue_assignees") as clear_assignees:
+                forge_metadata.reconcile_failed_ci_pull_request(pull_request)
+
+            rerun_failed_jobs.assert_called_once_with(3513, "abc123")
+            add_label.assert_not_called()
+            set_item_status.assert_not_called()
+            clear_assignees.assert_not_called()
+            outputs.append(output.getvalue())
+
+        self.assertEqual(outputs[0], outputs[1])
+        self.assertIn("Skipping review for PR #3513", outputs[0])
+
     def test_reconcile_approved_conflicting_pr_resolves_the_conflict_instead_of_merging(self) -> None:
         pr = {
             "number": 3513,
@@ -4827,6 +4862,7 @@ class PullRequestReviewTests(unittest.TestCase):
             {"id": 103, "conclusion": "failure", "run_attempt": 3},
             {"id": 104, "conclusion": "success", "run_attempt": 1},
             {"id": 105, "conclusion": None, "run_attempt": 1},
+            {"id": 106, "conclusion": "failure", "run_attempt": 4},
         ]
 
         with patch.object(forge_metadata, "get_pull_request_workflow_runs", return_value=workflow_runs), \
