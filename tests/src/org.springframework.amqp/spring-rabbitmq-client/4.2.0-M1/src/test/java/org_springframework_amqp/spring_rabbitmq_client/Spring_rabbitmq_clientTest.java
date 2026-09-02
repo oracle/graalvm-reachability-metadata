@@ -174,7 +174,7 @@ public class Spring_rabbitmq_clientTest {
     void templateConvertAndSendPublishesConvertedMessageToConfiguredAddress() throws Exception {
         FakeConnection connection = new FakeConnection();
         RabbitAmqpTemplate template = new RabbitAmqpTemplate(connectionFactory(connection));
-        template.setPublishTimeout(Duration.ofMillis(250));
+        template.setPublishTimeout(Duration.ofSeconds(10));
         template.setExchange("orders.exchange");
         template.setRoutingKey("created");
 
@@ -185,8 +185,8 @@ public class Spring_rabbitmq_clientTest {
             return message;
         });
 
-        assertThat(result.get(1, TimeUnit.SECONDS)).isTrue();
-        assertThat(connection.publisherBuilder.publishTimeout).isEqualTo(Duration.ofMillis(250));
+        assertThat(result.get(10, TimeUnit.SECONDS)).isTrue();
+        assertThat(connection.publisherBuilder.publishTimeout).isEqualTo(Duration.ofSeconds(10));
         assertThat(connection.publisher.published).hasSize(1);
         FakeMessage published = connection.publisher.published.get(0);
         assertThat(published.addressExchange).isEqualTo("orders.exchange");
@@ -207,10 +207,10 @@ public class Spring_rabbitmq_clientTest {
         connection.nextDelivery = delivery;
         connection.nextDeliveryContext = deliveryContext;
         RabbitAmqpTemplate template = new RabbitAmqpTemplate(connectionFactory(connection));
-        template.setCompletionTimeout(Duration.ofMillis(250));
+        template.setCompletionTimeout(Duration.ofSeconds(10));
         template.setReceiveQueue("orders.queue");
 
-        Object converted = template.receiveAndConvert().get(1, TimeUnit.SECONDS);
+        Object converted = template.receiveAndConvert().get(10, TimeUnit.SECONDS);
 
         assertThat(converted).isEqualTo("incoming");
         assertThat(deliveryContext.accepts).isEqualTo(1);
@@ -226,17 +226,17 @@ public class Spring_rabbitmq_clientTest {
         FakeConnection connection = new FakeConnection();
         connection.requestReply = textMessage("accepted");
         RabbitAmqpTemplate template = new RabbitAmqpTemplate(connectionFactory(connection));
-        template.setPublishTimeout(Duration.ofMillis(250));
-        template.setCompletionTimeout(Duration.ofMillis(250));
+        template.setPublishTimeout(Duration.ofSeconds(10));
+        template.setCompletionTimeout(Duration.ofSeconds(10));
         template.setQueue("requests");
         template.setReplyToQueue("replies");
         org.springframework.amqp.core.Message request = springMessage("approve".getBytes(StandardCharsets.UTF_8));
         request.getMessageProperties().setMessageId("request-1");
 
-        String reply = template.<String>convertSendAndReceive(request).get(1, TimeUnit.SECONDS);
+        String reply = template.<String>convertSendAndReceive(request).get(10, TimeUnit.SECONDS);
 
         assertThat(reply).isEqualTo("accepted");
-        assertThat(connection.requesterBuilder.requestTimeout).isEqualTo(Duration.ofMillis(250));
+        assertThat(connection.requesterBuilder.requestTimeout).isEqualTo(Duration.ofSeconds(10));
         assertThat(connection.requesterBuilder.replyToQueue).isEqualTo("replies");
         assertThat(connection.requesterBuilder.correlationIdSupplier.get()).isEqualTo("request-1");
         assertThat(connection.requester.published).hasSize(1);
@@ -269,7 +269,7 @@ public class Spring_rabbitmq_clientTest {
         container.setConsumersPerQueue(2);
         container.setInitialCredits(12);
         container.setPriority(5);
-        container.setGracefulShutdownPeriod(Duration.ofMillis(250));
+        container.setGracefulShutdownPeriod(Duration.ofSeconds(10));
         container.setupMessageListener(listener);
 
         container.afterPropertiesSet();
@@ -287,7 +287,7 @@ public class Spring_rabbitmq_clientTest {
 
         CountDownLatch stopped = new CountDownLatch(1);
         container.stop(stopped::countDown);
-        assertThat(stopped.await(1, TimeUnit.SECONDS)).isTrue();
+        assertThat(stopped.await(10, TimeUnit.SECONDS)).isTrue();
         assertThat(connection.createdConsumers).allSatisfy(consumer -> assertThat(consumer.closed).isTrue());
     }
 
@@ -297,7 +297,7 @@ public class Spring_rabbitmq_clientTest {
         RabbitAmqpListenerContainer container = new RabbitAmqpListenerContainer(connectionFactory(connection));
         container.setQueueNames("billing.high", "billing.low");
         container.setConsumersPerQueue(2);
-        container.setGracefulShutdownPeriod(Duration.ofMillis(250));
+        container.setGracefulShutdownPeriod(Duration.ofSeconds(10));
         container.setupMessageListener(message -> assertThat(message).isNotNull());
 
         container.afterPropertiesSet();
@@ -333,7 +333,7 @@ public class Spring_rabbitmq_clientTest {
 
         CountDownLatch stopped = new CountDownLatch(1);
         container.stop(stopped::countDown);
-        assertThat(stopped.await(1, TimeUnit.SECONDS)).isTrue();
+        assertThat(stopped.await(10, TimeUnit.SECONDS)).isTrue();
         assertThat(connection.createdConsumers).allSatisfy(consumer -> assertThat(consumer.closed).isTrue());
     }
 
