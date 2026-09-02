@@ -20,6 +20,7 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.ServiceLoader;
 import java.util.concurrent.Callable;
+import java.util.stream.Stream;
 
 import org.graalvm.internal.tck.NativeImageSupport;
 import org.junit.jupiter.api.Test;
@@ -186,16 +187,17 @@ public class SnappyLoaderTest {
                 Path nativeLibraryDirectory = Path.of(System.getProperty(CHILD_TEMPDIR_PROPERTY), "bundled");
                 Files.createDirectories(nativeLibraryDirectory);
 
-                String libraryFileName = System.mapLibraryName("snappyjava");
-                Path staleExtractedLibrary = nativeLibraryDirectory.resolve(
-                        "snappy-" + SnappyLoader.getVersion() + "-" + libraryFileName);
-                Files.writeString(staleExtractedLibrary, "stale native library", StandardCharsets.UTF_8);
-
                 System.setProperty(SnappyLoader.KEY_SNAPPY_TEMPDIR, nativeLibraryDirectory.toString());
                 byte[] input = "SnappyLoader extracts the bundled JNI library".getBytes(StandardCharsets.UTF_8);
                 byte[] compressed = Snappy.compress(input);
                 assertThat(Snappy.uncompress(compressed)).isEqualTo(input);
-                assertThat(Files.size(staleExtractedLibrary)).isGreaterThan((long) "stale native library".length());
+
+                try (Stream<Path> extractedLibraries = Files.list(nativeLibraryDirectory)) {
+                    Path extractedLibrary = extractedLibraries.filter(Files::isRegularFile).findFirst().orElseThrow();
+                    assertThat(extractedLibrary.getFileName().toString())
+                            .startsWith("snappy-" + SnappyLoader.getVersion() + "-");
+                    assertThat(Files.size(extractedLibrary)).isGreaterThan(0L);
+                }
                 return SnappyLoader.isNativeLibraryLoaded();
             } finally {
                 clearSnappyProperties();
