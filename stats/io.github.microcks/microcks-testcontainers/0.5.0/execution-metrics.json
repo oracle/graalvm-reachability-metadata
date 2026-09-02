@@ -1,0 +1,108 @@
+{
+  "add_new_library_support:2026-09-02": {
+    "timestamp": "2026-09-02T20:46:01.474301Z",
+    "library": "io.github.microcks:microcks-testcontainers:0.5.0",
+    "starting_commit": "679dd6ea499c30cfa496e860f4ee998847d6bbbf",
+    "ending_commit": "24cf340256dd62c7190cb3d28e251fb1d66cc51b",
+    "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-sol",
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "status": "success",
+    "stats": {
+      "version": "0.5.0",
+      "dynamicAccess": {
+        "breakdown": {
+          "resources": {
+            "coverageRatio": 0.0,
+            "coveredCalls": 0,
+            "totalCalls": 4
+          }
+        },
+        "coverageRatio": 0.0,
+        "coveredCalls": 0,
+        "totalCalls": 4
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 1004,
+          "missed": 4337,
+          "ratio": 0.18798,
+          "total": 5341
+        },
+        "line": {
+          "covered": 260,
+          "missed": 979,
+          "ratio": 0.209847,
+          "total": 1239
+        },
+        "method": {
+          "covered": 88,
+          "missed": 358,
+          "ratio": 0.197309,
+          "total": 446
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "advisory_preparation",
+      "issue_number": 9686,
+      "issue_label": "library-new-request",
+      "library": "io.github.microcks:microcks-testcontainers:0.5.0",
+      "summary": "Meaningful coverage requires starting Microcks in its Uber Docker distribution.",
+      "deterministic_setup": [
+        {
+          "kind": "docker_image",
+          "image": "quay.io/microcks/microcks-uber:1.14.0",
+          "slug": "microcks_uber",
+          "reason": "The published artifact depends on Testcontainers but not on a Microcks server; its documented usage constructs and starts a Microcks Uber container. Version 0.5.0 webhook support requires Microcks 1.14.0 or later. [POM](https://repo.maven.apache.org/maven2/io/github/microcks/microcks-testcontainers/\n...[truncated]"
+        }
+      ],
+      "agent_guidance": "No extra Maven dependency, environment variable, or system property is required for baseline coverage. Start and cleanly stop the prepared MicrocksContainer, import a small classpath OpenAPI fixture, then exercise mock endpoint lookup, HTTP access, invocation verification, and TestRequest/TestResult APIs. Postman and asynchronous ensemble paths require additional optional runtime containers or brokers and should not be assumed for the initial scaffold.",
+      "risks": [
+        "Container startup is relatively slow and requires Docker; use bounded readiness and test timeouts.",
+        "Native Image verification may expose unsupported Testcontainers or HTTP/reflection paths; local Gradle and Native Image results remain authoritative."
+      ],
+      "applied_setup": [
+        {
+          "kind": "docker_image",
+          "image": "quay.io/microcks/microcks-uber:1.14.0",
+          "slug": "microcks_uber",
+          "result": "already_present",
+          "target": "tests/tck-build-logic/src/main/resources/allowed-docker-images/Dockerfile-microcks_uber"
+        }
+      ],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#9686 Support for io.github.microcks:microcks-testcontainers:0.5.0; label=library-new-request; body_chars=39"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "gpt-5.6-luna",
+      "input_tokens_used": 1198300,
+      "output_tokens_used": 8265,
+      "prompt_path": "library-preflight-prompt.txt",
+      "raw_response_path": "library-preflight-response.txt",
+      "session_log_path": "/home/mihailo/git/graalvm-reachability-metadata/forge/logs/io.github.microcks:microcks-testcontainers:0.5.0/library-preparation-preflight/codex-session-j7_gwg1c.log"
+    },
+    "metrics": {
+      "input_tokens_used": 134282,
+      "cached_input_tokens_used": 2558080,
+      "output_tokens_used": 16359,
+      "iterations": 2,
+      "cost_usd": 2.4412,
+      "generated_loc": 114,
+      "tested_library_loc": 260,
+      "metadata_entries": 69,
+      "test_only_metadata_entries": 563,
+      "code_coverage_percent": 20.98
+    },
+    "artifacts": {
+      "metadata_file": "metadata/io.github.microcks/microcks-testcontainers/0.5.0/reachability-metadata.json"
+    }
+  }
+}
