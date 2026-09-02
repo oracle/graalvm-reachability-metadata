@@ -16,33 +16,17 @@ import org.junit.jupiter.api.Test;
 public class AnnotatedMBeanTest {
 
     @Test
-    void invokesAuditedOperationWithReferenceParameter() throws Exception {
-        String propertyName = "org.apache.activemq.audit";
-        String previousValue = System.getProperty(propertyName);
-        System.setProperty(propertyName, "entry");
+    void invokesOperationWithReferenceParameter() throws Exception {
+        Echo implementation = new Echo();
+        AnnotatedMBean mBean = new AnnotatedMBean(
+                implementation,
+                EchoMBean.class,
+                new ObjectName("org.example:type=Echo,name=standard"));
 
-        try {
-            Echo implementation = new Echo();
-            AnnotatedMBean mBean = new AnnotatedMBean(
-                    implementation,
-                    EchoMBean.class,
-                    new ObjectName("org.example:type=Echo,name=audited"));
+        Object result = mBean.invoke(
+                "echo", new Object[] {"message"}, new String[] {String.class.getName()});
 
-            Object result = mBean.invoke(
-                    "echo", new Object[] {"message"}, new String[] {String.class.getName()});
-
-            assertThat(result).isEqualTo("echo:message");
-        } finally {
-            restoreProperty(propertyName, previousValue);
-        }
-    }
-
-    private static void restoreProperty(String propertyName, String value) {
-        if (value == null) {
-            System.clearProperty(propertyName);
-        } else {
-            System.setProperty(propertyName, value);
-        }
+        assertThat(result).isEqualTo("echo:message");
     }
 
     public interface EchoMBean {

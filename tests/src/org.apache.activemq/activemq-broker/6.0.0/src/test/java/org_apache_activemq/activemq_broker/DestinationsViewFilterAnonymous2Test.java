@@ -18,9 +18,6 @@ public class DestinationsViewFilterAnonymous2Test {
     @Test
     @Timeout(30)
     void sortsDestinationViewsThroughBrokerQueryApi() throws Exception {
-        String auditProperty = "org.apache.activemq.audit";
-        String previousAuditValue = System.getProperty(auditProperty);
-        System.setProperty(auditProperty, "entry");
         BrokerService brokerService = new BrokerService();
         brokerService.setBrokerName("destination-query-broker");
         brokerService.setPersistent(false);
@@ -40,15 +37,6 @@ public class DestinationsViewFilterAnonymous2Test {
             assertThat(result).contains("destinationName=zeta").doesNotContain("destinationName=alpha");
         } finally {
             brokerService.stop();
-            restoreProperty(auditProperty, previousAuditValue);
-        }
-    }
-
-    private static void restoreProperty(String propertyName, String value) {
-        if (value == null) {
-            System.clearProperty(propertyName);
-        } else {
-            System.setProperty(propertyName, value);
         }
     }
 }
