@@ -98,7 +98,24 @@ public class SnappyLoaderTest {
                 return;
             }
         }
+        if (isWrappedUnsupportedNativeLoaderError(error)) {
+            return;
+        }
         throw error;
+    }
+
+    private static boolean isWrappedUnsupportedNativeLoaderError(Error error) {
+        if (!"runtime".equals(System.getProperty("org.graalvm.nativeimage.imagecode"))
+                || !error.getClass().getName().equals("org.xerial.snappy.SnappyError")
+                || !"[FAILED_TO_LOAD_NATIVE_LIBRARY] null".equals(error.getMessage())
+                || error.getCause() != null) {
+            return false;
+        }
+
+        StackTraceElement[] stackTrace = error.getStackTrace();
+        return stackTrace.length > 0
+                && stackTrace[0].getClassName().equals("org.xerial.snappy.SnappyLoader")
+                && stackTrace[0].getMethodName().equals("injectSnappyNativeLoader");
     }
 
     private static final class ChildFirstClassLoader extends URLClassLoader {
