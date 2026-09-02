@@ -41,7 +41,13 @@ from ai_workflows.core.workflow_strategy import (
     WorkflowStrategy,
     strategy_skips_initial_fix_phase,
 )
-from git_scripts.common_git import build_ai_branch_name, delete_remote_branch_if_exists, ensure_gh_authenticated, load_library_stats
+from git_scripts.common_git import (
+    build_ai_branch_name,
+    delete_remote_branch_if_exists,
+    ensure_gh_authenticated,
+    load_library_stats,
+    switch_branch_quietly,
+)
 from utility_scripts import metrics_writer
 from utility_scripts.continuation_marker import (
     PHASE_FINALIZATION,
@@ -50,6 +56,7 @@ from utility_scripts.continuation_marker import (
     save_phase_update,
 )
 from utility_scripts.dynamic_access_exhaust_report import resolve_workflow_exhaust_report
+from utility_scripts.gradle_environment import gradle_command_environment
 from utility_scripts.issue_requested_metadata import (
     NO_REPORTER_METADATA_CONTEXT,
     format_issue_requested_test_requirements,
@@ -58,6 +65,7 @@ from utility_scripts.library_preparation_preflight import (
     prepare_library_preparation_preflight,
 )
 from utility_scripts.library_stats import stats_artifact_dir
+from utility_scripts.logged_command import run_logged_command
 from utility_scripts.metadata_index import (
     MATCH_NEW_VERSION,
     LibraryUpdateTarget,
@@ -71,6 +79,8 @@ from utility_scripts.run_location import (
     STEP_NORMAL_SETUP,
     STEP_RUN_WORKFLOW_ENGINE,
     RunLocation,
+    enter_phase,
+    log_step_progress,
     record_step_failure,
     run_step,
 )
@@ -81,7 +91,7 @@ from utility_scripts.source_context import (
     resolve_test_source_layout,
     source_context_urls_available,
 )
-from utility_scripts.stage_logger import log_stage
+from utility_scripts.stage_logger import log_detail, log_stage
 from utility_scripts.strategy_loader import require_strategy_by_name
 from utility_scripts.workflow_setup import (
     list_all_files,
@@ -420,16 +430,25 @@ def _write_index_entries(repo_path: str, group: str, artifact: str, entries: lis
 
 
 def _run_scaffold(repo_path: str, coordinate: str) -> None:
-    """Run the Gradle scaffold task with a clear failure message."""
+    """Run scaffold quietly with a durable log and clear failure.
+
+    §FS-forge-run-output-legibility §FS-durable-generation-logs
+    """
     command = ["./gradlew", "scaffold", "--coordinates", coordinate]
-    log_stage("library-update-target", f"Running scaffold command: {' '.join(command)}")
-    try:
-        subprocess.run(command, cwd=repo_path, check=True)
-    except subprocess.CalledProcessError as error:
+    result = run_logged_command(
+        command,
+        cwd=repo_path,
+        task_type="library-update-target",
+        subject=coordinate,
+        action="scaffold",
+        env=gradle_command_environment(repo_path),
+        stage="library-update-target",
+    )
+    if result.returncode != 0:
         raise RuntimeError(
             "Failed to scaffold library-update target "
-            f"{coordinate}; command exited with status {error.returncode}: {' '.join(command)}"
-        ) from error
+            f"{coordinate}; command exited with status {result.returncode}: {' '.join(command)}"
+        )
 
 
 def clone_library_update_support(
@@ -523,7 +542,7 @@ def prepare_library_update_target(
     )
     if must_split_shared_target and target.matched_entry is not None:
         clone_library_update_support(repo_path, group, artifact, requested_version, target.matched_entry)
-        log_stage(
+        log_detail(
             "library-update-target",
             "Split {group}:{artifact}:{requested_version} from shared metadata-version {metadata_version} "
             "for version-specific library-update coverage".format(
@@ -549,7 +568,7 @@ def prepare_library_update_target(
     baseline = resolve_version_backfill_baseline(repo_path, group, artifact, requested_version)
     if baseline is not None:
         clone_library_update_support(repo_path, group, artifact, requested_version, baseline.entry)
-        log_stage(
+        log_detail(
             "library-update-target",
             "Cloned support for {group}:{artifact}:{requested_version} from {baseline_coordinates}; "
             "reason: {reason}".format(
@@ -562,7 +581,7 @@ def prepare_library_update_target(
         )
     else:
         coordinate = f"{group}:{artifact}:{requested_version}"
-        log_stage("library-update-target", f"No compatible support found; scaffolding {coordinate}")
+        log_detail("library-update-target", f"No compatible support found; scaffolding {coordinate}")
         _run_scaffold(repo_path, coordinate)
 
     return target
@@ -664,6 +683,7 @@ def main(argv=None) -> int:
     resume_from = None if continuation_marker is None else continuation_marker.continue_from
     resume_existing_tree = resume_from in {"fix", "explore", PHASE_FINALIZATION, "publication"}
     resume_finalization = resume_from == PHASE_FINALIZATION
+    enter_phase(PHASE_SETUP)
     reachability_repo_path, metrics_repo_dir, metrics_repo_root = resolve_workflow_repo_paths(
         explicit_repo_path,
         explicit_metrics_repo_path,
@@ -689,7 +709,13 @@ def main(argv=None) -> int:
     validate_repo_paths(reachability_repo_path, metrics_repo_dir)
     os.chdir(reachability_repo_path)
 
-    log_stage("setup", f"Selected strategy: {strategy_name}")
+    log_detail("setup", f"Selected strategy: {strategy_name}")
+    setup_action = (
+        "Reusing prepared coverage workspace"
+        if resume_existing_tree
+        else "Preparing coverage workspace"
+    )
+    log_step_progress(PHASE_SETUP, STEP_NORMAL_SETUP, f"{setup_action} for {library}")
     update_target = prepare_library_update_target(
         reachability_repo_path,
         group,
@@ -698,7 +724,7 @@ def main(argv=None) -> int:
         issue_requested_metadata_context=issue_requested_metadata_context,
     )
     if update_target.match_type != MATCH_NEW_VERSION:
-        log_stage(
+        log_detail(
             "library-update-target",
             (
                 f"Using {update_target.match_type} target: "
@@ -713,9 +739,9 @@ def main(argv=None) -> int:
         with run_step(PHASE_SETUP, STEP_NORMAL_SETUP, operand=library):
             new_branch = build_ai_branch_name(f"improve-coverage-{group}-{artifact}-{version}")
             delete_remote_branch_if_exists(new_branch)
-            subprocess.run(["git", "switch", "-C", new_branch], check=True)
+            switch_branch_quietly(new_branch)
     else:
-        log_stage("continuation", f"Resuming {library} from preserved branch at phase {resume_from}")
+        log_detail("continuation", f"Resuming {library} from preserved branch at phase {resume_from}")
 
     # Commit existing state as checkpoint
     test_version = update_target.resolved_test_version
@@ -737,7 +763,7 @@ def main(argv=None) -> int:
         record_step_failure(location=RunLocation(PHASE_SETUP, STEP_NORMAL_SETUP, library))
         return 1
     if test_version != version:
-        log_stage(
+        log_detail(
             "setup",
             "Using indexed test directory tests/src/{group}/{artifact}/{test_version} for {library}".format(
                 group=group,
@@ -757,7 +783,7 @@ def main(argv=None) -> int:
             )
             record_step_failure(location=RunLocation(PHASE_SETUP, STEP_NORMAL_SETUP, library))
             return 1
-        log_stage("setup", f"Reusing cached baseline snapshot from {BASELINE_STATS_FILENAME}")
+        log_detail("setup", f"Reusing cached baseline snapshot from {BASELINE_STATS_FILENAME}")
     else:
         # Snapshot baseline stats and metadata entry counts before the workflow modifies them.
         baseline_stats = load_library_stats(reachability_repo_path, library)
@@ -770,7 +796,7 @@ def main(argv=None) -> int:
         }
         with open(baseline_stats_path, "w", encoding="utf-8") as f:
             json.dump(baseline_snapshot, f, indent=2)
-        log_stage("setup", f"Saved baseline snapshot to {BASELINE_STATS_FILENAME}")
+        log_detail("setup", f"Saved baseline snapshot to {BASELINE_STATS_FILENAME}")
     if not resume_existing_tree:
         subprocess.run(["git", "add", tests_dir, index_json], check=False)
         subprocess.run(
@@ -778,7 +804,7 @@ def main(argv=None) -> int:
             capture_output=True, text=True, check=False,
         )
     checkpoint_commit = subprocess.check_output(["git", "rev-parse", "HEAD"], text=True).strip()
-    log_stage("setup", f"Checkpoint commit: {checkpoint_commit}")
+    log_detail("setup", f"Checkpoint commit: {checkpoint_commit}")
     if not resume_existing_tree:
         save_phase_update(
             continuation_marker_path,
@@ -795,7 +821,7 @@ def main(argv=None) -> int:
     ):
         populate_artifact_urls(reachability_repo_path, library)
     else:
-        log_stage(
+        log_detail(
             "populate-artifact-urls",
             f"Skipping artifact URL population for resumed {library}; index.json already has requested source-context URLs.",
         )
@@ -852,7 +878,7 @@ def main(argv=None) -> int:
     read_only_files = list_all_files(docs_path) if docs_path else []
     read_only_files.extend(prepared_source_context.read_only_files)
 
-    log_stage("init-agent", f"Initializing {strategy_agent} agent")
+    log_detail("init-agent", f"Initializing {strategy_agent} agent")
     agent_class = Agent.get_class(strategy_agent)
     agent = agent_class(
         model_name=model_name,
@@ -869,11 +895,22 @@ def main(argv=None) -> int:
         agent_name=strategy.get("agent-command"),
     )
 
+    log_step_progress(PHASE_SETUP, STEP_NORMAL_SETUP, f"Setup ready for {library}")
     if resume_finalization:
+        log_step_progress(
+            PHASE_SETUP,
+            STEP_RUN_WORKFLOW_ENGINE,
+            f"Reusing completed workflow for {strategy_name}",
+        )
         workflow_status = RUN_STATUS_SUCCESS
         iterations = 0
     else:
         with run_step(PHASE_SETUP, STEP_RUN_WORKFLOW_ENGINE, operand=strategy_name):
+            log_step_progress(
+                PHASE_SETUP,
+                STEP_RUN_WORKFLOW_ENGINE,
+                f"Starting workflow {strategy_name} for {library}",
+            )
             run_result = strategy_obj.run(
                 agent=agent,
                 checkpoint_commit_hash=checkpoint_commit,
@@ -906,9 +943,9 @@ def main(argv=None) -> int:
         )
     else:
         if workflow_status == SUCCESS_WITH_INTERVENTION_STATUS:
-            log_stage("status", "Coverage improvement produced PR-eligible post-generation intervention output")
+            log_detail("status", "Coverage improvement produced PR-eligible post-generation intervention output")
         else:
-            log_stage("status", "Coverage improvement succeeded")
+            log_detail("status", "Coverage improvement succeeded")
         run_metrics = metrics_writer.create_run_metrics_output_json(
             repo_path=reachability_repo_path,
             package=group,

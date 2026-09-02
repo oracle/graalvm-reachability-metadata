@@ -8,9 +8,21 @@ import os
 import subprocess
 import tempfile
 import unittest
+from contextlib import redirect_stdout
 from unittest.mock import patch
 
-from utility_scripts.library_finalization import run_library_finalization
+from utility_scripts.library_finalization import (
+    _run_finalization_agent_fix,
+    run_library_finalization,
+)
+from utility_scripts.run_location import (
+    PHASE_FINALIZATION,
+    STEP_AGENT_FIX,
+    STEP_FINALIZE_RUN,
+    failed_run_location,
+    reset_run_location,
+    run_step,
+)
 
 
 def _git(repo_path: str, *args: str) -> str:
@@ -32,6 +44,68 @@ def _commit_all(repo_path: str, message: str) -> str:
 
 
 class LibraryFinalizationTests(unittest.TestCase):
+    def setUp(self) -> None:
+        reset_run_location()
+
+    def tearDown(self) -> None:
+        reset_run_location()
+
+    def test_concise_metadata_repair_uses_agent_fix_step(self) -> None:
+        output = io.StringIO()
+        with patch.dict(
+                os.environ,
+                {"FORGE_VERBOSE": "0", "FORGE_DEBUG_LOGGING": "0"},
+        ), redirect_stdout(output):
+            with run_step(
+                    PHASE_FINALIZATION,
+                    STEP_FINALIZE_RUN,
+                    operand="g:a:1.0",
+            ):
+                result = _run_finalization_agent_fix(
+                    "g:a:1.0",
+                    "metadata validation",
+                    1,
+                    3,
+                    lambda: True,
+                )
+
+        self.assertTrue(result)
+        printed = output.getvalue()
+        self.assertIn(
+            "[finalization] Running agent fix for metadata validation on g:a:1.0 "
+            "(attempt 1/3) (2/2)",
+            printed,
+        )
+        self.assertIn(
+            "[finalization] Agent fix completed for metadata validation on g:a:1.0 "
+            "(attempt 1/3) (2/2)",
+            printed,
+        )
+
+    def test_last_failed_metadata_repair_records_agent_fix_location(self) -> None:
+        output = io.StringIO()
+        with patch.dict(
+                os.environ,
+                {"FORGE_VERBOSE": "0", "FORGE_DEBUG_LOGGING": "0"},
+        ), redirect_stdout(output):
+            with run_step(
+                    PHASE_FINALIZATION,
+                    STEP_FINALIZE_RUN,
+                    operand="g:a:1.0",
+            ):
+                result = _run_finalization_agent_fix(
+                    "g:a:1.0",
+                    "metadata validation",
+                    3,
+                    3,
+                    lambda: False,
+                )
+
+        self.assertFalse(result)
+        location = failed_run_location()
+        self.assertIsNotNone(location)
+        self.assertEqual(location.step, STEP_AGENT_FIX)
+
     def test_rejects_legacy_test_resource_native_image_config_after_split(self) -> None:
         with tempfile.TemporaryDirectory() as repo_path:
             _git(repo_path, "init")

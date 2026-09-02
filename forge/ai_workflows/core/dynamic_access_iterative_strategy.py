@@ -6,6 +6,7 @@
 import os
 import subprocess
 
+from ai_workflows.agents.agent import send_agent_prompt
 from ai_workflows.core.workflow_strategy import (
     RUN_STATUS_CHUNK_READY,
     RUN_STATUS_FAILURE,
@@ -29,10 +30,11 @@ from utility_scripts.run_location import (
     STEP_NATIVE_TRACE_GATE,
     RunLocation,
     enter_phase,
+    log_step_progress,
     record_step_failure,
     run_step,
 )
-from utility_scripts.stage_logger import log_stage
+from utility_scripts.stage_logger import log_detail
 from utility_scripts.strategy_loader import load_strategy_by_name
 
 
@@ -163,7 +165,11 @@ class DynamicAccessIterativeStrategy(WorkflowStrategy):
         prompt_iterations = 1
         with run_step(RUN_PHASE_EXPLORE, STEP_GENERATE_TESTS, operand="reporter-requested metadata"):
             self._print_issue_requested_metadata_message("agent: running reporter-requested metadata prompt")
-            agent.send_prompt(self._render_prompt("issue-requested-metadata"))
+            send_agent_prompt(
+                agent,
+                self._render_prompt("issue-requested-metadata"),
+                "issue_requested_metadata()",
+            )
             self._print_issue_requested_metadata_message("agent: complete")
 
         last_test_output = ""
@@ -193,11 +199,13 @@ class DynamicAccessIterativeStrategy(WorkflowStrategy):
             self._print_issue_requested_metadata_message(
                 "agent: test failed before nativeTest; sending failure output back to agent"
             )
-            agent.send_prompt(
+            send_agent_prompt(
+                agent,
                 "When `./gradlew test -Pcoordinates={library}` is ran this is the error:\n{error_output}".format(
                     library=self.library,
                     error_output=test_output,
-                )
+                ),
+                "feedback_fix()",
             )
             self._print_issue_requested_metadata_message("agent: complete")
             prompt_iterations += 1
@@ -367,6 +375,11 @@ class DynamicAccessIterativeStrategy(WorkflowStrategy):
                     class_name=class_name,
                 )
             )
+            log_step_progress(
+                RUN_PHASE_EXPLORE,
+                STEP_GENERATE_TESTS,
+                f"Generating tests for class {progress_text}: {class_name}",
+            )
             self._print_dynamic_access_detail(
                 "coverage: {covered}/{total}".format(
                     covered=active_class.covered_calls,
@@ -378,6 +391,13 @@ class DynamicAccessIterativeStrategy(WorkflowStrategy):
             class_committed = False
             gate_failed = False
             while class_attempts < self.max_class_iterations:
+                if class_attempts > 0:
+                    log_step_progress(
+                        RUN_PHASE_EXPLORE,
+                        STEP_GENERATE_TESTS,
+                        f"Retrying test generation for class {progress_text}: {class_name} "
+                        f"(attempt {class_attempts + 1}/{self.max_class_iterations})",
+                    )
                 self._print_dynamic_access_detail(
                     "attempt {attempt}/{max_attempts}".format(
                         attempt=class_attempts + 1,
@@ -394,7 +414,7 @@ class DynamicAccessIterativeStrategy(WorkflowStrategy):
                 )
                 with run_step(RUN_PHASE_EXPLORE, STEP_GENERATE_TESTS, operand=class_name):
                     self._print_dynamic_access_detail("agent: running dynamic-access prompt", indent_level=2)
-                    agent.send_prompt(dynamic_prompt)
+                    send_agent_prompt(agent, dynamic_prompt, "dynamic_access_iteration()")
                     self._print_dynamic_access_detail("agent: complete", indent_level=2)
                 prompt_iterations += 1
                 save_phase_update(
@@ -407,6 +427,12 @@ class DynamicAccessIterativeStrategy(WorkflowStrategy):
                 last_test_output = ""
                 last_failed_task = None
                 for test_iteration in range(self.max_class_test_iterations):
+                    log_step_progress(
+                        RUN_PHASE_EXPLORE,
+                        STEP_GENERATE_TESTS,
+                        f"Running test {test_iteration + 1}/{self.max_class_test_iterations}",
+                        indent_level=1,
+                    )
                     self._print_dynamic_access_detail(
                         "test {current}/{maximum}: running ./gradlew test -Pcoordinates={library}".format(
                             current=test_iteration + 1,
@@ -419,6 +445,18 @@ class DynamicAccessIterativeStrategy(WorkflowStrategy):
                     failed_task = self._get_first_failed_task(test_output)
                     last_test_output = test_output
                     last_failed_task = failed_task
+                    if failed_task == "nativeTest":
+                        test_outcome = "reached nativeTest"
+                    elif failed_task is None:
+                        test_outcome = "passed"
+                    else:
+                        test_outcome = f"failed at {failed_task}"
+                    log_step_progress(
+                        RUN_PHASE_EXPLORE,
+                        STEP_GENERATE_TESTS,
+                        f"Test {test_iteration + 1}/{self.max_class_test_iterations} {test_outcome}",
+                        indent_level=1,
+                    )
                     self._print_dynamic_access_detail(
                         "test: complete (failed task: {failed_task})".format(
                             failed_task=failed_task or "none",
@@ -428,15 +466,23 @@ class DynamicAccessIterativeStrategy(WorkflowStrategy):
                     if failed_task in {"nativeTest", None}:
                         reached_native_test = True
                         break
+                    log_step_progress(
+                        RUN_PHASE_EXPLORE,
+                        STEP_GENERATE_TESTS,
+                        f"Running feedback fix after {failed_task}",
+                        indent_level=2,
+                    )
                     self._print_dynamic_access_detail(
                         "agent: test failed before nativeTest; sending failure output back to agent",
                         indent_level=2,
                     )
-                    agent.send_prompt(
+                    send_agent_prompt(
+                        agent,
                         "When `./gradlew test -Pcoordinates={library}` is ran this is the error:\n{error_output}".format(
                             library=self.library,
                             error_output=test_output,
-                        )
+                        ),
+                        "feedback_fix()",
                     )
                     self._print_dynamic_access_detail("agent: complete", indent_level=2)
                     prompt_iterations += 1
@@ -453,12 +499,22 @@ class DynamicAccessIterativeStrategy(WorkflowStrategy):
                         class_name=class_name,
                     )
                     subprocess.run(["git", "reset", "--hard", class_checkpoint], check=False)
+                    log_step_progress(
+                        RUN_PHASE_EXPLORE,
+                        STEP_GENERATE_TESTS,
+                        f"Class {class_name} failed before nativeTest",
+                    )
                     class_failed = True
                     break
 
                 previous_report = current_report
                 current_report = self._generate_dynamic_access_report(indent_level=2)
                 if current_report is None:
+                    log_step_progress(
+                        RUN_PHASE_EXPLORE,
+                        STEP_GENERATE_TESTS,
+                        f"Class {class_name} failed: dynamic-access report unavailable",
+                    )
                     self._print_dynamic_access_detail(
                         "result: dynamic-access report unavailable after test run",
                         indent_level=2,
@@ -539,6 +595,12 @@ class DynamicAccessIterativeStrategy(WorkflowStrategy):
                         ),
                         indent_level=2,
                     )
+                    log_step_progress(
+                        RUN_PHASE_EXPLORE,
+                        STEP_GENERATE_TESTS,
+                        f"Class {class_name} partially covered: "
+                        f"{updated_class.covered_calls}/{updated_class.total_calls}",
+                    )
                     class_checkpoint = self._commit_test_sources(
                         f"Partial dynamic-access coverage for {class_name} "
                         f"({updated_class.covered_calls}/{updated_class.total_calls})"
@@ -558,6 +620,12 @@ class DynamicAccessIterativeStrategy(WorkflowStrategy):
                         updated_class = current_report.get_class(class_name) or updated_class
                     self._save_dynamic_access_exhaust_report()
                 else:
+                    log_step_progress(
+                        RUN_PHASE_EXPLORE,
+                        STEP_GENERATE_TESTS,
+                        f"Class {class_name} gained no coverage; "
+                        f"{updated_class.uncovered_calls} calls remain",
+                    )
                     self._print_dynamic_access_detail(
                         "result: no new coverage, {remaining} {call_label} still uncovered".format(
                             remaining=updated_class.uncovered_calls,
@@ -617,6 +685,11 @@ class DynamicAccessIterativeStrategy(WorkflowStrategy):
                         self._locate_explore_failure(class_name)
                         return False, prompt_iterations
                     self._last_phase_status = RUN_STATUS_CHUNK_READY
+                    log_step_progress(
+                        RUN_PHASE_EXPLORE,
+                        STEP_GENERATE_TESTS,
+                        f"Exploration chunk ready after {len(terminal_classes_this_part)} classes",
+                    )
                     self._print_dynamic_access_message(
                         "Chunked dynamic-access boundary reached after {count} terminal class(es).".format(
                             count=len(terminal_classes_this_part),
@@ -638,6 +711,11 @@ class DynamicAccessIterativeStrategy(WorkflowStrategy):
                     "final: exhausted after {attempts} attempts".format(
                         attempts=self.max_class_iterations,
                     )
+                )
+                log_step_progress(
+                    RUN_PHASE_EXPLORE,
+                    STEP_GENERATE_TESTS,
+                    f"Class {class_name} exhausted after {self.max_class_iterations} attempts",
                 )
                 self._print_failure_analysis(
                     "class_iteration_exhausted",
@@ -673,6 +751,11 @@ class DynamicAccessIterativeStrategy(WorkflowStrategy):
                     self._locate_explore_failure(class_name)
                     return False, prompt_iterations
                 self._last_phase_status = RUN_STATUS_CHUNK_READY
+                log_step_progress(
+                    RUN_PHASE_EXPLORE,
+                    STEP_GENERATE_TESTS,
+                    f"Exploration chunk ready after {len(terminal_classes_this_part)} classes",
+                )
                 self._print_dynamic_access_message(
                     "Chunked dynamic-access boundary reached after {count} terminal class(es).".format(
                         count=len(terminal_classes_this_part),
@@ -963,6 +1046,19 @@ class DynamicAccessIterativeStrategy(WorkflowStrategy):
             current_report,
     ) -> None:
         remaining_calls = max(current_report.total_calls - current_report.covered_calls, 0)
+        log_step_progress(
+            RUN_PHASE_EXPLORE,
+            STEP_GENERATE_TESTS,
+            "Finished class {class_name}: classes {completed}/{total} processed; "
+            "coverage {covered}/{call_total} ({remaining} remaining)".format(
+                class_name=class_name,
+                completed=completed_class_count,
+                total=total_class_count,
+                covered=current_report.covered_calls,
+                call_total=current_report.total_calls,
+                remaining=remaining_calls,
+            ),
+        )
         cls._print_dynamic_access_message(cls.PROGRESS_DIVIDER)
         cls._print_dynamic_access_message(
             "Progress after {class_name}: classes {completed}/{total} complete; "
@@ -1122,7 +1218,6 @@ class DynamicAccessIterativeStrategy(WorkflowStrategy):
                 indent_level=indent_level,
                 exit_code=result.returncode,
             )
-            print(result.stdout)
             return None
         try:
             report = load_dynamic_access_coverage_report(
@@ -1235,15 +1330,15 @@ class DynamicAccessIterativeStrategy(WorkflowStrategy):
 
     @staticmethod
     def _print_dynamic_access_message(message: str) -> None:
-        log_stage("dynamic-access", message)
+        log_detail("dynamic-access", message)
 
     @classmethod
     def _print_dynamic_access_detail(cls, message: str, indent_level: int = 1) -> None:
-        log_stage("dynamic-access", message, indent_level=indent_level)
+        log_detail("dynamic-access", message, indent_level=indent_level)
 
     @staticmethod
     def _print_issue_requested_metadata_message(message: str) -> None:
-        log_stage("issue-requested-metadata", message)
+        log_detail("issue-requested-metadata", message)
 
     @classmethod
     def _print_failure_analysis(cls, stage: str, issue: str, indent_level: int = 1, **details) -> None:

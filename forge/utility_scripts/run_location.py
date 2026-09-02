@@ -29,7 +29,13 @@ from utility_scripts.continuation_marker import (
     ContinuationMarker,
     save_phase_update,
 )
-from utility_scripts.stage_logger import log_phase_banner, log_stage
+from utility_scripts.stage_logger import (
+    log_debug,
+    log_phase_banner,
+    log_stage,
+    set_compact_narration,
+)
+from utility_scripts.task_logs import display_log_path
 
 # The dispatcher-side segment that runs before a run — and therefore before any
 # continuation state — exists. §FS-forge-run-location-reporting.1
@@ -69,9 +75,9 @@ PHASE_STEPS: dict[str, tuple[str, ...]] = {
     PHASE_CLAIM: (
         STEP_CHECK_HOST_REQUIREMENTS,
         STEP_CHECK_STRATEGY_AND_MODEL,
-        STEP_CHECK_ISSUE_FORM,
         STEP_CLAIM_ISSUE,
         STEP_CREATE_ISSUE_WORKSPACE,
+        STEP_CHECK_ISSUE_FORM,
         STEP_ROUTE_TO_DRIVER,
     ),
     PHASE_SETUP: (
@@ -99,6 +105,16 @@ PHASE_STEPS: dict[str, tuple[str, ...]] = {
         STEP_LOCAL_CI_CHECK,
     ),
 }
+
+# Phases move to concise output one at a time. Their registered method-style
+# announcement remains available under --verbose. §FS-forge-run-output-legibility.5
+COMPACT_OUTPUT_PHASES: tuple[str, ...] = (
+    PHASE_CLAIM,
+    PHASE_SETUP,
+    PHASE_FIX,
+    PHASE_EXPLORE,
+    PHASE_FINALIZATION,
+)
 
 UNLOCATED_STEP = "<unlocated-step>"
 LOCATION_ATTRIBUTE = "forge_run_location"
@@ -200,6 +216,7 @@ def reset_run_location() -> None:
     _STATE.phase = None
     _STATE.context = None
     _STATE.reported = False
+    set_compact_narration(False)
 
 
 def enter_phase(phase: str) -> None:
@@ -212,6 +229,7 @@ def enter_phase(phase: str) -> None:
     if _STATE.phase == phase:
         return
     _STATE.phase = phase
+    set_compact_narration(phase in COMPACT_OUTPUT_PHASES)
     log_phase_banner(phase, context=_STATE.context)
 
 
@@ -242,8 +260,23 @@ def announce_step(phase: str, step: str, operand: str | None = None) -> RunLocat
     position, total = step_position(phase, step)
     enter_phase(phase)
     suffix = "" if operand is None else f" on {operand}"
-    log_stage(phase, f"Running step {step} ({position}/{total}) of phase {phase}{suffix}")
+    message = f"Running step {step} ({position}/{total}) of phase {phase}{suffix}"
+    if phase in COMPACT_OUTPUT_PHASES:
+        log_debug(phase, message)
+    else:
+        log_stage(phase, message)
     return RunLocation(phase=phase, step=step, operand=operand)
+
+
+def log_step_progress(
+        phase: str,
+        step: str,
+        message: str,
+        indent_level: int = 0,
+) -> None:
+    """Print one concise step transition with its derived phase position."""
+    position, total = step_position(phase, step)
+    log_stage(phase, f"{message} ({position}/{total})", indent_level=indent_level)
 
 
 def pipeline_step(
@@ -352,7 +385,11 @@ def format_run_failure_line(location: RunLocation) -> str:
     return f"{FAILURE_LINE_PREFIX}{location}"
 
 
-def report_run_failure(location: RunLocation, detail: str | None = None) -> str:
+def report_run_failure(
+        location: RunLocation,
+        detail: str | None = None,
+        log_path: str | None = None,
+) -> str:
     """Print the failure location once per run, then its error detail.
 
     A run has one terminal failure, so the first reporter on the way out owns the
@@ -367,9 +404,37 @@ def report_run_failure(location: RunLocation, detail: str | None = None) -> str:
     print(line, file=sys.stderr)
     if not location.is_located:
         print(UNLOCATED_FAILURE_DEFECT, file=sys.stderr)
+    print(file=sys.stderr)
+    print(f"Phase failed: {location.phase}", file=sys.stderr)
+    print(f"Step failed: {location.step}", file=sys.stderr)
+    if location.operand is not None:
+        print(f"{_failure_operand_label(location)}: {location.operand}", file=sys.stderr)
     if detail:
-        print(detail, file=sys.stderr)
+        print(f"Error: {_normalize_failure_detail(detail)}", file=sys.stderr)
+    if log_path:
+        print(f"Log: {display_log_path(log_path)}", file=sys.stderr)
     return line
+
+
+def _failure_operand_label(location: RunLocation) -> str:
+    """Return the operator-facing label for a failed step's operand."""
+    operand = location.operand or ""
+    if (
+            location.step in {STEP_GENERATE_TESTS, STEP_NATIVE_TRACE_GATE}
+            and ":" not in operand and "." in operand and " " not in operand
+    ):
+        return "Class"
+    if ":" in operand:
+        return "Coordinate"
+    return "Operand"
+
+
+def _normalize_failure_detail(detail: str) -> str:
+    """Remove the legacy error prefix before rendering structured failure output."""
+    normalized = detail.strip()
+    if normalized.startswith("ERROR: "):
+        return normalized[len("ERROR: "):]
+    return normalized
 
 
 def _record_failure_in_marker(location: RunLocation) -> None:

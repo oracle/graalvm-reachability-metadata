@@ -5,6 +5,7 @@
 
 import os
 import sys
+import threading
 from typing import TextIO
 
 
@@ -14,11 +15,35 @@ ANSI_BOLD_RED = "\033[1;31m"
 ANSI_BOLD_CYAN = "\033[1;36m"
 BANNER_WIDTH = 88
 DEBUG_LOGGING_ENV_VAR = "FORGE_DEBUG_LOGGING"
+VERBOSE_LOGGING_ENV_VAR = "FORGE_VERBOSE"
+
+
+class _NarrationState(threading.local):
+    """Per-run phase state deciding whether normal detail is suppressed."""
+
+    def __init__(self) -> None:
+        self.compact: bool = False
+
+
+_NARRATION_STATE = _NarrationState()
+
+
+def _environment_flag_enabled(variable: str) -> bool:
+    """Return True when an environment flag carries a conventional true value."""
+    return os.environ.get(variable, "").strip().lower() in {"1", "true", "yes", "on"}
+
+
+def enable_verbose_logging() -> None:
+    """Enable narration-level logging for this process and its children."""
+    os.environ[VERBOSE_LOGGING_ENV_VAR] = "1"
 
 
 def debug_logging_enabled() -> bool:
     """Return True when narration-level logging is switched on."""
-    return os.environ.get(DEBUG_LOGGING_ENV_VAR, "").strip().lower() in {"1", "true", "yes", "on"}
+    return (
+        _environment_flag_enabled(VERBOSE_LOGGING_ENV_VAR)
+        or _environment_flag_enabled(DEBUG_LOGGING_ENV_VAR)
+    )
 
 
 def log_stage(stage: str, message: str, indent_level: int = 0) -> None:
@@ -27,11 +52,33 @@ def log_stage(stage: str, message: str, indent_level: int = 0) -> None:
     print(f"[{stage}] {indent}{message}")
 
 
+def set_compact_narration(compact: bool) -> None:
+    """Select whether the current thread's announced phase hides detail."""
+    _NARRATION_STATE.compact = compact
+
+
+def log_detail(stage: str, message: str, indent_level: int = 0) -> None:
+    """Print narration unless the current compact phase hides it."""
+    if _NARRATION_STATE.compact and not debug_logging_enabled():
+        return
+    log_stage(stage, message, indent_level)
+
+
+def log_plain_detail(message: str) -> None:
+    """Print unprefixed narration unless the compact phase hides it.
+
+    §FS-forge-run-output-legibility.5
+    """
+    if _NARRATION_STATE.compact and not debug_logging_enabled():
+        return
+    print(message)
+
+
 def log_debug(stage: str, message: str, indent_level: int = 0) -> None:
-    """Print narration that is debugging detail, not run output.
+    """Print verbose narration that is debugging detail, not normal run output.
 
     Keeps the human-intervention handoff's git narration out of failure output
-    unless debug logging is enabled. §FS-forge-run-location-reporting.4
+    unless verbose logging is enabled. §FS-forge-run-location-reporting.4
     """
     if debug_logging_enabled():
         log_stage(stage, message, indent_level)

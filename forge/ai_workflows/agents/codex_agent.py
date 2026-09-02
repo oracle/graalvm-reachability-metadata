@@ -8,7 +8,7 @@ import os
 import subprocess
 import tempfile
 import time
-from ai_workflows.agents.agent import Agent
+from ai_workflows.agents.agent import Agent, AgentTimeoutError
 from ai_workflows.agents.agent_runtime import (
     CODEX_BYPASS_APPROVALS_AND_SANDBOX_FLAG,
     agent_process_environment,
@@ -162,43 +162,43 @@ class CodexAgent(Agent):
 
     def graphify(self, source_dirs: list[str]) -> str:
         """Send $graphify to the Codex session to build a merged knowledge graph context."""
-        from utility_scripts.stage_logger import log_stage
+        from utility_scripts.stage_logger import log_detail
         from utility_scripts.task_logs import display_log_path
         if not source_dirs:
             return ""
-        log_stage("graphify", f"Initializing knowledge graph context for {len(source_dirs)} source(s)")
+        log_detail("graphify", f"Initializing knowledge graph context for {len(source_dirs)} source(s)")
         result = self.send_prompt(f"$graphify {source_dirs[0]}")
         for extra_dir in source_dirs[1:]:
-            log_stage("graphify", f"Merging graph from {display_log_path(extra_dir)}")
+            log_detail("graphify", f"Merging graph from {display_log_path(extra_dir)}")
             result = self.send_prompt(f"$graphify {extra_dir} --update")
-        log_stage("graphify", "Knowledge graph context initialized")
+        log_detail("graphify", "Knowledge graph context initialized")
         return result
 
     def send_prompt(self, prompt: str) -> str:
         self._print_session_log_once("Codex", self._session_log_path)
-        original_thread_id = self._thread_id
-        cmd = self._build_exec_command(prompt)
-        try:
-            returncode, output = self._run_codex_command(cmd)
-        except subprocess.TimeoutExpired as exc:
-            self._write_turn_log(original_thread_id, prompt, exc.output or "")
-            print(f"[Codex] Timed out after {self._timeout}s.", flush=True)
-            raise RuntimeError("Codex prompt timed out.") from exc
+        with self._agent_activity("Codex"):
+            original_thread_id = self._thread_id
+            cmd = self._build_exec_command(prompt)
+            try:
+                returncode, output = self._run_codex_command(cmd)
+            except subprocess.TimeoutExpired as exc:
+                self._write_turn_log(original_thread_id, prompt, exc.output or "")
+                raise AgentTimeoutError(
+                    self._current_agent_action(), self._timeout, self._session_log_path,
+                ) from exc
 
-        self._record_token_usage(prompt, output)
-        if self._thread_id is None:
-            self._thread_id = self._extract_thread_id(output)
-        self._write_turn_log(self._thread_id or original_thread_id, prompt, output)
-        if returncode != 0:
-            print("[Codex] Failed.", flush=True)
-            raise RuntimeError(f"Codex command failed with exit code {returncode}.")
-        if self._thread_id is None:
-            raise RuntimeError("Codex command completed without a thread id.")
-        response = self._extract_last_message(output)
-        if not response:
-            raise RuntimeError("Codex command completed without an assistant message.")
-        print("[Codex] Done.", flush=True)
-        return response
+            self._record_token_usage(prompt, output)
+            if self._thread_id is None:
+                self._thread_id = self._extract_thread_id(output)
+            self._write_turn_log(self._thread_id or original_thread_id, prompt, output)
+            if returncode != 0:
+                raise RuntimeError(f"Codex command failed with exit code {returncode}.")
+            if self._thread_id is None:
+                raise RuntimeError("Codex command completed without a thread id.")
+            response = self._extract_last_message(output)
+            if not response:
+                raise RuntimeError("Codex command completed without an assistant message.")
+            return response
 
     def _run_codex_command(self, cmd: list[str]) -> tuple[int, str]:
         start_time = time.monotonic()

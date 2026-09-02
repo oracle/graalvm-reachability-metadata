@@ -13,6 +13,7 @@ from ai_workflows.core.workflow_strategy import (
 from utility_scripts.continuation_marker import PHASE_EXPLORE, PHASE_FIX, save_phase_update
 from utility_scripts.dynamic_access_report import BulkDynamicAccessProgress, DynamicAccessCoverageReport
 from utility_scripts.java_fix_coverage_follow_up import uncovered_dynamic_access_class_count
+from utility_scripts.stage_logger import log_detail
 
 
 @WorkflowStrategy.register("increase_dynamic_access_coverage")
@@ -48,7 +49,7 @@ class IncreaseDynamicAccessCoverageStrategy(WorkflowStrategy):
 
     @staticmethod
     def _print_message(message: str) -> None:
-        print(f"[composition-workflow] {message}")
+        log_detail("composition-workflow", message)
 
     def run(self, agent, **kwargs):
         current_report: DynamicAccessCoverageReport | None = None

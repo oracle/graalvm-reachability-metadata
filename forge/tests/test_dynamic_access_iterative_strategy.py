@@ -16,9 +16,18 @@ from ai_workflows.core.dynamic_access_iterative_strategy import DynamicAccessIte
 from ai_workflows.core.workflow_strategy import RUN_STATUS_CHUNK_READY, RUN_STATUS_FAILURE, RUN_STATUS_SUCCESS
 from utility_scripts.dynamic_access_report import DynamicAccessClass, DynamicAccessCoverageReport
 from utility_scripts.dynamic_access_exhaust_report import DynamicAccessExhaustReport
+from utility_scripts.continuation_marker import PHASE_EXPLORE
+from utility_scripts.run_location import enter_phase, reset_run_location
 
 
 class DynamicAccessProgressLoggingTests(unittest.TestCase):
+    def setUp(self) -> None:
+        reset_run_location()
+        enter_phase(PHASE_EXPLORE)
+
+    def tearDown(self) -> None:
+        reset_run_location()
+
     def test_class_completion_progress_prints_overall_coverage(self) -> None:
         report = DynamicAccessCoverageReport(
             coordinate="org.example:lib:1.0.0",
@@ -39,10 +48,8 @@ class DynamicAccessProgressLoggingTests(unittest.TestCase):
 
         self.assertEqual(
             output.getvalue().strip(),
-            "[dynamic-access] ===================================================================================\n"
-            "[dynamic-access] Progress after org.example.SomeClass: "
-            "classes 5/35 complete; overall coverage 45/103 covered (58 remaining)\n"
-            "[dynamic-access] ===================================================================================",
+            "[explore] Finished class org.example.SomeClass: classes 5/35 processed; "
+            "coverage 45/103 (58 remaining) (1/3)",
         )
 
     def test_completed_class_count_includes_fully_covered_report_classes(self) -> None:

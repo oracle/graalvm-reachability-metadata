@@ -21,6 +21,7 @@ from git_scripts.common_git import (
     stage_and_commit as stage_and_commit_common,
 )
 from utility_scripts.gradle_environment import gradle_command_environment
+from utility_scripts.logged_command import run_logged_command
 from utility_scripts.metadata_index import (
     index_path,
     load_index_entries,
@@ -345,20 +346,28 @@ def _apply_alias_split(
     entries.insert(target_index, successor_entry)
     _write_index_entries(repo_path, group, artifact, entries)
     successor_coordinates = f"{group}:{artifact}:{failed_version}"
-    log_stage(
-        "generate-library-stats",
-        f"Running generateLibraryStats for split successor {successor_coordinates}",
-    )
-    subprocess.run(
-        [
-            "./gradlew",
-            "generateLibraryStats",
-            f"-Pcoordinates={successor_coordinates}",
-        ],
+    stats_command = [
+        "./gradlew",
+        "generateLibraryStats",
+        f"-Pcoordinates={successor_coordinates}",
+    ]
+    # Keep split finalization quiet without losing its evidence.
+    # §FS-forge-run-output-legibility §FS-durable-generation-logs
+    stats_result = run_logged_command(
+        stats_command,
         cwd=repo_path,
+        task_type="library-update-alias-split",
+        subject=successor_coordinates,
+        action="generateLibraryStats",
         env=gradle_command_environment(repo_path),
-        check=True,
+        stage="generate-library-stats",
     )
+    if stats_result.returncode != 0:
+        raise subprocess.CalledProcessError(
+            stats_result.returncode,
+            stats_command,
+            output=stats_result.stdout,
+        )
 
     return {
         "requested_coordinates": requested_coordinates,

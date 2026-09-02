@@ -7,6 +7,7 @@ import contextlib
 import io
 import tempfile
 import unittest
+from unittest.mock import patch
 
 from utility_scripts import run_location
 from utility_scripts.continuation_marker import (
@@ -22,6 +23,7 @@ from utility_scripts.run_location import (
     PHASE_SETUP,
     STEP_CHECK_HOST_REQUIREMENTS,
     STEP_GENERATE_TESTS,
+    STEP_NORMAL_SETUP,
     STEP_NATIVE_TRACE_GATE,
     STEP_PUBLISH_BRANCH,
     UNLOCATED_FAILURE_DEFECT,
@@ -32,6 +34,7 @@ from utility_scripts.run_location import (
     bind_run_context,
     clear_recorded_failure,
     format_run_failure_line,
+    log_step_progress,
     marker_failure_location,
     pipeline_step,
     record_step_failure,
@@ -41,6 +44,7 @@ from utility_scripts.run_location import (
     run_step,
     step_position,
 )
+from utility_scripts.stage_logger import log_detail, log_plain_detail
 
 
 def _captured(callable_under_test):
@@ -84,17 +88,118 @@ class ProgressOutputTests(unittest.TestCase):
     def tearDown(self) -> None:
         reset_run_location()
 
-    def test_step_entry_prints_the_running_step_line(self) -> None:
+    def test_verbose_explore_prints_the_registered_step_line(self) -> None:
         def enter() -> None:
             with run_step(PHASE_EXPLORE, STEP_NATIVE_TRACE_GATE, operand="com.acme.Thing"):
                 pass
 
-        stdout, _ = _captured(enter)
+        with patch.dict("os.environ", {"FORGE_VERBOSE": "1"}):
+            stdout, _ = _captured(enter)
         position, total = step_position(PHASE_EXPLORE, STEP_NATIVE_TRACE_GATE)
         self.assertIn(
             f"Running step {STEP_NATIVE_TRACE_GATE} ({position}/{total}) of phase {PHASE_EXPLORE} on com.acme.Thing",
             stdout,
         )
+
+    def test_compact_claim_progress_keeps_the_derived_step_count(self) -> None:
+        def enter() -> None:
+            with run_step(PHASE_CLAIM, STEP_CHECK_HOST_REQUIREMENTS):
+                log_step_progress(
+                    PHASE_CLAIM,
+                    STEP_CHECK_HOST_REQUIREMENTS,
+                    "Checking host requirements",
+                )
+
+        with patch.dict(
+                "os.environ",
+                {"FORGE_VERBOSE": "0", "FORGE_DEBUG_LOGGING": "0"},
+        ):
+            stdout, _ = _captured(enter)
+
+        position, total = step_position(PHASE_CLAIM, STEP_CHECK_HOST_REQUIREMENTS)
+        self.assertIn(f"[claim] Checking host requirements ({position}/{total})", stdout)
+        self.assertNotIn(f"Running step {STEP_CHECK_HOST_REQUIREMENTS}", stdout)
+
+    def test_verbose_claim_progress_restores_the_registered_step_line(self) -> None:
+        def enter() -> None:
+            with run_step(PHASE_CLAIM, STEP_CHECK_HOST_REQUIREMENTS):
+                log_step_progress(
+                    PHASE_CLAIM,
+                    STEP_CHECK_HOST_REQUIREMENTS,
+                    "Checking host requirements",
+                )
+
+        with patch.dict("os.environ", {"FORGE_VERBOSE": "1"}):
+            stdout, _ = _captured(enter)
+
+        self.assertIn(f"Running step {STEP_CHECK_HOST_REQUIREMENTS}", stdout)
+        self.assertIn("[claim] Checking host requirements", stdout)
+
+    def test_compact_setup_hides_detail_but_keeps_state_and_count(self) -> None:
+        def enter() -> None:
+            with run_step(PHASE_SETUP, STEP_NORMAL_SETUP, operand="org.example:lib:1.0.0"):
+                log_step_progress(
+                    PHASE_SETUP,
+                    STEP_NORMAL_SETUP,
+                    "Scaffolding org.example:lib:1.0.0",
+                )
+                log_detail("scaffold", "internal setup narration")
+                log_plain_detail("plain setup narration")
+
+        with patch.dict(
+                "os.environ",
+                {"FORGE_VERBOSE": "0", "FORGE_DEBUG_LOGGING": "0"},
+        ):
+            stdout, _ = _captured(enter)
+
+        position, total = step_position(PHASE_SETUP, STEP_NORMAL_SETUP)
+        self.assertIn(f"[setup] Scaffolding org.example:lib:1.0.0 ({position}/{total})", stdout)
+        self.assertNotIn(f"Running step {STEP_NORMAL_SETUP}", stdout)
+        self.assertNotIn("internal setup narration", stdout)
+        self.assertNotIn("plain setup narration", stdout)
+
+    def test_verbose_setup_restores_detail_and_registered_step(self) -> None:
+        def enter() -> None:
+            with run_step(PHASE_SETUP, STEP_NORMAL_SETUP, operand="org.example:lib:1.0.0"):
+                log_step_progress(
+                    PHASE_SETUP,
+                    STEP_NORMAL_SETUP,
+                    "Scaffolding org.example:lib:1.0.0",
+                )
+                log_detail("scaffold", "internal setup narration")
+                log_plain_detail("plain setup narration")
+
+        with patch.dict("os.environ", {"FORGE_VERBOSE": "1"}):
+            stdout, _ = _captured(enter)
+
+        self.assertIn(f"Running step {STEP_NORMAL_SETUP}", stdout)
+        self.assertIn("internal setup narration", stdout)
+        self.assertIn("plain setup narration", stdout)
+        self.assertNotIn("[] plain setup narration", stdout)
+
+    def test_finalization_is_compact_and_publication_restores_detail(self) -> None:
+        def transition() -> None:
+            run_location.enter_phase(PHASE_SETUP)
+            log_detail("setup-detail", "hidden setup detail")
+            run_location.enter_phase(PHASE_EXPLORE)
+            log_detail("explore-detail", "hidden explore detail")
+            run_location.enter_phase(PHASE_FINALIZATION)
+            log_detail("finalization-detail", "hidden finalization detail")
+            log_plain_detail("hidden plain finalization detail")
+            run_location.enter_phase(PHASE_PUBLICATION)
+            log_detail("publication-detail", "visible publication detail")
+
+        with patch.dict(
+                "os.environ",
+                {"FORGE_VERBOSE": "0", "FORGE_DEBUG_LOGGING": "0"},
+        ):
+            stdout, _ = _captured(transition)
+
+        self.assertNotIn("hidden setup detail", stdout)
+        self.assertNotIn("hidden explore detail", stdout)
+        self.assertNotIn("hidden finalization detail", stdout)
+        self.assertNotIn("hidden plain finalization detail", stdout)
+        self.assertIn("visible publication detail", stdout)
 
     def test_phase_banner_prints_once_per_transition(self) -> None:
         bind_run_context("issue #1412 org.example:demo:1.0.0")
@@ -131,7 +236,10 @@ class FailureLocationTests(unittest.TestCase):
         _, stderr = _captured(fail)
         lines = [line for line in stderr.splitlines() if line]
         self.assertEqual(lines[0], "run failed in explore/generate_tests()[com.acme.Thing]")
-        self.assertEqual(lines[1], "ERROR: boom")
+        self.assertEqual(lines[1], "Phase failed: explore")
+        self.assertEqual(lines[2], "Step failed: generate_tests()")
+        self.assertEqual(lines[3], "Class: com.acme.Thing")
+        self.assertEqual(lines[4], "Error: boom")
 
     def test_innermost_step_wins_and_survives_an_intermediate_handler(self) -> None:
         def fail() -> None:

@@ -8,6 +8,7 @@ import subprocess
 import sys
 
 from git_scripts.common_git import GitTransportError, run_git_transport
+from utility_scripts.stage_logger import log_debug
 
 REACHABILITY_REPO_CLONE_URL = "git@github.com:oracle/graalvm-reachability-metadata.git"
 
@@ -238,7 +239,7 @@ def metrics_json_repo_relative_path(
 
 def resolve_reachability_repo_root(explicit_reachability_path: str | None) -> str:
     """Resolve and validate the reachability repository a run operates on."""
-    print("[Resolving graalvm-reachability-metadata root path...]")
+    log_debug("startup", "Resolving graalvm-reachability-metadata root path")
     if explicit_reachability_path:
         resolved_reachability_root = explicit_reachability_path
     else:
@@ -249,7 +250,7 @@ def resolve_reachability_repo_root(explicit_reachability_path: str | None) -> st
 
 def resolve_metrics_repo_root(reachability_root: str, explicit_metrics_repo_path: str | None) -> str:
     """Resolve the Forge metrics root used alongside a resolved reachability repository."""
-    print("[Resolving Forge metrics root path...]")
+    log_debug("startup", "Resolving Forge metrics root path")
     if explicit_metrics_repo_path:
         return ensure_in_repo_metrics_root(explicit_metrics_repo_path)
     return resolve_in_repo_metrics_root(reachability_root)
