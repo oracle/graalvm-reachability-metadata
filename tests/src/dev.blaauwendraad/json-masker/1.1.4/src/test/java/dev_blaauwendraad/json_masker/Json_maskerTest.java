@@ -76,6 +76,22 @@ public class Json_maskerTest {
     }
 
     @Test
+    void allowsOnlyValuesAtConfiguredJsonPaths() {
+        JsonMaskingConfig config = JsonMaskingConfig.builder()
+                .allowJsonPaths("$.profile.name", "$.profile.age", "$.profile.verified")
+                .build();
+        JsonMasker masker = JsonMasker.getMasker(config);
+        String input = "{\"profile\":{\"name\":\"Ada\",\"age\":36,\"verified\":true},"
+                + "\"copy\":{\"name\":\"Ada\",\"age\":36,\"verified\":true}}";
+
+        String masked = masker.mask(input);
+
+        assertThat(masked)
+                .isEqualTo("{\"profile\":{\"name\":\"Ada\",\"age\":36,\"verified\":true},"
+                        + "\"copy\":{\"name\":\"***\",\"age\":\"###\",\"verified\":\"&&&\"}}");
+    }
+
+    @Test
     void masksExactAndWildcardJsonPaths() {
         JsonMaskingConfig config = JsonMaskingConfig.builder()
                 .maskJsonPaths("$.users.*.token", "$.admin.token")
