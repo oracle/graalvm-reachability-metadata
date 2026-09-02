@@ -8,6 +8,11 @@ Newest entry first; every non-approval is recorded, including one a repair later
 **Test messaging timeouts violate the 10-second floor**
 
 In tests/src/org.springframework.amqp/spring-rabbitmq-client/4.2.0-M1/src/test/java/org_springframework_amqp/spring_rabbitmq_client/Spring_rabbitmq_clientTest.java, the newly added test project configured 250 ms publish, completion, request, and graceful-shutdown timeouts and used 1-second bounded waits. These explicit messaging/client timeouts are below the mandatory 10-second minimum in §FS-test-contract.1.7.
+## 2026-09-02 — org.springframework:spring-websocket:6.2.10 (#8969)
+
+**Version-pinned supporting dependency in reusable test project**
+
+Review Signal #4 is violated in tests/src/org.springframework/spring-websocket/6.2.10/build.gradle: spring-messaging is pinned to 6.2.10 even though this test project must remain reusable across supported Spring Framework versions.
 
 ## 2026-08-29 — org.junit.platform:junit-platform-commons:1.12.0 (#9603)
 
