@@ -1,0 +1,24 @@
+Agent failure: Pi RPC exited before completing `prompt` (exit code 1).
+Warning: (startup session lookup, global settings) ENOSPC: no space left on device, mkdir '/home/mihailo/.pi/agent/settings.json.lock'
+node:fs:1370
+  const result = binding.mkdir(
+                         ^
+
+Error: ENOSPC: no space left on device, mkdir '/home/mihailo/.pi/agent/trust.json.lock'
+    at Object.mkdirSync (node:fs:1370:26)
+    at newFs.<computed> [as mkdir] (/home/mihailo/git/pi-mono/node_modules/proper-lockfile/lib/adapter.js:15:42)
+    at acquireLock (/home/mihailo/git/pi-mono/node_modules/proper-lockfile/lib/lockfile.js:29:16)
+    at RetryOperation._fn (/home/mihailo/git/pi-mono/node_modules/proper-lockfile/lib/lockfile.js:233:13)
+    at RetryOperation.attempt (/home/mihailo/git/pi-mono/node_modules/proper-lockfile/node_modules/retry/lib/retry_operation.js:112:8)
+    at /home/mihailo/git/pi-mono/node_modules/proper-lockfile/lib/lockfile.js:232:19
+    at resolveCanonicalPath (/home/mihailo/git/pi-mono/node_modules/proper-lockfile/lib/lockfile.js:17:16)
+    at lock (/home/mihailo/git/pi-mono/node_modules/proper-lockfile/lib/lockfile.js:224:5)
+    at /home/mihailo/git/pi-mono/node_modules/proper-lockfile/lib/adapter.js:53:9
+    at AsyncFunction.lockSync (/home/mihailo/git/pi-mono/node_modules/proper-lockfile/index.js:13:42) {
+  errno: -28,
+  code: 'ENOSPC',
+  syscall: 'mkdir',
+  path: '/home/mihailo/.pi/agent/trust.json.lock'
+}
+
+Node.js v22.23.2
