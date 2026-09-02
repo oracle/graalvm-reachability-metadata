@@ -12,6 +12,16 @@ import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.netflix.graphql.types.subscription.DataPayload
 import com.netflix.graphql.types.subscription.EmptyPayload
 import com.netflix.graphql.types.subscription.Error as SubscriptionError
+import com.netflix.graphql.types.subscription.GQL_COMPLETE
+import com.netflix.graphql.types.subscription.GQL_CONNECTION_ACK
+import com.netflix.graphql.types.subscription.GQL_CONNECTION_ERROR
+import com.netflix.graphql.types.subscription.GQL_CONNECTION_INIT
+import com.netflix.graphql.types.subscription.GQL_CONNECTION_KEEP_ALIVE
+import com.netflix.graphql.types.subscription.GQL_CONNECTION_TERMINATE
+import com.netflix.graphql.types.subscription.GQL_DATA
+import com.netflix.graphql.types.subscription.GQL_ERROR
+import com.netflix.graphql.types.subscription.GQL_START
+import com.netflix.graphql.types.subscription.GQL_STOP
 import com.netflix.graphql.types.subscription.GRAPHQL_SUBSCRIPTIONS_TRANSPORT_WS_PROTOCOL
 import com.netflix.graphql.types.subscription.GRAPHQL_SUBSCRIPTIONS_WS_PROTOCOL
 import com.netflix.graphql.types.subscription.OperationMessage
@@ -273,6 +283,35 @@ public class Graphql_dgs_subscription_typesTest {
             )
         }.isInstanceOf(JsonMappingException::class.java)
             .hasMessageContaining("query")
+    }
+
+    @Test
+    public fun legacyOperationMessageConstantsExposeProtocolWireValues() {
+        assertThat(
+            listOf(
+                GQL_CONNECTION_INIT,
+                GQL_CONNECTION_ACK,
+                GQL_CONNECTION_ERROR,
+                GQL_START,
+                GQL_STOP,
+                GQL_DATA,
+                GQL_ERROR,
+                GQL_COMPLETE,
+                GQL_CONNECTION_TERMINATE,
+                GQL_CONNECTION_KEEP_ALIVE,
+            ),
+        ).containsExactly(
+            "connection_init",
+            "connection_ack",
+            "connection_error",
+            "start",
+            "stop",
+            "data",
+            "error",
+            "complete",
+            "connection_terminate",
+            "ka",
+        )
     }
 
     @Test
