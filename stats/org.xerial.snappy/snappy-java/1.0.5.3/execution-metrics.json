@@ -1,0 +1,143 @@
+{
+  "fix_java_run_fail:2026-09-02": {
+    "timestamp": "2026-09-02T01:39:02.811753Z",
+    "library": "org.xerial.snappy:snappy-java:1.0.5.3",
+    "starting_commit": "8ae6d39274b6b3de5fec6088acd7ea683ba23129",
+    "ending_commit": "7f792f792723ccf60fa03e2d757f86c2aac846aa",
+    "previous_library": "org.xerial.snappy:snappy-java:1.0.4.1",
+    "strategy_name": "java_run_iterative_with_coverage_sources_pi_gpt-5.6-sol",
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "status": "success",
+    "stats": {
+      "version": "1.0.5.3",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 8,
+            "totalCalls": 8
+          },
+          "resources": {
+            "coverageRatio": 0.8,
+            "coveredCalls": 4,
+            "totalCalls": 5
+          }
+        },
+        "coverageRatio": 0.923077,
+        "coveredCalls": 12,
+        "totalCalls": 13
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 646,
+          "missed": 2110,
+          "ratio": 0.234398,
+          "total": 2756
+        },
+        "line": {
+          "covered": 131,
+          "missed": 453,
+          "ratio": 0.224315,
+          "total": 584
+        },
+        "method": {
+          "covered": 27,
+          "missed": 110,
+          "ratio": 0.19708,
+          "total": 137
+        }
+      }
+    },
+    "previous_library_stats": {
+      "version": "1.0.4.1",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 8,
+            "totalCalls": 8
+          },
+          "resources": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 5,
+            "totalCalls": 5
+          }
+        },
+        "coverageRatio": 1.0,
+        "coveredCalls": 13,
+        "totalCalls": 13
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 676,
+          "missed": 1927,
+          "ratio": 0.2597,
+          "total": 2603
+        },
+        "line": {
+          "covered": 137,
+          "missed": 417,
+          "ratio": 0.247292,
+          "total": 554
+        },
+        "method": {
+          "covered": 26,
+          "missed": 108,
+          "ratio": 0.19403,
+          "total": 134
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "advisory_preparation",
+      "issue_number": 9404,
+      "issue_label": "fails-java-run",
+      "library": "org.xerial.snappy:snappy-java:1.0.5.3",
+      "summary": "JNI setup is required on JDK 25: enable native access. The bundled artifact needs no extra runtime dependency or Docker image. [Upstream README](https://github.com/xerial/snappy-java)",
+      "deterministic_setup": [],
+      "agent_guidance": "Run JVM tests with --enable-native-access=ALL-UNNAMED and retain --add-opens=java.base/java.lang=ALL-UNNAMED for SnappyLoader class-loader coverage. Use the bundled native resource for normal Snappy.compress/uncompress tests; only set org.xerial.snappy.use.systemlib and java.library.path when intentionally testing system-library fallback. [Oracle restricted-method guidance](https://docs.oracle.com/en/java/javase/24/core/restricted-methods.html)",
+      "risks": [
+        "The reported failure is test-specific: 1.0.5.3 uses UUID-suffixed extracted native filenames, so launch flags will not fix the fixed-name stale-file assertion.",
+        "Native binaries are OS/architecture-specific; verify the selected platform under JVM and Native Image."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#9404 [Automation] java run fails for org.xerial.snappy:snappy-java:1.0.5.3; label=fails-java-run; body_chars=8015"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "7 existing test file path(s) included"
+        }
+      ],
+      "current_library": "org.xerial.snappy:snappy-java:1.0.4.1",
+      "new_version": "1.0.5.3",
+      "model": "gpt-5.6-luna",
+      "input_tokens_used": 3412759,
+      "output_tokens_used": 16811,
+      "prompt_path": "library-preflight-prompt.txt",
+      "raw_response_path": "library-preflight-response.txt",
+      "session_log_path": "/home/mihailo/git/graalvm-reachability-metadata-copy/forge/logs/org.xerial.snappy:snappy-java:1.0.5.3/library-preparation-preflight/codex-session-cv3ruub_.log"
+    },
+    "metrics": {
+      "input_tokens_used": 169120,
+      "cached_input_tokens_used": 906752,
+      "output_tokens_used": 10911,
+      "iterations": 3,
+      "cost_usd": 1.6263,
+      "tested_library_loc": 131,
+      "metadata_entries": 15,
+      "test_only_metadata_entries": 14,
+      "previous_library_metadata_entries": 8,
+      "previous_library_test_only_metadata_entries": 1,
+      "code_coverage_percent": 22.43,
+      "previous_library_coverage_percent": 24.73
+    },
+    "artifacts": {
+      "metadata_file": "metadata/org.xerial.snappy/snappy-java/1.0.5.3/reachability-metadata.json"
+    }
+  }
+}
