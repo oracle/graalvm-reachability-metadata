@@ -22,6 +22,8 @@ import com.netflix.graphql.types.subscription.websockets.CloseCode
 import com.netflix.graphql.types.subscription.websockets.ExecutionResult
 import com.netflix.graphql.types.subscription.websockets.Message
 import com.netflix.graphql.types.subscription.websockets.MessageType
+import graphql.GraphQLError
+import graphql.GraphqlErrorBuilder
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.Test
@@ -182,6 +184,28 @@ public class Graphql_dgs_subscription_typesTest {
             MessageType.ERROR,
             MessageType.COMPLETE,
         )
+    }
+
+    @Test
+    public fun executionResultsRetainTypedGraphQlErrors() {
+        val graphQLError: GraphQLError = GraphqlErrorBuilder.newError()
+            .message("price service unavailable")
+            .path(listOf("priceUpdated"))
+            .extensions(mapOf("classification" to "UPSTREAM"))
+            .build()
+        val nextMessage: Message.NextMessage = Message.NextMessage(
+            id = "subscription-errors",
+            payload = ExecutionResult(
+                data = mapOf("priceUpdated" to null),
+                errors = listOf(graphQLError),
+            ),
+        )
+
+        val retainedError: GraphQLError = nextMessage.payload.errors.single()
+        assertThat(nextMessage.payload.data).isEqualTo(mapOf("priceUpdated" to null))
+        assertThat(retainedError.message).isEqualTo("price service unavailable")
+        assertThat(retainedError.path).containsExactly("priceUpdated")
+        assertThat(retainedError.extensions).containsEntry("classification", "UPSTREAM")
     }
 
     @Test
