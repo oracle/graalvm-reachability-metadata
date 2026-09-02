@@ -3,6 +3,12 @@
 Rendered by Forge from the pre-push branch review of §FS-local-branch-review.
 Newest entry first; every non-approval is recorded, including one a repair later cleared.
 
+## 2026-09-02 — org.apache.activemq:artemis-jms-client:2.56.0 (#9574)
+
+**Generated repair changes a baseline suite and violates mandatory test bounds**
+
+The eventual diff modified the existing 2.28.0 test and test-only metadata even though the repair has a dedicated 2.56.0 project, violating the target-source and no-scope-creep rules. In tests/src/org.apache.activemq/artemis-jms-client/2.56.0/src/test/java/org_apache_activemq/artemis_jms_client/ArtemisJmsClientTest.java, the top-level test class was package-private, consumer.receive(1000) used a 1-second messaging timeout below the mandatory 10-second floor, and waitForActivation(1, TimeUnit.MINUTES) did not keep the individual test below 60 seconds.
+
 ## 2026-09-02 — org.eclipse.jetty:jetty-util:12.0.9 (#8928)
 
 **Test-only resource bundle shipped as library metadata**
