@@ -3,6 +3,12 @@
 Rendered by Forge from the pre-push branch review of §FS-local-branch-review.
 Newest entry first; every non-approval is recorded, including one a repair later cleared.
 
+## 2026-09-02 — org.springframework:spring-websocket:6.2.10 (#8969)
+
+**Version-pinned supporting dependency in reusable test project**
+
+Review Signal #4 is violated in tests/src/org.springframework/spring-websocket/6.2.10/build.gradle: spring-messaging is pinned to 6.2.10 even though this test project must remain reusable across supported Spring Framework versions.
+
 ## 2026-08-29 — org.junit.platform:junit-platform-commons:1.12.0 (#9603)
 
 **Javac repair adds unrelated coverage behavior**
