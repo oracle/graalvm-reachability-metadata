@@ -161,12 +161,17 @@ For each execution, the launcher must:
    parent directory. `99000` is a fixed synthetic issue number used only to
    satisfy the code coverage workspace naming contract.
 5. Prepare the conversion inputs deterministically, including the coordinate,
-   commits, run identifier, source worktree, runner Forge path, metrics
-   publishing checkout, and coverage suite paths expected in
-   `runtime/code-coverage/issues/conversion.json`.
+   commits, run identifier, source worktree, runner Forge path, and coverage
+   suite paths expected in `runtime/code-coverage/issues/conversion.json`.
 6. Execute the existing preparation, API coverage, native metadata preparation,
    deep coverage, and finalization behavior without claiming or reading a GitHub
    issue.
+
+Source-worktree creation is a per-cell gate. Before attempting it, the launcher
+removes an existing linked worktree or filesystem entry only at that cell's
+exact allocated `source/` path. If creation still fails, the launcher reports
+the cell as skipped, counts it as an unsuccessful outcome, and continues with
+the next selected cell without invoking Rhei or publishing a benchmark result.
 
 Benchmark preparation must not query an issue, validate an issue label, assign
 an issue, or mutate a GitHub Project status. The coordinate supplied by the
