@@ -67,6 +67,49 @@ class LibraryUpdateRouterTests(unittest.TestCase):
             messages = [call.args[1] for call in stage_log.call_args_list]
             self.assertTrue(any("nearest prior same major/minor" in message for message in messages))
 
+    def test_missing_kafka_major_version_probes_prior_major_baseline(self) -> None:
+        with tempfile.TemporaryDirectory() as repo:
+            group = "org.apache.kafka"
+            artifact = "kafka-streams"
+            index_dir = os.path.join(repo, "metadata", group, artifact)
+            os.makedirs(index_dir, exist_ok=True)
+            baseline_entry = {
+                "latest": True,
+                "metadata-version": "3.6.0",
+                "tested-versions": ["3.6.0", "3.6.1", "3.6.2"],
+            }
+            with open(os.path.join(index_dir, "index.json"), "w", encoding="utf-8") as index_file:
+                json.dump([baseline_entry], index_file)
+            _write_file(os.path.join(repo, "metadata", group, artifact, "3.6.0", "metadata.json"))
+            _write_file(os.path.join(repo, "tests", "src", group, artifact, "3.6.0", "build.gradle"))
+            compile_failure = library_update_router._ProbeCommandResult(
+                exit_code=1,
+                log_path="compile.log",
+            )
+
+            with patch.object(
+                    library_update_router,
+                    "_probe_baseline_suite",
+                    return_value=(compile_failure, None, None),
+            ) as probe, patch.object(
+                    library_update_router,
+                    "write_library_update_route",
+            ), patch.object(library_update_router, "log_stage") as stage_log:
+                route = library_update_router.select_library_update_route(
+                    repo,
+                    os.path.join(repo, "metrics"),
+                    "org.apache.kafka:kafka-streams:4.3.1",
+                )
+
+            self.assertEqual(route.selected_driver, library_update_router.ROUTE_FIX_JAVAC)
+            self.assertEqual(route.baseline_coordinates, "org.apache.kafka:kafka-streams:3.6.0")
+            self.assertEqual(
+                probe.call_args.kwargs["baseline_entry"]["metadata-version"],
+                "3.6.0",
+            )
+            messages = [call.args[1] for call in stage_log.call_args_list]
+            self.assertTrue(any("nearest prior earlier-major" in message for message in messages))
+
 
 if __name__ == "__main__":
     unittest.main()
