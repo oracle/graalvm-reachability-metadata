@@ -8,7 +8,7 @@
 The runner owns deterministic matrix expansion, isolated worktrees, benchmark
 conversion, compact metrics extraction, and immediate same-repository
 publication. Rhei continues to own the coverage phases themselves.
-§FS-code-coverage-benchmarking
+§FS-code-coverage-benchmarking §AR-code-coverage-benchmarking
 """
 
 from __future__ import annotations
