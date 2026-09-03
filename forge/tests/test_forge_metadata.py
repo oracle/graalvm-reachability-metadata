@@ -341,6 +341,59 @@ class FinalizeSuccessfulIssueTests(unittest.TestCase):
 
 
 class LibraryUpdateIssueTests(unittest.TestCase):
+    def test_compact_preflight_reports_completed_decision(self) -> None:
+        from utility_scripts import library_preparation_preflight as preflight_module
+
+        with tempfile.TemporaryDirectory() as temp_dir:
+            claimed_issue = SimpleNamespace(
+                scratch_metrics_repo_path=temp_dir,
+                preflight_info_path=temp_dir,
+            )
+            record = {
+                "status": "completed",
+                "action": "no_action",
+                "issue_number": 1412,
+                "library": "org.example:lib:1.0.0",
+                "deterministic_setup": [],
+            }
+            stdout = io.StringIO()
+            run_location.enter_phase(PHASE_SETUP)
+            with contextlib.redirect_stdout(stdout):
+                preflight_module._write_and_log_preflight(claimed_issue, record)
+            run_location.reset_run_location()
+
+        self.assertIn(
+            "[setup] Library preflight completed for org.example:lib:1.0.0: no action (1/3)",
+            stdout.getvalue(),
+        )
+        self.assertNotIn("Preflight decision", stdout.getvalue())
+
+    def test_degraded_preflight_keeps_cause_and_log_in_compact_output(self) -> None:
+        from utility_scripts import library_preparation_preflight as preflight_module
+
+        with tempfile.TemporaryDirectory() as temp_dir:
+            claimed_issue = SimpleNamespace(
+                scratch_metrics_repo_path=temp_dir,
+                preflight_info_path=temp_dir,
+            )
+            record = {
+                "status": "degraded",
+                "action": "no_action",
+                "issue_number": 1412,
+                "library": "org.example:lib:1.0.0",
+                "deterministic_setup": [],
+                "failure_reason": "Agent timed out",
+                "session_log_path": "/tmp/preflight-session.log",
+            }
+            stdout = io.StringIO()
+            run_location.enter_phase(PHASE_SETUP)
+            with contextlib.redirect_stdout(stdout):
+                preflight_module._write_and_log_preflight(claimed_issue, record)
+            run_location.reset_run_location()
+
+        self.assertIn("Library preflight degraded for org.example:lib:1.0.0: Agent timed out", stdout.getvalue())
+        self.assertIn("preflight-session.log", stdout.getvalue())
+
     def test_library_preflight_dispatches_without_a_strategy(self) -> None:
         claimed_issue = forge_metadata.ClaimedIssue(
             issue={"number": 1412, "title": "Update org.example:lib:1.0.0"},
@@ -2620,6 +2673,17 @@ class WorkQueueSchedulerTests(unittest.TestCase):
         self.assertFalse(default_args.take_blocked_issues)
         self.assertTrue(override_args.take_blocked_issues)
 
+    def test_verbose_output_is_disabled_by_default(self) -> None:
+        default_args = forge_metadata.parse_args(["--label", forge_metadata.LABEL_LIBRARY_NEW])
+        verbose_args = forge_metadata.parse_args([
+            "--label",
+            forge_metadata.LABEL_LIBRARY_NEW,
+            "--verbose",
+        ])
+
+        self.assertFalse(default_args.verbose)
+        self.assertTrue(verbose_args.verbose)
+
     def test_issue_queue_modes_accept_priority_tiers(self) -> None:
         for priority in forge_metadata.PRIORITY_CHOICES:
             with self.subTest(priority=priority):
@@ -3501,7 +3565,7 @@ class IssueClaimCacheTests(unittest.TestCase):
             ],
         )
 
-    def test_process_loop_logs_scan_start_and_progress(self) -> None:
+    def test_verbose_process_loop_logs_scan_start_and_progress(self) -> None:
         issues = [
             {
                 "number": issue_number,
@@ -3525,6 +3589,7 @@ class IssueClaimCacheTests(unittest.TestCase):
                         "claim_issue_for_processing",
                         return_value=None,
                     ), \
+                    patch.dict(os.environ, {"FORGE_VERBOSE": "1"}), \
                     patch("sys.stdout", new_callable=io.StringIO) as stdout:
                 self.assertEqual(
                     forge_metadata.process_issues_with_label(
@@ -3618,12 +3683,13 @@ class ProjectItemStatusTests(unittest.TestCase):
 
         gh_json.assert_called_once()
 
-    def test_forge_project_item_state_uses_combined_lookup(self) -> None:
+    def test_forge_project_item_state_is_quiet_in_compact_output(self) -> None:
         with patch.object(
                 forge_metadata,
                 "get_issue_project_item_status",
                 return_value=("project-item", forge_metadata.STATUS_TODO),
         ) as get_issue_project_item_status, \
+                patch.dict(os.environ, {"FORGE_VERBOSE": "0", "FORGE_DEBUG_LOGGING": "0"}), \
                 patch("sys.stdout", new_callable=io.StringIO) as stdout:
             self.assertEqual(
                 forge_metadata.get_project_item_state(1412),
@@ -3636,6 +3702,17 @@ class ProjectItemStatusTests(unittest.TestCase):
             1412,
             forge_metadata.STATUS_FIELD_NAME,
         )
+        self.assertEqual("", stdout.getvalue())
+
+    def test_forge_project_item_state_is_available_in_verbose_output(self) -> None:
+        with patch.object(
+                forge_metadata,
+                "get_issue_project_item_status",
+                return_value=("project-item", forge_metadata.STATUS_TODO),
+        ), patch.dict(os.environ, {"FORGE_VERBOSE": "1"}), \
+                patch("sys.stdout", new_callable=io.StringIO) as stdout:
+            forge_metadata.get_project_item_state(1412)
+
         self.assertIn(
             (
                 "[project-item] Issue #1412 is linked to GitHub project item project-item "
@@ -3758,7 +3835,9 @@ class IssueClaimLockTests(unittest.TestCase):
                     patch.object(forge_metadata, "set_issue_assignee") as set_issue_assignee, \
                     patch.object(forge_metadata, "set_item_status") as set_item_status, \
                     patch.object(forge_metadata.random, "uniform", return_value=0), \
-                    patch.object(forge_metadata.time, "sleep"):
+                    patch.object(forge_metadata.time, "sleep"), \
+                    patch.dict(os.environ, {"FORGE_VERBOSE": "0", "FORGE_DEBUG_LOGGING": "0"}), \
+                    patch("sys.stdout", new_callable=io.StringIO) as stdout:
                 self.assertEqual(
                     forge_metadata.try_claim_issue(issue, "automation-user"),
                     "project-item",
@@ -3766,6 +3845,9 @@ class IssueClaimLockTests(unittest.TestCase):
 
         set_issue_assignee.assert_called_once_with(1412, "automation-user")
         set_item_status.assert_called_once_with("project-item", forge_metadata.STATUS_IN_PROGRESS)
+        self.assertIn("[claim] Issue #1412 claimed (3/6)", stdout.getvalue())
+        self.assertNotIn("Setting issue #1412 assignee", stdout.getvalue())
+        self.assertNotIn("Waiting", stdout.getvalue())
 
     def test_try_claim_issue_skips_chunked_dynamic_access_when_in_progress(self) -> None:
         issue = _search_issue(1412, [forge_metadata.LABEL_CHUNKED_DYNAMIC_ACCESS])
@@ -4651,14 +4733,59 @@ class PullRequestReviewTests(unittest.TestCase):
         with patch.object(forge_metadata, "get_pull_request_changed_index_files", return_value=[]), \
                 patch.object(forge_metadata, "gh"), \
                 patch.object(forge_metadata, "get_project_item_id", return_value="project-item"), \
+                patch.object(
+                    forge_metadata,
+                    "get_issue_claim_payload",
+                    return_value={
+                        "labels": [
+                            {"name": forge_metadata.LABEL_CHUNKED_DYNAMIC_ACCESS},
+                            {"name": forge_metadata.LABEL_HUMAN_INTERVENTION},
+                            {"name": forge_metadata.LABEL_RESUMABLE},
+                        ],
+                    },
+                ), \
+                patch.object(forge_metadata, "remove_issue_label") as remove_issue_label, \
                 patch.object(forge_metadata, "set_item_status") as set_item_status, \
                 patch.object(forge_metadata, "clear_issue_assignees") as clear_issue_assignees, \
                 patch.object(forge_metadata, "invalidate_issue_claim_cache_entry") as invalidate_cache:
             forge_metadata.merge_pull_request(pr, "/repo")
 
+        self.assertEqual(
+            remove_issue_label.call_args_list,
+            [
+                call(1412, forge_metadata.LABEL_HUMAN_INTERVENTION),
+                call(1412, forge_metadata.LABEL_RESUMABLE),
+            ],
+        )
         set_item_status.assert_called_once_with("project-item", forge_metadata.STATUS_TODO)
         clear_issue_assignees.assert_called_once_with(1412)
         invalidate_cache.assert_called_once_with(1412)
+
+    def test_merge_pull_request_keeps_clean_chunk_issue_labels(self) -> None:
+        pr = {
+            "number": 3513,
+            "url": "https://github.com/oracle/graalvm-reachability-metadata/pull/3513",
+            "headRefOid": "abc123",
+            "body": "Refs: #1412\n\nSummary:\n- Chunked dynamic-access: yes\n",
+        }
+
+        with patch.object(forge_metadata, "get_pull_request_changed_index_files", return_value=[]), \
+                patch.object(forge_metadata, "gh"), \
+                patch.object(forge_metadata, "get_project_item_id", return_value="project-item"), \
+                patch.object(
+                    forge_metadata,
+                    "get_issue_claim_payload",
+                    return_value={
+                        "labels": [{"name": forge_metadata.LABEL_CHUNKED_DYNAMIC_ACCESS}],
+                    },
+                ), \
+                patch.object(forge_metadata, "remove_issue_label") as remove_issue_label, \
+                patch.object(forge_metadata, "set_item_status"), \
+                patch.object(forge_metadata, "clear_issue_assignees"), \
+                patch.object(forge_metadata, "invalidate_issue_claim_cache_entry"):
+            forge_metadata.merge_pull_request(pr, "/repo")
+
+        remove_issue_label.assert_not_called()
 
     def test_merge_pull_request_does_not_release_final_chunked_dynamic_access_issue(self) -> None:
         pr = {
@@ -4759,6 +4886,41 @@ class PullRequestReviewTests(unittest.TestCase):
         rerun_failed_jobs.assert_called_once_with(3513, "abc123")
         merge_pull_request.assert_not_called()
 
+    def test_reconcile_failed_ci_treats_chunked_and_regular_prs_the_same_after_cap(self) -> None:
+        outputs: list[str] = []
+        pull_request_bodies = (
+            "",
+            "Refs: #1412\n\nSummary:\n- Chunked dynamic-access: yes\n",
+        )
+
+        for body in pull_request_bodies:
+            pull_request = {
+                "number": 3513,
+                "headRefOid": "abc123",
+                "body": body,
+                "statusCheckRollup": {"state": "FAILURE"},
+            }
+            output = io.StringIO()
+            with self.subTest(body=body), contextlib.redirect_stdout(output), \
+                    patch.object(
+                        forge_metadata,
+                        "rerun_failed_pull_request_workflow_jobs",
+                        return_value=0,
+                    ) as rerun_failed_jobs, \
+                    patch.object(forge_metadata, "add_pull_request_label") as add_label, \
+                    patch.object(forge_metadata, "set_item_status") as set_item_status, \
+                    patch.object(forge_metadata, "clear_issue_assignees") as clear_assignees:
+                forge_metadata.reconcile_failed_ci_pull_request(pull_request)
+
+            rerun_failed_jobs.assert_called_once_with(3513, "abc123")
+            add_label.assert_not_called()
+            set_item_status.assert_not_called()
+            clear_assignees.assert_not_called()
+            outputs.append(output.getvalue())
+
+        self.assertEqual(outputs[0], outputs[1])
+        self.assertIn("Skipping review for PR #3513", outputs[0])
+
     def test_reconcile_approved_conflicting_pr_resolves_the_conflict_instead_of_merging(self) -> None:
         pr = {
             "number": 3513,
@@ -4827,6 +4989,7 @@ class PullRequestReviewTests(unittest.TestCase):
             {"id": 103, "conclusion": "failure", "run_attempt": 3},
             {"id": 104, "conclusion": "success", "run_attempt": 1},
             {"id": 105, "conclusion": None, "run_attempt": 1},
+            {"id": 106, "conclusion": "failure", "run_attempt": 4},
         ]
 
         with patch.object(forge_metadata, "get_pull_request_workflow_runs", return_value=workflow_runs), \

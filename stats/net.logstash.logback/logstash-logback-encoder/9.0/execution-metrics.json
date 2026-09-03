@@ -1,0 +1,106 @@
+{
+  "add_new_library_support:2026-09-02": {
+    "timestamp": "2026-09-02T18:22:58.834011Z",
+    "library": "net.logstash.logback:logstash-logback-encoder:9.0",
+    "starting_commit": "3e2b3e137eb414a463c5b874304a630f70eef04f",
+    "ending_commit": "4fea0e76bdda99317bbcd270bc93fd4c67a55ac2",
+    "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-sol",
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "status": "success",
+    "stats": {
+      "version": "9.0",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 5,
+            "totalCalls": 5
+          }
+        },
+        "coverageRatio": 1.0,
+        "coveredCalls": 5,
+        "totalCalls": 5
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 2180,
+          "missed": 21088,
+          "ratio": 0.093691,
+          "total": 23268
+        },
+        "line": {
+          "covered": 659,
+          "missed": 5572,
+          "ratio": 0.105762,
+          "total": 6231
+        },
+        "method": {
+          "covered": 228,
+          "missed": 1790,
+          "ratio": 0.112983,
+          "total": 2018
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "advisory_preparation",
+      "issue_number": 9692,
+      "issue_label": "library-new-request",
+      "library": "net.logstash.logback:logstash-logback-encoder:9.0",
+      "summary": "Normal scaffold omits Logback’s optional/provided runtime needed for meaningful LoggingEvent encoding.",
+      "deterministic_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "ch.qos.logback:logback-classic:1.5.20",
+          "scope": "testImplementation",
+          "reason": "The 9.0 POM requires applications to directly provide Logback for regular LoggingEvents; this also supplies logback-core and SLF4J."
+        }
+      ],
+      "agent_guidance": "Exercise the normal LoggingEvent path with LogstashEncoder or a composite encoder and an in-memory output stream. Avoid network appenders and Docker. If testing XML configuration, add the required logback configuration as test resources. Do not force Jackson 2.x; version 9.0 uses Jackson 3.",
+      "risks": [
+        "Native-image verification may require additional reflection/resource metadata if XML-driven configuration is used."
+      ],
+      "applied_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "ch.qos.logback:logback-classic:1.5.20",
+          "result": "applied",
+          "target": "tests/src/net.logstash.logback/logstash-logback-encoder/9.0/build.gradle"
+        }
+      ],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#9692 Support for net.logstash.logback:logstash-logback-encoder:9.0; label=library-new-request; body_chars=39"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "gpt-5.6-luna",
+      "input_tokens_used": 329926,
+      "output_tokens_used": 3926,
+      "prompt_path": "library-preflight-prompt.txt",
+      "raw_response_path": "library-preflight-response.txt",
+      "session_log_path": "/home/mihailo/git/graalvm-reachability-metadata/forge/logs/net.logstash.logback:logstash-logback-encoder:9.0/library-preparation-preflight/codex-session-rnv8vozd.log"
+    },
+    "metrics": {
+      "input_tokens_used": 65848,
+      "cached_input_tokens_used": 880640,
+      "output_tokens_used": 7902,
+      "iterations": 1,
+      "cost_usd": 1.0066,
+      "generated_loc": 87,
+      "tested_library_loc": 659,
+      "metadata_entries": 8,
+      "test_only_metadata_entries": 1,
+      "code_coverage_percent": 10.58
+    },
+    "artifacts": {
+      "metadata_file": "metadata/net.logstash.logback/logstash-logback-encoder/9.0/reachability-metadata.json"
+    }
+  }
+}

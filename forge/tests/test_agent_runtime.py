@@ -2,21 +2,28 @@
 
 from __future__ import annotations
 
+import contextlib
+import io
 import json
 import os
 import shlex
+import subprocess
 import tempfile
 import unittest
-from unittest.mock import patch
+from unittest.mock import Mock, patch
 
 from ai_workflows.agents import Agent
+from ai_workflows.agents.agent import AgentTimeoutError
 from ai_workflows.agents.claude_code_agent import ClaudeCodeAgent
 from ai_workflows.agents.codex_agent import CodexAgent
 from ai_workflows.agents.codex_app_server import CodexAppServerClient
 from ai_workflows.agents.opencode_agent import OpenCodeAgent
+from ai_workflows.agents.pi_agent import PiAgent
+from ai_workflows.agents.pi_rpc_client import PromptResult
 from ai_workflows.agents.agent_runtime import PROVIDER_AWARE_BACKENDS, resolve_provider
 from ai_workflows.agents.agent_runtime import (
     CODEX_BYPASS_APPROVALS_AND_SANDBOX_FLAG,
+    AgentSelection,
     DEFAULT_AGENT,
     SUPPORTED_AGENT_BACKENDS,
     default_model_for_backend,
@@ -24,6 +31,7 @@ from ai_workflows.agents.agent_runtime import (
     get_setup_agent,
     agent_process_environment,
     normalize_backend_name,
+    run_agent_task,
 )
 from utility_scripts.source_context import url_fetch_agent_command
 from utility_scripts.strategy_loader import (
@@ -39,6 +47,93 @@ class AgentRuntimeTests(unittest.TestCase):
             set(SUPPORTED_AGENT_BACKENDS),
             {name for name in SUPPORTED_AGENT_BACKENDS if Agent.get_class(name)},
         )
+
+    def test_agent_timeout_prints_named_quiet_activity_and_log(self) -> None:
+        with tempfile.TemporaryDirectory() as work_dir:
+            agent = CodexAgent(
+                model_name="gpt-5.6-luna",
+                working_dir=work_dir,
+                timeout=1200,
+                library="org.example:demo:1.0.0",
+                task_type="add-new-library-support",
+            )
+            timeout = subprocess.TimeoutExpired(["codex"], 1200, output="partial private output")
+            output = io.StringIO()
+            with patch.object(agent, "_run_codex_command", side_effect=timeout), \
+                    contextlib.redirect_stdout(output), self.assertRaises(AgentTimeoutError) as raised:
+                agent.send_prompt_for_action("prompt", "dynamic_access_iteration()")
+
+        rendered = output.getvalue()
+        self.assertIn("Running dynamic_access_iteration()", rendered)
+        self.assertIn("dynamic_access_iteration() timed out", rendered)
+        self.assertIn("log:", rendered)
+        self.assertNotIn("partial private output", rendered)
+        self.assertEqual(raised.exception.timeout_seconds, 1200)
+
+    def test_one_shot_agent_failure_preserves_message(self) -> None:
+        failed_agent = Mock()
+        failed_agent.send_prompt_for_action.side_effect = AgentTimeoutError(
+            "native_test_verify()",
+            1800,
+            "/tmp/native-session.log",
+        )
+        failed_agent.total_tokens_sent = 0
+        failed_agent.total_tokens_received = 0
+        failed_agent.cached_input_tokens_used = 0
+        failed_agent._session_log_path = "/tmp/native-session.log"
+
+        with tempfile.TemporaryDirectory() as temp_dir:
+            task_log_path = os.path.join(temp_dir, "native-task.log")
+            with patch(
+                    "ai_workflows.agents.agent_runtime.create_agent",
+                    return_value=failed_agent,
+            ), patch(
+                    "ai_workflows.agents.agent_runtime.build_task_log_path",
+                    return_value=task_log_path,
+            ):
+                result = run_agent_task(
+                    selection=AgentSelection(backend="codex", model="test-model"),
+                    working_dir=temp_dir,
+                    prompt="repair",
+                    task_type="native-test-verify",
+                    library="g:a:1.0",
+                    timeout=1800,
+                )
+
+        self.assertEqual(
+            result.failure_message,
+            "Agent native_test_verify() timed out after 30:00",
+        )
+
+    def test_pi_reuses_the_first_log_path_for_every_turn(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            log_path = os.path.join(temp_dir, "pi-generation.log")
+            agent = PiAgent(
+                model_name="test-model",
+                working_dir=temp_dir,
+                library="g:a:1.0",
+                task_type="native-test-verify",
+            )
+            agent._rpc_client = Mock()
+            agent._rpc_client.run_prompt.side_effect = [
+                PromptResult("first", "/tmp/pi-session-1", {"tokens": {}}),
+                PromptResult("second", "/tmp/pi-session-2", {"tokens": {}}),
+            ]
+
+            with patch.object(
+                    agent,
+                    "_build_generation_log_path",
+                    return_value=log_path,
+            ) as build_log_path, contextlib.redirect_stdout(io.StringIO()):
+                self.assertEqual(agent.send_prompt("first prompt"), "first")
+                self.assertEqual(agent.send_prompt("second prompt"), "second")
+
+            with open(log_path, "r", encoding="utf-8") as log_file:
+                durable_log = log_file.read()
+
+        build_log_path.assert_called_once_with()
+        self.assertEqual(agent._session_log_path, log_path)
+        self.assertEqual(durable_log.count("Timestamp:"), 2)
 
     def test_the_environment_selects_the_analysis_role_only(self) -> None:
         """The worker configures analysis; a bundle owns the test role it declares."""

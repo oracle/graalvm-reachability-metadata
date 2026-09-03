@@ -9,7 +9,7 @@ import os
 import subprocess
 import uuid
 
-from ai_workflows.agents.agent import Agent
+from ai_workflows.agents.agent import Agent, AgentTimeoutError
 from ai_workflows.agents.agent_runtime import agent_process_environment
 from utility_scripts.gradle_test_runner import run_gradle_test_command
 
@@ -62,34 +62,37 @@ class ClaudeCodeAgent(Agent):
 
     def send_prompt(self, prompt: str) -> str:
         self._print_session_log_once("Claude Code", self._session_log_path)
-        command = self._build_command(prompt)
-        try:
-            result = subprocess.run(
-                command,
-                cwd=self._working_dir,
-                env=self._environment,
-                stdout=subprocess.PIPE,
-                stderr=subprocess.STDOUT,
-                text=True,
-                timeout=self._timeout,
-                check=False,
-            )
-        except subprocess.TimeoutExpired as exc:
-            self._append_log(prompt, exc.stdout or "")
-            raise RuntimeError("Claude Code prompt timed out.") from exc
-        self._append_log(prompt, result.stdout)
-        if result.returncode != 0:
-            raise RuntimeError(f"Claude Code command failed with exit code {result.returncode}.")
-        payload = self._parse_result(result.stdout)
-        self._session_id = str(payload.get("session_id") or self._session_id or "") or None
-        usage = payload.get("usage") or {}
-        self._total_tokens_sent += int(usage.get("input_tokens", 0) or 0)
-        self._total_tokens_received += int(usage.get("output_tokens", 0) or 0)
-        self._cached_input_tokens_used += int(usage.get("cache_read_input_tokens", 0) or 0)
-        response = str(payload.get("result") or "")
-        if not response:
-            raise RuntimeError("Claude Code command completed without an assistant result.")
-        return response
+        with self._agent_activity("Claude Code"):
+            command = self._build_command(prompt)
+            try:
+                result = subprocess.run(
+                    command,
+                    cwd=self._working_dir,
+                    env=self._environment,
+                    stdout=subprocess.PIPE,
+                    stderr=subprocess.STDOUT,
+                    text=True,
+                    timeout=self._timeout,
+                    check=False,
+                )
+            except subprocess.TimeoutExpired as exc:
+                self._append_log(prompt, exc.stdout or "")
+                raise AgentTimeoutError(
+                    self._current_agent_action(), self._timeout, self._session_log_path,
+                ) from exc
+            self._append_log(prompt, result.stdout)
+            if result.returncode != 0:
+                raise RuntimeError(f"Claude Code command failed with exit code {result.returncode}.")
+            payload = self._parse_result(result.stdout)
+            self._session_id = str(payload.get("session_id") or self._session_id or "") or None
+            usage = payload.get("usage") or {}
+            self._total_tokens_sent += int(usage.get("input_tokens", 0) or 0)
+            self._total_tokens_received += int(usage.get("output_tokens", 0) or 0)
+            self._cached_input_tokens_used += int(usage.get("cache_read_input_tokens", 0) or 0)
+            response = str(payload.get("result") or "")
+            if not response:
+                raise RuntimeError("Claude Code command completed without an assistant result.")
+            return response
 
     def _build_command(self, prompt: str, fork: bool = False) -> list[str]:
         command = [

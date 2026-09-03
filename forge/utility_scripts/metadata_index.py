@@ -226,10 +226,11 @@ def resolve_version_backfill_baseline(
         artifact: str,
         requested_version: str,
 ) -> VersionBackfillBaseline | None:
-    """Resolve one usable same-major baseline for deterministic version backfill.
+    """Resolve one usable baseline for deterministic version backfill.
 
-    Exact index ownership takes precedence over version ordering. Non-exact
-    selection never crosses a major-version boundary. §AR-forge-driver-queues
+    Exact index ownership takes precedence over version ordering. A non-exact
+    selection prefers the requested major, then the nearest prior version from
+    an earlier major. §AR-forge-driver-queues.2
     """
     target = resolve_library_update_target(repo_path, group, artifact, requested_version)
     if target.match_type != MATCH_NEW_VERSION and target.matched_entry is not None:
@@ -293,6 +294,19 @@ def resolve_version_backfill_baseline(
             "same-major",
             f"{ordering} same-major supported version {selected.supported_version}",
         )
+
+    prior_major = [
+        candidate for candidate in candidates
+        if _is_prior_version(candidate.supported_version, requested_version)
+    ]
+    selected = _select_ordered_baseline_candidate(prior_major, requested_version)
+    if selected is not None:
+        return _version_backfill_baseline(
+            selected.entry,
+            selected.supported_version,
+            "prior-major",
+            f"nearest prior earlier-major supported version {selected.supported_version}",
+        )
     return None
 
 
@@ -317,10 +331,10 @@ def require_version_backfill_baseline(
     raise RuntimeError(
         "ERROR: Cannot resolve a compatible version-backfill baseline for "
         f"{coordinate} from {index_display}. Expected a usable exact owner or "
-        "a supported test suite in the same major version; each baseline must "
-        "have both metadata and test directories. A cross-major `latest` entry "
-        "is not a compatible baseline. Restore a compatible test suite or "
-        "route the issue for human intervention."
+        "a supported test suite from the same major or an earlier version; each "
+        "baseline must have both metadata and test directories. A newer-major "
+        "suite is not a compatible baseline for a historical backfill. Restore "
+        "a compatible test suite or route the issue for human intervention."
     )
 
 
@@ -413,6 +427,11 @@ def _baseline_ordering_reason(supported_version: str, requested_version: str) ->
     if comparison is not None and comparison <= 0:
         return "nearest prior"
     return "nearest following"
+
+
+def _is_prior_version(candidate_version: str, requested_version: str) -> bool:
+    comparison = _compare_parseable_metadata_versions(candidate_version, requested_version)
+    return comparison is not None and comparison < 0
 
 
 def latest_metadata_version(repo_path: str, group: str, artifact: str) -> str | None:

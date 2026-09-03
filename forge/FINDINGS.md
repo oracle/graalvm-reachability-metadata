@@ -8,6 +8,22 @@ Newest entry first; every non-approval is recorded, including one a repair later
 **Runtime repair deletes existing test coverage**
 
 Rule 4.8 (fix by weakening) was violated in `tests/src/org.springframework/spring-web/5.3.32`: the copied 5.3.18 suite deleted `JettyClientHttpResponseTest.java` and removed its Jetty dependency instead of adapting the failing runtime path while preserving the test's status, headers, cookies, and body assertions.
+## 2026-09-02 — org.springframework.boot:spring-boot-amqp:4.2.0-M1 (#9468)
+
+**Explicit messaging timeout is below the 10-second minimum**
+
+FS-test-contract.1.7 requires every explicit messaging timeout to be at least 10 seconds. tests/src/org.springframework.boot/spring-boot-amqp/4.2.0-M1/src/test/java/org_springframework_boot/spring_boot_amqp/Spring_boot_amqpTest.java configured the AMQP client completion timeout as 750ms in both direct property setup and the auto-configuration property test.
+## 2026-09-02 — org.apache.activemq:artemis-jms-client:2.56.0 (#9574)
+
+**Generated repair changes a baseline suite and violates mandatory test bounds**
+
+The eventual diff modified the existing 2.28.0 test and test-only metadata even though the repair has a dedicated 2.56.0 project, violating the target-source and no-scope-creep rules. In tests/src/org.apache.activemq/artemis-jms-client/2.56.0/src/test/java/org_apache_activemq/artemis_jms_client/ArtemisJmsClientTest.java, the top-level test class was package-private, consumer.receive(1000) used a 1-second messaging timeout below the mandatory 10-second floor, and waitForActivation(1, TimeUnit.MINUTES) did not keep the individual test below 60 seconds.
+
+## 2026-09-02 — org.eclipse.jetty:jetty-util:12.0.9 (#8928)
+
+**Test-only resource bundle shipped as library metadata**
+
+metadata/org.eclipse.jetty/jetty-util/12.0.9/reachability-metadata.json registered the bundle org_eclipse_jetty.jetty_util.loader even though that bundle is supplied only by tests/src/org.eclipse.jetty/jetty-util/12.0.9/src/test/resources/org_eclipse_jetty/jetty_util/loader.properties. Shipping test-owned metadata violates the required library/test metadata split.
 
 ## 2026-09-02 — org.springframework.amqp:spring-rabbitmq-client:4.2.0-M1 (#9467)
 

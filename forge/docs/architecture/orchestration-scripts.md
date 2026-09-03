@@ -194,8 +194,9 @@ then selects for review only PRs whose CI checks all completed successfully,
 which are not authored by the authenticated review user, and which are not
 still blocked by `human-intervention`. The loaded current-head state retains
 named check-run details and their Actions workflow provenance. Running checks
-wait, while failed checks enter deterministic retry or failure follow-up
-without launching an agent or consuming a review slot. PRs labeled
+wait. For a failed workflow run on the current head, orchestration reruns failed
+jobs while `run_attempt < 3`; at attempt `3` or above it skips review without
+mutating the pull request or any linked issue. PRs labeled
 `human-intervention` are skipped until a maintainer marks them
 `human-intervention-fixed`, at which point orchestration may dismiss stale
 requested-changes reviews and let normal merge gates proceed

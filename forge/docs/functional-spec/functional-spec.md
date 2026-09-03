@@ -2,7 +2,8 @@
 
 This spec realizes the Forge direction set out in §GOAL-forge-direction, in
 service of §GOAL-maximize-library-coverage and
-§GOAL-shorten-issue-to-shipped-metadata.
+§GOAL-shorten-issue-to-shipped-metadata. Repository-specific terms used by the
+spec are defined in §FS-forge-glossary.
 
 ## FS-forge-issue-resolution-goal: Forge issue resolution goal
 
@@ -69,6 +70,23 @@ the stage that broke (`fails-javac-compile`, `fails-java-run`,
 `fails-native-image-build`, or `fails-native-image-run`). Forge claims those
 issues; it never opens them. The producer's contract is the reachability repo's
 Library version update automation (§root/FS-library-version-update-automation).
+
+## FS-foreign-metadata-owner-follow-ups: Foreign metadata owner follow-ups
+
+§FS-forge-scope §root/FS-metadata
+
+When metadata finalization resolves a foreign condition to one runtime
+dependency coordinate that the reachability repo cannot yet host, Forge must
+create or reuse an open issue targeting that exact coordinate. A missing
+artifact uses `library-new-request`; an existing artifact missing the resolved
+version uses `library-update-request`.
+
+The routing operation and original metadata check remain failed. Forge gives
+the analysis agent their captured output, the resolved coordinate, the failure
+reason, and the follow-up issue URL. It must not treat the dependency package as
+owned by the source artifact. If ownership is absent or ambiguous, Forge creates
+no issue and gives the unresolved routing failure to the agent. A passing
+initial metadata check performs none of this work.
 
 ## FS-forge-glossary: Glossary
 
@@ -452,36 +470,84 @@ the current implementation is §ROADMAP-forge-dispatcher-owned-run-preconditions
 
 ### FS-forge-run-output-legibility: Legible run output
 
-The run's own output is an output of the run. Whoever is running generation
-watches it live, so it must answer two questions at a glance: which concrete
-step the run is in right now, and — when the run stops — what exactly failed.
-Clarity is the requirement, not volume: a wall of text that has to be read
-backwards to locate the current step fails this section as surely as silence
-does. This is the live counterpart of the durable record required by
-§FS-durable-generation-logs, and it keeps the loop short as called for by
-§GOAL-shorten-issue-to-shipped-metadata.
+The run's own output is one of the run outputs defined by §FS-forge-outputs.
+Whoever is running generation watches it live, so it must answer two questions
+at a glance: which concrete step the run is in right now, and — when the run
+stops — what exactly failed. Clarity is the requirement, not volume: a wall of
+text that has to be read backwards to locate the current step fails this section
+as surely as silence does. This is the live counterpart of the durable record
+required by §FS-durable-generation-logs, and it keeps the loop short as called
+for by §GOAL-shorten-issue-to-shipped-metadata.
 
-1. **Every step announces itself once.** On entering a pipeline step, the run
-   prints one line naming the phase and the step (`setup/neural_setup`,
-   `explore/native_trace_gate`, `finalization/local_ci_check`, …) and the
-   operand it is working on. The reader must never have to infer the current
-   step from incidental output such as a Gradle banner or an agent's prose.
-2. **Every failure names its location and its cause.** A failing run states the
-   phase, the step, the operand, and the concrete reason it stopped, in that
-   order, before any surrounding detail — the same pair required everywhere a
-   failure surfaces by §ROADMAP-forge-failure-locates-phase-and-step. A failure
-   reported only as a status, a stack trace, or a generic message does not
-   satisfy this requirement.
-3. **The inside of a step stays quiet.** Work within a step is reported by
-   outcome, not by narration: one line per completed unit (a generated class, a
-   passed gate, a trace cycle) and nothing per intermediate operation. Repeated
-   or retried work says that it is a retry and which attempt it is, so a
-   stalled loop is visible as a loop.
-4. **Detail lives in the logs, not in the terminal.** Full agent conversations,
-   Gradle output, and native-image output are written to the durable logs; the
-   run output prints the path to the relevant log instead of reproducing it, so
-   a maintainer can escalate from the summary to the evidence in one step
-   (§FS-durable-generation-logs).
+#### 1. Every step locates its state
+
+On entering a pipeline step, the normal output prints one concise line naming
+the phase, the work and its operand, plus the step's derived position as
+`(n/total)` (`setup/neural_setup`, `explore/native_trace_gate`,
+`finalization/local_ci_check`, …). A completed step or unit adds one outcome
+line under the same position instead of narrating its intermediate work. The
+reader must never have to infer the current step from incidental output such as
+a Gradle banner or an agent's prose.
+
+#### 2. Every failure names its location and its cause
+
+A failing run states the phase, the step, the operand, and the concrete reason
+it stopped, in that order, before any surrounding detail — the same pair
+required everywhere a failure surfaces by
+§ROADMAP-forge-failure-locates-phase-and-step. A failure reported only as a
+status, a stack trace, or a generic message does not satisfy this requirement.
+
+#### 3. The inside of a step stays quiet
+
+Work within a step is reported by outcome, not by narration: one line per
+completed unit (a generated class, a passed gate, a trace cycle) and nothing per
+intermediate operation. Repeated or retried work says that it is a retry and
+which attempt it is, so a stalled loop is visible as a loop.
+
+#### 4. Detail lives in the logs, not in the terminal
+
+Full agent conversations, Gradle output, and native-image output are written to
+the durable logs; the run output prints the path to the relevant log instead of
+reproducing it, so a maintainer can escalate from the summary to the evidence in
+one step (§FS-durable-generation-logs).
+
+#### 5. Verbose mode restores narration
+
+`--verbose` adds the intermediate operations hidden by normal output, including
+the registered method-style step announcement and deterministic setup details.
+It never replaces the concise progress and outcome lines. A failed gate prints
+the detail needed to diagnose that failure even when verbose mode is off.
+
+For `setup`, normal output reduces the phase to three visible states under the
+registered positions: library preflight starts and reports its decision,
+deterministic workspace preparation names its current unit and reports it
+ready, and workflow-engine dispatch names the strategy it starts. Agent session
+paths, command start/success lines, branch commands, source downloads,
+checkpoints, and report refreshes are verbose narration. A failed command or a
+degraded preflight remains visible with its cause and durable log path.
+
+For `fix` and `explore`, normal output names the diagram step and only the unit
+that advances it. Test generation identifies either the selected class and its
+`current/total` class position, a bulk iteration, or an unguided generation
+attempt. Beneath that state, tests report their bounded attempt, terminal task,
+and whether `nativeTest` was reached; an agent retry is one indented `feedback
+fix` state. The native-trace gate reports start, terminal status, and a nested
+`agent_fix` state only when deterministic tracing cannot converge. Agent session
+announcements, static start/completion lines, Gradle commands, report refreshes,
+trace directories, metadata paths, cycle internals, and failure-log excerpts
+are verbose narration. The in-place agent heartbeat remains the normal live
+timer. Terminal failures still name their cause and durable log.
+
+For `finalization`, normal output shows the terminal native-trace gate, then
+the three native-test lanes with their `current/total` lane position, toolchain,
+and Native Image mode. The remaining deterministic production work is one
+`final repository checks` state per coordinate, followed by the finalization
+outcome. An agent entered by a failed native lane, metadata check, or Checkstyle
+check is reported as the separate `agent_fix` step with its attempt and target.
+Metadata splitting, individual validation and style tasks, statistics and
+metrics generation, schema validation, Gradle commands, paths, and timings are
+verbose narration. A failed command or agent remains visible with its cause and
+durable log path.
 
 ## FS-forge-run-metrics: Per-run metrics record
 §GOAL-minimize-generation-cost
@@ -701,16 +767,19 @@ Chunked mode is automatic after the issue is marked with the
 `chunked-dynamic-access` label. The normal project status remains the run-state
 signal: `Todo` means Forge may claim the next chunk, `In Progress` means a chunk
 is currently being generated or reviewed, and the final PR's `Fixes: #<issue>`
-transition moves the issue to `Done`. If a non-final chunk PR has failed CI and
-no failed-job rerun remains available, Forge must move the issue back to `Todo`
-and mark that PR for human follow-up so a replacement chunk can be generated.
-Forge must not require an explicit resume-state CLI flag; the exhaust report
+transition moves the issue to `Done`. Forge must not require an explicit
+resume-state CLI flag; the exhaust report
 location must be derived from the coordinate and loaded automatically by the
 orchestration scripts, as specified by §AR-dynamic-access-exhaust-report. When
 the issue is being resumed from a preserved failed-run continuation marker,
 Forge may proceed without a coordinate-local exhaust report and use
 `explore.exhaustedClasses` from the marker as the processed-class set for the
 resumed run (§FS-forge-run-continuation.2).
+
+When a non-final chunk PR merges, Forge releases the linked issue for the next
+chunk by moving it to `Todo`, clearing its assignees, and removing the
+`human-intervention` and `resumable` labels when present. It retains the
+`chunked-dynamic-access` label so the next claim stays in chunked mode.
 
 Chunk PRs use `Refs: #<issue>` until the final chunk. Only the final chunk PR
 may use `Fixes: #<issue>` and move the issue to `Done`. Non-final chunk PRs

@@ -4,13 +4,27 @@
 # work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 
 import io
+import json
 import os
 import subprocess
 import tempfile
 import unittest
-from unittest.mock import patch
+from contextlib import redirect_stdout
+from unittest.mock import Mock, patch
 
-from utility_scripts.library_finalization import run_library_finalization
+from utility_scripts.foreign_metadata_owner_issue import failure_report_path
+from utility_scripts.library_finalization import (
+    _run_finalization_agent_fix,
+    run_library_finalization,
+)
+from utility_scripts.run_location import (
+    PHASE_FINALIZATION,
+    STEP_AGENT_FIX,
+    STEP_FINALIZE_RUN,
+    failed_run_location,
+    reset_run_location,
+    run_step,
+)
 
 
 def _git(repo_path: str, *args: str) -> str:
@@ -32,6 +46,68 @@ def _commit_all(repo_path: str, message: str) -> str:
 
 
 class LibraryFinalizationTests(unittest.TestCase):
+    def setUp(self) -> None:
+        reset_run_location()
+
+    def tearDown(self) -> None:
+        reset_run_location()
+
+    def test_concise_metadata_repair_uses_agent_fix_step(self) -> None:
+        output = io.StringIO()
+        with patch.dict(
+                os.environ,
+                {"FORGE_VERBOSE": "0", "FORGE_DEBUG_LOGGING": "0"},
+        ), redirect_stdout(output):
+            with run_step(
+                    PHASE_FINALIZATION,
+                    STEP_FINALIZE_RUN,
+                    operand="g:a:1.0",
+            ):
+                result = _run_finalization_agent_fix(
+                    "g:a:1.0",
+                    "metadata validation",
+                    1,
+                    3,
+                    lambda: True,
+                )
+
+        self.assertTrue(result)
+        printed = output.getvalue()
+        self.assertIn(
+            "[finalization] Running agent fix for metadata validation on g:a:1.0 "
+            "(attempt 1/3) (2/2)",
+            printed,
+        )
+        self.assertIn(
+            "[finalization] Agent fix completed for metadata validation on g:a:1.0 "
+            "(attempt 1/3) (2/2)",
+            printed,
+        )
+
+    def test_last_failed_metadata_repair_records_agent_fix_location(self) -> None:
+        output = io.StringIO()
+        with patch.dict(
+                os.environ,
+                {"FORGE_VERBOSE": "0", "FORGE_DEBUG_LOGGING": "0"},
+        ), redirect_stdout(output):
+            with run_step(
+                    PHASE_FINALIZATION,
+                    STEP_FINALIZE_RUN,
+                    operand="g:a:1.0",
+            ):
+                result = _run_finalization_agent_fix(
+                    "g:a:1.0",
+                    "metadata validation",
+                    3,
+                    3,
+                    lambda: False,
+                )
+
+        self.assertFalse(result)
+        location = failed_run_location()
+        self.assertIsNotNone(location)
+        self.assertEqual(location.step, STEP_AGENT_FIX)
+
     def test_rejects_legacy_test_resource_native_image_config_after_split(self) -> None:
         with tempfile.TemporaryDirectory() as repo_path:
             _git(repo_path, "init")
@@ -170,6 +246,10 @@ class LibraryFinalizationTests(unittest.TestCase):
                 "utility_scripts.library_finalization._run_gradle_command",
                 side_effect=run_gradle,
         ), patch(
+                "utility_scripts.library_finalization._run_route_foreign_metadata",
+                side_effect=lambda *_args: events.append("routeForeignMetadata")
+                or Mock(returncode=0, stdout=""),
+        ), patch(
                 "utility_scripts.library_finalization.find_uncommitted_legacy_test_native_image_config_files_for_coordinate",
                 return_value=[],
         ), patch(
@@ -200,12 +280,12 @@ class LibraryFinalizationTests(unittest.TestCase):
         )
 
     def test_route_failure_falls_through_to_analysis_repair(self) -> None:
-        def run_gradle(_repo_path: str, command: list[str]) -> bool:
-            return command[1] != "routeForeignMetadata"
-
         with tempfile.TemporaryDirectory() as repo_path, patch(
                 "utility_scripts.library_finalization._run_gradle_command",
-                side_effect=run_gradle,
+                return_value=True,
+        ), patch(
+                "utility_scripts.library_finalization._run_route_foreign_metadata",
+                return_value=Mock(returncode=1, stdout="routing failed"),
         ), patch(
                 "utility_scripts.library_finalization.find_uncommitted_legacy_test_native_image_config_files_for_coordinate",
                 return_value=[],
@@ -234,13 +314,78 @@ class LibraryFinalizationTests(unittest.TestCase):
             )
 
         self.assertTrue(result)
-        analysis_fix.assert_called_once_with(repo_path, "org.example:demo:1.0.0", "malformed metadata")
+        agent_evidence = analysis_fix.call_args.args[2]
+        self.assertIn("malformed metadata", agent_evidence)
+        self.assertIn("routing failed", agent_evidence)
         check_metadata.assert_called_once()
+
+    def test_unsupported_owner_issue_and_route_output_reach_agent(self) -> None:
+        library = "org.example:demo:1.0.0"
+        with tempfile.TemporaryDirectory() as repo_path:
+            report_path = failure_report_path(repo_path, library)
+            os.makedirs(os.path.dirname(report_path))
+            with open(report_path, "w", encoding="utf-8") as report_file:
+                json.dump(
+                    {
+                        "reason": "owner-version-unsupported",
+                        "coordinate": "org.owner:dependency:1.0.0",
+                    },
+                    report_file,
+                )
+
+            with patch(
+                    "utility_scripts.library_finalization._run_gradle_command",
+                    return_value=True,
+            ), patch(
+                    "utility_scripts.library_finalization._run_route_foreign_metadata",
+                    return_value=Mock(returncode=1, stdout="owner version is not supported"),
+            ), patch(
+                    "utility_scripts.library_finalization.ensure_foreign_metadata_owner_issue",
+                    return_value="https://github.com/oracle/repo/issues/42",
+            ) as ensure_issue, patch(
+                    "utility_scripts.library_finalization.find_uncommitted_legacy_test_native_image_config_files_for_coordinate",
+                    return_value=[],
+            ), patch(
+                    "utility_scripts.library_finalization._run_check_metadata_files",
+                    side_effect=[(False, "foreign package"), (True, "BUILD SUCCESSFUL")],
+            ) as check_metadata, patch(
+                    "utility_scripts.library_finalization._run_check_metadata_files_with_allowed_packages_fix",
+            ) as allowed_packages_fix, patch(
+                    "utility_scripts.library_finalization._run_check_metadata_fix",
+                    return_value=True,
+            ) as analysis_fix, patch(
+                    "utility_scripts.library_finalization.run_style_fix_and_checks",
+                    return_value=True,
+            ), patch(
+                    "utility_scripts.library_finalization.collect_generated_test_validity_issues",
+                    return_value=[],
+            ):
+                result = run_library_finalization(
+                    repo_path=repo_path,
+                    library=library,
+                    group="org.example",
+                    artifact="demo",
+                    library_version="1.0.0",
+                )
+
+        self.assertTrue(result)
+        ensure_issue.assert_called_once()
+        allowed_packages_fix.assert_not_called()
+        self.assertEqual(check_metadata.call_count, 2)
+        agent_evidence = analysis_fix.call_args.args[2]
+        self.assertIn("foreign package", agent_evidence)
+        self.assertIn("owner-version-unsupported", agent_evidence)
+        self.assertIn("org.owner:dependency:1.0.0", agent_evidence)
+        self.assertIn("https://github.com/oracle/repo/issues/42", agent_evidence)
+        self.assertIn("owner version is not supported", agent_evidence)
 
     def test_metadata_validation_passes_after_first_analysis_repair(self) -> None:
         with tempfile.TemporaryDirectory() as repo_path, patch(
                 "utility_scripts.library_finalization._run_gradle_command",
                 return_value=True,
+        ), patch(
+                "utility_scripts.library_finalization._run_route_foreign_metadata",
+                return_value=Mock(returncode=0, stdout=""),
         ), patch(
                 "utility_scripts.library_finalization.find_uncommitted_legacy_test_native_image_config_files_for_coordinate",
                 return_value=[],
@@ -282,6 +427,9 @@ class LibraryFinalizationTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as repo_path, patch(
                 "utility_scripts.library_finalization._run_gradle_command",
                 return_value=True,
+        ), patch(
+                "utility_scripts.library_finalization._run_route_foreign_metadata",
+                return_value=Mock(returncode=0, stdout=""),
         ), patch(
                 "utility_scripts.library_finalization.find_uncommitted_legacy_test_native_image_config_files_for_coordinate",
                 return_value=[],

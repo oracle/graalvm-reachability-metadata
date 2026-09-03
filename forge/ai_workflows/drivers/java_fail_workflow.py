@@ -23,7 +23,12 @@ from ai_workflows.core.workflow_strategy import (
     SUCCESS_WITH_INTERVENTION_STATUS,
     WorkflowStrategy,
 )
-from git_scripts.common_git import build_ai_branch_name, delete_remote_branch_if_exists, ensure_gh_authenticated
+from git_scripts.common_git import (
+    build_ai_branch_name,
+    delete_remote_branch_if_exists,
+    ensure_gh_authenticated,
+    switch_branch_quietly,
+)
 from utility_scripts import metrics_writer
 from utility_scripts.continuation_marker import (
     PHASE_FINALIZATION,
@@ -35,16 +40,24 @@ from utility_scripts.gradle_environment import gradle_command_environment
 from utility_scripts.library_preparation_preflight import (
     prepare_library_preparation_preflight,
 )
+from utility_scripts.logged_command import run_logged_command
 from utility_scripts.metadata_index import is_newer_than_latest_metadata_version
 from utility_scripts.metrics_writer import create_failure_run_metrics_output
 from utility_scripts.repo_path_resolver import require_complete_reachability_repo
-from utility_scripts.run_location import STEP_NORMAL_SETUP, STEP_RUN_WORKFLOW_ENGINE, run_step
+from utility_scripts.run_location import (
+    STEP_NORMAL_SETUP,
+    STEP_RUN_WORKFLOW_ENGINE,
+    enter_phase,
+    log_step_progress,
+    run_step,
+)
 from utility_scripts.source_context import (
     normalize_source_context_types,
     populate_artifact_urls,
     prepare_source_contexts,
     resolve_test_source_layout,
 )
+from utility_scripts.stage_logger import log_detail
 from utility_scripts.strategy_loader import require_strategy_by_name
 from utility_scripts.workflow_setup import (
     list_all_files,
@@ -229,7 +242,7 @@ def copy_and_prepare_project_dir(
         raise FileNotFoundError(f"Missing source test project directory: {src_dir}")
 
     if _same_filesystem_path(src_dir, dst_dir):
-        print(f"[project-prep] Source and destination test project are the same: {dst_dir}")
+        log_detail("project-prep", f"Source and destination test project are the same: {dst_dir}")
     else:
         os.makedirs(dst_dir, exist_ok=True)
         shutil.copytree(src_dir, dst_dir, dirs_exist_ok=True)
@@ -244,11 +257,24 @@ def copy_and_prepare_project_dir(
 
 
 def run_gradle_task(task: str, coordinates: str) -> None:
-    """Run a Gradle task for the provided dependency coordinates."""
+    """Run a Gradle task quietly with durable output for the coordinates.
+
+    §FS-forge-run-output-legibility §FS-durable-generation-logs
+    """
     repo_path = os.getcwd()
     require_complete_reachability_repo(repo_path)
-    command = f"./gradlew {task} -Pcoordinates={coordinates}"
-    subprocess.run(command, shell=True, env=gradle_command_environment(repo_path), check=True)
+    command = ["./gradlew", task, f"-Pcoordinates={coordinates}"]
+    result = run_logged_command(
+        command,
+        cwd=repo_path,
+        task_type="java-fail-setup",
+        subject=coordinates,
+        action=task,
+        env=gradle_command_environment(repo_path),
+        stage="java-fail-setup",
+    )
+    if result.returncode != 0:
+        raise subprocess.CalledProcessError(result.returncode, command, output=result.stdout)
 
 
 def update_metadata_index_json(
@@ -282,10 +308,7 @@ def create_project_prep_checkpoint(config: JavaFailWorkflowConfig, group, artifa
         f"{config.branch_prefix}-{group}-{artifact}-{updated_library_version}",
     )
     delete_remote_branch_if_exists(new_branch)
-    subprocess.run(
-        ["git", "switch", "-C", new_branch],
-        check=True,
-    )
+    switch_branch_quietly(new_branch)
 
     candidate_paths = [
         os.path.join("tests", "src", group, artifact, updated_library_version),
@@ -296,7 +319,7 @@ def create_project_prep_checkpoint(config: JavaFailWorkflowConfig, group, artifa
 
     has_staged_changes = subprocess.run(["git", "diff", "--cached", "--quiet"], check=False)
     if has_staged_changes.returncode == 0:
-        print("[project-prep] No project preparation changes to commit.")
+        log_detail("project-prep", "No project preparation changes to commit.")
         return subprocess.check_output(["git", "rev-parse", "HEAD"], text=True).strip()
 
     subprocess.run(
@@ -411,7 +434,7 @@ def init_agent(
         print("ERROR: Strategy is missing required field: agent", file=sys.stderr)
         sys.exit(1)
 
-    print(f"[Initializing {strategy_agent} agent...]")
+    log_detail("init-agent", f"Initializing {strategy_agent} agent")
     agent_class = Agent.get_class(strategy_agent)
     return agent_class(
         model_name=model_name,
@@ -466,6 +489,7 @@ def run_java_fail_workflow(config: JavaFailWorkflowConfig, argv=None):
     resume_from = None if continuation_marker is None else continuation_marker.continue_from
     resume_existing_tree = resume_from in {"fix", "explore", PHASE_FINALIZATION, "publication"}
     resume_finalization = resume_from == PHASE_FINALIZATION
+    enter_phase(PHASE_SETUP)
     reachability_repo_path, metrics_repo_dir, metrics_repo_root = resolve_workflow_repo_paths(
         explicit_repo_path,
         explicit_metrics_repo_path,
@@ -478,6 +502,13 @@ def run_java_fail_workflow(config: JavaFailWorkflowConfig, argv=None):
             reachability_repo_path,
         )
     )
+    updated_library = f"{group}:{artifact}:{updated_library_version}"
+    setup_action = (
+        "Reusing prepared repair workspace"
+        if resume_existing_tree
+        else "Preparing repair workspace"
+    )
+    log_step_progress(PHASE_SETUP, STEP_NORMAL_SETUP, f"{setup_action} for {updated_library}")
     if not resume_existing_tree:
         save_phase_update(
             continuation_marker_path,
@@ -522,9 +553,8 @@ def run_java_fail_workflow(config: JavaFailWorkflowConfig, argv=None):
                 lambda marker: marker.mark_setup_done(),
             )
     else:
-        log_stage("continuation", f"Resuming {group}:{artifact}:{updated_library_version} from phase {resume_from}")
+        log_detail("continuation", f"Resuming {updated_library} from phase {resume_from}")
         commit_checkpoint = subprocess.check_output(["git", "rev-parse", "HEAD"], text=True).strip()
-    updated_library = f"{group}:{artifact}:{updated_library_version}"
     if not resume_existing_tree:
         populate_artifact_urls(reachability_repo_path, updated_library)
 
@@ -585,11 +615,22 @@ def run_java_fail_workflow(config: JavaFailWorkflowConfig, argv=None):
         persistent_instructions=strategy_obj.persistent_instructions,
     )
 
+    log_step_progress(PHASE_SETUP, STEP_NORMAL_SETUP, f"Setup ready for {updated_library}")
     if resume_finalization:
+        log_step_progress(
+            PHASE_SETUP,
+            STEP_RUN_WORKFLOW_ENGINE,
+            f"Reusing completed workflow for {strategy_name}",
+        )
         workflow_status = RUN_STATUS_SUCCESS
         iterations = 0
     else:
         with run_step(PHASE_SETUP, STEP_RUN_WORKFLOW_ENGINE, operand=strategy_name):
+            log_step_progress(
+                PHASE_SETUP,
+                STEP_RUN_WORKFLOW_ENGINE,
+                f"Starting workflow {strategy_name} for {updated_library}",
+            )
             workflow_status, iterations = strategy_obj.run(
                 agent=agent,
             )

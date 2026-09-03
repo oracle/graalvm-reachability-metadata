@@ -149,15 +149,18 @@ comparison reaches the PR body without the snapshot reaching the published tree
 **When it does not**, the driver must first find a version-compatible baseline
 suite and probe it. Exact index ownership wins; otherwise it prefers the nearest
 prior version on the same major/minor line, then the nearest following version on
-that line, then candidates within the same major. A test-version alias only
-locates a reusable suite — it does not declare support and cannot contribute a
-candidate. Version lines come from the leading numeric components, including
+that line, then candidates within the same major. If no same-major candidate
+exists, the nearest usable supported version below the requested version is the
+baseline, even when it belongs to an earlier major version. Thus a version newer
+than the repository's latest supported version uses that latest usable suite,
+while a historical backfill never uses a newer-major suite. A test-version alias
+only locates a reusable suite — it does not declare support and cannot contribute
+a candidate. Version lines come from the leading numeric components, including
 conventional `v`- and `r`-prefixed releases; recognized prerelease qualifiers keep
 their explicit ordering, while other valid Maven suffixes keep the numeric line
-and fall back to deterministic ordering rather than becoming ineligible. A
-cross-major baseline is never compatible, even when marked latest, and if no
-baseline can be selected deterministically the route stops with an actionable
-error rather than probing something that cannot work.
+and fall back to deterministic ordering rather than becoming ineligible. If no
+same-major or lower baseline can be selected deterministically, the route stops
+with an actionable error rather than probing a future incompatible suite.
 
 The probe then decides who owns the rest:
 
@@ -304,6 +307,15 @@ staging only artifact-scoped paths would drop them, and the next checkpoint rese
 would delete them. Test sources and stats stay scoped to the target coordinate.
 
 Per-coordinate finalization repairs missing allowed-packages deterministically.
+After `checkMetadataFiles` fails, it first runs `routeForeignMetadata`. When
+routing resolves an owner whose artifact is absent from repository metadata,
+Forge creates or reuses a `library-new-request`; when the artifact exists but
+the resolved version is unsupported, it creates or reuses a
+`library-update-request`. Routing remains failed, and Forge gives the original
+check output, routing output, resolved coordinate, and issue URL to the analysis
+agent. A passing initial metadata check does not run ownership routing.
+§FS-foreign-metadata-owner-follow-ups
+
 If metadata validation still fails, Forge gives its command and captured output
 to the analysis agent up to three times, rerunning validation after each repair
 and letting each deterministic result decide whether another attempt is needed.

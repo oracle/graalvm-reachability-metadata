@@ -157,7 +157,80 @@ class LibraryUpdateTargetTests(unittest.TestCase):
                 self.assertEqual(baseline.match_type, expected_match_type)
                 self.assertIn("nearest prior", baseline.reason)
 
-    def test_backfill_fails_when_only_cross_major_suite_is_usable(self) -> None:
+    def test_forward_update_uses_nearest_prior_major_suite(self) -> None:
+        with tempfile.TemporaryDirectory() as repo:
+            _write_index(repo, [
+                {
+                    "metadata-version": "3.5.1",
+                    "tested-versions": ["3.5.1", "3.5.2"],
+                },
+                {
+                    "latest": True,
+                    "metadata-version": "3.6.0",
+                    "tested-versions": ["3.6.0", "3.6.1", "3.6.2"],
+                },
+            ], group="org.apache.kafka", artifact="kafka-streams")
+            for version in ["3.5.1", "3.6.0"]:
+                _write_file(os.path.join(
+                    repo,
+                    "metadata",
+                    "org.apache.kafka",
+                    "kafka-streams",
+                    version,
+                    "reachability-metadata.json",
+                ))
+                _write_file(os.path.join(
+                    repo,
+                    "tests",
+                    "src",
+                    "org.apache.kafka",
+                    "kafka-streams",
+                    version,
+                    "build.gradle",
+                ))
+
+            baseline = require_version_backfill_baseline(
+                repo,
+                "org.apache.kafka",
+                "kafka-streams",
+                "4.3.1",
+            )
+
+            self.assertEqual(baseline.metadata_version, "3.6.0")
+            self.assertEqual(baseline.test_version, "3.6.0")
+            self.assertEqual(baseline.supported_version, "3.6.2")
+            self.assertEqual(baseline.match_type, "prior-major")
+            self.assertIn("nearest prior earlier-major", baseline.reason)
+
+    def test_same_major_following_suite_wins_over_prior_major(self) -> None:
+        with tempfile.TemporaryDirectory() as repo:
+            _write_index(repo, [
+                {
+                    "metadata-version": "3.9.0",
+                    "tested-versions": ["3.9.0"],
+                },
+                {
+                    "latest": True,
+                    "metadata-version": "4.1.0",
+                    "tested-versions": ["4.1.0"],
+                },
+            ])
+            for version in ["3.9.0", "4.1.0"]:
+                _write_file(os.path.join(repo, "metadata", "org.example", "demo", version, "metadata.json"))
+                _write_file(os.path.join(repo, "tests", "src", "org.example", "demo", version, "build.gradle"))
+
+            baseline = require_version_backfill_baseline(
+                repo,
+                "org.example",
+                "demo",
+                "4.0.0",
+            )
+
+            self.assertEqual(baseline.supported_version, "4.1.0")
+            self.assertEqual(baseline.match_type, "same-major")
+            self.assertIn("nearest following same-major", baseline.reason)
+
+    def test_backfill_rejects_only_newer_major_suite(self) -> None:
         with tempfile.TemporaryDirectory() as repo:
             _write_index(repo, [{
                 "latest": True,
@@ -170,7 +243,7 @@ class LibraryUpdateTargetTests(unittest.TestCase):
             baseline = resolve_version_backfill_baseline(repo, "org.example", "demo", "1.9.9")
 
             self.assertIsNone(baseline)
-            with self.assertRaisesRegex(RuntimeError, "cross-major `latest` entry"):
+            with self.assertRaisesRegex(RuntimeError, "newer-major suite"):
                 require_version_backfill_baseline(repo, "org.example", "demo", "1.9.9")
 
     def test_exact_tested_version_owner_wins_over_nearer_entry(self) -> None:
@@ -724,10 +797,11 @@ class LibraryUpdateTargetTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as repo:
             _write_index(repo, [])
 
-            def fail_scaffold(command, **kwargs):  # type: ignore[no-untyped-def]
-                raise subprocess.CalledProcessError(17, command)
-
-            with patch("ai_workflows.drivers.improve_library_coverage.subprocess.run", side_effect=fail_scaffold):
+            failed_result = subprocess.CompletedProcess(["./gradlew"], 17)
+            with patch(
+                    "ai_workflows.drivers.improve_library_coverage.run_logged_command",
+                    return_value=failed_result,
+            ):
                 with self.assertRaisesRegex(
                         RuntimeError,
                         "Failed to scaffold library-update target org.example:demo:9.9.9",

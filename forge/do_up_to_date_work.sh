@@ -43,6 +43,7 @@ USER_REQUESTED_ONLY="${FORGE_USER_REQUESTED_ISSUES_ONLY:-0}"
 # §FS-forge-run-requirements.2
 TAKE_BLOCKED_ISSUES="${FORGE_TAKE_BLOCKED_ISSUES:-0}"
 GRAALVM_VERSION_CHECK="${FORGE_GRAALVM_VERSION_CHECK:-strict}"
+VERBOSE="${FORGE_VERBOSE:-0}"
 WORK_STRATEGY_NAME="${FORGE_STRATEGY_NAME:-optimistic_dynamic_access_iterative_pi_gpt-5.6-sol}"
 GITHUB_RATE_LIMIT_EXIT_CODE=75
 GRADLE_BOOTSTRAP_EXIT_CODE=76
@@ -90,6 +91,9 @@ Options:
       Run one update/work cycle and exit without sleeping.
   --fail-fast
       Exit nonzero when the first work cycle is unsuccessful.
+  -v, --verbose
+      Show deterministic narration hidden by the compact default output and
+      enable verbose output in the selected workflow agents.
   --stop
       Request Forge do-work loops to exit. Without a branch argument this
       creates the global stop marker ~/.metadata-forge-stop. With --branch or
@@ -223,6 +227,8 @@ Environment:
   FORGE_GRAALVM_VERSION_CHECK
       Default --graalvm-version-check mode: strict, warn, or off. Defaults to
       strict.
+  FORGE_VERBOSE
+      Set to 1 for the same behavior as --verbose. Defaults to 0.
 
 Examples:
   $0
@@ -485,6 +491,7 @@ export_work_configuration() {
     export FORGE_USER_REQUESTED_ISSUES_ONLY="$USER_REQUESTED_ONLY"
     export FORGE_TAKE_BLOCKED_ISSUES="$TAKE_BLOCKED_ISSUES"
     export FORGE_GRAALVM_VERSION_CHECK="$GRAALVM_VERSION_CHECK"
+    export FORGE_VERBOSE="$VERBOSE"
 
     if [[ -n "$AGENT_FAMILY" ]]; then
         export FORGE_AGENT_FAMILY="$AGENT_FAMILY"
@@ -540,6 +547,9 @@ process_work_queues() {
     if [[ "$TAKE_BLOCKED_ISSUES" == "1" ]]; then
         forge_metadata_args+=("--take-blocked-issues")
     fi
+    if [[ "$VERBOSE" == "1" ]]; then
+        forge_metadata_args+=("--verbose")
+    fi
 
     run_step "Processing configured work queues via forge_metadata." \
         "$PYTHON_BIN" "$SCRIPT_DIR/forge_metadata.py" "${forge_metadata_args[@]}"
@@ -563,7 +573,10 @@ run_host_requirements() {
         return 1
     fi
 
-    log "Validating Forge host requirements before any work starts."
+    if [[ "$VERBOSE" == "1" ]]; then
+        log "Validating Forge host requirements before any work starts."
+        host_requirements_args+=(--verbose)
+    fi
     # The gate takes no review model or shared family: --agent-family already
     # reaches it as --analysis-family, and PR review runs on the analysis role
     # (§FS-forge-agent-runtime-selection).
@@ -843,6 +856,10 @@ while [[ "$#" -gt 0 ]]; do
             FAIL_FAST=1
             shift
             ;;
+        -v|--verbose)
+            VERBOSE=1
+            shift
+            ;;
         --user-requested-only)
             USER_REQUESTED_ONLY=1
             shift
@@ -1018,6 +1035,11 @@ if [[ "$GRAALVM_VERSION_CHECK" != "strict" \
         && "$GRAALVM_VERSION_CHECK" != "warn" \
         && "$GRAALVM_VERSION_CHECK" != "off" ]]; then
     echo "--graalvm-version-check must be strict, warn, or off." >&2
+    exit 1
+fi
+
+if [[ "$VERBOSE" != "0" && "$VERBOSE" != "1" ]]; then
+    echo "FORGE_VERBOSE must be 0 or 1." >&2
     exit 1
 fi
 

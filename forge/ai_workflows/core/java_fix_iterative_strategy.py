@@ -3,6 +3,7 @@
 # You should have received a copy of the CC0 legalcode along with this
 # work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 
+from ai_workflows.agents.agent import send_agent_prompt
 from ai_workflows.core.workflow_strategy import RUN_STATUS_FAILURE, RUN_STATUS_SUCCESS, WorkflowStrategy
 from utility_scripts.continuation_marker import PHASE_EXPLORE, PHASE_FIX, save_phase_update
 from utility_scripts.run_location import (
@@ -11,10 +12,12 @@ from utility_scripts.run_location import (
     STEP_NATIVE_TRACE_GATE,
     RunLocation,
     enter_phase,
+    log_step_progress,
     record_step_failure,
     run_step,
 )
 from utility_scripts.native_test_verification import global_output_dir
+from utility_scripts.stage_logger import log_detail
 
 
 """
@@ -90,11 +93,11 @@ class _JavaTestFixIterativeBase(WorkflowStrategy):
         return "agent: test failed before nativeTest; sending failure output back to agent"
 
     def _print_message(self, message: str) -> None:
-        print(f"[{self._log_prefix}] {message}")
+        log_detail(self._log_prefix, message)
 
     @classmethod
     def _print_detail(cls, message: str, indent_level: int = 1) -> None:
-        print(f"{'  ' * indent_level}{message}")
+        log_detail("fix", message, indent_level=indent_level)
 
     def run(self, agent):
         save_phase_update(
@@ -105,10 +108,31 @@ class _JavaTestFixIterativeBase(WorkflowStrategy):
         workflow_status = RUN_STATUS_FAILURE
 
         with run_step(RUN_PHASE_FIX, STEP_FIX_REPORTED_FAILURE, operand=self.library):
+            log_step_progress(
+                RUN_PHASE_FIX,
+                STEP_FIX_REPORTED_FAILURE,
+                f"Fixing reported failure for {self.library}",
+            )
+            log_step_progress(
+                RUN_PHASE_FIX,
+                STEP_FIX_REPORTED_FAILURE,
+                "Reproducing reported failure",
+                indent_level=1,
+            )
             self._print_message("running initial gradle test to collect errors")
             initial_error = agent.run_test_command(f"./gradlew test -Pcoordinates={self.library}")
+            log_step_progress(
+                RUN_PHASE_FIX,
+                STEP_FIX_REPORTED_FAILURE,
+                "Running initial agent fix",
+                indent_level=1,
+            )
             self._print_message("running agent...")
-            agent.send_prompt(self._render_prompt("initial", initial_error=initial_error))
+            send_agent_prompt(
+                agent,
+                self._render_prompt("initial", initial_error=initial_error),
+                "initial_fix()",
+            )
             self._print_message("agent complete")
         global_iterations = 1
 
@@ -116,6 +140,12 @@ class _JavaTestFixIterativeBase(WorkflowStrategy):
             save_phase_update(
                 self.continuation_marker_path,
                 lambda marker: marker.record_iteration(PHASE_FIX, test_iter + 1),
+            )
+            log_step_progress(
+                RUN_PHASE_FIX,
+                STEP_FIX_REPORTED_FAILURE,
+                f"Running test {test_iter + 1}/{self.max_test_iterations}",
+                indent_level=1,
             )
             self._print_message(
                 "test {test_iteration}/{max_test_iterations}".format(
@@ -131,6 +161,18 @@ class _JavaTestFixIterativeBase(WorkflowStrategy):
             )
             test_output = agent.run_test_command(f"./gradlew test -Pcoordinates={self.library}")
             failed_task = self._get_first_failed_task(test_output)
+            if failed_task == "nativeTest":
+                test_outcome = "reached nativeTest"
+            elif failed_task is None:
+                test_outcome = "passed"
+            else:
+                test_outcome = f"failed at {failed_task}"
+            log_step_progress(
+                RUN_PHASE_FIX,
+                STEP_FIX_REPORTED_FAILURE,
+                f"Test {test_iter + 1}/{self.max_test_iterations} {test_outcome}",
+                indent_level=1,
+            )
             self._print_detail(
                 "test: complete (failed task: {failed_task})".format(
                     failed_task=failed_task or "none",
@@ -147,12 +189,20 @@ class _JavaTestFixIterativeBase(WorkflowStrategy):
                 break
 
             global_iterations += 1
+            log_step_progress(
+                RUN_PHASE_FIX,
+                STEP_FIX_REPORTED_FAILURE,
+                f"Running feedback fix after {failed_task}",
+                indent_level=2,
+            )
             self._print_detail(
                 self._retry_detail_message,
                 indent_level=2,
             )
-            agent.send_prompt(
-                f"{self._retry_prompt_title}\n./gradlew test -Pcoordinates={self.library}\n\nOutput:\n{test_output}"
+            send_agent_prompt(
+                agent,
+                f"{self._retry_prompt_title}\n./gradlew test -Pcoordinates={self.library}\n\nOutput:\n{test_output}",
+                "feedback_fix()",
             )
             self._print_detail("agent: complete", indent_level=2)
 
@@ -176,6 +226,11 @@ class _JavaTestFixIterativeBase(WorkflowStrategy):
                 ),
             )
         else:
+            log_step_progress(
+                RUN_PHASE_FIX,
+                STEP_FIX_REPORTED_FAILURE,
+                f"Reported failure could not be fixed for {self.library}",
+            )
             save_phase_update(
                 self.continuation_marker_path,
                 lambda marker: marker.mark_phase_pending(PHASE_FIX, iteration=global_iterations),

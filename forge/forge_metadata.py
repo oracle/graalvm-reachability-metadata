@@ -93,6 +93,7 @@ from ai_workflows.core.workflow_strategy import (
     RUN_STATUS_SUCCESS,
     SUCCESS_WITH_INTERVENTION_STATUS,
 )
+from ai_workflows.agents.agent import AgentFailureError
 from ai_workflows.agents.codex_agent import extract_codex_token_usage
 from ai_workflows.agents.agent_runtime import (
     analysis_agent_run,
@@ -153,6 +154,7 @@ from utility_scripts.continuation_marker import (
 from utility_scripts.dynamic_access_report import load_dynamic_access_coverage_report
 from utility_scripts.fixture_github import FixtureGitHubState, load_fixture_github_state
 from utility_scripts.gradle_environment import gradle_command_environment
+from utility_scripts.logged_command import run_logged_command
 from utility_scripts.library_stats import resolve_stats_file_path
 from utility_scripts.library_preparation_preflight import (
     LIBRARY_PREPARATION_PREFLIGHT_FILENAME,
@@ -201,6 +203,7 @@ from utility_scripts.run_location import (
     STEP_CLAIM_ISSUE,
     STEP_CREATE_ISSUE_WORKSPACE,
     STEP_NEURAL_SETUP,
+    STEP_NORMAL_SETUP,
     STEP_PUBLISH_BRANCH,
     STEP_ROUTE_TO_DRIVER,
     RunLocation,
@@ -208,6 +211,7 @@ from utility_scripts.run_location import (
     bind_run_context,
     enter_phase,
     format_run_failure_line,
+    log_step_progress,
     marker_failure_location,
     pipeline_step,
     record_step_failure,
@@ -217,7 +221,15 @@ from utility_scripts.run_location import (
     run_step,
 )
 from utility_scripts.source_context import GradleBootstrapFailure
-from utility_scripts.stage_logger import log_debug, log_failure_banner, log_stage, log_success_banner
+from utility_scripts.stage_logger import (
+    debug_logging_enabled,
+    enable_verbose_logging,
+    log_debug,
+    log_detail,
+    log_failure_banner,
+    log_stage,
+    log_success_banner,
+)
 from utility_scripts.shutdown_signal import get_active_shutdown_signal_path, is_shutdown_requested
 from utility_scripts.strategy_loader import load_strategy_by_name, require_strategy_by_name
 from utility_scripts.task_logs import (
@@ -1825,9 +1837,8 @@ def get_project_item_state(issue_number: int) -> tuple[str | None, str | None]:
         STATUS_FIELD_NAME,
     )
     if item_id:
-        print()
         status_text = status if status is not None else "unknown"
-        log_stage(
+        log_debug(
             "project-item",
             (
                 f"Issue #{issue_number} is linked to GitHub project item {item_id} "
@@ -2159,13 +2170,11 @@ def resolve_authenticated_user(authenticated_user: str | None = None) -> str:
     if authenticated_user is not None:
         return authenticated_user
     if is_fixture_testing_enabled():
-        print()
-        log_stage("github-auth", f"Fixture authenticated as: {FIXTURE_AUTHENTICATED_USER}")
+        log_debug("github-auth", f"Fixture authenticated as: {FIXTURE_AUTHENTICATED_USER}")
         return FIXTURE_AUTHENTICATED_USER
     ensure_gh_authenticated()
     resolved_user = get_authenticated_user()
-    print()
-    log_stage("github-auth", f"Authenticated as: {resolved_user}")
+    log_debug("github-auth", f"Authenticated as: {resolved_user}")
     return resolved_user
 
 
@@ -2417,7 +2426,10 @@ def get_pull_request_workflow_runs(head_sha: str) -> list[dict]:
 
 
 def get_rerunnable_failed_workflow_run_ids(workflow_runs: list[dict]) -> list[int]:
-    """Return failed GitHub Actions run IDs below the automated rerun limit."""
+    """Return failed GitHub Actions run IDs below the automated rerun limit.
+
+    §FS-automated-pr-review
+    """
     run_ids: list[int] = []
     for workflow_run in workflow_runs:
         if not isinstance(workflow_run, dict):
@@ -2641,11 +2653,14 @@ def resolve_non_final_chunked_dynamic_access_issue(pr: dict) -> int | None:
     return int(match.group(1))
 
 
-def release_non_final_chunked_dynamic_access_issue(pr: dict, reason: str) -> int | None:
-    """Move a non-final chunk issue back to Todo and return the issue number."""
+def apply_chunked_dynamic_access_merge_follow_up(pr: dict) -> None:
+    """Restore a merged non-final chunk issue for a clean next chunk.
+
+    §FS-forge-chunked-dynamic-access
+    """
     issue_number = resolve_non_final_chunked_dynamic_access_issue(pr)
     if issue_number is None:
-        return None
+        return
 
     item_id = get_project_item_id(issue_number)
     if item_id is None:
@@ -2653,36 +2668,17 @@ def release_non_final_chunked_dynamic_access_issue(pr: dict, reason: str) -> int
             f"Chunked dynamic-access PR #{pr.get('number')} references issue #{issue_number}, "
             f"but the issue is not linked to project {PROJECT_NUMBER}."
         )
+    issue: dict = get_issue_claim_payload(issue_number)
+    for label_name in (LABEL_HUMAN_INTERVENTION, LABEL_RESUMABLE):
+        if issue_has_label(issue, label_name):
+            remove_issue_label(issue_number, label_name)
     set_item_status(item_id, STATUS_TODO)
     clear_issue_assignees(issue_number)
     invalidate_issue_claim_cache_entry(issue_number)
     log_stage(
         "chunked-dynamic-access",
-        f"Released issue #{issue_number} for the next chunk after PR #{pr.get('number')} {reason}.",
+        f"Released issue #{issue_number} for the next chunk after PR #{pr.get('number')} merged.",
     )
-    return issue_number
-
-
-def apply_chunked_dynamic_access_merge_follow_up(pr: dict) -> None:
-    """Move a merged non-final chunk issue back to Todo for the next chunk."""
-    release_non_final_chunked_dynamic_access_issue(pr, "merged")
-
-
-def apply_chunked_dynamic_access_failed_ci_follow_up(pr: dict) -> None:
-    """Release a non-final chunk issue when its PR has failed CI and no rerun remains."""
-    issue_number = release_non_final_chunked_dynamic_access_issue(pr, "failed CI")
-    if issue_number is None:
-        return
-    pr_number = pr.get("number")
-    if isinstance(pr_number, int):
-        add_pull_request_label(pr_number, LABEL_HUMAN_INTERVENTION)
-        log_stage(
-            "chunked-dynamic-access",
-            (
-                f"Marked failed non-final chunk PR #{pr_number} as "
-                f"'{LABEL_HUMAN_INTERVENTION}' after releasing issue #{issue_number}."
-            ),
-        )
 
 
 def apply_unblocked_issue_merge_follow_up(pr: dict) -> None:
@@ -2850,7 +2846,10 @@ def resolve_pull_request_merge_conflict(
 
 
 def reconcile_failed_ci_pull_request(pull_request: dict) -> None:
-    """Handle failed CI deterministically without launching a review agent."""
+    """Rerun failed CI below attempt three, otherwise skip review.
+
+    §FS-automated-pr-review
+    """
     pr_number = pull_request.get("number")
     head_sha = pull_request.get("headRefOid")
     if not isinstance(pr_number, int) or not isinstance(head_sha, str) or not head_sha:
@@ -2861,23 +2860,12 @@ def reconcile_failed_ci_pull_request(pull_request: dict) -> None:
         print(f"[Skipping failed-CI follow-up for PR #{pr_number}: CI state changed.]")
         return
 
-    chunked_issue = resolve_non_final_chunked_dynamic_access_issue(pull_request)
     rerun_count = rerun_failed_pull_request_workflow_jobs(pr_number, head_sha)
     if rerun_count:
-        if chunked_issue is not None:
-            print(
-                f"[Reran failed GitHub Actions job(s) in {rerun_count} workflow run(s) "
-                f"for chunked PR #{pr_number}; keeping the backing issue in progress for this pass.]"
-            )
-        else:
-            print(
-                f"[Reran failed GitHub Actions job(s) in {rerun_count} workflow run(s) "
-                f"for PR #{pr_number}; review waits for successful CI.]"
-            )
-        return
-
-    if chunked_issue is not None:
-        apply_chunked_dynamic_access_failed_ci_follow_up(pull_request)
+        print(
+            f"[Reran failed GitHub Actions job(s) in {rerun_count} workflow run(s) "
+            f"for PR #{pr_number}; review waits for successful CI.]"
+        )
         return
 
     print(
@@ -3600,8 +3588,7 @@ def set_item_status(item_id: str, status: str) -> None:
     """
     Update the Status field of a project item to the given status option name.
     """
-    print()
-    log_stage("project-status", f"Setting project item {item_id} -> {status}")
+    log_debug("project-status", f"Setting project item {item_id} -> {status}")
     project_node_id, field_id, option_ids = get_cached_field_info()
     option_id = option_ids.get(status)
     run_github_command_with_retries(
@@ -5269,21 +5256,21 @@ def _prepare_library_update_dynamic_access_report(claimed_issue: ClaimedIssue) -
 
 def _generate_dispatcher_dynamic_access_report(claimed_issue: ClaimedIssue) -> None:
     """Generate or refresh the dynamic-access report used for dispatcher chunking."""
-    result = subprocess.run(
+    result = run_logged_command(
         [
             "./gradlew",
             "generateDynamicAccessCoverageReport",
             f"-Pcoordinates={claimed_issue.issue_coordinates}",
         ],
         cwd=claimed_issue.worktree_path,
+        task_type="dynamic-access-report",
+        subject=claimed_issue.issue_coordinates,
+        action="generateDynamicAccessCoverageReport",
         env=gradle_command_environment(claimed_issue.worktree_path),
-        stdout=subprocess.PIPE,
-        stderr=subprocess.STDOUT,
-        text=True,
-        check=False,
+        stage="dynamic-access",
     )
     if result.returncode != 0:
-        log_stage(
+        log_detail(
             "dynamic-access-chunking",
             (
                 "Dispatcher dynamic-access report refresh failed for "
@@ -5355,7 +5342,7 @@ def _prepare_dispatcher_dynamic_access_report(claimed_issue: ClaimedIssue) -> bo
     built (§FS-forge-chunked-dynamic-access).
     """
     if _continuation_resumes_existing_tree(claimed_issue.continuation_marker):
-        log_stage(
+        log_detail(
             "dynamic-access-chunking",
             (
                 f"Issue #{claimed_issue.issue['number']} resumes a preserved tree; "
@@ -5409,7 +5396,7 @@ def prepare_dynamic_access_chunking(
         chunk_boundary: int = threshold
         if active_chunk_remaining_budget is not None:
             chunk_boundary = min(chunk_boundary, active_chunk_remaining_budget)
-        log_stage(
+        log_detail(
             "dynamic-access-chunking",
             "Deferring chunk selection for '{strategy}' until its bulk phase completes; "
             "uncovered_classes={uncovered}, class_boundary={boundary}.".format(
@@ -5422,7 +5409,7 @@ def prepare_dynamic_access_chunking(
 
     report = _load_dispatcher_dynamic_access_report(claimed_issue)
     if report is None:
-        log_stage(
+        log_detail(
             "dynamic-access-chunking",
             (
                 f"No dispatcher dynamic-access report for issue #{claimed_issue.issue['number']} "
@@ -5448,7 +5435,7 @@ def prepare_dynamic_access_chunking(
         claimed_issue.continuation_marker,
     )
     if not already_chunked and len(current_uncovered_classes) <= threshold:
-        log_stage(
+        log_detail(
             "dynamic-access-chunking",
             (
                 f"Chunking not selected for issue #{claimed_issue.issue['number']}: "
@@ -5466,7 +5453,7 @@ def prepare_dynamic_access_chunking(
     if active_chunk_remaining_budget is not None:
         current_chunk_class_count = min(current_chunk_class_count, active_chunk_remaining_budget)
     if current_chunk_class_count <= 0:
-        log_stage(
+        log_detail(
             "dynamic-access-chunking",
             (
                 f"No chunk selected for issue #{claimed_issue.issue['number']}: "
@@ -5486,7 +5473,7 @@ def prepare_dynamic_access_chunking(
         add_issue_label(claimed_issue.issue["number"], LABEL_CHUNKED_DYNAMIC_ACCESS)
         add_issue_label_to_payload(claimed_issue.issue, LABEL_CHUNKED_DYNAMIC_ACCESS)
 
-    log_stage(
+    log_detail(
         "dynamic-access-chunking",
         "Chunked dynamic-access selected for issue #{issue_number}: "
         "already_chunked={already_chunked}, total_uncovered_classes={uncovered_count}, "
@@ -5885,6 +5872,12 @@ def invoke_pipeline(
     (§AR-forge-workflow-boundary), receiving resolved coordinates, paths,
     strategy names, and chunk context.
     """
+    issue_number = claimed_issue.issue["number"]
+    log_step_progress(
+        PHASE_CLAIM,
+        STEP_ROUTE_TO_DRIVER,
+        f"Routing issue #{issue_number} to its workflow driver",
+    )
     require_claimed_issue_worktree(claimed_issue, "workflow execution")
     strategy_override = strategy_name
     if claimed_issue.continuation_marker is not None:
@@ -5908,6 +5901,11 @@ def invoke_pipeline(
         library_update_route,
         strategy_override,
     )
+    log_step_progress(
+        PHASE_CLAIM,
+        STEP_ROUTE_TO_DRIVER,
+        f"Issue #{issue_number} routed to {claimed_issue.label} with strategy {run_strategy_name}",
+    )
     continuation_path = create_or_load_run_continuation_marker(
         claimed_issue,
         run_strategy_name,
@@ -5930,9 +5928,14 @@ def invoke_pipeline(
             claimed_issue,
             marker,
         )
-        log_stage(
+        log_detail(
             "continuation",
             f"Issue #{claimed_issue.issue['number']} skips completed setup preflight.",
+        )
+        log_step_progress(
+            PHASE_SETUP,
+            STEP_NEURAL_SETUP,
+            f"Reusing completed library preflight for {claimed_issue.issue_coordinates}",
         )
     else:
         # The preflight agent is the run's neural setup, and it runs before the
@@ -5954,10 +5957,29 @@ def invoke_pipeline(
                     and library_update_route.selected_driver == ROUTE_IMPROVE_COVERAGE
             )
     ):
-        chunk_class_count = prepare_dynamic_access_chunking(
-            claimed_issue,
-            run_strategy_name,
-        )
+        with run_step(PHASE_SETUP, STEP_NORMAL_SETUP, operand=claimed_issue.issue_coordinates):
+            log_step_progress(
+                PHASE_SETUP,
+                STEP_NORMAL_SETUP,
+                f"Inspecting dynamic access for {claimed_issue.issue_coordinates}",
+            )
+            chunk_class_count = prepare_dynamic_access_chunking(
+                claimed_issue,
+                run_strategy_name,
+            )
+            uncovered_classes = _dispatcher_uncovered_class_count(claimed_issue)
+            budget_suffix = f", class budget {chunk_class_count}" if chunk_class_count is not None else ""
+            inspection_result = (
+                "report unavailable"
+                if uncovered_classes == "unavailable"
+                else f"{uncovered_classes} uncovered classes{budget_suffix}"
+            )
+            log_step_progress(
+                PHASE_SETUP,
+                STEP_NORMAL_SETUP,
+                f"Dynamic-access inspection ready for {claimed_issue.issue_coordinates}: "
+                f"{inspection_result}",
+            )
     invocation = build_workflow_driver_invocation(
             claimed_issue,
             strategy_override,
@@ -5967,9 +5989,10 @@ def invoke_pipeline(
             library_update_route,
             continuation_path,
         )
+    if debug_logging_enabled() and "--verbose" not in invocation.argv:
+        invocation.argv.append("--verbose")
 
-    print()
-    log_stage(invocation.log_stage_name, invocation.log_message)
+    log_detail(invocation.log_stage_name, invocation.log_message)
     if is_fixture_testing_enabled():
         display_argv = list(invocation.argv)
         if "--issue-requested-metadata-context" in display_argv:
@@ -6203,8 +6226,14 @@ def get_review_queue_configs_from_environment() -> list[ReviewQueueConfig]:
     ]
 
 
+@pipeline_step(PHASE_CLAIM, STEP_CHECK_STRATEGY_AND_MODEL)
 def validate_work_queue_strategies(queue_configs: list[WorkQueueConfig]) -> None:
     """Validate strategy names configured for enabled issue queues."""
+    log_step_progress(
+        PHASE_CLAIM,
+        STEP_CHECK_STRATEGY_AND_MODEL,
+        "Checking configured strategies",
+    )
     seen_strategy_names: set[str] = set()
     for queue_config in queue_configs:
         strategy_name = queue_config.strategy_name
@@ -6212,6 +6241,11 @@ def validate_work_queue_strategies(queue_configs: list[WorkQueueConfig]) -> None
             continue
         require_strategy_by_name(strategy_name)
         seen_strategy_names.add(strategy_name)
+    log_step_progress(
+        PHASE_CLAIM,
+        STEP_CHECK_STRATEGY_AND_MODEL,
+        f"Configured strategies accepted: {len(seen_strategy_names)}",
+    )
 
 
 def run_pull_request_review_loop(
@@ -6357,11 +6391,15 @@ def fetch_issue_base_commit(repo_path: str) -> str:
     remote-tracking ref supplies repository state for issue work
     (§FS-forge-run-requirements.2).
     """
+    log_debug(
+        "claim",
+        f"Fetching newest origin/{DEFAULT_WORKTREE_BASE_REF} for the next issue claim",
+    )
     remote_tracking_ref = fetch_default_base_ref(repo_path, "issue claim")
     commit = resolve_git_commit(repo_path, remote_tracking_ref)
-    log_stage(
-        "issue-base",
-        f"Pinned origin/{DEFAULT_WORKTREE_BASE_REF} at {commit[:12]} for the next issue claim",
+    log_debug(
+        "claim",
+        f"Pinned origin/{DEFAULT_WORKTREE_BASE_REF} at {commit[:12]}",
     )
     return commit
 
@@ -6449,6 +6487,15 @@ def create_issue_workspace(
 
     §FS-forge-run-requirements.4
     """
+    log_step_progress(
+        PHASE_CLAIM,
+        STEP_CREATE_ISSUE_WORKSPACE,
+        f"Creating workspace for issue #{issue_number} from newest master {issue_base_commit[:12]}",
+    )
+    log_debug(
+        "claim",
+        f"Workspace base for issue #{issue_number}: {issue_base_commit}",
+    )
     repo_root = get_repo_root()
     worktrees_root = os.path.join(repo_root, "local_repositories", SCRATCH_WORKTREE_DIRNAME)
     os.makedirs(worktrees_root, exist_ok=True)
@@ -6467,6 +6514,11 @@ def create_issue_workspace(
     except SystemExit:
         remove_worktree(base_reachability_metadata_path, worktree_path)
         raise
+    log_step_progress(
+        PHASE_CLAIM,
+        STEP_CREATE_ISSUE_WORKSPACE,
+        f"Workspace created for issue #{issue_number}: {os.path.relpath(worktree_path, repo_root)}",
+    )
 
     scratch_metrics_repo_path = os.path.join(worktree_path, get_forge_subdir_name())
     del canonical_metrics_repo_path, issue_number
@@ -6503,11 +6555,6 @@ def cleanup_issue_workspace(claimed_issue: ClaimedIssue, canonical_metrics_repo_
             )
 
 
-@pipeline_step(
-    PHASE_CLAIM,
-    STEP_CHECK_ISSUE_FORM,
-    operand=lambda arguments: f"issue #{arguments['issue']['number']}",
-)
 def build_claim_metadata(
         issue: dict,
         label: str,
@@ -6778,7 +6825,16 @@ class IssueFormVerdict:
 ISSUE_FORM_ACCEPTED = IssueFormVerdict()
 
 
-def check_issue_form(issue: dict, label: str, reachability_metadata_path: str) -> IssueFormVerdict:
+@pipeline_step(
+    PHASE_CLAIM,
+    STEP_CHECK_ISSUE_FORM,
+    operand=lambda arguments: f"issue #{arguments['issue']['number']}",
+)
+def check_issue_form(
+        issue: dict,
+        label: str,
+        reachability_metadata_path: str,
+) -> IssueFormVerdict:
     """Decide every issue-form rule from the payload and the repository.
 
     Runs inside the pinned issue-base worktree while the exclusive claim is held.
@@ -6788,6 +6844,11 @@ def check_issue_form(issue: dict, label: str, reachability_metadata_path: str) -
     (§FS-forge-run-requirements.3, §root/PRCPL-verify-inputs).
     """
     issue_number = issue["number"]
+    log_step_progress(
+        PHASE_CLAIM,
+        STEP_CHECK_ISSUE_FORM,
+        f"Checking issue #{issue_number} against newest master in its pinned workspace",
+    )
 
     workflow_labels = sorted(
         label_name for label_name in get_issue_label_names(issue) if label_name in PIPELINE_LABELS
@@ -6875,6 +6936,11 @@ def check_issue_form(issue: dict, label: str, reachability_metadata_path: str) -
             ),
         ))
 
+    log_step_progress(
+        PHASE_CLAIM,
+        STEP_CHECK_ISSUE_FORM,
+        f"Issue #{issue_number} accepted: {label} for {coordinate}",
+    )
     return ISSUE_FORM_ACCEPTED
 
 
@@ -7019,18 +7085,35 @@ def claim_issue_for_processing(
     §FS-forge-run-requirements.4).
     """
     enter_phase(PHASE_CLAIM)
+    issue_number = issue["number"]
+    log_step_progress(PHASE_CLAIM, STEP_CLAIM_ISSUE, f"Claiming issue #{issue_number}")
     if not refresh_issue_payload_for_claim(issue, label, authenticated_user):
+        log_step_progress(
+            PHASE_CLAIM,
+            STEP_CLAIM_ISSUE,
+            f"Issue #{issue_number} not claimed: live issue state is no longer eligible",
+        )
         return None
 
     try:
         issue_base_commit = fetch_issue_base_commit(base_reachability_metadata_path)
     except BaseException as exc:
         if isinstance(exc, Exception):
+            log_step_progress(
+                PHASE_CLAIM,
+                STEP_CLAIM_ISSUE,
+                f"Issue #{issue_number} not claimed: newest origin/master could not be pinned",
+            )
             return None
         raise
 
     item_id = try_claim_issue(issue, authenticated_user, label, take_blocked_issues)
     if not item_id:
+        log_step_progress(
+            PHASE_CLAIM,
+            STEP_CLAIM_ISSUE,
+            f"Issue #{issue_number} not claimed: live claimability check did not pass",
+        )
         return None
 
     worktree_path: str | None = None
@@ -7307,11 +7390,16 @@ def run_claimed_issue(
             raise KeyboardInterrupt from exc
         # The location the step annotated onto the exception leads its detail.
         # §FS-forge-run-location-reporting.3
+        error_detail = str(exc) if isinstance(exc, AgentFailureError) else (
+            f"Issue #{claimed_issue.issue['number']} workflow raised an exception: {exc!r}"
+        )
         report_run_failure(
             resolve_failure_location(exc),
-            f"ERROR: Issue #{claimed_issue.issue['number']} workflow raised an exception: {exc!r}",
+            error_detail,
+            log_path=exc.log_path if isinstance(exc, AgentFailureError) else None,
         )
-        traceback.print_exc()
+        if not isinstance(exc, AgentFailureError):
+            traceback.print_exc()
         success = False
         failure_was_external = is_external_failure_exception(exc)
     if is_user_interrupt_requested():
@@ -8735,21 +8823,18 @@ def try_claim_issue_with_local_lock(
 
     try:
         # SET ourselves as the sole assignee
-        print()
-        log_stage("issue-claim", f"Setting issue #{number} assignee to {authenticated_user}")
+        log_debug("issue-claim", f"Setting issue #{number} assignee to {authenticated_user}")
         set_issue_assignee(number, authenticated_user)
 
         # Random wait so concurrent runners' SETs have time to land.
         backoff = random.uniform(CLAIM_BACKOFF_MIN, CLAIM_BACKOFF_MAX)
-        print()
-        log_stage("issue-claim", f"Waiting {backoff:.1f}s before verifying claim on issue #{number}")
+        log_debug("issue-claim", f"Waiting {backoff:.1f}s before verifying claim on issue #{number}")
         time.sleep(backoff)
 
         # Verify we are still the assignee
         assignees = get_issue_assignees(number)
         if assignees != [authenticated_user]:
-            print()
-            log_stage("issue-claim", f"Issue #{number}: assignee is now {assignees}, not us. Backing off.")
+            log_debug("issue-claim", f"Issue #{number}: assignee is now {assignees}, not us. Backing off.")
             if assignees:
                 record_issue_claim_cache_observations([
                     IssueClaimCacheObservation(
@@ -8768,8 +8853,8 @@ def try_claim_issue_with_local_lock(
                 project_status=STATUS_IN_PROGRESS,
             )
         ])
-        print()
-        log_stage("issue-claim", f"Claimed issue #{number} (-> In Progress)")
+        log_step_progress(PHASE_CLAIM, STEP_CLAIM_ISSUE, f"Issue #{number} claimed")
+        log_debug("claim", f"Issue #{number} claimed; project status is In Progress")
         return item_id
     except BaseException as exc:
         revert_issue_claim_if_still_owned_by_user(
@@ -8827,8 +8912,7 @@ def log_issue_scan_start(label: str, offset: int, priority: str | None = None) -
         position = "draining the high, priority, then normal tiers in turn"
     else:
         position = f"from offset {offset}"
-    print()
-    log_stage("issue-scan", f"Starting issue scan for label '{label}' {position}")
+    log_debug("issue-scan", f"Starting issue scan for label '{label}' {position}")
 
 
 def log_issue_scan_progress(
@@ -8841,8 +8925,7 @@ def log_issue_scan_progress(
 ) -> None:
     """Log issue scan progress after another interval of candidates was inspected."""
     position = format_issue_scan_position(offset, current_offset, scan_state, priority)
-    print()
-    log_stage(
+    log_debug(
         "issue-scan",
         f"Looked through {scanned_count} issue(s) for label '{label}' ({position})",
     )
@@ -9148,8 +9231,7 @@ def process_issues_with_label(
     finally:
         executor.shutdown(wait=False, cancel_futures=True)
 
-    print()
-    log_stage("issue-scan", f"Scanned {scanned_count} issue(s) for label '{label}'")
+    log_debug("issue-scan", f"Scanned {scanned_count} issue(s) for label '{label}'")
     return processed_count
 
 
@@ -9202,12 +9284,10 @@ def process_work_queues(
             )
             return
         if queue_config.limit <= 0:
-            print()
-            log_stage("work-queue", f"Skipping issue queue '{queue_config.label}' because its limit is 0")
+            log_debug("work-queue", f"Skipping issue queue '{queue_config.label}' because its limit is 0")
             continue
 
-        print()
-        log_stage(
+        log_debug(
             "work-queue",
             f"Processing up to {queue_config.limit} issue(s) for label '{queue_config.label}'",
         )
@@ -9233,8 +9313,7 @@ def process_work_queues(
                 user_requested_only=user_requested_only,
                 **priority_kwargs,
             )
-            print()
-            log_stage(
+            log_debug(
                 "issue-scan",
                 f"Selected random start offset {issue_scan_offset} for label '{queue_config.label}'",
             )
@@ -9262,8 +9341,7 @@ def process_work_queues(
             )
             return
         if review_queue_config.limit <= 0:
-            print()
-            log_stage("work-queue", f"Skipping review queue '{review_queue_config.label}' because its limit is 0")
+            log_debug("work-queue", f"Skipping review queue '{review_queue_config.label}' because its limit is 0")
             continue
 
         authenticated_user = resolve_authenticated_user(authenticated_user)
@@ -9414,6 +9492,11 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         default=DEFAULT_TAKE_BLOCKED_ISSUES,
         help="Claim issues even when GitHub shows open blocking issues. Defaults to disabled.",
     )
+    parser.add_argument(
+        "-v", "--verbose",
+        action="store_true",
+        help="Show narration hidden by the compact default output.",
+    )
 
     args = parser.parse_args(argv)
     if args.period is not None and args.review_pr is None:
@@ -9464,8 +9547,7 @@ def process_single_issue(
     validate_issue_processing_environment()
 
     issue, label = get_issue_by_number(issue_number)
-    print()
-    log_stage("issue-scan", f"Issue #{issue_number} matched pipeline label: {label}")
+    log_debug("issue-scan", f"Issue #{issue_number} matched pipeline label: {label}")
 
     if is_fixture_testing_enabled():
         with fixture_issue_run_log(issue_number):
@@ -9562,12 +9644,23 @@ def require_host_requirements(args: argparse.Namespace, reachability_metadata_pa
     checkout this run selected, which `--reachability-metadata-path` can move away from
     the checkout that contains Forge (§FS-forge-host-requirements).
     """
+    log_step_progress(
+        PHASE_CLAIM,
+        STEP_CHECK_HOST_REQUIREMENTS,
+        "Checking host requirements",
+    )
     ensure_host_requirements(
         FORGE_DIR,
         requirements=resolve_host_requirement_queues(args),
         graalvm_version_check=resolve_graalvm_version_check(args.graalvm_version_check),
         repo_dir=reachability_metadata_path,
         test_strategy_names=resolve_host_requirement_strategy_names(args),
+        verbose=args.verbose or debug_logging_enabled(),
+    )
+    log_step_progress(
+        PHASE_CLAIM,
+        STEP_CHECK_HOST_REQUIREMENTS,
+        "Host requirements passed",
     )
 
 
@@ -9576,6 +9669,8 @@ def main() -> None:
     previous_sigint_handler = signal.getsignal(signal.SIGINT)
     signal.signal(signal.SIGINT, _handle_sigint)
     args = parse_args()
+    if args.verbose:
+        enable_verbose_logging()
     normal_exit = False
 
     try:
@@ -9606,7 +9701,17 @@ def main() -> None:
         require_host_requirements(args, reachability_metadata_path)
         if args.strategy_name:
             with run_step(PHASE_CLAIM, STEP_CHECK_STRATEGY_AND_MODEL, operand=args.strategy_name):
+                log_step_progress(
+                    PHASE_CLAIM,
+                    STEP_CHECK_STRATEGY_AND_MODEL,
+                    f"Checking strategy {args.strategy_name}",
+                )
                 require_strategy_by_name(args.strategy_name)
+                log_step_progress(
+                    PHASE_CLAIM,
+                    STEP_CHECK_STRATEGY_AND_MODEL,
+                    f"Strategy {args.strategy_name} accepted",
+                )
         metrics_repo_path = resolve_metrics_repo_root(reachability_metadata_path, None)
 
         if not PROJECT_NUMBER:
@@ -9666,8 +9771,10 @@ def main() -> None:
                     priority=args.priority,
                     user_requested_only=user_requested_only,
                 )
-                print()
-                log_stage("issue-scan", f"Selected random start offset {issue_scan_offset} for label '{args.label}'")
+                log_debug(
+                    "issue-scan",
+                    f"Selected random start offset {issue_scan_offset} for label '{args.label}'",
+                )
             process_issues_with_label(
                 args.label,
                 args.limit,
