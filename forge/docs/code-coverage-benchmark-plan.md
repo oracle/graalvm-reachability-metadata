@@ -82,10 +82,12 @@ Accept multiple values for `--library-index`, `--agent`, `--model`, and
 `--thinking`. Reject unknown, duplicate, or agent-incompatible selections
 before creating worktrees. Print the selected matrix before the first mutation.
 
-Each cell receives a unique run ID and parent. Create its source worktree from
-`benchmarkSuiteCommit`. Instantiate the Rhei workspace with synthetic issue
-number `99000`, retaining the required `code-coverage-99000` name below the
-unique parent.
+Each cell receives a unique run ID and parent. Remove an existing entry only at
+that cell's exact `source/` path, then create its source worktree from
+`benchmarkSuiteCommit`. If creation still fails, report the skipped cell and
+continue the matrix without invoking Rhei or publishing a result. Otherwise,
+instantiate the Rhei workspace with synthetic issue number `99000`, retaining
+the required `code-coverage-99000` name below the unique parent.
 
 ## Benchmark template mode
 
@@ -103,8 +105,8 @@ the default. Use supported MiniJinja `{% if benchmark %}` blocks to change the
 rendered task structure rather than asking an agent to interpret the mode.
 
 Additional inputs carry the run ID, fixed suite commit, runner commit, source
-worktree, runner Forge path, and metrics publishing checkout. Deterministic
-benchmark preparation rejects missing values.
+worktree, and runner Forge path. Deterministic benchmark preparation rejects
+missing values.
 
 ### Conversion
 
@@ -231,6 +233,8 @@ Do not commit or push runtime artifacts and logs in the initial implementation.
 - All filter combinations produce the expected cross-product.
 - Claude accounting is tested without live model calls.
 - Complete and partial records validate and are idempotent.
+- An existing exact source-worktree path is replaced before creation.
+- A remaining creation failure skips that cell and the matrix continues.
 - Each result is pushed after its execution.
 - Workspaces remain; worktrees are removed only after publication.
 

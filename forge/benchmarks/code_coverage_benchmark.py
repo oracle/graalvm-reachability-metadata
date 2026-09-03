@@ -371,11 +371,53 @@ def _discard_source_worktree(path: Path) -> None:
         )
 
 
-def _create_source_worktree(path: Path, suite_commit: str) -> None:
+def _path_key(path: Path) -> str:
+    return os.path.normcase(os.path.abspath(path))
+
+
+def _registered_worktree_paths(repository_root: Path) -> set[str]:
+    output = _git_output(
+        repository_root,
+        "worktree",
+        "list",
+        "--porcelain",
+        "-z",
+    )
+    return {
+        _path_key(Path(field.removeprefix("worktree ")))
+        for field in output.split("\0")
+        if field.startswith("worktree ")
+    }
+
+
+def _remove_existing_source_worktree(
+        path: Path,
+        repository_root: Path,
+) -> None:
+    if path.name != "source":
+        raise BenchmarkError(
+            f"Refusing to replace a non-source worktree path: {path}"
+        )
+    if _path_key(path) in _registered_worktree_paths(repository_root):
+        _remove_worktree(path, repository_root)
+    if not os.path.lexists(path):
+        return
+    if path.is_symlink() or path.is_file():
+        path.unlink()
+    else:
+        shutil.rmtree(path)
+
+
+def _create_source_worktree(
+        path: Path,
+        suite_commit: str,
+        repository_root: Path = REPOSITORY_ROOT,
+) -> None:
+    _remove_existing_source_worktree(path, repository_root)
     path.parent.mkdir(parents=True, exist_ok=True)
     subprocess.run(
         ["git", "worktree", "add", "--detach", str(path), suite_commit],
-        cwd=REPOSITORY_ROOT,
+        cwd=repository_root,
         check=True,
     )
 
@@ -496,7 +538,18 @@ def _execute_cell(
     run_parent = workspace_root / run_id
     source_worktree = run_parent / "source"
     workspace = run_parent / suite.workspace_name
-    _create_source_worktree(source_worktree, suite.commit)
+    try:
+        _create_source_worktree(source_worktree, suite.commit)
+    except (OSError, subprocess.SubprocessError) as error:
+        configuration = cell.configuration
+        print(
+            "ERROR: Skipping benchmark cell "
+            f"{cell.library.coordinate} | {configuration.agent} | "
+            f"{configuration.configured_model} | {cell.thinking}: "
+            f"could not create source worktree {source_worktree}: {error}",
+            file=sys.stderr,
+        )
+        return False, False
     identity = _run_identity(
         run_id=run_id,
         suite=suite,

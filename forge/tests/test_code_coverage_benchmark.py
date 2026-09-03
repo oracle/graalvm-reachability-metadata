@@ -134,6 +134,37 @@ class CodeCoverageBenchmarkLifecycleTests(unittest.TestCase):
             thinking_levels=["high"],
         )[0]
 
+    def test_replaces_existing_source_worktree(self) -> None:
+        temporary = tempfile.TemporaryDirectory()
+        self.addCleanup(temporary.cleanup)
+        root = Path(temporary.name)
+        repository = root / "repository"
+        source = root / "run" / "source"
+        repository.mkdir()
+        _git(repository, "init", "-b", "master")
+        (repository / "README.md").write_text("seed\n", encoding="utf-8")
+        _git(repository, "add", "README.md")
+        _git(
+            repository,
+            "-c",
+            "user.name=test",
+            "-c",
+            "user.email=test@example.com",
+            "commit",
+            "-m",
+            "seed",
+        )
+        commit = _git(repository, "rev-parse", "HEAD").stdout.strip()
+
+        benchmark._create_source_worktree(source, commit, repository)
+        (source / "stale.txt").write_text("stale\n", encoding="utf-8")
+
+        benchmark._create_source_worktree(source, commit, repository)
+
+        self.assertFalse((source / "stale.txt").exists())
+        self.assertEqual(commit, _git(source, "rev-parse", "HEAD").stdout.strip())
+        benchmark._remove_worktree(source, repository)
+
     def test_removes_source_only_after_publication_marker(self) -> None:
         temporary = tempfile.TemporaryDirectory()
         self.addCleanup(temporary.cleanup)
@@ -187,6 +218,38 @@ class CodeCoverageBenchmarkLifecycleTests(unittest.TestCase):
             benchmark._discard_source_worktree(Path("/tmp/source"))
 
         output.assert_called_once()
+
+    def test_skips_cell_when_source_worktree_creation_fails(self) -> None:
+        temporary = tempfile.TemporaryDirectory()
+        self.addCleanup(temporary.cleanup)
+        root = Path(temporary.name)
+        error = subprocess.CalledProcessError(1, ["git", "worktree", "add"])
+
+        with patch.object(
+                benchmark,
+                "_new_run_id",
+                return_value="run-skipped",
+        ), patch.object(
+                benchmark,
+                "_create_source_worktree",
+                side_effect=error,
+        ), patch.object(
+                benchmark.subprocess,
+                "run",
+        ) as execute, patch.object(
+                benchmark,
+                "publish_workspace",
+        ) as publish, patch("builtins.print"):
+            outcome = benchmark._execute_cell(
+                self.suite,
+                self.cell,
+                "a" * 40,
+                root,
+            )
+
+        self.assertEqual((False, False), outcome)
+        execute.assert_not_called()
+        publish.assert_not_called()
 
     def test_retains_source_when_publication_has_no_marker(self) -> None:
         temporary = tempfile.TemporaryDirectory()

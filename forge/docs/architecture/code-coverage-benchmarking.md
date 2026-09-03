@@ -31,11 +31,14 @@ Merged coverage improvements do not move an existing benchmark input. A newer
 runner may still execute the old suite and records both identities.
 §FS-code-coverage-benchmarking.1
 
-## 2. Successful execution sequence
+## 2. Cell execution sequence
 
 The runner prints the complete selection before creating worktrees. Every cell
-gets a unique parent, source worktree, and preserved workspace. Publication
-creates another short-lived worktree only while appending that cell's result.
+gets a unique parent and first passes a source-worktree gate: an entry at its
+exact `source/` path is removed, then Git must create the fixed-suite worktree.
+A failed gate skips that cell before Rhei and the matrix continues. Successful
+cells get a preserved workspace; publication creates another short-lived
+worktree only while appending that cell's result.
 §FS-code-coverage-benchmarking.2
 
 ```mermaid
@@ -57,6 +60,7 @@ sequenceDiagram
     L-->>O: print complete selected matrix
 
     loop each selected cell
+        L->>G: remove exact source path if it already exists
         L->>G: create source at benchmarkSuiteCommit
         G-->>S: fixed library state
         L->>R: instantiate benchmark=true, issue=99000
@@ -114,6 +118,10 @@ Middle Rhei tasks resolve their coverage helpers from the fixed source
 worktree.
 
 ## 3. Failure and retry sequence
+
+A source-worktree gate failure happens before this sequence: the launcher
+reports the skipped cell and continues without creating a Rhei workspace or
+benchmark result. §FS-code-coverage-benchmarking.2
 
 The terminal program is not the only publication path. The launcher checks for
 a publication marker after Rhei returns. If Rhei stopped before publication, the
