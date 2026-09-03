@@ -1,0 +1,93 @@
+{
+  "add_new_library_support:2026-09-02": {
+    "timestamp": "2026-09-02T17:38:27.227724Z",
+    "library": "tools.jackson.dataformat:jackson-dataformat-avro:3.1.5",
+    "starting_commit": "6fe825a0046ecc7aabde18faa3cf81e5e3e1977d",
+    "ending_commit": "87a382b1d389ecfe50e72552132c82571b7e4e72",
+    "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-sol",
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "status": "success",
+    "stats": {
+      "version": "3.1.5",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 4,
+            "totalCalls": 4
+          }
+        },
+        "coverageRatio": 1.0,
+        "coveredCalls": 4,
+        "totalCalls": 4
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 3015,
+          "missed": 12522,
+          "ratio": 0.194053,
+          "total": 15537
+        },
+        "line": {
+          "covered": 812,
+          "missed": 3045,
+          "ratio": 0.210526,
+          "total": 3857
+        },
+        "method": {
+          "covered": 242,
+          "missed": 733,
+          "ratio": 0.248205,
+          "total": 975
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "advisory_preparation",
+      "issue_number": 9695,
+      "issue_label": "library-new-request",
+      "library": "tools.jackson.dataformat:jackson-dataformat-avro:3.1.5",
+      "summary": "The artifact already supplies Apache Avro 1.12.1 transitively, but Avro usage requires an explicit schema.",
+      "deterministic_setup": [],
+      "agent_guidance": "Use tools.jackson.dataformat.avro.AvroMapper or AvroFactory with an inline schema or AvroMapper.schemaFor(...); exercise schema-bound serialization and deserialization. No Docker image, environment variable, system property, Avro tools, or extra Maven dependency is required. See [Jackson 3 guidance](https://github.com/FasterXML/jackson-dataformats-binary/blob/3.x/CLAUDE.md) and [Apache Avro documentation](https://avro.apache.org/docs/1.12.0/getting-started-java/).",
+      "risks": [
+        "Do not copy Jackson 2.x examples using com.fasterxml.jackson.dataformat.avro; Jackson 3 uses tools.jackson.dataformat.avro.",
+        "Tests that omit a schema will not reach meaningful Avro serialization paths."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#9695 Support for tools.jackson.dataformat:jackson-dataformat-avro:3.1.5; label=library-new-request; body_chars=39"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "gpt-5.6-luna",
+      "input_tokens_used": 1675775,
+      "output_tokens_used": 9933,
+      "prompt_path": "library-preflight-prompt.txt",
+      "raw_response_path": "library-preflight-response.txt",
+      "session_log_path": "/home/mihailo/git/graalvm-reachability-metadata/forge/logs/tools.jackson.dataformat:jackson-dataformat-avro:3.1.5/library-preparation-preflight/codex-session-4eeq5ys2.log"
+    },
+    "metrics": {
+      "input_tokens_used": 93544,
+      "cached_input_tokens_used": 1197568,
+      "output_tokens_used": 8582,
+      "iterations": 1,
+      "cost_usd": 1.324,
+      "generated_loc": 97,
+      "tested_library_loc": 812,
+      "metadata_entries": 22,
+      "test_only_metadata_entries": 9,
+      "code_coverage_percent": 21.05
+    },
+    "artifacts": {
+      "metadata_file": "metadata/tools.jackson.dataformat/jackson-dataformat-avro/3.1.5/reachability-metadata.json"
+    }
+  }
+}
