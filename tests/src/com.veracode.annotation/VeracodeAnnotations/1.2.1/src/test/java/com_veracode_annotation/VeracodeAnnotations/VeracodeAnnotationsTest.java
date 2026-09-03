@@ -58,6 +58,41 @@ public class VeracodeAnnotationsTest {
     }
 
     @Test
+    @CRLFCleanser
+    @FilePathCleanser
+    @RedirectURLCleanser
+    @SQLQueryCleanser
+    @XSSCleanser
+    void cleanserAnnotationsExposeEmptyMetadataByDefault(TestInfo testInfo) {
+        CRLFCleanser crlfCleanser = AnnotationSupport.findAnnotation(
+                        testInfo.getTestMethod().orElseThrow(), CRLFCleanser.class)
+                .orElseThrow();
+        FilePathCleanser filePathCleanser = AnnotationSupport.findAnnotation(
+                        testInfo.getTestMethod().orElseThrow(), FilePathCleanser.class)
+                .orElseThrow();
+        RedirectURLCleanser redirectURLCleanser = AnnotationSupport.findAnnotation(
+                        testInfo.getTestMethod().orElseThrow(), RedirectURLCleanser.class)
+                .orElseThrow();
+        SQLQueryCleanser sqlQueryCleanser = AnnotationSupport.findAnnotation(
+                        testInfo.getTestMethod().orElseThrow(), SQLQueryCleanser.class)
+                .orElseThrow();
+        XSSCleanser xssCleanser = AnnotationSupport.findAnnotation(
+                        testInfo.getTestMethod().orElseThrow(), XSSCleanser.class)
+                .orElseThrow();
+
+        assertThat(crlfCleanser.value()).isEmpty();
+        assertThat(crlfCleanser.userComment()).isEmpty();
+        assertThat(filePathCleanser.value()).isEmpty();
+        assertThat(filePathCleanser.userComment()).isEmpty();
+        assertThat(redirectURLCleanser.value()).isEmpty();
+        assertThat(redirectURLCleanser.userComment()).isEmpty();
+        assertThat(sqlQueryCleanser.value()).isEmpty();
+        assertThat(sqlQueryCleanser.userComment()).isEmpty();
+        assertThat(xssCleanser.value()).isEmpty();
+        assertThat(xssCleanser.userComment()).isEmpty();
+    }
+
+    @Test
     void crlfCleanserSupportsDefaultAndConfiguredMethodAnnotations() {
         ApplicationCleansers cleansers = new ApplicationCleansers();
         CRLFCleanser annotation = new CRLFCleanserLiteral("header-value", "Removes line breaks from headers");
