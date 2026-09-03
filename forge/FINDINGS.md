@@ -3,6 +3,12 @@
 Rendered by Forge from the pre-push branch review of §FS-local-branch-review.
 Newest entry first; every non-approval is recorded, including one a repair later cleared.
 
+## 2026-09-03 — org.apache.kafka:kafka-streams:4.3.1 (#9764)
+
+**Issue-requested reachability metadata is missing**
+
+Issue #9764 explicitly requests reflection access to the `topologyMetadata` field on `org.apache.kafka.streams.KafkaStreams` and the `sourceTopicsForStore(String, String)` method on `org.apache.kafka.streams.processor.internals.TopologyMetadata`. Neither registration appears in `metadata/org.apache.kafka/kafka-streams/4.3.1/reachability-metadata.json`, and the new tests only use topology construction and `TopologyTestDriver`; they do not instantiate `KafkaStreams` or exercise the reporter-described path through a public library API. Rule 5 requires issue-requested metadata, appropriately conditioned when the request omitted conditions, plus a public-API test that exercises it.
+
 ## 2026-09-02 — org.springframework.boot:spring-boot-amqp:4.2.0-M1 (#9468)
 
 **Explicit messaging timeout is below the 10-second minimum**
