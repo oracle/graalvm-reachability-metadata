@@ -20,6 +20,10 @@ import java.io.*;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.FileSystem;
+import java.nio.file.FileSystems;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -33,7 +37,7 @@ public abstract class GrypeTask extends DefaultTask {
     @Inject
     protected abstract ExecOperations getExecOperations();
 
-    @Option(option = "baseCommit", description = "Base commit for the image comparison")
+    @Option(option = "baseCommit", description = "Last commit from master")
     void setBaseCommit(String baseCommit) {
         this.baseCommit = baseCommit;
     }
@@ -97,8 +101,7 @@ public abstract class GrypeTask extends DefaultTask {
 
     /**
      * Scans images that have been changed between org.graalvm.internal.tck.GrypeTask#baseCommit and org.graalvm.internal.tck.GrypeTask#newCommit.
-     * Existing images pass when they are no more vulnerable than their base-commit version.
-     * New images are reported and establish their initial vulnerability baseline.
+     * If changed images are not more vulnerable than previously allowed images, they won't be reported as vulnerable
      */
     private void scanChangedImages() throws IOException, URISyntaxException {
         Set<DockerImage> imagesToCheck = getChangedImages().stream().map(this::makeDockerImage).collect(Collectors.toSet());
@@ -106,7 +109,7 @@ public abstract class GrypeTask extends DefaultTask {
 
         if (!vulnerableImages.isEmpty()) {
             int acceptedImages = 0;
-            Set<String> currentlyAllowedImages = getAllowedImagesFromBaseCommit();
+            Set<String> currentlyAllowedImages = getAllowedImagesFromMaster();
 
             for (DockerImage image : vulnerableImages) {
                 image.printVulnerabilityStatus();
@@ -116,18 +119,15 @@ public abstract class GrypeTask extends DefaultTask {
                         .filter(allowedImage -> DockerUtils.getImageName(allowedImage).equalsIgnoreCase(image.getImageName()))
                         .findFirst();
 
-                if (existingAllowedImage.isEmpty()) {
-                    System.out.println("Accepting new image without an existing vulnerability baseline: " + image.image());
-                    acceptedImages++;
-                    continue;
-                }
+                // check if a new image is not more vulnerable than the existing one
+                if (existingAllowedImage.isPresent()) {
+                    DockerImage imageToCompare = makeDockerImage(existingAllowedImage.get());
+                    imageToCompare.printVulnerabilityStatus();
 
-                DockerImage imageToCompare = makeDockerImage(existingAllowedImage.get());
-                imageToCompare.printVulnerabilityStatus();
-
-                if (image.isNotMoreVulnerable(imageToCompare)) {
-                    System.out.println("Accepting: " + image.image() + " because it does not have more vulnerabilities than existing: " + imageToCompare.image());
-                    acceptedImages++;
+                    if (image.isNotMoreVulnerable(imageToCompare)) {
+                        System.out.println("Accepting: " + image.image() + " because it does not have more vulnerabilities than existing: " + imageToCompare.image());
+                        acceptedImages++;
+                    }
                 }
             }
 
@@ -213,18 +213,35 @@ public abstract class GrypeTask extends DefaultTask {
     }
 
     /**
-     * Return all allowed docker images from the base commit
+     * Return all allowed docker images from master branch
      */
-    private Set<String> getAllowedImagesFromBaseCommit() {
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        getExecOperations().exec(spec -> {
-            spec.setStandardOutput(outputStream);
-            spec.commandLine("git", "grep", "^FROM ", baseCommit, "--",
-                    "tests/tck-build-logic/src/main/resources/allowed-docker-images");
-        });
+    private Set<String> getAllowedImagesFromMaster() throws URISyntaxException, IOException {
+        URL url = GrypeTask.class.getResource(DockerUtils.ALLOWED_DOCKER_IMAGES);
+        if (url == null) {
+            throw new RuntimeException("Cannot find allowed-docker-images directory");
+        }
 
-        return outputStream.toString(StandardCharsets.UTF_8).lines()
-                .map(line -> line.substring(line.indexOf("FROM ") + "FROM ".length()).trim())
-                .collect(Collectors.toSet());
+        Set<String> allowedImages = new HashSet<>();
+        try (FileSystem fs = FileSystems.newFileSystem(url.toURI(), Collections.emptyMap())) {
+            List<String> files = Files.walk(fs.getPath(DockerUtils.ALLOWED_DOCKER_IMAGES))
+                    .filter(Files::isRegularFile)
+                    .map(Path::toString)
+                    .map(path -> path.substring(path.lastIndexOf("/") + 1))
+                    .map(DockerUtils::getDockerFile)
+                    .map(DockerUtils::fileNameFromJar)
+                    .toList();
+
+            for (String file : files) {
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                getExecOperations().exec(spec -> {
+                    spec.setStandardOutput(baos);
+                    spec.commandLine("git", "show", "origin/master:tests/tck-build-logic/src/main/resources" + file);
+                });
+
+                allowedImages.add(baos.toString());
+            }
+        }
+
+        return allowedImages.stream().map(line -> line.substring("FROM".length()).trim()).collect(Collectors.toSet());
     }
 }

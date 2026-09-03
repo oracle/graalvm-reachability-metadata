@@ -19,10 +19,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URI;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Duration;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
@@ -40,14 +42,25 @@ public class MicrocksContainerTest {
     private static final int IO_TIMEOUT_MILLIS = 10_000;
 
     @Test
-    void importsFilesAndExercisesMockAndTestApis(@TempDir Path tempDir) throws Exception {
-        try (MicrocksContainer microcks = new MicrocksContainer(IMAGE)) {
-            File snapshot = copyResourceToFile(tempDir, SNAPSHOT);
-            File openApi = copyResourceToFile(tempDir, OPEN_API);
+    void importsResourcesAndExercisesMockAndTestApis(@TempDir Path tempDir) throws Exception {
+        File snapshot = copyResourceToFile(tempDir, SNAPSHOT);
+        File openApi = copyResourceToFile(tempDir, OPEN_API);
+        Map<String, URL> resourceFiles = Map.of(
+                SNAPSHOT, snapshot.toURI().toURL(),
+                OPEN_API, openApi.toURI().toURL());
 
-            microcks.start();
-            microcks.importSnapshot(snapshot);
-            microcks.importAsMainArtifact(openApi);
+        try (MicrocksContainer microcks = new MicrocksContainer(IMAGE)
+                .withSnapshots(SNAPSHOT)
+                .withMainArtifacts(OPEN_API)) {
+            Thread thread = Thread.currentThread();
+            ClassLoader originalClassLoader = thread.getContextClassLoader();
+            thread.setContextClassLoader(
+                    new ResourceFileClassLoader(originalClassLoader, resourceFiles));
+            try {
+                microcks.start();
+            } finally {
+                thread.setContextClassLoader(originalClassLoader);
+            }
 
             List<ServiceRef> services = microcks.getServices();
             assertThat(services)
@@ -123,6 +136,20 @@ public class MicrocksContainerTest {
         while (!microcks.verify(SERVICE_NAME, SERVICE_VERSION)
                 && System.nanoTime() < deadline) {
             TimeUnit.MILLISECONDS.sleep(200);
+        }
+    }
+
+    private static final class ResourceFileClassLoader extends ClassLoader {
+        private final Map<String, URL> resourceFiles;
+
+        private ResourceFileClassLoader(ClassLoader parent, Map<String, URL> resourceFiles) {
+            super(parent);
+            this.resourceFiles = resourceFiles;
+        }
+
+        @Override
+        public URL getResource(String name) {
+            return resourceFiles.getOrDefault(name, super.getResource(name));
         }
     }
 
