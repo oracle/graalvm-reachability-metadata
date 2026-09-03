@@ -3,7 +3,7 @@
 # You should have received a copy of the CC0 legalcode along with this
 # work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 
-"""Shared checkpoint-reset helpers for failed workflow runs (§WF-forge-workflow-drivers.3)."""
+"""Shared checkpoint-reset helpers for failed workflow runs (§AR-forge-driver-finalization)."""
 
 import os
 import shutil

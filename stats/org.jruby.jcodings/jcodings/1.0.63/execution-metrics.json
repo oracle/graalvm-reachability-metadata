@@ -1,0 +1,97 @@
+{
+  "add_new_library_support:2026-06-27": {
+    "timestamp": "2026-06-27T05:18:30.407016Z",
+    "library": "org.jruby.jcodings:jcodings:1.0.63",
+    "starting_commit": "7958a3972c3f6078e294470313e9f8679b814f62",
+    "ending_commit": "04a1fe8fffd6ccea312694ac78f168661cecb292",
+    "strategy_name": "dynamic_access_main_sources_pi_gpt-5.5",
+    "agent": "pi",
+    "model": "oca/gpt-5.5",
+    "status": "success",
+    "stats": {
+      "version": "1.0.63",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 6,
+            "totalCalls": 6
+          },
+          "resources": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 1,
+            "totalCalls": 1
+          }
+        },
+        "coverageRatio": 1.0,
+        "coveredCalls": 7,
+        "totalCalls": 7
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 11255,
+          "missed": 156149,
+          "ratio": 0.067233,
+          "total": 167404
+        },
+        "line": {
+          "covered": 194,
+          "missed": 6328,
+          "ratio": 0.029745,
+          "total": 6522
+        },
+        "method": {
+          "covered": 55,
+          "missed": 1039,
+          "ratio": 0.050274,
+          "total": 1094
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "no_action",
+      "issue_number": 8410,
+      "issue_label": "library-new-request",
+      "library": "org.jruby.jcodings:jcodings:1.0.63",
+      "summary": "jcodings is a self-contained byte-encoding library with no compile/runtime dependencies beyond java.base; normal usage exercises its own EncodingDB, Encoding, transcoder, resource-table, and CharsetProvider APIs without Docker, extra Maven dependencies, or environment setup.",
+      "deterministic_setup": [],
+      "agent_guidance": "",
+      "risks": [
+        "The artifact loads /tables/*.bin resources and some encoding/transcoder classes reflectively, so meaningful native-image coverage should exercise EncodingDB lookups, charset provider usage, and transcoder paths; this affects generated test focus/metadata, not deterministic setup."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#8410 Support for org.jruby.jcodings:jcodings:1.0.63; label=library-new-request; body_chars=39"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "oca/gpt-5.5",
+      "input_tokens_used": 40075,
+      "output_tokens_used": 2305,
+      "prompt_path": "library-preflight-prompt.txt",
+      "raw_response_path": "library-preflight-response.txt",
+      "session_log_path": "/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/logs/org.jruby.jcodings:jcodings:1.0.63/library-preparation-preflight/pi-generation-2026-06-27T05-03-32-841914Z.log"
+    },
+    "metrics": {
+      "input_tokens_used": 145213,
+      "cached_input_tokens_used": 1165824,
+      "output_tokens_used": 7774,
+      "iterations": 2,
+      "cost_usd": 0.8161,
+      "generated_loc": 56,
+      "tested_library_loc": 194,
+      "metadata_entries": 7,
+      "code_coverage_percent": 2.97
+    },
+    "artifacts": {
+      "test_file": "tests/src/org.jruby.jcodings/jcodings/1.0.63/src/test/java/org_jruby_jcodings/jcodings/TranscoderTest.java",
+      "metadata_file": "metadata/org.jruby.jcodings/jcodings/1.0.63/reachability-metadata.json"
+    }
+  }
+}

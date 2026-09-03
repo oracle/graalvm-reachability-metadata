@@ -1,0 +1,94 @@
+{
+  "add_new_library_support:2026-06-28": {
+    "timestamp": "2026-06-28T04:41:28.304614Z",
+    "library": "com.squareup.okhttp3:okhttp-jvm:5.3.2",
+    "starting_commit": "6da610dfd9f70bf7069e5ccade8fc81188eb3e68",
+    "ending_commit": "957f1a0caf84657478374b45d237323af6fc5c75",
+    "strategy_name": "dynamic_access_main_sources_pi_gpt-5.5",
+    "agent": "pi",
+    "model": "oca/gpt-5.5",
+    "status": "success",
+    "stats": {
+      "version": "5.3.2",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 2,
+            "totalCalls": 2
+          }
+        },
+        "coverageRatio": 1.0,
+        "coveredCalls": 2,
+        "totalCalls": 2
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 74,
+          "missed": 59937,
+          "ratio": 0.001233,
+          "total": 60011
+        },
+        "line": {
+          "covered": 17,
+          "missed": 12010,
+          "ratio": 0.001413,
+          "total": 12027
+        },
+        "method": {
+          "covered": 2,
+          "missed": 2542,
+          "ratio": 0.000786,
+          "total": 2544
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "no_action",
+      "issue_number": 5335,
+      "issue_label": "library-new-request",
+      "library": "com.squareup.okhttp3:okhttp-jvm:5.3.2",
+      "summary": "OkHttp JVM 5.3.2 is a standalone HTTP client; its required dependencies resolve transitively and meaningful tests can use JDK-local HTTP primitives without extra Maven dependencies, Docker, or environment/system properties.",
+      "deterministic_setup": [],
+      "agent_guidance": "",
+      "risks": [
+        "Official docs mention MockWebServer for client testing, but it is not required for basic meaningful coverage because an in-process JDK HTTP server can exercise requests, responses, headers, bodies, redirects, interceptors, and caching.",
+        "Optional TLS provider integrations such as Conscrypt, BouncyCastle, and OpenJSSE require additional provider dependencies if the generated tests choose to cover those paths; they are optional and not necessary for baseline coverage."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#5335 Support for com.squareup.okhttp3:okhttp-jvm:5.3.2; label=library-new-request; body_chars=106"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "oca/gpt-5.5",
+      "input_tokens_used": 37526,
+      "output_tokens_used": 2400,
+      "prompt_path": "library-preflight-prompt.txt",
+      "raw_response_path": "library-preflight-response.txt",
+      "session_log_path": "/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/logs/com.squareup.okhttp3:okhttp-jvm:5.3.2/library-preparation-preflight/pi-generation-2026-06-28T04-25-52-679008Z.log"
+    },
+    "metrics": {
+      "input_tokens_used": 44703,
+      "cached_input_tokens_used": 631808,
+      "output_tokens_used": 7248,
+      "iterations": 1,
+      "cost_usd": 0.5333,
+      "generated_loc": 40,
+      "tested_library_loc": 17,
+      "metadata_entries": 1,
+      "test_only_metadata_entries": 6,
+      "code_coverage_percent": 0.14
+    },
+    "artifacts": {
+      "test_file": "tests/src/com.squareup.okhttp3/okhttp-jvm/5.3.2/src/test/kotlin/com_squareup_okhttp3/okhttp_jvm/Okhttp3InternalUtilJvmKtTest.kt",
+      "metadata_file": "metadata/com.squareup.okhttp3/okhttp-jvm/5.3.2/reachability-metadata.json"
+    }
+  }
+}

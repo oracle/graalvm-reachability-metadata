@@ -24,10 +24,10 @@ Progress since the previous dynamic-access report:
 Remaining uncovered dynamic-access call sites for this class:
 {uncovered_dynamic_access_calls}
 
-Rules:
+Rules (test contract: §root/FS-test-contract):
 - Add or refine tests so execution reaches the remaining uncovered call sites for the active class.
 - Focus on the active class only.
-- Create or update tests only under the resolved target test source root listed above. Do not edit cloned baseline test directories or other versioned test directories.
-- Reporter issue context identifies what is missing; infer the requested metadata from that context and ensure any added or modified reachability metadata uses appropriate conditions, preferably `typeReached`. A condition is valid only if that type is reached before the dynamic access occurs; do not use a later or merely related class as the condition.
-- Cover supported behavior through the library's normal public API. Do not satisfy coverage by asserting a known broken, regressed, or version-specific failure path for the current artifact.
-- If the remaining call site is reachable only through behavior that is known to be broken in this library version, choose another supported path or leave the call site uncovered.
+- Create or update tests only under the resolved target test source root listed above. Do not edit cloned baseline test directories or other versioned test directories. §root/FS-test-contract.1.1
+- Reporter issue context identifies what is missing; infer the requested metadata from that context and ensure any added or modified reachability metadata uses appropriate conditions, preferably `typeReached`. A condition is valid only if that type is reached before the dynamic access occurs; do not use a later or merely related class as the condition. §root/FS-test-contract.3.5
+- Cover supported behavior through the library's normal public API. Do not satisfy coverage by asserting a known broken, regressed, or version-specific failure path for the current artifact. §root/FS-test-contract.2.6
+- If the remaining call site is reachable only through behavior that is known to be broken in this library version, choose another supported path or leave the call site uncovered. §root/FS-test-contract.2.6

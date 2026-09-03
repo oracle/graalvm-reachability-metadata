@@ -289,13 +289,30 @@ public final class MetadataGenerationUtils {
      * the results into the computed metadata directory for the given coordinates.
      */
     public static void collectMetadata(ExecOperations execOps, Path testsDirectory, ProjectLayout layout, String coordinates, Path gradlew) {
+        collectMetadataWithCoverageSuite(execOps, testsDirectory, layout, coordinates, gradlew, false);
+    }
+
+    public static void collectMetadataWithCoverageSuite(
+            ExecOperations execOps,
+            Path testsDirectory,
+            ProjectLayout layout,
+            String coordinates,
+            Path gradlew,
+            boolean includeCodeCoverageSuite
+    ) {
         Path metadataDirectory = GeneralUtils.computeMetadataDirectory(layout, coordinates);
         try {
             Path agentMetadataDirectory = Files.createTempDirectory("generate-metadata-agent-");
             Path mergedMetadataDirectory = Files.createTempDirectory("generate-metadata-merged-");
             try {
-                collectMetadata(execOps, testsDirectory, layout, coordinates, gradlew, agentMetadataDirectory);
-                mergeMetadataIntoDurableDirectory(execOps, layout, gradlew, metadataDirectory, agentMetadataDirectory, mergedMetadataDirectory);
+                collectMetadata(
+                        execOps, testsDirectory, layout, coordinates, gradlew,
+                        agentMetadataDirectory, includeCodeCoverageSuite
+                );
+                mergeMetadataIntoDurableDirectory(
+                        execOps, layout, gradlew, metadataDirectory,
+                        agentMetadataDirectory, mergedMetadataDirectory
+                );
             } finally {
                 deleteRecursively(agentMetadataDirectory);
                 deleteRecursively(mergedMetadataDirectory);
@@ -310,10 +327,30 @@ public final class MetadataGenerationUtils {
      * the results into the requested output directory without durable merging.
      */
     public static void collectMetadata(ExecOperations execOps, Path testsDirectory, ProjectLayout layout, String coordinates, Path gradlew, Path metadataDirectory) {
+        collectMetadata(execOps, testsDirectory, layout, coordinates, gradlew, metadataDirectory, false);
+    }
+
+    public static void collectMetadata(
+            ExecOperations execOps,
+            Path testsDirectory,
+            ProjectLayout layout,
+            String coordinates,
+            Path gradlew,
+            Path metadataDirectory,
+            boolean includeCodeCoverageSuite
+    ) {
         Path resolvedMetadataDirectory = resolveMetadataDirectory(layout, metadataDirectory);
+        List<String> testArguments = new ArrayList<>(List.of("-Pagent"));
+        if (includeCodeCoverageSuite) {
+            testArguments.add("-PincludeCodeCoverageSuite=true");
+        }
+        testArguments.add("test");
 
         GeneralUtils.printInfo("Generating metadata");
-        GeneralUtils.invokeCommand(execOps, gradlew.toString(), List.of("-Pagent", "test"), "Cannot generate metadata", testsDirectory);
+        GeneralUtils.invokeCommand(
+                execOps, gradlew.toString(), testArguments,
+                "Cannot generate metadata", testsDirectory
+        );
 
         GeneralUtils.printInfo("Performing metadata copy");
         GeneralUtils.invokeCommand(execOps, gradlew.toString(), List.of("metadataCopy", "--task", "test", "--dir", resolvedMetadataDirectory.toString()), "Cannot perform metadata copy", testsDirectory);
@@ -647,6 +684,8 @@ public final class MetadataGenerationUtils {
         List<String> latestAllowedPackages = null;
         List<String> latestRequires = null;
         LibraryLanguage latestLanguage = null;
+        Boolean latestAutoUpdate = null;
+        Boolean latestHighPriority = null;
         // Copy default metadata properties from the current latest entry.
         for (int i = 0; i < entries.size(); i++) {
             MetadataVersionsIndexEntry entry = entries.get(i);
@@ -654,8 +693,10 @@ public final class MetadataGenerationUtils {
                 latestAllowedPackages = entry.allowedPackages();
                 latestRequires = entry.requires();
                 latestLanguage = entry.language();
+                latestAutoUpdate = entry.autoUpdate();
+                latestHighPriority = entry.highPriority();
                 if (markAsLatest) {
-                    entries.set(i, copyWithLatest(entry, null));
+                    entries.set(i, copyWithLatest(entry, null, null, null));
                 }
             }
         }
@@ -665,6 +706,8 @@ public final class MetadataGenerationUtils {
         List<String> testedVersions = moveTestedVersionsCoveredByNewMetadata(entries, newCoords.version());
         MetadataVersionsIndexEntry newEntry = new MetadataVersionsIndexEntry(
                 markAsLatest ? Boolean.TRUE : null, // latest
+                markAsLatest ? latestAutoUpdate : null, // auto-update
+                markAsLatest ? latestHighPriority : null, // high-priority
                 null, // override
                 null, // default-for
                 newCoords.version(), // metadata-version
@@ -783,6 +826,8 @@ public final class MetadataGenerationUtils {
     private static MetadataVersionsIndexEntry copyWithTestedVersions(MetadataVersionsIndexEntry entry, List<String> testedVersions) {
         return new MetadataVersionsIndexEntry(
                 entry.latest(),
+                entry.autoUpdate(),
+                entry.highPriority(),
                 entry.override(),
                 entry.defaultFor(),
                 entry.metadataVersion(),
@@ -803,9 +848,16 @@ public final class MetadataGenerationUtils {
         );
     }
 
-    private static MetadataVersionsIndexEntry copyWithLatest(MetadataVersionsIndexEntry entry, Boolean latest) {
+    private static MetadataVersionsIndexEntry copyWithLatest(
+            MetadataVersionsIndexEntry entry,
+            Boolean latest,
+            Boolean autoUpdate,
+            Boolean highPriority
+    ) {
         return new MetadataVersionsIndexEntry(
                 latest,
+                autoUpdate,
+                highPriority,
                 entry.override(),
                 entry.defaultFor(),
                 entry.metadataVersion(),

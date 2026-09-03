@@ -1,0 +1,99 @@
+{
+  "add_new_library_support:2026-06-25": {
+    "timestamp": "2026-06-25T01:45:21.711766Z",
+    "library": "classworlds:classworlds:1.1",
+    "starting_commit": "953ffe7e6c7554c1b00a2d5b64a58c9dc6f21a27",
+    "ending_commit": "16c7fd8778101f04db59f5b29ae5e41d7a3883bc",
+    "strategy_name": "dynamic_access_main_sources_pi_gpt-5.5",
+    "agent": "pi",
+    "model": "oca/gpt-5.5",
+    "status": "success_with_intervention",
+    "stats": {
+      "version": "1.1",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 0.666667,
+            "coveredCalls": 10,
+            "totalCalls": 15
+          },
+          "resources": {
+            "coverageRatio": 0.875,
+            "coveredCalls": 7,
+            "totalCalls": 8
+          }
+        },
+        "coverageRatio": 0.73913,
+        "coveredCalls": 17,
+        "totalCalls": 23
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 882,
+          "missed": 2403,
+          "ratio": 0.268493,
+          "total": 3285
+        },
+        "line": {
+          "covered": 239,
+          "missed": 598,
+          "ratio": 0.285544,
+          "total": 837
+        },
+        "method": {
+          "covered": 55,
+          "missed": 87,
+          "ratio": 0.387324,
+          "total": 142
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "no_action",
+      "issue_number": 2224,
+      "issue_label": "library-new-request",
+      "library": "classworlds:classworlds:1.1",
+      "summary": "No setup beyond the generated test scaffold is needed: classworlds:classworlds:1.1 is a self-contained classloader/launcher library with no Maven dependencies and no Docker or external service requirements.",
+      "deterministic_setup": [],
+      "agent_guidance": "Meaningful tests can exercise org.codehaus.classworlds.ClassWorld, ClassRealm, Configurator, and Launcher entirely in-process. If testing Launcher.main or mainWithExitCode, create a temporary classworlds.conf resource/file and set the classworlds.conf system property for that test, clearing it afterward; alternatively call Launcher.configure(InputStream) directly to avoid global system-property setup.",
+      "risks": [
+        "The artifact is an old legacy API using org.codehaus.classworlds packages, not the newer org.codehaus.plexus.classworlds coordinates.",
+        "Launcher-based coverage depends on a correctly formatted classworlds.conf; direct ClassWorld/ClassRealm tests are lower-risk and do not need the system property."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#2224 Support for classworlds:classworlds:1.1; label=library-new-request; body_chars=96"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "oca/gpt-5.5",
+      "input_tokens_used": 65541,
+      "output_tokens_used": 3034,
+      "prompt_path": "library-preflight-prompt.txt",
+      "raw_response_path": "library-preflight-response.txt",
+      "session_log_path": "/home/mihailo/git/graalvm-reachability-metadata-copy/forge/logs/classworlds:classworlds:1.1/library-preparation-preflight/pi-generation-2026-06-25T00-29-35-792068Z.log"
+    },
+    "metrics": {
+      "input_tokens_used": 405719,
+      "cached_input_tokens_used": 2221056,
+      "output_tokens_used": 32481,
+      "iterations": 8,
+      "cost_usd": 2.0849,
+      "generated_loc": 489,
+      "tested_library_loc": 239,
+      "metadata_entries": 12,
+      "test_only_metadata_entries": 28,
+      "code_coverage_percent": 28.55
+    },
+    "artifacts": {
+      "test_file": "tests/src/classworlds/classworlds/1.1/src/test/java/classworlds/classworlds/RealmClassLoaderTest.java",
+      "metadata_file": "metadata/classworlds/classworlds/1.1/reachability-metadata.json"
+    }
+  }
+}

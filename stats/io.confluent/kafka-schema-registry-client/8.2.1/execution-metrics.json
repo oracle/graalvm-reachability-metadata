@@ -1,0 +1,94 @@
+{
+  "add_new_library_support:2026-06-25": {
+    "timestamp": "2026-06-25T12:36:46.447171Z",
+    "library": "io.confluent:kafka-schema-registry-client:8.2.1",
+    "starting_commit": "ed90b4fc56d476f6c74d04687f2eaf1a5a38ca87",
+    "ending_commit": "f66c46c716221b843c12e9482f3466495b1fcd98",
+    "strategy_name": "dynamic_access_main_sources_pi_gpt-5.5",
+    "agent": "pi",
+    "model": "oca/gpt-5.5",
+    "status": "success",
+    "stats": {
+      "version": "8.2.1",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 9,
+            "totalCalls": 9
+          }
+        },
+        "coverageRatio": 1.0,
+        "coveredCalls": 9,
+        "totalCalls": 9
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 685,
+          "missed": 33019,
+          "ratio": 0.020324,
+          "total": 33704
+        },
+        "line": {
+          "covered": 165,
+          "missed": 7543,
+          "ratio": 0.021406,
+          "total": 7708
+        },
+        "method": {
+          "covered": 42,
+          "missed": 1811,
+          "ratio": 0.022666,
+          "total": 1853
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "no_action",
+      "issue_number": 7010,
+      "issue_label": "library-new-request",
+      "library": "io.confluent:kafka-schema-registry-client:8.2.1",
+      "summary": "No extra setup is required: the resolved artifact includes its normal runtime dependencies and exposes in-memory MockSchemaRegistryClient/MockSchemaRegistry APIs that can exercise schema registration, lookup, compatibility, metadata, and Avro parsing without Docker, environment variables, or additional test dependencies.",
+      "deterministic_setup": [],
+      "agent_guidance": "",
+      "risks": [
+        "Tests that choose CachedSchemaRegistryClient or RestService against an http:// URL would require a running Schema Registry service, but meaningful coverage is reachable through the artifact's built-in mock client, so a Docker image is not justified.",
+        "Protobuf or JSON Schema provider coverage would require separate Confluent provider artifacts, but this issue targets kafka-schema-registry-client itself and Avro support is already part of the resolved artifact."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#7010 Support for io.confluent:kafka-schema-registry-client:8.2.1; label=library-new-request; body_chars=116"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "oca/gpt-5.5",
+      "input_tokens_used": 40944,
+      "output_tokens_used": 2101,
+      "prompt_path": "library-preflight-prompt.txt",
+      "raw_response_path": "library-preflight-response.txt",
+      "session_log_path": "/home/mihailo/git/graalvm-reachability-metadata/forge/logs/io.confluent:kafka-schema-registry-client:8.2.1/library-preparation-preflight/pi-generation-2026-06-25T11-53-53-233236Z.log"
+    },
+    "metrics": {
+      "input_tokens_used": 78871,
+      "cached_input_tokens_used": 418816,
+      "output_tokens_used": 9027,
+      "iterations": 2,
+      "cost_usd": 0.4802,
+      "generated_loc": 80,
+      "tested_library_loc": 165,
+      "metadata_entries": 24,
+      "test_only_metadata_entries": 4,
+      "code_coverage_percent": 2.14
+    },
+    "artifacts": {
+      "test_file": "tests/src/io.confluent/kafka-schema-registry-client/8.2.1/src/test/java/io_confluent/kafka_schema_registry_client/BoundedConcurrentHashMapTest.java",
+      "metadata_file": "metadata/io.confluent/kafka-schema-registry-client/8.2.1/reachability-metadata.json"
+    }
+  }
+}

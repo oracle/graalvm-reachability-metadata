@@ -1,0 +1,99 @@
+{
+  "add_new_library_support:2026-06-28": {
+    "timestamp": "2026-06-28T04:45:32.563997Z",
+    "library": "javax.ws.rs:javax.ws.rs-api:2.0.1",
+    "starting_commit": "50d441500bf06300b4438abb4781245c815da957",
+    "ending_commit": "8783f7082c6edf567442e66ceb71708b7ae33b95",
+    "strategy_name": "dynamic_access_main_sources_pi_gpt-5.5",
+    "agent": "pi",
+    "model": "oca/gpt-5.5",
+    "status": "success",
+    "stats": {
+      "version": "2.0.1",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 9,
+            "totalCalls": 9
+          },
+          "resources": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 8,
+            "totalCalls": 8
+          }
+        },
+        "coverageRatio": 1.0,
+        "coveredCalls": 17,
+        "totalCalls": 17
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 553,
+          "missed": 5410,
+          "ratio": 0.092739,
+          "total": 5963
+        },
+        "line": {
+          "covered": 141,
+          "missed": 1169,
+          "ratio": 0.107634,
+          "total": 1310
+        },
+        "method": {
+          "covered": 24,
+          "missed": 408,
+          "ratio": 0.055556,
+          "total": 432
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "advisory_preparation",
+      "issue_number": 2691,
+      "issue_label": "library-new-request",
+      "library": "javax.ws.rs:javax.ws.rs-api:2.0.1",
+      "summary": "The artifact is an API-only JAX-RS jar with no runtime implementation dependency or service provider entries. Meaningful coverage of factory paths requires test-local providers, but no extra Maven dependency or Docker image is needed.",
+      "deterministic_setup": [],
+      "agent_guidance": "Do not add Jersey/RESTEasy just to make the API factories work. For tests that call RuntimeDelegate, Response, UriBuilder, Link, Variant, or ClientBuilder factory methods, provide test-local stub implementations and point the JAX-RS lookup at them with system properties such as `javax.ws.rs.ext.RuntimeDelegate` and `javax.ws.rs.client.ClientBuilder`, or equivalent `META-INF/services/...` test resources. Reset `RuntimeDelegate.setInstance(null)` and restore/clear any system properties after each test to avoid cross-test contamination.",
+      "risks": [
+        "Calling factory methods without a provider will try absent default implementation classes such as Jersey and fail before exercising meaningful behavior.",
+        "Adding a real JAX-RS implementation dependency would shift coverage toward that implementation rather than the requested API artifact."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#2691 Support for javax.ws.rs:javax.ws.rs-api:2.0.1; label=library-new-request; body_chars=102"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "oca/gpt-5.5",
+      "input_tokens_used": 37667,
+      "output_tokens_used": 2822,
+      "prompt_path": "library-preflight-prompt.txt",
+      "raw_response_path": "library-preflight-response.txt",
+      "session_log_path": "/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/logs/javax.ws.rs:javax.ws.rs-api:2.0.1/library-preparation-preflight/pi-generation-2026-06-28T04-18-58-267141Z.log"
+    },
+    "metrics": {
+      "input_tokens_used": 327384,
+      "cached_input_tokens_used": 2302464,
+      "output_tokens_used": 28813,
+      "iterations": 7,
+      "cost_usd": 2.0156,
+      "generated_loc": 382,
+      "tested_library_loc": 141,
+      "metadata_entries": 5,
+      "test_only_metadata_entries": 4,
+      "code_coverage_percent": 10.76
+    },
+    "artifacts": {
+      "test_file": "tests/src/javax.ws.rs/javax.ws.rs-api/2.0.1/src/test/java/javax_ws_rs/javax_ws_rs_api/ExtFactoryFinderTest.java",
+      "metadata_file": "metadata/javax.ws.rs/javax.ws.rs-api/2.0.1/reachability-metadata.json"
+    }
+  }
+}

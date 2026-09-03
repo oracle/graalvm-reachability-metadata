@@ -1,0 +1,76 @@
+name: Forge Branch Ready
+
+on:
+  push:
+    branches:
+      - "ai/**"
+    # The path filter excludes ordinary repairs; a force-pushed rebase can still
+    # match upstream descriptors, so the trusted publisher no-ops existing PRs
+    # (§forge/AR-actions-publication).
+    paths:
+      - "stats/*/*/*/forge-publication.json"
+
+permissions:
+  contents: read
+  pull-requests: read
+
+jobs:
+  validate:
+    name: Validate exact Forge branch SHA
+    runs-on: ubuntu-latest
+    outputs:
+      local_review_attestation: ${{ steps.validate.outputs.local_review_attestation }}
+    steps:
+      - name: Check out trusted publisher
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+        with:
+          ref: master
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Fetch publication SHA as data
+        env:
+          HEAD_SHA: ${{ github.sha }}
+          HEAD_BRANCH: ${{ github.ref_name }}
+        run: >-
+          git fetch --no-tags origin "$HEAD_SHA"
+          "+refs/heads/$HEAD_BRANCH:refs/remotes/origin/$HEAD_BRANCH"
+
+      - name: Install publisher schema validator
+        run: python3 -m pip install --disable-pip-version-check jsonschema==4.25.1
+
+      - name: Validate publication descriptor and diff
+        id: validate
+        env:
+          GH_TOKEN: ${{ github.token }}
+          HEAD_SHA: ${{ github.sha }}
+          HEAD_BRANCH: ${{ github.ref_name }}
+          HEAD_ACTOR: ${{ github.actor }}
+          HEAD_REPOSITORY: ${{ github.repository }}
+        run: >-
+          python3 .github/scripts/forge_pr_publisher/publisher.py validate
+          --sha "$HEAD_SHA"
+          --branch "$HEAD_BRANCH"
+          --actor "$HEAD_ACTOR"
+          --repository "$HEAD_REPOSITORY"
+
+      - name: Upload trusted publication preview
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: forge-publication-${{ github.run_id }}
+          path: publication.md
+          if-no-files-found: error
+          retention-days: 14
+
+  # False eligibility skips this check without failing publication.
+  # §forge/FS-automated-pr-review
+  local-review-attestation:
+    name: Forge Local Review Attestation
+    needs: validate
+    if: needs.validate.outputs.local_review_attestation == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Attest safe local review for exact SHA
+        env:
+          HEAD_SHA: ${{ github.sha }}
+        run: echo "Safe local review attested for $HEAD_SHA"

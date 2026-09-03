@@ -1,0 +1,101 @@
+{
+  "add_new_library_support:2026-06-27": {
+    "timestamp": "2026-06-27T17:43:00.261429Z",
+    "library": "dev.zio:zio-stacktracer_2.13:2.0.22",
+    "starting_commit": "693036ea4cf9e529e8e23a035bee3e0208580261",
+    "ending_commit": "0d93b54f9a8444384063e97e00a6b7ca60e529e0",
+    "strategy_name": "dynamic_access_main_sources_pi_gpt-5.5",
+    "agent": "pi",
+    "model": "oca/gpt-5.5",
+    "status": "success",
+    "stats": {
+      "version": "2.0.22",
+      "dynamicAccess": {
+        "breakdown": {},
+        "coverageRatio": 1.0,
+        "coveredCalls": 0,
+        "totalCalls": 0
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 295,
+          "missed": 1080,
+          "ratio": 0.214545,
+          "total": 1375
+        },
+        "line": {
+          "covered": 22,
+          "missed": 39,
+          "ratio": 0.360656,
+          "total": 61
+        },
+        "method": {
+          "covered": 34,
+          "missed": 53,
+          "ratio": 0.390805,
+          "total": 87
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "advisory_preparation",
+      "issue_number": 5471,
+      "issue_label": "library-new-request",
+      "library": "dev.zio:zio-stacktracer_2.13:2.0.22",
+      "summary": "The artifact is a Scala 2.13 macro/stack-tracing support library; its POM marks Scala compiler/reflect APIs as provided, but its macro classes link to scala.reflect APIs, so meaningful coverage may require adding the Scala compiler to the test classpath.",
+      "deterministic_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "org.scala-lang:scala-compiler:2.13.12",
+          "scope": "testImplementation",
+          "reason": "zio-stacktracer_2.13 2.0.22 declares scala-compiler and scala-reflect as provided dependencies, and its macro implementation classes depend on scala.reflect.macros and related compiler/reflect APIs; adding scala-compiler also brings scala-reflect transitively for tests that exercise the macro-facing\n...[truncated]"
+        }
+      ],
+      "agent_guidance": "Use self-contained tests; no Docker service or environment variable is indicated. Prefer exercising the runtime stack-tracer API directly and, if using Scala test sources to exercise macro expansion, keep assertions flexible for generated file names and line numbers because traces encode source location.",
+      "risks": [
+        "The repository's generated scaffold and Gradle verification remain authoritative; if the scaffold already supplies Scala compiler support for _2.13 artifacts, the extra dependency may be redundant.",
+        "The library is mostly compile-time macro infrastructure, so Java-only tests can cover only the small runtime surface and may not reach the macro implementation paths."
+      ],
+      "applied_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "org.scala-lang:scala-compiler:2.13.12",
+          "result": "already_present",
+          "target": "tests/src/dev.zio/zio-stacktracer_2.13/2.0.22/build.gradle"
+        }
+      ],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#5471 Support for dev.zio:zio-stacktracer_2.13:2.0.22; label=library-new-request; body_chars=104"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "oca/gpt-5.5",
+      "input_tokens_used": 63971,
+      "output_tokens_used": 3805,
+      "prompt_path": "library-preflight-prompt.txt",
+      "raw_response_path": "library-preflight-response.txt",
+      "session_log_path": "/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/logs/dev.zio:zio-stacktracer_2.13:2.0.22/library-preparation-preflight/pi-generation-2026-06-27T17-28-32-904378Z.log"
+    },
+    "metrics": {
+      "input_tokens_used": 208899,
+      "cached_input_tokens_used": 1826816,
+      "output_tokens_used": 20257,
+      "iterations": 4,
+      "cost_usd": 1.5211,
+      "generated_loc": 177,
+      "tested_library_loc": 22,
+      "metadata_entries": 0,
+      "code_coverage_percent": 36.07
+    },
+    "artifacts": {
+      "test_file": "tests/src/dev.zio/zio-stacktracer_2.13/2.0.22/src/test/scala/dev_zio/zio_stacktracer_2_13/Zio_stacktracer_2_13Test.scala",
+      "metadata_file": "metadata/dev.zio/zio-stacktracer_2.13/2.0.22/reachability-metadata.json"
+    }
+  }
+}

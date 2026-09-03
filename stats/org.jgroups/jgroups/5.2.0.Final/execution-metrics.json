@@ -1,0 +1,100 @@
+{
+  "add_new_library_support:2026-06-29": {
+    "timestamp": "2026-06-29T11:31:13.243975Z",
+    "library": "org.jgroups:jgroups:5.2.0.Final",
+    "starting_commit": "0409c0e85455724ec143e1b580a5334c625c1fe8",
+    "ending_commit": "470f1e31e39650d870c95995ec323226c19959f1",
+    "strategy_name": "dynamic_access_main_sources_pi_gpt-5.5",
+    "agent": "pi",
+    "model": "oca/gpt-5.5",
+    "status": "success",
+    "stats": {
+      "version": "5.2.0.Final",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 0.964029,
+            "coveredCalls": 134,
+            "totalCalls": 139
+          },
+          "resources": {
+            "coverageRatio": 0.833333,
+            "coveredCalls": 10,
+            "totalCalls": 12
+          }
+        },
+        "coverageRatio": 0.953642,
+        "coveredCalls": 144,
+        "totalCalls": 151
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 37126,
+          "missed": 193381,
+          "ratio": 0.161062,
+          "total": 230507
+        },
+        "line": {
+          "covered": 7882,
+          "missed": 41365,
+          "ratio": 0.16005,
+          "total": 49247
+        },
+        "method": {
+          "covered": 1756,
+          "missed": 7719,
+          "ratio": 0.18533,
+          "total": 9475
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "advisory_preparation",
+      "issue_number": 1498,
+      "issue_label": "library-new-request",
+      "library": "org.jgroups:jgroups:5.2.0.Final",
+      "summary": "JGroups has no required external service or mandatory non-transitive runtime dependency, but meaningful generated tests should force local IPv4/loopback networking to avoid multicast/interface variability in CI and native-image runs.",
+      "deterministic_setup": [],
+      "agent_guidance": "Set test and native runtime system properties `jgroups.bind_addr=127.0.0.1` and `java.net.preferIPv4Stack=true`. Prefer in-process/local stacks such as `SHARED_LOOPBACK` with `SHARED_LOOPBACK_PING` and unique cluster names; close every `JChannel` after use. Set `jgroups.use.jdk_logger=true` unless a test intentionally exercises `LogFactory` selection or `jgroups.log_class` custom logger loading.",
+      "risks": [
+        "Default JGroups UDP stacks use multicast and host network interfaces, which can be flaky or unavailable in CI containers.",
+        "Optional integrations such as SLF4J/log4j2 logging, WildFly OpenSSL, and real JDBC discovery need extra classpath or services only if tests explicitly target those paths; they are not required for baseline meaningful coverage.",
+        "Local Gradle and Native Image verification remain authoritative for whether additional metadata or runtime flags are needed."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#1498 Support for org.jgroups:jgroups:5.2.0.Final; label=library-new-request; body_chars=176"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "36 existing test file path(s) included"
+        }
+      ],
+      "model": "oca/gpt-5.5",
+      "input_tokens_used": 46272,
+      "output_tokens_used": 4608,
+      "prompt_path": "library-preflight-prompt.txt",
+      "raw_response_path": "library-preflight-response.txt",
+      "session_log_path": "/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/logs/org.jgroups:jgroups:5.2.0.Final/library-preparation-preflight/pi-generation-2026-06-29T10-49-16-557187Z.log"
+    },
+    "metrics": {
+      "input_tokens_used": 253483,
+      "cached_input_tokens_used": 1803264,
+      "output_tokens_used": 16933,
+      "iterations": 6,
+      "cost_usd": 1.4096,
+      "generated_loc": 2033,
+      "tested_library_loc": 7882,
+      "metadata_entries": 651,
+      "test_only_metadata_entries": 251,
+      "code_coverage_percent": 16.0
+    },
+    "artifacts": {
+      "test_file": "tests/src/org.jgroups/jgroups/5.2.0.Final/src/test/java/org_jgroups/jgroups/ProtocolStackTest.java",
+      "metadata_file": "metadata/org.jgroups/jgroups/5.2.0.Final/reachability-metadata.json"
+    }
+  }
+}

@@ -1,0 +1,98 @@
+{
+  "add_new_library_support:2026-08-27": {
+    "timestamp": "2026-08-27T08:52:04.178491Z",
+    "library": "org.sonatype.sisu.inject:cglib:2.2.1-v20090111",
+    "starting_commit": "9c042ce83ca8bb911303955f75f1fe23fbeeda1b",
+    "ending_commit": "431c75d243754c30bb9d8d0816e81392c080a31f",
+    "strategy_name": "dynamic_access_main_sources_pi_gpt-5.6-terra",
+    "agent": "pi",
+    "model": "gpt-5.6-terra",
+    "status": "chunk_ready",
+    "stats": {
+      "version": "2.2.1-v20090111",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 0.423729,
+            "coveredCalls": 25,
+            "totalCalls": 59
+          },
+          "resources": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 1,
+            "totalCalls": 1
+          }
+        },
+        "coverageRatio": 0.433333,
+        "coveredCalls": 26,
+        "totalCalls": 60
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 2311,
+          "missed": 19839,
+          "ratio": 0.104334,
+          "total": 22150
+        },
+        "line": {
+          "covered": 520,
+          "missed": 4505,
+          "ratio": 0.103483,
+          "total": 5025
+        },
+        "method": {
+          "covered": 134,
+          "missed": 985,
+          "ratio": 0.11975,
+          "total": 1119
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "advisory_preparation",
+      "issue_number": 2417,
+      "issue_label": "library-new-request",
+      "library": "org.sonatype.sisu.inject:cglib:2.2.1-v20090111",
+      "summary": "Core CGLIB proxy coverage requires opening java.lang on modern JDKs; declared ASM dependencies resolve transitively and no external service is needed.",
+      "deterministic_setup": [],
+      "agent_guidance": "Configure every Gradle Test task with `--add-opens=java.base/java.lang=ALL-UNNAMED` and add the same argument to all `graalvmNative` binaries. CGLIB's `ReflectUtils` reflectively accesses `ClassLoader.defineClass` and otherwise fails during static initialization on JDK 25.",
+      "risks": [
+        "CGLIB generates classes dynamically, which Native Image cannot generally perform at runtime; tests may need build-time generation or must focus on behavior compatible with closed-world execution.",
+        "The artifact uses the very old transitive dependency `asm:asm:3.1`; optional Ant and ASM utility dependencies are unnecessary for core proxy, bean, and reflection coverage."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#2417 Support for org.sonatype.sisu.inject:cglib:2.2.1-v20090111; label=library-new-request; body_chars=115"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "gpt-5.6-sol",
+      "input_tokens_used": 59959,
+      "output_tokens_used": 4068,
+      "prompt_path": "library-preflight-prompt.txt",
+      "raw_response_path": "library-preflight-response.txt",
+      "session_log_path": "/home/jovan/Work/graalvm-reachability-metadata/forge/logs/org.sonatype.sisu.inject:cglib:2.2.1-v20090111/library-preparation-preflight/pi-generation-2026-08-27T07-19-51-738208Z.log"
+    },
+    "metrics": {
+      "input_tokens_used": 493239,
+      "cached_input_tokens_used": 3472896,
+      "output_tokens_used": 41968,
+      "iterations": 11,
+      "cost_usd": 2.7308,
+      "generated_loc": 268,
+      "tested_library_loc": 520,
+      "metadata_entries": 15,
+      "test_only_metadata_entries": 17,
+      "code_coverage_percent": 10.35
+    },
+    "artifacts": {
+      "metadata_file": "metadata/org.sonatype.sisu.inject/cglib/2.2.1-v20090111/reachability-metadata.json"
+    }
+  }
+}

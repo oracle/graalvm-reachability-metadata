@@ -1,0 +1,143 @@
+{
+  "fix_javac_fail:2026-08-28": {
+    "timestamp": "2026-08-28T09:26:15.709185Z",
+    "library": "org.junit.platform:junit-platform-commons:1.11.0",
+    "starting_commit": "032504c3f8e8d426d0ecb7d5240ad5105403aac2",
+    "ending_commit": "2c3a2ac5e6dea9c93e30a9ccbe231c8df6ae84ec",
+    "previous_library": "org.junit.platform:junit-platform-commons:1.8.2",
+    "strategy_name": "javac_iterative_with_coverage_sources_pi_gpt-5.6-sol",
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "status": "success",
+    "stats": {
+      "version": "1.11.0",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 25,
+            "totalCalls": 25
+          },
+          "resources": {
+            "coverageRatio": 0.666667,
+            "coveredCalls": 2,
+            "totalCalls": 3
+          }
+        },
+        "coverageRatio": 0.964286,
+        "coveredCalls": 27,
+        "totalCalls": 28
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 2917,
+          "missed": 5113,
+          "ratio": 0.363263,
+          "total": 8030
+        },
+        "line": {
+          "covered": 615,
+          "missed": 1041,
+          "ratio": 0.371377,
+          "total": 1656
+        },
+        "method": {
+          "covered": 196,
+          "missed": 392,
+          "ratio": 0.333333,
+          "total": 588
+        }
+      }
+    },
+    "previous_library_stats": {
+      "version": "1.8.2",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 26,
+            "totalCalls": 26
+          },
+          "resources": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 2,
+            "totalCalls": 2
+          }
+        },
+        "coverageRatio": 1.0,
+        "coveredCalls": 28,
+        "totalCalls": 28
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 2763,
+          "missed": 3435,
+          "ratio": 0.445789,
+          "total": 6198
+        },
+        "line": {
+          "covered": 582,
+          "missed": 703,
+          "ratio": 0.452918,
+          "total": 1285
+        },
+        "method": {
+          "covered": 184,
+          "missed": 261,
+          "ratio": 0.413483,
+          "total": 445
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "no_action",
+      "issue_number": 9209,
+      "issue_label": "fails-javac-compile",
+      "library": "org.junit.platform:junit-platform-commons:1.11.0",
+      "summary": "No extra setup is needed. The failure is a stale test calling getOutermostInstance, which is absent from junit-platform-commons 1.11.0; dependencies are ordinary transitive JUnit support libraries.",
+      "deterministic_setup": [],
+      "agent_guidance": "Update or replace the incompatible test invocation for the 1.11.0 API. Do not add another JUnit dependency or system property.",
+      "risks": [
+        "junit-platform-commons exposes internal APIs intended for JUnit's own modules, so API changes across versions are expected.",
+        "Adding an older commons artifact could mask the target version and produce misleading coverage."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#9209 [Automation] javac compile fails for org.junit.platform:junit-platform-commons:1.11.0; label=fails-javac-compile; body_chars=8015"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "12 existing test file path(s) included"
+        }
+      ],
+      "current_library": "org.junit.platform:junit-platform-commons:1.8.2",
+      "new_version": "1.11.0",
+      "model": "gpt-5.6-luna",
+      "input_tokens_used": 241549,
+      "output_tokens_used": 1724,
+      "prompt_path": "library-preflight-prompt.txt",
+      "raw_response_path": "library-preflight-response.txt",
+      "session_log_path": "/home/mihailo/git/graalvm-reachability-metadata/forge/logs/org.junit.platform:junit-platform-commons:1.11.0/library-preparation-preflight/codex-session-u8kezu5r.log"
+    },
+    "metrics": {
+      "input_tokens_used": 243012,
+      "cached_input_tokens_used": 2564096,
+      "output_tokens_used": 21466,
+      "iterations": 7,
+      "cost_usd": 3.1411,
+      "tested_library_loc": 615,
+      "metadata_entries": 19,
+      "test_only_metadata_entries": 70,
+      "previous_library_metadata_entries": 25,
+      "previous_library_test_only_metadata_entries": 47,
+      "code_coverage_percent": 37.14,
+      "previous_library_coverage_percent": 45.29
+    },
+    "artifacts": {
+      "metadata_file": "metadata/org.junit.platform/junit-platform-commons/1.11.0/reachability-metadata.json"
+    }
+  }
+}

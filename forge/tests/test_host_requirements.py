@@ -1,0 +1,1341 @@
+# Copyright and related rights waived via CC0
+#
+# You should have received a copy of the CC0 legalcode along with this
+# work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
+
+import io
+import json
+import os
+import subprocess
+import tempfile
+import unittest
+from contextlib import contextmanager, redirect_stderr, redirect_stdout
+from pathlib import Path
+from typing import Iterator
+from unittest.mock import Mock, patch
+
+from utility_scripts.host_requirements import (
+    ARTIFACT_REPOSITORY_URLS,
+    COVERAGE_REQUIREMENTS,
+    GRAALVM_SCHEMA_PATH,
+    HostRequirements,
+    QueueRequirements,
+    check_graalvm_installation,
+    codex_doctor_provider_status,
+    codex_unattended_policy_status,
+    graalvm_ea_version_matches,
+    java_version_major,
+    main,
+    parse_ea_release_version,
+    parse_graalvm_runtime_version,
+    parse_gradle_version,
+    parse_grype_version,
+    parse_args,
+    parse_native_image_version,
+    probe_http_200,
+    probe_proxied_host,
+    resolve_graalvm_version_check,
+    resolve_https_proxy,
+    resolve_queue_requirements,
+    run_command,
+)
+
+
+@contextmanager
+def _graalvm_home(native_image: bool = True, schema: bool = True) -> Iterator[str]:
+    """Create a GraalVM home whose Native Image and schema presence can be controlled."""
+    with tempfile.TemporaryDirectory() as temp_dir:
+        executables = ["java", "native-image"] if native_image else ["java"]
+        bin_dir = Path(temp_dir) / "bin"
+        bin_dir.mkdir()
+        for executable in executables:
+            (bin_dir / executable).touch(mode=0o755)
+        if schema:
+            schema_path = Path(temp_dir) / GRAALVM_SCHEMA_PATH
+            schema_path.parent.mkdir(parents=True)
+            schema_path.touch()
+        yield temp_dir
+
+
+class HostRequirementsTests(unittest.TestCase):
+    def test_host_cli_accepts_verbose_output(self) -> None:
+        args = parse_args(["--forge-dir", "/repo/forge", "--verbose"])
+
+        self.assertTrue(args.verbose)
+
+    def test_invalid_queue_limit_prints_one_actionable_fix(self) -> None:
+        stdout = io.StringIO()
+        stderr = io.StringIO()
+        with patch.dict(os.environ, {"FORGE_WORK_LIMIT": "invalid"}, clear=True), \
+                redirect_stdout(stdout), redirect_stderr(stderr):
+            result = main(["--forge-dir", "/repo/forge"])
+
+        self.assertEqual(1, result)
+        self.assertEqual("", stdout.getvalue())
+        self.assertIn("FORGE_WORK_LIMIT must be a non-negative integer", stderr.getvalue())
+        self.assertEqual(1, stderr.getvalue().count("Fix:"))
+
+    def test_queue_requirements_follow_effective_limits(self) -> None:
+        environment = {
+            "FORGE_JAVAC_WORK_LIMIT": "0",
+            "FORGE_JAVA_RUN_WORK_LIMIT": "0",
+            "FORGE_NI_RUN_WORK_LIMIT": "0",
+            "FORGE_LIBRARY_UPDATE_WORK_LIMIT": "0",
+            "FORGE_WORK_LIMIT": "0",
+            "FORGE_REVIEW_LIMIT": "0",
+            "FORGE_BULK_UPDATE_REVIEW_LIMIT": "2",
+        }
+
+        requirements = resolve_queue_requirements(environment)
+
+        self.assertFalse(requirements.issue_work)
+        self.assertTrue(requirements.review_work)
+
+    def test_explicit_review_label_ignores_default_queue_overrides(self) -> None:
+        environment = {
+            "FORGE_JAVAC_WORK_LIMIT": "0",
+            "FORGE_JAVA_RUN_WORK_LIMIT": "0",
+            "FORGE_NI_RUN_WORK_LIMIT": "0",
+            "FORGE_LIBRARY_UPDATE_WORK_LIMIT": "0",
+            "FORGE_WORK_LIMIT": "0",
+            "FORGE_REVIEW_LABEL": "library-new-request",
+            "FORGE_REVIEW_LIMIT": "0",
+            "FORGE_BULK_UPDATE_REVIEW_LIMIT": "2",
+        }
+
+        requirements = resolve_queue_requirements(environment)
+
+        self.assertFalse(requirements.issue_work)
+        self.assertFalse(requirements.review_work)
+
+    def test_codex_doctor_provider_status_requires_reachable_provider(self) -> None:
+        output = json.dumps({
+            "checks": {
+                "network.provider_reachability": {
+                    "status": "fail",
+                    "summary": "provider endpoint is unreachable",
+                },
+            },
+        })
+
+        passed, detail = codex_doctor_provider_status(output)
+
+        self.assertFalse(passed)
+        self.assertIn("unreachable", detail)
+
+    def test_java_version_major_supports_current_and_legacy_version_lines(self) -> None:
+        self.assertEqual(25, java_version_major('openjdk version "25.0.2" 2026-01-20'))
+        self.assertEqual(8, java_version_major('java version "1.8.0_402"'))
+        self.assertIsNone(java_version_major("java version unavailable"))
+
+    def test_native_image_and_ea_version_parsing(self) -> None:
+        native_output = (
+            "native-image 25.0.4 2026-07-21\n"
+            "GraalVM Runtime Environment GraalVM CE 25.2.4+7.1 "
+            "(build 25.0.4+7-jvmci-25.2-b20)\n"
+        )
+
+        self.assertEqual("25.0.4", parse_native_image_version(native_output))
+        self.assertEqual("25.2.4+7.1", parse_graalvm_runtime_version(native_output))
+        self.assertEqual(
+            ("25.3", "25.0.4.1", 2),
+            parse_ea_release_version("25i3-25.0.4.1-ea.02"),
+        )
+        self.assertTrue(graalvm_ea_version_matches(
+            "25i3-25.0.4.1-ea.02",
+            "25.3.4.1-dev+0.1",
+            "25.0.4.1+0-LTS-jvmci-25.3-b21",
+        ))
+        self.assertFalse(graalvm_ea_version_matches(
+            "25i3-25.0.4.1-ea.02",
+            "25.3.4.1-dev+0.0",
+            "25.0.4.1+0-LTS-jvmci-25.3-b20",
+        ))
+        self.assertTrue(graalvm_ea_version_matches(
+            "25i3-25.0.4.1-ea.03",
+            "25.3.4.1-dev+0.1",
+            "25.0.4.1+0-LTS-jvmci-25.3-b21",
+        ))
+
+    def test_grype_version_parsing(self) -> None:
+        self.assertEqual("0.104.0", parse_grype_version("Application: grype\nVersion: 0.104.0\n"))
+        self.assertEqual("0.104.0", parse_grype_version("Version: v0.104.0\n"))
+        self.assertEqual("9.1.0", parse_gradle_version("\nWelcome to Gradle 9.1.0!\n\nGradle 9.1.0\n"))
+
+    def test_pinned_graalvm_25_version_is_recorded_in_repository(self) -> None:
+        forge_dir = Path(__file__).resolve().parents[1]
+        with (forge_dir / "graalvm-versions.json").open(encoding="utf-8") as version_file:
+            version = json.load(version_file)["GRAALVM_HOME_25_0"]
+
+        self.assertRegex(version, r"^25\.0\.\d+$")
+
+    @patch("utility_scripts.host_requirements.run_command")
+    def test_graalvm_check_requires_repository_schema(self, command: Mock) -> None:
+        command.return_value = subprocess.CompletedProcess(
+            ["native-image", "--version"],
+            0,
+            "native-image 25.2.4 2026-07-28\n",
+            "",
+        )
+        with _graalvm_home(schema=False) as graalvm_home:
+            host_requirements = HostRequirements(
+                "/repo/forge",
+                "python3",
+                {"GRAALVM_HOME": graalvm_home},
+            )
+
+            host_requirements._check_graalvm_home("GRAALVM_HOME", True, "25.2.4")
+
+        self.assertFalse(host_requirements.results[-1].passed)
+        self.assertIn(GRAALVM_SCHEMA_PATH, host_requirements.results[-1].detail)
+        self.assertIn("is missing", host_requirements.results[-1].detail)
+
+    @patch("utility_scripts.host_requirements.run_command")
+    def test_graalvm_check_requires_loadable_native_image_agent(self, command: Mock) -> None:
+        command.return_value = subprocess.CompletedProcess(
+            ["java", "-agentlib:native-image-agent", "-version"],
+            1,
+            "",
+            "Could not find agent library native-image-agent",
+        )
+        with _graalvm_home() as graalvm_home:
+            host_requirements = HostRequirements(
+                "/repo/forge",
+                "python3",
+                {"GRAALVM_HOME": graalvm_home},
+            )
+
+            host_requirements._check_graalvm_home("GRAALVM_HOME", True, "25.2.4")
+
+        self.assertEqual(1, len(host_requirements.results))
+        self.assertFalse(host_requirements.results[0].passed)
+        self.assertIn("cannot load native-image-agent", host_requirements.results[0].detail)
+
+    @patch("utility_scripts.host_requirements.run_command")
+    def test_strict_version_check_stops_work_on_a_mismatched_graalvm(self, command: Mock) -> None:
+        command.return_value = subprocess.CompletedProcess(
+            ["native-image", "--version"],
+            0,
+            "native-image 25.2.4 2026-07-28\n"
+            "GraalVM Runtime Environment GraalVM CE 25.2.4+7.1 (build 25.0.4+7-jvmci-25.2-b20)\n",
+            "",
+        )
+        with _graalvm_home() as graalvm_home:
+            host_requirements = HostRequirements(
+                "/repo/forge",
+                "python3",
+                {"GRAALVM_HOME": graalvm_home},
+                graalvm_version_check="strict",
+            )
+
+            host_requirements._check_graalvm_home("GRAALVM_HOME", True, "25.3.0")
+
+        installation, version = host_requirements.results
+        self.assertEqual("PASS", installation.status)
+        self.assertEqual("FAIL", version.status)
+        self.assertTrue(version.blocks_work)
+
+    @patch("utility_scripts.host_requirements.run_command")
+    def test_warn_version_check_keeps_native_image_and_schema_mandatory(self, command: Mock) -> None:
+        command.return_value = subprocess.CompletedProcess(
+            ["native-image", "--version"],
+            0,
+            "native-image 25.2.4 2026-07-28\n"
+            "GraalVM Runtime Environment GraalVM CE 25.2.4+7.1 (build 25.0.4+7-jvmci-25.2-b20)\n",
+            "",
+        )
+        with _graalvm_home() as patched_graalvm, _graalvm_home(native_image=False) as broken_graalvm:
+            host_requirements = HostRequirements(
+                "/repo/forge",
+                "python3",
+                {"GRAALVM_HOME": patched_graalvm, "GRAALVM_HOME_25_0": broken_graalvm},
+                graalvm_version_check="warn",
+            )
+
+            host_requirements._check_graalvm_home("GRAALVM_HOME", True, "25.3.0")
+            host_requirements._check_graalvm_home("GRAALVM_HOME_25_0", True, "25.0.4")
+
+        mismatched_version = host_requirements.results[1]
+        self.assertEqual("WARN", mismatched_version.status)
+        self.assertFalse(mismatched_version.blocks_work)
+        self.assertTrue(host_requirements.results[2].blocks_work)
+
+    def test_coverage_lane_uses_graalvm_home_at_jdk_25_or_newer(self) -> None:
+        with _graalvm_home() as graalvm_home:
+            host_requirements = HostRequirements(
+                "/repo/forge",
+                "python3",
+                {"GRAALVM_HOME": graalvm_home},
+                requirements=COVERAGE_REQUIREMENTS,
+            )
+            with patch("utility_scripts.host_requirements.run_command") as command:
+                command.return_value = subprocess.CompletedProcess(
+                    ["java", "-version"], 0, "", 'openjdk version "26.0.1" 2026-10-20\n'
+                )
+                host_requirements._check_environment()
+
+        selected, = host_requirements.results
+        self.assertEqual("GRAALVM_HOME", selected.name)
+        self.assertEqual("PASS", selected.status)
+
+    def test_coverage_lane_falls_back_from_graalvm_home_to_java_home(self) -> None:
+        with _graalvm_home() as graalvm_home:
+            host_requirements = HostRequirements(
+                "/repo/forge",
+                "python3",
+                {"JAVA_HOME": graalvm_home},
+                requirements=COVERAGE_REQUIREMENTS,
+            )
+            with patch("utility_scripts.host_requirements.run_command") as command:
+                command.return_value = subprocess.CompletedProcess(
+                    ["java", "-version"], 0, "", 'openjdk version "26.0.1" 2026-10-20\n'
+                )
+                host_requirements._check_environment()
+
+        selected, = host_requirements.results
+        self.assertEqual("PASS", selected.status)
+        self.assertIn("from JAVA_HOME", selected.detail)
+        self.assertEqual(graalvm_home, host_requirements.environment["GRAALVM_HOME"])
+
+    def test_coverage_lane_prefers_graalvm_home_over_java_home(self) -> None:
+        with _graalvm_home() as graalvm_home, _graalvm_home() as java_home:
+            host_requirements = HostRequirements(
+                "/repo/forge",
+                "python3",
+                {"GRAALVM_HOME": graalvm_home, "JAVA_HOME": java_home},
+                requirements=COVERAGE_REQUIREMENTS,
+            )
+            with patch("utility_scripts.host_requirements.run_command") as command:
+                command.return_value = subprocess.CompletedProcess(
+                    ["java", "-version"], 0, "", 'openjdk version "26.0.1" 2026-10-20\n'
+                )
+                host_requirements._check_environment()
+
+        selected, = host_requirements.results
+        self.assertIn(graalvm_home, selected.detail)
+        self.assertNotIn("from JAVA_HOME", selected.detail)
+
+    def test_coverage_lane_rejects_graalvm_older_than_25(self) -> None:
+        with _graalvm_home() as graalvm_home:
+            host_requirements = HostRequirements(
+                "/repo/forge",
+                "python3",
+                {"JAVA_HOME": graalvm_home},
+                requirements=COVERAGE_REQUIREMENTS,
+            )
+            with patch("utility_scripts.host_requirements.run_command") as command:
+                command.return_value = subprocess.CompletedProcess(
+                    ["java", "-version"], 0, "", 'openjdk version "21.0.5" 2024-10-15\n'
+                )
+                host_requirements._check_environment()
+
+        selected, = host_requirements.results
+        self.assertTrue(selected.blocks_work)
+        self.assertIn("JDK 25 or newer", selected.remediation)
+
+    def test_coverage_lane_requires_a_graalvm_environment_variable(self) -> None:
+        host_requirements = HostRequirements(
+            "/repo/forge",
+            "python3",
+            {},
+            requirements=COVERAGE_REQUIREMENTS,
+        )
+
+        host_requirements._check_environment()
+
+        selected, = host_requirements.results
+        self.assertTrue(selected.blocks_work)
+        self.assertIn("neither GRAALVM_HOME nor JAVA_HOME is set", selected.detail)
+
+    def test_coverage_lane_requires_native_image(self) -> None:
+        with _graalvm_home(native_image=False) as graalvm_home:
+            host_requirements = HostRequirements(
+                "/repo/forge",
+                "python3",
+                {"GRAALVM_HOME": graalvm_home},
+                requirements=COVERAGE_REQUIREMENTS,
+            )
+            host_requirements._check_environment()
+
+        selected, = host_requirements.results
+        self.assertTrue(selected.blocks_work)
+        self.assertIn("bin/native-image is missing", selected.detail)
+
+    def test_coverage_lane_selects_build_capabilities(self) -> None:
+        self.assertTrue(COVERAGE_REQUIREMENTS.build_work)
+        self.assertTrue(COVERAGE_REQUIREMENTS.any_work)
+        self.assertFalse(COVERAGE_REQUIREMENTS.issue_work)
+        self.assertTrue(COVERAGE_REQUIREMENTS.github_work)
+
+    def test_disabled_version_check_skips_version_resolution_and_comparison(self) -> None:
+        with _graalvm_home() as graalvm_home:
+            host_requirements = HostRequirements(
+                "/repo/forge",
+                "python3",
+                {"GRAALVM_HOME": graalvm_home, "FORGE_WORK_LIMIT": "1"},
+                graalvm_version_check="off",
+            )
+
+            with patch("utility_scripts.host_requirements.run_command") as command:
+                command.return_value = subprocess.CompletedProcess(["java", "-version"], 0, "", "")
+                host_requirements._check_graalvm_home("GRAALVM_HOME", True, None)
+
+        self.assertEqual(1, command.call_count)
+        self.assertIn("-agentlib:native-image-agent", command.call_args.args[0][1])
+        installation, version = host_requirements.results
+        self.assertEqual("PASS", installation.status)
+        self.assertEqual("SKIP", version.status)
+        self.assertIn("version match disabled", version.detail)
+
+    def test_version_check_mode_is_read_from_the_environment_and_validated(self) -> None:
+        self.assertEqual("warn", resolve_graalvm_version_check(None, {"FORGE_GRAALVM_VERSION_CHECK": "warn"}))
+        self.assertEqual("off", resolve_graalvm_version_check("off", {"FORGE_GRAALVM_VERSION_CHECK": "strict"}))
+        self.assertEqual("strict", resolve_graalvm_version_check(None, {}))
+        with self.assertRaises(ValueError):
+            resolve_graalvm_version_check("lenient", {})
+
+    def test_graalvm_installation_problems_are_named_once(self) -> None:
+        with _graalvm_home(native_image=False, schema=False) as graalvm_home:
+            problems = check_graalvm_installation(graalvm_home)
+
+        self.assertEqual(
+            [
+                os.path.join("bin", "native-image") + " is missing or not executable",
+                f"{GRAALVM_SCHEMA_PATH} is missing",
+            ],
+            problems,
+        )
+
+    def test_codex_managed_policy_rejects_unattended_recovery(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            bundle_path = os.path.join(temp_dir, "cloud-config-bundle-cache.json")
+            with open(bundle_path, "w", encoding="utf-8") as bundle_file:
+                json.dump({
+                    "requirements_toml": {
+                        "enterprise_managed": [{
+                            "name": "Codex Developers",
+                            "contents": (
+                                'allowed_approval_policies = ["on-request", "untrusted"]\n'
+                                'allowed_sandbox_modes = ["read-only", "workspace-write"]\n'
+                            ),
+                        }],
+                    },
+                }, bundle_file)
+
+            passed, detail = codex_unattended_policy_status(temp_dir)
+
+        self.assertFalse(passed)
+        self.assertIn("Codex Developers", detail)
+        self.assertIn("`never` is disallowed", detail)
+        self.assertNotIn("`workspace-write` is disallowed", detail)
+
+    def test_only_selected_agent_executables_are_required(self) -> None:
+        host_requirements = HostRequirements(
+            "/repo/forge",
+            "python3",
+            requirements=QueueRequirements(issue_work=False, review_work=True),
+            analysis_agent="claude",
+            analysis_family="claude-code",
+            analysis_model="claude-opus-4-1",
+        )
+        with patch.object(host_requirements, "_check_tool") as check_tool, \
+                patch.object(host_requirements, "_check_grype"), \
+                patch.object(host_requirements, "_check_gradle_wrapper"):
+            host_requirements._check_tools()
+
+        required_agent_checks = [
+            call_args.args[1]
+            for call_args in check_tool.call_args_list
+            if call_args.args[0].startswith("Agent backend") and call_args.args[2]
+        ]
+        self.assertEqual(required_agent_checks, ["claude"])
+
+    def test_role_agent_family_and_command_are_checked_independently(self) -> None:
+        host_requirements = HostRequirements(
+            "/repo/forge",
+            "python3",
+            requirements=QueueRequirements(issue_work=False, review_work=True),
+            analysis_agent="cdx",
+            analysis_family="codex",
+            analysis_model="gpt-5.6-terra",
+        )
+        with patch.object(host_requirements, "_check_tool") as check_tool, \
+                patch.object(host_requirements, "_check_grype"), \
+                patch.object(host_requirements, "_check_gradle_wrapper"):
+            host_requirements._check_tools()
+
+        required_agent_checks = [
+            call_args.args[1]
+            for call_args in check_tool.call_args_list
+            if call_args.args[0].startswith("Agent backend") and call_args.args[2]
+        ]
+        self.assertEqual(required_agent_checks, ["cdx"])
+
+    def test_custom_agent_alias_uses_family_for_state_and_provider_checks(self) -> None:
+        environment = {"HOME": "/operator"}
+        host_requirements = HostRequirements(
+            "/repo/forge",
+            "python3",
+            environment=environment,
+            requirements=QueueRequirements(
+                issue_work=False,
+                review_work=True,
+                github_work=False,
+            ),
+            analysis_agent="cdx",
+            analysis_family="codex",
+            analysis_model="gpt-5.6-terra",
+        )
+        with patch(
+                "utility_scripts.host_requirements.probe_write_access",
+                return_value=(True, "writable"),
+        ), patch.object(
+            host_requirements,
+            "_check_git_remote_access",
+        ), patch(
+            "utility_scripts.host_requirements.probe_tcp_host",
+            return_value=(True, "reachable"),
+        ) as probe_host:
+            host_requirements._check_write_permissions()
+            host_requirements._check_network()
+
+        result_by_name = {result.name: result for result in host_requirements.results}
+        self.assertIn("codex state", result_by_name)
+        self.assertIn("/operator/.codex", result_by_name["codex state"].remediation)
+        probed_hosts = [call.args[0] for call in probe_host.call_args_list]
+        self.assertIn("chatgpt.com", probed_hosts)
+        self.assertNotIn("opencode.ai", probed_hosts)
+
+    def test_setup_role_gets_every_host_capability_check(self) -> None:
+        environment = {"HOME": "/operator"}
+        host_requirements = HostRequirements(
+            "/repo/forge",
+            "python3",
+            environment=environment,
+            requirements=QueueRequirements(
+                issue_work=True,
+                review_work=False,
+                github_work=False,
+            ),
+            analysis_family="codex",
+            analysis_agent="codex",
+            setup_family="opencode",
+            setup_agent="setup-code",
+            setup_model="setup-model",
+            setup_provider="openrouter",
+        )
+
+        with patch.object(host_requirements, "_check_tool") as check_tool, \
+                patch.object(host_requirements, "_check_grype"), \
+                patch.object(host_requirements, "_check_gradle_wrapper"):
+            host_requirements._check_tools()
+
+        required_agent_commands = {
+            call_args.args[1]
+            for call_args in check_tool.call_args_list
+            if call_args.args[0].startswith("Agent backend") and call_args.args[2]
+        }
+        self.assertIn("setup-code", required_agent_commands)
+
+        with patch(
+                "utility_scripts.host_requirements.probe_write_access",
+                return_value=(True, "writable"),
+        ), patch.object(
+            host_requirements,
+            "_check_git_remote_access",
+        ), patch(
+            "utility_scripts.host_requirements.probe_tcp_host",
+            return_value=(True, "reachable"),
+        ) as probe_host, patch(
+            "utility_scripts.host_requirements.probe_http_200",
+            return_value=(True, "HTTP 200"),
+        ):
+            host_requirements._check_write_permissions()
+            host_requirements._check_network()
+
+        result_by_name = {result.name: result for result in host_requirements.results}
+        self.assertIn("opencode state", result_by_name)
+        self.assertTrue(result_by_name["opencode state"].required)
+        self.assertIn("/operator/.local/share/opencode", result_by_name["opencode state"].remediation)
+        probed_hosts = [call.args[0] for call in probe_host.call_args_list]
+        self.assertIn("openrouter.ai", probed_hosts)
+
+        with patch(
+                "utility_scripts.host_requirements.resolve_executable",
+                side_effect=lambda executable: f"/bin/{executable}",
+        ), patch.object(
+            host_requirements,
+            "_selected_agent_authentication",
+            return_value=(True, "ready"),
+        ) as authenticate:
+            host_requirements._check_selected_agents()
+
+        self.assertIn(
+            ("opencode", "setup-code", "setup-model", "openrouter"),
+            [call.args for call in authenticate.call_args_list],
+        )
+
+    def test_test_role_defaults_come_from_the_selected_strategy(self) -> None:
+        host_requirements = HostRequirements(
+            "/repo/forge",
+            "python3",
+            environment={},
+            requirements=QueueRequirements(issue_work=True, review_work=False),
+            test_strategy_name="dynamic_access_main_sources_pi_gpt-5.6-sol",
+        )
+
+        self.assertEqual(host_requirements.test_family, "pi")
+        self.assertEqual(host_requirements.test_agent, "pi")
+        self.assertEqual(host_requirements.test_model, "gpt-5.6-sol")
+
+    def test_all_enabled_strategy_agents_are_validated(self) -> None:
+        host_requirements = HostRequirements(
+            "/repo/forge",
+            "python3",
+            environment={},
+            requirements=QueueRequirements(issue_work=True, review_work=False),
+            test_strategy_names=[
+                "dynamic_access_main_sources_pi_gpt-5.6-sol",
+                "dynamic_access_main_sources_codex_gpt-5.6-sol",
+            ],
+        )
+
+        self.assertEqual(
+            {requirement.family for requirement in host_requirements.test_requirements},
+            {"pi", "codex"},
+        )
+        with patch(
+                "utility_scripts.host_requirements.resolve_executable",
+                side_effect=lambda executable: f"/bin/{executable}",
+        ), patch.object(
+            host_requirements,
+            "_selected_agent_authentication",
+            return_value=(True, "ready"),
+        ) as authenticate:
+            host_requirements._check_selected_agents()
+
+        authenticated_families = {call.args[0] for call in authenticate.call_args_list}
+        self.assertEqual(authenticated_families, {"codex", "pi"})
+
+    def test_github_permission_results_name_each_required_mutation_boundary(self) -> None:
+        environment = {
+            "FORGE_WORK_LIMIT": "1",
+            "FORGE_REVIEW_LIMIT": "1",
+        }
+        host_requirements = HostRequirements("/repo/forge", "python3", environment)
+        response = json.dumps({
+            "data": {
+                "viewer": {
+                    "login": "automation-user",
+                },
+                "repository": {
+                    "nameWithOwner": "oracle/graalvm-reachability-metadata",
+                    "viewerPermission": "MAINTAIN",
+                },
+                "organization": {
+                    "projectV2": {
+                        "title": "Reachability Metadata",
+                        "viewerCanUpdate": True,
+                    },
+                },
+            },
+        })
+
+        host_requirements._record_github_permissions(response)
+
+        result_by_name = {result.name: result for result in host_requirements.results}
+        self.assertTrue(result_by_name["oracle repository mutations"].passed)
+        self.assertTrue(result_by_name["oracle project 30 updates"].passed)
+        push_target = result_by_name["generated-branch push target"]
+        self.assertTrue(push_target.passed)
+        self.assertIn("oracle/graalvm-reachability-metadata", push_target.detail)
+
+    @patch("utility_scripts.host_requirements.uuid.uuid4", return_value=Mock(hex="probe-id"))
+    @patch("utility_scripts.host_requirements.find_remote_for_github_repo", return_value="upstream")
+    @patch("utility_scripts.host_requirements.run_command")
+    def test_build_work_requires_dry_run_push_to_publication_remote(
+            self,
+            command: Mock,
+            find_remote: Mock,
+            _uuid: Mock,
+    ) -> None:
+        command.side_effect = [
+            subprocess.CompletedProcess(
+                ["git", "remote", "get-url", "--push", "upstream"],
+                0,
+                "https://github.com/oracle/graalvm-reachability-metadata.git\n",
+                "",
+            ),
+            subprocess.CompletedProcess(
+                ["git", "push", "--dry-run"],
+                128,
+                "",
+                "fatal: Authentication failed",
+            ),
+        ]
+        host_requirements = HostRequirements(
+            "/repo/forge",
+            "python3",
+            {},
+            requirements=COVERAGE_REQUIREMENTS,
+        )
+
+        host_requirements._check_generated_branch_push_access()
+
+        result = host_requirements.results[-1]
+        self.assertTrue(result.required)
+        self.assertFalse(result.passed)
+        self.assertIn("remote=upstream", result.detail)
+        self.assertIn("dry-run push=failed", result.detail)
+        self.assertIn("gh auth setup-git --hostname github.com", result.remediation)
+        find_remote.assert_called_once_with(
+            "oracle/graalvm-reachability-metadata",
+            cwd="/repo",
+        )
+        push_call = command.call_args_list[-1]
+        self.assertEqual(
+            [
+                "git", "-C", "/repo",
+                "push", "--dry-run", "--no-verify", "--porcelain",
+                "upstream", "HEAD:refs/heads/ai/forge-host-check-probe-id",
+            ],
+            push_call.args[0],
+        )
+        self.assertEqual(60, push_call.kwargs["timeout"])
+
+    @patch("utility_scripts.host_requirements.uuid.uuid4", return_value=Mock(hex="probe-id"))
+    @patch("utility_scripts.host_requirements.find_remote_for_github_repo", return_value="origin")
+    @patch("utility_scripts.host_requirements.run_command")
+    def test_dry_run_push_probe_supports_ssh(
+            self,
+            command: Mock,
+            _find_remote: Mock,
+            _uuid: Mock,
+    ) -> None:
+        command.side_effect = [
+            subprocess.CompletedProcess(
+                ["git", "remote", "get-url", "--push", "origin"],
+                0,
+                "git@github.com:oracle/graalvm-reachability-metadata.git\n",
+                "",
+            ),
+            subprocess.CompletedProcess(
+                ["git", "push", "--dry-run"],
+                0,
+                "To github.com:oracle/graalvm-reachability-metadata.git\n",
+                "",
+            ),
+        ]
+        host_requirements = HostRequirements(
+            "/repo/forge",
+            "python3",
+            {},
+            requirements=COVERAGE_REQUIREMENTS,
+        )
+
+        host_requirements._check_generated_branch_push_access()
+
+        result = host_requirements.results[-1]
+        self.assertTrue(result.passed)
+        self.assertIn("protocol=ssh", result.detail)
+        self.assertIn("dry-run push=passed", result.detail)
+
+    @patch(
+        "utility_scripts.host_requirements.find_remote_for_github_repo",
+        side_effect=RuntimeError("missing"),
+    )
+    @patch("utility_scripts.host_requirements.run_command")
+    def test_push_probe_requires_remote_for_target_repository(
+            self,
+            command: Mock,
+            _find_remote: Mock,
+    ) -> None:
+        host_requirements = HostRequirements(
+            "/repo/forge",
+            "python3",
+            {},
+            requirements=COVERAGE_REQUIREMENTS,
+        )
+
+        host_requirements._check_generated_branch_push_access()
+
+        result = host_requirements.results[-1]
+        self.assertFalse(result.passed)
+        self.assertIn("remote=unavailable", result.detail)
+        command.assert_not_called()
+
+    @patch("utility_scripts.host_requirements.subprocess.run")
+    def test_probe_commands_disable_git_terminal_prompts(self, command: Mock) -> None:
+        command.return_value = subprocess.CompletedProcess(["git"], 1, "", "failed")
+
+        run_command(["git", "push", "--dry-run"], {})
+
+        environment = command.call_args.kwargs["env"]
+        self.assertEqual("0", environment["GIT_TERMINAL_PROMPT"])
+
+    def test_required_failure_stops_before_work_and_prints_remediation(self) -> None:
+        environment = {
+            "FORGE_JAVAC_WORK_LIMIT": "0",
+            "FORGE_JAVA_RUN_WORK_LIMIT": "0",
+            "FORGE_NI_RUN_WORK_LIMIT": "0",
+            "FORGE_LIBRARY_UPDATE_WORK_LIMIT": "0",
+            "FORGE_WORK_LIMIT": "0",
+            "FORGE_REVIEW_LIMIT": "1",
+        }
+        host_requirements = HostRequirements("/repo/forge", "python3", environment)
+
+        def fail_tools() -> None:
+            host_requirements._add(
+                "tool",
+                "GitHub CLI",
+                True,
+                False,
+                "gh was not found",
+                "Install gh.",
+            )
+
+        stdout = io.StringIO()
+        stderr = io.StringIO()
+        with patch.object(host_requirements, "_check_tools", side_effect=fail_tools), \
+                patch.object(host_requirements, "_check_environment"), \
+                patch.object(host_requirements, "_check_write_permissions"), \
+                patch.object(host_requirements, "_check_network"), \
+                patch.object(host_requirements, "_check_github"), \
+                patch.object(host_requirements, "_check_codex"), \
+                patch.object(host_requirements, "_check_docker"), \
+                redirect_stdout(stdout), redirect_stderr(stderr):
+            passed = host_requirements.run()
+
+        self.assertFalse(passed)
+        self.assertIn("[FAIL] tool: GitHub CLI", stdout.getvalue())
+        self.assertIn("Fix: Install gh.", stdout.getvalue())
+        self.assertIn("No work was started", stdout.getvalue())
+        self.assertEqual("", stderr.getvalue())
+
+    def test_successful_host_report_is_quiet_unless_verbose(self) -> None:
+        def run_host(verbose: bool) -> str:
+            host_requirements = HostRequirements(
+                "/repo/forge",
+                "python3",
+                {},
+                requirements=QueueRequirements(
+                    issue_work=False,
+                    review_work=False,
+                    github_work=False,
+                ),
+            )
+            stdout = io.StringIO()
+            with patch.object(host_requirements, "_check_tools"), \
+                    patch.object(host_requirements, "_check_environment"), \
+                    patch.object(host_requirements, "_check_write_permissions"), \
+                    patch.object(host_requirements, "_check_network"), \
+                    patch.object(host_requirements, "_check_github"), \
+                    patch.object(host_requirements, "_check_selected_agents"), \
+                    patch.object(host_requirements, "_check_docker"), \
+                    redirect_stdout(stdout):
+                self.assertTrue(host_requirements.run(verbose=verbose))
+            return stdout.getvalue()
+
+        self.assertEqual("", run_host(verbose=False))
+        verbose_output = run_host(verbose=True)
+        self.assertIn("[forge-host] Deterministic host requirements", verbose_output)
+        self.assertIn("[forge-host] Check results:", verbose_output)
+        self.assertIn("PASS: all required host checks succeeded", verbose_output)
+
+    @patch("utility_scripts.host_requirements.resolve_executable", return_value="/usr/bin/docker")
+    @patch("utility_scripts.host_requirements.run_command")
+    def test_docker_daemon_check_does_not_require_docker_specific_template_fields(
+            self,
+            command: Mock,
+            _resolve: Mock,
+    ) -> None:
+        command.return_value = subprocess.CompletedProcess(
+            ["docker", "info"],
+            0,
+            "host:\n  arch: amd64\n",
+            "",
+        )
+        host_requirements = HostRequirements("/repo/forge", "python3", {"FORGE_WORK_LIMIT": "1"})
+
+        host_requirements._check_docker()
+
+        command.assert_called_once_with(["docker", "info"], host_requirements.environment)
+        self.assertTrue(host_requirements.results[-1].passed)
+
+    def test_runs_without_live_github_skip_github_permissions_and_api_hosts(self) -> None:
+        host_requirements = HostRequirements(
+            "/repo/forge",
+            "python3",
+            {},
+            requirements=QueueRequirements(issue_work=True, review_work=False, github_work=False),
+        )
+
+        with patch("utility_scripts.host_requirements.probe_tcp_host", return_value=(True, "reachable")), \
+                patch("utility_scripts.host_requirements.probe_http_200", return_value=(True, "HTTP 200")), \
+                patch.object(host_requirements, "_check_git_remote_access"):
+            host_requirements._check_github()
+            host_requirements._check_network()
+
+        result_by_name = {result.name: result for result in host_requirements.results}
+        self.assertEqual("SKIP", result_by_name["authentication and permissions"].status)
+        self.assertEqual("SKIP", result_by_name["github.com"].status)
+        self.assertEqual("SKIP", result_by_name["api.github.com"].status)
+        self.assertEqual("PASS", result_by_name["chatgpt.com"].status)
+
+    def test_issue_work_requires_http_200_from_every_artifact_repository(self) -> None:
+        host_requirements = HostRequirements(
+            "/repo/forge",
+            "python3",
+            {},
+            requirements=QueueRequirements(issue_work=True, review_work=False, github_work=False),
+        )
+
+        with patch.object(host_requirements, "_check_git_remote_access"), \
+                patch("utility_scripts.host_requirements.probe_tcp_host", return_value=(True, "reachable")), \
+                patch(
+                    "utility_scripts.host_requirements.probe_http_200",
+                    side_effect=[(True, "HTTP 200"), (False, "HTTP 503")],
+                ) as probe_repository:
+            host_requirements._check_network()
+
+        self.assertEqual(
+            list(ARTIFACT_REPOSITORY_URLS),
+            [call.args[0] for call in probe_repository.call_args_list],
+        )
+        result_by_name = {result.name: result for result in host_requirements.results}
+        central = result_by_name[f"artifact repository {ARTIFACT_REPOSITORY_URLS[0]}"]
+        confluent = result_by_name[f"artifact repository {ARTIFACT_REPOSITORY_URLS[1]}"]
+        self.assertEqual("PASS", central.status)
+        self.assertEqual("FAIL", confluent.status)
+        self.assertTrue(confluent.blocks_work)
+
+    def test_http_repository_probe_requires_exactly_200(self) -> None:
+        response = Mock()
+        response.__enter__ = Mock(return_value=response)
+        response.__exit__ = Mock(return_value=False)
+        response.getcode.return_value = 204
+
+        with patch("utility_scripts.host_requirements.urllib.request.urlopen", return_value=response) as open_url:
+            passed, detail = probe_http_200("https://repo.example/maven")
+
+        self.assertFalse(passed)
+        self.assertIn("HTTP 204", detail)
+        request = open_url.call_args.args[0]
+        self.assertEqual("HEAD", request.get_method())
+        self.assertEqual("https://repo.example/maven/", request.full_url)
+
+    def test_selected_repository_paths_are_checked_instead_of_the_forge_parent_checkout(self) -> None:
+        with tempfile.TemporaryDirectory() as target_repo:
+            gradlew = Path(target_repo) / "gradlew"
+            gradlew.touch(mode=0o755)
+            host_requirements = HostRequirements(
+                "/parent/forge",
+                "python3",
+                {},
+                requirements=QueueRequirements(issue_work=True, review_work=False),
+                repo_dir=target_repo,
+            )
+
+            with patch("utility_scripts.host_requirements.run_command") as command:
+                command.return_value = subprocess.CompletedProcess(["gradlew"], 0, "Gradle 8.14\n", "")
+                host_requirements._check_gradle_wrapper(True)
+                host_requirements._check_write_permissions()
+                host_requirements._check_git_remote_access()
+
+        result_by_name = {result.name: result for result in host_requirements.results}
+        self.assertIn(str(gradlew), result_by_name["Gradle wrapper"].detail)
+        self.assertIn("/parent/.git", result_by_name["Forge git metadata"].detail)
+        self.assertIn(
+            os.path.join(target_repo, ".git"),
+            result_by_name["Selected repository git metadata"].detail,
+        )
+        self.assertTrue(result_by_name["Selected repository git metadata"].required)
+        self.assertIn(f"checkout={target_repo}", result_by_name["Selected repository git remote"].detail)
+        self.assertIn("checkout=/parent/forge", result_by_name["Forge git self-update"].detail)
+
+    def test_selected_repository_checks_collapse_when_forge_owns_the_checkout(self) -> None:
+        host_requirements = HostRequirements(
+            "/repo/forge",
+            "python3",
+            {},
+            requirements=QueueRequirements(issue_work=False, review_work=True),
+        )
+
+        with patch("utility_scripts.host_requirements.run_command") as command:
+            command.return_value = subprocess.CompletedProcess(["git"], 0, "origin\n", "")
+            host_requirements._check_write_permissions()
+            host_requirements._check_git_remote_access()
+
+        result_by_name = {result.name: result for result in host_requirements.results}
+        self.assertEqual("SKIP", result_by_name["Selected repository git metadata"].status)
+        self.assertEqual("SKIP", result_by_name["Selected repository git remote"].status)
+        self.assertIn("checkout that contains Forge", result_by_name["Selected repository git remote"].detail)
+
+    def test_network_probes_follow_the_configured_proxy(self) -> None:
+        proxied = {"https_proxy": "http://10.0.0.1:80", "no_proxy": "localhost,.internal.example"}
+
+        self.assertEqual(("10.0.0.1", 80), resolve_https_proxy(proxied, "github.com"))
+        self.assertIsNone(resolve_https_proxy(proxied, "build.internal.example"))
+        self.assertIsNone(resolve_https_proxy({}, "github.com"))
+        self.assertEqual(("proxy.example", 80), resolve_https_proxy({"HTTPS_PROXY": "proxy.example"}, "github.com"))
+
+    def test_proxy_tunnel_result_reports_both_hops(self) -> None:
+        connection = Mock()
+        connection.__enter__ = Mock(return_value=connection)
+        connection.__exit__ = Mock(return_value=False)
+        connection.recv.return_value = b"HTTP/1.1 200 Connection established\r\n\r\n"
+
+        with patch("utility_scripts.host_requirements.socket.create_connection", return_value=connection):
+            passed, detail = probe_proxied_host("github.com", 443, ("10.0.0.1", 80))
+
+        self.assertTrue(passed)
+        self.assertIn("via proxy 10.0.0.1:80", detail)
+        connection.sendall.assert_called_once_with(
+            b"CONNECT github.com:443 HTTP/1.1\r\nHost: github.com:443\r\n\r\n"
+        )
+
+    def test_proxy_refusal_is_reported_as_unreachable(self) -> None:
+        connection = Mock()
+        connection.__enter__ = Mock(return_value=connection)
+        connection.__exit__ = Mock(return_value=False)
+        connection.recv.return_value = b"HTTP/1.1 403 Forbidden\r\n\r\n"
+
+        with patch("utility_scripts.host_requirements.socket.create_connection", return_value=connection):
+            passed, detail = probe_proxied_host("registry-1.docker.io", 443, ("10.0.0.1", 80))
+
+        self.assertFalse(passed)
+        self.assertIn("403 Forbidden", detail)
+
+    def test_worker_validates_host_requirements_before_first_cycle(self) -> None:
+        worker_path = Path(__file__).resolve().parents[1] / "do_up_to_date_work.sh"
+        worker = worker_path.read_text(encoding="utf-8")
+        startup = worker.rindex("\nrun_host_requirements\n")
+        first_cycle = worker.rindex("\nrun_cycle\n")
+
+        self.assertLess(startup, first_cycle)
+
+    def test_worker_forwards_take_blocked_issues_to_dispatcher(self) -> None:
+        """The do-work override reaches every work queue (§FS-forge-run-requirements.2)."""
+        worker_path = Path(__file__).resolve().parents[1] / "do_up_to_date_work.sh"
+
+        def run_worker(
+                extra_args: list[str],
+                take_blocked_environment: str | None = None,
+        ) -> list[str]:
+            with tempfile.TemporaryDirectory() as temp_dir:
+                fake_python = os.path.join(temp_dir, "python3")
+                fake_git = os.path.join(temp_dir, "git")
+                fake_gh = os.path.join(temp_dir, "gh")
+                args_path = os.path.join(temp_dir, "args.txt")
+                with open(fake_python, "w", encoding="utf-8") as output_file:
+                    output_file.write(
+                        "#!/usr/bin/env bash\n"
+                        "if [[ \"$1\" == */forge_metadata.py ]]; then\n"
+                        "  shift\n"
+                        "  printf '%s\\n' \"$@\" > \"$FORGE_TEST_ARGS_FILE\"\n"
+                        "fi\n"
+                        "exit 0\n"
+                    )
+                with open(fake_git, "w", encoding="utf-8") as output_file:
+                    output_file.write("#!/usr/bin/env bash\nexit 0\n")
+                with open(fake_gh, "w", encoding="utf-8") as output_file:
+                    output_file.write("#!/usr/bin/env bash\nprintf '{\"resources\":{}}\\n'\n")
+                os.chmod(fake_python, 0o755)
+                os.chmod(fake_git, 0o755)
+                os.chmod(fake_gh, 0o755)
+
+                environment = dict(os.environ)
+                environment.pop("FORGE_TAKE_BLOCKED_ISSUES", None)
+                environment.pop("FORGE_VERBOSE", None)
+                environment.update({
+                    "PYTHON_BIN": fake_python,
+                    "PATH": f"{temp_dir}{os.pathsep}{environment['PATH']}",
+                    "FORGE_TEST_ARGS_FILE": args_path,
+                    "FORGE_DO_WORK_STOP_FILE": os.path.join(temp_dir, "stop"),
+                    "DO_WORK_CLEAN_LOCAL_REPOSITORIES_EVERY": "99",
+                    "FORGE_WORK_LIMIT": "0",
+                    "FORGE_JAVAC_WORK_LIMIT": "0",
+                    "FORGE_JAVA_RUN_WORK_LIMIT": "0",
+                    "FORGE_NI_RUN_WORK_LIMIT": "0",
+                    "FORGE_LIBRARY_UPDATE_WORK_LIMIT": "0",
+                    "FORGE_REVIEW_LIMIT": "0",
+                })
+                if take_blocked_environment is not None:
+                    environment["FORGE_TAKE_BLOCKED_ISSUES"] = take_blocked_environment
+
+                result = subprocess.run(
+                    [str(worker_path), "--once", *extra_args],
+                    env=environment,
+                    stdout=subprocess.PIPE,
+                    stderr=subprocess.PIPE,
+                    text=True,
+                    check=False,
+                )
+                self.assertEqual(0, result.returncode, result.stderr)
+                with open(args_path, encoding="utf-8") as input_file:
+                    return input_file.read().splitlines()
+
+        self.assertNotIn("--take-blocked-issues", run_worker([]))
+        self.assertIn("--take-blocked-issues", run_worker(["--take-blocked-issues"]))
+        self.assertIn("--take-blocked-issues", run_worker([], "1"))
+        self.assertNotIn("--verbose", run_worker([]))
+        self.assertIn("--verbose", run_worker(["--verbose"]))
+
+    def test_worker_propagates_the_analysis_role_selection(self) -> None:
+        worker_path = Path(__file__).resolve().parents[1] / "do_up_to_date_work.sh"
+        with tempfile.TemporaryDirectory() as temp_dir:
+            fake_python = os.path.join(temp_dir, "python3")
+            args_path = os.path.join(temp_dir, "args.txt")
+            with open(fake_python, "w", encoding="utf-8") as output_file:
+                output_file.write(
+                    "#!/usr/bin/env bash\n"
+                    "printf '%s\\n' \"$@\" > \"$FORGE_TEST_ARGS_FILE\"\n"
+                    "exit 1\n"
+                )
+            os.chmod(fake_python, 0o755)
+            environment = dict(os.environ)
+            for variable in (
+                    "FORGE_AGENT_FAMILY",
+                    "FORGE_ANALYSIS_AGENT",
+                    "FORGE_ANALYSIS_FAMILY",
+                    "FORGE_ANALYSIS_MODEL",
+            ):
+                environment.pop(variable, None)
+            environment.update({
+                "PYTHON_BIN": fake_python,
+                "FORGE_TEST_ARGS_FILE": args_path,
+            })
+
+            result = subprocess.run(
+                [
+                    str(worker_path), "--once",
+                    "--analysis-agent", "cdx",
+                    "--analysis-family", "codex",
+                ],
+                env=environment,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                text=True,
+                check=False,
+            )
+            with open(args_path, encoding="utf-8") as input_file:
+                arguments = input_file.read().splitlines()
+
+        self.assertNotEqual(result.returncode, 0)
+        self.assertEqual(arguments[arguments.index("--analysis-agent") + 1], "cdx")
+        self.assertEqual(arguments[arguments.index("--analysis-family") + 1], "codex")
+        self.assertEqual(arguments[arguments.index("--analysis-model") + 1], "gpt-5.6-luna")
+
+    def test_worker_forwards_setup_options_only_when_configured(self) -> None:
+        worker_path = Path(__file__).resolve().parents[1] / "do_up_to_date_work.sh"
+
+        def run_worker(extra_args: list[str]) -> list[str]:
+            with tempfile.TemporaryDirectory() as temp_dir:
+                fake_python = os.path.join(temp_dir, "python3")
+                args_path = os.path.join(temp_dir, "args.txt")
+                with open(fake_python, "w", encoding="utf-8") as output_file:
+                    output_file.write(
+                        "#!/usr/bin/env bash\n"
+                        "printf '%s\\n' \"$@\" > \"$FORGE_TEST_ARGS_FILE\"\n"
+                        "exit 1\n"
+                    )
+                os.chmod(fake_python, 0o755)
+                environment = dict(os.environ)
+                for variable in (
+                        "FORGE_AGENT_FAMILY",
+                        "FORGE_ANALYSIS_AGENT",
+                        "FORGE_ANALYSIS_FAMILY",
+                        "FORGE_ANALYSIS_MODEL",
+                        "FORGE_SETUP_AGENT",
+                        "FORGE_SETUP_FAMILY",
+                        "FORGE_SETUP_MODEL",
+                        "FORGE_SETUP_PROVIDER",
+                ):
+                    environment.pop(variable, None)
+                environment.update({
+                    "PYTHON_BIN": fake_python,
+                    "FORGE_TEST_ARGS_FILE": args_path,
+                })
+                subprocess.run(
+                    [str(worker_path), "--once", *extra_args],
+                    env=environment,
+                    stdout=subprocess.PIPE,
+                    stderr=subprocess.PIPE,
+                    text=True,
+                    check=False,
+                )
+                with open(args_path, encoding="utf-8") as input_file:
+                    return input_file.read().splitlines()
+
+        # Unset means the shared default, not the analysis setting.
+        arguments = run_worker([])
+        self.assertNotIn("--setup-agent", arguments)
+        self.assertNotIn("--setup-family", arguments)
+        self.assertNotIn("--setup-model", arguments)
+        self.assertNotIn("--setup-provider", arguments)
+
+        arguments = run_worker([
+            "--setup-family", "pi",
+            "--setup-agent", "my-pi",
+            "--setup-model", "cheap-model",
+            "--setup-provider", "openrouter",
+        ])
+        self.assertEqual(arguments[arguments.index("--setup-family") + 1], "pi")
+        self.assertEqual(arguments[arguments.index("--setup-agent") + 1], "my-pi")
+        self.assertEqual(arguments[arguments.index("--setup-model") + 1], "cheap-model")
+        self.assertEqual(arguments[arguments.index("--setup-provider") + 1], "openrouter")
+
+    def test_worker_only_forwards_options_the_gate_defines(self) -> None:
+        """A stale forwarded option would exit the gate with code 2 before any work starts."""
+        worker_path = Path(__file__).resolve().parents[1] / "do_up_to_date_work.sh"
+
+        def gate_arguments(extra_args: list[str], extra_environment: dict[str, str]) -> list[str]:
+            with tempfile.TemporaryDirectory() as temp_dir:
+                fake_python = os.path.join(temp_dir, "python3")
+                args_path = os.path.join(temp_dir, "args.txt")
+                with open(fake_python, "w", encoding="utf-8") as output_file:
+                    output_file.write(
+                        "#!/usr/bin/env bash\n"
+                        "printf '%s\\n' \"$@\" > \"$FORGE_TEST_ARGS_FILE\"\n"
+                        "exit 1\n"
+                    )
+                os.chmod(fake_python, 0o755)
+                environment = dict(os.environ)
+                for variable in (
+                        "FORGE_AGENT_FAMILY",
+                        "FORGE_ANALYSIS_AGENT",
+                        "FORGE_ANALYSIS_FAMILY",
+                        "FORGE_ANALYSIS_MODEL",
+                ):
+                    environment.pop(variable, None)
+                environment.update({
+                    "PYTHON_BIN": fake_python,
+                    "FORGE_TEST_ARGS_FILE": args_path,
+                })
+                environment.update(extra_environment)
+                subprocess.run(
+                    [str(worker_path), "--once", *extra_args],
+                    env=environment,
+                    stdout=subprocess.PIPE,
+                    stderr=subprocess.PIPE,
+                    text=True,
+                    check=False,
+                )
+                with open(args_path, encoding="utf-8") as input_file:
+                    recorded = input_file.read().splitlines()
+                self.assertTrue(recorded[0].endswith("host_requirements.py"), recorded[0])
+                return recorded[1:]
+
+        for extra_args, extra_environment in (
+                ([], {}),
+                (["--agent-family", "codex"], {}),
+                ([], {"FORGE_ANALYSIS_MODEL": "gpt-5.6-luna"}),
+                (["--setup-family", "pi", "--setup-model", "cheap-model"], {}),
+        ):
+            with self.subTest(extra_args=extra_args, extra_environment=extra_environment):
+                parse_args(gate_arguments(extra_args, extra_environment))
+
+    def test_worker_names_enabled_strategies_and_never_retargets_them(self) -> None:
+        worker_path = Path(__file__).resolve().parents[1] / "do_up_to_date_work.sh"
+        with tempfile.TemporaryDirectory() as temp_dir:
+            fake_python = os.path.join(temp_dir, "python3")
+            args_path = os.path.join(temp_dir, "args.txt")
+            with open(fake_python, "w", encoding="utf-8") as output_file:
+                output_file.write(
+                    "#!/usr/bin/env bash\n"
+                    "printf '%s\\n' \"$@\" > \"$FORGE_TEST_ARGS_FILE\"\n"
+                    "exit 1\n"
+                )
+            os.chmod(fake_python, 0o755)
+            environment = dict(os.environ)
+            for variable in (
+                    "FORGE_AGENT_FAMILY",
+                    "FORGE_ANALYSIS_AGENT",
+                    "FORGE_ANALYSIS_FAMILY",
+                    "FORGE_ANALYSIS_MODEL",
+            ):
+                environment.pop(variable, None)
+            environment.update({
+                "PYTHON_BIN": fake_python,
+                "FORGE_TEST_ARGS_FILE": args_path,
+                "FORGE_WORK_LIMIT": "1",
+                "FORGE_JAVAC_WORK_LIMIT": "1",
+                "FORGE_JAVAC_STRATEGY_NAME": "dynamic_access_main_sources_codex_gpt-5.6-sol",
+                "FORGE_JAVA_RUN_WORK_LIMIT": "0",
+                "FORGE_NI_RUN_WORK_LIMIT": "0",
+                "FORGE_LIBRARY_UPDATE_WORK_LIMIT": "0",
+            })
+
+            result = subprocess.run(
+                [str(worker_path), "--once"],
+                env=environment,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                text=True,
+                check=False,
+            )
+            with open(args_path, encoding="utf-8") as input_file:
+                arguments = input_file.read().splitlines()
+
+        self.assertNotEqual(result.returncode, 0)
+        # The strategy is the only thing that names a test-role backend.
+        self.assertNotIn("--test-agent", arguments)
+        self.assertNotIn("--test-family", arguments)
+        self.assertNotIn("--test-model", arguments)
+        self.assertNotIn("--test-provider", arguments)
+        strategy_values = [
+            arguments[index + 1]
+            for index, argument in enumerate(arguments)
+            if argument == "--test-strategy"
+        ]
+        self.assertEqual(
+            strategy_values,
+            [
+                "optimistic_dynamic_access_iterative_pi_gpt-5.6-sol",
+                "dynamic_access_main_sources_codex_gpt-5.6-sol",
+            ],
+        )
+
+    def test_worker_family_only_selection_uses_default_executable(self) -> None:
+        worker_path = Path(__file__).resolve().parents[1] / "do_up_to_date_work.sh"
+        with tempfile.TemporaryDirectory() as temp_dir:
+            fake_python = os.path.join(temp_dir, "python3")
+            args_path = os.path.join(temp_dir, "args.txt")
+            with open(fake_python, "w", encoding="utf-8") as output_file:
+                output_file.write(
+                    "#!/usr/bin/env bash\n"
+                    "printf '%s\\n' \"$@\" > \"$FORGE_TEST_ARGS_FILE\"\n"
+                    "exit 1\n"
+                )
+            os.chmod(fake_python, 0o755)
+            environment = dict(os.environ)
+            for variable in (
+                    "FORGE_AGENT_FAMILY",
+                    "FORGE_ANALYSIS_AGENT",
+                    "FORGE_ANALYSIS_FAMILY",
+                    "FORGE_ANALYSIS_MODEL",
+            ):
+                environment.pop(variable, None)
+            environment.update({
+                "PYTHON_BIN": fake_python,
+                "FORGE_TEST_ARGS_FILE": args_path,
+            })
+
+            result = subprocess.run(
+                [str(worker_path), "--once", "--analysis-family", "pi"],
+                env=environment,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                text=True,
+                check=False,
+            )
+            with open(args_path, encoding="utf-8") as input_file:
+                arguments = input_file.read().splitlines()
+
+        self.assertNotEqual(result.returncode, 0)
+        self.assertEqual(arguments[arguments.index("--analysis-family") + 1], "pi")
+        self.assertEqual(arguments[arguments.index("--analysis-agent") + 1], "pi")
+
+
+if __name__ == "__main__":
+    unittest.main()

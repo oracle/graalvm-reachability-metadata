@@ -1,0 +1,583 @@
+# Copyright and related rights waived via CC0
+#
+# You should have received a copy of the CC0 legalcode along with this
+# work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
+
+"""Shared branch-publication pipeline for the publish_* routes.
+
+§AR-shared-publication-pipeline.
+"""
+
+import os
+import shutil
+import subprocess
+import tempfile
+from collections.abc import Callable
+from dataclasses import replace
+
+from git_scripts.common_git import (
+    build_ai_branch_name,
+    delete_remote_branch_if_exists,
+    find_remote_for_github_repo,
+    get_authenticated_login,
+    git_files_under,
+    is_java_fix_test_module_file,
+    run_git_transport,
+    stage_and_commit as stage_and_commit_common,
+)
+from git_scripts.local_branch_review import run_local_branch_review
+from git_scripts.publication_descriptor import (
+    PublicationDescriptorInput,
+    build_publication_branch,
+    build_publication_id,
+    write_publication_descriptor,
+)
+from utility_scripts.gradle_environment import gradle_command_environment
+from utility_scripts.library_finalization import run_library_finalization
+from utility_scripts.library_stats import stats_artifact_dir
+from utility_scripts.metadata_index import resolve_metadata_version
+from utility_scripts.local_ci_verification import (
+    LocalCIVerificationResult,
+    fetch_pr_base_ref,
+    run_local_ci_verification,
+)
+from utility_scripts.logged_command import run_logged_command
+from utility_scripts.continuation_marker import (
+    CONTINUATION_MARKER_FILENAME,
+    PHASE_PUBLICATION,
+    ContinuationMarker,
+    continuation_marker_path,
+    load_continuation_marker,
+)
+from utility_scripts.metrics_writer import PENDING_METRICS_FILENAME
+from utility_scripts.run_location import STEP_LOCAL_CI_CHECK, run_step
+
+REPO: str = "oracle/graalvm-reachability-metadata"
+BASE_BRANCH: str = "master"
+LIBRARY_UPDATE_TARGET_FILENAME: str = ".library_update_target.json"
+PRESERVATION_ONLY_PATHS: set[str] = {
+    f"forge/{CONTINUATION_MARKER_FILENAME}",
+}
+LOCAL_PUBLICATION_INPUT_PATHS: set[str] = {
+    f"forge/{PENDING_METRICS_FILENAME}",
+    f"forge/{LIBRARY_UPDATE_TARGET_FILENAME}",
+}
+PRESERVATION_ONLY_DIRECTORIES: tuple[str, ...] = (
+    "human-intervention-logs",
+    "forge/human-intervention-logs",
+)
+MAX_PR_BODY_CHARS: int = 60_000
+MAX_INLINE_TEST_DIFF_CHARS: int = 12_000
+PR_BODY_REQUIRED_TAIL_CHARS: int = 12_000
+LOCAL_REVIEW_EXCLUDED_TASK_TYPES: frozenset[str] = frozenset({
+    "code-coverage-improvement",
+})
+
+
+def _publication_resume_marker(repo_path: str) -> ContinuationMarker | None:
+    """Return the publication continuation marker when this run resumes publication."""
+    marker = load_continuation_marker(continuation_marker_path(repo_path))
+    if marker is None or marker.continue_from != PHASE_PUBLICATION:
+        return None
+    return marker
+
+
+def _record_publication_pushed(
+        repo_path: str,
+        branch: str,
+        marker: ContinuationMarker | None = None,
+) -> None:
+    """Record the push boundary in the continuation marker if one exists."""
+    marker_path = continuation_marker_path(repo_path)
+    active_marker = marker or load_continuation_marker(marker_path)
+    if active_marker is None:
+        return
+    active_marker.record_publication_pushed(branch)
+    active_marker.save(marker_path)
+
+
+def _record_publication_branch(
+        repo_path: str,
+        branch: str,
+        marker: ContinuationMarker | None = None,
+) -> None:
+    """Record the branch namespace before publication reaches the push."""
+    marker_path = continuation_marker_path(repo_path)
+    active_marker = marker or load_continuation_marker(marker_path)
+    if active_marker is None:
+        return
+    active_marker.record_publication_branch(branch)
+    active_marker.save(marker_path)
+
+
+def _record_publication_identity(
+        repo_path: str,
+        publication_id: str,
+        branch: str,
+        timestamp: str,
+        marker: ContinuationMarker | None = None,
+) -> None:
+    """Persist the stable publication identity before any branch push."""
+    marker_path = continuation_marker_path(repo_path)
+    active_marker = marker or load_continuation_marker(marker_path)
+    if active_marker is None:
+        return
+    active_marker.record_publication_identity(publication_id, branch, timestamp)
+    active_marker.save(marker_path)
+
+
+def _has_staged_changes(repo_path: str) -> bool:
+    """Return True when the index contains changes ready to commit."""
+    result = subprocess.run(["git", "diff", "--cached", "--quiet"], cwd=repo_path, check=False)
+    return result.returncode != 0
+
+
+def _snapshot_local_publication_inputs(repo_path: str) -> dict[str, bytes]:
+    """Read local-only inputs that PR creation still needs after branch cleanup."""
+    snapshots: dict[str, bytes] = {}
+    for path in sorted(LOCAL_PUBLICATION_INPUT_PATHS):
+        absolute_path = os.path.join(repo_path, path)
+        if os.path.isfile(absolute_path):
+            with open(absolute_path, "rb") as local_input:
+                snapshots[path] = local_input.read()
+    return snapshots
+
+
+def _restore_local_publication_inputs(repo_path: str, snapshots: dict[str, bytes]) -> None:
+    """Restore PR inputs as untracked files after removing them from the branch."""
+    for path, contents in snapshots.items():
+        absolute_path = os.path.join(repo_path, path)
+        os.makedirs(os.path.dirname(absolute_path), exist_ok=True)
+        with open(absolute_path, "wb") as local_input:
+            local_input.write(contents)
+
+
+def _remove_preservation_only_files(repo_path: str) -> None:
+    """Remove files that are tracked only on failed-run preservation branches."""
+    local_input_snapshots = _snapshot_local_publication_inputs(repo_path)
+    paths: list[str] = sorted(PRESERVATION_ONLY_PATHS | LOCAL_PUBLICATION_INPUT_PATHS)
+    pathspecs = [*paths, *PRESERVATION_ONLY_DIRECTORIES]
+    tracked_paths = subprocess.check_output(
+        ["git", "ls-files", "--", *pathspecs],
+        cwd=repo_path,
+        text=True,
+    ).splitlines()
+    if tracked_paths:
+        subprocess.run(["git", "rm", "-f", "-q", "--", *tracked_paths], cwd=repo_path, check=True)
+    for path in paths:
+        absolute_path = os.path.join(repo_path, path)
+        if os.path.isfile(absolute_path):
+            os.remove(absolute_path)
+    for directory in PRESERVATION_ONLY_DIRECTORIES:
+        absolute_directory = os.path.join(repo_path, directory)
+        if os.path.isdir(absolute_directory):
+            shutil.rmtree(absolute_directory)
+    _restore_local_publication_inputs(repo_path, local_input_snapshots)
+
+
+def _commit_preservation_artifact_clearance(repo_path: str) -> None:
+    """Commit removal of resume helper artifacts when publication resumes."""
+    _remove_preservation_only_files(repo_path)
+    if _has_staged_changes(repo_path):
+        subprocess.run(["git", "commit", "-m", "Clear resume helper artifacts"], check=True, cwd=repo_path)
+
+
+def _prepare_unpushed_publication_resume_branch(
+        repo_path: str,
+        branch: str,
+        marker: ContinuationMarker,
+) -> None:
+    """Create the PR branch from the resumed preserved branch and clear helpers."""
+    subprocess.run(["git", "switch", "-C", branch], check=True, cwd=repo_path)
+    _record_publication_branch(repo_path, branch, marker)
+    _commit_preservation_artifact_clearance(repo_path)
+    _record_publication_branch(repo_path, branch, marker)
+
+
+def _run_post_review_gradle_test(
+        repo_path: str,
+        coordinates: str,
+        lane_name: str,
+        environment: dict[str, str],
+) -> bool:
+    """Run one post-review lane with output kept in its durable log.
+
+    §FS-forge-run-output-legibility.4 §FS-durable-generation-logs
+    """
+    result = run_logged_command(
+        ["./gradlew", "test", f"-Pcoordinates={coordinates}"],
+        cwd=repo_path,
+        env=gradle_command_environment(repo_path, environment),
+        task_type="post-review-finalization",
+        subject=coordinates,
+        action=lane_name,
+        stage="finalization",
+    )
+    return result.returncode == 0
+
+
+def _run_standard_post_review_finalization(
+        repo_path: str,
+        coordinates: str,
+        base_commit: str,
+) -> bool:
+    """Replay the standard generation/finalization tier over reviewer edits.
+
+    The outer local-review phase owns the bounded repair and deterministic
+    rerun; this callback only reports whether the tier passed.
+    §FS-local-branch-review
+    """
+    current_environment: dict[str, str] = dict(os.environ)
+    future_defaults_environment: dict[str, str] = dict(os.environ)
+    future_defaults_environment["GVM_TCK_NATIVE_IMAGE_MODE"] = "future-defaults-all"
+    graalvm_25_home: str | None = os.environ.get("GRAALVM_HOME_25_0")
+    if not graalvm_25_home:
+        return False
+    graalvm_25_environment: dict[str, str] = dict(os.environ)
+    graalvm_25_environment["GRAALVM_HOME"] = graalvm_25_home
+    graalvm_25_environment["JAVA_HOME"] = graalvm_25_home
+    graalvm_25_environment.pop("GVM_TCK_NATIVE_IMAGE_MODE", None)
+    for lane_name, environment in (
+            ("post-review current-defaults latest GraalVM test", current_environment),
+            ("post-review future-defaults latest GraalVM test", future_defaults_environment),
+            ("post-review current-defaults GraalVM 25 test", graalvm_25_environment),
+    ):
+        if not _run_post_review_gradle_test(
+                repo_path,
+                coordinates,
+                lane_name,
+                environment,
+        ):
+            return False
+
+    group, artifact, version = coordinates.split(":")
+    libraries: list[str] = [coordinates]
+    metadata_version: str = resolve_metadata_version(repo_path, group, artifact, version)
+    metadata_coordinates: str = f"{group}:{artifact}:{metadata_version}"
+    if metadata_coordinates not in libraries:
+        libraries.append(metadata_coordinates)
+    for library in libraries:
+        library_version: str = library.rsplit(":", 1)[-1]
+        if not run_library_finalization(
+                repo_path=repo_path,
+                library=library,
+                group=group,
+                artifact=artifact,
+                library_version=library_version,
+                base_commit=base_commit,
+        ):
+            return False
+    return True
+
+
+def publish_branch(
+        repo_path: str,
+        branch_suffix: str,
+        coordinates: str,
+        stage: Callable[[], None],
+        metrics_repo_path: str | None = None,
+        before_rebase: Callable[[], None] | None = None,
+        before_verification: Callable[[str], None] | None = None,
+        descriptor_input: PublicationDescriptorInput | Callable[[], PublicationDescriptorInput] | None = None,
+        before_stage: Callable[[str, str], None] | None = None,
+        post_review_finalization: Callable[[], bool] | None = None,
+) -> tuple[str, LocalCIVerificationResult]:
+    """Create, stage, rebase, verify, and push the publication branch.
+
+    The one shared path from a verified worktree to a pushed PR branch
+    (§AR-shared-publication-pipeline): publishers supply only their staging
+    policy (§AR-expected-paths) and optional pre-rebase hooks. Local
+    CI-equivalent verification always runs before the push that makes the branch
+    PR-eligible (§AR-pr-eligibility).
+    """
+    resume_marker = _publication_resume_marker(repo_path)
+    resume_branch = None if resume_marker is None or not resume_marker.publication_is_pushed() else resume_marker.publication_branch()
+    if resume_branch is not None:
+        commit = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=repo_path, text=True).strip()
+        return resume_branch, LocalCIVerificationResult(
+            status="skipped-publication-resume",
+            base_commit=commit,
+            final_commit=commit,
+        )
+
+    publication_remote = find_remote_for_github_repo(REPO, cwd=repo_path)
+    base_ref = fetch_pr_base_ref(repo_path, REPO, BASE_BRANCH)
+    resolved_descriptor_input = descriptor_input() if callable(descriptor_input) else descriptor_input
+    publication_timestamp = None if resume_marker is None else resume_marker.publication_timestamp()
+    if resolved_descriptor_input is not None and publication_timestamp is not None:
+        resolved_descriptor_input = replace(resolved_descriptor_input, timestamp=publication_timestamp)
+    branch = None if resume_marker is None else resume_marker.publication_branch()
+    publication_id = None if resume_marker is None else resume_marker.publication_id()
+    if resolved_descriptor_input is not None:
+        expected_publication_id = build_publication_id(
+            resolved_descriptor_input.issue_number,
+            resolved_descriptor_input.timestamp,
+            coordinates,
+            resolved_descriptor_input.task_type,
+        )
+        if publication_id is not None and publication_id != expected_publication_id:
+            raise ValueError("Continuation publication ID does not match durable run inputs")
+        publication_id = expected_publication_id
+        producer = get_authenticated_login(cwd=repo_path)
+        expected_branch = build_publication_branch(producer, branch_suffix, publication_id)
+        if branch is not None and branch != expected_branch:
+            raise ValueError("Continuation publication branch does not match durable run inputs")
+        branch = expected_branch
+        _record_publication_identity(
+            repo_path, publication_id, branch, resolved_descriptor_input.timestamp, resume_marker,
+        )
+    elif branch is None:
+        branch = build_ai_branch_name(branch_suffix, cwd=repo_path)
+    _record_publication_branch(repo_path, branch, resume_marker)
+    delete_remote_branch_if_exists(branch, remote=publication_remote, cwd=repo_path)
+    if resume_marker is None:
+        subprocess.run(["git", "switch", "-C", branch], check=True, cwd=repo_path)
+        _remove_preservation_only_files(repo_path)
+    else:
+        _prepare_unpushed_publication_resume_branch(repo_path, branch, resume_marker)
+    if before_stage is not None:
+        if publication_id is None:
+            raise ValueError("Publication identity callback requires a descriptor")
+        before_stage(publication_id, branch)
+    stage()
+    if before_rebase is not None:
+        before_rebase()
+    subprocess.run(["git", "rebase", base_ref], check=True, cwd=repo_path)
+    if before_verification is not None:
+        # Library-update publishers may refine alias buckets before local CI
+        # decides PR eligibility. §FS-library-update-tested-version-split
+        before_verification(base_ref)
+    # Local CI-equivalent verification is the publication phase's own step.
+    # §FS-forge-run-location-reporting.2
+    with run_step(PHASE_PUBLICATION, STEP_LOCAL_CI_CHECK, operand=coordinates):
+        local_ci_verification = run_local_ci_verification(
+            repo_path=repo_path,
+            coordinates=coordinates,
+            base_commit=base_ref,
+            metrics_repo_path=metrics_repo_path,
+        )
+    if resolved_descriptor_input is not None:
+        if publication_id is None:
+            raise ValueError("Publication descriptor requires a publication ID")
+        review_descriptor_input = (
+            descriptor_input() if callable(descriptor_input) else resolved_descriptor_input
+        )
+        if review_descriptor_input.timestamp != resolved_descriptor_input.timestamp:
+            review_descriptor_input = replace(
+                review_descriptor_input, timestamp=resolved_descriptor_input.timestamp,
+            )
+        review_publication_id = build_publication_id(
+            review_descriptor_input.issue_number,
+            review_descriptor_input.timestamp,
+            coordinates,
+            review_descriptor_input.task_type,
+        )
+        if review_publication_id != publication_id:
+            raise ValueError("Publication descriptor identity changed during finalization")
+
+        local_review_payload: dict | None = None
+        if review_descriptor_input.task_type not in LOCAL_REVIEW_EXCLUDED_TASK_TYPES:
+            # Code-coverage runs retain phase-boundary reports that cannot yet be
+            # regenerated correctly after reviewer test edits, so that route is
+            # excluded until it has phase snapshots. §FS-local-branch-review
+            review_outcome = run_local_branch_review(
+                repo_path=repo_path,
+                coordinates=coordinates,
+                base_commit=base_ref,
+                task_type=review_descriptor_input.task_type,
+                local_ci_verification=local_ci_verification,
+                descriptor_input=review_descriptor_input,
+                metrics_repo_path=metrics_repo_path,
+                post_review_finalization=(
+                    post_review_finalization
+                    if post_review_finalization is not None
+                    else (
+                        (lambda: True)
+                        if review_descriptor_input.task_type == "not-for-native-image"
+                        else lambda: _run_standard_post_review_finalization(
+                            repo_path, coordinates, base_ref,
+                        )
+                    )
+                ),
+                stage_publication_changes=stage,
+            )
+            local_ci_verification = review_outcome.local_ci_verification
+            local_review_payload = review_outcome.to_descriptor_payload()
+
+        final_descriptor_input = (
+            descriptor_input() if callable(descriptor_input) else review_descriptor_input
+        )
+        if final_descriptor_input.timestamp != resolved_descriptor_input.timestamp:
+            final_descriptor_input = replace(
+                final_descriptor_input, timestamp=resolved_descriptor_input.timestamp,
+            )
+        final_publication_id = build_publication_id(
+            final_descriptor_input.issue_number,
+            final_descriptor_input.timestamp,
+            coordinates,
+            final_descriptor_input.task_type,
+        )
+        if final_publication_id != publication_id:
+            raise ValueError("Publication descriptor identity changed after local review")
+        descriptor_path = write_publication_descriptor(
+            repo_path=repo_path,
+            coordinates=coordinates,
+            producer=get_authenticated_login(cwd=repo_path),
+            branch=branch,
+            publication_id=publication_id,
+            base_commit=base_ref,
+            descriptor_input=final_descriptor_input,
+            local_ci_verification=local_ci_verification,
+            local_review=local_review_payload,
+        )
+        descriptor_relative_path = os.path.relpath(descriptor_path, repo_path)
+        stage_and_commit_common(
+            [descriptor_relative_path],
+            "Add Forge publication descriptor",
+            cwd=repo_path,
+        )
+    run_git_transport(["push", publication_remote, branch], cwd=repo_path)
+    _record_publication_pushed(repo_path, branch, resume_marker)
+    return branch, local_ci_verification
+
+
+def stage_library_version_paths(
+        group: str,
+        artifact: str,
+        library_version: str,
+        repo_path: str,
+        commit_message: str,
+) -> None:
+    """Stage the standard per-version tests/metadata/stats paths and commit.
+
+    Publication scripts stage the workflow-specific expected paths instead of a
+    generic repository-wide add, keeping the path boundary explicit
+    (§AR-expected-paths).
+    """
+    candidate_paths: list[str] = [
+        str(os.path.join("tests", "src", group, artifact, library_version)),
+        str(os.path.join("metadata", group, artifact, "index.json")),
+        str(os.path.join("metadata", group, artifact, library_version)),
+        str(os.path.relpath(stats_artifact_dir(repo_path, group, artifact), repo_path)),
+    ]
+    candidate_paths = [path for path in candidate_paths if os.path.exists(os.path.join(repo_path, path))]
+    stage_and_commit_common(candidate_paths, commit_message, cwd=repo_path)
+
+
+def _copy_git_files_under(repo_path: str, source_dir: str, destination_dir: str) -> None:
+    os.makedirs(destination_dir, exist_ok=True)
+    for git_path in git_files_under(repo_path, source_dir):
+        source_file = os.path.join(repo_path, git_path)
+        relative_file = os.path.relpath(source_file, source_dir)
+        if relative_file.startswith(os.pardir + os.sep) or relative_file == os.pardir:
+            continue
+        if not is_java_fix_test_module_file(relative_file):
+            continue
+        destination_file = os.path.join(destination_dir, relative_file)
+        os.makedirs(os.path.dirname(destination_file), exist_ok=True)
+        shutil.copy2(source_file, destination_file)
+
+
+def _generate_test_diff_outputs(
+        group: str,
+        artifact: str,
+        current_version: str,
+        new_version: str,
+        repo_path: str,
+) -> tuple[str, str]:
+    """Build full and stat test diffs for bounded PR descriptions (§AR-pr-body)."""
+    old_dir = os.path.join(repo_path, "tests", "src", group, artifact, current_version)
+    new_dir = os.path.join(repo_path, "tests", "src", group, artifact, new_version)
+    old_display_dir = os.path.relpath(old_dir, repo_path).replace(os.sep, "/")
+    new_display_dir = os.path.relpath(new_dir, repo_path).replace(os.sep, "/")
+    old_diff_display_dir = f"/{old_display_dir}"
+    new_diff_display_dir = f"/{new_display_dir}"
+
+    # Prepare temp copies from Git's file list with a narrow allow-list for the PR body diff.
+    with tempfile.TemporaryDirectory() as tmpdir:
+        tmp_old = os.path.join(tmpdir, "old")
+        tmp_new = os.path.join(tmpdir, "new")
+
+        _copy_git_files_under(repo_path, old_dir, tmp_old)
+        _copy_git_files_under(repo_path, new_dir, tmp_new)
+
+        diff_args = ["git", "diff", "--no-index", "--find-renames"]
+        res = subprocess.run(
+            [*diff_args, tmp_old, tmp_new],
+            capture_output=True,
+            text=True,
+        )
+        if res.returncode in (0, 1):
+            diff_text = res.stdout
+            stat_res = subprocess.run(
+                [*diff_args, "--stat", tmp_old, tmp_new],
+                capture_output=True,
+                text=True,
+            )
+            if stat_res.returncode not in (0, 1):
+                raise RuntimeError(
+                    f"Subprocess failed with return code: {stat_res.returncode}. "
+                    f"Error output:\n{stat_res.stderr.strip()}"
+                )
+
+            diff_text = diff_text.replace(tmp_old.replace(os.sep, "/"), old_diff_display_dir)
+            diff_text = diff_text.replace(tmp_new.replace(os.sep, "/"), new_diff_display_dir)
+            diff_text = diff_text.replace(tmp_old, old_diff_display_dir)
+            diff_text = diff_text.replace(tmp_new, new_diff_display_dir)
+            return diff_text, stat_res.stdout
+
+        error_message = (
+            f"Subprocess failed with return code: {res.returncode}. "
+            f"Error output:\n{res.stderr.strip()}"
+        )
+        raise RuntimeError(error_message)
+
+
+def generate_diff_text(group: str, artifact: str, current_version: str, new_version: str, repo_path: str) -> str:
+    """Build the complete test diff for callers that need it."""
+    diff_text, _diff_stat = _generate_test_diff_outputs(
+        group, artifact, current_version, new_version, repo_path,
+    )
+    return diff_text
+
+
+def format_bounded_test_diff_section(
+        group: str,
+        artifact: str,
+        current_version: str,
+        new_version: str,
+        repo_path: str,
+) -> str:
+    """Format a reviewable test diff excerpt that cannot exhaust a PR body (§AR-pr-body)."""
+    diff_text, diff_stat = _generate_test_diff_outputs(
+        group, artifact, current_version, new_version, repo_path,
+    )
+    excerpt = diff_text[:MAX_INLINE_TEST_DIFF_CHARS]
+    truncation_note = ""
+    if len(diff_text) > MAX_INLINE_TEST_DIFF_CHARS:
+        truncation_note = (
+            "\n\nThe complete test diff is available in this pull request's "
+            "**Files changed** tab."
+        )
+    return (
+        "**Test-source comparison**\n\n"
+        "```text\n"
+        f"{diff_stat.strip()}\n"
+        "```\n\n"
+        "```diff\n"
+        f"{excerpt}\n"
+        "```"
+        f"{truncation_note}"
+    )
+
+
+def bound_pr_body(body: str) -> str:
+    """Keep all publisher PR bodies below GitHub's limit (§AR-pr-body)."""
+    if len(body) <= MAX_PR_BODY_CHARS:
+        return body
+    truncation_notice = (
+        "\n\n---\n\nAdditional generated detail was omitted to keep this pull request "
+        "description within GitHub's size limit."
+    )
+    head_chars = MAX_PR_BODY_CHARS - len(truncation_notice) - PR_BODY_REQUIRED_TAIL_CHARS
+    return body[:head_chars].rstrip() + truncation_notice + body[-PR_BODY_REQUIRED_TAIL_CHARS:]

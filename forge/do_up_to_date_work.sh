@@ -21,13 +21,32 @@ LIBRARY_UPDATE_WORK_STRATEGY_NAME="${FORGE_LIBRARY_UPDATE_STRATEGY_NAME:-}"
 WORK_LABEL="${FORGE_WORK_LABEL:-library-new-request}"
 WORK_LIMIT="${FORGE_WORK_LIMIT:-1}"
 RANDOM_WORK_OFFSET="${FORGE_RANDOM_WORK_OFFSET:-0}"
+PRIORITY_TIER=""
 PARALLELISM="${FORGE_PARALLELISM:-1}"
 REVIEW_LABEL="${FORGE_REVIEW_LABEL:-}"
 REVIEW_LIMIT="${FORGE_REVIEW_LIMIT:-1}"
-REVIEW_MODEL="${FORGE_REVIEW_MODEL:-gpt-5.4}"
+ANALYSIS_AGENT="${FORGE_ANALYSIS_AGENT:-}"
+ANALYSIS_MODEL="${FORGE_ANALYSIS_MODEL:-}"
+ANALYSIS_PROVIDER="${FORGE_ANALYSIS_PROVIDER:-${FORGE_AGENT_PROVIDER:-}}"
+ANALYSIS_FAMILY="${FORGE_ANALYSIS_FAMILY:-${FORGE_ANALYSIS_AGENT_FAMILY:-${FORGE_AGENT_FAMILY:-}}}"
+SETUP_AGENT="${FORGE_SETUP_AGENT:-}"
+SETUP_MODEL="${FORGE_SETUP_MODEL:-}"
+SETUP_PROVIDER="${FORGE_SETUP_PROVIDER:-}"
+SETUP_FAMILY="${FORGE_SETUP_FAMILY:-}"
+# Alias only the test executable; the strategy still owns selection.
+# §FS-forge-agent-runtime-selection
+TEST_AGENT_ALIAS="${FORGE_TEST_AGENT_ALIAS:-}"
+AGENT_FAMILY="${FORGE_AGENT_FAMILY:-}"
+FAIL_FAST="${FORGE_FAIL_FAST:-0}"
 USER_REQUESTED_ONLY="${FORGE_USER_REQUESTED_ISSUES_ONLY:-0}"
-WORK_STRATEGY_NAME="${FORGE_STRATEGY_NAME:-dynamic_access_main_sources_pi_gpt-5.5}"
+# Explicitly bypass only the open-blocker claim predicate.
+# §FS-forge-run-requirements.2
+TAKE_BLOCKED_ISSUES="${FORGE_TAKE_BLOCKED_ISSUES:-0}"
+GRAALVM_VERSION_CHECK="${FORGE_GRAALVM_VERSION_CHECK:-strict}"
+VERBOSE="${FORGE_VERBOSE:-0}"
+WORK_STRATEGY_NAME="${FORGE_STRATEGY_NAME:-optimistic_dynamic_access_iterative_pi_gpt-5.6-sol}"
 GITHUB_RATE_LIMIT_EXIT_CODE=75
+GRADLE_BOOTSTRAP_EXIT_CODE=76
 MAX_PARALLELISM=4
 RUN_ONCE=0
 REQUEST_STOP=0
@@ -70,6 +89,11 @@ Options:
       Show this help text.
   --once
       Run one update/work cycle and exit without sleeping.
+  --fail-fast
+      Exit nonzero when the first work cycle is unsuccessful.
+  -v, --verbose
+      Show deterministic narration hidden by the compact default output and
+      enable verbose output in the selected workflow agents.
   --stop
       Request Forge do-work loops to exit. Without a branch argument this
       creates the global stop marker ~/.metadata-forge-stop. With --branch or
@@ -101,6 +125,8 @@ Options:
   --no-random-offset
       Start new-library issue scans from the beginning of the issue list. This
       is the default.
+  --priority {high,priority,normal}
+      Process only the selected issue priority tier in every issue queue.
   --parallelism N
       Run up to N issue workflows in parallel. Defaults to FORGE_PARALLELISM,
       then 1. The maximum is 4.
@@ -109,10 +135,49 @@ Options:
       Defaults to FORGE_REVIEW_LIMIT, then 1. Without FORGE_REVIEW_LABEL, reviews
       library-new-request, fixes-javac-fail, fixes-java-run-fail,
       fixes-native-image-run-fail, and library-bulk-update PRs each cycle.
+  --analysis-agent COMMAND
+      Select the executable used for analysis/recovery/review work. The
+      command may use any local name, such as cdx.
+  --analysis-family {claude-code,pi,codex,opencode}
+      Select the analysis agent family (adapter/protocol).
+  --analysis-provider PROVIDER
+      Select the provider for a pi or opencode analysis agent. Defaults to
+      FORGE_ANALYSIS_PROVIDER, then openai-codex. Ignored by codex and
+      claude-code, which authenticate their own provider.
+  --analysis-model MODEL
+      Select its backend-specific model. Defaults to FORGE_ANALYSIS_MODEL,
+      then gpt-5.6-luna for Codex or sonnet for Claude Code.
+  --setup-agent COMMAND
+      Select the executable used for URL discovery and library preflight. The
+      command may use any local name.
+  --setup-family {claude-code,pi,codex,opencode}
+      Select the setup agent family (adapter/protocol).
+  --setup-provider PROVIDER
+      Select the provider for a pi or opencode setup agent. Ignored by codex and
+      claude-code, which authenticate their own provider.
+  --setup-model MODEL
+      Select its backend-specific model. Setup and analysis are independent:
+      an unset setup option takes the shared default, never the analysis
+      setting.
+  --agent-family FAMILY
+      Backward-compatible alias for --analysis-family. The test-generation
+      backend, model, and provider come from the selected strategy.
+  --test-agent-alias COMMAND
+      Use a machine-local executable name for the test agent without changing
+      the backend, model, or provider selected by its strategy.
   --user-requested-only
       Fetch only user-requested issue queue items by excluding configured
       automation and maintainer issue authors. Defaults to
       FORGE_USER_REQUESTED_ISSUES_ONLY, then 0.
+  --take-blocked-issues
+      Claim issues even when GitHub shows open blocking issues. This bypasses
+      only the blocker check. Defaults to FORGE_TAKE_BLOCKED_ISSUES, then 0.
+  --graalvm-version-check {strict,warn,off}
+      How host validation treats a GraalVM version mismatch: strict stops the
+      worker, warn reports it, off skips the version match. Native Image and the
+      reachability-metadata schema stay mandatory in every mode, so a locally
+      built Graal can be used with warn or off. Defaults to
+      FORGE_GRAALVM_VERSION_CHECK, then strict.
 
 Environment:
   DO_WORK_SLEEP_SECONDS
@@ -135,12 +200,35 @@ Environment:
   FORGE_REVIEW_LABEL
       Review only PRs with this label. If unset, each generated PR label is
       reviewed every cycle.
+  FORGE_ANALYSIS_AGENT, FORGE_ANALYSIS_FAMILY, FORGE_ANALYSIS_MODEL,
+  FORGE_ANALYSIS_PROVIDER
+      Configure offline analysis, recovery, style-fix, and review work.
+      Codex defaults to gpt-5.6-luna/high (xhigh for review); Claude Code
+      defaults to sonnet.
+  FORGE_SETUP_AGENT, FORGE_SETUP_FAMILY, FORGE_SETUP_MODEL,
+  FORGE_SETUP_PROVIDER
+      Configure artifact-URL discovery and library preparation preflight,
+      independently of the analysis role.
+  FORGE_AGENT_FAMILY
+      Backward-compatible analysis family fallback selected by --agent-family.
+  FORGE_TEST_AGENT_ALIAS
+      Machine-local executable name for the strategy-selected test agent.
+  FORGE_FAIL_FAST
+      Set to 1 to exit nonzero on the first unsuccessful work cycle.
   FORGE_USER_REQUESTED_ISSUES_ONLY
       Set to 1 to fetch only user-requested issue queue items, or 0 to process
       all eligible issue authors. Defaults to 0.
+  FORGE_TAKE_BLOCKED_ISSUES
+      Set to 1 to claim issues with open blockers, or 0 to leave them queued.
+      Defaults to 0.
   FORGE_LIBRARY_REVIEW_LIMIT, FORGE_JAVAC_REVIEW_LIMIT, FORGE_JAVA_RUN_REVIEW_LIMIT,
   FORGE_NI_RUN_REVIEW_LIMIT, FORGE_BULK_UPDATE_REVIEW_LIMIT
       Override FORGE_REVIEW_LIMIT for one default review queue.
+  FORGE_GRAALVM_VERSION_CHECK
+      Default --graalvm-version-check mode: strict, warn, or off. Defaults to
+      strict.
+  FORGE_VERBOSE
+      Set to 1 for the same behavior as --verbose. Defaults to 0.
 
 Examples:
   $0
@@ -148,6 +236,7 @@ Examples:
   $0 --javac-limit 3 --new-limit 1
   $0 --user-requested-only --new-limit 1
   $0 --once --branch master
+  $0 --once --graalvm-version-check warn
   $0 --clear-issue-caches
   DO_WORK_SLEEP_SECONDS=60 $0 origin/main
 EOF
@@ -368,6 +457,13 @@ run_step() {
         return 0
     fi
 
+    # §FS-shared-infrastructure-bootstrap-failure: a shared Gradle bootstrap outage
+    # is host-wide, so skip the rest of this cycle and retry after the normal sleep.
+    if [[ "$status" -eq "$GRADLE_BOOTSTRAP_EXIT_CODE" ]]; then
+        log "Skipping remaining work because the shared Gradle bootstrap failed; retrying after sleep."
+        return 0
+    fi
+
     return "$status"
 }
 
@@ -387,8 +483,50 @@ export_work_configuration() {
     export FORGE_PARALLELISM="$PARALLELISM"
     export FORGE_STRATEGY_NAME="$WORK_STRATEGY_NAME"
     export FORGE_REVIEW_LIMIT="$REVIEW_LIMIT"
-    export FORGE_REVIEW_MODEL="$REVIEW_MODEL"
+    export FORGE_ANALYSIS_AGENT="$ANALYSIS_AGENT"
+    export FORGE_ANALYSIS_FAMILY="$ANALYSIS_FAMILY"
+    export FORGE_ANALYSIS_MODEL="$ANALYSIS_MODEL"
+    export FORGE_ANALYSIS_PROVIDER="$ANALYSIS_PROVIDER"
+    export FORGE_FAIL_FAST="$FAIL_FAST"
     export FORGE_USER_REQUESTED_ISSUES_ONLY="$USER_REQUESTED_ONLY"
+    export FORGE_TAKE_BLOCKED_ISSUES="$TAKE_BLOCKED_ISSUES"
+    export FORGE_GRAALVM_VERSION_CHECK="$GRAALVM_VERSION_CHECK"
+    export FORGE_VERBOSE="$VERBOSE"
+
+    if [[ -n "$AGENT_FAMILY" ]]; then
+        export FORGE_AGENT_FAMILY="$AGENT_FAMILY"
+    else
+        unset FORGE_AGENT_FAMILY
+    fi
+
+    # Exported only when configured, so an unset option takes the shared
+    # default rather than a stale value from a previous cycle.
+    if [[ -n "$SETUP_AGENT" ]]; then
+        export FORGE_SETUP_AGENT="$SETUP_AGENT"
+    else
+        unset FORGE_SETUP_AGENT
+    fi
+    if [[ -n "$SETUP_FAMILY" ]]; then
+        export FORGE_SETUP_FAMILY="$SETUP_FAMILY"
+    else
+        unset FORGE_SETUP_FAMILY
+    fi
+    if [[ -n "$SETUP_MODEL" ]]; then
+        export FORGE_SETUP_MODEL="$SETUP_MODEL"
+    else
+        unset FORGE_SETUP_MODEL
+    fi
+    if [[ -n "$SETUP_PROVIDER" ]]; then
+        export FORGE_SETUP_PROVIDER="$SETUP_PROVIDER"
+    else
+        unset FORGE_SETUP_PROVIDER
+    fi
+
+    if [[ -n "$TEST_AGENT_ALIAS" ]]; then
+        export FORGE_TEST_AGENT_ALIAS="$TEST_AGENT_ALIAS"
+    else
+        unset FORGE_TEST_AGENT_ALIAS
+    fi
 
     if [[ -n "$REVIEW_LABEL" ]]; then
         export FORGE_REVIEW_LABEL="$REVIEW_LABEL"
@@ -403,9 +541,73 @@ process_work_queues() {
         "--parallelism"
         "$PARALLELISM"
     )
+    if [[ -n "$PRIORITY_TIER" ]]; then
+        forge_metadata_args+=("--priority" "$PRIORITY_TIER")
+    fi
+    if [[ "$TAKE_BLOCKED_ISSUES" == "1" ]]; then
+        forge_metadata_args+=("--take-blocked-issues")
+    fi
+    if [[ "$VERBOSE" == "1" ]]; then
+        forge_metadata_args+=("--verbose")
+    fi
 
     run_step "Processing configured work queues via forge_metadata." \
         "$PYTHON_BIN" "$SCRIPT_DIR/forge_metadata.py" "${forge_metadata_args[@]}"
+}
+
+run_host_requirements() {
+    local host_requirements_script="$SCRIPT_DIR/utility_scripts/host_requirements.py"
+    local host_requirements_args=(
+        --forge-dir "$SCRIPT_DIR"
+        --python-bin "$PYTHON_BIN"
+        --analysis-agent "$ANALYSIS_AGENT"
+        --analysis-family "$ANALYSIS_FAMILY"
+        --analysis-model "$ANALYSIS_MODEL"
+        --analysis-provider "$ANALYSIS_PROVIDER"
+        --graalvm-version-check "$GRAALVM_VERSION_CHECK"
+    )
+
+    if ! command -v "$PYTHON_BIN" >/dev/null 2>&1; then
+        echo "ERROR: Forge host requirements need PYTHON_BIN='$PYTHON_BIN' to resolve to an executable." >&2
+        echo "Fix: install Python 3 or export PYTHON_BIN=/absolute/path/to/python3." >&2
+        return 1
+    fi
+
+    if [[ "$VERBOSE" == "1" ]]; then
+        log "Validating Forge host requirements before any work starts."
+        host_requirements_args+=(--verbose)
+    fi
+    # The gate takes no review model or shared family: --agent-family already
+    # reaches it as --analysis-family, and PR review runs on the analysis role
+    # (§FS-forge-agent-runtime-selection).
+    if [[ -n "$SETUP_AGENT" ]]; then
+        host_requirements_args+=(--setup-agent "$SETUP_AGENT")
+    fi
+    if [[ -n "$SETUP_FAMILY" ]]; then
+        host_requirements_args+=(--setup-family "$SETUP_FAMILY")
+    fi
+    if [[ -n "$SETUP_MODEL" ]]; then
+        host_requirements_args+=(--setup-model "$SETUP_MODEL")
+    fi
+    if [[ -n "$SETUP_PROVIDER" ]]; then
+        host_requirements_args+=(--setup-provider "$SETUP_PROVIDER")
+    fi
+    if (( WORK_LIMIT > 0 )); then
+        host_requirements_args+=(--test-strategy "$WORK_STRATEGY_NAME")
+    fi
+    if (( JAVAC_WORK_LIMIT > 0 )) && [[ -n "$JAVAC_WORK_STRATEGY_NAME" ]]; then
+        host_requirements_args+=(--test-strategy "$JAVAC_WORK_STRATEGY_NAME")
+    fi
+    if (( JAVA_RUN_WORK_LIMIT > 0 )) && [[ -n "$JAVA_RUN_WORK_STRATEGY_NAME" ]]; then
+        host_requirements_args+=(--test-strategy "$JAVA_RUN_WORK_STRATEGY_NAME")
+    fi
+    if (( NI_RUN_WORK_LIMIT > 0 )) && [[ -n "$NI_RUN_WORK_STRATEGY_NAME" ]]; then
+        host_requirements_args+=(--test-strategy "$NI_RUN_WORK_STRATEGY_NAME")
+    fi
+    if (( LIBRARY_UPDATE_WORK_LIMIT > 0 )) && [[ -n "$LIBRARY_UPDATE_WORK_STRATEGY_NAME" ]]; then
+        host_requirements_args+=(--test-strategy "$LIBRARY_UPDATE_WORK_STRATEGY_NAME")
+    fi
+    "$PYTHON_BIN" "$host_requirements_script" "${host_requirements_args[@]}"
 }
 
 run_cycle() {
@@ -436,6 +638,9 @@ run_cycle() {
     log "Running do_up_to_date_work.sh while monitoring ${FORGE_MONITORED_BRANCH}."
     if ! process_work_queues; then
         log "do_up_to_date_work.sh failed; retrying after sleep."
+        if [[ "$FAIL_FAST" == "1" ]]; then
+            return 1
+        fi
     fi
 
     exit_if_stop_requested
@@ -521,6 +726,15 @@ while [[ "$#" -gt 0 ]]; do
             RANDOM_WORK_OFFSET=0
             shift
             ;;
+        --priority)
+            require_option_value "$1" "${2:-}"
+            PRIORITY_TIER="$2"
+            shift 2
+            ;;
+        --priority=*)
+            PRIORITY_TIER="${1#*=}"
+            shift
+            ;;
         --parallelism)
             require_option_value "$1" "${2:-}"
             PARALLELISM="$2"
@@ -539,8 +753,128 @@ while [[ "$#" -gt 0 ]]; do
             REVIEW_LIMIT="${1#*=}"
             shift
             ;;
+        --analysis-agent)
+            require_option_value "$1" "${2:-}"
+            ANALYSIS_AGENT="$2"
+            shift 2
+            ;;
+        --analysis-agent=*)
+            ANALYSIS_AGENT="${1#*=}"
+            shift
+            ;;
+        --analysis-family|--analysis-agent-family)
+            require_option_value "$1" "${2:-}"
+            ANALYSIS_FAMILY="$2"
+            shift 2
+            ;;
+        --analysis-family=*|--analysis-agent-family=*)
+            ANALYSIS_FAMILY="${1#*=}"
+            require_option_value "--analysis-family" "$ANALYSIS_FAMILY"
+            shift
+            ;;
+        --analysis-provider)
+            [[ $# -ge 2 ]] || { echo "--analysis-provider requires a value" >&2; exit 2; }
+            ANALYSIS_PROVIDER="$2"
+            shift 2
+            ;;
+        --analysis-provider=*)
+            ANALYSIS_PROVIDER="${1#*=}"
+            shift
+            ;;
+        --analysis-model)
+            require_option_value "$1" "${2:-}"
+            ANALYSIS_MODEL="$2"
+            shift 2
+            ;;
+        --analysis-model=*)
+            ANALYSIS_MODEL="${1#*=}"
+            shift
+            ;;
+        --setup-agent)
+            require_option_value "$1" "${2:-}"
+            SETUP_AGENT="$2"
+            shift 2
+            ;;
+        --setup-agent=*)
+            SETUP_AGENT="${1#*=}"
+            require_option_value "--setup-agent" "$SETUP_AGENT"
+            shift
+            ;;
+        --setup-family|--setup-agent-family)
+            require_option_value "$1" "${2:-}"
+            SETUP_FAMILY="$2"
+            shift 2
+            ;;
+        --setup-family=*|--setup-agent-family=*)
+            SETUP_FAMILY="${1#*=}"
+            require_option_value "--setup-family" "$SETUP_FAMILY"
+            shift
+            ;;
+        --setup-model)
+            require_option_value "$1" "${2:-}"
+            SETUP_MODEL="$2"
+            shift 2
+            ;;
+        --setup-model=*)
+            SETUP_MODEL="${1#*=}"
+            require_option_value "--setup-model" "$SETUP_MODEL"
+            shift
+            ;;
+        --setup-provider)
+            require_option_value "$1" "${2:-}"
+            SETUP_PROVIDER="$2"
+            shift 2
+            ;;
+        --setup-provider=*)
+            SETUP_PROVIDER="${1#*=}"
+            require_option_value "--setup-provider" "$SETUP_PROVIDER"
+            shift
+            ;;
+        --agent-family)
+            require_option_value "$1" "${2:-}"
+            AGENT_FAMILY="$2"
+            ANALYSIS_FAMILY="$2"
+            shift 2
+            ;;
+        --agent-family=*)
+            AGENT_FAMILY="${1#*=}"
+            require_option_value "--agent-family" "$AGENT_FAMILY"
+            ANALYSIS_FAMILY="$AGENT_FAMILY"
+            shift
+            ;;
+        --test-agent-alias)
+            require_option_value "$1" "${2:-}"
+            TEST_AGENT_ALIAS="$2"
+            shift 2
+            ;;
+        --test-agent-alias=*)
+            TEST_AGENT_ALIAS="${1#*=}"
+            require_option_value "--test-agent-alias" "$TEST_AGENT_ALIAS"
+            shift
+            ;;
+        --fail-fast)
+            FAIL_FAST=1
+            shift
+            ;;
+        -v|--verbose)
+            VERBOSE=1
+            shift
+            ;;
         --user-requested-only)
             USER_REQUESTED_ONLY=1
+            shift
+            ;;
+        --take-blocked-issues)
+            TAKE_BLOCKED_ISSUES=1
+            shift
+            ;;
+        --graalvm-version-check)
+            require_option_value "$1" "${2:-}"
+            GRAALVM_VERSION_CHECK="$2"
+            shift 2
+            ;;
+        --graalvm-version-check=*)
+            GRAALVM_VERSION_CHECK="${1#*=}"
             shift
             ;;
         --)
@@ -622,6 +956,61 @@ require_nonnegative_integer "FORGE_REVIEW_LIMIT" "$REVIEW_LIMIT"
 require_parallelism "$PARALLELISM"
 require_positive_integer "FORGE_DO_WORK_SLEEP_POLL_SECONDS" "$SLEEP_POLL_SECONDS"
 
+default_agent_command() {
+    case "$1" in
+        claude-code) printf '%s\n' "claude" ;;
+        pi|codex|opencode) printf '%s\n' "$1" ;;
+    esac
+}
+
+if [[ -z "$ANALYSIS_FAMILY" ]]; then
+    if [[ -n "$ANALYSIS_AGENT" ]]; then
+        ANALYSIS_FAMILY="$ANALYSIS_AGENT"
+    else
+        ANALYSIS_FAMILY="codex"
+    fi
+fi
+
+if [[ -z "$ANALYSIS_AGENT" ]]; then
+    ANALYSIS_AGENT="$(default_agent_command "$ANALYSIS_FAMILY")"
+fi
+
+if [[ -z "$ANALYSIS_MODEL" ]]; then
+    case "$ANALYSIS_FAMILY" in
+        codex) ANALYSIS_MODEL="gpt-5.6-luna" ;;
+        claude-code) ANALYSIS_MODEL="sonnet" ;;
+        *) ANALYSIS_MODEL="gpt-5.6-terra" ;;
+    esac
+fi
+case "$ANALYSIS_FAMILY" in
+    claude-code|pi|codex|opencode) ;;
+    *)
+        echo "--analysis-family must be claude-code, pi, codex, or opencode." >&2
+        exit 1
+        ;;
+esac
+if [[ -n "$SETUP_FAMILY" ]]; then
+    case "$SETUP_FAMILY" in
+        claude-code|pi|codex|opencode) ;;
+        *)
+            echo "--setup-family must be claude-code, pi, codex, or opencode." >&2
+            exit 1
+            ;;
+    esac
+fi
+if [[ -z "$SETUP_FAMILY" && -n "$SETUP_AGENT" ]]; then
+    case "$SETUP_AGENT" in
+        claude-code|pi|codex|opencode) SETUP_FAMILY="$SETUP_AGENT" ;;
+    esac
+fi
+if [[ -n "$PRIORITY_TIER" \
+        && "$PRIORITY_TIER" != "high" \
+        && "$PRIORITY_TIER" != "priority" \
+        && "$PRIORITY_TIER" != "normal" ]]; then
+    echo "--priority must be high, priority, or normal." >&2
+    exit 1
+fi
+
 if [[ "$RANDOM_WORK_OFFSET" != "0" && "$RANDOM_WORK_OFFSET" != "1" ]]; then
     echo "FORGE_RANDOM_WORK_OFFSET must be 0 or 1." >&2
     exit 1
@@ -632,8 +1021,31 @@ if [[ "$USER_REQUESTED_ONLY" != "0" && "$USER_REQUESTED_ONLY" != "1" ]]; then
     exit 1
 fi
 
+if [[ "$TAKE_BLOCKED_ISSUES" != "0" && "$TAKE_BLOCKED_ISSUES" != "1" ]]; then
+    echo "FORGE_TAKE_BLOCKED_ISSUES must be 0 or 1." >&2
+    exit 1
+fi
+
+if [[ "$FAIL_FAST" != "0" && "$FAIL_FAST" != "1" ]]; then
+    echo "FORGE_FAIL_FAST must be 0 or 1." >&2
+    exit 1
+fi
+
+if [[ "$GRAALVM_VERSION_CHECK" != "strict" \
+        && "$GRAALVM_VERSION_CHECK" != "warn" \
+        && "$GRAALVM_VERSION_CHECK" != "off" ]]; then
+    echo "--graalvm-version-check must be strict, warn, or off." >&2
+    exit 1
+fi
+
+if [[ "$VERBOSE" != "0" && "$VERBOSE" != "1" ]]; then
+    echo "FORGE_VERBOSE must be 0 or 1." >&2
+    exit 1
+fi
+
 export_work_configuration
 exit_if_stop_requested
+run_host_requirements
 run_cycle
 
 if [[ "$RUN_ONCE" == "1" ]]; then

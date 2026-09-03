@@ -14,15 +14,20 @@ from utility_scripts.metadata_index import (
     coordinate_parts as metadata_coordinate_parts,
     resolve_test_dir,
 )
-from utility_scripts.stage_logger import log_stage
-from utility_scripts.strategy_loader import load_strategy_by_name
+from ai_workflows.agents.agent_runtime import AgentRunResult, get_setup_agent, setup_agent_run
+from utility_scripts.run_location import (
+    PHASE_SETUP,
+    STEP_NEURAL_SETUP,
+    log_step_progress,
+)
+from utility_scripts.stage_logger import log_detail
+from utility_scripts.task_logs import display_log_path
 
 LIBRARY_PREPARATION_PREFLIGHT_FILENAME = ".library_preparation_preflight.json"
 NO_LIBRARY_PREPARATION_PREFLIGHT_CONTEXT = (
     "Library preparation preflight did not request additional setup."
 )
-DEFAULT_LIBRARY_PREFLIGHT_STRATEGY_ENV = "FORGE_LIBRARY_PREFLIGHT_STRATEGY_NAME"
-DEFAULT_LIBRARY_PREFLIGHT_MODEL_NAME = "oca/gpt-5.4"
+LIBRARY_PREFLIGHT_TIMEOUT_SECONDS = 900
 LIBRARY_PREFLIGHT_MAX_ISSUE_BODY_CHARS = 8000
 LIBRARY_PREFLIGHT_MAX_TEST_FILES = 40
 LIBRARY_PREFLIGHT_MAX_DETERMINISTIC_SETUP = 8
@@ -40,7 +45,7 @@ LIBRARY_PREFLIGHT_UNSAFE_TERMS = (
     "token",
 )
 # Deterministic setup the driver applies itself, idempotently, as source edits
-# (§ORCH-forge-orchestration-spec.1.1). Anything else stays advisory guidance.
+# (§AR-forge-orchestration.1.1). Anything else stays advisory guidance.
 LIBRARY_PREFLIGHT_DETERMINISTIC_KINDS = ("dependency", "docker_image")
 LIBRARY_PREFLIGHT_DEPENDENCY_SCOPES = (
     "testImplementation",
@@ -311,7 +316,7 @@ def _completed_library_preflight_record(
         input_bundle: dict[str, Any],
         response_payload: dict[str, Any],
         model_name: str,
-        agent: Any | None,
+        result: Any | None,
         prompt_path: str | None,
         raw_response_path: str | None,
         session_log_path: str | None,
@@ -339,8 +344,8 @@ def _completed_library_preflight_record(
     record["agent_guidance"] = agent_guidance
     record["risks"] = risks
     record["model"] = model_name
-    record["input_tokens_used"] = int(getattr(agent, "total_tokens_sent", 0) or 0)
-    record["output_tokens_used"] = int(getattr(agent, "total_tokens_received", 0) or 0)
+    record["input_tokens_used"] = int(getattr(result, "input_tokens", 0) or 0)
+    record["output_tokens_used"] = int(getattr(result, "output_tokens", 0) or 0)
     if prompt_path:
         record["prompt_path"] = prompt_path
     if raw_response_path:
@@ -369,6 +374,10 @@ def _library_preflight_prompt(input_bundle: dict[str, Any]) -> str:
         '  - {"kind": "dependency", "coordinate": "group:artifact:version", '
         '"scope": "testImplementation", "reason": "..."}\n'
         '  - {"kind": "docker_image", "image": "name:tag", "slug": "short-slug", "reason": "..."}\n'
+        "If a test needs a Docker image that is already pinned under "
+        "`tests/tck-build-logic/src/main/resources/allowed-docker-images/`, reuse the exact "
+        "tag from that `Dockerfile-<slug>` instead of introducing a new one, since the "
+        "allow-list permits a single shared tag per image.\n"
         "Put environment variables, system properties, and other test-code setup in "
         "`agent_guidance`. Do not restate deterministic entries as guidance.\n\n"
         "Return a single JSON object with this shape:\n"
@@ -422,37 +431,60 @@ def _write_and_log_preflight(claimed_issue: Any, record: dict[str, Any]) -> str:
     failure_reason = record.get("failure_reason")
     if failure_reason:
         detail += f" reason={failure_reason}"
-    log_stage(
+    log_detail(
         "library-preflight",
         f"Preflight decision for issue #{record.get('issue_number')}: {detail}",
     )
+    library = str(record.get("library") or "unknown library")
+    if record.get("status") == "completed":
+        outcome = str(record.get("action") or "no_action").replace("_", " ")
+        if setup_count:
+            outcome += f", {setup_count} deterministic setup item(s)"
+        log_step_progress(
+            PHASE_SETUP,
+            STEP_NEURAL_SETUP,
+            f"Library preflight completed for {library}: {outcome}",
+        )
+    else:
+        log_path = record.get("session_log_path")
+        log_suffix = f" (log: {display_log_path(str(log_path))})" if log_path else ""
+        failure_text = str(failure_reason or "no usable decision")
+        log_step_progress(
+            PHASE_SETUP,
+            STEP_NEURAL_SETUP,
+            f"Library preflight degraded for {library}: {failure_text}{log_suffix}",
+        )
     return write_library_preparation_preflight(_preflight_artifact_root(claimed_issue), record)
 
 
 def run_library_preparation_preflight(
         claimed_issue: Any,
-        strategy_name: str | None,
         issue_body_provider: Callable[[int], str],
-        init_agent: Callable[..., Any],
-        default_strategy_name: str,
-        default_model_name: str = DEFAULT_LIBRARY_PREFLIGHT_MODEL_NAME,
 ) -> str:
-    """Run and persist the library-specific preparation preflight before workflow dispatch."""
-    selected_strategy_name = (
-        os.environ.get(DEFAULT_LIBRARY_PREFLIGHT_STRATEGY_ENV)
-        or strategy_name
-        or default_strategy_name
-    )
+    """Run and persist the library-specific preparation preflight before workflow dispatch.
+
+    Preflight researches a library and decides which deterministic setup it
+    needs, before the tree holds any generated work, so it runs on the setup
+    role (§FS-forge-agent-runtime-selection). The role owns the backend and the
+    model; the record reports what actually ran.
+    """
+    selection = get_setup_agent()
     input_bundle = build_library_preflight_input_bundle(
         claimed_issue,
         issue_body_provider,
     )
-    log_stage(
+    log_step_progress(
+        PHASE_SETUP,
+        STEP_NEURAL_SETUP,
+        f"Running library preflight for {input_bundle.get('library')}",
+    )
+    log_detail(
         "library-preflight",
         (
             f"Running preflight for issue #{claimed_issue.issue['number']} "
             "(live) "
-            f"library={input_bundle.get('library')} strategy={selected_strategy_name}"
+            f"library={input_bundle.get('library')} "
+            f"agent={selection.backend} model={selection.model}"
         ),
     )
     prompt = _library_preflight_prompt(input_bundle)
@@ -464,39 +496,30 @@ def run_library_preparation_preflight(
     )
     raw_response_path: str | None = None
     session_log_path: str | None = None
-    model_name = default_model_name
+    model_name = selection.model
 
-    strategy = load_strategy_by_name(selected_strategy_name)
-    if strategy is None:
-        record = _degraded_library_preflight_record(
-            claimed_issue,
-            input_bundle,
-            f"preflight strategy not found: {selected_strategy_name}",
-            prompt_path=prompt_path,
-        )
-        return _write_and_log_preflight(claimed_issue, record)
-
-    model_name = str(strategy.get("model") or default_model_name)
-    agent: Any | None = None
+    result: AgentRunResult | None = None
     try:
-        agent = init_agent(
-            strategy=strategy,
+        result = setup_agent_run(
             working_dir=claimed_issue.worktree_path,
-            editable_files=[],
-            read_only_files=[],
-            library=str(input_bundle.get("library") or ""),
+            context=prompt,
             task_type="library-preparation-preflight",
-            verbose=False,
-            model_name=model_name,
+            library=str(input_bundle.get("library") or ""),
+            timeout=LIBRARY_PREFLIGHT_TIMEOUT_SECONDS,
         )
-        response_text = agent.send_prompt(prompt)
+        if result.return_code != 0:
+            raise RuntimeError(
+                f"preflight agent exited {result.return_code}"
+                + (" (timed out)" if result.timed_out else "")
+            )
+        response_text = result.response
         raw_response_path = _write_text_artifact(
             preflight_artifact_root,
             "library-preflight-response.txt",
             response_text,
         )
         session_log_path = _relative_or_absolute_path(
-            getattr(agent, "_session_log_path", None),
+            result.session_log_path,
             preflight_artifact_root,
         )
         response_payload = _extract_preflight_json_response(response_text)
@@ -505,15 +528,15 @@ def run_library_preparation_preflight(
             input_bundle,
             response_payload,
             model_name,
-            agent,
+            result,
             prompt_path,
             raw_response_path,
             session_log_path,
         )
     except Exception as exc:
-        if session_log_path is None and agent is not None:
+        if session_log_path is None and result is not None:
             session_log_path = _relative_or_absolute_path(
-                getattr(agent, "_session_log_path", None),
+                result.session_log_path,
                 preflight_artifact_root,
             )
         record = _degraded_library_preflight_record(
@@ -602,7 +625,32 @@ def _apply_dependency_setup(
     return {**result, "result": "applied", "target": os.path.relpath(build_gradle, reachability_repo_path)}
 
 
-def _apply_docker_image_setup(reachability_repo_path: str, entry: dict[str, str]) -> dict[str, str]:
+def _ensure_required_docker_image(reachability_repo_path: str, library_coordinate: str, image: str) -> None:
+    """Declare `image` in the library's `required-docker-images.txt` once its test dir exists.
+
+    For a new library the test dir is created by `scaffold`, so at preflight time this is a
+    no-op and the driver re-applies the setup after scaffold.
+    """
+    parts = library_coordinate.split(":")
+    if len(parts) != 3:
+        return
+    group, artifact, version = parts
+    test_dir = os.path.join(reachability_repo_path, "tests", "src", group, artifact, version)
+    if not os.path.isdir(test_dir):
+        return
+    required_path = os.path.join(test_dir, "required-docker-images.txt")
+    lines: list[str] = []
+    if os.path.isfile(required_path):
+        with open(required_path, "r", encoding="utf-8") as required_file:
+            lines = [line.strip() for line in required_file if line.strip()]
+    if image in lines:
+        return
+    lines.append(image)
+    with open(required_path, "w", encoding="utf-8") as required_file:
+        required_file.write("\n".join(lines) + "\n")
+
+
+def _apply_docker_image_setup(reachability_repo_path: str, entry: dict[str, str], library_coordinate: str) -> dict[str, str]:
     """Idempotently add a Dockerfile pin to the allowed-docker-images directory."""
     image = entry["image"]
     slug = entry["slug"]
@@ -610,6 +658,7 @@ def _apply_docker_image_setup(reachability_repo_path: str, entry: dict[str, str]
     images_dir = os.path.join(reachability_repo_path, ALLOWED_DOCKER_IMAGES_RELDIR)
     if not os.path.isdir(images_dir):
         return {**result, "result": "skipped", "reason": "allowed_images_dir_absent"}
+    _ensure_required_docker_image(reachability_repo_path, library_coordinate, image)
     target = os.path.join(images_dir, f"Dockerfile-{slug}")
     relative_target = os.path.relpath(target, reachability_repo_path)
     desired = f"FROM {image}\n"
@@ -628,12 +677,19 @@ def _apply_docker_image_setup(reachability_repo_path: str, entry: dict[str, str]
 def apply_library_preparation_setup(
         preflight: dict[str, Any] | None,
         reachability_repo_path: str,
+        only_kinds: set[str] | None = None,
 ) -> dict[str, Any] | None:
     """Apply deterministic preflight setup once and idempotently, recording results.
 
-    Driver-owned step (§ORCH-forge-orchestration-spec.1.1): typed `dependency` and
+    Driver-owned step (§AR-forge-orchestration.1.1): typed `dependency` and
     `docker_image` entries are applied as source edits; unappliable entries are
     left for the advisory guidance fallback. Mutates and returns the record.
+
+    `only_kinds` restricts which entry kinds are (re)applied on this pass; entries of
+    other kinds keep their prior `applied_setup` result untouched. The post-scaffold
+    reapply passes `{"docker_image"}` so it re-pins allow-list Dockerfiles without
+    re-touching dependencies the model's already-rendered context still lists as
+    pending work.
     """
     if not isinstance(preflight, dict):
         return preflight
@@ -641,14 +697,23 @@ def apply_library_preparation_setup(
         preflight.setdefault("applied_setup", [])
         return preflight
     library_coordinate = str(preflight.get("library") or "")
+    previous: dict[tuple[Any, Any], dict[str, str]] = {}
+    for item in preflight.get("applied_setup") or []:
+        if isinstance(item, dict):
+            previous[(item.get("kind"), item.get("coordinate") or item.get("slug"))] = item
     applied: list[dict[str, str]] = []
     for entry in preflight.get("deterministic_setup") or []:
         kind = entry.get("kind") if isinstance(entry, dict) else None
+        key = (kind, entry.get("coordinate") or entry.get("slug")) if isinstance(entry, dict) else (kind, None)
+        if only_kinds is not None and kind not in only_kinds:
+            if key in previous:
+                applied.append(previous[key])
+            continue
         try:
             if kind == "dependency":
                 applied.append(_apply_dependency_setup(reachability_repo_path, library_coordinate, entry))
             elif kind == "docker_image":
-                applied.append(_apply_docker_image_setup(reachability_repo_path, entry))
+                applied.append(_apply_docker_image_setup(reachability_repo_path, entry, library_coordinate))
         except Exception as exc:
             applied.append({"kind": str(kind), "result": "skipped", "reason": f"{type(exc).__name__}: {exc}"})
     preflight["applied_setup"] = applied
@@ -663,7 +728,7 @@ def prepare_library_preparation_preflight(
 
     Returns the (mutated) record for metrics and the advisory-only prompt context.
     Must run after the reachability repo path is resolved so source edits land in
-    the right worktree (§ORCH-forge-orchestration-spec.1.1).
+    the right worktree (§AR-forge-orchestration.1.1).
     """
     preflight = load_library_preparation_preflight(preflight_path)
     apply_library_preparation_setup(preflight, reachability_repo_path)
@@ -674,7 +739,7 @@ def prepare_library_preparation_preflight(
                 f"{item.get('kind')}:{item.get('result')}"
                 for item in applied if isinstance(item, dict)
             )
-            log_stage("library-preflight", f"Applied deterministic setup: {summary}")
+            log_detail("library-preflight", f"Applied deterministic setup: {summary}")
     context = format_library_preparation_preflight_context(preflight)
     return preflight, context
 

@@ -8,9 +8,87 @@ import os
 import subprocess
 import tempfile
 import time
-from ai_workflows.agents.agent import Agent
+from ai_workflows.agents.agent import Agent, AgentTimeoutError
+from ai_workflows.agents.agent_runtime import (
+    CODEX_BYPASS_APPROVALS_AND_SANDBOX_FLAG,
+    agent_process_environment,
+)
 from ai_workflows.agents.codex_app_server import CodexAppServerClient
 from utility_scripts.gradle_test_runner import run_gradle_test_command
+
+
+def extract_codex_token_usage(output: str) -> tuple[int, int, int] | None:
+    """Parse cumulative `(input, cached_input, output)` token usage from a Codex `--json` stream.
+
+    Returns `None` when the output carries no recognizable usage payload.
+    """
+    usage_candidates: list[tuple[int, int, int]] = []
+    for line in output.splitlines():
+        line = line.strip()
+        if not line:
+            continue
+        try:
+            payload = json.loads(line)
+        except json.JSONDecodeError:
+            continue
+        usage = _extract_usage_from_payload(payload)
+        if usage is not None:
+            usage_candidates.append(usage)
+
+    if not usage_candidates:
+        return None
+
+    return (
+        max(item[0] for item in usage_candidates),
+        max(item[1] for item in usage_candidates),
+        max(item[2] for item in usage_candidates),
+    )
+
+
+def _extract_usage_from_payload(payload) -> tuple[int, int, int] | None:
+    if isinstance(payload, dict):
+        input_tokens = 0
+        cached_input_tokens = 0
+        output_tokens = 0
+        found = False
+        for key, value in payload.items():
+            if isinstance(value, (dict, list)):
+                nested_usage = _extract_usage_from_payload(value)
+                if nested_usage is not None:
+                    input_tokens += nested_usage[0]
+                    cached_input_tokens += nested_usage[1]
+                    output_tokens += nested_usage[2]
+                    found = True
+                continue
+            if not isinstance(value, int):
+                continue
+            if key in {"input_tokens", "prompt_tokens", "total_input_tokens"}:
+                input_tokens += value
+                found = True
+            if key in {"cached_input_tokens", "cached_prompt_tokens", "total_cached_input_tokens"}:
+                cached_input_tokens += value
+                found = True
+            if key in {"output_tokens", "completion_tokens", "total_output_tokens"}:
+                output_tokens += value
+                found = True
+        return (input_tokens, cached_input_tokens, output_tokens) if found else None
+
+    if isinstance(payload, list):
+        input_tokens = 0
+        cached_input_tokens = 0
+        output_tokens = 0
+        found = False
+        for item in payload:
+            nested_usage = _extract_usage_from_payload(item)
+            if nested_usage is None:
+                continue
+            input_tokens += nested_usage[0]
+            cached_input_tokens += nested_usage[1]
+            output_tokens += nested_usage[2]
+            found = True
+        return (input_tokens, cached_input_tokens, output_tokens) if found else None
+
+    return None
 
 
 @Agent.register("codex")
@@ -27,6 +105,10 @@ class CodexAgent(Agent):
             task_type: str = "session",
             library: str | None = None,
             persistent_instructions: str | None = None,
+            environment: dict[str, str] | None = None,
+            agent_family: str | None = None,
+            agent_name: str | None = None,
+            thinking_level: str | None = None,
             **_,
     ):
         self._model_name = model_name
@@ -35,6 +117,13 @@ class CodexAgent(Agent):
         self._task_type = task_type
         self._library = library
         self._persistent_instructions = persistent_instructions
+        source_environment = os.environ if environment is None else environment
+        self._agent_family = agent_family or source_environment.get("FORGE_AGENT_FAMILY")
+        self._reasoning_effort = thinking_level or (
+            "high" if model_name == "gpt-5.6-luna" else "medium"
+        )
+        self._codex_command = agent_name or "codex"
+        self._environment = agent_process_environment(source_environment)
         self._total_tokens_sent = 0
         self._cached_input_tokens_used = 0
         self._total_tokens_received = 0
@@ -50,6 +139,9 @@ class CodexAgent(Agent):
             working_dir=self._working_dir,
             timeout=self._timeout,
             persistent_instructions=self._persistent_instructions,
+            environment=self._environment,
+            codex_command=self._codex_command,
+            reasoning_effort=self._reasoning_effort,
         )
 
     @property
@@ -70,62 +162,43 @@ class CodexAgent(Agent):
 
     def graphify(self, source_dirs: list[str]) -> str:
         """Send $graphify to the Codex session to build a merged knowledge graph context."""
-        from utility_scripts.stage_logger import log_stage
+        from utility_scripts.stage_logger import log_detail
         from utility_scripts.task_logs import display_log_path
         if not source_dirs:
             return ""
-        log_stage("graphify", f"Initializing knowledge graph context for {len(source_dirs)} source(s)")
+        log_detail("graphify", f"Initializing knowledge graph context for {len(source_dirs)} source(s)")
         result = self.send_prompt(f"$graphify {source_dirs[0]}")
         for extra_dir in source_dirs[1:]:
-            log_stage("graphify", f"Merging graph from {display_log_path(extra_dir)}")
+            log_detail("graphify", f"Merging graph from {display_log_path(extra_dir)}")
             result = self.send_prompt(f"$graphify {extra_dir} --update")
-        log_stage("graphify", "Knowledge graph context initialized")
+        log_detail("graphify", "Knowledge graph context initialized")
         return result
 
     def send_prompt(self, prompt: str) -> str:
         self._print_session_log_once("Codex", self._session_log_path)
-        original_thread_id = self._thread_id
-        config_args = self._build_config_args()
-        if self._thread_id is None:
-            cmd = [
-                "codex", "exec",
-                "--dangerously-bypass-approvals-and-sandbox",
-                "--json",
-                *config_args,
-                "-m", self._model_name,
-                prompt,
-            ]
-        else:
-            cmd = [
-                "codex", "exec", "resume",
-                "--dangerously-bypass-approvals-and-sandbox",
-                "--json",
-                *config_args,
-                "-m", self._model_name,
-                self._thread_id,
-                prompt,
-            ]
-        try:
-            returncode, output = self._run_codex_command(cmd)
-        except subprocess.TimeoutExpired as exc:
-            self._write_turn_log(original_thread_id, prompt, exc.output or "")
-            print(f"[Codex] Timed out after {self._timeout}s.", flush=True)
-            raise RuntimeError("Codex prompt timed out.") from exc
+        with self._agent_activity("Codex"):
+            original_thread_id = self._thread_id
+            cmd = self._build_exec_command(prompt)
+            try:
+                returncode, output = self._run_codex_command(cmd)
+            except subprocess.TimeoutExpired as exc:
+                self._write_turn_log(original_thread_id, prompt, exc.output or "")
+                raise AgentTimeoutError(
+                    self._current_agent_action(), self._timeout, self._session_log_path,
+                ) from exc
 
-        self._record_token_usage(prompt, output)
-        if self._thread_id is None:
-            self._thread_id = self._extract_thread_id(output)
-        self._write_turn_log(self._thread_id or original_thread_id, prompt, output)
-        if returncode != 0:
-            print("[Codex] Failed.", flush=True)
-            raise RuntimeError(f"Codex command failed with exit code {returncode}.")
-        if self._thread_id is None:
-            raise RuntimeError("Codex command completed without a thread id.")
-        response = self._extract_last_message(output)
-        if not response:
-            raise RuntimeError("Codex command completed without an assistant message.")
-        print("[Codex] Done.", flush=True)
-        return response
+            self._record_token_usage(prompt, output)
+            if self._thread_id is None:
+                self._thread_id = self._extract_thread_id(output)
+            self._write_turn_log(self._thread_id or original_thread_id, prompt, output)
+            if returncode != 0:
+                raise RuntimeError(f"Codex command failed with exit code {returncode}.")
+            if self._thread_id is None:
+                raise RuntimeError("Codex command completed without a thread id.")
+            response = self._extract_last_message(output)
+            if not response:
+                raise RuntimeError("Codex command completed without an assistant message.")
+            return response
 
     def _run_codex_command(self, cmd: list[str]) -> tuple[int, str]:
         start_time = time.monotonic()
@@ -144,6 +217,7 @@ class CodexAgent(Agent):
                 process = subprocess.Popen(
                     cmd,
                     cwd=self._working_dir,
+                    env=self._environment,
                     stdout=temp_output,
                     stderr=subprocess.STDOUT,
                     text=True,
@@ -254,13 +328,16 @@ class CodexAgent(Agent):
             working_dir=self._working_dir,
             timeout=self._timeout,
             persistent_instructions=self._persistent_instructions,
+            environment=self._environment,
+            codex_command=self._codex_command,
+            reasoning_effort=self._reasoning_effort,
         )
 
     def run_test_command(self, test_cmd: str) -> str:
         return run_gradle_test_command(test_cmd, self._working_dir, library=self._library)
 
     def _record_token_usage(self, prompt: str, output: str) -> None:
-        usage = self._extract_usage_from_output(output)
+        usage = extract_codex_token_usage(output)
         if usage is None:
             self._total_tokens_sent += self._estimate_tokens(prompt)
             self._total_tokens_received += self._estimate_tokens(output)
@@ -274,74 +351,6 @@ class CodexAgent(Agent):
     def _estimate_tokens(text: str) -> int:
         return len(text.split())
 
-    def _extract_usage_from_output(self, output: str) -> tuple[int, int, int] | None:
-        usage_candidates: list[tuple[int, int, int]] = []
-        for line in output.splitlines():
-            line = line.strip()
-            if not line:
-                continue
-            try:
-                payload = json.loads(line)
-            except json.JSONDecodeError:
-                continue
-            usage = self._extract_usage_from_payload(payload)
-            if usage is not None:
-                usage_candidates.append(usage)
-
-        if not usage_candidates:
-            return None
-
-        return (
-            max(item[0] for item in usage_candidates),
-            max(item[1] for item in usage_candidates),
-            max(item[2] for item in usage_candidates),
-        )
-
-    def _extract_usage_from_payload(self, payload) -> tuple[int, int, int] | None:
-        if isinstance(payload, dict):
-            input_tokens = 0
-            cached_input_tokens = 0
-            output_tokens = 0
-            found = False
-            for key, value in payload.items():
-                if isinstance(value, (dict, list)):
-                    nested_usage = self._extract_usage_from_payload(value)
-                    if nested_usage is not None:
-                        input_tokens += nested_usage[0]
-                        cached_input_tokens += nested_usage[1]
-                        output_tokens += nested_usage[2]
-                        found = True
-                    continue
-                if not isinstance(value, int):
-                    continue
-                if key in {"input_tokens", "prompt_tokens", "total_input_tokens"}:
-                    input_tokens += value
-                    found = True
-                if key in {"cached_input_tokens", "cached_prompt_tokens", "total_cached_input_tokens"}:
-                    cached_input_tokens += value
-                    found = True
-                if key in {"output_tokens", "completion_tokens", "total_output_tokens"}:
-                    output_tokens += value
-                    found = True
-            return (input_tokens, cached_input_tokens, output_tokens) if found else None
-
-        if isinstance(payload, list):
-            input_tokens = 0
-            cached_input_tokens = 0
-            output_tokens = 0
-            found = False
-            for item in payload:
-                nested_usage = self._extract_usage_from_payload(item)
-                if nested_usage is None:
-                    continue
-                input_tokens += nested_usage[0]
-                cached_input_tokens += nested_usage[1]
-                output_tokens += nested_usage[2]
-                found = True
-            return (input_tokens, cached_input_tokens, output_tokens) if found else None
-
-        return None
-
     def _clone(self) -> "CodexAgent":
         child = CodexAgent(
             model_name=self._model_name,
@@ -350,21 +359,42 @@ class CodexAgent(Agent):
             task_type=self._task_type,
             library=self._library,
             persistent_instructions=self._persistent_instructions,
+            environment=self._environment,
+            agent_family=self._agent_family,
+            agent_name=self._codex_command,
+            thinking_level=self._reasoning_effort,
         )
         child._control_client = self._control_client
         return child
 
     def _build_config_args(self) -> list[str]:
         config = {
-            "reasoning.effort": "medium",
+            "reasoning.effort": self._reasoning_effort,
         }
         if self._persistent_instructions:
             config["developer_instructions"] = self._persistent_instructions
 
         args: list[str] = []
         for key, value in config.items():
-            args.extend(["-c", f"{key}={self._toml_string(value)}"])
+            raw_keys: set[str] = set()
+            rendered = value if key in raw_keys else self._toml_string(value)
+            args.extend(["-c", f"{key}={rendered}"])
         return args
+
+    def _build_exec_command(self, prompt: str) -> list[str]:
+        command = [self._codex_command, "exec"]
+        if self._thread_id is not None:
+            command.append("resume")
+        command.extend([
+            CODEX_BYPASS_APPROVALS_AND_SANDBOX_FLAG,
+            "--json",
+            *self._build_config_args(),
+            "-m", self._model_name,
+        ])
+        if self._thread_id is not None:
+            command.append(self._thread_id)
+        command.append(prompt)
+        return command
 
     @staticmethod
     def _toml_string(value: str) -> str:

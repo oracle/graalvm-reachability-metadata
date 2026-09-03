@@ -1,7 +1,7 @@
 # Development Cheat Sheet
 
 ## Prerequisites (assume exists)
-- JAVA_HOME set to JDK 21 (GraalVM recommended to match CI)
+- JAVA_HOME set to JDK 25 (GraalVM recommended to match CI)
 - Docker
 - grype v0.104.0 (install: curl -sSfL https://get.anchore.io/grype/v0.104.0/install.sh | sudo sh -s -- -b /usr/local/bin)
 
@@ -78,17 +78,13 @@
 ## Releases and Packaging
 - Package artifacts: ./gradlew package
 
-## Forge automation E2E
-- After changing Forge control-plane, workflow, strategy, git-publication, or
-  shared workflow code under `forge/`, run the hermetic fixture Forge E2E
-  (§forge/E2E-forge-workflow-testing) as described in
-  [forge/docs/e2e.md](forge/docs/e2e.md); treat `forge_metadata.py` runs as the
-  source of truth instead of mock-only or direct-driver tests. Live GitHub Forge
-  E2E still requires an explicit user request.
+- **Never cite under `tests/src`.** Checkstyle holds that suite to ASCII, so the
+  `§` marker cannot appear in a test file.
 
-## Grounding with grund (v2)
+<!-- BEGIN GRUND MANAGED BLOCK -->
+## Grounding with grund (v7)
 
-This project uses [`grund`](https://github.com/vjovanov/grund): every spec, goal, decision, and end-to-end test has a stable ID `<KIND>-<slug>[.<section>]`, cited with the marker `§`. Root repository IDs use `KIND ∈ {GRUND, GOAL, FS, AR, TCK, E2E, CI, METADATA, TESTS, SKILL}`; Forge has its own `forge` namespace with `KIND ∈ {GRUND, GOAL, AR, FS, DW, STRAT, ORCH, GIT, WF, E2E, BENCH, ROADMAP}`. For example, `FS-user-login.3.1` is only a shape illustration, not a real ID in this repo. Type `$$` in a grund-aware editor and it becomes `§`. Bare ID-shaped tokens are ignored — `[reference] strict = true` is set in `.agents/grund.toml`, so only `§`-prefixed citations are checked.
+This project uses [`grund`](https://github.com/vjovanov/grund): every spec, goal, decision, and end-to-end test has a stable ID `<KIND>-<slug>[.<section>]` (`KIND ∈ {GRUND, GOAL, PRCPL, FS, AR}`), cited with the marker `§` — e.g. `<§>FS-user-login.3.1` (the `FS-user-login` here is a shape illustration, not a real ID in this repo, hence the `<§>` escape). Type `$$` in a grund-aware editor and it becomes `§`. Bare ID-shaped tokens are ignored — `[reference] strict = true` is set in `grund.toml`, so only `§`-prefixed citations are checked.
 
 ### Grounding from a citation
 
@@ -100,26 +96,37 @@ A `§<ID>` is a pointer to a fact, not a file path. Resolve it with `grund` and 
 - `grund <ID> --brief` — heading + first paragraph only.
 - `grund refs <ID>` — every site that cites the ID; add `--summary` for one line per file. Run before renaming or moving a declaration.
 - `grund list` / `grund list --kind FS,AR` — discover IDs if you get lost
-- Cross-namespace citations use `§forge/<ID>`; for example, root repository docs cite Forge goals as `§forge/GOAL-forge-direction`.
 
 ### Project map
 
 - [GRUND](docs/grund.md): Why: repository motivation
-- [GOAL](docs/goals.md): Where: repository outcome goals
-- [FS](docs): Repository functional behavior and contributor-facing requirements
-- [AR](docs): Repository architecture and build infrastructure
-- [TCK](docs/tck.md): Test harness task groups
-- [E2E](docs/e2e.md): Infrastructure end-to-end tests (testInfra/testAllInfra)
-- [CI](docs/ci.md): Recurring CI workflows and composite actions
-- [METADATA](docs/metadata.md): The shipped `metadata/` suite
-- [TESTS](docs/tests.md): The `tests/` suite that justifies the metadata
-- [SKILL](skills): Agent review and automation skills
+- [GOAL](docs/goals.md): Where: repository direction and outcomes
+- [PRCPL](docs/principles.md): Cross-cutting principles for how the repository works
+- [FS](docs/functional-spec): Repository functional behavior and contributor-facing requirements
+- [AR](docs/architecture): Repository architecture and build infrastructure
+- [skills/](skills): Agent review and automation skills
+- [.github/workflows/](.github/workflows): CI and release workflows: the gate on GitHub
+- [.github/actions/](.github/actions): Composite actions the workflows reuse
+- [metadata/](metadata): The shipped reachability metadata, verbatim
+- [tests/](tests): Per-library test projects that justify the metadata
+- [tests/tck-build-logic/](tests/tck-build-logic): The TCK harness build logic the test projects run on
+- [stats/](stats): Generated library statistics
+- [docs/assets/](docs/assets): README images, shipped verbatim
 
-Start from [docs/README.md](docs/README.md) for the documentation index.
+### Project namespaces
 
-Workspace members:
+A namespace is a project boundary, not a docs folder. The current project is the local namespace: cite its IDs as `§<ID>`.
 
-- `forge` → [forge/AGENTS.md](forge/AGENTS.md): Forge namespace. Local Forge citations use `§<ID>` inside `forge/`; repository docs cite Forge facts with `§forge/<ID>`.
+Create or use a separate namespace when work introduces an independently checked app, package, service, or subproject. Give that project its own `grund.toml`, add it to the workspace root's `[workspace] members`, run `grund init` there, and set a stable `project_name`.
+
+Do not create a namespace for a regular module or component that still belongs to this project. Cite across namespaces as `§alias/<ID>` and run `grund check` from the workspace root.
+
+### Workspace members
+
+Cross-project citations use §alias/<ID>.
+
+- [`forge`](forge/AGENTS.md): Automation subproject that turns labeled issues into reviewed metadata pull requests
+- [`root`](AGENTS.md): Repository for shared GraalVM reachability metadata, tests, and release infrastructure
 
 ### Declarations and citations
 
@@ -128,10 +135,78 @@ Declarations are heading lines `# FS-user-login: …` in markdown. In a code doc
 ### Rules
 
 - **Spec first.** For behavior or design changes, write or update the most-specific spec point before code.
-- **Document by component when complexity warrants it.** A complex component, such as a module, service, workflow family, script family, or large behavior-owning file, may have its own functional spec and architecture following the same behavior/requirements vs how split.
-- **Do not over-nest simple components.** If a component only needs one architecture explanation and has no separate behavioral contract, keep it as a single architecture declaration/file rather than creating a subdirectory.
-- **Grund and goals are namespace-local top-level docs.** Repository motivation and direction live in `docs/grund.md` and `docs/goals.md`; Forge motivation and direction live in `forge/docs/grund.md` and `forge/docs/goals.md`.
 - **Cite as you write.** Place `§<ID>` at the point a claim or behavior is made — on the doc-comment for a whole behavior, inline beside the clause it enforces.
+- **Marker = live citation.** A `§`-prefixed token resolves and is checked wherever it appears — including inside Markdown backticks. To mention an ID without citing it, write `<§><ID>`, omit the marker, or use a fenced code block.
 - **Inline citation style.** Inline notes: ≤ 1 line preferred, hard cap 3 lines; ≤ 100 columns.
 - **Always cite the most-specific point.**
-- **Citations climb to reasons (grund.md).** Goals cite reasons, specs cite goals; architecture cites specs; code and executable tests cite specs.
+
+### Citation directions
+
+- **GOAL** must cite GRUND.
+- **PRCPL** must cite GOAL.
+- **FS** should cite GOAL or FS.
+- **AR** must cite FS or GOAL.
+- **skills/** must cite FS; should cite AR.
+- **.github/workflows/** should cite FS or AR.
+- **.github/actions/** should cite FS or AR.
+- **code** (Build files and repository scripts outside a kind home) must cite FS; should cite AR.
+Unlisted kinds and pairs are fine.
+
+### Clickable citations
+
+On repository web surfaces, link `§<ID>` to the PR branch in PR bodies, the reviewed commit in reviews, an exact commit for permalinks, and the default branch otherwise; fall back to plain when unsure.
+<!-- END GRUND MANAGED BLOCK -->
+
+## Grounding conventions for this repository
+
+The block above is generated by `grund init` and is rewritten on every run, so
+repository-specific conventions live here instead.
+
+Start from [docs/README.md](docs/README.md) for the documentation index.
+
+### Namespaces in this repository
+
+`forge` is a workspace member with its own namespace and its own kinds
+(`KIND ∈ {GRUND, GOAL, AR, FS, ROADMAP}`),
+documented in [forge/AGENTS.md](forge/AGENTS.md). Inside `forge/`, cite Forge
+facts as `§<ID>`; from repository docs, cite them as `§forge/<ID>` — for example
+`§forge/GOAL-forge-direction`. Run `grund check` from the repository root, which
+is the only place the workspace alias table is in scope.
+
+### Additional rules
+
+- **The spec is the foundation.** Every idea, issue resolution, and design change is
+  checked against the spec before it is implemented. If it aligns, cite the most-specific
+  point it implements and proceed. If it does not align, stop and say so, then offer the
+  user two paths: **(dangerous)** change the spec, or work out how the idea fits inside
+  the current constraints. Never widen a spec point silently to make an implementation
+  legal. A spec change is dangerous because other points and code cite it: run
+  `grund refs <ID>` first to see the blast radius, get explicit approval, and land the
+  spec change as its own commit ahead of the code.
+- **The spec says how and why, not what each file is.** Spec points state the behavior
+  the repository guarantees and the reasoning behind it. They are not per-module or
+  per-function descriptions — if a paragraph would go stale merely because a file was
+  renamed or a function moved, it does not belong in the spec.
+- **Grund and goals are namespace-local top-level docs.** Repository motivation
+  and direction live in `docs/grund.md` and `docs/goals.md`; Forge motivation and
+  direction live in `forge/docs/grund.md` and `forge/docs/goals.md`.
+- **Document by component when complexity warrants it.** A complex component,
+  such as a module, service, workflow family, script family, or large
+  behavior-owning file, may have its own functional spec and architecture
+  following the same behavior/requirements vs how split.
+- **Do not over-nest simple components.** If a component only needs one
+  architecture explanation and has no separate behavioral contract, keep it as a
+  single architecture declaration/file rather than creating a subdirectory.
+- **Every kind has its own home.** No two kinds may share a `file` or `folder`
+  in `grund.toml`. A kind with one home file is declared as `file`, a kind that
+  spreads across several files as `folder`. The generated project map links each
+  kind to its home, so a shared home makes the map useless — the prefix must
+  tell you which file or folder to open.
+- **A folder home covers every file in it.** `docs/architecture/` is the `AR`
+  folder home and `docs/functional-spec/` is the `FS` folder home, in both
+  namespaces; every declaration in those folders carries that prefix, whichever
+  file it sits in. A document is filed under the folder whose question it
+  answers — the harness and CI document how the repository is wired, the two
+  suites state what the shipped metadata and its tests must be — and the file,
+  not the prefix, tells you which component it belongs to. Find a declaration
+  with `grund list` or the folder's `README.md` index, not by its prefix.

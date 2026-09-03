@@ -1,0 +1,99 @@
+{
+  "add_new_library_support:2026-06-26": {
+    "timestamp": "2026-06-26T19:43:29.285486Z",
+    "library": "net.java.dev.jna:jna-platform:5.12.1",
+    "starting_commit": "10ad139d81656f85792e51fe54b94eaef6569352",
+    "ending_commit": "b5b36a978860633f1504ecb51c73cb72fb87c8d4",
+    "strategy_name": "dynamic_access_main_sources_pi_gpt-5.5",
+    "agent": "pi",
+    "model": "oca/gpt-5.5",
+    "status": "success_with_intervention",
+    "stats": {
+      "version": "5.12.1",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 0.115385,
+            "coveredCalls": 3,
+            "totalCalls": 26
+          },
+          "resources": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 1,
+            "totalCalls": 1
+          }
+        },
+        "coverageRatio": 0.148148,
+        "coveredCalls": 4,
+        "totalCalls": 27
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 285,
+          "missed": 63083,
+          "ratio": 0.004498,
+          "total": 63368
+        },
+        "line": {
+          "covered": 59,
+          "missed": 14052,
+          "ratio": 0.004181,
+          "total": 14111
+        },
+        "method": {
+          "covered": 14,
+          "missed": 3468,
+          "ratio": 0.004021,
+          "total": 3482
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "no_action",
+      "issue_number": 8507,
+      "issue_label": "library-new-request",
+      "library": "net.java.dev.jna:jna-platform:5.12.1",
+      "summary": "jna-platform 5.12.1 only has the expected transitive dependency on net.java.dev.jna:jna:5.12.1 and provides mappings to host OS native libraries; meaningful Linux/POSIX coverage is reachable without extra Maven dependencies, Docker services, or required environment/system properties.",
+      "deterministic_setup": [],
+      "agent_guidance": "",
+      "risks": [
+        "Many jna-platform APIs are OS-specific; tests that directly exercise Windows COM/Win32, macOS, GUI, X11, or optional native libraries may fail on the Linux/headless CI host.",
+        "Prefer host-available POSIX/Linux mappings such as libc/sysinfo/resource structures, or pure structure/constant behavior, and guard any platform-specific calls."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#8507 Support for net.java.dev.jna:jna-platform:5.12.1; label=library-new-request; body_chars=39"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "oca/gpt-5.5",
+      "input_tokens_used": 49259,
+      "output_tokens_used": 2964,
+      "prompt_path": "library-preflight-prompt.txt",
+      "raw_response_path": "library-preflight-response.txt",
+      "session_log_path": "/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/logs/net.java.dev.jna:jna-platform:5.12.1/library-preparation-preflight/pi-generation-2026-06-26T16-56-52-410532Z.log"
+    },
+    "metrics": {
+      "input_tokens_used": 1479375,
+      "cached_input_tokens_used": 17621504,
+      "output_tokens_used": 186576,
+      "iterations": 33,
+      "cost_usd": 14.4081,
+      "generated_loc": 128,
+      "tested_library_loc": 59,
+      "metadata_entries": 147,
+      "test_only_metadata_entries": 4,
+      "code_coverage_percent": 0.42
+    },
+    "artifacts": {
+      "test_file": "tests/src/net.java.dev.jna/jna-platform/5.12.1/src/test/java/net_java_dev_jna/jna_platform/ConvertTest.java",
+      "metadata_file": "metadata/net.java.dev.jna/jna-platform/5.12.1/reachability-metadata.json"
+    }
+  }
+}

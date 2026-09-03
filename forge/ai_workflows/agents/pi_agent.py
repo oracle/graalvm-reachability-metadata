@@ -5,13 +5,16 @@
 
 import json
 import os
-import subprocess
 from datetime import datetime, timezone
 
-from ai_workflows.agents.agent import Agent
+from ai_workflows.agents.agent import Agent, AgentTimeoutError
+from ai_workflows.agents.agent_runtime import agent_process_environment
 from ai_workflows.agents.pi_rpc_client import PiRpcClient, PiRpcError, PromptResult
 from utility_scripts.gradle_test_runner import run_gradle_test_command
 from utility_scripts.pi_logs import build_pi_log_path
+
+
+DEFAULT_PI_PROVIDER = "openai-codex"
 
 
 @Agent.register("pi")
@@ -25,19 +28,24 @@ class PiAgent(Agent):
             timeout: int = 720,
             provider: str | None = None,
             pi_command: str = "pi",
+            agent_name: str | None = None,
             session_dir: str | None = None,
             library: str | None = None,
             task_type: str = "session",
             persistent_instructions: str | None = None,
+            thinking_level: str | None = None,
+            environment: dict[str, str] | None = None,
             **_,
     ):
         self._model_name = model_name
-        self._provider = provider
-        self._pi_command = pi_command
+        self._provider = provider or DEFAULT_PI_PROVIDER
+        self._pi_command = agent_name or pi_command
         self._session_dir = session_dir
         self._working_dir = os.path.abspath(working_dir)
         self._timeout = timeout
         self._persistent_instructions = persistent_instructions
+        self._thinking_level = thinking_level
+        self._environment = agent_process_environment(environment)
         self._session_path: str | None = None
         self._total_tokens_sent = 0
         self._cached_input_tokens_used = 0
@@ -49,13 +57,15 @@ class PiAgent(Agent):
         self._task_type = task_type
         self._session_log_path: str | None = None
         self._rpc_client = PiRpcClient(
-            pi_command=pi_command,
+            pi_command=self._pi_command,
             session_dir=session_dir,
             provider=self._provider,
             model=self._model_name,
             working_dir=self._working_dir,
             timeout=self._timeout,
             persistent_instructions=self._persistent_instructions,
+            thinking_level=self._thinking_level,
+            environment=self._environment,
         )
 
     @property
@@ -72,40 +82,44 @@ class PiAgent(Agent):
 
     def graphify(self, source_dirs: list[str]) -> str:
         """Send /skill:graphify to the Pi session to build a merged knowledge graph context."""
-        from utility_scripts.stage_logger import log_stage
+        from utility_scripts.stage_logger import log_detail
         from utility_scripts.task_logs import display_log_path
         if not source_dirs:
             return ""
-        log_stage("graphify", f"Initializing knowledge graph context for {len(source_dirs)} source(s)")
+        log_detail("graphify", f"Initializing knowledge graph context for {len(source_dirs)} source(s)")
         result = self.send_prompt(f"/skill:graphify {source_dirs[0]}")
         for extra_dir in source_dirs[1:]:
-            log_stage("graphify", f"Merging graph from {display_log_path(extra_dir)}")
+            log_detail("graphify", f"Merging graph from {display_log_path(extra_dir)}")
             result = self.send_prompt(f"/skill:graphify {extra_dir} --update")
-        log_stage("graphify", "Knowledge graph context initialized")
+        log_detail("graphify", "Knowledge graph context initialized")
         return result
 
     def send_prompt(self, prompt: str) -> str:
-        original_session_path = self._session_path
-        try:
-            result = self._rpc_client.run_prompt(
-                prompt,
-                session=self._session_path,
-                progress_callback=lambda detail: self._print_live_status("Pi", detail),
-            )
-        except PiRpcError as exc:
-            self._ensure_failure_log_path()
-            self._print_session_log_once("Pi", self._session_log_path)
-            self._write_failure_log(original_session_path, prompt, exc)
-            raise
-        finally:
-            self._clear_live_status()
-        self._session_path = result.session_file
-        if self._session_log_path is None or self._session_path != original_session_path:
-            self._set_session_log_path(self._build_generation_log_path())
-        self._update_token_counters(result.session_stats)
+        self._ensure_session_log_path()
         self._print_session_log_once("Pi", self._session_log_path)
-        self._write_turn_log(self._session_path or original_session_path, prompt, result)
-        return result.text
+        with self._agent_activity("Pi"):
+            original_session_path = self._session_path
+            try:
+                result = self._rpc_client.run_prompt(
+                    prompt,
+                    session=self._session_path,
+                    progress_callback=lambda detail: self._print_live_status("Pi", detail),
+                )
+            except (PiRpcError, RuntimeError) as exc:
+                logged_error = exc if isinstance(exc, PiRpcError) else PiRpcError(str(exc))
+                self._write_failure_log(original_session_path, prompt, logged_error)
+                if "timed out" in str(exc).lower():
+                    raise AgentTimeoutError(
+                        self._current_agent_action(), self._timeout, self._session_log_path,
+                    ) from exc
+                raise
+            finally:
+                self._clear_live_status()
+            self._session_path = result.session_file
+            self._update_token_counters(result.session_stats)
+            self._print_session_log_once("Pi", self._session_log_path)
+            self._write_turn_log(self._session_path or original_session_path, prompt, result)
+            return result.text
 
     def fork(self, prompt: str) -> "PiAgent":
         if self._session_path is None:
@@ -159,6 +173,8 @@ class PiAgent(Agent):
             working_dir=self._working_dir,
             timeout=self._timeout,
             persistent_instructions=self._persistent_instructions,
+            thinking_level=self._thinking_level,
+            environment=self._environment,
         )
 
     def run_test_command(self, test_cmd: str) -> str:
@@ -208,6 +224,8 @@ class PiAgent(Agent):
             library=self._library,
             task_type=self._task_type,
             persistent_instructions=self._persistent_instructions,
+            thinking_level=self._thinking_level,
+            environment=self._environment,
         )
         child._rpc_client = self._rpc_client
         return child
@@ -403,8 +421,11 @@ class PiAgent(Agent):
         self._session_log_path = log_path
         self._session_log_announced = False
 
-    def _ensure_failure_log_path(self) -> None:
-        """Ensure failures are written to a generation log file."""
+    def _ensure_session_log_path(self) -> None:
+        """Choose the stable log path used by every turn of this agent instance.
+
+        §FS-durable-generation-logs
+        """
         if self._session_log_path is not None:
             return
         self._set_session_log_path(self._build_generation_log_path())

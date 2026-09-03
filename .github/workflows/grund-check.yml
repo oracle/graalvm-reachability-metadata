@@ -1,0 +1,66 @@
+# Per-PR gate that runs `grund check` over both namespaces, so a citation that stops resolving,
+# or a managed AGENTS.md block that drifts from its grund.toml, fails the PR instead of rotting.
+# §AR-grund-check; enforces §FS-repository-functional-spec.5.6.
+name: "Validate grund citations"
+
+on:
+  pull_request:
+    branches:
+      - master
+
+permissions:
+  contents: read
+
+env:
+  # Pinned, not floating: a newer grund can render a newer managed AGENTS.md block, which would
+  # fail every PR until someone re-runs `grund init`. Bump this and the checksum together.
+  GRUND_VERSION: "0.12.2"
+  GRUND_SHA256: "b61d8f828cb746a4a94a02b485fcb3e1f54843b1b47eb50063f65277f7346339"
+
+jobs:
+  grund-check:
+    name: "🧭 Validate grund citations"
+    runs-on: "ubuntu-22.04"
+    timeout-minutes: 5
+    steps:
+      - name: "☁️ Checkout repository"
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+
+      - name: "🔎 Detect relevant file changes"
+        id: filter
+        uses: ./.github/actions/detect-file-changes
+        with:
+          # The union of both projects' `[scan] include` roots and their configs; a PR that
+          # touches none of them cannot break a citation.
+          file-patterns: |
+            - 'AGENTS.md'
+            - 'README.md'
+            - 'COVERAGE.md'
+            - 'build.gradle'
+            - 'grund.toml'
+            - 'docs/**'
+            - 'skills/**'
+            - '.github/workflows/**'
+            - '.github/actions/**'
+            - 'forge/AGENTS.md'
+            - 'forge/README.md'
+            - 'forge/DEVELOPING.md'
+            - 'forge/grund.toml'
+            - 'forge/docs/**'
+
+      - name: "🔧 Install grund"
+        if: steps.filter.outputs.changed == 'true'
+        run: |
+          archive="grund-${GRUND_VERSION}-x86_64-unknown-linux-gnu.tar.gz"
+          curl -sSfL -o "${RUNNER_TEMP}/${archive}" \
+            "https://github.com/vjovanov/grund/releases/download/v${GRUND_VERSION}/${archive}"
+          echo "${GRUND_SHA256}  ${RUNNER_TEMP}/${archive}" | sha256sum --check --strict
+          tar -xzf "${RUNNER_TEMP}/${archive}" -C "${RUNNER_TEMP}"
+          echo "${RUNNER_TEMP}/grund-${GRUND_VERSION}-x86_64-unknown-linux-gnu" >> "${GITHUB_PATH}"
+
+      - name: "🧭 Check citations"
+        if: steps.filter.outputs.changed == 'true'
+        # Run from the workspace root: it is the only place the alias table that resolves
+        # cross-namespace citations is in scope, so this one run covers Forge too.
+        run: |
+          grund check

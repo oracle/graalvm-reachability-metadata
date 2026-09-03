@@ -1,0 +1,149 @@
+name: code-coverage-improvement
+version: 1.0.0
+description: Convert one code-coverage-improvement GitHub issue into a bounded Rhei workflow that improves tests for an already-supported library.
+
+inputs:
+  - name: repo
+    description: GitHub repository containing the source issue, in owner/name form.
+    type: string
+    default: oracle/graalvm-reachability-metadata
+    validate: "^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$"
+
+  - name: issue_number
+    description: GitHub issue number to convert. The issue must carry code-coverage-improvement.
+    type: number
+    validate: "[1-9][0-9]*"
+
+  - name: coordinate
+    description: Optional Maven coordinate override. Leave empty to parse group:artifact:version from the issue body.
+    type: string
+    default: ""
+    validate: "^$|^[A-Za-z0-9_.-]+:[A-Za-z0-9_.-]+:[A-Za-z0-9_.+-]+$"
+
+  - name: issue_label
+    description: Label that identifies code coverage improvement issues.
+    type: string
+    default: code-coverage-improvement
+    validate: "^[A-Za-z0-9_.-]+$"
+
+  - name: repo_checkout
+    description: Path to the source graalvm-reachability-metadata checkout, relative to the rendered workspace or absolute.
+    type: string
+    default: ../..
+
+  - name: work_subdir
+    description: Subdirectory inside each issue worktree where Forge code and docs live.
+    type: string
+    default: forge
+    validate: "^[A-Za-z0-9_./-]+$"
+
+  - name: worktree_root
+    description: Directory where per-issue worktrees are created or reused, relative to the rendered workspace or absolute.
+    type: string
+    default: ../../.agents/worktrees
+
+  - name: project_owner
+    description: Optional GitHub Project owner used for membership/status verification. Empty disables Project verification.
+    type: string
+    default: oracle
+    validate: "^$|^@me$|^[A-Za-z0-9_.-]+$"
+
+  - name: project_number
+    description: Optional GitHub Project number used with project_owner. Empty disables Project verification.
+    type: string
+    default: "30"
+    validate: "^$|^[1-9][0-9]*$"
+
+  - name: todo_status
+    description: Project status expected before conversion when Project verification is enabled.
+    type: string
+    default: Todo
+
+  - name: in_progress_status
+    description: Project status to set after conversion when Project verification is enabled.
+    type: string
+    default: In Progress
+
+  - name: workspace_path
+    description: >-
+      Path from the agent's working directory to this workspace, the directory
+      holding states.yaml and index.rhei.md. Agents resolve every artifact path
+      against it, so it must match where the workspace was instantiated. Default
+      assumes the workspace sits directly under the work subdirectory.
+    type: string
+    default: "{{work_subdir}}/code-coverage-{{issue_number}}"
+
+  - name: branch_suffix
+    description: >-
+      Readable run label appended to the publication head branch, before the
+      publication ID. Empty keeps the plain coordinate-and-model branch. The
+      publication ID already keeps two runs of one coordinate and model apart, so
+      this only says which run a branch belongs to.
+    type: string
+    default: ""
+
+  - name: worker_agent
+    description: >-
+      Rhei target used for execution and fix states, as
+      <agent>[<mode>]:<provider>/<model>. Its model names the publication head
+      branch and the rendered pull request title, and its mode selects the
+      reasoning level from the agent profile in this template's settings.json.
+    type: string
+    default: pi[high]:openai-codex/gpt-5.6-luna
+
+  - name: fix_passes
+    description: >-
+      Automated repairs allowed on each finalization path - failed steps and
+      failed artifact verification are budgeted separately. Defaults to the
+      number of steps the step program can fail at, so one failing step cannot
+      spend the allowance another one needs.
+    type: number
+    default: 7
+    validate: "[1-9][0-9]*"
+
+  - name: coverage_iterations
+    description: >-
+      Maximum number of cover iterations per phase. Measurement completes the
+      phase when the budget is spent, when nothing uncovered remains, or when
+      the marginal-yield stop fires.
+    type: number
+    default: 15
+    validate: "[1-9][0-9]*"
+
+  - name: stop_threshold
+    description: >-
+      Pass yield below which a cover pass counts as low, in newly covered
+      methods. Counted in methods rather than percentage points because one
+      point is worth an order of magnitude more methods on a large library than
+      on a small one.
+    type: number
+    default: 10
+    validate: "[1-9][0-9]*"
+
+  - name: stop_window
+    description: >-
+      Consecutive low-yield passes that complete a phase. Pass yields
+      oscillate, so a longer window is reset by a single mediocre pass and
+      never fires.
+    type: number
+    default: 2
+    validate: "[1-9][0-9]*"
+
+  - name: stop_floor
+    description: >-
+      Cover passes that must complete before the marginal-yield stop applies,
+      so a broken opening pass cannot end a phase before it has produced
+      anything.
+    type: number
+    default: 4
+    validate: "[1-9][0-9]*"
+
+  - name: measure_visits
+    description: >-
+      Hard visit cap on each measurement loop and its fix state, bounding cover
+      and repair re-runs. It must exceed `coverage_iterations` by the number of
+      measurement retries a run may need: a full-budget phase already spends
+      one measurement per pass plus the baseline.
+    type: number
+    default: 22
+    validate: "[1-9][0-9]*"

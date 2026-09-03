@@ -1,0 +1,181 @@
+{
+  "schemaVersion": "1.2.0",
+  "generatedAt": "2026-08-20T10:15:30Z",
+  "coordinate": "com.example:demo:1.0.0",
+  "coverageSuitePath": "tests/src/com.example/demo/1.0.0/code-coverage-improvement",
+  "runCoverage": {
+    "universe": 30,
+    "apiUniverse": 10,
+    "deepUniverse": 20,
+    "checkpoints": [
+      {
+        "name": "runStart",
+        "apiCovered": 4,
+        "deepCovered": 5,
+        "covered": 9,
+        "uncovered": 21,
+        "coveragePercent": 30.0
+      },
+      {
+        "name": "afterApiPhase",
+        "apiCovered": 8,
+        "deepCovered": 8,
+        "covered": 16,
+        "uncovered": 14,
+        "coveragePercent": 53.33
+      },
+      {
+        "name": "final",
+        "apiCovered": 9,
+        "deepCovered": 12,
+        "covered": 21,
+        "uncovered": 9,
+        "coveragePercent": 70.0
+      }
+    ],
+    "phases": [
+      {
+        "name": "api",
+        "covered": 7,
+        "coveragePercentagePoints": 23.33
+      },
+      {
+        "name": "deep",
+        "covered": 5,
+        "coveragePercentagePoints": 16.67
+      }
+    ]
+  },
+  "apiJacoco": {
+    "baseline": {
+      "total": 16,
+      "measured": 10,
+      "covered": 4,
+      "uncovered": 6,
+      "notReported": 6,
+      "coveragePercent": 40.0
+    },
+    "final": {
+      "total": 16,
+      "measured": 10,
+      "covered": 8,
+      "uncovered": 2,
+      "notReported": 6,
+      "coveragePercent": 80.0
+    },
+    "delta": {
+      "covered": 4,
+      "uncovered": -4,
+      "notReported": 0,
+      "coveragePercentagePoints": 40.0
+    }
+  },
+  "deepJacoco": {
+    "baseline": {
+      "total": 20,
+      "covered": 5,
+      "uncovered": 15,
+      "coveragePercent": 25.0
+    },
+    "final": {
+      "total": 20,
+      "covered": 12,
+      "uncovered": 8,
+      "coveragePercent": 60.0
+    },
+    "delta": {
+      "covered": 7,
+      "uncovered": -7,
+      "coveragePercentagePoints": 35.0
+    }
+  },
+  "pgoGuidance": {
+    "guidanceOnly": true,
+    "note": "Sampled PGO is navigation evidence only. Sample counts do not measure coverage.",
+    "baseline": {
+      "samplingContexts": 2,
+      "sampledMethods": 5,
+      "sampleCount": 42,
+      "sampledJoins": 2
+    },
+    "final": {
+      "samplingContexts": 3,
+      "sampledMethods": 8,
+      "sampleCount": 84,
+      "sampledJoins": 4
+    }
+  },
+  "targets": {
+    "completed": [
+      {
+        "id": "example.Greeter#greet():java.lang.String",
+        "phase": "api",
+        "status": "completed"
+      }
+    ],
+    "skipped": [
+      {
+        "id": "example.Internal#secret():java.lang.String",
+        "phase": "deep",
+        "status": "skipped",
+        "reason": "No public route.",
+        "attemptCount": 1,
+        "lastAttemptedIteration": 2
+      }
+    ],
+    "exhausted": [],
+    "failed": []
+  },
+  "stopDecisions": [
+    {
+      "phase": "api",
+      "passes": 9,
+      "budget": 15,
+      "threshold": 10,
+      "window": 2,
+      "floor": 4,
+      "reason": "marginal-yield",
+      "passYields": [
+        701,
+        316,
+        215,
+        73,
+        33,
+        93,
+        13,
+        0,
+        5
+      ]
+    },
+    {
+      "phase": "deep",
+      "passes": 15,
+      "budget": 15,
+      "threshold": 10,
+      "window": 2,
+      "floor": 4,
+      "reason": "budget-spent",
+      "passYields": [
+        91,
+        251,
+        41,
+        6,
+        47,
+        17,
+        24,
+        12,
+        18,
+        30,
+        22,
+        15,
+        19,
+        11,
+        14
+      ]
+    }
+  ],
+  "validationCommands": [
+    "./gradlew test -Pcoordinates=com.example:demo:1.0.0"
+  ],
+  "needsHumanIntervention": false
+}

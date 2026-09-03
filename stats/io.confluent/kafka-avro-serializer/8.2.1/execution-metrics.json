@@ -1,0 +1,93 @@
+{
+  "add_new_library_support:2026-07-08": {
+    "timestamp": "2026-07-08T13:11:07.950460Z",
+    "library": "io.confluent:kafka-avro-serializer:8.2.1",
+    "starting_commit": "c0a192b0dacde595f81d868ad6284772c5600c4f",
+    "ending_commit": "e2ddeb0110b69ecd37b4325626c716f619efb069",
+    "strategy_name": "dynamic_access_main_sources_pi_gpt-5.5",
+    "agent": "pi",
+    "model": "gpt-5.5",
+    "status": "success",
+    "stats": {
+      "version": "8.2.1",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 3,
+            "totalCalls": 3
+          }
+        },
+        "coverageRatio": 1.0,
+        "coveredCalls": 3,
+        "totalCalls": 3
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 883,
+          "missed": 1598,
+          "ratio": 0.355905,
+          "total": 2481
+        },
+        "line": {
+          "covered": 227,
+          "missed": 362,
+          "ratio": 0.385399,
+          "total": 589
+        },
+        "method": {
+          "covered": 40,
+          "missed": 80,
+          "ratio": 0.333333,
+          "total": 120
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "no_action",
+      "issue_number": 7009,
+      "issue_label": "library-new-request",
+      "library": "io.confluent:kafka-avro-serializer:8.2.1",
+      "summary": "No extra Maven dependency, Docker image, environment variable, or system property is required. The artifact brings Kafka clients, Avro, schema serializer, and schema-registry client transitively, and meaningful serializer/deserializer coverage can use the bundled MockSchemaRegistryClient instead of a real Schema Registry service.",
+      "deterministic_setup": [],
+      "agent_guidance": "Use in-process test setup: instantiate KafkaAvroSerializer/KafkaAvroDeserializer with io.confluent.kafka.schemaregistry.client.MockSchemaRegistryClient and include schema.registry.url in the config map, e.g. \"bogus\" or a mock:// URL, to satisfy Confluent config validation without Docker.",
+      "risks": [
+        "Avoid tests that require a live Kafka broker or Schema Registry unless explicitly needed; the core serializer/deserializer paths are testable in memory.",
+        "The legacy KafkaAvroDecoder path may need Kafka server-side classes, but meaningful coverage should prefer KafkaAvroSerializer and KafkaAvroDeserializer."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#7009 Support for io.confluent:kafka-avro-serializer:8.2.1; label=library-new-request; body_chars=109"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "gpt-5.5",
+      "input_tokens_used": 31980,
+      "output_tokens_used": 3541,
+      "prompt_path": "library-preflight-prompt.txt",
+      "raw_response_path": "library-preflight-response.txt",
+      "session_log_path": "/home/jovan/Work/graalvm-reachability-metadata/forge/logs/io.confluent:kafka-avro-serializer:8.2.1/library-preparation-preflight/pi-generation-2026-07-08T12-43-14-206913Z.log"
+    },
+    "metrics": {
+      "input_tokens_used": 34149,
+      "cached_input_tokens_used": 345088,
+      "output_tokens_used": 4375,
+      "iterations": 1,
+      "cost_usd": 0.4745,
+      "generated_loc": 109,
+      "tested_library_loc": 227,
+      "metadata_entries": 30,
+      "test_only_metadata_entries": 12,
+      "code_coverage_percent": 38.54
+    },
+    "artifacts": {
+      "metadata_file": "metadata/io.confluent/kafka-avro-serializer/8.2.1/reachability-metadata.json"
+    }
+  }
+}

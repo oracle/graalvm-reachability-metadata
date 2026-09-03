@@ -14,14 +14,17 @@ if __package__ in (None, ""):
 import ai_workflows.agents  # noqa: F401 - triggers agent registration
 import ai_workflows.core  # noqa: F401 - triggers strategy registration
 from ai_workflows.agents import Agent
-from ai_workflows.core.fix_metadata_codex import run_codex_metadata_fix
 from ai_workflows.core.workflow_strategy import (
     RUN_STATUS_SUCCESS,
     SUCCESS_WITH_INTERVENTION_STATUS,
     WorkflowStrategy,
 )
 from ai_workflows.drivers.improve_library_coverage import prepare_library_update_target
-from git_scripts.common_git import build_ai_branch_name, delete_remote_branch_if_exists
+from git_scripts.common_git import (
+    build_ai_branch_name,
+    delete_remote_branch_if_exists,
+    switch_branch_quietly,
+)
 from utility_scripts import metrics_writer
 from utility_scripts.continuation_marker import (
     PHASE_EXPLORE,
@@ -36,16 +39,27 @@ from utility_scripts.gradle_environment import gradle_command_environment
 from utility_scripts.library_preparation_preflight import (
     prepare_library_preparation_preflight,
 )
+from utility_scripts.logged_command import LoggedCommandResult, run_logged_command
 from utility_scripts.metadata_index import resolve_metadata_version, resolve_test_version
 from utility_scripts.metrics_writer import create_failure_run_metrics_output
+from utility_scripts.native_test_verification import global_output_dir
 from utility_scripts.repo_path_resolver import require_complete_reachability_repo
+from utility_scripts.run_location import (
+    STEP_NORMAL_SETUP,
+    STEP_RUN_WORKFLOW_ENGINE,
+    clear_recorded_failure,
+    enter_phase,
+    log_step_progress,
+    record_step_failure,
+    run_step,
+)
 from utility_scripts.source_context import (
     normalize_source_context_types,
     populate_artifact_urls,
     prepare_source_contexts,
     resolve_test_source_layout,
 )
-from utility_scripts.stage_logger import log_stage
+from utility_scripts.stage_logger import log_detail, log_stage
 from utility_scripts.strategy_loader import require_strategy_by_name
 from utility_scripts.workflow_setup import (
     list_all_files,
@@ -54,8 +68,8 @@ from utility_scripts.workflow_setup import (
     validate_repo_paths,
 )
 
-DEFAULT_MODEL_NAME = "oca/gpt-5.5"
-DEFAULT_STRATEGY_NAME = "library_update_pi_gpt-5.5"
+DEFAULT_MODEL_NAME = "gpt-5.6-sol"
+DEFAULT_STRATEGY_NAME = "library_update_pi_gpt-5.6-sol"
 METRICS_TASK_TYPE = "fix_ni_run"
 
 
@@ -118,44 +132,33 @@ def run_fix_test_native_image_run(
         reachability_metadata_path: str,
         current_coordinates: str,
         new_version: str,
-) -> subprocess.CompletedProcess[str]:
-    """Run the fixTestNativeImageRun Gradle task."""
+) -> LoggedCommandResult:
+    """Run the fixTestNativeImageRun task with durable quiet output.
+
+    §FS-forge-run-output-legibility §FS-durable-generation-logs
+    """
     require_complete_reachability_repo(reachability_metadata_path)
-    return subprocess.run(
+    group, artifact, _ = current_coordinates.split(":", 2)
+    library = f"{group}:{artifact}:{new_version}"
+    return run_logged_command(
         [
             "./gradlew", "fixTestNativeImageRun",
             f"-PtestLibraryCoordinates={current_coordinates}",
             f"-PnewLibraryVersion={new_version}",
         ],
         cwd=reachability_metadata_path,
+        task_type="native-image-run-fix",
+        subject=library,
+        action="fixTestNativeImageRun",
         env=gradle_command_environment(reachability_metadata_path),
-    )
-
-
-def run_gradle_test(
-        reachability_metadata_path: str,
-        coordinates: str,
-) -> subprocess.CompletedProcess[str]:
-    """Run Gradle tests for the provided coordinates."""
-    require_complete_reachability_repo(reachability_metadata_path)
-    return subprocess.run(
-        [
-            "./gradlew", "test",
-            f"-Pcoordinates={coordinates}",
-        ],
-        cwd=reachability_metadata_path,
-        env=gradle_command_environment(reachability_metadata_path),
+        stage="native-image-run-fix",
     )
 
 
 def create_or_switch_branch(reachability_metadata_path: str, branch: str) -> None:
     """Reset the workflow branch to the current detached HEAD."""
     delete_remote_branch_if_exists(branch, cwd=reachability_metadata_path)
-    subprocess.run(
-        ["git", "switch", "-C", branch],
-        cwd=reachability_metadata_path,
-        check=True,
-    )
+    switch_branch_quietly(branch, cwd=reachability_metadata_path)
 
 
 def commit_checkpoint(reachability_metadata_path: str, library: str) -> str:
@@ -164,7 +167,7 @@ def commit_checkpoint(reachability_metadata_path: str, library: str) -> str:
     The checkpoint captures the valid seed after artifact URL population and
     before any exploratory test-suite split. If best-effort exploration resets to
     this checkpoint, finalization can still publish the seeded fix
-    (§WF-native-image-run-fix-workflow.3).
+    (§AR-forge-driver-queues.4).
     """
     subprocess.run(["git", "add", "-A"], cwd=reachability_metadata_path, check=False)
     subprocess.run(
@@ -184,20 +187,23 @@ def commit_checkpoint(reachability_metadata_path: str, library: str) -> str:
 def run_dynamic_access_coverage_report(
         reachability_metadata_path: str,
         library: str,
-) -> subprocess.CompletedProcess[str]:
-    """Generate the dynamic-access coverage report for the new coordinate."""
+) -> LoggedCommandResult:
+    """Generate the dynamic-access report with durable quiet output.
+
+    §FS-forge-run-output-legibility §FS-durable-generation-logs
+    """
     require_complete_reachability_repo(reachability_metadata_path)
-    return subprocess.run(
+    return run_logged_command(
         [
             "./gradlew", "generateDynamicAccessCoverageReport",
             f"-Pcoordinates={library}",
         ],
         cwd=reachability_metadata_path,
+        task_type="dynamic-access-report",
+        subject=library,
+        action="generateDynamicAccessCoverageReport",
         env=gradle_command_environment(reachability_metadata_path),
-        stdout=subprocess.PIPE,
-        stderr=subprocess.STDOUT,
-        text=True,
-        check=False,
+        stage="dynamic-access",
     )
 
 
@@ -207,13 +213,12 @@ def should_explore_new_version(reachability_metadata_path: str, group: str, arti
     Exploration is conditional: an empty or fully-covered dynamic-access report
     skips the version-specific suite preparation and exploration entirely, and
     the workflow finalizes the metadata-first seed directly
-    (§WF-native-image-run-fix-workflow.3).
+    (§AR-forge-driver-queues.4).
     """
     library = f"{group}:{artifact}:{version}"
     result = run_dynamic_access_coverage_report(reachability_metadata_path, library)
     if result.returncode != 0:
-        log_stage("coverage-gate", f"Dynamic-access report unavailable for {library}; skipping exploration")
-        print(result.stdout)
+        log_detail("coverage-gate", f"Dynamic-access report unavailable for {library}; skipping exploration")
         return False
 
     test_version = resolve_test_version(reachability_metadata_path, group, artifact, version)
@@ -225,12 +230,12 @@ def should_explore_new_version(reachability_metadata_path: str, group: str, arti
     try:
         report = load_dynamic_access_coverage_report(report_path)
     except FileNotFoundError:
-        log_stage("coverage-gate", f"Dynamic-access report file missing for {library}; skipping exploration")
+        log_detail("coverage-gate", f"Dynamic-access report file missing for {library}; skipping exploration")
         return False
 
     uncovered_calls = max(report.total_calls - report.covered_calls, 0)
     if not report.has_dynamic_access or report.total_calls == 0 or uncovered_calls == 0:
-        log_stage(
+        log_detail(
             "coverage-gate",
             "No uncovered dynamic-access calls for {library} "
             "(hasDynamicAccess={has}, {covered}/{total} covered); skipping exploration".format(
@@ -242,7 +247,7 @@ def should_explore_new_version(reachability_metadata_path: str, group: str, arti
         )
         return False
 
-    log_stage(
+    log_detail(
         "coverage-gate",
         "{uncovered} uncovered dynamic-access call(s) for {library}; preparing exploration".format(
             uncovered=uncovered_calls,
@@ -334,6 +339,8 @@ def build_strategy_and_agent(
         verbose=False,
         mcps=strategy.get("mcps", []),
         persistent_instructions=strategy_obj.persistent_instructions,
+        thinking_level=strategy.get("thinking-level"),
+        agent_name=strategy.get("agent-command"),
     )
     return strategy_obj, agent, model_name, test_source_layout.source_root
 
@@ -341,11 +348,11 @@ def build_strategy_and_agent(
 def main(argv=None) -> int:
     """Run the Native Image fix driver.
 
-    The single-run driver (§WF-forge-workflow-drivers) for
-    §WF-native-image-run-fix-workflow. `fixTestNativeImageRun` produces the seed;
+    The single-run driver (§AR-forge-drivers) for
+    §AR-forge-driver-queues.4. `fixTestNativeImageRun` produces the seed. A
+    failed seed enters the shared native-test gate before any agent repair;
     dynamic-access exploration runs only when the new version has uncovered
-    calls; the shared `finalize_run` path (three native-test
-    lanes + dual-coordinate finalization) always gates PR eligibility.
+    calls; the shared `finalize_run` path always gates PR eligibility.
     """
     args = build_parser().parse_args(sys.argv[1:] if argv is None else argv)
 
@@ -360,6 +367,7 @@ def main(argv=None) -> int:
     resume_from = None if continuation_marker is None else continuation_marker.continue_from
     resume_existing_tree = resume_from in {"fix", PHASE_EXPLORE, PHASE_FINALIZATION, "publication"}
     resume_finalization = resume_from == PHASE_FINALIZATION
+    enter_phase(PHASE_SETUP)
     # Apply deterministic preflight setup into the resolved worktree before
     # generation; only advisory guidance reaches the prompt context.
     library_preparation_preflight, library_preparation_preflight_context = (
@@ -377,8 +385,8 @@ def main(argv=None) -> int:
             ),
         )
     if library_preparation_preflight is not None:
-        print("[pipeline] Library preparation preflight:")
-        print(library_preparation_preflight_context)
+        log_detail("pipeline", "Library preparation preflight:")
+        log_detail("pipeline", library_preparation_preflight_context)
 
     resolve_graalvm_java_home()
     validate_repo_paths(reachability_metadata_path, metrics_repo_dir)
@@ -390,93 +398,120 @@ def main(argv=None) -> int:
         f"fix-native-image-run-{group}-{artifact}-{new_version}",
         cwd=reachability_metadata_path,
     )
+    strategy_obj: WorkflowStrategy | None = None
+    agent: Agent | None = None
+    model_name: str | None = None
+    tests_root: str | None = None
+    setup_action = (
+        "Reusing prepared native-image workspace"
+        if resume_existing_tree
+        else "Preparing native-image workspace"
+    )
+    log_step_progress(PHASE_SETUP, STEP_NORMAL_SETUP, f"{setup_action} for {library}")
     if not resume_existing_tree:
-        print(f"[pipeline] Creating branch: {branch}")
-        create_or_switch_branch(reachability_metadata_path, branch)
+        # Branching and the deterministic native-image fix are the run's
+        # model-free setup. §FS-forge-run-location-reporting.2
+        with run_step(PHASE_SETUP, STEP_NORMAL_SETUP, operand=library):
+            log_detail("pipeline", f"Creating branch: {branch}")
+            create_or_switch_branch(reachability_metadata_path, branch)
 
-        print(f"[pipeline] Running fixTestNativeImageRun for: {current_coordinates} -> {new_version}")
-        result = run_fix_test_native_image_run(
-            reachability_metadata_path=reachability_metadata_path,
-            current_coordinates=current_coordinates,
-            new_version=new_version,
-        )
-
-        if result.returncode != 0:
-            generated_metadata_file = os.path.join(
-                reachability_metadata_path,
-                "metadata",
-                group,
-                artifact,
-                new_version,
-                "reachability-metadata.json",
+            log_detail(
+                "pipeline",
+                f"Running fixTestNativeImageRun for: {current_coordinates} -> {new_version}",
             )
-            if not os.path.isfile(generated_metadata_file):
-                print(
-                    "ERROR: fixTestNativeImageRun failed before generating "
-                    f"{generated_metadata_file}. Skipping Codex metadata repair.",
-                    file=sys.stderr,
-                )
-                return result.returncode
-            print(f"[pipeline] Detected missing metadata entries for {library}. Running Codex fix.")
-            gradle_env = gradle_command_environment(reachability_metadata_path)
-            codex_rc, _codex_log, _codex_timed_out = run_codex_metadata_fix(
-                reachability_metadata_path,
-                library,
-                graalvm_home=gradle_env.get("GRAALVM_HOME"),
-                library_preparation_preflight_context=library_preparation_preflight_context,
-            )
-            if codex_rc != 0:
-                print(f"ERROR: Codex failed with return code: {codex_rc}", file=sys.stderr)
-                return codex_rc
-            print(f"[pipeline] Codex metadata fix completed. Running Gradle test for {library}.")
-            result = run_gradle_test(
+            result = run_fix_test_native_image_run(
                 reachability_metadata_path=reachability_metadata_path,
-                coordinates=library,
+                current_coordinates=current_coordinates,
+                new_version=new_version,
             )
-            if result.returncode != 0:
-                print("[pipeline] Gradle test failed after Codex metadata fix. Skipping PR creation.", file=sys.stderr)
-                return result.returncode
 
-        populate_artifact_urls(reachability_metadata_path, library)
-        checkpoint = commit_checkpoint(reachability_metadata_path, library)
-        save_phase_update(
-            args.continuation_marker_path,
-            lambda marker: (
-                marker.mark_setup_done(),
-                marker.mark_phase_completed(PHASE_FIX),
-            ),
-        )
+            if result.returncode != 0:
+                # The failed JVM-agent seed reaches runtime truth before any agent
+                # repair. §FS-native-test-verification-gate §AR-forge-workflow-pipeline
+                strategy_obj, agent, model_name, tests_root = build_strategy_and_agent(
+                    strategy_name=args.strategy_name,
+                    reachability_metadata_path=reachability_metadata_path,
+                    library=library,
+                    group=group,
+                    artifact=artifact,
+                    version=new_version,
+                    library_preparation_preflight_context=library_preparation_preflight_context,
+                    explore=False,
+                    continuation_marker_path=args.continuation_marker_path,
+                )
+                test_version = resolve_test_version(
+                    reachability_metadata_path,
+                    group,
+                    artifact,
+                    new_version,
+                )
+                if not strategy_obj.verify_native_test_gate(
+                        global_output_dir(
+                            reachability_metadata_path,
+                            group,
+                            artifact,
+                            test_version,
+                        ),
+                        label="fixTestNativeImageRun failure",
+                ):
+                    print(
+                        f"ERROR: native-test gate failed after fixTestNativeImageRun for {library}.",
+                        file=sys.stderr,
+                    )
+                    record_step_failure()
+                    return 1
+
+            populate_artifact_urls(reachability_metadata_path, library)
+            checkpoint = commit_checkpoint(reachability_metadata_path, library)
+            save_phase_update(
+                args.continuation_marker_path,
+                lambda marker: (
+                    marker.mark_setup_done(),
+                    marker.mark_phase_completed(PHASE_FIX),
+                ),
+            )
     else:
-        log_stage("continuation", f"Resuming {library} from preserved branch at phase {resume_from}")
+        log_detail("continuation", f"Resuming {library} from preserved branch at phase {resume_from}")
         checkpoint = subprocess.check_output(["git", "rev-parse", "HEAD"], text=True).strip()
 
     # Coverage gate: explore only when the new version has uncovered calls.
     explore = not resume_finalization and should_explore_new_version(reachability_metadata_path, group, artifact, new_version)
     if explore:
-        print(f"[pipeline] Preparing version-specific test-suite for {library}")
+        log_detail("pipeline", f"Preparing version-specific test-suite for {library}")
         prepare_library_update_target(reachability_metadata_path, group, artifact, new_version)
 
-    strategy_obj, agent, model_name, tests_root = build_strategy_and_agent(
-        strategy_name=args.strategy_name,
-        reachability_metadata_path=reachability_metadata_path,
-        library=library,
-        group=group,
-        artifact=artifact,
-        version=new_version,
-        library_preparation_preflight_context=library_preparation_preflight_context,
-        explore=explore,
-        continuation_marker_path=args.continuation_marker_path,
-    )
+    if strategy_obj is None or explore:
+        strategy_obj, agent, model_name, tests_root = build_strategy_and_agent(
+            strategy_name=args.strategy_name,
+            reachability_metadata_path=reachability_metadata_path,
+            library=library,
+            group=group,
+            artifact=artifact,
+            version=new_version,
+            library_preparation_preflight_context=library_preparation_preflight_context,
+            explore=explore,
+            continuation_marker_path=args.continuation_marker_path,
+        )
+    assert agent is not None
+    assert model_name is not None
+    assert tests_root is not None
+    log_step_progress(PHASE_SETUP, STEP_NORMAL_SETUP, f"Setup ready for {library}")
 
     iterations = 0
     if explore:
-        print(f"[pipeline] Running dynamic-access exploration for {library}")
-        run_result = strategy_obj.run(agent=agent, checkpoint_commit_hash=checkpoint)
+        with run_step(PHASE_SETUP, STEP_RUN_WORKFLOW_ENGINE, operand=args.strategy_name):
+            log_step_progress(
+                PHASE_SETUP,
+                STEP_RUN_WORKFLOW_ENGINE,
+                f"Starting workflow {args.strategy_name} for {library}",
+            )
+            run_result = strategy_obj.run(agent=agent, checkpoint_commit_hash=checkpoint)
         explore_status, iterations = run_result[0], run_result[1]
         # Best-effort: a partial or failed explore must not abort. The seed is
         # already valid and the finalization gate decides PR eligibility.
         log_stage("explore", f"Dynamic-access exploration completed with status: {explore_status}")
         if explore_status != RUN_STATUS_SUCCESS:
+            clear_recorded_failure()
             save_phase_update(
                 args.continuation_marker_path,
                 lambda marker: marker.mark_phase_completed(PHASE_EXPLORE, iteration=iterations),
@@ -493,6 +528,11 @@ def main(argv=None) -> int:
                 continuation_marker_path=args.continuation_marker_path,
             )
     else:
+        log_step_progress(
+            PHASE_SETUP,
+            STEP_RUN_WORKFLOW_ENGINE,
+            f"Dynamic-access workflow not needed for {library}",
+        )
         save_phase_update(
             args.continuation_marker_path,
             lambda marker: marker.mark_phase_skipped(PHASE_EXPLORE),
@@ -514,7 +554,6 @@ def main(argv=None) -> int:
             agent=agent,
             model_name=model_name,
             global_iterations=iterations,
-            tests_root=tests_root,
             strategy_name=args.strategy_name,
             status=finalize_status,
             starting_commit=checkpoint,
@@ -524,7 +563,7 @@ def main(argv=None) -> int:
         )
     else:
         # Keep the generated working-tree state as the debugging surface for the
-        # next maintainer or Forge run (§WF-native-image-run-fix-workflow.5).
+        # next maintainer or Forge run (§AR-forge-driver-queues.4).
         print("[pipeline] Finalization failed. Skipping PR creation.", file=sys.stderr)
         ending_commit = subprocess.check_output(["git", "rev-parse", "HEAD"], text=True).strip()
         run_metrics = create_failure_run_metrics_output(

@@ -1,0 +1,98 @@
+{
+  "add_new_library_support:2026-06-27": {
+    "timestamp": "2026-06-27T22:53:39.851244Z",
+    "library": "org.apache.maven:maven-core:2.0.6",
+    "starting_commit": "e235e554680faee1e6350fc0fb10c0fa348e38a0",
+    "ending_commit": "7e5dd3e938045929a1f737dac654c35ec27475ae",
+    "strategy_name": "dynamic_access_main_sources_pi_gpt-5.5",
+    "agent": "pi",
+    "model": "oca/gpt-5.5",
+    "status": "success",
+    "stats": {
+      "version": "2.0.6",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 0.928571,
+            "coveredCalls": 13,
+            "totalCalls": 14
+          },
+          "resources": {
+            "coverageRatio": 0.5,
+            "coveredCalls": 2,
+            "totalCalls": 4
+          }
+        },
+        "coverageRatio": 0.833333,
+        "coveredCalls": 15,
+        "totalCalls": 18
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 942,
+          "missed": 12110,
+          "ratio": 0.072173,
+          "total": 13052
+        },
+        "line": {
+          "covered": 153,
+          "missed": 2732,
+          "ratio": 0.053033,
+          "total": 2885
+        },
+        "method": {
+          "covered": 34,
+          "missed": 337,
+          "ratio": 0.091644,
+          "total": 371
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "no_action",
+      "issue_number": 2189,
+      "issue_label": "library-new-request",
+      "library": "org.apache.maven:maven-core:2.0.6",
+      "summary": "maven-core:2.0.6 resolves its required Maven 2/Plexus/ClassWorlds/Wagon dependencies transitively, and basic meaningful usage is reachable with MavenCli plus a temporary POM without Docker, extra test dependencies, or environment/system properties.",
+      "deterministic_setup": [],
+      "agent_guidance": "No environment variables or system properties appear required. For meaningful coverage, prefer in-process Maven Core APIs such as org.apache.maven.cli.MavenCli with a org.codehaus.classworlds.ClassWorld and a temporary minimal pom.xml; a validate build on a no-goal project exercises core project scanning/container paths without needing external services.",
+      "risks": [
+        "Tests that execute real lifecycle phases or plugin goals may try to resolve Maven plugins from repositories; avoid network-dependent goals unless local Gradle/Native Image verification proves them hermetic.",
+        "Maven 2.0.6 is old and Plexus/component-discovery heavy, so native-image metadata may still be needed, but this is metadata generation work rather than pre-generation setup."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#2189 Support for org.apache.maven:maven-core:2.0.6; label=library-new-request; body_chars=178"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "oca/gpt-5.5",
+      "input_tokens_used": 37103,
+      "output_tokens_used": 4362,
+      "prompt_path": "library-preflight-prompt.txt",
+      "raw_response_path": "library-preflight-response.txt",
+      "session_log_path": "/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/logs/org.apache.maven:maven-core:2.0.6/library-preparation-preflight/pi-generation-2026-06-27T21-53-02-427678Z.log"
+    },
+    "metrics": {
+      "input_tokens_used": 457876,
+      "cached_input_tokens_used": 4188672,
+      "output_tokens_used": 39276,
+      "iterations": 18,
+      "cost_usd": 3.2726,
+      "generated_loc": 515,
+      "tested_library_loc": 153,
+      "metadata_entries": 11,
+      "code_coverage_percent": 5.3
+    },
+    "artifacts": {
+      "test_file": "tests/src/org.apache.maven/maven-core/2.0.6/src/test/java/org_apache_maven/maven_core/MavenAnonymous1Test.java",
+      "metadata_file": "metadata/org.apache.maven/maven-core/2.0.6/reachability-metadata.json"
+    }
+  }
+}

@@ -469,6 +469,18 @@ class ScaffoldTaskTests {
 
         ScaffoldTask initialTask = registerScaffoldTask(project, "scaffoldInitial", initialCoordinates);
         initialTask.run();
+        Path indexFile = tempDir.resolve("metadata/org.postgresql/postgresql/index.json");
+        List<Map<String, Object>> initialEntries = OBJECT_MAPPER.readValue(
+                indexFile.toFile(),
+                new TypeReference<>() {}
+        );
+        initialEntries.stream()
+                .filter(entry -> Boolean.TRUE.equals(entry.get("latest")))
+                .forEach(entry -> {
+                    entry.put("auto-update", true);
+                    entry.put("high-priority", true);
+                });
+        OBJECT_MAPPER.writerWithDefaultPrettyPrinter().writeValue(indexFile.toFile(), initialEntries);
 
         ScaffoldTask secondTask = registerScaffoldTask(project, "scaffoldSecond", secondCoordinates);
         secondTask.run();
@@ -481,11 +493,13 @@ class ScaffoldTaskTests {
         assertThat(indexEntries.get(0)).containsEntry("metadata-version", "42.7.2")
                 .containsEntry("tested-versions", List.of("42.7.2"))
                 .containsEntry("allowed-packages", List.of("org.postgresql"))
-                .doesNotContainKey("latest");
+                .doesNotContainKeys("latest", "auto-update", "high-priority");
         assertThat(indexEntries.get(1)).containsEntry("metadata-version", "42.7.3")
                 .containsEntry("tested-versions", List.of("42.7.3"))
                 .containsEntry("allowed-packages", List.of("org.postgresql"))
-                .containsEntry("latest", true);
+                .containsEntry("latest", true)
+                .containsEntry("auto-update", true)
+                .containsEntry("high-priority", true);
         assertThat(tempDir.resolve("tests/src/org.postgresql/postgresql/42.7.3/build.gradle")).exists();
         assertThat(tempDir.resolve("metadata/org.postgresql/postgresql/42.7.3/reachability-metadata.json")).exists();
         assertThat(Files.readString(tempDir.resolve("metadata/org.postgresql/postgresql/index.json"), StandardCharsets.UTF_8))

@@ -1,0 +1,94 @@
+{
+  "add_new_library_support:2026-06-28": {
+    "timestamp": "2026-06-28T11:04:12.723029Z",
+    "library": "io.smallrye.beanbag:smallrye-beanbag-maven:1.6.1",
+    "starting_commit": "7573b8c7d2d051f4bfa42b02846eb63a341cce4c",
+    "ending_commit": "39e35de54f3f334335d9e6b8b22bdc1d74223b4f",
+    "strategy_name": "dynamic_access_main_sources_pi_gpt-5.5",
+    "agent": "pi",
+    "model": "oca/gpt-5.5",
+    "status": "success",
+    "stats": {
+      "version": "1.6.1",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 7,
+            "totalCalls": 7
+          }
+        },
+        "coverageRatio": 1.0,
+        "coveredCalls": 7,
+        "totalCalls": 7
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 143,
+          "missed": 1823,
+          "ratio": 0.072737,
+          "total": 1966
+        },
+        "line": {
+          "covered": 35,
+          "missed": 318,
+          "ratio": 0.09915,
+          "total": 353
+        },
+        "method": {
+          "covered": 13,
+          "missed": 60,
+          "ratio": 0.178082,
+          "total": 73
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "no_action",
+      "issue_number": 3815,
+      "issue_label": "library-new-request",
+      "library": "io.smallrye.beanbag:smallrye-beanbag-maven:1.6.1",
+      "summary": "No extra dependency, Docker image, or environment/system property is needed: the artifact transitively brings SmallRye BeanBag/Sisu, Maven Resolver, Maven Wagon, Plexus, and related Maven components, and normal usage is in-process via MavenFactory.create(), getRepositorySystem(), settings/session helpers, and repository list creation.",
+      "deterministic_setup": [],
+      "agent_guidance": "No special environment setup is required. For stable tests, avoid depending on the host Maven installation or user Maven settings; prefer passing null or temporary settings/local-repository paths and avoid live remote artifact resolution unless explicitly needed.",
+      "risks": [
+        "Tests that read the real ~/.m2/settings.xml or maven.home may become host-dependent.",
+        "Tests that actually resolve artifacts from Maven Central introduce network flakiness; meaningful coverage can be reached with in-process factory/session/settings assertions instead.",
+        "Sisu/Plexus resource scanning is central to the library, so generated tests should exercise component lookup paths to let metadata generation observe reflective/resource access."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#3815 Support for io.smallrye.beanbag:smallrye-beanbag-maven:1.6.1; label=library-new-request; body_chars=117"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "oca/gpt-5.5",
+      "input_tokens_used": 52197,
+      "output_tokens_used": 4209,
+      "prompt_path": "library-preflight-prompt.txt",
+      "raw_response_path": "library-preflight-response.txt",
+      "session_log_path": "/home/vjovanov/c/forge/forge4/graalvm-reachability-metadata/forge/logs/io.smallrye.beanbag:smallrye-beanbag-maven:1.6.1/library-preparation-preflight/pi-generation-2026-06-28T10-49-50-924581Z.log"
+    },
+    "metrics": {
+      "input_tokens_used": 60053,
+      "cached_input_tokens_used": 984064,
+      "output_tokens_used": 7737,
+      "iterations": 1,
+      "cost_usd": 0.7241,
+      "generated_loc": 88,
+      "tested_library_loc": 35,
+      "metadata_entries": 1,
+      "code_coverage_percent": 9.92
+    },
+    "artifacts": {
+      "test_file": "tests/src/io.smallrye.beanbag/smallrye-beanbag-maven/1.6.1/src/test/java/io_smallrye_beanbag/smallrye_beanbag_maven/PlexusContainerImplTest.java",
+      "metadata_file": "metadata/io.smallrye.beanbag/smallrye-beanbag-maven/1.6.1/reachability-metadata.json"
+    }
+  }
+}

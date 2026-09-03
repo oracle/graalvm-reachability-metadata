@@ -12,6 +12,7 @@ import sys
 import time
 from typing import Any, Callable, Iterable, List
 from utility_scripts.library_stats import load_library_stats_entry
+from utility_scripts.stage_logger import debug_logging_enabled
 from utility_scripts.strategy_loader import load_strategy_by_name
 
 
@@ -477,6 +478,23 @@ def build_ai_branch_name(branch_suffix: str, cwd=None) -> str:
     return f"ai/{authenticated_login}/{branch_suffix}"
 
 
+def switch_branch_quietly(branch: str, cwd: str | None = None) -> None:
+    """Reset a branch without leaking Git narration in compact output.
+
+    §FS-forge-run-output-legibility.5
+    """
+    result = subprocess.run(
+        ["git", "switch", "-C", branch],
+        cwd=cwd,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT,
+        text=True,
+        check=True,
+    )
+    if debug_logging_enabled() and result.stdout:
+        print(result.stdout, end="")
+
+
 def git_remote_branch_exists(branch: str, remote: str = "origin", cwd: str | None = None) -> bool:
     """Return True when the remote has a branch with this name."""
     result = run_git_transport(
@@ -693,6 +711,28 @@ def resolve_github_repo_slug(repo_path: str | None = None, explicit_repo: str | 
     raise SystemExit(1)
 
 
+def find_remote_for_github_repo(repo: str, cwd: str | None = None) -> str:
+    """Return the local remote that points at the requested GitHub repository."""
+    result = subprocess.run(
+        ["git", "remote"],
+        capture_output=True,
+        text=True,
+        check=True,
+        cwd=cwd,
+    )
+    remote_names = result.stdout.splitlines()
+    ordered_names = [
+        *[name for name in ("origin", "upstream") if name in remote_names],
+        *[name for name in remote_names if name not in {"origin", "upstream"}],
+    ]
+    for remote_name in ordered_names:
+        remote_url = get_remote_url(remote_name, cwd=cwd)
+        remote_repo = _parse_github_repo_slug(remote_url or "")
+        if remote_repo is not None and remote_repo.lower() == repo.lower():
+            return remote_name
+    raise RuntimeError(f"No Git remote points at required upstream repository {repo}")
+
+
 def get_origin_owner(cwd=None):
     """Extract the repository owner from the ``origin`` remote URL.
 
@@ -710,14 +750,6 @@ def get_origin_owner(cwd=None):
         )
         raise SystemExit(1)
     return repo_slug.split("/", 1)[0]
-
-
-def get_configured_reviewers() -> list[str]:
-    """Return PR reviewers configured via ``METADATA_FORGE_PR_REVIEWERS``."""
-    raw_value = os.environ.get("METADATA_FORGE_PR_REVIEWERS", "")
-    if not raw_value.strip():
-        return []
-    return [reviewer.strip() for reviewer in raw_value.split(",") if reviewer.strip()]
 
 
 def git_files_under(repo_path: str, directory: str) -> list[str]:
@@ -835,63 +867,6 @@ def load_library_stats(repo_path, coordinates):
     """Load the full stats entry for the given coordinates from exploded stats files."""
     group, artifact, version = coordinates.split(":")
     return load_library_stats_entry(repo_path, group, artifact, version)
-
-
-def dynamic_access_category_regressions(
-        old_coordinates: str,
-        new_coordinates: str,
-        old_version_stats: dict | None,
-        new_version_stats: dict | None,
-) -> list[str]:
-    """Return fully covered dynamic-access categories that became uncovered."""
-    old_da = old_version_stats.get("dynamicAccess") if old_version_stats else None
-    new_da = new_version_stats.get("dynamicAccess") if new_version_stats else None
-    if not is_dynamic_access_stats_entry(old_da) or not is_dynamic_access_stats_entry(new_da):
-        return []
-
-    regressions = []
-    old_breakdown = old_da.get("breakdown", {})
-    new_breakdown = new_da.get("breakdown", {})
-    for category in sorted(set(old_breakdown.keys()) & set(new_breakdown.keys())):
-        old_category = old_breakdown.get(category)
-        new_category = new_breakdown.get(category)
-        if not is_dynamic_access_stats_entry(old_category) or not is_dynamic_access_stats_entry(new_category):
-            continue
-        old_total = int(old_category.get("totalCalls", 0))
-        new_total = int(new_category.get("totalCalls", 0))
-        old_covered = int(old_category.get("coveredCalls", 0))
-        new_covered = int(new_category.get("coveredCalls", 0))
-        if old_total <= 0 or new_total <= 0:
-            continue
-        if old_covered == old_total and new_covered < new_total:
-            regressions.append(
-                f"{category}: `{old_coordinates}` was {format_dynamic_access_entry(old_category)}, "
-                f"but `{new_coordinates}` is {format_dynamic_access_entry(new_category)}"
-            )
-    return regressions
-
-
-def assert_no_dynamic_access_category_regressions(
-        repo_path: str,
-        old_coordinates: str,
-        new_coordinates: str,
-) -> None:
-    """Fail PR publication if old/new stats show a dynamic-access category regression."""
-    old_version_stats = load_library_stats(repo_path, old_coordinates)
-    new_version_stats = load_library_stats(repo_path, new_coordinates)
-    regressions = dynamic_access_category_regressions(
-        old_coordinates,
-        new_coordinates,
-        old_version_stats,
-        new_version_stats,
-    )
-    if regressions:
-        regression_lines = "\n".join(f"- {regression}" for regression in regressions)
-        raise RuntimeError(
-            "Dynamic-access category regression detected between old and new library stats:\n"
-            f"{regression_lines}\n"
-            "Restore the category coverage or route the PR to human intervention with an explicit explanation."
-        )
 
 
 def format_dynamic_access_entry(stats):

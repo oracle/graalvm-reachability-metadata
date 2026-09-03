@@ -4,7 +4,7 @@
 # You should have received a copy of the CC0 legalcode along with this
 # work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 
-# CI Docker isolation helper for metadata tests. §CI-shared-scripts.
+# CI Docker isolation helper for metadata tests. §AR-shared-scripts.
 # Enforces the no-network test invariant in §FS-repository-functional-spec.5.3.
 
 # Purpose:

@@ -14,7 +14,7 @@ Usage:
     [--reachability-metadata-path /path/to/graalvm-reachability-metadata] \
     [--metrics-repo-path /path/to/metrics-storage] \
     [--docs-path /path/to/docs] \
-    [--strategy-name "library_update_pi_gpt-5.5"] \
+    [--strategy-name "library_update_optimistic_pi_gpt-5.6-sol"] \
     [-v]
 """
 
@@ -26,7 +26,7 @@ import re
 import shutil
 import subprocess
 import sys
-from typing import Any, Callable
+from typing import Any
 
 if __package__ in (None, ""):
     sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
@@ -41,7 +41,13 @@ from ai_workflows.core.workflow_strategy import (
     WorkflowStrategy,
     strategy_skips_initial_fix_phase,
 )
-from git_scripts.common_git import build_ai_branch_name, delete_remote_branch_if_exists, ensure_gh_authenticated, load_library_stats
+from git_scripts.common_git import (
+    build_ai_branch_name,
+    delete_remote_branch_if_exists,
+    ensure_gh_authenticated,
+    load_library_stats,
+    switch_branch_quietly,
+)
 from utility_scripts import metrics_writer
 from utility_scripts.continuation_marker import (
     PHASE_FINALIZATION,
@@ -50,6 +56,7 @@ from utility_scripts.continuation_marker import (
     save_phase_update,
 )
 from utility_scripts.dynamic_access_exhaust_report import resolve_workflow_exhaust_report
+from utility_scripts.gradle_environment import gradle_command_environment
 from utility_scripts.issue_requested_metadata import (
     NO_REPORTER_METADATA_CONTEXT,
     format_issue_requested_test_requirements,
@@ -58,14 +65,25 @@ from utility_scripts.library_preparation_preflight import (
     prepare_library_preparation_preflight,
 )
 from utility_scripts.library_stats import stats_artifact_dir
+from utility_scripts.logged_command import run_logged_command
 from utility_scripts.metadata_index import (
     MATCH_NEW_VERSION,
     LibraryUpdateTarget,
     is_newer_than_latest_metadata_version,
     load_index_entries,
     resolve_library_update_target,
+    resolve_version_backfill_baseline,
 )
 from utility_scripts.metrics_writer import count_metadata_entries, count_test_only_metadata_entries, create_failure_run_metrics_output
+from utility_scripts.run_location import (
+    STEP_NORMAL_SETUP,
+    STEP_RUN_WORKFLOW_ENGINE,
+    RunLocation,
+    enter_phase,
+    log_step_progress,
+    record_step_failure,
+    run_step,
+)
 from utility_scripts.source_context import (
     normalize_source_context_types,
     populate_artifact_urls,
@@ -73,7 +91,7 @@ from utility_scripts.source_context import (
     resolve_test_source_layout,
     source_context_urls_available,
 )
-from utility_scripts.stage_logger import log_stage
+from utility_scripts.stage_logger import log_detail, log_stage
 from utility_scripts.strategy_loader import require_strategy_by_name
 from utility_scripts.workflow_setup import (
     list_all_files,
@@ -83,8 +101,8 @@ from utility_scripts.workflow_setup import (
 )
 from utility_scripts.worktree_reset import reset_worktree_preserving_paths
 
-DEFAULT_MODEL_NAME = "oca/gpt-5.5"
-DEFAULT_STRATEGY_NAME = "library_update_pi_gpt-5.5"
+DEFAULT_MODEL_NAME = "gpt-5.6-sol"
+DEFAULT_STRATEGY_NAME = "library_update_optimistic_pi_gpt-5.6-sol"
 METRICS_TASK_TYPE = "improve_library_coverage"
 BASELINE_STATS_FILENAME = ".baseline-stats.json"
 LIBRARY_UPDATE_TARGET_FILENAME = ".library_update_target.json"
@@ -228,81 +246,8 @@ def _version_is_at_or_after(version: str, requested_version: str) -> bool:
     return _padded_version_numbers(version) >= _padded_version_numbers(requested_version)
 
 
-def _is_supported_index_entry(entry: dict[str, Any]) -> bool:
-    metadata_version = entry.get("metadata-version")
-    return isinstance(metadata_version, str) and bool(metadata_version)
-
-
 def _entry_test_version(entry: dict[str, Any]) -> str:
     return str(entry.get("test-version") or entry.get("metadata-version"))
-
-
-def _usable_clone_entry(repo_path: str, group: str, artifact: str, entry: dict[str, Any]) -> bool:
-    metadata_version = str(entry.get("metadata-version") or "")
-    if not metadata_version:
-        return False
-    test_version = _entry_test_version(entry)
-    metadata_dir = os.path.join(repo_path, "metadata", group, artifact, metadata_version)
-    test_dir = os.path.join(repo_path, "tests", "src", group, artifact, test_version)
-    return os.path.isdir(metadata_dir) and os.path.isdir(test_dir)
-
-
-def _closest_entry(
-        entries: list[dict[str, Any]],
-        requested_version: str,
-        predicate: Callable[[tuple[int, ...]], bool],
-) -> dict[str, Any] | None:
-    candidates = [entry for entry in entries if predicate(_padded_version_numbers(str(entry["metadata-version"])))]
-    if not candidates:
-        return None
-    requested_numbers = _padded_version_numbers(requested_version)
-
-    def rank(entry: dict[str, Any]) -> tuple[tuple[int, ...], tuple[int, ...]]:
-        candidate_numbers = _padded_version_numbers(str(entry["metadata-version"]))
-        distance = tuple(abs(candidate - requested) for candidate, requested in zip(candidate_numbers, requested_numbers))
-        descending_candidate = tuple(-part for part in candidate_numbers)
-        return distance, descending_candidate
-
-    return min(candidates, key=rank)
-
-
-def select_clone_baseline_entry(
-        repo_path: str,
-        group: str,
-        artifact: str,
-        requested_version: str,
-) -> dict[str, Any] | None:
-    """Select the closest compatible existing support to clone for a new version."""
-    entries = load_index_entries(repo_path, group, artifact) or []
-    usable_entries = [
-        entry for entry in entries
-        if isinstance(entry, dict) and _is_supported_index_entry(entry)
-        and _usable_clone_entry(repo_path, group, artifact, entry)
-    ]
-    if not usable_entries:
-        return None
-
-    requested_numbers = _padded_version_numbers(requested_version)
-    same_major_minor = _closest_entry(
-        usable_entries,
-        requested_version,
-        lambda numbers: numbers[:2] == requested_numbers[:2],
-    )
-    if same_major_minor is not None:
-        return same_major_minor
-
-    same_major = _closest_entry(
-        usable_entries,
-        requested_version,
-        lambda numbers: numbers[:1] == requested_numbers[:1],
-    )
-    if same_major is not None:
-        return same_major
-
-    latest_entries = [entry for entry in usable_entries if entry.get("latest") is True]
-    if latest_entries:
-        return latest_entries[0]
-    return None
 
 
 def _copytree_replace(destination: str, source: str) -> None:
@@ -485,16 +430,25 @@ def _write_index_entries(repo_path: str, group: str, artifact: str, entries: lis
 
 
 def _run_scaffold(repo_path: str, coordinate: str) -> None:
-    """Run the Gradle scaffold task with a clear failure message."""
+    """Run scaffold quietly with a durable log and clear failure.
+
+    §FS-forge-run-output-legibility §FS-durable-generation-logs
+    """
     command = ["./gradlew", "scaffold", "--coordinates", coordinate]
-    log_stage("library-update-target", f"Running scaffold command: {' '.join(command)}")
-    try:
-        subprocess.run(command, cwd=repo_path, check=True)
-    except subprocess.CalledProcessError as error:
+    result = run_logged_command(
+        command,
+        cwd=repo_path,
+        task_type="library-update-target",
+        subject=coordinate,
+        action="scaffold",
+        env=gradle_command_environment(repo_path),
+        stage="library-update-target",
+    )
+    if result.returncode != 0:
         raise RuntimeError(
             "Failed to scaffold library-update target "
-            f"{coordinate}; command exited with status {error.returncode}: {' '.join(command)}"
-        ) from error
+            f"{coordinate}; command exited with status {result.returncode}: {' '.join(command)}"
+        )
 
 
 def clone_library_update_support(
@@ -588,7 +542,7 @@ def prepare_library_update_target(
     )
     if must_split_shared_target and target.matched_entry is not None:
         clone_library_update_support(repo_path, group, artifact, requested_version, target.matched_entry)
-        log_stage(
+        log_detail(
             "library-update-target",
             "Split {group}:{artifact}:{requested_version} from shared metadata-version {metadata_version} "
             "for version-specific library-update coverage".format(
@@ -611,21 +565,23 @@ def prepare_library_update_target(
     if target.match_type != MATCH_NEW_VERSION:
         return target
 
-    baseline_entry = select_clone_baseline_entry(repo_path, group, artifact, requested_version)
-    if baseline_entry is not None:
-        clone_library_update_support(repo_path, group, artifact, requested_version, baseline_entry)
-        log_stage(
+    baseline = resolve_version_backfill_baseline(repo_path, group, artifact, requested_version)
+    if baseline is not None:
+        clone_library_update_support(repo_path, group, artifact, requested_version, baseline.entry)
+        log_detail(
             "library-update-target",
-            "Cloned support for {group}:{artifact}:{requested_version} from metadata-version {metadata_version}".format(
+            "Cloned support for {group}:{artifact}:{requested_version} from {baseline_coordinates}; "
+            "reason: {reason}".format(
                 group=group,
                 artifact=artifact,
                 requested_version=requested_version,
-                metadata_version=baseline_entry.get("metadata-version"),
+                baseline_coordinates=f"{group}:{artifact}:{baseline.test_version}",
+                reason=baseline.reason,
             ),
         )
     else:
         coordinate = f"{group}:{artifact}:{requested_version}"
-        log_stage("library-update-target", f"No compatible support found; scaffolding {coordinate}")
+        log_detail("library-update-target", f"No compatible support found; scaffolding {coordinate}")
         _run_scaffold(repo_path, coordinate)
 
     return target
@@ -702,8 +658,8 @@ def format_issue_requested_metadata_context(context: str) -> str:
 def main(argv=None) -> int:
     """Run one library-update coverage workflow from setup through metrics.
 
-    The single-run driver (§WF-forge-workflow-drivers) for
-    §WF-improve-library-coverage.
+    The single-run driver (§AR-forge-drivers) for
+    §AR-forge-driver-queues.2.
     """
     (
         group,
@@ -727,6 +683,7 @@ def main(argv=None) -> int:
     resume_from = None if continuation_marker is None else continuation_marker.continue_from
     resume_existing_tree = resume_from in {"fix", "explore", PHASE_FINALIZATION, "publication"}
     resume_finalization = resume_from == PHASE_FINALIZATION
+    enter_phase(PHASE_SETUP)
     reachability_repo_path, metrics_repo_dir, metrics_repo_root = resolve_workflow_repo_paths(
         explicit_repo_path,
         explicit_metrics_repo_path,
@@ -752,7 +709,13 @@ def main(argv=None) -> int:
     validate_repo_paths(reachability_repo_path, metrics_repo_dir)
     os.chdir(reachability_repo_path)
 
-    log_stage("setup", f"Selected strategy: {strategy_name}")
+    log_detail("setup", f"Selected strategy: {strategy_name}")
+    setup_action = (
+        "Reusing prepared coverage workspace"
+        if resume_existing_tree
+        else "Preparing coverage workspace"
+    )
+    log_step_progress(PHASE_SETUP, STEP_NORMAL_SETUP, f"{setup_action} for {library}")
     update_target = prepare_library_update_target(
         reachability_repo_path,
         group,
@@ -761,7 +724,7 @@ def main(argv=None) -> int:
         issue_requested_metadata_context=issue_requested_metadata_context,
     )
     if update_target.match_type != MATCH_NEW_VERSION:
-        log_stage(
+        log_detail(
             "library-update-target",
             (
                 f"Using {update_target.match_type} target: "
@@ -771,12 +734,14 @@ def main(argv=None) -> int:
         )
     model_name = strategy.get("model") or DEFAULT_MODEL_NAME
     if not resume_existing_tree:
-        # Create feature branch
-        new_branch = build_ai_branch_name(f"improve-coverage-{group}-{artifact}-{version}")
-        delete_remote_branch_if_exists(new_branch)
-        subprocess.run(["git", "switch", "-C", new_branch], check=True)
+        # Branching the improvement run is its model-free setup.
+        # §FS-forge-run-location-reporting.2
+        with run_step(PHASE_SETUP, STEP_NORMAL_SETUP, operand=library):
+            new_branch = build_ai_branch_name(f"improve-coverage-{group}-{artifact}-{version}")
+            delete_remote_branch_if_exists(new_branch)
+            switch_branch_quietly(new_branch)
     else:
-        log_stage("continuation", f"Resuming {library} from preserved branch at phase {resume_from}")
+        log_detail("continuation", f"Resuming {library} from preserved branch at phase {resume_from}")
 
     # Commit existing state as checkpoint
     test_version = update_target.resolved_test_version
@@ -795,9 +760,10 @@ def main(argv=None) -> int:
             ),
             file=sys.stderr,
         )
+        record_step_failure(location=RunLocation(PHASE_SETUP, STEP_NORMAL_SETUP, library))
         return 1
     if test_version != version:
-        log_stage(
+        log_detail(
             "setup",
             "Using indexed test directory tests/src/{group}/{artifact}/{test_version} for {library}".format(
                 group=group,
@@ -815,8 +781,9 @@ def main(argv=None) -> int:
                 f"{os.path.relpath(baseline_stats_path, reachability_repo_path)}",
                 file=sys.stderr,
             )
+            record_step_failure(location=RunLocation(PHASE_SETUP, STEP_NORMAL_SETUP, library))
             return 1
-        log_stage("setup", f"Reusing cached baseline snapshot from {BASELINE_STATS_FILENAME}")
+        log_detail("setup", f"Reusing cached baseline snapshot from {BASELINE_STATS_FILENAME}")
     else:
         # Snapshot baseline stats and metadata entry counts before the workflow modifies them.
         baseline_stats = load_library_stats(reachability_repo_path, library)
@@ -829,7 +796,7 @@ def main(argv=None) -> int:
         }
         with open(baseline_stats_path, "w", encoding="utf-8") as f:
             json.dump(baseline_snapshot, f, indent=2)
-        log_stage("setup", f"Saved baseline snapshot to {BASELINE_STATS_FILENAME}")
+        log_detail("setup", f"Saved baseline snapshot to {BASELINE_STATS_FILENAME}")
     if not resume_existing_tree:
         subprocess.run(["git", "add", tests_dir, index_json], check=False)
         subprocess.run(
@@ -837,7 +804,7 @@ def main(argv=None) -> int:
             capture_output=True, text=True, check=False,
         )
     checkpoint_commit = subprocess.check_output(["git", "rev-parse", "HEAD"], text=True).strip()
-    log_stage("setup", f"Checkpoint commit: {checkpoint_commit}")
+    log_detail("setup", f"Checkpoint commit: {checkpoint_commit}")
     if not resume_existing_tree:
         save_phase_update(
             continuation_marker_path,
@@ -854,7 +821,7 @@ def main(argv=None) -> int:
     ):
         populate_artifact_urls(reachability_repo_path, library)
     else:
-        log_stage(
+        log_detail(
             "populate-artifact-urls",
             f"Skipping artifact URL population for resumed {library}; index.json already has requested source-context URLs.",
         )
@@ -911,7 +878,7 @@ def main(argv=None) -> int:
     read_only_files = list_all_files(docs_path) if docs_path else []
     read_only_files.extend(prepared_source_context.read_only_files)
 
-    log_stage("init-agent", f"Initializing {strategy_agent} agent")
+    log_detail("init-agent", f"Initializing {strategy_agent} agent")
     agent_class = Agent.get_class(strategy_agent)
     agent = agent_class(
         model_name=model_name,
@@ -924,16 +891,30 @@ def main(argv=None) -> int:
         verbose=is_verbose,
         mcps=strategy.get("mcps", []),
         persistent_instructions=strategy_obj.persistent_instructions,
+        thinking_level=strategy.get("thinking-level"),
+        agent_name=strategy.get("agent-command"),
     )
 
+    log_step_progress(PHASE_SETUP, STEP_NORMAL_SETUP, f"Setup ready for {library}")
     if resume_finalization:
+        log_step_progress(
+            PHASE_SETUP,
+            STEP_RUN_WORKFLOW_ENGINE,
+            f"Reusing completed workflow for {strategy_name}",
+        )
         workflow_status = RUN_STATUS_SUCCESS
         iterations = 0
     else:
-        run_result = strategy_obj.run(
-            agent=agent,
-            checkpoint_commit_hash=checkpoint_commit,
-        )
+        with run_step(PHASE_SETUP, STEP_RUN_WORKFLOW_ENGINE, operand=strategy_name):
+            log_step_progress(
+                PHASE_SETUP,
+                STEP_RUN_WORKFLOW_ENGINE,
+                f"Starting workflow {strategy_name} for {library}",
+            )
+            run_result = strategy_obj.run(
+                agent=agent,
+                checkpoint_commit_hash=checkpoint_commit,
+            )
         workflow_status, iterations = run_result[0], run_result[1]
 
     if workflow_status in {RUN_STATUS_SUCCESS, RUN_STATUS_CHUNK_READY}:
@@ -962,9 +943,9 @@ def main(argv=None) -> int:
         )
     else:
         if workflow_status == SUCCESS_WITH_INTERVENTION_STATUS:
-            log_stage("status", "Coverage improvement produced PR-eligible post-generation intervention output")
+            log_detail("status", "Coverage improvement produced PR-eligible post-generation intervention output")
         else:
-            log_stage("status", "Coverage improvement succeeded")
+            log_detail("status", "Coverage improvement succeeded")
         run_metrics = metrics_writer.create_run_metrics_output_json(
             repo_path=reachability_repo_path,
             package=group,
@@ -973,7 +954,6 @@ def main(argv=None) -> int:
             agent=agent,
             model_name=model_name,
             global_iterations=iterations,
-            tests_root=test_source_layout.source_root,
             strategy_name=strategy_name,
             status=workflow_status,
             starting_commit=checkpoint_commit,

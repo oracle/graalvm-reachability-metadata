@@ -1,0 +1,160 @@
+grund_config_version = 1
+project_name = "root"
+project_description = "Repository for shared GraalVM reachability metadata, tests, and release infrastructure"
+
+[workspace]
+members = ["forge"]
+include_root = true
+
+[reference]
+marker = "§"
+trigger = "$$"
+strict = true
+require_grounding = false
+inline_style = "citation-with-note" # citation-with-note | citation-only
+inline_note_suggested_lines = 1
+inline_note_max_lines = 3
+inline_note_max_columns = 100
+warn_on_suggested = false
+
+[id]
+format = "{kind}-{slug}" # placeholders: {kind} required; use {number}, {slug}, or both
+section_separator = "."
+section_heading_levels = "strict" # strict | warn | loose
+number_pattern = "\\d+"
+slug_pattern = "[a-z0-9][a-z0-9-]*"
+
+[[kinds]]
+kind = "GRUND"
+file = "docs/grund.md"
+title = "Why: repository motivation"
+
+[[kinds]]
+kind = "GOAL"
+file = "docs/goals.md"
+title = "Where: repository direction and outcomes"
+
+[[kinds]]
+kind = "PRCPL"
+file = "docs/principles.md"
+title = "Cross-cutting principles for how the repository works"
+
+[[kinds]]
+kind = "FS"
+folder = "docs/functional-spec"
+title = "Repository functional behavior and contributor-facing requirements"
+
+[[kinds]]
+kind = "AR"
+folder = "docs/architecture"
+title = "Repository architecture and build infrastructure"
+
+[[kinds]]
+kind = "SKILL"
+folder = "skills"
+citable = false
+title = "Agent review and automation skills"
+
+[[kinds]]
+kind = "workflow"
+folder = ".github/workflows"
+citable = false
+title = "CI and release workflows: the gate on GitHub"
+
+[[kinds]]
+kind = "action"
+folder = ".github/actions"
+citable = false
+title = "Composite actions the workflows reuse"
+
+# Places that are listed, not walked: content that ships verbatim or is generated.
+[[kinds]]
+kind = "metadata"
+folder = "metadata"
+citable = false
+scan = false
+title = "The shipped reachability metadata, verbatim"
+
+[[kinds]]
+kind = "tests"
+folder = "tests"
+citable = false
+scan = false
+title = "Per-library test projects that justify the metadata"
+
+[[kinds]]
+kind = "tck-build-logic"
+folder = "tests/tck-build-logic"
+citable = false
+title = "The TCK harness build logic the test projects run on"
+
+[[kinds]]
+kind = "stats"
+folder = "stats"
+citable = false
+scan = false
+title = "Generated library statistics"
+
+[[kinds]]
+kind = "asset"
+folder = "docs/assets"
+citable = false
+scan = false
+title = "README images, shipped verbatim"
+
+# The homeless kind: every citation site outside every home above.
+[[kinds]]
+kind = "code"
+citable = false
+title = "Build files and repository scripts outside a kind home"
+
+[scan]
+include = ["AGENTS.md", "README.md", "COVERAGE.md", "docs", "skills", ".github/workflows", ".github/actions", "build.gradle"]
+exclude = ["target", "node_modules", ".git", "dist", "build", ".venv", ".gradle", "out", "forge/.venv", "forge/**/__pycache__"]
+extensions = ["md", "html", "yml", "yaml", "gradle", "sh", "js"]
+comment_prefixes = ["//", "#", "/*", "*", "<!--"]
+docstring_python = false
+respect_gitignore = true
+
+[output]
+format = "text" # text | json
+color = "auto" # auto | always | never
+relative_paths = true
+
+[fmt.cross_refs]
+enabled = false
+anchor_format = "github" # github | gitlab | mkdocs | pandoc | none
+
+[citations]
+default = "may"
+
+[citations.GOAL]
+must = ["GRUND"]
+
+[citations.PRCPL]
+must = ["GOAL"]
+
+[citations.FS]
+should = ["GOAL|FS"]
+
+[citations.AR]
+must = ["FS|GOAL"]
+
+[citations.SKILL]
+must = ["FS"]
+should = ["AR"]
+
+[citations.workflow]
+should = ["FS|AR"]
+
+[citations.action]
+should = ["FS|AR"]
+
+# No [citations.tck-build-logic] rule: a file here sits in two homes, `tests`
+# and `tck-build-logic`, and grund reads a nested home as ambiguity rather than
+# most-specific-wins, so these files classify as `code`. The rule below governs
+# them; restore this one when grund resolves the nesting.
+
+[citations.code]
+must = ["FS"]
+should = ["AR"]

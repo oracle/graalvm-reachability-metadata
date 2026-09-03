@@ -21,12 +21,19 @@ from utility_scripts.metadata_index import (
     MATCH_METADATA_VERSION,
     MATCH_NEW_VERSION,
     MATCH_TESTED_VERSION,
+    require_version_backfill_baseline,
     resolve_library_update_target,
+    resolve_version_backfill_baseline,
 )
 
 
-def _write_index(repo_path: str, entries: list[dict]) -> str:
-    index_dir = os.path.join(repo_path, "metadata", "org.example", "demo")
+def _write_index(
+        repo_path: str,
+        entries: list[dict],
+        group: str = "org.example",
+        artifact: str = "demo",
+) -> str:
+    index_dir = os.path.join(repo_path, "metadata", group, artifact)
     os.makedirs(index_dir, exist_ok=True)
     index_path = os.path.join(index_dir, "index.json")
     with open(index_path, "w", encoding="utf-8") as file:
@@ -41,6 +48,199 @@ def _write_file(path: str, content: str = "") -> None:
 
 
 class LibraryUpdateTargetTests(unittest.TestCase):
+    def test_netty_backfill_ignores_latest_next_major_prerelease(self) -> None:
+        with tempfile.TemporaryDirectory() as repo:
+            group = "io.netty"
+            artifact = "netty-common"
+            index_dir = os.path.join(repo, "metadata", group, artifact)
+            os.makedirs(index_dir, exist_ok=True)
+            with open(os.path.join(index_dir, "index.json"), "w", encoding="utf-8") as index_file:
+                json.dump([
+                    {
+                        "metadata-version": "4.1.100.Final",
+                        "tested-versions": ["4.1.100.Final"],
+                    },
+                    {
+                        "metadata-version": "4.1.115.Final",
+                        "tested-versions": ["4.1.115.Final", "4.1.130.Final"],
+                    },
+                    {
+                        "metadata-version": "4.1.140.Final",
+                        "tested-versions": ["4.1.140.Final"],
+                    },
+                    {
+                        "latest": True,
+                        "metadata-version": "5.0.0.Alpha1",
+                        "tested-versions": ["5.0.0.Alpha1"],
+                    },
+                ], index_file)
+            for version in ["4.1.100.Final", "4.1.115.Final", "4.1.140.Final", "5.0.0.Alpha1"]:
+                _write_file(os.path.join(repo, "metadata", group, artifact, version, "reachability-metadata.json"))
+                _write_file(os.path.join(repo, "tests", "src", group, artifact, version, "build.gradle"))
+
+            baseline = require_version_backfill_baseline(
+                repo,
+                group,
+                artifact,
+                "4.1.132.Final",
+            )
+
+            self.assertEqual(baseline.metadata_version, "4.1.115.Final")
+            self.assertEqual(baseline.test_version, "4.1.115.Final")
+            self.assertEqual(baseline.match_type, "same-major-minor")
+            self.assertIn("nearest prior same major/minor", baseline.reason)
+
+    def test_backfill_accepts_common_maven_version_suffixes(self) -> None:
+        cases = [
+            (
+                "33.7.0-jre",
+                ["33.5.0-jre", "33.6.0-jre", "34.0.0-jre"],
+                "33.6.0-jre",
+                "same-major",
+            ),
+            (
+                "12.8.2.jre11",
+                ["12.8.0.jre8", "12.8.1.jre11", "12.9.0.jre11"],
+                "12.8.1.jre11",
+                "same-major-minor",
+            ),
+            (
+                "1.5.5.Final-format-002",
+                ["1.5.3.Final-format-001", "1.5.4.Final-format-002"],
+                "1.5.4.Final-format-002",
+                "same-major-minor",
+            ),
+            (
+                "r10",
+                ["r06", "r09"],
+                "r09",
+                "same-major",
+            ),
+        ]
+
+        for requested_version, supported_versions, expected_version, expected_match_type in cases:
+            with self.subTest(requested_version=requested_version), tempfile.TemporaryDirectory() as repo:
+                _write_index(repo, [
+                    {
+                        "metadata-version": version,
+                        "tested-versions": [version],
+                    }
+                    for version in supported_versions
+                ])
+                for version in supported_versions:
+                    _write_file(os.path.join(
+                        repo,
+                        "metadata",
+                        "org.example",
+                        "demo",
+                        version,
+                        "metadata.json",
+                    ))
+                    _write_file(os.path.join(
+                        repo,
+                        "tests",
+                        "src",
+                        "org.example",
+                        "demo",
+                        version,
+                        "build.gradle",
+                    ))
+
+                baseline = require_version_backfill_baseline(
+                    repo,
+                    "org.example",
+                    "demo",
+                    requested_version,
+                )
+
+                self.assertEqual(baseline.supported_version, expected_version)
+                self.assertEqual(baseline.match_type, expected_match_type)
+                self.assertIn("nearest prior", baseline.reason)
+
+    def test_backfill_fails_when_only_cross_major_suite_is_usable(self) -> None:
+        with tempfile.TemporaryDirectory() as repo:
+            _write_index(repo, [{
+                "latest": True,
+                "metadata-version": "2.0.0-RC1",
+                "tested-versions": ["2.0.0-RC1"],
+            }])
+            _write_file(os.path.join(repo, "metadata", "org.example", "demo", "2.0.0-RC1", "metadata.json"))
+            _write_file(os.path.join(repo, "tests", "src", "org.example", "demo", "2.0.0-RC1", "build.gradle"))
+
+            baseline = resolve_version_backfill_baseline(repo, "org.example", "demo", "1.9.9")
+
+            self.assertIsNone(baseline)
+            with self.assertRaisesRegex(RuntimeError, "cross-major `latest` entry"):
+                require_version_backfill_baseline(repo, "org.example", "demo", "1.9.9")
+
+    def test_exact_tested_version_owner_wins_over_nearer_entry(self) -> None:
+        with tempfile.TemporaryDirectory() as repo:
+            _write_index(repo, [
+                {
+                    "metadata-version": "1.0.0",
+                    "tested-versions": ["1.2.4"],
+                },
+                {
+                    "latest": True,
+                    "metadata-version": "1.2.3",
+                    "tested-versions": ["1.2.3"],
+                },
+            ])
+            for version in ["1.0.0", "1.2.3"]:
+                _write_file(os.path.join(repo, "metadata", "org.example", "demo", version, "metadata.json"))
+                _write_file(os.path.join(repo, "tests", "src", "org.example", "demo", version, "build.gradle"))
+
+            baseline = require_version_backfill_baseline(repo, "org.example", "demo", "1.2.4")
+
+            self.assertEqual(baseline.metadata_version, "1.0.0")
+            self.assertEqual(baseline.match_type, MATCH_TESTED_VERSION)
+            self.assertIn("exact tested-version ownership", baseline.reason)
+
+    def test_test_version_alias_does_not_claim_compatibility_for_metadata_entry(self) -> None:
+        with tempfile.TemporaryDirectory() as repo:
+            _write_index(repo, [
+                {
+                    "latest": True,
+                    "metadata-version": "4.2.1.Final",
+                    "test-version": "4.1.74.Final",
+                    "tested-versions": ["4.2.1.Final"],
+                },
+                {
+                    "metadata-version": "4.1.74.Final",
+                    "tested-versions": ["4.1.74.Final"],
+                },
+            ], group="io.netty", artifact="netty-codec-memcache")
+            for version in ["4.2.1.Final", "4.1.74.Final"]:
+                _write_file(os.path.join(
+                    repo,
+                    "metadata",
+                    "io.netty",
+                    "netty-codec-memcache",
+                    version,
+                    "reachability-metadata.json",
+                ))
+            _write_file(os.path.join(
+                repo,
+                "tests",
+                "src",
+                "io.netty",
+                "netty-codec-memcache",
+                "4.1.74.Final",
+                "build.gradle",
+            ))
+
+            baseline = require_version_backfill_baseline(
+                repo,
+                "io.netty",
+                "netty-codec-memcache",
+                "4.1.75.Final",
+            )
+
+            self.assertEqual(baseline.metadata_version, "4.1.74.Final")
+            self.assertEqual(baseline.test_version, "4.1.74.Final")
+            self.assertEqual(baseline.supported_version, "4.1.74.Final")
+            self.assertEqual(baseline.match_type, "same-major-minor")
+
     def test_issue_requested_metadata_context_includes_mandatory_test_coverage(self) -> None:
         context = format_issue_requested_metadata_context(
             "Caused by: org.graalvm.nativeimage.MissingReflectionRegistrationError: "
@@ -524,10 +724,11 @@ class LibraryUpdateTargetTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as repo:
             _write_index(repo, [])
 
-            def fail_scaffold(command, **kwargs):  # type: ignore[no-untyped-def]
-                raise subprocess.CalledProcessError(17, command)
-
-            with patch("ai_workflows.drivers.improve_library_coverage.subprocess.run", side_effect=fail_scaffold):
+            failed_result = subprocess.CompletedProcess(["./gradlew"], 17)
+            with patch(
+                    "ai_workflows.drivers.improve_library_coverage.run_logged_command",
+                    return_value=failed_result,
+            ):
                 with self.assertRaisesRegex(
                         RuntimeError,
                         "Failed to scaffold library-update target org.example:demo:9.9.9",

@@ -1,0 +1,881 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/oracle/graalvm-reachability-metadata/.github/scripts/forge_pr_publisher/schema.json",
+  "title": "Forge publication descriptor",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "publication_id",
+    "timestamp",
+    "branch",
+    "producer",
+    "base_commit",
+    "issue_number",
+    "library",
+    "task_type",
+    "template_type",
+    "metrics",
+    "local_ci_verification",
+    "forge",
+    "modifiers",
+    "follow_ups",
+    "render"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": 1
+    },
+    "publication_id": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9-]{7,79}$"
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "branch": {
+      "type": "string",
+      "pattern": "^ai/[A-Za-z0-9](?:[A-Za-z0-9-]{0,38})/[A-Za-z0-9][A-Za-z0-9._/-]{0,199}$"
+    },
+    "producer": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9](?:[A-Za-z0-9-]{0,38})$"
+    },
+    "base_commit": {
+      "$ref": "#/$defs/commit"
+    },
+    "issue_number": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "library": {
+      "$ref": "#/$defs/library"
+    },
+    "previous_library": {
+      "$ref": "#/$defs/library"
+    },
+    "task_type": {
+      "enum": [
+        "library-new-request",
+        "library-update-request",
+        "fixes-javac-fail",
+        "fixes-java-run-fail",
+        "fixes-native-image-run-fail",
+        "not-for-native-image",
+        "code-coverage-improvement"
+      ]
+    },
+    "template_type": {
+      "enum": [
+        "library-new-request",
+        "library-update-request",
+        "fixes-javac-fail",
+        "fixes-java-run-fail",
+        "fixes-native-image-run-fail",
+        "not-for-native-image",
+        "code-coverage-improvement"
+      ]
+    },
+    "strategy_name": {
+      "type": "string",
+      "maxLength": 200
+    },
+    "metrics": {
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "path",
+            "timestamp",
+            "summary"
+          ],
+          "properties": {
+            "path": {
+              "type": "string",
+              "pattern": "^stats/[^/]+/[^/]+/[^/]+/execution-metrics\\.json$"
+            },
+            "timestamp": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "agent": {
+              "type": "string",
+              "maxLength": 200
+            },
+            "model": {
+              "type": "string",
+              "maxLength": 200
+            },
+            "summary": {
+              "type": "object"
+            }
+          }
+        }
+      ]
+    },
+    "local_ci_verification": {
+      "$ref": "#/$defs/local_ci"
+    },
+    "post_generation_intervention": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "stage",
+        "intervention_file",
+        "analysis_markdown"
+      ],
+      "properties": {
+        "stage": {
+          "type": "string",
+          "maxLength": 200
+        },
+        "intervention_file": {
+          "type": "string",
+          "maxLength": 1000
+        },
+        "analysis_markdown": {
+          "type": "string",
+          "maxLength": 30000
+        }
+      }
+    },
+    "local_review": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status",
+        "model",
+        "session_log_path",
+        "changed_paths",
+        "repair_reverted",
+        "failed_step",
+        "published_tree"
+      ],
+      "properties": {
+        "status": {
+          "enum": ["completed", "unavailable"]
+        },
+        "decision": {
+          "enum": ["approved", "changes_requested"]
+        },
+        "review_comment": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 30000
+        },
+        "finding_title": {
+          "type": "string",
+          "maxLength": 30000
+        },
+        "finding_body": {
+          "type": "string",
+          "maxLength": 30000
+        },
+        "fix_note": {
+          "type": "string",
+          "maxLength": 30000
+        },
+        "model": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "session_log_path": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1000
+        },
+        "changed_paths": {
+          "type": "array",
+          "maxItems": 200,
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1000
+          }
+        },
+        "repair_reverted": {
+          "type": "boolean"
+        },
+        "failed_step": {
+          "oneOf": [
+            {"type": "null"},
+            {"type": "string", "maxLength": 1000}
+          ]
+        },
+        "published_tree": {
+          "enum": ["verified", "repaired"]
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {"status": {"const": "completed"}},
+            "required": ["status"]
+          },
+          "then": {
+            "required": [
+              "decision",
+              "review_comment",
+              "finding_title",
+              "finding_body",
+              "fix_note"
+            ]
+          },
+          "else": {
+            "not": {
+              "anyOf": [
+                {"required": ["decision"]},
+                {"required": ["review_comment"]},
+                {"required": ["finding_title"]},
+                {"required": ["finding_body"]},
+                {"required": ["fix_note"]}
+              ]
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {"repair_reverted": {"const": true}},
+            "required": ["repair_reverted"]
+          },
+          "then": {
+            "properties": {
+              "failed_step": {"type": "string", "minLength": 1},
+              "published_tree": {"const": "verified"}
+            }
+          },
+          "else": {
+            "properties": {
+              "failed_step": {"type": "null"}
+            },
+            "allOf": [
+              {
+                "if": {
+                  "properties": {"changed_paths": {"minItems": 1}},
+                  "required": ["changed_paths"]
+                },
+                "then": {
+                  "properties": {
+                    "published_tree": {"const": "repaired"}
+                  }
+                },
+                "else": {
+                  "properties": {
+                    "published_tree": {"const": "verified"}
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {"decision": {"const": "changes_requested"}},
+            "required": ["decision"]
+          },
+          "then": {
+            "properties": {
+              "finding_title": {"type": "string", "minLength": 1},
+              "finding_body": {"type": "string", "minLength": 1}
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {"status": {"const": "unavailable"}},
+            "required": ["status"]
+          },
+          "then": {
+            "properties": {
+              "changed_paths": {"maxItems": 0},
+              "repair_reverted": {"const": false},
+              "failed_step": {"type": "null"},
+              "published_tree": {"const": "verified"}
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {"changed_paths": {"minItems": 1}},
+            "required": ["changed_paths"]
+          },
+          "then": {
+            "properties": {
+              "status": {"const": "completed"},
+              "finding_title": {"type": "string", "minLength": 1},
+              "finding_body": {"type": "string", "minLength": 1},
+              "fix_note": {"type": "string", "minLength": 1}
+            }
+          }
+        }
+      ]
+    },
+    "forge": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "monitored_branch",
+        "branch",
+        "commit"
+      ],
+      "properties": {
+        "monitored_branch": {
+          "type": "string",
+          "maxLength": 255
+        },
+        "branch": {
+          "type": "string",
+          "maxLength": 255
+        },
+        "commit": {
+          "$ref": "#/$defs/commit"
+        }
+      }
+    },
+    "modifiers": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "chunked_dynamic_access",
+        "chunk_final",
+        "human_intervention"
+      ],
+      "properties": {
+        "chunked_dynamic_access": {
+          "type": "boolean"
+        },
+        "chunk_final": {
+          "type": "boolean"
+        },
+        "human_intervention": {
+          "type": "boolean"
+        }
+      }
+    },
+    "follow_ups": {
+      "type": "array",
+      "maxItems": 2,
+      "items": {
+        "oneOf": [
+          {
+            "$ref": "#/$defs/deferred_coverage"
+          },
+          {
+            "$ref": "#/$defs/tested_version_split"
+          }
+        ]
+      }
+    },
+    "render": {
+      "$ref": "#/$defs/render"
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "task_type": {"const": "code-coverage-improvement"}
+        },
+        "required": ["task_type"]
+      },
+      "then": {
+        "not": {"required": ["local_review"]}
+      },
+      "else": {
+        "required": ["local_review"]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "task_type": {
+            "const": "library-new-request"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "template_type": {
+            "const": "library-new-request"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "task_type": {
+            "const": "code-coverage-improvement"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "template_type": {
+            "const": "code-coverage-improvement"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "task_type": {
+            "const": "not-for-native-image"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "template_type": {
+            "const": "not-for-native-image"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "task_type": {
+            "const": "fixes-native-image-run-fail"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "template_type": {
+            "const": "fixes-native-image-run-fail"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "task_type": {
+            "const": "fixes-javac-fail"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "template_type": {
+            "enum": [
+              "fixes-javac-fail",
+              "library-update-request"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "task_type": {
+            "const": "fixes-java-run-fail"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "template_type": {
+            "enum": [
+              "fixes-java-run-fail",
+              "library-update-request"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "task_type": {
+            "const": "library-update-request"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "template_type": {
+            "enum": [
+              "library-update-request",
+              "fixes-javac-fail",
+              "fixes-java-run-fail",
+              "fixes-native-image-run-fail"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "modifiers": {
+            "properties": {
+              "chunked_dynamic_access": {
+                "const": false
+              }
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "modifiers": {
+            "properties": {
+              "chunk_final": {
+                "const": true
+              }
+            }
+          }
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "commit": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{40}$"
+    },
+    "library": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "group",
+        "artifact",
+        "version",
+        "coordinates"
+      ],
+      "properties": {
+        "group": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255
+        },
+        "artifact": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255
+        },
+        "version": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255
+        },
+        "coordinates": {
+          "type": "string",
+          "pattern": "^[^:]+:[^:]+:[^:]+$",
+          "maxLength": 767
+        }
+      }
+    },
+    "local_ci": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status",
+        "base_commit",
+        "commands",
+        "fixups",
+        "repo_fix_paths",
+        "human_intervention_required"
+      ],
+      "properties": {
+        "status": {
+          "type": "string",
+          "minLength": 1
+        },
+        "base_commit": {
+          "$ref": "#/$defs/commit"
+        },
+        "final_commit": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/commit"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "commands": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "gate",
+              "command",
+              "returncode"
+            ],
+            "properties": {
+              "gate": {
+                "type": "string",
+                "minLength": 1
+              },
+              "command": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "returncode": {
+                "type": "integer"
+              },
+              "env": {
+                "type": "object"
+              },
+              "log_path": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "output_excerpt": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "fixups": {
+          "type": "array",
+          "items": {
+            "type": "object"
+          }
+        },
+        "repo_fix_paths": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "human_intervention_required": {
+          "type": "boolean"
+        },
+        "failure_gate": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "failure_command": {
+          "type": [
+            "array",
+            "null"
+          ],
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "deferred_coverage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "type",
+        "coordinate",
+        "uncovered_class_count",
+        "class_threshold",
+        "issue_number"
+      ],
+      "properties": {
+        "type": {
+          "const": "deferred_dynamic_access_coverage"
+        },
+        "coordinate": {
+          "type": "string",
+          "pattern": "^[^:]+:[^:]+:[^:]+$"
+        },
+        "uncovered_class_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "class_threshold": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "issue_number": {
+          "type": "integer",
+          "minimum": 1
+        }
+      }
+    },
+    "tested_version_split": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "type",
+        "coordinate",
+        "tested_version",
+        "issue_number"
+      ],
+      "properties": {
+        "type": {
+          "const": "tested_version_split"
+        },
+        "coordinate": {
+          "type": "string",
+          "pattern": "^[^:]+:[^:]+:[^:]+$"
+        },
+        "tested_version": {
+          "type": "string",
+          "minLength": 1
+        },
+        "reason": {
+          "type": "string",
+          "maxLength": 2000
+        },
+        "issue_number": {
+          "type": "integer",
+          "minimum": 1
+        }
+      }
+    },
+    "render": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "baseline_stats": {
+          "type": [
+            "object",
+            "null"
+          ]
+        },
+        "library_stats": {
+          "type": [
+            "object",
+            "null"
+          ]
+        },
+        "baseline_metadata_entries": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "current_metadata_entries": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "baseline_test_only_entries": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "current_test_only_entries": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "library_update_target": {
+          "type": [
+            "object",
+            "null"
+          ]
+        },
+        "dynamic_access": {
+          "type": [
+            "object",
+            "null"
+          ]
+        },
+        "dynamic_access_evidence": {
+          "type": [
+            "object",
+            "null"
+          ]
+        },
+        "alias_split": {
+          "type": [
+            "object",
+            "null"
+          ]
+        },
+        "code_coverage": {
+          "type": [
+            "object",
+            "null"
+          ]
+        },
+        "token_usage": {
+          "type": [
+            "array",
+            "null"
+          ],
+          "maxItems": 32,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "phase"
+            ],
+            "properties": {
+              "phase": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 100
+              },
+              "input": {
+                "type": [
+                  "integer",
+                  "null"
+                ],
+                "minimum": 0
+              },
+              "cached": {
+                "type": [
+                  "integer",
+                  "null"
+                ],
+                "minimum": 0
+              },
+              "output": {
+                "type": [
+                  "integer",
+                  "null"
+                ],
+                "minimum": 0
+              }
+            }
+          }
+        },
+        "worker_model": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "maxLength": 200
+        },
+        "reason": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "maxLength": 10000
+        },
+        "replacement": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "maxLength": 2000
+        }
+      }
+    }
+  }
+}

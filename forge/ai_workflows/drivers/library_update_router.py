@@ -19,10 +19,8 @@ from ai_workflows.drivers.improve_library_coverage import clone_library_update_s
 from utility_scripts.gradle_environment import gradle_command_environment
 from utility_scripts.library_stats import stats_artifact_dir
 from utility_scripts.metadata_index import (
-    MATCH_NEW_VERSION,
     coordinate_parts,
-    is_not_for_native_image_entry,
-    load_index_entries,
+    require_version_backfill_baseline,
     resolve_library_update_target,
 )
 from utility_scripts.stage_logger import log_stage
@@ -144,13 +142,13 @@ def select_library_update_route(repo_path: str, metrics_repo_root: str, coordina
     """Select and persist the driver for one `library-update-request`.
 
     Existing requested-version suites keep the normal coverage path. Missing
-    requested-version suites are probed from the latest supported test suite,
+    requested-version suites are probed from a compatible supported test suite,
     then routed to the driver that owns the selected repair or coverage path.
-    §WF-forge-workflow-drivers.2
+    §AR-forge-driver-queues
     """
     group, artifact, requested_version = _require_versioned_coordinate(coordinates)
     target = resolve_library_update_target(repo_path, group, artifact, requested_version)
-    if target.match_type != MATCH_NEW_VERSION or os.path.isdir(target.test_dir):
+    if os.path.isdir(target.test_dir):
         route = LibraryUpdateRoute(
             selected_driver=ROUTE_IMPROVE_COVERAGE,
             baseline_coordinates=None,
@@ -163,22 +161,22 @@ def select_library_update_route(repo_path: str, metrics_repo_root: str, coordina
         write_library_update_route(metrics_repo_root, route)
         return route
 
-    latest_entry = _latest_supported_entry(repo_path, group, artifact, coordinates)
-    baseline_test_version = _entry_test_version(latest_entry)
+    baseline = require_version_backfill_baseline(repo_path, group, artifact, requested_version)
+    baseline_test_version = baseline.test_version
     baseline_coordinates = f"{group}:{artifact}:{baseline_test_version}"
     log_stage(
         "library-update-router",
         (
-            f"Missing requested-version test suite for {coordinates}; probing latest "
-            f"supported test version {baseline_coordinates}"
+            f"Missing requested-version test suite for {coordinates}; selected compatible "
+            f"baseline {baseline_coordinates}; reason: {baseline.reason}"
         ),
     )
-    compile_result, java_test_result, native_test_result = _probe_latest_suite(
+    compile_result, java_test_result, native_test_result = _probe_baseline_suite(
         repo_path=repo_path,
         group=group,
         artifact=artifact,
         requested_version=requested_version,
-        latest_entry=latest_entry,
+        baseline_entry=baseline.entry,
     )
     if compile_result.exit_code != 0:
         route = LibraryUpdateRoute(
@@ -212,12 +210,12 @@ def select_library_update_route(repo_path: str, metrics_repo_root: str, coordina
     return route
 
 
-def _probe_latest_suite(
+def _probe_baseline_suite(
         repo_path: str,
         group: str,
         artifact: str,
         requested_version: str,
-        latest_entry: dict[str, Any],
+        baseline_entry: dict[str, Any],
 ) -> tuple[_ProbeCommandResult, _ProbeCommandResult | None, _ProbeCommandResult | None]:
     requested_coordinates = f"{group}:{artifact}:{requested_version}"
     snapshot = _PathSnapshot([
@@ -227,7 +225,7 @@ def _probe_latest_suite(
         os.path.join(stats_artifact_dir(repo_path, group, artifact), requested_version),
     ])
     try:
-        clone_library_update_support(repo_path, group, artifact, requested_version, latest_entry)
+        clone_library_update_support(repo_path, group, artifact, requested_version, baseline_entry)
         compile_result = _run_probe_gradle_task(repo_path, requested_coordinates, "compileTestJava")
         if compile_result.exit_code != 0:
             return compile_result, None, None
@@ -258,77 +256,6 @@ def _run_probe_gradle_task(repo_path: str, coordinates: str, task: str) -> _Prob
             check=False,
         )
     return _ProbeCommandResult(exit_code=result.returncode, log_path=log_path)
-
-
-def _latest_supported_entry(repo_path: str, group: str, artifact: str, coordinates: str) -> dict[str, Any]:
-    entries = load_index_entries(repo_path, group, artifact)
-    if entries is None:
-        _raise_unusable_latest_supported_suite(repo_path, group, artifact, coordinates, [], [])
-    assert entries is not None
-    latest_entries = [
-        entry
-        for entry in entries
-        if isinstance(entry, dict)
-        and entry.get("latest") is True
-    ]
-    usable_latest_entries = [
-        entry
-        for entry in latest_entries
-        if _is_usable_supported_entry(repo_path, group, artifact, entry)
-    ]
-    if len(usable_latest_entries) != 1:
-        _raise_unusable_latest_supported_suite(
-            repo_path,
-            group,
-            artifact,
-            coordinates,
-            latest_entries,
-            usable_latest_entries,
-        )
-    return usable_latest_entries[0]
-
-
-def _raise_unusable_latest_supported_suite(
-        repo_path: str,
-        group: str,
-        artifact: str,
-        coordinates: str,
-        latest_entries: list[dict[str, Any]],
-        usable_latest_entries: list[dict[str, Any]],
-) -> None:
-    index_path = os.path.join(repo_path, "metadata", group, artifact, "index.json")
-    rel_index_path = os.path.relpath(index_path, repo_path)
-    raise RuntimeError(
-        "ERROR: Cannot route missing-version library-update request for "
-        f"{coordinates}: expected exactly one usable latest supported suite in "
-        f"{rel_index_path}, found {len(usable_latest_entries)} usable latest "
-        f"entries out of {len(latest_entries)} latest=true entries. A usable "
-        "latest entry must not be not-for-native-image, must have a non-empty "
-        "`metadata-version`, and must have both "
-        f"`metadata/{group}/{artifact}/<metadata-version>` and "
-        f"`tests/src/{group}/{artifact}/<test-version-or-metadata-version>`. "
-        "Fix the index or restore the latest test suite before rerunning."
-    )
-
-
-def _is_usable_supported_entry(repo_path: str, group: str, artifact: str, entry: dict[str, Any]) -> bool:
-    if is_not_for_native_image_entry(entry):
-        return False
-    metadata_version = entry.get("metadata-version")
-    if not isinstance(metadata_version, str) or not metadata_version:
-        return False
-    test_version = _entry_test_version(entry)
-    return (
-        os.path.isdir(os.path.join(repo_path, "metadata", group, artifact, metadata_version))
-        and os.path.isdir(os.path.join(repo_path, "tests", "src", group, artifact, test_version))
-    )
-
-
-def _entry_test_version(entry: dict[str, Any]) -> str:
-    test_version = entry.get("test-version") or entry.get("metadata-version")
-    if not isinstance(test_version, str) or not test_version:
-        raise RuntimeError(f"Index entry does not have a usable test version: {entry}")
-    return test_version
 
 
 def _require_versioned_coordinate(coordinates: str) -> tuple[str, str, str]:

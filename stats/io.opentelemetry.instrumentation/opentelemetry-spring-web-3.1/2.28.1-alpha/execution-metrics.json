@@ -1,0 +1,107 @@
+{
+  "add_new_library_support:2026-06-26": {
+    "timestamp": "2026-06-26T16:55:45.668919Z",
+    "library": "io.opentelemetry.instrumentation:opentelemetry-spring-web-3.1:2.28.1-alpha",
+    "starting_commit": "3908f5f90c627d746fe852a04c7efc2e03fe6f00",
+    "ending_commit": "288f424166d5fa16d07b82023977885f6256143c",
+    "strategy_name": "dynamic_access_main_sources_pi_gpt-5.5",
+    "agent": "pi",
+    "model": "oca/gpt-5.5",
+    "status": "success",
+    "stats": {
+      "version": "2.28.1-alpha",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 1,
+            "totalCalls": 1
+          }
+        },
+        "coverageRatio": 1.0,
+        "coveredCalls": 1,
+        "totalCalls": 1
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 225,
+          "missed": 99,
+          "ratio": 0.694444,
+          "total": 324
+        },
+        "line": {
+          "covered": 76,
+          "missed": 34,
+          "ratio": 0.690909,
+          "total": 110
+        },
+        "method": {
+          "covered": 27,
+          "missed": 9,
+          "ratio": 0.75,
+          "total": 36
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "advisory_preparation",
+      "issue_number": 8532,
+      "issue_label": "library-new-request",
+      "library": "io.opentelemetry.instrumentation:opentelemetry-spring-web-3.1:2.28.1-alpha",
+      "summary": "The artifact only brings OpenTelemetry API/instrumentation dependencies, but its public API and normal use require Spring Web RestTemplate types that are intentionally compile-only/upstream application-provided.",
+      "deterministic_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "org.springframework:spring-web:3.1.0.RELEASE",
+          "scope": "testImplementation",
+          "reason": "OpenTelemetry's own module declares Spring Web as compileOnly/testLibrary at the minimum supported 3.1 version, and the library's README says spring-web is required to instrument RestTemplate."
+        }
+      ],
+      "agent_guidance": "No Docker image, environment variable, or system property is required. Meaningful tests should exercise SpringWebTelemetry by creating a RestTemplate interceptor and driving it through a local/mock ClientHttpRequestExecution or local in-process HTTP endpoint; avoid external network services.",
+      "risks": [
+        "If tests try to assert exported spans instead of just exercising instrumentation paths, they may need to construct an OpenTelemetry SDK/testing instance in test code; basic interceptor coverage can use the transitive OpenTelemetry API.",
+        "Spring Web 3.1.0.RELEASE is the upstream minimum-version test dependency; if it proves incompatible with local Java/native-image verification, a newer supported Spring Web version may be needed."
+      ],
+      "applied_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "org.springframework:spring-web:3.1.0.RELEASE",
+          "result": "applied",
+          "target": "tests/src/io.opentelemetry.instrumentation/opentelemetry-spring-web-3.1/2.28.1-alpha/build.gradle"
+        }
+      ],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#8532 Support for io.opentelemetry.instrumentation:opentelemetry-spring-web-3.1:2.28.1-alpha; label=library-new-request; body_chars=39"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "oca/gpt-5.5",
+      "input_tokens_used": 42245,
+      "output_tokens_used": 4616,
+      "prompt_path": "library-preflight-prompt.txt",
+      "raw_response_path": "library-preflight-response.txt",
+      "session_log_path": "/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/logs/io.opentelemetry.instrumentation:opentelemetry-spring-web-3.1:2.28.1-alpha/library-preparation-preflight/pi-generation-2026-06-26T16-44-05-125244Z.log"
+    },
+    "metrics": {
+      "input_tokens_used": 80368,
+      "cached_input_tokens_used": 862720,
+      "output_tokens_used": 8388,
+      "iterations": 2,
+      "cost_usd": 0.683,
+      "generated_loc": 111,
+      "tested_library_loc": 76,
+      "metadata_entries": 14,
+      "code_coverage_percent": 69.09
+    },
+    "artifacts": {
+      "test_file": "tests/src/io.opentelemetry.instrumentation/opentelemetry-spring-web-3.1/2.28.1-alpha/src/test/java/io_opentelemetry_instrumentation/opentelemetry_spring_web_3_1/HeaderUtilTest.java",
+      "metadata_file": "metadata/io.opentelemetry.instrumentation/opentelemetry-spring-web-3.1/2.28.1-alpha/reachability-metadata.json"
+    }
+  }
+}

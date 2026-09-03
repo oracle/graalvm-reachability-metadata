@@ -16,7 +16,23 @@ Use `do-work.sh` for unattended operation. It is a stable wrapper that forwards
 all arguments to `do_up_to_date_work.sh`; the up-to-date worker owns argument
 parsing, self-updates, queue processing, sleeping, and re-execing the latest
 script before the next cycle.
-§DW-do-work-loop
+§AR-do-work-loop
+
+Before self-update or queue processing, and again at the start of every
+work-starting `forge_metadata.py` invocation, Forge validates the deterministic
+host requirements for the tools, environment variables, filesystem and network
+permissions, GitHub repository/project access, Docker, and agent authentication
+its mode needs. Normal output prints only the check's start and outcome;
+`--verbose` or a failure prints the complete report. A failed required check
+exits before Forge claims or reviews anything; a `--review-pr` run is never
+asked for a GraalVM.
+§FS-forge-host-requirements
+
+The 25.0.x validation lane is pinned in `graalvm-versions.json`; update that
+file when Forge should move to a newer 25.0.x release. The main and EA lanes are
+checked against the latest published GA and EA release metadata at startup. Pass
+`--graalvm-version-check warn` or `off` to run against a locally built Graal;
+Native Image, its agent, and the reachability-metadata schema remain mandatory.
 
 ```console
 ./do-work.sh [options] [forge-branch]
@@ -31,9 +47,23 @@ Common options:
 - `--ni-run-limit N`: process up to `N` Native Image runtime failure tasks per cycle.
 - `--parallelism N`: run up to `N` issue workflows in parallel. Maximum: 4.
 - `--review-limit N`: process up to `N` PR review tasks per label per cycle.
+- `--agent-family {claude-code,pi,codex,opencode}`: select the analysis backend;
+  an alias for `--analysis-family`. The test-generation backend, model, and
+  provider come from the selected strategy.
 - `--random-offset`: start new-library issue scans at a random offset instead of the newest issues first.
+- `--priority {high,priority,normal}`: process only the selected issue priority tier.
 - `--user-requested-only`: fetch only user-requested issue queue items, excluding configured automation and maintainer authors.
+- `--take-blocked-issues`: claim issues with open blockers; disabled by default.
+- `--graalvm-version-check {strict,warn,off}`: how a GraalVM version mismatch is treated. Default: `strict`.
 - `--once`: run a single update/work cycle through `do_up_to_date_work.sh` and exit.
+- `--fail-fast`: return nonzero on the first unsuccessful work cycle.
+- `-v`, `--verbose`: restore deterministic narration hidden by compact output
+  and enable verbose output in the selected workflow agents.
+- `--analysis-agent COMMAND --analysis-family FAMILY`: choose the analysis executable and adapter family.
+- `--setup-agent COMMAND --setup-family FAMILY`: choose the executable and adapter family for artifact-URL
+  discovery and library preflight, independently of the analysis role.
+- `--test-agent-alias COMMAND`: use a machine-local executable name for the
+  test agent without changing the strategy's backend, model, or provider.
 - `--stop`: ask all Forge `do-work` loops for the current user to exit by creating `~/.metadata-forge-stop`.
 - `--stop --branch BRANCH`: ask only loops monitoring `BRANCH` to exit, using a branch-scoped marker such as `~/.metadata-forge-stop.master`.
 - `--clear-stop`: remove the matching global or branch-scoped stop marker so future `do-work` loops can run.
@@ -46,6 +76,7 @@ Examples:
 ./do-work.sh --parallelism 2
 DO_WORK_SLEEP_SECONDS=60 ./do-work.sh --branch master
 ./do-work.sh --user-requested-only --new-limit 1
+./do-work.sh --once --agent-family codex --new-limit 1 --javac-limit 0 --java-run-limit 0 --ni-run-limit 0 --review-limit 0
 FORGE_REVIEW_LABEL=library-new-request ./do-work.sh --review-limit 2
 ./do-work.sh --stop
 ./do-work.sh --stop --branch master
@@ -57,10 +88,10 @@ FORGE_REVIEW_LABEL=library-new-request ./do-work.sh --review-limit 2
 The same limits can be controlled with environment variables such as
 `FORGE_WORK_LIMIT`, `FORGE_JAVAC_WORK_LIMIT`, `FORGE_JAVA_RUN_WORK_LIMIT`,
 `FORGE_NI_RUN_WORK_LIMIT`, `FORGE_PARALLELISM`, `FORGE_REVIEW_LIMIT`,
-`FORGE_BULK_UPDATE_REVIEW_LIMIT`, `FORGE_USER_REQUESTED_ISSUES_ONLY`, and
-`DO_WORK_SLEEP_SECONDS`. Set `FORGE_DO_WORK_STOP_FILE` to override the shared
-stop marker path.
-§DW-do-work-loop
+`FORGE_BULK_UPDATE_REVIEW_LIMIT`, `FORGE_USER_REQUESTED_ISSUES_ONLY`,
+`FORGE_TAKE_BLOCKED_ISSUES`, and `DO_WORK_SLEEP_SECONDS`. Set
+`FORGE_DO_WORK_STOP_FILE` to override the shared stop marker path.
+§AR-do-work-loop
 
 ## Setup
 
@@ -76,10 +107,15 @@ pip install -e .
 Required local tools depend on the work queue being processed:
 
 - `gh` for issue, PR, and review automation.
+- `rhei` for the interactive code-coverage-improvement workflow.
 - `pi` for Pi-agent strategies and automated style recovery.
 - `codex` for Codex-agent strategies and metadata fixups.
-- GraalVM available through `GRAALVM_HOME` or `JAVA_HOME`.
-§STRAT-forge-predefined-strategy-contract
+- For issue work, set `GRAALVM_HOME`, `GRAALVM_HOME_25_0`, and
+  `GRAALVM_HOME_LATEST_EA` to the exact versions printed by the host-requirement
+  report. Each distribution must include Native Image, its agent, and the
+  reachability-metadata schema. Review-only work needs only `JAVA_HOME` pointing
+  to JDK 25.
+§FS-forge-predefined-strategy-contract
 
 Local Forge automation must run without `sudo`. Local CI verification fails
 fast instead of prompting for an administrator password if a command or script
@@ -97,7 +133,21 @@ distribution cache under the system temp directory. Set
 
 The top-level worker delegates to these lower-level entry points. Use them
 directly when debugging a single task or reproducing a failure.
-§WF-forge-workflow-drivers
+§AR-forge-drivers
+
+To select the highest-priority eligible `code-coverage-improvement` issue and
+start its Rhei workspace with the terminal TUI and browser dashboard:
+
+```console
+./run-code-coverage-improvement.sh
+```
+
+Pass `rhei run` options after `--`, for example
+`./run-code-coverage-improvement.sh -- --parallel 2`. The launcher requires
+GitHub CLI 2.39.0 or newer, validates the coverage host requirements before
+querying the issue queue, and validates the selected issue's exact-version test
+project before invoking Rhei.
+§FS-forge-host-requirements §AR-code-coverage-improvement.2
 
 ```console
 python3 forge_metadata.py --help
@@ -112,7 +162,7 @@ python3 ai_workflows/drivers/fix_ni_run.py --coordinates <group:artifact:oldVers
 
 Strategies are declared in `strategies/predefined_strategies.json`. Prompt text
 lives in `prompt_templates/`. Persisted output contracts live in `schemas/`.
-§STRAT-workflow-strategy-registry
+§FS-workflow-strategy-registry
 
 ## Repository Layout
 
@@ -137,12 +187,12 @@ forge/
 - `ai_workflows/drivers/`: deterministic workflow entry points.
 - `ai_workflows/core/`: registered workflow engines and shared orchestration.
 - `ai_workflows/agents/`: backend-neutral agent adapters.
-- `benchmarks/`: generation benchmark suites and runner. §BENCH-forge-generation-benchmarking
+- `benchmarks/`: generation benchmark suites and runner. §FS-forge-generation-benchmarking
 - `git_scripts/`: branch, commit, PR, and review helpers.
 - `utility_scripts/`: shared support code.
 - `docs/`: design notes, workflow specifications, and testing guidance.
 §AR-forge-architecture
 
 See `DEVELOPING.md` for command-level workflow details,
-`docs/functional-spec.md` for the functional specification, and
-`docs/architecture.md` for the architecture overview.
+`docs/functional-spec/functional-spec.md` for the functional specification, and
+`docs/architecture/architecture.md` for the architecture overview.

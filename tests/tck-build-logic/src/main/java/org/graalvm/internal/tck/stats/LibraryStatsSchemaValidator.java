@@ -178,6 +178,10 @@ public final class LibraryStatsSchemaValidator {
             return null;
         }
 
+        if (isForgePublicationFile(relative)) {
+            return null;
+        }
+
         if (relative.getNameCount() == 4 && "stats.json".equals(relative.getName(3).toString())) {
             return new StatsLocation(
                     relative.getName(0).toString(),
@@ -188,7 +192,8 @@ public final class LibraryStatsSchemaValidator {
 
         failures.add("Unexpected JSON file under stats root: " + file
                 + " (expected stats/<groupId>/<artifactId>/<metadataVersion>/stats.json, "
-                + "stats/<groupId>/<artifactId>/<metadataVersion>/execution-metrics.json, or stats/schemas/*.json)");
+                + "stats/<groupId>/<artifactId>/<metadataVersion>/execution-metrics.json, "
+                + "stats/<groupId>/<artifactId>/<metadataVersion>/forge-publication.json, or stats/schemas/*.json)");
         return null;
     }
 
@@ -199,6 +204,14 @@ public final class LibraryStatsSchemaValidator {
     private static boolean isExecutionMetricsFile(Path relativePath) {
         return relativePath.getNameCount() == 4
                 && "execution-metrics.json".equals(relativePath.getName(3).toString());
+    }
+
+    /// Forge commits its publication descriptor beside the stats it publishes. Both sides of the
+    /// publication handoff already schema-validate it, so this validator only has to recognize the
+    /// file instead of rejecting it as stray JSON (§forge/AR-actions-publication).
+    private static boolean isForgePublicationFile(Path relativePath) {
+        return relativePath.getNameCount() == 4
+                && "forge-publication.json".equals(relativePath.getName(3).toString());
     }
 
     private static void validateExecutionMetricsFile(

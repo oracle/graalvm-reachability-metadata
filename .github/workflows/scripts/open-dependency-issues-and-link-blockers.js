@@ -1,6 +1,7 @@
+// §AR-shared-scripts; invoked by §AR-triage-new-issues.
+
 // Opens or reuses GitHub issues for unsupported dependencies discovered in a deps.dev
 // expansion and wires them together with GitHub "blocked by" relationships.
-// §CI-shared-scripts; invoked by §CI-triage-new-issues.
 //
 // It performs the following:
 //   1. Loads the raw dependency graph from `DEPS_GRAPH_JSON`
@@ -130,29 +131,6 @@ function buildIssueBody() {
   return [
     '_This issue was created by automation._'
   ].join('\n');
-}
-
-/**
- * Normalizes GitHub issue labels into a de-duplicated list of label names.
- */
-function normalizeIssueLabelNames(labels) {
-  return uniqueStrings(
-    (Array.isArray(labels) ? labels : []).map((label) =>
-      typeof label === 'string' ? label : label?.name
-    )
-  );
-}
-
-/**
- * Returns the labels to apply to newly created dependency issues.
- */
-function buildCreatedIssueLabels(context) {
-  const createdIssueLabels = ['library-new-request'];
-  const sourceIssueLabelNames = normalizeIssueLabelNames(context?.payload?.issue?.labels);
-  if (sourceIssueLabelNames.includes('priority')) {
-    createdIssueLabels.push('priority');
-  }
-  return createdIssueLabels;
 }
 
 /**
@@ -600,7 +578,6 @@ module.exports = async function openDependencyIssuesAndLinkBlockers({ github, co
   const repo = context.repo.repo;
   const sourceIssueNumber = context.issue.number;
   const workspaceDir = resolveWorkspaceDir();
-  const createdIssueLabels = buildCreatedIssueLabels(context);
 
   const rawDependencyGraph = loadRawDependencyGraph();
   if (isEmptyObject(rawDependencyGraph)) {
@@ -884,7 +861,7 @@ module.exports = async function openDependencyIssuesAndLinkBlockers({ github, co
         repo,
         title,
         body,
-        labels: createdIssueLabels
+        labels: ['library-new-request']
       });
       issueNumber = created.data.number;
       createdCount++;

@@ -1,0 +1,94 @@
+{
+  "add_new_library_support:2026-06-28": {
+    "timestamp": "2026-06-28T18:58:47.645018Z",
+    "library": "jmock:jmock:1.1.0",
+    "starting_commit": "34ae54106233a5711b11ee2349b1036aa951bd94",
+    "ending_commit": "0843214cfce71cb0a05aa77e57b94ad51afe2960",
+    "strategy_name": "dynamic_access_main_sources_pi_gpt-5.5",
+    "agent": "pi",
+    "model": "oca/gpt-5.5",
+    "status": "success",
+    "stats": {
+      "version": "1.1.0",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 12,
+            "totalCalls": 12
+          }
+        },
+        "coverageRatio": 1.0,
+        "coveredCalls": 12,
+        "totalCalls": 12
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 1279,
+          "missed": 5106,
+          "ratio": 0.200313,
+          "total": 6385
+        },
+        "line": {
+          "covered": 285,
+          "missed": 1139,
+          "ratio": 0.20014,
+          "total": 1424
+        },
+        "method": {
+          "covered": 107,
+          "missed": 482,
+          "ratio": 0.181664,
+          "total": 589
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "no_action",
+      "issue_number": 2801,
+      "issue_label": "library-new-request",
+      "library": "jmock:jmock:1.1.0",
+      "summary": "jmock:jmock:1.1.0 is an in-process Java mocking library. Its POM declares only junit:junit:3.8.1 as a normal transitive dependency, and the artifact uses JDK reflection/proxy and java.beans APIs rather than external services, Docker-backed resources, or required system properties.",
+      "deterministic_setup": [],
+      "agent_guidance": "No environment variables or system properties are required. Meaningful tests can use the normal jMock 1.x interface-mocking flow, e.g. create a small test interface, instantiate org.jmock.Mock or helper methods from MockObjectTestCase, set expectations/stubs, call the proxy, and verify.",
+      "risks": [
+        "jMock 1.1.0 is JUnit 3-era; tests should not assume modern jMock 2 APIs.",
+        "Proxy-based mocks require exercising user-defined interfaces so metadata generation can observe dynamic proxy use, but this is normal test coverage rather than extra setup."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#2801 Support for jmock:jmock:1.1.0; label=library-new-request; body_chars=86"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "oca/gpt-5.5",
+      "input_tokens_used": 24885,
+      "output_tokens_used": 3176,
+      "prompt_path": "library-preflight-prompt.txt",
+      "raw_response_path": "library-preflight-response.txt",
+      "session_log_path": "/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/logs/jmock:jmock:1.1.0/library-preparation-preflight/pi-generation-2026-06-28T18-32-34-871185Z.log"
+    },
+    "metrics": {
+      "input_tokens_used": 167047,
+      "cached_input_tokens_used": 1291776,
+      "output_tokens_used": 15983,
+      "iterations": 5,
+      "cost_usd": 1.1254,
+      "generated_loc": 130,
+      "tested_library_loc": 285,
+      "metadata_entries": 11,
+      "test_only_metadata_entries": 3,
+      "code_coverage_percent": 20.01
+    },
+    "artifacts": {
+      "test_file": "tests/src/jmock/jmock/1.1.0/src/test/java/jmock/jmock/VerifierTest.java",
+      "metadata_file": "metadata/jmock/jmock/1.1.0/reachability-metadata.json"
+    }
+  }
+}

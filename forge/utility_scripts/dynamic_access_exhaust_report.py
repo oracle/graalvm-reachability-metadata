@@ -56,7 +56,7 @@ class DynamicAccessExhaustReport:
 
     The report is intentionally not a precomputed chunk manifest. Every resume
     regenerates the current dynamic-access report and filters out these recorded
-    class sets (§WF-dynamic-access-exhaust-report).
+    class sets (§AR-dynamic-access-exhaust-report).
     """
 
     coordinate: str
@@ -67,6 +67,8 @@ class DynamicAccessExhaustReport:
     skipped_classes: list[str] = field(default_factory=list)
     exhausted_classes: list[str] = field(default_factory=list)
     failed_classes: list[str] = field(default_factory=list)
+    latest_chunk_publication_id: str | None = None
+    latest_chunk_branch: str | None = None
     latest_chunk_pull_request: int | None = None
     latest_chunk_commit: str | None = None
 
@@ -91,6 +93,8 @@ class DynamicAccessExhaustReport:
             skipped_classes=list(payload.get("skippedClasses", [])),
             exhausted_classes=list(payload.get("exhaustedClasses", [])),
             failed_classes=list(payload.get("failedClasses", [])),
+            latest_chunk_publication_id=payload.get("latestChunkPublicationId"),
+            latest_chunk_branch=payload.get("latestChunkBranch"),
             latest_chunk_pull_request=_optional_int(payload.get("latestChunkPullRequest")),
             latest_chunk_commit=payload.get("latestChunkCommit"),
         )
@@ -112,6 +116,8 @@ class DynamicAccessExhaustReport:
             "skippedClasses": self.skipped_classes,
             "exhaustedClasses": self.exhausted_classes,
             "failedClasses": self.failed_classes,
+            "latestChunkPublicationId": self.latest_chunk_publication_id,
+            "latestChunkBranch": self.latest_chunk_branch,
             "latestChunkPullRequest": self.latest_chunk_pull_request,
             "latestChunkCommit": self.latest_chunk_commit,
         }
@@ -165,10 +171,10 @@ class DynamicAccessExhaustReport:
         self.class_threshold = int(class_threshold)
         self.current_chunk_class_count = int(current_chunk_class_count)
 
-    def record_published_chunk(self, commit: str, pr_number: int | None) -> None:
-        """Record the latest published chunk PR and commit."""
-        self.latest_chunk_commit = commit
-        self.latest_chunk_pull_request = pr_number
+    def record_publication_identity(self, publication_id: str, branch: str) -> None:
+        """Record the chunk identity that will be resolved after Actions publication."""
+        self.latest_chunk_publication_id = publication_id
+        self.latest_chunk_branch = branch
 
 
 def _append_unique(values: list[str], value: str) -> list[str]:

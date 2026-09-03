@@ -59,5 +59,97 @@
       "test_file": "tests/src/org.apache.avro/avro/1.12.1/src/test/java/org_apache_avro/avro/SpecificDataTest.java",
       "metadata_file": "metadata/org.apache.avro/avro/1.12.1/reachability-metadata.json"
     }
+  },
+  "improve_library_coverage:2026-06-24": {
+    "timestamp": "2026-06-24T11:28:55.524210Z",
+    "library": "org.apache.avro:avro:1.12.1",
+    "starting_commit": "2db46a4efaa98005e6586e8df2f937d1a4e8d4f6",
+    "ending_commit": "070cc4f73e94fff4435625fee62c490a1dc5227f",
+    "strategy_name": "dynamic_access_main_sources_pi_gpt-5.5",
+    "agent": "pi",
+    "model": "oca/gpt-5.5",
+    "status": "success_with_intervention",
+    "stats": {
+      "version": "1.12.1",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 0.926829,
+            "coveredCalls": 38,
+            "totalCalls": 41
+          }
+        },
+        "coverageRatio": 0.926829,
+        "coveredCalls": 38,
+        "totalCalls": 41
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 9184,
+          "missed": 43877,
+          "ratio": 0.173084,
+          "total": 53061
+        },
+        "line": {
+          "covered": 2127,
+          "missed": 9527,
+          "ratio": 0.182512,
+          "total": 11654
+        },
+        "method": {
+          "covered": 578,
+          "missed": 2213,
+          "ratio": 0.207094,
+          "total": 2791
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "advisory_preparation",
+      "issue_number": 8565,
+      "issue_label": "library-update-request",
+      "library": "org.apache.avro:avro:1.12.1",
+      "summary": "No extra dependency or Docker service is required for normal Avro schema, generic, specific, and reflect usage, but meaningful native coverage of Avro reflection constructor paths needs a JDK LambdaMetafactory dump property.",
+      "deterministic_setup": [],
+      "agent_guidance": "If generated tests exercise org.apache.avro.reflect.ReflectionUtil, ReflectData, or constructor-backed specific/reflect records, configure the test JVM with -Djdk.invoke.LambdaMetafactory.dumpProxyClassFiles=true and use a stable writable working directory so the native-image agent can observe the dumped lambda proxy class resources.",
+      "risks": [
+        "Avro's snappy, xz, and zstandard codecs depend on optional artifacts; avoid tests for those codecs unless explicit optional dependencies are later added.",
+        "Dumped lambda proxy class resource names can vary by JDK/GraalVM version, so Gradle and Native Image verification remain authoritative."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#8565 Update existing library: org.apache.avro:avro:1.12.1; label=library-update-request; body_chars=150"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "14 existing test file path(s) included"
+        }
+      ],
+      "model": "oca/gpt-5.5",
+      "input_tokens_used": 60020,
+      "output_tokens_used": 3971,
+      "prompt_path": "library-preflight-prompt.txt",
+      "raw_response_path": "library-preflight-response.txt",
+      "session_log_path": "/home/mihailo/git/graalvm-reachability-metadata/forge/logs/org.apache.avro:avro:1.12.1/library-preparation-preflight/pi-generation-2026-06-24T10-13-01-561756Z.log"
+    },
+    "metrics": {
+      "input_tokens_used": 84402,
+      "cached_input_tokens_used": 496640,
+      "output_tokens_used": 6662,
+      "iterations": 2,
+      "cost_usd": 0.4482,
+      "generated_loc": 565,
+      "tested_library_loc": 2127,
+      "metadata_entries": 61,
+      "test_only_metadata_entries": 53,
+      "code_coverage_percent": 18.25
+    },
+    "artifacts": {
+      "test_file": "tests/src/org.apache.avro/avro/1.12.1/src/test/java/org_apache_avro/avro/ReflectDatumReaderTest.java",
+      "metadata_file": "metadata/org.apache.avro/avro/1.12.1/reachability-metadata.json"
+    }
   }
 }

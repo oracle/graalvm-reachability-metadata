@@ -10,7 +10,7 @@ Usage:
   python3 ai_workflows/drivers/fix_java_run_fail.py \
     --coordinates group:artifact:oldVersion \
     --new-version newVersion \
-    [--strategy-name "java_run_iterative_with_coverage_sources_pi_gpt-5.5"] \
+    [--strategy-name "java_run_iterative_with_coverage_sources_pi_gpt-5.6-sol"] \
     [--reachability-metadata-path /path/to/graalvm-reachability-metadata] \
     [--metrics-repo-path /path/to/metrics-storage] \
     [--docs-path /path/to/docs] \
@@ -29,8 +29,8 @@ from ai_workflows.drivers.java_fail_workflow import JAVA_RUN_CONFIG, run_java_fa
 def main(argv=None):
     """Execute the end-to-end java-run fix driver for a version bump.
 
-    The java-run-failure driver for §WF-java-fail-fix-workflow, following the
-    single-run driver contract (§WF-forge-workflow-drivers).
+    The java-run-failure driver for §AR-java-fail-fix-workflow, following the
+    single-run driver contract (§AR-forge-drivers).
     """
     return run_java_fail_workflow(JAVA_RUN_CONFIG, argv)
 

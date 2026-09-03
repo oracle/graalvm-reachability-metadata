@@ -78,4 +78,120 @@ class ValidateIndexFilesTaskTests {
 
         assertThat(failures).isEmpty();
     }
+
+    @Test
+    void allowsAutoUpdateOnTheLatestEntry() throws IOException {
+        JsonNode index = OBJECT_MAPPER.readTree("""
+                [
+                  {
+                    "latest": true,
+                    "auto-update": true,
+                    "metadata-version": "1.0.0",
+                    "tested-versions": ["1.0.0"],
+                    "allowed-packages": ["com.example"]
+                  }
+                ]
+                """);
+        List<String> failures = new ArrayList<>();
+
+        ValidateIndexFilesTask.checkLibraryIndexAutoUpdate(
+                index,
+                "metadata/com.example/demo/index.json",
+                failures
+        );
+
+        assertThat(failures).isEmpty();
+    }
+
+    @Test
+    void rejectsAutoUpdateOnNonLatestOrMultipleEntries() throws IOException {
+        JsonNode index = OBJECT_MAPPER.readTree("""
+                [
+                  {
+                    "auto-update": true,
+                    "metadata-version": "1.0.0",
+                    "tested-versions": ["1.0.0"],
+                    "allowed-packages": ["com.example"]
+                  },
+                  {
+                    "latest": true,
+                    "auto-update": true,
+                    "metadata-version": "2.0.0",
+                    "tested-versions": ["2.0.0"],
+                    "allowed-packages": ["com.example"]
+                  }
+                ]
+                """);
+        List<String> failures = new ArrayList<>();
+
+        ValidateIndexFilesTask.checkLibraryIndexAutoUpdate(
+                index,
+                "metadata/com.example/demo/index.json",
+                failures
+        );
+
+        assertThat(failures)
+                .anySatisfy(failure -> assertThat(failure)
+                        .contains("only on the entry with latest: true"))
+                .anySatisfy(failure -> assertThat(failure)
+                        .contains("at most one entry"));
+    }
+
+    @Test
+    void allowsHighPriorityOnTheLatestEntry() throws IOException {
+        JsonNode index = OBJECT_MAPPER.readTree("""
+                [
+                  {
+                    "latest": true,
+                    "high-priority": true,
+                    "metadata-version": "1.0.0",
+                    "tested-versions": ["1.0.0"],
+                    "allowed-packages": ["com.example"]
+                  }
+                ]
+                """);
+        List<String> failures = new ArrayList<>();
+
+        ValidateIndexFilesTask.checkLibraryIndexHighPriority(
+                index,
+                "metadata/com.example/demo/index.json",
+                failures
+        );
+
+        assertThat(failures).isEmpty();
+    }
+
+    @Test
+    void rejectsHighPriorityOnNonLatestOrMultipleEntries() throws IOException {
+        JsonNode index = OBJECT_MAPPER.readTree("""
+                [
+                  {
+                    "high-priority": true,
+                    "metadata-version": "1.0.0",
+                    "tested-versions": ["1.0.0"],
+                    "allowed-packages": ["com.example"]
+                  },
+                  {
+                    "latest": true,
+                    "high-priority": true,
+                    "metadata-version": "2.0.0",
+                    "tested-versions": ["2.0.0"],
+                    "allowed-packages": ["com.example"]
+                  }
+                ]
+                """);
+        List<String> failures = new ArrayList<>();
+
+        ValidateIndexFilesTask.checkLibraryIndexHighPriority(
+                index,
+                "metadata/com.example/demo/index.json",
+                failures
+        );
+
+        assertThat(failures)
+                .anySatisfy(failure -> assertThat(failure)
+                        .contains("only on the entry with latest: true"))
+                .anySatisfy(failure -> assertThat(failure)
+                        .contains("at most one entry"));
+    }
 }

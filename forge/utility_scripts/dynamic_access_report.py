@@ -5,7 +5,7 @@
 
 """Typed access to Gradle dynamic-access coverage reports.
 
-The iterative engine (§WF-dynamic-access-iterative-strategy) depends on these
+The iterative engine (§AR-dynamic-access-iterative) depends on these
 parsed reports to select the next uncovered class, compute per-class coverage
 deltas, and format call sites for the targeted prompts of its per-class loop.
 """
@@ -54,7 +54,7 @@ class DynamicAccessCoverageReport:
 
     The iterative engine consumes this state class-by-class and skips exhausted
     classes rather than retrying already-processed dynamic-access surface
-    (§WF-dynamic-access-iterative-strategy).
+    (§AR-dynamic-access-iterative).
     """
 
     coordinate: str
@@ -83,6 +83,50 @@ class DynamicAccessCoverageReport:
 
 
 @dataclass(frozen=True)
+class BulkDynamicAccessProgress:
+    """Post-gate class progress from one bulk phase.
+
+    The workflow compares its baseline with the last successfully gated report
+    and carries that exact report into the composite boundary
+    (§AR-dynamic-access-bulk).
+    """
+
+    final_report: DynamicAccessCoverageReport
+    completed_classes: tuple[str, ...]
+    remaining_classes: tuple[str, ...]
+
+
+def compute_bulk_dynamic_access_progress(
+        initial_report: DynamicAccessCoverageReport,
+        final_report: DynamicAccessCoverageReport,
+        processed_classes: set[str],
+) -> BulkDynamicAccessProgress:
+    """Return completed and still-eligible classes after bulk."""
+    initial_uncovered_classes: set[str] = {
+        class_coverage.class_name
+        for class_coverage in initial_report.classes
+        if class_coverage.uncovered_calls > 0
+    }
+    completed_classes: tuple[str, ...] = tuple(sorted(
+        class_name
+        for class_name in initial_uncovered_classes
+        if (
+            (final_class := final_report.get_class(class_name)) is not None
+            and final_class.uncovered_calls == 0
+        )
+    ))
+    remaining_classes: tuple[str, ...] = tuple(
+        class_coverage.class_name
+        for class_coverage in final_report.classes
+        if (
+            class_coverage.uncovered_calls > 0
+            and class_coverage.class_name not in processed_classes
+        )
+    )
+    return BulkDynamicAccessProgress(final_report, completed_classes, remaining_classes)
+
+
+@dataclass(frozen=True)
 class DynamicAccessClassDelta:
     newly_covered: list[DynamicAccessCallSite]
     still_uncovered: list[DynamicAccessCallSite]
@@ -96,7 +140,7 @@ def load_dynamic_access_coverage_report(
 
     Source files are resolved against prepared read-only source context so the
     per-class prompt can carry class-specific implementation context
-    (§WF-dynamic-access-iterative-strategy).
+    (§AR-dynamic-access-iterative).
     """
     if not os.path.isfile(report_path):
         raise FileNotFoundError(report_path)
@@ -147,7 +191,7 @@ def compute_class_delta(
     """Compare two reports for one class to find what changed between iterations.
 
     The per-class prompt uses this delta to focus the next attempt on newly
-    covered and still-uncovered call sites (§WF-dynamic-access-iterative-strategy).
+    covered and still-uncovered call sites (§AR-dynamic-access-iterative).
     """
     previous_class = None if previous_report is None else previous_report.get_class(class_name)
     current_class = current_report.get_class(class_name)

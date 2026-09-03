@@ -49,7 +49,7 @@ import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
 /**
- * Implements §TCK-test-harness.5 — the {@code addTestedVersion} authoring helper that records a
+ * Implements §AR-test-harness.5 — the {@code addTestedVersion} authoring helper that records a
  * newly passing version in {@code index.json} and refreshes mirrored stats and shared test sources,
  * used by the compatibility workflow (§FS-repository-functional-spec.9).
  */
@@ -200,6 +200,8 @@ public abstract class TestedVersionUpdaterTask extends DefaultTask {
                 updateDependentTestVersions(oldMetadata, newVersion, entries);
                 return new MetadataVersionsIndexEntry(
                         entry.latest(),
+                        entry.autoUpdate(),
+                        entry.highPriority(),
                         entry.override(),
                         entry.defaultFor(),
                         newVersion,
@@ -558,6 +560,8 @@ public abstract class TestedVersionUpdaterTask extends DefaultTask {
                 // Create a new entry with the updated test-version
                 MetadataVersionsIndexEntry updatedEntry = new MetadataVersionsIndexEntry(
                         entry.latest(),
+                        entry.autoUpdate(),
+                        entry.highPriority(),
                         entry.override(),
                         entry.defaultFor(),
                         entry.metadataVersion(),

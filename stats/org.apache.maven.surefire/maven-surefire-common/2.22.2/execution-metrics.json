@@ -1,0 +1,98 @@
+{
+  "add_new_library_support:2026-06-28": {
+    "timestamp": "2026-06-28T17:17:24.821233Z",
+    "library": "org.apache.maven.surefire:maven-surefire-common:2.22.2",
+    "starting_commit": "b335810838e65c24a57902146e3944f42ccab4d0",
+    "ending_commit": "ea3f7ec8c75e2cdfa9c9be919fb88b74cd087426",
+    "strategy_name": "dynamic_access_main_sources_pi_gpt-5.5",
+    "agent": "pi",
+    "model": "oca/gpt-5.5",
+    "status": "success",
+    "stats": {
+      "version": "2.22.2",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 58,
+            "totalCalls": 58
+          },
+          "resources": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 1,
+            "totalCalls": 1
+          }
+        },
+        "coverageRatio": 1.0,
+        "coveredCalls": 59,
+        "totalCalls": 59
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 4790,
+          "missed": 59751,
+          "ratio": 0.074216,
+          "total": 64541
+        },
+        "line": {
+          "covered": 1195,
+          "missed": 14070,
+          "ratio": 0.078284,
+          "total": 15265
+        },
+        "method": {
+          "covered": 234,
+          "missed": 2793,
+          "ratio": 0.077304,
+          "total": 3027
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "no_action",
+      "issue_number": 2431,
+      "issue_label": "library-new-request",
+      "library": "org.apache.maven.surefire:maven-surefire-common:2.22.2",
+      "summary": "The artifact is an internal Maven Surefire/Failsafe common library whose resolved compile/runtime dependencies are ordinary Maven/Surefire/Plexus artifacts already pulled transitively; meaningful tests can exercise scanners, reporters, properties, boot serializer/configuration, and SPI loading without Docker, environment variables, system properties, or extra Maven dependencies.",
+      "deterministic_setup": [],
+      "agent_guidance": "",
+      "risks": [
+        "Some deeper plugin-integration paths construct Maven mojo/session/provider state and may be awkward to cover with a simple generated scaffold, but the upstream tests show those are handled with ordinary in-process test fixtures/resources rather than external services or required driver setup."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#2431 Support for org.apache.maven.surefire:maven-surefire-common:2.22.2; label=library-new-request; body_chars=123"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "oca/gpt-5.5",
+      "input_tokens_used": 67005,
+      "output_tokens_used": 3451,
+      "prompt_path": "library-preflight-prompt.txt",
+      "raw_response_path": "library-preflight-response.txt",
+      "session_log_path": "/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/logs/org.apache.maven.surefire:maven-surefire-common:2.22.2/library-preparation-preflight/pi-generation-2026-06-28T16-20-22-742284Z.log"
+    },
+    "metrics": {
+      "input_tokens_used": 519650,
+      "cached_input_tokens_used": 6605824,
+      "output_tokens_used": 60721,
+      "iterations": 12,
+      "cost_usd": 5.1245,
+      "generated_loc": 615,
+      "tested_library_loc": 1195,
+      "metadata_entries": 22,
+      "test_only_metadata_entries": 5,
+      "code_coverage_percent": 7.83
+    },
+    "artifacts": {
+      "test_file": "tests/src/org.apache.maven.surefire/maven-surefire-common/2.22.2/src/test/java/org_apache_maven_surefire/maven_surefire_common/ServiceLoaderTest.java",
+      "metadata_file": "metadata/org.apache.maven.surefire/maven-surefire-common/2.22.2/reachability-metadata.json"
+    }
+  }
+}

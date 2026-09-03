@@ -32,17 +32,17 @@ It covers new-library metadata PRs, including titles like `[GenAI] Add support f
 ### `review-fixes-javac-fail`
 
 Reviews pull requests with the `fixes-javac-fail` label.
-It covers compile-failure repair PRs for existing libraries and applies a lighter review than `library-new-request`: keep the diff scoped to the compile fix, preserve meaningful tests, and block regressions where dynamic-access coverage drops between the previously tested version and the new version.
+It covers compile-failure repair PRs for existing libraries and applies a lighter review than `library-new-request`: keep the diff scoped to the compile fix, preserve meaningful tests, and apply the ordered repair coverage gate to overall and breakdown statistics.
 
 ### `review-fixes-java-run-fail`
 
 Reviews pull requests with the `fixes-java-run-fail` label.
-It covers JVM runtime-failure repair PRs for existing libraries and applies a lighter review than `library-new-request`: keep the diff scoped to the Java runtime fix, preserve meaningful tests and assertions, and block regressions where dynamic-access coverage drops between the previously tested version and the new version.
+It covers JVM runtime-failure repair PRs for existing libraries and applies a lighter review than `library-new-request`: keep the diff scoped to the Java runtime fix, preserve meaningful tests and assertions, and apply the ordered repair coverage gate to overall and breakdown statistics.
 
 ### `review-fixes-native-image-run-fail`
 
 Reviews pull requests with the `fixes-native-image-run-fail` label.
-It covers native-image runtime-failure repair PRs for existing libraries and applies a lighter review than `library-new-request`: verify the native path is fixed rather than skipped, keep metadata and test changes scoped, and block regressions where dynamic-access coverage drops between the previously tested version and the new version.
+It covers native-image runtime-failure repair PRs for existing libraries and applies a lighter review than `library-new-request`: verify the native path is fixed rather than skipped, keep metadata and test changes scoped, and apply the ordered repair coverage gate to overall and breakdown statistics.
 
 ### `close-new-library-support-pr`
 

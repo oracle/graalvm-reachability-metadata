@@ -1,0 +1,7 @@
+# Forge records one pre-push review finding per generated branch in
+# `forge/FINDINGS.md` (§forge/FS-local-branch-review). Every branch inserts its
+# entry at the same offset below the header, so any two concurrent pull requests
+# conflict on that file and on nothing else. The ledger is append-only, so
+# keeping both sides is always the correct resolution: `union` merges the entries
+# without conflict markers instead of stopping the merge.
+forge/FINDINGS.md merge=union

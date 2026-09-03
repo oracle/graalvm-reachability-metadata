@@ -1,0 +1,167 @@
+grund_config_version = 1
+project_name = "forge"
+project_description = "Automation subproject that turns labeled issues into reviewed metadata pull requests"
+
+[reference]
+marker = "§"
+trigger = "$$"
+strict = true
+require_grounding = false
+inline_style = "citation-with-note" # citation-with-note | citation-only
+inline_note_suggested_lines = 1
+inline_note_max_lines = 20
+inline_note_max_columns = 100
+warn_on_suggested = false
+
+[id]
+format = "{kind}-{slug}" # placeholders: {kind} required; use {number}, {slug}, or both
+section_separator = "."
+section_heading_levels = "strict" # strict | warn | loose
+number_pattern = "\\d+"
+slug_pattern = "[a-z0-9][a-z0-9-]*"
+
+[[kinds]]
+kind = "GRUND"
+file = "docs/grund.md"
+title = "Why: Forge motivation"
+
+[[kinds]]
+kind = "GOAL"
+file = "docs/goals.md"
+title = "Where: Forge direction and outcomes"
+
+[[kinds]]
+kind = "AR"
+folder = "docs/architecture"
+title = "Forge architecture and technical structure"
+
+[[kinds]]
+kind = "FS"
+folder = "docs/functional-spec"
+title = "Forge functional behavior and requirements"
+
+[[kinds]]
+kind = "ROADMAP"
+file = "docs/roadmap.md"
+title = "Forge implementation roadmap"
+
+# Places that are read and checked, but declare no IDs.
+[[kinds]]
+kind = "prompt"
+folder = "prompt_templates"
+citable = false
+title = "Agent prompt templates the workflows render"
+
+[[kinds]]
+kind = "example"
+folder = "examples"
+citable = false
+title = "Worked examples of a workflow run"
+
+[[kinds]]
+kind = "ai-workflows"
+folder = "ai_workflows"
+citable = false
+title = "Workflow drivers, engines, and agent adapters"
+
+[[kinds]]
+kind = "git-scripts"
+folder = "git_scripts"
+citable = false
+title = "Git and GitHub automation: commits, branches, PRs, stats"
+
+[[kinds]]
+kind = "utility-scripts"
+folder = "utility_scripts"
+citable = false
+title = "Shared support code used across workflows and pipelines"
+
+[[kinds]]
+kind = "benchmarks"
+folder = "benchmarks"
+citable = false
+title = "Benchmark campaign configuration and runner"
+
+[[kinds]]
+kind = "tests"
+folder = "tests"
+citable = false
+title = "Unit and integration tests for the Python modules"
+
+# Places that are listed, not walked: data that ships verbatim.
+[[kinds]]
+kind = "schema"
+folder = "schemas"
+citable = false
+scan = false
+title = "JSON Schemas for strategies, metrics, and continuation markers"
+
+[[kinds]]
+kind = "strategy"
+folder = "strategies"
+citable = false
+scan = false
+title = "Predefined strategy configurations"
+
+# The homeless kind: every citation site outside every home above.
+[[kinds]]
+kind = "code"
+citable = false
+title = "Loose scripts and plugins outside a kind home"
+
+[scan]
+include = ["AGENTS.md", "README.md", "DEVELOPING.md", "docs", "scripts", "pylint_plugins", "forge_metadata.py"]
+exclude = ["target", "node_modules", ".git", "dist", "build", ".venv", ".gradle", "out", "**/__pycache__", "local_repositories", "logs", "roadmap-planning", "skills"]
+extensions = ["md", "html", "py"]
+comment_prefixes = ["//", "#", "/*", "*", "<!--"]
+docstring_python = true
+respect_gitignore = true
+
+[output]
+format = "text" # text | json
+color = "auto" # auto | always | never
+relative_paths = true
+
+[fmt.cross_refs]
+enabled = false
+anchor_format = "github" # github | gitlab | mkdocs | pandoc | none
+
+[citations]
+default = "may"
+
+[citations.GOAL]
+must = ["GRUND|GOAL"]
+
+[citations.FS]
+must = ["GOAL|FS"]
+
+[citations.AR]
+must = ["FS|GOAL"]
+
+[citations.ROADMAP]
+should = ["GOAL|FS|AR"]
+
+[citations.prompt]
+should = ["*/FS|AR|GOAL"]
+
+[citations.example]
+should = ["FS|AR"]
+
+[citations.ai-workflows]
+should = ["FS|AR"]
+
+[citations.git-scripts]
+should = ["FS|AR"]
+
+[citations.utility-scripts]
+should = ["FS|AR"]
+
+[citations.benchmarks]
+should = ["FS|AR"]
+
+[citations.tests]
+should = ["FS|AR"]
+
+[citations.code]
+must = ["FS"]
+should = ["AR"]

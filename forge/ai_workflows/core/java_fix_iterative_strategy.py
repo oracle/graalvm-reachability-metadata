@@ -3,16 +3,21 @@
 # You should have received a copy of the CC0 legalcode along with this
 # work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 
+from ai_workflows.agents.agent import send_agent_prompt
 from ai_workflows.core.workflow_strategy import RUN_STATUS_FAILURE, RUN_STATUS_SUCCESS, WorkflowStrategy
 from utility_scripts.continuation_marker import PHASE_EXPLORE, PHASE_FIX, save_phase_update
-from utility_scripts.native_test_verification import (
-    STATUS_FAILED as NATIVE_TEST_GATE_FAILED,
-    global_output_dir,
-    verify_native_test_passes,
+from utility_scripts.run_location import (
+    PHASE_FIX as RUN_PHASE_FIX,
+    STEP_FIX_REPORTED_FAILURE,
+    STEP_NATIVE_TRACE_GATE,
+    RunLocation,
+    enter_phase,
+    log_step_progress,
+    record_step_failure,
+    run_step,
 )
-
-
-DEFAULT_MAX_NATIVE_TEST_VERIFICATION_ITERATIONS = 40
+from utility_scripts.native_test_verification import global_output_dir
+from utility_scripts.stage_logger import log_detail
 
 
 """
@@ -70,10 +75,6 @@ class _JavaTestFixIterativeBase(WorkflowStrategy):
         self.group, self.artifact, self.version = self.library.split(":")
         self.package = self.group
         self.max_test_iterations = self.parameters["max-test-iterations"]
-        self.max_native_test_verification_iterations = self._parameter_int(
-            "max-native-test-verification-iterations",
-            DEFAULT_MAX_NATIVE_TEST_VERIFICATION_ITERATIONS,
-        )
 
     @property
     def _log_prefix(self) -> str:
@@ -92,30 +93,59 @@ class _JavaTestFixIterativeBase(WorkflowStrategy):
         return "agent: test failed before nativeTest; sending failure output back to agent"
 
     def _print_message(self, message: str) -> None:
-        print(f"[{self._log_prefix}] {message}")
+        log_detail(self._log_prefix, message)
 
     @classmethod
     def _print_detail(cls, message: str, indent_level: int = 1) -> None:
-        print(f"{'  ' * indent_level}{message}")
+        log_detail("fix", message, indent_level=indent_level)
 
     def run(self, agent):
         save_phase_update(
             self.continuation_marker_path,
             lambda marker: marker.mark_phase_running(PHASE_FIX),
         )
+        enter_phase(RUN_PHASE_FIX)
         workflow_status = RUN_STATUS_FAILURE
 
-        self._print_message("running initial gradle test to collect errors")
-        initial_error = agent.run_test_command(f"./gradlew test -Pcoordinates={self.library}")
-        self._print_message("running agent...")
-        agent.send_prompt(self._render_prompt("initial", initial_error=initial_error))
-        self._print_message("agent complete")
+        with run_step(RUN_PHASE_FIX, STEP_FIX_REPORTED_FAILURE, operand=self.library):
+            log_step_progress(
+                RUN_PHASE_FIX,
+                STEP_FIX_REPORTED_FAILURE,
+                f"Fixing reported failure for {self.library}",
+            )
+            log_step_progress(
+                RUN_PHASE_FIX,
+                STEP_FIX_REPORTED_FAILURE,
+                "Reproducing reported failure",
+                indent_level=1,
+            )
+            self._print_message("running initial gradle test to collect errors")
+            initial_error = agent.run_test_command(f"./gradlew test -Pcoordinates={self.library}")
+            log_step_progress(
+                RUN_PHASE_FIX,
+                STEP_FIX_REPORTED_FAILURE,
+                "Running initial agent fix",
+                indent_level=1,
+            )
+            self._print_message("running agent...")
+            send_agent_prompt(
+                agent,
+                self._render_prompt("initial", initial_error=initial_error),
+                "initial_fix()",
+            )
+            self._print_message("agent complete")
         global_iterations = 1
 
         for test_iter in range(self.max_test_iterations):
             save_phase_update(
                 self.continuation_marker_path,
                 lambda marker: marker.record_iteration(PHASE_FIX, test_iter + 1),
+            )
+            log_step_progress(
+                RUN_PHASE_FIX,
+                STEP_FIX_REPORTED_FAILURE,
+                f"Running test {test_iter + 1}/{self.max_test_iterations}",
+                indent_level=1,
             )
             self._print_message(
                 "test {test_iteration}/{max_test_iterations}".format(
@@ -131,6 +161,18 @@ class _JavaTestFixIterativeBase(WorkflowStrategy):
             )
             test_output = agent.run_test_command(f"./gradlew test -Pcoordinates={self.library}")
             failed_task = self._get_first_failed_task(test_output)
+            if failed_task == "nativeTest":
+                test_outcome = "reached nativeTest"
+            elif failed_task is None:
+                test_outcome = "passed"
+            else:
+                test_outcome = f"failed at {failed_task}"
+            log_step_progress(
+                RUN_PHASE_FIX,
+                STEP_FIX_REPORTED_FAILURE,
+                f"Test {test_iter + 1}/{self.max_test_iterations} {test_outcome}",
+                indent_level=1,
+            )
             self._print_detail(
                 "test: complete (failed task: {failed_task})".format(
                     failed_task=failed_task or "none",
@@ -147,18 +189,32 @@ class _JavaTestFixIterativeBase(WorkflowStrategy):
                 break
 
             global_iterations += 1
+            log_step_progress(
+                RUN_PHASE_FIX,
+                STEP_FIX_REPORTED_FAILURE,
+                f"Running feedback fix after {failed_task}",
+                indent_level=2,
+            )
             self._print_detail(
                 self._retry_detail_message,
                 indent_level=2,
             )
-            agent.send_prompt(
-                f"{self._retry_prompt_title}\n./gradlew test -Pcoordinates={self.library}\n\nOutput:\n{test_output}"
+            send_agent_prompt(
+                agent,
+                f"{self._retry_prompt_title}\n./gradlew test -Pcoordinates={self.library}\n\nOutput:\n{test_output}",
+                "feedback_fix()",
             )
             self._print_detail("agent: complete", indent_level=2)
 
-        if workflow_status == RUN_STATUS_SUCCESS and self.fix_mode == JAVA_FIX_MODE_JAVA_RUN:
-            if not self._run_native_test_verification_gate():
-                workflow_status = RUN_STATUS_FAILURE
+        # Both repair modes must prove the repaired tree under Native Image.
+        # §AR-native-test-verification-callers
+        if workflow_status == RUN_STATUS_SUCCESS:
+            with run_step(RUN_PHASE_FIX, STEP_NATIVE_TRACE_GATE, operand=self.library):
+                if not self.verify_native_test_gate(global_output_dir(
+                    self.reachability_repo_path, self.group, self.artifact, self.version,
+                )):
+                    record_step_failure()
+                    workflow_status = RUN_STATUS_FAILURE
 
         agent.clear_context()
         if workflow_status == RUN_STATUS_SUCCESS:
@@ -170,39 +226,19 @@ class _JavaTestFixIterativeBase(WorkflowStrategy):
                 ),
             )
         else:
+            log_step_progress(
+                RUN_PHASE_FIX,
+                STEP_FIX_REPORTED_FAILURE,
+                f"Reported failure could not be fixed for {self.library}",
+            )
             save_phase_update(
                 self.continuation_marker_path,
                 lambda marker: marker.mark_phase_pending(PHASE_FIX, iteration=global_iterations),
             )
-        return workflow_status, global_iterations
-
-    def _run_native_test_verification_gate(self) -> bool:
-        """Terminal gate: verify nativeTest passes; FAILED aborts the workflow."""
-        output_dir = global_output_dir(
-            self.reachability_repo_path, self.group, self.artifact, self.version,
-        )
-        self._print_message(
-            f"native-test gate: starting output_dir={output_dir} "
-            f"budget={self.max_native_test_verification_iterations}"
-        )
-        result = verify_native_test_passes(
-            reachability_repo_path=self.reachability_repo_path,
-            coordinate=self.library,
-            output_dir=output_dir,
-            max_iterations=self.max_native_test_verification_iterations,
-        )
-        if result.status == NATIVE_TEST_GATE_FAILED:
-            log_path = result.last_native_test_log_path or "(none)"
-            self._print_message(
-                f"native-test gate FAILED after {result.iterations_used} cycles "
-                f"(last log: {log_path})"
+            record_step_failure(
+                location=RunLocation(RUN_PHASE_FIX, STEP_FIX_REPORTED_FAILURE, self.library),
             )
-            return False
-        self._print_message(
-            f"native-test gate {result.status} after {result.iterations_used} cycles"
-        )
-        return True
-
+        return workflow_status, global_iterations
 
 @WorkflowStrategy.register("javac_iterative")
 class JavacIterativeStrategy(_JavaTestFixIterativeBase):

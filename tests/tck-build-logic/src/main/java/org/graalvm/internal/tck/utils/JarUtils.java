@@ -28,6 +28,14 @@ public abstract class JarUtils {
     private static final String META_INF_VERSIONS = "META-INF/versions/";
 
     /**
+     * Returns whether a resolved artifact is the unclassified main JAR eligible
+     * for the coverage denominator. §AR-test-harness.8
+     */
+    public static boolean isUnclassifiedMainJar(String extension, String classifier) {
+        return "jar".equals(extension) && (classifier == null || classifier.isEmpty());
+    }
+
+    /**
      * Scans the given JARs and returns all fully-qualified class names found.
      * Handles multi-release JARs by stripping the {@code META-INF/versions/N/} prefix.
      * Excludes {@code module-info.class}.

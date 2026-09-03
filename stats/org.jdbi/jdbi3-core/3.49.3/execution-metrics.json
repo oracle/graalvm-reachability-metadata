@@ -1,0 +1,111 @@
+{
+  "add_new_library_support:2026-08-29": {
+    "timestamp": "2026-08-29T03:35:09.101149Z",
+    "library": "org.jdbi:jdbi3-core:3.49.3",
+    "starting_commit": "668ecc3edadfc07657f6be4fc8c21e928dfad9d2",
+    "ending_commit": "3a429d92f5ed7b3c148afd116d9b48a17e74ca7f",
+    "strategy_name": "dynamic_access_bulk_pi_gpt-5.6-sol",
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "status": "success",
+    "stats": {
+      "version": "3.49.3",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 0.983333,
+            "coveredCalls": 59,
+            "totalCalls": 60
+          },
+          "resources": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 1,
+            "totalCalls": 1
+          }
+        },
+        "coverageRatio": 0.983607,
+        "coveredCalls": 60,
+        "totalCalls": 61
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 17732,
+          "missed": 48967,
+          "ratio": 0.265851,
+          "total": 66699
+        },
+        "line": {
+          "covered": 3958,
+          "missed": 10428,
+          "ratio": 0.275129,
+          "total": 14386
+        },
+        "method": {
+          "covered": 1261,
+          "missed": 3141,
+          "ratio": 0.286461,
+          "total": 4402
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "advisory_preparation",
+      "issue_number": 9496,
+      "issue_label": "library-new-request",
+      "library": "org.jdbi:jdbi3-core:3.49.3",
+      "summary": "Jdbi core requires a JDBC driver for meaningful database-backed coverage.",
+      "deterministic_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "com.h2database:h2:2.3.232",
+          "scope": "testImplementation",
+          "reason": "Jdbi's core artifact only brings its hard dependencies transitively; its documented usage and testing model require a JDBC database driver. H2 provides an embedded, deterministic database suitable for native tests. [Jdbi 3.49.3 guide](https://jdbi.org/releases/3.49.3/) [Maven Central artifact](https\n...[truncated]"
+        }
+      ],
+      "agent_guidance": "Use Jdbi's fluent core API with an isolated in-memory JDBC database, exercising schema creation, binding, queries, result mapping, handles, and transactions. Install H2DatabasePlugin only when covering H2-specific array or UUID mappings; it is included in jdbi3-core. Keep tests native-image executable and avoid adding SQL Object or Jdbi testing modules unless specifically required.",
+      "risks": [
+        "Native-image verification remains authoritative because JDBC driver loading and reflective result mapping may require generated metadata."
+      ],
+      "applied_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "com.h2database:h2:2.3.232",
+          "result": "applied",
+          "target": "tests/src/org.jdbi/jdbi3-core/3.49.3/build.gradle"
+        }
+      ],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#9496 Support for org.jdbi:jdbi3-core:3.49.3; label=library-new-request; body_chars=80"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "gpt-5.6-luna",
+      "input_tokens_used": 2256279,
+      "output_tokens_used": 8897,
+      "prompt_path": "library-preflight-prompt.txt",
+      "raw_response_path": "library-preflight-response.txt",
+      "session_log_path": "/home/mihailo/git/graalvm-reachability-metadata/forge/logs/org.jdbi:jdbi3-core:3.49.3/library-preparation-preflight/codex-session-_4ogiq2t.log"
+    },
+    "metrics": {
+      "input_tokens_used": 343052,
+      "cached_input_tokens_used": 4539904,
+      "output_tokens_used": 42474,
+      "iterations": 3,
+      "cost_usd": 5.2595,
+      "generated_loc": 963,
+      "tested_library_loc": 3958,
+      "metadata_entries": 132,
+      "test_only_metadata_entries": 101,
+      "code_coverage_percent": 27.51
+    },
+    "artifacts": {
+      "metadata_file": "metadata/org.jdbi/jdbi3-core/3.49.3/reachability-metadata.json"
+    }
+  }
+}

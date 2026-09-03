@@ -1,0 +1,100 @@
+{
+  "add_new_library_support:2026-06-26": {
+    "timestamp": "2026-06-26T20:47:46.845781Z",
+    "library": "io.opentelemetry.semconv:opentelemetry-semconv-incubating:1.41.1-alpha",
+    "starting_commit": "6f963317056b1aec341763eca1906000f6e7cf6a",
+    "ending_commit": "9c01ae31c6c14df3875adb4ebeef68f793700ce2",
+    "strategy_name": "dynamic_access_main_sources_pi_gpt-5.5",
+    "agent": "pi",
+    "model": "oca/gpt-5.5",
+    "status": "success",
+    "stats": {
+      "version": "1.41.1-alpha",
+      "dynamicAccess": {
+        "breakdown": {},
+        "coverageRatio": 1.0,
+        "coveredCalls": 0,
+        "totalCalls": 0
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 1352,
+          "missed": 1389,
+          "ratio": 0.493251,
+          "total": 2741
+        },
+        "line": {
+          "covered": 686,
+          "missed": 628,
+          "ratio": 0.52207,
+          "total": 1314
+        },
+        "method": {
+          "covered": 17,
+          "missed": 69,
+          "ratio": 0.197674,
+          "total": 86
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "advisory_preparation",
+      "issue_number": 8518,
+      "issue_label": "library-new-request",
+      "library": "io.opentelemetry.semconv:opentelemetry-semconv-incubating:1.41.1-alpha",
+      "summary": "The incubating semconv artifact is generated constants/classes and needs no service, Docker image, or environment settings, but its public fields reference io.opentelemetry.api.common.AttributeKey and the published metadata does not bring opentelemetry-api transitively.",
+      "deterministic_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "io.opentelemetry:opentelemetry-api:1.33.0",
+          "scope": "testImplementation",
+          "reason": "OpenTelemetry semconv documentation says users must also depend on opentelemetry-api, and the artifact's generated classes expose AttributeKey fields. The upstream build pins opentelemetry-api 1.33.0 as the conservative compileOnly API requirement; without it, tests that access semconv constants fai\n...[truncated]"
+        }
+      ],
+      "agent_guidance": "",
+      "risks": [
+        "The requested artifact version is 1.41.1-alpha, but opentelemetry-api has no 1.41.1 release; 1.33.0 is the upstream compileOnly baseline for this semconv release."
+      ],
+      "applied_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "io.opentelemetry:opentelemetry-api:1.33.0",
+          "result": "applied",
+          "target": "tests/src/io.opentelemetry.semconv/opentelemetry-semconv-incubating/1.41.1-alpha/build.gradle"
+        }
+      ],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#8518 Support for io.opentelemetry.semconv:opentelemetry-semconv-incubating:1.41.1-alpha; label=library-new-request; body_chars=39"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "oca/gpt-5.5",
+      "input_tokens_used": 40733,
+      "output_tokens_used": 4809,
+      "prompt_path": "library-preflight-prompt.txt",
+      "raw_response_path": "library-preflight-response.txt",
+      "session_log_path": "/home/vjovanov/c/forge/forge1/graalvm-reachability-metadata/forge/logs/io.opentelemetry.semconv:opentelemetry-semconv-incubating:1.41.1-alpha/library-preparation-preflight/pi-generation-2026-06-26T20-25-44-641950Z.log"
+    },
+    "metrics": {
+      "input_tokens_used": 241593,
+      "cached_input_tokens_used": 4393984,
+      "output_tokens_used": 40789,
+      "iterations": 3,
+      "cost_usd": 3.4207,
+      "generated_loc": 537,
+      "tested_library_loc": 686,
+      "metadata_entries": 0,
+      "code_coverage_percent": 52.21
+    },
+    "artifacts": {
+      "test_file": "tests/src/io.opentelemetry.semconv/opentelemetry-semconv-incubating/1.41.1-alpha/src/test/java/io_opentelemetry_semconv/opentelemetry_semconv_incubating/Opentelemetry_semconv_incubatingTest.java",
+      "metadata_file": "metadata/io.opentelemetry.semconv/opentelemetry-semconv-incubating/1.41.1-alpha/reachability-metadata.json"
+    }
+  }
+}

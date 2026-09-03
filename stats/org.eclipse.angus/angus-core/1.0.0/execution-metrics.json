@@ -1,0 +1,94 @@
+{
+  "add_new_library_support:2026-06-29": {
+    "timestamp": "2026-06-29T01:05:54.113037Z",
+    "library": "org.eclipse.angus:angus-core:1.0.0",
+    "starting_commit": "2ae7e3e2e3812e9494e7c385123a76e1b8fdb647",
+    "ending_commit": "4354b524ee940e0c00a6d80b5aed3d738bb1b1af",
+    "strategy_name": "dynamic_access_main_sources_pi_gpt-5.5",
+    "agent": "pi",
+    "model": "oca/gpt-5.5",
+    "status": "success",
+    "stats": {
+      "version": "1.0.0",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 8,
+            "totalCalls": 8
+          }
+        },
+        "coverageRatio": 1.0,
+        "coveredCalls": 8,
+        "totalCalls": 8
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 985,
+          "missed": 10640,
+          "ratio": 0.084731,
+          "total": 11625
+        },
+        "line": {
+          "covered": 225,
+          "missed": 2093,
+          "ratio": 0.097066,
+          "total": 2318
+        },
+        "method": {
+          "covered": 36,
+          "missed": 317,
+          "ratio": 0.101983,
+          "total": 353
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "advisory_preparation",
+      "issue_number": 1525,
+      "issue_label": "library-new-request",
+      "library": "org.eclipse.angus:angus-core:1.0.0",
+      "summary": "The artifact is a self-contained Angus Mail core/utilities jar with transitive Jakarta Mail and Activation dependencies; no extra Maven dependency or Docker service is needed, but one JDK module export may be required for full SocketFetcher SSL hostname-check coverage.",
+      "deterministic_setup": [],
+      "agent_guidance": "Meaningful tests can use in-memory streams, Jakarta Activation DataHandler/DataSource objects, ServiceLoader for jakarta.mail.util.StreamProvider, and loopback ServerSocket/SSLServerSocket instances; do not require live SMTP/IMAP/POP3 infrastructure. If exercising com.sun.mail.util.SocketFetcher server identity verification through the JDK sun.security.util.HostnameChecker path, configure JVM/native test execution with --add-exports=java.base/sun.security.util=ALL-UNNAMED, as the related Angus Mail tests do.",
+      "risks": [
+        "Most public packages in angus-core are utility/internal support packages, so generated tests should avoid adding angus-mail or protocol artifacts just to test SMTP/IMAP/POP3 behavior.",
+        "SocketFetcher has fallback hostname matching when sun.security.util is inaccessible, so lack of the add-exports option may reduce coverage of that specific path rather than block all useful coverage."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#1525 Support for org.eclipse.angus:angus-core:1.0.0; label=library-new-request; body_chars=179"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "oca/gpt-5.5",
+      "input_tokens_used": 64796,
+      "output_tokens_used": 3899,
+      "prompt_path": "library-preflight-prompt.txt",
+      "raw_response_path": "library-preflight-response.txt",
+      "session_log_path": "/home/vjovanov/c/forge/forge2/graalvm-reachability-metadata/forge/logs/org.eclipse.angus:angus-core:1.0.0/library-preparation-preflight/pi-generation-2026-06-29T00-44-38-486914Z.log"
+    },
+    "metrics": {
+      "input_tokens_used": 122752,
+      "cached_input_tokens_used": 927744,
+      "output_tokens_used": 14470,
+      "iterations": 2,
+      "cost_usd": 0.898,
+      "generated_loc": 270,
+      "tested_library_loc": 225,
+      "metadata_entries": 7,
+      "test_only_metadata_entries": 2,
+      "code_coverage_percent": 9.71
+    },
+    "artifacts": {
+      "test_file": "tests/src/org.eclipse.angus/angus-core/1.0.0/src/test/java/org_eclipse_angus/angus_core/WriteTimeoutSocketTest.java",
+      "metadata_file": "metadata/org.eclipse.angus/angus-core/1.0.0/reachability-metadata.json"
+    }
+  }
+}

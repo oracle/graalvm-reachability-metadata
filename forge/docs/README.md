@@ -1,7 +1,7 @@
 # Forge documentation
 
 This directory holds Forge's grounded documentation: motivation, direction,
-functional specifications, architecture, workflow specs, and test specs. Every
+functional specifications, architecture, and workflow specs. Every
 document follows the [`grund`](https://github.com/vjovanov/grund) convention, so
 each fact has a stable ID and can be cited from prose, other docs, and source
 code.
@@ -14,63 +14,51 @@ For the authoritative grounding rules and the agent contribution contract, see
 Documents are organized by grund *kind*. A kind groups facts of one type (a
 goal, a functional requirement, an architecture decision, …) and has a fixed
 *home* — a single file or a folder — declared in
-[../.agents/grund.toml](../.agents/grund.toml). An ID always lives in its kind's
+[../grund.toml](../grund.toml). An ID always lives in its kind's
 home, so the prefix tells you which file to open.
 
 | Kind | Home | Holds |
 | --- | --- | --- |
 | `GRUND` | [grund.md](grund.md) | Why Forge exists — the motivation everything else climbs back to. |
 | `GOAL` | [goals.md](goals.md) | Where Forge is headed — direction and measurable outcomes. |
-| `FS` | [functional-spec.md](functional-spec.md) | What Forge must do — contributor-facing functional behavior. |
-| `AR` | [architecture.md](architecture.md), [agent.md](agent.md) | How Forge is structured — boundaries, components, extension points. |
-| `DW` | [do-work.md](do-work.md) | The unattended do-work loop architecture. |
-| `STRAT` | [strategies.md](strategies.md) | Predefined strategy configuration architecture. |
-| `ORCH` | [orchestration-scripts.md](orchestration-scripts.md) | Orchestration script behavior and architecture. |
-| `GIT` | [git-scripts.md](git-scripts.md) | Git and PR publication behavior and architecture. |
-| `WF` | [workflows/](workflows/) | Per-workflow specifications and operating rules. |
-| `E2E` | [e2e.md](e2e.md) | End-to-end workflow test specification. |
-| `BENCH` | [benchmarking.md](benchmarking.md) | Generation benchmarking specification. |
+| `FS` | [functional-spec/](functional-spec/README.md) | What Forge must do — contributor-facing functional behavior and the per-component contracts. |
+| `AR` | [architecture/](architecture/README.md) | How Forge is structured — boundaries, components, extension points, and the per-component design. |
 | `ROADMAP` | [roadmap.md](roadmap.md) | Planned, not-yet-implemented work. |
 
-A kind whose home is a *folder* (`AR`, `FS`, `WF`) may spread its IDs across
-several files in that folder; a kind whose home is a single *file* keeps all of
-its IDs in that one file.
+`AR` and `FS` are *folder* homes: they spread their IDs across every file in
+that folder, and the file — not the prefix — tells you which component a
+declaration belongs to.
+
+`docs/` holds only the three documents that answer a question about Forge as a
+whole — why (`GRUND`), where (`GOAL`), and what is planned (`ROADMAP`).
+Everything else lives under [architecture/](architecture/README.md) or
+[functional-spec/](functional-spec/README.md), and the directory tells you
+whether a document describes structure or behavior.
 
 ### Files at a glance
 
 - [grund.md](grund.md) — `GRUND-forge-motivation`: why Forge exists.
 - [goals.md](goals.md) — `GOAL-forge-direction` and the outcome goals beneath it.
-- [functional-spec.md](functional-spec.md) — `FS-forge-functional-spec`: top-level functional spec and the workflow-spec catalog.
-- [continuation.md](continuation.md) — `FS-forge-run-continuation`: resuming a failed run at the phase that failed, and the continuation marker contract.
-- [architecture.md](architecture.md) — `AR-forge-architecture`: control plane, workflow boundaries, and extension points.
-- [agent.md](agent.md) — `AR-agent-api`: the agent API and its Pi implementation.
-- [do-work.md](do-work.md) — `DW-do-work-loop`: the long-running worker loop.
-- [strategies.md](strategies.md) — `STRAT-workflow-strategy-registry`: strategy registry, contract, and fields.
-- [orchestration-scripts.md](orchestration-scripts.md) — `ORCH-forge-orchestration-spec`.
-- [git-scripts.md](git-scripts.md) — `GIT-forge-publication`: PR eligibility, body, issue linking, and publication.
-- [benchmarking.md](benchmarking.md) — `BENCH-forge-generation-benchmarking`.
-- [e2e.md](e2e.md) — `E2E-forge-workflow-testing`: hermetic and live end-to-end testing.
+- [functional-spec/functional-spec.md](functional-spec/functional-spec.md) — `FS-forge-functional-spec`: top-level functional spec and the workflow-spec catalog.
+- [functional-spec/continuation.md](functional-spec/continuation.md) — `FS-forge-run-continuation`: resuming a failed run at the phase that failed, and the continuation marker contract.
+- [architecture/architecture.md](architecture/architecture.md) — `AR-forge-architecture`: control plane, workflow boundaries, and extension points.
+- [architecture/agent.md](architecture/agent.md) — `AR-agent-api`: the agent API and its backend adapters.
+- [architecture/do-work.md](architecture/do-work.md) — `AR-do-work-loop`: the long-running worker loop.
+- [architecture/orchestration-scripts.md](architecture/orchestration-scripts.md) — `AR-forge-orchestration`.
+- [architecture/git-scripts.md](architecture/git-scripts.md) — `AR-forge-publication`: PR eligibility, body, issue linking, and publication.
+- [functional-spec/strategies.md](functional-spec/strategies.md) — `FS-workflow-strategy-registry`: strategy registry, contract, and fields.
+- [functional-spec/benchmarking.md](functional-spec/benchmarking.md) — `FS-forge-generation-benchmarking`.
 - [roadmap.md](roadmap.md) — `ROADMAP-forge-implementation` and the planned improvements beneath it.
 
-### The `workflows/` subtree
+### A component still awaiting its split
 
-[workflows/](workflows/) is the `WF` home: every ID in this subtree — including
-the workflow-system and per-workflow architecture — uses the `WF` prefix. The
-shared overview file carries both the behavioral contract and the architecture;
-each individual workflow is one file:
-
-- [workflows/architecture.md](workflows/architecture.md) — `WF-forge-workflow-system` and `WF-forge-workflow-architecture`: shared workflow behavior, engines, and strategy configuration.
-- [workflows/workflow-drivers.md](workflows/workflow-drivers.md) — `WF-forge-workflow-drivers`.
-- [workflows/dynamic-access.md](workflows/dynamic-access.md) — `WF-dynamic-access-workflow`.
-- [workflows/improve-library-coverage.md](workflows/improve-library-coverage.md) — `WF-improve-library-coverage`.
-- [workflows/java-fail-fix.md](workflows/java-fail-fix.md) — `WF-java-fail-fix-workflow`.
-- [workflows/native-image-run-fix.md](workflows/native-image-run-fix.md) — `WF-native-image-run-fix-workflow`.
-- [workflows/native-metadata-tracing.md](workflows/native-metadata-tracing.md) — `WF-native-metadata-tracing`.
-- [workflows/code-coverage-improvement.md](workflows/code-coverage-improvement.md) — `WF-code-coverage-improvement` and `WF-code-coverage-improvement-architecture`: planned code coverage workflow, behavior and architecture in one file.
-
-A workflow file may declare both its behavioral contract and its own
-architecture; both use the `WF` prefix, as the shared overview and the planned
-code coverage workflow above do.
+[architecture/code-coverage-improvement.md](architecture/code-coverage-improvement.md)
+keeps behavior and architecture in one document. It is
+the only component documented that way. The split — behavior into the functional
+spec, engine into [architecture/workflows.md](architecture/workflows.md), driver
+into [architecture/drivers.md](architecture/drivers.md) — happens in a later
+change, and the document says so in its opening paragraph. Cite `CC-` IDs
+normally in the meantime; they are stable until that change renames them.
 
 ## Grund tags in the documentation
 
@@ -85,8 +73,8 @@ Every grounded fact has a stable ID of the form `<KIND>-<slug>[.<section>]`:
   (`.1`, `.2.1`, …).
 
 For example, `GOAL-forge-direction` names the top-level direction goal, and
-`E2E-forge-workflow-testing.4` points at the fourth numbered section of the
-end-to-end test spec.
+`FS-forge-functional-spec.4` points at the fourth numbered section of the
+functional spec.
 
 ### Declarations
 
@@ -126,7 +114,7 @@ Always cite the most specific point that supports the claim, and keep inline
 notes short (≤ 1 line preferred, ≤ 100 columns).
 
 Only `§`-prefixed tokens are checked — `[reference] strict = true` in
-[../.agents/grund.toml](../.agents/grund.toml) — so a bare ID-shaped word in
+[../grund.toml](../grund.toml) — so a bare ID-shaped word in
 prose is ignored.
 
 ### Reading a citation

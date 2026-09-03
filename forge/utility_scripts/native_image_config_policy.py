@@ -22,15 +22,23 @@ LEGACY_TEST_NATIVE_IMAGE_CONFIG_FILENAMES = frozenset(
         "predefined-classes-config.json",
     }
 )
-TEST_NATIVE_IMAGE_RESOURCE_SEGMENT = "/src/test/resources/META-INF/native-image/"
+#: Legacy config is rejected anywhere under a coordinate's test project, not only
+#: under `src/test/resources/META-INF/native-image/`. Extension suites such as
+#: `code-coverage-improvement/` are siblings of `src/`, and a guard anchored on the
+#: resource segment alone lets a tracing-agent artifact land beside them unnoticed
+#: (§AR-code-coverage-improvement.2, §root/FS-metadata.1).
+TEST_SOURCE_ROOT = "tests/src/"
 
 
 def format_legacy_test_native_image_config_error(paths: list[str]) -> str:
     """Return the standard error shown when legacy test-resource config is found."""
     joined_paths = "\n - ".join(paths)
     return (
-        "ERROR: Legacy Native Image config files are not supported in generated test resources. "
-        "Move test-only metadata into reachability-metadata.json and remove:\n - "
+        "ERROR: Legacy Native Image config files are not supported anywhere under tests/src/. "
+        "This repository loads only reachability-metadata.json: entries a consumer needs belong in "
+        "metadata/<group>/<artifact>/<version>/reachability-metadata.json, entries only the tests need in "
+        "the test project's src/test/resources/META-INF/native-image/reachability-metadata.json, and "
+        "splitTestOnlyMetadata decides which. Convert and remove:\n - "
         f"{joined_paths}"
     )
 
@@ -44,13 +52,13 @@ def parse_coordinate_parts(coordinates: str) -> tuple[str, str, str]:
 
 
 def find_legacy_test_native_image_config_files_for_coordinate(repo_path: str, coordinates: str) -> list[str]:
-    """Return legacy Native Image config files under the resolved test resources for one coordinate."""
-    native_image_dir = os.path.join(repo_path, _coordinate_test_native_image_prefix(repo_path, coordinates))
-    if not os.path.isdir(native_image_dir):
+    """Return legacy Native Image config files under the resolved test project for one coordinate."""
+    test_project_dir = os.path.join(repo_path, _coordinate_test_project_prefix(repo_path, coordinates))
+    if not os.path.isdir(test_project_dir):
         return []
 
     paths: list[str] = []
-    for root, _dirnames, filenames in os.walk(native_image_dir):
+    for root, _dirnames, filenames in os.walk(test_project_dir):
         for filename in filenames:
             if filename in LEGACY_TEST_NATIVE_IMAGE_CONFIG_FILENAMES:
                 paths.append(_repo_relative_path(repo_path, os.path.join(root, filename)))
@@ -86,26 +94,22 @@ def find_uncommitted_legacy_test_native_image_config_files_for_coordinate(repo_p
 
 
 def is_legacy_test_native_image_config_path(path: str) -> bool:
-    """Return True when a repo-relative path is a legacy test-resource Native Image config file."""
+    """Return True when a repo-relative path is a legacy Native Image config file under `tests/src/`."""
     normalized = path.replace("\\", "/")
     return (
-        normalized.startswith("tests/src/")
-        and TEST_NATIVE_IMAGE_RESOURCE_SEGMENT in normalized
+        normalized.startswith(TEST_SOURCE_ROOT)
         and os.path.basename(normalized) in LEGACY_TEST_NATIVE_IMAGE_CONFIG_FILENAMES
     )
 
 
-def _coordinate_test_native_image_prefix(repo_path: str, coordinates: str) -> str:
+def _coordinate_test_project_prefix(repo_path: str, coordinates: str) -> str:
     group, artifact, version = parse_coordinate_parts(coordinates)
     test_version = resolve_test_version(repo_path, group, artifact, version)
-    return (
-        f"tests/src/{group}/{artifact}/{test_version}/"
-        "src/test/resources/META-INF/native-image/"
-    )
+    return f"{TEST_SOURCE_ROOT}{group}/{artifact}/{test_version}/"
 
 
 def _filter_coordinate_test_native_image_paths(repo_path: str, coordinates: str, paths: list[str]) -> list[str]:
-    prefix = _coordinate_test_native_image_prefix(repo_path, coordinates)
+    prefix = _coordinate_test_project_prefix(repo_path, coordinates)
     return sorted(path for path in paths if path.replace("\\", "/").startswith(prefix))
 
 
