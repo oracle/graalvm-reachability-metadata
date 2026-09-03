@@ -57,3 +57,4 @@ public class AnnotationBeanUtilsTest {
             this.count = count;
         }
     }
+}
