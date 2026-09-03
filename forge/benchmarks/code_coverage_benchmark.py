@@ -48,7 +48,6 @@ BENCHMARK_DIR = Path("runtime") / "code-coverage" / "benchmark"
 RUN_RECORD = BENCHMARK_DIR / "run.json"
 RESULT_RECORD = BENCHMARK_DIR / "result.json"
 PUBLICATION_MARKER = BENCHMARK_DIR / "publication.json"
-PUBLISHER_MARKER = ".code-coverage-benchmark-publisher.json"
 RESULT_SCHEMA_VERSION = "1.0.0"
 COMMIT_SUBJECT = "Record code coverage benchmark"
 MAX_PUBLISH_ATTEMPTS = 5
@@ -57,7 +56,6 @@ sys.path.insert(0, str(FORGE_ROOT))
 
 from git_scripts.common_git import (  # noqa: E402
     GitTransportError,
-    git_remote_exists,
     run_git_transport,
 )
 from utility_scripts.code_coverage_jacoco import (  # noqa: E402
@@ -338,46 +336,39 @@ def _new_run_id(cell: MatrixCell) -> str:
     ))
 
 
-def _publisher_marker(path: Path) -> Path:
-    return path / PUBLISHER_MARKER
-
-
-def _create_publishing_worktree(
-        root: Path,
-        runner_commit: str,
-        explicit_path: Path | None,
-) -> tuple[Path, bool]:
-    if explicit_path is not None:
-        path = explicit_path.resolve()
-        if not _publisher_marker(path).is_file():
-            raise BenchmarkError(
-                f"Publishing checkout has no benchmark marker: {path}"
-            )
-        return path, False
-    path = root / f"publisher-{uuid.uuid4().hex[:12]}"
+def _create_publication_worktree(
+        repository_root: Path,
+        path: Path,
+        start_point: str,
+) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     subprocess.run(
-        ["git", "worktree", "add", "--detach", str(path), runner_commit],
-        cwd=REPOSITORY_ROOT,
+        ["git", "worktree", "add", "--detach", str(path), start_point],
+        cwd=repository_root,
         check=True,
     )
-    _write_json(
-        _publisher_marker(path),
-        {
-            "schemaVersion": "1.0.0",
-            "repository": str(REPOSITORY_ROOT.resolve()),
-            "runnerCommit": runner_commit,
-        },
-    )
-    return path, True
 
 
-def _remove_worktree(path: Path) -> None:
+def _remove_worktree(
+        path: Path,
+        repository_root: Path = REPOSITORY_ROOT,
+) -> None:
     subprocess.run(
         ["git", "worktree", "remove", "--force", str(path)],
-        cwd=REPOSITORY_ROOT,
+        cwd=repository_root,
         check=True,
     )
+
+
+def _discard_source_worktree(path: Path) -> None:
+    try:
+        _remove_worktree(path)
+    except (OSError, subprocess.SubprocessError) as error:
+        print(
+            f"ERROR: Could not remove published source worktree {path}: "
+            f"{error}",
+            file=sys.stderr,
+        )
 
 
 def _create_source_worktree(path: Path, suite_commit: str) -> None:
@@ -408,7 +399,6 @@ def _run_identity(
         runner_commit: str,
         cell: MatrixCell,
         source_worktree: Path,
-        metrics_repo_path: Path,
 ) -> dict[str, Any]:
     return {
         "schemaVersion": "1.0.0",
@@ -429,7 +419,6 @@ def _run_identity(
         "checkedInAllMethods": cell.library.all_methods,
         "sourceWorktree": str(source_worktree.resolve()),
         "runnerForgePath": str(FORGE_ROOT.resolve()),
-        "metricsRepoPath": str(metrics_repo_path.resolve()),
     }
 
 
@@ -468,7 +457,6 @@ def _instantiate_command(
         runner_commit: str,
         source_worktree: Path,
         workspace: Path,
-        publishing_worktree: Path,
         identity: dict[str, Any],
 ) -> list[str]:
     configuration = cell.configuration
@@ -482,7 +470,6 @@ def _instantiate_command(
         "benchmark_started_at": identity["startedAt"],
         "benchmark_source_worktree": str(source_worktree.resolve()),
         "benchmark_runner_forge_path": str(FORGE_ROOT.resolve()),
-        "benchmark_metrics_repo_path": str(publishing_worktree.resolve()),
         "benchmark_agent": configuration.agent,
         "benchmark_model": configuration.configured_model,
         "benchmark_target_model": configuration.target_model,
@@ -504,7 +491,6 @@ def _execute_cell(
         cell: MatrixCell,
         runner_commit: str,
         workspace_root: Path,
-        publishing_worktree: Path,
 ) -> tuple[bool, bool]:
     run_id = _new_run_id(cell)
     run_parent = workspace_root / run_id
@@ -517,7 +503,6 @@ def _execute_cell(
         runner_commit=runner_commit,
         cell=cell,
         source_worktree=source_worktree,
-        metrics_repo_path=publishing_worktree,
     )
     command = _instantiate_command(
         suite,
@@ -526,7 +511,6 @@ def _execute_cell(
         runner_commit,
         source_worktree,
         workspace,
-        publishing_worktree,
         identity,
     )
     try:
@@ -551,7 +535,7 @@ def _execute_cell(
                 exit_code=result.returncode,
             )
         if _publication_marker_path(workspace).is_file():
-            _remove_worktree(source_worktree)
+            _discard_source_worktree(source_worktree)
             print(f"Preserved benchmark workspace: {workspace.resolve()}")
             return status == "success", True
     except (BenchmarkError, OSError, subprocess.SubprocessError) as error:
@@ -562,7 +546,7 @@ def _execute_cell(
             if not _publication_marker_path(workspace).is_file():
                 publish_workspace(workspace, requested_status="failure")
             if _publication_marker_path(workspace).is_file():
-                _remove_worktree(source_worktree)
+                _discard_source_worktree(source_worktree)
                 print(f"Preserved benchmark workspace: {workspace.resolve()}")
                 return False, True
         except (BenchmarkError, OSError, subprocess.SubprocessError) as publish_error:
@@ -969,77 +953,96 @@ def _publish_lock(metrics_repo_path: Path) -> TextIO:
     return lock_handle
 
 
+def _discard_publication_worktree(
+        repository_root: Path,
+        path: Path,
+) -> None:
+    removal = subprocess.run(
+        ["git", "worktree", "remove", "--force", str(path)],
+        cwd=repository_root,
+        check=False,
+        capture_output=True,
+        text=True,
+    )
+    if removal.returncode != 0:
+        detail = removal.stderr.strip() or removal.stdout.strip()
+        print(
+            f"ERROR: Could not remove disposable publication worktree "
+            f"{path}: {detail}",
+            file=sys.stderr,
+        )
+
+
 def _publish_result(
-        metrics_repo_path: Path,
+        repository_root: Path,
+        workspace: Path,
         result: dict[str, Any],
 ) -> str:
-    if not _publisher_marker(metrics_repo_path).is_file():
-        raise BenchmarkError(
-            "Benchmark metrics publication requires a dedicated marked worktree."
-        )
     relative_path = _metrics_relative_path(result["coordinate"])
-    absolute_path = metrics_repo_path / relative_path
-    lock_handle = _publish_lock(metrics_repo_path)
+    lock_handle = _publish_lock(repository_root)
     try:
-        has_origin = git_remote_exists("origin", cwd=str(metrics_repo_path))
         for attempt in range(1, MAX_PUBLISH_ATTEMPTS + 1):
-            if has_origin:
-                run_git_transport(
-                    ["fetch", "origin", "master"],
-                    cwd=str(metrics_repo_path),
-                )
-                subprocess.run(
-                    ["git", "reset", "--hard", "origin/master"],
-                    cwd=metrics_repo_path,
-                    check=True,
-                )
-            changed = _merge_result(absolute_path, result)
-            subprocess.run(
-                ["git", "add", str(relative_path)],
-                cwd=metrics_repo_path,
-                check=True,
-            )
-            staged = subprocess.run(
-                ["git", "diff", "--cached", "--quiet"],
-                cwd=metrics_repo_path,
-                check=False,
-            )
-            if staged.returncode == 0:
-                return _git_output(metrics_repo_path, "rev-parse", "HEAD")
-            if not changed:
-                raise BenchmarkError(
-                    "Identical benchmark metrics unexpectedly changed the index."
-                )
-            subprocess.run(
-                [
-                    "git",
-                    "-c",
-                    "user.name=metadata-forge",
-                    "-c",
-                    "user.email=metadata-forge@local",
-                    "commit",
-                    "-m",
-                    COMMIT_SUBJECT,
-                ],
-                cwd=metrics_repo_path,
-                check=True,
-            )
-            if not has_origin:
-                return _git_output(metrics_repo_path, "rev-parse", "HEAD")
+            publisher = workspace.parent / f"publisher-{uuid.uuid4().hex[:12]}"
+            created = False
             try:
                 run_git_transport(
-                    ["push", "origin", "HEAD:master"],
-                    cwd=str(metrics_repo_path),
+                    ["fetch", "origin", "master"],
+                    cwd=str(repository_root),
                 )
-                return _git_output(metrics_repo_path, "rev-parse", "HEAD")
+                _create_publication_worktree(
+                    repository_root,
+                    publisher,
+                    "origin/master",
+                )
+                created = True
+                changed = _merge_result(publisher / relative_path, result)
+                subprocess.run(
+                    ["git", "add", str(relative_path)],
+                    cwd=publisher,
+                    check=True,
+                )
+                staged = subprocess.run(
+                    ["git", "diff", "--cached", "--quiet"],
+                    cwd=publisher,
+                    check=False,
+                )
+                if staged.returncode == 0:
+                    return _git_output(publisher, "rev-parse", "HEAD")
+                if not changed:
+                    raise BenchmarkError(
+                        "Identical benchmark metrics unexpectedly changed "
+                        "the index."
+                    )
+                subprocess.run(
+                    [
+                        "git",
+                        "-c",
+                        "user.name=metadata-forge",
+                        "-c",
+                        "user.email=metadata-forge@local",
+                        "commit",
+                        "-m",
+                        COMMIT_SUBJECT,
+                    ],
+                    cwd=publisher,
+                    check=True,
+                )
+                run_git_transport(
+                    ["push", "origin", "HEAD:master"],
+                    cwd=str(publisher),
+                )
+                return _git_output(publisher, "rev-parse", "HEAD")
             except GitTransportError as error:
                 if attempt == MAX_PUBLISH_ATTEMPTS:
                     raise
                 print(
-                    f"Retrying benchmark metrics push after attempt "
+                    f"Retrying benchmark metrics publication after attempt "
                     f"{attempt} failed: {error}",
                     file=sys.stderr,
                 )
+            finally:
+                if created:
+                    _discard_publication_worktree(repository_root, publisher)
         raise BenchmarkError("Benchmark metrics publication exhausted retries.")
     finally:
         fcntl.flock(lock_handle.fileno(), fcntl.LOCK_UN)
@@ -1051,7 +1054,7 @@ def publish_workspace(
         *,
         requested_status: str | None = None,
         exit_code: int | None = None,
-        metrics_repo_override: Path | None = None,
+        repository_root: Path = REPOSITORY_ROOT,
 ) -> dict[str, Any]:
     """Collect and idempotently publish one workspace's compact result."""
     workspace = workspace.resolve()
@@ -1062,12 +1065,7 @@ def publish_workspace(
         candidate = run.get("rheiExitCode")
         known_exit = candidate if type(candidate) is int else None
     result = _collect_result(workspace, status, known_exit)
-    metrics_repo_path = (
-        metrics_repo_override.resolve()
-        if metrics_repo_override is not None
-        else Path(run["metricsRepoPath"]).resolve()
-    )
-    published_commit = _publish_result(metrics_repo_path, result)
+    published_commit = _publish_result(repository_root.resolve(), workspace, result)
     marker = {
         "schemaVersion": "1.0.0",
         "runId": result["runId"],
@@ -1092,7 +1090,6 @@ def convert_workspace(args: argparse.Namespace) -> None:
     workspace = Path(args.workspace).resolve()
     source_worktree = Path(args.source_worktree).resolve()
     runner_forge_path = Path(args.runner_forge_path).resolve()
-    metrics_repo_path = Path(args.metrics_repo_path).resolve()
     if _git_output(source_worktree, "rev-parse", "HEAD") != args.suite_commit:
         raise BenchmarkError(
             "Benchmark source worktree is not at the configured suite commit."
@@ -1101,8 +1098,6 @@ def convert_workspace(args: argparse.Namespace) -> None:
         raise BenchmarkError(
             "Benchmark runner checkout is not at the recorded runner commit."
         )
-    if not _publisher_marker(metrics_repo_path).is_file():
-        raise BenchmarkError("Metrics checkout is not a benchmark publisher.")
     group, artifact, _ = args.coordinate.split(":")
     test_dir = Path(
         resolve_test_dir(
@@ -1158,7 +1153,6 @@ def convert_workspace(args: argparse.Namespace) -> None:
         "checkedInAllMethods": args.checked_in_all_methods,
         "sourceWorktree": str(source_worktree),
         "runnerForgePath": str(runner_forge_path),
-        "metricsRepoPath": str(metrics_repo_path),
     }
     _ensure_run_record(workspace, run_identity)
     work_path_output = (
@@ -1186,7 +1180,6 @@ def _convert_parser(subparsers: Any) -> None:
     parser.add_argument("--runner-commit", required=True)
     parser.add_argument("--source-worktree", required=True)
     parser.add_argument("--runner-forge-path", required=True)
-    parser.add_argument("--metrics-repo-path", required=True)
     parser.add_argument("--agent", required=True, choices=("pi", "claude-code"))
     parser.add_argument("--configured-model", required=True)
     parser.add_argument("--target-model", required=True)
@@ -1209,7 +1202,6 @@ def _run_parser(subparsers: Any) -> None:
         type=Path,
         default=DEFAULT_WORKSPACE_ROOT,
     )
-    parser.add_argument("--publishing-worktree", type=Path)
     parser.add_argument("--dry-run", action="store_true")
 
 
@@ -1218,7 +1210,6 @@ def _publish_parser(subparsers: Any) -> None:
     parser.add_argument("--workspace", required=True, type=Path)
     parser.add_argument("--status", choices=("success", "failure"))
     parser.add_argument("--exit-code", type=int)
-    parser.add_argument("--metrics-repo-path", type=Path)
 
 
 def _retry_parser(subparsers: Any) -> None:
@@ -1228,7 +1219,6 @@ def _retry_parser(subparsers: Any) -> None:
         type=Path,
         default=DEFAULT_WORKSPACE_ROOT,
     )
-    parser.add_argument("--publishing-worktree", type=Path)
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -1259,33 +1249,16 @@ def run_selected(args: argparse.Namespace) -> int:
     _verify_preconditions(suite, cells)
     runner_commit = _runner_commit()
     workspace_root = args.workspace_root.resolve()
-    publishing_worktree, created_publisher = _create_publishing_worktree(
-        workspace_root,
-        runner_commit,
-        args.publishing_worktree,
-    )
     failures = 0
-    unpublished = 0
-    try:
-        for cell in cells:
-            workflow_succeeded, published = _execute_cell(
-                    suite,
-                    cell,
-                    runner_commit,
-                    workspace_root,
-                    publishing_worktree,
-            )
-            if not workflow_succeeded:
-                failures += 1
-            if not published:
-                unpublished += 1
-    finally:
-        if created_publisher and unpublished == 0:
-            _remove_worktree(publishing_worktree)
-        elif created_publisher:
-            print(
-                f"Preserved publishing worktree: {publishing_worktree.resolve()}"
-            )
+    for cell in cells:
+        workflow_succeeded, _ = _execute_cell(
+            suite,
+            cell,
+            runner_commit,
+            workspace_root,
+        )
+        if not workflow_succeeded:
+            failures += 1
     return 1 if failures else 0
 
 
@@ -1300,34 +1273,20 @@ def retry_pending(args: argparse.Namespace) -> int:
     print(f"Found {len(pending)} unpublished benchmark workspace(s).")
     if not pending:
         return 0
-    publisher, created_publisher = _create_publishing_worktree(
-        workspace_root,
-        _runner_commit(),
-        args.publishing_worktree,
-    )
     failures = 0
-    try:
-        for workspace in pending:
-            try:
-                publish_workspace(
-                    workspace,
-                    metrics_repo_override=publisher,
-                )
-                run = _read_json(_run_record_path(workspace))
-                source = Path(run["sourceWorktree"])
-                if source.exists():
-                    _remove_worktree(source)
-            except (BenchmarkError, OSError, subprocess.SubprocessError) as error:
-                failures += 1
-                print(
-                    f"ERROR: Could not publish {workspace}: {error}",
-                    file=sys.stderr,
-                )
-    finally:
-        if created_publisher and failures == 0:
-            _remove_worktree(publisher)
-        elif created_publisher:
-            print(f"Preserved publishing worktree: {publisher.resolve()}")
+    for workspace in pending:
+        try:
+            publish_workspace(workspace)
+            run = _read_json(_run_record_path(workspace))
+            source = Path(run["sourceWorktree"])
+            if source.exists():
+                _discard_source_worktree(source)
+        except (BenchmarkError, OSError, subprocess.SubprocessError) as error:
+            failures += 1
+            print(
+                f"ERROR: Could not publish {workspace}: {error}",
+                file=sys.stderr,
+            )
     return 1 if failures else 0
 
 
@@ -1344,7 +1303,6 @@ def main(argv: list[str] | None = None) -> int:
                 args.workspace,
                 requested_status=args.status,
                 exit_code=args.exit_code,
-                metrics_repo_override=args.metrics_repo_path,
             )
             return 0
         if args.command == "retry-pending":

@@ -155,11 +155,11 @@ Each finished execution appends one timestamped object. `runId` makes retries
 idempotent. Keep entries ordered by timestamp.
 
 Publish immediately after each execution, not after the selected matrix
-finishes. Use a dedicated publishing worktree of this same repository so
-fetch/reset operations do not touch the user checkout, source worktrees, or
-preserved workspaces. Reuse Forge's fetch/reset/reappend/commit/push retry
-behavior and serialize local publishers. Commit subjects must be at most 60
-characters.
+finishes. For each result, fetch `origin/master`, create a fresh disposable
+worktree at that commit, append and push the result, then remove the worktree.
+A push race retries from a new worktree. Never reset or reuse a publication
+checkout; the preserved `result.json` is the retry input. Serialize local
+publishers. Commit subjects must be at most 60 characters.
 
 Write the normalized result into the preserved workspace before Git
 publication. Write a publication marker only after a successful push. Repeating

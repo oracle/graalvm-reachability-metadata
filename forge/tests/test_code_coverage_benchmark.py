@@ -138,7 +138,6 @@ class CodeCoverageBenchmarkLifecycleTests(unittest.TestCase):
         temporary = tempfile.TemporaryDirectory()
         self.addCleanup(temporary.cleanup)
         root = Path(temporary.name)
-        publisher = root / "publisher"
 
         def execute(command: list[str], **_: object) -> subprocess.CompletedProcess:
             workspace = Path(command[command.index("--output") + 1])
@@ -171,18 +170,28 @@ class CodeCoverageBenchmarkLifecycleTests(unittest.TestCase):
                 self.cell,
                 "a" * 40,
                 root,
-                publisher,
             )
 
         self.assertEqual((True, True), outcome)
         publish.assert_not_called()
         remove.assert_called_once_with(root / "run-success" / "source")
 
+    def test_source_cleanup_failure_does_not_raise(self) -> None:
+        error = subprocess.CalledProcessError(1, ["git", "worktree", "remove"])
+
+        with patch.object(
+                benchmark,
+                "_remove_worktree",
+                side_effect=error,
+        ), patch("builtins.print") as output:
+            benchmark._discard_source_worktree(Path("/tmp/source"))
+
+        output.assert_called_once()
+
     def test_retains_source_when_publication_has_no_marker(self) -> None:
         temporary = tempfile.TemporaryDirectory()
         self.addCleanup(temporary.cleanup)
         root = Path(temporary.name)
-        publisher = root / "publisher"
 
         with patch.object(
                 benchmark,
@@ -208,7 +217,6 @@ class CodeCoverageBenchmarkLifecycleTests(unittest.TestCase):
                 self.cell,
                 "a" * 40,
                 root,
-                publisher,
             )
 
         self.assertEqual((False, False), outcome)
@@ -242,7 +250,6 @@ class CodeCoverageBenchmarkMetricsTests(unittest.TestCase):
                 "checkedInAllMethods": all_methods,
                 "sourceWorktree": "/tmp/source",
                 "runnerForgePath": "/tmp/forge",
-                "metricsRepoPath": "/tmp/publisher",
             },
         )
 
@@ -354,12 +361,15 @@ class CodeCoverageBenchmarkMetricsTests(unittest.TestCase):
         with self.assertRaisesRegex(benchmark.BenchmarkError, "different metrics"):
             benchmark._merge_result(path, conflicting)
 
-    def test_local_publication_commits_only_coordinate_metrics(self) -> None:
+    def test_publication_uses_one_disposable_worktree(self) -> None:
         temporary = tempfile.TemporaryDirectory()
         self.addCleanup(temporary.cleanup)
-        repository = Path(temporary.name) / "repository"
-        publisher = Path(temporary.name) / "publisher"
+        root = Path(temporary.name)
+        remote = root / "remote.git"
+        repository = root / "repository"
+        remote.mkdir()
         repository.mkdir()
+        _git(remote, "init", "--bare", "-b", "master")
         _git(repository, "init", "-b", "master")
         (repository / "README.md").write_text("seed\n", encoding="utf-8")
         _git(repository, "add", "README.md")
@@ -373,45 +383,43 @@ class CodeCoverageBenchmarkMetricsTests(unittest.TestCase):
             "-m",
             "seed",
         )
-        _git(repository, "worktree", "add", "--detach", str(publisher), "HEAD")
-        _write_json(
-            publisher / benchmark.PUBLISHER_MARKER,
-            {"schemaVersion": "1.0.0"},
-        )
-        _, workspace = self._workspace()
+        _git(repository, "remote", "add", "origin", str(remote))
+        _git(repository, "push", "-u", "origin", "master")
+        workspace = root / "run-1" / "code-coverage-99000"
+        workspace.mkdir(parents=True)
         self._write_run(workspace)
         result = benchmark._collect_result(workspace, "failure", 1)
 
-        first_commit = benchmark._publish_result(publisher, result)
-        second_commit = benchmark._publish_result(publisher, result)
+        first_commit = benchmark._publish_result(repository, workspace, result)
+        second_commit = benchmark._publish_result(repository, workspace, result)
 
         self.assertEqual(first_commit, second_commit)
-        metrics_path = (
-            publisher
-            / "code-coverage-benchmarks"
-            / "com.example"
-            / "demo"
-            / "1.0.0.json"
-        )
-        self.assertEqual(
-            [result],
-            json.loads(metrics_path.read_text(encoding="utf-8")),
-        )
+        metrics_path = "code-coverage-benchmarks/com.example/demo/1.0.0.json"
+        stored = _git(
+            repository,
+            "show",
+            f"{second_commit}:{metrics_path}",
+        ).stdout
+        self.assertEqual([result], json.loads(stored))
         self.assertEqual(
             benchmark.COMMIT_SUBJECT,
-            _git(publisher, "log", "-1", "--format=%s").stdout.strip(),
+            _git(
+                repository,
+                "show",
+                "-s",
+                "--format=%s",
+                second_commit,
+            ).stdout.strip(),
         )
         changed = _git(
-            publisher,
+            repository,
             "show",
             "--pretty=",
             "--name-only",
-            "HEAD",
+            second_commit,
         ).stdout.splitlines()
-        self.assertEqual(
-            ["code-coverage-benchmarks/com.example/demo/1.0.0.json"],
-            [line for line in changed if line],
-        )
+        self.assertEqual([metrics_path], [line for line in changed if line])
+        self.assertEqual([], list(workspace.parent.glob("publisher-*")))
 
 
 class CodeCoverageBenchmarkTemplateTests(unittest.TestCase):

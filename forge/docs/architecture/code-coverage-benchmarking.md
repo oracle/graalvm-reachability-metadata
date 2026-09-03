@@ -18,7 +18,7 @@ implements §FS-code-coverage-benchmarking while preserving
 | Code coverage Rhei template | Switches conversion and publication behavior through the `benchmark` input. |
 | Source worktree | Disposable checkout of the fixed `benchmarkSuiteCommit`. |
 | Rhei workspace | Permanent local record keyed by `runId` and named `code-coverage-99000`. |
-| Publishing worktree | Dedicated checkout that may fetch, reset, commit, and push coordinate metrics. |
+| Publication worktree | Fresh checkout of `origin/master` used to append and push one result, then removed. |
 
 Two commits describe different axes:
 
@@ -33,10 +33,10 @@ runner may still execute the old suite and records both identities.
 
 ## 2. Successful execution sequence
 
-The runner prints the complete selection before creating worktrees. It creates
-one publishing worktree for the launcher invocation, then processes selected
-cells sequentially. Every cell gets a unique parent, source worktree, and
-preserved workspace. §FS-code-coverage-benchmarking.2
+The runner prints the complete selection before creating worktrees. Every cell
+gets a unique parent, source worktree, and preserved workspace. Publication
+creates another short-lived worktree only while appending that cell's result.
+§FS-code-coverage-benchmarking.2
 
 ```mermaid
 %%{init: {"themeVariables": {"noteBkgColor": "#eef2f7", "noteTextColor": "#0f172a", "noteBorderColor": "#94a3b8"}}}%%
@@ -49,14 +49,12 @@ sequenceDiagram
     participant B as Benchmark helper
     participant S as Source worktree
     participant W as Preserved workspace
-    participant P as Publishing worktree
+    participant P as Disposable publication worktree
     participant M as origin/master
 
     O->>L: run with optional filters
     L->>L: load suite and validate selectors
     L-->>O: print complete selected matrix
-    L->>G: create detached publisher at runnerCommit
-    G-->>P: dedicated publishing checkout
 
     loop each selected cell
         L->>G: create source at benchmarkSuiteCommit
@@ -86,15 +84,17 @@ sequenceDiagram
         R->>B: run benchmark-publication
         B->>W: read final metrics and accounting
         B->>W: write result.json
-        B->>P: publish portable result
-        P->>P: acquire repository-wide publisher lock
-        P->>M: fetch origin/master
-        M-->>P: latest coordinate lists
-        P->>P: reset publisher and upsert by runId
+        B->>G: acquire repository-wide publication lock
+        B->>M: fetch origin/master
+        M-->>B: latest coordinate lists
+        B->>G: create publisher at origin/master
+        G-->>P: fresh publication checkout
+        B->>P: append result.json by runId
         P->>P: validate and commit coordinate JSON
         P->>M: push HEAD:master
         M-->>P: push accepted
         P-->>B: published commit
+        B->>G: remove publication worktree
         B->>W: write publication.json
         end
 
@@ -104,7 +104,6 @@ sequenceDiagram
         Note over W: workspace remains for lookup
     end
 
-    L->>G: remove publisher when nothing is pending
     L-->>O: outcome and preserved workspace paths
 ```
 
@@ -129,46 +128,52 @@ sequenceDiagram
     participant L as Benchmark launcher
     participant R as Rhei
     participant B as Benchmark helper
+    participant G as Git
     participant W as Preserved workspace
     participant S as Source worktree
-    participant P as Publishing worktree
+    participant P as Disposable publication worktree
     participant M as origin/master
 
     L->>R: execute benchmark cell
     alt workflow stops before terminal publication
         R-->>L: return without publication marker
         L->>B: collect failure result
-        B->>W: read reports, transitions, and accounting
-        B->>W: write partial result.json
-        B->>P: publish failure result
+        B->>W: read partial evidence and write result.json
     else terminal publication cannot push
         B->>W: result.json already written
         R-->>L: return without publication marker
-        L->>B: retry identical runId
-        B->>P: publish result again
+        L->>B: retry identical result.json
     end
 
+    B->>G: acquire repository-wide publication lock
+    B->>M: fetch origin/master
+    B->>G: create publisher at origin/master
+    G-->>P: fresh publication checkout
+    B->>P: append result.json by runId
     alt push succeeds
         P->>M: push coordinate metrics
         M-->>P: accepted
         P-->>B: published commit
+        B->>G: remove publication worktree
         B->>W: write publication.json
         L->>S: remove disposable source
         Note over W: workspace remains
     else collection or push still fails
         P-->>B: publication failure
+        B->>G: remove publication worktree
         B-->>L: failure
-        Note over W,S: retain both for recovery
+        Note over W,S: retain source and result.json
         L-->>O: print workspace and source paths
     end
 
     O->>L: retry-pending
     L->>W: find run.json without publication.json
-    L->>P: create or reuse publisher
-    L->>B: republish without running coverage
-    B->>P: upsert identical result
-    P->>M: fetch, commit, and push
-    M-->>P: accepted
+    L->>B: republish preserved result.json
+    B->>M: fetch latest origin/master
+    B->>G: create fresh publication worktree
+    B->>P: append identical result by runId
+    P->>M: push coordinate metrics
+    B->>G: remove publication worktree
     B->>W: write publication.json
     L->>S: remove source
     L-->>O: retry completed
@@ -248,26 +253,27 @@ the initial metric. Missing partial evidence is `null`, never zero.
 
 ## 6. Publication boundary
 
-The publishing worktree is the only checkout the publisher may reset. Before a
-destructive reset, its identity must prove it is the dedicated linked worktree
-for the expected repository and not the primary runner or source checkout.
+Publication never edits the runner or source checkout. Each attempt creates a
+fresh linked worktree from the fetched `origin/master` beside the run workspace
+and removes it after that attempt. No publishing checkout is reused or reset.
 
 Publication is serialized by a lock in the repository common Git directory.
 Under that lock, every attempt:
 
 1. Fetches `origin/master`.
-2. Resets only the verified publisher.
-3. Upserts the result by `runId`.
+2. Creates a disposable worktree at `origin/master`.
+3. Upserts the preserved `result.json` object by `runId`.
 4. Sorts by timestamp and `runId`.
 5. Validates the complete coordinate list.
 6. Commits only that coordinate JSON path.
 7. Pushes to `origin/master`.
+8. Removes the publication worktree.
 
-A push race repeats the whole sequence. An identical entry is success; a
-conflicting entry is rejected. The publication marker is last, so its presence
-means the portable result is durable and source cleanup may begin. Cleanup
-failure is operational state and must not reclassify a successful result.
-§FS-code-coverage-benchmarking.3
+A push race repeats the sequence with another fresh worktree. An identical entry
+is success; a conflicting entry is rejected. The publication marker is last, so
+its presence means the portable result is durable and source cleanup may begin.
+Publication-worktree cleanup failure is operational state and must not
+reclassify a successful result. §FS-code-coverage-benchmarking.3
 
 ## 7. Configuration and extension
 
