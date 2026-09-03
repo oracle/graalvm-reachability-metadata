@@ -16,6 +16,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class AnnotationBeanUtilsTest {
     @Test
+    @SuppressWarnings("checkstyle:annotationAccess")
     void copiesAnnotationAttributesToBeanProperties() {
         Options options = ConfiguredType.class.getAnnotation(Options.class);
         OptionsBean bean = new OptionsBean();
