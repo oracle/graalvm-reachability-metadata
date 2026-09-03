@@ -3,6 +3,11 @@
 Rendered by Forge from the pre-push branch review of §FS-local-branch-review.
 Newest entry first; every non-approval is recorded, including one a repair later cleared.
 
+## 2026-09-02 — org.springframework.boot:spring-boot-amqp:4.2.0-M1 (#9468)
+
+**Explicit messaging timeout is below the 10-second minimum**
+
+FS-test-contract.1.7 requires every explicit messaging timeout to be at least 10 seconds. tests/src/org.springframework.boot/spring-boot-amqp/4.2.0-M1/src/test/java/org_springframework_boot/spring_boot_amqp/Spring_boot_amqpTest.java configured the AMQP client completion timeout as 750ms in both direct property setup and the auto-configuration property test.
 ## 2026-09-02 — org.apache.activemq:artemis-jms-client:2.56.0 (#9574)
 
 **Generated repair changes a baseline suite and violates mandatory test bounds**
