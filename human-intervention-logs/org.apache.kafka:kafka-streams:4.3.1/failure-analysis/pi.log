@@ -1,0 +1,15 @@
+## Human intervention needed
+
+The automated job failed for `org.apache.kafka:kafka-streams:4.3.1`. Preserved work: https://github.com/oracle/graalvm-reachability-metadata/tree/ai%2Fkimeta%2Fhuman-intervention%2Fissue-9764-library-update-request-org.apache.kafka-kafka-streams-4.3.1-4d1ed3f5
+
+The run is classified as `test_generation_failed`, most likely during `explore/generate_tests()` before Gradle verification. No `4.3.1` test project, metadata, execution metrics, dynamic-access report, or Gradle output was preserved; the branch contains only failure-analysis logs. Additionally, `pi.log` reports `Pi RPC exited before completing prompt (exit code -2)`, and the generation transcript ends during preliminary documentation inspection, so the follow-up diagnosis was also interrupted.
+
+Inspect:
+- `human-intervention-logs/org.apache.kafka:kafka-streams:4.3.1/failure-analysis/pi.log`
+- `human-intervention-logs/org.apache.kafka:kafka-streams:4.3.1/failure-analysis/pi-generation-2026-09-03T09-18-34-984249Z.log`
+- Recover the original run logs, if available, from `logs/org.apache.kafka:kafka-streams:4.3.1/`.
+
+Manual next steps:
+1. Check the worker/process logs for the signal or timeout that caused the Pi RPC exit and recover any missing original test-generation transcript.
+2. Create the `4.3.1` test project from the existing `3.6.0` suite, adapt it for Kafka Streams 4.3.1, and run `compileTestJava` followed by `javaTest`.
+3. Once JVM tests pass, run the coordinate-scoped metadata/native test and dynamic-access reporting tasks, then generate the missing execution metrics.
