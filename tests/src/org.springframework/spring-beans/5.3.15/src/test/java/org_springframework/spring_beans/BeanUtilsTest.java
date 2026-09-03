@@ -6,6 +6,8 @@
  */
 package org_springframework.spring_beans;
 
+import java.beans.PropertyEditor;
+import java.beans.PropertyEditorSupport;
 import java.lang.reflect.Constructor;
 
 import org.junit.jupiter.api.Test;
@@ -40,6 +42,34 @@ public class BeanUtilsTest {
         TargetBean target = new TargetBean();
         BeanUtils.copyProperties(source, target);
         assertThat(target.getName()).isEqualTo("spring");
+    }
+
+    @Test
+    void findsAndUsesPropertyEditorByNamingConvention() {
+        PropertyEditor editor = BeanUtils.findEditorByConvention(ConventionValue.class);
+
+        assertThat(editor).isInstanceOf(ConventionValueEditor.class);
+        editor.setAsText("spring");
+        assertThat(((ConventionValue) editor.getValue()).getValue()).isEqualTo("spring");
+    }
+
+    public static class ConventionValue {
+        private final String value;
+
+        public ConventionValue(String value) {
+            this.value = value;
+        }
+
+        public String getValue() {
+            return this.value;
+        }
+    }
+
+    public static class ConventionValueEditor extends PropertyEditorSupport {
+        @Override
+        public void setAsText(String text) {
+            setValue(new ConventionValue(text));
+        }
     }
 
     public static class DefaultBean {
