@@ -16,10 +16,47 @@ import com.veracode.annotation.RedirectURLCleanser;
 import com.veracode.annotation.SQLQueryCleanser;
 import com.veracode.annotation.XSSCleanser;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
+import org.junit.platform.commons.support.AnnotationSupport;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class VeracodeAnnotationsTest {
+    @Test
+    @CRLFCleanser(value = "line-break-removal", userComment = "Safe for response headers")
+    @FilePathCleanser(value = "export-path", userComment = "Confined to the export directory")
+    @RedirectURLCleanser(value = "local-redirect", userComment = "Restricted to local routes")
+    @SQLQueryCleanser(value = "query-fragment", userComment = "Selected from known columns")
+    @XSSCleanser(value = "html-output", userComment = "Escaped before rendering")
+    void cleanserAnnotationsAreDiscoverableByRuntimeAnalysisTools(TestInfo testInfo) {
+        CRLFCleanser crlfCleanser = AnnotationSupport.findAnnotation(
+                        testInfo.getTestMethod().orElseThrow(), CRLFCleanser.class)
+                .orElseThrow();
+        FilePathCleanser filePathCleanser = AnnotationSupport.findAnnotation(
+                        testInfo.getTestMethod().orElseThrow(), FilePathCleanser.class)
+                .orElseThrow();
+        RedirectURLCleanser redirectURLCleanser = AnnotationSupport.findAnnotation(
+                        testInfo.getTestMethod().orElseThrow(), RedirectURLCleanser.class)
+                .orElseThrow();
+        SQLQueryCleanser sqlQueryCleanser = AnnotationSupport.findAnnotation(
+                        testInfo.getTestMethod().orElseThrow(), SQLQueryCleanser.class)
+                .orElseThrow();
+        XSSCleanser xssCleanser = AnnotationSupport.findAnnotation(
+                        testInfo.getTestMethod().orElseThrow(), XSSCleanser.class)
+                .orElseThrow();
+
+        assertThat(crlfCleanser.value()).isEqualTo("line-break-removal");
+        assertThat(crlfCleanser.userComment()).isEqualTo("Safe for response headers");
+        assertThat(filePathCleanser.value()).isEqualTo("export-path");
+        assertThat(filePathCleanser.userComment()).isEqualTo("Confined to the export directory");
+        assertThat(redirectURLCleanser.value()).isEqualTo("local-redirect");
+        assertThat(redirectURLCleanser.userComment()).isEqualTo("Restricted to local routes");
+        assertThat(sqlQueryCleanser.value()).isEqualTo("query-fragment");
+        assertThat(sqlQueryCleanser.userComment()).isEqualTo("Selected from known columns");
+        assertThat(xssCleanser.value()).isEqualTo("html-output");
+        assertThat(xssCleanser.userComment()).isEqualTo("Escaped before rendering");
+    }
+
     @Test
     void crlfCleanserSupportsDefaultAndConfiguredMethodAnnotations() {
         ApplicationCleansers cleansers = new ApplicationCleansers();
