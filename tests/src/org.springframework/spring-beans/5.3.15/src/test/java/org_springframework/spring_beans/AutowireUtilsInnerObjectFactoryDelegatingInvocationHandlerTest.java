@@ -7,18 +7,22 @@
 package org_springframework.spring_beans;
 
 import java.io.Serializable;
+import java.lang.reflect.Field;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.ObjectFactory;
-import org.springframework.beans.factory.support.AutowireUtils;
+import org.springframework.beans.factory.config.DependencyDescriptor;
+import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class AutowireUtilsInnerObjectFactoryDelegatingInvocationHandlerTest {
     @Test
-    void delegatesInterfaceCallToObjectFactoryProduct() {
-        ObjectFactory<Greeting> factory = new GreetingFactory();
-        Greeting proxy = (Greeting) AutowireUtils.resolveAutowiringValue(factory, Greeting.class);
+    void delegatesInterfaceCallToObjectFactoryProduct() throws Exception {
+        DefaultListableBeanFactory beanFactory = new DefaultListableBeanFactory();
+        beanFactory.registerResolvableDependency(Greeting.class, new GreetingFactory());
+        Field field = InjectionTarget.class.getDeclaredField("greeting");
+        Greeting proxy = (Greeting) beanFactory.resolveDependency(new DependencyDescriptor(field, true), null);
 
         assertThat(proxy.value()).isEqualTo("delegated");
     }
@@ -47,5 +51,9 @@ public class AutowireUtilsInnerObjectFactoryDelegatingInvocationHandlerTest {
         public String value() {
             return this.value;
         }
+    }
+
+    public static class InjectionTarget {
+        private Greeting greeting;
     }
 }
