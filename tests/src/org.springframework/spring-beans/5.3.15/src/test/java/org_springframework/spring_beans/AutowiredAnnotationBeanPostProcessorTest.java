@@ -25,12 +25,31 @@ public class AutowiredAnnotationBeanPostProcessorTest {
         assertThat(constructors[0].getParameterTypes()).containsExactly(Dependency.class);
     }
 
+    @Test
+    void discoversAutowiredConstructorDeclaredOnEnhancedUserClass() {
+        AutowiredAnnotationBeanPostProcessor processor = new AutowiredAnnotationBeanPostProcessor();
+
+        Constructor<?>[] constructors = processor.determineCandidateConstructors(
+                ConstructorBean$$SpringProxy.class, "enhancedBean");
+
+        assertThat(constructors).hasSize(1);
+        assertThat(constructors[0].getDeclaringClass()).isEqualTo(ConstructorBean$$SpringProxy.class);
+        assertThat(constructors[0].getParameterTypes()).containsExactly(Dependency.class);
+    }
+
     public static class ConstructorBean {
         public ConstructorBean() {
         }
 
         @Autowired(required = false)
         public ConstructorBean(Dependency dependency) {
+        }
+    }
+
+    @SuppressWarnings("checkstyle:TypeName")
+    public static class ConstructorBean$$SpringProxy extends ConstructorBean {
+        public ConstructorBean$$SpringProxy(Dependency dependency) {
+            super(dependency);
         }
     }
 

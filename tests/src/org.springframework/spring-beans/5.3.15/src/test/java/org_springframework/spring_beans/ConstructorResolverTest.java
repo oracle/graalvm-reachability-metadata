@@ -31,6 +31,19 @@ public class ConstructorResolverTest {
     }
 
     @Test
+    void mapsEnhancedSubclassConstructorToUserDeclaredConstructor() {
+        DefaultListableBeanFactory factory = new DefaultListableBeanFactory();
+        RootBeanDefinition definition = new RootBeanDefinition(RequiredBean$$SpringProxy.class);
+        definition.getConstructorArgumentValues().addGenericArgumentValue("enhanced");
+        factory.registerBeanDefinition("enhanced", definition);
+
+        RequiredBean bean = factory.getBean("enhanced", RequiredBean.class);
+
+        assertThat(bean).isInstanceOf(RequiredBean$$SpringProxy.class);
+        assertThat(bean.getValue()).isEqualTo("enhanced");
+    }
+
+    @Test
     void discoversPublicFactoryMethods() {
         DefaultListableBeanFactory factory = new DefaultListableBeanFactory();
         RootBeanDefinition definition = new RootBeanDefinition(ProductFactory.class);
@@ -62,6 +75,13 @@ public class ConstructorResolverTest {
 
         public String getValue() {
             return this.value;
+        }
+    }
+
+    @SuppressWarnings("checkstyle:TypeName")
+    public static class RequiredBean$$SpringProxy extends RequiredBean {
+        public RequiredBean$$SpringProxy(String value) {
+            super(value);
         }
     }
 
