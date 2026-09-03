@@ -14,6 +14,77 @@ inputs:
     type: number
     validate: "[1-9][0-9]*"
 
+  - name: benchmark
+    description: Run without GitHub issue mutation and publish benchmark metrics.
+    type: boolean
+    default: false
+
+  - name: benchmark_run_id
+    description: Unique benchmark execution identifier; required in benchmark mode.
+    type: string
+    default: ""
+    validate: "^$|^[A-Za-z0-9_.-]+$"
+
+  - name: benchmark_started_at
+    description: Stable UTC start timestamp; required in benchmark mode.
+    type: string
+    default: ""
+
+  - name: benchmark_suite_commit
+    description: Fixed library-state commit; required in benchmark mode.
+    type: string
+    default: ""
+    validate: "^$|^[0-9a-f]{40}$"
+
+  - name: benchmark_runner_commit
+    description: Runner implementation commit; required in benchmark mode.
+    type: string
+    default: ""
+    validate: "^$|^[0-9a-f]{40}$"
+
+  - name: benchmark_source_worktree
+    description: Absolute fixed-suite source worktree; required in benchmark mode.
+    type: string
+    default: ""
+
+  - name: benchmark_runner_forge_path
+    description: Absolute Forge path containing the benchmark helper.
+    type: string
+    default: ""
+
+  - name: benchmark_metrics_repo_path
+    description: Absolute dedicated publishing worktree.
+    type: string
+    default: ""
+
+  - name: benchmark_agent
+    description: Stable benchmark agent name.
+    type: string
+    default: ""
+    validate: "^$|^(pi|claude-code)$"
+
+  - name: benchmark_model
+    description: Stable configured benchmark model name.
+    type: string
+    default: ""
+
+  - name: benchmark_target_model
+    description: Concrete model identifier passed to the agent.
+    type: string
+    default: ""
+
+  - name: benchmark_thinking
+    description: Benchmark thinking level.
+    type: string
+    default: ""
+    validate: "^$|^(medium|high|xhigh)$"
+
+  - name: benchmark_checked_in_all_methods
+    description: Checked-in method total used to select the library.
+    type: number
+    default: 1
+    validate: "[1-9][0-9]*"
+
   - name: coordinate
     description: Optional Maven coordinate override. Leave empty to parse group:artifact:version from the issue body.
     type: string

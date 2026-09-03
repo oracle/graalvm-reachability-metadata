@@ -21,6 +21,13 @@ rhei instantiate code-coverage-improvement \
   --output code-coverage-1234
 ```
 
+
+The same template has a deterministic `benchmark=true` mode used only by
+`run-code-coverage-benchmark.sh`. It receives a fixed coordinate and source
+worktree, writes the same conversion artifacts without reading or mutating
+GitHub, and replaces source publication with compact metrics publication
+§FS-code-coverage-benchmarking. Normal mode retains issue conversion and source
+publication.
 The rendered workspace contains eight tasks:
 
 1. Convert the issue and create or reuse the per-issue worktree.

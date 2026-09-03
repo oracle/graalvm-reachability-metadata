@@ -43,6 +43,38 @@ states:
     concurrent: true
     program: "true"
 
+  benchmark-convert:
+    description: Validate fixed benchmark inputs and write conversion artifacts.
+    concurrent: true
+    program: >-
+      python3 "{{benchmark_runner_forge_path}}/benchmarks/code_coverage_benchmark.py"
+      convert
+      --workspace "{{workspace_path}}"
+      --coordinate "{{coordinate}}"
+      --run-id "{{benchmark_run_id}}"
+      --started-at "{{benchmark_started_at}}"
+      --suite-commit "{{benchmark_suite_commit}}"
+      --runner-commit "{{benchmark_runner_commit}}"
+      --source-worktree "{{benchmark_source_worktree}}"
+      --runner-forge-path "{{benchmark_runner_forge_path}}"
+      --metrics-repo-path "{{benchmark_metrics_repo_path}}"
+      --agent "{{benchmark_agent}}"
+      --configured-model "{{benchmark_model}}"
+      --target-model "{{benchmark_target_model}}"
+      --thinking "{{benchmark_thinking}}"
+      --checked-in-all-methods "{{benchmark_checked_in_all_methods}}"
+    program_timeout: 5m
+
+  benchmark-publication:
+    description: Collect and immediately publish only compact benchmark metrics.
+    concurrent: true
+    program: >-
+      python3 "{{benchmark_runner_forge_path}}/benchmarks/code_coverage_benchmark.py"
+      publish
+      --workspace "{{workspace_path}}"
+      --status success
+    program_timeout: 10m
+
   execute:
     description: Execute one code coverage pipeline phase.
     target: "{{worker_agent}}"
@@ -961,6 +993,26 @@ states:
     final: true
 
 transitions:
+  - from: benchmark-convert
+    to: completed
+    exit_code: 0
+    description: Fixed inputs and conversion artifacts are valid.
+
+  - from: benchmark-convert
+    to: human-intervention
+    exit_code: 1
+    description: Benchmark conversion rejected its fixed inputs.
+
+  - from: benchmark-publication
+    to: completed
+    exit_code: 0
+    description: Compact metrics were committed and pushed.
+
+  - from: benchmark-publication
+    to: human-intervention
+    exit_code: 1
+    description: Metrics collection or publication failed for outer retry.
+
   - from: prepared
     to: execute
     description: Pipeline task enters execution.

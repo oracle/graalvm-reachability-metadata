@@ -1,0 +1,137 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Code Coverage Benchmark Results",
+  "type": "array",
+  "items": {"$ref": "#/$defs/result"},
+  "$defs": {
+    "nullableCount": {
+      "type": ["integer", "null"],
+      "minimum": 0
+    },
+    "nullableDelta": {
+      "type": ["integer", "null"]
+    },
+    "nullablePercentageDelta": {
+      "type": ["number", "null"],
+      "minimum": -100,
+      "maximum": 100
+    },
+    "tokens": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["input", "cachedInputRead", "output"],
+      "properties": {
+        "input": {"$ref": "#/$defs/nullableCount"},
+        "cachedInputRead": {"$ref": "#/$defs/nullableCount"},
+        "output": {"$ref": "#/$defs/nullableCount"}
+      }
+    },
+    "phaseCoverage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "coveredBefore",
+        "coveredAfter",
+        "methodsGained",
+        "percentagePointsGained",
+        "allMethods"
+      ],
+      "properties": {
+        "coveredBefore": {"$ref": "#/$defs/nullableCount"},
+        "coveredAfter": {"$ref": "#/$defs/nullableCount"},
+        "methodsGained": {"$ref": "#/$defs/nullableDelta"},
+        "percentagePointsGained": {"$ref": "#/$defs/nullablePercentageDelta"},
+        "allMethods": {"$ref": "#/$defs/nullableCount"}
+      }
+    },
+    "phase": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["coverPasses", "fixInvocations", "tokens", "coverage"],
+      "properties": {
+        "coverPasses": {"$ref": "#/$defs/nullableCount"},
+        "fixInvocations": {"$ref": "#/$defs/nullableCount"},
+        "tokens": {"$ref": "#/$defs/tokens"},
+        "coverage": {"$ref": "#/$defs/phaseCoverage"}
+      }
+    },
+    "failure": {
+      "type": ["object", "null"],
+      "additionalProperties": false,
+      "required": ["phase", "exitCode"],
+      "properties": {
+        "phase": {"type": ["string", "null"]},
+        "exitCode": {"type": ["integer", "null"]}
+      }
+    },
+    "result": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schemaVersion",
+        "runId",
+        "timestamp",
+        "benchmarkSuiteCommit",
+        "runnerCommit",
+        "coordinate",
+        "workspaceName",
+        "agent",
+        "configuredModel",
+        "observedModel",
+        "thinking",
+        "status",
+        "failure",
+        "checkedInAllMethods",
+        "measuredAllMethodsDifference",
+        "api",
+        "deep",
+        "total"
+      ],
+      "properties": {
+        "schemaVersion": {"const": "1.0.0"},
+        "runId": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_.-]+$"
+        },
+        "timestamp": {"type": "string", "format": "date-time"},
+        "benchmarkSuiteCommit": {"$ref": "#/$defs/commit"},
+        "runnerCommit": {"$ref": "#/$defs/commit"},
+        "coordinate": {"$ref": "#/$defs/coordinate"},
+        "workspaceName": {"const": "code-coverage-99000"},
+        "agent": {"enum": ["pi", "claude-code"]},
+        "configuredModel": {"type": "string", "minLength": 1},
+        "observedModel": {"type": ["string", "null"]},
+        "thinking": {"enum": ["medium", "high", "xhigh"]},
+        "status": {"enum": ["success", "failure"]},
+        "failure": {"$ref": "#/$defs/failure"},
+        "checkedInAllMethods": {"type": "integer", "minimum": 1},
+        "measuredAllMethodsDifference": {"$ref": "#/$defs/nullableDelta"},
+        "api": {"$ref": "#/$defs/phase"},
+        "deep": {"$ref": "#/$defs/phase"},
+        "total": {"$ref": "#/$defs/phase"}
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {"status": {"const": "success"}},
+            "required": ["status"]
+          },
+          "then": {
+            "properties": {"failure": {"type": "null"}}
+          },
+          "else": {
+            "properties": {"failure": {"type": "object"}}
+          }
+        }
+      ]
+    },
+    "commit": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{40}$"
+    },
+    "coordinate": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9_.-]+:[A-Za-z0-9_.-]+:[A-Za-z0-9_.+-]+$"
+    }
+  }
+}

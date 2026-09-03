@@ -1,0 +1,75 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Code Coverage Benchmark Suite",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "benchmarkSuiteCommit",
+    "syntheticIssueNumber",
+    "workspaceName",
+    "libraries",
+    "configurations",
+    "thinkingLevels"
+  ],
+  "properties": {
+    "schemaVersion": {"const": "1.0.0"},
+    "benchmarkSuiteCommit": {"$ref": "#/$defs/commit"},
+    "syntheticIssueNumber": {"const": 99000},
+    "workspaceName": {"const": "code-coverage-99000"},
+    "libraries": {
+      "type": "array",
+      "minItems": 5,
+      "maxItems": 5,
+      "items": {"$ref": "#/$defs/library"}
+    },
+    "configurations": {
+      "type": "array",
+      "minItems": 5,
+      "maxItems": 5,
+      "items": {"$ref": "#/$defs/configuration"}
+    },
+    "thinkingLevels": {
+      "const": ["medium", "high", "xhigh"]
+    }
+  },
+  "$defs": {
+    "commit": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{40}$"
+    },
+    "coordinate": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9_.-]+:[A-Za-z0-9_.-]+:[A-Za-z0-9_.+-]+$"
+    },
+    "library": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "index",
+        "coordinate",
+        "coveredMethods",
+        "allMethods",
+        "coveragePercent"
+      ],
+      "properties": {
+        "index": {"type": "integer", "minimum": 1, "maximum": 5},
+        "coordinate": {"$ref": "#/$defs/coordinate"},
+        "coveredMethods": {"type": "integer", "minimum": 0},
+        "allMethods": {"type": "integer", "minimum": 1},
+        "coveragePercent": {"type": "number", "minimum": 0, "maximum": 100}
+      }
+    },
+    "configuration": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["agent", "configuredModel", "provider", "targetModel"],
+      "properties": {
+        "agent": {"enum": ["pi", "claude-code"]},
+        "configuredModel": {"type": "string", "minLength": 1},
+        "provider": {"type": "string", "minLength": 1},
+        "targetModel": {"type": "string", "minLength": 1}
+      }
+    }
+  }
+}
