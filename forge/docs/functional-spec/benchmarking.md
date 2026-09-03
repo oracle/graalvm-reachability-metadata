@@ -201,9 +201,11 @@ code-coverage-benchmarks/<group>/<artifact>/<version>.json
 Every execution is appended immediately after it finishes, ordered by timestamp.
 Its `runId` is the idempotency key: retrying an identical result validates the
 existing entry instead of appending it again, while conflicting data for one
-run ID is rejected. Publication uses a dedicated worktree, serializes local
-writers, and retries by fetching `origin/master`, resetting only that publishing
-worktree, re-appending the result, committing, and pushing.
+run ID is rejected. Publication serializes local writers and creates a fresh
+disposable worktree from the latest `origin/master` for each result. It appends
+the result, commits, and pushes from that worktree, then removes it. A push race
+retries with another fresh worktree; publication never reuses or resets a
+publishing checkout.
 
 The outer launcher must invoke the same metrics collector when Rhei terminates
 before reaching benchmark publication. Thus a failed or partial workflow remains
