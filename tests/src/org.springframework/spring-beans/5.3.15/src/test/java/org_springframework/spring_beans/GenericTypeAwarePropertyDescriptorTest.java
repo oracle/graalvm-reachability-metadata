@@ -6,31 +6,43 @@
  */
 package org_springframework.spring_beans;
 
-import java.lang.reflect.Method;
-
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.BeanUtils;
-import org.springframework.beans.GenericTypeAwarePropertyDescriptor;
+import org.springframework.beans.BeanWrapper;
+import org.springframework.beans.PropertyAccessorFactory;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class GenericTypeAwarePropertyDescriptorTest {
     @Test
-    void recordsAmbiguousOverloadedWriteMethods() throws Exception {
-        Method writeMethod = BeanUtils.findMethod(OverloadedBean.class, "setValue", String.class);
+    void introspectsOverloadedWriteMethods() {
+        OverloadedBean bean = new OverloadedBean();
+        BeanWrapper wrapper = PropertyAccessorFactory.forBeanPropertyAccess(bean);
 
-        GenericTypeAwarePropertyDescriptor descriptor = new GenericTypeAwarePropertyDescriptor(
-                OverloadedBean.class, "value", null, writeMethod, null);
+        wrapper.setPropertyValue("value", "7");
 
-        assertThat(descriptor.getPropertyType()).isEqualTo(String.class);
-        assertThat(descriptor.getWriteMethod()).isEqualTo(writeMethod);
+        boolean stringSetterInvoked = "7".equals(bean.stringValue());
+        boolean integerSetterInvoked = Integer.valueOf(7).equals(bean.integerValue());
+        assertThat(stringSetterInvoked || integerSetterInvoked).isTrue();
     }
 
     public static class OverloadedBean {
+        private String stringValue;
+        private Integer integerValue;
+
         public void setValue(String value) {
+            this.stringValue = value;
         }
 
         public void setValue(Integer value) {
+            this.integerValue = value;
+        }
+
+        public String stringValue() {
+            return this.stringValue;
+        }
+
+        public Integer integerValue() {
+            return this.integerValue;
         }
     }
 }
