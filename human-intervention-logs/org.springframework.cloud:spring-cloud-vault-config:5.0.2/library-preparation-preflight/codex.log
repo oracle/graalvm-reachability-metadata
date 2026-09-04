@@ -1,0 +1,17 @@
+{
+  "action": "advisory_preparation",
+  "summary": "End-to-end configuration loading requires a live Vault server; the normal dependency closure is otherwise sufficient. [Spring Cloud Vault Quick Start](https://docs.spring.io/spring-cloud-vault/reference/quickstart.html)",
+  "deterministic_setup": [
+    {
+      "kind": "docker_image",
+      "image": "hashicorp/vault:1.21.1",
+      "slug": "vault",
+      "reason": "Pinned official Vault image; this version is referenced by Spring Cloud Vault release tooling and supports the documented integration-test workflow. [Spring Cloud Vault releases](https://github.com/spring-cloud/spring-cloud-vault/releases)"
+    }
+  ],
+  "agent_guidance": "Start an isolated ephemeral Vault server from the declared image, preferably dev mode over HTTP for baseline KV/config-data coverage. Dynamically map its port, wait for readiness, provision deterministic KV data, configure spring.application.name, spring.config.import=vault://, spring.cloud.vault.uri, spring.cloud.vault.scheme=http, spring.cloud.vault.authentication, and the test-only authentication value, then always stop and remove the server. Exercise default/contextual paths, profiles, optional imports, and fail-fast behavior. Use a test-local truststore if TLS-specific coverage is attempted.",
+  "risks": [
+    "The upstream quick start uses HTTPS and generated certificates; HTTP dev mode will not cover TLS behavior.",
+    "Tests require a working Docker daemon and reliable container cleanup."
+  ]
+}

@@ -1,0 +1,86 @@
+{
+  "continueFrom": "explore",
+  "coordinate": "org.springframework.cloud:spring-cloud-vault-config:5.0.2",
+  "failure": null,
+  "issueNumber": 9705,
+  "label": "library-new-request",
+  "libraryPreparationPreflight": {
+    "action": "advisory_preparation",
+    "agent_guidance": "Start an isolated ephemeral Vault server from the declared image, preferably dev mode over HTTP for baseline KV/config-data coverage. Dynamically map its port, wait for readiness, provision deterministic KV data, configure spring.application.name, spring.config.import=vault://, spring.cloud.vault.uri, spring.cloud.vault.scheme=http, spring.cloud.vault.authentication, and the test-only authentication value, then always stop and remove the server. Exercise default/contextual paths, profiles, optional imports, and fail-fast behavior. Use a test-local truststore if TLS-specific coverage is attempted.",
+    "applied_setup": [],
+    "deterministic_setup": [
+      {
+        "image": "hashicorp/vault:1.21.1",
+        "kind": "docker_image",
+        "reason": "Pinned official Vault image; this version is referenced by Spring Cloud Vault release tooling and supports the documented integration-test workflow. [Spring Cloud Vault releases](https://github.com/spring-cloud/spring-cloud-vault/releases)",
+        "slug": "vault"
+      }
+    ],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#9705 Support for org.springframework.cloud:spring-cloud-vault-config:5.0.2; label=library-new-request; body_chars=39"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "0 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 2875792,
+    "issue_label": "library-new-request",
+    "issue_number": 9705,
+    "library": "org.springframework.cloud:spring-cloud-vault-config:5.0.2",
+    "model": "gpt-5.6-luna",
+    "output_tokens_used": 12207,
+    "prompt_path": "library-preflight-prompt.txt",
+    "raw_response_path": "library-preflight-response.txt",
+    "risks": [
+      "The upstream quick start uses HTTPS and generated certificates; HTTP dev mode will not cover TLS behavior.",
+      "Tests require a working Docker daemon and reliable container cleanup."
+    ],
+    "session_log_path": "/home/mihailo/git/graalvm-reachability-metadata-copy/forge/logs/org.springframework.cloud:spring-cloud-vault-config:5.0.2/library-preparation-preflight/codex-session-7ah241cw.log",
+    "status": "completed",
+    "summary": "End-to-end configuration loading requires a live Vault server; the normal dependency closure is otherwise sufficient. [Spring Cloud Vault Quick Start](https://docs.spring.io/spring-cloud-vault/reference/quickstart.html)"
+  },
+  "libraryUpdateRoute": null,
+  "newVersion": null,
+  "phases": {
+    "explore": {
+      "chunkClassCount": 1,
+      "chunkProcessedClassCount": 1,
+      "exhaustedClasses": [
+        "org.springframework.cloud.vault.config.VaultConfigDataLoader"
+      ],
+      "iteration": 2,
+      "status": "pending"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": null,
+      "status": "skipped"
+    },
+    "publication": {
+      "branch": null,
+      "coverageFollowUpIssueNumber": null,
+      "isPushed": false,
+      "publicationId": null,
+      "publicationTimestamp": null,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": true,
+      "status": "completed"
+    }
+  },
+  "preservedBranch": "ai/kimeta/human-intervention/issue-9705-library-new-request-org.springframework.cloud-spring-cloud-vault-config-5.0.2-a9438eac",
+  "publicationMetrics": {
+    "extras": {},
+    "library": "org.springframework.cloud:spring-cloud-vault-config:5.0.2",
+    "timestamp": "2026-09-04T06:47:58.461723Z"
+  },
+  "schemaVersion": 1,
+  "strategyName": "optimistic_dynamic_access_iterative_pi_gpt-5.6-sol"
+}
