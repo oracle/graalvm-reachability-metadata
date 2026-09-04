@@ -17,7 +17,13 @@ from ai_workflows.core.workflow_strategy import RUN_STATUS_CHUNK_READY, RUN_STAT
 from utility_scripts.dynamic_access_report import DynamicAccessClass, DynamicAccessCoverageReport
 from utility_scripts.dynamic_access_exhaust_report import DynamicAccessExhaustReport
 from utility_scripts.continuation_marker import PHASE_EXPLORE
-from utility_scripts.run_location import enter_phase, reset_run_location
+from utility_scripts.run_location import (
+    RunLocation,
+    STEP_GENERATE_TESTS,
+    enter_phase,
+    failed_run_location,
+    reset_run_location,
+)
 
 
 class DynamicAccessProgressLoggingTests(unittest.TestCase):
@@ -393,6 +399,117 @@ class DynamicAccessProgressLoggingTests(unittest.TestCase):
         self.assertEqual(set(saved_report.completed_classes), {"org.example.A", "org.example.B"})
         self.assertNotIn("org.example.C", saved_report.completed_classes)
 
+    def test_final_remainder_succeeds_after_bulk_completed_classes(self) -> None:
+        """A terminal iterative remainder keeps productive bulk work successful.
+
+        §FS-forge-chunked-dynamic-access
+        """
+        class FakeAgent:
+            def send_prompt(self, prompt: str) -> None:
+                pass
+
+            def run_test_command(self, command: str) -> str:
+                return "BUILD SUCCESSFUL"
+
+            def clear_context(self) -> None:
+                pass
+
+        completed_classes = [f"org.example.Completed{index}" for index in range(27)]
+        remaining_classes = [f"org.example.Remaining{index}" for index in range(6)]
+        current_report = self._report_for_class_names(
+            completed_classes + remaining_classes,
+            completed_classes,
+        )
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            exhaust_report_path = os.path.join(tmpdir, "dynamic-access-exhaust-report.json")
+            exhaust_report = DynamicAccessExhaustReport.create(
+                coordinate="org.example:lib:1.0.0",
+                issue_number=9776,
+            )
+            for class_name in completed_classes:
+                exhaust_report.mark_completed(class_name)
+            strategy = self._strategy(
+                dynamic_access_exhaust_report=exhaust_report,
+                dynamic_access_exhaust_report_path=exhaust_report_path,
+                chunk_class_count=15,
+            )
+
+            with patch.object(strategy, "_render_prompt", return_value="prompt"), \
+                    patch.object(strategy, "_generate_dynamic_access_report", return_value=current_report), \
+                    patch.object(strategy, "_print_failure_analysis"), \
+                    patch.object(
+                        strategy,
+                        "_commit_dynamic_access_exhaust_report",
+                        side_effect=lambda message: strategy._save_dynamic_access_exhaust_report(),
+                    ), \
+                    patch.object(strategy, "_library_test_change_signature", return_value="clean"), \
+                    patch(
+                        "ai_workflows.core.dynamic_access_iterative_strategy.subprocess.check_output",
+                        return_value="checkpoint\n",
+                    ):
+                phase_ok, iterations = strategy._run_dynamic_access_phase(FakeAgent(), current_report)
+
+            saved_report = DynamicAccessExhaustReport.load(exhaust_report_path)
+
+        self.assertTrue(phase_ok)
+        self.assertEqual(iterations, 6)
+        self.assertEqual(len(saved_report.completed_classes), 27)
+        self.assertEqual(set(saved_report.exhausted_classes), set(remaining_classes))
+        self.assertIsNone(failed_run_location())
+
+    def test_terminal_exhaustion_defers_failure_location_to_caller(self) -> None:
+        """A phase result alone does not record a terminal workflow failure.
+
+        §FS-forge-run-location-reporting.3
+        """
+        class_name = "org.example.Exhausted"
+        current_report = self._report_for_class_names([class_name], [])
+        exhaust_report = DynamicAccessExhaustReport.create(
+            coordinate="org.example:lib:1.0.0",
+            issue_number=9776,
+        )
+        exhaust_report.mark_exhausted(class_name)
+        strategy = self._strategy(
+            dynamic_access_exhaust_report=exhaust_report,
+            chunk_class_count=15,
+        )
+
+        with patch.object(strategy, "_library_test_change_signature", return_value="clean"):
+            phase_ok, iterations = strategy._run_dynamic_access_phase(object(), current_report)
+
+        self.assertFalse(phase_ok)
+        self.assertEqual(iterations, 0)
+        self.assertIsNone(failed_run_location())
+
+    def test_standalone_run_locates_terminal_exploration_failure(self) -> None:
+        """The standalone workflow records zero progress when it returns failure.
+
+        §FS-forge-run-location-reporting.3
+        """
+        class_name = "org.example.Exhausted"
+        current_report = self._report_for_class_names([class_name], [])
+        exhaust_report = DynamicAccessExhaustReport.create(
+            coordinate="org.example:lib:1.0.0",
+            issue_number=9776,
+        )
+        exhaust_report.mark_exhausted(class_name)
+        strategy = self._strategy(
+            dynamic_access_exhaust_report=exhaust_report,
+            chunk_class_count=15,
+        )
+
+        with patch.object(strategy, "_generate_dynamic_access_report", return_value=current_report), \
+                patch.object(strategy, "_library_test_change_signature", return_value="clean"), \
+                patch("ai_workflows.core.dynamic_access_iterative_strategy.subprocess.run"):
+            result = strategy.run(agent=object(), checkpoint_commit_hash="checkpoint")
+
+        self.assertEqual(result, (RUN_STATUS_FAILURE, 0, 0))
+        self.assertEqual(
+            failed_run_location(),
+            RunLocation(PHASE_EXPLORE, STEP_GENERATE_TESTS, "org.example:lib:1.0.0"),
+        )
+
     def test_should_stop_for_chunked_dynamic_access_returns_false_without_report(self) -> None:
         strategy = self._strategy()
         report = DynamicAccessCoverageReport(
@@ -513,6 +630,7 @@ class DynamicAccessProgressLoggingTests(unittest.TestCase):
             self.assertEqual(strategy.run(agent=object()), (RUN_STATUS_SUCCESS, 1))
 
         self.assertEqual(calls, ["dynamic-access", "issue-requested"])
+        self.assertIsNone(failed_run_location())
 
     def test_increase_coverage_strategy_fails_when_no_primary_dynamic_access_or_issue_work_succeeds(self) -> None:
         class NoProgressDynamicAccess:
@@ -540,6 +658,10 @@ class DynamicAccessProgressLoggingTests(unittest.TestCase):
                 NoProgressDynamicAccess,
         ):
             self.assertEqual(strategy.run(agent=object()), (RUN_STATUS_FAILURE, 0))
+        self.assertEqual(
+            failed_run_location(),
+            RunLocation(PHASE_EXPLORE, STEP_GENERATE_TESTS, "org.example:lib:1.0.0"),
+        )
 
     @staticmethod
     def _class_coverage(class_name: str, total_calls: int, covered_calls: int) -> DynamicAccessClass:

@@ -125,6 +125,7 @@ class DynamicAccessIterativeStrategy(WorkflowStrategy):
         if self._last_phase_status == RUN_STATUS_CHUNK_READY:
             return RUN_STATUS_CHUNK_READY, global_iterations, 1
         if not phase_ok:
+            self._locate_explore_failure()
             recovery_checkpoint = self._latest_class_checkpoint or checkpoint_commit_hash
             subprocess.run(["git", "reset", "--hard", recovery_checkpoint], check=False)
             return RUN_STATUS_FAILURE, global_iterations, 0
@@ -337,7 +338,8 @@ class DynamicAccessIterativeStrategy(WorkflowStrategy):
                         len(terminal_classes_this_part),
                     )
                     return True, prompt_iterations
-                if successful_classes > 0:
+                phase_succeeded: bool = self._has_successful_class_coverage(successful_classes)
+                if phase_succeeded:
                     self._mark_continuation_explore_completed(
                         prompt_iterations,
                         exhausted_classes,
@@ -349,7 +351,7 @@ class DynamicAccessIterativeStrategy(WorkflowStrategy):
                         exhausted_classes,
                         len(terminal_classes_this_part),
                     )
-                return successful_classes > 0, prompt_iterations
+                return phase_succeeded, prompt_iterations
 
             class_name = active_class.class_name
             # Snapshot HEAD before this class so we can roll back on failure
@@ -793,6 +795,19 @@ class DynamicAccessIterativeStrategy(WorkflowStrategy):
         """
         record_step_failure(
             location=RunLocation(RUN_PHASE_EXPLORE, STEP_GENERATE_TESTS, class_name or self.library),
+        )
+
+    def _has_successful_class_coverage(self, successful_classes: int) -> bool:
+        """Return whether iterative or preceding bulk work gained class coverage.
+
+        Bulk records its completed classes in the shared exhaust report before
+        iterative exploration finishes the remainder. §FS-forge-chunked-dynamic-access
+        """
+        if successful_classes > 0:
+            return True
+        return (
+            self.dynamic_access_exhaust_report is not None
+            and bool(self.dynamic_access_exhaust_report.completed_classes)
         )
 
     def _mark_continuation_explore_pending(
