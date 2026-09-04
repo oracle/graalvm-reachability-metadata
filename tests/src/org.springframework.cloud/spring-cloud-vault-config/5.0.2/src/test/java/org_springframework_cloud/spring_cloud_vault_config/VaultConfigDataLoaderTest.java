@@ -37,16 +37,18 @@ public class VaultConfigDataLoaderTest {
 
     private static final Duration COMMAND_TIMEOUT = Duration.ofSeconds(10);
 
+    private static final Duration CONTAINER_START_TIMEOUT = Duration.ofSeconds(20);
+
     @Test
     @Timeout(value = 59)
     void loadsConfigurationUsingTokenAuthentication() throws Exception {
         int port = findAvailablePort();
         String containerName = "spring-cloud-vault-config-" + UUID.randomUUID();
-        boolean containerStarted = false;
+        boolean containerStartAttempted = false;
 
         try {
+            containerStartAttempted = true;
             startVault(containerName, port);
-            containerStarted = true;
             waitUntilVaultIsReady(containerName);
             writeSecret(containerName);
 
@@ -73,8 +75,8 @@ public class VaultConfigDataLoaderTest {
                 deferredLogs.switchOverAll();
             }
         } finally {
-            if (containerStarted) {
-                runCommand("docker", "rm", "--force", containerName);
+            if (containerStartAttempted) {
+                removeContainer(containerName);
             }
         }
     }
@@ -100,10 +102,17 @@ public class VaultConfigDataLoaderTest {
     }
 
     private static void startVault(String containerName, int port) throws IOException, InterruptedException {
-        runCommand("docker", "run", "--detach", "--rm", "--name", containerName,
+        runCommand(CONTAINER_START_TIMEOUT, "docker", "run", "--detach", "--rm", "--name", containerName,
                 "--publish", "127.0.0.1:" + port + ":8200", "--cap-add=IPC_LOCK",
                 "--env", "VAULT_DEV_ROOT_TOKEN_ID=" + ROOT_TOKEN,
                 "--env", "VAULT_DEV_LISTEN_ADDRESS=0.0.0.0:8200", VAULT_IMAGE, "server", "-dev");
+    }
+
+    private static void removeContainer(String containerName) throws IOException, InterruptedException {
+        CommandResult result = executeCommand("docker", "rm", "--force", containerName);
+        if (result.exitCode() != 0 && !result.output().contains("No such container")) {
+            throw new IllegalStateException("Could not remove Vault container: " + result.output());
+        }
     }
 
     private static void waitUntilVaultIsReady(String containerName) throws IOException, InterruptedException {
@@ -129,7 +138,11 @@ public class VaultConfigDataLoaderTest {
     }
 
     private static void runCommand(String... command) throws IOException, InterruptedException {
-        CommandResult result = executeCommand(command);
+        runCommand(COMMAND_TIMEOUT, command);
+    }
+
+    private static void runCommand(Duration timeout, String... command) throws IOException, InterruptedException {
+        CommandResult result = executeCommand(timeout, command);
         if (result.exitCode() != 0) {
             throw new IllegalStateException("Command failed with exit code " + result.exitCode() + ": "
                     + result.output());
@@ -137,11 +150,17 @@ public class VaultConfigDataLoaderTest {
     }
 
     private static CommandResult executeCommand(String... command) throws IOException, InterruptedException {
+        return executeCommand(COMMAND_TIMEOUT, command);
+    }
+
+    private static CommandResult executeCommand(Duration timeout, String... command)
+            throws IOException, InterruptedException {
         Process process = new ProcessBuilder(command).redirectErrorStream(true).start();
-        if (!process.waitFor(COMMAND_TIMEOUT.toMillis(), TimeUnit.MILLISECONDS)) {
+        if (!process.waitFor(timeout.toMillis(), TimeUnit.MILLISECONDS)) {
             process.destroyForcibly();
             process.waitFor(COMMAND_TIMEOUT.toMillis(), TimeUnit.MILLISECONDS);
-            throw new IllegalStateException("Command timed out: " + String.join(" ", command));
+            throw new IllegalStateException("Command timed out after " + timeout + ": "
+                    + String.join(" ", command));
         }
         try (InputStream input = process.getInputStream()) {
             String output = new String(input.readAllBytes(), StandardCharsets.UTF_8);
