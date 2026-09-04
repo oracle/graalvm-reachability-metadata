@@ -283,6 +283,14 @@ therefore gives iterative the whole boundary. When no more than the boundary
 remain, iterative exploration receives the entire remainder and finishes the
 final chunk even if bulk already met the boundary.
 
+An optimistic composite first generates the report that would steer bulk. When
+the report is usable but names fewer uncovered classes than the configured
+`bulk-min-uncovered-classes`, it skips the bulk primary and starts iterative
+exploration with that same report. A report at or above the minimum is handed to
+bulk without another refresh. An unavailable or empty report still enters bulk
+so its basic-iterative bootstrap remains available. This routing belongs to the
+composite only; a pure-bulk strategy always runs its configured bulk workflow.
+
 The bulk primary and iterative refinement are one `explore` phase. The bulk
 primary leaves that phase running when the composite owns the next
 transition. The composite completes it only when the bulk result is already a

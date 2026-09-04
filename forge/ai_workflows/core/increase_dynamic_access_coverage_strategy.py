@@ -31,6 +31,11 @@ class IncreaseDynamicAccessCoverageStrategy(WorkflowStrategy):
         super().__init__(strategy_obj, **context)
         self.primary_workflow_name: str | None = strategy_obj.get("primary-workflow")
         self.chunk_class_count: int = int(self.context.get("chunk_class_count") or 0)
+        self.bulk_min_uncovered_classes: int = int(
+            self.parameters.get("bulk-min-uncovered-classes") or 0
+        )
+        if self.bulk_min_uncovered_classes < 0:
+            raise ValueError("bulk-min-uncovered-classes must be non-negative")
         self.reachability_repo_path = self.context["reachability_repo_path"]
         self.library = self.context.get("library") or self.context.get("updated_library")
         self.group, self.artifact, self.version = self.library.split(":")
@@ -61,12 +66,42 @@ class IncreaseDynamicAccessCoverageStrategy(WorkflowStrategy):
             location=RunLocation(PHASE_EXPLORE, STEP_GENERATE_TESTS, self.library),
         )
 
+    def _precheck_optimistic_bulk(
+            self,
+    ) -> tuple[DynamicAccessCoverageReport | None, int | None]:
+        """Return the reusable report and a small-report iterative budget."""
+        if (
+                self.primary_workflow_name != "bulk_dynamic_access"
+                or self.bulk_min_uncovered_classes <= 0
+        ):
+            return None, None
+
+        report = self.primary._generate_dynamic_access_report()
+        if report is None or not report.has_dynamic_access or report.total_calls == 0:
+            return report, None
+
+        uncovered_class_count: int = uncovered_dynamic_access_class_count(report)
+        if uncovered_class_count >= self.bulk_min_uncovered_classes:
+            return report, None
+
+        self._print_message(
+            "skipping bulk dynamic-access primary: "
+            "uncovered_classes={uncovered} minimum={minimum}".format(
+                uncovered=uncovered_class_count,
+                minimum=self.bulk_min_uncovered_classes,
+            )
+        )
+        return report, uncovered_class_count
+
     def run(self, agent, **kwargs):
         current_report: DynamicAccessCoverageReport | None = None
         iterative_chunk_count: int | None = None
         preceding_covered_call_gain: int = 0
         required_iterative_chunk_phase: bool = False
         skip_dynamic_access_phase: bool = False
+        small_report_iterative_count: int | None = None
+        if self.primary is not None:
+            current_report, small_report_iterative_count = self._precheck_optimistic_bulk()
 
         if self.primary is None:
             self._print_message("no primary workflow configured, skipping to dynamic-access coverage phase")
@@ -76,15 +111,28 @@ class IncreaseDynamicAccessCoverageStrategy(WorkflowStrategy):
             )
             status = RUN_STATUS_SUCCESS
             iterations = 0
+        elif small_report_iterative_count is not None:
+            result: tuple[str, int, int] = (RUN_STATUS_SUCCESS, 0, 1)
+            status = RUN_STATUS_SUCCESS
+            iterations = 0
+            iterative_chunk_count = small_report_iterative_count
+            skip_dynamic_access_phase = small_report_iterative_count == 0
+            required_iterative_chunk_phase = small_report_iterative_count > 0
+            agent.clear_context()
         else:
             self._print_message("starting primary workflow")
-            result = self.primary.run(agent, **kwargs)
+            primary_kwargs: dict[str, object] = dict(kwargs)
+            if current_report is not None:
+                primary_kwargs["initial_report"] = current_report
+            result = self.primary.run(agent, **primary_kwargs)
             status = result[0]
             iterations = result[1]
             self._print_message(f"primary workflow completed with status: {status}")
 
             if status != RUN_STATUS_SUCCESS:
-                self._print_message("skipping dynamic-access coverage phase because primary workflow did not succeed")
+                self._print_message(
+                    "skipping dynamic-access coverage phase because primary workflow did not succeed"
+                )
                 self.post_generation_intervention = self.primary.post_generation_intervention
                 return result
 
@@ -155,7 +203,7 @@ class IncreaseDynamicAccessCoverageStrategy(WorkflowStrategy):
                 lambda marker: marker.mark_phase_completed(PHASE_EXPLORE),
             )
             phase_ok, da_iterations = True, 0
-            self._print_message("all dynamic-access classes are covered after bulk")
+            self._print_message("all dynamic-access classes are covered")
         else:
             self._print_message("starting dynamic-access coverage phase")
             if current_report is None:

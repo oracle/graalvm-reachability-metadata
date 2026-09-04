@@ -89,8 +89,14 @@ class BulkDynamicAccessStrategy(WorkflowStrategy):
             "dynamic-access-coverage.json",
         )
 
-    def run(self, agent: object, **kwargs: object) -> tuple[str, int, int]:
-        initial_report = self._generate_dynamic_access_report()
+    def run(
+            self,
+            agent: object,
+            initial_report: DynamicAccessCoverageReport | None = None,
+            **kwargs: object,
+    ) -> tuple[str, int, int]:
+        if initial_report is None:
+            initial_report = self._generate_dynamic_access_report()
         fallback_prompt_iterations = 0
         fallback_successful_generations = 0
         if not self._report_is_usable(initial_report):
