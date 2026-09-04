@@ -101,6 +101,21 @@ public class Langchain4j_embeddings_all_minilm_l6_v2Test {
     }
 
     @Test
+    void placesSemanticallyRelatedSentencesCloserTogether() {
+        EmbeddingModel model = new AllMiniLmL6V2EmbeddingModel(new RecordingExecutor());
+        List<TextSegment> segments = List.of(
+                TextSegment.from("A puppy is playing with a ball in the garden."),
+                TextSegment.from("A young dog chases a toy outdoors."),
+                TextSegment.from("Quarterly financial reports describe corporate revenue."));
+
+        List<Embedding> embeddings = model.embedAll(segments).content();
+
+        double relatedSimilarity = cosineSimilarity(embeddings.get(0), embeddings.get(1));
+        double unrelatedSimilarity = cosineSimilarity(embeddings.get(0), embeddings.get(2));
+        assertThat(relatedSimilarity).isGreaterThan(unrelatedSimilarity);
+    }
+
+    @Test
     void embedsLongText() {
         EmbeddingModel model = new AllMiniLmL6V2EmbeddingModel(new RecordingExecutor());
 
@@ -132,6 +147,16 @@ public class Langchain4j_embeddings_all_minilm_l6_v2Test {
             }
         }
         throw new AssertionError("AllMiniLmL6V2 embedding model factory was not service-loadable");
+    }
+
+    private static double cosineSimilarity(Embedding left, Embedding right) {
+        float[] leftVector = left.vector();
+        float[] rightVector = right.vector();
+        double dotProduct = 0.0;
+        for (int i = 0; i < leftVector.length; i++) {
+            dotProduct += leftVector[i] * rightVector[i];
+        }
+        return dotProduct / (magnitude(leftVector) * magnitude(rightVector));
     }
 
     private static double magnitude(float[] vector) {
