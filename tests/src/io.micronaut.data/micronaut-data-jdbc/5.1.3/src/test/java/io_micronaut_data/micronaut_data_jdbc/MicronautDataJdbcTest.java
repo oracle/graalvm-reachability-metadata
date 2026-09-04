@@ -7,6 +7,7 @@
 package io_micronaut_data.micronaut_data_jdbc;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.List;
 import java.util.Optional;
@@ -15,6 +16,8 @@ import io.micronaut.context.annotation.Property;
 import io.micronaut.data.annotation.GeneratedValue;
 import io.micronaut.data.annotation.Id;
 import io.micronaut.data.annotation.MappedEntity;
+import io.micronaut.data.annotation.Version;
+import io.micronaut.data.exceptions.OptimisticLockException;
 import io.micronaut.data.jdbc.annotation.JdbcRepository;
 import io.micronaut.data.model.Page;
 import io.micronaut.data.model.Pageable;
@@ -41,6 +44,9 @@ public class MicronautDataJdbcTest {
 
     @Inject
     CatalogBookRepository repository;
+
+    @Inject
+    VersionedBookRepository versionedBookRepository;
 
     @BeforeEach
     void clearCatalog() {
@@ -118,6 +124,30 @@ public class MicronautDataJdbcTest {
         assertThat(page.hasNext()).isTrue();
     }
 
+    @Test
+    void usesEntityVersionsToRejectStaleUpdates() {
+        VersionedBook saved = versionedBookRepository.save(new VersionedBook("Distributed Catalogs"));
+        VersionedBook staleCopy = versionedBookRepository.findById(saved.getId()).orElseThrow();
+        VersionedBook currentCopy = versionedBookRepository.findById(saved.getId()).orElseThrow();
+
+        assertThat(saved.getVersion()).isZero();
+
+        currentCopy.setTitle("Distributed Catalogs, Second Edition");
+        versionedBookRepository.update(currentCopy);
+
+        VersionedBook updated = versionedBookRepository.findById(saved.getId()).orElseThrow();
+        assertThat(updated.getTitle()).isEqualTo("Distributed Catalogs, Second Edition");
+        assertThat(updated.getVersion()).isEqualTo(1L);
+
+        staleCopy.setTitle("Outdated Catalogs");
+        assertThatThrownBy(() -> versionedBookRepository.update(staleCopy))
+                .isInstanceOf(OptimisticLockException.class);
+
+        VersionedBook retained = versionedBookRepository.findById(saved.getId()).orElseThrow();
+        assertThat(retained.getTitle()).isEqualTo("Distributed Catalogs, Second Edition");
+        assertThat(retained.getVersion()).isEqualTo(1L);
+    }
+
     @JdbcRepository(dialect = Dialect.H2)
     public interface CatalogBookRepository extends CrudRepository<CatalogBook, Long> {
 
@@ -130,6 +160,54 @@ public class MicronautDataJdbcTest {
         List<CatalogBook> findByPagesGreaterThanOrderByPagesDesc(int pages);
 
         long countByAuthor(String author);
+    }
+
+    @JdbcRepository(dialect = Dialect.H2)
+    public interface VersionedBookRepository extends CrudRepository<VersionedBook, Long> {
+    }
+}
+
+@MappedEntity("versioned_book")
+class VersionedBook {
+
+    @Id
+    @GeneratedValue
+    private Long id;
+
+    @Version
+    private Long version;
+
+    private String title;
+
+    VersionedBook() {
+    }
+
+    VersionedBook(String title) {
+        this.title = title;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Long getVersion() {
+        return version;
+    }
+
+    public void setVersion(Long version) {
+        this.version = version;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
     }
 }
 
