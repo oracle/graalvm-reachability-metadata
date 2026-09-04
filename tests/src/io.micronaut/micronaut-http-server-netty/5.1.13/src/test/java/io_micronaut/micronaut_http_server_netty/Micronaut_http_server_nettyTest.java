@@ -8,10 +8,12 @@ package io_micronaut.micronaut_http_server_netty;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.Map;
+import java.util.zip.GZIPOutputStream;
 
 import io.micronaut.context.ApplicationContext;
 import io.micronaut.context.env.Environment;
@@ -97,6 +99,27 @@ public class Micronaut_http_server_nettyTest {
         }
     }
 
+    @Test
+    @Timeout(55)
+    void decompressesGzipEncodedRequestBodies() throws Exception {
+        Map<String, Object> properties = Map.of("micronaut.server.port", -1);
+        String requestBody = "content encoded for transport";
+
+        try (EmbeddedServer server = ApplicationContext.run(EmbeddedServer.class, properties, Environment.TEST);
+                HttpClient client = HttpClient.create(server.getURL(), clientConfiguration())) {
+            HttpRequest<byte[]> request = HttpRequest.POST("/netty-test/decompress", gzip(requestBody))
+                    .header("Content-Encoding", "gzip")
+                    .contentType(MediaType.TEXT_PLAIN_TYPE)
+                    .accept(MediaType.TEXT_PLAIN_TYPE);
+            HttpResponse<String> response = client.toBlocking().exchange(request, String.class);
+
+            assertThat(response.code()).isEqualTo(HttpStatus.OK.getCode());
+            assertThat(response.body()).isEqualTo(requestBody);
+            assertThat(response.getHeaders().get("X-Decompressed-Length"))
+                    .isEqualTo(Integer.toString(requestBody.getBytes(StandardCharsets.UTF_8).length));
+        }
+    }
+
     @Get(uri = "/greet/{name}", produces = MediaType.TEXT_PLAIN)
     public HttpResponse<String> greet(
             @PathVariable("name") String name,
@@ -115,6 +138,13 @@ public class Micronaut_http_server_nettyTest {
                 .header("X-Body-Length", Integer.toString(body.length()));
     }
 
+    @Post(uri = "/decompress", consumes = MediaType.TEXT_PLAIN, produces = MediaType.TEXT_PLAIN)
+    public HttpResponse<String> decompress(@Body byte[] body) {
+        return HttpResponse.ok(new String(body, StandardCharsets.UTF_8))
+                .contentType(MediaType.TEXT_PLAIN_TYPE)
+                .header("X-Decompressed-Length", Integer.toString(body.length));
+    }
+
     @Post(uri = "/upload", consumes = MediaType.MULTIPART_FORM_DATA, produces = MediaType.TEXT_PLAIN)
     public HttpResponse<String> upload(
             @Part("description") String description, @Part("document") CompletedFileUpload document)
@@ -128,6 +158,14 @@ public class Micronaut_http_server_nettyTest {
         return HttpResponse.ok(responseBody)
                 .contentType(MediaType.TEXT_PLAIN_TYPE)
                 .header("X-Upload-Size", Long.toString(document.getSize()));
+    }
+
+    private static byte[] gzip(String value) throws IOException {
+        ByteArrayOutputStream output = new ByteArrayOutputStream();
+        try (GZIPOutputStream gzip = new GZIPOutputStream(output)) {
+            gzip.write(value.getBytes(StandardCharsets.UTF_8));
+        }
+        return output.toByteArray();
     }
 
     private static DefaultHttpClientConfiguration clientConfiguration() {
