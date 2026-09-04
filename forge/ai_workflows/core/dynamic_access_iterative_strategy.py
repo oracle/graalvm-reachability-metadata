@@ -125,6 +125,7 @@ class DynamicAccessIterativeStrategy(WorkflowStrategy):
         if self._last_phase_status == RUN_STATUS_CHUNK_READY:
             return RUN_STATUS_CHUNK_READY, global_iterations, 1
         if not phase_ok:
+            self._locate_explore_failure()
             recovery_checkpoint = self._latest_class_checkpoint or checkpoint_commit_hash
             subprocess.run(["git", "reset", "--hard", recovery_checkpoint], check=False)
             return RUN_STATUS_FAILURE, global_iterations, 0
@@ -350,7 +351,6 @@ class DynamicAccessIterativeStrategy(WorkflowStrategy):
                         exhausted_classes,
                         len(terminal_classes_this_part),
                     )
-                    self._locate_explore_failure()
                 return phase_succeeded, prompt_iterations
 
             class_name = active_class.class_name

@@ -13,6 +13,7 @@ from ai_workflows.core.workflow_strategy import (
 from utility_scripts.continuation_marker import PHASE_EXPLORE, PHASE_FIX, save_phase_update
 from utility_scripts.dynamic_access_report import BulkDynamicAccessProgress, DynamicAccessCoverageReport
 from utility_scripts.java_fix_coverage_follow_up import uncovered_dynamic_access_class_count
+from utility_scripts.run_location import RunLocation, STEP_GENERATE_TESTS, record_step_failure
 from utility_scripts.stage_logger import log_detail
 
 
@@ -50,6 +51,15 @@ class IncreaseDynamicAccessCoverageStrategy(WorkflowStrategy):
     @staticmethod
     def _print_message(message: str) -> None:
         log_detail("composition-workflow", message)
+
+    def _record_dynamic_access_failure(self) -> None:
+        """Record exploration only after the composite makes it terminal.
+
+        §FS-forge-run-location-reporting.3
+        """
+        record_step_failure(
+            location=RunLocation(PHASE_EXPLORE, STEP_GENERATE_TESTS, self.library),
+        )
 
     def run(self, agent, **kwargs):
         current_report: DynamicAccessCoverageReport | None = None
@@ -158,11 +168,13 @@ class IncreaseDynamicAccessCoverageStrategy(WorkflowStrategy):
                     "required iterative dynamic-access chunk phase did not succeed"
                 )
                 status = RUN_STATUS_FAILURE
+                self._record_dynamic_access_failure()
             elif self.primary is None and not has_issue_requested_metadata:
                 self._print_message(
                     "dynamic-access coverage phase did not succeed and no reporter-requested metadata phase is available"
                 )
                 status = RUN_STATUS_FAILURE
+                self._record_dynamic_access_failure()
             else:
                 self._print_message(
                     "continuing with existing workflow result because dynamic-access coverage phase did not succeed"

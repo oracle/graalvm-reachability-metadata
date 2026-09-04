@@ -458,8 +458,8 @@ class DynamicAccessProgressLoggingTests(unittest.TestCase):
         self.assertEqual(set(saved_report.exhausted_classes), set(remaining_classes))
         self.assertIsNone(failed_run_location())
 
-    def test_terminal_exhaustion_without_completed_classes_locates_failure(self) -> None:
-        """A genuine zero-progress status failure names its explore step.
+    def test_terminal_exhaustion_defers_failure_location_to_caller(self) -> None:
+        """A phase result alone does not record a terminal workflow failure.
 
         §FS-forge-run-location-reporting.3
         """
@@ -480,6 +480,31 @@ class DynamicAccessProgressLoggingTests(unittest.TestCase):
 
         self.assertFalse(phase_ok)
         self.assertEqual(iterations, 0)
+        self.assertIsNone(failed_run_location())
+
+    def test_standalone_run_locates_terminal_exploration_failure(self) -> None:
+        """The standalone workflow records zero progress when it returns failure.
+
+        §FS-forge-run-location-reporting.3
+        """
+        class_name = "org.example.Exhausted"
+        current_report = self._report_for_class_names([class_name], [])
+        exhaust_report = DynamicAccessExhaustReport.create(
+            coordinate="org.example:lib:1.0.0",
+            issue_number=9776,
+        )
+        exhaust_report.mark_exhausted(class_name)
+        strategy = self._strategy(
+            dynamic_access_exhaust_report=exhaust_report,
+            chunk_class_count=15,
+        )
+
+        with patch.object(strategy, "_generate_dynamic_access_report", return_value=current_report), \
+                patch.object(strategy, "_library_test_change_signature", return_value="clean"), \
+                patch("ai_workflows.core.dynamic_access_iterative_strategy.subprocess.run"):
+            result = strategy.run(agent=object(), checkpoint_commit_hash="checkpoint")
+
+        self.assertEqual(result, (RUN_STATUS_FAILURE, 0, 0))
         self.assertEqual(
             failed_run_location(),
             RunLocation(PHASE_EXPLORE, STEP_GENERATE_TESTS, "org.example:lib:1.0.0"),
@@ -605,6 +630,7 @@ class DynamicAccessProgressLoggingTests(unittest.TestCase):
             self.assertEqual(strategy.run(agent=object()), (RUN_STATUS_SUCCESS, 1))
 
         self.assertEqual(calls, ["dynamic-access", "issue-requested"])
+        self.assertIsNone(failed_run_location())
 
     def test_increase_coverage_strategy_fails_when_no_primary_dynamic_access_or_issue_work_succeeds(self) -> None:
         class NoProgressDynamicAccess:
@@ -632,6 +658,10 @@ class DynamicAccessProgressLoggingTests(unittest.TestCase):
                 NoProgressDynamicAccess,
         ):
             self.assertEqual(strategy.run(agent=object()), (RUN_STATUS_FAILURE, 0))
+        self.assertEqual(
+            failed_run_location(),
+            RunLocation(PHASE_EXPLORE, STEP_GENERATE_TESTS, "org.example:lib:1.0.0"),
+        )
 
     @staticmethod
     def _class_coverage(class_name: str, total_calls: int, covered_calls: int) -> DynamicAccessClass:
