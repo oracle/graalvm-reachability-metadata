@@ -122,6 +122,26 @@ def model_slug(worker_agent: str) -> str:
     return slug
 
 
+def thinking_level(worker_agent: str) -> str:
+    """Return the thinking mode selected by a Rhei worker target.
+
+    The bracketed mode is the workflow's reasoning level
+    (§AR-code-coverage-improvement.4).
+    """
+    agent_target: str = worker_agent.split(":", 1)[0]
+    match: re.Match[str] | None = re.fullmatch(
+        r"[A-Za-z0-9._-]+(?:\[([A-Za-z0-9._-]+)\])?",
+        agent_target,
+    )
+    if match is None:
+        print(
+            f"ERROR: worker agent '{worker_agent}' has an invalid agent mode.",
+            file=sys.stderr,
+        )
+        raise SystemExit(1)
+    return match.group(1) or "default"
+
+
 def load_finalization_metrics(finalization_dir: str) -> dict[str, Any]:
     metrics_path: str = os.path.join(finalization_dir, "final-metrics.json")
     if not os.path.isfile(metrics_path):
@@ -187,6 +207,7 @@ def build_descriptor_input(
         issue_number: int,
         metrics: dict[str, Any],
         model: str,
+        thinking: str,
         token_usage: list[dict[str, Any]],
 ) -> PublicationDescriptorInput:
     """Carry the finalized coverage evidence to the trusted renderer as data.
@@ -207,6 +228,7 @@ def build_descriptor_input(
             },
             "token_usage": token_usage,
             "worker_model": model,
+            "worker_thinking_level": thinking,
         },
     )
 
@@ -250,6 +272,7 @@ def publish(
     # pipeline appends separates repeated runs of one model
     # (§AR-code-coverage-improvement.4).
     model: str = model_slug(worker_agent)
+    thinking: str = thinking_level(worker_agent)
     suffix: str = f"-{branch_suffix}" if branch_suffix else ""
     # Rhei writes accounting beside the workflow runtime, two levels above the
     # finalization directory it hands this helper.
@@ -260,6 +283,7 @@ def publish(
         issue_number,
         metrics,
         model,
+        thinking,
         load_token_usage(resolved_accounting),
     )
 

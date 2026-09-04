@@ -549,8 +549,8 @@ The Rhei template should decompose the workflow into these phases:
 
    The descriptor carries the render inputs and only those: coordinate, coverage
    suite path, the whole-run coverage checkpoints and phase gains, the per-phase
-   JaCoCo records, the human-intervention flag, the generating model, and
-   per-phase token usage read from the Rhei accounting directory. The body links
+   JaCoCo records, the human-intervention flag, the generating model and thinking
+   level, and per-phase token usage read from the Rhei accounting directory. The body links
    its issue with `Fixes:`, never conditionally: one run publishes one pull
    request, so merging it closes
    the issue that claimed the coordinate (§AR-issue-linking). Per-target
@@ -799,8 +799,9 @@ engine:
   model written as `<model>:<thinking>` is parsed as a provider/model pair and
   silently resolves to a different model. The template therefore bundles a `pi`
   agent profile in its `settings.json` whose `high` and `xhigh` modes add
-  `--thinking`, and publication reads the model back out of the same target to
-  name the head branch (§AR-code-coverage-improvement.4). That profile replaces
+  `--thinking`, and publication reads the model and thinking level back out of
+  the same target, using the model to name the head branch and rendering both in the pull
+  request body (§AR-code-coverage-improvement.4). That profile replaces
   Rhei's built-in one outright rather than extending it, so it restates the
   `session` block as well: without it Rhei passes no `--session-dir`, cannot
   read back the agent's native transcript, and silently captures no per-state
