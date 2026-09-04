@@ -286,10 +286,19 @@ final chunk even if bulk already met the boundary.
 An optimistic composite first generates the report that would steer bulk. When
 the report is usable but names fewer uncovered classes than the configured
 `bulk-min-uncovered-classes`, it skips the bulk primary and starts iterative
-exploration with that same report. A report at or above the minimum is handed to
-bulk without another refresh. An unavailable or empty report still enters bulk
-so its basic-iterative bootstrap remains available. This routing belongs to the
-composite only; a pure-bulk strategy always runs its configured bulk workflow.
+exploration with that same report. The budget it hands over is the remainder
+iterative exploration can still take, measured against the exhaust report and
+continuation marker like the post-bulk boundary is. A small report whose
+remainder is entirely processed therefore stays with bulk, which is the only
+phase that prompts again on a class per-class exploration exhausted. A report
+at or above the minimum is handed to bulk without another refresh. A report
+with nothing uncovered left skips both phases and completes exploration. An
+unavailable or empty report still enters bulk so its basic-iterative bootstrap
+remains available. Whenever the composite skips the primary it releases the
+same pending fix phase the primary would have released, so a skipped primary
+never holds back the continuation phase order (§FS-forge-run-continuation.1).
+This routing belongs to the composite only; a pure-bulk strategy always runs
+its configured bulk workflow.
 
 The bulk primary and iterative refinement are one `explore` phase. The bulk
 primary leaves that phase running when the composite owns the next

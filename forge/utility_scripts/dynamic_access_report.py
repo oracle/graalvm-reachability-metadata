@@ -97,6 +97,26 @@ class BulkDynamicAccessProgress:
     covered_call_gain: int
 
 
+def remaining_uncovered_classes(
+        report: DynamicAccessCoverageReport,
+        processed_classes: set[str],
+) -> tuple[str, ...]:
+    """Return uncovered classes no phase has processed yet.
+
+    The remainder a phase can still take is the report's uncovered classes
+    minus the exhaust report and continuation marker's processed set
+    (§AR-dynamic-access-composite).
+    """
+    return tuple(
+        class_coverage.class_name
+        for class_coverage in report.classes
+        if (
+            class_coverage.uncovered_calls > 0
+            and class_coverage.class_name not in processed_classes
+        )
+    )
+
+
 def compute_bulk_dynamic_access_progress(
         initial_report: DynamicAccessCoverageReport,
         final_report: DynamicAccessCoverageReport,
@@ -116,14 +136,7 @@ def compute_bulk_dynamic_access_progress(
             and final_class.uncovered_calls == 0
         )
     ))
-    remaining_classes: tuple[str, ...] = tuple(
-        class_coverage.class_name
-        for class_coverage in final_report.classes
-        if (
-            class_coverage.uncovered_calls > 0
-            and class_coverage.class_name not in processed_classes
-        )
-    )
+    remaining_classes: tuple[str, ...] = remaining_uncovered_classes(final_report, processed_classes)
     covered_call_gain: int = max(final_report.covered_calls - initial_report.covered_calls, 0)
     return BulkDynamicAccessProgress(
         final_report,

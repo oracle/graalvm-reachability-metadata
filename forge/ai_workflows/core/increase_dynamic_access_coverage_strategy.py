@@ -11,7 +11,11 @@ from ai_workflows.core.workflow_strategy import (
     WorkflowStrategy,
 )
 from utility_scripts.continuation_marker import PHASE_EXPLORE, PHASE_FIX, save_phase_update
-from utility_scripts.dynamic_access_report import BulkDynamicAccessProgress, DynamicAccessCoverageReport
+from utility_scripts.dynamic_access_report import (
+    BulkDynamicAccessProgress,
+    DynamicAccessCoverageReport,
+    remaining_uncovered_classes,
+)
 from utility_scripts.java_fix_coverage_follow_up import uncovered_dynamic_access_class_count
 from utility_scripts.run_location import RunLocation, STEP_GENERATE_TESTS, record_step_failure
 from utility_scripts.stage_logger import log_detail
@@ -69,7 +73,13 @@ class IncreaseDynamicAccessCoverageStrategy(WorkflowStrategy):
     def _precheck_optimistic_bulk(
             self,
     ) -> tuple[DynamicAccessCoverageReport | None, int | None]:
-        """Return the reusable report and a small-report iterative budget."""
+        """Return the reusable report and a small-report iterative budget.
+
+        The budget is the remainder iterative exploration can still take, on
+        the same basis as the post-bulk boundary: a class an earlier phase
+        already processed is not work either phase can repeat
+        (§AR-dynamic-access-composite).
+        """
         if (
                 self.primary_workflow_name != "bulk_dynamic_access"
                 or self.bulk_min_uncovered_classes <= 0
@@ -81,17 +91,36 @@ class IncreaseDynamicAccessCoverageStrategy(WorkflowStrategy):
             return report, None
 
         uncovered_class_count: int = uncovered_dynamic_access_class_count(report)
+        if uncovered_class_count == 0:
+            self._print_message("skipping bulk dynamic-access primary: no uncovered classes remain")
+            return report, 0
         if uncovered_class_count >= self.bulk_min_uncovered_classes:
+            return report, None
+
+        remaining_class_count: int = len(remaining_uncovered_classes(
+            report,
+            self.primary.processed_dynamic_access_classes(),
+        ))
+        if remaining_class_count == 0:
+            # Bulk is the only phase that still prompts on a class iterative
+            # exploration exhausted, so a fully processed remainder stays with it.
+            self._print_message(
+                "keeping bulk dynamic-access primary: "
+                "uncovered_classes={uncovered} are already processed".format(
+                    uncovered=uncovered_class_count,
+                )
+            )
             return report, None
 
         self._print_message(
             "skipping bulk dynamic-access primary: "
-            "uncovered_classes={uncovered} minimum={minimum}".format(
+            "uncovered_classes={uncovered} remaining={remaining} minimum={minimum}".format(
                 uncovered=uncovered_class_count,
+                remaining=remaining_class_count,
                 minimum=self.bulk_min_uncovered_classes,
             )
         )
-        return report, uncovered_class_count
+        return report, remaining_class_count
 
     def run(self, agent, **kwargs):
         current_report: DynamicAccessCoverageReport | None = None
@@ -112,6 +141,13 @@ class IncreaseDynamicAccessCoverageStrategy(WorkflowStrategy):
             status = RUN_STATUS_SUCCESS
             iterations = 0
         elif small_report_iterative_count is not None:
+            # The skipped primary still owns its phase transition, so the
+            # composite releases the fix phase bulk would have released
+            # (§FS-forge-run-continuation.1).
+            save_phase_update(
+                self.continuation_marker_path,
+                lambda marker: marker.mark_phase_skipped_if_pending(PHASE_FIX),
+            )
             result: tuple[str, int, int] = (RUN_STATUS_SUCCESS, 0, 1)
             status = RUN_STATUS_SUCCESS
             iterations = 0
