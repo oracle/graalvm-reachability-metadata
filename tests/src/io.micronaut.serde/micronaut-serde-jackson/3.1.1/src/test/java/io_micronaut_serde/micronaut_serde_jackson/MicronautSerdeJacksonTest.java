@@ -139,6 +139,35 @@ public class MicronautSerdeJacksonTest {
     }
 
     @Test
+    void readsUnquotedPropertyNamesWhenJacksonReadFeatureIsEnabled() throws Exception {
+        Map<String, Object> properties = Map.of(
+                "micronaut.serde.jackson.json-read-features.ALLOW_UNQUOTED_PROPERTY_NAMES", "true");
+
+        try (ApplicationContext context = ApplicationContext.run(properties)) {
+            ObjectMapper mapper = context.getBean(ObjectMapper.class);
+
+            FeatureMessage message = mapper.readValue(
+                    "{subject:\"Deployment ready\",priority:3}", FeatureMessage.class);
+
+            assertThat(message).isEqualTo(new FeatureMessage("Deployment ready", 3));
+        }
+    }
+
+    @Test
+    void writesUnquotedPropertyNamesWhenJacksonWriteFeatureIsEnabled() throws Exception {
+        Map<String, Object> properties = Map.of(
+                "micronaut.serde.jackson.json-write-features.QUOTE_PROPERTY_NAMES", "false");
+
+        try (ApplicationContext context = ApplicationContext.run(properties)) {
+            ObjectMapper mapper = context.getBean(ObjectMapper.class);
+
+            String json = mapper.writeValueAsString(new FeatureMessage("Deployment ready", 3));
+
+            assertThat(json).isEqualTo("{subject:\"Deployment ready\",priority:3}");
+        }
+    }
+
+    @Test
     void updatesMutableValuesAndMergesAnnotatedMaps() throws Exception {
         UserPreferences preferences = new UserPreferences();
         preferences.setDisplayName("Ada");
@@ -234,6 +263,10 @@ public class MicronautSerdeJacksonTest {
 
     @Serdeable
     public record LineItem(String sku, String description, int quantity) {
+    }
+
+    @Serdeable
+    public record FeatureMessage(String subject, int priority) {
     }
 
     public enum PurchaseStatus {
