@@ -1,0 +1,106 @@
+{
+  "add_new_library_support:2026-09-04": {
+    "timestamp": "2026-09-04T02:15:42.478122Z",
+    "library": "io.micronaut.validation:micronaut-validation:5.1.0",
+    "starting_commit": "275946e8b40c477e07c32948c74f3c2bc210e58c",
+    "ending_commit": "c4edd60c86bfff61e63bb60e533d1e9d92db2f59",
+    "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-sol",
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "status": "success",
+    "stats": {
+      "version": "5.1.0",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 2,
+            "totalCalls": 2
+          }
+        },
+        "coverageRatio": 1.0,
+        "coveredCalls": 2,
+        "totalCalls": 2
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 3453,
+          "missed": 7800,
+          "ratio": 0.306852,
+          "total": 11253
+        },
+        "line": {
+          "covered": 788,
+          "missed": 1669,
+          "ratio": 0.320716,
+          "total": 2457
+        },
+        "method": {
+          "covered": 184,
+          "missed": 452,
+          "ratio": 0.289308,
+          "total": 636
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "advisory_preparation",
+      "issue_number": 9822,
+      "issue_label": "library-new-request",
+      "library": "io.micronaut.validation:micronaut-validation:5.1.0",
+      "summary": "Micronaut Validation requires compile-time processing beyond the scaffold’s runtime dependency.",
+      "deterministic_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "io.micronaut.test:micronaut-test-junit5:5.1.0",
+          "scope": "testImplementation",
+          "reason": "Needed for documented @MicronautTest integration coverage. See the official test setup documentation: https://docs.micronaut.io/5.1.x/test/"
+        }
+      ],
+      "agent_guidance": "Configure testAnnotationProcessor with io.micronaut:micronaut-inject-java:5.1.6 and io.micronaut.validation:micronaut-validation-processor:5.1.0. Exercise @Introspected validation and validated Micronaut bean methods through an injected Validator or @MicronautTest. Leave micronaut.validator.enabled at its default true value; no Docker image or external service is required. The artifact’s transitive runtime dependencies are micronaut-inject, micronaut-core-reactive, jakarta.validation-api, and micronaut-reactor:4.0.0. See https://docs.micronaut.io/5.1.x/validation/ and https://mvnrepository.com/artifact/io.micronaut.validation/micronaut-validation/5.1.0/dependencies",
+      "risks": [
+        "Micronaut 5.1 targets Java 25; local Gradle and Native Image verification must confirm compatibility.",
+        "Micronaut’s implementation does not support XML configuration or the Bean Validation constraint metadata API."
+      ],
+      "applied_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "io.micronaut.test:micronaut-test-junit5:5.1.0",
+          "result": "applied",
+          "target": "tests/src/io.micronaut.validation/micronaut-validation/5.1.0/build.gradle"
+        }
+      ],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#9822 Support for io.micronaut.validation:micronaut-validation:5.1.0; label=library-new-request; body_chars=39"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "gpt-5.6-luna",
+      "input_tokens_used": 1910934,
+      "output_tokens_used": 12877,
+      "prompt_path": "library-preflight-prompt.txt",
+      "raw_response_path": "library-preflight-response.txt",
+      "session_log_path": "/home/mihailo/git/graalvm-reachability-metadata-copy/forge/logs/io.micronaut.validation:micronaut-validation:5.1.0/library-preparation-preflight/codex-session-0dl6ym2w.log"
+    },
+    "metrics": {
+      "input_tokens_used": 82706,
+      "cached_input_tokens_used": 1089152,
+      "output_tokens_used": 10635,
+      "iterations": 1,
+      "cost_usd": 1.2772,
+      "generated_loc": 54,
+      "tested_library_loc": 788,
+      "metadata_entries": 5,
+      "code_coverage_percent": 32.07
+    },
+    "artifacts": {
+      "metadata_file": "metadata/io.micronaut.validation/micronaut-validation/5.1.0/reachability-metadata.json"
+    }
+  }
+}
