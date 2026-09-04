@@ -243,6 +243,23 @@ Bad: a PR diff adding
   tests/src/.../src/test/resources/META-INF/native-image/reflect-config.json
 ```
 
+The single exception is the reporter-requested metadata phase. A need inferred
+from a reported issue is mandatory (§FS-test-contract.1.5), so when the phase has
+written a test that drives the requested access through a public API path and
+`generateMetadata` still does not trace the entry, the entry is written by hand
+into the coordinate's shipped `metadata/<group>/<artifact>/<version>/` files.
+The exception is bounded: only for needs inferred from the issue, only after
+generation has been run and missed them, only with a condition — preferably
+`typeReached` — reached before the access occurs, and never in place of the
+test. Nothing under `src/test/resources/META-INF/native-image` is ever written,
+and no other phase or author may hand-write metadata.
+
+```text
+Good: generateMetadata missed the reporter's entry, so the phase adds it to
+  metadata/org.apache.kafka/kafka-streams/4.3.1/reachability-metadata.json
+  with a typeReached condition, alongside the test that drives it
+```
+
 ### 2.8 No JVM toolchain or compatibility overrides
 
 Tests do not add toolchain, target, or release overrides that move them off the
