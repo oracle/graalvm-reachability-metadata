@@ -16,6 +16,7 @@ import io.micronaut.sourcegen.annotations.Wither;
 import io.micronaut.sourcegen.info.MicronautSourcegenAnnotationsModuleInfo;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -112,6 +113,18 @@ public class Micronaut_sourcegen_annotationsTest {
         assertThat(decorated.priceFor("pear")).isEqualTo("USD 3");
         assertThat(decorated.lookupCount()).isEqualTo(2);
     }
+
+    @Test
+    void singularBuilderClearsAccumulatedElements() {
+        TagCollection tags = TagCollectionBuilder.builder()
+                .tag("draft")
+                .tags(Set.of("internal", "reviewed"))
+                .clearTags()
+                .tag("published")
+                .build();
+
+        assertThat(tags.tags()).containsExactly("published");
+    }
 }
 
 @Builder
@@ -119,6 +132,10 @@ record Purchase(
         String customer,
         @Singular List<String> items,
         @Singular("attribute") Map<String, String> attributes) {
+}
+
+@Builder
+record TagCollection(@Singular Set<String> tags) {
 }
 
 @SuperBuilder
