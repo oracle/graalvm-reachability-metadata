@@ -102,7 +102,7 @@ class BulkDynamicAccessChunkTests(unittest.TestCase):
                 self.assertEqual(primary.saved, expected_chunk_ready)
 
     def test_composite_passes_shortfall_and_gated_report_to_iterative(self) -> None:
-        strategy = self._composite_strategy()
+        strategy = self._composite_strategy(bulk_min_uncovered_classes=5)
         primary = self._FakePrimary(self._progress(10, 90, covered_call_gain=4))
         strategy.primary = primary
         strategy.primary_workflow_name = "bulk_dynamic_access"
@@ -138,6 +138,46 @@ class BulkDynamicAccessChunkTests(unittest.TestCase):
         self.assertEqual(result, (RUN_STATUS_SUCCESS, 5, 1))
         self.assertEqual(captured_context["chunk_class_count"], 5)
         self.assertEqual(captured_context["preceding_dynamic_access_covered_call_gain"], 4)
+        self.assertEqual(captured_reports, [primary.bulk_chunk_progress.final_report])
+        self.assertEqual(primary.run_calls, 1)
+        self.assertIs(primary.initial_report, primary.bulk_chunk_progress.final_report)
+
+    def test_composite_skips_bulk_below_minimum_class_count(self) -> None:
+        strategy = self._composite_strategy(bulk_min_uncovered_classes=5)
+        primary = self._FakePrimary(self._progress(0, 4))
+        strategy.primary = primary
+        captured_context: dict[str, object] = {}
+        captured_reports: list[DynamicAccessCoverageReport] = []
+
+        class FakeDynamicAccess:
+            def __init__(self, strategy_obj: dict, **context: object) -> None:
+                captured_context.update(context)
+                self._last_phase_status = RUN_STATUS_SUCCESS
+
+            def _run_dynamic_access_phase(
+                    self,
+                    agent: object,
+                    report: DynamicAccessCoverageReport,
+            ) -> tuple[bool, int]:
+                captured_reports.append(report)
+                return True, 2
+
+            def has_issue_requested_metadata_context(self) -> bool:
+                return False
+
+        class FakeAgent:
+            def clear_context(self) -> None:
+                pass
+
+        with patch(
+                "ai_workflows.core.increase_dynamic_access_coverage_strategy.DynamicAccessIterativeStrategy",
+                FakeDynamicAccess,
+        ):
+            result = strategy.run(FakeAgent())
+
+        self.assertEqual(result, (RUN_STATUS_SUCCESS, 2, 1))
+        self.assertEqual(primary.run_calls, 0)
+        self.assertEqual(captured_context["chunk_class_count"], 4)
         self.assertEqual(captured_reports, [primary.bulk_chunk_progress.final_report])
 
     def test_composite_fails_when_required_iterative_shortfall_fails(self) -> None:
@@ -201,11 +241,15 @@ class BulkDynamicAccessChunkTests(unittest.TestCase):
         )
 
     @staticmethod
-    def _composite_strategy() -> IncreaseDynamicAccessCoverageStrategy:
+    def _composite_strategy(
+            bulk_min_uncovered_classes: int = 0,
+    ) -> IncreaseDynamicAccessCoverageStrategy:
         strategy = IncreaseDynamicAccessCoverageStrategy(
             {
                 "model": "test-model",
-                "parameters": {},
+                "parameters": {
+                    "bulk-min-uncovered-classes": bulk_min_uncovered_classes,
+                },
                 "prompts": {},
             },
             reachability_repo_path="/tmp/reachability",
@@ -282,8 +326,20 @@ class BulkDynamicAccessChunkTests(unittest.TestCase):
             self.bulk_chunk_progress = progress
             self.saved = False
             self.post_generation_intervention = None
+            self.run_calls = 0
+            self.initial_report: DynamicAccessCoverageReport | None = None
 
-        def run(self, agent: object, **kwargs: object) -> tuple[str, int, int]:
+        def _generate_dynamic_access_report(self) -> DynamicAccessCoverageReport:
+            return self.bulk_chunk_progress.final_report
+
+        def run(
+                self,
+                agent: object,
+                initial_report: DynamicAccessCoverageReport | None = None,
+                **kwargs: object,
+        ) -> tuple[str, int, int]:
+            self.run_calls += 1
+            self.initial_report = initial_report
             return RUN_STATUS_SUCCESS, 3, 1
 
         def save_bulk_chunk_state(self) -> None:
@@ -326,6 +382,20 @@ class BulkDynamicAccessRunTests(unittest.TestCase):
         self.assertIn("[explore]   Test 1/2 passed (1/3)", printed)
         self.assertNotIn("[bulk-da]", printed)
         self.assertNotIn("./gradlew", printed)
+
+    def test_prechecked_report_avoids_duplicate_initial_refresh(self) -> None:
+        strategy, agent = self._runnable_strategy(reports=[self._usable_report()])
+        refresh_report = strategy._generate_dynamic_access_report
+
+        with patch.object(
+                strategy,
+                "_generate_dynamic_access_report",
+                wraps=refresh_report,
+        ) as refresh:
+            status, _, _ = strategy.run(agent, initial_report=self._usable_report())
+
+        self.assertEqual(status, RUN_STATUS_SUCCESS)
+        self.assertEqual(refresh.call_count, 1)
 
     def test_empty_report_bootstraps_through_the_fallback_then_runs_bulk(self) -> None:
         # A report only becomes usable once tests exist; the fallback creates
