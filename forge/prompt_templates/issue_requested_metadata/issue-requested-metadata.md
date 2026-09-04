@@ -20,5 +20,5 @@ Rules (test contract: §root/FS-test-contract):
 - Add or update tests in `{test_language_display_name}` only under the resolved target test source root listed above. §root/FS-test-contract.1.1
 - Update `build.gradle` only if a missing dependency is required to exercise the public API path. §root/FS-test-contract.2.9
 - Do not compile or run tests yourself. The workflow will do that externally. §AR-forge-strategy-agent-boundary
-- Do not edit reachability metadata or Native Image config files directly. The workflow will collect and merge metadata from the tests. §root/FS-test-contract.2.7
-- If the issue omits metadata conditions, make the tests drive a specific public API path so collected metadata can receive narrow conditions, preferably `typeReached`. The condition must be reached before the metadata access occurs; a later or merely related class is not a valid condition. §root/FS-test-contract.3.5
+- Do not edit reachability metadata or Native Image config files in this step. The workflow runs `./gradlew generateMetadata` next and asks you to fill only what tracing missed. §root/FS-test-contract.2.7
+- Make the tests drive a specific public API path so every reporter-requested entry can use the required `typeReached` condition. Choose the narrowest valid type reached before the metadata access occurs; a later or merely related class is not valid, and no other condition kind is permitted. §root/FS-test-contract.2.7
