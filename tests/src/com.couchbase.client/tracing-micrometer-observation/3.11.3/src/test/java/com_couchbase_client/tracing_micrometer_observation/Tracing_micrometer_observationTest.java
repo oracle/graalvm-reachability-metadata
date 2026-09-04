@@ -16,6 +16,7 @@ import io.micrometer.observation.tck.TestObservationRegistryAssert;
 import io.micrometer.observation.transport.Kind;
 import io.micrometer.tracing.Span;
 import io.micrometer.tracing.Tracer;
+import io.micrometer.tracing.handler.DefaultTracingObservationHandler;
 import io.micrometer.tracing.handler.PropagatingSenderTracingObservationHandler;
 import io.micrometer.tracing.propagation.Propagator;
 import io.micrometer.tracing.test.simple.SimpleSpan;
@@ -144,6 +145,31 @@ public class Tracing_micrometer_observationTest {
                 .that()
                 .hasBeenStarted()
                 .hasBeenStopped();
+    }
+
+    @Test
+    void wrapsExistingMicrometerObservationForUseAsSdkParent() {
+        SimpleTracer simpleTracer = new SimpleTracer();
+        TestObservationRegistry registry = TestObservationRegistry.create();
+        registry.observationConfig().observationHandler(new DefaultTracingObservationHandler(simpleTracer));
+        ObservationRequestTracer tracer = ObservationRequestTracer.wrap(registry);
+        Observation parentObservation = Observation.start("application.request", registry);
+        SimpleSpan parentSpan = simpleTracer.lastSpan();
+        ObservationRequestSpan wrappedParent = ObservationRequestSpan.wrap(parentObservation);
+
+        ObservationRequestSpan child =
+                (ObservationRequestSpan) tracer.requestSpan("cb.external-child", wrappedParent);
+        SimpleSpan childSpan = simpleTracer.lastSpan();
+        CouchbaseSenderContext childContext = (CouchbaseSenderContext) child.observation().getContext();
+        child.end();
+        parentObservation.stop();
+
+        assertThat(wrappedParent.observation()).isSameAs(parentObservation);
+        assertThat(childContext.getParentObservation()).isSameAs(parentObservation);
+        assertThat(parentSpan.getName()).isEqualTo("application.request");
+        assertThat(childSpan.getParentId()).isEqualTo(parentSpan.getSpanId());
+        assertThat(childSpan.getTraceId()).isEqualTo(parentSpan.getTraceId());
+        assertThat(simpleTracer.getSpans()).hasSize(2);
     }
 
     @Test
