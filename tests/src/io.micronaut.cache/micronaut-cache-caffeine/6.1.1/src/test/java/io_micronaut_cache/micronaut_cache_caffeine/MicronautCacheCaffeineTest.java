@@ -9,6 +9,7 @@ package io_micronaut_cache.micronaut_cache_caffeine;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.RemovalCause;
 import com.github.benmanes.caffeine.cache.RemovalListener;
+import com.github.benmanes.caffeine.cache.Weigher;
 import io.micronaut.cache.AsyncCache;
 import io.micronaut.cache.CacheInfo;
 import io.micronaut.cache.CacheManager;
@@ -17,6 +18,7 @@ import io.micronaut.cache.caffeine.DefaultSyncCache;
 import io.micronaut.cache.caffeine.configuration.CaffeineCacheConfiguration;
 import io.micronaut.context.ApplicationContext;
 import io.micronaut.core.convert.ConversionService;
+import io.micronaut.inject.qualifiers.Qualifiers;
 import io.micronaut.runtime.ApplicationConfiguration;
 import java.time.Duration;
 import java.util.ArrayList;
@@ -168,6 +170,31 @@ public class MicronautCacheCaffeineTest {
         }
     }
 
+    @Test
+    void namedWeigherControlsCacheAdmissionByValueWeight() {
+        try (ApplicationContext context = ApplicationContext.run()) {
+            RecordingWeigher weigher = new RecordingWeigher();
+            context.registerSingleton(
+                    Weigher.class, weigher, Qualifiers.byName("length-weighted"), false);
+
+            CaffeineCacheConfiguration configuration = new CaffeineCacheConfiguration(
+                    "length-weighted", context.getBean(ApplicationConfiguration.class));
+            configuration.setMaximumWeight(5L);
+            configuration.setTestMode(true);
+
+            DefaultSyncCache cache = new DefaultSyncCache(
+                    configuration, context, context.getBean(ConversionService.class));
+            cache.put("oversized", "123456");
+            cache.getNativeCache().cleanUp();
+            assertThat(cache.get("oversized", String.class)).isEmpty();
+
+            cache.put("accepted", "four");
+            cache.getNativeCache().cleanUp();
+            assertThat(cache.get("accepted", String.class)).contains("four");
+            assertThat(weigher.values()).contains("123456", "four");
+        }
+    }
+
     private static ApplicationContext configuredContext() {
         Map<String, Object> properties = Map.of(
                 "micronaut.caches.catalog.initial-capacity", 2,
@@ -206,6 +233,20 @@ public class MicronautCacheCaffeineTest {
 
         private int invocations() {
             return invocations;
+        }
+    }
+
+    private static final class RecordingWeigher implements Weigher<Object, Object> {
+        private final List<Object> values = new ArrayList<>();
+
+        @Override
+        public int weigh(Object key, Object value) {
+            values.add(value);
+            return value.toString().length();
+        }
+
+        private List<Object> values() {
+            return values;
         }
     }
 
