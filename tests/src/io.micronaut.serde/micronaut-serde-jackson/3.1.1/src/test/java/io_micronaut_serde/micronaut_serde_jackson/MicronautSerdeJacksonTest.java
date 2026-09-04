@@ -11,9 +11,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -31,6 +33,9 @@ import io.micronaut.json.tree.JsonNode;
 import io.micronaut.serde.ObjectMapper;
 import io.micronaut.serde.annotation.Serdeable;
 import org.junit.jupiter.api.Test;
+import org.reactivestreams.Processor;
+import org.reactivestreams.Subscriber;
+import org.reactivestreams.Subscription;
 
 public class MicronautSerdeJacksonTest {
 
@@ -101,6 +106,37 @@ public class MicronautSerdeJacksonTest {
             assertPurchase(mapper.readValueFromTree(tree, purchaseType));
             assertThat(mapper.writeValueAsString(null)).isEqualTo("null");
             assertThat(mapper.readValue("null", Purchase.class)).isNull();
+        }
+    }
+
+    @Test
+    void parsesChunkedJsonArrayAsReactiveElementStream() {
+        ParserConsumer parserConsumer = new ParserConsumer();
+        RecordingJsonNodeSubscriber subscriber = new RecordingJsonNodeSubscriber();
+
+        try (ApplicationContext context = ApplicationContext.run()) {
+            JsonMapper mapper = context.getBean(ObjectMapper.class);
+            Processor<byte[], JsonNode> parser = mapper.createReactiveParser(parserConsumer, true);
+            InputSubscription inputSubscription = new InputSubscription();
+            parser.subscribe(subscriber);
+            parser.onSubscribe(inputSubscription);
+
+            parser.onNext("[{\"subject\":\"Deployment".getBytes(StandardCharsets.UTF_8));
+            parser.onNext((" ready\",\"priority\":3},"
+                    + "{\"subject\":\"Rollback complete\",\"priority\":1}]")
+                    .getBytes(StandardCharsets.UTF_8));
+            parser.onComplete();
+
+            assertThat(parserConsumer.parser).isSameAs(parser);
+            assertThat(inputSubscription.requested).isGreaterThanOrEqualTo(2);
+            assertThat(inputSubscription.cancelled).isFalse();
+            assertThat(subscriber.failure).isNull();
+            assertThat(subscriber.completed).isTrue();
+            assertThat(subscriber.values).hasSize(2);
+            assertThat(subscriber.values.get(0).get("subject").getStringValue()).isEqualTo("Deployment ready");
+            assertThat(subscriber.values.get(0).get("priority").getIntValue()).isEqualTo(3);
+            assertThat(subscriber.values.get(1).get("subject").getStringValue()).isEqualTo("Rollback complete");
+            assertThat(subscriber.values.get(1).get("priority").getIntValue()).isEqualTo(1);
         }
     }
 
@@ -197,6 +233,59 @@ public class MicronautSerdeJacksonTest {
                     "language", "en",
                     "theme", "light",
                     "density", "compact"));
+        }
+    }
+
+    private static final class ParserConsumer implements Consumer<Processor<byte[], JsonNode>> {
+
+        private Processor<byte[], JsonNode> parser;
+
+        @Override
+        public void accept(Processor<byte[], JsonNode> parser) {
+            this.parser = parser;
+        }
+    }
+
+    private static final class RecordingJsonNodeSubscriber implements Subscriber<JsonNode> {
+
+        private final List<JsonNode> values = new ArrayList<>();
+        private Throwable failure;
+        private boolean completed;
+
+        @Override
+        public void onSubscribe(Subscription subscription) {
+            subscription.request(2);
+        }
+
+        @Override
+        public void onNext(JsonNode value) {
+            values.add(value);
+        }
+
+        @Override
+        public void onError(Throwable failure) {
+            this.failure = failure;
+        }
+
+        @Override
+        public void onComplete() {
+            completed = true;
+        }
+    }
+
+    private static final class InputSubscription implements Subscription {
+
+        private long requested;
+        private boolean cancelled;
+
+        @Override
+        public void request(long count) {
+            requested += count;
+        }
+
+        @Override
+        public void cancel() {
+            cancelled = true;
         }
     }
 
