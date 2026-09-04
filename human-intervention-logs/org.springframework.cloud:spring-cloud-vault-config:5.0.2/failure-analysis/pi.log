@@ -1,0 +1,16 @@
+## Human intervention needed
+
+The automated job for `org.springframework.cloud:spring-cloud-vault-config:5.0.2` failed. Preserved work is available at https://github.com/oracle/graalvm-reachability-metadata/tree/ai%2Fkimeta%2Fhuman-intervention%2Fissue-9705-library-new-request-org.springframework.cloud-spring-cloud-vault-config-5.0.2-7d9f6f62.
+
+The likely failing stage is test generation/exploration (`generate_tests()`), not Gradle or Native Image execution. After five iterations, dynamic-access coverage remained at 1/2 (50%): `VaultConfigDataLoader.java:415` is covered, while the instance logger replacement at line 424 remains uncovered. The generation log reports that normal `SessionManager` implementations either have no `Log` field or only final fields, so the call was recorded as exhausted. Meanwhile, the generated Vault integration test passes on both JVM and Native Image.
+
+Please inspect:
+- `logs/org.springframework.cloud:spring-cloud-vault-config:5.0.2/add-new-library-support/pi-generation-2026-09-04T09-55-58-803053Z.log`
+- `logs/org.springframework.cloud:spring-cloud-vault-config:5.0.2/gradle/generateDynamicAccessCoverageReport-2026-09-04T11-26-18-245185Z.log`
+- `logs/org.springframework.cloud:spring-cloud-vault-config:5.0.2/gradle-test/gradle-test-2026-09-04T11-24-56-410107Z.log`
+- `logs/org.springframework.cloud:spring-cloud-vault-config:5.0.2/native-test-verify/cycle-0-finalizedTest-2026-09-04T11-18-04-001995Z.log`
+
+Manual next steps:
+1. Review the generated Vault test, metadata, and `dynamic-access-exhaust-report.json` on the preserved branch.
+2. Confirm whether line 424 is unreachable through supported production `SessionManager` implementations; if so, approve the exhaustion/coverage exception, otherwise add a realistic path that reaches it.
+3. Re-run the coordinate’s `test` and `generateDynamicAccessCoverageReport` tasks after resolving the coverage decision, then complete finalization.
