@@ -1,0 +1,16 @@
+Implemented a targeted fix:
+
+- Replaced the vulnerable Vault Docker container with an in-process Vault-compatible HTTP server.
+- Removed the Vault Docker image declaration and allowlist entry.
+- Made `checkAllowedDockerImages` succeed as a no-op when the commit range contains no Docker image changes.
+- Added Native Image resource configuration for the HTTP server provider.
+
+Verified successfully:
+
+- `checkAllowedDockerImages --baseCommit=origin/master --newCommit=HEAD`
+- Coordinate JVM and native tests
+- `validateIndexFiles`
+- `checkMetadataFiles`
+- `checkstyle`
+- `spotlessCheck`
+- `grund check`

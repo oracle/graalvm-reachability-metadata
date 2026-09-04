@@ -1,0 +1,35 @@
+{
+  "action": "advisory_preparation",
+  "summary": "Meaningful coverage requires a Spring Boot context backed by a running Vault service.",
+  "deterministic_setup": [
+    {
+      "kind": "dependency",
+      "coordinate": "org.springframework.boot:spring-boot-autoconfigure:4.0.7",
+      "scope": "testImplementation",
+      "reason": "The artifact’s Spring Boot integration dependencies are optional and are absent from the normal scaffold."
+    },
+    {
+      "kind": "dependency",
+      "coordinate": "org.springframework.boot:spring-boot-test:4.0.7",
+      "scope": "testImplementation",
+      "reason": "Provides Spring Boot test infrastructure for exercising auto-configuration and ConfigData loading."
+    },
+    {
+      "kind": "dependency",
+      "coordinate": "org.testcontainers:testcontainers-vault:2.0.5",
+      "scope": "testImplementation",
+      "reason": "Provides the VaultContainer integration needed for isolated integration coverage."
+    },
+    {
+      "kind": "docker_image",
+      "image": "hashicorp/vault:1.20.4",
+      "slug": "hashicorp_vault",
+      "reason": "Spring Cloud Vault requires a running Vault server; this pinned official image supports deterministic local integration tests."
+    }
+  ],
+  "agent_guidance": "Use VaultContainer with a fixed root authentication value and initialize a KV entry before creating the Spring context. Configure spring.config.import=vault:// plus the container-derived Vault URI and authentication setting before bootstrap/config-data resolution. Prefer development mode over HTTP to avoid certificate setup; exercise KV-backed property loading and auto-configuration.",
+  "risks": [
+    "Dynamic container ports must be configured before Spring ConfigData resolution.",
+    "Native Image verification may require additional generated reachability metadata for Spring Boot and Testcontainers."
+  ]
+}
