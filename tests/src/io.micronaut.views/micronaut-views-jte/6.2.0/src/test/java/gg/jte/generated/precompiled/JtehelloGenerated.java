@@ -65,6 +65,20 @@ public class JtehelloGenerated {
 
     @Test
     @SuppressWarnings("unchecked")
+    void htmlRendererSupportsRenderingWithoutAModel() throws Exception {
+        try (ApplicationContext context = ApplicationContext.run()) {
+            HtmlJteViewsRenderer<Object> renderer =
+                    context.getBean(HtmlJteViewsRenderer.class);
+            StringWriter output = new StringWriter();
+
+            renderer.render("hello", null, null).writeTo(output);
+
+            assertThat(output.toString()).isEqualTo("<h1>Hello </h1>");
+        }
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
     void plainRendererWritesPrecompiledHtmlTemplateAsUtf8Text() throws Exception {
         try (ApplicationContext context = ApplicationContext.run()) {
             PlainJteViewsRenderer<Map<String, Object>> renderer =
