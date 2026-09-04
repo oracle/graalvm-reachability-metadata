@@ -26,6 +26,8 @@ import org.junit.jupiter.api.Test;
 public class JtehelloGenerated {
     public static final String JTE_NAME = "hello.jte";
     public static final int[] JTE_LINE_INFO = {0};
+    private static final byte[] BINARY_GREETING =
+            "<h1>Hello from binary content</h1>".getBytes(StandardCharsets.UTF_8);
 
     public static void render(
             HtmlTemplateOutput output, HtmlInterceptor interceptor, String name) {
@@ -38,6 +40,10 @@ public class JtehelloGenerated {
             HtmlTemplateOutput output,
             HtmlInterceptor interceptor,
             Map<String, Object> parameters) {
+        if (Boolean.TRUE.equals(parameters.get("binary"))) {
+            output.writeBinaryContent(BINARY_GREETING);
+            return;
+        }
         render(output, interceptor, (String) parameters.get("name"));
     }
 
@@ -90,6 +96,21 @@ public class JtehelloGenerated {
 
             assertThat(output.toString(StandardCharsets.UTF_8))
                     .isEqualTo("<h1>Hello <Micronaut></h1>");
+        }
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    void plainRendererPreservesPrecompiledBinaryContent() throws Exception {
+        try (ApplicationContext context = ApplicationContext.run()) {
+            PlainJteViewsRenderer<Map<String, Object>> renderer =
+                    context.getBean(PlainJteViewsRenderer.class);
+            ByteArrayOutputStream output = new ByteArrayOutputStream();
+
+            renderer.render("hello", Map.of("binary", true), null)
+                    .writeTo(output, StandardCharsets.UTF_8);
+
+            assertThat(output.toByteArray()).isEqualTo(BINARY_GREETING);
         }
     }
 
