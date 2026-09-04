@@ -1,0 +1,133 @@
+{
+  "base_commit": "2ba6a901ed198ff722255671d586c92a1386634c",
+  "branch": "ai/kimeta/add-lib-support-com.couchbase.client-tracing-micrometer-observation-3.11.3-forge-9701-20260904074610428344-413e2f5573b4",
+  "follow_ups": [],
+  "forge": {
+    "branch": "master",
+    "commit": "ba58523c3fea9aa544577abc3ac4bda0c3bba5ba",
+    "monitored_branch": "origin/master"
+  },
+  "issue_number": 9701,
+  "library": {
+    "artifact": "tracing-micrometer-observation",
+    "coordinates": "com.couchbase.client:tracing-micrometer-observation:3.11.3",
+    "group": "com.couchbase.client",
+    "version": "3.11.3"
+  },
+  "local_ci_verification": {
+    "base_commit": "2ba6a901ed198ff722255671d586c92a1386634c",
+    "commands": [
+      {
+        "command": [
+          "./gradlew",
+          "generateChangedIndexFileCoordinatesList",
+          "-PbaseCommit=origin/master",
+          "-PnewCommit=HEAD"
+        ],
+        "env": {
+          "GITHUB_OUTPUT": "/tmp/tmp0ikgryv0"
+        },
+        "gate": "changed-index-coordinates",
+        "log_path": "logs/changed-index-coordinates/local-ci/gradlew-2026-09-04T07-46-16-945719Z.log",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :generateChangedIndexFileCoordinatesList\n\n[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata-copy/forge/local_repositories/forge_worktrees/9701-ce5d1766/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 2s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      },
+      {
+        "command": [
+          "./gradlew",
+          "validateIndexFiles",
+          "-Pcoordinates=com.couchbase.client:tracing-micrometer-observation"
+        ],
+        "env": {},
+        "gate": "index-file-validation",
+        "log_path": "logs/index-file-validation/local-ci/gradlew-2026-09-04T07-46-19-828618Z.log",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :validateIndexFiles\n✅ metadata/com.couchbase.client/tracing-micrometer-observation/index.json: Valid\n\n[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata-copy/forge/local_repositories/forge_worktrees/9701-ce5d1766/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 1s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      }
+    ],
+    "failure_command": null,
+    "failure_gate": null,
+    "final_commit": "debba74f993400f93561c85f8fd4590db3521da5",
+    "fixups": [],
+    "human_intervention_required": false,
+    "repo_fix_paths": [],
+    "status": "success"
+  },
+  "local_review": {
+    "changed_paths": [],
+    "decision": "approved",
+    "failed_step": null,
+    "finding_body": "",
+    "finding_title": "",
+    "fix_note": "",
+    "model": "gpt-5.6-sol",
+    "published_tree": "verified",
+    "repair_reverted": false,
+    "review_comment": "Reviewed the specified commit range and local evidence against every relevant enumerated library-new-request rule. The diff is scoped to one coordinate and its allowed metadata, stats, and test paths; only reachability-metadata.json metadata files are present. The public, version-agnostic test exercises the target library from a separate test package, is not scaffold-only, does not bypass visibility or use reflection/stubs, and does not skip or tolerate Native Image failures. Reported dynamic access is 0/0, which is a valid no-calls case, so the percentage and entry-count mismatch gates do not apply. The recorded run and local index gates succeeded. I did not inspect individual metadata entries, as required. No blocking violation was found.",
+    "session_log_path": "logs/com.couchbase.client:tracing-micrometer-observation:3.11.3/local-branch-review/pi.log",
+    "status": "completed"
+  },
+  "metrics": {
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "path": "stats/com.couchbase.client/tracing-micrometer-observation/3.11.3/execution-metrics.json",
+    "summary": {
+      "cached_input_tokens_used": 3111936,
+      "code_coverage_percent": 92.59,
+      "cost_usd": 3.8248,
+      "generated_loc": 197,
+      "input_tokens_used": 274375,
+      "iterations": 5,
+      "metadata_entries": 0,
+      "output_tokens_used": 29896,
+      "test_only_metadata_entries": 1,
+      "tested_library_loc": 50
+    },
+    "timestamp": "2026-09-04T07:46:10.428344Z"
+  },
+  "modifiers": {
+    "chunk_final": true,
+    "chunked_dynamic_access": false,
+    "human_intervention": false
+  },
+  "producer": "kimeta",
+  "publication_id": "forge-9701-20260904074610428344-413e2f5573b4",
+  "render": {
+    "dynamic_access": null,
+    "dynamic_access_evidence": null,
+    "library_stats": {
+      "dynamicAccess": {
+        "breakdown": {},
+        "coverageRatio": 1.0,
+        "coveredCalls": 0,
+        "totalCalls": 0
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 162,
+          "missed": 15,
+          "ratio": 0.915254,
+          "total": 177
+        },
+        "line": {
+          "covered": 50,
+          "missed": 4,
+          "ratio": 0.925926,
+          "total": 54
+        },
+        "method": {
+          "covered": 25,
+          "missed": 1,
+          "ratio": 0.961538,
+          "total": 26
+        }
+      },
+      "version": "3.11.3"
+    }
+  },
+  "schema_version": 1,
+  "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-sol",
+  "task_type": "library-new-request",
+  "template_type": "library-new-request",
+  "timestamp": "2026-09-04T07:46:10.428344Z"
+}
