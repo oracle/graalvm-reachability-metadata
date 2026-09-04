@@ -69,6 +69,7 @@ public class VaultConfigDataLoaderTest {
                     SessionManager sessionManager = bootstrapContext.get(SessionManager.class);
 
                     assertThat(sessionManager).isInstanceOf(LifecycleAwareSessionManager.class);
+                    assertThat(sessionManager.getSessionToken().getToken()).isEqualTo(ROOT_TOKEN);
                     assertThat(configData.getPropertySources()).hasSize(1);
                     assertThat(propertySource.getProperty("message")).isEqualTo("loaded-from-vault");
                     assertThat(propertySource.getProperty("environment")).isEqualTo("integration-test");
