@@ -249,10 +249,11 @@ written a test that drives the requested access through a public API path and
 `generateMetadata` still does not trace the entry, the entry is written by hand
 into the coordinate's shipped `metadata/<group>/<artifact>/<version>/` files.
 The exception is bounded: only for needs inferred from the issue, only after
-generation has been run and missed them, only with a condition — preferably
-`typeReached` — reached before the access occurs, and never in place of the
-test. Nothing under `src/test/resources/META-INF/native-image` is ever written,
-and no other phase or author may hand-write metadata.
+generation has been run and missed them, and never in place of the test. Every
+hand-written entry must have a `typeReached` condition naming a type reached
+before the access occurs; no other condition kind is permitted. Nothing under
+`src/test/resources/META-INF/native-image` is ever written, and no other phase
+or author may hand-write metadata.
 
 ```text
 Good: generateMetadata missed the reporter's entry, so the phase adds it to
