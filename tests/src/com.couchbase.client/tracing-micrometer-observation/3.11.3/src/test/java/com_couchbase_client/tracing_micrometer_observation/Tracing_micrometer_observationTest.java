@@ -147,6 +147,26 @@ public class Tracing_micrometer_observationTest {
     }
 
     @Test
+    void observationPredicateCanDisableSelectedCouchbaseOperations() {
+        SimpleTracer simpleTracer = new SimpleTracer();
+        TestObservationRegistry registry = tracingRegistry(simpleTracer);
+        registry.observationConfig().observationPredicate((name, context) ->
+                !(context instanceof CouchbaseSenderContext
+                        && ((CouchbaseSenderContext) context)
+                                .getOperationName()
+                                .equals("cb.suppressed")));
+        ObservationRequestTracer tracer = ObservationRequestTracer.wrap(registry);
+
+        ObservationRequestSpan requestSpan =
+                (ObservationRequestSpan) tracer.requestSpan("cb.suppressed", null);
+
+        assertThat(requestSpan.observation().isNoop()).isTrue();
+        requestSpan.end();
+        TestObservationRegistryAssert.assertThat(registry).doesNotHaveAnyObservation();
+        assertThat(simpleTracer.getSpans()).isEmpty();
+    }
+
+    @Test
     void tracerLifecycleCompletesWithoutEndingAnActiveRequestSpan() {
         SimpleTracer simpleTracer = new SimpleTracer();
         TestObservationRegistry registry = tracingRegistry(simpleTracer);
