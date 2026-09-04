@@ -191,8 +191,11 @@ deterministic post-generation merge.
 **Every driver carries it.** Routing decides which repair a reported issue
 needs; it does not decide whether the reporter's own request is attempted. The
 dispatcher forwards the issue body to every workflow driver, and each driver
-runs the phase before finalization, so no run closes a reported request without
-having tried it. The phase runs on the **analysis role**
+runs the phase after its workflow strategy succeeds and before finalization, so
+the reporter's additions are attempted only on a valid workflow result and are
+still covered by every final gate. Composite workflow engines do not run the
+phase themselves. No run closes a reported request without having tried it. The
+phase runs on the **analysis role**
 (§FS-forge-agent-runtime-selection), not on the strategy's own agent field, and
 carries its own prompts — a strategy that never declared them still gets the
 request attempted.
@@ -210,7 +213,9 @@ The agent writes the tests, the engine runs `generateMetadata` — the engine ow
 every Gradle command (§AR-forge-strategy-agent-boundary) — and only then is the
 agent asked to hand-write the requested entries tracing missed, under the narrow
 exception in §root/FS-test-contract.2.7. The hand-written entry supplements the
-test; it never replaces it.
+test; it never replaces it. A failed generation returns to test repair without
+running the fill step. Any test repair starts the cycle again at generation, so
+every fill decision is based on a successful trace of the current tests.
 
 Each inferred need is mandatory even when coverage is already complete or the
 need is unrelated to any uncovered class. Forge does not parse issue text with

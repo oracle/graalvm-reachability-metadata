@@ -50,7 +50,12 @@ class IssueRequestedMetadataTests(unittest.TestCase):
 class _RecordingStrategy(DynamicAccessIterativeStrategy):
     """Strategy stub that records the commands and prompts the phase produces."""
 
-    def __init__(self, test_outputs: list[str], **context) -> None:
+    def __init__(
+            self,
+            test_outputs: list[str],
+            generate_outputs: list[str] | None = None,
+            **context,
+    ) -> None:
         super().__init__(
             {
                 "model": "test-model",
@@ -65,13 +70,14 @@ class _RecordingStrategy(DynamicAccessIterativeStrategy):
         )
         self.commands: list[str] = []
         self.committed: list[str] = []
-        self._test_outputs = list(test_outputs)
+        self._test_outputs: list[str] = list(test_outputs)
+        self._generate_outputs: list[str] = list(generate_outputs or ["BUILD SUCCESSFUL"])
 
     def _run_command_with_env(self, cmd: str, env: dict | None = None) -> str:
         self.commands.append(cmd)
         if cmd.startswith("./gradlew test "):
             return self._test_outputs.pop(0)
-        return "BUILD SUCCESSFUL"
+        return self._generate_outputs.pop(0)
 
     def _commit_issue_requested_metadata(self, message: str) -> None:
         self.committed.append(message)
@@ -154,15 +160,79 @@ class IssueRequestedMetadataPhaseTests(unittest.TestCase):
         self.assertEqual(iterations, 1)
         self.assertEqual(strategy.commands, [])
 
-    def test_ensure_runs_the_phase_only_once(self) -> None:
+    def test_generation_must_succeed_before_fill(self) -> None:
         strategy = _RecordingStrategy(
-            ["BUILD SUCCESSFUL"],
+            [],
+            generate_outputs=[
+                "> Task :compileTestJava FAILED"
+            ] * ISSUE_REQUESTED_METADATA_TEST_ITERATIONS,
             issue_requested_metadata_context=self.REPORTER_CONTEXT,
         )
 
-        self._run_phase(strategy)
-        self.assertEqual(strategy.ensure_issue_requested_metadata_phase(), (True, 0))
-        self.assertEqual(strategy.commands.count("./gradlew test -Pcoordinates=org.example:lib:1.0.0"), 1)
+        (phase_ok, iterations), prompts = self._run_phase(strategy)
+
+        self.assertFalse(phase_ok)
+        self.assertEqual(iterations, 3)
+        self.assertEqual(
+            strategy.commands,
+            [
+                "./gradlew generateMetadata -Pcoordinates=org.example:lib:1.0.0"
+            ] * ISSUE_REQUESTED_METADATA_TEST_ITERATIONS,
+        )
+        self.assertNotIn(ISSUE_REQUESTED_METADATA_FILL_PROMPT_KEY, prompts)
+        self.assertEqual(strategy.committed, [])
+
+    def test_generation_retries_after_test_repair_before_fill(self) -> None:
+        strategy = _RecordingStrategy(
+            ["BUILD SUCCESSFUL"],
+            generate_outputs=[
+                "> Task :compileTestJava FAILED",
+                "BUILD SUCCESSFUL",
+            ],
+            issue_requested_metadata_context=self.REPORTER_CONTEXT,
+        )
+
+        (phase_ok, iterations), prompts = self._run_phase(strategy)
+
+        self.assertTrue(phase_ok)
+        self.assertEqual(iterations, 3)
+        self.assertEqual(prompts[0], ISSUE_REQUESTED_METADATA_PROMPT_KEY)
+        self.assertTrue(prompts[1].startswith(ISSUE_REQUESTED_METADATA_PROMPT_KEY))
+        self.assertIn("generateMetadata", prompts[1])
+        self.assertEqual(prompts[2], ISSUE_REQUESTED_METADATA_FILL_PROMPT_KEY)
+        self.assertEqual(
+            strategy.commands,
+            [
+                "./gradlew generateMetadata -Pcoordinates=org.example:lib:1.0.0",
+                "./gradlew generateMetadata -Pcoordinates=org.example:lib:1.0.0",
+                "./gradlew test -Pcoordinates=org.example:lib:1.0.0",
+            ],
+        )
+
+    def test_test_failure_retries_only_the_fill_prompt(self) -> None:
+        strategy = _RecordingStrategy(
+            ["> Task :nativeTest FAILED", "BUILD SUCCESSFUL"],
+            issue_requested_metadata_context=self.REPORTER_CONTEXT,
+        )
+
+        (phase_ok, iterations), prompts = self._run_phase(strategy)
+
+        self.assertTrue(phase_ok)
+        self.assertEqual(iterations, 3)
+        self.assertEqual(prompts[:2], [
+            ISSUE_REQUESTED_METADATA_PROMPT_KEY,
+            ISSUE_REQUESTED_METADATA_FILL_PROMPT_KEY,
+        ])
+        self.assertTrue(prompts[2].startswith(ISSUE_REQUESTED_METADATA_FILL_PROMPT_KEY))
+        self.assertIn("./gradlew test", prompts[2])
+        self.assertEqual(
+            strategy.commands,
+            [
+                "./gradlew generateMetadata -Pcoordinates=org.example:lib:1.0.0",
+                "./gradlew test -Pcoordinates=org.example:lib:1.0.0",
+                "./gradlew test -Pcoordinates=org.example:lib:1.0.0",
+            ],
+        )
 
     def test_prompt_templates_render_for_the_phase(self) -> None:
         strategy = _RecordingStrategy(

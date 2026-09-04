@@ -439,7 +439,7 @@ class DynamicAccessProgressLoggingTests(unittest.TestCase):
         ):
             self.assertEqual(strategy.run(agent=object()), (RUN_STATUS_CHUNK_READY, 3))
 
-    def test_increase_coverage_strategy_runs_issue_requested_phase_after_dynamic_access(self) -> None:
+    def test_increase_coverage_strategy_does_not_run_issue_requested_phase(self) -> None:
         calls: list[str] = []
 
         class ReporterRequestedDynamicAccess:
@@ -449,10 +449,6 @@ class DynamicAccessProgressLoggingTests(unittest.TestCase):
             def _run_dynamic_access_phase(self, agent) -> tuple[bool, int]:
                 calls.append("dynamic-access")
                 return False, 0
-
-        def run_reporter_phase() -> tuple[bool, int]:
-            calls.append("issue-requested")
-            return True, 1
 
         strategy = IncreaseDynamicAccessCoverageStrategy(
             {
@@ -471,11 +467,11 @@ class DynamicAccessProgressLoggingTests(unittest.TestCase):
         ), patch.object(
                 strategy,
                 "run_issue_requested_metadata_phase",
-                side_effect=run_reporter_phase,
-        ):
-            self.assertEqual(strategy.run(agent=object()), (RUN_STATUS_SUCCESS, 1))
+        ) as reporter_phase:
+            self.assertEqual(strategy.run(agent=object()), (RUN_STATUS_FAILURE, 0))
 
-        self.assertEqual(calls, ["dynamic-access", "issue-requested"])
+        self.assertEqual(calls, ["dynamic-access"])
+        reporter_phase.assert_not_called()
 
     def test_increase_coverage_strategy_fails_when_no_primary_dynamic_access_or_issue_work_succeeds(self) -> None:
         class NoProgressDynamicAccess:

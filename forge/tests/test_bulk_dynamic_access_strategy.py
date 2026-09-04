@@ -121,8 +121,11 @@ class BulkDynamicAccessChunkTests(unittest.TestCase):
         for has_reporter_context in (False, True):
             with self.subTest(has_reporter_context=has_reporter_context):
                 strategy = self._composite_strategy()
+                if has_reporter_context:
+                    strategy.context["issue_requested_metadata_context"] = (
+                        "Reporter-provided missing metadata context"
+                    )
                 strategy.primary = self._FakePrimary(self._progress(10, 90))
-                reporter_phase_calls: list[bool] = []
 
                 class FailingDynamicAccess:
                     def __init__(self, strategy_obj: dict, **context: object) -> None:
@@ -139,28 +142,18 @@ class BulkDynamicAccessChunkTests(unittest.TestCase):
                     def clear_context(self) -> None:
                         pass
 
-                def run_reporter_phase() -> tuple[bool, int]:
-                    reporter_phase_calls.append(True)
-                    return True, 1
-
                 with patch(
                         "ai_workflows.core.increase_dynamic_access_coverage_strategy."
                         "DynamicAccessIterativeStrategy",
                         FailingDynamicAccess,
                 ), patch.object(
                         strategy,
-                        "has_issue_requested_metadata_context",
-                        return_value=has_reporter_context,
-                ), patch.object(
-                        strategy,
                         "run_issue_requested_metadata_phase",
-                        side_effect=run_reporter_phase,
-                ):
+                ) as reporter_phase:
                     result = strategy.run(FakeAgent())
 
-                expected_iterations = 4 if has_reporter_context else 3
-                self.assertEqual(result, (RUN_STATUS_FAILURE, expected_iterations, 1))
-                self.assertEqual(reporter_phase_calls, [True] if has_reporter_context else [])
+                self.assertEqual(result, (RUN_STATUS_FAILURE, 3, 1))
+                reporter_phase.assert_not_called()
 
     @staticmethod
     def _bulk_strategy(**context: object) -> BulkDynamicAccessStrategy:

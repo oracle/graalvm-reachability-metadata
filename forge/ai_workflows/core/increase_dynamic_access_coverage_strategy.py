@@ -151,16 +151,15 @@ class IncreaseDynamicAccessCoverageStrategy(WorkflowStrategy):
             )
         )
 
-        has_issue_requested_metadata = self.has_issue_requested_metadata_context()
         if not phase_ok:
             if required_iterative_chunk_phase:
                 self._print_message(
                     "required iterative dynamic-access chunk phase did not succeed"
                 )
                 status = RUN_STATUS_FAILURE
-            elif self.primary is None and not has_issue_requested_metadata:
+            elif self.primary is None:
                 self._print_message(
-                    "dynamic-access coverage phase did not succeed and no reporter-requested metadata phase is available"
+                    "dynamic-access coverage phase did not succeed"
                 )
                 status = RUN_STATUS_FAILURE
             else:
@@ -177,45 +176,6 @@ class IncreaseDynamicAccessCoverageStrategy(WorkflowStrategy):
             if len(result) == 2:
                 return status, iterations
             return (status, iterations) + result[2:]
-
-        if has_issue_requested_metadata:
-            self._print_message("starting reporter-requested metadata phase")
-            save_phase_update(
-                self.continuation_marker_path,
-                lambda marker: marker.mark_phase_running(PHASE_EXPLORE),
-            )
-            issue_phase_ok, issue_iterations = self.run_issue_requested_metadata_phase()
-            iterations += issue_iterations
-            self._print_message(
-                "reporter-requested metadata phase completed with phase_ok={phase_ok}, iterations_added={iterations}"
-                .format(
-                    phase_ok=issue_phase_ok,
-                    iterations=issue_iterations,
-                )
-            )
-            if not issue_phase_ok:
-                status = RUN_STATUS_FAILURE
-                save_phase_update(
-                    self.continuation_marker_path,
-                    lambda marker: marker.mark_phase_pending(PHASE_EXPLORE, iteration=iterations),
-                )
-                if self.primary is None:
-                    return status, iterations
-                if len(result) == 2:
-                    return status, iterations
-                return (status, iterations) + result[2:]
-            if status not in {RUN_STATUS_CHUNK_READY, RUN_STATUS_FAILURE}:
-                status = RUN_STATUS_SUCCESS
-            if status == RUN_STATUS_FAILURE:
-                save_phase_update(
-                    self.continuation_marker_path,
-                    lambda marker: marker.mark_phase_pending(PHASE_EXPLORE, iteration=iterations),
-                )
-            else:
-                save_phase_update(
-                    self.continuation_marker_path,
-                    lambda marker: marker.mark_phase_completed(PHASE_EXPLORE, iteration=iterations),
-                )
 
         if self.primary is None:
             return status, iterations

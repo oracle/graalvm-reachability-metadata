@@ -15,6 +15,7 @@ import ai_workflows.agents  # noqa: F401 - triggers agent registration
 import ai_workflows.core  # noqa: F401 - triggers strategy registration
 from ai_workflows.agents import Agent
 from ai_workflows.core.workflow_strategy import (
+    RUN_STATUS_FAILURE,
     RUN_STATUS_SUCCESS,
     SUCCESS_WITH_INTERVENTION_STATUS,
     WorkflowStrategy,
@@ -560,12 +561,14 @@ def main(argv=None) -> int:
 
     # No driver closes a reported request without attempting it.
     # §forge/AR-forge-driver-queues.2.1
-    issue_phase_ok, issue_phase_iterations = strategy_obj.ensure_issue_requested_metadata_phase()
+    issue_phase_ok, issue_phase_iterations = strategy_obj.run_issue_requested_metadata_phase()
     iterations += issue_phase_iterations
-    if not issue_phase_ok:
+    if issue_phase_ok:
+        finalize_status = strategy_obj.finalize_run(checkpoint)
+    else:
         log_stage("explore", "Reporter-requested metadata phase did not succeed")
+        finalize_status = RUN_STATUS_FAILURE
 
-    finalize_status = strategy_obj.finalize_run(checkpoint)
     succeeded = finalize_status in {RUN_STATUS_SUCCESS, SUCCESS_WITH_INTERVENTION_STATUS}
 
     if succeeded:

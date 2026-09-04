@@ -184,7 +184,6 @@ class WorkflowStrategy(ABC):
         )
         self.persistent_instructions = load_persistent_instructions(self.strategy_obj, **self.context)
         self.post_generation_intervention: dict | None = None
-        self._issue_requested_metadata_phase_ran = False
         self.continuation_marker_path: str | None = self.context.get("continuation_marker_path")
         self.continuation_marker = load_continuation_marker(self.continuation_marker_path)
         self._validate_required_prompts()
@@ -857,17 +856,6 @@ class WorkflowStrategy(ABC):
         """Return whether this run carries reporter-requested metadata to cover."""
         return has_reporter_metadata_context(self.context.get("issue_requested_metadata_context"))
 
-    def ensure_issue_requested_metadata_phase(self) -> tuple[bool, int]:
-        """Run the reporter-requested metadata phase unless it already ran.
-
-        The driver-facing guarantee behind §forge/AR-forge-driver-queues.2.1: whichever
-        workflow engine a routed issue lands on, no run reaches finalization
-        without having attempted the reporter's request.
-        """
-        if self._issue_requested_metadata_phase_ran:
-            return True, 0
-        return self.run_issue_requested_metadata_phase()
-
     def run_issue_requested_metadata_phase(self) -> tuple[bool, int]:
         """Cover reporter-requested metadata, independent of dynamic access.
 
@@ -879,7 +867,6 @@ class WorkflowStrategy(ABC):
         """
         if not self.has_issue_requested_metadata_context():
             return True, 0
-        self._issue_requested_metadata_phase_ran = True
 
         checkpoint = self._current_head_commit()
         iterations = 0
@@ -893,20 +880,73 @@ class WorkflowStrategy(ABC):
                 )
             # The engine owns every Gradle command; the agent only edits.
             # §forge/AR-forge-strategy-agent-boundary
-            generate_output = self._run_command_with_env(
-                f"./gradlew generateMetadata -Pcoordinates={self.library}"
-            )
-            self._print_issue_requested_metadata_message(
-                "generateMetadata: complete (failed task: {task})".format(
-                    task=self._get_first_failed_task(generate_output) or "none",
+            last_generate_output: str = ""
+            last_generate_failed_task: str | None = None
+            generation_succeeded: bool = False
+            for generate_iteration in range(ISSUE_REQUESTED_METADATA_TEST_ITERATIONS):
+                self._print_issue_requested_metadata_message(
+                    "generate {current}/{maximum}: running ./gradlew generateMetadata "
+                    "-Pcoordinates={library}".format(
+                        current=generate_iteration + 1,
+                        maximum=ISSUE_REQUESTED_METADATA_TEST_ITERATIONS,
+                        library=self.library,
+                    )
                 )
+                last_generate_output = self._run_command_with_env(
+                    f"./gradlew generateMetadata -Pcoordinates={self.library}"
+                )
+                last_generate_failed_task = self._get_first_failed_task(last_generate_output)
+                generation_succeeded = (
+                    last_generate_failed_task is None
+                    and "BUILD SUCCESSFUL" in last_generate_output
+                )
+                self._print_issue_requested_metadata_message(
+                    "generateMetadata: complete (succeeded: {succeeded}, failed task: {task})".format(
+                        succeeded=generation_succeeded,
+                        task=last_generate_failed_task or "none",
+                    )
+                )
+                if generation_succeeded:
+                    break
+                if generate_iteration + 1 == ISSUE_REQUESTED_METADATA_TEST_ITERATIONS:
+                    break
+
+                self._print_issue_requested_metadata_message(
+                    "agent: sending generation failure back for test repair"
+                )
+                iterations += 1
+                if not self._run_issue_requested_metadata_turn(
+                        "{prompt}\n\nWhen `./gradlew generateMetadata "
+                        "-Pcoordinates={library}` is run this is the error:\n"
+                        "{error_output}".format(
+                            prompt=write_prompt,
+                            library=self.library,
+                            error_output=_trim_output_tail(
+                                last_generate_output,
+                                ISSUE_REQUESTED_METADATA_MAX_OUTPUT_CHARS,
+                            ),
+                        )
+                ):
+                    return self._fail_issue_requested_metadata_phase(
+                        checkpoint, iterations, "analysis_agent_turn_failed",
+                    )
+
+            if not generation_succeeded:
+                return self._fail_issue_requested_metadata_phase(
+                    checkpoint,
+                    iterations,
+                    "generate_metadata_never_succeeded",
+                    failed_task=last_generate_failed_task or "unknown",
+                )
+
+            self._print_issue_requested_metadata_message(
+                "agent: filling requested entries tracing did not produce"
             )
-            self._print_issue_requested_metadata_message("agent: filling requested entries tracing did not produce")
             fill_prompt = self._render_issue_requested_metadata_prompt(
                 ISSUE_REQUESTED_METADATA_FILL_PROMPT_KEY,
                 issue_requested_metadata_dir=self._issue_requested_metadata_dir(),
                 generate_metadata_output=_trim_output_tail(
-                    generate_output,
+                    last_generate_output,
                     ISSUE_REQUESTED_METADATA_MAX_OUTPUT_CHARS,
                 ),
             )
@@ -916,7 +956,8 @@ class WorkflowStrategy(ABC):
                     checkpoint, iterations, "analysis_agent_turn_failed",
                 )
 
-        last_test_output = ""
+        last_test_output: str = ""
+        last_failed_task: str | None = None
         for test_iteration in range(ISSUE_REQUESTED_METADATA_TEST_ITERATIONS):
             self._print_issue_requested_metadata_message(
                 "test {current}/{maximum}: running ./gradlew test -Pcoordinates={library}".format(
@@ -926,26 +967,33 @@ class WorkflowStrategy(ABC):
                 )
             )
             last_test_output = self._run_command_with_env(f"./gradlew test -Pcoordinates={self.library}")
-            failed_task = self._get_first_failed_task(last_test_output)
+            last_failed_task = self._get_first_failed_task(last_test_output)
             self._print_issue_requested_metadata_message(
-                "test: complete (failed task: {failed_task})".format(failed_task=failed_task or "none")
+                "test: complete (failed task: {failed_task})".format(
+                    failed_task=last_failed_task or "none"
+                )
             )
             # The request is satisfied only when the suite it is exercised by
             # passes end to end, `nativeTest` included.
             # §forge/FS-local-ci-equivalent-verification
-            if failed_task is None and "BUILD SUCCESSFUL" in last_test_output:
+            if last_failed_task is None and "BUILD SUCCESSFUL" in last_test_output:
                 self._commit_issue_requested_metadata(
                     f"Issue-requested metadata coverage for {self.library}"
                 )
                 return True, iterations
-            self._print_issue_requested_metadata_message("agent: sending failure output back to the analysis agent")
+            if test_iteration + 1 == ISSUE_REQUESTED_METADATA_TEST_ITERATIONS:
+                break
+
+            # Generation already succeeded for the current tests. Retry only the
+            # permitted metadata fill so no test change can bypass regeneration.
+            self._print_issue_requested_metadata_message(
+                "agent: sending test failure back for metadata repair"
+            )
             iterations += 1
             if not self._run_issue_requested_metadata_turn(
-                    "{prompt}\n\nWhen `./gradlew test -Pcoordinates={library}` is run this is the error:\n"
-                    "{error_output}".format(
-                        prompt=self._render_issue_requested_metadata_prompt(
-                            ISSUE_REQUESTED_METADATA_PROMPT_KEY,
-                        ),
+                    "{prompt}\n\nWhen `./gradlew test -Pcoordinates={library}` "
+                    "is run this is the error:\n{error_output}".format(
+                        prompt=fill_prompt,
                         library=self.library,
                         error_output=_trim_output_tail(
                             last_test_output,
@@ -961,7 +1009,7 @@ class WorkflowStrategy(ABC):
             checkpoint,
             iterations,
             "test_failures_prevented_a_passing_suite",
-            failed_task=self._get_first_failed_task(last_test_output) or "unknown",
+            failed_task=last_failed_task or "unknown",
         )
 
     def _run_issue_requested_metadata_turn(self, prompt: str) -> bool:

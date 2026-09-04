@@ -13,13 +13,19 @@ from ai_workflows.drivers import fix_ni_run
 
 
 class _FakeStrategy:
-    def __init__(self, gate_result: bool = True, run_status: str = RUN_STATUS_SUCCESS) -> None:
+    def __init__(
+            self,
+            gate_result: bool = True,
+            run_status: str = RUN_STATUS_SUCCESS,
+            issue_phase_ok: bool = True,
+    ) -> None:
         self.gate_result = gate_result
         self.run_status = run_status
         self.gate_calls: list[tuple[str, str | None]] = []
         self.run_calls: list[tuple[object, str]] = []
         self.finalize_calls: list[str] = []
         self.issue_requested_metadata_phase_calls = 0
+        self.issue_phase_ok = issue_phase_ok
         self.post_generation_intervention: dict | None = None
 
     def verify_native_test_gate(self, output_dir: str, label: str | None = None) -> bool:
@@ -30,9 +36,9 @@ class _FakeStrategy:
         self.run_calls.append((agent, checkpoint_commit_hash))
         return self.run_status, 1
 
-    def ensure_issue_requested_metadata_phase(self) -> tuple[bool, int]:
+    def run_issue_requested_metadata_phase(self) -> tuple[bool, int]:
         self.issue_requested_metadata_phase_calls += 1
-        return True, 0
+        return self.issue_phase_ok, 0
 
     def finalize_run(self, checkpoint: str) -> str:
         self.finalize_calls.append(checkpoint)
@@ -102,6 +108,11 @@ class NativeImageRunDriverTests(unittest.TestCase):
                 return_value={},
             ))
             stack.enter_context(patch.object(fix_ni_run.metrics_writer, "write_workflow_run_metrics"))
+            stack.enter_context(patch.object(
+                fix_ni_run,
+                "create_failure_run_metrics_output",
+                return_value={},
+            ))
 
             returncode = fix_ni_run.main([
                 "--coordinates", "g:a:1.0",
@@ -148,6 +159,20 @@ class NativeImageRunDriverTests(unittest.TestCase):
         self.assertEqual(strategy.run_calls, [(agent, "checkpoint")])
         self.assertEqual(strategy.finalize_calls, ["checkpoint"])
         clear_recorded_failure.assert_not_called()
+
+    def test_failed_reporter_phase_skips_finalization(self) -> None:
+        strategy = _FakeStrategy(issue_phase_ok=False)
+
+        returncode, _run_seed, _populate_urls, _clear_recorded_failure, _agent = self._run_driver(
+            seed_returncode=0,
+            explore=False,
+            strategy=strategy,
+        )
+
+        self.assertEqual(returncode, 1)
+        self.assertEqual(strategy.issue_requested_metadata_phase_calls, 1)
+        self.assertEqual(strategy.run_calls, [])
+        self.assertEqual(strategy.finalize_calls, [])
 
     def test_failed_exploration_clears_its_non_terminal_failure(self) -> None:
         strategy = _FakeStrategy(run_status=RUN_STATUS_FAILURE)

@@ -708,7 +708,7 @@ def main(argv=None):
     if workflow_status == RUN_STATUS_SUCCESS:
         # No driver closes a reported request without attempting it.
         # §forge/AR-forge-driver-queues.2.1
-        issue_phase_ok, issue_phase_iterations = strategy_obj.ensure_issue_requested_metadata_phase()
+        issue_phase_ok, issue_phase_iterations = strategy_obj.run_issue_requested_metadata_phase()
         global_iterations += issue_phase_iterations
         if not issue_phase_ok:
             workflow_status = RUN_STATUS_FAILURE
