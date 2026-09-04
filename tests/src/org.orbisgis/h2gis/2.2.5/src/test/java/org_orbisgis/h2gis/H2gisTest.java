@@ -9,6 +9,8 @@ package org_orbisgis.h2gis;
 import org.h2gis.functions.factory.H2GISFunctions;
 import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Geometry;
+import org.locationtech.jts.geom.MultiLineString;
+import org.locationtech.jts.geom.MultiPolygon;
 import org.locationtech.jts.geom.Point;
 
 import java.sql.Connection;
@@ -164,6 +166,32 @@ public class H2gisTest {
             assertThat(resultSet.getDouble("overlap_area")).isEqualTo(2.0);
             assertThat(resultSet.getDouble("buffer_area")).isBetween(3.0, 4.0);
             assertThat(resultSet.getString("hull_type")).isEqualTo("POLYGON");
+            assertThat(resultSet.next()).isFalse();
+        }
+    }
+
+    @Test
+    void generatesDelaunayTriangleMeshAndEdges() throws Exception {
+        try (Connection connection = openSpatialDatabase("delaunay_mesh");
+                Statement statement = connection.createStatement();
+                ResultSet resultSet = statement.executeQuery("""
+                        SELECT
+                            ST_Delaunay(ST_GeomFromText(
+                                'MULTIPOINT ((0 0), (4 0), (4 4), (0 4))')) AS triangles,
+                            ST_Delaunay(ST_GeomFromText(
+                                'MULTIPOINT ((0 0), (4 0), (4 4), (0 4))'), 1) AS edges
+                        """)) {
+            assertThat(resultSet.next()).isTrue();
+
+            Geometry triangles = resultSet.getObject("triangles", Geometry.class);
+            assertThat(triangles).isInstanceOf(MultiPolygon.class);
+            assertThat(triangles.getNumGeometries()).isEqualTo(2);
+            assertThat(triangles.getArea()).isEqualTo(16.0);
+
+            Geometry edges = resultSet.getObject("edges", Geometry.class);
+            assertThat(edges).isInstanceOf(MultiLineString.class);
+            assertThat(edges.getNumGeometries()).isEqualTo(5);
+            assertThat(edges.getLength()).isCloseTo(16.0 + Math.sqrt(32.0), within(0.000001));
             assertThat(resultSet.next()).isFalse();
         }
     }
