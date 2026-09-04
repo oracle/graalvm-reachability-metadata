@@ -5,6 +5,7 @@
 
 import io
 import os
+import tempfile
 import unittest
 from contextlib import redirect_stdout
 from unittest.mock import patch
@@ -14,6 +15,13 @@ from ai_workflows.core.increase_dynamic_access_coverage_strategy import (
 )
 from ai_workflows.core.bulk_dynamic_access_strategy import BulkDynamicAccessStrategy
 from ai_workflows.core.workflow_strategy import RUN_STATUS_FAILURE, RUN_STATUS_SUCCESS
+from utility_scripts.continuation_marker import (
+    PHASE_EXPLORE,
+    PHASE_FIX,
+    STATUS_COMPLETED,
+    STATUS_SKIPPED,
+    ContinuationMarker,
+)
 from utility_scripts.dynamic_access_exhaust_report import DynamicAccessExhaustReport
 from utility_scripts.dynamic_access_report import (
     BulkDynamicAccessProgress,
@@ -180,6 +188,113 @@ class BulkDynamicAccessChunkTests(unittest.TestCase):
         self.assertEqual(captured_context["chunk_class_count"], 4)
         self.assertEqual(captured_reports, [primary.bulk_chunk_progress.final_report])
 
+    def test_composite_budget_excludes_already_processed_classes(self) -> None:
+        strategy = self._composite_strategy(bulk_min_uncovered_classes=5)
+        primary = self._FakePrimary(
+            self._progress(0, 4),
+            processed_classes={"remaining-0", "remaining-1"},
+        )
+        strategy.primary = primary
+        captured_context: dict[str, object] = {}
+
+        result = self._run_with_fake_iterative(strategy, captured_context)
+
+        self.assertEqual(result, (RUN_STATUS_SUCCESS, 2, 1))
+        self.assertEqual(primary.run_calls, 0)
+        self.assertEqual(captured_context["chunk_class_count"], 2)
+
+    def test_composite_keeps_bulk_when_the_small_remainder_is_processed(self) -> None:
+        strategy = self._composite_strategy(bulk_min_uncovered_classes=5)
+        primary = self._FakePrimary(
+            self._progress(0, 4),
+            processed_classes={f"remaining-{index}" for index in range(4)},
+        )
+        strategy.primary = primary
+        captured_context: dict[str, object] = {}
+
+        result = self._run_with_fake_iterative(strategy, captured_context)
+
+        self.assertEqual(result, (RUN_STATUS_SUCCESS, 5, 1))
+        self.assertEqual(primary.run_calls, 1)
+
+    def test_composite_skips_both_phases_when_nothing_is_uncovered(self) -> None:
+        strategy = self._composite_strategy(bulk_min_uncovered_classes=5)
+        primary = self._FakePrimary(self._progress(3, 0))
+        strategy.primary = primary
+        captured_context: dict[str, object] = {}
+
+        with tempfile.TemporaryDirectory() as marker_dir:
+            marker_path = self._pending_fix_marker(marker_dir)
+            strategy.continuation_marker_path = marker_path
+            result = self._run_with_fake_iterative(strategy, captured_context)
+            marker = ContinuationMarker.load(marker_path)
+
+        self.assertEqual(result, (RUN_STATUS_SUCCESS, 0, 1))
+        self.assertEqual(primary.run_calls, 0)
+        # A skipped primary must still release the fix phase, or the marker
+        # resumes at `fix` and never reaches publication.
+        self.assertEqual(marker.phases[PHASE_FIX]["status"], STATUS_SKIPPED)
+        self.assertEqual(marker.phases[PHASE_EXPLORE]["status"], STATUS_COMPLETED)
+
+    def test_composite_releases_the_fix_phase_when_it_skips_bulk(self) -> None:
+        strategy = self._composite_strategy(bulk_min_uncovered_classes=5)
+        primary = self._FakePrimary(self._progress(0, 4))
+        strategy.primary = primary
+        captured_context: dict[str, object] = {}
+
+        with tempfile.TemporaryDirectory() as marker_dir:
+            marker_path = self._pending_fix_marker(marker_dir)
+            strategy.continuation_marker_path = marker_path
+            self._run_with_fake_iterative(strategy, captured_context)
+            marker = ContinuationMarker.load(marker_path)
+
+        self.assertEqual(primary.run_calls, 0)
+        self.assertEqual(marker.phases[PHASE_FIX]["status"], STATUS_SKIPPED)
+
+    @staticmethod
+    def _pending_fix_marker(marker_dir: str) -> str:
+        marker = ContinuationMarker.create(
+            strategy_name="optimistic",
+            issue_number=9864,
+            label="library-update-request",
+            coordinate="org.example:lib:1.0.0",
+            new_version=None,
+        )
+        marker.mark_setup_done()
+        marker_path = os.path.join(marker_dir, "continuation.json")
+        marker.save(marker_path)
+        return marker_path
+
+    @staticmethod
+    def _run_with_fake_iterative(
+            strategy: IncreaseDynamicAccessCoverageStrategy,
+            captured_context: dict[str, object],
+    ) -> tuple[str, int, int]:
+        class FakeDynamicAccess:
+            def __init__(self, strategy_obj: dict, **context: object) -> None:
+                captured_context.update(context)
+                self._last_phase_status = RUN_STATUS_SUCCESS
+
+            def _run_dynamic_access_phase(
+                    self,
+                    agent: object,
+                    report: DynamicAccessCoverageReport | None = None,
+            ) -> tuple[bool, int]:
+                return True, 2
+
+            def has_issue_requested_metadata_context(self) -> bool:
+                return False
+
+        class FakeAgent:
+            def clear_context(self) -> None:
+                pass
+
+        with patch(
+                "ai_workflows.core.increase_dynamic_access_coverage_strategy.DynamicAccessIterativeStrategy",
+                FakeDynamicAccess,
+        ):
+            return strategy.run(FakeAgent())
+
     def test_composite_fails_when_required_iterative_shortfall_fails(self) -> None:
         for has_reporter_context in (False, True):
             with self.subTest(has_reporter_context=has_reporter_context):
@@ -322,15 +437,23 @@ class BulkDynamicAccessChunkTests(unittest.TestCase):
         )
 
     class _FakePrimary:
-        def __init__(self, progress: BulkDynamicAccessProgress) -> None:
+        def __init__(
+                self,
+                progress: BulkDynamicAccessProgress,
+                processed_classes: set[str] | None = None,
+        ) -> None:
             self.bulk_chunk_progress = progress
             self.saved = False
             self.post_generation_intervention = None
             self.run_calls = 0
             self.initial_report: DynamicAccessCoverageReport | None = None
+            self.processed_classes = processed_classes or set()
 
         def _generate_dynamic_access_report(self) -> DynamicAccessCoverageReport:
             return self.bulk_chunk_progress.final_report
+
+        def processed_dynamic_access_classes(self) -> set[str]:
+            return set(self.processed_classes)
 
         def run(
                 self,
