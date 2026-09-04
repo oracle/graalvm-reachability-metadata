@@ -9,16 +9,19 @@ package gg_jte.jte_native_resources;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import gg.jte.ContentType;
+import gg.jte.TemplateEngine;
 import gg.jte.extension.api.JteConfig;
 import gg.jte.extension.api.ParamDescription;
 import gg.jte.extension.api.TemplateDescription;
 import gg.jte.nativeimage.NativeResourcesExtension;
+import gg.jte.resolve.DirectoryCodeResolver;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
@@ -85,6 +88,37 @@ public class Jte_native_resourcesTest {
                 {"name":"example.layouts.PageGenerated", "allDeclaredMethods":true, "allDeclaredFields":true}
                 ]
                 """);
+    }
+
+    @Test
+    void generatesResourcesWhenConfiguredThroughTemplateEngine() throws IOException {
+        Path templateRoot = temporaryDirectory.resolve("templates");
+        Path generatedSourcesRoot = temporaryDirectory.resolve("generated-sources");
+        Path generatedResourcesRoot = temporaryDirectory.resolve("generated-resources");
+        Files.createDirectories(templateRoot);
+        Files.writeString(templateRoot.resolve("welcome.jte"), "Welcome");
+
+        TemplateEngine templateEngine = TemplateEngine.create(
+                new DirectoryCodeResolver(templateRoot),
+                generatedSourcesRoot,
+                ContentType.Html,
+                Jte_native_resourcesTest.class.getClassLoader(),
+                "example.views");
+        templateEngine.setTargetResourceDirectory(generatedResourcesRoot);
+        templateEngine.setProjectNamespace("example.application");
+        templateEngine.setExtensions(Map.of(NativeResourcesExtension.class.getName(), Map.of()));
+
+        List<String> generatedTemplates = templateEngine.generateAll();
+
+        assertThat(generatedTemplates).hasSize(1);
+        Path generatedTemplate = generatedSourcesRoot.resolve(generatedTemplates.get(0));
+        assertThat(generatedTemplate).isRegularFile();
+        String generatedFileName = generatedTemplate.getFileName().toString();
+        String generatedClassName = generatedFileName.substring(0, generatedFileName.length() - ".java".length());
+        Path reflectionFile = generatedResourcesRoot.resolve(
+                "META-INF/native-image/jte-generated/example.application/reflection-config.json");
+        assertThat(Files.readString(reflectionFile))
+                .contains("\"name\":\"example.views." + generatedClassName + "\"");
     }
 
     @Test
