@@ -8,6 +8,7 @@
     "generatedAt",
     "coordinate",
     "coverageSuitePath",
+    "finalMeasurementArtifacts",
     "runCoverage",
     "apiJacoco",
     "deepJacoco",
@@ -18,7 +19,7 @@
     "needsHumanIntervention"
   ],
   "properties": {
-    "schemaVersion": {"const": "1.2.0"},
+    "schemaVersion": {"const": "1.3.0"},
     "generatedAt": {
       "type": "string",
       "format": "date-time"
@@ -28,6 +29,15 @@
       "pattern": "^[A-Za-z0-9_.-]+:[A-Za-z0-9_.-]+:[A-Za-z0-9_.+-]+$"
     },
     "coverageSuitePath": {"type": "string", "minLength": 1},
+    "finalMeasurementArtifacts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["jacoco", "discoveryReport"],
+      "properties": {
+        "jacoco": {"type": "string", "minLength": 1},
+        "discoveryReport": {"type": "string", "minLength": 1}
+      }
+    },
     "runCoverage": {"$ref": "#/$defs/runCoverage"},
     "apiJacoco": {"$ref": "#/$defs/apiEvidence"},
     "deepJacoco": {"$ref": "#/$defs/deepEvidence"},

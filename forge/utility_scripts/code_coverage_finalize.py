@@ -24,7 +24,7 @@ from jsonschema import Draft202012Validator
 from utility_scripts.code_coverage_model import parse_inventory_id
 from utility_scripts.code_coverage_jacoco import load_jacoco_method_coverage
 
-SCHEMA_VERSION = "1.2.0"
+SCHEMA_VERSION = "1.3.0"
 
 #: Run checkpoints, in run order. Each is one JaCoCo report, and each phase
 #: begins at the checkpoint the previous phase ended on
@@ -800,6 +800,10 @@ def finalize_coverage(
         "generatedAt": _generated_at(),
         "coordinate": coordinate,
         "coverageSuitePath": _suite_path(coverage_suite_path),
+        "finalMeasurementArtifacts": {
+            "jacoco": jacoco_paths[2],
+            "discoveryReport": deep_final_path,
+        },
         "runCoverage": _run_coverage(
             api_baseline_report, deep_baseline_report, jacoco_paths
         ),

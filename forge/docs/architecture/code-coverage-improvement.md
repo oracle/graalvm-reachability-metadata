@@ -511,8 +511,9 @@ The Rhei template should decompose the workflow into these phases:
    (including the tracked coverage suite); run the regular JVM tests (`javaTest`)
    and the tracked extension suite (`codeCoverageTest`); regenerate the
    coordinate's committed library stats from the combined main-JAR-only JaCoCo
-   report; and persist final metrics from the baseline and highest-iteration
-   JaCoCo and deep reports, including each phase's recorded stop decision
+   report; and persist final metrics from the baseline and final JaCoCo and deep reports. After a finalization
+   repair, the final reports come from one agent-free deterministic
+   remeasurement, including each phase's recorded stop decision
    (§3.3). The stats update makes the repository coverage
    dashboard reflect the tests this workflow adds without counting classified
    artifacts such as an upstream test JAR in the denominator
@@ -620,7 +621,9 @@ nonzero exit code names the failed step, and its completion is decided by a
 deterministic verification program, not by an agent's own claim: it checks the
 finalization artifacts exist, schema-validates the final metrics, and inspects
 their outcomes. Fixable step or verification failures return to a bounded fix
-state, after which the steps re-run; failed targets or an explicit
+state, after which one agent-free final remeasurement refreshes JaCoCo,
+sampled PGO, call-tree, and discovery evidence before the steps re-run. A failed
+final remeasurement routes directly to human intervention; failed targets or an explicit
 human-intervention flag in the metrics, and failures that survive the fix
 budget, route to human intervention.
 

@@ -25,7 +25,8 @@
 #
 # Final verified task (finalization only):
 #   reviewed-prepared -> reviewed-execute -- 0 -> finalize-verify -- 0 -> completed
-#     (exit N names the failed step -> finalize-fix -> re-run; 75/80 as before)
+#     (failure -> finalize-fix -> finalize-remeasure -> reviewed-execute;
+#      final remeasurement failures require human intervention)
 #
 # Measurement is a deterministic program that always writes the current
 # report to one fixed path and, when the loop continues, derives the cover
@@ -803,6 +804,14 @@ states:
       jacoco_after_api, jacoco_final = report_bounds(
           "runtime/code-coverage/discovery", "jacoco-deep", ".xml"
       )
+      final_measurement = Path("runtime/code-coverage/final-measurement")
+      final_deep = final_measurement / "discovery-report.json"
+      final_jacoco = final_measurement / "jacoco.xml"
+      if final_deep.exists() != final_jacoco.exists():
+          fail(7, "final measurement is incomplete")
+      if final_deep.is_file():
+          deep_final = final_deep
+          jacoco_final = final_jacoco
       finalize_command = [
           sys.executable,
           f"{work_path}/utility_scripts/code_coverage_finalize.py",
@@ -941,6 +950,129 @@ states:
       - name: fix
         path: runtime/code-coverage/fixes/{task_id}-{visit_count}.md
         description: Fixes applied after a failed finalization step or verification.
+
+  finalize-remeasure:
+    description: Regenerate final coverage evidence after a finalization repair.
+    concurrent: true
+    visits: {{fix_passes * 2 + 2}}
+    program: |
+      python3 - "$RHEI_INPUT_CONVERSION_PATH" <<'PY'
+      import json
+      import os
+      import shutil
+      import subprocess
+      import sys
+      from pathlib import Path
+
+      def fail(step: int, message: str) -> None:
+          print(f"step {step}: {message}", file=sys.stderr)
+          sys.exit(step)
+
+      def run(
+              step: int,
+              command: list,
+              cwd: str | None = None,
+              env: dict | None = None,
+      ) -> None:
+          command = [str(part) for part in command]
+          try:
+              if subprocess.run(command, cwd=cwd, env=env).returncode != 0:
+                  fail(step, f"command failed: {' '.join(command[:2])}")
+          except OSError as error:
+              fail(step, f"command could not run: {error}")
+
+      try:
+          conversion = json.load(open(sys.argv[1]))
+          coordinate = conversion["coordinate"]
+          worktree = conversion["worktreePath"]
+          work_path = conversion["workPath"]
+          group, artifact, version = coordinate.split(":")
+          sys.path.insert(0, work_path)
+          from utility_scripts.metadata_index import resolve_test_dir
+          subproject = Path(resolve_test_dir(
+              worktree, group, artifact, version
+          ))
+      except Exception as error:
+          fail(1, f"conversion or test project is invalid: {error}")
+
+      output = Path("runtime/code-coverage/final-measurement")
+      if output.exists():
+          shutil.rmtree(output)
+      output.mkdir(parents=True)
+      gradle = [f"{worktree}/gradlew", f"-Pcoordinates={coordinate}"]
+      include_suite = "-PincludeCodeCoverageSuite=true"
+
+      run(2, gradle + ["jacocoCodeCoverageReport"], cwd=worktree)
+      jacoco_source = (
+          subproject
+          / "build/reports/jacoco/jacocoCodeCoverageReport"
+          / "jacocoCodeCoverageReport.xml"
+      )
+      if not jacoco_source.is_file():
+          fail(2, f"missing JaCoCo XML at {jacoco_source}")
+      jacoco = output / "jacoco.xml"
+      shutil.copy(jacoco_source, jacoco)
+
+      run(3, gradle + ["nativeTestPGOSampling", include_suite], cwd=worktree)
+      profile = (output / "pgo-profile.iprof").resolve()
+      run(
+          4,
+          gradle + [
+              "runNativeTestPGO",
+              include_suite,
+              f"-PpgoProfilePath={profile}",
+          ],
+          cwd=worktree,
+      )
+      if not profile.is_file():
+          fail(4, "sampling run wrote no .iprof")
+
+      reports_dir = subproject / "build/native/nativeTestCompile/reports"
+      triplets: dict = {}
+      for csv_path in reports_dir.glob("call_tree_*.csv"):
+          rest = csv_path.stem.partition("call_tree_")[2]
+          csv_kind, _, suffix = rest.partition("_")
+          triplets.setdefault(suffix, {})[csv_kind] = csv_path
+      complete = {
+          suffix: files
+          for suffix, files in triplets.items()
+          if {"methods", "invokes", "targets"} <= set(files)
+      }
+      if not complete:
+          fail(5, f"no coherent call-tree CSV triplet under {reports_dir}")
+      triplet = output / "call-tree"
+      triplet.mkdir()
+      for csv_path in complete[sorted(complete)[-1]].values():
+          shutil.copy(csv_path, triplet / csv_path.name)
+
+      analyzer = [
+          sys.executable,
+          f"{work_path}/utility_scripts/code_coverage_profile_report.py",
+          "--profile", profile,
+          "--reports-dir", triplet,
+          "--api-inventory",
+          "runtime/code-coverage/api-inventory/api-inventory.json",
+          "--jacoco-xml", jacoco,
+          "--library-methods", "runtime/code-coverage/graph/methods.csv",
+          "--coordinate", coordinate,
+          "--iteration", "0",
+          "--output-dir", output,
+      ]
+      run(6, analyzer, env=dict(os.environ, PYTHONPATH=work_path))
+      discovery = output / "discovery-report-0.json"
+      if not discovery.is_file():
+          fail(6, f"analyzer wrote no report at {discovery}")
+      discovery.rename(output / "discovery-report.json")
+      PY
+    program_timeout: 120m
+    inputs:
+      - name: conversion
+        path: runtime/code-coverage/issues/conversion.json
+    outputs:
+      - name: final-jacoco
+        path: runtime/code-coverage/final-measurement/jacoco.xml
+      - name: final-discovery
+        path: runtime/code-coverage/final-measurement/discovery-report.json
 
   human-intervention:
     description: Human decision or manual repair is required.
@@ -1280,9 +1412,44 @@ transitions:
     exit_code: 80
     description: Final metrics demand human action (failed targets or explicit flag).
 
-  - from: finalize-fix
+  - from: finalize-remeasure
     to: reviewed-execute
-    description: Repairs applied; the finalization steps re-run from the start.
+    exit_code: 0
+    description: Final evidence is fresh; rerun finalization.
+
+  - from: finalize-remeasure
+    to: human-intervention
+    exit_code: 1
+    description: Final measurement setup failed after a repair.
+
+  - from: finalize-remeasure
+    to: human-intervention
+    exit_code: 2
+    description: Final JaCoCo measurement failed after a repair.
+
+  - from: finalize-remeasure
+    to: human-intervention
+    exit_code: 3
+    description: Final PGO image build failed after a repair.
+
+  - from: finalize-remeasure
+    to: human-intervention
+    exit_code: 4
+    description: Final PGO sampling run failed after a repair.
+
+  - from: finalize-remeasure
+    to: human-intervention
+    exit_code: 5
+    description: Final call-tree capture failed after a repair.
+
+  - from: finalize-remeasure
+    to: human-intervention
+    exit_code: 6
+    description: Final discovery analysis failed after a repair.
+
+  - from: finalize-fix
+    to: finalize-remeasure
+    description: Repairs applied; refresh final evidence before rerunning finalization.
 
   - from: human-intervention
     to: execute
