@@ -13,6 +13,7 @@ import io.micronaut.sourcegen.annotations.Singular;
 import io.micronaut.sourcegen.annotations.SuperBuilder;
 import io.micronaut.sourcegen.annotations.ToString;
 import io.micronaut.sourcegen.annotations.Wither;
+import io.micronaut.sourcegen.info.MicronautSourcegenAnnotationsModuleInfo;
 import java.util.List;
 import java.util.Map;
 import org.junit.jupiter.api.Test;
@@ -20,6 +21,23 @@ import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class Micronaut_sourcegen_annotationsTest {
+    @Test
+    void exposesModuleInformation() {
+        MicronautSourcegenAnnotationsModuleInfo moduleInfo = new MicronautSourcegenAnnotationsModuleInfo();
+
+        assertThat(moduleInfo.getId()).isEqualTo("io.micronaut.sourcegen:micronaut-sourcegen-annotations");
+        assertThat(moduleInfo.getName()).isEqualTo("sourcegen-annotations");
+        assertThat(moduleInfo.getDescription())
+                .hasValue("Micronaut SourceGen exposes a language-neutral API for source code generation.");
+        assertThat(moduleInfo.getMavenCoordinates()).hasValueSatisfying(coordinates -> {
+            assertThat(coordinates.groupId()).isEqualTo("io.micronaut.sourcegen");
+            assertThat(coordinates.artifactId()).isEqualTo("micronaut-sourcegen-annotations");
+            assertThat(coordinates.version()).isEqualTo(moduleInfo.getVersion()).isNotBlank();
+        });
+        assertThat(moduleInfo.getParentModuleId()).isEmpty();
+        assertThat(moduleInfo.getTags()).isEmpty();
+    }
+
     @Test
     void builderCreatesRecordWithSingularCollections() {
         Purchase purchase = PurchaseBuilder.builder()
