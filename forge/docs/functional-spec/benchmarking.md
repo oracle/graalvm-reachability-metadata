@@ -97,3 +97,196 @@ A benchmark result must not be used for strategy comparison when:
   cleanup failure.
 - It compared results produced from different suite inputs without documenting
   the difference.
+
+# FS-code-coverage-benchmarking: Code coverage improvement benchmarking
+
+Code coverage improvement benchmarking compares agent configurations by running
+the complete code coverage improvement workflow against the same already-supported
+libraries and the same repository state. Its initial contract is deliberately
+small: preserve the Rhei workspace for inspection and publish one compact metrics
+record per execution (§FS-forge-generation-benchmarking.1,
+§GOAL-maximize-library-coverage, §GOAL-minimize-generation-cost).
+
+## 1. Initial benchmark suite and baseline
+
+The initial suite contains these exact coordinates. The checked-in statistics at
+baseline commit `92a2a4fa60b2d6532fa533f2d4f8f795dd28a1cb` report the following
+method coverage; none of the five test projects contains a
+`code-coverage-improvement` suite at that commit.
+
+| Coordinate | Covered methods | All methods | Method coverage |
+| --- | ---: | ---: | ---: |
+| `io.github.resilience4j:resilience4j-core:2.3.0` | 9 | 359 | 2.51% |
+| `org.apache.commons:commons-compress:1.23.0` | 269 | 4,366 | 6.16% |
+| `org.apache.kafka:kafka-streams:3.6.0` | 1,855 | 19,283 | 9.62% |
+| `com.h2database:h2:2.1.210` | 2,412 | 11,943 | 20.20% |
+| `com.google.code.gson:gson:2.14.0` | 366 | 1,040 | 35.19% |
+
+The commit is the fixed benchmark-suite input. Every execution must create its
+source worktree from that exact commit, never from the launcher's current `HEAD`,
+`master`, or `origin/master`. A code coverage improvement merged later therefore
+does not change the input. The suite commit must not advance automatically.
+
+The benchmark runner itself may execute from a later clean commit. Every result
+records both `benchmarkSuiteCommit` and `runnerCommit`: the first identifies the
+library state being measured and the second is implementation provenance, not a
+second baseline or campaign identifier.
+
+The checked-in totals select and describe the suite; the run's own frozen JaCoCo
+method universe is authoritative in its metrics. A difference between the
+checked-in `All methods` value and the measured universe must be recorded, not
+silently reconciled.
+
+## 2. Matrix selection and preparation
+
+The default matrix is the cross-product of five libraries, five agent/model
+configurations, and three thinking levels, for 75 executions:
+
+- Pi with `gpt-5.6-sol`, `gpt-5.6-luna`, or `gpt-5.6-terra`.
+- Claude Code with the stable configuration names `sonnet-5` or `opus-5`.
+- `medium`, `high`, or `xhigh` thinking for every configuration.
+
+The launcher accepts multiple library indexes, agents, models, and thinking
+levels as filters. Unspecified dimensions retain all configured values. Unknown,
+duplicate, and agent-incompatible selections must fail before any worktree is
+created, and the complete selected matrix must be printed before the first
+mutation. With no selection flags, the launcher selects exactly 75 executions.
+
+For each execution, the launcher must:
+
+1. Validate that the coordinate belongs to the fixed suite.
+2. Allocate a unique run identifier and a unique parent directory.
+3. Create a disposable source worktree from the fixed suite commit.
+4. Instantiate a Rhei workspace named `code-coverage-99000` below that unique
+   parent directory. `99000` is a fixed synthetic issue number used only to
+   satisfy the code coverage workspace naming contract.
+5. Prepare the conversion inputs deterministically, including the coordinate,
+   commits, run identifier, source worktree, runner Forge path, and coverage
+   suite paths expected in `runtime/code-coverage/issues/conversion.json`.
+6. Execute the existing preparation, API coverage, native metadata preparation,
+   deep coverage, and finalization behavior without claiming or reading a GitHub
+   issue.
+
+Source-worktree creation is a per-cell gate. Before attempting it, the launcher
+removes an existing linked worktree or filesystem entry only at that cell's
+exact allocated `source/` path. If creation still fails, the launcher reports
+the cell as skipped, counts it as an unsuccessful outcome, and continues with
+the next selected cell without invoking Rhei or publishing a benchmark result.
+
+Benchmark preparation must not query an issue, validate an issue label, assign
+an issue, or mutate a GitHub Project status. The coordinate supplied by the
+launcher is the complete benchmark input that replaces issue conversion. The
+normal issue-driven launcher remains unchanged. A boolean `benchmark` template
+input, defaulting to false, renders either the existing issue conversion and
+source publication tasks or deterministic benchmark conversion and metrics
+publication tasks. The middle preparation, API, native-metadata, deep, and
+finalization tasks are the same in both modes.
+
+The Rhei workspace must live outside the disposable source worktree. Distinct
+run parents prevent collisions while preserving the required fixed workspace
+name.
+
+## 3. Benchmark metrics publication
+
+A benchmark workspace routes successful finalization to a deterministic
+`code-coverage-benchmark-publication` task instead of the normal publication
+task. It must not push
+the generated source branch, publish a Forge branch descriptor, open a pull
+request, or change the synthetic issue.
+
+Benchmark publication reads the finalized coverage record and Rhei accounting,
+writes the metrics record in §FS-code-coverage-benchmarking.4, and commits and
+pushes only that record to the same reachability-metadata repository. Results
+live in one JSON list per coordinate:
+
+```text
+code-coverage-benchmarks/<group>/<artifact>/<version>.json
+```
+
+Every execution is appended immediately after it finishes, ordered by timestamp.
+Its `runId` is the idempotency key: retrying an identical result validates the
+existing entry instead of appending it again, while conflicting data for one
+run ID is rejected. Publication serializes local writers and creates a fresh
+disposable worktree from the latest `origin/master` for each result. It appends
+the result, commits, and pushes from that worktree, then removes it. A push race
+retries with another fresh worktree; publication never reuses or resets a
+publishing checkout.
+
+The outer launcher must invoke the same metrics collector when Rhei terminates
+before reaching benchmark publication. Thus a failed or partial workflow remains
+a benchmark result rather than disappearing from the comparison.
+
+The normalized result must be written into the workspace before Git publication,
+and a publication marker may be written only after a successful push. The
+source worktree may be removed only after that marker exists. The Rhei workspace
+must not be removed: it remains on the machine for later inspection of its
+reports, prompts, accounting, fixes, and work notes. If metrics writing or
+pushing fails, both the source worktree and workspace remain so completion can
+be retried without losing evidence.
+
+The launcher provides a command that discovers workspaces without a publication
+marker and retries their result publication without rerunning coverage.
+
+## 4. Initial metrics record
+
+The initial record contains identity, status, and the API, deep, and total
+results. It publishes no Rhei runtime artifacts or logs.
+
+Identity and status must contain:
+
+- schema version, unique run identifier, and timestamp;
+- the fixed suite commit and runner commit;
+- coordinate, agent, configured model, observed model, and thinking level;
+- terminal status; and
+- for an unsuccessful execution, the phase and exit code when known.
+
+The API and deep records must each contain:
+
+- `coverPasses`, meaning invocations of that phase's cover state;
+- `fixInvocations`, meaning invocations of that phase's fix state;
+- input, cached-input-read, and output tokens consumed by all agent invocations
+  in that phase, including fixes;
+- covered methods before and after the phase;
+- methods gained and coverage percentage points gained; and
+- `allMethods`, the frozen whole-run JaCoCo method universe used as the common
+  denominator.
+
+The total record must contain the sums of API and deep cover passes, fix
+invocations, and token classes, plus run-start covered methods, final covered
+methods, total methods gained, total percentage points gained, and
+`allMethods`. Tokens from conversion, preparation, finalization, and benchmark
+completion are outside the initial token total.
+
+Coverage values must come from the existing whole-run `runCoverage` checkpoints
+and phase gains, so API starts at `runStart`, deep starts at `afterApiPhase`, and
+the total ends at `final`. All three use one denominator
+(§AR-code-coverage-improvement.4.1). Cover-pass counts come from the recorded
+phase stop decisions; fix counts and phase token usage come from Rhei invocation
+and task accounting. Cached input must remain separate from ordinary input.
+
+When a failed execution lacks a final checkpoint or another metric, the field is
+`null`, not zero. Metrics that exist before the failure must still be retained.
+
+## 5. Preserved local workspace
+
+The preserved workspace is the detailed local lookup record for an execution.
+Its stable parent is keyed by the run identifier, and it retains the rendered
+Rhei plan and the complete `runtime/` tree produced by the workflow. It is not
+committed or pushed by the initial benchmark implementation.
+
+The launcher must print the preserved workspace's absolute path when the run
+ends. The metrics record must carry its run identifier and workspace name so a
+local lookup can resolve the corresponding directory without making a
+machine-specific absolute path part of the portable comparison data.
+
+## 6. Deferred decisions
+
+The following are explicitly deferred until the base runner and metrics record
+exist:
+
+- when and how the fixed library set or baseline commit is revised;
+- execution concurrency, scheduling, and statistical replication;
+- cost calculation, timing, efficiency, quality, stability, and other advanced
+  metrics; and
+- publication or remote archival of preserved Rhei workspaces and runtime
+  artifacts.

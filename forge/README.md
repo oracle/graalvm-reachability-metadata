@@ -149,6 +149,30 @@ querying the issue queue, and validates the selected issue's exact-version test
 project before invoking Rhei.
 §FS-forge-host-requirements §AR-code-coverage-improvement.2
 
+To inspect or execute the fixed code coverage benchmark matrix, use the
+benchmark launcher. With no selection flags it selects all 75 cells; filters
+compose and accept multiple values:
+
+```console
+./run-code-coverage-benchmark.sh --dry-run
+./run-code-coverage-benchmark.sh --library-index 1 3 5
+./run-code-coverage-benchmark.sh --agent claude-code --model sonnet-5
+./run-code-coverage-benchmark.sh --thinking high
+```
+
+Each cell keeps its Rhei workspace below
+`local_repositories/code_coverage_benchmarks/`, immediately appends compact
+metrics to
+`../code-coverage-benchmarks/<group>/<artifact>/<version>.json`, and removes
+only its disposable source worktree after publication succeeds. Retry preserved
+unpublished results without rerunning coverage:
+
+```console
+./run-code-coverage-benchmark.sh retry-pending
+```
+
+§FS-code-coverage-benchmarking
+
 ```console
 python3 forge_metadata.py --help
 python3 ai_workflows/drivers/add_new_library_support.py --coordinates <group:artifact:version>
