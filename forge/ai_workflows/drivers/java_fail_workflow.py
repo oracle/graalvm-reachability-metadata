@@ -36,7 +36,9 @@ from utility_scripts.continuation_marker import (
     load_continuation_marker,
     save_phase_update,
 )
+from utility_scripts.edit_scope import format_resolved_edit_scope_context
 from utility_scripts.gradle_environment import gradle_command_environment
+from utility_scripts.issue_requested_metadata import format_issue_requested_metadata_context
 from utility_scripts.library_preparation_preflight import (
     prepare_library_preparation_preflight,
 )
@@ -159,6 +161,11 @@ def build_parser(config: JavaFailWorkflowConfig):
         help="Optional path with additional read-only docs/sources for agent context",
     )
     parser.add_argument(
+        "--issue-requested-metadata-context",
+        default="",
+        help="Reporter-provided missing metadata context extracted from the GitHub issue body.",
+    )
+    parser.add_argument(
         "--library-preparation-preflight-path",
         help="Path to the dispatcher-created library preparation preflight JSON record.",
     )
@@ -203,6 +210,7 @@ def parse_flags(config: JavaFailWorkflowConfig, argv_list):
         flags.verbose,
         flags.reachability_metadata_path,
         flags.metrics_repo_path,
+        flags.issue_requested_metadata_context,
         flags.library_preparation_preflight_path,
         flags.continuation_marker_path,
         flags.dynamic_access_class_threshold,
@@ -479,6 +487,7 @@ def run_java_fail_workflow(config: JavaFailWorkflowConfig, argv=None):
         is_verbose,
         explicit_repo_path,
         explicit_metrics_repo_path,
+        issue_requested_metadata_context,
         library_preparation_preflight_path,
         continuation_marker_path,
         dynamic_access_class_threshold,
@@ -586,6 +595,7 @@ def run_java_fail_workflow(config: JavaFailWorkflowConfig, argv=None):
         strategy_obj=strategy,
         reachability_repo_path=reachability_repo_path,
         updated_library=updated_library,
+        library=updated_library,
         old_version=old_library_version,
         new_version=updated_library_version,
         build_gradle_file=build_gradle_file,
@@ -596,6 +606,15 @@ def run_java_fail_workflow(config: JavaFailWorkflowConfig, argv=None):
         test_language_display_name=test_source_layout.display_language,
         test_source_dir_name=test_source_layout.source_dir_name,
         library_preparation_preflight_context=library_preparation_preflight_context,
+        issue_requested_metadata_context=format_issue_requested_metadata_context(
+            issue_requested_metadata_context,
+        ),
+        resolved_edit_scope_context=format_resolved_edit_scope_context(
+            reachability_repo_path,
+            tests_dir,
+            test_source_layout.source_root,
+            build_gradle_file,
+        ),
         continuation_marker_path=continuation_marker_path,
         dynamic_access_class_threshold=dynamic_access_class_threshold,
     )
@@ -634,6 +653,14 @@ def run_java_fail_workflow(config: JavaFailWorkflowConfig, argv=None):
             workflow_status, iterations = strategy_obj.run(
                 agent=agent,
             )
+
+    if workflow_status == RUN_STATUS_SUCCESS:
+        # No driver closes a reported request without attempting it.
+        # §forge/AR-forge-driver-queues.2.1
+        issue_phase_ok, issue_phase_iterations = strategy_obj.ensure_issue_requested_metadata_phase()
+        iterations += issue_phase_iterations
+        if not issue_phase_ok:
+            workflow_status = RUN_STATUS_FAILURE
 
     last_passing_candidate_commit = None
     if workflow_status == RUN_STATUS_SUCCESS:

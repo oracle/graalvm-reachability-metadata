@@ -169,41 +169,6 @@ class DynamicAccessProgressLoggingTests(unittest.TestCase):
             strategy.dynamic_access_report_path,
         )
 
-    def test_issue_requested_metadata_phase_commits_when_native_test_is_reached(self) -> None:
-        class FakeAgent:
-            def __init__(self) -> None:
-                self.prompts: list[str] = []
-                self.cleared = False
-
-            def send_prompt(self, prompt: str) -> None:
-                self.prompts.append(prompt)
-
-            def run_test_command(self, command: str) -> str:
-                return "> Task :nativeTest FAILED"
-
-            def clear_context(self) -> None:
-                self.cleared = True
-
-        strategy = self._strategy(
-            issue_requested_metadata_context="Reporter-provided missing metadata context:\nmissing resource",
-        )
-        strategy.prompts["issue-requested-metadata"] = "unused"
-        agent = FakeAgent()
-
-        with patch.object(strategy, "_render_prompt", return_value="prompt"), \
-                patch.object(strategy, "_commit_test_sources") as commit_tests, \
-                patch(
-                    "ai_workflows.core.dynamic_access_iterative_strategy.subprocess.check_output",
-                    return_value="checkpoint\n",
-                ):
-            phase_ok, iterations = strategy._run_issue_requested_metadata_phase(agent)
-
-        self.assertTrue(phase_ok)
-        self.assertEqual(iterations, 1)
-        self.assertEqual(agent.prompts, ["prompt"])
-        self.assertTrue(agent.cleared)
-        commit_tests.assert_called_once_with("Issue-requested metadata coverage for org.example:lib:1.0.0")
-
     def test_native_test_gate_flushes_leftover_classes_at_end(self) -> None:
         class FakeAgent:
             def send_prompt(self, prompt: str) -> None:
@@ -455,9 +420,6 @@ class DynamicAccessProgressLoggingTests(unittest.TestCase):
             def __init__(self, strategy_obj: dict, **context) -> None:
                 self._last_phase_status = RUN_STATUS_CHUNK_READY
 
-            def has_issue_requested_metadata_context(self) -> bool:
-                return False
-
             def _run_dynamic_access_phase(self, agent) -> tuple[bool, int]:
                 return True, 3
 
@@ -484,16 +446,13 @@ class DynamicAccessProgressLoggingTests(unittest.TestCase):
             def __init__(self, strategy_obj: dict, **context) -> None:
                 self._last_phase_status = RUN_STATUS_SUCCESS
 
-            def has_issue_requested_metadata_context(self) -> bool:
-                return True
-
-            def _run_issue_requested_metadata_phase(self, agent) -> tuple[bool, int]:
-                calls.append("issue-requested")
-                return True, 1
-
             def _run_dynamic_access_phase(self, agent) -> tuple[bool, int]:
                 calls.append("dynamic-access")
                 return False, 0
+
+        def run_reporter_phase() -> tuple[bool, int]:
+            calls.append("issue-requested")
+            return True, 1
 
         strategy = IncreaseDynamicAccessCoverageStrategy(
             {
@@ -509,6 +468,10 @@ class DynamicAccessProgressLoggingTests(unittest.TestCase):
         with patch(
                 "ai_workflows.core.increase_dynamic_access_coverage_strategy.DynamicAccessIterativeStrategy",
                 ReporterRequestedDynamicAccess,
+        ), patch.object(
+                strategy,
+                "run_issue_requested_metadata_phase",
+                side_effect=run_reporter_phase,
         ):
             self.assertEqual(strategy.run(agent=object()), (RUN_STATUS_SUCCESS, 1))
 
@@ -518,9 +481,6 @@ class DynamicAccessProgressLoggingTests(unittest.TestCase):
         class NoProgressDynamicAccess:
             def __init__(self, strategy_obj: dict, **context) -> None:
                 self._last_phase_status = RUN_STATUS_SUCCESS
-
-            def has_issue_requested_metadata_context(self) -> bool:
-                return False
 
             def _run_dynamic_access_phase(self, agent) -> tuple[bool, int]:
                 return False, 0

@@ -19,6 +19,7 @@ class _FakeStrategy:
         self.gate_calls: list[tuple[str, str | None]] = []
         self.run_calls: list[tuple[object, str]] = []
         self.finalize_calls: list[str] = []
+        self.issue_requested_metadata_phase_calls = 0
         self.post_generation_intervention: dict | None = None
 
     def verify_native_test_gate(self, output_dir: str, label: str | None = None) -> bool:
@@ -28,6 +29,10 @@ class _FakeStrategy:
     def run(self, agent: object, checkpoint_commit_hash: str) -> tuple[str, int]:
         self.run_calls.append((agent, checkpoint_commit_hash))
         return self.run_status, 1
+
+    def ensure_issue_requested_metadata_phase(self) -> tuple[bool, int]:
+        self.issue_requested_metadata_phase_calls += 1
+        return True, 0
 
     def finalize_run(self, checkpoint: str) -> str:
         self.finalize_calls.append(checkpoint)

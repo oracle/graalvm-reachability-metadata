@@ -103,9 +103,6 @@ class BulkDynamicAccessChunkTests(unittest.TestCase):
                 captured_reports.append(report)
                 return True, 2
 
-            def has_issue_requested_metadata_context(self) -> bool:
-                return False
-
         class FakeAgent:
             def clear_context(self) -> None:
                 pass
@@ -138,24 +135,26 @@ class BulkDynamicAccessChunkTests(unittest.TestCase):
                     ) -> tuple[bool, int]:
                         return False, 0
 
-                    def has_issue_requested_metadata_context(self) -> bool:
-                        return has_reporter_context
-
-                    def _run_issue_requested_metadata_phase(
-                            self,
-                            agent: object,
-                    ) -> tuple[bool, int]:
-                        reporter_phase_calls.append(True)
-                        return True, 1
-
                 class FakeAgent:
                     def clear_context(self) -> None:
                         pass
+
+                def run_reporter_phase() -> tuple[bool, int]:
+                    reporter_phase_calls.append(True)
+                    return True, 1
 
                 with patch(
                         "ai_workflows.core.increase_dynamic_access_coverage_strategy."
                         "DynamicAccessIterativeStrategy",
                         FailingDynamicAccess,
+                ), patch.object(
+                        strategy,
+                        "has_issue_requested_metadata_context",
+                        return_value=has_reporter_context,
+                ), patch.object(
+                        strategy,
+                        "run_issue_requested_metadata_phase",
+                        side_effect=run_reporter_phase,
                 ):
                     result = strategy.run(FakeAgent())
 

@@ -54,7 +54,9 @@ from utility_scripts.continuation_marker import (
     save_phase_update,
 )
 from utility_scripts.dynamic_access_exhaust_report import resolve_workflow_exhaust_report
+from utility_scripts.edit_scope import format_resolved_edit_scope_context
 from utility_scripts.gradle_environment import gradle_command_environment
+from utility_scripts.issue_requested_metadata import format_issue_requested_metadata_context
 from utility_scripts.library_preparation_preflight import (
     apply_library_preparation_setup,
     prepare_library_preparation_preflight,
@@ -194,6 +196,11 @@ def build_parser():
         help="GitHub issue number for the dynamic-access exhaust report.",
     )
     parser.add_argument(
+        "--issue-requested-metadata-context",
+        default="",
+        help="Reporter-provided missing metadata context extracted from the GitHub issue body.",
+    )
+    parser.add_argument(
         "--library-preparation-preflight-path",
         help="Path to the dispatcher-created library preparation preflight JSON record.",
     )
@@ -235,6 +242,7 @@ def parse_flags(argv_list):
         flags.keep_tests_without_dynamic_access,
         flags.chunk_class_count,
         flags.issue_number,
+        flags.issue_requested_metadata_context,
         flags.library_preparation_preflight_path,
         flags.continuation_marker_path,
     )
@@ -468,6 +476,7 @@ def main(argv=None):
         keep_tests_without_dynamic_access,
         chunk_class_count,
         issue_number,
+        issue_requested_metadata_context,
         library_preparation_preflight_path,
         continuation_marker_path,
     ) = parse_flags(argv if argv is not None else sys.argv[1:])
@@ -571,6 +580,15 @@ def main(argv=None):
         test_language_display_name=test_source_layout.display_language,
         test_source_dir_name=test_source_layout.source_dir_name,
         library_preparation_preflight_context=library_preparation_preflight_context,
+        issue_requested_metadata_context=format_issue_requested_metadata_context(
+            issue_requested_metadata_context,
+        ),
+        resolved_edit_scope_context=format_resolved_edit_scope_context(
+            reachability_repo_path,
+            module_dir,
+            test_source_layout.source_root,
+            os.path.join(module_dir, "build.gradle"),
+        ),
         continuation_marker_path=continuation_marker_path,
     )
 
@@ -686,6 +704,14 @@ def main(argv=None):
             )
     if scaffold_placeholder_quality_gate_failed or generated_test_validity_gate_failed:
         workflow_status = RUN_STATUS_FAILURE
+
+    if workflow_status == RUN_STATUS_SUCCESS:
+        # No driver closes a reported request without attempting it.
+        # §forge/AR-forge-driver-queues.2.1
+        issue_phase_ok, issue_phase_iterations = strategy_obj.ensure_issue_requested_metadata_phase()
+        global_iterations += issue_phase_iterations
+        if not issue_phase_ok:
+            workflow_status = RUN_STATUS_FAILURE
 
     if workflow_status in {RUN_STATUS_SUCCESS, RUN_STATUS_CHUNK_READY}:
         if is_benchmark_mode:

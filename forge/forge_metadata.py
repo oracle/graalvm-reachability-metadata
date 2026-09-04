@@ -5528,6 +5528,17 @@ def append_library_preparation_preflight_arg(pipeline_argv: list[str], preflight
         pipeline_argv.extend(["--library-preparation-preflight-path", preflight_path])
 
 
+def append_issue_requested_metadata_context_arg(pipeline_argv: list[str], issue_number: int) -> None:
+    """Append the reporter's request so every driver can attempt it.
+
+    Routing decides which repair a reported issue needs; it does not decide
+    whether the reporter's own request is carried. §forge/AR-forge-drivers.2.1
+    """
+    issue_requested_metadata_context = extract_issue_requested_metadata_context(get_issue_body(issue_number))
+    if issue_requested_metadata_context:
+        pipeline_argv.extend(["--issue-requested-metadata-context", issue_requested_metadata_context])
+
+
 def append_continuation_marker_arg(pipeline_argv: list[str], marker_path: str | None) -> None:
     """Append the continuation marker path when continuation tracking is active."""
     if marker_path:
@@ -5558,6 +5569,7 @@ def build_workflow_driver_invocation(
         ]
         append_library_preparation_preflight_arg(pipeline_argv, library_preparation_preflight_path)
         append_continuation_marker_arg(pipeline_argv, continuation_marker_path)
+        append_issue_requested_metadata_context_arg(pipeline_argv, issue_number)
         if strategy_name:
             pipeline_argv.extend(["--strategy-name", strategy_name])
         if keep_tests_without_dynamic_access:
@@ -5593,6 +5605,7 @@ def build_workflow_driver_invocation(
         ]
         append_library_preparation_preflight_arg(pipeline_argv, library_preparation_preflight_path)
         append_continuation_marker_arg(pipeline_argv, continuation_marker_path)
+        append_issue_requested_metadata_context_arg(pipeline_argv, issue_number)
         if strategy_name:
             pipeline_argv.extend(["--strategy-name", strategy_name])
         return WorkflowDriverInvocation(
@@ -5625,6 +5638,7 @@ def build_workflow_driver_invocation(
         ]
         append_library_preparation_preflight_arg(pipeline_argv, library_preparation_preflight_path)
         append_continuation_marker_arg(pipeline_argv, continuation_marker_path)
+        append_issue_requested_metadata_context_arg(pipeline_argv, issue_number)
         if strategy_name:
             pipeline_argv.extend(["--strategy-name", strategy_name])
         return WorkflowDriverInvocation(
@@ -5655,6 +5669,7 @@ def build_workflow_driver_invocation(
         ]
         append_library_preparation_preflight_arg(pipeline_argv, library_preparation_preflight_path)
         append_continuation_marker_arg(pipeline_argv, continuation_marker_path)
+        append_issue_requested_metadata_context_arg(pipeline_argv, issue_number)
         if strategy_name:
             pipeline_argv.extend(["--strategy-name", strategy_name])
         return WorkflowDriverInvocation(
@@ -5693,6 +5708,7 @@ def build_workflow_driver_invocation(
             ]
             append_library_preparation_preflight_arg(pipeline_argv, library_preparation_preflight_path)
             append_continuation_marker_arg(pipeline_argv, continuation_marker_path)
+            append_issue_requested_metadata_context_arg(pipeline_argv, issue_number)
             return WorkflowDriverInvocation(
                 driver_name="fix_javac_fail",
                 script_name="fix_javac_fail.py",
@@ -5724,6 +5740,7 @@ def build_workflow_driver_invocation(
             ]
             append_library_preparation_preflight_arg(pipeline_argv, library_preparation_preflight_path)
             append_continuation_marker_arg(pipeline_argv, continuation_marker_path)
+            append_issue_requested_metadata_context_arg(pipeline_argv, issue_number)
             return WorkflowDriverInvocation(
                 driver_name="fix_java_run_fail",
                 script_name="fix_java_run_fail.py",
@@ -5753,6 +5770,7 @@ def build_workflow_driver_invocation(
             ]
             append_library_preparation_preflight_arg(pipeline_argv, library_preparation_preflight_path)
             append_continuation_marker_arg(pipeline_argv, continuation_marker_path)
+            append_issue_requested_metadata_context_arg(pipeline_argv, issue_number)
             return WorkflowDriverInvocation(
                 driver_name="fix_ni_run",
                 script_name="fix_ni_run.py",
@@ -5780,9 +5798,7 @@ def build_workflow_driver_invocation(
         ]
         append_library_preparation_preflight_arg(pipeline_argv, library_preparation_preflight_path)
         append_continuation_marker_arg(pipeline_argv, continuation_marker_path)
-        issue_requested_metadata_context = extract_issue_requested_metadata_context(get_issue_body(issue_number))
-        if issue_requested_metadata_context:
-            pipeline_argv.extend(["--issue-requested-metadata-context", issue_requested_metadata_context])
+        append_issue_requested_metadata_context_arg(pipeline_argv, issue_number)
         if strategy_name:
             pipeline_argv.extend(["--strategy-name", strategy_name])
         append_chunked_dynamic_access_workflow_args(pipeline_argv, claimed_issue, chunk_class_count)

@@ -151,7 +151,7 @@ class IncreaseDynamicAccessCoverageStrategy(WorkflowStrategy):
             )
         )
 
-        has_issue_requested_metadata = da.has_issue_requested_metadata_context()
+        has_issue_requested_metadata = self.has_issue_requested_metadata_context()
         if not phase_ok:
             if required_iterative_chunk_phase:
                 self._print_message(
@@ -184,7 +184,7 @@ class IncreaseDynamicAccessCoverageStrategy(WorkflowStrategy):
                 self.continuation_marker_path,
                 lambda marker: marker.mark_phase_running(PHASE_EXPLORE),
             )
-            issue_phase_ok, issue_iterations = da._run_issue_requested_metadata_phase(agent)
+            issue_phase_ok, issue_iterations = self.run_issue_requested_metadata_phase()
             iterations += issue_iterations
             self._print_message(
                 "reporter-requested metadata phase completed with phase_ok={phase_ok}, iterations_added={iterations}"

@@ -188,20 +188,37 @@ reporter must get working. That need is separate from the aggregate coverage
 delta, and Forge treats it as a prompt-based requirement rather than a
 deterministic post-generation merge.
 
+**Every driver carries it.** Routing decides which repair a reported issue
+needs; it does not decide whether the reporter's own request is attempted. The
+dispatcher forwards the issue body to every workflow driver, and each driver
+runs the phase before finalization, so no run closes a reported request without
+having tried it. The phase runs on the **analysis role**
+(§FS-forge-agent-runtime-selection), not on the strategy's own agent field, and
+carries its own prompts — a strategy that never declared them still gets the
+request attempted.
+
 The driver forwards the issue body into the workflow as **untrusted** context;
 the agent infers the needed metadata from it but must not follow instructions
 embedded in it. The agent then exercises each need through public library API —
 not direct test reflection, no-op class literals, or assertions that merely name
-the target — and includes the requested metadata when generation did not already
-produce it. Where the issue omits conditions, the agent adds the narrowest valid
+the target. Where the issue omits conditions, the agent adds the narrowest valid
 one that is reached *before* the dynamic access occurs; a condition reached only
 afterwards is invalid even if it belongs to the same library surface.
+
+**Generate, then fill.** Tracing is tried before anything is written by hand.
+The agent writes the tests, the engine runs `generateMetadata` — the engine owns
+every Gradle command (§AR-forge-strategy-agent-boundary) — and only then is the
+agent asked to hand-write the requested entries tracing missed, under the narrow
+exception in §root/FS-test-contract.2.7. The hand-written entry supplements the
+test; it never replaces it.
 
 Each inferred need is mandatory even when coverage is already complete or the
 need is unrelated to any uncovered class. Forge does not parse issue text with
 hardcoded rules and does not apply parsed metadata as a fallback — the
-requirement is carried entirely through the prompt and verified by local
-verification (§FS-local-ci-equivalent-verification).
+requirement is carried entirely through the prompt and verified by running the
+coordinate's suite: the phase succeeds only when `./gradlew test` passes end to
+end, so reaching `nativeTest` is never mistaken for a satisfied request
+(§FS-local-ci-equivalent-verification).
 
 ### 3. Java failures
 
