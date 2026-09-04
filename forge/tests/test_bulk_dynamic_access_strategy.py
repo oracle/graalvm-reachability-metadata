@@ -38,6 +38,25 @@ class BulkDynamicAccessChunkTests(unittest.TestCase):
         self.assertIs(progress.final_report, final_report)
         self.assertEqual(progress.completed_classes, ("A", "B"))
         self.assertEqual(progress.remaining_classes, ("C",))
+        self.assertEqual(progress.covered_call_gain, 2)
+
+    def test_bulk_progress_counts_partial_call_gain(self) -> None:
+        initial_report = self._partial_report(0)
+        final_report = self._partial_report(1)
+
+        progress = compute_bulk_dynamic_access_progress(initial_report, final_report, set())
+
+        self.assertEqual(progress.completed_classes, ())
+        self.assertEqual(progress.remaining_classes, ("A",))
+        self.assertEqual(progress.covered_call_gain, 1)
+
+    def test_bulk_progress_ignores_unchanged_partial_coverage(self) -> None:
+        initial_report = self._partial_report(1)
+        final_report = self._partial_report(1)
+
+        progress = compute_bulk_dynamic_access_progress(initial_report, final_report, set())
+
+        self.assertEqual(progress.covered_call_gain, 0)
 
     def test_bulk_progress_is_recorded_in_shared_exhaust_state(self) -> None:
         exhaust_report = DynamicAccessExhaustReport.create(
@@ -84,7 +103,7 @@ class BulkDynamicAccessChunkTests(unittest.TestCase):
 
     def test_composite_passes_shortfall_and_gated_report_to_iterative(self) -> None:
         strategy = self._composite_strategy()
-        primary = self._FakePrimary(self._progress(10, 90))
+        primary = self._FakePrimary(self._progress(10, 90, covered_call_gain=4))
         strategy.primary = primary
         strategy.primary_workflow_name = "bulk_dynamic_access"
         captured_context: dict[str, object] = {}
@@ -118,6 +137,7 @@ class BulkDynamicAccessChunkTests(unittest.TestCase):
 
         self.assertEqual(result, (RUN_STATUS_SUCCESS, 5, 1))
         self.assertEqual(captured_context["chunk_class_count"], 5)
+        self.assertEqual(captured_context["preceding_dynamic_access_covered_call_gain"], 4)
         self.assertEqual(captured_reports, [primary.bulk_chunk_progress.final_report])
 
     def test_composite_fails_when_required_iterative_shortfall_fails(self) -> None:
@@ -196,7 +216,12 @@ class BulkDynamicAccessChunkTests(unittest.TestCase):
         return strategy
 
     @classmethod
-    def _progress(cls, completed: int, remaining: int) -> BulkDynamicAccessProgress:
+    def _progress(
+            cls,
+            completed: int,
+            remaining: int,
+            covered_call_gain: int = 0,
+    ) -> BulkDynamicAccessProgress:
         final_report = cls._report(
             [f"completed-{index}" for index in range(completed)]
             + [f"remaining-{index}" for index in range(remaining)],
@@ -206,6 +231,7 @@ class BulkDynamicAccessChunkTests(unittest.TestCase):
             final_report=final_report,
             completed_classes=tuple(f"completed-{index}" for index in range(completed)),
             remaining_classes=tuple(f"remaining-{index}" for index in range(remaining)),
+            covered_call_gain=covered_call_gain,
         )
 
     @staticmethod
@@ -229,6 +255,25 @@ class BulkDynamicAccessChunkTests(unittest.TestCase):
                     call_sites=[],
                 )
                 for class_name in class_names
+            ],
+        )
+
+    @staticmethod
+    def _partial_report(covered_calls: int) -> DynamicAccessCoverageReport:
+        return DynamicAccessCoverageReport(
+            coordinate="org.example:lib:1.0.0",
+            has_dynamic_access=True,
+            total_calls=2,
+            covered_calls=covered_calls,
+            classes=[
+                DynamicAccessClass(
+                    class_name="A",
+                    source_file=None,
+                    resolved_source_file=None,
+                    total_calls=2,
+                    covered_calls=covered_calls,
+                    call_sites=[],
+                )
             ],
         )
 

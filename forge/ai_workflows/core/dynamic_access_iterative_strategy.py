@@ -85,6 +85,9 @@ class DynamicAccessIterativeStrategy(WorkflowStrategy):
         self.dynamic_access_exhaust_report_path: str | None = self.context.get(
             "dynamic_access_exhaust_report_path",
         )
+        self.preceding_dynamic_access_covered_call_gain: int = int(
+            self.context.get("preceding_dynamic_access_covered_call_gain") or 0
+        )
         self.chunk_class_count = int(self.context.get("chunk_class_count") or 0)
         self._last_phase_status = RUN_STATUS_SUCCESS
         self._latest_class_checkpoint: str | None = None
@@ -798,12 +801,13 @@ class DynamicAccessIterativeStrategy(WorkflowStrategy):
         )
 
     def _has_successful_class_coverage(self, successful_classes: int) -> bool:
-        """Return whether iterative or preceding bulk work gained class coverage.
+        """Return whether iterative or preceding bulk work gained coverage.
 
-        Bulk records its completed classes in the shared exhaust report before
-        iterative exploration finishes the remainder. §FS-forge-chunked-dynamic-access
+        Bulk passes its covered-call gain directly and records completed classes
+        in the shared exhaust report before iterative exploration finishes the
+        remainder. §FS-forge-chunked-dynamic-access
         """
-        if successful_classes > 0:
+        if successful_classes > 0 or self.preceding_dynamic_access_covered_call_gain > 0:
             return True
         return (
             self.dynamic_access_exhaust_report is not None

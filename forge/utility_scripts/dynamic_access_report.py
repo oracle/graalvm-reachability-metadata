@@ -87,13 +87,14 @@ class BulkDynamicAccessProgress:
     """Post-gate class progress from one bulk phase.
 
     The workflow compares its baseline with the last successfully gated report
-    and carries that exact report into the composite boundary
+    and carries that exact report and covered-call gain into the composite boundary
     (§AR-dynamic-access-bulk).
     """
 
     final_report: DynamicAccessCoverageReport
     completed_classes: tuple[str, ...]
     remaining_classes: tuple[str, ...]
+    covered_call_gain: int
 
 
 def compute_bulk_dynamic_access_progress(
@@ -123,7 +124,13 @@ def compute_bulk_dynamic_access_progress(
             and class_coverage.class_name not in processed_classes
         )
     )
-    return BulkDynamicAccessProgress(final_report, completed_classes, remaining_classes)
+    covered_call_gain: int = max(final_report.covered_calls - initial_report.covered_calls, 0)
+    return BulkDynamicAccessProgress(
+        final_report,
+        completed_classes,
+        remaining_classes,
+        covered_call_gain,
+    )
 
 
 @dataclass(frozen=True)

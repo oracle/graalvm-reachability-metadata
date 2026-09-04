@@ -236,8 +236,10 @@ chunked run it retains the initial report and, after the full iteration budget,
 compares it with the report refreshed immediately before the last passing gate.
 Every class that changed from uncovered to covered is recorded as completed;
 bulk never records a class as skipped, exhausted, or failed because it cannot
-attribute those outcomes to one class. This comparison runs once after the
-bulk loop and does not regenerate the report.
+attribute those outcomes to one class. The same comparison records the total
+covered-call gain so a partial improvement inside one class remains visible to
+the composite. This comparison runs once after the bulk loop and does not
+regenerate the report.
 
 In a pure-bulk workflow, a productive pass with more than the configured
 threshold still remaining returns chunk-ready. A zero-yield pass is final, as
@@ -286,6 +288,11 @@ primary leaves that phase running when the composite owns the next
 transition. The composite completes it only when the bulk result is already a
 chunk boundary or covers the whole report; otherwise the iterative workflow
 completes or leaves pending the same phase (§FS-forge-run-continuation.1).
+At the natural end of iterative refinement, any positive covered-call gain from
+the gated bulk phase counts as acceptable progress even when bulk did not fully
+complete a class and iterative work added no further coverage. That accumulated
+gain does not mask an iterative report, test, or native-gate failure, which ends
+the phase before the natural completion decision.
 
 Parameters: the primary workflow's parameters plus the iterative exploration
 parameters, from one bundle. Families: composite coverage strategies, Java-fix

@@ -458,6 +458,86 @@ class DynamicAccessProgressLoggingTests(unittest.TestCase):
         self.assertEqual(set(saved_report.exhausted_classes), set(remaining_classes))
         self.assertIsNone(failed_run_location())
 
+    def test_final_remainder_succeeds_after_partial_bulk_call_gain(self) -> None:
+        """A partial bulk gain remains successful after iterative exhaustion.
+
+        §FS-forge-chunked-dynamic-access
+        """
+        phase_ok, iterations, exhaust_report = self._run_exhausted_partial_remainder(1)
+
+        self.assertTrue(phase_ok)
+        self.assertEqual(iterations, 1)
+        self.assertEqual(exhaust_report.exhausted_classes, ["org.example.Partial"])
+
+    def test_final_remainder_fails_without_partial_bulk_call_gain(self) -> None:
+        """An unchanged bulk report does not excuse iterative exhaustion.
+
+        §FS-forge-chunked-dynamic-access
+        """
+        phase_ok, iterations, _ = self._run_exhausted_partial_remainder(0)
+
+        self.assertFalse(phase_ok)
+        self.assertEqual(iterations, 1)
+
+    def test_partial_bulk_call_gain_does_not_mask_report_failure(self) -> None:
+        """Accumulated progress applies only at natural phase completion.
+
+        §FS-forge-chunked-dynamic-access
+        """
+        phase_ok, iterations, _ = self._run_exhausted_partial_remainder(
+            1,
+            report_refresh_succeeds=False,
+        )
+
+        self.assertFalse(phase_ok)
+        self.assertEqual(iterations, 1)
+
+    def _run_exhausted_partial_remainder(
+            self,
+            preceding_covered_call_gain: int,
+            report_refresh_succeeds: bool = True,
+    ) -> tuple[bool, int, DynamicAccessExhaustReport]:
+        class FakeAgent:
+            def send_prompt(self, prompt: str) -> None:
+                pass
+
+            def run_test_command(self, command: str) -> str:
+                return "BUILD SUCCESSFUL"
+
+            def clear_context(self) -> None:
+                pass
+
+        class_name = "org.example.Partial"
+        current_report = DynamicAccessCoverageReport(
+            coordinate="org.example:lib:1.0.0",
+            has_dynamic_access=True,
+            total_calls=2,
+            covered_calls=1,
+            classes=[self._class_coverage(class_name, 2, 1)],
+        )
+        exhaust_report = DynamicAccessExhaustReport.create(
+            coordinate="org.example:lib:1.0.0",
+            issue_number=9864,
+        )
+        strategy = self._strategy(
+            dynamic_access_exhaust_report=exhaust_report,
+            chunk_class_count=15,
+            preceding_dynamic_access_covered_call_gain=preceding_covered_call_gain,
+        )
+        refreshed_report = current_report if report_refresh_succeeds else None
+
+        with patch.object(strategy, "_render_prompt", return_value="prompt"), \
+                patch.object(strategy, "_generate_dynamic_access_report", return_value=refreshed_report), \
+                patch.object(strategy, "_print_failure_analysis"), \
+                patch.object(strategy, "_library_test_change_signature", return_value="clean"), \
+                patch(
+                    "ai_workflows.core.dynamic_access_iterative_strategy.subprocess.check_output",
+                    return_value="checkpoint\n",
+                ):
+            phase_ok, iterations = strategy._run_dynamic_access_phase(FakeAgent(), current_report)
+
+        return phase_ok, iterations, exhaust_report
+
     def test_terminal_exhaustion_defers_failure_location_to_caller(self) -> None:
         """A phase result alone does not record a terminal workflow failure.
 
