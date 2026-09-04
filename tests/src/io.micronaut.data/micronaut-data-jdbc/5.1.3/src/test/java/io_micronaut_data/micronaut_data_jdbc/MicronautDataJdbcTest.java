@@ -16,6 +16,9 @@ import io.micronaut.data.annotation.GeneratedValue;
 import io.micronaut.data.annotation.Id;
 import io.micronaut.data.annotation.MappedEntity;
 import io.micronaut.data.jdbc.annotation.JdbcRepository;
+import io.micronaut.data.model.Page;
+import io.micronaut.data.model.Pageable;
+import io.micronaut.data.model.Sort;
 import io.micronaut.data.model.query.builder.sql.Dialect;
 import io.micronaut.data.repository.CrudRepository;
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
@@ -92,10 +95,35 @@ public class MicronautDataJdbcTest {
         assertThat(repository.findAll()).hasSize(3);
     }
 
+    @Test
+    void returnsSortedPagesWithTotalCounts() {
+        repository.saveAll(List.of(
+                new CatalogBook("978-0-00-000020-2", "Ember", "Riley Shah", 180),
+                new CatalogBook("978-0-00-000021-9", "Atlas", "Riley Shah", 220),
+                new CatalogBook("978-0-00-000022-6", "Delta", "Riley Shah", 260),
+                new CatalogBook("978-0-00-000023-3", "Beacon", "Riley Shah", 300),
+                new CatalogBook("978-0-00-000024-0", "Cinder", "Riley Shah", 340)));
+
+        Pageable request = Pageable.from(1, 2, Sort.of(Sort.Order.asc("title")));
+        Page<CatalogBook> page = repository.findAll(request);
+
+        assertThat(page.getContent())
+                .extracting(CatalogBook::getTitle)
+                .containsExactly("Cinder", "Delta");
+        assertThat(page.getPageNumber()).isEqualTo(1);
+        assertThat(page.getNumberOfElements()).isEqualTo(2);
+        assertThat(page.getTotalSize()).isEqualTo(5);
+        assertThat(page.getTotalPages()).isEqualTo(3);
+        assertThat(page.hasPrevious()).isTrue();
+        assertThat(page.hasNext()).isTrue();
+    }
+
     @JdbcRepository(dialect = Dialect.H2)
     public interface CatalogBookRepository extends CrudRepository<CatalogBook, Long> {
 
         Optional<CatalogBook> findByIsbn(String isbn);
+
+        Page<CatalogBook> findAll(Pageable pageable);
 
         List<CatalogBook> findByAuthorOrderByTitle(String author);
 
