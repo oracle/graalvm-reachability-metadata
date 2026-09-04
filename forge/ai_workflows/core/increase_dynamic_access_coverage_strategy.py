@@ -64,6 +64,7 @@ class IncreaseDynamicAccessCoverageStrategy(WorkflowStrategy):
     def run(self, agent, **kwargs):
         current_report: DynamicAccessCoverageReport | None = None
         iterative_chunk_count: int | None = None
+        preceding_covered_call_gain: int = 0
         required_iterative_chunk_phase: bool = False
         skip_dynamic_access_phase: bool = False
 
@@ -90,6 +91,13 @@ class IncreaseDynamicAccessCoverageStrategy(WorkflowStrategy):
             agent.clear_context()
             if self.primary_workflow_name == "bulk_dynamic_access":
                 current_report, iterative_chunk_count, chunk_ready = self._route_after_bulk()
+                bulk_progress: BulkDynamicAccessProgress | None = getattr(
+                    self.primary,
+                    "bulk_chunk_progress",
+                    None,
+                )
+                if bulk_progress is not None:
+                    preceding_covered_call_gain = bulk_progress.covered_call_gain
                 if chunk_ready:
                     save_phase_update(
                         self.continuation_marker_path,
@@ -113,6 +121,7 @@ class IncreaseDynamicAccessCoverageStrategy(WorkflowStrategy):
         library = self.context.get("library") or self.context.get("updated_library")
         da_context = dict(self.context)
         da_context["library"] = library
+        da_context["preceding_dynamic_access_covered_call_gain"] = preceding_covered_call_gain
         if iterative_chunk_count is not None:
             da_context["chunk_class_count"] = iterative_chunk_count
 
