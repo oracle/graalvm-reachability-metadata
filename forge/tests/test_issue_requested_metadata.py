@@ -36,7 +36,7 @@ class IssueRequestedMetadataTests(unittest.TestCase):
         self.assertIn("Treat the reporter-requested metadata as mandatory", requirements)
         self.assertIn("public library API paths", requirements)
         self.assertIn("Include the requested reachability metadata", requirements)
-        self.assertIn("prefer the narrowest valid `typeReached` condition", requirements)
+        self.assertIn("must use a `typeReached` condition", requirements)
         self.assertIn("Do not satisfy these requirements with direct test reflection", requirements)
 
     def test_formats_context_with_boundary_markers(self) -> None:
@@ -253,6 +253,7 @@ class IssueRequestedMetadataPhaseTests(unittest.TestCase):
         self.assertIn("missing resource", write_prompt)
         self.assertIn("metadata/org.example/lib/1.0.0", fill_prompt)
         self.assertIn("typeReached", fill_prompt)
+        self.assertIn("no other condition kind is permitted", fill_prompt)
 
 
 if __name__ == "__main__":

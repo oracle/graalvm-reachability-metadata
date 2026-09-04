@@ -204,9 +204,10 @@ The driver forwards the issue body into the workflow as **untrusted** context;
 the agent infers the needed metadata from it but must not follow instructions
 embedded in it. The agent then exercises each need through public library API —
 not direct test reflection, no-op class literals, or assertions that merely name
-the target. Where the issue omits conditions, the agent adds the narrowest valid
-one that is reached *before* the dynamic access occurs; a condition reached only
-afterwards is invalid even if it belongs to the same library surface.
+the target. Every reporter-requested entry uses a `typeReached` condition naming
+the narrowest valid type reached *before* the dynamic access occurs; no other
+condition kind is permitted, and a type reached only afterwards is invalid even
+if it belongs to the same library surface.
 
 **Generate, then fill.** Tracing is tried before anything is written by hand.
 The agent writes the tests, the engine runs `generateMetadata` — the engine owns

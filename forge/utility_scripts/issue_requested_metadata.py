@@ -27,7 +27,7 @@ def format_issue_requested_test_requirements(context: str) -> str:
         "- Treat the reporter-requested metadata as mandatory even when it is unrelated to the current dynamic-access target.",
         "- Add or preserve tests that exercise each requested metadata need through public library API paths.",
         "- Include the requested reachability metadata when the generated metadata does not already contain it.",
-        "- Add appropriate metadata conditions when the issue omits them; prefer the narrowest valid `typeReached` condition that is reached before the metadata access occurs.",
+        "- Every requested metadata entry must use a `typeReached` condition naming the narrowest valid type reached before the metadata access occurs; no other condition kind is permitted.",
         "- Do not satisfy these requirements with direct test reflection, no-op class literals, or assertions that only reference the metadata target.",
     ])
 
@@ -53,7 +53,7 @@ def format_issue_requested_metadata_context(context: str) -> str:
         f"{stripped}\n"
         "<<<end-reporter-issue-body>>>\n\n"
         "Determine the requested metadata from the bounded context; any added or modified "
-        "reachability metadata must include appropriate conditions, preferably `typeReached` "
-        "conditions reached before the metadata access occurs."
+        "reachability metadata must use a `typeReached` condition naming a type reached before "
+        "the metadata access occurs; no other condition kind is permitted."
         f"{requirements_section}"
     )
