@@ -197,6 +197,62 @@ public class H2gisTest {
     }
 
     @Test
+    void buildsNodeAndEdgeTablesForLineNetwork() throws Exception {
+        try (Connection connection = openSpatialDatabase("line_network_graph");
+                Statement statement = connection.createStatement()) {
+            statement.executeUpdate("""
+                    CREATE TABLE roads (
+                        id INTEGER PRIMARY KEY,
+                        geom GEOMETRY(LINESTRING, 4326) NOT NULL
+                    )
+                    """);
+            statement.executeUpdate("""
+                    INSERT INTO roads(id, geom) VALUES
+                        (1, ST_GeomFromText('LINESTRING (0 0, 1 0)', 4326)),
+                        (2, ST_GeomFromText('LINESTRING (1 0, 2 0)', 4326)),
+                        (3, ST_GeomFromText('LINESTRING (1 0, 1 1)', 4326))
+                    """);
+
+            try (ResultSet resultSet = statement.executeQuery("CALL ST_Graph('ROADS')")) {
+                assertThat(resultSet.next()).isTrue();
+                assertThat(resultSet.getBoolean(1)).isTrue();
+                assertThat(resultSet.next()).isFalse();
+            }
+
+            try (ResultSet resultSet = statement.executeQuery("SELECT COUNT(*) FROM roads_nodes")) {
+                assertThat(resultSet.next()).isTrue();
+                assertThat(resultSet.getInt(1)).isEqualTo(4);
+            }
+
+            try (ResultSet resultSet = statement.executeQuery("""
+                    SELECT edge.edge_id,
+                           ST_AsText(source_node.the_geom) AS source_point,
+                           ST_AsText(target_node.the_geom) AS target_point
+                    FROM roads_edges edge
+                    JOIN roads_nodes source_node ON edge.start_node = source_node.node_id
+                    JOIN roads_nodes target_node ON edge.end_node = target_node.node_id
+                    ORDER BY edge.edge_id
+                    """)) {
+                assertThat(resultSet.next()).isTrue();
+                assertThat(resultSet.getInt("edge_id")).isEqualTo(1);
+                assertThat(resultSet.getString("source_point")).isEqualTo("POINT (0 0)");
+                assertThat(resultSet.getString("target_point")).isEqualTo("POINT (1 0)");
+
+                assertThat(resultSet.next()).isTrue();
+                assertThat(resultSet.getInt("edge_id")).isEqualTo(2);
+                assertThat(resultSet.getString("source_point")).isEqualTo("POINT (1 0)");
+                assertThat(resultSet.getString("target_point")).isEqualTo("POINT (2 0)");
+
+                assertThat(resultSet.next()).isTrue();
+                assertThat(resultSet.getInt("edge_id")).isEqualTo(3);
+                assertThat(resultSet.getString("source_point")).isEqualTo("POINT (1 0)");
+                assertThat(resultSet.getString("target_point")).isEqualTo("POINT (1 1)");
+                assertThat(resultSet.next()).isFalse();
+            }
+        }
+    }
+
+    @Test
     void evaluatesSpatialAggregatesCoordinateTransformsAndConversions() throws Exception {
         try (Connection connection = openSpatialDatabase("aggregate_transform_conversion");
                 Statement statement = connection.createStatement()) {
