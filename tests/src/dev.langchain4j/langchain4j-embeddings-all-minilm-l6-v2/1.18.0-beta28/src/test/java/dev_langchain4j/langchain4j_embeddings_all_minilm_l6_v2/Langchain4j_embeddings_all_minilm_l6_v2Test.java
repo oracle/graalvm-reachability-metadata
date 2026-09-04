@@ -10,10 +10,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.data.Percentage.withPercentage;
 
 import dev.langchain4j.data.embedding.Embedding;
+import dev.langchain4j.data.message.TextContent;
 import dev.langchain4j.data.segment.TextSegment;
 import dev.langchain4j.model.embedding.EmbeddingModel;
 import dev.langchain4j.model.embedding.onnx.allminilml6v2.AllMiniLmL6V2EmbeddingModel;
 import dev.langchain4j.model.embedding.onnx.allminilml6v2.AllMiniLmL6V2EmbeddingModelFactory;
+import dev.langchain4j.model.embedding.request.EmbeddingRequest;
+import dev.langchain4j.model.embedding.response.EmbeddingResponse;
 import dev.langchain4j.model.output.Response;
 import dev.langchain4j.model.output.TokenUsage;
 import dev.langchain4j.spi.model.embedding.EmbeddingModelFactory;
@@ -71,6 +74,30 @@ public class Langchain4j_embeddings_all_minilm_l6_v2Test {
         assertThat(tokenUsage.outputTokenCount()).isNull();
         assertThat(tokenUsage.totalTokenCount()).isEqualTo(3);
         assertThat(response.finishReason()).isNull();
+    }
+
+    @Test
+    void embedsMultipartTextInputAsOneEmbedding() {
+        EmbeddingModel model = new AllMiniLmL6V2EmbeddingModel(new RecordingExecutor());
+        EmbeddingRequest multipartRequest = EmbeddingRequest.builder()
+                .input(TextContent.from("sentence transformers"), TextContent.from("create useful embeddings"))
+                .build();
+        EmbeddingRequest joinedRequest = EmbeddingRequest.builder()
+                .input("sentence transformers\ncreate useful embeddings")
+                .build();
+
+        EmbeddingResponse multipartResponse = model.embed(multipartRequest);
+        EmbeddingResponse joinedResponse = model.embed(joinedRequest);
+
+        assertThat(multipartResponse.embeddings()).singleElement().satisfies(embedding -> {
+            assertThat(embedding.dimension()).isEqualTo(EMBEDDING_DIMENSION);
+            assertThat(magnitude(embedding.vector())).isCloseTo(1.0, withPercentage(0.01));
+        });
+        assertThat(multipartResponse.embeddings()).isEqualTo(joinedResponse.embeddings());
+        assertThat(multipartResponse.tokenUsage()).isNotNull();
+        assertThat(multipartResponse.tokenUsage().inputTokenCount())
+                .isEqualTo(joinedResponse.tokenUsage().inputTokenCount());
+        assertThat(multipartResponse.modelName()).isEqualTo(model.modelName());
     }
 
     @Test
