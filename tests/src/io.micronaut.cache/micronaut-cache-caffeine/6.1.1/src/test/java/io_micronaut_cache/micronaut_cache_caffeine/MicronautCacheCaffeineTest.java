@@ -68,6 +68,21 @@ public class MicronautCacheCaffeineTest {
     }
 
     @Test
+    void supplierBasedPutIfAbsentComputesValueOnlyForMissingKey() {
+        try (ApplicationContext context = configuredContext()) {
+            SyncCache<?> cache = context.getBean(CacheManager.class).getCache("catalog");
+            CountingSupplier initialValue = new CountingSupplier("created");
+            CountingSupplier replacementValue = new CountingSupplier("replacement");
+
+            assertThat(cache.<String>putIfAbsent("lazy", initialValue)).isEqualTo("created");
+            assertThat(initialValue.invocations()).isEqualTo(1);
+            assertThat(cache.<String>putIfAbsent("lazy", replacementValue)).isEqualTo("created");
+            assertThat(replacementValue.invocations()).isZero();
+            assertThat(cache.get("lazy", String.class)).contains("created");
+        }
+    }
+
+    @Test
     void asynchronousViewPerformsCacheOperations() throws Exception {
         try (ApplicationContext context = configuredContext()) {
             SyncCache<?> cache = context.getBean(CacheManager.class).getCache("catalog");
