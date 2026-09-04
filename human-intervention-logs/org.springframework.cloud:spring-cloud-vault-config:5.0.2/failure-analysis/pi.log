@@ -1,0 +1,20 @@
+## Human intervention needed
+
+The automated job failed during dynamic-access test generation for `org.springframework.cloud:spring-cloud-vault-config:5.0.2`.
+
+Preserved work: https://github.com/oracle/graalvm-reachability-metadata/tree/ai%2Fkimeta%2Fhuman-intervention%2Fissue-9705-library-new-request-org.springframework.cloud-spring-cloud-vault-config-5.0.2-a9438eac
+
+The likely failure is coverage convergence, not Gradle or Native Image execution. After 6 iterations, the final report remained at 1/2 dynamic-access calls (50%). The uncovered call is `Field#set` at `VaultConfigDataLoader.java:424`. The generation log concludes that this path may be unreachable through the resolved public API because Spring Vault `4.0.3` exposes only a `protected final Log logger`, which `isUpdateableLogField` rejects; both final attempts therefore made no test changes. The class was recorded as exhausted.
+
+The generated Vault integration test itself passes: the latest Gradle log reports one successful native test and `BUILD SUCCESSFUL`. Metrics nevertheless record `status: failure`, `generated_loc: 0`, and `metadata_entries: 0`, indicating that finalization did not complete and the preserved branch is not publication-ready.
+
+Inspect:
+- `logs/org.springframework.cloud:spring-cloud-vault-config:5.0.2/add-new-library-support/pi-generation-2026-09-04T06-04-21-451035Z.log`
+- `logs/org.springframework.cloud:spring-cloud-vault-config:5.0.2/gradle/generateDynamicAccessCoverageReport-2026-09-04T06-46-28-202039Z.log`
+- `logs/org.springframework.cloud:spring-cloud-vault-config:5.0.2/gradle-test/gradle-test-2026-09-04T06-45-08-301896Z.log`
+- `stats/org.springframework.cloud/spring-cloud-vault-config/5.0.2/execution-metrics.json`
+
+Manual next steps:
+1. Confirm from `VaultConfigDataLoader` and Spring Vault `4.0.3` sources whether line 424 has any supported public-API path; add a consumer-like test only if one exists.
+2. If the call is genuinely unreachable, accept/document the exhausted call site and complete metadata finalization, including splitting test-only metadata.
+3. Run coordinate-scoped metadata validation, dynamic-access reporting, and the full JVM/native test lane before publication.
