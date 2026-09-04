@@ -27,7 +27,9 @@ import org.springframework.cloud.vault.config.SecretBackendMetadata;
 import org.springframework.cloud.vault.config.VaultConfigDataLoader;
 import org.springframework.cloud.vault.config.VaultConfigLocation;
 import org.springframework.cloud.vault.config.VaultProperties;
+import org.springframework.context.support.GenericApplicationContext;
 import org.springframework.core.env.PropertySource;
+import org.springframework.vault.authentication.LifecycleAwareSessionManager;
 import org.springframework.vault.authentication.SessionManager;
 import org.springframework.vault.core.VaultTemplate;
 
@@ -54,18 +56,30 @@ public class VaultConfigDataLoaderTest {
             VaultProperties properties = createVaultProperties(vaultUri);
             DefaultBootstrapContext bootstrapContext = new DefaultBootstrapContext();
             bootstrapContext.register(VaultProperties.class, ignored -> properties);
+            DeferredLogs deferredLogs = new DeferredLogs();
+            VaultConfigDataLoader loader = new VaultConfigDataLoader(deferredLogs);
 
-            ConfigDataLoaderContext loaderContext = () -> bootstrapContext;
-            SecretBackendMetadata backend =
-                    KeyValueSecretBackendMetadata.create("secret", "vault-config-loader");
-            ConfigData configData = new VaultConfigDataLoader(new DeferredLogs())
-                    .load(loaderContext, new VaultConfigLocation(backend, false));
+            try (GenericApplicationContext applicationContext = new GenericApplicationContext()) {
+                applicationContext.refresh();
+                try {
+                    ConfigDataLoaderContext loaderContext = () -> bootstrapContext;
+                    SecretBackendMetadata backend =
+                            KeyValueSecretBackendMetadata.create("secret", "vault-config-loader");
+                    ConfigData configData = loader.load(loaderContext, new VaultConfigLocation(backend, false));
+                    PropertySource<?> propertySource = configData.getPropertySources().get(0);
+                    SessionManager sessionManager = bootstrapContext.get(SessionManager.class);
 
-            assertThat(configData.getPropertySources()).hasSize(1);
-            PropertySource<?> propertySource = configData.getPropertySources().get(0);
-            assertThat(propertySource.getProperty("greeting")).isEqualTo(SECRET_VALUE);
-            assertThat(bootstrapContext.get(VaultTemplate.class)).isNotNull();
-            assertThat(bootstrapContext.get(SessionManager.class)).isNotNull();
+                    assertThat(configData.getPropertySources()).hasSize(1);
+                    assertThat(propertySource.getProperty("greeting")).isEqualTo(SECRET_VALUE);
+                    assertThat(bootstrapContext.get(VaultTemplate.class)).isNotNull();
+                    assertThat(sessionManager).isInstanceOf(LifecycleAwareSessionManager.class);
+                    assertThat(sessionManager.getSessionToken().getToken()).isEqualTo(ROOT_TOKEN);
+                } finally {
+                    bootstrapContext.close(applicationContext);
+                }
+            } finally {
+                deferredLogs.switchOverAll();
+            }
         } finally {
             removeContainer(containerName);
         }
@@ -109,7 +123,7 @@ public class VaultConfigDataLoaderTest {
         properties.setReadTimeout((int) IO_TIMEOUT.toMillis());
         properties.getReactive().setEnabled(false);
         properties.getConfig().getLifecycle().setEnabled(false);
-        properties.getSession().getLifecycle().setEnabled(false);
+        properties.getSession().getLifecycle().setEnabled(true);
         return properties;
     }
 
