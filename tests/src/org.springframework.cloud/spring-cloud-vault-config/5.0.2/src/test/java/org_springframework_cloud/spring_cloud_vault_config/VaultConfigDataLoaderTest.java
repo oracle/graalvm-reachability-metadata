@@ -28,6 +28,8 @@ import org.springframework.cloud.vault.config.VaultConfigLocation;
 import org.springframework.cloud.vault.config.VaultProperties;
 import org.springframework.context.support.GenericApplicationContext;
 import org.springframework.core.env.PropertySource;
+import org.springframework.vault.authentication.LifecycleAwareSessionManager;
+import org.springframework.vault.authentication.SessionManager;
 
 public class VaultConfigDataLoaderTest {
 
@@ -41,7 +43,7 @@ public class VaultConfigDataLoaderTest {
 
     @Test
     @Timeout(value = 59)
-    void loadsConfigurationUsingTokenAuthentication() throws Exception {
+    void loadsConfigurationUsingLifecycleAwareTokenAuthentication() throws Exception {
         int port = findAvailablePort();
         String containerName = "spring-cloud-vault-config-" + UUID.randomUUID();
         boolean containerStartAttempted = false;
@@ -64,7 +66,9 @@ public class VaultConfigDataLoaderTest {
                     ConfigData configData = loader.load(new TestConfigDataLoaderContext(bootstrapContext),
                             new VaultConfigLocation("secret/config-test", false));
                     PropertySource<?> propertySource = configData.getPropertySources().getFirst();
+                    SessionManager sessionManager = bootstrapContext.get(SessionManager.class);
 
+                    assertThat(sessionManager).isInstanceOf(LifecycleAwareSessionManager.class);
                     assertThat(configData.getPropertySources()).hasSize(1);
                     assertThat(propertySource.getProperty("message")).isEqualTo("loaded-from-vault");
                     assertThat(propertySource.getProperty("environment")).isEqualTo("integration-test");
@@ -91,7 +95,7 @@ public class VaultConfigDataLoaderTest {
         properties.setReadTimeout(10_000);
         properties.getReactive().setEnabled(false);
         properties.getConfig().getLifecycle().setEnabled(false);
-        properties.getSession().getLifecycle().setEnabled(false);
+        properties.getSession().getLifecycle().setEnabled(true);
         return properties;
     }
 
