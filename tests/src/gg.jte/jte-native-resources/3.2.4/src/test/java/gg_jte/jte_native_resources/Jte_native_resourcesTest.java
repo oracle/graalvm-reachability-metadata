@@ -91,6 +91,23 @@ public class Jte_native_resourcesTest {
     }
 
     @Test
+    void replacesReflectionConfigurationWhenTemplatesChange() throws IOException {
+        NativeResourcesExtension extension = new NativeResourcesExtension();
+        JteConfig configuration = config(temporaryDirectory, "example.application", "example.views");
+        extension.generate(configuration, Set.of(template("old.jte", "example.views", "OldGenerated")));
+
+        extension.generate(configuration, Set.of(template("current.jte", "example.views", "CurrentGenerated")));
+
+        Path reflectionFile = temporaryDirectory.resolve(
+                "META-INF/native-image/jte-generated/example.application/reflection-config.json");
+        assertThat(Files.readString(reflectionFile)).isEqualTo("""
+                [
+                {"name":"example.views.CurrentGenerated", "allDeclaredMethods":true, "allDeclaredFields":true}
+                ]
+                """);
+    }
+
+    @Test
     void generatesResourcesWhenConfiguredThroughTemplateEngine() throws IOException {
         Path templateRoot = temporaryDirectory.resolve("templates");
         Path generatedSourcesRoot = temporaryDirectory.resolve("generated-sources");
