@@ -65,7 +65,8 @@ public class VaultConfigDataLoaderTest {
             PropertySource<?> propertySource = configData.getPropertySources().get(0);
             assertThat(propertySource.getProperty("greeting")).isEqualTo(SECRET_VALUE);
             assertThat(bootstrapContext.get(VaultTemplate.class)).isNotNull();
-            assertThat(bootstrapContext.get(SessionManager.class)).isNotNull();
+            SessionManager sessionManager = bootstrapContext.get(SessionManager.class);
+            assertThat(sessionManager.getSessionToken().getToken()).isEqualTo(ROOT_TOKEN);
         } finally {
             removeContainer(containerName);
         }
