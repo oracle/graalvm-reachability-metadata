@@ -6,10 +6,12 @@
  */
 package org_springframework_boot.spring_boot_testcontainers;
 
+import java.security.KeyStore;
 import java.time.Duration;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import com.redis.testcontainers.RedisContainer;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.testcontainers.containers.GenericContainer;
@@ -20,13 +22,17 @@ import org.testcontainers.postgresql.PostgreSQLContainer;
 
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
+import org.springframework.boot.data.redis.autoconfigure.DataRedisConnectionDetails;
 import org.springframework.boot.jdbc.autoconfigure.JdbcConnectionDetails;
+import org.springframework.boot.ssl.SslBundle;
 import org.springframework.boot.testcontainers.beans.TestcontainerBeanDefinition;
 import org.springframework.boot.testcontainers.context.ImportTestcontainers;
 import org.springframework.boot.testcontainers.lifecycle.TestcontainersLifecycleApplicationContextInitializer;
 import org.springframework.boot.testcontainers.lifecycle.TestcontainersStartup;
+import org.springframework.boot.testcontainers.service.connection.PemTrustStore;
 import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
 import org.springframework.boot.testcontainers.service.connection.ServiceConnectionAutoConfiguration;
+import org.springframework.boot.testcontainers.service.connection.Ssl;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.Bean;
@@ -40,6 +46,28 @@ import org.springframework.test.context.TestContextManager;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class Spring_boot_testcontainersTest {
+
+    private static final String TEST_CERTIFICATE = """
+            -----BEGIN CERTIFICATE-----
+            MIIDCTCCAfGgAwIBAgIUakBJBWl5YwlpzHNTfsAVlmbrhOgwDQYJKoZIhvcNAQEL
+            BQAwFDESMBAGA1UEAwwJbG9jYWxob3N0MB4XDTI2MDkwNTExNDAxOFoXDTM2MDkw
+            MjExNDAxOFowFDESMBAGA1UEAwwJbG9jYWxob3N0MIIBIjANBgkqhkiG9w0BAQEF
+            AAOCAQ8AMIIBCgKCAQEAmP44J23L6kRbyQ7AfZUxA1CYr90ayj2MDQKShaYw1iMs
+            YUy90OwWrnBSsF+0v6sbob/Xx6nbYHuap3W00oZ3M3mHZFrLXcKsBvFA9/rOr/N7
+            uS2BUP7YyM5LLBpNjNaZQrJH6c4LpKr5wAuFopCwRV3aCnFLTB8ORvWZpvyZZTtN
+            5UYWClIelhYnyelZhGdV1JNMu1vkEh6GDPguuyGv5QWYM/LeT/C/eqapKe9Ho0UU
+            M3kO0rE0aCtKFchfKjzm22AkueYhEpr4K0qjllcP+Buf/0Y8/INoKrQP4JGXsV01
+            qdY5BLtilndE/k42N+HJo0v3HDUydges+ktD6nLHawIDAQABo1MwUTAdBgNVHQ4E
+            FgQUleaC02Y9BeHnyK0ibFwQDOJVs28wHwYDVR0jBBgwFoAUleaC02Y9BeHnyK0i
+            bFwQDOJVs28wDwYDVR0TAQH/BAUwAwEB/zANBgkqhkiG9w0BAQsFAAOCAQEAXSTY
+            jHGwLfNqv+S8Ic5N+MF0X10ygARu1Srb6o7HyJwuggWNefF+vUjzPNa6ZIfpTKM4
+            MCuEFXZdp6jA5ONAeL7hPRDvyWIED3VWot6o+9iWtbJzySKYbOUpCc57gVt8ev35
+            L3pdcCwNowfKdulgFp0nPdChR6OaeoMhdddDXMuYC4/J/USqTzui/jxvT17XRzbs
+            A6AX+v6jBMBu/QA27XyG4uRCYZTc8McsTI9tlAh3k+fMSP2OC8pUzBDK30vxAPht
+            5uN7gMEqZOBfr2/vJSag88pdlpwqsLrZR0iItrE1rAIgONdeCXCQW/E6s2AqFJ8c
+            rExAjDayNCHR+utzqw==
+            -----END CERTIFICATE-----
+            """;
 
     @Test
     void importTestcontainersRegistersContainerFieldAsInfrastructureBeanWithoutStartingIt() {
@@ -107,6 +135,45 @@ public class Spring_boot_testcontainersTest {
         assertThat(second.isRunning()).isFalse();
         assertThat(first.getStopCount()).isEqualTo(1);
         assertThat(second.getStopCount()).isEqualTo(1);
+    }
+
+    @Test
+    void sslServiceConnectionCreatesBundleFromPemTrustMaterial() throws Exception {
+        try (AnnotationConfigApplicationContext context =
+                new AnnotationConfigApplicationContext(SslServiceConnectionConfiguration.class)) {
+            DataRedisConnectionDetails connectionDetails = context.getBean(DataRedisConnectionDetails.class);
+            SslBundle sslBundle = connectionDetails.getSslBundle();
+
+            assertThat(sslBundle).isNotNull();
+            assertThat(sslBundle.getProtocol()).isEqualTo("TLSv1.3");
+            assertThat(sslBundle.getOptions().getCiphers()).containsExactly("TLS_AES_128_GCM_SHA256");
+            assertThat(sslBundle.getOptions().getEnabledProtocols()).containsExactly("TLSv1.3");
+            assertThat(sslBundle.getKey().getPassword()).isEqualTo("key-password");
+            assertThat(sslBundle.getKey().getAlias()).isEqualTo("client");
+            assertThat(sslBundle.getStores().getKeyStore()).isNull();
+            KeyStore trustStore = sslBundle.getStores().getTrustStore();
+            assertThat(trustStore).isNotNull();
+            assertThat(trustStore.size()).isEqualTo(1);
+        }
+    }
+
+    @Configuration(proxyBeanMethods = false)
+    @ImportAutoConfiguration(ServiceConnectionAutoConfiguration.class)
+    static class SslServiceConnectionConfiguration {
+
+        @Bean(destroyMethod = "")
+        @ServiceConnection(name = "redis")
+        @PemTrustStore(certificate = TEST_CERTIFICATE)
+        @Ssl(
+                protocol = "TLSv1.3",
+                ciphers = "TLS_AES_128_GCM_SHA256",
+                enabledProtocols = "TLSv1.3",
+                keyPassword = "key-password",
+                keyAlias = "client")
+        RedisContainer redisContainer() {
+            return new RedisContainer("redis:latest");
+        }
+
     }
 
     @Configuration(proxyBeanMethods = false)
