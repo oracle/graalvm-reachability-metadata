@@ -34,7 +34,10 @@ public class ModelResolverTest {
 
         Schema<?> status = property(resolvedSchema.schema, "status");
 
-        assertThat(status.getEnum()).containsExactly("active", "archived");
+        List<?> enumValues = status.getEnum();
+        assertThat(enumValues).hasSize(2);
+        assertThat(enumValues.get(0)).isEqualTo("active");
+        assertThat(enumValues.get(1)).isEqualTo("archived");
     }
 
     @Test
