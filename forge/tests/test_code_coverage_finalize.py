@@ -328,7 +328,9 @@ class FinalizerTests(unittest.TestCase):
         loaded = module.load_validated_final_metrics(
             os.path.join(output, "final-metrics.json")
         )
-        self.assertEqual(loaded["schemaVersion"], "1.2.0")
+        self.assertEqual(loaded["schemaVersion"], "1.3.0")
+        self.assertTrue(loaded["finalMeasurementArtifacts"]["jacoco"].endswith("jacoco-final.xml"))
+        self.assertTrue(loaded["finalMeasurementArtifacts"]["discoveryReport"].endswith("deep-5.json"))
         with open(
                 os.path.join(output, "final-summary.md"),
                 encoding="utf-8",

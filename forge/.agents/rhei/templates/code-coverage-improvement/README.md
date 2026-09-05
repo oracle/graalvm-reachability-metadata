@@ -60,7 +60,8 @@ unreviewed; finalization executes as a deterministic step program (JVM tests
 only at this stage — no Native Image validation) whose nonzero exit code names
 the failed step, and completes only when the deterministic `finalize-verify`
 program accepts its artifacts. Fixable failures are repaired by `finalize-fix`
-for at most `fix_passes` pass(es) before the steps re-run. Failed targets or an
+for at most `fix_passes` pass(es) before final evidence is remeasured and the
+steps re-run. Failed targets or an
 explicit `needsHumanIntervention` flag route to `human-intervention`. Pipeline
 tasks also route there when a required helper or artifact fails instead of
 completing with partial evidence. Finalization writes schema-validated,

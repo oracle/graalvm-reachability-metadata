@@ -511,8 +511,9 @@ The Rhei template should decompose the workflow into these phases:
    (including the tracked coverage suite); run the regular JVM tests (`javaTest`)
    and the tracked extension suite (`codeCoverageTest`); regenerate the
    coordinate's committed library stats from the combined main-JAR-only JaCoCo
-   report; and persist final metrics from the baseline and highest-iteration
-   JaCoCo and deep reports, including each phase's recorded stop decision
+   report; and persist final metrics from the baseline and final JaCoCo and deep reports. After a finalization
+   repair, the final reports come from one agent-free deterministic
+   remeasurement, including each phase's recorded stop decision
    (§3.3). The stats update makes the repository coverage
    dashboard reflect the tests this workflow adds without counting classified
    artifacts such as an upstream test JAR in the denominator
@@ -548,8 +549,8 @@ The Rhei template should decompose the workflow into these phases:
 
    The descriptor carries the render inputs and only those: coordinate, coverage
    suite path, the whole-run coverage checkpoints and phase gains, the per-phase
-   JaCoCo records, the human-intervention flag, the generating model, and
-   per-phase token usage read from the Rhei accounting directory. The body links
+   JaCoCo records, the human-intervention flag, the generating model and thinking
+   level, and per-phase token usage read from the Rhei accounting directory. The body links
    its issue with `Fixes:`, never conditionally: one run publishes one pull
    request, so merging it closes
    the issue that claimed the coordinate (§AR-issue-linking). Per-target
@@ -620,7 +621,9 @@ nonzero exit code names the failed step, and its completion is decided by a
 deterministic verification program, not by an agent's own claim: it checks the
 finalization artifacts exist, schema-validates the final metrics, and inspects
 their outcomes. Fixable step or verification failures return to a bounded fix
-state, after which the steps re-run; failed targets or an explicit
+state, after which one agent-free final remeasurement refreshes JaCoCo,
+sampled PGO, call-tree, and discovery evidence before the steps re-run. A failed
+final remeasurement routes directly to human intervention; failed targets or an explicit
 human-intervention flag in the metrics, and failures that survive the fix
 budget, route to human intervention.
 
@@ -796,8 +799,9 @@ engine:
   model written as `<model>:<thinking>` is parsed as a provider/model pair and
   silently resolves to a different model. The template therefore bundles a `pi`
   agent profile in its `settings.json` whose `high` and `xhigh` modes add
-  `--thinking`, and publication reads the model back out of the same target to
-  name the head branch (§AR-code-coverage-improvement.4). That profile replaces
+  `--thinking`, and publication reads the model and thinking level back out of
+  the same target, using the model to name the head branch and rendering both in the pull
+  request body (§AR-code-coverage-improvement.4). That profile replaces
   Rhei's built-in one outright rather than extending it, so it restates the
   `session` block as well: without it Rhei passes no `--session-dir`, cannot
   read back the agent's native transcript, and silently captures no per-state

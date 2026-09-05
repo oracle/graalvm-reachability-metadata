@@ -67,6 +67,7 @@ def _descriptor(**render_overrides: Any) -> dict[str, Any]:
         "code_coverage": _coverage_evidence(),
         "token_usage": [],
         "worker_model": "gpt-5.6-luna",
+        "worker_thinking_level": "high",
     }
     render.update(render_overrides)
     return {
@@ -180,6 +181,18 @@ class CoveragePublisherTemplateTests(unittest.TestCase):
         self.assertEqual(
             title, "[GenAI] Improve code coverage for com.example:demo:1.0.0 using gpt-5.6-luna"
         )
+
+    def test_body_reports_the_worker_thinking_level(self) -> None:
+        _, body = publisher.render_publication(_descriptor())
+
+        self.assertIn("- Thinking level: high", body)
+
+    def test_render_validation_rejects_a_missing_thinking_level(self) -> None:
+        descriptor = _descriptor()
+        descriptor["render"].pop("worker_thinking_level")
+
+        with self.assertRaisesRegex(ValueError, "thinking level"):
+            publisher._validate_render_inputs(descriptor)
 
     def test_body_reports_every_checkpoint_on_one_denominator(self) -> None:
         """One universe of 30: 10 reportable API entries plus 20 deep methods."""
