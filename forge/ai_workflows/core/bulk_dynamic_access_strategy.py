@@ -89,8 +89,14 @@ class BulkDynamicAccessStrategy(WorkflowStrategy):
             "dynamic-access-coverage.json",
         )
 
-    def run(self, agent: object, **kwargs: object) -> tuple[str, int, int]:
-        initial_report = self._generate_dynamic_access_report()
+    def run(
+            self,
+            agent: object,
+            initial_report: DynamicAccessCoverageReport | None = None,
+            **kwargs: object,
+    ) -> tuple[str, int, int]:
+        if initial_report is None:
+            initial_report = self._generate_dynamic_access_report()
         fallback_prompt_iterations = 0
         fallback_successful_generations = 0
         if not self._report_is_usable(initial_report):
@@ -355,13 +361,10 @@ class BulkDynamicAccessStrategy(WorkflowStrategy):
         attribute skipped, exhausted, or failed classes
         (§AR-dynamic-access-bulk).
         """
-        processed_classes: set[str] = self._continuation_processed_classes()
-        if self.dynamic_access_exhaust_report is not None:
-            processed_classes.update(self.dynamic_access_exhaust_report.processed_classes())
         progress: BulkDynamicAccessProgress = compute_bulk_dynamic_access_progress(
             initial_report,
             final_report,
-            processed_classes,
+            self.processed_dynamic_access_classes(),
         )
         if self.dynamic_access_exhaust_report is not None:
             for class_name in progress.completed_classes:
@@ -378,6 +381,17 @@ class BulkDynamicAccessStrategy(WorkflowStrategy):
                 boundary=self.chunk_class_count,
             )
         )
+
+    def processed_dynamic_access_classes(self) -> set[str]:
+        """Return every class a resumed run must not count as remaining work.
+
+        The exhaust report and the continuation marker record what earlier
+        phases already took (§AR-dynamic-access-exhaust-report).
+        """
+        processed_classes: set[str] = self._continuation_processed_classes()
+        if self.dynamic_access_exhaust_report is not None:
+            processed_classes.update(self.dynamic_access_exhaust_report.processed_classes())
+        return processed_classes
 
     def _continuation_processed_classes(self) -> set[str]:
         """Return classes a resumed bulk run must exclude from its remainder."""
