@@ -3,6 +3,11 @@
 Rendered by Forge from the pre-push branch review of §FS-local-branch-review.
 Newest entry first; every non-approval is recorded, including one a repair later cleared.
 
+## 2026-09-05 — com.github.seregamorph:spring-test-smart-context:1.0 (#9677)
+
+**Dynamic-access coverage does not meet the new-library minimum**
+
+Review Signal #6 was violated at stats/com.github.seregamorph/spring-test-smart-context/1.0/stats.json: the submitted evidence reported 0 of 1 dynamic-access calls covered (0%), while new-library requests with non-zero calls require coverage above 20%.
 ## 2026-09-05 — org.springframework.boot:spring-boot-testcontainers:4.1.1 (#9682)
 
 **Version-pinned companion Spring Boot test dependency**

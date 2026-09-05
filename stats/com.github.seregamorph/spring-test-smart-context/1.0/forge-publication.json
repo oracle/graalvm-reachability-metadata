@@ -1,0 +1,148 @@
+{
+  "base_commit": "1b430ff2d012ccf2ddfa01257e8ca67b1f9886a1",
+  "branch": "ai/kimeta/add-lib-support-com.github.seregamorph-spring-test-smart-context-1.0-chunked-forge-9677-20260905141723906376-54c56ad5573b",
+  "follow_ups": [],
+  "forge": {
+    "branch": "issue-9864-partial-bulk-progress",
+    "commit": "b601b85254d1c48b01dfab6e29ac0734df3af6f9",
+    "monitored_branch": "origin/issue-9864-partial-bulk-progress"
+  },
+  "issue_number": 9677,
+  "library": {
+    "artifact": "spring-test-smart-context",
+    "coordinates": "com.github.seregamorph:spring-test-smart-context:1.0",
+    "group": "com.github.seregamorph",
+    "version": "1.0"
+  },
+  "local_ci_verification": {
+    "base_commit": "1b430ff2d012ccf2ddfa01257e8ca67b1f9886a1",
+    "commands": [
+      {
+        "command": [
+          "./gradlew",
+          "generateChangedIndexFileCoordinatesList",
+          "-PbaseCommit=origin/master",
+          "-PnewCommit=HEAD"
+        ],
+        "env": {
+          "GITHUB_OUTPUT": "/tmp/tmpm_2p_x6f"
+        },
+        "gate": "changed-index-coordinates",
+        "log_path": "logs/changed-index-coordinates/local-ci/gradlew-2026-09-05T14-39-04-062495Z.log",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :generateChangedIndexFileCoordinatesList\n\n[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9677-d0346fd2/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 2s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      },
+      {
+        "command": [
+          "./gradlew",
+          "validateIndexFiles",
+          "-Pcoordinates=com.github.seregamorph:spring-test-smart-context"
+        ],
+        "env": {},
+        "gate": "index-file-validation",
+        "log_path": "logs/index-file-validation/local-ci/gradlew-2026-09-05T14-39-06-219865Z.log",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :validateIndexFiles\n✅ metadata/com.github.seregamorph/spring-test-smart-context/index.json: Valid\n\n[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9677-d0346fd2/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 1s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      }
+    ],
+    "failure_command": null,
+    "failure_gate": null,
+    "final_commit": "cdc21176dce0c6efcb9652a1c8fbd9f6025b4558",
+    "fixups": [],
+    "human_intervention_required": false,
+    "repo_fix_paths": [],
+    "status": "success"
+  },
+  "local_review": {
+    "changed_paths": [
+      "stats/com.github.seregamorph/spring-test-smart-context/1.0/stats.json",
+      "tests/src/com.github.seregamorph/spring-test-smart-context/1.0/src/test/java/com/github/seregamorph/testsmartcontext/SmartDirtiesTestsSupportState.java",
+      "tests/src/com.github.seregamorph/spring-test-smart-context/1.0/src/test/java/com_github_seregamorph/spring_test_smart_context/SmartDirtiesTestsSupportTest.java"
+    ],
+    "decision": "approved",
+    "failed_step": null,
+    "finding_body": "Review Signal #6 was violated at stats/com.github.seregamorph/spring-test-smart-context/1.0/stats.json: the submitted evidence reported 0 of 1 dynamic-access calls covered (0%), while new-library requests with non-zero calls require coverage above 20%.",
+    "finding_title": "Dynamic-access coverage does not meet the new-library minimum",
+    "fix_note": "Added a focused test for the library's uninitialized-ordering diagnostic path and a minimal package-local state helper so the test executes the tracked ClassLoader.getResources call without reflection or a native-only bypass. Regenerated stats to 1/1 covered (100%). Verified javaTest, checkstyle, the dynamic-access report, stats validation, and the full native-image test task.",
+    "model": "gpt-5.6-sol",
+    "published_tree": "repaired",
+    "repair_reverted": false,
+    "review_comment": "Reviewed the single-library diff, test and build configuration, metadata file names and scope, local gate evidence, and resolved statistics under all enumerated new-library review rules. The tests are library-specific, remain separate from the library package except for a narrowly scoped state-control helper needed to reach the package-private diagnostic path, contain no native-image skip or version-pinned assertion, and pass JVM, Checkstyle, and native-image testing. After correction, the refreshed report and exploded statistics show 1/1 dynamic-access calls covered (100%), so the resulting tree is approved.",
+    "session_log_path": "logs/com.github.seregamorph:spring-test-smart-context:1.0/local-branch-review/pi.log",
+    "status": "completed"
+  },
+  "metrics": {
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "path": "stats/com.github.seregamorph/spring-test-smart-context/1.0/execution-metrics.json",
+    "summary": {
+      "cached_input_tokens_used": 3099520,
+      "code_coverage_percent": 20.16,
+      "cost_usd": 2.7761,
+      "generated_loc": 50,
+      "input_tokens_used": 120541,
+      "iterations": 2,
+      "metadata_entries": 4,
+      "output_tokens_used": 20786,
+      "test_only_metadata_entries": 6,
+      "tested_library_loc": 98
+    },
+    "timestamp": "2026-09-05T14:17:23.906376Z"
+  },
+  "modifiers": {
+    "chunk_final": true,
+    "chunked_dynamic_access": true,
+    "human_intervention": false
+  },
+  "producer": "kimeta",
+  "publication_id": "forge-9677-20260905141723906376-54c56ad5573b",
+  "render": {
+    "dynamic_access": null,
+    "dynamic_access_evidence": {
+      "covered_call_sites": [],
+      "metadata_rules": [
+        "when `org.junit.jupiter.engine.discovery.ClassOrderingVisitor` is reached, make `com.github.seregamorph.testsmartcontext.jupiter.SmartDirtiesClassOrderer.<init>()` available for reflection"
+      ]
+    },
+    "library_stats": {
+      "dynamicAccess": {
+        "breakdown": {
+          "resources": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 1,
+            "totalCalls": 1
+          }
+        },
+        "coverageRatio": 1.0,
+        "coveredCalls": 1,
+        "totalCalls": 1
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 496,
+          "missed": 1539,
+          "ratio": 0.243735,
+          "total": 2035
+        },
+        "line": {
+          "covered": 135,
+          "missed": 351,
+          "ratio": 0.277778,
+          "total": 486
+        },
+        "method": {
+          "covered": 40,
+          "missed": 80,
+          "ratio": 0.333333,
+          "total": 120
+        }
+      },
+      "version": "1.0"
+    }
+  },
+  "schema_version": 1,
+  "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-sol",
+  "task_type": "library-new-request",
+  "template_type": "library-new-request",
+  "timestamp": "2026-09-05T14:17:23.906376Z"
+}
