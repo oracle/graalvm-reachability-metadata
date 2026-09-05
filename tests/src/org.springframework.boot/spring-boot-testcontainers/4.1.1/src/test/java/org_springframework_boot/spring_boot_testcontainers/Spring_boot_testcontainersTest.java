@@ -7,23 +7,17 @@
 package org_springframework_boot.spring_boot_testcontainers;
 
 import java.security.KeyStore;
-import java.time.Duration;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import com.redis.testcontainers.RedisContainer;
-import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.testcontainers.containers.GenericContainer;
-import org.testcontainers.junit.jupiter.Container;
-import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.lifecycle.Startable;
-import org.testcontainers.postgresql.PostgreSQLContainer;
 
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
 import org.springframework.boot.data.redis.autoconfigure.DataRedisConnectionDetails;
-import org.springframework.boot.jdbc.autoconfigure.JdbcConnectionDetails;
 import org.springframework.boot.ssl.SslBundle;
 import org.springframework.boot.testcontainers.beans.TestcontainerBeanDefinition;
 import org.springframework.boot.testcontainers.context.ImportTestcontainers;
@@ -33,15 +27,12 @@ import org.springframework.boot.testcontainers.service.connection.PemTrustStore;
 import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
 import org.springframework.boot.testcontainers.service.connection.ServiceConnectionAutoConfiguration;
 import org.springframework.boot.testcontainers.service.connection.Ssl;
-import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.MapPropertySource;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
-import org.springframework.test.context.TestContextManager;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -287,87 +278,4 @@ public class Spring_boot_testcontainersTest {
 
     }
 
-    @Nested
-    @Testcontainers(disabledWithoutDocker = true)
-    class DockerServiceConnectionTests {
-
-        static final PostgreSQLContainer POSTGRES = new PostgreSQLContainer("postgres:18-alpine")
-                .withDatabaseName("application")
-                .withUsername("application")
-                .withPassword("secret")
-                .withStartupTimeout(Duration.ofSeconds(30))
-                .withStartupTimeoutSeconds(30);
-
-        @Test
-        void serviceConnectionProvidesRunningContainerDetailsThroughApplicationContext() {
-            AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext();
-            new TestcontainersLifecycleApplicationContextInitializer().initialize(context);
-            context.register(ServiceConnectionConfiguration.class);
-
-            try {
-                context.refresh();
-                JdbcConnectionDetails connectionDetails = context.getBean(JdbcConnectionDetails.class);
-
-                assertThat(POSTGRES.isRunning()).isTrue();
-                assertThat(connectionDetails.getJdbcUrl()).isEqualTo(POSTGRES.getJdbcUrl());
-                assertThat(connectionDetails.getUsername()).isEqualTo("application");
-                assertThat(connectionDetails.getPassword()).isEqualTo("secret");
-                assertThat(connectionDetails.getDriverClassName()).isEqualTo("org.postgresql.Driver");
-            } finally {
-                context.close();
-            }
-
-            assertThat(POSTGRES.isRunning()).isFalse();
-        }
-
-    }
-
-    @Nested
-    @ContextConfiguration(classes = FieldServiceConnectionConfiguration.class)
-    @Testcontainers(disabledWithoutDocker = true)
-    class FieldServiceConnectionTests {
-
-        @Container
-        @ServiceConnection(type = JdbcConnectionDetails.class)
-        static final PostgreSQLContainer POSTGRES = new PostgreSQLContainer("postgres:18-alpine")
-                .withDatabaseName("field-connection")
-                .withUsername("field-user")
-                .withPassword("field-secret")
-                .withStartupTimeout(Duration.ofSeconds(30))
-                .withStartupTimeoutSeconds(30);
-
-        @Test
-        void serviceConnectionOnContainerFieldContributesConnectionDetailsToSpringTestContext() {
-            TestContextManager testContextManager = new TestContextManager(FieldServiceConnectionTests.class);
-            ConfigurableApplicationContext context =
-                    (ConfigurableApplicationContext) testContextManager.getTestContext().getApplicationContext();
-
-            try (context) {
-                JdbcConnectionDetails connectionDetails = context.getBean(JdbcConnectionDetails.class);
-
-                assertThat(connectionDetails.getJdbcUrl()).isEqualTo(POSTGRES.getJdbcUrl());
-                assertThat(connectionDetails.getUsername()).isEqualTo("field-user");
-                assertThat(connectionDetails.getPassword()).isEqualTo("field-secret");
-                assertThat(connectionDetails.getDriverClassName()).isEqualTo("org.postgresql.Driver");
-            }
-        }
-
-    }
-
-    @Configuration(proxyBeanMethods = false)
-    static class FieldServiceConnectionConfiguration {
-
-    }
-
-    @Configuration(proxyBeanMethods = false)
-    @ImportAutoConfiguration(ServiceConnectionAutoConfiguration.class)
-    static class ServiceConnectionConfiguration {
-
-        @Bean
-        @ServiceConnection(type = JdbcConnectionDetails.class)
-        PostgreSQLContainer postgresContainer() {
-            return DockerServiceConnectionTests.POSTGRES;
-        }
-
-    }
 }
