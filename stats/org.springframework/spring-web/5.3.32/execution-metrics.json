@@ -1,0 +1,134 @@
+{
+  "fix_java_run_fail:2026-09-02": {
+    "timestamp": "2026-09-02T06:34:52.858248Z",
+    "library": "org.springframework:spring-web:5.3.32",
+    "starting_commit": "5ff4c9fc902a0dd8f64f839d1da1ac83a9276731",
+    "ending_commit": "9b17beee701f63d530c6a297b7b94e8c0eaebf1d",
+    "previous_library": "org.springframework:spring-web:5.3.18",
+    "strategy_name": "java_run_iterative_with_coverage_sources_pi_gpt-5.6-sol",
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "status": "success",
+    "stats": {
+      "version": "5.3.32",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 0.947368,
+            "coveredCalls": 18,
+            "totalCalls": 19
+          }
+        },
+        "coverageRatio": 0.947368,
+        "coveredCalls": 18,
+        "totalCalls": 19
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 2623,
+          "missed": 95563,
+          "ratio": 0.026715,
+          "total": 98186
+        },
+        "line": {
+          "covered": 612,
+          "missed": 22043,
+          "ratio": 0.027014,
+          "total": 22655
+        },
+        "method": {
+          "covered": 155,
+          "missed": 6133,
+          "ratio": 0.02465,
+          "total": 6288
+        }
+      }
+    },
+    "previous_library_stats": {
+      "version": "5.3.18",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 22,
+            "totalCalls": 22
+          }
+        },
+        "coverageRatio": 1.0,
+        "coveredCalls": 22,
+        "totalCalls": 22
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 4565,
+          "missed": 93041,
+          "ratio": 0.04677,
+          "total": 97606
+        },
+        "line": {
+          "covered": 894,
+          "missed": 21628,
+          "ratio": 0.039695,
+          "total": 22522
+        },
+        "method": {
+          "covered": 219,
+          "missed": 6031,
+          "ratio": 0.03504,
+          "total": 6250
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "advisory_preparation",
+      "issue_number": 9402,
+      "issue_label": "fails-java-run",
+      "library": "org.springframework:spring-web:5.3.32",
+      "summary": "No missing library dependency or Docker service was found. The failure is caused by the fragile hand-rolled loopback HTTP fixture, not Spring Web setup. Spring Web 5.3.32 publishes only spring-beans and spring-core, while the existing scaffold already declares its optional integrations ([module metadata](https://repo.maven.apache.org/maven2/org/springframework/spring-web/5.3.32/spring-web-5.3.32.module), [documentation](https://docs.spring.io/spring-framework/docs/5.3.32/reference/html/web-reactive.html)).",
+      "deterministic_setup": [],
+      "agent_guidance": "Use a deterministic in-process loopback HTTP fixture for JettyClientHttpConnector coverage: bind to 127.0.0.1 on an ephemeral port, start it before the request, consume complete request headers, keep the connection open until the exchange completes, bound all waits, and stop the HttpClient, server, and executor in finally. Preserve the status, headers, cookies, and body assertions. No Docker image or JVM system property is required.",
+      "risks": [
+        "The current raw ServerSocket fixture has reproduced both a 10-second timeout and Jetty EofException/ClosedChannelException under JDK 25.",
+        "Keep the existing Jetty artifacts on one compatible line: jetty-reactive-httpclient 2.0.6 resolves Jetty 10.0.11 ([POM](https://repo.maven.apache.org/maven2/org/eclipse/jetty/jetty-reactive-httpclient/2.0.6/jetty-reactive-httpclient-2.0.6.pom), [compatibility notes](https://webtide.com/reactive-httpclient-1-1-5-2-0-0-and-3-0-0/)).",
+        "Local Gradle and Native Image verification must validate any replacement fixture."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#9402 [Automation] java run fails for org.springframework:spring-web:5.3.32; label=fails-java-run; body_chars=8015"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "18 existing test file path(s) included"
+        }
+      ],
+      "current_library": "org.springframework:spring-web:5.3.18",
+      "new_version": "5.3.32",
+      "model": "gpt-5.6-luna",
+      "input_tokens_used": 10239511,
+      "output_tokens_used": 28595,
+      "prompt_path": "library-preflight-prompt.txt",
+      "raw_response_path": "library-preflight-response.txt",
+      "session_log_path": "/home/mihailo/git/graalvm-reachability-metadata-copy/forge/logs/org.springframework:spring-web:5.3.32/library-preparation-preflight/codex-session-mjehuyj6.log"
+    },
+    "metrics": {
+      "input_tokens_used": 316808,
+      "cached_input_tokens_used": 8007680,
+      "output_tokens_used": 49927,
+      "iterations": 7,
+      "cost_usd": 7.0856,
+      "tested_library_loc": 612,
+      "metadata_entries": 85,
+      "test_only_metadata_entries": 11,
+      "previous_library_metadata_entries": 123,
+      "previous_library_test_only_metadata_entries": 11,
+      "code_coverage_percent": 2.7,
+      "previous_library_coverage_percent": 3.97
+    },
+    "artifacts": {
+      "metadata_file": "metadata/org.springframework/spring-web/5.3.32/reachability-metadata.json"
+    }
+  }
+}
