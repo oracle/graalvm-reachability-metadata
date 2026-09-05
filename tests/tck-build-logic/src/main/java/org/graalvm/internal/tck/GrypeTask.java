@@ -205,7 +205,8 @@ public abstract class GrypeTask extends DefaultTask {
                 .toList();
 
         if (diffFiles.isEmpty()) {
-            return Set.of();
+            throw new RuntimeException("There are no changed or new docker image founded. " +
+                    "This task should be executed only if there are changes in allowed-docker-images directory.");
         }
 
         return DockerUtils.extractImagesNames(diffFiles);
