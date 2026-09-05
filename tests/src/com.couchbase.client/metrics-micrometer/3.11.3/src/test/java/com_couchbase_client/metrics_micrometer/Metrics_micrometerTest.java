@@ -13,6 +13,7 @@ import com.couchbase.client.metrics.micrometer.MicrometerCounter;
 import com.couchbase.client.metrics.micrometer.MicrometerMeter;
 import com.couchbase.client.metrics.micrometer.MicrometerValueRecorder;
 import io.micrometer.core.instrument.DistributionSummary;
+import io.micrometer.core.instrument.composite.CompositeMeterRegistry;
 import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
 import org.junit.jupiter.api.Test;
 
@@ -122,6 +123,31 @@ public class Metrics_micrometerTest {
             assertThat(registry.find("couchbase.operation.duration").meters()).hasSize(2);
         } finally {
             registry.close();
+        }
+    }
+
+    @Test
+    void compositeRegistryReceivesMeasurementsAfterChildIsAdded() {
+        CompositeMeterRegistry compositeRegistry = new CompositeMeterRegistry();
+        SimpleMeterRegistry childRegistry = new SimpleMeterRegistry();
+        try {
+            Counter counter = MicrometerMeter.wrap(compositeRegistry)
+                    .counter("couchbase.composite.operations", Map.of("service", "key-value"));
+
+            counter.incrementBy(2);
+            compositeRegistry.add(childRegistry);
+            counter.incrementBy(3);
+
+            assertThat(childRegistry
+                            .get("couchbase.composite.operations")
+                            .tag("service", "key-value")
+                            .counter()
+                            .count())
+                    .isEqualTo(3);
+        } finally {
+            compositeRegistry.remove(childRegistry);
+            childRegistry.close();
+            compositeRegistry.close();
         }
     }
 
