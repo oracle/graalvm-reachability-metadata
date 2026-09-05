@@ -3,6 +3,12 @@
 Rendered by Forge from the pre-push branch review of §FS-local-branch-review.
 Newest entry first; every non-approval is recorded, including one a repair later cleared.
 
+## 2026-09-05 — org.springframework.boot:spring-boot-testcontainers:4.1.1 (#9682)
+
+**Version-pinned companion Spring Boot test dependency**
+
+Review Signal #4 was violated in tests/src/org.springframework.boot/spring-boot-testcontainers/4.1.1/build.gradle: spring-boot-test was pinned to 4.1.1, so this test suite would keep using that companion module when exercised against another supported spring-boot-testcontainers version.
+
 ## 2026-09-05 — org.springframework.cloud:spring-cloud-vault-config:5.0.2 (#9705)
 
 **New-library request included an unrelated shared GrypeTask behavior change**
