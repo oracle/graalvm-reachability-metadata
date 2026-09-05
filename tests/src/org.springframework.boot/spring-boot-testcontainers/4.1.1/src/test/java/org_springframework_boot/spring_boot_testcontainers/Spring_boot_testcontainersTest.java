@@ -13,6 +13,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.testcontainers.containers.GenericContainer;
+import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.lifecycle.Startable;
 import org.testcontainers.postgresql.PostgreSQLContainer;
@@ -26,12 +27,15 @@ import org.springframework.boot.testcontainers.lifecycle.TestcontainersLifecycle
 import org.springframework.boot.testcontainers.lifecycle.TestcontainersStartup;
 import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
 import org.springframework.boot.testcontainers.service.connection.ServiceConnectionAutoConfiguration;
+import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.MapPropertySource;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
+import org.springframework.test.context.TestContextManager;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -248,6 +252,43 @@ public class Spring_boot_testcontainersTest {
 
             assertThat(POSTGRES.isRunning()).isFalse();
         }
+
+    }
+
+    @Nested
+    @ContextConfiguration(classes = FieldServiceConnectionConfiguration.class)
+    @Testcontainers(disabledWithoutDocker = true)
+    class FieldServiceConnectionTests {
+
+        @Container
+        @ServiceConnection(type = JdbcConnectionDetails.class)
+        static final PostgreSQLContainer POSTGRES = new PostgreSQLContainer("postgres:18-alpine")
+                .withDatabaseName("field-connection")
+                .withUsername("field-user")
+                .withPassword("field-secret")
+                .withStartupTimeout(Duration.ofSeconds(30))
+                .withStartupTimeoutSeconds(30);
+
+        @Test
+        void serviceConnectionOnContainerFieldContributesConnectionDetailsToSpringTestContext() {
+            TestContextManager testContextManager = new TestContextManager(FieldServiceConnectionTests.class);
+            ConfigurableApplicationContext context =
+                    (ConfigurableApplicationContext) testContextManager.getTestContext().getApplicationContext();
+
+            try (context) {
+                JdbcConnectionDetails connectionDetails = context.getBean(JdbcConnectionDetails.class);
+
+                assertThat(connectionDetails.getJdbcUrl()).isEqualTo(POSTGRES.getJdbcUrl());
+                assertThat(connectionDetails.getUsername()).isEqualTo("field-user");
+                assertThat(connectionDetails.getPassword()).isEqualTo("field-secret");
+                assertThat(connectionDetails.getDriverClassName()).isEqualTo("org.postgresql.Driver");
+            }
+        }
+
+    }
+
+    @Configuration(proxyBeanMethods = false)
+    static class FieldServiceConnectionConfiguration {
 
     }
 
