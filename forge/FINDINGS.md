@@ -8,6 +8,23 @@ Newest entry first; every non-approval is recorded, including one a repair later
 **Runtime repair deletes existing test coverage**
 
 Rule 4.8 (fix by weakening) was violated in `tests/src/org.springframework/spring-web/5.3.32`: the copied 5.3.18 suite deleted `JettyClientHttpResponseTest.java` and removed its Jetty dependency instead of adapting the failing runtime path while preserving the test's status, headers, cookies, and body assertions.
+## 2026-09-05 — com.github.seregamorph:spring-test-smart-context:1.0 (#9677)
+
+**Dynamic-access coverage does not meet the new-library minimum**
+
+Review Signal #6 was violated at stats/com.github.seregamorph/spring-test-smart-context/1.0/stats.json: the submitted evidence reported 0 of 1 dynamic-access calls covered (0%), while new-library requests with non-zero calls require coverage above 20%.
+## 2026-09-05 — org.springframework.boot:spring-boot-testcontainers:4.1.1 (#9682)
+
+**Version-pinned companion Spring Boot test dependency**
+
+Review Signal #4 was violated in tests/src/org.springframework.boot/spring-boot-testcontainers/4.1.1/build.gradle: spring-boot-test was pinned to 4.1.1, so this test suite would keep using that companion module when exercised against another supported spring-boot-testcontainers version.
+
+## 2026-09-05 — org.springframework.cloud:spring-cloud-vault-config:5.0.2 (#9705)
+
+**New-library request included an unrelated shared GrypeTask behavior change**
+
+Review Signal #1 requires a new-library request to stay scoped to one target library and its supporting test files. tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/GrypeTask.java changed shared Docker scanning behavior to silently accept an empty image diff, which is unrelated to adding org.springframework.cloud:spring-cloud-vault-config:5.0.2.
+
 ## 2026-09-02 — org.springframework.boot:spring-boot-amqp:4.2.0-M1 (#9468)
 
 **Explicit messaging timeout is below the 10-second minimum**

@@ -13,6 +13,7 @@ from ai_workflows.core.workflow_strategy import (
 from utility_scripts.continuation_marker import PHASE_EXPLORE, PHASE_FIX, save_phase_update
 from utility_scripts.dynamic_access_report import BulkDynamicAccessProgress, DynamicAccessCoverageReport
 from utility_scripts.java_fix_coverage_follow_up import uncovered_dynamic_access_class_count
+from utility_scripts.run_location import RunLocation, STEP_GENERATE_TESTS, record_step_failure
 from utility_scripts.stage_logger import log_detail
 
 
@@ -50,6 +51,15 @@ class IncreaseDynamicAccessCoverageStrategy(WorkflowStrategy):
     @staticmethod
     def _print_message(message: str) -> None:
         log_detail("composition-workflow", message)
+
+    def _record_dynamic_access_failure(self) -> None:
+        """Record exploration only after the composite makes it terminal.
+
+        §FS-forge-run-location-reporting.3
+        """
+        record_step_failure(
+            location=RunLocation(PHASE_EXPLORE, STEP_GENERATE_TESTS, self.library),
+        )
 
     def run(self, agent, **kwargs):
         current_report: DynamicAccessCoverageReport | None = None
@@ -151,18 +161,19 @@ class IncreaseDynamicAccessCoverageStrategy(WorkflowStrategy):
             )
         )
 
-        has_issue_requested_metadata = da.has_issue_requested_metadata_context()
         if not phase_ok:
             if required_iterative_chunk_phase:
                 self._print_message(
                     "required iterative dynamic-access chunk phase did not succeed"
                 )
                 status = RUN_STATUS_FAILURE
-            elif self.primary is None and not has_issue_requested_metadata:
+                self._record_dynamic_access_failure()
+            elif self.primary is None:
                 self._print_message(
-                    "dynamic-access coverage phase did not succeed and no reporter-requested metadata phase is available"
+                    "dynamic-access coverage phase did not succeed"
                 )
                 status = RUN_STATUS_FAILURE
+                self._record_dynamic_access_failure()
             else:
                 self._print_message(
                     "continuing with existing workflow result because dynamic-access coverage phase did not succeed"
@@ -177,45 +188,6 @@ class IncreaseDynamicAccessCoverageStrategy(WorkflowStrategy):
             if len(result) == 2:
                 return status, iterations
             return (status, iterations) + result[2:]
-
-        if has_issue_requested_metadata:
-            self._print_message("starting reporter-requested metadata phase")
-            save_phase_update(
-                self.continuation_marker_path,
-                lambda marker: marker.mark_phase_running(PHASE_EXPLORE),
-            )
-            issue_phase_ok, issue_iterations = da._run_issue_requested_metadata_phase(agent)
-            iterations += issue_iterations
-            self._print_message(
-                "reporter-requested metadata phase completed with phase_ok={phase_ok}, iterations_added={iterations}"
-                .format(
-                    phase_ok=issue_phase_ok,
-                    iterations=issue_iterations,
-                )
-            )
-            if not issue_phase_ok:
-                status = RUN_STATUS_FAILURE
-                save_phase_update(
-                    self.continuation_marker_path,
-                    lambda marker: marker.mark_phase_pending(PHASE_EXPLORE, iteration=iterations),
-                )
-                if self.primary is None:
-                    return status, iterations
-                if len(result) == 2:
-                    return status, iterations
-                return (status, iterations) + result[2:]
-            if status not in {RUN_STATUS_CHUNK_READY, RUN_STATUS_FAILURE}:
-                status = RUN_STATUS_SUCCESS
-            if status == RUN_STATUS_FAILURE:
-                save_phase_update(
-                    self.continuation_marker_path,
-                    lambda marker: marker.mark_phase_pending(PHASE_EXPLORE, iteration=iterations),
-                )
-            else:
-                save_phase_update(
-                    self.continuation_marker_path,
-                    lambda marker: marker.mark_phase_completed(PHASE_EXPLORE, iteration=iterations),
-                )
 
         if self.primary is None:
             return status, iterations

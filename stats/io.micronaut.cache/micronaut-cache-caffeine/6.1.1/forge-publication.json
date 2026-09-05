@@ -1,0 +1,146 @@
+{
+  "base_commit": "0d1718b85d49ee6f62299bed475507df021ab974",
+  "branch": "ai/kimeta/add-lib-support-io.micronaut.cache-micronaut-cache-caffeine-6.1.1-forge-9795-20260904044245189324-08a2c13aa7e7",
+  "follow_ups": [],
+  "forge": {
+    "branch": "issue-9776-composite-bulk-success",
+    "commit": "45dafbf4a348867df2709e876b8f08541c9824e0",
+    "monitored_branch": "origin/issue-9776-composite-bulk-success"
+  },
+  "issue_number": 9795,
+  "library": {
+    "artifact": "micronaut-cache-caffeine",
+    "coordinates": "io.micronaut.cache:micronaut-cache-caffeine:6.1.1",
+    "group": "io.micronaut.cache",
+    "version": "6.1.1"
+  },
+  "local_ci_verification": {
+    "base_commit": "0d1718b85d49ee6f62299bed475507df021ab974",
+    "commands": [
+      {
+        "command": [
+          "./gradlew",
+          "generateChangedIndexFileCoordinatesList",
+          "-PbaseCommit=origin/master",
+          "-PnewCommit=HEAD"
+        ],
+        "env": {
+          "GITHUB_OUTPUT": "/tmp/tmprrzfag5c"
+        },
+        "gate": "changed-index-coordinates",
+        "log_path": "logs/changed-index-coordinates/local-ci/gradlew-2026-09-04T04-42-51-560764Z.log",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :generateChangedIndexFileCoordinatesList\n\n[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9795-6f50c3fa/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 2s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      },
+      {
+        "command": [
+          "./gradlew",
+          "validateIndexFiles",
+          "-Pcoordinates=io.micronaut.cache:micronaut-cache-caffeine"
+        ],
+        "env": {},
+        "gate": "index-file-validation",
+        "log_path": "logs/index-file-validation/local-ci/gradlew-2026-09-04T04-42-54-319559Z.log",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :validateIndexFiles\n✅ metadata/io.micronaut.cache/micronaut-cache-caffeine/index.json: Valid\n\n[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9795-6f50c3fa/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 2s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      }
+    ],
+    "failure_command": null,
+    "failure_gate": null,
+    "final_commit": "60e03716bc7d6ada18cb9b40d7c906c1a6ff4617",
+    "fixups": [],
+    "human_intervention_required": false,
+    "repo_fix_paths": [],
+    "status": "success"
+  },
+  "local_review": {
+    "changed_paths": [],
+    "decision": "approved",
+    "failed_step": null,
+    "finding_body": "",
+    "finding_title": "",
+    "fix_note": "No correction was needed; the reviewed tree is approved unchanged.",
+    "model": "gpt-5.6-sol",
+    "published_tree": "verified",
+    "repair_reverted": false,
+    "review_comment": "Reviewed the specified commit diff and local evidence against all enumerated new-library rules. The change is scoped to one coordinate and uses only reachability-metadata.json; the public, version-agnostic test is outside the library package, replaces the scaffold with real synchronous and asynchronous cache behavior, has bounded waits, and does not skip or tolerate Native Image failures. The reported 0/0 dynamic-access result is a valid no-calls case, so no percentage or entry-count mismatch gate applies. Index validation was recorded as successful, and I additionally ran ./gradlew checkMetadataFiles test -Pcoordinates=io.micronaut.cache:micronaut-cache-caffeine:6.1.1 --stacktrace successfully, including all seven JVM and Native Image tests. No blocking violation was found.",
+    "session_log_path": "logs/io.micronaut.cache:micronaut-cache-caffeine:6.1.1/local-branch-review/pi.log",
+    "status": "completed"
+  },
+  "metrics": {
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "path": "stats/io.micronaut.cache/micronaut-cache-caffeine/6.1.1/execution-metrics.json",
+    "summary": {
+      "cached_input_tokens_used": 2344704,
+      "code_coverage_percent": 75.0,
+      "cost_usd": 3.1749,
+      "generated_loc": 267,
+      "input_tokens_used": 235739,
+      "iterations": 3,
+      "metadata_entries": 19,
+      "output_tokens_used": 27461,
+      "test_only_metadata_entries": 51,
+      "tested_library_loc": 108
+    },
+    "timestamp": "2026-09-04T04:42:45.189324Z"
+  },
+  "modifiers": {
+    "chunk_final": true,
+    "chunked_dynamic_access": false,
+    "human_intervention": false
+  },
+  "producer": "kimeta",
+  "publication_id": "forge-9795-20260904044245189324-08a2c13aa7e7",
+  "render": {
+    "dynamic_access": null,
+    "dynamic_access_evidence": {
+      "covered_call_sites": [],
+      "metadata_rules": [
+        "when `io.micronaut.cache.caffeine.DefaultSyncCache` is reached, make `com.github.benmanes.caffeine.cache.BBHeader$ReadAndWriteCounterRef` available for reflection",
+        "when `io.micronaut.cache.caffeine.DefaultSyncCache` is reached, make `com.github.benmanes.caffeine.cache.BBHeader$ReadCounterRef` available for reflection",
+        "when `io.micronaut.cache.caffeine.DefaultSyncCache` is reached, make `com.github.benmanes.caffeine.cache.PSAWMS.<init>()` available for reflection",
+        "when `io.micronaut.cache.caffeine.DefaultSyncCache` is reached, make `com.github.benmanes.caffeine.cache.PSMS` available for reflection",
+        "when `io.micronaut.cache.caffeine.DefaultSyncCache` is reached, make `com.github.benmanes.caffeine.cache.PSMW` available for reflection",
+        "when `io.micronaut.cache.caffeine.DefaultSyncCache` is reached, make `com.github.benmanes.caffeine.cache.SSLSMW` available for reflection",
+        "when `io.micronaut.cache.caffeine.DefaultSyncCache` is reached, make `com.github.benmanes.caffeine.cache.SSMW` available for reflection",
+        "when `io.micronaut.cache.caffeine.DefaultSyncCache` is reached, make `com.github.benmanes.caffeine.cache.SSSMSAW` available for reflection",
+        "... and 6 more"
+      ]
+    },
+    "library_stats": {
+      "dynamicAccess": {
+        "breakdown": {},
+        "coverageRatio": 1.0,
+        "coveredCalls": 0,
+        "totalCalls": 0
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 561,
+          "missed": 369,
+          "ratio": 0.603226,
+          "total": 930
+        },
+        "line": {
+          "covered": 108,
+          "missed": 36,
+          "ratio": 0.75,
+          "total": 144
+        },
+        "method": {
+          "covered": 44,
+          "missed": 10,
+          "ratio": 0.814815,
+          "total": 54
+        }
+      },
+      "version": "6.1.1"
+    }
+  },
+  "schema_version": 1,
+  "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-sol",
+  "task_type": "library-new-request",
+  "template_type": "library-new-request",
+  "timestamp": "2026-09-04T04:42:45.189324Z"
+}

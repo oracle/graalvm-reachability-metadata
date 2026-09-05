@@ -1,0 +1,36 @@
+{
+  "reflection" : [
+    {
+      "condition" : {
+        "typeReached" : "io.micronaut.serde.support.DefaultEncoderContext"
+      },
+      "type" : "io.micronaut.context.annotation.Prototype"
+    },
+    {
+      "condition" : {
+        "typeReached" : "io.micronaut.serde.KeysSupport$LazyKeysProviders"
+      },
+      "type" : "io.micronaut.serde.jackson.JacksonKeysProvider",
+      "methods" : [
+        {
+          "name" : "<init>",
+          "parameterTypes" : [ ]
+        }
+      ]
+    },
+    {
+      "condition" : {
+        "typeReached" : "io.micronaut.serde.support.deserializers.ErrorCatchingDeserializer"
+      },
+      "type" : "tools.jackson.core.JacksonException"
+    }
+  ],
+  "resources" : [
+    {
+      "condition" : {
+        "typeReached" : "io.micronaut.serde.KeysSupport$LazyKeysProviders"
+      },
+      "glob" : "META-INF/services/io.micronaut.serde.KeysProvider"
+    }
+  ]
+}

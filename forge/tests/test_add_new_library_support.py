@@ -68,6 +68,7 @@ class AddNewLibrarySupportTests(unittest.TestCase):
             False,
             0,
             None,
+            "",
             None,
             None,
         )
