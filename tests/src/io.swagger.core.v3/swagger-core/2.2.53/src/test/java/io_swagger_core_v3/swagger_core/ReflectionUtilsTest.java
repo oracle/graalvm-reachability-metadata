@@ -19,11 +19,31 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class ReflectionUtilsTest {
+    private static final String CONTEXT_ONLY_CLASS_NAME =
+            "io_swagger_core_v3.swagger_core.context.ContextOnlyFixture";
+
     @Test
     void loadsExistingClassByName() throws ClassNotFoundException {
         Class<?> loadedClass = ReflectionUtils.loadClassByName(String.class.getName());
 
         assertThat(loadedClass).isEqualTo(String.class);
+    }
+
+    @Test
+    void fallsBackToThreadContextClassLoader() throws ClassNotFoundException {
+        Thread thread = Thread.currentThread();
+        ClassLoader originalClassLoader = thread.getContextClassLoader();
+        ContextOnlyClassLoader contextClassLoader = new ContextOnlyClassLoader(originalClassLoader);
+        thread.setContextClassLoader(contextClassLoader);
+
+        try {
+            Class<?> loadedClass = ReflectionUtils.loadClassByName(CONTEXT_ONLY_CLASS_NAME);
+
+            assertThat(loadedClass).isEqualTo(ContextOnlyFixture.class);
+            assertThat(contextClassLoader.requestedClassName).isEqualTo(CONTEXT_ONLY_CLASS_NAME);
+        } finally {
+            thread.setContextClassLoader(originalClassLoader);
+        }
     }
 
     @Test
@@ -85,6 +105,26 @@ public class ReflectionUtilsTest {
     public static class ParentFields {
         public String shared;
         public String superOnly;
+    }
+
+    public static class ContextOnlyFixture {
+    }
+
+    private static final class ContextOnlyClassLoader extends ClassLoader {
+        private String requestedClassName;
+
+        private ContextOnlyClassLoader(ClassLoader parent) {
+            super(parent);
+        }
+
+        @Override
+        public Class<?> loadClass(String name) throws ClassNotFoundException {
+            if (CONTEXT_ONLY_CLASS_NAME.equals(name)) {
+                requestedClassName = name;
+                return ContextOnlyFixture.class;
+            }
+            return super.loadClass(name);
+        }
     }
 
     public static class ChildFields extends ParentFields {
