@@ -8,6 +8,7 @@ package com_couchbase_client.metrics_micrometer;
 
 import com.couchbase.client.core.cnc.Counter;
 import com.couchbase.client.core.cnc.ValueRecorder;
+import com.couchbase.client.core.error.MeterException;
 import com.couchbase.client.metrics.micrometer.MicrometerCounter;
 import com.couchbase.client.metrics.micrometer.MicrometerMeter;
 import com.couchbase.client.metrics.micrometer.MicrometerValueRecorder;
@@ -19,6 +20,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class Metrics_micrometerTest {
 
@@ -118,6 +120,36 @@ public class Metrics_micrometerTest {
             assertThat(archiveSummary.totalAmount()).isEqualTo(40);
             assertThat(archiveSummary.max()).isEqualTo(40);
             assertThat(registry.find("couchbase.operation.duration").meters()).hasSize(2);
+        } finally {
+            registry.close();
+        }
+    }
+
+    @Test
+    void counterRegistrationErrorsAreReportedAsMeterExceptions() {
+        SimpleMeterRegistry registry = new SimpleMeterRegistry();
+        try {
+            registry.summary("couchbase.metric.type");
+            MicrometerMeter meter = MicrometerMeter.wrap(registry);
+
+            assertThatThrownBy(() -> meter.counter("couchbase.metric.type", Map.of()))
+                    .isInstanceOf(MeterException.class)
+                    .hasCauseInstanceOf(IllegalArgumentException.class);
+        } finally {
+            registry.close();
+        }
+    }
+
+    @Test
+    void valueRecorderRegistrationErrorsAreReportedAsMeterExceptions() {
+        SimpleMeterRegistry registry = new SimpleMeterRegistry();
+        try {
+            registry.counter("couchbase.metric.type");
+            MicrometerMeter meter = MicrometerMeter.wrap(registry);
+
+            assertThatThrownBy(() -> meter.valueRecorder("couchbase.metric.type", Map.of()))
+                    .isInstanceOf(MeterException.class)
+                    .hasCauseInstanceOf(IllegalArgumentException.class);
         } finally {
             registry.close();
         }
