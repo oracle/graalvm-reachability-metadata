@@ -3,6 +3,12 @@
 Rendered by Forge from the pre-push branch review of §FS-local-branch-review.
 Newest entry first; every non-approval is recorded, including one a repair later cleared.
 
+## 2026-09-05 — org.springframework.cloud:spring-cloud-vault-config:5.0.2 (#9705)
+
+**New-library request included an unrelated shared GrypeTask behavior change**
+
+Review Signal #1 requires a new-library request to stay scoped to one target library and its supporting test files. tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/GrypeTask.java changed shared Docker scanning behavior to silently accept an empty image diff, which is unrelated to adding org.springframework.cloud:spring-cloud-vault-config:5.0.2.
+
 ## 2026-09-02 — org.springframework.boot:spring-boot-amqp:4.2.0-M1 (#9468)
 
 **Explicit messaging timeout is below the 10-second minimum**
