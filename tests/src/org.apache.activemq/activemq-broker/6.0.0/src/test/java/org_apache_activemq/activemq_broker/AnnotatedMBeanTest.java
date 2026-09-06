@@ -18,7 +18,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class AnnotatedMBeanTest {
 
     @Test
-    void invokesAuditedMBeanOperationWithDeclaredSignature() throws Exception {
+    void invokesMBeanOperationWithDeclaredSignature() throws Exception {
         Log4JConfigView implementation = new Log4JConfigView();
         AnnotatedMBean mBean = new AnnotatedMBean(
                 implementation,

@@ -18,23 +18,7 @@ dependencies {
     testImplementation 'org.assertj:assertj-core:3.22.0'
 }
 
-String auditProperty = "org.apache.activemq.audit"
-
-tasks.withType(Test).configureEach {
-    systemProperty auditProperty, "entry"
-}
-
-tasks.named("nativeTest") {
-    runtimeArgs.add("-D$auditProperty=entry")
-}
-
 graalvmNative {
-    binaries {
-        test {
-            buildArgs.add("-D$auditProperty=entry")
-        }
-    }
-
     agent {
         defaultMode = "conditional"
         modes {

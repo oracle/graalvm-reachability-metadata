@@ -33,7 +33,7 @@ public class DestinationsViewFilterAnonymous2Test {
 
             String result = broker.getAdminView().queryQueues(
                     """
-                    {"sortColumn":"name","sortOrder":"desc"}
+                    {"filter":"","sortColumn":"name","sortOrder":"desc"}
                     """,
                     1,
                     10);
