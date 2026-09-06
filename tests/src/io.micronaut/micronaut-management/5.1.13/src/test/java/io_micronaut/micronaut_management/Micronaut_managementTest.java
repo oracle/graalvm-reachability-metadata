@@ -11,6 +11,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import io.micronaut.context.ApplicationContext;
 import io.micronaut.context.env.Environment;
 import io.micronaut.core.type.Argument;
+import io.micronaut.http.HttpMethod;
 import io.micronaut.http.HttpRequest;
 import io.micronaut.http.HttpResponse;
 import io.micronaut.http.HttpStatus;
@@ -89,6 +90,33 @@ public class Micronaut_managementTest {
             assertThat(response.code()).isEqualTo(HttpStatus.OK.getCode());
             assertThat(response.getContentType()).contains(MediaType.APPLICATION_JSON_TYPE);
             assertThat(response.body()).isEmpty();
+        }
+    }
+
+    @Test
+    @Timeout(55)
+    void stopsRunningApplicationThroughWriteEndpoint() throws InterruptedException {
+        Map<String, Object> properties = Map.ofEntries(
+                Map.entry("micronaut.server.port", -1),
+                Map.entry("endpoints.all.enabled", false),
+                Map.entry("endpoints.all.path", "/management/"),
+                Map.entry("endpoints.all.sensitive", false),
+                Map.entry("endpoints.stop.enabled", true));
+
+        try (EmbeddedServer server = ApplicationContext.run(EmbeddedServer.class, properties, Environment.TEST);
+                HttpClient client = HttpClient.create(server.getURL(), clientConfiguration())) {
+            HttpRequest<?> request = HttpRequest.create(HttpMethod.POST, "/management/stop")
+                    .accept(MediaType.APPLICATION_JSON_TYPE);
+            HttpResponse<Map<String, Object>> response = client.toBlocking().exchange(request, JSON_MAP);
+
+            assertThat(response.code()).isEqualTo(HttpStatus.OK.getCode());
+            assertThat(response.body()).containsEntry("message", "Server shutdown started");
+
+            long stopDeadline = System.nanoTime() + HTTP_TIMEOUT.toNanos();
+            while (server.isRunning() && System.nanoTime() < stopDeadline) {
+                Thread.sleep(100);
+            }
+            assertThat(server.isRunning()).isFalse();
         }
     }
 
