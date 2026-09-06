@@ -10,15 +10,22 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import io.micronaut.context.ApplicationContext;
+import io.micronaut.context.annotation.Secondary;
 import io.micronaut.core.type.Argument;
 import io.micronaut.json.tree.JsonNode;
+import io.micronaut.serde.Decoder;
+import io.micronaut.serde.Encoder;
 import io.micronaut.serde.ObjectMapper;
+import io.micronaut.serde.Serde;
 import io.micronaut.serde.annotation.Serdeable;
+import jakarta.inject.Singleton;
 import org.junit.jupiter.api.Test;
 
 public class MicronautSerdeApiTest {
@@ -112,6 +119,20 @@ public class MicronautSerdeApiTest {
         }
     }
 
+    @Test
+    void usesCustomSerdeForScalarRepresentation() throws Exception {
+        CatalogCode expected = new CatalogCode("ref-204");
+
+        try (ApplicationContext context = ApplicationContext.run()) {
+            ObjectMapper mapper = context.getBean(ObjectMapper.class);
+
+            String json = mapper.writeValueAsString(expected);
+
+            assertThat(json).isEqualTo("\"REF-204\"");
+            assertThat(mapper.readValue(json, CatalogCode.class)).isEqualTo(expected);
+        }
+    }
+
     private static LibraryBook sampleBook() {
         return new LibraryBook(
                 "978-0-00-000001-1",
@@ -147,6 +168,32 @@ public class MicronautSerdeApiTest {
 
     @Serdeable
     public record ReadingProgressUpdate(int currentPage) {
+    }
+
+    @Serdeable.Serializable(using = CatalogCodeSerde.class)
+    @Serdeable.Deserializable(using = CatalogCodeSerde.class)
+    public record CatalogCode(String value) {
+    }
+
+    @Singleton
+    @Secondary
+    public static final class CatalogCodeSerde implements Serde<CatalogCode> {
+
+        @Override
+        public void serialize(
+                Encoder encoder,
+                EncoderContext context,
+                Argument<? extends CatalogCode> type,
+                CatalogCode value)
+                throws IOException {
+            encoder.encodeString(value.value().toUpperCase(Locale.ROOT));
+        }
+
+        @Override
+        public CatalogCode deserialize(
+                Decoder decoder, DecoderContext context, Argument<? super CatalogCode> type) throws IOException {
+            return new CatalogCode(decoder.decodeString().toLowerCase(Locale.ROOT));
+        }
     }
 
     @Serdeable
