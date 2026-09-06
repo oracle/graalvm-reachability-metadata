@@ -3,6 +3,12 @@
 Rendered by Forge from the pre-push branch review of §FS-local-branch-review.
 Newest entry first; every non-approval is recorded, including one a repair later cleared.
 
+## 2026-09-06 — org.springframework:spring-webflux:6.0.0 (#9403)
+
+**Explicit I/O timeout below the 10-second floor**
+
+In tests/src/org.springframework/spring-webflux/6.0.0/src/test/java/org_springframework/spring_webflux/InvocableHandlerMethodTest.java, the reactive request wait used Duration.ofSeconds(5). This violates the enumerated 10-second minimum for explicit request/I/O timeouts in §FS-test-contract.1.7.
+
 ## 2026-09-06 — io.netty:netty-codec:5.0.0.Alpha1 (#9762)
 
 **Unsupported-feature catch masks statically available class resolution**
