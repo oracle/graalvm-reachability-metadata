@@ -3,6 +3,12 @@
 Rendered by Forge from the pre-push branch review of §FS-local-branch-review.
 Newest entry first; every non-approval is recorded, including one a repair later cleared.
 
+## 2026-09-06 — io.netty:netty-codec:5.0.0.Alpha1 (#9762)
+
+**Unsupported-feature catch masks statically available class resolution**
+
+In tests/src/io.netty/netty-codec/5.0.0.Alpha1/src/test/java/io_netty/netty_codec/ClassLoaderClassResolverTest.java, both tests caught Error and accepted NativeImageSupport.isUnsupportedFeatureError even though the target class name is fixed, the class is included in the image, and the behavior does not require a class discovered after image build. This applies the sole open-ended dynamic-class-loading exception outside its permitted scope and could make the native tests pass without executing their assertions.
+
 ## 2026-09-05 — com.github.seregamorph:spring-test-smart-context:1.0 (#9677)
 
 **Dynamic-access coverage does not meet the new-library minimum**
