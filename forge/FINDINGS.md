@@ -3,6 +3,12 @@
 Rendered by Forge from the pre-push branch review of §FS-local-branch-review.
 Newest entry first; every non-approval is recorded, including one a repair later cleared.
 
+## 2026-09-06 — io.micronaut.serde:micronaut-serde-support:3.1.1 (#9837)
+
+**Version-pinned companion serialization dependency**
+
+Review Signal #4 was violated in tests/src/io.micronaut.serde/micronaut-serde-support/3.1.1/build.gradle: micronaut-serde-jackson was pinned to 3.1.1, so the suite would not track the tested Micronaut Serde version when reused for another supported version.
+
 ## 2026-09-06 — io.netty:netty-codec:5.0.0.Alpha1 (#9762)
 
 **Unsupported-feature catch masks statically available class resolution**
