@@ -70,6 +70,30 @@ public class Micronaut_managementTest {
 
     @Test
     @Timeout(55)
+    void refreshesApplicationStateThroughWriteEndpoint() {
+        Map<String, Object> properties = Map.ofEntries(
+                Map.entry("micronaut.server.port", -1),
+                Map.entry("endpoints.all.enabled", false),
+                Map.entry("endpoints.all.path", "/management/"),
+                Map.entry("endpoints.all.sensitive", false),
+                Map.entry("endpoints.refresh.enabled", true));
+
+        try (EmbeddedServer server = ApplicationContext.run(EmbeddedServer.class, properties, Environment.TEST);
+                HttpClient client = HttpClient.create(server.getURL(), clientConfiguration())) {
+            BlockingHttpClient blockingClient = client.toBlocking();
+            HttpRequest<?> request = HttpRequest.POST("/management/refresh", Map.of("force", true))
+                    .accept(MediaType.APPLICATION_JSON_TYPE);
+
+            HttpResponse<List<String>> response = blockingClient.exchange(request, Argument.listOf(String.class));
+
+            assertThat(response.code()).isEqualTo(HttpStatus.OK.getCode());
+            assertThat(response.getContentType()).contains(MediaType.APPLICATION_JSON_TYPE);
+            assertThat(response.body()).isEmpty();
+        }
+    }
+
+    @Test
+    @Timeout(55)
     void servesConfiguredInformationAndInspectionEndpoints() {
         Map<String, Object> properties = Map.ofEntries(
                 Map.entry("micronaut.server.port", -1),
@@ -95,7 +119,7 @@ public class Micronaut_managementTest {
                     .containsEntry("owner", "platform-team");
 
             Map<String, Object> environment = getJson(blockingClient, "/management/env");
-            assertThat(environment).containsOnlyKeys("activeEnvironments");
+            assertThat(environment).hasSize(1).containsKey("activeEnvironments");
             assertThat(asList(environment.get("activeEnvironments"))).contains("test");
 
             Map<String, Object> beanReport = getJson(blockingClient, "/management/beans");
