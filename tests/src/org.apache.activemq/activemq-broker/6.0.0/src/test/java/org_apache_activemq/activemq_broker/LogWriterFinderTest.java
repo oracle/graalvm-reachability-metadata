@@ -17,7 +17,15 @@ public class LogWriterFinderTest {
     private static final String LOG_WRITER_PATH = "META-INF/services/org/apache/activemq/transport/logwriters/";
 
     @Test
-    void loadsBundledLogWriterDefinition() throws Exception {
+    void loadsBundledLogWriterThroughContextClassLoader() throws Exception {
+        LogWriter writer = new LogWriterFinder(LOG_WRITER_PATH).newInstance("default");
+
+        assertThat(writer.getClass().getName())
+                .isEqualTo("org.apache.activemq.transport.logwriters.DefaultLogWriter");
+    }
+
+    @Test
+    void fallsBackToLibraryClassLoader() throws Exception {
         Thread thread = Thread.currentThread();
         ClassLoader originalClassLoader = thread.getContextClassLoader();
         thread.setContextClassLoader(ClassLoader.getPlatformClassLoader());

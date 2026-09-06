@@ -13,6 +13,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 import java.nio.file.Path;
+import java.security.Provider;
+import java.security.Security;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -20,6 +22,16 @@ public class BrokerServiceTest {
 
     @TempDir
     Path temporaryDirectory;
+
+    @Test
+    void registersAvailableSecurityProvider() {
+        new BrokerService();
+
+        Provider provider = Security.getProvider("BC");
+
+        assertThat(provider).isNotNull();
+        assertThat(provider.getService("Cipher", "AES")).isNotNull();
+    }
 
     @Test
     void lazilyCreatesPersistentStores() throws Exception {

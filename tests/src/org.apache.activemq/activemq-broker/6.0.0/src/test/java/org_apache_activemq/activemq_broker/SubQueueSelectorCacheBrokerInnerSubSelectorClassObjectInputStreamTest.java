@@ -17,7 +17,9 @@ import org.apache.activemq.plugin.SubQueueSelectorCacheBrokerPlugin;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.concurrent.TimeUnit;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -36,6 +38,7 @@ public class SubQueueSelectorCacheBrokerInnerSubSelectorClassObjectInputStreamTe
 
         try {
             writer.addConsumer(new ConnectionContext(), consumer);
+            awaitCacheFile(cacheFile);
         } finally {
             writer.stop();
         }
@@ -60,7 +63,15 @@ public class SubQueueSelectorCacheBrokerInnerSubSelectorClassObjectInputStreamTe
         };
         SubQueueSelectorCacheBrokerPlugin plugin = new SubQueueSelectorCacheBrokerPlugin();
         plugin.setPersistFile(cacheFile.toFile());
-        plugin.setPersistInterval(10_000L);
+        plugin.setPersistInterval(10L);
         return (SubQueueSelectorCacheBroker) plugin.installPlugin(next);
+    }
+
+    private void awaitCacheFile(Path cacheFile) throws InterruptedException {
+        long deadline = System.nanoTime() + TimeUnit.SECONDS.toNanos(10L);
+        while (Files.notExists(cacheFile) && System.nanoTime() < deadline) {
+            Thread.sleep(10L);
+        }
+        assertThat(cacheFile).exists();
     }
 }

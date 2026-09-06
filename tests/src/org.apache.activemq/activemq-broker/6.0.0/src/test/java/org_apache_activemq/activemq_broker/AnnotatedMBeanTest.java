@@ -7,8 +7,6 @@
 package org_apache_activemq.activemq_broker;
 
 import org.apache.activemq.broker.jmx.AnnotatedMBean;
-import org.apache.activemq.broker.jmx.Log4JConfigView;
-import org.apache.activemq.broker.jmx.Log4JConfigViewMBean;
 import org.junit.jupiter.api.Test;
 
 import javax.management.ObjectName;
@@ -19,24 +17,29 @@ public class AnnotatedMBeanTest {
 
     @Test
     void invokesMBeanOperationWithDeclaredSignature() throws Exception {
-        Log4JConfigView implementation = new Log4JConfigView();
         AnnotatedMBean mBean = new AnnotatedMBean(
-                implementation,
-                Log4JConfigViewMBean.class,
-                new ObjectName("org.apache.activemq:type=Log4JConfig"));
-        String loggerName = "activemq.annotated.mbean";
-        String originalLevel = implementation.getLogLevel(loggerName);
+                new GreetingView(),
+                GreetingViewMBean.class,
+                new ObjectName("org.apache.activemq:type=Greeting"));
 
-        try {
-            Object result = mBean.invoke(
-                    "setLogLevel",
-                    new Object[]{loggerName, "INFO"},
-                    new String[]{String.class.getName(), String.class.getName()});
+        Object result = mBean.invoke(
+                "greet",
+                new Object[]{"ActiveMQ"},
+                new String[]{String.class.getName()});
 
-            assertThat(result).isNull();
-            assertThat(implementation.getLogLevel(loggerName)).isEqualTo("INFO");
-        } finally {
-            implementation.setLogLevel(loggerName, originalLevel);
+        assertThat(result).isEqualTo("Hello, ActiveMQ");
+    }
+
+    public interface GreetingViewMBean {
+
+        String greet(String name);
+    }
+
+    public static class GreetingView implements GreetingViewMBean {
+
+        @Override
+        public String greet(String name) {
+            return "Hello, " + name;
         }
     }
 }

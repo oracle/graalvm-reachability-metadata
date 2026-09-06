@@ -19,6 +19,7 @@ import org.junit.jupiter.api.io.TempDir;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.concurrent.TimeUnit;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -39,6 +40,7 @@ public class SubQueueSelectorCacheBrokerTest {
             broker.addConsumer(new ConnectionContext(), consumer);
             assertThat(broker.getSelectorsForDestination("queue://Consumer.orders.VirtualTopic.events"))
                     .contains("region = 'eu'");
+            awaitCacheFile(cacheFile);
         } finally {
             broker.stop();
         }
@@ -57,7 +59,15 @@ public class SubQueueSelectorCacheBrokerTest {
         };
         SubQueueSelectorCacheBrokerPlugin plugin = new SubQueueSelectorCacheBrokerPlugin();
         plugin.setPersistFile(cacheFile.toFile());
-        plugin.setPersistInterval(10_000L);
+        plugin.setPersistInterval(10L);
         return (SubQueueSelectorCacheBroker) plugin.installPlugin(next);
+    }
+
+    private void awaitCacheFile(Path cacheFile) throws InterruptedException {
+        long deadline = System.nanoTime() + TimeUnit.SECONDS.toNanos(10L);
+        while (Files.notExists(cacheFile) && System.nanoTime() < deadline) {
+            Thread.sleep(10L);
+        }
+        assertThat(cacheFile).exists();
     }
 }
