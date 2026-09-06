@@ -1,0 +1,158 @@
+{
+  "fix_javac_fail:2026-09-06": {
+    "timestamp": "2026-09-06T14:02:37.829993Z",
+    "library": "org.springframework:spring-webflux:6.0.0",
+    "starting_commit": "9670039a16a77ccfb5b459dae4ff413fbe1e8251",
+    "ending_commit": "395bcb1c5be436ea88ca22fbe6b53609d516fc75",
+    "previous_library": "org.springframework:spring-webflux:5.3.31",
+    "strategy_name": "javac_iterative_with_coverage_sources_pi_gpt-5.6-sol",
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "status": "success",
+    "stats": {
+      "version": "6.0.0",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 1,
+            "totalCalls": 1
+          }
+        },
+        "coverageRatio": 1.0,
+        "coveredCalls": 1,
+        "totalCalls": 1
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 394,
+          "missed": 42170,
+          "ratio": 0.009257,
+          "total": 42564
+        },
+        "line": {
+          "covered": 117,
+          "missed": 9323,
+          "ratio": 0.012394,
+          "total": 9440
+        },
+        "method": {
+          "covered": 32,
+          "missed": 3340,
+          "ratio": 0.00949,
+          "total": 3372
+        }
+      }
+    },
+    "previous_library_stats": {
+      "version": "5.3.31",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 10,
+            "totalCalls": 10
+          }
+        },
+        "coverageRatio": 1.0,
+        "coveredCalls": 10,
+        "totalCalls": 10
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 524,
+          "missed": 43150,
+          "ratio": 0.011998,
+          "total": 43674
+        },
+        "line": {
+          "covered": 140,
+          "missed": 9162,
+          "ratio": 0.015051,
+          "total": 9302
+        },
+        "method": {
+          "covered": 34,
+          "missed": 3236,
+          "ratio": 0.010398,
+          "total": 3270
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "advisory_preparation",
+      "issue_number": 9403,
+      "issue_label": "fails-javac-compile",
+      "library": "org.springframework:spring-webflux:6.0.0",
+      "summary": "Spring WebFlux 6.0.0 requires Jetty 11 for its optional Jetty WebSocket paths; existing tests target removed Jetty 10 APIs.",
+      "deterministic_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "org.eclipse.jetty.websocket:websocket-jetty-server:11.0.12",
+          "scope": "testImplementation",
+          "reason": "Provides the Jetty 11 server API used by Spring WebFlux 6.0.0."
+        },
+        {
+          "kind": "dependency",
+          "coordinate": "org.eclipse.jetty.websocket:websocket-jetty-client:11.0.12",
+          "scope": "testImplementation",
+          "reason": "Provides the Jetty 11 client API used by JettyWebSocketClient."
+        }
+      ],
+      "agent_guidance": "Migrate copied tests from Jetty10RequestUpgradeStrategy to JettyRequestUpgradeStrategy and update Jetty10-specific test names/references. Replace the existing Jetty 10 pins rather than mixing Jetty generations. Use Jakarta Servlet mocks/APIs and stop Jetty clients in finally blocks. No Docker image or system property is required.",
+      "risks": [
+        "Leaving Jetty 10 and Jetty 11 dependencies mixed can cause incompatible WebSocket and Servlet APIs.",
+        "The 6.0.0 artifact no longer contains Jetty10RequestUpgradeStrategy or the prior Jetty 10 upgrade-helper path."
+      ],
+      "applied_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "org.eclipse.jetty.websocket:websocket-jetty-server:11.0.12",
+          "result": "skipped",
+          "reason": "build_gradle_absent"
+        },
+        {
+          "kind": "dependency",
+          "coordinate": "org.eclipse.jetty.websocket:websocket-jetty-client:11.0.12",
+          "result": "skipped",
+          "reason": "build_gradle_absent"
+        }
+      ],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#9403 [Automation] javac compile fails for org.springframework:spring-webflux:6.0.0; label=fails-javac-compile; body_chars=8015"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "9 existing test file path(s) included"
+        }
+      ],
+      "current_library": "org.springframework:spring-webflux:5.3.31",
+      "new_version": "6.0.0",
+      "model": "gpt-5.6-luna",
+      "input_tokens_used": 3009634,
+      "output_tokens_used": 14930,
+      "prompt_path": "library-preflight-prompt.txt",
+      "raw_response_path": "library-preflight-response.txt",
+      "session_log_path": "/home/mihailo/git/graalvm-reachability-metadata/forge/logs/org.springframework:spring-webflux:6.0.0/library-preparation-preflight/codex-session-a0olmwas.log"
+    },
+    "metrics": {
+      "input_tokens_used": 68559,
+      "cached_input_tokens_used": 673664,
+      "output_tokens_used": 7411,
+      "iterations": 2,
+      "cost_usd": 0.9019,
+      "tested_library_loc": 117,
+      "metadata_entries": 78,
+      "test_only_metadata_entries": 6,
+      "previous_library_metadata_entries": 92,
+      "code_coverage_percent": 1.24,
+      "previous_library_coverage_percent": 1.51
+    },
+    "artifacts": {
+      "metadata_file": "metadata/org.springframework/spring-webflux/6.0.0/reachability-metadata.json"
+    }
+  }
+}
