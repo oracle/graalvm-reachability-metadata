@@ -41,7 +41,7 @@ public class CompatibleObjectEncoderTest {
             if (encodedMessage != null) {
                 encodedMessage.release();
             }
-            channel.finishAndReleaseAll();
+            channel.finish();
         }
     }
 

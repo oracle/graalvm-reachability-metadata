@@ -52,7 +52,7 @@ public class ByteBufChecksumInnerReflectiveByteBufChecksumTest {
             if (input != null && input.refCnt() > 0) {
                 input.release();
             }
-            channel.finishAndReleaseAll();
+            channel.finish();
         }
     }
 

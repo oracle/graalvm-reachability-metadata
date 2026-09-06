@@ -36,7 +36,7 @@ public class CompactObjectInputStreamTest {
             assertArrayEquals(expected, actual);
             assertNull(channel.readInbound());
         } finally {
-            channel.finishAndReleaseAll();
+            channel.finish();
         }
     }
 

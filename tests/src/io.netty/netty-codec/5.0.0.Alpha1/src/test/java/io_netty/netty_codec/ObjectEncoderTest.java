@@ -33,7 +33,7 @@ public class ObjectEncoderTest {
             assertNotNull(encodedMessage);
             assertEquals(encodedMessage.readableBytes() - Integer.BYTES, encodedMessage.getInt(0));
 
-            Object actualMessage = decodeObject(encodedMessage.retainedDuplicate());
+            Object actualMessage = decodeObject(encodedMessage.duplicate().retain());
 
             assertEquals(expectedMessage, actualMessage);
             assertNull(encoderChannel.readOutbound());
@@ -41,7 +41,7 @@ public class ObjectEncoderTest {
             if (encodedMessage != null) {
                 encodedMessage.release();
             }
-            encoderChannel.finishAndReleaseAll();
+            encoderChannel.finish();
         }
     }
 
@@ -55,7 +55,7 @@ public class ObjectEncoderTest {
             assertNull(decoderChannel.readInbound());
             return decodedMessage;
         } finally {
-            decoderChannel.finishAndReleaseAll();
+            decoderChannel.finish();
         }
     }
 }
