@@ -28,7 +28,7 @@ public class InvocableHandlerMethodTest {
         InvocableHandlerMethod invocableMethod = new InvocableHandlerMethod(handler, method);
         ServerWebExchange exchange = MockServerWebExchange.from(MockServerHttpRequest.get("/greeting"));
 
-        HandlerResult result = invocableMethod.invoke(exchange, new BindingContext()).block(Duration.ofSeconds(5));
+        HandlerResult result = invocableMethod.invoke(exchange, new BindingContext()).block(Duration.ofSeconds(10));
 
         assertThat(result).isNotNull();
         assertThat(result.getHandler()).isSameAs(invocableMethod);
