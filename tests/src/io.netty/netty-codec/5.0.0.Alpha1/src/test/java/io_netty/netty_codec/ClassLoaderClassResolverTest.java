@@ -8,7 +8,6 @@ package io_netty.netty_codec;
 
 import io.netty.handler.codec.serialization.ClassResolver;
 import io.netty.handler.codec.serialization.ClassResolvers;
-import org.graalvm.internal.tck.NativeImageSupport;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -26,14 +25,10 @@ public class ClassLoaderClassResolverTest {
         RecordingClassLoader classLoader = new RecordingClassLoader(getClass().getClassLoader());
         ClassResolver resolver = ClassResolvers.cacheDisabled(classLoader);
 
-        try {
-            Class<?> resolvedClass = resolver.resolve(TARGET_CLASS_NAME);
+        Class<?> resolvedClass = resolver.resolve(TARGET_CLASS_NAME);
 
-            assertSame(ClassLoaderClassResolverTarget.class, resolvedClass);
-            assertEquals(1, classLoader.loadCount(TARGET_CLASS_NAME));
-        } catch (Error error) {
-            rethrowUnlessUnsupportedDynamicClassLoading(error);
-        }
+        assertSame(ClassLoaderClassResolverTarget.class, resolvedClass);
+        assertEquals(1, classLoader.loadCount(TARGET_CLASS_NAME));
     }
 
     @Test
@@ -41,20 +36,10 @@ public class ClassLoaderClassResolverTest {
         FailingOnceClassLoader classLoader = new FailingOnceClassLoader(getClass().getClassLoader(), TARGET_CLASS_NAME);
         ClassResolver resolver = ClassResolvers.cacheDisabled(classLoader);
 
-        try {
-            Class<?> resolvedClass = resolver.resolve(TARGET_CLASS_NAME);
+        Class<?> resolvedClass = resolver.resolve(TARGET_CLASS_NAME);
 
-            assertSame(ClassLoaderClassResolverTarget.class, resolvedClass);
-            assertTrue(classLoader.failedInitialLoad());
-        } catch (Error error) {
-            rethrowUnlessUnsupportedDynamicClassLoading(error);
-        }
-    }
-
-    private static void rethrowUnlessUnsupportedDynamicClassLoading(Error error) {
-        if (!NativeImageSupport.isUnsupportedFeatureError(error)) {
-            throw error;
-        }
+        assertSame(ClassLoaderClassResolverTarget.class, resolvedClass);
+        assertTrue(classLoader.failedInitialLoad());
     }
 
     private static class RecordingClassLoader extends ClassLoader {
