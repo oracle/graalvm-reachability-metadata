@@ -175,6 +175,95 @@ class DynamicAccessProgressLoggingTests(unittest.TestCase):
             strategy.dynamic_access_report_path,
         )
 
+    def test_final_class_feedback_fix_is_verified(self) -> None:
+        class FakeAgent:
+            def __init__(self) -> None:
+                self.prompts: list[str] = []
+                self.test_commands: list[str] = []
+                self.test_outputs: list[str] = [
+                    "> Task :compileTestJava FAILED",
+                    "> Task :test FAILED",
+                    "> Task :nativeTest FAILED",
+                ]
+
+            def send_prompt(self, prompt: str) -> None:
+                self.prompts.append(prompt)
+
+            def run_test_command(self, command: str) -> str:
+                self.test_commands.append(command)
+                return self.test_outputs.pop(0)
+
+            def clear_context(self) -> None:
+                pass
+
+        class_name = "org.example.Exhausted"
+        current_report = self._report_for_class_names([class_name], [])
+        covered_report = self._report_for_class_names([class_name], [class_name])
+        strategy = self._strategy(parameters={"max-class-test-iterations": 2})
+        agent = FakeAgent()
+
+        with patch.object(strategy, "_render_prompt", return_value="initial prompt"), \
+                patch.object(strategy, "_generate_dynamic_access_report", return_value=covered_report), \
+                patch.object(strategy, "_commit_test_sources"), \
+                patch.object(strategy, "_run_native_test_verification_gate", return_value=True), \
+                patch.object(strategy, "_library_test_change_signature", return_value="clean"), \
+                patch(
+                    "ai_workflows.core.dynamic_access_iterative_strategy.subprocess.check_output",
+                    return_value="checkpoint\n",
+                ):
+            phase_ok, iterations = strategy._run_dynamic_access_phase(agent, current_report)
+
+        self.assertTrue(phase_ok)
+        self.assertEqual(iterations, 3)
+        self.assertEqual(len(agent.test_commands), 3)
+        self.assertEqual(len(agent.prompts), 3)
+        self.assertIn("compileTestJava FAILED", agent.prompts[1])
+        self.assertIn("test FAILED", agent.prompts[2])
+
+    def test_exhausted_class_does_not_request_unverified_fix(self) -> None:
+        class FakeAgent:
+            def __init__(self) -> None:
+                self.prompts: list[str] = []
+                self.test_commands: list[str] = []
+                self.test_outputs: list[str] = [
+                    "> Task :compileTestJava FAILED",
+                    "> Task :test FAILED",
+                    "> Task :test FAILED",
+                ]
+
+            def send_prompt(self, prompt: str) -> None:
+                self.prompts.append(prompt)
+
+            def run_test_command(self, command: str) -> str:
+                self.test_commands.append(command)
+                return self.test_outputs.pop(0)
+
+            def clear_context(self) -> None:
+                pass
+
+        class_name = "org.example.Exhausted"
+        current_report = self._report_for_class_names([class_name], [])
+        strategy = self._strategy(parameters={"max-class-test-iterations": 2})
+        agent = FakeAgent()
+
+        with patch.object(strategy, "_render_prompt", return_value="initial prompt"), \
+                patch.object(strategy, "_print_failure_analysis"), \
+                patch.object(strategy, "_library_test_change_signature", return_value="clean"), \
+                patch(
+                    "ai_workflows.core.dynamic_access_iterative_strategy.subprocess.check_output",
+                    return_value="checkpoint\n",
+                ), \
+                patch("ai_workflows.core.dynamic_access_iterative_strategy.subprocess.run"):
+            phase_ok, iterations = strategy._run_dynamic_access_phase(agent, current_report)
+
+        self.assertFalse(phase_ok)
+        self.assertEqual(iterations, 3)
+        self.assertEqual(len(agent.test_commands), 3)
+        self.assertEqual(len(agent.prompts), 3)
+        self.assertFalse(agent.test_outputs)
+        self.assertIn("compileTestJava FAILED", agent.prompts[1])
+        self.assertIn("test FAILED", agent.prompts[2])
+
     def test_native_test_gate_flushes_leftover_classes_at_end(self) -> None:
         class FakeAgent:
             def send_prompt(self, prompt: str) -> None:

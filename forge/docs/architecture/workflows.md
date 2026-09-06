@@ -194,7 +194,8 @@ class-scoped, reviewable progress on the coverage-improvement queue
 (§FS-forge-scope). It generates the initial report, selects one
 uncovered class, and gives that class a bounded number of prompt attempts; each
 attempt gets a bounded number of test-repair rounds before the class is rolled
-back to its checkpoint.
+back to its checkpoint. The initial test precedes those rounds, and every repair
+is followed by another test before Forge decides that the budget is exhausted.
 
 Per class, the correlated report decides the outcome. All call sites covered
 resolves the class and commits it. Some call sites newly covered commits partial
@@ -207,7 +208,7 @@ Committing per class is what makes chunking and resume possible: each terminal
 class transition advances the checkpoint past its own commit, so a whole-phase
 reset preserves the classes already recorded rather than resurrecting them.
 
-Parameters: prompt-attempt budget per class, test-iteration budget per class,
+Parameters: prompt-attempt budget per class, test-repair budget per class,
 source-context types, native-test verification budget. Families:
 `dynamic_access_*`, library-update coverage strategies.
 
