@@ -95,6 +95,23 @@ public class MicronautSerdeApiTest {
         }
     }
 
+    @Test
+    void updatesExistingMutableValueFromOverrideObject() throws Exception {
+        ReadingProgress progress = new ReadingProgress();
+        progress.setBookTitle("Native Applications");
+        progress.setCurrentPage(80);
+
+        try (ApplicationContext context = ApplicationContext.run()) {
+            ObjectMapper mapper = context.getBean(ObjectMapper.class);
+
+            ReadingProgress updated = mapper.updateValue(progress, new ReadingProgressUpdate(125));
+
+            assertThat(updated).isSameAs(progress);
+            assertThat(updated.getBookTitle()).isEqualTo("Native Applications");
+            assertThat(updated.getCurrentPage()).isEqualTo(125);
+        }
+    }
+
     private static LibraryBook sampleBook() {
         return new LibraryBook(
                 "978-0-00-000001-1",
@@ -103,6 +120,33 @@ public class MicronautSerdeApiTest {
                 BookFormat.HARDCOVER,
                 List.of("java", "serialization"),
                 Map.of("central", 3, "west", 2));
+    }
+
+    @Serdeable
+    public static final class ReadingProgress {
+
+        private String bookTitle;
+        private int currentPage;
+
+        public String getBookTitle() {
+            return bookTitle;
+        }
+
+        public void setBookTitle(String bookTitle) {
+            this.bookTitle = bookTitle;
+        }
+
+        public int getCurrentPage() {
+            return currentPage;
+        }
+
+        public void setCurrentPage(int currentPage) {
+            this.currentPage = currentPage;
+        }
+    }
+
+    @Serdeable
+    public record ReadingProgressUpdate(int currentPage) {
     }
 
     @Serdeable
