@@ -3,6 +3,12 @@
 Rendered by Forge from the pre-push branch review of §FS-local-branch-review.
 Newest entry first; every non-approval is recorded, including one a repair later cleared.
 
+## 2026-09-06 — io.micronaut:micronaut-management:5.1.13 (#9825)
+
+**Companion Micronaut dependencies pin the tested library version**
+
+Review Signal #4 / FS-test-contract.2.5 is violated in tests/src/io.micronaut/micronaut-management/5.1.13/build.gradle: the HTTP server, HTTP client, and Jackson companion modules hardcode 5.1.13, so the test project does not remain version-agnostic when the tested Micronaut version changes.
+
 ## 2026-09-06 — io.netty:netty-codec:5.0.0.Alpha1 (#9762)
 
 **Unsupported-feature catch masks statically available class resolution**
