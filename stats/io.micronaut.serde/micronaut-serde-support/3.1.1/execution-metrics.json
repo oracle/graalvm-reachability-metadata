@@ -1,0 +1,107 @@
+{
+  "add_new_library_support:2026-09-06": {
+    "timestamp": "2026-09-06T22:19:22.573539Z",
+    "library": "io.micronaut.serde:micronaut-serde-support:3.1.1",
+    "starting_commit": "c3e118ef8dafa8a2fa9732a60669cfb3ffdcfe66",
+    "ending_commit": "a269f50d118d47d1cdd98b891704820d6ab67cce",
+    "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-sol",
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "status": "success",
+    "stats": {
+      "version": "3.1.1",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 2,
+            "totalCalls": 2
+          }
+        },
+        "coverageRatio": 1.0,
+        "coveredCalls": 2,
+        "totalCalls": 2
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 5010,
+          "missed": 30873,
+          "ratio": 0.13962,
+          "total": 35883
+        },
+        "line": {
+          "covered": 1150,
+          "missed": 6998,
+          "ratio": 0.141139,
+          "total": 8148
+        },
+        "method": {
+          "covered": 356,
+          "missed": 1432,
+          "ratio": 0.199105,
+          "total": 1788
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "advisory_preparation",
+      "issue_number": 9837,
+      "issue_label": "library-new-request",
+      "library": "io.micronaut.serde:micronaut-serde-support:3.1.1",
+      "summary": "The support artifact is infrastructure-only; meaningful user-style coverage needs a concrete serialization runtime.",
+      "deterministic_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "io.micronaut.serde:micronaut-serde-jackson:3.1.1",
+          "scope": "testImplementation",
+          "reason": "Provides the documented concrete ObjectMapper backend and exercises micronaut-serde-support through normal Micronaut usage."
+        }
+      ],
+      "agent_guidance": "Add testAnnotationProcessor dependencies for io.micronaut:micronaut-inject-java:5.1.3 and io.micronaut.serde:micronaut-serde-processor:3.1.1. Test @Serdeable fixtures through ApplicationContext and the ObjectMapper, keeping test packages separate from library packages. No Docker image or system property is required.",
+      "risks": [
+        "Tests must assert support behavior rather than only testing Jackson integration.",
+        "Local Gradle and Native Image verification should confirm the processor/runtime combination."
+      ],
+      "applied_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "io.micronaut.serde:micronaut-serde-jackson:3.1.1",
+          "result": "applied",
+          "target": "tests/src/io.micronaut.serde/micronaut-serde-support/3.1.1/build.gradle"
+        }
+      ],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#9837 Support for io.micronaut.serde:micronaut-serde-support:3.1.1; label=library-new-request; body_chars=39"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "gpt-5.6-luna",
+      "input_tokens_used": 2438348,
+      "output_tokens_used": 11322,
+      "prompt_path": "library-preflight-prompt.txt",
+      "raw_response_path": "library-preflight-response.txt",
+      "session_log_path": "/home/mihailo/git/graalvm-reachability-metadata/forge/logs/io.micronaut.serde:micronaut-serde-support:3.1.1/library-preparation-preflight/codex-session-ftowsdk1.log"
+    },
+    "metrics": {
+      "input_tokens_used": 166639,
+      "cached_input_tokens_used": 1079808,
+      "output_tokens_used": 10038,
+      "iterations": 2,
+      "cost_usd": 1.6742,
+      "generated_loc": 96,
+      "tested_library_loc": 1150,
+      "metadata_entries": 5,
+      "test_only_metadata_entries": 70,
+      "code_coverage_percent": 14.11
+    },
+    "artifacts": {
+      "metadata_file": "metadata/io.micronaut.serde/micronaut-serde-support/3.1.1/reachability-metadata.json"
+    }
+  }
+}
