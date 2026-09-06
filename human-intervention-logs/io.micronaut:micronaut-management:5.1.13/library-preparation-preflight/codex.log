@@ -1,0 +1,29 @@
+{
+  "action": "advisory_preparation",
+  "summary": "Meaningful coverage requires exercising management endpoints through an embedded Micronaut HTTP server with JSON responses.",
+  "deterministic_setup": [
+    {
+      "kind": "dependency",
+      "coordinate": "io.micronaut:micronaut-http-server-netty:5.1.13",
+      "scope": "testImplementation",
+      "reason": "Micronaut Management is normally consumed as HTTP endpoints; the artifact does not include an HTTP server. https://guides.micronaut.io/latest/micronaut-health-endpoint-gradle-groovy.html"
+    },
+    {
+      "kind": "dependency",
+      "coordinate": "io.micronaut:micronaut-http-client:5.1.13",
+      "scope": "testImplementation",
+      "reason": "Tests need an HTTP client to call the embedded management endpoints. https://guides.micronaut.io/latest/micronaut-health-endpoint-gradle-groovy.html"
+    },
+    {
+      "kind": "dependency",
+      "coordinate": "io.micronaut:micronaut-jackson-databind:5.1.13",
+      "scope": "testImplementation",
+      "reason": "Management endpoint results are JSON responses; the generated scaffold has no JSON HTTP codec. The repository’s Micronaut 5.1.13 HTTP test uses this module."
+    }
+  ],
+  "agent_guidance": "Start an EmbeddedServer on a random port by setting micronaut.server.port=-1, create the client against server.getURL(), and close both resources. Exercise built-in endpoints such as /health and configuration-sensitive behavior; avoid optional JDBC, discovery, or external-service integrations unless specifically tested.",
+  "risks": [
+    "Native-image verification must confirm the embedded server, client, and JSON serialization work together.",
+    "Do not add a Docker image: the core management endpoints have no mandatory external service dependency."
+  ]
+}
