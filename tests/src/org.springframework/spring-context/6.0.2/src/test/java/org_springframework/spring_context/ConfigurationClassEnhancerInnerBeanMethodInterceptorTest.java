@@ -8,9 +8,7 @@ package org_springframework.spring_context;
 
 import static org.junit.jupiter.api.Assertions.assertNotSame;
 import static org.junit.jupiter.api.Assertions.assertSame;
-import static org.junit.jupiter.api.Assertions.assertNull;
 
-import org.graalvm.internal.tck.NativeImageSupport;
 import org.junit.jupiter.api.Test;
 
 import org.springframework.beans.factory.FactoryBean;
@@ -36,11 +34,6 @@ public class ConfigurationClassEnhancerInnerBeanMethodInterceptorTest {
             final Product product = interceptedFactory.getObject();
 
             assertNotSame(targetFactory, interceptedFactory);
-            if (isNativeImageRuntime()) {
-                assertSame(InterfaceProxyConfiguration.class, configuration.getClass());
-                assertNotSame(context.getBean("interfaceFactoryBean"), product);
-                return;
-            }
             assertSame(context.getBean("interfaceFactoryBean"), product);
         });
     }
@@ -53,14 +46,11 @@ public class ConfigurationClassEnhancerInnerBeanMethodInterceptorTest {
                     (ConcurrentMapCacheFactoryBean) context.getBean("&cglibFactoryBean");
 
             final ConcurrentMapCacheFactoryBean interceptedFactory = configuration.cglibFactoryBean();
+            final Class<?> objectType = interceptedFactory.getObjectType();
             final ConcurrentMapCache cache = interceptedFactory.getObject();
 
             assertNotSame(targetFactory, interceptedFactory);
-            if (isNativeImageRuntime()) {
-                assertSame(CglibProxyConfiguration.class, configuration.getClass());
-                assertNull(cache);
-                return;
-            }
+            assertSame(ConcurrentMapCache.class, objectType);
             assertSame(context.getBean("cglibFactoryBean"), cache);
         });
     }
@@ -68,20 +58,12 @@ public class ConfigurationClassEnhancerInnerBeanMethodInterceptorTest {
     private static void withContext(Class<?> configurationClass, ContextAction action) throws Exception {
         try (AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(configurationClass)) {
             action.accept(context);
-        } catch (Error error) {
-            if (!NativeImageSupport.isUnsupportedFeatureError(error)) {
-                throw error;
-            }
         }
     }
 
     @FunctionalInterface
     private interface ContextAction {
         void accept(AnnotationConfigApplicationContext context) throws Exception;
-    }
-
-    private static boolean isNativeImageRuntime() {
-        return "runtime".equals(System.getProperty("org.graalvm.nativeimage.imagecode"));
     }
 
     @Configuration
