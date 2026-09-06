@@ -1,0 +1,18 @@
+## Human intervention needed
+
+The automated job for `io.micronaut:micronaut-management:5.1.13` failed in `explore/generate_tests()` with `test_generation_failed`.
+
+Preserved work: https://github.com/oracle/graalvm-reachability-metadata/tree/ai%2Fkimeta%2Fhuman-intervention%2Fissue-9825-library-new-request-io.micronaut-micronaut-management-5.1.13-52e714f8
+
+The run exhausted all 3 generation iterations without a passing test. The first verification failed to compile because `assertThat(response.getStatus())` was ambiguous. After that was corrected, the JVM test failed with `HttpClientResponseException: Service Unavailable` while calling `/health`. The preserved test contains a subsequent unverified change using explicit success/error body types; the generation transcript states that tests were not run after this edit. Metrics report failure, 0 generated LOC, no metadata artifact, and 0/2 dynamic-access calls covered. The exhaust report marks `io.micronaut.management.health.indicator.jdbc.JdbcIndicator` as failed and exhausted.
+
+Inspect:
+- `human-intervention-logs/io.micronaut:micronaut-management:5.1.13/add-new-library-support/pi-generation-2026-09-06T04-46-55-170441Z.log`
+- `human-intervention-logs/io.micronaut:micronaut-management:5.1.13/gradle-test/gradle-test-2026-09-06T04-55-23-238981Z.log`
+- `human-intervention-logs/io.micronaut:micronaut-management:5.1.13/gradle-test/gradle-test-2026-09-06T04-55-54-940682Z.log`
+- `human-intervention-logs/io.micronaut:micronaut-management:5.1.13/gradle/generateDynamicAccessCoverageReport-2026-09-06T04-45-15-281868Z.log`
+
+Manual next steps:
+1. Verify or correct the preserved `JdbcIndicatorTest.java` HTTP 503 handling, remove the remaining placeholder test, and run `./gradlew javaTest -Pcoordinates=io.micronaut:micronaut-management:5.1.13`.
+2. Regenerate the dynamic-access report and confirm the two `JdbcIndicator` reflection call sites are covered.
+3. Generate metadata and run `./gradlew test -Pcoordinates=io.micronaut:micronaut-management:5.1.13` before publication.
