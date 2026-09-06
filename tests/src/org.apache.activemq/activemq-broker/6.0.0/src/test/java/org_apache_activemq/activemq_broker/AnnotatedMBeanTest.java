@@ -24,18 +24,19 @@ public class AnnotatedMBeanTest {
                 implementation,
                 Log4JConfigViewMBean.class,
                 new ObjectName("org.apache.activemq:type=Log4JConfig"));
-        String originalRootLevel = implementation.getRootLogLevel();
+        String loggerName = "activemq.annotated.mbean";
+        String originalLevel = implementation.getLogLevel(loggerName);
 
         try {
             Object result = mBean.invoke(
-                    "setRootLogLevel",
-                    new Object[]{"INFO"},
-                    new String[]{String.class.getName()});
+                    "setLogLevel",
+                    new Object[]{loggerName, "INFO"},
+                    new String[]{String.class.getName(), String.class.getName()});
 
             assertThat(result).isNull();
-            assertThat(implementation.getRootLogLevel()).isEqualTo("INFO");
+            assertThat(implementation.getLogLevel(loggerName)).isEqualTo("INFO");
         } finally {
-            implementation.setRootLogLevel(originalRootLevel);
+            implementation.setLogLevel(loggerName, originalLevel);
         }
     }
 }
