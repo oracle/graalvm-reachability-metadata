@@ -12,9 +12,9 @@ import org.junit.jupiter.api.Test;
 
 import org.springframework.web.reactive.socket.client.JettyWebSocketClient;
 
-public class JettyWebSocketClientInnerJetty10UpgradeHelperTest {
+public class JettyWebSocketClientTest {
     @Test
-    void constructionInitializesJetty10UpgradeHelper() {
+    void constructionInitializesJettyClient() {
         JettyWebSocketClient client = new JettyWebSocketClient();
         try {
             assertThat(client.getJettyClient()).isNotNull();

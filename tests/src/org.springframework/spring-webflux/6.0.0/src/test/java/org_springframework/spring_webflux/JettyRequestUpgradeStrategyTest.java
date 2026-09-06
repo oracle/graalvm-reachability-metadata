@@ -21,6 +21,7 @@ import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.core.io.buffer.DefaultDataBufferFactory;
 import org.springframework.http.HttpCookie;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.codec.ServerCodecConfigurer;
 import org.springframework.http.server.reactive.AbstractServerHttpRequest;
 import org.springframework.http.server.reactive.AbstractServerHttpResponse;
@@ -32,25 +33,25 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.reactive.socket.HandshakeInfo;
 import org.springframework.web.reactive.socket.server.RequestUpgradeStrategy;
-import org.springframework.web.reactive.socket.server.upgrade.Jetty10RequestUpgradeStrategy;
+import org.springframework.web.reactive.socket.server.upgrade.JettyRequestUpgradeStrategy;
 import org.springframework.web.server.ServerWebExchange;
 import org.springframework.web.server.adapter.DefaultServerWebExchange;
 import org.springframework.web.server.i18n.AcceptHeaderLocaleContextResolver;
 import org.springframework.web.server.session.DefaultWebSessionManager;
 
-public class Jetty10RequestUpgradeStrategyTest {
+public class JettyRequestUpgradeStrategyTest {
     private static final URI REQUEST_URI = URI.create("http://localhost/ws");
 
     @Test
-    void constructsStrategyWhenJetty10WebSocketServerApiIsAvailable() {
-        RequestUpgradeStrategy strategy = new Jetty10RequestUpgradeStrategy();
+    void constructsStrategyWhenJettyWebSocketServerApiIsAvailable() {
+        RequestUpgradeStrategy strategy = new JettyRequestUpgradeStrategy();
 
-        assertThat(strategy).isInstanceOf(Jetty10RequestUpgradeStrategy.class);
+        assertThat(strategy).isInstanceOf(JettyRequestUpgradeStrategy.class);
     }
 
     @Test
     void upgradeCreatesJettyWebSocketCreatorProxyBeforeLookingUpContainer() {
-        RequestUpgradeStrategy strategy = new Jetty10RequestUpgradeStrategy();
+        RequestUpgradeStrategy strategy = new JettyRequestUpgradeStrategy();
         MockServletContext servletContext = new MockServletContext();
         MockHttpServletRequest servletRequest = new MockHttpServletRequest(servletContext, "GET", "/ws");
         MockHttpServletResponse servletResponse = new MockHttpServletResponse();
@@ -60,7 +61,7 @@ public class Jetty10RequestUpgradeStrategyTest {
         // The mock servlet context intentionally has no Jetty container; by the time this fails,
         // the strategy has already created the JettyWebSocketCreator proxy.
         assertThatThrownBy(() -> strategy.upgrade(exchange, session -> Mono.empty(), "chat", () -> handshakeInfo)
-                .block(Duration.ofSeconds(5)))
+                .block(Duration.ofSeconds(10)))
                 .isInstanceOf(RuntimeException.class);
     }
 
@@ -84,8 +85,8 @@ public class Jetty10RequestUpgradeStrategyTest {
         }
 
         @Override
-        public String getMethodValue() {
-            return this.servletRequest.getMethod();
+        public HttpMethod getMethod() {
+            return HttpMethod.valueOf(this.servletRequest.getMethod());
         }
 
         @Override
