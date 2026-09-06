@@ -8,6 +8,7 @@ package io_netty.netty_codec;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.zip.GZIPOutputStream;
 
@@ -28,13 +29,13 @@ public class ByteBufChecksumInnerReflectiveByteBufChecksumTest {
     void gzipDecoderUpdatesChecksumFromDirectInputBuffer() throws IOException {
         byte[] expected = "netty checksum data from a direct buffer".getBytes(StandardCharsets.UTF_8);
         byte[] compressed = gzip(expected);
-        ByteBuf input = Unpooled.directBuffer(compressed.length);
+        ByteBuffer directInput = ByteBuffer.allocateDirect(compressed.length);
+        directInput.put(compressed).flip();
+        ByteBuf input = Unpooled.wrappedBuffer(directInput);
         EmbeddedChannel channel = new EmbeddedChannel(new JdkZlibDecoder(ZlibWrapper.GZIP));
         channel.config().setAllocator(UnpooledByteBufAllocator.DEFAULT);
 
         try {
-            input.writeBytes(compressed);
-
             assertTrue(channel.writeInbound(input));
             input = null;
 
