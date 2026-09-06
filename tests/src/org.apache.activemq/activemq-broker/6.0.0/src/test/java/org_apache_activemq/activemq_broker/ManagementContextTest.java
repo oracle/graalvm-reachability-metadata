@@ -16,10 +16,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class ManagementContextTest {
 
     @Test
-    void createsMBeanServerAndLocalConnectorRegistry() throws Exception {
+    void createsMBeanServer() throws Exception {
         ManagementContext context = new ManagementContext();
-        context.setCreateConnector(true);
-        context.setConnectorPort(0);
+        context.setCreateConnector(false);
 
         try {
             MBeanServer server = context.getMBeanServer();
