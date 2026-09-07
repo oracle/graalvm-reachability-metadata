@@ -1,0 +1,93 @@
+{
+  "improve_library_coverage:2026-09-07": {
+    "timestamp": "2026-09-07T01:42:52.600603Z",
+    "library": "org.jetbrains.kotlin:kotlin-stdlib:1.7.10",
+    "starting_commit": "a31088a26d44f6beb1491584d8db29da2c27c867",
+    "ending_commit": "10bc17a62c9197ba61fc71db3b10f96ce89dd0b5",
+    "strategy_name": "library_update_optimistic_pi_gpt-5.6-sol",
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "status": "success",
+    "stats": {
+      "version": "1.7.10",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 18,
+            "totalCalls": 18
+          }
+        },
+        "coverageRatio": 1.0,
+        "coveredCalls": 18,
+        "totalCalls": 18
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 1873,
+          "missed": 132756,
+          "ratio": 0.013912,
+          "total": 134629
+        },
+        "line": {
+          "covered": 360,
+          "missed": 20149,
+          "ratio": 0.017553,
+          "total": 20509
+        },
+        "method": {
+          "covered": 141,
+          "missed": 7335,
+          "ratio": 0.01886,
+          "total": 7476
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "no_action",
+      "issue_number": 8926,
+      "issue_label": "library-update-request",
+      "library": "org.jetbrains.kotlin:kotlin-stdlib:1.7.10",
+      "summary": "kotlin-stdlib:1.7.10 is self-contained for JVM use; its POM only adds kotlin-stdlib-common and org.jetbrains:annotations. No Docker service, environment variable, or system property is required. [Maven Central](https://central.sonatype.com/artifact/org.jetbrains.kotlin/kotlin-stdlib/1.7.10)",
+      "deterministic_setup": [],
+      "agent_guidance": "Use in-process Kotlin/JVM tests against public stdlib APIs and preserve the existing --initialize-at-build-time=kotlin.Metadata Native Image argument. The existing kotlinx-coroutines-core-jvm dependency is only required if retaining the current coroutine test; it is not required by kotlin-stdlib itself. Focus coverage on JVM platform behavior such as exception suppression and JDK extensions. [Kotlin stdlib API](https://kotlinlang.org/api/core/kotlin-stdlib/)",
+      "risks": [
+        "The issue's low dynamic-access coverage must be addressed through meaningful public-API tests; setup alone will not improve the 1/18 coverage.",
+        "The Kotlin test plugin and tested stdlib use different versions, so Gradle and Native Image verification remain authoritative."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#8926 Update existing library: org.jetbrains.kotlin:kotlin-stdlib:1.7.10; label=library-update-request; body_chars=169"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "4 existing test file path(s) included"
+        }
+      ],
+      "model": "gpt-5.6-luna",
+      "input_tokens_used": 1579229,
+      "output_tokens_used": 10780,
+      "prompt_path": "library-preflight-prompt.txt",
+      "raw_response_path": "library-preflight-response.txt",
+      "session_log_path": "/home/mihailo/git/graalvm-reachability-metadata-copy/forge/logs/org.jetbrains.kotlin:kotlin-stdlib:1.7.10/library-preparation-preflight/codex-session-yurgvs7v.log"
+    },
+    "metrics": {
+      "input_tokens_used": 688000,
+      "cached_input_tokens_used": 15533440,
+      "output_tokens_used": 83738,
+      "iterations": 9,
+      "cost_usd": 13.7188,
+      "generated_loc": 268,
+      "tested_library_loc": 360,
+      "metadata_entries": 18,
+      "test_only_metadata_entries": 17,
+      "code_coverage_percent": 1.76
+    },
+    "artifacts": {
+      "metadata_file": "metadata/org.jetbrains.kotlin/kotlin-stdlib/1.7.10/reachability-metadata.json"
+    }
+  }
+}

@@ -1,0 +1,91 @@
+{
+  "improve_library_coverage:2026-09-07": {
+    "timestamp": "2026-09-07T05:36:52.960017Z",
+    "library": "org.bouncycastle:bcpkix-jdk18on:1.77",
+    "starting_commit": "5fca3fe88abbd3e28d5fb95581eb05fcd861bc0b",
+    "ending_commit": "8cdf977d2f51bc82078b4fa82ce3c34c8c39a829",
+    "strategy_name": "library_update_optimistic_pi_gpt-5.6-sol",
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "status": "success",
+    "stats": {
+      "version": "1.77",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 6,
+            "totalCalls": 6
+          },
+          "resources": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 2,
+            "totalCalls": 2
+          }
+        },
+        "coverageRatio": 1.0,
+        "coveredCalls": 8,
+        "totalCalls": 8
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 4283,
+          "missed": 94583,
+          "ratio": 0.043321,
+          "total": 98866
+        },
+        "method": {
+          "covered": 133,
+          "missed": 4171,
+          "ratio": 0.030901,
+          "total": 4304
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "advisory_preparation",
+      "issue_number": 8922,
+      "issue_label": "library-update-request",
+      "library": "org.bouncycastle:bcpkix-jdk18on:1.77",
+      "summary": "Use the transitive BC provider explicitly for meaningful JCA/JCE coverage; no extra dependency, Docker image, or system property is required. [Pinned POM](https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk18on/1.77/bcpkix-jdk18on-1.77.pom)",
+      "deterministic_setup": [],
+      "agent_guidance": "Construct a BouncyCastleProvider and pass it explicitly to provider-aware JCA/JCE APIs (or register it with Security.addProvider when provider discovery is under test). Bind JcaContentSignerBuilder and related builders explicitly so JDK providers do not mask BC behavior. The existing provider construction is appropriate. [Provider installation guidance](https://github.com/bcgit/bc-java/wiki/Provider-Installation)",
+      "risks": [
+        "Default provider selection may exercise SunJCE/SunRsaSign instead of Bouncy Castle.",
+        "Provider algorithm mappings use reflection; native-image verification and generated metadata remain authoritative."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#8922 Update existing library: org.bouncycastle:bcpkix-jdk18on:1.77; label=library-update-request; body_chars=168"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "7 existing test file path(s) included"
+        }
+      ],
+      "model": "gpt-5.6-luna",
+      "input_tokens_used": 1069725,
+      "output_tokens_used": 11382,
+      "prompt_path": "library-preflight-prompt.txt",
+      "raw_response_path": "library-preflight-response.txt",
+      "session_log_path": "/home/mihailo/git/graalvm-reachability-metadata-copy/forge/logs/org.bouncycastle:bcpkix-jdk18on:1.77/library-preparation-preflight/codex-session-tugk5mtu.log"
+    },
+    "metrics": {
+      "input_tokens_used": 753832,
+      "cached_input_tokens_used": 9824128,
+      "output_tokens_used": 57640,
+      "iterations": 6,
+      "cost_usd": 10.4105,
+      "generated_loc": 439,
+      "tested_library_loc": 0,
+      "metadata_entries": 218,
+      "code_coverage_percent": 4.33
+    },
+    "artifacts": {
+      "metadata_file": "metadata/org.bouncycastle/bcpkix-jdk18on/1.77/reachability-metadata.json"
+    }
+  }
+}

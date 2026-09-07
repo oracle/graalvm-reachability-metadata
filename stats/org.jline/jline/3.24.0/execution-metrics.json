@@ -1,0 +1,112 @@
+{
+  "improve_library_coverage:2026-09-07": {
+    "timestamp": "2026-09-07T06:52:26.036278Z",
+    "library": "org.jline:jline:3.24.0",
+    "starting_commit": "b1910d64906e4fff4b52c8ea21ea96b8446d5c31",
+    "ending_commit": "8f3eae2ebfd17957978c4714be2dce6f764e3c23",
+    "strategy_name": "library_update_optimistic_pi_gpt-5.6-sol",
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "status": "success",
+    "stats": {
+      "version": "3.24.0",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 25,
+            "totalCalls": 25
+          },
+          "resources": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 8,
+            "totalCalls": 8
+          }
+        },
+        "coverageRatio": 1.0,
+        "coveredCalls": 33,
+        "totalCalls": 33
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 30164,
+          "missed": 130894,
+          "ratio": 0.187287,
+          "total": 161058
+        },
+        "line": {
+          "covered": 5314,
+          "missed": 25113,
+          "ratio": 0.174648,
+          "total": 30427
+        },
+        "method": {
+          "covered": 770,
+          "missed": 3200,
+          "ratio": 0.193955,
+          "total": 3970
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "advisory_preparation",
+      "issue_number": 9891,
+      "issue_label": "library-update-request",
+      "library": "org.jline:jline:3.24.0",
+      "summary": "JLine's optional Jansi provider is needed for meaningful terminal and PTY coverage.",
+      "deterministic_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "org.jline:jline-terminal-jansi:3.24.0",
+          "scope": "testImplementation",
+          "reason": "JLine marks Jansi optional; this module exposes the Jansi terminal implementation and native PTY paths. [Maven Central](https://central.sonatype.com/artifact/org.jline/jline/3.24.0) [JLine terminal providers](https://jline.github.io/docs/modules/terminal-providers/)"
+        }
+      ],
+      "agent_guidance": "Explicitly exercise TerminalBuilder.provider(\"jansi\") where provider-specific coverage is intended. Run JVM and native tests with LD_PRELOAD=/usr/lib/x86_64-linux-gnu/libutil.so on the repository Linux image. Keep noninteractive tests deterministic using piped ExternalTerminal or DumbTerminal streams.",
+      "risks": [
+        "Jansi PTY behavior depends on the Linux image and preload library path.",
+        "Do not require an interactive terminal for the full test suite."
+      ],
+      "applied_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "org.jline:jline-terminal-jansi:3.24.0",
+          "result": "already_present",
+          "target": "tests/src/org.jline/jline/3.24.0/build.gradle"
+        }
+      ],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#9891 Update existing library: org.jline:jline:3.24.0; label=library-update-request; body_chars=417"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "4 existing test file path(s) included"
+        }
+      ],
+      "model": "gpt-5.6-luna",
+      "input_tokens_used": 294075,
+      "output_tokens_used": 2738,
+      "prompt_path": "library-preflight-prompt.txt",
+      "raw_response_path": "library-preflight-response.txt",
+      "session_log_path": "/home/mihailo/git/graalvm-reachability-metadata-copy/forge/logs/org.jline:jline:3.24.0/library-preparation-preflight/codex-session-2ljrbjvd.log"
+    },
+    "metrics": {
+      "input_tokens_used": 243688,
+      "cached_input_tokens_used": 4489344,
+      "output_tokens_used": 35349,
+      "iterations": 2,
+      "cost_usd": 4.5236,
+      "generated_loc": 718,
+      "tested_library_loc": 5314,
+      "metadata_entries": 104,
+      "test_only_metadata_entries": 1,
+      "code_coverage_percent": 17.46
+    },
+    "artifacts": {
+      "metadata_file": "metadata/org.jline/jline/3.24.0/reachability-metadata.json"
+    }
+  }
+}

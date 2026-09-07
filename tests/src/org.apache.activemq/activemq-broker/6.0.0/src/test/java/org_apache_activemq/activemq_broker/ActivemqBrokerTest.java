@@ -9,34 +9,39 @@ package org_apache_activemq.activemq_broker;
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.apache.activemq.broker.BrokerService;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
 
 import jakarta.jms.Connection;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class ActivemqBrokerTest {
+@Timeout(value = 50, unit = TimeUnit.SECONDS)
+public class ActivemqBrokerTest {
 
-    private static final String BROKER_URL_BASE = "vm://" + UUID.randomUUID().toString().replaceAll("-", "") + "?broker.persistent=false";
+    private static final String BROKER_NAME = UUID.randomUUID().toString().replaceAll("-", "");
+    private static final String BROKER_URL = "vm://" + BROKER_NAME + "?create=false";
 
     @Test
     void testEmbeddedBrokerConnection() throws Exception {
         BrokerService brokerService = new BrokerService();
-        brokerService.addConnector(BROKER_URL_BASE);
         brokerService.setUseJmx(false);
         brokerService.getManagementContext().setCreateConnector(false);
         brokerService.setUseShutdownHook(false);
         brokerService.setPersistent(false);
-        brokerService.setBrokerName("embedded-broker");
-        brokerService.start();
-        brokerService.waitUntilStarted();
+        brokerService.setBrokerName(BROKER_NAME);
+        try {
+            brokerService.start();
+            brokerService.waitUntilStarted();
 
-        ActiveMQConnectionFactory connectionFactory = new ActiveMQConnectionFactory(BROKER_URL_BASE);
-        try (Connection connection = connectionFactory.createConnection()) {
-            assertThat(connection).isNotNull();
+            ActiveMQConnectionFactory connectionFactory = new ActiveMQConnectionFactory(BROKER_URL);
+            try (Connection connection = connectionFactory.createConnection()) {
+                assertThat(connection).isNotNull();
+            }
+        } finally {
+            brokerService.stop();
+            brokerService.waitUntilStopped();
         }
-
-        brokerService.stop();
-        brokerService.waitUntilStopped();
     }
 }

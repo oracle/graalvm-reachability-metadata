@@ -1,0 +1,138 @@
+{
+  "base_commit": "613a9a5a5fbb16cb9922ee120e71a5abd0d765b1",
+  "branch": "ai/kimeta/add-lib-support-io.micronaut-micronaut-router-5.1.13-forge-9834-20260907074633197802-ee3a68620932",
+  "follow_ups": [],
+  "forge": {
+    "branch": "issue-9864-partial-bulk-progress",
+    "commit": "6b5fc3df8434e9d85c22a92f09f560e6ae0e2db2",
+    "monitored_branch": "origin/issue-9864-partial-bulk-progress"
+  },
+  "issue_number": 9834,
+  "library": {
+    "artifact": "micronaut-router",
+    "coordinates": "io.micronaut:micronaut-router:5.1.13",
+    "group": "io.micronaut",
+    "version": "5.1.13"
+  },
+  "local_ci_verification": {
+    "base_commit": "613a9a5a5fbb16cb9922ee120e71a5abd0d765b1",
+    "commands": [
+      {
+        "command": [
+          "./gradlew",
+          "generateChangedIndexFileCoordinatesList",
+          "-PbaseCommit=origin/master",
+          "-PnewCommit=HEAD"
+        ],
+        "env": {
+          "GITHUB_OUTPUT": "/tmp/tmpd02ywq6m"
+        },
+        "gate": "changed-index-coordinates",
+        "log_path": "logs/changed-index-coordinates/local-ci/gradlew-2026-09-07T07-46-40-686862Z.log",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :generateChangedIndexFileCoordinatesList\n\n[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9834-e554f4c1/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 3s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      },
+      {
+        "command": [
+          "./gradlew",
+          "validateIndexFiles",
+          "-Pcoordinates=io.micronaut:micronaut-router"
+        ],
+        "env": {},
+        "gate": "index-file-validation",
+        "log_path": "logs/index-file-validation/local-ci/gradlew-2026-09-07T07-46-44-449399Z.log",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :validateIndexFiles\n✅ metadata/io.micronaut/micronaut-router/index.json: Valid\n\n[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9834-e554f4c1/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 3s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      }
+    ],
+    "failure_command": null,
+    "failure_gate": null,
+    "final_commit": "3b0d46447513e185bd9387e4f30041c5c2598700",
+    "fixups": [],
+    "human_intervention_required": false,
+    "repo_fix_paths": [],
+    "status": "success"
+  },
+  "local_review": {
+    "changed_paths": [],
+    "decision": "approved",
+    "failed_step": null,
+    "finding_body": "",
+    "finding_title": "",
+    "fix_note": "",
+    "model": "gpt-5.6-sol",
+    "published_tree": "verified",
+    "repair_reverted": false,
+    "review_comment": "Reviewed the specified diff and local evidence against all enumerated new-library rules. The change is scoped to io.micronaut:micronaut-router:5.1.13, uses only reachability-metadata.json, has non-scaffold public-API tests in a separate package with no native-image skip, failure swallowing, version pinning, visibility bypass, or JVM override, and reports a valid 0/0 dynamic-access case for which the percentage and entry-count mismatch gates do not apply. Index validation evidence is green; I also reran checkMetadataFiles and the full coordinate test, including all seven JVM and native-image tests, successfully. No blocking violation was found.",
+    "session_log_path": "logs/io.micronaut:micronaut-router:5.1.13/local-branch-review/pi.log",
+    "status": "completed"
+  },
+  "metrics": {
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "path": "stats/io.micronaut/micronaut-router/5.1.13/execution-metrics.json",
+    "summary": {
+      "cached_input_tokens_used": 6508544,
+      "code_coverage_percent": 39.79,
+      "cost_usd": 6.3433,
+      "generated_loc": 260,
+      "input_tokens_used": 360595,
+      "iterations": 5,
+      "metadata_entries": 4,
+      "output_tokens_used": 42867,
+      "test_only_metadata_entries": 34,
+      "tested_library_loc": 949
+    },
+    "timestamp": "2026-09-07T07:46:33.197802Z"
+  },
+  "modifiers": {
+    "chunk_final": true,
+    "chunked_dynamic_access": false,
+    "human_intervention": false
+  },
+  "producer": "kimeta",
+  "publication_id": "forge-9834-20260907074633197802-ee3a68620932",
+  "render": {
+    "dynamic_access": null,
+    "dynamic_access_evidence": {
+      "covered_call_sites": [],
+      "metadata_rules": [
+        "when `io.micronaut.web.router.ServerFilterRouteBuilder` is reached, make `io.micronaut.http.HttpMethod[]` available for reflection"
+      ]
+    },
+    "library_stats": {
+      "dynamicAccess": {
+        "breakdown": {},
+        "coverageRatio": 1.0,
+        "coveredCalls": 0,
+        "totalCalls": 0
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 4530,
+          "missed": 6991,
+          "ratio": 0.393195,
+          "total": 11521
+        },
+        "line": {
+          "covered": 949,
+          "missed": 1436,
+          "ratio": 0.397904,
+          "total": 2385
+        },
+        "method": {
+          "covered": 226,
+          "missed": 452,
+          "ratio": 0.333333,
+          "total": 678
+        }
+      },
+      "version": "5.1.13"
+    }
+  },
+  "schema_version": 1,
+  "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-sol",
+  "task_type": "library-new-request",
+  "template_type": "library-new-request",
+  "timestamp": "2026-09-07T07:46:33.197802Z"
+}
