@@ -6,6 +6,7 @@
  */
 package io_micronaut.micronaut_jackson_core;
 
+import io.micronaut.buffer.netty.NettyByteBufferFactory;
 import io.micronaut.context.env.PropertySourceLoader;
 import io.micronaut.core.io.buffer.ByteArrayBufferFactory;
 import io.micronaut.core.io.buffer.ByteBuffer;
@@ -20,6 +21,8 @@ import io.micronaut.jackson.core.tree.JsonStreamTransfer;
 import io.micronaut.jackson.core.tree.TreeGenerator;
 import io.micronaut.json.JsonStreamConfig;
 import io.micronaut.json.tree.JsonNode;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -313,6 +316,32 @@ public class Micronaut_jackson_coreTest {
             assertThat(parser.nextToken()).isEqualTo(JsonToken.VALUE_TRUE);
             assertThat(parser.nextToken()).isEqualTo(JsonToken.VALUE_FALSE);
             assertThat(parser.nextToken()).isEqualTo(JsonToken.END_ARRAY);
+        }
+    }
+
+    @Test
+    void parserFactoryReadsTheReadableRegionOfHeapAndDirectNettyBuffers() throws IOException {
+        String prefix = "ignored-prefix";
+        String json = "{\"source\":\"netty\",\"value\":29}";
+        String suffix = "ignored-suffix";
+        byte[] content = bytes(prefix + json + suffix);
+        List<ByteBuf> nativeBuffers = List.of(
+                Unpooled.wrappedBuffer(content), Unpooled.directBuffer(content.length).writeBytes(content));
+
+        for (ByteBuf nativeBuffer : nativeBuffers) {
+            try {
+                nativeBuffer.setIndex(bytes(prefix).length, bytes(prefix + json).length);
+                ByteBuffer<ByteBuf> buffer = NettyByteBufferFactory.DEFAULT.wrap(nativeBuffer);
+
+                try (JsonParser parser = JacksonCoreParserFactory.createJsonParser(
+                        JSON_FACTORY, ObjectReadContext.empty(), buffer)) {
+                    JsonNode root = JsonNodeTreeCodec.getInstance().readTree(parser);
+                    assertThat(root.get("source").getStringValue()).isEqualTo("netty");
+                    assertThat(root.get("value").getIntValue()).isEqualTo(29);
+                }
+            } finally {
+                nativeBuffer.release();
+            }
         }
     }
 
