@@ -9,6 +9,8 @@ package io_micronaut.micronaut_router;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import io.micronaut.context.ApplicationContext;
+import io.micronaut.context.ExecutionHandleLocator;
+import io.micronaut.context.annotation.Executable;
 import io.micronaut.context.env.Environment;
 import io.micronaut.core.version.annotation.Version;
 import io.micronaut.http.HttpMethod;
@@ -24,10 +26,12 @@ import io.micronaut.http.annotation.PathVariable;
 import io.micronaut.http.annotation.Post;
 import io.micronaut.http.annotation.RequestFilter;
 import io.micronaut.http.annotation.ServerFilter;
+import io.micronaut.web.router.DefaultRouteBuilder;
 import io.micronaut.web.router.MethodBasedRouteMatch;
 import io.micronaut.web.router.RouteAttributes;
 import io.micronaut.web.router.RouteMatch;
 import io.micronaut.web.router.Router;
+import io.micronaut.web.router.UriRoute;
 import io.micronaut.web.router.UriRouteMatch;
 import io.micronaut.web.router.naming.HyphenatedUriNamingStrategy;
 import io.micronaut.web.router.resource.StaticResourceResolver;
@@ -188,6 +192,43 @@ public class Micronaut_routerTest {
         assertThat(UriUtil.isRelative("https://example.test/catalog")).isFalse();
     }
 
+    @Test
+    @Timeout(55)
+    void buildsAndMatchesNestedProgrammaticRoutes() {
+        try (ApplicationContext context = ApplicationContext.run(Environment.TEST)) {
+            ProgrammaticRouteBuilder routeBuilder = new ProgrammaticRouteBuilder(context);
+            UriRoute catalogRoute = routeBuilder.GET(
+                    "/programmatic/{category}",
+                    Micronaut_routerTest.class,
+                    "programmaticCatalog",
+                    String.class);
+            catalogRoute.nest(() -> routeBuilder.GET(
+                    "/details/{item}",
+                    Micronaut_routerTest.class,
+                    "programmaticDetails",
+                    String.class,
+                    int.class));
+
+            assertThat(routeBuilder.getUriRoutes()).hasSize(2);
+            UriRouteMatch<Object, Object> catalogMatch = catalogRoute
+                    .toRouteInfo()
+                    .match("/programmatic/tools")
+                    .orElseThrow();
+            assertThat(catalogMatch.invoke()).isEqualTo("catalog-tools");
+
+            UriRoute nestedRoute = routeBuilder.getUriRoutes().get(1);
+            UriRouteMatch<Object, Object> routeMatch = nestedRoute
+                    .toRouteInfo()
+                    .match("/programmatic/tools/details/7")
+                    .orElseThrow();
+
+            assertThat(routeMatch.getVariableValues())
+                    .containsEntry("category", "tools")
+                    .containsEntry("item", "7");
+            assertThat(routeMatch.invoke()).isEqualTo("tools-7");
+        }
+    }
+
     @Get(uri = "/items/{id}", produces = MediaType.TEXT_PLAIN)
     public String item(@PathVariable("id") long id) {
         return "item-" + id;
@@ -225,6 +266,16 @@ public class Micronaut_routerTest {
         return "error: " + failure.getMessage();
     }
 
+    @Executable
+    public String programmaticCatalog(String category) {
+        return "catalog-" + category;
+    }
+
+    @Executable
+    public String programmaticDetails(String category, int item) {
+        return category + "-" + item;
+    }
+
     private static UriRouteMatch<?, ?> findClosest(Router router, HttpRequest<?> request) {
         UriRouteMatch<?, ?> routeMatch = router.findClosest(request);
         assertThat(routeMatch).isNotNull();
@@ -239,5 +290,11 @@ public class Micronaut_routerTest {
     }
 
     public static final class OrderHistoryController {
+    }
+
+    public static final class ProgrammaticRouteBuilder extends DefaultRouteBuilder {
+        public ProgrammaticRouteBuilder(ExecutionHandleLocator executionHandleLocator) {
+            super(executionHandleLocator);
+        }
     }
 }
