@@ -34,6 +34,7 @@ import io.micronaut.views.TemplatedBuilder;
 import io.micronaut.views.View;
 import io.micronaut.views.ViewUtils;
 import io.micronaut.views.ViewsConfigurationProperties;
+import io.micronaut.views.ViewsModelDecorator;
 import io.micronaut.views.ViewsRenderer;
 import io.micronaut.views.ViewsRendererConfiguration;
 import io.micronaut.views.ViewsRendererLocator;
@@ -45,8 +46,6 @@ import io.micronaut.views.http.ResponseBodySwap;
 import io.micronaut.views.http.ResponseBodySwapper;
 import io.micronaut.views.http.ViewsFilterConfiguration;
 import io.micronaut.views.model.ViewModelProcessor;
-import io.micronaut.views.model.security.SecurityViewModelProcessor;
-import io.micronaut.views.model.security.SecurityViewModelProcessorConfigurationProperties;
 import jakarta.inject.Singleton;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -241,32 +240,36 @@ public class Micronaut_views_coreTest {
     }
 
     @Test
-    void securityProcessorAddsAuthenticatedUserToImmutableViewModel() {
-        SecurityViewModelProcessorConfigurationProperties configuration =
-                new SecurityViewModelProcessorConfigurationProperties();
-        configuration.setSecurityKey("viewer");
-        configuration.setPrincipalNameKey("displayName");
-        configuration.setAttributesKey("details");
+    @SuppressWarnings("unchecked")
+    void applicationContextDecoratesMapModelsWithAuthenticatedUser() {
+        Map<String, Object> properties = Map.of(
+                "micronaut.security.views-model-decorator.security-key", "viewer",
+                "micronaut.security.views-model-decorator.principal-name-key", "displayName",
+                "micronaut.security.views-model-decorator.attributes-key", "details");
 
-        Map<String, Object> attributes = Map.of("department", "engineering");
-        HttpRequest<?> request = HttpRequest.GET("/account");
-        request.setAttribute(
-                SecurityFilter.AUTHENTICATION, Authentication.build("Ada", attributes));
-        Map<String, Object> immutableModel = Map.of("heading", "Account");
-        ModelAndView<Map<String, Object>> modelAndView =
-                new ModelAndView<>("account", immutableModel);
+        try (ApplicationContext context = ApplicationContext.run(properties, Environment.TEST)) {
+            Map<String, Object> attributes = Map.of("department", "engineering");
+            HttpRequest<?> request = HttpRequest.GET("/account");
+            request.setAttribute(
+                    SecurityFilter.AUTHENTICATION,
+                    Authentication.build("Ada", attributes));
+            Map<String, Object> immutableModel = Map.of("heading", "Account");
+            ModelAndView<Map<String, Object>> modelAndView =
+                    new ModelAndView<>("account", immutableModel);
 
-        SecurityViewModelProcessor processor =
-                new SecurityViewModelProcessor(configuration);
-        processor.process(request, modelAndView);
+            ViewsModelDecorator<Map<String, Object>, HttpRequest<?>> decorator =
+                    (ViewsModelDecorator<Map<String, Object>, HttpRequest<?>>)
+                            context.getBean(ViewsModelDecorator.class);
+            decorator.decorate(request, modelAndView);
 
-        Map<String, Object> decoratedModel = modelAndView.getModel().orElseThrow();
-        assertThat(decoratedModel).isNotSameAs(immutableModel);
-        assertThat(decoratedModel)
-                .containsEntry("heading", "Account")
-                .containsEntry(
-                        "viewer",
-                        Map.of("displayName", "Ada", "details", attributes));
+            Map<String, Object> decoratedModel = modelAndView.getModel().orElseThrow();
+            assertThat(decoratedModel).isNotSameAs(immutableModel);
+            assertThat(decoratedModel)
+                    .containsEntry("heading", "Account")
+                    .containsEntry(
+                            "viewer",
+                            Map.of("displayName", "Ada", "details", attributes));
+        }
     }
 
     @Test
