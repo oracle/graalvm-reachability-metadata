@@ -1,0 +1,97 @@
+{
+  "improve_library_coverage:2026-09-06": {
+    "timestamp": "2026-09-06T20:39:18.644264Z",
+    "library": "org.apache.activemq:activemq-broker:6.0.0",
+    "starting_commit": "5bffcc5a07dc430c8f0abc52198bf36c30cb4143",
+    "ending_commit": "6542f010795a7d81aa9f578da3b7225216397a40",
+    "strategy_name": "library_update_optimistic_pi_gpt-5.6-sol",
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "status": "success",
+    "stats": {
+      "version": "6.0.0",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 0.493151,
+            "coveredCalls": 36,
+            "totalCalls": 73
+          },
+          "resources": {
+            "coverageRatio": 0.714286,
+            "coveredCalls": 5,
+            "totalCalls": 7
+          }
+        },
+        "coverageRatio": 0.5125,
+        "coveredCalls": 41,
+        "totalCalls": 80
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 12753,
+          "missed": 91977,
+          "ratio": 0.12177,
+          "total": 104730
+        },
+        "line": {
+          "covered": 3332,
+          "missed": 22904,
+          "ratio": 0.127001,
+          "total": 26236
+        },
+        "method": {
+          "covered": 847,
+          "missed": 5285,
+          "ratio": 0.138128,
+          "total": 6132
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "no_action",
+      "issue_number": 8927,
+      "issue_label": "library-update-request",
+      "library": "org.apache.activemq:activemq-broker:6.0.0",
+      "summary": "The existing embedded, non-persistent BrokerService scaffold is sufficient. ActiveMQ 6.0.0 resolves its required client, OpenWire, annotation, and JMS dependencies transitively, and documented embedded usage needs no Docker or external service. [POM](https://repo1.maven.org/maven2/org/apache/activemq/activemq-broker/6.0.0/activemq-broker-6.0.0.pom) [embedded broker documentation](https://activemq.apache.org/components/classic/documentation/how-do-i-embed-a-broker-inside-a-connection)",
+      "deterministic_setup": [],
+      "agent_guidance": "Keep coverage tests in-process using BrokerService and vm:// with persistence disabled, as in the existing test. No environment variable or system property is required. Persistent-broker scenarios would be separate and may require KahaDB plus a test-owned data directory.",
+      "risks": [
+        "ActiveMQ 6.0.0 requires JDK 17+, which is satisfied by the repository prerequisites. [Release requirements](https://activemq.apache.org/components/classic/download/classic-06-00-00)"
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#8927 Update existing library: org.apache.activemq:activemq-broker:6.0.0; label=library-update-request; body_chars=169"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "8 existing test file path(s) included"
+        }
+      ],
+      "model": "gpt-5.6-luna",
+      "input_tokens_used": 552833,
+      "output_tokens_used": 6967,
+      "prompt_path": "library-preflight-prompt.txt",
+      "raw_response_path": "library-preflight-response.txt",
+      "session_log_path": "/home/mihailo/git/graalvm-reachability-metadata/forge/logs/org.apache.activemq:activemq-broker:6.0.0/library-preparation-preflight/codex-session-9lkuqxbd.log"
+    },
+    "metrics": {
+      "input_tokens_used": 856832,
+      "cached_input_tokens_used": 19082368,
+      "output_tokens_used": 118392,
+      "iterations": 18,
+      "cost_usd": 17.3772,
+      "generated_loc": 485,
+      "tested_library_loc": 3332,
+      "metadata_entries": 447,
+      "test_only_metadata_entries": 18,
+      "code_coverage_percent": 12.7
+    },
+    "artifacts": {
+      "metadata_file": "metadata/org.apache.activemq/activemq-broker/6.0.0/reachability-metadata.json"
+    }
+  }
+}

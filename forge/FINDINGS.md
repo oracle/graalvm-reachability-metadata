@@ -9,6 +9,11 @@ Newest entry first; every non-approval is recorded, including one a repair later
 
 The custom ObjectInputStream/ObjectOutputStream subclasses in X509CRLHolderTest.java and X509CertificateHolderTest.java replaced the library's normal byte[] serialization payload with test-selected short[]/int[] values solely to create distinct descriptor paths. This was a direct serialization shortcut, and it caused the test-created short[] registration plus stale org_bouncycastle test-resource entries to ship in metadata/org.bouncycastle/bcpkix-jdk18on/1.77/reachability-metadata.json, violating the enumerated no-shortcuts and no-test-only-shipped-metadata rules.
 
+## 2026-09-06 — org.apache.activemq:activemq-broker:6.0.0 (#8927)
+
+**Split test project retained an invalid baseline test contract**
+
+In `tests/src/org.apache.activemq/activemq-broker/6.3.0/src/test/java/org_apache_activemq/activemq_broker/ActivemqBrokerTest.java`, the newly added top-level test class was package-private, violating test-contract rule 1.2. That test and the modified 6.0.0 counterpart also used unbounded broker lifecycle waits and performed broker cleanup only after the connection path succeeded, violating rule 1.6. The new 6.3.0 project's `gradle.properties` additionally still identified the 6.0.0 library and metadata directories instead of its own coordinate.
 ## 2026-09-06 — io.micronaut:micronaut-management:5.1.13 (#9825)
 
 **Companion Micronaut dependencies pin the tested library version**
