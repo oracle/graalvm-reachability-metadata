@@ -11,6 +11,7 @@ import java.security.KeyFactory;
 import java.security.Provider;
 import java.security.PublicKey;
 import java.security.spec.RSAPublicKeySpec;
+import java.util.Random;
 
 import org.junit.jupiter.api.Test;
 import org.testcontainers.shaded.org.apache.commons.lang3.SerializationUtils;
@@ -23,8 +24,10 @@ public class BCRSAPublicKeyTest {
     void serializesProviderRsaPublicKeys() throws Exception {
         Provider provider = new BouncyCastleProvider();
         KeyFactory factory = KeyFactory.getInstance("RSA", provider);
+        Random random = new Random(7);
+        BigInteger modulus = BigInteger.probablePrime(512, random).multiply(BigInteger.probablePrime(512, random));
         PublicKey original = factory.generatePublic(
-            new RSAPublicKeySpec(BigInteger.valueOf(3233), BigInteger.valueOf(17))
+            new RSAPublicKeySpec(modulus, BigInteger.valueOf(65_537))
         );
 
         PublicKey restored = SerializationUtils.roundtrip(original);

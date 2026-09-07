@@ -36,6 +36,6 @@ public class JournaledAlgorithmTest {
 
         assertThat(serialized.getAlgorithmIdentifier()).isEqualTo(identifier);
         assertThat(restored.getAlgorithmIdentifier()).isEqualTo(identifier);
-        assertThat(restored.getJournalingSecureRandom().getTranscript()).isEqualTo(random.getTranscript());
+        assertThat(restored.getJournalingSecureRandom().getFullTranscript()).isEqualTo(random.getFullTranscript());
     }
 }

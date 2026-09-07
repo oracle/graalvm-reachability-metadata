@@ -9,9 +9,7 @@ package org_testcontainers.testcontainers;
 import java.security.AlgorithmParameters;
 import java.security.Provider;
 
-import javax.crypto.Cipher;
 import javax.crypto.spec.GCMParameterSpec;
-import javax.crypto.spec.SecretKeySpec;
 
 import org.junit.jupiter.api.Test;
 import org.testcontainers.shaded.org.bouncycastle.jce.provider.BouncyCastleProvider;
@@ -20,14 +18,15 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class GcmSpecUtilTest {
     @Test
-    void preservesGcmParametersAcrossCipherInitialization() throws Exception {
+    void preservesProviderGcmParametersAcrossEncoding() throws Exception {
         Provider provider = new BouncyCastleProvider();
         GCMParameterSpec specification = new GCMParameterSpec(128, new byte[12]);
-        Cipher cipher = Cipher.getInstance("AES/GCM/NoPadding", provider);
-        cipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(new byte[16], "AES"), specification);
+        AlgorithmParameters parameters = AlgorithmParameters.getInstance("GCM", provider);
+        parameters.init(specification);
 
-        AlgorithmParameters parameters = cipher.getParameters();
-        GCMParameterSpec restored = parameters.getParameterSpec(GCMParameterSpec.class);
+        AlgorithmParameters decoded = AlgorithmParameters.getInstance("GCM", provider);
+        decoded.init(parameters.getEncoded());
+        GCMParameterSpec restored = decoded.getParameterSpec(GCMParameterSpec.class);
 
         assertThat(restored.getTLen()).isEqualTo(128);
         assertThat(restored.getIV()).containsExactly(specification.getIV());

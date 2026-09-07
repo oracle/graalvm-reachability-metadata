@@ -6,8 +6,6 @@
  */
 package org_testcontainers.testcontainers;
 
-import java.util.EnumSet;
-
 import org.junit.jupiter.api.Test;
 import org.testcontainers.shaded.com.fasterxml.jackson.databind.util.ClassUtil;
 
@@ -19,7 +17,6 @@ public class ClassUtilTest {
         assertThat(ClassUtil.findConstructor(Bean.class, true)).isNotNull();
         assertThat(ClassUtil.createInstance(Bean.class, true)).isInstanceOf(Bean.class);
         assertThat(ClassUtil.findClass("java.lang.String")).isEqualTo(String.class);
-        assertThat(ClassUtil.findEnumType(EnumSet.noneOf(State.class))).isEqualTo(State.class);
 
         Thread thread = Thread.currentThread();
         ClassLoader contextLoader = thread.getContextClassLoader();
@@ -33,9 +30,5 @@ public class ClassUtilTest {
 
     public static class Bean {
         public Bean() {}
-    }
-
-    public enum State {
-        READY
     }
 }

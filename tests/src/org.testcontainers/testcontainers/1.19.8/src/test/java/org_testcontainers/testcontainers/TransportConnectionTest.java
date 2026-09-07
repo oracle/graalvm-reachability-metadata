@@ -11,6 +11,8 @@ import java.io.ByteArrayOutputStream;
 import java.security.SecureRandom;
 
 import org.junit.jupiter.api.Test;
+import org.testcontainers.shaded.com.trilead.ssh2.crypto.cipher.NullCipher;
+import org.testcontainers.shaded.com.trilead.ssh2.crypto.digest.MAC;
 import org.testcontainers.shaded.com.trilead.ssh2.transport.TransportConnection;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -23,7 +25,9 @@ public class TransportConnectionTest {
             new ByteArrayOutputStream(),
             new SecureRandom()
         );
+        MAC mac = new MAC("hmac-sha1", new byte[MAC.getKeyLen("hmac-sha1")]);
+        connection.changeSendCipher(new NullCipher(), mac);
 
-        assertThat(connection.getPacketOverheadEstimate()).isPositive();
+        assertThat(connection.getPacketOverheadEstimate()).isGreaterThan(mac.size());
     }
 }

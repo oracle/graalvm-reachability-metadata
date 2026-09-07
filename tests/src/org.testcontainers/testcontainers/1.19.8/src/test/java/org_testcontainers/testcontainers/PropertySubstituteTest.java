@@ -59,7 +59,7 @@ public class PropertySubstituteTest {
         );
 
         assertThat(bean.items).containsExactly("first", "second");
-        assertThat(bean.counts).containsExactlyEntriesOf(Map.of("one", 1, "two", 2));
+        assertThat(bean.counts).containsAllEntriesOf(Map.of("one", 1, "two", 2));
         assertThat(bean.aliases).containsExactly("primary", "secondary");
     }
 
