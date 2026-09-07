@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 import org.testcontainers.shaded.com.fasterxml.jackson.databind.introspect.AnnotatedMethod;
 import org.testcontainers.shaded.com.fasterxml.jackson.databind.introspect.BasicBeanDescription;
+import org.testcontainers.shaded.org.apache.commons.lang3.SerializationUtils;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -26,11 +27,13 @@ public class AnnotatedMethodTest {
         AnnotatedMethod factory = description.getFactoryMethods().get(0);
         AnnotatedMethod getter = description.findMethod("getValue", new Class<?>[0]);
         AnnotatedMethod setter = description.findMethod("setValue", new Class<?>[] { String.class });
+        AnnotatedMethod restoredGetter = SerializationUtils.roundtrip(getter);
 
         assertThat(factory.call()).isInstanceOf(MethodBean.class);
         assertThat(factory.call(new Object[0])).isInstanceOf(MethodBean.class);
         setter.setValue(bean, "set");
         assertThat(getter.callOn(bean)).isEqualTo("set");
+        assertThat(restoredGetter.callOn(bean)).isEqualTo("set");
     }
 
     public static class MethodBean {

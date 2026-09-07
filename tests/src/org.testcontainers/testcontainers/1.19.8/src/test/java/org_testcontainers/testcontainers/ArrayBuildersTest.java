@@ -19,5 +19,7 @@ public class ArrayBuildersTest {
             .containsExactly("a", "b", "c");
         assertThat(ArrayBuilders.insertInListNoDup(new String[] { "a", "b" }, "a"))
             .containsExactly("a", "b");
+        assertThat(ArrayBuilders.insertInListNoDup(new String[] { "b", "a", "c" }, "a"))
+            .containsExactly("a", "b", "c");
     }
 }

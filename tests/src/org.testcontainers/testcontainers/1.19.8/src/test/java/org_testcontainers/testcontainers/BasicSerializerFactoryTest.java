@@ -10,13 +10,17 @@ import org.junit.jupiter.api.Test;
 import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.net.URI;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class BasicSerializerFactoryTest {
     @Test
     void createsAStandardSerializerFromTheLookupTable() throws Exception {
-        assertThat(new ObjectMapper().writeValueAsString(URI.create("https://example.invalid/value")))
+        ObjectMapper mapper = new ObjectMapper();
+
+        assertThat(mapper.writeValueAsString(URI.create("https://example.invalid/value")))
             .isEqualTo("\"https://example.invalid/value\"");
+        assertThat(mapper.writeValueAsString(new AtomicInteger(7))).isEqualTo("7");
     }
 }

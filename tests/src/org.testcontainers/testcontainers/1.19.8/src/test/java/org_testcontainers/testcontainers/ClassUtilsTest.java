@@ -11,6 +11,7 @@ import org.testcontainers.shaded.org.apache.commons.lang3.ClassUtils;
 
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -21,6 +22,9 @@ public class ClassUtilsTest {
             Modifier.isPublic(ClassUtils.getPublicMethod(HiddenList.class, "size").getDeclaringClass().getModifiers())
         )
             .isTrue();
+        assertThat(ClassUtils.convertClassNamesToClasses(List.of("java.lang.String")))
+            .containsExactly(String.class);
+        assertThat(ClassUtils.getClass("java.lang.String")).isEqualTo(String.class);
     }
 
     private static class HiddenList extends ArrayList<String> {

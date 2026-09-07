@@ -6,6 +6,8 @@
  */
 package org_testcontainers.testcontainers;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import org.junit.jupiter.api.Test;
 import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 import org.testcontainers.shaded.com.fasterxml.jackson.databind.deser.impl.FieldProperty;
@@ -37,7 +39,32 @@ public class FieldPropertyTest {
         assertThat(target.value).isEqualTo("returned");
     }
 
+    @Test
+    void returnsTheBuilderAfterDeserializingAFieldProperty() throws Exception {
+        BuiltBean result = new ObjectMapper().readValue("{\"value\":\"built\"}", BuiltBean.class);
+
+        assertThat(result.value).isEqualTo("built");
+    }
+
     public static class FieldBean {
         public String value;
+    }
+
+    @JsonDeserialize(builder = BuiltBean.Builder.class)
+    public static class BuiltBean {
+        private final String value;
+
+        private BuiltBean(String value) {
+            this.value = value;
+        }
+
+        @JsonPOJOBuilder(withPrefix = "")
+        public static class Builder {
+            public String value;
+
+            public BuiltBean build() {
+                return new BuiltBean(value);
+            }
+        }
     }
 }

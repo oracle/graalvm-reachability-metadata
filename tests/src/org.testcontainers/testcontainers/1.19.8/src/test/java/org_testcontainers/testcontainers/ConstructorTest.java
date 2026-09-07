@@ -7,19 +7,21 @@
 package org_testcontainers.testcontainers;
 
 import org.junit.jupiter.api.Test;
-import org.testcontainers.shaded.org.yaml.snakeyaml.TypeDescription;
+import org.testcontainers.shaded.org.yaml.snakeyaml.LoaderOptions;
 import org.testcontainers.shaded.org.yaml.snakeyaml.Yaml;
 import org.testcontainers.shaded.org.yaml.snakeyaml.constructor.Constructor;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class TypeDescriptionTest {
+public class ConstructorTest {
     @Test
-    void createsTheRootTypeDescribedToTheConstructor() {
-        TypeDescription description = new TypeDescription(Bean.class, Bean.class);
-        Bean bean = new Yaml(new Constructor(description)).load("value: typed");
+    void resolvesRootTypesNamedInConstructorConfiguration() throws Exception {
+        String rootType = Bean.class.getName();
+        Bean first = new Yaml(new Constructor(rootType)).load("value: first");
+        Bean second = new Yaml(new Constructor(rootType, new LoaderOptions())).load("value: second");
 
-        assertThat(bean.value).isEqualTo("typed");
+        assertThat(first.value).isEqualTo("first");
+        assertThat(second.value).isEqualTo("second");
     }
 
     public static class Bean {

@@ -9,6 +9,7 @@ package org_testcontainers.testcontainers;
 import org.junit.jupiter.api.Test;
 import org.testcontainers.shaded.com.fasterxml.jackson.core.Version;
 import org.testcontainers.shaded.com.fasterxml.jackson.core.util.VersionUtil;
+import org.testcontainers.shaded.com.fasterxml.jackson.databind.cfg.MapperConfig;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class VersionUtilTest {
@@ -21,5 +22,6 @@ public class VersionUtilTest {
         );
 
         assertThat(mavenVersion.isUnknownVersion()).isTrue();
+        assertThat(VersionUtil.packageVersionFor(MapperConfig.class).isUnknownVersion()).isFalse();
     }
 }

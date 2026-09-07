@@ -19,6 +19,7 @@ public class ArrayUtilsTest {
         assertThat(ArrayUtils.add(values, "e")).containsExactly("b", "c", "c", "d", "e");
         assertThat(ArrayUtils.add(values, 0, "a")).containsExactly("a", "b", "c", "c", "d");
         assertThat(ArrayUtils.add((String[]) null, "a")).containsExactly("a");
+        assertThat(ArrayUtils.add((String[]) null, 0, "a")).containsExactly("a");
         assertThat(ArrayUtils.addAll(values, "e", "f")).containsExactly("b", "c", "c", "d", "e", "f");
         assertThat(ArrayUtils.insert(1, values, "x", "y")).containsExactly("b", "x", "y", "c", "c", "d");
         assertThat(ArrayUtils.nullToEmpty((String[]) null)).isEmpty();

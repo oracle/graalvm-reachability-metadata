@@ -14,6 +14,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class ReflectionTest {
     @Test
     void createsInterfaceProxies() {
+        Reflection.initialize(Greeting.class);
         Greeting greeting = Reflection.newProxy(
             Greeting.class,
             (proxy, method, arguments) -> "hello " + arguments[0]

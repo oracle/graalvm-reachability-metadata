@@ -11,6 +11,7 @@ import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 import org.testcontainers.shaded.com.fasterxml.jackson.databind.introspect.AnnotatedField;
 import org.testcontainers.shaded.com.fasterxml.jackson.databind.introspect.BasicBeanDescription;
 import org.testcontainers.shaded.com.fasterxml.jackson.databind.introspect.BeanPropertyDefinition;
+import org.testcontainers.shaded.org.apache.commons.lang3.SerializationUtils;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -23,12 +24,14 @@ public class AnnotatedFieldTest {
             .introspect(mapper.constructType(FieldBean.class));
         BeanPropertyDefinition property = description.findProperties().get(0);
         AnnotatedField field = property.getField();
+        AnnotatedField restored = SerializationUtils.roundtrip(field);
         FieldBean bean = new FieldBean();
 
         field.setValue(bean, "set");
+        restored.setValue(bean, "restored");
 
-        assertThat(field.getValue(bean)).isEqualTo("set");
-        assertThat(mapper.writeValueAsString(bean)).isEqualTo("{\"value\":\"set\"}");
+        assertThat(restored.getValue(bean)).isEqualTo("restored");
+        assertThat(mapper.writeValueAsString(bean)).isEqualTo("{\"value\":\"restored\"}");
     }
 
     public static class FieldBean {
