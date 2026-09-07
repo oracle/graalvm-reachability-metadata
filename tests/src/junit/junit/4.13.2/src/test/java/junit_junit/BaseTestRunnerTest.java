@@ -13,11 +13,10 @@ import junit.framework.TestCase;
 import junit.framework.TestResult;
 import junit.framework.TestSuite;
 import junit.runner.BaseTestRunner;
-import org.junit.jupiter.api.Test;
 
 public class BaseTestRunnerTest {
 
-    @Test
+    @org.junit.jupiter.api.Test
     void loadsAndInvokesAStaticSuiteMethod() {
         RecordingTestRunner runner = new RecordingTestRunner();
 

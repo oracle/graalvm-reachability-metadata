@@ -12,11 +12,10 @@ import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestResult;
 import junit.framework.TestSuite;
-import org.junit.jupiter.api.Test;
 
 public class TestSuiteTest {
 
-    @Test
+    @org.junit.jupiter.api.Test
     void createsLegacyTestsWithBothSupportedConstructorShapes() {
         Test stringConstructed = TestSuite.createTest(StringConstructorCase.class, "testExecute");
         Test noArgConstructed = TestSuite.createTest(NoArgConstructorCase.class, "testExecute");

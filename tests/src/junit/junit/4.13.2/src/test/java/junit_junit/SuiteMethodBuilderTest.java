@@ -11,13 +11,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
-import org.junit.jupiter.api.Test;
 import org.junit.runner.JUnitCore;
 import org.junit.runner.Result;
 
 public class SuiteMethodBuilderTest {
 
-    @Test
+    @org.junit.jupiter.api.Test
     void discoversAClassThatPublishesAStaticSuite() {
         Result result = JUnitCore.runClasses(SuiteFixture.class);
 
