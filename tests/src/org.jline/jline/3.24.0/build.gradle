@@ -17,6 +17,7 @@ dependencies {
 
 test {
     environment "LD_PRELOAD", "/usr/lib/x86_64-linux-gnu/libutil.so" // Hack in order to use JANSI on GH Actions
+    jvmArgs "--add-opens=java.base/java.io=ALL-UNNAMED", "--add-opens=java.base/java.lang=ALL-UNNAMED"
 }
 
 tasks.named("nativeTest") {
@@ -26,7 +27,22 @@ tasks.named("nativeTest") {
 graalvmNative {
     binaries {
         test {
-            buildArgs.add('--allow-incomplete-classpath')
+            buildArgs.addAll(
+                    '--allow-incomplete-classpath',
+                    '--add-opens=java.base/java.io=ALL-UNNAMED',
+                    '--add-opens=java.base/java.lang=ALL-UNNAMED'
+            )
+        }
+    }
+}
+
+graalvmNative {
+    agent {
+        defaultMode = "conditional"
+        modes {
+            conditional {
+                userCodeFilterPath = "user-code-filter.json"
+            }
         }
     }
 }
