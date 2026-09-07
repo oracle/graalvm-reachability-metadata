@@ -12,6 +12,8 @@ import com.github.dockerjava.api.command.CreateNetworkResponse;
 import com.github.dockerjava.api.command.CreateVolumeResponse;
 import com.github.dockerjava.api.command.InspectImageResponse;
 import com.github.dockerjava.api.command.WaitContainerResultCallback;
+import com.github.dockerjava.api.model.Event;
+import com.github.dockerjava.api.model.EventType;
 import com.github.dockerjava.api.model.Info;
 import com.github.dockerjava.api.model.Statistics;
 import com.github.dockerjava.api.model.Version;
@@ -33,6 +35,7 @@ import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -167,6 +170,53 @@ public class TestcontainersTest {
         } finally {
             if (imageBuilt) {
                 dockerClient.removeImageCmd(imageName).withForce(true).exec();
+            }
+        }
+    }
+
+    @Test
+    @Timeout(55)
+    void streamsFilteredDockerEvents() throws Exception {
+        DockerClient dockerClient = DockerClientFactory.instance().client();
+        String repository = "localhost/testcontainers/event-" + UUID.randomUUID();
+        String tag = "observed";
+        String taggedImage = repository + ":" + tag;
+        AtomicReference<Event> receivedEvent = new AtomicReference<>();
+        CountDownLatch eventReceived = new CountDownLatch(1);
+        boolean imageTagged = false;
+
+        try (
+            ResultCallback.Adapter<Event> callback = new ResultCallback.Adapter<>() {
+                @Override
+                public void onNext(Event event) {
+                    if (
+                        event.getActor() != null &&
+                        event.getActor().getAttributes() != null &&
+                        taggedImage.equals(event.getActor().getAttributes().get("name"))
+                    ) {
+                        receivedEvent.set(event);
+                        eventReceived.countDown();
+                    }
+                }
+            }
+        ) {
+            dockerClient
+                .eventsCmd()
+                .withEventTypeFilter(EventType.IMAGE)
+                .withEventFilter("tag")
+                .exec(callback);
+            assertThat(callback.awaitStarted(10, TimeUnit.SECONDS)).isTrue();
+
+            dockerClient.tagImageCmd(NGINX_IMAGE, repository, tag).exec();
+            imageTagged = true;
+
+            assertThat(eventReceived.await(10, TimeUnit.SECONDS)).isTrue();
+            assertThat(receivedEvent.get().getAction()).isEqualTo("tag");
+            assertThat(receivedEvent.get().getType()).isEqualTo(EventType.IMAGE);
+            assertThat(receivedEvent.get().getActor().getId()).isNotBlank();
+        } finally {
+            if (imageTagged) {
+                dockerClient.removeImageCmd(taggedImage).exec();
             }
         }
     }
