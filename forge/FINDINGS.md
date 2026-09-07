@@ -3,6 +3,12 @@
 Rendered by Forge from the pre-push branch review of §FS-local-branch-review.
 Newest entry first; every non-approval is recorded, including one a repair later cleared.
 
+## 2026-09-07 — io.micronaut:micronaut-http-netty:5.1.13 (#9833)
+
+**New-library dynamic-access coverage is below the required floor**
+
+Review Signal #6 requires dynamic-access coverage above 20% when calls exist. `stats/io.micronaut/micronaut-http-netty/5.1.13/stats.json` and the resolved review evidence report 0 of 6 calls covered (0%), so this contribution needs stronger tests and refreshed coverage evidence before approval.
+
 ## 2026-09-07 — org.flywaydb:flyway-core:13.5.0 (#9842)
 
 **Java-run repair adds unrelated internal-API coverage**
