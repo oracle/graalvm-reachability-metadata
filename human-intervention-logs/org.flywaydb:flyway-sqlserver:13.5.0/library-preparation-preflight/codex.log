@@ -1,0 +1,23 @@
+{
+  "action": "advisory_preparation",
+  "summary": "Meaningful coverage requires a SQL Server integration test with an explicit JDBC driver and database container.",
+  "deterministic_setup": [
+    {
+      "kind": "dependency",
+      "coordinate": "com.microsoft.sqlserver:mssql-jdbc:12.2.0.jre11",
+      "scope": "testImplementation",
+      "reason": "Flyway SQL Server 13.5.0 does not include the JDBC driver; the existing scaffold already uses this repository-supported driver version. Flyway documents the driver as a separate dependency. [Flyway SQL Server documentation](https://documentation.red-gate.com/fd/sql-server-database-277579330.html)"
+    },
+    {
+      "kind": "docker_image",
+      "image": "mcr.microsoft.com/mssql/server:2022-CU14-ubuntu-22.04",
+      "slug": "mssql_server",
+      "reason": "The integration test must execute migrations against a real SQL Server instance; reuse the exact tag already pinned by the repository allow-list."
+    }
+  ],
+  "agent_guidance": "Generate an integration test that starts the declared SQL Server container, waits until localhost:1433 accepts SQL authentication, runs Flyway migrations through SQLServerDataSource, asserts migration results, and reliably stops the process. Preserve explicit migration-resource handling for Native Image because generic classpath resource enumeration is insufficient; include the migration SQL resources in native-image metadata. Microsoft documents that both SQL Server and the JDBC driver are required for connections. [Microsoft JDBC documentation](https://learn.microsoft.com/en-us/sql/connect/jdbc/using-the-jdbc-driver?view=sql-server-ver16)",
+  "risks": [
+    "The test requires Docker and exclusive host port 1433.",
+    "The issue reproducer references a different tested version than the stated 13.5.0 target; local Gradle and Native Image verification should use the actual target coordinate."
+  ]
+}

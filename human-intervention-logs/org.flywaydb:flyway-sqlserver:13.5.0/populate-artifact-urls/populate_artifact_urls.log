@@ -1,0 +1,1216 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :populateArtifactURLs
+Reading additional input from stdin...
+OpenAI Codex v0.153.2
+--------
+workdir: /home/mihailo/git/graalvm-reachability-metadata-copy/forge/local_repositories/forge_worktrees/9843-2a666e0d
+model: gpt-5.6-luna
+provider: openai
+approval: on-request
+sandbox: read-only
+reasoning effort: high
+reasoning summaries: none
+session id: 01a07d51-7f0f-76c3-8d70-0c78abc58f8b
+--------
+user
+Find the repository URL, the sources URL, the test suite URL, the documentation URL, and a concise two-sentence explanation for the following library: org.flywaydb:flyway-sqlserver:13.5.0
+Also determine whether this is a language-specific library. If it is language-specific, set the "language" field using:
+- { "name": "kotlin", "version": "<kotlin major.minor, e.g. 2.0>" } for Kotlin libraries
+- { "name": "groovy", "version": "<groovy major.minor, e.g. 4.0>" } for Groovy libraries
+- { "name": "scala", "version": "2" } for Scala 2 libraries
+- { "name": "scala", "version": "3" } for Scala 3 libraries
+If the library is not language-specific, leave the "language" field absent.
+The sources URL, the test suite URL, and the documentation URL must render correctly for every entry tested-version alias when "$version$" is replaced with that alias. Entry tested-versions: [13.5.0].
+The source, test suite, and documentation URLs should point to the right tag of the library.
+If we have these source of these artifacts on maven, that should be prefered.
+If there are tests on maven that should also be prefered.
+The "description" field must explain what the library does in exactly two sentences.
+
+
+Update this repository directly:
+- File: /home/mihailo/git/graalvm-reachability-metadata-copy/forge/local_repositories/forge_worktrees/9843-2a666e0d/metadata/org.flywaydb/flyway-sqlserver/index.json
+- Entry selector: "metadata-version" = "13.5.0"
+- Fill only missing fields among "source-code-url", "repository-url", "test-code-url", "documentation-url", "description", and "language".
+- A field is missing only when absent, null, or blank.
+- Do not modify fields that already contain a non-blank value.
+- Set missing "source-code-url" to the selected source URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- Set missing "repository-url" to the selected repository URL.
+- "repository-url" must be the canonical repository root URL and must not include a version/tag/branch path (for example, no "/tree/v_1.2.11").
+- Set missing "test-code-url" to the selected test suite URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- Set missing "documentation-url" to the selected project documentation URL with "$version$" replacing each tested-version alias only when that template is valid for every alias.
+- When URL maintenance is requested, treat existing versioned "source-code-url", "test-code-url", and "documentation-url" values as templates when they contain the current entry version or another artifact version.
+- Render template candidates for every entry tested-version alias and verify rendered URLs before writing them.
+- If template verification fails, search for a correct exact-version URL instead of preserving a stale value.
+- A non-empty URL pointing at a different artifact version is not considered already correct when URL maintenance is requested.
+- Set missing "description" to a concise explanation of the library in exactly two sentences.
+- Set missing "language" only when the library is language-specific; otherwise leave the field absent.
+- Set the "description" field to the selected two-sentence explanation.
+- Set the "language" field only when the library is language-specific.
+- If any of these URLs or the description cannot be found with confidence, set that field value to "N/A".
+- Do not use unversioned docs or "latest/current" docs.
+- Keep all other fields unchanged.
+- Keep JSON valid and consistently formatted.
+
+Current URL values:
+- source-code-url: <missing>
+- repository-url: <missing>
+- test-code-url: <missing>
+- documentation-url: <missing>
+- description: <missing>
+- language: <missing>
+
+Context:
+- Coordinate version: 13.5.0
+- Entry metadata-version: 13.5.0
+- Entry test-version: 11.8.1
+- Entry tested-versions: [13.5.0]
+warning: Codex's Linux sandbox uses bubblewrap and needs access to create user namespaces.
+warning: Configured value for `approval_policy` is disallowed by requirements; falling back to required value OnRequest. Details: invalid value for `approval_policy`: `Never` is not in the allowed set [OnRequest, UnlessTrusted] (set by enterprise-managed requirements Codex Developers (8a9cace4-0b4b-4c93-a8d5-b33253d2d6e4))
+warning: Configured value for `permission_profile` is disallowed by requirements; falling back to required value Managed { file_system: Restricted { entries: [FileSystemSandboxEntry { path: Special { value: Root }, access: Read }], glob_scan_max_depth: None }, network: Restricted }. Details: invalid value for `sandbox_mode`: `DangerFullAccess` is not in the allowed set [ReadOnly, WorkspaceWrite] (set by enterprise-managed requirements Codex Developers (8a9cace4-0b4b-4c93-a8d5-b33253d2d6e4))
+codex
+I’ll inspect the target entry and repository conventions, then verify exact-version URLs (including the Maven sources/tests artifacts where available) before making only the requested field updates.
+codex
+The initial read was blocked by the workspace sandbox’s network-namespace setup, so I’m retrying the same read-only inspection with the required environment approval.
+exec
+/usr/bin/zsh -lc "pwd && sed -n '1,220p' AGENTS.md && printf '\\n--- target ---\\n' && sed -n '1,220p' metadata/org.flywaydb/flyway-sqlserver/index.json" in /home/mihailo/git/graalvm-reachability-metadata-copy/forge/local_repositories/forge_worktrees/9843-2a666e0d
+ succeeded in 0ms:
+/home/mihailo/git/graalvm-reachability-metadata-copy/forge/local_repositories/forge_worktrees/9843-2a666e0d
+# Development Cheat Sheet
+
+## Prerequisites (assume exists)
+- JAVA_HOME set to JDK 25 (GraalVM recommended to match CI)
+- Docker
+- grype v0.104.0 (install: curl -sSfL https://get.anchore.io/grype/v0.104.0/install.sh | sudo sh -s -- -b /usr/local/bin)
+
+## Setup
+- Always use Gradle wrapper from repo root:
+  - Unix: ./gradlew <task> [options]
+  - Windows: gradlew.bat <task> [options]
+- Tip: add --stacktrace for debugging
+
+## One command for complete infrastructure testing
+./gradlew testAllInfra -Pparallelism=4 --stacktrace
+
+## Code Style
+- Always try to reuse existing code.
+- Be assertive in code.
+- Write type annotations in all functions and most variables.
+- Document code without being too verbose.
+- In Java and Groovy, always import classes and use them without qualified names.
+- In Java use multi-line strings where possible.
+- In Java use the markdown style for comments.
+
+## Testing individual components
+
+- Clean previous build outputs for the selected coordinates: ./gradlew clean -Pcoordinates=[group:artifact:version|k/n|all]
+- Pre-fetch Docker images allowed by metadata (used in tests) for the selected coordinates: ./gradlew pullAllowedDockerImages -Pcoordinates=[group:artifact:version|k/n|all]
+- Validate reachability metadata files for the selected coordinates: ./gradlew checkMetadataFiles -Pcoordinates=[group:artifact:version|k/n|all]
+- Run Checkstyle for the selected coordinates: ./gradlew checkstyle -Pcoordinates=[group:artifact:version|k/n|all]
+- Compile test sources for the selected coordinates: ./gradlew compileTestJava -Pcoordinates=[group:artifact:version|k/n|all]
+- Run JVM-based tests for the selected coordinates: ./gradlew javaTest -Pcoordinates=[group:artifact:version|k/n|all]
+- Build native images used by native tests (compile-only) for the selected coordinates: ./gradlew nativeTestCompile -Pcoordinates=[group:artifact:version|k/n|all]
+- Run all tests for the selected coordinates: ./gradlew test -Pcoordinates=[group:artifact:version|k/n|all]
+
+
+## Check style and formatting
+- Style check: ./gradlew checkstyle
+- Format check: ./gradlew spotlessCheck
+
+## Testing the metadata
+- Single library (replace with group:artifact:version):
+  - ./gradlew pullAllowedDockerImages -Pcoordinates=group:artifact:version
+  - ./gradlew checkMetadataFiles -Pcoordinates=group:artifact:version
+  - ./gradlew test -Pcoordinates=group:artifact:version
+- Sharded example (1/64):
+  - ./gradlew pullAllowedDockerImages -Pcoordinates=1/64
+  - ./gradlew checkMetadataFiles -Pcoordinates=1/64
+  - ./gradlew test -Pcoordinates=1/64
+
+### Generating Metadata
+- Generate metadata for a certain library version:
+   - ./gradlew generateMetadata -Pcoordinates=com.hazelcast:hazelcast:5.2.1
+- Generate metadata for a certain library version and derive `user-code-filter.json` from the resolved library JAR:
+   - ./gradlew generateMetadata -Pcoordinates=org.postgresql:postgresql:42.7.3 --agentAllowedPackages=fromJar
+- Generate metadata for a certain library version and create or update the user-code-filter.json:
+   - ./gradlew generateMetadata -Pcoordinates=org.postgresql:postgresql:42.7.3 --agentAllowedPackages=org.example.app,com.acme.service
+
+### Fix failing tasks
+
+- Generates new metadata for library's new version which is failing native-image run:
+  - ./gradlew fixTestNativeImageRun -PtestLibraryCoordinates=org.postgresql:postgresql:42.7.3 -PnewLibraryVersion=42.7.4
+
+## Docker Image Vulnerability Scanning
+- Changed images between commits:
+  - ./gradlew checkAllowedDockerImages --baseCommit=$(git rev-parse origin/master) --newCommit=$(git rev-parse HEAD)
+- All allowed images:
+  - ./gradlew checkAllowedDockerImages
+
+## Compatibility Automation (latest library versions)
+- List libs with newer upstream versions:
+  - ./gradlew fetchExistingLibrariesWithNewerVersions --quiet
+- Record a newly tested version:
+  - ./gradlew addTestedVersion -Pcoordinates="group:artifact:newVersion" --lastSupportedVersion="oldVersion"
+  - Example: ./gradlew addTestedVersion -Pcoordinates="org.postgresql:postgresql:42.7.4" --lastSupportedVersion="42.7.3"
+
+## Releases and Packaging
+- Package artifacts: ./gradlew package
+
+- **Never cite under `tests/src`.** Checkstyle holds that suite to ASCII, so the
+  `§` marker cannot appear in a test file.
+
+<!-- BEGIN GRUND MANAGED BLOCK -->
+## Grounding with grund (v7)
+
+This project uses [`grund`](https://github.com/vjovanov/grund): every spec, goal, decision, and end-to-end test has a stable ID `<KIND>-<slug>[.<section>]` (`KIND ∈ {GRUND, GOAL, PRCPL, FS, AR}`), cited with the marker `§` — e.g. `<§>FS-user-login.3.1` (the `FS-user-login` here is a shape illustration, not a real ID in this repo, hence the `<§>` escape). Type `$$` in a grund-aware editor and it becomes `§`. Bare ID-shaped tokens are ignored — `[reference] strict = true` is set in `grund.toml`, so only `§`-prefixed citations are checked.
+
+### Grounding from a citation
+
+A `§<ID>` is a pointer to a fact, not a file path. Resolve it with `grund` and climb only as far as needed:
+
+- `grund <ID>` — the lead (heading-less, cut at the first child section). The cheap first read for a bare `§<ID>` citation.
+- `grund <ID> --toc` — the lead plus the nested section map. Use to choose which subsection to fetch next.
+- `grund <ID> --full` — the entire body. Escalate to this when narrower reads aren't enough.
+- `grund <ID> --brief` — heading + first paragraph only.
+- `grund refs <ID>` — every site that cites the ID; add `--summary` for one line per file. Run before renaming or moving a declaration.
+- `grund list` / `grund list --kind FS,AR` — discover IDs if you get lost
+
+### Project map
+
+- [GRUND](docs/grund.md): Why: repository motivation
+- [GOAL](docs/goals.md): Where: repository direction and outcomes
+- [PRCPL](docs/principles.md): Cross-cutting principles for how the repository works
+- [FS](docs/functional-spec): Repository functional behavior and contributor-facing requirements
+- [AR](docs/architecture): Repository architecture and build infrastructure
+- [skills/](skills): Agent review and automation skills
+- [.github/workflows/](.github/workflows): CI and release workflows: the gate on GitHub
+- [.github/actions/](.github/actions): Composite actions the workflows reuse
+- [metadata/](metadata): The shipped reachability metadata, verbatim
+- [tests/](tests): Per-library test projects that justify the metadata
+- [tests/tck-build-logic/](tests/tck-build-logic): The TCK harness build logic the test projects run on
+- [stats/](stats): Generated library statistics
+- [docs/assets/](docs/assets): README images, shipped verbatim
+
+### Project namespaces
+
+A namespace is a project boundary, not a docs folder. The current project is the local namespace: cite its IDs as `§<ID>`.
+
+Create or use a separate namespace when work introduces an independently checked app, package, service, or subproject. Give that project its own `grund.toml`, add it to the workspace root's `[workspace] members`, run `grund init` there, and set a stable `project_name`.
+
+Do not create a namespace for a regular module or component that still belongs to this project. Cite across namespaces as `§alias/<ID>` and run `grund check` from the workspace root.
+
+### Workspace members
+
+Cross-project citations use §alias/<ID>.
+
+- [`forge`](forge/AGENTS.md): Automation subproject that turns labeled issues into reviewed metadata pull requests
+- [`root`](AGENTS.md): Repository for shared GraalVM reachability metadata, tests, and release infrastructure
+
+### Declarations and citations
+
+Declarations are heading lines `# FS-user-login: …` in markdown. In a code doc-comment (Rustdoc, Javadoc, JSDoc, Python docstring, Go `//`, …) drop the `#` — write `/// FS-user-login: …` directly. Numbered headings inside a declaration are citable sections: use depth-matching headings (`## 1. …`, `### 1.1 …`, etc.) so `§<ID>.1` / `§<ID>.1.1` resolve; mismatched heading depth is a `grund check` error. Plain headings or bold labels are fine for non-citable local structure. One doc-comment may declare multiple IDs (e.g. an `AR-` and an `FS-` on the same class) — each gets its own body. An inline source declaration is reachable from the configured kind home via a one-line stub: `# <ID>: [<path>](<path>)`.
+
+### Rules
+
+- **Spec first.** For behavior or design changes, write or update the most-specific spec point before code.
+- **Cite as you write.** Place `§<ID>` at the point a claim or behavior is made — on the doc-comment for a whole behavior, inline beside the clause it enforces.
+- **Marker = live citation.** A `§`-prefixed token resolves and is checked wherever it appears — including inside Markdown backticks. To mention an ID without citing it, write `<§><ID>`, omit the marker, or use a fenced code block.
+- **Inline citation style.** Inline notes: ≤ 1 line preferred, hard cap 3 lines; ≤ 100 columns.
+- **Always cite the most-specific point.**
+
+### Citation directions
+
+- **GOAL** must cite GRUND.
+- **PRCPL** must cite GOAL.
+- **FS** should cite GOAL or FS.
+- **AR** must cite FS or GOAL.
+- **skills/** must cite FS; should cite AR.
+- **.github/workflows/** should cite FS or AR.
+- **.github/actions/** should cite FS or AR.
+- **code** (Build files and repository scripts outside a kind home) must cite FS; should cite AR.
+Unlisted kinds and pairs are fine.
+
+### Clickable citations
+
+On repository web surfaces, link `§<ID>` to the PR branch in PR bodies, the reviewed commit in reviews, an exact commit for permalinks, and the default branch otherwise; fall back to plain when unsure.
+<!-- END GRUND MANAGED BLOCK -->
+
+## Grounding conventions for this repository
+
+The block above is generated by `grund init` and is rewritten on every run, so
+repository-specific conventions live here instead.
+
+Start from [docs/README.md](docs/README.md) for the documentation index.
+
+### Namespaces in this repository
+
+`forge` is a workspace member with its own namespace and its own kinds
+(`KIND ∈ {GRUND, GOAL, AR, FS, ROADMAP}`),
+documented in [forge/AGENTS.md](forge/AGENTS.md). Inside `forge/`, cite Forge
+facts as `§<ID>`; from repository docs, cite them as `§forge/<ID>` — for example
+`§forge/GOAL-forge-direction`. Run `grund check` from the repository root, which
+is the only place the workspace alias table is in scope.
+
+### Additional rules
+
+- **The spec is the foundation.** Every idea, issue resolution, and design change is
+  checked against the spec before it is implemented. If it aligns, cite the most-specific
+  point it implements and proceed. If it does not align, stop and say so, then offer the
+  user two paths: **(dangerous)** change the spec, or work out how the idea fits inside
+  the current constraints. Never widen a spec point silently to make an implementation
+  legal. A spec change is dangerous because other points and code cite it: run
+  `grund refs <ID>` first to see the blast radius, get explicit approval, and land the
+  spec change as its own commit ahead of the code.
+- **The spec says how and why, not what each file is.** Spec points state the behavior
+  the repository guarantees and the reasoning behind it. They are not per-module or
+  per-function descriptions — if a paragraph would go stale merely because a file was
+  renamed or a function moved, it does not belong in the spec.
+- **Grund and goals are namespace-local top-level docs.** Repository motivation
+  and direction live in `docs/grund.md` and `docs/goals.md`; Forge motivation and
+  direction live in `forge/docs/grund.md` and `forge/docs/goals.md`.
+- **Document by component when complexity warrants it.** A complex component,
+  such as a module, service, workflow family, script family, or large
+  behavior-owning file, may have its own functional spec and architecture
+  following the same behavior/requirements vs how split.
+- **Do not over-nest simple components.** If a component only needs one
+  architecture explanation and has no separate behavioral contract, keep it as a
+  single architecture declaration/file rather than creating a subdirectory.
+- **Every kind has its own home.** No two kinds may share a `file` or `folder`
+  in `grund.toml`. A kind with one home file is declared as `file`, a kind that
+  spreads across several files as `folder`. The generated project map links each
+  kind to its home, so a shared home makes the map useless — the prefix must
+  tell you which file or folder to open.
+- **A folder home covers every file in it.** `docs/architecture/` is the `AR`
+  folder home and `docs/functional-spec/` is the `FS` folder home, in both
+  namespaces; every declaration in those folders carries that prefix, whichever
+  file it sits in. A document is filed under the folder whose question it
+  answers — the harness and CI document how the repository is wired, the two
+  suites state what the shipped metadata and its tests must be — and the file,
+  not the prefix, tells you which component it belongs to. Find a declaration
+  with `grund list` or the folder's `README.md` index, not by its prefix.
+
+--- target ---
+[
+  {
+    "latest" : true,
+    "auto-update" : true,
+    "metadata-version" : "13.5.0",
+    "test-version" : "11.8.1",
+    "tested-versions" : [
+      "13.5.0"
+    ],
+    "allowed-packages" : [
+      "org.flywaydb",
+      "org.flywaydb.clean",
+      "org.flywaydb.database.sqlserver"
+    ]
+  },
+  {
+    "metadata-version" : "12.3.0",
+    "test-version" : "11.8.1",
+    "source-code-url" : "https://repo1.maven.org/maven2/org/flywaydb/flyway-sqlserver/$version$/flyway-sqlserver-$version$-sources.jar",
+    "repository-url" : "https://github.com/flyway/flyway",
+    "test-code-url" : "N/A",
+    "documentation-url" : "https://github.com/flyway/flyway/blob/flyway-$version$/documentation/Reference/Database%20Driver%20Reference/SQL%20Server%20Database.md",
+    "description" : "Flyway SQL Server support module adds Microsoft SQL Server, Azure Synapse, and Microsoft Fabric Data Warehouse database support to Flyway. It provides the database type, parser, schema handling, and clean-mode integrations used to run Flyway migrations against those platforms.",
+    "tested-versions" : [
+      "12.3.0",
+      "12.4.0",
+      "12.5.0",
+      "12.6.0",
+      "12.6.1",
+      "12.6.2",
+      "12.7.0",
+      "12.8.0",
+      "12.8.1",
+      "12.9.0",
+      "12.10.0",
+      "12.11.0",
+      "13.0.0",
+      "13.1.0",
+      "13.2.0",
+      "13.3.0",
+      "13.4.0"
+    ],
+    "allowed-packages" : [
+      "org.flywaydb",
+      "org.flywaydb.clean",
+      "org.flywaydb.database.sqlserver"
+    ]
+  },
+  {
+    "metadata-version" : "11.12.0",
+    "test-version" : "11.8.1",
+    "source-code-url" : "https://repo1.maven.org/maven2/org/flywaydb/flyway-sqlserver/$version$/flyway-sqlserver-$version$-sources.jar",
+    "repository-url" : "https://github.com/flyway/flyway",
+    "test-code-url" : "N/A",
+    "documentation-url" : "https://github.com/flyway/flyway/blob/flyway-$version$/documentation/Reference/Database%20Driver%20Reference/SQL%20Server%20Database.md",
+    "description" : "Flyway SQL Server support module adds Microsoft SQL Server, Azure Synapse, and Microsoft Fabric Data Warehouse database support to Flyway. It provides the database type, parser, schema handling, and clean-mode integrations used to run Flyway migrations against those platforms.",
+    "tested-versions" : [
+      "11.12.0",
+      "11.13.0",
+      "11.13.1",
+      "11.13.2",
+      "11.13.3",
+      "11.14.0",
+      "11.14.1",
+      "11.15.0",
+      "11.16.0",
+      "11.17.0",
+      "11.17.1",
+      "11.17.2",
+      "11.18.0",
+      "11.19.0",
+      "11.19.1",
+      "11.20.0",
+      "11.20.1",
+      "11.20.2",
+      "11.20.3",
+      "12.0.0",
+      "12.0.1",
+      "12.0.2",
+      "12.0.3",
+      "12.1.0",
+      "12.1.1",
+      "12.2.0"
+    ],
+    "allowed-packages" : [
+      "org.flywaydb",
+      "org.flywaydb.clean",
+      "org.flywaydb.database.sqlserver"
+    ]
+  },
+  {
+    "metadata-version" : "11.8.1",
+    "source-code-url" : "https://repo1.maven.org/maven2/org/flywaydb/flyway-sqlserver/$version$/flyway-sqlserver-$version$-sources.jar",
+    "repository-url" : "https://github.com/flyway/flyway",
+    "test-code-url" : "N/A",
+    "documentation-url" : "https://github.com/flyway/flyway/blob/flyway-$version$/documentation/Reference/Database%20Driver%20Reference/SQL%20Server%20Database.md",
+    "description" : "Flyway SQL Server support module adds Microsoft SQL Server and Azure Synapse database-specific support to Flyway. It provides the SQL Server database type, parser, schema handling, and clean-mode integrations used to run Flyway migrations against those platforms.",
+    "tested-versions" : [
+      "11.8.1",
+      "11.8.2",
+      "11.9.0",
+      "11.9.1",
+      "11.9.2",
+      "11.10.0",
+      "11.10.1",
+      "11.10.2",
+      "11.10.3",
+      "11.10.4",
+      "11.10.5",
+      "11.11.0",
+      "11.11.1",
+      "11.11.2"
+    ],
+    "allowed-packages" : [
+      "org.flywaydb",
+      "org.flywaydb.clean",
+      "org.flywaydb.database.sqlserver"
+    ]
+  },
+  {
+    "metadata-version" : "10.19.0",
+    "test-version" : "10.10.0",
+    "source-code-url" : "https://repo1.maven.org/maven2/org/flywaydb/flyway-sqlserver/$version$/flyway-sqlserver-$version$-sources.jar",
+    "repository-url" : "https://github.com/flyway/flyway",
+    "test-code-url" : "N/A",
+    "documentation-url" : "https://github.com/flyway/flyway/blob/flyway-$version$/documentation/Flyway%20CLI%20and%20API/Supported%20Databases/SQL%20Server%20Database.md",
+    "description" : "Flyway SQL Server support module adds Microsoft SQL Server and Azure Synapse database-specific support to Flyway. It provides the SQL Server database type, parser, schema handling, and clean-mode integrations used to run Flyway migrations against those platforms.",
+    "tested-versions" : [
+      "10.19.0",
+      "10.20.0",
+      "10.20.1",
+      "10.21.0",
+      "10.22.0",
+      "11.0.0",
+      "11.0.1",
+      "11.1.0",
+      "11.1.1",
+      "11.2.0",
+      "11.3.0",
+      "11.3.1",
+      "11.3.2",
+      "11.3.3",
+      "11.3.4",
+      "11.4.0",
+      "11.4.1",
+      "11.5.0",
+      "11.6.0",
+      "11.7.0",
+      "11.7.1",
+      "11.7.2",
+      "11.8.0"
+    ],
+    "allowed-packages" : [
+      "org.flywaydb"
+    ]
+  },
+  {
+    "metadata-version" : "10.13.0",
+    "test-version" : "10.10.0",
+    "source-code-url" : "https://repo1.maven.org/maven2/org/flywaydb/flyway-sqlserver/$version$/flyway-sqlserver-$version$-sources.jar",
+    "repository-url" : "https://github.com/flyway/flyway",
+    "test-code-url" : "N/A",
+    "documentation-url" : "https://github.com/flyway/flyway/tree/flyway-$version$/documentation",
+    "description" : "Flyway SQL Server support module adds Microsoft SQL Server and Azure Synapse database-specific support to Flyway. It provides the SQL Server database type, parser, schema handling, and clean-mode integrations used to run Flyway migrations against those platforms.",
+    "tested-versions" : [
+      "10.13.0",
+      "10.14.0",
+      "10.15.0",
+      "10.15.2",
+      "10.16.0",
+      "10.17.0",
+      "10.17.1",
+      "10.17.2",
+      "10.17.3",
+      "10.18.0",
+      "10.18.1",
+      "10.18.2"
+    ],
+    "allowed-packages" : [
+      "org.flywaydb"
+    ]
+  },
+  {
+    "metadata-version" : "10.10.0",
+    "source-code-url" : "https://repo1.maven.org/maven2/org/flywaydb/flyway-sqlserver/$version$/flyway-sqlserver-$version$-sources.jar",
+    "repository-url" : "https://github.com/flyway/flyway",
+    "test-code-url" : "N/A",
+    "documentation-url" : "https://github.com/flyway/flyway/tree/flyway-$version$/documentation",
+    "description" : "Flyway SQL Server support module adds Microsoft SQL Server and Azure Synapse database-specific support to Flyway. It provides the SQL Server database type, parser, schema handling, and clean-mode integrations used to run Flyway migrations against those platforms.",
+    "tested-versions" : [
+      "10.10.0",
+      "10.11.0",
+      "10.11.1",
+      "10.12.0"
+    ],
+    "allowed-packages" : [
+      "org.flywaydb"
+    ]
+  }
+]
+
+exec
+/usr/bin/zsh -lc "rg -n 'flyway-sqlserver|test-code-url.*maven|sources\\.jar' metadata/org.flywaydb metadata | head -80" in /home/mihailo/git/graalvm-reachability-metadata-copy/forge/local_repositories/forge_worktrees/9843-2a666e0d
+ succeeded in 0ms:
+metadata/com.google.collections/google-collections/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/google/collections/google-collections/$version$/google-collections-$version$-sources.jar",
+metadata/org.conscrypt/conscrypt-openjdk-uber/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/conscrypt/conscrypt-openjdk-uber/$version$/conscrypt-openjdk-uber-$version$-sources.jar",
+metadata/org.apache.geronimo.specs/geronimo-annotation_1.1_spec/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/geronimo/specs/geronimo-annotation_1.1_spec/$version$/geronimo-annotation_1.1_spec-$version$-sources.jar",
+metadata/org.glassfish.expressly/expressly/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/glassfish/expressly/expressly/$version$/expressly-$version$-sources.jar",
+metadata/org.apache.geronimo.specs/geronimo-jta_1.1_spec/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/geronimo/specs/geronimo-jta_$version$_spec/$version$/geronimo-jta_$version$_spec-$version$-sources.jar",
+metadata/org.flywaydb/flyway-core/index.json:9:    "source-code-url" : "https://repo1.maven.org/maven2/org/flywaydb/flyway-core/$version$/flyway-core-$version$-sources.jar",
+metadata/org.flywaydb/flyway-core/index.json:21:    "source-code-url" : "https://repo1.maven.org/maven2/org/flywaydb/flyway-core/$version$/flyway-core-$version$-sources.jar",
+metadata/org.flywaydb/flyway-core/index.json:38:    "source-code-url" : "https://repo1.maven.org/maven2/org/flywaydb/flyway-core/$version$/flyway-core-$version$-sources.jar",
+metadata/org.flywaydb/flyway-core/index.json:75:    "source-code-url" : "https://repo1.maven.org/maven2/org/flywaydb/flyway-core/$version$/flyway-core-$version$-sources.jar",
+metadata/org.flywaydb/flyway-core/index.json:125:    "source-code-url" : "https://repo1.maven.org/maven2/org/flywaydb/flyway-core/$version$/flyway-core-$version$-sources.jar",
+metadata/org.flywaydb/flyway-core/index.json:142:    "source-code-url" : "https://repo1.maven.org/maven2/org/flywaydb/flyway-core/$version$/flyway-core-$version$-sources.jar",
+metadata/org.flywaydb/flyway-core/index.json:159:    "source-code-url" : "https://repo1.maven.org/maven2/org/flywaydb/flyway-core/$version$/flyway-core-$version$-sources.jar",
+metadata/org.flywaydb/flyway-core/index.json:176:    "source-code-url" : "https://repo1.maven.org/maven2/org/flywaydb/flyway-core/$version$/flyway-core-$version$-sources.jar",
+metadata/org.flywaydb/flyway-core/index.json:192:    "source-code-url" : "https://repo1.maven.org/maven2/org/flywaydb/flyway-core/$version$/flyway-core-$version$-sources.jar",
+metadata/org.http4s/http4s-core_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/http4s/http4s-core_3/$version$/http4s-core_3-$version$-sources.jar",
+metadata/org.http4s/http4s-core_3/index.json:26:    "source-code-url" : "https://repo1.maven.org/maven2/org/http4s/http4s-core_3/0.23.30/http4s-core_3-0.23.30-sources.jar",
+metadata/org.sangria-graphql/sangria-derivation_3/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/sangria-graphql/sangria-derivation_3/$version$/sangria-derivation_3-$version$-sources.jar",
+metadata/org.apache.geronimo.specs/geronimo-atinject_1.0_spec/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/geronimo/specs/geronimo-atinject_$version$_spec/$version$/geronimo-atinject_$version$_spec-$version$-sources.jar",
+metadata/org.thymeleaf.extras/thymeleaf-extras-springsecurity6/index.json:6:    "source-code-url" : "https://repo1.maven.org/maven2/org/thymeleaf/extras/thymeleaf-extras-springsecurity6/$version$/thymeleaf-extras-springsecurity6-$version$-sources.jar",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:4:    "source-code-url" : "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/$version$/caffeine-$version$-sources.jar",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:6:    "test-code-url" : "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/$version$/caffeine-$version$-test.jar",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:25:    "source-code-url" : "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/$version$/caffeine-$version$-sources.jar",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:27:    "test-code-url" : "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/$version$/caffeine-$version$-test.jar",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:44:    "source-code-url" : "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/$version$/caffeine-$version$-sources.jar",
+metadata/com.github.ben-manes.caffeine/caffeine/index.json:46:    "test-code-url" : "https://repo1.maven.org/maven2/com/github/ben-manes/caffeine/caffeine/$version$/caffeine-$version$-test.jar",
+metadata/com.lihaoyi/upickle_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/lihaoyi/upickle_3/$version$/upickle_3-$version$-sources.jar",
+metadata/com.lihaoyi/upickle_3/index.json:26:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/lihaoyi/upickle_3/$version$/upickle_3-$version$-sources.jar",
+metadata/org.http4s/http4s-ember-server_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/http4s/http4s-ember-server_3/$version$/http4s-ember-server_3-$version$-sources.jar",
+metadata/org.sangria-graphql/sangria-streaming-api_3/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/sangria-graphql/sangria-streaming-api_3/$version$/sangria-streaming-api_3-$version$-sources.jar",
+metadata/com.rabbitmq.client/amqp-client/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/rabbitmq/client/amqp-client/$version$/amqp-client-$version$-sources.jar",
+metadata/org.jboss/jandex/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/smallrye/jandex/$version$/jandex-$version$-sources.jar",
+metadata/org.jboss/jandex/index.json:37:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/smallrye/jandex/$version$/jandex-$version$-sources.jar",
+metadata/org.jboss/jandex/index.json:52:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/smallrye/jandex/$version$/jandex-$version$-sources.jar",
+metadata/org.jboss/jandex/index.json:73:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jboss/jandex/$version$/jandex-$version$-sources.jar",
+metadata/org.jboss/jandex/index.json:87:    "source-code-url" : "https://repo1.maven.org/maven2/org/jboss/jandex/$version$/jandex-$version$-sources.jar",
+metadata/com.lihaoyi/unroll-annotation_3/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/lihaoyi/unroll-annotation_3/$version$/unroll-annotation_3-$version$-sources.jar",
+metadata/org.apache.geronimo.specs/geronimo-el_2.2_spec/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/geronimo/specs/geronimo-el_2.2_spec/$version$/geronimo-el_2.2_spec-$version$-sources.jar",
+metadata/org.apache.pdfbox/fontbox/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/pdfbox/fontbox/$version$/fontbox-$version$-sources.jar",
+metadata/org.sangria-graphql/sangria-core_3/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/sangria-graphql/sangria-core_3/$version$/sangria-core_3-$version$-sources.jar",
+metadata/com.lihaoyi/sourcecode_2.13/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/lihaoyi/sourcecode_2.13/$version$/sourcecode_2.13-$version$-sources.jar",
+metadata/org.http4s/http4s-ember-client_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/http4s/http4s-ember-client_3/$version$/http4s-ember-client_3-$version$-sources.jar",
+metadata/org.apache.geronimo.specs/geronimo-interceptor_1.2_spec/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/geronimo/specs/geronimo-interceptor_1.2_spec/$version$/geronimo-interceptor_1.2_spec-$version$-sources.jar",
+metadata/com.jamesmurty.utils/java-xmlbuilder/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/jamesmurty/utils/java-xmlbuilder/$version$/java-xmlbuilder-$version$-sources.jar",
+metadata/com.jamesmurty.utils/java-xmlbuilder/index.json:21:    "source-code-url" : "https://repo1.maven.org/maven2/com/jamesmurty/utils/java-xmlbuilder/$version$/java-xmlbuilder-$version$-sources.jar",
+metadata/com.jamesmurty.utils/java-xmlbuilder/index.json:36:    "source-code-url" : "https://repo1.maven.org/maven2/com/jamesmurty/utils/java-xmlbuilder/$version$/java-xmlbuilder-$version$-sources.jar",
+metadata/com.lihaoyi/requests_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/lihaoyi/requests_3/$version$/requests_3-$version$-sources.jar",
+metadata/org.http4s/http4s-server_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/http4s/http4s-server_3/$version$/http4s-server_3-$version$-sources.jar",
+metadata/org.apache.geronimo.specs/geronimo-osgi-registry/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/geronimo/specs/geronimo-osgi-registry/$version$/geronimo-osgi-registry-$version$-sources.jar",
+metadata/org.apache.geronimo.specs/geronimo-osgi-registry/index.json:7:    "test-code-url" : "https://repo1.maven.org/maven2/org/apache/geronimo/specs/geronimo-osgi-registry-itests/$version$/geronimo-osgi-registry-itests-$version$-sources.jar",
+metadata/dev.optics/monocle-core_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/dev/optics/monocle-core_3/$version$/monocle-core_3-$version$-sources.jar",
+metadata/io.smallrye.config/smallrye-config-common/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/smallrye/config/smallrye-config-common/$version$/smallrye-config-common-$version$-sources.jar",
+metadata/com.lihaoyi/scalatags_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/lihaoyi/scalatags_3/$version$/scalatags_3-$version$-sources.jar",
+metadata/org.apache.geronimo.specs/geronimo-jcache_1.0_spec/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/geronimo/specs/geronimo-jcache_1.0_spec/$version$/geronimo-jcache_1.0_spec-$version$-sources.jar",
+metadata/com.amazonaws/aws-lambda-java-events/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/amazonaws/aws-lambda-java-events/$version$/aws-lambda-java-events-$version$-sources.jar",
+metadata/com.lihaoyi/pprint_2.13/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/lihaoyi/pprint_2.13/$version$/pprint_2.13-$version$-sources.jar",
+metadata/org.apache.geronimo.specs/geronimo-annotation_1.3_spec/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/geronimo/specs/geronimo-annotation_1.3_spec/$version$/geronimo-annotation_1.3_spec-$version$-sources.jar",
+metadata/org.http4s/http4s-circe_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/http4s/http4s-circe_3/$version$/http4s-circe_3-$version$-sources.jar",
+metadata/com.fasterxml.jackson.module/jackson-module-scala_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/fasterxml/jackson/module/jackson-module-scala_3/$version$/jackson-module-scala_3-$version$-sources.jar",
+metadata/com.fasterxml.jackson.module/jackson-module-scala_3/index.json:58:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/fasterxml/jackson/module/jackson-module-scala_3/$version$/jackson-module-scala_3-$version$-sources.jar",
+metadata/org.jgrapht/jgrapht-core/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/jgrapht/jgrapht-core/$version$/jgrapht-core-$version$-sources.jar",
+metadata/org.apache.pdfbox/pdfbox-io/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/pdfbox/pdfbox-io/$version$/pdfbox-io-$version$-sources.jar",
+metadata/com.lihaoyi/upack_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/com/lihaoyi/upack_3/$version$/upack_3-$version$-sources.jar",
+metadata/org.sangria-graphql/sangria-marshalling-api_3/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/sangria-graphql/sangria-marshalling-api_3/$version$/sangria-marshalling-api_3-$version$-sources.jar",
+metadata/org.sangria-graphql/sangria-marshalling-api_3/index.json:25:    "source-code-url" : "https://repo1.maven.org/maven2/org/sangria-graphql/sangria-marshalling-api_3/$version$/sangria-marshalling-api_3-$version$-sources.jar",
+metadata/com.github.seregamorph/spring-test-smart-context/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/github/seregamorph/spring-test-smart-context/$version$/spring-test-smart-context-$version$-sources.jar",
+metadata/io.smallrye.config/smallrye-config-core/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/smallrye/config/smallrye-config-core/$version$/smallrye-config-core-$version$-sources.jar",
+metadata/org.bitbucket.b_c/jose4j/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/bitbucket/b_c/jose4j/$version$/jose4j-$version$-sources.jar",
+metadata/org.flywaydb/flyway-database-postgresql/index.json:7:    "source-code-url" : "https://repo1.maven.org/maven2/org/flywaydb/flyway-database-postgresql/$version$/flyway-database-postgresql-$version$-sources.jar",
+metadata/org.flywaydb/flyway-database-postgresql/index.json:44:    "source-code-url" : "https://repo1.maven.org/maven2/org/flywaydb/flyway-database-postgresql/$version$/flyway-database-postgresql-$version$-sources.jar",
+metadata/org.flywaydb/flyway-database-postgresql/index.json:69:    "source-code-url" : "https://repo1.maven.org/maven2/org/flywaydb/flyway-database-postgresql/$version$/flyway-database-postgresql-$version$-sources.jar",
+metadata/jakarta.xml.soap/jakarta.xml.soap-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/jakarta/xml/soap/jakarta.xml.soap-api/$version$/jakarta.xml.soap-api-$version$-sources.jar",
+metadata/org.http4s/http4s-dsl_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/http4s/http4s-dsl_3/$version$/http4s-dsl_3-$version$-sources.jar",
+metadata/com.fasterxml.jackson.module/jackson-module-kotlin/index.json:6:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/module/jackson-module-kotlin/$version$/jackson-module-kotlin-$version$-sources.jar",
+metadata/io.grpc/grpc-rls/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/io/grpc/grpc-rls/$version$/grpc-rls-$version$-sources.jar",
+metadata/org.http4s/http4s-ember-core_3/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/org/http4s/http4s-ember-core_3/$version$/http4s-ember-core_3-$version$-sources.jar",
+metadata/io.helidon.builder/helidon-builder-api/index.json:5:    "source-code-url" : "https://repo.maven.apache.org/maven2/io/helidon/builder/helidon-builder-api/$version$/helidon-builder-api-$version$-sources.jar",
+metadata/org.junit.platform/junit-platform-reporting/index.json:11:    "source-code-url" : "https://repo1.maven.org/maven2/org/junit/platform/junit-platform-reporting/$version$/junit-platform-reporting-$version$-sources.jar",
+metadata/org.junit.platform/junit-platform-reporting/index.json:22:    "source-code-url" : "https://repo1.maven.org/maven2/org/junit/platform/junit-platform-reporting/$version$/junit-platform-reporting-$version$-sources.jar",
+metadata/org.apache.pdfbox/pdfbox/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/org/apache/pdfbox/pdfbox/$version$/pdfbox-$version$-sources.jar",
+metadata/com.fasterxml.jackson.module/jackson-module-paranamer/index.json:5:    "source-code-url" : "https://repo1.maven.org/maven2/com/fasterxml/jackson/module/jackson-module-paranamer/$version$/jackson-module-paranamer-$version$-sources.jar",
+
+web search: 
+web search: site:repo1.maven.org/maven2/org/flywaydb/flyway-sqlserver/13.5.0 flyway-sqlserver-13.5.0-sources.jar ...
+web search: 
+web search: https://github.com/flyway/flyway/tree/flyway-13.5.0/documentation/Reference/Database%20Driver%20Reference/SQL%20Server%20Database.md
+web search: 
+web search: https://github.com/flyway/flyway/tree/flyway-13.5.0/documentation
+exec
+/usr/bin/zsh -lc "curl -fsSL https://repo1.maven.org/maven2/org/flywaydb/flyway-sqlserver/13.5.0/ | sed -n '1,220p'" in /home/mihailo/git/graalvm-reachability-metadata-copy/forge/local_repositories/forge_worktrees/9843-2a666e0d
+ succeeded in 384ms:
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Central Repository: org/flywaydb/flyway-sqlserver/13.5.0</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+body {
+	background: #fff;
+}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>org/flywaydb/flyway-sqlserver/13.5.0</h1>
+	</header>
+	<hr/>
+	<main>
+		<pre id="contents">
+<a href="../">../</a>
+<a href="flyway-sqlserver-13.5.0-javadoc.jar" title="flyway-sqlserver-13.5.0-javadoc.jar">flyway-sqlserver-13.5.0-javadoc.jar</a>               2026-09-03 09:44    286263      
+<a href="flyway-sqlserver-13.5.0-javadoc.jar.asc" title="flyway-sqlserver-13.5.0-javadoc.jar.asc">flyway-sqlserver-13.5.0-javadoc.jar.asc</a>           2026-09-03 09:44       488      
+<a href="flyway-sqlserver-13.5.0-javadoc.jar.md5" title="flyway-sqlserver-13.5.0-javadoc.jar.md5">flyway-sqlserver-13.5.0-javadoc.jar.md5</a>           2026-09-03 09:44        32      
+<a href="flyway-sqlserver-13.5.0-javadoc.jar.sha1" title="flyway-sqlserver-13.5.0-javadoc.jar.sha1">flyway-sqlserver-13.5.0-javadoc.jar.sha1</a>          2026-09-03 09:44        40      
+<a href="flyway-sqlserver-13.5.0-javadoc.jar.sha256" title="flyway-sqlserver-13.5.0-javadoc.jar.sha256">flyway-sqlserver-13.5.0-javadoc.jar.sha256</a>        2026-09-03 09:44        64      
+<a href="flyway-sqlserver-13.5.0-javadoc.jar.sha512" title="flyway-sqlserver-13.5.0-javadoc.jar.sha512">flyway-sqlserver-13.5.0-javadoc.jar.sha512</a>        2026-09-03 09:44       128      
+<a href="flyway-sqlserver-13.5.0-sources.jar" title="flyway-sqlserver-13.5.0-sources.jar">flyway-sqlserver-13.5.0-sources.jar</a>               2026-09-03 09:44     46711      
+<a href="flyway-sqlserver-13.5.0-sources.jar.asc" title="flyway-sqlserver-13.5.0-sources.jar.asc">flyway-sqlserver-13.5.0-sources.jar.asc</a>           2026-09-03 09:44       488      
+<a href="flyway-sqlserver-13.5.0-sources.jar.md5" title="flyway-sqlserver-13.5.0-sources.jar.md5">flyway-sqlserver-13.5.0-sources.jar.md5</a>           2026-09-03 09:44        32      
+<a href="flyway-sqlserver-13.5.0-sources.jar.sha1" title="flyway-sqlserver-13.5.0-sources.jar.sha1">flyway-sqlserver-13.5.0-sources.jar.sha1</a>          2026-09-03 09:44        40      
+<a href="flyway-sqlserver-13.5.0-sources.jar.sha256" title="flyway-sqlserver-13.5.0-sources.jar.sha256">flyway-sqlserver-13.5.0-sources.jar.sha256</a>        2026-09-03 09:44        64      
+<a href="flyway-sqlserver-13.5.0-sources.jar.sha512" title="flyway-sqlserver-13.5.0-sources.jar.sha512">flyway-sqlserver-13.5.0-sources.jar.sha512</a>        2026-09-03 09:44       128      
+<a href="flyway-sqlserver-13.5.0.jar" title="flyway-sqlserver-13.5.0.jar">flyway-sqlserver-13.5.0.jar</a>                       2026-09-03 09:44     66802      
+<a href="flyway-sqlserver-13.5.0.jar.asc" title="flyway-sqlserver-13.5.0.jar.asc">flyway-sqlserver-13.5.0.jar.asc</a>                   2026-09-03 09:44       488      
+<a href="flyway-sqlserver-13.5.0.jar.md5" title="flyway-sqlserver-13.5.0.jar.md5">flyway-sqlserver-13.5.0.jar.md5</a>                   2026-09-03 09:44        32      
+<a href="flyway-sqlserver-13.5.0.jar.sha1" title="flyway-sqlserver-13.5.0.jar.sha1">flyway-sqlserver-13.5.0.jar.sha1</a>                  2026-09-03 09:44        40      
+<a href="flyway-sqlserver-13.5.0.jar.sha256" title="flyway-sqlserver-13.5.0.jar.sha256">flyway-sqlserver-13.5.0.jar.sha256</a>                2026-09-03 09:44        64      
+<a href="flyway-sqlserver-13.5.0.jar.sha512" title="flyway-sqlserver-13.5.0.jar.sha512">flyway-sqlserver-13.5.0.jar.sha512</a>                2026-09-03 09:44       128      
+<a href="flyway-sqlserver-13.5.0.pom" title="flyway-sqlserver-13.5.0.pom">flyway-sqlserver-13.5.0.pom</a>                       2026-09-03 09:44      1874      
+<a href="flyway-sqlserver-13.5.0.pom.asc" title="flyway-sqlserver-13.5.0.pom.asc">flyway-sqlserver-13.5.0.pom.asc</a>                   2026-09-03 09:44       488      
+<a href="flyway-sqlserver-13.5.0.pom.md5" title="flyway-sqlserver-13.5.0.pom.md5">flyway-sqlserver-13.5.0.pom.md5</a>                   2026-09-03 09:44        32      
+<a href="flyway-sqlserver-13.5.0.pom.sha1" title="flyway-sqlserver-13.5.0.pom.sha1">flyway-sqlserver-13.5.0.pom.sha1</a>                  2026-09-03 09:44        40      
+<a href="flyway-sqlserver-13.5.0.pom.sha256" title="flyway-sqlserver-13.5.0.pom.sha256">flyway-sqlserver-13.5.0.pom.sha256</a>                2026-09-03 09:44        64      
+<a href="flyway-sqlserver-13.5.0.pom.sha512" title="flyway-sqlserver-13.5.0.pom.sha512">flyway-sqlserver-13.5.0.pom.sha512</a>                2026-09-03 09:44       128      
+		</pre>
+	</main>
+	<hr/>
+</body>
+
+</html>
+exec
+/usr/bin/zsh -lc 'tmp_dir=$(mktemp -d) && curl -fsSL https://repo1.maven.org/maven2/org/flywaydb/flyway-sqlserver/13.5.0/flyway-sqlserver-13.5.0-sources.jar -o "$tmp_dir/sources.jar" && unzip -l "$tmp_dir/sources.jar" | sed -n '"'1,160p' && rm -rf \""'$tmp_dir"' in /home/mihailo/git/graalvm-reachability-metadata-copy/forge/local_repositories/forge_worktrees/9843-2a666e0d
+ succeeded in 205ms:
+Archive:  /tmp/tmp.lzmHgXJ84T/sources.jar
+  Length      Date    Time    Name
+---------  ---------- -----   ----
+        0  2026-09-03 09:34   META-INF/
+       82  2026-09-03 09:34   META-INF/MANIFEST.MF
+        0  2026-09-03 09:31   org/
+        0  2026-09-03 09:31   org/flywaydb/
+        0  2026-09-03 09:34   org/flywaydb/clean/
+        0  2026-09-03 09:34   org/flywaydb/clean/database/
+        0  2026-09-03 09:31   org/flywaydb/database/
+        0  2026-09-03 09:34   org/flywaydb/database/sqlserver/
+        0  2026-09-03 09:34   org/flywaydb/database/sqlserver/fabricDataWarehouse/
+        0  2026-09-03 09:34   org/flywaydb/database/sqlserver/synapse/
+        0  2026-09-03 09:34   org/flywaydb/database/sqlserver/babelfish/
+        0  2026-09-03 09:31   META-INF/services/
+        0  2026-09-03 09:34   META-INF/maven/
+        0  2026-09-03 09:34   META-INF/maven/org.flywaydb/
+        0  2026-09-03 09:34   META-INF/maven/org.flywaydb/flyway-sqlserver/
+     5311  2026-09-03 09:34   org/flywaydb/clean/CleanModeCommandExtension.java
+     1483  2026-09-03 09:34   org/flywaydb/clean/CleanModeSupportedDatabases.java
+     2833  2026-09-03 09:34   org/flywaydb/clean/CleanModeCleanExecutor.java
+     7621  2026-09-03 09:34   org/flywaydb/clean/database/SQLServerCleanModePlugin.java
+     2135  2026-09-03 09:34   org/flywaydb/database/sqlserver/fabricDataWarehouse/FabricDataWarehouseConnection.java
+     3155  2026-09-03 09:34   org/flywaydb/database/sqlserver/fabricDataWarehouse/FabricDataWarehouseDatabaseType.java
+     3458  2026-09-03 09:34   org/flywaydb/database/sqlserver/fabricDataWarehouse/FabricDataWarehouseSchema.java
+     4417  2026-09-03 09:34   org/flywaydb/database/sqlserver/fabricDataWarehouse/FabricDataWarehouseDatabase.java
+     3004  2026-09-03 09:34   org/flywaydb/database/sqlserver/fabricDataWarehouse/FabricDataWarehouseTable.java
+     1040  2026-09-03 09:34   org/flywaydb/database/sqlserver/package-info.java
+    15048  2026-09-03 09:34   org/flywaydb/database/sqlserver/SQLServerDatabase.java
+     1252  2026-09-03 09:34   org/flywaydb/database/sqlserver/SQLServerKerberosSupport.java
+     1862  2026-09-03 09:34   org/flywaydb/database/sqlserver/SQLServerKerberosSupportStub.java
+     1059  2026-09-03 09:34   org/flywaydb/database/sqlserver/LoginModel.java
+     3463  2026-09-03 09:34   org/flywaydb/database/sqlserver/SQLServerApplicationLockTemplate.java
+     6395  2026-09-03 09:34   org/flywaydb/database/sqlserver/SQLServerParser.java
+     2280  2026-09-03 09:34   org/flywaydb/database/sqlserver/SQLServerConfigurationExtension.java
+     1932  2026-09-03 09:34   org/flywaydb/database/sqlserver/SQLServerEngineEdition.java
+     1086  2026-09-03 09:34   org/flywaydb/database/sqlserver/KerberosModel.java
+    22194  2026-09-03 09:34   org/flywaydb/database/sqlserver/SQLServerSchema.java
+     3390  2026-09-03 09:34   org/flywaydb/database/sqlserver/SQLServerTable.java
+     4763  2026-09-03 09:34   org/flywaydb/database/sqlserver/SQLServerConnection.java
+     5087  2026-09-03 09:34   org/flywaydb/database/sqlserver/synapse/SynapseDatabase.java
+     2969  2026-09-03 09:34   org/flywaydb/database/sqlserver/synapse/SynapseTable.java
+     1917  2026-09-03 09:34   org/flywaydb/database/sqlserver/synapse/SynapseConnection.java
+     2607  2026-09-03 09:34   org/flywaydb/database/sqlserver/synapse/SynapseSchema.java
+     3092  2026-09-03 09:34   org/flywaydb/database/sqlserver/synapse/SynapseDatabaseType.java
+     2771  2026-09-03 09:34   org/flywaydb/database/sqlserver/babelfish/BabelfishDatabaseType.java
+     1911  2026-09-03 09:34   org/flywaydb/database/sqlserver/babelfish/BabelfishDatabase.java
+     4541  2026-09-03 09:34   org/flywaydb/database/sqlserver/SQLServerDatabaseType.java
+      484  2026-09-03 09:31   META-INF/services/org.flywaydb.core.extensibility.Plugin
+     1874  2026-09-03 09:31   META-INF/maven/org.flywaydb/flyway-sqlserver/pom.xml
+       64  2026-09-03 09:34   META-INF/maven/org.flywaydb/flyway-sqlserver/pom.properties
+---------                     -------
+   126580                     48 files
+
+web search: 
+web search: github flyway-13.5.0 "SQL Server Database.md" ...
+exec
+/usr/bin/zsh -lc "curl -fsSL -H 'Accept: application/vnd.github+json' 'https://api.github.com/repos/flyway/flyway/contents/flyway-database/flyway-sqlserver?ref=flyway-13.5.0' | sed -n '1,220p'" in /home/mihailo/git/graalvm-reachability-metadata-copy/forge/local_repositories/forge_worktrees/9843-2a666e0d
+ succeeded in 335ms:
+[
+  {
+    "name": "pom.xml",
+    "path": "flyway-database/flyway-sqlserver/pom.xml",
+    "sha": "b6ea8fc15106280990d2f39b342f669b35a880ab",
+    "size": 1874,
+    "url": "https://api.github.com/repos/flyway/flyway/contents/flyway-database/flyway-sqlserver/pom.xml?ref=flyway-13.5.0",
+    "html_url": "https://github.com/flyway/flyway/blob/flyway-13.5.0/flyway-database/flyway-sqlserver/pom.xml",
+    "git_url": "https://api.github.com/repos/flyway/flyway/git/blobs/b6ea8fc15106280990d2f39b342f669b35a880ab",
+    "download_url": "https://raw.githubusercontent.com/flyway/flyway/flyway-13.5.0/flyway-database/flyway-sqlserver/pom.xml",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/flyway/flyway/contents/flyway-database/flyway-sqlserver/pom.xml?ref=flyway-13.5.0",
+      "git": "https://api.github.com/repos/flyway/flyway/git/blobs/b6ea8fc15106280990d2f39b342f669b35a880ab",
+      "html": "https://github.com/flyway/flyway/blob/flyway-13.5.0/flyway-database/flyway-sqlserver/pom.xml"
+    }
+  },
+  {
+    "name": "src",
+    "path": "flyway-database/flyway-sqlserver/src",
+    "sha": "d90a11826703f27ac746237fd306543d69150fab",
+    "size": 0,
+    "url": "https://api.github.com/repos/flyway/flyway/contents/flyway-database/flyway-sqlserver/src?ref=flyway-13.5.0",
+    "html_url": "https://github.com/flyway/flyway/tree/flyway-13.5.0/flyway-database/flyway-sqlserver/src",
+    "git_url": "https://api.github.com/repos/flyway/flyway/git/trees/d90a11826703f27ac746237fd306543d69150fab",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/flyway/flyway/contents/flyway-database/flyway-sqlserver/src?ref=flyway-13.5.0",
+      "git": "https://api.github.com/repos/flyway/flyway/git/trees/d90a11826703f27ac746237fd306543d69150fab",
+      "html": "https://github.com/flyway/flyway/tree/flyway-13.5.0/flyway-database/flyway-sqlserver/src"
+    }
+  }
+]
+
+exec
+/usr/bin/zsh -lc "curl -fsSL -H 'Accept: application/vnd.github+json' 'https://api.github.com/repos/flyway/flyway/git/trees/flyway-13.5.0?recursive=1' | rg 'flyway-database/flyway-sqlserver|SQL%20Server|SQL.Server|documentation/Reference/Database' | head -120" in /home/mihailo/git/graalvm-reachability-metadata-copy/forge/local_repositories/forge_worktrees/9843-2a666e0d
+ succeeded in 616ms:
+      "path": "documentation/Reference/Configuration/Flyway Namespace/Flyway SQL Server Namespace.md",
+      "path": "documentation/Reference/Configuration/Flyway Namespace/Flyway SQL Server Namespace",
+      "path": "documentation/Reference/Configuration/Flyway Namespace/Flyway SQL Server Namespace/Flyway SQL Server Clean Namespace.md",
+      "path": "documentation/Reference/Configuration/Flyway Namespace/Flyway SQL Server Namespace/Flyway SQL Server Clean Namespace",
+      "path": "documentation/Reference/Configuration/Flyway Namespace/Flyway SQL Server Namespace/Flyway SQL Server Clean Namespace/Flyway SQL Server Clean Mode Setting.md",
+      "path": "documentation/Reference/Configuration/Flyway Namespace/Flyway SQL Server Namespace/Flyway SQL Server Clean Namespace/Flyway SQL Server Clean Schemas Exclude Setting.md",
+      "path": "documentation/Reference/Configuration/Flyway Namespace/Flyway SQL Server Namespace/Flyway SQL Server Kerberos Login File Setting.md",
+      "path": "documentation/Reference/Configuration/Redgate Compare Namespace/Redgate Compare SQL Server Namespace.md",
+      "path": "documentation/Reference/Configuration/Redgate Compare Namespace/Redgate Compare SQL Server Namespace",
+      "path": "documentation/Reference/Configuration/Redgate Compare Namespace/Redgate Compare SQL Server Namespace/SQL Server Behavior Options Namespace.md",
+      "path": "documentation/Reference/Configuration/Redgate Compare Namespace/Redgate Compare SQL Server Namespace/SQL Server Behavior Options Namespace",
+      "path": "documentation/Reference/Configuration/Redgate Compare Namespace/Redgate Compare SQL Server Namespace/SQL Server Behavior Options Namespace/SQL Server Add Create Or Alter For Rerunnable Scripts Setting.md",
+      "path": "documentation/Reference/Configuration/Redgate Compare Namespace/Redgate Compare SQL Server Namespace/SQL Server Behavior Options Namespace/SQL Server Add Drop And Create For Rerunnable Scripts Setting.md",
+      "path": "documentation/Reference/Configuration/Redgate Compare Namespace/Redgate Compare SQL Server Namespace/SQL Server Behavior Options Namespace/SQL Server Add No Population To Fulltext Indexes Setting.md",
+      "path": "documentation/Reference/Configuration/Redgate Compare Namespace/Redgate Compare SQL Server Namespace/SQL Server Behavior Options Namespace/SQL Server Add Object Existence Checks Setting.md",
+      "path": "documentation/Reference/Configuration/Redgate Compare Namespace/Redgate Compare SQL Server Namespace/SQL Server Behavior Options Namespace/SQL Server Add Online On When Creating Indexes Or Altering Columns Setting.md",
+      "path": "documentation/Reference/Configuration/Redgate Compare Namespace/Redgate Compare SQL Server Namespace/SQL Server Behavior Options Namespace/SQL Server Add With Encryption Setting.md",
+      "path": "documentation/Reference/Configuration/Redgate Compare Namespace/Redgate Compare SQL Server Namespace/SQL Server Behavior Options Namespace/SQL Server Consider Next Filegroup In Partition Schemes Setting.md",
+      "path": "documentation/Reference/Configuration/Redgate Compare Namespace/Redgate Compare SQL Server Namespace/SQL Server Behavior Options Namespace/SQL Server Decrypt Encrypted Objects Setting.md",
+      "path": "documentation/Reference/Configuration/Redgate Compare Namespace/Redgate Compare SQL Server Namespace/SQL Server Behavior Options Namespace/SQL Server Disable Auto Column Mapping Setting.md",
+      "path": "documentation/Reference/Configuration/Redgate Compare Namespace/Redgate Compare SQL Server Namespace/SQL Server Behavior Options Namespace/SQL Server Dont Use Alter Assembly To Change Clr Objects Setting.md",
+      "path": "documentation/Reference/Configuration/Redgate Compare Namespace/Redgate Compare SQL Server Namespace/SQL Server Behavior Options Namespace/SQL Server Forbid Duplicate Table Storage Settings Setting.md",
+      "path": "documentation/Reference/Configuration/Redgate Compare Namespace/Redgate Compare SQL Server Namespace/SQL Server Behavior Options Namespace/SQL Server Force Column Order Setting.md",
+      "path": "documentation/Reference/Configuration/Redgate Compare Namespace/Redgate Compare SQL Server Namespace/SQL Server Behavior Options Namespace/SQL Server Ignore Migration Scripts Setting.md",
+      "path": "documentation/Reference/Configuration/Redgate Compare Namespace/Redgate Compare SQL Server Namespace/SQL Server Behavior Options Namespace/SQL Server Include Dependencies Setting.md",
+      "path": "documentation/Reference/Configuration/Redgate Compare Namespace/Redgate Compare SQL Server Namespace/SQL Server Behavior Options Namespace/SQL Server Include Role Existence Checks Setting.md",
+      "path": "documentation/Reference/Configuration/Redgate Compare Namespace/Redgate Compare SQL Server Namespace/SQL Server Behavior Options Namespace/SQL Server Include Schema Existence Checks Setting.md",
+      "path": "documentation/Reference/Configuration/Redgate Compare Namespace/Redgate Compare SQL Server Namespace/SQL Server Behavior Options Namespace/SQL Server Inline Fulltext Fields Setting.md",
+      "path": "documentation/Reference/Configuration/Redgate Compare Namespace/Redgate Compare SQL Server Namespace/SQL Server Behavior Options Namespace/SQL Server Inline Table Objects Setting.md",
+      "path": "documentation/Reference/Configuration/Redgate Compare Namespace/Redgate Compare SQL Server Namespace/SQL Server Behavior Options Namespace/SQL Server Use Case Sensitive Object Definition Setting.md",
+      "path": "documentation/Reference/Configuration/Redgate Compare Namespace/Redgate Compare SQL Server Namespace/SQL Server Behavior Options Namespace/SQL Server Use Database Compatibility Level Setting.md",
+      "path": "documentation/Reference/Configuration/Redgate Compare Namespace/Redgate Compare SQL Server Namespace/SQL Server Behavior Options Namespace/SQL Server Use Set Statements In Script Database Info Setting.md",
+      "path": "documentation/Reference/Configuration/Redgate Compare Namespace/Redgate Compare SQL Server Namespace/SQL Server Behavior Options Namespace/SQL Server Write Assemblies As Dlls Setting.md",
+      "path": "documentation/Reference/Configuration/Redgate Compare Namespace/Redgate Compare SQL Server Namespace/SQL Server Data Comparison Options Namespace.md",
+      "path": "documentation/Reference/Configuration/Redgate Compare Namespace/Redgate Compare SQL Server Namespace/SQL Server Data Comparison Options Namespace",
+      "path": "documentation/Reference/Configuration/Redgate Compare Namespace/Redgate Compare SQL Server Namespace/SQL Server Data Comparison Options Namespace/SQL Server Data Compress Temporary Files Setting.md",
+      "path": "documentation/Reference/Configuration/Redgate Compare Namespace/Redgate Compare SQL Server Namespace/SQL Server Data Comparison Options Namespace/SQL Server Data Force Binary Collation Setting.md",
+      "path": "documentation/Reference/Configuration/Redgate Compare Namespace/Redgate Compare SQL Server Namespace/SQL Server Data Comparison Options Namespace/SQL Server Data Treat Empty String As Null Setting.md",
+      "path": "documentation/Reference/Configuration/Redgate Compare Namespace/Redgate Compare SQL Server Namespace/SQL Server Data Comparison Options Namespace/SQL Server Data Trim Trailing White Space Setting.md",
+      "path": "documentation/Reference/Configuration/Redgate Compare Namespace/Redgate Compare SQL Server Namespace/SQL Server Data Comparison Options Namespace/SQL Server Data Use Checksum Comparison Setting.md",
+      "path": "documentation/Reference/Configuration/Redgate Compare Namespace/Redgate Compare SQL Server Namespace/SQL Server Data Comparison Options Namespace/SQL Server Data Use Max Precision For Float Comparison Setting.md",
+      "path": "documentation/Reference/Configuration/Redgate Compare Namespace/Redgate Compare SQL Server Namespace/SQL Server Data Deployment Options Namespace.md",
+      "path": "documentation/Reference/Configuration/Redgate Compare Namespace/Redgate Compare SQL Server Namespace/SQL Server Data Deployment Options Namespace",
+      "path": "documentation/Reference/Configuration/Redgate Compare Namespace/Redgate Compare SQL Server Namespace/SQL Server Data Deployment Options Namespace/SQL Server Data Disable Foreign Keys Setting.md",
+      "path": "documentation/Reference/Configuration/Redgate Compare Namespace/Redgate Compare SQL Server Namespace/SQL Server Data Deployment Options Namespace/SQL Server Data Dont Include Comments In Script Setting.md",
+      "path": "documentation/Reference/Configuration/Redgate Compare Namespace/Redgate Compare SQL Server Namespace/SQL Server Data Deployment Options Namespace/SQL Server Data Drop Primary Keys Indexes And Constraints Setting.md",
+      "path": "documentation/Reference/Configuration/Redgate Compare Namespace/Redgate Compare SQL Server Namespace/SQL Server Data Deployment Options Namespace/SQL Server Data Reseed Identity Columns Setting.md",
+      "path": "documentation/Reference/Configuration/Redgate Compare Namespace/Redgate Compare SQL Server Namespace/SQL Server Data Deployment Options Namespace/SQL Server Data Skip Integrity Checks For Foreign Keys Setting.md",
+      "path": "documentation/Reference/Configuration/Redgate Compare Namespace/Redgate Compare SQL Server Namespace/SQL Server Data Deployment Options Namespace/SQL Server Data Transport CLR Data Types As Binary Setting.md",
+      "path": "documentation/Reference/Configuration/Redgate Compare Namespace/Redgate Compare SQL Server Namespace/SQL Server Data Deployment Options Namespace/SQL Server Data Use Existence Checks.md",
+      "path": "documentation/Reference/Configuration/Redgate Compare Namespace/Redgate Compare SQL Server Namespace/SQL Server Data Deployment Options Namespace/SQL Server Data disable DDL Triggers Setting.md",
+      "path": "documentation/Reference/Configuration/Redgate Compare Namespace/Redgate Compare SQL Server Namespace/SQL Server Data Deployment Options Namespace/SQL Server Data disable DML Triggers Setting.md",
+      "path": "documentation/Reference/Configuration/Redgate Compare Namespace/Redgate Compare SQL Server Namespace/SQL Server Data Mapping Options Namespace.md",
+      "path": "documentation/Reference/Configuration/Redgate Compare Namespace/Redgate Compare SQL Server Namespace/SQL Server Data Mapping Options Namespace",
+      "path": "documentation/Reference/Configuration/Redgate Compare Namespace/Redgate Compare SQL Server Namespace/SQL Server Data Mapping Options Namespace/SQL Server Data Include Timestamp Columns Setting.md",
+      "path": "documentation/Reference/Configuration/Redgate Compare Namespace/Redgate Compare SQL Server Namespace/SQL Server Data Mapping Options Namespace/SQL Server Data Use Case Sensitive Object Definition Setting.md",
+      "path": "documentation/Reference/Configuration/Redgate Compare Namespace/Redgate Compare SQL Server Namespace/SQL Server Filter File Setting.md",
+      "path": "documentation/Reference/Configuration/Redgate Compare Namespace/Redgate Compare SQL Server Namespace/SQL Server Ignore Options Namespace.md",
+      "path": "documentation/Reference/Configuration/Redgate Compare Namespace/Redgate Compare SQL Server Namespace/SQL Server Ignore Options Namespace",
+      "path": "documentation/Reference/Configuration/Redgate Compare Namespace/Redgate Compare SQL Server Namespace/SQL Server Ignore Options Namespace/SQL Server Ignore Authorization On Schema Objects Setting.md",
+      "path": "documentation/Reference/Configuration/Redgate Compare Namespace/Redgate Compare SQL Server Namespace/SQL Server Ignore Options Namespace/SQL Server Ignore Bindings Setting.md",
+      "path": "documentation/Reference/Configuration/Redgate Compare Namespace/Redgate Compare SQL Server Namespace/SQL Server Ignore Options Namespace/SQL Server Ignore Change Tracking Setting.md",
+      "path": "documentation/Reference/Configuration/Redgate Compare Namespace/Redgate Compare SQL Server Namespace/SQL Server Ignore Options Namespace/SQL Server Ignore Collations Setting.md",
+      "path": "documentation/Reference/Configuration/Redgate Compare Namespace/Redgate Compare SQL Server Namespace/SQL Server Ignore Options Namespace/SQL Server Ignore Comments Setting.md",
+      "path": "documentation/Reference/Configuration/Redgate Compare Namespace/Redgate Compare SQL Server Namespace/SQL Server Ignore Options Namespace/SQL Server Ignore DML Triggers Setting.md",
+      "path": "documentation/Reference/Configuration/Redgate Compare Namespace/Redgate Compare SQL Server Namespace/SQL Server Ignore Options Namespace/SQL Server Ignore Data Compression Setting.md",
+      "path": "documentation/Reference/Configuration/Redgate Compare Namespace/Redgate Compare SQL Server Namespace/SQL Server Ignore Options Namespace/SQL Server Ignore Data Sync Schema Setting.md",
+      "path": "documentation/Reference/Configuration/Redgate Compare Namespace/Redgate Compare SQL Server Namespace/SQL Server Ignore Options Namespace/SQL Server Ignore Database And Server Name In Synonyms Setting.md",
+      "path": "documentation/Reference/Configuration/Redgate Compare Namespace/Redgate Compare SQL Server Namespace/SQL Server Ignore Options Namespace/SQL Server Ignore Dynamic Data Masking Setting.md",
+      "path": "documentation/Reference/Configuration/Redgate Compare Namespace/Redgate Compare SQL Server Namespace/SQL Server Ignore Options Namespace/SQL Server Ignore Event Notifications On Queues Setting.md",
+      "path": "documentation/Reference/Configuration/Redgate Compare Namespace/Redgate Compare SQL Server Namespace/SQL Server Ignore Options Namespace/SQL Server Ignore Extended Properties Setting.md",
+      "path": "documentation/Reference/Configuration/Redgate Compare Namespace/Redgate Compare SQL Server Namespace/SQL Server Ignore Options Namespace/SQL Server Ignore File Groups Partition Schemes And Partition Functions Setting.md",
+      "path": "documentation/Reference/Configuration/Redgate Compare Namespace/Redgate Compare SQL Server Namespace/SQL Server Ignore Options Namespace/SQL Server Ignore Fill Factor And Index Padding Setting.md",
+      "path": "documentation/Reference/Configuration/Redgate Compare Namespace/Redgate Compare SQL Server Namespace/SQL Server Ignore Options Namespace/SQL Server Ignore Full Text Indexing Setting.md",
+      "path": "documentation/Reference/Configuration/Redgate Compare Namespace/Redgate Compare SQL Server Namespace/SQL Server Ignore Options Namespace/SQL Server Ignore Identity Seed And Increment Values Setting.md",
+      "path": "documentation/Reference/Configuration/Redgate Compare Namespace/Redgate Compare SQL Server Namespace/SQL Server Ignore Options Namespace/SQL Server Ignore Indexes Setting.md",
+      "path": "documentation/Reference/Configuration/Redgate Compare Namespace/Redgate Compare SQL Server Namespace/SQL Server Ignore Options Namespace/SQL Server Ignore Instead Of Triggers Setting.md",
+      "path": "documentation/Reference/Configuration/Redgate Compare Namespace/Redgate Compare SQL Server Namespace/SQL Server Ignore Options Namespace/SQL Server Ignore Internally Used Microsoft Extended Properties Setting.md",
+      "path": "documentation/Reference/Configuration/Redgate Compare Namespace/Redgate Compare SQL Server Namespace/SQL Server Ignore Options Namespace/SQL Server Ignore Lock Properties Of Indexes Setting.md",
+      "path": "documentation/Reference/Configuration/Redgate Compare Namespace/Redgate Compare SQL Server Namespace/SQL Server Ignore Options Namespace/SQL Server Ignore Nocheck And With Nocheck Setting.md",
+      "path": "documentation/Reference/Configuration/Redgate Compare Namespace/Redgate Compare SQL Server Namespace/SQL Server Ignore Options Namespace/SQL Server Ignore Not For Replication Setting.md",
+      "path": "documentation/Reference/Configuration/Redgate Compare Namespace/Redgate Compare SQL Server Namespace/SQL Server Ignore Options Namespace/SQL Server Ignore Nullability Of Columns Setting.md",
+      "path": "documentation/Reference/Configuration/Redgate Compare Namespace/Redgate Compare SQL Server Namespace/SQL Server Ignore Options Namespace/SQL Server Ignore Performance Indexes Setting.md",
+      "path": "documentation/Reference/Configuration/Redgate Compare Namespace/Redgate Compare SQL Server Namespace/SQL Server Ignore Options Namespace/SQL Server Ignore Permissions Setting.md",
+      "path": "documentation/Reference/Configuration/Redgate Compare Namespace/Redgate Compare SQL Server Namespace/SQL Server Ignore Options Namespace/SQL Server Ignore Replication Triggers Setting.md",
+      "path": "documentation/Reference/Configuration/Redgate Compare Namespace/Redgate Compare SQL Server Namespace/SQL Server Ignore Options Namespace/SQL Server Ignore Schemas Setting.md",
+      "path": "documentation/Reference/Configuration/Redgate Compare Namespace/Redgate Compare SQL Server Namespace/SQL Server Ignore Options Namespace/SQL Server Ignore Sensitivity Classifications Setting.md",
+      "path": "documentation/Reference/Configuration/Redgate Compare Namespace/Redgate Compare SQL Server Namespace/SQL Server Ignore Options Namespace/SQL Server Ignore Set Quoted Identifier And Set Ansi Nulls Statements Setting.md",
+      "path": "documentation/Reference/Configuration/Redgate Compare Namespace/Redgate Compare SQL Server Namespace/SQL Server Ignore Options Namespace/SQL Server Ignore Square Brackets In Object Names Setting.md",
+      "path": "documentation/Reference/Configuration/Redgate Compare Namespace/Redgate Compare SQL Server Namespace/SQL Server Ignore Options Namespace/SQL Server Ignore Statistics Incremental Setting.md",
+      "path": "documentation/Reference/Configuration/Redgate Compare Namespace/Redgate Compare SQL Server Namespace/SQL Server Ignore Options Namespace/SQL Server Ignore Statistics No Recompute Property On Indexes Setting.md",
+      "path": "documentation/Reference/Configuration/Redgate Compare Namespace/Redgate Compare SQL Server Namespace/SQL Server Ignore Options Namespace/SQL Server Ignore Statistics Setting.md",
+      "path": "documentation/Reference/Configuration/Redgate Compare Namespace/Redgate Compare SQL Server Namespace/SQL Server Ignore Options Namespace/SQL Server Ignore Synonym Dependencies Setting.md",
+      "path": "documentation/Reference/Configuration/Redgate Compare Namespace/Redgate Compare SQL Server Namespace/SQL Server Ignore Options Namespace/SQL Server Ignore System Named Constraint And Index Names Setting.md",
+      "path": "documentation/Reference/Configuration/Redgate Compare Namespace/Redgate Compare SQL Server Namespace/SQL Server Ignore Options Namespace/SQL Server Ignore Tsqlt Framework And Tests Setting.md",
+      "path": "documentation/Reference/Configuration/Redgate Compare Namespace/Redgate Compare SQL Server Namespace/SQL Server Ignore Options Namespace/SQL Server Ignore User Properties Setting.md",
+      "path": "documentation/Reference/Configuration/Redgate Compare Namespace/Redgate Compare SQL Server Namespace/SQL Server Ignore Options Namespace/SQL Server Ignore Users Permissions And Role Memberships Setting.md",
+      "path": "documentation/Reference/Configuration/Redgate Compare Namespace/Redgate Compare SQL Server Namespace/SQL Server Ignore Options Namespace/SQL Server Ignore White Space Setting.md",
+      "path": "documentation/Reference/Configuration/Redgate Compare Namespace/Redgate Compare SQL Server Namespace/SQL Server Ignore Options Namespace/SQL Server Ignore With Element Order Setting.md",
+      "path": "documentation/Reference/Configuration/Redgate Compare Namespace/Redgate Compare SQL Server Namespace/SQL Server Ignore Options Namespace/SQL Server Ignore With Encryption Setting.md",
+      "path": "documentation/Reference/Configuration/Redgate Compare Namespace/Redgate Compare SQL Server Namespace/SQL Server Ignore Options Namespace/SQL Server Ignore With Nocheck Setting.md",
+      "path": "documentation/Reference/Database Driver Reference.md",
+      "path": "documentation/Reference/Database Driver Reference",
+      "path": "documentation/Reference/Database Driver Reference/Aurora MySQL.md",
+      "path": "documentation/Reference/Database Driver Reference/Aurora PostgreSQL.md",
+      "path": "documentation/Reference/Database Driver Reference/Azure Synapse.md",
+      "path": "documentation/Reference/Database Driver Reference/Babelfish.md",
+      "path": "documentation/Reference/Database Driver Reference/Cassandra Database.md",
+      "path": "documentation/Reference/Database Driver Reference/Cassandra Database",
+      "path": "documentation/Reference/Database Driver Reference/Cassandra Database/Cassandra Database - Native Connectors.md",
+      "path": "documentation/Reference/Database Driver Reference/Clickhouse Database.md",
+      "path": "documentation/Reference/Database Driver Reference/CockroachDB.md",
+      "path": "documentation/Reference/Database Driver Reference/CosmosDB.md",
+      "path": "documentation/Reference/Database Driver Reference/Couchbase.md",
+      "path": "documentation/Reference/Database Driver Reference/Cubrid.md",
+      "path": "documentation/Reference/Database Driver Reference/DB2 zOS Database.md",
+      "path": "documentation/Reference/Database Driver Reference/DB2.md",
+      "path": "documentation/Reference/Database Driver Reference/Databricks.md",
+      "path": "documentation/Reference/Database Driver Reference/Derby.md",
+      "path": "documentation/Reference/Database Driver Reference/DocumentDB.md",
+
+exec
+/usr/bin/zsh -lc "curl -fsSL -H 'Accept: application/vnd.github+json' 'https://api.github.com/repos/flyway/flyway/git/trees/flyway-13.5.0?recursive=1' | rg 'flyway-database/flyway-sqlserver|SQL Server Database\\.md|sqlserver.*src/test|sqlserver.*test' | tail -80" in /home/mihailo/git/graalvm-reachability-metadata-copy/forge/local_repositories/forge_worktrees/9843-2a666e0d
+ succeeded in 447ms:
+      "path": "documentation/Reference/Database Driver Reference/SQL Server Database.md",
+      "path": "flyway-database/flyway-sqlserver",
+      "path": "flyway-database/flyway-sqlserver/pom.xml",
+      "path": "flyway-database/flyway-sqlserver/src",
+      "path": "flyway-database/flyway-sqlserver/src/main",
+      "path": "flyway-database/flyway-sqlserver/src/main/java",
+      "path": "flyway-database/flyway-sqlserver/src/main/java/org",
+      "path": "flyway-database/flyway-sqlserver/src/main/java/org/flywaydb",
+      "path": "flyway-database/flyway-sqlserver/src/main/java/org/flywaydb/clean",
+      "path": "flyway-database/flyway-sqlserver/src/main/java/org/flywaydb/clean/CleanModeCleanExecutor.java",
+      "path": "flyway-database/flyway-sqlserver/src/main/java/org/flywaydb/clean/CleanModeCommandExtension.java",
+      "path": "flyway-database/flyway-sqlserver/src/main/java/org/flywaydb/clean/CleanModeSupportedDatabases.java",
+      "path": "flyway-database/flyway-sqlserver/src/main/java/org/flywaydb/clean/database",
+      "path": "flyway-database/flyway-sqlserver/src/main/java/org/flywaydb/clean/database/SQLServerCleanModePlugin.java",
+      "path": "flyway-database/flyway-sqlserver/src/main/java/org/flywaydb/database",
+      "path": "flyway-database/flyway-sqlserver/src/main/java/org/flywaydb/database/sqlserver",
+      "path": "flyway-database/flyway-sqlserver/src/main/java/org/flywaydb/database/sqlserver/KerberosModel.java",
+      "path": "flyway-database/flyway-sqlserver/src/main/java/org/flywaydb/database/sqlserver/LoginModel.java",
+      "path": "flyway-database/flyway-sqlserver/src/main/java/org/flywaydb/database/sqlserver/SQLServerApplicationLockTemplate.java",
+      "path": "flyway-database/flyway-sqlserver/src/main/java/org/flywaydb/database/sqlserver/SQLServerConfigurationExtension.java",
+      "path": "flyway-database/flyway-sqlserver/src/main/java/org/flywaydb/database/sqlserver/SQLServerConnection.java",
+      "path": "flyway-database/flyway-sqlserver/src/main/java/org/flywaydb/database/sqlserver/SQLServerDatabase.java",
+      "path": "flyway-database/flyway-sqlserver/src/main/java/org/flywaydb/database/sqlserver/SQLServerDatabaseType.java",
+      "path": "flyway-database/flyway-sqlserver/src/main/java/org/flywaydb/database/sqlserver/SQLServerEngineEdition.java",
+      "path": "flyway-database/flyway-sqlserver/src/main/java/org/flywaydb/database/sqlserver/SQLServerKerberosSupport.java",
+      "path": "flyway-database/flyway-sqlserver/src/main/java/org/flywaydb/database/sqlserver/SQLServerKerberosSupportStub.java",
+      "path": "flyway-database/flyway-sqlserver/src/main/java/org/flywaydb/database/sqlserver/SQLServerParser.java",
+      "path": "flyway-database/flyway-sqlserver/src/main/java/org/flywaydb/database/sqlserver/SQLServerSchema.java",
+      "path": "flyway-database/flyway-sqlserver/src/main/java/org/flywaydb/database/sqlserver/SQLServerTable.java",
+      "path": "flyway-database/flyway-sqlserver/src/main/java/org/flywaydb/database/sqlserver/babelfish",
+      "path": "flyway-database/flyway-sqlserver/src/main/java/org/flywaydb/database/sqlserver/babelfish/BabelfishDatabase.java",
+      "path": "flyway-database/flyway-sqlserver/src/main/java/org/flywaydb/database/sqlserver/babelfish/BabelfishDatabaseType.java",
+      "path": "flyway-database/flyway-sqlserver/src/main/java/org/flywaydb/database/sqlserver/fabricDataWarehouse",
+      "path": "flyway-database/flyway-sqlserver/src/main/java/org/flywaydb/database/sqlserver/fabricDataWarehouse/FabricDataWarehouseConnection.java",
+      "path": "flyway-database/flyway-sqlserver/src/main/java/org/flywaydb/database/sqlserver/fabricDataWarehouse/FabricDataWarehouseDatabase.java",
+      "path": "flyway-database/flyway-sqlserver/src/main/java/org/flywaydb/database/sqlserver/fabricDataWarehouse/FabricDataWarehouseDatabaseType.java",
+      "path": "flyway-database/flyway-sqlserver/src/main/java/org/flywaydb/database/sqlserver/fabricDataWarehouse/FabricDataWarehouseSchema.java",
+      "path": "flyway-database/flyway-sqlserver/src/main/java/org/flywaydb/database/sqlserver/fabricDataWarehouse/FabricDataWarehouseTable.java",
+      "path": "flyway-database/flyway-sqlserver/src/main/java/org/flywaydb/database/sqlserver/package-info.java",
+      "path": "flyway-database/flyway-sqlserver/src/main/java/org/flywaydb/database/sqlserver/synapse",
+      "path": "flyway-database/flyway-sqlserver/src/main/java/org/flywaydb/database/sqlserver/synapse/SynapseConnection.java",
+      "path": "flyway-database/flyway-sqlserver/src/main/java/org/flywaydb/database/sqlserver/synapse/SynapseDatabase.java",
+      "path": "flyway-database/flyway-sqlserver/src/main/java/org/flywaydb/database/sqlserver/synapse/SynapseDatabaseType.java",
+      "path": "flyway-database/flyway-sqlserver/src/main/java/org/flywaydb/database/sqlserver/synapse/SynapseSchema.java",
+      "path": "flyway-database/flyway-sqlserver/src/main/java/org/flywaydb/database/sqlserver/synapse/SynapseTable.java",
+      "path": "flyway-database/flyway-sqlserver/src/main/resources",
+      "path": "flyway-database/flyway-sqlserver/src/main/resources/META-INF",
+      "path": "flyway-database/flyway-sqlserver/src/main/resources/META-INF/services",
+      "path": "flyway-database/flyway-sqlserver/src/main/resources/META-INF/services/org.flywaydb.core.extensibility.Plugin",
+
+codex
+The exact 13.5.0 tag exists. Maven Central publishes the module’s versioned sources JAR but no test JAR, and the tagged repository tree has only `src/main`, so the test-suite field should be `N/A`; the tagged documentation file is present at the versioned path.
+exec
+/usr/bin/zsh -lc "for url in \\
+'https://repo1.maven.org/maven2/org/flywaydb/flyway-sqlserver/13.5.0/flyway-sqlserver-13.5.0-sources.jar' \\
+'https://github.com/flyway/flyway/blob/flyway-13.5.0/documentation/Reference/Database%20Driver%20Reference/SQL%20Server%20Database.md'; do \\
+  status="'$(curl -L -sS -o /dev/null -w '"'%{http_code}' \""'$url"); '"\\
+  printf '%s %s\\n' \""'$status" "$url"; '"\\
+done
+printf '\\n--- status ---\\n'
+git status --short -- metadata/org.flywaydb/flyway-sqlserver/index.json" in /home/mihailo/git/graalvm-reachability-metadata-copy/forge/local_repositories/forge_worktrees/9843-2a666e0d
+ exited 1 in 922ms:
+zsh:4: read-only variable: status
+
+exec
+/usr/bin/zsh -lc "for url in \\
+'https://repo1.maven.org/maven2/org/flywaydb/flyway-sqlserver/13.5.0/flyway-sqlserver-13.5.0-sources.jar' \\
+'https://github.com/flyway/flyway/blob/flyway-13.5.0/documentation/Reference/Database%20Driver%20Reference/SQL%20Server%20Database.md'; do \\
+  http_code="'$(curl -L -sS -o /dev/null -w '"'%{http_code}' \""'$url"); '"\\
+  printf '%s %s\\n' \""'$http_code" "$url"; '"\\
+done
+printf '\\n--- status ---\\n'
+git status --short -- metadata/org.flywaydb/flyway-sqlserver/index.json" in /home/mihailo/git/graalvm-reachability-metadata-copy/forge/local_repositories/forge_worktrees/9843-2a666e0d
+ succeeded in 1359ms:
+200 https://repo1.maven.org/maven2/org/flywaydb/flyway-sqlserver/13.5.0/flyway-sqlserver-13.5.0-sources.jar
+200 https://github.com/flyway/flyway/blob/flyway-13.5.0/documentation/Reference/Database%20Driver%20Reference/SQL%20Server%20Database.md
+
+--- status ---
+ M metadata/org.flywaydb/flyway-sqlserver/index.json
+
+exec
+/usr/bin/zsh -lc 'git diff -- metadata/org.flywaydb/flyway-sqlserver/index.json' in /home/mihailo/git/graalvm-reachability-metadata-copy/forge/local_repositories/forge_worktrees/9843-2a666e0d
+ succeeded in 0ms:
+diff --git a/metadata/org.flywaydb/flyway-sqlserver/index.json b/metadata/org.flywaydb/flyway-sqlserver/index.json
+index 9fafd3b654..84f1ad59a8 100644
+--- a/metadata/org.flywaydb/flyway-sqlserver/index.json
++++ b/metadata/org.flywaydb/flyway-sqlserver/index.json
+@@ -2,6 +2,18 @@
+   {
+     "latest" : true,
+     "auto-update" : true,
++    "metadata-version" : "13.5.0",
++    "test-version" : "11.8.1",
++    "tested-versions" : [
++      "13.5.0"
++    ],
++    "allowed-packages" : [
++      "org.flywaydb",
++      "org.flywaydb.clean",
++      "org.flywaydb.database.sqlserver"
++    ]
++  },
++  {
+     "metadata-version" : "12.3.0",
+     "test-version" : "11.8.1",
+     "source-code-url" : "https://repo1.maven.org/maven2/org/flywaydb/flyway-sqlserver/$version$/flyway-sqlserver-$version$-sources.jar",
+
+codex
+The target file already contains an unrelated user change adding the 13.5.0 entry; I’ll preserve that change and populate only its missing metadata fields.
+2026-09-07T19:24:32.433229Z ERROR codex_core::tools::router: error=apply_patch verification failed: Failed to read file to update /home/mihailo/git/graalvm-reachability-metadata-copy/forge/local_repositories/forge_worktrees/9843-2a666e0d/metadata/org.flywaydb/flyway-sqlserver/index.json: fs sandbox helper failed with status exit status: 1: bwrap: loopback: Failed RTM_NEWADDR: Operation not permitted
+2026-09-07T19:24:40.118340Z ERROR codex_core::tools::router: error=apply_patch verification failed: Failed to read file to update /home/mihailo/git/graalvm-reachability-metadata-copy/forge/local_repositories/forge_worktrees/9843-2a666e0d/metadata/org.flywaydb/flyway-sqlserver/index.json: fs sandbox helper failed with status exit status: 1: bwrap: loopback: Failed RTM_NEWADDR: Operation not permitted
+codex
+The patch helper hit the same sandbox namespace failure while reading the workspace. I’m applying the identical minimal patch through the repository’s command-line patch utility with approval, then I’ll validate the diff and JSON.
+2026-09-07T19:24:51.952432Z ERROR codex_core::tools::router: error=apply_patch verification failed: Failed to read file to update /home/mihailo/git/graalvm-reachability-metadata-copy/forge/local_repositories/forge_worktrees/9843-2a666e0d/metadata/org.flywaydb/flyway-sqlserver/index.json: fs sandbox helper failed with status exit status: 1: bwrap: loopback: Failed RTM_NEWADDR: Operation not permitted
+exec
+/usr/bin/zsh -lc "perl -0pi -e 's/    \"test-version\" : \"11\\.8\\.1\",\\n    \"tested-versions\"/    \"test-version\" : \"11.8.1\",\\n    \"source-code-url\" : \"https:\\/\\/repo1.maven.org\\/maven2\\/org\\/flywaydb\\/flyway-sqlserver\\/"'$version$'"\\/flyway-sqlserver-"'$version$-sources.jar",'"\\n    \"repository-url\" : \"https:\\/\\/github.com\\/flyway\\/flyway\",\\n    \"test-code-url\" : \"N\\/A\",\\n    \"documentation-url\" : \"https:\\/\\/github.com\\/flyway\\/flyway\\/blob\\/flyway-"'$version$'"\\/documentation\\/Reference\\/Database%20Driver%20Reference\\/SQL%20Server%20Database.md\",\\n    \"description\" : \"Flyway SQL Server support module adds Microsoft SQL Server, Azure Synapse, and Microsoft Fabric Data Warehouse database support to Flyway. It provides the database type, parser, schema handling, and clean-mode integrations used to run Flyway migrations against those platforms.\",\\n    \"tested-versions\"/ if "'$. == 1'"' metadata/org.flywaydb/flyway-sqlserver/index.json" in /home/mihailo/git/graalvm-reachability-metadata-copy/forge/local_repositories/forge_worktrees/9843-2a666e0d
+ succeeded in 0ms:
+exec
+/usr/bin/zsh -lc "sed -n '1,35p' metadata/org.flywaydb/flyway-sqlserver/index.json && printf '\\n--- diff ---\\n' && git diff -- metadata/org.flywaydb/flyway-sqlserver/index.json && printf '\\n--- JSON validation ---\\n' && jq empty metadata/org.flywaydb/flyway-sqlserver/index.json && printf 'valid\\n'" in /home/mihailo/git/graalvm-reachability-metadata-copy/forge/local_repositories/forge_worktrees/9843-2a666e0d
+ exited 5 in 0ms:
+[
+  {
+    "latest" : true,
+    "auto-update" : true,
+    "metadata-version" : "13.5.0",
+    "test-version" : "11.8.1",
+    "source-code-url" : "https://repo1.maven.org/maven2/org/flywaydb/flyway-sqlserver/ flyway-sqlserver-0sources.jar",
+    "repository-url" : "https://github.com/flyway/flyway",
+    "test-code-url" : "N/A",
+    "documentation-url" : "https://github.com/flyway/flyway/blob/flyway- documentation/Reference/Database%20Driver%20Reference/SQL%20Server%20Database.md",
+    "description" : "Flyway SQL Server support module adds Microsoft SQL Server, Azure Synapse, and Microsoft Fabric Data Warehouse database support to Flyway. It provides the database type, parser, schema handling, and clean-mode integrations used to run Flyway migrations against those platforms.",
+    "tested-versions" : [
+      "13.5.0"
+    ],
+    "allowed-packages" : [
+      "org.flywaydb",
+      "org.flywaydb.clean",
+      "org.flywaydb.database.sqlserver"
+    ]
+  },
+  {
+    "metadata-version" : "12.3.0",
+    "test-version" : "11.8.1",
+    "source-code-url" : "https://repo1.maven.org/maven2/org/flywaydb/flyway-sqlserver/$version$/flyway-sqlserver-$version$-sources.jar",
+    "repository-url" : "https://github.com/flyway/flyway",
+    "test-code-url" : "N/A",
+    "documentation-url" : "https://github.com/flyway/flyway/blob/flyway-$version$/documentation/Reference/Database%20Driver%20Reference/SQL%20Server%20Database.md",
+    "description" : "Flyway SQL Server support module adds Microsoft SQL Server, Azure Synapse, and Microsoft Fabric Data Warehouse database support to Flyway. It provides the database type, parser, schema handling, and clean-mode integrations used to run Flyway migrations against those platforms.",
+    "tested-versions" : [
+      "12.3.0",
+      "12.4.0",
+      "12.5.0",
+      "12.6.0",
+      "12.6.1",
+      "12.6.2",
+
+--- diff ---
+diff --git a/metadata/org.flywaydb/flyway-sqlserver/index.json b/metadata/org.flywaydb/flyway-sqlserver/index.json
+index 9fafd3b654..ac7ee2b9aa 100644
+Binary files a/metadata/org.flywaydb/flyway-sqlserver/index.json and b/metadata/org.flywaydb/flyway-sqlserver/index.json differ
+
+--- JSON validation ---
+jq: parse error: Invalid string: control characters from U+0000 through U+001F must be escaped at line 7, column 117
+
+codex
+The first fallback replacement exposed a Perl interpolation issue: it inserted NUL characters where the literal `$version$` tokens belong. I’m correcting those two lines directly, then re-running JSON and diff checks before considering the edit complete.
+exec
+/usr/bin/zsh -lc "perl -0pi -e 's#    \"source-code-url\" : .*?\\n#    \"source-code-url\" : \"https://repo1.maven.org/maven2/org/flywaydb/flyway-sqlserver/\\x24version\\x24/flyway-sqlserver-\\x24version\\x24-sources.jar\",\\n#; s#    \"documentation-url\" : .*?\\n#    \"documentation-url\" : \"https://github.com/flyway/flyway/blob/flyway-\\x24version\\x24/documentation/Reference/Database%20Driver%20Reference/SQL%20Server%20Database.md\",\\n#' metadata/org.flywaydb/flyway-sqlserver/index.json
+jq empty metadata/org.flywaydb/flyway-sqlserver/index.json" in /home/mihailo/git/graalvm-reachability-metadata-copy/forge/local_repositories/forge_worktrees/9843-2a666e0d
+ exited 5 in 0ms:
+jq: parse error: Invalid string: control characters from U+0000 through U+001F must be escaped at line 7, column 117
+
+exec
+/usr/bin/zsh -lc "sed -n '5,12l' metadata/org.flywaydb/flyway-sqlserver/index.json && od -An -tx1 -c -j 120 -N 260 metadata/org.flywaydb/flyway-sqlserver/index.json" in /home/mihailo/git/graalvm-reachability-metadata-copy/forge/local_repositories/forge_worktrees/9843-2a666e0d
+ succeeded in 0ms:
+    "metadata-version" : "13.5.0",$
+    "test-version" : "11.8.1",$
+    "source-code-url" : "https://repo1.maven.org/maven2/org/flywaydb/\
+flyway-sqlserver/\000flyway-sqlserver-0sources.jar",$
+    "repository-url" : "https://github.com/flyway/flyway",$
+    "test-code-url" : "N/A",$
+    "documentation-url" : "https://github.com/flyway/flyway/blob/flyw\
+ay-\000documentation/Reference/Database%20Driver%20Reference/SQL%20Se\
+rver%20Database.md",$
+    "description" : "Flyway SQL Server support module adds Microsoft \
+SQL Server, Azure Synapse, and Microsoft Fabric Data Warehouse databa\
+se support to Flyway. It provides the database type, parser, schema h\
+andling, and clean-mode integrations used to run Flyway migrations ag\
+ainst those platforms.",$
+    "tested-versions" : [$
+  20  20  20  22  73  6f  75  72  63  65  2d  63  6f  64  65  2d
+               "   s   o   u   r   c   e   -   c   o   d   e   -
+  75  72  6c  22  20  3a  20  22  68  74  74  70  73  3a  2f  2f
+   u   r   l   "       :       "   h   t   t   p   s   :   /   /
+  72  65  70  6f  31  2e  6d  61  76  65  6e  2e  6f  72  67  2f
+   r   e   p   o   1   .   m   a   v   e   n   .   o   r   g   /
+  6d  61  76  65  6e  32  2f  6f  72  67  2f  66  6c  79  77  61
+   m   a   v   e   n   2   /   o   r   g   /   f   l   y   w   a
+  79  64  62  2f  66  6c  79  77  61  79  2d  73  71  6c  73  65
+   y   d   b   /   f   l   y   w   a   y   -   s   q   l   s   e
+  72  76  65  72  2f  00  66  6c  79  77  61  79  2d  73  71  6c
+   r   v   e   r   /  \0   f   l   y   w   a   y   -   s   q   l
+  73  65  72  76  65  72  2d  30  73  6f  75  72  63  65  73  2e
+   s   e   r   v   e   r   -   0   s   o   u   r   c   e   s   .
+  6a  61  72  22  2c  0a  20  20  20  20  22  72  65  70  6f  73
+   j   a   r   "   ,  \n                   "   r   e   p   o   s
+  69  74  6f  72  79  2d  75  72  6c  22  20  3a  20  22  68  74
+   i   t   o   r   y   -   u   r   l   "       :       "   h   t
+  74  70  73  3a  2f  2f  67  69  74  68  75  62  2e  63  6f  6d
+   t   p   s   :   /   /   g   i   t   h   u   b   .   c   o   m
+  2f  66  6c  79  77  61  79  2f  66  6c  79  77  61  79  22  2c
+   /   f   l   y   w   a   y   /   f   l   y   w   a   y   "   ,
+  0a  20  20  20  20  22  74  65  73  74  2d  63  6f  64  65  2d
+  \n                   "   t   e   s   t   -   c   o   d   e   -
+  75  72  6c  22  20  3a  20  22  4e  2f  41  22  2c  0a  20  20
+   u   r   l   "       :       "   N   /   A   "   ,  \n        
+  20  20  22  64  6f  63  75  6d  65  6e  74  61  74  69  6f  6e
+           "   d   o   c   u   m   e   n   t   a   t   i   o   n
+  2d  75  72  6c  22  20  3a  20  22  68  74  74  70  73  3a  2f
+   -   u   r   l   "       :       "   h   t   t   p   s   :   /
+  2f  67  69  74  68  75  62  2e  63  6f  6d  2f  66  6c  79  77
+   /   g   i   t   h   u   b   .   c   o   m   /   f   l   y   w
+  61  79  2f  66
+   a   y   /   f
+
+exec
+/usr/bin/zsh -lc "perl -pi -e 'if (/\\x00/ && /source-code-url/) { "'$_ = qq{    "source-code-url" : "https://repo1.maven.org/maven2/org/flywaydb/flyway-sqlserver/'"\\x24version\\x24/flyway-sqlserver-\\x24version\\x24-sources.jar\",\\n}; } elsif (/\\x00/ && /documentation-url/) { "'$_ = qq{    "documentation-url" : "https://github.com/flyway/flyway/blob/flyway-'"\\x24version\\x24/documentation/Reference/Database%20Driver%20Reference/SQL%20Server%20Database.md\",\\n}; }' metadata/org.flywaydb/flyway-sqlserver/index.json
+jq empty metadata/org.flywaydb/flyway-sqlserver/index.json
+sed -n '5,16p' metadata/org.flywaydb/flyway-sqlserver/index.json" in /home/mihailo/git/graalvm-reachability-metadata-copy/forge/local_repositories/forge_worktrees/9843-2a666e0d
+ succeeded in 0ms:
+    "metadata-version" : "13.5.0",
+    "test-version" : "11.8.1",
+    "source-code-url" : "https://repo1.maven.org/maven2/org/flywaydb/flyway-sqlserver/$version$/flyway-sqlserver-$version$-sources.jar",
+    "repository-url" : "https://github.com/flyway/flyway",
+    "test-code-url" : "N/A",
+    "documentation-url" : "https://github.com/flyway/flyway/blob/flyway-$version$/documentation/Reference/Database%20Driver%20Reference/SQL%20Server%20Database.md",
+    "description" : "Flyway SQL Server support module adds Microsoft SQL Server, Azure Synapse, and Microsoft Fabric Data Warehouse database support to Flyway. It provides the database type, parser, schema handling, and clean-mode integrations used to run Flyway migrations against those platforms.",
+    "tested-versions" : [
+      "13.5.0"
+    ],
+    "allowed-packages" : [
+      "org.flywaydb",
+
+exec
+/usr/bin/zsh -lc 'set -e
+file=metadata/org.flywaydb/flyway-sqlserver/index.json
+jq empty "$file"
+git diff --check
+printf '"'%s\\n' '--- rendered URLs ---'
+jq -r '.[0] | .[\"source-code-url\"], .[\"documentation-url\"]' \""'$file" | sed '"'s/\\"'$version'"\\"'$/13.5.0/g'"' | while IFS= read -r url; do code="'$(curl -L -sS -o /dev/null -w '"'%{http_code}' \""'$url"); printf '"'%s %s\\n' \""'$code" "$url"; done
+printf '"'%s\\n' '--- target entry ---'
+jq '.[0]' \""'$file"
+printf '"'%s\\n' '--- diff ---'
+git diff -- \""'$file"' in /home/mihailo/git/graalvm-reachability-metadata-copy/forge/local_repositories/forge_worktrees/9843-2a666e0d
+ succeeded in 849ms:
+200 https://repo1.maven.org/maven2/org/flywaydb/flyway-sqlserver/13.5.0/flyway-sqlserver-13.5.0-sources.jar
+200 https://github.com/flyway/flyway/blob/flyway-13.5.0/documentation/Reference/Database%20Driver%20Reference/SQL%20Server%20Database.md
+--- target entry ---
+{
+  "latest": true,
+  "auto-update": true,
+  "metadata-version": "13.5.0",
+  "test-version": "11.8.1",
+  "source-code-url": "https://repo1.maven.org/maven2/org/flywaydb/flyway-sqlserver/$version$/flyway-sqlserver-$version$-sources.jar",
+  "repository-url": "https://github.com/flyway/flyway",
+  "test-code-url": "N/A",
+  "documentation-url": "https://github.com/flyway/flyway/blob/flyway-$version$/documentation/Reference/Database%20Driver%20Reference/SQL%20Server%20Database.md",
+  "description": "Flyway SQL Server support module adds Microsoft SQL Server, Azure Synapse, and Microsoft Fabric Data Warehouse database support to Flyway. It provides the database type, parser, schema handling, and clean-mode integrations used to run Flyway migrations against those platforms.",
+  "tested-versions": [
+    "13.5.0"
+  ],
+  "allowed-packages": [
+    "org.flywaydb",
+    "org.flywaydb.clean",
+    "org.flywaydb.database.sqlserver"
+  ]
+}
+--- diff ---
+diff --git a/metadata/org.flywaydb/flyway-sqlserver/index.json b/metadata/org.flywaydb/flyway-sqlserver/index.json
+index 9fafd3b654..2e17c19848 100644
+--- a/metadata/org.flywaydb/flyway-sqlserver/index.json
++++ b/metadata/org.flywaydb/flyway-sqlserver/index.json
+@@ -2,6 +2,23 @@
+   {
+     "latest" : true,
+     "auto-update" : true,
++    "metadata-version" : "13.5.0",
++    "test-version" : "11.8.1",
++    "source-code-url" : "https://repo1.maven.org/maven2/org/flywaydb/flyway-sqlserver/$version$/flyway-sqlserver-$version$-sources.jar",
++    "repository-url" : "https://github.com/flyway/flyway",
++    "test-code-url" : "N/A",
++    "documentation-url" : "https://github.com/flyway/flyway/blob/flyway-$version$/documentation/Reference/Database%20Driver%20Reference/SQL%20Server%20Database.md",
++    "description" : "Flyway SQL Server support module adds Microsoft SQL Server, Azure Synapse, and Microsoft Fabric Data Warehouse database support to Flyway. It provides the database type, parser, schema handling, and clean-mode integrations used to run Flyway migrations against those platforms.",
++    "tested-versions" : [
++      "13.5.0"
++    ],
++    "allowed-packages" : [
++      "org.flywaydb",
++      "org.flywaydb.clean",
++      "org.flywaydb.database.sqlserver"
++    ]
++  },
++  {
+     "metadata-version" : "12.3.0",
+     "test-version" : "11.8.1",
+     "source-code-url" : "https://repo1.maven.org/maven2/org/flywaydb/flyway-sqlserver/$version$/flyway-sqlserver-$version$-sources.jar",
+
+codex
+Updated [index.json](</home/mihailo/git/graalvm-reachability-metadata-copy/forge/local_repositories/forge_worktrees/9843-2a666e0d/metadata/org.flywaydb/flyway-sqlserver/index.json:3).
+
+- Repository: `https://github.com/flyway/flyway`
+- Sources: Maven Central version template
+- Tests: `N/A` (no Maven test artifact)
+- Documentation: versioned Flyway 13.5.0 tag path
+- Language: omitted; not language-specific
+- Description: exactly two sentences
+
+JSON validation, diff checks, and rendered URL checks passed. Sources and documentation URLs returned HTTP 200.
+tokens used
+101,041
+Updated [index.json](</home/mihailo/git/graalvm-reachability-metadata-copy/forge/local_repositories/forge_worktrees/9843-2a666e0d/metadata/org.flywaydb/flyway-sqlserver/index.json:3).
+
+- Repository: `https://github.com/flyway/flyway`
+- Sources: Maven Central version template
+- Tests: `N/A` (no Maven test artifact)
+- Documentation: versioned Flyway 13.5.0 tag path
+- Language: omitted; not language-specific
+- Description: exactly two sentences
+
+JSON validation, diff checks, and rendered URL checks passed. Sources and documentation URLs returned HTTP 200.
+Ran agent for org.flywaydb:flyway-sqlserver:13.5.0 (exit 0). Log: /home/mihailo/git/graalvm-reachability-metadata-copy/forge/local_repositories/forge_worktrees/9843-2a666e0d/build/agent-url-discovery-logs/org.flywaydb-flyway-sqlserver-13.5.0.log
+Completed populateArtifactURLs: invoked=1, prompted=0, skipped=0, overwriteExisting=false, verifyArtifactSources=false, limit=null
+
+[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata-copy/forge/local_repositories/forge_worktrees/9843-2a666e0d/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 5m 15s
+9 actionable tasks: 1 executed, 8 up-to-date
