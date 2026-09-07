@@ -402,7 +402,8 @@ public class Micronaut_buffer_nettyTest {
 
     @Test
     void providesAContainerManagedByteBufferFactory() {
-        try (ApplicationContext context = ApplicationContext.run()) {
+        try (ApplicationContext context =
+                ApplicationContext.builder().eagerBeansEnabled(false).start()) {
             NettyByteBufferFactory factory = context.getBean(NettyByteBufferFactory.class);
             ByteBuffer<ByteBuf> buffer = factory.buffer(SAMPLE.length);
 
@@ -451,7 +452,9 @@ public class Micronaut_buffer_nettyTest {
         expectedSystemProperties.keySet().forEach(
                 name -> originalSystemProperties.put(name, System.getProperty(name)));
 
-        try (ApplicationContext context = ApplicationContext.run(properties)) {
+        try (ApplicationContext context = ApplicationContext.builder(properties)
+                .eagerBeansEnabled(false)
+                .start()) {
             assertThat(context.getBean(ByteBufAllocatorConfiguration.class)).isNotNull();
             expectedSystemProperties.forEach(
                     (name, value) -> assertThat(System.getProperty(name)).isEqualTo(value));
