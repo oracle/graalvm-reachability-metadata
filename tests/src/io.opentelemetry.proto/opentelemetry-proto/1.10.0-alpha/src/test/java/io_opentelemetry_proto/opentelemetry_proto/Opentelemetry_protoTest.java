@@ -35,6 +35,8 @@ import io.opentelemetry.proto.metrics.v1.NumberDataPoint;
 import io.opentelemetry.proto.metrics.v1.ResourceMetrics;
 import io.opentelemetry.proto.metrics.v1.ScopeMetrics;
 import io.opentelemetry.proto.metrics.v1.Sum;
+import io.opentelemetry.proto.metrics.v1.Summary;
+import io.opentelemetry.proto.metrics.v1.SummaryDataPoint;
 import io.opentelemetry.proto.profiles.v1development.Profile;
 import io.opentelemetry.proto.profiles.v1development.ProfilesDictionary;
 import io.opentelemetry.proto.profiles.v1development.ResourceProfiles;
@@ -244,6 +246,41 @@ public class Opentelemetry_protoTest {
         assertThat(recordedPoint.getMin()).isEqualTo(1.1D);
         assertThat(recordedPoint.hasMax()).isTrue();
         assertThat(recordedPoint.getMax()).isEqualTo(8.7D);
+    }
+
+    @Test
+    void summaryMetricRepresentsQuantilesAndAggregateValues() {
+        SummaryDataPoint point = SummaryDataPoint.newBuilder()
+                .setStartTimeUnixNano(10L)
+                .setTimeUnixNano(20L)
+                .setCount(20L)
+                .setSum(315.0D)
+                .addAttributes(attribute("route", "checkout"))
+                .addQuantileValues(SummaryDataPoint.ValueAtQuantile.newBuilder()
+                        .setQuantile(0.5D)
+                        .setValue(12.0D))
+                .addQuantileValues(SummaryDataPoint.ValueAtQuantile.newBuilder()
+                        .setQuantile(0.95D)
+                        .setValue(28.5D))
+                .build();
+        Metric metric = Metric.newBuilder()
+                .setName("request.payload.size")
+                .setUnit("By")
+                .setSummary(Summary.newBuilder().addDataPoints(point))
+                .build();
+
+        SummaryDataPoint recordedPoint = metric.getSummary().getDataPoints(0);
+
+        assertThat(metric.getDataCase()).isEqualTo(Metric.DataCase.SUMMARY);
+        assertThat(recordedPoint.getCount()).isEqualTo(20L);
+        assertThat(recordedPoint.getSum()).isEqualTo(315.0D);
+        assertThat(recordedPoint.getAttributes(0).getValue().getStringValue()).isEqualTo("checkout");
+        assertThat(recordedPoint.getQuantileValuesList())
+                .extracting(SummaryDataPoint.ValueAtQuantile::getQuantile)
+                .containsExactly(0.5D, 0.95D);
+        assertThat(recordedPoint.getQuantileValuesList())
+                .extracting(SummaryDataPoint.ValueAtQuantile::getValue)
+                .containsExactly(12.0D, 28.5D);
     }
 
     @Test
