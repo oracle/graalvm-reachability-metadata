@@ -24,6 +24,8 @@ import io.micronaut.http.annotation.Produces;
 import io.micronaut.http.filter.ServerFilterChain;
 import io.micronaut.inject.BeanDefinition;
 import io.micronaut.inject.ExecutableMethod;
+import io.micronaut.security.authentication.Authentication;
+import io.micronaut.security.filters.SecurityFilter;
 import io.micronaut.views.AbstractViewsRenderer;
 import io.micronaut.views.ModelAndView;
 import io.micronaut.views.ModelAndViewRenderer;
@@ -43,6 +45,8 @@ import io.micronaut.views.http.ResponseBodySwap;
 import io.micronaut.views.http.ResponseBodySwapper;
 import io.micronaut.views.http.ViewsFilterConfiguration;
 import io.micronaut.views.model.ViewModelProcessor;
+import io.micronaut.views.model.security.SecurityViewModelProcessor;
+import io.micronaut.views.model.security.SecurityViewModelProcessorConfigurationProperties;
 import jakarta.inject.Singleton;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -234,6 +238,35 @@ public class Micronaut_views_coreTest {
         TemplateBuilder writableBuilder = new TemplateBuilder();
         assertThat(writableBuilder.template(writable)).isSameAs(writableBuilder);
         assertThat(writableBuilder.build().render()).contains(writable);
+    }
+
+    @Test
+    void securityProcessorAddsAuthenticatedUserToImmutableViewModel() {
+        SecurityViewModelProcessorConfigurationProperties configuration =
+                new SecurityViewModelProcessorConfigurationProperties();
+        configuration.setSecurityKey("viewer");
+        configuration.setPrincipalNameKey("displayName");
+        configuration.setAttributesKey("details");
+
+        Map<String, Object> attributes = Map.of("department", "engineering");
+        HttpRequest<?> request = HttpRequest.GET("/account");
+        request.setAttribute(
+                SecurityFilter.AUTHENTICATION, Authentication.build("Ada", attributes));
+        Map<String, Object> immutableModel = Map.of("heading", "Account");
+        ModelAndView<Map<String, Object>> modelAndView =
+                new ModelAndView<>("account", immutableModel);
+
+        SecurityViewModelProcessor processor =
+                new SecurityViewModelProcessor(configuration);
+        processor.process(request, modelAndView);
+
+        Map<String, Object> decoratedModel = modelAndView.getModel().orElseThrow();
+        assertThat(decoratedModel).isNotSameAs(immutableModel);
+        assertThat(decoratedModel)
+                .containsEntry("heading", "Account")
+                .containsEntry(
+                        "viewer",
+                        Map.of("displayName", "Ada", "details", attributes));
     }
 
     @Test
