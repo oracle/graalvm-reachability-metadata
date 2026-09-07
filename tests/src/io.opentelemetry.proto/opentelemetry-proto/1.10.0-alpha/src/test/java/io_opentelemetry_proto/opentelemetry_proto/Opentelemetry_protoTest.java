@@ -28,6 +28,7 @@ import io.opentelemetry.proto.logs.v1.SeverityNumber;
 import io.opentelemetry.proto.metrics.v1.AggregationTemporality;
 import io.opentelemetry.proto.metrics.v1.ExponentialHistogram;
 import io.opentelemetry.proto.metrics.v1.ExponentialHistogramDataPoint;
+import io.opentelemetry.proto.metrics.v1.Exemplar;
 import io.opentelemetry.proto.metrics.v1.Gauge;
 import io.opentelemetry.proto.metrics.v1.Histogram;
 import io.opentelemetry.proto.metrics.v1.HistogramDataPoint;
@@ -212,7 +213,14 @@ public class Opentelemetry_protoTest {
     }
 
     @Test
-    void histogramMetricRepresentsDistributionBuckets() {
+    void histogramMetricRepresentsDistributionBucketsAndExemplars() {
+        Exemplar exemplar = Exemplar.newBuilder()
+                .setTimeUnixNano(15L)
+                .setAsDouble(4.2D)
+                .setTraceId(TRACE_ID)
+                .setSpanId(SPAN_ID)
+                .addFilteredAttributes(attribute("sampled", "true"))
+                .build();
         HistogramDataPoint point = HistogramDataPoint.newBuilder()
                 .setStartTimeUnixNano(10L)
                 .setTimeUnixNano(20L)
@@ -225,6 +233,7 @@ public class Opentelemetry_protoTest {
                 .addExplicitBounds(5.0D)
                 .setMin(1.1D)
                 .setMax(8.7D)
+                .addExemplars(exemplar)
                 .build();
         Metric metric = Metric.newBuilder()
                 .setName("request.duration")
@@ -248,6 +257,8 @@ public class Opentelemetry_protoTest {
         assertThat(recordedPoint.getMin()).isEqualTo(1.1D);
         assertThat(recordedPoint.hasMax()).isTrue();
         assertThat(recordedPoint.getMax()).isEqualTo(8.7D);
+        assertThat(recordedPoint.getExemplars(0).getAsDouble()).isEqualTo(4.2D);
+        assertThat(recordedPoint.getExemplars(0).getFilteredAttributes(0).getKey()).isEqualTo("sampled");
     }
 
     @Test
