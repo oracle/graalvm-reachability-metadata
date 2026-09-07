@@ -8,6 +8,12 @@ Newest entry first; every non-approval is recorded, including one a repair later
 **Runtime repair deletes existing test coverage**
 
 Rule 4.8 (fix by weakening) was violated in `tests/src/org.springframework/spring-web/5.3.32`: the copied 5.3.18 suite deleted `JettyClientHttpResponseTest.java` and removed its Jetty dependency instead of adapting the failing runtime path while preserving the test's status, headers, cookies, and body assertions.
+## 2026-09-07 — io.micronaut:micronaut-http-server:5.1.13 (#9832)
+
+**Companion dependencies pin the tested library version**
+
+Review Signal #4 is violated in tests/src/io.micronaut/micronaut-http-server/5.1.13/build.gradle: the Netty server, HTTP client, and Jackson databind companion dependencies hardcode 5.1.13. This prevents the suite from resolving those matching Micronaut modules at the TCK-selected tested version when the same test is reused for later supported versions.
+
 ## 2026-09-07 — io.micronaut:micronaut-core:5.0.0 (#9799)
 
 **Missing minimum dynamic-access coverage evidence**
