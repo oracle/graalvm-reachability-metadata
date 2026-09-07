@@ -35,7 +35,9 @@ import io.micronaut.http.client.HttpClient;
 import io.micronaut.http.client.exceptions.HttpClientResponseException;
 import io.micronaut.http.server.types.files.StreamedFile;
 import io.micronaut.http.server.types.files.SystemFile;
+import io.micronaut.http.server.util.HttpHostResolver;
 import io.micronaut.runtime.server.EmbeddedServer;
+import jakarta.inject.Inject;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
@@ -59,6 +61,9 @@ public class Micronaut_http_serverTest {
 
     @TempDir
     Path temporaryDirectory;
+
+    @Inject
+    HttpHostResolver hostResolver;
 
     @Test
     @Timeout(55)
@@ -183,6 +188,41 @@ public class Micronaut_http_serverTest {
 
     @Test
     @Timeout(55)
+    void resolvesAndValidatesConfiguredHostHeaders() {
+        Map<String, Object> properties = Map.ofEntries(
+                Map.entry("micronaut.server.port", -1),
+                Map.entry("micronaut.server.host-resolution.host-header", "X-Public-Host"),
+                Map.entry("micronaut.server.host-resolution.protocol-header", "X-Public-Protocol"),
+                Map.entry("micronaut.server.host-resolution.port-header", "X-Public-Port"),
+                Map.entry(
+                        "micronaut.server.host-resolution.allowed-hosts",
+                        List.of("https://api\\.example:8443")));
+
+        try (EmbeddedServer server = ApplicationContext.run(EmbeddedServer.class, properties, Environment.TEST);
+                HttpClient client = HttpClient.create(server.getURL(), clientConfiguration())) {
+            BlockingHttpClient blockingClient = client.toBlocking();
+            HttpRequest<?> allowedRequest = HttpRequest.GET("/server-test/resolved-host")
+                    .header("X-Public-Host", "api.example")
+                    .header("X-Public-Protocol", "https")
+                    .header("X-Public-Port", "8443");
+
+            HttpResponse<String> allowedResponse = blockingClient.exchange(allowedRequest, String.class);
+
+            assertThat(allowedResponse.body()).isEqualTo("https://api.example:8443");
+
+            HttpRequest<?> rejectedRequest = HttpRequest.GET("/server-test/resolved-host")
+                    .header("X-Public-Host", "untrusted.example")
+                    .header("X-Public-Protocol", "https")
+                    .header("X-Public-Port", "8443");
+
+            HttpResponse<String> rejectedResponse = blockingClient.exchange(rejectedRequest, String.class);
+
+            assertThat(rejectedResponse.body()).isEqualTo("http://localhost");
+        }
+    }
+
+    @Test
+    @Timeout(55)
     void servesARequestedByteRangeFromASystemFile() throws IOException {
         Path file = temporaryDirectory.resolve("range-source.txt");
         Files.writeString(file, "0123456789abcdef", StandardCharsets.UTF_8);
@@ -256,6 +296,11 @@ public class Micronaut_http_serverTest {
     @Get(uri = "/cors", produces = MediaType.TEXT_PLAIN)
     public HttpResponse<String> cors() {
         return HttpResponse.ok("cors-response").header("X-Route", "cors");
+    }
+
+    @Get(uri = "/resolved-host", produces = MediaType.TEXT_PLAIN)
+    public String resolvedHost(HttpRequest<?> request) {
+        return hostResolver.resolve(request);
     }
 
     @Get(uri = "/file", produces = MediaType.TEXT_PLAIN)
