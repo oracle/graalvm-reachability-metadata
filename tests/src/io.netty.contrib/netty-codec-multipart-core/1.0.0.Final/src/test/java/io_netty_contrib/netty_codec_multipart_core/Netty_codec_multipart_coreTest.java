@@ -122,6 +122,104 @@ public class Netty_codec_multipart_coreTest {
     }
 
     @Test
+    void decodesFilesInsideMultipartMixedField() {
+        String outerBoundary = "outer-boundary";
+        String body = """
+                --outer-boundary
+                Content-Disposition: form-data; name="files"
+                Content-Type: multipart/mixed; boundary="inner-boundary"
+
+                --inner-boundary
+                Content-Disposition: attachment; filename="alpha.txt"
+                Content-Type: text/plain
+
+                alpha
+                --inner-boundary
+                Content-Disposition: attachment; filename="beta.txt"
+                Content-Type: text/plain
+
+                beta
+                --inner-boundary--
+                --outer-boundary--
+                """.replace("\n", "\r\n");
+        List<PostBodyDecoder.Event> events = new ArrayList<>();
+        List<String> fileNames = new ArrayList<>();
+        List<String> contents = new ArrayList<>();
+        String outerFieldName = null;
+        String currentFileName = null;
+        StringBuilder currentContent = null;
+        boolean mixed = false;
+
+        try (PostBodyDecoder decoder = PostBodyDecoder.builder()
+                .charset(StandardCharsets.UTF_8)
+                .forMultipartBoundary(outerBoundary)) {
+            decoder.add(utf8(body));
+            decoder.endInput();
+
+            PostBodyDecoder.Event event;
+            while ((event = decoder.next()) != null) {
+                events.add(event);
+                switch (event) {
+                    case BEGIN_FIELD:
+                        if (mixed) {
+                            currentContent = new StringBuilder();
+                        }
+                        break;
+                    case HEADER:
+                        ParsedHeaderValue header = decoder.parsedHeaderValue();
+                        if (header instanceof ContentDisposition) {
+                            ContentDisposition disposition = (ContentDisposition) header;
+                            if (mixed) {
+                                currentFileName = disposition.fileName();
+                            } else {
+                                outerFieldName = disposition.name();
+                            }
+                        }
+                        break;
+                    case BEGIN_MIXED:
+                        mixed = true;
+                        break;
+                    case CONTENT:
+                        assertThat(currentContent).isNotNull();
+                        currentContent.append(decoder.decodedContentString());
+                        break;
+                    case FIELD_COMPLETE:
+                        if (currentContent != null) {
+                            fileNames.add(currentFileName);
+                            contents.add(currentContent.toString());
+                            currentFileName = null;
+                            currentContent = null;
+                        } else {
+                            mixed = false;
+                        }
+                        break;
+                    case HEADERS_COMPLETE:
+                        assertThat(currentContent).isNotNull();
+                        break;
+                    default:
+                        throw new AssertionError("Unexpected decoder event: " + event);
+                }
+            }
+        }
+
+        assertThat(outerFieldName).isEqualTo("files");
+        assertThat(fileNames).containsExactly("alpha.txt", "beta.txt");
+        assertThat(contents).containsExactly("alpha", "beta");
+        assertThat(events).containsSubsequence(
+                PostBodyDecoder.Event.BEGIN_FIELD,
+                PostBodyDecoder.Event.BEGIN_MIXED,
+                PostBodyDecoder.Event.BEGIN_FIELD,
+                PostBodyDecoder.Event.HEADERS_COMPLETE,
+                PostBodyDecoder.Event.CONTENT,
+                PostBodyDecoder.Event.FIELD_COMPLETE,
+                PostBodyDecoder.Event.BEGIN_FIELD,
+                PostBodyDecoder.Event.HEADERS_COMPLETE,
+                PostBodyDecoder.Event.CONTENT,
+                PostBodyDecoder.Event.FIELD_COMPLETE,
+                PostBodyDecoder.Event.FIELD_COMPLETE);
+    }
+
+    @Test
     void enforcesConfiguredFieldAndUndecodedDataLimits() {
         FormCollector collector = new FormCollector();
         try (PostBodyDecoder decoder = PostBodyDecoder.builder().maxFields(1).forUrlEncodedData()) {
