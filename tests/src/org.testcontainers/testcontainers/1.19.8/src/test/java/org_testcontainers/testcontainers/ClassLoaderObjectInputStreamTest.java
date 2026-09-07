@@ -41,7 +41,7 @@ public class ClassLoaderObjectInputStreamTest {
 
         try (
             ClassLoaderObjectInputStream input = new ClassLoaderObjectInputStream(
-                new DenyingClassLoader(),
+                new DelegatingClassLoader(),
                 new ByteArrayInputStream(encoded)
             )
         ) {
@@ -60,7 +60,13 @@ public class ClassLoaderObjectInputStreamTest {
         }
     }
 
-    public interface Greeting extends Serializable {
+    public static class DelegatingClassLoader extends ClassLoader {
+        public DelegatingClassLoader() {
+            super(ClassLoaderObjectInputStreamTest.class.getClassLoader());
+        }
+    }
+
+    interface Greeting extends Serializable {
         String greet(String name);
     }
 
