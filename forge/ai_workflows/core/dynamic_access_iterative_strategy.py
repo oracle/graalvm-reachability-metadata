@@ -71,7 +71,9 @@ class DynamicAccessIterativeStrategy(WorkflowStrategy):
         )
         self.package = self.group
         self.max_class_iterations = self.parameters["max-iterations"]
-        self.max_class_test_iterations = self.parameters["max-class-test-iterations"]
+        # The established configuration key budgets complete repair rounds.
+        # §FS-predefined-strategy-parameter-families
+        self.max_class_test_repairs = self.parameters["max-class-test-iterations"]
         self.native_test_verification_batch_size = self._parameter_int(
             "native-test-verification-batch-size",
             DEFAULT_NATIVE_TEST_VERIFICATION_BATCH_SIZE,
@@ -83,6 +85,9 @@ class DynamicAccessIterativeStrategy(WorkflowStrategy):
         )
         self.dynamic_access_exhaust_report_path: str | None = self.context.get(
             "dynamic_access_exhaust_report_path",
+        )
+        self.preceding_dynamic_access_covered_call_gain: int = int(
+            self.context.get("preceding_dynamic_access_covered_call_gain") or 0
         )
         self.chunk_class_count = int(self.context.get("chunk_class_count") or 0)
         self._last_phase_status = RUN_STATUS_SUCCESS
@@ -350,17 +355,18 @@ class DynamicAccessIterativeStrategy(WorkflowStrategy):
                 reached_native_test = False
                 last_test_output = ""
                 last_failed_task = None
-                for test_iteration in range(self.max_class_test_iterations):
+                test_attempts: int = self.max_class_test_repairs + 1
+                for test_iteration in range(test_attempts):
                     log_step_progress(
                         RUN_PHASE_EXPLORE,
                         STEP_GENERATE_TESTS,
-                        f"Running test {test_iteration + 1}/{self.max_class_test_iterations}",
+                        f"Running test {test_iteration + 1}/{test_attempts}",
                         indent_level=1,
                     )
                     self._print_dynamic_access_detail(
                         "test {current}/{maximum}: running ./gradlew test -Pcoordinates={library}".format(
                             current=test_iteration + 1,
-                            maximum=self.max_class_test_iterations,
+                            maximum=test_attempts,
                             library=self.library,
                         ),
                         indent_level=2,
@@ -378,7 +384,7 @@ class DynamicAccessIterativeStrategy(WorkflowStrategy):
                     log_step_progress(
                         RUN_PHASE_EXPLORE,
                         STEP_GENERATE_TESTS,
-                        f"Test {test_iteration + 1}/{self.max_class_test_iterations} {test_outcome}",
+                        f"Test {test_iteration + 1}/{test_attempts} {test_outcome}",
                         indent_level=1,
                     )
                     self._print_dynamic_access_detail(
@@ -389,6 +395,8 @@ class DynamicAccessIterativeStrategy(WorkflowStrategy):
                     )
                     if failed_task in {"nativeTest", None}:
                         reached_native_test = True
+                        break
+                    if test_iteration == test_attempts - 1:
                         break
                     log_step_progress(
                         RUN_PHASE_EXPLORE,
@@ -720,12 +728,13 @@ class DynamicAccessIterativeStrategy(WorkflowStrategy):
         )
 
     def _has_successful_class_coverage(self, successful_classes: int) -> bool:
-        """Return whether iterative or preceding bulk work gained class coverage.
+        """Return whether iterative or preceding bulk work gained coverage.
 
-        Bulk records its completed classes in the shared exhaust report before
-        iterative exploration finishes the remainder. §FS-forge-chunked-dynamic-access
+        Bulk passes its covered-call gain directly and records completed classes
+        in the shared exhaust report before iterative exploration finishes the
+        remainder. §FS-forge-chunked-dynamic-access
         """
-        if successful_classes > 0:
+        if successful_classes > 0 or self.preceding_dynamic_access_covered_call_gain > 0:
             return True
         return (
             self.dynamic_access_exhaust_report is not None

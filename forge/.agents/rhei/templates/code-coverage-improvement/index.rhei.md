@@ -55,7 +55,7 @@ finalization task runs as a deterministic program of numbered steps (read the
 conversion record, run checkstyle, run the JVM tests with the coverage
 suite, finalize
 metrics); a nonzero exit code is the number of the failed step and routes to
-`finalize-fix`, after which the steps re-run from the start. `finalize-verify`
+`finalize-fix`, after which final evidence is remeasured and the steps re-run. `finalize-verify`
 then accepts the artifacts only on presence, schema validation of
 `final-metrics.json`, and metrics outcomes — never on an agent's own claim.
 Fixable failures are bounded by `{{fix_passes}}` pass(es); failed targets or an

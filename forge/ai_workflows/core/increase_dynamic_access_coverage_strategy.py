@@ -11,7 +11,11 @@ from ai_workflows.core.workflow_strategy import (
     WorkflowStrategy,
 )
 from utility_scripts.continuation_marker import PHASE_EXPLORE, PHASE_FIX, save_phase_update
-from utility_scripts.dynamic_access_report import BulkDynamicAccessProgress, DynamicAccessCoverageReport
+from utility_scripts.dynamic_access_report import (
+    BulkDynamicAccessProgress,
+    DynamicAccessCoverageReport,
+    remaining_uncovered_classes,
+)
 from utility_scripts.java_fix_coverage_follow_up import uncovered_dynamic_access_class_count
 from utility_scripts.run_location import RunLocation, STEP_GENERATE_TESTS, record_step_failure
 from utility_scripts.stage_logger import log_detail
@@ -31,6 +35,11 @@ class IncreaseDynamicAccessCoverageStrategy(WorkflowStrategy):
         super().__init__(strategy_obj, **context)
         self.primary_workflow_name: str | None = strategy_obj.get("primary-workflow")
         self.chunk_class_count: int = int(self.context.get("chunk_class_count") or 0)
+        self.bulk_min_uncovered_classes: int = int(
+            self.parameters.get("bulk-min-uncovered-classes") or 0
+        )
+        if self.bulk_min_uncovered_classes < 0:
+            raise ValueError("bulk-min-uncovered-classes must be non-negative")
         self.reachability_repo_path = self.context["reachability_repo_path"]
         self.library = self.context.get("library") or self.context.get("updated_library")
         self.group, self.artifact, self.version = self.library.split(":")
@@ -61,11 +70,67 @@ class IncreaseDynamicAccessCoverageStrategy(WorkflowStrategy):
             location=RunLocation(PHASE_EXPLORE, STEP_GENERATE_TESTS, self.library),
         )
 
+    def _precheck_optimistic_bulk(
+            self,
+    ) -> tuple[DynamicAccessCoverageReport | None, int | None]:
+        """Return the reusable report and a small-report iterative budget.
+
+        The budget is the remainder iterative exploration can still take, on
+        the same basis as the post-bulk boundary: a class an earlier phase
+        already processed is not work either phase can repeat
+        (§AR-dynamic-access-composite).
+        """
+        if (
+                self.primary_workflow_name != "bulk_dynamic_access"
+                or self.bulk_min_uncovered_classes <= 0
+        ):
+            return None, None
+
+        report = self.primary._generate_dynamic_access_report()
+        if report is None or not report.has_dynamic_access or report.total_calls == 0:
+            return report, None
+
+        uncovered_class_count: int = uncovered_dynamic_access_class_count(report)
+        if uncovered_class_count == 0:
+            self._print_message("skipping bulk dynamic-access primary: no uncovered classes remain")
+            return report, 0
+        if uncovered_class_count >= self.bulk_min_uncovered_classes:
+            return report, None
+
+        remaining_class_count: int = len(remaining_uncovered_classes(
+            report,
+            self.primary.processed_dynamic_access_classes(),
+        ))
+        if remaining_class_count == 0:
+            # Bulk is the only phase that still prompts on a class iterative
+            # exploration exhausted, so a fully processed remainder stays with it.
+            self._print_message(
+                "keeping bulk dynamic-access primary: "
+                "uncovered_classes={uncovered} are already processed".format(
+                    uncovered=uncovered_class_count,
+                )
+            )
+            return report, None
+
+        self._print_message(
+            "skipping bulk dynamic-access primary: "
+            "uncovered_classes={uncovered} remaining={remaining} minimum={minimum}".format(
+                uncovered=uncovered_class_count,
+                remaining=remaining_class_count,
+                minimum=self.bulk_min_uncovered_classes,
+            )
+        )
+        return report, remaining_class_count
+
     def run(self, agent, **kwargs):
         current_report: DynamicAccessCoverageReport | None = None
         iterative_chunk_count: int | None = None
+        preceding_covered_call_gain: int = 0
         required_iterative_chunk_phase: bool = False
         skip_dynamic_access_phase: bool = False
+        small_report_iterative_count: int | None = None
+        if self.primary is not None:
+            current_report, small_report_iterative_count = self._precheck_optimistic_bulk()
 
         if self.primary is None:
             self._print_message("no primary workflow configured, skipping to dynamic-access coverage phase")
@@ -75,21 +140,48 @@ class IncreaseDynamicAccessCoverageStrategy(WorkflowStrategy):
             )
             status = RUN_STATUS_SUCCESS
             iterations = 0
+        elif small_report_iterative_count is not None:
+            # The skipped primary still owns its phase transition, so the
+            # composite releases the fix phase bulk would have released
+            # (§FS-forge-run-continuation.1).
+            save_phase_update(
+                self.continuation_marker_path,
+                lambda marker: marker.mark_phase_skipped_if_pending(PHASE_FIX),
+            )
+            result: tuple[str, int, int] = (RUN_STATUS_SUCCESS, 0, 1)
+            status = RUN_STATUS_SUCCESS
+            iterations = 0
+            iterative_chunk_count = small_report_iterative_count
+            skip_dynamic_access_phase = small_report_iterative_count == 0
+            required_iterative_chunk_phase = small_report_iterative_count > 0
+            agent.clear_context()
         else:
             self._print_message("starting primary workflow")
-            result = self.primary.run(agent, **kwargs)
+            primary_kwargs: dict[str, object] = dict(kwargs)
+            if current_report is not None:
+                primary_kwargs["initial_report"] = current_report
+            result = self.primary.run(agent, **primary_kwargs)
             status = result[0]
             iterations = result[1]
             self._print_message(f"primary workflow completed with status: {status}")
 
             if status != RUN_STATUS_SUCCESS:
-                self._print_message("skipping dynamic-access coverage phase because primary workflow did not succeed")
+                self._print_message(
+                    "skipping dynamic-access coverage phase because primary workflow did not succeed"
+                )
                 self.post_generation_intervention = self.primary.post_generation_intervention
                 return result
 
             agent.clear_context()
             if self.primary_workflow_name == "bulk_dynamic_access":
                 current_report, iterative_chunk_count, chunk_ready = self._route_after_bulk()
+                bulk_progress: BulkDynamicAccessProgress | None = getattr(
+                    self.primary,
+                    "bulk_chunk_progress",
+                    None,
+                )
+                if bulk_progress is not None:
+                    preceding_covered_call_gain = bulk_progress.covered_call_gain
                 if chunk_ready:
                     save_phase_update(
                         self.continuation_marker_path,
@@ -113,6 +205,7 @@ class IncreaseDynamicAccessCoverageStrategy(WorkflowStrategy):
         library = self.context.get("library") or self.context.get("updated_library")
         da_context = dict(self.context)
         da_context["library"] = library
+        da_context["preceding_dynamic_access_covered_call_gain"] = preceding_covered_call_gain
         if iterative_chunk_count is not None:
             da_context["chunk_class_count"] = iterative_chunk_count
 
@@ -146,7 +239,7 @@ class IncreaseDynamicAccessCoverageStrategy(WorkflowStrategy):
                 lambda marker: marker.mark_phase_completed(PHASE_EXPLORE),
             )
             phase_ok, da_iterations = True, 0
-            self._print_message("all dynamic-access classes are covered after bulk")
+            self._print_message("all dynamic-access classes are covered")
         else:
             self._print_message("starting dynamic-access coverage phase")
             if current_report is None:
