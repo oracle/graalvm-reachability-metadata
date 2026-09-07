@@ -27,6 +27,8 @@ import io.micronaut.inject.ExecutableMethod;
 import io.micronaut.views.AbstractViewsRenderer;
 import io.micronaut.views.ModelAndView;
 import io.micronaut.views.ModelAndViewRenderer;
+import io.micronaut.views.Renderable;
+import io.micronaut.views.TemplatedBuilder;
 import io.micronaut.views.View;
 import io.micronaut.views.ViewUtils;
 import io.micronaut.views.ViewsConfigurationProperties;
@@ -49,6 +51,7 @@ import java.io.Writer;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Random;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
@@ -197,6 +200,43 @@ public class Micronaut_views_coreTest {
     }
 
     @Test
+    void templatedBuilderConfiguresViewAndModelTemplates() {
+        Map<String, Object> model = Map.of("recipient", "Ada");
+        TemplateBuilder builder = new TemplateBuilder();
+
+        assertThat(builder.template("mail/welcome", model)).isSameAs(builder);
+        BuiltTemplate combinedTemplate = builder.build();
+        assertThat(combinedTemplate.view()).contains("mail/welcome");
+        assertThat(combinedTemplate.model()).contains(model);
+        assertThat(combinedTemplate.render()).isEmpty();
+
+        Map<String, Object> replacementModel = Map.of("recipient", "Grace");
+        assertThat(builder.templateView("mail/reminder")).isSameAs(builder);
+        assertThat(builder.templateModel(replacementModel)).isSameAs(builder);
+        BuiltTemplate updatedTemplate = builder.build();
+        assertThat(updatedTemplate.view()).contains("mail/reminder");
+        assertThat(updatedTemplate.model()).contains(replacementModel);
+    }
+
+    @Test
+    void templatedBuilderConfiguresInlineTemplates() throws IOException {
+        CharSequence html = new StringBuilder("<strong>Hello</strong>");
+        TemplateBuilder characterBuilder = new TemplateBuilder();
+
+        assertThat(characterBuilder.template(html)).isSameAs(characterBuilder);
+        BuiltTemplate characterTemplate = characterBuilder.build();
+        assertThat(characterTemplate.view()).isEmpty();
+        assertThat(characterTemplate.model()).isEmpty();
+        assertThat(writeToString(characterTemplate.render().orElseThrow()))
+                .isEqualTo(html.toString());
+
+        TextWritable writable = new TextWritable("<em>Welcome</em>");
+        TemplateBuilder writableBuilder = new TemplateBuilder();
+        assertThat(writableBuilder.template(writable)).isSameAs(writableBuilder);
+        assertThat(writableBuilder.build().render()).contains(writable);
+    }
+
+    @Test
     void cspFilterAddsNonceToRequestAndResponsePolicy() {
         CspConfiguration configuration = new CspConfiguration();
         configuration.setEnabled(true);
@@ -285,6 +325,29 @@ public class Micronaut_views_coreTest {
         public void process(
                 HttpRequest<?> request, ModelAndView<GreetingModel> modelAndView) {
             modelAndView.getModel().orElseThrow().setDecoratedPath(request.getPath());
+        }
+    }
+
+    private static final class TemplateBuilder
+            extends TemplatedBuilder<BuiltTemplate, TemplateBuilder> {
+        @Override
+        public BuiltTemplate build() {
+            return new BuiltTemplate(getTemplate(), getTemplateView(), getTemplateModel());
+        }
+    }
+
+    private record BuiltTemplate(
+            Object inlineTemplate, Optional<String> view, Optional<Object> model)
+            implements Renderable {
+        @Override
+        public Optional<Writable> render() {
+            if (inlineTemplate instanceof Writable writable) {
+                return Optional.of(writable);
+            }
+            if (inlineTemplate instanceof CharSequence characters) {
+                return Optional.of(new TextWritable(characters.toString()));
+            }
+            return Optional.empty();
         }
     }
 
