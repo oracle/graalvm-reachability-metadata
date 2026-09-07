@@ -51,7 +51,7 @@ public class Netty_codec_multipart_coreTest {
         assertField(collector.fields.get(0), "first", null, "hello world");
         assertField(collector.fields.get(1), "name", null, "Netty Core");
         assertField(collector.fields.get(2), "empty", null, "");
-        assertField(collector.fields.get(3), "currency", null, "€");
+        assertField(collector.fields.get(3), "currency", null, "\u20AC");
         for (DecodedField field : collector.fields) {
             assertThat(field.headerNames).containsExactly(HttpHeaderNames.CONTENT_DISPOSITION.toString());
             assertThat(field.headers).isEmpty();
@@ -135,7 +135,7 @@ public class Netty_codec_multipart_coreTest {
                 .containsEntry(HttpHeaderNames.CONTENT_TYPE.toString(), "text/plain; charset=UTF-8");
 
         DecodedField upload = collector.fields.get(1);
-        assertField(upload, "upload", "café.txt", "binary-content");
+        assertField(upload, "upload", "caf\u00E9.txt", "binary-content");
         assertThat(upload.headers)
                 .containsEntry(HttpHeaderNames.CONTENT_TYPE.toString(), "application/octet-stream")
                 .containsEntry(HttpHeaderNames.CONTENT_TRANSFER_ENCODING.toString(), "binary");
