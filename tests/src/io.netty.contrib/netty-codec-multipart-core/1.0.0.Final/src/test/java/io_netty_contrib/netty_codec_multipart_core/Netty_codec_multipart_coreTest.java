@@ -20,6 +20,7 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.contrib.multipart.ContentDisposition;
 import io.netty.contrib.multipart.DecoderQuirk;
+import io.netty.contrib.multipart.FormDecoderException;
 import io.netty.contrib.multipart.ParsedHeaderValue;
 import io.netty.contrib.multipart.PostBodyDecoder;
 import io.netty.contrib.multipart.TooManyFormFieldsException;
@@ -76,6 +77,27 @@ public class Netty_codec_multipart_coreTest {
                 PostBodyDecoder.Event.HEADERS_COMPLETE,
                 PostBodyDecoder.Event.CONTENT,
                 PostBodyDecoder.Event.FIELD_COMPLETE);
+    }
+
+    @Test
+    void preservesMalformedPercentEscapesByDefault() {
+        FormCollector collector = new FormCollector();
+
+        try (PostBodyDecoder decoder = PostBodyDecoder.builder().forUrlEncodedData()) {
+            decoder.add(utf8("field=%GG%2"));
+            decoder.endInput();
+            collector.drain(decoder);
+        }
+
+        collector.assertComplete();
+        assertThat(collector.fields).hasSize(1);
+        assertField(collector.fields.get(0), "field", null, "%GG%2");
+    }
+
+    @Test
+    void rejectsMalformedPercentEscapesWhenCompatibilityQuirksAreEnabled() {
+        assertMalformedPercentEscapeRejected(DecoderQuirk.REFUSE_NON_HEX_PERCENT_DECODE, "field=%GG");
+        assertMalformedPercentEscapeRejected(DecoderQuirk.REFUSE_SHORT_PERCENT_DECODE, "field=%2");
     }
 
     @Test
@@ -285,6 +307,19 @@ public class Netty_codec_multipart_coreTest {
 
     private static ByteBuf utf8(String value) {
         return Unpooled.copiedBuffer(value, StandardCharsets.UTF_8);
+    }
+
+    private static void assertMalformedPercentEscapeRejected(DecoderQuirk quirk, String body) {
+        FormCollector collector = new FormCollector();
+        try (PostBodyDecoder decoder = PostBodyDecoder.builder()
+                .enableQuirks(quirk)
+                .forUrlEncodedData()) {
+            decoder.add(utf8(body));
+            decoder.endInput();
+
+            assertThatExceptionOfType(FormDecoderException.class)
+                    .isThrownBy(() -> collector.drain(decoder));
+        }
     }
 
     private static void assertField(DecodedField field, String name, String fileName, String content) {
