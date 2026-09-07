@@ -36,7 +36,7 @@ public class ConfigurationClassBeanDefinitionReaderTest {
         }
     }
 
-    @Configuration
+    @Configuration(proxyBeanMethods = false)
     @ImportResource(value = "classpath:org_springframework/spring_context/imported-resource.custom",
             reader = CountingBeanDefinitionReader.class)
     public static class ImportedResourceConfiguration {
