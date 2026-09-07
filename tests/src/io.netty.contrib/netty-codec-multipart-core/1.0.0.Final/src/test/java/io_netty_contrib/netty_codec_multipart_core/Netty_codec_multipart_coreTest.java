@@ -288,20 +288,63 @@ public class Netty_codec_multipart_coreTest {
             assertThat(decoder.hasQuirk(DecoderQuirk.EARLY_DECODE)).isFalse();
             decoder.setCompactionThreshold(128);
             assertThat(decoder.getCompactionThreshold()).isEqualTo(128);
+
+            decoder.add(utf8("""
+                    --vintage-boundary
+                    Content-Disposition: form-data; name="upload"
+                    Content-Type: text/plain
+
+                    vintage content
+                    --vintage-boundary--
+                    """.replace("\n", "\r\n")));
+            assertThat(decoder.getCurrentAllocatedCapacity()).isPositive();
+            decoder.endInput();
+
+            assertThat(decoder.next()).isEqualTo(PostBodyDecoder.Event.BEGIN_FIELD);
+            assertThat(decoder.next()).isEqualTo(PostBodyDecoder.Event.HEADER);
+            assertThat(decoder.getQuirkHeader())
+                    .containsExactly("Content-Disposition", "form-data", "name=\"upload\"");
+            assertThat(decoder.next()).isEqualTo(PostBodyDecoder.Event.HEADER);
+            assertThat(decoder.getQuirkHeader()).containsExactly("Content-Type", "text/plain");
+            assertThat(decoder.next()).isEqualTo(PostBodyDecoder.Event.HEADERS_COMPLETE);
+            assertThat(decoder.isMixed()).isFalse();
+            assertThat(decoder.next()).isEqualTo(PostBodyDecoder.Event.CONTENT);
+            assertThat(decoder.decodedContentString()).isEqualTo("vintage content");
+            assertThat(decoder.next()).isEqualTo(PostBodyDecoder.Event.FIELD_COMPLETE);
+            assertThat(decoder.next()).isNull();
         }
 
-        try (PostBodyDecoder decoder = PostBodyDecoder.builder().forUrlEncodedData()) {
+        try (PostBodyDecoder decoder = PostBodyDecoder.builder()
+                .compactionThreshold(64)
+                .forUrlEncodedData()) {
             VintageAccess.UrlEncodedDecoder vintageDecoder = (VintageAccess.UrlEncodedDecoder) decoder;
-            ByteBuf component = utf8("Netty+Core%21");
+            assertThat(vintageDecoder.getCompactionThreshold()).isEqualTo(64);
+            vintageDecoder.setCompactionThreshold(128);
+            assertThat(vintageDecoder.getCompactionThreshold()).isEqualTo(128);
+            assertThat(vintageDecoder.isEof()).isFalse();
+
+            decoder.add(utf8("component=Netty+Core%21"));
+            decoder.endInput();
+            assertThat(vintageDecoder.isEof()).isTrue();
+            assertThat(decoder.next()).isEqualTo(PostBodyDecoder.Event.BEGIN_FIELD);
+            assertThat(decoder.next()).isEqualTo(PostBodyDecoder.Event.HEADER);
+            assertThat(decoder.hasUnparsedHeaderValue()).isFalse();
+            ContentDisposition disposition = (ContentDisposition) decoder.parsedHeaderValue();
+            assertThat(disposition.name()).isEqualTo("component");
+            assertThat(disposition.fileName()).isNull();
+            assertThat(decoder.next()).isEqualTo(PostBodyDecoder.Event.HEADERS_COMPLETE);
+            assertThat(decoder.next()).isEqualTo(PostBodyDecoder.Event.CONTENT);
+
+            ByteBuf component = vintageDecoder.undecodedContent();
             try {
+                assertThat(component.toString(StandardCharsets.UTF_8)).isEqualTo("Netty+Core%21");
                 vintageDecoder.decodeComponent(component, false);
                 assertThat(component.toString(StandardCharsets.UTF_8)).isEqualTo("Netty Core!");
             } finally {
                 component.release();
             }
-            assertThat(vintageDecoder.isEof()).isFalse();
-            decoder.endInput();
-            assertThat(vintageDecoder.isEof()).isTrue();
+            assertThat(decoder.next()).isEqualTo(PostBodyDecoder.Event.FIELD_COMPLETE);
+            assertThat(decoder.next()).isNull();
         }
     }
 
