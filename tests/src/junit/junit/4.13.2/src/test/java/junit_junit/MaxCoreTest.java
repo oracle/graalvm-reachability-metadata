@@ -12,8 +12,12 @@ import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import junit.framework.TestCase;
+import junit.framework.TestSuite;
+import org.junit.Ignore;
 import org.junit.experimental.max.MaxCore;
+import org.junit.internal.runners.JUnit38ClassRunner;
 import org.junit.jupiter.api.Test;
+import org.junit.runner.Request;
 import org.junit.runner.Result;
 
 public class MaxCoreTest {
@@ -23,7 +27,10 @@ public class MaxCoreTest {
         Path directory = Files.createTempDirectory("junit-max-core");
         File historyFile = directory.resolve("history.bin").toFile();
         try {
-            Result result = MaxCore.storedLocally(historyFile).run(InvalidLegacyCase.class);
+            TestSuite malformedSuite = new TestSuite(InvalidLegacyCase.class);
+            Request request = Request.runner(new JUnit38ClassRunner(malformedSuite));
+
+            Result result = MaxCore.storedLocally(historyFile).run(request);
 
             assertThat(result.getRunCount()).isEqualTo(1);
             assertThat(result.getFailureCount()).isEqualTo(1);
@@ -33,6 +40,7 @@ public class MaxCoreTest {
         }
     }
 
+    @Ignore
     public static class InvalidLegacyCase extends TestCase {
         private InvalidLegacyCase() {
         }
