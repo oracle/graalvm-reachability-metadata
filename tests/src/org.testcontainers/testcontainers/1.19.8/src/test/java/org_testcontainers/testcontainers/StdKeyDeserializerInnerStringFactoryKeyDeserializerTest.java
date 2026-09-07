@@ -24,14 +24,14 @@ public class StdKeyDeserializerInnerStringFactoryKeyDeserializerTest {
     }
 
     public static class FactoryKey {
-        private final String value;
+        private String value;
 
-        private FactoryKey(String value) {
-            this.value = value;
-        }
+        private FactoryKey() {}
 
         public static FactoryKey valueOf(String value) {
-            return new FactoryKey(value);
+            FactoryKey key = new FactoryKey();
+            key.value = value;
+            return key;
         }
 
         @Override

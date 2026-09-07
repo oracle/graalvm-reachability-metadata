@@ -17,6 +17,8 @@ public class JacksonAnnotationIntrospectorTest {
     void usesTheJsonNameDeclaredOnAnEnumField() throws Exception {
         ObjectMapper mapper = new ObjectMapper();
 
+        assertThat(mapper.getSerializationConfig().getAnnotationIntrospector().findEnumValue(State.READY))
+            .isEqualTo("ready-to-run");
         assertThat(mapper.writeValueAsString(State.READY)).isEqualTo("\"ready-to-run\"");
         assertThat(mapper.readValue("\"ready-to-run\"", State.class)).isEqualTo(State.READY);
     }

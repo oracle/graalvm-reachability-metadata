@@ -15,9 +15,11 @@ public class ObjectUtilsTest {
     @Test
     void clonesArraysAndPubliclyCloneableObjects() {
         String[] array = { "one", "two" };
+        int[] primitiveArray = { 1, 2 };
         CloneableValue value = new CloneableValue("copied");
 
         assertThat(ObjectUtils.clone(array)).containsExactly("one", "two").isNotSameAs(array);
+        assertThat(ObjectUtils.clone(primitiveArray)).containsExactly(1, 2).isNotSameAs(primitiveArray);
         assertThat(ObjectUtils.clone(value)).isEqualTo(value).isNotSameAs(value);
     }
 

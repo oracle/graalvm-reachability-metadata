@@ -26,7 +26,7 @@ public class ClassLoaderObjectInputStreamTest {
 
         try (
             ClassLoaderObjectInputStream input = new ClassLoaderObjectInputStream(
-                getClass().getClassLoader(),
+                new DenyingClassLoader(),
                 new ByteArrayInputStream(encoded)
             )
         ) {
@@ -41,11 +41,22 @@ public class ClassLoaderObjectInputStreamTest {
 
         try (
             ClassLoaderObjectInputStream input = new ClassLoaderObjectInputStream(
-                getClass().getClassLoader(),
+                new DenyingClassLoader(),
                 new ByteArrayInputStream(encoded)
             )
         ) {
             assertThat(((Greeting) input.readObject()).greet("proxy")).isEqualTo("Hello proxy");
+        }
+    }
+
+    public static class DenyingClassLoader extends ClassLoader {
+        public DenyingClassLoader() {
+            super(null);
+        }
+
+        @Override
+        public Class<?> loadClass(String name) throws ClassNotFoundException {
+            throw new ClassNotFoundException(name);
         }
     }
 

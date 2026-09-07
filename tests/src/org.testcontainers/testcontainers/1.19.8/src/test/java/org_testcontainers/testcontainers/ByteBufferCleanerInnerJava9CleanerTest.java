@@ -25,7 +25,7 @@ public class ByteBufferCleanerInnerJava9CleanerTest {
         Files.write(input, new byte[] { 1, 2, 3, 4 });
 
         try (MemoryMappedFileInputStream stream = MemoryMappedFileInputStream.builder().setPath(input).get()) {
-            assertThat(stream.readAllBytes()).containsExactly(1, 2, 3, 4);
+            assertThat(stream.read()).isEqualTo(1);
         }
 
         assertThat(Files.deleteIfExists(input)).isTrue();

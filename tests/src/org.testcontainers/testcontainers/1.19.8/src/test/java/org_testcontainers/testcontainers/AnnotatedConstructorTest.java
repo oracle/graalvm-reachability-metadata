@@ -26,6 +26,7 @@ public class AnnotatedConstructorTest {
         AnnotatedConstructor restored = SerializationUtils.roundtrip(constructor);
 
         assertThat(constructor.call()).isInstanceOf(ConstructorBean.class);
+        assertThat(constructor.call(new Object[0])).isInstanceOf(ConstructorBean.class);
         assertThat(restored.call()).isInstanceOf(ConstructorBean.class);
     }
 

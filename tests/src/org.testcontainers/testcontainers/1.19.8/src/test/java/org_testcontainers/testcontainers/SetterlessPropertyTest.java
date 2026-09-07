@@ -23,10 +23,10 @@ public class SetterlessPropertyTest {
     }
 
     public static class SetterlessBean {
-        private final List<String> values = new ArrayList<>();
+        private final List<String> storage = new ArrayList<>();
 
         public List<String> getValues() {
-            return values;
+            return storage;
         }
     }
 }
