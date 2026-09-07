@@ -1,0 +1,50 @@
+/*
+ * Copyright and related rights waived via CC0
+ *
+ * You should have received a copy of the CC0 legalcode along with this
+ * work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
+ */
+package kotlinstdlib
+
+import kotlin.coroutines.Continuation
+import kotlin.coroutines.CoroutineContext
+import kotlin.coroutines.EmptyCoroutineContext
+import kotlin.coroutines.createCoroutine
+import kotlin.coroutines.jvm.internal.CoroutineStackFrame
+import kotlin.coroutines.suspendCoroutine
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertNotNull
+import kotlin.test.assertTrue
+
+public class DebugMetadataKtTest {
+    @Test
+    public fun suspendedCoroutineStackFrameReportsItsSourceLine(): Unit {
+        val block: suspend () -> Unit = {
+            suspendForDebugMetadataInspection()
+        }
+        val continuation: Continuation<Unit> = block.createCoroutine(DebugMetadataCompletion())
+        val frame: CoroutineStackFrame = continuation as CoroutineStackFrame
+        val initialElement: StackTraceElement = assertNotNull(frame.getStackTraceElement())
+
+        continuation.resumeWith(Result.success(Unit))
+        val suspendedElement: StackTraceElement = assertNotNull(frame.getStackTraceElement())
+
+        assertEquals(-1, initialElement.lineNumber)
+        assertEquals("DebugMetadataKtTest.kt", suspendedElement.fileName)
+        assertTrue(suspendedElement.lineNumber > 0)
+    }
+}
+
+private suspend fun suspendForDebugMetadataInspection(): Unit =
+    suspendCoroutine { _: Continuation<Unit> ->
+        // Keep the generated continuation suspended for stack-frame inspection.
+    }
+
+private class DebugMetadataCompletion : Continuation<Unit> {
+    override val context: CoroutineContext = EmptyCoroutineContext
+
+    override fun resumeWith(result: Result<Unit>): Unit {
+        result.getOrThrow()
+    }
+}
