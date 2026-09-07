@@ -8,6 +8,11 @@ Newest entry first; every non-approval is recorded, including one a repair later
 **Split test project retained an invalid baseline test contract**
 
 In `tests/src/org.apache.activemq/activemq-broker/6.3.0/src/test/java/org_apache_activemq/activemq_broker/ActivemqBrokerTest.java`, the newly added top-level test class was package-private, violating test-contract rule 1.2. That test and the modified 6.0.0 counterpart also used unbounded broker lifecycle waits and performed broker cleanup only after the connection path succeeded, violating rule 1.6. The new 6.3.0 project's `gradle.properties` additionally still identified the 6.0.0 library and metadata directories instead of its own coordinate.
+## 2026-09-06 — io.micronaut.serde:micronaut-serde-support:3.1.1 (#9837)
+
+**Version-pinned companion serialization dependency**
+
+Review Signal #4 was violated in tests/src/io.micronaut.serde/micronaut-serde-support/3.1.1/build.gradle: micronaut-serde-jackson was pinned to 3.1.1, so the suite would not track the tested Micronaut Serde version when reused for another supported version.
 
 ## 2026-09-06 — io.netty:netty-codec:5.0.0.Alpha1 (#9762)
 
