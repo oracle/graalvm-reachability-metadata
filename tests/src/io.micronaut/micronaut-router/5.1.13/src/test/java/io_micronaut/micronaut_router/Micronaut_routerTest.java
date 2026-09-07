@@ -40,6 +40,8 @@ import io.micronaut.web.router.Router;
 import io.micronaut.web.router.StatusRoute;
 import io.micronaut.web.router.UriRoute;
 import io.micronaut.web.router.UriRouteMatch;
+import io.micronaut.web.router.filter.FilteredRouter;
+import io.micronaut.web.router.filter.RouteMatchFilter;
 import io.micronaut.web.router.naming.HyphenatedUriNamingStrategy;
 import io.micronaut.web.router.qualifier.ConsumesMediaTypeQualifier;
 import io.micronaut.web.router.resource.StaticResourceResolver;
@@ -47,6 +49,7 @@ import io.micronaut.web.router.uri.UriUtil;
 import java.net.URL;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Predicate;
 import jakarta.inject.Singleton;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
@@ -216,6 +219,34 @@ public class Micronaut_routerTest {
                     .isEqualTo("json-handler");
             assertThat(context.getBean(CatalogHandler.class, consumesText).name())
                     .isEqualTo("text-handler");
+        }
+    }
+
+    @Test
+    @Timeout(55)
+    void filtersRouteCandidatesWithARequestAwarePolicy() {
+        try (ApplicationContext context = ApplicationContext.run(Environment.TEST)) {
+            Router router = context.getBean(Router.class);
+            RouteMatchFilter routeFilter = new RouteMatchFilter() {
+                @Override
+                public <T, R> Predicate<UriRouteMatch<T, R>> filter(HttpRequest<?> request) {
+                    return route -> route.getHttpMethod() == HttpMethod.GET
+                            && route.getMethodName().equals(request.getHeaders().get("X-Allowed-Route"));
+                }
+            };
+            Router filteredRouter = new FilteredRouter(router, routeFilter);
+
+            HttpRequest<?> allowedRequest = HttpRequest.GET("/catalog/items/featured")
+                    .header("X-Allowed-Route", "featuredItem");
+            List<UriRouteMatch<Object, Object>> allowedRoutes = filteredRouter.findAny(allowedRequest);
+            assertThat(allowedRoutes).singleElement().satisfies(route -> {
+                assertThat(route.getMethodName()).isEqualTo("featuredItem");
+                assertThat(route.invoke()).isEqualTo("featured-item");
+            });
+
+            HttpRequest<?> rejectedRequest = HttpRequest.GET("/catalog/items/featured")
+                    .header("X-Allowed-Route", "anotherRoute");
+            assertThat(filteredRouter.findAny(rejectedRequest)).isEmpty();
         }
     }
 
