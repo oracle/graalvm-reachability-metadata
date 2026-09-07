@@ -16,6 +16,8 @@ import io.micronaut.core.cli.CommandLine;
 import io.micronaut.core.convert.ConversionService;
 import io.micronaut.core.convert.DefaultMutableConversionService;
 import io.micronaut.core.convert.value.MutableConvertibleValuesMap;
+import io.micronaut.core.execution.DelayedExecutionFlow;
+import io.micronaut.core.execution.ExecutionFlow;
 import io.micronaut.core.io.ResourceResolver;
 import io.micronaut.core.io.buffer.ReadBuffer;
 import io.micronaut.core.io.buffer.ReadBufferFactory;
@@ -35,11 +37,13 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
+import java.time.Duration;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 import org.junit.jupiter.api.Test;
 
 public class Micronaut_coreTest {
@@ -219,6 +223,23 @@ public class Micronaut_coreTest {
         assertThat(OrderUtil.sortOrderedCollection(components))
                 .extracting(OrderedComponent::name)
                 .containsExactly("first", "middle", "last");
+    }
+
+    @Test
+    void transformsValuesThroughDelayedExecutionFlow() {
+        DelayedExecutionFlow<Integer> source = DelayedExecutionFlow.create();
+        ExecutionFlow<String> transformed =
+                source.map(value -> value * 2)
+                        .flatMap(value -> ExecutionFlow.just("result-" + value));
+        CompletableFuture<String> completion = transformed.toCompletableFuture();
+
+        assertThat(completion).isNotDone();
+
+        source.complete(21);
+
+        assertThat(completion)
+                .succeedsWithin(Duration.ofSeconds(10))
+                .isEqualTo("result-42");
     }
 
     @Test
