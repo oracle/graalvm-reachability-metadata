@@ -582,18 +582,55 @@ class ReportArtifactsTest(unittest.TestCase):
         report = self._generate(iteration=0, target_state_paths=[state_path])
 
         by_id = {entry["id"]: entry for entry in report["uncoveredPaths"]}
-        self.assertEqual(report["promptTargetIds"], [RESOLVE_ID, RELOAD_ID])
-        self.assertEqual(report["summary"]["terminalUncovered"], 2)
-        for method_id in (PARSE_ID, LOAD_ID):
+        self.assertEqual(report["promptTargetIds"], [RESOLVE_ID])
+        self.assertEqual(report["summary"]["terminalUncovered"], 3)
+        for method_id in (PARSE_ID, LOAD_ID, RELOAD_ID):
             self.assertTrue(by_id[method_id]["terminal"])
             self.assertNotIn(method_id, report["promptTargetIds"])
-        self.assertEqual(by_id[RELOAD_ID]["targetStatus"], "attempted")
+        self.assertEqual(by_id[RELOAD_ID]["targetStatus"], "exhausted")
         self.assertEqual(by_id[RELOAD_ID]["attemptCount"], 3)
-        self.assertFalse(by_id[RELOAD_ID]["terminal"])
+        self.assertEqual(
+            by_id[RELOAD_ID]["stateReason"],
+            "3 attempts without coverage change",
+        )
+        bulk = {entry["id"]: entry for entry in report["bulkTargets"]}
+        self.assertEqual(bulk[RELOAD_ID]["targetStatus"], "exhausted")
         persisted = {entry["id"]: entry for entry in report["targetStates"]}
         self.assertEqual(persisted[RESOLVE_INTEGER_ID]["status"], "completed")
         self.assertEqual(persisted[PARSE_ID]["status"], "skipped")
         self.assertEqual(persisted[LOAD_ID]["status"], "exhausted")
+        self.assertEqual(persisted[RELOAD_ID]["status"], "exhausted")
+
+    def test_uncovered_targets_are_exhausted_after_attempt_threshold(self) -> None:
+        reports: list[dict] = [
+            self._generate(iteration=iteration)
+            for iteration in range(report_module.MAX_UNCOVERED_ATTEMPTS + 1)
+        ]
+
+        report: dict = reports[-1]
+        bulk = {entry["id"]: entry for entry in report["bulkTargets"]}
+        target = bulk[RESOLVE_ID]
+        self.assertNotIn(RESOLVE_ID, report["promptTargetIds"])
+        self.assertIn(RESOLVE_ID, {entry["id"] for entry in report["uncoveredPaths"]})
+        self.assertEqual(target["attemptCount"], report_module.MAX_UNCOVERED_ATTEMPTS)
+        self.assertEqual(target["targetStatus"], "exhausted")
+        self.assertEqual(target["stateReason"], "3 attempts without coverage change")
+
+    def test_covered_target_is_not_exhausted_before_threshold(self) -> None:
+        state_path = self._write_json("deep-cover-0.json", {
+            "coordinate": "com.example:demo:1.0.0",
+            "targets": [{
+                "id": RESOLVE_INTEGER_ID,
+                "status": "attempted",
+                "attemptCount": report_module.MAX_UNCOVERED_ATTEMPTS - 1,
+            }],
+        })
+
+        report = self._generate(iteration=0, target_state_paths=[state_path])
+
+        persisted = {entry["id"]: entry for entry in report["targetStates"]}
+        self.assertEqual(persisted[RESOLVE_INTEGER_ID]["status"], "attempted")
+        self.assertIsNone(persisted[RESOLVE_INTEGER_ID]["reason"])
 
     def test_target_state_rejects_unknown_status(self) -> None:
         state_path = self._write_json("bad-state.json", {
