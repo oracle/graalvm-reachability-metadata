@@ -10,6 +10,7 @@ import com.github.dockerjava.api.DockerClient;
 import com.github.dockerjava.api.async.ResultCallback;
 import com.github.dockerjava.api.command.CreateNetworkResponse;
 import com.github.dockerjava.api.command.CreateVolumeResponse;
+import com.github.dockerjava.api.command.InspectImageResponse;
 import com.github.dockerjava.api.command.WaitContainerResultCallback;
 import com.github.dockerjava.api.model.Info;
 import com.github.dockerjava.api.model.Statistics;
@@ -21,6 +22,7 @@ import org.testcontainers.DockerClientFactory;
 import org.testcontainers.containers.Container;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.wait.strategy.Wait;
+import org.testcontainers.images.builder.ImageFromDockerfile;
 import org.testcontainers.images.builder.Transferable;
 
 import java.net.URI;
@@ -136,6 +138,36 @@ public class TestcontainersTest {
 
             dockerClient.startContainerCmd(containerId).exec();
             assertThat(nginx.isRunning()).isTrue();
+        }
+    }
+
+    @Test
+    @Timeout(55)
+    void buildsImageFromInMemoryDockerfile() throws Exception {
+        DockerClient dockerClient = DockerClientFactory.instance().client();
+        String imageName = "localhost/testcontainers/in-memory-" + UUID.randomUUID();
+        String dockerfile = """
+            FROM %s
+            LABEL testcontainers.feature="image-builder"
+            ENV TESTCONTAINERS_BUILT_IMAGE="true"
+            """.formatted(NGINX_IMAGE);
+        boolean imageBuilt = false;
+
+        try {
+            ImageFromDockerfile image = new ImageFromDockerfile(imageName, false)
+                .withFileFromString("Dockerfile", dockerfile);
+
+            assertThat(image.get(30, TimeUnit.SECONDS)).isEqualTo(imageName);
+            imageBuilt = true;
+
+            InspectImageResponse imageInfo = dockerClient.inspectImageCmd(imageName).exec();
+            assertThat(imageInfo.getConfig().getLabels())
+                .containsEntry("testcontainers.feature", "image-builder");
+            assertThat(imageInfo.getConfig().getEnv()).contains("TESTCONTAINERS_BUILT_IMAGE=true");
+        } finally {
+            if (imageBuilt) {
+                dockerClient.removeImageCmd(imageName).withForce(true).exec();
+            }
         }
     }
 
