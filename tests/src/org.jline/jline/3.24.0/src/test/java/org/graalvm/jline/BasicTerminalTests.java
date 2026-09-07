@@ -18,53 +18,56 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
-
 import java.nio.charset.StandardCharsets;
 import java.util.EnumSet;
+import java.util.concurrent.TimeUnit;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 public class BasicTerminalTests {
 
-    @Test
+    @Test(timeout = 30000L)
     public void testNewlines() throws IOException, InterruptedException {
-        PipedInputStream in = new PipedInputStream();
-        PipedOutputStream outIn = new PipedOutputStream(in);
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-        ExternalTerminal terminal = new ExternalTerminal("foo", "ansi", in, out, StandardCharsets.UTF_8);
+        try (PipedInputStream input = new PipedInputStream();
+                PipedOutputStream inputWriter = new PipedOutputStream(input);
+                ByteArrayOutputStream output = new ByteArrayOutputStream();
+                ExternalTerminal terminal = new ExternalTerminal(
+                        "foo", "ansi", input, output, StandardCharsets.UTF_8)) {
+            Attributes attributes = terminal.getAttributes();
+            attributes.setLocalFlag(LocalFlag.ECHO, true);
+            attributes.setInputFlag(InputFlag.IGNCR, true);
+            attributes.setOutputFlags(EnumSet.of(OutputFlag.OPOST));
+            terminal.setAttributes(attributes);
 
-        Attributes attributes = terminal.getAttributes();
-        attributes.setLocalFlag(LocalFlag.ECHO, true);
-        attributes.setInputFlag(InputFlag.IGNCR, true);
-        attributes.setOutputFlags(EnumSet.of(OutputFlag.OPOST));
-        terminal.setAttributes(attributes);
+            String text = "Testing input and output with newlines\r\nSecond line.";
+            String expected = "Testing input and output with newlines\nSecond line.";
 
-        String text = "Testing input and output with newlines\r\nSecond line.";
-        String expected = "Testing input and output with newlines\nSecond line.";
+            inputWriter.write(text.getBytes(StandardCharsets.UTF_8));
+            long deadline = System.nanoTime() + TimeUnit.SECONDS.toNanos(10L);
+            while (output.size() < expected.length() && System.nanoTime() < deadline) {
+                Thread.sleep(100L);
+            }
 
-        outIn.write(text.getBytes());
-        while (out.size() < expected.length()) {
-            Thread.sleep(100);
+            assertEquals(expected, output.toString(StandardCharsets.UTF_8));
         }
-
-        assertEquals(expected, out.toString());
     }
 
-    @Test
+    @Test(timeout = 30000L)
     public void testCursor() throws IOException {
-        PipedInputStream in = new PipedInputStream();
-        final PipedOutputStream outIn = new PipedOutputStream(in);
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-        ExternalTerminal terminal = new ExternalTerminal("foo", "ansi", in, out, StandardCharsets.UTF_8);
+        try (PipedInputStream input = new PipedInputStream();
+                PipedOutputStream inputWriter = new PipedOutputStream(input);
+                ByteArrayOutputStream output = new ByteArrayOutputStream();
+                ExternalTerminal terminal = new ExternalTerminal(
+                        "foo", "ansi", input, output, StandardCharsets.UTF_8)) {
+            inputWriter.write(new byte[] {'\033', '[', '2', ';', '3', 'R', 'f'});
+            inputWriter.flush();
 
-        outIn.write(new byte[]{'\033', '[', '2', ';', '3', 'R', 'f'});
-        outIn.flush();
-
-        Cursor cursor = terminal.getCursorPosition(c -> {
-        });
-        assertNotNull(cursor);
-        assertEquals(2, cursor.getX());
-        assertEquals(1, cursor.getY());
+            Cursor cursor = terminal.getCursorPosition(discarded -> {
+            });
+            assertNotNull(cursor);
+            assertEquals(2, cursor.getX());
+            assertEquals(1, cursor.getY());
+        }
     }
 }
