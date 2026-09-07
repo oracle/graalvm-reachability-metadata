@@ -141,6 +141,49 @@ def load_library_methods(path: str) -> set[str]:
     return methods
 
 
+def load_library_line_numbers(path: str) -> dict[str, tuple[tuple[int, int], ...]]:
+    """Read exact bytecode-to-source mappings from extractor method rows."""
+    try:
+        with open(path, "r", encoding="utf-8", newline="") as handle:
+            reader = csv.DictReader(handle)
+            if reader.fieldnames is None or "id" not in reader.fieldnames:
+                raise ProfileFormatError(
+                    f"Library method list '{path}' has no 'id' header column."
+                )
+            if "lineNumbers" not in reader.fieldnames:
+                return {}
+            rows: list[dict[str, str | None]] = list(reader)
+    except OSError as error:
+        raise ProfileFormatError(f"Cannot read library method list '{path}'.") from error
+
+    result: dict[str, tuple[tuple[int, int], ...]] = {}
+    for row in rows:
+        method_id: str = row.get("id") or ""
+        raw_entries: str = row.get("lineNumbers") or ""
+        entries: list[tuple[int, int]] = []
+        for raw_entry in raw_entries.split(";"):
+            if not raw_entry:
+                continue
+            raw_bci, separator, raw_line = raw_entry.partition(":")
+            try:
+                bci: int = int(raw_bci)
+                line: int = int(raw_line)
+            except ValueError as error:
+                raise ProfileFormatError(
+                    f"Library method list '{path}' has invalid line-number entry "
+                    f"'{raw_entry}' for '{method_id}'."
+                ) from error
+            if not separator or bci < 0 or line < 0:
+                raise ProfileFormatError(
+                    f"Library method list '{path}' has invalid line-number entry "
+                    f"'{raw_entry}' for '{method_id}'."
+                )
+            entries.append((bci, line))
+        if entries:
+            result[method_id] = tuple(sorted(set(entries)))
+    return result
+
+
 def library_owners(library_methods: set[str] | None) -> set[str] | None:
     """The declaring types of the library method list, for Definition 10'.
 
@@ -530,7 +573,29 @@ def _add_creation_edges(graph: CallGraph) -> None:
             graph.reverse_adjacency.setdefault(body_id, []).append(edge)
 
 
-def _load_call_graph(reports_dir: str, owners: set[str] | None) -> CallGraph:
+def _source_line_for_bci(
+        caller: MethodRef,
+        raw_bci: str,
+        line_numbers: dict[str, tuple[tuple[int, int], ...]],
+) -> int | None:
+    """Map one native call-tree invoke BCI through the caller's class table."""
+    try:
+        invoke_bci: int = int(raw_bci)
+    except ValueError:
+        return None
+    source_line: int | None = None
+    for start_bci, line in line_numbers.get(caller.canonical_id, ()):
+        if start_bci > invoke_bci:
+            break
+        source_line = line
+    return source_line
+
+
+def _load_call_graph(
+        reports_dir: str,
+        owners: set[str] | None,
+        line_numbers: dict[str, tuple[tuple[int, int], ...]],
+) -> CallGraph:
     """Load the analysis call-tree CSV dump into an id-indexed call graph."""
     methods_path, invokes_path, targets_path = _find_call_tree_files(reports_dir)
     methods_rows = _read_csv_by_id(methods_path)
@@ -562,14 +627,20 @@ def _load_call_graph(reports_dir: str, owners: set[str] | None) -> CallGraph:
         if caller_id not in graph.methods or callee_id not in graph.methods:
             continue
         graph.invoke_fan_out.setdefault(invoke_id, []).append(callee_id)
+        raw_bci: str = invoke.get("BytecodeIndexes", "")
         edge = {
             "caller": caller_id,
             "callee": callee_id,
-            "bci": invoke.get("BytecodeIndexes", ""),
+            "bci": raw_bci,
             "is_direct": invoke.get("IsDirect", ""),
             "kind": "call",
             "invoke_id": invoke_id,
         }
+        source_line: int | None = _source_line_for_bci(
+            graph.methods[caller_id], raw_bci, line_numbers
+        )
+        if source_line is not None:
+            edge["source_line"] = source_line
         site_edges.setdefault(invoke_id, []).append(edge)
         graph.adjacency.setdefault(caller_id, []).append(edge)
         graph.reverse_adjacency.setdefault(callee_id, []).append(edge)
@@ -596,10 +667,14 @@ def _load_call_graph(reports_dir: str, owners: set[str] | None) -> CallGraph:
     return graph
 
 
-def load_call_graph(reports_dir: str, owners: set[str] | None = None) -> CallGraph:
+def load_call_graph(
+        reports_dir: str,
+        owners: set[str] | None = None,
+        line_numbers: dict[str, tuple[tuple[int, int], ...]] | None = None,
+) -> CallGraph:
     """Load one coherent call-tree triplet, failing closed on bad input."""
     try:
-        return _load_call_graph(reports_dir, owners)
+        return _load_call_graph(reports_dir, owners, line_numbers or {})
     except (OSError, csv.Error, KeyError, TypeError, ValueError) as error:
         raise ProfileFormatError(f"Cannot load call-tree CSVs from '{reports_dir}'.") from error
 
@@ -998,11 +1073,10 @@ def _inferred_invoking_line(
 ) -> tuple[int, JacocoLineCoverage] | None:
     """Locate the line region containing the invoke without extra artifacts.
 
-    Call-tree CSVs expose bytecode indexes, while JaCoCo XML omits the class
-    line-number table that maps those indexes to source lines. An explicit line
-    wins when a fixture or future producer supplies it. Otherwise a proven test
-    dispatch anchors on the first covered caller line; other misses use the
-    final uncovered block and its strongest non-branch instruction signal.
+    The class-file extractor maps the call-tree bytecode index to an explicit
+    source line. Old extractor artifacts lack that mapping, so they fall back
+    deterministically to the final uncovered block and its strongest
+    non-branch instruction signal.
     """
     explicit_line: int | None = edge.get("source_line")
     if explicit_line is not None:
@@ -1011,16 +1085,6 @@ def _inferred_invoking_line(
         )
         if explicit is not None:
             return explicit
-
-    candidates: list[dict] = _dispatch_candidates(edge, graph)
-    if len(candidates) > 1 and any(
-            candidate["coverageSuite"] for candidate in candidates
-    ):
-        covered_start: tuple[int, JacocoLineCoverage] | None = next(
-            (record for record in region if record[1].covered), None
-        )
-        if covered_start is not None:
-            return covered_start
 
     blocks: list[list[tuple[int, JacocoLineCoverage]]] = _missed_blocks(region)
     if blocks:
@@ -1104,15 +1168,16 @@ def _edge_miss_classification(
         ),
         [],
     )
-    exception_gap: bool = bool(
+    exception_handler_entry: bool = bool(
         containing_block
+        and target_record != containing_block[0]
         and nearest_covered is not None
         and containing_block[0][0] == nearest_covered[0] + 1
         and containing_block[0][1].mi == 1
         and nearest_covered[1].mb == 0
     )
     fork: tuple[int, JacocoLineCoverage] | None = None
-    if not exception_gap:
+    if not exception_handler_entry:
         fork = next(
             (
                 record
@@ -1905,7 +1970,13 @@ def generate_report(
     library_methods: set[str] | None = (
         load_library_methods(library_methods_path) if library_methods_path else None
     )
-    graph: CallGraph = load_call_graph(reports_dir, library_owners(library_methods))
+    line_numbers: dict[str, tuple[tuple[int, int], ...]] = (
+        load_library_line_numbers(library_methods_path)
+        if library_methods_path else {}
+    )
+    graph: CallGraph = load_call_graph(
+        reports_dir, library_owners(library_methods), line_numbers
+    )
     profile: SampledProfile = load_sampled_profile(profile_path, graph)
     inventory: dict = _load_json_object(api_inventory_path, "API inventory")
     _require_coordinate(inventory, coordinate, "API inventory")

@@ -112,6 +112,7 @@ class JacocoLineCoverageTest(unittest.TestCase):
             candidate_refs: list[MethodRef],
             invoke_id: int,
             bci: str,
+            source_line: int,
     ) -> dict:
         methods: dict[int, MethodRef] = {
             1: caller,
@@ -133,6 +134,7 @@ class JacocoLineCoverageTest(unittest.TestCase):
             "is_direct": "false",
             "kind": "call",
             "invoke_id": invoke_id,
+            "source_line": source_line,
         }
         graph = report_module.CallGraph(
             methods=methods,
@@ -183,6 +185,7 @@ class JacocoLineCoverageTest(unittest.TestCase):
             [],
             101,
             "444",
+            137,
         )
 
         self.assertEqual(classification["kind"], "fork-not-taken")
@@ -207,10 +210,11 @@ class JacocoLineCoverageTest(unittest.TestCase):
             ],
             102,
             "32",
+            40,
         )
 
         self.assertEqual(classification["kind"], "no-fork")
-        self.assertEqual(classification["target"]["line"], 39)
+        self.assertEqual(classification["target"]["line"], 40)
         self.assertEqual(classification["nearestCovered"]["line"], 37)
         self.assertIsNone(classification["fork"])
         rendered: str = "\n".join(report_module._classification_lines(classification))
@@ -232,6 +236,7 @@ class JacocoLineCoverageTest(unittest.TestCase):
             ],
             103,
             "23",
+            834,
         )
 
         self.assertEqual(classification["kind"], "dispatched-elsewhere")
