@@ -10,6 +10,11 @@ plugins {
 
 String libraryVersion = tck.testedLibraryVersion.get()
 
+tasks.withType(Test).configureEach {
+    // Keep serialization descriptor discovery attributable to each holder's writeObject method.
+    forkEvery = 1
+}
+
 dependencies {
     testImplementation "org.bouncycastle:bcpkix-jdk18on:$libraryVersion"
     testImplementation 'org.assertj:assertj-core:3.22.0'
