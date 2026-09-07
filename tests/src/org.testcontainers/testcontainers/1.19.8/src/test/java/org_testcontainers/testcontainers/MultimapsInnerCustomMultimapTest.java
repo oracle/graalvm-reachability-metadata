@@ -21,11 +21,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class MultimapsInnerCustomMultimapTest {
     @Test
+    @SuppressWarnings("unchecked")
     void preservesCustomCollectionFactoriesWhenSerialized() {
         Multimap<String, String> values = Multimaps.newMultimap(new HashMap<>(), new CollectionFactory());
         values.put("key", "value");
 
-        Multimap<?, ?> restored = (Multimap<?, ?>) SerializationUtils.roundtrip((Serializable) values);
+        Multimap<String, String> restored = (Multimap<String, String>) SerializationUtils.roundtrip(
+            (Serializable) values
+        );
 
         assertThat(restored.entries()).containsExactly(org.assertj.core.data.MapEntry.entry("key", "value"));
     }

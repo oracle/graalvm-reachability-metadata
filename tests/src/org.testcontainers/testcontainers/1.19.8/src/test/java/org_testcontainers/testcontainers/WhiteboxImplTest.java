@@ -15,9 +15,11 @@ public class WhiteboxImplTest {
     @Test
     void readsInternalStateByNameAndType() {
         State state = new State();
+        String byName = WhiteboxImpl.getInternalState(state, "message");
+        String byType = WhiteboxImpl.getInternalState(state, String.class);
 
-        assertThat(WhiteboxImpl.getInternalState(state, "message")).isEqualTo("ready");
-        assertThat(WhiteboxImpl.getInternalState(state, String.class)).isEqualTo("ready");
+        assertThat(byName).isEqualTo("ready");
+        assertThat(byType).isEqualTo("ready");
         assertThat(WhiteboxImpl.getByNameAndType(state, "message", String.class)).isEqualTo("ready");
     }
 

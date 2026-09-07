@@ -21,12 +21,15 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class MultimapsInnerCustomListMultimapTest {
     @Test
+    @SuppressWarnings("unchecked")
     void preservesCustomListFactoriesWhenSerialized() {
         ListMultimap<String, String> values = Multimaps.newListMultimap(new HashMap<>(), new ListFactory());
         values.put("key", "one");
         values.put("key", "two");
 
-        ListMultimap<?, ?> restored = (ListMultimap<?, ?>) SerializationUtils.roundtrip((Serializable) values);
+        ListMultimap<String, String> restored = (ListMultimap<String, String>) SerializationUtils.roundtrip(
+            (Serializable) values
+        );
 
         assertThat(restored.asMap().get("key")).containsExactly("one", "two");
     }

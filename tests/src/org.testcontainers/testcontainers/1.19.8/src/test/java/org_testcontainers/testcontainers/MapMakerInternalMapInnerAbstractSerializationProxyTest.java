@@ -17,11 +17,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class MapMakerInternalMapInnerAbstractSerializationProxyTest {
     @Test
+    @SuppressWarnings("unchecked")
     void serializesEntriesThroughTheMapProxy() {
         ConcurrentMap<String, String> values = new MapMaker().weakKeys().makeMap();
         values.put("key", "value");
 
-        ConcurrentMap<?, ?> restored = (ConcurrentMap<?, ?>) SerializationUtils.roundtrip((Serializable) values);
+        ConcurrentMap<String, String> restored = (ConcurrentMap<String, String>) SerializationUtils.roundtrip(
+            (Serializable) values
+        );
 
         assertThat(restored).containsEntry("key", "value");
     }

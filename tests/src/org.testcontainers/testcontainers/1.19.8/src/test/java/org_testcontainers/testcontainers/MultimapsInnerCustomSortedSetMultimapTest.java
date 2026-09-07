@@ -21,6 +21,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class MultimapsInnerCustomSortedSetMultimapTest {
     @Test
+    @SuppressWarnings("unchecked")
     void preservesCustomSortedSetFactoriesWhenSerialized() {
         SortedSetMultimap<String, String> values = Multimaps.newSortedSetMultimap(
             new HashMap<>(),
@@ -29,7 +30,7 @@ public class MultimapsInnerCustomSortedSetMultimapTest {
         values.put("key", "two");
         values.put("key", "one");
 
-        SortedSetMultimap<?, ?> restored = (SortedSetMultimap<?, ?>) SerializationUtils.roundtrip(
+        SortedSetMultimap<String, String> restored = (SortedSetMultimap<String, String>) SerializationUtils.roundtrip(
             (Serializable) values
         );
 

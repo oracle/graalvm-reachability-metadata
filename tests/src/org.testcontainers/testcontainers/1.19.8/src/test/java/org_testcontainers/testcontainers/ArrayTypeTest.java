@@ -17,7 +17,7 @@ public class ArrayTypeTest {
     void changesTheComponentTypeAndBuildsTheCorrespondingArrayClass() {
         TypeFactory factory = TypeFactory.defaultInstance();
         ArrayType strings = factory.constructArrayType(String.class);
-        ArrayType integers = strings.withContentType(factory.constructType(Integer.class));
+        ArrayType integers = (ArrayType) strings.withContentType(factory.constructType(Integer.class));
 
         assertThat(integers.getRawClass()).isEqualTo(Integer[].class);
         assertThat(integers.getContentType().getRawClass()).isEqualTo(Integer.class);
