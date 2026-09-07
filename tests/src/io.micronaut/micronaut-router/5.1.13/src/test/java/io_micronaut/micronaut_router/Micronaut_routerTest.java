@@ -22,6 +22,8 @@ import io.micronaut.http.annotation.Error;
 import io.micronaut.http.annotation.Get;
 import io.micronaut.http.annotation.PathVariable;
 import io.micronaut.http.annotation.Post;
+import io.micronaut.http.annotation.RequestFilter;
+import io.micronaut.http.annotation.ServerFilter;
 import io.micronaut.web.router.MethodBasedRouteMatch;
 import io.micronaut.web.router.RouteAttributes;
 import io.micronaut.web.router.RouteMatch;
@@ -161,6 +163,18 @@ public class Micronaut_routerTest {
 
     @Test
     @Timeout(55)
+    void discoversServerFiltersByPathAndHttpMethod() {
+        try (ApplicationContext context = ApplicationContext.run(Environment.TEST)) {
+            Router router = context.getBean(Router.class);
+
+            assertThat(router.findFilters(HttpRequest.GET("/filtered/catalog"))).hasSize(1);
+            assertThat(router.findFilters(HttpRequest.POST("/filtered/catalog", "item"))).isEmpty();
+            assertThat(router.findFilters(HttpRequest.GET("/unfiltered/catalog"))).isEmpty();
+        }
+    }
+
+    @Test
+    @Timeout(55)
     void normalizesBrowserRequestTargetsForRfc3986Routing() {
         String browserPath = "/a path/\u00E9|x?bad=%zz&ok=%2F";
 
@@ -215,6 +229,13 @@ public class Micronaut_routerTest {
         UriRouteMatch<?, ?> routeMatch = router.findClosest(request);
         assertThat(routeMatch).isNotNull();
         return routeMatch;
+    }
+
+    @ServerFilter("/filtered/**")
+    public static final class CatalogServerFilter {
+        @RequestFilter(methods = HttpMethod.GET)
+        public void filter() {
+        }
     }
 
     public static final class OrderHistoryController {
