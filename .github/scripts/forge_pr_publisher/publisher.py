@@ -298,6 +298,9 @@ def _validate_render_inputs(descriptor: dict[str, Any]) -> None:
 
 def _validate_code_coverage_render(render: dict[str, Any]) -> None:
     """Require the finalized coverage evidence the coverage template reads."""
+    thinking = render.get("worker_thinking_level")
+    if not isinstance(thinking, str) or not thinking.strip():
+        raise ValueError("Code coverage publication requires a thinking level")
     metrics = render.get("code_coverage")
     if not isinstance(metrics, dict):
         raise ValueError("Code coverage publication requires render.code_coverage")
@@ -940,6 +943,7 @@ def _render_code_coverage_improvement(
         f"- Coordinate: `{coordinates}`",
         f"- Coverage suite path: `{metrics['coverageSuitePath']}`",
         f"- Model: {model}",
+        f"- Thinking level: {render['worker_thinking_level']}",
         f"- Needs human intervention: {'yes' if metrics['needsHumanIntervention'] else 'no'}",
         "",
         "## JaCoCo coverage",

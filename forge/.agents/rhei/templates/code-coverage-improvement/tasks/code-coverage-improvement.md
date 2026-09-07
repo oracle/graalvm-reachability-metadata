@@ -189,14 +189,14 @@
 **Prior:** Task code-coverage-deep-coverage
 
 - Final API report: highest-iteration `runtime/code-coverage/validation/api-cover-report-<n>.json`
-- Final deep report: highest-iteration `runtime/code-coverage/discovery/discovery-report-<n>.json`
+- Final deep report: highest-iteration deep report, or `runtime/code-coverage/final-measurement/discovery-report.json` after `finalize-fix`
 - Helper script: `forge/utility_scripts/code_coverage_finalize.py`
 - Purpose: gate publication on deterministic post-loop validation, update the
   committed library coverage stats, and summarize JaCoCo and sampled-path
   guidance.
 - Execution: this task is a deterministic program (the `reviewed-execute`
   state), not an agent checklist. A nonzero exit code is the number of the
-  failed step and routes to `finalize-fix`. Finalization runs no Native Image
+  failed step and routes to `finalize-fix`, then deterministic final remeasurement. Finalization runs no Native Image
   validation of the coverage tests; the stats step (5) does build a native image,
   because the dynamic-access half of `stats.json` is only observable from one.
 - Program steps:
@@ -228,8 +228,7 @@
   6. Invoke `forge/utility_scripts/code_coverage_finalize.py` with the resolved
      `--coordinate`, repository-relative `--coverage-suite-path`, the API
      baseline/final reports (`api-cover-report-0.json` and the highest-iteration report),
-     the deep baseline/final reports (`discovery-report-0.json` and the
-     highest-iteration report), any externally provided
+     the deep baseline and selected final reports, any externally provided
      `runtime/code-coverage/targets/*.json` as repeated `--target-state`
      arguments (the workflow itself no longer produces them), the exact
      checkstyle, JVM test, and stats commands as repeated

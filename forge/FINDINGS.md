@@ -8,6 +8,11 @@ Newest entry first; every non-approval is recorded, including one a repair later
 **Explicit I/O timeout below the 10-second floor**
 
 In tests/src/org.springframework/spring-webflux/6.0.0/src/test/java/org_springframework/spring_webflux/InvocableHandlerMethodTest.java, the reactive request wait used Duration.ofSeconds(5). This violates the enumerated 10-second minimum for explicit request/I/O timeouts in §FS-test-contract.1.7.
+## 2026-09-07 — org.junit.platform:junit-platform-reporting:6.1.0 (#9212)
+
+**Repair contribution changes unrelated coordinates**
+
+The proposed diff added metadata, index changes, and stats for org.junit.platform:junit-platform-commons:6.1.0 and org.junit.platform:junit-platform-engine:6.1.0. The closed-file-set and one-library/one-version rules require this fixes-native-image-run-fail contribution to remain inside the target org.junit.platform:junit-platform-reporting:6.1.0 coordinate and its supporting files.
 ## 2026-09-07 — org.bouncycastle:bcpkix-jdk18on:1.77 (#8922)
 
 **Test-created serialization metadata shipped as library metadata**
