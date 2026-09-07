@@ -6,10 +6,10 @@
  */
 package org_testcontainers.testcontainers;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import org.junit.jupiter.api.Test;
 import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
+import org.testcontainers.shaded.com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import org.testcontainers.shaded.com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import org.testcontainers.shaded.com.fasterxml.jackson.databind.deser.impl.FieldProperty;
 import org.testcontainers.shaded.com.fasterxml.jackson.databind.introspect.BasicBeanDescription;
 import org.testcontainers.shaded.com.fasterxml.jackson.databind.introspect.BeanPropertyDefinition;
