@@ -3,6 +3,12 @@
 Rendered by Forge from the pre-push branch review of §FS-local-branch-review.
 Newest entry first; every non-approval is recorded, including one a repair later cleared.
 
+## 2026-09-07 — org.apache.activemq:artemis-jms-client:2.36.0 (#8921)
+
+**Cloned test projects omit required native metadata and violate test visibility and timeout rules**
+
+The new 2.36.0 test-only reachability metadata omitted the inherited embedded-server registrations, causing nativeTest to fail while initializing ActiveMQServerLogger. In addition, ArtemisJmsClientTest in both 2.36.0 and 2.50.0 was package-private and used a 1-second JMS receive timeout, violating the public top-level test-class requirement and the 10-second minimum explicit I/O timeout.
+
 ## 2026-09-07 — io.micronaut:micronaut-core:5.0.0 (#9799)
 
 **Missing minimum dynamic-access coverage evidence**
