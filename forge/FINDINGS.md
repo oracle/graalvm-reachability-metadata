@@ -8,6 +8,12 @@ Newest entry first; every non-approval is recorded, including one a repair later
 **Explicit I/O timeout below the 10-second floor**
 
 In tests/src/org.springframework/spring-webflux/6.0.0/src/test/java/org_springframework/spring_webflux/InvocableHandlerMethodTest.java, the reactive request wait used Duration.ofSeconds(5). This violates the enumerated 10-second minimum for explicit request/I/O timeouts in §FS-test-contract.1.7.
+## 2026-09-07 — org.flywaydb:flyway-core:13.5.0 (#9842)
+
+**Java-run repair adds unrelated internal-API coverage**
+
+`tests/src/org.flywaydb/flyway-core/13.5.0/src/test/java/flyway/MergeUtilsTest.java` directly exercised the internal `org.flywaydb.core.internal.util.MergeUtils` API solely to increase dynamic-access coverage. This was unrelated to the Jackson runtime dependency repair and violated the enumerated meaningful-public-API and no-scope-creep test rules.
+
 ## 2026-09-07 — org.junit.platform:junit-platform-reporting:6.1.0 (#9212)
 
 **Repair contribution changes unrelated coordinates**
