@@ -1,0 +1,13 @@
+Implemented metadata fixes for `org.testcontainers:testcontainers:1.19.8`:
+
+- Registered `Finalizer.startFinalizer(...)` under `FinalizableReferenceQueue`.
+- Replaced invalid generated lambda conditions with `MethodUtils`.
+- Moved test-only metadata into the test resource metadata file.
+
+Verification using the required GraalVM:
+
+- `native-image --version`: exact requested `25.0.2 / 25.1.0-dev+10.1`
+- `checkMetadataFiles`: passed
+- `./gradlew test -Pcoordinates=org.testcontainers:testcontainers:1.19.8`: passed, all 159 native tests successful
+
+The pre-existing untracked `dynamic-access-exhaust-report.json` remains untouched.

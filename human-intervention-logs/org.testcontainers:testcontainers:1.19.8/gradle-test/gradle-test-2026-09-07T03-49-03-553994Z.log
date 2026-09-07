@@ -1,0 +1,240 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :tckTest
+====================
+Testing library: org.testcontainers:testcontainers:1.19.8
+Command: `/home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8924-edf8a39b/gradlew nativeTest`
+Executing test...
+-------
+Starting a Gradle Daemon, 1 busy and 1 incompatible and 10 stopped Daemons could not be reused, use --status for details
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+> Task :tck-test-support:compileJava UP-TO-DATE
+> Task :tck-test-support:processResources UP-TO-DATE
+> Task :compileJava UP-TO-DATE
+> Task :tck-test-support:classes UP-TO-DATE
+> Task :tck-test-support:jar UP-TO-DATE
+> Task :processResources UP-TO-DATE
+> Task :classes UP-TO-DATE
+
+Note: Some input files use or override a deprecated API.
+> Task :compileTestJava
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :jar UP-TO-DATE
+> Task :checkTestTimeoutAnnotations
+> Task :processTestResources
+> Task :testClasses
+
+> Task :test
+
+AnnotatedMethodTest > invokesMethodsObtainedThroughJacksonIntrospection() FAILED
+    java.lang.NullPointerException: Cannot invoke "org.testcontainers.shaded.com.fasterxml.jackson.databind.introspect.AnnotatedMethod.call()" because "factory" is null
+        at org_testcontainers.testcontainers.AnnotatedMethodTest.invokesMethodsObtainedThroughJacksonIntrospection(AnnotatedMethodTest.java:29)
+
+BeanAsArrayBuilderDeserializerTest > finishesArrayShapedDeserializationThroughABuilder() FAILED
+    org.testcontainers.shaded.com.fasterxml.jackson.databind.JsonMappingException: Can not deserialize instance of org_testcontainers.testcontainers.BeanAsArrayBuilderDeserializerTest$Builder out of START_ARRAY token
+     at [Source: ["built"]; line: 1, column: 1]
+        at app//org.testcontainers.shaded.com.fasterxml.jackson.databind.JsonMappingException.from(JsonMappingException.java:270)
+        at app//org.testcontainers.shaded.com.fasterxml.jackson.databind.DeserializationContext.reportMappingException(DeserializationContext.java:1234)
+        at app//org.testcontainers.shaded.com.fasterxml.jackson.databind.DeserializationContext.handleUnexpectedToken(DeserializationContext.java:1122)
+        at app//org.testcontainers.shaded.com.fasterxml.jackson.databind.DeserializationContext.handleUnexpectedToken(DeserializationContext.java:1075)
+        at app//org.testcontainers.shaded.com.fasterxml.jackson.databind.deser.BeanDeserializerBase.deserializeFromArray(BeanDeserializerBase.java:1371)
+        at app//org.testcontainers.shaded.com.fasterxml.jackson.databind.deser.BuilderBasedDeserializer.deserialize(BuilderBasedDeserializer.java:175)
+        at app//org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper._readMapAndClose(ObjectMapper.java:3798)
+        at app//org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper.readValue(ObjectMapper.java:2842)
+        at app//org_testcontainers.testcontainers.BeanAsArrayBuilderDeserializerTest.finishesArrayShapedDeserializationThroughABuilder(BeanAsArrayBuilderDeserializerTest.java:21)
+
+CommonsIoIOUtilsTest > resolvesResourcesWithDefaultAndExplicitClassLoaders() FAILED
+    java.io.IOException: Resource not found: testcontainers.properties
+        at org.testcontainers.shaded.org.apache.commons.io.IOUtils.resourceToURL(IOUtils.java:2351)
+        at org.testcontainers.shaded.org.apache.commons.io.IOUtils.resourceToURL(IOUtils.java:2330)
+        at org_testcontainers.testcontainers.CommonsIoIOUtilsTest.resolvesResourcesWithDefaultAndExplicitClassLoaders(CommonsIoIOUtilsTest.java:17)
+
+ConstructorInnerConstructSequenceTest > choosesConstructorsForSequenceValues() FAILED
+    Can't construct a java object for tag:yaml.org,2002:org_testcontainers.testcontainers.ConstructorInnerConstructSequenceTest$Sequence; exception=No suitable constructor with 2 arguments found for class org_testcontainers.testcontainers.ConstructorInnerConstructSequenceTest$Sequence
+     in 'string', line 1, column 1:
+        [one, two]
+        ^
+        at app//org.testcontainers.shaded.org.yaml.snakeyaml.constructor.Constructor$ConstructYamlObject.construct(Constructor.java:364)
+        at app//org.testcontainers.shaded.org.yaml.snakeyaml.constructor.BaseConstructor.constructObjectNoCheck(BaseConstructor.java:270)
+        at app//org.testcontainers.shaded.org.yaml.snakeyaml.constructor.BaseConstructor.constructObject(BaseConstructor.java:253)
+        at app//org.testcontainers.shaded.org.yaml.snakeyaml.constructor.BaseConstructor.constructDocument(BaseConstructor.java:207)
+        at app//org.testcontainers.shaded.org.yaml.snakeyaml.constructor.BaseConstructor.getSingleData(BaseConstructor.java:191)
+        at app//org.testcontainers.shaded.org.yaml.snakeyaml.Yaml.loadFromReader(Yaml.java:477)
+        at app//org.testcontainers.shaded.org.yaml.snakeyaml.Yaml.loadAs(Yaml.java:457)
+        at app//org_testcontainers.testcontainers.ConstructorInnerConstructSequenceTest.choosesConstructorsForSequenceValues(ConstructorInnerConstructSequenceTest.java:21)
+
+        Caused by:
+        org.testcontainers.shaded.org.yaml.snakeyaml.error.YAMLException: No suitable constructor with 2 arguments found for class org_testcontainers.testcontainers.ConstructorInnerConstructSequenceTest$Sequence
+            at app//org.testcontainers.shaded.org.yaml.snakeyaml.constructor.Constructor$ConstructSequence.construct(Constructor.java:627)
+            at app//org.testcontainers.shaded.org.yaml.snakeyaml.constructor.Constructor$ConstructYamlObject.construct(Constructor.java:358)
+            ... 7 more
+
+DateDeserializersInnerCalendarDeserializerTest > instantiatesAndPopulatesACustomCalendar() FAILED
+    java.lang.reflect.InaccessibleObjectException: Unable to make private void java.util.GregorianCalendar.setGregorianChange(long) accessible: module java.base does not "opens java.util" to unnamed module @82de64a
+        at java.base/java.lang.reflect.AccessibleObject.throwInaccessibleObjectException(AccessibleObject.java:353)
+        at java.base/java.lang.reflect.AccessibleObject.checkCanSetAccessible(AccessibleObject.java:329)
+        at java.base/java.lang.reflect.AccessibleObject.checkCanSetAccessible(AccessibleObject.java:277)
+        at java.base/java.lang.reflect.Method.checkCanSetAccessible(Method.java:182)
+        at java.base/java.lang.reflect.Method.setAccessible(Method.java:176)
+        at org.testcontainers.shaded.com.fasterxml.jackson.databind.util.ClassUtil.checkAndFixAccess(ClassUtil.java:759)
+        at org.testcontainers.shaded.com.fasterxml.jackson.databind.introspect.AnnotatedMember.fixAccess(AnnotatedMember.java:138)
+        at org.testcontainers.shaded.com.fasterxml.jackson.databind.deser.impl.MethodProperty.fixAccess(MethodProperty.java:77)
+        at org.testcontainers.shaded.com.fasterxml.jackson.databind.deser.BeanDeserializerBuilder._fixAccess(BeanDeserializerBuilder.java:467)
+        at org.testcontainers.shaded.com.fasterxml.jackson.databind.deser.BeanDeserializerBuilder.build(BeanDeserializerBuilder.java:334)
+        at org.testcontainers.shaded.com.fasterxml.jackson.databind.deser.BeanDeserializerFactory.buildBeanDeserializer(BeanDeserializerFactory.java:247)
+        at org.testcontainers.shaded.com.fasterxml.jackson.databind.deser.BeanDeserializerFactory.createBeanDeserializer(BeanDeserializerFactory.java:141)
+        at org.testcontainers.shaded.com.fasterxml.jackson.databind.deser.DeserializerCache._createDeserializer2(DeserializerCache.java:403)
+        at org.testcontainers.shaded.com.fasterxml.jackson.databind.deser.DeserializerCache._createDeserializer(DeserializerCache.java:349)
+        at org.testcontainers.shaded.com.fasterxml.jackson.databind.deser.DeserializerCache._createAndCache2(DeserializerCache.java:264)
+        at org.testcontainers.shaded.com.fasterxml.jackson.databind.deser.DeserializerCache._createAndCacheValueDeserializer(DeserializerCache.java:244)
+        at org.testcontainers.shaded.com.fasterxml.jackson.databind.deser.DeserializerCache.findValueDeserializer(DeserializerCache.java:142)
+        at org.testcontainers.shaded.com.fasterxml.jackson.databind.DeserializationContext.findRootValueDeserializer(DeserializationContext.java:476)
+        at org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper._findRootDeserializer(ObjectMapper.java:3899)
+        at org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper._readMapAndClose(ObjectMapper.java:3794)
+        at org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper.readValue(ObjectMapper.java:2842)
+        at org_testcontainers.testcontainers.DateDeserializersInnerCalendarDeserializerTest.instantiatesAndPopulatesACustomCalendar(DateDeserializersInnerCalendarDeserializerTest.java:19)
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+
+WARNING: sun.misc.Unsafe::objectFieldOffset has been called by org.testcontainers.shaded.com.google.common.util.concurrent.AbstractFuture$UnsafeAtomicHelper (file:/tmp/metadata-forge-gradle/6c511174d24457d7/caches/modules-2/files-2.1/org.testcontainers/testcontainers/1.19.8/f29b06c6f2aa69f4125f6cb95ed61d3efe63c30/testcontainers-1.19.8.jar)
+WARNING: Please consider reporting this to the maintainers of class org.testcontainers.shaded.com.google.common.util.concurrent.AbstractFuture$UnsafeAtomicHelper
+WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+
+> Task :test
+
+FuturesGetCheckedTest > convertsAFutureFailureToTheRequestedCheckedException() FAILED
+    java.lang.AssertionError: 
+    Expecting actual throwable to be an instance of:
+      org_testcontainers.testcontainers.FuturesGetCheckedTest.CheckedFailure
+    but was:
+      org.testcontainers.shaded.com.google.common.util.concurrent.UncheckedExecutionException: java.lang.IllegalStateException: failure
+    	at org.testcontainers.shaded.com.google.common.util.concurrent.FuturesGetChecked.wrapAndThrowExceptionOrError(FuturesGetChecked.java:212)
+    	at org.testcontainers.shaded.com.google.common.util.concurrent.FuturesGetChecked.getChecked(FuturesGetChecked.java:66)
+    	at org.testcontainers.shaded.com.google.common.util.concurrent.FuturesGetChecked.getChecked(FuturesGetChecked.java:50)
+    	at org.testcontainers.shaded.com.google.common.util.concurrent.Futures.getChecked(Futures.java:1229)
+    	at org_testcontainers.testcontainers.FuturesGetCheckedTest.lambda$convertsAFutureFailureToTheRequestedCheckedException$0(FuturesGetCheckedTest.java:18)
+    	at org.assertj.core.api.ThrowableAssert.catchThrowable(ThrowableAssert.java:63)
+    	at org.assertj.core.api.AssertionsForClassTypes.catchThrowable(AssertionsForClassTypes.java:878)
+    	at org.assertj.core.api.Assertions.catchThrowable(Assertions.java:1337)
+    	at org.assertj.core.api.Assertions.assertThatThrownBy(Assertions.java:1181)
+    	at org_testcontainers.testcontainers.FuturesGetCheckedTest.convertsAFutureFailureToTheRequestedCheckedException(FuturesGetCheckedTest.java:17)
+    	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:104)
+    	at java.base/java.lang.reflect.Method.invoke(Method.java:565)
+    	at org.junit.platform.commons.util.ReflectionUtils.invokeMethod(ReflectionUtils.java:727)
+    	at org.junit.jupiter.engine.execution.MethodInvocation.proceed(MethodInvocation.java:60)
+    	at org.junit.jupiter.engine.execution.InvocationInterceptorChain$ValidatingInvocation.proceed(InvocationInterceptorChain.java:131)
+    	at org.junit.jupiter.api.AssertTimeoutPreemptively.lambda$submitTask$3(AssertTimeoutPreemptively.java:95)
+    	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:328)
+    	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1090)
+    	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:614)
+    	at java.base/java.lang.Thread.run(Thread.java:1474)
+    Caused by: java.lang.IllegalStateException: failure
+    	... 16 more
+        at org_testcontainers.testcontainers.FuturesGetCheckedTest.convertsAFutureFailureToTheRequestedCheckedException(FuturesGetCheckedTest.java:23)
+
+MapMakerInternalMapInnerAbstractSerializationProxyTest > serializesEntriesThroughTheMapProxy() FAILED
+    java.lang.AssertionError: 
+    Expecting map:
+      {"key"="value"}
+    to contain entries:
+      ["key"="value"]
+    but could not find the following map entries:
+      ["key"="value"]
+        at org_testcontainers.testcontainers.MapMakerInternalMapInnerAbstractSerializationProxyTest.serializesEntriesThroughTheMapProxy(MapMakerInternalMapInnerAbstractSerializationProxyTest.java:29)
+
+MethodUtilsTest > discoversAndInvokesCompatibleMethods() FAILED
+    java.lang.IllegalAccessException: class org.testcontainers.shaded.org.apache.commons.lang3.reflect.MethodUtils cannot access a member of class org_testcontainers.testcontainers.MethodUtilsTest$HiddenGreeter with modifiers "public"
+        at java.base/jdk.internal.reflect.Reflection.newIllegalAccessException(Reflection.java:400)
+        at java.base/java.lang.reflect.AccessibleObject.checkAccess(AccessibleObject.java:670)
+        at java.base/java.lang.reflect.Method.invoke(Method.java:556)
+        at org.testcontainers.shaded.org.apache.commons.lang3.reflect.MethodUtils.invokeMethod(MethodUtils.java:235)
+        at org.testcontainers.shaded.org.apache.commons.lang3.reflect.MethodUtils.invokeMethod(MethodUtils.java:261)
+        at org.testcontainers.shaded.org.apache.commons.lang3.reflect.MethodUtils.invokeMethod(MethodUtils.java:153)
+        at org_testcontainers.testcontainers.MethodUtilsTest.discoversAndInvokesCompatibleMethods(MethodUtilsTest.java:22)
+
+SnakeYamlPropertyUtilsTest > discoversPropertiesUsingBeanAndFieldAccess() FAILED
+    java.lang.AssertionError: 
+    Expecting ArrayList:
+      ["property"]
+    to contain:
+      ["field"]
+    but could not find the following element(s):
+      ["field"]
+        at org_testcontainers.testcontainers.SnakeYamlPropertyUtilsTest.discoversPropertiesUsingBeanAndFieldAccess(SnakeYamlPropertyUtilsTest.java:24)
+
+VersionUtilTest > discoversPackageAndMavenVersionInformation() FAILED
+    org.opentest4j.AssertionFailedError: 
+    expected: "example.test"
+     but was: ""
+        at java.base@25.0.2/jdk.internal.reflect.DirectConstructorHandleAccessor.newInstance(DirectConstructorHandleAccessor.java:62)
+        at java.base@25.0.2/java.lang.reflect.Constructor.newInstanceWithCaller(Constructor.java:499)
+        at app//org_testcontainers.testcontainers.VersionUtilTest.discoversPackageAndMavenVersionInformation(VersionUtilTest.java:23)
+
+97 tests completed, 10 failed
+
+> Task :test FAILED
+
+
+[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8924-edf8a39b/tests/src/org.testcontainers/testcontainers/1.19.8/build/reports/problems/problems-report.html
+FAILURE: Build failed with an exception.
+
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+* What went wrong:
+
+Execution failed for task ':test'.
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+> There were failing tests. See the report at: file:///home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8924-edf8a39b/tests/src/org.testcontainers/testcontainers/1.19.8/build/reports/tests/test/index.html
+18 actionable tasks: 4 executed, 14 up-to-date
+
+* Try:
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+
+BUILD FAILED in 36s
+
+> Task :tckTest FAILED
+
+[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8924-edf8a39b/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':tckTest'.
+> Test for org.testcontainers:testcontainers:1.19.8 failed with exit code 1.
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD FAILED in 41s
+9 actionable tasks: 1 executed, 8 up-to-date
