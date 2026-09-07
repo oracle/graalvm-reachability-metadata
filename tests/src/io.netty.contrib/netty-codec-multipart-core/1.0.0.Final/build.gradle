@@ -15,6 +15,13 @@ dependencies {
     testImplementation 'org.assertj:assertj-core:3.22.0'
 }
 
+tasks.named("nativeTest") {
+    runtimeArgs.addAll([
+            '-Dsun.misc.unsafe.memory.access=allow',
+            '-Dio.netty.tryReflectionSetAccessible=true'
+    ])
+}
+
 graalvmNative {
     agent {
         defaultMode = "conditional"
