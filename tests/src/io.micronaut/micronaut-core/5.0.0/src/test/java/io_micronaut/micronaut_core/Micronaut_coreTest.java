@@ -27,7 +27,9 @@ import io.micronaut.core.order.Ordered;
 import io.micronaut.core.propagation.PropagatedContext;
 import io.micronaut.core.propagation.PropagatedContextElement;
 import io.micronaut.core.reflect.InstantiationUtils;
+import io.micronaut.core.reflect.ReflectionUtils;
 import io.micronaut.core.type.Argument;
+import io.micronaut.core.util.ArrayUtils;
 import io.micronaut.core.util.CollectionUtils;
 import io.micronaut.core.util.ConnectionString;
 import io.micronaut.core.version.VersionUtils;
@@ -115,6 +117,25 @@ public class Micronaut_coreTest {
                         .orElseThrow();
 
         assertThat(converted).isInstanceOf(TreeSet.class).containsExactly(3, 5, 8);
+    }
+
+    @Test
+    void handlesMissingReflectiveMembers() {
+        assertThat(ReflectionUtils.findConstructor(Runnable.class)).isEmpty();
+        assertThat(ReflectionUtils.findDeclaredField(Runnable.class, "missing")).isEmpty();
+        assertThat(ReflectionUtils.getDeclaredMethod(Runnable.class, "missing")).isEmpty();
+        assertThat(ReflectionUtils.findMethod(Runnable.class, "missing")).isEmpty();
+        assertThat(ReflectionUtils.findMethodsByName(Runnable.class, "missing")).isEmpty();
+    }
+
+    @Test
+    void createsReferenceAndPrimitiveArrays() {
+        assertThat(ArrayUtils.concat(new String[] {"one"}, "two"))
+                .containsExactly("one", "two");
+        assertThat(ArrayUtils.toArray(List.of("one", "two"), String.class))
+                .containsExactly("one", "two");
+        assertThat(ArrayUtils.toWrapperArray(new int[] {1, 2})).containsExactly(1, 2);
+        assertThat(ArrayUtils.toPrimitiveArray(new Integer[] {1, 2})).isEqualTo(new int[] {1, 2});
     }
 
     @Test
