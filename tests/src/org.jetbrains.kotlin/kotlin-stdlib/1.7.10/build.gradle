@@ -26,6 +26,8 @@ kotlin {
 
 compileTestKotlin {
     kotlinOptions.jvmTarget = testJvmVersion.toString()
+    // Use the oldest API supported by the compiler so generated coroutine metadata remains compatible.
+    kotlinOptions.apiVersion = "1.9"
 }
 
 graalvmNative {
