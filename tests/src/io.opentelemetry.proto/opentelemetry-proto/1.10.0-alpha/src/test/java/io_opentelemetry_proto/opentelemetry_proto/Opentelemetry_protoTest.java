@@ -26,6 +26,8 @@ import io.opentelemetry.proto.logs.v1.ResourceLogs;
 import io.opentelemetry.proto.logs.v1.ScopeLogs;
 import io.opentelemetry.proto.logs.v1.SeverityNumber;
 import io.opentelemetry.proto.metrics.v1.AggregationTemporality;
+import io.opentelemetry.proto.metrics.v1.ExponentialHistogram;
+import io.opentelemetry.proto.metrics.v1.ExponentialHistogramDataPoint;
 import io.opentelemetry.proto.metrics.v1.Gauge;
 import io.opentelemetry.proto.metrics.v1.Histogram;
 import io.opentelemetry.proto.metrics.v1.HistogramDataPoint;
@@ -246,6 +248,52 @@ public class Opentelemetry_protoTest {
         assertThat(recordedPoint.getMin()).isEqualTo(1.1D);
         assertThat(recordedPoint.hasMax()).isTrue();
         assertThat(recordedPoint.getMax()).isEqualTo(8.7D);
+    }
+
+    @Test
+    void exponentialHistogramMetricRepresentsPositiveNegativeAndZeroBuckets() {
+        ExponentialHistogramDataPoint point = ExponentialHistogramDataPoint.newBuilder()
+                .setStartTimeUnixNano(10L)
+                .setTimeUnixNano(20L)
+                .setCount(7L)
+                .setSum(15.75D)
+                .setScale(2)
+                .setZeroCount(1L)
+                .setPositive(ExponentialHistogramDataPoint.Buckets.newBuilder()
+                        .setOffset(-1)
+                        .addBucketCounts(2L)
+                        .addBucketCounts(3L))
+                .setNegative(ExponentialHistogramDataPoint.Buckets.newBuilder()
+                        .setOffset(1)
+                        .addBucketCounts(1L))
+                .setMin(-2.5D)
+                .setMax(8.0D)
+                .setZeroThreshold(0.01D)
+                .build();
+        Metric metric = Metric.newBuilder()
+                .setName("request.size")
+                .setUnit("By")
+                .setExponentialHistogram(ExponentialHistogram.newBuilder()
+                        .setAggregationTemporality(AggregationTemporality.AGGREGATION_TEMPORALITY_DELTA)
+                        .addDataPoints(point))
+                .build();
+
+        ExponentialHistogramDataPoint recordedPoint = metric.getExponentialHistogram().getDataPoints(0);
+
+        assertThat(metric.getDataCase()).isEqualTo(Metric.DataCase.EXPONENTIAL_HISTOGRAM);
+        assertThat(metric.getExponentialHistogram().getAggregationTemporality())
+                .isEqualTo(AggregationTemporality.AGGREGATION_TEMPORALITY_DELTA);
+        assertThat(recordedPoint.getCount()).isEqualTo(7L);
+        assertThat(recordedPoint.getScale()).isEqualTo(2);
+        assertThat(recordedPoint.getZeroCount()).isEqualTo(1L);
+        assertThat(recordedPoint.getPositive().getOffset()).isEqualTo(-1);
+        assertThat(recordedPoint.getPositive().getBucketCountsList()).containsExactly(2L, 3L);
+        assertThat(recordedPoint.getNegative().getOffset()).isEqualTo(1);
+        assertThat(recordedPoint.getNegative().getBucketCountsList()).containsExactly(1L);
+        assertThat(recordedPoint.getSum()).isEqualTo(15.75D);
+        assertThat(recordedPoint.getMin()).isEqualTo(-2.5D);
+        assertThat(recordedPoint.getMax()).isEqualTo(8.0D);
+        assertThat(recordedPoint.getZeroThreshold()).isEqualTo(0.01D);
     }
 
     @Test
