@@ -1,9 +1,0 @@
-{
-  "action": "advisory_preparation",
-  "summary": "Netty 4.2.7.Final is transitively resolved, but its adaptive allocator can fail under Native Image; no extra dependency or Docker image is needed. ([POM](https://repo.maven.apache.org/maven2/io/netty/contrib/netty-codec-multipart-core/1.0.0.Final/netty-codec-multipart-core-1.0.0.Final.pom), [Netty issue](https://github.com/netty/netty/issues/15397))",
-  "deterministic_setup": [],
-  "agent_guidance": "Set -Dio.netty.allocator.type=unpooled before any Netty class initializes, for both JVM and native-test execution. Exercise PostBodyDecoder.builder() with in-memory Unpooled buffers for multipart and URL-encoded data, following the upstream API documentation. ([Documentation](https://github.com/netty-contrib/codec-multipart))",
-  "risks": [
-    "This is a Native Image workaround that bypasses Netty 4.2's adaptive allocator; local Gradle and Native Image verification remains authoritative."
-  ]
-}
