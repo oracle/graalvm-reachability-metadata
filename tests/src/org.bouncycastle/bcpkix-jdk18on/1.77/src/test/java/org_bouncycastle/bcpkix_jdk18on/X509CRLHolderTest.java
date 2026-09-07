@@ -10,11 +10,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.OutputStream;
 import java.math.BigInteger;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
@@ -74,58 +71,13 @@ public class X509CRLHolderTest {
 
     private static X509CRLHolder roundTrip(X509CRLHolder original) throws Exception {
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-        try (ObjectOutputStream output = new CRLEncodingObjectOutputStream(bytes)) {
+        try (ObjectOutputStream output = new ObjectOutputStream(bytes)) {
             output.writeObject(original);
         }
 
-        try (ObjectInputStream input = new CRLEncodingObjectInputStream(
+        try (ObjectInputStream input = new ObjectInputStream(
                 new ByteArrayInputStream(bytes.toByteArray()))) {
             return (X509CRLHolder) input.readObject();
-        }
-    }
-
-    // Give this holder's nested encoding write its own serialization descriptor path.
-    private static final class CRLEncodingObjectOutputStream extends ObjectOutputStream {
-
-        private CRLEncodingObjectOutputStream(OutputStream output) throws IOException {
-            super(output);
-            enableReplaceObject(true);
-        }
-
-        @Override
-        protected Object replaceObject(Object object) {
-            if (!(object instanceof byte[])) {
-                return object;
-            }
-
-            byte[] encoding = (byte[]) object;
-            short[] replacement = new short[encoding.length];
-            for (int index = 0; index < encoding.length; index++) {
-                replacement[index] = (short) (encoding[index] & 0xff);
-            }
-            return replacement;
-        }
-    }
-
-    private static final class CRLEncodingObjectInputStream extends ObjectInputStream {
-
-        private CRLEncodingObjectInputStream(InputStream input) throws IOException {
-            super(input);
-            enableResolveObject(true);
-        }
-
-        @Override
-        protected Object resolveObject(Object object) {
-            if (!(object instanceof short[])) {
-                return object;
-            }
-
-            short[] encoding = (short[]) object;
-            byte[] replacement = new byte[encoding.length];
-            for (int index = 0; index < encoding.length; index++) {
-                replacement[index] = (byte) encoding[index];
-            }
-            return replacement;
         }
     }
 }

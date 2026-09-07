@@ -10,11 +10,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.OutputStream;
 import java.math.BigInteger;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
@@ -70,58 +67,13 @@ public class X509CertificateHolderTest {
 
     private static X509CertificateHolder roundTrip(X509CertificateHolder original) throws Exception {
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-        try (ObjectOutputStream output = new CertificateEncodingObjectOutputStream(bytes)) {
+        try (ObjectOutputStream output = new ObjectOutputStream(bytes)) {
             output.writeObject(original);
         }
 
-        try (ObjectInputStream input = new CertificateEncodingObjectInputStream(
+        try (ObjectInputStream input = new ObjectInputStream(
                 new ByteArrayInputStream(bytes.toByteArray()))) {
             return (X509CertificateHolder) input.readObject();
-        }
-    }
-
-    // Give this holder's nested encoding write its own serialization descriptor path.
-    private static final class CertificateEncodingObjectOutputStream extends ObjectOutputStream {
-
-        private CertificateEncodingObjectOutputStream(OutputStream output) throws IOException {
-            super(output);
-            enableReplaceObject(true);
-        }
-
-        @Override
-        protected Object replaceObject(Object object) {
-            if (!(object instanceof byte[])) {
-                return object;
-            }
-
-            byte[] encoding = (byte[]) object;
-            int[] replacement = new int[encoding.length];
-            for (int index = 0; index < encoding.length; index++) {
-                replacement[index] = encoding[index] & 0xff;
-            }
-            return replacement;
-        }
-    }
-
-    private static final class CertificateEncodingObjectInputStream extends ObjectInputStream {
-
-        private CertificateEncodingObjectInputStream(InputStream input) throws IOException {
-            super(input);
-            enableResolveObject(true);
-        }
-
-        @Override
-        protected Object resolveObject(Object object) {
-            if (!(object instanceof int[])) {
-                return object;
-            }
-
-            int[] encoding = (int[]) object;
-            byte[] replacement = new byte[encoding.length];
-            for (int index = 0; index < encoding.length; index++) {
-                replacement[index] = (byte) encoding[index];
-            }
-            return replacement;
         }
     }
 }
