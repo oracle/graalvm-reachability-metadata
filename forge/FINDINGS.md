@@ -53,6 +53,11 @@ Review Signal #4 was violated in tests/src/io.micronaut.serde/micronaut-serde-su
 **Unsupported-feature catch masks statically available class resolution**
 
 In tests/src/io.netty/netty-codec/5.0.0.Alpha1/src/test/java/io_netty/netty_codec/ClassLoaderClassResolverTest.java, both tests caught Error and accepted NativeImageSupport.isUnsupportedFeatureError even though the target class name is fixed, the class is included in the image, and the behavior does not require a class discovered after image build. This applies the sole open-ended dynamic-class-loading exception outside its permitted scope and could make the native tests pass without executing their assertions.
+## 2026-09-06 — io.netty:netty-codec:4.2.2.Final (#9761)
+
+**Native-image repair deletes the failing checksum test**
+
+The branch deletes tests/src/io.netty/netty-codec/4.1.42.Final/src/test/java/io_netty/netty_codec/ByteBufChecksumInnerReflectiveByteBufChecksumTest.java after that test exposed the CleanerJava24/SharedArena native failure. Deleting the failing test to make the native lane green is the enumerated fix-by-weakening violation in FS-contribution-contract.4.8 / FS-test-contract.2.9 and does not demonstrate that the native-image runtime path was repaired.
 
 ## 2026-09-05 — com.github.seregamorph:spring-test-smart-context:1.0 (#9677)
 
