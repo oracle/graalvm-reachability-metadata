@@ -3,6 +3,11 @@
 Rendered by Forge from the pre-push branch review of §FS-local-branch-review.
 Newest entry first; every non-approval is recorded, including one a repair later cleared.
 
+## 2026-09-07 — org.junit.platform:junit-platform-reporting:6.1.0 (#9212)
+
+**Repair contribution changes unrelated coordinates**
+
+The proposed diff added metadata, index changes, and stats for org.junit.platform:junit-platform-commons:6.1.0 and org.junit.platform:junit-platform-engine:6.1.0. The closed-file-set and one-library/one-version rules require this fixes-native-image-run-fail contribution to remain inside the target org.junit.platform:junit-platform-reporting:6.1.0 coordinate and its supporting files.
 ## 2026-09-07 — org.bouncycastle:bcpkix-jdk18on:1.77 (#8922)
 
 **Test-created serialization metadata shipped as library metadata**
