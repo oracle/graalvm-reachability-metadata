@@ -4,6 +4,11 @@
  * You should have received a copy of the CC0 legalcode along with this
  * work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
  */
+import org.gradle.api.tasks.SourceSet
+import org.gradle.api.tasks.TaskProvider
+import org.gradle.api.tasks.bundling.Jar
+import org.gradle.api.tasks.testing.Test
+
 plugins {
     id "org.graalvm.internal.tck"
     alias(libs.plugins.kotlin.jvm)
@@ -11,6 +16,16 @@ plugins {
 
 String libraryVersion = tck.testedLibraryVersion.get()
 int testJvmVersion = tck.testJvmVersion.get()
+String moduleNameRetrieverTestModule = "kotlinstdlib.modulenameretrievertest"
+String moduleNameRetrieverTestPath = "kotlinstdlib/modulenameretriever/ModuleNameRetrieverTest.kt"
+
+// The module-name branch is observable only when the generated coroutine belongs to a named module.
+SourceSet moduleNameRetrieverTest = sourceSets.create("moduleNameRetrieverTest")
+moduleNameRetrieverTest.kotlin.srcDir("src/test/kotlin")
+moduleNameRetrieverTest.kotlin.include(moduleNameRetrieverTestPath)
+moduleNameRetrieverTest.compileClasspath = sourceSets.test.compileClasspath
+moduleNameRetrieverTest.runtimeClasspath = moduleNameRetrieverTest.output + moduleNameRetrieverTest.compileClasspath
+sourceSets.test.kotlin.exclude(moduleNameRetrieverTestPath)
 
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$libraryVersion"
@@ -30,11 +45,41 @@ compileTestKotlin {
     kotlinOptions.apiVersion = "1.9"
 }
 
+compileModuleNameRetrieverTestKotlin {
+    kotlinOptions.jvmTarget = testJvmVersion.toString()
+    kotlinOptions.apiVersion = "1.9"
+}
+
+TaskProvider<Jar> moduleNameRetrieverTestJar = tasks.register("moduleNameRetrieverTestJar", Jar) {
+    archiveClassifier = "module-name-retriever-test"
+    from(moduleNameRetrieverTest.output)
+    manifest {
+        attributes("Automatic-Module-Name": moduleNameRetrieverTestModule)
+    }
+}
+
+tasks.named("test", Test) {
+    dependsOn(moduleNameRetrieverTestJar)
+    testClassesDirs = testClassesDirs + moduleNameRetrieverTest.output.classesDirs
+    jvmArgs(
+        "--module-path", moduleNameRetrieverTestJar.flatMap { Jar jar -> jar.archiveFile }.get().asFile.absolutePath,
+        "--add-modules", moduleNameRetrieverTestModule
+    )
+}
+
+tasks.named("nativeTestCompile") {
+    dependsOn(moduleNameRetrieverTestJar)
+}
+
 graalvmNative {
     binaries {
         test {
+            String modulePath = moduleNameRetrieverTestJar.flatMap { Jar jar -> jar.archiveFile }
+                .get().asFile.absolutePath
             buildArgs.add('--no-fallback')
             buildArgs.add('--initialize-at-build-time=kotlin.Metadata')
+            buildArgs.add("--module-path=$modulePath")
+            buildArgs.add("--add-modules=$moduleNameRetrieverTestModule")
         }
     }
 }
