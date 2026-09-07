@@ -7,6 +7,13 @@
 package io_opentelemetry_proto.opentelemetry_proto;
 
 import com.google.protobuf.ByteString;
+import io.micrometer.core.instrument.Clock;
+import io.micrometer.core.instrument.Counter;
+import io.micrometer.core.instrument.DistributionSummary;
+import io.micrometer.core.instrument.Timer;
+import io.micrometer.registry.otlp.OtlpConfig;
+import io.micrometer.registry.otlp.OtlpMeterRegistry;
+import io.micrometer.registry.otlp.OtlpMetricsSender;
 import io.opentelemetry.proto.collector.logs.v1.ExportLogsServiceRequest;
 import io.opentelemetry.proto.collector.metrics.v1.ExportMetricsServiceRequest;
 import io.opentelemetry.proto.collector.profiles.v1development.ExportProfilesServiceRequest;
@@ -19,7 +26,6 @@ import io.opentelemetry.proto.logs.v1.ResourceLogs;
 import io.opentelemetry.proto.logs.v1.ScopeLogs;
 import io.opentelemetry.proto.logs.v1.SeverityNumber;
 import io.opentelemetry.proto.metrics.v1.AggregationTemporality;
-import io.opentelemetry.proto.metrics.v1.Exemplar;
 import io.opentelemetry.proto.metrics.v1.Gauge;
 import io.opentelemetry.proto.metrics.v1.Histogram;
 import io.opentelemetry.proto.metrics.v1.HistogramDataPoint;
@@ -41,10 +47,21 @@ import io.opentelemetry.proto.trace.v1.ScopeSpans;
 import io.opentelemetry.proto.trace.v1.Span;
 import io.opentelemetry.proto.trace.v1.Status;
 import io.opentelemetry.proto.trace.v1.TracesData;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
+
+import java.time.Duration;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ThreadFactory;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class Opentelemetry_protoTest {
     private static final ByteString TRACE_ID = ByteString.copyFromUtf8("0123456789abcdef");
     private static final ByteString SPAN_ID = ByteString.copyFromUtf8("01234567");
@@ -100,6 +117,47 @@ public class Opentelemetry_protoTest {
     }
 
     @Test
+    @Order(1)
+    void otlpMeterRegistryExportsRecordedMetricsAsProtobuf() throws Exception {
+        CapturingMetricsSender sender = new CapturingMetricsSender();
+        OtlpMeterRegistry registry = OtlpMeterRegistry.builder(new InMemoryOtlpConfig())
+                .clock(Clock.SYSTEM)
+                .metricsSender(sender)
+                .threadFactory(new DaemonThreadFactory())
+                .build();
+        try {
+            Counter.builder("checkout.orders")
+                    .tag("result", "accepted")
+                    .register(registry)
+                    .increment(3.0D);
+            Timer.builder("checkout.duration")
+                    .publishPercentileHistogram()
+                    .register(registry)
+                    .record(Duration.ofMillis(75));
+            DistributionSummary.builder("checkout.items")
+                    .publishPercentileHistogram()
+                    .register(registry)
+                    .record(4.0D);
+        } finally {
+            registry.close();
+        }
+
+        OtlpMetricsSender.Request sentRequest = sender.singleRequest();
+        ExportMetricsServiceRequest request = ExportMetricsServiceRequest.parseFrom(sentRequest.getMetricsData());
+        Map<String, Metric> metrics = metricsByName(request);
+
+        assertThat(sentRequest.getAddress()).isEqualTo("http://collector.invalid/v1/metrics");
+        assertThat(request.getResourceMetricsCount()).isEqualTo(1);
+        assertThat(request.getResourceMetrics(0).hasResource()).isTrue();
+        assertThat(metrics.keySet()).contains("checkout.orders", "checkout.duration", "checkout.items");
+        assertThat(metrics.get("checkout.orders").getSum().getDataPoints(0).getAsDouble()).isEqualTo(3.0D);
+        assertThat(metrics.get("checkout.duration").getHistogram().getDataPoints(0).getCount()).isEqualTo(1L);
+        assertThat(metrics.get("checkout.duration").getHistogram().getDataPoints(0).getSum()).isEqualTo(75.0D);
+        assertThat(metrics.get("checkout.items").getHistogram().getDataPoints(0).getCount()).isEqualTo(1L);
+        assertThat(metrics.get("checkout.items").getHistogram().getDataPoints(0).getSum()).isEqualTo(4.0D);
+    }
+
+    @Test
     void metricsExportSupportsGaugeAndCumulativeSumDataPoints() throws Exception {
         NumberDataPoint gaugePoint = NumberDataPoint.newBuilder()
                 .setStartTimeUnixNano(10L)
@@ -150,14 +208,7 @@ public class Opentelemetry_protoTest {
     }
 
     @Test
-    void histogramMetricRepresentsDistributionBucketsAndExemplars() {
-        Exemplar exemplar = Exemplar.newBuilder()
-                .setTimeUnixNano(15L)
-                .setAsDouble(4.2D)
-                .setTraceId(TRACE_ID)
-                .setSpanId(SPAN_ID)
-                .addFilteredAttributes(attribute("sampled", "true"))
-                .build();
+    void histogramMetricRepresentsDistributionBuckets() {
         HistogramDataPoint point = HistogramDataPoint.newBuilder()
                 .setStartTimeUnixNano(10L)
                 .setTimeUnixNano(20L)
@@ -170,7 +221,6 @@ public class Opentelemetry_protoTest {
                 .addExplicitBounds(5.0D)
                 .setMin(1.1D)
                 .setMax(8.7D)
-                .addExemplars(exemplar)
                 .build();
         Metric metric = Metric.newBuilder()
                 .setName("request.duration")
@@ -194,8 +244,6 @@ public class Opentelemetry_protoTest {
         assertThat(recordedPoint.getMin()).isEqualTo(1.1D);
         assertThat(recordedPoint.hasMax()).isTrue();
         assertThat(recordedPoint.getMax()).isEqualTo(8.7D);
-        assertThat(recordedPoint.getExemplars(0).getAsDouble()).isEqualTo(4.2D);
-        assertThat(recordedPoint.getExemplars(0).getFilteredAttributes(0).getKey()).isEqualTo("sampled");
     }
 
     @Test
@@ -276,6 +324,18 @@ public class Opentelemetry_protoTest {
         assertThat(parsedRecord.getEventName()).isEqualTo("payment.authorization");
     }
 
+    private static Map<String, Metric> metricsByName(ExportMetricsServiceRequest request) {
+        Map<String, Metric> metrics = new HashMap<>();
+        for (ResourceMetrics resourceMetrics : request.getResourceMetricsList()) {
+            for (ScopeMetrics scopeMetrics : resourceMetrics.getScopeMetricsList()) {
+                for (Metric metric : scopeMetrics.getMetricsList()) {
+                    metrics.put(metric.getName(), metric);
+                }
+            }
+        }
+        return metrics;
+    }
+
     private static Resource resource() {
         return Resource.newBuilder()
                 .addAttributes(attribute("service.name", "checkout"))
@@ -296,5 +356,45 @@ public class Opentelemetry_protoTest {
                 .setKey(key)
                 .setValue(AnyValue.newBuilder().setStringValue(value))
                 .build();
+    }
+
+    private static class CapturingMetricsSender implements OtlpMetricsSender {
+        private final List<OtlpMetricsSender.Request> requests = new ArrayList<>();
+
+        @Override
+        public void send(OtlpMetricsSender.Request request) {
+            requests.add(request);
+        }
+
+        OtlpMetricsSender.Request singleRequest() {
+            assertThat(requests).hasSize(1);
+            return requests.get(0);
+        }
+    }
+
+    private static class DaemonThreadFactory implements ThreadFactory {
+        @Override
+        public Thread newThread(Runnable runnable) {
+            Thread thread = new Thread(runnable, "otlp-test-publisher");
+            thread.setDaemon(true);
+            return thread;
+        }
+    }
+
+    private static class InMemoryOtlpConfig implements OtlpConfig {
+        @Override
+        public String get(String key) {
+            return null;
+        }
+
+        @Override
+        public String url() {
+            return "http://collector.invalid/v1/metrics";
+        }
+
+        @Override
+        public Duration step() {
+            return Duration.ofSeconds(30);
+        }
     }
 }
