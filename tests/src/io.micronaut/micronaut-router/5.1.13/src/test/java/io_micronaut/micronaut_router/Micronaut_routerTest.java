@@ -6,11 +6,217 @@
  */
 package io_micronaut.micronaut_router;
 
-import org.junit.jupiter.api.Test;
+import static org.assertj.core.api.Assertions.assertThat;
 
-class Micronaut_routerTest {
+import io.micronaut.context.ApplicationContext;
+import io.micronaut.context.env.Environment;
+import io.micronaut.core.version.annotation.Version;
+import io.micronaut.http.HttpMethod;
+import io.micronaut.http.HttpRequest;
+import io.micronaut.http.HttpStatus;
+import io.micronaut.http.MediaType;
+import io.micronaut.http.MutableHttpRequest;
+import io.micronaut.http.annotation.Body;
+import io.micronaut.http.annotation.Controller;
+import io.micronaut.http.annotation.Error;
+import io.micronaut.http.annotation.Get;
+import io.micronaut.http.annotation.PathVariable;
+import io.micronaut.http.annotation.Post;
+import io.micronaut.web.router.MethodBasedRouteMatch;
+import io.micronaut.web.router.RouteAttributes;
+import io.micronaut.web.router.RouteMatch;
+import io.micronaut.web.router.Router;
+import io.micronaut.web.router.UriRouteMatch;
+import io.micronaut.web.router.naming.HyphenatedUriNamingStrategy;
+import io.micronaut.web.router.resource.StaticResourceResolver;
+import io.micronaut.web.router.uri.UriUtil;
+import java.net.URL;
+import java.util.List;
+import java.util.Map;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
+
+@Controller("/catalog")
+public class Micronaut_routerTest {
     @Test
-    void test() throws Exception {
-        System.out.println("This is just a placeholder, implement your test");
+    @Timeout(55)
+    void discoversExecutesAndSelectsAnnotatedRoutes() {
+        try (ApplicationContext context = ApplicationContext.run(Environment.TEST)) {
+            Router router = context.getBean(Router.class);
+
+            UriRouteMatch<?, ?> itemRoute = findClosest(
+                    router,
+                    HttpRequest.GET("/catalog/items/42").accept(MediaType.TEXT_PLAIN_TYPE));
+            assertThat(itemRoute.getHttpMethod() == HttpMethod.GET).isTrue();
+            assertThat(itemRoute.getVariableValues()).containsEntry("id", "42");
+            assertThat(itemRoute.getRouteInfo().getProduces()).containsExactly(MediaType.TEXT_PLAIN_TYPE);
+            assertThat(itemRoute.invoke()).isEqualTo("item-42");
+
+            UriRouteMatch<?, ?> featuredRoute = findClosest(
+                    router,
+                    HttpRequest.GET("/catalog/items/featured").accept(MediaType.TEXT_PLAIN_TYPE));
+            assertThat(featuredRoute.getMethodName()).isEqualTo("featuredItem");
+            assertThat(featuredRoute.invoke()).isEqualTo("featured-item");
+
+            HttpRequest<String> createRequest = HttpRequest.POST("/catalog/items", "pencil")
+                    .contentType(MediaType.TEXT_PLAIN_TYPE)
+                    .accept(MediaType.TEXT_PLAIN_TYPE);
+            UriRouteMatch<?, ?> createRoute = findClosest(router, createRequest);
+            assertThat(createRoute.getRouteInfo().getConsumes()).containsExactly(MediaType.TEXT_PLAIN_TYPE);
+            assertThat(createRoute.getRouteInfo().needsRequestBody()).isTrue();
+            assertThat(createRoute.invoke("pencil")).isEqualTo("created-pencil");
+
+            List<UriRouteMatch<Object, Object>> routesForPath =
+                    router.findAny(HttpRequest.GET("/catalog/items/42"));
+            boolean hasGetRoute = false;
+            boolean hasHeadRoute = false;
+            for (UriRouteMatch<?, ?> route : routesForPath) {
+                hasGetRoute |= route.getHttpMethod() == HttpMethod.GET;
+                hasHeadRoute |= route.getHttpMethod() == HttpMethod.HEAD;
+            }
+            assertThat(routesForPath).hasSize(2);
+            assertThat(hasGetRoute).isTrue();
+            assertThat(hasHeadRoute).isTrue();
+            assertThat(router.POST("/catalog/items/42")).isEmpty();
+        }
+    }
+
+    @Test
+    @Timeout(55)
+    void filtersVersionedRoutesUsingHeaderParameterAndDefaultVersion() {
+        Map<String, Object> properties = Map.ofEntries(
+                Map.entry("micronaut.router.versioning.enabled", true),
+                Map.entry("micronaut.router.versioning.header.enabled", true),
+                Map.entry("micronaut.router.versioning.header.names", List.of("X-Release")),
+                Map.entry("micronaut.router.versioning.parameter.enabled", true),
+                Map.entry("micronaut.router.versioning.parameter.names", List.of("api-revision")),
+                Map.entry("micronaut.router.versioning.default-version", "v1"));
+
+        try (ApplicationContext context = ApplicationContext.run(properties, Environment.TEST)) {
+            Router router = context.getBean(Router.class);
+
+            HttpRequest<?> headerRequest = HttpRequest.GET("/catalog/versioned")
+                    .header("X-Release", "v2")
+                    .accept(MediaType.TEXT_PLAIN_TYPE);
+            assertThat(findClosest(router, headerRequest).invoke()).isEqualTo("version-two");
+
+            MutableHttpRequest<?> parameterRequest = HttpRequest.GET("/catalog/versioned")
+                    .accept(MediaType.TEXT_PLAIN_TYPE);
+            parameterRequest.getParameters().add("api-revision", "v2");
+            assertThat(findClosest(router, parameterRequest).invoke()).isEqualTo("version-two");
+
+            HttpRequest<?> defaultVersionRequest = HttpRequest.GET("/catalog/versioned")
+                    .accept(MediaType.TEXT_PLAIN_TYPE);
+            assertThat(findClosest(router, defaultVersionRequest).invoke()).isEqualTo("version-one");
+        }
+    }
+
+    @Test
+    @Timeout(55)
+    void bindsRouterConfigurationAndResolvesPackagedStaticResources() {
+        Map<String, Object> properties = Map.ofEntries(
+                Map.entry("micronaut.server.context-path", "/gateway/"),
+                Map.entry("micronaut.router.static-resources.assets.enabled", true),
+                Map.entry("micronaut.router.static-resources.assets.mapping", "/assets/**"),
+                Map.entry(
+                        "micronaut.router.static-resources.assets.paths",
+                        List.of("classpath:META-INF/micronaut-configuration-schemas")));
+
+        try (ApplicationContext context = ApplicationContext.run(properties, Environment.TEST)) {
+            HyphenatedUriNamingStrategy namingStrategy = context.getBean(HyphenatedUriNamingStrategy.class);
+            assertThat(namingStrategy.resolveUri(OrderHistoryController.class))
+                    .isEqualTo("/gateway/order-history");
+            assertThat(namingStrategy.resolveUri("OrderHistory")).isEqualTo("/gateway/order-history");
+
+            StaticResourceResolver resolver = context.getBean(StaticResourceResolver.class);
+            String configurationSchema = "/assets/io.micronaut.web.router.resource.StaticResourceConfiguration.json";
+            URL resolvedResource = resolver.resolve(configurationSchema).orElseThrow();
+            assertThat(resolvedResource.getPath()).endsWith("StaticResourceConfiguration.json");
+            assertThat(resolver.resolve("/assets/missing.json")).isEmpty();
+        }
+    }
+
+    @Test
+    @Timeout(55)
+    void resolvesStatusAndErrorRoutesAndStoresRouteAttributes() {
+        try (ApplicationContext context = ApplicationContext.run(Environment.TEST)) {
+            Router router = context.getBean(Router.class);
+
+            RouteMatch<?> statusRoute = router.route(Micronaut_routerTest.class, HttpStatus.NOT_FOUND).orElseThrow();
+            assertThat(statusRoute.execute()).isEqualTo("catalog-not-found");
+
+            IllegalArgumentException failure = new IllegalArgumentException("invalid item");
+            RouteMatch<?> errorRoute = router.route(Micronaut_routerTest.class, failure).orElseThrow();
+            assertThat(errorRoute).isInstanceOf(MethodBasedRouteMatch.class);
+            MethodBasedRouteMatch<?, ?> methodBasedErrorRoute = (MethodBasedRouteMatch<?, ?>) errorRoute;
+            assertThat(methodBasedErrorRoute.invoke()).isEqualTo("error: invalid item");
+
+            MutableHttpRequest<?> request = HttpRequest.GET("/catalog/missing");
+            RouteAttributes.setRouteMatch(request, statusRoute);
+            RouteAttributes.setRouteInfo(request, statusRoute.getRouteInfo());
+            assertThat(RouteAttributes.getRouteMatch(request)).contains(statusRoute);
+            assertThat(RouteAttributes.getRouteInfo(request)).contains(statusRoute.getRouteInfo());
+        }
+    }
+
+    @Test
+    @Timeout(55)
+    void normalizesBrowserRequestTargetsForRfc3986Routing() {
+        String browserPath = "/a path/\u00E9|x?bad=%zz&ok=%2F";
+
+        assertThat(UriUtil.toValidPath(browserPath))
+                .isEqualTo("/a%20path/%C3%A9%7Cx?bad=%25zz&ok=%2F");
+        assertThat(UriUtil.toValidPath("//catalog/items")).isEqualTo("/catalog/items");
+        assertThat(UriUtil.isValidPath("/catalog/items?limit=10")).isTrue();
+        assertThat(UriUtil.isValidPath("/catalog/%invalid")).isFalse();
+        assertThat(UriUtil.isValidPath("/catalog//items")).isFalse();
+        assertThat(UriUtil.isRelative("/catalog/items")).isTrue();
+        assertThat(UriUtil.isRelative("https://example.test/catalog")).isFalse();
+    }
+
+    @Get(uri = "/items/{id}", produces = MediaType.TEXT_PLAIN)
+    public String item(@PathVariable("id") long id) {
+        return "item-" + id;
+    }
+
+    @Get(uri = "/items/featured", produces = MediaType.TEXT_PLAIN)
+    public String featuredItem() {
+        return "featured-item";
+    }
+
+    @Post(uri = "/items", consumes = MediaType.TEXT_PLAIN, produces = MediaType.TEXT_PLAIN)
+    public String createItem(@Body String body) {
+        return "created-" + body;
+    }
+
+    @Get(uri = "/versioned", produces = MediaType.TEXT_PLAIN)
+    @Version("v1")
+    public String versionOne() {
+        return "version-one";
+    }
+
+    @Get(uri = "/versioned", produces = MediaType.TEXT_PLAIN)
+    @Version("v2")
+    public String versionTwo() {
+        return "version-two";
+    }
+
+    @Error(status = HttpStatus.NOT_FOUND)
+    public String notFound() {
+        return "catalog-not-found";
+    }
+
+    @Error(IllegalArgumentException.class)
+    public String invalidItem(IllegalArgumentException failure) {
+        return "error: " + failure.getMessage();
+    }
+
+    private static UriRouteMatch<?, ?> findClosest(Router router, HttpRequest<?> request) {
+        UriRouteMatch<?, ?> routeMatch = router.findClosest(request);
+        assertThat(routeMatch).isNotNull();
+        return routeMatch;
+    }
+
+    public static final class OrderHistoryController {
     }
 }
