@@ -177,16 +177,16 @@ public class Micronaut_buffer_nettyTest {
                 NettyReadBufferFactory.of(UnpooledByteBufAllocator.DEFAULT);
 
         try (ReadBuffer empty = factory.createEmpty();
-                ReadBuffer utf8 = factory.copyOf("Grüße", StandardCharsets.UTF_8);
-                ReadBuffer latin = factory.copyOf("café", StandardCharsets.ISO_8859_1);
+                ReadBuffer utf8 = factory.copyOf("Gr\u00fc\u00dfe", StandardCharsets.UTF_8);
+                ReadBuffer latin = factory.copyOf("caf\u00e9", StandardCharsets.ISO_8859_1);
                 InputStream input = new ByteArrayInputStream(SAMPLE);
                 ReadBuffer fromStream = factory.copyOf(input);
                 ReadBuffer fromNio = factory.copyOf(StandardCharsets.UTF_8.encode("nio"));
                 ReadBuffer adaptedNio = factory.adapt(StandardCharsets.UTF_8.encode("adapted"));
                 ReadBuffer adaptedArray = factory.adapt("array".getBytes(StandardCharsets.UTF_8))) {
             assertThat(empty.readable()).isZero();
-            assertThat(utf8.toString(StandardCharsets.UTF_8)).isEqualTo("Grüße");
-            assertThat(latin.toString(StandardCharsets.ISO_8859_1)).isEqualTo("café");
+            assertThat(utf8.toString(StandardCharsets.UTF_8)).isEqualTo("Gr\u00fc\u00dfe");
+            assertThat(latin.toString(StandardCharsets.ISO_8859_1)).isEqualTo("caf\u00e9");
             assertThat(fromStream.toArray()).containsExactly(SAMPLE);
             assertThat(fromNio.toString(StandardCharsets.UTF_8)).isEqualTo("nio");
             assertThat(adaptedNio.toString(StandardCharsets.UTF_8)).isEqualTo("adapted");
