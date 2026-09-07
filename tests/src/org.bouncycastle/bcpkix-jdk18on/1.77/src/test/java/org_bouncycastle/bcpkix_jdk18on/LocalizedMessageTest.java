@@ -15,27 +15,27 @@ import org.junit.jupiter.api.Test;
 
 public class LocalizedMessageTest {
 
-    private static final String RESOURCE = "org_bouncycastle.bcpkix_jdk18on.localized_messages";
+    private static final String RESOURCE = "org.bouncycastle.pkix.CertPathReviewerMessages";
+    private static final String MESSAGE_ID = "CertPathReviewer.emptyCertPath";
     private static final TimeZone UTC = TimeZone.getTimeZone("UTC");
 
     @Test
     void resolvesMessageWithDefaultClassLoader() throws Exception {
-        LocalizedMessage message = new LocalizedMessage(
-                RESOURCE, "welcome", new Object[] {"Alice"});
+        LocalizedMessage message = new LocalizedMessage(RESOURCE, MESSAGE_ID);
 
-        String result = message.getEntry(null, Locale.ENGLISH, UTC);
+        String result = message.getEntry("text", Locale.ENGLISH, UTC);
 
-        assertThat(result).isEqualTo("Welcome, Alice!");
+        assertThat(result).isEqualTo("PKIXCertPathReviewer: the CertPath is empty.");
     }
 
     @Test
     void resolvesMessageWithExplicitClassLoader() throws Exception {
-        LocalizedMessage message = new LocalizedMessage(
-                RESOURCE, "farewell", new Object[] {"Bob"});
-        message.setClassLoader(LocalizedMessageTest.class.getClassLoader());
+        LocalizedMessage message = new LocalizedMessage(RESOURCE, MESSAGE_ID);
+        message.setClassLoader(LocalizedMessage.class.getClassLoader());
 
-        String result = message.getEntry(null, Locale.ENGLISH, UTC);
+        String result = message.getEntry("text", Locale.GERMAN, UTC);
 
-        assertThat(result).isEqualTo("Goodbye, Bob.");
+        assertThat(result)
+                .isEqualTo("PKIXCertPathReviewer: der Zertifizierungspfad ist leer.");
     }
 }
