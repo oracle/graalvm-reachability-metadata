@@ -19,6 +19,7 @@ import io.micronaut.http.HttpStatus;
 import io.micronaut.http.MediaType;
 import io.micronaut.http.MutableHttpRequest;
 import io.micronaut.http.annotation.Body;
+import io.micronaut.http.annotation.Consumes;
 import io.micronaut.http.annotation.Controller;
 import io.micronaut.http.annotation.Error;
 import io.micronaut.http.annotation.Get;
@@ -40,11 +41,13 @@ import io.micronaut.web.router.StatusRoute;
 import io.micronaut.web.router.UriRoute;
 import io.micronaut.web.router.UriRouteMatch;
 import io.micronaut.web.router.naming.HyphenatedUriNamingStrategy;
+import io.micronaut.web.router.qualifier.ConsumesMediaTypeQualifier;
 import io.micronaut.web.router.resource.StaticResourceResolver;
 import io.micronaut.web.router.uri.UriUtil;
 import java.net.URL;
 import java.util.List;
 import java.util.Map;
+import jakarta.inject.Singleton;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 
@@ -197,6 +200,22 @@ public class Micronaut_routerTest {
             assertThat(router.findFilters(HttpRequest.GET("/filtered/catalog"))).hasSize(1);
             assertThat(router.findFilters(HttpRequest.POST("/filtered/catalog", "item"))).isEmpty();
             assertThat(router.findFilters(HttpRequest.GET("/unfiltered/catalog"))).isEmpty();
+        }
+    }
+
+    @Test
+    @Timeout(55)
+    void selectsBeansByConsumedMediaType() {
+        try (ApplicationContext context = ApplicationContext.run(Environment.TEST)) {
+            ConsumesMediaTypeQualifier<CatalogHandler> consumesJson =
+                    new ConsumesMediaTypeQualifier<>(MediaType.APPLICATION_JSON_TYPE);
+            ConsumesMediaTypeQualifier<CatalogHandler> consumesText =
+                    new ConsumesMediaTypeQualifier<>(MediaType.TEXT_PLAIN_TYPE);
+
+            assertThat(context.getBean(CatalogHandler.class, consumesJson).name())
+                    .isEqualTo("json-handler");
+            assertThat(context.getBean(CatalogHandler.class, consumesText).name())
+                    .isEqualTo("text-handler");
         }
     }
 
@@ -432,6 +451,28 @@ public class Micronaut_routerTest {
     }
 
     public static final class OrderHistoryController {
+    }
+
+    public interface CatalogHandler {
+        String name();
+    }
+
+    @Singleton
+    @Consumes(MediaType.APPLICATION_JSON)
+    public static final class JsonCatalogHandler implements CatalogHandler {
+        @Override
+        public String name() {
+            return "json-handler";
+        }
+    }
+
+    @Singleton
+    @Consumes(MediaType.TEXT_PLAIN)
+    public static final class TextCatalogHandler implements CatalogHandler {
+        @Override
+        public String name() {
+            return "text-handler";
+        }
     }
 
     public static final class ProgrammaticRouteBuilder extends DefaultRouteBuilder {
