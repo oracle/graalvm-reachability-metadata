@@ -1,0 +1,71 @@
+/*
+ * Copyright and related rights waived via CC0
+ *
+ * You should have received a copy of the CC0 legalcode along with this
+ * work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
+ */
+plugins {
+    id "org.graalvm.internal.tck"
+}
+
+String libraryVersion = tck.testedLibraryVersion.get()
+File compiledTestClassesDir = layout.buildDirectory.dir("classes/java/test").get().asFile
+File processedTestResourcesDir = layout.buildDirectory.dir("resources/test").get().asFile
+File generatedCglibProxyMarkerFile = layout.buildDirectory.dir("generated/cglib-proxy-test-classes").get().file("done.marker").asFile
+String javaHome = System.getenv("JAVA_HOME")
+
+dependencies {
+    testImplementation "org.springframework:spring-aop:$libraryVersion"
+    testImplementation 'org.aspectj:aspectjrt:1.9.6'
+    testImplementation 'org.aspectj:aspectjweaver:1.9.6'
+    testImplementation 'org.assertj:assertj-core:3.22.0'
+}
+
+tasks.withType(Test).configureEach {
+    systemProperty "spring.objenesis.ignore", "true"
+}
+
+tasks.named("nativeTest") {
+    runtimeArgs.add("-Dspring.objenesis.ignore=true")
+}
+
+tasks.register("generatePredefinedCglibProxyClasses", JavaExec) { JavaExec task ->
+    task.dependsOn(tasks.named("testClasses"))
+    task.inputs.files(compiledTestClassesDir, processedTestResourcesDir, configurations.testRuntimeClasspath)
+    task.outputs.file(generatedCglibProxyMarkerFile)
+    task.classpath = files(compiledTestClassesDir, processedTestResourcesDir, configurations.testRuntimeClasspath)
+    task.mainClass = "org_springframework.spring_aop.PredefinedCglibProxyClassesGenerator"
+    task.args(compiledTestClassesDir.absolutePath)
+    task.executable = new File(javaHome, "bin/java").absolutePath
+    task.environment("JAVA_HOME", javaHome)
+    task.environment("GRAALVM_HOME", System.getenv("GRAALVM_HOME"))
+    task.doLast {
+        generatedCglibProxyMarkerFile.parentFile.mkdirs()
+        generatedCglibProxyMarkerFile.text = "generated"
+    }
+}
+
+tasks.named("nativeTestCompile") {
+    dependsOn("generatePredefinedCglibProxyClasses")
+}
+
+tasks.named("nativeTraceImage") {
+    dependsOn("generatePredefinedCglibProxyClasses")
+}
+
+graalvmNative {
+    binaries {
+        test {
+            buildArgs.add("-Dspring.objenesis.ignore=true")
+        }
+    }
+
+    agent {
+        defaultMode = "conditional"
+        modes {
+            conditional {
+                userCodeFilterPath = "user-code-filter.json"
+            }
+        }
+    }
+}
