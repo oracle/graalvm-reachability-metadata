@@ -8,6 +8,12 @@ Newest entry first; every non-approval is recorded, including one a repair later
 **Runtime repair deletes existing test coverage**
 
 Rule 4.8 (fix by weakening) was violated in `tests/src/org.springframework/spring-web/5.3.32`: the copied 5.3.18 suite deleted `JettyClientHttpResponseTest.java` and removed its Jetty dependency instead of adapting the failing runtime path while preserving the test's status, headers, cookies, and body assertions.
+## 2026-09-07 — io.micronaut:micronaut-core:5.0.0 (#9799)
+
+**Missing minimum dynamic-access coverage evidence**
+
+Review Signal #6 was violated in stats/io.micronaut/micronaut-core/5.0.0/stats.json: dynamicAccess was N/A, while resolved evidence described dynamic-access metadata and supplied no covered call sites, so the branch had no credible evidence that non-zero dynamic access exceeded 20%. Regenerating the report exposed 83 calls and only 10 covered (12.05%) before test expansion.
+
 ## 2026-09-07 — org.flywaydb:flyway-core:13.5.0 (#9842)
 
 **Java-run repair adds unrelated internal-API coverage**
