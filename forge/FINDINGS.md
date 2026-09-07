@@ -3,6 +3,12 @@
 Rendered by Forge from the pre-push branch review of §FS-local-branch-review.
 Newest entry first; every non-approval is recorded, including one a repair later cleared.
 
+## 2026-09-07 — io.micronaut:micronaut-core:5.0.0 (#9799)
+
+**Missing minimum dynamic-access coverage evidence**
+
+Review Signal #6 was violated in stats/io.micronaut/micronaut-core/5.0.0/stats.json: dynamicAccess was N/A, while resolved evidence described dynamic-access metadata and supplied no covered call sites, so the branch had no credible evidence that non-zero dynamic access exceeded 20%. Regenerating the report exposed 83 calls and only 10 covered (12.05%) before test expansion.
+
 ## 2026-09-07 — org.flywaydb:flyway-core:13.5.0 (#9842)
 
 **Java-run repair adds unrelated internal-API coverage**
