@@ -6,6 +6,7 @@
  */
 package org_testcontainers.testcontainers;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import org.junit.jupiter.api.Test;
 import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 import org.testcontainers.shaded.com.fasterxml.jackson.databind.introspect.AnnotatedMethod;
@@ -22,7 +23,7 @@ public class AnnotatedMethodTest {
             .introspect(mapper.constructType(MethodBean.class));
         MethodBean bean = new MethodBean();
 
-        AnnotatedMethod factory = description.findMethod("create", new Class<?>[0]);
+        AnnotatedMethod factory = description.getFactoryMethods().get(0);
         AnnotatedMethod getter = description.findMethod("getValue", new Class<?>[0]);
         AnnotatedMethod setter = description.findMethod("setValue", new Class<?>[] { String.class });
 
@@ -35,6 +36,7 @@ public class AnnotatedMethodTest {
     public static class MethodBean {
         private String value = "initial";
 
+        @JsonCreator
         public static MethodBean create() {
             return new MethodBean();
         }

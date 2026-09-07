@@ -9,6 +9,8 @@ package org_testcontainers.testcontainers;
 import org.junit.jupiter.api.Test;
 import org.testcontainers.shaded.com.google.common.util.concurrent.Futures;
 
+import java.io.IOException;
+
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class FuturesGetCheckedTest {
@@ -16,12 +18,12 @@ public class FuturesGetCheckedTest {
     void convertsAFutureFailureToTheRequestedCheckedException() {
         assertThatThrownBy(
             () -> Futures.getChecked(
-                Futures.immediateFailedFuture(new IllegalStateException("failure")),
+                Futures.immediateFailedFuture(new IOException("failure")),
                 CheckedFailure.class
             )
         )
             .isInstanceOf(CheckedFailure.class)
-            .hasCauseInstanceOf(IllegalStateException.class);
+            .hasCauseInstanceOf(IOException.class);
     }
 
     public static class CheckedFailure extends Exception {

@@ -17,9 +17,11 @@ public class SnakeYamlPropertyUtilsTest {
     @Test
     void discoversPropertiesUsingBeanAndFieldAccess() {
         PropertyUtils properties = new PropertyUtils();
+        PropertyUtils fieldProperties = new PropertyUtils();
+        fieldProperties.setBeanAccess(BeanAccess.FIELD);
 
         assertThat(properties.getProperties(Bean.class)).extracting(Property::getName).contains("property");
-        assertThat(properties.getProperties(Bean.class, BeanAccess.FIELD))
+        assertThat(fieldProperties.getProperties(Bean.class, BeanAccess.FIELD))
             .extracting(Property::getName)
             .contains("field");
     }

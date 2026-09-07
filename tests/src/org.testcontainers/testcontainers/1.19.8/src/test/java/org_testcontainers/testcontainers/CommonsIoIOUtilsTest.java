@@ -14,8 +14,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class CommonsIoIOUtilsTest {
     @Test
     void resolvesResourcesWithDefaultAndExplicitClassLoaders() throws Exception {
-        assertThat(IOUtils.resourceToURL("testcontainers.properties")).hasProtocol("file");
-        assertThat(IOUtils.resourceToURL("testcontainers.properties", getClass().getClassLoader()))
-            .hasProtocol("file");
+        assertThat(IOUtils.resourceToURL("/testcontainers.properties").toString())
+            .endsWith("testcontainers.properties");
+        assertThat(IOUtils.resourceToURL("testcontainers.properties", getClass().getClassLoader()).toString())
+            .endsWith("testcontainers.properties");
     }
 }

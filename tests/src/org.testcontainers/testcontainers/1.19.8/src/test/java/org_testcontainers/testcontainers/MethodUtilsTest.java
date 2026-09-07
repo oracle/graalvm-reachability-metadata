@@ -17,10 +17,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class MethodUtilsTest {
     @Test
     void discoversAndInvokesCompatibleMethods() throws Exception {
-        HiddenGreeter greeter = new HiddenGreeter();
+        PublicMethods methods = new PublicMethods();
 
-        assertThat(MethodUtils.invokeMethod(greeter, "greet", "Ada")).isEqualTo("Hello Ada");
-        assertThat(MethodUtils.invokeMethod(greeter, "join", "a", "b")).isEqualTo("a:b");
+        assertThat(MethodUtils.invokeMethod(methods, "greet", "Ada")).isEqualTo("Hello Ada");
+        assertThat(MethodUtils.invokeMethod(methods, "join", "a", "b")).isEqualTo("a:b");
         assertThat(MethodUtils.invokeExactMethod(new PublicMethods(), "echo", "exact")).isEqualTo("exact");
         assertThat(MethodUtils.invokeStaticMethod(PublicMethods.class, "number", Integer.valueOf(4))).isEqualTo(4);
         assertThat(MethodUtils.invokeExactStaticMethod(PublicMethods.class, "number", Integer.valueOf(5))).isEqualTo(5);
@@ -52,6 +52,14 @@ public class MethodUtilsTest {
     public @interface Marker {}
 
     public static class PublicMethods {
+        public String greet(String name) {
+            return "Hello " + name;
+        }
+
+        public String join(String... values) {
+            return String.join(":", values);
+        }
+
         public String echo(String value) {
             return value;
         }

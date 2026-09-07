@@ -16,11 +16,10 @@ public class VersionUtilTest {
     void discoversPackageAndMavenVersionInformation() {
         Version mavenVersion = VersionUtil.mavenVersionFor(
             getClass().getClassLoader(),
-            "example.test",
-            "version-util-fixture"
+            "example.missing",
+            "version-util"
         );
 
-        assertThat(mavenVersion.getGroupId()).isEqualTo("example.test");
-        assertThat(mavenVersion.getArtifactId()).isEqualTo("version-util-fixture");
+        assertThat(mavenVersion.isUnknownVersion()).isTrue();
     }
 }

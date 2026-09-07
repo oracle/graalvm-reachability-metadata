@@ -18,7 +18,7 @@ public class ConstructorInnerConstructSequenceTest {
     void choosesConstructorsForSequenceValues() {
         Yaml yaml = new Yaml();
         Pair pair = yaml.loadAs("[left, 4]", Pair.class);
-        Sequence sequence = yaml.loadAs("[one, two]", Sequence.class);
+        Sequence sequence = yaml.loadAs("[[one, two]]", Sequence.class);
 
         assertThat(pair.left).isEqualTo("left");
         assertThat(pair.right).isEqualTo(4);

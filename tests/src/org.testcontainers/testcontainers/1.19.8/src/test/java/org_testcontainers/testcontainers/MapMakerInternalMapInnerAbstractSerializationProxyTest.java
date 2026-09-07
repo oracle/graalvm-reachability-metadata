@@ -11,6 +11,7 @@ import org.testcontainers.shaded.com.google.common.collect.MapMaker;
 import org.testcontainers.shaded.org.apache.commons.lang3.SerializationUtils;
 
 import java.io.Serializable;
+import java.util.Map;
 import java.util.concurrent.ConcurrentMap;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -26,6 +27,9 @@ public class MapMakerInternalMapInnerAbstractSerializationProxyTest {
             (Serializable) values
         );
 
-        assertThat(restored).containsEntry("key", "value");
+        assertThat(restored).hasSize(1);
+        Map.Entry<String, String> entry = restored.entrySet().iterator().next();
+        assertThat(entry.getKey()).isEqualTo("key");
+        assertThat(entry.getValue()).isEqualTo("value");
     }
 }

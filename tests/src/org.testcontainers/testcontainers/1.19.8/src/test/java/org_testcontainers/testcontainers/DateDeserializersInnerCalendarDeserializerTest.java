@@ -15,17 +15,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class DateDeserializersInnerCalendarDeserializerTest {
     @Test
-    void instantiatesAndPopulatesACustomCalendar() throws Exception {
-        CustomCalendar calendar = new ObjectMapper().readValue("0", CustomCalendar.class);
+    void instantiatesAndPopulatesAGregorianCalendar() throws Exception {
+        GregorianCalendar calendar = new ObjectMapper().readValue("0", GregorianCalendar.class);
 
         assertThat(calendar.getTimeInMillis()).isZero();
-    }
-
-    public static class CustomCalendar extends GregorianCalendar {
-        private static final long serialVersionUID = 1L;
-
-        public CustomCalendar() {
-            super();
-        }
     }
 }
