@@ -16,7 +16,7 @@ public class ExceptionUtilsTest {
     void discoversACauseThroughAConventionalAccessor() {
         IllegalStateException cause = new IllegalStateException("cause");
 
-        assertThat(ExceptionUtils.getCause(new TargetException(cause), new String[] { "getTargetException" }))
+        assertThat(ExceptionUtils.getCause(new TargetException(cause), new String[] {"getTargetException"}))
             .isSameAs(cause);
     }
 

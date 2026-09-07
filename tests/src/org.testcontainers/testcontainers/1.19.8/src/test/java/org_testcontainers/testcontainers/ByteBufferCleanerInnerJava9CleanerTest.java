@@ -22,7 +22,7 @@ public class ByteBufferCleanerInnerJava9CleanerTest {
     @Test
     void releasesMappedBuffersWhenTheInputStreamCloses() throws Exception {
         Path input = temporaryDirectory.resolve("mapped.bin");
-        Files.write(input, new byte[] { 1, 2, 3, 4 });
+        Files.write(input, new byte[] {1, 2, 3, 4});
 
         try (MemoryMappedFileInputStream stream = MemoryMappedFileInputStream.builder().setPath(input).get()) {
             assertThat(stream.read()).isEqualTo(1);

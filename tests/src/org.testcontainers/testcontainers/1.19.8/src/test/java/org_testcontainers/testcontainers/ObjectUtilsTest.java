@@ -14,8 +14,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class ObjectUtilsTest {
     @Test
     void clonesArraysAndPubliclyCloneableObjects() {
-        String[] array = { "one", "two" };
-        int[] primitiveArray = { 1, 2 };
+        String[] array = {"one", "two"};
+        int[] primitiveArray = {1, 2};
         CloneableValue value = new CloneableValue("copied");
 
         assertThat(ObjectUtils.clone(array)).containsExactly("one", "two").isNotSameAs(array);

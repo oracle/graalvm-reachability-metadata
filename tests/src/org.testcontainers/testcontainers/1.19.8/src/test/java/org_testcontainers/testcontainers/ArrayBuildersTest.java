@@ -14,12 +14,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class ArrayBuildersTest {
     @Test
     void insertsValuesIntoTypedArrays() {
-        assertThat(ArrayBuilders.insertInList(new String[] { "b", "c" }, "a")).containsExactly("a", "b", "c");
-        assertThat(ArrayBuilders.insertInListNoDup(new String[] { "b", "c" }, "a"))
+        assertThat(ArrayBuilders.insertInList(new String[] {"b", "c"}, "a")).containsExactly("a", "b", "c");
+        assertThat(ArrayBuilders.insertInListNoDup(new String[] {"b", "c"}, "a"))
             .containsExactly("a", "b", "c");
-        assertThat(ArrayBuilders.insertInListNoDup(new String[] { "a", "b" }, "a"))
+        assertThat(ArrayBuilders.insertInListNoDup(new String[] {"a", "b"}, "a"))
             .containsExactly("a", "b");
-        assertThat(ArrayBuilders.insertInListNoDup(new String[] { "b", "a", "c" }, "a"))
+        assertThat(ArrayBuilders.insertInListNoDup(new String[] {"b", "a", "c"}, "a"))
             .containsExactly("a", "b", "c");
     }
 }

@@ -42,6 +42,6 @@ public class GenericContainerTest {
         }
 
         @Override
-        protected void containerIsCreated(String containerId) {}
+        protected void containerIsCreated(String containerId) { }
     }
 }

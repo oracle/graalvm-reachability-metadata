@@ -73,7 +73,7 @@ public class MethodUtilsTest {
         }
 
         @Marker
-        public void marked() {}
+        public void marked() { }
     }
 
     private static class HiddenPublicMethods extends PublicMethods {

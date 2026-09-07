@@ -29,6 +29,6 @@ public class ClassUtilTest {
     }
 
     public static class Bean {
-        public Bean() {}
+        public Bean() { }
     }
 }

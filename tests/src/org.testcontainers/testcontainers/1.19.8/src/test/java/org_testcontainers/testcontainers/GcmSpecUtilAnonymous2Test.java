@@ -21,7 +21,7 @@ public class GcmSpecUtilAnonymous2Test {
     void readsProviderGcmParametersAsTheJdkSpecification() throws Exception {
         Provider provider = new BouncyCastleProvider();
         AlgorithmParameters parameters = AlgorithmParameters.getInstance("GCM", provider);
-        GCMParameterSpec original = new GCMParameterSpec(104, new byte[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 });
+        GCMParameterSpec original = new GCMParameterSpec(104, new byte[] {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12});
         parameters.init(original);
 
         GCMParameterSpec restored = parameters.getParameterSpec(GCMParameterSpec.class);

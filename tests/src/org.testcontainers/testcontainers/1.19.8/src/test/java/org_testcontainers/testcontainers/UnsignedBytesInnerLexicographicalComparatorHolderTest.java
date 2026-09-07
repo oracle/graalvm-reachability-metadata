@@ -18,7 +18,7 @@ public class UnsignedBytesInnerLexicographicalComparatorHolderTest {
     void selectsAndUsesTheBestUnsignedByteArrayComparator() {
         Comparator<byte[]> comparator = UnsignedBytes.lexicographicalComparator();
 
-        assertThat(comparator.compare(new byte[] { 0, -1 }, new byte[] { 1, 0 })).isNegative();
-        assertThat(comparator.compare(new byte[] { -1 }, new byte[] { 127 })).isPositive();
+        assertThat(comparator.compare(new byte[] {0, -1}, new byte[] {1, 0})).isNegative();
+        assertThat(comparator.compare(new byte[] {-1}, new byte[] {127})).isPositive();
     }
 }

@@ -31,7 +31,7 @@ public class ExceptionUtilTest {
         public OutputStream getOutputStream() {
             return new OutputStream() {
                 @Override
-                public void write(int value) {}
+                public void write(int value) { }
 
                 @Override
                 public void close() throws IOException {
@@ -61,7 +61,7 @@ public class ExceptionUtilTest {
         }
 
         @Override
-        public void destroy() {}
+        public void destroy() { }
     }
 
     public static class CloseThrowingInputStream extends InputStream {

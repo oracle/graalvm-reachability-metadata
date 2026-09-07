@@ -31,6 +31,6 @@ public class AnnotatedConstructorTest {
     }
 
     public static class ConstructorBean {
-        public ConstructorBean() {}
+        public ConstructorBean() { }
     }
 }

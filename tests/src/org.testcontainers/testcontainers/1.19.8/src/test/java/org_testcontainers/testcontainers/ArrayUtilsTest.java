@@ -14,7 +14,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class ArrayUtilsTest {
     @Test
     void createsTypedArraysForArrayTransformations() {
-        String[] values = { "b", "c", "c", "d" };
+        String[] values = {"b", "c", "c", "d"};
 
         assertThat(ArrayUtils.add(values, "e")).containsExactly("b", "c", "c", "d", "e");
         assertThat(ArrayUtils.add(values, 0, "a")).containsExactly("a", "b", "c", "c", "d");

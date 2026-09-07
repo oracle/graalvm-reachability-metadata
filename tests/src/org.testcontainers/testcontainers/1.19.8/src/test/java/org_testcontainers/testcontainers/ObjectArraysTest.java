@@ -15,7 +15,7 @@ public class ObjectArraysTest {
     @Test
     void createsAndConcatenatesTypedArrays() {
         assertThat(ObjectArrays.newArray(String.class, 2)).hasSize(2).containsOnlyNulls();
-        assertThat(ObjectArrays.concat(new String[] { "a" }, new String[] { "b" }, String.class))
+        assertThat(ObjectArrays.concat(new String[] {"a"}, new String[] {"b"}, String.class))
             .containsExactly("a", "b");
     }
 }

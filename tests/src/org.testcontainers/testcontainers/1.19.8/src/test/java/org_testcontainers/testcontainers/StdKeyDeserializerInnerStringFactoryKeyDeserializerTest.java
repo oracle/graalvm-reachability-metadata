@@ -26,7 +26,7 @@ public class StdKeyDeserializerInnerStringFactoryKeyDeserializerTest {
     public static class FactoryKey {
         private String value;
 
-        private FactoryKey() {}
+        private FactoryKey() { }
 
         public static FactoryKey valueOf(String value) {
             FactoryKey key = new FactoryKey();

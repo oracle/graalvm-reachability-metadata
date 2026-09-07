@@ -16,6 +16,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class AnnotationUtilsTest {
     @Test
+    @SuppressWarnings("checkstyle:annotationAccess")
     void comparesAndRendersAnnotationMembers() {
         Label first = First.class.getAnnotation(Label.class);
         Label second = Second.class.getAnnotation(Label.class);

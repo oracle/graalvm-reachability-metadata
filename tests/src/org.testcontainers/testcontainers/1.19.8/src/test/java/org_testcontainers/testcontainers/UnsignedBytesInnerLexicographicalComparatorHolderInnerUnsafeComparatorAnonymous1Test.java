@@ -17,8 +17,8 @@ public class UnsignedBytesInnerLexicographicalComparatorHolderInnerUnsafeCompara
     @Test
     void comparesUnsignedBytesAcrossFullMachineWordsAndTails() {
         Comparator<byte[]> comparator = UnsignedBytes.lexicographicalComparator();
-        byte[] lower = { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
-        byte[] higher = { 1, 2, 3, 4, 5, 6, 7, 8, -1 };
+        byte[] lower = {1, 2, 3, 4, 5, 6, 7, 8, 9};
+        byte[] higher = {1, 2, 3, 4, 5, 6, 7, 8, -1};
 
         assertThat(comparator.compare(lower, higher)).isNegative();
         assertThat(comparator.compare(higher, lower)).isPositive();

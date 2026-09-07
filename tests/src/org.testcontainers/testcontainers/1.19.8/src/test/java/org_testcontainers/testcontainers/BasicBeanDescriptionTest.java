@@ -24,6 +24,6 @@ public class BasicBeanDescriptionTest {
     }
 
     public static class Bean {
-        public Bean() {}
+        public Bean() { }
     }
 }

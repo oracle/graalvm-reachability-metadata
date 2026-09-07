@@ -26,7 +26,7 @@ public class AnnotatedMethodTest {
 
         AnnotatedMethod factory = description.getFactoryMethods().get(0);
         AnnotatedMethod getter = description.findMethod("getValue", new Class<?>[0]);
-        AnnotatedMethod setter = description.findMethod("setValue", new Class<?>[] { String.class });
+        AnnotatedMethod setter = description.findMethod("setValue", new Class<?>[] {String.class});
         AnnotatedMethod restoredGetter = SerializationUtils.roundtrip(getter);
 
         assertThat(factory.call()).isInstanceOf(MethodBean.class);
