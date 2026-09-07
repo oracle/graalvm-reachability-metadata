@@ -8,8 +8,10 @@ package io_micronaut.micronaut_buffer_netty;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import io.micronaut.buffer.netty.ByteBufAllocatorConfiguration;
 import io.micronaut.buffer.netty.NettyByteBufferFactory;
 import io.micronaut.buffer.netty.NettyReadBufferFactory;
+import io.micronaut.context.ApplicationContext;
 import io.micronaut.core.convert.MutableConversionService;
 import io.micronaut.core.io.buffer.ByteBuffer;
 import io.micronaut.core.io.buffer.ReadBuffer;
@@ -28,7 +30,9 @@ import java.io.OutputStream;
 import java.nio.channels.ClosedChannelException;
 import java.nio.channels.ScatteringByteChannel;
 import java.nio.charset.StandardCharsets;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 
@@ -394,6 +398,55 @@ public class Micronaut_buffer_nettyTest {
         } finally {
             release(convertedJdk);
         }
+    }
+
+    @Test
+    void bindsDefaultAllocatorConfigurationToNettySystemProperties() {
+        Map<String, Object> properties = Map.ofEntries(
+                Map.entry("netty.default.allocator.num-heap-arenas", 1),
+                Map.entry("netty.default.allocator.num-direct-arenas", 2),
+                Map.entry("netty.default.allocator.page-size", 8192),
+                Map.entry("netty.default.allocator.max-order", 4),
+                Map.entry("netty.default.allocator.chunk-size", 131072),
+                Map.entry("netty.default.allocator.small-cache-size", 64),
+                Map.entry("netty.default.allocator.normal-cache-size", 32),
+                Map.entry("netty.default.allocator.use-cache-for-all-threads", false),
+                Map.entry("netty.default.allocator.max-cached-buffer-capacity", 32768),
+                Map.entry("netty.default.allocator.cache-trim-interval", 1024),
+                Map.entry("netty.default.allocator.max-cached-byte-buffers-per-chunk", 128));
+        Map<String, String> expectedSystemProperties = Map.ofEntries(
+                Map.entry("io.netty.allocator.numHeapArenas", "1"),
+                Map.entry("io.netty.allocator.numDirectArenas", "2"),
+                Map.entry("io.netty.allocator.pageSize", "8192"),
+                Map.entry("io.netty.allocator.maxOrder", "4"),
+                Map.entry("io.netty.allocator.chunkSize", "131072"),
+                Map.entry("io.netty.allocator.smallCacheSize", "64"),
+                Map.entry("io.netty.allocator.normalCacheSize", "32"),
+                Map.entry("io.netty.allocator.useCacheForAllThreads", "false"),
+                Map.entry("io.netty.allocator.maxCachedBufferCapacity", "32768"),
+                Map.entry("io.netty.allocator.cacheTrimInterval", "1024"),
+                Map.entry("io.netty.allocator.maxCachedByteBuffersPerChunk", "128"));
+        Map<String, String> originalSystemProperties = new LinkedHashMap<>();
+        expectedSystemProperties.keySet().forEach(
+                name -> originalSystemProperties.put(name, System.getProperty(name)));
+
+        try (ApplicationContext context = ApplicationContext.run(properties)) {
+            assertThat(context.getBean(ByteBufAllocatorConfiguration.class)).isNotNull();
+            expectedSystemProperties.forEach(
+                    (name, value) -> assertThat(System.getProperty(name)).isEqualTo(value));
+        } finally {
+            restoreSystemProperties(originalSystemProperties);
+        }
+    }
+
+    private static void restoreSystemProperties(Map<String, String> properties) {
+        properties.forEach((name, value) -> {
+            if (value == null) {
+                System.clearProperty(name);
+            } else {
+                System.setProperty(name, value);
+            }
+        });
     }
 
     private static void release(ByteBuf buffer) {
