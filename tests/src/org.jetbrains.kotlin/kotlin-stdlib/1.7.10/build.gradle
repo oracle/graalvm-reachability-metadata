@@ -59,6 +59,8 @@ TaskProvider<Jar> moduleNameRetrieverTestJar = tasks.register("moduleNameRetriev
 }
 
 tasks.named("test", Test) {
+    // Isolate tests so PlatformImplementations can initialize for each selected Java version.
+    forkEvery = 1
     dependsOn(moduleNameRetrieverTestJar)
     testClassesDirs = testClassesDirs + moduleNameRetrieverTest.output.classesDirs
     jvmArgs(
