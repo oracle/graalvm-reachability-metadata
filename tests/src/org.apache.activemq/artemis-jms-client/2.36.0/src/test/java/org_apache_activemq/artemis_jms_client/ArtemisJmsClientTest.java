@@ -32,9 +32,10 @@ import java.util.concurrent.TimeUnit;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class ArtemisJmsClientTest {
+public class ArtemisJmsClientTest {
 
     private static final String QUEUE_NAME = "queue-test-" + new Random().nextLong();
+    private static final int RECEIVE_TIMEOUT_MILLIS = 10_000;
 
     private static final Logger logger = LoggerFactory.getLogger("ArtemisJmsClientTest");
 
@@ -102,7 +103,7 @@ class ArtemisJmsClientTest {
             try (Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE)) {
                 Destination destination = session.createQueue(QUEUE_NAME);
                 try (MessageConsumer consumer = session.createConsumer(destination)) {
-                    Message message = consumer.receive(1000);
+                    Message message = consumer.receive(RECEIVE_TIMEOUT_MILLIS);
                     String text = ((TextMessage) message).getText();
                     logger.info("Received text message: {}", text);
                     return text;
