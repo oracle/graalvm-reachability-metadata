@@ -9,6 +9,11 @@ Newest entry first; every non-approval is recorded, including one a repair later
 
 `tests/src/org.flywaydb/flyway-core/13.5.0/src/test/java/flyway/MergeUtilsTest.java` directly exercised the internal `org.flywaydb.core.internal.util.MergeUtils` API solely to increase dynamic-access coverage. This was unrelated to the Jackson runtime dependency repair and violated the enumerated meaningful-public-API and no-scope-creep test rules.
 
+## 2026-09-07 — org.junit.platform:junit-platform-reporting:6.1.0 (#9212)
+
+**Repair contribution changes unrelated coordinates**
+
+The proposed diff added metadata, index changes, and stats for org.junit.platform:junit-platform-commons:6.1.0 and org.junit.platform:junit-platform-engine:6.1.0. The closed-file-set and one-library/one-version rules require this fixes-native-image-run-fail contribution to remain inside the target org.junit.platform:junit-platform-reporting:6.1.0 coordinate and its supporting files.
 ## 2026-09-07 — org.bouncycastle:bcpkix-jdk18on:1.77 (#8922)
 
 **Test-created serialization metadata shipped as library metadata**
