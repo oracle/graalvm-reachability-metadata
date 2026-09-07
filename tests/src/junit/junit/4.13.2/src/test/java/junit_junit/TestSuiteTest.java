@@ -17,6 +17,8 @@ public class TestSuiteTest {
 
     @org.junit.jupiter.api.Test
     void createsLegacyTestsWithBothSupportedConstructorShapes() {
+        int stringExecutionsBeforeRun = StringConstructorCase.executions;
+        int noArgExecutionsBeforeRun = NoArgConstructorCase.executions;
         Test stringConstructed = TestSuite.createTest(StringConstructorCase.class, "testExecute");
         Test noArgConstructed = TestSuite.createTest(NoArgConstructorCase.class, "testExecute");
         TestResult result = new TestResult();
@@ -26,8 +28,8 @@ public class TestSuiteTest {
 
         assertThat(result.runCount()).isEqualTo(2);
         assertThat(result.wasSuccessful()).isTrue();
-        assertThat(StringConstructorCase.executions).isEqualTo(1);
-        assertThat(NoArgConstructorCase.executions).isEqualTo(1);
+        assertThat(StringConstructorCase.executions).isEqualTo(stringExecutionsBeforeRun + 1);
+        assertThat(NoArgConstructorCase.executions).isEqualTo(noArgExecutionsBeforeRun + 1);
     }
 
     public static class StringConstructorCase extends TestCase {

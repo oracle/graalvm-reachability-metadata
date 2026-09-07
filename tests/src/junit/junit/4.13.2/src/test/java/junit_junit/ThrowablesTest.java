@@ -17,7 +17,13 @@ public class ThrowablesTest {
 
     @Test
     void includesSuppressedFailuresInTheTrimmedTrace() {
-        Result result = JUnitCore.runClasses(FailingFixture.class);
+        FailingFixture.failureEnabled = true;
+        Result result;
+        try {
+            result = JUnitCore.runClasses(FailingFixture.class);
+        } finally {
+            FailingFixture.failureEnabled = false;
+        }
         Failure failure = result.getFailures().get(0);
 
         String trace = failure.getTrimmedTrace();
@@ -26,14 +32,18 @@ public class ThrowablesTest {
     }
 
     public static class FailingFixture {
+        private static boolean failureEnabled;
+
         public FailingFixture() {
         }
 
         @org.junit.Test
         public void failWithSuppressedException() {
-            IllegalStateException exception = new IllegalStateException("primary");
-            exception.addSuppressed(new IllegalArgumentException("secondary"));
-            throw exception;
+            if (failureEnabled) {
+                IllegalStateException exception = new IllegalStateException("primary");
+                exception.addSuppressed(new IllegalArgumentException("secondary"));
+                throw exception;
+            }
         }
     }
 }

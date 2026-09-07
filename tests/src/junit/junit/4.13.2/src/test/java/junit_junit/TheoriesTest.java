@@ -27,10 +27,12 @@ public class TheoriesTest {
 
     @Test
     void validatesAndExecutesFieldMethodAndSupplierDataPoints() {
+        int numericExecutionsBeforeRun = TheoryFixture.numericExecutions;
+
         Result result = JUnitCore.runClasses(TheoryFixture.class);
 
         assertThat(result.wasSuccessful()).isTrue();
-        assertThat(TheoryFixture.numericExecutions).isEqualTo(2);
+        assertThat(TheoryFixture.numericExecutions).isEqualTo(numericExecutionsBeforeRun + 2);
         assertThat(TheoryFixture.suppliedValue).isEqualTo("supplied");
     }
 

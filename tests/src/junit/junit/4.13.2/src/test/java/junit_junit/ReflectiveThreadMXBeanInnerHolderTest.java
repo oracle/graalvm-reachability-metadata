@@ -9,39 +9,38 @@ package junit_junit;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.concurrent.TimeUnit;
-import org.junit.Rule;
 import org.junit.jupiter.api.Test;
 import org.junit.rules.Timeout;
-import org.junit.runner.JUnitCore;
-import org.junit.runner.Result;
+import org.junit.runner.Description;
+import org.junit.runners.model.Statement;
 import org.junit.runners.model.TestTimedOutException;
 
 public class ReflectiveThreadMXBeanInnerHolderTest {
 
     @Test
-    void initializesThreadManagementMethodsDuringStuckThreadInspection() {
-        Result result = JUnitCore.runClasses(BusyFixture.class);
-
-        assertThat(result.getRunCount()).isEqualTo(1);
-        assertThat(result.getFailureCount()).isEqualTo(1);
-        assertThat(result.getFailures().get(0).getException()).isInstanceOf(TestTimedOutException.class);
-    }
-
-    public static class BusyFixture {
-        @Rule
-        public final Timeout timeout = Timeout.builder()
+    void initializesThreadManagementMethodsDuringStuckThreadInspection() throws Throwable {
+        Timeout timeout = Timeout.builder()
                 .withTimeout(1, TimeUnit.SECONDS)
                 .withLookingForStuckThread(true)
                 .build();
-
-        public BusyFixture() {
-        }
-
-        @org.junit.Test
-        public void remainsRunnableUntilInterrupted() {
-            while (!Thread.currentThread().isInterrupted()) {
-                Thread.yield();
+        Statement busyStatement = new Statement() {
+            @Override
+            public void evaluate() {
+                while (!Thread.currentThread().isInterrupted()) {
+                    Thread.yield();
+                }
             }
+        };
+        Statement timedStatement = timeout.apply(
+                busyStatement, Description.createTestDescription(getClass(), "busyStatement"));
+
+        boolean timedOut = false;
+        try {
+            timedStatement.evaluate();
+        } catch (TestTimedOutException expected) {
+            timedOut = true;
         }
+
+        assertThat(timedOut).isTrue();
     }
 }

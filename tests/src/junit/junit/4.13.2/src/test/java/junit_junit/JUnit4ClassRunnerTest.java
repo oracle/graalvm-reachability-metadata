@@ -18,11 +18,13 @@ public class JUnit4ClassRunnerTest {
 
     @Test
     void createsAndRunsALegacyJUnitFourFixture() throws Exception {
+        int executionsBeforeRun = Fixture.executions;
+
         Result result = new JUnitCore().run(new JUnit4ClassRunner(Fixture.class));
 
         assertThat(result.wasSuccessful()).isTrue();
         assertThat(result.getRunCount()).isEqualTo(1);
-        assertThat(Fixture.executions).isEqualTo(1);
+        assertThat(Fixture.executions).isEqualTo(executionsBeforeRun + 1);
     }
 
     public static class Fixture {

@@ -20,10 +20,12 @@ public class TheoriesInnerTheoryAnchorAnonymous1Test {
 
     @Test
     void createsTheoryFixturesWithConstructorArguments() {
+        int observedTotalBeforeRun = ConstructorTheoryFixture.observedTotal;
+
         Result result = JUnitCore.runClasses(ConstructorTheoryFixture.class);
 
         assertThat(result.wasSuccessful()).isTrue();
-        assertThat(ConstructorTheoryFixture.observedTotal).isEqualTo(3);
+        assertThat(ConstructorTheoryFixture.observedTotal).isEqualTo(observedTotalBeforeRun + 3);
     }
 
     @RunWith(Theories.class)
