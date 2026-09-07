@@ -267,6 +267,25 @@ public class Micronaut_jackson_coreTest {
     }
 
     @Test
+    void treeGeneratorSupportsNumericPropertyIdsAndCharacterSlices() throws IOException {
+        char[] decoratedValue = "__payload__".toCharArray();
+        JsonNode generated;
+
+        try (TreeGenerator generator = JsonNodeTreeCodec.getInstance().createTreeGenerator()) {
+            generator.writeStartObject();
+            generator.writePropertyId(17);
+            generator.writeString(decoratedValue, 2, 7);
+            generator.writeEndObject();
+
+            assertThat(generator.isComplete()).isTrue();
+            generated = generator.getCompletedValue();
+        }
+
+        assertThat(generated.isObject()).isTrue();
+        assertThat(generated.get("17").getStringValue()).isEqualTo("payload");
+    }
+
+    @Test
     void streamTransferBuildsEquivalentTreesFromCurrentAndNextTokens() throws IOException {
         JsonStreamConfig preciseConfig = JsonStreamConfig.DEFAULT
                 .withUseBigIntegerForInts(true)
