@@ -3,6 +3,12 @@
 Rendered by Forge from the pre-push branch review of §FS-local-branch-review.
 Newest entry first; every non-approval is recorded, including one a repair later cleared.
 
+## 2026-09-07 — org.bouncycastle:bcpkix-jdk18on:1.77 (#8922)
+
+**Test-created serialization metadata shipped as library metadata**
+
+The custom ObjectInputStream/ObjectOutputStream subclasses in X509CRLHolderTest.java and X509CertificateHolderTest.java replaced the library's normal byte[] serialization payload with test-selected short[]/int[] values solely to create distinct descriptor paths. This was a direct serialization shortcut, and it caused the test-created short[] registration plus stale org_bouncycastle test-resource entries to ship in metadata/org.bouncycastle/bcpkix-jdk18on/1.77/reachability-metadata.json, violating the enumerated no-shortcuts and no-test-only-shipped-metadata rules.
+
 ## 2026-09-06 — org.apache.activemq:activemq-broker:6.0.0 (#8927)
 
 **Split test project retained an invalid baseline test contract**
