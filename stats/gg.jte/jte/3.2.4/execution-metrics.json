@@ -1,0 +1,98 @@
+{
+  "add_new_library_support:2026-09-07": {
+    "timestamp": "2026-09-07T22:33:19.376027Z",
+    "library": "gg.jte:jte:3.2.4",
+    "starting_commit": "1e4fb3e5f3cc5b3ec0d767310c5c00245ff1d039",
+    "ending_commit": "b905d9ed86175622d45297fa96162f13c0e5896e",
+    "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-sol",
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "status": "success",
+    "stats": {
+      "version": "3.2.4",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 3,
+            "totalCalls": 3
+          },
+          "resources": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 3,
+            "totalCalls": 3
+          }
+        },
+        "coverageRatio": 1.0,
+        "coveredCalls": 6,
+        "totalCalls": 6
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 2822,
+          "missed": 5423,
+          "ratio": 0.342268,
+          "total": 8245
+        },
+        "line": {
+          "covered": 593,
+          "missed": 1160,
+          "ratio": 0.338277,
+          "total": 1753
+        },
+        "method": {
+          "covered": 127,
+          "missed": 215,
+          "ratio": 0.371345,
+          "total": 342
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "advisory_preparation",
+      "issue_number": 9827,
+      "issue_label": "library-new-request",
+      "library": "gg.jte:jte:3.2.4",
+      "summary": "The artifact has no external setup dependencies, but meaningful engine coverage requires template fixtures and native-safe precompiled templates.",
+      "deterministic_setup": [],
+      "agent_guidance": "Add a minimal Java .jte template fixture and exercise TemplateEngine, HTML escaping, parameters, and StringOutput. JVM tests may use DirectoryCodeResolver and runtime compilation. Native-image tests must use precompiled template classes via createPrecompiled; include generated classes and required reflection metadata. Do not use Kotlin .kte templates unless separately adding Kotlin support.",
+      "risks": [
+        "Runtime template compilation depends on a JDK compiler and is unsuitable for native-image execution.",
+        "Template classes loaded reflectively may require NativeResourcesExtension-generated metadata."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#9827 Support for gg.jte:jte:3.2.4; label=library-new-request; body_chars=39"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "gpt-5.6-luna",
+      "input_tokens_used": 957680,
+      "output_tokens_used": 5465,
+      "prompt_path": "library-preflight-prompt.txt",
+      "raw_response_path": "library-preflight-response.txt",
+      "session_log_path": "/home/mihailo/git/graalvm-reachability-metadata/forge/logs/gg.jte:jte:3.2.4/library-preparation-preflight/codex-session-h2ryuksz.log"
+    },
+    "metrics": {
+      "input_tokens_used": 154127,
+      "cached_input_tokens_used": 1289984,
+      "output_tokens_used": 13014,
+      "iterations": 4,
+      "cost_usd": 1.806,
+      "generated_loc": 123,
+      "tested_library_loc": 593,
+      "metadata_entries": 3,
+      "test_only_metadata_entries": 3,
+      "code_coverage_percent": 33.83
+    },
+    "artifacts": {
+      "metadata_file": "metadata/gg.jte/jte/3.2.4/reachability-metadata.json"
+    }
+  }
+}

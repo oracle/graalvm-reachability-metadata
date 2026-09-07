@@ -11,17 +11,11 @@ plugins {
 String libraryVersion = tck.testedLibraryVersion.get()
 
 dependencies {
-    testImplementation "io.netty:netty-codec:$libraryVersion"
-    testImplementation 'com.google.protobuf.nano:protobuf-javanano:3.0.0-alpha-5'
+    testImplementation "org.neo4j.bolt:neo4j-bolt-connection-routed:$libraryVersion"
     testImplementation 'org.assertj:assertj-core:3.22.0'
 }
 
 graalvmNative {
-    binaries {
-        test {
-            buildArgs.add("-H:+SharedArenaSupport")
-        }
-    }
     agent {
         defaultMode = "conditional"
         modes {

@@ -8,6 +8,12 @@ Newest entry first; every non-approval is recorded, including one a repair later
 **Explicit I/O timeout below the 10-second floor**
 
 In tests/src/org.springframework/spring-webflux/6.0.0/src/test/java/org_springframework/spring_webflux/InvocableHandlerMethodTest.java, the reactive request wait used Duration.ofSeconds(5). This violates the enumerated 10-second minimum for explicit request/I/O timeouts in §FS-test-contract.1.7.
+## 2026-09-07 — io.micronaut:micronaut-http-server:5.1.13 (#9832)
+
+**Companion dependencies pin the tested library version**
+
+Review Signal #4 is violated in tests/src/io.micronaut/micronaut-http-server/5.1.13/build.gradle: the Netty server, HTTP client, and Jackson databind companion dependencies hardcode 5.1.13. This prevents the suite from resolving those matching Micronaut modules at the TCK-selected tested version when the same test is reused for later supported versions.
+
 ## 2026-09-07 — io.micronaut:micronaut-core:5.0.0 (#9799)
 
 **Missing minimum dynamic-access coverage evidence**
@@ -52,6 +58,11 @@ Review Signal #4 was violated in tests/src/io.micronaut.serde/micronaut-serde-su
 **Unsupported-feature catch masks statically available class resolution**
 
 In tests/src/io.netty/netty-codec/5.0.0.Alpha1/src/test/java/io_netty/netty_codec/ClassLoaderClassResolverTest.java, both tests caught Error and accepted NativeImageSupport.isUnsupportedFeatureError even though the target class name is fixed, the class is included in the image, and the behavior does not require a class discovered after image build. This applies the sole open-ended dynamic-class-loading exception outside its permitted scope and could make the native tests pass without executing their assertions.
+## 2026-09-06 — io.netty:netty-codec:4.2.2.Final (#9761)
+
+**Native-image repair deletes the failing checksum test**
+
+The branch deletes tests/src/io.netty/netty-codec/4.1.42.Final/src/test/java/io_netty/netty_codec/ByteBufChecksumInnerReflectiveByteBufChecksumTest.java after that test exposed the CleanerJava24/SharedArena native failure. Deleting the failing test to make the native lane green is the enumerated fix-by-weakening violation in FS-contribution-contract.4.8 / FS-test-contract.2.9 and does not demonstrate that the native-image runtime path was repaired.
 
 ## 2026-09-05 — com.github.seregamorph:spring-test-smart-context:1.0 (#9677)
 
