@@ -12,6 +12,7 @@ import io.micronaut.core.annotation.AnnotationValue;
 import io.micronaut.core.annotation.Introspected;
 import io.micronaut.core.beans.BeanIntrospection;
 import io.micronaut.core.beans.BeanProperty;
+import io.micronaut.core.cli.CommandLine;
 import io.micronaut.core.convert.ConversionService;
 import io.micronaut.core.convert.DefaultMutableConversionService;
 import io.micronaut.core.convert.value.MutableConvertibleValuesMap;
@@ -81,6 +82,24 @@ public class Micronaut_coreTest {
                 .containsEntry(7, URI.create("https://example.test/items"));
         assertThat(conversionService.convertRequired("5,8,13", int[].class))
                 .containsExactly(5, 8, 13);
+    }
+
+    @Test
+    void parsesDeclaredAndUndeclaredCommandLineOptions() {
+        CommandLine commandLine =
+                CommandLine.build()
+                        .addOption("environment", "The target environment")
+                        .addOption("verbose", "Enable verbose output")
+                        .parseString(
+                                "--environment production --verbose -Dapp.region=west "
+                                        + "\"report file.txt\" --tag=nightly");
+
+        assertThat(commandLine.hasOption("environment")).isTrue();
+        assertThat(commandLine.optionValue("environment")).isEqualTo("production");
+        assertThat(commandLine.optionValue("verbose")).isEqualTo(true);
+        assertThat(commandLine.getSystemProperties()).containsEntry("app.region", "west");
+        assertThat(commandLine.getRemainingArgs()).containsExactly("report file.txt");
+        assertThat(commandLine.getUndeclaredOptions()).containsEntry("tag", "nightly");
     }
 
     @Test
