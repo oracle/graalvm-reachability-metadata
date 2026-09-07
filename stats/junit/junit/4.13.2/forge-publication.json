@@ -1,0 +1,186 @@
+{
+  "base_commit": "bfaff0b6b068db5ac9bbb1855b472d8044589f6a",
+  "branch": "ai/kimeta/improve-coverage-junit-junit-4.13.2-chunked-forge-8920-20260907214540005443-585489008f28",
+  "follow_ups": [],
+  "forge": {
+    "branch": "master",
+    "commit": "bfaff0b6b068db5ac9bbb1855b472d8044589f6a",
+    "monitored_branch": "origin/master"
+  },
+  "issue_number": 8920,
+  "library": {
+    "artifact": "junit",
+    "coordinates": "junit:junit:4.13.2",
+    "group": "junit",
+    "version": "4.13.2"
+  },
+  "local_ci_verification": {
+    "base_commit": "bfaff0b6b068db5ac9bbb1855b472d8044589f6a",
+    "commands": [
+      {
+        "command": [
+          "./gradlew",
+          "generateChangedIndexFileCoordinatesList",
+          "-PbaseCommit=origin/master",
+          "-PnewCommit=HEAD"
+        ],
+        "env": {
+          "GITHUB_OUTPUT": "/tmp/tmpmofxu4p1"
+        },
+        "gate": "changed-index-coordinates",
+        "log_path": "logs/changed-index-coordinates/local-ci/gradlew-2026-09-07T21-45-45-139160Z.log",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :generateChangedIndexFileCoordinatesList\n\n[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8920-4c8ab585/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 2s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      },
+      {
+        "command": [
+          "./gradlew",
+          "validateIndexFiles",
+          "-Pcoordinates=junit:junit"
+        ],
+        "env": {},
+        "gate": "index-file-validation",
+        "log_path": "logs/index-file-validation/local-ci/gradlew-2026-09-07T21-45-47-549364Z.log",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :validateIndexFiles\n✅ metadata/junit/junit/index.json: Valid\n\n[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8920-4c8ab585/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 1s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      }
+    ],
+    "failure_command": null,
+    "failure_gate": null,
+    "final_commit": "7b6b914c0dc1b9e6a7c2c448316500d268258058",
+    "fixups": [],
+    "human_intervention_required": false,
+    "repo_fix_paths": [],
+    "status": "success"
+  },
+  "local_review": {
+    "changed_paths": [],
+    "decision": "approved",
+    "failed_step": null,
+    "finding_body": "",
+    "finding_title": "",
+    "fix_note": "",
+    "model": "gpt-5.6-sol",
+    "published_tree": "verified",
+    "repair_reverted": false,
+    "review_comment": "Reviewed the specified branch diff and local evidence for junit:junit:4.13.2. The change is scoped to the target coordinate, raises dynamic-access coverage from 0% (0/70) to 100% (70/70), adds library-specific public-API tests without native skips, version-pinned assertions, direct-reflection shortcuts, library-package placement, or legacy metadata files, and has valid conditional metadata. Local checkMetadataFiles, checkstyle, JVM tests, native-image compilation, and native runtime tests pass for the coordinate.",
+    "session_log_path": "logs/junit:junit:4.13.2/local-branch-review/pi.log",
+    "status": "completed"
+  },
+  "metrics": {
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "path": "stats/junit/junit/4.13.2/execution-metrics.json",
+    "summary": {
+      "cached_input_tokens_used": 13010304,
+      "code_coverage_percent": 46.39,
+      "cost_usd": 11.3416,
+      "generated_loc": 1576,
+      "input_tokens_used": 507947,
+      "iterations": 11,
+      "metadata_entries": 169,
+      "output_tokens_used": 76555,
+      "test_only_metadata_entries": 869,
+      "tested_library_loc": 2269
+    },
+    "timestamp": "2026-09-07T21:45:40.005443Z"
+  },
+  "modifiers": {
+    "chunk_final": true,
+    "chunked_dynamic_access": true,
+    "human_intervention": false
+  },
+  "producer": "kimeta",
+  "publication_id": "forge-8920-20260907214540005443-585489008f28",
+  "render": {
+    "alias_split": null,
+    "baseline_metadata_entries": 1,
+    "baseline_stats": {
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 0.0,
+            "coveredCalls": 0,
+            "totalCalls": 70
+          }
+        },
+        "coverageRatio": 0.0,
+        "coveredCalls": 0,
+        "totalCalls": 70
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 68,
+          "missed": 21428,
+          "ratio": 0.003163,
+          "total": 21496
+        },
+        "line": {
+          "covered": 25,
+          "missed": 4866,
+          "ratio": 0.005111,
+          "total": 4891
+        },
+        "method": {
+          "covered": 10,
+          "missed": 1620,
+          "ratio": 0.006135,
+          "total": 1630
+        }
+      },
+      "version": "4.13.2"
+    },
+    "baseline_test_only_entries": 3,
+    "current_metadata_entries": 169,
+    "current_test_only_entries": 869,
+    "dynamic_access": null,
+    "library_stats": {
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 70,
+            "totalCalls": 70
+          }
+        },
+        "coverageRatio": 1.0,
+        "coveredCalls": 70,
+        "totalCalls": 70
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 9768,
+          "missed": 11728,
+          "ratio": 0.45441,
+          "total": 21496
+        },
+        "line": {
+          "covered": 2269,
+          "missed": 2622,
+          "ratio": 0.463913,
+          "total": 4891
+        },
+        "method": {
+          "covered": 816,
+          "missed": 814,
+          "ratio": 0.500613,
+          "total": 1630
+        }
+      },
+      "version": "4.13.2"
+    },
+    "library_update_target": {
+      "match_type": "tested-version",
+      "matched_metadata_version": "4.13.2",
+      "matched_test_version": "4.13.2",
+      "requested_coordinate": "junit:junit:4.13.2",
+      "resolved_metadata_version": "4.13.2",
+      "resolved_test_version": "4.13.2"
+    }
+  },
+  "schema_version": 1,
+  "strategy_name": "library_update_optimistic_pi_gpt-5.6-sol",
+  "task_type": "library-update-request",
+  "template_type": "library-update-request",
+  "timestamp": "2026-09-07T21:45:40.005443Z"
+}

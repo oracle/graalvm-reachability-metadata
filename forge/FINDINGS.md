@@ -8,6 +8,11 @@ Newest entry first; every non-approval is recorded, including one a repair later
 **Explicit I/O timeout below the 10-second floor**
 
 In tests/src/org.springframework/spring-webflux/6.0.0/src/test/java/org_springframework/spring_webflux/InvocableHandlerMethodTest.java, the reactive request wait used Duration.ofSeconds(5). This violates the enumerated 10-second minimum for explicit request/I/O timeouts in §FS-test-contract.1.7.
+## 2026-09-02 — org.springframework:spring-web:5.3.32 (#9402)
+
+**Runtime repair deletes existing test coverage**
+
+Rule 4.8 (fix by weakening) was violated in `tests/src/org.springframework/spring-web/5.3.32`: the copied 5.3.18 suite deleted `JettyClientHttpResponseTest.java` and removed its Jetty dependency instead of adapting the failing runtime path while preserving the test's status, headers, cookies, and body assertions.
 ## 2026-09-07 — io.micronaut:micronaut-http-server:5.1.13 (#9832)
 
 **Companion dependencies pin the tested library version**

@@ -11,7 +11,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.internal.AssumptionViolatedException;
 import org.junit.jupiter.api.Test;
 
-class JunitTest {
+public class JunitTest {
 
     @Test
     @SuppressWarnings("deprecation")
