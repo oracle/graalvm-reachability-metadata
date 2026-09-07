@@ -342,6 +342,16 @@ uncovered according to exact JaCoCo evidence. The agent must reach internal
 methods through the shown public behavior rather than invoke implementation
 methods directly.
 
+Every prompted target also carries a deterministic miss classification derived
+from JaCoCo source-line instruction and branch counters plus the target's
+reverse call-site fan-out. A covered invoking line with an uncovered target is
+`dispatched-elsewhere` and names the site's other candidate implementations,
+including candidates owned by the coverage suite. Otherwise the nearest
+covered branch above the invoking line is `fork-not-taken`; when no such branch
+exists, `no-fork` names the nearest covered line and explains that the target
+requires an exception or external event. The Markdown prompt and full JSON
+report carry the same classification. §GOAL-maximize-library-coverage
+
 The full JSON report retains every uncovered internal target, its JaCoCo
 evidence, graph status, rank, sampled context, and static path. The prompt-facing
 Markdown and target-id list contain at most 200 methods globally. Measurement
