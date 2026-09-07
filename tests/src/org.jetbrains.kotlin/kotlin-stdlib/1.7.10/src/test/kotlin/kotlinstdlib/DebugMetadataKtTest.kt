@@ -24,11 +24,12 @@ public class DebugMetadataKtTest {
             suspendForDebugMetadataInspection()
         }
         val continuation: Continuation<Unit> = block.createCoroutine(DebugMetadataCompletion())
-        val frame: CoroutineStackFrame = continuation as CoroutineStackFrame
-        val initialElement: StackTraceElement = assertNotNull(frame.getStackTraceElement())
+        val outerFrame: CoroutineStackFrame = continuation as CoroutineStackFrame
+        val generatedFrame: CoroutineStackFrame = outerFrame.callerFrame ?: outerFrame
+        val initialElement: StackTraceElement = assertNotNull(generatedFrame.getStackTraceElement())
 
         continuation.resumeWith(Result.success(Unit))
-        val suspendedElement: StackTraceElement = assertNotNull(frame.getStackTraceElement())
+        val suspendedElement: StackTraceElement = assertNotNull(generatedFrame.getStackTraceElement())
 
         assertEquals(-1, initialElement.lineNumber)
         assertEquals("DebugMetadataKtTest.kt", suspendedElement.fileName)

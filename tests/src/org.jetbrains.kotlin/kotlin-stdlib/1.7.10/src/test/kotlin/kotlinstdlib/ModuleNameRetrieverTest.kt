@@ -24,14 +24,15 @@ public class ModuleNameRetrieverTest {
             suspendForModuleNameInspection()
         }
         val continuation: Continuation<Unit> = block.createCoroutine(ModuleNameCompletion())
-        val frame: CoroutineStackFrame = continuation as CoroutineStackFrame
+        val outerFrame: CoroutineStackFrame = continuation as CoroutineStackFrame
+        val generatedFrame: CoroutineStackFrame = outerFrame.callerFrame ?: outerFrame
 
         continuation.resumeWith(Result.success(Unit))
-        val stackTraceElement: StackTraceElement = assertNotNull(frame.getStackTraceElement())
+        val stackTraceElement: StackTraceElement = assertNotNull(generatedFrame.getStackTraceElement())
 
         assertEquals("ModuleNameRetrieverTest.kt", stackTraceElement.fileName)
         assertTrue(stackTraceElement.lineNumber > 0)
-        assertTrue(frame.toString().contains("ModuleNameRetrieverTest.kt"))
+        assertTrue(generatedFrame.toString().contains("ModuleNameRetrieverTest.kt"))
     }
 }
 
