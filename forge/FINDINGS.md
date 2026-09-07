@@ -3,6 +3,12 @@
 Rendered by Forge from the pre-push branch review of §FS-local-branch-review.
 Newest entry first; every non-approval is recorded, including one a repair later cleared.
 
+## 2026-09-07 — io.micronaut:micronaut-buffer-netty:5.1.13 (#9828)
+
+**Application context closes while eager bean processing is still running**
+
+In Micronaut_buffer_nettyTest.java, both ApplicationContext.run(...) calls enable asynchronous eager bean processing. The native test lane completed its assertions but then emitted an uncaught NullPointerException from DefaultBeanContext.processParallelBeans after the contexts had closed. This violates the test contract requirement that background resources be cleanly bounded and closed.
+
 ## 2026-09-07 — io.micronaut:micronaut-http-server:5.1.13 (#9832)
 
 **Companion dependencies pin the tested library version**
