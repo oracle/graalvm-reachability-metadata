@@ -27,8 +27,11 @@ import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.operator.ContentSigner;
 import org.bouncycastle.operator.jcajce.JcaContentSignerBuilder;
 import org.bouncycastle.operator.jcajce.JcaContentVerifierProviderBuilder;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 
+// Serialize before other holders so the agent attributes the cached byte-array write to this class.
+@Order(1)
 public class X509CRLHolderTest {
 
     private static final BigInteger REVOKED_SERIAL_NUMBER = BigInteger.valueOf(4096);
