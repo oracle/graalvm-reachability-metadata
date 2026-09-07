@@ -401,6 +401,27 @@ public class Micronaut_buffer_nettyTest {
     }
 
     @Test
+    void providesAContainerManagedByteBufferFactory() {
+        try (ApplicationContext context = ApplicationContext.run()) {
+            NettyByteBufferFactory factory = context.getBean(NettyByteBufferFactory.class);
+            ByteBuffer<ByteBuf> buffer = factory.buffer(SAMPLE.length);
+
+            try {
+                buffer.write(SAMPLE.clone());
+                byte[] copy = new byte[SAMPLE.length];
+                buffer.read(copy);
+
+                assertThat(context.getBean(NettyByteBufferFactory.class)).isSameAs(factory);
+                assertThat(factory.getNativeAllocator()).isSameAs(ByteBufAllocator.DEFAULT);
+                assertThat(copy).containsExactly(SAMPLE);
+                assertThat(buffer.readableBytes()).isZero();
+            } finally {
+                release(buffer.asNativeBuffer());
+            }
+        }
+    }
+
+    @Test
     void bindsDefaultAllocatorConfigurationToNettySystemProperties() {
         Map<String, Object> properties = Map.ofEntries(
                 Map.entry("netty.default.allocator.num-heap-arenas", 1),
