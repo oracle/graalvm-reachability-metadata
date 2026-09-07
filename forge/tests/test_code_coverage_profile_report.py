@@ -12,6 +12,7 @@ import tempfile
 import unittest
 
 from utility_scripts.code_coverage_jacoco import (
+    JacocoLineCoverage,
     JacocoMethodCoverage,
     JacocoReportError,
     load_jacoco_method_coverage,
@@ -302,6 +303,69 @@ class DeepCorrelationTest(unittest.TestCase):
         self.assertEqual(path["jacocoStatus"], "uncovered")
         self.assertEqual(path["stepsRemaining"], 0)
 
+    def test_covered_call_site_is_dispatched_elsewhere_and_never_fork(self) -> None:
+        caller = MethodRef("example.Router", "route", (), "void")
+        target = MethodRef("example.Handler$1", "handle", (), "void")
+        suite_handler = MethodRef(
+            "example.RouteCoverageTest$1", "handle", (), "void"
+        )
+        target_edge: dict = {
+            "caller": 1,
+            "callee": 2,
+            "bci": "1",
+            "is_direct": "false",
+            "kind": "call",
+            "invoke_id": 10,
+            "source_line": 1,
+        }
+        suite_edge: dict = {
+            **target_edge,
+            "callee": 3,
+        }
+        graph = report_module.CallGraph(
+            methods={1: caller, 2: target, 3: suite_handler},
+            key_to_id={
+                caller.canonical_id: 1,
+                target.canonical_id: 2,
+                suite_handler.canonical_id: 3,
+            },
+            adjacency={1: [target_edge, suite_edge]},
+            reverse_adjacency={2: [target_edge], 3: [suite_edge]},
+            invoke_fan_out={10: [2, 3]},
+        )
+        caller_coverage = JacocoMethodCoverage(
+            method_ref=caller,
+            covered=True,
+            source_path="example/Router.java",
+            source_line=1,
+            report_paths=("fixture.xml",),
+        )
+        report, _ = report_module.correlate(
+            report_module.SampledProfile(),
+            graph,
+            {"targets": [{"id": caller.canonical_id, "kind": "method"}]},
+            {
+                caller.canonical_id: caller_coverage,
+                target.canonical_id: _coverage(target),
+            },
+            jacoco_lines={
+                "example/Router.java": {
+                    1: JacocoLineCoverage(mi=0, ci=5, mb=1, cb=1),
+                },
+            },
+        )
+
+        classification: dict = report["bulkTargets"][0]["missClassification"]
+        self.assertEqual(classification["kind"], "dispatched-elsewhere")
+        self.assertIsNone(classification["fork"])
+        self.assertTrue(
+            next(
+                candidate
+                for candidate in classification["candidates"]
+                if candidate["id"] == suite_handler.canonical_id
+            )["coverageSuite"]
+        )
+
     def test_shortest_distance_beats_prompt_quality(self) -> None:
         framework = MethodRef("java.lang.Thread", "run", (), "void")
         app = MethodRef("app.Service", "work", (), "void")
@@ -432,22 +496,21 @@ class ReportArtifactsTest(unittest.TestCase):
             markdown = md_file.read()
         self.assertIn("## Observed (sampled guidance only)", markdown)
         self.assertIn("## Uncovered paths (JaCoCo-exact, top 200)", markdown)
-        navigation = (
-            "Observed:\n"
-            "`Registry.init()`\n\n"
-            "Uncovered paths:\n"
-            "`Registry.init() → resolve(...)`\n"
-            "`Registry.init() → resolve(...) → load(...)`\n"
-            "`Registry.init() → resolve(...) → load(...) → reload()`\n"
+        expected_paths: tuple[str, ...] = (
+            "`Registry.init() → resolve(...)`",
+            "`Registry.init() → resolve(...) → load(...)`",
+            "`Registry.init() → resolve(...) → load(...) → reload()`",
+            "`Config.of() → parse(...)`",
         )
-        public_navigation = (
-            "Public entry:\n"
-            "`Config.of()`\n\n"
-            "Uncovered paths:\n"
-            "`Config.of() → parse(...)`\n"
-        )
-        self.assertIn(navigation, markdown)
-        self.assertIn(public_navigation, markdown)
+        for path in expected_paths:
+            self.assertIn(path, markdown)
+        for target in report["bulkTargets"]:
+            self.assertIn("missClassification", target)
+            self.assertIn(
+                target["missClassification"]["kind"],
+                {"dispatched-elsewhere", "fork-not-taken", "no-fork"},
+            )
+        self.assertEqual(markdown.count("  target "), len(report["bulkTargets"]))
         path_lines = [line for line in markdown.splitlines() if line.startswith("`")]
         for line in path_lines:
             self.assertNotIn("#", line)
