@@ -1,0 +1,196 @@
+{
+  "base_commit": "b71286b2cdaeae27bcc8c15f8c1c7518fe93a4cb",
+  "branch": "ai/kimeta/improve-coverage-org.jline-jline-3.24.0-forge-9891-20260907065226036278-6c00f90bf904",
+  "follow_ups": [],
+  "forge": {
+    "branch": "issue-9776-composite-bulk-success",
+    "commit": "45dafbf4a348867df2709e876b8f08541c9824e0",
+    "monitored_branch": "origin/issue-9776-composite-bulk-success"
+  },
+  "issue_number": 9891,
+  "library": {
+    "artifact": "jline",
+    "coordinates": "org.jline:jline:3.24.0",
+    "group": "org.jline",
+    "version": "3.24.0"
+  },
+  "local_ci_verification": {
+    "base_commit": "b71286b2cdaeae27bcc8c15f8c1c7518fe93a4cb",
+    "commands": [
+      {
+        "command": [
+          "./gradlew",
+          "generateChangedIndexFileCoordinatesList",
+          "-PbaseCommit=origin/master",
+          "-PnewCommit=HEAD"
+        ],
+        "env": {
+          "GITHUB_OUTPUT": "/tmp/tmpqrs8mvnp"
+        },
+        "gate": "changed-index-coordinates",
+        "log_path": "logs/changed-index-coordinates/local-ci/gradlew-2026-09-07T06-52-48-690213Z.log",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :generateChangedIndexFileCoordinatesList\n\n[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata-copy/forge/local_repositories/forge_worktrees/9891-c9fa0c74/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 2s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      },
+      {
+        "command": [
+          "./gradlew",
+          "validateIndexFiles",
+          "-Pcoordinates=org.jline:jline"
+        ],
+        "env": {},
+        "gate": "index-file-validation",
+        "log_path": "logs/index-file-validation/local-ci/gradlew-2026-09-07T06-52-50-940214Z.log",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :validateIndexFiles\n✅ metadata/org.jline/jline/index.json: Valid\n\n[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata-copy/forge/local_repositories/forge_worktrees/9891-c9fa0c74/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 1s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      }
+    ],
+    "failure_command": null,
+    "failure_gate": null,
+    "final_commit": "4d002165d3d3da8e76ef8c53f04d90664574043f",
+    "fixups": [],
+    "human_intervention_required": false,
+    "repo_fix_paths": [],
+    "status": "success"
+  },
+  "local_review": {
+    "changed_paths": [],
+    "decision": "approved",
+    "failed_step": null,
+    "finding_body": "",
+    "finding_title": "",
+    "fix_note": "No correction was needed; the reviewed tree is approved unchanged.",
+    "model": "gpt-5.6-sol",
+    "published_tree": "verified",
+    "repair_reverted": false,
+    "review_comment": "Reviewed the specified commit range and local evidence for org.jline:jline:3.24.0. The diff is scoped to the target metadata, index, stats, and test project; introduces no legacy metadata files, native-image skips, swallowed failures, version-pinned test assertions, or library-package test placement. The issue requests preservation of the 3.24.0/3.24.1 successor range and no specific metadata entry; the index retains both versions. Added tests exercise JLine terminal, provider, resource, proxy, signal, editor, and completion behavior through library APIs. Dynamic-access coverage improves from 3.0303% (1/33) to 100% (33/33), and the recorded metadata, style, JVM/native, stats, and local index gates are successful. No enumerated-rule violation was found.",
+    "session_log_path": "logs/org.jline:jline:3.24.0/local-branch-review/pi.log",
+    "status": "completed"
+  },
+  "metrics": {
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "path": "stats/org.jline/jline/3.24.0/execution-metrics.json",
+    "summary": {
+      "cached_input_tokens_used": 4489344,
+      "code_coverage_percent": 17.46,
+      "cost_usd": 4.5236,
+      "generated_loc": 718,
+      "input_tokens_used": 243688,
+      "iterations": 2,
+      "metadata_entries": 104,
+      "output_tokens_used": 35349,
+      "test_only_metadata_entries": 1,
+      "tested_library_loc": 5314
+    },
+    "timestamp": "2026-09-07T06:52:26.036278Z"
+  },
+  "modifiers": {
+    "chunk_final": true,
+    "chunked_dynamic_access": false,
+    "human_intervention": false
+  },
+  "producer": "kimeta",
+  "publication_id": "forge-9891-20260907065226036278-6c00f90bf904",
+  "render": {
+    "alias_split": null,
+    "baseline_metadata_entries": 92,
+    "baseline_stats": {
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 0.0,
+            "coveredCalls": 0,
+            "totalCalls": 25
+          },
+          "resources": {
+            "coverageRatio": 0.125,
+            "coveredCalls": 1,
+            "totalCalls": 8
+          }
+        },
+        "coverageRatio": 0.030303,
+        "coveredCalls": 1,
+        "totalCalls": 33
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 7404,
+          "missed": 153654,
+          "ratio": 0.045971,
+          "total": 161058
+        },
+        "line": {
+          "covered": 1124,
+          "missed": 29303,
+          "ratio": 0.036941,
+          "total": 30427
+        },
+        "method": {
+          "covered": 119,
+          "missed": 3851,
+          "ratio": 0.029975,
+          "total": 3970
+        }
+      },
+      "version": "3.24.0"
+    },
+    "baseline_test_only_entries": 0,
+    "current_metadata_entries": 104,
+    "current_test_only_entries": 1,
+    "dynamic_access": null,
+    "library_stats": {
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 25,
+            "totalCalls": 25
+          },
+          "resources": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 8,
+            "totalCalls": 8
+          }
+        },
+        "coverageRatio": 1.0,
+        "coveredCalls": 33,
+        "totalCalls": 33
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 30164,
+          "missed": 130894,
+          "ratio": 0.187287,
+          "total": 161058
+        },
+        "line": {
+          "covered": 5314,
+          "missed": 25113,
+          "ratio": 0.174648,
+          "total": 30427
+        },
+        "method": {
+          "covered": 770,
+          "missed": 3200,
+          "ratio": 0.193955,
+          "total": 3970
+        }
+      },
+      "version": "3.24.0"
+    },
+    "library_update_target": {
+      "match_type": "tested-version",
+      "matched_metadata_version": "3.24.0",
+      "matched_test_version": "3.24.0",
+      "requested_coordinate": "org.jline:jline:3.24.0",
+      "resolved_metadata_version": "3.24.0",
+      "resolved_test_version": "3.24.0"
+    }
+  },
+  "schema_version": 1,
+  "strategy_name": "library_update_optimistic_pi_gpt-5.6-sol",
+  "task_type": "library-update-request",
+  "template_type": "library-update-request",
+  "timestamp": "2026-09-07T06:52:26.036278Z"
+}
