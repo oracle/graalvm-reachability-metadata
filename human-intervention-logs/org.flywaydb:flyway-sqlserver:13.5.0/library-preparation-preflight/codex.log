@@ -1,0 +1,23 @@
+{
+  "action": "advisory_preparation",
+  "summary": "Meaningful coverage requires a real SQL Server and its separate JDBC driver.",
+  "deterministic_setup": [
+    {
+      "kind": "dependency",
+      "coordinate": "com.microsoft.sqlserver:mssql-jdbc:12.2.0.jre11",
+      "scope": "testImplementation",
+      "reason": "flyway-sqlserver does not provide the JDBC driver transitively; Flyway documents it as a separate dependency. The existing test already resolves this driver."
+    },
+    {
+      "kind": "docker_image",
+      "image": "mcr.microsoft.com/mssql/server:2022-latest",
+      "slug": "mssql-server",
+      "reason": "SQL Server-specific Flyway behavior cannot be meaningfully exercised against an embedded database; reuse the existing pinned SQL Server image."
+    }
+  ],
+  "agent_guidance": "Start SQL Server with EULA acceptance and a strong SA password, wait for readiness on port 1433, and configure the JDBC URL, database, username, and password consistently for JVM and native tests. Preserve -H:+AddAllCharsets because the SQL Server driver selects code pages from server collation.",
+  "risks": [
+    "The reported failure already occurs after native-image creation and already includes -H:+AddAllCharsets; setup alone will not fix the runtime metadata failure.",
+    "Container startup timing and SQL Server authentication may make tests flaky without an explicit readiness wait."
+  ]
+}
