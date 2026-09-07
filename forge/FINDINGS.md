@@ -9,6 +9,11 @@ Newest entry first; every non-approval is recorded, including one a repair later
 
 In tests/src/io.opentelemetry.proto/opentelemetry-proto/1.10.0-alpha/src/test/java/io_opentelemetry_proto/opentelemetry_proto/Opentelemetry_protoTest.java, the branch removed Exemplar construction and its assertions from histogramMetricRepresentsDistributionBucketsAndExemplars. This violates the enumerated no-scope-creep/no-fix-by-weakening rule: a library-update contribution must not remove or weaken existing passing test coverage.
 
+## 2026-09-02 — org.springframework:spring-web:5.3.32 (#9402)
+
+**Runtime repair deletes existing test coverage**
+
+Rule 4.8 (fix by weakening) was violated in `tests/src/org.springframework/spring-web/5.3.32`: the copied 5.3.18 suite deleted `JettyClientHttpResponseTest.java` and removed its Jetty dependency instead of adapting the failing runtime path while preserving the test's status, headers, cookies, and body assertions.
 ## 2026-09-07 — io.micronaut:micronaut-http-server:5.1.13 (#9832)
 
 **Companion dependencies pin the tested library version**
