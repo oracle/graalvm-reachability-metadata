@@ -8,6 +8,11 @@ Newest entry first; every non-approval is recorded, including one a repair later
 **Companion Micronaut dependencies pin the tested library version**
 
 Review Signal #4 / FS-test-contract.2.5 is violated in tests/src/io.micronaut/micronaut-management/5.1.13/build.gradle: the HTTP server, HTTP client, and Jackson companion modules hardcode 5.1.13, so the test project does not remain version-agnostic when the tested Micronaut version changes.
+## 2026-09-06 — io.micronaut.serde:micronaut-serde-support:3.1.1 (#9837)
+
+**Version-pinned companion serialization dependency**
+
+Review Signal #4 was violated in tests/src/io.micronaut.serde/micronaut-serde-support/3.1.1/build.gradle: micronaut-serde-jackson was pinned to 3.1.1, so the suite would not track the tested Micronaut Serde version when reused for another supported version.
 
 ## 2026-09-06 — io.netty:netty-codec:5.0.0.Alpha1 (#9762)
 
