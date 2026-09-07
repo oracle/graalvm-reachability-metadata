@@ -13,12 +13,10 @@ String libraryVersion = tck.testedLibraryVersion.get()
 dependencies {
     testImplementation("org.jline:jline:${libraryVersion}")
     testImplementation("org.jline:jline-terminal-jansi:${libraryVersion}")
-    testImplementation("org.jline:jline-terminal-jna:${libraryVersion}")
 }
 
 test {
     environment "LD_PRELOAD", "/usr/lib/x86_64-linux-gnu/libutil.so" // Hack in order to use JANSI on GH Actions
-    jvmArgs "--add-opens=java.base/java.io=ALL-UNNAMED"
 }
 
 tasks.named("nativeTest") {
@@ -26,20 +24,9 @@ tasks.named("nativeTest") {
 }
 
 graalvmNative {
-    agent {
-        defaultMode = "conditional"
-        modes {
-            conditional {
-                userCodeFilterPath = "user-code-filter.json"
-            }
-        }
-    }
     binaries {
         test {
-            buildArgs.addAll(
-                    '--allow-incomplete-classpath',
-                    '--add-opens=java.base/java.io=ALL-UNNAMED'
-            )
+            buildArgs.add('--allow-incomplete-classpath')
         }
     }
 }
