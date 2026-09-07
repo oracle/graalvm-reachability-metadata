@@ -27,12 +27,15 @@ import io.micronaut.http.annotation.Header;
 import io.micronaut.http.annotation.PathVariable;
 import io.micronaut.http.annotation.Post;
 import io.micronaut.http.annotation.QueryValue;
+import io.micronaut.http.annotation.RequestAttribute;
+import io.micronaut.http.annotation.RequestFilter;
 import io.micronaut.http.annotation.ResponseFilter;
 import io.micronaut.http.annotation.ServerFilter;
 import io.micronaut.http.client.BlockingHttpClient;
 import io.micronaut.http.client.DefaultHttpClientConfiguration;
 import io.micronaut.http.client.HttpClient;
 import io.micronaut.http.client.exceptions.HttpClientResponseException;
+import io.micronaut.http.server.filter.FilterBodyParser;
 import io.micronaut.http.server.types.files.StreamedFile;
 import io.micronaut.http.server.types.files.SystemFile;
 import io.micronaut.http.server.util.HttpHostResolver;
@@ -49,6 +52,8 @@ import java.time.Duration;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 import org.junit.jupiter.api.io.TempDir;
@@ -58,6 +63,7 @@ public class Micronaut_http_serverTest {
     private static final Duration HTTP_TIMEOUT = Duration.ofSeconds(10);
     private static final Argument<Map<String, Object>> JSON_MAP = Argument.mapOf(String.class, Object.class);
     private static final byte[] STREAM_CONTENT = "streamed server content".getBytes(StandardCharsets.UTF_8);
+    private static final String PARSED_OPERATION_ATTRIBUTE = "parsed-operation";
 
     @TempDir
     Path temporaryDirectory;
@@ -99,6 +105,37 @@ public class Micronaut_http_serverTest {
                     .containsEntry("locale", "fr-CA")
                     .containsEntry("requestId", "request-17")
                     .containsEntry("method", "POST");
+        }
+    }
+
+    @Test
+    @Timeout(55)
+    void parsesJsonAndFormBodiesWithinARequestFilter() {
+        Map<String, Object> properties = Map.of("micronaut.server.port", -1);
+
+        try (EmbeddedServer server = ApplicationContext.run(EmbeddedServer.class, properties, Environment.TEST);
+                HttpClient client = HttpClient.create(server.getURL(), clientConfiguration())) {
+            BlockingHttpClient blockingClient = client.toBlocking();
+            HttpRequest<?> jsonRequest = HttpRequest.POST(
+                            "/server-test/filter-body",
+                            Map.of("operation", "publish", "document", "guide"))
+                    .contentType(MediaType.APPLICATION_JSON_TYPE)
+                    .accept(MediaType.TEXT_PLAIN_TYPE);
+
+            HttpResponse<String> jsonResponse = blockingClient.exchange(jsonRequest, String.class);
+
+            assertThat(jsonResponse.code()).isEqualTo(HttpStatus.OK.getCode());
+            assertThat(jsonResponse.body()).isEqualTo("publish");
+
+            HttpRequest<?> formRequest = HttpRequest.POST(
+                            "/server-test/filter-body", "operation=archive&document=notes")
+                    .contentType(MediaType.APPLICATION_FORM_URLENCODED_TYPE)
+                    .accept(MediaType.TEXT_PLAIN_TYPE);
+
+            HttpResponse<String> formResponse = blockingClient.exchange(formRequest, String.class);
+
+            assertThat(formResponse.code()).isEqualTo(HttpStatus.OK.getCode());
+            assertThat(formResponse.body()).isEqualTo("archive");
         }
     }
 
@@ -288,6 +325,14 @@ public class Micronaut_http_serverTest {
         return HttpResponse.created(response);
     }
 
+    @Post(
+            uri = "/filter-body",
+            consumes = {MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED},
+            produces = MediaType.TEXT_PLAIN)
+    public String filteredBody(@RequestAttribute(PARSED_OPERATION_ATTRIBUTE) String operation) {
+        return operation;
+    }
+
     @Get(uri = "/required", produces = MediaType.TEXT_PLAIN)
     public String required(@QueryValue("count") int count) {
         return "count=" + count;
@@ -329,6 +374,23 @@ public class Micronaut_http_serverTest {
         configuration.setReadTimeout(HTTP_TIMEOUT);
         configuration.setRequestTimeout(HTTP_TIMEOUT);
         return configuration;
+    }
+
+    @ServerFilter("/server-test/filter-body")
+    public static final class BodyParsingServerFilter {
+        private final FilterBodyParser bodyParser;
+
+        public BodyParsingServerFilter(FilterBodyParser bodyParser) {
+            this.bodyParser = bodyParser;
+        }
+
+        @RequestFilter
+        public CompletableFuture<@Nullable HttpResponse<?>> captureOperation(HttpRequest<?> request) {
+            return bodyParser.parseBody(request).thenApply(body -> {
+                request.setAttribute(PARSED_OPERATION_ATTRIBUTE, body.get("operation"));
+                return null;
+            });
+        }
     }
 
     @ServerFilter("/server-test/**")
