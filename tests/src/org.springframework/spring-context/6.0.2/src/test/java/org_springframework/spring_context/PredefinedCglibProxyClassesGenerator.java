@@ -11,8 +11,15 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 
+import org.springframework.aot.generate.ClassNameGenerator;
+import org.springframework.aot.generate.DefaultGenerationContext;
+import org.springframework.aot.generate.InMemoryGeneratedFiles;
 import org.springframework.cache.concurrent.ConcurrentMapCacheFactoryBean;
+import org.springframework.context.annotation.AnnotatedBeanDefinitionReader;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.context.aot.ApplicationContextAotGenerator;
+import org.springframework.context.support.GenericApplicationContext;
+import org.springframework.javapoet.ClassName;
 
 public final class PredefinedCglibProxyClassesGenerator {
 
@@ -23,6 +30,7 @@ public final class PredefinedCglibProxyClassesGenerator {
     private static final List<String> EXPECTED_CLASS_FILES = List.of(
             "org_springframework/spring_context/ConfigurationClassEnhancerInnerBeanMethodInterceptorTest$CglibProxyConfiguration$$SpringCGLIB$$0.class",
             "org_springframework/spring_context/ConfigurationClassEnhancerInnerBeanMethodInterceptorTest$InterfaceProxyConfiguration$$SpringCGLIB$$0.class",
+            "org_springframework/spring_context/ConfigurationClassPostProcessorInnerConfigurationClassProxyBeanRegistrationCodeFragmentsTest$ConstructorConfiguredApplication$$SpringCGLIB$$0.class",
             "org/springframework/cache/concurrent/ConcurrentMapCacheFactoryBean$$SpringCGLIB$$0.class");
 
     private PredefinedCglibProxyClassesGenerator() {
@@ -40,6 +48,7 @@ public final class PredefinedCglibProxyClassesGenerator {
 
         generateCglibFactoryBeanProxyClasses();
         generateInterfaceFactoryBeanProxyClasses();
+        generateConstructorConfiguredApplicationProxyClass();
         verifyExpectedClassFiles(outputDirectory);
     }
 
@@ -62,6 +71,25 @@ public final class PredefinedCglibProxyClassesGenerator {
                     context.getBean(
                             ConfigurationClassEnhancerInnerBeanMethodInterceptorTest.InterfaceProxyConfiguration.class);
             configuration.interfaceFactoryBean().getObject();
+        }
+    }
+
+    private static void generateConstructorConfiguredApplicationProxyClass() {
+        InMemoryGeneratedFiles generatedFiles = new InMemoryGeneratedFiles();
+        DefaultGenerationContext generationContext = new DefaultGenerationContext(
+                new ClassNameGenerator(ClassName.get(
+                        ConfigurationClassPostProcessorInnerConfigurationClassProxyBeanRegistrationCodeFragmentsTest
+                                .ConstructorConfiguredApplication.class)),
+                generatedFiles);
+        try (GenericApplicationContext applicationContext = new GenericApplicationContext()) {
+            applicationContext.registerBean(
+                    ConfigurationClassPostProcessorInnerConfigurationClassProxyBeanRegistrationCodeFragmentsTest
+                            .ConfigurationCollaborator.class);
+            new AnnotatedBeanDefinitionReader(applicationContext).register(
+                    ConfigurationClassPostProcessorInnerConfigurationClassProxyBeanRegistrationCodeFragmentsTest
+                            .ConstructorConfiguredApplication.class);
+            new ApplicationContextAotGenerator().processAheadOfTime(applicationContext, generationContext);
+            generationContext.writeGeneratedContent();
         }
     }
 
