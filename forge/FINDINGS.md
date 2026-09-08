@@ -8,6 +8,11 @@ Newest entry first; every non-approval is recorded, including one a repair later
 **Coverage update weakens an existing passing test**
 
 In tests/src/io.opentelemetry.proto/opentelemetry-proto/1.10.0-alpha/src/test/java/io_opentelemetry_proto/opentelemetry_proto/Opentelemetry_protoTest.java, the branch removed Exemplar construction and its assertions from histogramMetricRepresentsDistributionBucketsAndExemplars. This violates the enumerated no-scope-creep/no-fix-by-weakening rule: a library-update contribution must not remove or weaken existing passing test coverage.
+## 2026-09-07 — io.micronaut:micronaut-buffer-netty:5.1.13 (#9828)
+
+**Application context closes while eager bean processing is still running**
+
+In Micronaut_buffer_nettyTest.java, both ApplicationContext.run(...) calls enable asynchronous eager bean processing. The native test lane completed its assertions but then emitted an uncaught NullPointerException from DefaultBeanContext.processParallelBeans after the contexts had closed. This violates the test contract requirement that background resources be cleanly bounded and closed.
 
 ## 2026-09-02 — org.springframework:spring-web:5.3.32 (#9402)
 
