@@ -3,10 +3,16 @@
 
 ## Overview
 
+{% if benchmark %}
+This workspace benchmarks `{{coordinate}}` from fixed commit
+`{{benchmark_suite_commit}}` as run `{{benchmark_run_id}}`. It performs no
+GitHub issue or Project operation and publishes only compact metrics.
+{% else %}
 This workspace converts `{{repo}}` issue `#{{issue_number}}` into a bounded
 code coverage improvement workflow for one already-supported library. The issue
 must carry `{{issue_label}}` and identify a Maven coordinate in
 `group:artifact:version` form unless `{{coordinate}}` is provided.
+{% endif %}
 
 The workflow keeps generated code coverage tests under the dedicated suite path
 `tests/src/<group>/<artifact>/<test-version>/code-coverage-improvement` (a tracked
@@ -24,6 +30,18 @@ and a phase ends early once two consecutive passes each cover fewer than
 
 ## Source
 
+{% if benchmark %}
+| Field | Value |
+|---|---|
+| Coordinate | `{{coordinate}}` |
+| Run ID | `{{benchmark_run_id}}` |
+| Fixed suite commit | `{{benchmark_suite_commit}}` |
+| Runner commit | `{{benchmark_runner_commit}}` |
+| Source worktree | `{{benchmark_source_worktree}}` |
+| Agent | `{{benchmark_agent}}` |
+| Configured model | `{{benchmark_model}}` |
+| Thinking | `{{benchmark_thinking}}` |
+{% else %}
 | Field | Value |
 |---|---|
 | Repository | `{{repo}}` |
@@ -37,6 +55,7 @@ and a phase ends early once two consecutive passes each cover fewer than
 | Project number | `{{project_number}}` |
 | TODO status | `{{todo_status}}` |
 | In-progress status | `{{in_progress_status}}` |
+{% endif %}
 
 ## Verification
 
@@ -55,7 +74,7 @@ finalization task runs as a deterministic program of numbered steps (read the
 conversion record, run checkstyle, run the JVM tests with the coverage
 suite, finalize
 metrics); a nonzero exit code is the number of the failed step and routes to
-`finalize-fix`, after which the steps re-run from the start. `finalize-verify`
+`finalize-fix`, after which final evidence is remeasured and the steps re-run. `finalize-verify`
 then accepts the artifacts only on presence, schema validation of
 `final-metrics.json`, and metrics outcomes — never on an agent's own claim.
 Fixable failures are bounded by `{{fix_passes}}` pass(es); failed targets or an

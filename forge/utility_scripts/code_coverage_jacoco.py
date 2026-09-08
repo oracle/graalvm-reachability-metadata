@@ -15,6 +15,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 import os
+from typing import NamedTuple
 import xml.etree.ElementTree as ET
 
 from utility_scripts.code_coverage_model import MethodRef, parse_jvm_descriptor
@@ -40,6 +41,28 @@ class JacocoMethodCoverage:
         return "covered" if self.covered else "uncovered"
 
 
+class JacocoLineCoverage(NamedTuple):
+    """Instruction and branch counters for one source line."""
+
+    mi: int
+    ci: int
+    mb: int
+    cb: int
+
+    @property
+    def covered(self) -> bool:
+        """Whether JaCoCo observed any instruction on this line."""
+        return self.ci > 0
+
+
+@dataclass(frozen=True)
+class JacocoCoverage:
+    """Method and source-line evidence loaded from the same XML reports."""
+
+    methods: dict[str, JacocoMethodCoverage]
+    lines: dict[str, dict[int, JacocoLineCoverage]]
+
+
 def _source_path(class_element: ET.Element) -> str | None:
     source_file: str = class_element.get("sourcefilename") or ""
     class_name: str = class_element.get("name") or ""
@@ -62,6 +85,66 @@ def _source_line(method_element: ET.Element, method_id: str, report_path: str) -
             f"JaCoCo report '{report_path}' has invalid source line "
             f"'{raw_line}' for '{method_id}'."
         ) from error
+
+
+def _int_attribute(
+        element: ET.Element,
+        name: str,
+        context: str,
+        report_path: str,
+) -> int:
+    raw_value: str = element.get(name, "")
+    try:
+        value: int = int(raw_value)
+    except ValueError as error:
+        raise JacocoReportError(
+            f"JaCoCo report '{report_path}' has invalid {name} count "
+            f"'{raw_value}' for {context}."
+        ) from error
+    if value < 0:
+        raise JacocoReportError(
+            f"JaCoCo report '{report_path}' has negative {name} count "
+            f"'{raw_value}' for {context}."
+        )
+    return value
+
+
+def _sourcefile_path(package_element: ET.Element, sourcefile_element: ET.Element) -> str:
+    source_file: str = sourcefile_element.get("name") or ""
+    if not source_file:
+        raise JacocoReportError("JaCoCo sourcefile record has no name.")
+    package_path: str = package_element.get("name") or ""
+    if not package_path:
+        return source_file
+    return os.path.join(package_path, source_file).replace(os.sep, "/")
+
+
+def _line_coverage(
+        line_element: ET.Element,
+        source_path: str,
+        report_path: str,
+) -> tuple[int, JacocoLineCoverage]:
+    context: str = f"'{source_path}' line '{line_element.get('nr', '')}'"
+    line: int = _int_attribute(line_element, "nr", context, report_path)
+    return line, JacocoLineCoverage(
+        mi=_int_attribute(line_element, "mi", context, report_path),
+        ci=_int_attribute(line_element, "ci", context, report_path),
+        mb=_int_attribute(line_element, "mb", context, report_path),
+        cb=_int_attribute(line_element, "cb", context, report_path),
+    )
+
+
+def _merge_line_coverage(
+        previous: JacocoLineCoverage,
+        current: JacocoLineCoverage,
+) -> JacocoLineCoverage:
+    """Merge repeated reports conservatively toward observed coverage."""
+    return JacocoLineCoverage(
+        mi=min(previous.mi, current.mi),
+        ci=max(previous.ci, current.ci),
+        mb=min(previous.mb, current.mb),
+        cb=max(previous.cb, current.cb),
+    )
 
 
 def _method_covered(method_element: ET.Element, method_id: str, report_path: str) -> bool:
@@ -102,7 +185,7 @@ def _merge_coverage(
     )
 
 
-def _load_report(report_path: str) -> dict[str, JacocoMethodCoverage]:
+def _load_report(report_path: str) -> JacocoCoverage:
     if not os.path.isfile(report_path):
         raise JacocoReportError(f"JaCoCo report does not exist: '{report_path}'.")
     try:
@@ -156,21 +239,59 @@ def _load_report(report_path: str) -> dict[str, JacocoMethodCoverage]:
 
     if not methods:
         raise JacocoReportError(f"JaCoCo report '{report_path}' contains no method records.")
-    return methods
+
+    lines: dict[str, dict[int, JacocoLineCoverage]] = {}
+    for package_element in root.findall("package"):
+        for sourcefile_element in package_element.findall("sourcefile"):
+            source_path: str = _sourcefile_path(package_element, sourcefile_element)
+            source_lines: dict[int, JacocoLineCoverage] = lines.setdefault(
+                source_path, {}
+            )
+            for line_element in sourcefile_element.findall("line"):
+                line, coverage = _line_coverage(
+                    line_element, source_path, report_path
+                )
+                previous_line: JacocoLineCoverage | None = source_lines.get(line)
+                source_lines[line] = (
+                    coverage
+                    if previous_line is None
+                    else _merge_line_coverage(previous_line, coverage)
+                )
+    return JacocoCoverage(methods=methods, lines=lines)
+
+
+def load_jacoco_coverage(
+        xml_paths: list[str],
+) -> JacocoCoverage:
+    """Load method and line evidence, parsing each XML report once."""
+    if not xml_paths:
+        raise JacocoReportError("No JaCoCo XML reports were provided.")
+
+    methods: dict[str, JacocoMethodCoverage] = {}
+    lines: dict[str, dict[int, JacocoLineCoverage]] = {}
+    for report_path in xml_paths:
+        report: JacocoCoverage = _load_report(report_path)
+        for method_id, coverage in report.methods.items():
+            previous: JacocoMethodCoverage | None = methods.get(method_id)
+            methods[method_id] = (
+                coverage if previous is None else _merge_coverage(previous, coverage)
+            )
+        for source_path, report_lines in report.lines.items():
+            source_lines: dict[int, JacocoLineCoverage] = lines.setdefault(
+                source_path, {}
+            )
+            for line, coverage in report_lines.items():
+                previous_line: JacocoLineCoverage | None = source_lines.get(line)
+                source_lines[line] = (
+                    coverage
+                    if previous_line is None
+                    else _merge_line_coverage(previous_line, coverage)
+                )
+    return JacocoCoverage(methods=methods, lines=lines)
 
 
 def load_jacoco_method_coverage(
         xml_paths: list[str],
 ) -> dict[str, JacocoMethodCoverage]:
     """Load all exact method records, merging repeat evidence covered-first."""
-    if not xml_paths:
-        raise JacocoReportError("No JaCoCo XML reports were provided.")
-
-    methods: dict[str, JacocoMethodCoverage] = {}
-    for report_path in xml_paths:
-        for method_id, coverage in _load_report(report_path).items():
-            previous: JacocoMethodCoverage | None = methods.get(method_id)
-            methods[method_id] = (
-                coverage if previous is None else _merge_coverage(previous, coverage)
-            )
-    return methods
+    return load_jacoco_coverage(xml_paths).methods

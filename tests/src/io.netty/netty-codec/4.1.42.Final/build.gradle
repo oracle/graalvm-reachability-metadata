@@ -17,6 +17,11 @@ dependencies {
 }
 
 graalvmNative {
+    binaries {
+        test {
+            buildArgs.add("-H:+SharedArenaSupport")
+        }
+    }
     agent {
         defaultMode = "conditional"
         modes {

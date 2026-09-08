@@ -1,0 +1,100 @@
+{
+  "add_new_library_support:2026-09-07": {
+    "timestamp": "2026-09-07T21:57:19.156118Z",
+    "library": "io.micronaut.views:micronaut-views-core:6.2.0",
+    "starting_commit": "8e5b7983fdb8ee95b57fbc38615096e58df024d5",
+    "ending_commit": "99af151d4ec6e593fd1c2bfe9867e09170e604fa",
+    "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-sol",
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "status": "success",
+    "stats": {
+      "version": "6.2.0",
+      "dynamicAccess": {
+        "breakdown": {},
+        "coverageRatio": 1.0,
+        "coveredCalls": 0,
+        "totalCalls": 0
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 1090,
+          "missed": 426,
+          "ratio": 0.718997,
+          "total": 1516
+        },
+        "line": {
+          "covered": 278,
+          "missed": 110,
+          "ratio": 0.716495,
+          "total": 388
+        },
+        "method": {
+          "covered": 109,
+          "missed": 34,
+          "ratio": 0.762238,
+          "total": 143
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "advisory_preparation",
+      "issue_number": 9829,
+      "issue_label": "library-new-request",
+      "library": "io.micronaut.views:micronaut-views-core:6.2.0",
+      "summary": "Core HTTP integration requires Micronaut HTTP classes not supplied transitively.",
+      "deterministic_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "io.micronaut:micronaut-http:5.1.7",
+          "scope": "testImplementation",
+          "reason": "The core JAR contains HTTP integration classes but its POM declares no HTTP dependency; upstream tests use Micronaut HTTP modules."
+        }
+      ],
+      "agent_guidance": "Exercise core APIs through ApplicationContext, @View/ModelAndView resolution, HTTP response swapping, configuration, and resource-backed renderer helpers. Keep fixtures under src/test/resources/views; no Docker image or system property is required. The core module is engine-neutral, so do not add a template-engine adapter unless specifically testing integration beyond this library.",
+      "risks": [
+        "Full rendered HTML coverage requires a separate engine adapter and is outside the core module's normal scope."
+      ],
+      "applied_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "io.micronaut:micronaut-http:5.1.7",
+          "result": "applied",
+          "target": "tests/src/io.micronaut.views/micronaut-views-core/6.2.0/build.gradle"
+        }
+      ],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#9829 Support for io.micronaut.views:micronaut-views-core:6.2.0; label=library-new-request; body_chars=39"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "gpt-5.6-luna",
+      "input_tokens_used": 718915,
+      "output_tokens_used": 7457,
+      "prompt_path": "library-preflight-prompt.txt",
+      "raw_response_path": "library-preflight-response.txt",
+      "session_log_path": "/home/mihailo/git/graalvm-reachability-metadata-copy/forge/logs/io.micronaut.views:micronaut-views-core:6.2.0/library-preparation-preflight/codex-session-hjp9uuq8.log"
+    },
+    "metrics": {
+      "input_tokens_used": 301960,
+      "cached_input_tokens_used": 5968128,
+      "output_tokens_used": 44897,
+      "iterations": 6,
+      "cost_usd": 5.8408,
+      "generated_loc": 457,
+      "tested_library_loc": 278,
+      "metadata_entries": 1,
+      "test_only_metadata_entries": 43,
+      "code_coverage_percent": 71.65
+    },
+    "artifacts": {
+      "metadata_file": "metadata/io.micronaut.views/micronaut-views-core/6.2.0/reachability-metadata.json"
+    }
+  }
+}

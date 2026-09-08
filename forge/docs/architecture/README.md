@@ -12,7 +12,9 @@ file it sits in. Architecture that belongs to one component — the worker loop 
 [orchestration-scripts.md](orchestration-scripts.md), publication in
 [git-scripts.md](git-scripts.md), the workflow engines in
 [workflows.md](workflows.md), the code coverage workflow in
-[code-coverage-improvement.md](code-coverage-improvement.md) — is grouped by
+[code-coverage-improvement.md](code-coverage-improvement.md), and the coverage
+benchmark control plane in
+[code-coverage-benchmarking.md](code-coverage-benchmarking.md) — is grouped by
 file rather than by prefix.
 
 | ID | Subject |
@@ -44,6 +46,7 @@ file rather than by prefix.
 | [§AR-chunked-dynamic-access-pr-linking](workflows.md#ar-chunked-dynamic-access-pr-linking-chunk-pr-linking) | Chunk PR linking |
 | [§AR-code-coverage-improvement](code-coverage-improvement.md#ar-code-coverage-improvement-code-coverage-improvement-workflow) | Code coverage improvement workflow |
 | [§AR-code-coverage-improvement-architecture](code-coverage-improvement.md#ar-code-coverage-improvement-architecture-code-coverage-improvement-workflow-architecture) | Code coverage improvement workflow architecture |
+| [§AR-code-coverage-benchmarking](code-coverage-benchmarking.md#ar-code-coverage-benchmarking-code-coverage-benchmark-architecture) | Fixed-input benchmark execution, metrics publication, and preserved workspaces |
 | [§AR-do-work-loop](do-work.md#ar-do-work-loop-do-work-loop-architecture) | do-work loop architecture |
 | [§AR-forge-orchestration](orchestration-scripts.md#ar-forge-orchestration-forge-orchestration-scripts) | Forge orchestration scripts |
 | [§AR-forge-publication](git-scripts.md#ar-forge-publication-forge-branch-and-pull-request-publication) | Forge branch and pull-request publication |
@@ -79,3 +82,6 @@ Files:
 - [code-coverage-improvement.md](code-coverage-improvement.md) — the PGO-driven
   coverage workflow, behavior and architecture in one document until it is split
   into a spec of its own.
+- [code-coverage-benchmarking.md](code-coverage-benchmarking.md) — the fixed
+  suite, execution sequences, metrics derivation, publishing worktree, and
+  workspace preservation architecture.

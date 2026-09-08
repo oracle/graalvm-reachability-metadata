@@ -24,7 +24,7 @@ from jsonschema import Draft202012Validator
 from utility_scripts.code_coverage_model import parse_inventory_id
 from utility_scripts.code_coverage_jacoco import load_jacoco_method_coverage
 
-SCHEMA_VERSION = "1.2.0"
+SCHEMA_VERSION = "1.3.0"
 
 #: Run checkpoints, in run order. Each is one JaCoCo report, and each phase
 #: begins at the checkpoint the previous phase ended on
@@ -478,6 +478,51 @@ def _validate_target_state_document(
         )
 
 
+def _target_states_from_entries(
+        value: Any, label: str
+) -> dict[str, dict[str, Any]]:
+    states: dict[str, dict[str, Any]] = {}
+    entries: list[Any] = _array(value, label)
+    for index, item in enumerate(entries):
+        entry_label: str = f"{label}[{index}]"
+        target: dict[str, Any] = _object(item, entry_label)
+        target_id: str = _method_id(target.get("id"), f"{entry_label}.id")
+        if target_id in states:
+            raise FinalizationError(f"{label} repeats target '{target_id}'.")
+        status: str = _string(target.get("status"), f"{entry_label}.status")
+        if status not in TARGET_STATE_STATUSES:
+            raise FinalizationError(
+                f"Target-state target '{target_id}' has unknown status '{status}'."
+            )
+        reason: str | None = target.get("reason")
+        if reason is not None:
+            _string(reason, f"{entry_label}.reason")
+        if status in TERMINAL_NEGATIVE_STATUSES and reason is None:
+            raise FinalizationError(
+                f"Target '{target_id}' with status '{status}' requires a reason."
+            )
+        last_iteration_value: Any = target.get("lastAttemptedIteration")
+        last_iteration: int | None = None
+        if last_iteration_value is not None:
+            last_iteration = _integer(
+                last_iteration_value, f"{entry_label}.lastAttemptedIteration"
+            )
+            if last_iteration == 0:
+                raise FinalizationError(
+                    f"{entry_label}.lastAttemptedIteration must be positive."
+                )
+        states[target_id] = {
+            "id": target_id,
+            "status": status,
+            "attemptCount": _integer(
+                target.get("attemptCount"), f"{entry_label}.attemptCount"
+            ),
+            "lastAttemptedIteration": last_iteration,
+            "reason": reason,
+        }
+    return states
+
+
 def _load_latest_target_states(
         paths: list[str], coordinate: str
 ) -> dict[str, dict[str, Any]]:
@@ -487,46 +532,9 @@ def _load_latest_target_states(
         document: dict[str, Any] = _read_object(path, "Target-state file")
         _validate_target_state_document(document, path)
         _check_coordinate(document, coordinate, "Target-state file")
-        seen: set[str] = set()
-        targets: list[Any] = _array(
-            document.get("targets"), "Target-state file.targets"
-        )
-        for index, item in enumerate(targets):
-            target: dict[str, Any] = _object(
-                item, f"Target-state file.targets[{index}]"
-            )
-            target_id: str = _method_id(
-                target.get("id"), f"Target-state file.targets[{index}].id"
-            )
-            if target_id in seen:
-                raise FinalizationError(
-                    f"Target-state file '{path}' repeats target '{target_id}'."
-                )
-            seen.add(target_id)
-            status: str = _string(
-                target.get("status"), f"Target-state file.targets[{index}].status"
-            )
-            if status not in TARGET_STATE_STATUSES:
-                raise FinalizationError(
-                    f"Target-state target '{target_id}' has unknown status '{status}'."
-                )
-            reason: str | None = target.get("reason")
-            if reason is not None:
-                _string(reason, f"Target-state file.targets[{index}].reason")
-            if status in TERMINAL_NEGATIVE_STATUSES and reason is None:
-                raise FinalizationError(
-                    f"Target '{target_id}' with status '{status}' requires a reason."
-                )
-            latest[target_id] = {
-                "id": target_id,
-                "status": status,
-                "attemptCount": _integer(
-                    target.get("attemptCount"),
-                    f"Target-state file.targets[{index}].attemptCount",
-                ),
-                "lastAttemptedIteration": target.get("lastAttemptedIteration"),
-                "reason": reason,
-            }
+        latest.update(_target_states_from_entries(
+            document.get("targets"), f"Target-state file '{path}'.targets"
+        ))
     return latest
 
 
@@ -561,9 +569,12 @@ def _target_outcomes(
         deep_baseline_report: dict[str, Any],
         deep_final_report: dict[str, Any],
 ) -> dict[str, list[dict[str, Any]]]:
-    states: dict[str, dict[str, Any]] = _load_latest_target_states(
-        paths, coordinate
+    # Measurement owns automatic attempt and exhaustion state; explicit files
+    # remain later overrides for compatibility (§AR-code-coverage-improvement.3.2).
+    states: dict[str, dict[str, Any]] = _target_states_from_entries(
+        deep_final_report.get("targetStates", []), "Deep final.targetStates"
     )
+    states.update(_load_latest_target_states(paths, coordinate))
     api_baseline: dict[str, str] = _coverage_statuses(
         api_baseline_report,
         "targets",
@@ -800,6 +811,10 @@ def finalize_coverage(
         "generatedAt": _generated_at(),
         "coordinate": coordinate,
         "coverageSuitePath": _suite_path(coverage_suite_path),
+        "finalMeasurementArtifacts": {
+            "jacoco": jacoco_paths[2],
+            "discoveryReport": deep_final_path,
+        },
         "runCoverage": _run_coverage(
             api_baseline_report, deep_baseline_report, jacoco_paths
         ),

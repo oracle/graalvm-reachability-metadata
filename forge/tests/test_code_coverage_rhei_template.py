@@ -36,6 +36,54 @@ def _render_numeric_placeholders(source: str) -> str:
 
 class CodeCoverageRheiTemplateTests(unittest.TestCase):
 
+    def test_deep_cover_preserves_java_package_visibility(self) -> None:
+        """Deep-cover prompts must reach internals through public behavior.
+
+        §AR-code-coverage-improvement.3.2
+        """
+        forge_root: str = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        states_paths: tuple[str, ...] = (
+            os.path.join(
+                forge_root,
+                ".agents",
+                "rhei",
+                "templates",
+                "code-coverage-improvement",
+                "states.yaml",
+            ),
+            os.path.join(
+                forge_root,
+                "examples",
+                "code-coverage-improvement-example",
+                "states.yaml",
+            ),
+        )
+
+        for states_path in states_paths:
+            with open(states_path, encoding="utf-8") as states_file:
+                source: str = states_file.read()
+            machine: dict = yaml.safe_load(_render_numeric_placeholders(source))
+            instructions: str = machine["states"]["deep-cover"]["instructions"]
+            normalized_instructions: str = " ".join(instructions.split())
+
+            with self.subTest(path=states_path):
+                self.assertIn(
+                    "Never bypass Java visibility by declaring a test in a package "
+                    "that exists in the tested library.",
+                    normalized_instructions,
+                )
+                self.assertIn("Use a distinct test-only package.", normalized_instructions)
+                self.assertIn(
+                    "A `public` member on a package-private class is not public "
+                    "user-callable API.",
+                    normalized_instructions,
+                )
+                self.assertIn(
+                    "If no public user-callable API reaches an internal target, "
+                    "leave that target uncovered rather than call it directly.",
+                    normalized_instructions,
+                )
+
     def test_measurement_repairs_reuse_the_logical_cover_pass(self) -> None:
         """Both loops must keep retries out of the pass-yield history."""
         forge_root: str = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -93,6 +141,59 @@ class CodeCoverageRheiTemplateTests(unittest.TestCase):
                     for output in state["outputs"]:
                         self.assertIn("{visit_count}", output["path"])
 
+
+    def test_finalization_fix_requires_one_agent_free_remeasurement(self) -> None:
+        """A finalization repair cannot complete with its pre-repair evidence."""
+        forge_root: str = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        states_path: str = os.path.join(
+            forge_root,
+            ".agents",
+            "rhei",
+            "templates",
+            "code-coverage-improvement",
+            "states.yaml",
+        )
+        with open(states_path, encoding="utf-8") as states_file:
+            machine: dict = yaml.safe_load(
+                _render_numeric_placeholders(states_file.read())
+            )
+
+        transitions: list[dict] = machine["transitions"]
+        self.assertEqual(
+            {
+                transition["to"]
+                for transition in transitions
+                if transition["from"] == "finalize-fix"
+            },
+            {"finalize-remeasure"},
+        )
+        self.assertEqual(
+            {
+                (transition["exit_code"], transition["to"])
+                for transition in transitions
+                if transition["from"] == "finalize-remeasure"
+            },
+            {
+                (0, "reviewed-execute"),
+                *((code, "human-intervention") for code in range(1, 7)),
+            },
+        )
+        program: str = machine["states"]["finalize-remeasure"]["program"]
+        python_source: str = program.split("<<'PY'\n", 1)[1].rsplit("\nPY", 1)[0]
+        compile(python_source, "finalize-remeasure", "exec")
+        for command in (
+                "jacocoCodeCoverageReport",
+                "nativeTestPGOSampling",
+                "runNativeTestPGO",
+                "code_coverage_profile_report.py",
+        ):
+            self.assertIn(command, program)
+        self.assertNotIn("begin_measurement", program)
+        self.assertNotIn("deep-cover", program)
+        finalization: str = machine["states"]["reviewed-execute"]["program"]
+        self.assertIn("runtime/code-coverage/final-measurement", finalization)
+        self.assertIn("jacoco.xml", finalization)
+        self.assertIn("discovery-report.json", finalization)
 
 if __name__ == "__main__":
     unittest.main()

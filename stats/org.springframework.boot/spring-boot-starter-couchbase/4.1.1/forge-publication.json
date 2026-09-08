@@ -1,0 +1,86 @@
+{
+  "base_commit": "f588852642b11aa3433497f5300cb20c2ab1f728",
+  "branch": "ai/kimeta/not-for-native-image-org.springframework.boot-spring-boot-starter-couchbase-forge-9702-20260904065124448189-bd2ad01c2b3c",
+  "follow_ups": [],
+  "forge": {
+    "branch": "issue-9776-composite-bulk-success",
+    "commit": "45dafbf4a348867df2709e876b8f08541c9824e0",
+    "monitored_branch": "origin/issue-9776-composite-bulk-success"
+  },
+  "issue_number": 9702,
+  "library": {
+    "artifact": "spring-boot-starter-couchbase",
+    "coordinates": "org.springframework.boot:spring-boot-starter-couchbase:4.1.1",
+    "group": "org.springframework.boot",
+    "version": "4.1.1"
+  },
+  "local_ci_verification": {
+    "base_commit": "f588852642b11aa3433497f5300cb20c2ab1f728",
+    "commands": [
+      {
+        "command": [
+          "./gradlew",
+          "generateChangedIndexFileCoordinatesList",
+          "-PbaseCommit=origin/master",
+          "-PnewCommit=HEAD"
+        ],
+        "env": {
+          "GITHUB_OUTPUT": "/tmp/tmpsv_xg336"
+        },
+        "gate": "changed-index-coordinates",
+        "log_path": "logs/changed-index-coordinates/local-ci/gradlew-2026-09-04T06-51-29-283412Z.log",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :generateChangedIndexFileCoordinatesList\n\n[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9702-873c8178/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 2s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      },
+      {
+        "command": [
+          "./gradlew",
+          "validateIndexFiles",
+          "-Pcoordinates=org.springframework.boot:spring-boot-starter-couchbase"
+        ],
+        "env": {},
+        "gate": "index-file-validation",
+        "log_path": "logs/index-file-validation/local-ci/gradlew-2026-09-04T06-51-31-841739Z.log",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :validateIndexFiles\n✅ metadata/org.springframework.boot/spring-boot-starter-couchbase/index.json: Valid\n\n[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9702-873c8178/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 1s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      }
+    ],
+    "failure_command": null,
+    "failure_gate": null,
+    "final_commit": "1a10bd0afaa4896ebd096bf3ecab549525a16f52",
+    "fixups": [],
+    "human_intervention_required": false,
+    "repo_fix_paths": [],
+    "status": "success"
+  },
+  "local_review": {
+    "changed_paths": [],
+    "decision": "approved",
+    "failed_step": null,
+    "finding_body": "",
+    "finding_title": "",
+    "fix_note": "No correction was needed; I made no repository changes.",
+    "model": "gpt-5.6-sol",
+    "published_tree": "verified",
+    "repair_reverted": false,
+    "review_comment": "Reviewed the complete eventual PR diff and local evidence against every relevant enumerated new-library rule. The change is scoped to one target artifact and adds only a schema-valid not-for-native-image index marker with a concrete classless-starter reason and class-bearing replacement. Test, native-execution, package-separation, version-pinning, metadata-entry, legacy-metadata, and dynamic-access coverage rules are not applicable because no test suite or reachability metadata is added. The changed-index and index-validation gates passed, and the diff has no whitespace errors.",
+    "session_log_path": "logs/org.springframework.boot:spring-boot-starter-couchbase:4.1.1/local-branch-review/pi.log",
+    "status": "completed"
+  },
+  "metrics": null,
+  "modifiers": {
+    "chunk_final": true,
+    "chunked_dynamic_access": false,
+    "human_intervention": false
+  },
+  "producer": "kimeta",
+  "publication_id": "forge-9702-20260904065124448189-bd2ad01c2b3c",
+  "render": {
+    "reason": "The published spring-boot-starter-couchbase-4.1.1 JAR contains only META-INF files and no JVM class files; it is a dependency starter whose runtime classes are supplied by dependencies.",
+    "replacement": "org.springframework.boot:spring-boot-couchbase:4.1.1"
+  },
+  "schema_version": 1,
+  "task_type": "not-for-native-image",
+  "template_type": "not-for-native-image",
+  "timestamp": "2026-09-04T06:51:24.448189+00:00"
+}

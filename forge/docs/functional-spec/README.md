@@ -49,6 +49,7 @@ contract in [strategies.md](strategies.md), the benchmark contract in
 | [§FS-java-fail-fix-composite-strategy-config](strategies.md#fs-java-fail-fix-composite-strategy-config-java-fail-fix-composite-strategy-configuration) | Java fail-fix composite strategy configuration |
 | [§FS-predefined-strategy-extension](strategies.md#fs-predefined-strategy-extension-adding-or-changing-a-strategy-bundle) | Adding or changing a strategy bundle |
 | [§FS-forge-generation-benchmarking](benchmarking.md#fs-forge-generation-benchmarking-forge-generation-benchmarking) | Forge generation benchmarking |
+| [§FS-code-coverage-benchmarking](benchmarking.md#fs-code-coverage-benchmarking-code-coverage-improvement-benchmarking) | Code coverage improvement benchmarking |
 
 This index is navigational. Cite the specific declaration ID rather than this
 file.

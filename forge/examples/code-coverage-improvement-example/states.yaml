@@ -354,9 +354,11 @@ states:
       shutil.copy(report_path, discovery / "discovery-report.json")
 
       # Decide: 0 = phase done, 10 = actionable targets remain and budget left.
+      # Bulk targets retain exhausted entries for audit; prompt IDs alone are actionable.
+      # §AR-code-coverage-improvement.3.2
       report = json.load(open(report_path))
-      actionable = report.get("bulkTargets", [])
-      print(f"[deep-measure] iteration {iteration}: {len(actionable)} actionable deep targets", flush=True)
+      prompt_target_ids = report.get("promptTargetIds", [])
+      print(f"[deep-measure] iteration {iteration}: {len(prompt_target_ids)} actionable deep targets", flush=True)
 
       # Heuristic iteration budget: one cover pass lands at most ~250 methods
       # and roughly half the uncovered targets are reachable in practice, so
@@ -364,7 +366,7 @@ states:
       baseline = json.load(open(discovery / "discovery-report-0.json"))
       budget = min(10, max(1, baseline["summary"]["deepUncovered"] // 500))
       print(f"[deep-measure] iteration budget {budget} from {baseline['summary']['deepUncovered']} baseline uncovered methods", flush=True)
-      if not actionable or iteration >= budget:
+      if not prompt_target_ids or iteration >= budget:
           sys.exit(0)
 
       # Steering: the analyzer already renders the compact Observed /
@@ -375,7 +377,7 @@ states:
       prompts = Path("runtime/code-coverage/prompts")
       prompts.mkdir(parents=True, exist_ok=True)
       (prompts / "deep-cover-prompt.md").write_text(markdown.read_text())
-      print(f"[deep-measure] wrote prompt with {len(actionable)} targets", flush=True)
+      print(f"[deep-measure] wrote prompt with {len(prompt_target_ids)} targets", flush=True)
       sys.exit(10)
       PY
     program_timeout: 120m
@@ -398,6 +400,12 @@ states:
       Rules:
       - Attempt every listed uncovered path through its shown public entry;
         never invoke an internal target directly.
+      - Never bypass Java visibility by declaring a test in a package that
+        exists in the tested library. Use a distinct test-only package. A
+        `public` member on a package-private class is not public user-callable
+        API. If no public user-callable API reaches an internal target, leave
+        that target uncovered rather than call it directly.
+        §AR-code-coverage-improvement.3.2
       - `Observed:` lines are sampled guidance only; every `Uncovered paths`
         target is uncovered according to exact JaCoCo evidence.
       - Edit generated tests only under the tracked extension suite

@@ -342,14 +342,27 @@ uncovered according to exact JaCoCo evidence. The agent must reach internal
 methods through the shown public behavior rather than invoke implementation
 methods directly.
 
+Every prompted target also carries a deterministic miss classification derived
+from JaCoCo source-line instruction and branch counters plus the target's
+reverse call-site fan-out. A covered invoking line with an uncovered target is
+`dispatched-elsewhere` and names the site's other candidate implementations,
+including candidates owned by the coverage suite. Otherwise the nearest
+covered branch above the invoking line is `fork-not-taken`; when no such branch
+exists, `no-fork` names the nearest covered line and explains that the target
+requires an exception or external event. The Markdown prompt and full JSON
+report carry the same classification. §GOAL-maximize-library-coverage
+
 The full JSON report retains every uncovered internal target, its JaCoCo
 evidence, graph status, rank, sampled context, and static path. The prompt-facing
 Markdown and target-id list contain at most 200 methods globally. Measurement
 itself carries attempt state deterministically in the discovery-report history:
 every target it prompted gets its attempt count incremented at the next
 measurement, ranking prefers less-attempted targets, and covered targets leave
-the uncovered set — so later iterations advance beyond the first 200 without
-any agent-written state.
+the uncovered set. An uncovered target that reaches the configured unsuccessful
+attempt threshold becomes exhausted and leaves later prompts, while remaining
+in `bulkTargets` and the full JSON report for finalization and audit. This lets
+later iterations advance beyond repeatedly unproductive targets without any
+agent-written state.
 The deep phase runs for the same fixed `coverage_iterations` budget and stops
 early when no actionable target remains or when the pass yield collapses
 (§3.3), on the same rule and the same thresholds as the API phase.
@@ -413,6 +426,23 @@ collapse consecutive nodes that render alike; the untranslated path is retained
 in JSON. When a route reaches its target through a closure the enclosing method
 hands to a scheduler or executor, the entry says so: the body then runs on
 another thread, and a test that does not wait for it covers nothing.
+
+Native Image factory stubs owned by
+`com.oracle.svm.core.code.FactoryMethodHolder` render as the constructors they
+stand for when the constructor derived from the factory return type and
+parameters exists in the resolved library bytecode inventory. An unmatched
+factory remains unchanged rather than naming a constructor the library does not
+declare. Route distance and ranking use this translated semantic path: replacing
+one factory with one constructor preserves distance, while an adjacent factory
+and identical constructor collapse to one step. The raw Native Image path remains
+in JSON beside the translated path for auditability.
+
+This normalization is deliberately limited to verified factory stubs. Anonymous
+class owners remain in their bytecode form, and assertion, mocking, container,
+and existing-test frames receive no new display filtering here. Resolving those
+frames requires provenance or ownership judgments that constructor identity does
+not establish, so they are separate design decisions rather than heuristics
+bundled into factory translation.
 
 ### 3.3 Marginal-yield early stop
 
@@ -511,8 +541,9 @@ The Rhei template should decompose the workflow into these phases:
    (including the tracked coverage suite); run the regular JVM tests (`javaTest`)
    and the tracked extension suite (`codeCoverageTest`); regenerate the
    coordinate's committed library stats from the combined main-JAR-only JaCoCo
-   report; and persist final metrics from the baseline and highest-iteration
-   JaCoCo and deep reports, including each phase's recorded stop decision
+   report; and persist final metrics from the baseline and final JaCoCo and deep reports. After a finalization
+   repair, the final reports come from one agent-free deterministic
+   remeasurement, including each phase's recorded stop decision
    (§3.3). The stats update makes the repository coverage
    dashboard reflect the tests this workflow adds without counting classified
    artifacts such as an upstream test JAR in the denominator
@@ -548,8 +579,8 @@ The Rhei template should decompose the workflow into these phases:
 
    The descriptor carries the render inputs and only those: coordinate, coverage
    suite path, the whole-run coverage checkpoints and phase gains, the per-phase
-   JaCoCo records, the human-intervention flag, the generating model, and
-   per-phase token usage read from the Rhei accounting directory. The body links
+   JaCoCo records, the human-intervention flag, the generating model and thinking
+   level, and per-phase token usage read from the Rhei accounting directory. The body links
    its issue with `Fixes:`, never conditionally: one run publishes one pull
    request, so merging it closes
    the issue that claimed the coordinate (§AR-issue-linking). Per-target
@@ -620,7 +651,9 @@ nonzero exit code names the failed step, and its completion is decided by a
 deterministic verification program, not by an agent's own claim: it checks the
 finalization artifacts exist, schema-validates the final metrics, and inspects
 their outcomes. Fixable step or verification failures return to a bounded fix
-state, after which the steps re-run; failed targets or an explicit
+state, after which one agent-free final remeasurement refreshes JaCoCo,
+sampled PGO, call-tree, and discovery evidence before the steps re-run. A failed
+final remeasurement routes directly to human intervention; failed targets or an explicit
 human-intervention flag in the metrics, and failures that survive the fix
 budget, route to human intervention.
 
@@ -796,8 +829,9 @@ engine:
   model written as `<model>:<thinking>` is parsed as a provider/model pair and
   silently resolves to a different model. The template therefore bundles a `pi`
   agent profile in its `settings.json` whose `high` and `xhigh` modes add
-  `--thinking`, and publication reads the model back out of the same target to
-  name the head branch (§AR-code-coverage-improvement.4). That profile replaces
+  `--thinking`, and publication reads the model and thinking level back out of
+  the same target, using the model to name the head branch and rendering both in the pull
+  request body (§AR-code-coverage-improvement.4). That profile replaces
   Rhei's built-in one outright rather than extending it, so it restates the
   `session` block as well: without it Rhei passes no `--session-dir`, cannot
   read back the agent's native transcript, and silently captures no per-state

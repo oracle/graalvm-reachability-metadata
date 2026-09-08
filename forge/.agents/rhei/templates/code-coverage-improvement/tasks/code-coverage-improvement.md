@@ -1,4 +1,27 @@
+{% if benchmark %}
+### Task code-coverage-convert: Prepare benchmark {{benchmark_run_id}}
+{% else %}
 ### Task code-coverage-convert: Convert issue {{issue_number}}
+{% endif %}
+{% if benchmark %}
+**State:** benchmark-convert
+
+- Coordinate: `{{coordinate}}`
+- Run ID: `{{benchmark_run_id}}`
+- Fixed suite commit: `{{benchmark_suite_commit}}`
+- Runner commit: `{{benchmark_runner_commit}}`
+- Source worktree: `{{benchmark_source_worktree}}`
+- Purpose: validate the fixed input and write the issue-compatible conversion
+  artifacts without reading or mutating GitHub
+  §FS-code-coverage-benchmarking.2.
+- Helper: `{{benchmark_runner_forge_path}}/benchmarks/code_coverage_benchmark.py convert`
+- Artifacts:
+  - `runtime/code-coverage/issues/inventory.md`
+  - `runtime/code-coverage/issues/conversion.md`
+  - `runtime/code-coverage/issues/conversion.json`
+  - `runtime/code-coverage/benchmark/run.json`
+  - `runtime/code-coverage/work/code-coverage-{{issue_number}}.code-coverage-convert.md`
+{% else %}
 **State:** prepared
 
 - Source issue: `https://github.com/{{repo}}/issues/{{issue_number}}`
@@ -44,6 +67,7 @@
   - `runtime/code-coverage/issues/conversion.json`
   - `runtime/code-coverage/work/code-coverage-{{issue_number}}.code-coverage-convert.md`
 
+{% endif %}
 ### Task code-coverage-prepare: Prepare library
 **State:** prepared
 **Prior:** Task code-coverage-convert
@@ -189,14 +213,14 @@
 **Prior:** Task code-coverage-deep-coverage
 
 - Final API report: highest-iteration `runtime/code-coverage/validation/api-cover-report-<n>.json`
-- Final deep report: highest-iteration `runtime/code-coverage/discovery/discovery-report-<n>.json`
+- Final deep report: highest-iteration deep report, or `runtime/code-coverage/final-measurement/discovery-report.json` after `finalize-fix`
 - Helper script: `forge/utility_scripts/code_coverage_finalize.py`
 - Purpose: gate publication on deterministic post-loop validation, update the
   committed library coverage stats, and summarize JaCoCo and sampled-path
   guidance.
 - Execution: this task is a deterministic program (the `reviewed-execute`
   state), not an agent checklist. A nonzero exit code is the number of the
-  failed step and routes to `finalize-fix`. Finalization runs no Native Image
+  failed step and routes to `finalize-fix`, then deterministic final remeasurement. Finalization runs no Native Image
   validation of the coverage tests; the stats step (5) does build a native image,
   because the dynamic-access half of `stats.json` is only observable from one.
 - Program steps:
@@ -228,8 +252,7 @@
   6. Invoke `forge/utility_scripts/code_coverage_finalize.py` with the resolved
      `--coordinate`, repository-relative `--coverage-suite-path`, the API
      baseline/final reports (`api-cover-report-0.json` and the highest-iteration report),
-     the deep baseline/final reports (`discovery-report-0.json` and the
-     highest-iteration report), any externally provided
+     the deep baseline and selected final reports, any externally provided
      `runtime/code-coverage/targets/*.json` as repeated `--target-state`
      arguments (the workflow itself no longer produces them), the exact
      checkstyle, JVM test, and stats commands as repeated
@@ -243,6 +266,25 @@
   - `runtime/code-coverage/finalization/final-summary.md`
   - `runtime/code-coverage/finalization/final-metrics.json`
 
+{% if benchmark %}
+### Task code-coverage-benchmark-publication: Publish benchmark metrics
+**State:** benchmark-publication
+**Prior:** Task code-coverage-finalization
+
+- Helper: `{{benchmark_runner_forge_path}}/benchmarks/code_coverage_benchmark.py publish`
+- Purpose: collect the finalized and partial Rhei evidence, write
+  `runtime/code-coverage/benchmark/result.json`, and idempotently append only
+  that compact result to
+  `code-coverage-benchmarks/<group>/<artifact>/<version>.json`
+  §FS-code-coverage-benchmarking.3.
+- The helper writes `runtime/code-coverage/benchmark/publication.json` only
+  after the result commit is pushed.
+- This task must not publish source changes, create a publication descriptor,
+  open a pull request, or mutate GitHub.
+- Artifacts:
+  - `runtime/code-coverage/benchmark/result.json`
+  - `runtime/code-coverage/benchmark/publication.json`
+{% else %}
 ### Task code-coverage-publication: Publish the verified branch
 **State:** prepared
 **Prior:** Task code-coverage-finalization
@@ -287,3 +329,5 @@
 - Artifacts:
   - `runtime/code-coverage/publication/branch.md`
   - `runtime/code-coverage/work/code-coverage-{{issue_number}}.code-coverage-publication.md`
+
+{% endif %}
