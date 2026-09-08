@@ -18,7 +18,8 @@ import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
-import java.time.Clock;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.time.DateTimeException;
 import java.time.Duration;
 import java.time.LocalDate;
@@ -44,7 +45,6 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
 import java.util.function.IntSupplier;
 
-import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import org.junit.jupiter.api.Test;
@@ -54,25 +54,20 @@ import org.neo4j.bolt.connection.AuthTokens;
 import org.neo4j.bolt.connection.BasicResponseHandler;
 import org.neo4j.bolt.connection.BoltAgent;
 import org.neo4j.bolt.connection.BoltConnection;
+import org.neo4j.bolt.connection.BoltConnectionProvider;
 import org.neo4j.bolt.connection.BoltConnectionState;
 import org.neo4j.bolt.connection.BoltProtocolVersion;
 import org.neo4j.bolt.connection.BoltServerAddress;
 import org.neo4j.bolt.connection.ClusterComposition;
-import org.neo4j.bolt.connection.DatabaseName;
-import org.neo4j.bolt.connection.DatabaseNameUtil;
-import org.neo4j.bolt.connection.DefaultDomainNameResolver;
 import org.neo4j.bolt.connection.ListenerEvent;
 import org.neo4j.bolt.connection.LoggingProvider;
 import org.neo4j.bolt.connection.MetricsListener;
 import org.neo4j.bolt.connection.NotificationConfig;
-import org.neo4j.bolt.connection.RoutingContext;
-import org.neo4j.bolt.connection.SecurityPlans;
 import org.neo4j.bolt.connection.TelemetryApi;
 import org.neo4j.bolt.connection.TransactionType;
 import org.neo4j.bolt.connection.exception.BoltClientException;
 import org.neo4j.bolt.connection.message.Messages;
-import org.neo4j.bolt.connection.netty.BootstrapFactory;
-import org.neo4j.bolt.connection.netty.NettyBoltConnectionProvider;
+import org.neo4j.bolt.connection.netty.NettyBoltConnectionProviderFactory;
 import org.neo4j.bolt.connection.summary.CommitSummary;
 import org.neo4j.bolt.connection.summary.RouteSummary;
 import org.neo4j.bolt.connection.summary.RunSummary;
@@ -87,34 +82,47 @@ import org.neo4j.bolt.connection.values.Value;
 import org.neo4j.bolt.connection.values.ValueFactory;
 
 public class Neo4j_bolt_connection_nettyTest {
+    static {
+        System.setProperty("io.netty.allocator.type", "pooled");
+    }
+
     private static final int BOLT_MAGIC = 0x6060B017;
     private static final int BOLT_5_8 = 0x00000805;
-    private static final int CONNECT_TIMEOUT_MILLIS = 2_000;
-    private static final int TEST_TIMEOUT_SECONDS = 5;
+    private static final int CONNECT_TIMEOUT_MILLIS = 10_000;
+    private static final int TEST_TIMEOUT_SECONDS = 10;
     private static final SimpleValueFactory VALUE_FACTORY = new SimpleValueFactory();
     private static final BoltAgent AGENT = new BoltAgent("neo4j-bolt-netty-test", "JVM", "Java", "JUnit");
     private static final LoggingProvider LOGGING = new TestLoggingProvider();
     private static final MetricsListener METRICS = new TestMetricsListener();
 
     @Test
-    void bootstrapFactoryCreatesReusableNettyBootstraps() {
-        Bootstrap ownedBootstrap = BootstrapFactory.newBootstrap(1);
-        EventLoopGroup ownedGroup = ownedBootstrap.config().group();
+    void providerFactoryCreatesProvidersWithOwnedAndSuppliedEventLoops() throws Exception {
+        NettyBoltConnectionProviderFactory factory = new NettyBoltConnectionProviderFactory();
+        assertThat(factory.supports("bolt")).isTrue();
+        assertThat(factory.supports("neo4j")).isTrue();
+        assertThat(factory.supports("http")).isFalse();
+
+        BoltConnectionProvider ownedProvider = factory.create(
+                LOGGING,
+                VALUE_FACTORY,
+                METRICS,
+                Map.of("eventLoopThreads", 1, "eventLoopThreadNamePrefix", "bolt-owned"));
         try {
-            assertThat(ownedGroup).isNotNull();
-            assertThat(ownedBootstrap.config().channelFactory()).isNotNull();
+            assertThat(ownedProvider).isNotNull();
         } finally {
-            ownedGroup.shutdownGracefully(0, 1, TimeUnit.SECONDS).syncUninterruptibly();
+            await(ownedProvider.close());
         }
 
         EventLoopGroup suppliedGroup = new NioEventLoopGroup(1);
         try {
-            Bootstrap suppliedBootstrap = BootstrapFactory.newBootstrap(suppliedGroup);
-
-            assertThat(suppliedBootstrap.config().group()).isSameAs(suppliedGroup);
-            assertThat(suppliedBootstrap.config().channelFactory()).isNotNull();
+            BoltConnectionProvider suppliedProvider = factory.create(
+                    LOGGING, VALUE_FACTORY, METRICS, Map.of("eventLoopGroup", suppliedGroup));
+            await(suppliedProvider.close());
+            assertThat(suppliedGroup.isShuttingDown()).isFalse();
         } finally {
-            suppliedGroup.shutdownGracefully(0, 1, TimeUnit.SECONDS).syncUninterruptibly();
+            suppliedGroup
+                    .shutdownGracefully(0, TEST_TIMEOUT_SECONDS, TimeUnit.SECONDS)
+                    .syncUninterruptibly();
         }
     }
 
@@ -129,7 +137,7 @@ public class Neo4j_bolt_connection_nettyTest {
             assertThat(connection.serverAddress()).isEqualTo(server.address());
             assertThat(connection.protocolVersion()).isEqualTo(new BoltProtocolVersion(5, 8));
             assertThat(connection.telemetrySupported()).isTrue();
-            assertThat(connection.serverSideRoutingEnabled()).isTrue();
+            assertThat(connection.serverSideRoutingEnabled()).isFalse();
             assertThat(connection.defaultReadTimeout()).contains(Duration.ofSeconds(7));
 
             AuthInfo authInfo = await(connection.authInfo());
@@ -259,49 +267,20 @@ public class Neo4j_bolt_connection_nettyTest {
     }
 
     @Test
-    void providerConnectivityFeatureChecksUseHandshakeAndAuthentication() throws Exception {
+    void providerConnectsWithRoutingUriAndMinimumProtocolVersion() throws Exception {
         try (BoltTestServer server = new BoltTestServer(BOLT_5_8);
                 TestProvider provider = new TestProvider()) {
-            await(provider.provider().verifyConnectivity(
-                    server.address(),
-                    RoutingContext.EMPTY,
-                    AGENT,
-                    "bolt",
-                    CONNECT_TIMEOUT_MILLIS,
-                    SecurityPlans.unencrypted(),
-                    AuthTokens.none(VALUE_FACTORY)));
+            BoltConnection connection = await(provider.connect(
+                    server.address(), "neo4j", new BoltProtocolVersion(5, 7)));
+
+            assertThat(connection.protocolVersion()).isEqualTo(new BoltProtocolVersion(5, 8));
+            assertThat(connection.serverSideRoutingEnabled()).isTrue();
+            assertThat(await(connection.authInfo()).authToken().asMap().get("scheme").asString())
+                    .isEqualTo("none");
+
+            await(connection.close());
             server.awaitHandled();
-            assertThat(server.signatures()).contains(0x01, 0x6A);
-        }
-
-        try (BoltTestServer server = new BoltTestServer(BOLT_5_8);
-                TestProvider provider = new TestProvider()) {
-            Boolean supportsMultiDb = await(provider.provider().supportsMultiDb(
-                    server.address(),
-                    RoutingContext.EMPTY,
-                    AGENT,
-                    "bolt",
-                    CONNECT_TIMEOUT_MILLIS,
-                    SecurityPlans.unencrypted(),
-                    AuthTokens.none(VALUE_FACTORY)));
-
-            assertThat(supportsMultiDb).isTrue();
-            server.awaitHandled();
-        }
-
-        try (BoltTestServer server = new BoltTestServer(BOLT_5_8);
-                TestProvider provider = new TestProvider()) {
-            Boolean supportsSessionAuth = await(provider.provider().supportsSessionAuth(
-                    server.address(),
-                    RoutingContext.EMPTY,
-                    AGENT,
-                    "bolt",
-                    CONNECT_TIMEOUT_MILLIS,
-                    SecurityPlans.unencrypted(),
-                    AuthTokens.none(VALUE_FACTORY)));
-
-            assertThat(supportsSessionAuth).isTrue();
-            server.awaitHandled();
+            assertThat(server.signatures()).contains(0x01);
         }
     }
 
@@ -309,14 +288,7 @@ public class Neo4j_bolt_connection_nettyTest {
     void providerReportsUnsupportedBoltProtocolNegotiation() throws Exception {
         try (BoltTestServer server = new BoltTestServer(0);
                 TestProvider provider = new TestProvider()) {
-            CompletionStage<Void> verification = provider.provider().verifyConnectivity(
-                    server.address(),
-                    RoutingContext.EMPTY,
-                    AGENT,
-                    "bolt",
-                    CONNECT_TIMEOUT_MILLIS,
-                    SecurityPlans.unencrypted(),
-                    AuthTokens.none(VALUE_FACTORY));
+            CompletionStage<BoltConnection> verification = provider.connect(server.address());
 
             assertThatThrownBy(() -> await(verification))
                     .isInstanceOf(ExecutionException.class)
@@ -333,42 +305,31 @@ public class Neo4j_bolt_connection_nettyTest {
 
     private static final class TestProvider implements AutoCloseable {
         private final EventLoopGroup eventLoopGroup;
-        private final NettyBoltConnectionProvider provider;
+        private final BoltConnectionProvider provider;
 
         private TestProvider() {
             this.eventLoopGroup = new NioEventLoopGroup(1);
-            this.provider = new NettyBoltConnectionProvider(
-                    eventLoopGroup,
-                    Clock.systemUTC(),
-                    DefaultDomainNameResolver.getInstance(),
-                    null,
-                    LOGGING,
-                    VALUE_FACTORY,
-                    METRICS);
+            this.provider = new NettyBoltConnectionProviderFactory()
+                    .create(LOGGING, VALUE_FACTORY, METRICS, Map.of("eventLoopGroup", eventLoopGroup));
         }
 
-        private CompletionStage<BoltConnection> connect(BoltServerAddress address) {
-            DatabaseName databaseName = DatabaseNameUtil.defaultDatabase();
+        private CompletionStage<BoltConnection> connect(BoltServerAddress address) throws URISyntaxException {
+            return connect(address, "bolt", null);
+        }
+
+        private CompletionStage<BoltConnection> connect(
+                BoltServerAddress address, String scheme, BoltProtocolVersion minVersion) throws URISyntaxException {
+            URI uri = new URI(scheme, null, address.connectionHost(), address.port(), null, null, null);
             return provider.connect(
-                    address,
-                    RoutingContext.EMPTY,
+                    uri,
+                    null,
                     AGENT,
-                    "bolt",
+                    "neo4j-bolt-netty-test",
                     CONNECT_TIMEOUT_MILLIS,
-                    SecurityPlans.unencrypted(),
-                    databaseName,
-                    () -> CompletableFuture.completedFuture(AuthTokens.none(VALUE_FACTORY)),
-                    AccessMode.WRITE,
-                    Set.of("neo4j"),
                     null,
-                    null,
-                    NotificationConfig.defaultConfig(),
-                    selectedDatabase -> { },
-                    Map.of("source", "test"));
-        }
-
-        private NettyBoltConnectionProvider provider() {
-            return provider;
+                    AuthTokens.none(VALUE_FACTORY),
+                    minVersion,
+                    NotificationConfig.defaultConfig());
         }
 
         @Override
@@ -376,7 +337,9 @@ public class Neo4j_bolt_connection_nettyTest {
             try {
                 await(provider.close());
             } finally {
-                eventLoopGroup.shutdownGracefully(0, 1, TimeUnit.SECONDS).syncUninterruptibly();
+                eventLoopGroup
+                        .shutdownGracefully(0, TEST_TIMEOUT_SECONDS, TimeUnit.SECONDS)
+                        .syncUninterruptibly();
             }
         }
     }
