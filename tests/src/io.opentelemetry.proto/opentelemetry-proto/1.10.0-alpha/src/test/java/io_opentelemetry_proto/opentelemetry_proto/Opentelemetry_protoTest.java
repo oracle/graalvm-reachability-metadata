@@ -7,6 +7,13 @@
 package io_opentelemetry_proto.opentelemetry_proto;
 
 import com.google.protobuf.ByteString;
+import io.micrometer.core.instrument.Clock;
+import io.micrometer.core.instrument.Counter;
+import io.micrometer.core.instrument.DistributionSummary;
+import io.micrometer.core.instrument.Timer;
+import io.micrometer.registry.otlp.OtlpConfig;
+import io.micrometer.registry.otlp.OtlpMeterRegistry;
+import io.micrometer.registry.otlp.OtlpMetricsSender;
 import io.opentelemetry.proto.collector.logs.v1.ExportLogsServiceRequest;
 import io.opentelemetry.proto.collector.metrics.v1.ExportMetricsServiceRequest;
 import io.opentelemetry.proto.collector.profiles.v1development.ExportProfilesServiceRequest;
@@ -19,6 +26,8 @@ import io.opentelemetry.proto.logs.v1.ResourceLogs;
 import io.opentelemetry.proto.logs.v1.ScopeLogs;
 import io.opentelemetry.proto.logs.v1.SeverityNumber;
 import io.opentelemetry.proto.metrics.v1.AggregationTemporality;
+import io.opentelemetry.proto.metrics.v1.ExponentialHistogram;
+import io.opentelemetry.proto.metrics.v1.ExponentialHistogramDataPoint;
 import io.opentelemetry.proto.metrics.v1.Exemplar;
 import io.opentelemetry.proto.metrics.v1.Gauge;
 import io.opentelemetry.proto.metrics.v1.Histogram;
@@ -29,6 +38,8 @@ import io.opentelemetry.proto.metrics.v1.NumberDataPoint;
 import io.opentelemetry.proto.metrics.v1.ResourceMetrics;
 import io.opentelemetry.proto.metrics.v1.ScopeMetrics;
 import io.opentelemetry.proto.metrics.v1.Sum;
+import io.opentelemetry.proto.metrics.v1.Summary;
+import io.opentelemetry.proto.metrics.v1.SummaryDataPoint;
 import io.opentelemetry.proto.profiles.v1development.Profile;
 import io.opentelemetry.proto.profiles.v1development.ProfilesDictionary;
 import io.opentelemetry.proto.profiles.v1development.ResourceProfiles;
@@ -41,10 +52,21 @@ import io.opentelemetry.proto.trace.v1.ScopeSpans;
 import io.opentelemetry.proto.trace.v1.Span;
 import io.opentelemetry.proto.trace.v1.Status;
 import io.opentelemetry.proto.trace.v1.TracesData;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
+
+import java.time.Duration;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ThreadFactory;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class Opentelemetry_protoTest {
     private static final ByteString TRACE_ID = ByteString.copyFromUtf8("0123456789abcdef");
     private static final ByteString SPAN_ID = ByteString.copyFromUtf8("01234567");
@@ -97,6 +119,47 @@ public class Opentelemetry_protoTest {
         assertThat(parsedSpan.getEvents(0).getAttributes(0).getValue().getStringValue()).isEqualTo("accepted");
         assertThat(parsedSpan.getLinks(0).getTraceId()).isEqualTo(ByteString.copyFromUtf8("fedcba9876543210"));
         assertThat(parsedSpan.getStatus().getCode()).isEqualTo(Status.StatusCode.STATUS_CODE_ERROR);
+    }
+
+    @Test
+    @Order(1)
+    void otlpMeterRegistryExportsRecordedMetricsAsProtobuf() throws Exception {
+        CapturingMetricsSender sender = new CapturingMetricsSender();
+        OtlpMeterRegistry registry = OtlpMeterRegistry.builder(new InMemoryOtlpConfig())
+                .clock(Clock.SYSTEM)
+                .metricsSender(sender)
+                .threadFactory(new DaemonThreadFactory())
+                .build();
+        try {
+            Counter.builder("checkout.orders")
+                    .tag("result", "accepted")
+                    .register(registry)
+                    .increment(3.0D);
+            Timer.builder("checkout.duration")
+                    .publishPercentileHistogram()
+                    .register(registry)
+                    .record(Duration.ofMillis(75));
+            DistributionSummary.builder("checkout.items")
+                    .publishPercentileHistogram()
+                    .register(registry)
+                    .record(4.0D);
+        } finally {
+            registry.close();
+        }
+
+        OtlpMetricsSender.Request sentRequest = sender.singleRequest();
+        ExportMetricsServiceRequest request = ExportMetricsServiceRequest.parseFrom(sentRequest.getMetricsData());
+        Map<String, Metric> metrics = metricsByName(request);
+
+        assertThat(sentRequest.getAddress()).isEqualTo("http://collector.invalid/v1/metrics");
+        assertThat(request.getResourceMetricsCount()).isEqualTo(1);
+        assertThat(request.getResourceMetrics(0).hasResource()).isTrue();
+        assertThat(metrics.keySet()).contains("checkout.orders", "checkout.duration", "checkout.items");
+        assertThat(metrics.get("checkout.orders").getSum().getDataPoints(0).getAsDouble()).isEqualTo(3.0D);
+        assertThat(metrics.get("checkout.duration").getHistogram().getDataPoints(0).getCount()).isEqualTo(1L);
+        assertThat(metrics.get("checkout.duration").getHistogram().getDataPoints(0).getSum()).isEqualTo(75.0D);
+        assertThat(metrics.get("checkout.items").getHistogram().getDataPoints(0).getCount()).isEqualTo(1L);
+        assertThat(metrics.get("checkout.items").getHistogram().getDataPoints(0).getSum()).isEqualTo(4.0D);
     }
 
     @Test
@@ -199,6 +262,87 @@ public class Opentelemetry_protoTest {
     }
 
     @Test
+    void exponentialHistogramMetricRepresentsPositiveNegativeAndZeroBuckets() {
+        ExponentialHistogramDataPoint point = ExponentialHistogramDataPoint.newBuilder()
+                .setStartTimeUnixNano(10L)
+                .setTimeUnixNano(20L)
+                .setCount(7L)
+                .setSum(15.75D)
+                .setScale(2)
+                .setZeroCount(1L)
+                .setPositive(ExponentialHistogramDataPoint.Buckets.newBuilder()
+                        .setOffset(-1)
+                        .addBucketCounts(2L)
+                        .addBucketCounts(3L))
+                .setNegative(ExponentialHistogramDataPoint.Buckets.newBuilder()
+                        .setOffset(1)
+                        .addBucketCounts(1L))
+                .setMin(-2.5D)
+                .setMax(8.0D)
+                .setZeroThreshold(0.01D)
+                .build();
+        Metric metric = Metric.newBuilder()
+                .setName("request.size")
+                .setUnit("By")
+                .setExponentialHistogram(ExponentialHistogram.newBuilder()
+                        .setAggregationTemporality(AggregationTemporality.AGGREGATION_TEMPORALITY_DELTA)
+                        .addDataPoints(point))
+                .build();
+
+        ExponentialHistogramDataPoint recordedPoint = metric.getExponentialHistogram().getDataPoints(0);
+
+        assertThat(metric.getDataCase()).isEqualTo(Metric.DataCase.EXPONENTIAL_HISTOGRAM);
+        assertThat(metric.getExponentialHistogram().getAggregationTemporality())
+                .isEqualTo(AggregationTemporality.AGGREGATION_TEMPORALITY_DELTA);
+        assertThat(recordedPoint.getCount()).isEqualTo(7L);
+        assertThat(recordedPoint.getScale()).isEqualTo(2);
+        assertThat(recordedPoint.getZeroCount()).isEqualTo(1L);
+        assertThat(recordedPoint.getPositive().getOffset()).isEqualTo(-1);
+        assertThat(recordedPoint.getPositive().getBucketCountsList()).containsExactly(2L, 3L);
+        assertThat(recordedPoint.getNegative().getOffset()).isEqualTo(1);
+        assertThat(recordedPoint.getNegative().getBucketCountsList()).containsExactly(1L);
+        assertThat(recordedPoint.getSum()).isEqualTo(15.75D);
+        assertThat(recordedPoint.getMin()).isEqualTo(-2.5D);
+        assertThat(recordedPoint.getMax()).isEqualTo(8.0D);
+        assertThat(recordedPoint.getZeroThreshold()).isEqualTo(0.01D);
+    }
+
+    @Test
+    void summaryMetricRepresentsQuantilesAndAggregateValues() {
+        SummaryDataPoint point = SummaryDataPoint.newBuilder()
+                .setStartTimeUnixNano(10L)
+                .setTimeUnixNano(20L)
+                .setCount(20L)
+                .setSum(315.0D)
+                .addAttributes(attribute("route", "checkout"))
+                .addQuantileValues(SummaryDataPoint.ValueAtQuantile.newBuilder()
+                        .setQuantile(0.5D)
+                        .setValue(12.0D))
+                .addQuantileValues(SummaryDataPoint.ValueAtQuantile.newBuilder()
+                        .setQuantile(0.95D)
+                        .setValue(28.5D))
+                .build();
+        Metric metric = Metric.newBuilder()
+                .setName("request.payload.size")
+                .setUnit("By")
+                .setSummary(Summary.newBuilder().addDataPoints(point))
+                .build();
+
+        SummaryDataPoint recordedPoint = metric.getSummary().getDataPoints(0);
+
+        assertThat(metric.getDataCase()).isEqualTo(Metric.DataCase.SUMMARY);
+        assertThat(recordedPoint.getCount()).isEqualTo(20L);
+        assertThat(recordedPoint.getSum()).isEqualTo(315.0D);
+        assertThat(recordedPoint.getAttributes(0).getValue().getStringValue()).isEqualTo("checkout");
+        assertThat(recordedPoint.getQuantileValuesList())
+                .extracting(SummaryDataPoint.ValueAtQuantile::getQuantile)
+                .containsExactly(0.5D, 0.95D);
+        assertThat(recordedPoint.getQuantileValuesList())
+                .extracting(SummaryDataPoint.ValueAtQuantile::getValue)
+                .containsExactly(12.0D, 28.5D);
+    }
+
+    @Test
     void profilesExportRetainsDictionaryIndexedSampleData() {
         ProfilesDictionary dictionary = ProfilesDictionary.newBuilder()
                 .addStringTable("")
@@ -276,6 +420,18 @@ public class Opentelemetry_protoTest {
         assertThat(parsedRecord.getEventName()).isEqualTo("payment.authorization");
     }
 
+    private static Map<String, Metric> metricsByName(ExportMetricsServiceRequest request) {
+        Map<String, Metric> metrics = new HashMap<>();
+        for (ResourceMetrics resourceMetrics : request.getResourceMetricsList()) {
+            for (ScopeMetrics scopeMetrics : resourceMetrics.getScopeMetricsList()) {
+                for (Metric metric : scopeMetrics.getMetricsList()) {
+                    metrics.put(metric.getName(), metric);
+                }
+            }
+        }
+        return metrics;
+    }
+
     private static Resource resource() {
         return Resource.newBuilder()
                 .addAttributes(attribute("service.name", "checkout"))
@@ -296,5 +452,45 @@ public class Opentelemetry_protoTest {
                 .setKey(key)
                 .setValue(AnyValue.newBuilder().setStringValue(value))
                 .build();
+    }
+
+    private static class CapturingMetricsSender implements OtlpMetricsSender {
+        private final List<OtlpMetricsSender.Request> requests = new ArrayList<>();
+
+        @Override
+        public void send(OtlpMetricsSender.Request request) {
+            requests.add(request);
+        }
+
+        OtlpMetricsSender.Request singleRequest() {
+            assertThat(requests).hasSize(1);
+            return requests.get(0);
+        }
+    }
+
+    private static class DaemonThreadFactory implements ThreadFactory {
+        @Override
+        public Thread newThread(Runnable runnable) {
+            Thread thread = new Thread(runnable, "otlp-test-publisher");
+            thread.setDaemon(true);
+            return thread;
+        }
+    }
+
+    private static class InMemoryOtlpConfig implements OtlpConfig {
+        @Override
+        public String get(String key) {
+            return null;
+        }
+
+        @Override
+        public String url() {
+            return "http://collector.invalid/v1/metrics";
+        }
+
+        @Override
+        public Duration step() {
+            return Duration.ofSeconds(30);
+        }
     }
 }

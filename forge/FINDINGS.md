@@ -3,6 +3,11 @@
 Rendered by Forge from the pre-push branch review of §FS-local-branch-review.
 Newest entry first; every non-approval is recorded, including one a repair later cleared.
 
+## 2026-09-07 — io.opentelemetry.proto:opentelemetry-proto:1.10.0-alpha (#9910)
+
+**Coverage update weakens an existing passing test**
+
+In tests/src/io.opentelemetry.proto/opentelemetry-proto/1.10.0-alpha/src/test/java/io_opentelemetry_proto/opentelemetry_proto/Opentelemetry_protoTest.java, the branch removed Exemplar construction and its assertions from histogramMetricRepresentsDistributionBucketsAndExemplars. This violates the enumerated no-scope-creep/no-fix-by-weakening rule: a library-update contribution must not remove or weaken existing passing test coverage.
 ## 2026-09-06 — org.springframework:spring-webflux:6.0.0 (#9403)
 
 **Explicit I/O timeout below the 10-second floor**
