@@ -19,26 +19,38 @@ import io.micronaut.http.HttpStatus;
 import io.micronaut.http.MediaType;
 import io.micronaut.http.MutableHttpRequest;
 import io.micronaut.http.annotation.Body;
+import io.micronaut.http.annotation.Consumes;
 import io.micronaut.http.annotation.Controller;
 import io.micronaut.http.annotation.Error;
 import io.micronaut.http.annotation.Get;
+import io.micronaut.http.annotation.Header;
 import io.micronaut.http.annotation.PathVariable;
 import io.micronaut.http.annotation.Post;
+import io.micronaut.http.annotation.QueryValue;
+import io.micronaut.http.annotation.RequestAttribute;
 import io.micronaut.http.annotation.RequestFilter;
 import io.micronaut.http.annotation.ServerFilter;
 import io.micronaut.web.router.DefaultRouteBuilder;
+import io.micronaut.web.router.ErrorRoute;
 import io.micronaut.web.router.MethodBasedRouteMatch;
 import io.micronaut.web.router.RouteAttributes;
 import io.micronaut.web.router.RouteMatch;
+import io.micronaut.web.router.RouteMatchUtils;
 import io.micronaut.web.router.Router;
+import io.micronaut.web.router.StatusRoute;
 import io.micronaut.web.router.UriRoute;
 import io.micronaut.web.router.UriRouteMatch;
+import io.micronaut.web.router.filter.FilteredRouter;
+import io.micronaut.web.router.filter.RouteMatchFilter;
 import io.micronaut.web.router.naming.HyphenatedUriNamingStrategy;
+import io.micronaut.web.router.qualifier.ConsumesMediaTypeQualifier;
 import io.micronaut.web.router.resource.StaticResourceResolver;
 import io.micronaut.web.router.uri.UriUtil;
 import java.net.URL;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Predicate;
+import jakarta.inject.Singleton;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 
@@ -84,6 +96,22 @@ public class Micronaut_routerTest {
             assertThat(hasGetRoute).isTrue();
             assertThat(hasHeadRoute).isTrue();
             assertThat(router.POST("/catalog/items/42")).isEmpty();
+        }
+    }
+
+    @Test
+    @Timeout(55)
+    void invokesAnAnnotatedRouteWithRequestValues() {
+        try (ApplicationContext context = ApplicationContext.run(Environment.TEST)) {
+            Router router = context.getBean(Router.class);
+            HttpRequest<?> request = HttpRequest.GET("/catalog/search?term=router")
+                    .header("X-Trace", "trace-12")
+                    .accept(MediaType.TEXT_PLAIN_TYPE);
+
+            UriRouteMatch<?, ?> routeMatch = findClosest(router, request);
+
+            assertThat(routeMatch.invoke("router", "trace-12", "north"))
+                    .isEqualTo("router|trace-12|north");
         }
     }
 
@@ -162,6 +190,7 @@ public class Micronaut_routerTest {
             RouteAttributes.setRouteInfo(request, statusRoute.getRouteInfo());
             assertThat(RouteAttributes.getRouteMatch(request)).contains(statusRoute);
             assertThat(RouteAttributes.getRouteInfo(request)).contains(statusRoute.getRouteInfo());
+            assertThat(RouteMatchUtils.findRouteMatch(request)).contains(statusRoute);
         }
     }
 
@@ -174,6 +203,50 @@ public class Micronaut_routerTest {
             assertThat(router.findFilters(HttpRequest.GET("/filtered/catalog"))).hasSize(1);
             assertThat(router.findFilters(HttpRequest.POST("/filtered/catalog", "item"))).isEmpty();
             assertThat(router.findFilters(HttpRequest.GET("/unfiltered/catalog"))).isEmpty();
+        }
+    }
+
+    @Test
+    @Timeout(55)
+    void selectsBeansByConsumedMediaType() {
+        try (ApplicationContext context = ApplicationContext.run(Environment.TEST)) {
+            ConsumesMediaTypeQualifier<CatalogHandler> consumesJson =
+                    new ConsumesMediaTypeQualifier<>(MediaType.APPLICATION_JSON_TYPE);
+            ConsumesMediaTypeQualifier<CatalogHandler> consumesText =
+                    new ConsumesMediaTypeQualifier<>(MediaType.TEXT_PLAIN_TYPE);
+
+            assertThat(context.getBean(CatalogHandler.class, consumesJson).name())
+                    .isEqualTo("json-handler");
+            assertThat(context.getBean(CatalogHandler.class, consumesText).name())
+                    .isEqualTo("text-handler");
+        }
+    }
+
+    @Test
+    @Timeout(55)
+    void filtersRouteCandidatesWithARequestAwarePolicy() {
+        try (ApplicationContext context = ApplicationContext.run(Environment.TEST)) {
+            Router router = context.getBean(Router.class);
+            RouteMatchFilter routeFilter = new RouteMatchFilter() {
+                @Override
+                public <T, R> Predicate<UriRouteMatch<T, R>> filter(HttpRequest<?> request) {
+                    return route -> route.getHttpMethod() == HttpMethod.GET
+                            && route.getMethodName().equals(request.getHeaders().get("X-Allowed-Route"));
+                }
+            };
+            Router filteredRouter = new FilteredRouter(router, routeFilter);
+
+            HttpRequest<?> allowedRequest = HttpRequest.GET("/catalog/items/featured")
+                    .header("X-Allowed-Route", "featuredItem");
+            List<UriRouteMatch<Object, Object>> allowedRoutes = filteredRouter.findAny(allowedRequest);
+            assertThat(allowedRoutes).singleElement().satisfies(route -> {
+                assertThat(route.getMethodName()).isEqualTo("featuredItem");
+                assertThat(route.invoke()).isEqualTo("featured-item");
+            });
+
+            HttpRequest<?> rejectedRequest = HttpRequest.GET("/catalog/items/featured")
+                    .header("X-Allowed-Route", "anotherRoute");
+            assertThat(filteredRouter.findAny(rejectedRequest)).isEmpty();
         }
     }
 
@@ -229,6 +302,82 @@ public class Micronaut_routerTest {
         }
     }
 
+    @Test
+    @Timeout(55)
+    void buildsAndExecutesConventionalResourceRoutes() {
+        try (ApplicationContext context = ApplicationContext.run(Environment.TEST)) {
+            ProgrammaticRouteBuilder routeBuilder = new ProgrammaticRouteBuilder(context);
+            String resourceBase = routeBuilder.getUriNamingStrategy().resolveUri(Micronaut_routerTest.class);
+            routeBuilder.resources(Micronaut_routerTest.class);
+
+            assertThat(routeBuilder.getUriRoutes()).hasSize(6);
+            assertThat(routeBuilder.getUriRoutes())
+                    .extracting(UriRoute::getHttpMethod)
+                    .contains(HttpMethod.GET, HttpMethod.POST, HttpMethod.DELETE, HttpMethod.PATCH, HttpMethod.PUT);
+            assertThat(routeBuilder.getUriRoutes().stream()
+                            .filter(route -> route.getHttpMethod() == HttpMethod.GET)
+                            .count())
+                    .isEqualTo(2);
+            assertThat(routeBuilder.getUriRoutes())
+                    .allSatisfy(route -> assertThat(route.toRouteInfo().getDeclaringType())
+                            .isEqualTo(Micronaut_routerTest.class));
+
+            UriRoute detailRoute = routeBuilder.getUriRoutes().stream()
+                    .filter(route -> route.getHttpMethod() == HttpMethod.GET)
+                    .filter(route -> route.toRouteInfo().match(resourceBase + "/31").isPresent())
+                    .findFirst()
+                    .orElseThrow();
+            assertThat(detailRoute.toRouteInfo().match(resourceBase + "/31").orElseThrow().invoke())
+                    .isEqualTo("resource-31");
+
+            UriRoute indexRoute = routeBuilder.getUriRoutes().stream()
+                    .filter(route -> route.getHttpMethod() == HttpMethod.GET)
+                    .filter(route -> route.toRouteInfo().match(resourceBase).isPresent())
+                    .findFirst()
+                    .orElseThrow();
+            assertThat(indexRoute.toRouteInfo().match(resourceBase).orElseThrow().invoke())
+                    .isEqualTo("resource-index");
+        }
+    }
+
+    @Test
+    @Timeout(55)
+    void buildsAndExecutesProgrammaticStatusAndErrorRoutes() {
+        try (ApplicationContext context = ApplicationContext.run(Environment.TEST)) {
+            ProgrammaticRouteBuilder routeBuilder = new ProgrammaticRouteBuilder(context);
+            StatusRoute statusRoute = routeBuilder.status(
+                    Micronaut_routerTest.class,
+                    HttpStatus.ACCEPTED,
+                    Micronaut_routerTest.class,
+                    "programmaticStatus");
+            ErrorRoute errorRoute = routeBuilder.error(
+                    Micronaut_routerTest.class,
+                    IllegalStateException.class,
+                    Micronaut_routerTest.class,
+                    "programmaticFailure",
+                    IllegalStateException.class);
+
+            assertThat(statusRoute.originatingType()).isEqualTo(Micronaut_routerTest.class);
+            assertThat(statusRoute.status() == HttpStatus.ACCEPTED).isTrue();
+            RouteMatch<?> statusMatch = statusRoute
+                    .toRouteInfo()
+                    .match(Micronaut_routerTest.class, HttpStatus.ACCEPTED)
+                    .orElseThrow();
+            assertThat(statusMatch.execute()).isEqualTo("programmatic-accepted");
+
+            IllegalStateException failure = new IllegalStateException("route failure");
+            assertThat(errorRoute.originatingType()).isEqualTo(Micronaut_routerTest.class);
+            assertThat(errorRoute.exceptionType()).isEqualTo(IllegalStateException.class);
+            RouteMatch<?> errorMatch = errorRoute
+                    .toRouteInfo()
+                    .match(Micronaut_routerTest.class, failure)
+                    .orElseThrow();
+            assertThat(errorMatch).isInstanceOf(MethodBasedRouteMatch.class);
+            MethodBasedRouteMatch<?, ?> methodBasedErrorMatch = (MethodBasedRouteMatch<?, ?>) errorMatch;
+            assertThat(methodBasedErrorMatch.invoke()).isEqualTo("handled-route failure");
+        }
+    }
+
     @Get(uri = "/items/{id}", produces = MediaType.TEXT_PLAIN)
     public String item(@PathVariable("id") long id) {
         return "item-" + id;
@@ -242,6 +391,14 @@ public class Micronaut_routerTest {
     @Post(uri = "/items", consumes = MediaType.TEXT_PLAIN, produces = MediaType.TEXT_PLAIN)
     public String createItem(@Body String body) {
         return "created-" + body;
+    }
+
+    @Get(uri = "/search", produces = MediaType.TEXT_PLAIN)
+    public String search(
+            @QueryValue("term") String term,
+            @Header("X-Trace") String trace,
+            @RequestAttribute("tenant") String tenant) {
+        return term + "|" + trace + "|" + tenant;
     }
 
     @Get(uri = "/versioned", produces = MediaType.TEXT_PLAIN)
@@ -276,6 +433,41 @@ public class Micronaut_routerTest {
         return category + "-" + item;
     }
 
+    @Executable
+    public String programmaticStatus() {
+        return "programmatic-accepted";
+    }
+
+    @Executable
+    public String programmaticFailure(IllegalStateException failure) {
+        return "handled-" + failure.getMessage();
+    }
+
+    @Executable
+    public String index() {
+        return "resource-index";
+    }
+
+    @Executable
+    public String show(Object id) {
+        return "resource-" + id;
+    }
+
+    @Executable
+    public String save() {
+        return "resource-saved";
+    }
+
+    @Executable
+    public String update(Object id) {
+        return "resource-updated-" + id;
+    }
+
+    @Executable
+    public String delete(Object id) {
+        return "resource-deleted-" + id;
+    }
+
     private static UriRouteMatch<?, ?> findClosest(Router router, HttpRequest<?> request) {
         UriRouteMatch<?, ?> routeMatch = router.findClosest(request);
         assertThat(routeMatch).isNotNull();
@@ -290,6 +482,28 @@ public class Micronaut_routerTest {
     }
 
     public static final class OrderHistoryController {
+    }
+
+    public interface CatalogHandler {
+        String name();
+    }
+
+    @Singleton
+    @Consumes(MediaType.APPLICATION_JSON)
+    public static final class JsonCatalogHandler implements CatalogHandler {
+        @Override
+        public String name() {
+            return "json-handler";
+        }
+    }
+
+    @Singleton
+    @Consumes(MediaType.TEXT_PLAIN)
+    public static final class TextCatalogHandler implements CatalogHandler {
+        @Override
+        public String name() {
+            return "text-handler";
+        }
     }
 
     public static final class ProgrammaticRouteBuilder extends DefaultRouteBuilder {

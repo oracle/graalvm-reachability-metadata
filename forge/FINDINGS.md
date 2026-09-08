@@ -3,6 +3,23 @@
 Rendered by Forge from the pre-push branch review of §FS-local-branch-review.
 Newest entry first; every non-approval is recorded, including one a repair later cleared.
 
+## 2026-09-07 — io.micronaut:micronaut-buffer-netty:5.1.13 (#9828)
+
+**Application context closes while eager bean processing is still running**
+
+In Micronaut_buffer_nettyTest.java, both ApplicationContext.run(...) calls enable asynchronous eager bean processing. The native test lane completed its assertions but then emitted an uncaught NullPointerException from DefaultBeanContext.processParallelBeans after the contexts had closed. This violates the test contract requirement that background resources be cleanly bounded and closed.
+
+## 2026-09-02 — org.springframework:spring-web:5.3.32 (#9402)
+
+**Runtime repair deletes existing test coverage**
+
+Rule 4.8 (fix by weakening) was violated in `tests/src/org.springframework/spring-web/5.3.32`: the copied 5.3.18 suite deleted `JettyClientHttpResponseTest.java` and removed its Jetty dependency instead of adapting the failing runtime path while preserving the test's status, headers, cookies, and body assertions.
+## 2026-09-07 — io.micronaut:micronaut-http-server:5.1.13 (#9832)
+
+**Companion dependencies pin the tested library version**
+
+Review Signal #4 is violated in tests/src/io.micronaut/micronaut-http-server/5.1.13/build.gradle: the Netty server, HTTP client, and Jackson databind companion dependencies hardcode 5.1.13. This prevents the suite from resolving those matching Micronaut modules at the TCK-selected tested version when the same test is reused for later supported versions.
+
 ## 2026-09-07 — io.micronaut:micronaut-core:5.0.0 (#9799)
 
 **Missing minimum dynamic-access coverage evidence**
@@ -47,6 +64,11 @@ Review Signal #4 was violated in tests/src/io.micronaut.serde/micronaut-serde-su
 **Unsupported-feature catch masks statically available class resolution**
 
 In tests/src/io.netty/netty-codec/5.0.0.Alpha1/src/test/java/io_netty/netty_codec/ClassLoaderClassResolverTest.java, both tests caught Error and accepted NativeImageSupport.isUnsupportedFeatureError even though the target class name is fixed, the class is included in the image, and the behavior does not require a class discovered after image build. This applies the sole open-ended dynamic-class-loading exception outside its permitted scope and could make the native tests pass without executing their assertions.
+## 2026-09-06 — io.netty:netty-codec:4.2.2.Final (#9761)
+
+**Native-image repair deletes the failing checksum test**
+
+The branch deletes tests/src/io.netty/netty-codec/4.1.42.Final/src/test/java/io_netty/netty_codec/ByteBufChecksumInnerReflectiveByteBufChecksumTest.java after that test exposed the CleanerJava24/SharedArena native failure. Deleting the failing test to make the native lane green is the enumerated fix-by-weakening violation in FS-contribution-contract.4.8 / FS-test-contract.2.9 and does not demonstrate that the native-image runtime path was repaired.
 
 ## 2026-09-05 — com.github.seregamorph:spring-test-smart-context:1.0 (#9677)
 

@@ -100,6 +100,7 @@ class FinalizerTests(unittest.TestCase):
             self,
             include_target_state: bool = True,
             include_stop_decisions: bool = True,
+            include_discovery_state: bool = False,
     ) -> dict:
         baseline_api = self._write(
             "api-0.json", _api(["covered", "uncovered", "uncovered", "uncovered"])
@@ -114,13 +115,20 @@ class FinalizerTests(unittest.TestCase):
                 42,
             ),
         )
-        final_deep = self._write(
-            "deep-5.json",
-            _deep(
-                ["covered", "covered", "uncovered", "uncovered", "uncovered"],
-                84,
-            ),
+        final_deep_report = _deep(
+            ["covered", "covered", "uncovered", "uncovered", "uncovered"],
+            84,
         )
+        if include_discovery_state:
+            final_deep_report["targetStates"] = [{
+                "id": "example.Internal#m2():void",
+                "status": "exhausted",
+                "terminal": True,
+                "attemptCount": 3,
+                "lastAttemptedIteration": None,
+                "reason": "3 attempts without coverage change",
+            }]
+        final_deep = self._write("deep-5.json", final_deep_report)
         state = self._write(
             "targets.json",
             {
@@ -274,6 +282,21 @@ class FinalizerTests(unittest.TestCase):
         self.assertEqual(metrics["targets"]["exhausted"], [])
         self.assertEqual(metrics["targets"]["failed"], [])
         self.assertFalse(metrics["needsHumanIntervention"])
+
+    def test_final_discovery_report_supplies_exhausted_outcomes(self) -> None:
+        metrics = self._run(
+            include_target_state=False,
+            include_discovery_state=True,
+        )
+
+        self.assertEqual(metrics["targets"]["exhausted"], [{
+            "id": "example.Internal#m2():void",
+            "phase": "deep",
+            "status": "exhausted",
+            "attemptCount": 3,
+            "lastAttemptedIteration": None,
+            "reason": "3 attempts without coverage change",
+        }])
 
     def test_coverage_reports_determine_completion(self) -> None:
         metrics = self._run()
