@@ -221,7 +221,9 @@ The trusted publisher accepts a benchmark-result descriptor only when the
 branch changes exactly the coordinate result list and that one descriptor, the
 descriptor's coordinate determines both paths, the embedded result validates
 against the benchmark-result schema, and the list is exactly the base list plus
-that result. It opens one `rhei`-labeled pull request for the run and renders
+that result. It opens one pull request for the run, labeled `GenAI`,
+`code-coverage-improvement`, and `rhei` so the run sits in the same triage
+queue as the coverage-improvement PRs it measures, and renders
 the run identity, status, configuration, coverage gain, and token totals from
 the validated descriptor. Repository CI and the normal merge boundary remain
 responsible for accepting it. §FS-forge-publication-readiness

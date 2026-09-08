@@ -139,6 +139,13 @@ class BenchmarkResultPublisherTests(unittest.TestCase):
         self.assertIn("- Failure phase: `api`", body)
         self.assertNotIn("Fixes:", body)
 
+    def test_route_labels_join_the_coverage_queue(self) -> None:
+        """A benchmark result is triaged next to the coverage work it measures."""
+        self.assertEqual(
+            publisher.ROUTE_LABELS["code-coverage-benchmark-result"],
+            ["GenAI", "code-coverage-improvement", "rhei"],
+        )
+
     def test_accepts_exactly_one_result_appended_to_the_base(self) -> None:
         descriptor = _descriptor()
         result_path = "code-coverage-benchmarks/com.example/demo/1.0.0.json"

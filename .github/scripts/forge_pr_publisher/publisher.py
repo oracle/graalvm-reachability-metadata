@@ -50,7 +50,7 @@ ROUTE_LABELS = {
     "fixes-java-run-fail": ["GenAI", "fixes-java-run-fail"],
     "fixes-native-image-run-fail": ["fixes-native-image-run-fail"],
     "not-for-native-image": ["GenAI", "library-new-request", "not-for-native-image"],
-    "code-coverage-benchmark-result": ["GenAI", "rhei"],
+    "code-coverage-benchmark-result": ["GenAI", "code-coverage-improvement", "rhei"],
     "code-coverage-improvement": ["GenAI", "code-coverage-improvement", "rhei"],
 }
 

@@ -127,6 +127,7 @@ GitHub labels are part of the public triage surface for issues and PRs. Pipeline
 | `docker` | PR | PR updates allowed Docker images used by tests. |
 | `GenAI` | PR | PR was produced by generative-AI automation. Generated PR titles also use a `[GenAI]` prefix when created by the corresponding Forge scripts. |
 | `priority` | Issue | Work-queue priority marker. Forge processes matching issues after `high-priority` issues and before regular issues in the same pipeline batch; issue triage also adds it to eligible native-build-tools-created support requests. |
+| `code-coverage-improvement` | PR | PR carries Rhei code coverage improvement work for a library, or a benchmark result measuring that work. |
 | `rhei` | PR | PR was produced by a Rhei workflow, including compact code coverage benchmark results. |
 | `high-priority` | Issue | Highest work-queue urgency marker. Compatibility automation adds it to failed updates for artifacts whose latest index entry sets `high-priority: true`, and Forge processes it before `priority` and regular issues in the same pipeline batch. |
 | `chunked-dynamic-access` | Issue | Forge split dynamic-access generation for this issue into class-aligned chunks because the uncovered class count exceeded the configured threshold. Normal project status controls whether Forge may claim the next chunk. |
