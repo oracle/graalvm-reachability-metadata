@@ -1135,6 +1135,12 @@ def publish_workspace(
         f"Published benchmark result {result['runId']} at "
         f"{marker['resultPath']}."
     )
+    _write_terminal_result(
+        f"Published benchmark result {result['runId']} "
+        f"({result['status']}) for {result['coordinate']} at "
+        f"{marker['resultPath']}, repository commit "
+        f"{marker['repositoryCommit']}."
+    )
     return result
 
 
@@ -1221,6 +1227,28 @@ def convert_workspace(args: argparse.Namespace) -> None:
         "No GitHub issue or Project operation was performed.\n",
         encoding="utf-8",
     )
+    _write_terminal_result(
+        f"Prepared benchmark {args.run_id} for {args.coordinate} at suite "
+        f"commit {args.suite_commit}. Conversion artifacts written; no GitHub "
+        f"issue or Project operation was performed."
+    )
+
+
+def _write_terminal_result(message: str) -> None:
+    """Satisfy Rhei's terminal-result obligation for a program worker.
+
+    Rhei requires a non-empty `runtime/results/<task-id>.md` on every edge into
+    a final state, and hands a program the absolute path in `RHEI_RESULT_PATH`
+    because a program has no prompt to carry it. A program state whose exit-0
+    edge is terminal must write it, or the task stalls instead of advancing.
+    §FS-code-coverage-benchmarking.2
+    """
+    result_path = os.environ.get("RHEI_RESULT_PATH")
+    if not result_path:
+        return
+    path = Path(result_path)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(message.rstrip("\n") + "\n", encoding="utf-8")
 
 
 def _convert_parser(subparsers: Any) -> None:

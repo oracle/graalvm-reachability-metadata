@@ -485,6 +485,47 @@ class CodeCoverageBenchmarkMetricsTests(unittest.TestCase):
         self.assertEqual([], list(workspace.parent.glob("publisher-*")))
 
 
+class CodeCoverageBenchmarkTerminalResultTests(unittest.TestCase):
+    """A program state on a terminal edge owes Rhei a non-empty result."""
+
+    def test_writes_message_to_rhei_result_path(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "results" / "task.md"
+            with patch.dict("os.environ", {"RHEI_RESULT_PATH": str(path)}):
+                benchmark._write_terminal_result("Prepared benchmark run.")
+            self.assertEqual(
+                "Prepared benchmark run.\n",
+                path.read_text(encoding="utf-8"),
+            )
+
+    def test_is_a_no_op_without_the_environment_variable(self) -> None:
+        with patch.dict("os.environ", {}, clear=True):
+            benchmark._write_terminal_result("ignored")
+
+    def test_publication_records_its_own_terminal_result(self) -> None:
+        temporary = tempfile.TemporaryDirectory()
+        self.addCleanup(temporary.cleanup)
+        root = Path(temporary.name)
+        workspace = root / "run-1" / "code-coverage-99000"
+        workspace.mkdir(parents=True)
+        result = {
+            "runId": "run-1",
+            "coordinate": "com.example:demo:1.0.0",
+            "status": "success",
+        }
+        path = root / "results" / "publication.md"
+
+        with patch.dict("os.environ", {"RHEI_RESULT_PATH": str(path)}), \
+                patch.object(benchmark, "_read_json", return_value={}), \
+                patch.object(benchmark, "_collect_result", return_value=result), \
+                patch.object(benchmark, "_publish_result", return_value="c" * 40):
+            benchmark.publish_workspace(workspace, requested_status="success")
+
+        recorded = path.read_text(encoding="utf-8")
+        self.assertIn("run-1", recorded)
+        self.assertIn("com.example:demo:1.0.0", recorded)
+
+
 class CodeCoverageBenchmarkTemplateTests(unittest.TestCase):
 
     def test_template_has_distinct_conversion_and_terminal_branches(self) -> None:
