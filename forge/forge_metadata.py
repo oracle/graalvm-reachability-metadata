@@ -26,6 +26,7 @@ import argparse
 import concurrent.futures
 import contextlib
 import errno
+import importlib.util
 import hashlib
 import json
 import os
@@ -44,6 +45,7 @@ import uuid
 from collections.abc import Callable
 from dataclasses import dataclass
 from datetime import datetime
+from types import SimpleNamespace
 from typing import Any, Optional
 from urllib.parse import quote
 
@@ -136,6 +138,13 @@ from git_scripts.publish_ni_run_fix import (
 from git_scripts.publish_improve_coverage import (
     main as run_publish_improve_coverage,
 )
+from git_scripts.local_branch_review import (
+    REVIEW_SKILLS_BY_TASK_TYPE,
+    LocalReviewVerdict,
+    _read_verdict,
+    _record_finding,
+)
+from git_scripts.publication_descriptor import validate_publication_descriptor
 from utility_scripts.dynamic_access_exhaust_report import (
     DynamicAccessExhaustReport,
     dynamic_access_exhaust_report_path,
@@ -311,7 +320,7 @@ LABEL_PR_JAVAC_FIX = "fixes-javac-fail"
 LABEL_PR_JAVA_RUN_FIX = "fixes-java-run-fail"
 LABEL_PR_NI_RUN_FIX = "fixes-native-image-run-fail"
 LABEL_PR_LIBRARY_UPDATE = "library-update-request"
-LABEL_PR_LIBRARY_BULK_UPDATE = "library-bulk-update"
+LABEL_PR_CODE_COVERAGE = "code-coverage-improvement"
 LABEL_HIGH_PRIORITY = "high-priority"
 LABEL_PRIORITY = "priority"
 PRIORITY_HIGH = "high"
@@ -320,6 +329,7 @@ PRIORITY_CHOICES: tuple[str, ...] = (PRIORITY_HIGH, LABEL_PRIORITY, PRIORITY_NOR
 LABEL_HUMAN_INTERVENTION = "human-intervention"
 LABEL_HUMAN_INTERVENTION_FIXED = "human-intervention-fixed"
 LABEL_NOT_FOR_NATIVE_IMAGE = "not-for-native-image"
+LABEL_LIBRARY_UNSUPPORTED_VERSION = "library-unsupported-version"
 LABEL_CHUNKED_DYNAMIC_ACCESS = "chunked-dynamic-access"
 LABEL_RESUMABLE = "resumable"
 FIXTURE_AUTHENTICATED_USER = "fixture-runner"
@@ -395,6 +405,10 @@ PRIORITY_LABEL_COLOR = "FBCA04"
 PRIORITY_LABEL_DESCRIPTION = "Automation should process this issue before regular queue items"
 CHUNKED_DYNAMIC_ACCESS_LABEL_COLOR = "C5DEF5"
 CHUNKED_DYNAMIC_ACCESS_LABEL_DESCRIPTION = "Issue uses chunked dynamic-access processing"
+LIBRARY_UNSUPPORTED_VERSION_LABEL_COLOR = "5319E7"
+LIBRARY_UNSUPPORTED_VERSION_LABEL_DESCRIPTION = (
+    "Library version cannot be supported by GraalVM Native Image"
+)
 RESUMABLE_LABEL_COLOR = "0E8A16"
 RESUMABLE_LABEL_DESCRIPTION = "Issue has preserved automation work that Forge can resume"
 DEFAULT_DYNAMIC_ACCESS_CHUNK_CLASS_THRESHOLD = 15
@@ -404,10 +418,18 @@ DEFAULT_WORK_QUEUE_STRATEGY_NAME = "optimistic_dynamic_access_iterative_pi_gpt-5
 FAILURE_ANALYSIS_TIMEOUT_SECONDS = 1800
 REVIEW_TIMEOUT_SECONDS = 1800
 DEFAULT_WORKTREE_BASE_REF = "master"
-LOCAL_REVIEW_ATTESTATION_CHECK_NAME = "Forge Local Review Attestation"
-FORGE_BRANCH_READY_WORKFLOW_NAME = "Forge Branch Ready"
-FORGE_BRANCH_READY_WORKFLOW_PATH = ".github/workflows/forge-branch-ready.yml"
-GITHUB_ACTIONS_APP_SLUG = "github-actions"
+TRUSTED_FORGE_PUBLISHER_LOGIN = "graalvmbot"
+BENCHMARK_PUBLICATION_TASK_TYPE = "code-coverage-benchmark-result"
+SUPPORTED_FORGE_REVIEW_TASK_TYPES = {
+    "library-new-request",
+    "library-update-request",
+    "fixes-javac-fail",
+    "fixes-java-run-fail",
+    "fixes-native-image-run-fail",
+    "not-for-native-image",
+    BENCHMARK_PUBLICATION_TASK_TYPE,
+}
+LOCAL_REVIEW_CLOSE_MARKER = "<!-- forge-local-review-close -->"
 # The GraalVM lanes are named once in `host_requirements`, in this order.
 DEV_GRAALVM_ENV_VAR, POST_GENERATION_GRAALVM_ENV_VAR, LATEST_EA_GRAALVM_ENV_VAR = ISSUE_GRAALVM_ENV_VARS
 FORGE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -2198,6 +2220,12 @@ def get_pull_request_state(pr_number: int) -> dict:
           number
           url
           body
+          author {{
+            login
+          }}
+          headRepository {{
+            nameWithOwner
+          }}
           headRefOid
           headRefName
           isCrossRepository
@@ -2330,66 +2358,123 @@ def has_failed_pull_request_ci(pr: dict) -> bool:
     return ci_state in FAILED_CI_STATES
 
 
-def has_trusted_local_review_attestation(pull_request: dict) -> bool:
-    """Return whether the current PR head has the trusted local-review check.
-
-    §FS-automated-pr-review
-    """
-    head_sha = pull_request.get("headRefOid")
-    status_check_rollup = pull_request.get("statusCheckRollup")
-    contexts = (
-        status_check_rollup.get("contexts")
-        if isinstance(status_check_rollup, dict)
-        else None
+def _load_trusted_publisher_module(reachability_metadata_path: str) -> Any:
+    """Load the default-branch publication validator used by Actions."""
+    publisher_path = os.path.join(
+        reachability_metadata_path,
+        ".github",
+        "scripts",
+        "forge_pr_publisher",
+        "publisher.py",
     )
-    nodes = contexts.get("nodes") if isinstance(contexts, dict) else None
-    if not isinstance(head_sha, str) or not head_sha or not isinstance(nodes, list):
-        return False
-
-    for check_run in nodes:
-        if not isinstance(check_run, dict):
-            continue
-        check_suite = check_run.get("checkSuite")
-        if not isinstance(check_suite, dict):
-            continue
-        app = check_suite.get("app")
-        commit = check_suite.get("commit")
-        workflow_run = check_suite.get("workflowRun")
-        if not all(isinstance(value, dict) for value in (app, commit, workflow_run)):
-            continue
-        workflow = workflow_run.get("workflow")
-        workflow_file = workflow_run.get("file")
-        if not isinstance(workflow, dict) or not isinstance(workflow_file, dict):
-            continue
-        if (
-            check_run.get("__typename") == "CheckRun"
-            and check_run.get("name") == LOCAL_REVIEW_ATTESTATION_CHECK_NAME
-            and check_run.get("status") == "COMPLETED"
-            and check_run.get("conclusion") == "SUCCESS"
-            and commit.get("oid") == head_sha
-            and app.get("slug") == GITHUB_ACTIONS_APP_SLUG
-            and workflow_run.get("event") == "push"
-            and workflow.get("name") == FORGE_BRANCH_READY_WORKFLOW_NAME
-            and workflow_file.get("path") == FORGE_BRANCH_READY_WORKFLOW_PATH
-        ):
-            return True
-    return False
+    module_name = "_forge_trusted_pr_publisher"
+    existing = sys.modules.get(module_name)
+    if existing is not None and getattr(existing, "__file__", None) == publisher_path:
+        return existing
+    spec = importlib.util.spec_from_file_location(module_name, publisher_path)
+    if spec is None or spec.loader is None:
+        raise RuntimeError("Trusted Forge publisher module is unavailable")
+    module = importlib.util.module_from_spec(spec)
+    sys.modules[module_name] = module
+    spec.loader.exec_module(module)
+    return module
 
 
-def approve_pull_request_from_local_review_attestation(pull_request: dict) -> None:
-    """Approve the exact attested PR head without launching a review agent.
+def validate_pull_request_publication(
+        pull_request: dict,
+        reachability_metadata_path: str,
+) -> Any:
+    """Validate the trusted descriptor on the exact current PR head.
 
     §FS-automated-pr-review
     """
     pr_number = pull_request.get("number")
     head_sha = pull_request.get("headRefOid")
-    if not isinstance(pr_number, int) or not isinstance(head_sha, str) or not head_sha:
-        print(
-            f"ERROR: Missing head metadata for attested PR #{pr_number}.",
-            file=sys.stderr,
-        )
-        raise RuntimeError(f"Missing head metadata for attested PR #{pr_number}")
+    head_branch = pull_request.get("headRefName")
+    head_repository = pull_request.get("headRepository")
+    author = pull_request.get("author")
+    if (
+            not isinstance(pr_number, int)
+            or not isinstance(head_sha, str)
+            or not head_sha
+            or not isinstance(head_branch, str)
+            or not head_branch.startswith("ai/")
+    ):
+        raise ValueError(f"PR #{pr_number} has no eligible exact upstream ai/** head")
+    if (
+            pull_request.get("isCrossRepository")
+            or not isinstance(head_repository, dict)
+            or head_repository.get("nameWithOwner") != REPO
+    ):
+        raise ValueError(f"PR #{pr_number} head repository is not {REPO}")
+    if not isinstance(author, dict) or author.get("login") != TRUSTED_FORGE_PUBLISHER_LOGIN:
+        raise ValueError(f"PR #{pr_number} was not created by the trusted Forge publisher")
+    if subprocess.run(
+            ["git", "check-ref-format", "--branch", head_branch],
+            cwd=reachability_metadata_path,
+            check=False,
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+    ).returncode != 0:
+        raise ValueError(f"PR #{pr_number} head branch is not a valid git ref")
 
+    run_git_transport(
+        ["fetch", "--quiet", "origin", DEFAULT_WORKTREE_BASE_REF],
+        cwd=reachability_metadata_path,
+    )
+    run_git_transport(
+        [
+            "fetch", "--quiet", "origin",
+            f"+refs/heads/{head_branch}:refs/remotes/origin/{head_branch}",
+        ],
+        cwd=reachability_metadata_path,
+    )
+    producer_parts = head_branch.split("/", 2)
+    if len(producer_parts) != 3 or not producer_parts[1]:
+        raise ValueError(f"PR #{pr_number} head branch does not name a producer")
+    publisher = _load_trusted_publisher_module(reachability_metadata_path)
+    with contextlib.chdir(reachability_metadata_path):
+        validated = publisher.validate_publication(
+            head_sha=head_sha,
+            branch=head_branch,
+            actor=producer_parts[1],
+            repository=REPO,
+        )
+
+    descriptor = validated.descriptor
+    publication_id = descriptor.get("publication_id")
+    body = pull_request.get("body")
+    trailer = f"Forge-Publication-ID: {publication_id}"
+    if not isinstance(body, str) or trailer not in body.splitlines():
+        raise ValueError(f"PR #{pr_number} does not carry its trusted publication identity")
+    if descriptor.get("task_type") not in SUPPORTED_FORGE_REVIEW_TASK_TYPES:
+        raise ValueError(f"PR #{pr_number} descriptor task is not eligible for Forge review")
+    return validated
+
+
+def publication_review_disposition(validated: Any) -> tuple[str, str | None]:
+    """Return the exact-head descriptor decision executed by Forge."""
+    descriptor = validated.descriptor
+    if descriptor.get("task_type") == BENCHMARK_PUBLICATION_TASK_TYPE:
+        return "approved", None
+    review = descriptor.get("local_review")
+    if not isinstance(review, dict):
+        raise ValueError("Generated publication descriptor has no local review")
+    decision = review.get("decision")
+    action = review.get("action")
+    if decision == "approved" and action is None:
+        return decision, None
+    if decision == "rejected" and action in {"human-intervention", "close"}:
+        return decision, str(action)
+    raise ValueError("Publication descriptor has an invalid local-review disposition")
+
+
+def approve_pull_request_from_descriptor(pull_request: dict) -> None:
+    """Approve the exact descriptor-validated PR head without an agent."""
+    pr_number = pull_request.get("number")
+    head_sha = pull_request.get("headRefOid")
+    if not isinstance(pr_number, int) or not isinstance(head_sha, str) or not head_sha:
+        raise RuntimeError(f"Missing head metadata for descriptor-approved PR #{pr_number}")
     gh(
         "api",
         "--method",
@@ -2400,8 +2485,49 @@ def approve_pull_request_from_local_review_attestation(pull_request: dict) -> No
         "-f",
         "event=APPROVE",
         "-f",
-        f"body=Approved from the trusted local review attestation for commit {head_sha}.",
+        f"body=Approved from the authoritative local review for commit {head_sha}.",
     )
+
+
+def reconcile_rejected_publication(
+        pull_request: dict,
+        validated: Any,
+) -> None:
+    """Apply the exact rejected action idempotently without waiting for CI."""
+    decision, action = publication_review_disposition(validated)
+    if decision != "rejected":
+        return
+    pr_number = pull_request.get("number")
+    if not isinstance(pr_number, int):
+        raise RuntimeError("Rejected publication is missing its pull request number")
+    if action == "human-intervention":
+        add_pull_request_label(pr_number, LABEL_HUMAN_INTERVENTION)
+        print(f"[Kept rejected PR #{pr_number} open for human intervention.]")
+        return
+    if action != "close":
+        raise ValueError(f"Rejected publication has unsupported action {action!r}")
+
+    review = validated.descriptor["local_review"]
+    if not any(
+            LOCAL_REVIEW_CLOSE_MARKER in str(comment.get("body") or "")
+            for comment in get_issue_comments(pr_number)
+    ):
+        post_issue_comment(
+            pr_number,
+            "\n\n".join([
+                "This pull request is closed because of the local reviewer's decision.",
+                f"**{review['finding_title']}**\n\n{review['finding_body']}",
+                str(review["review_comment"]),
+                LOCAL_REVIEW_CLOSE_MARKER,
+            ]),
+        )
+    gh("pr", "close", str(pr_number), "--repo", REPO)
+    issue_number = validated.descriptor.get("issue_number")
+    if not isinstance(issue_number, int):
+        raise RuntimeError(f"Rejected close PR #{pr_number} has no linked issue")
+    add_issue_label(issue_number, LABEL_LIBRARY_UNSUPPORTED_VERSION)
+    close_issue(issue_number, f"local review rejected PR #{pr_number} as unsupported")
+    print(f"[Closed rejected PR #{pr_number} and unsupported issue #{issue_number}.]")
 
 
 def get_pull_request_workflow_runs(head_sha: str) -> list[dict]:
@@ -2845,17 +2971,320 @@ def resolve_pull_request_merge_conflict(
         remove_worktree(reachability_metadata_path, worktree_path)
 
 
-def reconcile_failed_ci_pull_request(pull_request: dict) -> None:
-    """Rerun failed CI below attempt three, otherwise skip review.
+def _ci_repair_changed_paths(worktree_path: str) -> list[str]:
+    """Return tracked and untracked paths changed by the CI-repair agent."""
+    tracked = run_checked_command(
+        ["git", "diff", "--name-only", "--diff-filter=ACMRTD", "HEAD"],
+        worktree_path,
+        "Failed to list CI-repair changes",
+    ).stdout.splitlines()
+    untracked = run_checked_command(
+        ["git", "ls-files", "--others", "--exclude-standard"],
+        worktree_path,
+        "Failed to list untracked CI-repair files",
+    ).stdout.splitlines()
+    return sorted(set(path for path in [*tracked, *untracked] if path))
 
-    §FS-automated-pr-review
-    """
+
+def _read_infrastructure_issue_evidence(verdict_path: str) -> dict[str, str] | None:
+    """Read optional structured shared-infrastructure evidence from a verdict."""
+    try:
+        with open(verdict_path, "r", encoding="utf-8") as verdict_file:
+            payload = json.load(verdict_file)
+    except (OSError, json.JSONDecodeError):
+        return None
+    evidence = payload.get("infrastructure_issue") if isinstance(payload, dict) else None
+    if not isinstance(evidence, dict):
+        return None
+    title = evidence.get("title")
+    body = evidence.get("body")
+    if not isinstance(title, str) or not title.strip():
+        return None
+    if not isinstance(body, str) or not body.strip():
+        return None
+    return {"title": title.strip(), "body": body.strip()}
+
+
+def ensure_infrastructure_issue(evidence: dict[str, str]) -> tuple[int, str]:
+    """Find one exact-title open infrastructure issue or create it."""
+    candidates = gh_json(
+        "issue", "list",
+        "--repo", REPO,
+        "--state", "open",
+        "--search", f"{evidence['title']} in:title",
+        "--limit", "100",
+        "--json", "number,title,url",
+    )
+    if not isinstance(candidates, list):
+        raise RuntimeError("Infrastructure issue search returned invalid data")
+    for candidate in candidates:
+        if isinstance(candidate, dict) and candidate.get("title") == evidence["title"]:
+            return int(candidate["number"]), str(candidate["url"])
+    created = gh_json(
+        "api",
+        "--method", "POST",
+        f"/repos/{REPO}/issues",
+        "-f", f"title={evidence['title']}",
+        "-f", f"body={evidence['body']}",
+    )
+    if not isinstance(created, dict):
+        raise RuntimeError("Infrastructure issue creation returned invalid data")
+    return int(created["number"]), str(created["html_url"])
+
+
+def build_ci_repair_prompt(
+        pr_number: int,
+        descriptor: dict[str, Any],
+        evidence_path: str,
+        verdict_path: str,
+) -> str:
+    """Build the failed-CI repair and authoritative re-review prompt."""
+    task_type = str(descriptor["task_type"])
+    skill = REVIEW_SKILLS_BY_TASK_TYPE.get(task_type)
+    skill_instruction = (
+        f"Apply every relevant enumerated rule in skills/{skill}/SKILL.md."
+        if skill is not None
+        else "This is a benchmark-result publication; preserve its measured result."
+    )
+    return "\n".join([
+        f"Repair failed required CI for pull request #{pr_number}.",
+        f"Read the exact descriptor and failed-check evidence from {evidence_path}.",
+        "Use gh pr checks and gh run view when more failure output is needed.",
+        skill_instruction,
+        "Apply the first matching disposition in §root/FS-contribution-contract.5.",
+        "",
+        "Edit only the contribution's own library files. Do not edit shared build logic, "
+        "the test harness, workflows, another coordinate, the publication descriptor, or "
+        "forge/FINDINGS.md. Run the failed checks needed to verify your repair. Then review "
+        "the complete resulting diff with the same responsibility as local_review.",
+        "",
+        f"Write exactly one JSON verdict to {verdict_path}. Use decision approved and omit "
+        "action only when the resulting tree is ready. Otherwise use decision rejected with "
+        "action human-intervention or close and a non-empty finding. For a shared repository "
+        "defect, also add infrastructure_issue with non-empty title and body evidence.",
+        json.dumps({
+            "decision": "approved",
+            "review_comment": "What failed, what you checked, and the resulting decision.",
+            "finding_title": "Reusable finding title, or empty when there was no finding.",
+            "finding_body": "Failure evidence and rule, or empty when there was no finding.",
+            "fix_note": "What you changed and how you verified it.",
+        }, indent=2),
+        "Do not commit or push; Forge owns the descriptor, findings ledger, commit, and push.",
+    ])
+
+
+def repair_failed_ci_pull_request(
+        pull_request: dict,
+        validated: Any,
+        reachability_metadata_path: str,
+) -> bool:
+    """Repair exhausted CI, rewrite the exact-head decision, and push once."""
+    pr_number = pull_request.get("number")
+    head_sha = pull_request.get("headRefOid")
+    head_branch = pull_request.get("headRefName")
+    if (
+            not isinstance(pr_number, int)
+            or not isinstance(head_sha, str)
+            or not isinstance(head_branch, str)
+    ):
+        raise RuntimeError("Failed-CI repair requires complete pull request head metadata")
+
+    worktree_root = os.path.join(
+        FORGE_DIR, "local_repositories", "forge_ci_repair_worktrees",
+    )
+    os.makedirs(worktree_root, exist_ok=True)
+    worktree_path = os.path.join(
+        worktree_root, f"ci-repair-pr-{pr_number}-{uuid.uuid4().hex[:8]}",
+    )
+    create_detached_worktree(
+        reachability_metadata_path,
+        worktree_path,
+        head_sha,
+        f"Failed to create CI-repair worktree for PR #{pr_number}",
+    )
+    try:
+        evidence_dir = os.path.join(worktree_path, f".forge-ci-repair-{uuid.uuid4().hex[:8]}")
+        os.makedirs(evidence_dir)
+        evidence_path = os.path.join(evidence_dir, "evidence.json")
+        verdict_path = os.path.join(evidence_dir, "verdict.json")
+        with open(evidence_path, "w", encoding="utf-8") as evidence_file:
+            json.dump(
+                {
+                    "pull_request": {
+                        "number": pr_number,
+                        "head_sha": head_sha,
+                        "head_branch": head_branch,
+                    },
+                    "descriptor": validated.descriptor,
+                    "failed_checks": (
+                        pull_request.get("statusCheckRollup", {})
+                        .get("contexts", {})
+                        .get("nodes", [])
+                    ),
+                },
+                evidence_file,
+                indent=2,
+                sort_keys=True,
+            )
+            evidence_file.write("\n")
+
+        selection = get_analysis_agent()
+        trusted_environment = dict(os.environ)
+        trusted_environment["_FORGE_AGENT_ALLOW_GITHUB_ACCESS"] = "1"
+        result = analysis_agent_run(
+            working_dir=worktree_path,
+            context=build_ci_repair_prompt(
+                pr_number, validated.descriptor, evidence_path, verdict_path,
+            ),
+            task_type="pr-ci-repair",
+            library=str(validated.descriptor["library"]["coordinates"]),
+            timeout=REVIEW_TIMEOUT_SECONDS,
+            environment=trusted_environment,
+        )
+        log_path = display_log_path(result.log_path)
+        verdict = _read_verdict(verdict_path) if result.return_code == 0 else None
+        infrastructure_evidence = _read_infrastructure_issue_evidence(verdict_path)
+        shutil.rmtree(evidence_dir, ignore_errors=True)
+        changed_paths = _ci_repair_changed_paths(worktree_path)
+
+        if verdict is None:
+            verdict = LocalReviewVerdict(
+                decision="rejected",
+                action="human-intervention",
+                review_comment=f"Forge could not obtain a valid CI-repair verdict. Log: {log_path}",
+                finding_title="CI repair reviewer unavailable",
+                finding_body="The failed-CI repair turn did not return a readable decision.",
+                fix_note="",
+            )
+        elif verdict.decision == "approved" and not changed_paths:
+            verdict = LocalReviewVerdict(
+                decision="rejected",
+                action="human-intervention",
+                review_comment=verdict.review_comment,
+                finding_title="Failed CI was not repaired",
+                finding_body="The CI-repair reviewer approved without changing the failing head.",
+                fix_note=verdict.fix_note,
+            )
+
+        library = validated.descriptor["library"]
+        allowed_prefixes = (
+            f"metadata/{library['group']}/{library['artifact']}/",
+            f"tests/src/{library['group']}/{library['artifact']}/",
+            f"stats/{library['group']}/{library['artifact']}/",
+        )
+        invalid_paths = [
+            path for path in changed_paths
+            if not path.startswith(allowed_prefixes)
+        ]
+        if invalid_paths:
+            verdict = LocalReviewVerdict(
+                decision="rejected",
+                action="human-intervention",
+                review_comment="The attempted CI repair changed files outside the contribution.",
+                finding_title="CI repair crossed the contribution boundary",
+                finding_body=(
+                    "The repair attempted to change shared or unrelated paths: "
+                    + ", ".join(invalid_paths)
+                ),
+                fix_note="The out-of-scope edits were discarded.",
+            )
+
+        if verdict.decision == "rejected":
+            subprocess.run(["git", "reset", "--hard", head_sha], cwd=worktree_path, check=True)
+            subprocess.run(["git", "clean", "-fd"], cwd=worktree_path, check=True)
+            changed_paths = []
+            if infrastructure_evidence is not None:
+                issue_number, issue_url = ensure_infrastructure_issue(infrastructure_evidence)
+                verdict = LocalReviewVerdict(
+                    decision=verdict.decision,
+                    action=verdict.action,
+                    review_comment=verdict.review_comment,
+                    finding_title=verdict.finding_title,
+                    finding_body=(
+                        f"{verdict.finding_body.rstrip()}\n\n"
+                        f"Infrastructure issue: {issue_url} (#{issue_number})"
+                    ),
+                    fix_note=verdict.fix_note,
+                )
+
+        if verdict.finding_title:
+            _record_finding(
+                repo_path=worktree_path,
+                coordinates=str(library["coordinates"]),
+                descriptor_input=SimpleNamespace(
+                    issue_number=validated.descriptor.get("issue_number"),
+                ),
+                title=verdict.finding_title,
+                body=verdict.finding_body,
+            )
+
+        descriptor = json.loads(json.dumps(validated.descriptor))
+        descriptor["local_review"] = {
+            "decision": verdict.decision,
+            "review_comment": verdict.review_comment,
+            "finding_title": verdict.finding_title,
+            "finding_body": verdict.finding_body,
+            "fix_note": verdict.fix_note,
+            "model": selection.model,
+            "session_log_path": log_path,
+            "changed_paths": changed_paths[:200],
+        }
+        if verdict.action is not None:
+            descriptor["local_review"]["action"] = verdict.action
+        validate_publication_descriptor(worktree_path, descriptor)
+        descriptor_path = os.path.join(worktree_path, validated.descriptor_path)
+        with open(descriptor_path, "w", encoding="utf-8") as descriptor_file:
+            json.dump(descriptor, descriptor_file, indent=2, sort_keys=True)
+            descriptor_file.write("\n")
+        subprocess.run(["git", "add", "-A"], cwd=worktree_path, check=True)
+        subprocess.run(
+            ["git", "commit", "-m", f"Repair failed CI for PR #{pr_number}"],
+            cwd=worktree_path,
+            check=True,
+        )
+        run_git_transport(
+            [
+                "push", "origin", f"HEAD:refs/heads/{head_branch}",
+                f"--force-with-lease=refs/heads/{head_branch}:{head_sha}",
+            ],
+            cwd=worktree_path,
+        )
+        print(
+            f"[Pushed CI-repair decision for PR #{pr_number}; "
+            "the new exact head will be evaluated on the next pass.]"
+        )
+        if verdict.decision == "rejected":
+            rejected_marker = f"<!-- forge-ci-repair-rejected:{head_sha} -->"
+            if not any(
+                    rejected_marker in str(comment.get("body") or "")
+                    for comment in get_issue_comments(pr_number)
+            ):
+                post_issue_comment(
+                    pr_number,
+                    f"Forge could not fix the failed CI by changing this contribution.\n\n"
+                    f"{verdict.review_comment}\n\n{rejected_marker}",
+                )
+            reconcile_rejected_publication(
+                pull_request,
+                SimpleNamespace(descriptor=descriptor),
+            )
+        return True
+    finally:
+        cleanup_review_workspace(
+            reachability_metadata_path, worktree_path, pr_number,
+        )
+
+
+def reconcile_failed_ci_pull_request(
+        pull_request: dict,
+        validated: Any,
+        reachability_metadata_path: str,
+) -> None:
+    """Rerun failed jobs below the limit, then invoke scoped CI repair."""
     pr_number = pull_request.get("number")
     head_sha = pull_request.get("headRefOid")
     if not isinstance(pr_number, int) or not isinstance(head_sha, str) or not head_sha:
-        print(f"ERROR: Missing head metadata for failed-CI PR #{pr_number}.", file=sys.stderr)
         raise RuntimeError(f"Missing head metadata for failed-CI PR #{pr_number}")
-
     if not has_failed_pull_request_ci(pull_request):
         print(f"[Skipping failed-CI follow-up for PR #{pr_number}: CI state changed.]")
         return
@@ -2864,13 +3293,18 @@ def reconcile_failed_ci_pull_request(pull_request: dict) -> None:
     if rerun_count:
         print(
             f"[Reran failed GitHub Actions job(s) in {rerun_count} workflow run(s) "
-            f"for PR #{pr_number}; review waits for successful CI.]"
+            f"for PR #{pr_number}; waiting for the completed rerun.]"
         )
         return
 
     print(
-        f"[Skipping review for PR #{pr_number}: CI failed and no eligible "
-        "GitHub Actions workflow runs were found to rerun.]"
+        f"[CI retries are exhausted for approved PR #{pr_number}; "
+        "starting contribution-scoped CI repair.]"
+    )
+    repair_failed_ci_pull_request(
+        pull_request,
+        validated,
+        reachability_metadata_path,
     )
 
 
@@ -2893,24 +3327,10 @@ def reconcile_reviewed_pull_request(
         )
 
         if is_pull_request_conflicting(pr):
-            if not resolve_pull_request_merge_conflict(
-                    pr,
-                    reachability_metadata_path or get_repo_root(),
-            ):
-                add_pull_request_label(pr_number, LABEL_HUMAN_INTERVENTION)
-                print(
-                    f"[Added label '{LABEL_HUMAN_INTERVENTION}' to conflicting "
-                    f"PR #{pr_number}; git could not refresh its head without judgment.]"
-                )
+            print(f"[Skipping merge for PR #{pr_number}: the head is now conflicting.]")
             return True
-
         if has_failed_pull_request_ci(pr):
-            reconcile_failed_ci_pull_request(pr)
-            return True
-
-        if review_decision == "CHANGES_REQUESTED":
-            add_pull_request_label(pr_number, LABEL_HUMAN_INTERVENTION)
-            print(f"[Added label '{LABEL_HUMAN_INTERVENTION}' to PR #{pr_number}: {pr_url}]")
+            print(f"[Skipping merge for PR #{pr_number}: CI changed to a failed state.]")
             return True
 
         if review_decision != "APPROVED":
@@ -3083,172 +3503,73 @@ def extract_codex_token_usage_summary(log_path: str, model_name: str | None = No
     )
 
 
-def get_pull_request_discussion(pr_number: int) -> dict:
-    """Fetch issue comments and submitted reviews for the target pull request."""
-    return gh_json(
-        "pr",
-        "view",
-        str(pr_number),
-        "--repo",
-        REPO,
-        "--json",
-        "comments,reviews",
+
+def _process_descriptor_pull_request(
+        pull_request: dict,
+        reachability_metadata_path: str,
+        maintainer_override: bool = False,
+) -> None:
+    """Execute one exact-head publication decision without semantic re-review."""
+    pr_number = pull_request.get("number")
+    validated = validate_pull_request_publication(
+        pull_request,
+        reachability_metadata_path,
     )
+    decision, action = publication_review_disposition(validated)
+    if decision == "rejected" and not maintainer_override:
+        reconcile_rejected_publication(pull_request, validated)
+        return
 
+    if is_pull_request_conflicting(pull_request):
+        if not resolve_pull_request_merge_conflict(
+                pull_request,
+                reachability_metadata_path,
+        ):
+            add_pull_request_label(int(pr_number), LABEL_HUMAN_INTERVENTION)
+            print(
+                f"[Added label '{LABEL_HUMAN_INTERVENTION}' to conflicting "
+                f"PR #{pr_number}; git could not refresh its head without judgment.]"
+            )
+        return
 
-def format_structured_body(body: str | None) -> str:
-    """Format a multiline comment body for terminal output."""
-    normalized = (body or "").strip()
-    if not normalized:
-        return "  Body: <empty>"
-    return "  Body:\n" + "\n".join(f"    {line}" for line in normalized.splitlines())
-
-
-def print_pull_request_discussion(pr_number: int) -> None:
-    """Print current pull request comments and reviews in a structured format."""
-    try:
-        discussion = get_pull_request_discussion(pr_number)
-    except Exception as exc:
+    if (
+            pull_request_has_label(pull_request, LABEL_HUMAN_INTERVENTION)
+            and not maintainer_override
+    ):
         print(
-            f"ERROR: Failed to fetch comments for pull request #{pr_number}: {exc}",
-            file=sys.stderr,
+            f"[Skipping PR #{pr_number}: it remains labeled "
+            f"'{LABEL_HUMAN_INTERVENTION}'.]"
         )
         return
 
-    comments = discussion.get("comments")
-    reviews = discussion.get("reviews")
-    comment_list = comments if isinstance(comments, list) else []
-    review_list = reviews if isinstance(reviews, list) else []
-
-    print(f"[PR discussion for #{pr_number}]")
-    print(f"  Issue comments: {len(comment_list)}")
-    if comment_list:
-        for index, comment in enumerate(comment_list, start=1):
-            author = comment.get("author", {}) if isinstance(comment, dict) else {}
-            author_login = author.get("login", "unknown") if isinstance(author, dict) else "unknown"
-            created_at = comment.get("createdAt", "unknown") if isinstance(comment, dict) else "unknown"
-            body = comment.get("body", "") if isinstance(comment, dict) else ""
-            print(f"  Comment {index}:")
-            print(f"    Author: {author_login}")
-            print(f"    Created: {created_at}")
-            print(format_structured_body(body))
-    else:
-        print("  Comment details: none")
-
-    print(f"  Reviews: {len(review_list)}")
-    if review_list:
-        for index, review in enumerate(review_list, start=1):
-            author = review.get("author", {}) if isinstance(review, dict) else {}
-            author_login = author.get("login", "unknown") if isinstance(author, dict) else "unknown"
-            submitted_at = review.get("submittedAt", "unknown") if isinstance(review, dict) else "unknown"
-            state = review.get("state", "unknown") if isinstance(review, dict) else "unknown"
-            body = review.get("body", "") if isinstance(review, dict) else ""
-            print(f"  Review {index}:")
-            print(f"    Author: {author_login}")
-            print(f"    State: {state}")
-            print(f"    Submitted: {submitted_at}")
-            print(format_structured_body(body))
-    else:
-        print("  Review details: none")
-
-
-def review_pull_request(
-        pr_number: int,
-        reachability_metadata_path: str,
-        pr_url: str | None = None,
-        coordinates: str | None = None,
-) -> bool:
-    """Run the trusted analysis agent to review and submit a pull-request review.
-
-    §FS-automated-pr-review §FS-forge-agent-runtime-selection
-    """
-    if pr_url is None:
-        pr_url = get_pull_request_url(pr_number)
-
-    trusted_agent_environment: dict[str, str] = dict(os.environ)
-    trusted_agent_environment["_FORGE_AGENT_ALLOW_GITHUB_ACCESS"] = "1"
-    review_worktree_path: str = create_review_workspace(reachability_metadata_path, pr_number)
-    prompt: str = build_review_prompt(pr_number)
-    print(
-        f"\n[Reviewing PR #{pr_number} with the configured analysis agent "
-        "in an isolated worktree; the agent will submit the review.]"
-    )
-    print(f"[PR link: {pr_url}]")
-    try:
-        result = analysis_agent_run(
-            working_dir=review_worktree_path,
-            context=prompt,
-            task_type="pr-review",
-            library=coordinates or f"pr-{pr_number}",
-            timeout=REVIEW_TIMEOUT_SECONDS,
-            environment=trusted_agent_environment,
-        )
-        log_path_display: str = display_log_path(result.log_path)
-        print(f"[Review log: {log_path_display}]")
-        if result.return_code != 0:
-            failure: str = (
-                f"timed out after {REVIEW_TIMEOUT_SECONDS} seconds"
-                if result.timed_out
-                else f"failed with exit code {result.return_code}"
-            )
+    if maintainer_override:
+        dismissed_count = dismiss_requested_changes_reviews(int(pr_number))
+        if dismissed_count:
             print(
-                (
-                    f"ERROR: Pull request review {failure} for PR #{pr_number}. "
-                    f"PR: {pr_url}. Log: {log_path_display}."
-                ),
-                file=sys.stderr,
+                f"[Dismissed {dismissed_count} requested-changes review(s) "
+                f"on PR #{pr_number}.]"
             )
-            return False
-
-        final_findings: str = result.response.strip()
-        print(f"[Finished review for PR #{pr_number}: {pr_url}]")
-        if final_findings:
-            print(f"[Final findings for PR #{pr_number}]\n{final_findings}")
-        else:
-            print(f"[Final findings for PR #{pr_number}: unavailable in {log_path_display}]")
-        print_pull_request_discussion(pr_number)
-        return True
-    except (
-        GitHubError,
-        GitHubRateLimitExceeded,
-        OSError,
-        RuntimeError,
-        subprocess.CalledProcessError,
-    ) as exc:
-        print(
-            f"ERROR: PR review orchestration failed for PR #{pr_number}: {exc}",
-            file=sys.stderr,
-        )
-        return False
-    finally:
-        cleanup_review_workspace(reachability_metadata_path, review_worktree_path, pr_number)
-
-
-def build_review_prompt(pr_number: int) -> str:
-    """Build the prompt for a trusted analysis-agent pull-request review."""
-    return (
-        f"Review pull request #{pr_number} in the current GitHub repository and submit the review "
-        f"directly on GitHub for exactly PR #{pr_number}. The pull request is already checked out "
-        "in an isolated detached worktree with a fresh `origin/master` ref. Use the applicable "
-        "checked-in review skill selected by the PR label. Use `gh pr view` and `gh pr checks` for "
-        "the PR description, labels, discussion, reviews, and checks. Inspect the checked-out "
-        "change against `origin/master` with `git diff --name-status origin/master...HEAD`, "
-        "`git diff --stat origin/master...HEAD`, and targeted diffs for only the files and hunks "
-        "needed by the review. Do not request or print the entire patch in one command. During "
-        "normal review, do not run `gh pr checkout`, `git checkout`, or `git switch`, and do not "
-        "write files. Exception: if the PR changes `metadata/<group>/<artifact>/index.json`, run "
-        "final index validation against current `origin/master` before approving. If validation "
-        "fails because tested versions are in the wrong metadata bucket or duplicated across "
-        "buckets, use the `fix-index-file-inconsistencies` skill. In that exception path, you may "
-        "check out the PR branch, fix only the required `index.json` files, commit the repair, and "
-        "push it to the PR branch before submitting the GitHub review. Only request changes for a "
-        "concrete violation of an enumerated rule in the applicable review skill. Do not block on "
-        "self-formed test-quality, test-scope, or end-user-behavior judgments that are not backed "
-        "by a specific enumerated rule. If you cannot inspect the PR metadata, applicable review "
-        "skill, or checked-out changes, do not submit a review and report the blocking failure "
-        "clearly. Otherwise submit either an approval or a requested-changes review with a concise "
-        "summary of what you checked and concluded."
+    print(
+        f"[Approving descriptor-validated PR #{pr_number} at "
+        f"{pull_request['headRefOid']}; no semantic review agent launched.]"
     )
+    approve_pull_request_from_descriptor(pull_request)
+
+    if has_failed_pull_request_ci(pull_request):
+        reconcile_failed_ci_pull_request(
+            pull_request,
+            validated,
+            reachability_metadata_path,
+        )
+        return
+    if not has_successful_pull_request_ci(pull_request):
+        print(f"[Waiting for CI to complete on approved PR #{pr_number}.]")
+        return
+    if not reconcile_reviewed_pull_request(
+            int(pr_number),
+            reachability_metadata_path,
+    ):
+        raise RuntimeError(f"Failed merge reconciliation for PR #{pr_number}")
 
 
 def process_pull_requests_with_label(
@@ -3257,209 +3578,69 @@ def process_pull_requests_with_label(
         reachability_metadata_path: str,
         authenticated_user: str,
 ) -> None:
-    """Process labeled PRs, launching review agents only after successful CI.
+    """Execute validated local-review decisions for one labeled PR queue.
 
     §FS-automated-pr-review
     """
-    state_cache: dict[int, dict] = {}
+    del authenticated_user
     fetch_limit = max(limit, 20)
     fixed_pull_requests = get_pull_requests_with_labels(
         [label, LABEL_HUMAN_INTERVENTION_FIXED],
         fetch_limit,
     )
-    fixed_selection = select_review_pull_requests(
-        fixed_pull_requests,
-        authenticated_user,
-        limit,
-        state_cache,
-        reachability_metadata_path,
-    )
-    while len(fixed_selection.ready) < limit and len(fixed_pull_requests) == fetch_limit:
-        print(
-            f"[Found {len(fixed_selection.ready)} eligible "
-            f"'{LABEL_HUMAN_INTERVENTION_FIXED}' PR(s) after filtering "
-            f"{len(fixed_pull_requests)} fetched PR(s); "
-            "fetching more.]"
-        )
-        fetch_limit *= 2
-        fixed_pull_requests = get_pull_requests_with_labels(
-            [label, LABEL_HUMAN_INTERVENTION_FIXED],
-            fetch_limit,
-        )
-        fixed_selection = select_review_pull_requests(
-            fixed_pull_requests,
-            authenticated_user,
-            limit,
-            state_cache,
-            reachability_metadata_path,
-        )
-
-    failed_reviews: list[int] = []
-    for pull_request in fixed_selection.failed:
-        try:
-            reconcile_failed_ci_pull_request(pull_request)
-        except Exception as exc:
-            pr_number = pull_request.get("number")
-            print(
-                f"ERROR: Failed CI follow-up for PR #{pr_number}: {exc!r}",
-                file=sys.stderr,
-            )
-            if isinstance(pr_number, int):
-                failed_reviews.append(pr_number)
-
-    fixed_pull_requests_to_merge = fixed_selection.ready[:limit]
-    if fixed_selection.waiting_count:
-        print(
-            f"[Skipping {fixed_selection.waiting_count} "
-            f"'{LABEL_HUMAN_INTERVENTION_FIXED}' candidate PR(s) while CI is pending.]"
-        )
-    for pull_request in fixed_pull_requests_to_merge:
-        pr_number = pull_request["number"]
-        print(
-            f"[Merging PR #{pr_number} labeled "
-            f"'{LABEL_HUMAN_INTERVENTION_FIXED}' without automated review.]"
-        )
-        try:
-            dismissed_count = dismiss_requested_changes_reviews(pr_number)
-            if dismissed_count:
-                print(f"[Dismissed {dismissed_count} requested-changes review(s) on PR #{pr_number}.]")
-            gh(
-                "pr",
-                "review",
-                str(pr_number),
-                "--repo",
-                REPO,
-                "--approve",
-                "--body",
-                f"Approved after manual follow-up marked this PR as '{LABEL_HUMAN_INTERVENTION_FIXED}'.",
-            )
-            pr = get_pull_request_state(pr_number)
-            merge_pull_request(pr, reachability_metadata_path)
-        except Exception as exc:
-            print(
-                f"ERROR: Failed to merge human-intervention-fixed PR #{pr_number}: {exc!r}",
-                file=sys.stderr,
-            )
-            failed_reviews.append(pr_number)
-
-    remaining_limit = limit - len(fixed_pull_requests_to_merge)
-    if remaining_limit <= 0:
-        if failed_reviews:
-            print(
-                f"ERROR: Pull request processing failed for pull request(s): {failed_reviews}",
-                file=sys.stderr,
-            )
-            sys.exit(1)
-        return
-
-    fetch_limit = max(remaining_limit, 20)
-    pull_requests = get_pull_requests_with_label(label, fetch_limit)
-    selection = select_review_pull_requests(
-        pull_requests,
-        authenticated_user,
-        remaining_limit,
-        state_cache,
-        reachability_metadata_path,
-        excluded_labels=(LABEL_HUMAN_INTERVENTION_FIXED,),
-    )
-    while len(selection.ready) < remaining_limit and len(pull_requests) == fetch_limit:
-        print(
-            f"[Found {len(selection.ready)} eligible PR(s) after filtering "
-            f"{len(pull_requests)} fetched PR(s); fetching more.]"
-        )
-        fetch_limit *= 2
-        pull_requests = get_pull_requests_with_label(label, fetch_limit)
-        selection = select_review_pull_requests(
-            pull_requests,
-            authenticated_user,
-            remaining_limit,
-            state_cache,
-            reachability_metadata_path,
-            excluded_labels=(LABEL_HUMAN_INTERVENTION_FIXED,),
-        )
-
-    for pull_request in selection.failed:
-        try:
-            reconcile_failed_ci_pull_request(pull_request)
-        except Exception as exc:
-            pr_number = pull_request.get("number")
-            print(
-                f"ERROR: Failed CI follow-up for PR #{pr_number}: {exc!r}",
-                file=sys.stderr,
-            )
-            if isinstance(pr_number, int):
-                failed_reviews.append(pr_number)
-
-    authored_pull_requests = [
-        pull_request for pull_request in pull_requests
-        if is_authored_by_user(pull_request, authenticated_user)
+    ordinary_pull_requests = get_pull_requests_with_label(label, fetch_limit)
+    fixed_numbers = {
+        pull_request.get("number")
+        for pull_request in fixed_pull_requests
+        if isinstance(pull_request.get("number"), int)
+    }
+    candidates = [
+        *((pull_request, True) for pull_request in fixed_pull_requests),
+        *((pull_request, False) for pull_request in ordinary_pull_requests
+          if pull_request.get("number") not in fixed_numbers),
     ]
-    human_intervention_pull_requests = [
-        pull_request for pull_request in pull_requests
-        if pull_request_has_label(pull_request, LABEL_HUMAN_INTERVENTION)
-    ]
-    filtered_pull_requests = selection.ready[:remaining_limit]
 
-    if authored_pull_requests:
-        print(f"[Skipping {len(authored_pull_requests)} PR(s) authored by {authenticated_user}.]")
-    if human_intervention_pull_requests:
-        print(
-            f"[Skipping {len(human_intervention_pull_requests)} PR(s) labeled "
-            f"'{LABEL_HUMAN_INTERVENTION}'.]"
-        )
-    if selection.waiting_count:
-        print(f"[Skipping {selection.waiting_count} candidate PR(s) while CI is pending.]")
-
-    if not filtered_pull_requests and not fixed_pull_requests_to_merge:
-        print(
-            f"\n[No open pull requests found with label '{label}' that lack the "
-            f"'{LABEL_HUMAN_INTERVENTION}' label, have successful CI, and are not "
-            f"authored by {authenticated_user}.]"
-        )
-        if failed_reviews:
-            print(
-                f"ERROR: Pull request processing failed for pull request(s): {failed_reviews}",
-                file=sys.stderr,
-            )
-            sys.exit(1)
-        return
-
-    for pull_request in filtered_pull_requests:
-        pr_number = pull_request["number"]
-        pr_url = pull_request.get("url") if isinstance(pull_request.get("url"), str) else None
-        pr_title = pull_request.get("title") if isinstance(pull_request.get("title"), str) else ""
-        coordinates = extract_maven_coordinates(pr_title)
-        if has_trusted_local_review_attestation(pull_request):
-            print(
-                f"[Approving PR #{pr_number} from trusted local review attestation "
-                f"on {pull_request['headRefOid']}; no review agent launched.]"
-            )
-            try:
-                approve_pull_request_from_local_review_attestation(pull_request)
-            except Exception as exc:
-                print(
-                    f"ERROR: Failed attested approval for PR #{pr_number}: {exc!r}",
-                    file=sys.stderr,
-                )
-                failed_reviews.append(pr_number)
-                continue
-        elif not review_pull_request(
-                pr_number,
-                reachability_metadata_path,
-                pr_url,
-                coordinates,
-        ):
-            failed_reviews.append(pr_number)
+    state_cache: dict[int, dict] = {}
+    failures: list[int] = []
+    processed = 0
+    for pull_request, maintainer_override in candidates:
+        if processed >= limit:
+            break
+        pr_number = pull_request.get("number")
+        if not isinstance(pr_number, int):
             continue
-        if not reconcile_reviewed_pull_request(pr_number, reachability_metadata_path):
-            failed_reviews.append(pr_number)
+        try:
+            enriched = attach_pull_request_state(pull_request, state_cache)
+            _process_descriptor_pull_request(
+                enriched,
+                reachability_metadata_path,
+                maintainer_override=maintainer_override,
+            )
+            processed += 1
+        except ValueError as error:
+            print(
+                f"[Skipping ineligible PR #{pr_number}: {error}]"
+            )
+        except Exception as error:
+            print(
+                f"ERROR: Failed descriptor-driven processing for PR "
+                f"#{pr_number}: {error!r}",
+                file=sys.stderr,
+            )
+            failures.append(pr_number)
 
-    if failed_reviews:
+    if processed == 0:
         print(
-            f"ERROR: Pull request processing failed for pull request(s): {failed_reviews}",
+            f"\n[No exact-head Forge publications found with label '{label}'.]"
+        )
+    if failures:
+        print(
+            f"ERROR: Pull request processing failed for pull request(s): {failures}",
             file=sys.stderr,
         )
         sys.exit(1)
+
+
 
 
 def set_issue_assignee(issue_number: int, username: str):
@@ -4171,7 +4352,7 @@ def ensure_repo_label_exists(label_name: str, color: str, description: str) -> N
             value for value in [create_result.stdout.strip(), create_result.stderr.strip()] if value
         )
         print(
-            f"ERROR: Failed to ensure label '{label_name}' exists.\n{error_output}",
+            f"ERROR: Failed to ensure label '{label_name}'.\n{error_output}",
             file=sys.stderr,
         )
         create_result.check_returncode()
@@ -4215,6 +4396,9 @@ def add_issue_label(issue_number: int, label_name: str) -> None:
     elif label_name == LABEL_RESUMABLE:
         label_color = RESUMABLE_LABEL_COLOR
         label_description = RESUMABLE_LABEL_DESCRIPTION
+    elif label_name == LABEL_LIBRARY_UNSUPPORTED_VERSION:
+        label_color = LIBRARY_UNSUPPORTED_VERSION_LABEL_COLOR
+        label_description = LIBRARY_UNSUPPORTED_VERSION_LABEL_DESCRIPTION
     ensure_repo_label_exists(
         label_name,
         label_color,
@@ -6236,8 +6420,8 @@ def get_review_queue_configs_from_environment() -> list[ReviewQueueConfig]:
             limit=get_env_non_negative_int("FORGE_LIBRARY_UPDATE_REVIEW_LIMIT", review_limit),
         ),
         ReviewQueueConfig(
-            label=LABEL_PR_LIBRARY_BULK_UPDATE,
-            limit=get_env_non_negative_int("FORGE_BULK_UPDATE_REVIEW_LIMIT", review_limit),
+            label=LABEL_PR_CODE_COVERAGE,
+            limit=get_env_non_negative_int("FORGE_BENCHMARK_REVIEW_LIMIT", review_limit),
         ),
     ]
 

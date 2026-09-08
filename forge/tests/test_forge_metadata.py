@@ -123,6 +123,9 @@ def _pull_request_state(number: int, ci_state: str, mergeable: str = "MERGEABLE"
         "number": number,
         "headRefOid": f"head-{number}",
         "headRefName": f"ai/kimeta/pr-{number}",
+        "author": {"login": forge_metadata.TRUSTED_FORGE_PUBLISHER_LOGIN},
+        "headRepository": {"nameWithOwner": forge_metadata.REPO},
+        "body": "Forge-Publication-ID: forge-9962-test",
         "isCrossRepository": False,
         "reviewDecision": "REVIEW_REQUIRED",
         "mergeable": mergeable,
@@ -131,29 +134,39 @@ def _pull_request_state(number: int, ci_state: str, mergeable: str = "MERGEABLE"
     }
 
 
-def _local_review_attestation_check(head_sha: str) -> dict:
-    return {
-        "__typename": "CheckRun",
-        "name": forge_metadata.LOCAL_REVIEW_ATTESTATION_CHECK_NAME,
-        "status": "COMPLETED",
-        "conclusion": "SUCCESS",
-        "checkSuite": {
-            "app": {"slug": forge_metadata.GITHUB_ACTIONS_APP_SLUG},
-            "commit": {"oid": head_sha},
-            "workflowRun": {
-                "event": "push",
-                "workflow": {"name": forge_metadata.FORGE_BRANCH_READY_WORKFLOW_NAME},
-                "file": {"path": forge_metadata.FORGE_BRANCH_READY_WORKFLOW_PATH},
-            },
+def _validated_publication(
+        decision: str = "approved",
+        action: str | None = None,
+        task_type: str = "library-new-request",
+) -> SimpleNamespace:
+    review = {
+        "decision": decision,
+        "review_comment": "Checked.",
+        "finding_title": "" if decision == "approved" else "Finding",
+        "finding_body": "" if decision == "approved" else "Reason.",
+        "fix_note": "",
+        "model": "test-model",
+        "session_log_path": "task-logs/review.log",
+        "changed_paths": [],
+    }
+    if action is not None:
+        review["action"] = action
+    descriptor = {
+        "task_type": task_type,
+        "publication_id": "forge-9962-test",
+        "issue_number": 9962,
+        "local_review": review,
+        "library": {
+            "group": "org.example",
+            "artifact": "demo",
+            "version": "1.0",
+            "coordinates": "org.example:demo:1.0",
         },
     }
+    if task_type == "code-coverage-benchmark-result":
+        descriptor.pop("local_review")
+    return SimpleNamespace(descriptor=descriptor)
 
-
-def _add_local_review_attestation(state: dict, check_run: dict | None = None) -> dict:
-    state["statusCheckRollup"]["contexts"] = {
-        "nodes": [check_run or _local_review_attestation_check(state["headRefOid"])],
-    }
-    return state
 
 
 def _preflight(
@@ -2981,7 +2994,7 @@ class WorkQueueSchedulerTests(unittest.TestCase):
 
 
 class PullRequestReviewSelectionTests(unittest.TestCase):
-    def test_pull_request_state_loads_named_check_provenance(self) -> None:
+    def test_pull_request_state_loads_exact_head_identity(self) -> None:
         payload = {
             "data": {
                 "repository": {
@@ -2993,88 +3006,71 @@ class PullRequestReviewSelectionTests(unittest.TestCase):
             forge_metadata.get_pull_request_state(9656)
 
         query_argument = gh_json.call_args.args[-1]
-        self.assertIn("contexts(first: 100)", query_argument)
-        self.assertIn("checkSuite", query_argument)
-        self.assertIn("workflowRun", query_argument)
-        self.assertIn("commit", query_argument)
+        self.assertIn("headRepository", query_argument)
+        self.assertIn("nameWithOwner", query_argument)
+        self.assertIn("author", query_argument)
+        self.assertIn("statusCheckRollup", query_argument)
 
-    def test_trusted_current_head_attestation_is_accepted(self) -> None:
-        state = _add_local_review_attestation(_pull_request_state(9656, "SUCCESS"))
-        self.assertTrue(forge_metadata.has_trusted_local_review_attestation(state))
-
-    def test_non_current_or_untrusted_attestation_is_rejected(self) -> None:
-        cases = {
-            "older-sha": ("checkSuite", "commit", "oid", "older-head"),
-            "failed": (None, None, "conclusion", "FAILURE"),
-            "skipped": (None, None, "conclusion", "SKIPPED"),
-            "untrusted-app": ("checkSuite", "app", "slug", "other-app"),
-            "wrong-workflow": (
-                "checkSuite", "workflowRun", "workflow", {"name": "Other Workflow"},
-            ),
-            "wrong-workflow-path": (
-                "checkSuite",
-                "workflowRun",
-                "file",
-                {"path": ".github/workflows/other.yml"},
-            ),
-        }
-        for name, (outer, section, key, value) in cases.items():
-            with self.subTest(name=name):
-                state = _pull_request_state(9656, "SUCCESS")
-                check_run = _local_review_attestation_check(state["headRefOid"])
-                if outer is None:
-                    check_run[key] = value
-                else:
-                    check_run[outer][section][key] = value
-                _add_local_review_attestation(state, check_run)
-                self.assertFalse(forge_metadata.has_trusted_local_review_attestation(state))
-
-        self.assertFalse(
-            forge_metadata.has_trusted_local_review_attestation(
-                _pull_request_state(9656, "SUCCESS")
-            )
-        )
-
-    def test_attested_approval_targets_exact_head_commit(self) -> None:
+    def test_descriptor_approval_targets_exact_head_commit(self) -> None:
         state = _pull_request_state(9656, "SUCCESS")
         with patch.object(forge_metadata, "gh") as gh:
-            forge_metadata.approve_pull_request_from_local_review_attestation(state)
+            forge_metadata.approve_pull_request_from_descriptor(state)
 
         self.assertIn("commit_id=head-9656", gh.call_args.args)
         self.assertIn("event=APPROVE", gh.call_args.args)
 
-    def test_bulk_pull_request_list_omits_status_check_rollup(self) -> None:
-        with patch.object(forge_metadata, "gh_json", return_value=[]) as gh_json:
-            self.assertEqual(
-                [],
-                forge_metadata.get_pull_requests_with_label(forge_metadata.LABEL_LIBRARY_NEW, 20),
-            )
+    def test_descriptor_dispositions_are_exact(self) -> None:
+        self.assertEqual(
+            ("approved", None),
+            forge_metadata.publication_review_disposition(
+                _validated_publication(),
+            ),
+        )
+        self.assertEqual(
+            ("rejected", "human-intervention"),
+            forge_metadata.publication_review_disposition(
+                _validated_publication("rejected", "human-intervention"),
+            ),
+        )
+        self.assertEqual(
+            ("approved", None),
+            forge_metadata.publication_review_disposition(
+                _validated_publication(task_type="code-coverage-benchmark-result"),
+            ),
+        )
 
-        args = gh_json.call_args.args
-        self.assertEqual("number,title,url,author,labels", args[-1])
-        self.assertNotIn("statusCheckRollup", args)
+    def test_fork_is_rejected_before_descriptor_fetch(self) -> None:
+        state = _pull_request_state(9656, "SUCCESS")
+        state["isCrossRepository"] = True
+        with patch.object(forge_metadata, "run_git_transport") as fetch:
+            with self.assertRaisesRegex(ValueError, "head repository"):
+                forge_metadata.validate_pull_request_publication(
+                    state, "/tmp/reachability",
+                )
+        fetch.assert_not_called()
 
-    def test_current_head_attestation_approves_without_agent(self) -> None:
+    def test_approved_publication_skips_semantic_agent_and_merges(self) -> None:
         pull_request = _pull_request(9656, [forge_metadata.LABEL_LIBRARY_NEW])
-        state = _add_local_review_attestation(_pull_request_state(9656, "SUCCESS"))
-
-        with patch.object(forge_metadata, "get_pull_requests_with_labels", return_value=[]), \
+        state = _pull_request_state(9656, "SUCCESS")
+        validated = _validated_publication()
+        with (
+                patch.object(forge_metadata, "get_pull_requests_with_labels", return_value=[]),
                 patch.object(
-                    forge_metadata,
-                    "get_pull_requests_with_label",
+                    forge_metadata, "get_pull_requests_with_label",
                     return_value=[pull_request],
-                ), \
-                patch.object(forge_metadata, "get_pull_request_state", return_value=state), \
+                ),
+                patch.object(forge_metadata, "get_pull_request_state", return_value=state),
                 patch.object(
-                    forge_metadata,
-                    "approve_pull_request_from_local_review_attestation",
-                ) as approve, \
-                patch.object(forge_metadata, "review_pull_request") as review, \
+                    forge_metadata, "validate_pull_request_publication",
+                    return_value=validated,
+                ),
+                patch.object(forge_metadata, "approve_pull_request_from_descriptor") as approve,
                 patch.object(
-                    forge_metadata,
-                    "reconcile_reviewed_pull_request",
+                    forge_metadata, "reconcile_reviewed_pull_request",
                     return_value=True,
-                ) as reconcile:
+                ) as reconcile,
+                patch.object(forge_metadata, "analysis_agent_run") as agent,
+        ):
             forge_metadata.process_pull_requests_with_label(
                 forge_metadata.LABEL_LIBRARY_NEW,
                 1,
@@ -3082,97 +3078,28 @@ class PullRequestReviewSelectionTests(unittest.TestCase):
                 "automation-user",
             )
 
-        approve.assert_called_once()
         self.assertEqual(9656, approve.call_args.args[0]["number"])
-        review.assert_not_called()
         reconcile.assert_called_once_with(9656, "/tmp/reachability")
+        agent.assert_not_called()
 
-    def test_non_attested_cases_use_agent(self) -> None:
-        missing = _pull_request_state(9656, "SUCCESS")
-        older = _pull_request_state(9656, "SUCCESS")
-        _add_local_review_attestation(older, _local_review_attestation_check("older-head"))
-        skipped = _pull_request_state(9656, "SUCCESS")
-        skipped_check = _local_review_attestation_check(skipped["headRefOid"])
-        skipped_check["conclusion"] = "SKIPPED"
-        _add_local_review_attestation(skipped, skipped_check)
-        failed = _pull_request_state(9656, "SUCCESS")
-        failed_check = _local_review_attestation_check(failed["headRefOid"])
-        failed_check["conclusion"] = "FAILURE"
-        _add_local_review_attestation(failed, failed_check)
-        untrusted = _pull_request_state(9656, "SUCCESS")
-        untrusted_check = _local_review_attestation_check(untrusted["headRefOid"])
-        untrusted_check["checkSuite"]["app"]["slug"] = "other-app"
-        _add_local_review_attestation(untrusted, untrusted_check)
-        malformed = _pull_request_state(9656, "SUCCESS")
-        _add_local_review_attestation(malformed, {"name": "malformed"})
-
-        cases = {
-            "missing": missing,
-            "older-sha": older,
-            "skipped": skipped,
-            "failed": failed,
-            "untrusted": untrusted,
-            "malformed": malformed,
-        }
-        for name, state in cases.items():
-            with self.subTest(name=name):
-                pull_request = _pull_request(9656, [forge_metadata.LABEL_LIBRARY_NEW])
-                with patch.object(
-                        forge_metadata,
-                        "get_pull_requests_with_labels",
-                        return_value=[],
-                ), patch.object(
-                        forge_metadata,
-                        "get_pull_requests_with_label",
-                        return_value=[pull_request],
-                ), patch.object(
-                        forge_metadata,
-                        "get_pull_request_state",
-                        return_value=state,
-                ), patch.object(
-                        forge_metadata,
-                        "approve_pull_request_from_local_review_attestation",
-                ) as approve, patch.object(
-                        forge_metadata,
-                        "review_pull_request",
-                        return_value=True,
-                ) as review, patch.object(
-                        forge_metadata,
-                        "reconcile_reviewed_pull_request",
-                        return_value=True,
-                ):
-                    forge_metadata.process_pull_requests_with_label(
-                        forge_metadata.LABEL_LIBRARY_NEW,
-                        1,
-                        "/tmp/reachability",
-                        "automation-user",
-                    )
-
-                approve.assert_not_called()
-                review.assert_called_once()
-
-    def test_direct_approval_failure_stops_review_processing(self) -> None:
+    def test_rejected_publication_is_reconciled_without_approval(self) -> None:
         pull_request = _pull_request(9656, [forge_metadata.LABEL_LIBRARY_NEW])
-        state = _add_local_review_attestation(_pull_request_state(9656, "SUCCESS"))
-
-        with patch.object(forge_metadata, "get_pull_requests_with_labels", return_value=[]), \
+        state = _pull_request_state(9656, "FAILURE")
+        validated = _validated_publication("rejected", "close")
+        with (
+                patch.object(forge_metadata, "get_pull_requests_with_labels", return_value=[]),
                 patch.object(
-                    forge_metadata,
-                    "get_pull_requests_with_label",
+                    forge_metadata, "get_pull_requests_with_label",
                     return_value=[pull_request],
-                ), \
-                patch.object(forge_metadata, "get_pull_request_state", return_value=state), \
+                ),
+                patch.object(forge_metadata, "get_pull_request_state", return_value=state),
                 patch.object(
-                    forge_metadata,
-                    "approve_pull_request_from_local_review_attestation",
-                    side_effect=RuntimeError("approval failed"),
-                ), \
-                patch.object(forge_metadata, "review_pull_request") as review, \
-                patch.object(
-                    forge_metadata,
-                    "reconcile_reviewed_pull_request",
-                ) as reconcile, \
-                self.assertRaisesRegex(SystemExit, "1"):
+                    forge_metadata, "validate_pull_request_publication",
+                    return_value=validated,
+                ),
+                patch.object(forge_metadata, "reconcile_rejected_publication") as reject,
+                patch.object(forge_metadata, "approve_pull_request_from_descriptor") as approve,
+        ):
             forge_metadata.process_pull_requests_with_label(
                 forge_metadata.LABEL_LIBRARY_NEW,
                 1,
@@ -3180,132 +3107,68 @@ class PullRequestReviewSelectionTests(unittest.TestCase):
                 "automation-user",
             )
 
-        review.assert_not_called()
+        self.assertEqual(9656, reject.call_args.args[0]["number"])
+        self.assertIs(validated, reject.call_args.args[1])
+        approve.assert_not_called()
+
+    def test_pending_ci_is_approved_but_not_merged(self) -> None:
+        state = _pull_request_state(9656, "PENDING")
+        validated = _validated_publication()
+        with (
+                patch.object(
+                    forge_metadata, "validate_pull_request_publication",
+                    return_value=validated,
+                ),
+                patch.object(forge_metadata, "approve_pull_request_from_descriptor") as approve,
+                patch.object(forge_metadata, "reconcile_reviewed_pull_request") as reconcile,
+        ):
+            forge_metadata._process_descriptor_pull_request(
+                state,
+                "/tmp/reachability",
+                maintainer_override=False,
+            )
+
+        approve.assert_called_once_with(state)
         reconcile.assert_not_called()
 
-    def test_process_pull_requests_fetches_state_only_after_cheap_filters(self) -> None:
-        buried_pull_requests = [
-            _pull_request(
-                number,
-                [
-                    forge_metadata.LABEL_LIBRARY_NEW,
-                    forge_metadata.LABEL_HUMAN_INTERVENTION,
-                ],
+    def test_exhausted_failed_ci_runs_repair(self) -> None:
+        state = _pull_request_state(9656, "FAILURE")
+        validated = _validated_publication()
+        with (
+                patch.object(
+                    forge_metadata, "rerun_failed_pull_request_workflow_jobs",
+                    return_value=0,
+                ),
+                patch.object(forge_metadata, "repair_failed_ci_pull_request") as repair,
+        ):
+            forge_metadata.reconcile_failed_ci_pull_request(
+                state,
+                validated,
+                "/tmp/reachability",
             )
-            for number in range(1, 21)
+
+        repair.assert_called_once_with(state, validated, "/tmp/reachability")
+
+    def test_rerun_failed_jobs_respects_attempt_limit(self) -> None:
+        workflow_runs = [
+            {"id": 101, "conclusion": "failure", "run_attempt": 1},
+            {"id": 102, "conclusion": "failure", "run_attempt": 2},
+            {"id": 103, "conclusion": "failure", "run_attempt": 3},
+            {"id": 104, "conclusion": "success", "run_attempt": 1},
         ]
-        eligible_pull_request = _pull_request(100, [forge_metadata.LABEL_LIBRARY_NEW])
-
-        with patch.object(forge_metadata, "get_pull_requests_with_labels", return_value=[]), \
+        with (
                 patch.object(
-                    forge_metadata,
-                    "get_pull_requests_with_label",
-                    side_effect=[
-                        buried_pull_requests,
-                        [*buried_pull_requests, eligible_pull_request],
-                    ],
-                ) as get_pull_requests, \
-                patch.object(
-                    forge_metadata,
-                    "get_pull_request_state",
-                    return_value=_pull_request_state(100, "SUCCESS"),
-                ) as get_pull_request_state, \
-                patch.object(forge_metadata, "review_pull_request", return_value=True) as review_pull_request, \
-                patch.object(
-                    forge_metadata,
-                    "reconcile_reviewed_pull_request",
-                    return_value=True,
-                ) as reconcile_reviewed_pull_request:
-            forge_metadata.process_pull_requests_with_label(
-                forge_metadata.LABEL_LIBRARY_NEW,
-                1,
-                "/tmp/reachability",
-                "automation-user",
+                    forge_metadata, "get_pull_request_workflow_runs",
+                    return_value=workflow_runs,
+                ),
+                patch.object(forge_metadata, "gh") as gh,
+        ):
+            count = forge_metadata.rerun_failed_pull_request_workflow_jobs(
+                3513, "abc123",
             )
 
-        get_pull_requests.assert_has_calls([
-            call(forge_metadata.LABEL_LIBRARY_NEW, 20),
-            call(forge_metadata.LABEL_LIBRARY_NEW, 40),
-        ])
-        get_pull_request_state.assert_called_once_with(100)
-        review_pull_request.assert_called_once_with(
-            100,
-            "/tmp/reachability",
-            "https://github.com/oracle/graalvm-reachability-metadata/pull/100",
-            None,
-        )
-        reconcile_reviewed_pull_request.assert_called_once_with(100, "/tmp/reachability")
-
-    def test_process_pull_requests_reviews_only_successful_ci(self) -> None:
-        pull_requests = [
-            _pull_request(1, [forge_metadata.LABEL_LIBRARY_NEW]),
-            _pull_request(2, [forge_metadata.LABEL_LIBRARY_NEW]),
-            _pull_request(3, [forge_metadata.LABEL_LIBRARY_NEW]),
-        ]
-        states = {
-            1: _pull_request_state(1, "FAILURE"),
-            2: _pull_request_state(2, "PENDING"),
-            3: _pull_request_state(3, "SUCCESS"),
-        }
-
-        with patch.object(forge_metadata, "get_pull_requests_with_labels", return_value=[]), \
-                patch.object(forge_metadata, "get_pull_requests_with_label", return_value=pull_requests), \
-                patch.object(
-                    forge_metadata,
-                    "get_pull_request_state",
-                    side_effect=lambda number: states[number],
-                ), \
-                patch.object(
-                    forge_metadata,
-                    "reconcile_failed_ci_pull_request",
-                ) as reconcile_failed_ci, \
-                patch.object(forge_metadata, "review_pull_request", return_value=True) as review_pull_request, \
-                patch.object(
-                    forge_metadata,
-                    "reconcile_reviewed_pull_request",
-                    return_value=True,
-                ) as reconcile_reviewed_pull_request:
-            forge_metadata.process_pull_requests_with_label(
-                forge_metadata.LABEL_LIBRARY_NEW,
-                1,
-                "/tmp/reachability",
-                "automation-user",
-            )
-
-        self.assertEqual(1, reconcile_failed_ci.call_args.args[0]["number"])
-        review_pull_request.assert_called_once_with(
-            3,
-            "/tmp/reachability",
-            "https://github.com/oracle/graalvm-reachability-metadata/pull/3",
-            None,
-        )
-        reconcile_reviewed_pull_request.assert_called_once_with(3, "/tmp/reachability")
-
-    def test_process_pull_requests_refreshes_conflict_before_review(self) -> None:
-        pull_request = _pull_request(4, [forge_metadata.LABEL_LIBRARY_NEW])
-        state = _pull_request_state(4, "FAILURE", mergeable="CONFLICTING")
-
-        with patch.object(forge_metadata, "get_pull_requests_with_labels", return_value=[]), \
-                patch.object(forge_metadata, "get_pull_requests_with_label", return_value=[pull_request]), \
-                patch.object(forge_metadata, "get_pull_request_state", return_value=state), \
-                patch.object(
-                    forge_metadata,
-                    "resolve_pull_request_merge_conflict",
-                    return_value=True,
-                ) as resolve_conflict, \
-                patch.object(forge_metadata, "reconcile_failed_ci_pull_request") as reconcile_failed_ci, \
-                patch.object(forge_metadata, "review_pull_request") as review_pull_request:
-            forge_metadata.process_pull_requests_with_label(
-                forge_metadata.LABEL_LIBRARY_NEW,
-                1,
-                "/tmp/reachability",
-                "automation-user",
-            )
-
-        self.assertEqual(4, resolve_conflict.call_args.args[0]["number"])
-        self.assertEqual("/tmp/reachability", resolve_conflict.call_args.args[1])
-        reconcile_failed_ci.assert_not_called()
-        review_pull_request.assert_not_called()
+        self.assertEqual(2, count)
+        self.assertEqual(2, gh.call_count)
 
 
 class IssueClaimCacheTests(unittest.TestCase):
@@ -4572,138 +4435,6 @@ class InterruptHandlingTests(unittest.TestCase):
 
 
 class PullRequestReviewTests(unittest.TestCase):
-    def test_review_pull_request_uses_centralized_analysis_selection(self) -> None:
-        configured_environment = {
-            "FORGE_ANALYSIS_AGENT": "my-pi",
-            "FORGE_ANALYSIS_FAMILY": "pi",
-            "FORGE_ANALYSIS_MODEL": "configured-model",
-            "FORGE_ANALYSIS_PROVIDER": "openrouter",
-            "FORGE_ANALYSIS_THINKING_LEVEL": "high",
-            "GH_TOKEN": "secret",
-            "GH_CONFIG_DIR": "/github-config",
-        }
-        with tempfile.TemporaryDirectory() as temp_dir, patch.dict(
-                os.environ,
-                configured_environment,
-                clear=True,
-        ), patch.object(
-            forge_metadata,
-            "create_review_workspace",
-            return_value=temp_dir,
-        ), patch.object(
-            forge_metadata,
-            "cleanup_review_workspace",
-        ) as cleanup_review_workspace, patch(
-            "ai_workflows.agents.agent_runtime.run_agent_task",
-            return_value=AgentRunResult(
-                0,
-                os.path.join(temp_dir, "review.log"),
-                False,
-                "Submitted approval.",
-            ),
-        ) as run_agent, patch.object(
-            forge_metadata,
-            "print_pull_request_discussion",
-        ) as print_discussion:
-            self.assertTrue(
-                forge_metadata.review_pull_request(
-                    3513,
-                    "/repo",
-                    "https://github.com/oracle/graalvm-reachability-metadata/pull/3513",
-                    "org.example:demo:1.0",
-                )
-            )
-
-        invocation = run_agent.call_args.kwargs
-        selection = invocation["selection"]
-        self.assertEqual(selection.backend, "pi")
-        self.assertEqual(selection.agent, "my-pi")
-        self.assertEqual(selection.model, "configured-model")
-        self.assertEqual(selection.provider, "openrouter")
-        self.assertEqual(selection.thinking_level, "high")
-        self.assertEqual(invocation["working_dir"], temp_dir)
-        self.assertEqual(invocation["task_type"], "pr-review")
-        self.assertEqual(invocation["library"], "org.example:demo:1.0")
-        self.assertIn("submit the review directly", invocation["prompt"])
-        agent_environment = invocation["environment"]
-        self.assertEqual(agent_environment["GH_TOKEN"], "secret")
-        self.assertEqual(agent_environment["GH_CONFIG_DIR"], "/github-config")
-        self.assertEqual(agent_environment["_FORGE_AGENT_ALLOW_GITHUB_ACCESS"], "1")
-        cleanup_review_workspace.assert_called_once_with("/repo", temp_dir, 3513)
-        print_discussion.assert_called_once_with(3513)
-
-    def test_review_pull_request_uses_analysis_role_defaults(self) -> None:
-        with tempfile.TemporaryDirectory() as temp_dir, patch.dict(
-                os.environ,
-                {},
-                clear=True,
-        ), patch.object(
-            forge_metadata,
-            "create_review_workspace",
-            return_value=temp_dir,
-        ), patch.object(
-            forge_metadata,
-            "cleanup_review_workspace",
-        ), patch(
-            "ai_workflows.agents.agent_runtime.run_agent_task",
-            return_value=AgentRunResult(
-                0,
-                os.path.join(temp_dir, "review.log"),
-                False,
-                "Submitted approval.",
-            ),
-        ) as run_agent, patch.object(
-            forge_metadata,
-            "print_pull_request_discussion",
-        ):
-            self.assertTrue(
-                forge_metadata.review_pull_request(
-                    3513,
-                    "/repo",
-                    "https://github.com/oracle/graalvm-reachability-metadata/pull/3513",
-                )
-            )
-
-        invocation = run_agent.call_args.kwargs
-        selection = invocation["selection"]
-        self.assertEqual(selection.backend, "codex")
-        self.assertEqual(selection.agent, "codex")
-        self.assertEqual(selection.model, "gpt-5.6-luna")
-        self.assertEqual(selection.thinking_level, "high")
-        self.assertIsNone(selection.provider)
-        agent_environment = invocation["environment"]
-        self.assertEqual(agent_environment, {"_FORGE_AGENT_ALLOW_GITHUB_ACCESS": "1"})
-
-    def test_review_pull_request_rejects_agent_failure(self) -> None:
-        with tempfile.TemporaryDirectory() as temp_dir, patch.object(
-                forge_metadata,
-                "create_review_workspace",
-                return_value=temp_dir,
-        ), patch.object(
-            forge_metadata,
-            "cleanup_review_workspace",
-        ) as cleanup_review_workspace, patch.object(
-            forge_metadata,
-            "analysis_agent_run",
-            return_value=AgentRunResult(
-                1,
-                os.path.join(temp_dir, "review.log"),
-                True,
-            ),
-        ), patch.object(
-            forge_metadata,
-            "print_pull_request_discussion",
-        ) as print_discussion:
-            self.assertFalse(
-                forge_metadata.review_pull_request(
-                    3513,
-                    "/repo",
-                    "https://github.com/oracle/graalvm-reachability-metadata/pull/3513",
-                )
-            )
-
-        cleanup_review_workspace.assert_called_once_with("/repo", temp_dir, 3513)
-        print_discussion.assert_not_called()
 
     def test_merge_pull_request_validates_index_candidate_before_merge(self) -> None:
         pr = {
@@ -4873,7 +4604,8 @@ class PullRequestReviewTests(unittest.TestCase):
                 ["metadata/org.example/demo/index.json"],
             )
 
-    def test_reconcile_approved_pr_with_failed_ci_reruns_failed_jobs_without_merging(self) -> None:
+
+    def test_reconcile_failed_state_does_not_merge(self) -> None:
         pr = {
             "number": 3513,
             "url": "https://github.com/oracle/graalvm-reachability-metadata/pull/3513",
@@ -4883,121 +4615,13 @@ class PullRequestReviewTests(unittest.TestCase):
             "mergeStateStatus": "CLEAN",
             "statusCheckRollup": {"state": "FAILURE"},
         }
-
-        with patch.object(forge_metadata, "get_pull_request_state", return_value=pr), \
-                patch.object(
-                    forge_metadata,
-                    "rerun_failed_pull_request_workflow_jobs",
-                    return_value=1,
-                ) as rerun_failed_jobs, \
-                patch.object(forge_metadata, "merge_pull_request") as merge_pull_request:
+        with (
+                patch.object(forge_metadata, "get_pull_request_state", return_value=pr),
+                patch.object(forge_metadata, "merge_pull_request") as merge_pull_request,
+        ):
             self.assertTrue(forge_metadata.reconcile_reviewed_pull_request(3513))
-
-        rerun_failed_jobs.assert_called_once_with(3513, "abc123")
         merge_pull_request.assert_not_called()
 
-    def test_reconcile_unapproved_pr_with_failed_ci_reruns_failed_jobs(self) -> None:
-        pr = {
-            "number": 3513,
-            "url": "https://github.com/oracle/graalvm-reachability-metadata/pull/3513",
-            "headRefOid": "abc123",
-            "reviewDecision": "REVIEW_REQUIRED",
-            "mergeable": "MERGEABLE",
-            "mergeStateStatus": "CLEAN",
-            "statusCheckRollup": {"state": "FAILURE"},
-        }
-
-        with patch.object(forge_metadata, "get_pull_request_state", return_value=pr), \
-                patch.object(
-                    forge_metadata,
-                    "rerun_failed_pull_request_workflow_jobs",
-                    return_value=1,
-                ) as rerun_failed_jobs, \
-                patch.object(forge_metadata, "merge_pull_request") as merge_pull_request:
-            self.assertTrue(forge_metadata.reconcile_reviewed_pull_request(3513))
-        rerun_failed_jobs.assert_called_once_with(3513, "abc123")
-        merge_pull_request.assert_not_called()
-
-    def test_reconcile_failed_ci_treats_chunked_and_regular_prs_the_same_after_cap(self) -> None:
-        outputs: list[str] = []
-        pull_request_bodies = (
-            "",
-            "Refs: #1412\n\nSummary:\n- Chunked dynamic-access: yes\n",
-        )
-
-        for body in pull_request_bodies:
-            pull_request = {
-                "number": 3513,
-                "headRefOid": "abc123",
-                "body": body,
-                "statusCheckRollup": {"state": "FAILURE"},
-            }
-            output = io.StringIO()
-            with self.subTest(body=body), contextlib.redirect_stdout(output), \
-                    patch.object(
-                        forge_metadata,
-                        "rerun_failed_pull_request_workflow_jobs",
-                        return_value=0,
-                    ) as rerun_failed_jobs, \
-                    patch.object(forge_metadata, "add_pull_request_label") as add_label, \
-                    patch.object(forge_metadata, "set_item_status") as set_item_status, \
-                    patch.object(forge_metadata, "clear_issue_assignees") as clear_assignees:
-                forge_metadata.reconcile_failed_ci_pull_request(pull_request)
-
-            rerun_failed_jobs.assert_called_once_with(3513, "abc123")
-            add_label.assert_not_called()
-            set_item_status.assert_not_called()
-            clear_assignees.assert_not_called()
-            outputs.append(output.getvalue())
-
-        self.assertEqual(outputs[0], outputs[1])
-        self.assertIn("Skipping review for PR #3513", outputs[0])
-
-    def test_reconcile_approved_conflicting_pr_resolves_the_conflict_instead_of_merging(self) -> None:
-        pr = {
-            "number": 3513,
-            "url": "https://github.com/oracle/graalvm-reachability-metadata/pull/3513",
-            "headRefOid": "abc123",
-            "headRefName": "ai/kimeta/demo",
-            "reviewDecision": "APPROVED",
-            "mergeable": "CONFLICTING",
-            "mergeStateStatus": "DIRTY",
-            "statusCheckRollup": {"state": "SUCCESS"},
-        }
-
-        with patch.object(forge_metadata, "get_pull_request_state", return_value=pr), \
-                patch.object(
-                    forge_metadata,
-                    "resolve_pull_request_merge_conflict",
-                    return_value=True,
-                ) as resolve_conflict, \
-                patch.object(forge_metadata, "merge_pull_request") as merge_pull_request:
-            self.assertTrue(forge_metadata.reconcile_reviewed_pull_request(3513, "/tmp/reachability"))
-
-        resolve_conflict.assert_called_once_with(pr, "/tmp/reachability")
-        merge_pull_request.assert_not_called()
-
-    def test_reconcile_conflicting_pr_refreshes_before_ci_succeeds(self) -> None:
-        pr = {
-            "number": 3513,
-            "url": "https://github.com/oracle/graalvm-reachability-metadata/pull/3513",
-            "headRefOid": "abc123",
-            "headRefName": "ai/kimeta/demo",
-            "reviewDecision": "APPROVED",
-            "mergeable": "CONFLICTING",
-            "mergeStateStatus": "DIRTY",
-            "statusCheckRollup": {"state": "PENDING"},
-        }
-
-        with patch.object(forge_metadata, "get_pull_request_state", return_value=pr), \
-                patch.object(
-                    forge_metadata,
-                    "resolve_pull_request_merge_conflict",
-                ) as resolve_conflict, \
-                patch.object(forge_metadata, "merge_pull_request") as merge_pull_request:
-            self.assertTrue(forge_metadata.reconcile_reviewed_pull_request(3513, "/tmp/reachability"))
-        resolve_conflict.assert_called_once_with(pr, "/tmp/reachability")
-        merge_pull_request.assert_not_called()
 
     def test_resolve_pull_request_merge_conflict_leaves_fork_heads_alone(self) -> None:
         pr = {
@@ -5065,18 +4689,6 @@ class PullRequestReviewTests(unittest.TestCase):
             cwd="/repo",
         )
 
-    def test_review_prompt_uses_live_targeted_evidence_and_direct_submission(self) -> None:
-        prompt = forge_metadata.build_review_prompt(3513)
-
-        self.assertIn("submit the review directly", prompt)
-        self.assertIn("gh pr view", prompt)
-        self.assertIn("gh pr checks", prompt)
-        self.assertIn("git diff --name-status origin/master...HEAD", prompt)
-        self.assertIn("targeted diffs", prompt)
-        self.assertIn("fix-index-file-inconsistencies", prompt)
-        self.assertNotIn(".forge-review-context.json", prompt)
-
-        self.assertNotIn("Forge will validate and submit", prompt)
 
 if __name__ == "__main__":
     unittest.main()

@@ -180,12 +180,13 @@ the same code path on its own schedule.
 
 **Queue configuration.** A single explicit `FORGE_REVIEW_LABEL` selects one
 review queue; otherwise orchestration runs the default set of PR review queues,
-one per successful-result label — `library-new-request`, `library-update-request`,
-`fixes-javac-fail`, `fixes-java-run-fail`, `fixes-native-image-run-fail`, and the
-bulk-update label. Each queue has a per-label limit env var (defaulting to
-`FORGE_REVIEW_LIMIT`, default 1). Setting a queue's limit to 0 disables it. The
-reviewer is the worker-configured analysis role, with no review-specific agent,
-model, provider, or thinking override (§FS-forge-agent-runtime-selection).
+one per generated-result label — `library-new-request`,
+`library-update-request`, `fixes-javac-fail`, `fixes-java-run-fail`,
+`fixes-native-image-run-fail` — plus `code-coverage-improvement` so validated
+benchmark-result descriptors enter the same executor. Each queue has a
+per-label limit env var (defaulting to `FORGE_REVIEW_LIMIT`, default 1).
+Setting a queue's limit to 0 disables it. The worker-configured analysis role is
+used only by the exhausted failed-CI path (§FS-forge-agent-runtime-selection).
 
 **Candidate validation.** Labels select queues but never establish trust. For
 each candidate, orchestration loads the descriptor from the exact current head

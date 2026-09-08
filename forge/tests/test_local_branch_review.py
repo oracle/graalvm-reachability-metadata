@@ -148,7 +148,6 @@ class LocalBranchReviewTests(unittest.TestCase):
         verification = LocalCIVerificationResult(status="success", base_commit="base")
         verdict = _verdict()
         outcome = module.LocalBranchReviewOutcome(
-            status="completed",
             model="gpt-test",
             session_log_path="task-logs/review.log",
             local_ci_verification=verification,
@@ -173,9 +172,9 @@ class LocalBranchReviewTests(unittest.TestCase):
                 stage_publication_changes=stage,
             )
 
-        self.assertIs(outcome.verdict, verdict)
-        self.assertTrue(outcome.repair_reverted)
-        self.assertEqual(outcome.failed_step, "post-review-finalization")
+        self.assertEqual(outcome.verdict.decision, "rejected")
+        self.assertEqual(outcome.verdict.action, "human-intervention")
+        self.assertIn("post-review-finalization", outcome.verdict.finding_body)
         self.assertIs(outcome.local_ci_verification, verification)
         self.assertEqual(finalization.call_count, 2)
         repair.assert_called_once()
@@ -192,7 +191,6 @@ class LocalBranchReviewTests(unittest.TestCase):
         )
         verdict = _verdict()
         outcome = module.LocalBranchReviewOutcome(
-            status="completed",
             model="gpt-test",
             session_log_path="task-logs/review.log",
             local_ci_verification=verification,
@@ -217,17 +215,15 @@ class LocalBranchReviewTests(unittest.TestCase):
                 stage_publication_changes=Mock(),
             )
 
-        self.assertIs(outcome.verdict, verdict)
-        self.assertIs(outcome.local_ci_verification, verification)
-        self.assertTrue(outcome.repair_reverted)
-        self.assertEqual(outcome.failed_step, "validate-index-files")
+        self.assertEqual(outcome.verdict.decision, "rejected")
+        self.assertEqual(outcome.verdict.action, "human-intervention")
+        self.assertIn("validate-index-files", outcome.verdict.finding_body)
         reset.assert_called_once_with("/repo", "verified", "/metrics", verification)
 
     def test_persisted_verdict_is_scoped_to_publication_timestamp(self) -> None:
         verification = LocalCIVerificationResult(status="success", base_commit="base")
         descriptor_input = SimpleNamespace(timestamp="2026-08-25T10:00:00Z")
         outcome = module.LocalBranchReviewOutcome(
-            status="completed",
             model="gpt-test",
             session_log_path="task-logs/review.log",
             local_ci_verification=verification,
