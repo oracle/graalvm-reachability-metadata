@@ -87,19 +87,36 @@ def descriptor_input_from_pending_metrics(
 
 
 def build_publication_id(
-        issue_number: int,
+        issue_number: int | None,
         timestamp: str,
         coordinates: str,
         task_type: str,
+        *,
+        benchmark_run_id: str | None = None,
 ) -> str:
     """Build a stable ID from durable run facts so continuation reuses it."""
-    identity = json.dumps(
-        {
+    if issue_number is None:
+        if not benchmark_run_id:
+            raise ValueError("Issue-less publication requires a benchmark run ID")
+        identity_fields: dict[str, Any] = {
+            "benchmark_run_id": benchmark_run_id,
+            "timestamp": timestamp,
+            "coordinates": coordinates,
+            "task_type": task_type,
+        }
+        prefix = "benchmark"
+    else:
+        if benchmark_run_id is not None:
+            raise ValueError("Issue publication must not carry a benchmark run ID")
+        identity_fields = {
             "issue_number": issue_number,
             "timestamp": timestamp,
             "coordinates": coordinates,
             "task_type": task_type,
-        },
+        }
+        prefix = str(issue_number)
+    identity = json.dumps(
+        identity_fields,
         sort_keys=True,
         separators=(",", ":"),
     )
@@ -107,7 +124,7 @@ def build_publication_id(
     compact_timestamp = re.sub(r"[^0-9]", "", timestamp)[:20]
     if not compact_timestamp:
         raise ValueError("Publication timestamp must contain a date or time")
-    return f"forge-{issue_number}-{compact_timestamp}-{digest}"
+    return f"forge-{prefix}-{compact_timestamp}-{digest}"
 
 
 def build_publication_branch(producer: str, branch_suffix: str, publication_id: str) -> str:

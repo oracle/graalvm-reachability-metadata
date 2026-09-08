@@ -6,8 +6,8 @@
 """Run and publish fixed-input code coverage improvement benchmarks.
 
 The runner owns deterministic matrix expansion, isolated worktrees, benchmark
-conversion, compact metrics extraction, and immediate same-repository
-publication. Rhei continues to own the coverage phases themselves.
+conversion, compact metrics extraction, and descriptor-backed PR publication.
+Rhei continues to own the coverage phases themselves.
 §FS-code-coverage-benchmarking §AR-code-coverage-benchmarking
 """
 
@@ -41,6 +41,9 @@ RESULT_SCHEMA_PATH = (
 FINAL_METRICS_SCHEMA_PATH = (
     FORGE_ROOT / "schemas" / "code_coverage_final_metrics_schema.json"
 )
+PUBLISHER_SCHEMA_PATH = (
+    REPOSITORY_ROOT / ".github" / "scripts" / "forge_pr_publisher" / "schema.json"
+)
 DEFAULT_WORKSPACE_ROOT = (
     FORGE_ROOT / "local_repositories" / "code_coverage_benchmarks"
 )
@@ -50,13 +53,20 @@ RESULT_RECORD = BENCHMARK_DIR / "result.json"
 PUBLICATION_MARKER = BENCHMARK_DIR / "publication.json"
 RESULT_SCHEMA_VERSION = "1.0.0"
 COMMIT_SUBJECT = "Record code coverage benchmark"
+DESCRIPTOR_COMMIT_SUBJECT = "Add Forge publication descriptor"
+BENCHMARK_TASK_TYPE = "code-coverage-benchmark-result"
 MAX_PUBLISH_ATTEMPTS = 5
 
 sys.path.insert(0, str(FORGE_ROOT))
 
 from git_scripts.common_git import (  # noqa: E402
     GitTransportError,
+    get_authenticated_login,
     run_git_transport,
+)
+from git_scripts.publication_descriptor import (  # noqa: E402
+    build_publication_branch,
+    build_publication_id,
 )
 from utility_scripts.code_coverage_jacoco import (  # noqa: E402
     load_jacoco_method_coverage,
@@ -66,6 +76,15 @@ from utility_scripts.metadata_index import resolve_test_dir  # noqa: E402
 
 class BenchmarkError(RuntimeError):
     """Raised when benchmark evidence or repository state is unsafe."""
+
+@dataclass(frozen=True)
+class BenchmarkPublication:
+    """Durable location of one proposed or already merged result."""
+
+    commit: str
+    branch: str | None
+    publication_id: str
+    already_merged: bool
 
 
 @dataclass(frozen=True)
@@ -1026,12 +1045,184 @@ def _discard_publication_worktree(
         )
 
 
+def _descriptor_relative_path(coordinate: str) -> Path:
+    group, artifact, version = coordinate.split(":")
+    return Path("stats") / group / artifact / version / "forge-publication.json"
+
+
+def _commit_paths(repository: Path, paths: list[Path], subject: str) -> str:
+    subprocess.run(
+        ["git", "add", "--", *(str(path) for path in paths)],
+        cwd=repository,
+        check=True,
+    )
+    subprocess.run(
+        [
+            "git",
+            "-c",
+            "user.name=metadata-forge",
+            "-c",
+            "user.email=metadata-forge@local",
+            "commit",
+            "-m",
+            subject,
+        ],
+        cwd=repository,
+        check=True,
+    )
+    return _git_output(repository, "rev-parse", "HEAD")
+
+
+def _publication_identity(
+        repository_root: Path,
+        result: dict[str, Any],
+) -> tuple[str, str, str]:
+    producer = get_authenticated_login(cwd=str(repository_root))
+    publication_id = build_publication_id(
+        None,
+        result["timestamp"],
+        result["coordinate"],
+        BENCHMARK_TASK_TYPE,
+        benchmark_run_id=result["runId"],
+    )
+    _, artifact, version = result["coordinate"].split(":")
+    branch_suffix = (
+        f"benchmark-{artifact}-{version}-{result['configuredModel']}-{result['thinking']}"
+    )
+    branch = build_publication_branch(producer, branch_suffix, publication_id)
+    return producer, publication_id, branch
+
+
+def _benchmark_descriptor(
+        *,
+        result: dict[str, Any],
+        producer: str,
+        publication_id: str,
+        branch: str,
+        base_commit: str,
+        result_commit: str,
+        result_path: Path,
+) -> dict[str, Any]:
+    group, artifact, version = result["coordinate"].split(":")
+    return {
+        "schema_version": 1,
+        "publication_id": publication_id,
+        "timestamp": result["timestamp"],
+        "branch": branch,
+        "producer": producer,
+        "base_commit": base_commit,
+        "issue_number": None,
+        "benchmark_run_id": result["runId"],
+        "library": {
+            "group": group,
+            "artifact": artifact,
+            "version": version,
+            "coordinates": result["coordinate"],
+        },
+        "task_type": BENCHMARK_TASK_TYPE,
+        "template_type": BENCHMARK_TASK_TYPE,
+        "metrics": None,
+        "local_ci_verification": {
+            "status": "success",
+            "base_commit": base_commit,
+            "final_commit": result_commit,
+            "commands": [
+                {
+                    "gate": "benchmark-result-schema",
+                    "command": [
+                        "python3",
+                        "forge/utility_scripts/schema_validator.py",
+                        "code_coverage_benchmark_result",
+                        str(result_path),
+                    ],
+                    "returncode": 0,
+                }
+            ],
+            "fixups": [],
+            "repo_fix_paths": [],
+            "human_intervention_required": False,
+        },
+        "forge": {
+            "monitored_branch": "master",
+            "branch": "benchmark-runner",
+            "commit": result["runnerCommit"],
+        },
+        "modifiers": {
+            "chunked_dynamic_access": False,
+            "chunk_final": True,
+            "human_intervention": False,
+        },
+        "follow_ups": [],
+        "render": {"benchmark_result": result},
+    }
+
+
+def _json_at_ref(repository: Path, ref: str, path: Path) -> Any | None:
+    completed = subprocess.run(
+        ["git", "show", f"{ref}:{path}"],
+        cwd=repository,
+        check=False,
+        capture_output=True,
+        text=True,
+    )
+    if completed.returncode != 0:
+        return None
+    return json.loads(completed.stdout)
+
+
+def _fetch_existing_publication(
+        repository_root: Path,
+        result: dict[str, Any],
+        branch: str,
+        publication_id: str,
+) -> str | None:
+    remote_ref = f"refs/remotes/origin/{branch}"
+    fetch = subprocess.run(
+        [
+            "git",
+            "fetch",
+            "--quiet",
+            "origin",
+            f"+refs/heads/{branch}:{remote_ref}",
+        ],
+        cwd=repository_root,
+        check=False,
+        capture_output=True,
+        text=True,
+    )
+    if fetch.returncode != 0:
+        return None
+    descriptor = _json_at_ref(
+        repository_root,
+        remote_ref,
+        _descriptor_relative_path(result["coordinate"]),
+    )
+    entries = _json_at_ref(
+        repository_root,
+        remote_ref,
+        _metrics_relative_path(result["coordinate"]),
+    )
+    if not isinstance(descriptor, dict) or not isinstance(entries, list):
+        raise BenchmarkError(f"Existing publication branch is incomplete: {branch}")
+    if (
+            descriptor.get("publication_id") != publication_id
+            or descriptor.get("branch") != branch
+            or descriptor.get("benchmark_run_id") != result["runId"]
+            or descriptor.get("render", {}).get("benchmark_result") != result
+            or result not in entries
+    ):
+        raise BenchmarkError(f"Existing publication branch conflicts with run {result['runId']}")
+    return _git_output(repository_root, "rev-parse", remote_ref)
+
+
 def _publish_result(
         repository_root: Path,
         workspace: Path,
         result: dict[str, Any],
-) -> str:
+) -> BenchmarkPublication:
     relative_path = _metrics_relative_path(result["coordinate"])
+    descriptor_path = _descriptor_relative_path(result["coordinate"])
+    producer, publication_id, branch = _publication_identity(repository_root, result)
     lock_handle = _publish_lock(repository_root)
     try:
         for attempt in range(1, MAX_PUBLISH_ATTEMPTS + 1):
@@ -1042,6 +1233,16 @@ def _publish_result(
                     ["fetch", "origin", "master"],
                     cwd=str(repository_root),
                 )
+                existing_commit = _fetch_existing_publication(
+                    repository_root,
+                    result,
+                    branch,
+                    publication_id,
+                )
+                if existing_commit is not None:
+                    return BenchmarkPublication(
+                        existing_commit, branch, publication_id, False,
+                    )
                 _create_publication_worktree(
                     repository_root,
                     publisher,
@@ -1049,42 +1250,45 @@ def _publish_result(
                 )
                 created = True
                 changed = _merge_result(publisher / relative_path, result)
-                subprocess.run(
-                    ["git", "add", str(relative_path)],
-                    cwd=publisher,
-                    check=True,
-                )
-                staged = subprocess.run(
-                    ["git", "diff", "--cached", "--quiet"],
-                    cwd=publisher,
-                    check=False,
-                )
-                if staged.returncode == 0:
-                    return _git_output(publisher, "rev-parse", "HEAD")
                 if not changed:
-                    raise BenchmarkError(
-                        "Identical benchmark metrics unexpectedly changed "
-                        "the index."
+                    return BenchmarkPublication(
+                        _git_output(publisher, "rev-parse", "HEAD"),
+                        None,
+                        publication_id,
+                        True,
                     )
-                subprocess.run(
-                    [
-                        "git",
-                        "-c",
-                        "user.name=metadata-forge",
-                        "-c",
-                        "user.email=metadata-forge@local",
-                        "commit",
-                        "-m",
-                        COMMIT_SUBJECT,
-                    ],
-                    cwd=publisher,
-                    check=True,
+                result_commit = _commit_paths(
+                    publisher,
+                    [relative_path],
+                    COMMIT_SUBJECT,
+                )
+                base_commit = _git_output(publisher, "rev-parse", "origin/master")
+                descriptor = _benchmark_descriptor(
+                    result=result,
+                    producer=producer,
+                    publication_id=publication_id,
+                    branch=branch,
+                    base_commit=base_commit,
+                    result_commit=result_commit,
+                    result_path=relative_path,
+                )
+                _validate(descriptor, PUBLISHER_SCHEMA_PATH)
+                _write_json(publisher / descriptor_path, descriptor)
+                descriptor_commit = _commit_paths(
+                    publisher,
+                    [descriptor_path],
+                    DESCRIPTOR_COMMIT_SUBJECT,
                 )
                 run_git_transport(
-                    ["push", "origin", "HEAD:master"],
+                    ["push", "origin", f"HEAD:refs/heads/{branch}"],
                     cwd=str(publisher),
                 )
-                return _git_output(publisher, "rev-parse", "HEAD")
+                return BenchmarkPublication(
+                    descriptor_commit,
+                    branch,
+                    publication_id,
+                    False,
+                )
             except GitTransportError as error:
                 if attempt == MAX_PUBLISH_ATTEMPTS:
                     raise
@@ -1118,7 +1322,7 @@ def publish_workspace(
         candidate = run.get("rheiExitCode")
         known_exit = candidate if type(candidate) is int else None
     result = _collect_result(workspace, status, known_exit)
-    published_commit = _publish_result(repository_root.resolve(), workspace, result)
+    publication = _publish_result(repository_root.resolve(), workspace, result)
     marker = {
         "schemaVersion": "1.0.0",
         "runId": result["runId"],
@@ -1127,18 +1331,27 @@ def publish_workspace(
             .isoformat(timespec="seconds")
             .replace("+00:00", "Z")
         ),
-        "repositoryCommit": published_commit,
+        "repositoryCommit": publication.commit,
+        "publicationBranch": publication.branch,
+        "publicationId": publication.publication_id,
+        "publicationState": (
+            "merged" if publication.already_merged else "branch-pushed"
+        ),
         "resultPath": str(_metrics_relative_path(result["coordinate"])),
     }
     _write_json(_publication_marker_path(workspace), marker)
     print(
-        f"Published benchmark result {result['runId']} at "
-        f"{marker['resultPath']}."
+        f"Published benchmark result {result['runId']} on "
+        + (
+            "origin/master."
+            if publication.already_merged
+            else f"branch {publication.branch}; trusted Actions will open the PR."
+        )
     )
     _write_terminal_result(
         f"Published benchmark result {result['runId']} "
         f"({result['status']}) for {result['coordinate']} at "
-        f"{marker['resultPath']}, repository commit "
+        f"{marker['resultPath']}, publication commit "
         f"{marker['repositoryCommit']}."
     )
     return result

@@ -136,8 +136,9 @@ After finalization, render exactly one terminal task:
   `code-coverage-benchmark-publication` in a `benchmark-publication` state.
 
 Benchmark publication collects metrics, updates the coordinate JSON, validates
-it, commits it, and pushes it. It must not push generated source, create a Forge
-publication descriptor, open a pull request, or mutate an issue.
+it, commits it with a Forge publication descriptor, and pushes a unique `ai/**`
+branch that trusted Actions turn into a pull request. It must not push generated
+source, call the pull-request API, or mutate an issue.
 
 If Rhei stops before the terminal task, the outer launcher invokes the same
 idempotent collector so failed or partial executions are recorded.
@@ -158,15 +159,16 @@ idempotent. Keep entries ordered by timestamp.
 
 Publish immediately after each execution, not after the selected matrix
 finishes. For each result, fetch `origin/master`, create a fresh disposable
-worktree at that commit, append and push the result, then remove the worktree.
-A push race retries from a new worktree. Never reset or reuse a publication
+worktree at that commit, append the result, commit its descriptor, push the
+publication branch, then remove the worktree. Never reset or reuse a publication
 checkout; the preserved `result.json` is the retry input. Serialize local
 publishers. Commit subjects must be at most 60 characters.
 
 Write the normalized result into the preserved workspace before Git
-publication. Write a publication marker only after a successful push. Repeating
-publication for the same `runId` validates the identical entry instead of
-appending it again.
+publication. Write a publication marker only after a successful branch push or
+after finding the identical result already merged. Repeating publication for
+the same `runId` reuses the exact branch or validates the merged entry instead
+of appending it again.
 
 ## Initial metrics
 
@@ -201,7 +203,7 @@ Preserve every Rhei workspace locally after success or failure. Print its
 absolute path when the execution ends. Portable metrics retain the run ID and
 stable workspace name, not a machine-specific absolute path.
 
-Remove the disposable source worktree only after its result is pushed. If
+Remove the disposable source worktree only after its result branch is pushed. If
 collection or publication fails, retain both workspace and worktree. Provide a
 command that discovers workspaces without a publication marker and retries
 publication without rerunning coverage.
@@ -235,7 +237,7 @@ Do not commit or push runtime artifacts and logs in the initial implementation.
 - Complete and partial records validate and are idempotent.
 - An existing exact source-worktree path is replaced before creation.
 - A remaining creation failure skips that cell and the matrix continues.
-- Each result is pushed after its execution.
+- Each result is proposed through a descriptor-backed PR after its execution.
 - Workspaces remain; worktrees are removed only after publication.
 
 ## Later decisions

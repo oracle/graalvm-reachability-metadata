@@ -424,7 +424,7 @@ class CodeCoverageBenchmarkMetricsTests(unittest.TestCase):
         with self.assertRaisesRegex(benchmark.BenchmarkError, "different metrics"):
             benchmark._merge_result(path, conflicting)
 
-    def test_publication_uses_one_disposable_worktree(self) -> None:
+    def test_publication_pushes_one_descriptor_backed_branch(self) -> None:
         temporary = tempfile.TemporaryDirectory()
         self.addCleanup(temporary.cleanup)
         root = Path(temporary.name)
@@ -453,35 +453,60 @@ class CodeCoverageBenchmarkMetricsTests(unittest.TestCase):
         self._write_run(workspace)
         result = benchmark._collect_result(workspace, "failure", 1)
 
-        first_commit = benchmark._publish_result(repository, workspace, result)
-        second_commit = benchmark._publish_result(repository, workspace, result)
+        with patch.object(
+                benchmark,
+                "get_authenticated_login",
+                return_value="test-bot",
+        ):
+            first = benchmark._publish_result(repository, workspace, result)
+            second = benchmark._publish_result(repository, workspace, result)
 
-        self.assertEqual(first_commit, second_commit)
+        self.assertEqual(first, second)
+        self.assertFalse(first.already_merged)
+        self.assertIsNotNone(first.branch)
         metrics_path = "code-coverage-benchmarks/com.example/demo/1.0.0.json"
         stored = _git(
             repository,
             "show",
-            f"{second_commit}:{metrics_path}",
+            f"{first.commit}:{metrics_path}",
         ).stdout
         self.assertEqual([result], json.loads(stored))
         self.assertEqual(
-            benchmark.COMMIT_SUBJECT,
+            benchmark.DESCRIPTOR_COMMIT_SUBJECT,
             _git(
                 repository,
                 "show",
                 "-s",
                 "--format=%s",
-                second_commit,
+                first.commit,
             ).stdout.strip(),
         )
+        descriptor_path = "stats/com.example/demo/1.0.0/forge-publication.json"
+        descriptor = json.loads(
+            _git(repository, "show", f"{first.commit}:{descriptor_path}").stdout
+        )
+        self.assertEqual(benchmark.BENCHMARK_TASK_TYPE, descriptor["task_type"])
+        self.assertEqual("run-1", descriptor["benchmark_run_id"])
+        self.assertEqual(result, descriptor["render"]["benchmark_result"])
+        master_object = subprocess.run(
+            ["git", "cat-file", "-e", f"origin/master:{metrics_path}"],
+            cwd=repository,
+            check=False,
+            capture_output=True,
+            text=True,
+        )
+        self.assertNotEqual(0, master_object.returncode)
         changed = _git(
             repository,
-            "show",
-            "--pretty=",
+            "diff",
             "--name-only",
-            second_commit,
+            "origin/master",
+            first.commit,
         ).stdout.splitlines()
-        self.assertEqual([metrics_path], [line for line in changed if line])
+        self.assertEqual(
+            sorted((metrics_path, descriptor_path)),
+            sorted(line for line in changed if line),
+        )
         self.assertEqual([], list(workspace.parent.glob("publisher-*")))
 
 
@@ -518,7 +543,13 @@ class CodeCoverageBenchmarkTerminalResultTests(unittest.TestCase):
         with patch.dict("os.environ", {"RHEI_RESULT_PATH": str(path)}), \
                 patch.object(benchmark, "_read_json", return_value={}), \
                 patch.object(benchmark, "_collect_result", return_value=result), \
-                patch.object(benchmark, "_publish_result", return_value="c" * 40):
+                patch.object(
+                    benchmark,
+                    "_publish_result",
+                    return_value=benchmark.BenchmarkPublication(
+                        "c" * 40, "ai/test/benchmark", "forge-benchmark-id", False,
+                    ),
+                ):
             benchmark.publish_workspace(workspace, requested_status="success")
 
         recorded = path.read_text(encoding="utf-8")
