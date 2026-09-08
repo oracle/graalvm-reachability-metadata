@@ -190,39 +190,54 @@ name.
 
 A benchmark workspace routes successful finalization to a deterministic
 `code-coverage-benchmark-publication` task instead of the normal publication
-task. It must not push
-the generated source branch, publish a Forge branch descriptor, open a pull
-request, or change the synthetic issue.
+task. It must not push the generated source branch or change the synthetic
+issue. It publishes the compact benchmark result through the trusted Forge
+publication boundary: the local runner pushes a same-repository `ai/**` branch
+carrying the result and a benchmark-result publication descriptor, and trusted
+default-branch Actions validate that exact branch and open its pull request.
+The local runner must never call the pull-request API itself.
 
-Benchmark publication reads the finalized coverage record and Rhei accounting,
-writes the metrics record in §FS-code-coverage-benchmarking.4, and commits and
-pushes only that record to the same reachability-metadata repository. Results
-live in one JSON list per coordinate:
+Benchmark publication reads the finalized coverage record and Rhei accounting
+and writes the metrics record in §FS-code-coverage-benchmarking.4. Results live
+in one JSON list per coordinate:
 
 ```text
 code-coverage-benchmarks/<group>/<artifact>/<version>.json
 ```
 
-Every execution is appended immediately after it finishes, ordered by timestamp.
-Its `runId` is the idempotency key: retrying an identical result validates the
-existing entry instead of appending it again, while conflicting data for one
-run ID is rejected. Publication serializes local writers and creates a fresh
-disposable worktree from the latest `origin/master` for each result. It appends
-the result, commits, and pushes from that worktree, then removes it. A push race
-retries with another fresh worktree; publication never reuses or resets a
-publishing checkout.
+Every execution is proposed immediately after it finishes, ordered by
+timestamp. Its `runId` is the idempotency key: retrying an identical result
+validates either the entry already merged into `origin/master` or the exact
+open publication branch instead of creating another pull request, while
+conflicting data for one run ID is rejected. Publication serializes local
+writers and creates a fresh disposable worktree from the latest
+`origin/master` for each result. It appends the result, validates and commits
+the complete coordinate list, writes a descriptor that repeats the exact result
+and names its repository path, commits the descriptor at the required
+coordinate-local `stats/**/forge-publication.json` path, and pushes the unique
+publication branch. The worktree is then removed.
+
+The trusted publisher accepts a benchmark-result descriptor only when the
+branch changes exactly the coordinate result list and that one descriptor, the
+descriptor's coordinate determines both paths, the embedded result validates
+against the benchmark-result schema, and the list is exactly the base list plus
+that result. It opens one `rhei`-labeled pull request for the run and renders
+the run identity, status, configuration, coverage gain, and token totals from
+the validated descriptor. Repository CI and the normal merge boundary remain
+responsible for accepting it. §FS-forge-publication-readiness
 
 The outer launcher must invoke the same metrics collector when Rhei terminates
 before reaching benchmark publication. Thus a failed or partial workflow remains
 a benchmark result rather than disappearing from the comparison.
 
 The normalized result must be written into the workspace before Git publication,
-and a publication marker may be written only after a successful push. The
-source worktree may be removed only after that marker exists. The Rhei workspace
-must not be removed: it remains on the machine for later inspection of its
-reports, prompts, accounting, fixes, and work notes. If metrics writing or
-pushing fails, both the source worktree and workspace remain so completion can
-be retried without losing evidence.
+and a publication marker may be written only after the publication branch is
+durable or the identical result is already merged. The source worktree may be
+removed only after that marker exists. The Rhei workspace must not be removed:
+it remains on the machine for later inspection of its reports, prompts,
+accounting, fixes, and work notes. If metrics writing, descriptor validation, or
+branch pushing fails, both the source worktree and workspace remain so
+completion can be retried without losing evidence.
 
 The launcher provides a command that discovers workspaces without a publication
 marker and retries their result publication without rerunning coverage.

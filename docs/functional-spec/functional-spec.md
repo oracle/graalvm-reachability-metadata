@@ -100,8 +100,10 @@ The `forge/` toolkit composes LLM agents (Aider, Codex, Pi) with deterministic G
 2. **Fix `javac` failures** raised by a library version bump.
 3. **Fix native-image runtime failures** raised by a library version bump.
 4. **Improve coverage** of already-supported libraries by targeting uncovered dynamic-access call sites.
+5. **Record code coverage benchmarks** — publish compact, reproducible benchmark
+   results through descriptor-backed pull requests without shipping generated tests.
 
-Each Forge run records per-library metrics under `stats/<group>/<artifact>/<version>/execution-metrics.json` and, when invoked through `git_scripts/publish_*.py`, pushes a verified branch that trusted GitHub Actions turn into a PR ready for human review. See [forge/README.md](../../forge/README.md) and [forge/docs/functional-spec/functional-spec.md](../../forge/docs/functional-spec/functional-spec.md).
+Each Forge run records per-library metrics under `stats/<group>/<artifact>/<version>/execution-metrics.json` and, when invoked through a publication script or the benchmark result publisher, pushes a verified branch that trusted GitHub Actions turn into a PR ready for review. See [forge/README.md](../../forge/README.md) and [forge/docs/functional-spec/functional-spec.md](../../forge/docs/functional-spec/functional-spec.md).
 
 #### GitHub label contract
 
@@ -125,6 +127,7 @@ GitHub labels are part of the public triage surface for issues and PRs. Pipeline
 | `docker` | PR | PR updates allowed Docker images used by tests. |
 | `GenAI` | PR | PR was produced by generative-AI automation. Generated PR titles also use a `[GenAI]` prefix when created by the corresponding Forge scripts. |
 | `priority` | Issue | Work-queue priority marker. Forge processes matching issues after `high-priority` issues and before regular issues in the same pipeline batch; issue triage also adds it to eligible native-build-tools-created support requests. |
+| `rhei` | PR | PR was produced by a Rhei workflow, including compact code coverage benchmark results. |
 | `high-priority` | Issue | Highest work-queue urgency marker. Compatibility automation adds it to failed updates for artifacts whose latest index entry sets `high-priority: true`, and Forge processes it before `priority` and regular issues in the same pipeline batch. |
 | `chunked-dynamic-access` | Issue | Forge split dynamic-access generation for this issue into class-aligned chunks because the uncovered class count exceeded the configured threshold. Normal project status controls whether Forge may claim the next chunk. |
 | `human-intervention` | Issue / PR | Automation could not safely complete the work without manual follow-up, or automated PR review requested changes. |
