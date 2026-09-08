@@ -1,9 +1,9 @@
 {
   "add_new_library_support:2026-09-07": {
-    "timestamp": "2026-09-07T07:46:33.197802Z",
+    "timestamp": "2026-09-07T23:44:20.019314Z",
     "library": "io.micronaut:micronaut-router:5.1.13",
-    "starting_commit": "f48e405786045c0b842770ee939bd8b278f68b4d",
-    "ending_commit": "4f2a7bf6c3c4b63f6000c086afbfe89c4f7d266a",
+    "starting_commit": "bfaff0b6b068db5ac9bbb1855b472d8044589f6a",
+    "ending_commit": "6f83493cb895a5433c904c643f9b054fb8b2dd4b",
     "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-sol",
     "agent": "pi",
     "model": "gpt-5.6-sol",
@@ -18,62 +18,81 @@
       },
       "libraryCoverage": {
         "instruction": {
-          "covered": 4530,
-          "missed": 6991,
-          "ratio": 0.393195,
+          "covered": 4865,
+          "missed": 6656,
+          "ratio": 0.422272,
           "total": 11521
         },
         "line": {
-          "covered": 949,
-          "missed": 1436,
-          "ratio": 0.397904,
+          "covered": 1008,
+          "missed": 1377,
+          "ratio": 0.422642,
           "total": 2385
         },
         "method": {
-          "covered": 226,
-          "missed": 452,
-          "ratio": 0.333333,
+          "covered": 255,
+          "missed": 423,
+          "ratio": 0.376106,
           "total": 678
         }
       }
     },
     "library_preparation_preflight": {
-      "status": "degraded",
-      "action": "no_action",
-      "issue_number": 9834,
+      "status": "completed",
+      "action": "advisory_preparation",
+      "issue_number": 9830,
       "issue_label": "library-new-request",
       "library": "io.micronaut:micronaut-router:5.1.13",
-      "summary": "Library preparation preflight did not produce usable advisory setup.",
-      "deterministic_setup": [],
-      "agent_guidance": "",
-      "risks": [],
-      "applied_setup": [],
+      "summary": "Annotated route coverage requires Micronaut compile-time annotation processing beyond the plain scaffold.",
+      "deterministic_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "io.micronaut:micronaut-inject-java:5.1.13",
+          "scope": "testImplementation",
+          "reason": "The resolved router artifact supplies runtime Micronaut dependencies but not the Java processor required for generated bean and route definitions. Micronaut’s normal routing model is annotation-driven. [Micronaut routing guide](https://docs.micronaut.io/snapshot/guide/index.html)"
+        }
+      ],
+      "agent_guidance": "Ensure the dependency is active on the test annotation-processor path (testAnnotationProcessor for Java). Exercise annotated controllers, route selection, versioning, filters, programmatic routes, URI utilities, and static resources in-process with ApplicationContext. No Docker image, external service, environment variable, or system property is required.",
+      "risks": [
+        "Without annotation processing, annotated route discovery may be absent or fail in Native Image.",
+        "Avoid adding HTTP server modules solely for router coverage; the router and its resolved transitive dependencies support in-process testing."
+      ],
+      "applied_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "io.micronaut:micronaut-inject-java:5.1.13",
+          "result": "already_present",
+          "target": "tests/src/io.micronaut/micronaut-router/5.1.13/build.gradle"
+        }
+      ],
       "input_evidence": [
         {
           "name": "issue",
-          "summary": "#9834 Support for io.micronaut:micronaut-router:5.1.13; label=library-new-request; body_chars=39"
+          "summary": "#9830 Support for io.micronaut:micronaut-router:5.1.13; label=library-new-request; body_chars=39"
         },
         {
           "name": "existing_tests",
-          "summary": "0 existing test file path(s) included"
+          "summary": "7 existing test file path(s) included"
         }
       ],
-      "failure_reason": "RuntimeError: preflight agent exited 1",
       "model": "gpt-5.6-luna",
+      "input_tokens_used": 1485692,
+      "output_tokens_used": 10786,
       "prompt_path": "library-preflight-prompt.txt",
-      "session_log_path": "/home/mihailo/git/graalvm-reachability-metadata/forge/logs/io.micronaut:micronaut-router:5.1.13/library-preparation-preflight/codex-session-s4xy2iw_.log"
+      "raw_response_path": "library-preflight-response.txt",
+      "session_log_path": "/home/mihailo/git/graalvm-reachability-metadata/forge/logs/io.micronaut:micronaut-router:5.1.13/library-preparation-preflight/codex-session-j5lmi9sp.log"
     },
     "metrics": {
-      "input_tokens_used": 360595,
-      "cached_input_tokens_used": 6508544,
-      "output_tokens_used": 42867,
-      "iterations": 5,
-      "cost_usd": 6.3433,
-      "generated_loc": 260,
-      "tested_library_loc": 949,
+      "input_tokens_used": 314142,
+      "cached_input_tokens_used": 5590400,
+      "output_tokens_used": 41723,
+      "iterations": 9,
+      "cost_usd": 5.6176,
+      "generated_loc": 448,
+      "tested_library_loc": 1008,
       "metadata_entries": 4,
-      "test_only_metadata_entries": 34,
-      "code_coverage_percent": 39.79
+      "test_only_metadata_entries": 36,
+      "code_coverage_percent": 42.26
     },
     "artifacts": {
       "metadata_file": "metadata/io.micronaut/micronaut-router/5.1.13/reachability-metadata.json"
