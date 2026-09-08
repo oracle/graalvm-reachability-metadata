@@ -187,46 +187,30 @@ bulk-update label. Each queue has a per-label limit env var (defaulting to
 reviewer is the worker-configured analysis role, with no review-specific agent,
 model, provider, or thinking override (§FS-forge-agent-runtime-selection).
 
-**Candidate selection.** For each queue, orchestration fetches PRs carrying the
-queue label, plus PRs carrying `human-intervention-fixed`. It first refreshes a
-conflicting same-repository head when git can merge the base without judgment,
-then selects for review only PRs whose CI checks all completed successfully,
-which are not authored by the authenticated review user, and which are not
-still blocked by `human-intervention`. The loaded current-head state retains
-named check-run details and their Actions workflow provenance. Running checks
-wait. For a failed workflow run on the current head, orchestration reruns failed
-jobs while `run_attempt < 3`; at attempt `3` or above it skips review without
-mutating the pull request or any linked issue. PRs labeled
-`human-intervention` are skipped until a maintainer marks them
-`human-intervention-fixed`, at which point orchestration may dismiss stale
-requested-changes reviews and let normal merge gates proceed
-(§FS-automated-pr-review).
+**Candidate validation.** Labels select queues but never establish trust. For
+each candidate, orchestration loads the descriptor from the exact current head
+and reuses the trusted publisher's schema and publication validation. Only an
+upstream `ai/**` head whose validated task is a supported generated route or
+benchmark can continue. Conflicting same-repository heads are refreshed when
+git can merge the base without judgment, then re-evaluated on a later pass.
 
-**Attested direct approval.** Before creating a review worktree, orchestration
-looks for one successful `Forge Local Review Attestation` check attached to the
-candidate's current `headRefOid`. The check is trusted only when its check suite
-belongs to GitHub Actions and its workflow run identifies the repository's
-`Forge Branch Ready` workflow. On a match, Forge creates a pull-request review
-with event `APPROVE` and an explicit `commit_id` equal to that head SHA, then
-calls the ordinary post-review reconciliation. Missing or unverifiable
-provenance, any other conclusion, malformed data, or an attestation on another
-commit leaves the candidate on the agent path. A failed direct-approval request
-records that PR as failed and does not reconcile it.
+**Decision execution.** Rejected decisions are reconciled immediately without
+waiting for CI. Approved generated descriptors and validated benchmark-result
+descriptors receive a deterministic GitHub approval bound to the exact head.
+Running checks wait; successful non-blocking merge gates permit merge. A
+`human-intervention-fixed` label remains the explicit maintainer override and
+can resume this deterministic path without a semantic review agent.
 
-**Isolated review run.** Before selecting agent review work, orchestration validates
-the parent process's GitHub CLI authentication and the selected analysis
-backend's authentication without invoking a model (§FS-automated-pr-review).
-Each selected PR without a reusable attestation is reviewed in a throwaway
-detached worktree created from a freshly fetched base ref, with the PR checked
-out in detached HEAD.
-The selected analysis agent is trusted with the authenticated GitHub CLI, reads
-live PR metadata and checks, applies the label-specific checked-in rules, and
-uses targeted diffs against the fresh base before submitting the review itself.
-The shared analysis runtime owns invocation, durable logging, failures, and
-token accounting (§FS-durable-generation-logs); orchestration supplies only the
-review prompt, worktree, and GitHub-access capability. The worktree is cleaned
-up afterward, and a timeout or unsuccessful agent turn is a review failure, not
-an approval.
+**Failed-CI repair.** Failed Actions runs are rerun while `run_attempt < 3`.
+After that budget on an approved head, orchestration creates a throwaway
+worktree at the exact PR head and invokes the worker-configured analysis role
+with the descriptor and failed-check evidence. The agent repairs only the
+contribution, performs the local-review responsibility over the result, and
+returns the decision data; trusted Forge code records findings, opens or reuses
+an infrastructure issue from structured evidence when required, rewrites and
+validates the descriptor, and pushes the same upstream branch. The next pass
+starts from that new exact head. No ordinary successful-CI path invokes an
+agent (§FS-automated-pr-review).
 
 **Scheduling and shutdown.** With `--period`, the review loop repeats after each
 interval; without it, it runs once. The loop checks the do-work stop markers

@@ -194,7 +194,7 @@ sequenceDiagram
         end
     end
     DR->>AG: local_review(diff, gate records, descriptor stats)
-    AG-->>DR: approved, or finding filed and repaired
+    AG-->>DR: approved, or rejected with action
     opt the review repaired the branch
         DR->>DR: finalize_run() + local_ci_check()
         opt either fails over the repaired tree
@@ -202,7 +202,7 @@ sequenceDiagram
             AG-->>DR: repaired or failed
             DR->>DR: finalize_run() + local_ci_check()
             opt either still fails
-                DR->>DR: local_review_checkpoint_reset()
+                DR->>DR: restore_verified_tree() + record rejection
             end
         end
     end
@@ -803,75 +803,41 @@ human-intervention handoff that happens today (§FS-human-intervention-policy).
 **Neural.** Judging whether a diff satisfies the review rules is what no gate can
 decide, and neither is the edit that answers a finding.
 
-Specified by §FS-local-branch-review. Except for the temporarily excluded
-`code-coverage-improvement` route, a second review of the branch before it is
-pushed runs cold — a detached worktree at the verified commit, no shared session
-with the run that produced it — over `base_ref..HEAD`, under the same
-`skills/review-*/SKILL.md` rules the post-push reviewer applies
-(§FS-automated-pr-review), selected by the same `task_type`, with the local
-evidence a PR reviewer never sees: the `local_ci_check()` records and the
-resolved descriptor statistics. Isolation is the mechanism here and not a
-detail — a review that shares a session with the run that produced the branch
-inherits every justification that run already talked itself into.
+Specified by §FS-local-branch-review. Except for deterministic coverage and
+benchmark publication routes, the authoritative review runs cold in a detached
+worktree at the verified commit, with no shared generation session. It reviews
+`base_ref..HEAD` under the applicable `skills/review-*/SKILL.md` rules and
+§root/FS-contribution-contract.5, selected by `task_type`, with the local
+`local_ci_check()` records and resolved descriptor statistics.
 
-A finding never reaches `agent_fix()`. That step is for a deterministic check
-that failed and can re-run to decide, and nothing can re-run to confirm that a
-rule violation is gone, so the reviewer that formed the finding is what answers
-it: it reports and edits in one pass. The phase records the structured verdict it
-returns — decision, comment, finding, fix note — as returned, and derives from
-git only which steps run next. A changed tree means `finalize_run()` and
-`local_ci_check()` run again, because a review repair can break either tier and
-nothing may be pushed that the gates have not seen. Those are deterministic, so
-their failure reaches `agent_fix()` on the usual terms, and a repair that still
-will not verify reaches `local_review_checkpoint_reset()`.
+A finding never reaches `agent_fix()`. The reviewer reports it and applies a
+contribution-local repair in one pass. Forge uses git only to decide whether
+`finalize_run()` and `local_ci_check()` must run again. A repair that survives
+those gates results in `approved`; a finding that cannot be resolved results in
+`rejected` with action `human-intervention` or `close`. Reviewer failure is
+the fixed rejected human-intervention outcome.
 
-Three outcomes — approved, repaired, or a finding left open — and none of them
-fails the run. The session log stays on the machine, the finding is committed to
-`forge/FINDINGS.md`, and the verdict rides the descriptor into the PR body as
-**Local Agent Review**. The label follows the reviewer's own non-approval or
-Forge's reverted repair, never a rewritten verdict
+The session log stays on the machine, every finding is committed to
+`forge/FINDINGS.md`, and the exact decision rides the descriptor into the PR
+body as **Local Agent Review**. Repair is not a descriptor decision state, and
+publication adds `human-intervention` only for the explicit rejected action
 (§FS-human-intervention-policy).
 
-### local_review_checkpoint_reset()
+### restore_verified_tree()
 
 **Algorithmic.**
 
-The step the run reaches when a review repair could not be made to verify: the
-review found something, the reviewer's edit broke finalization or the gate, and
-`agent_fix()` could not rescue it. The branch is still the one the run verified
-before any of that happened, so the correct outcome is to publish that branch,
-not to lose it — a review finding must never destroy a run that was already
-publishable (§FS-local-branch-review).
+When a review repair cannot pass finalization or the pre-publication gate after
+bounded deterministic-check repair, Forge returns to the last commit that those
+gates passed. This preserves an otherwise publishable generated result while
+ensuring an approval never describes edits that were discarded
+(§FS-local-branch-review).
 
-It is the same move `reset_to_class_checkpoint()` makes in exploration: return to
-the last commit that a gate actually passed over, which here is the verified
-pre-repair commit — the tree `local_ci_check()` cleared just before the review
-ran. Everything the review and its repair wrote to gate-covered paths is
-discarded, because none of it verifies.
-
-Two things survive the reset, and they are why this is a step of its own rather
-than a `git reset --hard`:
-
-- **The findings entry.** `forge/FINDINGS.md` is restored on top of the
-  checkpoint and committed. It is not a gate-covered path, nothing about it
-  failed, and a finding that cost a repair attempt is exactly the finding worth
-  a record. Discarding it would leave the run's most informative output on the
-  floor.
-- **The review verdict**, exactly as the reviewer wrote it. The reviewer judged
-  and repaired in good faith, and a reset does not make its decision wrong, so
-  the step edits nothing it returned. What it adds is its own fact — the repair
-  was reverted, this step broke, the restored tree is what ships — recorded
-  beside the verdict. The pending verification metrics are rewritten to the
-  record that describes *that* tree, since the failed re-run described a tree
-  that no longer exists.
-
-The reset does not fail the run. The branch publishes, and because the tree it
-publishes is no longer the one the reviewer approved, that recorded fact is what
-carries the human-intervention signal and opens the PR labeled
-(§FS-human-intervention-policy) — a maintainer
-gets a green branch, the finding that was not fixed, and the record of what
-happened when Forge tried. That is strictly more than the same run would have
-produced with no pre-push review at all, which is the bar this step has to clear.
+The findings entry survives on top of the checkpoint and records both the
+original violation and the failed repair. The descriptor records `rejected`
+with the disposition action; it does not expose `repair_reverted`,
+`published_tree`, or another intermediate state. Verification metrics are
+restored to the record for the tree that is actually published.
 
 ### publish_branch()
 
