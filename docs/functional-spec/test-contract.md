@@ -495,7 +495,9 @@ signature to close the gap. Instead, in order:
    This is the usual outcome and it keeps the shipped metadata justified.
 2. **If no public API works, the version is unsupportable.** Metadata no test
    justifies is not shipped: close the pull request, label the issue
-   `library-unsupported-version`, and report the incompatibility upstream.
+   `library-unsupported-version`, and report the incompatibility upstream, as
+   §FS-contribution-contract.5.4 sets out for the same case reached from the
+   library's side.
 
 ### 4.4 No dependence on resource metadata for machine-local paths
 

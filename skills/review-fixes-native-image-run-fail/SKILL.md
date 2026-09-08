@@ -103,7 +103,23 @@ The PR number or URL can be passed as an optional argument (for example, `1234`,
    - If current-defaults and future-defaults lanes both run, both should pass unless the PR clearly targets only one failing lane and the other failure is unrelated infrastructure noise.
    - If CI is flaky but the diff and coverage comparison are sound, ask for a rerun instead of blocking on speculation.
 
+## Disposition
+
+Finding a violation is half the review. **Read §FS-contribution-contract.5 and take the disposition it assigns** — `grund FS-contribution-contract.5 --full`, or section 5 of `docs/functional-spec/contribution-contract.md` in the checkout. That section is authoritative and this table is only a dispatch: it tells you which case you are in, not what the case permits. You are the party that acts, because the PR was generated and no author is waiting to answer a review comment.
+
+| Case | When | What you do |
+|---|---|---|
+| 5.1 | The violation is in the PR's own `metadata/`, `stats/`, and `tests/src/` files | Repair it on the PR head, push, re-run the affected checks, and say what you changed and why |
+| 5.2 | The only possible fix is build logic, harness code, workflows, or another coordinate | Do not repair there; revert such a change if the PR already carries one, then take 5.3 |
+| 5.3 | The cause is a defect in shared repository code | Find or open one issue for the defect, comment that the PR is blocked on it rather than on its own content, then take 5.5 |
+| 5.4 | The library's dynamic access is reachable only through behavior Native Image cannot support | Close the PR, label the linked issue `library-unsupported-version`, and close that issue |
+| 5.5 | Anything else, uncertainty included | Label the PR `human-intervention` and comment with the rule at issue, what you tried, and what you could not decide |
+
+Never close a PR under any case but 5.4. Read §FS-contribution-contract.5.1 before you repair: it bounds what a repair may do, and it carries the one exception that lets you drop a test scenario rather than fix it.
+
 ## Decision Rules
+
+These decide the verdict. **Disposition** above decides what you then do with it: a violation you can correct inside the PR's own files is repaired and pushed, not requested from an author who is not there.
 
 Approve when all of these are true:
 
@@ -122,7 +138,7 @@ Request changes when any of these are true:
 Ask for follow-up instead of rejecting when:
 
 - Stats needed for the old/new version comparison are missing or stale.
-- CI failed in a way that looks like infrastructure noise.
+- CI failed in a way that looks like infrastructure noise. A transient external failure is waited out; a reproducible defect in the repository's own code is case 5.3 of **Disposition** (§FS-contribution-contract.5.3).
 - A failing repair-coverage scope may reflect a plausible upstream API or runtime change, but the PR does not explain it.
 
 ## Output Style
