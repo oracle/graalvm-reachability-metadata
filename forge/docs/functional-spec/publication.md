@@ -315,12 +315,15 @@ with the local evidence that repository CI does not provide.
 
 **Isolation and authority.** The review runs cold in a worktree detached at the
 verified commit and in a session carrying no generation transcript. Forge invokes
-the worker-configured analysis role (§FS-forge-agent-runtime-selection), supplies
-the prompt and evidence, and owns execution and logging. The reviewer applies
-the task's label-specific rules and the first matching disposition in
-§root/FS-contribution-contract.5. This is the ordinary generated branch's one
-semantic review; the published-PR process executes its decision without another
-general review agent.
+the worker-configured analysis role (§FS-forge-agent-runtime-selection), requests
+`xhigh` reasoning, supplies the prompt and evidence, and owns execution and
+logging. The reviewer applies the task's label-specific rules and the first
+matching disposition in §root/FS-contribution-contract.5. Its prompt enumerates
+the mutation-producing finalization duties and requires the reviewer to run them
+after its last edit, repair their failures inside the contribution, and write the
+verdict only for that stable finalized tree. This is the ordinary generated
+branch's one semantic review; neither local verification nor the published-PR
+process launches another general repair or review agent after that verdict.
 
 **Outcomes.** The review has exactly two decisions:
 
@@ -360,14 +363,16 @@ descriptor state; `changes_requested`, `repaired`, `repair_reverted`, and
 `published_tree` are not control-flow outcomes.
 
 **Forge verifies edits.** Forge derives the changed paths and owns staging and
-commits. A changed tree reruns finalization
+commits. A changed tree replays finalization
 (§FS-local-ci-equivalent-verification.1) and the pre-publication gate
-(§FS-local-ci-equivalent-verification.2); an unchanged tree does not. If a
-review repair still cannot pass those deterministic gates after their bounded
-repair, Forge restores the last verified tree, records the failed attempt in the
-finding, and publishes that exact tree as `rejected` with the action selected
-by the disposition ladder. An approval of a discarded tree must never describe
-the published head.
+(§FS-local-ci-equivalent-verification.2) with every secondary agent repair
+disabled; an unchanged tree does not. This replay is verification, not another
+mutation phase: the head and worktree must remain byte-for-byte equal to the
+reviewed commit. If either gate fails or changes that tree, Forge restores the
+last verified tree, records the failed attempt in the finding, and publishes
+that exact tree as `rejected` with the action selected by the disposition
+ladder. No edit made after the verdict may enter the published head, and an
+approval of a discarded tree must never describe it.
 
 **Durability and rendering.** The review prompt, response, and repair pass are
 durable task logs (§FS-durable-generation-logs). Its in-flight verdict is staged
