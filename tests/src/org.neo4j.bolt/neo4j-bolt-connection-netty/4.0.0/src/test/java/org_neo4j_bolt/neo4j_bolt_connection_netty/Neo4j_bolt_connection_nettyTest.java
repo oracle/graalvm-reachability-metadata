@@ -138,7 +138,7 @@ public class Neo4j_bolt_connection_nettyTest {
             assertThat(connection.protocolVersion()).isEqualTo(new BoltProtocolVersion(5, 8));
             assertThat(connection.telemetrySupported()).isTrue();
             assertThat(connection.serverSideRoutingEnabled()).isFalse();
-            assertThat(connection.defaultReadTimeout()).contains(Duration.ofSeconds(7));
+            assertThat(connection.defaultReadTimeout()).contains(Duration.ofSeconds(10));
 
             AuthInfo authInfo = await(connection.authInfo());
             assertThat(authInfo.authToken().asMap().get("scheme").asString()).isEqualTo("none");
@@ -171,7 +171,7 @@ public class Neo4j_bolt_connection_nettyTest {
                                     "bm-1",
                                     Set.of("neo4j"),
                                     TransactionType.DEFAULT,
-                                    Duration.ofSeconds(1),
+                                    Duration.ofSeconds(10),
                                     Map.of("purpose", VALUE_FACTORY.value("integration-test")),
                                     NotificationConfig.defaultConfig()),
                             Messages.commit())));
@@ -216,7 +216,7 @@ public class Neo4j_bolt_connection_nettyTest {
                                     Set.of("bm-before-auto-commit"),
                                     "RETURN $name",
                                     Map.of("name", VALUE_FACTORY.value("Bob")),
-                                    Duration.ofSeconds(2),
+                                    Duration.ofSeconds(10),
                                     Map.of("purpose", VALUE_FACTORY.value("auto-commit-test")),
                                     NotificationConfig.defaultConfig()),
                             Messages.discard(-1, 1))));
@@ -426,7 +426,7 @@ public class Neo4j_bolt_connection_nettyTest {
                         "server", "Neo4j/5.26-test",
                         "connection_id", "bolt-1",
                         "hints", Map.of(
-                                "connection.recv_timeout_seconds", 7L,
+                                "connection.recv_timeout_seconds", 10L,
                                 "telemetry.enabled", true,
                                 "ssr.enabled", true)));
                 case 0x10 -> writeSuccess(output, Map.of(
