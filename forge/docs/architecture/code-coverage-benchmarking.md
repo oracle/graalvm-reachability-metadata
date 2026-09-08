@@ -18,7 +18,8 @@ implements §FS-code-coverage-benchmarking while preserving
 | Code coverage Rhei template | Switches conversion and publication behavior through the `benchmark` input. |
 | Source worktree | Disposable checkout of the fixed `benchmarkSuiteCommit`. |
 | Rhei workspace | Permanent local record keyed by `runId` and named `code-coverage-99000`. |
-| Publication worktree | Fresh checkout of `origin/master` used to append and push one result, then removed. |
+| Publication worktree | Fresh checkout of `origin/master` used to append one result and push its descriptor-backed PR branch, then removed. |
+| Trusted Actions publisher | Validates the exact result and descriptor from default-branch code and opens the benchmark-result PR. |
 
 Two commits describe different axes:
 
@@ -54,6 +55,7 @@ sequenceDiagram
     participant W as Preserved workspace
     participant P as Disposable publication worktree
     participant M as origin/master
+    participant A as Trusted publisher
 
     O->>L: run with optional filters
     L->>L: load suite and validate selectors
@@ -95,9 +97,12 @@ sequenceDiagram
         G-->>P: fresh publication checkout
         B->>P: append result.json by runId
         P->>P: validate and commit coordinate JSON
-        P->>M: push HEAD:master
-        M-->>P: push accepted
-        P-->>B: published commit
+        P->>P: write and commit descriptor
+        P->>M: push unique ai/** branch
+        M-->>A: Forge Branch Ready succeeds
+        A->>A: validate exact result and descriptor
+        A->>M: open benchmark-result PR
+        P-->>B: durable publication branch
         B->>G: remove publication worktree
         B->>W: write publication.json
         end
@@ -141,6 +146,7 @@ sequenceDiagram
     participant S as Source worktree
     participant P as Disposable publication worktree
     participant M as origin/master
+    participant A as Trusted publisher
 
     L->>R: execute benchmark cell
     alt workflow stops before terminal publication
@@ -158,10 +164,10 @@ sequenceDiagram
     B->>G: create publisher at origin/master
     G-->>P: fresh publication checkout
     B->>P: append result.json by runId
-    alt push succeeds
-        P->>M: push coordinate metrics
-        M-->>P: accepted
-        P-->>B: published commit
+    alt branch push succeeds
+        P->>M: push result and descriptor branch
+        M-->>A: validate and open PR asynchronously
+        P-->>B: publication branch accepted
         B->>G: remove publication worktree
         B->>W: write publication.json
         L->>S: remove disposable source
@@ -180,7 +186,8 @@ sequenceDiagram
     B->>M: fetch latest origin/master
     B->>G: create fresh publication worktree
     B->>P: append identical result by runId
-    P->>M: push coordinate metrics
+    P->>M: push result and descriptor branch
+    M-->>A: validate and open PR asynchronously
     B->>G: remove publication worktree
     B->>W: write publication.json
     L->>S: remove source
@@ -188,8 +195,9 @@ sequenceDiagram
 ```
 
 `result.json` is written before Git publication and is immutable for its
-`runId`. A retry either finds an identical remote entry or appends the
-same object. Different data with the same `runId` is an integrity error.
+`runId`. A retry either finds an identical merged entry, reuses its exact
+remote publication branch, or proposes the same object. Different data with
+the same `runId` is an integrity error.
 
 ## 4. Data locations
 
@@ -219,13 +227,18 @@ forge/local_repositories/code_coverage_benchmarks/
         logs/
 ```
 
-Only portable result lists enter the repository:
+Only portable result lists and their coordinate-local publication descriptors
+enter the publication branch:
 
 ```text
 code-coverage-benchmarks/
   <group>/
     <artifact>/
       <version>.json
+stats/
+  <group>/
+    <artifact>/
+      <version>/forge-publication.json
 ```
 
 `run.json` may contain machine-specific paths because it drives recovery.
@@ -274,14 +287,19 @@ Under that lock, every attempt:
 4. Sorts by timestamp and `runId`.
 5. Validates the complete coordinate list.
 6. Commits only that coordinate JSON path.
-7. Pushes to `origin/master`.
-8. Removes the publication worktree.
+7. Writes and validates a descriptor containing the exact result and path.
+8. Commits the descriptor as the tip commit.
+9. Pushes the unique `ai/**` publication branch.
+10. Removes the publication worktree.
 
-A push race repeats the sequence with another fresh worktree. An identical entry
-is success; a conflicting entry is rejected. The publication marker is last, so
-its presence means the portable result is durable and source cleanup may begin.
-Publication-worktree cleanup failure is operational state and must not
-reclassify a successful result. §FS-code-coverage-benchmarking.3
+Trusted Actions then validates that the branch is exactly the base list plus the
+descriptor's result and opens the pull request; feature-branch code never gets
+publication credentials. A retry reuses an identical remote branch or accepts
+an identical result already merged into `origin/master`; a conflicting entry is
+rejected. The publication marker is last, so its presence means the portable
+result is durable on a publication branch or already merged and source cleanup
+may begin. Publication-worktree cleanup failure is operational state and must
+not reclassify a successful result. §FS-code-coverage-benchmarking.3
 
 ## 7. Configuration and extension
 

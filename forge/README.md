@@ -162,9 +162,10 @@ compose and accept multiple values:
 
 Each cell keeps its Rhei workspace below
 `local_repositories/code_coverage_benchmarks/`, immediately appends compact
-metrics to
-`../code-coverage-benchmarks/<group>/<artifact>/<version>.json`, and removes
-only its disposable source worktree after publication succeeds. Retry preserved
+metrics to `../code-coverage-benchmarks/<group>/<artifact>/<version>.json` on a
+descriptor-backed `ai/**` branch, and lets trusted Actions open the result PR.
+It removes only its disposable source worktree after the branch is durable or
+the result is already merged. Retry preserved
 unpublished results without rerunning coverage:
 
 ```console

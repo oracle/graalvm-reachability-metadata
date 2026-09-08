@@ -46,8 +46,13 @@
       "$ref": "#/$defs/commit"
     },
     "issue_number": {
-      "type": "integer",
+      "type": ["integer", "null"],
       "minimum": 1
+    },
+    "benchmark_run_id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 200
     },
     "library": {
       "$ref": "#/$defs/library"
@@ -63,6 +68,7 @@
         "fixes-java-run-fail",
         "fixes-native-image-run-fail",
         "not-for-native-image",
+        "code-coverage-benchmark-result",
         "code-coverage-improvement"
       ]
     },
@@ -74,6 +80,7 @@
         "fixes-java-run-fail",
         "fixes-native-image-run-fail",
         "not-for-native-image",
+        "code-coverage-benchmark-result",
         "code-coverage-improvement"
       ]
     },
@@ -380,7 +387,7 @@
     {
       "if": {
         "properties": {
-          "task_type": {"const": "code-coverage-improvement"}
+          "task_type": {"enum": ["code-coverage-improvement", "code-coverage-benchmark-result"]}
         },
         "required": ["task_type"]
       },
@@ -389,6 +396,38 @@
       },
       "else": {
         "required": ["local_review"]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "task_type": {"const": "code-coverage-benchmark-result"}
+        },
+        "required": ["task_type"]
+      },
+      "then": {
+        "required": ["benchmark_run_id"],
+        "properties": {
+          "issue_number": {"type": "null"},
+          "template_type": {"const": "code-coverage-benchmark-result"},
+          "render": {
+            "properties": {
+              "benchmark_result": {"type": "object"}
+            },
+            "required": ["benchmark_result"]
+          }
+        }
+      },
+      "else": {
+        "properties": {
+          "issue_number": {
+            "type": "integer",
+            "minimum": 1
+          }
+        },
+        "not": {
+          "required": ["benchmark_run_id"]
+        }
       }
     },
     {
@@ -807,6 +846,12 @@
           ]
         },
         "code_coverage": {
+          "type": [
+            "object",
+            "null"
+          ]
+        },
+        "benchmark_result": {
           "type": [
             "object",
             "null"

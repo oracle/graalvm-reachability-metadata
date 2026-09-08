@@ -37,7 +37,12 @@ SEVERE_METADATA_DROP_RATIO = 0.25
 DYNAMIC_ACCESS_METADATA_ENTRY_NOTE_RATIO = 1.75
 PUBLISHER_LOGIN = "graalvmbot"
 LOCAL_REVIEW_ATTESTATION_OUTPUT = "local_review_attestation"
-PUBLICATION_ID_SUFFIX = re.compile(r"(forge-\d+-\d{14,20}-[0-9a-f]{12})$")
+PUBLICATION_ID_SUFFIX = re.compile(
+    r"(forge-(?:\d+|benchmark)-\d{14,20}-[0-9a-f]{12})$"
+)
+BENCHMARK_RESULT_SCHEMA_PATH = (
+    Path(__file__).resolve().parents[3] / "forge/schemas/code_coverage_benchmark_result_schema.json"
+)
 ROUTE_LABELS = {
     "library-new-request": ["GenAI", "library-new-request"],
     "library-update-request": ["GenAI", "library-update-request"],
@@ -45,6 +50,7 @@ ROUTE_LABELS = {
     "fixes-java-run-fail": ["GenAI", "fixes-java-run-fail"],
     "fixes-native-image-run-fail": ["fixes-native-image-run-fail"],
     "not-for-native-image": ["GenAI", "library-new-request", "not-for-native-image"],
+    "code-coverage-benchmark-result": ["GenAI", "code-coverage-improvement", "rhei"],
     "code-coverage-improvement": ["GenAI", "code-coverage-improvement", "rhei"],
 }
 
@@ -255,24 +261,46 @@ def validate_publication(
     if descriptor["publication_id"] != expected_publication_id:
         raise ValueError("Descriptor publication ID does not match its durable run inputs")
 
+    if descriptor["task_type"] == "code-coverage-benchmark-result":
+        _validate_benchmark_result_publication(
+            descriptor=descriptor,
+            descriptor_path=descriptor_path,
+            head_sha=head_sha,
+            base_commit=base_commit,
+            changed_paths=changed_paths,
+        )
     _validate_render_inputs(descriptor)
     return ValidatedPublication(descriptor, descriptor_path, head_sha)
 
 
 def _build_publication_id(descriptor: dict[str, Any]) -> str:
-    identity = json.dumps(
-        {
+    if descriptor["task_type"] == "code-coverage-benchmark-result":
+        benchmark_run_id = descriptor.get("benchmark_run_id")
+        if not isinstance(benchmark_run_id, str) or not benchmark_run_id:
+            raise ValueError("Benchmark publication requires a run ID")
+        identity_fields: dict[str, Any] = {
+            "benchmark_run_id": benchmark_run_id,
+            "timestamp": descriptor["timestamp"],
+            "coordinates": descriptor["library"]["coordinates"],
+            "task_type": descriptor["task_type"],
+        }
+        prefix = "benchmark"
+    else:
+        identity_fields = {
             "issue_number": descriptor["issue_number"],
             "timestamp": descriptor["timestamp"],
             "coordinates": descriptor["library"]["coordinates"],
             "task_type": descriptor["task_type"],
-        },
+        }
+        prefix = str(descriptor["issue_number"])
+    identity = json.dumps(
+        identity_fields,
         sort_keys=True,
         separators=(",", ":"),
     )
     digest = hashlib.sha256(identity.encode("utf-8")).hexdigest()[:12]
     compact_timestamp = re.sub(r"[^0-9]", "", descriptor["timestamp"])[:20]
-    return f"forge-{descriptor['issue_number']}-{compact_timestamp}-{digest}"
+    return f"forge-{prefix}-{compact_timestamp}-{digest}"
 
 
 def _validate_render_inputs(descriptor: dict[str, Any]) -> None:
@@ -294,7 +322,79 @@ def _validate_render_inputs(descriptor: dict[str, Any]) -> None:
             raise ValueError("Not-for-native-image publication requires a reason")
     if template_type == "code-coverage-improvement":
         _validate_code_coverage_render(descriptor["render"])
+    if template_type == "code-coverage-benchmark-result":
+        _validate_benchmark_result(descriptor["render"].get("benchmark_result"))
 
+
+def _validate_benchmark_result(result: Any) -> None:
+    """Validate one compact benchmark result using the trusted schema."""
+    if not BENCHMARK_RESULT_SCHEMA_PATH.is_file():
+        raise ValueError("Trusted benchmark result schema is unavailable")
+    with BENCHMARK_RESULT_SCHEMA_PATH.open(encoding="utf-8") as schema_file:
+        schema = json.load(schema_file)
+    Draft202012Validator(schema, format_checker=FormatChecker()).validate([result])
+
+
+def _json_value_at_commit(commit: str, path: str) -> Any:
+    """Read any JSON value from one exact commit."""
+    return json.loads(git("show", f"{commit}:{path}"))
+
+
+def _validate_benchmark_result_publication(
+        *,
+        descriptor: dict[str, Any],
+        descriptor_path: str,
+        head_sha: str,
+        base_commit: str,
+        changed_paths: list[str],
+) -> None:
+    """Accept exactly one schema-valid result appended to its coordinate list.
+
+    §forge/FS-code-coverage-benchmarking.3
+    """
+    library = descriptor["library"]
+    result_path = (
+        f"code-coverage-benchmarks/{library['group']}/{library['artifact']}/"
+        f"{library['version']}.json"
+    )
+    if changed_paths != sorted((descriptor_path, result_path)):
+        raise ValueError(
+            "Benchmark publication must change exactly its result list and descriptor"
+        )
+
+    result = descriptor["render"].get("benchmark_result")
+    _validate_benchmark_result(result)
+    if result["runId"] != descriptor["benchmark_run_id"]:
+        raise ValueError("Benchmark descriptor run IDs do not agree")
+    if result["coordinate"] != library["coordinates"]:
+        raise ValueError("Benchmark descriptor coordinate does not match its result")
+
+    head_entries = _json_value_at_commit(head_sha, result_path)
+    if not isinstance(head_entries, list):
+        raise ValueError("Benchmark result path must contain a JSON list")
+    with BENCHMARK_RESULT_SCHEMA_PATH.open(encoding="utf-8") as schema_file:
+        result_schema = json.load(schema_file)
+    Draft202012Validator(
+        result_schema,
+        format_checker=FormatChecker(),
+    ).validate(head_entries)
+
+    base_object = f"{base_commit}:{result_path}"
+    base_entries = (
+        _json_value_at_commit(base_commit, result_path)
+        if _git_object_exists(base_object)
+        else []
+    )
+    if not isinstance(base_entries, list):
+        raise ValueError("Base benchmark result path must contain a JSON list")
+    if any(entry.get("runId") == result["runId"] for entry in base_entries):
+        raise ValueError("Benchmark result already exists in the publication base")
+    expected_entries = [*base_entries, result]
+    expected_entries.sort(key=lambda entry: (entry["timestamp"], entry["runId"]))
+    if head_entries != expected_entries:
+        raise ValueError(
+            "Benchmark result list must be the sorted base list plus the descriptor result"
+        )
 
 def _validate_code_coverage_render(render: dict[str, Any]) -> None:
     """Require the finalized coverage evidence the coverage template reads."""
@@ -965,6 +1065,57 @@ def _render_code_coverage_improvement(
     return title, body
 
 
+def _benchmark_metric(value: Any, suffix: str = "") -> str:
+    """Render a nullable benchmark metric without inventing a zero."""
+    if value is None:
+        return "n/a"
+    return f"{value:,}{suffix}" if isinstance(value, int) else f"{value}{suffix}"
+
+
+def _render_code_coverage_benchmark_result(
+        descriptor: dict[str, Any],
+        _validated: ValidatedPublication | None,
+) -> tuple[str, str]:
+    """Render one schema-validated benchmark result. §forge/FS-code-coverage-benchmarking.3"""
+    result = descriptor["render"]["benchmark_result"]
+    coordinates = result["coordinate"]
+    model = result["configuredModel"]
+    thinking = result["thinking"]
+    title = f"[Benchmark] Record {coordinates} result ({model}, {thinking})"
+    coverage = result["total"]["coverage"]
+    tokens = result["total"]["tokens"]
+    lines = [
+        "## Code coverage benchmark result",
+        "",
+        f"- Run: `{result['runId']}`",
+        f"- Coordinate: `{coordinates}`",
+        f"- Status: `{result['status']}`",
+        f"- Agent: `{result['agent']}`",
+        f"- Configured model: `{model}`",
+        f"- Observed model: `{result['observedModel'] or 'n/a'}`",
+        f"- Thinking level: `{thinking}`",
+        f"- Benchmark suite commit: `{result['benchmarkSuiteCommit']}`",
+        f"- Runner commit: `{result['runnerCommit']}`",
+        "",
+        "## Result",
+        "",
+        f"- Covered methods: {_benchmark_metric(coverage['coveredBefore'])} → "
+        f"{_benchmark_metric(coverage['coveredAfter'])}",
+        f"- Methods gained: {_benchmark_metric(coverage['methodsGained'])}",
+        f"- Coverage gained: {_benchmark_metric(coverage['percentagePointsGained'], 'pp')}",
+        f"- Method universe: {_benchmark_metric(coverage['allMethods'])}",
+        f"- Input tokens: {_benchmark_metric(tokens['input'])}",
+        f"- Cached input tokens: {_benchmark_metric(tokens['cachedInputRead'])}",
+        f"- Output tokens: {_benchmark_metric(tokens['output'])}",
+    ]
+    failure = result.get("failure")
+    if isinstance(failure, dict):
+        lines += [
+            f"- Failure phase: `{failure['phase']}`",
+            f"- Exit code: `{failure['exitCode']}`",
+        ]
+    return title, "\n".join(lines)
+
 _TEMPLATE_BUILDERS = {
     "library-update-request": _render_library_update_request,
     "library-new-request": _render_library_new_request,
@@ -973,6 +1124,7 @@ _TEMPLATE_BUILDERS = {
     "fixes-native-image-run-fail": _render_native_image_run_fix,
     "not-for-native-image": _render_not_for_native_image,
     "code-coverage-improvement": _render_code_coverage_improvement,
+    "code-coverage-benchmark-result": _render_code_coverage_benchmark_result,
 }
 
 
