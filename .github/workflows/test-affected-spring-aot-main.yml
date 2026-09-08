@@ -92,7 +92,10 @@ jobs:
         with:
           distribution: 'graalvm'
           java-version: ${{ matrix.java }}
-          set-java-home: 'false'
+          # Spring AOT reflects on JDK types to generate hints, so it must run on the
+          # native-image JDK: a split JAVA_HOME records hints for the wrong JDK.
+          # §AR-test-affected-spring-aot.
+          set-java-home: 'true'
           native-image-job-reports: 'true'
           github-token: ${{ secrets.GITHUB_TOKEN }}
 

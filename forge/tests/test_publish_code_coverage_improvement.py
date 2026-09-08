@@ -260,6 +260,7 @@ class CoveragePublicationTests(unittest.TestCase):
         self.assertEqual(descriptor_input.issue_number, 8380)
         self.assertEqual(descriptor_input.status, "success")
         self.assertEqual(descriptor_input.render["worker_model"], "gpt-5.6-luna")
+        self.assertEqual(descriptor_input.render["worker_thinking_level"], "high")
         self.assertEqual(descriptor_input.render["token_usage"], usage)
         self.assertEqual(
             descriptor_input.render["code_coverage"]["coordinate"],
@@ -290,6 +291,20 @@ class CoveragePublicationTests(unittest.TestCase):
             module.model_slug("codex[xhigh]:openai:gpt-5.5"), "gpt-5.5"
         )
         self.assertEqual(module.model_slug("gpt-5.6-sol"), "gpt-5.6-sol")
+
+    def test_thinking_level_reads_the_mode_out_of_a_rhei_target(self) -> None:
+        self.assertEqual(
+            module.thinking_level("pi[high]:openai-codex/gpt-5.6-luna"),
+            "high",
+        )
+        self.assertEqual(
+            module.thinking_level("codex[xhigh]:openai:gpt-5.5"),
+            "xhigh",
+        )
+        self.assertEqual(
+            module.thinking_level("pi:openai-codex/gpt-5.6-sol"),
+            "default",
+        )
 
     def test_model_slug_rejects_a_target_without_a_model(self) -> None:
         with self.assertRaises(SystemExit):

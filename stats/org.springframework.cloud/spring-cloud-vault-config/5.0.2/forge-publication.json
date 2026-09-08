@@ -1,0 +1,156 @@
+{
+  "base_commit": "924e43477c9a1d0e9b372a75196292c19505a4ca",
+  "branch": "ai/kimeta/add-lib-support-org.springframework.cloud-spring-cloud-vault-config-5.0.2-chunked-forge-9705-20260905015635324980-edc53f669604",
+  "follow_ups": [],
+  "forge": {
+    "branch": "issue-9864-partial-bulk-progress",
+    "commit": "b601b85254d1c48b01dfab6e29ac0734df3af6f9",
+    "monitored_branch": "origin/issue-9864-partial-bulk-progress"
+  },
+  "issue_number": 9705,
+  "library": {
+    "artifact": "spring-cloud-vault-config",
+    "coordinates": "org.springframework.cloud:spring-cloud-vault-config:5.0.2",
+    "group": "org.springframework.cloud",
+    "version": "5.0.2"
+  },
+  "local_ci_verification": {
+    "base_commit": "924e43477c9a1d0e9b372a75196292c19505a4ca",
+    "commands": [
+      {
+        "command": [
+          "./gradlew",
+          "generateChangedIndexFileCoordinatesList",
+          "-PbaseCommit=origin/master",
+          "-PnewCommit=HEAD"
+        ],
+        "env": {
+          "GITHUB_OUTPUT": "/tmp/tmp09tj2qy4"
+        },
+        "gate": "changed-index-coordinates",
+        "log_path": "logs/changed-index-coordinates/local-ci/gradlew-2026-09-05T02-18-05-440560Z.log",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :generateChangedIndexFileCoordinatesList\n\n[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9705-0859023e/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 2s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      },
+      {
+        "command": [
+          "./gradlew",
+          "validateIndexFiles",
+          "-Pcoordinates=org.springframework.cloud:spring-cloud-vault-config"
+        ],
+        "env": {},
+        "gate": "index-file-validation",
+        "log_path": "logs/index-file-validation/local-ci/gradlew-2026-09-05T02-18-07-602966Z.log",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :validateIndexFiles\n✅ metadata/org.springframework.cloud/spring-cloud-vault-config/index.json: Valid\n\n[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9705-0859023e/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 1s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      }
+    ],
+    "failure_command": null,
+    "failure_gate": null,
+    "final_commit": "70494879abd3090cdb92455b484faf7dbc5570e1",
+    "fixups": [],
+    "human_intervention_required": false,
+    "repo_fix_paths": [],
+    "status": "success"
+  },
+  "local_review": {
+    "changed_paths": [
+      "tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/GrypeTask.java"
+    ],
+    "decision": "approved",
+    "failed_step": null,
+    "finding_body": "Review Signal #1 requires a new-library request to stay scoped to one target library and its supporting test files. tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/GrypeTask.java changed shared Docker scanning behavior to silently accept an empty image diff, which is unrelated to adding org.springframework.cloud:spring-cloud-vault-config:5.0.2.",
+    "finding_title": "New-library request included an unrelated shared GrypeTask behavior change",
+    "fix_note": "Restored GrypeTask.getChangedDockerImageNames() to the base behavior, removing the unrelated shared-infrastructure change. The resulting tree is approved after targeted metadata validation, Checkstyle, JVM testing, and Native Image testing passed.",
+    "model": "gpt-5.6-sol",
+    "published_tree": "repaired",
+    "repair_reverted": false,
+    "review_comment": "Reviewed the eventual PR diff, local gate evidence, test source/build configuration, metadata file presence and scope, and resolved statistics. The repaired diff is limited to org.springframework.cloud:spring-cloud-vault-config:5.0.2 and its supporting files; the test is library-specific, uses a separate package, has no native skip or version-pinned assertion, and passes on both the JVM and Native Image. Reported dynamic-access coverage is 1/2 (50%), and the reported counts do not trigger the metadata mismatch rule. Metadata validation, Checkstyle, JVM tests, and the complete targeted native test passed.",
+    "session_log_path": "logs/org.springframework.cloud:spring-cloud-vault-config:5.0.2/local-branch-review/pi.log",
+    "status": "completed"
+  },
+  "metrics": {
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "path": "stats/org.springframework.cloud/spring-cloud-vault-config/5.0.2/execution-metrics.json",
+    "summary": {
+      "cached_input_tokens_used": 8664704,
+      "code_coverage_percent": 20.51,
+      "cost_usd": 10.4229,
+      "generated_loc": 167,
+      "input_tokens_used": 797753,
+      "iterations": 8,
+      "metadata_entries": 93,
+      "output_tokens_used": 70058,
+      "test_only_metadata_entries": 75,
+      "tested_library_loc": 355
+    },
+    "timestamp": "2026-09-05T01:56:35.324980Z"
+  },
+  "modifiers": {
+    "chunk_final": true,
+    "chunked_dynamic_access": true,
+    "human_intervention": false
+  },
+  "producer": "kimeta",
+  "publication_id": "forge-9705-20260905015635324980-edc53f669604",
+  "render": {
+    "dynamic_access": null,
+    "dynamic_access_evidence": {
+      "covered_call_sites": [
+        "[reflection] java.lang.reflect.Field#set(java.lang.Object, java.lang.Object) <- org.springframework.cloud.vault.config.VaultConfigDataLoader.lambda$reconfigureLogger$0(VaultConfigDataLoader.java:415) (line 415)"
+      ],
+      "metadata_rules": [
+        "when `org.springframework.cloud.vault.config.VaultConfigDataLoader` is reached, make `ch.qos.logback.classic.BasicConfigurator.<init>()` available for reflection",
+        "when `org.springframework.cloud.vault.config.VaultConfigDataLoader` is reached, make `ch.qos.logback.classic.spi.LogbackServiceProvider` available for reflection",
+        "when `org.springframework.cloud.vault.config.VaultConfigDataLoader` is reached, make `ch.qos.logback.classic.util.DefaultJoranConfigurator.<init>()` available for reflection",
+        "when `org.springframework.cloud.vault.config.DefaultRestTemplateFactory` is reached, make `com.fasterxml.jackson.databind.JsonNode` available for reflection",
+        "when `org.springframework.cloud.vault.config.VaultConfigDataLoader$ImperativeInfrastructure` is reached, make `com.fasterxml.jackson.databind.ObjectMapper` available for reflection",
+        "when `org.springframework.cloud.vault.config.VaultConfigDataLoader$ImperativeInfrastructure` is reached, make `com.fasterxml.jackson.dataformat.cbor.CBORFactory` available for reflection",
+        "when `org.springframework.cloud.vault.config.VaultConfigDataLoader$ImperativeInfrastructure` is reached, make `com.fasterxml.jackson.dataformat.smile.SmileFactory` available for reflection",
+        "when `org.springframework.cloud.vault.config.VaultConfigDataLoader$ImperativeInfrastructure` is reached, make `com.fasterxml.jackson.dataformat.xml.XmlMapper` available for reflection",
+        "... and 62 more"
+      ]
+    },
+    "library_stats": {
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 0.5,
+            "coveredCalls": 1,
+            "totalCalls": 2
+          }
+        },
+        "coverageRatio": 0.5,
+        "coveredCalls": 1,
+        "totalCalls": 2
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 1416,
+          "missed": 5437,
+          "ratio": 0.206625,
+          "total": 6853
+        },
+        "line": {
+          "covered": 356,
+          "missed": 1375,
+          "ratio": 0.205661,
+          "total": 1731
+        },
+        "method": {
+          "covered": 117,
+          "missed": 443,
+          "ratio": 0.208929,
+          "total": 560
+        }
+      },
+      "version": "5.0.2"
+    }
+  },
+  "schema_version": 1,
+  "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-sol",
+  "task_type": "library-new-request",
+  "template_type": "library-new-request",
+  "timestamp": "2026-09-05T01:56:35.324980Z"
+}

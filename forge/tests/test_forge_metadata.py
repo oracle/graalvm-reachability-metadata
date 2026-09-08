@@ -612,20 +612,52 @@ class LibraryUpdateIssueTests(unittest.TestCase):
         context = argv[argv.index("--issue-requested-metadata-context") + 1]
         self.assertIn("org.example.Demo.setName", context)
 
-    def test_library_new_does_not_read_issue_body_or_pass_reporter_context(self) -> None:
+    def test_library_new_passes_issue_requested_metadata_context_to_workflow(self) -> None:
         claimed_issue = _claimed_issue(label=forge_metadata.LABEL_LIBRARY_NEW)
 
         with patch.object(forge_metadata, "require_claimed_issue_worktree"), \
                 patch.object(forge_metadata, "run_library_preparation_preflight", return_value=None), \
                 patch.object(forge_metadata, "prepare_dynamic_access_chunking", return_value=None), \
-                patch.object(forge_metadata, "get_issue_body") as issue_body, \
+                patch.object(
+                    forge_metadata,
+                    "get_issue_body",
+                    return_value="org.example.Demo needs reflective construction.",
+                ) as issue_body, \
                 patch.object(forge_metadata, "run_add_new_library_support_workflow", return_value=0) as workflow:
             self.assertTrue(forge_metadata.invoke_pipeline(claimed_issue, "basic_iterative_pi_gpt-5.4", False))
 
-        issue_body.assert_not_called()
+        issue_body.assert_called_once_with(1412)
         workflow.assert_called_once()
         argv = workflow.call_args.args[0]
-        self.assertNotIn("--issue-requested-metadata-context", argv)
+        context = argv[argv.index("--issue-requested-metadata-context") + 1]
+        self.assertIn("org.example.Demo", context)
+
+    def test_routed_javac_repair_passes_issue_requested_metadata_context_to_workflow(self) -> None:
+        claimed_issue = _claimed_issue(label=forge_metadata.LABEL_LIBRARY_UPDATE)
+
+        with patch.object(forge_metadata, "require_claimed_issue_worktree"), \
+                patch.object(forge_metadata, "run_library_preparation_preflight", return_value=None), \
+                patch.object(forge_metadata, "prepare_dynamic_access_chunking", return_value=None), \
+                patch.object(
+                    forge_metadata,
+                    "get_issue_body",
+                    return_value="KafkaStreams.topologyMetadata is missing.",
+                ), \
+                patch.object(
+                    forge_metadata,
+                    "select_library_update_route",
+                    return_value=forge_metadata.LibraryUpdateRoute(
+                        selected_driver=forge_metadata.ROUTE_FIX_JAVAC,
+                        baseline_coordinates="org.example:demo:0.9.0",
+                        new_version="1.0.0",
+                    ),
+                ), \
+                patch.object(forge_metadata, "run_fix_javac_workflow", return_value=0) as workflow:
+            self.assertTrue(forge_metadata.invoke_pipeline(claimed_issue, "library_update_pi_gpt-5.6-sol", False))
+
+        argv = workflow.call_args.args[0]
+        context = argv[argv.index("--issue-requested-metadata-context") + 1]
+        self.assertIn("KafkaStreams.topologyMetadata", context)
 
 
 class IssueClaimPreflightTests(unittest.TestCase):

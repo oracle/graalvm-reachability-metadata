@@ -1,0 +1,131 @@
+{
+  "add_new_library_support:2026-09-05": {
+    "timestamp": "2026-09-05T14:17:23.906376Z",
+    "library": "com.github.seregamorph:spring-test-smart-context:1.0",
+    "starting_commit": "d0892286606e078abd6aceda64e41cbf146ddb56",
+    "ending_commit": "5a20524225f354aba2515ca4e3c4cc0af0d6af36",
+    "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-sol",
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "status": "success",
+    "stats": {
+      "version": "1.0",
+      "dynamicAccess": {
+        "breakdown": {
+          "resources": {
+            "coverageRatio": 0.0,
+            "coveredCalls": 0,
+            "totalCalls": 1
+          }
+        },
+        "coverageRatio": 0.0,
+        "coveredCalls": 0,
+        "totalCalls": 1
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 377,
+          "missed": 1658,
+          "ratio": 0.185258,
+          "total": 2035
+        },
+        "line": {
+          "covered": 98,
+          "missed": 388,
+          "ratio": 0.201646,
+          "total": 486
+        },
+        "method": {
+          "covered": 28,
+          "missed": 92,
+          "ratio": 0.233333,
+          "total": 120
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "advisory_preparation",
+      "issue_number": 9677,
+      "issue_label": "library-new-request",
+      "library": "com.github.seregamorph:spring-test-smart-context:1.0",
+      "summary": "Spring dependencies are marked provided by the published artifact, so the normal scaffold cannot load its Spring listeners or JDBC helpers.",
+      "deterministic_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "org.springframework:spring-context:6.1.16",
+          "scope": "testImplementation",
+          "reason": "Required by the artifact’s Spring context integration; declared provided in the published POM."
+        },
+        {
+          "kind": "dependency",
+          "coordinate": "org.springframework:spring-test:6.1.16",
+          "scope": "testImplementation",
+          "reason": "Required by the artifact’s TestContext listeners and Spring test integration; declared provided in the published POM."
+        },
+        {
+          "kind": "dependency",
+          "coordinate": "org.springframework:spring-jdbc:6.1.16",
+          "scope": "testImplementation",
+          "reason": "Required to exercise the artifact’s JDBC helper package; declared provided in the published POM."
+        }
+      ],
+      "agent_guidance": "Generate JUnit Jupiter Spring TestContext tests using a simple in-memory configuration, preferably extending AbstractJUnitSpringIntegrationTest or registering SmartDirtiesContextTestExecutionListener. Exercise multiple context configurations to reach ordering and automatic context-cleanup behavior. The artifact auto-configures Jupiter ordering and Spring listener discovery; avoid adding competing junit-platform.properties or spring.factories files. JUnit 4 support was removed in version 1.0. No Docker or external service is required. See the upstream [usage documentation](https://github.com/seregamorph/spring-test-smart-context#how-to-use).",
+      "risks": [
+        "The artifact ships both junit-platform.properties and Spring factory metadata, so conflicting test resources may alter or break automatic setup.",
+        "Spring version compatibility and Native Image reachability must be validated by the repository’s Gradle and Native Image checks."
+      ],
+      "applied_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "org.springframework:spring-context:6.1.16",
+          "result": "applied",
+          "target": "tests/src/com.github.seregamorph/spring-test-smart-context/1.0/build.gradle"
+        },
+        {
+          "kind": "dependency",
+          "coordinate": "org.springframework:spring-test:6.1.16",
+          "result": "applied",
+          "target": "tests/src/com.github.seregamorph/spring-test-smart-context/1.0/build.gradle"
+        },
+        {
+          "kind": "dependency",
+          "coordinate": "org.springframework:spring-jdbc:6.1.16",
+          "result": "applied",
+          "target": "tests/src/com.github.seregamorph/spring-test-smart-context/1.0/build.gradle"
+        }
+      ],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#9677 Support for com.github.seregamorph:spring-test-smart-context:1.0; label=library-new-request; body_chars=39"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "gpt-5.6-luna",
+      "input_tokens_used": 1612020,
+      "output_tokens_used": 12994,
+      "prompt_path": "library-preflight-prompt.txt",
+      "raw_response_path": "library-preflight-response.txt",
+      "session_log_path": "/home/mihailo/git/graalvm-reachability-metadata/forge/logs/com.github.seregamorph:spring-test-smart-context:1.0/library-preparation-preflight/codex-session-haa720gc.log"
+    },
+    "metrics": {
+      "input_tokens_used": 120541,
+      "cached_input_tokens_used": 3099520,
+      "output_tokens_used": 20786,
+      "iterations": 2,
+      "cost_usd": 2.7761,
+      "generated_loc": 50,
+      "tested_library_loc": 98,
+      "metadata_entries": 4,
+      "test_only_metadata_entries": 6,
+      "code_coverage_percent": 20.16
+    },
+    "artifacts": {
+      "metadata_file": "metadata/com.github.seregamorph/spring-test-smart-context/1.0/reachability-metadata.json"
+    }
+  }
+}

@@ -15,6 +15,7 @@ import ai_workflows.agents  # noqa: F401 - triggers agent registration
 import ai_workflows.core  # noqa: F401 - triggers strategy registration
 from ai_workflows.agents import Agent
 from ai_workflows.core.workflow_strategy import (
+    RUN_STATUS_FAILURE,
     RUN_STATUS_SUCCESS,
     SUCCESS_WITH_INTERVENTION_STATUS,
     WorkflowStrategy,
@@ -35,7 +36,9 @@ from utility_scripts.continuation_marker import (
     save_phase_update,
 )
 from utility_scripts.dynamic_access_report import load_dynamic_access_coverage_report
+from utility_scripts.edit_scope import format_resolved_edit_scope_context
 from utility_scripts.gradle_environment import gradle_command_environment
+from utility_scripts.issue_requested_metadata import format_issue_requested_metadata_context
 from utility_scripts.library_preparation_preflight import (
     prepare_library_preparation_preflight,
 )
@@ -116,6 +119,11 @@ def build_parser():
             "Dynamic-access strategy used for the conditional exploration phase "
             f"(default: {DEFAULT_STRATEGY_NAME})"
         ),
+    )
+    parser.add_argument(
+        "--issue-requested-metadata-context",
+        default="",
+        help="Reporter-provided missing metadata context extracted from the GitHub issue body.",
     )
     parser.add_argument(
         "--library-preparation-preflight-path",
@@ -266,6 +274,7 @@ def build_strategy_and_agent(
         version: str,
         library_preparation_preflight_context,
         explore: bool,
+        issue_requested_metadata_context: str = "",
         continuation_marker_path: str | None = None,
 ):
     """Construct the dynamic-access strategy object and its agent for the new coordinate.
@@ -321,6 +330,15 @@ def build_strategy_and_agent(
         test_source_dir_name=test_source_layout.source_dir_name,
         metadata_version=metadata_version,
         library_preparation_preflight_context=library_preparation_preflight_context,
+        issue_requested_metadata_context=format_issue_requested_metadata_context(
+            issue_requested_metadata_context,
+        ),
+        resolved_edit_scope_context=format_resolved_edit_scope_context(
+            reachability_metadata_path,
+            tests_dir,
+            test_source_layout.source_root,
+            build_gradle_file,
+        ),
         continuation_marker_path=continuation_marker_path,
     )
 
@@ -437,6 +455,7 @@ def main(argv=None) -> int:
                     version=new_version,
                     library_preparation_preflight_context=library_preparation_preflight_context,
                     explore=False,
+                    issue_requested_metadata_context=args.issue_requested_metadata_context,
                     continuation_marker_path=args.continuation_marker_path,
                 )
                 test_version = resolve_test_version(
@@ -490,6 +509,7 @@ def main(argv=None) -> int:
             version=new_version,
             library_preparation_preflight_context=library_preparation_preflight_context,
             explore=explore,
+            issue_requested_metadata_context=args.issue_requested_metadata_context,
             continuation_marker_path=args.continuation_marker_path,
         )
     assert agent is not None
@@ -525,6 +545,7 @@ def main(argv=None) -> int:
                 version=new_version,
                 library_preparation_preflight_context=library_preparation_preflight_context,
                 explore=False,
+                issue_requested_metadata_context=args.issue_requested_metadata_context,
                 continuation_marker_path=args.continuation_marker_path,
             )
     else:
@@ -538,7 +559,16 @@ def main(argv=None) -> int:
             lambda marker: marker.mark_phase_skipped(PHASE_EXPLORE),
         )
 
-    finalize_status = strategy_obj.finalize_run(checkpoint)
+    # No driver closes a reported request without attempting it.
+    # §forge/AR-forge-driver-queues.2.1
+    issue_phase_ok, issue_phase_iterations = strategy_obj.run_issue_requested_metadata_phase()
+    iterations += issue_phase_iterations
+    if issue_phase_ok:
+        finalize_status = strategy_obj.finalize_run(checkpoint)
+    else:
+        log_stage("explore", "Reporter-requested metadata phase did not succeed")
+        finalize_status = RUN_STATUS_FAILURE
+
     succeeded = finalize_status in {RUN_STATUS_SUCCESS, SUCCESS_WITH_INTERVENTION_STATUS}
 
     if succeeded:

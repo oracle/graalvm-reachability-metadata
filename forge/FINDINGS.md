@@ -9,6 +9,89 @@ Newest entry first; every non-approval is recorded, including one a repair later
 
 Review Signal #6 was violated at `stats/io.github.microcks/microcks-testcontainers/0.5.0/stats.json`: the submitted evidence reported 0/4 dynamic-access calls (0%), but a new-library contribution with calls to cover must exceed 20%. Review Signal #1's single-library scope was also violated by the unrelated repository-wide change to `tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/GrypeTask.java`; build logic is not a supporting file for this coordinate.
 
+## 2026-09-02 — org.springframework:spring-web:5.3.32 (#9402)
+
+**Runtime repair deletes existing test coverage**
+
+Rule 4.8 (fix by weakening) was violated in `tests/src/org.springframework/spring-web/5.3.32`: the copied 5.3.18 suite deleted `JettyClientHttpResponseTest.java` and removed its Jetty dependency instead of adapting the failing runtime path while preserving the test's status, headers, cookies, and body assertions.
+## 2026-09-07 — io.micronaut:micronaut-http-server:5.1.13 (#9832)
+
+**Companion dependencies pin the tested library version**
+
+Review Signal #4 is violated in tests/src/io.micronaut/micronaut-http-server/5.1.13/build.gradle: the Netty server, HTTP client, and Jackson databind companion dependencies hardcode 5.1.13. This prevents the suite from resolving those matching Micronaut modules at the TCK-selected tested version when the same test is reused for later supported versions.
+
+## 2026-09-07 — io.micronaut:micronaut-core:5.0.0 (#9799)
+
+**Missing minimum dynamic-access coverage evidence**
+
+Review Signal #6 was violated in stats/io.micronaut/micronaut-core/5.0.0/stats.json: dynamicAccess was N/A, while resolved evidence described dynamic-access metadata and supplied no covered call sites, so the branch had no credible evidence that non-zero dynamic access exceeded 20%. Regenerating the report exposed 83 calls and only 10 covered (12.05%) before test expansion.
+
+## 2026-09-07 — org.flywaydb:flyway-core:13.5.0 (#9842)
+
+**Java-run repair adds unrelated internal-API coverage**
+
+`tests/src/org.flywaydb/flyway-core/13.5.0/src/test/java/flyway/MergeUtilsTest.java` directly exercised the internal `org.flywaydb.core.internal.util.MergeUtils` API solely to increase dynamic-access coverage. This was unrelated to the Jackson runtime dependency repair and violated the enumerated meaningful-public-API and no-scope-creep test rules.
+
+## 2026-09-07 — org.junit.platform:junit-platform-reporting:6.1.0 (#9212)
+
+**Repair contribution changes unrelated coordinates**
+
+The proposed diff added metadata, index changes, and stats for org.junit.platform:junit-platform-commons:6.1.0 and org.junit.platform:junit-platform-engine:6.1.0. The closed-file-set and one-library/one-version rules require this fixes-native-image-run-fail contribution to remain inside the target org.junit.platform:junit-platform-reporting:6.1.0 coordinate and its supporting files.
+## 2026-09-07 — org.bouncycastle:bcpkix-jdk18on:1.77 (#8922)
+
+**Test-created serialization metadata shipped as library metadata**
+
+The custom ObjectInputStream/ObjectOutputStream subclasses in X509CRLHolderTest.java and X509CertificateHolderTest.java replaced the library's normal byte[] serialization payload with test-selected short[]/int[] values solely to create distinct descriptor paths. This was a direct serialization shortcut, and it caused the test-created short[] registration plus stale org_bouncycastle test-resource entries to ship in metadata/org.bouncycastle/bcpkix-jdk18on/1.77/reachability-metadata.json, violating the enumerated no-shortcuts and no-test-only-shipped-metadata rules.
+
+## 2026-09-06 — org.apache.activemq:activemq-broker:6.0.0 (#8927)
+
+**Split test project retained an invalid baseline test contract**
+
+In `tests/src/org.apache.activemq/activemq-broker/6.3.0/src/test/java/org_apache_activemq/activemq_broker/ActivemqBrokerTest.java`, the newly added top-level test class was package-private, violating test-contract rule 1.2. That test and the modified 6.0.0 counterpart also used unbounded broker lifecycle waits and performed broker cleanup only after the connection path succeeded, violating rule 1.6. The new 6.3.0 project's `gradle.properties` additionally still identified the 6.0.0 library and metadata directories instead of its own coordinate.
+## 2026-09-06 — io.micronaut:micronaut-management:5.1.13 (#9825)
+
+**Companion Micronaut dependencies pin the tested library version**
+
+Review Signal #4 / FS-test-contract.2.5 is violated in tests/src/io.micronaut/micronaut-management/5.1.13/build.gradle: the HTTP server, HTTP client, and Jackson companion modules hardcode 5.1.13, so the test project does not remain version-agnostic when the tested Micronaut version changes.
+## 2026-09-06 — io.micronaut.serde:micronaut-serde-support:3.1.1 (#9837)
+
+**Version-pinned companion serialization dependency**
+
+Review Signal #4 was violated in tests/src/io.micronaut.serde/micronaut-serde-support/3.1.1/build.gradle: micronaut-serde-jackson was pinned to 3.1.1, so the suite would not track the tested Micronaut Serde version when reused for another supported version.
+
+## 2026-09-06 — io.netty:netty-codec:5.0.0.Alpha1 (#9762)
+
+**Unsupported-feature catch masks statically available class resolution**
+
+In tests/src/io.netty/netty-codec/5.0.0.Alpha1/src/test/java/io_netty/netty_codec/ClassLoaderClassResolverTest.java, both tests caught Error and accepted NativeImageSupport.isUnsupportedFeatureError even though the target class name is fixed, the class is included in the image, and the behavior does not require a class discovered after image build. This applies the sole open-ended dynamic-class-loading exception outside its permitted scope and could make the native tests pass without executing their assertions.
+## 2026-09-06 — io.netty:netty-codec:4.2.2.Final (#9761)
+
+**Native-image repair deletes the failing checksum test**
+
+The branch deletes tests/src/io.netty/netty-codec/4.1.42.Final/src/test/java/io_netty/netty_codec/ByteBufChecksumInnerReflectiveByteBufChecksumTest.java after that test exposed the CleanerJava24/SharedArena native failure. Deleting the failing test to make the native lane green is the enumerated fix-by-weakening violation in FS-contribution-contract.4.8 / FS-test-contract.2.9 and does not demonstrate that the native-image runtime path was repaired.
+
+## 2026-09-05 — com.github.seregamorph:spring-test-smart-context:1.0 (#9677)
+
+**Dynamic-access coverage does not meet the new-library minimum**
+
+Review Signal #6 was violated at stats/com.github.seregamorph/spring-test-smart-context/1.0/stats.json: the submitted evidence reported 0 of 1 dynamic-access calls covered (0%), while new-library requests with non-zero calls require coverage above 20%.
+## 2026-09-05 — org.springframework.boot:spring-boot-testcontainers:4.1.1 (#9682)
+
+**Version-pinned companion Spring Boot test dependency**
+
+Review Signal #4 was violated in tests/src/org.springframework.boot/spring-boot-testcontainers/4.1.1/build.gradle: spring-boot-test was pinned to 4.1.1, so this test suite would keep using that companion module when exercised against another supported spring-boot-testcontainers version.
+
+## 2026-09-05 — org.springframework.cloud:spring-cloud-vault-config:5.0.2 (#9705)
+
+**New-library request included an unrelated shared GrypeTask behavior change**
+
+Review Signal #1 requires a new-library request to stay scoped to one target library and its supporting test files. tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/GrypeTask.java changed shared Docker scanning behavior to silently accept an empty image diff, which is unrelated to adding org.springframework.cloud:spring-cloud-vault-config:5.0.2.
+
+## 2026-09-02 — org.springframework.boot:spring-boot-amqp:4.2.0-M1 (#9468)
+
+**Explicit messaging timeout is below the 10-second minimum**
+
+FS-test-contract.1.7 requires every explicit messaging timeout to be at least 10 seconds. tests/src/org.springframework.boot/spring-boot-amqp/4.2.0-M1/src/test/java/org_springframework_boot/spring_boot_amqp/Spring_boot_amqpTest.java configured the AMQP client completion timeout as 750ms in both direct property setup and the auto-configuration property test.
 ## 2026-09-02 — org.apache.activemq:artemis-jms-client:2.56.0 (#9574)
 
 **Generated repair changes a baseline suite and violates mandatory test bounds**

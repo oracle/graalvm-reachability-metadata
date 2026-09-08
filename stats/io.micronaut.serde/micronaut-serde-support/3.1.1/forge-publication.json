@@ -1,0 +1,151 @@
+{
+  "base_commit": "8373d25fa0284b5037850218b5aed6321907bb5c",
+  "branch": "ai/kimeta/add-lib-support-io.micronaut.serde-micronaut-serde-support-3.1.1-chunked-forge-9837-20260906221922573539-6cc5027f42fd",
+  "follow_ups": [],
+  "forge": {
+    "branch": "issue-9864-partial-bulk-progress",
+    "commit": "6b5fc3df8434e9d85c22a92f09f560e6ae0e2db2",
+    "monitored_branch": "origin/issue-9864-partial-bulk-progress"
+  },
+  "issue_number": 9837,
+  "library": {
+    "artifact": "micronaut-serde-support",
+    "coordinates": "io.micronaut.serde:micronaut-serde-support:3.1.1",
+    "group": "io.micronaut.serde",
+    "version": "3.1.1"
+  },
+  "local_ci_verification": {
+    "base_commit": "8373d25fa0284b5037850218b5aed6321907bb5c",
+    "commands": [
+      {
+        "command": [
+          "./gradlew",
+          "generateChangedIndexFileCoordinatesList",
+          "-PbaseCommit=origin/master",
+          "-PnewCommit=HEAD"
+        ],
+        "env": {
+          "GITHUB_OUTPUT": "/tmp/tmpj9vveib5"
+        },
+        "gate": "changed-index-coordinates",
+        "log_path": "logs/changed-index-coordinates/local-ci/gradlew-2026-09-06T22-28-02-135932Z.log",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :generateChangedIndexFileCoordinatesList\n\n[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9837-a7f26a67/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 2s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      },
+      {
+        "command": [
+          "./gradlew",
+          "validateIndexFiles",
+          "-Pcoordinates=io.micronaut.serde:micronaut-serde-support"
+        ],
+        "env": {},
+        "gate": "index-file-validation",
+        "log_path": "logs/index-file-validation/local-ci/gradlew-2026-09-06T22-28-04-278189Z.log",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :validateIndexFiles\n✅ metadata/io.micronaut.serde/micronaut-serde-support/index.json: Valid\n\n[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9837-a7f26a67/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 1s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      }
+    ],
+    "failure_command": null,
+    "failure_gate": null,
+    "final_commit": "5548e868187ccddf8c564deb33f6884e586918cf",
+    "fixups": [],
+    "human_intervention_required": false,
+    "repo_fix_paths": [],
+    "status": "success"
+  },
+  "local_review": {
+    "changed_paths": [
+      "tests/src/io.micronaut.serde/micronaut-serde-support/3.1.1/build.gradle"
+    ],
+    "decision": "approved",
+    "failed_step": null,
+    "finding_body": "Review Signal #4 was violated in tests/src/io.micronaut.serde/micronaut-serde-support/3.1.1/build.gradle: micronaut-serde-jackson was pinned to 3.1.1, so the suite would not track the tested Micronaut Serde version when reused for another supported version.",
+    "finding_title": "Version-pinned companion serialization dependency",
+    "fix_note": "Changed the micronaut-serde-jackson dependency version from the literal 3.1.1 to $libraryVersion, preserving the current resolved dependency while making the suite reusable across tested versions. The corrected tree is approved.",
+    "model": "gpt-5.6-sol",
+    "published_tree": "repaired",
+    "repair_reverted": false,
+    "review_comment": "Approved after the version-pinning correction. I checked the eventual PR diff against all relevant review signals: it is scoped to one coordinate; the two tests replace the scaffold with target-library behavior, run normally under Native Image, use a separate test package, and contain no native-only skips or broad Error catches; only reachability-metadata.json metadata files are added; and the recorded 2/2 (100%) dynamic-access coverage clears the >20% gate. The reported 5 library plus 70 test-only metadata entries do not trigger the mismatch rule for 2 covered calls. Local evidence records successful index gates, and the repaired tree passes spotlessCheck, checkstyle, compileTestJava, and javaTest for the coordinate. I did not inspect individual metadata entries.",
+    "session_log_path": "logs/io.micronaut.serde:micronaut-serde-support:3.1.1/local-branch-review/pi.log",
+    "status": "completed"
+  },
+  "metrics": {
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "path": "stats/io.micronaut.serde/micronaut-serde-support/3.1.1/execution-metrics.json",
+    "summary": {
+      "cached_input_tokens_used": 1079808,
+      "code_coverage_percent": 14.11,
+      "cost_usd": 1.6742,
+      "generated_loc": 96,
+      "input_tokens_used": 166639,
+      "iterations": 2,
+      "metadata_entries": 5,
+      "output_tokens_used": 10038,
+      "test_only_metadata_entries": 70,
+      "tested_library_loc": 1150
+    },
+    "timestamp": "2026-09-06T22:19:22.573539Z"
+  },
+  "modifiers": {
+    "chunk_final": true,
+    "chunked_dynamic_access": true,
+    "human_intervention": false
+  },
+  "producer": "kimeta",
+  "publication_id": "forge-9837-20260906221922573539-6cc5027f42fd",
+  "render": {
+    "dynamic_access": null,
+    "dynamic_access_evidence": {
+      "covered_call_sites": [
+        "[reflection] java.lang.reflect.Array#newInstance(java.lang.Class, int) <- io.micronaut.serde.support.deserializers.DeserBean$DerProperty.concatenateArrays(DeserBean.java:1312) (line 1312)",
+        "[reflection] java.lang.reflect.Array#newInstance(java.lang.Class, int) <- io.micronaut.serde.support.serdes.CustomizedObjectArrayDeserializer.deserialize(CustomizedObjectArrayDeserializer.java:50) (line 50)"
+      ],
+      "metadata_rules": [
+        "when `io.micronaut.serde.KeysSupport$LazyKeysProviders` is reached, make `io.micronaut.serde.jackson.JacksonKeysProvider.<init>()` available for reflection",
+        "when `io.micronaut.serde.support.deserializers.DeserBean$DerProperty` is reached, make `java.lang.String[]` available for reflection",
+        "when `io.micronaut.serde.support.deserializers.ErrorCatchingDeserializer` is reached, make `tools.jackson.core.JacksonException` available for reflection"
+      ]
+    },
+    "library_stats": {
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 2,
+            "totalCalls": 2
+          }
+        },
+        "coverageRatio": 1.0,
+        "coveredCalls": 2,
+        "totalCalls": 2
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 5010,
+          "missed": 30873,
+          "ratio": 0.13962,
+          "total": 35883
+        },
+        "line": {
+          "covered": 1150,
+          "missed": 6998,
+          "ratio": 0.141139,
+          "total": 8148
+        },
+        "method": {
+          "covered": 356,
+          "missed": 1432,
+          "ratio": 0.199105,
+          "total": 1788
+        }
+      },
+      "version": "3.1.1"
+    }
+  },
+  "schema_version": 1,
+  "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-sol",
+  "task_type": "library-new-request",
+  "template_type": "library-new-request",
+  "timestamp": "2026-09-06T22:19:22.573539Z"
+}

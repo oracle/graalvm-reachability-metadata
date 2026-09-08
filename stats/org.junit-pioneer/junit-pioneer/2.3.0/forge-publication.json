@@ -1,0 +1,164 @@
+{
+  "base_commit": "eefa64795f2b2ac847c0484bb954a319c64a8f74",
+  "branch": "ai/kimeta/add-lib-support-org.junit-pioneer-junit-pioneer-2.3.0-forge-9679-20260903115838940705-7c93bb25b857",
+  "follow_ups": [],
+  "forge": {
+    "branch": "master",
+    "commit": "eefa64795f2b2ac847c0484bb954a319c64a8f74",
+    "monitored_branch": "origin/master"
+  },
+  "issue_number": 9679,
+  "library": {
+    "artifact": "junit-pioneer",
+    "coordinates": "org.junit-pioneer:junit-pioneer:2.3.0",
+    "group": "org.junit-pioneer",
+    "version": "2.3.0"
+  },
+  "local_ci_verification": {
+    "base_commit": "eefa64795f2b2ac847c0484bb954a319c64a8f74",
+    "commands": [
+      {
+        "command": [
+          "./gradlew",
+          "generateChangedIndexFileCoordinatesList",
+          "-PbaseCommit=origin/master",
+          "-PnewCommit=HEAD"
+        ],
+        "env": {
+          "GITHUB_OUTPUT": "/tmp/tmpx83rvxdj"
+        },
+        "gate": "changed-index-coordinates",
+        "log_path": "logs/changed-index-coordinates/local-ci/gradlew-2026-09-03T11-58-44-296650Z.log",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :generateChangedIndexFileCoordinatesList\n\n[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata-copy/forge/local_repositories/forge_worktrees/9679-6a08cdf9/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 2s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      },
+      {
+        "command": [
+          "./gradlew",
+          "validateIndexFiles",
+          "-Pcoordinates=org.junit-pioneer:junit-pioneer"
+        ],
+        "env": {},
+        "gate": "index-file-validation",
+        "log_path": "logs/index-file-validation/local-ci/gradlew-2026-09-03T11-58-46-615593Z.log",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :validateIndexFiles\n✅ metadata/org.junit-pioneer/junit-pioneer/index.json: Valid\n\n[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata-copy/forge/local_repositories/forge_worktrees/9679-6a08cdf9/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 1s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      }
+    ],
+    "failure_command": null,
+    "failure_gate": null,
+    "final_commit": "c58865a99a58e11af0408732e89ae1d1a0bd7c6b",
+    "fixups": [],
+    "human_intervention_required": false,
+    "repo_fix_paths": [],
+    "status": "success"
+  },
+  "local_review": {
+    "changed_paths": [],
+    "decision": "approved",
+    "failed_step": null,
+    "finding_body": "",
+    "finding_title": "",
+    "fix_note": "",
+    "model": "gpt-5.6-sol",
+    "published_tree": "verified",
+    "repair_reverted": false,
+    "review_comment": "Approved. The diff is scoped to org.junit-pioneer:junit-pioneer:2.3.0 and uses only reachability-metadata.json for library and test-only metadata. The six public, library-specific tests are outside the library package, contain no scaffold placeholder, target-version pinning, Native Image skip/failure tolerance, reflection shortcut, shadow type, or runtime class-definition pattern. Reported dynamic-access coverage is 11/11 (100%), above the new-library gate; 11 covered calls do not trigger investigation against the reported 16 total library-plus-test-only metadata entries. The recorded index gate passed, and I additionally confirmed checkMetadataFiles, checkstyle, javaTest, and the full native test lane pass locally.",
+    "session_log_path": "logs/org.junit-pioneer:junit-pioneer:2.3.0/local-branch-review/pi.log",
+    "status": "completed"
+  },
+  "metrics": {
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "path": "stats/org.junit-pioneer/junit-pioneer/2.3.0/execution-metrics.json",
+    "summary": {
+      "cached_input_tokens_used": 1255168,
+      "code_coverage_percent": 19.62,
+      "cost_usd": 1.3518,
+      "generated_loc": 122,
+      "input_tokens_used": 90417,
+      "iterations": 1,
+      "metadata_entries": 13,
+      "output_tokens_used": 9070,
+      "test_only_metadata_entries": 3,
+      "tested_library_loc": 363
+    },
+    "timestamp": "2026-09-03T11:58:38.940705Z"
+  },
+  "modifiers": {
+    "chunk_final": true,
+    "chunked_dynamic_access": false,
+    "human_intervention": false
+  },
+  "producer": "kimeta",
+  "publication_id": "forge-9679-20260903115838940705-7c93bb25b857",
+  "render": {
+    "dynamic_access": null,
+    "dynamic_access_evidence": {
+      "covered_call_sites": [
+        "[reflection] java.lang.Class#getDeclaredMethod(java.lang.String, java.lang.Class[]) <- org.junitpioneer.internal.PioneerAnnotationUtils.flatten(PioneerAnnotationUtils.java:144) (line 144)",
+        "[reflection] java.lang.Class#getDeclaredMethod(java.lang.String, java.lang.Class[]) <- org.junitpioneer.internal.PioneerAnnotationUtils.isContainerAnnotation(PioneerAnnotationUtils.java:159) (line 159)",
+        "[reflection] java.lang.reflect.Method#invoke(java.lang.Object, java.lang.Object[]) <- org.junitpioneer.internal.PioneerAnnotationUtils.flatten(PioneerAnnotationUtils.java:145) (line 145)",
+        "[reflection] java.lang.Class#getDeclaredField(java.lang.String) <- org.junitpioneer.jupiter.EnvironmentVariableUtils.getFieldValue(EnvironmentVariableUtils.java:98) (line 98)",
+        "[reflection] java.lang.reflect.Field#get(java.lang.Object) <- org.junitpioneer.jupiter.EnvironmentVariableUtils.getFieldValue(EnvironmentVariableUtils.java:109) (line 109)",
+        "[resources] java.lang.ClassLoader#getResourceAsStream(java.lang.String) <- org.junitpioneer.jupiter.json.JsonClasspathSourceArgumentsProvider.lambda$classpathResource$0(JsonClasspathSourceArgumentsProvider.java:40) (line 40)",
+        "[reflection] java.lang.ClassLoader#loadClass(java.lang.String) <- org.junitpioneer.jupiter.json.JsonConverterProvider.isJacksonObjectMapperClassPresent(JsonConverterProvider.java:19) (line 19)",
+        "[reflection] java.lang.Class#getConstructors() <- org.junitpioneer.jupiter.params.RangeSourceArgumentsProvider.provideArguments(RangeSourceArgumentsProvider.java:74) (line 74)",
+        "... and 3 more"
+      ],
+      "metadata_rules": [
+        "when `org.junitpioneer.jupiter.json.JsonConverterProvider` is reached, make `com.fasterxml.jackson.databind.ObjectMapper` available for reflection",
+        "when `org.junitpioneer.jupiter.json.DefaultObjectMapperProvider` is reached, make `com.fasterxml.jackson.databind.ext.Java7SupportImpl.<init>()` available for reflection",
+        "when `org.junitpioneer.jupiter.EnvironmentVariableUtils` is reached, make `java.lang.ProcessEnvironment` available for reflection",
+        "when `org.junitpioneer.jupiter.EnvironmentVariableUtils` is reached, make `java.util.Collections$UnmodifiableMap` available for reflection",
+        "when `org.junitpioneer.jupiter.json.JacksonJsonConverter` is reached, make `org.junitpioneer.jupiter.json.DefaultObjectMapperProvider` available for reflection",
+        "when `org.junitpioneer.jupiter.params.RangeSourceArgumentsProvider` is reached, make `org.junitpioneer.jupiter.params.IntRange.<init>(org.junitpioneer.jupiter.params.IntRangeSource)` available for reflection"
+      ]
+    },
+    "library_stats": {
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 10,
+            "totalCalls": 10
+          },
+          "resources": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 1,
+            "totalCalls": 1
+          }
+        },
+        "coverageRatio": 1.0,
+        "coveredCalls": 11,
+        "totalCalls": 11
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 1469,
+          "missed": 6877,
+          "ratio": 0.176012,
+          "total": 8346
+        },
+        "line": {
+          "covered": 363,
+          "missed": 1487,
+          "ratio": 0.196216,
+          "total": 1850
+        },
+        "method": {
+          "covered": 131,
+          "missed": 431,
+          "ratio": 0.233096,
+          "total": 562
+        }
+      },
+      "version": "2.3.0"
+    }
+  },
+  "schema_version": 1,
+  "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-sol",
+  "task_type": "library-new-request",
+  "template_type": "library-new-request",
+  "timestamp": "2026-09-03T11:58:38.940705Z"
+}
