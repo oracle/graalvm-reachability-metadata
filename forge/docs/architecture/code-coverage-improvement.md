@@ -348,8 +348,11 @@ Markdown and target-id list contain at most 200 methods globally. Measurement
 itself carries attempt state deterministically in the discovery-report history:
 every target it prompted gets its attempt count incremented at the next
 measurement, ranking prefers less-attempted targets, and covered targets leave
-the uncovered set — so later iterations advance beyond the first 200 without
-any agent-written state.
+the uncovered set. An uncovered target that reaches the configured unsuccessful
+attempt threshold becomes exhausted and leaves later prompts, while remaining
+in `bulkTargets` and the full JSON report for finalization and audit. This lets
+later iterations advance beyond repeatedly unproductive targets without any
+agent-written state.
 The deep phase runs for the same fixed `coverage_iterations` budget and stops
 early when no actionable target remains or when the pass yield collapses
 (§3.3), on the same rule and the same thresholds as the API phase.

@@ -8,6 +8,12 @@ Newest entry first; every non-approval is recorded, including one a repair later
 **Explicit I/O timeout below the 10-second floor**
 
 In tests/src/org.springframework/spring-webflux/6.0.0/src/test/java/org_springframework/spring_webflux/InvocableHandlerMethodTest.java, the reactive request wait used Duration.ofSeconds(5). This violates the enumerated 10-second minimum for explicit request/I/O timeouts in §FS-test-contract.1.7.
+## 2026-09-07 — io.micronaut:micronaut-buffer-netty:5.1.13 (#9828)
+
+**Application context closes while eager bean processing is still running**
+
+In Micronaut_buffer_nettyTest.java, both ApplicationContext.run(...) calls enable asynchronous eager bean processing. The native test lane completed its assertions but then emitted an uncaught NullPointerException from DefaultBeanContext.processParallelBeans after the contexts had closed. This violates the test contract requirement that background resources be cleanly bounded and closed.
+
 ## 2026-09-02 — org.springframework:spring-web:5.3.32 (#9402)
 
 **Runtime repair deletes existing test coverage**
