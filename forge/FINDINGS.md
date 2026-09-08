@@ -8,6 +8,16 @@ Newest entry first; every non-approval is recorded, including one a repair later
 **Coverage update weakens an existing passing test**
 
 In tests/src/io.opentelemetry.proto/opentelemetry-proto/1.10.0-alpha/src/test/java/io_opentelemetry_proto/opentelemetry_proto/Opentelemetry_protoTest.java, the branch removed Exemplar construction and its assertions from histogramMetricRepresentsDistributionBucketsAndExemplars. This violates the enumerated no-scope-creep/no-fix-by-weakening rule: a library-update contribution must not remove or weaken existing passing test coverage.
+## 2026-09-06 — org.springframework:spring-webflux:6.0.0 (#9403)
+
+**Explicit I/O timeout below the 10-second floor**
+
+In tests/src/org.springframework/spring-webflux/6.0.0/src/test/java/org_springframework/spring_webflux/InvocableHandlerMethodTest.java, the reactive request wait used Duration.ofSeconds(5). This violates the enumerated 10-second minimum for explicit request/I/O timeouts in §FS-test-contract.1.7.
+## 2026-09-08 — org.neo4j.bolt:neo4j-bolt-connection-netty:4.0.0 (#9390)
+
+**Explicit test timeouts below the 10-second floor**
+
+The new Neo4j_bolt_connection_nettyTest.java configured database transaction timeouts of 1 and 2 seconds and a server-advertised connection read timeout of 7 seconds (with a matching assertion). These concrete explicit database/read timeouts violate the 10-second minimum in §FS-test-contract.1.7.
 ## 2026-09-07 — io.micronaut:micronaut-buffer-netty:5.1.13 (#9828)
 
 **Application context closes while eager bean processing is still running**
