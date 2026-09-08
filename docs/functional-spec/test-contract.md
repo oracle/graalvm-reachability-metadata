@@ -466,11 +466,14 @@ runs the action and accepts a failure only on proof, in this order:
 1. the thrown `Error` is an `UnsupportedFeatureError`;
 2. an `UnsupportedFeatureError` appears in its cause chain, which also covers
    `ServiceConfigurationError` and `ExceptionInInitializerError` wrapping;
-3. GraalVM's `UnsupportedFeatureError` trace was written to `System.err` while
-   the action ran, which is the only surviving evidence when a library
+3. a throwable carrying an `UnsupportedFeatureError` was printed to `System.err`
+   while the action ran, which is the only surviving evidence when a library
    discards the cause.
 
-Anything else is re-thrown unchanged. On the JVM the action runs and asserts
+Printed throwables are inspected as objects, never matched as text, so unrelated
+output naming the error cannot buy tolerance. An `AssertionError` or
+`VirtualMachineError` is always re-thrown, so a genuine assertion failure after a
+tolerated one is never masked. Anything else is re-thrown unchanged. On the JVM the action runs and asserts
 normally, so the helper is never a skip (§FS-test-contract.4.1).
 
 ```java
