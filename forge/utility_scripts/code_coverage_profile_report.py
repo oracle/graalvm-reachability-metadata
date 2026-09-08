@@ -56,6 +56,9 @@ from utility_scripts.code_coverage_model import (
 )
 
 MAX_LISTED_METHODS = 200
+#: Uncovered targets leave the prompt after this many unsuccessful attempts
+#: (§AR-code-coverage-improvement.3.2).
+MAX_UNCOVERED_ATTEMPTS = 3
 TARGET_STATE_STATUSES: frozenset[str] = frozenset({
     "pending", "selected", "attempted", "completed", "skipped", "exhausted", "failed",
 })
@@ -1022,11 +1025,24 @@ def _effective_target_state(
         method_id: str,
         target_states: dict[str, TargetState],
         attempt_counts: dict[str, int],
+        jacoco_uncovered: bool = False,
 ) -> TargetState:
     state = target_states.get(method_id, TargetState())
+    attempt_count: int = max(state.attempt_count, attempt_counts.get(method_id, 0))
+    if (
+            jacoco_uncovered
+            and not state.terminal
+            and attempt_count >= MAX_UNCOVERED_ATTEMPTS
+    ):
+        return TargetState(
+            status="exhausted",
+            attempt_count=attempt_count,
+            last_attempted_iteration=state.last_attempted_iteration,
+            reason=f"{MAX_UNCOVERED_ATTEMPTS} attempts without coverage change",
+        )
     return TargetState(
         status=state.status,
-        attempt_count=max(state.attempt_count, attempt_counts.get(method_id, 0)),
+        attempt_count=attempt_count,
         last_attempted_iteration=state.last_attempted_iteration,
         reason=state.reason,
     )
@@ -1089,6 +1105,9 @@ def correlate(
     deep_uncovered: list[JacocoMethodCoverage] = [
         coverage for coverage in deep_coverage if not coverage.covered
     ]
+    deep_uncovered_ids: set[str] = {
+        coverage.method_ref.canonical_id for coverage in deep_uncovered
+    }
 
     sampled_routes: RouteMap = _sample_routes(graph, profile)
     entry_routes: RouteMap = _public_entry_routes(graph, [ref for ref, _ in inventory_refs])
@@ -1102,6 +1121,7 @@ def correlate(
                 coverage.method_ref.canonical_id,
                 states,
                 attempts,
+                jacoco_uncovered=True,
             ),
         )
         for coverage in deep_uncovered
@@ -1117,12 +1137,14 @@ def correlate(
     # agent can write a test naming one, and for nearly all of them the
     # enclosing method is an offered target already
     # (§AR-code-coverage-improvement.3.2.1).
-    actionable_records: list[NearCallRecord] = [
+    bulk_records: list[NearCallRecord] = [
         record
         for record in uncovered_records
         if record.join_kind != "none"
-        and not record.target_state.terminal
         and not _is_synthetic_method(record.target_ref)
+    ]
+    actionable_records: list[NearCallRecord] = [
+        record for record in bulk_records if not record.target_state.terminal
     ]
     synthetic_excluded: int = sum(
         1
@@ -1140,11 +1162,11 @@ def correlate(
         )
         for record in uncovered_records
     ]
-    prompt_json: list[dict] = [
+    bulk_json: list[dict] = [
         _record_to_json(
             record, graph, mathematical_ranks[record.target_ref.canonical_id], jacoco_methods
         )
-        for record in prompt_records
+        for record in bulk_records
     ]
 
     report: dict = {
@@ -1183,7 +1205,15 @@ def correlate(
         },
         "inventory": inventory_report,
         "targetStates": [
-            _target_state_to_json(method_id, _effective_target_state(method_id, states, attempts))
+            _target_state_to_json(
+                method_id,
+                _effective_target_state(
+                    method_id,
+                    states,
+                    attempts,
+                    jacoco_uncovered=method_id in deep_uncovered_ids,
+                ),
+            )
             for method_id in sorted(set(states) | set(attempts))
         ],
         "deepMethods": [
@@ -1214,7 +1244,7 @@ def correlate(
         "observedMethods": _observed_methods(profile, graph, jacoco_methods),
         "uncoveredPaths": uncovered_json,
         "promptTargetIds": [record.target_ref.canonical_id for record in prompt_records],
-        "bulkTargets": prompt_json,
+        "bulkTargets": bulk_json,
         "caveats": [
             "JaCoCo is the only coverage authority; sampled PGO evidence is guidance only.",
             "Absence of a sample never proves non-execution.",
