@@ -8,6 +8,11 @@ Newest entry first; every non-approval is recorded, including one a repair later
 **Explicit test timeouts below the 10-second floor**
 
 The new Neo4j_bolt_connection_nettyTest.java configured database transaction timeouts of 1 and 2 seconds and a server-advertised connection read timeout of 7 seconds (with a matching assertion). These concrete explicit database/read timeouts violate the 10-second minimum in §FS-test-contract.1.7.
+## 2026-09-07 — io.micronaut:micronaut-buffer-netty:5.1.13 (#9828)
+
+**Application context closes while eager bean processing is still running**
+
+In Micronaut_buffer_nettyTest.java, both ApplicationContext.run(...) calls enable asynchronous eager bean processing. The native test lane completed its assertions but then emitted an uncaught NullPointerException from DefaultBeanContext.processParallelBeans after the contexts had closed. This violates the test contract requirement that background resources be cleanly bounded and closed.
 
 ## 2026-09-02 — org.springframework:spring-web:5.3.32 (#9402)
 
