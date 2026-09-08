@@ -6,9 +6,6 @@
  */
 package org.graalvm.internal.tck;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
 
@@ -49,14 +46,15 @@ public final class NativeImageSupport {
     ///
     /// @throws Exception whatever the action throws
     public static void runToleratingUnsupportedFeature(ThrowingRunnable action) throws Exception {
-        ByteArrayOutputStream capturedErr = new ByteArrayOutputStream();
         PrintStream originalErr = System.err;
-        System.setErr(new PrintStream(new TeeOutputStream(capturedErr, originalErr), true,
-                StandardCharsets.UTF_8));
+        UnsupportedFeatureTrackingPrintStream trackingErr =
+                new UnsupportedFeatureTrackingPrintStream(originalErr);
+        System.setErr(trackingErr);
         try {
             action.run();
         } catch (Error error) {
-            if (!hasUnsupportedFeatureCause(error) && !printedUnsupportedFeature(capturedErr)) {
+            if (mustAlwaysRethrow(error)
+                    || (!hasUnsupportedFeatureCause(error) && !trackingErr.printedUnsupportedFeature())) {
                 throw error;
             }
         } finally {
@@ -64,8 +62,8 @@ public final class NativeImageSupport {
         }
     }
 
-    private static boolean hasUnsupportedFeatureCause(Error error) {
-        for (Throwable current = error; current != null; current = current.getCause()) {
+    private static boolean hasUnsupportedFeatureCause(Throwable throwable) {
+        for (Throwable current = throwable; current != null; current = current.getCause()) {
             if (current instanceof Error candidate && isUnsupportedFeatureError(candidate)) {
                 return true;
             }
@@ -73,37 +71,29 @@ public final class NativeImageSupport {
         return false;
     }
 
-    private static boolean printedUnsupportedFeature(ByteArrayOutputStream capturedErr) {
-        return capturedErr.toString(StandardCharsets.UTF_8).contains(UNSUPPORTED_FEATURE_ERROR);
+    private static boolean mustAlwaysRethrow(Error error) {
+        return error instanceof AssertionError
+                || error instanceof VirtualMachineError;
     }
 
-    /// Keeps captured output visible on the original stream so a tolerated failure is
-    /// still diagnosable from the test log.
-    private static final class TeeOutputStream extends OutputStream {
-        private final OutputStream captured;
-        private final OutputStream original;
+    /// Records actual unsupported-feature throwables while keeping their traces visible.
+    private static final class UnsupportedFeatureTrackingPrintStream extends PrintStream {
+        private volatile boolean printedUnsupportedFeature;
 
-        private TeeOutputStream(OutputStream captured, OutputStream original) {
-            this.captured = captured;
-            this.original = original;
+        private UnsupportedFeatureTrackingPrintStream(PrintStream original) {
+            super(original, true, StandardCharsets.UTF_8);
         }
 
         @Override
-        public void write(int b) throws IOException {
-            captured.write(b);
-            original.write(b);
+        public void println(Object value) {
+            if (value instanceof Throwable throwable && hasUnsupportedFeatureCause(throwable)) {
+                printedUnsupportedFeature = true;
+            }
+            super.println(value);
         }
 
-        @Override
-        public void write(byte[] bytes, int offset, int length) throws IOException {
-            captured.write(bytes, offset, length);
-            original.write(bytes, offset, length);
-        }
-
-        @Override
-        public void flush() throws IOException {
-            captured.flush();
-            original.flush();
+        private boolean printedUnsupportedFeature() {
+            return printedUnsupportedFeature;
         }
     }
 }

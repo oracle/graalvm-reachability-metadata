@@ -6,6 +6,8 @@
  */
 package org.graalvm.internal.tck;
 
+import java.io.PrintStream;
+
 import com.oracle.svm.core.jdk.UnsupportedFeatureError;
 import org.junit.jupiter.api.Test;
 
@@ -81,6 +83,15 @@ public class NativeImageSupportTest {
     }
 
     @Test
+    void rethrowsALibraryErrorWhenOnlyTheUnsupportedFeatureClassNameWasPrinted() {
+        assertThrows(LibraryError.class,
+                () -> NativeImageSupport.runToleratingUnsupportedFeature(() -> {
+                    System.err.println(UnsupportedFeatureError.class.getName());
+                    throw new LibraryError("[FAILED_TO_LOAD_NATIVE_LIBRARY] null");
+                }));
+    }
+
+    @Test
     void rethrowsAnUnrelatedAssertionFailure() {
         assertThrows(AssertionError.class,
                 () -> NativeImageSupport.runToleratingUnsupportedFeature(() -> {
@@ -89,8 +100,28 @@ public class NativeImageSupportTest {
     }
 
     @Test
+    void rethrowsAnAssertionFailureAfterUnsupportedFeatureWasPrinted() {
+        assertThrows(AssertionError.class,
+                () -> NativeImageSupport.runToleratingUnsupportedFeature(() -> {
+                    unsupportedFeatureError().printStackTrace(System.err);
+                    throw new AssertionError("later assertion must fail");
+                }));
+    }
+
+    @Test
+    void rethrowsAFatalErrorAfterUnsupportedFeatureWasPrinted() {
+        OutOfMemoryError fatalError = new OutOfMemoryError("unrelated fatal error");
+        OutOfMemoryError thrown = assertThrows(OutOfMemoryError.class,
+                () -> NativeImageSupport.runToleratingUnsupportedFeature(() -> {
+                    unsupportedFeatureError().printStackTrace(System.err);
+                    throw fatalError;
+                }));
+        assertSame(fatalError, thrown);
+    }
+
+    @Test
     void restoresTheOriginalErrorStream() throws Exception {
-        java.io.PrintStream originalErr = System.err;
+        PrintStream originalErr = System.err;
         NativeImageSupport.runToleratingUnsupportedFeature(() -> {
             throw unsupportedFeatureError();
         });
