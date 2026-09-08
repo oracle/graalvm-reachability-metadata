@@ -1085,5 +1085,181 @@ class SyntheticLambdaTest(unittest.TestCase):
         self.assertNotIn("lambda$", markdown)
 
 
+class FactoryStubTranslationTest(unittest.TestCase):
+    """Native Image factory paths use verified constructors.
+
+    §AR-code-coverage-improvement.3.2.1
+    """
+
+    CALLER = MethodRef("com.example.Api", "start", (), "void")
+    ALPHA_FACTORY = MethodRef(
+        report_module.FACTORY_METHOD_HOLDER,
+        "AlphaEntry_generated",
+        ("java.lang.String",),
+        "com.example.AlphaEntry",
+    )
+    ALPHA_CONSTRUCTOR = MethodRef(
+        "com.example.AlphaEntry", "<init>", ("java.lang.String",), "void",
+    )
+    ALPHA_TARGET = MethodRef("com.example.AlphaEntry", "read", (), "void")
+    ZULU_FACTORY = MethodRef(
+        report_module.FACTORY_METHOD_HOLDER,
+        "ZuluEntry_generated",
+        (),
+        "com.example.ZuluEntry",
+    )
+    ZULU_CONSTRUCTOR = MethodRef("com.example.ZuluEntry", "<init>", (), "void")
+    ZULU_TARGET = MethodRef("com.example.ZuluEntry", "read", (), "void")
+    UNMATCHED_FACTORY = MethodRef(
+        report_module.FACTORY_METHOD_HOLDER,
+        "External_generated",
+        (),
+        "external.Entry",
+    )
+
+    def setUp(self) -> None:
+        methods: dict[int, MethodRef] = {
+            1: self.CALLER,
+            2: self.ALPHA_FACTORY,
+            3: self.ALPHA_CONSTRUCTOR,
+            4: self.ALPHA_TARGET,
+            5: self.ZULU_FACTORY,
+            6: self.ZULU_TARGET,
+            7: self.UNMATCHED_FACTORY,
+        }
+
+        def edge(caller: int, callee: int) -> dict:
+            return {
+                "caller": caller,
+                "callee": callee,
+                "bci": "",
+                "is_direct": "true",
+                "kind": "call",
+            }
+
+        self.graph = report_module.CallGraph(
+            methods=methods,
+            key_to_id={
+                ref.canonical_id: static_id for static_id, ref in methods.items()
+            },
+            adjacency={
+                1: [edge(1, 2), edge(1, 5)],
+                2: [edge(2, 3)],
+                3: [edge(3, 4)],
+                5: [edge(5, 6)],
+            },
+        )
+        library_methods: set[str] = {
+            self.ALPHA_CONSTRUCTOR.canonical_id,
+            self.ZULU_CONSTRUCTOR.canonical_id,
+        }
+        report_module._index_factory_stubs(self.graph, library_methods)
+        jacoco: dict[str, JacocoMethodCoverage] = {
+            ref.canonical_id: _coverage(ref)
+            for ref in (self.ALPHA_TARGET, self.ZULU_TARGET)
+        }
+        self.report, _ = report_module.correlate(
+            report_module.SampledProfile(),
+            self.graph,
+            {"targets": [{"id": self.CALLER.canonical_id, "kind": "method"}]},
+            jacoco,
+        )
+        self.paths: dict[str, dict] = {
+            entry["id"]: entry for entry in self.report["uncoveredPaths"]
+        }
+
+    def test_verified_factories_render_as_constructors(self) -> None:
+        alpha_path: str = report_module._display_path([1, 2, 3, 4], self.graph)
+        zulu_path: str = report_module._display_path([1, 5, 6], self.graph)
+
+        self.assertEqual(alpha_path, "Api.start() → AlphaEntry(...) → read()")
+        self.assertEqual(zulu_path, "Api.start() → ZuluEntry() → read()")
+        self.assertNotIn("FactoryMethodHolder", alpha_path)
+        self.assertNotIn("FactoryMethodHolder", zulu_path)
+
+    def test_semantic_distance_collapses_only_a_duplicate_constructor(self) -> None:
+        alpha: dict = self.paths[self.ALPHA_TARGET.canonical_id]
+        zulu: dict = self.paths[self.ZULU_TARGET.canonical_id]
+
+        self.assertEqual(alpha["stepsRemaining"], 2)
+        self.assertEqual(zulu["stepsRemaining"], 2)
+        self.assertEqual(
+            alpha["reachingPath"],
+            [
+                self.CALLER.canonical_id,
+                self.ALPHA_CONSTRUCTOR.canonical_id,
+                self.ALPHA_TARGET.canonical_id,
+            ],
+        )
+        self.assertIn(self.ALPHA_FACTORY.canonical_id, alpha["reachingPathRaw"])
+        self.assertIn(self.ALPHA_CONSTRUCTOR.canonical_id, alpha["reachingPathRaw"])
+        self.assertEqual(len(alpha["reachingPathRaw"]), 4)
+        self.assertEqual(len(zulu["reachingPathRaw"]), 3)
+
+    def test_semantic_distance_controls_ranking(self) -> None:
+        self.assertEqual(
+            self.report["promptTargetIds"],
+            [self.ALPHA_TARGET.canonical_id, self.ZULU_TARGET.canonical_id],
+        )
+
+    def test_route_selection_uses_semantic_distance(self) -> None:
+        first_factory = MethodRef(
+            report_module.FACTORY_METHOD_HOLDER, "First_generated", (), "com.example.First",
+        )
+        first_constructor = MethodRef("com.example.First", "<init>", (), "void")
+        second_factory = MethodRef(
+            report_module.FACTORY_METHOD_HOLDER, "Second_generated", (), "com.example.Second",
+        )
+        second_constructor = MethodRef("com.example.Second", "<init>", (), "void")
+        raw_steps: list[MethodRef] = [
+            MethodRef("com.example.Raw", name, (), "void")
+            for name in ("one", "two", "three")
+        ]
+        target = MethodRef("com.example.Target", "hit", (), "void")
+        refs: list[MethodRef] = [
+            self.CALLER,
+            first_factory,
+            first_constructor,
+            second_factory,
+            second_constructor,
+            *raw_steps,
+            target,
+        ]
+        graph = report_module.CallGraph(
+            methods={index: ref for index, ref in enumerate(refs, start=1)},
+            key_to_id={ref.canonical_id: index for index, ref in enumerate(refs, start=1)},
+        )
+
+        def add_edge(caller: int, callee: int) -> None:
+            graph.adjacency.setdefault(caller, []).append({
+                "caller": caller,
+                "callee": callee,
+                "kind": "call",
+            })
+
+        semantic_path: list[int] = [1, 2, 3, 4, 5, 9]
+        raw_shorter_path: list[int] = [1, 6, 7, 8, 9]
+        for path in (semantic_path, raw_shorter_path):
+            for caller, callee in zip(path, path[1:]):
+                add_edge(caller, callee)
+        report_module._index_factory_stubs(
+            graph,
+            {first_constructor.canonical_id, second_constructor.canonical_id},
+        )
+
+        routes = report_module._public_entry_routes(graph, [self.CALLER])
+        selected, _ = report_module._route_to(9, routes)
+
+        self.assertEqual(selected, semantic_path)
+        self.assertEqual(routes.distance[9], 3)
+        self.assertEqual(report_module._path_distance(selected, graph), 3)
+
+    def test_unmatched_factory_remains_unchanged(self) -> None:
+        translated: list[MethodRef] = report_module._translated_path([1, 7], self.graph)
+        rendered: str = report_module._display_path([1, 7], self.graph)
+        self.assertEqual(translated[-1], self.UNMATCHED_FACTORY)
+        self.assertIn("FactoryMethodHolder.External_generated()", rendered)
+
+
 if __name__ == "__main__":
     unittest.main()

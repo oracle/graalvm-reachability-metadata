@@ -87,6 +87,9 @@ TEST_TYPE_SUFFIXES = ("IT", "ITCase", "Test", "TestCase", "Tests")
 #: Marker in the class name the image generator gives a lambda implementation.
 SYNTHETIC_LAMBDA_CLASS_MARKER = "$$Lambda"
 
+#: Native Image owner for generated allocation methods that replace constructors.
+FACTORY_METHOD_HOLDER = "com.oracle.svm.core.code.FactoryMethodHolder"
+
 #: Method-name prefixes the compiler owns; no test can name one of these
 #: (§AR-code-coverage-improvement.3.2.1).
 SYNTHETIC_METHOD_PREFIXES = ("lambda$", "access$")
@@ -208,6 +211,8 @@ class CallGraph:
     reverse_adjacency: dict[int, list[dict]] = field(default_factory=dict)
     #: Invoke id -> every implementation resolved at that exact call site.
     invoke_fan_out: dict[int, list[int]] = field(default_factory=dict)
+    #: Native Image factory node -> verified source-level constructor.
+    path_aliases: dict[int, MethodRef] = field(default_factory=dict)
     #: Synthetic node -> the method whose source captured that closure.
     creator_of: dict[int, int] = field(default_factory=dict)
     #: Creating method -> the lambda bodies the compiler extracted from it.
@@ -362,6 +367,7 @@ class NearCallRecord:
     static_path_edges: list[dict]
     sample: Sample | None
     sampled_join_path_index: int | None
+    semantic_distance: int | None = None
 
     @property
     def target_ref(self) -> MethodRef:
@@ -375,6 +381,8 @@ class NearCallRecord:
     def distance(self) -> int | None:
         if self.join_kind == "none":
             return None
+        if self.semantic_distance is not None:
+            return self.semantic_distance
         return max(0, len(self.static_path) - 1)
 
     @property
@@ -506,6 +514,27 @@ def _index_synthetic_lambdas(graph: CallGraph) -> None:
         body_ids.sort(key=lambda body_id: graph.methods[body_id].canonical_id)
 
 
+def _index_factory_stubs(
+        graph: CallGraph,
+        library_methods: set[str] | None,
+) -> None:
+    """Map verified Native Image allocation stubs to library constructors.
+
+    The return type and parameters identify the constructor represented by a
+    factory stub. Requiring that exact constructor in the bytecode inventory
+    avoids inventing source-level constructors for other generated factories
+    (§AR-code-coverage-improvement.3.2.1).
+    """
+    if library_methods is None:
+        return
+    for static_id, ref in graph.methods.items():
+        if ref.owner != FACTORY_METHOD_HOLDER:
+            continue
+        constructor = MethodRef(ref.return_type, "<init>", ref.params, "void")
+        if constructor.canonical_id in library_methods:
+            graph.path_aliases[static_id] = constructor
+
+
 def _mark_dispatch_edges(
         graph: CallGraph,
         site_edges: dict[int, list[dict]],
@@ -598,6 +627,7 @@ def _load_call_graph(
         reports_dir: str,
         owners: set[str] | None,
         line_numbers: dict[str, tuple[tuple[int, int], ...]],
+        library_methods: set[str] | None,
 ) -> CallGraph:
     """Load the analysis call-tree CSV dump into an id-indexed call graph."""
     methods_path, invokes_path, targets_path = _find_call_tree_files(reports_dir)
@@ -649,6 +679,7 @@ def _load_call_graph(
         graph.reverse_adjacency.setdefault(callee_id, []).append(edge)
 
     _index_synthetic_lambdas(graph)
+    _index_factory_stubs(graph, library_methods)
     _mark_dispatch_edges(graph, site_edges, site_declared, owners)
     _add_creation_edges(graph)
 
@@ -674,10 +705,13 @@ def load_call_graph(
         reports_dir: str,
         owners: set[str] | None = None,
         line_numbers: dict[str, tuple[tuple[int, int], ...]] | None = None,
+        library_methods: set[str] | None = None,
 ) -> CallGraph:
     """Load one coherent call-tree triplet, failing closed on bad input."""
     try:
-        return _load_call_graph(reports_dir, owners, line_numbers or {})
+        return _load_call_graph(
+            reports_dir, owners, line_numbers or {}, library_methods
+        )
     except (OSError, csv.Error, KeyError, TypeError, ValueError) as error:
         raise ProfileFormatError(f"Cannot load call-tree CSVs from '{reports_dir}'.") from error
 
@@ -789,6 +823,15 @@ def _existing_test_frame_index(full_path: list[tuple[MethodRef, int]]) -> int | 
     return None
 
 
+def _translated_ref(static_id: int, graph: CallGraph) -> MethodRef:
+    """Return the source-level identity used to compare path steps.
+
+    §AR-code-coverage-improvement.3.2.1
+    """
+    creator_id: int = graph.creator_of.get(static_id, static_id)
+    return graph.path_aliases.get(creator_id, graph.methods[creator_id])
+
+
 @dataclass
 class RouteMap:
     distance: dict[int, int] = field(default_factory=dict)
@@ -800,7 +843,7 @@ def _multi_source_routes(
         graph: CallGraph,
         seeds: list[tuple[int, tuple, object]],
 ) -> RouteMap:
-    """Compute deterministic shortest paths from ranked source methods."""
+    """Compute deterministic shortest semantic paths from ranked source methods."""
     routes = RouteMap()
     best_keys: dict[int, tuple[int, tuple]] = {}
     queue: list[tuple[int, tuple, str, int]] = []
@@ -818,6 +861,7 @@ def _multi_source_routes(
         distance, seed_rank, _, current = heapq.heappop(queue)
         if best_keys.get(current) != (distance, seed_rank):
             continue
+        current_ref_id: str = _translated_ref(current, graph).canonical_id
         for edge in graph.adjacency.get(current, []):
             # A functional-interface call site names no callee of its own, so
             # routing through it invents a reachability claim
@@ -825,16 +869,21 @@ def _multi_source_routes(
             if edge["kind"] == "dispatch":
                 continue
             callee: int = edge["callee"]
-            candidate_key = (distance + 1, seed_rank)
+            semantic_step: int = int(
+                current_ref_id
+                != _translated_ref(callee, graph).canonical_id
+            )
+            candidate_distance: int = distance + semantic_step
+            candidate_key = (candidate_distance, seed_rank)
             if callee in best_keys and best_keys[callee] <= candidate_key:
                 continue
             best_keys[callee] = candidate_key
-            routes.distance[callee] = distance + 1
+            routes.distance[callee] = candidate_distance
             routes.previous[callee] = (current, edge)
             routes.payload[callee] = routes.payload[current]
             heapq.heappush(
                 queue,
-                (distance + 1, seed_rank, graph.methods[callee].canonical_id, callee),
+                (candidate_distance, seed_rank, graph.methods[callee].canonical_id, callee),
             )
     return routes
 
@@ -922,6 +971,7 @@ def _build_record(
             static_path_edges=edges,
             sample=sample,
             sampled_join_path_index=path_index,
+            semantic_distance=_path_distance(path, graph),
         )
     if target_id in entry_routes.distance:
         path, edges = _route_to(target_id, entry_routes)
@@ -934,6 +984,7 @@ def _build_record(
             static_path_edges=edges,
             sample=None,
             sampled_join_path_index=None,
+            semantic_distance=_path_distance(path, graph),
         )
     return NearCallRecord(
         coverage=coverage,
@@ -1292,14 +1343,19 @@ def _hand_off_note(record: NearCallRecord, graph: CallGraph) -> str | None:
     return None
 
 
-def _translated_path(static_path: list[int], graph: CallGraph) -> list[int]:
-    """Replace synthetic nodes by their creator, collapsing repeats."""
-    translated: list[int] = []
+def _translated_path(static_path: list[int], graph: CallGraph) -> list[MethodRef]:
+    """Replace synthetic nodes by source-level methods, collapsing repeats."""
+    translated: list[MethodRef] = []
     for static_id in static_path:
-        creator_id: int = graph.creator_of.get(static_id, static_id)
-        if not translated or translated[-1] != creator_id:
-            translated.append(creator_id)
+        ref: MethodRef = _translated_ref(static_id, graph)
+        if not translated or translated[-1].canonical_id != ref.canonical_id:
+            translated.append(ref)
     return translated
+
+
+def _path_distance(static_path: list[int], graph: CallGraph) -> int:
+    """Count edges in the source-level path used for prompt ranking."""
+    return max(0, len(_translated_path(static_path, graph)) - 1)
 
 
 def _record_to_json(
@@ -1335,8 +1391,8 @@ def _record_to_json(
         "missClassification": miss_classification,
         "reachingPath": (
             [
-                _format_static_id(static_id, graph)
-                for static_id in _translated_path(record.static_path, graph)
+                ref.canonical_id
+                for ref in _translated_path(record.static_path, graph)
             ]
             if graph_present else None
         ),
@@ -1666,8 +1722,8 @@ def _display_path(static_path: list[int], graph: CallGraph, limit: int = 6) -> s
     # Generated lambda classes and extracted bodies carry compiler-chosen names;
     # the agent can only act on the method that creates them
     # (§AR-code-coverage-improvement.3.2.1).
-    path: list[int] = _translated_path(static_path, graph)
-    selected: list[int | None]
+    path: list[MethodRef] = _translated_path(static_path, graph)
+    selected: list[MethodRef | None]
     if len(path) <= limit:
         selected = list(path)
     else:
@@ -1675,14 +1731,9 @@ def _display_path(static_path: list[int], graph: CallGraph, limit: int = 6) -> s
 
     labels: list[str] = []
     previous_owner: str | None = None
-    for static_id in selected:
-        if static_id is None:
-            labels.append("…")
-            previous_owner = None
-            continue
-        ref = graph.methods.get(static_id)
+    for ref in selected:
         if ref is None:
-            labels.append(f"method-{static_id}")
+            labels.append("…")
             previous_owner = None
             continue
         labels.append(_display_method(ref, ref.owner != previous_owner))
@@ -2005,7 +2056,10 @@ def generate_report(
         if library_methods_path else {}
     )
     graph: CallGraph = load_call_graph(
-        reports_dir, library_owners(library_methods), line_numbers
+        reports_dir,
+        library_owners(library_methods),
+        line_numbers,
+        library_methods,
     )
     profile: SampledProfile = load_sampled_profile(profile_path, graph)
     inventory: dict = _load_json_object(api_inventory_path, "API inventory")

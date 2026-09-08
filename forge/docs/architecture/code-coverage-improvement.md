@@ -427,6 +427,23 @@ in JSON. When a route reaches its target through a closure the enclosing method
 hands to a scheduler or executor, the entry says so: the body then runs on
 another thread, and a test that does not wait for it covers nothing.
 
+Native Image factory stubs owned by
+`com.oracle.svm.core.code.FactoryMethodHolder` render as the constructors they
+stand for when the constructor derived from the factory return type and
+parameters exists in the resolved library bytecode inventory. An unmatched
+factory remains unchanged rather than naming a constructor the library does not
+declare. Route distance and ranking use this translated semantic path: replacing
+one factory with one constructor preserves distance, while an adjacent factory
+and identical constructor collapse to one step. The raw Native Image path remains
+in JSON beside the translated path for auditability.
+
+This normalization is deliberately limited to verified factory stubs. Anonymous
+class owners remain in their bytecode form, and assertion, mocking, container,
+and existing-test frames receive no new display filtering here. Resolving those
+frames requires provenance or ownership judgments that constructor identity does
+not establish, so they are separate design decisions rather than heuristics
+bundled into factory translation.
+
 ### 3.3 Marginal-yield early stop
 
 Both phases stop before their budget when the last passes stop producing
