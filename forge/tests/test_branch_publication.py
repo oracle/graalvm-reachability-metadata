@@ -103,6 +103,35 @@ class BranchPublicationTests(unittest.TestCase):
             self.assertNotIn(f"forge/{CONTINUATION_MARKER_FILENAME}", tracked_paths)
             self.assertNotIn("forge/human-intervention-logs/run.log", tracked_paths)
 
+    def test_post_review_finalization_disables_agent_repairs(self) -> None:
+        with patch.dict(os.environ, {"GRAALVM_HOME_25_0": "/jdk-25"}), \
+                patch.object(
+                    branch_publication, "_run_post_review_gradle_test",
+                    return_value=True,
+                ), patch.object(
+                    branch_publication, "resolve_metadata_version",
+                    return_value="1.0",
+                ), patch.object(
+                    branch_publication, "run_library_finalization",
+                    return_value=True,
+                ) as finalization:
+            result = branch_publication._run_standard_post_review_finalization(
+                "/repo",
+                "g:a:1.0",
+                "base",
+            )
+
+        self.assertTrue(result)
+        finalization.assert_called_once_with(
+            repo_path="/repo",
+            library="g:a:1.0",
+            group="g",
+            artifact="a",
+            library_version="1.0",
+            base_commit="base",
+            allow_agent_repairs=False,
+        )
+
 
 if __name__ == "__main__":
     unittest.main()

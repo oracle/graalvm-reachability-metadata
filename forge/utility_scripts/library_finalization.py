@@ -343,8 +343,11 @@ def run_library_finalization(
         library_version: str,
         log_prefix: str | None = None,
         base_commit: str | None = None,
+        allow_agent_repairs: bool = True,
 ) -> bool:
     """Run the shared end-of-workflow finalization steps for one library.
+
+    Agent repair is disabled when replaying a reviewed tree. §FS-local-branch-review
 
     §AR-forge-driver-finalization
     """
@@ -393,6 +396,8 @@ def run_library_finalization(
                 unsupported_owner_reported = True
             else:
                 routing_failure_evidence = _routing_failure_agent_evidence(route_result.stdout)
+    if not metadata_valid and not allow_agent_repairs:
+        return False
     if not metadata_valid:
         for attempt in range(1, MAX_CHECK_METADATA_FIX_ATTEMPTS + 1):
             log_detail(
@@ -428,7 +433,11 @@ def run_library_finalization(
         else:
             return False
     log_detail("style-checks", f"Running style checks for {library}")
-    if not run_style_fix_and_checks(repo_path, library):
+    if not run_style_fix_and_checks(
+            repo_path,
+            library,
+            allow_agent_repairs=allow_agent_repairs,
+    ):
         return False
     test_source_root = os.path.join(repo_path, "tests", "src", group, artifact, library_version, "src", "test")
     generated_test_validity_issues = collect_generated_test_validity_issues(test_source_root)

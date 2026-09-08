@@ -30,14 +30,13 @@ from utility_scripts.local_ci_verification import (
     LocalCIVerificationError,
     LocalCIVerificationResult,
     run_local_ci_verification,
-    run_repair_agent,
     write_verification_metrics,
 )
 from utility_scripts.metrics_writer import read_pending_metrics, write_pending_metrics
 from utility_scripts.stage_logger import log_stage
 from utility_scripts.task_logs import build_timestamped_task_log_path, display_log_path
 
-LOCAL_REVIEW_TIMEOUT_SECONDS: int = 900
+LOCAL_REVIEW_TIMEOUT_SECONDS: int = 3600
 LOCAL_REVIEW_METRICS_KEY: str = "local_review"
 REVIEW_WORKTREE_DIRNAME: str = "forge_prepublication_review_worktrees"
 FINDINGS_TITLE: str = "# Forge pre-push review findings"
@@ -62,7 +61,6 @@ REVIEW_SKILLS_BY_TASK_TYPE: dict[str, str] = {
 }
 
 PostReviewFinalization = Callable[[], bool]
-StagePublicationChanges = Callable[[], None]
 
 
 @dataclass(frozen=True)
@@ -221,13 +219,12 @@ def run_local_branch_review(
         metrics_repo_path: str | None = None,
         model: str | None = None,
         post_review_finalization: PostReviewFinalization | None = None,
-        stage_publication_changes: StagePublicationChanges | None = None,
 ) -> LocalBranchReviewOutcome:
     """Review once, verify actual edits, and always return a publishable outcome.
 
-    Reviewer findings never reach the deterministic repair agent. The reviewer
-    reports and edits in one cold pass; Git alone decides whether finalization
-    and the gate run again. §FS-local-branch-review
+    The reviewer owns every semantic repair in one cold pass. Forge replays the
+    deterministic checks without accepting a post-verdict mutation.
+    §FS-local-branch-review
     """
     persisted: LocalBranchReviewOutcome | None = _load_persisted_outcome(
         metrics_repo_path,
@@ -280,7 +277,7 @@ def run_local_branch_review(
     if execution.changed_paths:
         _log_review(
             f"Reviewer changed {len(execution.changed_paths)} path(s); "
-            "re-running finalization and the pre-publication gate",
+            "replaying finalization and the pre-publication gate without repairs",
             indent_level=1,
         )
         _verify_reviewer_edits(
@@ -292,7 +289,6 @@ def run_local_branch_review(
             original_verification=local_ci_verification,
             outcome=outcome,
             post_review_finalization=post_review_finalization,
-            stage_publication_changes=stage_publication_changes,
         )
     else:
         _log_review("Reviewer made no branch edits; verification is not repeated", indent_level=1)
@@ -311,6 +307,13 @@ def run_local_branch_review(
     return outcome
 
 
+def _tree_matches_commit(repo_path: str, expected_sha: str) -> bool:
+    """Keep the post-verdict replay read-only. §FS-local-branch-review"""
+    current_sha: str = _git_stdout(repo_path, ["rev-parse", "HEAD"])
+    status: str = _git_stdout(repo_path, ["status", "--porcelain"])
+    return current_sha == expected_sha and not status
+
+
 def _verify_reviewer_edits(
         *,
         repo_path: str,
@@ -321,30 +324,18 @@ def _verify_reviewer_edits(
         original_verification: LocalCIVerificationResult,
         outcome: LocalBranchReviewOutcome,
         post_review_finalization: PostReviewFinalization | None,
-        stage_publication_changes: StagePublicationChanges | None,
 ) -> None:
-    """Re-run both deterministic tiers and reject a repair that cannot verify."""
+    """Replay deterministic checks without accepting any post-verdict mutation."""
+    reviewed_sha: str = _git_stdout(repo_path, ["rev-parse", "HEAD"])
     failed_step: str | None = _run_finalization(post_review_finalization)
+    if failed_step is None and not _tree_matches_commit(repo_path, reviewed_sha):
+        failed_step = "post-review-finalization-mutated-reviewed-tree"
     if failed_step is not None:
-        if stage_publication_changes is not None:
-            stage_publication_changes()
-        run_repair_agent(
-            repo_path=repo_path,
-            prompt=_build_deterministic_repair_prompt(coordinates, failed_step),
-            task_type="local-review-check-repair",
-            library=coordinates,
-            commit_message="Repair post-review finalization failure",
+        _reset_reviewer_edits(
+            repo_path, verified_sha, metrics_repo_path, original_verification,
         )
-        failed_step = _run_finalization(post_review_finalization)
-        if failed_step is not None:
-            _reset_reviewer_edits(
-                repo_path, verified_sha, metrics_repo_path, original_verification,
-            )
-            _reject_failed_repair(outcome, failed_step)
-            return
-
-    if stage_publication_changes is not None:
-        stage_publication_changes()
+        _reject_failed_repair(outcome, failed_step)
+        return
 
     try:
         outcome.local_ci_verification = run_local_ci_verification(
@@ -352,6 +343,7 @@ def _verify_reviewer_edits(
             coordinates=coordinates,
             base_commit=base_commit,
             metrics_repo_path=metrics_repo_path,
+            max_fixup_attempts=0,
         )
     except LocalCIVerificationError as error:
         _reset_reviewer_edits(
@@ -360,6 +352,16 @@ def _verify_reviewer_edits(
         outcome.local_ci_verification = original_verification
         _reject_failed_repair(
             outcome, error.result.failure_gate or "pre-publication-gate",
+        )
+        return
+
+    if not _tree_matches_commit(repo_path, reviewed_sha):
+        _reset_reviewer_edits(
+            repo_path, verified_sha, metrics_repo_path, original_verification,
+        )
+        outcome.local_ci_verification = original_verification
+        _reject_failed_repair(
+            outcome, "pre-publication-gate-mutated-reviewed-tree",
         )
 
 
@@ -417,17 +419,6 @@ def _reset_reviewer_edits(
     )
 
 
-def _build_deterministic_repair_prompt(coordinates: str, failed_step: str) -> str:
-    return "\n".join([
-        "A deterministic check failed after the pre-push reviewer edited the branch.",
-        "Fix only that check's failure, keep the reviewer's intended repair intact when possible,",
-        "and do not edit forge/FINDINGS.md. The deterministic rerun will decide the outcome.",
-        "",
-        f"Library: {coordinates}",
-        f"Failed step: {failed_step}",
-    ])
-
-
 def _request_review(
         *,
         repo_path: str,
@@ -480,7 +471,7 @@ def _request_review(
             library=coordinates,
             timeout=LOCAL_REVIEW_TIMEOUT_SECONDS,
             model=review_model,
-            thinking_level="medium",
+            thinking_level="xhigh",
         )
         displayed_log_path: str = display_log_path(result.log_path)
         _log_review(
@@ -716,6 +707,39 @@ def _read_verdict(verdict_path: str) -> LocalReviewVerdict | None:
     )
 
 
+def _build_review_finalization_instructions(
+        coordinates: str,
+        task_type: str,
+) -> list[str]:
+    """Give one reviewer every finalization duty. §FS-local-branch-review"""
+    if task_type == "not-for-native-image":
+        return [
+            "Before writing the verdict, ensure the marker and descriptor inputs are final. "
+            "This route has no library finalization callback or second semantic agent.",
+            "",
+        ]
+    return [
+        "Before writing the verdict, finish every mutation-producing finalization step after "
+        "your last edit. This is the only semantic repair pass; Forge will not launch another agent.",
+        "Run and repair the target coordinate until all of these pass and leave the intended tree:",
+        f"- `./gradlew test -Pcoordinates={coordinates}` with current defaults.",
+        f"- `GVM_TCK_NATIVE_IMAGE_MODE=future-defaults-all ./gradlew test "
+        f"-Pcoordinates={coordinates}`.",
+        f"- `GRAALVM_HOME=\"$GRAALVM_HOME_25_0\" JAVA_HOME=\"$GRAALVM_HOME_25_0\" "
+        f"./gradlew test -Pcoordinates={coordinates}`.",
+        f"- `./gradlew splitTestOnlyMetadata -Pcoordinates={coordinates}`.",
+        f"- `./gradlew checkMetadataFiles -Pcoordinates={coordinates}`.",
+        f"- `./gradlew spotlessApply spotlessCheck checkstyle -Pcoordinates={coordinates}`.",
+        f"- `./gradlew generateLibraryStats -Pcoordinates={coordinates}`.",
+        "Repeat the metadata finalization commands for the resolved metadata-version coordinate "
+        "when it differs from the requested version, and re-check the generated-test validity rules.",
+        "Inspect every file these commands change as part of your review and rerun affected commands. "
+        "Approve only after the final tree is stable. Forge will replay the checks with secondary "
+        "agents disabled; a failure or any new tree mutation discards the repair and records rejection.",
+        "",
+    ]
+
+
 def _build_review_prompt(
         *,
         coordinates: str,
@@ -748,6 +772,7 @@ def _build_review_prompt(
         "non-empty title and a body containing the cause and reproducible evidence. Forge "
         "will open or reuse that issue and add its link to the recorded finding.",
         "",
+        *_build_review_finalization_instructions(coordinates, task_type),
         f"Write exactly one JSON verdict to `{verdict_path}`. This is the only judgment Forge reads:",
         json.dumps({
             "decision": "approved",

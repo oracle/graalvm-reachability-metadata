@@ -221,10 +221,10 @@ def _run_standard_post_review_finalization(
         coordinates: str,
         base_commit: str,
 ) -> bool:
-    """Replay the standard generation/finalization tier over reviewer edits.
+    """Replay finalization without a second semantic repair.
 
-    The outer local-review phase owns the bounded repair and deterministic
-    rerun; this callback only reports whether the tier passed.
+    The reviewer already owns every repair. This callback disables nested agents;
+    the outer local-review phase also rejects any mutation the replay produces.
     §FS-local-branch-review
     """
     current_environment: dict[str, str] = dict(os.environ)
@@ -265,6 +265,7 @@ def _run_standard_post_review_finalization(
                 artifact=artifact,
                 library_version=library_version,
                 base_commit=base_commit,
+                allow_agent_repairs=False,
         ):
             return False
     return True
@@ -399,7 +400,6 @@ def publish_branch(
                         )
                     )
                 ),
-                stage_publication_changes=stage,
             )
             local_ci_verification = review_outcome.local_ci_verification
             local_review_payload = review_outcome.to_descriptor_payload()

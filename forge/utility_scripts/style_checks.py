@@ -214,8 +214,9 @@ def run_style_fix_and_checks(
         repo_path: str,
         coordinates: str,
         timeout_seconds: int = DEFAULT_STYLE_FIX_TIMEOUT_SECONDS,
+        allow_agent_repairs: bool = True,
 ) -> bool:
-    """Apply style fixes and run style checks for the provided library coordinates."""
+    """Apply formatting and optionally forbid another agent. §FS-local-branch-review"""
     coordinate_arg = f"-Pcoordinates={coordinates}"
 
     if not _run_gradle_task(repo_path, ["./gradlew", "spotlessApply", coordinate_arg]):
@@ -226,6 +227,8 @@ def run_style_fix_and_checks(
     checkstyle_result = _run_checkstyle(repo_path, coordinate_arg)
     if checkstyle_result.returncode == 0:
         return True
+    if not allow_agent_repairs:
+        return False
 
     print(f"[checkstyle] Gradle command failed: ./gradlew checkstyle {coordinate_arg}", file=sys.stderr)
     log_path = _build_checkstyle_log_path(coordinates)
