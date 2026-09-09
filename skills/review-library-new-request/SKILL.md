@@ -65,12 +65,26 @@ Work through the steps in order. Each step cites the Review Signals (by number, 
 
 6. Check validation status.
    - Expected minimum: metadata validation and library test jobs for the target coordinates are green.
-   - If the PR is small and the review concerns correctness rather than infra noise, prefer asking for code changes over rerunning CI.
+   - If the PR is small and the review concerns correctness rather than infra noise, repair the PR under **Disposition** rather than rerunning CI.
    - If CI is flaky but the content is otherwise solid, ask for a rerun after the review issues are resolved.
+
+## Disposition
+
+Finding a violation is half the review. **Read §FS-contribution-contract.5 and take the disposition it assigns** — `grund FS-contribution-contract.5 --full`, or section 5 of `docs/functional-spec/contribution-contract.md` in the checkout. That section is authoritative and this table is only a dispatch: it tells you which case you are in, not what the case permits. You are the party that acts, because the PR was generated and no author is waiting to answer a review comment.
+
+| Case | When | What you do |
+|---|---|---|
+| 5.1 | The violation is in the PR's own `metadata/`, `stats/`, and `tests/src/` files | Repair it on the PR head, push, re-run the affected checks, and say what you changed and why |
+| 5.2 | The only possible fix is build logic, harness code, workflows, or another coordinate | Do not repair there; revert such a change if the PR already carries one, then take 5.3 |
+| 5.3 | The cause is a defect in shared repository code | Find or open one issue for the defect, comment that the PR is blocked on it rather than on its own content, then take 5.5 |
+| 5.4 | The library's dynamic access is reachable only through behavior Native Image cannot support | Close the PR, label the linked issue `library-unsupported-version`, and close that issue |
+| 5.5 | Anything else, uncertainty included | Label the PR `human-intervention` and comment with the rule at issue, what you tried, and what you could not decide |
+
+Never close a PR under any case but 5.4. Read §FS-contribution-contract.5.1 before you repair: it bounds what a repair may do, and it carries the one exception that lets you drop a test scenario rather than fix it.
 
 ## Output Style
 
-Match the concise review style already used in this repository:
+Match the concise review style already used in this repository. Each line below is what you say about the violation; **Disposition** above decides whether you say it in a repair note, in a blocked-on-infrastructure comment, in a close, or in a `human-intervention` comment.
 
 - For scaffold-only tests: say that tests must differ from the scaffold and should not be accepted as-is.
 - For native skips that does not depend on the open-ended dynamic class loading: say that the PR avoids the failing native path instead of fixing it, so it does not demonstrate native-image runtime coverage.

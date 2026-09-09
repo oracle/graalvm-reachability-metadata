@@ -12,6 +12,7 @@ import tempfile
 import unittest
 
 from utility_scripts.code_coverage_jacoco import (
+    JacocoLineCoverage,
     JacocoMethodCoverage,
     JacocoReportError,
     load_jacoco_method_coverage,
@@ -96,6 +97,21 @@ class CallGraphAndProfileTest(unittest.TestCase):
         self.assertEqual(len(graph.methods), 10)
         self.assertIn(LOAD_ID, graph.key_to_id)
         self.assertEqual(len(graph.loose_to_ids["com.example.Registry#resolve/1"]), 2)
+
+    def test_call_graph_maps_invoke_bci_through_library_line_table(self) -> None:
+        graph = report_module.load_call_graph(
+            FIXTURES,
+            line_numbers={INIT_ID: ((0, 7), (8, 11), (20, 18))},
+        )
+
+        target_id: int = graph.key_to_id[RESOLVE_ID]
+        edge: dict = next(
+            candidate
+            for candidate in graph.reverse_adjacency[target_id]
+            if candidate["caller"] == graph.key_to_id[INIT_ID]
+        )
+        self.assertEqual(edge["bci"], "10")
+        self.assertEqual(edge["source_line"], 11)
 
     def test_call_graph_selects_one_complete_suffix_atomically(self) -> None:
         with tempfile.TemporaryDirectory(prefix="call-tree-triplet-") as reports_dir:
@@ -302,6 +318,109 @@ class DeepCorrelationTest(unittest.TestCase):
         self.assertEqual(path["jacocoStatus"], "uncovered")
         self.assertEqual(path["stepsRemaining"], 0)
 
+    def test_covered_call_site_is_dispatched_elsewhere_and_never_fork(self) -> None:
+        caller = MethodRef("example.Router", "route", (), "void")
+        target = MethodRef("example.Handler$1", "handle", (), "void")
+        suite_handler = MethodRef(
+            "example.RouteCoverageTest$1", "handle", (), "void"
+        )
+        target_edge: dict = {
+            "caller": 1,
+            "callee": 2,
+            "bci": "1",
+            "is_direct": "false",
+            "kind": "call",
+            "invoke_id": 10,
+            "source_line": 1,
+        }
+        suite_edge: dict = {
+            **target_edge,
+            "callee": 3,
+        }
+        graph = report_module.CallGraph(
+            methods={1: caller, 2: target, 3: suite_handler},
+            key_to_id={
+                caller.canonical_id: 1,
+                target.canonical_id: 2,
+                suite_handler.canonical_id: 3,
+            },
+            adjacency={1: [target_edge, suite_edge]},
+            reverse_adjacency={2: [target_edge], 3: [suite_edge]},
+            invoke_fan_out={10: [2, 3]},
+        )
+        caller_coverage = JacocoMethodCoverage(
+            method_ref=caller,
+            covered=True,
+            source_path="example/Router.java",
+            source_line=1,
+            report_paths=("fixture.xml",),
+        )
+        report, _ = report_module.correlate(
+            report_module.SampledProfile(),
+            graph,
+            {"targets": [{"id": caller.canonical_id, "kind": "method"}]},
+            {
+                caller.canonical_id: caller_coverage,
+                target.canonical_id: _coverage(target),
+            },
+            jacoco_lines={
+                "example/Router.java": {
+                    1: JacocoLineCoverage(mi=0, ci=5, mb=1, cb=1),
+                },
+            },
+        )
+
+        classification: dict = report["bulkTargets"][0]["missClassification"]
+        self.assertEqual(classification["kind"], "dispatched-elsewhere")
+        self.assertIsNone(classification["fork"])
+        self.assertTrue(
+            next(
+                candidate
+                for candidate in classification["candidates"]
+                if candidate["id"] == suite_handler.canonical_id
+            )["coverageSuite"]
+        )
+
+    def test_target_at_missed_block_start_keeps_preceding_fork(self) -> None:
+        caller = MethodRef("example.Router", "route", (), "void")
+        target = MethodRef("example.Handler", "handle", (), "void")
+        edge: dict = {
+            "caller": 1,
+            "callee": 2,
+            "bci": "8",
+            "is_direct": "true",
+            "kind": "call",
+            "invoke_id": 10,
+            "source_line": 3,
+        }
+        graph = report_module.CallGraph(
+            methods={1: caller, 2: target},
+            invoke_fan_out={10: [2]},
+        )
+        caller_coverage = JacocoMethodCoverage(
+            method_ref=caller,
+            covered=True,
+            source_path="example/Router.java",
+            source_line=1,
+            report_paths=("fixture.xml",),
+        )
+
+        classification: dict = report_module._edge_miss_classification(
+            edge,
+            graph,
+            {caller.canonical_id: caller_coverage},
+            {
+                "example/Router.java": {
+                    1: JacocoLineCoverage(mi=0, ci=5, mb=1, cb=1),
+                    2: JacocoLineCoverage(mi=0, ci=2, mb=0, cb=0),
+                    3: JacocoLineCoverage(mi=1, ci=0, mb=0, cb=0),
+                },
+            },
+        )
+
+        self.assertEqual(classification["kind"], "fork-not-taken")
+        self.assertEqual(classification["fork"]["line"], 1)
+
     def test_shortest_distance_beats_prompt_quality(self) -> None:
         framework = MethodRef("java.lang.Thread", "run", (), "void")
         app = MethodRef("app.Service", "work", (), "void")
@@ -432,22 +551,21 @@ class ReportArtifactsTest(unittest.TestCase):
             markdown = md_file.read()
         self.assertIn("## Observed (sampled guidance only)", markdown)
         self.assertIn("## Uncovered paths (JaCoCo-exact, top 200)", markdown)
-        navigation = (
-            "Observed:\n"
-            "`Registry.init()`\n\n"
-            "Uncovered paths:\n"
-            "`Registry.init() → resolve(...)`\n"
-            "`Registry.init() → resolve(...) → load(...)`\n"
-            "`Registry.init() → resolve(...) → load(...) → reload()`\n"
+        expected_paths: tuple[str, ...] = (
+            "`Registry.init() → resolve(...)`",
+            "`Registry.init() → resolve(...) → load(...)`",
+            "`Registry.init() → resolve(...) → load(...) → reload()`",
+            "`Config.of() → parse(...)`",
         )
-        public_navigation = (
-            "Public entry:\n"
-            "`Config.of()`\n\n"
-            "Uncovered paths:\n"
-            "`Config.of() → parse(...)`\n"
-        )
-        self.assertIn(navigation, markdown)
-        self.assertIn(public_navigation, markdown)
+        for path in expected_paths:
+            self.assertIn(path, markdown)
+        for target in report["bulkTargets"]:
+            self.assertIn("missClassification", target)
+            self.assertIn(
+                target["missClassification"]["kind"],
+                {"dispatched-elsewhere", "fork-not-taken", "no-fork"},
+            )
+        self.assertEqual(markdown.count("  target "), len(report["bulkTargets"]))
         path_lines = [line for line in markdown.splitlines() if line.startswith("`")]
         for line in path_lines:
             self.assertNotIn("#", line)
@@ -582,18 +700,55 @@ class ReportArtifactsTest(unittest.TestCase):
         report = self._generate(iteration=0, target_state_paths=[state_path])
 
         by_id = {entry["id"]: entry for entry in report["uncoveredPaths"]}
-        self.assertEqual(report["promptTargetIds"], [RESOLVE_ID, RELOAD_ID])
-        self.assertEqual(report["summary"]["terminalUncovered"], 2)
-        for method_id in (PARSE_ID, LOAD_ID):
+        self.assertEqual(report["promptTargetIds"], [RESOLVE_ID])
+        self.assertEqual(report["summary"]["terminalUncovered"], 3)
+        for method_id in (PARSE_ID, LOAD_ID, RELOAD_ID):
             self.assertTrue(by_id[method_id]["terminal"])
             self.assertNotIn(method_id, report["promptTargetIds"])
-        self.assertEqual(by_id[RELOAD_ID]["targetStatus"], "attempted")
+        self.assertEqual(by_id[RELOAD_ID]["targetStatus"], "exhausted")
         self.assertEqual(by_id[RELOAD_ID]["attemptCount"], 3)
-        self.assertFalse(by_id[RELOAD_ID]["terminal"])
+        self.assertEqual(
+            by_id[RELOAD_ID]["stateReason"],
+            "3 attempts without coverage change",
+        )
+        bulk = {entry["id"]: entry for entry in report["bulkTargets"]}
+        self.assertEqual(bulk[RELOAD_ID]["targetStatus"], "exhausted")
         persisted = {entry["id"]: entry for entry in report["targetStates"]}
         self.assertEqual(persisted[RESOLVE_INTEGER_ID]["status"], "completed")
         self.assertEqual(persisted[PARSE_ID]["status"], "skipped")
         self.assertEqual(persisted[LOAD_ID]["status"], "exhausted")
+        self.assertEqual(persisted[RELOAD_ID]["status"], "exhausted")
+
+    def test_uncovered_targets_are_exhausted_after_attempt_threshold(self) -> None:
+        reports: list[dict] = [
+            self._generate(iteration=iteration)
+            for iteration in range(report_module.MAX_UNCOVERED_ATTEMPTS + 1)
+        ]
+
+        report: dict = reports[-1]
+        bulk = {entry["id"]: entry for entry in report["bulkTargets"]}
+        target = bulk[RESOLVE_ID]
+        self.assertNotIn(RESOLVE_ID, report["promptTargetIds"])
+        self.assertIn(RESOLVE_ID, {entry["id"] for entry in report["uncoveredPaths"]})
+        self.assertEqual(target["attemptCount"], report_module.MAX_UNCOVERED_ATTEMPTS)
+        self.assertEqual(target["targetStatus"], "exhausted")
+        self.assertEqual(target["stateReason"], "3 attempts without coverage change")
+
+    def test_covered_target_is_not_exhausted_before_threshold(self) -> None:
+        state_path = self._write_json("deep-cover-0.json", {
+            "coordinate": "com.example:demo:1.0.0",
+            "targets": [{
+                "id": RESOLVE_INTEGER_ID,
+                "status": "attempted",
+                "attemptCount": report_module.MAX_UNCOVERED_ATTEMPTS - 1,
+            }],
+        })
+
+        report = self._generate(iteration=0, target_state_paths=[state_path])
+
+        persisted = {entry["id"]: entry for entry in report["targetStates"]}
+        self.assertEqual(persisted[RESOLVE_INTEGER_ID]["status"], "attempted")
+        self.assertIsNone(persisted[RESOLVE_INTEGER_ID]["reason"])
 
     def test_target_state_rejects_unknown_status(self) -> None:
         state_path = self._write_json("bad-state.json", {
@@ -785,6 +940,20 @@ class LibraryMethodFilterTest(unittest.TestCase):
                 handle.write(f'"{self.LIB.canonical_id}",true,false\n')
             self.assertEqual(report_module.load_library_methods(path), {self.LIB.canonical_id})
 
+    def test_loading_reads_bytecode_line_numbers_from_extractor_csv(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            path = os.path.join(directory, "methods.csv")
+            with open(path, "w", encoding="utf-8") as handle:
+                handle.write("id,hasCode,isPublicApi,isStatic,lineNumbers\n")
+                handle.write(
+                    f'"{self.LIB.canonical_id}",true,false,false,"0:11;8:15"\n'
+                )
+
+            self.assertEqual(
+                report_module.load_library_line_numbers(path),
+                {self.LIB.canonical_id: ((0, 11), (8, 15))},
+            )
+
 
 class SyntheticLambdaTest(unittest.TestCase):
     """Lambda attribution and route honesty (§AR-code-coverage-improvement.3.2.1).
@@ -914,6 +1083,182 @@ class SyntheticLambdaTest(unittest.TestCase):
         self.assertIn("1 closures, 1 never executed", markdown)
         self.assertIn("runs on another thread via `Executor.submit`", markdown)
         self.assertNotIn("lambda$", markdown)
+
+
+class FactoryStubTranslationTest(unittest.TestCase):
+    """Native Image factory paths use verified constructors.
+
+    §AR-code-coverage-improvement.3.2.1
+    """
+
+    CALLER = MethodRef("com.example.Api", "start", (), "void")
+    ALPHA_FACTORY = MethodRef(
+        report_module.FACTORY_METHOD_HOLDER,
+        "AlphaEntry_generated",
+        ("java.lang.String",),
+        "com.example.AlphaEntry",
+    )
+    ALPHA_CONSTRUCTOR = MethodRef(
+        "com.example.AlphaEntry", "<init>", ("java.lang.String",), "void",
+    )
+    ALPHA_TARGET = MethodRef("com.example.AlphaEntry", "read", (), "void")
+    ZULU_FACTORY = MethodRef(
+        report_module.FACTORY_METHOD_HOLDER,
+        "ZuluEntry_generated",
+        (),
+        "com.example.ZuluEntry",
+    )
+    ZULU_CONSTRUCTOR = MethodRef("com.example.ZuluEntry", "<init>", (), "void")
+    ZULU_TARGET = MethodRef("com.example.ZuluEntry", "read", (), "void")
+    UNMATCHED_FACTORY = MethodRef(
+        report_module.FACTORY_METHOD_HOLDER,
+        "External_generated",
+        (),
+        "external.Entry",
+    )
+
+    def setUp(self) -> None:
+        methods: dict[int, MethodRef] = {
+            1: self.CALLER,
+            2: self.ALPHA_FACTORY,
+            3: self.ALPHA_CONSTRUCTOR,
+            4: self.ALPHA_TARGET,
+            5: self.ZULU_FACTORY,
+            6: self.ZULU_TARGET,
+            7: self.UNMATCHED_FACTORY,
+        }
+
+        def edge(caller: int, callee: int) -> dict:
+            return {
+                "caller": caller,
+                "callee": callee,
+                "bci": "",
+                "is_direct": "true",
+                "kind": "call",
+            }
+
+        self.graph = report_module.CallGraph(
+            methods=methods,
+            key_to_id={
+                ref.canonical_id: static_id for static_id, ref in methods.items()
+            },
+            adjacency={
+                1: [edge(1, 2), edge(1, 5)],
+                2: [edge(2, 3)],
+                3: [edge(3, 4)],
+                5: [edge(5, 6)],
+            },
+        )
+        library_methods: set[str] = {
+            self.ALPHA_CONSTRUCTOR.canonical_id,
+            self.ZULU_CONSTRUCTOR.canonical_id,
+        }
+        report_module._index_factory_stubs(self.graph, library_methods)
+        jacoco: dict[str, JacocoMethodCoverage] = {
+            ref.canonical_id: _coverage(ref)
+            for ref in (self.ALPHA_TARGET, self.ZULU_TARGET)
+        }
+        self.report, _ = report_module.correlate(
+            report_module.SampledProfile(),
+            self.graph,
+            {"targets": [{"id": self.CALLER.canonical_id, "kind": "method"}]},
+            jacoco,
+        )
+        self.paths: dict[str, dict] = {
+            entry["id"]: entry for entry in self.report["uncoveredPaths"]
+        }
+
+    def test_verified_factories_render_as_constructors(self) -> None:
+        alpha_path: str = report_module._display_path([1, 2, 3, 4], self.graph)
+        zulu_path: str = report_module._display_path([1, 5, 6], self.graph)
+
+        self.assertEqual(alpha_path, "Api.start() → AlphaEntry(...) → read()")
+        self.assertEqual(zulu_path, "Api.start() → ZuluEntry() → read()")
+        self.assertNotIn("FactoryMethodHolder", alpha_path)
+        self.assertNotIn("FactoryMethodHolder", zulu_path)
+
+    def test_semantic_distance_collapses_only_a_duplicate_constructor(self) -> None:
+        alpha: dict = self.paths[self.ALPHA_TARGET.canonical_id]
+        zulu: dict = self.paths[self.ZULU_TARGET.canonical_id]
+
+        self.assertEqual(alpha["stepsRemaining"], 2)
+        self.assertEqual(zulu["stepsRemaining"], 2)
+        self.assertEqual(
+            alpha["reachingPath"],
+            [
+                self.CALLER.canonical_id,
+                self.ALPHA_CONSTRUCTOR.canonical_id,
+                self.ALPHA_TARGET.canonical_id,
+            ],
+        )
+        self.assertIn(self.ALPHA_FACTORY.canonical_id, alpha["reachingPathRaw"])
+        self.assertIn(self.ALPHA_CONSTRUCTOR.canonical_id, alpha["reachingPathRaw"])
+        self.assertEqual(len(alpha["reachingPathRaw"]), 4)
+        self.assertEqual(len(zulu["reachingPathRaw"]), 3)
+
+    def test_semantic_distance_controls_ranking(self) -> None:
+        self.assertEqual(
+            self.report["promptTargetIds"],
+            [self.ALPHA_TARGET.canonical_id, self.ZULU_TARGET.canonical_id],
+        )
+
+    def test_route_selection_uses_semantic_distance(self) -> None:
+        first_factory = MethodRef(
+            report_module.FACTORY_METHOD_HOLDER, "First_generated", (), "com.example.First",
+        )
+        first_constructor = MethodRef("com.example.First", "<init>", (), "void")
+        second_factory = MethodRef(
+            report_module.FACTORY_METHOD_HOLDER, "Second_generated", (), "com.example.Second",
+        )
+        second_constructor = MethodRef("com.example.Second", "<init>", (), "void")
+        raw_steps: list[MethodRef] = [
+            MethodRef("com.example.Raw", name, (), "void")
+            for name in ("one", "two", "three")
+        ]
+        target = MethodRef("com.example.Target", "hit", (), "void")
+        refs: list[MethodRef] = [
+            self.CALLER,
+            first_factory,
+            first_constructor,
+            second_factory,
+            second_constructor,
+            *raw_steps,
+            target,
+        ]
+        graph = report_module.CallGraph(
+            methods={index: ref for index, ref in enumerate(refs, start=1)},
+            key_to_id={ref.canonical_id: index for index, ref in enumerate(refs, start=1)},
+        )
+
+        def add_edge(caller: int, callee: int) -> None:
+            graph.adjacency.setdefault(caller, []).append({
+                "caller": caller,
+                "callee": callee,
+                "kind": "call",
+            })
+
+        semantic_path: list[int] = [1, 2, 3, 4, 5, 9]
+        raw_shorter_path: list[int] = [1, 6, 7, 8, 9]
+        for path in (semantic_path, raw_shorter_path):
+            for caller, callee in zip(path, path[1:]):
+                add_edge(caller, callee)
+        report_module._index_factory_stubs(
+            graph,
+            {first_constructor.canonical_id, second_constructor.canonical_id},
+        )
+
+        routes = report_module._public_entry_routes(graph, [self.CALLER])
+        selected, _ = report_module._route_to(9, routes)
+
+        self.assertEqual(selected, semantic_path)
+        self.assertEqual(routes.distance[9], 3)
+        self.assertEqual(report_module._path_distance(selected, graph), 3)
+
+    def test_unmatched_factory_remains_unchanged(self) -> None:
+        translated: list[MethodRef] = report_module._translated_path([1, 7], self.graph)
+        rendered: str = report_module._display_path([1, 7], self.graph)
+        self.assertEqual(translated[-1], self.UNMATCHED_FACTORY)
+        self.assertIn("FactoryMethodHolder.External_generated()", rendered)
 
 
 if __name__ == "__main__":

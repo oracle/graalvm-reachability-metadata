@@ -449,6 +449,56 @@ pass under Native Image — and never to keep tests for inline, static,
 construction, or concrete-class mocking, Java agent self-attach, runtime
 instrumentation, or native-image substitution paths (§FS-test-contract.4.5).
 
+#### 4.3.1 Verify the feature, never the library's error
+
+Tolerating requires positive proof that Native Image refused an operation. The
+proof is always GraalVM's own `UnsupportedFeatureError` — never the library's
+error type, message, or stack frames. Some libraries catch that error and
+re-throw their own without setting a cause, which destroys the evidence a
+cause walk needs; recognising such a library-specific signature to tolerate
+the failure anyway is the §FS-test-contract.4.2 violation, not a workaround
+for it.
+
+`NativeImageSupport.runToleratingUnsupportedFeature` from
+`org.graalvm.internal.tck` is the one sanctioned way to apply the exception. It
+runs the action and accepts a failure only on proof, in this order:
+
+1. the thrown `Error` is an `UnsupportedFeatureError`;
+2. an `UnsupportedFeatureError` appears in its cause chain, which also covers
+   `ServiceConfigurationError` and `ExceptionInInitializerError` wrapping;
+3. a throwable carrying an `UnsupportedFeatureError` was printed to `System.err`
+   while the action ran, which is the only surviving evidence when a library
+   discards the cause.
+
+Printed throwables are inspected as objects, never matched as text, so unrelated
+output naming the error cannot buy tolerance. An `AssertionError` or
+`VirtualMachineError` is always re-thrown, so a genuine assertion failure after a
+tolerated one is never masked. Anything else is re-thrown unchanged. On the JVM the action runs and asserts
+normally, so the helper is never a skip (§FS-test-contract.4.1).
+
+```java
+NativeImageSupport.runToleratingUnsupportedFeature(() -> {
+    Plugin plugin = PluginLoader.load(pluginJar, "example.Plugin");
+    assertThat(plugin.name()).isEqualTo("example");
+});
+```
+
+#### 4.3.2 When the failure cannot be verified
+
+A library that discards the error silently leaves nothing to verify. The
+burden of proof is on tolerating, never on failing: an unverifiable failure is
+an unexplained failure and must surface. Do not reach for the library's error
+signature to close the gap. Instead, in order:
+
+1. **Re-scope the test to API that works under Native Image.** Drop the
+   unsupported scenario and cover the rest of the library's public surface.
+   This is the usual outcome and it keeps the shipped metadata justified.
+2. **If no public API works, the version is unsupportable.** Metadata no test
+   justifies is not shipped: close the pull request, label the issue
+   `library-unsupported-version`, and report the incompatibility upstream, as
+   §FS-contribution-contract.5.4 sets out for the same case reached from the
+   library's side.
+
 ### 4.4 No dependence on resource metadata for machine-local paths
 
 Tests never depend on Native Image resource metadata for temporary, build, or

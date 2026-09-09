@@ -14,23 +14,24 @@ Image is normative in the test contract (§FS-test-contract), which makes
 content is normative in §FS-repository-functional-spec.5.1. This contract does
 not restate those rules. It adds only what review needs on top of them: the
 strength of each rule, the contribution-shape limits that can be checked
-algorithmically, the coverage gates, and the enumerated ways a contribution can
-cheat. Review skills and review automation implement this contract and must not
-contradict it.
+algorithmically, the coverage gates, the enumerated ways a contribution can
+cheat, and what a reviewer must do about each of them. Review skills and review
+automation implement this contract and must not contradict it.
 
 ## 1. Rule strength
 
 Every rule is either a **must** or a **should**:
 
 - A **must** holds unconditionally. A concrete must violation blocks the
-  contribution: review requests changes, and the violation is repaired, not
-  argued around. The musts are §FS-test-contract.1 (what a test must have),
+  contribution: the violation is repaired, not argued around, and
+  §FS-contribution-contract.5 decides who repairs it. The musts are
+  §FS-test-contract.1 (what a test must have),
   §FS-test-contract.2 (what it must not do), §FS-test-contract.4 (the Native
   Image execution contract), and sections 2–4 of this contract.
 - A **should** guides generation and repair. The shoulds are
   §FS-test-contract.3 (what a test should do). In review they are advisory: a
-  reviewer may mention a should violation but must not block on it, and
-  automated review must not request changes for one.
+  reviewer may mention a should violation but must not block on it, must not
+  repair on it, and automated review must not request changes for one.
 
 Reviewers block only on a concrete violation of an enumerated must — never on
 self-formed judgments of test quality, test depth, scope taste, or "end-user
@@ -107,8 +108,9 @@ When a scope fails, the reviewer must investigate why before deciding. The
 analysis uses available evidence such as the old and new stats, test diff,
 upstream API or runtime changes, and CI output. The review states the supported
 cause; when the evidence does not establish one, it states that the cause is
-unknown and asks for an explanation. A reviewer must not present speculation as
-the cause of a regression.
+unknown and escalates under §FS-contribution-contract.5.5 rather than deciding
+on a guess. A reviewer must not present speculation as the cause of a
+regression.
 
 PRs with the `chunked-dynamic-access` label are exempt from every percentage
 and repair-comparison gate in this section, including the final chunk. A chunk
@@ -139,9 +141,10 @@ issue-requested metadata gate still apply.
 
 A contribution cheats when its evidence — a green test, a coverage number, a
 metadata entry — does not mean what it claims. Each pattern below is a must
-violation; review states the concrete pattern found and blocks. Where a
-pattern violates a test-contract point, the cited point is the rule; this
-section fixes the review bar for detecting it.
+violation; review states the concrete pattern found, blocks, and takes the
+disposition §FS-contribution-contract.5 assigns it. Where a pattern violates a
+test-contract point, the cited point is the rule; this section fixes the review
+bar for detecting it.
 
 1. **Scaffold-only test** (§FS-test-contract.1.3). The review bar is exact:
    a test is "scaffold" only when its body is still the unmodified placeholder
@@ -191,3 +194,144 @@ the new-library bars for scaffold history or package placement to inherited
 baseline tests — compatibility branches and existing layouts stay acceptable —
 but every pattern above remains blocking wherever it appears in the changed
 code.
+
+## 5. Review disposition
+
+A review is not finished when it has a verdict. Every review ends in exactly
+one disposition, chosen by the first case below that applies. The ladder exists
+because a generated contribution has no author waiting to answer a review: the
+automation that opened the pull request has moved on, so a finding left on it
+stalls the queue instead of resolving it (§forge/FS-automated-pr-review).
+Whoever reviews is the party that acts.
+
+The dispositions are approve, repair, close, and escalate. Approval means every
+must in this contract holds on the tree that will merge — including after a
+repair. Closing is available only where a rule in this contract says a
+contribution must be closed, which today is §FS-contribution-contract.5.4
+alone; absent such a rule, a contribution the reviewer cannot bring inside the
+rules escalates (§FS-contribution-contract.5.5).
+
+### 5.1 A violation inside the contribution is repaired, not reported
+
+When the violation is in the contribution's own files and the reviewer can
+bring it inside the rules, the reviewer makes the change on the pull request's
+head and re-runs the gates that change affects. Recording the finding and
+stopping is not a disposition for generated work: the pre-push review already
+repairs what it finds (§forge/FS-local-branch-review), and the published-PR
+review must not be weaker than the review that preceded it.
+
+Requesting changes is a disposition only when a human author will act on it. On
+a generated contribution it is §FS-contribution-contract.5.5 wearing a review's
+clothes, and it must be recorded as such, so the pull request carries the
+`human-intervention` label a maintainer triages rather than a request nobody
+reads.
+
+A repair is bound by every rule the contribution was bound by. In particular a
+repair must not weaken the evidence to reach a green result: deleting tests,
+disabling test classes, dropping assertions, swallowing the failing exception,
+or reducing a test to triviality is the same violation whether the generator or
+the reviewer commits it (§FS-test-contract.2.9). The review states what it
+changed and why, so the repair is reviewable as a change and not only as an
+outcome.
+
+One removal is not a weakening: dropping a scenario that targets behavior
+Native Image cannot support (§FS-test-contract.4.5) when the refusal cannot be
+verified. Where none of the three proofs of §FS-test-contract.4.3.1 can be
+obtained — the library catches GraalVM's `UnsupportedFeatureError` and leaves
+nothing behind — the scenario can be neither tolerated nor made to pass, so
+keeping it only turns a repairable contribution into an unexplained failure.
+The sanctioned repair is the re-scope of §FS-test-contract.4.3.2: drop that
+scenario and cover the rest of the library's public surface. Three conditions
+bound it, and the review states all three. The unsupported mechanism is named
+concretely, not inferred from a red test. The scenario's failure is genuinely
+unverifiable; a refusal the helper can prove is tolerated with the helper
+instead of deleted. And what remains still exercises the library's public API
+and carries the metadata the contribution ships, with the gates of
+§FS-contribution-contract.3 applied to the re-scoped result and not to the
+tree the reviewer started from. When nothing survives the re-scope, the version
+is unsupportable and the disposition is §FS-contribution-contract.5.4.
+
+### 5.2 A repair stays inside the contribution's file set
+
+The closed file set of §FS-contribution-contract.2 bounds the repair exactly as
+it bounds the contribution. A fix that can only be made by editing build logic,
+the test harness, workflows, the allowed-image scanning machinery — as distinct
+from the single allowed-Docker-image entry §FS-contribution-contract.2 admits
+when the test requires it — or another coordinate is not a repair; it is
+§FS-contribution-contract.5.3.
+
+The recurring form is a test that fails because of a defect in a shared Gradle
+task or harness class. It is repaired by changing the test, or it is not
+repaired here at all. Editing the shared code inside the contribution makes one
+library's pull request carry a repository-wide behavior change through a review
+scoped to one coordinate, and that change reaches master with no reviewer
+having weighed its effect on every other library. The contribution's own
+directories are the only place a reviewer's edit belongs.
+
+### 5.3 A defect in shared infrastructure becomes its own issue
+
+When the cause of a failure is in shared repository infrastructure — build
+logic, the test harness, CI workflows, image scanning, or publication — the
+contribution is not what is wrong, and nothing the reviewer does inside it can
+be the fix. The reviewer, in order:
+
+1. finds the open issue that already tracks the defect, or opens one describing
+   the failure, its cause, and the evidence — one issue per defect, never one
+   per pull request that met it;
+2. comments on the pull request naming that issue and stating that the
+   contribution is blocked on it rather than on its own content;
+3. takes the escalation of §FS-contribution-contract.5.5 for the pull request
+   itself.
+
+An infrastructure defect is met by many contributions. Repairing it inside each
+one hides how often it recurs, splits one change across several unrelated
+diffs, and leaves the repository's shared code changed by whichever pull
+request happened to arrive first. One issue per defect keeps the recurrence
+visible and the fix reviewable on its own terms.
+
+This case is a defect in the repository's own code, which is distinct from a
+transient external failure such as a rate limit, a registry outage, or a
+network error. A transient failure is retried or waited out, and becomes
+neither an issue nor an escalation (§forge/FS-human-intervention-policy).
+
+### 5.4 A library version Native Image cannot support is closed
+
+A library version is unsupportable when the dynamic access it performs is
+reachable only through behavior Native Image does not support
+(§FS-test-contract.4.5): the library guards that access itself, the guard fails
+under Native Image whatever the metadata registers, and the library then falls
+back or degrades. No metadata entry changes the outcome and no test can cover
+the calls, so the coverage gates of §FS-contribution-contract.3 are unreachable
+by construction rather than unmet by this attempt. Reflective access to JDK
+internals that Native Image substitutes and withholds from reflection is the
+recurring shape.
+
+The evidence bar is the mechanism, not the number. The review names the
+concrete unsupported behavior and shows the library's dynamic-access call sites
+standing behind it. Coverage that is merely low, a test that is merely hard to
+write, or a failure not yet diagnosed is §FS-contribution-contract.5.1 or
+§FS-contribution-contract.5.5 — never this.
+
+Where it holds, the contribution is closed rather than repaired or escalated,
+because metadata no test can justify is not shipped (§GOAL-tested-metadata).
+The reviewer closes the pull request with that explanation, labels the linked
+issue `library-unsupported-version`, and closes that issue rather than
+returning it to the work queue: an open request in `Todo` is claimed again and
+spends the same budget on the same wall. Where a library change could remove
+the guard, the incompatibility is reported upstream. This is the library-level
+counterpart of the test-level case in §FS-test-contract.4.3.2.
+
+### 5.5 Everything else is handed to a maintainer
+
+A contribution the reviewer cannot bring inside the rules, and that no rule
+condemns to §FS-contribution-contract.5.4, is labeled `human-intervention` and
+commented on. It is not closed, and it is not approved. The comment states the
+rule at issue, what the reviewer tried, and what it could not decide, so a
+maintainer continues from the review instead of re-deriving it
+(§forge/FS-human-intervention-policy).
+
+Uncertainty is this case. A reviewer that cannot tell whether a must is
+violated escalates instead of resolving the doubt in either direction:
+approving an unclear contribution ships metadata that may be unjustified, and
+closing one throws away work no rule condemns. Escalation is the only
+disposition whose cost is bounded by a maintainer's attention.

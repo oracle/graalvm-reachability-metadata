@@ -512,6 +512,10 @@ Forge's responsibility boundary, including:
 - The pre-push review found something it could not correct, or its repair did
   not survive finalization and the gate, so the branch publishes with the
   finding still open (§FS-local-branch-review).
+- The published-PR review reached the escalation of the disposition ladder: a
+  rule violation it could not repair inside the contribution's file set, or a
+  defect in shared repository infrastructure that the contribution must not
+  carry and that now has its own issue (§root/FS-contribution-contract.5).
 
 Forge must not use `human-intervention` for failures that are only external or
 transient infrastructure conditions. The issue-side classification is by failure
@@ -595,6 +599,25 @@ Review labels select the review rule set. `library-new-request`,
 own review expectations. The review prompt or skill must apply the rules for
 the PR's label rather than using generic code-review judgment alone.
 
+**The review disposition ladder decides the outcome.** Finding a violation is
+half of a review; §root/FS-contribution-contract.5 fixes what follows, and
+review automation is bound by it. The reviewer repairs the contribution on the
+pull request's head when the fix lies inside the contribution's file set, opens
+or links an infrastructure issue and escalates when the cause is shared
+repository code, closes an unsupportable library version, and otherwise labels
+the pull request `human-intervention` with a comment stating what it could not
+decide. A generated pull request has no author to answer a requested-changes
+review, so submitting one is the escalation of §root/FS-contribution-contract.5.5
+and must carry that label rather than stand alone.
+
+A repair is pushed to the pull request's head, which restarts its checks exactly
+as a conflict-refresh push does. Review and merge therefore belong to a later
+pass: Forge must re-read the checks and the review decision after a repair push
+rather than carrying pre-repair state forward, and the approval is earned against
+the repaired head. A reviewer that cannot push to the head — a fork, or a
+permission failure — takes the escalation path instead, because a repair the
+pull request never receives is not a disposition.
+
 Review automation must skip PRs already labeled `human-intervention`. That
 label means maintainer judgment is required before normal automated review may
 continue, per §FS-human-intervention-policy. A PR labeled
@@ -615,19 +638,21 @@ analysis agent, model, and provider. Neither check may invoke a model. The
 review agent is trusted automation acting on Forge's behalf: it must run in an
 execution environment that can use the authenticated `gh` session without an
 interactive approval boundary, inspect the live pull request and its checked-out
-diff, and submit the approval or requested-changes review itself. Forge does not
-parse an agent verdict and resubmit it through a second GitHub client. An
+diff, commit and push a repair to a same-repository head, and submit the
+approval or requested-changes review itself. Forge does not parse an agent
+verdict and resubmit it through a second GitHub client. An
 authentication failure, timeout, or unsuccessful agent turn must stop processing
 that review rather than being treated as an approval. This agent contract is
 unchanged for every pull request without a reusable attestation.
 
-Automated review may add or request the `human-intervention` PR label only when
-the applicable label-specific review rules say the result cannot be handled by
-a normal approval or requested-changes review. Review uncertainty, transient CI
-noise, GitHub status/API failures, Maven download failures, or other external
-infrastructure errors must not be converted into `human-intervention` unless
-the review rules identify a semantic generated-result, repository-automation,
-metadata, or library-execution problem that requires maintainer judgment
+Automated review adds the `human-intervention` PR label exactly where
+§root/FS-contribution-contract.5.5 assigns the escalation: a rule violation the
+reviewer could not repair inside the contribution's file set, a defect in shared
+repository infrastructure once its issue exists, or a judgment the reviewer could
+not make. Transient CI noise, GitHub status/API failures, Maven download
+failures, and other external infrastructure errors are none of those and must not
+be converted into `human-intervention`; they are retried or waited out, and the
+review runs again once the transient condition clears
 (§FS-human-intervention-policy).
 
 **A conflict that needs no judgment is resolved, not escalated.** A pull request

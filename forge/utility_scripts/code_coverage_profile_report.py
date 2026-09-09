@@ -44,9 +44,11 @@ import os
 import sys
 
 from utility_scripts.code_coverage_jacoco import (
+    JacocoCoverage,
+    JacocoLineCoverage,
     JacocoMethodCoverage,
     JacocoReportError,
-    load_jacoco_method_coverage,
+    load_jacoco_coverage,
 )
 from utility_scripts.code_coverage_model import (
     MethodRef,
@@ -56,6 +58,10 @@ from utility_scripts.code_coverage_model import (
 )
 
 MAX_LISTED_METHODS = 200
+MAX_RENDERED_DISPATCH_CANDIDATES = 12
+#: Uncovered targets leave the prompt after this many unsuccessful attempts
+#: (§AR-code-coverage-improvement.3.2).
+MAX_UNCOVERED_ATTEMPTS = 3
 TARGET_STATE_STATUSES: frozenset[str] = frozenset({
     "pending", "selected", "attempted", "completed", "skipped", "exhausted", "failed",
 })
@@ -80,6 +86,9 @@ TEST_TYPE_SUFFIXES = ("IT", "ITCase", "Test", "TestCase", "Tests")
 
 #: Marker in the class name the image generator gives a lambda implementation.
 SYNTHETIC_LAMBDA_CLASS_MARKER = "$$Lambda"
+
+#: Native Image owner for generated allocation methods that replace constructors.
+FACTORY_METHOD_HOLDER = "com.oracle.svm.core.code.FactoryMethodHolder"
 
 #: Method-name prefixes the compiler owns; no test can name one of these
 #: (§AR-code-coverage-improvement.3.2.1).
@@ -138,6 +147,49 @@ def load_library_methods(path: str) -> set[str]:
     return methods
 
 
+def load_library_line_numbers(path: str) -> dict[str, tuple[tuple[int, int], ...]]:
+    """Read exact bytecode-to-source mappings from extractor method rows."""
+    try:
+        with open(path, "r", encoding="utf-8", newline="") as handle:
+            reader = csv.DictReader(handle)
+            if reader.fieldnames is None or "id" not in reader.fieldnames:
+                raise ProfileFormatError(
+                    f"Library method list '{path}' has no 'id' header column."
+                )
+            if "lineNumbers" not in reader.fieldnames:
+                return {}
+            rows: list[dict[str, str | None]] = list(reader)
+    except OSError as error:
+        raise ProfileFormatError(f"Cannot read library method list '{path}'.") from error
+
+    result: dict[str, tuple[tuple[int, int], ...]] = {}
+    for row in rows:
+        method_id: str = row.get("id") or ""
+        raw_entries: str = row.get("lineNumbers") or ""
+        entries: list[tuple[int, int]] = []
+        for raw_entry in raw_entries.split(";"):
+            if not raw_entry:
+                continue
+            raw_bci, separator, raw_line = raw_entry.partition(":")
+            try:
+                bci: int = int(raw_bci)
+                line: int = int(raw_line)
+            except ValueError as error:
+                raise ProfileFormatError(
+                    f"Library method list '{path}' has invalid line-number entry "
+                    f"'{raw_entry}' for '{method_id}'."
+                ) from error
+            if not separator or bci < 0 or line < 0:
+                raise ProfileFormatError(
+                    f"Library method list '{path}' has invalid line-number entry "
+                    f"'{raw_entry}' for '{method_id}'."
+                )
+            entries.append((bci, line))
+        if entries:
+            result[method_id] = tuple(sorted(set(entries)))
+    return result
+
+
 def library_owners(library_methods: set[str] | None) -> set[str] | None:
     """The declaring types of the library method list, for Definition 10'.
 
@@ -157,6 +209,10 @@ class CallGraph:
     loose_to_ids: dict[str, list[int]] = field(default_factory=dict)
     adjacency: dict[int, list[dict]] = field(default_factory=dict)
     reverse_adjacency: dict[int, list[dict]] = field(default_factory=dict)
+    #: Invoke id -> every implementation resolved at that exact call site.
+    invoke_fan_out: dict[int, list[int]] = field(default_factory=dict)
+    #: Native Image factory node -> verified source-level constructor.
+    path_aliases: dict[int, MethodRef] = field(default_factory=dict)
     #: Synthetic node -> the method whose source captured that closure.
     creator_of: dict[int, int] = field(default_factory=dict)
     #: Creating method -> the lambda bodies the compiler extracted from it.
@@ -311,6 +367,7 @@ class NearCallRecord:
     static_path_edges: list[dict]
     sample: Sample | None
     sampled_join_path_index: int | None
+    semantic_distance: int | None = None
 
     @property
     def target_ref(self) -> MethodRef:
@@ -324,6 +381,8 @@ class NearCallRecord:
     def distance(self) -> int | None:
         if self.join_kind == "none":
             return None
+        if self.semantic_distance is not None:
+            return self.semantic_distance
         return max(0, len(self.static_path) - 1)
 
     @property
@@ -455,6 +514,27 @@ def _index_synthetic_lambdas(graph: CallGraph) -> None:
         body_ids.sort(key=lambda body_id: graph.methods[body_id].canonical_id)
 
 
+def _index_factory_stubs(
+        graph: CallGraph,
+        library_methods: set[str] | None,
+) -> None:
+    """Map verified Native Image allocation stubs to library constructors.
+
+    The return type and parameters identify the constructor represented by a
+    factory stub. Requiring that exact constructor in the bytecode inventory
+    avoids inventing source-level constructors for other generated factories
+    (§AR-code-coverage-improvement.3.2.1).
+    """
+    if library_methods is None:
+        return
+    for static_id, ref in graph.methods.items():
+        if ref.owner != FACTORY_METHOD_HOLDER:
+            continue
+        constructor = MethodRef(ref.return_type, "<init>", ref.params, "void")
+        if constructor.canonical_id in library_methods:
+            graph.path_aliases[static_id] = constructor
+
+
 def _mark_dispatch_edges(
         graph: CallGraph,
         site_edges: dict[int, list[dict]],
@@ -525,7 +605,30 @@ def _add_creation_edges(graph: CallGraph) -> None:
             graph.reverse_adjacency.setdefault(body_id, []).append(edge)
 
 
-def _load_call_graph(reports_dir: str, owners: set[str] | None) -> CallGraph:
+def _source_line_for_bci(
+        caller: MethodRef,
+        raw_bci: str,
+        line_numbers: dict[str, tuple[tuple[int, int], ...]],
+) -> int | None:
+    """Map one native call-tree invoke BCI through the caller's class table."""
+    try:
+        invoke_bci: int = int(raw_bci)
+    except ValueError:
+        return None
+    source_line: int | None = None
+    for start_bci, line in line_numbers.get(caller.canonical_id, ()):
+        if start_bci > invoke_bci:
+            break
+        source_line = line
+    return source_line
+
+
+def _load_call_graph(
+        reports_dir: str,
+        owners: set[str] | None,
+        line_numbers: dict[str, tuple[tuple[int, int], ...]],
+        library_methods: set[str] | None,
+) -> CallGraph:
     """Load the analysis call-tree CSV dump into an id-indexed call graph."""
     methods_path, invokes_path, targets_path = _find_call_tree_files(reports_dir)
     methods_rows = _read_csv_by_id(methods_path)
@@ -556,22 +659,33 @@ def _load_call_graph(reports_dir: str, owners: set[str] | None) -> CallGraph:
         callee_id = int(target_row["TargetId"])
         if caller_id not in graph.methods or callee_id not in graph.methods:
             continue
+        graph.invoke_fan_out.setdefault(invoke_id, []).append(callee_id)
+        raw_bci: str = invoke.get("BytecodeIndexes", "")
         edge = {
             "caller": caller_id,
             "callee": callee_id,
-            "bci": invoke.get("BytecodeIndexes", ""),
+            "bci": raw_bci,
             "is_direct": invoke.get("IsDirect", ""),
             "kind": "call",
+            "invoke_id": invoke_id,
         }
+        source_line: int | None = _source_line_for_bci(
+            graph.methods[caller_id], raw_bci, line_numbers
+        )
+        if source_line is not None:
+            edge["source_line"] = source_line
         site_edges.setdefault(invoke_id, []).append(edge)
         graph.adjacency.setdefault(caller_id, []).append(edge)
         graph.reverse_adjacency.setdefault(callee_id, []).append(edge)
 
     _index_synthetic_lambdas(graph)
+    _index_factory_stubs(graph, library_methods)
     _mark_dispatch_edges(graph, site_edges, site_declared, owners)
     _add_creation_edges(graph)
 
     for method_ids in graph.loose_to_ids.values():
+        method_ids.sort(key=lambda method_id: graph.methods[method_id].canonical_id)
+    for method_ids in graph.invoke_fan_out.values():
         method_ids.sort(key=lambda method_id: graph.methods[method_id].canonical_id)
     for edges in graph.adjacency.values():
         edges.sort(key=lambda edge: (
@@ -587,10 +701,17 @@ def _load_call_graph(reports_dir: str, owners: set[str] | None) -> CallGraph:
     return graph
 
 
-def load_call_graph(reports_dir: str, owners: set[str] | None = None) -> CallGraph:
+def load_call_graph(
+        reports_dir: str,
+        owners: set[str] | None = None,
+        line_numbers: dict[str, tuple[tuple[int, int], ...]] | None = None,
+        library_methods: set[str] | None = None,
+) -> CallGraph:
     """Load one coherent call-tree triplet, failing closed on bad input."""
     try:
-        return _load_call_graph(reports_dir, owners)
+        return _load_call_graph(
+            reports_dir, owners, line_numbers or {}, library_methods
+        )
     except (OSError, csv.Error, KeyError, TypeError, ValueError) as error:
         raise ProfileFormatError(f"Cannot load call-tree CSVs from '{reports_dir}'.") from error
 
@@ -702,6 +823,15 @@ def _existing_test_frame_index(full_path: list[tuple[MethodRef, int]]) -> int | 
     return None
 
 
+def _translated_ref(static_id: int, graph: CallGraph) -> MethodRef:
+    """Return the source-level identity used to compare path steps.
+
+    §AR-code-coverage-improvement.3.2.1
+    """
+    creator_id: int = graph.creator_of.get(static_id, static_id)
+    return graph.path_aliases.get(creator_id, graph.methods[creator_id])
+
+
 @dataclass
 class RouteMap:
     distance: dict[int, int] = field(default_factory=dict)
@@ -713,7 +843,7 @@ def _multi_source_routes(
         graph: CallGraph,
         seeds: list[tuple[int, tuple, object]],
 ) -> RouteMap:
-    """Compute deterministic shortest paths from ranked source methods."""
+    """Compute deterministic shortest semantic paths from ranked source methods."""
     routes = RouteMap()
     best_keys: dict[int, tuple[int, tuple]] = {}
     queue: list[tuple[int, tuple, str, int]] = []
@@ -731,6 +861,7 @@ def _multi_source_routes(
         distance, seed_rank, _, current = heapq.heappop(queue)
         if best_keys.get(current) != (distance, seed_rank):
             continue
+        current_ref_id: str = _translated_ref(current, graph).canonical_id
         for edge in graph.adjacency.get(current, []):
             # A functional-interface call site names no callee of its own, so
             # routing through it invents a reachability claim
@@ -738,16 +869,21 @@ def _multi_source_routes(
             if edge["kind"] == "dispatch":
                 continue
             callee: int = edge["callee"]
-            candidate_key = (distance + 1, seed_rank)
+            semantic_step: int = int(
+                current_ref_id
+                != _translated_ref(callee, graph).canonical_id
+            )
+            candidate_distance: int = distance + semantic_step
+            candidate_key = (candidate_distance, seed_rank)
             if callee in best_keys and best_keys[callee] <= candidate_key:
                 continue
             best_keys[callee] = candidate_key
-            routes.distance[callee] = distance + 1
+            routes.distance[callee] = candidate_distance
             routes.previous[callee] = (current, edge)
             routes.payload[callee] = routes.payload[current]
             heapq.heappush(
                 queue,
-                (distance + 1, seed_rank, graph.methods[callee].canonical_id, callee),
+                (candidate_distance, seed_rank, graph.methods[callee].canonical_id, callee),
             )
     return routes
 
@@ -835,6 +971,7 @@ def _build_record(
             static_path_edges=edges,
             sample=sample,
             sampled_join_path_index=path_index,
+            semantic_distance=_path_distance(path, graph),
         )
     if target_id in entry_routes.distance:
         path, edges = _route_to(target_id, entry_routes)
@@ -847,6 +984,7 @@ def _build_record(
             static_path_edges=edges,
             sample=None,
             sampled_join_path_index=None,
+            semantic_distance=_path_distance(path, graph),
         )
     return NearCallRecord(
         coverage=coverage,
@@ -887,8 +1025,283 @@ def _edge_to_json(edge: dict, graph: CallGraph) -> dict:
         "caller": _format_static_id(edge["caller"], graph),
         "callee": _format_static_id(edge["callee"], graph),
         "bci": edge["bci"],
+        "invokeId": edge.get("invoke_id"),
         "isDirect": edge["is_direct"],
         "kind": edge["kind"],
+    }
+
+
+def _line_to_json(
+        source_path: str,
+        line: int,
+        coverage: JacocoLineCoverage,
+) -> dict:
+    return {
+        "sourcePath": source_path,
+        "line": line,
+        "mi": coverage.mi,
+        "ci": coverage.ci,
+        "mb": coverage.mb,
+        "cb": coverage.cb,
+    }
+
+
+def _method_line_region(
+        caller: MethodRef,
+        jacoco_methods: dict[str, JacocoMethodCoverage],
+        jacoco_lines: dict[str, dict[int, JacocoLineCoverage]],
+) -> tuple[str | None, list[tuple[int, JacocoLineCoverage]]]:
+    """Return the caller's source lines, bounded by the next reported method."""
+    coverage: JacocoMethodCoverage | None = jacoco_methods.get(caller.canonical_id)
+    if (
+            coverage is None
+            or coverage.source_path is None
+            or coverage.source_line is None
+    ):
+        return None, []
+    source_lines: dict[int, JacocoLineCoverage] = jacoco_lines.get(
+        coverage.source_path, {}
+    )
+    later_starts: list[int] = sorted({
+        method.source_line
+        for method in jacoco_methods.values()
+        if method.source_path == coverage.source_path
+        and method.source_line is not None
+        and method.source_line > coverage.source_line
+    })
+    end_line: int = (
+        later_starts[0] - 1 if later_starts else max(source_lines, default=coverage.source_line)
+    )
+    return coverage.source_path, [
+        (line, line_coverage)
+        for line, line_coverage in sorted(source_lines.items())
+        if coverage.source_line <= line <= end_line
+    ]
+
+
+def _candidate_is_coverage_suite(ref: MethodRef) -> bool:
+    """Recognize generated extension-suite classes by their naming contract."""
+    owner: str = ref.owner.rsplit(".", 1)[-1].split("$", 1)[0]
+    return "CoverageTest" in owner
+
+
+def _dispatch_candidates(edge: dict, graph: CallGraph) -> list[dict]:
+    invoke_id: int | None = edge.get("invoke_id")
+    method_ids: list[int] = (
+        graph.invoke_fan_out.get(invoke_id, []) if invoke_id is not None else []
+    )
+    if not method_ids and edge.get("callee") in graph.methods:
+        method_ids = [edge["callee"]]
+    return [
+        {
+            "id": graph.methods[method_id].canonical_id,
+            "coverageSuite": _candidate_is_coverage_suite(graph.methods[method_id]),
+        }
+        for method_id in method_ids
+        if method_id in graph.methods
+    ]
+
+
+def _missed_blocks(
+        region: list[tuple[int, JacocoLineCoverage]],
+) -> list[list[tuple[int, JacocoLineCoverage]]]:
+    blocks: list[list[tuple[int, JacocoLineCoverage]]] = []
+    current: list[tuple[int, JacocoLineCoverage]] = []
+    for line_record in region:
+        _, coverage = line_record
+        if coverage.ci == 0 and coverage.mi > 0:
+            current.append(line_record)
+            continue
+        if current:
+            blocks.append(current)
+            current = []
+    if current:
+        blocks.append(current)
+    return blocks
+
+
+def _inferred_invoking_line(
+        edge: dict,
+        graph: CallGraph,
+        region: list[tuple[int, JacocoLineCoverage]],
+) -> tuple[int, JacocoLineCoverage] | None:
+    """Locate the line region containing the invoke without extra artifacts.
+
+    The class-file extractor maps the call-tree bytecode index to an explicit
+    source line. Old extractor artifacts lack that mapping, so they fall back
+    deterministically to the final uncovered block and its strongest
+    non-branch instruction signal.
+    """
+    explicit_line: int | None = edge.get("source_line")
+    if explicit_line is not None:
+        explicit: tuple[int, JacocoLineCoverage] | None = next(
+            (record for record in region if record[0] == explicit_line), None
+        )
+        if explicit is not None:
+            return explicit
+
+    blocks: list[list[tuple[int, JacocoLineCoverage]]] = _missed_blocks(region)
+    if blocks:
+        block: list[tuple[int, JacocoLineCoverage]] = blocks[-1]
+        non_branch_lines: list[tuple[int, JacocoLineCoverage]] = [
+            record for record in block if record[1].mb == 0 and record[1].cb == 0
+        ]
+        candidates_for_line: list[tuple[int, JacocoLineCoverage]] = (
+            non_branch_lines or block
+        )
+        most_instructions: int = max(
+            coverage.mi for _, coverage in candidates_for_line
+        )
+        return next(
+            record
+            for record in candidates_for_line
+            if record[1].mi == most_instructions
+        )
+
+    return next((record for record in region if record[1].covered), None)
+
+
+def _edge_miss_classification(
+        edge: dict,
+        graph: CallGraph,
+        jacoco_methods: dict[str, JacocoMethodCoverage],
+        jacoco_lines: dict[str, dict[int, JacocoLineCoverage]],
+) -> dict:
+    """Classify one reverse call site from its caller's JaCoCo line region."""
+    caller: MethodRef | None = graph.methods.get(edge.get("caller"))
+    candidates: list[dict] = _dispatch_candidates(edge, graph)
+    if caller is None:
+        return {
+            "kind": "no-fork",
+            "target": None,
+            "invokingMethod": None,
+            "invokeBci": edge.get("bci"),
+            "fork": None,
+            "nearestCovered": None,
+            "candidates": candidates,
+        }
+
+    source_path, region = _method_line_region(caller, jacoco_methods, jacoco_lines)
+    target_record: tuple[int, JacocoLineCoverage] | None = _inferred_invoking_line(
+        edge, graph, region
+    )
+    target: dict | None = (
+        _line_to_json(source_path, *target_record)
+        if source_path is not None and target_record is not None
+        else None
+    )
+    base: dict = {
+        "target": target,
+        "invokingMethod": caller.canonical_id,
+        "invokeBci": edge.get("bci"),
+        "fork": None,
+        "nearestCovered": None,
+        "candidates": candidates,
+    }
+    if target_record is not None and target_record[1].covered and len(candidates) > 1:
+        return {"kind": "dispatched-elsewhere", **base}
+
+    target_index: int = (
+        region.index(target_record) if target_record is not None else len(region)
+    )
+    preceding: list[tuple[int, JacocoLineCoverage]] = region[:target_index]
+    nearest_covered: tuple[int, JacocoLineCoverage] | None = next(
+        (record for record in reversed(preceding) if record[1].covered), None
+    )
+    base["nearestCovered"] = (
+        _line_to_json(source_path, *nearest_covered)
+        if source_path is not None and nearest_covered is not None
+        else None
+    )
+
+    containing_block: list[tuple[int, JacocoLineCoverage]] = next(
+        (
+            block
+            for block in _missed_blocks(region)
+            if target_record is not None and target_record in block
+        ),
+        [],
+    )
+    exception_handler_entry: bool = bool(
+        containing_block
+        and target_record != containing_block[0]
+        and nearest_covered is not None
+        and containing_block[0][0] == nearest_covered[0] + 1
+        and containing_block[0][1].mi == 1
+        and nearest_covered[1].mb == 0
+    )
+    fork: tuple[int, JacocoLineCoverage] | None = None
+    if not exception_handler_entry:
+        fork = next(
+            (
+                record
+                for record in reversed(preceding)
+                if record[1].covered and record[1].mb > 0
+            ),
+            None,
+        )
+    if fork is not None and source_path is not None:
+        base["fork"] = _line_to_json(source_path, *fork)
+        return {"kind": "fork-not-taken", **base}
+    return {"kind": "no-fork", **base}
+
+
+def _classify_miss(
+        record: NearCallRecord,
+        graph: CallGraph,
+        jacoco_methods: dict[str, JacocoMethodCoverage],
+        jacoco_lines: dict[str, dict[int, JacocoLineCoverage]],
+) -> dict:
+    """Choose the strongest diagnosis across all sites that invoke a target."""
+    if record.target_id is None:
+        edges: list[dict] = []
+    else:
+        routed_edges: list[dict] = [
+            edge
+            for edge in reversed(record.static_path_edges)
+            if edge.get("callee") == record.target_id
+        ]
+        edges = [*routed_edges, *graph.reverse_adjacency.get(record.target_id, [])]
+    unique_edges: list[dict] = []
+    seen: set[tuple[object, ...]] = set()
+    for edge in edges:
+        key: tuple[object, ...] = (
+            edge.get("invoke_id"), edge.get("caller"), edge.get("callee"), edge.get("bci")
+        )
+        if key not in seen:
+            seen.add(key)
+            unique_edges.append(edge)
+    classifications: list[dict] = [
+        _edge_miss_classification(
+            edge, graph, jacoco_methods, jacoco_lines
+        )
+        for edge in unique_edges
+    ]
+    priority: dict[str, int] = {
+        "dispatched-elsewhere": 0,
+        "fork-not-taken": 1,
+        "no-fork": 2,
+    }
+    if classifications:
+        return min(
+            classifications,
+            key=lambda item: (
+                priority[item["kind"]],
+                (
+                    item["target"]["sourcePath"]
+                    if item["target"] is not None else ""
+                ),
+                item["target"]["line"] if item["target"] is not None else sys.maxsize,
+            ),
+        )
+    return {
+        "kind": "no-fork",
+        "target": None,
+        "invokingMethod": None,
+        "invokeBci": None,
+        "fork": None,
+        "nearestCovered": None,
+        "candidates": [],
     }
 
 
@@ -930,14 +1343,19 @@ def _hand_off_note(record: NearCallRecord, graph: CallGraph) -> str | None:
     return None
 
 
-def _translated_path(static_path: list[int], graph: CallGraph) -> list[int]:
-    """Replace synthetic nodes by their creator, collapsing repeats."""
-    translated: list[int] = []
+def _translated_path(static_path: list[int], graph: CallGraph) -> list[MethodRef]:
+    """Replace synthetic nodes by source-level methods, collapsing repeats."""
+    translated: list[MethodRef] = []
     for static_id in static_path:
-        creator_id: int = graph.creator_of.get(static_id, static_id)
-        if not translated or translated[-1] != creator_id:
-            translated.append(creator_id)
+        ref: MethodRef = _translated_ref(static_id, graph)
+        if not translated or translated[-1].canonical_id != ref.canonical_id:
+            translated.append(ref)
     return translated
+
+
+def _path_distance(static_path: list[int], graph: CallGraph) -> int:
+    """Count edges in the source-level path used for prompt ranking."""
+    return max(0, len(_translated_path(static_path, graph)) - 1)
 
 
 def _record_to_json(
@@ -945,6 +1363,7 @@ def _record_to_json(
         graph: CallGraph,
         rank: int,
         jacoco_methods: dict[str, JacocoMethodCoverage],
+        miss_classification: dict,
 ) -> dict:
     graph_present: bool = record.target_id is not None
     return {
@@ -969,10 +1388,11 @@ def _record_to_json(
         "synthetic": _is_synthetic_method(record.target_ref),
         "closures": _closure_stats(record, graph, jacoco_methods),
         "handOff": _hand_off_note(record, graph),
+        "missClassification": miss_classification,
         "reachingPath": (
             [
-                _format_static_id(static_id, graph)
-                for static_id in _translated_path(record.static_path, graph)
+                ref.canonical_id
+                for ref in _translated_path(record.static_path, graph)
             ]
             if graph_present else None
         ),
@@ -1022,11 +1442,24 @@ def _effective_target_state(
         method_id: str,
         target_states: dict[str, TargetState],
         attempt_counts: dict[str, int],
+        jacoco_uncovered: bool = False,
 ) -> TargetState:
     state = target_states.get(method_id, TargetState())
+    attempt_count: int = max(state.attempt_count, attempt_counts.get(method_id, 0))
+    if (
+            jacoco_uncovered
+            and not state.terminal
+            and attempt_count >= MAX_UNCOVERED_ATTEMPTS
+    ):
+        return TargetState(
+            status="exhausted",
+            attempt_count=attempt_count,
+            last_attempted_iteration=state.last_attempted_iteration,
+            reason=f"{MAX_UNCOVERED_ATTEMPTS} attempts without coverage change",
+        )
     return TargetState(
         status=state.status,
-        attempt_count=max(state.attempt_count, attempt_counts.get(method_id, 0)),
+        attempt_count=attempt_count,
         last_attempted_iteration=state.last_attempted_iteration,
         reason=state.reason,
     )
@@ -1041,12 +1474,14 @@ def correlate(
         attempt_counts: dict[str, int] | None = None,
         target_states: dict[str, TargetState] | None = None,
         library_methods: set[str] | None = None,
+        jacoco_lines: dict[str, dict[int, JacocoLineCoverage]] | None = None,
 ) -> tuple[dict, list[NearCallRecord]]:
     """Build exact public coverage and deep uncovered-method path records."""
     if max_listed <= 0:
         raise ProfileFormatError("max_listed must be positive.")
     attempts: dict[str, int] = attempt_counts or {}
     states: dict[str, TargetState] = target_states or {}
+    lines: dict[str, dict[int, JacocoLineCoverage]] = jacoco_lines or {}
     inventory_refs: list[tuple[MethodRef, dict]] = []
     for target in inventory.get("targets", []):
         ref: MethodRef | None = parse_inventory_id(target.get("id", ""))
@@ -1089,6 +1524,9 @@ def correlate(
     deep_uncovered: list[JacocoMethodCoverage] = [
         coverage for coverage in deep_coverage if not coverage.covered
     ]
+    deep_uncovered_ids: set[str] = {
+        coverage.method_ref.canonical_id for coverage in deep_uncovered
+    }
 
     sampled_routes: RouteMap = _sample_routes(graph, profile)
     entry_routes: RouteMap = _public_entry_routes(graph, [ref for ref, _ in inventory_refs])
@@ -1102,6 +1540,7 @@ def correlate(
                 coverage.method_ref.canonical_id,
                 states,
                 attempts,
+                jacoco_uncovered=True,
             ),
         )
         for coverage in deep_uncovered
@@ -1117,12 +1556,14 @@ def correlate(
     # agent can write a test naming one, and for nearly all of them the
     # enclosing method is an offered target already
     # (§AR-code-coverage-improvement.3.2.1).
-    actionable_records: list[NearCallRecord] = [
+    bulk_records: list[NearCallRecord] = [
         record
         for record in uncovered_records
         if record.join_kind != "none"
-        and not record.target_state.terminal
         and not _is_synthetic_method(record.target_ref)
+    ]
+    actionable_records: list[NearCallRecord] = [
+        record for record in bulk_records if not record.target_state.terminal
     ]
     synthetic_excluded: int = sum(
         1
@@ -1134,17 +1575,31 @@ def correlate(
     prompt_records: list[NearCallRecord] = sorted(
         actionable_records, key=_prompt_selection_key,
     )[:effective_limit]
+    miss_classifications: dict[str, dict] = {
+        record.target_ref.canonical_id: _classify_miss(
+            record, graph, jacoco_methods, lines
+        )
+        for record in uncovered_records
+    }
     uncovered_json: list[dict] = [
         _record_to_json(
-            record, graph, mathematical_ranks[record.target_ref.canonical_id], jacoco_methods
+            record,
+            graph,
+            mathematical_ranks[record.target_ref.canonical_id],
+            jacoco_methods,
+            miss_classifications[record.target_ref.canonical_id],
         )
         for record in uncovered_records
     ]
-    prompt_json: list[dict] = [
+    bulk_json: list[dict] = [
         _record_to_json(
-            record, graph, mathematical_ranks[record.target_ref.canonical_id], jacoco_methods
+            record,
+            graph,
+            mathematical_ranks[record.target_ref.canonical_id],
+            jacoco_methods,
+            miss_classifications[record.target_ref.canonical_id],
         )
-        for record in prompt_records
+        for record in bulk_records
     ]
 
     report: dict = {
@@ -1183,7 +1638,15 @@ def correlate(
         },
         "inventory": inventory_report,
         "targetStates": [
-            _target_state_to_json(method_id, _effective_target_state(method_id, states, attempts))
+            _target_state_to_json(
+                method_id,
+                _effective_target_state(
+                    method_id,
+                    states,
+                    attempts,
+                    jacoco_uncovered=method_id in deep_uncovered_ids,
+                ),
+            )
             for method_id in sorted(set(states) | set(attempts))
         ],
         "deepMethods": [
@@ -1214,7 +1677,7 @@ def correlate(
         "observedMethods": _observed_methods(profile, graph, jacoco_methods),
         "uncoveredPaths": uncovered_json,
         "promptTargetIds": [record.target_ref.canonical_id for record in prompt_records],
-        "bulkTargets": prompt_json,
+        "bulkTargets": bulk_json,
         "caveats": [
             "JaCoCo is the only coverage authority; sampled PGO evidence is guidance only.",
             "Absence of a sample never proves non-execution.",
@@ -1259,8 +1722,8 @@ def _display_path(static_path: list[int], graph: CallGraph, limit: int = 6) -> s
     # Generated lambda classes and extracted bodies carry compiler-chosen names;
     # the agent can only act on the method that creates them
     # (§AR-code-coverage-improvement.3.2.1).
-    path: list[int] = _translated_path(static_path, graph)
-    selected: list[int | None]
+    path: list[MethodRef] = _translated_path(static_path, graph)
+    selected: list[MethodRef | None]
     if len(path) <= limit:
         selected = list(path)
     else:
@@ -1268,14 +1731,9 @@ def _display_path(static_path: list[int], graph: CallGraph, limit: int = 6) -> s
 
     labels: list[str] = []
     previous_owner: str | None = None
-    for static_id in selected:
-        if static_id is None:
-            labels.append("…")
-            previous_owner = None
-            continue
-        ref = graph.methods.get(static_id)
+    for ref in selected:
         if ref is None:
-            labels.append(f"method-{static_id}")
+            labels.append("…")
             previous_owner = None
             continue
         labels.append(_display_method(ref, ref.owner != previous_owner))
@@ -1283,8 +1741,66 @@ def _display_path(static_path: list[int], graph: CallGraph, limit: int = 6) -> s
     return " → ".join(labels)
 
 
+def _line_location(evidence: dict | None) -> str:
+    if evidence is None:
+        return "unknown invoking line"
+    source_path: str = evidence["sourcePath"]
+    return f"{os.path.basename(source_path)}:{evidence['line']}"
+
+
+def _classification_lines(classification: dict) -> list[str]:
+    target: dict | None = classification.get("target")
+    if target is None:
+        target_line: str = "  target line unavailable"
+    else:
+        status: str = "RAN" if target["ci"] > 0 else "never ran"
+        target_line = f"  target `{_line_location(target)}` {status}"
+    kind: str = classification["kind"]
+    if kind == "dispatched-elsewhere":
+        candidate_records: list[dict] = sorted(
+            classification["candidates"],
+            key=lambda candidate: (not candidate["coverageSuite"], candidate["id"]),
+        )
+        candidates: list[str] = [
+            (
+                f"`{candidate['id']}` [coverage suite]"
+                if candidate["coverageSuite"]
+                else f"`{candidate['id']}`"
+            )
+            for candidate in candidate_records[:MAX_RENDERED_DISPATCH_CANDIDATES]
+        ]
+        omitted: int = len(candidate_records) - len(candidates)
+        candidates_text: str = ", ".join(candidates)
+        if omitted:
+            candidates_text += f", … {omitted} more in JSON"
+        return [
+            target_line,
+            "  no fork — same line, different implementation answered",
+            f"  candidates: {candidates_text}",
+        ]
+    if kind == "fork-not-taken":
+        fork: dict = classification["fork"]
+        total_branches: int = fork["mb"] + fork["cb"]
+        return [
+            target_line,
+            f"  fork `{_line_location(fork)}` ran, {fork['cb']} of "
+            f"{total_branches} branches taken — target is beyond an untaken branch",
+        ]
+    nearest: dict | None = classification.get("nearestCovered")
+    nearest_text: str = (
+        f"nearest covered `{_line_location(nearest)}`"
+        if nearest is not None
+        else "no covered line was available"
+    )
+    return [
+        target_line,
+        f"  no fork above — {nearest_text}; target is reached only by an exception "
+        "or external event",
+    ]
+
+
 def _prompt_line(record: NearCallRecord, graph: CallGraph, notes: dict[str, dict]) -> str:
-    """One prompt path, with what the excluded synthetic rows used to say."""
+    """One prompt path with its line diagnosis and synthetic-method notes."""
     note: dict = notes.get(record.target_ref.canonical_id, {})
     suffixes: list[str] = []
     closures: dict | None = note.get("closures")
@@ -1295,7 +1811,14 @@ def _prompt_line(record: NearCallRecord, graph: CallGraph, notes: dict[str, dict
     if note.get("handOff"):
         suffixes.append(f"runs on another thread via `{note['handOff']}` — the test must wait")
     path: str = f"`{_display_path(record.static_path, graph)}`"
-    return f"{path} — {'; '.join(suffixes)}" if suffixes else path
+    path_line: str = f"{path} — {'; '.join(suffixes)}" if suffixes else path
+    classification: dict = note.get("missClassification", {
+        "kind": "no-fork",
+        "target": None,
+        "nearestCovered": None,
+        "candidates": [],
+    })
+    return "\n".join([path_line, *_classification_lines(classification)])
 
 
 def write_markdown(
@@ -1528,13 +2051,21 @@ def generate_report(
     library_methods: set[str] | None = (
         load_library_methods(library_methods_path) if library_methods_path else None
     )
-    graph: CallGraph = load_call_graph(reports_dir, library_owners(library_methods))
+    line_numbers: dict[str, tuple[tuple[int, int], ...]] = (
+        load_library_line_numbers(library_methods_path)
+        if library_methods_path else {}
+    )
+    graph: CallGraph = load_call_graph(
+        reports_dir,
+        library_owners(library_methods),
+        line_numbers,
+        library_methods,
+    )
     profile: SampledProfile = load_sampled_profile(profile_path, graph)
     inventory: dict = _load_json_object(api_inventory_path, "API inventory")
     _require_coordinate(inventory, coordinate, "API inventory")
-    jacoco_methods: dict[str, JacocoMethodCoverage] = load_jacoco_method_coverage(
-        jacoco_xml_paths
-    )
+    jacoco: JacocoCoverage = load_jacoco_coverage(jacoco_xml_paths)
+    jacoco_methods: dict[str, JacocoMethodCoverage] = jacoco.methods
     previous: dict | None = _previous_report(output_dir, iteration)
     target_states: dict[str, TargetState] = _previous_target_states(previous)
     target_states.update(load_target_states(target_state_paths, coordinate))
@@ -1547,6 +2078,7 @@ def generate_report(
         _next_attempt_counts(previous),
         target_states,
         library_methods,
+        jacoco.lines,
     )
     report["coordinate"] = coordinate
     report["iteration"] = iteration

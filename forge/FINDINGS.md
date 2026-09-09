@@ -8,6 +8,42 @@ Newest entry first; every non-approval is recorded, including one a repair later
 **Cloned test projects omit required native metadata and violate test visibility and timeout rules**
 
 The new 2.36.0 test-only reachability metadata omitted the inherited embedded-server registrations, causing nativeTest to fail while initializing ActiveMQServerLogger. In addition, ArtemisJmsClientTest in both 2.36.0 and 2.50.0 was package-private and used a 1-second JMS receive timeout, violating the public top-level test-class requirement and the 10-second minimum explicit I/O timeout.
+## 2026-09-03 — org.apache.kafka:kafka-streams:4.3.1 (#9764)
+
+**Issue-requested reachability metadata is missing**
+
+Issue #9764 explicitly requests reflection access to the `topologyMetadata` field on `org.apache.kafka.streams.KafkaStreams` and the `sourceTopicsForStore(String, String)` method on `org.apache.kafka.streams.processor.internals.TopologyMetadata`. Neither registration appears in `metadata/org.apache.kafka/kafka-streams/4.3.1/reachability-metadata.json`, and the new tests only use topology construction and `TopologyTestDriver`; they do not instantiate `KafkaStreams` or exercise the reporter-described path through a public library API. Rule 5 requires issue-requested metadata, appropriately conditioned when the request omitted conditions, plus a public-API test that exercises it.
+## 2026-09-07 — io.opentelemetry.proto:opentelemetry-proto:1.10.0-alpha (#9910)
+
+**Coverage update weakens an existing passing test**
+
+In tests/src/io.opentelemetry.proto/opentelemetry-proto/1.10.0-alpha/src/test/java/io_opentelemetry_proto/opentelemetry_proto/Opentelemetry_protoTest.java, the branch removed Exemplar construction and its assertions from histogramMetricRepresentsDistributionBucketsAndExemplars. This violates the enumerated no-scope-creep/no-fix-by-weakening rule: a library-update contribution must not remove or weaken existing passing test coverage.
+## 2026-09-06 — org.springframework:spring-webflux:6.0.0 (#9403)
+
+**Explicit I/O timeout below the 10-second floor**
+
+In tests/src/org.springframework/spring-webflux/6.0.0/src/test/java/org_springframework/spring_webflux/InvocableHandlerMethodTest.java, the reactive request wait used Duration.ofSeconds(5). This violates the enumerated 10-second minimum for explicit request/I/O timeouts in §FS-test-contract.1.7.
+## 2026-09-08 — org.neo4j.bolt:neo4j-bolt-connection-netty:4.0.0 (#9390)
+
+**Explicit test timeouts below the 10-second floor**
+
+The new Neo4j_bolt_connection_nettyTest.java configured database transaction timeouts of 1 and 2 seconds and a server-advertised connection read timeout of 7 seconds (with a matching assertion). These concrete explicit database/read timeouts violate the 10-second minimum in §FS-test-contract.1.7.
+## 2026-09-07 — io.micronaut:micronaut-buffer-netty:5.1.13 (#9828)
+
+**Application context closes while eager bean processing is still running**
+
+In Micronaut_buffer_nettyTest.java, both ApplicationContext.run(...) calls enable asynchronous eager bean processing. The native test lane completed its assertions but then emitted an uncaught NullPointerException from DefaultBeanContext.processParallelBeans after the contexts had closed. This violates the test contract requirement that background resources be cleanly bounded and closed.
+
+## 2026-09-02 — org.springframework:spring-web:5.3.32 (#9402)
+
+**Runtime repair deletes existing test coverage**
+
+Rule 4.8 (fix by weakening) was violated in `tests/src/org.springframework/spring-web/5.3.32`: the copied 5.3.18 suite deleted `JettyClientHttpResponseTest.java` and removed its Jetty dependency instead of adapting the failing runtime path while preserving the test's status, headers, cookies, and body assertions.
+## 2026-09-07 — io.micronaut:micronaut-http-server:5.1.13 (#9832)
+
+**Companion dependencies pin the tested library version**
+
+Review Signal #4 is violated in tests/src/io.micronaut/micronaut-http-server/5.1.13/build.gradle: the Netty server, HTTP client, and Jackson databind companion dependencies hardcode 5.1.13. This prevents the suite from resolving those matching Micronaut modules at the TCK-selected tested version when the same test is reused for later supported versions.
 
 ## 2026-09-07 — io.micronaut:micronaut-core:5.0.0 (#9799)
 
@@ -53,6 +89,11 @@ Review Signal #4 was violated in tests/src/io.micronaut.serde/micronaut-serde-su
 **Unsupported-feature catch masks statically available class resolution**
 
 In tests/src/io.netty/netty-codec/5.0.0.Alpha1/src/test/java/io_netty/netty_codec/ClassLoaderClassResolverTest.java, both tests caught Error and accepted NativeImageSupport.isUnsupportedFeatureError even though the target class name is fixed, the class is included in the image, and the behavior does not require a class discovered after image build. This applies the sole open-ended dynamic-class-loading exception outside its permitted scope and could make the native tests pass without executing their assertions.
+## 2026-09-06 — io.netty:netty-codec:4.2.2.Final (#9761)
+
+**Native-image repair deletes the failing checksum test**
+
+The branch deletes tests/src/io.netty/netty-codec/4.1.42.Final/src/test/java/io_netty/netty_codec/ByteBufChecksumInnerReflectiveByteBufChecksumTest.java after that test exposed the CleanerJava24/SharedArena native failure. Deleting the failing test to make the native lane green is the enumerated fix-by-weakening violation in FS-contribution-contract.4.8 / FS-test-contract.2.9 and does not demonstrate that the native-image runtime path was repaired.
 
 ## 2026-09-05 — com.github.seregamorph:spring-test-smart-context:1.0 (#9677)
 

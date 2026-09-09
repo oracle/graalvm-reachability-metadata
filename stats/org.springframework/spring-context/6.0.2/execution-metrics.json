@@ -1,0 +1,143 @@
+{
+  "fix_javac_fail:2026-09-07": {
+    "timestamp": "2026-09-07T02:09:36.744968Z",
+    "library": "org.springframework:spring-context:6.0.2",
+    "starting_commit": "59b944a58d1a83106ca46a7a92f668180ea52568",
+    "ending_commit": "29ff407d5fc875a64a1c7e5454efb234a5de2794",
+    "previous_library": "org.springframework:spring-context:5.3.15",
+    "strategy_name": "javac_iterative_with_coverage_sources_pi_gpt-5.6-sol",
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "status": "success",
+    "stats": {
+      "version": "6.0.2",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 42,
+            "totalCalls": 42
+          },
+          "resources": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 11,
+            "totalCalls": 11
+          }
+        },
+        "coverageRatio": 1.0,
+        "coveredCalls": 53,
+        "totalCalls": 53
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 10126,
+          "missed": 53063,
+          "ratio": 0.160249,
+          "total": 63189
+        },
+        "line": {
+          "covered": 2475,
+          "missed": 12717,
+          "ratio": 0.162915,
+          "total": 15192
+        },
+        "method": {
+          "covered": 572,
+          "missed": 3179,
+          "ratio": 0.152493,
+          "total": 3751
+        }
+      }
+    },
+    "previous_library_stats": {
+      "version": "5.3.15",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 0.987013,
+            "coveredCalls": 76,
+            "totalCalls": 77
+          },
+          "resources": {
+            "coverageRatio": 0.916667,
+            "coveredCalls": 11,
+            "totalCalls": 12
+          }
+        },
+        "coverageRatio": 0.977528,
+        "coveredCalls": 87,
+        "totalCalls": 89
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 10350,
+          "missed": 60335,
+          "ratio": 0.146424,
+          "total": 70685
+        },
+        "line": {
+          "covered": 2548,
+          "missed": 13606,
+          "ratio": 0.157732,
+          "total": 16154
+        },
+        "method": {
+          "covered": 592,
+          "missed": 3377,
+          "ratio": 0.149156,
+          "total": 3969
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "no_action",
+      "issue_number": 9400,
+      "issue_label": "fails-javac-compile",
+      "library": "org.springframework:spring-context:6.0.2",
+      "summary": "No extra dependency, Docker image, or property is needed for normal Spring Context usage. Its published POM resolves the required Spring modules transitively, and standard usage is in-process ApplicationContext configuration. [POM](https://repo.maven.apache.org/maven2/org/springframework/spring-context/6.0.2/spring-context-6.0.2.pom) [documentation](https://docs.spring.io/spring-framework/docs/6.0.2/reference/html/)",
+      "deterministic_setup": [],
+      "agent_guidance": "Do not add dependencies to restore the missing symbols. They are Spring 5.3 APIs absent from the 6.0.2 JAR; Spring 6 removed RPC-style remoting and dedicated EJB access. Regenerate or adapt tests for 6.0.2, omitting or replacing tests for org.springframework.remoting.*, org.springframework.ejb.*, and removed WebLogic/WebSphere support. [Release notes](https://github.com/spring-projects/spring-framework/wiki/Spring-Framework-6.0-Release-Notes)",
+      "risks": [
+        "Copying the 5.3.15 test sources unchanged will continue to fail compilation; the existing javax.ejb test dependency cannot provide the removed Spring classes.",
+        "Spring 6 also adopts a Java 17+ and Jakarta EE 9+ baseline, so legacy javax-based test code may require pruning or porting."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#9400 [Automation] javac compile fails for org.springframework:spring-context:6.0.2; label=fails-javac-compile; body_chars=8015"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "40 existing test file path(s) included"
+        }
+      ],
+      "current_library": "org.springframework:spring-context:5.3.15",
+      "new_version": "6.0.2",
+      "model": "gpt-5.6-luna",
+      "input_tokens_used": 957480,
+      "output_tokens_used": 10474,
+      "prompt_path": "library-preflight-prompt.txt",
+      "raw_response_path": "library-preflight-response.txt",
+      "session_log_path": "/home/mihailo/git/graalvm-reachability-metadata/forge/logs/org.springframework:spring-context:6.0.2/library-preparation-preflight/codex-session-yjrisd80.log"
+    },
+    "metrics": {
+      "input_tokens_used": 358497,
+      "cached_input_tokens_used": 4038016,
+      "output_tokens_used": 42215,
+      "iterations": 5,
+      "cost_usd": 5.078,
+      "tested_library_loc": 2475,
+      "metadata_entries": 363,
+      "test_only_metadata_entries": 188,
+      "previous_library_metadata_entries": 196,
+      "previous_library_test_only_metadata_entries": 46,
+      "code_coverage_percent": 16.29,
+      "previous_library_coverage_percent": 15.77
+    },
+    "artifacts": {
+      "metadata_file": "metadata/org.springframework/spring-context/6.0.2/reachability-metadata.json"
+    }
+  }
+}

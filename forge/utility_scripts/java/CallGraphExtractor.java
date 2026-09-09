@@ -6,9 +6,11 @@
  */
 import java.io.IOException;
 import java.io.UncheckedIOException;
+import java.lang.classfile.Attributes;
 import java.lang.classfile.ClassFile;
 import java.lang.classfile.ClassModel;
 import java.lang.classfile.MethodModel;
+import java.lang.classfile.attribute.LineNumberInfo;
 import java.lang.classfile.instruction.InvokeDynamicInstruction;
 import java.lang.classfile.instruction.InvokeInstruction;
 import java.lang.constant.DirectMethodHandleDesc;
@@ -18,6 +20,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.lang.reflect.AccessFlag;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
@@ -34,7 +37,9 @@ import java.util.zip.ZipFile;
 ///
 /// Reads library jars with the JDK Class-File API and writes three CSV files:
 /// one row per declared method, one row per call edge, and one row per declared
-/// type. Method identities are the canonical `owner#name(params):ret` form
+/// type. Method rows retain their bytecode-to-source line table for exact deep
+/// miss classification (§AR-code-coverage-improvement.3.2). Method identities
+/// are the canonical `owner#name(params):ret` form
 /// produced by `utility_scripts/code_coverage_model.py`, so extractor output
 /// joins directly with JaCoCo evidence and the API inventory.
 ///
@@ -59,7 +64,8 @@ public final class CallGraphExtractor {
     /// One declared method: its canonical id and whether it carries a body.
     /// `isStatic` is what tells eligibility analysis that an entry needs no
     /// receiver at all (§AR-code-coverage-improvement.3.1.2).
-    private record MethodNode(String id, boolean hasCode, boolean isPublicApi, boolean isStatic) {
+    private record MethodNode(String id, boolean hasCode, boolean isPublicApi, boolean isStatic,
+                              String lineNumbers) {
     }
 
     /// Declared supertypes of one class, used for hierarchy analysis.
@@ -154,7 +160,7 @@ public final class CallGraphExtractor {
                     method.methodTypeSymbol());
             boolean isPublicMethod = isPublicClass && method.flags().has(AccessFlag.PUBLIC);
             declared.add(new MethodNode(id, method.code().isPresent(), isPublicMethod,
-                    method.flags().has(AccessFlag.STATIC)));
+                    method.flags().has(AccessFlag.STATIC), lineNumbers(method)));
             declaredIds.add(id);
         }
         methodsByOwner.put(owner, declared);
@@ -290,13 +296,25 @@ public final class CallGraphExtractor {
         return internalName.replace('/', '.');
     }
 
+    /// Semicolon-separated `start-bci:source-line` entries for one method.
+    private static String lineNumbers(MethodModel method) {
+        return method.code()
+                .flatMap(code -> code.findAttribute(Attributes.lineNumberTable()))
+                .map(attribute -> attribute.lineNumbers().stream()
+                        .sorted(Comparator.comparingInt(LineNumberInfo::startPc))
+                        .map(info -> info.startPc() + ":" + info.lineNumber())
+                        .toList())
+                .map(entries -> String.join(";", entries))
+                .orElse("");
+    }
+
     private void write(Path outputDir) throws IOException {
         Files.createDirectories(outputDir);
         List<String> methodRows = new ArrayList<>();
-        methodRows.add("id,hasCode,isPublicApi,isStatic");
+        methodRows.add("id,hasCode,isPublicApi,isStatic,lineNumbers");
         methodsByOwner.values().forEach(declared -> declared.forEach(node -> methodRows.add(
                 quote(node.id()) + "," + node.hasCode() + "," + node.isPublicApi()
-                        + "," + node.isStatic())));
+                        + "," + node.isStatic() + "," + quote(node.lineNumbers()))));
         write(outputDir.resolve("methods.csv"), methodRows);
 
         List<String> edgeRows = new ArrayList<>();
