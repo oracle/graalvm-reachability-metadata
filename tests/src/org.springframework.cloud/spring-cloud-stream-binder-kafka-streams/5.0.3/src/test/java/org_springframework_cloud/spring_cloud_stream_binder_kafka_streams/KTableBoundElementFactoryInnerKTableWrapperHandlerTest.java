@@ -21,18 +21,14 @@ import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.TopicPartition;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.apache.kafka.common.serialization.StringSerializer;
-import org.apache.kafka.streams.kstream.GlobalKTable;
 import org.apache.kafka.streams.kstream.KStream;
-import org.apache.kafka.streams.kstream.KeyValueMapper;
+import org.apache.kafka.streams.kstream.KTable;
 import org.apache.kafka.streams.kstream.ValueJoiner;
-import org.apache.kafka.streams.state.QueryableStoreTypes;
-import org.apache.kafka.streams.state.ReadOnlyKeyValueStore;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringBootConfiguration;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.cloud.stream.binder.kafka.streams.InteractiveQueryService;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.kafka.test.EmbeddedKafkaBroker;
@@ -41,15 +37,14 @@ import org.springframework.test.annotation.DirtiesContext;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@SpringBootTest(classes = GlobalKTableBoundElementFactoryInnerGlobalKTableWrapperHandlerTest.Application.class,
+@SpringBootTest(classes = KTableBoundElementFactoryInnerKTableWrapperHandlerTest.Application.class,
         properties = {
                 "spring.cloud.function.definition=enrich",
-                "spring.cloud.stream.kafka.streams.binder.applicationId=global-k-table-wrapper-handler",
-                "spring.cloud.stream.kafka.streams.binder.state-store-retry.max-attempts=20",
+                "spring.cloud.stream.kafka.streams.binder.applicationId=k-table-wrapper-handler",
                 "spring.cloud.stream.kafka.streams.binder.brokers=${spring.embedded.kafka.brokers}",
-                "spring.cloud.stream.bindings.enrich-in-0.destination=global-k-table-wrapper-stream-input",
-                "spring.cloud.stream.bindings.enrich-in-1.destination=global-k-table-wrapper-table-input",
-                "spring.cloud.stream.bindings.enrich-out-0.destination=global-k-table-wrapper-output",
+                "spring.cloud.stream.bindings.enrich-in-0.destination=k-table-wrapper-stream-input",
+                "spring.cloud.stream.bindings.enrich-in-1.destination=k-table-wrapper-table-input",
+                "spring.cloud.stream.bindings.enrich-out-0.destination=k-table-wrapper-output",
                 "spring.cloud.stream.kafka.streams.bindings.enrich-in-0.consumer.key-serde="
                         + "org.apache.kafka.common.serialization.Serdes$StringSerde",
                 "spring.cloud.stream.kafka.streams.bindings.enrich-in-0.consumer.value-serde="
@@ -59,25 +54,24 @@ import static org.assertj.core.api.Assertions.assertThat;
                 "spring.cloud.stream.kafka.streams.bindings.enrich-in-1.consumer.value-serde="
                         + "org.apache.kafka.common.serialization.Serdes$StringSerde",
                 "spring.cloud.stream.kafka.streams.bindings.enrich-in-1.consumer.materialized-as="
-                        + "global-k-table-wrapper-store",
+                        + "k-table-wrapper-store",
                 "spring.cloud.stream.kafka.streams.bindings.enrich-out-0.producer.key-serde="
                         + "org.apache.kafka.common.serialization.Serdes$StringSerde",
                 "spring.cloud.stream.kafka.streams.bindings.enrich-out-0.producer.value-serde="
                         + "org.apache.kafka.common.serialization.Serdes$StringSerde"
         })
 @EmbeddedKafka(partitions = 1, topics = {
-        GlobalKTableBoundElementFactoryInnerGlobalKTableWrapperHandlerTest.STREAM_INPUT_TOPIC,
-        GlobalKTableBoundElementFactoryInnerGlobalKTableWrapperHandlerTest.TABLE_INPUT_TOPIC,
-        GlobalKTableBoundElementFactoryInnerGlobalKTableWrapperHandlerTest.OUTPUT_TOPIC
+        KTableBoundElementFactoryInnerKTableWrapperHandlerTest.STREAM_INPUT_TOPIC,
+        KTableBoundElementFactoryInnerKTableWrapperHandlerTest.TABLE_INPUT_TOPIC,
+        KTableBoundElementFactoryInnerKTableWrapperHandlerTest.OUTPUT_TOPIC
 }, bootstrapServersProperty = "spring.kafka.bootstrap-servers")
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
-public class GlobalKTableBoundElementFactoryInnerGlobalKTableWrapperHandlerTest {
+public class KTableBoundElementFactoryInnerKTableWrapperHandlerTest {
     private static final Duration CLIENT_TIMEOUT = Duration.ofSeconds(10);
-    private static final Duration TABLE_UPDATE_TIMEOUT = Duration.ofSeconds(20);
-    static final String STREAM_INPUT_TOPIC = "global-k-table-wrapper-stream-input";
-    static final String TABLE_INPUT_TOPIC = "global-k-table-wrapper-table-input";
-    static final String OUTPUT_TOPIC = "global-k-table-wrapper-output";
-    private static final String STORE_NAME = "global-k-table-wrapper-store";
+    static final String STREAM_INPUT_TOPIC = "k-table-wrapper-stream-input";
+    static final String TABLE_INPUT_TOPIC = "k-table-wrapper-table-input";
+    static final String OUTPUT_TOPIC = "k-table-wrapper-output";
+    private static final String STORE_NAME = "k-table-wrapper-store";
 
     @Autowired
     private ApplicationContext applicationContext;
@@ -86,8 +80,8 @@ public class GlobalKTableBoundElementFactoryInnerGlobalKTableWrapperHandlerTest 
     private EmbeddedKafkaBroker embeddedKafkaBroker;
 
     @Test
-    void globalKTableBindingForwardsCallsAndEnrichesStreamRecords() throws Exception {
-        GlobalKTable<?, ?> bindingTarget = this.applicationContext.getBean("enrich-in-1", GlobalKTable.class);
+    void kTableBindingForwardsCallsAndEnrichesStreamRecords() throws Exception {
+        KTable<?, ?> bindingTarget = this.applicationContext.getBean("enrich-in-1", KTable.class);
         assertThat(bindingTarget.queryableStoreName()).isEqualTo(STORE_NAME);
 
         KafkaProducer<String, String> producer = new KafkaProducer<>(producerProperties());
@@ -95,10 +89,6 @@ public class GlobalKTableBoundElementFactoryInnerGlobalKTableWrapperHandlerTest 
         try {
             consumer.assign(List.of(new TopicPartition(OUTPUT_TOPIC, 0)));
             send(producer, TABLE_INPUT_TOPIC, "order-42", "priority");
-            ReadOnlyKeyValueStore<String, String> store = this.applicationContext
-                    .getBean(InteractiveQueryService.class)
-                    .getQueryableStore(STORE_NAME, QueryableStoreTypes.keyValueStore());
-            awaitTableValue(store, "order-42", "priority");
             producer.send(new ProducerRecord<>(STREAM_INPUT_TOPIC, "order-42", "created"));
 
             ConsumerRecords<String, String> records = consumer.poll(CLIENT_TIMEOUT);
@@ -110,20 +100,6 @@ public class GlobalKTableBoundElementFactoryInnerGlobalKTableWrapperHandlerTest 
             consumer.close(CLIENT_TIMEOUT);
             producer.close(CLIENT_TIMEOUT);
         }
-    }
-
-    private void awaitTableValue(ReadOnlyKeyValueStore<String, String> store, String key, String expectedValue)
-            throws InterruptedException {
-        long deadline = System.nanoTime() + TABLE_UPDATE_TIMEOUT.toNanos();
-        String value = null;
-        while (System.nanoTime() < deadline) {
-            value = store.get(key);
-            if (expectedValue.equals(value)) {
-                return;
-            }
-            Thread.sleep(100);
-        }
-        assertThat(value).isEqualTo(expectedValue);
     }
 
     private Map<String, Object> producerProperties() {
@@ -138,7 +114,7 @@ public class GlobalKTableBoundElementFactoryInnerGlobalKTableWrapperHandlerTest 
     private Map<String, Object> consumerProperties() {
         return Map.of(
                 ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, this.embeddedKafkaBroker.getBrokersAsString(),
-                ConsumerConfig.GROUP_ID_CONFIG, "global-k-table-wrapper-handler-consumer",
+                ConsumerConfig.GROUP_ID_CONFIG, "k-table-wrapper-handler-consumer",
                 ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest",
                 ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class,
                 ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class,
@@ -154,24 +130,17 @@ public class GlobalKTableBoundElementFactoryInnerGlobalKTableWrapperHandlerTest 
     @EnableAutoConfiguration
     public static class Application {
         @Bean
-        public BiFunction<KStream<String, String>, GlobalKTable<String, String>, KStream<String, String>> enrich() {
-            return new GlobalTableEnrichment();
+        public BiFunction<KStream<String, String>, KTable<String, String>, KStream<String, String>> enrich() {
+            return new TableEnrichment();
         }
     }
 
-    private static final class GlobalTableEnrichment
-            implements BiFunction<KStream<String, String>, GlobalKTable<String, String>, KStream<String, String>> {
+    private static final class TableEnrichment
+            implements BiFunction<KStream<String, String>, KTable<String, String>, KStream<String, String>> {
 
         @Override
-        public KStream<String, String> apply(KStream<String, String> stream, GlobalKTable<String, String> table) {
-            return stream.leftJoin(table, new OrderKeySelector(), new OrderEnricher());
-        }
-    }
-
-    private static final class OrderKeySelector implements KeyValueMapper<String, String, String> {
-        @Override
-        public String apply(String key, String value) {
-            return key;
+        public KStream<String, String> apply(KStream<String, String> stream, KTable<String, String> table) {
+            return stream.leftJoin(table, new OrderEnricher());
         }
     }
 
