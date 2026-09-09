@@ -528,29 +528,45 @@ publication. A title marker, branch name, or label alone is insufficient.
 **Approved heads are approved deterministically.** For a normal generated task,
 `local_review.decision` must be `approved`; a validated benchmark-result
 descriptor is approved by definition because it records measurements rather
-than a mergeable generated contribution. Forge submits the GitHub approval with
-an explicit commit ID equal to the validated head and never carries that
-approval across a later push. Pending required checks wait. A head merges only
-after every required CI and repository merge gate is successful and
-non-blocking.
+than a mergeable generated contribution. If the head changes an index file,
+Forge validates the current-base merge candidate before approval because
+enabling auto-merge on an already-green head may merge it immediately. Forge
+then submits the GitHub approval with an explicit commit ID equal to the
+validated head and immediately enables auto-merge for the pull request with the
+same expected head. Forge never directly merges an approved pull request:
+pending required checks wait, and GitHub queues or merges only after every
+required CI and repository merge gate is successful and non-blocking. A later
+push must earn a new exact-head approval rather than carrying the old approval
+forward.
 
 **Rejected heads are acted on immediately.** A rejected descriptor never
-receives an approval and does not wait for CI. Action `human-intervention`
-ensures the label is present and leaves the pull request open. Action `close`
-posts one idempotent explanation using the recorded reviewer reason, closes the
-pull request, labels the linked issue `library-unsupported-version`, and closes
-that issue. The trusted publisher performs this immediately after PR creation;
-the PR-review process may reconcile the same end state idempotently.
+receives an approval or auto-merge request and does not wait for CI. Before
+executing the rejection, Forge disables any auto-merge request left from an
+older approved head and dismisses only its own approval. Action
+`human-intervention` ensures the label is present and leaves the pull request
+open. Action `close` posts one idempotent explanation using the recorded
+reviewer reason, closes the pull request, labels the linked issue
+`library-unsupported-version`, and closes that issue. The trusted publisher
+performs this immediately after PR creation; the PR-review process may reconcile
+the same end state idempotently.
 
-**Failed CI enters repair only after deterministic retries.** For each failed
-GitHub Actions workflow on an approved current head, Forge reruns failed jobs
-while `run_attempt` is below `3`. If required CI still fails after that budget,
-Forge invokes the worker-configured analysis role as a CI-repair reviewer in an
-isolated worktree. The turn receives the failed-check evidence and exact-head
-descriptor, diagnoses the failure, and applies §root/FS-contribution-contract.5:
-repair only contribution-local defects, return structured evidence for shared
-infrastructure defects, close only for the supported unfixable-library case,
-and escalate everything else.
+**Failed CI enters diagnosis immediately.** Forge does not rerun a failed
+GitHub Actions workflow before diagnosis. It invokes the worker-configured
+analysis role as a CI-repair reviewer in an isolated worktree on the approved
+current head. The turn receives the failed-check and workflow-run evidence plus
+the exact-head descriptor, diagnoses whether the failure is transient or caused
+by the contribution, and applies §root/FS-contribution-contract.5: repair only
+contribution-local defects, return structured evidence for shared infrastructure
+defects, close only for the supported unfixable-library case, and escalate
+everything else.
+
+A transient verdict changes neither the contribution nor its descriptor. It
+names only failed workflow runs from the current head; trusted Forge code
+validates those IDs and requests reruns of their failed jobs, then stops until a
+later pass. The analysis agent decides whether a rerun is justified, while Forge
+owns and scopes the GitHub mutation. An approved repair must change the
+contribution and re-review the resulting tree. A no-change approval is invalid,
+not a transient verdict.
 
 A contribution-local repair performs the same local-review responsibilities on
 the resulting tree, appends every new finding to `forge/FINDINGS.md`, updates
@@ -559,8 +575,10 @@ existing head branch. Structured infrastructure evidence causes trusted Forge
 code to open or reuse one infrastructure issue and link it before recording
 `rejected` plus `human-intervention`; an unfixable library records `rejected`
 plus `close`. Any case that cannot be fixed by changing the contribution is
-explained on the pull request. A push restarts CI and invalidates prior approval;
-every later action begins again from the new exact-head descriptor.
+explained on the pull request. Before every repair push, Forge disables
+auto-merge and dismisses its approval for the old head; a rejected outcome also
+remains unapproved while its action is applied. A push restarts CI, and every
+later action begins again from the new exact-head descriptor.
 
 Transient CI noise, GitHub status/API failures, Maven download failures, and
 other external infrastructure errors are retried or waited out and are not
@@ -579,12 +597,19 @@ requests conflict there, and each merge re-conflicts the rest; keeping both
 entries is the only correct resolution, so the repository configures git to
 take it without asking. Conflict refresh is deterministic queue maintenance,
 not review: before CI state can make a pull request eligible for an agent,
-Forge must merge the base branch into a conflicting same-repository head and
-push the result when that merge left no conflict behind. A merge that still
-conflicts — in the ledger or in any other file — is a real disagreement over
-content and takes the human-intervention path instead, as does a head Forge
-cannot push to. Pushing restarts the pull request's checks, so review and merge
-belong to a later pass: Forge must re-read the review decision and checks after
-pushing rather than carrying pre-push state forward, which also means an
-approval dismissed by the push is re-earned by the normal review path rather
-than assumed.
+Forge first approves the validated head and enables auto-merge, then merges the
+base branch into a conflicting same-repository head and pushes the result when
+that merge left no conflict behind. A merge that still conflicts — in the
+ledger or in any other file — is a real disagreement over content and takes the
+human-intervention path instead, as does a head Forge cannot push to. Before
+applying that label, Forge disables auto-merge and dismisses its approval so no
+human-intervention pull request remains approved. Before pushing a resolved
+merge, Forge likewise withdraws the old head's approval and auto-merge request.
+The push restarts the pull request's checks, so evaluation belongs to a later pass:
+Forge must re-read the descriptor decision and checks after pushing rather than
+carrying pre-push state forward, and a new exact head must be approved again.
+
+Because GitHub may complete an armed merge between worker passes, Forge also
+reconciles the existing chunk and follow-up issue transitions from the merged
+pull request. That reconciliation must be idempotent and must not release the
+same issue again after a later Forge run has claimed it.
