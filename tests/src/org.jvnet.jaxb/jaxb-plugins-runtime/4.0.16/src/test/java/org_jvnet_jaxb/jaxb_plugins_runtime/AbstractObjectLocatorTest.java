@@ -35,7 +35,7 @@ final class LocalizedObjectLocator extends AbstractObjectLocator {
 
     @Override
     public Object[] getMessageParameters() {
-        return new Object[] { getObject(), step };
+        return new Object[] {getObject(), step};
     }
 
     @Override
