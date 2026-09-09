@@ -1,0 +1,18 @@
+{
+  "action": "advisory_preparation",
+  "summary": "Meaningful SFTP coverage requires a reachable SFTP server; the artifact’s Apache MINA client dependencies are already transitive.",
+  "deterministic_setup": [
+    {
+      "kind": "docker_image",
+      "image": "atmoz/sftp:debian",
+      "slug": "atmoz_sftp_debian",
+      "reason": "Spring Integration SFTP is a client integration library, and its documented adapters require an actual SSH/SFTP endpoint for upload, download, and session coverage."
+    }
+  ],
+  "agent_guidance": "Start the container with a deterministic test user and published port, for example user `test` with password `test` and an upload directory. Configure DefaultSftpSessionFactory or equivalent test properties to connect to localhost on the mapped port, authenticate with those credentials, and use test-managed temporary local and remote directories. Avoid relying on a pre-existing host-key file; configure the test verifier explicitly for the ephemeral test server.",
+  "risks": [
+    "The Docker image tag is mutable; local and CI verification must confirm the pulled image and server behavior.",
+    "Tests must cleanly stop the container and remove temporary files.",
+    "SSH host-key verification and authentication defaults may otherwise make tests fail before exercising Spring Integration code."
+  ]
+}
