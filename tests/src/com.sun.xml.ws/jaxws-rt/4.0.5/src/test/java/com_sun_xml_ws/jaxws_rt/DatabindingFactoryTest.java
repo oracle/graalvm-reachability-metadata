@@ -15,13 +15,16 @@ import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class Jaxws_rtTest {
+public class DatabindingFactoryTest {
     @Test
-    void databindingFactoryCreatesAnEmptyPropertySet() {
+    void createsAConfigurableFactoryThroughThePublicEntryPoint() {
         DatabindingFactory factory = DatabindingFactory.newInstance();
 
         assertThat(factory).isNotNull();
         assertThat(factory.properties()).isEmpty();
+
+        factory.properties().put("com.example.transport", "in-memory");
+        assertThat(factory.properties()).containsEntry("com.example.transport", "in-memory");
     }
 
     @Test
