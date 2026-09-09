@@ -4160,7 +4160,10 @@ def _build_human_intervention_analysis_prompt(
         claimed_issue: ClaimedIssue,
         candidate: HumanInterventionCandidate,
 ) -> str:
-    """Create the analysis prompt for the follow-up agent run."""
+    """Create the analysis prompt for the follow-up agent run.
+
+    The comment states evidence, not policy. §FS-human-intervention-policy
+    """
     if candidate.coverage is None:
         return _build_failed_generation_analysis_prompt(claimed_issue, candidate, [], None)
 
@@ -4186,6 +4189,9 @@ def _build_human_intervention_analysis_prompt(
         "- Explain briefly why dynamic-access coverage is missing or still very low.\n"
         "- Ground the explanation in concrete project observations.\n"
         "- End with 2 or 3 specific manual next steps.\n"
+        "- Ground every next step in what the logs, metrics, or repository actually show.\n"
+        "- Do not assert repository policy, conventions, or prohibitions. If a fix is disallowed "
+        "here, cite the grund spec point that disallows it; otherwise leave the claim out.\n"
         "- Keep the comment concise and do not use code fences.\n"
         "- Do not mention being an AI."
     )
@@ -4316,7 +4322,10 @@ def _build_failed_generation_analysis_prompt(
         run_metrics: dict | None,
         preservation_result: FailurePreservationResult | None = None,
 ) -> str:
-    """Create a Codex prompt that asks for the exact failure-analysis issue comment."""
+    """Create a Codex prompt that asks for the exact failure-analysis issue comment.
+
+    The comment states evidence, not policy. §FS-human-intervention-policy
+    """
     coverage_details = "- Dynamic-access coverage: unavailable"
     if candidate.coverage is not None:
         coverage_percent = candidate.coverage.coverage_ratio * 100.0
@@ -4361,6 +4370,9 @@ def _build_failed_generation_analysis_prompt(
         "- Explain the most likely failing stage and the concrete evidence from logs or metrics.\n"
         "- Mention specific log paths that a maintainer should inspect.\n"
         "- End with 2 or 3 specific manual next steps.\n"
+        "- Ground every next step in what the logs, metrics, or repository actually show.\n"
+        "- Do not assert repository policy, conventions, or prohibitions. If a fix is disallowed "
+        "here, cite the grund spec point that disallows it; otherwise leave the claim out.\n"
         "- Keep the comment concise but detailed enough to act on.\n"
         "- Do not use code fences.\n"
         "- Do not mention being an AI."

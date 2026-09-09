@@ -508,6 +508,19 @@ additionally carries a continuation marker, so a later run can resume the issue
 from the phase that failed instead of regenerating from scratch
 (§FS-forge-run-continuation).
 
+**The comment states evidence, not policy.** A human-intervention comment is
+published to a maintainer, so every claim in it must be traceable to something
+the run actually observed: the failing stage, the log lines and metrics behind
+that conclusion, what the run already tried, and what a maintainer can do next.
+Its recommendations must not assert a repository policy, convention, or
+prohibition. When the comment does claim that a fix is disallowed here, it
+carries the `grund` citation of the spec point that disallows it, and when no
+such point exists the claim is left out entirely. An uncitable prohibition is
+worse than silence: the comment is read both by the maintainer who picks the
+issue up and by any later run that takes the issue thread as context, so an
+invented rule blocks the precedented fix and then propagates as if it were
+repository guidance.
+
 
 ## FS-automated-pr-review: Automated pull request review
 

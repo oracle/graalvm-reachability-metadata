@@ -4410,6 +4410,76 @@ class FailedRunFollowUpTests(unittest.TestCase):
 
         post_follow_up.assert_not_called()
 
+    def test_failed_generation_prompt_forbids_uncitable_policy_claims(self) -> None:
+        """The published comment states evidence, not invented repository policy."""
+        candidate = forge_metadata.HumanInterventionCandidate(
+            strategy_name=None,
+            workflow_status=forge_metadata.RUN_STATUS_FAILURE,
+            reason="test_generation_failed",
+        )
+
+        prompt = forge_metadata._build_failed_generation_analysis_prompt(
+            _claimed_issue(),
+            candidate,
+            ["/tmp/logs/run.log"],
+            None,
+        )
+
+        self.assertIn("Ground every next step in what the logs, metrics, or repository actually show.", prompt)
+        self.assertIn("Do not assert repository policy, conventions, or prohibitions.", prompt)
+        self.assertIn("cite the grund spec point that disallows it; otherwise leave the claim out.", prompt)
+
+    def test_low_coverage_prompt_forbids_uncitable_policy_claims(self) -> None:
+        """The low-coverage variant is published the same way, so it carries the same constraint."""
+        candidate = forge_metadata.HumanInterventionCandidate(
+            strategy_name="strategy",
+            workflow_status=forge_metadata.RUN_STATUS_FAILURE,
+            coverage=forge_metadata.DynamicAccessCoverageSnapshot(
+                covered_calls=0,
+                total_calls=12,
+                coverage_ratio=0.0,
+                source="dynamic-access-coverage.json",
+            ),
+        )
+
+        prompt = forge_metadata._build_human_intervention_analysis_prompt(_claimed_issue(), candidate)
+
+        self.assertIn("Ground every next step in what the logs, metrics, or repository actually show.", prompt)
+        self.assertIn("Do not assert repository policy, conventions, or prohibitions.", prompt)
+        self.assertIn("cite the grund spec point that disallows it; otherwise leave the claim out.", prompt)
+
+    def test_fallback_comments_assert_no_repository_policy(self) -> None:
+        """The deterministic fallbacks must stay policy-free too."""
+        claimed_issue = _claimed_issue()
+        failed_generation = forge_metadata._build_failed_generation_fallback_comment(
+            claimed_issue,
+            forge_metadata.HumanInterventionCandidate(
+                strategy_name=None,
+                workflow_status=forge_metadata.RUN_STATUS_FAILURE,
+                reason="test_generation_failed",
+            ),
+            [],
+        )
+        low_coverage = forge_metadata._build_human_intervention_fallback_comment(
+            claimed_issue,
+            forge_metadata.HumanInterventionCandidate(
+                strategy_name="strategy",
+                workflow_status=forge_metadata.RUN_STATUS_FAILURE,
+                coverage=forge_metadata.DynamicAccessCoverageSnapshot(
+                    covered_calls=0,
+                    total_calls=12,
+                    coverage_ratio=0.0,
+                    source="dynamic-access-coverage.json",
+                ),
+            ),
+        )
+
+        for comment in (failed_generation, low_coverage):
+            lowered = comment.lower()
+            self.assertNotIn("repository policy", lowered)
+            self.assertNotIn("forbid", lowered)
+            self.assertNotIn("not allowed", lowered)
+
 
 class InterruptHandlingTests(unittest.TestCase):
     def setUp(self) -> None:
