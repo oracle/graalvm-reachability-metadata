@@ -6,8 +6,11 @@
  */
 package com_sun_xml_ws.jaxws_rt;
 
+import com.oracle.webservices.api.EnvelopeStyle;
+import com.oracle.webservices.api.EnvelopeStyleFeature;
 import com.oracle.webservices.api.databinding.DatabindingFactory;
 import com.oracle.webservices.api.databinding.ExternalMetadataFeature;
+import com.sun.xml.ws.api.SOAPVersion;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -19,6 +22,17 @@ public class Jaxws_rtTest {
 
         assertThat(factory).isNotNull();
         assertThat(factory.properties()).isEmpty();
+    }
+
+    @Test
+    void soapVersionConvertsEnvelopeStyleFeature() {
+        EnvelopeStyleFeature feature = SOAPVersion.SOAP_12.toFeature();
+
+        assertThat(feature.getStyles()).containsExactly(EnvelopeStyle.Style.SOAP12);
+        assertThat(SOAPVersion.from(feature)).isEqualTo(SOAPVersion.SOAP_12);
+        assertThat(SOAPVersion.fromHttpBinding(SOAPVersion.SOAP_12.httpBindingId))
+                .isEqualTo(SOAPVersion.SOAP_12);
+        assertThat(SOAPVersion.fromNsUri(SOAPVersion.SOAP_12.nsUri)).isEqualTo(SOAPVersion.SOAP_12);
     }
 
     @Test
