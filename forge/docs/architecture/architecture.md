@@ -194,11 +194,11 @@ sequenceDiagram
         end
     end
     DR->>AG: local_review(diff, gate records, descriptor stats)
-    AG->>AG: repair + mutation-producing finalization
+    AG->>AG: repair + exact finalization command until stable
     AG-->>DR: approved, or rejected with action
     opt the review repaired the branch
-        DR->>DR: replay finalize_run() + local_ci_check() without agents
-        opt either fails or changes the reviewed tree
+        DR->>DR: replay only local_ci_check() without fixups
+        opt gate fails or changes the reviewed tree
             DR->>DR: restore_verified_tree() + record rejection
         end
     end
@@ -631,17 +631,19 @@ with a failed repair is the caller's contract, and they differ because a failed
 repair means something different at each: the gate resets to its checkpoint and
 fails the run, because metadata it rejected must not publish; `local_ci_check()`
 hands off for human intervention, because the branch is not publishable; and
-the verification replay over a `local_review()` repair disables
-`agent_fix()` entirely and reaches `restore_verified_tree()` if a check fails
-or changes the reviewed tree. The verified branch remains publishable with the
-review finding recorded and no post-verdict semantic edit.
+the post-review `local_ci_check()` replay disables `agent_fix()` entirely and
+reaches `restore_verified_tree()` if the gate fails or changes the reviewed
+tree. The verified branch remains publishable with the review finding recorded
+and no post-verdict finalization or semantic edit.
 
 There is one repair step, and every repair-capable call site reaches the same
-one. The post-verdict replay is deliberately not repair-capable: it fails on
-the first error or mutation. A second tool appended behind the first is not a
-second chance at the same contract: it is a step whose only remaining move is
-the one the first step declined to make, chosen because the sequence ran out,
-not because the evidence pointed there.
+one. The post-verdict gate is deliberately not repair-capable: it fails on the
+first error or mutation. Finalization is not part of that replay because the
+reviewer has already driven the exact Forge-owned finalizer to a stable pass. A
+second tool appended behind the first is not a second chance at the same
+contract: it would be a step whose only remaining move is the one the first step
+declined to make, chosen because the sequence ran out, not because the evidence
+pointed there.
 
 The name is this document's. No symbol reads `agent_fix`: it is a contract the
 implementations are measured against, the way `native_trace_gate()` names what
@@ -810,14 +812,17 @@ worktree at the verified commit, with no shared generation session. It reviews
 `local_ci_check()` records and resolved descriptor statistics.
 
 A finding never reaches `agent_fix()`. The `xhigh` reviewer reports it and
-applies a contribution-local repair in one pass. After its final edit it performs
-the mutation-producing `finalize_run()` responsibilities itself and writes the
-verdict only for that stable tree. Forge then replays `finalize_run()` and
-`local_ci_check()` with secondary agents disabled. A repair remains `approved`
-only when both checks pass without changing the reviewed commit; a failure or
-mutation reaches `restore_verified_tree()`. A finding that cannot be resolved
-results in `rejected` with action `human-intervention` or `close`. Reviewer
-failure is the fixed rejected human-intervention outcome.
+applies a contribution-local repair in one pass. After its final manual edit it
+runs the Forge-owned finalization command, which executes all three native lanes
+and the shared library finalizer with nested agents disabled. The command hashes
+the publishable tree around the run and requires another pass after any mutation,
+so the reviewer writes its verdict only after the complete finalizer succeeds
+without changing that tree. Forge does not run finalization afterward; it reruns
+only `local_ci_check()` without fixups. A repair remains `approved` only when that
+gate passes without changing the reviewed commit; a failure or mutation reaches
+`restore_verified_tree()`. A finding that cannot be resolved results in
+`rejected` with action `human-intervention` or `close`. Reviewer failure is the
+fixed rejected human-intervention outcome.
 
 The session log stays on the machine, every finding is committed to
 `forge/FINDINGS.md`, and the exact decision rides the descriptor into the PR
@@ -829,9 +834,9 @@ publication adds `human-intervention` only for the explicit rejected action
 
 **Algorithmic.**
 
-When a review repair cannot pass the no-agent finalization and pre-publication
-replay without changing the reviewed commit, Forge returns to the last commit
-that those gates passed. It never launches another agent after the verdict. This
+When a review repair cannot pass the no-fixup pre-publication gate without
+changing the reviewed commit, Forge returns to the last commit that gate passed.
+It never reruns finalization or launches another agent after the verdict. This
 preserves an otherwise publishable generated result while ensuring an approval
 never describes edits that were discarded (§FS-local-branch-review).
 
@@ -850,8 +855,8 @@ credentials (§AR-forge-verification-publication-boundary,
 §AR-forge-publication). "Publish" means *make PR-eligible*, and that is the
 push at the end: nothing leaves the machine before `local_ci_check()` and
 `local_review()` have passed over the tree that will be pushed, and — when the
-review repaired something — before the no-agent `finalize_run()` and
-`local_ci_check()` replay has passed without changing the reviewed commit.
+review repaired something — before the no-fixup `local_ci_check()` replay has
+passed without changing the reviewed commit.
 
 Locally, the run switches to a unique branch named
 `ai/<producer>/<suffix>-<publication-id>`, stages only expected paths, rebases

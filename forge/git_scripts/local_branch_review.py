@@ -10,10 +10,10 @@ from __future__ import annotations
 import copy
 import json
 import os
+import shlex
 import shutil
 import subprocess
 import uuid
-from collections.abc import Callable
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from typing import Any
@@ -25,6 +25,7 @@ from ai_workflows.agents.agent_runtime import (
     get_analysis_agent,
 )
 from git_scripts.common_git import gh, gh_json, parse_coordinate_parts, stage_and_commit
+from git_scripts.review_finalization import finalization_receipt_matches
 from utility_scripts.local_ci_verification import (
     FINDINGS_RELATIVE_PATH,
     LocalCIVerificationError,
@@ -59,9 +60,6 @@ REVIEW_SKILLS_BY_TASK_TYPE: dict[str, str] = {
     "fixes-native-image-run-fail": "review-fixes-native-image-run-fail",
     "not-for-native-image": "review-library-new-request",
 }
-
-PostReviewFinalization = Callable[[], bool]
-
 
 @dataclass(frozen=True)
 class LocalReviewVerdict:
@@ -218,12 +216,11 @@ def run_local_branch_review(
         descriptor_input: Any,
         metrics_repo_path: str | None = None,
         model: str | None = None,
-        post_review_finalization: PostReviewFinalization | None = None,
 ) -> LocalBranchReviewOutcome:
     """Review once, verify actual edits, and always return a publishable outcome.
 
-    The reviewer owns every semantic repair in one cold pass. Forge replays the
-    deterministic checks without accepting a post-verdict mutation.
+    The reviewer owns finalization and semantic repair in one cold pass. Forge
+    replays only the cross-cutting gate without accepting a post-verdict mutation.
     §FS-local-branch-review
     """
     persisted: LocalBranchReviewOutcome | None = _load_persisted_outcome(
@@ -277,7 +274,7 @@ def run_local_branch_review(
     if execution.changed_paths:
         _log_review(
             f"Reviewer changed {len(execution.changed_paths)} path(s); "
-            "replaying finalization and the pre-publication gate without repairs",
+            "re-running only the pre-publication gate without repairs",
             indent_level=1,
         )
         _verify_reviewer_edits(
@@ -288,7 +285,6 @@ def run_local_branch_review(
             metrics_repo_path=metrics_repo_path,
             original_verification=local_ci_verification,
             outcome=outcome,
-            post_review_finalization=post_review_finalization,
         )
     else:
         _log_review("Reviewer made no branch edits; verification is not repeated", indent_level=1)
@@ -308,7 +304,7 @@ def run_local_branch_review(
 
 
 def _tree_matches_commit(repo_path: str, expected_sha: str) -> bool:
-    """Keep the post-verdict replay read-only. §FS-local-branch-review"""
+    """Keep the post-verdict gate read-only. §FS-local-branch-review"""
     current_sha: str = _git_stdout(repo_path, ["rev-parse", "HEAD"])
     status: str = _git_stdout(repo_path, ["status", "--porcelain"])
     return current_sha == expected_sha and not status
@@ -323,20 +319,9 @@ def _verify_reviewer_edits(
         metrics_repo_path: str | None,
         original_verification: LocalCIVerificationResult,
         outcome: LocalBranchReviewOutcome,
-        post_review_finalization: PostReviewFinalization | None,
 ) -> None:
-    """Replay deterministic checks without accepting any post-verdict mutation."""
+    """Replay the cross-cutting gate without accepting a post-verdict mutation."""
     reviewed_sha: str = _git_stdout(repo_path, ["rev-parse", "HEAD"])
-    failed_step: str | None = _run_finalization(post_review_finalization)
-    if failed_step is None and not _tree_matches_commit(repo_path, reviewed_sha):
-        failed_step = "post-review-finalization-mutated-reviewed-tree"
-    if failed_step is not None:
-        _reset_reviewer_edits(
-            repo_path, verified_sha, metrics_repo_path, original_verification,
-        )
-        _reject_failed_repair(outcome, failed_step)
-        return
-
     try:
         outcome.local_ci_verification = run_local_ci_verification(
             repo_path=repo_path,
@@ -391,19 +376,6 @@ def _reject_failed_repair(
     )
 
 
-def _run_finalization(finalization: PostReviewFinalization | None) -> str | None:
-    """Run route-owned finalization and return the failing step, if any."""
-    if finalization is None:
-        return "post-review-finalization-not-configured"
-    try:
-        if finalization():
-            return None
-    except Exception as error:  # The review phase degrades instead of failing publication. §FS-local-branch-review
-        step = getattr(error, "step", None)
-        return str(step or type(error).__name__)
-    return "post-review-finalization"
-
-
 def _reset_reviewer_edits(
         repo_path: str,
         verified_sha: str,
@@ -448,6 +420,9 @@ def _request_review(
         os.makedirs(evidence_dir)
         evidence_path: str = os.path.join(evidence_dir, "review-evidence.json")
         verdict_path: str = os.path.join(evidence_dir, "verdict.json")
+        finalization_receipt_path: str = os.path.join(
+            evidence_dir, "finalization-receipt.json",
+        )
         _write_evidence(
             evidence_path,
             coordinates,
@@ -462,6 +437,7 @@ def _request_review(
             task_type=task_type,
             evidence_path=evidence_path,
             verdict_path=verdict_path,
+            finalization_receipt_path=finalization_receipt_path,
         )
         selection: AgentSelection = get_analysis_agent()
         result: AgentRunResult = analysis_agent_run(
@@ -494,8 +470,27 @@ def _request_review(
         verdict: LocalReviewVerdict | None = _read_verdict(verdict_path)
         if verdict is None:
             return ReviewExecution(None, displayed_log_path)
+        finalization_verified: bool = (
+            task_type == "not-for-native-image"
+            or finalization_receipt_matches(
+                finalization_receipt_path,
+                worktree_path,
+                coordinates,
+                base_sha,
+            )
+        )
         shutil.rmtree(evidence_dir, ignore_errors=True)
         changed_paths: list[str] = _commit_reviewer_edits(worktree_path, verified_sha)
+        if (
+                changed_paths
+                and verdict.decision == "approved"
+                and not finalization_verified
+        ):
+            _log_review(
+                "Reviewer edits do not have a stable finalization receipt",
+                indent_level=1,
+            )
+            return ReviewExecution(None, displayed_log_path)
         if changed_paths and (
                 not verdict.finding_title.strip() or not verdict.fix_note.strip()
         ):
@@ -710,6 +705,8 @@ def _read_verdict(verdict_path: str) -> LocalReviewVerdict | None:
 def _build_review_finalization_instructions(
         coordinates: str,
         task_type: str,
+        base_sha: str,
+        finalization_receipt_path: str,
 ) -> list[str]:
     """Give one reviewer every finalization duty. §FS-local-branch-review"""
     if task_type == "not-for-native-image":
@@ -718,24 +715,30 @@ def _build_review_finalization_instructions(
             "This route has no library finalization callback or second semantic agent.",
             "",
         ]
+    command: str = shlex.join([
+        "python3",
+        "-m",
+        "git_scripts.review_finalization",
+        "--repo-path",
+        ".",
+        "--coordinates",
+        coordinates,
+        "--base-commit",
+        base_sha,
+        "--receipt-path",
+        finalization_receipt_path,
+    ])
     return [
-        "Before writing the verdict, finish every mutation-producing finalization step after "
-        "your last edit. This is the only semantic repair pass; Forge will not launch another agent.",
-        "Run and repair the target coordinate until all of these pass and leave the intended tree:",
-        f"- `./gradlew test -Pcoordinates={coordinates}` with current defaults.",
-        f"- `GVM_TCK_NATIVE_IMAGE_MODE=future-defaults-all ./gradlew test "
-        f"-Pcoordinates={coordinates}`.",
-        f"- `GRAALVM_HOME=\"$GRAALVM_HOME_25_0\" JAVA_HOME=\"$GRAALVM_HOME_25_0\" "
-        f"./gradlew test -Pcoordinates={coordinates}`.",
-        f"- `./gradlew splitTestOnlyMetadata -Pcoordinates={coordinates}`.",
-        f"- `./gradlew checkMetadataFiles -Pcoordinates={coordinates}`.",
-        f"- `./gradlew spotlessApply spotlessCheck checkstyle -Pcoordinates={coordinates}`.",
-        f"- `./gradlew generateLibraryStats -Pcoordinates={coordinates}`.",
-        "Repeat the metadata finalization commands for the resolved metadata-version coordinate "
-        "when it differs from the requested version, and re-check the generated-test validity rules.",
-        "Inspect every file these commands change as part of your review and rerun affected commands. "
-        "Approve only after the final tree is stable. Forge will replay the checks with secondary "
-        "agents disabled; a failure or any new tree mutation discards the repair and records rejection.",
+        "If you edit the contribution, run the exact Forge-owned finalization command after your last "
+        "manual edit. This is the only semantic repair pass; it disables nested agents and includes "
+        "all three test lanes, foreign-metadata routing, deterministic allowed-package updates, "
+        "metadata and style checks, generated-test validity, and library statistics:",
+        f"- `PYTHONPATH=forge {command}`",
+        "If it fails, use its logs and resulting diff to repair the contribution, then run the exact "
+        "command again. A run that updates the publishable tree deliberately exits nonzero: inspect "
+        "those changes as part of the review and rerun it. Write the verdict only after the command "
+        "exits successfully, which proves a complete pass made no further publishable change. Do not "
+        "edit the contribution after that successful run. Forge will not run finalization again.",
         "",
     ]
 
@@ -748,6 +751,7 @@ def _build_review_prompt(
         task_type: str,
         evidence_path: str,
         verdict_path: str,
+        finalization_receipt_path: str,
 ) -> str:
     """Build the authoritative cold review-and-repair prompt from local evidence."""
     skill: str = REVIEW_SKILLS_BY_TASK_TYPE[task_type]
@@ -772,7 +776,12 @@ def _build_review_prompt(
         "non-empty title and a body containing the cause and reproducible evidence. Forge "
         "will open or reuse that issue and add its link to the recorded finding.",
         "",
-        *_build_review_finalization_instructions(coordinates, task_type),
+        *_build_review_finalization_instructions(
+            coordinates,
+            task_type,
+            base_sha,
+            finalization_receipt_path,
+        ),
         f"Write exactly one JSON verdict to `{verdict_path}`. This is the only judgment Forge reads:",
         json.dumps({
             "decision": "approved",

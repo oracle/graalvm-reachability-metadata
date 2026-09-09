@@ -32,16 +32,12 @@ from git_scripts.publication_descriptor import (
     build_publication_id,
     write_publication_descriptor,
 )
-from utility_scripts.gradle_environment import gradle_command_environment
-from utility_scripts.library_finalization import run_library_finalization
 from utility_scripts.library_stats import stats_artifact_dir
-from utility_scripts.metadata_index import resolve_metadata_version
 from utility_scripts.local_ci_verification import (
     LocalCIVerificationResult,
     fetch_pr_base_ref,
     run_local_ci_verification,
 )
-from utility_scripts.logged_command import run_logged_command
 from utility_scripts.continuation_marker import (
     CONTINUATION_MARKER_FILENAME,
     PHASE_PUBLICATION,
@@ -194,83 +190,6 @@ def _prepare_unpushed_publication_resume_branch(
     _record_publication_branch(repo_path, branch, marker)
 
 
-def _run_post_review_gradle_test(
-        repo_path: str,
-        coordinates: str,
-        lane_name: str,
-        environment: dict[str, str],
-) -> bool:
-    """Run one post-review lane with output kept in its durable log.
-
-    §FS-forge-run-output-legibility.4 §FS-durable-generation-logs
-    """
-    result = run_logged_command(
-        ["./gradlew", "test", f"-Pcoordinates={coordinates}"],
-        cwd=repo_path,
-        env=gradle_command_environment(repo_path, environment),
-        task_type="post-review-finalization",
-        subject=coordinates,
-        action=lane_name,
-        stage="finalization",
-    )
-    return result.returncode == 0
-
-
-def _run_standard_post_review_finalization(
-        repo_path: str,
-        coordinates: str,
-        base_commit: str,
-) -> bool:
-    """Replay finalization without a second semantic repair.
-
-    The reviewer already owns every repair. This callback disables nested agents;
-    the outer local-review phase also rejects any mutation the replay produces.
-    §FS-local-branch-review
-    """
-    current_environment: dict[str, str] = dict(os.environ)
-    future_defaults_environment: dict[str, str] = dict(os.environ)
-    future_defaults_environment["GVM_TCK_NATIVE_IMAGE_MODE"] = "future-defaults-all"
-    graalvm_25_home: str | None = os.environ.get("GRAALVM_HOME_25_0")
-    if not graalvm_25_home:
-        return False
-    graalvm_25_environment: dict[str, str] = dict(os.environ)
-    graalvm_25_environment["GRAALVM_HOME"] = graalvm_25_home
-    graalvm_25_environment["JAVA_HOME"] = graalvm_25_home
-    graalvm_25_environment.pop("GVM_TCK_NATIVE_IMAGE_MODE", None)
-    for lane_name, environment in (
-            ("post-review current-defaults latest GraalVM test", current_environment),
-            ("post-review future-defaults latest GraalVM test", future_defaults_environment),
-            ("post-review current-defaults GraalVM 25 test", graalvm_25_environment),
-    ):
-        if not _run_post_review_gradle_test(
-                repo_path,
-                coordinates,
-                lane_name,
-                environment,
-        ):
-            return False
-
-    group, artifact, version = coordinates.split(":")
-    libraries: list[str] = [coordinates]
-    metadata_version: str = resolve_metadata_version(repo_path, group, artifact, version)
-    metadata_coordinates: str = f"{group}:{artifact}:{metadata_version}"
-    if metadata_coordinates not in libraries:
-        libraries.append(metadata_coordinates)
-    for library in libraries:
-        library_version: str = library.rsplit(":", 1)[-1]
-        if not run_library_finalization(
-                repo_path=repo_path,
-                library=library,
-                group=group,
-                artifact=artifact,
-                library_version=library_version,
-                base_commit=base_commit,
-                allow_agent_repairs=False,
-        ):
-            return False
-    return True
-
-
 def publish_branch(
         repo_path: str,
         branch_suffix: str,
@@ -281,7 +200,6 @@ def publish_branch(
         before_verification: Callable[[str], None] | None = None,
         descriptor_input: PublicationDescriptorInput | Callable[[], PublicationDescriptorInput] | None = None,
         before_stage: Callable[[str, str], None] | None = None,
-        post_review_finalization: Callable[[], bool] | None = None,
 ) -> tuple[str, LocalCIVerificationResult]:
     """Create, stage, rebase, verify, and push the publication branch.
 
@@ -389,17 +307,6 @@ def publish_branch(
                 local_ci_verification=local_ci_verification,
                 descriptor_input=review_descriptor_input,
                 metrics_repo_path=metrics_repo_path,
-                post_review_finalization=(
-                    post_review_finalization
-                    if post_review_finalization is not None
-                    else (
-                        (lambda: True)
-                        if review_descriptor_input.task_type == "not-for-native-image"
-                        else lambda: _run_standard_post_review_finalization(
-                            repo_path, coordinates, base_ref,
-                        )
-                    )
-                ),
             )
             local_ci_verification = review_outcome.local_ci_verification
             local_review_payload = review_outcome.to_descriptor_payload()

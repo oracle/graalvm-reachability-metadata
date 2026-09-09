@@ -9,7 +9,7 @@ import subprocess
 import tempfile
 import unittest
 from types import SimpleNamespace
-from unittest.mock import Mock, patch
+from unittest.mock import patch
 
 from git_scripts import local_branch_review as module
 from utility_scripts.local_ci_verification import LocalCIVerificationResult
@@ -87,7 +87,6 @@ class LocalBranchReviewTests(unittest.TestCase):
 
     def test_unchanged_tree_does_not_rerun_checks(self) -> None:
         verification = LocalCIVerificationResult(status="success", base_commit="base")
-        finalization = Mock(return_value=True)
         descriptor_input = SimpleNamespace(timestamp="2026-08-25T10:00:00Z")
         execution = module.ReviewExecution(_verdict(), "task-logs/review.log", [])
 
@@ -104,17 +103,14 @@ class LocalBranchReviewTests(unittest.TestCase):
                 task_type="library-new-request",
                 local_ci_verification=verification,
                 descriptor_input=descriptor_input,
-                post_review_finalization=finalization,
             )
 
         self.assertIs(outcome.local_ci_verification, verification)
-        finalization.assert_not_called()
         local_ci.assert_not_called()
 
-    def test_changed_tree_reruns_finalization_and_gate(self) -> None:
+    def test_changed_tree_reruns_only_the_gate(self) -> None:
         verification = LocalCIVerificationResult(status="success", base_commit="base")
         reverified = LocalCIVerificationResult(status="success", base_commit="base")
-        finalization = Mock(return_value=True)
         descriptor_input = SimpleNamespace(timestamp="2026-08-25T10:00:00Z")
         execution = module.ReviewExecution(_verdict(), "task-logs/review.log", ["source.txt"])
 
@@ -132,11 +128,9 @@ class LocalBranchReviewTests(unittest.TestCase):
                 task_type="library-new-request",
                 local_ci_verification=verification,
                 descriptor_input=descriptor_input,
-                post_review_finalization=finalization,
             )
 
         self.assertIs(outcome.local_ci_verification, reverified)
-        finalization.assert_called_once_with()
         local_ci.assert_called_once_with(
             repo_path="/repo",
             coordinates="org.example:demo:1.0.0",
@@ -144,70 +138,6 @@ class LocalBranchReviewTests(unittest.TestCase):
             metrics_repo_path=None,
             max_fixup_attempts=0,
         )
-
-    def test_failed_finalization_resets_without_another_agent(self) -> None:
-        verification = LocalCIVerificationResult(status="success", base_commit="base")
-        outcome = module.LocalBranchReviewOutcome(
-            model="gpt-test",
-            session_log_path="task-logs/review.log",
-            local_ci_verification=verification,
-            verdict=_verdict(),
-            changed_paths=["source.txt"],
-        )
-        finalization = Mock(return_value=False)
-
-        with patch.object(module, "_git_stdout", return_value="reviewed"), \
-                patch.object(module, "_reset_reviewer_edits") as reset, \
-                patch.object(module, "run_local_ci_verification") as local_ci:
-            module._verify_reviewer_edits(
-                repo_path="/repo",
-                coordinates="org.example:demo:1.0.0",
-                base_commit="base",
-                verified_sha="verified",
-                metrics_repo_path="/metrics",
-                original_verification=verification,
-                outcome=outcome,
-                post_review_finalization=finalization,
-            )
-
-        self.assertEqual(outcome.verdict.decision, "rejected")
-        self.assertEqual(outcome.verdict.action, "human-intervention")
-        self.assertIn("post-review-finalization", outcome.verdict.finding_body)
-        self.assertIs(outcome.local_ci_verification, verification)
-        finalization.assert_called_once_with()
-        reset.assert_called_once_with("/repo", "verified", "/metrics", verification)
-        local_ci.assert_not_called()
-
-    def test_finalization_mutation_discards_the_reviewed_repair(self) -> None:
-        verification = LocalCIVerificationResult(status="success", base_commit="base")
-        outcome = module.LocalBranchReviewOutcome(
-            model="gpt-test",
-            session_log_path="task-logs/review.log",
-            local_ci_verification=verification,
-            verdict=_verdict(),
-            changed_paths=["source.txt"],
-        )
-
-        with patch.object(module, "_git_stdout", return_value="reviewed"), \
-                patch.object(module, "_tree_matches_commit", return_value=False), \
-                patch.object(module, "_reset_reviewer_edits") as reset, \
-                patch.object(module, "run_local_ci_verification") as local_ci:
-            module._verify_reviewer_edits(
-                repo_path="/repo",
-                coordinates="org.example:demo:1.0.0",
-                base_commit="base",
-                verified_sha="verified",
-                metrics_repo_path="/metrics",
-                original_verification=verification,
-                outcome=outcome,
-                post_review_finalization=lambda: True,
-            )
-
-        self.assertEqual(outcome.verdict.decision, "rejected")
-        self.assertEqual(outcome.verdict.action, "human-intervention")
-        self.assertIn("mutated-reviewed-tree", outcome.verdict.finding_body)
-        reset.assert_called_once_with("/repo", "verified", "/metrics", verification)
-        local_ci.assert_not_called()
 
     def test_failed_gate_resets_and_restores_the_verified_record(self) -> None:
         verification = LocalCIVerificationResult(status="success", base_commit="base")
@@ -241,7 +171,6 @@ class LocalBranchReviewTests(unittest.TestCase):
                 metrics_repo_path="/metrics",
                 original_verification=verification,
                 outcome=outcome,
-                post_review_finalization=lambda: True,
             )
 
         self.assertEqual(outcome.verdict.decision, "rejected")
@@ -357,12 +286,14 @@ class LocalBranchReviewTests(unittest.TestCase):
             task_type="library-new-request",
             evidence_path="/tmp/evidence.json",
             verdict_path="/tmp/verdict.json",
+            finalization_receipt_path="/tmp/finalization-receipt.json",
         )
 
         self.assertIn("This is the only semantic repair pass", prompt)
-        self.assertIn("./gradlew generateLibraryStats", prompt)
+        self.assertIn("git_scripts.review_finalization", prompt)
+        self.assertIn("foreign-metadata routing", prompt)
         self.assertLess(
-            prompt.index("./gradlew generateLibraryStats"),
+            prompt.index("git_scripts.review_finalization"),
             prompt.index("Write exactly one JSON verdict"),
         )
 
