@@ -6,11 +6,21 @@
  */
 package com_sun_xml_ws.jaxws_rt;
 
+import com.oracle.webservices.api.databinding.ExternalMetadataFeature;
 import org.junit.jupiter.api.Test;
 
-class Jaxws_rtTest {
+import static org.assertj.core.api.Assertions.assertThat;
+
+public class Jaxws_rtTest {
     @Test
-    void test() throws Exception {
-        System.out.println("This is just a placeholder, implement your test");
+    void externalMetadataFeatureRetainsConfiguredResourceNames() {
+        ExternalMetadataFeature feature = ExternalMetadataFeature.builder()
+                .addResources("META-INF/ws-metadata.xml", "META-INF/ws-policy.xml")
+                .setEnabled(false)
+                .build();
+
+        assertThat(feature.isEnabled()).isFalse();
+        assertThat(feature.getResourceNames())
+                .containsExactly("META-INF/ws-metadata.xml", "META-INF/ws-policy.xml");
     }
 }
