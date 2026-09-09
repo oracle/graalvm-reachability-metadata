@@ -36,6 +36,54 @@ def _render_numeric_placeholders(source: str) -> str:
 
 class CodeCoverageRheiTemplateTests(unittest.TestCase):
 
+    def test_deep_cover_preserves_java_package_visibility(self) -> None:
+        """Deep-cover prompts must reach internals through public behavior.
+
+        §AR-code-coverage-improvement.3.2
+        """
+        forge_root: str = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        states_paths: tuple[str, ...] = (
+            os.path.join(
+                forge_root,
+                ".agents",
+                "rhei",
+                "templates",
+                "code-coverage-improvement",
+                "states.yaml",
+            ),
+            os.path.join(
+                forge_root,
+                "examples",
+                "code-coverage-improvement-example",
+                "states.yaml",
+            ),
+        )
+
+        for states_path in states_paths:
+            with open(states_path, encoding="utf-8") as states_file:
+                source: str = states_file.read()
+            machine: dict = yaml.safe_load(_render_numeric_placeholders(source))
+            instructions: str = machine["states"]["deep-cover"]["instructions"]
+            normalized_instructions: str = " ".join(instructions.split())
+
+            with self.subTest(path=states_path):
+                self.assertIn(
+                    "Never bypass Java visibility by declaring a test in a package "
+                    "that exists in the tested library.",
+                    normalized_instructions,
+                )
+                self.assertIn("Use a distinct test-only package.", normalized_instructions)
+                self.assertIn(
+                    "A `public` member on a package-private class is not public "
+                    "user-callable API.",
+                    normalized_instructions,
+                )
+                self.assertIn(
+                    "If no public user-callable API reaches an internal target, "
+                    "leave that target uncovered rather than call it directly.",
+                    normalized_instructions,
+                )
+
     def test_measurement_repairs_reuse_the_logical_cover_pass(self) -> None:
         """Both loops must keep retries out of the pass-yield history."""
         forge_root: str = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))

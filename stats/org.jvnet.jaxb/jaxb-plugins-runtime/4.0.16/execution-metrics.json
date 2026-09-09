@@ -1,0 +1,111 @@
+{
+  "add_new_library_support:2026-09-09": {
+    "timestamp": "2026-09-09T01:49:21.363822Z",
+    "library": "org.jvnet.jaxb:jaxb-plugins-runtime:4.0.16",
+    "starting_commit": "95d57f7ef199ff1034548c63a46969bf6f14d4fe",
+    "ending_commit": "b22a602c499cb6886f5b70fd74151bb0790efb46",
+    "strategy_name": "dynamic_access_main_sources_pi_gpt-5.6-terra",
+    "agent": "pi",
+    "model": "gpt-5.6-terra",
+    "status": "success",
+    "stats": {
+      "version": "4.0.16",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 2,
+            "totalCalls": 2
+          },
+          "resources": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 1,
+            "totalCalls": 1
+          }
+        },
+        "coverageRatio": 1.0,
+        "coveredCalls": 3,
+        "totalCalls": 3
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 214,
+          "missed": 11327,
+          "ratio": 0.018543,
+          "total": 11541
+        },
+        "line": {
+          "covered": 62,
+          "missed": 2637,
+          "ratio": 0.022971,
+          "total": 2699
+        },
+        "method": {
+          "covered": 21,
+          "missed": 719,
+          "ratio": 0.028378,
+          "total": 740
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "advisory_preparation",
+      "issue_number": 9954,
+      "issue_label": "library-new-request",
+      "library": "org.jvnet.jaxb:jaxb-plugins-runtime:4.0.16",
+      "summary": "Full JAXB-based coverage needs the provided JAXB runtime implementation.",
+      "deterministic_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "org.glassfish.jaxb:jaxb-runtime:4.0.9",
+          "scope": "testImplementation",
+          "reason": "The artifact marks jaxb-runtime as provided, but normal JAXBContext, marshalling, and unmarshalling paths require its implementation. The aligned JAXB version is managed by the 4.0.16 parent POM. [Maven Central](https://central.sonatype.com/artifact/org.jvnet.jaxb/jaxb-plugins-runtime/4.0.16) [runti\n...[truncated]"
+        }
+      ],
+      "agent_guidance": "Use Jakarta JAXB fixture classes and exercise generated-code contracts such as CopyTo, Equals, HashCode, ToString, Merge, adapters, and locators. Include JAXBContext-based marshal/unmarshal coverage; do not use javax.xml.bind or add jaxb-plugins merely as a test dependency. [Usage guide](https://github.com/highsource/jaxb-tools/wiki/Using-JAXB2-Basics-Plugins)",
+      "risks": [
+        "JAXB service loading, reflection, and Native Image behavior must be confirmed by the repository's Gradle and Native Image verification."
+      ],
+      "applied_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "org.glassfish.jaxb:jaxb-runtime:4.0.9",
+          "result": "applied",
+          "target": "tests/src/org.jvnet.jaxb/jaxb-plugins-runtime/4.0.16/build.gradle"
+        }
+      ],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#9954 Support for org.jvnet.jaxb:jaxb-plugins-runtime:4.0.16; label=library-new-request; body_chars=52"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "gpt-5.6-luna",
+      "input_tokens_used": 2805428,
+      "output_tokens_used": 13713,
+      "prompt_path": "library-preflight-prompt.txt",
+      "raw_response_path": "library-preflight-response.txt",
+      "session_log_path": "/home/mihailo/git/graalvm-reachability-metadata-copy/forge/logs/org.jvnet.jaxb:jaxb-plugins-runtime:4.0.16/library-preparation-preflight/codex-session-5zsiwibr.log"
+    },
+    "metrics": {
+      "input_tokens_used": 149273,
+      "cached_input_tokens_used": 842240,
+      "output_tokens_used": 11605,
+      "iterations": 4,
+      "cost_usd": 0.7579,
+      "generated_loc": 76,
+      "tested_library_loc": 62,
+      "metadata_entries": 4,
+      "test_only_metadata_entries": 3,
+      "code_coverage_percent": 2.3
+    },
+    "artifacts": {
+      "metadata_file": "metadata/org.jvnet.jaxb/jaxb-plugins-runtime/4.0.16/reachability-metadata.json"
+    }
+  }
+}

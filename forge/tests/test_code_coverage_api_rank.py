@@ -3,6 +3,7 @@
 # You should have received a copy of the CC0 legalcode along with this
 # work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 
+import csv
 import os
 import shutil
 import subprocess
@@ -699,6 +700,14 @@ class ExtractorEligibilityTests(unittest.TestCase):
         )
         self.assertEqual(
             self._model.supertypes["com.example.Palette"], ["com.example.BasePalette"])
+
+    def test_extractor_records_method_line_number_tables(self) -> None:
+        methods_path = os.path.join(self._graph_dir, "methods.csv")
+        with open(methods_path, encoding="utf-8", newline="") as handle:
+            methods = {row["id"]: row for row in csv.DictReader(handle)}
+
+        constructor = methods["com.example.Factory#<init>():void"]
+        self.assertRegex(constructor["lineNumbers"], r"^\d+:\d+(;\d+:\d+)*$")
 
     def test_entry_points_are_eligible(self) -> None:
         self.assertEqual(self._eligible["com.example.Factory#<init>():void"], "constructor")

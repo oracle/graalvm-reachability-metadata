@@ -8,6 +8,31 @@ Newest entry first; every non-approval is recorded, including one a repair later
 **New-library contribution misses the dynamic-access gate and includes build logic**
 
 Review Signal #6 was violated at `stats/io.github.microcks/microcks-testcontainers/0.5.0/stats.json`: the submitted evidence reported 0/4 dynamic-access calls (0%), but a new-library contribution with calls to cover must exceed 20%. Review Signal #1's single-library scope was also violated by the unrelated repository-wide change to `tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/GrypeTask.java`; build logic is not a supporting file for this coordinate.
+## 2026-09-03 — org.apache.kafka:kafka-streams:4.3.1 (#9764)
+
+**Issue-requested reachability metadata is missing**
+
+Issue #9764 explicitly requests reflection access to the `topologyMetadata` field on `org.apache.kafka.streams.KafkaStreams` and the `sourceTopicsForStore(String, String)` method on `org.apache.kafka.streams.processor.internals.TopologyMetadata`. Neither registration appears in `metadata/org.apache.kafka/kafka-streams/4.3.1/reachability-metadata.json`, and the new tests only use topology construction and `TopologyTestDriver`; they do not instantiate `KafkaStreams` or exercise the reporter-described path through a public library API. Rule 5 requires issue-requested metadata, appropriately conditioned when the request omitted conditions, plus a public-API test that exercises it.
+## 2026-09-07 — io.opentelemetry.proto:opentelemetry-proto:1.10.0-alpha (#9910)
+
+**Coverage update weakens an existing passing test**
+
+In tests/src/io.opentelemetry.proto/opentelemetry-proto/1.10.0-alpha/src/test/java/io_opentelemetry_proto/opentelemetry_proto/Opentelemetry_protoTest.java, the branch removed Exemplar construction and its assertions from histogramMetricRepresentsDistributionBucketsAndExemplars. This violates the enumerated no-scope-creep/no-fix-by-weakening rule: a library-update contribution must not remove or weaken existing passing test coverage.
+## 2026-09-06 — org.springframework:spring-webflux:6.0.0 (#9403)
+
+**Explicit I/O timeout below the 10-second floor**
+
+In tests/src/org.springframework/spring-webflux/6.0.0/src/test/java/org_springframework/spring_webflux/InvocableHandlerMethodTest.java, the reactive request wait used Duration.ofSeconds(5). This violates the enumerated 10-second minimum for explicit request/I/O timeouts in §FS-test-contract.1.7.
+## 2026-09-08 — org.neo4j.bolt:neo4j-bolt-connection-netty:4.0.0 (#9390)
+
+**Explicit test timeouts below the 10-second floor**
+
+The new Neo4j_bolt_connection_nettyTest.java configured database transaction timeouts of 1 and 2 seconds and a server-advertised connection read timeout of 7 seconds (with a matching assertion). These concrete explicit database/read timeouts violate the 10-second minimum in §FS-test-contract.1.7.
+## 2026-09-07 — io.micronaut:micronaut-buffer-netty:5.1.13 (#9828)
+
+**Application context closes while eager bean processing is still running**
+
+In Micronaut_buffer_nettyTest.java, both ApplicationContext.run(...) calls enable asynchronous eager bean processing. The native test lane completed its assertions but then emitted an uncaught NullPointerException from DefaultBeanContext.processParallelBeans after the contexts had closed. This violates the test contract requirement that background resources be cleanly bounded and closed.
 
 ## 2026-09-02 — org.springframework:spring-web:5.3.32 (#9402)
 
