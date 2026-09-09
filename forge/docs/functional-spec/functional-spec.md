@@ -284,22 +284,22 @@ invocation. `do-work.sh` preserves the worker-configured selections across
 self-update and re-execution (§AR-do-work-loop); the concrete roles, families,
 and defaults are architecture (§AR-agent-api).
 
-**A published-PR reviewer is a trusted analysis agent.** Orchestration invokes
-the worker-configured analysis role in an isolated review worktree and grants
-that turn the authenticated, non-interactive GitHub session. The selected agent
-acts on Forge's behalf: it reads the live pull-request metadata, discussion,
-checks, and targeted local diffs, applies the label-specific checked-in review
-rules, and submits its review directly to GitHub (§FS-automated-pr-review).
-Agent, family, model, provider, and thinking level remain entirely owned by the
-analysis role; review orchestration must not replace any part of that selection.
+**The pre-push reviewer is the semantic reviewer.** It runs through the
+worker-configured analysis role, receives local verification evidence, applies
+the label-specific checked-in review rules and the contribution-disposition
+ladder, repairs contribution-local violations, and returns the structured
+decision that publication records (§FS-local-branch-review). Agent, family,
+model, provider, and thinking level remain entirely owned by the analysis role.
 
-The pre-push review (§FS-local-branch-review) has no published pull request or
-GitHub review to submit. It continues to receive local evidence and return its
-structured verdict to publication. The two reviews share their label-specific
-rules, not an input transport or publication protocol. A published-PR review is
-therefore not brokered through a Forge-defined JSON decision: the trusted agent
-owns both the judgment and the GitHub review it submits, while the shared
-analysis runtime owns invocation, logs, failures, and token accounting.
+The published-PR process does not repeat that semantic review. It validates the
+descriptor on the exact pull-request head and executes its decision
+deterministically (§FS-automated-pr-review). The analysis role is invoked after
+publication only when an approved head has exhausted deterministic failed-CI
+reruns. That CI-repair turn receives the failed-check evidence, applies the same
+review and disposition contract as the pre-push reviewer, updates the descriptor
+and findings record for the resulting exact head, and pushes the result. The
+shared analysis runtime continues to own invocation, logs, failures, and token
+accounting.
 
 ## FS-forge-run-requirements: Run requirements
 

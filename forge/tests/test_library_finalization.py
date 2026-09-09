@@ -464,6 +464,37 @@ class LibraryFinalizationTests(unittest.TestCase):
         )
         self.assertEqual(check_metadata.call_count, 4)
 
+    def test_verification_mode_does_not_launch_metadata_agent(self) -> None:
+        with tempfile.TemporaryDirectory() as repo_path, patch(
+                "utility_scripts.library_finalization._run_gradle_command",
+                return_value=True,
+        ), patch(
+                "utility_scripts.library_finalization._run_route_foreign_metadata",
+                return_value=Mock(returncode=1, stdout="routing failed"),
+        ), patch(
+                "utility_scripts.library_finalization.find_uncommitted_legacy_test_native_image_config_files_for_coordinate",
+                return_value=[],
+        ), patch(
+                "utility_scripts.library_finalization._run_check_metadata_files",
+                return_value=(False, "malformed metadata"),
+        ), patch(
+                "utility_scripts.library_finalization._run_check_metadata_fix",
+        ) as analysis_fix, patch(
+                "utility_scripts.library_finalization.run_style_fix_and_checks",
+        ) as style_checks:
+            result = run_library_finalization(
+                repo_path=repo_path,
+                library="org.example:demo:1.0.0",
+                group="org.example",
+                artifact="demo",
+                library_version="1.0.0",
+                allow_agent_repairs=False,
+            )
+
+        self.assertFalse(result)
+        analysis_fix.assert_not_called()
+        style_checks.assert_not_called()
+
 
 if __name__ == "__main__":
     unittest.main()

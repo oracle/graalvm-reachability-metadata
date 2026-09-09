@@ -15,7 +15,7 @@ import os
 import sys
 import unittest
 from typing import Any
-from unittest.mock import patch
+from unittest.mock import Mock, patch
 
 REPOSITORY_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 PUBLISHER_PATH = os.path.join(
@@ -114,6 +114,70 @@ class ExistingForgePublicationTests(unittest.TestCase):
 
         self.assertIsNone(resolved)
         gh_json_mock.assert_not_called()
+
+    def test_pull_request_head_selects_descriptor_from_current_diff(self) -> None:
+        descriptor_path: str = (
+            "stats/org.example/demo/1.0/forge-publication.json"
+        )
+        descriptor: dict[str, Any] = {
+            "base_commit": "b" * 40,
+            "producer": "kimeta",
+            "branch": BRANCH,
+            "publication_id": PUBLICATION_ID,
+            "library": {
+                "group": "org.example",
+                "artifact": "demo",
+                "version": "1.0",
+                "coordinates": "org.example:demo:1.0",
+            },
+            "task_type": "library-new-request",
+        }
+
+        def git_output(*args: str) -> str:
+            if args == ("rev-parse", f"{HEAD_SHA}^{{commit}}"):
+                return HEAD_SHA
+            if args == (
+                    "rev-parse",
+                    f"refs/remotes/origin/{BRANCH}^{{commit}}",
+            ):
+                return HEAD_SHA
+            if args == (
+                    "diff", "--name-only", "--diff-filter=ACMRTD",
+                    f"refs/remotes/origin/master...{HEAD_SHA}",
+            ):
+                return "\n".join((
+                    "metadata/org.example/demo/1.0/reachability-metadata.json",
+                    descriptor_path,
+                ))
+            self.fail(f"Unexpected git invocation: {args}")
+
+        with (
+                patch.object(publisher, "git", side_effect=git_output) as git_mock,
+                patch.object(
+                    publisher, "read_json_at_commit", return_value=descriptor,
+                ),
+                patch.object(publisher, "load_schema", return_value={}),
+                patch.object(publisher, "Draft202012Validator"),
+                patch.object(
+                    publisher.subprocess, "run", return_value=Mock(returncode=0),
+                ),
+                patch.object(
+                    publisher, "_build_publication_id", return_value=PUBLICATION_ID,
+                ),
+                patch.object(publisher, "_validate_render_inputs"),
+        ):
+            validated = publisher.validate_publication(
+                head_sha=HEAD_SHA,
+                branch=BRANCH,
+                actor="kimeta",
+                repository=publisher.REPOSITORY,
+                pull_request_head=True,
+            )
+        self.assertEqual(descriptor_path, validated.descriptor_path)
+        self.assertFalse(any(
+            call.args[0] == "ls-tree" for call in git_mock.call_args_list
+        ))
+
 
     def test_existing_pr_noops_before_validation_after_force_rebase(self) -> None:
         pull_request = _pull_request()
