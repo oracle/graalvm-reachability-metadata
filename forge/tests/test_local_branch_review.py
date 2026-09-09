@@ -270,7 +270,7 @@ class LocalBranchReviewTests(unittest.TestCase):
             library="org.example:demo:1.0.0",
             timeout=module.LOCAL_REVIEW_TIMEOUT_SECONDS,
             model="central-model",
-            thinking_level="xhigh",
+            thinking_level="high",
         )
         self.assertEqual(execution.verdict, verdict)
         self.assertEqual(

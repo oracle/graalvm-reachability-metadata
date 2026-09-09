@@ -447,7 +447,7 @@ def _request_review(
             library=coordinates,
             timeout=LOCAL_REVIEW_TIMEOUT_SECONDS,
             model=review_model,
-            thinking_level="xhigh",
+            thinking_level="high",
         )
         displayed_log_path: str = display_log_path(result.log_path)
         _log_review(

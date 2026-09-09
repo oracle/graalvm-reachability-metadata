@@ -811,7 +811,7 @@ worktree at the verified commit, with no shared generation session. It reviews
 §root/FS-contribution-contract.5, selected by `task_type`, with the local
 `local_ci_check()` records and resolved descriptor statistics.
 
-A finding never reaches `agent_fix()`. The `xhigh` reviewer reports it and
+A finding never reaches `agent_fix()`. The `high` reviewer reports it and
 applies a contribution-local repair in one pass. After its final manual edit it
 runs the Forge-owned finalization command, which executes all three native lanes
 and the shared library finalizer with nested agents disabled. The command hashes
