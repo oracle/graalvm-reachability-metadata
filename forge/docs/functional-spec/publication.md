@@ -316,7 +316,7 @@ with the local evidence that repository CI does not provide.
 **Isolation and authority.** The review runs cold in a worktree detached at the
 verified commit and in a session carrying no generation transcript. Forge invokes
 the worker-configured analysis role (§FS-forge-agent-runtime-selection), requests
-`xhigh` reasoning, supplies the prompt and evidence, and owns execution and
+`high` reasoning, supplies the prompt and evidence, and owns execution and
 logging. The reviewer applies the task's label-specific rules and the first
 matching disposition in §root/FS-contribution-contract.5. Its prompt supplies one
 Forge-owned command that executes the complete mutation-producing finalization
