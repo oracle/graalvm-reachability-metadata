@@ -6,12 +6,21 @@
  */
 package com_sun_xml_ws.jaxws_rt;
 
+import com.oracle.webservices.api.databinding.DatabindingFactory;
 import com.oracle.webservices.api.databinding.ExternalMetadataFeature;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class Jaxws_rtTest {
+    @Test
+    void databindingFactoryCreatesAnEmptyPropertySet() {
+        DatabindingFactory factory = DatabindingFactory.newInstance();
+
+        assertThat(factory).isNotNull();
+        assertThat(factory.properties()).isEmpty();
+    }
+
     @Test
     void externalMetadataFeatureRetainsConfiguredResourceNames() {
         ExternalMetadataFeature feature = ExternalMetadataFeature.builder()
