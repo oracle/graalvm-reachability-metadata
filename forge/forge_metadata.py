@@ -301,7 +301,6 @@ REVIEW_PERIOD_SUFFIX_SECONDS = {
 }
 FAILED_CI_STATES = {"FAILURE", "ERROR"}
 RERUNNABLE_WORKFLOW_RUN_CONCLUSIONS = {"failure"}
-MAX_AUTOMATED_WORKFLOW_RERUN_ATTEMPTS = 3
 
 REPO = "oracle/graalvm-reachability-metadata"
 PROJECT_NUMBER = 30
@@ -328,6 +327,7 @@ PRIORITY_NORMAL = "normal"
 PRIORITY_CHOICES: tuple[str, ...] = (PRIORITY_HIGH, LABEL_PRIORITY, PRIORITY_NORMAL)
 LABEL_HUMAN_INTERVENTION = "human-intervention"
 LABEL_HUMAN_INTERVENTION_FIXED = "human-intervention-fixed"
+LABEL_FORGE_MERGE_FOLLOW_UP = "forge-merge-follow-up"
 LABEL_NOT_FOR_NATIVE_IMAGE = "not-for-native-image"
 LABEL_LIBRARY_UNSUPPORTED_VERSION = "library-unsupported-version"
 LABEL_CHUNKED_DYNAMIC_ACCESS = "chunked-dynamic-access"
@@ -377,6 +377,10 @@ LOW_DYNAMIC_ACCESS_COVERAGE_RATIO = 0.10
 HUMAN_INTERVENTION_LABEL_COLOR = "B60205"
 HUMAN_INTERVENTION_LABEL_DESCRIPTION = (
     "Requires manual follow-up because automated processing needs human attention"
+)
+FORGE_MERGE_FOLLOW_UP_LABEL_COLOR = "0E8A16"
+FORGE_MERGE_FOLLOW_UP_LABEL_DESCRIPTION = (
+    "Forge must reconcile linked issues after GitHub auto-merges this pull request"
 )
 HUMAN_INTERVENTION_NON_FAILURE_STATUSES = {
     RUN_STATUS_SUCCESS,
@@ -430,6 +434,7 @@ SUPPORTED_FORGE_REVIEW_TASK_TYPES = {
     BENCHMARK_PUBLICATION_TASK_TYPE,
 }
 LOCAL_REVIEW_CLOSE_MARKER = "<!-- forge-local-review-close -->"
+FORGE_APPROVAL_BODY_PREFIX = "Approved from the authoritative local review for commit "
 # The GraalVM lanes are named once in `host_requirements`, in this order.
 DEV_GRAALVM_ENV_VAR, POST_GENERATION_GRAALVM_ENV_VAR, LATEST_EA_GRAALVM_ENV_VAR = ISSUE_GRAALVM_ENV_VARS
 FORGE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -478,6 +483,16 @@ class ReviewQueueSelection:
     ready: list[dict]
     failed: list[dict]
     waiting_count: int
+
+
+@dataclass(frozen=True)
+class CIRepairOutcome:
+    """One structured failed-CI diagnosis. §FS-automated-pr-review"""
+
+    decision: str
+    review_verdict: LocalReviewVerdict | None = None
+    workflow_run_ids: tuple[int, ...] = ()
+    review_comment: str = ""
 
 
 @dataclass(frozen=True)
@@ -1058,29 +1073,37 @@ def get_issues_with_label(
     )
 
 
-def get_pull_requests_with_label(label: str, fetch_limit: int) -> list[dict]:
-    """Fetch open pull requests that carry the given label."""
-    return get_pull_requests_with_labels([label], fetch_limit)
+def get_pull_requests_with_label(
+        label: str,
+        fetch_limit: int,
+        state: str = "open",
+) -> list[dict]:
+    """Fetch pull requests in one state that carry the given label."""
+    return get_pull_requests_with_labels([label], fetch_limit, state=state)
 
 
-def get_pull_requests_with_labels(labels: list[str], fetch_limit: int) -> list[dict]:
-    """Fetch open pull requests that carry all given labels."""
+def get_pull_requests_with_labels(
+        labels: list[str],
+        fetch_limit: int,
+        state: str = "open",
+) -> list[dict]:
+    """Fetch pull requests in one state that carry all given labels."""
     unique_labels = list(dict.fromkeys(labels))
     label_args: list[str] = []
     for label in unique_labels:
         label_args.extend(["--label", label])
     label_description = "', '".join(unique_labels)
     print(
-        f"\n[Fetching open pull requests with label(s) '{label_description}' from {REPO} "
+        f"\n[Fetching {state} pull requests with label(s) '{label_description}' from {REPO} "
         f"(fetched={fetch_limit})]"
     )
     data = gh_json(
         "pr", "list",
         "--repo", REPO,
         *label_args,
-        "--state", "open",
+        "--state", state,
         "--limit", str(fetch_limit),
-        "--json", "number,title,url,author,labels",
+        "--json", "number,title,url,author,labels,body,headRefOid,mergedAt",
     )
     return data
 
@@ -2229,10 +2252,15 @@ def get_pull_request_state(pr_number: int) -> dict:
           headRefOid
           headRefName
           isCrossRepository
+          state
+          mergedAt
           reviewDecision
           mergeStateStatus
           mergeable
           isMergeQueueEnabled
+          autoMergeRequest {{
+            enabledAt
+          }}
           statusCheckRollup {{
             state
             contexts(first: 100) {{
@@ -2333,17 +2361,6 @@ def dismiss_requested_changes_reviews(pr_number: int, message: str | None = None
     return dismissed_count
 
 
-def has_passing_pull_request_gates(pr: dict) -> bool:
-    """Return True when the pull request is mergeable and all status gates are green."""
-    status_check_rollup = pr.get("statusCheckRollup")
-    ci_state = status_check_rollup.get("state") if isinstance(status_check_rollup, dict) else None
-    return (
-        pr.get("mergeable") == "MERGEABLE"
-        and pr.get("mergeStateStatus") == "CLEAN"
-        and ci_state == "SUCCESS"
-    )
-
-
 def has_successful_pull_request_ci(pr: dict) -> bool:
     """Return True when the pull request's combined CI status is successful."""
     status_check_rollup = pr.get("statusCheckRollup")
@@ -2439,6 +2456,7 @@ def validate_pull_request_publication(
             branch=head_branch,
             actor=producer_parts[1],
             repository=REPO,
+            pull_request_head=True,
         )
 
     descriptor = validated.descriptor
@@ -2485,8 +2503,84 @@ def approve_pull_request_from_descriptor(pull_request: dict) -> None:
         "-f",
         "event=APPROVE",
         "-f",
-        f"body=Approved from the authoritative local review for commit {head_sha}.",
+        f"body={FORGE_APPROVAL_BODY_PREFIX}{head_sha}.",
     )
+    pull_request["reviewDecision"] = "APPROVED"
+
+
+def enable_pull_request_auto_merge(pull_request: dict) -> None:
+    """Enable auto-merge without allowing a different head to be merged.
+
+    §FS-automated-pr-review
+    """
+    pr_number = pull_request.get("number")
+    head_sha = pull_request.get("headRefOid")
+    if not isinstance(pr_number, int) or not isinstance(head_sha, str) or not head_sha:
+        raise RuntimeError(f"Missing auto-merge metadata for PR #{pr_number}")
+    if pull_request.get("autoMergeRequest") is not None:
+        print(f"[Auto-merge is already enabled for approved PR #{pr_number}.]")
+        return
+
+    merge_args = [
+        "pr", "merge", str(pr_number),
+        "--repo", REPO,
+        "--auto",
+        "--match-head-commit", head_sha,
+    ]
+    if not pull_request.get("isMergeQueueEnabled"):
+        merge_args.append(resolve_pull_request_merge_flag(pull_request))
+    gh(*merge_args)
+    pull_request["autoMergeRequest"] = {"enabledAt": "forge"}
+    print(f"[Enabled auto-merge for approved PR #{pr_number} at {head_sha}.]")
+
+
+def disable_pull_request_auto_merge(pull_request: dict) -> None:
+    """Disable an active auto-merge request before human intervention."""
+    pr_number = pull_request.get("number")
+    if not isinstance(pr_number, int):
+        raise RuntimeError("Cannot disable auto-merge without a pull request number")
+    if pull_request.get("autoMergeRequest") is None:
+        return
+    gh("pr", "merge", str(pr_number), "--repo", REPO, "--disable-auto")
+    pull_request["autoMergeRequest"] = None
+    print(f"[Disabled auto-merge for PR #{pr_number}.]")
+
+
+def dismiss_forge_approval_reviews(
+        pull_request: dict,
+        message: str = "Forge withdrew approval because this pull request needs human intervention.",
+) -> int:
+    """Dismiss only exact-head approvals previously submitted by Forge."""
+    pr_number = pull_request.get("number")
+    if not isinstance(pr_number, int):
+        raise RuntimeError("Cannot dismiss Forge approval without a pull request number")
+    dismissed_count = 0
+    for review in get_pull_request_reviews(pr_number):
+        if not isinstance(review, dict) or review.get("state") != "APPROVED":
+            continue
+        if not str(review.get("body") or "").startswith(FORGE_APPROVAL_BODY_PREFIX):
+            continue
+        review_id = review.get("id")
+        if not isinstance(review_id, int):
+            raise RuntimeError(f"Forge approval on PR #{pr_number} has no review id")
+        gh(
+            "api",
+            "--method", "PUT",
+            f"/repos/{REPO}/pulls/{pr_number}/reviews/{review_id}/dismissals",
+            "-f", f"message={message}",
+        )
+        dismissed_count += 1
+
+    if dismissed_count:
+        pull_request["reviewDecision"] = "REVIEW_REQUIRED"
+        print(f"[Dismissed {dismissed_count} Forge approval(s) on PR #{pr_number}.]")
+    return dismissed_count
+
+
+def ensure_pull_request_unapproved(pull_request: dict) -> None:
+    """Withdraw Forge merge readiness. §FS-automated-pr-review"""
+    disable_pull_request_auto_merge(pull_request)
+    dismiss_forge_approval_reviews(pull_request)
 
 
 def reconcile_rejected_publication(
@@ -2500,12 +2594,19 @@ def reconcile_rejected_publication(
     pr_number = pull_request.get("number")
     if not isinstance(pr_number, int):
         raise RuntimeError("Rejected publication is missing its pull request number")
+    ensure_pull_request_unapproved(pull_request)
+    if pull_request_has_label(pull_request, LABEL_FORGE_MERGE_FOLLOW_UP):
+        remove_pull_request_label(pr_number, LABEL_FORGE_MERGE_FOLLOW_UP)
     if action == "human-intervention":
         add_pull_request_label(pr_number, LABEL_HUMAN_INTERVENTION)
         print(f"[Kept rejected PR #{pr_number} open for human intervention.]")
         return
     if action != "close":
         raise ValueError(f"Rejected publication has unsupported action {action!r}")
+
+    issue_number = validated.descriptor.get("issue_number")
+    if not isinstance(issue_number, int):
+        raise RuntimeError(f"Rejected close PR #{pr_number} has no linked issue")
 
     review = validated.descriptor["local_review"]
     if not any(
@@ -2521,12 +2622,9 @@ def reconcile_rejected_publication(
                 LOCAL_REVIEW_CLOSE_MARKER,
             ]),
         )
-    gh("pr", "close", str(pr_number), "--repo", REPO)
-    issue_number = validated.descriptor.get("issue_number")
-    if not isinstance(issue_number, int):
-        raise RuntimeError(f"Rejected close PR #{pr_number} has no linked issue")
     add_issue_label(issue_number, LABEL_LIBRARY_UNSUPPORTED_VERSION)
     close_issue(issue_number, f"local review rejected PR #{pr_number} as unsupported")
+    gh("pr", "close", str(pr_number), "--repo", REPO)
     print(f"[Closed rejected PR #{pr_number} and unsupported issue #{issue_number}.]")
 
 
@@ -2551,41 +2649,51 @@ def get_pull_request_workflow_runs(head_sha: str) -> list[dict]:
     return workflow_runs
 
 
-def get_rerunnable_failed_workflow_run_ids(workflow_runs: list[dict]) -> list[int]:
-    """Return failed GitHub Actions run IDs below the automated rerun limit.
-
-    §FS-automated-pr-review
-    """
-    run_ids: list[int] = []
-    for workflow_run in workflow_runs:
-        if not isinstance(workflow_run, dict):
-            continue
-        run_id = workflow_run.get("id")
-        run_attempt = workflow_run.get("run_attempt")
-        conclusion = workflow_run.get("conclusion")
+def get_failed_workflow_run_ids(workflow_runs: list[dict]) -> list[int]:
+    """Return failed run IDs from exact-head evidence. §FS-automated-pr-review"""
+    return [
+        int(workflow_run["id"])
+        for workflow_run in workflow_runs
         if (
-                isinstance(run_id, int)
-                and isinstance(run_attempt, int)
-                and run_attempt < MAX_AUTOMATED_WORKFLOW_RERUN_ATTEMPTS
-                and conclusion in RERUNNABLE_WORKFLOW_RUN_CONCLUSIONS
-        ):
-            run_ids.append(run_id)
-    return run_ids
+            isinstance(workflow_run, dict)
+            and isinstance(workflow_run.get("id"), int)
+            and workflow_run.get("conclusion") in RERUNNABLE_WORKFLOW_RUN_CONCLUSIONS
+        )
+    ]
 
 
-def rerun_failed_pull_request_workflow_jobs(pr_number: int, head_sha: str) -> int:
-    """Rerun failed GitHub Actions jobs for the current pull request head SHA."""
-    workflow_runs = get_pull_request_workflow_runs(head_sha)
-    run_ids = get_rerunnable_failed_workflow_run_ids(workflow_runs)
-    if not run_ids:
+def rerun_failed_pull_request_workflow_jobs(
+        pr_number: int,
+        head_sha: str,
+        requested_run_ids: tuple[int, ...],
+) -> int:
+    """Rerun only agent-selected failed jobs on this head. §FS-automated-pr-review"""
+    pull_request = get_pull_request_state(pr_number)
+    if (
+            pull_request.get("headRefOid") != head_sha
+            or pull_request.get("state") not in {None, "OPEN"}
+    ):
         print(
-            f"[No failed GitHub Actions workflow runs eligible for rerun on PR #{pr_number} "
-            f"at head {head_sha}.]"
+            f"[Skipping transient rerun for PR #{pr_number}: "
+            f"{head_sha} is no longer its open head.]"
+        )
+        return 0
+    workflow_runs = get_pull_request_workflow_runs(head_sha)
+    failed_run_ids = set(get_failed_workflow_run_ids(workflow_runs))
+    stale_run_ids = [run_id for run_id in requested_run_ids if run_id not in failed_run_ids]
+    if stale_run_ids:
+        print(
+            f"[Skipping transient rerun for PR #{pr_number}: workflow run(s) "
+            f"{', '.join(str(run_id) for run_id in stale_run_ids)} are no longer failed "
+            f"on head {head_sha}.]"
         )
         return 0
 
-    for run_id in run_ids:
-        print(f"[Rerunning failed GitHub Actions jobs for PR #{pr_number}, workflow run {run_id}.]")
+    for run_id in requested_run_ids:
+        print(
+            f"[Rerunning agent-classified transient jobs for PR #{pr_number}, "
+            f"workflow run {run_id}.]"
+        )
         gh(
             "api",
             "--method",
@@ -2593,7 +2701,7 @@ def rerun_failed_pull_request_workflow_jobs(pr_number: int, head_sha: str) -> in
             f"/repos/{REPO}/actions/runs/{run_id}/rerun-failed-jobs",
         )
 
-    return len(run_ids)
+    return len(requested_run_ids)
 
 
 def resolve_pull_request_merge_flag(pr: dict) -> str:
@@ -2807,6 +2915,29 @@ def apply_chunked_dynamic_access_merge_follow_up(pr: dict) -> None:
     )
 
 
+def pull_request_needs_merge_follow_up(pull_request: dict) -> bool:
+    """Return whether a GitHub-completed merge needs Forge issue bookkeeping."""
+    return (
+        resolve_non_final_chunked_dynamic_access_issue(pull_request) is not None
+        or bool(extract_follow_up_issue_numbers(pull_request.get("body")))
+    )
+
+
+def mark_pull_request_merge_follow_up_pending(pull_request: dict) -> None:
+    """Persist post-merge work before auto-merge completes. §FS-automated-pr-review"""
+    if not pull_request_needs_merge_follow_up(pull_request):
+        return
+    if pull_request_has_label(pull_request, LABEL_FORGE_MERGE_FOLLOW_UP):
+        return
+    pr_number = pull_request.get("number")
+    if not isinstance(pr_number, int):
+        raise RuntimeError("Cannot mark merge follow-up without a pull request number")
+    add_pull_request_label(pr_number, LABEL_FORGE_MERGE_FOLLOW_UP)
+    labels = pull_request.setdefault("labels", [])
+    if isinstance(labels, list):
+        labels.append({"name": LABEL_FORGE_MERGE_FOLLOW_UP})
+
+
 def apply_unblocked_issue_merge_follow_up(pr: dict) -> None:
     """Release issues parked behind a PR after that PR merges.
 
@@ -2831,38 +2962,27 @@ def apply_unblocked_issue_merge_follow_up(pr: dict) -> None:
         )
 
 
-def merge_pull_request(pr: dict, reachability_metadata_path: str | None = None) -> None:
-    """Merge a pull request using the repository's configured merge method."""
-    pr_number = pr.get("number")
-    head_ref_oid = pr.get("headRefOid")
-    pr_url = pr.get("url") or f"https://github.com/{REPO}/pull/{pr_number}"
-    if not isinstance(pr_number, int) or not isinstance(head_ref_oid, str) or not head_ref_oid:
-        print(f"ERROR: Missing merge metadata for pull request #{pr_number}.", file=sys.stderr)
-        raise RuntimeError(f"Missing merge metadata for pull request #{pr_number}")
-    if reachability_metadata_path is None:
-        reachability_metadata_path = get_repo_root()
-
-    validate_pull_request_indexes_before_merge(pr_number, head_ref_oid, reachability_metadata_path)
-
-    merge_args = [
-        "pr",
-        "merge",
-        str(pr_number),
-        "--repo",
-        REPO,
-        "--match-head-commit",
-        head_ref_oid,
-    ]
-    if pr.get("isMergeQueueEnabled"):
-        merge_args.append("--auto")
-    else:
-        merge_args.append(resolve_pull_request_merge_flag(pr))
-
-    print(f"[Merging PR #{pr_number}: {pr_url}]")
-    gh(*merge_args)
-    if not pr.get("isMergeQueueEnabled"):
-        apply_chunked_dynamic_access_merge_follow_up(pr)
-        apply_unblocked_issue_merge_follow_up(pr)
+def reconcile_auto_merged_pull_request_follow_ups(fetch_limit: int = 100) -> None:
+    """Apply durable follow-ups for auto-merged PRs. §FS-automated-pr-review"""
+    merged_pull_requests = get_pull_requests_with_labels(
+        [LABEL_FORGE_MERGE_FOLLOW_UP],
+        fetch_limit,
+        state="merged",
+    )
+    for pull_request in merged_pull_requests:
+        pr_number = pull_request.get("number")
+        if not isinstance(pr_number, int):
+            continue
+        try:
+            apply_chunked_dynamic_access_merge_follow_up(pull_request)
+            apply_unblocked_issue_merge_follow_up(pull_request)
+            remove_pull_request_label(pr_number, LABEL_FORGE_MERGE_FOLLOW_UP)
+            print(f"[Reconciled linked issues after auto-merge of PR #{pr_number}.]")
+        except Exception as exc:
+            print(
+                f"ERROR: Failed auto-merge follow-up for PR #{pr_number}: {exc!r}",
+                file=sys.stderr,
+            )
 
 
 def is_pull_request_conflicting(pull_request: dict) -> bool:
@@ -2958,6 +3078,7 @@ def resolve_pull_request_merge_conflict(
             )
             return False
 
+        ensure_pull_request_unapproved(pull_request)
         run_git_transport(
             ["push", "origin", f"HEAD:refs/heads/{head_ref_name}"],
             cwd=worktree_path,
@@ -2984,25 +3105,6 @@ def _ci_repair_changed_paths(worktree_path: str) -> list[str]:
         "Failed to list untracked CI-repair files",
     ).stdout.splitlines()
     return sorted(set(path for path in [*tracked, *untracked] if path))
-
-
-def _read_infrastructure_issue_evidence(verdict_path: str) -> dict[str, str] | None:
-    """Read optional structured shared-infrastructure evidence from a verdict."""
-    try:
-        with open(verdict_path, "r", encoding="utf-8") as verdict_file:
-            payload = json.load(verdict_file)
-    except (OSError, json.JSONDecodeError):
-        return None
-    evidence = payload.get("infrastructure_issue") if isinstance(payload, dict) else None
-    if not isinstance(evidence, dict):
-        return None
-    title = evidence.get("title")
-    body = evidence.get("body")
-    if not isinstance(title, str) or not title.strip():
-        return None
-    if not isinstance(body, str) or not body.strip():
-        return None
-    return {"title": title.strip(), "body": body.strip()}
 
 
 def ensure_infrastructure_issue(evidence: dict[str, str]) -> tuple[int, str]:
@@ -3049,7 +3151,8 @@ def build_ci_repair_prompt(
     return "\n".join([
         f"Repair failed required CI for pull request #{pr_number}.",
         f"Read the exact descriptor and failed-check evidence from {evidence_path}.",
-        "Use gh pr checks and gh run view when more failure output is needed.",
+        "Use gh pr checks and gh run view when more failure output is needed. Do not "
+        "rerun jobs or make any other GitHub mutation; Forge owns those actions.",
         skill_instruction,
         "Apply the first matching disposition in §root/FS-contribution-contract.5.",
         "",
@@ -3058,10 +3161,13 @@ def build_ci_repair_prompt(
         "forge/FINDINGS.md. Run the failed checks needed to verify your repair. Then review "
         "the complete resulting diff with the same responsibility as local_review.",
         "",
-        f"Write exactly one JSON verdict to {verdict_path}. Use decision approved and omit "
-        "action only when the resulting tree is ready. Otherwise use decision rejected with "
-        "action human-intervention or close and a non-empty finding. For a shared repository "
-        "defect, also add infrastructure_issue with non-empty title and body evidence.",
+        f"Write exactly one JSON verdict to {verdict_path}. If the evidence proves the "
+        "failure is transient, make no edits and use decision transient with the exact "
+        "current-head workflow_run_ids whose failed jobs Forge should rerun. Use decision "
+        "approved and omit action only when you repaired the contribution and the resulting "
+        "tree is ready. Otherwise use decision rejected with action human-intervention or "
+        "close and a non-empty finding. For a shared repository defect, also add "
+        "infrastructure_issue with non-empty title and body evidence.",
         json.dumps({
             "decision": "approved",
             "review_comment": "What failed, what you checked, and the resulting decision.",
@@ -3069,8 +3175,69 @@ def build_ci_repair_prompt(
             "finding_body": "Failure evidence and rule, or empty when there was no finding.",
             "fix_note": "What you changed and how you verified it.",
         }, indent=2),
+        "For a transient failure, instead write:",
+        json.dumps({
+            "decision": "transient",
+            "workflow_run_ids": [123456789],
+            "review_comment": "Evidence that the selected failed run is transient.",
+        }, indent=2),
         "Do not commit or push; Forge owns the descriptor, findings ledger, commit, and push.",
     ])
+
+
+def _read_ci_repair_outcome(verdict_path: str) -> CIRepairOutcome | None:
+    """Read a repair, rejection, or transient-rerun diagnosis."""
+    try:
+        with open(verdict_path, "r", encoding="utf-8") as verdict_file:
+            payload = json.load(verdict_file)
+    except (OSError, json.JSONDecodeError):
+        return None
+    if not isinstance(payload, dict):
+        return None
+    if payload.get("decision") != "transient":
+        review_verdict = _read_verdict(verdict_path)
+        if review_verdict is None:
+            return None
+        return CIRepairOutcome(
+            decision=review_verdict.decision,
+            review_verdict=review_verdict,
+        )
+
+    run_ids = payload.get("workflow_run_ids")
+    review_comment = payload.get("review_comment")
+    if (
+            not isinstance(run_ids, list)
+            or not run_ids
+            or any(not isinstance(run_id, int) or run_id <= 0 for run_id in run_ids)
+            or len(set(run_ids)) != len(run_ids)
+            or not isinstance(review_comment, str)
+            or not review_comment.strip()
+            or len(review_comment) > 20_000
+    ):
+        return None
+    return CIRepairOutcome(
+        decision="transient",
+        workflow_run_ids=tuple(run_ids),
+        review_comment=review_comment.strip(),
+    )
+
+
+def _ci_repair_path_is_allowed(path: str, descriptor: dict[str, Any]) -> bool:
+    """Enforce the exact file set. §root/FS-contribution-contract.2"""
+    library = descriptor["library"]
+    group = str(library["group"])
+    artifact = str(library["artifact"])
+    version = str(library["version"])
+    exact_paths = {
+        f"metadata/{group}/{artifact}/index.json",
+        f"metadata/{group}/{artifact}/{version}/reachability-metadata.json",
+    }
+    allowed_prefixes = (
+        f"tests/src/{group}/{artifact}/{version}/",
+        f"stats/{group}/{artifact}/{version}/",
+        "tests/tck-build-logic/src/main/resources/allowed-docker-images/",
+    )
+    return path in exact_paths or path.startswith(allowed_prefixes)
 
 
 def repair_failed_ci_pull_request(
@@ -3078,7 +3245,7 @@ def repair_failed_ci_pull_request(
         validated: Any,
         reachability_metadata_path: str,
 ) -> bool:
-    """Repair exhausted CI, rewrite the exact-head decision, and push once."""
+    """Diagnose failed CI, then rerun transient jobs or push one repaired decision."""
     pr_number = pull_request.get("number")
     head_sha = pull_request.get("headRefOid")
     head_branch = pull_request.get("headRefName")
@@ -3107,6 +3274,7 @@ def repair_failed_ci_pull_request(
         os.makedirs(evidence_dir)
         evidence_path = os.path.join(evidence_dir, "evidence.json")
         verdict_path = os.path.join(evidence_dir, "verdict.json")
+        workflow_runs = get_pull_request_workflow_runs(head_sha)
         with open(evidence_path, "w", encoding="utf-8") as evidence_file:
             json.dump(
                 {
@@ -3116,6 +3284,7 @@ def repair_failed_ci_pull_request(
                         "head_branch": head_branch,
                     },
                     "descriptor": validated.descriptor,
+                    "workflow_runs": workflow_runs,
                     "failed_checks": (
                         pull_request.get("statusCheckRollup", {})
                         .get("contexts", {})
@@ -3140,12 +3309,53 @@ def repair_failed_ci_pull_request(
             library=str(validated.descriptor["library"]["coordinates"]),
             timeout=REVIEW_TIMEOUT_SECONDS,
             environment=trusted_environment,
+            thinking_level="xhigh",
         )
         log_path = display_log_path(result.log_path)
-        verdict = _read_verdict(verdict_path) if result.return_code == 0 else None
-        infrastructure_evidence = _read_infrastructure_issue_evidence(verdict_path)
+        outcome = _read_ci_repair_outcome(verdict_path) if result.return_code == 0 else None
         shutil.rmtree(evidence_dir, ignore_errors=True)
         changed_paths = _ci_repair_changed_paths(worktree_path)
+        verdict = outcome.review_verdict if outcome is not None else None
+
+        if outcome is not None and outcome.decision == "transient":
+            invalid_run_ids = sorted(
+                set(outcome.workflow_run_ids) - set(get_failed_workflow_run_ids(workflow_runs))
+            )
+            if changed_paths:
+                verdict = LocalReviewVerdict(
+                    decision="rejected",
+                    action="human-intervention",
+                    review_comment=outcome.review_comment,
+                    finding_title="Transient CI diagnosis changed the contribution",
+                    finding_body=(
+                        "A transient verdict must leave the exact failing tree unchanged, but "
+                        f"the agent changed: {', '.join(changed_paths)}"
+                    ),
+                    fix_note="The out-of-scope transient edits were discarded.",
+                )
+            elif invalid_run_ids:
+                verdict = LocalReviewVerdict(
+                    decision="rejected",
+                    action="human-intervention",
+                    review_comment=outcome.review_comment,
+                    finding_title="Transient CI diagnosis selected unrelated runs",
+                    finding_body=(
+                        "The transient verdict requested workflow runs that were not failed "
+                        f"on the exact reviewed head: {', '.join(map(str, invalid_run_ids))}"
+                    ),
+                    fix_note="No workflow was rerun.",
+                )
+            else:
+                rerun_count = rerun_failed_pull_request_workflow_jobs(
+                    pr_number,
+                    head_sha,
+                    outcome.workflow_run_ids,
+                )
+                print(
+                    f"[CI repair agent classified {rerun_count} workflow run(s) as transient "
+                    f"for approved PR #{pr_number}; waiting for the rerun.]"
+                )
+                return True
 
         if verdict is None:
             verdict = LocalReviewVerdict(
@@ -3166,16 +3376,20 @@ def repair_failed_ci_pull_request(
                 fix_note=verdict.fix_note,
             )
 
-        library = validated.descriptor["library"]
-        allowed_prefixes = (
-            f"metadata/{library['group']}/{library['artifact']}/",
-            f"tests/src/{library['group']}/{library['artifact']}/",
-            f"stats/{library['group']}/{library['artifact']}/",
-        )
+        infrastructure_evidence = verdict.infrastructure_issue
+
         invalid_paths = [
             path for path in changed_paths
-            if not path.startswith(allowed_prefixes)
+            if not _ci_repair_path_is_allowed(path, validated.descriptor)
         ]
+        allowed_docker_paths = [
+            path for path in changed_paths
+            if path.startswith(
+                "tests/tck-build-logic/src/main/resources/allowed-docker-images/"
+            )
+        ]
+        if len(allowed_docker_paths) > 1:
+            invalid_paths.extend(allowed_docker_paths)
         if invalid_paths:
             verdict = LocalReviewVerdict(
                 decision="rejected",
@@ -3206,6 +3420,7 @@ def repair_failed_ci_pull_request(
                     ),
                     fix_note=verdict.fix_note,
                 )
+        library = validated.descriptor["library"]
 
         if verdict.finding_title:
             _record_finding(
@@ -3242,6 +3457,7 @@ def repair_failed_ci_pull_request(
             cwd=worktree_path,
             check=True,
         )
+        ensure_pull_request_unapproved(pull_request)
         run_git_transport(
             [
                 "push", "origin", f"HEAD:refs/heads/{head_branch}",
@@ -3280,7 +3496,7 @@ def reconcile_failed_ci_pull_request(
         validated: Any,
         reachability_metadata_path: str,
 ) -> None:
-    """Rerun failed jobs below the limit, then invoke scoped CI repair."""
+    """Invoke scoped CI diagnosis immediately without automatic reruns."""
     pr_number = pull_request.get("number")
     head_sha = pull_request.get("headRefOid")
     if not isinstance(pr_number, int) or not isinstance(head_sha, str) or not head_sha:
@@ -3289,66 +3505,12 @@ def reconcile_failed_ci_pull_request(
         print(f"[Skipping failed-CI follow-up for PR #{pr_number}: CI state changed.]")
         return
 
-    rerun_count = rerun_failed_pull_request_workflow_jobs(pr_number, head_sha)
-    if rerun_count:
-        print(
-            f"[Reran failed GitHub Actions job(s) in {rerun_count} workflow run(s) "
-            f"for PR #{pr_number}; waiting for the completed rerun.]"
-        )
-        return
-
-    print(
-        f"[CI retries are exhausted for approved PR #{pr_number}; "
-        "starting contribution-scoped CI repair.]"
-    )
+    print(f"[Starting immediate contribution-scoped CI diagnosis for PR #{pr_number}.]")
     repair_failed_ci_pull_request(
         pull_request,
         validated,
         reachability_metadata_path,
     )
-
-
-def reconcile_reviewed_pull_request(
-        pr_number: int,
-        reachability_metadata_path: str | None = None,
-) -> bool:
-    """Apply post-review PR follow-up actions based on the latest review state."""
-    try:
-        pr = get_pull_request_state(pr_number)
-        review_decision = pr.get("reviewDecision")
-        pr_url = pr.get("url") or f"https://github.com/{REPO}/pull/{pr_number}"
-
-        print(
-            f"[Post-review state for PR #{pr_number}: "
-            f"decision={review_decision}, "
-            f"mergeable={pr.get('mergeable')}, "
-            f"mergeStateStatus={pr.get('mergeStateStatus')}, "
-            f"ci={((pr.get('statusCheckRollup') or {}).get('state'))}]"
-        )
-
-        if is_pull_request_conflicting(pr):
-            print(f"[Skipping merge for PR #{pr_number}: the head is now conflicting.]")
-            return True
-        if has_failed_pull_request_ci(pr):
-            print(f"[Skipping merge for PR #{pr_number}: CI changed to a failed state.]")
-            return True
-
-        if review_decision != "APPROVED":
-            print(f"[Skipping merge for PR #{pr_number}: review decision is '{review_decision}'.]")
-            return True
-
-        if not has_passing_pull_request_gates(pr):
-            print(f"[Skipping merge for PR #{pr_number}: merge gates are not fully passing yet.]")
-            return True
-
-        merge_pull_request(pr, reachability_metadata_path)
-        return True
-    except Exception as exc:
-        print(
-            f"ERROR: Failed post-review follow-up for PR #{pr_number}: {exc!r}",
-            file=sys.stderr,
-        )
-        return False
 
 
 def is_review_pull_request_base_eligible(
@@ -3511,49 +3673,69 @@ def _process_descriptor_pull_request(
 ) -> None:
     """Execute one exact-head publication decision without semantic re-review."""
     pr_number = pull_request.get("number")
+    if not isinstance(pr_number, int):
+        raise RuntimeError("Descriptor-driven review requires a pull request number")
     validated = validate_pull_request_publication(
         pull_request,
         reachability_metadata_path,
     )
-    decision, action = publication_review_disposition(validated)
-    if decision == "rejected" and not maintainer_override:
+    decision, _action = publication_review_disposition(validated)
+    if decision != "approved":
         reconcile_rejected_publication(pull_request, validated)
-        return
-
-    if is_pull_request_conflicting(pull_request):
-        if not resolve_pull_request_merge_conflict(
-                pull_request,
-                reachability_metadata_path,
-        ):
-            add_pull_request_label(int(pr_number), LABEL_HUMAN_INTERVENTION)
-            print(
-                f"[Added label '{LABEL_HUMAN_INTERVENTION}' to conflicting "
-                f"PR #{pr_number}; git could not refresh its head without judgment.]"
-            )
         return
 
     if (
             pull_request_has_label(pull_request, LABEL_HUMAN_INTERVENTION)
             and not maintainer_override
     ):
+        ensure_pull_request_unapproved(pull_request)
         print(
             f"[Skipping PR #{pr_number}: it remains labeled "
             f"'{LABEL_HUMAN_INTERVENTION}'.]"
         )
         return
 
+    conflicting = is_pull_request_conflicting(pull_request)
+    if not conflicting:
+        validate_pull_request_indexes_before_merge(
+            pr_number,
+            str(pull_request["headRefOid"]),
+            reachability_metadata_path,
+        )
+
     if maintainer_override:
-        dismissed_count = dismiss_requested_changes_reviews(int(pr_number))
+        dismissed_count = dismiss_requested_changes_reviews(pr_number)
         if dismissed_count:
             print(
                 f"[Dismissed {dismissed_count} requested-changes review(s) "
                 f"on PR #{pr_number}.]"
             )
+        for label_name in (LABEL_HUMAN_INTERVENTION, LABEL_HUMAN_INTERVENTION_FIXED):
+            if pull_request_has_label(pull_request, label_name):
+                remove_pull_request_label(pr_number, label_name)
+
+    mark_pull_request_merge_follow_up_pending(pull_request)
     print(
         f"[Approving descriptor-validated PR #{pr_number} at "
         f"{pull_request['headRefOid']}; no semantic review agent launched.]"
     )
     approve_pull_request_from_descriptor(pull_request)
+    enable_pull_request_auto_merge(pull_request)
+
+    if conflicting:
+        if not resolve_pull_request_merge_conflict(
+                pull_request,
+                reachability_metadata_path,
+        ):
+            ensure_pull_request_unapproved(pull_request)
+            if pull_request_has_label(pull_request, LABEL_FORGE_MERGE_FOLLOW_UP):
+                remove_pull_request_label(pr_number, LABEL_FORGE_MERGE_FOLLOW_UP)
+            add_pull_request_label(pr_number, LABEL_HUMAN_INTERVENTION)
+            print(
+                f"[Added label '{LABEL_HUMAN_INTERVENTION}' to conflicting "
+                f"PR #{pr_number}; git could not refresh its head without judgment.]"
+            )
+        return
 
     if has_failed_pull_request_ci(pull_request):
         reconcile_failed_ci_pull_request(
@@ -3563,13 +3745,11 @@ def _process_descriptor_pull_request(
         )
         return
     if not has_successful_pull_request_ci(pull_request):
-        print(f"[Waiting for CI to complete on approved PR #{pr_number}.]")
+        print(f"[Waiting for CI to complete on approved auto-merge PR #{pr_number}.]")
         return
-    if not reconcile_reviewed_pull_request(
-            int(pr_number),
-            reachability_metadata_path,
-    ):
-        raise RuntimeError(f"Failed merge reconciliation for PR #{pr_number}")
+
+    print(f"[Approved PR #{pr_number} is ready for GitHub auto-merge.]")
+    reconcile_auto_merged_pull_request_follow_ups()
 
 
 def process_pull_requests_with_label(
@@ -3583,51 +3763,66 @@ def process_pull_requests_with_label(
     §FS-automated-pr-review
     """
     del authenticated_user
+    reconcile_auto_merged_pull_request_follow_ups()
     fetch_limit = max(limit, 20)
-    fixed_pull_requests = get_pull_requests_with_labels(
-        [label, LABEL_HUMAN_INTERVENTION_FIXED],
-        fetch_limit,
-    )
-    ordinary_pull_requests = get_pull_requests_with_label(label, fetch_limit)
-    fixed_numbers = {
-        pull_request.get("number")
-        for pull_request in fixed_pull_requests
-        if isinstance(pull_request.get("number"), int)
-    }
-    candidates = [
-        *((pull_request, True) for pull_request in fixed_pull_requests),
-        *((pull_request, False) for pull_request in ordinary_pull_requests
-          if pull_request.get("number") not in fixed_numbers),
-    ]
-
     state_cache: dict[int, dict] = {}
     failures: list[int] = []
+    attempted_numbers: set[int] = set()
     processed = 0
-    for pull_request, maintainer_override in candidates:
+    while processed < limit:
+        fixed_pull_requests = get_pull_requests_with_labels(
+            [label, LABEL_HUMAN_INTERVENTION_FIXED],
+            fetch_limit,
+        )
+        ordinary_pull_requests = get_pull_requests_with_label(label, fetch_limit)
+        fixed_numbers = {
+            pull_request.get("number")
+            for pull_request in fixed_pull_requests
+            if isinstance(pull_request.get("number"), int)
+        }
+        candidates = [
+            *((pull_request, True) for pull_request in fixed_pull_requests),
+            *((pull_request, False) for pull_request in ordinary_pull_requests
+              if pull_request.get("number") not in fixed_numbers),
+        ]
+
+        for pull_request, maintainer_override in candidates:
+            if processed >= limit:
+                break
+            pr_number = pull_request.get("number")
+            if not isinstance(pr_number, int) or pr_number in attempted_numbers:
+                continue
+            attempted_numbers.add(pr_number)
+            try:
+                enriched = attach_pull_request_state(pull_request, state_cache)
+                _process_descriptor_pull_request(
+                    enriched,
+                    reachability_metadata_path,
+                    maintainer_override=maintainer_override,
+                )
+                processed += 1
+            except ValueError as error:
+                print(f"[Skipping ineligible PR #{pr_number}: {error}]")
+            except Exception as error:
+                print(
+                    f"ERROR: Failed descriptor-driven processing for PR "
+                    f"#{pr_number}: {error!r}",
+                    file=sys.stderr,
+                )
+                failures.append(pr_number)
+
         if processed >= limit:
             break
-        pr_number = pull_request.get("number")
-        if not isinstance(pr_number, int):
-            continue
-        try:
-            enriched = attach_pull_request_state(pull_request, state_cache)
-            _process_descriptor_pull_request(
-                enriched,
-                reachability_metadata_path,
-                maintainer_override=maintainer_override,
-            )
-            processed += 1
-        except ValueError as error:
-            print(
-                f"[Skipping ineligible PR #{pr_number}: {error}]"
-            )
-        except Exception as error:
-            print(
-                f"ERROR: Failed descriptor-driven processing for PR "
-                f"#{pr_number}: {error!r}",
-                file=sys.stderr,
-            )
-            failures.append(pr_number)
+        if (
+                len(fixed_pull_requests) < fetch_limit
+                and len(ordinary_pull_requests) < fetch_limit
+        ):
+            break
+        fetch_limit *= 2
+        print(
+            f"[Found {processed} eligible Forge PR(s) after inspecting "
+            f"{len(attempted_numbers)} candidate(s); fetching up to {fetch_limit}.]"
+        )
 
     if processed == 0:
         print(
@@ -4439,10 +4634,15 @@ def remove_issue_label(issue_number: int, label_name: str) -> None:
 
 def add_pull_request_label(pr_number: int, label_name: str) -> None:
     """Add a label to a GitHub pull request, creating the label if necessary."""
+    label_color = HUMAN_INTERVENTION_LABEL_COLOR
+    label_description = HUMAN_INTERVENTION_LABEL_DESCRIPTION
+    if label_name == LABEL_FORGE_MERGE_FOLLOW_UP:
+        label_color = FORGE_MERGE_FOLLOW_UP_LABEL_COLOR
+        label_description = FORGE_MERGE_FOLLOW_UP_LABEL_DESCRIPTION
     ensure_repo_label_exists(
         label_name,
-        HUMAN_INTERVENTION_LABEL_COLOR,
-        HUMAN_INTERVENTION_LABEL_DESCRIPTION,
+        label_color,
+        label_description,
     )
     gh(
         "api",
@@ -4452,6 +4652,21 @@ def add_pull_request_label(pr_number: int, label_name: str) -> None:
         "-f",
         f"labels[]={label_name}",
     )
+
+
+def remove_pull_request_label(pr_number: int, label_name: str) -> None:
+    """Remove a label from a pull request when present."""
+    encoded_label = quote(label_name, safe="")
+    result = gh(
+        "api",
+        "--method", "DELETE",
+        f"/repos/{REPO}/issues/{pr_number}/labels/{encoded_label}",
+        check=False,
+    )
+    if result.returncode != 0:
+        error_text = "\n".join((result.stderr or "", result.stdout or "")).lower()
+        if "not found" not in error_text and "404" not in error_text:
+            result.check_returncode()
 
 
 def _sanitize_branch_segment(value: str) -> str:

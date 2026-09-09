@@ -110,6 +110,18 @@ class LocalReviewPublisherActionTests(unittest.TestCase):
             {"labels": ["library-unsupported-version"]},
             json.loads(label_call.kwargs["input_text"]),
         )
+        issue_close = [
+            "gh", "api", f"repos/{publisher.REPOSITORY}/issues/9962",
+            "--method", "PATCH", "-f", "state=closed",
+        ]
+        pull_request_close = [
+            "gh", "api", f"repos/{publisher.REPOSITORY}/pulls/77",
+            "--method", "PATCH", "-f", "state=closed",
+        ]
+        self.assertLess(
+            commands.index(issue_close),
+            commands.index(pull_request_close),
+        )
 
     def test_existing_marked_comment_is_not_duplicated(self) -> None:
         comments = [{"body": "Already handled. <!-- forge-local-review-close -->"}]

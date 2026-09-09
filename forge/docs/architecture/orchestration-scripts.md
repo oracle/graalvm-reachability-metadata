@@ -178,6 +178,104 @@ review behavior contract in §FS-automated-pr-review. It is entered through
 [--period <seconds|Nm|Nh|Nd>]`, and the do-work loop (§AR-do-work-loop) drives
 the same code path on its own schedule.
 
+The executor is shown as a sequence because every pass starts from live GitHub
+state and may deliberately hand the pull request to a later pass:
+
+```mermaid
+%%{init: {"themeVariables": {"noteBkgColor": "#eef2f7", "noteTextColor": "#0f172a", "noteBorderColor": "#94a3b8"}}}%%
+sequenceDiagram
+    autonumber
+    participant W as Forge review worker
+    participant GH as GitHub
+    participant V as trusted publisher validator
+    participant WT as repair worktree
+    participant AG as analysis agent
+
+    W->>GH: list open PRs and reconcile completed auto-merges
+    GH-->>W: candidate PRs
+    loop each candidate, up to queue limit
+        W->>GH: load exact head, labels, checks, and merge state
+        W->>V: validate trusted descriptor at exact head
+        alt descriptor decision is rejected
+            W->>GH: disable auto-merge and dismiss Forge approval
+            alt action is human-intervention
+                W->>GH: add human-intervention and leave open
+            else action is close
+                W->>GH: post reason and close PR and linked issue
+            end
+        else descriptor decision is approved
+            alt human-intervention without fixed override
+                W->>GH: disable auto-merge and dismiss Forge approval
+                W->>W: wait for a maintainer
+            else eligible approved head
+                opt non-conflicting head changes an index
+                    W->>WT: validate current-master merge candidate
+                end
+                opt fixed override is present
+                    W->>GH: clear intervention labels and stale change requests
+                end
+                W->>GH: approve exact validated head
+                W->>GH: enable auto-merge with expected head SHA
+                alt head conflicts with master
+                    W->>WT: merge current master without judgment
+                    alt merge resolves mechanically
+                        W->>GH: withdraw old-head approval and auto-merge
+                        WT->>GH: push refreshed head
+                        W->>W: defer new head to next pass
+                    else conflict still requires judgment
+                        W->>GH: disable auto-merge and dismiss Forge approval
+                        W->>GH: add human-intervention
+                    end
+                else required CI is pending
+                    W->>W: leave approved auto-merge armed
+                    GH->>GH: merge automatically if every gate turns green
+                else required CI failed
+                    W->>WT: create exact-head repair worktree
+                    W->>AG: xhigh diagnosis with checks, runs, descriptor, and rules
+                    alt failure is transient
+                        AG-->>W: transient plus exact failed workflow run IDs
+                        W->>GH: rerun only those still-failed current-head jobs
+                    else contribution is repaired
+                        AG->>WT: edit allowed contribution files and review result
+                        W->>WT: record approved decision and commit
+                        W->>GH: withdraw old-head approval and auto-merge
+                        WT->>GH: force-with-lease push repaired head
+                        W->>W: defer new head to next pass
+                    else result needs human intervention or close
+                        W->>GH: disable auto-merge and dismiss Forge approval
+                        W->>WT: record rejected decision and commit
+                        WT->>GH: force-with-lease push rejected head
+                        W->>GH: apply human-intervention or close action
+                    end
+                else required CI is green
+                    GH->>GH: queue or merge automatically when all gates are ready
+                end
+            end
+        end
+    end
+
+    opt GitHub completed an armed merge with linked issue work
+        W->>GH: find merged PR carrying Forge follow-up label
+        W->>GH: release linked chunk or follow-up issue
+        W->>GH: remove completed follow-up label
+    end
+```
+
+The numbered calls collapse into six stages. Each stage either reaches a terminal
+GitHub state or deliberately waits for a later pass with no stale state carried
+forward:
+
+| Stage | Owner | What it establishes | Exit |
+| --- | --- | --- | --- |
+| Candidate discovery | Forge review worker | The PR is open and carries the configured queue label; labels select work, not trust | Candidate state is loaded from GitHub |
+| Exact-head validation | Worker and trusted publisher validator | The upstream `ai/**` head, bot authorship, publication identity, schema, route, and the one descriptor in the current PR diff all agree | A validated descriptor and its exact `approved` or `rejected` disposition |
+| Immediate rejection | Worker | A rejected decision withdraws Forge merge readiness without waiting for CI | The PR remains unapproved with `human-intervention`, or the PR and unsupported-version issue are closed |
+| Approval and auto-merge | Worker and GitHub | Index-changing mergeable heads are guarded first, then approval and auto-merge are bound to the validated SHA | GitHub owns the eventual queue or merge operation |
+| Conflict maintenance | Worker and temporary worktree | Approved conflicts are refreshed mechanically after auto-merge is armed | A refreshed head waits for another pass, or Forge withdraws approval and escalates |
+| Failed-CI diagnosis | Worker and xhigh analysis agent | Every failure is diagnosed before any rerun; transient rerun IDs and contribution repairs are separate outcomes | Selected jobs rerun, a repaired head is pushed, or rejection is reconciled |
+| Merge follow-up | Worker and GitHub | A durable PR label identifies issue transitions pending after GitHub completes auto-merge | Linked issues are released once and the pending marker is removed |
+
+
 **Queue configuration.** A single explicit `FORGE_REVIEW_LABEL` selects one
 review queue; otherwise orchestration runs the default set of PR review queues,
 one per generated-result label — `library-new-request`,
@@ -186,32 +284,48 @@ one per generated-result label — `library-new-request`,
 benchmark-result descriptors enter the same executor. Each queue has a
 per-label limit env var (defaulting to `FORGE_REVIEW_LIMIT`, default 1).
 Setting a queue's limit to 0 disables it. The worker-configured analysis role is
-used only by the exhausted failed-CI path (§FS-forge-agent-runtime-selection).
+used only by failed-CI diagnosis and receives `xhigh` as the caller's thinking
+preference (§FS-forge-agent-runtime-selection).
 
 **Candidate validation.** Labels select queues but never establish trust. For
 each candidate, orchestration loads the descriptor from the exact current head
-and reuses the trusted publisher's schema and publication validation. Only an
-upstream `ai/**` head whose validated task is a supported generated route or
-benchmark can continue. Conflicting same-repository heads are refreshed when
-git can merge the base without judgment, then re-evaluated on a later pass.
+and reuses the trusted publisher's schema and publication validation. Initial
+publication requires the descriptor in the tip commit; review instead locates
+the one descriptor in the current `origin/master...HEAD` pull-request diff, so
+an inherited descriptor remains valid after a deterministic conflict-refresh
+merge or a maintainer repair. Only an upstream `ai/**` head whose validated task
+is a supported generated route or benchmark can continue. Conflicting
+same-repository heads enter approval and auto-merge first, are refreshed when
+git can merge the base without judgment, then are re-evaluated on a later pass.
 
-**Decision execution.** Rejected decisions are reconciled immediately without
-waiting for CI. Approved generated descriptors and validated benchmark-result
-descriptors receive a deterministic GitHub approval bound to the exact head.
-Running checks wait; successful non-blocking merge gates permit merge. A
-`human-intervention-fixed` label remains the explicit maintainer override and
-can resume this deterministic path without a semantic review agent.
+**Decision execution.** Rejected decisions withdraw any Forge approval and
+auto-merge request, then reconcile immediately without waiting for CI. An
+approved generated descriptor or validated benchmark-result descriptor first
+passes final index validation when applicable, receives a deterministic GitHub
+approval bound to the exact head, and immediately has auto-merge enabled with
+the same expected SHA. Forge does not issue the merge itself. A
+`human-intervention-fixed` label remains the explicit maintainer override; Forge
+clears the intervention labels and stale requested-changes reviews before
+resuming the approved path without a semantic review agent.
 
-**Failed-CI repair.** Failed Actions runs are rerun while `run_attempt < 3`.
-After that budget on an approved head, orchestration creates a throwaway
-worktree at the exact PR head and invokes the worker-configured analysis role
-with the descriptor and failed-check evidence. The agent repairs only the
-contribution, performs the local-review responsibility over the result, and
-returns the decision data; trusted Forge code records findings, opens or reuses
-an infrastructure issue from structured evidence when required, rewrites and
-validates the descriptor, and pushes the same upstream branch. The next pass
-starts from that new exact head. No ordinary successful-CI path invokes an
-agent (§FS-automated-pr-review).
+**Failed-CI diagnosis and repair.** Every failed approved head creates a
+throwaway exact-head worktree and invokes the worker-configured analysis role at
+`xhigh` before any rerun. The agent receives the descriptor, failed checks, and
+workflow runs. A transient verdict names exact workflow run IDs and makes no
+edits; Forge verifies those runs are still failed on the same head and reruns
+only their failed jobs. A repair edits only the contribution and performs the
+local-review responsibility over the result. Trusted Forge code records
+findings, opens or reuses an infrastructure issue from structured evidence when
+required, rewrites and validates the descriptor, and pushes the same upstream
+branch. Every head-changing push first withdraws auto-merge and Forge approval
+from the old head. The next pass starts from the new exact head. No pending- or successful-CI path
+invokes an agent (§FS-automated-pr-review).
+
+**Auto-merge follow-up.** Before arming a PR whose body links a non-final chunk
+or another blocked issue, Forge adds a durable follow-up label. Review cycles
+also scan merged PRs carrying that label, apply the existing issue transition,
+and remove the label only after it succeeds. This preserves post-merge
+bookkeeping when GitHub completes auto-merge between worker passes.
 
 **Scheduling and shutdown.** With `--period`, the review loop repeats after each
 interval; without it, it runs once. The loop checks the do-work stop markers

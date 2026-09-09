@@ -155,8 +155,14 @@ def validate_publication(
         branch: str,
         actor: str,
         repository: str,
+        pull_request_head: bool = False,
 ) -> ValidatedPublication:
-    """Validate a feature tree as inert data (§forge/AR-actions-publication)."""
+    """Validate a feature tree as inert data (§forge/AR-actions-publication).
+
+    Initial publication requires the descriptor in the tip commit. The
+    published-PR executor instead selects it from the current pull-request diff,
+    where it remains authoritative after deterministic maintenance commits.
+    """
     if repository != REPOSITORY:
         raise ValueError(f"Unexpected head repository: {repository}")
     resolved_head = git("rev-parse", f"{head_sha}^{{commit}}").strip()
@@ -173,15 +179,36 @@ def validate_publication(
             f"Remote branch {branch!r} no longer points at the triggering SHA {head_sha}"
         )
 
-    descriptor_paths = [
-        path
-        for path in git("ls-tree", "-r", "--name-only", head_sha).splitlines()
-        if path.endswith("/forge-publication.json")
-    ]
-    tip_candidates = [path for path in descriptor_paths if _path_changed(head_sha, path)]
-    if len(tip_candidates) != 1:
-        raise ValueError("Exactly one tip-committed forge-publication.json is required")
-    descriptor_path = tip_candidates[0]
+    trusted_base_ref = f"refs/remotes/origin/{BASE_BRANCH}"
+    changed_paths: list[str] | None = None
+    if pull_request_head:
+        changed_paths = sorted(
+            path
+            for path in git(
+                "diff", "--name-only", "--diff-filter=ACMRTD",
+                f"{trusted_base_ref}...{head_sha}",
+            ).splitlines()
+            if path
+        )
+        descriptor_candidates: list[str] = [
+            path for path in changed_paths
+            if path.endswith("/forge-publication.json")
+        ]
+        if len(descriptor_candidates) != 1:
+            raise ValueError(
+                "Exactly one forge-publication.json is required in the pull-request diff"
+            )
+        descriptor_path = descriptor_candidates[0]
+    else:
+        descriptor_paths = [
+            path
+            for path in git("ls-tree", "-r", "--name-only", head_sha).splitlines()
+            if path.endswith("/forge-publication.json")
+        ]
+        tip_candidates = [path for path in descriptor_paths if _path_changed(head_sha, path)]
+        if len(tip_candidates) != 1:
+            raise ValueError("Exactly one tip-committed forge-publication.json is required")
+        descriptor_path = tip_candidates[0]
     descriptor = read_json_at_commit(head_sha, descriptor_path)
     Draft202012Validator(load_schema(), format_checker=FormatChecker()).validate(descriptor)
 
@@ -191,20 +218,20 @@ def validate_publication(
             check=False,
     ).returncode != 0:
         raise ValueError("Descriptor base commit is not an ancestor of the head SHA")
-    trusted_base_ref = f"refs/remotes/origin/{BASE_BRANCH}"
     if subprocess.run(
             ["git", "merge-base", "--is-ancestor", base_commit, trusted_base_ref],
             check=False,
     ).returncode != 0:
         raise ValueError("Descriptor base commit is not on the trusted upstream base branch")
 
-    changed_paths = sorted(
-        path
-        for path in git(
-            "diff", "--name-only", "--diff-filter=ACMRTD", base_commit, head_sha,
-        ).splitlines()
-        if path
-    )
+    if changed_paths is None:
+        changed_paths = sorted(
+            path
+            for path in git(
+                "diff", "--name-only", "--diff-filter=ACMRTD", base_commit, head_sha,
+            ).splitlines()
+            if path
+        )
     changed_descriptors = [
         path for path in changed_paths if path.endswith("/forge-publication.json")
     ]
@@ -1685,6 +1712,9 @@ def _reconcile_rejected_close(
         return
 
     pr_number: int = int(pull_request["number"])
+    issue_number: Any = descriptor.get("issue_number")
+    if not isinstance(issue_number, int):
+        raise TypeError("Rejected close publication requires a linked issue")
     marker = "<!-- forge-local-review-close -->"
     comments: Any = gh_json(
         "api", f"repos/{REPOSITORY}/issues/{pr_number}/comments",
@@ -1708,14 +1738,6 @@ def _reconcile_rejected_close(
                 "--method", "POST", "-f", f"body={comment_body}",
             ]
         )
-    run([
-        "gh", "api", f"repos/{REPOSITORY}/pulls/{pr_number}",
-        "--method", "PATCH", "-f", "state=closed",
-    ])
-
-    issue_number: Any = descriptor.get("issue_number")
-    if not isinstance(issue_number, int):
-        raise TypeError("Rejected close publication requires a linked issue")
     run(
         [
             "gh", "api", f"repos/{REPOSITORY}/issues/{issue_number}/labels",
@@ -1725,6 +1747,10 @@ def _reconcile_rejected_close(
     )
     run([
         "gh", "api", f"repos/{REPOSITORY}/issues/{issue_number}",
+        "--method", "PATCH", "-f", "state=closed",
+    ])
+    run([
+        "gh", "api", f"repos/{REPOSITORY}/pulls/{pr_number}",
         "--method", "PATCH", "-f", "state=closed",
     ])
 
