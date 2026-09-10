@@ -1,0 +1,55 @@
+{
+  "timestamp": "2026-09-10T06:03:28.296243Z",
+  "library": "org.apache.sshd:sshd-core:2.18.0",
+  "starting_commit": "ec63894c1777cd05bbab03642edf73879ca8d71f",
+  "ending_commit": "ec63894c1777cd05bbab03642edf73879ca8d71f",
+  "strategy_name": "dynamic_access_main_sources_pi_gpt-5.6-terra",
+  "agent": "pi",
+  "model": "gpt-5.6-terra",
+  "status": "failure",
+  "library_preparation_preflight": {
+    "status": "completed",
+    "action": "no_action",
+    "issue_number": 9958,
+    "issue_label": "library-new-request",
+    "library": "org.apache.sshd:sshd-core:2.18.0",
+    "summary": "sshd-core is self-contained for meaningful client/server coverage; its required sshd-common and SLF4J dependencies resolve transitively, and in-process SSH tests need no Docker or special properties.",
+    "deterministic_setup": [],
+    "agent_guidance": "Exercise the public SshClient/SshServer APIs with an in-process server, generated host keys, and temporary filesystem paths. Avoid relying on a user's ~/.ssh configuration. Add optional crypto dependencies only if testing algorithms unavailable in the default JDK providers.",
+    "risks": [
+      "Native-image coverage may require explicit reachability metadata for service-loaded algorithms or key providers.",
+      "Tests involving optional Bouncy Castle, EdDSA, SFTP, or MINA backends require those modules explicitly."
+    ],
+    "applied_setup": [],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#9958 Support for org.apache.sshd:sshd-core:2.18.0; label=library-new-request; body_chars=39"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "0 existing test file path(s) included"
+      }
+    ],
+    "model": "gpt-5.6-luna",
+    "input_tokens_used": 519451,
+    "output_tokens_used": 2947,
+    "prompt_path": "library-preflight-prompt.txt",
+    "raw_response_path": "library-preflight-response.txt",
+    "session_log_path": "/home/mihailo/git/graalvm-reachability-metadata-copy/forge/logs/org.apache.sshd:sshd-core:2.18.0/library-preparation-preflight/codex-session-a7o91v4r.log"
+  },
+  "metrics": {
+    "input_tokens_used": 494326,
+    "cached_input_tokens_used": 12822528,
+    "output_tokens_used": 49474,
+    "iterations": 12,
+    "cost_usd": 5.1835,
+    "generated_loc": 0,
+    "tested_library_loc": 0,
+    "metadata_entries": 0,
+    "code_coverage_percent": 0.0
+  },
+  "artifacts": {
+    "metadata_file": "None"
+  }
+}

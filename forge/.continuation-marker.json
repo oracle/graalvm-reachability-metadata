@@ -1,0 +1,81 @@
+{
+  "continueFrom": "explore",
+  "coordinate": "org.apache.sshd:sshd-core:2.18.0",
+  "failure": {
+    "operand": "org.apache.sshd:sshd-core:2.18.0",
+    "phase": "explore",
+    "step": "generate_tests()"
+  },
+  "issueNumber": 9958,
+  "label": "library-new-request",
+  "libraryPreparationPreflight": {
+    "action": "no_action",
+    "agent_guidance": "Exercise the public SshClient/SshServer APIs with an in-process server, generated host keys, and temporary filesystem paths. Avoid relying on a user's ~/.ssh configuration. Add optional crypto dependencies only if testing algorithms unavailable in the default JDK providers.",
+    "applied_setup": [],
+    "deterministic_setup": [],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#9958 Support for org.apache.sshd:sshd-core:2.18.0; label=library-new-request; body_chars=39"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "0 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 519451,
+    "issue_label": "library-new-request",
+    "issue_number": 9958,
+    "library": "org.apache.sshd:sshd-core:2.18.0",
+    "model": "gpt-5.6-luna",
+    "output_tokens_used": 2947,
+    "prompt_path": "library-preflight-prompt.txt",
+    "raw_response_path": "library-preflight-response.txt",
+    "risks": [
+      "Native-image coverage may require explicit reachability metadata for service-loaded algorithms or key providers.",
+      "Tests involving optional Bouncy Castle, EdDSA, SFTP, or MINA backends require those modules explicitly."
+    ],
+    "session_log_path": "/home/mihailo/git/graalvm-reachability-metadata-copy/forge/logs/org.apache.sshd:sshd-core:2.18.0/library-preparation-preflight/codex-session-a7o91v4r.log",
+    "status": "completed",
+    "summary": "sshd-core is self-contained for meaningful client/server coverage; its required sshd-common and SLF4J dependencies resolve transitively, and in-process SSH tests need no Docker or special properties."
+  },
+  "libraryUpdateRoute": null,
+  "newVersion": null,
+  "phases": {
+    "explore": {
+      "chunkClassCount": null,
+      "chunkProcessedClassCount": 0,
+      "exhaustedClasses": [],
+      "iteration": 12,
+      "status": "pending"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": null,
+      "status": "skipped"
+    },
+    "publication": {
+      "branch": null,
+      "coverageFollowUpIssueNumber": null,
+      "isPushed": false,
+      "publicationId": null,
+      "publicationTimestamp": null,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": true,
+      "status": "completed"
+    }
+  },
+  "preservedBranch": "ai/kimeta/human-intervention/issue-9958-library-new-request-org.apache.sshd-sshd-core-2.18.0-fdf437ad",
+  "publicationMetrics": {
+    "extras": {},
+    "library": "org.apache.sshd:sshd-core:2.18.0",
+    "timestamp": "2026-09-10T06:03:28.296243Z"
+  },
+  "schemaVersion": 1,
+  "strategyName": "dynamic_access_main_sources_pi_gpt-5.6-terra"
+}
