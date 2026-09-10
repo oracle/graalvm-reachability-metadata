@@ -9,12 +9,42 @@ package org_apache_tomcat_embed.tomcat_embed_core;
 import org.apache.catalina.LifecycleException;
 import org.apache.catalina.LifecycleState;
 import org.apache.catalina.connector.Connector;
+import org.apache.coyote.Request;
+import org.apache.coyote.http2.Http2Protocol;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class ConnectorProtocolIntrospectionTest {
+
+    @Test
+    void http2ProtocolExposesCleartextAndTlsNegotiationIdentifiers() {
+        Http2Protocol protocol = new Http2Protocol();
+
+        assertThat(protocol.getHttpUpgradeName(false)).isEqualTo("h2c");
+        assertThat(protocol.getHttpUpgradeName(true)).isNull();
+        assertThat(protocol.getAlpnName()).isEqualTo("h2");
+        assertThat(protocol.getAlpnIdentifier()).containsExactly((byte) 'h', (byte) '2');
+    }
+
+    @Test
+    void http2ProtocolValidatesCleartextUpgradeSettingsHeaders() {
+        Http2Protocol protocol = new Http2Protocol();
+        Request validRequest = new Request();
+        validRequest.getMimeHeaders().addValue("Connection").setString("keep-alive, HTTP2-Settings");
+        validRequest.getMimeHeaders().addValue("HTTP2-Settings").setString("encoded-settings");
+
+        assertThat(protocol.accept(validRequest)).isTrue();
+
+        Request missingSettingsRequest = new Request();
+        missingSettingsRequest.getMimeHeaders().addValue("Connection").setString("HTTP2-Settings");
+        assertThat(protocol.accept(missingSettingsRequest)).isFalse();
+
+        validRequest.getMimeHeaders().addValue("HTTP2-Settings").setString("duplicate-settings");
+        assertThat(protocol.accept(validRequest)).isFalse();
+    }
 
     @ParameterizedTest
     @ValueSource(strings = {"HTTP/1.1", "org.apache.coyote.http11.Http11NioProtocol",
