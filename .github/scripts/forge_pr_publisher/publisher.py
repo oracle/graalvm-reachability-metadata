@@ -544,6 +544,9 @@ def render_publication(
     if builder is None:
         raise ValueError(f"Unsupported template type: {template}")
     title, body = builder(descriptor, validated)
+    skipped = _skip_record_entries(descriptor, validated)
+    if skipped is not None:
+        body = _render_skip_record(descriptor, skipped)
     body += _render_local_review(descriptor)
     body += f"\nForge-Publication-ID: {descriptor['publication_id']}\n"
     return title, _bound_body(body)
@@ -1104,6 +1107,88 @@ def _render_code_coverage_benchmark_result(
             f"- Exit code: `{failure['exitCode']}`",
         ]
     return title, "\n".join(lines)
+
+SKIP_RECORD_TEMPLATES = frozenset({
+    "library-update-request",
+    "fixes-javac-fail",
+    "fixes-java-run-fail",
+    "fixes-native-image-run-fail",
+})
+
+
+def _index_skipped_versions(commit: str, group: str, artifact: str) -> dict[str, str]:
+    """Read one artifact's recorded skip reasons, keyed by version."""
+    path = f"metadata/{group}/{artifact}/index.json"
+    try:
+        payload = json.loads(git("show", f"{commit}:{path}"))
+    except (RuntimeError, json.JSONDecodeError):
+        return {}
+    if not isinstance(payload, list):
+        return {}
+    skipped: dict[str, str] = {}
+    for entry in payload:
+        if not isinstance(entry, dict):
+            continue
+        for record in entry.get("skipped-versions") or []:
+            if isinstance(record, dict) and record.get("version"):
+                skipped[str(record["version"])] = str(record.get("reason", ""))
+    return skipped
+
+
+def _tree_has_path(commit: str, path: str) -> bool:
+    return bool(git("ls-tree", "--name-only", commit, "--", path).strip())
+
+
+def _skip_record_entries(
+        descriptor: dict[str, Any],
+        validated: ValidatedPublication | None,
+) -> list[tuple[str, str]] | None:
+    """Detect a contribution the review turned into a skip record (§FS-contribution-contract.5.4).
+
+    Read from the tree rather than the descriptor: the descriptor states what the
+    agent generated, and a review that records versions as skipped deletes exactly
+    those generated files, so only the tree describes what merges (§forge/FS-forge-publication-readiness).
+    """
+    if validated is None or descriptor["template_type"] not in SKIP_RECORD_TEMPLATES:
+        return None
+    group, artifact, version = str(descriptor["library"]["coordinates"]).split(":")
+    if _tree_has_path(validated.head_sha, f"metadata/{group}/{artifact}/{version}"):
+        return None
+    head = _index_skipped_versions(validated.head_sha, group, artifact)
+    base = _index_skipped_versions(str(descriptor["base_commit"]), group, artifact)
+    added = [(v, reason) for v, reason in head.items() if v not in base]
+    if not added:
+        return None
+    return sorted(added)
+
+
+def _render_skip_record(
+        descriptor: dict[str, Any],
+        skipped: list[tuple[str, str]],
+) -> str:
+    """Render the body for a contribution that records versions as skipped.
+
+    The generated statistics, stats diff and test diff of the template body all
+    describe files this tree no longer carries, so they are replaced rather than
+    extended (§forge/FS-forge-publication-readiness).
+    """
+    coordinates = descriptor["library"]["coordinates"]
+    rows = "".join(f"| `{version}` | {reason} |\n" for version, reason in skipped)
+    return (
+        "## What does this PR do?\n\n"
+        f"{_issue_reference(descriptor)}\n\n"
+        f"This pull request records `{coordinates}` as a library version Native Image "
+        "cannot support. It ships no metadata and no test: the generated contribution was "
+        "replaced by `skipped-versions` entries in the artifact's `index.json`, so the "
+        "compatibility automation stops proposing these versions instead of re-testing and "
+        "re-reporting them (§FS-contribution-contract.5.4).\n\n"
+        "### Versions recorded as skipped\n\n"
+        "| Version | Reason |\n| --- | --- |\n"
+        f"{rows}"
+        "\n"
+        f"{_format_forge_revision_section(descriptor)}"
+    )
+
 
 _TEMPLATE_BUILDERS = {
     "library-update-request": _render_library_update_request,
