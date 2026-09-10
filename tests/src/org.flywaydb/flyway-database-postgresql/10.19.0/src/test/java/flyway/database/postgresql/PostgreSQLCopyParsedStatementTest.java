@@ -9,7 +9,12 @@ package flyway.database.postgresql;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.time.Duration;
+import java.util.concurrent.TimeUnit;
 import javax.sql.DataSource;
 
 import org.awaitility.Awaitility;
@@ -21,11 +26,12 @@ import org.flywaydb.database.postgresql.PostgreSQLConfigurationExtension;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
 import org.postgresql.ds.PGSimpleDataSource;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class FlywayDatabasePostgresqlTests {
+public class PostgreSQLCopyParsedStatementTest {
 
     private static final String USERNAME = "fred";
 
@@ -33,7 +39,8 @@ public class FlywayDatabasePostgresqlTests {
 
     private static final String DATABASE = "test";
 
-    private static final String JDBC_URL = "jdbc:postgresql://localhost/" + DATABASE;
+    private static final String JDBC_URL =
+            "jdbc:postgresql://localhost/" + DATABASE + "?connectTimeout=10&socketTimeout=10";
 
     private static Process process;
 
@@ -46,7 +53,7 @@ public class FlywayDatabasePostgresqlTests {
                 .redirectError(new File("postgres-stderr.txt")).start();
 
         // Wait until connection can be established
-        Awaitility.await().atMost(Duration.ofMinutes(1)).ignoreExceptions().until(() -> {
+        Awaitility.await().atMost(Duration.ofSeconds(50)).ignoreExceptions().until(() -> {
             getDataSource().getConnection().close();
             return true;
         });
@@ -54,15 +61,20 @@ public class FlywayDatabasePostgresqlTests {
     }
 
     @AfterAll
-    static void tearDown() {
+    static void tearDown() throws InterruptedException {
         if (process != null && process.isAlive()) {
             System.out.println("Shutting down PostgreSQL");
             process.destroy();
+            if (!process.waitFor(10, TimeUnit.SECONDS)) {
+                process.destroyForcibly();
+                assertThat(process.waitFor(10, TimeUnit.SECONDS)).isTrue();
+            }
         }
     }
 
     @Test
-    void migrate() {
+    @Timeout(55)
+    void migratesCopyFromStdinData() throws SQLException {
         DataSource dataSource = getDataSource();
 
         Configuration configuration = new FluentConfiguration()
@@ -78,6 +90,20 @@ public class FlywayDatabasePostgresqlTests {
 
         assertThat(migration.success).isTrue();
         assertThat(migration.migrationsExecuted).isEqualTo(2);
+        try (Connection connection = dataSource.getConnection();
+                Statement statement = connection.createStatement();
+                ResultSet rows = statement.executeQuery("SELECT id, title, name FROM test ORDER BY id")) {
+            assertThat(rows.next()).isTrue();
+            assertThat(rows.getInt("id")).isEqualTo(1);
+            assertThat(rows.getString("title")).isEqualTo("first");
+            assertThat(rows.getInt("name")).isEqualTo(10);
+
+            assertThat(rows.next()).isTrue();
+            assertThat(rows.getInt("id")).isEqualTo(2);
+            assertThat(rows.getString("title")).isEqualTo("second");
+            assertThat(rows.getInt("name")).isEqualTo(20);
+            assertThat(rows.next()).isFalse();
+        }
     }
 
     private static DataSource getDataSource() {
