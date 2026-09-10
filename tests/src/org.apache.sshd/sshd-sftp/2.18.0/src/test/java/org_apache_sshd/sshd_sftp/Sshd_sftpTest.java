@@ -11,9 +11,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.ByteBuffer;
+import java.nio.channels.FileChannel;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.time.Duration;
 import java.util.ArrayList;
@@ -76,6 +79,47 @@ public class Sshd_sftpTest {
                     sftpClient.remove(renamedFile);
                     assertThat(fileNames(sftpClient, directory)).doesNotContain("renamed.txt");
                     sftpClient.rmdir(directory);
+                }
+            }
+        } finally {
+            client.stop();
+            server.stop(true);
+        }
+    }
+
+    @Test
+    void supportsRandomAccessRemoteFileChannels() throws Exception {
+        Path rootDirectory = Path.of(System.getProperty("java.io.tmpdir"));
+        String remoteFile = "channel-" + UUID.randomUUID() + ".txt";
+        SshServer server = createServer(rootDirectory);
+        SshClient client = SshClient.setUpDefaultClient();
+        client.setServerKeyVerifier(AcceptAllServerKeyVerifier.INSTANCE);
+
+        try {
+            server.start();
+            client.start();
+
+            try (ClientSession session = client.connect("user", "localhost", server.getPort())
+                    .verify(CONNECTION_TIMEOUT)
+                    .getSession()) {
+                session.addPasswordIdentity("password");
+                session.auth().verify(CONNECTION_TIMEOUT);
+
+                try (SftpClient sftpClient = SftpClientFactory.instance().createSftpClient(session)) {
+                    try (FileChannel channel = sftpClient.openRemotePathChannel(remoteFile,
+                            StandardOpenOption.CREATE_NEW, StandardOpenOption.READ, StandardOpenOption.WRITE)) {
+                        byte[] contents = "SFTP random-access channel".getBytes(StandardCharsets.UTF_8);
+                        channel.write(ByteBuffer.wrap("SFTP ______-access channel".getBytes(StandardCharsets.UTF_8)));
+                        channel.position("SFTP ".length());
+                        channel.write(ByteBuffer.wrap("random".getBytes(StandardCharsets.UTF_8)));
+                        channel.position(0);
+
+                        ByteBuffer received = ByteBuffer.allocate(contents.length);
+                        assertThat(channel.read(received)).isEqualTo(contents.length);
+                        assertThat(received.array()).isEqualTo(contents);
+                    }
+
+                    sftpClient.remove(remoteFile);
                 }
             }
         } finally {
