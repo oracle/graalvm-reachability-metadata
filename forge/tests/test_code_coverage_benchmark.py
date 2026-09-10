@@ -13,6 +13,7 @@ import shutil
 import subprocess
 import tempfile
 import unittest
+from types import SimpleNamespace
 from unittest.mock import patch
 from pathlib import Path
 
@@ -119,6 +120,77 @@ class CodeCoverageBenchmarkMatrixTests(unittest.TestCase):
             "claude-code[high]:anthropic/claude-sonnet-5",
             configuration.target("high"),
         )
+
+
+class CodeCoverageBenchmarkConversionTests(unittest.TestCase):
+    """The pin supplies the input; the runner supplies the measurement.
+    §FS-code-coverage-benchmarking.1
+    """
+
+    def _convert(self) -> dict:
+        temporary = tempfile.TemporaryDirectory()
+        self.addCleanup(temporary.cleanup)
+        root = Path(temporary.name)
+        runner = root / "runner"
+        source = root / "run" / "source"
+        workspace = root / "run" / "code-coverage-99000"
+        (runner / "forge").mkdir(parents=True)
+        (runner / "README.md").write_text("seed\n", encoding="utf-8")
+        _git(runner, "init", "-b", "master")
+        _git(runner, "add", "-A")
+        _git(
+            runner,
+            "-c",
+            "user.name=test",
+            "-c",
+            "user.email=test@example.com",
+            "commit",
+            "-m",
+            "seed",
+        )
+        commit = _git(runner, "rev-parse", "HEAD").stdout.strip()
+        benchmark._create_source_worktree(source, commit, runner)
+        self.addCleanup(benchmark._remove_worktree, source, runner)
+        test_dir = source / "tests" / "src" / "com.example" / "demo" / "1.0.0"
+        test_dir.mkdir(parents=True)
+
+        with patch.object(benchmark, "resolve_test_dir", return_value=str(test_dir)):
+            benchmark.convert_workspace(
+                SimpleNamespace(
+                    workspace=str(workspace),
+                    coordinate="com.example:demo:1.0.0",
+                    run_id="run-1",
+                    started_at="2026-09-09T00:00:00Z",
+                    suite_commit=commit,
+                    runner_commit=commit,
+                    source_worktree=str(source),
+                    runner_forge_path=str(runner / "forge"),
+                    agent="pi",
+                    configured_model="gpt-5.6-sol",
+                    target_model="openai-codex/gpt-5.6-sol",
+                    thinking="high",
+                    checked_in_all_methods=11943,
+                )
+            )
+        conversion = json.loads(
+            (
+                workspace / "runtime" / "code-coverage" / "issues" / "conversion.json"
+            ).read_text(encoding="utf-8")
+        )
+        conversion["_runnerForge"] = str((runner / "forge").resolve())
+        conversion["_source"] = str(source.resolve())
+        return conversion
+
+    def test_measurement_helpers_resolve_from_the_runner(self) -> None:
+        conversion = self._convert()
+
+        self.assertEqual(conversion["_runnerForge"], conversion["workPath"])
+
+    def test_measured_input_stays_the_pinned_worktree(self) -> None:
+        conversion = self._convert()
+
+        self.assertEqual(conversion["_source"], conversion["worktreePath"])
+        self.assertNotIn(conversion["_source"], conversion["workPath"])
 
 
 class CodeCoverageBenchmarkLifecycleTests(unittest.TestCase):

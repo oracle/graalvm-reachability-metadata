@@ -1385,7 +1385,12 @@ def convert_workspace(args: argparse.Namespace) -> None:
             "The fixed benchmark input already contains a coverage suite: "
             f"{coverage_suite}"
         )
-    work_path = source_worktree / "forge"
+    # The pin supplies the input; the runner supplies the measurement. Resolving
+    # helpers from the pinned worktree would freeze ranking, classification, and
+    # prompt rendering at the suite commit and split the final-metrics contract
+    # away from the publisher that has to read it.
+    # §FS-code-coverage-benchmarking.1 §AR-code-coverage-benchmarking.1
+    work_path = runner_forge_path
     conversion = {
         "coordinate": args.coordinate,
         "worktreePath": str(source_worktree),
@@ -1405,8 +1410,8 @@ def convert_workspace(args: argparse.Namespace) -> None:
     (issue_dir / "conversion.md").write_text(
         "# Benchmark conversion\n\n"
         f"- Coordinate: `{args.coordinate}`\n"
-        f"- Worktree: `{source_worktree}`\n"
-        f"- Work path: `{work_path}`\n"
+        f"- Measured input: `{source_worktree}` at `{args.suite_commit}`\n"
+        f"- Measuring helpers: `{work_path}` at `{args.runner_commit}`\n"
         f"- Coverage suite: `{coverage_suite}`\n",
         encoding="utf-8",
     )
