@@ -24,10 +24,11 @@ public class ConnectorProtocolIntrospectionTest {
         connector.setPort(0);
 
         try {
-            connector.getProperty("bindOnInit");
+            Object bindOnInitBeforeUpdate = connector.getProperty("bindOnInit");
             boolean bindOnInitUpdated = connector.setProperty("bindOnInit", "false");
             Object bindOnInitAfterUpdate = connector.getProperty("bindOnInit");
 
+            assertThat(bindOnInitBeforeUpdate).isNull();
             assertThat(bindOnInitUpdated).isTrue();
             assertThat(bindOnInitAfterUpdate).isEqualTo("false");
 
