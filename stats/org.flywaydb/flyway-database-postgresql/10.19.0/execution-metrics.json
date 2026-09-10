@@ -1,0 +1,120 @@
+{
+  "improve_library_coverage:2026-09-10": {
+    "timestamp": "2026-09-10T05:02:33.881051Z",
+    "library": "org.flywaydb:flyway-database-postgresql:10.19.0",
+    "starting_commit": "f055cdcb3411783d36dbc2db0fd591e19f988583",
+    "ending_commit": "2252db5ab5b46d9189da925e1cc925bd4bc31229",
+    "strategy_name": "library_update_optimistic_pi_gpt-5.6-sol",
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "status": "success",
+    "stats": {
+      "version": "10.19.0",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 6,
+            "totalCalls": 6
+          }
+        },
+        "coverageRatio": 1.0,
+        "coveredCalls": 6,
+        "totalCalls": 6
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 906,
+          "missed": 2486,
+          "ratio": 0.267099,
+          "total": 3392
+        },
+        "line": {
+          "covered": 177,
+          "missed": 411,
+          "ratio": 0.30102,
+          "total": 588
+        },
+        "method": {
+          "covered": 67,
+          "missed": 116,
+          "ratio": 0.36612,
+          "total": 183
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "advisory_preparation",
+      "issue_number": 8919,
+      "issue_label": "library-update-request",
+      "library": "org.flywaydb:flyway-database-postgresql:10.19.0",
+      "summary": "Meaningful coverage requires the PostgreSQL JDBC driver and a live PostgreSQL database.",
+      "deterministic_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "org.postgresql:postgresql:42.3.4",
+          "scope": "testImplementation",
+          "reason": "The Flyway PostgreSQL module depends on flyway-core and Lombok, but not the JDBC driver; the existing integration test explicitly requires pgJDBC."
+        },
+        {
+          "kind": "docker_image",
+          "image": "postgres:18-alpine",
+          "slug": "postgres",
+          "reason": "The PostgreSQL database implementation must be exercised against a real PostgreSQL server; this tag is already allow-listed."
+        }
+      ],
+      "agent_guidance": "Exercise Flyway through its public configuration and migration APIs using a JDBC datasource. Configure PostgreSQLConfigurationExtension and disable transactional locking when required by migration scenarios involving concurrent DDL.",
+      "risks": [
+        "Tests require Docker access and an available host port 5432.",
+        "The artifact also contains CockroachDB classes; avoid treating those as PostgreSQL coverage unless separately justified."
+      ],
+      "applied_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "org.postgresql:postgresql:42.3.4",
+          "result": "already_present",
+          "target": "tests/src/org.flywaydb/flyway-database-postgresql/10.19.0/build.gradle"
+        },
+        {
+          "kind": "docker_image",
+          "image": "postgres:18-alpine",
+          "slug": "postgres",
+          "result": "already_present",
+          "target": "tests/tck-build-logic/src/main/resources/allowed-docker-images/Dockerfile-postgres"
+        }
+      ],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#8919 Update existing library: org.flywaydb:flyway-database-postgresql:10.19.0; label=library-update-request; body_chars=168"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "11 existing test file path(s) included"
+        }
+      ],
+      "model": "gpt-5.6-luna",
+      "input_tokens_used": 413009,
+      "output_tokens_used": 4205,
+      "prompt_path": "library-preflight-prompt.txt",
+      "raw_response_path": "library-preflight-response.txt",
+      "session_log_path": "/home/mihailo/git/graalvm-reachability-metadata-copy/forge/logs/org.flywaydb:flyway-database-postgresql:10.19.0/library-preparation-preflight/codex-session-spc30tml.log"
+    },
+    "metrics": {
+      "input_tokens_used": 72876,
+      "cached_input_tokens_used": 935296,
+      "output_tokens_used": 11724,
+      "iterations": 3,
+      "cost_usd": 1.1837,
+      "generated_loc": 140,
+      "tested_library_loc": 177,
+      "metadata_entries": 91,
+      "test_only_metadata_entries": 35,
+      "code_coverage_percent": 30.1
+    },
+    "artifacts": {
+      "metadata_file": "metadata/org.flywaydb/flyway-database-postgresql/10.19.0/reachability-metadata.json"
+    }
+  }
+}
