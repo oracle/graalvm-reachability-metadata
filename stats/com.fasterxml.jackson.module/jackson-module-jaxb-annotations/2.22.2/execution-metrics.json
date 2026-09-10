@@ -1,27 +1,53 @@
 {
   "add_new_library_support:2026-09-10": {
-    "timestamp": "2026-09-10T03:16:15.748434Z",
+    "timestamp": "2026-09-10T05:25:26.812421Z",
     "library": "com.fasterxml.jackson.module:jackson-module-jaxb-annotations:2.22.2",
-    "starting_commit": "04fba183c9d0fb63f3ebfcb55cca6626056d7b7d",
-    "ending_commit": "8870374bb1bd0f419964a66be4d1e955939a3c7d",
+    "starting_commit": "05735967e74a28003bed4046bd32004ae1211eb9",
+    "ending_commit": "cd0d2b265cca476e6f376e1bdfe376fb3ad299e7",
     "strategy_name": "dynamic_access_main_sources_pi_gpt-5.6-terra",
     "agent": "pi",
     "model": "gpt-5.6-terra",
-    "status": "failure",
+    "status": "success",
+    "stats": {
+      "version": "2.22.2",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 3,
+            "totalCalls": 3
+          }
+        },
+        "coverageRatio": 1.0,
+        "coveredCalls": 3,
+        "totalCalls": 3
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 912,
+          "missed": 2097,
+          "ratio": 0.303091,
+          "total": 3009
+        },
+        "line": {
+          "covered": 234,
+          "missed": 514,
+          "ratio": 0.312834,
+          "total": 748
+        },
+        "method": {
+          "covered": 55,
+          "missed": 63,
+          "ratio": 0.466102,
+          "total": 118
+        }
+      }
+    },
     "library_preparation_preflight": {
-      "status": "completed",
       "action": "advisory_preparation",
-      "issue_number": 9955,
-      "issue_label": "library-new-request",
-      "library": "com.fasterxml.jackson.module:jackson-module-jaxb-annotations:2.22.2",
-      "summary": "The module requires explicit registration and JAXB-annotated fixtures for meaningful coverage, but no extra dependency or Docker image.",
-      "deterministic_setup": [],
       "agent_guidance": "Register com.fasterxml.jackson.module.jaxb.JaxbAnnotationModule with ObjectMapper and exercise serialization/deserialization of fixtures using javax.xml.bind.annotation annotations such as XmlRootElement, XmlElement, and XmlAttribute. The artifact already brings jackson dependencies, javax.xml.bind:jaxb-api:2.2.12, and jakarta.activation-api transitively; a JAXB implementation is not required for this module’s annotation-introspection path.",
-      "risks": [
-        "Do not use the Jakarta XML Bind annotations; this artifact supports javax.xml.bind annotations.",
-        "If tests exercise DataHandler, DOM, or actual JAXBContext functionality, additional runtime behavior and Native Image metadata may be required."
-      ],
       "applied_setup": [],
+      "deterministic_setup": [],
       "input_evidence": [
         {
           "name": "issue",
@@ -32,26 +58,36 @@
           "summary": "0 existing test file path(s) included"
         }
       ],
-      "model": "gpt-5.6-luna",
       "input_tokens_used": 351424,
+      "issue_label": "library-new-request",
+      "issue_number": 9955,
+      "library": "com.fasterxml.jackson.module:jackson-module-jaxb-annotations:2.22.2",
+      "model": "gpt-5.6-luna",
       "output_tokens_used": 2810,
       "prompt_path": "library-preflight-prompt.txt",
       "raw_response_path": "library-preflight-response.txt",
-      "session_log_path": "/home/mihailo/git/graalvm-reachability-metadata-copy/forge/logs/com.fasterxml.jackson.module:jackson-module-jaxb-annotations:2.22.2/library-preparation-preflight/codex-session-7lqliofs.log"
+      "risks": [
+        "Do not use the Jakarta XML Bind annotations; this artifact supports javax.xml.bind annotations.",
+        "If tests exercise DataHandler, DOM, or actual JAXBContext functionality, additional runtime behavior and Native Image metadata may be required."
+      ],
+      "session_log_path": "/home/mihailo/git/graalvm-reachability-metadata-copy/forge/logs/com.fasterxml.jackson.module:jackson-module-jaxb-annotations:2.22.2/library-preparation-preflight/codex-session-7lqliofs.log",
+      "status": "completed",
+      "summary": "The module requires explicit registration and JAXB-annotated fixtures for meaningful coverage, but no extra dependency or Docker image."
     },
     "metrics": {
       "input_tokens_used": 69383,
       "cached_input_tokens_used": 588288,
       "output_tokens_used": 9129,
-      "iterations": 3,
+      "iterations": 5,
       "cost_usd": 0.4575,
-      "generated_loc": 0,
-      "tested_library_loc": 0,
-      "metadata_entries": 0,
-      "code_coverage_percent": 0.0
+      "generated_loc": 104,
+      "tested_library_loc": 234,
+      "metadata_entries": 4,
+      "test_only_metadata_entries": 10,
+      "code_coverage_percent": 31.28
     },
     "artifacts": {
-      "metadata_file": "None"
+      "metadata_file": "metadata/com.fasterxml.jackson.module/jackson-module-jaxb-annotations/2.22.2/reachability-metadata.json"
     }
   }
 }
