@@ -25,7 +25,10 @@ from ai_workflows.agents.agent_runtime import (
     get_analysis_agent,
 )
 from git_scripts.common_git import gh, gh_json, parse_coordinate_parts, stage_and_commit
-from git_scripts.review_finalization import finalization_receipt_matches
+from git_scripts.review_finalization import (
+    finalization_receipt_matches,
+    publishable_tree_digest,
+)
 from utility_scripts.local_ci_verification import (
     FINDINGS_RELATIVE_PATH,
     LocalCIVerificationError,
@@ -303,11 +306,35 @@ def run_local_branch_review(
     return outcome
 
 
-def _tree_matches_commit(repo_path: str, expected_sha: str) -> bool:
-    """Keep the post-verdict gate read-only. §FS-local-branch-review"""
-    current_sha: str = _git_stdout(repo_path, ["rev-parse", "HEAD"])
-    status: str = _git_stdout(repo_path, ["status", "--porcelain"])
-    return current_sha == expected_sha and not status
+@dataclass(frozen=True)
+class PublishableTree:
+    """The publishable content of the review worktree at one moment."""
+
+    head: str
+    digest: str
+    status: tuple[str, ...]
+
+
+def _capture_publishable_tree(repo_path: str) -> PublishableTree:
+    """Snapshot only the content the branch would publish. §FS-local-branch-review"""
+    return PublishableTree(
+        head=_git_stdout(repo_path, ["rev-parse", "HEAD"]),
+        digest=publishable_tree_digest(repo_path),
+        status=tuple(_git_stdout(repo_path, ["status", "--porcelain"]).splitlines()),
+    )
+
+
+def _describe_tree_change(before: PublishableTree, after: PublishableTree) -> str:
+    """Name what the gate changed so the finding diagnoses itself. §FS-local-branch-review"""
+    details: list[str] = []
+    if before.head != after.head:
+        details.append(f"HEAD moved from {before.head[:12]} to {after.head[:12]}")
+    details.extend(f"appeared: {line}" for line in after.status if line not in before.status)
+    details.extend(f"disappeared: {line}" for line in before.status if line not in after.status)
+    if not details:
+        details.append("publishable content changed without a new `git status` entry")
+        details.extend(f"still present: {line}" for line in after.status)
+    return "; ".join(details)
 
 
 def _verify_reviewer_edits(
@@ -321,7 +348,7 @@ def _verify_reviewer_edits(
         outcome: LocalBranchReviewOutcome,
 ) -> None:
     """Replay the cross-cutting gate without accepting a post-verdict mutation."""
-    reviewed_sha: str = _git_stdout(repo_path, ["rev-parse", "HEAD"])
+    reviewed_tree: PublishableTree = _capture_publishable_tree(repo_path)
     try:
         outcome.local_ci_verification = run_local_ci_verification(
             repo_path=repo_path,
@@ -340,25 +367,34 @@ def _verify_reviewer_edits(
         )
         return
 
-    if not _tree_matches_commit(repo_path, reviewed_sha):
-        _reset_reviewer_edits(
-            repo_path, verified_sha, metrics_repo_path, original_verification,
-        )
-        outcome.local_ci_verification = original_verification
-        _reject_failed_repair(
-            outcome, "pre-publication-gate-mutated-reviewed-tree",
-        )
+    gate_tree: PublishableTree = _capture_publishable_tree(repo_path)
+    if gate_tree.digest == reviewed_tree.digest:
+        return
+    change_detail: str = _describe_tree_change(reviewed_tree, gate_tree)
+    _log_review(
+        f"Pre-publication gate changed the publishable tree: {change_detail}",
+        indent_level=1,
+    )
+    _reset_reviewer_edits(
+        repo_path, verified_sha, metrics_repo_path, original_verification,
+    )
+    outcome.local_ci_verification = original_verification
+    _reject_failed_repair(
+        outcome, "pre-publication-gate-mutated-reviewed-tree", change_detail,
+    )
 
 
 def _reject_failed_repair(
         outcome: LocalBranchReviewOutcome,
         failed_step: str,
+        change_detail: str = "",
 ) -> None:
     """Ensure the descriptor decision describes the restored verified tree."""
     verdict: LocalReviewVerdict = outcome.verdict
+    observed: str = f" ({change_detail})" if change_detail else ""
     detail: str = (
-        f"The attempted review repair did not pass {failed_step}; Forge restored "
-        "the last verified tree, where this finding remains unresolved."
+        f"The attempted review repair did not pass {failed_step}{observed}; Forge "
+        "restored the last verified tree, where this finding remains unresolved."
     )
     finding_title: str = verdict.finding_title or "Pre-push review repair did not verify"
     finding_body: str = verdict.finding_body
