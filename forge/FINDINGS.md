@@ -3,6 +3,11 @@
 Rendered by Forge from the pre-push branch review of §FS-local-branch-review.
 Newest entry first; every non-approval is recorded, including one a repair later cleared.
 
+## 2026-09-03 — io.github.microcks:microcks-testcontainers:0.5.0 (#9686)
+
+**New-library contribution misses the dynamic-access gate and includes build logic**
+
+Review Signal #6 was violated at `stats/io.github.microcks/microcks-testcontainers/0.5.0/stats.json`: the submitted evidence reported 0/4 dynamic-access calls (0%), but a new-library contribution with calls to cover must exceed 20%. Review Signal #1's single-library scope was also violated by the unrelated repository-wide change to `tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/GrypeTask.java`; build logic is not a supporting file for this coordinate.
 ## 2026-09-03 — org.apache.kafka:kafka-streams:4.3.1 (#9764)
 
 **Issue-requested reachability metadata is missing**
