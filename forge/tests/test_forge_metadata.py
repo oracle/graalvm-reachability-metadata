@@ -418,6 +418,58 @@ class LibraryUpdateIssueTests(unittest.TestCase):
         self.assertIn("preflight-session.log", stdout.getvalue())
         self.assertNotIn("session_log_path", record)
 
+    def _preflight_record(self, response: dict) -> dict:
+        from utility_scripts import library_preparation_preflight as preflight_module
+
+        claimed_issue = SimpleNamespace(
+            issue={"number": 1412},
+            label="library-update-request",
+            current_coordinates=None,
+            new_version=None,
+        )
+        return preflight_module._completed_library_preflight_record(
+            claimed_issue,
+            {"library": "org.example:lib:1.0.0"},
+            response,
+            "gpt-5.6-sol",
+            None,
+            None,
+            None,
+            None,
+        )
+
+    def test_preflight_keeps_a_decision_that_merely_mentions_credentials(self) -> None:
+        record = self._preflight_record({
+            "action": "advisory_preparation",
+            "summary": "The SFTP client needs a live endpoint to cover anything.",
+            "deterministic_setup": [
+                {"kind": "docker_image", "image": "atmoz/sftp:alpine", "slug": "sftp", "reason": "endpoint"},
+            ],
+            "agent_guidance": (
+                "Configure DefaultSftpSessionFactory to connect to localhost on the mapped "
+                "port, authenticate with those credentials, and tokenize the returned "
+                "listing into a secret-free assertion."
+            ),
+            "risks": ["The container ships a throwaway token."],
+        })
+
+        self.assertEqual(record["status"], "completed")
+        self.assertEqual(len(record["deterministic_setup"]), 1)
+        self.assertIn("authenticate with those credentials", record["agent_guidance"])
+        self.assertEqual(record["risks"], ["The container ships a throwaway token."])
+
+    def test_preflight_degrades_on_a_requested_action_and_names_the_term(self) -> None:
+        with self.assertRaises(ValueError) as raised:
+            self._preflight_record({
+                "action": "advisory_preparation",
+                "summary": "Fetch the fixtures first.",
+                "deterministic_setup": [],
+                "agent_guidance": "Run curl -sSL https://example.invalid/fixtures.tar.gz before the tests.",
+                "risks": [],
+            })
+
+        self.assertIn("unsafe preparation behavior: curl", str(raised.exception))
+
     def test_library_preflight_dispatches_without_a_strategy(self) -> None:
         claimed_issue = forge_metadata.ClaimedIssue(
             issue={"number": 1412, "title": "Update org.example:lib:1.0.0"},

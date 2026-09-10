@@ -31,8 +31,11 @@ LIBRARY_PREFLIGHT_TIMEOUT_SECONDS = 900
 LIBRARY_PREFLIGHT_MAX_ISSUE_BODY_CHARS = 8000
 LIBRARY_PREFLIGHT_MAX_TEST_FILES = 40
 LIBRARY_PREFLIGHT_MAX_DETERMINISTIC_SETUP = 8
-# Only the free-text advisory guidance is scanned for these; the deterministic
-# setup entries are validated structurally and cannot smuggle prose commands.
+# Requested actions that would take an agent outside the harness — shelling out,
+# fetching from the network, mutating the machine. Only the free-text advisory
+# fields are scanned; deterministic setup is validated by shape. Subject-matter
+# vocabulary is deliberately absent: it names what a library is about, not what
+# the guidance asks for (§AR-forge-orchestration.1.2).
 LIBRARY_PREFLIGHT_UNSAFE_TERMS = (
     "sudo",
     "curl ",
@@ -40,9 +43,6 @@ LIBRARY_PREFLIGHT_UNSAFE_TERMS = (
     "git clone",
     "rm -rf",
     "docker run",
-    "credential",
-    "secret",
-    "token",
 )
 # Deterministic setup the driver applies itself, idempotently, as source edits
 # (§AR-forge-orchestration.1.1). Anything else stays advisory guidance.
@@ -258,10 +258,10 @@ def _preflight_string_list(value: Any, limit: int = 8) -> list[str]:
     return normalized
 
 
-def _preflight_contains_unsafe_text(*values: Any) -> bool:
-    """Return True when advisory text asks for unsafe preparation behavior."""
+def _unsafe_terms_in(*values: Any) -> list[str]:
+    """Return the unsafe action terms the advisory text requests, for the error message."""
     combined = "\n".join(str(value).lower() for value in values if value is not None)
-    return any(term in combined for term in LIBRARY_PREFLIGHT_UNSAFE_TERMS)
+    return [term.strip() for term in LIBRARY_PREFLIGHT_UNSAFE_TERMS if term in combined]
 
 
 def _parse_deterministic_setup_entry(entry: Any) -> dict[str, str] | None:
@@ -320,9 +320,13 @@ def _completed_library_preflight_record(
     if action == "advisory_preparation" and not (deterministic_setup or agent_guidance):
         raise ValueError("advisory_preparation response did not include deterministic setup or guidance")
     # Deterministic entries are validated structurally above; only the free-text
-    # advisory fields can carry prose, so only those are scanned for unsafe terms.
-    if _preflight_contains_unsafe_text(summary, agent_guidance, risks):
-        raise ValueError("preflight response requested unsafe preparation behavior")
+    # advisory fields can carry prose, so only those are scanned — and only for
+    # requested actions, never subject matter (§AR-forge-orchestration.1.2).
+    unsafe_terms = _unsafe_terms_in(summary, agent_guidance, risks)
+    if unsafe_terms:
+        raise ValueError(
+            f"preflight response requested unsafe preparation behavior: {', '.join(unsafe_terms)}"
+        )
 
     record = _base_library_preflight_record(claimed_issue, input_bundle)
     record["status"] = "completed"
