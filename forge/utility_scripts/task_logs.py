@@ -4,7 +4,18 @@
 # work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 
 import os
+import uuid
 from datetime import datetime, timezone
+
+
+def new_session_id() -> str:
+    """Mint the identifier that names one agent session in durable records.
+
+    A session identifier travels where a log path cannot: it is meaningful to a
+    reader who has no access to the operator's filesystem, and it is the "session
+    or thread identifier" that §FS-durable-generation-logs asks a run to record.
+    """
+    return uuid.uuid4().hex[:16]
 
 
 def sanitize_log_segment(value: str | None) -> str:

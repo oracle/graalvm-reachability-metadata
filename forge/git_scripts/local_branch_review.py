@@ -35,7 +35,11 @@ from utility_scripts.local_ci_verification import (
 )
 from utility_scripts.metrics_writer import read_pending_metrics, write_pending_metrics
 from utility_scripts.stage_logger import log_stage
-from utility_scripts.task_logs import build_timestamped_task_log_path, display_log_path
+from utility_scripts.task_logs import (
+    build_timestamped_task_log_path,
+    display_log_path,
+    new_session_id,
+)
 
 LOCAL_REVIEW_TIMEOUT_SECONDS: int = 3600
 LOCAL_REVIEW_METRICS_KEY: str = "local_review"
@@ -79,7 +83,7 @@ class ReviewExecution:
     """The observable result of the isolated reviewer process."""
 
     verdict: LocalReviewVerdict | None
-    session_log_path: str
+    session_id: str
     changed_paths: list[str] = field(default_factory=list)
 
 
@@ -88,7 +92,7 @@ class LocalBranchReviewOutcome:
     """Reviewer decision plus the evidence Forge persists."""
 
     model: str
-    session_log_path: str
+    session_id: str
     local_ci_verification: LocalCIVerificationResult
     verdict: LocalReviewVerdict
     changed_paths: list[str] = field(default_factory=list)
@@ -110,9 +114,13 @@ class LocalBranchReviewOutcome:
             "finding_body": self.verdict.finding_body,
             "fix_note": self.verdict.fix_note,
             "model": self.model,
-            "session_log_path": self.session_log_path,
             "changed_paths": list(self.changed_paths[:200]),
         }
+        # A session identifier, not a log path: the operator's `logs/` tree is
+        # gitignored, so a path here resolves for nobody who reads the pull
+        # request. §AR-publication-descriptor
+        if self.session_id:
+            payload["session_id"] = self.session_id
         if self.verdict.action is not None:
             payload["action"] = self.verdict.action
         return payload
@@ -138,7 +146,7 @@ class LocalBranchReviewOutcome:
         )
         return cls(
             model=str(payload["model"]),
-            session_log_path=str(payload["session_log_path"]),
+            session_id=str(payload.get("session_id") or ""),
             local_ci_verification=local_ci_verification,
             verdict=verdict,
             changed_paths=[str(path) for path in payload.get("changed_paths", [])],
@@ -265,7 +273,7 @@ def run_local_branch_review(
     verdict = _resolve_infrastructure_issue(verdict)
     outcome = LocalBranchReviewOutcome(
         model=review_model,
-        session_log_path=execution.session_log_path,
+        session_id=execution.session_id,
         local_ci_verification=local_ci_verification,
         verdict=verdict,
         changed_paths=list(execution.changed_paths),
@@ -403,6 +411,7 @@ def _request_review(
         descriptor_input: Any,
 ) -> ReviewExecution:
     """Run the isolated reviewer, transfer its Git edits, and return its verdict."""
+    session_id: str = new_session_id()
     unavailable_log_path: str = build_timestamped_task_log_path(
         "local-review", coordinates, "local_branch_review"
     )
@@ -411,7 +420,11 @@ def _request_review(
         _write_unavailable_log(
             unavailable_log_path, "Could not create detached review worktree.",
         )
-        return ReviewExecution(None, display_log_path(unavailable_log_path))
+        _log_review(
+            f"review session {session_id}; log: {display_log_path(unavailable_log_path)}",
+            indent_level=1,
+        )
+        return ReviewExecution(None, session_id)
 
     try:
         evidence_dir: str = os.path.join(
@@ -449,9 +462,11 @@ def _request_review(
             model=review_model,
             thinking_level="high",
         )
-        displayed_log_path: str = display_log_path(result.log_path)
+        # The path resolves only on this machine; the identifier is what the
+        # descriptor and the pull request carry. §FS-durable-generation-logs
         _log_review(
-            f"{selection.backend} review log: {displayed_log_path}",
+            f"{selection.backend} review session {session_id}; "
+            f"log: {display_log_path(result.log_path)}",
             indent_level=1,
         )
         if result.return_code != 0:
@@ -465,11 +480,11 @@ def _request_review(
                 f"Review {detail}",
                 indent_level=1,
             )
-            return ReviewExecution(None, displayed_log_path)
+            return ReviewExecution(None, session_id)
 
         verdict: LocalReviewVerdict | None = _read_verdict(verdict_path)
         if verdict is None:
-            return ReviewExecution(None, displayed_log_path)
+            return ReviewExecution(None, session_id)
         finalization_verified: bool = (
             task_type == "not-for-native-image"
             or finalization_receipt_matches(
@@ -490,7 +505,7 @@ def _request_review(
                 "Reviewer edits do not have a stable finalization receipt",
                 indent_level=1,
             )
-            return ReviewExecution(None, displayed_log_path)
+            return ReviewExecution(None, session_id)
         if changed_paths and (
                 not verdict.finding_title.strip() or not verdict.fix_note.strip()
         ):
@@ -498,13 +513,13 @@ def _request_review(
                 "Reviewer edited the tree without a complete finding and fix note",
                 indent_level=1,
             )
-            return ReviewExecution(None, displayed_log_path)
+            return ReviewExecution(None, session_id)
         if verdict.decision == "rejected":
-            return ReviewExecution(verdict, displayed_log_path)
+            return ReviewExecution(verdict, session_id)
         if changed_paths:
             review_commit: str = _git_stdout(worktree_path, ["rev-parse", "HEAD"])
             subprocess.run(["git", "cherry-pick", review_commit], cwd=repo_path, check=True)
-        return ReviewExecution(verdict, displayed_log_path, changed_paths)
+        return ReviewExecution(verdict, session_id, changed_paths)
     finally:
         _remove_review_worktree(repo_path, worktree_path)
 

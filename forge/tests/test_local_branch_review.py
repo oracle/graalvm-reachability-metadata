@@ -149,7 +149,7 @@ class LocalBranchReviewTests(unittest.TestCase):
         verdict = _verdict()
         outcome = module.LocalBranchReviewOutcome(
             model="gpt-test",
-            session_log_path="task-logs/review.log",
+            session_id="a1b2c3d4e5f60718",
             local_ci_verification=verification,
             verdict=verdict,
             changed_paths=["source.txt"],
@@ -190,7 +190,7 @@ class LocalBranchReviewTests(unittest.TestCase):
         descriptor_input = SimpleNamespace(timestamp="2026-08-25T10:00:00Z")
         outcome = module.LocalBranchReviewOutcome(
             model="gpt-test",
-            session_log_path="task-logs/review.log",
+            session_id="a1b2c3d4e5f60718",
             local_ci_verification=verification,
             verdict=_verdict(),
         )
@@ -273,9 +273,8 @@ class LocalBranchReviewTests(unittest.TestCase):
             thinking_level="high",
         )
         self.assertEqual(execution.verdict, verdict)
-        self.assertEqual(
-            execution.session_log_path, module.display_log_path(result.log_path),
-        )
+        # A session identifier, never a path into the operator's gitignored logs.
+        self.assertRegex(execution.session_id, r"^[0-9a-f]{16}$")
         remove_worktree.assert_called_once_with("/repo", review_worktree)
 
     def test_review_prompt_finishes_finalization_before_verdict(self) -> None:

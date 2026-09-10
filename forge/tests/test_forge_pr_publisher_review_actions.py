@@ -40,7 +40,7 @@ def _descriptor(action: str | None = None) -> dict[str, Any]:
         "finding_body": "" if action is None else "Native Image cannot support this version.",
         "fix_note": "",
         "model": "gpt-5.6-terra",
-        "session_log_path": "task-logs/review.log",
+        "session_id": "a1b2c3d4e5f60718",
         "changed_paths": [],
     }
     if action is not None:

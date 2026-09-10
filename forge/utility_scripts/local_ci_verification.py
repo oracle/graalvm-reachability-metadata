@@ -53,25 +53,33 @@ DOCKER_IMAGE_LIST_COMMAND = ["docker", "image", "ls", "--format", "{{.Repository
 
 @dataclass
 class CommandRecord:
-    """A single local CI command and its outcome."""
+    """A single local CI command and its outcome.
+
+    The log path is deliberately absent: the record reaches the publication
+    descriptor, where a path into the operator's gitignored `logs/` tree resolves
+    for no reader. The path is printed for the operator instead.
+    §FS-durable-generation-logs
+    """
 
     gate: str
     command: list[str]
     returncode: int
     env: dict[str, str] = field(default_factory=dict)
-    log_path: str | None = None
     output_excerpt: str = ""
 
 
 @dataclass
 class FixupRecord:
-    """A verifier fixup attempt."""
+    """A verifier fixup attempt.
+
+    Like `CommandRecord`, it reaches the publication descriptor and so carries no
+    log path. §FS-durable-generation-logs
+    """
 
     gate: str
     command: list[str]
     commit: str | None
     changed_paths: list[str]
-    log_path: str | None = None
 
 
 @dataclass(frozen=True)
@@ -482,7 +490,6 @@ def _run_recorded_command(
             command=command,
             returncode=1,
             env=display_env,
-            log_path=display_log_path(log_path),
             output_excerpt=output,
         )
         result.commands.append(record)
@@ -514,14 +521,17 @@ def _run_recorded_command(
         command=command,
         returncode=returncode,
         env=display_env,
-        log_path=display_log_path(log_path),
         output_excerpt=_tail(output),
     )
     result.commands.append(record)
+    displayed_log_path = display_log_path(log_path)
     if returncode != 0:
-        _log_local_ci(f"Gate {gate} failed with exit code {returncode}; log: {record.log_path}", indent_level=1)
+        _log_local_ci(
+            f"Gate {gate} failed with exit code {returncode}; log: {displayed_log_path}",
+            indent_level=1,
+        )
         return record
-    _log_local_ci(f"Gate {gate} passed; log: {record.log_path}", indent_level=1)
+    _log_local_ci(f"Gate {gate} passed; log: {displayed_log_path}", indent_level=1)
     return None
 
 
@@ -654,12 +664,18 @@ def _run_fixup(repo_path: str, coordinates: str, failed_command: CommandRecord) 
         library=coordinates,
         commit_message="Apply local CI verification fixes",
     )
+    outcome = attempt.failure_reason or f"committed {attempt.commit}"
+    # The record no longer carries the path, so this line is the only place the
+    # operator learns which log holds the fixup turn. §FS-durable-generation-logs
+    _log_local_ci(
+        f"Fixup for gate {failed_command.gate} {outcome}; log: {attempt.log_path}",
+        indent_level=1,
+    )
     return FixupRecord(
         gate=failed_command.gate,
         command=attempt.command,
         commit=attempt.commit,
         changed_paths=attempt.changed_paths,
-        log_path=attempt.log_path,
     )
 
 
@@ -1091,9 +1107,8 @@ def _record_synthetic_failure(
         command=command,
         returncode=1,
         env=dict(env or {}),
-        log_path=display_log_path(log_path),
         output_excerpt=_tail(output),
     )
     result.commands.append(record)
-    _log_local_ci(f"Gate {gate} failed; log: {record.log_path}", indent_level=1)
+    _log_local_ci(f"Gate {gate} failed; log: {display_log_path(log_path)}", indent_level=1)
     return record

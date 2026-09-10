@@ -161,7 +161,6 @@
         "finding_body",
         "fix_note",
         "model",
-        "session_log_path",
         "changed_paths"
       ],
       "properties": {
@@ -193,7 +192,14 @@
           "minLength": 1,
           "maxLength": 200
         },
+        "session_id": {
+          "description": "Identifier of the reviewer session. Never a filesystem path: the operator's log tree is gitignored, so a path resolves for nobody who reads the pull request.",
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
         "session_log_path": {
+          "description": "Historic. Descriptors already on master carry it; new descriptors must not.",
           "type": "string",
           "minLength": 1,
           "maxLength": 1000
@@ -586,12 +592,6 @@
               },
               "env": {
                 "type": "object"
-              },
-              "log_path": {
-                "type": [
-                  "string",
-                  "null"
-                ]
               },
               "output_excerpt": {
                 "type": "string"
