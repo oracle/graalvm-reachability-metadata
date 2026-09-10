@@ -147,9 +147,28 @@ reachability worktree. Durable evidence is the normalized record embedded in
 run metrics (§FS-forge-run-metrics).
 
 If the agent times out during `neural_setup()` or returns invalid, unavailable,
-or unsafe output, the driver must return a setup failure to orchestration. It
+or unusable output, the driver must return a setup failure to orchestration. It
 must keep the collected evidence and failure reason visible in metrics and
 continuation state rather than silently converting the failure to `no_action`.
+
+### 1.2 What the advisory prose scan is for
+
+Advisory guidance reaches the workflow prompt as evidence, never as instructions
+the driver executes, so the only prose the scan must catch is guidance that asks
+an agent to step outside the harness — shelling out, fetching from the network,
+or mutating the machine. The scan therefore matches requested *actions*.
+
+Subject matter is not a safety signal. Terms naming what a library is about —
+credentials, secrets, tokens and the like — describe the domain of database
+drivers, cloud SDKs, mail and SSH clients, and every lexer or parser, and are
+expected vocabulary in correct guidance for exactly those libraries. Scanning
+for them disqualifies sound decisions while stopping nothing, because unsafe
+intent phrased without those words passes untouched. The scan must not reject a
+decision on subject-matter vocabulary.
+
+A match degrades the decision, and the recorded failure reason names the
+matched terms, so a false positive is diagnosable from the metrics alone
+rather than needing a source read and a replay.
 
 Orchestration scripts must not let a failed workflow silently disappear.
 Successful or chunk-ready runs (§AR-chunked-dynamic-access-pr-linking) build one
