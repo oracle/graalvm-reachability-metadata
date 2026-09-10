@@ -6,12 +6,20 @@
  */
 package com_fasterxml_jackson_module.jackson_module_jaxb_annotations;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.nio.charset.StandardCharsets;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.type.TypeFactory;
 import com.fasterxml.jackson.module.jaxb.JaxbAnnotationIntrospector;
 import com.fasterxml.jackson.module.jaxb.JaxbAnnotationModule;
 import org.junit.jupiter.api.Test;
 
+import javax.activation.DataHandler;
+import javax.activation.DataSource;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
@@ -34,6 +42,22 @@ public class JaxbAnnotationIntrospectorTest {
         assertThat(json).isEqualTo("{\"identifier\":\"contact-7\",\"display-name\":\"Ada\"}");
         assertThat(restored.identifier).isEqualTo(expected.identifier);
         assertThat(restored.displayName).isEqualTo(expected.displayName);
+    }
+
+    @Test
+    void serializesAndDeserializesDataHandlerContent() throws Exception {
+        ObjectMapper mapper = new ObjectMapper().registerModule(new JaxbAnnotationModule());
+        byte[] payload = "jaxb-attachment".getBytes(StandardCharsets.UTF_8);
+        DataHandler expected = new DataHandler(new ByteArrayDataSource(payload));
+
+        String json = mapper.writeValueAsString(expected);
+        DataHandler restored = mapper.readValue(json, DataHandler.class);
+
+        assertThat(json).isEqualTo("\"amF4Yi1hdHRhY2htZW50\"");
+        assertThat(restored.getContentType()).isEqualTo("application/octet-stream");
+        try (InputStream input = restored.getInputStream()) {
+            assertThat(input.readAllBytes()).containsExactly(payload);
+        }
     }
 
     @Test
@@ -75,5 +99,33 @@ public class JaxbAnnotationIntrospectorTest {
         CONFIRMED,
 
         CANCELLED
+    }
+
+    private static final class ByteArrayDataSource implements DataSource {
+        private final byte[] content;
+
+        private ByteArrayDataSource(byte[] content) {
+            this.content = content.clone();
+        }
+
+        @Override
+        public InputStream getInputStream() {
+            return new ByteArrayInputStream(content);
+        }
+
+        @Override
+        public OutputStream getOutputStream() throws IOException {
+            throw new IOException("Read-only data source");
+        }
+
+        @Override
+        public String getContentType() {
+            return "application/octet-stream";
+        }
+
+        @Override
+        public String getName() {
+            return "jaxb-attachment";
+        }
     }
 }
