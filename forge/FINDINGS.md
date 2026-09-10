@@ -3,6 +3,14 @@
 Rendered by Forge from the pre-push branch review of §FS-local-branch-review.
 Newest entry first; every non-approval is recorded, including one a repair later cleared.
 
+## 2026-09-10 — org.bouncycastle:bcpkix-jdk15on:1.70 (#8918)
+
+**Dynamic-access statistics remained stale after test generation**
+
+The generated tree added serialization round-trip tests for all three reported holder classes, but its committed `stats.json` and local review evidence still reported the unchanged baseline of 0% (0/6). The inherited-interface test aggregation and `forkEvery = 1` setup also prevented the agent-origin output from representing the full test suite, leaving stale coverage evidence for the library-update review. Update reviews require current statistics to apply the coverage gate reliably.
+
+The attempted review repair did not pass pre-publication-gate-mutated-reviewed-tree; Forge restored the last verified tree, where this finding remains unresolved.
+
 ## 2026-09-03 — org.apache.kafka:kafka-streams:4.3.1 (#9764)
 
 **Issue-requested reachability metadata is missing**
