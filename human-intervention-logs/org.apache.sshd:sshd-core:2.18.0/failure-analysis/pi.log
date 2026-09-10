@@ -1,0 +1,19 @@
+## Human intervention needed
+
+The automated job failed while generating tests for `org.apache.sshd:sshd-core:2.18.0`.
+
+Preserved work: https://github.com/oracle/graalvm-reachability-metadata/tree/ai%2Fkimeta%2Fhuman-intervention%2Fissue-9958-library-new-request-org.apache.sshd-sshd-core-2.18.0-fdf437ad
+
+The persistent blocker is `nativeTestCompile`: Native Image reports that `org.apache.sshd.common.file.root.RootedFileSystemProvider` is stored in the image heap while runtime-initialized. This occurs even with only the scaffold placeholder test, indicating a classpath/service-provider initialization problem rather than a particular generated test. Six later Gradle runs reproduce it. A transient JVM failure parsing `PT10S` occurred earlier but was not the terminal blocker.
+
+After 12 iterations, metrics recorded the same starting and ending commit, `0` generated LOC, `0` metadata entries, and unavailable dynamic-access coverage. The preserved test remains a placeholder and the metadata file is empty.
+
+Inspect:
+- `logs/org.apache.sshd:sshd-core:2.18.0/add-new-library-support/pi-generation-2026-09-10T05-38-12-634414Z.log`
+- `logs/org.apache.sshd:sshd-core:2.18.0/gradle-test/gradle-test-2026-09-10T06-02-46-433546Z.log`
+- `logs/org.apache.sshd:sshd-core:2.18.0/gradle-test/gradle-test-2026-09-10T05-57-55-024343Z.log`
+
+Manual next steps:
+1. Reproduce with `./gradlew nativeTestCompile -Pcoordinates=org.apache.sshd:sshd-core:2.18.0 --stacktrace` and trace the `RootedFileSystemProvider` instantiation.
+2. Find a dependency, upstream, or harness-level solution that avoids image-heap capture without adding forbidden build-time-initialization configuration.
+3. Replace the placeholder with meaningful in-process SSH client/server coverage, then rerun the coordinate tests and metadata/coverage generation.
