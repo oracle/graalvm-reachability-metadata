@@ -14,6 +14,7 @@ import org.gradle.api.DefaultTask;
 import org.gradle.api.tasks.TaskAction;
 import org.gradle.api.tasks.options.Option;
 import org.gradle.process.ExecOperations;
+import org.gradle.process.ExecResult;
 
 import javax.inject.Inject;
 import java.io.*;
@@ -33,7 +34,7 @@ public abstract class GrypeTask extends DefaultTask {
     @Inject
     protected abstract ExecOperations getExecOperations();
 
-    @Option(option = "baseCommit", description = "Base commit for the image comparison")
+    @Option(option = "baseCommit", description = "Last commit from master")
     void setBaseCommit(String baseCommit) {
         this.baseCommit = baseCommit;
     }
@@ -48,6 +49,8 @@ public abstract class GrypeTask extends DefaultTask {
 
     private static final String JQ_MATCHER = " | jq -c '.matches | .[] | .vulnerability | select(.severity | (contains(\"High\") or contains(\"Critical\")))'";
     private static final String DOCKERFILE_DIRECTORY = "allowed-docker-images";
+    private static final String DOCKERFILE_PATH = "tests/tck-build-logic/src/main/resources/" + DOCKERFILE_DIRECTORY;
+    private static final String FROM_DIRECTIVE = "FROM";
 
     private static final String HIGH_VULNERABILITY = "HIGH";
     private static final String CRITICAL_VULNERABILITY = "CRITICAL";
@@ -97,43 +100,48 @@ public abstract class GrypeTask extends DefaultTask {
 
     /**
      * Scans images that have been changed between org.graalvm.internal.tck.GrypeTask#baseCommit and org.graalvm.internal.tck.GrypeTask#newCommit.
-     * Existing images pass when they are no more vulnerable than their base-commit version.
-     * New images are reported and establish their initial vulnerability baseline.
+     * An image that is already allowed at the base commit must not be more vulnerable than its base-commit version;
+     * an image that is not allowed yet has nothing to compare against, so it establishes its own baseline
+     * (§AR-scan-docker-images).
      */
     private void scanChangedImages() throws IOException, URISyntaxException {
         Set<DockerImage> imagesToCheck = getChangedImages().stream().map(this::makeDockerImage).collect(Collectors.toSet());
         List<DockerImage> vulnerableImages = imagesToCheck.stream().filter(DockerImage::isVulnerableImage).toList();
+        if (vulnerableImages.isEmpty()) {
+            return;
+        }
 
-        if (!vulnerableImages.isEmpty()) {
-            int acceptedImages = 0;
-            Set<String> currentlyAllowedImages = getAllowedImagesFromBaseCommit();
+        Set<String> currentlyAllowedImages = getAllowedImagesFromBaseCommit();
+        int acceptedImages = 0;
 
-            for (DockerImage image : vulnerableImages) {
-                image.printVulnerabilityStatus();
+        for (DockerImage image : vulnerableImages) {
+            image.printVulnerabilityStatus();
 
-                // get allowed image with the same name, if it exists
-                Optional<String> existingAllowedImage = currentlyAllowedImages.stream()
-                        .filter(allowedImage -> DockerUtils.getImageName(allowedImage).equalsIgnoreCase(image.getImageName()))
-                        .findFirst();
+            // get allowed image with the same name, if it exists
+            Optional<String> existingAllowedImage = currentlyAllowedImages.stream()
+                    .filter(allowedImage -> DockerUtils.getImageName(allowedImage).equalsIgnoreCase(image.getImageName()))
+                    .findFirst();
 
-                if (existingAllowedImage.isEmpty()) {
-                    System.out.println("Accepting new image without an existing vulnerability baseline: " + image.image());
-                    acceptedImages++;
-                    continue;
-                }
-
-                DockerImage imageToCompare = makeDockerImage(existingAllowedImage.get());
-                imageToCompare.printVulnerabilityStatus();
-
-                if (image.isNotMoreVulnerable(imageToCompare)) {
-                    System.out.println("Accepting: " + image.image() + " because it does not have more vulnerabilities than existing: " + imageToCompare.image());
-                    acceptedImages++;
-                }
+            if (existingAllowedImage.isEmpty()) {
+                // the image is allowed for the first time: its counts printed above become the baseline
+                System.out.println("Accepting: " + image.image() + " because it is not allowed yet. "
+                        + "The vulnerabilities reported above become the baseline that later changes to this image must not exceed");
+                acceptedImages++;
+                continue;
             }
 
-            if (acceptedImages < vulnerableImages.size()) {
-                throw new IllegalStateException("Highly vulnerable images found. Please check the list of vulnerable images provided above.");
+            // check if a new image is not more vulnerable than the existing one
+            DockerImage imageToCompare = makeDockerImage(existingAllowedImage.get());
+            imageToCompare.printVulnerabilityStatus();
+
+            if (image.isNotMoreVulnerable(imageToCompare)) {
+                System.out.println("Accepting: " + image.image() + " because it does not have more vulnerabilities than existing: " + imageToCompare.image());
+                acceptedImages++;
             }
+        }
+
+        if (acceptedImages < vulnerableImages.size()) {
+            throw new IllegalStateException("Highly vulnerable images found. Please check the list of vulnerable images provided above.");
         }
     }
 
@@ -213,18 +221,27 @@ public abstract class GrypeTask extends DefaultTask {
     }
 
     /**
-     * Return all allowed docker images from the base commit
+     * Returns all docker images that are allowed at org.graalvm.internal.tck.GrypeTask#baseCommit, which is the
+     * baseline a changed image is compared against (§AR-scan-docker-images). Reading the base commit rather than a
+     * fixed branch keeps a pull request measured against the commit it branched from.
      */
     private Set<String> getAllowedImagesFromBaseCommit() {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        getExecOperations().exec(spec -> {
+        ExecResult result = getExecOperations().exec(spec -> {
             spec.setStandardOutput(outputStream);
-            spec.commandLine("git", "grep", "^FROM ", baseCommit, "--",
-                    "tests/tck-build-logic/src/main/resources/allowed-docker-images");
+            spec.setIgnoreExitValue(true);
+            spec.commandLine("git", "grep", "-h", "^" + FROM_DIRECTIVE + " ", baseCommit, "--", DOCKERFILE_PATH);
         });
 
-        return outputStream.toString(StandardCharsets.UTF_8).lines()
-                .map(line -> line.substring(line.indexOf("FROM ") + "FROM ".length()).trim())
+        // git grep exits with 1 when nothing matches, which is the legitimate "no image is allowed yet" case
+        if (result.getExitValue() > 1) {
+            result.assertNormalExitValue();
+        }
+
+        return Arrays.stream(outputStream.toString(StandardCharsets.UTF_8).split("\\r?\\n"))
+                .map(String::trim)
+                .filter(line -> line.startsWith(FROM_DIRECTIVE))
+                .map(line -> line.substring(FROM_DIRECTIVE.length()).trim())
                 .collect(Collectors.toSet());
     }
 }

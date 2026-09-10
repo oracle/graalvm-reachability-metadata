@@ -1,0 +1,145 @@
+{
+  "base_commit": "59e35bb79e88315d510d2e101c4ba2963a31627e",
+  "branch": "ai/kimeta/add-lib-support-com.fasterxml.jackson.module-jackson-module-jaxb-annotations-2.22.2-forge-9955-20260910052526812421-5e8a55127f7c",
+  "follow_ups": [],
+  "forge": {
+    "branch": "master",
+    "commit": "efa1ab1a09be3152010e3a29ac6eb77929d22154",
+    "monitored_branch": "origin/issue-9962-authoritative-local-review"
+  },
+  "issue_number": 9955,
+  "library": {
+    "artifact": "jackson-module-jaxb-annotations",
+    "coordinates": "com.fasterxml.jackson.module:jackson-module-jaxb-annotations:2.22.2",
+    "group": "com.fasterxml.jackson.module",
+    "version": "2.22.2"
+  },
+  "local_ci_verification": {
+    "base_commit": "59e35bb79e88315d510d2e101c4ba2963a31627e",
+    "commands": [
+      {
+        "command": [
+          "./gradlew",
+          "generateChangedIndexFileCoordinatesList",
+          "-PbaseCommit=origin/master",
+          "-PnewCommit=HEAD"
+        ],
+        "env": {
+          "GITHUB_OUTPUT": "/tmp/tmpxnha2ku_"
+        },
+        "gate": "changed-index-coordinates",
+        "log_path": "logs/changed-index-coordinates/local-ci/gradlew-2026-09-10T05-25-32-292169Z.log",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :generateChangedIndexFileCoordinatesList\n\n[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata-copy/forge/local_repositories/forge_worktrees/9955-befabbca/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 2s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      },
+      {
+        "command": [
+          "./gradlew",
+          "validateIndexFiles",
+          "-Pcoordinates=com.fasterxml.jackson.module:jackson-module-jaxb-annotations"
+        ],
+        "env": {},
+        "gate": "index-file-validation",
+        "log_path": "logs/index-file-validation/local-ci/gradlew-2026-09-10T05-25-34-514182Z.log",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :validateIndexFiles\n✅ metadata/com.fasterxml.jackson.module/jackson-module-jaxb-annotations/index.json: Valid\n\n[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata-copy/forge/local_repositories/forge_worktrees/9955-befabbca/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 1s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      }
+    ],
+    "failure_command": null,
+    "failure_gate": null,
+    "final_commit": "32fce5f8002abe9fd28be940940f1804ae95c785",
+    "fixups": [],
+    "human_intervention_required": false,
+    "repo_fix_paths": [],
+    "status": "success"
+  },
+  "local_review": {
+    "changed_paths": [],
+    "decision": "approved",
+    "finding_body": "",
+    "finding_title": "",
+    "fix_note": "",
+    "model": "gpt-5.6-sol",
+    "review_comment": "The diff is scoped to one coordinate and uses only reachability-metadata.json. The public, version-agnostic test suite exercises JAXB annotation introspection, serialization, deserialization, enum naming, and DataHandler handling without scaffold code, package visibility bypasses, Native Image skips, tolerated failures, runtime class definition, or direct reflection shortcuts. Reported dynamic-access coverage is 3/3 (100%), above the new-library gate, and 3 covered calls do not trigger the mismatch probe against 14 reported library plus test-only metadata entries. The supplied changed-coordinate and index-validation gates passed at the reviewed head, and the tree contains no unrelated publishable changes. All applicable musts are satisfied.",
+    "session_log_path": "logs/com.fasterxml.jackson.module:jackson-module-jaxb-annotations:2.22.2/local-branch-review/pi.log"
+  },
+  "metrics": {
+    "agent": "pi",
+    "model": "gpt-5.6-terra",
+    "path": "stats/com.fasterxml.jackson.module/jackson-module-jaxb-annotations/2.22.2/execution-metrics.json",
+    "summary": {
+      "cached_input_tokens_used": 588288,
+      "code_coverage_percent": 31.28,
+      "cost_usd": 0.4575,
+      "generated_loc": 104,
+      "input_tokens_used": 69383,
+      "iterations": 5,
+      "metadata_entries": 4,
+      "output_tokens_used": 9129,
+      "test_only_metadata_entries": 10,
+      "tested_library_loc": 234
+    },
+    "timestamp": "2026-09-10T05:25:26.812421Z"
+  },
+  "modifiers": {
+    "chunk_final": true,
+    "chunked_dynamic_access": false,
+    "human_intervention": false
+  },
+  "producer": "kimeta",
+  "publication_id": "forge-9955-20260910052526812421-5e8a55127f7c",
+  "render": {
+    "dynamic_access": null,
+    "dynamic_access_evidence": {
+      "covered_call_sites": [
+        "[reflection] java.lang.Class#getDeclaredFields() <- com.fasterxml.jackson.module.jaxb.JaxbAnnotationIntrospector.findEnumValues(JaxbAnnotationIntrospector.java:943) (line 943)",
+        "[reflection] java.lang.Class#newInstance() <- com.fasterxml.jackson.module.jaxb.JaxbAnnotationIntrospector.<init>(JaxbAnnotationIntrospector.java:145) (line 145)",
+        "[reflection] java.lang.Class#newInstance() <- com.fasterxml.jackson.module.jaxb.JaxbAnnotationIntrospector.<init>(JaxbAnnotationIntrospector.java:146) (line 146)"
+      ],
+      "metadata_rules": [
+        "when `com.fasterxml.jackson.module.jaxb.JaxbAnnotationIntrospector` is reached, make `com.fasterxml.jackson.module.jaxb.deser.DataHandlerJsonDeserializer.<init>()` available for reflection",
+        "when `com.fasterxml.jackson.module.jaxb.JaxbAnnotationIntrospector` is reached, make `com.fasterxml.jackson.module.jaxb.ser.DataHandlerJsonSerializer.<init>()` available for reflection"
+      ]
+    },
+    "library_stats": {
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 3,
+            "totalCalls": 3
+          }
+        },
+        "coverageRatio": 1.0,
+        "coveredCalls": 3,
+        "totalCalls": 3
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 912,
+          "missed": 2097,
+          "ratio": 0.303091,
+          "total": 3009
+        },
+        "line": {
+          "covered": 234,
+          "missed": 514,
+          "ratio": 0.312834,
+          "total": 748
+        },
+        "method": {
+          "covered": 55,
+          "missed": 63,
+          "ratio": 0.466102,
+          "total": 118
+        }
+      },
+      "version": "2.22.2"
+    }
+  },
+  "schema_version": 1,
+  "strategy_name": "dynamic_access_main_sources_pi_gpt-5.6-terra",
+  "task_type": "library-new-request",
+  "template_type": "library-new-request",
+  "timestamp": "2026-09-10T05:25:26.812421Z"
+}

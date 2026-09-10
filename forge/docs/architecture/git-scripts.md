@@ -86,12 +86,10 @@ The descriptor contains data, never GitHub instructions:
   reference and publication metrics, local verification evidence, optional
   post-generation intervention, and Forge revision evidence;
 - typed flags for chunking, final-chunk state, and human-intervention evidence;
-- the pre-push review verdict as its own object rather than folded into the
-  human-intervention flag, so the publisher can render what the review found and
-  triage can still tell the causes of the label apart (§FS-local-branch-review).
-  It carries the reviewer's own decision, comment, finding, and fix note, the
-  session log path, and — separately, because it is Forge's fact and not the
-  reviewer's — whether a repair had to be reverted before the push;
+- the authoritative pre-push review verdict as its own object
+  (§FS-local-branch-review). It carries `approved`, or `rejected` with the
+  required `human-intervention` or `close` action, plus the review comment,
+  finding, fix note, model and session provenance, and changed-path evidence;
 - typed follow-up facts for deferred dynamic-access coverage or a tested-version
   split, each carrying the number of the issue Forge already opened locally, so
   the publisher only references it.
@@ -120,15 +118,9 @@ feature branch and must not create or modify GitHub resources. The title and
 body it publishes come from the shared non-mutating renderer
 (§AR-pr-preview-builders), never from a second rendering path.
 
-Strict validation also computes the local-review attestation output for the
-triggering SHA. The publisher helper reads only the validated descriptor and
-returns true exactly for the four safe local review and verification values in
-§FS-automated-pr-review. The validation job exposes that result as a job output;
-a separate `Forge Local Review Attestation` job runs only for true and succeeds
-without reading feature-branch code. A false result skips that job rather than
-failing Branch Ready. The existing-publication no-op is resolved before strict
-validation and exports false, so a maintenance push cannot turn an old
-descriptor verdict into a new current-SHA attestation.
+Strict validation exposes no synthetic review check. The descriptor itself is
+the exact-head decision record consumed later by the authenticated Forge
+PR-review process (§FS-automated-pr-review).
 
 Its push trigger is scoped to the descriptor path, which excludes ordinary
 repair pushes. A force-pushed rebase can still match that path when GitHub's
@@ -192,12 +184,14 @@ structural: the descriptor producer must equal the pushing actor and must own th
 `ai/<producer>/` branch namespace, so a publication cannot be attributed to
 someone who did not push it.
 
-The publisher renders the PR, applies only the fixed primary label and trusted
-modifiers (`GenAI`, `chunked-dynamic-access`, and `human-intervention`),
-requests configured reviewers, and records the PR URL in the job summary. It
-references follow-up issues by the number the descriptor carries; creation and
-project parking already happened locally, keyed off durable run state so a
-retried run reuses the same issue.
+The publisher renders and always creates or updates the PR, applies the fixed
+primary labels and trusted non-review modifiers, requests configured reviewers,
+and records the PR URL in the job summary. Only
+`local_review.decision: rejected` with action `human-intervention` adds that
+label. Rejected action `close` instead posts one marked explanation, closes the
+PR, labels the linked issue `library-unsupported-version`, and closes it. Those
+mutations are idempotent. Follow-up issue references still come from typed
+descriptor facts created locally.
 
 `FORGE_PR_PUBLISH_MODE` controls rollout. A missing value or `shadow` renders
 and uploads the title/body evidence without creating GitHub resources; only

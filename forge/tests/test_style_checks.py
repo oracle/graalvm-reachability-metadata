@@ -113,6 +113,24 @@ class StyleChecksTests(unittest.TestCase):
         self.assertEqual(coordinate_test.call_count, 2)
         self.assertEqual(checkstyle.call_count, 3)
 
+    def test_verification_mode_does_not_launch_checkstyle_agent(self) -> None:
+        failed = subprocess.CompletedProcess([], 1, stdout="checkstyle failure")
+        with patch("utility_scripts.style_checks._run_gradle_task", return_value=True), \
+                patch(
+                    "utility_scripts.style_checks._run_checkstyle",
+                    return_value=failed,
+                ), patch(
+                    "utility_scripts.style_checks._run_analysis_checkstyle_fix",
+                ) as analysis_fix:
+            result = run_style_fix_and_checks(
+                "/repo",
+                "g:a:1.0",
+                allow_agent_repairs=False,
+            )
+
+        self.assertFalse(result)
+        analysis_fix.assert_not_called()
+
 
 if __name__ == "__main__":
     unittest.main()

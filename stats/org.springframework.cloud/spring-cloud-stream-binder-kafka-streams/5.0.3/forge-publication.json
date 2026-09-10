@@ -1,0 +1,162 @@
+{
+  "base_commit": "a244ea34c5ef8d1484eef3650f36d64258e83367",
+  "branch": "ai/kimeta/add-lib-support-org.springframework.cloud-spring-cloud-stream-binder-kafka-streams-5.0.3-forge-9953-20260909040152355307-82694c58a214",
+  "follow_ups": [],
+  "forge": {
+    "branch": "master",
+    "commit": "7aac39f8d83c08c8a8e261a1c7686859182116ea",
+    "monitored_branch": "origin/issue-9962-authoritative-local-review"
+  },
+  "issue_number": 9953,
+  "library": {
+    "artifact": "spring-cloud-stream-binder-kafka-streams",
+    "coordinates": "org.springframework.cloud:spring-cloud-stream-binder-kafka-streams:5.0.3",
+    "group": "org.springframework.cloud",
+    "version": "5.0.3"
+  },
+  "local_ci_verification": {
+    "base_commit": "a244ea34c5ef8d1484eef3650f36d64258e83367",
+    "commands": [
+      {
+        "command": [
+          "./gradlew",
+          "generateChangedIndexFileCoordinatesList",
+          "-PbaseCommit=origin/master",
+          "-PnewCommit=HEAD"
+        ],
+        "env": {
+          "GITHUB_OUTPUT": "/tmp/tmpopl20fz6"
+        },
+        "gate": "changed-index-coordinates",
+        "log_path": "logs/changed-index-coordinates/local-ci/gradlew-2026-09-09T04-01-58-431329Z.log",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :generateChangedIndexFileCoordinatesList\n\n[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata-copy/forge/local_repositories/forge_worktrees/9953-f933ffb4/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 2s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      },
+      {
+        "command": [
+          "./gradlew",
+          "validateIndexFiles",
+          "-Pcoordinates=org.springframework.cloud:spring-cloud-stream-binder-kafka-streams"
+        ],
+        "env": {},
+        "gate": "index-file-validation",
+        "log_path": "logs/index-file-validation/local-ci/gradlew-2026-09-09T04-02-00-803108Z.log",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :validateIndexFiles\n✅ metadata/org.springframework.cloud/spring-cloud-stream-binder-kafka-streams/index.json: Valid\n\n[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata-copy/forge/local_repositories/forge_worktrees/9953-f933ffb4/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 1s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      }
+    ],
+    "failure_command": null,
+    "failure_gate": null,
+    "final_commit": "9e0d7743e263f1301f558717f04a2ce32b9ba81a",
+    "fixups": [],
+    "human_intervention_required": false,
+    "repo_fix_paths": [],
+    "status": "success"
+  },
+  "local_review": {
+    "changed_paths": [],
+    "decision": "approved",
+    "failed_step": null,
+    "finding_body": "",
+    "finding_title": "",
+    "fix_note": "",
+    "model": "gpt-5.6-sol",
+    "published_tree": "verified",
+    "repair_reverted": false,
+    "review_comment": "Reviewed the specified commit range for the single target coordinate. The diff stays within the allowed metadata, stats, and test paths; uses only reachability-metadata.json; and the tests are library-specific, public, version-agnostic, separately packaged, and do not skip or tolerate Native Image failures. Reported dynamic-access coverage is 10/10 (100%), above the required gate, and the 93 reported library-plus-test-only metadata entries do not trigger the entry-count mismatch check. Index validation evidence was green, and I additionally verified git diff --check, checkMetadataFiles, checkstyle, validateLibraryStats, and the full JVM/native test lane successfully. No enumerated rule violation was found.",
+    "session_log_path": "logs/org.springframework.cloud:spring-cloud-stream-binder-kafka-streams:5.0.3/local-branch-review/pi.log",
+    "status": "completed"
+  },
+  "metrics": {
+    "agent": "pi",
+    "model": "gpt-5.6-terra",
+    "path": "stats/org.springframework.cloud/spring-cloud-stream-binder-kafka-streams/5.0.3/execution-metrics.json",
+    "summary": {
+      "cached_input_tokens_used": 4048896,
+      "code_coverage_percent": 9.88,
+      "cost_usd": 2.788,
+      "generated_loc": 400,
+      "input_tokens_used": 391766,
+      "iterations": 8,
+      "metadata_entries": 34,
+      "output_tokens_used": 53096,
+      "test_only_metadata_entries": 59,
+      "tested_library_loc": 265
+    },
+    "timestamp": "2026-09-09T04:01:52.355307Z"
+  },
+  "modifiers": {
+    "chunk_final": true,
+    "chunked_dynamic_access": false,
+    "human_intervention": false
+  },
+  "producer": "kimeta",
+  "publication_id": "forge-9953-20260909040152355307-82694c58a214",
+  "render": {
+    "dynamic_access": null,
+    "dynamic_access_evidence": {
+      "covered_call_sites": [
+        "[reflection] java.lang.reflect.Method#invoke(java.lang.Object, java.lang.Object[]) <- org.springframework.cloud.stream.binder.kafka.streams.GlobalKTableBoundElementFactory$GlobalKTableWrapperHandler.invoke(GlobalKTableBoundElementFactory.java:118) (line 118)",
+        "[reflection] java.lang.reflect.Method#invoke(java.lang.Object, java.lang.Object[]) <- org.springframework.cloud.stream.binder.kafka.streams.GlobalKTableBoundElementFactory$GlobalKTableWrapperHandler.invoke(GlobalKTableBoundElementFactory.java:123) (line 123)",
+        "[reflection] java.lang.reflect.Method#invoke(java.lang.Object, java.lang.Object[]) <- org.springframework.cloud.stream.binder.kafka.streams.KStreamBoundElementFactory$KStreamWrapperHandler.invoke(KStreamBoundElementFactory.java:137) (line 137)",
+        "[reflection] java.lang.reflect.Method#invoke(java.lang.Object, java.lang.Object[]) <- org.springframework.cloud.stream.binder.kafka.streams.KStreamBoundElementFactory$KStreamWrapperHandler.invoke(KStreamBoundElementFactory.java:142) (line 142)",
+        "[reflection] java.lang.reflect.Method#invoke(java.lang.Object, java.lang.Object[]) <- org.springframework.cloud.stream.binder.kafka.streams.KTableBoundElementFactory$KTableWrapperHandler.invoke(KTableBoundElementFactory.java:113) (line 113)",
+        "[reflection] java.lang.reflect.Method#invoke(java.lang.Object, java.lang.Object[]) <- org.springframework.cloud.stream.binder.kafka.streams.KTableBoundElementFactory$KTableWrapperHandler.invoke(KTableBoundElementFactory.java:118) (line 118)",
+        "[reflection] java.lang.Class#getDeclaredMethods() <- org.springframework.cloud.stream.binder.kafka.streams.function.FunctionDetectorCondition.pruneFunctionBeansForKafkaStreams(FunctionDetectorCondition.java:97) (line 97)",
+        "[reflection] java.lang.Class#getMethods() <- org.springframework.cloud.stream.binder.kafka.streams.function.FunctionDetectorCondition.pruneFunctionBeansForKafkaStreams(FunctionDetectorCondition.java:101) (line 101)",
+        "... and 2 more"
+      ],
+      "metadata_rules": [
+        "when `org.springframework.cloud.stream.binder.kafka.streams.GlobalKTableBoundElementFactory` is reached, make `kotlinx.coroutines.reactor.MonoKt` available for reflection",
+        "when `org.springframework.cloud.stream.binder.kafka.streams.GlobalKTableBoundElementFactory` is reached, make `org.apache.kafka.streams.kstream.GlobalKTable` available for reflection",
+        "when `org.springframework.cloud.stream.binder.kafka.streams.GlobalKTableBoundElementFactory$GlobalKTableWrapperHandler` is reached, make `org.apache.kafka.streams.kstream.GlobalKTable.queryableStoreName()` available for reflection",
+        "when `org.springframework.cloud.stream.binder.kafka.streams.KStreamBoundElementFactory` is reached, make `org.apache.kafka.streams.kstream.KStream` available for reflection",
+        "when `org.springframework.cloud.stream.binder.kafka.streams.KStreamBoundElementFactory$KStreamWrapperHandler` is reached, make `org.apache.kafka.streams.kstream.KStream.mapValues(org.apache.kafka.streams.kstream.ValueMapper, org.apache.kafka.streams.kstream.Named)` available for reflection",
+        "when `org.springframework.cloud.stream.binder.kafka.streams.KTableBoundElementFactory` is reached, make `org.apache.kafka.streams.kstream.KTable` available for reflection",
+        "when `org.springframework.cloud.stream.binder.kafka.streams.KTableBoundElementFactory$KTableWrapperHandler` is reached, make `org.apache.kafka.streams.kstream.KTable.queryableStoreName()` available for reflection",
+        "when `org.springframework.cloud.stream.binder.kafka.streams.KTableBoundElementFactory$KTableWrapperHandler` is reached, make `org.apache.kafka.streams.kstream.KTable.toStream(org.apache.kafka.streams.kstream.Named)` available for reflection",
+        "... and 17 more"
+      ]
+    },
+    "library_stats": {
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 10,
+            "totalCalls": 10
+          }
+        },
+        "coverageRatio": 1.0,
+        "coveredCalls": 10,
+        "totalCalls": 10
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 1103,
+          "missed": 10592,
+          "ratio": 0.094314,
+          "total": 11695
+        },
+        "line": {
+          "covered": 265,
+          "missed": 2416,
+          "ratio": 0.098844,
+          "total": 2681
+        },
+        "method": {
+          "covered": 50,
+          "missed": 491,
+          "ratio": 0.092421,
+          "total": 541
+        }
+      },
+      "version": "5.0.3"
+    }
+  },
+  "schema_version": 1,
+  "strategy_name": "dynamic_access_main_sources_pi_gpt-5.6-terra",
+  "task_type": "library-new-request",
+  "template_type": "library-new-request",
+  "timestamp": "2026-09-09T04:01:52.355307Z"
+}

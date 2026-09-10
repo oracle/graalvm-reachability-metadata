@@ -113,7 +113,6 @@ def _descriptor(**render_overrides: Any) -> dict[str, Any]:
 
 def _local_review() -> dict[str, Any]:
     return {
-        "status": "completed",
         "decision": "approved",
         "review_comment": "Checked the publication rules; no blocking issue remains.",
         "finding_title": "",
@@ -122,9 +121,6 @@ def _local_review() -> dict[str, Any]:
         "model": "gpt-5.6-terra",
         "session_log_path": "task-logs/review.log",
         "changed_paths": [],
-        "repair_reverted": False,
-        "failed_step": None,
-        "published_tree": "verified",
     }
 
 
@@ -136,13 +132,14 @@ class CoveragePublisherTemplateTests(unittest.TestCase):
 
         Draft202012Validator(schema, format_checker=FormatChecker()).validate(_descriptor())
 
-    def test_unavailable_review_has_no_reviewer_words(self) -> None:
+    def test_rejected_review_requires_action_and_finding(self) -> None:
         review = _local_review()
-        review["status"] = "unavailable"
-        for field in (
-                "decision", "review_comment", "finding_title", "finding_body", "fix_note",
-        ):
-            review.pop(field)
+        review.update({
+            "decision": "rejected",
+            "action": "human-intervention",
+            "finding_title": "Reviewer unavailable",
+            "finding_body": "Forge could not obtain a readable verdict.",
+        })
         with open(SCHEMA_PATH, encoding="utf-8") as schema_file:
             schema = json.load(schema_file)
 
@@ -150,17 +147,10 @@ class CoveragePublisherTemplateTests(unittest.TestCase):
             schema["properties"]["local_review"], format_checker=FormatChecker(),
         ).validate(review)
         body = publisher._render_local_review({"local_review": review})
+        self.assertIn("- Decision: `rejected`", body)
+        self.assertIn("- Action: `human-intervention`", body)
 
-        self.assertIn("reviewer was unavailable", body)
-        self.assertIn("no reviewer verdict or finding", body)
-        self.assertNotIn("Checked the publication rules", body)
-
-    def test_nonapproval_requires_a_complete_finding(self) -> None:
-        review = _local_review()
-        review["decision"] = "changes_requested"
-        with open(SCHEMA_PATH, encoding="utf-8") as schema_file:
-            schema = json.load(schema_file)
-
+        review.pop("action")
         with self.assertRaises(ValidationError):
             Draft202012Validator(
                 schema["properties"]["local_review"], format_checker=FormatChecker(),
@@ -290,14 +280,15 @@ class CoveragePublisherTemplateTests(unittest.TestCase):
 
         self.assertNotIn("## Local Agent Review", body)
 
-    def test_review_nonapproval_or_reverted_repair_requires_intervention(self) -> None:
+    def test_only_rejected_human_intervention_requires_label(self) -> None:
         descriptor = {"local_review": _local_review()}
         self.assertFalse(publisher._local_review_requires_human_intervention(descriptor))
-        descriptor["local_review"]["decision"] = "changes_requested"
-        self.assertTrue(publisher._local_review_requires_human_intervention(descriptor))
-        descriptor["local_review"]["decision"] = "approved"
-        descriptor["local_review"]["repair_reverted"] = True
-        descriptor["local_review"]["failed_step"] = "checkMetadataFiles"
+        descriptor["local_review"].update({
+            "decision": "rejected",
+            "action": "close",
+        })
+        self.assertFalse(publisher._local_review_requires_human_intervention(descriptor))
+        descriptor["local_review"]["action"] = "human-intervention"
         self.assertTrue(publisher._local_review_requires_human_intervention(descriptor))
 
     def test_body_omits_the_forge_revision_block(self) -> None:
