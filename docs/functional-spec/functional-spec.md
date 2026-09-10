@@ -403,6 +403,17 @@ discarded before Maven Central is queried. Before a candidate enters the run it
 is de-duplicated against open issues: a library whose newest candidate version
 already has an open `[Automation] … fails for <group:artifact:version>` issue is
 skipped, so a known-failing version is not re-tested every day.
+
+That de-duplication is suppression while an issue is open, not a decision. A
+version whose issue has been closed re-enters the run on the next day. The
+permanent exclusion is the artifact's `skipped-versions`, whose entries are
+removed from the candidate list before de-duplication and never re-enter it.
+The distinction matters because §FS-library-version-update-automation.2 stops a
+library at its first failing version: a version that cannot be supported and is
+not skipped both re-files its own issue indefinitely and blocks every later
+version of that library from ever being tested. Skip entries are written by the
+disposition in §FS-contribution-contract.5.4.
+
 `generateNewLibraryVersionCompatibilityMatrix` turns the surviving candidates
 into the CI test matrix, bounded by the per-run library budget and the
 ≤ 30-newer-versions-per-library cap (§FS-repository-functional-spec.5.3). When

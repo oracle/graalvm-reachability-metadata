@@ -514,10 +514,12 @@ signature to close the gap. Instead, in order:
    unsupported scenario and cover the rest of the library's public surface.
    This is the usual outcome and it keeps the shipped metadata justified.
 2. **If no public API works, the version is unsupportable.** Metadata no test
-   justifies is not shipped: close the pull request, label the issue
-   `library-unsupported-version`, and report the incompatibility upstream, as
-   §FS-contribution-contract.5.4 sets out for the same case reached from the
-   library's side.
+   justifies is not shipped: record the version in the artifact's
+   `skipped-versions` so the compatibility automation stops re-testing it, label
+   the issue `library-unsupported-version`, and report the incompatibility
+   upstream. §FS-contribution-contract.5.4 sets out the full disposition for the
+   same case reached from the library's side, including when the contribution
+   becomes the skip record and when it is closed outright.
 
 ### 4.4 No dependence on resource metadata for machine-local paths
 

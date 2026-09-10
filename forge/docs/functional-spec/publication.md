@@ -348,8 +348,22 @@ satisfies the review rules. A shared infrastructure defect is not repaired on
 the contribution: the reviewer returns structured evidence, Forge opens or
 reuses one issue for that defect, and the descriptor records `rejected` plus
 `human-intervention`. Unsupported library behavior meeting
-§root/FS-contribution-contract.5.4 records `rejected` plus `close`. Every
-other unresolved or uncertain finding records `rejected` plus
+§root/FS-contribution-contract.5.4 records `rejected` plus `close` only where
+that rule finds no index entry to record the skip in. Where the artifact has
+one, the reviewer repairs the contribution into the skip record that rule
+prescribes and the descriptor carries the ordinary `approved` decision.
+
+**A skip record is rendered from the tree.** Descriptor facts state what the
+agent generated, and this repair deletes exactly the generated files, so a body
+rendered from the descriptor would report metadata entries, coverage percentages
+and stats diffs for files that no longer exist. Publication therefore detects the
+repair from the published tree — the artifact's `index.json` gained
+`skipped-versions` entries and the contribution ships no `metadata/<version>/` —
+and replaces the template body with the recorded versions and their reasons, read
+from those same entries. The title is left as the contribution's own template
+rendered it: it carries the run and model provenance, and publication identity is
+the branch and publication ID rather than the title.
+Every other unresolved or uncertain finding records `rejected` plus
 `human-intervention`.
 
 **Findings record.** Every finding is appended to tracked
