@@ -20,6 +20,30 @@ def _git(repo_path: str, *args: str) -> str:
     return subprocess.check_output(["git", *args], cwd=repo_path, text=True).strip()
 
 
+def _write(repo_path: str, relative_path: str, contents: str) -> None:
+    absolute_path = os.path.join(repo_path, relative_path)
+    os.makedirs(os.path.dirname(absolute_path), exist_ok=True)
+    with open(absolute_path, "w", encoding="utf-8") as target_file:
+        target_file.write(contents)
+
+
+def _init_repo(repo_path: str) -> None:
+    subprocess.run(["git", "init", "-q"], cwd=repo_path, check=True)
+    subprocess.run(["git", "config", "user.name", "Forge Test"], cwd=repo_path, check=True)
+    subprocess.run(
+        ["git", "config", "user.email", "forge-test@example.invalid"],
+        cwd=repo_path,
+        check=True,
+    )
+    _write(repo_path, "source.txt", "before\n")
+    subprocess.run(["git", "add", "."], cwd=repo_path, check=True)
+    subprocess.run(["git", "commit", "-qm", "Initial"], cwd=repo_path, check=True)
+
+
+def _tree(digest: str = "stable") -> module.PublishableTree:
+    return module.PublishableTree(head="reviewed", digest=digest, status=())
+
+
 def _verdict() -> module.LocalReviewVerdict:
     return module.LocalReviewVerdict(
         decision="approved",
@@ -115,11 +139,11 @@ class LocalBranchReviewTests(unittest.TestCase):
         execution = module.ReviewExecution(_verdict(), "task-logs/review.log", ["source.txt"])
 
         with patch.object(module, "_load_persisted_outcome", return_value=None), \
-                patch.object(module, "_git_stdout", side_effect=["base", "head", "reviewed"]), \
+                patch.object(module, "_git_stdout", side_effect=["base", "head"]), \
                 patch.object(module, "_request_review", return_value=execution), \
                 patch.object(module, "_record_outcome_finding"), \
                 patch.object(module, "_persist_outcome"), \
-                patch.object(module, "_tree_matches_commit", return_value=True), \
+                patch.object(module, "_capture_publishable_tree", return_value=_tree()), \
                 patch.object(module, "run_local_ci_verification", return_value=reverified) as local_ci:
             outcome = module.run_local_branch_review(
                 repo_path="/repo",
@@ -161,7 +185,7 @@ class LocalBranchReviewTests(unittest.TestCase):
                 side_effect=module.LocalCIVerificationError(failed),
             ) as local_ci, patch.object(
                 module, "_git_stdout", return_value="reviewed",
-            ), patch.object(module, "_tree_matches_commit", return_value=True), \
+            ), patch.object(module, "_capture_publishable_tree", return_value=_tree()), \
                 patch.object(module, "_reset_reviewer_edits") as reset:
             module._verify_reviewer_edits(
                 repo_path="/repo",
@@ -184,6 +208,86 @@ class LocalBranchReviewTests(unittest.TestCase):
             metrics_repo_path="/metrics",
             max_fixup_attempts=0,
         )
+
+    def test_scratch_file_does_not_revert_a_reviewer_repair(self) -> None:
+        """An unignored non-contribution file is not a gate mutation. §FS-local-branch-review"""
+        verification = LocalCIVerificationResult(status="success", base_commit="base")
+        reverified = LocalCIVerificationResult(status="success", base_commit="base")
+        verdict = _verdict()
+        outcome = module.LocalBranchReviewOutcome(
+            model="gpt-test",
+            session_log_path="task-logs/review.log",
+            local_ci_verification=verification,
+            verdict=verdict,
+            changed_paths=["source.txt"],
+        )
+
+        with tempfile.TemporaryDirectory() as repo_path:
+            _init_repo(repo_path)
+            base_commit = _git(repo_path, "rev-parse", "HEAD")
+            _write(repo_path, "source.txt", "reviewer repair\n")
+            subprocess.run(["git", "commit", "-aqm", "Repair"], cwd=repo_path, check=True)
+            _write(repo_path, "forge/.library_update_target.json", "{}\n")
+
+            with patch.object(
+                    module, "run_local_ci_verification", return_value=reverified,
+            ), patch.object(module, "_reset_reviewer_edits") as reset:
+                module._verify_reviewer_edits(
+                    repo_path=repo_path,
+                    coordinates="org.example:demo:1.0.0",
+                    base_commit=base_commit,
+                    verified_sha=base_commit,
+                    metrics_repo_path=None,
+                    original_verification=verification,
+                    outcome=outcome,
+                )
+
+        reset.assert_not_called()
+        self.assertIs(outcome.verdict, verdict)
+        self.assertEqual(outcome.verdict.decision, "approved")
+        self.assertIs(outcome.local_ci_verification, reverified)
+
+    def test_gate_changing_a_contribution_path_reverts_and_names_it(self) -> None:
+        """Only a publishable difference produces the mutation label. §FS-local-branch-review"""
+        verification = LocalCIVerificationResult(status="success", base_commit="base")
+        reverified = LocalCIVerificationResult(status="success", base_commit="base")
+        outcome = module.LocalBranchReviewOutcome(
+            model="gpt-test",
+            session_log_path="task-logs/review.log",
+            local_ci_verification=verification,
+            verdict=_verdict(),
+            changed_paths=["source.txt"],
+        )
+
+        with tempfile.TemporaryDirectory() as repo_path:
+            _init_repo(repo_path)
+            base_commit = _git(repo_path, "rev-parse", "HEAD")
+            _write(repo_path, "forge/.library_update_target.json", "{}\n")
+
+            def mutating_gate(**_: object) -> LocalCIVerificationResult:
+                _write(repo_path, "source.txt", "gate rewrote this\n")
+                return reverified
+
+            with patch.object(
+                    module, "run_local_ci_verification", side_effect=mutating_gate,
+            ), patch.object(module, "_reset_reviewer_edits") as reset:
+                module._verify_reviewer_edits(
+                    repo_path=repo_path,
+                    coordinates="org.example:demo:1.0.0",
+                    base_commit=base_commit,
+                    verified_sha=base_commit,
+                    metrics_repo_path=None,
+                    original_verification=verification,
+                    outcome=outcome,
+                )
+
+        reset.assert_called_once_with(repo_path, base_commit, None, verification)
+        self.assertEqual(outcome.verdict.decision, "rejected")
+        self.assertEqual(outcome.verdict.action, "human-intervention")
+        self.assertIn("pre-publication-gate-mutated-reviewed-tree", outcome.verdict.finding_body)
+        self.assertIn("source.txt", outcome.verdict.finding_body)
+        self.assertNotIn(".library_update_target.json", outcome.verdict.finding_body)
+        self.assertIs(outcome.local_ci_verification, verification)
 
     def test_persisted_verdict_is_scoped_to_publication_timestamp(self) -> None:
         verification = LocalCIVerificationResult(status="success", base_commit="base")

@@ -818,9 +818,11 @@ and the shared library finalizer with nested agents disabled. The command hashes
 the publishable tree around the run and requires another pass after any mutation,
 so the reviewer writes its verdict only after the complete finalizer succeeds
 without changing that tree. Forge does not run finalization afterward; it reruns
-only `local_ci_check()` without fixups. A repair remains `approved` only when that
-gate passes without changing the reviewed commit; a failure or mutation reaches
-`restore_verified_tree()`. A finding that cannot be resolved results in
+only `local_ci_check()` without fixups. Forge hashes the publishable tree with the
+same function around that gate, so the two checks agree by construction and a
+local scratch file the branch would never publish cannot read as a mutation. A
+repair remains `approved` only when the gate passes without changing that tree;
+a failure or a real mutation reaches `restore_verified_tree()`. A finding that cannot be resolved results in
 `rejected` with action `human-intervention` or `close`. Reviewer failure is the
 fixed rejected human-intervention outcome.
 
@@ -835,7 +837,8 @@ publication adds `human-intervention` only for the explicit rejected action
 **Algorithmic.**
 
 When a review repair cannot pass the no-fixup pre-publication gate without
-changing the reviewed commit, Forge returns to the last commit that gate passed.
+changing the publishable tree, Forge returns to the last commit that gate passed
+and records the paths that actually differed.
 It never reruns finalization or launches another agent after the verdict. This
 preserves an otherwise publishable generated result while ensuring an approval
 never describes edits that were discarded (§FS-local-branch-review).
