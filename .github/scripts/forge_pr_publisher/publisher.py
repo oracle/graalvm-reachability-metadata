@@ -494,9 +494,13 @@ def _render_local_review(descriptor: dict[str, Any]) -> str:
     action: Any = review.get("action")
     if isinstance(action, str):
         lines.append(f"- Action: `{action}`")
+    lines.append(f"- Model: `{review['model']}`")
+    session_id: Any = review.get("session_id")
+    # Never the log path: `forge/logs/` is gitignored, so the path resolved for
+    # nobody who read the pull request. §forge/AR-publication-descriptor
+    if isinstance(session_id, str) and session_id:
+        lines.append(f"- Review session: `{session_id}`")
     lines.extend([
-        f"- Model: `{review['model']}`",
-        f"- Session log: `{review['session_log_path']}`",
         "",
         review["review_comment"],
     ])

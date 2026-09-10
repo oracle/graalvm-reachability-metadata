@@ -244,6 +244,7 @@ from utility_scripts.strategy_loader import load_strategy_by_name, require_strat
 from utility_scripts.task_logs import (
     build_task_log_path,
     display_log_path,
+    new_session_id,
     resolve_logs_root,
     sanitize_library_log_segment,
 )
@@ -3270,6 +3271,7 @@ def repair_failed_ci_pull_request(
         f"Failed to create CI-repair worktree for PR #{pr_number}",
     )
     try:
+        session_id = new_session_id()
         evidence_dir = os.path.join(worktree_path, f".forge-ci-repair-{uuid.uuid4().hex[:8]}")
         os.makedirs(evidence_dir)
         evidence_path = os.path.join(evidence_dir, "evidence.json")
@@ -3311,7 +3313,11 @@ def repair_failed_ci_pull_request(
             environment=trusted_environment,
             thinking_level="xhigh",
         )
-        log_path = display_log_path(result.log_path)
+        # The identifier is what the descriptor and the pull request carry; the
+        # path is printed for the operator only. §FS-durable-generation-logs
+        print(
+            f"[CI repair session {session_id}; log: {display_log_path(result.log_path)}]"
+        )
         outcome = _read_ci_repair_outcome(verdict_path) if result.return_code == 0 else None
         shutil.rmtree(evidence_dir, ignore_errors=True)
         changed_paths = _ci_repair_changed_paths(worktree_path)
@@ -3361,7 +3367,10 @@ def repair_failed_ci_pull_request(
             verdict = LocalReviewVerdict(
                 decision="rejected",
                 action="human-intervention",
-                review_comment=f"Forge could not obtain a valid CI-repair verdict. Log: {log_path}",
+                review_comment=(
+                    "Forge could not obtain a valid CI-repair verdict in review session "
+                    f"{session_id}."
+                ),
                 finding_title="CI repair reviewer unavailable",
                 finding_body="The failed-CI repair turn did not return a readable decision.",
                 fix_note="",
@@ -3441,7 +3450,7 @@ def repair_failed_ci_pull_request(
             "finding_body": verdict.finding_body,
             "fix_note": verdict.fix_note,
             "model": selection.model,
-            "session_log_path": log_path,
+            "session_id": session_id,
             "changed_paths": changed_paths[:200],
         }
         if verdict.action is not None:

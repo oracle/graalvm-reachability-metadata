@@ -154,7 +154,7 @@ def _validated_publication(
         "finding_body": "" if decision == "approved" else "Reason.",
         "fix_note": "",
         "model": "test-model",
-        "session_log_path": "task-logs/review.log",
+        "session_id": "a1b2c3d4e5f60718",
         "changed_paths": [],
     }
     if action is not None:
@@ -404,16 +404,19 @@ class LibraryUpdateIssueTests(unittest.TestCase):
                 "library": "org.example:lib:1.0.0",
                 "deterministic_setup": [],
                 "failure_reason": "Agent timed out",
-                "session_log_path": "/tmp/preflight-session.log",
             }
             stdout = io.StringIO()
             run_location.enter_phase(PHASE_SETUP)
             with contextlib.redirect_stdout(stdout):
-                preflight_module._write_and_log_preflight(claimed_issue, record)
+                preflight_module._write_and_log_preflight(
+                    claimed_issue, record, "/tmp/preflight-session.log",
+                )
             run_location.reset_run_location()
 
         self.assertIn("Library preflight degraded for org.example:lib:1.0.0: Agent timed out", stdout.getvalue())
+        # The log path reaches the operator's console; the persisted record never carries it.
         self.assertIn("preflight-session.log", stdout.getvalue())
+        self.assertNotIn("session_log_path", record)
 
     def test_library_preflight_dispatches_without_a_strategy(self) -> None:
         claimed_issue = forge_metadata.ClaimedIssue(
@@ -468,9 +471,11 @@ class LibraryUpdateIssueTests(unittest.TestCase):
                 preflight_module, "build_library_preflight_input_bundle",
                 return_value={"library": "org.example:lib:1.0.0"},
         ), patch.object(
-                preflight_module, "_write_text_artifact", return_value="/tmp/a.txt",
+                preflight_module, "_write_text_artifact",
         ), patch.object(
-                preflight_module, "_write_and_log_preflight", side_effect=lambda _i, record: record,
+                preflight_module,
+                "_write_and_log_preflight",
+                side_effect=lambda _i, record, _log=None: record,
         ):
             record = preflight_module.run_library_preparation_preflight(
                 claimed_issue=claimed_issue,
@@ -483,6 +488,10 @@ class LibraryUpdateIssueTests(unittest.TestCase):
         self.assertEqual(record["model"], "cheap-model")
         self.assertEqual(record["input_tokens_used"], 11)
         self.assertEqual(record["output_tokens_used"], 7)
+        # No path field survives into the committed metrics record.
+        self.assertEqual(
+            {"prompt_path", "raw_response_path", "session_log_path"} & set(record), set(),
+        )
 
     def test_issue_lookup_does_not_request_body_for_generic_claiming(self) -> None:
         issue_payload = {

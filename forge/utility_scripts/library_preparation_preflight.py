@@ -211,9 +211,6 @@ def _degraded_library_preflight_record(
         input_bundle: dict[str, Any],
         failure_reason: str,
         model_name: str | None = None,
-        prompt_path: str | None = None,
-        raw_response_path: str | None = None,
-        session_log_path: str | None = None,
 ) -> dict[str, Any]:
     """Record an unavailable or unusable preflight as no-action advisory output."""
     record = _base_library_preflight_record(claimed_issue, input_bundle)
@@ -221,12 +218,6 @@ def _degraded_library_preflight_record(
     record["failure_reason"] = failure_reason
     if model_name:
         record["model"] = model_name
-    if prompt_path:
-        record["prompt_path"] = prompt_path
-    if raw_response_path:
-        record["raw_response_path"] = raw_response_path
-    if session_log_path:
-        record["session_log_path"] = session_log_path
     return record
 
 
@@ -317,9 +308,6 @@ def _completed_library_preflight_record(
         response_payload: dict[str, Any],
         model_name: str,
         result: Any | None,
-        prompt_path: str | None,
-        raw_response_path: str | None,
-        session_log_path: str | None,
 ) -> dict[str, Any]:
     """Normalize a valid preflight response into the persisted metrics shape."""
     action = str(response_payload.get("action") or "no_action").strip()
@@ -346,12 +334,6 @@ def _completed_library_preflight_record(
     record["model"] = model_name
     record["input_tokens_used"] = int(getattr(result, "input_tokens", 0) or 0)
     record["output_tokens_used"] = int(getattr(result, "output_tokens", 0) or 0)
-    if prompt_path:
-        record["prompt_path"] = prompt_path
-    if raw_response_path:
-        record["raw_response_path"] = raw_response_path
-    if session_log_path:
-        record["session_log_path"] = session_log_path
     return record
 
 
@@ -394,27 +376,11 @@ def _library_preflight_prompt(input_bundle: dict[str, Any]) -> str:
     )
 
 
-def _relative_or_absolute_path(path: str | None, root: str) -> str | None:
-    """Return a stable metrics path, relative when it is under the metrics root."""
-    if not path:
-        return None
-    try:
-        absolute_path = os.path.abspath(path)
-        absolute_root = os.path.abspath(root)
-        if os.path.commonpath([absolute_path, absolute_root]) == absolute_root:
-            return os.path.relpath(absolute_path, absolute_root)
-    except ValueError:
-        pass
-    return path
-
-
-def _write_text_artifact(root: str, file_name: str, content: str) -> str:
-    """Write a preflight text artifact and return its metrics-root-relative path."""
+def _write_text_artifact(root: str, file_name: str, content: str) -> None:
+    """Write a preflight text artifact next to the record it belongs to."""
     os.makedirs(root, exist_ok=True)
-    path = os.path.join(root, file_name)
-    with open(path, "w", encoding="utf-8") as artifact_file:
+    with open(os.path.join(root, file_name), "w", encoding="utf-8") as artifact_file:
         artifact_file.write(content)
-    return os.path.relpath(path, root)
 
 
 def _preflight_artifact_root(claimed_issue: Any) -> str:
@@ -422,8 +388,18 @@ def _preflight_artifact_root(claimed_issue: Any) -> str:
     return getattr(claimed_issue, "preflight_info_path", None) or claimed_issue.scratch_metrics_repo_path
 
 
-def _write_and_log_preflight(claimed_issue: Any, record: dict[str, Any]) -> str:
-    """Persist the record and log a one-line outcome, covering every decision path."""
+def _write_and_log_preflight(
+        claimed_issue: Any,
+        record: dict[str, Any],
+        session_log_path: str | None = None,
+) -> str:
+    """Persist the record and log a one-line outcome, covering every decision path.
+
+    The session log path is printed, never persisted: the record is committed to
+    `stats/`, where a path into the operator's gitignored `logs/` tree resolves for
+    no reader and an absolute one carries a home directory into a public
+    repository. §FS-durable-generation-logs
+    """
     detail = f"status={record.get('status')} action={record.get('action')}"
     setup_count = len(record.get("deterministic_setup") or [])
     if setup_count:
@@ -446,8 +422,9 @@ def _write_and_log_preflight(claimed_issue: Any, record: dict[str, Any]) -> str:
             f"Library preflight completed for {library}: {outcome}",
         )
     else:
-        log_path = record.get("session_log_path")
-        log_suffix = f" (log: {display_log_path(str(log_path))})" if log_path else ""
+        log_suffix = (
+            f" (log: {display_log_path(session_log_path)})" if session_log_path else ""
+        )
         failure_text = str(failure_reason or "no usable decision")
         log_step_progress(
             PHASE_SETUP,
@@ -489,12 +466,13 @@ def run_library_preparation_preflight(
     )
     prompt = _library_preflight_prompt(input_bundle)
     preflight_artifact_root = _preflight_artifact_root(claimed_issue)
-    prompt_path = _write_text_artifact(
+    # The prompt and the response stay on disk as run evidence; only their paths
+    # are kept out of the committed record.
+    _write_text_artifact(
         preflight_artifact_root,
         "library-preflight-prompt.txt",
         prompt,
     )
-    raw_response_path: str | None = None
     session_log_path: str | None = None
     model_name = selection.model
 
@@ -513,15 +491,12 @@ def run_library_preparation_preflight(
                 + (" (timed out)" if result.timed_out else "")
             )
         response_text = result.response
-        raw_response_path = _write_text_artifact(
+        _write_text_artifact(
             preflight_artifact_root,
             "library-preflight-response.txt",
             response_text,
         )
-        session_log_path = _relative_or_absolute_path(
-            result.session_log_path,
-            preflight_artifact_root,
-        )
+        session_log_path = result.session_log_path
         response_payload = _extract_preflight_json_response(response_text)
         record = _completed_library_preflight_record(
             claimed_issue,
@@ -529,26 +504,17 @@ def run_library_preparation_preflight(
             response_payload,
             model_name,
             result,
-            prompt_path,
-            raw_response_path,
-            session_log_path,
         )
     except Exception as exc:
         if session_log_path is None and result is not None:
-            session_log_path = _relative_or_absolute_path(
-                result.session_log_path,
-                preflight_artifact_root,
-            )
+            session_log_path = result.session_log_path
         record = _degraded_library_preflight_record(
             claimed_issue,
             input_bundle,
             f"{type(exc).__name__}: {exc}",
             model_name=model_name,
-            prompt_path=prompt_path,
-            raw_response_path=raw_response_path,
-            session_log_path=session_log_path,
         )
-    return _write_and_log_preflight(claimed_issue, record)
+    return _write_and_log_preflight(claimed_issue, record, session_log_path)
 
 
 def write_library_preparation_preflight(metrics_repo_root: str, preflight: dict[str, Any]) -> str:
