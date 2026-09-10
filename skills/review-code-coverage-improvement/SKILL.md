@@ -53,7 +53,7 @@ silently drops entries a consumer depends on. No library-owned entry may leave
 `metadata/<group>/<artifact>/<version>/reachability-metadata.json`.
 
 Removing an entry that rule 3 says should never have shipped is correct, not a
-violation. Every other removal is blocking.
+violation — rule 3 says where it goes instead. Every other removal is blocking.
 
 ```bash
 gh pr diff <pr> -- 'metadata/**/reachability-metadata.json' | grep '^-' | grep -v '^---'
@@ -84,6 +84,19 @@ gh pr diff <pr> -- 'metadata/**/reachability-metadata.json' \
 
 Cross-check each added name against the classes defined in the PR's test sources
 and in the existing test tree. A hit is blocking.
+
+The remedy is relocation, never deletion — the entry records dynamic access a
+real traced execution needed:
+
+- An entry whose `type` is test-defined moves to the test project's metadata
+  file.
+- An entry whose `type` is library-owned but whose `condition.typeReached` is
+  test-defined may stay shipped only re-conditioned on a library-defined type
+  that actually reaches it; otherwise it moves too.
+- The same discipline runs the other way: an entry leaves the test project's
+  metadata file only by promotion into shipped metadata under a library-owned
+  condition. A regeneration that plainly drops test-only entries breaks the
+  suite's native run the same way rule 2's removals break a consumer's.
 
 Nothing in the harness catches this for you:
 
@@ -140,6 +153,8 @@ Request changes when:
 - `dynamicAccess.coverageRatio` regressed or became `N/A` (ask for a rerun).
 - A library-owned entry was removed from shipped metadata.
 - A shipped entry names a class defined in a test source tree.
+- A test-only entry was deleted outright — from either file — instead of moved
+  to the test project's metadata file or re-conditioned on a library-owned type.
 - A legacy split-config file appears, or the suite carries its own metadata
   directory.
 - A test asserts nothing, reaches coverage only by invoking internals, or skips
@@ -154,8 +169,9 @@ Short, factual, blocking.
 - Removed metadata: name the dropped entries and say a coverage PR must not
   shrink shipped metadata.
 - Test-only leak: name the entry, say the class is defined in the PR's test
-  sources, and note that `splitTestOnlyMetadata` cannot separate it because the
-  coverage suite is outside the scanned source sets.
+  sources, ask for the move (or the library-owned re-condition), not a
+  deletion, and note that `splitTestOnlyMetadata` cannot separate it because
+  the coverage suite is outside the scanned source sets.
 - Internals-poking: say the test raises the number without exercising behavior a
   consumer can reach.
 - PGO-as-coverage: say only JaCoCo states coverage.
