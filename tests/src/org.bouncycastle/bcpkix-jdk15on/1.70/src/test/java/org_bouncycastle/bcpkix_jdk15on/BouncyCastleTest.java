@@ -38,7 +38,10 @@ import java.util.Date;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class BouncyCastleTest {
+public class BouncyCastleTest
+        implements X509AttributeCertificateHolderTest,
+                X509CertificateHolderTest,
+                X509CRLHolderTest {
 
     private final Provider provider = new BouncyCastleProvider();
 

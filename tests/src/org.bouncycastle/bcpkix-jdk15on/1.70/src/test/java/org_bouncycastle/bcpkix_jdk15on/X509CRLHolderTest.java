@@ -29,34 +29,33 @@ import org.bouncycastle.operator.jcajce.JcaContentSignerBuilder;
 import org.bouncycastle.operator.jcajce.JcaContentVerifierProviderBuilder;
 import org.junit.jupiter.api.Test;
 
-public class X509CRLHolderTest {
-
-    private static final BigInteger REVOKED_SERIAL_NUMBER = BigInteger.valueOf(4096);
-    private static final X500Name ISSUER = new X500Name("CN=CRL Serialization Test CA");
-    private static final Date THIS_UPDATE = Date.from(Instant.parse("2024-01-01T00:00:00Z"));
-    private static final Date NEXT_UPDATE = Date.from(Instant.parse("2025-01-01T00:00:00Z"));
-    private static final Date REVOCATION_DATE = Date.from(Instant.parse("2024-02-01T00:00:00Z"));
+public interface X509CRLHolderTest {
 
     @Test
-    void serializationRoundTripPreservesRevocationList() throws Exception {
+    default void serializationRoundTripPreservesRevocationList() throws Exception {
+        BigInteger revokedSerialNumber = BigInteger.valueOf(4096);
+        X500Name issuer = new X500Name("CN=CRL Serialization Test CA");
+        Date thisUpdate = Date.from(Instant.parse("2024-01-01T00:00:00Z"));
+        Date nextUpdate = Date.from(Instant.parse("2025-01-01T00:00:00Z"));
+        Date revocationDate = Date.from(Instant.parse("2024-02-01T00:00:00Z"));
         Provider provider = new BouncyCastleProvider();
         KeyPair keyPair = generateKeyPair(provider);
         ContentSigner signer = new JcaContentSignerBuilder("SHA256withRSA")
                 .setProvider(provider)
                 .build(keyPair.getPrivate());
         JcaX509v2CRLBuilder builder = new JcaX509v2CRLBuilder(
-                new X500Principal(ISSUER.getEncoded()), THIS_UPDATE);
-        builder.setNextUpdate(NEXT_UPDATE);
-        builder.addCRLEntry(REVOKED_SERIAL_NUMBER, REVOCATION_DATE, CRLReason.keyCompromise);
+                new X500Principal(issuer.getEncoded()), thisUpdate);
+        builder.setNextUpdate(nextUpdate);
+        builder.addCRLEntry(revokedSerialNumber, revocationDate, CRLReason.keyCompromise);
         X509CRLHolder original = builder.build(signer);
 
         X509CRLHolder restored = roundTrip(original);
 
         assertThat(restored).isEqualTo(original).isNotSameAs(original);
         assertThat(restored.getEncoded()).containsExactly(original.getEncoded());
-        assertThat(restored.getIssuer()).isEqualTo(ISSUER);
-        assertThat(restored.getRevokedCertificate(REVOKED_SERIAL_NUMBER).getSerialNumber())
-                .isEqualTo(REVOKED_SERIAL_NUMBER);
+        assertThat(restored.getIssuer()).isEqualTo(issuer);
+        assertThat(restored.getRevokedCertificate(revokedSerialNumber).getSerialNumber())
+                .isEqualTo(revokedSerialNumber);
         assertThat(restored.isSignatureValid(new JcaContentVerifierProviderBuilder()
                         .setProvider(provider)
                         .build(keyPair.getPublic())))

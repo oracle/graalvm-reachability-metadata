@@ -31,40 +31,38 @@ import org.bouncycastle.operator.jcajce.JcaContentSignerBuilder;
 import org.bouncycastle.operator.jcajce.JcaContentVerifierProviderBuilder;
 import org.junit.jupiter.api.Test;
 
-public class X509AttributeCertificateHolderTest {
-
-    private static final ASN1ObjectIdentifier ACCESS_ROLE =
-            new ASN1ObjectIdentifier("1.3.6.1.4.1.55555.1");
-    private static final X500Name HOLDER_NAME = new X500Name("CN=Release Approver");
-    private static final X500Name ISSUER_NAME = new X500Name("CN=Attribute Authority");
-    private static final BigInteger SERIAL_NUMBER = BigInteger.valueOf(424242);
-    private static final Date NOT_BEFORE = Date.from(Instant.parse("2024-01-01T00:00:00Z"));
-    private static final Date NOT_AFTER = Date.from(Instant.parse("2034-01-01T00:00:00Z"));
+public interface X509AttributeCertificateHolderTest {
 
     @Test
-    void serializationRoundTripPreservesSignedAttributeCertificate() throws Exception {
+    default void serializationRoundTripPreservesSignedAttributeCertificate() throws Exception {
+        ASN1ObjectIdentifier accessRole = new ASN1ObjectIdentifier("1.3.6.1.4.1.55555.1");
+        X500Name holderName = new X500Name("CN=Release Approver");
+        X500Name issuerName = new X500Name("CN=Attribute Authority");
+        BigInteger serialNumber = BigInteger.valueOf(424242);
+        Date notBefore = Date.from(Instant.parse("2024-01-01T00:00:00Z"));
+        Date notAfter = Date.from(Instant.parse("2034-01-01T00:00:00Z"));
         Provider provider = new BouncyCastleProvider();
         KeyPair keyPair = generateKeyPair(provider);
         ContentSigner signer = new JcaContentSignerBuilder("SHA256withRSA")
                 .setProvider(provider)
                 .build(keyPair.getPrivate());
         X509v2AttributeCertificateBuilder builder = new X509v2AttributeCertificateBuilder(
-                new AttributeCertificateHolder(HOLDER_NAME),
-                new AttributeCertificateIssuer(ISSUER_NAME),
-                SERIAL_NUMBER,
-                NOT_BEFORE,
-                NOT_AFTER);
-        builder.addAttribute(ACCESS_ROLE, new DERUTF8String("production-release"));
+                new AttributeCertificateHolder(holderName),
+                new AttributeCertificateIssuer(issuerName),
+                serialNumber,
+                notBefore,
+                notAfter);
+        builder.addAttribute(accessRole, new DERUTF8String("production-release"));
         X509AttributeCertificateHolder original = builder.build(signer);
 
         X509AttributeCertificateHolder restored = serializeAndRead(original);
 
         assertThat(restored).isEqualTo(original).isNotSameAs(original);
         assertThat(restored.getEncoded()).containsExactly(original.getEncoded());
-        assertThat(restored.getSerialNumber()).isEqualTo(SERIAL_NUMBER);
-        assertThat(restored.getHolder().getEntityNames()).containsExactly(HOLDER_NAME);
-        assertThat(restored.getIssuer().getNames()).containsExactly(ISSUER_NAME);
-        assertThat(restored.getAttributes(ACCESS_ROLE)).hasSize(1);
+        assertThat(restored.getSerialNumber()).isEqualTo(serialNumber);
+        assertThat(restored.getHolder().getEntityNames()).containsExactly(holderName);
+        assertThat(restored.getIssuer().getNames()).containsExactly(issuerName);
+        assertThat(restored.getAttributes(accessRole)).hasSize(1);
         assertThat(restored.isValidOn(Date.from(Instant.parse("2029-01-01T00:00:00Z")))).isTrue();
         assertThat(restored.isSignatureValid(new JcaContentVerifierProviderBuilder()
                         .setProvider(provider)

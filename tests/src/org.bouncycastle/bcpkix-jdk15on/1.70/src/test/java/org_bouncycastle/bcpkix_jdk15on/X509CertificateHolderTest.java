@@ -27,32 +27,31 @@ import org.bouncycastle.operator.jcajce.JcaContentSignerBuilder;
 import org.bouncycastle.operator.jcajce.JcaContentVerifierProviderBuilder;
 import org.junit.jupiter.api.Test;
 
-public class X509CertificateHolderTest {
-
-    private static final X500Name ISSUER = new X500Name("CN=Certificate Authority");
-    private static final X500Name SUBJECT = new X500Name("CN=Signed Service");
-    private static final BigInteger SERIAL_NUMBER = BigInteger.valueOf(7301);
-    private static final Date NOT_BEFORE = Date.from(Instant.parse("2024-01-01T00:00:00Z"));
-    private static final Date NOT_AFTER = Date.from(Instant.parse("2034-01-01T00:00:00Z"));
+public interface X509CertificateHolderTest {
 
     @Test
-    void serializationRoundTripPreservesSignedCertificate() throws Exception {
+    default void serializationRoundTripPreservesSignedCertificate() throws Exception {
+        X500Name issuer = new X500Name("CN=Certificate Authority");
+        X500Name subject = new X500Name("CN=Signed Service");
+        BigInteger serialNumber = BigInteger.valueOf(7301);
+        Date notBefore = Date.from(Instant.parse("2024-01-01T00:00:00Z"));
+        Date notAfter = Date.from(Instant.parse("2034-01-01T00:00:00Z"));
         Provider provider = new BouncyCastleProvider();
         KeyPair keyPair = generateKeyPair(provider);
         ContentSigner signer = new JcaContentSignerBuilder("SHA256withRSA")
                 .setProvider(provider)
                 .build(keyPair.getPrivate());
         X509CertificateHolder original = new JcaX509v3CertificateBuilder(
-                        ISSUER, SERIAL_NUMBER, NOT_BEFORE, NOT_AFTER, SUBJECT, keyPair.getPublic())
+                        issuer, serialNumber, notBefore, notAfter, subject, keyPair.getPublic())
                 .build(signer);
 
         X509CertificateHolder restored = roundTrip(original);
 
         assertThat(restored).isEqualTo(original).isNotSameAs(original);
         assertThat(restored.getEncoded()).containsExactly(original.getEncoded());
-        assertThat(restored.getSerialNumber()).isEqualTo(SERIAL_NUMBER);
-        assertThat(restored.getIssuer()).isEqualTo(ISSUER);
-        assertThat(restored.getSubject()).isEqualTo(SUBJECT);
+        assertThat(restored.getSerialNumber()).isEqualTo(serialNumber);
+        assertThat(restored.getIssuer()).isEqualTo(issuer);
+        assertThat(restored.getSubject()).isEqualTo(subject);
         assertThat(restored.isSignatureValid(new JcaContentVerifierProviderBuilder()
                         .setProvider(provider)
                         .build(keyPair.getPublic())))
