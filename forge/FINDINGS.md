@@ -3,6 +3,12 @@
 Rendered by Forge from the pre-push branch review of §FS-local-branch-review.
 Newest entry first; every non-approval is recorded, including one a repair later cleared.
 
+## 2026-09-10 — org.apache.sshd:sshd-sftp:2.18.0 (#9959)
+
+**Library tests rely on prohibited Native Image class-initialization flags**
+
+The coordinate's build.gradle adds --initialize-at-build-time for Apache SSHD and SLF4J classes. This violates §FS-test-contract.2.7, which permits only --add-opens/--add-exports native configuration in a test build. I removed the flag and preserved all three scenarios while replacing the rooted server filesystem with SSHD's native filesystem, but the current-defaults lane still failed because Native Image embedded service-discovered RootedFileSystemProvider and SftpFileSystemProviderFacade instances. After reverting that unsuccessful repair, the exact finalization command passed current-defaults but failed future-defaults because sun.nio.fs.LinuxFileSystemProvider also requires prohibited build-time initialization; see forge/logs/org.apache.sshd:sshd-sftp:2.18.0/local-review-finalization/review_future-defaults_latest_GraalVM_test-2026-09-10T07-12-43-936009Z.log. No compliant contribution-local repair was established, the evidence does not prove a shared repository defect, and §FS-contribution-contract.5.4 is not established, so §FS-contribution-contract.5.5 applies.
+
 ## 2026-09-03 — org.apache.kafka:kafka-streams:4.3.1 (#9764)
 
 **Issue-requested reachability metadata is missing**
