@@ -32,6 +32,15 @@ Merged coverage improvements do not move an existing benchmark input. A newer
 runner may still execute the old suite and records both identities.
 §FS-code-coverage-benchmarking.1
 
+The two identities map onto two directories, and the conversion record keeps
+them apart. `worktreePath` is the pinned source worktree — the library state
+under measurement — while `workPath` is the Forge tree the measurement helpers
+are imported and executed from. In the issue-driven flow both live in the same
+worktree, because it branches from `master` and its helpers are already current.
+A benchmark cell is the case where they diverge, so `workPath` is the runner's
+Forge path there and the pin is left holding only its input.
+§FS-code-coverage-benchmarking.1
+
 ## 2. Cell execution sequence
 
 The runner prints the complete selection before creating worktrees. Every cell
@@ -271,6 +280,30 @@ Conversion, preparation, finalization, and publication tokens are excluded from
 the initial metric. Missing partial evidence is `null`, never zero.
 `checkedInAllMethods` keeps the suite snapshot and
 `measuredAllMethodsDifference` exposes a changed measured universe.
+
+### 5.1 Final-metrics contract ownership
+
+The runner owns the final coverage metrics contract, and owns it by
+construction rather than by convention. `utility_scripts/code_coverage_finalize.py`
+writes `schemaVersion`, `schemas/code_coverage_final_metrics_schema.json`
+constrains it, and `code_coverage_benchmark.py` reads the record during
+publication. All three resolve from the runner: the first two through `workPath`,
+the third because publication always ran from the runner.
+
+Resolving the writer and its validator from the pinned worktree is what made a
+schema change landing between the pin and the run fatal. The two pinned ends
+agreed with each other, so finalization validated its own output honestly and
+every in-run gate passed; only the reader was current, and the disagreement
+surfaced at the terminal publication state with the whole execution already paid
+for. Nothing forbade that split, because nothing said which commit owned the
+record.
+
+Comparing the pinned and runner schema versions at launch would not be a
+safeguard against this. The suite commit deliberately does not advance
+(§FS-code-coverage-benchmarking.1), so a pin older than the current schema is
+the normal state, and refusing on that difference would refuse every valid
+campaign. One resolution source, not an equality check, is what keeps the
+contract whole. §FS-code-coverage-benchmarking.1
 
 ## 6. Publication boundary
 

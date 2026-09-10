@@ -132,6 +132,15 @@ records both `benchmarkSuiteCommit` and `runnerCommit`: the first identifies the
 library state being measured and the second is implementation provenance, not a
 second baseline or campaign identifier.
 
+The pinned worktree supplies the input and nothing else: the coordinate's test
+project and its metadata. Measurement is implementation, so every helper that
+analyses, ranks, classifies, renders prompts, or writes and validates metrics
+must resolve from the runner. A run whose helpers come from the pin records a
+`runnerCommit` that did not produce it, and makes a prompt or ranking change
+unmeasurable — the only way to reach the run would be to move the input, which
+changes the measured library state and invalidates comparison with every earlier
+result.
+
 The checked-in totals select and describe the suite; the run's own frozen JaCoCo
 method universe is authoritative in its metrics. A difference between the
 checked-in `All methods` value and the measured universe must be recorded, not
