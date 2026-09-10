@@ -1,0 +1,10 @@
+{
+  "action": "advisory_preparation",
+  "summary": "The module requires explicit registration and JAXB-annotated fixtures for meaningful coverage, but no extra dependency or Docker image.",
+  "deterministic_setup": [],
+  "agent_guidance": "Register com.fasterxml.jackson.module.jaxb.JaxbAnnotationModule with ObjectMapper and exercise serialization/deserialization of fixtures using javax.xml.bind.annotation annotations such as XmlRootElement, XmlElement, and XmlAttribute. The artifact already brings jackson dependencies, javax.xml.bind:jaxb-api:2.2.12, and jakarta.activation-api transitively; a JAXB implementation is not required for this module’s annotation-introspection path.",
+  "risks": [
+    "Do not use the Jakarta XML Bind annotations; this artifact supports javax.xml.bind annotations.",
+    "If tests exercise DataHandler, DOM, or actual JAXBContext functionality, additional runtime behavior and Native Image metadata may be required."
+  ]
+}
