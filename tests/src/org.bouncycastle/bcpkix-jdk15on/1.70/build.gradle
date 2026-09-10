@@ -15,6 +15,11 @@ dependencies {
     testImplementation 'org.assertj:assertj-core:3.22.0'
 }
 
+test {
+    // Give each serialization test a fresh ObjectStreamClass cache for agent origin tracking.
+    forkEvery = 1
+}
+
 graalvmNative {
     agent {
         defaultMode = "conditional"
