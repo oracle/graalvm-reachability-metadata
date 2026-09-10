@@ -373,12 +373,16 @@ finalization receipt, and owns staging and commits. A changed tree reruns only
 the pre-publication gate (§FS-local-ci-equivalent-verification.2), with fixups
 disabled; an unchanged tree does not. Finalization (§FS-local-ci-equivalent-verification.1) has already
 reached a stable tree inside the review and is not replayed. The gate is
-verification, not another mutation phase: the head and publishable worktree must
-remain byte-for-byte equal to the reviewed commit. If it fails or changes that
-tree, Forge restores the last verified tree, records the failed attempt in the
-finding, and publishes that exact tree as `rejected` with the action selected by
-the disposition ladder. No edit made after the verdict may enter the published
-head, and an approval of a discarded tree must never describe it.
+verification, not another mutation phase: the head and the publishable tree must
+be byte-for-byte identical before and after it runs. The comparison is over the
+publishable tree alone — the same content the finalization receipt hashes — so
+local scratch files that the branch would never publish are not evidence of a
+mutation, and only a difference the gate itself introduced counts. If the gate
+fails or changes that tree, Forge restores the last verified tree, records the
+failed attempt in the finding together with the paths that actually differed,
+and publishes that exact tree as `rejected` with the action selected by the
+disposition ladder. No edit made after the verdict may enter the published head,
+and an approval of a discarded tree must never describe it.
 
 **Durability and rendering.** The review prompt, response, and repair pass are
 durable task logs (§FS-durable-generation-logs). Its in-flight verdict is staged
