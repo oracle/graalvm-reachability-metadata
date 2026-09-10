@@ -113,10 +113,10 @@ Finding a violation is half the review. **Read §FS-contribution-contract.5 and 
 | 5.1 | The violation is in the PR's own `metadata/`, `stats/`, and `tests/src/` files | Repair it on the PR head, push, re-run the affected checks, and say what you changed and why |
 | 5.2 | The only possible fix is build logic, harness code, workflows, or another coordinate | Do not repair there; revert such a change if the PR already carries one, then take 5.3 |
 | 5.3 | The cause is a defect in shared repository code | Find or open one issue for the defect, comment that the PR is blocked on it rather than on its own content, then take 5.5 |
-| 5.4 | The library's dynamic access is reachable only through behavior Native Image cannot support | Close the PR, label the linked issue `library-unsupported-version`, and close that issue |
+| 5.4 | The library's dynamic access is reachable only through behavior Native Image cannot support | Turn the PR into the skip record: drop `metadata/<version>/`, `tests/src/<version>/` and the mirrored `stats/<version>/stats.json` and `execution-metrics.json` — keep `forge-publication.json` — then add `skipped-versions` entries to the artifact's `index.json` for this version and every newer one that shares the behavior, and approve the index-only result; make sure the linked issue carries `library-unsupported-version` — the merge closes it through the PR's link |
 | 5.5 | Anything else, uncertainty included | Label the PR `human-intervention` and comment with the rule at issue, what you tried, and what you could not decide |
 
-Never close a PR under any case but 5.4. Read §FS-contribution-contract.5.1 before you repair: it bounds what a repair may do, and it carries the one exception that lets you drop a test scenario rather than fix it.
+Never close a PR under any case but 5.4, and under this label 5.4 does not close it either — it records a skip the automation reads, because a closed-but-unskipped version is re-tested and re-reported on the next scheduled run. Read §FS-contribution-contract.5.1 before you repair: it bounds what a repair may do, and it carries the one exception that lets you drop a test scenario rather than fix it.
 
 ## Decision Rules
 
