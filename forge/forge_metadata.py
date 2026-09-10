@@ -49,6 +49,8 @@ from types import SimpleNamespace
 from typing import Any, Optional
 from urllib.parse import quote
 
+from jsonschema import ValidationError
+
 import ai_workflows.core  # noqa: F401 - triggers strategy registration
 from ai_workflows.drivers.add_new_library_support import (
     DEFAULT_MODEL_NAME,
@@ -2450,14 +2452,23 @@ def validate_pull_request_publication(
     if len(producer_parts) != 3 or not producer_parts[1]:
         raise ValueError(f"PR #{pr_number} head branch does not name a producer")
     publisher = _load_trusted_publisher_module(reachability_metadata_path)
-    with contextlib.chdir(reachability_metadata_path):
-        validated = publisher.validate_publication(
-            head_sha=head_sha,
-            branch=head_branch,
-            actor=producer_parts[1],
-            repository=REPO,
-            pull_request_head=True,
-        )
+    try:
+        with contextlib.chdir(reachability_metadata_path):
+            validated = publisher.validate_publication(
+                head_sha=head_sha,
+                branch=head_branch,
+                actor=producer_parts[1],
+                repository=REPO,
+                pull_request_head=True,
+            )
+    except ValidationError as error:
+        # A head whose descriptor was written against an older publication
+        # contract cannot be executed under the current one, so it is ineligible
+        # rather than a run failure (§FS-automated-pr-review).
+        raise ValueError(
+            f"PR #{pr_number} descriptor does not satisfy the current publication "
+            f"schema: {error.message}"
+        ) from error
 
     descriptor = validated.descriptor
     publication_id = descriptor.get("publication_id")

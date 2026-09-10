@@ -15,6 +15,8 @@ import unittest
 from collections.abc import Callable
 from unittest.mock import call, patch
 
+from jsonschema import Draft202012Validator, ValidationError
+
 import forge_metadata
 from types import SimpleNamespace
 from ai_workflows.agents.agent_runtime import AgentRunResult, AgentSelection
@@ -29,6 +31,30 @@ from utility_scripts.continuation_marker import (
 from utility_scripts.fixture_github import FixtureComment, FixtureGitHubState, FixtureIssue
 from utility_scripts.dynamic_access_report import DynamicAccessClass, DynamicAccessCoverageReport
 from utility_scripts.metrics_writer import PENDING_METRICS_FILENAME
+
+
+PUBLICATION_SCHEMA_PATH = os.path.join(
+    os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))),
+    ".github", "scripts", "forge_pr_publisher", "schema.json",
+)
+
+
+def _legacy_local_review() -> dict:
+    """Return the pre-authoritative-review `local_review` object shipped in old descriptors."""
+    return {
+        "decision": "changes_requested",
+        "review_comment": "Repaired the metadata.",
+        "finding_title": "Finding",
+        "finding_body": "Reason.",
+        "fix_note": "Fixed.",
+        "model": "test-model",
+        "session_log_path": "task-logs/review.log",
+        "changed_paths": ["metadata/org.example/demo/1.0/reachability-metadata.json"],
+        "failed_step": None,
+        "published_tree": "0" * 40,
+        "repair_reverted": False,
+        "status": "changes_requested",
+    }
 
 
 def _project_item_status_response(status: str) -> dict:
@@ -3189,6 +3215,56 @@ class PullRequestReviewSelectionTests(unittest.TestCase):
                     state, "/tmp/reachability",
                 )
         fetch.assert_not_called()
+
+    def test_legacy_descriptor_is_skipped_instead_of_failing_the_queue(self) -> None:
+        """A descriptor written against an older contract is ineligible, not a run failure.
+
+        §FS-automated-pr-review
+        """
+        with open(PUBLICATION_SCHEMA_PATH, "r", encoding="utf-8") as schema_file:
+            local_review_schema = json.load(schema_file)["properties"]["local_review"]
+        with self.assertRaises(ValidationError) as unvalidatable:
+            Draft202012Validator(local_review_schema).validate(_legacy_local_review())
+
+        def raise_schema_error(**_kwargs) -> None:
+            raise unvalidatable.exception
+
+        pull_request = _pull_request(9637, [forge_metadata.LABEL_LIBRARY_NEW])
+        state = _pull_request_state(9637, "SUCCESS")
+        output = io.StringIO()
+        with tempfile.TemporaryDirectory() as reachability_metadata_path:
+            with (
+                    patch.object(
+                        forge_metadata, "get_pull_requests_with_labels", return_value=[],
+                    ),
+                    patch.object(
+                        forge_metadata, "get_pull_requests_with_label",
+                        return_value=[pull_request],
+                    ),
+                    patch.object(
+                        forge_metadata, "attach_pull_request_state",
+                        side_effect=lambda _pull_request, _cache: state,
+                    ),
+                    patch.object(forge_metadata, "run_git_transport"),
+                    patch.object(
+                        forge_metadata, "_load_trusted_publisher_module",
+                        return_value=SimpleNamespace(validate_publication=raise_schema_error),
+                    ),
+                    patch.object(forge_metadata, "approve_pull_request_from_descriptor") as approve,
+                    patch.object(forge_metadata, "reconcile_rejected_publication") as reject,
+                    contextlib.redirect_stdout(output),
+            ):
+                forge_metadata.process_pull_requests_with_label(
+                    forge_metadata.LABEL_LIBRARY_NEW,
+                    2,
+                    reachability_metadata_path,
+                    "automation-user",
+                )
+
+        self.assertIn("Skipping ineligible PR #9637", output.getvalue())
+        self.assertIn("current publication schema", output.getvalue())
+        approve.assert_not_called()
+        reject.assert_not_called()
 
     def test_approved_publication_arms_auto_merge_without_semantic_agent(self) -> None:
         pull_request = _pull_request(9656, [forge_metadata.LABEL_LIBRARY_NEW])
