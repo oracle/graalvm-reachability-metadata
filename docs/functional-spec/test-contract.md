@@ -241,18 +241,15 @@ no better public API path exists (§FS-tests.1).
 
 **Consumer-required build-time initialization.** `--initialize-at-build-time` is
 permitted under one bounded exception, because a test that omits a flag the
-consumer cannot omit exercises a configuration nobody can ship. All four
+consumer cannot omit exercises a configuration nobody can ship. All three
 conditions hold together:
 
 1. the library produces no native image at all without the flag, so no test of
    any shape can pass without it;
 2. the requirement originates in the library or its transitive dependencies, not
-   in the test code, so no rewrite of the test removes it;
+   in the test code, so no rewrite of the test removes it; and
 3. the flag names only the types that force it, never a package or the library
-   at large; and
-4. the shipped `reachability-metadata.json` carries a top-level `comment` naming
-   the exact flags the consumer must add, since the bundle is the only artifact
-   the consumer receives and nothing else records the precondition.
+   at large.
 
 This is not a repair. A failing native image is evidence of missing metadata
 until conditions 1 and 2 are demonstrated, so the flag is never added to make a

@@ -23,9 +23,8 @@ this document describes the test-project contract.
 - `build.gradle` may add test dependencies and, when there is no better public
   API path, restrict Native Image configuration edits to `--add-opens` /
   `--add-exports` under `graalvmNative`. `--initialize-at-build-time` is
-  permitted only under the bounded consumer-required exception, and the shipped
-  `reachability-metadata.json` must then name that flag in a top-level `comment`
-  so a consumer of the bundle learns it is required (§FS-test-contract.2.7).
+  permitted only under the bounded consumer-required exception
+  (§FS-test-contract.2.7).
 - Test assertions use standard Java or library exceptions, not Gradle-only
   failure types such as `GradleException`.
 
