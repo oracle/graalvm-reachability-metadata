@@ -1,0 +1,118 @@
+{
+  "add_new_library_support:2026-09-09": {
+    "timestamp": "2026-09-09T04:01:52.355307Z",
+    "library": "org.springframework.cloud:spring-cloud-stream-binder-kafka-streams:5.0.3",
+    "starting_commit": "9f753272858b81f5b2b253d22c39ea10dd960327",
+    "ending_commit": "1b81e3c0ba734884f6c513077a2d9d1a2e92cee2",
+    "strategy_name": "dynamic_access_main_sources_pi_gpt-5.6-terra",
+    "agent": "pi",
+    "model": "gpt-5.6-terra",
+    "status": "success",
+    "stats": {
+      "version": "5.0.3",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 10,
+            "totalCalls": 10
+          }
+        },
+        "coverageRatio": 1.0,
+        "coveredCalls": 10,
+        "totalCalls": 10
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 1103,
+          "missed": 10592,
+          "ratio": 0.094314,
+          "total": 11695
+        },
+        "line": {
+          "covered": 265,
+          "missed": 2416,
+          "ratio": 0.098844,
+          "total": 2681
+        },
+        "method": {
+          "covered": 50,
+          "missed": 491,
+          "ratio": 0.092421,
+          "total": 541
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "advisory_preparation",
+      "issue_number": 9953,
+      "issue_label": "library-new-request",
+      "library": "org.springframework.cloud:spring-cloud-stream-binder-kafka-streams:5.0.3",
+      "summary": "Meaningful binder coverage requires a Spring Boot test context and an embedded Kafka broker.",
+      "deterministic_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "org.springframework.boot:spring-boot-starter-test:4.0.8",
+          "scope": "testImplementation",
+          "reason": "The binder relies on Spring Boot auto-configuration; upstream tests use Spring Boot test support."
+        },
+        {
+          "kind": "dependency",
+          "coordinate": "org.springframework.kafka:spring-kafka-test:4.0.7",
+          "scope": "testImplementation",
+          "reason": "Provides EmbeddedKafkaBroker and Kafka test utilities used by upstream Kafka Streams binder integration tests."
+        }
+      ],
+      "agent_guidance": "Use a real Kafka Streams binder with @EmbeddedKafka, one broker, unique topics, and dynamically wire the broker address to spring.kafka.bootstrap-servers or the binder broker property. Set an explicit unique spring.cloud.stream.kafka.streams.binder.applicationId, exercise a functional KStream/KTable input-to-output path, await asynchronous processing, and avoid the Spring Cloud Stream test binder. See https://docs.spring.io/spring-kafka/reference/testing.html and https://docs.spring.io/spring-cloud-stream/reference/kafka/kafka-streams-binder/usage.html.",
+      "risks": [
+        "spring-kafka-test brings Kafka server internals and newer JUnit dependencies; Gradle and Native Image compatibility must be verified locally."
+      ],
+      "applied_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "org.springframework.boot:spring-boot-starter-test:4.0.8",
+          "result": "applied",
+          "target": "tests/src/org.springframework.cloud/spring-cloud-stream-binder-kafka-streams/5.0.3/build.gradle"
+        },
+        {
+          "kind": "dependency",
+          "coordinate": "org.springframework.kafka:spring-kafka-test:4.0.7",
+          "result": "applied",
+          "target": "tests/src/org.springframework.cloud/spring-cloud-stream-binder-kafka-streams/5.0.3/build.gradle"
+        }
+      ],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#9953 Support for org.springframework.cloud:spring-cloud-stream-binder-kafka-streams:5.0.3; label=library-new-request; body_chars=52"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "gpt-5.6-luna",
+      "input_tokens_used": 3952290,
+      "output_tokens_used": 16350,
+      "prompt_path": "library-preflight-prompt.txt",
+      "raw_response_path": "library-preflight-response.txt",
+      "session_log_path": "/home/mihailo/git/graalvm-reachability-metadata-copy/forge/logs/org.springframework.cloud:spring-cloud-stream-binder-kafka-streams:5.0.3/library-preparation-preflight/codex-session-nevhqz6p.log"
+    },
+    "metrics": {
+      "input_tokens_used": 391766,
+      "cached_input_tokens_used": 4048896,
+      "output_tokens_used": 53096,
+      "iterations": 8,
+      "cost_usd": 2.788,
+      "generated_loc": 400,
+      "tested_library_loc": 265,
+      "metadata_entries": 34,
+      "test_only_metadata_entries": 59,
+      "code_coverage_percent": 9.88
+    },
+    "artifacts": {
+      "metadata_file": "metadata/org.springframework.cloud/spring-cloud-stream-binder-kafka-streams/5.0.3/reachability-metadata.json"
+    }
+  }
+}
