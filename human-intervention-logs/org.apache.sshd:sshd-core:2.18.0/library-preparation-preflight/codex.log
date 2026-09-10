@@ -1,0 +1,10 @@
+{
+  "action": "no_action",
+  "summary": "sshd-core is self-contained for meaningful client/server coverage; its required sshd-common and SLF4J dependencies resolve transitively, and in-process SSH tests need no Docker or special properties.",
+  "deterministic_setup": [],
+  "agent_guidance": "Exercise the public SshClient/SshServer APIs with an in-process server, generated host keys, and temporary filesystem paths. Avoid relying on a user's ~/.ssh configuration. Add optional crypto dependencies only if testing algorithms unavailable in the default JDK providers.",
+  "risks": [
+    "Native-image coverage may require explicit reachability metadata for service-loaded algorithms or key providers.",
+    "Tests involving optional Bouncy Castle, EdDSA, SFTP, or MINA backends require those modules explicitly."
+  ]
+}
