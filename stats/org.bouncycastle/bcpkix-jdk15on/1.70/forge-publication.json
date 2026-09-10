@@ -1,0 +1,151 @@
+{
+  "base_commit": "9169ecefc619903cd949688ca5fcfa4817a53d65",
+  "branch": "ai/kimeta/improve-coverage-org.bouncycastle-bcpkix-jdk15on-1.70-chunked-forge-8918-20260910085533191926-3dba8fdc1b24",
+  "follow_ups": [],
+  "forge": {
+    "branch": "master",
+    "commit": "efa1ab1a09be3152010e3a29ac6eb77929d22154",
+    "monitored_branch": "origin/issue-9962-authoritative-local-review"
+  },
+  "issue_number": 8918,
+  "library": {
+    "artifact": "bcpkix-jdk15on",
+    "coordinates": "org.bouncycastle:bcpkix-jdk15on:1.70",
+    "group": "org.bouncycastle",
+    "version": "1.70"
+  },
+  "local_ci_verification": {
+    "base_commit": "9169ecefc619903cd949688ca5fcfa4817a53d65",
+    "commands": [],
+    "failure_command": null,
+    "failure_gate": null,
+    "final_commit": "c82c057e1c320ea8d45942ae57e2ecfb772fc514",
+    "fixups": [],
+    "human_intervention_required": false,
+    "repo_fix_paths": [],
+    "status": "success"
+  },
+  "local_review": {
+    "action": "human-intervention",
+    "changed_paths": [
+      "stats/org.bouncycastle/bcpkix-jdk15on/1.70/stats.json",
+      "tests/src/org.bouncycastle/bcpkix-jdk15on/1.70/build.gradle",
+      "tests/src/org.bouncycastle/bcpkix-jdk15on/1.70/src/test/java/org_bouncycastle/bcpkix_jdk15on/BouncyCastleTest.java",
+      "tests/src/org.bouncycastle/bcpkix-jdk15on/1.70/src/test/java/org_bouncycastle/bcpkix_jdk15on/X509AttributeCertificateHolderTest.java",
+      "tests/src/org.bouncycastle/bcpkix-jdk15on/1.70/src/test/java/org_bouncycastle/bcpkix_jdk15on/X509CRLHolderTest.java",
+      "tests/src/org.bouncycastle/bcpkix-jdk15on/1.70/src/test/java/org_bouncycastle/bcpkix_jdk15on/X509CertificateHolderTest.java"
+    ],
+    "decision": "rejected",
+    "finding_body": "The generated tree added serialization round-trip tests for all three reported holder classes, but its committed `stats.json` and local review evidence still reported the unchanged baseline of 0% (0/6). The inherited-interface test aggregation and `forkEvery = 1` setup also prevented the agent-origin output from representing the full test suite, leaving stale coverage evidence for the library-update review. Update reviews require current statistics to apply the coverage gate reliably.\n\nThe attempted review repair did not pass pre-publication-gate-mutated-reviewed-tree; Forge restored the last verified tree, where this finding remains unresolved.",
+    "finding_title": "Dynamic-access statistics remained stale after test generation",
+    "fix_note": "Converted the three inherited JUnit test interfaces back to standalone public test classes, removed the ineffective per-class JVM forking configuration, and let Forge finalization regenerate `stats.json`. The repaired tree reports 66.6667% (4/6) dynamic-access coverage and passed a final no-change finalization run.",
+    "model": "gpt-5.6-sol",
+    "review_comment": "Approved after correction. I reviewed the coordinate-scoped metadata, stats, and tests; the locally recorded issue context; metadata conditions and format; test behavior; and the coverage comparison. The three standalone public tests build, serialize, deserialize, and validate X509AttributeCertificateHolder, X509CRLHolder, and X509CertificateHolder through their supported APIs on JVM and Native Image. There is no native skip, swallowed failure, version pin, visibility bypass, legacy metadata file, unsafe I/O, or unrelated coordinate change. Fresh statistics improve dynamic-access coverage from 0% (0/6) to 66.6667% (4/6), so the library-update non-regression gate passes. The exact Forge finalization command then completed all three test lanes, metadata routing and validation, style checks, generated-test validation, and statistics generation without another publishable change.\n\nThe attempted review repair did not pass pre-publication-gate-mutated-reviewed-tree; Forge restored the last verified tree, where this finding remains unresolved.",
+    "session_log_path": "logs/org.bouncycastle:bcpkix-jdk15on:1.70/local-branch-review/pi.log"
+  },
+  "metrics": {
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "path": "stats/org.bouncycastle/bcpkix-jdk15on/1.70/execution-metrics.json",
+    "summary": {
+      "cached_input_tokens_used": 3220864,
+      "code_coverage_percent": 4.71,
+      "cost_usd": 3.9557,
+      "generated_loc": 332,
+      "input_tokens_used": 301204,
+      "iterations": 8,
+      "metadata_entries": 195,
+      "output_tokens_used": 27977,
+      "tested_library_loc": 0
+    },
+    "timestamp": "2026-09-10T08:55:33.191926Z"
+  },
+  "modifiers": {
+    "chunk_final": true,
+    "chunked_dynamic_access": true,
+    "human_intervention": false
+  },
+  "producer": "kimeta",
+  "publication_id": "forge-8918-20260910085533191926-3dba8fdc1b24",
+  "render": {
+    "alias_split": null,
+    "baseline_metadata_entries": 180,
+    "baseline_stats": {
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 0.0,
+            "coveredCalls": 0,
+            "totalCalls": 6
+          }
+        },
+        "coverageRatio": 0.0,
+        "coveredCalls": 0,
+        "totalCalls": 6
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 2656,
+          "missed": 74730,
+          "ratio": 0.034321,
+          "total": 77386
+        },
+        "line": "N/A",
+        "method": {
+          "covered": 64,
+          "missed": 3614,
+          "ratio": 0.017401,
+          "total": 3678
+        }
+      },
+      "version": "1.70"
+    },
+    "baseline_test_only_entries": 0,
+    "current_metadata_entries": 195,
+    "current_test_only_entries": 0,
+    "dynamic_access": null,
+    "library_stats": {
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 0.0,
+            "coveredCalls": 0,
+            "totalCalls": 6
+          }
+        },
+        "coverageRatio": 0.0,
+        "coveredCalls": 0,
+        "totalCalls": 6
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 3646,
+          "missed": 73740,
+          "ratio": 0.047114,
+          "total": 77386
+        },
+        "line": "N/A",
+        "method": {
+          "covered": 137,
+          "missed": 3541,
+          "ratio": 0.037249,
+          "total": 3678
+        }
+      },
+      "version": "1.70"
+    },
+    "library_update_target": {
+      "match_type": "tested-version",
+      "matched_metadata_version": "1.70",
+      "matched_test_version": "1.70",
+      "requested_coordinate": "org.bouncycastle:bcpkix-jdk15on:1.70",
+      "resolved_metadata_version": "1.70",
+      "resolved_test_version": "1.70"
+    }
+  },
+  "schema_version": 1,
+  "strategy_name": "library_update_optimistic_pi_gpt-5.6-sol",
+  "task_type": "library-update-request",
+  "template_type": "library-update-request",
+  "timestamp": "2026-09-10T08:55:33.191926Z"
+}
