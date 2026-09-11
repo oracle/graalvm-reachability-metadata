@@ -187,7 +187,7 @@ Failed generation or local finalization still preserves diagnostics
 (§FS-local-ci-equivalent-verification), restores claim state as appropriate, and
 leaves enough context for human follow-up.
 
-### 1.2 Unsupportable-version verdict
+### 1.3 Unsupportable-version verdict
 
 For `fails-*` issues the same preflight decision carries a third possible
 action beyond `no_action` and `advisory_preparation`: an unsupportable-version

@@ -47,6 +47,14 @@ LIBRARY_PREFLIGHT_UNSAFE_TERMS = (
 # Deterministic setup the driver applies itself, idempotently, as source edits
 # (§AR-forge-orchestration.1.1). Anything else stays advisory guidance.
 LIBRARY_PREFLIGHT_DETERMINISTIC_KINDS = ("dependency", "docker_image")
+# Only issues carrying failure evidence are asked the unsupportable-version
+# question (§FS-unsupportable-version-diagnosis).
+LIBRARY_PREFLIGHT_SKIP_VERDICT_LABELS = (
+    "fails-javac-compile",
+    "fails-java-run",
+    "fails-native-image-run",
+)
+LIBRARY_PREFLIGHT_MAX_SKIPPED_VERSIONS = 12
 LIBRARY_PREFLIGHT_DEPENDENCY_SCOPES = (
     "testImplementation",
     "testRuntimeOnly",
@@ -302,6 +310,39 @@ def _parse_deterministic_setup(value: Any) -> list[dict[str, str]]:
     return parsed
 
 
+def _parse_skipped_versions(value: Any, target_version: str) -> list[dict[str, str]]:
+    """Validate a skip verdict's version records; the burden of proof is on skipping.
+
+    Any malformation raises, degrading the record so the run falls through to
+    normal generation (§FS-unsupportable-version-diagnosis).
+    """
+    if not isinstance(value, list) or not value:
+        raise ValueError("skip_unsupported response did not include skipped_versions")
+    if len(value) > LIBRARY_PREFLIGHT_MAX_SKIPPED_VERSIONS:
+        raise ValueError("skip_unsupported response listed too many skipped versions")
+    parsed: list[dict[str, str]] = []
+    seen_versions: set[str] = set()
+    for record in value:
+        if not isinstance(record, dict):
+            raise ValueError("skipped_versions entries must be objects")
+        version = record.get("version")
+        reason = record.get("reason")
+        if not isinstance(version, str) or not version.strip():
+            raise ValueError("skipped_versions entries require a version")
+        if not isinstance(reason, str) or not reason.strip():
+            raise ValueError("skipped_versions entries require a reason")
+        if version.strip() in seen_versions:
+            continue
+        seen_versions.add(version.strip())
+        parsed.append({
+            "version": version.strip(),
+            "reason": _truncate_preflight_text(reason, 500),
+        })
+    if target_version not in seen_versions:
+        raise ValueError("skipped_versions must include the reported version")
+    return parsed
+
+
 def _completed_library_preflight_record(
         claimed_issue: Any,
         input_bundle: dict[str, Any],
@@ -311,7 +352,7 @@ def _completed_library_preflight_record(
 ) -> dict[str, Any]:
     """Normalize a valid preflight response into the persisted metrics shape."""
     action = str(response_payload.get("action") or "no_action").strip()
-    if action not in {"no_action", "advisory_preparation"}:
+    if action not in {"no_action", "advisory_preparation", "skip_unsupported"}:
         raise ValueError(f"unsupported preflight action: {action}")
     summary = _truncate_preflight_text(str(response_payload.get("summary") or ""), 1000)
     deterministic_setup = _parse_deterministic_setup(response_payload.get("deterministic_setup"))
@@ -319,10 +360,20 @@ def _completed_library_preflight_record(
     risks = _preflight_string_list(response_payload.get("risks"))
     if action == "advisory_preparation" and not (deterministic_setup or agent_guidance):
         raise ValueError("advisory_preparation response did not include deterministic setup or guidance")
+    skipped_versions: list[dict[str, str]] = []
+    if action == "skip_unsupported":
+        # The verdict is only asked for, and only accepted from, issues that
+        # carry failure evidence (§FS-unsupportable-version-diagnosis).
+        if claimed_issue.label not in LIBRARY_PREFLIGHT_SKIP_VERDICT_LABELS:
+            raise ValueError(f"skip_unsupported verdict is not allowed for label {claimed_issue.label}")
+        target_version = str(input_bundle.get("library") or "").split(":")[-1]
+        skipped_versions = _parse_skipped_versions(response_payload.get("skipped_versions"), target_version)
     # Deterministic entries are validated structurally above; only the free-text
-    # advisory fields can carry prose, so only those are scanned — and only for
-    # requested actions, never subject matter (§AR-forge-orchestration.1.2).
-    unsafe_terms = _unsafe_terms_in(summary, agent_guidance, risks)
+    # fields can carry prose, so only those are scanned — and only for
+    # requested actions, never subject matter (§AR-forge-orchestration.1.2). Skip
+    # reasons are published verbatim in index.json and the pull request.
+    skip_reasons = [entry["reason"] for entry in skipped_versions]
+    unsafe_terms = _unsafe_terms_in(summary, agent_guidance, risks, *skip_reasons)
     if unsafe_terms:
         raise ValueError(
             f"preflight response requested unsafe preparation behavior: {', '.join(unsafe_terms)}"
@@ -335,10 +386,61 @@ def _completed_library_preflight_record(
     record["deterministic_setup"] = deterministic_setup
     record["agent_guidance"] = agent_guidance
     record["risks"] = risks
+    if skipped_versions:
+        record["skipped_versions"] = skipped_versions
     record["model"] = model_name
     record["input_tokens_used"] = int(getattr(result, "input_tokens", 0) or 0)
     record["output_tokens_used"] = int(getattr(result, "output_tokens", 0) or 0)
     return record
+
+
+def _skip_verdict_prompt_section(input_bundle: dict[str, Any]) -> str:
+    """Render the unsupportable-version diagnosis for issues with failure evidence.
+
+    The five-step bar and the strict default come from
+    §FS-unsupportable-version-diagnosis; the disposition it feeds is
+    §root/FS-contribution-contract.5.4.
+    """
+    issue = input_bundle.get("issue") if isinstance(input_bundle.get("issue"), dict) else {}
+    if str(issue.get("label") or "") not in LIBRARY_PREFLIGHT_SKIP_VERDICT_LABELS:
+        return ""
+    library = str(input_bundle.get("library") or "")
+    version = library.split(":")[-1]
+    return (
+        "Separately, decide whether this library version can be supported under GraalVM "
+        "Native Image at all. A version is unsupportable only when covering its "
+        "dynamic-access calls requires behavior Native Image does not support: runtime "
+        "bytecode generation or class definition, runtime lambda definition, Java agent "
+        "self-attach, class redefinition or instrumentation, native-image substitution "
+        "paths, or URL/plugin/OSGi class loader paths that introduce classes not in the "
+        "image.\n\n"
+        "Run these steps in order. An unsupportable verdict requires ALL of them; stay "
+        "with the two actions above the moment one fails:\n"
+        "1. FAILURE: state the failing operation from the issue's failure evidence alone.\n"
+        "2. TRACE: follow the failing symbol into the library's own source and quote the "
+        "code performing the operation.\n"
+        "3. CLASSIFY: show the operation is in the list above. Anything reachability "
+        "metadata can register is repairable.\n"
+        "4. SOLE PATH: prove every public API route the metadata would justify passes "
+        "through this operation, with no configuration, property, or fallback branch "
+        "around it. One viable fallback means repairable.\n"
+        "5. RANGE: list newer released versions whose sources you verified share the "
+        "same mechanism. Include only versions you actually verified; when you cannot "
+        f"verify newer versions, record only {version}.\n\n"
+        "On an unsupportable verdict, return instead:\n"
+        "{\n"
+        '  "action": "skip_unsupported",\n'
+        '  "summary": "one sentence naming the mechanism and why the image cannot perform it",\n'
+        '  "skipped_versions": [{"version": "...", "reason": "mechanism sentence; later '
+        "versions: '; unchanged from <first>'\"}, ...]\n"
+        "}\n"
+        f"skipped_versions must include {version}; reasons are published verbatim in "
+        "index.json and the pull request, so write them for a reader who has not seen "
+        "this analysis. Never base the verdict on a red test, a library's own error "
+        "type, or its error message — only on the mechanism you traced in the library's "
+        "source. Any uncertainty at any step means repairable: attempting the fix is "
+        "the safe default, a wrong skip freezes versions that were never attempted.\n\n"
+    )
 
 
 def _library_preflight_prompt(input_bundle: dict[str, Any]) -> str:
@@ -375,6 +477,7 @@ def _library_preflight_prompt(input_bundle: dict[str, Any]) -> str:
         '  "risks": ["risk notes, if any"]\n'
         "}\n\n"
         "Choose no_action unless your research finds concrete evidence that extra setup is needed.\n\n"
+        f"{_skip_verdict_prompt_section(input_bundle)}"
         "Context (starting point):\n"
         f"{json.dumps(input_bundle, indent=2, ensure_ascii=False)}"
     )
@@ -540,6 +643,25 @@ def load_library_preparation_preflight(preflight_path: str | None) -> dict[str, 
     with open(preflight_path, "r", encoding="utf-8") as preflight_file:
         loaded = json.load(preflight_file)
     return loaded if isinstance(loaded, dict) else None
+
+
+def preflight_skip_record_entries(
+        preflight: dict[str, Any] | None,
+        target_version: str,
+) -> list[dict[str, str]] | None:
+    """Return the validated skip-record entries a driver should honor, or None.
+
+    Strict on every field so a malformed record falls through to normal
+    generation (§FS-unsupportable-version-diagnosis).
+    """
+    if not isinstance(preflight, dict):
+        return None
+    if preflight.get("status") != "completed" or preflight.get("action") != "skip_unsupported":
+        return None
+    try:
+        return _parse_skipped_versions(preflight.get("skipped_versions"), target_version)
+    except ValueError:
+        return None
 
 
 def _insert_into_dependencies_block(text: str, new_line: str) -> str | None:
