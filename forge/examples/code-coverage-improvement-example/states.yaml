@@ -592,7 +592,15 @@ states:
         echo "missing or empty final-metrics.json" >&2
         exit 75
       fi
-      if ! python3 "../../../forge/utility_scripts/schema_validator.py" \
+      # The validator must come from the same work path that wrote the metrics:
+      # the checkout under test is pinned in a benchmark run.
+      # §FS-code-coverage-benchmarking.1
+      work_path="$(python3 -c 'import json, sys; print(json.load(open(sys.argv[1]))["workPath"])' \
+          "$RHEI_INPUT_CONVERSION_PATH")" || {
+        echo "conversion.json missing or invalid" >&2
+        exit 75
+      }
+      if ! python3 "$work_path/utility_scripts/schema_validator.py" \
           code_coverage_final_metrics "$metrics" >&2; then
         echo "final-metrics.json failed schema validation" >&2
         exit 75
@@ -617,6 +625,8 @@ states:
         path: runtime/code-coverage/finalization/final-metrics.json
       - name: final-summary
         path: runtime/code-coverage/finalization/final-summary.md
+      - name: conversion
+        path: runtime/code-coverage/issues/conversion.json
 
   finalize-fix:
     description: Repair the cause of a failed finalization step or verification.

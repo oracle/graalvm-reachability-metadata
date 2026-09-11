@@ -682,6 +682,38 @@ class CodeCoverageBenchmarkTemplateTests(unittest.TestCase):
             settings["agents"]["claude-code"]["command"],
         )
 
+    def test_published_commits_keep_the_ambient_author(self) -> None:
+        """Benchmark commits are authored like every other publication path.
+
+        GitHub resolves a commit to an account by its author email, so an
+        override that no account owns publishes commits with no author at all.
+        """
+        temporary_directory = tempfile.TemporaryDirectory()
+        self.addCleanup(temporary_directory.cleanup)
+        repository = Path(temporary_directory.name) / "authored"
+        repository.mkdir()
+        for argument in (
+                ["git", "init", "--quiet", "-b", "master"],
+                ["git", "config", "user.name", "Benchmark Author"],
+                ["git", "config", "user.email", "author@example.com"],
+        ):
+            subprocess.run(argument, cwd=repository, check=True)
+        recorded = repository / "result.json"
+        recorded.write_text("{}\n", encoding="utf-8")
+
+        benchmark._commit_paths(repository, [recorded], "Record benchmark")
+
+        self.assertEqual(
+            subprocess.run(
+                ["git", "log", "-1", "--format=%an <%ae>"],
+                cwd=repository,
+                check=True,
+                capture_output=True,
+                text=True,
+            ).stdout.strip(),
+            "Benchmark Author <author@example.com>",
+        )
+
 
 if __name__ == "__main__":
     unittest.main()
