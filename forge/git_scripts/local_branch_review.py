@@ -821,8 +821,11 @@ def _build_review_prompt(
         "Repair a violation when the complete fix stays inside the contribution's allowed files. "
         "If the repaired tree satisfies every rule, approve it. Never edit shared infrastructure "
         "or another coordinate. Reject with action human-intervention for shared infrastructure, "
-        "uncertainty, or anything else requiring a maintainer. Reject with action close only when "
-        "§root/FS-contribution-contract.5.4 proves the library version is unsupportable.",
+        "uncertainty, or anything else requiring a maintainer. When "
+        "§root/FS-contribution-contract.5.4 proves the library version is unsupportable and "
+        "the artifact has an index entry, repair the contribution into the skip record that "
+        "rule prescribes and approve it. Reject with action close only when that rule leaves "
+        "nothing to record.",
         "For a shared infrastructure defect, include infrastructure_issue with a concise "
         "non-empty title and a body containing the cause and reproducible evidence. Forge "
         "will open or reuse that issue and add its link to the recorded finding.",

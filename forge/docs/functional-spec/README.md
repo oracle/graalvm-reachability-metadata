@@ -36,6 +36,7 @@ contract in [strategies.md](strategies.md), the benchmark contract in
 | [§FS-human-intervention-policy](publication.md#fs-human-intervention-policy-human-intervention-policy) | Human intervention policy |
 | [§FS-automated-pr-review](publication.md#fs-automated-pr-review-automated-pull-request-review) | Automated pull request review |
 | [§FS-forge-run-status](functional-spec.md#fs-forge-run-status-run-status-semantics) | Run status semantics |
+| [§FS-unsupportable-version-diagnosis](functional-spec.md#fs-unsupportable-version-diagnosis-pre-generation-unsupportable-version-diagnosis) | Pre-generation unsupportable-version diagnosis |
 | [§FS-forge-run-output-legibility](functional-spec.md#fs-forge-run-output-legibility-legible-run-output) | Legible run output |
 | [§FS-forge-chunked-dynamic-access](functional-spec.md#fs-forge-chunked-dynamic-access-chunked-dynamic-access-semantics) | Chunked dynamic-access semantics |
 | [§FS-forge-workflow-spec-catalog](functional-spec.md#fs-forge-workflow-spec-catalog-workflow-specifications) | Workflow specifications catalog |

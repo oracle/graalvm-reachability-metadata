@@ -41,7 +41,9 @@ from utility_scripts.gradle_environment import gradle_command_environment
 from utility_scripts.issue_requested_metadata import format_issue_requested_metadata_context
 from utility_scripts.library_preparation_preflight import (
     prepare_library_preparation_preflight,
+    preflight_skip_record_entries,
 )
+from utility_scripts.skip_record import apply_preflight_skip_record
 from utility_scripts.logged_command import LoggedCommandResult, run_logged_command
 from utility_scripts.metadata_index import resolve_metadata_version, resolve_test_version
 from utility_scripts.metrics_writer import create_failure_run_metrics_output
@@ -412,6 +414,40 @@ def main(argv=None) -> int:
 
     group, artifact, old_version = current_coordinates.split(":")
     library = f"{group}:{artifact}:{new_version}"
+
+    # An unsupportable verdict from the preflight replaces the whole fix run
+    # with a committed skip record. §FS-unsupportable-version-diagnosis
+    skip_entries = preflight_skip_record_entries(library_preparation_preflight, new_version)
+    if skip_entries is not None and not resume_existing_tree:
+        starting_commit = subprocess.check_output(["git", "rev-parse", "HEAD"], text=True).strip()
+        ending_commit = apply_preflight_skip_record(
+            reachability_repo_path=reachability_metadata_path,
+            group=group,
+            artifact=artifact,
+            target_version=new_version,
+            entries=skip_entries,
+            continuation_marker_path=args.continuation_marker_path,
+        )
+        if ending_commit is not None:
+            print("[Version recorded as skipped; no fix was attempted.]")
+            run_metrics = metrics_writer.create_java_run_fix_run_metrics_output_json(
+                repo_path=reachability_metadata_path,
+                package=group,
+                artifact=artifact,
+                previous_library_version=old_version,
+                new_library_version=new_version,
+                agent=None,
+                model_name=library_preparation_preflight.get("model"),
+                global_iterations=0,
+                strategy_name=args.strategy_name,
+                status=RUN_STATUS_SUCCESS,
+                starting_commit=starting_commit,
+                ending_commit=ending_commit,
+                library_preparation_preflight=library_preparation_preflight,
+            )
+            metrics_writer.write_workflow_run_metrics(run_metrics, metrics_repo_dir, metrics_repo_root, METRICS_TASK_TYPE)
+            return 0
+
     branch = build_ai_branch_name(
         f"fix-native-image-run-{group}-{artifact}-{new_version}",
         cwd=reachability_metadata_path,
