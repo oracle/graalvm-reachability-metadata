@@ -1,4 +1,9 @@
 #!/usr/bin/env python3
+# Copyright and related rights waived via CC0
+#
+# You should have received a copy of the CC0 legalcode along with this
+# work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
+
 """Decide whether a pushed branch may be published as a bot-authored pull request.
 
 The allowlist is the `MAINTAINER_PR_BRANCHES` repository variable: a comma-separated list

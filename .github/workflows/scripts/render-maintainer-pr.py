@@ -1,4 +1,9 @@
 #!/usr/bin/env python3
+# Copyright and related rights waived via CC0
+#
+# You should have received a copy of the CC0 legalcode along with this
+# work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
+
 """Render the PR title and body for a maintainer branch from a Markdown template.
 
 The template's first line that is neither blank nor part of a leading HTML comment is
