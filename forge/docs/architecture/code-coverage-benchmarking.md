@@ -137,10 +137,13 @@ A source-worktree gate failure happens before this sequence: the launcher
 reports the skipped cell and continues without creating a Rhei workspace or
 benchmark result. §FS-code-coverage-benchmarking.2
 
-The terminal program is not the only publication path. The launcher checks for
-a publication marker after Rhei returns. If Rhei stopped before publication, the
-launcher collects partial evidence and publishes a failure result. If collection
-or publication fails, both the source and workspace remain.
+The terminal program is the only automatic collection path. The launcher
+checks for a publication marker after Rhei returns. When the marker is missing
+but the workflow already wrote its result, the launcher retries Git
+publication of that exact record; when no result exists, it publishes nothing
+and reports the run as pending human intervention with the workspace and
+source paths preserved. The operator then resumes the workspace until terminal
+publication, or explicitly publishes the failure.
 §FS-code-coverage-benchmarking.3
 
 ```mermaid
@@ -159,9 +162,18 @@ sequenceDiagram
 
     L->>R: execute benchmark cell
     alt workflow stops before terminal publication
-        R-->>L: return without publication marker
-        L->>B: collect failure result
-        B->>W: read partial evidence and write result.json
+        R-->>L: return without publication marker or result.json
+        Note over W,S: retain workspace and source
+        L-->>O: report pending human intervention
+        alt operator resumes the workspace
+            O->>R: resume until terminal publication
+            R->>B: publish success result
+            B->>W: write result.json from terminal evidence
+        else operator publishes the failure
+            O->>L: publish --status failure
+            L->>B: collect failure result once
+            B->>W: read evidence and write result.json
+        end
     else terminal publication cannot push
         B->>W: result.json already written
         R-->>L: return without publication marker
@@ -191,22 +203,30 @@ sequenceDiagram
 
     O->>L: retry-pending
     L->>W: find run.json without publication.json
-    L->>B: republish preserved result.json
-    B->>M: fetch latest origin/master
-    B->>G: create fresh publication worktree
-    B->>P: append identical result by runId
-    P->>M: push result and descriptor branch
-    M-->>A: validate and open PR asynchronously
-    B->>G: remove publication worktree
-    B->>W: write publication.json
-    L->>S: remove source
-    L-->>O: retry completed
+    alt result.json exists
+        L->>B: republish preserved result.json
+        B->>M: fetch latest origin/master
+        B->>G: create fresh publication worktree
+        B->>P: append identical result by runId
+        P->>M: push result and descriptor branch
+        M-->>A: validate and open PR asynchronously
+        B->>G: remove publication worktree
+        B->>W: write publication.json
+        L->>S: remove source
+        L-->>O: retry completed
+    else no result.json
+        L-->>O: list workspace as pending human intervention
+    end
 ```
 
-`result.json` is written before Git publication and is immutable for its
-`runId`. A retry either finds an identical merged entry, reuses its exact
-remote publication branch, or proposes the same object. Different data with
-the same `runId` is an integrity error.
+`result.json` is written at most once, before Git publication, and is
+immutable for its `runId` whatever its status: a retry either finds an
+identical merged entry, reuses its exact remote publication branch, or
+proposes the same object, and different data with the same `runId` is an
+integrity error. Immutability is safe because no record is written
+automatically at a stop — a record exists only when the workflow reached
+terminal publication or the operator explicitly published a failure.
+§FS-code-coverage-benchmarking.3
 
 ## 4. Data locations
 
