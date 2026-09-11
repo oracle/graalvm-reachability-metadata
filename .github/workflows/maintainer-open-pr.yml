@@ -1,12 +1,16 @@
-# Opens the pull request for an `mm/**` branch as the graalvmbot machine account, so the
-# pushing maintainer is not the PR author and stays eligible to review it. Title and body
-# come from .github/maintainer-pr-template.md.
+# Opens the pull request for a maintainer branch as the graalvmbot machine account, so the
+# pushing maintainer is not the PR author and stays eligible to review it. Which branches
+# qualify is the `MAINTAINER_PR_BRANCHES` variable; title and body come from
+# .github/maintainer-pr-template.md.
 name: Maintainer Open PR
 
 on:
   push:
+    # A branch filter cannot read a variable, so this matches every namespaced branch and
+    # the allowlist does the real selection below. `*` does not match `/`, so the default
+    # branch and other unnamespaced branches never start a run.
     branches:
-      - "mm/**"
+      - "*/**"
 
 permissions:
   contents: read
@@ -19,11 +23,12 @@ concurrency:
 jobs:
   open-pr:
     name: Open pull request as graalvmbot
-    # Commas on both sides match whole logins, so `kim` cannot match `kimeta`. An unlisted
-    # pusher skips the job rather than failing it, and an empty variable disables the
-    # workflow entirely.
+    # Cheap prefilter so an unlisted pusher never starts a runner: `MAINTAINER_PR_BRANCHES`
+    # holds `login:pattern` entries, and a leading comma plus the trailing colon anchor the
+    # login as a whole word, so `kim` cannot match an entry for `kimeta`. The branch pattern
+    # itself is matched in the gate step; an empty variable disables the workflow entirely.
     if: >-
-      ${{ contains(format(',{0},', vars.MAINTAINER_PR_ACTORS), format(',{0},', github.actor)) }}
+      ${{ contains(format(',{0}', vars.MAINTAINER_PR_BRANCHES), format(',{0}:', github.actor)) }}
     runs-on: ubuntu-latest
     steps:
       - name: Check out the pushed branch
@@ -33,8 +38,24 @@ jobs:
           fetch-depth: 0
           persist-credentials: false
 
+      - name: Gate the branch against the allowlist
+        id: gate
+        env:
+          ALLOWLIST: ${{ vars.MAINTAINER_PR_BRANCHES }}
+          HEAD_BRANCH: ${{ github.ref_name }}
+          HEAD_ACTOR: ${{ github.actor }}
+        run: |
+          set -euo pipefail
+          python3 .github/workflows/scripts/match-maintainer-branch.py \
+            --allowlist "$ALLOWLIST" \
+            --actor "$HEAD_ACTOR" \
+            --branch "$HEAD_BRANCH" > "$RUNNER_TEMP/gate.txt"
+          cat "$RUNNER_TEMP/gate.txt" >> "$GITHUB_STEP_SUMMARY"
+          tail -n 1 "$RUNNER_TEMP/gate.txt" >> "$GITHUB_OUTPUT"
+
       - name: Render the template
         id: render
+        if: ${{ steps.gate.outputs.allowed == 'true' }}
         env:
           HEAD_SHA: ${{ github.sha }}
           HEAD_BRANCH: ${{ github.ref_name }}
@@ -43,8 +64,8 @@ jobs:
         run: |
           set -euo pipefail
           git fetch --no-tags origin "$BASE_BRANCH"
-          # Only commit subjects are read from the branch; no branch-supplied script,
-          # action, or build file is executed.
+          # Only commit subjects are read from the branch; no branch-supplied action or
+          # build file is executed.
           git log --reverse --format=%s "origin/$BASE_BRANCH..$HEAD_SHA" > "$RUNNER_TEMP/subjects.txt"
           if [ ! -s "$RUNNER_TEMP/subjects.txt" ]; then
             echo "Branch adds no commits over $BASE_BRANCH; nothing to open." >> "$GITHUB_STEP_SUMMARY"

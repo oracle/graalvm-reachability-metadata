@@ -1,6 +1,7 @@
 <!--
-  Title and body template for pull requests opened automatically from a push to
-  an `mm/**` branch (.github/workflows/maintainer-open-pr.yml).
+  Title and body template for pull requests opened automatically from a push to a
+  branch listed in the `MAINTAINER_PR_BRANCHES` variable
+  (.github/workflows/maintainer-open-pr.yml).
 
   The first line below that is neither blank nor an HTML comment becomes the PR
   title; everything after it becomes the PR body.
