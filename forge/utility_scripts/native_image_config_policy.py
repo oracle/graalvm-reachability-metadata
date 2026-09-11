@@ -62,7 +62,7 @@ def find_legacy_test_native_image_config_files_for_coordinate(repo_path: str, co
         for filename in filenames:
             if filename in LEGACY_TEST_NATIVE_IMAGE_CONFIG_FILENAMES:
                 paths.append(_repo_relative_path(repo_path, os.path.join(root, filename)))
-    return sorted(paths)
+    return sorted(_discard_git_ignored_paths(repo_path, paths))
 
 
 def find_changed_legacy_test_native_image_config_files_for_coordinate(
@@ -100,6 +100,27 @@ def is_legacy_test_native_image_config_path(path: str) -> bool:
         normalized.startswith(TEST_SOURCE_ROOT)
         and os.path.basename(normalized) in LEGACY_TEST_NATIVE_IMAGE_CONFIG_FILENAMES
     )
+
+
+def _discard_git_ignored_paths(repo_path: str, paths: list[str]) -> list[str]:
+    """Drop paths git ignores: the Gradle native plugin generates split-config
+    files under `build/`, and an ignored file can never be committed, so it is
+    not a policy violation (§AR-code-coverage-improvement.4)."""
+    if not paths:
+        return paths
+    result = subprocess.run(
+        ["git", "check-ignore", "--stdin"],
+        cwd=repo_path,
+        input="\n".join(paths),
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        text=True,
+        check=False,
+    )
+    if result.returncode not in (0, 1):
+        return paths
+    ignored = {line.strip() for line in result.stdout.splitlines() if line.strip()}
+    return [path for path in paths if path not in ignored]
 
 
 def _coordinate_test_project_prefix(repo_path: str, coordinates: str) -> str:

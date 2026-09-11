@@ -323,7 +323,9 @@ class CodeCoverageBenchmarkLifecycleTests(unittest.TestCase):
         execute.assert_not_called()
         publish.assert_not_called()
 
-    def test_retains_source_when_publication_has_no_marker(self) -> None:
+    def test_holds_stopped_run_for_human_intervention(self) -> None:
+        """A stop before terminal publication publishes nothing: the launcher
+        retains the workspace and source and reports the run as pending."""
         temporary = tempfile.TemporaryDirectory()
         self.addCleanup(temporary.cleanup)
         root = Path(temporary.name)
@@ -342,8 +344,63 @@ class CodeCoverageBenchmarkLifecycleTests(unittest.TestCase):
         ), patch.object(
                 benchmark,
                 "publish_workspace",
-                side_effect=benchmark.BenchmarkError("push failed"),
+        ) as publish, patch.object(
+                benchmark,
+                "_remove_worktree",
+        ) as remove, patch("builtins.print") as output:
+            outcome = benchmark._execute_cell(
+                self.suite,
+                self.cell,
+                "a" * 40,
+                root,
+            )
+
+        self.assertEqual((False, False), outcome)
+        publish.assert_not_called()
+        remove.assert_not_called()
+        messages = [str(call.args[0]) for call in output.call_args_list if call.args]
+        self.assertTrue(
+            any("PENDING HUMAN INTERVENTION" in message for message in messages)
+        )
+        workspace = root / "run-failure" / "code-coverage-99000"
+        run = benchmark._read_json(workspace / benchmark.RUN_RECORD)
+        self.assertEqual("failure", run["requestedStatus"])
+
+    def test_retries_publication_when_record_exists_without_marker(self) -> None:
+        """A workflow that wrote its record but could not push it retries Git
+        publication of that exact record instead of being held."""
+        temporary = tempfile.TemporaryDirectory()
+        self.addCleanup(temporary.cleanup)
+        root = Path(temporary.name)
+
+        def execute(command: list[str], **_: object) -> subprocess.CompletedProcess:
+            workspace = Path(command[command.index("--output") + 1])
+            _write_json(workspace / benchmark.RESULT_RECORD, {"status": "success"})
+            return subprocess.CompletedProcess(command, 1)
+
+        def publish(workspace: Path, **_: object) -> dict[str, object]:
+            _write_json(
+                workspace / benchmark.PUBLICATION_MARKER,
+                {"schemaVersion": "1.0.0"},
+            )
+            return {"status": "success"}
+
+        with patch.object(
+                benchmark,
+                "_new_run_id",
+                return_value="run-retry",
         ), patch.object(
+                benchmark,
+                "_create_source_worktree",
+        ), patch.object(
+                benchmark.subprocess,
+                "run",
+                side_effect=execute,
+        ), patch.object(
+                benchmark,
+                "publish_workspace",
+                side_effect=publish,
+        ) as republish, patch.object(
                 benchmark,
                 "_remove_worktree",
         ) as remove, patch("builtins.print"):
@@ -354,8 +411,40 @@ class CodeCoverageBenchmarkLifecycleTests(unittest.TestCase):
                 root,
             )
 
-        self.assertEqual((False, False), outcome)
-        remove.assert_not_called()
+        self.assertEqual((True, True), outcome)
+        republish.assert_called_once()
+        remove.assert_called_once_with(root / "run-retry" / "source")
+
+    def test_retry_pending_republishes_records_and_lists_held_workspaces(self) -> None:
+        """Only a workspace with a written record retries publication; one
+        without a record is listed as pending human intervention."""
+        temporary = tempfile.TemporaryDirectory()
+        self.addCleanup(temporary.cleanup)
+        root = Path(temporary.name)
+        held = root / "run-held" / "code-coverage-99000"
+        publishable = root / "run-pub" / "code-coverage-99000"
+        for run_id, workspace in (("run-held", held), ("run-pub", publishable)):
+            _write_json(
+                workspace / benchmark.RUN_RECORD,
+                {
+                    "runId": run_id,
+                    "sourceWorktree": str(workspace.parent / "source"),
+                },
+            )
+        _write_json(publishable / benchmark.RESULT_RECORD, {"status": "failure"})
+
+        with patch.object(
+                benchmark,
+                "publish_workspace",
+        ) as publish, patch("builtins.print") as output:
+            code = benchmark.retry_pending(SimpleNamespace(workspace_root=root))
+
+        self.assertEqual(0, code)
+        publish.assert_called_once_with(publishable)
+        messages = [str(call.args[0]) for call in output.call_args_list if call.args]
+        self.assertTrue(
+            any("PENDING HUMAN INTERVENTION" in message for message in messages)
+        )
 
 
 class CodeCoverageBenchmarkMetricsTests(unittest.TestCase):
@@ -481,6 +570,30 @@ class CodeCoverageBenchmarkMetricsTests(unittest.TestCase):
         self.assertIsNone(result["deep"]["coverPasses"])
         self.assertIsNone(result["total"]["tokens"]["input"])
         self.assertIsNone(result["total"]["coverage"]["allMethods"])
+
+    def test_written_record_is_immutable_for_its_run_id(self) -> None:
+        """A written record is returned verbatim whatever status is requested
+        later, even when terminal evidence appears after the write."""
+        _, workspace = self._workspace()
+        self._write_run(workspace)
+        recorded = benchmark._collect_result(workspace, "failure", 7)
+        self.assertEqual("failure", recorded["status"])
+
+        final_metrics = benchmark._final_metrics_path(workspace)
+        final_metrics.parent.mkdir(parents=True)
+        shutil.copy2(FINAL_METRICS, final_metrics)
+
+        self.assertEqual(recorded, benchmark._collect_result(workspace, "success", 0))
+        self.assertEqual(recorded, benchmark._collect_result(workspace, None, None))
+
+    def test_collecting_a_new_record_requires_an_explicit_status(self) -> None:
+        """Without a written record there is no automatic failure default: the
+        operator must decide the status explicitly."""
+        _, workspace = self._workspace()
+        self._write_run(workspace)
+        with self.assertRaises(benchmark.BenchmarkError):
+            benchmark._collect_result(workspace, None, None)
+        self.assertFalse(benchmark._result_record_path(workspace).is_file())
 
     def test_merge_is_idempotent_and_rejects_conflicts(self) -> None:
         temporary = tempfile.TemporaryDirectory()
