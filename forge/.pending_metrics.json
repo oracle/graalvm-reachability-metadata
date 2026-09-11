@@ -1,0 +1,52 @@
+{
+  "timestamp": "2026-09-11T14:58:00.171777Z",
+  "library": "org.springframework.integration:spring-integration-sftp:7.1.1",
+  "starting_commit": "e8fcbad5f63603b81461961df846cef3f5cd2318",
+  "ending_commit": "e8fcbad5f63603b81461961df846cef3f5cd2318",
+  "strategy_name": "dynamic_access_main_sources_pi_gpt-5.6-terra",
+  "agent": "pi",
+  "model": "gpt-5.6-terra",
+  "status": "failure",
+  "library_preparation_preflight": {
+    "status": "completed",
+    "action": "advisory_preparation",
+    "issue_number": 9952,
+    "issue_label": "library-new-request",
+    "library": "org.springframework.integration:spring-integration-sftp:7.1.1",
+    "summary": "Meaningful SFTP coverage requires a reachable SFTP server; the client dependencies are already transitive.",
+    "deterministic_setup": [],
+    "agent_guidance": "Create an in-process Apache MINA SSHD SFTP server on localhost using the transitive sshd-sftp dependency. Configure temporary directories, credentials or keys, host-key handling, and exercise session creation plus inbound, outbound, and gateway operations. Avoid requiring an external Docker image.",
+    "risks": [
+      "Tests that only instantiate configuration classes will provide shallow coverage.",
+      "Ensure the embedded server is started and stopped reliably and uses dynamically assigned ports."
+    ],
+    "applied_setup": [],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#9952 Support for org.springframework.integration:spring-integration-sftp:7.1.1; label=library-new-request; body_chars=52"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "0 existing test file path(s) included"
+      }
+    ],
+    "model": "gpt-5.6-luna",
+    "input_tokens_used": 582827,
+    "output_tokens_used": 3658
+  },
+  "metrics": {
+    "input_tokens_used": 238909,
+    "cached_input_tokens_used": 6578688,
+    "output_tokens_used": 41247,
+    "iterations": 12,
+    "cost_usd": 2.8607,
+    "generated_loc": 0,
+    "tested_library_loc": 0,
+    "metadata_entries": 0,
+    "code_coverage_percent": 0.0
+  },
+  "artifacts": {
+    "metadata_file": "None"
+  }
+}

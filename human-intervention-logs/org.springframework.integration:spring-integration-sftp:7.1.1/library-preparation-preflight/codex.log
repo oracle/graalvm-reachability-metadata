@@ -1,0 +1,10 @@
+{
+  "action": "advisory_preparation",
+  "summary": "Meaningful SFTP coverage requires a reachable SFTP server; the client dependencies are already transitive.",
+  "deterministic_setup": [],
+  "agent_guidance": "Create an in-process Apache MINA SSHD SFTP server on localhost using the transitive sshd-sftp dependency. Configure temporary directories, credentials or keys, host-key handling, and exercise session creation plus inbound, outbound, and gateway operations. Avoid requiring an external Docker image.",
+  "risks": [
+    "Tests that only instantiate configuration classes will provide shallow coverage.",
+    "Ensure the embedded server is started and stopped reliably and uses dynamically assigned ports."
+  ]
+}
