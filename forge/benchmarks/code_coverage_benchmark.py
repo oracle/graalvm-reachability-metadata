@@ -29,6 +29,10 @@ from typing import Any, TextIO
 
 from jsonschema import Draft202012Validator, FormatChecker, ValidationError
 
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+
+from ai_workflows.agents.agent_runtime import PROVIDER_AWARE_BACKENDS
+
 FORGE_ROOT = Path(__file__).resolve().parents[1]
 REPOSITORY_ROOT = FORGE_ROOT.parent
 SUITE_PATH = FORGE_ROOT / "benchmarks" / "code_coverage_suite.json"
@@ -108,11 +112,19 @@ class AgentConfiguration:
     target_model: str
 
     def target(self, thinking: str) -> str:
-        """Render the Rhei target selector for this configuration."""
-        return (
-            f"{self.agent}[{thinking}]:"
+        """Render the Rhei target selector for this configuration.
+
+        Rhei hands everything after the first colon to the agent CLI's model
+        flag, so only a provider-aware backend may carry a `<provider>/`
+        prefix. Claude Code and Codex reach their provider through their own
+        login and reject a prefixed model outright.
+        """
+        model: str = (
             f"{self.provider}/{self.target_model}"
+            if self.agent in PROVIDER_AWARE_BACKENDS
+            else self.target_model
         )
+        return f"{self.agent}[{thinking}]:{model}"
 
 
 @dataclass(frozen=True)

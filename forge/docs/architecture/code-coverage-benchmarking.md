@@ -362,6 +362,14 @@ levels. The CLI filters configured tuples rather than creating arbitrary
 cross-products: `--model gpt-5.6-sol` selects Pi, while explicitly pairing
 that model with Claude Code is rejected before mutation.
 
+A configuration's `provider` reaches the Rhei target only for a provider-aware
+backend. Rhei passes everything after the target's first colon to the agent
+CLI's model flag, so `pi` renders `pi[<thinking>]:<provider>/<model>` while
+Claude Code renders `claude-code[<thinking>]:<model>`: the Claude CLI
+authenticates its own provider and rejects a prefixed model name outright,
+which would otherwise fail every agent state of a run in seconds rather than
+failing the cell. The recorded `provider` stays descriptive either way.
+
 Advanced metrics can extend the schema and collector without changing the Rhei
 task graph. Runtime archive storage can add a portable archive reference while
 the workspace remains the complete local record. Future concurrency belongs in

@@ -117,9 +117,25 @@ class CodeCoverageBenchmarkMatrixTests(unittest.TestCase):
 
         self.assertEqual("claude-sonnet-5", configuration.target_model)
         self.assertEqual(
-            "claude-code[high]:anthropic/claude-sonnet-5",
+            "claude-code[high]:claude-sonnet-5",
             configuration.target("high"),
         )
+
+    def test_provider_prefix_only_for_provider_aware_agents(self) -> None:
+        """`claude` rejects a prefixed model; `pi` routes through a provider."""
+        claude = next(
+            item
+            for item in self.suite.configurations
+            if item.configured_model == "opus-5"
+        )
+        pi = next(
+            item
+            for item in self.suite.configurations
+            if item.configured_model == "gpt-5.6-luna"
+        )
+
+        self.assertEqual("claude-code[medium]:claude-opus-5", claude.target("medium"))
+        self.assertEqual("pi[medium]:openai-codex/gpt-5.6-luna", pi.target("medium"))
 
 
 class CodeCoverageBenchmarkConversionTests(unittest.TestCase):
