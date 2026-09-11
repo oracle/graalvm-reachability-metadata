@@ -1056,17 +1056,11 @@ def _commit_paths(repository: Path, paths: list[Path], subject: str) -> str:
         cwd=repository,
         check=True,
     )
+    # Commit with the ambient identity, like every other publication path. An
+    # override here reached GitHub as an address no account can own, so the
+    # published commits carried no author at all.
     subprocess.run(
-        [
-            "git",
-            "-c",
-            "user.name=metadata-forge",
-            "-c",
-            "user.email=metadata-forge@local",
-            "commit",
-            "-m",
-            subject,
-        ],
+        ["git", "commit", "-m", subject],
         cwd=repository,
         check=True,
     )
