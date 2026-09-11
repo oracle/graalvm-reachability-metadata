@@ -139,6 +139,11 @@ In tests/src/org.springframework.amqp/spring-rabbitmq-client/4.2.0-M1/src/test/j
 **Version-pinned supporting dependency in reusable test project**
 
 Review Signal #4 is violated in tests/src/org.springframework/spring-websocket/6.2.10/build.gradle: spring-messaging is pinned to 6.2.10 even though this test project must remain reusable across supported Spring Framework versions.
+## 2026-09-02 — org.xerial.snappy:snappy-java:1.0.5.3 (#9404)
+
+**Native-only SnappyError is swallowed without UnsupportedFeatureError verification**
+
+In tests/src/org.xerial.snappy/snappy-java/1.0.5.3/src/test/java/org_xerial_snappy/snappy_java/SnappyLoaderTest.java, hasUnsupportedSnappyNativeLoaderFailure accepted any native-runtime org.xerial.snappy.SnappyError whose stack mentioned SnappyLoader.injectSnappyNativeLoader. This tolerates a recognized Native Image failure without verifying it through NativeImageSupport.isUnsupportedFeatureError, violating the enumerated Native Image dodging rule. The smallest compliant correction exposes that nativeTest is not green because snappy-java discards the underlying UnsupportedFeatureError cause.
 
 ## 2026-08-29 — org.junit.platform:junit-platform-commons:1.12.0 (#9603)
 
