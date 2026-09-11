@@ -20,6 +20,7 @@ graalvmNative {
         test {
             // okhttp3.internal.Util eagerly resolves UTF-32 charsets during static init.
             buildArgs.add("-H:+AddAllCharsets")
+            buildArgs.add("--enable-url-protocols=http,https")
         }
     }
     agent {
@@ -30,4 +31,9 @@ graalvmNative {
             }
         }
     }
+}
+
+tasks.named("codeCoverageTest") {
+    dependsOn tasks.named("testClasses")
+    classpath += sourceSets.test.output
 }
