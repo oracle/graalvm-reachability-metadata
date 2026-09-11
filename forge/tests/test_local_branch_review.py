@@ -400,6 +400,21 @@ class LocalBranchReviewTests(unittest.TestCase):
             prompt.index("Write exactly one JSON verdict"),
         )
 
+    def test_review_prompt_states_the_skip_record_disposition(self) -> None:
+        prompt = module._build_review_prompt(
+            coordinates="org.example:demo:1.0.0",
+            base_sha="base",
+            verified_sha="head",
+            task_type="fixes-java-run-fail",
+            evidence_path="/tmp/evidence.json",
+            verdict_path="/tmp/verdict.json",
+            finalization_receipt_path="/tmp/finalization-receipt.json",
+        )
+
+        self.assertIn("repair the contribution into the skip record", prompt)
+        self.assertIn("close only when that rule leaves nothing to record", prompt)
+        self.assertNotIn("close only when \u00a7root/FS-contribution-contract.5.4 proves", prompt)
+
     def test_review_model_uses_centralized_analysis_selection(self) -> None:
         selection = SimpleNamespace(model="central-model")
         with patch.object(module, "get_analysis_agent", return_value=selection):
