@@ -25,3 +25,8 @@ graalvmNative {
         }
     }
 }
+
+tasks.named("nativeTest") {
+    runtimeArgs.add("-Djava.home=${System.getenv('JAVA_HOME')}")
+    runtimeArgs.add("-Djava.class.path=${sourceSets.test.runtimeClasspath.asPath}")
+}
