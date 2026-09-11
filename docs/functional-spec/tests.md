@@ -22,7 +22,9 @@ this document describes the test-project contract.
   (§FS-metadata, §FS-repository-functional-spec.5.1).
 - `build.gradle` may add test dependencies and, when there is no better public
   API path, restrict Native Image configuration edits to `--add-opens` /
-  `--add-exports` under `graalvmNative`.
+  `--add-exports` under `graalvmNative`. `--initialize-at-build-time` is
+  permitted only under the bounded consumer-required exception
+  (§FS-test-contract.2.7).
 - Test assertions use standard Java or library exceptions, not Gradle-only
   failure types such as `GradleException`.
 

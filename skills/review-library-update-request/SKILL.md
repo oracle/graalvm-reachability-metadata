@@ -33,6 +33,7 @@ The PR number or URL can be passed as an optional argument (for example, `1234`,
 - Do not accept tests that reference the exact library version in test code or assertions unless the version check is itself the behavior under test.
 - Keep test packages separate from library packages unless the PR clearly needs package placement to exercise the library. Tests placed inside the library package can bypass visibility boundaries and give false confidence.
 - Accept only `reachability-metadata.json` files as metadata files. Reject legacy native-image metadata config files such as `reflect-config.json`, `resource-config.json`, `proxy-config.json`, `serialization-config.json`, `jni-config.json`, or `predefined-classes-config.json`, including under test-only metadata.
+- `--initialize-at-build-time` in `build.gradle` is not a repair. Permit it only when the PR evidences all three conditions of the bounded consumer-required exception: no native image builds without the flag, the requirement comes from the library or its transitive dependencies rather than the test, and the flag names only the forcing types. A failing native image is evidence of missing metadata until the first two are shown. §FS-test-contract.2.7
 - Prefer concrete evidence from the linked issue, generated tests, metadata, stats, and CI over speculation.
 
 ## Workflow

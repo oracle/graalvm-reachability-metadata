@@ -37,6 +37,7 @@ The PR number or URL can be passed as an optional argument (for example, `1234`,
   call surface and passes the numeric coverage gate. The compile fix itself must still pass and must not be made green by
   deleting meaningful coverage or disabling native-image behavior.
 - Accept only `reachability-metadata.json` files as metadata files. Reject legacy native-image metadata config files such as `reflect-config.json`, `resource-config.json`, `proxy-config.json`, `serialization-config.json`, `jni-config.json`, or `predefined-classes-config.json`.
+- `--initialize-at-build-time` in `build.gradle` is not a repair. Permit it only when the PR evidences all three conditions of the bounded consumer-required exception: no native image builds without the flag, the requirement comes from the library or its transitive dependencies rather than the test, and the flag names only the forcing types. A failing native image is evidence of missing metadata until the first two are shown. §FS-test-contract.2.7
 - Prefer small, targeted review comments. This label is for repair work, not a full redesign of historical tests.
 
 ## Workflow
