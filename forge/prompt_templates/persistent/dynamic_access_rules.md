@@ -1,67 +1,15 @@
 Rules (test contract: §root/FS-test-contract):
-- Add or refine tests so execution reaches uncovered dynamic-access call sites. §root/FS-test-contract.1.3
-- Keep coverage for each dynamic-access class in its own dedicated `{test_language_display_name}` test file under `src/test/{test_source_dir_name}` in `graalvm-reachability-metadata`. §root/FS-test-contract.1.8
-- Maintain a one-to-one mapping between dynamic-access report classes and generated test class files. §root/FS-test-contract.1.8
-- Never use `$` in test class or file names. When naming test classes for inner or anonymous classes (classes whose name contains `$`), replace `$` followed by a number (anonymous classes like `Foo$4`) with `Anonymous4` (e.g., `FooAnonymous4Test`), and replace `$` followed by a name (named inner classes like `Foo$Bar`) with `Inner` and the name (e.g., `FooInnerBarTest`). §root/FS-test-contract.1.8
-- Do not broaden the patch into unrelated features. §root/FS-test-contract.2.9
-- Use upstream test sources only as behavioral examples. §root/FS-test-contract.3.3
-- Use documentation and source context only as API guidance. §root/FS-test-contract.3.3
-- Do not create source stubs, fake replacements, or shadow classes for library or dependency API types in their real packages. If a needed API is missing from the test classpath, add the correct test dependency or leave the call site unreached with an explanation. §root/FS-test-contract.2.3
-- Target supported library behavior. Do not make an uncovered dynamic-access call "covered" by asserting a known bug, regression, broken path, or version-specific failure in the target artifact. §root/FS-test-contract.2.6
-- Do not use reflection directly in the tests unless the public API requires it naturally. §root/FS-test-contract.2.1
-- Do not compile or run tests yourself. The workflow will do that externally. §AR-forge-strategy-agent-boundary
-- Follow idiomatic `{test_language_display_name}` coding conventions. §root/FS-test-contract.1.2
-- All top-level test classes must be public. §root/FS-test-contract.1.2
-- Keep tests outside the library's packages. Do not place a test in the same package as the library just to access package-private or internal code. §root/FS-test-contract.2.2
-- Keep tests version-agnostic. Do not hardcode the artifact version in normal test inputs or assertions. §root/FS-test-contract.2.5
-- Exception assertions are acceptable only for documented, supported negative-path APIs. Do not write tests whose method name, comments, or assertions describe a known broken behavior path such as "fails before", "regression", "broken", or "version-specific" failure. §root/FS-test-contract.2.6
-- Every individual test must complete in under 60 seconds. Use bounded waits and close all clients, servers, executors, and other background resources. §root/FS-test-contract.1.6
-- When tests use connection, request, read, socket, server, client, process, database, messaging, or HTTP timeouts, set each explicit timeout to at least 10 seconds. Shorter timeouts are flaky under native-image-agent metadata generation and Native Image startup, while unbounded waits are still not allowed. §root/FS-test-contract.1.7
-- Do not make tests depend on Native Image resource metadata for temporary, build, or
-  machine-local absolute paths. If a test creates files under a temp/build directory,
-  exercise them through normal file APIs or create the optional file that the library
-  expects; do not rely on classloader resource lookup for paths such as `/tmp/...`,
-  JUnit temp dirs, or `build/...`. §root/FS-test-contract.4.4
-- Do not create tests for behavior that depends on runtime bytecode generation,
-  runtime class definition or loading, runtime lambda definition, Java agent
-  self-attach, class redefinition, instrumentation, native-image substitutions,
-  URL/plugin/OSGi class loader paths, custom class loaders that introduce classes
-  not already in the native image, or classes that exist only through a custom
-  class loader. This includes Byte Buddy-backed inline mocking, static mocking,
-  construction mocking, and concrete-class mocking. Prefer statically representable
-  behavior such as public APIs. §root/FS-test-contract.4.5
-- Never generate, write, or modify reachability metadata or Native Image config entries. Do not create or edit `reachability-metadata.json`, `reflect-config.json`, `resource-config.json`, `proxy-config.json`, `serialization-config.json`, `jni-config.json`, `predefined-classes-config.json`, or any other file under `src/test/resources/META-INF/native-image`; Forge handles metadata generation and merging externally. §root/FS-test-contract.2.7
-
-Native Image execution contract (non-negotiable, §root/FS-test-contract.4):
-
-Every test you create or edit must run and assert the same behavior under Native Image as on the JVM. Reviewers reject any PR whose tests skip or tolerate Native Image failures, the PR is closed, and the entire run is discarded. A test that is green only because it dodges Native Image is a failed deliverable, not a fix.
-
-- Never skip Native Image execution: no `assumeFalse("runtime".equals(System.getProperty("org.graalvm.nativeimage.imagecode")))`, early returns, `@DisabledInNativeImage`, `isNativeImageRuntime()`, `ImageInfo.inImageRuntimeCode()`, or equivalent guards. §root/FS-test-contract.4.1
-- Never tolerate Native Image failures: do not catch an exception or error and accept it because the code detects native-image runtime or recognizes a known native-image failure message. A failure that only happens under Native Image signals missing reachability metadata or unsupported behavior; surface it and never hide it inside the test. §root/FS-test-contract.4.2
-
-Bad: test skipped under Native Image (rejected in review):
-```java
-assumeFalse("runtime".equals(System.getProperty("org.graalvm.nativeimage.imagecode")));
-```
-
-Bad: failure swallowed under Native Image (rejected in review):
-```java
-try {{
-    Function<String, Integer> length = MethodInvokers.asFunction(method);
-    assertThat(length.apply("commons")).isEqualTo(7);
-}} catch (IllegalArgumentException e) {{
-    if (!"runtime".equals(System.getProperty("org.graalvm.nativeimage.imagecode"))) {{
-        throw e;
-    }}
-}}
-```
-
-Sole sanctioned exception (§root/FS-test-contract.4.3): behavior that fundamentally requires open-ended dynamic class loading that Native Image cannot support (loading classes, JARs, generated bytecode, plugin implementations, or other class definitions only discovered after the native executable is built). This exception is for unavoidable public API coverage only; do not use it to keep tests for Byte Buddy-backed inline mocking, static mocking, construction mocking, Java agent self-attach, runtime instrumentation, or native-image substitution paths. Apply it only through `NativeImageSupport.runToleratingUnsupportedFeature` from `org.graalvm.internal.tck`, which accepts a failure only when GraalVM's `UnsupportedFeatureError` is proven — the thrown error, its cause chain, or its trace on `System.err` when the library discarded the cause — and re-throws everything else. §root/FS-test-contract.4.3.1
-```java
-NativeImageSupport.runToleratingUnsupportedFeature(() -> {{
-    Plugin plugin = PluginLoader.load(pluginJar, "example.Plugin");
-    assertThat(plugin.name()).isEqualTo("example");
-}});
-```
-Never tolerate a failure by recognising the library's own error type, message, or stack frames; that is the §root/FS-test-contract.4.2 violation, not a workaround for it. When nothing proves an `UnsupportedFeatureError`, re-scope the test to API that works under Native Image, and if no public API works report the version as unsupportable rather than shipping metadata no test justifies. §root/FS-test-contract.4.3.2
-Never use this pattern for ordinary reflection, resources, serialization, dynamic proxies, JNI, or missing reachability metadata; those tests must still pass under Native Image.
+- The binding test contract for every test you create or edit is
+  `docs/functional-spec/test-contract.md` in this repository. Read it in full
+  before your first edit and follow all of it: what a test must have
+  (§root/FS-test-contract.1), what it must not do (§root/FS-test-contract.2),
+  what it should do (§root/FS-test-contract.3), and the non-negotiable Native
+  Image execution contract (§root/FS-test-contract.4).
+- When a build failure or reviewer finding cites a contract section, re-read
+  that section before fixing; never work from memory of the contract.
+- Add or refine tests so execution reaches uncovered dynamic-access call
+  sites, keeping one dedicated `{test_language_display_name}` test file under
+  `src/test/{test_source_dir_name}` per dynamic-access class and the `$`-free
+  naming scheme of §root/FS-test-contract.1.8.
+- Do not compile or run tests yourself. The workflow will do that externally.
+  §AR-forge-strategy-agent-boundary
