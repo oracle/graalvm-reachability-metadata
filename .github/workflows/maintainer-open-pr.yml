@@ -38,6 +38,23 @@ jobs:
           fetch-depth: 0
           persist-credentials: false
 
+      # The pushed branch supplies commit subjects and nothing else: every script and the
+      # template are read from the base branch, so a branch cannot run its own code in the
+      # job that later holds GRAALBOT_PR_TOKEN.
+      - name: Take the scripts and template from the base branch
+        env:
+          BASE_BRANCH: ${{ github.event.repository.default_branch }}
+        run: |
+          set -euo pipefail
+          git fetch --no-tags origin "$BASE_BRANCH"
+          for path in \
+            .github/workflows/scripts/match-maintainer-branch.py \
+            .github/workflows/scripts/render-maintainer-pr.py \
+            .github/maintainer-pr-template.md
+          do
+            git show "origin/$BASE_BRANCH:$path" > "$RUNNER_TEMP/$(basename "$path")"
+          done
+
       - name: Gate the branch against the allowlist
         id: gate
         env:
@@ -46,12 +63,13 @@ jobs:
           HEAD_ACTOR: ${{ github.actor }}
         run: |
           set -euo pipefail
-          python3 .github/workflows/scripts/match-maintainer-branch.py \
+          python3 "$RUNNER_TEMP/match-maintainer-branch.py" \
             --allowlist "$ALLOWLIST" \
             --actor "$HEAD_ACTOR" \
-            --branch "$HEAD_BRANCH" > "$RUNNER_TEMP/gate.txt"
-          cat "$RUNNER_TEMP/gate.txt" >> "$GITHUB_STEP_SUMMARY"
-          tail -n 1 "$RUNNER_TEMP/gate.txt" >> "$GITHUB_OUTPUT"
+            --branch "$HEAD_BRANCH" \
+            > "$RUNNER_TEMP/gate-output.txt" 2> "$RUNNER_TEMP/gate-reason.txt"
+          tee -a "$GITHUB_STEP_SUMMARY" < "$RUNNER_TEMP/gate-reason.txt"
+          cat "$RUNNER_TEMP/gate-output.txt" >> "$GITHUB_OUTPUT"
 
       - name: Render the template
         id: render
@@ -60,22 +78,21 @@ jobs:
           HEAD_SHA: ${{ github.sha }}
           HEAD_BRANCH: ${{ github.ref_name }}
           HEAD_ACTOR: ${{ github.actor }}
+          BRANCH_NAME: ${{ steps.gate.outputs.name }}
           BASE_BRANCH: ${{ github.event.repository.default_branch }}
         run: |
           set -euo pipefail
-          git fetch --no-tags origin "$BASE_BRANCH"
-          # Only commit subjects are read from the branch; no branch-supplied action or
-          # build file is executed.
           git log --reverse --format=%s "origin/$BASE_BRANCH..$HEAD_SHA" > "$RUNNER_TEMP/subjects.txt"
           if [ ! -s "$RUNNER_TEMP/subjects.txt" ]; then
             echo "Branch adds no commits over $BASE_BRANCH; nothing to open." >> "$GITHUB_STEP_SUMMARY"
             echo "skip=true" >> "$GITHUB_OUTPUT"
             exit 0
           fi
-          python3 .github/workflows/scripts/render-maintainer-pr.py \
-            --template .github/maintainer-pr-template.md \
+          python3 "$RUNNER_TEMP/render-maintainer-pr.py" \
+            --template "$RUNNER_TEMP/maintainer-pr-template.md" \
             --subjects "$RUNNER_TEMP/subjects.txt" \
             --branch "$HEAD_BRANCH" \
+            --branch-name "$BRANCH_NAME" \
             --author "$HEAD_ACTOR" \
             --title-out "$RUNNER_TEMP/pr-title.txt" \
             --body-out "$RUNNER_TEMP/pr-body.md"

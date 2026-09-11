@@ -12,6 +12,7 @@ from pathlib import Path
 
 PLACEHOLDER_SUBJECT = "{{SUBJECT}}"
 PLACEHOLDER_BRANCH = "{{BRANCH}}"
+PLACEHOLDER_BRANCH_NAME = "{{BRANCH_NAME}}"
 PLACEHOLDER_AUTHOR = "{{AUTHOR}}"
 PLACEHOLDER_COMMITS = "{{COMMITS}}"
 
@@ -41,11 +42,12 @@ def split_title_body(text: str) -> tuple[str, str]:
     raise SystemExit("Template contains no title line outside comments")
 
 
-def render(template: str, subjects: list[str], branch: str, author: str) -> tuple[str, str]:
+def render(template: str, subjects: list[str], branch: str, branch_name: str, author: str) -> tuple[str, str]:
     commits: str = "\n".join(f"- {subject}" for subject in subjects)
     rendered: str = (
         template
         .replace(PLACEHOLDER_SUBJECT, subjects[0])
+        .replace(PLACEHOLDER_BRANCH_NAME, branch_name)
         .replace(PLACEHOLDER_BRANCH, branch)
         .replace(PLACEHOLDER_AUTHOR, author)
         .replace(PLACEHOLDER_COMMITS, commits)
@@ -58,6 +60,7 @@ def main() -> None:
     parser.add_argument("--template", required=True, type=Path)
     parser.add_argument("--subjects", required=True, type=Path)
     parser.add_argument("--branch", required=True)
+    parser.add_argument("--branch-name", required=True)
     parser.add_argument("--author", required=True)
     parser.add_argument("--title-out", required=True, type=Path)
     parser.add_argument("--body-out", required=True, type=Path)
@@ -73,6 +76,7 @@ def main() -> None:
         template=args.template.read_text(encoding="utf-8"),
         subjects=subjects,
         branch=args.branch,
+        branch_name=args.branch_name,
         author=args.author,
     )
     if not title:

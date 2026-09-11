@@ -7,12 +7,13 @@
   title; everything after it becomes the PR body.
 
   Placeholders:
-    {{SUBJECT}}  subject of the first commit the branch adds to the base branch
-    {{BRANCH}}   pushed branch name
-    {{AUTHOR}}   login of the account that pushed
-    {{COMMITS}}  bullet list of every commit subject on the branch
+    {{BRANCH_NAME}}  branch with the maintainer's own prefix removed
+    {{SUBJECT}}      subject of the first commit the branch adds to the base branch
+    {{BRANCH}}       pushed branch name
+    {{AUTHOR}}       login of the account that pushed
+    {{COMMITS}}      bullet list of every commit subject on the branch
 -->
-{{SUBJECT}}
+Auto PR: {{BRANCH_NAME}}
 
 ## What this does
 

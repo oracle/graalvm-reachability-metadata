@@ -8,7 +8,12 @@ which keeps every published branch owned by exactly one maintainer.
 
 Patterns use GitHub's branch-filter semantics rather than shell ones, so they read the same
 way as the `on.push.branches` filter in the workflow: `*` matches within one path segment,
-`**` crosses `/`, and `?` matches a single character. Used by
+`**` crosses `/`, and `?` matches a single character.
+
+On a match this also reports the branch's short name — the branch with the matched pattern's
+literal prefix removed, so `mm/auto-*` turns `mm/auto-benchmark-runner` into
+`benchmark-runner`. Each maintainer's own pattern therefore defines what counts as their
+prefix, and the name is what the PR title is built from. Used by
 `.github/workflows/maintainer-open-pr.yml`.
 """
 
@@ -16,6 +21,7 @@ from __future__ import annotations
 
 import argparse
 import re
+import sys
 
 
 def parse_allowlist(allowlist: str) -> list[tuple[str, str]]:
@@ -55,6 +61,14 @@ def compile_pattern(pattern: str) -> re.Pattern[str]:
     return re.compile(f"^{regex}$")
 
 
+def short_name(branch: str, pattern: str) -> str:
+    """Strip the pattern's literal prefix from `branch`, leaving the part the author chose."""
+    prefix: str = re.split(r"[*?]", pattern, maxsplit=1)[0]
+    name: str = branch[len(prefix):] if branch.startswith(prefix) else branch
+    # A wildcard-free pattern leaves nothing behind, so fall back to the last path segment.
+    return name or branch.rsplit("/", 1)[-1]
+
+
 def matching_pattern(allowlist: str, actor: str, branch: str) -> str | None:
     """Return the pattern that lets `actor` publish `branch`, or None if none does."""
     for login, pattern in parse_allowlist(allowlist):
@@ -72,13 +86,17 @@ def main() -> None:
     parser.add_argument("--branch", required=True)
     args = parser.parse_args()
 
+    # Human-readable reasoning goes to stderr, `key=value` results to stdout, so the
+    # workflow can append each stream where it belongs without parsing either.
     pattern: str | None = matching_pattern(args.allowlist, args.actor, args.branch)
     if pattern is None:
-        print(f"No MAINTAINER_PR_BRANCHES entry lets {args.actor} publish {args.branch}.")
+        print(f"No MAINTAINER_PR_BRANCHES entry lets {args.actor} publish {args.branch}.", file=sys.stderr)
         print("allowed=false")
         return
-    print(f"{args.branch} matches `{pattern}` for {args.actor}.")
+    name: str = short_name(args.branch, pattern)
+    print(f"{args.branch} matches `{pattern}` for {args.actor}; short name `{name}`.", file=sys.stderr)
     print("allowed=true")
+    print(f"name={name}")
 
 
 if __name__ == "__main__":
