@@ -556,6 +556,45 @@ class MetricsPathTests(unittest.TestCase):
                 "tests/src/org.example/demo/1.0.0/src/test/resources/META-INF/native-image/reachability-metadata.json"
             ))
 
+    def test_native_image_config_policy_skips_gitignored_build_output(self) -> None:
+        """The Gradle native plugin generates split-config files under `build/`; ignored files cannot be committed."""
+        with tempfile.TemporaryDirectory() as temp_dir:
+            metadata_dir = os.path.join(temp_dir, "metadata", "org.example", "demo")
+            test_project_dir = os.path.join(temp_dir, "tests", "src", "org.example", "demo", "1.0.0")
+            build_config_dir = os.path.join(
+                test_project_dir, "build", "native", "generated", "generateTestResourcesConfigFile"
+            )
+            test_metadata_dir = os.path.join(
+                test_project_dir, "src", "test", "resources", "META-INF", "native-image"
+            )
+            os.makedirs(metadata_dir)
+            os.makedirs(build_config_dir)
+            os.makedirs(test_metadata_dir)
+            with open(os.path.join(metadata_dir, "index.json"), "w", encoding="utf-8") as file:
+                json.dump(
+                    [
+                        {
+                            "metadata-version": "1.0.0",
+                            "test-version": "1.0.0",
+                            "tested-versions": ["1.0.1"],
+                        }
+                    ],
+                    file,
+                )
+            for directory in (build_config_dir, test_metadata_dir):
+                with open(os.path.join(directory, "resource-config.json"), "w", encoding="utf-8") as file:
+                    json.dump({"resources": {"includes": []}}, file)
+            _git(temp_dir, "init")
+            with open(os.path.join(temp_dir, ".gitignore"), "w", encoding="utf-8") as file:
+                file.write("**/build\n")
+
+            self.assertEqual(
+                find_legacy_test_native_image_config_files_for_coordinate(temp_dir, "org.example:demo:1.0.1"),
+                [
+                    "tests/src/org.example/demo/1.0.0/src/test/resources/META-INF/native-image/resource-config.json",
+                ],
+            )
+
     def test_create_run_metrics_includes_test_only_metadata_entries_only_when_positive(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
             tests_root = os.path.join(

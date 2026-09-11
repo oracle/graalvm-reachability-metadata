@@ -237,9 +237,22 @@ the run identity, status, configuration, coverage gain, and token totals from
 the validated descriptor. Repository CI and the normal merge boundary remain
 responsible for accepting it. §FS-forge-publication-readiness
 
-The outer launcher must invoke the same metrics collector when Rhei terminates
-before reaching benchmark publication. Thus a failed or partial workflow remains
-a benchmark result rather than disappearing from the comparison.
+When Rhei terminates before reaching benchmark publication, the launcher must
+publish nothing. It preserves the workspace and the source worktree and
+reports the run as pending human intervention, printing the workspace path and
+the failed phase when known. A record collected automatically from partial
+evidence at the stop can mask the completed outcome once the workspace is
+resumed and finalized, so a crash-time snapshot must never be published. A
+failed or partial workflow still remains a benchmark result rather than
+disappearing from the comparison, but it enters the comparison only through an
+explicit human decision: the operator either resumes the workspace until the
+workflow reaches terminal publication, or explicitly publishes the run as a
+failure, which builds the record exactly once from the evidence present at
+that moment. Every written record, success or failure, is immutable for its
+`runId`. Because a benchmark run has no GitHub issue, pending human
+intervention is launcher-local state reported on the console and derivable
+from the workspace, not the `human-intervention` label flow
+(§FS-human-intervention-policy).
 
 The normalized result must be written into the workspace before Git publication,
 and a publication marker may be written only after the publication branch is
@@ -251,7 +264,9 @@ branch pushing fails, both the source worktree and workspace remain so
 completion can be retried without losing evidence.
 
 The launcher provides a command that discovers workspaces without a publication
-marker and retries their result publication without rerunning coverage.
+marker. A workspace that already holds a written result retries its Git
+publication without rerunning coverage; a workspace without one is listed as
+pending human intervention and left untouched.
 
 ## 4. Initial metrics record
 

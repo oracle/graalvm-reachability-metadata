@@ -560,7 +560,10 @@ The Rhei template should decompose the workflow into these phases:
    (§root/FS-metadata.2, §root/AR-test-harness.5). The step also fails the
    run when a legacy split-config file survives anywhere under the coordinate's
    test tree, which is how a tracing-agent artifact left behind by metadata
-   preparation is caught before publication rather than in review (§2). Nothing
+   preparation is caught before publication rather than in review (§2).
+   Gitignored files are exempt: the Gradle native plugin generates split-config
+   files under `build/` as part of its own pipeline, and an ignored file can
+   never be committed, so it is not a policy violation. Nothing
    at this stage validates the coverage tests under Native Image — the native
    build the stats step runs measures dynamic access and does not gate the run;
    a nonzero exit code names the failed step.

@@ -600,12 +600,12 @@ def _execute_cell(
             else "failure"
         )
         _record_completion(workspace, status, result.returncode)
-        if not _publication_marker_path(workspace).is_file():
-            publish_workspace(
-                workspace,
-                requested_status=status,
-                exit_code=result.returncode,
-            )
+        # A workflow that already wrote its immutable record only failed to
+        # push it, so Git publication is retried; a workflow that stopped
+        # earlier is held for a human instead of publishing a crash-time
+        # snapshot (§FS-code-coverage-benchmarking.3).
+        if not _publication_marker_path(workspace).is_file() and result_path.is_file():
+            publish_workspace(workspace, exit_code=result.returncode)
         if _publication_marker_path(workspace).is_file():
             _discard_source_worktree(source_worktree)
             print(f"Preserved benchmark workspace: {workspace.resolve()}")
@@ -613,22 +613,17 @@ def _execute_cell(
     except (BenchmarkError, OSError, subprocess.SubprocessError) as error:
         print(f"ERROR: Benchmark run {run_id} failed: {error}", file=sys.stderr)
         try:
+            # The run record makes the held workspace discoverable by
+            # retry-pending even when the failure preceded its first write.
             _ensure_run_record(workspace, identity)
             _record_completion(workspace, "failure", None)
-            if not _publication_marker_path(workspace).is_file():
-                publish_workspace(workspace, requested_status="failure")
-            if _publication_marker_path(workspace).is_file():
-                _discard_source_worktree(source_worktree)
-                print(f"Preserved benchmark workspace: {workspace.resolve()}")
-                return False, True
-        except (BenchmarkError, OSError, subprocess.SubprocessError) as publish_error:
+        except (BenchmarkError, OSError) as record_error:
             print(
-                f"ERROR: Benchmark result {run_id} was not published: "
-                f"{publish_error}",
+                f"ERROR: Benchmark run {run_id} has no run record: "
+                f"{record_error}",
                 file=sys.stderr,
             )
-    print(f"Preserved benchmark workspace: {workspace.resolve()}")
-    print(f"Preserved source worktree: {source_worktree.resolve()}")
+    _report_pending_intervention(workspace, source_worktree)
     return False, False
 
 
@@ -673,16 +668,20 @@ def _phase_coverage(
     }
 
 
-def _coverage_from_final_metrics(
-        workspace: Path,
-) -> tuple[dict[str, Any], dict[str, Any], dict[str, Any]] | None:
-    path = (
+def _final_metrics_path(workspace: Path) -> Path:
+    return (
         workspace
         / "runtime"
         / "code-coverage"
         / "finalization"
         / "final-metrics.json"
     )
+
+
+def _coverage_from_final_metrics(
+        workspace: Path,
+) -> tuple[dict[str, Any], dict[str, Any], dict[str, Any]] | None:
+    path = _final_metrics_path(workspace)
     if not path.is_file():
         return None
     try:
@@ -807,13 +806,7 @@ def _phase_tokens(
 
 
 def _stop_passes(workspace: Path, phase: str) -> int | None:
-    final_metrics = (
-        workspace
-        / "runtime"
-        / "code-coverage"
-        / "finalization"
-        / "final-metrics.json"
-    )
+    final_metrics = _final_metrics_path(workspace)
     if final_metrics.is_file():
         try:
             for decision in _read_json(final_metrics).get("stopDecisions", []):
@@ -873,16 +866,41 @@ def _failure_phase(workspace: Path) -> str | None:
     return mapping.get(task)
 
 
+def _report_pending_intervention(workspace: Path, source_worktree: Path) -> None:
+    """A benchmark run has no GitHub issue, so pending human intervention is
+    launcher-local state: nothing is published, and the operator either resumes
+    the workspace to terminal publication or explicitly publishes the failure
+    (§FS-code-coverage-benchmarking.3)."""
+    phase = _failure_phase(workspace)
+    reason = (
+        f"stopped in the {phase} phase"
+        if phase
+        else "stopped before terminal publication"
+    )
+    print(
+        f"PENDING HUMAN INTERVENTION: {reason}; nothing was published. "
+        "Resume the workspace or publish it with an explicit --status failure."
+    )
+    print(f"Preserved benchmark workspace: {workspace.resolve()}")
+    print(f"Preserved source worktree: {source_worktree.resolve()}")
+
+
 def _collect_result(
         workspace: Path,
-        requested_status: str,
+        requested_status: str | None,
         exit_code: int | None,
 ) -> dict[str, Any]:
+    # A written record is immutable for its runId, success or failure
+    # (§AR-code-coverage-benchmarking.3).
     result_path = _result_record_path(workspace)
     if result_path.is_file():
         existing: dict[str, Any] = _read_json(result_path)
         _validate([existing], RESULT_SCHEMA_PATH)
         return existing
+    if requested_status is None:
+        raise BenchmarkError(
+            "Publishing without a recorded result requires an explicit --status."
+        )
     run: dict[str, Any] = _read_json(_run_record_path(workspace))
     finalized = _coverage_from_final_metrics(workspace)
     if requested_status == "success" and finalized is None:
@@ -1310,12 +1328,11 @@ def publish_workspace(
     """Collect and idempotently publish one workspace's compact result."""
     workspace = workspace.resolve()
     run: dict[str, Any] = _read_json(_run_record_path(workspace))
-    status = requested_status or run.get("requestedStatus") or "failure"
     known_exit = exit_code
     if known_exit is None:
         candidate = run.get("rheiExitCode")
         known_exit = candidate if type(candidate) is int else None
-    result = _collect_result(workspace, status, known_exit)
+    result = _collect_result(workspace, requested_status, known_exit)
     publication = _publish_result(repository_root.resolve(), workspace, result)
     marker = {
         "schemaVersion": "1.0.0",
@@ -1567,10 +1584,18 @@ def retry_pending(args: argparse.Namespace) -> int:
     if not pending:
         return 0
     failures = 0
+    held = 0
     for workspace in pending:
+        run = _read_json(_run_record_path(workspace))
+        # Only a workspace with a written record retries publication; one
+        # without a record is held for a human decision
+        # (§FS-code-coverage-benchmarking.3).
+        if not _result_record_path(workspace).is_file():
+            held += 1
+            _report_pending_intervention(workspace, Path(run["sourceWorktree"]))
+            continue
         try:
             publish_workspace(workspace)
-            run = _read_json(_run_record_path(workspace))
             source = Path(run["sourceWorktree"])
             if source.exists():
                 _discard_source_worktree(source)
@@ -1580,6 +1605,8 @@ def retry_pending(args: argparse.Namespace) -> int:
                 f"ERROR: Could not publish {workspace}: {error}",
                 file=sys.stderr,
             )
+    if held:
+        print(f"{held} workspace(s) are pending human intervention.")
     return 1 if failures else 0
 
 
