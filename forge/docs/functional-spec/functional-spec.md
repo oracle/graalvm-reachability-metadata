@@ -698,6 +698,47 @@ Every workflow records one of these statuses:
 
 The exit code is `0` for PR-eligible statuses and `1` for failure.
 
+## FS-unsupportable-version-diagnosis: Pre-generation unsupportable-version diagnosis
+
+For issues that report a failing version update (`fails-javac-compile`,
+`fails-java-run`, `fails-native-image-run`), the library preparation preflight
+(§AR-forge-orchestration.1) asks one additional question before any generation
+starts: does covering the library's dynamic-access calls require behavior
+Native Image does not support (§root/FS-test-contract.4.5)? The inputs — the
+automation issue's failure evidence and the library's sources for this and
+newer versions — all exist before the scaffold is prepared, so an
+unsupportable verdict costs one preflight turn and saves the whole fix budget.
+Without it, the disposition of §root/FS-contribution-contract.5.4 is reachable
+only through a branch that got green somehow: a run that fails honestly ends
+`RUN_STATUS_FAILURE`, publishes nothing, and no reviewer ever takes the
+disposition. Issues without failure evidence (`library-new-request`,
+`library-update-request`) are not asked: the first has no index entry to
+record a skip into, and the second carries no failure to diagnose.
+
+The diagnosis applies the evidence bar of §root/FS-contribution-contract.5.4
+in five steps — name the failing operation from the evidence, trace it into
+the library's source, classify it against the unsupported-behavior catalogue,
+prove no public API route avoids it, and bound the version range by verifying
+newer versions' sources. The verdict is structured and strict: anything
+missing, malformed, or uncertain means repairable, because a missed exit costs
+one wasted run while a wrong skip freezes versions that were never attempted.
+The range includes only versions whose sources the diagnosis actually
+verified; an under-skipped range self-heals, since the next version's run
+re-diagnoses before generation.
+
+The verdict travels in the preflight record. On an unsupportable verdict the
+workflow driver, before preparing any scaffold, records the verdict's
+`skipped-versions` entries in the artifact's `index.json`
+(§root/FS-library-version-update-automation.1), validates the index, and ends
+the run `RUN_STATUS_SUCCESS` with no generation spent — the skip record is the
+run's successful outcome. A verdict the driver cannot apply (a rejected index,
+a version already recorded) falls through to normal generation rather than
+failing the run. The publication pipeline is unchanged: the pre-publication
+gate validates the index-only tree, the local pre-push review
+(§FS-local-branch-review) verifies the recorded mechanism instead of
+discovering it, and the trusted publisher renders the pull request from the
+tree's skip record (§FS-forge-publication-readiness).
+
 ## FS-forge-chunked-dynamic-access: Chunked dynamic-access semantics
 
 - `FORGE_DYNAMIC_ACCESS_CHUNK_CLASS_THRESHOLD` configures the class-count threshold

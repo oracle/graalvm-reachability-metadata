@@ -357,6 +357,12 @@ the compatibility automation filed the issue
 (§FS-library-version-update-automation.4); where it is absent it is applied
 before the contribution merges.
 
+The diagnosis may already have happened before generation
+(§forge/FS-unsupportable-version-diagnosis), in which case the contribution
+arrives as the skip record and the reviewer verifies the recorded mechanism
+against the library's source instead of discovering it — the evidence bar
+above is unchanged.
+
 Where a library change could remove the guard, the incompatibility is reported
 upstream. This is the library-level counterpart of the test-level case in
 §FS-test-contract.4.3.2.

@@ -187,6 +187,20 @@ Failed generation or local finalization still preserves diagnostics
 (§FS-local-ci-equivalent-verification), restores claim state as appropriate, and
 leaves enough context for human follow-up.
 
+### 1.2 Unsupportable-version verdict
+
+For `fails-*` issues the same preflight decision carries a third possible
+action beyond `no_action` and `advisory_preparation`: an unsupportable-version
+verdict (§FS-unsupportable-version-diagnosis). The agent returns it with the
+structurally-validated `skipped_versions` entries the verdict prescribes;
+free-text reasons are scanned like the advisory fields because they are
+published verbatim. The record travels to the workflow driver unchanged, and
+the driver — not orchestration — honors it as its first act: it writes the
+entries into the artifact's `index.json`, validates the index, records success
+run metrics with no generation spent, and returns so orchestration hands the
+index-only tree to the ordinary publication finalizer. A verdict the driver
+cannot apply falls through to normal generation.
+
 ## 2. Pull Request Review Queues
 
 `forge_metadata.py` also owns the pull-request review side of Forge, which is a
