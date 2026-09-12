@@ -173,6 +173,14 @@
   - Run `./gradlew test -Pcoordinates=<resolved coordinate> -PincludeCodeCoverageSuite=true`; if it fails, repair
     metadata with the Codex `fix-missing-reachability-metadata` skill and re-run,
     up to the helper's fix budget.
+  - Run every Gradle command in the foreground with a timeout long enough to
+    finish it. Never start one as a background task and end your turn to wait
+    for it: this invocation is headless, your turn ending is the process
+    exiting, and any work still outstanding loses its supervisor. There is no
+    later turn to wake up in. If a command needs an hour, wait an hour.
+  - Before reporting success, confirm the artifacts below exist. If they do
+    not, the phase did not complete: keep working or request
+    `human-intervention`. Never report success without them.
   - If Native Image validation cannot be repaired automatically, request
     `human-intervention`.
 - Artifacts:
@@ -207,6 +215,14 @@
   JaCoCo is the sole coverage authority; sampled PGO and the static call graph
   provide navigation only. The phase completes when no actionable target
   remains or the iteration budget is spent.
+- Run every Gradle command in the foreground with a timeout long enough to
+  finish it. Never start one as a background task and end your turn to wait for
+  it: this invocation is headless, your turn ending is the process exiting, and
+  there is no later turn to wake up in. A native image build can take many
+  minutes; wait for it inside this turn.
+- Write your required state output before your final message. Ending the turn
+  with the report unwritten discards the whole invocation, however much work
+  preceded it.
 
 ### Task code-coverage-finalization: Finalize validation and metrics
 **State:** reviewed-prepared
