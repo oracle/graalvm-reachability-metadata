@@ -191,6 +191,16 @@ source publication tasks or deterministic benchmark conversion and metrics
 publication tasks. The middle preparation, API, native-metadata, deep, and
 finalization tasks are the same in both modes.
 
+A cell runs on one agent configuration, and that includes the repairs the
+workflow performs on its own output. The analysis role a cell resolves must be
+the cell's own agent, model, and thinking level, not the ambient default of the
+machine that launched the run. A cell whose coverage agent is one model while
+its metadata repairs are performed by another measures two agents at once and
+attributes the result to one of them, and an analysis role left to the
+environment makes the same cell produce different work on different machines.
+The launcher therefore fixes the analysis role for every cell it executes
+(§FS-forge-agent-runtime-selection).
+
 The Rhei workspace must live outside the disposable source worktree. Distinct
 run parents prevent collisions while preserving the required fixed workspace
 name.
