@@ -233,12 +233,22 @@ writers and creates a fresh disposable worktree from the latest
 `origin/master` for each result. It appends the result, validates and commits
 the complete coordinate list, writes a descriptor that repeats the exact result
 and names its repository path, commits the descriptor at the required
-coordinate-local `stats/**/forge-publication.json` path, and pushes the unique
-publication branch. The worktree is then removed.
+publication-scoped
+`stats/<group>/<artifact>/<version>/<publication id>/forge-publication.json`
+path, and pushes the unique publication branch. The worktree is then removed.
+
+A coordinate accumulates many benchmark results, one per executed cell, so a
+descriptor path fixed to the coordinate alone would name the same file for
+every run of that library. Each branch would then rewrite one path, and the
+second result to merge would conflict with the first over a file neither run
+shares any content with. Scoping the path by publication identifier gives
+concurrent runs of one library disjoint paths, so results merge independently
+and remain individually attributable.
 
 The trusted publisher accepts a benchmark-result descriptor only when the
 branch changes exactly the coordinate result list and that one descriptor, the
-descriptor's coordinate determines both paths, the embedded result validates
+descriptor's coordinate and publication identifier together determine both
+paths, the embedded result validates
 against the benchmark-result schema, and the list is exactly the base list plus
 that result. It opens one pull request for the run, labeled `GenAI`,
 `code-coverage-improvement`, and `rhei` so the run sits in the same triage
