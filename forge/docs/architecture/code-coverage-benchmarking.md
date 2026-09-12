@@ -267,8 +267,13 @@ code-coverage-benchmarks/
 stats/
   <group>/
     <artifact>/
-      <version>/forge-publication.json
+      <version>/
+        <publication id>/forge-publication.json
 ```
+
+The descriptor nests below a publication-identifier segment so that two results
+for one coordinate never claim the same path and never conflict on merge
+(§FS-code-coverage-benchmarking.3).
 
 `run.json` may contain machine-specific paths because it drives recovery.
 `result.json` contains no absolute paths; `runId` and

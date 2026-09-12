@@ -712,10 +712,14 @@ class CodeCoverageBenchmarkMetricsTests(unittest.TestCase):
                 first.commit,
             ).stdout.strip(),
         )
-        descriptor_path = "stats/com.example/demo/1.0.0/forge-publication.json"
+        descriptor_path = (
+            f"stats/com.example/demo/1.0.0/{first.publication_id}"
+            "/forge-publication.json"
+        )
         descriptor = json.loads(
             _git(repository, "show", f"{first.commit}:{descriptor_path}").stdout
         )
+        self.assertEqual(first.publication_id, descriptor["publication_id"])
         self.assertEqual(benchmark.BENCHMARK_TASK_TYPE, descriptor["task_type"])
         self.assertEqual("run-1", descriptor["benchmark_run_id"])
         self.assertEqual(result, descriptor["render"]["benchmark_result"])

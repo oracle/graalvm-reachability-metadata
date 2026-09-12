@@ -1102,9 +1102,19 @@ def _discard_publication_worktree(
         )
 
 
-def _descriptor_relative_path(coordinate: str) -> Path:
+def _descriptor_relative_path(coordinate: str, publication_id: str) -> Path:
+    """Return the publication-scoped descriptor path for one benchmark result.
+
+    A coordinate carries one result per executed cell, so a path fixed to the
+    coordinate alone would name the same file for every run of that library and
+    make the second result to merge conflict with the first
+    (§FS-code-coverage-benchmarking.3).
+    """
     group, artifact, version = coordinate.split(":")
-    return Path("stats") / group / artifact / version / "forge-publication.json"
+    return (
+        Path("stats") / group / artifact / version
+        / publication_id / "forge-publication.json"
+    )
 
 
 def _commit_paths(repository: Path, paths: list[Path], subject: str) -> str:
@@ -1246,7 +1256,7 @@ def _fetch_existing_publication(
     descriptor = _json_at_ref(
         repository_root,
         remote_ref,
-        _descriptor_relative_path(result["coordinate"]),
+        _descriptor_relative_path(result["coordinate"], publication_id),
     )
     entries = _json_at_ref(
         repository_root,
@@ -1272,8 +1282,8 @@ def _publish_result(
         result: dict[str, Any],
 ) -> BenchmarkPublication:
     relative_path = _metrics_relative_path(result["coordinate"])
-    descriptor_path = _descriptor_relative_path(result["coordinate"])
     producer, publication_id, branch = _publication_identity(repository_root, result)
+    descriptor_path = _descriptor_relative_path(result["coordinate"], publication_id)
     lock_handle = _publish_lock(repository_root)
     try:
         for attempt in range(1, MAX_PUBLISH_ATTEMPTS + 1):
