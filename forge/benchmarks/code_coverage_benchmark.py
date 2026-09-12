@@ -126,6 +126,25 @@ class AgentConfiguration:
         )
         return f"{self.agent}[{thinking}]:{model}"
 
+    def analysis_role_environment(self, thinking: str) -> dict[str, str]:
+        """Render the `FORGE_ANALYSIS_*` variables that pin the repair agent.
+
+        A cell runs on one configuration, repairs included, so the analysis
+        role resolves to the cell's own agent rather than to whatever the
+        launching machine happens to export
+        (§FS-code-coverage-benchmarking.2). The executable is left unset so
+        the backend's registered default applies, and the provider is sent
+        only where it means something (§FS-forge-agent-runtime-selection).
+        """
+        environment: dict[str, str] = {
+            "FORGE_ANALYSIS_FAMILY": self.agent,
+            "FORGE_ANALYSIS_MODEL": self.target_model,
+            "FORGE_ANALYSIS_THINKING_LEVEL": thinking,
+        }
+        if self.agent in PROVIDER_AWARE_BACKENDS:
+            environment["FORGE_ANALYSIS_PROVIDER"] = self.provider
+        return environment
+
 
 @dataclass(frozen=True)
 class MatrixCell:
@@ -597,8 +616,16 @@ def _execute_cell(
         workspace,
         identity,
     )
+    environment: dict[str, str] = dict(os.environ)
+    # Repairs belong to the cell, so its agent drives them rather than the
+    # launching machine's ambient role (§FS-code-coverage-benchmarking.2).
+    environment.update(
+        cell.configuration.analysis_role_environment(cell.thinking)
+    )
     try:
-        result = subprocess.run(command, cwd=FORGE_ROOT, check=False)
+        result = subprocess.run(
+            command, cwd=FORGE_ROOT, check=False, env=environment
+        )
         _ensure_run_record(workspace, identity)
         result_path = _result_record_path(workspace)
         recorded_result = _read_json(result_path) if result_path.is_file() else None

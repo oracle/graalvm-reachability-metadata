@@ -121,6 +121,36 @@ class CodeCoverageBenchmarkMatrixTests(unittest.TestCase):
             configuration.target("high"),
         )
 
+    def test_analysis_role_follows_the_cell_configuration(self) -> None:
+        """A cell repairs its own output with its own agent."""
+        claude = next(
+            item for item in self.suite.configurations
+            if item.configured_model == "opus-5"
+        )
+        self.assertEqual(
+            {
+                "FORGE_ANALYSIS_FAMILY": "claude-code",
+                "FORGE_ANALYSIS_MODEL": "claude-opus-5",
+                "FORGE_ANALYSIS_THINKING_LEVEL": "medium",
+            },
+            claude.analysis_role_environment("medium"),
+        )
+
+    def test_analysis_role_carries_a_provider_only_when_meaningful(self) -> None:
+        """`pi` routes through a provider; Claude Code authenticates itself."""
+        pi = next(
+            item for item in self.suite.configurations
+            if item.configured_model == "gpt-5.6-luna"
+        )
+        self.assertEqual(
+            "openai-codex", pi.analysis_role_environment("high")["FORGE_ANALYSIS_PROVIDER"]
+        )
+        claude = next(
+            item for item in self.suite.configurations
+            if item.configured_model == "opus-5"
+        )
+        self.assertNotIn("FORGE_ANALYSIS_PROVIDER", claude.analysis_role_environment("high"))
+
     def test_provider_prefix_only_for_provider_aware_agents(self) -> None:
         """`claude` rejects a prefixed model; `pi` routes through a provider."""
         claude = next(
