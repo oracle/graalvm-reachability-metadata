@@ -1,0 +1,16 @@
+## Human intervention needed
+
+The automated job failed for `org.springframework.integration:spring-integration-sftp:7.1.1`.
+
+Preserved work: https://github.com/oracle/graalvm-reachability-metadata/tree/ai%2Fkimeta%2Fhuman-intervention%2Fissue-9952-library-new-request-org.springframework.integration-spring-integration-sftp-7.1.1-0c4c6d30
+
+Test generation exhausted 12 iterations without completion: metrics record `generated_loc: 0`, `metadata_entries: 0`, identical start/end commits, and unavailable dynamic-access coverage. The likely blocker is `nativeTestCompile`: Native Image repeatedly fails because Apache MINA SSHD’s `RootedFileSystemProvider` and `SftpFileSystemProviderFacade` are found in the image heap despite runtime initialization. Dynamic-access reporting then fails because native compilation does not produce its input.
+
+Inspect:
+- `logs/org.springframework.integration:spring-integration-sftp:7.1.1/add-new-library-support/pi-generation-2026-09-11T14-37-57-988121Z.log`
+- `logs/org.springframework.integration:spring-integration-sftp:7.1.1/gradle-test/gradle-test-2026-09-11T14-54-55-270288Z.log`
+- `logs/org.springframework.integration:spring-integration-sftp:7.1.1/dynamic-access-report/generateDynamicAccessCoverageReport-2026-09-11T14-33-48-292776Z.log`
+
+1. Reproduce and trace `nativeTestCompile` with the supported GraalVM/JDK configuration.
+2. Resolve the Apache MINA SSHD filesystem-provider initialization issue without adding build-time-initialization metadata.
+3. Add meaningful in-process SFTP tests, regenerate metadata and dynamic-access coverage, then run coordinate-scoped validation.

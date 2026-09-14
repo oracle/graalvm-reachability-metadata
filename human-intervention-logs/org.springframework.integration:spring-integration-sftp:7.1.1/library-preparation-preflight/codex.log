@@ -1,0 +1,10 @@
+{
+  "action": "advisory_preparation",
+  "summary": "SFTP adapter behavior requires a reachable SFTP server; use an embedded Apache MINA SSHD server rather than Docker or extra dependencies.",
+  "deterministic_setup": [],
+  "agent_guidance": "Create an in-process SshServer on an ephemeral port with SftpSubsystemFactory, password authentication, a temporary VirtualFileSystemFactory root, and allowUnknownKeys=true in DefaultSftpSessionFactory. Exercise inbound, outbound, and gateway flows. The target artifact already brings Apache MINA SSHD transitively. See the official [SFTP documentation](https://www.springframework.org/spring-integration/reference/sftp.html) and [project test support](https://github.com/spring-projects/spring-integration/blob/main/spring-integration-sftp/src/test/java/org/springframework/integration/sftp/SftpTestSupport.java).",
+  "risks": [
+    "Without the embedded server, tests are likely limited to construction/configuration coverage and will miss meaningful file-transfer behavior.",
+    "Native Image verification may expose additional reflection or dynamic-access requirements after the integration tests are added."
+  ]
+}

@@ -1,0 +1,52 @@
+{
+  "timestamp": "2026-09-14T01:12:04.791651Z",
+  "library": "org.springframework.integration:spring-integration-sftp:7.1.1",
+  "starting_commit": "ae7b17f7342cfecc6f9a86c807dc6e01ecb1d030",
+  "ending_commit": "9b60ae1ebcdc78d12d42acb44d5ba3a129416599",
+  "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-sol",
+  "agent": "pi",
+  "model": "gpt-5.6-sol",
+  "status": "failure",
+  "library_preparation_preflight": {
+    "status": "completed",
+    "action": "advisory_preparation",
+    "issue_number": 9952,
+    "issue_label": "library-new-request",
+    "library": "org.springframework.integration:spring-integration-sftp:7.1.1",
+    "summary": "SFTP adapter behavior requires a reachable SFTP server; use an embedded Apache MINA SSHD server rather than Docker or extra dependencies.",
+    "deterministic_setup": [],
+    "agent_guidance": "Create an in-process SshServer on an ephemeral port with SftpSubsystemFactory, password authentication, a temporary VirtualFileSystemFactory root, and allowUnknownKeys=true in DefaultSftpSessionFactory. Exercise inbound, outbound, and gateway flows. The target artifact already brings Apache MINA SSHD transitively. See the official [SFTP documentation](https://www.springframework.org/spring-integration/reference/sftp.html) and [project test support](https://github.com/spring-projects/spring-integration/blob/main/spring-integration-sftp/src/test/java/org/springframework/integration/sftp/SftpTestSupport.java).",
+    "risks": [
+      "Without the embedded server, tests are likely limited to construction/configuration coverage and will miss meaningful file-transfer behavior.",
+      "Native Image verification may expose additional reflection or dynamic-access requirements after the integration tests are added."
+    ],
+    "applied_setup": [],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#9952 Support for org.springframework.integration:spring-integration-sftp:7.1.1; label=library-new-request; body_chars=52"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "0 existing test file path(s) included"
+      }
+    ],
+    "model": "gpt-5.6-luna",
+    "input_tokens_used": 360663,
+    "output_tokens_used": 2430
+  },
+  "metrics": {
+    "input_tokens_used": 373694,
+    "cached_input_tokens_used": 5870080,
+    "output_tokens_used": 38060,
+    "iterations": 11,
+    "cost_usd": 5.9453,
+    "generated_loc": 0,
+    "tested_library_loc": 0,
+    "metadata_entries": 0,
+    "code_coverage_percent": 0.0
+  },
+  "artifacts": {
+    "metadata_file": "None"
+  }
+}

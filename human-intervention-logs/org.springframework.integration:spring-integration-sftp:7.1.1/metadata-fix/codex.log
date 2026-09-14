@@ -1,0 +1,7 @@
+Unable to apply the fix: the workspace is enforced read-only, and both patch attempts failed with:
+
+`bwrap: loopback: Failed RTM_NEWADDR: Operation not permitted`
+
+Reproduction succeeded in reproducing the failure using the exact required GraalVM. It fails during analysis because `Security.<clinit>` reaches `FileSystemProvider.installedProviders`, placing `LinuxFileSystemProvider` in the image heap.
+
+No repository files were changed.

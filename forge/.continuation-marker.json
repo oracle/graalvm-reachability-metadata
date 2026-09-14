@@ -1,0 +1,78 @@
+{
+  "continueFrom": "explore",
+  "coordinate": "org.springframework.integration:spring-integration-sftp:7.1.1",
+  "failure": {
+    "operand": "org.springframework.integration:spring-integration-sftp:7.1.1 future-defaults latest GRAALVM test",
+    "phase": "finalization",
+    "step": "agent_fix()"
+  },
+  "issueNumber": 9952,
+  "label": "library-new-request",
+  "libraryPreparationPreflight": {
+    "action": "advisory_preparation",
+    "agent_guidance": "Create an in-process SshServer on an ephemeral port with SftpSubsystemFactory, password authentication, a temporary VirtualFileSystemFactory root, and allowUnknownKeys=true in DefaultSftpSessionFactory. Exercise inbound, outbound, and gateway flows. The target artifact already brings Apache MINA SSHD transitively. See the official [SFTP documentation](https://www.springframework.org/spring-integration/reference/sftp.html) and [project test support](https://github.com/spring-projects/spring-integration/blob/main/spring-integration-sftp/src/test/java/org/springframework/integration/sftp/SftpTestSupport.java).",
+    "applied_setup": [],
+    "deterministic_setup": [],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#9952 Support for org.springframework.integration:spring-integration-sftp:7.1.1; label=library-new-request; body_chars=52"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "0 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 360663,
+    "issue_label": "library-new-request",
+    "issue_number": 9952,
+    "library": "org.springframework.integration:spring-integration-sftp:7.1.1",
+    "model": "gpt-5.6-luna",
+    "output_tokens_used": 2430,
+    "risks": [
+      "Without the embedded server, tests are likely limited to construction/configuration coverage and will miss meaningful file-transfer behavior.",
+      "Native Image verification may expose additional reflection or dynamic-access requirements after the integration tests are added."
+    ],
+    "status": "completed",
+    "summary": "SFTP adapter behavior requires a reachable SFTP server; use an embedded Apache MINA SSHD server rather than Docker or extra dependencies."
+  },
+  "libraryUpdateRoute": null,
+  "newVersion": null,
+  "phases": {
+    "explore": {
+      "chunkClassCount": null,
+      "chunkProcessedClassCount": 0,
+      "exhaustedClasses": [],
+      "iteration": 7,
+      "status": "running"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": null,
+      "status": "skipped"
+    },
+    "publication": {
+      "branch": null,
+      "coverageFollowUpIssueNumber": null,
+      "isPushed": false,
+      "publicationId": null,
+      "publicationTimestamp": null,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": true,
+      "status": "completed"
+    }
+  },
+  "preservedBranch": "ai/kimeta/human-intervention/issue-9952-library-new-request-org.springframework.integration-spring-integration-sftp-7.1.1-461a17e1",
+  "publicationMetrics": {
+    "extras": {},
+    "library": "org.springframework.integration:spring-integration-sftp:7.1.1",
+    "timestamp": "2026-09-14T01:12:04.791651Z"
+  },
+  "schemaVersion": 1,
+  "strategyName": "optimistic_dynamic_access_iterative_pi_gpt-5.6-sol"
+}
