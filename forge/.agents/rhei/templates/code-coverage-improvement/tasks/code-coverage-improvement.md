@@ -284,48 +284,33 @@
   - `runtime/code-coverage/benchmark/publication.json`
 {% else %}
 ### Task code-coverage-publication: Publish the verified branch
-**State:** prepared
+**State:** publication
 **Prior:** Task code-coverage-finalization
 
-- Helper script: `forge/git_scripts/publish_code_coverage_improvement.py`
-- Worker agent: `{{worker_agent}}`
-- Branch suffix: `{{branch_suffix}}`
+- Deterministic program state; no agent turn. The state program invokes
+  `forge/git_scripts/publish_code_coverage_improvement.py` with the resolved
+  worktree, coordinate, and repository-relative coverage suite path from
+  `runtime/code-coverage/issues/conversion.json`, the issue number, and the
+  run's worker agent target (§AR-code-coverage-improvement.4).
 - Purpose: push the verified code coverage improvement as a publication branch
-  that trusted GitHub Actions turn into a pull request. This task does not open
-  the pull request and must never call `gh pr create`
+  that trusted GitHub Actions turn into a pull request. The program opens no
+  pull request and never calls `gh pr create`
   (§AR-forge-verification-publication-boundary).
-- Required work:
-  - Read `runtime/code-coverage/finalization/final-summary.md` and
-    `runtime/code-coverage/finalization/final-metrics.json`.
-  - Confirm the issue worktree branch is the expected issue branch.
-  - Leave verified changes uncommitted or committed; the helper stages the
-    coverage suite, touched metadata, and the regenerated coverage stats itself
-    and commits them.
-  - Run the helper with `--repo-path`, `--coordinate`, `--issue-number`,
-    `--finalization-dir`, `--coverage-suite-path`, and
-    `--worker-agent {{worker_agent}}`. The helper names the head branch after
-    that target's model, so a run of this coordinate on another model owns a
-    different branch.
-  - Pass `--branch-suffix {{branch_suffix}}` when that value is non-empty. It
-    only labels which run a branch belongs to; the publication ID the helper
-    appends already keeps two runs of one coordinate and model apart.
-  - The helper rebases onto upstream `master`, runs the pre-publication
-    verification gate, writes
-    `stats/<group>/<artifact>/<version>/forge-publication.json`, and pushes the
-    `ai/<login>/...` branch to `{{repo}}`. Pushing that branch is the whole
-    task: `Forge Branch Ready` validates the exact commit as data, and only its
-    success lets `Forge Open PR` render the body and open the pull request
-    (§AR-actions-publication).
-  - The descriptor carries the coordinate, coverage suite path, the whole-run
-    coverage checkpoints and phase gains on one shared denominator (§4.1), the
-    per-phase JaCoCo records, the human-intervention flag, the generating model,
-    and per-phase token usage.
-    The trusted renderer writes every section of the body from it. Do not
-    hand-write a pull request body: a section an agent types is one no run
-    publishes.
-  - Report the pushed branch name in the work artifact.
+- The helper validates the finalized metrics against the coordinate, stages
+  the coverage suite, touched metadata, and regenerated coverage stats,
+  rebases onto upstream `master`, runs the pre-publication verification gate,
+  writes `stats/<group>/<artifact>/<version>/forge-publication.json`, and
+  pushes the `ai/<login>/...` branch. `Forge Branch Ready` validates the exact
+  commit as data, and only its success lets `Forge Open PR` open the pull
+  request (§AR-actions-publication). The descriptor carries the render inputs;
+  the trusted renderer writes every section of the body from it.
+- The head branch names the worker agent's model, so a coordinate measured on
+  two models publishes two branches; the appended publication ID keeps two
+  runs of one coordinate and model apart, and `branch_suffix` only labels
+  which run a branch belongs to.
+- The program's exit code is the transition: 0 completes the task, 1 and 2
+  park it in `human-intervention`.
 - Artifacts:
   - `runtime/code-coverage/publication/branch.md`
-  - `runtime/code-coverage/work/code-coverage-{{issue_number}}.code-coverage-publication.md`
 
 {% endif %}

@@ -1,7 +1,7 @@
 # State machine diagram
 # ---------------------
 #
-# Pipeline tasks (convert, prepare, publication):
+# Pipeline tasks (convert, prepare):
 #   prepared -> execute -> completed / human-intervention
 #
 # Native metadata preparation (one task):
@@ -13,6 +13,11 @@
 # API inventory (one task):
 #   api-inventory -- 0 -> completed; 1-2 -> human-intervention
 #   javap over the library jars, scoped to every committed allowed package.
+#
+# Publication (one task, issue mode; benchmark mode uses benchmark-publication):
+#   publication -- 0 -> completed; 1-2 -> human-intervention
+#   The publish helper stages, rebases, verifies, writes the descriptor, and
+#   pushes; trusted Actions open the pull request.
 #
 # API coverage loop (one task):
 #   api-measure -- 0 (phase done) -> completed
@@ -185,6 +190,86 @@ states:
       except OSError as error:
           fail(2, f"the inventory helper could not run: {error}")
       PY
+
+  publication:
+    description: Push the verified issue branch and its publication descriptor.
+    concurrent: true
+    program_timeout: 120m
+    inputs:
+      - name: conversion
+        path: runtime/code-coverage/issues/conversion.json
+      - name: final_metrics
+        path: runtime/code-coverage/finalization/final-metrics.json
+      - name: final_summary
+        path: runtime/code-coverage/finalization/final-summary.md
+    program: |
+      python3 - "$RHEI_INPUT_CONVERSION_PATH" <<'PY'
+      import json
+      import os
+      import subprocess
+      import sys
+      from pathlib import Path
+
+      def fail(code: int, message: str) -> None:
+          print(f"[publication] {message}", file=sys.stderr)
+          sys.exit(code)
+
+      # The helper validates the finalized metrics against the coordinate and
+      # owns staging, rebase, the verification gate, the descriptor, and the
+      # push; its exit code is the transition
+      # (§AR-code-coverage-improvement.4, §AR-actions-publication).
+      try:
+          conversion = json.load(open(sys.argv[1]))
+          coordinate = conversion["coordinate"]
+          worktree = conversion["worktreePath"]
+          work_path = conversion["workPath"]
+          coverage_suite = conversion["coverageSuiteRepoRelativePath"]
+      except Exception as error:
+          fail(2, f"conversion.json missing or invalid: {error}")
+
+      helper = [
+          sys.executable,
+          f"{work_path}/git_scripts/publish_code_coverage_improvement.py",
+          "--repo-path", worktree,
+          "--coordinate", coordinate,
+          "--issue-number", "{{issue_number}}",
+          "--finalization-dir", "runtime/code-coverage/finalization",
+          "--coverage-suite-path", coverage_suite,
+          "--worker-agent", "{{worker_agent}}",
+      ]
+      branch_suffix = "{{branch_suffix}}"
+      if branch_suffix:
+          helper += ["--branch-suffix", branch_suffix]
+      print(f"[publication] {' '.join(helper)}", flush=True)
+      try:
+          completed = subprocess.run(
+              helper,
+              env=dict(os.environ, PYTHONPATH=work_path),
+              capture_output=True,
+              text=True,
+          )
+      except OSError as error:
+          fail(2, f"the publish helper could not run: {error}")
+      sys.stdout.write(completed.stdout)
+      sys.stderr.write(completed.stderr)
+      if completed.returncode != 0:
+          sys.exit(completed.returncode)
+      record = Path("runtime/code-coverage/publication")
+      record.mkdir(parents=True, exist_ok=True)
+      pushed = [
+          line for line in completed.stdout.splitlines()
+          if line.startswith("Pushed ")
+      ]
+      (record / "branch.md").write_text(
+          "\n".join(pushed or ["Pushed (branch name not captured)"]) + "\n",
+          encoding="utf-8",
+      )
+      sys.exit(0)
+      PY
+    outputs:
+      - name: branch
+        path: runtime/code-coverage/publication/branch.md
+        description: The pushed publication branch, one line.
 
   native-metadata:
     description: Deterministic native-metadata preparation through the shared native trace gate.
@@ -1283,6 +1368,21 @@ transitions:
     to: human-intervention
     description: A required helper or artifact is missing or failed.
 
+  - from: publication
+    to: completed
+    exit_code: 0
+    description: The verified branch and descriptor are pushed; trusted Actions take over.
+
+  - from: publication
+    to: human-intervention
+    exit_code: 1
+    description: The publish helper rejected its inputs or the push failed.
+
+  - from: publication
+    to: human-intervention
+    exit_code: 2
+    description: Publication inputs were missing or malformed.
+
   - from: api-inventory
     to: completed
     exit_code: 0
@@ -1670,6 +1770,10 @@ transitions:
   - from: human-intervention
     to: api-inventory
     description: A person resolved the blocker; re-run the API inventory.
+
+  - from: human-intervention
+    to: publication
+    description: A person resolved the blocker; re-run publication.
 
   - from: human-intervention
     to: api-measure
