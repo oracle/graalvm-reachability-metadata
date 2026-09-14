@@ -15,6 +15,7 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -171,6 +172,28 @@ public class Spring_integration_sftpTest {
             assertThat(reply.getPayload()).isInstanceOf(List.class);
             assertThat(reply.getPayload()).isEqualTo(List.of("alpha.txt", "beta.txt"));
             assertThat(gateway.getComponentType()).isEqualTo("sftp:outbound-gateway");
+        });
+    }
+
+    @Test
+    @Timeout(59)
+    void remoteFileTemplateExecutesMultipleOperationsInOneSession(@TempDir Path testDirectory) throws Exception {
+        withSftpServer(testDirectory, (remoteRoot, sessionFactory) -> {
+            SftpRemoteFileTemplate remoteFileTemplate = new SftpRemoteFileTemplate(sessionFactory);
+
+            List<String> remoteFiles = remoteFileTemplate.execute(session -> {
+                assertThat(session.mkdir("/template")).isTrue();
+                session.write(new ByteArrayInputStream("template payload".getBytes(StandardCharsets.UTF_8)),
+                        "/template/message.txt");
+                assertThat(session.exists("/template/message.txt")).isTrue();
+                return Arrays.stream(session.listNames("/template"))
+                        .filter(name -> !name.equals(".") && !name.equals(".."))
+                        .toList();
+            });
+
+            assertThat(remoteFiles).containsExactly("message.txt");
+            assertThat(Files.readString(remoteRoot.resolve("template/message.txt")))
+                    .isEqualTo("template payload");
         });
     }
 
