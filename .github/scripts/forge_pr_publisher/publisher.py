@@ -1106,6 +1106,7 @@ def _render_code_coverage_benchmark_result(
         f"- Method universe: {_benchmark_metric(coverage['allMethods'])}",
         f"- Input tokens: {_benchmark_metric(tokens['input'])}",
         f"- Cached input tokens: {_benchmark_metric(tokens['cachedInputRead'])}",
+        f"- Cache-write input tokens: {_benchmark_metric(tokens.get('cachedInputWrite'))}",
         f"- Output tokens: {_benchmark_metric(tokens['output'])}",
     ]
     failure = result.get("failure")

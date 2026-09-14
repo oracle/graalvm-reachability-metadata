@@ -531,6 +531,7 @@ class CodeCoverageBenchmarkMetricsTests(unittest.TestCase):
             input_tokens: int,
             cached_tokens: int,
             output_tokens: int,
+            cache_write_tokens: int = 0,
     ) -> None:
         _write_json(
             workspace
@@ -546,6 +547,7 @@ class CodeCoverageBenchmarkMetricsTests(unittest.TestCase):
                     "input": {
                         "total": {"value": input_tokens},
                         "cached_read": {"value": cached_tokens},
+                        "cache_write": {"value": cache_write_tokens},
                     },
                     "output": {"total": {"value": output_tokens}},
                 },
@@ -558,8 +560,8 @@ class CodeCoverageBenchmarkMetricsTests(unittest.TestCase):
         final_dir = workspace / "runtime" / "code-coverage" / "finalization"
         final_dir.mkdir(parents=True)
         shutil.copy2(FINAL_METRICS, final_dir / "final-metrics.json")
-        self._write_invocation(workspace, "1", "api-cover", 10, 20, 3)
-        self._write_invocation(workspace, "2", "api-fix", 1, 2, 3)
+        self._write_invocation(workspace, "1", "api-cover", 10, 20, 3, 3)
+        self._write_invocation(workspace, "2", "api-fix", 1, 2, 3, 1)
         self._write_invocation(workspace, "3", "deep-cover", 4, 5, 6)
         self._write_invocation(workspace, "4", "deep-fix", 7, 8, 9)
 
@@ -573,11 +575,11 @@ class CodeCoverageBenchmarkMetricsTests(unittest.TestCase):
         self.assertEqual(1, result["api"]["fixInvocations"])
         self.assertEqual(1, result["deep"]["fixInvocations"])
         self.assertEqual(
-            {"input": 11, "cachedInputRead": 22, "output": 6},
+            {"input": 11, "cachedInputRead": 22, "cachedInputWrite": 4, "output": 6},
             result["api"]["tokens"],
         )
         self.assertEqual(
-            {"input": 22, "cachedInputRead": 35, "output": 21},
+            {"input": 22, "cachedInputRead": 35, "cachedInputWrite": 4, "output": 21},
             result["total"]["tokens"],
         )
         self.assertEqual(
@@ -610,7 +612,7 @@ class CodeCoverageBenchmarkMetricsTests(unittest.TestCase):
         self.assertEqual({"phase": "deep", "exitCode": 7}, result["failure"])
         self.assertEqual(1, result["deep"]["fixInvocations"])
         self.assertEqual(
-            {"input": 7, "cachedInputRead": 8, "output": 9},
+            {"input": 7, "cachedInputRead": 8, "cachedInputWrite": 0, "output": 9},
             result["deep"]["tokens"],
         )
         self.assertIsNone(result["deep"]["coverPasses"])

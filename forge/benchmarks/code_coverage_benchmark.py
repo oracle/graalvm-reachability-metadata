@@ -828,6 +828,7 @@ def _phase_tokens(
         return {
             "input": empty_value,
             "cachedInputRead": empty_value,
+            "cachedInputWrite": empty_value,
             "output": empty_value,
         }
 
@@ -840,6 +841,10 @@ def _phase_tokens(
     return {
         "input": total("tokens", "input", "total"),
         "cachedInputRead": total("tokens", "input", "cached_read"),
+        # A separately billed input class on some providers and zero on the
+        # rest, so omitting it understates exactly one side of a comparison
+        # (§FS-code-coverage-benchmarking.3).
+        "cachedInputWrite": total("tokens", "input", "cache_write"),
         "output": total("tokens", "output", "total"),
     }
 
@@ -993,7 +998,7 @@ def _collect_result(
         )
     total_tokens = {
         key: _sum_nullable(api["tokens"][key], deep["tokens"][key])
-        for key in ("input", "cachedInputRead", "output")
+        for key in ("input", "cachedInputRead", "cachedInputWrite", "output")
     }
     total = {
         "coverPasses": _sum_nullable(
