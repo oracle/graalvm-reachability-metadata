@@ -305,8 +305,10 @@ The API and deep records must each contain:
 
 - `coverPasses`, meaning invocations of that phase's cover state;
 - `fixInvocations`, meaning invocations of that phase's fix state;
-- input, cached-input-read, and output tokens consumed by all agent invocations
-  in that phase, including fixes;
+- input, cached-input-read, cached-input-write, and output tokens consumed by
+  all agent invocations in that phase, including fixes — cache writes are a
+  separately billed input class on some providers and zero on the rest, so
+  omitting them understates exactly one side of a cross-provider comparison;
 - covered methods before and after the phase;
 - methods gained and coverage percentage points gained; and
 - `allMethods`, the frozen whole-run JaCoCo method universe used as the common
