@@ -4978,3 +4978,80 @@ class PullRequestReviewTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class BenchmarkResultsConflictResolutionTests(unittest.TestCase):
+    """Keyed union of the per-coordinate benchmark results file.
+
+    The entries are keyed by run ID and the only legal edit is adding one, so
+    two publications conflict textually while never disagreeing; the resolver
+    takes base plus the head's additions and escalates real disagreement
+    (§FS-automated-pr-review).
+    """
+
+    _PATH = "code-coverage-benchmarks/com.example/demo/1.0.0.json"
+
+    @staticmethod
+    def _entry(run_id: str, timestamp: str, output: int = 1) -> dict:
+        return {"runId": run_id, "timestamp": timestamp, "tokens": {"output": output}}
+
+    def _resolve(self, ancestor, head, base):
+        stages = {1: ancestor, 2: head, 3: base}
+        written: dict = {}
+
+        def fake_run(command, cwd, message):
+            if command[:2] == ["git", "show"]:
+                stage = int(command[2].split(":")[1])
+                return SimpleNamespace(stdout=json.dumps(stages[stage]))
+            if command[:2] == ["git", "add"]:
+                return SimpleNamespace(stdout="")
+            raise AssertionError(f"unexpected command {command}")
+
+        with tempfile.TemporaryDirectory() as worktree:
+            os.makedirs(os.path.join(worktree, os.path.dirname(self._PATH)))
+            with patch.object(forge_metadata, "run_checked_command", side_effect=fake_run):
+                resolved = forge_metadata.resolve_benchmark_results_conflict(
+                    worktree, self._PATH,
+                )
+            target = os.path.join(worktree, self._PATH)
+            if os.path.isfile(target):
+                written = json.load(open(target))
+        return resolved, written
+
+    def test_union_keeps_both_sides_sorted(self) -> None:
+        ancestor = [self._entry("run-a", "2026-09-08T00:00:00Z")]
+        head = ancestor + [self._entry("run-c", "2026-09-10T00:00:00Z")]
+        base = ancestor + [self._entry("run-b", "2026-09-09T00:00:00Z")]
+        resolved, written = self._resolve(ancestor, head, base)
+        self.assertTrue(resolved)
+        self.assertEqual([e["runId"] for e in written], ["run-a", "run-b", "run-c"])
+
+    def test_identical_run_on_both_sides_is_kept_once(self) -> None:
+        ancestor: list = []
+        shared = self._entry("run-x", "2026-09-09T00:00:00Z")
+        resolved, written = self._resolve(ancestor, [shared], [shared])
+        self.assertTrue(resolved)
+        self.assertEqual(written, [shared])
+
+    def test_same_run_id_with_different_content_escalates(self) -> None:
+        ancestor: list = []
+        head = [self._entry("run-x", "2026-09-09T00:00:00Z", output=1)]
+        base = [self._entry("run-x", "2026-09-09T00:00:00Z", output=2)]
+        resolved, _ = self._resolve(ancestor, head, base)
+        self.assertFalse(resolved)
+
+    def test_head_that_modified_an_existing_entry_escalates(self) -> None:
+        ancestor = [self._entry("run-a", "2026-09-08T00:00:00Z", output=1)]
+        head = [self._entry("run-a", "2026-09-08T00:00:00Z", output=9)]
+        base = ancestor + [self._entry("run-b", "2026-09-09T00:00:00Z")]
+        resolved, _ = self._resolve(ancestor, head, base)
+        self.assertFalse(resolved)
+
+    def test_head_that_dropped_an_existing_entry_escalates(self) -> None:
+        ancestor = [
+            self._entry("run-a", "2026-09-08T00:00:00Z"),
+            self._entry("run-b", "2026-09-09T00:00:00Z"),
+        ]
+        head = [ancestor[0], self._entry("run-c", "2026-09-10T00:00:00Z")]
+        resolved, _ = self._resolve(ancestor, head, ancestor)
+        self.assertFalse(resolved)

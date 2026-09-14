@@ -377,7 +377,8 @@ builders, serializers, parsers, adapters, configuration branches, error
 handling paths, and common object lifecycle operations. The API inventory is
 emitted as compact JSON and Markdown under
 `runtime/code-coverage/api-inventory/`; its canonical target `id` carries the
-full method identity.
+full method identity, and its class scope is the artifact's committed
+`allowed-packages` in full (§root/FS-metadata).
 
 The workflow should aim to cover the whole practical library API and internal
 runtime surface over repeated runs. If the target set is too large for one PR,
@@ -505,8 +506,16 @@ The Rhei template should decompose the workflow into these phases:
 2. **Prepare library** — create or verify the code coverage suite, prepare
    source context, and record baseline facts for the launcher-validated
    coordinate.
-3. **Generate API inventory** — deterministically write compact JSON and
-   Markdown reports for public user-callable API targets.
+3. **Generate API inventory** — a deterministic program state, not an agent
+   turn: it enumerates the public user-callable surface of the resolved
+   library jars and writes compact JSON and Markdown reports. The inventory's
+   scope is the artifact's committed `allowed-packages`, taken whole
+   (§root/FS-metadata): a class is in scope when it lies under any of those
+   packages, the same any-of rule the metadata validator enforces. A library
+   that declares several packages — 270 of the repository's artifacts do —
+   is inventoried across all of them; restricting to one silently shrinks
+   the API phase's whole target universe. The program's exit code is the
+   transition, exactly as in native-metadata preparation.
 4. **API coverage loop** — one task cycling deterministic measurement and an
    agent cover pass. Measurement runs JVM JaCoCo
    plus exact API-inventory correlation, persists `api-cover-report-<n>` history
@@ -518,9 +527,18 @@ The Rhei template should decompose the workflow into these phases:
    normal public API behavior and always returns to measurement. Reachability
    metadata and Native Image are intentionally out of scope in this phase.
 5. **Prepare native metadata** — run once after the API loop and before
-   deep discovery: generate reachability metadata and repair it with the Codex
-   `fix-missing-reachability-metadata` skill until a Native Image test passes.
-   Route unresolved metadata or Native Image failures to human intervention.
+   deep discovery, as a deterministic program state, not an agent turn: the
+   phase runs the shared native test verification gate
+   (§FS-native-test-verification-gate) with the coverage suite included in
+   every Gradle command, so JVM-agent metadata, the native trace loop, and the
+   gate's single terminal analysis-agent repair carry
+   `-PincludeCodeCoverageSuite=true` end to end. The gate's diagnose-first
+   repair prompt may fix a metadata condition or rewrite a native-incompatible
+   generated coverage test to a native-compatible public-API path; rewriting
+   preserves the test's JVM JaCoCo coverage, which is why it is preferred over
+   removal. The program's exit code is the transition: success completes the
+   phase, and an unrepaired gate failure routes to human intervention — the
+   outcome is never narrated in an artifact for a later phase to trip over.
 6. **Deep coverage loop** — the same measure/cover cycle for internal
    methods. Measurement runs JaCoCo over the library-owned method set, builds
    and runs native tests with PGO sampling, loads one coherent analysis
@@ -568,7 +586,10 @@ The Rhei template should decompose the workflow into these phases:
    build the stats step runs measures dynamic access and does not gate the run;
    a nonzero exit code names the failed step.
 8. **Publication** — push the verified branch and let trusted GitHub Actions
-   open the pull request. Local publication stages the coverage suite, the
+   open the pull request. In both modes this is a deterministic program state:
+   the helper validates its own inputs, and its exit code is the transition —
+   success completes the task, failure parks it in `human-intervention`.
+   Local publication stages the coverage suite, the
    metadata it justified, and the stats finalization regenerated, rebases onto
    upstream `master`, runs the
    pre-publication verification gate, writes
@@ -672,6 +693,223 @@ not a repair. Both paths share the finalization fix state, whose
 path-owned budget. Its counted visits ensure that an output from an earlier
 repair pass cannot satisfy the output-existence completion check for a later
 pass.
+
+### 4.2 Execution sequence
+
+The run is shown as a sequence because every phase boundary is a state
+transition the orchestrator decides from one process exit code, and the loops
+deliberately hand control back and forth between deterministic measurement and
+an agent pass. The same sequence executes in issue mode and in benchmark mode
+(§FS-code-coverage-benchmarking.2); only the first and last calls differ.
+Each shaded rectangle is one task of the instantiated plan, so a failure
+report naming a task points at exactly one box.
+
+```mermaid
+%%{init: {"themeVariables": {"noteBkgColor": "#eef2f7", "noteTextColor": "#0f172a", "noteBorderColor": "#94a3b8", "signalTextColor": "#0f172a", "signalColor": "#334155", "actorTextColor": "#0f172a", "actorBkg": "#e2e8f0", "actorBorder": "#64748b", "labelTextColor": "#0f172a", "labelBoxBkgColor": "#e2e8f0", "labelBoxBorderColor": "#64748b", "loopTextColor": "#0f172a", "sequenceNumberColor": "#ffffff"}}}%%
+sequenceDiagram
+    autonumber
+    participant R as Rhei orchestrator
+    participant P as deterministic state programs
+    participant A as worker agent
+    participant X as analysis agent
+    participant W as source worktree
+
+    rect rgb(147, 197, 253)
+        note over R,P: Task code-coverage-convert
+        R->>P: convert fixed inputs (issue or benchmark cell)
+        alt inputs are coherent
+            P-->>R: conversion record written, exit 0
+        else inputs rejected
+            P-->>R: exit 1, park in human-intervention
+        end
+    end
+
+    rect rgb(134, 239, 172)
+        note over R,W: Task code-coverage-prepare
+        R->>A: execute with the helper the task names
+        A->>W: create or verify the coverage suite, stage baseline facts and source context
+        A-->>R: artifacts written, completed
+    end
+
+    rect rgb(253, 224, 71)
+        note over R,W: Task code-coverage-api-inventory
+        R->>P: api-inventory runs the inventory helper
+        P->>W: javap over every class under the artifact's allowed-packages
+        alt inventory written
+            P-->>R: exit 0, completed
+        else a jar or javap failed
+            P-->>R: nonzero exit, park in human-intervention
+        end
+    end
+    note over R,A: execute edges carry no exit-code discriminator, so completed is always the edge taken
+
+    rect rgb(253, 186, 116)
+        note over R,W: Task code-coverage-api-coverage
+        loop measure then cover, budget coverage_iterations
+            R->>P: api-measure opens or resumes the iteration marker
+            P->>W: compileTestJava, codeCoverageTest, jacocoCodeCoverageReport
+            P->>P: join JaCoCo with the API inventory, write api-cover-report-n
+            opt no cached graph yet
+                P->>W: extract the static call graph from the library jars
+            end
+            alt no uncovered target, marginal yield (§3.3), or budget spent
+                P-->>R: exit 0, phase completed
+            else uncovered targets remain and budget is left
+                P->>P: rank targets by unlocked code, render the cover prompt
+                P-->>R: exit 10, schedule api-cover
+                R->>A: api-cover with the rendered prompt
+                A->>W: write behavior tests in the coverage suite
+                A-->>R: turn ends, back to api-measure
+            else a measurement step failed
+                P-->>R: exit 1-5 names the step, schedule api-fix
+                R->>A: api-fix repairs the suite
+                A-->>R: back to api-measure on the same iteration
+            end
+        end
+    end
+
+    rect rgb(249, 168, 212)
+        note over R,W: Task code-coverage-prepare-native-metadata
+        R->>P: native-metadata runs the shared native trace gate
+        P->>W: generateMetadata staged, with the coverage suite traced
+        P->>W: test against the staged metadata
+        loop while the binary exits 172 with new trace metadata
+            P->>W: runNativeTraceImage, accept the traced entries
+        end
+        opt the gate cannot converge deterministically
+            P->>X: one terminal diagnose-first repair (§FS-native-test-verification-gate)
+            X->>W: fix a metadata condition, or rewrite a native-incompatible test
+        end
+        alt durable metadata passes the re-run
+            P-->>R: exit 0, phase completed
+        else gate failed
+            P-->>R: exit 3, park in human-intervention
+        end
+    end
+
+    rect rgb(196, 181, 253)
+        note over R,W: Task code-coverage-deep-coverage
+        loop measure then cover, budget coverage_iterations
+            R->>P: deep-measure opens or resumes the iteration marker
+            P->>W: jacocoCodeCoverageReport
+            P->>W: nativeTestPGOSampling, then runNativeTestPGO on the .iprof
+            P->>P: map samples onto the static graph, write discovery-report-n
+            alt no actionable target, marginal yield (§3.3), or budget spent
+                P-->>R: exit 0, phase completed
+            else actionable targets remain
+                P-->>R: exit 10, schedule deep-cover
+                R->>A: deep-cover with observed and uncovered path groups
+                A->>W: reach internal methods through public behavior
+                A-->>R: turn ends, back to deep-measure
+            else a measurement or native build step failed
+                P-->>R: exit 1-7 names the step, schedule deep-fix
+                R->>A: deep-fix repairs metadata or the suite
+                A-->>R: back to deep-measure on the same iteration
+            end
+        end
+    end
+
+    rect rgb(94, 234, 212)
+        note over R,W: Task code-coverage-finalization
+        R->>P: reviewed-execute runs the finalization program
+        P->>W: splitTestOnlyMetadata, checkMetadataFiles, config policy
+        P->>W: checkstyle, javaTest, codeCoverageTest
+        P->>W: generateLibraryStats builds the dynamic-access native image
+        P->>P: write final-metrics.json and final-summary.md
+        alt every step passed
+            P-->>R: exit 0, schedule finalize-verify
+        else step n failed
+            P-->>R: exit n, schedule finalize-fix
+            R->>A: finalize-fix repairs the named step
+            A-->>R: hand to finalize-remeasure
+            R->>P: agent-free remeasurement, then reviewed-execute again
+        end
+        R->>P: finalize-verify schema-validates the final metrics
+        alt metrics valid and no intervention flag
+            P-->>R: exit 0, completed
+        else repairable gap
+            P-->>R: exit 75, schedule finalize-fix or park when its budget is spent
+        else failed targets or intervention flag
+            P-->>R: exit 80, park in human-intervention
+        end
+    end
+
+    rect rgb(203, 213, 225)
+        note over R,W: Task code-coverage-publication (issue) or code-coverage-benchmark-publication (benchmark)
+        alt issue mode
+            R->>P: publication runs the publish helper
+            P->>W: rebase onto master, write the descriptor, push the ai/ branch
+            P-->>R: exit 0 completed, nonzero human-intervention
+            note over P,W: trusted Actions validate the pushed commit and open the PR (§AR-actions-publication)
+        else benchmark mode
+            R->>P: benchmark publish collects run evidence
+            P->>W: append the compact result, push the descriptor-backed branch
+            P-->>R: exit 0 completed, exit 1 human-intervention
+        end
+    end
+```
+
+The numbered calls collapse into seven stages. Each stage either reaches a
+terminal state or hands the task to exactly one next state chosen by the exit
+code of the process that just finished:
+
+| Stage | Owner | What it establishes | Exit |
+| --- | --- | --- | --- |
+| Conversion | deterministic program | The fixed inputs are coherent and the worktree, coordinate, and run record exist before any agent runs | `completed`, or `human-intervention` on exit 1 |
+| Phase execution | worker agent | Prepare runs one agent turn around the staging helpers | The first legal `execute` edge, `completed` |
+| API inventory | deterministic program | The full public surface under every committed allowed package, as exact target ids | Exit 0 completes; nonzero parks in `human-intervention` |
+| Native metadata | deterministic program and gate analysis agent | Durable metadata that survives the gate's finalized re-run, with the coverage suite included end to end | Exit 0 completes; exit 3 parks in `human-intervention` |
+| API loop | measurement program and worker agent | Exact JaCoCo-vs-inventory truth, a ranked prompt, and a recorded stop decision every pass | Exit 0 completes the phase; 10 schedules a cover pass; 1-5 schedule a repair |
+| Deep loop | measurement program and worker agent | The same cycle over library-internal methods with sampled-PGO navigation | Exit 0 completes; 10 covers; 1-7 repair |
+| Finalization | deterministic programs and fix agent | Split metadata, style, JVM suites, regenerated stats, and schema-valid final metrics | Exit 0 verifies then completes; a failed step number routes to repair and remeasurement; 75/80 gate verification |
+| Intervention parking | orchestrator | A gating state that stops the run where a person can resume it toward any phase entry, completion, or cancellation | Manual transition only |
+| Publication | deterministic program (both modes) | A pushed branch whose descriptor lets trusted Actions open the pull request, or a pushed benchmark result | Exit 0 completes; nonzero parks in `human-intervention` |
+
+**Edge selection is first-match by exit code.** A program state maps each exit
+code it can produce to one destination, so the exit code is the whole decision:
+0 always means the phase is done, 10 is the loop-continue signal, and a small
+positive code names the failed step for the repair prompt. When two edges share
+an exit code — every measure state maps its failure codes to both its fix state
+and `human-intervention` — the orchestrator takes the first whose destination
+still has visit budget, so the fix state absorbs failures until its `visits`
+cap is spent and the same exit code then parks the task. Agent (`execute`,
+cover, fix) edges carry no exit-code discriminator at all; their first edge is
+taken whenever the turn ends without a process failure, which is why an agent
+can only report a blocker in its artifacts, not choose its own transition.
+
+**Measurement owns the loops.** Only `api-measure` and `deep-measure` move a
+loop forward: they write the numbered report history, compute the stop decision
+(§3.3), and render the next prompt. The cover agent writes tests and returns;
+it records no coverage claim and no target state. A repair pass re-enters
+measurement on the same iteration through the active-measurement marker, so a
+failed measurement plus its fix can never masquerade as a zero-yield cover
+pass or spend loop budget.
+
+**The native-metadata phase is a program around the shared gate.** The phase
+helper calls the native test verification gate
+(§FS-native-test-verification-gate) with the coverage suite merged into every
+command: JVM-agent metadata first, the exit-172 trace loop second, and one
+terminal diagnose-first analysis-agent repair last. The helper's exit code is
+the state transition, so a gate failure parks the task in `human-intervention`
+instead of surviving only as prose in an artifact. The gate's repair may
+rewrite a native-incompatible generated coverage test to a public-API path —
+the one repair class a metadata-only fix loop can never reach.
+
+**Human intervention is a parking state, not an error.** Nothing executes
+there. A person resumes the task over one of the recovery edges — back into
+`execute`, either measure state, or `reviewed-execute` — or ends it with
+`completed` or `cancelled`. In benchmark mode a parked or unpublished run is
+additionally preserved on disk and reported for retry
+(§FS-code-coverage-benchmarking.3).
+
+**Publication differs by mode, not by shape.** Both modes are deterministic
+programs. Issue mode runs the publish helper, which validates the finalized
+metrics against the coordinate, rebases, writes the coordinate's publication
+descriptor, and pushes the `ai/` branch; trusted Actions own everything after
+the push (§AR-actions-publication). Benchmark mode runs a program that appends the
+compact result to the per-coordinate results file and pushes the
+descriptor-backed branch without touching GitHub itself
+(§FS-code-coverage-benchmarking.3).
 
 ## 5. Acceptance Criteria
 

@@ -8,7 +8,11 @@ on:
     # match upstream descriptors, so the trusted publisher no-ops existing PRs
     # (§forge/AR-actions-publication).
     paths:
+      # A coordinate that carries many publications nests its descriptor under
+      # the publication ID, so both depths must start a run
+      # (§forge/FS-code-coverage-benchmarking.3).
       - "stats/*/*/*/forge-publication.json"
+      - "stats/*/*/*/*/forge-publication.json"
 
 permissions:
   contents: read

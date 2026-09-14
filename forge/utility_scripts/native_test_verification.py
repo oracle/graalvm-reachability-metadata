@@ -189,6 +189,7 @@ def verify_native_test_passes(
         max_iterations: int = DEFAULT_MAX_ITERATIONS,
         cycle_timeout_seconds: int = DEFAULT_CYCLE_TIMEOUT_SECONDS,
         env: dict[str, str] | None = None,
+        gradle_properties: tuple[str, ...] = (),
 ) -> NativeTestVerificationResult:
     """Try JVM-agent metadata first, then use native tracing as fallback.
 
@@ -196,7 +197,10 @@ def verify_native_test_passes(
     trace metadata outside durable repository metadata, finalizes only after a
     passing validation path, and invokes the analysis agent at most once as the
     terminal repair step. A caller-supplied environment selects the exact image
-    mode and GraalVM lane used by every command in the gate.
+    mode and GraalVM lane used by every command in the gate, and
+    ``gradle_properties`` rides on every Gradle command and every reproduction
+    command so a caller that widens the test source set repairs exactly the
+    build that failed (§FS-native-test-verification-gate.2).
     """
     require_complete_reachability_repo(reachability_repo_path)
     if max_iterations < 1:
@@ -350,6 +354,7 @@ def verify_native_test_passes(
             log_path=finalized_test_log_path,
             timeout_seconds=cycle_timeout_seconds,
             env=command_env,
+            gradle_properties=gradle_properties,
         )
         last_log_path = finalized_test_log_path
         if test_rc == 0:
@@ -363,7 +368,9 @@ def verify_native_test_passes(
                 "finalized durable metadata failed coordinate test "
                 f"(failed_task={failed_task_display}, exit={test_rc})"
             ),
-            reproduction_command=_coordinate_test_command(coordinate),
+            reproduction_command=_coordinate_test_command(
+                coordinate, gradle_properties=gradle_properties,
+            ),
             iterations_used=iterations_used,
         )
 
@@ -374,6 +381,7 @@ def verify_native_test_passes(
         output_dir=agent_metadata_dir,
         log_path=generate_metadata_log_path,
         env=command_env,
+        gradle_properties=gradle_properties,
     )
     last_log_path = generate_metadata_log_path
     agent_metadata_dirs = [agent_metadata_dir] if generate_metadata_rc == 0 else []
@@ -393,6 +401,7 @@ def verify_native_test_passes(
             log_path=test_log_path,
             timeout_seconds=cycle_timeout_seconds,
             env=command_env,
+            gradle_properties=gradle_properties,
         )
         last_log_path = test_log_path
         if test_rc == 0:
@@ -410,7 +419,9 @@ def verify_native_test_passes(
             return _route_to_analysis_agent(
                 stage="test",
                 reason=f"test failed before native trace fallback (failed_task={failed_task_display}, exit={test_rc})",
-                reproduction_command=_coordinate_test_command(coordinate, [agent_metadata_dir]),
+                reproduction_command=_coordinate_test_command(
+                    coordinate, [agent_metadata_dir], gradle_properties=gradle_properties,
+                ),
                 iterations_used=0,
             )
 
@@ -439,6 +450,7 @@ def verify_native_test_passes(
             log_path=log_path,
             timeout_seconds=cycle_timeout_seconds,
             env=command_env,
+            gradle_properties=gradle_properties,
         )
         last_log_path = log_path
         last_binary_rc = binary_rc if binary_rc is not None else gradle_rc
@@ -485,6 +497,7 @@ def verify_native_test_passes(
                         run_dir=run_dir,
                         condition_packages=trace_condition_packages,
                         metadata_config_dirs=_existing_metadata_dirs(agent_metadata_dirs + accepted_run_dirs),
+                        gradle_properties=gradle_properties,
                     ),
                     iterations_used=cycle + 1,
                 )
@@ -506,6 +519,7 @@ def verify_native_test_passes(
                         run_dir=run_dir,
                         condition_packages=trace_condition_packages,
                         metadata_config_dirs=_existing_metadata_dirs(agent_metadata_dirs + accepted_run_dirs),
+                        gradle_properties=gradle_properties,
                     ),
                     iterations_used=cycle + 1,
                 )
@@ -529,6 +543,7 @@ def verify_native_test_passes(
                 run_dir=run_dir,
                 condition_packages=trace_condition_packages,
                 metadata_config_dirs=_existing_metadata_dirs(agent_metadata_dirs + accepted_run_dirs),
+                gradle_properties=gradle_properties,
             ),
             iterations_used=cycle + 1,
         )
@@ -550,13 +565,18 @@ def verify_native_test_passes(
             run_dir=codex_reproduction_run_dir,
             condition_packages=trace_condition_packages,
             metadata_config_dirs=_existing_metadata_dirs(agent_metadata_dirs + accepted_run_dirs),
+            gradle_properties=gradle_properties,
         ),
         iterations_used=max_iterations,
     )
 
 
-def _coordinate_test_command(coordinate: str, metadata_config_dirs: list[str] | None = None) -> str:
-    parts = ["./gradlew test", f"-Pcoordinates={coordinate}"]
+def _coordinate_test_command(
+        coordinate: str,
+        metadata_config_dirs: list[str] | None = None,
+        gradle_properties: tuple[str, ...] = (),
+) -> str:
+    parts = ["./gradlew test", f"-Pcoordinates={coordinate}", *gradle_properties]
     if metadata_config_dirs:
         parts.append(f"-PmetadataConfigDirs={','.join(metadata_config_dirs)}")
     return " ".join(parts)
@@ -735,6 +755,7 @@ def _run_generate_metadata(
         output_dir: str,
         log_path: str,
         env: dict[str, str],
+        gradle_properties: tuple[str, ...] = (),
 ) -> int:
     """Run JVM-agent metadata generation for the coordinate into a staging dir.
 
@@ -745,6 +766,7 @@ def _run_generate_metadata(
         "./gradlew",
         "generateMetadata",
         f"-Pcoordinates={coordinate}",
+        *gradle_properties,
         "--agentAllowedPackages=fromJar",
         f"--metadataOutputDir={output_dir}",
     ]
@@ -763,9 +785,10 @@ def _run_coordinate_test(
         log_path: str,
         timeout_seconds: int,
         env: dict[str, str],
+        gradle_properties: tuple[str, ...] = (),
 ) -> tuple[int, str | None]:
     """Run normal coordinate tests and return the first failed Gradle task."""
-    cmd = ["./gradlew", "test", f"-Pcoordinates={coordinate}"]
+    cmd = ["./gradlew", "test", f"-Pcoordinates={coordinate}", *gradle_properties]
     if metadata_config_dirs:
         cmd.append(f"-PmetadataConfigDirs={','.join(metadata_config_dirs)}")
     result = _run_logged_gradle_command(
@@ -888,10 +911,12 @@ def _run_native_trace_image_command(
         run_dir: str,
         condition_packages: list[str],
         metadata_config_dirs: list[str],
+        gradle_properties: tuple[str, ...] = (),
 ) -> str:
     parts = [
         "./gradlew runNativeTraceImage",
         f"-Pcoordinates={coordinate}",
+        *gradle_properties,
         f"-PtraceMetadataPath={run_dir}",
         f"-PtraceMetadataConditionPackages={','.join(condition_packages)}",
     ]
@@ -909,6 +934,7 @@ def _run_native_trace_image(
         log_path: str,
         timeout_seconds: int = DEFAULT_CYCLE_TIMEOUT_SECONDS,
         env: dict[str, str] | None = None,
+        gradle_properties: tuple[str, ...] = (),
 ) -> tuple[int, int | None]:
     """Run ``runNativeTraceImage`` and surface the binary's exit code.
 
@@ -929,6 +955,7 @@ def _run_native_trace_image(
         "./gradlew",
         "runNativeTraceImage",
         f"-Pcoordinates={coordinate}",
+        *gradle_properties,
         f"-PtraceMetadataPath={run_dir}",
         f"-PtraceMetadataConditionPackages={','.join(condition_packages)}",
         f"-PtraceBinaryExitFile={exit_file}",
