@@ -191,6 +191,16 @@ source publication tasks or deterministic benchmark conversion and metrics
 publication tasks. The middle preparation, API, native-metadata, deep, and
 finalization tasks are the same in both modes.
 
+A cell runs on one agent configuration, and that includes the repairs the
+workflow performs on its own output. The analysis role a cell resolves must be
+the cell's own agent, model, and thinking level, not the ambient default of the
+machine that launched the run. A cell whose coverage agent is one model while
+its metadata repairs are performed by another measures two agents at once and
+attributes the result to one of them, and an analysis role left to the
+environment makes the same cell produce different work on different machines.
+The launcher therefore fixes the analysis role for every cell it executes
+(§FS-forge-agent-runtime-selection).
+
 The Rhei workspace must live outside the disposable source worktree. Distinct
 run parents prevent collisions while preserving the required fixed workspace
 name.
@@ -223,12 +233,22 @@ writers and creates a fresh disposable worktree from the latest
 `origin/master` for each result. It appends the result, validates and commits
 the complete coordinate list, writes a descriptor that repeats the exact result
 and names its repository path, commits the descriptor at the required
-coordinate-local `stats/**/forge-publication.json` path, and pushes the unique
-publication branch. The worktree is then removed.
+publication-scoped
+`stats/<group>/<artifact>/<version>/<publication id>/forge-publication.json`
+path, and pushes the unique publication branch. The worktree is then removed.
+
+A coordinate accumulates many benchmark results, one per executed cell, so a
+descriptor path fixed to the coordinate alone would name the same file for
+every run of that library. Each branch would then rewrite one path, and the
+second result to merge would conflict with the first over a file neither run
+shares any content with. Scoping the path by publication identifier gives
+concurrent runs of one library disjoint paths, so results merge independently
+and remain individually attributable.
 
 The trusted publisher accepts a benchmark-result descriptor only when the
 branch changes exactly the coordinate result list and that one descriptor, the
-descriptor's coordinate determines both paths, the embedded result validates
+descriptor's coordinate and publication identifier together determine both
+paths, the embedded result validates
 against the benchmark-result schema, and the list is exactly the base list plus
 that result. It opens one pull request for the run, labeled `GenAI`,
 `code-coverage-improvement`, and `rhei` so the run sits in the same triage
@@ -285,8 +305,10 @@ The API and deep records must each contain:
 
 - `coverPasses`, meaning invocations of that phase's cover state;
 - `fixInvocations`, meaning invocations of that phase's fix state;
-- input, cached-input-read, and output tokens consumed by all agent invocations
-  in that phase, including fixes;
+- input, cached-input-read, cached-input-write, and output tokens consumed by
+  all agent invocations in that phase, including fixes — cache writes are a
+  separately billed input class on some providers and zero on the rest, so
+  omitting them understates exactly one side of a cross-provider comparison;
 - covered methods before and after the phase;
 - methods gained and coverage percentage points gained; and
 - `allMethods`, the frozen whole-run JaCoCo method universe used as the common

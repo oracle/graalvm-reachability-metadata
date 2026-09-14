@@ -66,9 +66,13 @@ must be listed in descriptor verification evidence for maintainer review.
 ## AR-publication-descriptor: Durable publication descriptor
 
 Local finalization writes schema version `1` to
-`stats/<group>/<artifact>/<version>/forge-publication.json` and validates it
-against `.github/scripts/forge_pr_publisher/schema.json` before the publication
-commit. Exactly one descriptor path may change in a publication diff. The file
+`stats/<group>/<artifact>/<version>/forge-publication.json`, or below a further
+publication-identifier segment where one coordinate carries many publications
+(§FS-code-coverage-benchmarking.3), and validates it against
+`.github/scripts/forge_pr_publisher/schema.json` before the publication commit.
+The readiness workflow's path filter lists both depths, since a descriptor the
+filter does not match starts no run and the branch is never published.
+Exactly one descriptor path may change in a publication diff. The file
 remains after merge; a later publication for the coordinate replaces the
 current file while Git history retains prior provenance. Committing it is what
 §ROADMAP-forge-descriptor-off-tree replaces: the descriptor is a build artifact

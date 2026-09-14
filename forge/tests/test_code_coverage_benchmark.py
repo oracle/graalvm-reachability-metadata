@@ -117,9 +117,55 @@ class CodeCoverageBenchmarkMatrixTests(unittest.TestCase):
 
         self.assertEqual("claude-sonnet-5", configuration.target_model)
         self.assertEqual(
-            "claude-code[high]:anthropic/claude-sonnet-5",
+            "claude-code[high]:claude-sonnet-5",
             configuration.target("high"),
         )
+
+    def test_analysis_role_follows_the_cell_configuration(self) -> None:
+        """A cell repairs its own output with its own agent."""
+        claude = next(
+            item for item in self.suite.configurations
+            if item.configured_model == "opus-5"
+        )
+        self.assertEqual(
+            {
+                "FORGE_ANALYSIS_FAMILY": "claude-code",
+                "FORGE_ANALYSIS_MODEL": "claude-opus-5",
+                "FORGE_ANALYSIS_THINKING_LEVEL": "medium",
+            },
+            claude.analysis_role_environment("medium"),
+        )
+
+    def test_analysis_role_carries_a_provider_only_when_meaningful(self) -> None:
+        """`pi` routes through a provider; Claude Code authenticates itself."""
+        pi = next(
+            item for item in self.suite.configurations
+            if item.configured_model == "gpt-5.6-luna"
+        )
+        self.assertEqual(
+            "openai-codex", pi.analysis_role_environment("high")["FORGE_ANALYSIS_PROVIDER"]
+        )
+        claude = next(
+            item for item in self.suite.configurations
+            if item.configured_model == "opus-5"
+        )
+        self.assertNotIn("FORGE_ANALYSIS_PROVIDER", claude.analysis_role_environment("high"))
+
+    def test_provider_prefix_only_for_provider_aware_agents(self) -> None:
+        """`claude` rejects a prefixed model; `pi` routes through a provider."""
+        claude = next(
+            item
+            for item in self.suite.configurations
+            if item.configured_model == "opus-5"
+        )
+        pi = next(
+            item
+            for item in self.suite.configurations
+            if item.configured_model == "gpt-5.6-luna"
+        )
+
+        self.assertEqual("claude-code[medium]:claude-opus-5", claude.target("medium"))
+        self.assertEqual("pi[medium]:openai-codex/gpt-5.6-luna", pi.target("medium"))
 
 
 class CodeCoverageBenchmarkConversionTests(unittest.TestCase):
@@ -485,6 +531,7 @@ class CodeCoverageBenchmarkMetricsTests(unittest.TestCase):
             input_tokens: int,
             cached_tokens: int,
             output_tokens: int,
+            cache_write_tokens: int = 0,
     ) -> None:
         _write_json(
             workspace
@@ -500,6 +547,7 @@ class CodeCoverageBenchmarkMetricsTests(unittest.TestCase):
                     "input": {
                         "total": {"value": input_tokens},
                         "cached_read": {"value": cached_tokens},
+                        "cache_write": {"value": cache_write_tokens},
                     },
                     "output": {"total": {"value": output_tokens}},
                 },
@@ -512,8 +560,8 @@ class CodeCoverageBenchmarkMetricsTests(unittest.TestCase):
         final_dir = workspace / "runtime" / "code-coverage" / "finalization"
         final_dir.mkdir(parents=True)
         shutil.copy2(FINAL_METRICS, final_dir / "final-metrics.json")
-        self._write_invocation(workspace, "1", "api-cover", 10, 20, 3)
-        self._write_invocation(workspace, "2", "api-fix", 1, 2, 3)
+        self._write_invocation(workspace, "1", "api-cover", 10, 20, 3, 3)
+        self._write_invocation(workspace, "2", "api-fix", 1, 2, 3, 1)
         self._write_invocation(workspace, "3", "deep-cover", 4, 5, 6)
         self._write_invocation(workspace, "4", "deep-fix", 7, 8, 9)
 
@@ -527,11 +575,11 @@ class CodeCoverageBenchmarkMetricsTests(unittest.TestCase):
         self.assertEqual(1, result["api"]["fixInvocations"])
         self.assertEqual(1, result["deep"]["fixInvocations"])
         self.assertEqual(
-            {"input": 11, "cachedInputRead": 22, "output": 6},
+            {"input": 11, "cachedInputRead": 22, "cachedInputWrite": 4, "output": 6},
             result["api"]["tokens"],
         )
         self.assertEqual(
-            {"input": 22, "cachedInputRead": 35, "output": 21},
+            {"input": 22, "cachedInputRead": 35, "cachedInputWrite": 4, "output": 21},
             result["total"]["tokens"],
         )
         self.assertEqual(
@@ -564,7 +612,7 @@ class CodeCoverageBenchmarkMetricsTests(unittest.TestCase):
         self.assertEqual({"phase": "deep", "exitCode": 7}, result["failure"])
         self.assertEqual(1, result["deep"]["fixInvocations"])
         self.assertEqual(
-            {"input": 7, "cachedInputRead": 8, "output": 9},
+            {"input": 7, "cachedInputRead": 8, "cachedInputWrite": 0, "output": 9},
             result["deep"]["tokens"],
         )
         self.assertIsNone(result["deep"]["coverPasses"])
@@ -666,10 +714,14 @@ class CodeCoverageBenchmarkMetricsTests(unittest.TestCase):
                 first.commit,
             ).stdout.strip(),
         )
-        descriptor_path = "stats/com.example/demo/1.0.0/forge-publication.json"
+        descriptor_path = (
+            f"stats/com.example/demo/1.0.0/{first.publication_id}"
+            "/forge-publication.json"
+        )
         descriptor = json.loads(
             _git(repository, "show", f"{first.commit}:{descriptor_path}").stdout
         )
+        self.assertEqual(first.publication_id, descriptor["publication_id"])
         self.assertEqual(benchmark.BENCHMARK_TASK_TYPE, descriptor["task_type"])
         self.assertEqual("run-1", descriptor["benchmark_run_id"])
         self.assertEqual(result, descriptor["render"]["benchmark_result"])

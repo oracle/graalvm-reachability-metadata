@@ -250,8 +250,16 @@ def validate_publication(
     expected_coordinates = f"{library['group']}:{library['artifact']}:{library['version']}"
     if library["coordinates"] != expected_coordinates:
         raise ValueError("Descriptor library coordinate fields do not agree")
+    coordinate_directory = (
+        f"stats/{library['group']}/{library['artifact']}/{library['version']}"
+    )
+    # A coordinate carries many benchmark results, so their descriptors nest
+    # under the publication ID and only issue-driven publications keep the
+    # single coordinate-local path (§forge/FS-code-coverage-benchmarking.3).
     expected_descriptor = (
-        f"stats/{library['group']}/{library['artifact']}/{library['version']}/forge-publication.json"
+        f"{coordinate_directory}/{descriptor['publication_id']}/forge-publication.json"
+        if descriptor["task_type"] == "code-coverage-benchmark-result"
+        else f"{coordinate_directory}/forge-publication.json"
     )
     if descriptor_path != expected_descriptor:
         raise ValueError("Descriptor path does not match its library coordinate")
@@ -1098,6 +1106,7 @@ def _render_code_coverage_benchmark_result(
         f"- Method universe: {_benchmark_metric(coverage['allMethods'])}",
         f"- Input tokens: {_benchmark_metric(tokens['input'])}",
         f"- Cached input tokens: {_benchmark_metric(tokens['cachedInputRead'])}",
+        f"- Cache-write input tokens: {_benchmark_metric(tokens.get('cachedInputWrite'))}",
         f"- Output tokens: {_benchmark_metric(tokens['output'])}",
     ]
     failure = result.get("failure")

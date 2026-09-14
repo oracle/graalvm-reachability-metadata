@@ -3,32 +3,24 @@
 # You should have received a copy of the CC0 legalcode along with this
 # work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 
-# The deep phase this prepares for: §AR-code-coverage-improvement.3.2. Running once
-# between the phases, and the generate-then-repair loop:
-# §AR-code-coverage-improvement-architecture.1.
+# The deep phase this prepares for: §AR-code-coverage-improvement.3.2. Running
+# once between the phases as a deterministic program whose exit code is the
+# state transition: §AR-code-coverage-improvement.4 item 5.
 
 """
 Native-metadata preparation for the code coverage improvement workflow.
 
-It runs once between public API coverage and sampled-PGO deep discovery,
-generating metadata and repairing it with the Codex-backed
-`fix-missing-reachability-metadata` skill until a Native Image test passes.
-Supplemental configs the suite needs live in its own
-`code-coverage-improvement/metadata/` directory and are promotion candidates
-for `metadata/`.
-
-Loop: `generateMetadata` -> `test`; while it fails and a fix budget
-remains, `run_metadata_fix` then re-run `test`. If Native Image
-validation still cannot pass automatically, the run is flagged
-`needsHumanIntervention` (exit code 3) so the reviewed Rhei task routes to
-human intervention. A failed `generateMetadata` stops immediately instead of
-validating or repairing stale metadata.
+Runs once between public API coverage and sampled-PGO deep discovery, driving
+the shared native trace gate (§FS-native-test-verification-gate) with the
+coverage suite merged into every Gradle command. Durable metadata is written
+only when the gate's finalized re-run passes. Exit codes: 0 gate passed,
+2 invocation error, 3 gate failed (routes to human intervention).
 
 Usage:
   python3 utility_scripts/code_coverage_prepare_native_metadata.py \
     --repo-path <worktree> --coordinate group:artifact:version \
     --coverage-suite <indexed test project>/code-coverage-improvement \
-    --output-dir runtime/code-coverage/prepare [--max-fix-passes 2] [--skip-gradle]
+    --output-dir runtime/code-coverage/prepare [--max-cycles 40] [--skip-gradle]
 """
 
 from __future__ import annotations
@@ -36,15 +28,16 @@ from __future__ import annotations
 import argparse
 import json
 import os
-import shlex
 import sys
 
-from ai_workflows.core.metadata_fix import run_metadata_fix
-from utility_scripts.gradle_test_runner import run_gradle_test_command
+from utility_scripts.native_test_verification import (
+    NativeTestVerificationResult,
+    STATUS_FAILED,
+    verify_native_test_passes,
+)
 
-
-def _gradle_succeeded(output: str) -> bool:
-    return "BUILD SUCCESSFUL" in output
+COVERAGE_SUITE_PROPERTY: str = "-PincludeCodeCoverageSuite=true"
+DEFAULT_MAX_CYCLES: int = 40
 
 
 class NativeMetadataPreparationError(ValueError):
@@ -85,109 +78,54 @@ def _normalize_coverage_suite(repo_path: str, coverage_suite: str) -> str:
     return suite_path
 
 
-# The harness root project registers no `nativeTest` task: the per-library test
-# projects are separate Gradle builds. Root `test` is the invocation task that
-# runs `nativeTest` inside the resolved library build and forwards
-# `-PincludeCodeCoverageSuite`. Naming `nativeTest` here resolves against the
-# root project, where Gradle matches it by prefix against `nativeTestCompile`
-# and `nativeTestPGOSampling` and fails as ambiguous. §root/AR-test-harness.3
-NATIVE_VALIDATION_TASK: str = "test"
-
-
-def _gradle_command(task: str, coordinate: str) -> str:
-    coordinate_arg: str = shlex.quote(f"-Pcoordinates={coordinate}")
-    return f"./gradlew {task} {coordinate_arg} -PincludeCodeCoverageSuite=true --stacktrace"
-
-
 def prepare_native_metadata(
         repo_path: str,
         coordinate: str,
         coverage_suite: str,
         output_dir: str,
-        max_fix_passes: int,
+        max_cycles: int,
         skip_gradle: bool,
 ) -> dict:
-    """Generate metadata and repair it until Native Image validation passes."""
+    """Run the native trace gate with the coverage suite included end to end."""
     _validate_coordinate(coordinate)
-    if type(max_fix_passes) is not int or max_fix_passes < 0:
+    if type(max_cycles) is not int or max_cycles < 1:
         raise NativeMetadataPreparationError(
-            f"max_fix_passes must be a non-negative integer; got '{max_fix_passes}'."
+            f"max_cycles must be a positive integer; got '{max_cycles}'."
         )
     suite_path: str = _normalize_coverage_suite(repo_path, coverage_suite)
-    steps: list[dict] = []
     report: dict = {
         "coordinate": coordinate,
         "coverageSuite": suite_path,
         "metadataGenerated": False,
         "nativeTestPassed": False,
-        "fixPasses": 0,
+        "gateStatus": None,
+        "gateCycles": 0,
+        "agentInterventions": 0,
         "needsHumanIntervention": False,
         "failureReason": None,
-        "steps": steps,
+        "lastNativeTestLog": None,
     }
     if skip_gradle:
         _write_reports(report, output_dir)
         return report
 
-    generate_command: str = _gradle_command("generateMetadata", coordinate)
-    native_command: str = _gradle_command(NATIVE_VALIDATION_TASK, coordinate)
-
-    generate_output: str = run_gradle_test_command(
-        generate_command,
-        working_dir=repo_path, library=coordinate,
+    gate_output_dir: str = os.path.join(os.path.abspath(output_dir), "native-gate")
+    result: NativeTestVerificationResult = verify_native_test_passes(
+        reachability_repo_path=os.path.abspath(repo_path),
+        coordinate=coordinate,
+        output_dir=gate_output_dir,
+        max_iterations=max_cycles,
+        gradle_properties=(COVERAGE_SUITE_PROPERTY,),
     )
-    report["metadataGenerated"] = _gradle_succeeded(generate_output)
-    steps.append({
-        "task": "generateMetadata",
-        "command": generate_command,
-        "succeeded": report["metadataGenerated"],
-    })
-    if not report["metadataGenerated"]:
-        report["needsHumanIntervention"] = True
-        report["failureReason"] = (
-            "Metadata generation failed; native validation was not run against stale metadata."
-        )
-        _write_reports(report, output_dir)
-        return report
-
-    native_output: str = run_gradle_test_command(
-        native_command,
-        working_dir=repo_path,
-        library=coordinate,
-    )
-    passed: bool = _gradle_succeeded(native_output)
-    steps.append({
-        "task": NATIVE_VALIDATION_TASK,
-        "command": native_command,
-        "attempt": 0,
-        "succeeded": passed,
-    })
-
-    fix_passes: int = 0
-    while not passed and fix_passes < max_fix_passes:
-        fix_passes += 1
-        return_code, _log_path, _timed_out = run_metadata_fix(
-            repo_path, coordinate, reproduction_command=native_command,
-        )
-        steps.append({"task": "codexMetadataFix", "pass": fix_passes, "returncode": return_code})
-        native_output = run_gradle_test_command(
-            native_command,
-            working_dir=repo_path,
-            library=coordinate,
-        )
-        passed = _gradle_succeeded(native_output)
-        steps.append({
-            "task": NATIVE_VALIDATION_TASK,
-            "command": native_command,
-            "attempt": fix_passes,
-            "succeeded": passed,
-        })
-
-    report["fixPasses"] = fix_passes
+    passed: bool = result.status != STATUS_FAILED
+    report["metadataGenerated"] = passed
     report["nativeTestPassed"] = passed
+    report["gateStatus"] = result.status
+    report["gateCycles"] = result.iterations_used
+    report["agentInterventions"] = len(result.intervention_records)
     report["needsHumanIntervention"] = not passed
-    if not passed:
-        report["failureReason"] = "Native Image validation did not pass within the fix budget."
+    report["failureReason"] = result.failure_detail if not passed else None
+    report["lastNativeTestLog"] = result.last_native_test_log_path
     _write_reports(report, output_dir)
     return report
 
@@ -205,21 +143,21 @@ def _write_reports(report: dict, output_dir: str) -> None:
         f"- Coverage suite: `{report['coverageSuite']}`",
         f"- Metadata generated: {report['metadataGenerated']}",
         f"- Native Image test passed: {report['nativeTestPassed']}",
-        f"- Codex metadata fix passes: {report['fixPasses']}",
+        f"- Gate status: {report['gateStatus'] or 'not run'}",
+        f"- Gate cycles: {report['gateCycles']}",
+        f"- Analysis-agent interventions: {report['agentInterventions']}",
         f"- Needs human intervention: {report['needsHumanIntervention']}",
         f"- Failure reason: {report['failureReason'] or 'none'}",
-        "",
-        "## Steps",
-        "",
+        f"- Last native-test log: {report['lastNativeTestLog'] or 'none'}",
     ]
-    for step in report["steps"]:
-        lines.append(f"- {json.dumps(step)}")
     with open(md_path, "w", encoding="utf-8") as md_file:
         md_file.write("\n".join(lines) + "\n")
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Generate and repair native metadata before PGO discovery.")
+    parser = argparse.ArgumentParser(
+        description="Prepare native metadata through the native trace gate before PGO discovery."
+    )
     parser.add_argument("--repo-path", required=True, help="Issue worktree / repo root.")
     parser.add_argument("--coordinate", required=True, help="group:artifact:version.")
     parser.add_argument(
@@ -228,7 +166,12 @@ def main() -> None:
         help="Dedicated code coverage suite root containing src/test/java.",
     )
     parser.add_argument("--output-dir", required=True, help="Directory for preparation artifacts.")
-    parser.add_argument("--max-fix-passes", type=int, default=2, help="Maximum Codex metadata fix passes.")
+    parser.add_argument(
+        "--max-cycles",
+        type=int,
+        default=DEFAULT_MAX_CYCLES,
+        help="Maximum native trace gate cycles.",
+    )
     parser.add_argument("--skip-gradle", action="store_true", help="Write a no-op report without running Gradle.")
     args = parser.parse_args()
 
@@ -238,16 +181,18 @@ def main() -> None:
             coordinate=args.coordinate,
             coverage_suite=args.coverage_suite,
             output_dir=args.output_dir,
-            max_fix_passes=args.max_fix_passes,
+            max_cycles=args.max_cycles,
             skip_gradle=args.skip_gradle,
         )
     except NativeMetadataPreparationError as error:
         print(f"ERROR: {error}", file=sys.stderr)
         raise SystemExit(2) from error
-    print(f"Native metadata prepare: generated={report['metadataGenerated']} "
-          f"nativeTestPassed={report['nativeTestPassed']} fixPasses={report['fixPasses']}.")
+    print(
+        f"Native metadata prepare: gate={report['gateStatus'] or 'skipped'} "
+        f"cycles={report['gateCycles']} interventions={report['agentInterventions']}."
+    )
     if report["needsHumanIntervention"]:
-        print("Native Image metadata could not be repaired automatically; "
+        print("The native trace gate could not converge; "
               "route to human intervention.", file=sys.stderr)
         raise SystemExit(3)
 

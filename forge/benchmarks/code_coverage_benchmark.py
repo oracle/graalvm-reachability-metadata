@@ -29,6 +29,10 @@ from typing import Any, TextIO
 
 from jsonschema import Draft202012Validator, FormatChecker, ValidationError
 
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+
+from ai_workflows.agents.agent_runtime import PROVIDER_AWARE_BACKENDS
+
 FORGE_ROOT = Path(__file__).resolve().parents[1]
 REPOSITORY_ROOT = FORGE_ROOT.parent
 SUITE_PATH = FORGE_ROOT / "benchmarks" / "code_coverage_suite.json"
@@ -108,11 +112,38 @@ class AgentConfiguration:
     target_model: str
 
     def target(self, thinking: str) -> str:
-        """Render the Rhei target selector for this configuration."""
-        return (
-            f"{self.agent}[{thinking}]:"
+        """Render the Rhei target selector for this configuration.
+
+        Rhei hands everything after the first colon to the agent CLI's model
+        flag, so only a provider-aware backend may carry a `<provider>/`
+        prefix. Claude Code and Codex reach their provider through their own
+        login and reject a prefixed model outright.
+        """
+        model: str = (
             f"{self.provider}/{self.target_model}"
+            if self.agent in PROVIDER_AWARE_BACKENDS
+            else self.target_model
         )
+        return f"{self.agent}[{thinking}]:{model}"
+
+    def analysis_role_environment(self, thinking: str) -> dict[str, str]:
+        """Render the `FORGE_ANALYSIS_*` variables that pin the repair agent.
+
+        A cell runs on one configuration, repairs included, so the analysis
+        role resolves to the cell's own agent rather than to whatever the
+        launching machine happens to export
+        (§FS-code-coverage-benchmarking.2). The executable is left unset so
+        the backend's registered default applies, and the provider is sent
+        only where it means something (§FS-forge-agent-runtime-selection).
+        """
+        environment: dict[str, str] = {
+            "FORGE_ANALYSIS_FAMILY": self.agent,
+            "FORGE_ANALYSIS_MODEL": self.target_model,
+            "FORGE_ANALYSIS_THINKING_LEVEL": thinking,
+        }
+        if self.agent in PROVIDER_AWARE_BACKENDS:
+            environment["FORGE_ANALYSIS_PROVIDER"] = self.provider
+        return environment
 
 
 @dataclass(frozen=True)
@@ -585,8 +616,16 @@ def _execute_cell(
         workspace,
         identity,
     )
+    environment: dict[str, str] = dict(os.environ)
+    # Repairs belong to the cell, so its agent drives them rather than the
+    # launching machine's ambient role (§FS-code-coverage-benchmarking.2).
+    environment.update(
+        cell.configuration.analysis_role_environment(cell.thinking)
+    )
     try:
-        result = subprocess.run(command, cwd=FORGE_ROOT, check=False)
+        result = subprocess.run(
+            command, cwd=FORGE_ROOT, check=False, env=environment
+        )
         _ensure_run_record(workspace, identity)
         result_path = _result_record_path(workspace)
         recorded_result = _read_json(result_path) if result_path.is_file() else None
@@ -789,6 +828,7 @@ def _phase_tokens(
         return {
             "input": empty_value,
             "cachedInputRead": empty_value,
+            "cachedInputWrite": empty_value,
             "output": empty_value,
         }
 
@@ -801,6 +841,10 @@ def _phase_tokens(
     return {
         "input": total("tokens", "input", "total"),
         "cachedInputRead": total("tokens", "input", "cached_read"),
+        # A separately billed input class on some providers and zero on the
+        # rest, so omitting it understates exactly one side of a comparison
+        # (§FS-code-coverage-benchmarking.3).
+        "cachedInputWrite": total("tokens", "input", "cache_write"),
         "output": total("tokens", "output", "total"),
     }
 
@@ -954,7 +998,7 @@ def _collect_result(
         )
     total_tokens = {
         key: _sum_nullable(api["tokens"][key], deep["tokens"][key])
-        for key in ("input", "cachedInputRead", "output")
+        for key in ("input", "cachedInputRead", "cachedInputWrite", "output")
     }
     total = {
         "coverPasses": _sum_nullable(
@@ -1063,9 +1107,19 @@ def _discard_publication_worktree(
         )
 
 
-def _descriptor_relative_path(coordinate: str) -> Path:
+def _descriptor_relative_path(coordinate: str, publication_id: str) -> Path:
+    """Return the publication-scoped descriptor path for one benchmark result.
+
+    A coordinate carries one result per executed cell, so a path fixed to the
+    coordinate alone would name the same file for every run of that library and
+    make the second result to merge conflict with the first
+    (§FS-code-coverage-benchmarking.3).
+    """
     group, artifact, version = coordinate.split(":")
-    return Path("stats") / group / artifact / version / "forge-publication.json"
+    return (
+        Path("stats") / group / artifact / version
+        / publication_id / "forge-publication.json"
+    )
 
 
 def _commit_paths(repository: Path, paths: list[Path], subject: str) -> str:
@@ -1207,7 +1261,7 @@ def _fetch_existing_publication(
     descriptor = _json_at_ref(
         repository_root,
         remote_ref,
-        _descriptor_relative_path(result["coordinate"]),
+        _descriptor_relative_path(result["coordinate"], publication_id),
     )
     entries = _json_at_ref(
         repository_root,
@@ -1233,8 +1287,8 @@ def _publish_result(
         result: dict[str, Any],
 ) -> BenchmarkPublication:
     relative_path = _metrics_relative_path(result["coordinate"])
-    descriptor_path = _descriptor_relative_path(result["coordinate"])
     producer, publication_id, branch = _publication_identity(repository_root, result)
+    descriptor_path = _descriptor_relative_path(result["coordinate"], publication_id)
     lock_handle = _publish_lock(repository_root)
     try:
         for attempt in range(1, MAX_PUBLISH_ATTEMPTS + 1):
