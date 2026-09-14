@@ -586,7 +586,10 @@ The Rhei template should decompose the workflow into these phases:
    build the stats step runs measures dynamic access and does not gate the run;
    a nonzero exit code names the failed step.
 8. **Publication** — push the verified branch and let trusted GitHub Actions
-   open the pull request. Local publication stages the coverage suite, the
+   open the pull request. In both modes this is a deterministic program state:
+   the helper validates its own inputs, and its exit code is the transition —
+   success completes the task, failure parks it in `human-intervention`.
+   Local publication stages the coverage suite, the
    metadata it justified, and the stats finalization regenerated, rebases onto
    upstream `master`, runs the
    pre-publication verification gate, writes
@@ -834,9 +837,10 @@ sequenceDiagram
     rect rgb(203, 213, 225)
         note over R,W: Task code-coverage-publication (issue) or code-coverage-benchmark-publication (benchmark)
         alt issue mode
-            R->>A: publication stages, verifies, and runs the publish helper
-            A->>W: rebase onto master, write the descriptor, push the ai/ branch
-            note over A,W: trusted Actions validate the pushed commit and open the PR (§AR-actions-publication)
+            R->>P: publication runs the publish helper
+            P->>W: rebase onto master, write the descriptor, push the ai/ branch
+            P-->>R: exit 0 completed, nonzero human-intervention
+            note over P,W: trusted Actions validate the pushed commit and open the PR (§AR-actions-publication)
         else benchmark mode
             R->>P: benchmark publish collects run evidence
             P->>W: append the compact result, push the descriptor-backed branch
@@ -852,14 +856,14 @@ code of the process that just finished:
 | Stage | Owner | What it establishes | Exit |
 | --- | --- | --- | --- |
 | Conversion | deterministic program | The fixed inputs are coherent and the worktree, coordinate, and run record exist before any agent runs | `completed`, or `human-intervention` on exit 1 |
-| Phase execution | worker agent | Prepare and issue-mode publication each run one agent turn around a mandatory helper | The first legal `execute` edge, `completed` |
+| Phase execution | worker agent | Prepare runs one agent turn around the staging helpers | The first legal `execute` edge, `completed` |
 | API inventory | deterministic program | The full public surface under every committed allowed package, as exact target ids | Exit 0 completes; nonzero parks in `human-intervention` |
 | Native metadata | deterministic program and gate analysis agent | Durable metadata that survives the gate's finalized re-run, with the coverage suite included end to end | Exit 0 completes; exit 3 parks in `human-intervention` |
 | API loop | measurement program and worker agent | Exact JaCoCo-vs-inventory truth, a ranked prompt, and a recorded stop decision every pass | Exit 0 completes the phase; 10 schedules a cover pass; 1-5 schedule a repair |
 | Deep loop | measurement program and worker agent | The same cycle over library-internal methods with sampled-PGO navigation | Exit 0 completes; 10 covers; 1-7 repair |
 | Finalization | deterministic programs and fix agent | Split metadata, style, JVM suites, regenerated stats, and schema-valid final metrics | Exit 0 verifies then completes; a failed step number routes to repair and remeasurement; 75/80 gate verification |
 | Intervention parking | orchestrator | A gating state that stops the run where a person can resume it toward any phase entry, completion, or cancellation | Manual transition only |
-| Publication | agent (issue) or program (benchmark) | A pushed branch whose descriptor lets trusted Actions open the pull request, or a pushed benchmark result | `completed`, or `human-intervention` on failure |
+| Publication | deterministic program (both modes) | A pushed branch whose descriptor lets trusted Actions open the pull request, or a pushed benchmark result | Exit 0 completes; nonzero parks in `human-intervention` |
 
 **Edge selection is first-match by exit code.** A program state maps each exit
 code it can produce to one destination, so the exit code is the whole decision:
@@ -898,10 +902,11 @@ there. A person resumes the task over one of the recovery edges — back into
 additionally preserved on disk and reported for retry
 (§FS-code-coverage-benchmarking.3).
 
-**Publication differs by mode and by trust.** Issue mode runs an agent turn
-whose helper rebases, writes the coordinate's publication descriptor, and
-pushes the `ai/` branch; trusted Actions own everything after the push
-(§AR-actions-publication). Benchmark mode runs a program that appends the
+**Publication differs by mode, not by shape.** Both modes are deterministic
+programs. Issue mode runs the publish helper, which validates the finalized
+metrics against the coordinate, rebases, writes the coordinate's publication
+descriptor, and pushes the `ai/` branch; trusted Actions own everything after
+the push (§AR-actions-publication). Benchmark mode runs a program that appends the
 compact result to the per-coordinate results file and pushes the
 descriptor-backed branch without touching GitHub itself
 (§FS-code-coverage-benchmarking.3).
