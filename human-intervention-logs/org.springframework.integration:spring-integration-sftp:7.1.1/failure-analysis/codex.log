@@ -1,0 +1,20 @@
+Human intervention needed
+
+The automated job for `org.springframework.integration:spring-integration-sftp:7.1.1` failed during native-image verification. The most likely failure is `:nativeTestCompile`: Native Image aborts while placing `sun.nio.fs.LinuxFileSystemProvider` in the image heap, reached through `java.security.Security.<clinit>` and `java.nio.file.spi.FileSystemProvider`. The native executable therefore does not start, and no individual test fails. A prior native run passed all six generated tests.
+
+Preserved work: https://github.com/oracle/graalvm-reachability-metadata/tree/ai%2Fkimeta%2Fhuman-intervention%2Fissue-9952-library-new-request-org.springframework.integration-spring-integration-sftp-7.1.1-461a17e1
+
+The metrics report shows failure after 11 iterations, with dynamic-access coverage unavailable, `metadata_entries: 0`, and no generated LOC recorded. The metadata-fix log also reports that no repair was applied because the workspace was read-only.
+
+Please inspect:
+
+- `logs/org.springframework.integration:spring-integration-sftp:7.1.1/gradle-test/gradle-test-2026-09-14T01-11-37-391247Z.log`
+- `logs/org.springframework.integration:spring-integration-sftp:7.1.1/post-gen/intervention.md`
+- `logs/org.springframework.integration:spring-integration-sftp:7.1.1/metadata-fix/codex.log`
+- `logs/org.springframework.integration:spring-integration-sftp:7.1.1/gradle-test/gradle-test-2026-09-14T01-04-23-151537Z.log`
+
+Manual next steps:
+
+1. Reproduce with the exact GraalVM/JDK used by the job and investigate the `LinuxFileSystemProvider` image-heap initialization path.
+2. Determine a safe toolchain, dependency, or harness configuration fix; do not remove an arbitrary test or add unrelated metadata.
+3. Rerun `nativeTest` and dynamic-access coverage, then resume the support workflow if both complete successfully.
