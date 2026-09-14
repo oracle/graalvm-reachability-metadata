@@ -148,45 +148,31 @@
   the agent cannot claim coverage.
 
 ### Task code-coverage-prepare-native-metadata: Prepare native metadata
-**State:** prepared
+**State:** native-metadata
 **Prior:** Task code-coverage-api-coverage
 
-- Helper script: `forge/utility_scripts/code_coverage_prepare_native_metadata.py`
-- Invoke it with the resolved `--repo-path`, `--coordinate`, absolute
-  `--coverage-suite`, preparation `--output-dir`, and bounded
-  `--max-fix-passes`.
-- Purpose: generate and repair reachability metadata once after public API
-  coverage so the deep sampled-PGO builds can run
-  §AR-code-coverage-improvement.
-- Required work:
-  - Read the resolved coordinate and absolute suite root from the conversion
-    and preparation artifacts.
-  - Generate metadata with `./gradlew generateMetadata -Pcoordinates=<resolved coordinate> -PincludeCodeCoverageSuite=true`.
-  - Metadata lands in the coordinate's existing `reachability-metadata.json`
-    files and nowhere else. The coverage suite has no metadata directory of its
-    own, and the legacy split-config files a tracing agent may emit
-    (`jni-config.json`, `reflect-config.json`, `resource-config.json`,
-    `serialization-config.json`, `proxy-config.json`) are input to convert, not
-    output to commit — this repository loads none of them
-    (§root/FS-metadata.1, §AR-code-coverage-improvement.2). Do not split shipped
-    from test-only entries by hand: finalization runs `splitTestOnlyMetadata`.
-  - Run `./gradlew test -Pcoordinates=<resolved coordinate> -PincludeCodeCoverageSuite=true`; if it fails, repair
-    metadata with the Codex `fix-missing-reachability-metadata` skill and re-run,
-    up to the helper's fix budget.
-  - Run every Gradle command in the foreground with a timeout long enough to
-    finish it. Never start one as a background task and end your turn to wait
-    for it: this invocation is headless, your turn ending is the process
-    exiting, and any work still outstanding loses its supervisor. There is no
-    later turn to wake up in. If a command needs an hour, wait an hour.
-  - Before reporting success, confirm the artifacts below exist. If they do
-    not, the phase did not complete: keep working or request
-    `human-intervention`. Never report success without them.
-  - If Native Image validation cannot be repaired automatically, request
-    `human-intervention`.
+- Deterministic program state; no agent turn. The state program invokes
+  `forge/utility_scripts/code_coverage_prepare_native_metadata.py` with the
+  resolved worktree, coordinate, and absolute coverage-suite root from
+  `runtime/code-coverage/issues/conversion.json`.
+- Purpose: prepare reachability metadata once after public API coverage so the
+  deep sampled-PGO builds can run §AR-code-coverage-improvement.4.
+- The helper drives the shared native test verification gate
+  (§FS-native-test-verification-gate) with `-PincludeCodeCoverageSuite=true`
+  on every Gradle command: staged JVM-agent metadata first, the exit-172
+  native trace loop second, and the gate's single terminal diagnose-first
+  analysis-agent repair last. Durable metadata is written only when the
+  finalized re-run passes.
+- Metadata lands in the coordinate's existing `reachability-metadata.json`
+  files and nowhere else. The coverage suite has no metadata directory of its
+  own, and the legacy split-config files remain input, never output
+  (§root/FS-metadata.1, §AR-code-coverage-improvement.2). Finalization runs
+  `splitTestOnlyMetadata`.
+- The helper's exit code is the transition: 0 completes the phase, 2 and 3
+  park it in `human-intervention`.
 - Artifacts:
   - `runtime/code-coverage/prepare/native-metadata-prepare.json`
   - `runtime/code-coverage/prepare/native-metadata-prepare.md`
-  - `runtime/code-coverage/work/code-coverage-{{issue_number}}.code-coverage-prepare-native-metadata.md`
 
 ### Task code-coverage-deep-coverage: Deep coverage loop
 **State:** deep-measure

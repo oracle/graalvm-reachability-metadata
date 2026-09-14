@@ -1,8 +1,14 @@
 # State machine diagram
 # ---------------------
 #
-# Pipeline tasks (convert, prepare, api-inventory, native metadata, publication):
+# Pipeline tasks (convert, prepare, api-inventory, publication):
 #   prepared -> execute -> completed / human-intervention
+#
+# Native metadata preparation (one task):
+#   native-metadata -- 0 (gate finalized durable metadata) -> completed
+#     \-- 2 (bad inputs) / 3 (gate could not converge) -> human-intervention
+#   The program drives the shared native trace gate with the coverage suite
+#   included on every Gradle command (§FS-native-test-verification-gate).
 #
 # API coverage loop (one task):
 #   api-measure -- 0 (phase done) -> completed
@@ -118,6 +124,50 @@ states:
       - name: work
         path: runtime/code-coverage/work/{task_id}.md
         description: Execution summary for one pipeline phase.
+
+  native-metadata:
+    description: Deterministic native-metadata preparation through the shared native trace gate.
+    concurrent: true
+    program_timeout: 360m
+    inputs:
+      - name: conversion
+        path: runtime/code-coverage/issues/conversion.json
+    program: |
+      python3 - "$RHEI_INPUT_CONVERSION_PATH" <<'PY'
+      import json
+      import os
+      import subprocess
+      import sys
+
+      def fail(code: int, message: str) -> None:
+          print(f"[native-metadata] {message}", file=sys.stderr)
+          sys.exit(code)
+
+      # The gate call, its budget, and its exit-code contract:
+      # §AR-code-coverage-improvement.4 item 5, §FS-native-test-verification-gate.
+      try:
+          conversion = json.load(open(sys.argv[1]))
+          coordinate = conversion["coordinate"]
+          worktree = conversion["worktreePath"]
+          work_path = conversion["workPath"]
+          coverage_suite = conversion["coverageSuiteAbsolutePath"]
+      except Exception as error:
+          fail(2, f"conversion.json missing or invalid: {error}")
+
+      helper = [
+          sys.executable,
+          f"{work_path}/utility_scripts/code_coverage_prepare_native_metadata.py",
+          "--repo-path", worktree,
+          "--coordinate", coordinate,
+          "--coverage-suite", coverage_suite,
+          "--output-dir", "runtime/code-coverage/prepare",
+      ]
+      print(f"[native-metadata] {' '.join(helper)}", flush=True)
+      try:
+          sys.exit(subprocess.run(helper, env=dict(os.environ, PYTHONPATH=work_path)).returncode)
+      except OSError as error:
+          fail(2, f"the preparation helper could not run: {error}")
+      PY
 
   api-measure:
     description: JaCoCo report generation and API correlation; decides whether the API loop continues.
@@ -1172,6 +1222,21 @@ transitions:
     to: human-intervention
     description: A required helper or artifact is missing or failed.
 
+  - from: native-metadata
+    to: completed
+    exit_code: 0
+    description: The native trace gate finalized durable metadata and the re-run passed.
+
+  - from: native-metadata
+    to: human-intervention
+    exit_code: 2
+    description: Preparation inputs were missing or malformed.
+
+  - from: native-metadata
+    to: human-intervention
+    exit_code: 3
+    description: The native trace gate could not converge, even after its terminal repair.
+
   - from: api-measure
     to: completed
     exit_code: 0
@@ -1521,6 +1586,10 @@ transitions:
   - from: human-intervention
     to: execute
     description: Human requested rework of a pipeline task.
+
+  - from: human-intervention
+    to: native-metadata
+    description: A person resolved the blocker; re-run native-metadata preparation.
 
   - from: human-intervention
     to: api-measure
