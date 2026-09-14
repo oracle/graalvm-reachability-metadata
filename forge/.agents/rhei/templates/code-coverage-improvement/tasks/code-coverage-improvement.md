@@ -97,28 +97,24 @@
   - `runtime/code-coverage/work/code-coverage-{{issue_number}}.code-coverage-prepare.md`
 
 ### Task code-coverage-api-inventory: Generate API inventory
-**State:** prepared
+**State:** api-inventory
 **Prior:** Task code-coverage-prepare
 
-- Helper script: `forge/utility_scripts/code_coverage_api_inventory.py`
+- Deterministic program state; no agent turn. The state program invokes
+  `forge/utility_scripts/code_coverage_api_inventory.py` with the resolved
+  coordinate, every `libraryJars` entry, and every `allowedPackages` entry
+  from `runtime/code-coverage/prepare/library.json`
+  (§AR-code-coverage-improvement.4, §root/FS-metadata).
 - Purpose: deterministically describe public user-callable API targets for the
-  coordinate.
-- Required work:
-  - Use the prepared library record and source context.
-  - Generate compact JSON and Markdown reports under
-    `runtime/code-coverage/api-inventory/`.
-  - Make the canonical target `id` carry the full target identity; avoid
-    redundant split fields unless needed for stable processing.
-  - Include public constructors, instance/static methods, generated enum
-    accessor methods, builders, configuration, parsing, serialization,
-    adapters, lifecycle methods, and error-handling calls. Exclude fields.
-  - Do not prioritize private implementation details as direct test targets.
-  - Record the resolved library jars as `libraryJars` so the later bytecode
-    call-graph extraction resolves no artifacts of its own.
+  coordinate, across the artifact's whole committed allowed-package scope.
+- The canonical target `id` carries the full target identity; fields are
+  excluded; the resolved jars are recorded as `libraryJars` so later bytecode
+  call-graph extraction resolves no artifacts of its own.
+- The program's exit code is the transition: 0 completes the phase, 1 and 2
+  park it in `human-intervention`.
 - Artifacts:
   - `runtime/code-coverage/api-inventory/api-inventory.json`
   - `runtime/code-coverage/api-inventory/api-inventory.md`
-  - `runtime/code-coverage/work/code-coverage-{{issue_number}}.code-coverage-api-inventory.md`
 
 ### Task code-coverage-api-coverage: API coverage loop
 **State:** api-measure

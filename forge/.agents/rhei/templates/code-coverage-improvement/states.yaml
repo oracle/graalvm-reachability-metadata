@@ -1,7 +1,7 @@
 # State machine diagram
 # ---------------------
 #
-# Pipeline tasks (convert, prepare, api-inventory, publication):
+# Pipeline tasks (convert, prepare, publication):
 #   prepared -> execute -> completed / human-intervention
 #
 # Native metadata preparation (one task):
@@ -9,6 +9,10 @@
 #     \-- 2 (bad inputs) / 3 (gate could not converge) -> human-intervention
 #   The program drives the shared native trace gate with the coverage suite
 #   included on every Gradle command (§FS-native-test-verification-gate).
+#
+# API inventory (one task):
+#   api-inventory -- 0 -> completed; 1-2 -> human-intervention
+#   javap over the library jars, scoped to every committed allowed package.
 #
 # API coverage loop (one task):
 #   api-measure -- 0 (phase done) -> completed
@@ -124,6 +128,63 @@ states:
       - name: work
         path: runtime/code-coverage/work/{task_id}.md
         description: Execution summary for one pipeline phase.
+
+  api-inventory:
+    description: Deterministic public-API inventory over every committed allowed package.
+    concurrent: true
+    program_timeout: 30m
+    inputs:
+      - name: conversion
+        path: runtime/code-coverage/issues/conversion.json
+      - name: library
+        path: runtime/code-coverage/prepare/library.json
+    program: |
+      python3 - "$RHEI_INPUT_CONVERSION_PATH" "$RHEI_INPUT_LIBRARY_PATH" <<'PY'
+      import json
+      import os
+      import subprocess
+      import sys
+
+      def fail(code: int, message: str) -> None:
+          print(f"[api-inventory] {message}", file=sys.stderr)
+          sys.exit(code)
+
+      # Inventory scope is the artifact's committed allowed-packages, taken
+      # whole (§AR-code-coverage-improvement.4, §root/FS-metadata).
+      try:
+          conversion = json.load(open(sys.argv[1]))
+          library = json.load(open(sys.argv[2]))
+          coordinate = conversion["coordinate"]
+          work_path = conversion["workPath"]
+          library_jars = library["libraryJars"]
+          allowed_packages = library.get("allowedPackages") or []
+      except Exception as error:
+          fail(2, f"conversion or library record missing or invalid: {error}")
+      if not library_jars:
+          fail(2, "library.json records no library jars")
+
+      group, artifact, version = coordinate.split(":")
+      source_root = (
+          f"{work_path}/local_repositories/source_context/"
+          f"{group}/{artifact}/{version}/main/extracted"
+      )
+      helper = [
+          sys.executable,
+          f"{work_path}/utility_scripts/code_coverage_api_inventory.py",
+          "--coordinate", coordinate,
+          "--output-dir", "runtime/code-coverage/api-inventory",
+          "--source-root", source_root,
+      ]
+      for jar in library_jars:
+          helper += ["--library-jar", jar]
+      for package in allowed_packages:
+          helper += ["--include-package", package]
+      print(f"[api-inventory] {' '.join(helper)}", flush=True)
+      try:
+          sys.exit(subprocess.run(helper, env=dict(os.environ, PYTHONPATH=work_path)).returncode)
+      except OSError as error:
+          fail(2, f"the inventory helper could not run: {error}")
+      PY
 
   native-metadata:
     description: Deterministic native-metadata preparation through the shared native trace gate.
@@ -1222,6 +1283,21 @@ transitions:
     to: human-intervention
     description: A required helper or artifact is missing or failed.
 
+  - from: api-inventory
+    to: completed
+    exit_code: 0
+    description: The inventory covers every committed allowed package.
+
+  - from: api-inventory
+    to: human-intervention
+    exit_code: 1
+    description: javap or the jar enumeration failed.
+
+  - from: api-inventory
+    to: human-intervention
+    exit_code: 2
+    description: Inventory inputs were missing or malformed.
+
   - from: native-metadata
     to: completed
     exit_code: 0
@@ -1590,6 +1666,10 @@ transitions:
   - from: human-intervention
     to: native-metadata
     description: A person resolved the blocker; re-run native-metadata preparation.
+
+  - from: human-intervention
+    to: api-inventory
+    description: A person resolved the blocker; re-run the API inventory.
 
   - from: human-intervention
     to: api-measure

@@ -8,20 +8,18 @@ Deterministic public-API inventory for the code coverage improvement workflow
 (§AR-code-coverage-improvement.3.1, §AR-code-coverage-improvement-architecture).
 
 It enumerates the public, user-callable method and constructor surface of a
-resolved library artifact and emits compact JSON and Markdown reports. The
-canonical target `id` carries full identity (`owner#name(params):ret`), the
-exactness §AR-code-coverage-improvement.3.1 requires of the correlation.
-
-Derivation is `javap -public -s` over the library jar, per
-§AR-code-coverage-improvement-architecture.1: erased generics, varargs
-normalized to arrays, fields excluded, so ids line up with the analysis call
-tree and the sampled profile.
+resolved library artifact via `javap -public -s` and emits compact JSON and
+Markdown reports. The canonical target `id` carries full identity
+(`owner#name(params):ret`), the exactness §AR-code-coverage-improvement.3.1
+requires; generics erased, varargs normalized, fields excluded
+(§AR-code-coverage-improvement-architecture.1).
 
 Usage:
   python3 utility_scripts/code_coverage_api_inventory.py \
     --coordinate group:artifact:version \
     --library-jar path/to/library.jar [--library-jar ...] \
-    --output-dir runtime/code-coverage/api-inventory [--include-package com.example]
+    --output-dir runtime/code-coverage/api-inventory \
+    [--include-package com.example [--include-package com.example.spi ...]]
 """
 
 from __future__ import annotations
@@ -239,7 +237,7 @@ def _parse_member(body: str, owner_class: ClassInfo) -> ApiTarget | None:
     return None
 
 
-def enumerate_public_classes(jar_path: str, include_package: str | None) -> list[str]:
+def enumerate_public_classes(jar_path: str, include_packages: list[str] | None) -> list[str]:
     """Return candidate binary class names from a jar, skipping synthetic ones."""
     names: list[str] = []
     with zipfile.ZipFile(jar_path) as jar:
@@ -253,7 +251,12 @@ def enumerate_public_classes(jar_path: str, include_package: str | None) -> list
             # Skip anonymous classes (Outer$1); keep named nested classes.
             if re.search(r"\$\d", binary):
                 continue
-            if include_package and not (binary == include_package or binary.startswith(include_package + ".")):
+            # In scope when under ANY committed allowed package — the same
+            # any-of rule the metadata validator applies (§root/FS-metadata.2).
+            if include_packages and not any(
+                binary == prefix or binary.startswith(prefix + ".")
+                for prefix in include_packages
+            ):
                 continue
             names.append(binary)
     return sorted(names)
@@ -346,13 +349,13 @@ def generate_inventory(
         coordinate: str,
         jar_paths: list[str],
         output_dir: str,
-        include_package: str | None,
+        include_packages: list[str] | None,
         source_root: str,
 ) -> dict:
     class_names: list[str] = []
     for jar_path in jar_paths:
         try:
-            class_names.extend(enumerate_public_classes(jar_path, include_package))
+            class_names.extend(enumerate_public_classes(jar_path, include_packages))
         except (OSError, zipfile.BadZipFile) as error:
             raise ApiInventoryError(f"Cannot read library jar '{jar_path}': {error}") from error
     class_names = sorted(set(class_names))
@@ -375,7 +378,12 @@ def main() -> None:
     parser.add_argument("--coordinate", required=True, help="group:artifact:version.")
     parser.add_argument("--library-jar", action="append", required=True, help="Library jar path (repeatable).")
     parser.add_argument("--output-dir", required=True, help="Directory for inventory artifacts.")
-    parser.add_argument("--include-package", default=None, help="Restrict to this package prefix.")
+    parser.add_argument(
+        "--include-package",
+        action="append",
+        default=None,
+        help="Package prefix to include; repeat for every allowed package.",
+    )
     parser.add_argument("--source-root", default="", help="Prefix for emitted sourcePath values.")
     args = parser.parse_args()
 
@@ -384,7 +392,7 @@ def main() -> None:
             coordinate=args.coordinate,
             jar_paths=args.library_jar,
             output_dir=args.output_dir,
-            include_package=args.include_package,
+            include_packages=args.include_package,
             source_root=args.source_root,
         )
     except ApiInventoryError as error:
