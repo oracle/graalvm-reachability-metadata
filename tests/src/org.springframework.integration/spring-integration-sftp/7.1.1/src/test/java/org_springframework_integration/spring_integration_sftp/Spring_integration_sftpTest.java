@@ -8,6 +8,7 @@ package org_springframework_integration.spring_integration_sftp;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.io.ByteArrayInputStream;
 import java.io.Closeable;
 import java.io.File;
 import java.io.InputStream;
@@ -15,11 +16,13 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.apache.sshd.common.config.keys.KeyUtils;
 import org.apache.sshd.common.file.virtualfs.VirtualFileSystemFactory;
 import org.apache.sshd.server.SshServer;
 import org.apache.sshd.server.keyprovider.SimpleGeneratorHostKeyProvider;
+import org.apache.sshd.sftp.client.SftpClient;
 import org.apache.sshd.sftp.server.SftpSubsystemFactory;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
@@ -32,11 +35,20 @@ import org.springframework.integration.channel.QueueChannel;
 import org.springframework.integration.context.IntegrationContextUtils;
 import org.springframework.integration.file.FileHeaders;
 import org.springframework.integration.file.remote.gateway.AbstractRemoteFileOutboundGateway.Option;
+import org.springframework.integration.file.remote.session.Session;
 import org.springframework.integration.sftp.inbound.SftpInboundFileSynchronizer;
 import org.springframework.integration.sftp.inbound.SftpInboundFileSynchronizingMessageSource;
 import org.springframework.integration.sftp.inbound.SftpStreamingMessageSource;
 import org.springframework.integration.sftp.outbound.SftpMessageHandler;
 import org.springframework.integration.sftp.outbound.SftpOutboundGateway;
+import org.springframework.integration.sftp.server.ApacheMinaSftpEvent;
+import org.springframework.integration.sftp.server.ApacheMinaSftpEventListener;
+import org.springframework.integration.sftp.server.DirectoryCreatedEvent;
+import org.springframework.integration.sftp.server.FileWrittenEvent;
+import org.springframework.integration.sftp.server.PathMovedEvent;
+import org.springframework.integration.sftp.server.PathRemovedEvent;
+import org.springframework.integration.sftp.server.SessionClosedEvent;
+import org.springframework.integration.sftp.server.SessionOpenedEvent;
 import org.springframework.integration.sftp.session.DefaultSftpSessionFactory;
 import org.springframework.integration.sftp.session.SftpRemoteFileTemplate;
 import org.springframework.messaging.Message;
@@ -162,6 +174,75 @@ public class Spring_integration_sftpTest {
         });
     }
 
+    @Test
+    @Timeout(59)
+    void sftpServerEventsArePublishedAsSpringApplicationEvents(@TempDir Path testDirectory) throws Exception {
+        List<ApacheMinaSftpEvent> events = new CopyOnWriteArrayList<>();
+        ApacheMinaSftpEventListener eventListener = new ApacheMinaSftpEventListener();
+        eventListener.setApplicationEventPublisher(event -> events.add((ApacheMinaSftpEvent) event));
+        eventListener.afterPropertiesSet();
+
+        SftpSubsystemFactory subsystemFactory = new SftpSubsystemFactory();
+        subsystemFactory.addSftpEventListener(eventListener);
+        byte[] payload = "event payload".getBytes(StandardCharsets.UTF_8);
+
+        withSftpServer(testDirectory, subsystemFactory, (remoteRoot, sessionFactory) -> {
+            try (Session<SftpClient.DirEntry> session = sessionFactory.getSession()) {
+                assertThat(session.mkdir("/events")).isTrue();
+                session.write(new ByteArrayInputStream(payload), "/events/original.txt");
+                session.rename("/events/original.txt", "/events/renamed.txt");
+                assertThat(session.remove("/events/renamed.txt")).isTrue();
+                assertThat(session.rmdir("/events")).isTrue();
+            }
+        });
+
+        SessionOpenedEvent openedEvent = onlyEvent(events, SessionOpenedEvent.class);
+        assertThat(openedEvent.getClientVersion()).isGreaterThanOrEqualTo(3);
+        DirectoryCreatedEvent createdEvent = onlyEvent(events, DirectoryCreatedEvent.class);
+        assertThat(createdEvent.getPath().getFileName().toString()).isEqualTo("events");
+
+        List<FileWrittenEvent> writtenEvents = events.stream()
+                .filter(FileWrittenEvent.class::isInstance)
+                .map(FileWrittenEvent.class::cast)
+                .toList();
+        assertThat(writtenEvents).isNotEmpty();
+        assertThat(writtenEvents).allSatisfy(event ->
+                assertThat(event.getFile().getFileName().toString()).isEqualTo("original.txt"));
+        assertThat(writtenEvents.stream().mapToInt(FileWrittenEvent::getDataLen).sum()).isEqualTo(payload.length);
+
+        PathMovedEvent movedEvent = onlyEvent(events, PathMovedEvent.class);
+        assertThat(movedEvent.getSrcPath().getFileName().toString()).isEqualTo("original.txt");
+        assertThat(movedEvent.getDstPath().getFileName().toString()).isEqualTo("renamed.txt");
+
+        List<PathRemovedEvent> removedEvents = events.stream()
+                .filter(PathRemovedEvent.class::isInstance)
+                .map(PathRemovedEvent.class::cast)
+                .toList();
+        PathRemovedEvent removedFile = removedEvents.stream()
+                .filter(event -> !event.isDirectory())
+                .findFirst()
+                .orElseThrow();
+        assertThat(removedFile.getPath().getFileName().toString()).isEqualTo("renamed.txt");
+        PathRemovedEvent removedDirectory = removedEvents.stream()
+                .filter(PathRemovedEvent::isDirectory)
+                .findFirst()
+                .orElseThrow();
+        assertThat(removedDirectory.getPath().getFileName().toString()).isEqualTo("events");
+
+        SessionClosedEvent closedEvent = onlyEvent(events, SessionClosedEvent.class);
+        assertThat(closedEvent.getSession()).isSameAs(openedEvent.getSession());
+    }
+
+    private static <E extends ApacheMinaSftpEvent> E onlyEvent(
+            List<ApacheMinaSftpEvent> events, Class<E> eventType) {
+        List<E> matchingEvents = events.stream()
+                .filter(eventType::isInstance)
+                .map(eventType::cast)
+                .toList();
+        assertThat(matchingEvents).hasSize(1);
+        return matchingEvents.get(0);
+    }
+
     private static void initialize(SftpMessageHandler handler, String beanName) {
         handler.setBeanName(beanName);
         handler.setBeanFactory(integrationBeanFactory());
@@ -182,6 +263,11 @@ public class Spring_integration_sftpTest {
     }
 
     private static void withSftpServer(Path testDirectory, SftpScenario scenario) throws Exception {
+        withSftpServer(testDirectory, new SftpSubsystemFactory(), scenario);
+    }
+
+    private static void withSftpServer(
+            Path testDirectory, SftpSubsystemFactory subsystemFactory, SftpScenario scenario) throws Exception {
         Path remoteRoot = Files.createDirectories(testDirectory.resolve("remote-root"));
         SimpleGeneratorHostKeyProvider hostKeyProvider =
                 new SimpleGeneratorHostKeyProvider(testDirectory.resolve("host-key.pem"));
@@ -194,7 +280,7 @@ public class Spring_integration_sftpTest {
         server.setKeyPairProvider(hostKeyProvider);
         server.setPasswordAuthenticator(
                 (username, password, session) -> USERNAME.equals(username) && PASSWORD.equals(password));
-        server.setSubsystemFactories(List.of(new SftpSubsystemFactory()));
+        server.setSubsystemFactories(List.of(subsystemFactory));
         server.setFileSystemFactory(new VirtualFileSystemFactory(remoteRoot));
 
         DefaultSftpSessionFactory sessionFactory = null;
