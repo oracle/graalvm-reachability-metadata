@@ -16,6 +16,13 @@ dependencies {
 }
 
 graalvmNative {
+    binaries {
+        test {
+            buildArgs("--initialize-at-build-time=org.apache.sshd.common.file.root.RootedFileSystemProvider")
+            buildArgs("--initialize-at-build-time=org.apache.sshd.sftp.client.fs.SftpFileSystemProviderFacade")
+            buildArgs("--initialize-at-build-time=org.slf4j.helpers.NOPLogger")
+        }
+    }
     agent {
         defaultMode = "conditional"
         modes {
