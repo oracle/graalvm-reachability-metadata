@@ -8,7 +8,10 @@ package org_springframework_integration.spring_integration_sftp;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.io.Closeable;
 import java.io.File;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
@@ -24,14 +27,18 @@ import org.junit.jupiter.api.io.TempDir;
 
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.expression.spel.support.StandardEvaluationContext;
+import org.springframework.integration.IntegrationMessageHeaderAccessor;
 import org.springframework.integration.channel.QueueChannel;
 import org.springframework.integration.context.IntegrationContextUtils;
+import org.springframework.integration.file.FileHeaders;
 import org.springframework.integration.file.remote.gateway.AbstractRemoteFileOutboundGateway.Option;
 import org.springframework.integration.sftp.inbound.SftpInboundFileSynchronizer;
 import org.springframework.integration.sftp.inbound.SftpInboundFileSynchronizingMessageSource;
+import org.springframework.integration.sftp.inbound.SftpStreamingMessageSource;
 import org.springframework.integration.sftp.outbound.SftpMessageHandler;
 import org.springframework.integration.sftp.outbound.SftpOutboundGateway;
 import org.springframework.integration.sftp.session.DefaultSftpSessionFactory;
+import org.springframework.integration.sftp.session.SftpRemoteFileTemplate;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.support.GenericMessage;
 
@@ -91,6 +98,43 @@ public class Spring_integration_sftpTest {
             assertThat(Files.readString(received.getPayload().toPath())).isEqualTo("inbound payload");
             assertThat(Files.readString(inboundDirectory.resolve("incoming.txt"))).isEqualTo("inbound payload");
             assertThat(source.getComponentType()).isEqualTo("sftp:inbound-channel-adapter");
+        });
+    }
+
+    @Test
+    @Timeout(59)
+    void streamingInboundAdapterReadsRemoteFileWithoutDownloadingIt(@TempDir Path testDirectory) throws Exception {
+        withSftpServer(testDirectory, (remoteRoot, sessionFactory) -> {
+            Path streamingDirectory = Files.createDirectories(remoteRoot.resolve("streaming"));
+            Files.writeString(streamingDirectory.resolve("streamed.txt"), "streamed payload");
+
+            SftpRemoteFileTemplate remoteFileTemplate = new SftpRemoteFileTemplate(sessionFactory);
+            SftpStreamingMessageSource source = new SftpStreamingMessageSource(remoteFileTemplate);
+            source.setRemoteDirectory("/streaming");
+            source.setBeanName("sftpStreamingInboundAdapter");
+            source.setBeanFactory(integrationBeanFactory());
+            source.afterPropertiesSet();
+            source.start();
+
+            try {
+                Message<InputStream> received = source.receive();
+
+                assertThat(received).isNotNull();
+                assertThat(received.getHeaders().get(FileHeaders.REMOTE_FILE)).isEqualTo("streamed.txt");
+                assertThat(received.getHeaders().get(FileHeaders.REMOTE_DIRECTORY)).isEqualTo("/streaming");
+                assertThat(received.getHeaders().get(IntegrationMessageHeaderAccessor.CLOSEABLE_RESOURCE))
+                        .isInstanceOf(Closeable.class);
+                assertThat(source.getComponentType()).isEqualTo("sftp:inbound-streaming-channel-adapter");
+
+                Closeable session = (Closeable) received.getHeaders()
+                        .get(IntegrationMessageHeaderAccessor.CLOSEABLE_RESOURCE);
+                try (session; InputStream payload = received.getPayload()) {
+                    assertThat(new String(payload.readAllBytes(), StandardCharsets.UTF_8))
+                            .isEqualTo("streamed payload");
+                }
+            } finally {
+                source.stop();
+            }
         });
     }
 
