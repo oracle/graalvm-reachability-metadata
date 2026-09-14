@@ -518,9 +518,18 @@ The Rhei template should decompose the workflow into these phases:
    normal public API behavior and always returns to measurement. Reachability
    metadata and Native Image are intentionally out of scope in this phase.
 5. **Prepare native metadata** — run once after the API loop and before
-   deep discovery: generate reachability metadata and repair it with the Codex
-   `fix-missing-reachability-metadata` skill until a Native Image test passes.
-   Route unresolved metadata or Native Image failures to human intervention.
+   deep discovery, as a deterministic program state, not an agent turn: the
+   phase runs the shared native test verification gate
+   (§FS-native-test-verification-gate) with the coverage suite included in
+   every Gradle command, so JVM-agent metadata, the native trace loop, and the
+   gate's single terminal analysis-agent repair carry
+   `-PincludeCodeCoverageSuite=true` end to end. The gate's diagnose-first
+   repair prompt may fix a metadata condition or rewrite a native-incompatible
+   generated coverage test to a native-compatible public-API path; rewriting
+   preserves the test's JVM JaCoCo coverage, which is why it is preferred over
+   removal. The program's exit code is the transition: success completes the
+   phase, and an unrepaired gate failure routes to human intervention — the
+   outcome is never narrated in an artifact for a later phase to trip over.
 6. **Deep coverage loop** — the same measure/cover cycle for internal
    methods. Measurement runs JaCoCo over the library-owned method set, builds
    and runs native tests with PGO sampling, loads one coherent analysis
@@ -745,15 +754,21 @@ sequenceDiagram
 
     rect rgb(249, 168, 212)
         note over R,W: Task code-coverage-prepare-native-metadata
-        R->>A: execute the phase (one agent turn around one helper)
-        A->>W: generateMetadata with the coverage suite traced
-        A->>W: test with the merged suite
-        loop until green or the fix budget is spent
-            A->>X: fix-missing-reachability-metadata
-            X->>W: repair the coordinate's reachability-metadata.json
-            A->>W: re-run test
+        R->>P: native-metadata runs the shared native trace gate
+        P->>W: generateMetadata staged, with the coverage suite traced
+        P->>W: test against the staged metadata
+        loop while the binary exits 172 with new trace metadata
+            P->>W: runNativeTraceImage, accept the traced entries
         end
-        A-->>R: prepare artifacts written, completed
+        opt the gate cannot converge deterministically
+            P->>X: one terminal diagnose-first repair (§FS-native-test-verification-gate)
+            X->>W: fix a metadata condition, or rewrite a native-incompatible test
+        end
+        alt durable metadata passes the re-run
+            P-->>R: exit 0, phase completed
+        else gate failed
+            P-->>R: exit 3, park in human-intervention
+        end
     end
 
     rect rgb(196, 181, 253)
@@ -824,7 +839,8 @@ code of the process that just finished:
 | Stage | Owner | What it establishes | Exit |
 | --- | --- | --- | --- |
 | Conversion | deterministic program | The fixed inputs are coherent and the worktree, coordinate, and run record exist before any agent runs | `completed`, or `human-intervention` on exit 1 |
-| Phase execution | worker agent | Prepare, API inventory, native-metadata preparation, and issue-mode publication each run one agent turn around a mandatory helper | The first legal `execute` edge, `completed` |
+| Phase execution | worker agent | Prepare, API inventory, and issue-mode publication each run one agent turn around a mandatory helper | The first legal `execute` edge, `completed` |
+| Native metadata | deterministic program and gate analysis agent | Durable metadata that survives the gate's finalized re-run, with the coverage suite included end to end | Exit 0 completes; exit 3 parks in `human-intervention` |
 | API loop | measurement program and worker agent | Exact JaCoCo-vs-inventory truth, a ranked prompt, and a recorded stop decision every pass | Exit 0 completes the phase; 10 schedules a cover pass; 1-5 schedule a repair |
 | Deep loop | measurement program and worker agent | The same cycle over library-internal methods with sampled-PGO navigation | Exit 0 completes; 10 covers; 1-7 repair |
 | Finalization | deterministic programs and fix agent | Split metadata, style, JVM suites, regenerated stats, and schema-valid final metrics | Exit 0 verifies then completes; a failed step number routes to repair and remeasurement; 75/80 gate verification |
@@ -851,12 +867,15 @@ measurement on the same iteration through the active-measurement marker, so a
 failed measurement plus its fix can never masquerade as a zero-yield cover
 pass or spend loop budget.
 
-**The native-metadata phase is one agent turn around one helper.** The helper
-generates metadata with the coverage suite traced, runs the merged suite, and
-drives the bounded analysis-agent fix loop; the worker agent's job is to invoke
-it and record the outcome. Its exit code is visible only to that agent — the
-`execute` state's edges do not read it — so the phase's recorded artifacts, not
-the transition, are what carry a failure to finalization and review.
+**The native-metadata phase is a program around the shared gate.** The phase
+helper calls the native test verification gate
+(§FS-native-test-verification-gate) with the coverage suite merged into every
+command: JVM-agent metadata first, the exit-172 trace loop second, and one
+terminal diagnose-first analysis-agent repair last. The helper's exit code is
+the state transition, so a gate failure parks the task in `human-intervention`
+instead of surviving only as prose in an artifact. The gate's repair may
+rewrite a native-incompatible generated coverage test to a public-API path —
+the one repair class a metadata-only fix loop can never reach.
 
 **Human intervention is a parking state, not an error.** Nothing executes
 there. A person resumes the task over one of the recovery edges — back into

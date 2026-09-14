@@ -152,7 +152,11 @@ when the failure is a real defect that must surface.
 
 The caller supplies the coordinate, the reachability repo path, and an absolute
 staging root namespaced per class for the per-class caller and per coordinate
-otherwise. Agent metadata is staged under `agent` and merged trace metadata under
+otherwise. A caller whose validation widens the coordinate's test source set —
+the code coverage improvement workflow merges its dedicated coverage suite into
+`test` — additionally supplies Gradle project properties, and the gate carries
+them on every Gradle command it runs and on every reproduction command it hands
+the analysis agent, so the repair reproduces exactly the build that failed. Agent metadata is staged under `agent` and merged trace metadata under
 `trace`; durable repository metadata is written only after the final merge
 succeeds and the durable re-run passes.
 
