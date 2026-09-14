@@ -26,6 +26,7 @@ import javax.jms.MessageConsumer;
 import javax.jms.MessageProducer;
 import javax.jms.Session;
 import javax.jms.TextMessage;
+import javax.management.MBeanServerFactory;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
@@ -49,8 +50,11 @@ public class ArtemisJmsClientTest {
         Configuration config = new ConfigurationImpl();
         config.addAcceptorConfiguration("tcp", "tcp://127.0.0.1:61616");
         config.setSecurityEnabled(false);
+        config.setJMXManagementEnabled(false);
 
-        server = new ActiveMQServerImpl(config);
+        // Keep the broker off the platform MBeanServer: registering platform MXBeans fails
+        // inside a native image on GraalVM for JDK 25.0.4 (ThreadInfo open-type mapping).
+        server = new ActiveMQServerImpl(config, MBeanServerFactory.newMBeanServer());
         server.start();
         server.waitForActivation(1, TimeUnit.MINUTES);
         logger.info("Started embedded Artemis broker");
