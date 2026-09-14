@@ -1,0 +1,152 @@
+{
+  "base_commit": "efa1ab1a09be3152010e3a29ac6eb77929d22154",
+  "branch": "ai/kimeta/add-lib-support-wsdl4j-wsdl4j-1.6.3-forge-9951-20260909202219440384-f4c4ff59370f",
+  "follow_ups": [],
+  "forge": {
+    "branch": "master",
+    "commit": "efa1ab1a09be3152010e3a29ac6eb77929d22154",
+    "monitored_branch": "origin/master"
+  },
+  "issue_number": 9951,
+  "library": {
+    "artifact": "wsdl4j",
+    "coordinates": "wsdl4j:wsdl4j:1.6.3",
+    "group": "wsdl4j",
+    "version": "1.6.3"
+  },
+  "local_ci_verification": {
+    "base_commit": "efa1ab1a09be3152010e3a29ac6eb77929d22154",
+    "commands": [
+      {
+        "command": [
+          "./gradlew",
+          "generateChangedIndexFileCoordinatesList",
+          "-PbaseCommit=origin/master",
+          "-PnewCommit=HEAD"
+        ],
+        "env": {
+          "GITHUB_OUTPUT": "/tmp/tmplhrxn0ee"
+        },
+        "gate": "changed-index-coordinates",
+        "log_path": "logs/changed-index-coordinates/local-ci/gradlew-2026-09-09T20-22-24-729249Z.log",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :generateChangedIndexFileCoordinatesList\n\n[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata-copy/forge/local_repositories/forge_worktrees/9951-324e5223/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 2s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      },
+      {
+        "command": [
+          "./gradlew",
+          "validateIndexFiles",
+          "-Pcoordinates=wsdl4j:wsdl4j"
+        ],
+        "env": {},
+        "gate": "index-file-validation",
+        "log_path": "logs/index-file-validation/local-ci/gradlew-2026-09-09T20-22-26-838477Z.log",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :validateIndexFiles\n✅ metadata/wsdl4j/wsdl4j/index.json: Valid\n\n[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata-copy/forge/local_repositories/forge_worktrees/9951-324e5223/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 1s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      }
+    ],
+    "failure_command": null,
+    "failure_gate": null,
+    "final_commit": "268baf1d7c0b31ff5ce3c11607e834717ad85013",
+    "fixups": [],
+    "human_intervention_required": false,
+    "repo_fix_paths": [],
+    "status": "success"
+  },
+  "local_review": {
+    "changed_paths": [],
+    "decision": "approved",
+    "finding_body": "",
+    "finding_title": "",
+    "fix_note": "",
+    "model": "gpt-5.6-sol",
+    "review_comment": "Reviewed the eventual PR diff for single-coordinate scope, accepted metadata format, index integrity, and all test-contract musts. The tests are public, library-specific, version-agnostic, outside the library packages, mapped one file per reported dynamic-access class, and contain no scaffold body, Native Image dodge, unsupported runtime class definition, visibility bypass, or test-side metadata shortcut. Local records report successful validation and resolved dynamic-access coverage of 6/6 (100%); the reported 5 metadata entries do not trigger the 75% mismatch investigation threshold. No blocking violation was found.",
+    "session_log_path": "logs/wsdl4j:wsdl4j:1.6.3/local-branch-review/pi.log"
+  },
+  "metrics": {
+    "agent": "pi",
+    "model": "gpt-5.6-terra",
+    "path": "stats/wsdl4j/wsdl4j/1.6.3/execution-metrics.json",
+    "summary": {
+      "cached_input_tokens_used": 1521664,
+      "code_coverage_percent": 8.2,
+      "cost_usd": 1.1515,
+      "generated_loc": 97,
+      "input_tokens_used": 223208,
+      "iterations": 6,
+      "metadata_entries": 5,
+      "output_tokens_used": 14206,
+      "tested_library_loc": 367
+    },
+    "timestamp": "2026-09-09T20:22:19.440384Z"
+  },
+  "modifiers": {
+    "chunk_final": true,
+    "chunked_dynamic_access": false,
+    "human_intervention": false
+  },
+  "producer": "kimeta",
+  "publication_id": "forge-9951-20260909202219440384-f4c4ff59370f",
+  "render": {
+    "dynamic_access": null,
+    "dynamic_access_evidence": {
+      "covered_call_sites": [
+        "[reflection] java.lang.Class#newInstance() <- javax.wsdl.extensions.ExtensionRegistry.createExtension(ExtensionRegistry.java:367) (line 367)",
+        "[reflection] java.lang.Class#forName(java.lang.String) <- javax.wsdl.factory.WSDLFactory.newInstance(WSDLFactory.java:83) (line 83)",
+        "[reflection] java.lang.Class#newInstance() <- javax.wsdl.factory.WSDLFactory.newInstance(WSDLFactory.java:133) (line 133)",
+        "[reflection] java.lang.Class#newInstance() <- javax.wsdl.factory.WSDLFactory.newInstance(WSDLFactory.java:85) (line 85)",
+        "[reflection] java.lang.ClassLoader#loadClass(java.lang.String) <- javax.wsdl.factory.WSDLFactory.newInstance(WSDLFactory.java:131) (line 131)",
+        "[resources] java.lang.Class#getResourceAsStream(java.lang.String) <- javax.wsdl.factory.WSDLFactory$1.run(WSDLFactory.java:194) (line 194)"
+      ],
+      "metadata_rules": [
+        "when `javax.wsdl.extensions.ExtensionRegistry` is reached, make `com.ibm.wsdl.extensions.soap.SOAPBindingImpl.<init>()` available for reflection",
+        "when `javax.wsdl.factory.WSDLFactory` is reached, make `com.ibm.wsdl.factory.WSDLFactoryImpl.<init>()` available for reflection"
+      ]
+    },
+    "library_stats": {
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 5,
+            "totalCalls": 5
+          },
+          "resources": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 1,
+            "totalCalls": 1
+          }
+        },
+        "coverageRatio": 1.0,
+        "coveredCalls": 6,
+        "totalCalls": 6
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 1717,
+          "missed": 16398,
+          "ratio": 0.094783,
+          "total": 18115
+        },
+        "line": {
+          "covered": 367,
+          "missed": 4110,
+          "ratio": 0.081975,
+          "total": 4477
+        },
+        "method": {
+          "covered": 71,
+          "missed": 706,
+          "ratio": 0.091377,
+          "total": 777
+        }
+      },
+      "version": "1.6.3"
+    }
+  },
+  "schema_version": 1,
+  "strategy_name": "dynamic_access_main_sources_pi_gpt-5.6-terra",
+  "task_type": "library-new-request",
+  "template_type": "library-new-request",
+  "timestamp": "2026-09-09T20:22:19.440384Z"
+}

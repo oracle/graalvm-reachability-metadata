@@ -234,9 +234,29 @@ or Native Image config entries: no creating or editing
 `predefined-classes-config.json`, or any other file under
 `src/test/resources/META-INF/native-image`. Metadata is collected from the
 tests and merged by the harness and Forge (§FS-repository-functional-spec.5.1).
-The only permitted `build.gradle` native configuration is `--add-opens` /
-`--add-exports` under `graalvmNative` when no better public API path exists
-(§FS-tests.1).
+`build.gradle` native configuration under `graalvmNative` is limited to flags a
+consumer of the library must supply as well, or that grant the test module access
+it cannot obtain through a public API path: `--add-opens` / `--add-exports` when
+no better public API path exists (§FS-tests.1).
+
+**Consumer-required build-time initialization.** `--initialize-at-build-time` is
+permitted under one bounded exception, because a test that omits a flag the
+consumer cannot omit exercises a configuration nobody can ship. All three
+conditions hold together:
+
+1. the library produces no native image at all without the flag, so no test of
+   any shape can pass without it;
+2. the requirement originates in the library or its transitive dependencies, not
+   in the test code, so no rewrite of the test removes it; and
+3. the flag names only the types that force it, never a package or the library
+   at large.
+
+This is not a repair. A failing native image is evidence of missing metadata
+until conditions 1 and 2 are demonstrated, so the flag is never added to make a
+build pass, and never in place of a metadata entry. The metadata bundle itself
+still ships no build-time directive of any kind: `native-image.properties` and
+every other bundled directive remain forbidden, and the additivity invariant
+they protect is unchanged (§FS-repository-functional-spec.3).
 
 ```text
 Bad: a PR diff adding
@@ -494,10 +514,12 @@ signature to close the gap. Instead, in order:
    unsupported scenario and cover the rest of the library's public surface.
    This is the usual outcome and it keeps the shipped metadata justified.
 2. **If no public API works, the version is unsupportable.** Metadata no test
-   justifies is not shipped: close the pull request, label the issue
-   `library-unsupported-version`, and report the incompatibility upstream, as
-   §FS-contribution-contract.5.4 sets out for the same case reached from the
-   library's side.
+   justifies is not shipped: record the version in the artifact's
+   `skipped-versions` so the compatibility automation stops re-testing it, label
+   the issue `library-unsupported-version`, and report the incompatibility
+   upstream. §FS-contribution-contract.5.4 sets out the full disposition for the
+   same case reached from the library's side, including when the contribution
+   becomes the skip record and when it is closed outright.
 
 ### 4.4 No dependence on resource metadata for machine-local paths
 

@@ -95,7 +95,7 @@ initial metadata check performs none of this work.
 | **Reachability metadata** | JSON describing reflection, JNI, resource, serialization, and proxy access for a library, consumed by GraalVM `native-image`. |
 | **Reachability repo** | Local checkout or worktree of `oracle/graalvm-reachability-metadata`. The build and metadata-generation Gradle tasks run inside it. The parent checkout of `forge/` is used by default. |
 | **Forge metrics directory** | The `forge/` subdirectory of the reachability checkout, used as the transient staging area for a run's in-flight metrics (`.pending_metrics.json`) until local finalization writes the publication descriptor. Durable per-library run metrics persist to `stats/<group>/<artifact>/<version>/execution-metrics.json` (§FS-forge-run-metrics). |
-| **Forge publication descriptor** | Versioned, schema-validated JSON committed at `stats/<group>/<artifact>/<version>/forge-publication.json`. It is the durable, branch-controlled data handoff from locally verified Forge generation to the trusted Actions publisher (§AR-publication-descriptor). |
+| **Forge publication descriptor** | Versioned, schema-validated JSON committed at `stats/<group>/<artifact>/<version>/forge-publication.json`, or below a further publication-identifier segment where one coordinate carries many publications (§FS-code-coverage-benchmarking.3). It is the durable, branch-controlled data handoff from locally verified Forge generation to the trusted Actions publisher (§AR-publication-descriptor). |
 | **Forge publication ID** | A run-unique identity derived before the publication commit and recorded in the descriptor. Chunked runs also record it and the unique head branch in their exhaust report so a later run can resolve the preceding PR without committing a GitHub-assigned PR number after publication (§AR-chunked-linking). |
 | **Forge Actions publisher** | Default-branch code triggered through a successful unprivileged Branch Ready run. It treats the feature branch as data, revalidates the exact head SHA and descriptor, renders the PR, and performs publication-related GitHub mutations with a short-lived GitHub App token (§AR-actions-publication). |
 | **Coordinate** | Maven coordinate of the target library, formatted `group:artifact:version`. |
@@ -284,22 +284,22 @@ invocation. `do-work.sh` preserves the worker-configured selections across
 self-update and re-execution (§AR-do-work-loop); the concrete roles, families,
 and defaults are architecture (§AR-agent-api).
 
-**A published-PR reviewer is a trusted analysis agent.** Orchestration invokes
-the worker-configured analysis role in an isolated review worktree and grants
-that turn the authenticated, non-interactive GitHub session. The selected agent
-acts on Forge's behalf: it reads the live pull-request metadata, discussion,
-checks, and targeted local diffs, applies the label-specific checked-in review
-rules, and submits its review directly to GitHub (§FS-automated-pr-review).
-Agent, family, model, provider, and thinking level remain entirely owned by the
-analysis role; review orchestration must not replace any part of that selection.
+**The pre-push reviewer is the semantic reviewer.** It runs through the
+worker-configured analysis role, receives local verification evidence, applies
+the label-specific checked-in review rules and the contribution-disposition
+ladder, repairs contribution-local violations, and returns the structured
+decision that publication records (§FS-local-branch-review). Agent, family,
+model, provider, and thinking level remain entirely owned by the analysis role.
 
-The pre-push review (§FS-local-branch-review) has no published pull request or
-GitHub review to submit. It continues to receive local evidence and return its
-structured verdict to publication. The two reviews share their label-specific
-rules, not an input transport or publication protocol. A published-PR review is
-therefore not brokered through a Forge-defined JSON decision: the trusted agent
-owns both the judgment and the GitHub review it submits, while the shared
-analysis runtime owns invocation, logs, failures, and token accounting.
+The published-PR process does not repeat that semantic review. It validates the
+descriptor on the exact pull-request head and executes its decision
+deterministically (§FS-automated-pr-review). The analysis role is invoked after
+publication only when an approved head has exhausted deterministic failed-CI
+reruns. That CI-repair turn receives the failed-check evidence, applies the same
+review and disposition contract as the pre-push reviewer, updates the descriptor
+and findings record for the resulting exact head, and pushes the result. The
+shared analysis runtime continues to own invocation, logs, failures, and token
+accounting.
 
 ## FS-forge-run-requirements: Run requirements
 
@@ -697,6 +697,47 @@ Every workflow records one of these statuses:
 | `RUN_STATUS_FAILURE` | The workflow could not converge or a quality gate failed; the feature branch is reset to its workflow recovery checkpoint and no PR is opened. Iterative dynamic-access exploration advances that checkpoint after each committed class (§AR-dynamic-access-fallback-and-failure); other workflows retain their specified checkpoint behavior. |
 
 The exit code is `0` for PR-eligible statuses and `1` for failure.
+
+## FS-unsupportable-version-diagnosis: Pre-generation unsupportable-version diagnosis
+
+For issues that report a failing version update (`fails-javac-compile`,
+`fails-java-run`, `fails-native-image-run`), the library preparation preflight
+(§AR-forge-orchestration.1) asks one additional question before any generation
+starts: does covering the library's dynamic-access calls require behavior
+Native Image does not support (§root/FS-test-contract.4.5)? The inputs — the
+automation issue's failure evidence and the library's sources for this and
+newer versions — all exist before the scaffold is prepared, so an
+unsupportable verdict costs one preflight turn and saves the whole fix budget.
+Without it, the disposition of §root/FS-contribution-contract.5.4 is reachable
+only through a branch that got green somehow: a run that fails honestly ends
+`RUN_STATUS_FAILURE`, publishes nothing, and no reviewer ever takes the
+disposition. Issues without failure evidence (`library-new-request`,
+`library-update-request`) are not asked: the first has no index entry to
+record a skip into, and the second carries no failure to diagnose.
+
+The diagnosis applies the evidence bar of §root/FS-contribution-contract.5.4
+in five steps — name the failing operation from the evidence, trace it into
+the library's source, classify it against the unsupported-behavior catalogue,
+prove no public API route avoids it, and bound the version range by verifying
+newer versions' sources. The verdict is structured and strict: anything
+missing, malformed, or uncertain means repairable, because a missed exit costs
+one wasted run while a wrong skip freezes versions that were never attempted.
+The range includes only versions whose sources the diagnosis actually
+verified; an under-skipped range self-heals, since the next version's run
+re-diagnoses before generation.
+
+The verdict travels in the preflight record. On an unsupportable verdict the
+workflow driver, before preparing any scaffold, records the verdict's
+`skipped-versions` entries in the artifact's `index.json`
+(§root/FS-library-version-update-automation.1), validates the index, and ends
+the run `RUN_STATUS_SUCCESS` with no generation spent — the skip record is the
+run's successful outcome. A verdict the driver cannot apply (a rejected index,
+a version already recorded) falls through to normal generation rather than
+failing the run. The publication pipeline is unchanged: the pre-publication
+gate validates the index-only tree, the local pre-push review
+(§FS-local-branch-review) verifies the recorded mechanism instead of
+discovering it, and the trusted publisher renders the pull request from the
+tree's skip record (§FS-forge-publication-readiness).
 
 ## FS-forge-chunked-dynamic-access: Chunked dynamic-access semantics
 

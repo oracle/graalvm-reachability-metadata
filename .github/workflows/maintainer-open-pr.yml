@@ -1,0 +1,127 @@
+# Opens the pull request for a maintainer branch as the graalvmbot machine account, so the
+# pushing maintainer is not the PR author and stays eligible to review it. Which branches
+# qualify is the `MAINTAINER_PR_BRANCHES` variable; title and body come from
+# .github/maintainer-pr-template.md.
+name: Maintainer Open PR
+
+on:
+  push:
+    # A branch filter cannot read a variable, so this matches every namespaced branch and
+    # the allowlist does the real selection below. `*` does not match `/`, so the default
+    # branch and other unnamespaced branches never start a run.
+    branches:
+      - "*/**"
+
+permissions:
+  contents: read
+  pull-requests: read
+
+concurrency:
+  group: maintainer-open-pr-${{ github.ref_name }}
+  cancel-in-progress: false
+
+jobs:
+  open-pr:
+    name: Open pull request as graalvmbot
+    # Cheap prefilter so an unlisted pusher never starts a runner: `MAINTAINER_PR_BRANCHES`
+    # holds `login:pattern` entries, and a leading comma plus the trailing colon anchor the
+    # login as a whole word, so `kim` cannot match an entry for `kimeta`. The branch pattern
+    # itself is matched in the gate step; an empty variable disables the workflow entirely.
+    if: >-
+      ${{ contains(format(',{0}', vars.MAINTAINER_PR_BRANCHES), format(',{0}:', github.actor)) }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the pushed branch
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+
+      # The pushed branch supplies commit subjects and nothing else: every script and the
+      # template are read from the base branch, so a branch cannot run its own code in the
+      # job that later holds GRAALBOT_PR_TOKEN.
+      - name: Take the scripts and template from the base branch
+        env:
+          BASE_BRANCH: ${{ github.event.repository.default_branch }}
+        run: |
+          set -euo pipefail
+          git fetch --no-tags origin "$BASE_BRANCH"
+          for path in \
+            .github/workflows/scripts/match-maintainer-branch.py \
+            .github/workflows/scripts/render-maintainer-pr.py \
+            .github/maintainer-pr-template.md
+          do
+            git show "origin/$BASE_BRANCH:$path" > "$RUNNER_TEMP/$(basename "$path")"
+          done
+
+      - name: Gate the branch against the allowlist
+        id: gate
+        env:
+          ALLOWLIST: ${{ vars.MAINTAINER_PR_BRANCHES }}
+          HEAD_BRANCH: ${{ github.ref_name }}
+          HEAD_ACTOR: ${{ github.actor }}
+        run: |
+          set -euo pipefail
+          python3 "$RUNNER_TEMP/match-maintainer-branch.py" \
+            --allowlist "$ALLOWLIST" \
+            --actor "$HEAD_ACTOR" \
+            --branch "$HEAD_BRANCH" \
+            > "$RUNNER_TEMP/gate-output.txt" 2> "$RUNNER_TEMP/gate-reason.txt"
+          tee -a "$GITHUB_STEP_SUMMARY" < "$RUNNER_TEMP/gate-reason.txt"
+          cat "$RUNNER_TEMP/gate-output.txt" >> "$GITHUB_OUTPUT"
+
+      - name: Render the template
+        id: render
+        if: ${{ steps.gate.outputs.allowed == 'true' }}
+        env:
+          HEAD_SHA: ${{ github.sha }}
+          HEAD_BRANCH: ${{ github.ref_name }}
+          HEAD_ACTOR: ${{ github.actor }}
+          BRANCH_NAME: ${{ steps.gate.outputs.name }}
+          BASE_BRANCH: ${{ github.event.repository.default_branch }}
+        run: |
+          set -euo pipefail
+          git log --reverse --format=%s "origin/$BASE_BRANCH..$HEAD_SHA" > "$RUNNER_TEMP/subjects.txt"
+          if [ ! -s "$RUNNER_TEMP/subjects.txt" ]; then
+            echo "Branch adds no commits over $BASE_BRANCH; nothing to open." >> "$GITHUB_STEP_SUMMARY"
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          python3 "$RUNNER_TEMP/render-maintainer-pr.py" \
+            --template "$RUNNER_TEMP/maintainer-pr-template.md" \
+            --subjects "$RUNNER_TEMP/subjects.txt" \
+            --branch "$HEAD_BRANCH" \
+            --branch-name "$BRANCH_NAME" \
+            --author "$HEAD_ACTOR" \
+            --title-out "$RUNNER_TEMP/pr-title.txt" \
+            --body-out "$RUNNER_TEMP/pr-body.md"
+          echo "skip=false" >> "$GITHUB_OUTPUT"
+
+      - name: Open the pull request
+        if: ${{ steps.render.outputs.skip == 'false' }}
+        env:
+          GH_TOKEN: ${{ secrets.GRAALBOT_PR_TOKEN }}
+          GH_REPO: ${{ github.repository }}
+          HEAD_BRANCH: ${{ github.ref_name }}
+          BASE_BRANCH: ${{ github.event.repository.default_branch }}
+        run: |
+          set -euo pipefail
+          {
+            echo "## $(cat "$RUNNER_TEMP/pr-title.txt")"
+            echo
+            cat "$RUNNER_TEMP/pr-body.md"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+          # Repeated pushes to a published branch must not duplicate or reopen its pull
+          # request, so an existing open one is a successful no-op.
+          existing="$(gh pr list --head "$HEAD_BRANCH" --state open --json url --jq '.[0].url // empty')"
+          if [ -n "$existing" ]; then
+            echo "Existing pull request left unchanged: ${existing}" >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+
+          url="$(gh pr create --base "$BASE_BRANCH" --head "$HEAD_BRANCH" \
+            --title "$(cat "$RUNNER_TEMP/pr-title.txt")" \
+            --body-file "$RUNNER_TEMP/pr-body.md")"
+          echo "Opened ${url}" >> "$GITHUB_STEP_SUMMARY"

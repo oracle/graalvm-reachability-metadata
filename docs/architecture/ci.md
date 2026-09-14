@@ -114,6 +114,20 @@ part of the harness (§AR-test-harness).
 Serves §FS-repository-functional-spec.4.3 — the schedule-driven Docker image
 vulnerability scan.
 
+The PR-scoped scan is a ratchet, not an absolute bar. An image that already
+appears in the allow list at the base commit must carry no more critical or high
+findings than its base-commit version, so a tag bump can only hold or improve the
+count. An image with no counterpart at the base commit has nothing to ratchet
+against: it is accepted, and its counts — printed in the job log so a reviewer
+can weigh them — become the baseline that later changes to that image are
+measured against. The alternative, rejecting every first-time image with findings,
+makes the gate unsatisfiable for any contribution that needs a container the
+repository has not used before, because no realistic tag of a service image is
+free of high findings.
+
+The baseline is read from the base commit the task is given rather than from a
+fixed branch, so a pull request is measured against the commit it branched from.
+
 ### AR-sync-docker-images: Sync Docker images
 
 On PRs touching `allowed-docker-images/**` (Dependabot updates), synchronizes

@@ -36,7 +36,6 @@ TEST_DIFF_PATHS: tuple[str, ...] = (
 SEVERE_METADATA_DROP_RATIO = 0.25
 DYNAMIC_ACCESS_METADATA_ENTRY_NOTE_RATIO = 1.75
 PUBLISHER_LOGIN = "graalvmbot"
-LOCAL_REVIEW_ATTESTATION_OUTPUT = "local_review_attestation"
 PUBLICATION_ID_SUFFIX = re.compile(
     r"(forge-(?:\d+|benchmark)-\d{14,20}-[0-9a-f]{12})$"
 )
@@ -62,33 +61,6 @@ class ValidatedPublication:
     head_sha: str
 
 
-def local_review_attestation_eligible(validated: ValidatedPublication) -> bool:
-    """Return whether a validated descriptor carries a safe local approval.
-
-    §forge/FS-automated-pr-review
-    """
-    descriptor: dict[str, Any] = validated.descriptor
-    local_review: Any = descriptor.get("local_review")
-    local_ci_verification: Any = descriptor.get("local_ci_verification")
-    return (
-        isinstance(local_review, dict)
-        and isinstance(local_ci_verification, dict)
-        and local_review.get("status") == "completed"
-        and local_review.get("decision") == "approved"
-        and local_review.get("repair_reverted") is False
-        and local_ci_verification.get("status") == "success"
-    )
-
-
-def write_local_review_attestation_output(eligible: bool) -> None:
-    """Expose attestation eligibility to the calling Actions step."""
-    output_path: str | None = os.environ.get("GITHUB_OUTPUT")
-    if output_path is None:
-        return
-    with open(output_path, "a", encoding="utf-8") as output_file:
-        output_file.write(
-            f"{LOCAL_REVIEW_ATTESTATION_OUTPUT}={'true' if eligible else 'false'}\n"
-        )
 
 
 def run(command: list[str], *, input_text: str | None = None) -> str:
@@ -183,8 +155,14 @@ def validate_publication(
         branch: str,
         actor: str,
         repository: str,
+        pull_request_head: bool = False,
 ) -> ValidatedPublication:
-    """Validate a feature tree as inert data (§forge/AR-actions-publication)."""
+    """Validate a feature tree as inert data (§forge/AR-actions-publication).
+
+    Initial publication requires the descriptor in the tip commit. The
+    published-PR executor instead selects it from the current pull-request diff,
+    where it remains authoritative after deterministic maintenance commits.
+    """
     if repository != REPOSITORY:
         raise ValueError(f"Unexpected head repository: {repository}")
     resolved_head = git("rev-parse", f"{head_sha}^{{commit}}").strip()
@@ -201,15 +179,36 @@ def validate_publication(
             f"Remote branch {branch!r} no longer points at the triggering SHA {head_sha}"
         )
 
-    descriptor_paths = [
-        path
-        for path in git("ls-tree", "-r", "--name-only", head_sha).splitlines()
-        if path.endswith("/forge-publication.json")
-    ]
-    tip_candidates = [path for path in descriptor_paths if _path_changed(head_sha, path)]
-    if len(tip_candidates) != 1:
-        raise ValueError("Exactly one tip-committed forge-publication.json is required")
-    descriptor_path = tip_candidates[0]
+    trusted_base_ref = f"refs/remotes/origin/{BASE_BRANCH}"
+    changed_paths: list[str] | None = None
+    if pull_request_head:
+        changed_paths = sorted(
+            path
+            for path in git(
+                "diff", "--name-only", "--diff-filter=ACMRTD",
+                f"{trusted_base_ref}...{head_sha}",
+            ).splitlines()
+            if path
+        )
+        descriptor_candidates: list[str] = [
+            path for path in changed_paths
+            if path.endswith("/forge-publication.json")
+        ]
+        if len(descriptor_candidates) != 1:
+            raise ValueError(
+                "Exactly one forge-publication.json is required in the pull-request diff"
+            )
+        descriptor_path = descriptor_candidates[0]
+    else:
+        descriptor_paths = [
+            path
+            for path in git("ls-tree", "-r", "--name-only", head_sha).splitlines()
+            if path.endswith("/forge-publication.json")
+        ]
+        tip_candidates = [path for path in descriptor_paths if _path_changed(head_sha, path)]
+        if len(tip_candidates) != 1:
+            raise ValueError("Exactly one tip-committed forge-publication.json is required")
+        descriptor_path = tip_candidates[0]
     descriptor = read_json_at_commit(head_sha, descriptor_path)
     Draft202012Validator(load_schema(), format_checker=FormatChecker()).validate(descriptor)
 
@@ -219,20 +218,20 @@ def validate_publication(
             check=False,
     ).returncode != 0:
         raise ValueError("Descriptor base commit is not an ancestor of the head SHA")
-    trusted_base_ref = f"refs/remotes/origin/{BASE_BRANCH}"
     if subprocess.run(
             ["git", "merge-base", "--is-ancestor", base_commit, trusted_base_ref],
             check=False,
     ).returncode != 0:
         raise ValueError("Descriptor base commit is not on the trusted upstream base branch")
 
-    changed_paths = sorted(
-        path
-        for path in git(
-            "diff", "--name-only", "--diff-filter=ACMRTD", base_commit, head_sha,
-        ).splitlines()
-        if path
-    )
+    if changed_paths is None:
+        changed_paths = sorted(
+            path
+            for path in git(
+                "diff", "--name-only", "--diff-filter=ACMRTD", base_commit, head_sha,
+            ).splitlines()
+            if path
+        )
     changed_descriptors = [
         path for path in changed_paths if path.endswith("/forge-publication.json")
     ]
@@ -251,8 +250,16 @@ def validate_publication(
     expected_coordinates = f"{library['group']}:{library['artifact']}:{library['version']}"
     if library["coordinates"] != expected_coordinates:
         raise ValueError("Descriptor library coordinate fields do not agree")
+    coordinate_directory = (
+        f"stats/{library['group']}/{library['artifact']}/{library['version']}"
+    )
+    # A coordinate carries many benchmark results, so their descriptors nest
+    # under the publication ID and only issue-driven publications keep the
+    # single coordinate-local path (§forge/FS-code-coverage-benchmarking.3).
     expected_descriptor = (
-        f"stats/{library['group']}/{library['artifact']}/{library['version']}/forge-publication.json"
+        f"{coordinate_directory}/{descriptor['publication_id']}/forge-publication.json"
+        if descriptor["task_type"] == "code-coverage-benchmark-result"
+        else f"{coordinate_directory}/forge-publication.json"
     )
     if descriptor_path != expected_descriptor:
         raise ValueError("Descriptor path does not match its library coordinate")
@@ -482,26 +489,26 @@ def _path_changed(head_sha: str, path: str) -> bool:
 
 
 def _render_local_review(descriptor: dict[str, Any]) -> str:
-    """Render reviewer-owned words and Forge-owned tree facts separately."""
+    """Render the authoritative decision and reviewer-owned evidence."""
     review: Any = descriptor.get("local_review")
     if not isinstance(review, dict):
         return ""
-    lines: list[str] = ["", "## Local Agent Review", ""]
-    if review["status"] == "unavailable":
-        lines.extend([
-            "The local reviewer was unavailable, so this branch carries no reviewer verdict or finding.",
-            "",
-            f"- Model: `{review['model']}`",
-            f"- Session log: `{review['session_log_path']}`",
-            "- Published tree: the verified pre-review tree",
-        ])
-        return "\n".join(lines) + "\n"
-
-    lines.extend([
+    lines: list[str] = [
+        "",
+        "## Local Agent Review",
+        "",
         f"- Decision: `{review['decision']}`",
-        f"- Model: `{review['model']}`",
-        f"- Session log: `{review['session_log_path']}`",
-        f"- Published tree: `{review['published_tree']}`",
+    ]
+    action: Any = review.get("action")
+    if isinstance(action, str):
+        lines.append(f"- Action: `{action}`")
+    lines.append(f"- Model: `{review['model']}`")
+    session_id: Any = review.get("session_id")
+    # Never the log path: `forge/logs/` is gitignored, so the path resolved for
+    # nobody who read the pull request. §forge/AR-publication-descriptor
+    if isinstance(session_id, str) and session_id:
+        lines.append(f"- Review session: `{session_id}`")
+    lines.extend([
         "",
         review["review_comment"],
     ])
@@ -516,25 +523,15 @@ def _render_local_review(descriptor: dict[str, Any]) -> str:
     fix_note: str = review["fix_note"]
     if fix_note:
         lines.extend(["", "**Reviewer fix note**", "", fix_note])
-    if review["repair_reverted"]:
-        lines.extend([
-            "",
-            "**Forge verification fact:** the reviewer repair was reverted after "
-            f"`{review['failed_step']}` failed; the verified pre-review tree is published.",
-        ])
     return "\n".join(lines) + "\n"
 
 
 def _local_review_requires_human_intervention(descriptor: dict[str, Any]) -> bool:
-    """Use only reviewer non-approval or Forge's reset fact as the review signal."""
+    """Recognize only the explicit rejected human-intervention action."""
     review: Any = descriptor.get("local_review")
-    if not isinstance(review, dict):
-        return False
-    return (
-        review["status"] != "completed"
-        or review.get("decision") != "approved"
-        or bool(review["repair_reverted"])
-    )
+    return isinstance(review, dict) and (
+        review.get("decision"), review.get("action")
+    ) == ("rejected", "human-intervention")
 
 
 def render_publication(
@@ -555,6 +552,9 @@ def render_publication(
     if builder is None:
         raise ValueError(f"Unsupported template type: {template}")
     title, body = builder(descriptor, validated)
+    skipped = _skip_record_entries(descriptor, validated)
+    if skipped is not None:
+        body = _render_skip_record(descriptor, skipped)
     body += _render_local_review(descriptor)
     body += f"\nForge-Publication-ID: {descriptor['publication_id']}\n"
     return title, _bound_body(body)
@@ -1106,6 +1106,7 @@ def _render_code_coverage_benchmark_result(
         f"- Method universe: {_benchmark_metric(coverage['allMethods'])}",
         f"- Input tokens: {_benchmark_metric(tokens['input'])}",
         f"- Cached input tokens: {_benchmark_metric(tokens['cachedInputRead'])}",
+        f"- Cache-write input tokens: {_benchmark_metric(tokens.get('cachedInputWrite'))}",
         f"- Output tokens: {_benchmark_metric(tokens['output'])}",
     ]
     failure = result.get("failure")
@@ -1115,6 +1116,88 @@ def _render_code_coverage_benchmark_result(
             f"- Exit code: `{failure['exitCode']}`",
         ]
     return title, "\n".join(lines)
+
+SKIP_RECORD_TEMPLATES = frozenset({
+    "library-update-request",
+    "fixes-javac-fail",
+    "fixes-java-run-fail",
+    "fixes-native-image-run-fail",
+})
+
+
+def _index_skipped_versions(commit: str, group: str, artifact: str) -> dict[str, str]:
+    """Read one artifact's recorded skip reasons, keyed by version."""
+    path = f"metadata/{group}/{artifact}/index.json"
+    try:
+        payload = json.loads(git("show", f"{commit}:{path}"))
+    except (RuntimeError, json.JSONDecodeError):
+        return {}
+    if not isinstance(payload, list):
+        return {}
+    skipped: dict[str, str] = {}
+    for entry in payload:
+        if not isinstance(entry, dict):
+            continue
+        for record in entry.get("skipped-versions") or []:
+            if isinstance(record, dict) and record.get("version"):
+                skipped[str(record["version"])] = str(record.get("reason", ""))
+    return skipped
+
+
+def _tree_has_path(commit: str, path: str) -> bool:
+    return bool(git("ls-tree", "--name-only", commit, "--", path).strip())
+
+
+def _skip_record_entries(
+        descriptor: dict[str, Any],
+        validated: ValidatedPublication | None,
+) -> list[tuple[str, str]] | None:
+    """Detect a contribution the review turned into a skip record (§FS-contribution-contract.5.4).
+
+    Read from the tree rather than the descriptor: the descriptor states what the
+    agent generated, and a review that records versions as skipped deletes exactly
+    those generated files, so only the tree describes what merges (§forge/FS-forge-publication-readiness).
+    """
+    if validated is None or descriptor["template_type"] not in SKIP_RECORD_TEMPLATES:
+        return None
+    group, artifact, version = str(descriptor["library"]["coordinates"]).split(":")
+    if _tree_has_path(validated.head_sha, f"metadata/{group}/{artifact}/{version}"):
+        return None
+    head = _index_skipped_versions(validated.head_sha, group, artifact)
+    base = _index_skipped_versions(str(descriptor["base_commit"]), group, artifact)
+    added = [(v, reason) for v, reason in head.items() if v not in base]
+    if not added:
+        return None
+    return sorted(added)
+
+
+def _render_skip_record(
+        descriptor: dict[str, Any],
+        skipped: list[tuple[str, str]],
+) -> str:
+    """Render the body for a contribution that records versions as skipped.
+
+    The generated statistics, stats diff and test diff of the template body all
+    describe files this tree no longer carries, so they are replaced rather than
+    extended (§forge/FS-forge-publication-readiness).
+    """
+    coordinates = descriptor["library"]["coordinates"]
+    rows = "".join(f"| `{version}` | {reason} |\n" for version, reason in skipped)
+    return (
+        "## What does this PR do?\n\n"
+        f"{_issue_reference(descriptor)}\n\n"
+        f"This pull request records `{coordinates}` as a library version Native Image "
+        "cannot support. It ships no metadata and no test: the generated contribution was "
+        "replaced by `skipped-versions` entries in the artifact's `index.json`, so the "
+        "compatibility automation stops proposing these versions instead of re-testing and "
+        "re-reporting them (§FS-contribution-contract.5.4).\n\n"
+        "### Versions recorded as skipped\n\n"
+        "| Version | Reason |\n| --- | --- |\n"
+        f"{rows}"
+        "\n"
+        f"{_format_forge_revision_section(descriptor)}"
+    )
+
 
 _TEMPLATE_BUILDERS = {
     "library-update-request": _render_library_update_request,
@@ -1678,15 +1761,12 @@ def _ensure_pull_request_metadata(
         descriptor: dict[str, Any],
         reviewers: str,
 ) -> None:
+    """Apply trusted labels, reviewers, and the recorded rejection action."""
     labels = list(ROUTE_LABELS[descriptor["task_type"]])
     modifiers = descriptor["modifiers"]
     if modifiers["chunked_dynamic_access"]:
         labels.append("chunked-dynamic-access")
-    if (
-            modifiers["human_intervention"]
-            or _has_severe_metadata_drop(descriptor)
-            or _local_review_requires_human_intervention(descriptor)
-    ):
+    if _local_review_requires_human_intervention(descriptor):
         labels.append("human-intervention")
     run(
         [
@@ -1715,6 +1795,62 @@ def _ensure_pull_request_metadata(
             ],
             input_text=json.dumps({"reviewers": reviewer_names}),
         )
+    _reconcile_rejected_close(pull_request, descriptor)
+
+
+def _reconcile_rejected_close(
+        pull_request: dict[str, Any],
+        descriptor: dict[str, Any],
+) -> None:
+    """Close an unsupported contribution and its issue exactly once."""
+    review: Any = descriptor.get("local_review")
+    if not isinstance(review, dict) or (
+            review.get("decision"), review.get("action")
+    ) != ("rejected", "close"):
+        return
+
+    pr_number: int = int(pull_request["number"])
+    issue_number: Any = descriptor.get("issue_number")
+    if not isinstance(issue_number, int):
+        raise TypeError("Rejected close publication requires a linked issue")
+    marker = "<!-- forge-local-review-close -->"
+    comments: Any = gh_json(
+        "api", f"repos/{REPOSITORY}/issues/{pr_number}/comments",
+        "--method", "GET", "-f", "per_page=100",
+    )
+    if not isinstance(comments, list):
+        raise TypeError("Expected pull-request comments to be a list")
+    if not any(
+            isinstance(comment, dict) and marker in str(comment.get("body", ""))
+            for comment in comments
+    ):
+        comment_body = "\n\n".join([
+            "This pull request is closed because of the local reviewer's decision.",
+            f"**{review['finding_title']}**\n\n{review['finding_body']}",
+            str(review["review_comment"]),
+            marker,
+        ])
+        run(
+            [
+                "gh", "api", f"repos/{REPOSITORY}/issues/{pr_number}/comments",
+                "--method", "POST", "-f", f"body={comment_body}",
+            ]
+        )
+    run(
+        [
+            "gh", "api", f"repos/{REPOSITORY}/issues/{issue_number}/labels",
+            "--method", "POST", "--input", "-",
+        ],
+        input_text=json.dumps({"labels": ["library-unsupported-version"]}),
+    )
+    run([
+        "gh", "api", f"repos/{REPOSITORY}/issues/{issue_number}",
+        "--method", "PATCH", "-f", "state=closed",
+    ])
+    run([
+        "gh", "api", f"repos/{REPOSITORY}/pulls/{pr_number}",
+        "--method", "PATCH", "-f", "state=closed",
+    ])
 
 
 def write_existing_publication_evidence(
@@ -1769,7 +1905,6 @@ def build_parser() -> argparse.ArgumentParser:
 
 def main() -> int:
     args = build_parser().parse_args()
-    local_review_attestation: bool = False
     try:
         if args.repository != REPOSITORY:
             raise ValueError(f"Unexpected head repository: {args.repository}")
@@ -1784,7 +1919,6 @@ def main() -> int:
             actor=args.actor,
             repository=args.repository,
         )
-        local_review_attestation = local_review_attestation_eligible(validated)
         if args.command == "publish":
             title, body, pr_url = publish(validated, args.mode, args.reviewers)
         else:
@@ -1797,11 +1931,11 @@ def main() -> int:
         summary_path = os.environ.get("GITHUB_STEP_SUMMARY")
         if summary_path:
             with open(summary_path, "a", encoding="utf-8") as summary:
-                summary.write(f"## Forge publication validation failed\n\n- SHA: `{args.sha}`\n- Error: `{exc}`\n")
+                summary.write(
+                    f"## Forge publication validation failed\n\n"
+                    f"- SHA: `{args.sha}`\n- Error: `{exc}`\n"
+                )
         return 1
-    finally:
-        if args.command == "validate":
-            write_local_review_attestation_output(local_review_attestation)
 
 
 if __name__ == "__main__":

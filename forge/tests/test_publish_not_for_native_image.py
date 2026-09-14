@@ -49,7 +49,7 @@ class PublishNotForNativeImageTests(unittest.TestCase):
             return LocalBranchReviewOutcome(
                 status="completed",
                 model="test-model",
-                session_log_path="task-logs/review.log",
+                session_id="a1b2c3d4e5f60718",
                 local_ci_verification=result,
                 verdict=LocalReviewVerdict(
                     decision="approved",

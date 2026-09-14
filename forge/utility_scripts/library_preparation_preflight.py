@@ -31,8 +31,11 @@ LIBRARY_PREFLIGHT_TIMEOUT_SECONDS = 900
 LIBRARY_PREFLIGHT_MAX_ISSUE_BODY_CHARS = 8000
 LIBRARY_PREFLIGHT_MAX_TEST_FILES = 40
 LIBRARY_PREFLIGHT_MAX_DETERMINISTIC_SETUP = 8
-# Only the free-text advisory guidance is scanned for these; the deterministic
-# setup entries are validated structurally and cannot smuggle prose commands.
+# Requested actions that would take an agent outside the harness — shelling out,
+# fetching from the network, mutating the machine. Only the free-text advisory
+# fields are scanned; deterministic setup is validated by shape. Subject-matter
+# vocabulary is deliberately absent: it names what a library is about, not what
+# the guidance asks for (§AR-forge-orchestration.1.2).
 LIBRARY_PREFLIGHT_UNSAFE_TERMS = (
     "sudo",
     "curl ",
@@ -40,13 +43,18 @@ LIBRARY_PREFLIGHT_UNSAFE_TERMS = (
     "git clone",
     "rm -rf",
     "docker run",
-    "credential",
-    "secret",
-    "token",
 )
 # Deterministic setup the driver applies itself, idempotently, as source edits
 # (§AR-forge-orchestration.1.1). Anything else stays advisory guidance.
 LIBRARY_PREFLIGHT_DETERMINISTIC_KINDS = ("dependency", "docker_image")
+# Only issues carrying failure evidence are asked the unsupportable-version
+# question (§FS-unsupportable-version-diagnosis).
+LIBRARY_PREFLIGHT_SKIP_VERDICT_LABELS = (
+    "fails-javac-compile",
+    "fails-java-run",
+    "fails-native-image-run",
+)
+LIBRARY_PREFLIGHT_MAX_SKIPPED_VERSIONS = 12
 LIBRARY_PREFLIGHT_DEPENDENCY_SCOPES = (
     "testImplementation",
     "testRuntimeOnly",
@@ -211,9 +219,6 @@ def _degraded_library_preflight_record(
         input_bundle: dict[str, Any],
         failure_reason: str,
         model_name: str | None = None,
-        prompt_path: str | None = None,
-        raw_response_path: str | None = None,
-        session_log_path: str | None = None,
 ) -> dict[str, Any]:
     """Record an unavailable or unusable preflight as no-action advisory output."""
     record = _base_library_preflight_record(claimed_issue, input_bundle)
@@ -221,12 +226,6 @@ def _degraded_library_preflight_record(
     record["failure_reason"] = failure_reason
     if model_name:
         record["model"] = model_name
-    if prompt_path:
-        record["prompt_path"] = prompt_path
-    if raw_response_path:
-        record["raw_response_path"] = raw_response_path
-    if session_log_path:
-        record["session_log_path"] = session_log_path
     return record
 
 
@@ -267,10 +266,10 @@ def _preflight_string_list(value: Any, limit: int = 8) -> list[str]:
     return normalized
 
 
-def _preflight_contains_unsafe_text(*values: Any) -> bool:
-    """Return True when advisory text asks for unsafe preparation behavior."""
+def _unsafe_terms_in(*values: Any) -> list[str]:
+    """Return the unsafe action terms the advisory text requests, for the error message."""
     combined = "\n".join(str(value).lower() for value in values if value is not None)
-    return any(term in combined for term in LIBRARY_PREFLIGHT_UNSAFE_TERMS)
+    return [term.strip() for term in LIBRARY_PREFLIGHT_UNSAFE_TERMS if term in combined]
 
 
 def _parse_deterministic_setup_entry(entry: Any) -> dict[str, str] | None:
@@ -311,19 +310,49 @@ def _parse_deterministic_setup(value: Any) -> list[dict[str, str]]:
     return parsed
 
 
+def _parse_skipped_versions(value: Any, target_version: str) -> list[dict[str, str]]:
+    """Validate a skip verdict's version records; the burden of proof is on skipping.
+
+    Any malformation raises, degrading the record so the run falls through to
+    normal generation (§FS-unsupportable-version-diagnosis).
+    """
+    if not isinstance(value, list) or not value:
+        raise ValueError("skip_unsupported response did not include skipped_versions")
+    if len(value) > LIBRARY_PREFLIGHT_MAX_SKIPPED_VERSIONS:
+        raise ValueError("skip_unsupported response listed too many skipped versions")
+    parsed: list[dict[str, str]] = []
+    seen_versions: set[str] = set()
+    for record in value:
+        if not isinstance(record, dict):
+            raise ValueError("skipped_versions entries must be objects")
+        version = record.get("version")
+        reason = record.get("reason")
+        if not isinstance(version, str) or not version.strip():
+            raise ValueError("skipped_versions entries require a version")
+        if not isinstance(reason, str) or not reason.strip():
+            raise ValueError("skipped_versions entries require a reason")
+        if version.strip() in seen_versions:
+            continue
+        seen_versions.add(version.strip())
+        parsed.append({
+            "version": version.strip(),
+            "reason": _truncate_preflight_text(reason, 500),
+        })
+    if target_version not in seen_versions:
+        raise ValueError("skipped_versions must include the reported version")
+    return parsed
+
+
 def _completed_library_preflight_record(
         claimed_issue: Any,
         input_bundle: dict[str, Any],
         response_payload: dict[str, Any],
         model_name: str,
         result: Any | None,
-        prompt_path: str | None,
-        raw_response_path: str | None,
-        session_log_path: str | None,
 ) -> dict[str, Any]:
     """Normalize a valid preflight response into the persisted metrics shape."""
     action = str(response_payload.get("action") or "no_action").strip()
-    if action not in {"no_action", "advisory_preparation"}:
+    if action not in {"no_action", "advisory_preparation", "skip_unsupported"}:
         raise ValueError(f"unsupported preflight action: {action}")
     summary = _truncate_preflight_text(str(response_payload.get("summary") or ""), 1000)
     deterministic_setup = _parse_deterministic_setup(response_payload.get("deterministic_setup"))
@@ -331,10 +360,24 @@ def _completed_library_preflight_record(
     risks = _preflight_string_list(response_payload.get("risks"))
     if action == "advisory_preparation" and not (deterministic_setup or agent_guidance):
         raise ValueError("advisory_preparation response did not include deterministic setup or guidance")
+    skipped_versions: list[dict[str, str]] = []
+    if action == "skip_unsupported":
+        # The verdict is only asked for, and only accepted from, issues that
+        # carry failure evidence (§FS-unsupportable-version-diagnosis).
+        if claimed_issue.label not in LIBRARY_PREFLIGHT_SKIP_VERDICT_LABELS:
+            raise ValueError(f"skip_unsupported verdict is not allowed for label {claimed_issue.label}")
+        target_version = str(input_bundle.get("library") or "").split(":")[-1]
+        skipped_versions = _parse_skipped_versions(response_payload.get("skipped_versions"), target_version)
     # Deterministic entries are validated structurally above; only the free-text
-    # advisory fields can carry prose, so only those are scanned for unsafe terms.
-    if _preflight_contains_unsafe_text(summary, agent_guidance, risks):
-        raise ValueError("preflight response requested unsafe preparation behavior")
+    # fields can carry prose, so only those are scanned — and only for
+    # requested actions, never subject matter (§AR-forge-orchestration.1.2). Skip
+    # reasons are published verbatim in index.json and the pull request.
+    skip_reasons = [entry["reason"] for entry in skipped_versions]
+    unsafe_terms = _unsafe_terms_in(summary, agent_guidance, risks, *skip_reasons)
+    if unsafe_terms:
+        raise ValueError(
+            f"preflight response requested unsafe preparation behavior: {', '.join(unsafe_terms)}"
+        )
 
     record = _base_library_preflight_record(claimed_issue, input_bundle)
     record["status"] = "completed"
@@ -343,16 +386,61 @@ def _completed_library_preflight_record(
     record["deterministic_setup"] = deterministic_setup
     record["agent_guidance"] = agent_guidance
     record["risks"] = risks
+    if skipped_versions:
+        record["skipped_versions"] = skipped_versions
     record["model"] = model_name
     record["input_tokens_used"] = int(getattr(result, "input_tokens", 0) or 0)
     record["output_tokens_used"] = int(getattr(result, "output_tokens", 0) or 0)
-    if prompt_path:
-        record["prompt_path"] = prompt_path
-    if raw_response_path:
-        record["raw_response_path"] = raw_response_path
-    if session_log_path:
-        record["session_log_path"] = session_log_path
     return record
+
+
+def _skip_verdict_prompt_section(input_bundle: dict[str, Any]) -> str:
+    """Render the unsupportable-version diagnosis for issues with failure evidence.
+
+    The five-step bar and the strict default come from
+    §FS-unsupportable-version-diagnosis; the disposition it feeds is
+    §root/FS-contribution-contract.5.4.
+    """
+    issue = input_bundle.get("issue") if isinstance(input_bundle.get("issue"), dict) else {}
+    if str(issue.get("label") or "") not in LIBRARY_PREFLIGHT_SKIP_VERDICT_LABELS:
+        return ""
+    library = str(input_bundle.get("library") or "")
+    version = library.split(":")[-1]
+    return (
+        "Separately, decide whether this library version can be supported under GraalVM "
+        "Native Image at all. A version is unsupportable only when covering its "
+        "dynamic-access calls requires behavior Native Image does not support: runtime "
+        "bytecode generation or class definition, runtime lambda definition, Java agent "
+        "self-attach, class redefinition or instrumentation, native-image substitution "
+        "paths, or URL/plugin/OSGi class loader paths that introduce classes not in the "
+        "image.\n\n"
+        "Run these steps in order. An unsupportable verdict requires ALL of them; stay "
+        "with the two actions above the moment one fails:\n"
+        "1. FAILURE: state the failing operation from the issue's failure evidence alone.\n"
+        "2. TRACE: follow the failing symbol into the library's own source and quote the "
+        "code performing the operation.\n"
+        "3. CLASSIFY: show the operation is in the list above. Anything reachability "
+        "metadata can register is repairable.\n"
+        "4. SOLE PATH: prove every public API route the metadata would justify passes "
+        "through this operation, with no configuration, property, or fallback branch "
+        "around it. One viable fallback means repairable.\n"
+        "5. RANGE: list newer released versions whose sources you verified share the "
+        "same mechanism. Include only versions you actually verified; when you cannot "
+        f"verify newer versions, record only {version}.\n\n"
+        "On an unsupportable verdict, return instead:\n"
+        "{\n"
+        '  "action": "skip_unsupported",\n'
+        '  "summary": "one sentence naming the mechanism and why the image cannot perform it",\n'
+        '  "skipped_versions": [{"version": "...", "reason": "mechanism sentence; later '
+        "versions: '; unchanged from <first>'\"}, ...]\n"
+        "}\n"
+        f"skipped_versions must include {version}; reasons are published verbatim in "
+        "index.json and the pull request, so write them for a reader who has not seen "
+        "this analysis. Never base the verdict on a red test, a library's own error "
+        "type, or its error message — only on the mechanism you traced in the library's "
+        "source. Any uncertainty at any step means repairable: attempting the fix is "
+        "the safe default, a wrong skip freezes versions that were never attempted.\n\n"
+    )
 
 
 def _library_preflight_prompt(input_bundle: dict[str, Any]) -> str:
@@ -389,32 +477,17 @@ def _library_preflight_prompt(input_bundle: dict[str, Any]) -> str:
         '  "risks": ["risk notes, if any"]\n'
         "}\n\n"
         "Choose no_action unless your research finds concrete evidence that extra setup is needed.\n\n"
+        f"{_skip_verdict_prompt_section(input_bundle)}"
         "Context (starting point):\n"
         f"{json.dumps(input_bundle, indent=2, ensure_ascii=False)}"
     )
 
 
-def _relative_or_absolute_path(path: str | None, root: str) -> str | None:
-    """Return a stable metrics path, relative when it is under the metrics root."""
-    if not path:
-        return None
-    try:
-        absolute_path = os.path.abspath(path)
-        absolute_root = os.path.abspath(root)
-        if os.path.commonpath([absolute_path, absolute_root]) == absolute_root:
-            return os.path.relpath(absolute_path, absolute_root)
-    except ValueError:
-        pass
-    return path
-
-
-def _write_text_artifact(root: str, file_name: str, content: str) -> str:
-    """Write a preflight text artifact and return its metrics-root-relative path."""
+def _write_text_artifact(root: str, file_name: str, content: str) -> None:
+    """Write a preflight text artifact next to the record it belongs to."""
     os.makedirs(root, exist_ok=True)
-    path = os.path.join(root, file_name)
-    with open(path, "w", encoding="utf-8") as artifact_file:
+    with open(os.path.join(root, file_name), "w", encoding="utf-8") as artifact_file:
         artifact_file.write(content)
-    return os.path.relpath(path, root)
 
 
 def _preflight_artifact_root(claimed_issue: Any) -> str:
@@ -422,8 +495,18 @@ def _preflight_artifact_root(claimed_issue: Any) -> str:
     return getattr(claimed_issue, "preflight_info_path", None) or claimed_issue.scratch_metrics_repo_path
 
 
-def _write_and_log_preflight(claimed_issue: Any, record: dict[str, Any]) -> str:
-    """Persist the record and log a one-line outcome, covering every decision path."""
+def _write_and_log_preflight(
+        claimed_issue: Any,
+        record: dict[str, Any],
+        session_log_path: str | None = None,
+) -> str:
+    """Persist the record and log a one-line outcome, covering every decision path.
+
+    The session log path is printed, never persisted: the record is committed to
+    `stats/`, where a path into the operator's gitignored `logs/` tree resolves for
+    no reader and an absolute one carries a home directory into a public
+    repository. §FS-durable-generation-logs
+    """
     detail = f"status={record.get('status')} action={record.get('action')}"
     setup_count = len(record.get("deterministic_setup") or [])
     if setup_count:
@@ -446,8 +529,9 @@ def _write_and_log_preflight(claimed_issue: Any, record: dict[str, Any]) -> str:
             f"Library preflight completed for {library}: {outcome}",
         )
     else:
-        log_path = record.get("session_log_path")
-        log_suffix = f" (log: {display_log_path(str(log_path))})" if log_path else ""
+        log_suffix = (
+            f" (log: {display_log_path(session_log_path)})" if session_log_path else ""
+        )
         failure_text = str(failure_reason or "no usable decision")
         log_step_progress(
             PHASE_SETUP,
@@ -489,12 +573,13 @@ def run_library_preparation_preflight(
     )
     prompt = _library_preflight_prompt(input_bundle)
     preflight_artifact_root = _preflight_artifact_root(claimed_issue)
-    prompt_path = _write_text_artifact(
+    # The prompt and the response stay on disk as run evidence; only their paths
+    # are kept out of the committed record.
+    _write_text_artifact(
         preflight_artifact_root,
         "library-preflight-prompt.txt",
         prompt,
     )
-    raw_response_path: str | None = None
     session_log_path: str | None = None
     model_name = selection.model
 
@@ -513,15 +598,12 @@ def run_library_preparation_preflight(
                 + (" (timed out)" if result.timed_out else "")
             )
         response_text = result.response
-        raw_response_path = _write_text_artifact(
+        _write_text_artifact(
             preflight_artifact_root,
             "library-preflight-response.txt",
             response_text,
         )
-        session_log_path = _relative_or_absolute_path(
-            result.session_log_path,
-            preflight_artifact_root,
-        )
+        session_log_path = result.session_log_path
         response_payload = _extract_preflight_json_response(response_text)
         record = _completed_library_preflight_record(
             claimed_issue,
@@ -529,26 +611,17 @@ def run_library_preparation_preflight(
             response_payload,
             model_name,
             result,
-            prompt_path,
-            raw_response_path,
-            session_log_path,
         )
     except Exception as exc:
         if session_log_path is None and result is not None:
-            session_log_path = _relative_or_absolute_path(
-                result.session_log_path,
-                preflight_artifact_root,
-            )
+            session_log_path = result.session_log_path
         record = _degraded_library_preflight_record(
             claimed_issue,
             input_bundle,
             f"{type(exc).__name__}: {exc}",
             model_name=model_name,
-            prompt_path=prompt_path,
-            raw_response_path=raw_response_path,
-            session_log_path=session_log_path,
         )
-    return _write_and_log_preflight(claimed_issue, record)
+    return _write_and_log_preflight(claimed_issue, record, session_log_path)
 
 
 def write_library_preparation_preflight(metrics_repo_root: str, preflight: dict[str, Any]) -> str:
@@ -570,6 +643,25 @@ def load_library_preparation_preflight(preflight_path: str | None) -> dict[str, 
     with open(preflight_path, "r", encoding="utf-8") as preflight_file:
         loaded = json.load(preflight_file)
     return loaded if isinstance(loaded, dict) else None
+
+
+def preflight_skip_record_entries(
+        preflight: dict[str, Any] | None,
+        target_version: str,
+) -> list[dict[str, str]] | None:
+    """Return the validated skip-record entries a driver should honor, or None.
+
+    Strict on every field so a malformed record falls through to normal
+    generation (§FS-unsupportable-version-diagnosis).
+    """
+    if not isinstance(preflight, dict):
+        return None
+    if preflight.get("status") != "completed" or preflight.get("action") != "skip_unsupported":
+        return None
+    try:
+        return _parse_skipped_versions(preflight.get("skipped_versions"), target_version)
+    except ValueError:
+        return None
 
 
 def _insert_into_dependencies_block(text: str, new_line: str) -> str | None:

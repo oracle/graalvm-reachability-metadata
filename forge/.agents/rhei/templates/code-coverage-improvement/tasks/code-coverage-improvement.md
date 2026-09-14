@@ -97,28 +97,24 @@
   - `runtime/code-coverage/work/code-coverage-{{issue_number}}.code-coverage-prepare.md`
 
 ### Task code-coverage-api-inventory: Generate API inventory
-**State:** prepared
+**State:** api-inventory
 **Prior:** Task code-coverage-prepare
 
-- Helper script: `forge/utility_scripts/code_coverage_api_inventory.py`
+- Deterministic program state; no agent turn. The state program invokes
+  `forge/utility_scripts/code_coverage_api_inventory.py` with the resolved
+  coordinate, every `libraryJars` entry, and every `allowedPackages` entry
+  from `runtime/code-coverage/prepare/library.json`
+  (§AR-code-coverage-improvement.4, §root/FS-metadata).
 - Purpose: deterministically describe public user-callable API targets for the
-  coordinate.
-- Required work:
-  - Use the prepared library record and source context.
-  - Generate compact JSON and Markdown reports under
-    `runtime/code-coverage/api-inventory/`.
-  - Make the canonical target `id` carry the full target identity; avoid
-    redundant split fields unless needed for stable processing.
-  - Include public constructors, instance/static methods, generated enum
-    accessor methods, builders, configuration, parsing, serialization,
-    adapters, lifecycle methods, and error-handling calls. Exclude fields.
-  - Do not prioritize private implementation details as direct test targets.
-  - Record the resolved library jars as `libraryJars` so the later bytecode
-    call-graph extraction resolves no artifacts of its own.
+  coordinate, across the artifact's whole committed allowed-package scope.
+- The canonical target `id` carries the full target identity; fields are
+  excluded; the resolved jars are recorded as `libraryJars` so later bytecode
+  call-graph extraction resolves no artifacts of its own.
+- The program's exit code is the transition: 0 completes the phase, 1 and 2
+  park it in `human-intervention`.
 - Artifacts:
   - `runtime/code-coverage/api-inventory/api-inventory.json`
   - `runtime/code-coverage/api-inventory/api-inventory.md`
-  - `runtime/code-coverage/work/code-coverage-{{issue_number}}.code-coverage-api-inventory.md`
 
 ### Task code-coverage-api-coverage: API coverage loop
 **State:** api-measure
@@ -148,37 +144,31 @@
   the agent cannot claim coverage.
 
 ### Task code-coverage-prepare-native-metadata: Prepare native metadata
-**State:** prepared
+**State:** native-metadata
 **Prior:** Task code-coverage-api-coverage
 
-- Helper script: `forge/utility_scripts/code_coverage_prepare_native_metadata.py`
-- Invoke it with the resolved `--repo-path`, `--coordinate`, absolute
-  `--coverage-suite`, preparation `--output-dir`, and bounded
-  `--max-fix-passes`.
-- Purpose: generate and repair reachability metadata once after public API
-  coverage so the deep sampled-PGO builds can run
-  §AR-code-coverage-improvement.
-- Required work:
-  - Read the resolved coordinate and absolute suite root from the conversion
-    and preparation artifacts.
-  - Generate metadata with `./gradlew generateMetadata -Pcoordinates=<resolved coordinate> -PincludeCodeCoverageSuite=true`.
-  - Metadata lands in the coordinate's existing `reachability-metadata.json`
-    files and nowhere else. The coverage suite has no metadata directory of its
-    own, and the legacy split-config files a tracing agent may emit
-    (`jni-config.json`, `reflect-config.json`, `resource-config.json`,
-    `serialization-config.json`, `proxy-config.json`) are input to convert, not
-    output to commit — this repository loads none of them
-    (§root/FS-metadata.1, §AR-code-coverage-improvement.2). Do not split shipped
-    from test-only entries by hand: finalization runs `splitTestOnlyMetadata`.
-  - Run `./gradlew test -Pcoordinates=<resolved coordinate> -PincludeCodeCoverageSuite=true`; if it fails, repair
-    metadata with the Codex `fix-missing-reachability-metadata` skill and re-run,
-    up to the helper's fix budget.
-  - If Native Image validation cannot be repaired automatically, request
-    `human-intervention`.
+- Deterministic program state; no agent turn. The state program invokes
+  `forge/utility_scripts/code_coverage_prepare_native_metadata.py` with the
+  resolved worktree, coordinate, and absolute coverage-suite root from
+  `runtime/code-coverage/issues/conversion.json`.
+- Purpose: prepare reachability metadata once after public API coverage so the
+  deep sampled-PGO builds can run §AR-code-coverage-improvement.4.
+- The helper drives the shared native test verification gate
+  (§FS-native-test-verification-gate) with `-PincludeCodeCoverageSuite=true`
+  on every Gradle command: staged JVM-agent metadata first, the exit-172
+  native trace loop second, and the gate's single terminal diagnose-first
+  analysis-agent repair last. Durable metadata is written only when the
+  finalized re-run passes.
+- Metadata lands in the coordinate's existing `reachability-metadata.json`
+  files and nowhere else. The coverage suite has no metadata directory of its
+  own, and the legacy split-config files remain input, never output
+  (§root/FS-metadata.1, §AR-code-coverage-improvement.2). Finalization runs
+  `splitTestOnlyMetadata`.
+- The helper's exit code is the transition: 0 completes the phase, 2 and 3
+  park it in `human-intervention`.
 - Artifacts:
   - `runtime/code-coverage/prepare/native-metadata-prepare.json`
   - `runtime/code-coverage/prepare/native-metadata-prepare.md`
-  - `runtime/code-coverage/work/code-coverage-{{issue_number}}.code-coverage-prepare-native-metadata.md`
 
 ### Task code-coverage-deep-coverage: Deep coverage loop
 **State:** deep-measure
@@ -207,6 +197,14 @@
   JaCoCo is the sole coverage authority; sampled PGO and the static call graph
   provide navigation only. The phase completes when no actionable target
   remains or the iteration budget is spent.
+- Run every Gradle command in the foreground with a timeout long enough to
+  finish it. Never start one as a background task and end your turn to wait for
+  it: this invocation is headless, your turn ending is the process exiting, and
+  there is no later turn to wake up in. A native image build can take many
+  minutes; wait for it inside this turn.
+- Write your required state output before your final message. Ending the turn
+  with the report unwritten discards the whole invocation, however much work
+  preceded it.
 
 ### Task code-coverage-finalization: Finalize validation and metrics
 **State:** reviewed-prepared
@@ -286,48 +284,33 @@
   - `runtime/code-coverage/benchmark/publication.json`
 {% else %}
 ### Task code-coverage-publication: Publish the verified branch
-**State:** prepared
+**State:** publication
 **Prior:** Task code-coverage-finalization
 
-- Helper script: `forge/git_scripts/publish_code_coverage_improvement.py`
-- Worker agent: `{{worker_agent}}`
-- Branch suffix: `{{branch_suffix}}`
+- Deterministic program state; no agent turn. The state program invokes
+  `forge/git_scripts/publish_code_coverage_improvement.py` with the resolved
+  worktree, coordinate, and repository-relative coverage suite path from
+  `runtime/code-coverage/issues/conversion.json`, the issue number, and the
+  run's worker agent target (§AR-code-coverage-improvement.4).
 - Purpose: push the verified code coverage improvement as a publication branch
-  that trusted GitHub Actions turn into a pull request. This task does not open
-  the pull request and must never call `gh pr create`
+  that trusted GitHub Actions turn into a pull request. The program opens no
+  pull request and never calls `gh pr create`
   (§AR-forge-verification-publication-boundary).
-- Required work:
-  - Read `runtime/code-coverage/finalization/final-summary.md` and
-    `runtime/code-coverage/finalization/final-metrics.json`.
-  - Confirm the issue worktree branch is the expected issue branch.
-  - Leave verified changes uncommitted or committed; the helper stages the
-    coverage suite, touched metadata, and the regenerated coverage stats itself
-    and commits them.
-  - Run the helper with `--repo-path`, `--coordinate`, `--issue-number`,
-    `--finalization-dir`, `--coverage-suite-path`, and
-    `--worker-agent {{worker_agent}}`. The helper names the head branch after
-    that target's model, so a run of this coordinate on another model owns a
-    different branch.
-  - Pass `--branch-suffix {{branch_suffix}}` when that value is non-empty. It
-    only labels which run a branch belongs to; the publication ID the helper
-    appends already keeps two runs of one coordinate and model apart.
-  - The helper rebases onto upstream `master`, runs the pre-publication
-    verification gate, writes
-    `stats/<group>/<artifact>/<version>/forge-publication.json`, and pushes the
-    `ai/<login>/...` branch to `{{repo}}`. Pushing that branch is the whole
-    task: `Forge Branch Ready` validates the exact commit as data, and only its
-    success lets `Forge Open PR` render the body and open the pull request
-    (§AR-actions-publication).
-  - The descriptor carries the coordinate, coverage suite path, the whole-run
-    coverage checkpoints and phase gains on one shared denominator (§4.1), the
-    per-phase JaCoCo records, the human-intervention flag, the generating model,
-    and per-phase token usage.
-    The trusted renderer writes every section of the body from it. Do not
-    hand-write a pull request body: a section an agent types is one no run
-    publishes.
-  - Report the pushed branch name in the work artifact.
+- The helper validates the finalized metrics against the coordinate, stages
+  the coverage suite, touched metadata, and regenerated coverage stats,
+  rebases onto upstream `master`, runs the pre-publication verification gate,
+  writes `stats/<group>/<artifact>/<version>/forge-publication.json`, and
+  pushes the `ai/<login>/...` branch. `Forge Branch Ready` validates the exact
+  commit as data, and only its success lets `Forge Open PR` open the pull
+  request (§AR-actions-publication). The descriptor carries the render inputs;
+  the trusted renderer writes every section of the body from it.
+- The head branch names the worker agent's model, so a coordinate measured on
+  two models publishes two branches; the appended publication ID keeps two
+  runs of one coordinate and model apart, and `branch_suffix` only labels
+  which run a branch belongs to.
+- The program's exit code is the transition: 0 completes the task, 1 and 2
+  park it in `human-intervention`.
 - Artifacts:
   - `runtime/code-coverage/publication/branch.md`
-  - `runtime/code-coverage/work/code-coverage-{{issue_number}}.code-coverage-publication.md`
 
 {% endif %}
