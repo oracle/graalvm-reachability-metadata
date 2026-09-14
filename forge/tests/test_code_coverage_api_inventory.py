@@ -8,6 +8,7 @@ import shutil
 import subprocess
 import tempfile
 import unittest
+import zipfile
 from unittest.mock import patch
 
 from utility_scripts import code_coverage_api_inventory as inventory_module
@@ -131,6 +132,32 @@ public class com.example.Mixed {
                     inventory_module.run_javap(["demo.jar"], ["com.example.Missing"])
 
 
+    def test_enumeration_keeps_a_class_under_any_allowed_package(self) -> None:
+        """A multi-package artifact is inventoried across every allowed package.
+
+        270 of the repository's artifacts declare more than one allowed
+        package; keeping only one silently shrinks the whole API target
+        universe (§AR-code-coverage-improvement.4).
+        """
+        names = [
+            "ch/qos/logback/classic/Logger.class",
+            "ch/qos/logback/core/Appender.class",
+            "org/shaded/asm/ClassWriter.class",
+        ]
+        with tempfile.TemporaryDirectory() as tmp:
+            jar_path = os.path.join(tmp, "demo.jar")
+            with zipfile.ZipFile(jar_path, "w") as jar:
+                for name in names:
+                    jar.writestr(name, b"")
+            kept = inventory_module.enumerate_public_classes(
+                jar_path,
+                ["ch.qos.logback.classic", "ch.qos.logback.core"],
+            )
+        self.assertEqual(
+            sorted(kept),
+            ["ch.qos.logback.classic.Logger", "ch.qos.logback.core.Appender"],
+        )
+
     def test_generate_inventory_reports_missing_jar_clearly(self) -> None:
         with tempfile.TemporaryDirectory() as temporary_dir:
             with self.assertRaisesRegex(inventory_module.ApiInventoryError, "Cannot read library jar"):
@@ -138,7 +165,7 @@ public class com.example.Mixed {
                     coordinate="com.example:missing:1.0.0",
                     jar_paths=[os.path.join(temporary_dir, "missing.jar")],
                     output_dir=os.path.join(temporary_dir, "out"),
-                    include_package=None,
+                    include_packages=None,
                     source_root="",
                 )
 
@@ -164,7 +191,7 @@ class EndToEndJarTests(unittest.TestCase):
                 coordinate="com.example:demo:1.0.0",
                 jar_paths=[jar_path],
                 output_dir=os.path.join(tmp, "out"),
-                include_package="com.example",
+                include_packages=["com.example"],
                 source_root="",
             )
             ids = {t["id"] for t in inventory["targets"]}

@@ -5,227 +5,178 @@
 
 from contextlib import redirect_stderr
 import io
+import json
 import os
-import re
-import sys
 import tempfile
 import unittest
 from unittest.mock import patch
 
 from utility_scripts import code_coverage_prepare_native_metadata as prepare_module
-
-
-class _Gradle:
-    """Stateful fake for run_gradle_test_command driven by scripted native-validation results."""
-
-    def __init__(
-            self,
-            native_results: list[bool],
-            generate_succeeded: bool = True,
-    ) -> None:
-        self.native_results = list(native_results)
-        self.generate_succeeded = generate_succeeded
-        self.commands: list[str] = []
-
-    def __call__(self, command: str, working_dir: str, library: str | None = None) -> str:
-        self.commands.append(command)
-        if "generateMetadata" in command:
-            return (
-                "BUILD SUCCESSFUL in 1s"
-                if self.generate_succeeded
-                else "BUILD FAILED\nmetadata generation failed"
-            )
-        if f"./gradlew {prepare_module.NATIVE_VALIDATION_TASK} " in command:
-            succeeded = self.native_results.pop(0) if self.native_results else False
-            return "BUILD SUCCESSFUL in 9s" if succeeded else "BUILD FAILED\nmissing metadata"
-        return "BUILD SUCCESSFUL"
-
-
-_HARNESS_GRADLE = os.path.join(
-    os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))),
-    "tests", "tck-build-logic", "src", "main", "groovy",
-    "org.graalvm.internal.tck-harness.gradle",
+from utility_scripts.native_test_verification import (
+    InterventionRecord,
+    NativeTestVerificationResult,
+    STATUS_FAILED,
+    STATUS_PASSED,
+    STATUS_PASSED_WITH_INTERVENTION,
 )
 
 
-class NativeValidationTaskTests(unittest.TestCase):
-    """The helper must name a task the harness root project registers.
-
-    Gradle matches an unknown task name by prefix, so a wrong name stays silent
-    until a sibling task makes it ambiguous. `nativeTest` was such a name: it is
-    registered on the per-library builds, never on the root project.
-    """
-
-    def test_native_validation_task_is_registered_on_the_root_project(self) -> None:
-        """Fails if the helper ever names a task only the per-library builds define."""
-        with open(_HARNESS_GRADLE, encoding="utf-8") as harness:
-            registered = set(re.findall(r'tasks\.register\("([^"]+)"', harness.read()))
-        self.assertIn(prepare_module.NATIVE_VALIDATION_TASK, registered)
+def _gate_result(status: str, iterations: int = 3, interventions: int = 0) -> NativeTestVerificationResult:
+    return NativeTestVerificationResult(
+        status=status,
+        output_dir="/tmp/gate",
+        iterations_used=iterations,
+        last_native_test_log_path="/tmp/gate/logs/last.log",
+        intervention_records=[
+            InterventionRecord(stage=f"cycle-{index}-analysis-agent", kind="codex", log_path="/tmp/fix.log")
+            for index in range(interventions)
+        ],
+        failure_detail="gate failed" if status == STATUS_FAILED else None,
+    )
 
 
 class PrepareNativeMetadataTests(unittest.TestCase):
-    def _run(
-            self,
-            native_results: list[bool],
-            max_fix_passes: int = 2,
-            generate_succeeded: bool = True,
-    ) -> tuple[dict, _Gradle, list[tuple], bool, str]:
-        gradle = _Gradle(native_results, generate_succeeded)
-        fix_calls: list[tuple] = []
+    """The helper is a thin program around the shared native trace gate."""
 
-        def fake_fix(
-                repo: str,
-                coordinate: str,
-                reproduction_command: str | None = None,
-                **kwargs: object,
-        ) -> tuple[int, str, bool]:
-            fix_calls.append((repo, coordinate, reproduction_command))
-            return (0, "/tmp/codex.log", False)
+    def setUp(self) -> None:
+        self.workdir = tempfile.TemporaryDirectory()
+        self.addCleanup(self.workdir.cleanup)
+        self.repo = os.path.join(self.workdir.name, "repo")
+        self.suite = os.path.join(self.repo, "tests", "src", "g", "a", "1.0", "code-coverage-improvement")
+        os.makedirs(os.path.join(self.suite, "src", "test", "java"))
+        self.output = os.path.join(self.workdir.name, "prepare")
 
-        with tempfile.TemporaryDirectory() as tmp, \
-                patch.object(prepare_module, "run_gradle_test_command", gradle), \
-                patch.object(prepare_module, "run_metadata_fix", fake_fix):
-            relative_suite: str = os.path.join(
-                "tests", "src", "g", "a", "1.0", "code-coverage-improvement",
+    def _prepare(self, gate: NativeTestVerificationResult) -> tuple[dict, dict]:
+        with patch.object(prepare_module, "verify_native_test_passes", return_value=gate) as mock:
+            report = prepare_module.prepare_native_metadata(
+                repo_path=self.repo,
+                coordinate="g:a:1.0",
+                coverage_suite=self.suite,
+                output_dir=self.output,
+                max_cycles=40,
+                skip_gradle=False,
             )
-            suite_path: str = os.path.join(tmp, relative_suite)
-            os.makedirs(os.path.join(suite_path, "src", "test", "java"))
-            report: dict = prepare_module.prepare_native_metadata(
-                repo_path=tmp, coordinate="g:a:1.0", coverage_suite=relative_suite,
-                output_dir=os.path.join(tmp, "out"),
-                max_fix_passes=max_fix_passes, skip_gradle=False,
-            )
-            artifact: bool = os.path.isfile(
-                os.path.join(tmp, "out", "native-metadata-prepare.json")
-            )
-        return report, gradle, fix_calls, artifact, suite_path
+        return report, mock.call_args.kwargs
 
-    def test_passes_without_fix(self) -> None:
-        report, gradle, fix_calls, artifact, suite_path = self._run(native_results=[True])
-        self.assertTrue(report["metadataGenerated"])
-        self.assertTrue(report["nativeTestPassed"])
-        self.assertEqual(report["fixPasses"], 0)
-        self.assertFalse(report["needsHumanIntervention"])
-        self.assertEqual(report["coverageSuite"], suite_path)
-        self.assertEqual(fix_calls, [])
-        self.assertTrue(artifact)
-        self.assertEqual(len(gradle.commands), 2)
-        for command in gradle.commands:
-            self.assertIn("-PincludeCodeCoverageSuite=true", command)
-
-    def test_codex_fix_then_pass(self) -> None:
-        report, _gradle, fix_calls, _artifact, _suite_path = self._run(
-            native_results=[False, True],
-        )
-        self.assertEqual(report["fixPasses"], 1)
+    def test_gate_pass_reports_success_and_writes_artifacts(self) -> None:
+        report, kwargs = self._prepare(_gate_result(STATUS_PASSED))
         self.assertTrue(report["nativeTestPassed"])
         self.assertFalse(report["needsHumanIntervention"])
-        self.assertEqual(len(fix_calls), 1)
-        # The Codex fix is given the native-validation reproduction command.
-        self.assertIn(f"./gradlew {prepare_module.NATIVE_VALIDATION_TASK} ", fix_calls[0][2])
-        self.assertIn("-PincludeCodeCoverageSuite=true", fix_calls[0][2])
+        self.assertEqual(report["gateStatus"], STATUS_PASSED)
+        for name in ("native-metadata-prepare.json", "native-metadata-prepare.md"):
+            self.assertTrue(os.path.isfile(os.path.join(self.output, name)))
+        written = json.load(open(os.path.join(self.output, "native-metadata-prepare.json")))
+        self.assertEqual(written["gateStatus"], STATUS_PASSED)
 
-    def test_exhausts_budget_routes_to_human(self) -> None:
-        report, _gradle, fix_calls, _artifact, _suite_path = self._run(
-            native_results=[False, False, False],
-            max_fix_passes=2,
-        )
-        self.assertEqual(report["fixPasses"], 2)
+    def test_gate_receives_the_coverage_suite_property(self) -> None:
+        """The suite must ride on every gate command (§FS-native-test-verification-gate.2)."""
+        _report, kwargs = self._prepare(_gate_result(STATUS_PASSED))
+        self.assertEqual(kwargs["gradle_properties"], (prepare_module.COVERAGE_SUITE_PROPERTY,))
+        self.assertEqual(kwargs["coordinate"], "g:a:1.0")
+        self.assertEqual(kwargs["max_iterations"], 40)
+
+    def test_terminal_repair_still_counts_as_success(self) -> None:
+        report, _ = self._prepare(_gate_result(STATUS_PASSED_WITH_INTERVENTION, interventions=1))
+        self.assertTrue(report["nativeTestPassed"])
+        self.assertEqual(report["agentInterventions"], 1)
+        self.assertFalse(report["needsHumanIntervention"])
+
+    def test_gate_failure_routes_to_human(self) -> None:
+        report, _ = self._prepare(_gate_result(STATUS_FAILED, interventions=1))
         self.assertFalse(report["nativeTestPassed"])
         self.assertTrue(report["needsHumanIntervention"])
-        self.assertEqual(len(fix_calls), 2)
+        self.assertEqual(report["failureReason"], "gate failed")
 
-    def test_generation_failure_stops_before_native_validation(self) -> None:
-        report, gradle, fix_calls, artifact, _suite_path = self._run(
-            native_results=[True],
-            generate_succeeded=False,
-        )
-
-        self.assertFalse(report["metadataGenerated"])
-        self.assertFalse(report["nativeTestPassed"])
-        self.assertTrue(report["needsHumanIntervention"])
-        self.assertEqual(report["fixPasses"], 0)
-        self.assertIn("stale metadata", report["failureReason"])
-        self.assertEqual(len(gradle.commands), 1)
-        self.assertIn("generateMetadata", gradle.commands[0])
-        self.assertEqual(fix_calls, [])
-        self.assertTrue(artifact)
+    def test_skip_gradle_writes_a_noop_report_without_the_gate(self) -> None:
+        with patch.object(prepare_module, "verify_native_test_passes") as mock:
+            report = prepare_module.prepare_native_metadata(
+                repo_path=self.repo,
+                coordinate="g:a:1.0",
+                coverage_suite=self.suite,
+                output_dir=self.output,
+                max_cycles=40,
+                skip_gradle=True,
+            )
+        mock.assert_not_called()
+        self.assertIsNone(report["gateStatus"])
+        self.assertTrue(os.path.isfile(os.path.join(self.output, "native-metadata-prepare.json")))
 
     def test_rejects_missing_or_malformed_coverage_suite(self) -> None:
-        with tempfile.TemporaryDirectory() as tmp:
-            missing = os.path.join(tmp, "missing-suite")
-            with self.assertRaisesRegex(
-                    prepare_module.NativeMetadataPreparationError,
-                    "does not exist",
-            ):
+        for suite in ("", "   ", os.path.join(self.workdir.name, "absent")):
+            with self.assertRaises(prepare_module.NativeMetadataPreparationError):
                 prepare_module.prepare_native_metadata(
-                    repo_path=tmp,
+                    repo_path=self.repo,
                     coordinate="g:a:1.0",
-                    coverage_suite=missing,
-                    output_dir=os.path.join(tmp, "out"),
-                    max_fix_passes=0,
+                    coverage_suite=suite,
+                    output_dir=self.output,
+                    max_cycles=40,
+                    skip_gradle=True,
+                )
+        no_java = os.path.join(self.workdir.name, "no-java-suite")
+        os.makedirs(no_java)
+        with self.assertRaises(prepare_module.NativeMetadataPreparationError):
+            prepare_module.prepare_native_metadata(
+                repo_path=self.repo,
+                coordinate="g:a:1.0",
+                coverage_suite=no_java,
+                output_dir=self.output,
+                max_cycles=40,
+                skip_gradle=True,
+            )
+
+    def test_rejects_invalid_coordinate_and_cycle_budget(self) -> None:
+        for coordinate in ("", "g:a", "g:a:1 .0", "g::1.0"):
+            with self.assertRaises(prepare_module.NativeMetadataPreparationError):
+                prepare_module.prepare_native_metadata(
+                    repo_path=self.repo,
+                    coordinate=coordinate,
+                    coverage_suite=self.suite,
+                    output_dir=self.output,
+                    max_cycles=40,
+                    skip_gradle=True,
+                )
+        for cycles in (0, -1, True, "3"):
+            with self.assertRaises(prepare_module.NativeMetadataPreparationError):
+                prepare_module.prepare_native_metadata(
+                    repo_path=self.repo,
+                    coordinate="g:a:1.0",
+                    coverage_suite=self.suite,
+                    output_dir=self.output,
+                    max_cycles=cycles,
                     skip_gradle=True,
                 )
 
-            incomplete = os.path.join(tmp, "incomplete-suite")
-            os.makedirs(incomplete)
-            with self.assertRaisesRegex(
-                    prepare_module.NativeMetadataPreparationError,
-                    "src/test/java",
-            ):
-                prepare_module.prepare_native_metadata(
-                    repo_path=tmp,
-                    coordinate="g:a:1.0",
-                    coverage_suite=incomplete,
-                    output_dir=os.path.join(tmp, "out"),
-                    max_fix_passes=0,
-                    skip_gradle=True,
-                )
-
-    def test_rejects_invalid_coordinate_and_fix_budget(self) -> None:
-        with tempfile.TemporaryDirectory() as tmp:
-            suite_path = os.path.join(tmp, "suite")
-            os.makedirs(os.path.join(suite_path, "src", "test", "java"))
-            with self.assertRaisesRegex(
-                    prepare_module.NativeMetadataPreparationError,
-                    "group:artifact:version",
-            ):
-                prepare_module.prepare_native_metadata(
-                    repo_path=tmp,
-                    coordinate="g:a",
-                    coverage_suite=suite_path,
-                    output_dir=os.path.join(tmp, "out"),
-                    max_fix_passes=0,
-                    skip_gradle=True,
-                )
-            with self.assertRaisesRegex(
-                    prepare_module.NativeMetadataPreparationError,
-                    "non-negative integer",
-            ):
-                prepare_module.prepare_native_metadata(
-                    repo_path=tmp,
-                    coordinate="g:a:1.0",
-                    coverage_suite=suite_path,
-                    output_dir=os.path.join(tmp, "out"),
-                    max_fix_passes=-1,
-                    skip_gradle=True,
-                )
+    def test_cli_exit_codes_track_the_gate(self) -> None:
+        argv = [
+            "prog",
+            "--repo-path", self.repo,
+            "--coordinate", "g:a:1.0",
+            "--coverage-suite", self.suite,
+            "--output-dir", self.output,
+        ]
+        with patch.object(prepare_module, "verify_native_test_passes", return_value=_gate_result(STATUS_FAILED)):
+            with patch("sys.argv", argv), redirect_stderr(io.StringIO()):
+                with self.assertRaises(SystemExit) as caught:
+                    prepare_module.main()
+        self.assertEqual(caught.exception.code, 3)
+        with patch.object(prepare_module, "verify_native_test_passes", return_value=_gate_result(STATUS_PASSED)):
+            with patch("sys.argv", argv):
+                prepare_module.main()
 
     def test_cli_reports_invalid_suite_as_clear_error(self) -> None:
-        with tempfile.TemporaryDirectory() as tmp:
-            stderr = io.StringIO()
-            argv = [
-                "code_coverage_prepare_native_metadata.py",
-                "--repo-path", tmp,
-                "--coordinate", "g:a:1.0",
-                "--coverage-suite", "missing-suite",
-                "--output-dir", os.path.join(tmp, "out"),
-                "--skip-gradle",
-            ]
-            with patch.object(sys, "argv", argv), redirect_stderr(stderr):
-                with self.assertRaisesRegex(SystemExit, "2"):
-                    prepare_module.main()
-            self.assertTrue(stderr.getvalue().startswith("ERROR: "))
+        argv = [
+            "prog",
+            "--repo-path", self.repo,
+            "--coordinate", "g:a:1.0",
+            "--coverage-suite", os.path.join(self.workdir.name, "absent"),
+            "--output-dir", self.output,
+        ]
+        stderr = io.StringIO()
+        with patch("sys.argv", argv), redirect_stderr(stderr):
+            with self.assertRaises(SystemExit) as caught:
+                prepare_module.main()
+        self.assertEqual(caught.exception.code, 2)
+        self.assertIn("Coverage suite directory does not exist", stderr.getvalue())
 
 
 if __name__ == "__main__":

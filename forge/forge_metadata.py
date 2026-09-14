@@ -2991,6 +2991,73 @@ def is_pull_request_conflicting(pull_request: dict) -> bool:
     return pull_request.get("mergeable") == "CONFLICTING"
 
 
+_BENCHMARK_RESULTS_PATH_PATTERN = re.compile(
+    r"^code-coverage-benchmarks/[^/]+/[^/]+/[^/]+\.json$"
+)
+
+
+def _entries_by_run_id(entries: list) -> dict:
+    """Key benchmark result entries by runId, rejecting malformed shapes."""
+    keyed: dict = {}
+    for entry in entries:
+        run_id = entry.get("runId") if isinstance(entry, dict) else None
+        if not isinstance(run_id, str) or run_id in keyed:
+            raise ValueError("entries are not uniquely keyed by runId")
+        keyed[run_id] = entry
+    return keyed
+
+
+def resolve_benchmark_results_conflict(worktree_path: str, path: str) -> bool:
+    """Union-merge one conflicted benchmark results file by run ID.
+
+    The file's entries are keyed by run ID and the only legal edit is adding
+    one, so concurrent publications conflict textually while never actually
+    disagreeing; the resolution is the base side's entries plus the entries
+    the head added (§FS-automated-pr-review). It may never modify or drop an
+    existing entry, and a run ID on both sides with different content is a
+    real disagreement, so this returns False and the caller escalates.
+    """
+    try:
+        stages = [
+            json.loads(
+                run_checked_command(
+                    ["git", "show", f":{stage}:{path}"],
+                    worktree_path,
+                    f"Failed to read merge stage {stage} of {path}",
+                ).stdout
+            )
+            for stage in (1, 2, 3)
+        ]
+        if not all(isinstance(stage, list) for stage in stages):
+            return False
+        ancestor, head, base = (_entries_by_run_id(stage) for stage in stages)
+    except (RuntimeError, ValueError, json.JSONDecodeError):
+        return False
+
+    added = {run_id: entry for run_id, entry in head.items() if run_id not in ancestor}
+    # Everything the head did not add must match the merge ancestor exactly.
+    if {run_id: entry for run_id, entry in head.items() if run_id not in added} != ancestor:
+        return False
+    for run_id, entry in added.items():
+        if run_id in base and base[run_id] != entry:
+            return False
+
+    merged = list(base.values()) + [
+        entry for run_id, entry in added.items() if run_id not in base
+    ]
+    merged.sort(key=lambda entry: (entry["timestamp"], entry["runId"]))
+    absolute_path = os.path.join(worktree_path, path)
+    with open(absolute_path, "w", encoding="utf-8") as destination:
+        json.dump(merged, destination, indent=2, ensure_ascii=False)
+        destination.write("\n")
+    run_checked_command(
+        ["git", "add", path],
+        worktree_path,
+        f"Failed to stage the resolved {path}",
+    )
+    return True
+
+
 def resolve_pull_request_merge_conflict(
         pull_request: dict,
         reachability_metadata_path: str,
@@ -3072,12 +3139,28 @@ def resolve_pull_request_merge_conflict(
                 worktree_path,
                 f"Failed to list unresolved conflicts for PR #{pr_number}",
             ).stdout.split()
-            subprocess.run(["git", "merge", "--abort"], cwd=worktree_path, check=False)
-            print(
-                f"[Leaving PR #{pr_number} conflicting: git could not resolve "
-                f"{', '.join(conflicted_paths) or 'the merge'}.]"
+            # Benchmark results conflict textually while never disagreeing, so
+            # they are resolved, not escalated (§FS-automated-pr-review).
+            resolvable = bool(conflicted_paths) and all(
+                _BENCHMARK_RESULTS_PATH_PATTERN.match(path)
+                for path in conflicted_paths
             )
-            return False
+            if resolvable and all(
+                resolve_benchmark_results_conflict(worktree_path, path)
+                for path in conflicted_paths
+            ):
+                run_checked_command(
+                    ["git", "commit", "--no-edit"],
+                    worktree_path,
+                    f"Failed to conclude the resolved merge for PR #{pr_number}",
+                )
+            else:
+                subprocess.run(["git", "merge", "--abort"], cwd=worktree_path, check=False)
+                print(
+                    f"[Leaving PR #{pr_number} conflicting: git could not resolve "
+                    f"{', '.join(conflicted_paths) or 'the merge'}.]"
+                )
+                return False
 
         ensure_pull_request_unapproved(pull_request)
         run_git_transport(

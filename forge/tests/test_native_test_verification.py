@@ -173,6 +173,73 @@ class NativeTestFixPromptTests(unittest.TestCase):
         self.assertNotIn("selection", call_kwargs)
 
 
+class GradlePropertyThreadingTests(unittest.TestCase):
+    """Caller-supplied properties ride on every command and reproduction string.
+
+    A caller that widens the test source set must see the same widening in the
+    gate's own commands and in the reproduction command the analysis agent gets,
+    or the repair reproduces a different build (§FS-native-test-verification-gate.2).
+    """
+
+    _PROPERTY = ("-PincludeCodeCoverageSuite=true",)
+
+    def test_command_builders_carry_the_properties(self) -> None:
+        test_command = ntv._coordinate_test_command(
+            "g:a:1.0", ["/tmp/agent"], gradle_properties=self._PROPERTY
+        )
+        self.assertIn("-PincludeCodeCoverageSuite=true", test_command)
+        trace_command = ntv._run_native_trace_image_command(
+            coordinate="g:a:1.0",
+            run_dir="/tmp/run",
+            condition_packages=["g"],
+            metadata_config_dirs=[],
+            gradle_properties=self._PROPERTY,
+        )
+        self.assertIn("-PincludeCodeCoverageSuite=true", trace_command)
+
+    def test_runners_place_the_properties_on_the_gradle_command(self) -> None:
+        recorded: list[list[str]] = []
+
+        def _record(cmd, cwd, env, stdout, stderr, check, timeout=None):
+            recorded.append(list(cmd))
+            return Mock(returncode=0)
+
+        with tempfile.TemporaryDirectory() as scratch:
+            log_path = os.path.join(scratch, "log.txt")
+            with patch.object(ntv.subprocess, "run", side_effect=_record):
+                ntv._run_generate_metadata(
+                    reachability_repo_path=scratch,
+                    coordinate="g:a:1.0",
+                    output_dir=os.path.join(scratch, "agent"),
+                    log_path=log_path,
+                    env={},
+                    gradle_properties=self._PROPERTY,
+                )
+                ntv._run_coordinate_test(
+                    reachability_repo_path=scratch,
+                    coordinate="g:a:1.0",
+                    metadata_config_dirs=[],
+                    log_path=log_path,
+                    timeout_seconds=60,
+                    env={},
+                    gradle_properties=self._PROPERTY,
+                )
+                ntv._run_native_trace_image(
+                    reachability_repo_path=scratch,
+                    coordinate="g:a:1.0",
+                    run_dir=scratch,
+                    condition_packages=["g"],
+                    metadata_config_dirs=[],
+                    log_path=log_path,
+                    timeout_seconds=60,
+                    env={},
+                    gradle_properties=self._PROPERTY,
+                )
+        self.assertEqual(len(recorded), 3)
+        for command in recorded:
+            self.assertIn("-PincludeCodeCoverageSuite=true", command)
+
+
 class ClassKeyTests(unittest.TestCase):
 
     def test_replaces_dollar_signs(self) -> None:
