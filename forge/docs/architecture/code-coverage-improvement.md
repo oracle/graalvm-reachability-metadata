@@ -377,7 +377,8 @@ builders, serializers, parsers, adapters, configuration branches, error
 handling paths, and common object lifecycle operations. The API inventory is
 emitted as compact JSON and Markdown under
 `runtime/code-coverage/api-inventory/`; its canonical target `id` carries the
-full method identity.
+full method identity, and its class scope is the artifact's committed
+`allowed-packages` in full (§root/FS-metadata).
 
 The workflow should aim to cover the whole practical library API and internal
 runtime surface over repeated runs. If the target set is too large for one PR,
@@ -505,8 +506,16 @@ The Rhei template should decompose the workflow into these phases:
 2. **Prepare library** — create or verify the code coverage suite, prepare
    source context, and record baseline facts for the launcher-validated
    coordinate.
-3. **Generate API inventory** — deterministically write compact JSON and
-   Markdown reports for public user-callable API targets.
+3. **Generate API inventory** — a deterministic program state, not an agent
+   turn: it enumerates the public user-callable surface of the resolved
+   library jars and writes compact JSON and Markdown reports. The inventory's
+   scope is the artifact's committed `allowed-packages`, taken whole
+   (§root/FS-metadata): a class is in scope when it lies under any of those
+   packages, the same any-of rule the metadata validator enforces. A library
+   that declares several packages — 270 of the repository's artifacts do —
+   is inventoried across all of them; restricting to one silently shrinks
+   the API phase's whole target universe. The program's exit code is the
+   transition, exactly as in native-metadata preparation.
 4. **API coverage loop** — one task cycling deterministic measurement and an
    agent cover pass. Measurement runs JVM JaCoCo
    plus exact API-inventory correlation, persists `api-cover-report-<n>` history
@@ -721,9 +730,13 @@ sequenceDiagram
 
     rect rgb(253, 224, 71)
         note over R,W: Task code-coverage-api-inventory
-        R->>A: execute with the inventory helper
-        A->>W: derive public API targets from the library bytecode
-        A-->>R: api-inventory.json written, completed
+        R->>P: api-inventory runs the inventory helper
+        P->>W: javap over every class under the artifact's allowed-packages
+        alt inventory written
+            P-->>R: exit 0, completed
+        else a jar or javap failed
+            P-->>R: nonzero exit, park in human-intervention
+        end
     end
     note over R,A: execute edges carry no exit-code discriminator, so completed is always the edge taken
 
@@ -839,7 +852,8 @@ code of the process that just finished:
 | Stage | Owner | What it establishes | Exit |
 | --- | --- | --- | --- |
 | Conversion | deterministic program | The fixed inputs are coherent and the worktree, coordinate, and run record exist before any agent runs | `completed`, or `human-intervention` on exit 1 |
-| Phase execution | worker agent | Prepare, API inventory, and issue-mode publication each run one agent turn around a mandatory helper | The first legal `execute` edge, `completed` |
+| Phase execution | worker agent | Prepare and issue-mode publication each run one agent turn around a mandatory helper | The first legal `execute` edge, `completed` |
+| API inventory | deterministic program | The full public surface under every committed allowed package, as exact target ids | Exit 0 completes; nonzero parks in `human-intervention` |
 | Native metadata | deterministic program and gate analysis agent | Durable metadata that survives the gate's finalized re-run, with the coverage suite included end to end | Exit 0 completes; exit 3 parks in `human-intervention` |
 | API loop | measurement program and worker agent | Exact JaCoCo-vs-inventory truth, a ranked prompt, and a recorded stop decision every pass | Exit 0 completes the phase; 10 schedules a cover pass; 1-5 schedule a repair |
 | Deep loop | measurement program and worker agent | The same cycle over library-internal methods with sampled-PGO navigation | Exit 0 completes; 10 covers; 1-7 repair |
