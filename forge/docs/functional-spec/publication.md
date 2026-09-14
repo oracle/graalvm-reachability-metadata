@@ -617,7 +617,15 @@ maintainer. Because every branch records its finding at the same offset in the
 append-only `forge/FINDINGS.md` (§FS-local-branch-review), any two open pull
 requests conflict there, and each merge re-conflicts the rest; keeping both
 entries is the only correct resolution, so the repository configures git to
-take it without asking. Conflict refresh is deterministic queue maintenance,
+take it without asking. The per-coordinate benchmark results file
+(§FS-code-coverage-benchmarking.3) is the same situation one level up: its
+entries are keyed by run ID and the only legal edit is adding one, so two open
+publications always conflict there while never actually disagreeing. Git's
+textual merge cannot see that, so Forge resolves it itself: the base branch's
+entries plus the entries the head added, sorted by timestamp and run ID. The
+resolution may never modify or drop an existing entry, and a run ID appearing
+on both sides with different content is a real disagreement that escalates
+like any other conflict. Conflict refresh is deterministic queue maintenance,
 not review: before CI state can make a pull request eligible for an agent,
 Forge first approves the validated head and enables auto-merge, then merges the
 base branch into a conflicting same-repository head and pushes the result when
