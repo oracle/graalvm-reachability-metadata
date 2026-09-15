@@ -5055,3 +5055,93 @@ class BenchmarkResultsConflictResolutionTests(unittest.TestCase):
         head = [ancestor[0], self._entry("run-c", "2026-09-10T00:00:00Z")]
         resolved, _ = self._resolve(ancestor, head, ancestor)
         self.assertFalse(resolved)
+
+
+class RefreshPublicationDescriptorBaseTests(unittest.TestCase):
+    """The refresh re-anchors the head's descriptor to the merged base.
+
+    Trusted revalidation compares the result list against the descriptor's
+    recorded base commit, so the union merge alone would fail readiness
+    validation on every refreshed head (§FS-automated-pr-review).
+    """
+
+    _RESULTS = "code-coverage-benchmarks/com.example/demo/1.0.0.json"
+    _DESCRIPTOR = "stats/com.example/demo/1.0.0/pub-1/forge-publication.json"
+
+    @staticmethod
+    def _entry(run_id: str, timestamp: str) -> dict:
+        return {"runId": run_id, "timestamp": timestamp}
+
+    def _git(self, repo: str, *args: str) -> str:
+        return subprocess.run(
+            ["git", "-c", "user.name=t", "-c", "user.email=t@t", *args],
+            cwd=repo, check=True, capture_output=True, text=True,
+        ).stdout.strip()
+
+    def _write(self, repo: str, path: str, value) -> None:
+        absolute = os.path.join(repo, path)
+        os.makedirs(os.path.dirname(absolute), exist_ok=True)
+        with open(absolute, "w", encoding="utf-8") as destination:
+            json.dump(value, destination, indent=2, ensure_ascii=False)
+            destination.write("\n")
+
+    def _conflicted_repo(self) -> tuple[str, str, str]:
+        """Return (repo, ancestor sha, master sha) with a head merge in conflict."""
+        repo = tempfile.mkdtemp()
+        self.addCleanup(lambda: subprocess.run(["rm", "-rf", repo], check=False))
+        self._git(repo, "init", "-q", "-b", "master")
+        self._write(repo, self._RESULTS, [self._entry("run-a", "2026-09-08T00:00:00Z")])
+        self._git(repo, "add", "-A")
+        self._git(repo, "commit", "-qm", "ancestor")
+        ancestor = self._git(repo, "rev-parse", "HEAD")
+        self._git(repo, "checkout", "-qb", "head")
+        self._write(repo, self._RESULTS, [
+            self._entry("run-a", "2026-09-08T00:00:00Z"),
+            self._entry("run-h", "2026-09-10T00:00:00Z"),
+        ])
+        self._write(repo, self._DESCRIPTOR, {"base_commit": ancestor})
+        self._git(repo, "add", "-A")
+        self._git(repo, "commit", "-qm", "head result")
+        self._git(repo, "checkout", "-q", "master")
+        self._write(repo, self._RESULTS, [
+            self._entry("run-a", "2026-09-08T00:00:00Z"),
+            self._entry("run-m", "2026-09-09T00:00:00Z"),
+        ])
+        self._git(repo, "add", "-A")
+        self._git(repo, "commit", "-qm", "master result")
+        master = self._git(repo, "rev-parse", "HEAD")
+        self._git(repo, "checkout", "-q", "head")
+        merge = subprocess.run(
+            ["git", "merge", "master"],
+            cwd=repo, check=False, capture_output=True, text=True,
+        )
+        self.assertNotEqual(0, merge.returncode)
+        return repo, ancestor, master
+
+    def test_rewrites_and_stages_the_head_descriptor(self) -> None:
+        repo, ancestor, master = self._conflicted_repo()
+        self.assertTrue(
+            forge_metadata.resolve_benchmark_results_conflict(repo, self._RESULTS)
+        )
+        self.assertTrue(forge_metadata.refresh_publication_descriptor_base(repo))
+        descriptor = json.load(open(os.path.join(repo, self._DESCRIPTOR)))
+        self.assertEqual(master, descriptor["base_commit"])
+        staged = self._git(repo, "diff", "--cached", "--name-only").split()
+        self.assertIn(self._DESCRIPTOR, staged)
+        self._git(repo, "commit", "-q", "--no-edit")
+        merged = json.load(open(os.path.join(repo, self._RESULTS)))
+        self.assertEqual(["run-a", "run-m", "run-h"], [e["runId"] for e in merged])
+
+    def test_escalates_without_exactly_one_head_descriptor(self) -> None:
+        repo, _ancestor, _master = self._conflicted_repo()
+        second = "stats/com.example/demo/1.0.0/pub-2/forge-publication.json"
+        self._git(repo, "merge", "--abort")
+        self._write(repo, second, {"base_commit": "x"})
+        self._git(repo, "add", second)
+        self._git(repo, "commit", "-qm", "second descriptor")
+        merge = subprocess.run(
+            ["git", "merge", "master"],
+            cwd=repo, check=False, capture_output=True, text=True,
+        )
+        self.assertNotEqual(0, merge.returncode)
+        self.assertFalse(forge_metadata.refresh_publication_descriptor_base(repo))

@@ -625,7 +625,13 @@ textual merge cannot see that, so Forge resolves it itself: the base branch's
 entries plus the entries the head added, sorted by timestamp and run ID. The
 resolution may never modify or drop an existing entry, and a run ID appearing
 on both sides with different content is a real disagreement that escalates
-like any other conflict. Conflict refresh is deterministic queue maintenance,
+like any other conflict. Resolving the list obliges the refresh to re-anchor
+the head's own publication descriptor: trusted revalidation checks the result
+list against the descriptor's recorded base commit, so a refresh that unions
+the list while keeping the old base would fail readiness validation on every
+head it refreshed. The refresh therefore rewrites that one descriptor's
+`base_commit` to the base commit it merged in, and a head that does not carry
+exactly one descriptor escalates instead. Conflict refresh is deterministic queue maintenance,
 not review: before CI state can make a pull request eligible for an agent,
 Forge first approves the validated head and enables auto-merge, then merges the
 base branch into a conflicting same-repository head and pushes the result when
