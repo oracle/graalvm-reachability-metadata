@@ -1,0 +1,54 @@
+{
+  "add_new_library_support:2026-09-15": {
+    "timestamp": "2026-09-15T22:05:55.623425Z",
+    "library": "org.apache.sshd:sshd-common:2.18.0",
+    "starting_commit": "d617cf3541b5907fb86f606a14520352a3a20339",
+    "ending_commit": "6953dceff955d3ba00972043297760cf6d76b2c7",
+    "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-sol",
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "status": "failure",
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "no_action",
+      "issue_number": 9957,
+      "issue_label": "library-new-request",
+      "library": "org.apache.sshd:sshd-common:2.18.0",
+      "summary": "sshd-common is pure Java; SLF4J resolves transitively, while Bouncy Castle and EdDSA are optional. Meaningful coverage needs no extra dependency, Docker image, or system property.",
+      "deterministic_setup": [],
+      "agent_guidance": "Exercise public utility APIs using temporary files and in-memory data. Avoid optional Bouncy Castle/EdDSA algorithms and user SSH configuration unless explicitly adding those providers.",
+      "risks": [
+        "Native Image may require metadata for service-loaded providers or cryptographic implementations.",
+        "The module registers RootedFileSystemProvider through Java's service-loader mechanism; local native verification remains authoritative."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#9957 Support for org.apache.sshd:sshd-common:2.18.0; label=library-new-request; body_chars=39"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "gpt-5.6-luna",
+      "input_tokens_used": 367138,
+      "output_tokens_used": 3642
+    },
+    "metrics": {
+      "input_tokens_used": 238784,
+      "cached_input_tokens_used": 2783104,
+      "output_tokens_used": 18644,
+      "iterations": 31,
+      "cost_usd": 3.1448,
+      "generated_loc": 0,
+      "tested_library_loc": 0,
+      "metadata_entries": 0,
+      "code_coverage_percent": 0.0
+    },
+    "artifacts": {
+      "metadata_file": "None"
+    }
+  }
+}

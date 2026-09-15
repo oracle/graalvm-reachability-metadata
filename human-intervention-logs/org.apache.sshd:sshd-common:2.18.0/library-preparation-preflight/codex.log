@@ -1,0 +1,10 @@
+{
+  "action": "no_action",
+  "summary": "sshd-common is pure Java; SLF4J resolves transitively, while Bouncy Castle and EdDSA are optional. Meaningful coverage needs no extra dependency, Docker image, or system property.",
+  "deterministic_setup": [],
+  "agent_guidance": "Exercise public utility APIs using temporary files and in-memory data. Avoid optional Bouncy Castle/EdDSA algorithms and user SSH configuration unless explicitly adding those providers.",
+  "risks": [
+    "Native Image may require metadata for service-loaded providers or cryptographic implementations.",
+    "The module registers RootedFileSystemProvider through Java's service-loader mechanism; local native verification remains authoritative."
+  ]
+}

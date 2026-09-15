@@ -1,0 +1,235 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :tckTest
+====================
+Testing library: org.apache.sshd:sshd-common:2.18.0
+Command: `/home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9957-316b318f/gradlew nativeTest`
+Executing test...
+-------
+Starting a Gradle Daemon, 1 busy and 1 incompatible and 13 stopped Daemons could not be reused, use --status for details
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+> Task :compileJava NO-SOURCE
+> Task :processResources NO-SOURCE
+> Task :classes UP-TO-DATE
+> Task :tck-test-support:compileJava UP-TO-DATE
+> Task :jar UP-TO-DATE
+> Task :tck-test-support:processResources UP-TO-DATE
+> Task :tck-test-support:classes UP-TO-DATE
+> Task :tck-test-support:jar UP-TO-DATE
+> Task :checkTestTimeoutAnnotations
+> Task :compileTestJava UP-TO-DATE
+> Task :processTestResources NO-SOURCE
+> Task :testClasses UP-TO-DATE
+> Task :test UP-TO-DATE
+> Task :generateTestResourcesConfigFile UP-TO-DATE
+> Task :nativeTestCompile UP-TO-DATE
+
+> Task :nativeTest FAILED
+[junit-platform-native] WARNING: -djunit.platform.listeners.uid.tracking.output.dir not specified, trying to find test-ids on default Gradle/Maven locations. As this is a fallback mode, it could take a while. This should only happen if you are running tests executable manually and you didn't pass uid output directory with -djunit.platform.listeners.uid.tracking.output.dir=<path>.
+[junit-platform-native] WARNING: Using test-ids from default Gradle project location:/home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9957-316b318f/tests/src/org.apache.sshd/sshd-common/2.18.0/build/test-results/test/testlist
+SLF4J: Failed to load class "org.slf4j.impl.StaticLoggerBinder".
+[junit-platform-native] Running in 'test listener' mode using files matching pattern [junit-platform-unique-ids*] found in folder [/home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9957-316b318f/tests/src/org.apache.sshd/sshd-common/2.18.0/build/test-results/test/testlist] and its subfolders.
+SLF4J: Defaulting to no-operation (NOP) logger implementation
+SLF4J: See http://www.slf4j.org/codes.html#StaticLoggerBinder for further details.
+JUnit Platform on Native Image - report
+----------------------------------------
+
+org_apache_sshd.sshd_common.Sshd_commonTest > generatesEncodesAndSignsRsaKeys() FAILED
+
+org_apache_sshd.sshd_common.Sshd_commonTest > encryptsAuthenticatesDigestsAndCompressesSshPayloads() FAILED
+
+org_apache_sshd.sshd_common.Sshd_commonTest > createsJcaEntitiesThroughSecurityUtils() FAILED
+
+org_apache_sshd.sshd_common.Sshd_commonTest > parsesHashedKnownHostsAndAuthorizedKeys() FAILED
+
+org_apache_sshd.sshd_common.Sshd_commonTest > dispatchesFutureListenersThroughLibraryProxy() FAILED
+
+org_apache_sshd.sshd_common.Sshd_commonTest > loadsPackagedVersionProperties() FAILED
+
+org_apache_sshd.sshd_common.Sshd_commonTest > parsesAndResolvesOpenSshHostConfiguration() SUCCESSFUL
+
+
+Failures (6):
+  JUnit Jupiter:Sshd_commonTest:generatesEncodesAndSignsRsaKeys()
+    MethodSource [className = 'org_apache_sshd.sshd_common.Sshd_commonTest', methodName = 'generatesEncodesAndSignsRsaKeys', methodParameterTypes = '']
+    => java.lang.IllegalStateException: java.lang.ClassNotFoundException: org.apache.sshd.common.util.security.SunJCESecurityProviderRegistrar
+       org.apache.sshd.common.util.security.SecurityUtils.register(SecurityUtils.java:488)
+       org.apache.sshd.common.util.security.SecurityUtils.createSecurityEntityFactory(SecurityUtils.java:825)
+       org.apache.sshd.common.util.security.SecurityUtils.lambda$resolveSecurityEntityFactory$4(SecurityUtils.java:817)
+       java.base@25.0.2/java.util.TreeMap.callMappingFunctionWithCheck(TreeMap.java:782)
+       java.base@25.0.2/java.util.TreeMap.computeIfAbsent(TreeMap.java:592)
+       [...]
+     Caused by: java.lang.ClassNotFoundException: org.apache.sshd.common.util.security.SunJCESecurityProviderRegistrar
+       org.apache.sshd.common.util.threads.ThreadUtils.createDefaultInstance(ThreadUtils.java:181)
+       org.apache.sshd.common.util.threads.ThreadUtils.createDefaultInstance(ThreadUtils.java:161)
+       org.apache.sshd.common.util.security.SecurityUtils.register(SecurityUtils.java:477)
+       [...]
+  JUnit Jupiter:Sshd_commonTest:encryptsAuthenticatesDigestsAndCompressesSshPayloads()
+    MethodSource [className = 'org_apache_sshd.sshd_common.Sshd_commonTest', methodName = 'encryptsAuthenticatesDigestsAndCompressesSshPayloads', methodParameterTypes = '']
+    => java.lang.IllegalStateException: java.lang.ClassNotFoundException: org.apache.sshd.common.util.security.SunJCESecurityProviderRegistrar
+       org.apache.sshd.common.util.security.SecurityUtils.register(SecurityUtils.java:488)
+       org.apache.sshd.common.util.security.SecurityUtils.createSecurityEntityFactory(SecurityUtils.java:825)
+       org.apache.sshd.common.util.security.SecurityUtils.lambda$resolveSecurityEntityFactory$4(SecurityUtils.java:817)
+       java.base@25.0.2/java.util.TreeMap.callMappingFunctionWithCheck(TreeMap.java:782)
+       java.base@25.0.2/java.util.TreeMap.computeIfAbsent(TreeMap.java:592)
+       [...]
+     Caused by: java.lang.ClassNotFoundException: org.apache.sshd.common.util.security.SunJCESecurityProviderRegistrar
+       org.apache.sshd.common.util.threads.ThreadUtils.createDefaultInstance(ThreadUtils.java:181)
+       org.apache.sshd.common.util.threads.ThreadUtils.createDefaultInstance(ThreadUtils.java:161)
+       org.apache.sshd.common.util.security.SecurityUtils.register(SecurityUtils.java:477)
+       [...]
+  JUnit Jupiter:Sshd_commonTest:createsJcaEntitiesThroughSecurityUtils()
+    MethodSource [className = 'org_apache_sshd.sshd_common.Sshd_commonTest', methodName = 'createsJcaEntitiesThroughSecurityUtils', methodParameterTypes = '']
+    => java.lang.IllegalStateException: java.lang.ClassNotFoundException: org.apache.sshd.common.util.security.SunJCESecurityProviderRegistrar
+       org.apache.sshd.common.util.security.SecurityUtils.register(SecurityUtils.java:488)
+       org.apache.sshd.common.util.security.SecurityUtils.createSecurityEntityFactory(SecurityUtils.java:825)
+       org.apache.sshd.common.util.security.SecurityUtils.lambda$resolveSecurityEntityFactory$4(SecurityUtils.java:817)
+       java.base@25.0.2/java.util.TreeMap.callMappingFunctionWithCheck(TreeMap.java:782)
+       java.base@25.0.2/java.util.TreeMap.computeIfAbsent(TreeMap.java:592)
+       [...]
+     Caused by: java.lang.ClassNotFoundException: org.apache.sshd.common.util.security.SunJCESecurityProviderRegistrar
+       org.apache.sshd.common.util.threads.ThreadUtils.createDefaultInstance(ThreadUtils.java:181)
+       org.apache.sshd.common.util.threads.ThreadUtils.createDefaultInstance(ThreadUtils.java:161)
+       org.apache.sshd.common.util.security.SecurityUtils.register(SecurityUtils.java:477)
+       [...]
+  JUnit Jupiter:Sshd_commonTest:parsesHashedKnownHostsAndAuthorizedKeys()
+    MethodSource [className = 'org_apache_sshd.sshd_common.Sshd_commonTest', methodName = 'parsesHashedKnownHostsAndAuthorizedKeys', methodParameterTypes = '']
+    => java.lang.IllegalStateException: java.lang.ClassNotFoundException: org.apache.sshd.common.util.security.SunJCESecurityProviderRegistrar
+       org.apache.sshd.common.util.security.SecurityUtils.register(SecurityUtils.java:488)
+       org.apache.sshd.common.util.security.SecurityUtils.createSecurityEntityFactory(SecurityUtils.java:825)
+       org.apache.sshd.common.util.security.SecurityUtils.lambda$resolveSecurityEntityFactory$4(SecurityUtils.java:817)
+       java.base@25.0.2/java.util.TreeMap.callMappingFunctionWithCheck(TreeMap.java:782)
+       java.base@25.0.2/java.util.TreeMap.computeIfAbsent(TreeMap.java:592)
+       [...]
+     Caused by: java.lang.ClassNotFoundException: org.apache.sshd.common.util.security.SunJCESecurityProviderRegistrar
+       org.apache.sshd.common.util.threads.ThreadUtils.createDefaultInstance(ThreadUtils.java:181)
+       org.apache.sshd.common.util.threads.ThreadUtils.createDefaultInstance(ThreadUtils.java:161)
+       org.apache.sshd.common.util.security.SecurityUtils.register(SecurityUtils.java:477)
+       [...]
+  JUnit Jupiter:Sshd_commonTest:dispatchesFutureListenersThroughLibraryProxy()
+    MethodSource [className = 'org_apache_sshd.sshd_common.Sshd_commonTest', methodName = 'dispatchesFutureListenersThroughLibraryProxy', methodParameterTypes = '']
+    => org.graalvm.nativeimage.MissingReflectionRegistrationError: Cannot reflectively access the proxy class inheriting ['org.apache.sshd.common.future.SshFutureListener'].
+
+The matching metadata element in the 'reflection' section of 'reachability-metadata.json' is:
+
+    {
+      "type": {
+        "proxy": [
+          "org.apache.sshd.common.future.SshFutureListener"
+        ]
+      }
+    }
+
+The 'reachability-metadata.json' file should be located in 'META-INF/native-image/<group-id>/<artifact-id>/' of your project. For further help, see https://www.graalvm.org/latest/reference-manual/native-image/metadata/#reflection
+       org.graalvm.nativeimage.builder/com.oracle.svm.core.reflect.MissingReflectionRegistrationUtils.reportProxyAccess(MissingReflectionRegistrationUtils.java:151)
+       org.graalvm.nativeimage.builder/com.oracle.svm.core.reflect.proxy.DynamicProxySupport.getProxyClass(DynamicProxySupport.java:284)
+       java.base@25.0.2/java.lang.reflect.Proxy.getProxyConstructor(Proxy.java:63)
+       java.base@25.0.2/java.lang.reflect.Proxy.newProxyInstance(Proxy.java:924)
+       org.apache.sshd.common.util.ProxyUtils.newProxyInstance(ProxyUtils.java:40)
+       org.apache.sshd.common.util.EventListenerUtils.proxyWrapper(EventListenerUtils.java:195)
+       org.apache.sshd.common.util.EventListenerUtils.proxyWrapper(EventListenerUtils.java:150)
+       org_apache_sshd.sshd_common.Sshd_commonTest.dispatchesFutureListenersThroughLibraryProxy(Sshd_commonTest.java:238)
+       java.base@25.0.2/java.lang.reflect.Method.invoke(Method.java:565)
+       org.junit.platform.commons.util.ReflectionUtils.invokeMethod(ReflectionUtils.java:727)
+       [...]
+  JUnit Jupiter:Sshd_commonTest:loadsPackagedVersionProperties()
+    MethodSource [className = 'org_apache_sshd.sshd_common.Sshd_commonTest', methodName = 'loadsPackagedVersionProperties', methodParameterTypes = '']
+    => java.lang.AssertionError: 
+Expecting actual:
+  {}
+to contain key:
+  "sshd-version"
+       org_apache_sshd.sshd_common.Sshd_commonTest.loadsPackagedVersionProperties(Sshd_commonTest.java:250)
+       java.base@25.0.2/java.lang.reflect.Method.invoke(Method.java:565)
+       org.junit.platform.commons.util.ReflectionUtils.invokeMethod(ReflectionUtils.java:727)
+       org.junit.jupiter.engine.execution.MethodInvocation.proceed(MethodInvocation.java:60)
+       org.junit.jupiter.engine.execution.InvocationInterceptorChain$ValidatingInvocation.proceed(InvocationInterceptorChain.java:131)
+       org.junit.jupiter.api.AssertTimeoutPreemptively.lambda$submitTask$3(AssertTimeoutPreemptively.java:95)
+       java.base@25.0.2/java.util.concurrent.FutureTask.run(FutureTask.java:328)
+       java.base@25.0.2/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1090)
+       java.base@25.0.2/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:614)
+       java.base@25.0.2/java.lang.Thread.runWith(Thread.java:1487)
+       [...]
+
+Test run finished after 11 ms
+[         3 containers found      ]
+[         0 containers skipped    ]
+[         3 containers started    ]
+[         0 containers aborted    ]
+[         3 containers successful ]
+[         0 containers failed     ]
+[         7 tests found           ]
+[         0 tests skipped         ]
+[         7 tests started         ]
+[         0 tests aborted         ]
+[         1 tests successful      ]
+[         6 tests failed          ]
+
+
+[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9957-316b318f/tests/src/org.apache.sshd/sshd-common/2.18.0/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':nativeTest'.
+> Process 'command '/home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9957-316b318f/tests/src/org.apache.sshd/sshd-common/2.18.0/build/native/nativeTestCompile/org.apache.sshd.sshd-common_tests-tests'' finished with non-zero exit value 1
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+BUILD FAILED
+ in 11sDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+18 actionable tasks: 2 executed, 16 up-to-date
+
+> Task :tckTest FAILED
+
+[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9957-316b318f/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':tckTest'.
+> Test for org.apache.sshd:sshd-common:2.18.0 failed with exit code 1.
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD FAILED in 14s
+9 actionable tasks: 1 executed, 8 up-to-date
