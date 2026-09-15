@@ -102,20 +102,22 @@ from ai_workflows.agents.agent_runtime import (
     get_analysis_agent,
 )
 from git_scripts.common_git import (
+    GitTransportError,
+    get_issue_project_item_status,
+    get_origin_owner,
+    run_git_transport,
+)
+from git_scripts.github_cli import (
     GITHUB_TRANSIENT_RETRY_ATTEMPTS,
     GitHubError,
     GitHubRateLimitExceeded,
-    GitTransportError,
     _format_github_retry_reason,
     _github_retry_delay_seconds,
     _log_github_transient_retry,
     ensure_gh_authenticated,
-    get_issue_project_item_status,
-    get_origin_owner,
     is_github_rate_limit_text,
     is_github_transient_failure_text,
     log_github_query,
-    run_git_transport,
     run_github_command_with_retries,
     run_github_json_with_retries,
     run_github_with_retries,
@@ -138,11 +140,13 @@ from git_scripts.publish_ni_run_fix import (
 from git_scripts.publish_improve_coverage import (
     main as run_publish_improve_coverage,
 )
-from git_scripts.local_branch_review import (
-    REVIEW_SKILLS_BY_TASK_TYPE,
+from git_scripts.local_review_records import (
     LocalReviewVerdict,
-    _read_verdict,
     _record_finding,
+)
+from git_scripts.local_review_session import (
+    REVIEW_SKILLS_BY_TASK_TYPE,
+    _read_verdict,
 )
 from git_scripts.publication_descriptor import validate_publication_descriptor
 from utility_scripts.dynamic_access_exhaust_report import (
