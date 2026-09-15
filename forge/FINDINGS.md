@@ -8,6 +8,11 @@ Newest entry first; every non-approval is recorded, including one a repair later
 **Test-only metadata shadowed shipped registrations**
 
 The generated test-only reachability metadata duplicated shipped registrations for POJODefinition, array types, LinkedHashMap, and TreeMap behind test-class conditions, so those registrations could satisfy native tests without exercising the shipped library-conditioned entries. It also contained unstable $$Lambda/0x... conditions and nanoTime-derived missing-class targets, which are not stable valid evidence. The contribution additionally changed tracked native test-result XML even though that generated path is repository-ignored.
+## 2026-09-15 — org.apache.sshd:sshd-core:2.18.0 (#9958)
+
+**New-library contribution has zero dynamic-access coverage**
+
+The submitted statistics reported 0/6 covered dynamic-access calls, violating the above-20% gate for library-new-request contributions in §FS-contribution-contract.3.
 
 ## 2026-09-10 — org.apache.sshd:sshd-sftp:2.18.0 (#9959)
 
