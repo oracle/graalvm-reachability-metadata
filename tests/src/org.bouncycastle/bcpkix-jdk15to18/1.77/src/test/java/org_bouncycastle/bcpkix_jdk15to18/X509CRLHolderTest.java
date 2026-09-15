@@ -10,8 +10,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.OutputStream;
+import java.io.Serializable;
 import java.math.BigInteger;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
@@ -71,13 +75,60 @@ public class X509CRLHolderTest {
 
     private static X509CRLHolder roundTrip(X509CRLHolder original) throws Exception {
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-        try (ObjectOutputStream output = new ObjectOutputStream(bytes)) {
+        try (EncodingObjectOutputStream output = new EncodingObjectOutputStream(bytes)) {
             output.writeObject(original);
+            assertThat(output.crlEncoding).containsExactly(original.getEncoded());
         }
 
-        try (ObjectInputStream input = new ObjectInputStream(
+        try (EncodingObjectInputStream input = new EncodingObjectInputStream(
                 new ByteArrayInputStream(bytes.toByteArray()))) {
             return (X509CRLHolder) input.readObject();
+        }
+    }
+
+    private static final class EncodingObjectOutputStream extends ObjectOutputStream {
+
+        private byte[] crlEncoding;
+
+        private EncodingObjectOutputStream(OutputStream output) throws IOException {
+            super(output);
+            enableReplaceObject(true);
+        }
+
+        @Override
+        protected Object replaceObject(Object object) {
+            if (crlEncoding == null && object instanceof byte[]) {
+                crlEncoding = (byte[]) object;
+                return new SerializedCrlEncoding(crlEncoding.clone());
+            }
+            return object;
+        }
+    }
+
+    private static final class EncodingObjectInputStream extends ObjectInputStream {
+
+        private EncodingObjectInputStream(InputStream input) throws IOException {
+            super(input);
+            enableResolveObject(true);
+        }
+
+        @Override
+        protected Object resolveObject(Object object) {
+            if (object instanceof SerializedCrlEncoding) {
+                return ((SerializedCrlEncoding) object).encoding;
+            }
+            return object;
+        }
+    }
+
+    private static final class SerializedCrlEncoding implements Serializable {
+
+        private static final long serialVersionUID = 1L;
+
+        private final byte[] encoding;
+
+        private SerializedCrlEncoding(byte[] encoding) {
+            this.encoding = encoding;
         }
     }
 }
