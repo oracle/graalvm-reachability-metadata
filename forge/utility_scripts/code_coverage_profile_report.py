@@ -4,7 +4,7 @@
 # work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 
 # Deep-method coverage, with JaCoCo as the only coverage authority and sampled PGO as
-# navigation: §AR-code-coverage-improvement.3.2, §AR-code-coverage-improvement-architecture.1.
+# navigation: §AR-code-coverage-improvement.4.2, §AR-code-coverage-improvement.3.
 
 """
 JaCoCo-exact deep-method report with sampled-PGO path guidance.
@@ -60,7 +60,7 @@ from utility_scripts.code_coverage_model import (
 MAX_LISTED_METHODS = 200
 MAX_RENDERED_DISPATCH_CANDIDATES = 12
 #: Uncovered targets leave the prompt after this many unsuccessful attempts
-#: (§AR-code-coverage-improvement.3.2).
+#: (§AR-code-coverage-improvement.4.2).
 MAX_UNCOVERED_ATTEMPTS = 3
 TARGET_STATE_STATUSES: frozenset[str] = frozenset({
     "pending", "selected", "attempted", "completed", "skipped", "exhausted", "failed",
@@ -91,11 +91,11 @@ SYNTHETIC_LAMBDA_CLASS_MARKER = "$$Lambda"
 FACTORY_METHOD_HOLDER = "com.oracle.svm.core.code.FactoryMethodHolder"
 
 #: Method-name prefixes the compiler owns; no test can name one of these
-#: (§AR-code-coverage-improvement.3.2.1).
+#: (§AR-code-coverage-improvement.4.2.1).
 SYNTHETIC_METHOD_PREFIXES = ("lambda$", "access$")
 
 #: Methods that hand a closure to another thread, so its body runs later, on a
-#: thread the test does not control (§AR-code-coverage-improvement.3.2.1).
+#: thread the test does not control (§AR-code-coverage-improvement.4.2.1).
 HAND_OFF_METHOD_NAMES: frozenset[str] = frozenset({
     "execute",
     "invokeAll",
@@ -195,7 +195,7 @@ def library_owners(library_methods: set[str] | None) -> set[str] | None:
 
     Jar membership, not package prefix: the library's own test-classifier
     artifact ships classes in the library's packages
-    (§AR-code-coverage-improvement.3.2).
+    (§AR-code-coverage-improvement.4.2).
     """
     if library_methods is None:
         return None
@@ -448,7 +448,7 @@ def _creator_by_name(
 
     The body name carries the enclosing method's name without its parameter
     types, so this answers only when that name identifies exactly one method
-    (§AR-code-coverage-improvement.3.2.1).
+    (§AR-code-coverage-improvement.4.2.1).
     """
     parts: list[str] = ref.name.split("$")
     if len(parts) < 3 or not parts[1]:
@@ -465,7 +465,7 @@ def _index_synthetic_lambdas(graph: CallGraph) -> None:
     constructor is called where the closure is captured, and its interface
     method calls the body. Both hops are exact, so neither the overload
     ambiguity of the body name nor the meaningless generated class name reaches
-    a prompt (§AR-code-coverage-improvement.3.2.1).
+    a prompt (§AR-code-coverage-improvement.4.2.1).
     """
     by_owner: dict[str, list[int]] = {}
     by_owner_name: dict[tuple[str, str], list[int]] = {}
@@ -523,7 +523,7 @@ def _index_factory_stubs(
     The return type and parameters identify the constructor represented by a
     factory stub. Requiring that exact constructor in the bytecode inventory
     avoids inventing source-level constructors for other generated factories
-    (§AR-code-coverage-improvement.3.2.1).
+    (§AR-code-coverage-improvement.4.2.1).
     """
     if library_methods is None:
         return
@@ -545,7 +545,7 @@ def _mark_dispatch_edges(
 
     A virtual site is marked when either holds. The site admits a generated
     lambda class, so it invokes a functional interface whose object was captured
-    elsewhere and handed in (§AR-code-coverage-improvement.3.2.1). Or its
+    elsewhere and handed in (§AR-code-coverage-improvement.4.2.1). Or its
     statically declared target belongs to a foreign type — `Iterator.hasNext`,
     `Closeable.close`, `Object.equals` — where class-hierarchy analysis answers
     with every implementation in the image and none of them is what runs.
@@ -585,7 +585,7 @@ def _add_creation_edges(graph: CallGraph) -> None:
 
     The dump links a body only to its generated class, so without this edge the
     single honest route to a closure body does not exist
-    (§AR-code-coverage-improvement.3.2.1).
+    (§AR-code-coverage-improvement.4.2.1).
     """
     for creator_id, body_ids in sorted(graph.closures_of.items()):
         existing: set[int] = {
@@ -826,7 +826,7 @@ def _existing_test_frame_index(full_path: list[tuple[MethodRef, int]]) -> int | 
 def _translated_ref(static_id: int, graph: CallGraph) -> MethodRef:
     """Return the source-level identity used to compare path steps.
 
-    §AR-code-coverage-improvement.3.2.1
+    §AR-code-coverage-improvement.4.2.1
     """
     creator_id: int = graph.creator_of.get(static_id, static_id)
     return graph.path_aliases.get(creator_id, graph.methods[creator_id])
@@ -865,7 +865,7 @@ def _multi_source_routes(
         for edge in graph.adjacency.get(current, []):
             # A functional-interface call site names no callee of its own, so
             # routing through it invents a reachability claim
-            # (§AR-code-coverage-improvement.3.2.1).
+            # (§AR-code-coverage-improvement.4.2.1).
             if edge["kind"] == "dispatch":
                 continue
             callee: int = edge["callee"]
@@ -1313,7 +1313,7 @@ def _closure_stats(
     """How many closures this method owns, and how many never execute.
 
     This is what the excluded synthetic rows carried, moved onto the one name an
-    agent can act on (§AR-code-coverage-improvement.3.2.1). A body JaCoCo never
+    agent can act on (§AR-code-coverage-improvement.4.2.1). A body JaCoCo never
     reported counts as not executed, exactly as an unreported method counts as
     uncovered everywhere else in this phase.
     """
@@ -1502,7 +1502,7 @@ def correlate(
     # A JaCoCo report covers every instrumented class on the test runtime
     # classpath, which for libraries publishing a `test`-classifier artifact
     # includes their own unit tests. Restrict the deep universe to methods the
-    # resolved library jars actually declare (§AR-code-coverage-improvement.3.2).
+    # resolved library jars actually declare (§AR-code-coverage-improvement.4.2).
     deep_candidate_ids: set[str] = jacoco_ids - inventory_ids
     foreign_ids: set[str] = (
         deep_candidate_ids - library_methods if library_methods is not None else set()
@@ -1555,7 +1555,7 @@ def correlate(
     # Compiler-owned methods stay in the universe and the denominator, but no
     # agent can write a test naming one, and for nearly all of them the
     # enclosing method is an offered target already
-    # (§AR-code-coverage-improvement.3.2.1).
+    # (§AR-code-coverage-improvement.4.2.1).
     bulk_records: list[NearCallRecord] = [
         record
         for record in uncovered_records
@@ -1721,7 +1721,7 @@ def _display_method(ref: MethodRef, qualify_owner: bool) -> str:
 def _display_path(static_path: list[int], graph: CallGraph, limit: int = 6) -> str:
     # Generated lambda classes and extracted bodies carry compiler-chosen names;
     # the agent can only act on the method that creates them
-    # (§AR-code-coverage-improvement.3.2.1).
+    # (§AR-code-coverage-improvement.4.2.1).
     path: list[MethodRef] = _translated_path(static_path, graph)
     selected: list[MethodRef | None]
     if len(path) <= limit:

@@ -4,8 +4,8 @@ This workflow is getting its own spec. What follows is the current design in one
 document — behavior and architecture together — so it
 can be cited while it is worked on. A later change splits it the way the rest of
 Forge is split: what the workflow must do into the functional spec, the engine
-that runs it into [workflows.md](workflows.md), and the driver that prepares it
-into [drivers.md](drivers.md). Until then, treat the two declarations here as one
+that runs it into [workflows.md](../workflows.md), and the driver that prepares it
+into [drivers.md](../drivers.md). Until then, treat the two declarations here as one
 component's documentation rather than as a settled behavior contract.
 
 Code coverage improvement is a planned Forge workflow
@@ -30,6 +30,14 @@ report. JaCoCo is the sole coverage metric. Sampled GraalVM PGO profiles and the
 Native Image static call graph provide a later, separate navigation signal that
 shows an agent how current execution diverges from JaCoCo-uncovered internal
 library methods; sampling never changes a coverage result.
+
+The benchmark's naive baseline arm (§AR-code-coverage-benchmarking.3) runs
+this same pipeline with the guidance disabled: shared preparation,
+measurement, and publication, but a bare prompt and no guided tail. Everything
+this document describes beyond that shared loop — unlock-ranked API targets,
+receiver-obtainability filtering, the deep phase, native metadata, and
+finalization — is the treatment the benchmark measures against the baseline
+(§FS-code-coverage-benchmarking.7).
 
 ## 2. Scope
 
@@ -155,14 +163,121 @@ This workflow must not replace dynamic-access generation. It complements it:
 - A PR may contain both improvements when a strategy deliberately chains the
   workflows, but each workflow must report its own metrics.
 
-## 3. Coverage Model
+## 3. Components
+
+The workflow is its own component because its intent, inputs, metrics, and
+review evidence differ from dynamic-access coverage — it is its own queue
+(§FS-forge-scope). It reuses Forge's normal driver, strategy, agent,
+verification, metrics, and publication boundaries (§AR-forge-drivers), and is
+split into deterministic utilities plus a workflow engine:
+
+- **Rhei template and converter** — consumes one `code-coverage-improvement` issue,
+  resolves the coordinate and worktree, and renders the executable task plan.
+- **Workflow driver** — resolves the coordinate, existing metadata-generation
+  test suite, separate code coverage test suite, strategy, metrics root, source
+  context, and optional chunk state before constructing the workflow engine.
+- **API inventory builder** — derives promptable API and behavior groups from
+  the library artifact, sources, documentation, and upstream tests when
+  available. Implemented deterministically from the library jar via `javap` in
+  `forge/utility_scripts/code_coverage_api_inventory.py`.
+- **Bytecode call-graph extractor** — reads the resolved library artifacts and
+  emits every method and every call edge as CSV, using canonical identities
+  shared with the identity model. Implemented with the JDK Class-File API in
+  `forge/utility_scripts/java/CallGraphExtractor.java`, run through single-file
+  source launch so it needs no build step. It reads class files directly rather
+  than parsing `javap` output, which keeps `invokedynamic` lambda targets and
+  raw descriptors exact (§AR-code-coverage-improvement.4.1.1).
+- **API target ranker** — orders JaCoCo-uncovered public entries by the amount of
+  still-uncovered code each unlocks and renders the API-cover prompt, filling it
+  to the cap. Implemented in `forge/utility_scripts/code_coverage_api_rank.py`.
+  It reuses the cached call graph and recomputes reachable sets each iteration
+  against the shrinking universe (§AR-code-coverage-improvement.4.1.1).
+- **JVM coverage validator** — runs Java compilation and JVM tests under JaCoCo,
+  joins exact JaCoCo identities with the API inventory, and writes the public
+  API baseline and post-iteration reports. Implemented in
+  `forge/utility_scripts/code_coverage_validate.py`, driving the existing
+  `compileTestJava`/`javaTest`/`jacocoTestReport` harness tasks.
+- **JaCoCo evidence parser** — normalizes every method in the tested library's
+  JaCoCo XML into an exact identity, covered/uncovered status, and source
+  evidence shared by the public API validator and deep analyzer. Implemented in
+  `forge/utility_scripts/code_coverage_jacoco.py`. It never uses arity-only
+  identities to decide coverage.
+- **Native metadata preparer** — runs once after the API-cover loop and before
+  PGO discovery: generates reachability metadata and repairs it with the Codex
+  `fix-missing-reachability-metadata` skill until a Native Image test passes, so
+  the PGO-sampling builds succeed. Once, rather than per iteration, is the point:
+  the deep phase makes six collections — one baseline and five post-iteration
+  reports — and each would otherwise have to rediscover and repair the same
+  metadata gaps. The public JaCoCo phase stays JVM-only for the same reason, and
+  the deep phase's Native Image builds include the extension suite
+  (`-PincludeCodeCoverageSuite=true`), which is what makes valid metadata a
+  precondition. Supplemental configs the suite needs live in its suite-local
+  `code-coverage-improvement/metadata/` directory, applied on the include lane
+  and promotion candidates for `metadata/`. A failed `generateMetadata` stops
+  immediately instead of validating or repairing stale metadata; when repair
+  exhausts its budget the run is flagged `needsHumanIntervention` so the reviewed
+  Rhei task routes to a human. Implemented in
+  `forge/utility_scripts/code_coverage_prepare_native_metadata.py`.
+- **Native Image deep-path analyzer** — intersects exact JaCoCo library methods
+  with the analysis call-tree CSV graph, subtracts public API inventory entries,
+  restricts what remains to the methods the resolved library jars declare via
+  `--library-methods`, and uses sampled `.iprof` stacks only to navigate
+  JaCoCo-uncovered internal methods. It retains every record in JSON and emits compact `Observed` /
+  `Uncovered paths` Markdown capped at 100 methods. Implemented in
+  `forge/utility_scripts/code_coverage_profile_report.py`; the sampling image
+  and call-tree CSVs are produced by the `nativeTestPGOSampling` and
+  `runNativeTestPGO` harness tasks (`--pgo-sampling
+  -H:PGOSamplingPeriodMicros=<micros> -H:+PrintAnalysisCallTree
+  -H:PrintAnalysisCallTreeType=CSV`; the run dumps the profile through
+  `-XX:ProfilesDumpFile`). Profile `<`-chain contexts are leaf-first
+  (`callee:bci<caller:bci`), so sampled stacks read right-to-left from the root.
+- **Identity model** — normalizes API inventory, JaCoCo, call-tree CSV, and
+  sampled-profile method identities in
+  `forge/utility_scripts/code_coverage_model.py`.
+- **Marginal-yield stop evaluator** — reads a phase's own report history, derives
+  its per-pass yield series, and decides whether the phase has stopped producing
+  coverage (§AR-code-coverage-improvement.4.3). Implemented in
+  `forge/utility_scripts/code_coverage_stop.py` and shared by both measurement
+  states, so the two phases cannot drift onto different rules. It records the
+  decision on every pass, not only on the pass that stops a phase.
+- **Target-state store** — measurement-owned attempt and rotation state carried
+  in the discovery-report history; agents never author target state. Externally
+  supplied schema-valid state files remain accepted at finalization.
+- **Workflow engine** — owns prompt/command cycles, retries, target selection,
+  JaCoCo progress comparison, path refresh, and terminal status.
+- **Worker target** — the single `worker_agent` input drives every agent state,
+  defaulting to `pi[high]:openai-codex/gpt-5.6-luna`. Rhei's target grammar
+  carries the reasoning level in the mode bracket, not in the model string: a
+  model written as `<model>:<thinking>` is parsed as a provider/model pair and
+  silently resolves to a different model. The template therefore bundles a `pi`
+  agent profile in its `settings.json` whose `high` and `xhigh` modes add
+  `--thinking`, and publication reads the model and thinking level back out of
+  the same target, using the model to name the head branch and rendering both in the pull
+  request body (§AR-code-coverage-improvement.5). That profile replaces
+  Rhei's built-in one outright rather than extending it, so it restates the
+  `session` block as well: without it Rhei passes no `--session-dir`, cannot
+  read back the agent's native transcript, and silently captures no per-state
+  snapshot for a workflow whose every agent state is otherwise snapshotted.
+- **Publication handoff** — publishes only PR-eligible runs after local
+  CI-equivalent verification passes (§AR-forge-verification-publication-boundary).
+  Implemented in `forge/git_scripts/publish_code_coverage_improvement.py`, which
+  contributes this route's expected paths and descriptor to the shared branch
+  publication pipeline (§AR-shared-publication-pipeline); the trusted
+  `code-coverage-improvement` template in
+  `.github/scripts/forge_pr_publisher/publisher.py` renders the body from the
+  descriptor. The descriptor's timestamp is `generatedAt` in the finalization
+  metrics rather than the wall clock, which is what makes a retried publication
+  reuse one branch and one pull request instead of opening a second.
+
+
+## 4. Coverage Model
 
 The workflow has two ordered phases with separate targets, reports, and prompts.
 
 JaCoCo is authoritative in both phases; sampled PGO never changes whether a
 method is covered.
 
-### 3.1 Public API entry coverage
+### 4.1 Public API entry coverage
 
 The first phase covers the public user-callable API surface derived from the
 library artifacts. It joins exact canonical method identities from the API
@@ -183,7 +298,7 @@ constant rather than a function of the baseline uncovered count: scaling it made
 phase length depend on how that count is defined, so redefining the report
 summary silently halved it, and a constant cannot drift that way.
 
-#### 3.1.1 Target selection by unlocked internal code
+#### 4.1.1 Target selection by unlocked internal code
 
 Public API entries are not equally valuable: some open up large amounts of
 internal code, others only themselves. Selection therefore ranks entries by how
@@ -250,7 +365,7 @@ construct — is deliberately not part of this contract. Parameter count is a po
 proxy for construction difficulty, and repeated-attempt state provides an
 empirical signal instead.
 
-#### 3.1.2 Target eligibility by receiver obtainability
+#### 4.1.2 Target eligibility by receiver obtainability
 
 Ranking orders candidates; eligibility decides which entries may become
 candidates at all. A public method is only a legitimate prompt target when a
@@ -289,7 +404,7 @@ Ineligible entries stay in the coverage denominator. They are still library code
 and still execute collaterally when a realistic test exercises the surrounding
 subsystem; what they are not is something an agent can be asked to target.
 
-### 3.2 Deep implementation coverage
+### 4.2 Deep implementation coverage
 
 The second phase starts only after public API coverage and native metadata
 preparation. Its target universe is library-owned methods reported by JaCoCo
@@ -386,7 +501,7 @@ the workflow may use chunks, but each chunk must persist enough target/exhaust
 state for a later run to continue without redoing already completed, skipped,
 or semantically impossible targets (§GOAL-maximize-library-coverage).
 
-#### 3.2.1 Synthetic method attribution and route honesty
+#### 4.2.1 Synthetic method attribution and route honesty
 
 One lambda in source leaves three artifacts in bytecode: the enclosing method a
 person wrote, the body the compiler extracts (`lambda$enclosing$0`), and the
@@ -445,7 +560,7 @@ frames requires provenance or ownership judgments that constructor identity does
 not establish, so they are separate design decisions rather than heuristics
 bundled into factory translation.
 
-### 3.3 Marginal-yield early stop
+### 4.3 Marginal-yield early stop
 
 Both phases stop before their budget when the last passes stop producing
 coverage. A pass costs a full agent invocation and a full re-measurement, so the
@@ -497,7 +612,7 @@ fired, and finalization carries both phases' decisions into the run's metrics.
 Without that record a short run is indistinguishable from a crashed one, and the
 thresholds could only ever be re-argued rather than re-measured.
 
-## 4. Workflow
+## 5. Workflow
 
 The Rhei template should decompose the workflow into these phases:
 
@@ -637,7 +752,7 @@ The Rhei template should decompose the workflow into these phases:
    only labels which run a branch belongs to.
 
 
-### 4.1 Coverage accounting
+### 5.1 Coverage accounting
 
 Every count and every ratio the workflow publishes obeys three rules. They exist
 because violating them silently understates a run: an earlier revision reported
@@ -694,7 +809,7 @@ path-owned budget. Its counted visits ensure that an output from an earlier
 repair pass cannot satisfy the output-existence completion check for a later
 pass.
 
-### 4.2 Execution sequence
+### 5.2 Execution sequence
 
 The run is shown as a sequence because every phase boundary is a state
 transition the orchestrator decides from one process exit code, and the loops
@@ -911,7 +1026,7 @@ compact result to the per-coordinate results file and pushes that
 result-only branch without touching GitHub itself; the trusted publisher
 validates it from the branch diff (§FS-code-coverage-benchmarking.3).
 
-## 5. Acceptance Criteria
+## 6. Acceptance Criteria
 
 A code coverage improvement run is successful only when all of these hold:
 
@@ -956,7 +1071,7 @@ rhei validate examples/code-coverage-improvement-example
 rhei run examples/code-coverage-improvement-example --dry-run --parallel 2
 ```
 
-## 6. Boundaries
+## 7. Boundaries
 
 PGO profile data is navigation, not a replacement for JaCoCo or maintainer
 review. The workflow must not claim that profile growth or sample absence proves
@@ -973,200 +1088,5 @@ provide the sampled profile and coherent call-tree inputs. A Forge driver or
 driver mode is still required before the control plane can autonomously claim
 issues and launch this lane; that missing integration does not make the Rhei
 workspace or helper chain non-executable
-(§AR-code-coverage-improvement-architecture).
+(§AR-code-coverage-improvement.3).
 
-# AR-code-coverage-improvement-architecture: Code coverage improvement workflow architecture
-
-Code coverage improvement (§AR-code-coverage-improvement) should be implemented
-as its own workflow component because its intent, inputs, metrics, and review
-evidence differ from dynamic-access coverage — it is its own queue
-(§FS-forge-scope). The workflow reuses Forge's
-normal driver, strategy, agent, verification, metrics, and publication
-boundaries (§AR-forge-drivers), but it owns the PGO profile analysis
-and API-target state needed to broaden tests for already-supported libraries.
-
-## 1. Component Boundaries
-
-The component should be split into deterministic utilities plus a workflow
-engine:
-
-- **Rhei template and converter** — consumes one `code-coverage-improvement` issue,
-  resolves the coordinate and worktree, and renders the executable task plan.
-- **Workflow driver** — resolves the coordinate, existing metadata-generation
-  test suite, separate code coverage test suite, strategy, metrics root, source
-  context, and optional chunk state before constructing the workflow engine.
-- **API inventory builder** — derives promptable API and behavior groups from
-  the library artifact, sources, documentation, and upstream tests when
-  available. Implemented deterministically from the library jar via `javap` in
-  `forge/utility_scripts/code_coverage_api_inventory.py`.
-- **Bytecode call-graph extractor** — reads the resolved library artifacts and
-  emits every method and every call edge as CSV, using canonical identities
-  shared with the identity model. Implemented with the JDK Class-File API in
-  `forge/utility_scripts/java/CallGraphExtractor.java`, run through single-file
-  source launch so it needs no build step. It reads class files directly rather
-  than parsing `javap` output, which keeps `invokedynamic` lambda targets and
-  raw descriptors exact (§AR-code-coverage-improvement.3.1.1).
-- **API target ranker** — orders JaCoCo-uncovered public entries by the amount of
-  still-uncovered code each unlocks and renders the API-cover prompt, filling it
-  to the cap. Implemented in `forge/utility_scripts/code_coverage_api_rank.py`.
-  It reuses the cached call graph and recomputes reachable sets each iteration
-  against the shrinking universe (§AR-code-coverage-improvement.3.1.1).
-- **JVM coverage validator** — runs Java compilation and JVM tests under JaCoCo,
-  joins exact JaCoCo identities with the API inventory, and writes the public
-  API baseline and post-iteration reports. Implemented in
-  `forge/utility_scripts/code_coverage_validate.py`, driving the existing
-  `compileTestJava`/`javaTest`/`jacocoTestReport` harness tasks.
-- **JaCoCo evidence parser** — normalizes every method in the tested library's
-  JaCoCo XML into an exact identity, covered/uncovered status, and source
-  evidence shared by the public API validator and deep analyzer. Implemented in
-  `forge/utility_scripts/code_coverage_jacoco.py`. It never uses arity-only
-  identities to decide coverage.
-- **Native metadata preparer** — runs once after the API-cover loop and before
-  PGO discovery: generates reachability metadata and repairs it with the Codex
-  `fix-missing-reachability-metadata` skill until a Native Image test passes, so
-  the PGO-sampling builds succeed. Once, rather than per iteration, is the point:
-  the deep phase makes six collections — one baseline and five post-iteration
-  reports — and each would otherwise have to rediscover and repair the same
-  metadata gaps. The public JaCoCo phase stays JVM-only for the same reason, and
-  the deep phase's Native Image builds include the extension suite
-  (`-PincludeCodeCoverageSuite=true`), which is what makes valid metadata a
-  precondition. Supplemental configs the suite needs live in its suite-local
-  `code-coverage-improvement/metadata/` directory, applied on the include lane
-  and promotion candidates for `metadata/`. A failed `generateMetadata` stops
-  immediately instead of validating or repairing stale metadata; when repair
-  exhausts its budget the run is flagged `needsHumanIntervention` so the reviewed
-  Rhei task routes to a human. Implemented in
-  `forge/utility_scripts/code_coverage_prepare_native_metadata.py`.
-- **Native Image deep-path analyzer** — intersects exact JaCoCo library methods
-  with the analysis call-tree CSV graph, subtracts public API inventory entries,
-  restricts what remains to the methods the resolved library jars declare via
-  `--library-methods`, and uses sampled `.iprof` stacks only to navigate
-  JaCoCo-uncovered internal methods. It retains every record in JSON and emits compact `Observed` /
-  `Uncovered paths` Markdown capped at 100 methods. Implemented in
-  `forge/utility_scripts/code_coverage_profile_report.py`; the sampling image
-  and call-tree CSVs are produced by the `nativeTestPGOSampling` and
-  `runNativeTestPGO` harness tasks (`--pgo-sampling
-  -H:PGOSamplingPeriodMicros=<micros> -H:+PrintAnalysisCallTree
-  -H:PrintAnalysisCallTreeType=CSV`; the run dumps the profile through
-  `-XX:ProfilesDumpFile`). Profile `<`-chain contexts are leaf-first
-  (`callee:bci<caller:bci`), so sampled stacks read right-to-left from the root.
-- **Identity model** — normalizes API inventory, JaCoCo, call-tree CSV, and
-  sampled-profile method identities in
-  `forge/utility_scripts/code_coverage_model.py`.
-- **Marginal-yield stop evaluator** — reads a phase's own report history, derives
-  its per-pass yield series, and decides whether the phase has stopped producing
-  coverage (§AR-code-coverage-improvement.3.3). Implemented in
-  `forge/utility_scripts/code_coverage_stop.py` and shared by both measurement
-  states, so the two phases cannot drift onto different rules. It records the
-  decision on every pass, not only on the pass that stops a phase.
-- **Target-state store** — measurement-owned attempt and rotation state carried
-  in the discovery-report history; agents never author target state. Externally
-  supplied schema-valid state files remain accepted at finalization.
-- **Workflow engine** — owns prompt/command cycles, retries, target selection,
-  JaCoCo progress comparison, path refresh, and terminal status.
-- **Worker target** — the single `worker_agent` input drives every agent state,
-  defaulting to `pi[high]:openai-codex/gpt-5.6-luna`. Rhei's target grammar
-  carries the reasoning level in the mode bracket, not in the model string: a
-  model written as `<model>:<thinking>` is parsed as a provider/model pair and
-  silently resolves to a different model. The template therefore bundles a `pi`
-  agent profile in its `settings.json` whose `high` and `xhigh` modes add
-  `--thinking`, and publication reads the model and thinking level back out of
-  the same target, using the model to name the head branch and rendering both in the pull
-  request body (§AR-code-coverage-improvement.4). That profile replaces
-  Rhei's built-in one outright rather than extending it, so it restates the
-  `session` block as well: without it Rhei passes no `--session-dir`, cannot
-  read back the agent's native transcript, and silently captures no per-state
-  snapshot for a workflow whose every agent state is otherwise snapshotted.
-- **Publication handoff** — publishes only PR-eligible runs after local
-  CI-equivalent verification passes (§AR-forge-verification-publication-boundary).
-  Implemented in `forge/git_scripts/publish_code_coverage_improvement.py`, which
-  contributes this route's expected paths and descriptor to the shared branch
-  publication pipeline (§AR-shared-publication-pipeline); the trusted
-  `code-coverage-improvement` template in
-  `.github/scripts/forge_pr_publisher/publisher.py` renders the body from the
-  descriptor. The descriptor's timestamp is `generatedAt` in the finalization
-  metrics rather than the wall clock, which is what makes a retried publication
-  reuse one branch and one pull request instead of opening a second.
-
-## 2. Workflow State
-
-The workflow state is target-based, not call-site-based. Public API state comes
-from the exact inventory/JaCoCo join. Deep state comes from exact JaCoCo library
-methods joined to the static graph after public inventory entries are removed
-(§AR-dynamic-access-workflow).
-
-The code coverage test suite should be physically and logically separate from
-the test suite used to generate reachability metadata. The workflow may inspect
-metadata-generation tests as context, but generated coverage tests must be
-written to the coverage-suite root and measured with code-coverage metrics.
-Metadata-generation tests remain the source of dynamic-access and native-image
-metadata evidence.
-
-Target state is derived deterministically by measurement from its own prompt
-and report history — no agent-authored status exists. It should include:
-
-- target identifier and human-readable behavior description
-- phase and source of the target
-- baseline and current exact JaCoCo evidence
-- sampled context and static reaching path when available
-- attempt count and last attempted iteration
-
-The persisted state should be coordinate-scoped and stable enough for
-orchestration to resume later runs from the coordinate alone, following the same
-operational shape as chunked dynamic-access exhaust state without sharing the
-dynamic-access report schema (§AR-dynamic-access-exhaust-report).
-
-## 3. PGO Profile Handling
-
-Raw PGO artifacts are machine navigation evidence. The analyzer maps sampled
-contexts onto the static graph and emits concise path groups; it does not infer
-coverage or non-execution from sampling.
-
-For each exact JaCoCo-uncovered internal method, the analyzer first finds the
-shortest static path from any mapped sampled frame. If no sample joins, it finds
-the shortest public API entry path. A missing sample, missing graph node, or
-missing public route changes only navigation fields. It never changes the
-JaCoCo status.
-
-The prompt presents representative divergence groups rather than raw profile
-records. JSON retains the complete sampled contexts and method records for
-auditing. PGO progress asks whether navigation changed; JaCoCo progress asks
-whether generated tests covered methods. Only the JaCoCo answer contributes to
-coverage success.
-
-A PR-eligible result pairs exact JaCoCo deltas with generated-test rationale,
-sampled/static guidance, and deterministic verification results. Profile growth
-alone is never sufficient.
-
-## 4. Prompting and Review Evidence
-
-The public prompt lists exact uncovered API entries. The deep prompt lists
-compact observed/uncovered path groups and instructs the agent once to reach
-internal methods through public behavior. Neither prompt encourages direct
-invocation of implementation details merely to increase coverage.
-
-Metrics and PR publication should expose:
-
-- baseline and updated JaCoCo summary paths for each phase
-- sampled-profile and static-graph evidence paths, labeled guidance-only
-- selected public and deep targets with terminal statuses and attempt counts
-- generated or modified test paths
-- exact JaCoCo delta summary
-- verification commands and results
-- skipped or exhausted target reasons
-
-Review automation and maintainers should be able to distinguish this workflow's
-evidence from dynamic-access coverage evidence. A PR that improves code
-coverage should not be presented as a dynamic-access coverage fix unless it
-also ran and reported the dynamic-access workflow (§AR-forge-driver-queues.2).
-
-## 5. Implementation Status
-
-The Rhei implementation includes a validated template/example, exact API and
-deep JaCoCo helpers, sampled-PGO/static-path analysis, an opt-in dedicated test
-suite, native metadata preparation, durable target-state and final-metrics
-schemas, schema-validated finalization, and PR publication. The Gradle harness
-produces the sampled `.iprof` and one analysis call-tree CSV triplet per deep
-report. The remaining architecture work is a Forge driver or driver mode that
-lets the control plane claim an issue and launch this already executable Rhei
-lane automatically.

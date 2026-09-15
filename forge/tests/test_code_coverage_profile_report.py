@@ -956,7 +956,7 @@ class LibraryMethodFilterTest(unittest.TestCase):
 
 
 class SyntheticLambdaTest(unittest.TestCase):
-    """Lambda attribution and route honesty (§AR-code-coverage-improvement.3.2.1).
+    """Lambda attribution and route honesty (§AR-code-coverage-improvement.4.2.1).
 
     The graph models one closure end to end: `reload` captures it, the generated
     class carries it, its body calls `persist`, and an unrelated `drain` invokes
@@ -1088,7 +1088,7 @@ class SyntheticLambdaTest(unittest.TestCase):
 class FactoryStubTranslationTest(unittest.TestCase):
     """Native Image factory paths use verified constructors.
 
-    §AR-code-coverage-improvement.3.2.1
+    §AR-code-coverage-improvement.4.2.1
     """
 
     CALLER = MethodRef("com.example.Api", "start", (), "void")

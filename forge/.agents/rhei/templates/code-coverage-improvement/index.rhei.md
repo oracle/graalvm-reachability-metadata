@@ -21,12 +21,12 @@ extension suite inside the indexed test project), writes runtime evidence under
 §AR-code-coverage-improvement. The first gives the agent 400 exact
 JaCoCo-uncovered public API entries, ordered by how much still-uncovered code
 each one unlocks over a bytecode call graph
-(§AR-code-coverage-improvement.3.1.1). The second gives it at most 200
+(§AR-code-coverage-improvement.4.1.1). The second gives it at most 200
 JaCoCo-uncovered internal methods as compact paths derived from sampled PGO and
 the Native Image static call graph. Each phase has an editing-pass budget of
 `coverage_iterations` passes, every pass is followed by a fresh JaCoCo result,
 and a phase ends early once two consecutive passes each cover fewer than
-`stop_threshold` methods (§AR-code-coverage-improvement.3.3).
+`stop_threshold` methods (§AR-code-coverage-improvement.4.3).
 
 ## Source
 

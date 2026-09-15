@@ -89,7 +89,7 @@
         "total"
       ],
       "properties": {
-        "schemaVersion": {"const": "1.0.0"},
+        "schemaVersion": {"enum": ["1.0.0", "1.1.0"]},
         "runId": {
           "type": "string",
           "pattern": "^[A-Za-z0-9_.-]+$"
@@ -103,12 +103,14 @@
         "configuredModel": {"type": "string", "minLength": 1},
         "observedModel": {"type": ["string", "null"]},
         "thinking": {"enum": ["medium", "high", "xhigh"]},
+        "strategy": {"enum": ["guided", "naive"]},
         "status": {"enum": ["success", "failure"]},
         "failure": {"$ref": "#/$defs/failure"},
         "checkedInAllMethods": {"type": "integer", "minimum": 1},
         "measuredAllMethodsDifference": {"$ref": "#/$defs/nullableDelta"},
         "api": {"$ref": "#/$defs/phase"},
         "deep": {"$ref": "#/$defs/phase"},
+        "naive": {"oneOf": [{"$ref": "#/$defs/phase"}, {"type": "null"}]},
         "total": {"$ref": "#/$defs/phase"}
       },
       "allOf": [

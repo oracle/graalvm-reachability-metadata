@@ -213,3 +213,29 @@ inputs:
     type: number
     default: 22
     validate: "[1-9][0-9]*"
+
+  - name: strategy
+    description: >-
+      Benchmark strategy arm. `guided` runs the full workflow; `naive` runs the
+      benchmark-only baseline loop with the naive prompt and no guided tail
+      (§AR-code-coverage-benchmarking.3). Only meaningful in benchmark mode.
+    type: string
+    default: guided
+    validate: "^(guided|naive)$"
+
+  - name: naive_iterations
+    description: >-
+      Maximum cover passes for the naive baseline loop
+      (§FS-code-coverage-benchmarking.7). Separate from `coverage_iterations`
+      so the guided phase budgets keep their meaning.
+    type: number
+    default: 30
+    validate: "[1-9][0-9]*"
+
+  - name: naive_measure_visits
+    description: >-
+      Hard visit cap on the naive measurement loop and its fix state, sized as
+      the naive budget plus the baseline measurement and a repair allowance.
+    type: number
+    default: 40
+    validate: "[1-9][0-9]*"

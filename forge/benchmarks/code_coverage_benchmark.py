@@ -52,7 +52,8 @@ BENCHMARK_DIR = Path("runtime") / "code-coverage" / "benchmark"
 RUN_RECORD = BENCHMARK_DIR / "run.json"
 RESULT_RECORD = BENCHMARK_DIR / "result.json"
 PUBLICATION_MARKER = BENCHMARK_DIR / "publication.json"
-RESULT_SCHEMA_VERSION = "1.0.0"
+RESULT_SCHEMA_VERSION = "1.1.0"
+KNOWN_STRATEGIES = ("guided", "naive")
 COMMIT_SUBJECT = "Record code coverage benchmark"
 BENCHMARK_TASK_TYPE = "code-coverage-benchmark-result"
 MAX_PUBLISH_ATTEMPTS = 5
@@ -144,11 +145,14 @@ class AgentConfiguration:
 
 @dataclass(frozen=True)
 class MatrixCell:
-    """One library/configuration/thinking execution."""
+    """One library/configuration/thinking/strategy execution."""
 
     library: Library
     configuration: AgentConfiguration
     thinking: str
+    # Strategy arm: the guided workflow or the naive baseline
+    # (§AR-code-coverage-benchmarking.2, §AR-code-coverage-benchmarking.3).
+    strategy: str = "guided"
 
 
 @dataclass(frozen=True)
@@ -244,12 +248,18 @@ def expand_matrix(
         agents: list[str] | None = None,
         models: list[str] | None = None,
         thinking_levels: list[str] | None = None,
+        strategies: list[str] | None = None,
 ) -> list[MatrixCell]:
-    """Return the filtered cross-product after validating all selections."""
+    """Return the filtered cross-product after validating all selections.
+
+    The default matrix stays the guided arm; naive baseline cells are selected
+    explicitly (§AR-code-coverage-benchmarking.2).
+    """
     _reject_duplicates(library_indexes, "library index")
     _reject_duplicates(agents, "agent")
     _reject_duplicates(models, "model")
     _reject_duplicates(thinking_levels, "thinking")
+    _reject_duplicates(strategies, "strategy")
 
     known_indexes = {library.index for library in suite.libraries}
     known_agents = {configuration.agent for configuration in suite.configurations}
@@ -263,6 +273,7 @@ def expand_matrix(
         (agents, known_agents, "agent"),
         (models, known_models, "model"),
         (thinking_levels, known_thinking, "thinking"),
+        (strategies, set(KNOWN_STRATEGIES), "strategy"),
     ):
         unknown = set(selected or []) - known
         if unknown:
@@ -305,11 +316,13 @@ def expand_matrix(
         for thinking in suite.thinking_levels
         if thinking_levels is None or thinking in thinking_levels
     ]
+    selected_strategies = list(strategies) if strategies is not None else ["guided"]
     return [
-        MatrixCell(library, configuration, thinking)
+        MatrixCell(library, configuration, thinking, strategy)
         for library in selected_libraries
         for configuration in selected_configurations
         for thinking in selected_thinking
+        for strategy in selected_strategies
     ]
 
 
@@ -321,7 +334,7 @@ def print_matrix(cells: list[MatrixCell]) -> None:
             f"  {ordinal:>2}. library={cell.library.index} "
             f"{cell.library.coordinate} agent={cell.configuration.agent} "
             f"model={cell.configuration.configured_model} "
-            f"thinking={cell.thinking}"
+            f"thinking={cell.thinking} strategy={cell.strategy}"
         )
 
 
@@ -372,14 +385,19 @@ def _safe_segment(value: str) -> str:
 
 def _new_run_id(cell: MatrixCell) -> str:
     timestamp = dt.datetime.now(dt.timezone.utc).strftime("%Y%m%dT%H%M%SZ")
-    return "-".join((
+    segments = [
         timestamp,
         f"l{cell.library.index}",
         _safe_segment(cell.configuration.agent),
         _safe_segment(cell.configuration.configured_model),
         cell.thinking,
-        uuid.uuid4().hex[:10],
-    ))
+    ]
+    # Guided run ids keep their historical shape; only the baseline arm names
+    # its strategy (§AR-code-coverage-benchmarking.2).
+    if cell.strategy != "guided":
+        segments.append(cell.strategy)
+    segments.append(uuid.uuid4().hex[:10])
+    return "-".join(segments)
 
 
 def _create_publication_worktree(
@@ -504,6 +522,7 @@ def _run_identity(
         "configuredModel": cell.configuration.configured_model,
         "targetModel": cell.configuration.target_model,
         "thinking": cell.thinking,
+        "strategy": cell.strategy,
         "checkedInAllMethods": cell.library.all_methods,
         "sourceWorktree": str(source_worktree.resolve()),
         "runnerForgePath": str(FORGE_ROOT.resolve()),
@@ -563,6 +582,7 @@ def _instantiate_command(
         "benchmark_target_model": configuration.target_model,
         "benchmark_thinking": cell.thinking,
         "benchmark_checked_in_all_methods": str(cell.library.all_methods),
+        "strategy": cell.strategy,
         "repo_checkout": str(source_worktree.resolve()),
         "work_subdir": "forge",
         "workspace_path": str(workspace.resolve()),
@@ -781,6 +801,31 @@ def _coverage_from_reports(
     )
 
 
+def _naive_coverage_from_reports(workspace: Path) -> dict[str, Any] | None:
+    """Baseline-arm coverage from the naive loop's own JaCoCo copies.
+
+    The naive arm has no finalization; the loop's last report is the final
+    metric and publication reads it directly (§AR-code-coverage-benchmarking.3).
+    """
+    validation = workspace / "runtime" / "code-coverage" / "validation"
+    paths = _iteration_files(validation, "jacoco-naive", ".xml")
+    snapshots = [
+        snapshot
+        for snapshot in (_jacoco_snapshot(path) for path in paths)
+        if snapshot is not None
+    ]
+    if not snapshots:
+        return None
+    all_methods = snapshots[0][0]
+
+    def covered(snapshot: tuple[int, int]) -> int | None:
+        return snapshot[1] if snapshot[0] == all_methods else None
+
+    return _phase_coverage(
+        covered(snapshots[0]), covered(snapshots[-1]), all_methods
+    )
+
+
 def _load_invocations(workspace: Path) -> tuple[list[dict[str, Any]], bool]:
     directory = workspace / "runtime" / "accounting" / "invocations"
     if not directory.is_dir():
@@ -854,7 +899,7 @@ def _stop_passes(workspace: Path, phase: str) -> int | None:
                     return int(decision["passes"])
         except (OSError, ValueError, TypeError):
             pass
-    directory = "validation" if phase == "api" else "discovery"
+    directory = "discovery" if phase == "deep" else "validation"
     path = (
         workspace
         / "runtime"
@@ -900,6 +945,7 @@ def _failure_phase(workspace: Path) -> str | None:
         "api-coverage": "api",
         "prepare-native-metadata": "native-metadata",
         "deep-coverage": "deep",
+        "naive-coverage": "naive",
         "finalization": "finalization",
         "benchmark-publication": "benchmark-publication",
     }
@@ -931,7 +977,7 @@ def _collect_result(
         exit_code: int | None,
 ) -> dict[str, Any]:
     # A written record is immutable for its runId, success or failure
-    # (§AR-code-coverage-benchmarking.3).
+    # (§FS-code-coverage-benchmarking.3).
     result_path = _result_record_path(workspace)
     if result_path.is_file():
         existing: dict[str, Any] = _read_json(result_path)
@@ -942,14 +988,27 @@ def _collect_result(
             "Publishing without a recorded result requires an explicit --status."
         )
     run: dict[str, Any] = _read_json(_run_record_path(workspace))
-    finalized = _coverage_from_final_metrics(workspace)
-    if requested_status == "success" and finalized is None:
-        raise BenchmarkError(
-            "A successful benchmark must have valid final coverage metrics."
+    strategy = str(run.get("strategy", "guided"))
+    if strategy == "naive":
+        # The naive arm has no finalization: its last JaCoCo report is the
+        # final metric (§AR-code-coverage-benchmarking.3).
+        naive_coverage = _naive_coverage_from_reports(workspace)
+        if requested_status == "success" and naive_coverage is None:
+            raise BenchmarkError(
+                "A successful naive benchmark must have naive JaCoCo reports."
+            )
+        empty = _phase_coverage(None, None, None)
+        api_coverage, deep_coverage = dict(empty), dict(empty)
+        total_coverage = naive_coverage or dict(empty)
+    else:
+        finalized = _coverage_from_final_metrics(workspace)
+        if requested_status == "success" and finalized is None:
+            raise BenchmarkError(
+                "A successful benchmark must have valid final coverage metrics."
+            )
+        api_coverage, deep_coverage, total_coverage = (
+            finalized or _coverage_from_reports(workspace)
         )
-    api_coverage, deep_coverage, total_coverage = (
-        finalized or _coverage_from_reports(workspace)
-    )
     invocations, accounting_exists = _load_invocations(workspace)
 
     def phase_result(
@@ -981,6 +1040,9 @@ def _collect_result(
 
     api = phase_result("api", api_coverage)
     deep = phase_result("deep", deep_coverage)
+    naive = (
+        phase_result("naive", total_coverage) if strategy == "naive" else None
+    )
     observed_models = sorted({
         str(invocation["model"])
         for invocation in invocations
@@ -992,20 +1054,28 @@ def _collect_result(
             "Rhei accounting reports multiple observed models: "
             + ", ".join(observed_models)
         )
-    total_tokens = {
-        key: _sum_nullable(api["tokens"][key], deep["tokens"][key])
-        for key in ("input", "cachedInputRead", "cachedInputWrite", "output")
-    }
-    total = {
-        "coverPasses": _sum_nullable(
-            api["coverPasses"], deep["coverPasses"]
-        ),
-        "fixInvocations": _sum_nullable(
-            api["fixInvocations"], deep["fixInvocations"]
-        ),
-        "tokens": total_tokens,
-        "coverage": total_coverage,
-    }
+    if naive is not None:
+        total = {
+            "coverPasses": naive["coverPasses"],
+            "fixInvocations": naive["fixInvocations"],
+            "tokens": dict(naive["tokens"]),
+            "coverage": total_coverage,
+        }
+    else:
+        total_tokens = {
+            key: _sum_nullable(api["tokens"][key], deep["tokens"][key])
+            for key in ("input", "cachedInputRead", "cachedInputWrite", "output")
+        }
+        total = {
+            "coverPasses": _sum_nullable(
+                api["coverPasses"], deep["coverPasses"]
+            ),
+            "fixInvocations": _sum_nullable(
+                api["fixInvocations"], deep["fixInvocations"]
+            ),
+            "tokens": total_tokens,
+            "coverage": total_coverage,
+        }
     all_methods = total_coverage["allMethods"]
     status = "success" if requested_status == "success" else "failure"
     result = {
@@ -1024,6 +1094,7 @@ def _collect_result(
         "configuredModel": run["configuredModel"],
         "observedModel": observed_models[0] if observed_models else None,
         "thinking": run["thinking"],
+        "strategy": strategy,
         "status": status,
         "failure": None if status == "success" else {
             "phase": _failure_phase(workspace),
@@ -1037,6 +1108,7 @@ def _collect_result(
         ),
         "api": api,
         "deep": deep,
+        "naive": naive,
         "total": total,
     }
     _validate([result], RESULT_SCHEMA_PATH)
@@ -1378,6 +1450,7 @@ def convert_workspace(args: argparse.Namespace) -> None:
         "configuredModel": args.configured_model,
         "targetModel": args.target_model,
         "thinking": args.thinking,
+        "strategy": args.strategy,
         "checkedInAllMethods": args.checked_in_all_methods,
         "sourceWorktree": str(source_worktree),
         "runnerForgePath": str(runner_forge_path),
@@ -1439,6 +1512,11 @@ def _convert_parser(subparsers: Any) -> None:
         choices=("medium", "high", "xhigh"),
     )
     parser.add_argument("--checked-in-all-methods", required=True, type=int)
+    parser.add_argument(
+        "--strategy",
+        default="guided",
+        choices=KNOWN_STRATEGIES,
+    )
 
 
 def _run_parser(subparsers: Any) -> None:
@@ -1447,6 +1525,7 @@ def _run_parser(subparsers: Any) -> None:
     parser.add_argument("--agent", nargs="+")
     parser.add_argument("--model", nargs="+")
     parser.add_argument("--thinking", nargs="+")
+    parser.add_argument("--strategy", nargs="+", choices=KNOWN_STRATEGIES)
     parser.add_argument(
         "--workspace-root",
         type=Path,
@@ -1492,6 +1571,7 @@ def run_selected(args: argparse.Namespace) -> int:
         agents=args.agent,
         models=args.model,
         thinking_levels=args.thinking,
+        strategies=args.strategy,
     )
     print_matrix(cells)
     if args.dry_run:

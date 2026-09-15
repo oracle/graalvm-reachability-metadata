@@ -329,7 +329,7 @@ class FinalizerTests(unittest.TestCase):
         module.validate_final_metrics(metrics)
 
     def test_stop_decisions_are_carried_api_first(self) -> None:
-        """A phase that ended short must say why (§AR-code-coverage-improvement.3.3)."""
+        """A phase that ended short must say why (§AR-code-coverage-improvement.4.3)."""
         decisions = self._run()["stopDecisions"]
 
         self.assertEqual([entry["phase"] for entry in decisions], ["api", "deep"])
