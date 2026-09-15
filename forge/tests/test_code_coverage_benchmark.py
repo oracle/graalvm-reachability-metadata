@@ -657,7 +657,7 @@ class CodeCoverageBenchmarkMetricsTests(unittest.TestCase):
         with self.assertRaisesRegex(benchmark.BenchmarkError, "different metrics"):
             benchmark._merge_result(path, conflicting)
 
-    def test_publication_pushes_one_descriptor_backed_branch(self) -> None:
+    def test_publication_pushes_one_result_only_branch(self) -> None:
         temporary = tempfile.TemporaryDirectory()
         self.addCleanup(temporary.cleanup)
         root = Path(temporary.name)
@@ -705,7 +705,7 @@ class CodeCoverageBenchmarkMetricsTests(unittest.TestCase):
         ).stdout
         self.assertEqual([result], json.loads(stored))
         self.assertEqual(
-            benchmark.DESCRIPTOR_COMMIT_SUBJECT,
+            benchmark.COMMIT_SUBJECT,
             _git(
                 repository,
                 "show",
@@ -714,17 +714,6 @@ class CodeCoverageBenchmarkMetricsTests(unittest.TestCase):
                 first.commit,
             ).stdout.strip(),
         )
-        descriptor_path = (
-            f"stats/com.example/demo/1.0.0/{first.publication_id}"
-            "/forge-publication.json"
-        )
-        descriptor = json.loads(
-            _git(repository, "show", f"{first.commit}:{descriptor_path}").stdout
-        )
-        self.assertEqual(first.publication_id, descriptor["publication_id"])
-        self.assertEqual(benchmark.BENCHMARK_TASK_TYPE, descriptor["task_type"])
-        self.assertEqual("run-1", descriptor["benchmark_run_id"])
-        self.assertEqual(result, descriptor["render"]["benchmark_result"])
         master_object = subprocess.run(
             ["git", "cat-file", "-e", f"origin/master:{metrics_path}"],
             cwd=repository,
@@ -741,7 +730,7 @@ class CodeCoverageBenchmarkMetricsTests(unittest.TestCase):
             first.commit,
         ).stdout.splitlines()
         self.assertEqual(
-            sorted((metrics_path, descriptor_path)),
+            [metrics_path],
             sorted(line for line in changed if line),
         )
         self.assertEqual([], list(workspace.parent.glob("publisher-*")))

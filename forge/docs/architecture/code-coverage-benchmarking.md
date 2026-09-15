@@ -18,7 +18,7 @@ implements §FS-code-coverage-benchmarking while preserving
 | Code coverage Rhei template | Switches conversion and publication behavior through the `benchmark` input. |
 | Source worktree | Disposable checkout of the fixed `benchmarkSuiteCommit`. |
 | Rhei workspace | Permanent local record keyed by `runId` and named `code-coverage-99000`. |
-| Publication worktree | Fresh checkout of `origin/master` used to append one result and push its descriptor-backed PR branch, then removed. |
+| Publication worktree | Fresh checkout of `origin/master` used to append one result and push its result-only PR branch, then removed. |
 | Trusted Actions publisher | Validates the exact result and descriptor from default-branch code and opens the benchmark-result PR. |
 
 Two commits describe different axes:
@@ -256,23 +256,18 @@ forge/local_repositories/code_coverage_benchmarks/
         logs/
 ```
 
-Only portable result lists and their coordinate-local publication descriptors
-enter the publication branch:
+Only portable result lists enter the publication branch:
 
 ```text
 code-coverage-benchmarks/
   <group>/
     <artifact>/
       <version>.json
-stats/
-  <group>/
-    <artifact>/
-      <version>/
-        <publication id>/forge-publication.json
 ```
 
-The descriptor nests below a publication-identifier segment so that two results
-for one coordinate never claim the same path and never conflict on merge
+The branch carries no publication descriptor: the appended result is the
+complete record, and the trusted publisher validates and renders the pull
+request from the branch diff against the merge base with the default branch
 (§FS-code-coverage-benchmarking.3).
 
 `run.json` may contain machine-specific paths because it drives recovery.
