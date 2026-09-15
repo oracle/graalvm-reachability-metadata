@@ -3,6 +3,11 @@
 Rendered by Forge from the pre-push branch review of §FS-local-branch-review.
 Newest entry first; every non-approval is recorded, including one a repair later cleared.
 
+## 2026-09-15 — com.fasterxml.jackson.jr:jackson-jr-objects:2.21.0 (#8916)
+
+**Test-only metadata shadowed shipped registrations**
+
+The generated test-only reachability metadata duplicated shipped registrations for POJODefinition, array types, LinkedHashMap, and TreeMap behind test-class conditions, so those registrations could satisfy native tests without exercising the shipped library-conditioned entries. It also contained unstable $$Lambda/0x... conditions and nanoTime-derived missing-class targets, which are not stable valid evidence. The contribution additionally changed tracked native test-result XML even though that generated path is repository-ignored.
 ## 2026-09-15 — org.apache.sshd:sshd-core:2.18.0 (#9958)
 
 **New-library contribution has zero dynamic-access coverage**
