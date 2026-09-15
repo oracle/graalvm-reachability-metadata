@@ -1,0 +1,99 @@
+{
+  "add_new_library_support:2026-09-15": {
+    "timestamp": "2026-09-15T04:15:32.843200Z",
+    "library": "org.springframework.integration:spring-integration-sftp:7.1.1",
+    "starting_commit": "bebc9b1531a0daa81d4f649b5b430ac68d179703",
+    "ending_commit": "24c3a37d498572ef96a9d30c238567501b97827a",
+    "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-sol",
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "status": "success",
+    "stats": {
+      "version": "7.1.1",
+      "dynamicAccess": {
+        "breakdown": {},
+        "coverageRatio": 1.0,
+        "coveredCalls": 0,
+        "totalCalls": 0
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 1201,
+          "missed": 1071,
+          "ratio": 0.528609,
+          "total": 2272
+        },
+        "line": {
+          "covered": 335,
+          "missed": 268,
+          "ratio": 0.555556,
+          "total": 603
+        },
+        "method": {
+          "covered": 124,
+          "missed": 112,
+          "ratio": 0.525424,
+          "total": 236
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "advisory_preparation",
+      "issue_number": 9952,
+      "issue_label": "library-new-request",
+      "library": "org.springframework.integration:spring-integration-sftp:7.1.1",
+      "summary": "Meaningful coverage requires a reachable SFTP/SSH server; the artifact already supplies its client dependencies transitively.",
+      "deterministic_setup": [
+        {
+          "kind": "docker_image",
+          "image": "atmoz/sftp:alpine",
+          "slug": "atmoz_sftp",
+          "reason": "Provides an OpenSSH-backed SFTP endpoint for exercising session factories, uploads, downloads, directory operations, and adapters. No matching image is currently allow-listed."
+        }
+      ],
+      "agent_guidance": "Configure tests for the container host, mapped port, and a dedicated username/password with writable test directories. Use an ephemeral known-hosts strategy or explicitly configure host-key verification for the test server. Cover both outbound and inbound SFTP flows where feasible. The official documentation describes these operations and the required session-factory configuration: https://docs.spring.io/spring-integration/reference/sftp.html",
+      "risks": [
+        "The alpine image tag is maintained upstream and may change; local Docker-image validation remains authoritative.",
+        "SFTP integration tests may be sensitive to container startup readiness, port mapping, permissions, and host-key verification."
+      ],
+      "applied_setup": [
+        {
+          "kind": "docker_image",
+          "image": "atmoz/sftp:alpine",
+          "slug": "atmoz_sftp",
+          "result": "already_present",
+          "target": "tests/tck-build-logic/src/main/resources/allowed-docker-images/Dockerfile-atmoz_sftp"
+        }
+      ],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#9952 Support for org.springframework.integration:spring-integration-sftp:7.1.1; label=library-new-request; body_chars=52"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "gpt-5.6-luna",
+      "input_tokens_used": 456631,
+      "output_tokens_used": 2633
+    },
+    "metrics": {
+      "input_tokens_used": 401433,
+      "cached_input_tokens_used": 6898432,
+      "output_tokens_used": 51188,
+      "iterations": 7,
+      "cost_usd": 6.992,
+      "generated_loc": 529,
+      "tested_library_loc": 335,
+      "metadata_entries": 12,
+      "test_only_metadata_entries": 293,
+      "code_coverage_percent": 55.56
+    },
+    "artifacts": {
+      "metadata_file": "metadata/org.springframework.integration/spring-integration-sftp/7.1.1/reachability-metadata.json"
+    }
+  }
+}

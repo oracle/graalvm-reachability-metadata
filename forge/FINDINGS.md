@@ -3,6 +3,11 @@
 Rendered by Forge from the pre-push branch review of §FS-local-branch-review.
 Newest entry first; every non-approval is recorded, including one a repair later cleared.
 
+## 2026-09-15 — org.springframework.integration:spring-integration-sftp:7.1.1 (#9952)
+
+**Unbounded asynchronous reply waits in generated tests**
+
+Two SFTP outbound-gateway assertions used QueueChannel.receive() without a timeout, so a missing reply could wait indefinitely in violation of §FS-test-contract.1.6.
 ## 2026-09-15 — org.apache.sshd:sshd-core:2.18.0 (#9958)
 
 **New-library contribution has zero dynamic-access coverage**
