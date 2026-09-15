@@ -16,6 +16,11 @@ dependencies {
 }
 
 graalvmNative {
+    binaries {
+        test {
+            buildArgs.add('--future-defaults=run-time-initialize-file-system-providers')
+        }
+    }
     agent {
         defaultMode = "conditional"
         modes {
