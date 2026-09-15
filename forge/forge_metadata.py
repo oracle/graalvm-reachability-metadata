@@ -3058,6 +3058,59 @@ def resolve_benchmark_results_conflict(worktree_path: str, path: str) -> bool:
     return True
 
 
+def refresh_publication_descriptor_base(worktree_path: str) -> bool:
+    """Re-anchor the refreshed head's descriptor to the merged base commit.
+
+    Trusted revalidation checks the benchmark result list against the
+    descriptor's recorded base commit, so a refresh that unions the list while
+    keeping the old base fails readiness validation on every head it refreshed
+    (§FS-automated-pr-review). The head owns exactly one descriptor; any other
+    shape returns False and the caller escalates.
+    """
+    try:
+        ancestor: str = run_checked_command(
+            ["git", "merge-base", "HEAD", "MERGE_HEAD"],
+            worktree_path,
+            "Failed to resolve the merge ancestor of the refreshed head",
+        ).stdout.strip()
+        head_descriptors: list[str] = [
+            path
+            for path in run_checked_command(
+                ["git", "diff", "--name-only", ancestor, "HEAD"],
+                worktree_path,
+                "Failed to list the refreshed head's own changes",
+            ).stdout.split()
+            if path.endswith("/forge-publication.json")
+        ]
+        merged_base: str = run_checked_command(
+            ["git", "rev-parse", "MERGE_HEAD"],
+            worktree_path,
+            "Failed to resolve the merged base commit",
+        ).stdout.strip()
+    except RuntimeError:
+        return False
+    if len(head_descriptors) != 1:
+        return False
+    descriptor_path: str = os.path.join(worktree_path, head_descriptors[0])
+    try:
+        with open(descriptor_path, encoding="utf-8") as source:
+            descriptor = json.load(source)
+    except (OSError, json.JSONDecodeError):
+        return False
+    if not isinstance(descriptor, dict) or "base_commit" not in descriptor:
+        return False
+    descriptor["base_commit"] = merged_base
+    with open(descriptor_path, "w", encoding="utf-8") as destination:
+        json.dump(descriptor, destination, indent=2, ensure_ascii=False)
+        destination.write("\n")
+    run_checked_command(
+        ["git", "add", head_descriptors[0]],
+        worktree_path,
+        f"Failed to stage the re-anchored {head_descriptors[0]}",
+    )
+    return True
+
+
 def resolve_pull_request_merge_conflict(
         pull_request: dict,
         reachability_metadata_path: str,
@@ -3148,7 +3201,7 @@ def resolve_pull_request_merge_conflict(
             if resolvable and all(
                 resolve_benchmark_results_conflict(worktree_path, path)
                 for path in conflicted_paths
-            ):
+            ) and refresh_publication_descriptor_base(worktree_path):
                 run_checked_command(
                     ["git", "commit", "--no-edit"],
                     worktree_path,
