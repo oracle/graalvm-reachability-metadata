@@ -572,7 +572,13 @@ reviewer reason, closes the pull request, labels the linked issue
 performs this immediately after PR creation; the PR-review process may reconcile
 the same end state idempotently.
 
-**Failed CI enters diagnosis immediately.** Forge does not rerun a failed
+**Failed CI enters diagnosis immediately — except for benchmark results.**
+A benchmark-result head records a measurement, not a repairable contribution:
+there is nothing for a CI-repair reviewer to change. A failed-CI benchmark
+pull request is therefore never diagnosed or repaired; it simply stays open
+and unmerged, re-entering the approved auto-merge path if its CI later
+succeeds and waiting for a human otherwise.
+For every other publication, Forge does not rerun a failed
 GitHub Actions workflow before diagnosis. It invokes the worker-configured
 analysis role as a CI-repair reviewer in an isolated worktree on the approved
 current head. The turn receives the failed-check and workflow-run evidence plus
