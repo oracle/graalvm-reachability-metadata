@@ -65,7 +65,7 @@ class MetadataGenerationUtilsTests {
                 """
         );
 
-        MetadataGenerationUtils.makeVersionLatestInIndexJson(
+        MetadataIndexUpdateUtils.makeVersionLatestInIndexJson(
                 createProject().getLayout(),
                 Coordinates.parse(group + ":" + artifact + ":" + newVersion),
                 null
@@ -121,7 +121,7 @@ class MetadataGenerationUtilsTests {
                 """
         );
 
-        MetadataGenerationUtils.makeVersionLatestInIndexJson(
+        MetadataIndexUpdateUtils.makeVersionLatestInIndexJson(
                 createProject().getLayout(),
                 Coordinates.parse(group + ":" + artifact + ":1.1.0"),
                 null
@@ -174,7 +174,7 @@ class MetadataGenerationUtilsTests {
                 """
         );
 
-        MetadataGenerationUtils.addVersionToIndexJson(
+        MetadataIndexUpdateUtils.addVersionToIndexJson(
                 createProject().getLayout(),
                 Coordinates.parse(group + ":" + artifact + ":" + backfillVersion),
                 null
@@ -217,7 +217,7 @@ class MetadataGenerationUtilsTests {
                 """
         );
 
-        MetadataGenerationUtils.addVersionToIndexJsonUpdatingLatestWhenNewer(
+        MetadataIndexUpdateUtils.addVersionToIndexJsonUpdatingLatestWhenNewer(
                 createProject().getLayout(),
                 Coordinates.parse(group + ":" + artifact + ":3.0.0"),
                 null
@@ -255,7 +255,7 @@ class MetadataGenerationUtilsTests {
                 """
         );
 
-        MetadataGenerationUtils.addVersionToIndexJsonUpdatingLatestWhenNewer(
+        MetadataIndexUpdateUtils.addVersionToIndexJsonUpdatingLatestWhenNewer(
                 createProject().getLayout(),
                 Coordinates.parse(group + ":" + artifact + ":3.0.0-M5-javax"),
                 null

@@ -7,6 +7,7 @@
 package org.graalvm.internal.tck;
 
 import org.graalvm.internal.tck.utils.MetadataGenerationUtils;
+import org.graalvm.internal.tck.utils.MetadataIndexUpdateUtils;
 import org.graalvm.internal.tck.utils.GeneralUtils;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.file.ProjectLayout;
@@ -121,7 +122,7 @@ public abstract class GenerateMetadataTask extends DefaultTask {
             );
         }
         if (isFromJarAllowedPackages()) {
-            MetadataGenerationUtils.setAllowedPackagesInIndexJson(getLayout(), coordinatesValue, packageList);
+            MetadataIndexUpdateUtils.setAllowedPackagesInIndexJson(getLayout(), coordinatesValue, packageList);
         }
     }
 
@@ -132,7 +133,7 @@ public abstract class GenerateMetadataTask extends DefaultTask {
 
         String normalizedValue = agentAllowedPackages.trim();
         if (normalizedValue.equals(FROM_JAR)) {
-            return MetadataGenerationUtils.mergeWithAllowedPackagesInIndexJson(
+            return MetadataIndexUpdateUtils.mergeWithAllowedPackagesInIndexJson(
                     getLayout(),
                     coordinatesValue,
                     MetadataGenerationUtils.derivePackageRootsFromJar(getProject(), coordinatesValue)
