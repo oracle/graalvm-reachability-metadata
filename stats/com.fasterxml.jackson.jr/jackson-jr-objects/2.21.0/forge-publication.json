@@ -1,0 +1,148 @@
+{
+  "base_commit": "cd1e6b61d5c29452bdf0bcdbed7715e9404d233f",
+  "branch": "ai/kimeta/improve-coverage-com.fasterxml.jackson.jr-jackson-jr-objects-2.21.0-forge-8916-20260915090248064901-b23f51952979",
+  "follow_ups": [],
+  "forge": {
+    "branch": "master",
+    "commit": "cd1e6b61d5c29452bdf0bcdbed7715e9404d233f",
+    "monitored_branch": "origin/master"
+  },
+  "issue_number": 8916,
+  "library": {
+    "artifact": "jackson-jr-objects",
+    "coordinates": "com.fasterxml.jackson.jr:jackson-jr-objects:2.21.0",
+    "group": "com.fasterxml.jackson.jr",
+    "version": "2.21.0"
+  },
+  "local_ci_verification": {
+    "base_commit": "cd1e6b61d5c29452bdf0bcdbed7715e9404d233f",
+    "commands": [],
+    "failure_command": null,
+    "failure_gate": null,
+    "final_commit": "1aa0263dd0b1eb729f407cb056fc2445a95328e4",
+    "fixups": [],
+    "human_intervention_required": false,
+    "repo_fix_paths": [],
+    "status": "success"
+  },
+  "local_review": {
+    "changed_paths": [
+      "tests/src/com.fasterxml.jackson.jr/jackson-jr-objects/2.21.0/src/test/resources/META-INF/native-image/reachability-metadata.json",
+      "tests/src/com.fasterxml.jackson.jr/jackson-jr-objects/2.21.0/test-results-native/test/TEST-junit-jupiter.xml",
+      "tests/src/com.fasterxml.jackson.jr/jackson-jr-objects/2.21.0/test-results-native/test/TEST-junit-vintage.xml"
+    ],
+    "decision": "approved",
+    "finding_body": "The generated test-only reachability metadata duplicated shipped registrations for POJODefinition, array types, LinkedHashMap, and TreeMap behind test-class conditions, so those registrations could satisfy native tests without exercising the shipped library-conditioned entries. It also contained unstable $$Lambda/0x... conditions and nanoTime-derived missing-class targets, which are not stable valid evidence. The contribution additionally changed tracked native test-result XML even though that generated path is repository-ignored.",
+    "finding_title": "Test-only metadata shadowed shipped registrations",
+    "fix_note": "Removed the shadowing and unstable test-only metadata entries and stopped tracking the ignored native test-result XML files. The repaired suite still covers all 21 dynamic-access calls and passed the complete Forge finalization unchanged on its successful rerun.",
+    "model": "gpt-5.6-sol",
+    "review_comment": "Reviewed the one-coordinate diff, metadata format and conditions, test behavior, generated statistics, and local gate evidence. Dynamic-access coverage improves from 0/21 (0%) to 21/21 (100%) with no regression. After repair, the exact Forge finalization passed current-defaults on latest GraalVM, future-defaults on latest GraalVM, current-defaults on GraalVM 25, metadata splitting and validation, style checks, and regenerated statistics without further publishable changes.",
+    "session_id": "57e189cce94b444f"
+  },
+  "metrics": {
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "path": "stats/com.fasterxml.jackson.jr/jackson-jr-objects/2.21.0/execution-metrics.json",
+    "summary": {
+      "cached_input_tokens_used": 0,
+      "code_coverage_percent": 40.59,
+      "cost_usd": 0.0,
+      "generated_loc": 1433,
+      "input_tokens_used": 0,
+      "iterations": 2,
+      "metadata_entries": 16,
+      "output_tokens_used": 0,
+      "test_only_metadata_entries": 256,
+      "tested_library_loc": 0
+    },
+    "timestamp": "2026-09-15T09:02:48.064901Z"
+  },
+  "modifiers": {
+    "chunk_final": true,
+    "chunked_dynamic_access": false,
+    "human_intervention": false
+  },
+  "producer": "kimeta",
+  "publication_id": "forge-8916-20260915090248064901-b23f51952979",
+  "render": {
+    "alias_split": null,
+    "baseline_metadata_entries": 13,
+    "baseline_stats": {
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 0.0,
+            "coveredCalls": 0,
+            "totalCalls": 21
+          }
+        },
+        "coverageRatio": 0.0,
+        "coveredCalls": 0,
+        "totalCalls": 21
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 5565,
+          "missed": 8145,
+          "ratio": 0.405908,
+          "total": 13710
+        },
+        "line": "N/A",
+        "method": {
+          "covered": 292,
+          "missed": 413,
+          "ratio": 0.414184,
+          "total": 705
+        }
+      },
+      "version": "2.21.0"
+    },
+    "baseline_test_only_entries": 129,
+    "current_metadata_entries": 16,
+    "current_test_only_entries": 242,
+    "dynamic_access": null,
+    "library_stats": {
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 21,
+            "totalCalls": 21
+          }
+        },
+        "coverageRatio": 1.0,
+        "coveredCalls": 21,
+        "totalCalls": 21
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 5565,
+          "missed": 8145,
+          "ratio": 0.405908,
+          "total": 13710
+        },
+        "line": "N/A",
+        "method": {
+          "covered": 292,
+          "missed": 413,
+          "ratio": 0.414184,
+          "total": 705
+        }
+      },
+      "version": "2.21.0"
+    },
+    "library_update_target": {
+      "match_type": "tested-version",
+      "matched_metadata_version": "2.21.0",
+      "matched_test_version": "2.21.0",
+      "requested_coordinate": "com.fasterxml.jackson.jr:jackson-jr-objects:2.21.0",
+      "resolved_metadata_version": "2.21.0",
+      "resolved_test_version": "2.21.0"
+    }
+  },
+  "schema_version": 1,
+  "strategy_name": "library_update_optimistic_pi_gpt-5.6-sol",
+  "task_type": "library-update-request",
+  "template_type": "library-update-request",
+  "timestamp": "2026-09-15T09:02:48.064901Z"
+}
