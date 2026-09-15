@@ -215,6 +215,7 @@ class CodeCoverageBenchmarkConversionTests(unittest.TestCase):
                     configured_model="gpt-5.6-sol",
                     target_model="openai-codex/gpt-5.6-sol",
                     thinking="high",
+                    strategy="guided",
                     checked_in_all_methods=11943,
                 )
             )

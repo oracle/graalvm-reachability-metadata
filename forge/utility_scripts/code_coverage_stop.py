@@ -5,7 +5,7 @@
 
 """
 Decide whether a coverage phase has stopped producing coverage
-(§AR-code-coverage-improvement.3.3, §AR-code-coverage-improvement-architecture.1).
+(§AR-code-coverage-improvement.4.3, §AR-code-coverage-improvement.3).
 
 Both measurement states share this module, so the API and deep phases cannot
 drift onto different stop rules. A phase's pass yield is the number of methods
@@ -39,6 +39,9 @@ SCHEMA_VERSION = "1.0.0"
 PHASE_REPORTS: dict[str, tuple[str, str]] = {
     "api": ("api-cover-report", "covered"),
     "deep": ("discovery-report", "deepCovered"),
+    # The benchmark baseline arm's loop, on the frozen JaCoCo method universe
+    # (§AR-code-coverage-benchmarking.3, §FS-code-coverage-benchmarking.7).
+    "naive": ("naive-cover-report", "covered"),
 }
 DECISION_FILE = "stop-decision.json"
 ACTIVE_MEASUREMENT_FILE = "active-measurement.txt"
@@ -59,7 +62,7 @@ def begin_measurement(reports_dir: str, phase: str) -> int:
     A measurement repair returns to measurement without running the cover agent.
     The marker keeps that retry on the same iteration even when the failed
     measurement already wrote its numbered report, so a retry cannot become a
-    zero-yield cover pass (§AR-code-coverage-improvement.3.3).
+    zero-yield cover pass (§AR-code-coverage-improvement.4.3).
     """
     try:
         stem, _ = PHASE_REPORTS[phase]
@@ -167,7 +170,7 @@ def evaluate(
 
     The floor counts completed cover passes, not reports: a phase whose opening
     passes fail on an environment fault must not be ended by that fault before
-    it has had a chance to produce anything (§AR-code-coverage-improvement.3.3).
+    it has had a chance to produce anything (§AR-code-coverage-improvement.4.3).
     """
     if threshold < 1 or window < 1 or floor < 1:
         raise StopDecisionError(
@@ -221,7 +224,7 @@ def record(reports_dir: str, phase: str, record_value: dict[str, Any]) -> str:
     Written on every pass rather than only on the pass that stops a phase: a
     short run is otherwise indistinguishable from a crashed one, and the
     thresholds can then only be re-argued rather than re-measured
-    (§AR-code-coverage-improvement.3.3).
+    (§AR-code-coverage-improvement.4.3).
     """
     payload: dict[str, Any] = {"phase": phase, **record_value}
     path: str = os.path.join(reports_dir, f"{phase}-{DECISION_FILE}")

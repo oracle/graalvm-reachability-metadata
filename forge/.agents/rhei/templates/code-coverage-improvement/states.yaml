@@ -32,11 +32,18 @@
 #
 # A phase completes on exit 0 for any of three reasons, all recorded in its
 # `<phase>-stop-decision.json`: nothing uncovered remains, the pass yield
-# collapsed (§AR-code-coverage-improvement.3.3), or the budget is spent.
+# collapsed (§AR-code-coverage-improvement.4.3), or the budget is spent.
 #
 # Deep coverage loop (one task): identical shape with deep-measure (JaCoCo +
 # sampled PGO + call-tree steps plus the same stop decision, exits 1-7),
 # deep-cover, deep-fix.
+#
+# Naive baseline loop (benchmark strategy "naive", one task; the same shape
+# with no guidance steps, §AR-code-coverage-benchmarking.3):
+#   naive-measure -- 0 -> completed; 10 -> naive-cover -> naive-measure;
+#     1-4 -> naive-fix -> naive-measure (visits exhausted -> human-intervention)
+#   Steps: 1 conversion record, 2 JaCoCo universe measurement, 3 stop
+#   decision, 4 naive prompt render. Guided runs never enter these states.
 #
 # Final verified task (finalization only):
 #   reviewed-prepared -> reviewed-execute -- 0 -> finalize-verify -- 0 -> completed
@@ -78,6 +85,7 @@ states:
       --target-model "{{benchmark_target_model}}"
       --thinking "{{benchmark_thinking}}"
       --checked-in-all-methods "{{benchmark_checked_in_all_methods}}"
+      --strategy "{{strategy}}"
     program_timeout: 5m
 
   benchmark-publication:
@@ -155,7 +163,7 @@ states:
           sys.exit(code)
 
       # Inventory scope is the artifact's committed allowed-packages, taken
-      # whole (§AR-code-coverage-improvement.4, §root/FS-metadata).
+      # whole (§AR-code-coverage-improvement.5, §root/FS-metadata).
       try:
           conversion = json.load(open(sys.argv[1]))
           library = json.load(open(sys.argv[2]))
@@ -217,7 +225,7 @@ states:
       # The helper validates the finalized metrics against the coordinate and
       # owns staging, rebase, the verification gate, the descriptor, and the
       # push; its exit code is the transition
-      # (§AR-code-coverage-improvement.4, §AR-actions-publication).
+      # (§AR-code-coverage-improvement.5, §AR-actions-publication).
       try:
           conversion = json.load(open(sys.argv[1]))
           coordinate = conversion["coordinate"]
@@ -290,7 +298,7 @@ states:
           sys.exit(code)
 
       # The gate call, its budget, and its exit-code contract:
-      # §AR-code-coverage-improvement.4 item 5, §FS-native-test-verification-gate.
+      # §AR-code-coverage-improvement.5 item 5, §FS-native-test-verification-gate.
       try:
           conversion = json.load(open(sys.argv[1]))
           coordinate = conversion["coordinate"]
@@ -380,14 +388,14 @@ states:
       # Step 3: static call graph from the library bytecode, built once and
       # cached. The Native Image call tree cannot serve here: it holds only
       # methods current tests already reach, which excludes exactly the code
-      # this phase opens up (§AR-code-coverage-improvement.3.1.1). It runs
+      # this phase opens up (§AR-code-coverage-improvement.4.1.1). It runs
       # before the loop decision because the deep phase needs its method list
       # even when this phase completes on the first measurement.
       inventory_path = Path("runtime/code-coverage/api-inventory/api-inventory.json")
       graph_dir = Path("runtime/code-coverage/graph")
       # `types.csv` is the extractor's last output and its newest one, so its
       # absence means either no graph or a graph from an extractor that predates
-      # receiver-obtainability analysis (§AR-code-coverage-improvement.3.1.2).
+      # receiver-obtainability analysis (§AR-code-coverage-improvement.4.1.2).
       # Keying the cache on it rebuilds instead of silently ranking unfiltered.
       if not (graph_dir / "types.csv").is_file():
           try:
@@ -419,11 +427,11 @@ states:
       print(f"[api-measure] iteration {iteration}: {len(uncovered)} uncovered public targets", flush=True)
 
       # Step 4: the loop decision, recorded on every pass whether or not it
-      # stops the phase (§AR-code-coverage-improvement.3.3). The budget stays a
+      # stops the phase (§AR-code-coverage-improvement.4.3). The budget stays a
       # constant rather than a function of the baseline uncovered count:
       # scaling it made phase length depend on how that count is defined, so a
       # change to the summary basis silently halved the budget
-      # (§AR-code-coverage-improvement.3.1).
+      # (§AR-code-coverage-improvement.4.1).
       try:
           from utility_scripts.code_coverage_stop import (
               covered_series, decision, record, summarize,
@@ -690,7 +698,7 @@ states:
       # method list keeps the deep universe to methods the resolved jars declare;
       # a JaCoCo report also covers whatever else the test runtime classpath
       # instruments, including the library's own test-classifier artifact
-      # (§AR-code-coverage-improvement.3.2).
+      # (§AR-code-coverage-improvement.4.2).
       library_methods = Path("runtime/code-coverage/graph/methods.csv")
       if not library_methods.is_file():
           fail(6, f"the API phase left no library method list at {library_methods}")
@@ -720,7 +728,7 @@ states:
 
       # Step 7: the loop decision, on the same budget and the same
       # marginal-yield rule as the API phase, through the same evaluator so the
-      # two phases cannot drift apart (§AR-code-coverage-improvement.3.3).
+      # two phases cannot drift apart (§AR-code-coverage-improvement.4.3).
       try:
           from utility_scripts.code_coverage_stop import (
               covered_series, decision, record, summarize,
@@ -784,7 +792,7 @@ states:
         `public` member on a package-private class is not public user-callable
         API. If no public user-callable API reaches an internal target, leave
         that target uncovered rather than call it directly.
-        §AR-code-coverage-improvement.3.2
+        §AR-code-coverage-improvement.4.2
       - `Observed:` lines are sampled guidance only; every `Uncovered paths`
         target is uncovered according to exact JaCoCo evidence.
       - Add or edit test classes only under the tracked extension suite
@@ -880,6 +888,202 @@ states:
       - name: fix
         path: runtime/code-coverage/fixes/{task_id}-{visit_count}.md
         description: Fixes applied after a failed deep measurement step.
+
+  naive-measure:
+    description: Deterministic naive-baseline measurement on the JaCoCo method universe.
+    # The benchmark baseline arm's loop (§AR-code-coverage-benchmarking.3):
+    # measurement is only the JaCoCo run, the stop decision, and the naive
+    # prompt render; no inventory, call graph, or ranking is ever built.
+    concurrent: true
+    visits: {{naive_measure_visits}}
+    program: |
+      python3 - "$RHEI_INPUT_CONVERSION_PATH" <<'PY'
+      import json
+      import os
+      import subprocess
+      import sys
+      from pathlib import Path
+
+      def fail(step: int, message: str) -> None:
+          print(f"step {step}: {message}", file=sys.stderr)
+          sys.exit(step)
+
+      # Step 1: read the conversion record.
+      try:
+          conversion = json.load(open(sys.argv[1]))
+          coordinate = conversion["coordinate"]
+          worktree = conversion["worktreePath"]
+          work_path = conversion["workPath"]
+      except Exception as error:
+          fail(1, f"conversion.json missing or invalid: {error}")
+
+      validation = Path("runtime/code-coverage/validation")
+      validation.mkdir(parents=True, exist_ok=True)
+      sys.path.insert(0, work_path)
+      try:
+          from utility_scripts.code_coverage_stop import (
+              begin_measurement, complete_measurement,
+          )
+          iteration = begin_measurement(str(validation), "naive")
+      except Exception as error:
+          fail(3, f"the stop evaluator rejected the report history: {error}")
+
+      # Step 2: JVM JaCoCo run summarized straight from the method universe.
+      helper = [
+          sys.executable, f"{work_path}/utility_scripts/code_coverage_naive.py",
+          "measure",
+          "--repo-path", worktree,
+          "--coordinate", coordinate,
+          "--iteration", str(iteration),
+          "--output-dir", str(validation),
+      ]
+      print(f"[naive-measure] iteration {iteration}: {' '.join(helper)}", flush=True)
+      try:
+          if subprocess.run(helper, env=dict(os.environ, PYTHONPATH=work_path)).returncode != 0:
+              fail(2, "code_coverage_naive.py measure failed")
+      except OSError as error:
+          fail(2, f"code_coverage_naive.py could not run: {error}")
+      report_path = validation / f"naive-cover-report-{iteration}.json"
+      if not report_path.is_file():
+          fail(2, f"helper wrote no report at {report_path}")
+      report = json.load(open(report_path))
+      uncovered = int(report["summary"]["uncovered"])
+      print(f"[naive-measure] iteration {iteration}: {uncovered} uncovered library methods", flush=True)
+
+      # Step 3: the loop decision, on the shared marginal-yield rule
+      # (§AR-code-coverage-improvement.4.3), recorded on every pass.
+      try:
+          from utility_scripts.code_coverage_stop import (
+              covered_series, decision, record, summarize,
+          )
+          stop = decision(
+              covered_series(str(validation), "naive"),
+              threshold={{stop_threshold}},
+              window={{stop_window}},
+              floor={{stop_floor}},
+              budget={{naive_iterations}},
+              targets_remaining=uncovered,
+          )
+          record(str(validation), "naive", stop)
+      except Exception as error:
+          fail(3, f"the stop evaluator rejected the report history: {error}")
+      print(f"[naive-measure] {summarize(stop)}", flush=True)
+      if stop["stopped"]:
+          try:
+              complete_measurement(str(validation), "naive", iteration)
+          except Exception as error:
+              fail(3, f"the stop evaluator could not complete measurement: {error}")
+          sys.exit(0)
+
+      # Step 4: fill the naive prompt with the report's numbers — the only
+      # information the cover agent receives (§FS-code-coverage-benchmarking.7).
+      render = [
+          sys.executable, f"{work_path}/utility_scripts/code_coverage_naive.py",
+          "render",
+          "--report", str(report_path),
+          "--conversion", sys.argv[1],
+          "--template", f"{work_path}/prompt_templates/code_coverage/naive-baseline-iteration.md",
+          "--prompt-path", "runtime/code-coverage/prompts/naive-cover-prompt.md",
+      ]
+      print(f"[naive-measure] {' '.join(render)}", flush=True)
+      try:
+          if subprocess.run(render, env=dict(os.environ, PYTHONPATH=work_path)).returncode != 0:
+              fail(4, "code_coverage_naive.py render failed")
+      except OSError as error:
+          fail(4, f"code_coverage_naive.py could not run: {error}")
+      try:
+          complete_measurement(str(validation), "naive", iteration)
+      except Exception as error:
+          fail(3, f"the stop evaluator could not complete measurement: {error}")
+      sys.exit(10)
+      PY
+    program_timeout: 60m
+    inputs:
+      - name: conversion
+        path: runtime/code-coverage/issues/conversion.json
+
+  naive-cover:
+    description: One naive cover pass driven only by the rendered prompt.
+    target: "{{worker_agent}}"
+    concurrent: true
+    visits: {{naive_iterations}}
+    instructions: |
+      Improve library code coverage for Task {task_id}: {task_title}.
+
+      Read the prompt at `{input.prompt.path}` and do what it says. It is the
+      only guidance for this pass (§AR-code-coverage-benchmarking.3): work
+      from the coverage report it names and your own reading of the library.
+
+      Rules:
+      - Do not measure or claim coverage yourself: deterministic
+        re-measurement runs right after this state and decides the loop.
+      - Compile and run tests only from inside the worktree the prompt names,
+        with the exact command it gives.
+
+      Artifact paths in this task, including the one below, are relative to
+      the Rhei workspace root: the directory holding `states.yaml` and
+      `index.rhei.md`, which is `{{workspace_path}}`
+      from your working directory. Resolve every artifact path against that
+      directory. Do not prefix it with the workspace directory name alone, and
+      do not guess a prefix from your working directory.
+
+      Write `{output.work.path}` with:
+      - files changed
+      - commands run and results
+      - remaining risk
+    inputs:
+      - name: prompt
+        path: runtime/code-coverage/prompts/naive-cover-prompt.md
+    outputs:
+      - name: work
+        path: runtime/code-coverage/work/{task_id}-cover-{visit_count}.md
+        description: Cover-pass summary for one naive iteration.
+
+  naive-fix:
+    description: Repair the cause of a failed naive measurement step.
+    target: "{{worker_agent}}"
+    concurrent: true
+    visits: {{naive_measure_visits}}
+    instructions: |
+      Fix the naive measurement failure for Task {task_id}: {task_title}.
+
+      The deterministic naive measurement failed. Its stderr in the latest
+      state log names the failed step:
+      - step 1: `runtime/code-coverage/issues/conversion.json` is missing or
+        invalid - repair it from the conversion task evidence.
+      - step 2: the JVM JaCoCo run failed - the coverage suite does not
+        compile or a test fails. Make the suite pass again by fixing the
+        generated tests, following the same rules as the cover prompt at
+        `runtime/code-coverage/prompts/naive-cover-prompt.md`; do not weaken
+        or delete meaningful assertions, and never hand-craft reports.
+      - step 3: the stop evaluator rejected the report history - a
+        `naive-cover-report-<n>.json` is missing, out of sequence, or has no
+        integer `summary.covered`; restore the missing report from the run's
+        own history, never by writing a replacement.
+      - step 4: the prompt render failed - repair the report or conversion
+        record it named; never hand-write the cover prompt.
+
+      Fix only that cause. Measurement re-runs automatically after this state.
+
+      Artifact paths in this task, including the one below, are relative to
+      the Rhei workspace root: the directory holding `states.yaml` and
+      `index.rhei.md`, which is `{{workspace_path}}`
+      from your working directory. Resolve every artifact path against that
+      directory. Do not prefix it with the workspace directory name alone, and
+      do not guess a prefix from your working directory.
+
+      Write `{output.fix.path}` with:
+      - failure addressed
+      - files changed
+      - commands run and results
+      - residual risk
+    inputs:
+      - name: conversion
+        path: runtime/code-coverage/issues/conversion.json
+    outputs:
+      - name: fix
+        path: runtime/code-coverage/fixes/{task_id}-{visit_count}.md
+        description: Fixes applied after a failed naive measurement step.
 
   reviewed-prepared:
     description: Final verified task is generated and ready for execution.
@@ -1065,7 +1269,7 @@ states:
           finalize_command += ["--target-state", str(target_state)]
       # Why each phase's loop ended. A phase may complete before its budget on
       # the marginal-yield rule, and the run's evidence has to say so
-      # (§AR-code-coverage-improvement.3.3).
+      # (§AR-code-coverage-improvement.4.3).
       for stop_decision in (
           "runtime/code-coverage/validation/api-stop-decision.json",
           "runtime/code-coverage/discovery/deep-stop-decision.json",
@@ -1798,3 +2002,75 @@ transitions:
   - from: "*"
     to: cancelled
     description: Cancel any non-final task.
+
+  - from: naive-measure
+    to: completed
+    exit_code: 0
+    description: >-
+      No uncovered library methods remain, the pass yield collapsed, or the
+      naive budget is spent; the recorded stop decision names which.
+
+  - from: naive-measure
+    to: naive-cover
+    exit_code: 10
+    description: Uncovered methods remain; the naive prompt was rendered for the cover agent.
+
+  - from: naive-measure
+    to: naive-fix
+    exit_code: 1
+    condition: visitCount < visits
+    description: Step 1 failed - conversion.json is missing or invalid.
+
+  - from: naive-measure
+    to: naive-fix
+    exit_code: 2
+    condition: visitCount < visits
+    description: Step 2 failed - the JVM JaCoCo run failed, usually a red coverage suite.
+
+  - from: naive-measure
+    to: naive-fix
+    exit_code: 3
+    condition: visitCount < visits
+    description: Step 3 failed - the stop evaluator rejected the report history.
+
+  - from: naive-measure
+    to: naive-fix
+    exit_code: 4
+    condition: visitCount < visits
+    description: Step 4 failed - the naive prompt render failed.
+
+  - from: naive-measure
+    to: human-intervention
+    exit_code: 1
+    condition: visitCount >= visits
+    description: Step 1 still fails after the maximum fix passes.
+
+  - from: naive-measure
+    to: human-intervention
+    exit_code: 2
+    condition: visitCount >= visits
+    description: Step 2 still fails after the maximum fix passes.
+
+  - from: naive-measure
+    to: human-intervention
+    exit_code: 3
+    condition: visitCount >= visits
+    description: Step 3 still fails after the maximum fix passes.
+
+  - from: naive-measure
+    to: human-intervention
+    exit_code: 4
+    condition: visitCount >= visits
+    description: Step 4 still fails after the maximum fix passes.
+
+  - from: naive-cover
+    to: naive-measure
+    description: Naive cover pass finished; re-measure deterministically.
+
+  - from: naive-cover
+    to: human-intervention
+    description: Naive cover pass requires a human decision.
+
+  - from: naive-fix
+    to: naive-measure
+    description: Repairs applied; the naive measurement re-runs.
