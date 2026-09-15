@@ -59,7 +59,7 @@ from utility_scripts.continuation_marker import (
 from utility_scripts.dynamic_access_exhaust_report import resolve_workflow_exhaust_report
 from utility_scripts.edit_scope import format_resolved_edit_scope_context
 from utility_scripts.issue_requested_metadata import format_issue_requested_metadata_context
-from utility_scripts.library_preparation_preflight import (
+from utility_scripts.library_preparation_setup import (
     prepare_library_preparation_preflight,
 )
 from utility_scripts.metadata_index import MATCH_NEW_VERSION

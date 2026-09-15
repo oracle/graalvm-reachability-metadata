@@ -57,7 +57,7 @@ from utility_scripts.dynamic_access_exhaust_report import resolve_workflow_exhau
 from utility_scripts.edit_scope import format_resolved_edit_scope_context
 from utility_scripts.gradle_environment import gradle_command_environment
 from utility_scripts.issue_requested_metadata import format_issue_requested_metadata_context
-from utility_scripts.library_preparation_preflight import (
+from utility_scripts.library_preparation_setup import (
     apply_library_preparation_setup,
     prepare_library_preparation_preflight,
 )
