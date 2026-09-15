@@ -193,7 +193,9 @@ public final class LibraryStatsSchemaValidator {
         failures.add("Unexpected JSON file under stats root: " + file
                 + " (expected stats/<groupId>/<artifactId>/<metadataVersion>/stats.json, "
                 + "stats/<groupId>/<artifactId>/<metadataVersion>/execution-metrics.json, "
-                + "stats/<groupId>/<artifactId>/<metadataVersion>/forge-publication.json, or stats/schemas/*.json)");
+                + "stats/<groupId>/<artifactId>/<metadataVersion>/forge-publication.json, "
+                + "stats/<groupId>/<artifactId>/<metadataVersion>/<publicationId>/forge-publication.json, "
+                + "or stats/schemas/*.json)");
         return null;
     }
 
@@ -208,10 +210,13 @@ public final class LibraryStatsSchemaValidator {
 
     /// Forge commits its publication descriptor beside the stats it publishes. Both sides of the
     /// publication handoff already schema-validate it, so this validator only has to recognize the
-    /// file instead of rejecting it as stray JSON (§forge/AR-actions-publication).
+    /// file instead of rejecting it as stray JSON (§forge/AR-actions-publication). Benchmark
+    /// results scope the descriptor by publication id so concurrent runs of one coordinate merge
+    /// independently (§forge/FS-forge-generation-benchmarking.3), adding one path component.
     private static boolean isForgePublicationFile(Path relativePath) {
-        return relativePath.getNameCount() == 4
-                && "forge-publication.json".equals(relativePath.getName(3).toString());
+        int nameCount = relativePath.getNameCount();
+        return (nameCount == 4 || nameCount == 5)
+                && "forge-publication.json".equals(relativePath.getName(nameCount - 1).toString());
     }
 
     private static void validateExecutionMetricsFile(
