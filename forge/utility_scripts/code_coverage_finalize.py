@@ -28,7 +28,7 @@ SCHEMA_VERSION = "1.3.0"
 
 #: Run checkpoints, in run order. Each is one JaCoCo report, and each phase
 #: begins at the checkpoint the previous phase ended on
-#: (§AR-code-coverage-improvement.4.1).
+#: (§AR-code-coverage-improvement.5.1).
 CHECKPOINT_NAMES: tuple[str, ...] = ("runStart", "afterApiPhase", "final")
 SCHEMA_FILE = "code_coverage_final_metrics_schema.json"
 TARGET_STATE_SCHEMA_FILE = "code_coverage_target_state_schema.json"
@@ -246,7 +246,7 @@ def _universe_ids(
     that an unreported method is not silently dropped on one side and a hard
     error on the other. The two rosters must not overlap, since the deep roster
     is by construction the library methods the inventory does not hold, and an
-    overlap would double count (§AR-code-coverage-improvement.4.1).
+    overlap would double count (§AR-code-coverage-improvement.5.1).
     """
     inventory_ids: list[str] = list(
         _coverage_statuses(
@@ -329,7 +329,7 @@ def _run_coverage(
     a phase's own guidance is ranked on. This block is the run as a reader sees
     it: every checkpoint a share of the same complete method count, so a phase's
     gain is the distance from the previous checkpoint and the phase gains sum to
-    the run's gain (§AR-code-coverage-improvement.4.1).
+    the run's gain (§AR-code-coverage-improvement.5.1).
     """
     run_start_coverage: dict[str, Any] = load_jacoco_method_coverage(
         [jacoco_paths[0]]
@@ -370,7 +370,7 @@ def _stop_decisions(paths: list[str]) -> list[dict[str, Any]]:
 
     A phase that ends before its budget is spent is not a failure, but a run
     that cannot say why it ended short is indistinguishable from a crashed one
-    (§AR-code-coverage-improvement.3.3).
+    (§AR-code-coverage-improvement.4.3).
     """
     decisions: list[dict[str, Any]] = []
     for path in paths:
@@ -570,7 +570,7 @@ def _target_outcomes(
         deep_final_report: dict[str, Any],
 ) -> dict[str, list[dict[str, Any]]]:
     # Measurement owns automatic attempt and exhaustion state; explicit files
-    # remain later overrides for compatibility (§AR-code-coverage-improvement.3.2).
+    # remain later overrides for compatibility (§AR-code-coverage-improvement.4.2).
     states: dict[str, dict[str, Any]] = _target_states_from_entries(
         deep_final_report.get("targetStates", []), "Deep final.targetStates"
     )

@@ -469,7 +469,7 @@ def _validate_run_coverage(run: Any) -> None:
 
     The renderer divides nothing itself, so a descriptor missing a checkpoint or
     a universe count cannot be rendered against a fallback denominator — it is
-    rejected here instead (§forge/AR-code-coverage-improvement.4.1).
+    rejected here instead (§forge/AR-code-coverage-improvement.5.1).
     """
     if not isinstance(run, dict):
         raise ValueError("Code coverage runCoverage must be an object")
@@ -924,7 +924,7 @@ PHASE_LABELS: dict[str, str] = {
 
 
 #: How each phase's loop ended, in reader-facing words
-#: (§forge/AR-code-coverage-improvement.3.3).
+#: (§forge/AR-code-coverage-improvement.4.3).
 STOP_REASON_LABELS: dict[str, str] = {
     "no-targets": "nothing left uncovered",
     "budget-spent": "pass budget spent",
@@ -937,7 +937,7 @@ def _coverage_stop_lines(decisions: Any) -> list[str]:
 
     A phase may end before its budget because its passes stopped producing
     coverage, and a reader who cannot see that reads a short run as a broken one
-    (§forge/AR-code-coverage-improvement.3.3). Rendered only when the run
+    (§forge/AR-code-coverage-improvement.4.3). Rendered only when the run
     recorded the decisions, so descriptors from earlier runs still publish.
     """
     if not isinstance(decisions, list) or not decisions:
@@ -964,7 +964,7 @@ def _coverage_universe_lines(run: dict[str, Any]) -> list[str]:
     distance from the checkpoint the previous phase ended on, and the phase gains
     sum to the run's gain. Reporting each phase against its own roster instead
     put two different instants of the run on two different scales
-    (§forge/AR-code-coverage-improvement.4.1).
+    (§forge/AR-code-coverage-improvement.5.1).
     """
     universe = int(run["universe"])
     api_universe = int(run["apiUniverse"])
@@ -1058,7 +1058,7 @@ def _render_code_coverage_improvement(
 
     The descriptor carries the schema-validated `final-metrics.json` and the
     per-phase token accounting; this renderer only reports them, exactly as the
-    local helper did before publication moved into Actions (§forge/AR-code-coverage-improvement.4).
+    local helper did before publication moved into Actions (§forge/AR-code-coverage-improvement.5).
     """
     coordinates = descriptor["library"]["coordinates"]
     render = descriptor["render"]

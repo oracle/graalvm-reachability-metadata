@@ -125,7 +125,7 @@ conversion JSON and Markdown artifacts. It must not call `gh`, assign an
 issue, validate a label, or mutate Project status.
 
 Reuse preparation, API coverage, native metadata preparation, deep coverage,
-and finalization unchanged. §AR-code-coverage-improvement.4.1
+and finalization unchanged. §AR-code-coverage-improvement.5.1
 
 ### Publication
 

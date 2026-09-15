@@ -11,10 +11,8 @@ file it sits in. Architecture that belongs to one component — the worker loop 
 [do-work.md](do-work.md), the dispatcher in
 [orchestration-scripts.md](orchestration-scripts.md), publication in
 [git-scripts.md](git-scripts.md), the workflow engines in
-[workflows.md](workflows.md), the code coverage workflow in
-[code-coverage-improvement.md](code-coverage-improvement.md), and the coverage
-benchmark control plane in
-[code-coverage-benchmarking.md](code-coverage-benchmarking.md) — is grouped by
+[workflows.md](workflows.md), and the code coverage workflow family in
+[code-coverage/](code-coverage/) — is grouped by
 file rather than by prefix.
 
 | ID | Subject |
@@ -44,9 +42,8 @@ file rather than by prefix.
 | [§AR-dynamic-access-exhaust-report](workflows.md#ar-dynamic-access-exhaust-report-exhaust-report) | Exhaust report |
 | [§AR-native-test-verification-callers](workflows.md#ar-native-test-verification-callers-callers) | Which engine invokes the native test verification gate, and when |
 | [§AR-chunked-dynamic-access-pr-linking](workflows.md#ar-chunked-dynamic-access-pr-linking-chunk-pr-linking) | Chunk PR linking |
-| [§AR-code-coverage-improvement](code-coverage-improvement.md#ar-code-coverage-improvement-code-coverage-improvement-workflow) | Code coverage improvement workflow |
-| [§AR-code-coverage-improvement-architecture](code-coverage-improvement.md#ar-code-coverage-improvement-architecture-code-coverage-improvement-workflow-architecture) | Code coverage improvement workflow architecture |
-| [§AR-code-coverage-benchmarking](code-coverage-benchmarking.md#ar-code-coverage-benchmarking-code-coverage-benchmark-architecture) | Fixed-input benchmark execution, metrics publication, and preserved workspaces |
+| [§AR-code-coverage-improvement](code-coverage/workflow.md#ar-code-coverage-improvement-code-coverage-improvement-workflow) | Code coverage improvement workflow |
+| [§AR-code-coverage-benchmarking](code-coverage/benchmarking.md#ar-code-coverage-benchmarking-code-coverage-benchmark-architecture) | Fixed-input benchmark execution, metrics publication, and preserved workspaces |
 | [§AR-do-work-loop](do-work.md#ar-do-work-loop-do-work-loop-architecture) | do-work loop architecture |
 | [§AR-forge-orchestration](orchestration-scripts.md#ar-forge-orchestration-forge-orchestration-scripts) | Forge orchestration scripts |
 | [§AR-forge-publication](git-scripts.md#ar-forge-publication-forge-branch-and-pull-request-publication) | Forge branch and pull-request publication |
@@ -79,9 +76,9 @@ Files:
   claiming, worktree setup, workflow dispatch, and issue bookkeeping.
 - [git-scripts.md](git-scripts.md) — publication: staging, the descriptor, the
   PR body, labels, and issue linking.
-- [code-coverage-improvement.md](code-coverage-improvement.md) — the PGO-driven
+- [code-coverage/workflow.md](code-coverage/workflow.md) — the PGO-driven
   coverage workflow, behavior and architecture in one document until it is split
   into a spec of its own.
-- [code-coverage-benchmarking.md](code-coverage-benchmarking.md) — the fixed
-  suite, execution sequences, metrics derivation, publishing worktree, and
-  workspace preservation architecture.
+- [code-coverage/benchmarking.md](code-coverage/benchmarking.md) — the fixed
+  suite, execution sequences, metrics derivation, publishing worktree,
+  workspace preservation, and the naive baseline arm.
