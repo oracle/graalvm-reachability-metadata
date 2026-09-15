@@ -3597,6 +3597,15 @@ def reconcile_failed_ci_pull_request(
         print(f"[Skipping failed-CI follow-up for PR #{pr_number}: CI state changed.]")
         return
 
+    if validated.descriptor.get("task_type") == BENCHMARK_PUBLICATION_TASK_TYPE:
+        # A benchmark result is a measurement with no repairable contribution;
+        # the PR waits unmerged for green CI or a human. §FS-automated-pr-review
+        print(
+            f"[Leaving failed-CI benchmark PR #{pr_number} unmerged; "
+            "benchmark results are never repaired.]"
+        )
+        return
+
     print(f"[Starting immediate contribution-scoped CI diagnosis for PR #{pr_number}.]")
     repair_failed_ci_pull_request(
         pull_request,

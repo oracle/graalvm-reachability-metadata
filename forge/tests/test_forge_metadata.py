@@ -3456,6 +3456,26 @@ class PullRequestReviewSelectionTests(unittest.TestCase):
         repair.assert_called_once_with(state, validated, "/tmp/reachability")
         rerun.assert_not_called()
 
+    def test_failed_ci_benchmark_publication_is_never_repaired(self) -> None:
+        state = _pull_request_state(9656, "FAILURE")
+        validated = _validated_publication(
+            task_type=forge_metadata.BENCHMARK_PUBLICATION_TASK_TYPE,
+        )
+        with (
+                patch.object(forge_metadata, "repair_failed_ci_pull_request") as repair,
+                patch.object(
+                    forge_metadata, "rerun_failed_pull_request_workflow_jobs",
+                ) as rerun,
+        ):
+            forge_metadata.reconcile_failed_ci_pull_request(
+                state,
+                validated,
+                "/tmp/reachability",
+            )
+
+        repair.assert_not_called()
+        rerun.assert_not_called()
+
     def test_rerun_failed_jobs_uses_only_agent_selected_current_head_runs(self) -> None:
         workflow_runs = [
             {"id": 101, "conclusion": "failure", "run_attempt": 4},
