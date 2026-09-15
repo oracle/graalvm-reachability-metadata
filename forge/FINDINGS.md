@@ -3,6 +3,12 @@
 Rendered by Forge from the pre-push branch review of §FS-local-branch-review.
 Newest entry first; every non-approval is recorded, including one a repair later cleared.
 
+## 2026-09-15 — org.apache.sshd:sshd-core:2.18.0 (#9958)
+
+**New-library contribution has zero dynamic-access coverage**
+
+The submitted statistics reported 0/6 covered dynamic-access calls, violating the above-20% gate for library-new-request contributions in §FS-contribution-contract.3.
+
 ## 2026-09-10 — org.apache.sshd:sshd-sftp:2.18.0 (#9959)
 
 **Library tests rely on prohibited Native Image class-initialization flags**
