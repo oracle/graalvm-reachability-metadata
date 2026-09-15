@@ -229,7 +229,7 @@ from utility_scripts.run_location import (
     resolve_failure_location,
     run_step,
 )
-from utility_scripts.source_context import GradleBootstrapFailure
+from utility_scripts.source_context_discovery import GradleBootstrapFailure
 from utility_scripts.stage_logger import (
     debug_logging_enabled,
     enable_verbose_logging,

@@ -12,11 +12,13 @@ import unittest
 from unittest.mock import patch
 
 from utility_scripts.source_context import (
-    GradleBootstrapFailure,
     SourceArtifactContext,
+    prepare_source_contexts,
+)
+from utility_scripts.source_context_discovery import (
+    GradleBootstrapFailure,
     _is_gradle_bootstrap_failure,
     discover_artifact_metadata,
-    prepare_source_contexts,
 )
 
 SPOTLESS_BOOTSTRAP_OUTPUT = (
@@ -183,11 +185,11 @@ def _discovery_harness(attempts: list[subprocess.CompletedProcess]):
     with tempfile.TemporaryDirectory() as repo:
         log_path = os.path.join(repo, "discover.log")
         with (
-            patch("utility_scripts.source_context.require_complete_reachability_repo"),
-            patch("utility_scripts.source_context.build_task_log_path", return_value=log_path),
-            patch("utility_scripts.source_context.gradle_command_environment", return_value={"ENV": "1"}),
-            patch("utility_scripts.source_context.time.sleep") as sleep,
-            patch("utility_scripts.source_context.subprocess.run", side_effect=attempts) as run,
+            patch("utility_scripts.source_context_discovery.require_complete_reachability_repo"),
+            patch("utility_scripts.source_context_discovery.build_task_log_path", return_value=log_path),
+            patch("utility_scripts.source_context_discovery.gradle_command_environment", return_value={"ENV": "1"}),
+            patch("utility_scripts.source_context_discovery.time.sleep") as sleep,
+            patch("utility_scripts.source_context_discovery.subprocess.run", side_effect=attempts) as run,
         ):
             yield _DiscoveryHarness(repo, log_path, run, sleep)
 

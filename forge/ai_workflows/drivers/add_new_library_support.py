@@ -77,11 +77,13 @@ from utility_scripts.run_location import (
 )
 from utility_scripts.schema_validator import validate_benchmark_run_metrics
 from utility_scripts.source_context import (
-    discover_artifact_metadata,
     normalize_source_context_types,
-    populate_artifact_urls,
     prepare_source_contexts,
     resolve_test_source_layout,
+)
+from utility_scripts.source_context_discovery import (
+    discover_artifact_metadata,
+    populate_artifact_urls,
 )
 from utility_scripts.stage_logger import log_detail, log_stage
 from utility_scripts.task_logs import display_log_path

@@ -55,10 +55,10 @@ from utility_scripts.run_location import (
 )
 from utility_scripts.source_context import (
     normalize_source_context_types,
-    populate_artifact_urls,
     prepare_source_contexts,
     resolve_test_source_layout,
 )
+from utility_scripts.source_context_discovery import populate_artifact_urls
 from utility_scripts.stage_logger import log_detail
 from utility_scripts.strategy_loader import require_strategy_by_name
 from utility_scripts.workflow_setup import (
