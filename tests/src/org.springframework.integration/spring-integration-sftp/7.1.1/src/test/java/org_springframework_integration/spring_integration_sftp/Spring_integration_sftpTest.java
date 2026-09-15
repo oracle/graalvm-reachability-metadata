@@ -84,8 +84,7 @@ public class Spring_integration_sftpTest {
 
         try {
             waitUntilSftpIsReady();
-        }
-        catch (Exception exception) {
+        } catch (Exception exception) {
             stopSftpServer();
             throw exception;
         }
@@ -97,8 +96,7 @@ public class Spring_integration_sftpTest {
             if (sessionFactory != null) {
                 sessionFactory.destroy();
             }
-        }
-        finally {
+        } finally {
             if (sftpServer != null && sftpServer.isAlive()) {
                 sftpServer.destroy();
                 if (!sftpServer.waitFor(10, TimeUnit.SECONDS)) {
@@ -250,8 +248,7 @@ public class Spring_integration_sftpTest {
             SftpRemoteFileTemplate template = new SftpRemoteFileTemplate(sessionFactory);
             assertThat(template.exists(remoteDirectory + "/incoming.txt")).isFalse();
             assertThat(template.exists(remoteDirectory + "/ignored.log")).isTrue();
-        }
-        finally {
+        } finally {
             source.stop();
         }
     }
@@ -280,8 +277,7 @@ public class Spring_integration_sftpTest {
             try (InputStream inputStream = received.getPayload()) {
                 assertThat(new String(inputStream.readAllBytes(), StandardCharsets.UTF_8))
                         .isEqualTo("streamed-content");
-            }
-            finally {
+            } finally {
                 session.close();
             }
             assertThat(received.getHeaders())
@@ -291,8 +287,7 @@ public class Spring_integration_sftpTest {
             assertThat((String) received.getHeaders().get(FileHeaders.REMOTE_FILE_INFO))
                     .contains("\"filename\":\"stream.txt\"")
                     .contains("\"directory\":false");
-        }
-        finally {
+        } finally {
             source.stop();
         }
     }
@@ -379,8 +374,7 @@ public class Spring_integration_sftpTest {
                 if (session.test()) {
                     return;
                 }
-            }
-            catch (RuntimeException exception) {
+            } catch (RuntimeException exception) {
                 lastFailure = exception;
             }
             Thread.sleep(250L);

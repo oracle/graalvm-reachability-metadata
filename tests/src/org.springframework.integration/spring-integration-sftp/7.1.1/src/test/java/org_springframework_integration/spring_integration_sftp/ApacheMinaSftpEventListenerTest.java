@@ -72,8 +72,7 @@ public class ApacheMinaSftpEventListenerTest {
                 session.remove("/events/renamed.txt");
                 session.rmdir("/events");
             }
-        }
-        finally {
+        } finally {
             if (client != null) {
                 client.destroy();
             }
