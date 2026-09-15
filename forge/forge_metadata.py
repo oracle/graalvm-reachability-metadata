@@ -50,15 +50,17 @@ from typing import Any, Optional
 from urllib.parse import quote
 
 import ai_workflows.core  # noqa: F401 - triggers strategy registration
-from ai_workflows.drivers.add_new_library_support import (
+from ai_workflows.drivers.add_new_library_setup import (
     DEFAULT_MODEL_NAME,
-    DEFAULT_STRATEGY_NAME as DEFAULT_NEW_LIBRARY_STRATEGY_NAME,
     ScaffoldError,
     create_feature_branch_for_library,
     init_agent as init_workflow_agent,
-    main as run_add_new_library_support_workflow,
     prepare_native_image_eligible_artifact,
     run_scaffold as run_new_library_scaffold,
+)
+from ai_workflows.drivers.add_new_library_support import (
+    DEFAULT_STRATEGY_NAME as DEFAULT_NEW_LIBRARY_STRATEGY_NAME,
+    main as run_add_new_library_support_workflow,
 )
 from ai_workflows.drivers.fix_javac_fail import (
     main as run_fix_javac_workflow,

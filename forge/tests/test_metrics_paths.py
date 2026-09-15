@@ -9,7 +9,7 @@ import subprocess
 import tempfile
 import unittest
 
-from ai_workflows.drivers.add_new_library_support import (
+from ai_workflows.drivers.add_new_library_metrics import (
     resolve_add_new_library_support_metrics_json,
     write_add_new_library_support_metrics,
 )
