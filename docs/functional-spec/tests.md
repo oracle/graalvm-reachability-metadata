@@ -20,11 +20,9 @@ this document describes the test-project contract.
   `splitTestOnlyMetadata` carved out of the shipped library metadata so the test
   image can reach its own helper types without those entries reaching consumers
   (§FS-metadata, §FS-repository-functional-spec.5.1).
-- `build.gradle` may add test dependencies and, when there is no better public
-  API path, restrict Native Image configuration edits to `--add-opens` /
-  `--add-exports` under `graalvmNative`. `--initialize-at-build-time` is
-  permitted only under the bounded consumer-required exception
-  (§FS-test-contract.2.7).
+- `build.gradle` may add test dependencies and, under `graalvmNative`, only
+  flags the test can only be written and executed with — the uniform
+  necessity rule of §FS-test-contract.2.7.
 - Test assertions use standard Java or library exceptions, not Gradle-only
   failure types such as `GradleException`.
 

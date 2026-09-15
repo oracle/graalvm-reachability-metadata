@@ -234,33 +234,41 @@ or Native Image config entries: no creating or editing
 `predefined-classes-config.json`, or any other file under
 `src/test/resources/META-INF/native-image`. Metadata is collected from the
 tests and merged by the harness and Forge (§FS-repository-functional-spec.5.1).
-`build.gradle` native configuration under `graalvmNative` is limited to flags a
-consumer of the library must supply as well, or that grant the test module access
-it cannot obtain through a public API path: `--add-opens` / `--add-exports` when
-no better public API path exists (§FS-tests.1).
+**Native build and run flags.** All `graalvmNative` configuration in
+`build.gradle` — build arguments and run arguments alike — is held to one
+uniform rule: a flag may be present only when the test can only be written and
+executed while it is present. Whenever a compliant alternative exists — another
+public API path, another test shape, another way to drive the same behavior —
+the alternative is used and the flag is omitted. A flag is justified only when
+all three conditions hold together:
 
-**Consumer-required build-time initialization.** `--initialize-at-build-time` is
-permitted under one bounded exception, because a test that omits a flag the
-consumer cannot omit exercises a configuration nobody can ship. All three
-conditions hold together:
+1. no test of any shape builds and runs without the flag, so a consumer of the
+   library cannot omit it either — a test carrying a flag the consumer can drop
+   exercises a configuration nobody ships, and vice versa;
+2. the necessity originates in the library or its transitive dependencies —
+   their code, resources, or service registrations — never in the test code, so
+   no rewrite of the test removes it; and
+3. the flag is the narrowest one that resolves the necessity, naming only what
+   forces it, never a package or the library at large.
 
-1. the library produces no native image at all without the flag, so no test of
-   any shape can pass without it;
-2. the requirement originates in the library or its transitive dependencies, not
-   in the test code, so no rewrite of the test removes it; and
-3. the flag names only the types that force it, never a package or the library
-   at large.
-
-This is not a repair. A failing native image is evidence of missing metadata
-until conditions 1 and 2 are demonstrated, so the flag is never added to make a
-build pass, and never in place of a metadata entry. The metadata bundle itself
-still ships no build-time directive of any kind: `native-image.properties` and
-every other bundled directive remain forbidden, and the additivity invariant
-they protect is unchanged (§FS-repository-functional-spec.3).
+A flag is never a repair. A failing native image build or run is evidence of
+missing metadata until conditions 1 and 2 are demonstrated, so a flag is never
+added to make a build pass, and never in place of a metadata entry. The
+metadata bundle itself ships no build-time directive of any kind:
+`native-image.properties` and every other bundled directive remain forbidden,
+and the additivity invariant they protect is unchanged
+(§FS-repository-functional-spec.3).
 
 ```text
 Bad: a PR diff adding
   tests/src/.../src/test/resources/META-INF/native-image/reflect-config.json
+
+Bad: --initialize-at-build-time=<library types> added so nativeTestCompile
+  passes, when a differently shaped test needs no flag at all
+
+Good: --future-defaults=run-time-initialize-file-system-providers, with
+  evidence that every test shape fails without it because the library jar
+  registers FileSystemProviders via META-INF/services
 ```
 
 The single exception is the reporter-requested metadata phase. A need inferred

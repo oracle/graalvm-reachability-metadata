@@ -13,12 +13,9 @@ How to use the source context (strict):
 - Stop inspecting sources as soon as you have identified the renamed/removed/changed API for the failing symbols. Then make the minimal edit to the test.
 
 Rules (test contract: §root/FS-test-contract):
-- Only edit files that are added to context. Modify `{build_gradle_file}` only if additional dependencies are required. §root/FS-test-contract.2.9
+- The binding test contract is `docs/functional-spec/test-contract.md` in this repository; re-read the sections a failure cites before fixing.
+- Only edit files that are added to context. Modify `{build_gradle_file}` only if additional dependencies are required (§root/FS-test-contract.3.4). §AR-forge-strategy-agent-boundary
 - Test that is fixed must maintain functional coverage. Never simplify the test to the point of triviality. §root/FS-test-contract.3.6
-- Every individual test must complete in under 60 seconds. Use bounded waits and close all clients, servers, executors, and other background resources. §root/FS-test-contract.1.6
-- Keep the test in `{test_language_display_name}` under `src/test/{test_source_dir_name}`. §root/FS-test-contract.1.1
-- Follow idiomatic `{test_language_display_name}` coding conventions. §root/FS-test-contract.1.2
-- Use only the provided library version. §root/FS-test-contract.1.4
 
 Initial Gradle error output:
 {initial_error}

@@ -49,6 +49,17 @@ Each entry in `strategies/predefined_strategies.json` must provide:
   etc.).
 - `mcps` — optional list of MCP server names.
 
+Prompt templates and persistent instructions convey the root test contract by
+citation, not by restatement: they direct the agent to read
+`docs/functional-spec/test-contract.md` from its repository checkout and cite
+the governing section IDs instead of copying contract text into the prompt.
+This keeps one authoritative statement of every test rule, so a contract
+change reaches every generation and fix run without prompt-template edits.
+Inline prompt rules are reserved for what the contract cannot state: the
+workflow boundary (§AR-forge-strategy-agent-boundary), per-run substitutions
+such as the test language and source root, and the task the current prompt
+drives.
+
 There is no `post-generation-intervention` bundle field. Post-generation
 recovery is evidence-driven analysis-agent repair built into the workflow and
 finalization utilities, followed by deterministic re-runs of the failed
