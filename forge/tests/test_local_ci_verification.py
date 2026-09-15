@@ -260,7 +260,7 @@ class LocalCIVerificationTests(unittest.TestCase):
             result = LocalCIVerificationResult(status="running", base_commit="base")
             command = ["python3", "-c", "print('FAILED[javaTest][1.0.0][./gradlew test]')"]
             with patch(
-                    "utility_scripts.local_ci_verification.build_timestamped_task_log_path",
+                    "utility_scripts.local_ci_commands.build_timestamped_task_log_path",
                     return_value=os.path.join(log_path, "command.log"),
             ):
                 failed = _run_recorded_command(
@@ -302,9 +302,9 @@ class LocalCIVerificationTests(unittest.TestCase):
                     },
                     clear=True,
             ), patch(
-                    "utility_scripts.local_ci_verification.build_timestamped_task_log_path",
+                    "utility_scripts.local_ci_commands.build_timestamped_task_log_path",
                     return_value=os.path.join(log_path, "command.log"),
-            ), patch("utility_scripts.local_ci_verification.subprocess.run", side_effect=fake_run):
+            ), patch("utility_scripts.local_ci_commands.subprocess.run", side_effect=fake_run):
                 failed = _run_recorded_command(
                     repo_path,
                     "run-consecutive-tests",
@@ -322,9 +322,9 @@ class LocalCIVerificationTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as repo_path, tempfile.TemporaryDirectory() as log_path:
             result = LocalCIVerificationResult(status="running", base_commit="base")
             with patch(
-                    "utility_scripts.local_ci_verification.build_timestamped_task_log_path",
+                    "utility_scripts.local_ci_commands.build_timestamped_task_log_path",
                     return_value=os.path.join(log_path, "command.log"),
-            ), patch("utility_scripts.local_ci_verification.subprocess.run") as run:
+            ), patch("utility_scripts.local_ci_commands.subprocess.run") as run:
                 failed = _run_recorded_command(
                     repo_path,
                     "privileged-command",
@@ -344,9 +344,9 @@ class LocalCIVerificationTests(unittest.TestCase):
                 file.write("#!/bin/bash\nsudo systemctl restart docker\n")
             result = LocalCIVerificationResult(status="running", base_commit="base")
             with patch(
-                    "utility_scripts.local_ci_verification.build_timestamped_task_log_path",
+                    "utility_scripts.local_ci_commands.build_timestamped_task_log_path",
                     return_value=os.path.join(log_path, "command.log"),
-            ), patch("utility_scripts.local_ci_verification.subprocess.run") as run:
+            ), patch("utility_scripts.local_ci_commands.subprocess.run") as run:
                 failed = _run_recorded_command(
                     repo_path,
                     "privileged-script",
@@ -366,9 +366,9 @@ class LocalCIVerificationTests(unittest.TestCase):
                 file.write("#!/bin/bash\nsudo systemctl restart docker\n")
             result = LocalCIVerificationResult(status="running", base_commit="base")
             with patch(
-                    "utility_scripts.local_ci_verification.build_timestamped_task_log_path",
+                    "utility_scripts.local_ci_commands.build_timestamped_task_log_path",
                     return_value=os.path.join(log_path, "command.log"),
-            ), patch("utility_scripts.local_ci_verification.subprocess.run") as run:
+            ), patch("utility_scripts.local_ci_commands.subprocess.run") as run:
                 failed = _run_recorded_command(
                     repo_path,
                     "gradle-wrapper",
