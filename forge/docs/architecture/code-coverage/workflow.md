@@ -4,8 +4,8 @@ This workflow is getting its own spec. What follows is the current design in one
 document — behavior and architecture together — so it
 can be cited while it is worked on. A later change splits it the way the rest of
 Forge is split: what the workflow must do into the functional spec, the engine
-that runs it into [workflows.md](workflows.md), and the driver that prepares it
-into [drivers.md](drivers.md). Until then, treat the two declarations here as one
+that runs it into [workflows.md](../workflows.md), and the driver that prepares it
+into [drivers.md](../drivers.md). Until then, treat the two declarations here as one
 component's documentation rather than as a settled behavior contract.
 
 Code coverage improvement is a planned Forge workflow
