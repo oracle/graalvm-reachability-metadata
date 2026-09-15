@@ -73,8 +73,8 @@ from ai_workflows.drivers.fix_ni_run import (
 from ai_workflows.drivers.improve_library_coverage import (
     DEFAULT_STRATEGY_NAME as DEFAULT_LIBRARY_UPDATE_STRATEGY_NAME,
     main as run_improve_library_coverage_workflow,
-    prepare_library_update_target,
 )
+from ai_workflows.drivers.library_update_preparation import prepare_library_update_target
 from ai_workflows.drivers.library_update_router import (
     ROUTE_FIX_JAVA_RUN,
     ROUTE_FIX_JAVAC,

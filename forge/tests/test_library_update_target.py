@@ -10,12 +10,12 @@ import tempfile
 import unittest
 from unittest.mock import patch
 
-from ai_workflows.drivers.improve_library_coverage import (
-    format_issue_requested_metadata_context,
-    format_resolved_edit_scope_context,
+from ai_workflows.drivers.library_update_preparation import (
     prepare_library_update_target,
     reset_failed_library_update_worktree,
 )
+from utility_scripts.edit_scope import format_resolved_edit_scope_context
+from utility_scripts.issue_requested_metadata import format_issue_requested_metadata_context
 from utility_scripts.metadata_index import (
     MATCH_DEFAULT_FOR,
     MATCH_METADATA_VERSION,
@@ -799,7 +799,7 @@ class LibraryUpdateTargetTests(unittest.TestCase):
 
             failed_result = subprocess.CompletedProcess(["./gradlew"], 17)
             with patch(
-                    "ai_workflows.drivers.improve_library_coverage.run_logged_command",
+                    "ai_workflows.drivers.library_update_preparation.run_logged_command",
                     return_value=failed_result,
             ):
                 with self.assertRaisesRegex(
@@ -831,9 +831,9 @@ class LibraryUpdateTargetTests(unittest.TestCase):
                     os.remove(generated_stats)
                 return subprocess.CompletedProcess(command, 0)
 
-            with patch("ai_workflows.drivers.improve_library_coverage.subprocess.run", side_effect=fake_run), \
+            with patch("utility_scripts.worktree_reset.subprocess.run", side_effect=fake_run), \
                     patch(
-                        "ai_workflows.drivers.improve_library_coverage.subprocess.check_output",
+                        "utility_scripts.worktree_reset.subprocess.check_output",
                         return_value="checkpoint\n",
                     ):
                 ending_commit = reset_failed_library_update_worktree(repo, "checkpoint", target)

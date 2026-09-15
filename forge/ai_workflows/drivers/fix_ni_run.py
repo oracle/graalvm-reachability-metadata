@@ -20,7 +20,7 @@ from ai_workflows.core.workflow_strategy import (
     SUCCESS_WITH_INTERVENTION_STATUS,
     WorkflowStrategy,
 )
-from ai_workflows.drivers.improve_library_coverage import prepare_library_update_target
+from ai_workflows.drivers.library_update_preparation import prepare_library_update_target
 from git_scripts.common_git import (
     build_ai_branch_name,
     delete_remote_branch_if_exists,
