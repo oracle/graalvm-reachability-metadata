@@ -843,7 +843,7 @@ sequenceDiagram
             note over P,W: trusted Actions validate the pushed commit and open the PR (§AR-actions-publication)
         else benchmark mode
             R->>P: benchmark publish collects run evidence
-            P->>W: append the compact result, push the descriptor-backed branch
+            P->>W: append the compact result, push the result-only branch
             P-->>R: exit 0 completed, exit 1 human-intervention
         end
     end
@@ -907,9 +907,9 @@ programs. Issue mode runs the publish helper, which validates the finalized
 metrics against the coordinate, rebases, writes the coordinate's publication
 descriptor, and pushes the `ai/` branch; trusted Actions own everything after
 the push (§AR-actions-publication). Benchmark mode runs a program that appends the
-compact result to the per-coordinate results file and pushes the
-descriptor-backed branch without touching GitHub itself
-(§FS-code-coverage-benchmarking.3).
+compact result to the per-coordinate results file and pushes that
+result-only branch without touching GitHub itself; the trusted publisher
+validates it from the branch diff (§FS-code-coverage-benchmarking.3).
 
 ## 5. Acceptance Criteria
 

@@ -101,7 +101,7 @@ The `forge/` toolkit composes LLM agents (Aider, Codex, Pi) with deterministic G
 3. **Fix native-image runtime failures** raised by a library version bump.
 4. **Improve coverage** of already-supported libraries by targeting uncovered dynamic-access call sites.
 5. **Record code coverage benchmarks** — publish compact, reproducible benchmark
-   results through descriptor-backed pull requests without shipping generated tests.
+   results through diff-validated pull requests without shipping generated tests.
 
 Each Forge run records per-library metrics under `stats/<group>/<artifact>/<version>/execution-metrics.json` and, when invoked through a publication script or the benchmark result publisher, pushes a verified branch that trusted GitHub Actions turn into a PR ready for review. See [forge/README.md](../../forge/README.md) and [forge/docs/functional-spec/functional-spec.md](../../forge/docs/functional-spec/functional-spec.md).
 

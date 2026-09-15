@@ -180,6 +180,30 @@ def validate_publication(
         )
 
     trusted_base_ref = f"refs/remotes/origin/{BASE_BRANCH}"
+
+    # A benchmark-result head carries no descriptor: its diff against the merge
+    # base with the default branch is the handoff, computed fresh at validation
+    # time so a conflict refresh cannot stale it
+    # (§forge/FS-code-coverage-benchmarking.3).
+    merge_base = git("merge-base", trusted_base_ref, head_sha).strip()
+    merge_base_paths = sorted(
+        path
+        for path in git(
+            "diff", "--name-only", "--diff-filter=ACMRTD", merge_base, head_sha,
+        ).splitlines()
+        if path
+    )
+    if merge_base_paths and all(
+            path.startswith("code-coverage-benchmarks/") for path in merge_base_paths
+    ):
+        return _validate_benchmark_diff_publication(
+            head_sha=head_sha,
+            merge_base=merge_base,
+            changed_paths=merge_base_paths,
+            branch=branch,
+            actor=actor,
+        )
+
     changed_paths: list[str] | None = None
     if pull_request_head:
         changed_paths = sorted(
@@ -253,14 +277,7 @@ def validate_publication(
     coordinate_directory = (
         f"stats/{library['group']}/{library['artifact']}/{library['version']}"
     )
-    # A coordinate carries many benchmark results, so their descriptors nest
-    # under the publication ID and only issue-driven publications keep the
-    # single coordinate-local path (§forge/FS-code-coverage-benchmarking.3).
-    expected_descriptor = (
-        f"{coordinate_directory}/{descriptor['publication_id']}/forge-publication.json"
-        if descriptor["task_type"] == "code-coverage-benchmark-result"
-        else f"{coordinate_directory}/forge-publication.json"
-    )
+    expected_descriptor = f"{coordinate_directory}/forge-publication.json"
     if descriptor_path != expected_descriptor:
         raise ValueError("Descriptor path does not match its library coordinate")
 
@@ -268,14 +285,6 @@ def validate_publication(
     if descriptor["publication_id"] != expected_publication_id:
         raise ValueError("Descriptor publication ID does not match its durable run inputs")
 
-    if descriptor["task_type"] == "code-coverage-benchmark-result":
-        _validate_benchmark_result_publication(
-            descriptor=descriptor,
-            descriptor_path=descriptor_path,
-            head_sha=head_sha,
-            base_commit=base_commit,
-            changed_paths=changed_paths,
-        )
     _validate_render_inputs(descriptor)
     return ValidatedPublication(descriptor, descriptor_path, head_sha)
 
@@ -329,17 +338,6 @@ def _validate_render_inputs(descriptor: dict[str, Any]) -> None:
             raise ValueError("Not-for-native-image publication requires a reason")
     if template_type == "code-coverage-improvement":
         _validate_code_coverage_render(descriptor["render"])
-    if template_type == "code-coverage-benchmark-result":
-        _validate_benchmark_result(descriptor["render"].get("benchmark_result"))
-
-
-def _validate_benchmark_result(result: Any) -> None:
-    """Validate one compact benchmark result using the trusted schema."""
-    if not BENCHMARK_RESULT_SCHEMA_PATH.is_file():
-        raise ValueError("Trusted benchmark result schema is unavailable")
-    with BENCHMARK_RESULT_SCHEMA_PATH.open(encoding="utf-8") as schema_file:
-        schema = json.load(schema_file)
-    Draft202012Validator(schema, format_checker=FormatChecker()).validate([result])
 
 
 def _json_value_at_commit(commit: str, path: str) -> Any:
@@ -347,38 +345,41 @@ def _json_value_at_commit(commit: str, path: str) -> Any:
     return json.loads(git("show", f"{commit}:{path}"))
 
 
-def _validate_benchmark_result_publication(
+BENCHMARK_RESULT_PATH_PATTERN = re.compile(
+    r"code-coverage-benchmarks/([^/]+)/([^/]+)/([^/]+)\.json"
+)
+
+
+def _validate_benchmark_diff_publication(
         *,
-        descriptor: dict[str, Any],
-        descriptor_path: str,
         head_sha: str,
-        base_commit: str,
+        merge_base: str,
         changed_paths: list[str],
-) -> None:
-    """Accept exactly one schema-valid result appended to its coordinate list.
+        branch: str,
+        actor: str,
+) -> ValidatedPublication:
+    """Validate a descriptor-free benchmark-result head from its diff.
 
-    §forge/FS-code-coverage-benchmarking.3
+    The branch must change exactly one schema-valid coordinate result list and
+    append exactly one entry relative to the merge base with the default
+    branch; the appended entry is the complete record the pull request renders.
+    The base list is not reconstructed or enforced — a removed or edited entry
+    stays visible in the pull-request diff for the reviewer to judge
+    (§forge/FS-code-coverage-benchmarking.3).
     """
-    library = descriptor["library"]
-    result_path = (
-        f"code-coverage-benchmarks/{library['group']}/{library['artifact']}/"
-        f"{library['version']}.json"
-    )
-    if changed_paths != sorted((descriptor_path, result_path)):
-        raise ValueError(
-            "Benchmark publication must change exactly its result list and descriptor"
-        )
-
-    result = descriptor["render"].get("benchmark_result")
-    _validate_benchmark_result(result)
-    if result["runId"] != descriptor["benchmark_run_id"]:
-        raise ValueError("Benchmark descriptor run IDs do not agree")
-    if result["coordinate"] != library["coordinates"]:
-        raise ValueError("Benchmark descriptor coordinate does not match its result")
+    if len(changed_paths) != 1:
+        raise ValueError("Benchmark publication must change exactly one coordinate result list")
+    result_path = changed_paths[0]
+    path_match = BENCHMARK_RESULT_PATH_PATTERN.fullmatch(result_path)
+    if path_match is None:
+        raise ValueError(f"Unexpected benchmark result path: {result_path}")
+    group, artifact, version = path_match.groups()
 
     head_entries = _json_value_at_commit(head_sha, result_path)
     if not isinstance(head_entries, list):
         raise ValueError("Benchmark result path must contain a JSON list")
+    if not BENCHMARK_RESULT_SCHEMA_PATH.is_file():
+        raise ValueError("Trusted benchmark result schema is unavailable")
     with BENCHMARK_RESULT_SCHEMA_PATH.open(encoding="utf-8") as schema_file:
         result_schema = json.load(schema_file)
     Draft202012Validator(
@@ -386,22 +387,54 @@ def _validate_benchmark_result_publication(
         format_checker=FormatChecker(),
     ).validate(head_entries)
 
-    base_object = f"{base_commit}:{result_path}"
+    base_object = f"{merge_base}:{result_path}"
     base_entries = (
-        _json_value_at_commit(base_commit, result_path)
+        _json_value_at_commit(merge_base, result_path)
         if _git_object_exists(base_object)
         else []
     )
     if not isinstance(base_entries, list):
         raise ValueError("Base benchmark result path must contain a JSON list")
-    if any(entry.get("runId") == result["runId"] for entry in base_entries):
-        raise ValueError("Benchmark result already exists in the publication base")
-    expected_entries = [*base_entries, result]
-    expected_entries.sort(key=lambda entry: (entry["timestamp"], entry["runId"]))
-    if head_entries != expected_entries:
-        raise ValueError(
-            "Benchmark result list must be the sorted base list plus the descriptor result"
-        )
+    base_run_ids = {
+        entry.get("runId") for entry in base_entries if isinstance(entry, dict)
+    }
+    appended = [
+        entry for entry in head_entries if entry["runId"] not in base_run_ids
+    ]
+    if len(appended) != 1:
+        raise ValueError("Benchmark publication must append exactly one result")
+    result = appended[0]
+
+    coordinates = f"{group}:{artifact}:{version}"
+    if result["coordinate"] != coordinates:
+        raise ValueError("Benchmark result coordinate does not match its list path")
+    if not branch.startswith(f"ai/{actor}/"):
+        raise ValueError("Event branch does not belong to the triggering actor")
+
+    descriptor: dict[str, Any] = {
+        "task_type": "code-coverage-benchmark-result",
+        "template_type": "code-coverage-benchmark-result",
+        "branch": branch,
+        "producer": actor,
+        "timestamp": result["timestamp"],
+        "benchmark_run_id": result["runId"],
+        "library": {
+            "group": group,
+            "artifact": artifact,
+            "version": version,
+            "coordinates": coordinates,
+        },
+        "modifiers": {
+            "chunked_dynamic_access": False,
+            "chunk_final": True,
+            "human_intervention": False,
+        },
+        "render": {"benchmark_result": result},
+    }
+    descriptor["publication_id"] = _build_publication_id(descriptor)
+    if not branch.endswith(f"-{descriptor['publication_id']}"):
+        raise ValueError("Event branch does not carry the benchmark publication ID")
+    return ValidatedPublication(descriptor, result_path, head_sha)
 
 def _validate_code_coverage_render(render: dict[str, Any]) -> None:
     """Require the finalized coverage evidence the coverage template reads."""

@@ -308,8 +308,9 @@ review before it is pushed (§FS-automated-pr-review). The verified working tree
 local gate records, and resolved render statistics are still available at this
 point, so a contribution-local finding can be corrected before publication.
 The shared publication pipeline implements this phase before it writes the
-descriptor. Coverage and benchmark publication remain deterministic descriptor
-routes rather than semantic code-review subjects.
+descriptor. Coverage publication remains a deterministic descriptor route, and
+benchmark publication a deterministic diff-validated route
+(§FS-code-coverage-benchmarking.3), rather than semantic code-review subjects.
 
 **Placement.** The review runs inside publication, after the pre-publication
 gate of §FS-local-ci-equivalent-verification.2 has passed and the descriptor
@@ -539,17 +540,20 @@ semantic reviewer. Before any approval, rejection action, repair, or merge, it
 must load the publication descriptor from the pull request's exact current head
 and apply the same schema and publication trust checks as the trusted publisher.
 Missing, malformed, stale, wrong-repository, wrong-branch, or unsupported
-descriptor state makes the pull request ineligible for automation.
+descriptor state makes the pull request ineligible for automation. A
+benchmark-result head carries no descriptor; its eligibility check is the
+trusted publisher's diff validation (§FS-code-coverage-benchmarking.3).
 
 Eligibility is structural, not presentational. The head repository must be
 `oracle/graalvm-reachability-metadata`, the head branch must be upstream
 `ai/**`, the pull request must resolve to the trusted Forge publication identity,
-and the validated descriptor must name a supported generated task or benchmark
-publication. A title marker, branch name, or label alone is insufficient.
+and the validated descriptor must name a supported generated task — or the
+head must pass benchmark-result diff validation. A title marker, branch name,
+or label alone is insufficient.
 
 **Approved heads are approved deterministically.** For a normal generated task,
-`local_review.decision` must be `approved`; a validated benchmark-result
-descriptor is approved by definition because it records measurements rather
+`local_review.decision` must be `approved`; a diff-validated benchmark-result
+head is approved by definition because it records measurements rather
 than a mergeable generated contribution. If the head changes an index file,
 Forge validates the current-base merge candidate before approval because
 enabling auto-merge on an already-green head may merge it immediately. Forge

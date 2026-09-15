@@ -13,7 +13,7 @@ import unittest
 from typing import Any
 from unittest.mock import patch
 
-from jsonschema import Draft202012Validator, FormatChecker
+from jsonschema import Draft202012Validator, FormatChecker, exceptions
 
 REPOSITORY_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 PUBLISHER_PATH = os.path.join(
@@ -22,6 +22,8 @@ PUBLISHER_PATH = os.path.join(
 SCHEMA_PATH = os.path.join(
     REPOSITORY_ROOT, ".github", "scripts", "forge_pr_publisher", "schema.json",
 )
+
+RESULT_PATH = "code-coverage-benchmarks/com.example/demo/1.0.0.json"
 
 
 def _load_publisher() -> Any:
@@ -52,10 +54,10 @@ def _phase(before: int, after: int) -> dict[str, Any]:
     }
 
 
-def _result() -> dict[str, Any]:
+def _result(run_id: str = "run-1") -> dict[str, Any]:
     return {
         "schemaVersion": "1.0.0",
-        "runId": "run-1",
+        "runId": run_id,
         "timestamp": "2026-09-08T13:03:29Z",
         "benchmarkSuiteCommit": "a" * 40,
         "runnerCommit": "b" * 40,
@@ -75,64 +77,54 @@ def _result() -> dict[str, Any]:
     }
 
 
-def _descriptor() -> dict[str, Any]:
-    result = _result()
-    descriptor: dict[str, Any] = {
-        "schema_version": 1,
-        "publication_id": "pending",
-        "timestamp": result["timestamp"],
-        "branch": "pending",
-        "producer": "kimeta",
-        "base_commit": "0" * 40,
-        "issue_number": None,
-        "benchmark_run_id": result["runId"],
-        "library": {
-            "group": "com.example",
-            "artifact": "demo",
-            "version": "1.0.0",
-            "coordinates": result["coordinate"],
-        },
+def _publication_id(result: dict[str, Any]) -> str:
+    return publisher._build_publication_id({
         "task_type": "code-coverage-benchmark-result",
-        "template_type": "code-coverage-benchmark-result",
-        "metrics": None,
-        "local_ci_verification": {
-            "status": "success",
-            "base_commit": "0" * 40,
-            "final_commit": "1" * 40,
-            "commands": [],
-            "fixups": [],
-            "repo_fix_paths": [],
-            "human_intervention_required": False,
-        },
-        "forge": {"monitored_branch": "master", "branch": "master", "commit": "2" * 40},
-        "modifiers": {
-            "chunked_dynamic_access": False,
-            "chunk_final": True,
-            "human_intervention": False,
-        },
-        "follow_ups": [],
-        "render": {"benchmark_result": result},
-    }
-    publication_id = publisher._build_publication_id(descriptor)
-    descriptor["publication_id"] = publication_id
-    descriptor["branch"] = f"ai/kimeta/benchmark-demo-{publication_id}"
-    return descriptor
+        "timestamp": result["timestamp"],
+        "benchmark_run_id": result["runId"],
+        "library": {"coordinates": result["coordinate"]},
+    })
+
+
+def _branch(result: dict[str, Any], actor: str = "kimeta") -> str:
+    return f"ai/{actor}/benchmark-demo-{_publication_id(result)}"
+
+
+def _validate_diff(
+        head_entries: list[dict[str, Any]],
+        base_entries: list[dict[str, Any]] | None,
+        *,
+        changed_paths: list[str] | None = None,
+        branch: str | None = None,
+        actor: str = "kimeta",
+) -> Any:
+    result = head_entries[-1] if head_entries else _result()
+    with patch.object(
+            publisher,
+            "_json_value_at_commit",
+            side_effect=lambda commit, _path: head_entries
+            if commit == "head" else base_entries,
+    ), patch.object(
+            publisher, "_git_object_exists", return_value=base_entries is not None,
+    ):
+        return publisher._validate_benchmark_diff_publication(
+            head_sha="head",
+            merge_base="base",
+            changed_paths=changed_paths if changed_paths is not None else [RESULT_PATH],
+            branch=branch if branch is not None else _branch(result, actor),
+            actor=actor,
+        )
 
 
 class BenchmarkResultPublisherTests(unittest.TestCase):
 
-    def test_descriptor_is_schema_valid_and_has_no_issue(self) -> None:
-        descriptor = _descriptor()
-        with open(SCHEMA_PATH, encoding="utf-8") as schema_file:
-            schema = json.load(schema_file)
+    def test_diff_route_synthesizes_a_renderable_descriptor(self) -> None:
+        validated = _validate_diff([_result()], None)
 
-        Draft202012Validator(schema, format_checker=FormatChecker()).validate(descriptor)
-        self.assertIsNone(descriptor["issue_number"])
+        descriptor = validated.descriptor
+        self.assertEqual(descriptor["task_type"], "code-coverage-benchmark-result")
         self.assertTrue(descriptor["publication_id"].startswith("forge-benchmark-"))
-
-    def test_renders_result_without_an_issue_reference(self) -> None:
-        title, body = publisher.render_publication(_descriptor())
-
+        title, body = publisher.render_publication(descriptor)
         self.assertIn("[Benchmark] Record com.example:demo:1.0.0 result", title)
         self.assertIn("- Status: `failure`", body)
         self.assertIn("- Covered methods: 10 → 25", body)
@@ -146,36 +138,72 @@ class BenchmarkResultPublisherTests(unittest.TestCase):
             ["GenAI", "code-coverage-improvement", "rhei"],
         )
 
-    def test_accepts_exactly_one_result_appended_to_the_base(self) -> None:
-        descriptor = _descriptor()
-        result_path = "code-coverage-benchmarks/com.example/demo/1.0.0.json"
-        descriptor_path = "stats/com.example/demo/1.0.0/forge-publication.json"
+    def test_accepts_one_result_appended_to_a_populated_base(self) -> None:
+        earlier = _result("run-0")
+        appended = _result("run-1")
 
-        with patch.object(
-                publisher,
-                "_json_value_at_commit",
-                side_effect=lambda commit, _path: [descriptor["render"]["benchmark_result"]]
-                if commit == "head" else [],
-        ), patch.object(publisher, "_git_object_exists", return_value=True):
-            publisher._validate_benchmark_result_publication(
-                descriptor=descriptor,
-                descriptor_path=descriptor_path,
-                head_sha="head",
-                base_commit="base",
-                changed_paths=sorted((descriptor_path, result_path)),
+        validated = _validate_diff([earlier, appended], [earlier])
+
+        self.assertEqual(
+            validated.descriptor["benchmark_run_id"], appended["runId"],
+        )
+
+    def test_accepts_a_refreshed_head_without_a_recorded_base(self) -> None:
+        """The merge base is computed fresh, so a refresh cannot stale it."""
+        merged_elsewhere = _result("run-merged")
+        own = _result("run-own")
+
+        validated = _validate_diff(
+            [merged_elsewhere, own], [merged_elsewhere],
+            branch=_branch(own),
+        )
+
+        self.assertEqual(validated.descriptor["benchmark_run_id"], "run-own")
+
+    def test_rejects_more_than_one_changed_path(self) -> None:
+        with self.assertRaisesRegex(ValueError, "exactly one coordinate result list"):
+            _validate_diff(
+                [_result()], None,
+                changed_paths=[RESULT_PATH, "code-coverage-benchmarks/other/lib/1.0.0.json"],
             )
 
-    def test_rejects_an_unrelated_changed_path(self) -> None:
-        descriptor = _descriptor()
-
-        with self.assertRaisesRegex(ValueError, "exactly"):
-            publisher._validate_benchmark_result_publication(
-                descriptor=descriptor,
-                descriptor_path="stats/com.example/demo/1.0.0/forge-publication.json",
-                head_sha="head",
-                base_commit="base",
-                changed_paths=["README.md"],
+    def test_rejects_a_path_outside_the_results_layout(self) -> None:
+        with self.assertRaisesRegex(ValueError, "Unexpected benchmark result path"):
+            _validate_diff(
+                [_result()], None,
+                changed_paths=["code-coverage-benchmarks/README.md"],
             )
+
+    def test_rejects_more_than_one_appended_result(self) -> None:
+        with self.assertRaisesRegex(ValueError, "append exactly one result"):
+            _validate_diff([_result("run-1"), _result("run-2")], [])
+
+    def test_rejects_a_coordinate_result_mismatch(self) -> None:
+        mismatched = _result()
+        mismatched["coordinate"] = "com.example:other:1.0.0"
+
+        with self.assertRaisesRegex(ValueError, "does not match its list path"):
+            _validate_diff([mismatched], None)
+
+    def test_rejects_a_branch_owned_by_another_actor(self) -> None:
+        result = _result()
+
+        with self.assertRaisesRegex(ValueError, "triggering actor"):
+            _validate_diff([result], None, branch=_branch(result, "someone-else"))
+
+    def test_rejects_a_branch_without_the_publication_id(self) -> None:
+        with self.assertRaisesRegex(ValueError, "publication ID"):
+            _validate_diff([_result()], None, branch="ai/kimeta/benchmark-demo-other")
+
+    def test_descriptor_schema_no_longer_accepts_benchmark_descriptors(self) -> None:
+        """Old-runner benchmark descriptors are rejected instead of half-supported."""
+        with open(SCHEMA_PATH, encoding="utf-8") as schema_file:
+            schema = json.load(schema_file)
+        descriptor = {"task_type": "code-coverage-benchmark-result"}
+
+        validator = Draft202012Validator(schema, format_checker=FormatChecker())
+        with self.assertRaises(exceptions.ValidationError):
+            validator.validate(descriptor)
 
 
 if __name__ == "__main__":

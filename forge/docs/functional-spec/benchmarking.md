@@ -212,9 +212,18 @@ A benchmark workspace routes successful finalization to a deterministic
 task. It must not push the generated source branch or change the synthetic
 issue. It publishes the compact benchmark result through the trusted Forge
 publication boundary: the local runner pushes a same-repository `ai/**` branch
-carrying the result and a benchmark-result publication descriptor, and trusted
-default-branch Actions validate that exact branch and open its pull request.
-The local runner must never call the pull-request API itself.
+whose only change is the appended result, and trusted default-branch Actions
+validate that exact branch and open its pull request. The local runner must
+never call the pull-request API itself.
+
+A benchmark publication carries no publication descriptor. The result entry is
+already the complete, schema-validated record of the run, keyed by its run ID,
+so a descriptor could only repeat it — and the descriptor's recorded base
+commit goes stale whenever the branch is refreshed against a moved base,
+turning correct branches into validation failures. Everything the trusted
+publisher needs it derives from the branch diff against the merge base with
+the default branch, which is computed fresh at validation time and cannot go
+stale.
 
 Benchmark publication reads the finalized coverage record and Rhei accounting
 and writes the metrics record in §FS-code-coverage-benchmarking.4. Results live
@@ -231,30 +240,20 @@ open publication branch instead of creating another pull request, while
 conflicting data for one run ID is rejected. Publication serializes local
 writers and creates a fresh disposable worktree from the latest
 `origin/master` for each result. It appends the result, validates and commits
-the complete coordinate list, writes a descriptor that repeats the exact result
-and names its repository path, commits the descriptor at the required
-publication-scoped
-`stats/<group>/<artifact>/<version>/<publication id>/forge-publication.json`
-path, and pushes the unique publication branch. The worktree is then removed.
+the complete coordinate list, and pushes the unique publication branch. The
+worktree is then removed.
 
-A coordinate accumulates many benchmark results, one per executed cell, so a
-descriptor path fixed to the coordinate alone would name the same file for
-every run of that library. Each branch would then rewrite one path, and the
-second result to merge would conflict with the first over a file neither run
-shares any content with. Scoping the path by publication identifier gives
-concurrent runs of one library disjoint paths, so results merge independently
-and remain individually attributable.
-
-The trusted publisher accepts a benchmark-result descriptor only when the
-branch changes exactly the coordinate result list and that one descriptor, the
-descriptor's coordinate and publication identifier together determine both
-paths, the embedded result validates
-against the benchmark-result schema, and the list is exactly the base list plus
-that result. It opens one pull request for the run, labeled `GenAI`,
+The trusted publisher accepts a benchmark-result branch only when its diff
+against the merge base with the default branch changes exactly one coordinate
+result list under `code-coverage-benchmarks/**` and the changed list validates
+against the benchmark-result schema. It does not reconstruct or enforce the
+base list: a removed or edited entry is visible in the pull-request diff and
+is the reviewer's to judge, like any other reviewed change. The publisher
+opens one pull request for the run, labeled `GenAI`,
 `code-coverage-improvement`, and `rhei` so the run sits in the same triage
-queue as the coverage-improvement PRs it measures, and renders
-the run identity, status, configuration, coverage gain, and token totals from
-the validated descriptor. Repository CI and the normal merge boundary remain
+queue as the coverage-improvement PRs it measures, and renders the run
+identity, status, configuration, coverage gain, and token totals from the
+entries the diff appends. Repository CI and the normal merge boundary remain
 responsible for accepting it. §FS-forge-publication-readiness
 
 When Rhei terminates before reaching benchmark publication, the launcher must
@@ -279,8 +278,8 @@ and a publication marker may be written only after the publication branch is
 durable or the identical result is already merged. The source worktree may be
 removed only after that marker exists. The Rhei workspace must not be removed:
 it remains on the machine for later inspection of its reports, prompts,
-accounting, fixes, and work notes. If metrics writing, descriptor validation, or
-branch pushing fails, both the source worktree and workspace remain so
+accounting, fixes, and work notes. If metrics writing, result-list validation,
+or branch pushing fails, both the source worktree and workspace remain so
 completion can be retried without losing evidence.
 
 The launcher provides a command that discovers workspaces without a publication
