@@ -10,8 +10,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.OutputStream;
+import java.io.Serializable;
 import java.math.BigInteger;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
@@ -67,13 +71,60 @@ public class X509CertificateHolderTest {
 
     private static X509CertificateHolder roundTrip(X509CertificateHolder original) throws Exception {
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-        try (ObjectOutputStream output = new ObjectOutputStream(bytes)) {
+        try (EncodingObjectOutputStream output = new EncodingObjectOutputStream(bytes)) {
             output.writeObject(original);
+            assertThat(output.certificateEncoding).containsExactly(original.getEncoded());
         }
 
-        try (ObjectInputStream input = new ObjectInputStream(
+        try (EncodingObjectInputStream input = new EncodingObjectInputStream(
                 new ByteArrayInputStream(bytes.toByteArray()))) {
             return (X509CertificateHolder) input.readObject();
+        }
+    }
+
+    private static final class EncodingObjectOutputStream extends ObjectOutputStream {
+
+        private byte[] certificateEncoding;
+
+        private EncodingObjectOutputStream(OutputStream output) throws IOException {
+            super(output);
+            enableReplaceObject(true);
+        }
+
+        @Override
+        protected Object replaceObject(Object object) {
+            if (certificateEncoding == null && object instanceof byte[]) {
+                certificateEncoding = (byte[]) object;
+                return new SerializedCertificateEncoding(certificateEncoding.clone());
+            }
+            return object;
+        }
+    }
+
+    private static final class EncodingObjectInputStream extends ObjectInputStream {
+
+        private EncodingObjectInputStream(InputStream input) throws IOException {
+            super(input);
+            enableResolveObject(true);
+        }
+
+        @Override
+        protected Object resolveObject(Object object) {
+            if (object instanceof SerializedCertificateEncoding) {
+                return ((SerializedCertificateEncoding) object).encoding;
+            }
+            return object;
+        }
+    }
+
+    private static final class SerializedCertificateEncoding implements Serializable {
+
+        private static final long serialVersionUID = 1L;
+
+        private final byte[] encoding;
+
+        private SerializedCertificateEncoding(byte[] encoding) {
+            this.encoding = encoding;
         }
     }
 }
