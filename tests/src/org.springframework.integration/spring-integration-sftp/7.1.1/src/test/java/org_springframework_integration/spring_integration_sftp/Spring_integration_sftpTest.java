@@ -186,7 +186,7 @@ public class Spring_integration_sftpTest {
         initializeGateway(listGateway, "sftpListGateway", listReplies);
         listGateway.handleMessage(new GenericMessage<>("list"));
 
-        Message<?> listReply = listReplies.receive();
+        Message<?> listReply = listReplies.receive(10_000L);
         assertThat(listReply).isNotNull();
         List<?> listedFiles = (List<?>) listReply.getPayload();
         assertThat(listedFiles).hasSize(1);
@@ -203,7 +203,7 @@ public class Spring_integration_sftpTest {
         initializeGateway(getGateway, "sftpGetGateway", getReplies);
         getGateway.handleMessage(new GenericMessage<>(remoteDirectory + "/gateway.txt"));
 
-        Message<?> getReply = getReplies.receive();
+        Message<?> getReply = getReplies.receive(10_000L);
         assertThat(getReply).isNotNull();
         File downloaded = (File) getReply.getPayload();
         assertThat(downloaded.toPath()).hasContent("gateway-content");
