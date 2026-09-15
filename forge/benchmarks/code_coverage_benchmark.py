@@ -29,6 +29,10 @@ from typing import Any, TextIO
 
 from jsonschema import Draft202012Validator, FormatChecker, ValidationError
 
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+
+from ai_workflows.agents.agent_runtime import PROVIDER_AWARE_BACKENDS
+
 FORGE_ROOT = Path(__file__).resolve().parents[1]
 REPOSITORY_ROOT = FORGE_ROOT.parent
 SUITE_PATH = FORGE_ROOT / "benchmarks" / "code_coverage_suite.json"
@@ -108,11 +112,38 @@ class AgentConfiguration:
     target_model: str
 
     def target(self, thinking: str) -> str:
-        """Render the Rhei target selector for this configuration."""
-        return (
-            f"{self.agent}[{thinking}]:"
+        """Render the Rhei target selector for this configuration.
+
+        Rhei hands everything after the first colon to the agent CLI's model
+        flag, so only a provider-aware backend may carry a `<provider>/`
+        prefix. Claude Code and Codex reach their provider through their own
+        login and reject a prefixed model outright.
+        """
+        model: str = (
             f"{self.provider}/{self.target_model}"
+            if self.agent in PROVIDER_AWARE_BACKENDS
+            else self.target_model
         )
+        return f"{self.agent}[{thinking}]:{model}"
+
+    def analysis_role_environment(self, thinking: str) -> dict[str, str]:
+        """Render the `FORGE_ANALYSIS_*` variables that pin the repair agent.
+
+        A cell runs on one configuration, repairs included, so the analysis
+        role resolves to the cell's own agent rather than to whatever the
+        launching machine happens to export
+        (§FS-code-coverage-benchmarking.2). The executable is left unset so
+        the backend's registered default applies, and the provider is sent
+        only where it means something (§FS-forge-agent-runtime-selection).
+        """
+        environment: dict[str, str] = {
+            "FORGE_ANALYSIS_FAMILY": self.agent,
+            "FORGE_ANALYSIS_MODEL": self.target_model,
+            "FORGE_ANALYSIS_THINKING_LEVEL": thinking,
+        }
+        if self.agent in PROVIDER_AWARE_BACKENDS:
+            environment["FORGE_ANALYSIS_PROVIDER"] = self.provider
+        return environment
 
 
 @dataclass(frozen=True)
@@ -585,8 +616,16 @@ def _execute_cell(
         workspace,
         identity,
     )
+    environment: dict[str, str] = dict(os.environ)
+    # Repairs belong to the cell, so its agent drives them rather than the
+    # launching machine's ambient role (§FS-code-coverage-benchmarking.2).
+    environment.update(
+        cell.configuration.analysis_role_environment(cell.thinking)
+    )
     try:
-        result = subprocess.run(command, cwd=FORGE_ROOT, check=False)
+        result = subprocess.run(
+            command, cwd=FORGE_ROOT, check=False, env=environment
+        )
         _ensure_run_record(workspace, identity)
         result_path = _result_record_path(workspace)
         recorded_result = _read_json(result_path) if result_path.is_file() else None
@@ -600,12 +639,12 @@ def _execute_cell(
             else "failure"
         )
         _record_completion(workspace, status, result.returncode)
-        if not _publication_marker_path(workspace).is_file():
-            publish_workspace(
-                workspace,
-                requested_status=status,
-                exit_code=result.returncode,
-            )
+        # A workflow that already wrote its immutable record only failed to
+        # push it, so Git publication is retried; a workflow that stopped
+        # earlier is held for a human instead of publishing a crash-time
+        # snapshot (§FS-code-coverage-benchmarking.3).
+        if not _publication_marker_path(workspace).is_file() and result_path.is_file():
+            publish_workspace(workspace, exit_code=result.returncode)
         if _publication_marker_path(workspace).is_file():
             _discard_source_worktree(source_worktree)
             print(f"Preserved benchmark workspace: {workspace.resolve()}")
@@ -613,22 +652,17 @@ def _execute_cell(
     except (BenchmarkError, OSError, subprocess.SubprocessError) as error:
         print(f"ERROR: Benchmark run {run_id} failed: {error}", file=sys.stderr)
         try:
+            # The run record makes the held workspace discoverable by
+            # retry-pending even when the failure preceded its first write.
             _ensure_run_record(workspace, identity)
             _record_completion(workspace, "failure", None)
-            if not _publication_marker_path(workspace).is_file():
-                publish_workspace(workspace, requested_status="failure")
-            if _publication_marker_path(workspace).is_file():
-                _discard_source_worktree(source_worktree)
-                print(f"Preserved benchmark workspace: {workspace.resolve()}")
-                return False, True
-        except (BenchmarkError, OSError, subprocess.SubprocessError) as publish_error:
+        except (BenchmarkError, OSError) as record_error:
             print(
-                f"ERROR: Benchmark result {run_id} was not published: "
-                f"{publish_error}",
+                f"ERROR: Benchmark run {run_id} has no run record: "
+                f"{record_error}",
                 file=sys.stderr,
             )
-    print(f"Preserved benchmark workspace: {workspace.resolve()}")
-    print(f"Preserved source worktree: {source_worktree.resolve()}")
+    _report_pending_intervention(workspace, source_worktree)
     return False, False
 
 
@@ -673,16 +707,20 @@ def _phase_coverage(
     }
 
 
-def _coverage_from_final_metrics(
-        workspace: Path,
-) -> tuple[dict[str, Any], dict[str, Any], dict[str, Any]] | None:
-    path = (
+def _final_metrics_path(workspace: Path) -> Path:
+    return (
         workspace
         / "runtime"
         / "code-coverage"
         / "finalization"
         / "final-metrics.json"
     )
+
+
+def _coverage_from_final_metrics(
+        workspace: Path,
+) -> tuple[dict[str, Any], dict[str, Any], dict[str, Any]] | None:
+    path = _final_metrics_path(workspace)
     if not path.is_file():
         return None
     try:
@@ -790,6 +828,7 @@ def _phase_tokens(
         return {
             "input": empty_value,
             "cachedInputRead": empty_value,
+            "cachedInputWrite": empty_value,
             "output": empty_value,
         }
 
@@ -802,18 +841,16 @@ def _phase_tokens(
     return {
         "input": total("tokens", "input", "total"),
         "cachedInputRead": total("tokens", "input", "cached_read"),
+        # A separately billed input class on some providers and zero on the
+        # rest, so omitting it understates exactly one side of a comparison
+        # (§FS-code-coverage-benchmarking.3).
+        "cachedInputWrite": total("tokens", "input", "cache_write"),
         "output": total("tokens", "output", "total"),
     }
 
 
 def _stop_passes(workspace: Path, phase: str) -> int | None:
-    final_metrics = (
-        workspace
-        / "runtime"
-        / "code-coverage"
-        / "finalization"
-        / "final-metrics.json"
-    )
+    final_metrics = _final_metrics_path(workspace)
     if final_metrics.is_file():
         try:
             for decision in _read_json(final_metrics).get("stopDecisions", []):
@@ -873,16 +910,41 @@ def _failure_phase(workspace: Path) -> str | None:
     return mapping.get(task)
 
 
+def _report_pending_intervention(workspace: Path, source_worktree: Path) -> None:
+    """A benchmark run has no GitHub issue, so pending human intervention is
+    launcher-local state: nothing is published, and the operator either resumes
+    the workspace to terminal publication or explicitly publishes the failure
+    (§FS-code-coverage-benchmarking.3)."""
+    phase = _failure_phase(workspace)
+    reason = (
+        f"stopped in the {phase} phase"
+        if phase
+        else "stopped before terminal publication"
+    )
+    print(
+        f"PENDING HUMAN INTERVENTION: {reason}; nothing was published. "
+        "Resume the workspace or publish it with an explicit --status failure."
+    )
+    print(f"Preserved benchmark workspace: {workspace.resolve()}")
+    print(f"Preserved source worktree: {source_worktree.resolve()}")
+
+
 def _collect_result(
         workspace: Path,
-        requested_status: str,
+        requested_status: str | None,
         exit_code: int | None,
 ) -> dict[str, Any]:
+    # A written record is immutable for its runId, success or failure
+    # (§AR-code-coverage-benchmarking.3).
     result_path = _result_record_path(workspace)
     if result_path.is_file():
         existing: dict[str, Any] = _read_json(result_path)
         _validate([existing], RESULT_SCHEMA_PATH)
         return existing
+    if requested_status is None:
+        raise BenchmarkError(
+            "Publishing without a recorded result requires an explicit --status."
+        )
     run: dict[str, Any] = _read_json(_run_record_path(workspace))
     finalized = _coverage_from_final_metrics(workspace)
     if requested_status == "success" and finalized is None:
@@ -936,7 +998,7 @@ def _collect_result(
         )
     total_tokens = {
         key: _sum_nullable(api["tokens"][key], deep["tokens"][key])
-        for key in ("input", "cachedInputRead", "output")
+        for key in ("input", "cachedInputRead", "cachedInputWrite", "output")
     }
     total = {
         "coverPasses": _sum_nullable(
@@ -1045,9 +1107,19 @@ def _discard_publication_worktree(
         )
 
 
-def _descriptor_relative_path(coordinate: str) -> Path:
+def _descriptor_relative_path(coordinate: str, publication_id: str) -> Path:
+    """Return the publication-scoped descriptor path for one benchmark result.
+
+    A coordinate carries one result per executed cell, so a path fixed to the
+    coordinate alone would name the same file for every run of that library and
+    make the second result to merge conflict with the first
+    (§FS-code-coverage-benchmarking.3).
+    """
     group, artifact, version = coordinate.split(":")
-    return Path("stats") / group / artifact / version / "forge-publication.json"
+    return (
+        Path("stats") / group / artifact / version
+        / publication_id / "forge-publication.json"
+    )
 
 
 def _commit_paths(repository: Path, paths: list[Path], subject: str) -> str:
@@ -1056,17 +1128,11 @@ def _commit_paths(repository: Path, paths: list[Path], subject: str) -> str:
         cwd=repository,
         check=True,
     )
+    # Commit with the ambient identity, like every other publication path. An
+    # override here reached GitHub as an address no account can own, so the
+    # published commits carried no author at all.
     subprocess.run(
-        [
-            "git",
-            "-c",
-            "user.name=metadata-forge",
-            "-c",
-            "user.email=metadata-forge@local",
-            "commit",
-            "-m",
-            subject,
-        ],
+        ["git", "commit", "-m", subject],
         cwd=repository,
         check=True,
     )
@@ -1195,7 +1261,7 @@ def _fetch_existing_publication(
     descriptor = _json_at_ref(
         repository_root,
         remote_ref,
-        _descriptor_relative_path(result["coordinate"]),
+        _descriptor_relative_path(result["coordinate"], publication_id),
     )
     entries = _json_at_ref(
         repository_root,
@@ -1221,8 +1287,8 @@ def _publish_result(
         result: dict[str, Any],
 ) -> BenchmarkPublication:
     relative_path = _metrics_relative_path(result["coordinate"])
-    descriptor_path = _descriptor_relative_path(result["coordinate"])
     producer, publication_id, branch = _publication_identity(repository_root, result)
+    descriptor_path = _descriptor_relative_path(result["coordinate"], publication_id)
     lock_handle = _publish_lock(repository_root)
     try:
         for attempt in range(1, MAX_PUBLISH_ATTEMPTS + 1):
@@ -1316,12 +1382,11 @@ def publish_workspace(
     """Collect and idempotently publish one workspace's compact result."""
     workspace = workspace.resolve()
     run: dict[str, Any] = _read_json(_run_record_path(workspace))
-    status = requested_status or run.get("requestedStatus") or "failure"
     known_exit = exit_code
     if known_exit is None:
         candidate = run.get("rheiExitCode")
         known_exit = candidate if type(candidate) is int else None
-    result = _collect_result(workspace, status, known_exit)
+    result = _collect_result(workspace, requested_status, known_exit)
     publication = _publish_result(repository_root.resolve(), workspace, result)
     marker = {
         "schemaVersion": "1.0.0",
@@ -1385,7 +1450,12 @@ def convert_workspace(args: argparse.Namespace) -> None:
             "The fixed benchmark input already contains a coverage suite: "
             f"{coverage_suite}"
         )
-    work_path = source_worktree / "forge"
+    # The pin supplies the input; the runner supplies the measurement. Resolving
+    # helpers from the pinned worktree would freeze ranking, classification, and
+    # prompt rendering at the suite commit and split the final-metrics contract
+    # away from the publisher that has to read it.
+    # §FS-code-coverage-benchmarking.1 §AR-code-coverage-benchmarking.1
+    work_path = runner_forge_path
     conversion = {
         "coordinate": args.coordinate,
         "worktreePath": str(source_worktree),
@@ -1405,8 +1475,8 @@ def convert_workspace(args: argparse.Namespace) -> None:
     (issue_dir / "conversion.md").write_text(
         "# Benchmark conversion\n\n"
         f"- Coordinate: `{args.coordinate}`\n"
-        f"- Worktree: `{source_worktree}`\n"
-        f"- Work path: `{work_path}`\n"
+        f"- Measured input: `{source_worktree}` at `{args.suite_commit}`\n"
+        f"- Measuring helpers: `{work_path}` at `{args.runner_commit}`\n"
         f"- Coverage suite: `{coverage_suite}`\n",
         encoding="utf-8",
     )
@@ -1568,10 +1638,18 @@ def retry_pending(args: argparse.Namespace) -> int:
     if not pending:
         return 0
     failures = 0
+    held = 0
     for workspace in pending:
+        run = _read_json(_run_record_path(workspace))
+        # Only a workspace with a written record retries publication; one
+        # without a record is held for a human decision
+        # (§FS-code-coverage-benchmarking.3).
+        if not _result_record_path(workspace).is_file():
+            held += 1
+            _report_pending_intervention(workspace, Path(run["sourceWorktree"]))
+            continue
         try:
             publish_workspace(workspace)
-            run = _read_json(_run_record_path(workspace))
             source = Path(run["sourceWorktree"])
             if source.exists():
                 _discard_source_worktree(source)
@@ -1581,6 +1659,8 @@ def retry_pending(args: argparse.Namespace) -> int:
                 f"ERROR: Could not publish {workspace}: {error}",
                 file=sys.stderr,
             )
+    if held:
+        print(f"{held} workspace(s) are pending human intervention.")
     return 1 if failures else 0
 
 

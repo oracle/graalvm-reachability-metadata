@@ -13,6 +13,7 @@ import shutil
 import subprocess
 import tempfile
 import unittest
+from types import SimpleNamespace
 from unittest.mock import patch
 from pathlib import Path
 
@@ -116,9 +117,126 @@ class CodeCoverageBenchmarkMatrixTests(unittest.TestCase):
 
         self.assertEqual("claude-sonnet-5", configuration.target_model)
         self.assertEqual(
-            "claude-code[high]:anthropic/claude-sonnet-5",
+            "claude-code[high]:claude-sonnet-5",
             configuration.target("high"),
         )
+
+    def test_analysis_role_follows_the_cell_configuration(self) -> None:
+        """A cell repairs its own output with its own agent."""
+        claude = next(
+            item for item in self.suite.configurations
+            if item.configured_model == "opus-5"
+        )
+        self.assertEqual(
+            {
+                "FORGE_ANALYSIS_FAMILY": "claude-code",
+                "FORGE_ANALYSIS_MODEL": "claude-opus-5",
+                "FORGE_ANALYSIS_THINKING_LEVEL": "medium",
+            },
+            claude.analysis_role_environment("medium"),
+        )
+
+    def test_analysis_role_carries_a_provider_only_when_meaningful(self) -> None:
+        """`pi` routes through a provider; Claude Code authenticates itself."""
+        pi = next(
+            item for item in self.suite.configurations
+            if item.configured_model == "gpt-5.6-luna"
+        )
+        self.assertEqual(
+            "openai-codex", pi.analysis_role_environment("high")["FORGE_ANALYSIS_PROVIDER"]
+        )
+        claude = next(
+            item for item in self.suite.configurations
+            if item.configured_model == "opus-5"
+        )
+        self.assertNotIn("FORGE_ANALYSIS_PROVIDER", claude.analysis_role_environment("high"))
+
+    def test_provider_prefix_only_for_provider_aware_agents(self) -> None:
+        """`claude` rejects a prefixed model; `pi` routes through a provider."""
+        claude = next(
+            item
+            for item in self.suite.configurations
+            if item.configured_model == "opus-5"
+        )
+        pi = next(
+            item
+            for item in self.suite.configurations
+            if item.configured_model == "gpt-5.6-luna"
+        )
+
+        self.assertEqual("claude-code[medium]:claude-opus-5", claude.target("medium"))
+        self.assertEqual("pi[medium]:openai-codex/gpt-5.6-luna", pi.target("medium"))
+
+
+class CodeCoverageBenchmarkConversionTests(unittest.TestCase):
+    """The pin supplies the input; the runner supplies the measurement.
+    §FS-code-coverage-benchmarking.1
+    """
+
+    def _convert(self) -> dict:
+        temporary = tempfile.TemporaryDirectory()
+        self.addCleanup(temporary.cleanup)
+        root = Path(temporary.name)
+        runner = root / "runner"
+        source = root / "run" / "source"
+        workspace = root / "run" / "code-coverage-99000"
+        (runner / "forge").mkdir(parents=True)
+        (runner / "README.md").write_text("seed\n", encoding="utf-8")
+        _git(runner, "init", "-b", "master")
+        _git(runner, "add", "-A")
+        _git(
+            runner,
+            "-c",
+            "user.name=test",
+            "-c",
+            "user.email=test@example.com",
+            "commit",
+            "-m",
+            "seed",
+        )
+        commit = _git(runner, "rev-parse", "HEAD").stdout.strip()
+        benchmark._create_source_worktree(source, commit, runner)
+        self.addCleanup(benchmark._remove_worktree, source, runner)
+        test_dir = source / "tests" / "src" / "com.example" / "demo" / "1.0.0"
+        test_dir.mkdir(parents=True)
+
+        with patch.object(benchmark, "resolve_test_dir", return_value=str(test_dir)):
+            benchmark.convert_workspace(
+                SimpleNamespace(
+                    workspace=str(workspace),
+                    coordinate="com.example:demo:1.0.0",
+                    run_id="run-1",
+                    started_at="2026-09-09T00:00:00Z",
+                    suite_commit=commit,
+                    runner_commit=commit,
+                    source_worktree=str(source),
+                    runner_forge_path=str(runner / "forge"),
+                    agent="pi",
+                    configured_model="gpt-5.6-sol",
+                    target_model="openai-codex/gpt-5.6-sol",
+                    thinking="high",
+                    checked_in_all_methods=11943,
+                )
+            )
+        conversion = json.loads(
+            (
+                workspace / "runtime" / "code-coverage" / "issues" / "conversion.json"
+            ).read_text(encoding="utf-8")
+        )
+        conversion["_runnerForge"] = str((runner / "forge").resolve())
+        conversion["_source"] = str(source.resolve())
+        return conversion
+
+    def test_measurement_helpers_resolve_from_the_runner(self) -> None:
+        conversion = self._convert()
+
+        self.assertEqual(conversion["_runnerForge"], conversion["workPath"])
+
+    def test_measured_input_stays_the_pinned_worktree(self) -> None:
+        conversion = self._convert()
+
+        self.assertEqual(conversion["_source"], conversion["worktreePath"])
+        self.assertNotIn(conversion["_source"], conversion["workPath"])
 
 
 class CodeCoverageBenchmarkLifecycleTests(unittest.TestCase):
@@ -251,7 +369,9 @@ class CodeCoverageBenchmarkLifecycleTests(unittest.TestCase):
         execute.assert_not_called()
         publish.assert_not_called()
 
-    def test_retains_source_when_publication_has_no_marker(self) -> None:
+    def test_holds_stopped_run_for_human_intervention(self) -> None:
+        """A stop before terminal publication publishes nothing: the launcher
+        retains the workspace and source and reports the run as pending."""
         temporary = tempfile.TemporaryDirectory()
         self.addCleanup(temporary.cleanup)
         root = Path(temporary.name)
@@ -270,8 +390,63 @@ class CodeCoverageBenchmarkLifecycleTests(unittest.TestCase):
         ), patch.object(
                 benchmark,
                 "publish_workspace",
-                side_effect=benchmark.BenchmarkError("push failed"),
+        ) as publish, patch.object(
+                benchmark,
+                "_remove_worktree",
+        ) as remove, patch("builtins.print") as output:
+            outcome = benchmark._execute_cell(
+                self.suite,
+                self.cell,
+                "a" * 40,
+                root,
+            )
+
+        self.assertEqual((False, False), outcome)
+        publish.assert_not_called()
+        remove.assert_not_called()
+        messages = [str(call.args[0]) for call in output.call_args_list if call.args]
+        self.assertTrue(
+            any("PENDING HUMAN INTERVENTION" in message for message in messages)
+        )
+        workspace = root / "run-failure" / "code-coverage-99000"
+        run = benchmark._read_json(workspace / benchmark.RUN_RECORD)
+        self.assertEqual("failure", run["requestedStatus"])
+
+    def test_retries_publication_when_record_exists_without_marker(self) -> None:
+        """A workflow that wrote its record but could not push it retries Git
+        publication of that exact record instead of being held."""
+        temporary = tempfile.TemporaryDirectory()
+        self.addCleanup(temporary.cleanup)
+        root = Path(temporary.name)
+
+        def execute(command: list[str], **_: object) -> subprocess.CompletedProcess:
+            workspace = Path(command[command.index("--output") + 1])
+            _write_json(workspace / benchmark.RESULT_RECORD, {"status": "success"})
+            return subprocess.CompletedProcess(command, 1)
+
+        def publish(workspace: Path, **_: object) -> dict[str, object]:
+            _write_json(
+                workspace / benchmark.PUBLICATION_MARKER,
+                {"schemaVersion": "1.0.0"},
+            )
+            return {"status": "success"}
+
+        with patch.object(
+                benchmark,
+                "_new_run_id",
+                return_value="run-retry",
         ), patch.object(
+                benchmark,
+                "_create_source_worktree",
+        ), patch.object(
+                benchmark.subprocess,
+                "run",
+                side_effect=execute,
+        ), patch.object(
+                benchmark,
+                "publish_workspace",
+                side_effect=publish,
+        ) as republish, patch.object(
                 benchmark,
                 "_remove_worktree",
         ) as remove, patch("builtins.print"):
@@ -282,8 +457,40 @@ class CodeCoverageBenchmarkLifecycleTests(unittest.TestCase):
                 root,
             )
 
-        self.assertEqual((False, False), outcome)
-        remove.assert_not_called()
+        self.assertEqual((True, True), outcome)
+        republish.assert_called_once()
+        remove.assert_called_once_with(root / "run-retry" / "source")
+
+    def test_retry_pending_republishes_records_and_lists_held_workspaces(self) -> None:
+        """Only a workspace with a written record retries publication; one
+        without a record is listed as pending human intervention."""
+        temporary = tempfile.TemporaryDirectory()
+        self.addCleanup(temporary.cleanup)
+        root = Path(temporary.name)
+        held = root / "run-held" / "code-coverage-99000"
+        publishable = root / "run-pub" / "code-coverage-99000"
+        for run_id, workspace in (("run-held", held), ("run-pub", publishable)):
+            _write_json(
+                workspace / benchmark.RUN_RECORD,
+                {
+                    "runId": run_id,
+                    "sourceWorktree": str(workspace.parent / "source"),
+                },
+            )
+        _write_json(publishable / benchmark.RESULT_RECORD, {"status": "failure"})
+
+        with patch.object(
+                benchmark,
+                "publish_workspace",
+        ) as publish, patch("builtins.print") as output:
+            code = benchmark.retry_pending(SimpleNamespace(workspace_root=root))
+
+        self.assertEqual(0, code)
+        publish.assert_called_once_with(publishable)
+        messages = [str(call.args[0]) for call in output.call_args_list if call.args]
+        self.assertTrue(
+            any("PENDING HUMAN INTERVENTION" in message for message in messages)
+        )
 
 
 class CodeCoverageBenchmarkMetricsTests(unittest.TestCase):
@@ -324,6 +531,7 @@ class CodeCoverageBenchmarkMetricsTests(unittest.TestCase):
             input_tokens: int,
             cached_tokens: int,
             output_tokens: int,
+            cache_write_tokens: int = 0,
     ) -> None:
         _write_json(
             workspace
@@ -339,6 +547,7 @@ class CodeCoverageBenchmarkMetricsTests(unittest.TestCase):
                     "input": {
                         "total": {"value": input_tokens},
                         "cached_read": {"value": cached_tokens},
+                        "cache_write": {"value": cache_write_tokens},
                     },
                     "output": {"total": {"value": output_tokens}},
                 },
@@ -351,8 +560,8 @@ class CodeCoverageBenchmarkMetricsTests(unittest.TestCase):
         final_dir = workspace / "runtime" / "code-coverage" / "finalization"
         final_dir.mkdir(parents=True)
         shutil.copy2(FINAL_METRICS, final_dir / "final-metrics.json")
-        self._write_invocation(workspace, "1", "api-cover", 10, 20, 3)
-        self._write_invocation(workspace, "2", "api-fix", 1, 2, 3)
+        self._write_invocation(workspace, "1", "api-cover", 10, 20, 3, 3)
+        self._write_invocation(workspace, "2", "api-fix", 1, 2, 3, 1)
         self._write_invocation(workspace, "3", "deep-cover", 4, 5, 6)
         self._write_invocation(workspace, "4", "deep-fix", 7, 8, 9)
 
@@ -366,11 +575,11 @@ class CodeCoverageBenchmarkMetricsTests(unittest.TestCase):
         self.assertEqual(1, result["api"]["fixInvocations"])
         self.assertEqual(1, result["deep"]["fixInvocations"])
         self.assertEqual(
-            {"input": 11, "cachedInputRead": 22, "output": 6},
+            {"input": 11, "cachedInputRead": 22, "cachedInputWrite": 4, "output": 6},
             result["api"]["tokens"],
         )
         self.assertEqual(
-            {"input": 22, "cachedInputRead": 35, "output": 21},
+            {"input": 22, "cachedInputRead": 35, "cachedInputWrite": 4, "output": 21},
             result["total"]["tokens"],
         )
         self.assertEqual(
@@ -403,12 +612,36 @@ class CodeCoverageBenchmarkMetricsTests(unittest.TestCase):
         self.assertEqual({"phase": "deep", "exitCode": 7}, result["failure"])
         self.assertEqual(1, result["deep"]["fixInvocations"])
         self.assertEqual(
-            {"input": 7, "cachedInputRead": 8, "output": 9},
+            {"input": 7, "cachedInputRead": 8, "cachedInputWrite": 0, "output": 9},
             result["deep"]["tokens"],
         )
         self.assertIsNone(result["deep"]["coverPasses"])
         self.assertIsNone(result["total"]["tokens"]["input"])
         self.assertIsNone(result["total"]["coverage"]["allMethods"])
+
+    def test_written_record_is_immutable_for_its_run_id(self) -> None:
+        """A written record is returned verbatim whatever status is requested
+        later, even when terminal evidence appears after the write."""
+        _, workspace = self._workspace()
+        self._write_run(workspace)
+        recorded = benchmark._collect_result(workspace, "failure", 7)
+        self.assertEqual("failure", recorded["status"])
+
+        final_metrics = benchmark._final_metrics_path(workspace)
+        final_metrics.parent.mkdir(parents=True)
+        shutil.copy2(FINAL_METRICS, final_metrics)
+
+        self.assertEqual(recorded, benchmark._collect_result(workspace, "success", 0))
+        self.assertEqual(recorded, benchmark._collect_result(workspace, None, None))
+
+    def test_collecting_a_new_record_requires_an_explicit_status(self) -> None:
+        """Without a written record there is no automatic failure default: the
+        operator must decide the status explicitly."""
+        _, workspace = self._workspace()
+        self._write_run(workspace)
+        with self.assertRaises(benchmark.BenchmarkError):
+            benchmark._collect_result(workspace, None, None)
+        self.assertFalse(benchmark._result_record_path(workspace).is_file())
 
     def test_merge_is_idempotent_and_rejects_conflicts(self) -> None:
         temporary = tempfile.TemporaryDirectory()
@@ -481,10 +714,14 @@ class CodeCoverageBenchmarkMetricsTests(unittest.TestCase):
                 first.commit,
             ).stdout.strip(),
         )
-        descriptor_path = "stats/com.example/demo/1.0.0/forge-publication.json"
+        descriptor_path = (
+            f"stats/com.example/demo/1.0.0/{first.publication_id}"
+            "/forge-publication.json"
+        )
         descriptor = json.loads(
             _git(repository, "show", f"{first.commit}:{descriptor_path}").stdout
         )
+        self.assertEqual(first.publication_id, descriptor["publication_id"])
         self.assertEqual(benchmark.BENCHMARK_TASK_TYPE, descriptor["task_type"])
         self.assertEqual("run-1", descriptor["benchmark_run_id"])
         self.assertEqual(result, descriptor["render"]["benchmark_result"])
@@ -608,6 +845,38 @@ class CodeCoverageBenchmarkTemplateTests(unittest.TestCase):
         self.assertEqual(
             ["claude"],
             settings["agents"]["claude-code"]["command"],
+        )
+
+    def test_published_commits_keep_the_ambient_author(self) -> None:
+        """Benchmark commits are authored like every other publication path.
+
+        GitHub resolves a commit to an account by its author email, so an
+        override that no account owns publishes commits with no author at all.
+        """
+        temporary_directory = tempfile.TemporaryDirectory()
+        self.addCleanup(temporary_directory.cleanup)
+        repository = Path(temporary_directory.name) / "authored"
+        repository.mkdir()
+        for argument in (
+                ["git", "init", "--quiet", "-b", "master"],
+                ["git", "config", "user.name", "Benchmark Author"],
+                ["git", "config", "user.email", "author@example.com"],
+        ):
+            subprocess.run(argument, cwd=repository, check=True)
+        recorded = repository / "result.json"
+        recorded.write_text("{}\n", encoding="utf-8")
+
+        benchmark._commit_paths(repository, [recorded], "Record benchmark")
+
+        self.assertEqual(
+            subprocess.run(
+                ["git", "log", "-1", "--format=%an <%ae>"],
+                cwd=repository,
+                check=True,
+                capture_output=True,
+                text=True,
+            ).stdout.strip(),
+            "Benchmark Author <author@example.com>",
         )
 
 

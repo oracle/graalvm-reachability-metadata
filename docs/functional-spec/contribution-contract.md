@@ -207,9 +207,10 @@ Whoever reviews is the party that acts.
 The dispositions are approve, repair, close, and escalate. Approval means every
 must in this contract holds on the tree that will merge — including after a
 repair. Closing is available only where a rule in this contract says a
-contribution must be closed, which today is §FS-contribution-contract.5.4
-alone; absent such a rule, a contribution the reviewer cannot bring inside the
-rules escalates (§FS-contribution-contract.5.5).
+contribution must be closed, which today is §FS-contribution-contract.5.4 and
+only in the case that rule leaves nothing to record; absent such a rule, a
+contribution the reviewer cannot bring inside the rules escalates
+(§FS-contribution-contract.5.5).
 
 ### 5.1 A violation inside the contribution is repaired, not reported
 
@@ -294,7 +295,7 @@ transient external failure such as a rate limit, a registry outage, or a
 network error. A transient failure is retried or waited out, and becomes
 neither an issue nor an escalation (§forge/FS-human-intervention-policy).
 
-### 5.4 A library version Native Image cannot support is closed
+### 5.4 A library version Native Image cannot support is recorded as skipped
 
 A library version is unsupportable when the dynamic access it performs is
 reachable only through behavior Native Image does not support
@@ -312,14 +313,59 @@ standing behind it. Coverage that is merely low, a test that is merely hard to
 write, or a failure not yet diagnosed is §FS-contribution-contract.5.1 or
 §FS-contribution-contract.5.5 — never this.
 
-Where it holds, the contribution is closed rather than repaired or escalated,
-because metadata no test can justify is not shipped (§GOAL-tested-metadata).
-The reviewer closes the pull request with that explanation, labels the linked
-issue `library-unsupported-version`, and closes that issue rather than
-returning it to the work queue: an open request in `Todo` is claimed again and
-spends the same budget on the same wall. Where a library change could remove
-the guard, the incompatibility is reported upstream. This is the library-level
-counterpart of the test-level case in §FS-test-contract.4.3.2.
+Where it holds, the version is recorded as unsupported rather than repaired or
+escalated, because metadata no test can justify is not shipped
+(§GOAL-tested-metadata). Recording has two halves and both are required.
+
+The first half is the skip record. The reviewer adds a `skipped-versions` entry
+to `metadata/<group>/<artifact>/index.json` for the unsupportable version and
+for every newer version that shares the same unsupported behavior, each with a
+`reason` naming the mechanism the review has already established. Skipping only
+the reported version hands the same wall to the next one, because the
+compatibility walker stops a library at its first failure
+(§FS-library-version-update-automation.2). The skip is what makes the outcome
+stick: a version that is closed but not skipped re-enters the candidate list and
+the automation re-files the same issue on its next run
+(§FS-library-version-update-automation.1).
+
+The second half is the contribution. Where the artifact already has an index
+entry — the `fixes-*` labels and `library-update-request` — the reviewer repairs
+the contribution into that skip record: `metadata/<version>/`,
+`tests/src/<version>/` and the mirrored `stats/<version>/stats.json` and
+`stats/<version>/execution-metrics.json` are dropped, the skip entries are
+written into `index.json`, and the result is approved.
+
+What is dropped is fixed by what the stats gate checks. It validates the whole
+repository rather than the diff, so metadata left without its mirrored stats
+fails it and the two must go together; it also checks execution metrics against
+tested versions, so metrics cannot stay for a version that will never be tested.
+The publication descriptor `stats/<version>/forge-publication.json` is the
+exception and stays: it is exempt from both checks, and it identifies the
+contribution, so deleting it makes the publication unresolvable
+(§forge/FS-forge-publication-readiness).
+
+Where the artifact has no index entry — a new library that turns out to be
+unsupportable — there is nothing to skip and nothing to merge, and the
+contribution is closed.
+
+Either way the linked issue ends labeled `library-unsupported-version` and
+closed rather than returned to the work queue: an open request in `Todo` is
+claimed again and spends the same budget on the same wall. On the closed path
+the reviewer's disposition does both. On the skip path the merge closes the
+issue through the contribution's link, and the label is already present whenever
+the compatibility automation filed the issue
+(§FS-library-version-update-automation.4); where it is absent it is applied
+before the contribution merges.
+
+The diagnosis may already have happened before generation
+(§forge/FS-unsupportable-version-diagnosis), in which case the contribution
+arrives as the skip record and the reviewer verifies the recorded mechanism
+against the library's source instead of discovering it — the evidence bar
+above is unchanged.
+
+Where a library change could remove the guard, the incompatibility is reported
+upstream. This is the library-level counterpart of the test-level case in
+§FS-test-contract.4.3.2.
 
 ### 5.5 Everything else is handed to a maintainer
 

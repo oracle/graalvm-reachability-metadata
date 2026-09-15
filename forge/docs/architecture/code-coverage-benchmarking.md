@@ -32,6 +32,15 @@ Merged coverage improvements do not move an existing benchmark input. A newer
 runner may still execute the old suite and records both identities.
 §FS-code-coverage-benchmarking.1
 
+The two identities map onto two directories, and the conversion record keeps
+them apart. `worktreePath` is the pinned source worktree — the library state
+under measurement — while `workPath` is the Forge tree the measurement helpers
+are imported and executed from. In the issue-driven flow both live in the same
+worktree, because it branches from `master` and its helpers are already current.
+A benchmark cell is the case where they diverge, so `workPath` is the runner's
+Forge path there and the pin is left holding only its input.
+§FS-code-coverage-benchmarking.1
+
 ## 2. Cell execution sequence
 
 The runner prints the complete selection before creating worktrees. Every cell
@@ -128,10 +137,13 @@ A source-worktree gate failure happens before this sequence: the launcher
 reports the skipped cell and continues without creating a Rhei workspace or
 benchmark result. §FS-code-coverage-benchmarking.2
 
-The terminal program is not the only publication path. The launcher checks for
-a publication marker after Rhei returns. If Rhei stopped before publication, the
-launcher collects partial evidence and publishes a failure result. If collection
-or publication fails, both the source and workspace remain.
+The terminal program is the only automatic collection path. The launcher
+checks for a publication marker after Rhei returns. When the marker is missing
+but the workflow already wrote its result, the launcher retries Git
+publication of that exact record; when no result exists, it publishes nothing
+and reports the run as pending human intervention with the workspace and
+source paths preserved. The operator then resumes the workspace until terminal
+publication, or explicitly publishes the failure.
 §FS-code-coverage-benchmarking.3
 
 ```mermaid
@@ -150,9 +162,18 @@ sequenceDiagram
 
     L->>R: execute benchmark cell
     alt workflow stops before terminal publication
-        R-->>L: return without publication marker
-        L->>B: collect failure result
-        B->>W: read partial evidence and write result.json
+        R-->>L: return without publication marker or result.json
+        Note over W,S: retain workspace and source
+        L-->>O: report pending human intervention
+        alt operator resumes the workspace
+            O->>R: resume until terminal publication
+            R->>B: publish success result
+            B->>W: write result.json from terminal evidence
+        else operator publishes the failure
+            O->>L: publish --status failure
+            L->>B: collect failure result once
+            B->>W: read evidence and write result.json
+        end
     else terminal publication cannot push
         B->>W: result.json already written
         R-->>L: return without publication marker
@@ -182,22 +203,30 @@ sequenceDiagram
 
     O->>L: retry-pending
     L->>W: find run.json without publication.json
-    L->>B: republish preserved result.json
-    B->>M: fetch latest origin/master
-    B->>G: create fresh publication worktree
-    B->>P: append identical result by runId
-    P->>M: push result and descriptor branch
-    M-->>A: validate and open PR asynchronously
-    B->>G: remove publication worktree
-    B->>W: write publication.json
-    L->>S: remove source
-    L-->>O: retry completed
+    alt result.json exists
+        L->>B: republish preserved result.json
+        B->>M: fetch latest origin/master
+        B->>G: create fresh publication worktree
+        B->>P: append identical result by runId
+        P->>M: push result and descriptor branch
+        M-->>A: validate and open PR asynchronously
+        B->>G: remove publication worktree
+        B->>W: write publication.json
+        L->>S: remove source
+        L-->>O: retry completed
+    else no result.json
+        L-->>O: list workspace as pending human intervention
+    end
 ```
 
-`result.json` is written before Git publication and is immutable for its
-`runId`. A retry either finds an identical merged entry, reuses its exact
-remote publication branch, or proposes the same object. Different data with
-the same `runId` is an integrity error.
+`result.json` is written at most once, before Git publication, and is
+immutable for its `runId` whatever its status: a retry either finds an
+identical merged entry, reuses its exact remote publication branch, or
+proposes the same object, and different data with the same `runId` is an
+integrity error. Immutability is safe because no record is written
+automatically at a stop — a record exists only when the workflow reached
+terminal publication or the operator explicitly published a failure.
+§FS-code-coverage-benchmarking.3
 
 ## 4. Data locations
 
@@ -238,8 +267,13 @@ code-coverage-benchmarks/
 stats/
   <group>/
     <artifact>/
-      <version>/forge-publication.json
+      <version>/
+        <publication id>/forge-publication.json
 ```
+
+The descriptor nests below a publication-identifier segment so that two results
+for one coordinate never claim the same path and never conflict on merge
+(§FS-code-coverage-benchmarking.3).
 
 `run.json` may contain machine-specific paths because it drives recovery.
 `result.json` contains no absolute paths; `runId` and
@@ -271,6 +305,30 @@ Conversion, preparation, finalization, and publication tokens are excluded from
 the initial metric. Missing partial evidence is `null`, never zero.
 `checkedInAllMethods` keeps the suite snapshot and
 `measuredAllMethodsDifference` exposes a changed measured universe.
+
+### 5.1 Final-metrics contract ownership
+
+The runner owns the final coverage metrics contract, and owns it by
+construction rather than by convention. `utility_scripts/code_coverage_finalize.py`
+writes `schemaVersion`, `schemas/code_coverage_final_metrics_schema.json`
+constrains it, and `code_coverage_benchmark.py` reads the record during
+publication. All three resolve from the runner: the first two through `workPath`,
+the third because publication always ran from the runner.
+
+Resolving the writer and its validator from the pinned worktree is what made a
+schema change landing between the pin and the run fatal. The two pinned ends
+agreed with each other, so finalization validated its own output honestly and
+every in-run gate passed; only the reader was current, and the disagreement
+surfaced at the terminal publication state with the whole execution already paid
+for. Nothing forbade that split, because nothing said which commit owned the
+record.
+
+Comparing the pinned and runner schema versions at launch would not be a
+safeguard against this. The suite commit deliberately does not advance
+(§FS-code-coverage-benchmarking.1), so a pin older than the current schema is
+the normal state, and refusing on that difference would refuse every valid
+campaign. One resolution source, not an equality check, is what keeps the
+contract whole. §FS-code-coverage-benchmarking.1
 
 ## 6. Publication boundary
 
@@ -308,6 +366,14 @@ libraries, checked-in method totals, agent/model/provider mappings, or thinking
 levels. The CLI filters configured tuples rather than creating arbitrary
 cross-products: `--model gpt-5.6-sol` selects Pi, while explicitly pairing
 that model with Claude Code is rejected before mutation.
+
+A configuration's `provider` reaches the Rhei target only for a provider-aware
+backend. Rhei passes everything after the target's first colon to the agent
+CLI's model flag, so `pi` renders `pi[<thinking>]:<provider>/<model>` while
+Claude Code renders `claude-code[<thinking>]:<model>`: the Claude CLI
+authenticates its own provider and rejects a prefixed model name outright,
+which would otherwise fail every agent state of a run in seconds rather than
+failing the cell. The recorded `provider` stays descriptive either way.
 
 Advanced metrics can extend the schema and collector without changing the Rhei
 task graph. Runtime archive storage can add a portable archive reference while

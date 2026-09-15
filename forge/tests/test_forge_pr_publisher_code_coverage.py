@@ -119,7 +119,7 @@ def _local_review() -> dict[str, Any]:
         "finding_body": "",
         "fix_note": "",
         "model": "gpt-5.6-terra",
-        "session_log_path": "task-logs/review.log",
+        "session_id": "a1b2c3d4e5f60718",
         "changed_paths": [],
     }
 

@@ -132,6 +132,15 @@ records both `benchmarkSuiteCommit` and `runnerCommit`: the first identifies the
 library state being measured and the second is implementation provenance, not a
 second baseline or campaign identifier.
 
+The pinned worktree supplies the input and nothing else: the coordinate's test
+project and its metadata. Measurement is implementation, so every helper that
+analyses, ranks, classifies, renders prompts, or writes and validates metrics
+must resolve from the runner. A run whose helpers come from the pin records a
+`runnerCommit` that did not produce it, and makes a prompt or ranking change
+unmeasurable — the only way to reach the run would be to move the input, which
+changes the measured library state and invalidates comparison with every earlier
+result.
+
 The checked-in totals select and describe the suite; the run's own frozen JaCoCo
 method universe is authoritative in its metrics. A difference between the
 checked-in `All methods` value and the measured universe must be recorded, not
@@ -182,6 +191,16 @@ source publication tasks or deterministic benchmark conversion and metrics
 publication tasks. The middle preparation, API, native-metadata, deep, and
 finalization tasks are the same in both modes.
 
+A cell runs on one agent configuration, and that includes the repairs the
+workflow performs on its own output. The analysis role a cell resolves must be
+the cell's own agent, model, and thinking level, not the ambient default of the
+machine that launched the run. A cell whose coverage agent is one model while
+its metadata repairs are performed by another measures two agents at once and
+attributes the result to one of them, and an analysis role left to the
+environment makes the same cell produce different work on different machines.
+The launcher therefore fixes the analysis role for every cell it executes
+(§FS-forge-agent-runtime-selection).
+
 The Rhei workspace must live outside the disposable source worktree. Distinct
 run parents prevent collisions while preserving the required fixed workspace
 name.
@@ -214,12 +233,22 @@ writers and creates a fresh disposable worktree from the latest
 `origin/master` for each result. It appends the result, validates and commits
 the complete coordinate list, writes a descriptor that repeats the exact result
 and names its repository path, commits the descriptor at the required
-coordinate-local `stats/**/forge-publication.json` path, and pushes the unique
-publication branch. The worktree is then removed.
+publication-scoped
+`stats/<group>/<artifact>/<version>/<publication id>/forge-publication.json`
+path, and pushes the unique publication branch. The worktree is then removed.
+
+A coordinate accumulates many benchmark results, one per executed cell, so a
+descriptor path fixed to the coordinate alone would name the same file for
+every run of that library. Each branch would then rewrite one path, and the
+second result to merge would conflict with the first over a file neither run
+shares any content with. Scoping the path by publication identifier gives
+concurrent runs of one library disjoint paths, so results merge independently
+and remain individually attributable.
 
 The trusted publisher accepts a benchmark-result descriptor only when the
 branch changes exactly the coordinate result list and that one descriptor, the
-descriptor's coordinate determines both paths, the embedded result validates
+descriptor's coordinate and publication identifier together determine both
+paths, the embedded result validates
 against the benchmark-result schema, and the list is exactly the base list plus
 that result. It opens one pull request for the run, labeled `GenAI`,
 `code-coverage-improvement`, and `rhei` so the run sits in the same triage
@@ -228,9 +257,22 @@ the run identity, status, configuration, coverage gain, and token totals from
 the validated descriptor. Repository CI and the normal merge boundary remain
 responsible for accepting it. §FS-forge-publication-readiness
 
-The outer launcher must invoke the same metrics collector when Rhei terminates
-before reaching benchmark publication. Thus a failed or partial workflow remains
-a benchmark result rather than disappearing from the comparison.
+When Rhei terminates before reaching benchmark publication, the launcher must
+publish nothing. It preserves the workspace and the source worktree and
+reports the run as pending human intervention, printing the workspace path and
+the failed phase when known. A record collected automatically from partial
+evidence at the stop can mask the completed outcome once the workspace is
+resumed and finalized, so a crash-time snapshot must never be published. A
+failed or partial workflow still remains a benchmark result rather than
+disappearing from the comparison, but it enters the comparison only through an
+explicit human decision: the operator either resumes the workspace until the
+workflow reaches terminal publication, or explicitly publishes the run as a
+failure, which builds the record exactly once from the evidence present at
+that moment. Every written record, success or failure, is immutable for its
+`runId`. Because a benchmark run has no GitHub issue, pending human
+intervention is launcher-local state reported on the console and derivable
+from the workspace, not the `human-intervention` label flow
+(§FS-human-intervention-policy).
 
 The normalized result must be written into the workspace before Git publication,
 and a publication marker may be written only after the publication branch is
@@ -242,7 +284,9 @@ branch pushing fails, both the source worktree and workspace remain so
 completion can be retried without losing evidence.
 
 The launcher provides a command that discovers workspaces without a publication
-marker and retries their result publication without rerunning coverage.
+marker. A workspace that already holds a written result retries its Git
+publication without rerunning coverage; a workspace without one is listed as
+pending human intervention and left untouched.
 
 ## 4. Initial metrics record
 
@@ -261,8 +305,10 @@ The API and deep records must each contain:
 
 - `coverPasses`, meaning invocations of that phase's cover state;
 - `fixInvocations`, meaning invocations of that phase's fix state;
-- input, cached-input-read, and output tokens consumed by all agent invocations
-  in that phase, including fixes;
+- input, cached-input-read, cached-input-write, and output tokens consumed by
+  all agent invocations in that phase, including fixes — cache writes are a
+  separately billed input class on some providers and zero on the rest, so
+  omitting them understates exactly one side of a cross-provider comparison;
 - covered methods before and after the phase;
 - methods gained and coverage percentage points gained; and
 - `allMethods`, the frozen whole-run JaCoCo method universe used as the common

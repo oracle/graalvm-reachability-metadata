@@ -147,9 +147,28 @@ reachability worktree. Durable evidence is the normalized record embedded in
 run metrics (§FS-forge-run-metrics).
 
 If the agent times out during `neural_setup()` or returns invalid, unavailable,
-or unsafe output, the driver must return a setup failure to orchestration. It
+or unusable output, the driver must return a setup failure to orchestration. It
 must keep the collected evidence and failure reason visible in metrics and
 continuation state rather than silently converting the failure to `no_action`.
+
+### 1.2 What the advisory prose scan is for
+
+Advisory guidance reaches the workflow prompt as evidence, never as instructions
+the driver executes, so the only prose the scan must catch is guidance that asks
+an agent to step outside the harness — shelling out, fetching from the network,
+or mutating the machine. The scan therefore matches requested *actions*.
+
+Subject matter is not a safety signal. Terms naming what a library is about —
+credentials, secrets, tokens and the like — describe the domain of database
+drivers, cloud SDKs, mail and SSH clients, and every lexer or parser, and are
+expected vocabulary in correct guidance for exactly those libraries. Scanning
+for them disqualifies sound decisions while stopping nothing, because unsafe
+intent phrased without those words passes untouched. The scan must not reject a
+decision on subject-matter vocabulary.
+
+A match degrades the decision, and the recorded failure reason names the
+matched terms, so a false positive is diagnosable from the metrics alone
+rather than needing a source read and a replay.
 
 Orchestration scripts must not let a failed workflow silently disappear.
 Successful or chunk-ready runs (§AR-chunked-dynamic-access-pr-linking) build one
@@ -167,6 +186,20 @@ the claimed issue remains `In Progress` and assigned for manual inspection.
 Failed generation or local finalization still preserves diagnostics
 (§FS-local-ci-equivalent-verification), restores claim state as appropriate, and
 leaves enough context for human follow-up.
+
+### 1.3 Unsupportable-version verdict
+
+For `fails-*` issues the same preflight decision carries a third possible
+action beyond `no_action` and `advisory_preparation`: an unsupportable-version
+verdict (§FS-unsupportable-version-diagnosis). The agent returns it with the
+structurally-validated `skipped_versions` entries the verdict prescribes;
+free-text reasons are scanned like the advisory fields because they are
+published verbatim. The record travels to the workflow driver unchanged, and
+the driver — not orchestration — honors it as its first act: it writes the
+entries into the artifact's `index.json`, validates the index, records success
+run metrics with no generation spent, and returns so orchestration hands the
+index-only tree to the ordinary publication finalizer. A verdict the driver
+cannot apply falls through to normal generation.
 
 ## 2. Pull Request Review Queues
 

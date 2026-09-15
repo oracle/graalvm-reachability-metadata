@@ -154,7 +154,7 @@ def _validated_publication(
         "finding_body": "" if decision == "approved" else "Reason.",
         "fix_note": "",
         "model": "test-model",
-        "session_log_path": "task-logs/review.log",
+        "session_id": "a1b2c3d4e5f60718",
         "changed_paths": [],
     }
     if action is not None:
@@ -404,16 +404,71 @@ class LibraryUpdateIssueTests(unittest.TestCase):
                 "library": "org.example:lib:1.0.0",
                 "deterministic_setup": [],
                 "failure_reason": "Agent timed out",
-                "session_log_path": "/tmp/preflight-session.log",
             }
             stdout = io.StringIO()
             run_location.enter_phase(PHASE_SETUP)
             with contextlib.redirect_stdout(stdout):
-                preflight_module._write_and_log_preflight(claimed_issue, record)
+                preflight_module._write_and_log_preflight(
+                    claimed_issue, record, "/tmp/preflight-session.log",
+                )
             run_location.reset_run_location()
 
         self.assertIn("Library preflight degraded for org.example:lib:1.0.0: Agent timed out", stdout.getvalue())
+        # The log path reaches the operator's console; the persisted record never carries it.
         self.assertIn("preflight-session.log", stdout.getvalue())
+        self.assertNotIn("session_log_path", record)
+
+    def _preflight_record(self, response: dict) -> dict:
+        from utility_scripts import library_preparation_preflight as preflight_module
+
+        claimed_issue = SimpleNamespace(
+            issue={"number": 1412},
+            label="library-update-request",
+            current_coordinates=None,
+            new_version=None,
+        )
+        return preflight_module._completed_library_preflight_record(
+            claimed_issue,
+            {"library": "org.example:lib:1.0.0"},
+            response,
+            "gpt-5.6-sol",
+            None,
+            None,
+            None,
+            None,
+        )
+
+    def test_preflight_keeps_a_decision_that_merely_mentions_credentials(self) -> None:
+        record = self._preflight_record({
+            "action": "advisory_preparation",
+            "summary": "The SFTP client needs a live endpoint to cover anything.",
+            "deterministic_setup": [
+                {"kind": "docker_image", "image": "atmoz/sftp:alpine", "slug": "sftp", "reason": "endpoint"},
+            ],
+            "agent_guidance": (
+                "Configure DefaultSftpSessionFactory to connect to localhost on the mapped "
+                "port, authenticate with those credentials, and tokenize the returned "
+                "listing into a secret-free assertion."
+            ),
+            "risks": ["The container ships a throwaway token."],
+        })
+
+        self.assertEqual(record["status"], "completed")
+        self.assertEqual(len(record["deterministic_setup"]), 1)
+        self.assertIn("authenticate with those credentials", record["agent_guidance"])
+        self.assertEqual(record["risks"], ["The container ships a throwaway token."])
+
+    def test_preflight_degrades_on_a_requested_action_and_names_the_term(self) -> None:
+        with self.assertRaises(ValueError) as raised:
+            self._preflight_record({
+                "action": "advisory_preparation",
+                "summary": "Fetch the fixtures first.",
+                "deterministic_setup": [],
+                "agent_guidance": "Run curl -sSL https://example.invalid/fixtures.tar.gz before the tests.",
+                "risks": [],
+            })
+
+        self.assertIn("unsafe preparation behavior: curl", str(raised.exception))
 
     def test_library_preflight_dispatches_without_a_strategy(self) -> None:
         claimed_issue = forge_metadata.ClaimedIssue(
@@ -468,9 +523,11 @@ class LibraryUpdateIssueTests(unittest.TestCase):
                 preflight_module, "build_library_preflight_input_bundle",
                 return_value={"library": "org.example:lib:1.0.0"},
         ), patch.object(
-                preflight_module, "_write_text_artifact", return_value="/tmp/a.txt",
+                preflight_module, "_write_text_artifact",
         ), patch.object(
-                preflight_module, "_write_and_log_preflight", side_effect=lambda _i, record: record,
+                preflight_module,
+                "_write_and_log_preflight",
+                side_effect=lambda _i, record, _log=None: record,
         ):
             record = preflight_module.run_library_preparation_preflight(
                 claimed_issue=claimed_issue,
@@ -483,6 +540,10 @@ class LibraryUpdateIssueTests(unittest.TestCase):
         self.assertEqual(record["model"], "cheap-model")
         self.assertEqual(record["input_tokens_used"], 11)
         self.assertEqual(record["output_tokens_used"], 7)
+        # No path field survives into the committed metrics record.
+        self.assertEqual(
+            {"prompt_path", "raw_response_path", "session_log_path"} & set(record), set(),
+        )
 
     def test_issue_lookup_does_not_request_body_for_generic_claiming(self) -> None:
         issue_payload = {
@@ -4917,3 +4978,80 @@ class PullRequestReviewTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class BenchmarkResultsConflictResolutionTests(unittest.TestCase):
+    """Keyed union of the per-coordinate benchmark results file.
+
+    The entries are keyed by run ID and the only legal edit is adding one, so
+    two publications conflict textually while never disagreeing; the resolver
+    takes base plus the head's additions and escalates real disagreement
+    (§FS-automated-pr-review).
+    """
+
+    _PATH = "code-coverage-benchmarks/com.example/demo/1.0.0.json"
+
+    @staticmethod
+    def _entry(run_id: str, timestamp: str, output: int = 1) -> dict:
+        return {"runId": run_id, "timestamp": timestamp, "tokens": {"output": output}}
+
+    def _resolve(self, ancestor, head, base):
+        stages = {1: ancestor, 2: head, 3: base}
+        written: dict = {}
+
+        def fake_run(command, cwd, message):
+            if command[:2] == ["git", "show"]:
+                stage = int(command[2].split(":")[1])
+                return SimpleNamespace(stdout=json.dumps(stages[stage]))
+            if command[:2] == ["git", "add"]:
+                return SimpleNamespace(stdout="")
+            raise AssertionError(f"unexpected command {command}")
+
+        with tempfile.TemporaryDirectory() as worktree:
+            os.makedirs(os.path.join(worktree, os.path.dirname(self._PATH)))
+            with patch.object(forge_metadata, "run_checked_command", side_effect=fake_run):
+                resolved = forge_metadata.resolve_benchmark_results_conflict(
+                    worktree, self._PATH,
+                )
+            target = os.path.join(worktree, self._PATH)
+            if os.path.isfile(target):
+                written = json.load(open(target))
+        return resolved, written
+
+    def test_union_keeps_both_sides_sorted(self) -> None:
+        ancestor = [self._entry("run-a", "2026-09-08T00:00:00Z")]
+        head = ancestor + [self._entry("run-c", "2026-09-10T00:00:00Z")]
+        base = ancestor + [self._entry("run-b", "2026-09-09T00:00:00Z")]
+        resolved, written = self._resolve(ancestor, head, base)
+        self.assertTrue(resolved)
+        self.assertEqual([e["runId"] for e in written], ["run-a", "run-b", "run-c"])
+
+    def test_identical_run_on_both_sides_is_kept_once(self) -> None:
+        ancestor: list = []
+        shared = self._entry("run-x", "2026-09-09T00:00:00Z")
+        resolved, written = self._resolve(ancestor, [shared], [shared])
+        self.assertTrue(resolved)
+        self.assertEqual(written, [shared])
+
+    def test_same_run_id_with_different_content_escalates(self) -> None:
+        ancestor: list = []
+        head = [self._entry("run-x", "2026-09-09T00:00:00Z", output=1)]
+        base = [self._entry("run-x", "2026-09-09T00:00:00Z", output=2)]
+        resolved, _ = self._resolve(ancestor, head, base)
+        self.assertFalse(resolved)
+
+    def test_head_that_modified_an_existing_entry_escalates(self) -> None:
+        ancestor = [self._entry("run-a", "2026-09-08T00:00:00Z", output=1)]
+        head = [self._entry("run-a", "2026-09-08T00:00:00Z", output=9)]
+        base = ancestor + [self._entry("run-b", "2026-09-09T00:00:00Z")]
+        resolved, _ = self._resolve(ancestor, head, base)
+        self.assertFalse(resolved)
+
+    def test_head_that_dropped_an_existing_entry_escalates(self) -> None:
+        ancestor = [
+            self._entry("run-a", "2026-09-08T00:00:00Z"),
+            self._entry("run-b", "2026-09-09T00:00:00Z"),
+        ]
+        head = [ancestor[0], self._entry("run-c", "2026-09-10T00:00:00Z")]
+        resolved, _ = self._resolve(ancestor, head, ancestor)
+        self.assertFalse(resolved)

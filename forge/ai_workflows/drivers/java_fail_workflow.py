@@ -41,8 +41,10 @@ from utility_scripts.gradle_environment import gradle_command_environment
 from utility_scripts.issue_requested_metadata import format_issue_requested_metadata_context
 from utility_scripts.library_preparation_preflight import (
     prepare_library_preparation_preflight,
+    preflight_skip_record_entries,
 )
 from utility_scripts.logged_command import run_logged_command
+from utility_scripts.skip_record import apply_preflight_skip_record
 from utility_scripts.metadata_index import is_newer_than_latest_metadata_version
 from utility_scripts.metrics_writer import create_failure_run_metrics_output
 from utility_scripts.repo_path_resolver import require_complete_reachability_repo
@@ -530,6 +532,39 @@ def run_java_fail_workflow(config: JavaFailWorkflowConfig, argv=None):
     resolve_graalvm_java_home()
     validate_repo_paths(reachability_repo_path, metrics_repo_dir)
     os.chdir(reachability_repo_path)
+
+    # An unsupportable verdict from the preflight replaces the whole fix run
+    # with a committed skip record. §FS-unsupportable-version-diagnosis
+    skip_entries = preflight_skip_record_entries(library_preparation_preflight, updated_library_version)
+    if skip_entries is not None and not resume_existing_tree:
+        starting_commit = subprocess.check_output(["git", "rev-parse", "HEAD"], text=True).strip()
+        ending_commit = apply_preflight_skip_record(
+            reachability_repo_path=reachability_repo_path,
+            group=group,
+            artifact=artifact,
+            target_version=updated_library_version,
+            entries=skip_entries,
+            continuation_marker_path=continuation_marker_path,
+        )
+        if ending_commit is not None:
+            print("[Version recorded as skipped; no fix was attempted.]")
+            run_metrics = metrics_writer.create_javac_fix_run_metrics_output_json(
+                repo_path=reachability_repo_path,
+                package=group,
+                artifact=artifact,
+                previous_library_version=old_library_version,
+                new_library_version=updated_library_version,
+                agent=None,
+                model_name=library_preparation_preflight.get("model"),
+                global_iterations=0,
+                strategy_name=strategy_name,
+                status=RUN_STATUS_SUCCESS,
+                starting_commit=starting_commit,
+                ending_commit=ending_commit,
+                library_preparation_preflight=library_preparation_preflight,
+            )
+            write_fix_metrics(config, run_metrics, metrics_repo_dir, metrics_repo_root=metrics_repo_root)
+            return 0
 
     tests_dir = os.path.join(
         reachability_repo_path,

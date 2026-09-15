@@ -152,7 +152,11 @@ when the failure is a real defect that must surface.
 
 The caller supplies the coordinate, the reachability repo path, and an absolute
 staging root namespaced per class for the per-class caller and per coordinate
-otherwise. Agent metadata is staged under `agent` and merged trace metadata under
+otherwise. A caller whose validation widens the coordinate's test source set —
+the code coverage improvement workflow merges its dedicated coverage suite into
+`test` — additionally supplies Gradle project properties, and the gate carries
+them on every Gradle command it runs and on every reproduction command it hands
+the analysis agent, so the repair reproduces exactly the build that failed. Agent metadata is staged under `agent` and merged trace metadata under
 `trace`; durable repository metadata is written only after the final merge
 succeeds and the durable re-run passes.
 
@@ -348,8 +352,22 @@ satisfies the review rules. A shared infrastructure defect is not repaired on
 the contribution: the reviewer returns structured evidence, Forge opens or
 reuses one issue for that defect, and the descriptor records `rejected` plus
 `human-intervention`. Unsupported library behavior meeting
-§root/FS-contribution-contract.5.4 records `rejected` plus `close`. Every
-other unresolved or uncertain finding records `rejected` plus
+§root/FS-contribution-contract.5.4 records `rejected` plus `close` only where
+that rule finds no index entry to record the skip in. Where the artifact has
+one, the reviewer repairs the contribution into the skip record that rule
+prescribes and the descriptor carries the ordinary `approved` decision.
+
+**A skip record is rendered from the tree.** Descriptor facts state what the
+agent generated, and this repair deletes exactly the generated files, so a body
+rendered from the descriptor would report metadata entries, coverage percentages
+and stats diffs for files that no longer exist. Publication therefore detects the
+repair from the published tree — the artifact's `index.json` gained
+`skipped-versions` entries and the contribution ships no `metadata/<version>/` —
+and replaces the template body with the recorded versions and their reasons, read
+from those same entries. The title is left as the contribution's own template
+rendered it: it carries the run and model provenance, and publication identity is
+the branch and publication ID rather than the title.
+Every other unresolved or uncertain finding records `rejected` plus
 `human-intervention`.
 
 **Findings record.** Every finding is appended to tracked
@@ -373,12 +391,16 @@ finalization receipt, and owns staging and commits. A changed tree reruns only
 the pre-publication gate (§FS-local-ci-equivalent-verification.2), with fixups
 disabled; an unchanged tree does not. Finalization (§FS-local-ci-equivalent-verification.1) has already
 reached a stable tree inside the review and is not replayed. The gate is
-verification, not another mutation phase: the head and publishable worktree must
-remain byte-for-byte equal to the reviewed commit. If it fails or changes that
-tree, Forge restores the last verified tree, records the failed attempt in the
-finding, and publishes that exact tree as `rejected` with the action selected by
-the disposition ladder. No edit made after the verdict may enter the published
-head, and an approval of a discarded tree must never describe it.
+verification, not another mutation phase: the head and the publishable tree must
+be byte-for-byte identical before and after it runs. The comparison is over the
+publishable tree alone — the same content the finalization receipt hashes — so
+local scratch files that the branch would never publish are not evidence of a
+mutation, and only a difference the gate itself introduced counts. If the gate
+fails or changes that tree, Forge restores the last verified tree, records the
+failed attempt in the finding together with the paths that actually differed,
+and publishes that exact tree as `rejected` with the action selected by the
+disposition ladder. No edit made after the verdict may enter the published head,
+and an approval of a discarded tree must never describe it.
 
 **Durability and rendering.** The review prompt, response, and repair pass are
 durable task logs (§FS-durable-generation-logs). Its in-flight verdict is staged
@@ -595,7 +617,15 @@ maintainer. Because every branch records its finding at the same offset in the
 append-only `forge/FINDINGS.md` (§FS-local-branch-review), any two open pull
 requests conflict there, and each merge re-conflicts the rest; keeping both
 entries is the only correct resolution, so the repository configures git to
-take it without asking. Conflict refresh is deterministic queue maintenance,
+take it without asking. The per-coordinate benchmark results file
+(§FS-code-coverage-benchmarking.3) is the same situation one level up: its
+entries are keyed by run ID and the only legal edit is adding one, so two open
+publications always conflict there while never actually disagreeing. Git's
+textual merge cannot see that, so Forge resolves it itself: the base branch's
+entries plus the entries the head added, sorted by timestamp and run ID. The
+resolution may never modify or drop an existing entry, and a run ID appearing
+on both sides with different content is a real disagreement that escalates
+like any other conflict. Conflict refresh is deterministic queue maintenance,
 not review: before CI state can make a pull request eligible for an agent,
 Forge first approves the validated head and enables auto-merge, then merges the
 base branch into a conflicting same-repository head and pushes the result when

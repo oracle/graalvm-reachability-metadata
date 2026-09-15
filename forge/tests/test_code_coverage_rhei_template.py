@@ -195,5 +195,59 @@ class CodeCoverageRheiTemplateTests(unittest.TestCase):
         self.assertIn("jacoco.xml", finalization)
         self.assertIn("discovery-report.json", finalization)
 
+    def test_helpers_never_resolve_from_the_checkout_under_test(self) -> None:
+        """Every helper resolves from the work path, never from the checkout.
+
+        `repo_checkout` is the tree under test, which a benchmark pins to an
+        old commit; only `workPath` tracks the implementation that must measure
+        the run. A helper reached through the checkout silently runs pinned
+        tooling against current metrics. §FS-code-coverage-benchmarking.1
+        """
+        forge_root: str = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        states_paths: tuple[str, ...] = (
+            os.path.join(
+                forge_root,
+                ".agents",
+                "rhei",
+                "templates",
+                "code-coverage-improvement",
+                "states.yaml",
+            ),
+            os.path.join(
+                forge_root,
+                "examples",
+                "code-coverage-improvement-example",
+                "states.yaml",
+            ),
+        )
+        helper: re.Pattern = re.compile(
+            r"\S*(?:\{\{repo_checkout\}\}|\.\./\.\./\.\.)\S*"
+            r"(?:utility_scripts|schemas)\S*"
+        )
+
+        for states_path in states_paths:
+            with open(states_path, encoding="utf-8") as states_file:
+                source: str = states_file.read()
+            machine: dict = yaml.safe_load(_render_numeric_placeholders(source))
+
+            for name, state in machine["states"].items():
+                program: str = state.get("program", "")
+                with self.subTest(path=states_path, state=name):
+                    self.assertEqual(
+                        helper.findall(program),
+                        [],
+                        f"state '{name}' resolves a helper from the checkout "
+                        "under test; resolve it from conversion.json workPath",
+                    )
+
+            verify: dict = machine["states"]["finalize-verify"]
+            with self.subTest(path=states_path, state="finalize-verify"):
+                self.assertIn("schema_validator.py", verify["program"])
+                self.assertIn('["workPath"]', verify["program"])
+                self.assertIn(
+                    "conversion",
+                    {declared["name"] for declared in verify["inputs"]},
+                )
+
 if __name__ == "__main__":
     unittest.main()

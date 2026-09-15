@@ -34,6 +34,7 @@ Treat the following as hard review rules unless the PR provides a strong reason 
 9. **Do not read individual metadata entries.** Do not explicitly read or review individual metadata entries. Use the metadata entry count reported in the PR description for the metadata/dynamic-access mismatch check; do not manually count entries from metadata files. When the PR reports both library metadata entries and test-only metadata entries, use their sum as the PR-reported metadata entry count. Only request investigation when the covered dynamic-access call count is at least 75% higher than that PR-reported total. Skip this mismatch check entirely when the PR reports zero dynamic-access calls, because `0/0` does not provide enough information to judge whether the metadata entry count is relevant.
 10. **Only `reachability-metadata.json`.** Accept only `reachability-metadata.json` files as metadata files. Reject legacy native-image metadata config files such as `reflect-config.json`, `resource-config.json`, `proxy-config.json`, `serialization-config.json`, `jni-config.json`, or `predefined-classes-config.json`.
 11. **Test-only is defined by package.** Metadata is "test-only" when the type it describes belongs to a package from the test suite. A type from the library JAR or one of its dependencies is library metadata, even when a test is what exercised it.
+12. **`--initialize-at-build-time` is not a repair.** Permit it in `build.gradle` only when the PR evidences all three conditions of the bounded consumer-required exception: no native image builds without the flag, the requirement comes from the library or its transitive dependencies rather than the test, and the flag names only the forcing types. A failing native image is evidence of missing metadata until the first two are shown. §FS-test-contract.2.7
 
 
 ## Workflow
@@ -77,7 +78,7 @@ Finding a violation is half the review. **Read §FS-contribution-contract.5 and 
 | 5.1 | The violation is in the PR's own `metadata/`, `stats/`, and `tests/src/` files | Repair it on the PR head, push, re-run the affected checks, and say what you changed and why |
 | 5.2 | The only possible fix is build logic, harness code, workflows, or another coordinate | Do not repair there; revert such a change if the PR already carries one, then take 5.3 |
 | 5.3 | The cause is a defect in shared repository code | Find or open one issue for the defect, comment that the PR is blocked on it rather than on its own content, then take 5.5 |
-| 5.4 | The library's dynamic access is reachable only through behavior Native Image cannot support | Close the PR, label the linked issue `library-unsupported-version`, and close that issue |
+| 5.4 | The library's dynamic access is reachable only through behavior Native Image cannot support | The artifact has no index entry, so there is nothing to skip and nothing to merge: close the PR, label the linked issue `library-unsupported-version`, and close that issue |
 | 5.5 | Anything else, uncertainty included | Label the PR `human-intervention` and comment with the rule at issue, what you tried, and what you could not decide |
 
 Never close a PR under any case but 5.4. Read §FS-contribution-contract.5.1 before you repair: it bounds what a repair may do, and it carries the one exception that lets you drop a test scenario rather than fix it.
