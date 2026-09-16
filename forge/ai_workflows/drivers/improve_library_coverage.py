@@ -49,7 +49,7 @@ from git_scripts.common_git import (
     load_library_stats,
     switch_branch_quietly,
 )
-from utility_scripts import metrics_writer
+from utility_scripts import metrics_writer, run_metrics_payloads
 from utility_scripts.continuation_marker import (
     PHASE_FINALIZATION,
     PHASE_SETUP,
@@ -63,7 +63,8 @@ from utility_scripts.library_preparation_setup import (
     prepare_library_preparation_preflight,
 )
 from utility_scripts.metadata_index import MATCH_NEW_VERSION
-from utility_scripts.metrics_writer import count_metadata_entries, count_test_only_metadata_entries, create_failure_run_metrics_output
+from utility_scripts.library_measurements import count_metadata_entries, count_test_only_metadata_entries
+from utility_scripts.run_metrics_payloads import create_failure_run_metrics_output
 from utility_scripts.run_location import (
     STEP_NORMAL_SETUP,
     STEP_RUN_WORKFLOW_ENGINE,
@@ -487,7 +488,7 @@ def main(argv=None) -> int:
             log_detail("status", "Coverage improvement produced PR-eligible post-generation intervention output")
         else:
             log_detail("status", "Coverage improvement succeeded")
-        run_metrics = metrics_writer.create_run_metrics_output_json(
+        run_metrics = run_metrics_payloads.create_run_metrics_output_json(
             repo_path=reachability_repo_path,
             package=group,
             artifact=artifact,

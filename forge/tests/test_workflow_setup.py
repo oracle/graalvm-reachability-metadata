@@ -12,7 +12,7 @@ from pathlib import Path
 from typing import Iterator
 from unittest.mock import patch
 
-from utility_scripts.host_requirements import GRAALVM_SCHEMA_PATH
+from utility_scripts.host_graalvm_checks import GRAALVM_SCHEMA_PATH
 from utility_scripts.workflow_setup import resolve_graalvm_java_home
 
 

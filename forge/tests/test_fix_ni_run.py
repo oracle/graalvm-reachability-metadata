@@ -102,7 +102,7 @@ class NativeImageRunDriverTests(unittest.TestCase):
                 return_value="ending\n",
             ))
             stack.enter_context(patch.object(
-                fix_ni_run.metrics_writer,
+                fix_ni_run.run_metrics_payloads,
                 "create_java_run_fix_run_metrics_output_json",
                 autospec=True,
                 return_value={},

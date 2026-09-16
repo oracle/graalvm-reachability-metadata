@@ -11,7 +11,7 @@ import subprocess
 import tempfile
 import unittest
 
-from utility_scripts.metrics_writer import count_test_only_metadata_entries
+from utility_scripts.library_measurements import count_test_only_metadata_entries
 from utility_scripts.native_image_config_policy import (
     find_legacy_test_native_image_config_files_for_coordinate,
     is_legacy_test_native_image_config_path,

@@ -56,7 +56,7 @@ from ai_workflows.drivers.add_new_library_setup import (
     run_scaffold,
 )
 from git_scripts.common_git import get_repo_root
-from utility_scripts import metrics_writer
+from utility_scripts import metrics_writer, run_metrics_payloads
 from utility_scripts.continuation_marker import (
     PHASE_FINALIZATION,
     PHASE_SETUP,
@@ -93,7 +93,7 @@ from utility_scripts.test_quality_checks import (
     format_generated_test_validity_issue,
     format_placeholder_occurrence,
 )
-from utility_scripts.metrics_writer import create_failure_run_metrics_output
+from utility_scripts.run_metrics_payloads import create_failure_run_metrics_output
 from utility_scripts.strategy_loader import require_strategy_by_name
 from utility_scripts.workflow_setup import (
     list_all_files,
@@ -539,7 +539,7 @@ def main(argv=None):
             library_preparation_preflight=library_preparation_preflight,
         )
     else:
-        run_metrics = metrics_writer.create_run_metrics_output_json(
+        run_metrics = run_metrics_payloads.create_run_metrics_output_json(
             repo_path=reachability_repo_path,
             package=package,
             artifact=artifact,

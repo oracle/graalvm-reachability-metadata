@@ -192,11 +192,11 @@ from utility_scripts.metadata_index import (
 )
 from utility_scripts.metrics_writer import (
     PENDING_METRICS_FILENAME,
-    calc_model_session_cost,
     load_execution_metrics_for_timestamp,
     read_pending_metrics,
     write_pending_metrics,
 )
+from utility_scripts.token_costs import calc_model_session_cost
 from utility_scripts.native_image_artifact import (
     ARTIFACT_REPOSITORY_URLS,
     artifact_is_published,
@@ -254,15 +254,17 @@ from utility_scripts.task_logs import (
     resolve_logs_root,
     sanitize_library_log_segment,
 )
-from utility_scripts.host_requirements import (
+from utility_scripts.host_graalvm_checks import (
     DEFAULT_GRAALVM_VERSION_CHECK,
     GRAALVM_VERSION_CHECK_ENV_VAR,
     GRAALVM_VERSION_CHECK_MODES,
     ISSUE_GRAALVM_ENV_VARS,
-    QueueRequirements,
-    ensure_host_requirements,
     require_issue_graalvm_homes,
     resolve_graalvm_version_check,
+)
+from utility_scripts.host_requirements import (
+    QueueRequirements,
+    ensure_host_requirements,
     resolve_queue_requirements,
 )
 from utility_scripts.workflow_setup import list_all_files
