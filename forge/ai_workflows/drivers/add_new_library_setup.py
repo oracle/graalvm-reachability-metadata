@@ -24,7 +24,7 @@ from utility_scripts.logged_command import LoggedCommandResult, run_logged_comma
 from utility_scripts.metadata_index import is_not_for_native_image, write_not_for_native_image_marker
 from utility_scripts.native_image_artifact import evaluate_native_image_eligibility
 from utility_scripts.repo_path_resolver import require_complete_reachability_repo
-from utility_scripts.source_context import discover_artifact_metadata
+from utility_scripts.source_context_discovery import discover_artifact_metadata
 from utility_scripts.stage_logger import log_detail, log_stage
 from utility_scripts.task_logs import display_log_path
 

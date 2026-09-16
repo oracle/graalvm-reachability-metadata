@@ -181,7 +181,7 @@ from utility_scripts.java_fix_coverage_follow_up import (
     ensure_coverage_follow_up_issue,
     uncovered_dynamic_access_class_count,
 )
-from utility_scripts.library_update_alias_split import extract_follow_up_issue_numbers
+from utility_scripts.library_update_follow_up_issue import extract_follow_up_issue_numbers
 from utility_scripts.metadata_index import (
     coordinate_parts as metadata_coordinate_parts,
     get_not_for_native_image_marker,
@@ -235,7 +235,7 @@ from utility_scripts.run_location import (
     resolve_failure_location,
     run_step,
 )
-from utility_scripts.source_context import GradleBootstrapFailure
+from utility_scripts.source_context_discovery import GradleBootstrapFailure
 from utility_scripts.stage_logger import (
     debug_logging_enabled,
     enable_verbose_logging,

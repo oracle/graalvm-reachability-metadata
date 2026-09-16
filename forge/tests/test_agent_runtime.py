@@ -33,7 +33,7 @@ from ai_workflows.agents.agent_runtime import (
     normalize_backend_name,
     run_agent_task,
 )
-from utility_scripts.source_context import url_fetch_agent_command
+from utility_scripts.source_context_discovery import url_fetch_agent_command
 from utility_scripts.strategy_loader import (
     list_strategy_names,
     load_predefined_strategies,

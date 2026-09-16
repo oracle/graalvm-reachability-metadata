@@ -10,7 +10,7 @@ from collections.abc import Callable
 
 from git_scripts.common_git import gh, gh_json
 from utility_scripts.dynamic_access_report import DynamicAccessCoverageReport
-from utility_scripts.library_update_alias_split import (
+from utility_scripts.library_update_follow_up_issue import (
     PROJECT_NUMBER,
     STATUS_IN_PROGRESS,
     ensure_issue_project_status,

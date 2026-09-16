@@ -82,9 +82,12 @@ from utility_scripts.run_location import (
 )
 from utility_scripts.source_context import (
     normalize_source_context_types,
-    populate_artifact_urls,
     prepare_source_contexts,
     resolve_test_source_layout,
+)
+from utility_scripts.source_context_discovery import (
+    discover_artifact_metadata,
+    populate_artifact_urls,
 )
 from utility_scripts.stage_logger import log_detail, log_stage
 from utility_scripts.test_quality_checks import (
