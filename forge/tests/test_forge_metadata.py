@@ -17,13 +17,22 @@ from unittest.mock import call, patch
 
 import forge_metadata
 from dispatcher import (
+    ci_repair,
     claim_preflight,
+    continuation,
+    failure_follow_up,
+    human_intervention,
     fixture_support,
     github_api,
     issue_cache,
     issue_claiming,
     issue_queue,
+    pr_merge,
+    pr_publication,
+    pr_state,
     project_board,
+    review_loop,
+    worktrees,
 )
 from types import SimpleNamespace
 from ai_workflows.agents.agent_runtime import AgentRunResult, AgentSelection
@@ -2084,11 +2093,11 @@ class IssueFormGateClaimOrderTests(unittest.TestCase):
         completed_process = subprocess.CompletedProcess(args=[], returncode=0, stdout="")
 
         with patch.object(
-                forge_metadata,
+                worktrees,
                 "run_git_transport",
                 return_value=completed_process,
         ) as run, patch.object(
-                forge_metadata,
+                worktrees,
                 "resolve_git_commit",
                 return_value="base-sha",
         ) as resolve:
@@ -2463,7 +2472,7 @@ class IssueFormGateClaimOrderTests(unittest.TestCase):
         completed = subprocess.CompletedProcess(args=[], returncode=0, stdout="")
 
         with patch.object(
-                forge_metadata,
+                continuation,
                 "fetch_remote_branch",
                 return_value="refs/remotes/origin/ai/runner/preserved",
         ) as fetch_branch, patch.object(
@@ -3080,7 +3089,7 @@ class PullRequestReviewSelectionTests(unittest.TestCase):
                 },
             },
         }
-        with patch.object(forge_metadata, "gh_json", return_value=payload) as gh_json:
+        with patch.object(pr_state, "gh_json", return_value=payload) as gh_json:
             forge_metadata.get_pull_request_state(9656)
 
         query_argument = gh_json.call_args.args[-1]
@@ -3092,7 +3101,7 @@ class PullRequestReviewSelectionTests(unittest.TestCase):
 
     def test_descriptor_approval_targets_exact_head_commit(self) -> None:
         state = _pull_request_state(9656, "SUCCESS")
-        with patch.object(forge_metadata, "gh") as gh:
+        with patch.object(pr_publication, "gh") as gh:
             forge_metadata.approve_pull_request_from_descriptor(state)
 
         self.assertIn("commit_id=head-9656", gh.call_args.args)
@@ -3100,7 +3109,7 @@ class PullRequestReviewSelectionTests(unittest.TestCase):
 
     def test_auto_merge_targets_the_exact_approved_head(self) -> None:
         state = _pull_request_state(9656, "PENDING")
-        with patch.object(forge_metadata, "gh") as gh:
+        with patch.object(pr_publication, "gh") as gh:
             forge_metadata.enable_pull_request_auto_merge(state)
 
         gh.assert_called_once_with(
@@ -3120,12 +3129,12 @@ class PullRequestReviewSelectionTests(unittest.TestCase):
         validated = _validated_publication("rejected", "human-intervention")
         with (
                 patch.object(
-                    forge_metadata, "validate_pull_request_publication",
+                    review_loop, "validate_pull_request_publication",
                     return_value=validated,
                 ),
-                patch.object(forge_metadata, "reconcile_rejected_publication") as reject,
-                patch.object(forge_metadata, "approve_pull_request_from_descriptor") as approve,
-                patch.object(forge_metadata, "enable_pull_request_auto_merge") as enable_auto_merge,
+                patch.object(review_loop, "reconcile_rejected_publication") as reject,
+                patch.object(review_loop, "approve_pull_request_from_descriptor") as approve,
+                patch.object(review_loop, "enable_pull_request_auto_merge") as enable_auto_merge,
         ):
             forge_metadata._process_descriptor_pull_request(
                 state,
@@ -3142,12 +3151,12 @@ class PullRequestReviewSelectionTests(unittest.TestCase):
         state["labels"] = [{"name": forge_metadata.LABEL_HUMAN_INTERVENTION}]
         with (
                 patch.object(
-                    forge_metadata, "validate_pull_request_publication",
+                    review_loop, "validate_pull_request_publication",
                     return_value=_validated_publication(),
                 ),
-                patch.object(forge_metadata, "ensure_pull_request_unapproved") as unapprove,
-                patch.object(forge_metadata, "approve_pull_request_from_descriptor") as approve,
-                patch.object(forge_metadata, "enable_pull_request_auto_merge") as enable_auto_merge,
+                patch.object(review_loop, "ensure_pull_request_unapproved") as unapprove,
+                patch.object(review_loop, "approve_pull_request_from_descriptor") as approve,
+                patch.object(review_loop, "enable_pull_request_auto_merge") as enable_auto_merge,
         ):
             forge_metadata._process_descriptor_pull_request(
                 state,
@@ -3163,29 +3172,29 @@ class PullRequestReviewSelectionTests(unittest.TestCase):
         events: list[str] = []
         with (
                 patch.object(
-                    forge_metadata, "validate_pull_request_publication",
+                    review_loop, "validate_pull_request_publication",
                     return_value=_validated_publication(),
                 ),
                 patch.object(
-                    forge_metadata, "validate_pull_request_indexes_before_merge",
+                    review_loop, "validate_pull_request_indexes_before_merge",
                 ) as validate_indexes,
                 patch.object(
-                    forge_metadata, "approve_pull_request_from_descriptor",
+                    review_loop, "approve_pull_request_from_descriptor",
                     side_effect=lambda *_: events.append("approve"),
                 ),
                 patch.object(
-                    forge_metadata, "enable_pull_request_auto_merge",
+                    review_loop, "enable_pull_request_auto_merge",
                     side_effect=lambda *_: events.append("auto-merge"),
                 ),
                 patch.object(
-                    forge_metadata, "resolve_pull_request_merge_conflict",
+                    review_loop, "resolve_pull_request_merge_conflict",
                     side_effect=lambda *_: events.append("resolve") or False,
                 ),
                 patch.object(
-                    forge_metadata, "ensure_pull_request_unapproved",
+                    review_loop, "ensure_pull_request_unapproved",
                     side_effect=lambda *_: events.append("withdraw"),
                 ),
-                patch.object(forge_metadata, "add_pull_request_label"),
+                patch.object(review_loop, "add_pull_request_label"),
         ):
             forge_metadata._process_descriptor_pull_request(state, "/tmp/reachability")
 
@@ -3205,8 +3214,8 @@ class PullRequestReviewSelectionTests(unittest.TestCase):
             {"id": 12, "state": "APPROVED", "body": "Human approval."},
         ]
         with (
-                patch.object(forge_metadata, "get_pull_request_reviews", return_value=reviews),
-                patch.object(forge_metadata, "gh") as gh,
+                patch.object(pr_publication, "get_pull_request_reviews", return_value=reviews),
+                patch.object(pr_publication, "gh") as gh,
         ):
             forge_metadata.ensure_pull_request_unapproved(state)
 
@@ -3253,7 +3262,7 @@ class PullRequestReviewSelectionTests(unittest.TestCase):
     def test_fork_is_rejected_before_descriptor_fetch(self) -> None:
         state = _pull_request_state(9656, "SUCCESS")
         state["isCrossRepository"] = True
-        with patch.object(forge_metadata, "run_git_transport") as fetch:
+        with patch.object(pr_publication, "run_git_transport") as fetch:
             with self.assertRaisesRegex(ValueError, "head repository"):
                 forge_metadata.validate_pull_request_publication(
                     state, "/tmp/reachability",
@@ -3265,22 +3274,22 @@ class PullRequestReviewSelectionTests(unittest.TestCase):
         state = _pull_request_state(9656, "SUCCESS")
         validated = _validated_publication()
         with (
-                patch.object(forge_metadata, "get_pull_requests_with_labels", return_value=[]),
+                patch.object(review_loop, "get_pull_requests_with_labels", return_value=[]),
                 patch.object(
-                    forge_metadata, "get_pull_requests_with_label",
+                    review_loop, "get_pull_requests_with_label",
                     return_value=[pull_request],
                 ),
-                patch.object(forge_metadata, "get_pull_request_state", return_value=state),
+                patch.object(pr_state, "get_pull_request_state", return_value=state),
                 patch.object(
-                    forge_metadata, "validate_pull_request_publication",
+                    review_loop, "validate_pull_request_publication",
                     return_value=validated,
                 ),
                 patch.object(
-                    forge_metadata, "validate_pull_request_indexes_before_merge",
+                    review_loop, "validate_pull_request_indexes_before_merge",
                 ) as validate_indexes,
-                patch.object(forge_metadata, "approve_pull_request_from_descriptor") as approve,
-                patch.object(forge_metadata, "enable_pull_request_auto_merge") as enable_auto_merge,
-                patch.object(forge_metadata, "analysis_agent_run") as agent,
+                patch.object(review_loop, "approve_pull_request_from_descriptor") as approve,
+                patch.object(review_loop, "enable_pull_request_auto_merge") as enable_auto_merge,
+                patch.object(ci_repair, "analysis_agent_run") as agent,
         ):
             forge_metadata.process_pull_requests_with_label(
                 forge_metadata.LABEL_LIBRARY_NEW,
@@ -3299,18 +3308,18 @@ class PullRequestReviewSelectionTests(unittest.TestCase):
         state = _pull_request_state(9656, "FAILURE")
         validated = _validated_publication("rejected", "close")
         with (
-                patch.object(forge_metadata, "get_pull_requests_with_labels", return_value=[]),
+                patch.object(review_loop, "get_pull_requests_with_labels", return_value=[]),
                 patch.object(
-                    forge_metadata, "get_pull_requests_with_label",
+                    review_loop, "get_pull_requests_with_label",
                     return_value=[pull_request],
                 ),
-                patch.object(forge_metadata, "get_pull_request_state", return_value=state),
+                patch.object(pr_state, "get_pull_request_state", return_value=state),
                 patch.object(
-                    forge_metadata, "validate_pull_request_publication",
+                    review_loop, "validate_pull_request_publication",
                     return_value=validated,
                 ),
-                patch.object(forge_metadata, "reconcile_rejected_publication") as reject,
-                patch.object(forge_metadata, "approve_pull_request_from_descriptor") as approve,
+                patch.object(review_loop, "reconcile_rejected_publication") as reject,
+                patch.object(review_loop, "approve_pull_request_from_descriptor") as approve,
         ):
             forge_metadata.process_pull_requests_with_label(
                 forge_metadata.LABEL_LIBRARY_NEW,
@@ -3328,18 +3337,18 @@ class PullRequestReviewSelectionTests(unittest.TestCase):
         validated = _validated_publication("rejected", "close")
         comments = [{"body": forge_metadata.LOCAL_REVIEW_CLOSE_MARKER}]
         with (
-                patch.object(forge_metadata, "get_pull_request_reviews", return_value=[]),
-                patch.object(forge_metadata, "get_issue_comments", return_value=comments),
+                patch.object(pr_publication, "get_pull_request_reviews", return_value=[]),
+                patch.object(pr_publication, "get_issue_comments", return_value=comments),
                 patch.object(
-                    forge_metadata, "add_issue_label",
+                    pr_publication, "add_issue_label",
                     side_effect=lambda *_: events.append("label-issue"),
                 ),
                 patch.object(
-                    forge_metadata, "close_issue",
+                    pr_publication, "close_issue",
                     side_effect=lambda *_: events.append("close-issue"),
                 ),
                 patch.object(
-                    forge_metadata, "gh",
+                    pr_publication, "gh",
                     side_effect=lambda *_: events.append("close-pr"),
                 ),
         ):
@@ -3398,18 +3407,18 @@ class PullRequestReviewSelectionTests(unittest.TestCase):
 
         with (
                 patch.object(
-                    forge_metadata, "get_pull_requests_with_labels", return_value=[],
+                    review_loop, "get_pull_requests_with_labels", return_value=[],
                 ),
                 patch.object(
-                    forge_metadata, "get_pull_requests_with_label",
+                    review_loop, "get_pull_requests_with_label",
                     side_effect=[first_page, [*first_page, valid_pull_request]],
                 ) as fetch,
                 patch.object(
-                    forge_metadata, "attach_pull_request_state",
+                    review_loop, "attach_pull_request_state",
                     side_effect=lambda pull_request, _: pull_request,
                 ),
                 patch.object(
-                    forge_metadata, "_process_descriptor_pull_request",
+                    review_loop, "_process_descriptor_pull_request",
                     side_effect=process_candidate,
                 ),
         ):
@@ -3431,12 +3440,12 @@ class PullRequestReviewSelectionTests(unittest.TestCase):
         validated = _validated_publication()
         with (
                 patch.object(
-                    forge_metadata, "validate_pull_request_publication",
+                    review_loop, "validate_pull_request_publication",
                     return_value=validated,
                 ),
-                patch.object(forge_metadata, "validate_pull_request_indexes_before_merge"),
-                patch.object(forge_metadata, "approve_pull_request_from_descriptor") as approve,
-                patch.object(forge_metadata, "enable_pull_request_auto_merge") as enable_auto_merge,
+                patch.object(review_loop, "validate_pull_request_indexes_before_merge"),
+                patch.object(review_loop, "approve_pull_request_from_descriptor") as approve,
+                patch.object(review_loop, "enable_pull_request_auto_merge") as enable_auto_merge,
         ):
             forge_metadata._process_descriptor_pull_request(
                 state,
@@ -3451,9 +3460,9 @@ class PullRequestReviewSelectionTests(unittest.TestCase):
         state = _pull_request_state(9656, "FAILURE")
         validated = _validated_publication()
         with (
-                patch.object(forge_metadata, "repair_failed_ci_pull_request") as repair,
+                patch.object(ci_repair, "repair_failed_ci_pull_request") as repair,
                 patch.object(
-                    forge_metadata, "rerun_failed_pull_request_workflow_jobs",
+                    ci_repair, "rerun_failed_pull_request_workflow_jobs",
                 ) as rerun,
         ):
             forge_metadata.reconcile_failed_ci_pull_request(
@@ -3473,17 +3482,17 @@ class PullRequestReviewSelectionTests(unittest.TestCase):
         ]
         with (
                 patch.object(
-                    forge_metadata, "get_pull_request_state",
+                    pr_state, "get_pull_request_state",
                     return_value={
                         **_pull_request_state(3513, "FAILURE"),
                         "headRefOid": "abc123",
                     },
                 ),
                 patch.object(
-                    forge_metadata, "get_pull_request_workflow_runs",
+                    pr_state, "get_pull_request_workflow_runs",
                     return_value=workflow_runs,
                 ),
-                patch.object(forge_metadata, "gh") as gh,
+                patch.object(pr_state, "gh") as gh,
         ):
             count = forge_metadata.rerun_failed_pull_request_workflow_jobs(
                 3513,
@@ -4383,17 +4392,17 @@ class RunFailureLocationTests(unittest.TestCase):
         )
 
         with patch.object(
-                forge_metadata,
+                failure_follow_up,
                 "resolve_human_intervention_candidate",
                 return_value="candidate",
         ), \
                 patch.object(
-                    forge_metadata,
+                    failure_follow_up,
                     "run_codex_failed_generation_analysis",
                     return_value="Analysis body.",
                 ), \
                 patch.object(
-                    forge_metadata,
+                    failure_follow_up,
                     "post_human_intervention_comment_and_label",
                 ) as post_follow_up:
             forge_metadata.apply_failed_run_follow_up(
@@ -4433,9 +4442,9 @@ class FailedRunFollowUpTests(unittest.TestCase):
                 reviewable_worktree_path=repo_path,
             )
 
-            with patch.object(forge_metadata, "resolve_human_intervention_candidate", return_value=None), \
+            with patch.object(failure_follow_up, "resolve_human_intervention_candidate", return_value=None), \
                     patch.object(
-                        forge_metadata,
+                        failure_follow_up,
                         "post_human_intervention_comment_and_label",
                     ) as post_follow_up:
                 forge_metadata.apply_failed_run_follow_up(
@@ -4468,9 +4477,9 @@ class FailedRunFollowUpTests(unittest.TestCase):
                 reviewable_worktree_path=repo_path,
             )
 
-            with patch.object(forge_metadata, "resolve_human_intervention_candidate", return_value=None), \
+            with patch.object(failure_follow_up, "resolve_human_intervention_candidate", return_value=None), \
                     patch.object(
-                        forge_metadata,
+                        failure_follow_up,
                         "post_human_intervention_comment_and_label",
                     ) as post_follow_up:
                 forge_metadata.apply_failed_run_follow_up(
@@ -4562,9 +4571,9 @@ class InterruptHandlingTests(unittest.TestCase):
             reason="job_failed",
         )
 
-        with patch.object(forge_metadata, "_load_pending_run_metrics", return_value=None), \
-                patch.object(forge_metadata, "collect_issue_log_paths", return_value=[]), \
-                patch.object(forge_metadata, "require_claimed_issue_worktree", side_effect=RuntimeError("invalid")), \
+        with patch.object(human_intervention, "_load_pending_run_metrics", return_value=None), \
+                patch.object(human_intervention, "collect_issue_log_paths", return_value=[]), \
+                patch.object(worktrees, "require_claimed_issue_worktree", side_effect=RuntimeError("invalid")), \
                 patch.object(forge_metadata.subprocess, "run") as run:
             comment = forge_metadata.run_codex_failed_generation_analysis(
                 claimed_issue,
@@ -4585,10 +4594,10 @@ class InterruptHandlingTests(unittest.TestCase):
         )
         strategy = {"model": "test-model"}
 
-        with patch.object(forge_metadata, "load_strategy_by_name", return_value=strategy), \
-                patch.object(forge_metadata, "_collect_human_intervention_read_only_files", return_value=[]), \
-                patch.object(forge_metadata, "require_claimed_issue_worktree", side_effect=RuntimeError("invalid")), \
-                patch.object(forge_metadata, "init_workflow_agent") as init_agent:
+        with patch.object(human_intervention, "load_strategy_by_name", return_value=strategy), \
+                patch.object(human_intervention, "_collect_human_intervention_read_only_files", return_value=[]), \
+                patch.object(worktrees, "require_claimed_issue_worktree", side_effect=RuntimeError("invalid")), \
+                patch.object(human_intervention, "init_workflow_agent") as init_agent:
             comment = forge_metadata.run_human_intervention_analysis(
                 claimed_issue,
                 candidate,
@@ -4602,8 +4611,8 @@ class InterruptHandlingTests(unittest.TestCase):
     def test_human_intervention_posting_noops_after_interrupt(self) -> None:
         forge_metadata.mark_user_interrupt_requested()
 
-        with patch.object(forge_metadata, "post_issue_comment") as post_issue_comment, \
-                patch.object(forge_metadata, "add_issue_label") as add_issue_label:
+        with patch.object(failure_follow_up, "post_issue_comment") as post_issue_comment, \
+                patch.object(failure_follow_up, "add_issue_label") as add_issue_label:
             forge_metadata.post_human_intervention_comment_and_label(1412, "comment")
 
         post_issue_comment.assert_not_called()
@@ -4774,17 +4783,17 @@ class PullRequestReviewTests(unittest.TestCase):
         }
         with (
                 patch.object(
-                    forge_metadata,
+                    pr_merge,
                     "get_pull_requests_with_labels",
                     return_value=[pull_request],
                 ) as get_pull_requests,
                 patch.object(
-                    forge_metadata, "apply_chunked_dynamic_access_merge_follow_up",
+                    pr_merge, "apply_chunked_dynamic_access_merge_follow_up",
                 ) as apply_chunk,
                 patch.object(
-                    forge_metadata, "apply_unblocked_issue_merge_follow_up",
+                    pr_merge, "apply_unblocked_issue_merge_follow_up",
                 ) as apply_unblocked,
-                patch.object(forge_metadata, "remove_pull_request_label") as remove_label,
+                patch.object(pr_merge, "remove_pull_request_label") as remove_label,
         ):
             forge_metadata.reconcile_auto_merged_pull_request_follow_ups()
 
@@ -4802,11 +4811,11 @@ class PullRequestReviewTests(unittest.TestCase):
 
     def test_index_guard_validates_current_master_candidate(self) -> None:
         with patch.object(
-                forge_metadata,
+                pr_merge,
                 "get_pull_request_changed_index_files",
                 return_value=["metadata/org.example/demo/index.json"],
         ), patch.object(
-                forge_metadata,
+                pr_merge,
                 "validate_index_files_on_current_master_candidate",
         ) as validate_candidate:
             forge_metadata.validate_pull_request_indexes_before_merge(
@@ -4819,11 +4828,11 @@ class PullRequestReviewTests(unittest.TestCase):
 
     def test_index_guard_skips_unchanged_indexes(self) -> None:
         with patch.object(
-                forge_metadata,
+                pr_merge,
                 "get_pull_request_changed_index_files",
                 return_value=[],
         ), patch.object(
-                forge_metadata,
+                pr_merge,
                 "validate_index_files_on_current_master_candidate",
         ) as validate_candidate:
             forge_metadata.validate_pull_request_indexes_before_merge(
@@ -4840,9 +4849,9 @@ class PullRequestReviewTests(unittest.TestCase):
             "body": "Refs: #1412\n\nSummary:\n- Chunked dynamic-access: yes\n",
         }
         with (
-                patch.object(forge_metadata, "get_project_item_id", return_value="project-item"),
+                patch.object(pr_merge, "get_project_item_id", return_value="project-item"),
                 patch.object(
-                    forge_metadata,
+                    pr_merge,
                     "get_issue_claim_payload",
                     return_value={
                         "labels": [
@@ -4852,11 +4861,11 @@ class PullRequestReviewTests(unittest.TestCase):
                         ],
                     },
                 ),
-                patch.object(forge_metadata, "remove_issue_label") as remove_issue_label,
-                patch.object(forge_metadata, "set_item_status") as set_item_status,
-                patch.object(forge_metadata, "clear_issue_assignees") as clear_issue_assignees,
+                patch.object(pr_merge, "remove_issue_label") as remove_issue_label,
+                patch.object(pr_merge, "set_item_status") as set_item_status,
+                patch.object(pr_merge, "clear_issue_assignees") as clear_issue_assignees,
                 patch.object(
-                    forge_metadata, "invalidate_issue_claim_cache_entry",
+                    pr_merge, "invalidate_issue_claim_cache_entry",
                 ) as invalidate_cache,
         ):
             forge_metadata.apply_chunked_dynamic_access_merge_follow_up(pull_request)
@@ -4878,8 +4887,8 @@ class PullRequestReviewTests(unittest.TestCase):
             "body": "Fixes: #1412\n\nSummary:\n- Chunked dynamic-access: yes\n",
         }
         with (
-                patch.object(forge_metadata, "set_item_status") as set_item_status,
-                patch.object(forge_metadata, "clear_issue_assignees") as clear_issue_assignees,
+                patch.object(pr_merge, "set_item_status") as set_item_status,
+                patch.object(pr_merge, "clear_issue_assignees") as clear_issue_assignees,
         ):
             forge_metadata.apply_chunked_dynamic_access_merge_follow_up(pull_request)
 
@@ -4890,16 +4899,16 @@ class PullRequestReviewTests(unittest.TestCase):
         state = _pull_request_state(3513, "SUCCESS")
         with (
                 patch.object(
-                    forge_metadata, "validate_pull_request_publication",
+                    review_loop, "validate_pull_request_publication",
                     return_value=_validated_publication(),
                 ),
                 patch.object(
-                    forge_metadata,
+                    review_loop,
                     "validate_pull_request_indexes_before_merge",
                     side_effect=RuntimeError("invalid index"),
                 ),
-                patch.object(forge_metadata, "approve_pull_request_from_descriptor") as approve,
-                patch.object(forge_metadata, "enable_pull_request_auto_merge") as enable_auto_merge,
+                patch.object(review_loop, "approve_pull_request_from_descriptor") as approve,
+                patch.object(review_loop, "enable_pull_request_auto_merge") as enable_auto_merge,
         ):
             with self.assertRaises(RuntimeError):
                 forge_metadata._process_descriptor_pull_request(state, "/repo")
@@ -4909,7 +4918,7 @@ class PullRequestReviewTests(unittest.TestCase):
 
     def test_get_pull_request_changed_index_files_filters_library_indexes(self) -> None:
         with patch.object(
-                forge_metadata,
+                pr_state,
                 "get_pull_request_changed_files",
                 return_value=[
                     "metadata/org.example/demo/index.json",
@@ -4932,7 +4941,7 @@ class PullRequestReviewTests(unittest.TestCase):
             "isCrossRepository": True,
         }
 
-        with patch.object(forge_metadata, "create_detached_worktree") as create_detached_worktree:
+        with patch.object(worktrees, "create_detached_worktree") as create_detached_worktree:
             self.assertFalse(
                 forge_metadata.resolve_pull_request_merge_conflict(pr, "/tmp/reachability")
             )
@@ -4946,17 +4955,17 @@ class PullRequestReviewTests(unittest.TestCase):
         ]
 
         with patch.object(
-                forge_metadata,
+                pr_state,
                 "get_pull_request_state",
                 return_value={
                     **_pull_request_state(3513, "FAILURE"),
                     "headRefOid": "abc123",
                 },
         ), patch.object(
-                forge_metadata,
+                pr_state,
                 "get_pull_request_workflow_runs",
                 return_value=workflow_runs,
-        ), patch.object(forge_metadata, "gh") as gh:
+        ), patch.object(pr_state, "gh") as gh:
             self.assertEqual(
                 forge_metadata.rerun_failed_pull_request_workflow_jobs(
                     3513,
@@ -4971,7 +4980,7 @@ class PullRequestReviewTests(unittest.TestCase):
     def test_fetch_review_base_ref_updates_origin_master_without_pull(self) -> None:
         completed_process = subprocess.CompletedProcess(args=[], returncode=0, stdout="")
 
-        with patch.object(forge_metadata, "run_git_transport", return_value=completed_process) as run:
+        with patch.object(worktrees, "run_git_transport", return_value=completed_process) as run:
             forge_metadata.fetch_review_base_ref("/repo")
 
         run.assert_called_once_with(
@@ -5018,7 +5027,7 @@ class BenchmarkResultsConflictResolutionTests(unittest.TestCase):
 
         with tempfile.TemporaryDirectory() as worktree:
             os.makedirs(os.path.join(worktree, os.path.dirname(self._PATH)))
-            with patch.object(forge_metadata, "run_checked_command", side_effect=fake_run):
+            with patch.object(pr_merge, "run_checked_command", side_effect=fake_run):
                 resolved = forge_metadata.resolve_benchmark_results_conflict(
                     worktree, self._PATH,
                 )

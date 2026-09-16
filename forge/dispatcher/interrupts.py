@@ -18,6 +18,10 @@ from dispatcher.config import (
 )
 
 
+import time
+from utility_scripts.stage_logger import log_stage
+from dispatcher.config import SHUTDOWN_SIGNAL_POLL_SECONDS
+
 _user_interrupt_requested = threading.Event()
 _user_interrupt_reason = INTERRUPT_REASON_CTRL_C
 
@@ -102,3 +106,19 @@ def is_interrupt_exception(exc: BaseException) -> bool:
 def _handle_sigint(_signum, _frame) -> None:
     mark_user_interrupt_requested(INTERRUPT_REASON_CTRL_C)
     raise KeyboardInterrupt
+
+
+def sleep_until_shutdown_or_timeout(period_seconds: int) -> bool:
+    """Sleep for up to the requested period and return True if shutdown was requested."""
+    deadline = time.monotonic() + period_seconds
+    while True:
+        if is_shutdown_requested():
+            log_stage(
+                "shutdown",
+                f"Stop marker exists at {describe_active_shutdown_signal_path()}; exiting sleep",
+            )
+            return True
+        remaining = deadline - time.monotonic()
+        if remaining <= 0:
+            return False
+        time.sleep(min(remaining, SHUTDOWN_SIGNAL_POLL_SECONDS))
