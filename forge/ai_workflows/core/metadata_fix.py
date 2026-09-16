@@ -9,7 +9,7 @@ import sys
 
 from ai_workflows.agents.agent_runtime import analysis_agent_run
 from utility_scripts.task_logs import build_task_log_path, display_log_path
-from utility_scripts.host_requirements import check_graalvm_installation
+from utility_scripts.host_graalvm_checks import check_graalvm_installation
 from utility_scripts.repo_path_resolver import require_complete_reachability_repo
 from utility_scripts.gradle_environment import gradle_command_environment
 

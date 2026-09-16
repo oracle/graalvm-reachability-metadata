@@ -248,15 +248,17 @@ from utility_scripts.task_logs import (
     resolve_logs_root,
     sanitize_library_log_segment,
 )
-from utility_scripts.host_requirements import (
+from utility_scripts.host_graalvm_checks import (
     DEFAULT_GRAALVM_VERSION_CHECK,
     GRAALVM_VERSION_CHECK_ENV_VAR,
     GRAALVM_VERSION_CHECK_MODES,
     ISSUE_GRAALVM_ENV_VARS,
-    QueueRequirements,
-    ensure_host_requirements,
     require_issue_graalvm_homes,
     resolve_graalvm_version_check,
+)
+from utility_scripts.host_requirements import (
+    QueueRequirements,
+    ensure_host_requirements,
     resolve_queue_requirements,
 )
 from utility_scripts.workflow_setup import list_all_files

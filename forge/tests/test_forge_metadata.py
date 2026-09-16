@@ -19,7 +19,7 @@ import forge_metadata
 from types import SimpleNamespace
 from ai_workflows.agents.agent_runtime import AgentRunResult, AgentSelection
 from git_scripts import common_git
-from utility_scripts import host_requirements, run_location
+from utility_scripts import host_graalvm_checks, host_requirements, run_location
 from utility_scripts.continuation_marker import (
     PHASE_EXPLORE,
     PHASE_FINALIZATION,
@@ -4213,7 +4213,7 @@ class EnvironmentValidationTests(unittest.TestCase):
                 forge_metadata.POST_GENERATION_GRAALVM_ENV_VAR,
                 forge_metadata.LATEST_EA_GRAALVM_ENV_VAR,
             ),
-            host_requirements.ISSUE_GRAALVM_ENV_VARS,
+            host_graalvm_checks.ISSUE_GRAALVM_ENV_VARS,
         )
 
     def test_review_only_runs_do_not_require_graalvm(self) -> None:
