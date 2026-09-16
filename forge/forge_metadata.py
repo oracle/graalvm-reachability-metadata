@@ -274,100 +274,73 @@ try:
 except ImportError:
     fcntl = None
 
-DEFAULT_MAX_ISSUES = 5  # Default maximum number of issues to process per run
-DEFAULT_PARALLELISM = 1
-MAX_PARALLELISM = 4
-DEFAULT_ISSUE_SCAN_BATCH_SIZE = 25
-ISSUE_SCAN_PROGRESS_LOG_INTERVAL = 100
-GITHUB_API_MAX_PAGE_SIZE = 100
-GITHUB_SEARCH_MAX_RESULTS = 1000
-# Issue queues scan by creation date so an issue Forge itself touches cannot bump
-# itself back to the head of the queue and starve the rest of the backlog.
-ISSUE_SEARCH_SORT = "created"
-ISSUE_SEARCH_ORDER = "desc"
-DEFAULT_TAKE_BLOCKED_ISSUES = False
-# GitHub validates GraphQL node cost against worst-case first values; 5 issues can exceed 500k here.
-ISSUE_CLAIM_PREFLIGHT_CHUNK_SIZE = 4
-ISSUE_CLAIM_CACHE_VERSION = 1
-ISSUE_CLAIM_CACHE_FILENAME = "issue-cache-v1.json"
-ISSUE_CLAIM_CACHE_LOCK_FILENAME = "issue-cache-v1.lock"
-DEFAULT_ISSUE_CLAIM_CACHE_TTL_SECONDS = 15 * 60
-ISSUE_SEARCH_CACHE_VERSION = 2
-ISSUE_SEARCH_CACHE_FILENAME = "issue-search-cache-v2.json"
-ISSUE_SEARCH_CACHE_LOCK_FILENAME = "issue-search-cache-v1.lock"
-DEFAULT_ISSUE_SEARCH_CACHE_TTL_SECONDS = 10 * 60
-GITHUB_RATE_LIMIT_EXIT_CODE = 75
-GRADLE_BOOTSTRAP_EXIT_CODE = 76
-FIXTURE_E2E_LOG_DIRNAME = "fixture-e2e-logs"
-FIXTURE_RUN_LOG_FILENAME = "run.log"
-FIXTURE_PUBLICATION_FILENAME = "publication.md"
-FIXTURE_PREFLIGHT_EVIDENCE_DIRNAME = "preflight-evidence"
-REVIEW_PERIOD_SUFFIX_SECONDS = {
-    "s": 1,
-    "m": 60,
-    "h": 60 * 60,
-    "d": 24 * 60 * 60,
-}
-FAILED_CI_STATES = {"FAILURE", "ERROR"}
-RERUNNABLE_WORKFLOW_RUN_CONCLUSIONS = {"failure"}
-
-REPO = "oracle/graalvm-reachability-metadata"
-PROJECT_NUMBER = 30
-
-STATUS_FIELD_NAME = "Status"  # Name of the project Status field
-STATUS_TODO = "Todo"
-STATUS_IN_PROGRESS = "In Progress"
-STATUS_DONE = "Done"
-
-LABEL_LIBRARY_NEW = "library-new-request"
-LABEL_LIBRARY_UPDATE = "library-update-request"
-LABEL_JAVAC_FAIL = "fails-javac-compile"
-LABEL_JAVA_RUN_FAIL = "fails-java-run"
-LABEL_NI_RUN_FAIL = "fails-native-image-run"
-LABEL_PR_JAVAC_FIX = "fixes-javac-fail"
-LABEL_PR_JAVA_RUN_FIX = "fixes-java-run-fail"
-LABEL_PR_NI_RUN_FIX = "fixes-native-image-run-fail"
-LABEL_PR_LIBRARY_UPDATE = "library-update-request"
-LABEL_PR_CODE_COVERAGE = "code-coverage-improvement"
-LABEL_HIGH_PRIORITY = "high-priority"
-LABEL_PRIORITY = "priority"
-PRIORITY_HIGH = "high"
-PRIORITY_NORMAL = "normal"
-PRIORITY_CHOICES: tuple[str, ...] = (PRIORITY_HIGH, LABEL_PRIORITY, PRIORITY_NORMAL)
-LABEL_HUMAN_INTERVENTION = "human-intervention"
-LABEL_HUMAN_INTERVENTION_FIXED = "human-intervention-fixed"
-LABEL_FORGE_MERGE_FOLLOW_UP = "forge-merge-follow-up"
-LABEL_NOT_FOR_NATIVE_IMAGE = "not-for-native-image"
-LABEL_LIBRARY_UNSUPPORTED_VERSION = "library-unsupported-version"
-LABEL_CHUNKED_DYNAMIC_ACCESS = "chunked-dynamic-access"
-LABEL_RESUMABLE = "resumable"
-FIXTURE_AUTHENTICATED_USER = "fixture-runner"
-FIXTURE_COVERAGE_FOLLOW_UP_ISSUE_OFFSET = 9_000_000
-NON_USER_REQUESTED_ISSUE_AUTHORS: tuple[str, ...] = (
-    "graalvmbot",
-    "github-actions[bot]",
-    "github-actions-bot",
-    "vjovanov",
-    "kimeta",
-    "jormundur00",
-)
-
-SCRATCH_WORKTREE_DIRNAME = "forge_worktrees"
-PREFLIGHT_INFO_DIRNAME = "preflight_info"
-SCRATCH_REVIEW_WORKTREE_DIRNAME = "forge_review_worktrees"
-SCRATCH_FINAL_INDEX_VALIDATION_WORKTREE_DIRNAME = "forge_final_index_validation_worktrees"
-SCRATCH_CONFLICT_RESOLUTION_WORKTREE_DIRNAME = "forge_conflict_resolution_worktrees"
-SCRATCH_METRICS_DIRNAME = "forge_run_metrics"
-ISSUE_CLAIM_LOCK_DIRNAME = "metadata-forge-issue-claim-locks"
-ISSUE_CLAIM_CACHE_REASON_ASSIGNED = "assigned"
-ISSUE_CLAIM_CACHE_REASON_HUMAN_INTERVENTION = "human_intervention"
-ISSUE_CLAIM_CACHE_REASON_NOT_FOR_NATIVE_IMAGE = "not_for_native_image"
-ISSUE_CLAIM_CACHE_REASON_BLOCKED = "blocked"
-ISSUE_CLAIM_CACHE_REASON_CLOSED = "closed"
-ISSUE_CLAIM_CACHE_REASON_MISSING_PROJECT_ITEM = "missing_project_item"
-ISSUE_CLAIM_CACHE_REASON_NON_TODO = "non_todo"
-ISSUE_CLAIM_CACHE_REASON_IN_PROGRESS = "in_progress"
-ISSUE_CLAIM_CACHE_REASONS = {
+from dispatcher.config import (  # noqa: F401 - re-exported dispatcher API
+    DEFAULT_MAX_ISSUES,
+    DEFAULT_PARALLELISM,
+    MAX_PARALLELISM,
+    DEFAULT_ISSUE_SCAN_BATCH_SIZE,
+    ISSUE_SCAN_PROGRESS_LOG_INTERVAL,
+    GITHUB_API_MAX_PAGE_SIZE,
+    GITHUB_SEARCH_MAX_RESULTS,
+    ISSUE_SEARCH_SORT,
+    ISSUE_SEARCH_ORDER,
+    DEFAULT_TAKE_BLOCKED_ISSUES,
+    ISSUE_CLAIM_PREFLIGHT_CHUNK_SIZE,
+    ISSUE_CLAIM_CACHE_VERSION,
+    ISSUE_CLAIM_CACHE_FILENAME,
+    ISSUE_CLAIM_CACHE_LOCK_FILENAME,
+    DEFAULT_ISSUE_CLAIM_CACHE_TTL_SECONDS,
+    ISSUE_SEARCH_CACHE_VERSION,
+    ISSUE_SEARCH_CACHE_FILENAME,
+    ISSUE_SEARCH_CACHE_LOCK_FILENAME,
+    DEFAULT_ISSUE_SEARCH_CACHE_TTL_SECONDS,
+    GITHUB_RATE_LIMIT_EXIT_CODE,
+    GRADLE_BOOTSTRAP_EXIT_CODE,
+    FIXTURE_E2E_LOG_DIRNAME,
+    FIXTURE_RUN_LOG_FILENAME,
+    FIXTURE_PUBLICATION_FILENAME,
+    FIXTURE_PREFLIGHT_EVIDENCE_DIRNAME,
+    REVIEW_PERIOD_SUFFIX_SECONDS,
+    FAILED_CI_STATES,
+    RERUNNABLE_WORKFLOW_RUN_CONCLUSIONS,
+    REPO,
+    PROJECT_NUMBER,
+    STATUS_FIELD_NAME,
+    STATUS_TODO,
+    STATUS_IN_PROGRESS,
+    STATUS_DONE,
+    LABEL_LIBRARY_NEW,
+    LABEL_LIBRARY_UPDATE,
+    LABEL_JAVAC_FAIL,
+    LABEL_JAVA_RUN_FAIL,
+    LABEL_NI_RUN_FAIL,
+    LABEL_PR_JAVAC_FIX,
+    LABEL_PR_JAVA_RUN_FIX,
+    LABEL_PR_NI_RUN_FIX,
+    LABEL_PR_LIBRARY_UPDATE,
+    LABEL_PR_CODE_COVERAGE,
+    LABEL_HIGH_PRIORITY,
+    LABEL_PRIORITY,
+    PRIORITY_HIGH,
+    PRIORITY_NORMAL,
+    PRIORITY_CHOICES,
+    LABEL_HUMAN_INTERVENTION,
+    LABEL_HUMAN_INTERVENTION_FIXED,
+    LABEL_FORGE_MERGE_FOLLOW_UP,
+    LABEL_NOT_FOR_NATIVE_IMAGE,
+    LABEL_LIBRARY_UNSUPPORTED_VERSION,
+    LABEL_CHUNKED_DYNAMIC_ACCESS,
+    LABEL_RESUMABLE,
+    FIXTURE_AUTHENTICATED_USER,
+    FIXTURE_COVERAGE_FOLLOW_UP_ISSUE_OFFSET,
+    NON_USER_REQUESTED_ISSUE_AUTHORS,
+    SCRATCH_WORKTREE_DIRNAME,
+    PREFLIGHT_INFO_DIRNAME,
+    SCRATCH_REVIEW_WORKTREE_DIRNAME,
+    SCRATCH_FINAL_INDEX_VALIDATION_WORKTREE_DIRNAME,
+    SCRATCH_CONFLICT_RESOLUTION_WORKTREE_DIRNAME,
+    SCRATCH_METRICS_DIRNAME,
+    ISSUE_CLAIM_LOCK_DIRNAME,
     ISSUE_CLAIM_CACHE_REASON_ASSIGNED,
     ISSUE_CLAIM_CACHE_REASON_HUMAN_INTERVENTION,
     ISSUE_CLAIM_CACHE_REASON_NOT_FOR_NATIVE_IMAGE,
@@ -376,109 +349,140 @@ ISSUE_CLAIM_CACHE_REASONS = {
     ISSUE_CLAIM_CACHE_REASON_MISSING_PROJECT_ITEM,
     ISSUE_CLAIM_CACHE_REASON_NON_TODO,
     ISSUE_CLAIM_CACHE_REASON_IN_PROGRESS,
-}
-HUMAN_INTERVENTION_LOGS_DIRNAME = "human-intervention-logs"
-SCRIPT_RUN_METRICS_DIR = "script_run_metrics"
-ADD_NEW_LIBRARY_METRICS_FILE = "add_new_library_support.json"
-FIX_JAVAC_METRICS_FILE = "fix_javac_fail.json"
-FIX_JAVA_RUN_METRICS_FILE = "fix_java_run_fail.json"
-LOW_DYNAMIC_ACCESS_COVERAGE_RATIO = 0.10
-HUMAN_INTERVENTION_LABEL_COLOR = "B60205"
-HUMAN_INTERVENTION_LABEL_DESCRIPTION = (
-    "Requires manual follow-up because automated processing needs human attention"
-)
-FORGE_MERGE_FOLLOW_UP_LABEL_COLOR = "0E8A16"
-FORGE_MERGE_FOLLOW_UP_LABEL_DESCRIPTION = (
-    "Forge must reconcile linked issues after GitHub auto-merges this pull request"
-)
-HUMAN_INTERVENTION_NON_FAILURE_STATUSES = {
-    RUN_STATUS_SUCCESS,
-    RUN_STATUS_CHUNK_READY,
-    SUCCESS_WITH_INTERVENTION_STATUS,
-}
-PUBLICATION_METRICS_EXTRA_KEYS: tuple[str, ...] = (
-    "post_generation_intervention",
-    "local_ci_verification",
-    "library_update_alias_split",
-    "local_review",
-)
-# A workflow failure is logical (driver/core/CI-check) and gets `human-intervention`
-# by default. The only exception is an external dependency failure, which surfaces
-# as a typed exception at the Python boundary that issues it: GitHub (`gh`) as
-# `GitHubError` / `GitHubRateLimitExceeded`, remote git as `GitTransportError`, and
-# a Gradle build that never left configuration as `GradleBootstrapFailure`.
-# Maven Central and Docker registry failures have no such boundary (Gradle owns
-# them inside `./gradlew test`); they fall through to the safe logical default.
-# §FS-human-intervention-policy
-NOT_FOR_NATIVE_IMAGE_LABEL_COLOR = "5319E7"
-NOT_FOR_NATIVE_IMAGE_LABEL_DESCRIPTION = (
-    "Artifact is tracked but is not applicable to GraalVM Native Image reachability metadata"
-)
-PRIORITY_LABEL_COLOR = "FBCA04"
-PRIORITY_LABEL_DESCRIPTION = "Automation should process this issue before regular queue items"
-CHUNKED_DYNAMIC_ACCESS_LABEL_COLOR = "C5DEF5"
-CHUNKED_DYNAMIC_ACCESS_LABEL_DESCRIPTION = "Issue uses chunked dynamic-access processing"
-LIBRARY_UNSUPPORTED_VERSION_LABEL_COLOR = "5319E7"
-LIBRARY_UNSUPPORTED_VERSION_LABEL_DESCRIPTION = (
-    "Library version cannot be supported by GraalVM Native Image"
-)
-RESUMABLE_LABEL_COLOR = "0E8A16"
-RESUMABLE_LABEL_DESCRIPTION = "Issue has preserved automation work that Forge can resume"
-DEFAULT_DYNAMIC_ACCESS_CHUNK_CLASS_THRESHOLD = 15
-
-
-DEFAULT_WORK_QUEUE_STRATEGY_NAME = "optimistic_dynamic_access_iterative_pi_gpt-5.6-sol"
-FAILURE_ANALYSIS_TIMEOUT_SECONDS = 1800
-REVIEW_TIMEOUT_SECONDS = 1800
-DEFAULT_WORKTREE_BASE_REF = "master"
-TRUSTED_FORGE_PUBLISHER_LOGIN = "graalvmbot"
-BENCHMARK_PUBLICATION_TASK_TYPE = "code-coverage-benchmark-result"
-SUPPORTED_FORGE_REVIEW_TASK_TYPES = {
-    "library-new-request",
-    "library-update-request",
-    "fixes-javac-fail",
-    "fixes-java-run-fail",
-    "fixes-native-image-run-fail",
-    "not-for-native-image",
+    ISSUE_CLAIM_CACHE_REASONS,
+    HUMAN_INTERVENTION_LOGS_DIRNAME,
+    SCRIPT_RUN_METRICS_DIR,
+    ADD_NEW_LIBRARY_METRICS_FILE,
+    FIX_JAVAC_METRICS_FILE,
+    FIX_JAVA_RUN_METRICS_FILE,
+    LOW_DYNAMIC_ACCESS_COVERAGE_RATIO,
+    HUMAN_INTERVENTION_LABEL_COLOR,
+    HUMAN_INTERVENTION_LABEL_DESCRIPTION,
+    FORGE_MERGE_FOLLOW_UP_LABEL_COLOR,
+    FORGE_MERGE_FOLLOW_UP_LABEL_DESCRIPTION,
+    HUMAN_INTERVENTION_NON_FAILURE_STATUSES,
+    PUBLICATION_METRICS_EXTRA_KEYS,
+    NOT_FOR_NATIVE_IMAGE_LABEL_COLOR,
+    NOT_FOR_NATIVE_IMAGE_LABEL_DESCRIPTION,
+    PRIORITY_LABEL_COLOR,
+    PRIORITY_LABEL_DESCRIPTION,
+    CHUNKED_DYNAMIC_ACCESS_LABEL_COLOR,
+    CHUNKED_DYNAMIC_ACCESS_LABEL_DESCRIPTION,
+    LIBRARY_UNSUPPORTED_VERSION_LABEL_COLOR,
+    LIBRARY_UNSUPPORTED_VERSION_LABEL_DESCRIPTION,
+    RESUMABLE_LABEL_COLOR,
+    RESUMABLE_LABEL_DESCRIPTION,
+    DEFAULT_DYNAMIC_ACCESS_CHUNK_CLASS_THRESHOLD,
+    DEFAULT_WORK_QUEUE_STRATEGY_NAME,
+    FAILURE_ANALYSIS_TIMEOUT_SECONDS,
+    REVIEW_TIMEOUT_SECONDS,
+    DEFAULT_WORKTREE_BASE_REF,
+    TRUSTED_FORGE_PUBLISHER_LOGIN,
     BENCHMARK_PUBLICATION_TASK_TYPE,
-}
-LOCAL_REVIEW_CLOSE_MARKER = "<!-- forge-local-review-close -->"
-FORGE_APPROVAL_BODY_PREFIX = "Approved from the authoritative local review for commit "
-# The GraalVM lanes are named once in `host_requirements`, in this order.
-DEV_GRAALVM_ENV_VAR, POST_GENERATION_GRAALVM_ENV_VAR, LATEST_EA_GRAALVM_ENV_VAR = ISSUE_GRAALVM_ENV_VARS
-FORGE_DIR = os.path.dirname(os.path.abspath(__file__))
-INTERRUPT_EXIT_CODES = {130, -int(signal.SIGINT)}
-INTERRUPT_REASON_CTRL_C = "Ctrl+C interrupt"
-INTERRUPT_REASON_SHUTDOWN = "shutdown request"
-INTERRUPT_REASON_GRADLE_BOOTSTRAP = "Gradle bootstrap infrastructure failure"
-SHUTDOWN_SIGNAL_POLL_SECONDS = 5.0
+    SUPPORTED_FORGE_REVIEW_TASK_TYPES,
+    LOCAL_REVIEW_CLOSE_MARKER,
+    FORGE_APPROVAL_BODY_PREFIX,
+    DEV_GRAALVM_ENV_VAR,
+    POST_GENERATION_GRAALVM_ENV_VAR,
+    LATEST_EA_GRAALVM_ENV_VAR,
+    FORGE_DIR,
+    INTERRUPT_EXIT_CODES,
+    INTERRUPT_REASON_CTRL_C,
+    INTERRUPT_REASON_SHUTDOWN,
+    INTERRUPT_REASON_GRADLE_BOOTSTRAP,
+    SHUTDOWN_SIGNAL_POLL_SECONDS,
+    PIPELINE_LABELS,
+    FAILURE_PIPELINE_LABELS,
+    ISSUE_FORM_RULE_SINGLE_WORKFLOW_LABEL,
+    ISSUE_FORM_RULE_MAVEN_COORDINATES,
+    ISSUE_FORM_RULE_CURRENT_LATEST_VERSION,
+    ISSUE_FORM_RULE_NEWER_THAN_LATEST,
+    ISSUE_FORM_RULE_PUBLISHED_ARTIFACT,
+    ISSUE_FORM_REJECTION_MARKER_PREFIX,
+    CLAIM_BACKOFF_MIN,
+    CLAIM_BACKOFF_MAX,
+)
+from dispatcher.records import (  # noqa: F401 - re-exported dispatcher API
+    ClaimedIssue,
+    WorkQueueConfig,
+    IssueClaimPreflight,
+    IssueClaimCacheObservation,
+    CachedIssueClaimSkip,
+    WorkflowRunResult,
+    DynamicAccessCoverageSnapshot,
+)
+from dispatcher.interrupts import (  # noqa: F401 - re-exported dispatcher API
+    mark_user_interrupt_requested,
+    preserve_user_interrupt_reason,
+    clear_user_interrupt_requested,
+    is_user_interrupt_requested,
+    get_user_interrupt_reason,
+    is_shutdown_request_interrupt,
+    is_gradle_bootstrap_interrupt,
+    mark_shutdown_requested,
+    describe_active_shutdown_signal_path,
+    raise_if_shutdown_requested,
+    is_interrupt_exit_code,
+    is_interrupt_exception,
+    _handle_sigint,
+)
+from dispatcher.github_api import (  # noqa: F401 - re-exported dispatcher API
+    gh,
+    gh_json,
+    format_github_exception_details,
+)
+from dispatcher.fixture_support import (  # noqa: F401 - re-exported dispatcher API
+    FixtureRunLogTee,
+    _fixture_run_timestamp,
+    get_fixture_run_timestamp,
+    get_fixture_issue_artifact_dir,
+    fixture_issue_run_log,
+    configure_fixture_testing,
+    is_fixture_testing_enabled,
+    require_fixture_github_state,
+)
+from dispatcher.issue_cache import (  # noqa: F401 - re-exported dispatcher API
+    LocalIssueClaimLock,
+    LocalIssueClaimCacheWriterLock,
+    LocalIssueSearchCacheWriterLock,
+    get_issue_claim_locks_root,
+    get_issue_claim_lock_path,
+    get_issue_claim_cache_path,
+    get_issue_claim_cache_lock_path,
+    get_issue_search_cache_path,
+    get_issue_search_cache_lock_path,
+    try_acquire_issue_claim_lock,
+    is_issue_claim_cache_enabled,
+    get_issue_claim_cache_ttl_seconds,
+    _read_issue_claim_cache_payload,
+    _parse_issue_claim_cache_entry,
+    read_issue_claim_cache,
+    _write_issue_claim_cache_entries,
+    record_issue_claim_cache_observations,
+    invalidate_issue_claim_cache_entry,
+    _remove_file_if_exists,
+    clear_issue_claim_cache,
+    is_issue_search_cache_enabled,
+    get_issue_search_cache_ttl_seconds,
+    _read_issue_search_cache_payload,
+    _empty_issue_search_cache_payload,
+    _read_issue_search_cache_payload_or_empty,
+    _write_issue_search_cache_payload,
+    clear_issue_search_cache,
+    clear_issue_caches,
+    build_issue_search_cache_key,
+    _is_fresh_issue_search_entry,
+    _get_cached_issue_search_page,
+    _set_cached_issue_search_page,
+    _get_cached_issue_search_count,
+    _set_cached_issue_search_count,
+)
 
-_user_interrupt_requested = threading.Event()
-_user_interrupt_reason = INTERRUPT_REASON_CTRL_C
 
 
-@dataclass(frozen=True)
-class ClaimedIssue:
-    issue: dict
-    label: str
-    item_id: str
-    base_reachability_metadata_path: str
-    worktree_path: str
-    scratch_metrics_repo_path: str
-    issue_coordinates: str
-    issue_base_commit: str = DEFAULT_WORKTREE_BASE_REF
-    current_coordinates: str | None = None
-    new_version: str | None = None
-    preflight_info_path: str | None = None
-    continuation_marker: ContinuationMarker | None = None
 
 
-@dataclass(frozen=True)
-class WorkQueueConfig:
-    label: str
-    limit: int
-    strategy_name: str | None = None
-    random_offset: bool = False
+
 
 
 @dataclass(frozen=True)
@@ -504,49 +508,14 @@ class CIRepairOutcome:
     review_comment: str = ""
 
 
-@dataclass(frozen=True)
-class IssueClaimPreflight:
-    issue_number: int
-    item_id: str | None
-    project_status: str | None
-    assignees: tuple[str, ...]
-    open_blockers: tuple[int, ...]
-    complete: bool
 
 
-@dataclass(frozen=True)
-class IssueClaimCacheObservation:
-    issue_number: int
-    reason: str
-    assignees: tuple[str, ...] = ()
-    project_status: str | None = None
-    open_blockers: tuple[int, ...] = ()
 
 
-@dataclass(frozen=True)
-class CachedIssueClaimSkip:
-    issue_number: int
-    reason: str
-    observed_at_epoch: float
-    assignees: tuple[str, ...] = ()
-    project_status: str | None = None
-    open_blockers: tuple[int, ...] = ()
 
 
-@dataclass(frozen=True)
-class WorkflowRunResult:
-    claimed_issue: ClaimedIssue
-    success: bool
-    started_at: float | None = None
-    failure_was_external: bool = False
 
 
-@dataclass(frozen=True)
-class DynamicAccessCoverageSnapshot:
-    covered_calls: int
-    total_calls: int
-    coverage_ratio: float
-    source: str
 
 
 @dataclass(frozen=True)
@@ -657,88 +626,6 @@ class WorkflowDriverInvocation:
         }
 
 
-def mark_user_interrupt_requested(reason: str = INTERRUPT_REASON_CTRL_C) -> None:
-    """Record that the current run is shutting down before normal completion."""
-    global _user_interrupt_reason
-
-    _user_interrupt_reason = reason
-    _user_interrupt_requested.set()
-
-
-def preserve_user_interrupt_reason(reason: str = INTERRUPT_REASON_CTRL_C) -> None:
-    """Mark the run as unwinding without overwriting an already recorded reason.
-
-    Unwinding passes several handlers, and the first one to fire knows why the
-    run is stopping; later ones must not relabel a shared bootstrap stop as a
-    Ctrl+C (§FS-human-intervention-policy).
-    """
-    if not is_user_interrupt_requested():
-        mark_user_interrupt_requested(reason)
-
-
-def clear_user_interrupt_requested() -> None:
-    """Clear the shutdown marker before starting a new top-level run."""
-    global _user_interrupt_reason
-
-    _user_interrupt_reason = INTERRUPT_REASON_CTRL_C
-    _user_interrupt_requested.clear()
-
-
-def is_user_interrupt_requested() -> bool:
-    """Return True when the current run is unwinding before normal completion."""
-    return _user_interrupt_requested.is_set()
-
-
-def get_user_interrupt_reason() -> str:
-    """Return the current run's shutdown reason."""
-    return _user_interrupt_reason
-
-
-def is_shutdown_request_interrupt() -> bool:
-    """Return True when the current run is stopping because of the shared marker."""
-    return is_user_interrupt_requested() and get_user_interrupt_reason() == INTERRUPT_REASON_SHUTDOWN
-
-
-def is_gradle_bootstrap_interrupt() -> bool:
-    """Return True when the run is stopping on a shared Gradle bootstrap outage."""
-    return is_user_interrupt_requested() and get_user_interrupt_reason() == INTERRUPT_REASON_GRADLE_BOOTSTRAP
-
-
-def mark_shutdown_requested() -> None:
-    """Record that the shared Forge stop marker requested shutdown."""
-    mark_user_interrupt_requested(INTERRUPT_REASON_SHUTDOWN)
-
-
-def describe_active_shutdown_signal_path() -> str:
-    """Return the active stop marker path for log messages."""
-    return get_active_shutdown_signal_path() or "the configured stop marker"
-
-
-def raise_if_shutdown_requested() -> None:
-    """Raise KeyboardInterrupt when the shared Forge stop marker exists."""
-    if is_shutdown_requested():
-        mark_shutdown_requested()
-        raise KeyboardInterrupt
-
-
-def is_interrupt_exit_code(returncode: int | None) -> bool:
-    """Return True for process return codes that conventionally mean Ctrl+C."""
-    return returncode in INTERRUPT_EXIT_CODES
-
-
-def is_interrupt_exception(exc: BaseException) -> bool:
-    """Return True when an exception represents a Ctrl+C interrupt."""
-    if isinstance(exc, KeyboardInterrupt):
-        return True
-    if isinstance(exc, SystemExit) and isinstance(exc.code, int):
-        return is_interrupt_exit_code(exc.code)
-    return False
-
-
-def _handle_sigint(_signum, _frame) -> None:
-    mark_user_interrupt_requested(INTERRUPT_REASON_CTRL_C)
-    raise KeyboardInterrupt
-
 
 def validate_issue_processing_environment() -> None:
     """Validate the GraalVM environment required before issue processing can start.
@@ -749,88 +636,7 @@ def validate_issue_processing_environment() -> None:
     require_issue_graalvm_homes()
 
 
-def gh(
-        *args: str,
-        check: bool = True,
-        input_text: str | None = None,
-        cwd: str | None = None,
-        quiet: bool = False,
-        max_attempts: int = GITHUB_TRANSIENT_RETRY_ATTEMPTS,
-) -> subprocess.CompletedProcess:
-    """Run a gh CLI command and return the completed process."""
-    if max_attempts < 1:
-        raise ValueError("max_attempts must be at least 1")
-    cmd = ["gh", *args]
-    env = {**os.environ, "GH_PROMPT_DISABLED": "1", "GH_PAGER": ""}
-    if not quiet:
-        log_github_query(args)
-    for attempt in range(1, max_attempts + 1):
-        result = subprocess.run(
-            cmd,
-            capture_output=True,
-            text=True,
-            env=env,
-            input=input_text,
-            cwd=cwd,
-        )
-        if result.returncode == 0:
-            return result
 
-        error_text = "\n".join(part for part in (result.stderr, result.stdout) if part)
-        if check and is_github_rate_limit_text(error_text):
-            raise GitHubRateLimitExceeded("GitHub API rate limit exceeded")
-        if is_github_transient_failure_text(error_text):
-            if attempt < max_attempts:
-                _log_github_transient_retry(error_text, attempt, max_attempts, quiet)
-                time.sleep(_github_retry_delay_seconds(attempt))
-                continue
-            # Only type the failure when this loop owns the retries; a single attempt
-            # (max_attempts == 1) is driven by an outer retrier that needs the raw
-            # CalledProcessError so it can retry and decide.
-            if max_attempts > 1:
-                raise GitHubError(
-                    f"GitHub transient failure after {max_attempts} attempts: "
-                    f"{_format_github_retry_reason(error_text)}"
-                )
-        if check:
-            if not quiet:
-                print(f"ERROR: {' '.join(cmd)}\n{result.stderr}", file=sys.stderr)
-            result.check_returncode()
-        return result
-
-    raise RuntimeError("GitHub command exhausted retries")
-
-
-def gh_json(*args: str, quiet: bool = False) -> any:
-    """Run a gh CLI command and parse its stdout as JSON."""
-    return run_github_json_with_retries(gh, args, quiet=quiet)
-
-
-def format_github_exception_details(exc: Exception) -> str:
-    """Return concise GitHub command failure details without embedding long commands."""
-    if isinstance(exc, subprocess.CalledProcessError):
-        output = "\n".join(
-            text.strip()
-            for text in (exc.stderr, exc.stdout)
-            if isinstance(text, str) and text.strip()
-        )
-        if output:
-            return output
-        return f"gh command exited with code {exc.returncode}"
-    return repr(exc)
-
-
-PIPELINE_LABELS = {LABEL_LIBRARY_NEW, LABEL_LIBRARY_UPDATE, LABEL_JAVAC_FAIL, LABEL_JAVA_RUN_FAIL, LABEL_NI_RUN_FAIL}
-FAILURE_PIPELINE_LABELS = {LABEL_JAVAC_FAIL, LABEL_JAVA_RUN_FAIL, LABEL_NI_RUN_FAIL}
-
-# Named rules of the post-claim issue-form gate. The name of the failed rule is
-# what a rejection reports and what selects its comment. §FS-forge-run-requirements.3
-ISSUE_FORM_RULE_SINGLE_WORKFLOW_LABEL = "single-workflow-label"
-ISSUE_FORM_RULE_MAVEN_COORDINATES = "maven-coordinates"
-ISSUE_FORM_RULE_CURRENT_LATEST_VERSION = "current-latest-version"
-ISSUE_FORM_RULE_NEWER_THAN_LATEST = "newer-than-latest"
-ISSUE_FORM_RULE_PUBLISHED_ARTIFACT = "published-artifact"
-ISSUE_FORM_REJECTION_MARKER_PREFIX = "<!-- forge-issue-form-rejection"
 
 
 def get_issue_by_number(issue_number: int) -> tuple[dict, str]:
@@ -1201,581 +1007,6 @@ def cached_skip_blocks_authenticated_user(
     return not is_assigned_only_to_authenticated_user(cached_skip.assignees, authenticated_user)
 
 
-class LocalIssueClaimLock:
-    """Non-blocking per-issue lock for scripts running as the same GitHub user."""
-
-    def __init__(self, issue_number: int):
-        self.issue_number = issue_number
-        self.lock_path = get_issue_claim_lock_path(issue_number)
-        self.lock_file = None
-        self.fallback_lock_path = f"{self.lock_path}.exclusive"
-
-    def acquire(self) -> bool:
-        with held_issue_claim_lock_guard:
-            if self.issue_number in held_issue_claim_lock_numbers:
-                return False
-            held_issue_claim_lock_numbers.add(self.issue_number)
-
-        try:
-            os.makedirs(os.path.dirname(self.lock_path), exist_ok=True)
-            if fcntl is None:
-                return self._acquire_exclusive_file_lock()
-            return self._acquire_fcntl_lock()
-        except Exception:
-            self._forget_process_lock()
-            raise
-
-    def release(self) -> None:
-        if self.lock_file is None:
-            self._forget_process_lock()
-            return
-
-        try:
-            if fcntl is not None:
-                fcntl.flock(self.lock_file.fileno(), fcntl.LOCK_UN)
-        finally:
-            self.lock_file.close()
-            self.lock_file = None
-            if fcntl is None:
-                if os.path.exists(self.fallback_lock_path):
-                    os.unlink(self.fallback_lock_path)
-            self._forget_process_lock()
-
-    def _acquire_fcntl_lock(self) -> bool:
-        self.lock_file = open(self.lock_path, "a+", encoding="utf-8")
-        try:
-            fcntl.flock(self.lock_file.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB)
-        except OSError as exc:
-            self.lock_file.close()
-            self.lock_file = None
-            self._forget_process_lock()
-            if exc.errno in (errno.EACCES, errno.EAGAIN):
-                return False
-            raise
-
-        self._write_lock_owner()
-        return True
-
-    def _acquire_exclusive_file_lock(self) -> bool:
-        try:
-            fd = os.open(self.fallback_lock_path, os.O_CREAT | os.O_EXCL | os.O_WRONLY)
-        except FileExistsError:
-            self._forget_process_lock()
-            return False
-
-        self.lock_file = os.fdopen(fd, "w", encoding="utf-8")
-        self._write_lock_owner()
-        return True
-
-    def _write_lock_owner(self) -> None:
-        self.lock_file.seek(0)
-        self.lock_file.truncate()
-        self.lock_file.write(f"pid={os.getpid()} issue={self.issue_number}\n")
-        self.lock_file.flush()
-
-    def _forget_process_lock(self) -> None:
-        with held_issue_claim_lock_guard:
-            held_issue_claim_lock_numbers.discard(self.issue_number)
-
-
-class LocalIssueClaimCacheWriterLock:
-    """Short-lived exclusive lock for atomic issue-claim cache updates."""
-
-    def __init__(self):
-        self.lock_path = get_issue_claim_cache_lock_path()
-        self.lock_file = None
-        self.fallback_lock_path = f"{self.lock_path}.exclusive"
-
-    def __enter__(self):
-        self.acquire()
-        return self
-
-    def __exit__(self, _exc_type, _exc, _traceback) -> None:
-        self.release()
-
-    def acquire(self) -> None:
-        os.makedirs(os.path.dirname(self.lock_path), exist_ok=True)
-        if fcntl is None:
-            self._acquire_exclusive_file_lock()
-            return
-        self.lock_file = open(self.lock_path, "a+", encoding="utf-8")
-        fcntl.flock(self.lock_file.fileno(), fcntl.LOCK_EX)
-
-    def release(self) -> None:
-        if self.lock_file is None:
-            return
-        try:
-            if fcntl is not None:
-                fcntl.flock(self.lock_file.fileno(), fcntl.LOCK_UN)
-        finally:
-            self.lock_file.close()
-            self.lock_file = None
-            if fcntl is None and os.path.exists(self.fallback_lock_path):
-                os.unlink(self.fallback_lock_path)
-
-    def _acquire_exclusive_file_lock(self) -> None:
-        while True:
-            try:
-                fd = os.open(self.fallback_lock_path, os.O_CREAT | os.O_EXCL | os.O_WRONLY)
-                self.lock_file = os.fdopen(fd, "w", encoding="utf-8")
-                return
-            except FileExistsError:
-                time.sleep(0.05)
-
-
-class LocalIssueSearchCacheWriterLock:
-    """Short-lived exclusive lock for shared issue-search cache updates."""
-
-    def __init__(self):
-        self.lock_path = get_issue_search_cache_lock_path()
-        self.lock_file = None
-        self.fallback_lock_path = f"{self.lock_path}.exclusive"
-
-    def __enter__(self):
-        self.acquire()
-        return self
-
-    def __exit__(self, _exc_type, _exc, _traceback) -> None:
-        self.release()
-
-    def acquire(self) -> None:
-        os.makedirs(os.path.dirname(self.lock_path), exist_ok=True)
-        if fcntl is None:
-            self._acquire_exclusive_file_lock()
-            return
-        self.lock_file = open(self.lock_path, "a+", encoding="utf-8")
-        fcntl.flock(self.lock_file.fileno(), fcntl.LOCK_EX)
-
-    def release(self) -> None:
-        if self.lock_file is None:
-            return
-        try:
-            if fcntl is not None:
-                fcntl.flock(self.lock_file.fileno(), fcntl.LOCK_UN)
-        finally:
-            self.lock_file.close()
-            self.lock_file = None
-            if fcntl is None and os.path.exists(self.fallback_lock_path):
-                os.unlink(self.fallback_lock_path)
-
-    def _acquire_exclusive_file_lock(self) -> None:
-        while True:
-            try:
-                fd = os.open(self.fallback_lock_path, os.O_CREAT | os.O_EXCL | os.O_WRONLY)
-                self.lock_file = os.fdopen(fd, "w", encoding="utf-8")
-                return
-            except FileExistsError:
-                time.sleep(0.05)
-
-
-def get_issue_claim_locks_root() -> str:
-    """Return the shared local directory for issue claim locks."""
-    return os.path.join(
-        tempfile.gettempdir(),
-        ISSUE_CLAIM_LOCK_DIRNAME,
-        quote(REPO, safe=""),
-    )
-
-
-def get_issue_claim_lock_path(issue_number: int) -> str:
-    """Return the local lock file path for an issue number."""
-    return os.path.join(get_issue_claim_locks_root(), f"issue-{issue_number}.lock")
-
-
-def get_issue_claim_cache_path() -> str:
-    """Return the shared local issue-claim cache path."""
-    return os.path.join(get_issue_claim_locks_root(), ISSUE_CLAIM_CACHE_FILENAME)
-
-
-def get_issue_claim_cache_lock_path() -> str:
-    """Return the shared local issue-claim cache writer lock path."""
-    return os.path.join(get_issue_claim_locks_root(), ISSUE_CLAIM_CACHE_LOCK_FILENAME)
-
-
-def get_issue_search_cache_path() -> str:
-    """Return the shared local issue-search cache path."""
-    return os.path.join(get_issue_claim_locks_root(), ISSUE_SEARCH_CACHE_FILENAME)
-
-
-def get_issue_search_cache_lock_path() -> str:
-    """Return the shared local issue-search cache writer lock path."""
-    return os.path.join(get_issue_claim_locks_root(), ISSUE_SEARCH_CACHE_LOCK_FILENAME)
-
-
-def try_acquire_issue_claim_lock(issue_number: int) -> LocalIssueClaimLock | None:
-    """Acquire a local per-issue claim lock, or return None if another local runner holds it."""
-    claim_lock = LocalIssueClaimLock(issue_number)
-    if claim_lock.acquire():
-        return claim_lock
-    return None
-
-
-def is_issue_claim_cache_enabled() -> bool:
-    """Return True when the shared local issue-claim cache is enabled."""
-    if is_fixture_testing_enabled():
-        return False
-    return os.environ.get("FORGE_ISSUE_CLAIM_CACHE", "1") != "0"
-
-
-def get_issue_claim_cache_ttl_seconds() -> int:
-    """Return the issue-claim cache TTL in seconds."""
-    raw_value = os.environ.get("FORGE_ISSUE_CLAIM_CACHE_TTL_SECONDS")
-    if raw_value is None or raw_value == "":
-        return DEFAULT_ISSUE_CLAIM_CACHE_TTL_SECONDS
-    try:
-        value = int(raw_value)
-    except ValueError:
-        print("ERROR: FORGE_ISSUE_CLAIM_CACHE_TTL_SECONDS must be a non-negative integer.", file=sys.stderr)
-        sys.exit(1)
-    if value < 0:
-        print("ERROR: FORGE_ISSUE_CLAIM_CACHE_TTL_SECONDS must be a non-negative integer.", file=sys.stderr)
-        sys.exit(1)
-    return value
-
-
-def _read_issue_claim_cache_payload() -> dict | None:
-    cache_path = get_issue_claim_cache_path()
-    try:
-        with open(cache_path, "r", encoding="utf-8") as cache_file:
-            payload = json.load(cache_file)
-    except (FileNotFoundError, json.JSONDecodeError, OSError):
-        return None
-    if not isinstance(payload, dict):
-        return None
-    if payload.get("version") != ISSUE_CLAIM_CACHE_VERSION:
-        return None
-    if payload.get("repo") != REPO:
-        return None
-    if not isinstance(payload.get("entries"), dict):
-        return None
-    return payload
-
-
-def _parse_issue_claim_cache_entry(
-        issue_number: int,
-        entry: dict,
-        now: float,
-        ttl_seconds: int,
-) -> CachedIssueClaimSkip | None:
-    if not isinstance(entry, dict):
-        return None
-    reason = entry.get("reason")
-    if reason not in ISSUE_CLAIM_CACHE_REASONS:
-        return None
-    try:
-        observed_at_epoch = float(entry.get("observed_at_epoch"))
-    except (TypeError, ValueError):
-        return None
-    if now - observed_at_epoch > ttl_seconds:
-        return None
-
-    assignee_values = entry.get("assignees", [])
-    if not isinstance(assignee_values, list):
-        assignee_values = []
-    assignees = tuple(
-        assignee
-        for assignee in assignee_values
-        if isinstance(assignee, str) and assignee
-    )
-    blocker_values = entry.get("open_blockers", [])
-    if not isinstance(blocker_values, list):
-        blocker_values = []
-    open_blockers = tuple(
-        blocker
-        for blocker in blocker_values
-        if isinstance(blocker, int)
-    )
-    project_status = entry.get("project_status")
-    if project_status is not None and not isinstance(project_status, str):
-        project_status = None
-
-    return CachedIssueClaimSkip(
-        issue_number=issue_number,
-        reason=reason,
-        observed_at_epoch=observed_at_epoch,
-        assignees=assignees,
-        project_status=project_status,
-        open_blockers=open_blockers,
-    )
-
-
-def read_issue_claim_cache(now: float | None = None, require_fresh_cache: bool = True) -> dict[int, CachedIssueClaimSkip]:
-    """Read fresh issue-claim cache entries without taking a lock."""
-    if not is_issue_claim_cache_enabled():
-        return {}
-    ttl_seconds = get_issue_claim_cache_ttl_seconds()
-    if ttl_seconds <= 0:
-        return {}
-    now = time.time() if now is None else now
-    payload = _read_issue_claim_cache_payload()
-    if payload is None:
-        return {}
-    try:
-        updated_at_epoch = float(payload.get("updated_at_epoch"))
-    except (TypeError, ValueError):
-        return {}
-    if require_fresh_cache and now - updated_at_epoch > ttl_seconds:
-        return {}
-
-    cache: dict[int, CachedIssueClaimSkip] = {}
-    for issue_number_text, entry in payload.get("entries", {}).items():
-        try:
-            issue_number = int(issue_number_text)
-        except (TypeError, ValueError):
-            continue
-        cached_skip = _parse_issue_claim_cache_entry(issue_number, entry, now, ttl_seconds)
-        if cached_skip is not None:
-            cache[issue_number] = cached_skip
-    return cache
-
-
-def _write_issue_claim_cache_entries(entries: dict[int, CachedIssueClaimSkip], updated_at_epoch: float) -> None:
-    cache_path = get_issue_claim_cache_path()
-    os.makedirs(os.path.dirname(cache_path), exist_ok=True)
-    payload = {
-        "version": ISSUE_CLAIM_CACHE_VERSION,
-        "repo": REPO,
-        "updated_at_epoch": updated_at_epoch,
-        "entries": {
-            str(issue_number): {
-                "observed_at_epoch": cached_skip.observed_at_epoch,
-                "reason": cached_skip.reason,
-                "assignees": list(cached_skip.assignees),
-                "project_status": cached_skip.project_status,
-                "open_blockers": list(cached_skip.open_blockers),
-            }
-            for issue_number, cached_skip in sorted(entries.items())
-        },
-    }
-    temp_path = f"{cache_path}.{os.getpid()}.{uuid.uuid4().hex}.tmp"
-    try:
-        with open(temp_path, "w", encoding="utf-8") as cache_file:
-            json.dump(payload, cache_file, sort_keys=True)
-            cache_file.write("\n")
-            cache_file.flush()
-            os.fsync(cache_file.fileno())
-        os.replace(temp_path, cache_path)
-    finally:
-        if os.path.exists(temp_path):
-            os.unlink(temp_path)
-
-
-def record_issue_claim_cache_observations(
-        observations: list[IssueClaimCacheObservation],
-        now: float | None = None,
-) -> None:
-    """Record negative issue-claim observations in the shared local cache."""
-    observations = [
-        observation
-        for observation in observations
-        if observation.reason in ISSUE_CLAIM_CACHE_REASONS
-    ]
-    if not observations or not is_issue_claim_cache_enabled() or get_issue_claim_cache_ttl_seconds() <= 0:
-        return
-    now = time.time() if now is None else now
-    with LocalIssueClaimCacheWriterLock():
-        cache = read_issue_claim_cache(now, require_fresh_cache=False)
-        for observation in observations:
-            cache[observation.issue_number] = CachedIssueClaimSkip(
-                issue_number=observation.issue_number,
-                reason=observation.reason,
-                observed_at_epoch=now,
-                assignees=observation.assignees,
-                project_status=observation.project_status,
-                open_blockers=observation.open_blockers,
-            )
-        _write_issue_claim_cache_entries(cache, now)
-
-
-def invalidate_issue_claim_cache_entry(issue_number: int, now: float | None = None) -> None:
-    """Remove one issue from the shared local issue-claim cache."""
-    if not is_issue_claim_cache_enabled() or get_issue_claim_cache_ttl_seconds() <= 0:
-        return
-    now = time.time() if now is None else now
-    with LocalIssueClaimCacheWriterLock():
-        cache = read_issue_claim_cache(now, require_fresh_cache=False)
-        if issue_number not in cache:
-            return
-        cache.pop(issue_number, None)
-        _write_issue_claim_cache_entries(cache, now)
-
-
-def _remove_file_if_exists(path: str) -> bool:
-    try:
-        os.unlink(path)
-        return True
-    except FileNotFoundError:
-        return False
-
-
-def clear_issue_claim_cache() -> bool:
-    """Delete the shared local issue-claim cache file."""
-    with LocalIssueClaimCacheWriterLock():
-        return _remove_file_if_exists(get_issue_claim_cache_path())
-
-
-def is_issue_search_cache_enabled() -> bool:
-    """Return True when the shared local issue-search cache is enabled."""
-    return os.environ.get("FORGE_ISSUE_SEARCH_CACHE", "1") != "0"
-
-
-def get_issue_search_cache_ttl_seconds() -> int:
-    """Return the issue-search cache TTL in seconds."""
-    raw_value = os.environ.get("FORGE_ISSUE_SEARCH_CACHE_TTL_SECONDS")
-    if raw_value is None or raw_value == "":
-        return DEFAULT_ISSUE_SEARCH_CACHE_TTL_SECONDS
-    try:
-        value = int(raw_value)
-    except ValueError:
-        print("ERROR: FORGE_ISSUE_SEARCH_CACHE_TTL_SECONDS must be a non-negative integer.", file=sys.stderr)
-        sys.exit(1)
-    if value < 0:
-        print("ERROR: FORGE_ISSUE_SEARCH_CACHE_TTL_SECONDS must be a non-negative integer.", file=sys.stderr)
-        sys.exit(1)
-    return value
-
-
-def _read_issue_search_cache_payload() -> dict | None:
-    cache_path = get_issue_search_cache_path()
-    try:
-        with open(cache_path, "r", encoding="utf-8") as cache_file:
-            payload = json.load(cache_file)
-    except (FileNotFoundError, json.JSONDecodeError, OSError):
-        return None
-    if not isinstance(payload, dict):
-        return None
-    if payload.get("version") != ISSUE_SEARCH_CACHE_VERSION:
-        return None
-    if payload.get("repo") != REPO:
-        return None
-    if not isinstance(payload.get("pages"), dict):
-        return None
-    if not isinstance(payload.get("counts"), dict):
-        return None
-    return payload
-
-
-def _empty_issue_search_cache_payload(now: float) -> dict:
-    return {
-        "version": ISSUE_SEARCH_CACHE_VERSION,
-        "repo": REPO,
-        "updated_at_epoch": now,
-        "pages": {},
-        "counts": {},
-    }
-
-
-def _read_issue_search_cache_payload_or_empty(now: float) -> dict:
-    return _read_issue_search_cache_payload() or _empty_issue_search_cache_payload(now)
-
-
-def _write_issue_search_cache_payload(payload: dict, updated_at_epoch: float) -> None:
-    cache_path = get_issue_search_cache_path()
-    os.makedirs(os.path.dirname(cache_path), exist_ok=True)
-    payload["version"] = ISSUE_SEARCH_CACHE_VERSION
-    payload["repo"] = REPO
-    payload["updated_at_epoch"] = updated_at_epoch
-    payload.setdefault("pages", {})
-    payload.setdefault("counts", {})
-
-    temp_path = f"{cache_path}.{os.getpid()}.{uuid.uuid4().hex}.tmp"
-    try:
-        with open(temp_path, "w", encoding="utf-8") as cache_file:
-            json.dump(payload, cache_file, sort_keys=True)
-            cache_file.write("\n")
-            cache_file.flush()
-            os.fsync(cache_file.fileno())
-        os.replace(temp_path, cache_path)
-    finally:
-        if os.path.exists(temp_path):
-            os.unlink(temp_path)
-
-
-def clear_issue_search_cache() -> bool:
-    """Delete the shared local issue-search cache file."""
-    with LocalIssueSearchCacheWriterLock():
-        return _remove_file_if_exists(get_issue_search_cache_path())
-
-
-def clear_issue_caches() -> None:
-    """Delete local issue queue caches used by work-queue scanning."""
-    removed_claim_cache = clear_issue_claim_cache()
-    removed_search_cache = clear_issue_search_cache()
-    print()
-    log_stage(
-        "issue-cache",
-        f"Cleared issue claim cache at {get_issue_claim_cache_path()} "
-        f"({'removed' if removed_claim_cache else 'not present'})",
-    )
-    log_stage(
-        "issue-cache",
-        f"Cleared issue search cache at {get_issue_search_cache_path()} "
-        f"({'removed' if removed_search_cache else 'not present'})",
-    )
-
-
-def build_issue_search_cache_key(*parts: object) -> str:
-    """Return a stable compact cache key for a GitHub issue-search request."""
-    key_payload = json.dumps(parts, sort_keys=True, separators=(",", ":"))
-    return hashlib.sha256(key_payload.encode("utf-8")).hexdigest()
-
-
-def _is_fresh_issue_search_entry(entry: dict, now: float, ttl_seconds: int) -> bool:
-    try:
-        observed_at_epoch = float(entry.get("observed_at_epoch"))
-    except (TypeError, ValueError):
-        return False
-    return now - observed_at_epoch <= ttl_seconds
-
-
-def _get_cached_issue_search_page(
-        payload: dict,
-        cache_key: str,
-        now: float,
-        ttl_seconds: int,
-) -> list[dict] | None:
-    entry = payload.get("pages", {}).get(cache_key)
-    if not isinstance(entry, dict) or not _is_fresh_issue_search_entry(entry, now, ttl_seconds):
-        return None
-    issues = entry.get("issues")
-    if not isinstance(issues, list):
-        return None
-    return [
-        issue
-        for issue in issues
-        if isinstance(issue, dict) and isinstance(issue.get("number"), int)
-    ]
-
-
-def _set_cached_issue_search_page(payload: dict, cache_key: str, issues: list[dict], now: float) -> None:
-    payload.setdefault("pages", {})[cache_key] = {
-        "observed_at_epoch": now,
-        "issues": issues,
-    }
-
-
-def _get_cached_issue_search_count(
-        payload: dict,
-        cache_key: str,
-        now: float,
-        ttl_seconds: int,
-) -> int | None:
-    entry = payload.get("counts", {}).get(cache_key)
-    if not isinstance(entry, dict) or not _is_fresh_issue_search_entry(entry, now, ttl_seconds):
-        return None
-    total_count = entry.get("total_count")
-    if not isinstance(total_count, int):
-        return None
-    return total_count
-
-
-def _set_cached_issue_search_count(payload: dict, cache_key: str, total_count: int, now: float) -> None:
-    payload.setdefault("counts", {})[cache_key] = {
-        "observed_at_epoch": now,
-        "total_count": total_count,
-    }
-
-
 def pull_request_has_label(pr: dict, label_name: str) -> bool:
     """Return True when the GitHub pull request payload contains the given label."""
     return issue_has_label(pr, label_name)
@@ -2002,213 +1233,11 @@ project_node_id: Optional[str] = None
 field_id: Optional[str] = None
 option_ids: Optional[dict[str, str]] = None
 ensured_issue_labels: set[str] = set()
-held_issue_claim_lock_numbers: set[int] = set()
-held_issue_claim_lock_guard = threading.Lock()
 preservation_failed_worktree_paths: set[str] = set()
-fixture_github_state: FixtureGitHubState | None = None
-fixture_run_timestamp_value: str | None = None
 
 
-CLAIM_BACKOFF_MIN = 5  # Minimum seconds to wait before verifying claim
-CLAIM_BACKOFF_MAX = 10  # Maximum seconds to wait before verifying claim
 
 
-class FixtureRunLogTee:
-    """Mirror process stdout/stderr, including child process output, into one log file."""
-
-    def __init__(self, log_path: str) -> None:
-        self.log_path = log_path
-        self._log_file = open(log_path, "ab", buffering=0)
-        self._lock = threading.Lock()
-        self._original_stdout_fd = os.dup(1)
-        self._original_stderr_fd = os.dup(2)
-        self._stdout_read_fd, self._stdout_write_fd = os.pipe()
-        self._stderr_read_fd, self._stderr_write_fd = os.pipe()
-        self._threads: list[threading.Thread] = []
-        self._closed = False
-
-    def start(self) -> None:
-        sys.stdout.flush()
-        sys.stderr.flush()
-        self._threads = [
-            threading.Thread(
-                target=self._copy_stream,
-                args=(self._stdout_read_fd, self._original_stdout_fd),
-                daemon=True,
-            ),
-            threading.Thread(
-                target=self._copy_stream,
-                args=(self._stderr_read_fd, self._original_stderr_fd),
-                daemon=True,
-            ),
-        ]
-        for thread in self._threads:
-            thread.start()
-        os.dup2(self._stdout_write_fd, 1)
-        os.dup2(self._stderr_write_fd, 2)
-        os.close(self._stdout_write_fd)
-        os.close(self._stderr_write_fd)
-        if hasattr(sys.stdout, "reconfigure"):
-            sys.stdout.reconfigure(line_buffering=True, write_through=True)
-        if hasattr(sys.stderr, "reconfigure"):
-            sys.stderr.reconfigure(line_buffering=True, write_through=True)
-
-    def close(self) -> None:
-        if self._closed:
-            return
-        self._closed = True
-        sys.stdout.flush()
-        sys.stderr.flush()
-        os.dup2(self._original_stdout_fd, 1)
-        os.dup2(self._original_stderr_fd, 2)
-        for thread in self._threads:
-            thread.join(timeout=5)
-        os.close(self._original_stdout_fd)
-        os.close(self._original_stderr_fd)
-        self._log_file.close()
-
-    def _copy_stream(self, read_fd: int, target_fd: int) -> None:
-        # The terminal receives every byte unchanged so the live `\r`-updating
-        # status line renders exactly as before. The log file instead stores the
-        # terminal-resolved text: carriage returns overwrite in place, so the many
-        # in-place status frames collapse to the final state of each line.
-        line = bytearray()
-        cursor = 0
-        try:
-            while True:
-                chunk = os.read(read_fd, 65536)
-                if not chunk:
-                    break
-                os.write(target_fd, chunk)
-                log_bytes, line, cursor = self._resolve_carriage_returns(chunk, line, cursor)
-                if log_bytes:
-                    with self._lock:
-                        self._log_file.write(log_bytes)
-        finally:
-            if line:
-                with self._lock:
-                    self._log_file.write(bytes(line))
-            os.close(read_fd)
-
-    @staticmethod
-    def _resolve_carriage_returns(
-            chunk: bytes,
-            line: bytearray,
-            cursor: int,
-    ) -> tuple[bytes, bytearray, int]:
-        """Apply terminal `\\r`/`\\n` semantics to `chunk` for the log file.
-
-        Returns the bytes of any completed lines plus the carried-over partial
-        line and cursor. `\\r` resets the cursor to column 0 so later bytes
-        overwrite the current line, mirroring how a terminal displays an in-place
-        status update; `\\n` flushes the resolved line.
-        """
-        if 0x0D not in chunk and cursor == len(line):
-            # Fast path: no carriage returns and nothing pending to overwrite, so
-            # this is plain appending. Emit all complete lines, carry the rest.
-            line += chunk
-            split_at = line.rfind(0x0A)
-            if split_at == -1:
-                return b"", line, len(line)
-            completed = bytes(line[:split_at + 1])
-            remainder = bytearray(line[split_at + 1:])
-            return completed, remainder, len(remainder)
-
-        output = bytearray()
-        for byte in chunk:
-            if byte == 0x0A:  # newline: flush the resolved line
-                output += line
-                output.append(0x0A)
-                line = bytearray()
-                cursor = 0
-            elif byte == 0x0D:  # carriage return: overwrite from column 0
-                cursor = 0
-            elif cursor < len(line):
-                line[cursor] = byte
-                cursor += 1
-            else:
-                line.append(byte)
-                cursor += 1
-        return bytes(output), line, cursor
-
-
-def _fixture_run_timestamp() -> str:
-    return datetime.now().astimezone().strftime("%Y%m%d-%H%M%S-%f%z")
-
-
-def get_fixture_run_timestamp() -> str:
-    """Return one stable timestamp shared by every issue processed in this run.
-
-    Issues claimed by the same queue or label run land in sibling
-    `issue-<number>/<timestamp>/` directories so they sort and correlate together.
-    """
-    global fixture_run_timestamp_value
-    if fixture_run_timestamp_value is None:
-        fixture_run_timestamp_value = _fixture_run_timestamp()
-    return fixture_run_timestamp_value
-
-
-def get_fixture_issue_artifact_dir(issue_number: int) -> str:
-    """Return the artifact directory for one fixture issue: `issue-<number>/<timestamp>/`.
-
-    Single-issue, label, and work-queue runs all write each issue's evidence here,
-    alongside any other results for that issue. §FS-durable-generation-logs
-    """
-    issue_dir = os.path.join(
-        get_repo_root(),
-        FIXTURE_E2E_LOG_DIRNAME,
-        f"issue-{issue_number}",
-        get_fixture_run_timestamp(),
-    )
-    os.makedirs(issue_dir, exist_ok=True)
-    return issue_dir
-
-
-@contextlib.contextmanager
-def fixture_issue_run_log(issue_number: int):
-    """Tee one fixture issue's stdout/stderr into its own `run.log`.
-
-    Fixture issue processing is sequential (parallelism is pinned to 1 in fixture
-    mode), so a single process-wide tee per issue keeps each `run.log` scoped to
-    that issue without interleaving.
-    """
-    issue_dir = get_fixture_issue_artifact_dir(issue_number)
-    tee = FixtureRunLogTee(os.path.join(issue_dir, FIXTURE_RUN_LOG_FILENAME))
-    tee.start()
-    log_stage("fixture-log", f"Writing fixture run artifacts for issue #{issue_number} to {issue_dir}")
-    log_stage("fixture-log", f"Complete fixture run log: {tee.log_path}")
-    log_stage(
-        "fixture-log",
-        f"Fixture command: {' '.join(shlex.quote(argument) for argument in [sys.executable, *sys.argv])}",
-    )
-    try:
-        yield issue_dir
-    finally:
-        tee.close()
-
-
-def configure_fixture_testing(
-        fixture_paths: list[str] | None = None,
-        fixture_state: FixtureGitHubState | None = None,
-) -> FixtureGitHubState:
-    """Configure the dispatcher to use local fixture GitHub state."""
-    global fixture_github_state
-    if fixture_state is not None and fixture_paths is not None:
-        raise ValueError("Pass either fixture_paths or fixture_state, not both")
-    fixture_github_state = fixture_state or load_fixture_github_state(fixture_paths)
-    return fixture_github_state
-
-
-def is_fixture_testing_enabled() -> bool:
-    """Return True when GitHub helper calls should use fixture state."""
-    return fixture_github_state is not None
-
-
-def require_fixture_github_state() -> FixtureGitHubState:
-    """Return configured fixture GitHub state or fail with a dispatcher error."""
-    if fixture_github_state is None:
-        raise RuntimeError("Fixture GitHub state is not configured")
-    return fixture_github_state
 
 
 def get_authenticated_user() -> str:

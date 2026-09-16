@@ -16,6 +16,7 @@ from collections.abc import Callable
 from unittest.mock import call, patch
 
 import forge_metadata
+from dispatcher import fixture_support, github_api, issue_cache
 from types import SimpleNamespace
 from ai_workflows.agents.agent_runtime import AgentRunResult, AgentSelection
 from git_scripts import common_git, github_cli
@@ -867,7 +868,7 @@ class IssueClaimPreflightTests(unittest.TestCase):
             stderr="",
         )
 
-        with patch.object(forge_metadata, "gh", return_value=completed_process):
+        with patch.object(github_api, "gh", return_value=completed_process):
             with self.assertRaises(forge_metadata.GitHubRateLimitExceeded):
                 forge_metadata.gh_json("api", "graphql")
 
@@ -1201,7 +1202,7 @@ class IssueClaimPreflightTests(unittest.TestCase):
         }
 
         with tempfile.TemporaryDirectory() as lock_root:
-            with patch.object(forge_metadata, "get_issue_claim_locks_root", return_value=lock_root), \
+            with patch.object(issue_cache, "get_issue_claim_locks_root", return_value=lock_root), \
                     patch.object(forge_metadata, "get_issue_claim_payload", return_value=fresh_issue):
                 self.assertFalse(
                     forge_metadata.refresh_issue_payload_for_claim(
@@ -1225,7 +1226,7 @@ class IssueClaimPreflightTests(unittest.TestCase):
         }
 
         with tempfile.TemporaryDirectory() as lock_root:
-            with patch.object(forge_metadata, "get_issue_claim_locks_root", return_value=lock_root), \
+            with patch.object(issue_cache, "get_issue_claim_locks_root", return_value=lock_root), \
                     patch.object(forge_metadata, "get_issue_claim_payload", return_value=fresh_issue):
                 self.assertFalse(
                     forge_metadata.refresh_issue_payload_for_claim(
@@ -1265,7 +1266,7 @@ class IssueClaimPreflightTests(unittest.TestCase):
         }
 
         with tempfile.TemporaryDirectory() as lock_root:
-            with patch.object(forge_metadata, "get_issue_claim_locks_root", return_value=lock_root), \
+            with patch.object(issue_cache, "get_issue_claim_locks_root", return_value=lock_root), \
                     patch.object(forge_metadata, "get_issue_claim_payload", return_value=fresh_issue):
                 self.assertFalse(
                     forge_metadata.refresh_issue_payload_for_claim(
@@ -1631,7 +1632,7 @@ class IssueClaimPreflightTests(unittest.TestCase):
         }
 
         with tempfile.TemporaryDirectory() as lock_root:
-            with patch.object(forge_metadata, "get_issue_claim_locks_root", return_value=lock_root):
+            with patch.object(issue_cache, "get_issue_claim_locks_root", return_value=lock_root):
                 forge_metadata.record_issue_claim_cache_observations(
                     [
                         forge_metadata.IssueClaimCacheObservation(
@@ -1642,7 +1643,7 @@ class IssueClaimPreflightTests(unittest.TestCase):
                     ],
                 )
 
-            with patch.object(forge_metadata, "get_issue_claim_locks_root", return_value=lock_root), \
+            with patch.object(issue_cache, "get_issue_claim_locks_root", return_value=lock_root), \
                     patch.object(forge_metadata, "validate_issue_processing_environment"), \
                     patch.object(
                         forge_metadata,
@@ -1916,7 +1917,7 @@ class IssueFormRejectionTests(unittest.TestCase):
     """Rejection feedback: one comment, then a closed issue. §FS-forge-run-requirements.3"""
 
     def setUp(self) -> None:
-        self.addCleanup(setattr, forge_metadata, "fixture_github_state", None)
+        self.addCleanup(setattr, fixture_support, "fixture_github_state", None)
         self.addCleanup(forge_metadata.clear_issue_caches)
 
     def _reject(self, state: FixtureGitHubState, issue: dict) -> forge_metadata.IssueFormRejection:
@@ -3495,7 +3496,7 @@ class PullRequestReviewSelectionTests(unittest.TestCase):
 class IssueClaimCacheTests(unittest.TestCase):
     def test_read_cache_ignores_missing_corrupt_and_expired_cache(self) -> None:
         with tempfile.TemporaryDirectory() as lock_root:
-            with patch.object(forge_metadata, "get_issue_claim_locks_root", return_value=lock_root):
+            with patch.object(issue_cache, "get_issue_claim_locks_root", return_value=lock_root):
                 self.assertEqual(forge_metadata.read_issue_claim_cache(now=100.0), {})
 
                 with open(forge_metadata.get_issue_claim_cache_path(), "w", encoding="utf-8") as cache_file:
@@ -3523,7 +3524,7 @@ class IssueClaimCacheTests(unittest.TestCase):
 
     def test_record_and_invalidate_cache_entry(self) -> None:
         with tempfile.TemporaryDirectory() as lock_root:
-            with patch.object(forge_metadata, "get_issue_claim_locks_root", return_value=lock_root):
+            with patch.object(issue_cache, "get_issue_claim_locks_root", return_value=lock_root):
                 forge_metadata.record_issue_claim_cache_observations(
                     [
                         forge_metadata.IssueClaimCacheObservation(
@@ -3544,7 +3545,7 @@ class IssueClaimCacheTests(unittest.TestCase):
 
     def test_clear_issue_caches_removes_claim_and_search_caches(self) -> None:
         with tempfile.TemporaryDirectory() as lock_root:
-            with patch.object(forge_metadata, "get_issue_claim_locks_root", return_value=lock_root):
+            with patch.object(issue_cache, "get_issue_claim_locks_root", return_value=lock_root):
                 forge_metadata.record_issue_claim_cache_observations(
                     [
                         forge_metadata.IssueClaimCacheObservation(
@@ -3577,7 +3578,7 @@ class IssueClaimCacheTests(unittest.TestCase):
         }
 
         with tempfile.TemporaryDirectory() as lock_root:
-            with patch.object(forge_metadata, "get_issue_claim_locks_root", return_value=lock_root):
+            with patch.object(issue_cache, "get_issue_claim_locks_root", return_value=lock_root):
                 forge_metadata.record_issue_claim_cache_observations(
                     [
                         forge_metadata.IssueClaimCacheObservation(
@@ -3612,7 +3613,7 @@ class IssueClaimCacheTests(unittest.TestCase):
         }
 
         with tempfile.TemporaryDirectory() as lock_root:
-            with patch.object(forge_metadata, "get_issue_claim_locks_root", return_value=lock_root):
+            with patch.object(issue_cache, "get_issue_claim_locks_root", return_value=lock_root):
                 forge_metadata.record_issue_claim_cache_observations(
                     [
                         forge_metadata.IssueClaimCacheObservation(
@@ -3679,7 +3680,7 @@ class IssueClaimCacheTests(unittest.TestCase):
             return None
 
         with tempfile.TemporaryDirectory() as lock_root:
-            with patch.object(forge_metadata, "get_issue_claim_locks_root", return_value=lock_root), \
+            with patch.object(issue_cache, "get_issue_claim_locks_root", return_value=lock_root), \
                     patch.object(forge_metadata, "validate_issue_processing_environment"), \
                     patch.object(
                         forge_metadata,
@@ -3730,7 +3731,7 @@ class IssueClaimCacheTests(unittest.TestCase):
         ]
 
         with tempfile.TemporaryDirectory() as lock_root:
-            with patch.object(forge_metadata, "get_issue_claim_locks_root", return_value=lock_root), \
+            with patch.object(issue_cache, "get_issue_claim_locks_root", return_value=lock_root), \
                     patch.object(forge_metadata, "validate_issue_processing_environment"), \
                     patch.object(
                         forge_metadata,
@@ -3793,7 +3794,7 @@ class IssueClaimCacheTests(unittest.TestCase):
         ]
 
         with tempfile.TemporaryDirectory() as lock_root:
-            with patch.object(forge_metadata, "get_issue_claim_locks_root", return_value=lock_root), \
+            with patch.object(issue_cache, "get_issue_claim_locks_root", return_value=lock_root), \
                     patch.object(forge_metadata, "validate_issue_processing_environment"), \
                     patch.object(
                         forge_metadata,
@@ -3947,7 +3948,7 @@ class IssueClaimLockTests(unittest.TestCase):
             "assignees": [],
         }
         with tempfile.TemporaryDirectory() as lock_root:
-            with patch.object(forge_metadata, "get_issue_claim_locks_root", return_value=lock_root):
+            with patch.object(issue_cache, "get_issue_claim_locks_root", return_value=lock_root):
                 claim_lock = forge_metadata.try_acquire_issue_claim_lock(issue["number"])
                 self.assertIsNotNone(claim_lock)
                 try:
@@ -3968,7 +3969,7 @@ class IssueClaimLockTests(unittest.TestCase):
             "assignees": [],
         }
         with tempfile.TemporaryDirectory() as lock_root:
-            with patch.object(forge_metadata, "get_issue_claim_locks_root", return_value=lock_root), \
+            with patch.object(issue_cache, "get_issue_claim_locks_root", return_value=lock_root), \
                     patch.object(forge_metadata, "refresh_issue_payload_for_claim", return_value=True), \
                     patch.object(forge_metadata, "get_open_blocking_issue_numbers", return_value=[1392]), \
                     patch.object(forge_metadata, "add_issue_label") as add_issue_label, \
@@ -3994,7 +3995,7 @@ class IssueClaimLockTests(unittest.TestCase):
             "state": "OPEN",
         }
         with tempfile.TemporaryDirectory() as lock_root:
-            with patch.object(forge_metadata, "get_issue_claim_locks_root", return_value=lock_root), \
+            with patch.object(issue_cache, "get_issue_claim_locks_root", return_value=lock_root), \
                     patch.object(forge_metadata, "get_issue_claim_payload", return_value=fresh_issue), \
                     patch.object(forge_metadata, "get_open_blocking_issue_numbers") as get_blockers:
                 self.assertIsNone(
@@ -4017,7 +4018,7 @@ class IssueClaimLockTests(unittest.TestCase):
             "assignees": [],
         }
         with tempfile.TemporaryDirectory() as lock_root:
-            with patch.object(forge_metadata, "get_issue_claim_locks_root", return_value=lock_root), \
+            with patch.object(issue_cache, "get_issue_claim_locks_root", return_value=lock_root), \
                     patch.object(forge_metadata, "refresh_issue_payload_for_claim", return_value=True), \
                     patch.object(forge_metadata, "get_open_blocking_issue_numbers", return_value=[]), \
                     patch.object(forge_metadata, "get_issue_assignees", return_value=["other-user"]), \
@@ -4036,7 +4037,7 @@ class IssueClaimLockTests(unittest.TestCase):
             "assignees": [{"login": "automation-user"}],
         }
         with tempfile.TemporaryDirectory() as lock_root:
-            with patch.object(forge_metadata, "get_issue_claim_locks_root", return_value=lock_root), \
+            with patch.object(issue_cache, "get_issue_claim_locks_root", return_value=lock_root), \
                     patch.object(forge_metadata, "refresh_issue_payload_for_claim", return_value=True), \
                     patch.object(forge_metadata, "get_open_blocking_issue_numbers", return_value=[]), \
                     patch.object(forge_metadata, "get_issue_assignees", side_effect=[
@@ -4068,7 +4069,7 @@ class IssueClaimLockTests(unittest.TestCase):
     def test_try_claim_issue_skips_chunked_dynamic_access_when_in_progress(self) -> None:
         issue = _search_issue(1412, [forge_metadata.LABEL_CHUNKED_DYNAMIC_ACCESS])
         with tempfile.TemporaryDirectory() as lock_root:
-            with patch.object(forge_metadata, "get_issue_claim_locks_root", return_value=lock_root), \
+            with patch.object(issue_cache, "get_issue_claim_locks_root", return_value=lock_root), \
                     patch.object(forge_metadata, "refresh_issue_payload_for_claim", return_value=True), \
                     patch.object(forge_metadata, "get_open_blocking_issue_numbers", return_value=[]), \
                     patch.object(forge_metadata, "get_issue_assignees", return_value=[]), \
@@ -4096,7 +4097,7 @@ class IssueClaimLockTests(unittest.TestCase):
             "assignees": [],
         }
         with tempfile.TemporaryDirectory() as lock_root:
-            with patch.object(forge_metadata, "get_issue_claim_locks_root", return_value=lock_root), \
+            with patch.object(issue_cache, "get_issue_claim_locks_root", return_value=lock_root), \
                     patch.object(forge_metadata, "refresh_issue_payload_for_claim", return_value=True), \
                     patch.object(forge_metadata, "get_open_blocking_issue_numbers", return_value=[]), \
                     patch.object(forge_metadata, "get_issue_assignees", side_effect=[[], ["automation-user"]]), \
@@ -4124,7 +4125,7 @@ class IssueClaimLockTests(unittest.TestCase):
 
     def test_revert_issue_claim_invalidates_cache_entry(self) -> None:
         with tempfile.TemporaryDirectory() as lock_root:
-            with patch.object(forge_metadata, "get_issue_claim_locks_root", return_value=lock_root):
+            with patch.object(issue_cache, "get_issue_claim_locks_root", return_value=lock_root):
                 forge_metadata.record_issue_claim_cache_observations(
                     [
                         forge_metadata.IssueClaimCacheObservation(
@@ -4176,7 +4177,7 @@ class IssueSearchCacheTests(unittest.TestCase):
         }
 
         with tempfile.TemporaryDirectory() as lock_root:
-            with patch.object(forge_metadata, "get_issue_claim_locks_root", return_value=lock_root), \
+            with patch.object(issue_cache, "get_issue_claim_locks_root", return_value=lock_root), \
                     patch.object(forge_metadata.time, "time", return_value=100.0), \
                     patch.object(forge_metadata, "fetch_issue_search_page", return_value=[issue]) as fetch_page:
                 self.assertEqual(
@@ -4192,7 +4193,7 @@ class IssueSearchCacheTests(unittest.TestCase):
 
     def test_search_count_cache_is_shared_by_random_offset_resolution(self) -> None:
         with tempfile.TemporaryDirectory() as lock_root:
-            with patch.object(forge_metadata, "get_issue_claim_locks_root", return_value=lock_root), \
+            with patch.object(issue_cache, "get_issue_claim_locks_root", return_value=lock_root), \
                     patch.object(forge_metadata.time, "time", return_value=100.0), \
                     patch.object(forge_metadata, "fetch_issue_search_count", return_value=42) as fetch_count:
                 self.assertEqual(forge_metadata.count_issues_with_label(forge_metadata.LABEL_LIBRARY_NEW), 42)
@@ -4695,7 +4696,7 @@ class InterruptHandlingTests(unittest.TestCase):
             claimed_issue = _claimed_issue_in(repo_path)
             failure = forge_metadata.GradleBootstrapFailure(claimed_issue.issue_coordinates, "/tmp/discover.log")
 
-            with patch.object(forge_metadata, "get_issue_claim_locks_root", return_value=lock_root), \
+            with patch.object(issue_cache, "get_issue_claim_locks_root", return_value=lock_root), \
                     patch.object(forge_metadata, "validate_issue_processing_environment"), \
                     patch.object(
                         forge_metadata,
