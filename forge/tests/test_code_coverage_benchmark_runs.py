@@ -18,6 +18,8 @@ from unittest.mock import patch
 from pathlib import Path
 
 from benchmarks import code_coverage_benchmark as benchmark
+from benchmarks import code_coverage_benchmark_common as benchmark_common
+from benchmarks import code_coverage_benchmark_publication as benchmark_publication
 
 
 FORGE_ROOT = Path(__file__).resolve().parents[1]
@@ -116,7 +118,7 @@ class CodeCoverageBenchmarkLifecycleTests(unittest.TestCase):
                 benchmark,
                 "publish_workspace",
         ) as publish, patch.object(
-                benchmark,
+                benchmark_common,
                 "_remove_worktree",
         ) as remove:
             outcome = benchmark._execute_cell(
@@ -134,7 +136,7 @@ class CodeCoverageBenchmarkLifecycleTests(unittest.TestCase):
         error = subprocess.CalledProcessError(1, ["git", "worktree", "remove"])
 
         with patch.object(
-                benchmark,
+                benchmark_common,
                 "_remove_worktree",
                 side_effect=error,
         ), patch("builtins.print") as output:
@@ -196,7 +198,7 @@ class CodeCoverageBenchmarkLifecycleTests(unittest.TestCase):
                 benchmark,
                 "publish_workspace",
         ) as publish, patch.object(
-                benchmark,
+                benchmark_common,
                 "_remove_worktree",
         ) as remove, patch("builtins.print") as output:
             outcome = benchmark._execute_cell(
@@ -252,7 +254,7 @@ class CodeCoverageBenchmarkLifecycleTests(unittest.TestCase):
                 "publish_workspace",
                 side_effect=publish,
         ) as republish, patch.object(
-                benchmark,
+                benchmark_common,
                 "_remove_worktree",
         ) as remove, patch("builtins.print"):
             outcome = benchmark._execute_cell(
@@ -492,7 +494,7 @@ class CodeCoverageBenchmarkMetricsTests(unittest.TestCase):
         result = benchmark._collect_result(workspace, "failure", 1)
 
         with patch.object(
-                benchmark,
+                benchmark_publication,
                 "get_authenticated_login",
                 return_value="test-bot",
         ):

@@ -18,6 +18,9 @@ from unittest.mock import patch
 from pathlib import Path
 
 from benchmarks import code_coverage_benchmark as benchmark
+from benchmarks import code_coverage_benchmark_common as benchmark_common
+from benchmarks import code_coverage_benchmark_conversion as benchmark_conversion
+from benchmarks import code_coverage_benchmark_publication as benchmark_publication
 
 
 FORGE_ROOT = Path(__file__).resolve().parents[1]
@@ -200,7 +203,7 @@ class CodeCoverageBenchmarkConversionTests(unittest.TestCase):
         test_dir = source / "tests" / "src" / "com.example" / "demo" / "1.0.0"
         test_dir.mkdir(parents=True)
 
-        with patch.object(benchmark, "resolve_test_dir", return_value=str(test_dir)):
+        with patch.object(benchmark_conversion, "resolve_test_dir", return_value=str(test_dir)):
             benchmark.convert_workspace(
                 SimpleNamespace(
                     workspace=str(workspace),
