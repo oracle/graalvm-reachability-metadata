@@ -208,6 +208,26 @@ def _nested_token(invocation: dict[str, Any], *keys: str) -> int | None:
     return value if type(value) is int and value >= 0 else None
 
 
+def _ordinary_input(
+        total_input: int | None,
+        cached_read: int | None,
+        cache_write: int | None,
+) -> int | None:
+    """Input tokens with the cached classes removed.
+
+    Rhei reports `tokens.input.total` inclusive of the cached classes on newer
+    runtimes and exclusive of them on older ones, so copying it through makes
+    `input` mean one thing in some records and another in the rest. Ordinary
+    input must stay disjoint from cached input either way
+    (§FS-code-coverage-benchmarking.4), so the cached classes are subtracted
+    only from a total large enough to contain them.
+    """
+    if total_input is None:
+        return None
+    cached = (cached_read or 0) + (cache_write or 0)
+    return total_input - cached if total_input >= cached else total_input
+
+
 def _phase_tokens(
         invocations: list[dict[str, Any]],
         accounting_exists: bool,
@@ -235,13 +255,17 @@ def _phase_tokens(
             return None
         return sum(value for value in values if value is not None)
 
+    cached_read = total("tokens", "input", "cached_read")
+    cache_write = total("tokens", "input", "cache_write")
     return {
-        "input": total("tokens", "input", "total"),
-        "cachedInputRead": total("tokens", "input", "cached_read"),
+        "input": _ordinary_input(
+            total("tokens", "input", "total"), cached_read, cache_write
+        ),
+        "cachedInputRead": cached_read,
         # A separately billed input class on some providers and zero on the
         # rest, so omitting it understates exactly one side of a comparison
         # (§FS-code-coverage-benchmarking.3).
-        "cachedInputWrite": total("tokens", "input", "cache_write"),
+        "cachedInputWrite": cache_write,
         "output": total("tokens", "output", "total"),
     }
 

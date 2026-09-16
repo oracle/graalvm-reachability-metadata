@@ -401,6 +401,35 @@ class CodeCoverageBenchmarkMetricsTests(unittest.TestCase):
         )
         self.assertEqual(-1, result["measuredAllMethodsDifference"])
 
+    def test_input_stays_disjoint_from_cached_input(self) -> None:
+        """A Rhei total that already contains the cached classes is restated.
+
+        Newer Rhei runtimes report `input.total` inclusive of cached read and
+        cache write; the record must still publish ordinary input separately
+        (§FS-code-coverage-benchmarking.4).
+        """
+        _, workspace = self._workspace()
+        self._write_run(workspace)
+        final_dir = workspace / "runtime" / "code-coverage" / "finalization"
+        final_dir.mkdir(parents=True)
+        shutil.copy2(FINAL_METRICS, final_dir / "final-metrics.json")
+        # api: total 100 = 60 cached_read + 5 cache_write + 35 ordinary.
+        self._write_invocation(workspace, "1", "api-cover", 100, 60, 7, 5)
+        # deep: an older runtime, whose total already excludes the 8 cached.
+        self._write_invocation(workspace, "2", "deep-cover", 3, 8, 9)
+
+        result = benchmark.collect_result(workspace, "success", 0)
+
+        self.assertEqual(
+            {"input": 35, "cachedInputRead": 60, "cachedInputWrite": 5, "output": 7},
+            result["api"]["tokens"],
+        )
+        self.assertEqual(
+            {"input": 3, "cachedInputRead": 8, "cachedInputWrite": 0, "output": 9},
+            result["deep"]["tokens"],
+        )
+        self.assertEqual(38, result["total"]["tokens"]["input"])
+
     def test_partial_failure_keeps_known_accounting_and_nulls(self) -> None:
         _, workspace = self._workspace()
         self._write_run(workspace)
