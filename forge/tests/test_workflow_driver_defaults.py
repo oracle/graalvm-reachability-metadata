@@ -10,6 +10,13 @@ from pathlib import Path
 from unittest.mock import patch
 
 import forge_metadata
+from utility_scripts.continuation_marker import ContinuationMarker
+from dispatcher import (
+    config,
+    driver_invocation,
+    dynamic_access,
+    records,
+)
 from utility_scripts.dynamic_access_report import DynamicAccessClass, DynamicAccessCoverageReport
 from utility_scripts.strategy_loader import load_predefined_strategies
 
@@ -37,9 +44,9 @@ def _report(uncovered_class_count: int) -> DynamicAccessCoverageReport:
 
 def _claimed_issue(
         label: str,
-        continuation_marker: forge_metadata.ContinuationMarker | None = None,
-) -> forge_metadata.ClaimedIssue:
-    return forge_metadata.ClaimedIssue(
+        continuation_marker: ContinuationMarker | None = None,
+) -> records.ClaimedIssue:
+    return records.ClaimedIssue(
         issue={"number": 1412},
         label=label,
         item_id="item-1",
@@ -64,7 +71,7 @@ class WorkflowDriverDefaultTests(unittest.TestCase):
             "library_update_optimistic_pi_gpt-5.6-sol",
         )
         self.assertEqual(
-            forge_metadata.DEFAULT_WORK_QUEUE_STRATEGY_NAME,
+            config.DEFAULT_WORK_QUEUE_STRATEGY_NAME,
             "optimistic_dynamic_access_iterative_pi_gpt-5.6-sol",
         )
 
@@ -84,16 +91,16 @@ class WorkflowDriverDefaultTests(unittest.TestCase):
             "dynamic_access_bulk_pi_gpt-5.6-sol",
             "optimistic_dynamic_access_iterative_pi_gpt-5.6-sol",
         )
-        with patch.object(forge_metadata, "_prepare_new_library_dynamic_access_report", return_value=True) \
+        with patch.object(dynamic_access, "_prepare_new_library_dynamic_access_report", return_value=True) \
                 as prepare_report, \
-                patch.object(forge_metadata, "_generate_dispatcher_dynamic_access_report") as generate_report, \
-                patch.object(forge_metadata, "_resolve_dynamic_access_report_path", return_value="/worktree/report.json"), \
-                patch.object(forge_metadata, "load_dynamic_access_coverage_report", return_value=_report(3)):
+                patch.object(dynamic_access, "_generate_dispatcher_dynamic_access_report") as generate_report, \
+                patch.object(dynamic_access, "_resolve_dynamic_access_report_path", return_value="/worktree/report.json"), \
+                patch.object(dynamic_access, "load_dynamic_access_coverage_report", return_value=_report(3)):
             for strategy_name in strategies:
                 with self.subTest(strategy=strategy_name):
                     output = io.StringIO()
                     with redirect_stdout(output):
-                        chunk_count = forge_metadata.prepare_dynamic_access_chunking(
+                        chunk_count = dynamic_access.prepare_dynamic_access_chunking(
                             _claimed_issue(forge_metadata.LABEL_LIBRARY_NEW),
                             strategy_name,
                         )
@@ -103,13 +110,13 @@ class WorkflowDriverDefaultTests(unittest.TestCase):
         self.assertEqual(generate_report.call_count, len(strategies))
 
     def test_bulk_deferral_names_an_unavailable_report(self) -> None:
-        with patch.object(forge_metadata, "_prepare_new_library_dynamic_access_report", return_value=True), \
-                patch.object(forge_metadata, "_generate_dispatcher_dynamic_access_report"), \
-                patch.object(forge_metadata, "_resolve_dynamic_access_report_path", return_value="/worktree/report.json"), \
-                patch.object(forge_metadata, "load_dynamic_access_coverage_report", side_effect=FileNotFoundError):
+        with patch.object(dynamic_access, "_prepare_new_library_dynamic_access_report", return_value=True), \
+                patch.object(dynamic_access, "_generate_dispatcher_dynamic_access_report"), \
+                patch.object(dynamic_access, "_resolve_dynamic_access_report_path", return_value="/worktree/report.json"), \
+                patch.object(dynamic_access, "load_dynamic_access_coverage_report", side_effect=FileNotFoundError):
             output = io.StringIO()
             with redirect_stdout(output):
-                chunk_count = forge_metadata.prepare_dynamic_access_chunking(
+                chunk_count = dynamic_access.prepare_dynamic_access_chunking(
                     _claimed_issue(forge_metadata.LABEL_LIBRARY_NEW),
                     "dynamic_access_bulk_pi_gpt-5.6-sol",
                 )
@@ -117,9 +124,9 @@ class WorkflowDriverDefaultTests(unittest.TestCase):
         self.assertIn("uncovered_classes=unavailable", output.getvalue())
 
     def test_bulk_new_library_outside_native_image_disables_chunking(self) -> None:
-        with patch.object(forge_metadata, "_prepare_new_library_dynamic_access_report", return_value=False), \
-                patch.object(forge_metadata, "_generate_dispatcher_dynamic_access_report") as generate_report:
-            chunk_count = forge_metadata.prepare_dynamic_access_chunking(
+        with patch.object(dynamic_access, "_prepare_new_library_dynamic_access_report", return_value=False), \
+                patch.object(dynamic_access, "_generate_dispatcher_dynamic_access_report") as generate_report:
+            chunk_count = dynamic_access.prepare_dynamic_access_chunking(
                 _claimed_issue(forge_metadata.LABEL_LIBRARY_NEW),
                 "dynamic_access_bulk_pi_gpt-5.6-sol",
             )
@@ -127,11 +134,11 @@ class WorkflowDriverDefaultTests(unittest.TestCase):
         generate_report.assert_not_called()
 
     def test_library_update_preparation_precedes_the_deferred_decision(self) -> None:
-        with patch.object(forge_metadata, "_prepare_library_update_dynamic_access_report") as prepare_target, \
-                patch.object(forge_metadata, "_generate_dispatcher_dynamic_access_report") as generate_report, \
-                patch.object(forge_metadata, "_resolve_dynamic_access_report_path", return_value="/worktree/report.json"), \
-                patch.object(forge_metadata, "load_dynamic_access_coverage_report", return_value=_report(2)):
-            chunk_count = forge_metadata.prepare_dynamic_access_chunking(
+        with patch.object(dynamic_access, "_prepare_library_update_dynamic_access_report") as prepare_target, \
+                patch.object(dynamic_access, "_generate_dispatcher_dynamic_access_report") as generate_report, \
+                patch.object(dynamic_access, "_resolve_dynamic_access_report_path", return_value="/worktree/report.json"), \
+                patch.object(dynamic_access, "load_dynamic_access_coverage_report", return_value=_report(2)):
+            chunk_count = dynamic_access.prepare_dynamic_access_chunking(
                 _claimed_issue(forge_metadata.LABEL_LIBRARY_UPDATE),
                 "library_update_optimistic_pi_gpt-5.6-sol",
             )
@@ -140,7 +147,7 @@ class WorkflowDriverDefaultTests(unittest.TestCase):
         generate_report.assert_called_once()
 
     def test_optimistic_resume_uses_remaining_active_chunk_budget(self) -> None:
-        marker = forge_metadata.ContinuationMarker.create(
+        marker = ContinuationMarker.create(
             strategy_name="optimistic_dynamic_access_iterative_pi_gpt-5.6-sol",
             issue_number=1412,
             label=forge_metadata.LABEL_LIBRARY_NEW,
@@ -156,16 +163,16 @@ class WorkflowDriverDefaultTests(unittest.TestCase):
             continuation_marker=marker,
         )
 
-        with patch.object(forge_metadata, "_prepare_new_library_dynamic_access_report") as prepare_report, \
-                patch.object(forge_metadata, "_generate_dispatcher_dynamic_access_report") as generate_report, \
-                patch.object(forge_metadata, "_resolve_dynamic_access_report_path", return_value="/worktree/report.json"), \
-                patch.object(forge_metadata, "load_dynamic_access_coverage_report", return_value=_report(3)), \
+        with patch.object(dynamic_access, "_prepare_new_library_dynamic_access_report") as prepare_report, \
+                patch.object(dynamic_access, "_generate_dispatcher_dynamic_access_report") as generate_report, \
+                patch.object(dynamic_access, "_resolve_dynamic_access_report_path", return_value="/worktree/report.json"), \
+                patch.object(dynamic_access, "load_dynamic_access_coverage_report", return_value=_report(3)), \
                 patch.dict(
                     "os.environ",
                     {"FORGE_DYNAMIC_ACCESS_CHUNK_CLASS_THRESHOLD": "15"},
                     clear=True,
                 ):
-            chunk_count = forge_metadata.prepare_dynamic_access_chunking(
+            chunk_count = dynamic_access.prepare_dynamic_access_chunking(
                 claimed_issue,
                 "optimistic_dynamic_access_iterative_pi_gpt-5.6-sol",
             )
@@ -175,7 +182,7 @@ class WorkflowDriverDefaultTests(unittest.TestCase):
         generate_report.assert_called_once()
 
     def test_optimistic_resume_preserves_exhausted_active_chunk_budget(self) -> None:
-        marker = forge_metadata.ContinuationMarker.create(
+        marker = ContinuationMarker.create(
             strategy_name="optimistic_dynamic_access_iterative_pi_gpt-5.6-sol",
             issue_number=1412,
             label=forge_metadata.LABEL_LIBRARY_NEW,
@@ -191,16 +198,16 @@ class WorkflowDriverDefaultTests(unittest.TestCase):
             continuation_marker=marker,
         )
 
-        with patch.object(forge_metadata, "_prepare_new_library_dynamic_access_report") as prepare_report, \
-                patch.object(forge_metadata, "_generate_dispatcher_dynamic_access_report") as generate_report, \
-                patch.object(forge_metadata, "_resolve_dynamic_access_report_path", return_value="/worktree/report.json"), \
-                patch.object(forge_metadata, "load_dynamic_access_coverage_report", return_value=_report(3)), \
+        with patch.object(dynamic_access, "_prepare_new_library_dynamic_access_report") as prepare_report, \
+                patch.object(dynamic_access, "_generate_dispatcher_dynamic_access_report") as generate_report, \
+                patch.object(dynamic_access, "_resolve_dynamic_access_report_path", return_value="/worktree/report.json"), \
+                patch.object(dynamic_access, "load_dynamic_access_coverage_report", return_value=_report(3)), \
                 patch.dict(
                     "os.environ",
                     {"FORGE_DYNAMIC_ACCESS_CHUNK_CLASS_THRESHOLD": "15"},
                     clear=True,
                 ):
-            chunk_count = forge_metadata.prepare_dynamic_access_chunking(
+            chunk_count = dynamic_access.prepare_dynamic_access_chunking(
                 claimed_issue,
                 "optimistic_dynamic_access_iterative_pi_gpt-5.6-sol",
             )
@@ -234,7 +241,7 @@ class WorkflowDriverDefaultTests(unittest.TestCase):
         for label, expected_strategy in expected_defaults.items():
             with self.subTest(label=label):
                 self.assertEqual(
-                    forge_metadata.resolve_workflow_default_strategy_name(
+                    driver_invocation.resolve_workflow_default_strategy_name(
                         _claimed_issue(label),
                         library_update_route=None,
                     ),
@@ -242,7 +249,7 @@ class WorkflowDriverDefaultTests(unittest.TestCase):
                 )
 
     def test_direct_native_image_run_forwards_strategy_override(self) -> None:
-        invocation = forge_metadata.build_workflow_driver_invocation(
+        invocation = driver_invocation.build_workflow_driver_invocation(
             claimed_issue=_claimed_issue(forge_metadata.LABEL_NI_RUN_FAIL),
             strategy_name="library_update_dynamic_access_bulk_pi_gpt-5.6-sol",
             keep_tests_without_dynamic_access=False,
@@ -256,7 +263,7 @@ class WorkflowDriverDefaultTests(unittest.TestCase):
         )
 
     def test_direct_native_image_run_omits_unset_strategy_override(self) -> None:
-        invocation = forge_metadata.build_workflow_driver_invocation(
+        invocation = driver_invocation.build_workflow_driver_invocation(
             claimed_issue=_claimed_issue(forge_metadata.LABEL_NI_RUN_FAIL),
             strategy_name=None,
             keep_tests_without_dynamic_access=False,
@@ -264,7 +271,7 @@ class WorkflowDriverDefaultTests(unittest.TestCase):
 
         self.assertNotIn("--strategy-name", invocation.argv)
         self.assertEqual(
-            forge_metadata.resolve_workflow_default_strategy_name(
+            driver_invocation.resolve_workflow_default_strategy_name(
                 _claimed_issue(forge_metadata.LABEL_NI_RUN_FAIL),
                 library_update_route=None,
             ),

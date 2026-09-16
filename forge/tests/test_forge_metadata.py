@@ -17,6 +17,39 @@ from unittest.mock import call, patch
 
 import forge_metadata
 from dispatcher import (
+    env_config,
+    issue_admin,
+)
+from utility_scripts.native_image_artifact import ARTIFACT_REPOSITORY_URLS
+from utility_scripts.continuation_marker import ContinuationMarker
+from utility_scripts.dynamic_access_exhaust_report import DynamicAccessExhaustReport
+from utility_scripts.source_context_discovery import GradleBootstrapFailure
+from ai_workflows.drivers.library_update_router import LibraryUpdateRoute
+from ai_workflows.drivers.library_update_router import ROUTE_FIX_JAVAC
+from ai_workflows.drivers.library_update_router import ROUTE_IMPROVE_COVERAGE
+from ai_workflows.core.workflow_strategy import RUN_STATUS_FAILURE
+from utility_scripts.continuation_marker import continuation_marker_path
+from utility_scripts.dynamic_access_exhaust_report import dynamic_access_exhaust_report_path
+from utility_scripts.run_location import format_run_failure_line
+from utility_scripts.continuation_marker import load_continuation_marker
+import random
+import time
+from dispatcher import (
+    claim_setup,
+    config,
+    driver_invocation,
+    dynamic_access,
+    failure_preservation,
+    interrupts,
+    issue_form,
+    issue_processing,
+    lifecycle,
+    pipeline_execution,
+    publication,
+    queue_config,
+    records,
+)
+from dispatcher import (
     ci_repair,
     claim_preflight,
     continuation,
@@ -68,7 +101,7 @@ def _project_item_status_response(status: str) -> dict:
                                     "nodes": [
                                         {
                                             "name": status,
-                                            "field": {"name": forge_metadata.STATUS_FIELD_NAME},
+                                            "field": {"name": config.STATUS_FIELD_NAME},
                                         },
                                     ],
                                 },
@@ -110,10 +143,10 @@ def _search_issue(
     }
 
 
-def _scan_state(scanned_count: int = 0, exhausted: bool = False) -> forge_metadata.IssueQueueScanState:
+def _scan_state(scanned_count: int = 0, exhausted: bool = False) -> issue_queue.IssueQueueScanState:
     """Build the scan state a `get_prioritized_issues_with_label` stub would return."""
-    return forge_metadata.IssueQueueScanState(
-        tier_index=len(forge_metadata.ISSUE_PRIORITY_TIERS) if exhausted else 0,
+    return issue_queue.IssueQueueScanState(
+        tier_index=len(issue_queue.ISSUE_PRIORITY_TIERS) if exhausted else 0,
         tier_offset=0 if exhausted else scanned_count,
         scanned_count=scanned_count,
     )
@@ -141,8 +174,8 @@ def _pull_request_state(number: int, ci_state: str, mergeable: str = "MERGEABLE"
         "number": number,
         "headRefOid": f"head-{number}",
         "headRefName": f"ai/kimeta/pr-{number}",
-        "author": {"login": forge_metadata.TRUSTED_FORGE_PUBLISHER_LOGIN},
-        "headRepository": {"nameWithOwner": forge_metadata.REPO},
+        "author": {"login": config.TRUSTED_FORGE_PUBLISHER_LOGIN},
+        "headRepository": {"nameWithOwner": config.REPO},
         "body": "Forge-Publication-ID: forge-9962-test",
         "isCrossRepository": False,
         "state": "OPEN",
@@ -199,12 +232,12 @@ def _preflight(
         *,
         issue_number: int = 1412,
         item_id: str | None = "project-item",
-        project_status: str | None = forge_metadata.STATUS_TODO,
+        project_status: str | None = config.STATUS_TODO,
         assignees: tuple[str, ...] = (),
         open_blockers: tuple[int, ...] = (),
         complete: bool = True,
-) -> forge_metadata.IssueClaimPreflight:
-    return forge_metadata.IssueClaimPreflight(
+) -> records.IssueClaimPreflight:
+    return records.IssueClaimPreflight(
         issue_number=issue_number,
         item_id=item_id,
         project_status=project_status,
@@ -214,8 +247,8 @@ def _preflight(
     )
 
 
-def _claimed_issue(label: str = forge_metadata.LABEL_LIBRARY_NEW) -> forge_metadata.ClaimedIssue:
-    return forge_metadata.ClaimedIssue(
+def _claimed_issue(label: str = forge_metadata.LABEL_LIBRARY_NEW) -> records.ClaimedIssue:
+    return records.ClaimedIssue(
         issue={
             "number": 1412,
             "title": "Add support for org.example:lib:1.0.0",
@@ -229,7 +262,7 @@ def _claimed_issue(label: str = forge_metadata.LABEL_LIBRARY_NEW) -> forge_metad
     )
 
 
-def _claimed_issue_in(base_path: str, label: str = forge_metadata.LABEL_LIBRARY_NEW) -> forge_metadata.ClaimedIssue:
+def _claimed_issue_in(base_path: str, label: str = forge_metadata.LABEL_LIBRARY_NEW) -> records.ClaimedIssue:
     """Build a claimed issue whose base checkout path exists on disk."""
     return dataclasses.replace(_claimed_issue(label), base_reachability_metadata_path=base_path)
 
@@ -281,7 +314,7 @@ class FinalizeSuccessfulIssueTests(unittest.TestCase):
             }
             with open(os.path.join(stats_dir, "execution-metrics.json"), "w", encoding="utf-8") as metrics_file:
                 json.dump({"add_new_library_support:2026-06-18": run_metrics}, metrics_file)
-            marker = forge_metadata.ContinuationMarker.create(
+            marker = ContinuationMarker.create(
                 strategy_name="dynamic_access_main_sources_pi_gpt-5.6-sol",
                 issue_number=1412,
                 label=forge_metadata.LABEL_LIBRARY_NEW,
@@ -293,10 +326,10 @@ class FinalizeSuccessfulIssueTests(unittest.TestCase):
                 "post_generation_intervention": {"stage": "future-defaults-all"},
                 "local_ci_verification": {"status": "passed"},
             }
-            marker.record_publication_metrics(pending_metrics, forge_metadata.PUBLICATION_METRICS_EXTRA_KEYS)
-            marker.save(forge_metadata.continuation_marker_path(repo_path))
+            marker.record_publication_metrics(pending_metrics, config.PUBLICATION_METRICS_EXTRA_KEYS)
+            marker.save(continuation_marker_path(repo_path))
 
-            claimed_issue = forge_metadata.ClaimedIssue(
+            claimed_issue = records.ClaimedIssue(
                 issue={"number": 1412},
                 label=forge_metadata.LABEL_LIBRARY_NEW,
                 item_id="project-item",
@@ -306,7 +339,7 @@ class FinalizeSuccessfulIssueTests(unittest.TestCase):
                 issue_coordinates="org.example:lib:1.0.0",
             )
 
-            forge_metadata.restore_pending_run_metrics_from_execution_metrics(claimed_issue)
+            publication.restore_pending_run_metrics_from_execution_metrics(claimed_issue)
 
             with open(os.path.join(forge_path, PENDING_METRICS_FILENAME), "r", encoding="utf-8") as pending_file:
                 self.assertEqual(json.load(pending_file), pending_metrics)
@@ -325,16 +358,16 @@ class FinalizeSuccessfulIssueTests(unittest.TestCase):
             }
             with open(os.path.join(forge_path, PENDING_METRICS_FILENAME), "w", encoding="utf-8") as pending_file:
                 json.dump(run_metrics, pending_file)
-            marker = forge_metadata.ContinuationMarker.create(
+            marker = ContinuationMarker.create(
                 strategy_name="dynamic_access_main_sources_pi_gpt-5.6-sol",
                 issue_number=1412,
                 label=forge_metadata.LABEL_LIBRARY_NEW,
                 coordinate="org.example:lib:1.0.0",
                 new_version=None,
             )
-            marker.save(forge_metadata.continuation_marker_path(repo_path))
+            marker.save(continuation_marker_path(repo_path))
 
-            claimed_issue = forge_metadata.ClaimedIssue(
+            claimed_issue = records.ClaimedIssue(
                 issue={"number": 1412},
                 label=forge_metadata.LABEL_LIBRARY_NEW,
                 item_id="project-item",
@@ -344,9 +377,9 @@ class FinalizeSuccessfulIssueTests(unittest.TestCase):
                 issue_coordinates="org.example:lib:1.0.0",
             )
 
-            forge_metadata.restore_pending_run_metrics_from_execution_metrics(claimed_issue)
+            publication.restore_pending_run_metrics_from_execution_metrics(claimed_issue)
 
-            saved_marker = forge_metadata.load_continuation_marker(forge_metadata.continuation_marker_path(repo_path))
+            saved_marker = load_continuation_marker(continuation_marker_path(repo_path))
             self.assertIsNotNone(saved_marker)
             self.assertEqual(
                 saved_marker.publication_metrics,
@@ -363,13 +396,13 @@ class FinalizeSuccessfulIssueTests(unittest.TestCase):
     def test_not_for_native_image_pr_receives_metrics_repo_path_for_local_ci(self) -> None:
         claimed_issue = _claimed_issue()
 
-        with patch.object(forge_metadata, "find_dynamic_access_exhaust_report_path", return_value=None), \
-                patch.object(forge_metadata, "require_claimed_issue_worktree"), \
-                patch.object(forge_metadata, "_load_pending_run_metrics", return_value={"status": "success"}), \
-                patch.object(forge_metadata, "metadata_coordinate_parts", return_value=("org.example", "lib", "1.0.0")), \
-                patch.object(forge_metadata, "is_not_for_native_image", return_value=True), \
-                patch.object(forge_metadata, "run_publish_not_for_native_image") as make_pr:
-            forge_metadata.finalize_successful_issue(claimed_issue)
+        with patch.object(publication, "find_dynamic_access_exhaust_report_path", return_value=None), \
+                patch.object(publication, "require_claimed_issue_worktree"), \
+                patch.object(publication, "_load_pending_run_metrics", return_value={"status": "success"}), \
+                patch.object(publication, "metadata_coordinate_parts", return_value=("org.example", "lib", "1.0.0")), \
+                patch.object(publication, "is_not_for_native_image", return_value=True), \
+                patch.object(publication, "run_publish_not_for_native_image") as make_pr:
+            lifecycle.finalize_successful_issue(claimed_issue)
 
         make_pr.assert_called_once_with([
             "--coordinates", "org.example:lib:1.0.0",
@@ -489,7 +522,7 @@ class LibraryUpdateIssueTests(unittest.TestCase):
         self.assertIn("unsafe preparation behavior: curl", str(raised.exception))
 
     def test_library_preflight_dispatches_without_a_strategy(self) -> None:
-        claimed_issue = forge_metadata.ClaimedIssue(
+        claimed_issue = records.ClaimedIssue(
             issue={"number": 1412, "title": "Update org.example:lib:1.0.0"},
             label=forge_metadata.LABEL_LIBRARY_UPDATE,
             item_id="item-1",
@@ -501,11 +534,11 @@ class LibraryUpdateIssueTests(unittest.TestCase):
         )
 
         with patch.object(
-                forge_metadata,
+                driver_invocation,
                 "run_preflight_decision",
                 return_value="/tmp/preflight-info/.library_preparation_preflight.json",
         ) as preflight:
-            forge_metadata.run_library_preparation_preflight(claimed_issue)
+            driver_invocation.run_library_preparation_preflight(claimed_issue)
 
         # The setup role owns the backend and model; no bundle is consulted.
         self.assertEqual(
@@ -588,14 +621,14 @@ class LibraryUpdateIssueTests(unittest.TestCase):
         }
 
         with patch.object(issue_queue, "gh_json", return_value=issue_payload) as gh_json:
-            issue = forge_metadata.get_issue_claim_payload(1412)
+            issue = issue_queue.get_issue_claim_payload(1412)
 
         self.assertNotIn("body", issue)
         self.assertNotIn("body", gh_json.call_args.args[-1])
 
     def test_issue_body_fetch_is_explicit_for_reporter_metadata_context(self) -> None:
         with patch.object(issue_queue, "gh_json", return_value={"body": "Missing reflection metadata"}) as gh_json:
-            body = forge_metadata.get_issue_body(1412)
+            body = issue_queue.get_issue_body(1412)
 
         self.assertEqual(body, "Missing reflection metadata")
         self.assertEqual(gh_json.call_args.args[-1], "body")
@@ -610,7 +643,7 @@ class LibraryUpdateIssueTests(unittest.TestCase):
             ),
         }
 
-        claim_metadata = forge_metadata.build_claim_metadata(
+        claim_metadata = claim_setup.build_claim_metadata(
             issue,
             forge_metadata.LABEL_LIBRARY_UPDATE,
             "/tmp/reachability",
@@ -644,7 +677,7 @@ class LibraryUpdateIssueTests(unittest.TestCase):
                 "title": "Fails native image run io.netty:netty-common:4.1.132.Final",
             }
 
-            claim_metadata = forge_metadata.build_claim_metadata(
+            claim_metadata = claim_setup.build_claim_metadata(
                 issue,
                 forge_metadata.LABEL_NI_RUN_FAIL,
                 repo,
@@ -672,7 +705,7 @@ class LibraryUpdateIssueTests(unittest.TestCase):
         native-image reports missing resource file config/app.properties.
         """
 
-        context = forge_metadata.extract_issue_requested_metadata_context(body)
+        context = claim_setup.extract_issue_requested_metadata_context(body)
 
         self.assertIn("arbitrary prose", context)
         self.assertIn("org.example.Missing", context)
@@ -682,11 +715,11 @@ class LibraryUpdateIssueTests(unittest.TestCase):
     def test_library_update_passes_issue_requested_metadata_context_to_workflow(self) -> None:
         claimed_issue = _claimed_issue(label=forge_metadata.LABEL_LIBRARY_UPDATE)
 
-        with patch.object(forge_metadata, "require_claimed_issue_worktree"), \
-                patch.object(forge_metadata, "run_library_preparation_preflight", return_value=None), \
-                patch.object(forge_metadata, "prepare_dynamic_access_chunking", return_value=None), \
+        with patch.object(pipeline_execution, "require_claimed_issue_worktree"), \
+                patch.object(pipeline_execution, "run_library_preparation_preflight", return_value=None), \
+                patch.object(pipeline_execution, "prepare_dynamic_access_chunking", return_value=None), \
                 patch.object(
-                    forge_metadata,
+                    driver_invocation,
                     "get_issue_body",
                     return_value=(
                         "Caused by: org.graalvm.nativeimage.MissingReflectionRegistrationError: "
@@ -694,16 +727,16 @@ class LibraryUpdateIssueTests(unittest.TestCase):
                     ),
                 ) as issue_body, \
                 patch.object(
-                    forge_metadata,
+                    pipeline_execution,
                     "select_library_update_route",
-                    return_value=forge_metadata.LibraryUpdateRoute(
-                        selected_driver=forge_metadata.ROUTE_IMPROVE_COVERAGE,
+                    return_value=LibraryUpdateRoute(
+                        selected_driver=ROUTE_IMPROVE_COVERAGE,
                         baseline_coordinates=None,
                         new_version="1.0.0",
                     ),
                 ), \
-                patch.object(forge_metadata, "run_improve_library_coverage_workflow", return_value=0) as workflow:
-            self.assertTrue(forge_metadata.invoke_pipeline(claimed_issue, "library_update_pi_gpt-5.6-sol", False))
+                patch.object(driver_invocation, "run_improve_library_coverage_workflow", return_value=0) as workflow:
+            self.assertTrue(pipeline_execution.invoke_pipeline(claimed_issue, "library_update_pi_gpt-5.6-sol", False))
 
         issue_body.assert_called_once_with(1412)
         workflow.assert_called_once()
@@ -715,16 +748,16 @@ class LibraryUpdateIssueTests(unittest.TestCase):
     def test_library_new_passes_issue_requested_metadata_context_to_workflow(self) -> None:
         claimed_issue = _claimed_issue(label=forge_metadata.LABEL_LIBRARY_NEW)
 
-        with patch.object(forge_metadata, "require_claimed_issue_worktree"), \
-                patch.object(forge_metadata, "run_library_preparation_preflight", return_value=None), \
-                patch.object(forge_metadata, "prepare_dynamic_access_chunking", return_value=None), \
+        with patch.object(pipeline_execution, "require_claimed_issue_worktree"), \
+                patch.object(pipeline_execution, "run_library_preparation_preflight", return_value=None), \
+                patch.object(pipeline_execution, "prepare_dynamic_access_chunking", return_value=None), \
                 patch.object(
-                    forge_metadata,
+                    driver_invocation,
                     "get_issue_body",
                     return_value="org.example.Demo needs reflective construction.",
                 ) as issue_body, \
-                patch.object(forge_metadata, "run_add_new_library_support_workflow", return_value=0) as workflow:
-            self.assertTrue(forge_metadata.invoke_pipeline(claimed_issue, "basic_iterative_pi_gpt-5.4", False))
+                patch.object(driver_invocation, "run_add_new_library_support_workflow", return_value=0) as workflow:
+            self.assertTrue(pipeline_execution.invoke_pipeline(claimed_issue, "basic_iterative_pi_gpt-5.4", False))
 
         issue_body.assert_called_once_with(1412)
         workflow.assert_called_once()
@@ -735,25 +768,25 @@ class LibraryUpdateIssueTests(unittest.TestCase):
     def test_routed_javac_repair_passes_issue_requested_metadata_context_to_workflow(self) -> None:
         claimed_issue = _claimed_issue(label=forge_metadata.LABEL_LIBRARY_UPDATE)
 
-        with patch.object(forge_metadata, "require_claimed_issue_worktree"), \
-                patch.object(forge_metadata, "run_library_preparation_preflight", return_value=None), \
-                patch.object(forge_metadata, "prepare_dynamic_access_chunking", return_value=None), \
+        with patch.object(pipeline_execution, "require_claimed_issue_worktree"), \
+                patch.object(pipeline_execution, "run_library_preparation_preflight", return_value=None), \
+                patch.object(pipeline_execution, "prepare_dynamic_access_chunking", return_value=None), \
                 patch.object(
-                    forge_metadata,
+                    driver_invocation,
                     "get_issue_body",
                     return_value="KafkaStreams.topologyMetadata is missing.",
                 ), \
                 patch.object(
-                    forge_metadata,
+                    pipeline_execution,
                     "select_library_update_route",
-                    return_value=forge_metadata.LibraryUpdateRoute(
-                        selected_driver=forge_metadata.ROUTE_FIX_JAVAC,
+                    return_value=LibraryUpdateRoute(
+                        selected_driver=ROUTE_FIX_JAVAC,
                         baseline_coordinates="org.example:demo:0.9.0",
                         new_version="1.0.0",
                     ),
                 ), \
-                patch.object(forge_metadata, "run_fix_javac_workflow", return_value=0) as workflow:
-            self.assertTrue(forge_metadata.invoke_pipeline(claimed_issue, "library_update_pi_gpt-5.6-sol", False))
+                patch.object(driver_invocation, "run_fix_javac_workflow", return_value=0) as workflow:
+            self.assertTrue(pipeline_execution.invoke_pipeline(claimed_issue, "library_update_pi_gpt-5.6-sol", False))
 
         argv = workflow.call_args.args[0]
         context = argv[argv.index("--issue-requested-metadata-context") + 1]
@@ -769,10 +802,10 @@ class IssueClaimPreflightTests(unittest.TestCase):
             stderr="",
         )
 
-        with patch.object(forge_metadata.subprocess, "run", return_value=completed_process), \
+        with patch.object(subprocess, "run", return_value=completed_process), \
                 patch.dict(os.environ, {common_git.GITHUB_QUERY_LOG_ENV_VAR: ""}), \
                 patch("sys.stdout", new_callable=io.StringIO) as stdout:
-            forge_metadata.gh(
+            github_api.gh(
                 "api",
                 "--method",
                 "GET",
@@ -791,10 +824,10 @@ class IssueClaimPreflightTests(unittest.TestCase):
             stderr="",
         )
 
-        with patch.object(forge_metadata.subprocess, "run", return_value=completed_process), \
+        with patch.object(subprocess, "run", return_value=completed_process), \
                 patch.dict(os.environ, {common_git.GITHUB_QUERY_LOG_ENV_VAR: "1"}), \
                 patch("sys.stdout", new_callable=io.StringIO) as stdout:
-            forge_metadata.gh(
+            github_api.gh(
                 "api",
                 "--method",
                 "GET",
@@ -819,9 +852,9 @@ class IssueClaimPreflightTests(unittest.TestCase):
             stderr="GraphQL: API rate limit already exceeded for user ID 352820.",
         )
 
-        with patch.object(forge_metadata.subprocess, "run", return_value=completed_process):
+        with patch.object(subprocess, "run", return_value=completed_process):
             with self.assertRaises(forge_metadata.GitHubRateLimitExceeded):
-                forge_metadata.gh("issue", "view", "2099")
+                github_api.gh("issue", "view", "2099")
 
     def test_gh_retries_direct_transient_failure(self) -> None:
         failed_process = subprocess.CompletedProcess(
@@ -838,13 +871,13 @@ class IssueClaimPreflightTests(unittest.TestCase):
         )
 
         with patch.object(
-                forge_metadata.subprocess,
+                subprocess,
                 "run",
                 side_effect=[failed_process, successful_process],
         ) as run, \
-                patch.object(forge_metadata.time, "sleep") as sleep, \
+                patch.object(time, "sleep") as sleep, \
                 patch("sys.stderr", new_callable=io.StringIO) as stderr:
-            forge_metadata.gh("issue", "edit", "2099", "--add-label", "human-intervention")
+            github_api.gh("issue", "edit", "2099", "--add-label", "human-intervention")
 
         self.assertEqual(run.call_count, 2)
         sleep.assert_called_once_with(common_git.GITHUB_TRANSIENT_RETRY_BASE_DELAY_SECONDS)
@@ -865,13 +898,13 @@ class IssueClaimPreflightTests(unittest.TestCase):
         )
 
         with patch.object(
-                forge_metadata.subprocess,
+                subprocess,
                 "run",
                 side_effect=[failed_process, successful_process],
         ) as run, \
-                patch.object(forge_metadata.time, "sleep") as sleep, \
+                patch.object(time, "sleep") as sleep, \
                 patch("sys.stderr", new_callable=io.StringIO):
-            result = forge_metadata.gh("api", "/repos/example/repo/labels/demo", check=False)
+            result = github_api.gh("api", "/repos/example/repo/labels/demo", check=False)
 
         self.assertEqual(result.returncode, 0)
         self.assertEqual(run.call_count, 2)
@@ -887,7 +920,7 @@ class IssueClaimPreflightTests(unittest.TestCase):
 
         with patch.object(github_api, "gh", return_value=completed_process):
             with self.assertRaises(forge_metadata.GitHubRateLimitExceeded):
-                forge_metadata.gh_json("api", "graphql")
+                github_api.gh_json("api", "graphql")
 
     def test_gh_json_retries_transient_http_504(self) -> None:
         failed_process = subprocess.CompletedProcess(
@@ -904,14 +937,14 @@ class IssueClaimPreflightTests(unittest.TestCase):
         )
 
         with patch.object(
-                forge_metadata.subprocess,
+                subprocess,
                 "run",
                 side_effect=[failed_process, successful_process],
         ) as run, \
                 patch.object(github_cli.time, "sleep") as sleep, \
                 patch("sys.stderr", new_callable=io.StringIO) as stderr:
             self.assertEqual(
-                forge_metadata.gh_json("api", "graphql"),
+                github_api.gh_json("api", "graphql"),
                 {"data": {"ok": True}},
             )
 
@@ -935,13 +968,13 @@ class IssueClaimPreflightTests(unittest.TestCase):
         )
 
         with patch.object(
-                forge_metadata.subprocess,
+                subprocess,
                 "run",
                 side_effect=[failed_process, successful_process],
         ) as run, \
                 patch.object(github_cli.time, "sleep") as sleep, \
                 patch("sys.stderr", new_callable=io.StringIO):
-            self.assertEqual(forge_metadata.get_authenticated_user(), "vjovanov")
+            self.assertEqual(github_api.get_authenticated_user(), "vjovanov")
 
         self.assertEqual(run.call_count, 2)
         sleep.assert_called_once_with(common_git.GITHUB_TRANSIENT_RETRY_BASE_DELAY_SECONDS)
@@ -963,16 +996,16 @@ class IssueClaimPreflightTests(unittest.TestCase):
         with patch.object(
                 project_board,
                 "get_cached_field_info",
-                return_value=("project-id", "field-id", {forge_metadata.STATUS_IN_PROGRESS: "option-id"}),
+                return_value=("project-id", "field-id", {config.STATUS_IN_PROGRESS: "option-id"}),
         ), \
                 patch.object(
-                    forge_metadata.subprocess,
+                    subprocess,
                     "run",
                     side_effect=[failed_process, successful_process],
                 ) as run, \
                 patch.object(github_cli.time, "sleep") as sleep, \
                 patch("sys.stderr", new_callable=io.StringIO) as stderr:
-            forge_metadata.set_item_status("item-id", forge_metadata.STATUS_IN_PROGRESS)
+            project_board.set_item_status("item-id", config.STATUS_IN_PROGRESS)
 
         self.assertEqual(run.call_count, 2)
         sleep.assert_called_once_with(common_git.GITHUB_TRANSIENT_RETRY_BASE_DELAY_SECONDS)
@@ -987,7 +1020,7 @@ class IssueClaimPreflightTests(unittest.TestCase):
                 side_effect=forge_metadata.GitHubRateLimitExceeded("GitHub API rate limit exceeded"),
         ):
             with self.assertRaises(forge_metadata.GitHubRateLimitExceeded):
-                forge_metadata.get_issue_claim_preflights_or_empty([issue])
+                claim_preflight.get_issue_claim_preflights_or_empty([issue])
 
     def test_preflight_fallback_reports_github_error_without_traceback(self) -> None:
         issue = {"number": 1412, "labels": []}
@@ -1001,7 +1034,7 @@ class IssueClaimPreflightTests(unittest.TestCase):
         with patch.object(claim_preflight, "get_issue_claim_preflights", side_effect=error), \
                 patch("sys.stderr", new_callable=io.StringIO) as stderr:
             self.assertEqual(
-                forge_metadata.get_issue_claim_preflights_or_empty([issue]),
+                claim_preflight.get_issue_claim_preflights_or_empty([issue]),
                 {},
             )
 
@@ -1013,13 +1046,13 @@ class IssueClaimPreflightTests(unittest.TestCase):
     def test_claimable_preflight_does_not_skip(self) -> None:
         issue = {"number": 1412, "labels": []}
         self.assertFalse(
-            forge_metadata.should_skip_issue_from_preflight(issue, _preflight())
+            claim_preflight.should_skip_issue_from_preflight(issue, _preflight())
         )
 
     def test_assigned_preflight_skips_issue(self) -> None:
         issue = {"number": 1412, "labels": []}
         self.assertTrue(
-            forge_metadata.should_skip_issue_from_preflight(
+            claim_preflight.should_skip_issue_from_preflight(
                 issue,
                 _preflight(assignees=("automation-user",)),
             )
@@ -1028,7 +1061,7 @@ class IssueClaimPreflightTests(unittest.TestCase):
     def test_preflight_assigned_to_authenticated_user_does_not_skip(self) -> None:
         issue = {"number": 1412, "labels": []}
         self.assertFalse(
-            forge_metadata.should_skip_issue_from_preflight(
+            claim_preflight.should_skip_issue_from_preflight(
                 issue,
                 _preflight(assignees=("automation-user",)),
                 authenticated_user="automation-user",
@@ -1038,25 +1071,25 @@ class IssueClaimPreflightTests(unittest.TestCase):
     def test_non_todo_preflight_skips_issue(self) -> None:
         issue = {"number": 1412, "labels": []}
         self.assertTrue(
-            forge_metadata.should_skip_issue_from_preflight(
+            claim_preflight.should_skip_issue_from_preflight(
                 issue,
-                _preflight(project_status=forge_metadata.STATUS_IN_PROGRESS),
+                _preflight(project_status=config.STATUS_IN_PROGRESS),
             )
         )
 
     def test_chunked_dynamic_access_preflight_skips_in_progress_issue(self) -> None:
-        issue = _search_issue(1412, [forge_metadata.LABEL_CHUNKED_DYNAMIC_ACCESS])
+        issue = _search_issue(1412, [config.LABEL_CHUNKED_DYNAMIC_ACCESS])
         self.assertTrue(
-            forge_metadata.should_skip_issue_from_preflight(
+            claim_preflight.should_skip_issue_from_preflight(
                 issue,
-                _preflight(project_status=forge_metadata.STATUS_IN_PROGRESS),
+                _preflight(project_status=config.STATUS_IN_PROGRESS),
             )
         )
 
     def test_open_blocker_preflight_skips_issue(self) -> None:
         issue = {"number": 1412, "labels": []}
         self.assertTrue(
-            forge_metadata.should_skip_issue_from_preflight(
+            claim_preflight.should_skip_issue_from_preflight(
                 issue,
                 _preflight(open_blockers=(1392,)),
                 take_blocked_issues=False,
@@ -1066,7 +1099,7 @@ class IssueClaimPreflightTests(unittest.TestCase):
     def test_open_blocker_preflight_allows_issue_when_override_is_enabled(self) -> None:
         issue = {"number": 1412, "labels": []}
         self.assertFalse(
-            forge_metadata.should_skip_issue_from_preflight(
+            claim_preflight.should_skip_issue_from_preflight(
                 issue,
                 _preflight(open_blockers=(1392,)),
                 take_blocked_issues=True,
@@ -1076,7 +1109,7 @@ class IssueClaimPreflightTests(unittest.TestCase):
     def test_incomplete_preflight_falls_back_to_fresh_checks(self) -> None:
         issue = {"number": 1412, "labels": []}
         self.assertFalse(
-            forge_metadata.should_skip_issue_from_preflight(
+            claim_preflight.should_skip_issue_from_preflight(
                 issue,
                 _preflight(assignees=("automation-user",), complete=False),
             )
@@ -1100,8 +1133,8 @@ class IssueClaimPreflightTests(unittest.TestCase):
                                     "fieldValues": {
                                         "nodes": [
                                             {
-                                                "name": forge_metadata.STATUS_TODO,
-                                                "field": {"name": forge_metadata.STATUS_FIELD_NAME},
+                                                "name": config.STATUS_TODO,
+                                                "field": {"name": config.STATUS_FIELD_NAME},
                                             },
                                         ],
                                     },
@@ -1118,7 +1151,7 @@ class IssueClaimPreflightTests(unittest.TestCase):
         }
 
         with patch.object(claim_preflight, "gh_json", return_value=response) as gh_json:
-            preflights = forge_metadata.get_issue_claim_preflights([1412])
+            preflights = claim_preflight.get_issue_claim_preflights([1412])
 
         gh_json.assert_called_once()
         self.assertEqual(gh_json.call_args.kwargs, {"quiet": True})
@@ -1137,19 +1170,19 @@ class IssueClaimPreflightTests(unittest.TestCase):
         ]
 
         with patch.object(claim_preflight, "gh_json", side_effect=responses) as gh_json:
-            preflights = forge_metadata.get_issue_claim_preflights(issue_numbers)
+            preflights = claim_preflight.get_issue_claim_preflights(issue_numbers)
 
         self.assertEqual(gh_json.call_count, 3)
         self.assertEqual(set(preflights), set(issue_numbers))
-        self.assertLessEqual(forge_metadata.ISSUE_CLAIM_PREFLIGHT_CHUNK_SIZE, 4)
+        self.assertLessEqual(config.ISSUE_CLAIM_PREFLIGHT_CHUNK_SIZE, 4)
 
     def test_prioritized_issue_fetch_drains_each_tier_before_the_next(self) -> None:
         tier_issues = {
-            (forge_metadata.LABEL_HIGH_PRIORITY,): [
-                _search_issue(1414, [forge_metadata.LABEL_HIGH_PRIORITY]),
+            (config.LABEL_HIGH_PRIORITY,): [
+                _search_issue(1414, [config.LABEL_HIGH_PRIORITY]),
             ],
-            (forge_metadata.LABEL_PRIORITY,): [
-                _search_issue(1413, [forge_metadata.LABEL_PRIORITY]),
+            (config.LABEL_PRIORITY,): [
+                _search_issue(1413, [config.LABEL_PRIORITY]),
             ],
             (): [_search_issue(1412)],
         }
@@ -1171,7 +1204,7 @@ class IssueClaimPreflightTests(unittest.TestCase):
                 side_effect=fake_get_issues,
         ) as get_issues:
             for _ in range(4):
-                issues, scan_state = forge_metadata.get_prioritized_issues_with_label(
+                issues, scan_state = issue_queue.get_prioritized_issues_with_label(
                     forge_metadata.LABEL_LIBRARY_NEW,
                     25,
                     scan_state,
@@ -1183,31 +1216,31 @@ class IssueClaimPreflightTests(unittest.TestCase):
         self.assertEqual(
             [(call.args[2], call.args[3], call.args[4]) for call in get_issues.call_args_list],
             [
-                (0, [forge_metadata.LABEL_HIGH_PRIORITY], []),
-                (1, [forge_metadata.LABEL_HIGH_PRIORITY], []),
-                (0, [forge_metadata.LABEL_PRIORITY], [forge_metadata.LABEL_HIGH_PRIORITY]),
-                (1, [forge_metadata.LABEL_PRIORITY], [forge_metadata.LABEL_HIGH_PRIORITY]),
-                (0, [], [forge_metadata.LABEL_HIGH_PRIORITY, forge_metadata.LABEL_PRIORITY]),
-                (1, [], [forge_metadata.LABEL_HIGH_PRIORITY, forge_metadata.LABEL_PRIORITY]),
+                (0, [config.LABEL_HIGH_PRIORITY], []),
+                (1, [config.LABEL_HIGH_PRIORITY], []),
+                (0, [config.LABEL_PRIORITY], [config.LABEL_HIGH_PRIORITY]),
+                (1, [config.LABEL_PRIORITY], [config.LABEL_HIGH_PRIORITY]),
+                (0, [], [config.LABEL_HIGH_PRIORITY, config.LABEL_PRIORITY]),
+                (1, [], [config.LABEL_HIGH_PRIORITY, config.LABEL_PRIORITY]),
             ],
         )
 
     def test_tier_search_query_keeps_the_not_for_native_image_exclusion(self) -> None:
         with patch.dict(os.environ, {"FORGE_ISSUE_SEARCH_CACHE": "0"}), \
                 patch.object(issue_queue, "gh_json", return_value={"items": []}) as gh_json:
-            forge_metadata.search_issues_with_label(
+            issue_queue.search_issues_with_label(
                 forge_metadata.LABEL_LIBRARY_NEW,
                 25,
-                excluded_labels=[forge_metadata.LABEL_HIGH_PRIORITY],
+                excluded_labels=[config.LABEL_HIGH_PRIORITY],
             )
 
         self.assertEqual(
             gh_json.call_args.args[5],
             (
-                f"q=repo:{forge_metadata.REPO} is:issue is:open "
+                f"q=repo:{config.REPO} is:issue is:open "
                 f'label:"{forge_metadata.LABEL_LIBRARY_NEW}" '
-                f'-label:"{forge_metadata.LABEL_NOT_FOR_NATIVE_IMAGE}" '
-                f'-label:"{forge_metadata.LABEL_HIGH_PRIORITY}"'
+                f'-label:"{config.LABEL_NOT_FOR_NATIVE_IMAGE}" '
+                f'-label:"{config.LABEL_HIGH_PRIORITY}"'
             ),
         )
 
@@ -1222,22 +1255,22 @@ class IssueClaimPreflightTests(unittest.TestCase):
             with patch.object(issue_cache, "get_issue_claim_locks_root", return_value=lock_root), \
                     patch.object(claim_preflight, "get_issue_claim_payload", return_value=fresh_issue):
                 self.assertFalse(
-                    forge_metadata.refresh_issue_payload_for_claim(
+                    claim_preflight.refresh_issue_payload_for_claim(
                         issue,
                         forge_metadata.LABEL_LIBRARY_NEW,
                     )
                 )
-                cache = forge_metadata.read_issue_claim_cache()
+                cache = issue_cache.read_issue_claim_cache()
 
         self.assertEqual(issue["state"], "CLOSED")
-        self.assertEqual(cache[1412].reason, forge_metadata.ISSUE_CLAIM_CACHE_REASON_CLOSED)
+        self.assertEqual(cache[1412].reason, config.ISSUE_CLAIM_CACHE_REASON_CLOSED)
 
     def test_refresh_issue_payload_for_claim_skips_human_intervention_label(self) -> None:
         issue = _search_issue(1412, [forge_metadata.LABEL_LIBRARY_NEW])
         fresh_issue = {
             **_search_issue(
                 1412,
-                [forge_metadata.LABEL_LIBRARY_NEW, forge_metadata.LABEL_HUMAN_INTERVENTION],
+                [forge_metadata.LABEL_LIBRARY_NEW, config.LABEL_HUMAN_INTERVENTION],
             ),
             "state": "OPEN",
         }
@@ -1246,15 +1279,15 @@ class IssueClaimPreflightTests(unittest.TestCase):
             with patch.object(issue_cache, "get_issue_claim_locks_root", return_value=lock_root), \
                     patch.object(claim_preflight, "get_issue_claim_payload", return_value=fresh_issue):
                 self.assertFalse(
-                    forge_metadata.refresh_issue_payload_for_claim(
+                    claim_preflight.refresh_issue_payload_for_claim(
                         issue,
                         forge_metadata.LABEL_LIBRARY_NEW,
                     )
                 )
-                cache = forge_metadata.read_issue_claim_cache()
+                cache = issue_cache.read_issue_claim_cache()
 
-        self.assertTrue(forge_metadata.issue_has_label(issue, forge_metadata.LABEL_HUMAN_INTERVENTION))
-        self.assertEqual(cache[1412].reason, forge_metadata.ISSUE_CLAIM_CACHE_REASON_HUMAN_INTERVENTION)
+        self.assertTrue(issue_queue.issue_has_label(issue, config.LABEL_HUMAN_INTERVENTION))
+        self.assertEqual(cache[1412].reason, config.ISSUE_CLAIM_CACHE_REASON_HUMAN_INTERVENTION)
 
     def test_refresh_issue_payload_for_claim_skips_removed_queue_label(self) -> None:
         issue = _search_issue(1412, [forge_metadata.LABEL_LIBRARY_NEW])
@@ -1266,7 +1299,7 @@ class IssueClaimPreflightTests(unittest.TestCase):
         with patch.object(claim_preflight, "get_issue_claim_payload", return_value=fresh_issue), \
                 patch("sys.stdout", new_callable=io.StringIO) as stdout:
             self.assertFalse(
-                forge_metadata.refresh_issue_payload_for_claim(
+                claim_preflight.refresh_issue_payload_for_claim(
                     issue,
                     forge_metadata.LABEL_LIBRARY_NEW,
                 )
@@ -1286,15 +1319,15 @@ class IssueClaimPreflightTests(unittest.TestCase):
             with patch.object(issue_cache, "get_issue_claim_locks_root", return_value=lock_root), \
                     patch.object(claim_preflight, "get_issue_claim_payload", return_value=fresh_issue):
                 self.assertFalse(
-                    forge_metadata.refresh_issue_payload_for_claim(
+                    claim_preflight.refresh_issue_payload_for_claim(
                         issue,
                         forge_metadata.LABEL_LIBRARY_NEW,
                         "automation-user",
                     )
                 )
-                cache = forge_metadata.read_issue_claim_cache()
+                cache = issue_cache.read_issue_claim_cache()
 
-        self.assertEqual(cache[1412].reason, forge_metadata.ISSUE_CLAIM_CACHE_REASON_ASSIGNED)
+        self.assertEqual(cache[1412].reason, config.ISSUE_CLAIM_CACHE_REASON_ASSIGNED)
         self.assertEqual(cache[1412].assignees, ("other-user",))
 
     def test_refresh_issue_payload_for_claim_allows_issue_assigned_to_authenticated_user(self) -> None:
@@ -1307,7 +1340,7 @@ class IssueClaimPreflightTests(unittest.TestCase):
 
         with patch.object(claim_preflight, "get_issue_claim_payload", return_value=fresh_issue):
             self.assertTrue(
-                forge_metadata.refresh_issue_payload_for_claim(
+                claim_preflight.refresh_issue_payload_for_claim(
                     issue,
                     forge_metadata.LABEL_LIBRARY_NEW,
                     "automation-user",
@@ -1316,22 +1349,22 @@ class IssueClaimPreflightTests(unittest.TestCase):
 
     def test_issue_scan_batch_size_returns_candidate_batch_size(self) -> None:
         self.assertEqual(
-            forge_metadata.get_issue_scan_batch_size(1, 1),
-            forge_metadata.DEFAULT_ISSUE_SCAN_BATCH_SIZE,
+            issue_processing.get_issue_scan_batch_size(1, 1),
+            config.DEFAULT_ISSUE_SCAN_BATCH_SIZE,
         )
         self.assertEqual(
-            forge_metadata.get_issue_scan_batch_size(5, 1),
-            forge_metadata.DEFAULT_ISSUE_SCAN_BATCH_SIZE,
+            issue_processing.get_issue_scan_batch_size(5, 1),
+            config.DEFAULT_ISSUE_SCAN_BATCH_SIZE,
         )
         self.assertEqual(
-            forge_metadata.get_issue_scan_batch_size(100, 4),
-            forge_metadata.DEFAULT_ISSUE_SCAN_BATCH_SIZE,
+            issue_processing.get_issue_scan_batch_size(100, 4),
+            config.DEFAULT_ISSUE_SCAN_BATCH_SIZE,
         )
 
     def test_preflight_skips_issue_payloads_that_are_already_locally_unclaimable(self) -> None:
         human_intervention_issue = {
             "number": 1,
-            "labels": [{"name": forge_metadata.LABEL_HUMAN_INTERVENTION}],
+            "labels": [{"name": config.LABEL_HUMAN_INTERVENTION}],
             "assignees": [],
         }
         assigned_issue = {
@@ -1359,7 +1392,7 @@ class IssueClaimPreflightTests(unittest.TestCase):
                 },
         ) as get_issue_claim_preflights:
             self.assertEqual(
-                forge_metadata.get_issue_claim_preflights_or_empty(
+                claim_preflight.get_issue_claim_preflights_or_empty(
                     [human_intervention_issue, assigned_issue, own_assigned_issue, claimable_issue],
                     authenticated_user="current-user",
                 ),
@@ -1379,7 +1412,7 @@ class IssueClaimPreflightTests(unittest.TestCase):
         }
 
         self.assertFalse(
-            forge_metadata.should_skip_issue_from_preflight(issue, None)
+            claim_preflight.should_skip_issue_from_preflight(issue, None)
         )
 
     def test_payload_assigned_to_authenticated_user_does_not_skip(self) -> None:
@@ -1390,7 +1423,7 @@ class IssueClaimPreflightTests(unittest.TestCase):
         }
 
         self.assertFalse(
-            forge_metadata.should_skip_issue_from_preflight(
+            claim_preflight.should_skip_issue_from_preflight(
                 issue,
                 None,
                 authenticated_user="automation-user",
@@ -1403,15 +1436,15 @@ class IssueClaimPreflightTests(unittest.TestCase):
             "labels": [],
             "assignees": [],
         }
-        cached_skip = forge_metadata.CachedIssueClaimSkip(
+        cached_skip = records.CachedIssueClaimSkip(
             issue_number=1412,
-            reason=forge_metadata.ISSUE_CLAIM_CACHE_REASON_IN_PROGRESS,
+            reason=config.ISSUE_CLAIM_CACHE_REASON_IN_PROGRESS,
             observed_at_epoch=100.0,
-            project_status=forge_metadata.STATUS_IN_PROGRESS,
+            project_status=config.STATUS_IN_PROGRESS,
         )
 
         self.assertTrue(
-            forge_metadata.should_skip_issue_from_preflight(issue, None, cached_skip)
+            claim_preflight.should_skip_issue_from_preflight(issue, None, cached_skip)
         )
 
     def test_cached_own_assignment_does_not_skip(self) -> None:
@@ -1420,15 +1453,15 @@ class IssueClaimPreflightTests(unittest.TestCase):
             "labels": [],
             "assignees": [],
         }
-        cached_skip = forge_metadata.CachedIssueClaimSkip(
+        cached_skip = records.CachedIssueClaimSkip(
             issue_number=1412,
-            reason=forge_metadata.ISSUE_CLAIM_CACHE_REASON_ASSIGNED,
+            reason=config.ISSUE_CLAIM_CACHE_REASON_ASSIGNED,
             observed_at_epoch=100.0,
             assignees=("automation-user",),
         )
 
         self.assertFalse(
-            forge_metadata.should_skip_issue_from_preflight(
+            claim_preflight.should_skip_issue_from_preflight(
                 issue,
                 None,
                 cached_skip,
@@ -1445,7 +1478,7 @@ class IssueClaimPreflightTests(unittest.TestCase):
                         "gh_json",
                         return_value={"items": page_items},
                 ) as gh_json:
-            issues = forge_metadata.get_issues_with_label(
+            issues = issue_queue.get_issues_with_label(
                 forge_metadata.LABEL_LIBRARY_NEW,
                 1,
                 211,
@@ -1455,8 +1488,8 @@ class IssueClaimPreflightTests(unittest.TestCase):
         gh_json.assert_called_once_with(
             "api", "--method", "GET", "/search/issues",
             "-f", (
-                f"q=repo:{forge_metadata.REPO} is:issue is:open "
-                f'label:"{forge_metadata.LABEL_LIBRARY_NEW}" -label:"{forge_metadata.LABEL_NOT_FOR_NATIVE_IMAGE}"'
+                f"q=repo:{config.REPO} is:issue is:open "
+                f'label:"{forge_metadata.LABEL_LIBRARY_NEW}" -label:"{config.LABEL_NOT_FOR_NATIVE_IMAGE}"'
             ),
             "-f", "sort=created",
             "-f", "order=desc",
@@ -1472,7 +1505,7 @@ class IssueClaimPreflightTests(unittest.TestCase):
 
         with patch.dict(os.environ, {"FORGE_ISSUE_SEARCH_CACHE": "0"}), \
                 patch.object(issue_queue, "gh_json", return_value={"items": page_items}) as gh_json:
-            issues = forge_metadata.get_issues_with_label(
+            issues = issue_queue.get_issues_with_label(
                 forge_metadata.LABEL_LIBRARY_NEW,
                 2,
                 user_requested_only=True,
@@ -1485,8 +1518,8 @@ class IssueClaimPreflightTests(unittest.TestCase):
         gh_json.assert_called_once_with(
             "api", "--method", "GET", "/search/issues",
             "-f", (
-                f"q=repo:{forge_metadata.REPO} is:issue is:open "
-                f'label:"{forge_metadata.LABEL_LIBRARY_NEW}" -label:"{forge_metadata.LABEL_NOT_FOR_NATIVE_IMAGE}"'
+                f"q=repo:{config.REPO} is:issue is:open "
+                f'label:"{forge_metadata.LABEL_LIBRARY_NEW}" -label:"{config.LABEL_NOT_FOR_NATIVE_IMAGE}"'
             ),
             "-f", "sort=created",
             "-f", "order=desc",
@@ -1501,7 +1534,7 @@ class IssueClaimPreflightTests(unittest.TestCase):
             {"number": 3, "author": {"login": "vjovanov"}},
         ]
 
-        filtered = forge_metadata.filter_user_requested_issues(issues, user_requested_only=True)
+        filtered = issue_queue.filter_user_requested_issues(issues, user_requested_only=True)
 
         self.assertEqual([issue["number"] for issue in filtered], [1])
 
@@ -1512,7 +1545,7 @@ class IssueClaimPreflightTests(unittest.TestCase):
         ]
 
         with patch.object(issue_queue, "get_issues_with_label", return_value=issues) as get_issues:
-            filtered, scan_state = forge_metadata.get_prioritized_issues_with_label(
+            filtered, scan_state = issue_queue.get_prioritized_issues_with_label(
                 forge_metadata.LABEL_LIBRARY_NEW,
                 25,
                 user_requested_only=True,
@@ -1522,7 +1555,7 @@ class IssueClaimPreflightTests(unittest.TestCase):
             forge_metadata.LABEL_LIBRARY_NEW,
             25,
             0,
-            [forge_metadata.LABEL_HIGH_PRIORITY],
+            [config.LABEL_HIGH_PRIORITY],
             [],
         )
         self.assertEqual([issue["number"] for issue in filtered], [2])
@@ -1536,7 +1569,7 @@ class IssueClaimPreflightTests(unittest.TestCase):
         ]
 
         with patch.object(issue_queue, "get_issues_with_label", side_effect=batches) as get_issues:
-            filtered, scan_state = forge_metadata.get_prioritized_issues_with_label(
+            filtered, scan_state = issue_queue.get_prioritized_issues_with_label(
                 forge_metadata.LABEL_LIBRARY_NEW,
                 25,
                 user_requested_only=True,
@@ -1548,8 +1581,8 @@ class IssueClaimPreflightTests(unittest.TestCase):
         self.assertFalse(scan_state.exhausted)
 
     def test_random_issue_scan_offset_uses_open_issue_count(self) -> None:
-        with patch.object(forge_metadata, "count_issues_with_label", return_value=500), \
-                patch.object(forge_metadata.random, "randrange", return_value=123) as randrange:
+        with patch.object(issue_processing, "count_issues_with_label", return_value=500), \
+                patch.object(random, "randrange", return_value=123) as randrange:
             self.assertEqual(
                 forge_metadata.resolve_random_issue_scan_offset(forge_metadata.LABEL_LIBRARY_NEW),
                 123,
@@ -1558,8 +1591,8 @@ class IssueClaimPreflightTests(unittest.TestCase):
         randrange.assert_called_once_with(500)
 
     def test_random_issue_scan_offset_uses_user_requested_count(self) -> None:
-        with patch.object(forge_metadata, "count_issues_with_label", return_value=500) as count_issues, \
-                patch.object(forge_metadata.random, "randrange", return_value=123):
+        with patch.object(issue_processing, "count_issues_with_label", return_value=500) as count_issues, \
+                patch.object(random, "randrange", return_value=123):
             forge_metadata.resolve_random_issue_scan_offset(
                 forge_metadata.LABEL_LIBRARY_NEW,
                 user_requested_only=True,
@@ -1571,11 +1604,11 @@ class IssueClaimPreflightTests(unittest.TestCase):
         )
 
     def test_random_issue_scan_offset_counts_only_selected_priority_tier(self) -> None:
-        with patch.object(forge_metadata, "count_issues_with_label", return_value=50) as count_issues, \
-                patch.object(forge_metadata.random, "randrange", return_value=12):
+        with patch.object(issue_processing, "count_issues_with_label", return_value=50) as count_issues, \
+                patch.object(random, "randrange", return_value=12):
             offset = forge_metadata.resolve_random_issue_scan_offset(
                 forge_metadata.LABEL_LIBRARY_NEW,
-                priority=forge_metadata.PRIORITY_NORMAL,
+                priority=config.PRIORITY_NORMAL,
             )
 
         self.assertEqual(offset, 12)
@@ -1583,7 +1616,7 @@ class IssueClaimPreflightTests(unittest.TestCase):
             forge_metadata.LABEL_LIBRARY_NEW,
             [],
             False,
-            [forge_metadata.LABEL_HIGH_PRIORITY, forge_metadata.LABEL_PRIORITY],
+            [config.LABEL_HIGH_PRIORITY, config.LABEL_PRIORITY],
         )
 
     def test_fixture_issue_listing_can_exclude_non_user_authors(self) -> None:
@@ -1598,7 +1631,7 @@ class IssueClaimPreflightTests(unittest.TestCase):
                 assignees=[],
                 project_number=forge_metadata.PROJECT_NUMBER,
                 project_item_id="item-1",
-                project_status=forge_metadata.STATUS_TODO,
+                project_status=config.STATUS_TODO,
                 blockers=[],
                 comments=[],
                 continuation_marker=None,
@@ -1616,7 +1649,7 @@ class IssueClaimPreflightTests(unittest.TestCase):
                 assignees=[],
                 project_number=forge_metadata.PROJECT_NUMBER,
                 project_item_id="item-2",
-                project_status=forge_metadata.STATUS_TODO,
+                project_status=config.STATUS_TODO,
                 blockers=[],
                 comments=[],
                 continuation_marker=None,
@@ -1629,7 +1662,7 @@ class IssueClaimPreflightTests(unittest.TestCase):
         issues = state.list_open_issues_by_label(
             forge_metadata.LABEL_LIBRARY_NEW,
             limit=10,
-            excluded_authors=forge_metadata.NON_USER_REQUESTED_ISSUE_AUTHORS,
+            excluded_authors=config.NON_USER_REQUESTED_ISSUE_AUTHORS,
         )
 
         self.assertEqual([issue["number"] for issue in issues], [1])
@@ -1650,20 +1683,20 @@ class IssueClaimPreflightTests(unittest.TestCase):
 
         with tempfile.TemporaryDirectory() as lock_root:
             with patch.object(issue_cache, "get_issue_claim_locks_root", return_value=lock_root):
-                forge_metadata.record_issue_claim_cache_observations(
+                issue_cache.record_issue_claim_cache_observations(
                     [
-                        forge_metadata.IssueClaimCacheObservation(
+                        records.IssueClaimCacheObservation(
                             issue_number=1,
-                            reason=forge_metadata.ISSUE_CLAIM_CACHE_REASON_BLOCKED,
+                            reason=config.ISSUE_CLAIM_CACHE_REASON_BLOCKED,
                             open_blockers=(99,),
                         ),
                     ],
                 )
 
             with patch.object(issue_cache, "get_issue_claim_locks_root", return_value=lock_root), \
-                    patch.object(forge_metadata, "validate_issue_processing_environment"), \
+                    patch.object(issue_processing, "validate_issue_processing_environment"), \
                     patch.object(
-                        forge_metadata,
+                        issue_processing,
                         "get_prioritized_issues_with_label",
                         side_effect=[
                             ([skipped_issue], _scan_state(1)),
@@ -1671,16 +1704,16 @@ class IssueClaimPreflightTests(unittest.TestCase):
                         ],
                     ) as get_prioritized_issues_with_label, \
                     patch.object(
-                        forge_metadata,
+                        claim_preflight,
                         "get_issue_claim_preflights_or_empty",
                     ) as get_issue_claim_preflights_or_empty, \
                     patch.object(
-                        forge_metadata,
+                        issue_processing,
                         "claim_issue_for_processing",
                         return_value=_claimed_issue(),
                     ) as claim_issue_for_processing, \
                     patch.object(
-                        forge_metadata,
+                        issue_processing,
                         "process_claimed_issue_lifecycle",
                         return_value=True,
                     ), \
@@ -1706,13 +1739,13 @@ class IssueClaimPreflightTests(unittest.TestCase):
             [
                 call(
                     forge_metadata.LABEL_LIBRARY_NEW,
-                    forge_metadata.DEFAULT_ISSUE_SCAN_BATCH_SIZE,
-                    forge_metadata.IssueQueueScanState(),
+                    config.DEFAULT_ISSUE_SCAN_BATCH_SIZE,
+                    issue_queue.IssueQueueScanState(),
                     False,
                 ),
                 call(
                     forge_metadata.LABEL_LIBRARY_NEW,
-                    forge_metadata.DEFAULT_ISSUE_SCAN_BATCH_SIZE,
+                    config.DEFAULT_ISSUE_SCAN_BATCH_SIZE,
                     _scan_state(1),
                     False,
                 ),
@@ -1762,7 +1795,7 @@ def _fixture_form_issue(
         title: str = "Add support for org.example:widget:1.2.3",
         label_names: list[str] | None = None,
         assignees: list[str] | None = None,
-        project_status: str = forge_metadata.STATUS_TODO,
+        project_status: str = config.STATUS_TODO,
         comments: list | None = None,
 ) -> FixtureIssue:
     return FixtureIssue(
@@ -1789,8 +1822,8 @@ class IssueFormGateTests(unittest.TestCase):
     """The claim-held issue-form gate. §FS-forge-run-requirements.3"""
 
     def test_well_formed_issue_is_accepted(self) -> None:
-        with patch.object(forge_metadata, "artifact_is_published", return_value=True):
-            verdict = forge_metadata.check_issue_form(
+        with patch.object(issue_form, "artifact_is_published", return_value=True):
+            verdict = issue_form.check_issue_form(
                 _form_issue(),
                 forge_metadata.LABEL_LIBRARY_NEW,
                 "/nonexistent",
@@ -1804,18 +1837,18 @@ class IssueFormGateTests(unittest.TestCase):
             label_names=[
                 forge_metadata.LABEL_LIBRARY_NEW,
                 forge_metadata.LABEL_JAVAC_FAIL,
-                forge_metadata.LABEL_PRIORITY,
+                config.LABEL_PRIORITY,
             ],
         )
 
-        with patch.object(forge_metadata, "artifact_is_published") as is_published:
-            verdict = forge_metadata.check_issue_form(
+        with patch.object(issue_form, "artifact_is_published") as is_published:
+            verdict = issue_form.check_issue_form(
                 issue,
                 forge_metadata.LABEL_LIBRARY_NEW,
                 "/nonexistent",
             )
 
-        self.assertEqual(verdict.rejection.rule, forge_metadata.ISSUE_FORM_RULE_SINGLE_WORKFLOW_LABEL)
+        self.assertEqual(verdict.rejection.rule, config.ISSUE_FORM_RULE_SINGLE_WORKFLOW_LABEL)
         self.assertEqual(
             verdict.rejection.offending_value,
             f"{forge_metadata.LABEL_JAVAC_FAIL}, {forge_metadata.LABEL_LIBRARY_NEW}",
@@ -1826,14 +1859,14 @@ class IssueFormGateTests(unittest.TestCase):
     def test_title_without_coordinates_is_rejected_quoting_the_title(self) -> None:
         issue = _form_issue(title="Please add support for Widget")
 
-        with patch.object(forge_metadata, "artifact_is_published") as is_published:
-            verdict = forge_metadata.check_issue_form(
+        with patch.object(issue_form, "artifact_is_published") as is_published:
+            verdict = issue_form.check_issue_form(
                 issue,
                 forge_metadata.LABEL_LIBRARY_NEW,
                 "/nonexistent",
             )
 
-        self.assertEqual(verdict.rejection.rule, forge_metadata.ISSUE_FORM_RULE_MAVEN_COORDINATES)
+        self.assertEqual(verdict.rejection.rule, config.ISSUE_FORM_RULE_MAVEN_COORDINATES)
         self.assertEqual(verdict.rejection.offending_value, "Please add support for Widget")
         is_published.assert_not_called()
 
@@ -1842,10 +1875,10 @@ class IssueFormGateTests(unittest.TestCase):
             _write_index(repo_path, "org.example", "widget", [{"metadata-version": "1.0.0"}])
 
             with (
-                    patch.object(forge_metadata, "artifact_is_published") as is_published,
+                    patch.object(issue_form, "artifact_is_published") as is_published,
                     patch("sys.stderr", new_callable=io.StringIO) as stderr,
             ):
-                verdict = forge_metadata.check_issue_form(
+                verdict = issue_form.check_issue_form(
                     _form_issue(
                         title="Fix javac failure for org.example:widget:1.2.3",
                         label_names=[forge_metadata.LABEL_JAVAC_FAIL],
@@ -1854,7 +1887,7 @@ class IssueFormGateTests(unittest.TestCase):
                     repo_path,
                 )
 
-        self.assertEqual(verdict.rejection.rule, forge_metadata.ISSUE_FORM_RULE_CURRENT_LATEST_VERSION)
+        self.assertEqual(verdict.rejection.rule, config.ISSUE_FORM_RULE_CURRENT_LATEST_VERSION)
         self.assertEqual(verdict.rejection.offending_value, "org.example:widget")
         is_published.assert_not_called()
         self.assertEqual("", stderr.getvalue())
@@ -1868,8 +1901,8 @@ class IssueFormGateTests(unittest.TestCase):
                 [{"metadata-version": "2.0.0", "latest": True}],
             )
 
-            with patch.object(forge_metadata, "artifact_is_published") as is_published:
-                verdict = forge_metadata.check_issue_form(
+            with patch.object(issue_form, "artifact_is_published") as is_published:
+                verdict = issue_form.check_issue_form(
                     _form_issue(
                         title="Fix javac failure for org.example:widget:1.9.0",
                         label_names=[forge_metadata.LABEL_JAVAC_FAIL],
@@ -1878,7 +1911,7 @@ class IssueFormGateTests(unittest.TestCase):
                     repo_path,
                 )
 
-        self.assertEqual(verdict.rejection.rule, forge_metadata.ISSUE_FORM_RULE_NEWER_THAN_LATEST)
+        self.assertEqual(verdict.rejection.rule, config.ISSUE_FORM_RULE_NEWER_THAN_LATEST)
         self.assertEqual(verdict.rejection.offending_value, "1.9.0")
         self.assertIn("2.0.0", verdict.rejection.requirement)
         is_published.assert_not_called()
@@ -1892,8 +1925,8 @@ class IssueFormGateTests(unittest.TestCase):
                 [{"metadata-version": "2.0.0", "latest": True}],
             )
 
-            with patch.object(forge_metadata, "artifact_is_published", return_value=True):
-                verdict = forge_metadata.check_issue_form(
+            with patch.object(issue_form, "artifact_is_published", return_value=True):
+                verdict = issue_form.check_issue_form(
                     _form_issue(
                         title="Fix javac failure for org.example:widget:2.1.0",
                         label_names=[forge_metadata.LABEL_JAVAC_FAIL],
@@ -1905,21 +1938,21 @@ class IssueFormGateTests(unittest.TestCase):
         self.assertTrue(verdict.accepted)
 
     def test_unpublished_coordinate_is_rejected_naming_the_repositories(self) -> None:
-        with patch.object(forge_metadata, "artifact_is_published", return_value=False):
-            verdict = forge_metadata.check_issue_form(
+        with patch.object(issue_form, "artifact_is_published", return_value=False):
+            verdict = issue_form.check_issue_form(
                 _form_issue(),
                 forge_metadata.LABEL_LIBRARY_NEW,
                 "/nonexistent",
             )
 
-        self.assertEqual(verdict.rejection.rule, forge_metadata.ISSUE_FORM_RULE_PUBLISHED_ARTIFACT)
+        self.assertEqual(verdict.rejection.rule, config.ISSUE_FORM_RULE_PUBLISHED_ARTIFACT)
         self.assertEqual(verdict.rejection.offending_value, "org.example:widget:1.2.3")
-        for repository_url in forge_metadata.ARTIFACT_REPOSITORY_URLS:
+        for repository_url in ARTIFACT_REPOSITORY_URLS:
             self.assertIn(repository_url, verdict.rejection.requirement)
 
     def test_unreachable_repository_leaves_the_form_undecided(self) -> None:
-        with patch.object(forge_metadata, "artifact_is_published", return_value=None):
-            verdict = forge_metadata.check_issue_form(
+        with patch.object(issue_form, "artifact_is_published", return_value=None):
+            verdict = issue_form.check_issue_form(
                 _form_issue(),
                 forge_metadata.LABEL_LIBRARY_NEW,
                 "/nonexistent",
@@ -1937,14 +1970,14 @@ class IssueFormRejectionTests(unittest.TestCase):
         self.addCleanup(setattr, fixture_support, "fixture_github_state", None)
         self.addCleanup(forge_metadata.clear_issue_caches)
 
-    def _reject(self, state: FixtureGitHubState, issue: dict) -> forge_metadata.IssueFormRejection:
+    def _reject(self, state: FixtureGitHubState, issue: dict) -> issue_form.IssueFormRejection:
         forge_metadata.configure_fixture_testing(fixture_state=state)
-        rejection = forge_metadata.check_issue_form(
+        rejection = issue_form.check_issue_form(
             issue,
             forge_metadata.LABEL_LIBRARY_NEW,
             "/nonexistent",
         ).rejection
-        forge_metadata.reject_issue_form(issue, rejection)
+        issue_form.reject_issue_form(issue, rejection)
         return rejection
 
     def test_rejection_comments_the_rule_then_closes_the_issue(self) -> None:
@@ -1957,12 +1990,12 @@ class IssueFormRejectionTests(unittest.TestCase):
         comments = state.get_issue_comments(4242)
         self.assertEqual(len(comments), 1)
         body = comments[0]["body"]
-        self.assertIn(forge_metadata.ISSUE_FORM_RULE_MAVEN_COORDINATES, body)
+        self.assertIn(config.ISSUE_FORM_RULE_MAVEN_COORDINATES, body)
         self.assertIn("`Add support for Widget`", body)
         self.assertIn(rejection.requirement, body)
         self.assertEqual(state.get_issue_claim_payload(4242)["state"], "CLOSED")
         self.assertNotIn(
-            forge_metadata.LABEL_HUMAN_INTERVENTION,
+            config.LABEL_HUMAN_INTERVENTION,
             state.get_issue_labels(4242),
         )
         output = stdout.getvalue()
@@ -1983,8 +2016,8 @@ class IssueFormRejectionTests(unittest.TestCase):
 
     def _reopened_state(self, title: str) -> FixtureGitHubState:
         """Fixture state for an issue reopened with its rejection comment still on it."""
-        rejection = forge_metadata.IssueFormRejection(
-            rule=forge_metadata.ISSUE_FORM_RULE_MAVEN_COORDINATES,
+        rejection = issue_form.IssueFormRejection(
+            rule=config.ISSUE_FORM_RULE_MAVEN_COORDINATES,
             offending_value=title,
             requirement="Name the coordinates.",
         )
@@ -1992,8 +2025,8 @@ class IssueFormRejectionTests(unittest.TestCase):
             _fixture_form_issue(
                 title=title,
                 comments=[FixtureComment(
-                    author=forge_metadata.FIXTURE_AUTHENTICATED_USER,
-                    body=forge_metadata.build_issue_form_rejection_comment(rejection),
+                    author=config.FIXTURE_AUTHENTICATED_USER,
+                    body=issue_form.build_issue_form_rejection_comment(rejection),
                 )],
             ),
         ])
@@ -2020,8 +2053,8 @@ class IssueFormRejectionTests(unittest.TestCase):
         self.assertEqual(len(state.get_issue_comments(4242)), 2)
 
     def _reject_live(self, issue: dict) -> tuple:
-        rejection = forge_metadata.IssueFormRejection(
-            rule=forge_metadata.ISSUE_FORM_RULE_MAVEN_COORDINATES,
+        rejection = issue_form.IssueFormRejection(
+            rule=config.ISSUE_FORM_RULE_MAVEN_COORDINATES,
             offending_value="Add support for Widget",
             requirement="Name the coordinates.",
         )
@@ -2030,24 +2063,24 @@ class IssueFormRejectionTests(unittest.TestCase):
         def record(event: str) -> Callable[..., None]:
             return lambda *_args, **_kwargs: events.append(event)
 
-        with patch.object(forge_metadata, "get_issue_comments", return_value=[]), \
+        with patch.object(issue_form, "get_issue_comments", return_value=[]), \
                 patch.object(
-                    forge_metadata,
+                    issue_form,
                     "post_issue_comment",
                     side_effect=record("comment"),
                 ) as comment, \
                 patch.object(
-                    forge_metadata,
+                    issue_form,
                     "close_issue",
                     side_effect=record("close"),
                 ) as close, \
                 patch.object(
-                    forge_metadata,
+                    issue_form,
                     "clear_issue_assignees",
                     side_effect=record("clear"),
                 ) as clear, \
-                patch.object(forge_metadata, "add_issue_label") as label:
-            succeeded = forge_metadata.reject_issue_form(issue, rejection)
+                patch.object(issue_admin, "add_issue_label") as label:
+            succeeded = issue_form.reject_issue_form(issue, rejection)
         return succeeded, events, comment, close, clear, label
 
     def test_rejection_closes_claim_before_clearing_assignee(self) -> None:
@@ -2063,20 +2096,20 @@ class IssueFormRejectionTests(unittest.TestCase):
         label.assert_not_called()
 
     def test_failed_comment_does_not_close_or_clear_the_claim(self) -> None:
-        rejection = forge_metadata.IssueFormRejection(
-            rule=forge_metadata.ISSUE_FORM_RULE_MAVEN_COORDINATES,
+        rejection = issue_form.IssueFormRejection(
+            rule=config.ISSUE_FORM_RULE_MAVEN_COORDINATES,
             offending_value="Add support for Widget",
             requirement="Name the coordinates.",
         )
-        with patch.object(forge_metadata, "get_issue_comments", return_value=[]), \
+        with patch.object(issue_form, "get_issue_comments", return_value=[]), \
                 patch.object(
-                    forge_metadata,
+                    issue_form,
                     "post_issue_comment",
                     side_effect=RuntimeError("comment failed"),
                 ), \
-                patch.object(forge_metadata, "close_issue") as close, \
-                patch.object(forge_metadata, "clear_issue_assignees") as clear:
-            succeeded = forge_metadata.reject_issue_form(
+                patch.object(issue_form, "close_issue") as close, \
+                patch.object(issue_form, "clear_issue_assignees") as clear:
+            succeeded = issue_form.reject_issue_form(
                 _form_issue(title="Add support for Widget", assignees=["runner"]),
                 rejection,
             )
@@ -2101,7 +2134,7 @@ class IssueFormGateClaimOrderTests(unittest.TestCase):
                 "resolve_git_commit",
                 return_value="base-sha",
         ) as resolve:
-            commit = forge_metadata.fetch_issue_base_commit("/repo")
+            commit = worktrees.fetch_issue_base_commit("/repo")
 
         self.assertEqual(commit, "base-sha")
         run.assert_called_once_with(
@@ -2116,14 +2149,14 @@ class IssueFormGateClaimOrderTests(unittest.TestCase):
         resolve.assert_called_once_with("/repo", "refs/remotes/origin/master")
 
     def test_base_fetch_failure_leaves_issue_unclaimed(self) -> None:
-        with patch.object(forge_metadata, "refresh_issue_payload_for_claim", return_value=True), \
+        with patch.object(claim_setup, "refresh_issue_payload_for_claim", return_value=True), \
                 patch.object(
-                    forge_metadata,
+                    claim_setup,
                     "fetch_issue_base_commit",
                     side_effect=RuntimeError("origin unavailable"),
                 ), \
-                patch.object(forge_metadata, "try_claim_issue") as claim, \
-                patch.object(forge_metadata, "create_issue_workspace") as workspace:
+                patch.object(claim_setup, "try_claim_issue") as claim, \
+                patch.object(claim_setup, "create_issue_workspace") as workspace:
             claimed_issue = forge_metadata.claim_issue_for_processing(
                 _form_issue(),
                 forge_metadata.LABEL_LIBRARY_NEW,
@@ -2138,49 +2171,49 @@ class IssueFormGateClaimOrderTests(unittest.TestCase):
 
     def test_malformed_issue_uses_pinned_worktree_before_rejection(self) -> None:
         issue = _form_issue(title="Add support for Widget")
-        rejection = forge_metadata.IssueFormRejection(
-            rule=forge_metadata.ISSUE_FORM_RULE_MAVEN_COORDINATES,
+        rejection = issue_form.IssueFormRejection(
+            rule=config.ISSUE_FORM_RULE_MAVEN_COORDINATES,
             offending_value="Add support for Widget",
             requirement="Name the coordinates.",
         )
         events: list[str] = []
 
-        with patch.object(forge_metadata, "refresh_issue_payload_for_claim", return_value=True), \
+        with patch.object(claim_setup, "refresh_issue_payload_for_claim", return_value=True), \
                 patch.object(
-                    forge_metadata,
+                    claim_setup,
                     "fetch_issue_base_commit",
                     side_effect=lambda *_args: events.append("base") or "base-sha",
                 ), \
                 patch.object(
-                    forge_metadata,
+                    claim_setup,
                     "try_claim_issue",
                     side_effect=lambda *_args: events.append("claim") or "item-4242",
                 ), \
                 patch.object(
-                    forge_metadata,
+                    claim_setup,
                     "create_issue_workspace",
                     side_effect=lambda *_args: events.append("workspace") or ("/worktree", "/metrics"),
                 ) as workspace, \
                 patch.object(
-                    forge_metadata,
+                    claim_setup,
                     "create_preflight_info_dir",
                     return_value="/preflight",
                 ), \
                 patch.object(
-                    forge_metadata,
+                    claim_setup,
                     "check_issue_form",
                     side_effect=lambda *_args: (
                         events.append("check")
-                        or forge_metadata.IssueFormVerdict(rejection=rejection)
+                        or issue_form.IssueFormVerdict(rejection=rejection)
                     ),
                 ) as check, \
                 patch.object(
-                    forge_metadata,
+                    claim_setup,
                     "reject_issue_form",
                     side_effect=lambda *_args: events.append("reject") or True,
                 ) as reject, \
                 patch.object(
-                    forge_metadata,
+                    claim_setup,
                     "cleanup_claim_preparation_workspace",
                     side_effect=lambda *_args: events.append("cleanup"),
                 ) as cleanup:
@@ -2200,29 +2233,29 @@ class IssueFormGateClaimOrderTests(unittest.TestCase):
         cleanup.assert_called_once_with("/repo", "/worktree", "/preflight")
 
     def test_undecided_form_releases_claim_and_worktree(self) -> None:
-        with patch.object(forge_metadata, "refresh_issue_payload_for_claim", return_value=True), \
-                patch.object(forge_metadata, "fetch_issue_base_commit", return_value="base-sha"), \
-                patch.object(forge_metadata, "try_claim_issue", return_value="item-4242"), \
+        with patch.object(claim_setup, "refresh_issue_payload_for_claim", return_value=True), \
+                patch.object(claim_setup, "fetch_issue_base_commit", return_value="base-sha"), \
+                patch.object(claim_setup, "try_claim_issue", return_value="item-4242"), \
                 patch.object(
-                    forge_metadata,
+                    claim_setup,
                     "create_issue_workspace",
                     return_value=("/worktree", "/metrics"),
                 ), \
                 patch.object(
-                    forge_metadata,
+                    claim_setup,
                     "create_preflight_info_dir",
                     return_value="/preflight",
                 ), \
                 patch.object(
-                    forge_metadata,
+                    claim_setup,
                     "check_issue_form",
-                    return_value=forge_metadata.IssueFormVerdict(
+                    return_value=issue_form.IssueFormVerdict(
                         undecided_reason="host unreachable",
                     ),
                 ), \
-                patch.object(forge_metadata, "reject_issue_form") as reject, \
-                patch.object(forge_metadata, "revert_issue_claim") as revert, \
-                patch.object(forge_metadata, "cleanup_claim_preparation_workspace") as cleanup:
+                patch.object(claim_setup, "reject_issue_form") as reject, \
+                patch.object(claim_setup, "revert_issue_claim") as revert, \
+                patch.object(claim_setup, "cleanup_claim_preparation_workspace") as cleanup:
             claimed_issue = forge_metadata.claim_issue_for_processing(
                 _form_issue(),
                 forge_metadata.LABEL_LIBRARY_NEW,
@@ -2237,32 +2270,32 @@ class IssueFormGateClaimOrderTests(unittest.TestCase):
         cleanup.assert_called_once_with("/repo", "/worktree", "/preflight")
 
     def test_failed_rejection_releases_claim_and_worktree(self) -> None:
-        rejection = forge_metadata.IssueFormRejection(
-            rule=forge_metadata.ISSUE_FORM_RULE_MAVEN_COORDINATES,
+        rejection = issue_form.IssueFormRejection(
+            rule=config.ISSUE_FORM_RULE_MAVEN_COORDINATES,
             offending_value="Add support for Widget",
             requirement="Name the coordinates.",
         )
-        with patch.object(forge_metadata, "refresh_issue_payload_for_claim", return_value=True), \
-                patch.object(forge_metadata, "fetch_issue_base_commit", return_value="base-sha"), \
-                patch.object(forge_metadata, "try_claim_issue", return_value="item-4242"), \
+        with patch.object(claim_setup, "refresh_issue_payload_for_claim", return_value=True), \
+                patch.object(claim_setup, "fetch_issue_base_commit", return_value="base-sha"), \
+                patch.object(claim_setup, "try_claim_issue", return_value="item-4242"), \
                 patch.object(
-                    forge_metadata,
+                    claim_setup,
                     "create_issue_workspace",
                     return_value=("/worktree", "/metrics"),
                 ), \
                 patch.object(
-                    forge_metadata,
+                    claim_setup,
                     "create_preflight_info_dir",
                     return_value="/preflight",
                 ), \
                 patch.object(
-                    forge_metadata,
+                    claim_setup,
                     "check_issue_form",
-                    return_value=forge_metadata.IssueFormVerdict(rejection=rejection),
+                    return_value=issue_form.IssueFormVerdict(rejection=rejection),
                 ), \
-                patch.object(forge_metadata, "reject_issue_form", return_value=False), \
-                patch.object(forge_metadata, "revert_issue_claim") as revert, \
-                patch.object(forge_metadata, "cleanup_claim_preparation_workspace") as cleanup:
+                patch.object(claim_setup, "reject_issue_form", return_value=False), \
+                patch.object(claim_setup, "revert_issue_claim") as revert, \
+                patch.object(claim_setup, "cleanup_claim_preparation_workspace") as cleanup:
             claimed_issue = forge_metadata.claim_issue_for_processing(
                 _form_issue(title="Add support for Widget"),
                 forge_metadata.LABEL_LIBRARY_NEW,
@@ -2280,36 +2313,36 @@ class IssueFormGateClaimOrderTests(unittest.TestCase):
         cleanup.assert_called_once_with("/repo", "/worktree", "/preflight")
 
     def test_unexpected_post_claim_failure_releases_claim_and_worktree(self) -> None:
-        with patch.object(forge_metadata, "refresh_issue_payload_for_claim", return_value=True), \
-                patch.object(forge_metadata, "fetch_issue_base_commit", return_value="base-sha"), \
-                patch.object(forge_metadata, "try_claim_issue", return_value="item-4242"), \
+        with patch.object(claim_setup, "refresh_issue_payload_for_claim", return_value=True), \
+                patch.object(claim_setup, "fetch_issue_base_commit", return_value="base-sha"), \
+                patch.object(claim_setup, "try_claim_issue", return_value="item-4242"), \
                 patch.object(
-                    forge_metadata,
+                    claim_setup,
                     "create_issue_workspace",
                     return_value=("/worktree", "/metrics"),
                 ), \
                 patch.object(
-                    forge_metadata,
+                    claim_setup,
                     "create_preflight_info_dir",
                     return_value="/preflight",
                 ), \
                 patch.object(
-                    forge_metadata,
+                    claim_setup,
                     "check_issue_form",
-                    return_value=forge_metadata.ISSUE_FORM_ACCEPTED,
+                    return_value=issue_form.ISSUE_FORM_ACCEPTED,
                 ), \
                 patch.object(
-                    forge_metadata,
+                    claim_setup,
                     "maybe_handle_not_for_native_image_issue",
                     return_value=False,
                 ), \
                 patch.object(
-                    forge_metadata,
+                    claim_setup,
                     "build_claim_metadata",
                     side_effect=RuntimeError("invalid metadata index"),
                 ) as build_metadata, \
-                patch.object(forge_metadata, "revert_issue_claim") as revert, \
-                patch.object(forge_metadata, "cleanup_claim_preparation_workspace") as cleanup:
+                patch.object(claim_setup, "revert_issue_claim") as revert, \
+                patch.object(claim_setup, "cleanup_claim_preparation_workspace") as cleanup:
             claimed_issue = forge_metadata.claim_issue_for_processing(
                 _form_issue(),
                 forge_metadata.LABEL_LIBRARY_NEW,
@@ -2333,45 +2366,45 @@ class IssueFormGateClaimOrderTests(unittest.TestCase):
 
     def test_successful_claim_uses_one_pinned_base_for_all_repository_state(self) -> None:
         issue = _form_issue()
-        with patch.object(forge_metadata, "refresh_issue_payload_for_claim", return_value=True), \
-                patch.object(forge_metadata, "fetch_issue_base_commit", return_value="base-sha"), \
-                patch.object(forge_metadata, "try_claim_issue", return_value="item-4242"), \
+        with patch.object(claim_setup, "refresh_issue_payload_for_claim", return_value=True), \
+                patch.object(claim_setup, "fetch_issue_base_commit", return_value="base-sha"), \
+                patch.object(claim_setup, "try_claim_issue", return_value="item-4242"), \
                 patch.object(
-                    forge_metadata,
+                    claim_setup,
                     "create_issue_workspace",
                     return_value=("/worktree", "/metrics"),
                 ) as workspace, \
                 patch.object(
-                    forge_metadata,
+                    claim_setup,
                     "create_preflight_info_dir",
                     return_value="/preflight",
                 ), \
                 patch.object(
-                    forge_metadata,
+                    claim_setup,
                     "check_issue_form",
-                    return_value=forge_metadata.ISSUE_FORM_ACCEPTED,
+                    return_value=issue_form.ISSUE_FORM_ACCEPTED,
                 ) as check, \
                 patch.object(
-                    forge_metadata,
+                    claim_setup,
                     "maybe_handle_not_for_native_image_issue",
                     return_value=False,
                 ) as native_image, \
                 patch.object(
-                    forge_metadata,
+                    claim_setup,
                     "build_claim_metadata",
                     return_value=("org.example:widget:1.2.3", None, None),
                 ) as build_metadata, \
                 patch.object(
-                    forge_metadata,
+                    claim_setup,
                     "resolve_issue_continuation_marker",
                     return_value=None,
                 ) as continuation, \
                 patch.object(
-                    forge_metadata,
+                    claim_setup,
                     "resolve_chunked_dynamic_access_exhaust_report",
                     return_value=None,
                 ) as exhaust_report, \
-                patch.object(forge_metadata, "cleanup_claim_preparation_workspace") as cleanup:
+                patch.object(claim_setup, "cleanup_claim_preparation_workspace") as cleanup:
             claimed_issue = forge_metadata.claim_issue_for_processing(
                 issue,
                 forge_metadata.LABEL_LIBRARY_NEW,
@@ -2405,48 +2438,48 @@ class IssueFormGateClaimOrderTests(unittest.TestCase):
     def test_missing_chunk_report_returns_claim_to_todo(self) -> None:
         issue = _form_issue(label_names=[
             forge_metadata.LABEL_LIBRARY_NEW,
-            forge_metadata.LABEL_CHUNKED_DYNAMIC_ACCESS,
+            config.LABEL_CHUNKED_DYNAMIC_ACCESS,
         ])
-        with patch.object(forge_metadata, "refresh_issue_payload_for_claim", return_value=True), \
-                patch.object(forge_metadata, "fetch_issue_base_commit", return_value="base-sha"), \
-                patch.object(forge_metadata, "try_claim_issue", return_value="item-4242"), \
+        with patch.object(claim_setup, "refresh_issue_payload_for_claim", return_value=True), \
+                patch.object(claim_setup, "fetch_issue_base_commit", return_value="base-sha"), \
+                patch.object(claim_setup, "try_claim_issue", return_value="item-4242"), \
                 patch.object(
-                    forge_metadata,
+                    claim_setup,
                     "create_issue_workspace",
                     return_value=("/worktree", "/metrics"),
                 ), \
                 patch.object(
-                    forge_metadata,
+                    claim_setup,
                     "create_preflight_info_dir",
                     return_value="/preflight",
                 ), \
                 patch.object(
-                    forge_metadata,
+                    claim_setup,
                     "check_issue_form",
-                    return_value=forge_metadata.ISSUE_FORM_ACCEPTED,
+                    return_value=issue_form.ISSUE_FORM_ACCEPTED,
                 ), \
                 patch.object(
-                    forge_metadata,
+                    claim_setup,
                     "maybe_handle_not_for_native_image_issue",
                     return_value=False,
                 ), \
                 patch.object(
-                    forge_metadata,
+                    claim_setup,
                     "build_claim_metadata",
                     return_value=("org.example:widget:1.2.3", None, None),
                 ), \
                 patch.object(
-                    forge_metadata,
+                    claim_setup,
                     "resolve_issue_continuation_marker",
                     return_value=None,
                 ), \
                 patch.object(
-                    forge_metadata,
+                    claim_setup,
                     "resolve_chunked_dynamic_access_exhaust_report",
                     side_effect=RuntimeError("missing report"),
                 ), \
-                patch.object(forge_metadata, "revert_issue_claim") as revert, \
-                patch.object(forge_metadata, "cleanup_claim_preparation_workspace") as cleanup:
+                patch.object(claim_setup, "revert_issue_claim") as revert, \
+                patch.object(claim_setup, "cleanup_claim_preparation_workspace") as cleanup:
             claimed_issue = forge_metadata.claim_issue_for_processing(
                 issue,
                 forge_metadata.LABEL_LIBRARY_NEW,
@@ -2476,11 +2509,11 @@ class IssueFormGateClaimOrderTests(unittest.TestCase):
                 "fetch_remote_branch",
                 return_value="refs/remotes/origin/ai/runner/preserved",
         ) as fetch_branch, patch.object(
-                forge_metadata.subprocess,
+                subprocess,
                 "run",
                 return_value=completed,
         ) as run:
-            resumed = forge_metadata.checkout_continuation_branch(
+            resumed = continuation.checkout_continuation_branch(
                 "/worktree",
                 marker,
                 "base-sha",
@@ -2507,7 +2540,7 @@ class SingleIssueProcessingTests(unittest.TestCase):
         claimed_issue = _claimed_issue()
         pipeline_argv = ["--coordinates", claimed_issue.issue_coordinates]
 
-        forge_metadata.append_chunked_dynamic_access_workflow_args(pipeline_argv, claimed_issue, 4)
+        dynamic_access.append_chunked_dynamic_access_workflow_args(pipeline_argv, claimed_issue, 4)
 
         self.assertEqual(
             pipeline_argv,
@@ -2522,7 +2555,7 @@ class SingleIssueProcessingTests(unittest.TestCase):
         claimed_issue = _claimed_issue()
         pipeline_argv = ["--coordinates", claimed_issue.issue_coordinates]
 
-        forge_metadata.append_chunked_dynamic_access_workflow_args(pipeline_argv, claimed_issue, None)
+        dynamic_access.append_chunked_dynamic_access_workflow_args(pipeline_argv, claimed_issue, None)
 
         self.assertEqual(
             pipeline_argv,
@@ -2535,7 +2568,7 @@ class SingleIssueProcessingTests(unittest.TestCase):
     def test_prepare_dynamic_access_chunking_records_threshold_and_applies_label(self) -> None:
         with tempfile.TemporaryDirectory() as tmpdir:
             claimed_issue = _claimed_issue()
-            claimed_issue = forge_metadata.ClaimedIssue(
+            claimed_issue = records.ClaimedIssue(
                 **{
                     **claimed_issue.__dict__,
                     "worktree_path": tmpdir,
@@ -2550,39 +2583,39 @@ class SingleIssueProcessingTests(unittest.TestCase):
                 "org.example.F",
             ])
 
-            with patch.object(forge_metadata, "_prepare_new_library_dynamic_access_report"), \
-                    patch.object(forge_metadata, "_generate_dispatcher_dynamic_access_report"), \
-                    patch.object(forge_metadata, "_load_dispatcher_dynamic_access_report", return_value=report), \
-                    patch.object(forge_metadata, "add_issue_label") as add_issue_label, \
+            with patch.object(dynamic_access, "_prepare_new_library_dynamic_access_report"), \
+                    patch.object(dynamic_access, "_generate_dispatcher_dynamic_access_report"), \
+                    patch.object(dynamic_access, "_load_dispatcher_dynamic_access_report", return_value=report), \
+                    patch.object(dynamic_access, "add_issue_label") as add_issue_label, \
                     patch.dict(os.environ, {"FORGE_DYNAMIC_ACCESS_CHUNK_CLASS_THRESHOLD": "5"}, clear=True):
-                chunk_count = forge_metadata.prepare_dynamic_access_chunking(
+                chunk_count = dynamic_access.prepare_dynamic_access_chunking(
                     claimed_issue,
                     "dynamic_access_main_sources_pi_gpt-5.6-sol",
                 )
 
-            report_path = forge_metadata.dynamic_access_exhaust_report_path(
+            report_path = dynamic_access_exhaust_report_path(
                 tmpdir,
                 claimed_issue.issue_coordinates,
             )
             self.assertEqual(chunk_count, 5)
-            self.assertTrue(forge_metadata.issue_has_label(claimed_issue.issue, forge_metadata.LABEL_CHUNKED_DYNAMIC_ACCESS))
-            add_issue_label.assert_called_once_with(1412, forge_metadata.LABEL_CHUNKED_DYNAMIC_ACCESS)
+            self.assertTrue(issue_queue.issue_has_label(claimed_issue.issue, config.LABEL_CHUNKED_DYNAMIC_ACCESS))
+            add_issue_label.assert_called_once_with(1412, config.LABEL_CHUNKED_DYNAMIC_ACCESS)
             self.assertTrue(os.path.isfile(report_path))
-            report_state = forge_metadata.DynamicAccessExhaustReport.load(report_path)
+            report_state = DynamicAccessExhaustReport.load(report_path)
             self.assertEqual(report_state.class_threshold, 5)
             self.assertEqual(report_state.current_chunk_class_count, 5)
 
     def test_prepare_dynamic_access_chunking_uses_remaining_class_count_for_final_chunk(self) -> None:
         with tempfile.TemporaryDirectory() as tmpdir:
             claimed_issue = _claimed_issue()
-            claimed_issue.issue["labels"] = [{"name": forge_metadata.LABEL_CHUNKED_DYNAMIC_ACCESS}]
-            claimed_issue = forge_metadata.ClaimedIssue(
+            claimed_issue.issue["labels"] = [{"name": config.LABEL_CHUNKED_DYNAMIC_ACCESS}]
+            claimed_issue = records.ClaimedIssue(
                 **{
                     **claimed_issue.__dict__,
                     "worktree_path": tmpdir,
                 },
             )
-            report_state = forge_metadata.DynamicAccessExhaustReport.create(
+            report_state = DynamicAccessExhaustReport.create(
                 coordinate=claimed_issue.issue_coordinates,
                 issue_number=1412,
             )
@@ -2600,24 +2633,24 @@ class SingleIssueProcessingTests(unittest.TestCase):
                 "org.example.F",
             ])
 
-            with patch.object(forge_metadata, "_prepare_new_library_dynamic_access_report"), \
-                    patch.object(forge_metadata, "_generate_dispatcher_dynamic_access_report"), \
-                    patch.object(forge_metadata, "_load_dispatcher_dynamic_access_report", return_value=report), \
-                    patch.object(forge_metadata, "add_issue_label") as add_issue_label, \
+            with patch.object(dynamic_access, "_prepare_new_library_dynamic_access_report"), \
+                    patch.object(dynamic_access, "_generate_dispatcher_dynamic_access_report"), \
+                    patch.object(dynamic_access, "_load_dispatcher_dynamic_access_report", return_value=report), \
+                    patch.object(dynamic_access, "add_issue_label") as add_issue_label, \
                     patch.dict(os.environ, {"FORGE_DYNAMIC_ACCESS_CHUNK_CLASS_THRESHOLD": "5"}, clear=True):
-                chunk_count = forge_metadata.prepare_dynamic_access_chunking(
+                chunk_count = dynamic_access.prepare_dynamic_access_chunking(
                     claimed_issue,
                     "dynamic_access_main_sources_pi_gpt-5.6-sol",
                 )
 
-            report_state = forge_metadata.DynamicAccessExhaustReport.load(report_state.default_path(tmpdir))
+            report_state = DynamicAccessExhaustReport.load(report_state.default_path(tmpdir))
             self.assertEqual(chunk_count, 2)
             self.assertEqual(report_state.class_threshold, 5)
             self.assertEqual(report_state.current_chunk_class_count, 2)
             add_issue_label.assert_not_called()
 
     def test_chunked_dynamic_access_base_check_uses_pr_merge_commit_for_squash_merges(self) -> None:
-        report_state = forge_metadata.DynamicAccessExhaustReport.create(
+        report_state = DynamicAccessExhaustReport.create(
             coordinate="org.example:lib:1.0.0",
             issue_number=1412,
         )
@@ -2625,7 +2658,7 @@ class SingleIssueProcessingTests(unittest.TestCase):
         report_state.latest_chunk_pull_request = 4242
 
         with patch.object(
-                forge_metadata,
+                dynamic_access,
                 "gh",
                 return_value=subprocess.CompletedProcess(
                     ["gh"],
@@ -2634,11 +2667,11 @@ class SingleIssueProcessingTests(unittest.TestCase):
                 ),
         ), \
                 patch.object(
-                    forge_metadata.subprocess,
+                    subprocess,
                     "run",
                     return_value=subprocess.CompletedProcess(["git"], 0),
                 ) as run:
-            forge_metadata.verify_chunked_dynamic_access_base_contains_published_commit(
+            dynamic_access.verify_chunked_dynamic_access_base_contains_published_commit(
                 report_state,
                 "/tmp/reachability-worktree",
             )
@@ -2726,17 +2759,17 @@ class WorkQueueSchedulerTests(unittest.TestCase):
         }
 
         with patch.dict(os.environ, env, clear=True):
-            configs = forge_metadata.get_review_queue_configs_from_environment()
+            configs = queue_config.get_review_queue_configs_from_environment()
 
         self.assertEqual(
             [(config.label, config.limit) for config in configs],
             [
                 (forge_metadata.LABEL_LIBRARY_NEW, 0),
-                (forge_metadata.LABEL_PR_JAVAC_FIX, 2),
-                (forge_metadata.LABEL_PR_JAVA_RUN_FIX, 2),
-                (forge_metadata.LABEL_PR_NI_RUN_FIX, 2),
-                (forge_metadata.LABEL_PR_LIBRARY_UPDATE, 2),
-                (forge_metadata.LABEL_PR_CODE_COVERAGE, 4),
+                (config.LABEL_PR_JAVAC_FIX, 2),
+                (config.LABEL_PR_JAVA_RUN_FIX, 2),
+                (config.LABEL_PR_NI_RUN_FIX, 2),
+                (config.LABEL_PR_LIBRARY_UPDATE, 2),
+                (config.LABEL_PR_CODE_COVERAGE, 4),
             ],
         )
 
@@ -2847,18 +2880,18 @@ class WorkQueueSchedulerTests(unittest.TestCase):
 
     def test_review_label_environment_overrides_default_review_queues(self) -> None:
         env = {
-            "FORGE_REVIEW_LABEL": forge_metadata.LABEL_PR_CODE_COVERAGE,
+            "FORGE_REVIEW_LABEL": config.LABEL_PR_CODE_COVERAGE,
             "FORGE_REVIEW_LIMIT": "3",
             "FORGE_BENCHMARK_REVIEW_LIMIT": "0",
         }
 
         with patch.dict(os.environ, env, clear=True):
-            configs = forge_metadata.get_review_queue_configs_from_environment()
+            configs = queue_config.get_review_queue_configs_from_environment()
 
         self.assertEqual(
             [(config.label, config.limit) for config in configs],
             [
-                (forge_metadata.LABEL_PR_CODE_COVERAGE, 3),
+                (config.LABEL_PR_CODE_COVERAGE, 3),
             ],
         )
 
@@ -2874,10 +2907,10 @@ class WorkQueueSchedulerTests(unittest.TestCase):
         }
 
         with patch.dict(os.environ, env, clear=True), \
-                patch.object(forge_metadata, "require_strategy_by_name") as require_strategy_by_name, \
-                patch.object(forge_metadata, "validate_issue_processing_environment") as validate_environment, \
-                patch.object(forge_metadata, "process_issues_with_label", return_value=0) as process_issues, \
-                patch.object(forge_metadata, "process_pull_requests_with_label") as process_reviews:
+                patch.object(queue_config, "require_strategy_by_name") as require_strategy_by_name, \
+                patch.object(issue_processing, "validate_issue_processing_environment") as validate_environment, \
+                patch.object(issue_processing, "process_issues_with_label", return_value=0) as process_issues, \
+                patch.object(issue_processing, "process_pull_requests_with_label") as process_reviews:
             forge_metadata.process_work_queues(
                 "/tmp/reachability",
                 "/tmp/metrics",
@@ -2915,13 +2948,13 @@ class WorkQueueSchedulerTests(unittest.TestCase):
         }
 
         with patch.dict(os.environ, env, clear=True), \
-                patch.object(forge_metadata, "require_strategy_by_name"), \
-                patch.object(forge_metadata, "validate_issue_processing_environment"), \
+                patch.object(queue_config, "require_strategy_by_name"), \
+                patch.object(issue_processing, "validate_issue_processing_environment"), \
                 patch.object(
-                    forge_metadata, "resolve_random_issue_scan_offset", return_value=42
+                    issue_processing, "resolve_random_issue_scan_offset", return_value=42
                 ) as random_offset, \
-                patch.object(forge_metadata, "process_issues_with_label", return_value=0) as process_issues, \
-                patch.object(forge_metadata, "process_pull_requests_with_label") as process_reviews:
+                patch.object(issue_processing, "process_issues_with_label", return_value=0) as process_issues, \
+                patch.object(issue_processing, "process_pull_requests_with_label") as process_reviews:
             forge_metadata.process_work_queues(
                 "/tmp/reachability",
                 "/tmp/metrics",
@@ -2960,11 +2993,11 @@ class WorkQueueSchedulerTests(unittest.TestCase):
         }
 
         with patch.dict(os.environ, env, clear=True), \
-                patch.object(forge_metadata, "validate_issue_processing_environment"), \
+                patch.object(issue_processing, "validate_issue_processing_environment"), \
                 patch.object(
-                    forge_metadata, "resolve_random_issue_scan_offset", return_value=42
+                    issue_processing, "resolve_random_issue_scan_offset", return_value=42
                 ) as random_offset, \
-                patch.object(forge_metadata, "process_issues_with_label", return_value=0) as process_issues:
+                patch.object(issue_processing, "process_issues_with_label", return_value=0) as process_issues:
             forge_metadata.process_work_queues(
                 "/tmp/reachability",
                 "/tmp/metrics",
@@ -2981,7 +3014,7 @@ class WorkQueueSchedulerTests(unittest.TestCase):
             42,
             "/tmp/reachability",
             "/tmp/metrics",
-            forge_metadata.DEFAULT_WORK_QUEUE_STRATEGY_NAME,
+            config.DEFAULT_WORK_QUEUE_STRATEGY_NAME,
             False,
             "automation-user",
             forge_metadata.DEFAULT_PARALLELISM,
@@ -3001,8 +3034,8 @@ class WorkQueueSchedulerTests(unittest.TestCase):
         }
 
         with patch.dict(os.environ, env, clear=True), \
-                patch.object(forge_metadata, "validate_issue_processing_environment"), \
-                patch.object(forge_metadata, "process_issues_with_label", return_value=0) as process_issues:
+                patch.object(issue_processing, "validate_issue_processing_environment"), \
+                patch.object(issue_processing, "process_issues_with_label", return_value=0) as process_issues:
             forge_metadata.process_work_queues(
                 "/tmp/reachability",
                 "/tmp/metrics",
@@ -3016,7 +3049,7 @@ class WorkQueueSchedulerTests(unittest.TestCase):
             0,
             "/tmp/reachability",
             "/tmp/metrics",
-            forge_metadata.DEFAULT_WORK_QUEUE_STRATEGY_NAME,
+            config.DEFAULT_WORK_QUEUE_STRATEGY_NAME,
             False,
             "automation-user",
             forge_metadata.DEFAULT_PARALLELISM,
@@ -3038,11 +3071,11 @@ class WorkQueueSchedulerTests(unittest.TestCase):
 
         with patch.dict(os.environ, env, clear=True), \
                 patch.object(
-                    forge_metadata,
+                    issue_processing,
                     "resolve_authenticated_user",
                     return_value="automation-user",
                 ) as resolve_authenticated_user, \
-                patch.object(forge_metadata, "process_pull_requests_with_label") as process_reviews:
+                patch.object(issue_processing, "process_pull_requests_with_label") as process_reviews:
             forge_metadata.process_work_queues(
                 "/tmp/reachability",
                 "/tmp/metrics",
@@ -3065,10 +3098,10 @@ class WorkQueueSchedulerTests(unittest.TestCase):
         }
 
         with patch.dict(os.environ, env, clear=True), \
-                patch.object(forge_metadata, "is_shutdown_requested", return_value=True), \
-                patch.object(forge_metadata, "validate_issue_processing_environment") as validate_environment, \
-                patch.object(forge_metadata, "process_issues_with_label") as process_issues, \
-                patch.object(forge_metadata, "process_pull_requests_with_label") as process_reviews:
+                patch.object(issue_processing, "is_shutdown_requested", return_value=True), \
+                patch.object(issue_processing, "validate_issue_processing_environment") as validate_environment, \
+                patch.object(issue_processing, "process_issues_with_label") as process_issues, \
+                patch.object(issue_processing, "process_pull_requests_with_label") as process_reviews:
             forge_metadata.process_work_queues(
                 "/tmp/reachability",
                 "/tmp/metrics",
@@ -3090,7 +3123,7 @@ class PullRequestReviewSelectionTests(unittest.TestCase):
             },
         }
         with patch.object(pr_state, "gh_json", return_value=payload) as gh_json:
-            forge_metadata.get_pull_request_state(9656)
+            pr_state.get_pull_request_state(9656)
 
         query_argument = gh_json.call_args.args[-1]
         self.assertIn("headRepository", query_argument)
@@ -3102,7 +3135,7 @@ class PullRequestReviewSelectionTests(unittest.TestCase):
     def test_descriptor_approval_targets_exact_head_commit(self) -> None:
         state = _pull_request_state(9656, "SUCCESS")
         with patch.object(pr_publication, "gh") as gh:
-            forge_metadata.approve_pull_request_from_descriptor(state)
+            pr_publication.approve_pull_request_from_descriptor(state)
 
         self.assertIn("commit_id=head-9656", gh.call_args.args)
         self.assertIn("event=APPROVE", gh.call_args.args)
@@ -3110,14 +3143,14 @@ class PullRequestReviewSelectionTests(unittest.TestCase):
     def test_auto_merge_targets_the_exact_approved_head(self) -> None:
         state = _pull_request_state(9656, "PENDING")
         with patch.object(pr_publication, "gh") as gh:
-            forge_metadata.enable_pull_request_auto_merge(state)
+            pr_publication.enable_pull_request_auto_merge(state)
 
         gh.assert_called_once_with(
             "pr",
             "merge",
             "9656",
             "--repo",
-            forge_metadata.REPO,
+            config.REPO,
             "--auto",
             "--match-head-commit",
             "head-9656",
@@ -3136,7 +3169,7 @@ class PullRequestReviewSelectionTests(unittest.TestCase):
                 patch.object(review_loop, "approve_pull_request_from_descriptor") as approve,
                 patch.object(review_loop, "enable_pull_request_auto_merge") as enable_auto_merge,
         ):
-            forge_metadata._process_descriptor_pull_request(
+            review_loop._process_descriptor_pull_request(
                 state,
                 "/tmp/reachability",
                 maintainer_override=True,
@@ -3148,7 +3181,7 @@ class PullRequestReviewSelectionTests(unittest.TestCase):
 
     def test_human_intervention_pr_is_left_unapproved(self) -> None:
         state = _pull_request_state(9656, "SUCCESS")
-        state["labels"] = [{"name": forge_metadata.LABEL_HUMAN_INTERVENTION}]
+        state["labels"] = [{"name": config.LABEL_HUMAN_INTERVENTION}]
         with (
                 patch.object(
                     review_loop, "validate_pull_request_publication",
@@ -3158,7 +3191,7 @@ class PullRequestReviewSelectionTests(unittest.TestCase):
                 patch.object(review_loop, "approve_pull_request_from_descriptor") as approve,
                 patch.object(review_loop, "enable_pull_request_auto_merge") as enable_auto_merge,
         ):
-            forge_metadata._process_descriptor_pull_request(
+            review_loop._process_descriptor_pull_request(
                 state,
                 "/tmp/reachability",
             )
@@ -3196,7 +3229,7 @@ class PullRequestReviewSelectionTests(unittest.TestCase):
                 ),
                 patch.object(review_loop, "add_pull_request_label"),
         ):
-            forge_metadata._process_descriptor_pull_request(state, "/tmp/reachability")
+            review_loop._process_descriptor_pull_request(state, "/tmp/reachability")
 
         self.assertEqual(["approve", "auto-merge", "resolve", "withdraw"], events)
         validate_indexes.assert_not_called()
@@ -3209,7 +3242,7 @@ class PullRequestReviewSelectionTests(unittest.TestCase):
             {
                 "id": 11,
                 "state": "APPROVED",
-                "body": f"{forge_metadata.FORGE_APPROVAL_BODY_PREFIX}head-9656.",
+                "body": f"{config.FORGE_APPROVAL_BODY_PREFIX}head-9656.",
             },
             {"id": 12, "state": "APPROVED", "body": "Human approval."},
         ]
@@ -3217,7 +3250,7 @@ class PullRequestReviewSelectionTests(unittest.TestCase):
                 patch.object(pr_publication, "get_pull_request_reviews", return_value=reviews),
                 patch.object(pr_publication, "gh") as gh,
         ):
-            forge_metadata.ensure_pull_request_unapproved(state)
+            pr_publication.ensure_pull_request_unapproved(state)
 
         self.assertEqual(2, gh.call_count)
         self.assertIn("--disable-auto", gh.call_args_list[0].args)
@@ -3233,7 +3266,7 @@ class PullRequestReviewSelectionTests(unittest.TestCase):
                     "review_comment": "The runner was unavailable.",
                 }, verdict_file)
 
-            outcome = forge_metadata._read_ci_repair_outcome(verdict_path)
+            outcome = ci_repair._read_ci_repair_outcome(verdict_path)
 
         self.assertIsNotNone(outcome)
         self.assertEqual("transient", outcome.decision)
@@ -3242,19 +3275,19 @@ class PullRequestReviewSelectionTests(unittest.TestCase):
     def test_descriptor_dispositions_are_exact(self) -> None:
         self.assertEqual(
             ("approved", None),
-            forge_metadata.publication_review_disposition(
+            pr_publication.publication_review_disposition(
                 _validated_publication(),
             ),
         )
         self.assertEqual(
             ("rejected", "human-intervention"),
-            forge_metadata.publication_review_disposition(
+            pr_publication.publication_review_disposition(
                 _validated_publication("rejected", "human-intervention"),
             ),
         )
         self.assertEqual(
             ("approved", None),
-            forge_metadata.publication_review_disposition(
+            pr_publication.publication_review_disposition(
                 _validated_publication(task_type="code-coverage-benchmark-result"),
             ),
         )
@@ -3264,7 +3297,7 @@ class PullRequestReviewSelectionTests(unittest.TestCase):
         state["isCrossRepository"] = True
         with patch.object(pr_publication, "run_git_transport") as fetch:
             with self.assertRaisesRegex(ValueError, "head repository"):
-                forge_metadata.validate_pull_request_publication(
+                pr_publication.validate_pull_request_publication(
                     state, "/tmp/reachability",
                 )
         fetch.assert_not_called()
@@ -3291,7 +3324,7 @@ class PullRequestReviewSelectionTests(unittest.TestCase):
                 patch.object(review_loop, "enable_pull_request_auto_merge") as enable_auto_merge,
                 patch.object(ci_repair, "analysis_agent_run") as agent,
         ):
-            forge_metadata.process_pull_requests_with_label(
+            review_loop.process_pull_requests_with_label(
                 forge_metadata.LABEL_LIBRARY_NEW,
                 1,
                 "/tmp/reachability",
@@ -3321,7 +3354,7 @@ class PullRequestReviewSelectionTests(unittest.TestCase):
                 patch.object(review_loop, "reconcile_rejected_publication") as reject,
                 patch.object(review_loop, "approve_pull_request_from_descriptor") as approve,
         ):
-            forge_metadata.process_pull_requests_with_label(
+            review_loop.process_pull_requests_with_label(
                 forge_metadata.LABEL_LIBRARY_NEW,
                 1,
                 "/tmp/reachability",
@@ -3335,7 +3368,7 @@ class PullRequestReviewSelectionTests(unittest.TestCase):
     def test_rejected_close_updates_issue_before_closing_pr(self) -> None:
         events: list[str] = []
         validated = _validated_publication("rejected", "close")
-        comments = [{"body": forge_metadata.LOCAL_REVIEW_CLOSE_MARKER}]
+        comments = [{"body": config.LOCAL_REVIEW_CLOSE_MARKER}]
         with (
                 patch.object(pr_publication, "get_pull_request_reviews", return_value=[]),
                 patch.object(pr_publication, "get_issue_comments", return_value=comments),
@@ -3352,7 +3385,7 @@ class PullRequestReviewSelectionTests(unittest.TestCase):
                     side_effect=lambda *_: events.append("close-pr"),
                 ),
         ):
-            forge_metadata.reconcile_rejected_publication(
+            pr_publication.reconcile_rejected_publication(
                 {"number": 9656},
                 validated,
             )
@@ -3379,11 +3412,11 @@ class PullRequestReviewSelectionTests(unittest.TestCase):
         ]
 
         self.assertTrue(all(
-            forge_metadata._ci_repair_path_is_allowed(path, descriptor)
+            ci_repair._ci_repair_path_is_allowed(path, descriptor)
             for path in allowed_paths
         ))
         self.assertFalse(any(
-            forge_metadata._ci_repair_path_is_allowed(path, descriptor)
+            ci_repair._ci_repair_path_is_allowed(path, descriptor)
             for path in rejected_paths
         ))
 
@@ -3422,7 +3455,7 @@ class PullRequestReviewSelectionTests(unittest.TestCase):
                     side_effect=process_candidate,
                 ),
         ):
-            forge_metadata.process_pull_requests_with_label(
+            review_loop.process_pull_requests_with_label(
                 forge_metadata.LABEL_LIBRARY_NEW,
                 1,
                 "/tmp/reachability",
@@ -3447,7 +3480,7 @@ class PullRequestReviewSelectionTests(unittest.TestCase):
                 patch.object(review_loop, "approve_pull_request_from_descriptor") as approve,
                 patch.object(review_loop, "enable_pull_request_auto_merge") as enable_auto_merge,
         ):
-            forge_metadata._process_descriptor_pull_request(
+            review_loop._process_descriptor_pull_request(
                 state,
                 "/tmp/reachability",
                 maintainer_override=False,
@@ -3465,7 +3498,7 @@ class PullRequestReviewSelectionTests(unittest.TestCase):
                     ci_repair, "rerun_failed_pull_request_workflow_jobs",
                 ) as rerun,
         ):
-            forge_metadata.reconcile_failed_ci_pull_request(
+            ci_repair.reconcile_failed_ci_pull_request(
                 state,
                 validated,
                 "/tmp/reachability",
@@ -3494,7 +3527,7 @@ class PullRequestReviewSelectionTests(unittest.TestCase):
                 ),
                 patch.object(pr_state, "gh") as gh,
         ):
-            count = forge_metadata.rerun_failed_pull_request_workflow_jobs(
+            count = pr_state.rerun_failed_pull_request_workflow_jobs(
                 3513,
                 "abc123",
                 (101,),
@@ -3505,7 +3538,7 @@ class PullRequestReviewSelectionTests(unittest.TestCase):
             "api",
             "--method",
             "POST",
-            f"/repos/{forge_metadata.REPO}/actions/runs/101/rerun-failed-jobs",
+            f"/repos/{config.REPO}/actions/runs/101/rerun-failed-jobs",
         )
 
 
@@ -3514,77 +3547,77 @@ class IssueClaimCacheTests(unittest.TestCase):
     def test_read_cache_ignores_missing_corrupt_and_expired_cache(self) -> None:
         with tempfile.TemporaryDirectory() as lock_root:
             with patch.object(issue_cache, "get_issue_claim_locks_root", return_value=lock_root):
-                self.assertEqual(forge_metadata.read_issue_claim_cache(now=100.0), {})
+                self.assertEqual(issue_cache.read_issue_claim_cache(now=100.0), {})
 
-                with open(forge_metadata.get_issue_claim_cache_path(), "w", encoding="utf-8") as cache_file:
+                with open(issue_cache.get_issue_claim_cache_path(), "w", encoding="utf-8") as cache_file:
                     cache_file.write("{not json")
-                self.assertEqual(forge_metadata.read_issue_claim_cache(now=100.0), {})
+                self.assertEqual(issue_cache.read_issue_claim_cache(now=100.0), {})
 
-                with open(forge_metadata.get_issue_claim_cache_path(), "w", encoding="utf-8") as cache_file:
+                with open(issue_cache.get_issue_claim_cache_path(), "w", encoding="utf-8") as cache_file:
                     json.dump(
                         {
-                            "version": forge_metadata.ISSUE_CLAIM_CACHE_VERSION,
-                            "repo": forge_metadata.REPO,
+                            "version": config.ISSUE_CLAIM_CACHE_VERSION,
+                            "repo": config.REPO,
                             "updated_at_epoch": 0.0,
                             "entries": {
                                 "1412": {
                                     "observed_at_epoch": 0.0,
-                                    "reason": forge_metadata.ISSUE_CLAIM_CACHE_REASON_IN_PROGRESS,
-                                    "project_status": forge_metadata.STATUS_IN_PROGRESS,
+                                    "reason": config.ISSUE_CLAIM_CACHE_REASON_IN_PROGRESS,
+                                    "project_status": config.STATUS_IN_PROGRESS,
                                 },
                             },
                         },
                         cache_file,
                     )
 
-                self.assertEqual(forge_metadata.read_issue_claim_cache(now=901.0), {})
+                self.assertEqual(issue_cache.read_issue_claim_cache(now=901.0), {})
 
     def test_record_and_invalidate_cache_entry(self) -> None:
         with tempfile.TemporaryDirectory() as lock_root:
             with patch.object(issue_cache, "get_issue_claim_locks_root", return_value=lock_root):
-                forge_metadata.record_issue_claim_cache_observations(
+                issue_cache.record_issue_claim_cache_observations(
                     [
-                        forge_metadata.IssueClaimCacheObservation(
+                        records.IssueClaimCacheObservation(
                             issue_number=1412,
-                            reason=forge_metadata.ISSUE_CLAIM_CACHE_REASON_ASSIGNED,
+                            reason=config.ISSUE_CLAIM_CACHE_REASON_ASSIGNED,
                             assignees=("automation-user",),
                         ),
                     ],
                     now=100.0,
                 )
 
-                cache = forge_metadata.read_issue_claim_cache(now=100.0)
-                self.assertEqual(cache[1412].reason, forge_metadata.ISSUE_CLAIM_CACHE_REASON_ASSIGNED)
+                cache = issue_cache.read_issue_claim_cache(now=100.0)
+                self.assertEqual(cache[1412].reason, config.ISSUE_CLAIM_CACHE_REASON_ASSIGNED)
                 self.assertEqual(cache[1412].assignees, ("automation-user",))
 
-                forge_metadata.invalidate_issue_claim_cache_entry(1412, now=101.0)
-                self.assertEqual(forge_metadata.read_issue_claim_cache(now=101.0), {})
+                issue_cache.invalidate_issue_claim_cache_entry(1412, now=101.0)
+                self.assertEqual(issue_cache.read_issue_claim_cache(now=101.0), {})
 
     def test_clear_issue_caches_removes_claim_and_search_caches(self) -> None:
         with tempfile.TemporaryDirectory() as lock_root:
             with patch.object(issue_cache, "get_issue_claim_locks_root", return_value=lock_root):
-                forge_metadata.record_issue_claim_cache_observations(
+                issue_cache.record_issue_claim_cache_observations(
                     [
-                        forge_metadata.IssueClaimCacheObservation(
+                        records.IssueClaimCacheObservation(
                             issue_number=1412,
-                            reason=forge_metadata.ISSUE_CLAIM_CACHE_REASON_BLOCKED,
+                            reason=config.ISSUE_CLAIM_CACHE_REASON_BLOCKED,
                             open_blockers=(99,),
                         ),
                     ],
                     now=100.0,
                 )
-                forge_metadata._write_issue_search_cache_payload(
-                    forge_metadata._empty_issue_search_cache_payload(100.0),
+                issue_cache._write_issue_search_cache_payload(
+                    issue_cache._empty_issue_search_cache_payload(100.0),
                     100.0,
                 )
 
-                self.assertTrue(os.path.exists(forge_metadata.get_issue_claim_cache_path()))
-                self.assertTrue(os.path.exists(forge_metadata.get_issue_search_cache_path()))
+                self.assertTrue(os.path.exists(issue_cache.get_issue_claim_cache_path()))
+                self.assertTrue(os.path.exists(issue_cache.get_issue_search_cache_path()))
 
                 forge_metadata.clear_issue_caches()
 
-                self.assertFalse(os.path.exists(forge_metadata.get_issue_claim_cache_path()))
-                self.assertFalse(os.path.exists(forge_metadata.get_issue_search_cache_path()))
+                self.assertFalse(os.path.exists(issue_cache.get_issue_claim_cache_path()))
+                self.assertFalse(os.path.exists(issue_cache.get_issue_search_cache_path()))
 
     def test_cached_own_assignment_is_not_returned_as_skip(self) -> None:
         issue = {
@@ -3596,23 +3629,23 @@ class IssueClaimCacheTests(unittest.TestCase):
 
         with tempfile.TemporaryDirectory() as lock_root:
             with patch.object(issue_cache, "get_issue_claim_locks_root", return_value=lock_root):
-                forge_metadata.record_issue_claim_cache_observations(
+                issue_cache.record_issue_claim_cache_observations(
                     [
-                        forge_metadata.IssueClaimCacheObservation(
+                        records.IssueClaimCacheObservation(
                             issue_number=1412,
-                            reason=forge_metadata.ISSUE_CLAIM_CACHE_REASON_ASSIGNED,
+                            reason=config.ISSUE_CLAIM_CACHE_REASON_ASSIGNED,
                             assignees=("automation-user",),
                         ),
                     ],
                 )
 
                 self.assertEqual(
-                    forge_metadata.get_cached_issue_claim_skips([issue], "automation-user"),
+                    claim_preflight.get_cached_issue_claim_skips([issue], "automation-user"),
                     {},
                 )
                 self.assertIn(
                     1412,
-                    forge_metadata.get_cached_issue_claim_skips([issue], "other-user"),
+                    claim_preflight.get_cached_issue_claim_skips([issue], "other-user"),
                 )
 
     def test_process_loop_does_not_preflight_cached_issue(self) -> None:
@@ -3631,33 +3664,33 @@ class IssueClaimCacheTests(unittest.TestCase):
 
         with tempfile.TemporaryDirectory() as lock_root:
             with patch.object(issue_cache, "get_issue_claim_locks_root", return_value=lock_root):
-                forge_metadata.record_issue_claim_cache_observations(
+                issue_cache.record_issue_claim_cache_observations(
                     [
-                        forge_metadata.IssueClaimCacheObservation(
+                        records.IssueClaimCacheObservation(
                             issue_number=1,
-                            reason=forge_metadata.ISSUE_CLAIM_CACHE_REASON_IN_PROGRESS,
-                            project_status=forge_metadata.STATUS_IN_PROGRESS,
+                            reason=config.ISSUE_CLAIM_CACHE_REASON_IN_PROGRESS,
+                            project_status=config.STATUS_IN_PROGRESS,
                         ),
                     ],
                 )
 
-                with patch.object(forge_metadata, "validate_issue_processing_environment"), \
+                with patch.object(issue_processing, "validate_issue_processing_environment"), \
                         patch.object(
-                            forge_metadata,
+                            issue_processing,
                             "get_prioritized_issues_with_label",
                             return_value=([cached_issue, claimable_issue], _scan_state(2, exhausted=True)),
                         ), \
                         patch.object(
-                            forge_metadata,
+                            claim_preflight,
                             "get_issue_claim_preflights_or_empty",
                         ) as get_issue_claim_preflights_or_empty, \
                         patch.object(
-                            forge_metadata,
+                            issue_processing,
                             "claim_issue_for_processing",
                             return_value=_claimed_issue(),
                         ), \
                         patch.object(
-                            forge_metadata,
+                            issue_processing,
                             "process_claimed_issue_lifecycle",
                             return_value=True,
                         ):
@@ -3685,11 +3718,11 @@ class IssueClaimCacheTests(unittest.TestCase):
         }
 
         def claim_and_cache_negative_result(*_args: object, **_kwargs: object) -> None:
-            forge_metadata.record_issue_claim_cache_observations(
+            issue_cache.record_issue_claim_cache_observations(
                 [
-                    forge_metadata.IssueClaimCacheObservation(
+                    records.IssueClaimCacheObservation(
                         issue_number=1,
-                        reason=forge_metadata.ISSUE_CLAIM_CACHE_REASON_BLOCKED,
+                        reason=config.ISSUE_CLAIM_CACHE_REASON_BLOCKED,
                         open_blockers=(99,),
                     ),
                 ],
@@ -3698,9 +3731,9 @@ class IssueClaimCacheTests(unittest.TestCase):
 
         with tempfile.TemporaryDirectory() as lock_root:
             with patch.object(issue_cache, "get_issue_claim_locks_root", return_value=lock_root), \
-                    patch.object(forge_metadata, "validate_issue_processing_environment"), \
+                    patch.object(issue_processing, "validate_issue_processing_environment"), \
                     patch.object(
-                        forge_metadata,
+                        issue_processing,
                         "get_prioritized_issues_with_label",
                         side_effect=[
                             ([issue], _scan_state(1)),
@@ -3708,11 +3741,11 @@ class IssueClaimCacheTests(unittest.TestCase):
                         ],
                     ), \
                     patch.object(
-                        forge_metadata,
+                        claim_preflight,
                         "get_issue_claim_preflights_or_empty",
                     ) as get_issue_claim_preflights_or_empty, \
                     patch.object(
-                        forge_metadata,
+                        issue_processing,
                         "claim_issue_for_processing",
                         side_effect=claim_and_cache_negative_result,
                     ) as claim_issue_for_processing:
@@ -3728,8 +3761,8 @@ class IssueClaimCacheTests(unittest.TestCase):
                     1,
                 )
 
-                cache = forge_metadata.read_issue_claim_cache()
-                self.assertEqual(cache[1].reason, forge_metadata.ISSUE_CLAIM_CACHE_REASON_BLOCKED)
+                cache = issue_cache.read_issue_claim_cache()
+                self.assertEqual(cache[1].reason, config.ISSUE_CLAIM_CACHE_REASON_BLOCKED)
                 self.assertEqual(cache[1].open_blockers, (99,))
 
         self.assertEqual(processed, 0)
@@ -3749,23 +3782,23 @@ class IssueClaimCacheTests(unittest.TestCase):
 
         with tempfile.TemporaryDirectory() as lock_root:
             with patch.object(issue_cache, "get_issue_claim_locks_root", return_value=lock_root), \
-                    patch.object(forge_metadata, "validate_issue_processing_environment"), \
+                    patch.object(issue_processing, "validate_issue_processing_environment"), \
                     patch.object(
-                        forge_metadata,
+                        issue_processing,
                         "get_prioritized_issues_with_label",
                         return_value=(issues, _scan_state(len(issues), exhausted=True)),
                     ), \
                     patch.object(
-                        forge_metadata,
+                        claim_preflight,
                         "get_issue_claim_preflights_or_empty",
                     ) as get_issue_claim_preflights_or_empty, \
                     patch.object(
-                        forge_metadata,
+                        issue_processing,
                         "claim_issue_for_processing",
                         side_effect=[None, None, None, None, None, _claimed_issue()],
                     ) as claim_issue_for_processing, \
                     patch.object(
-                        forge_metadata,
+                        issue_processing,
                         "process_claimed_issue_lifecycle",
                         return_value=True,
                     ):
@@ -3812,14 +3845,14 @@ class IssueClaimCacheTests(unittest.TestCase):
 
         with tempfile.TemporaryDirectory() as lock_root:
             with patch.object(issue_cache, "get_issue_claim_locks_root", return_value=lock_root), \
-                    patch.object(forge_metadata, "validate_issue_processing_environment"), \
+                    patch.object(issue_processing, "validate_issue_processing_environment"), \
                     patch.object(
-                        forge_metadata,
+                        issue_processing,
                         "get_prioritized_issues_with_label",
                         return_value=(issues, _scan_state(len(issues), exhausted=True)),
                     ), \
                     patch.object(
-                        forge_metadata,
+                        issue_processing,
                         "claim_issue_for_processing",
                         return_value=None,
                     ), \
@@ -3847,11 +3880,11 @@ class IssueClaimCacheTests(unittest.TestCase):
         self.assertNotIn("Looked through 300 issue(s)", output)
 
     def test_process_loop_fetches_only_selected_priority_tier(self) -> None:
-        priority = forge_metadata.PRIORITY_NORMAL
-        tier = forge_metadata.get_issue_priority_tier(priority)
-        with patch.object(forge_metadata, "validate_issue_processing_environment"), \
-                patch.object(forge_metadata, "get_prioritized_issues_with_label") as prioritized_fetch, \
-                patch.object(forge_metadata, "get_issues_with_label", return_value=[]) as get_issues, \
+        priority = config.PRIORITY_NORMAL
+        tier = issue_queue.get_issue_priority_tier(priority)
+        with patch.object(issue_processing, "validate_issue_processing_environment"), \
+                patch.object(issue_processing, "get_prioritized_issues_with_label") as prioritized_fetch, \
+                patch.object(issue_processing, "get_issues_with_label", return_value=[]) as get_issues, \
                 patch("sys.stdout", new_callable=io.StringIO):
             processed = forge_metadata.process_issues_with_label(
                 forge_metadata.LABEL_LIBRARY_NEW,
@@ -3869,7 +3902,7 @@ class IssueClaimCacheTests(unittest.TestCase):
         self.assertEqual(processed, 0)
         get_issues.assert_called_once_with(
             forge_metadata.LABEL_LIBRARY_NEW,
-            forge_metadata.DEFAULT_ISSUE_SCAN_BATCH_SIZE,
+            config.DEFAULT_ISSUE_SCAN_BATCH_SIZE,
             0,
             list(tier.extra_labels),
             list(tier.excluded_labels),
@@ -3879,22 +3912,22 @@ class IssueClaimCacheTests(unittest.TestCase):
 
     def test_priority_choices_map_to_exclusive_label_filters(self) -> None:
         expected_filters = {
-            forge_metadata.PRIORITY_HIGH: (
-                (forge_metadata.LABEL_HIGH_PRIORITY,),
+            config.PRIORITY_HIGH: (
+                (config.LABEL_HIGH_PRIORITY,),
                 (),
             ),
-            forge_metadata.LABEL_PRIORITY: (
-                (forge_metadata.LABEL_PRIORITY,),
-                (forge_metadata.LABEL_HIGH_PRIORITY,),
+            config.LABEL_PRIORITY: (
+                (config.LABEL_PRIORITY,),
+                (config.LABEL_HIGH_PRIORITY,),
             ),
-            forge_metadata.PRIORITY_NORMAL: (
+            config.PRIORITY_NORMAL: (
                 (),
-                (forge_metadata.LABEL_HIGH_PRIORITY, forge_metadata.LABEL_PRIORITY),
+                (config.LABEL_HIGH_PRIORITY, config.LABEL_PRIORITY),
             ),
         }
         for priority, filters in expected_filters.items():
             with self.subTest(priority=priority):
-                tier = forge_metadata.get_issue_priority_tier(priority)
+                tier = issue_queue.get_issue_priority_tier(priority)
                 self.assertEqual((tier.extra_labels, tier.excluded_labels), filters)
 
 
@@ -3903,16 +3936,16 @@ class ProjectItemStatusTests(unittest.TestCase):
         with patch.object(
                 common_git,
                 "gh_json",
-                return_value=_project_item_status_response(forge_metadata.STATUS_TODO),
+                return_value=_project_item_status_response(config.STATUS_TODO),
         ) as gh_json:
             self.assertEqual(
                 common_git.get_issue_project_item_status(
-                    forge_metadata.REPO,
+                    config.REPO,
                     forge_metadata.PROJECT_NUMBER,
                     1412,
-                    forge_metadata.STATUS_FIELD_NAME,
+                    config.STATUS_FIELD_NAME,
                 ),
-                ("project-item", forge_metadata.STATUS_TODO),
+                ("project-item", config.STATUS_TODO),
             )
 
         gh_json.assert_called_once()
@@ -3921,20 +3954,20 @@ class ProjectItemStatusTests(unittest.TestCase):
         with patch.object(
                 project_board,
                 "get_issue_project_item_status",
-                return_value=("project-item", forge_metadata.STATUS_TODO),
+                return_value=("project-item", config.STATUS_TODO),
         ) as get_issue_project_item_status, \
                 patch.dict(os.environ, {"FORGE_VERBOSE": "0", "FORGE_DEBUG_LOGGING": "0"}), \
                 patch("sys.stdout", new_callable=io.StringIO) as stdout:
             self.assertEqual(
-                forge_metadata.get_project_item_state(1412),
-                ("project-item", forge_metadata.STATUS_TODO),
+                project_board.get_project_item_state(1412),
+                ("project-item", config.STATUS_TODO),
             )
 
         get_issue_project_item_status.assert_called_once_with(
-            forge_metadata.REPO,
+            config.REPO,
             forge_metadata.PROJECT_NUMBER,
             1412,
-            forge_metadata.STATUS_FIELD_NAME,
+            config.STATUS_FIELD_NAME,
         )
         self.assertEqual("", stdout.getvalue())
 
@@ -3942,15 +3975,15 @@ class ProjectItemStatusTests(unittest.TestCase):
         with patch.object(
                 project_board,
                 "get_issue_project_item_status",
-                return_value=("project-item", forge_metadata.STATUS_TODO),
+                return_value=("project-item", config.STATUS_TODO),
         ), patch.dict(os.environ, {"FORGE_VERBOSE": "1"}), \
                 patch("sys.stdout", new_callable=io.StringIO) as stdout:
-            forge_metadata.get_project_item_state(1412)
+            project_board.get_project_item_state(1412)
 
         self.assertIn(
             (
                 "[project-item] Issue #1412 is linked to GitHub project item project-item "
-                f"in project {forge_metadata.PROJECT_NUMBER} with Status '{forge_metadata.STATUS_TODO}'"
+                f"in project {forge_metadata.PROJECT_NUMBER} with Status '{config.STATUS_TODO}'"
             ),
             stdout.getvalue(),
         )
@@ -3966,14 +3999,14 @@ class IssueClaimLockTests(unittest.TestCase):
         }
         with tempfile.TemporaryDirectory() as lock_root:
             with patch.object(issue_cache, "get_issue_claim_locks_root", return_value=lock_root):
-                claim_lock = forge_metadata.try_acquire_issue_claim_lock(issue["number"])
+                claim_lock = issue_cache.try_acquire_issue_claim_lock(issue["number"])
                 self.assertIsNotNone(claim_lock)
                 try:
                     with patch.object(
                             issue_claiming,
                             "get_open_blocking_issue_numbers",
                     ) as get_open_blocking_issues:
-                        self.assertIsNone(forge_metadata.try_claim_issue(issue, "automation-user"))
+                        self.assertIsNone(issue_claiming.try_claim_issue(issue, "automation-user"))
                         get_open_blocking_issues.assert_not_called()
                 finally:
                     claim_lock.release()
@@ -3989,10 +4022,10 @@ class IssueClaimLockTests(unittest.TestCase):
             with patch.object(issue_cache, "get_issue_claim_locks_root", return_value=lock_root), \
                     patch.object(issue_claiming, "refresh_issue_payload_for_claim", return_value=True), \
                     patch.object(issue_claiming, "get_open_blocking_issue_numbers", return_value=[1392]), \
-                    patch.object(forge_metadata, "add_issue_label") as add_issue_label, \
+                    patch.object(issue_admin, "add_issue_label") as add_issue_label, \
                     patch.object(issue_claiming, "get_issue_assignees") as get_issue_assignees:
                 self.assertIsNone(
-                    forge_metadata.try_claim_issue(
+                    issue_claiming.try_claim_issue(
                         issue,
                         "automation-user",
                         take_blocked_issues=False,
@@ -4007,7 +4040,7 @@ class IssueClaimLockTests(unittest.TestCase):
         fresh_issue = {
             **_search_issue(
                 1412,
-                [forge_metadata.LABEL_LIBRARY_NEW, forge_metadata.LABEL_HUMAN_INTERVENTION],
+                [forge_metadata.LABEL_LIBRARY_NEW, config.LABEL_HUMAN_INTERVENTION],
             ),
             "state": "OPEN",
         }
@@ -4016,16 +4049,16 @@ class IssueClaimLockTests(unittest.TestCase):
                     patch.object(claim_preflight, "get_issue_claim_payload", return_value=fresh_issue), \
                     patch.object(issue_claiming, "get_open_blocking_issue_numbers") as get_blockers:
                 self.assertIsNone(
-                    forge_metadata.try_claim_issue(
+                    issue_claiming.try_claim_issue(
                         issue,
                         "automation-user",
                         forge_metadata.LABEL_LIBRARY_NEW,
                     )
                 )
-                cache = forge_metadata.read_issue_claim_cache()
+                cache = issue_cache.read_issue_claim_cache()
 
         get_blockers.assert_not_called()
-        self.assertEqual(cache[1412].reason, forge_metadata.ISSUE_CLAIM_CACHE_REASON_HUMAN_INTERVENTION)
+        self.assertEqual(cache[1412].reason, config.ISSUE_CLAIM_CACHE_REASON_HUMAN_INTERVENTION)
 
     def test_try_claim_issue_refreshes_assignees_after_local_lock(self) -> None:
         issue = {
@@ -4040,10 +4073,10 @@ class IssueClaimLockTests(unittest.TestCase):
                     patch.object(issue_claiming, "get_open_blocking_issue_numbers", return_value=[]), \
                     patch.object(issue_claiming, "get_issue_assignees", return_value=["other-user"]), \
                     patch.object(issue_claiming, "get_project_item_state") as get_project_item_state:
-                self.assertIsNone(forge_metadata.try_claim_issue(issue, "automation-user"))
+                self.assertIsNone(issue_claiming.try_claim_issue(issue, "automation-user"))
                 get_project_item_state.assert_not_called()
-                cache = forge_metadata.read_issue_claim_cache()
-                self.assertEqual(cache[1412].reason, forge_metadata.ISSUE_CLAIM_CACHE_REASON_ASSIGNED)
+                cache = issue_cache.read_issue_claim_cache()
+                self.assertEqual(cache[1412].reason, config.ISSUE_CLAIM_CACHE_REASON_ASSIGNED)
                 self.assertEqual(cache[1412].assignees, ("other-user",))
 
     def test_try_claim_issue_accepts_existing_authenticated_user_assignment(self) -> None:
@@ -4064,27 +4097,27 @@ class IssueClaimLockTests(unittest.TestCase):
                     patch.object(
                         issue_claiming,
                         "get_project_item_state",
-                        return_value=("project-item", forge_metadata.STATUS_TODO),
+                        return_value=("project-item", config.STATUS_TODO),
                     ), \
                     patch.object(issue_claiming, "set_issue_assignee") as set_issue_assignee, \
                     patch.object(issue_claiming, "set_item_status") as set_item_status, \
-                    patch.object(forge_metadata.random, "uniform", return_value=0), \
-                    patch.object(forge_metadata.time, "sleep"), \
+                    patch.object(random, "uniform", return_value=0), \
+                    patch.object(time, "sleep"), \
                     patch.dict(os.environ, {"FORGE_VERBOSE": "0", "FORGE_DEBUG_LOGGING": "0"}), \
                     patch("sys.stdout", new_callable=io.StringIO) as stdout:
                 self.assertEqual(
-                    forge_metadata.try_claim_issue(issue, "automation-user"),
+                    issue_claiming.try_claim_issue(issue, "automation-user"),
                     "project-item",
                 )
 
         set_issue_assignee.assert_called_once_with(1412, "automation-user")
-        set_item_status.assert_called_once_with("project-item", forge_metadata.STATUS_IN_PROGRESS)
+        set_item_status.assert_called_once_with("project-item", config.STATUS_IN_PROGRESS)
         self.assertIn("[claim] Issue #1412 claimed (3/6)", stdout.getvalue())
         self.assertNotIn("Setting issue #1412 assignee", stdout.getvalue())
         self.assertNotIn("Waiting", stdout.getvalue())
 
     def test_try_claim_issue_skips_chunked_dynamic_access_when_in_progress(self) -> None:
-        issue = _search_issue(1412, [forge_metadata.LABEL_CHUNKED_DYNAMIC_ACCESS])
+        issue = _search_issue(1412, [config.LABEL_CHUNKED_DYNAMIC_ACCESS])
         with tempfile.TemporaryDirectory() as lock_root:
             with patch.object(issue_cache, "get_issue_claim_locks_root", return_value=lock_root), \
                     patch.object(issue_claiming, "refresh_issue_payload_for_claim", return_value=True), \
@@ -4093,14 +4126,14 @@ class IssueClaimLockTests(unittest.TestCase):
                     patch.object(
                         issue_claiming,
                         "get_project_item_state",
-                        return_value=("project-item", forge_metadata.STATUS_IN_PROGRESS),
+                        return_value=("project-item", config.STATUS_IN_PROGRESS),
                     ), \
                     patch.object(issue_claiming, "set_issue_assignee") as set_issue_assignee, \
                     patch.object(issue_claiming, "set_item_status") as set_item_status, \
-                    patch.object(forge_metadata.random, "uniform", return_value=0), \
-                    patch.object(forge_metadata.time, "sleep"):
+                    patch.object(random, "uniform", return_value=0), \
+                    patch.object(time, "sleep"):
                 self.assertIsNone(
-                    forge_metadata.try_claim_issue(issue, "automation-user"),
+                    issue_claiming.try_claim_issue(issue, "automation-user"),
                 )
 
         set_issue_assignee.assert_not_called()
@@ -4121,47 +4154,47 @@ class IssueClaimLockTests(unittest.TestCase):
                     patch.object(
                         issue_claiming,
                         "get_project_item_state",
-                        return_value=("project-item", forge_metadata.STATUS_TODO),
+                        return_value=("project-item", config.STATUS_TODO),
                     ) as get_project_item_state, \
                     patch.object(issue_claiming, "get_item_status") as get_item_status, \
                     patch.object(issue_claiming, "set_issue_assignee") as set_issue_assignee, \
                     patch.object(issue_claiming, "set_item_status") as set_item_status, \
-                    patch.object(forge_metadata.random, "uniform", return_value=0), \
-                    patch.object(forge_metadata.time, "sleep"):
+                    patch.object(random, "uniform", return_value=0), \
+                    patch.object(time, "sleep"):
                 self.assertEqual(
-                    forge_metadata.try_claim_issue(issue, "automation-user"),
+                    issue_claiming.try_claim_issue(issue, "automation-user"),
                     "project-item",
                 )
-                cache = forge_metadata.read_issue_claim_cache()
-                self.assertEqual(cache[1412].reason, forge_metadata.ISSUE_CLAIM_CACHE_REASON_IN_PROGRESS)
+                cache = issue_cache.read_issue_claim_cache()
+                self.assertEqual(cache[1412].reason, config.ISSUE_CLAIM_CACHE_REASON_IN_PROGRESS)
 
             get_project_item_state.assert_called_once_with(1412)
             get_item_status.assert_not_called()
             set_issue_assignee.assert_called_once_with(1412, "automation-user")
-            set_item_status.assert_called_once_with("project-item", forge_metadata.STATUS_IN_PROGRESS)
+            set_item_status.assert_called_once_with("project-item", config.STATUS_IN_PROGRESS)
 
     def test_revert_issue_claim_invalidates_cache_entry(self) -> None:
         with tempfile.TemporaryDirectory() as lock_root:
             with patch.object(issue_cache, "get_issue_claim_locks_root", return_value=lock_root):
-                forge_metadata.record_issue_claim_cache_observations(
+                issue_cache.record_issue_claim_cache_observations(
                     [
-                        forge_metadata.IssueClaimCacheObservation(
+                        records.IssueClaimCacheObservation(
                             issue_number=1412,
-                            reason=forge_metadata.ISSUE_CLAIM_CACHE_REASON_IN_PROGRESS,
-                            project_status=forge_metadata.STATUS_IN_PROGRESS,
+                            reason=config.ISSUE_CLAIM_CACHE_REASON_IN_PROGRESS,
+                            project_status=config.STATUS_IN_PROGRESS,
                         ),
                     ],
                 )
 
                 with patch.object(issue_claiming, "set_item_status") as set_item_status, \
                         patch.object(issue_claiming, "clear_issue_assignees") as clear_issue_assignees, \
-                        patch.object(issue_claiming, "get_item_status", return_value=forge_metadata.STATUS_TODO), \
+                        patch.object(issue_claiming, "get_item_status", return_value=config.STATUS_TODO), \
                         patch.object(issue_claiming, "get_issue_assignees", return_value=[]):
-                    forge_metadata.revert_issue_claim("item-1", 1412, "test")
+                    issue_claiming.revert_issue_claim("item-1", 1412, "test")
 
-                self.assertEqual(forge_metadata.read_issue_claim_cache(), {})
+                self.assertEqual(issue_cache.read_issue_claim_cache(), {})
 
-        set_item_status.assert_called_once_with("item-1", forge_metadata.STATUS_TODO)
+        set_item_status.assert_called_once_with("item-1", config.STATUS_TODO)
         clear_issue_assignees.assert_called_once_with(1412)
 
     def test_revert_issue_claim_clears_assignees_after_status_update_error(self) -> None:
@@ -4174,10 +4207,10 @@ class IssueClaimLockTests(unittest.TestCase):
 
         with patch.object(issue_claiming, "set_item_status", side_effect=status_error), \
                 patch.object(issue_claiming, "clear_issue_assignees") as clear_issue_assignees, \
-                patch.object(issue_claiming, "get_item_status", return_value=forge_metadata.STATUS_TODO), \
+                patch.object(issue_claiming, "get_item_status", return_value=config.STATUS_TODO), \
                 patch.object(issue_claiming, "get_issue_assignees", return_value=[]), \
                 patch("sys.stderr", new_callable=io.StringIO) as stderr:
-            forge_metadata.revert_issue_claim("item-1", 1412, "test")
+            issue_claiming.revert_issue_claim("item-1", 1412, "test")
 
         clear_issue_assignees.assert_called_once_with(1412)
         self.assertIn("could not set project item", stderr.getvalue())
@@ -4195,14 +4228,14 @@ class IssueSearchCacheTests(unittest.TestCase):
 
         with tempfile.TemporaryDirectory() as lock_root:
             with patch.object(issue_cache, "get_issue_claim_locks_root", return_value=lock_root), \
-                    patch.object(forge_metadata.time, "time", return_value=100.0), \
+                    patch.object(time, "time", return_value=100.0), \
                     patch.object(issue_queue, "fetch_issue_search_page", return_value=[issue]) as fetch_page:
                 self.assertEqual(
-                    forge_metadata.get_issues_with_label(forge_metadata.LABEL_LIBRARY_NEW, 1),
+                    issue_queue.get_issues_with_label(forge_metadata.LABEL_LIBRARY_NEW, 1),
                     [issue],
                 )
                 self.assertEqual(
-                    forge_metadata.get_issues_with_label(forge_metadata.LABEL_LIBRARY_NEW, 1),
+                    issue_queue.get_issues_with_label(forge_metadata.LABEL_LIBRARY_NEW, 1),
                     [issue],
                 )
 
@@ -4211,25 +4244,25 @@ class IssueSearchCacheTests(unittest.TestCase):
     def test_search_count_cache_is_shared_by_random_offset_resolution(self) -> None:
         with tempfile.TemporaryDirectory() as lock_root:
             with patch.object(issue_cache, "get_issue_claim_locks_root", return_value=lock_root), \
-                    patch.object(forge_metadata.time, "time", return_value=100.0), \
+                    patch.object(time, "time", return_value=100.0), \
                     patch.object(issue_queue, "fetch_issue_search_count", return_value=42) as fetch_count:
-                self.assertEqual(forge_metadata.count_issues_with_label(forge_metadata.LABEL_LIBRARY_NEW), 42)
-                self.assertEqual(forge_metadata.count_issues_with_label(forge_metadata.LABEL_LIBRARY_NEW), 42)
+                self.assertEqual(issue_queue.count_issues_with_label(forge_metadata.LABEL_LIBRARY_NEW), 42)
+                self.assertEqual(issue_queue.count_issues_with_label(forge_metadata.LABEL_LIBRARY_NEW), 42)
 
         fetch_count.assert_called_once()
 
 
 class EnvironmentValidationTests(unittest.TestCase):
     def test_issue_processing_requires_dev_and_ci_graalvm_homes(self) -> None:
-        with patch.object(forge_metadata, "require_issue_graalvm_homes") as require_graalvm_homes:
+        with patch.object(env_config, "require_issue_graalvm_homes") as require_graalvm_homes:
             forge_metadata.validate_issue_processing_environment()
 
         require_graalvm_homes.assert_called_once_with()
         self.assertEqual(
             (
-                forge_metadata.DEV_GRAALVM_ENV_VAR,
-                forge_metadata.POST_GENERATION_GRAALVM_ENV_VAR,
-                forge_metadata.LATEST_EA_GRAALVM_ENV_VAR,
+                config.DEV_GRAALVM_ENV_VAR,
+                config.POST_GENERATION_GRAALVM_ENV_VAR,
+                config.LATEST_EA_GRAALVM_ENV_VAR,
             ),
             host_graalvm_checks.ISSUE_GRAALVM_ENV_VARS,
         )
@@ -4237,7 +4270,7 @@ class EnvironmentValidationTests(unittest.TestCase):
     def test_review_only_runs_do_not_require_graalvm(self) -> None:
         args = forge_metadata.parse_args(["--review-pr", "library-new-request"])
 
-        requirements = forge_metadata.resolve_host_requirement_queues(args)
+        requirements = queue_config.resolve_host_requirement_queues(args)
 
         self.assertFalse(requirements.issue_work)
         self.assertTrue(requirements.review_work)
@@ -4246,7 +4279,7 @@ class EnvironmentValidationTests(unittest.TestCase):
     def test_issue_runs_require_graalvm_without_review_capabilities(self) -> None:
         args = forge_metadata.parse_args(["--issue-number", "9101"])
 
-        requirements = forge_metadata.resolve_host_requirement_queues(args)
+        requirements = queue_config.resolve_host_requirement_queues(args)
 
         self.assertTrue(requirements.issue_work)
         self.assertFalse(requirements.review_work)
@@ -4254,7 +4287,7 @@ class EnvironmentValidationTests(unittest.TestCase):
     def test_fixture_runs_do_not_require_live_github_access(self) -> None:
         args = forge_metadata.parse_args(["--fixture-testing", "--issue-number", "9101"])
 
-        requirements = forge_metadata.resolve_host_requirement_queues(args)
+        requirements = queue_config.resolve_host_requirement_queues(args)
 
         self.assertTrue(requirements.issue_work)
         self.assertFalse(requirements.github_work)
@@ -4267,7 +4300,7 @@ class EnvironmentValidationTests(unittest.TestCase):
         }
 
         with patch.dict(os.environ, {**disabled_issue_queues, "FORGE_REVIEW_LIMIT": "1"}, clear=True):
-            requirements = forge_metadata.resolve_host_requirement_queues(args)
+            requirements = queue_config.resolve_host_requirement_queues(args)
 
         self.assertFalse(requirements.issue_work)
         self.assertTrue(requirements.review_work)
@@ -4286,7 +4319,7 @@ class EnvironmentValidationTests(unittest.TestCase):
         })
 
         with patch.dict(os.environ, environment, clear=True):
-            strategy_names = forge_metadata.resolve_host_requirement_strategy_names(args)
+            strategy_names = queue_config.resolve_host_requirement_strategy_names(args)
 
         self.assertEqual(
             strategy_names,
@@ -4297,7 +4330,7 @@ class EnvironmentValidationTests(unittest.TestCase):
         )
 
     def test_every_work_starting_invocation_validates_host_requirements(self) -> None:
-        with patch.object(forge_metadata, "ensure_host_requirements") as ensure, \
+        with patch.object(queue_config, "ensure_host_requirements") as ensure, \
                 patch.object(forge_metadata, "resolve_authenticated_user", return_value="forge-bot"), \
                 patch.object(forge_metadata, "resolve_reachability_repo_root", return_value="/repo"), \
                 patch.object(forge_metadata, "resolve_metrics_repo_root", return_value="/metrics"), \
@@ -4319,7 +4352,7 @@ class EnvironmentValidationTests(unittest.TestCase):
         def record_gate(forge_dir: str, **kwargs: object) -> None:
             checked_paths.append((forge_dir, str(kwargs["repo_dir"])))
 
-        with patch.object(forge_metadata, "ensure_host_requirements", side_effect=record_gate), \
+        with patch.object(queue_config, "ensure_host_requirements", side_effect=record_gate), \
                 patch.object(forge_metadata, "resolve_authenticated_user", return_value="forge-bot"), \
                 patch.object(
                     forge_metadata,
@@ -4340,7 +4373,7 @@ class EnvironmentValidationTests(unittest.TestCase):
         self.assertEqual("/other/repo", process_issue.call_args.args[1])
 
     def test_cache_maintenance_does_not_validate_host_requirements(self) -> None:
-        with patch.object(forge_metadata, "ensure_host_requirements") as ensure, \
+        with patch.object(queue_config, "ensure_host_requirements") as ensure, \
                 patch.object(forge_metadata, "clear_issue_caches") as clear_issue_caches, \
                 patch.object(sys, "argv", ["forge_metadata.py", "--clear-issue-caches"]):
             forge_metadata.main()
@@ -4367,21 +4400,21 @@ class RunFailureLocationTests(unittest.TestCase):
         stderr = io.StringIO()
 
         with contextlib.redirect_stdout(io.StringIO()), contextlib.redirect_stderr(stderr), \
-                patch.object(forge_metadata, "preserve_failed_work_for_follow_up", return_value=None), \
-                patch.object(forge_metadata, "refresh_preserved_branch_logs"), \
-                patch.object(forge_metadata, "revert_claimed_issue"), \
-                patch.object(forge_metadata, "apply_failed_run_follow_up") as follow_up:
+                patch.object(lifecycle, "preserve_failed_work_for_follow_up", return_value=None), \
+                patch.object(lifecycle, "refresh_preserved_branch_logs"), \
+                patch.object(lifecycle, "revert_claimed_issue"), \
+                patch.object(lifecycle, "apply_failed_run_follow_up") as follow_up:
             with run_location.run_step(
                 run_location.PHASE_EXPLORE,
                 run_location.STEP_NATIVE_TRACE_GATE,
                 operand="com.acme.Thing",
             ):
                 run_location.record_step_failure()
-            forge_metadata.handle_failed_claimed_issue(claimed_issue, "workflow failure")
+            lifecycle.handle_failed_claimed_issue(claimed_issue, "workflow failure")
 
         self.assertIn(expected_line, stderr.getvalue())
         forwarded = follow_up.call_args.kwargs["failure_location"]
-        self.assertEqual(forge_metadata.format_run_failure_line(forwarded), expected_line)
+        self.assertEqual(format_run_failure_line(forwarded), expected_line)
 
     def test_human_intervention_comment_leads_with_the_same_pair(self) -> None:
         claimed_issue = _claimed_issue(forge_metadata.LABEL_JAVAC_FAIL)
@@ -4405,7 +4438,7 @@ class RunFailureLocationTests(unittest.TestCase):
                     failure_follow_up,
                     "post_human_intervention_comment_and_label",
                 ) as post_follow_up:
-            forge_metadata.apply_failed_run_follow_up(
+            failure_follow_up.apply_failed_run_follow_up(
                 claimed_issue,
                 failure_location=failure_location,
             )
@@ -4423,7 +4456,7 @@ class FailedRunFollowUpTests(unittest.TestCase):
         claimed_issue = _claimed_issue(forge_metadata.LABEL_JAVAC_FAIL)
 
         with tempfile.TemporaryDirectory() as repo_path:
-            marker = forge_metadata.ContinuationMarker.create(
+            marker = ContinuationMarker.create(
                 strategy_name="strategy",
                 issue_number=1412,
                 label=claimed_issue.label,
@@ -4434,8 +4467,8 @@ class FailedRunFollowUpTests(unittest.TestCase):
             marker.mark_phase_skipped(PHASE_EXPLORE)
             marker.mark_phase_completed(PHASE_FINALIZATION)
             self.assertEqual(marker.continue_from, PHASE_PUBLICATION)
-            marker.save(forge_metadata.continuation_marker_path(repo_path))
-            preservation_result = forge_metadata.FailurePreservationResult(
+            marker.save(continuation_marker_path(repo_path))
+            preservation_result = failure_preservation.FailurePreservationResult(
                 branch_name="ai/test/preserved",
                 branch_url="https://github.com/oracle/graalvm-reachability-metadata/tree/ai/test/preserved",
                 committed_changes=True,
@@ -4447,7 +4480,7 @@ class FailedRunFollowUpTests(unittest.TestCase):
                         failure_follow_up,
                         "post_human_intervention_comment_and_label",
                     ) as post_follow_up:
-                forge_metadata.apply_failed_run_follow_up(
+                failure_follow_up.apply_failed_run_follow_up(
                     claimed_issue,
                     preservation_result=preservation_result,
                 )
@@ -4461,7 +4494,7 @@ class FailedRunFollowUpTests(unittest.TestCase):
         claimed_issue = _claimed_issue(forge_metadata.LABEL_JAVAC_FAIL)
 
         with tempfile.TemporaryDirectory() as repo_path:
-            marker = forge_metadata.ContinuationMarker.create(
+            marker = ContinuationMarker.create(
                 strategy_name="strategy",
                 issue_number=1412,
                 label=claimed_issue.label,
@@ -4469,8 +4502,8 @@ class FailedRunFollowUpTests(unittest.TestCase):
                 new_version=None,
             )
             self.assertEqual(marker.continue_from, PHASE_SETUP)
-            marker.save(forge_metadata.continuation_marker_path(repo_path))
-            preservation_result = forge_metadata.FailurePreservationResult(
+            marker.save(continuation_marker_path(repo_path))
+            preservation_result = failure_preservation.FailurePreservationResult(
                 branch_name="ai/test/preserved",
                 branch_url="https://github.com/oracle/graalvm-reachability-metadata/tree/ai/test/preserved",
                 committed_changes=True,
@@ -4482,7 +4515,7 @@ class FailedRunFollowUpTests(unittest.TestCase):
                         failure_follow_up,
                         "post_human_intervention_comment_and_label",
                     ) as post_follow_up:
-                forge_metadata.apply_failed_run_follow_up(
+                failure_follow_up.apply_failed_run_follow_up(
                     claimed_issue,
                     preservation_result=preservation_result,
                 )
@@ -4502,15 +4535,15 @@ class InterruptHandlingTests(unittest.TestCase):
     def test_interrupt_return_code_from_workflow_raises_keyboard_interrupt(self) -> None:
         claimed_issue = _claimed_issue()
 
-        with patch.object(forge_metadata, "run_add_new_library_support_workflow", return_value=130), \
-                patch.object(forge_metadata, "require_claimed_issue_worktree"), \
-                patch.object(forge_metadata, "run_library_preparation_preflight", return_value=None), \
-                patch.object(forge_metadata, "prepare_dynamic_access_chunking", return_value=None), \
-                patch.object(forge_metadata, "require_issue_graalvm_homes") as require_graalvm_homes:
+        with patch.object(driver_invocation, "run_add_new_library_support_workflow", return_value=130), \
+                patch.object(pipeline_execution, "require_claimed_issue_worktree"), \
+                patch.object(pipeline_execution, "run_library_preparation_preflight", return_value=None), \
+                patch.object(pipeline_execution, "prepare_dynamic_access_chunking", return_value=None), \
+                patch.object(env_config, "require_issue_graalvm_homes") as require_graalvm_homes:
             with self.assertRaises(KeyboardInterrupt):
-                forge_metadata.invoke_pipeline(claimed_issue, None, False)
+                pipeline_execution.invoke_pipeline(claimed_issue, None, False)
 
-        self.assertTrue(forge_metadata.is_user_interrupt_requested())
+        self.assertTrue(interrupts.is_user_interrupt_requested())
         require_graalvm_homes.assert_not_called()
 
     def test_interrupted_failed_workflow_skips_human_intervention_handling(self) -> None:
@@ -4518,18 +4551,18 @@ class InterruptHandlingTests(unittest.TestCase):
             claimed_issue = _claimed_issue_in(repo_path)
 
             def interrupted_run(*_args):
-                forge_metadata.mark_user_interrupt_requested()
-                return forge_metadata.WorkflowRunResult(
+                interrupts.mark_user_interrupt_requested()
+                return records.WorkflowRunResult(
                     claimed_issue=claimed_issue,
                     success=False,
                     started_at=123.0,
                 )
 
-            with patch.object(forge_metadata, "run_claimed_issue", side_effect=interrupted_run), \
-                    patch.object(forge_metadata, "handle_completed_run") as handle_completed_run, \
-                    patch.object(forge_metadata, "handle_failed_claimed_issue") as handle_failed_claimed_issue, \
-                    patch.object(forge_metadata, "revert_claimed_issue") as revert_claimed_issue, \
-                    patch.object(forge_metadata, "cleanup_issue_workspace") as cleanup_issue_workspace:
+            with patch.object(lifecycle, "run_claimed_issue", side_effect=interrupted_run), \
+                    patch.object(lifecycle, "handle_completed_run") as handle_completed_run, \
+                    patch.object(lifecycle, "handle_failed_claimed_issue") as handle_failed_claimed_issue, \
+                    patch.object(lifecycle, "revert_claimed_issue") as revert_claimed_issue, \
+                    patch.object(lifecycle, "cleanup_issue_workspace") as cleanup_issue_workspace:
                 with self.assertRaises(KeyboardInterrupt):
                     forge_metadata.process_claimed_issue_lifecycle(
                         claimed_issue,
@@ -4547,10 +4580,10 @@ class InterruptHandlingTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as repo_path:
             claimed_issue = _claimed_issue_in(repo_path)
 
-            with patch.object(forge_metadata, "run_claimed_issue", side_effect=SystemExit(1)), \
-                    patch.object(forge_metadata, "handle_completed_run") as handle_completed_run, \
-                    patch.object(forge_metadata, "handle_failed_claimed_issue") as handle_failed_claimed_issue, \
-                    patch.object(forge_metadata, "cleanup_issue_workspace") as cleanup_issue_workspace:
+            with patch.object(lifecycle, "run_claimed_issue", side_effect=SystemExit(1)), \
+                    patch.object(lifecycle, "handle_completed_run") as handle_completed_run, \
+                    patch.object(lifecycle, "handle_failed_claimed_issue") as handle_failed_claimed_issue, \
+                    patch.object(lifecycle, "cleanup_issue_workspace") as cleanup_issue_workspace:
                 handled = forge_metadata.process_claimed_issue_lifecycle(
                     claimed_issue,
                     strategy_name=None,
@@ -4565,17 +4598,17 @@ class InterruptHandlingTests(unittest.TestCase):
 
     def test_failed_run_analysis_uses_fallback_when_worktree_is_invalid(self) -> None:
         claimed_issue = _claimed_issue()
-        candidate = forge_metadata.HumanInterventionCandidate(
+        candidate = human_intervention.HumanInterventionCandidate(
             strategy_name=None,
-            workflow_status=forge_metadata.RUN_STATUS_FAILURE,
+            workflow_status=RUN_STATUS_FAILURE,
             reason="job_failed",
         )
 
         with patch.object(human_intervention, "_load_pending_run_metrics", return_value=None), \
                 patch.object(human_intervention, "collect_issue_log_paths", return_value=[]), \
                 patch.object(worktrees, "require_claimed_issue_worktree", side_effect=RuntimeError("invalid")), \
-                patch.object(forge_metadata.subprocess, "run") as run:
-            comment = forge_metadata.run_codex_failed_generation_analysis(
+                patch.object(subprocess, "run") as run:
+            comment = human_intervention.run_codex_failed_generation_analysis(
                 claimed_issue,
                 candidate,
                 started_at=123.0,
@@ -4587,9 +4620,9 @@ class InterruptHandlingTests(unittest.TestCase):
 
     def test_human_intervention_analysis_uses_fallback_when_worktree_is_invalid(self) -> None:
         claimed_issue = _claimed_issue()
-        candidate = forge_metadata.HumanInterventionCandidate(
+        candidate = human_intervention.HumanInterventionCandidate(
             strategy_name="strategy",
-            workflow_status=forge_metadata.RUN_STATUS_FAILURE,
+            workflow_status=RUN_STATUS_FAILURE,
             reason="low_dynamic_access_coverage",
         )
         strategy = {"model": "test-model"}
@@ -4598,7 +4631,7 @@ class InterruptHandlingTests(unittest.TestCase):
                 patch.object(human_intervention, "_collect_human_intervention_read_only_files", return_value=[]), \
                 patch.object(worktrees, "require_claimed_issue_worktree", side_effect=RuntimeError("invalid")), \
                 patch.object(human_intervention, "init_workflow_agent") as init_agent:
-            comment = forge_metadata.run_human_intervention_analysis(
+            comment = human_intervention.run_human_intervention_analysis(
                 claimed_issue,
                 candidate,
                 started_at=123.0,
@@ -4609,11 +4642,11 @@ class InterruptHandlingTests(unittest.TestCase):
         init_agent.assert_not_called()
 
     def test_human_intervention_posting_noops_after_interrupt(self) -> None:
-        forge_metadata.mark_user_interrupt_requested()
+        interrupts.mark_user_interrupt_requested()
 
         with patch.object(failure_follow_up, "post_issue_comment") as post_issue_comment, \
                 patch.object(failure_follow_up, "add_issue_label") as add_issue_label:
-            forge_metadata.post_human_intervention_comment_and_label(1412, "comment")
+            failure_follow_up.post_human_intervention_comment_and_label(1412, "comment")
 
         post_issue_comment.assert_not_called()
         add_issue_label.assert_not_called()
@@ -4626,58 +4659,58 @@ class InterruptHandlingTests(unittest.TestCase):
         revert the remaining claims, and exit, under the wrong reason.
         """
         claimed_issue = _claimed_issue()
-        forge_metadata.mark_user_interrupt_requested(forge_metadata.INTERRUPT_REASON_GRADLE_BOOTSTRAP)
+        interrupts.mark_user_interrupt_requested(config.INTERRUPT_REASON_GRADLE_BOOTSTRAP)
 
-        with patch.object(forge_metadata, "run_add_new_library_support_workflow", return_value=130), \
-                patch.object(forge_metadata, "require_claimed_issue_worktree"), \
-                patch.object(forge_metadata, "run_library_preparation_preflight", return_value=None), \
-                patch.object(forge_metadata, "prepare_dynamic_access_chunking", return_value=None), \
-                patch.object(forge_metadata, "create_or_load_run_continuation_marker", return_value=None), \
-                patch.object(forge_metadata, "load_continuation_marker", return_value=None), \
-                patch.object(forge_metadata, "record_library_update_route_in_marker"):
+        with patch.object(driver_invocation, "run_add_new_library_support_workflow", return_value=130), \
+                patch.object(pipeline_execution, "require_claimed_issue_worktree"), \
+                patch.object(pipeline_execution, "run_library_preparation_preflight", return_value=None), \
+                patch.object(pipeline_execution, "prepare_dynamic_access_chunking", return_value=None), \
+                patch.object(pipeline_execution, "create_or_load_run_continuation_marker", return_value=None), \
+                patch.object(pipeline_execution, "load_continuation_marker", return_value=None), \
+                patch.object(pipeline_execution, "record_library_update_route_in_marker"):
             with self.assertRaises(KeyboardInterrupt):
-                forge_metadata.invoke_pipeline(claimed_issue, None, False)
+                pipeline_execution.invoke_pipeline(claimed_issue, None, False)
 
         self.assertTrue(forge_metadata.is_gradle_bootstrap_interrupt())
 
     def test_ctrl_c_is_still_recorded_when_no_reason_was_set(self) -> None:
         forge_metadata.preserve_user_interrupt_reason()
 
-        self.assertTrue(forge_metadata.is_user_interrupt_requested())
+        self.assertTrue(interrupts.is_user_interrupt_requested())
         self.assertEqual(
-            forge_metadata.get_user_interrupt_reason(),
-            forge_metadata.INTERRUPT_REASON_CTRL_C,
+            interrupts.get_user_interrupt_reason(),
+            config.INTERRUPT_REASON_CTRL_C,
         )
 
     def test_gradle_bootstrap_failure_is_classified_as_external(self) -> None:
-        failure = forge_metadata.GradleBootstrapFailure("org.example:lib:1.0.0", "/tmp/discover.log")
+        failure = GradleBootstrapFailure("org.example:lib:1.0.0", "/tmp/discover.log")
 
         wrapped = RuntimeError("wrapped")
         wrapped.__cause__ = failure
 
-        self.assertTrue(forge_metadata.is_external_failure_exception(failure))
-        self.assertTrue(forge_metadata.is_external_failure_exception(wrapped))
+        self.assertTrue(human_intervention.is_external_failure_exception(failure))
+        self.assertTrue(human_intervention.is_external_failure_exception(wrapped))
 
     def test_preserved_interrupt_reason_survives_later_generic_handlers(self) -> None:
-        forge_metadata.mark_user_interrupt_requested(forge_metadata.INTERRUPT_REASON_GRADLE_BOOTSTRAP)
+        interrupts.mark_user_interrupt_requested(config.INTERRUPT_REASON_GRADLE_BOOTSTRAP)
         forge_metadata.preserve_user_interrupt_reason()
 
         self.assertTrue(forge_metadata.is_gradle_bootstrap_interrupt())
         self.assertEqual(
-            forge_metadata.get_user_interrupt_reason(),
-            forge_metadata.INTERRUPT_REASON_GRADLE_BOOTSTRAP,
+            interrupts.get_user_interrupt_reason(),
+            config.INTERRUPT_REASON_GRADLE_BOOTSTRAP,
         )
 
     def test_gradle_bootstrap_failure_reverts_claim_without_human_intervention_follow_up(self) -> None:
         with tempfile.TemporaryDirectory() as repo_path:
             claimed_issue = _claimed_issue_in(repo_path)
-            failure = forge_metadata.GradleBootstrapFailure(claimed_issue.issue_coordinates, "/tmp/discover.log")
+            failure = GradleBootstrapFailure(claimed_issue.issue_coordinates, "/tmp/discover.log")
 
-            with patch.object(forge_metadata, "run_claimed_issue", side_effect=failure), \
-                    patch.object(forge_metadata, "handle_completed_run") as handle_completed_run, \
-                    patch.object(forge_metadata, "handle_failed_claimed_issue") as handle_failed_claimed_issue, \
-                    patch.object(forge_metadata, "revert_claimed_issue") as revert_claimed_issue, \
-                    patch.object(forge_metadata, "cleanup_issue_workspace") as cleanup_issue_workspace:
+            with patch.object(lifecycle, "run_claimed_issue", side_effect=failure), \
+                    patch.object(lifecycle, "handle_completed_run") as handle_completed_run, \
+                    patch.object(lifecycle, "handle_failed_claimed_issue") as handle_failed_claimed_issue, \
+                    patch.object(lifecycle, "revert_claimed_issue") as revert_claimed_issue, \
+                    patch.object(lifecycle, "cleanup_issue_workspace") as cleanup_issue_workspace:
                 with self.assertRaises(KeyboardInterrupt):
                     forge_metadata.process_claimed_issue_lifecycle(
                         claimed_issue,
@@ -4687,14 +4720,14 @@ class InterruptHandlingTests(unittest.TestCase):
                     )
 
         self.assertEqual(
-            forge_metadata.get_user_interrupt_reason(),
-            forge_metadata.INTERRUPT_REASON_GRADLE_BOOTSTRAP,
+            interrupts.get_user_interrupt_reason(),
+            config.INTERRUPT_REASON_GRADLE_BOOTSTRAP,
         )
         handle_completed_run.assert_not_called()
         handle_failed_claimed_issue.assert_not_called()
         revert_claimed_issue.assert_called_once_with(
             claimed_issue,
-            forge_metadata.INTERRUPT_REASON_GRADLE_BOOTSTRAP,
+            config.INTERRUPT_REASON_GRADLE_BOOTSTRAP,
         )
         cleanup_issue_workspace.assert_called_once_with(claimed_issue, "/tmp/metrics")
 
@@ -4711,26 +4744,26 @@ class InterruptHandlingTests(unittest.TestCase):
 
         with tempfile.TemporaryDirectory() as repo_path, tempfile.TemporaryDirectory() as lock_root:
             claimed_issue = _claimed_issue_in(repo_path)
-            failure = forge_metadata.GradleBootstrapFailure(claimed_issue.issue_coordinates, "/tmp/discover.log")
+            failure = GradleBootstrapFailure(claimed_issue.issue_coordinates, "/tmp/discover.log")
 
             with patch.object(issue_cache, "get_issue_claim_locks_root", return_value=lock_root), \
-                    patch.object(forge_metadata, "validate_issue_processing_environment"), \
+                    patch.object(issue_processing, "validate_issue_processing_environment"), \
                     patch.object(
-                        forge_metadata,
+                        issue_processing,
                         "get_prioritized_issues_with_label",
                         return_value=(issues, _scan_state(len(issues), exhausted=True)),
                     ), \
-                    patch.object(forge_metadata, "get_issue_claim_preflights_or_empty"), \
+                    patch.object(claim_preflight, "get_issue_claim_preflights_or_empty"), \
                     patch.object(
-                        forge_metadata,
+                        issue_processing,
                         "claim_issue_for_processing",
                         return_value=claimed_issue,
                     ) as claim_issue_for_processing, \
-                    patch.object(forge_metadata, "run_claimed_issue", side_effect=failure), \
-                    patch.object(forge_metadata, "handle_completed_run") as handle_completed_run, \
-                    patch.object(forge_metadata, "handle_failed_claimed_issue") as handle_failed_claimed_issue, \
-                    patch.object(forge_metadata, "revert_claimed_issue"), \
-                    patch.object(forge_metadata, "cleanup_issue_workspace"):
+                    patch.object(lifecycle, "run_claimed_issue", side_effect=failure), \
+                    patch.object(lifecycle, "handle_completed_run") as handle_completed_run, \
+                    patch.object(lifecycle, "handle_failed_claimed_issue") as handle_failed_claimed_issue, \
+                    patch.object(lifecycle, "revert_claimed_issue"), \
+                    patch.object(lifecycle, "cleanup_issue_workspace"):
                 with self.assertRaises(KeyboardInterrupt):
                     forge_metadata.process_issues_with_label(
                         forge_metadata.LABEL_LIBRARY_NEW,
@@ -4748,14 +4781,14 @@ class InterruptHandlingTests(unittest.TestCase):
         handle_completed_run.assert_not_called()
         handle_failed_claimed_issue.assert_not_called()
         self.assertEqual(
-            forge_metadata.get_user_interrupt_reason(),
-            forge_metadata.INTERRUPT_REASON_GRADLE_BOOTSTRAP,
+            interrupts.get_user_interrupt_reason(),
+            config.INTERRUPT_REASON_GRADLE_BOOTSTRAP,
         )
 
     def test_process_issues_with_label_skips_queue_when_shutdown_requested(self) -> None:
-        with patch.object(forge_metadata, "is_shutdown_requested", return_value=True), \
-                patch.object(forge_metadata, "validate_issue_processing_environment") as validate_environment, \
-                patch.object(forge_metadata, "resolve_authenticated_user") as resolve_authenticated_user:
+        with patch.object(issue_processing, "is_shutdown_requested", return_value=True), \
+                patch.object(issue_processing, "validate_issue_processing_environment") as validate_environment, \
+                patch.object(issue_processing, "resolve_authenticated_user") as resolve_authenticated_user:
             processed = forge_metadata.process_issues_with_label(
                 forge_metadata.LABEL_LIBRARY_NEW,
                 1,
@@ -4778,7 +4811,7 @@ class PullRequestReviewTests(unittest.TestCase):
     def test_merged_auto_merge_follow_up_is_reconciled(self) -> None:
         pull_request = {
             "number": 3513,
-            "labels": [{"name": forge_metadata.LABEL_FORGE_MERGE_FOLLOW_UP}],
+            "labels": [{"name": config.LABEL_FORGE_MERGE_FOLLOW_UP}],
             "body": "Refs: #1412\n\nSummary:\n- Chunked dynamic-access: yes\n",
         }
         with (
@@ -4795,10 +4828,10 @@ class PullRequestReviewTests(unittest.TestCase):
                 ) as apply_unblocked,
                 patch.object(pr_merge, "remove_pull_request_label") as remove_label,
         ):
-            forge_metadata.reconcile_auto_merged_pull_request_follow_ups()
+            pr_merge.reconcile_auto_merged_pull_request_follow_ups()
 
         get_pull_requests.assert_called_once_with(
-            [forge_metadata.LABEL_FORGE_MERGE_FOLLOW_UP],
+            [config.LABEL_FORGE_MERGE_FOLLOW_UP],
             100,
             state="merged",
         )
@@ -4806,7 +4839,7 @@ class PullRequestReviewTests(unittest.TestCase):
         apply_unblocked.assert_called_once_with(pull_request)
         remove_label.assert_called_once_with(
             3513,
-            forge_metadata.LABEL_FORGE_MERGE_FOLLOW_UP,
+            config.LABEL_FORGE_MERGE_FOLLOW_UP,
         )
 
     def test_index_guard_validates_current_master_candidate(self) -> None:
@@ -4818,7 +4851,7 @@ class PullRequestReviewTests(unittest.TestCase):
                 pr_merge,
                 "validate_index_files_on_current_master_candidate",
         ) as validate_candidate:
-            forge_metadata.validate_pull_request_indexes_before_merge(
+            pr_merge.validate_pull_request_indexes_before_merge(
                 3513,
                 "abc123",
                 "/repo",
@@ -4835,7 +4868,7 @@ class PullRequestReviewTests(unittest.TestCase):
                 pr_merge,
                 "validate_index_files_on_current_master_candidate",
         ) as validate_candidate:
-            forge_metadata.validate_pull_request_indexes_before_merge(
+            pr_merge.validate_pull_request_indexes_before_merge(
                 3513,
                 "abc123",
                 "/repo",
@@ -4855,9 +4888,9 @@ class PullRequestReviewTests(unittest.TestCase):
                     "get_issue_claim_payload",
                     return_value={
                         "labels": [
-                            {"name": forge_metadata.LABEL_CHUNKED_DYNAMIC_ACCESS},
-                            {"name": forge_metadata.LABEL_HUMAN_INTERVENTION},
-                            {"name": forge_metadata.LABEL_RESUMABLE},
+                            {"name": config.LABEL_CHUNKED_DYNAMIC_ACCESS},
+                            {"name": config.LABEL_HUMAN_INTERVENTION},
+                            {"name": config.LABEL_RESUMABLE},
                         ],
                     },
                 ),
@@ -4868,16 +4901,16 @@ class PullRequestReviewTests(unittest.TestCase):
                     pr_merge, "invalidate_issue_claim_cache_entry",
                 ) as invalidate_cache,
         ):
-            forge_metadata.apply_chunked_dynamic_access_merge_follow_up(pull_request)
+            pr_merge.apply_chunked_dynamic_access_merge_follow_up(pull_request)
 
         self.assertEqual(
             remove_issue_label.call_args_list,
             [
-                call(1412, forge_metadata.LABEL_HUMAN_INTERVENTION),
-                call(1412, forge_metadata.LABEL_RESUMABLE),
+                call(1412, config.LABEL_HUMAN_INTERVENTION),
+                call(1412, config.LABEL_RESUMABLE),
             ],
         )
-        set_item_status.assert_called_once_with("project-item", forge_metadata.STATUS_TODO)
+        set_item_status.assert_called_once_with("project-item", config.STATUS_TODO)
         clear_issue_assignees.assert_called_once_with(1412)
         invalidate_cache.assert_called_once_with(1412)
 
@@ -4890,7 +4923,7 @@ class PullRequestReviewTests(unittest.TestCase):
                 patch.object(pr_merge, "set_item_status") as set_item_status,
                 patch.object(pr_merge, "clear_issue_assignees") as clear_issue_assignees,
         ):
-            forge_metadata.apply_chunked_dynamic_access_merge_follow_up(pull_request)
+            pr_merge.apply_chunked_dynamic_access_merge_follow_up(pull_request)
 
         set_item_status.assert_not_called()
         clear_issue_assignees.assert_not_called()
@@ -4911,7 +4944,7 @@ class PullRequestReviewTests(unittest.TestCase):
                 patch.object(review_loop, "enable_pull_request_auto_merge") as enable_auto_merge,
         ):
             with self.assertRaises(RuntimeError):
-                forge_metadata._process_descriptor_pull_request(state, "/repo")
+                review_loop._process_descriptor_pull_request(state, "/repo")
 
         approve.assert_not_called()
         enable_auto_merge.assert_not_called()
@@ -4928,7 +4961,7 @@ class PullRequestReviewTests(unittest.TestCase):
                 ],
         ):
             self.assertEqual(
-                forge_metadata.get_pull_request_changed_index_files(3513),
+                pr_state.get_pull_request_changed_index_files(3513),
                 ["metadata/org.example/demo/index.json"],
             )
 
@@ -4943,7 +4976,7 @@ class PullRequestReviewTests(unittest.TestCase):
 
         with patch.object(worktrees, "create_detached_worktree") as create_detached_worktree:
             self.assertFalse(
-                forge_metadata.resolve_pull_request_merge_conflict(pr, "/tmp/reachability")
+                pr_merge.resolve_pull_request_merge_conflict(pr, "/tmp/reachability")
             )
 
         create_detached_worktree.assert_not_called()
@@ -4967,7 +5000,7 @@ class PullRequestReviewTests(unittest.TestCase):
                 return_value=workflow_runs,
         ), patch.object(pr_state, "gh") as gh:
             self.assertEqual(
-                forge_metadata.rerun_failed_pull_request_workflow_jobs(
+                pr_state.rerun_failed_pull_request_workflow_jobs(
                     3513,
                     "abc123",
                     (102,),
@@ -4981,7 +5014,7 @@ class PullRequestReviewTests(unittest.TestCase):
         completed_process = subprocess.CompletedProcess(args=[], returncode=0, stdout="")
 
         with patch.object(worktrees, "run_git_transport", return_value=completed_process) as run:
-            forge_metadata.fetch_review_base_ref("/repo")
+            worktrees.fetch_review_base_ref("/repo")
 
         run.assert_called_once_with(
             [
@@ -5028,7 +5061,7 @@ class BenchmarkResultsConflictResolutionTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as worktree:
             os.makedirs(os.path.join(worktree, os.path.dirname(self._PATH)))
             with patch.object(pr_merge, "run_checked_command", side_effect=fake_run):
-                resolved = forge_metadata.resolve_benchmark_results_conflict(
+                resolved = pr_merge.resolve_benchmark_results_conflict(
                     worktree, self._PATH,
                 )
             target = os.path.join(worktree, self._PATH)

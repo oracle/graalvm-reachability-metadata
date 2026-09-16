@@ -26,6 +26,20 @@ from dispatcher.records import ClaimedIssue
 from dispatcher.config import SCRATCH_REVIEW_WORKTREE_DIRNAME
 from dispatcher.github_api import gh
 
+import shutil
+from utility_scripts.repo_path_resolver import get_forge_subdir_name
+from utility_scripts.run_location import PHASE_CLAIM
+from utility_scripts.run_location import STEP_CREATE_ISSUE_WORKSPACE
+from utility_scripts.run_location import log_step_progress
+from utility_scripts.run_location import pipeline_step
+from utility_scripts.stage_logger import log_stage
+from dispatcher.config import SCRATCH_WORKTREE_DIRNAME
+from dispatcher.fixture_support import is_fixture_testing_enabled
+
+# Worktrees whose failed-work preservation itself failed; cleanup must keep them.
+preservation_failed_worktree_paths: set[str] = set()
+
+
 def claimed_issue_worktree_is_valid(claimed_issue: ClaimedIssue, stage: str) -> bool:
     """Return True when analysis agents may safely run in the claimed issue worktree."""
     try:
@@ -234,3 +248,86 @@ def cleanup_review_workspace(
             f"ERROR: Failed to clean up review workspace for PR #{pr_number}: {exc!r}",
             file=sys.stderr,
         )
+
+
+@pipeline_step(
+    PHASE_CLAIM,
+    STEP_CREATE_ISSUE_WORKSPACE,
+    operand=lambda arguments: f"issue #{arguments['issue_number']}",
+)
+def create_issue_workspace(
+        base_reachability_metadata_path: str,
+        canonical_metrics_repo_path: str,
+        issue_number: int,
+        issue_base_commit: str = DEFAULT_WORKTREE_BASE_REF,
+) -> tuple[str, str]:
+    """Create an isolated issue worktree from the pinned repository base.
+
+    §FS-forge-run-requirements.4
+    """
+    log_step_progress(
+        PHASE_CLAIM,
+        STEP_CREATE_ISSUE_WORKSPACE,
+        f"Creating workspace for issue #{issue_number} from newest master {issue_base_commit[:12]}",
+    )
+    log_debug(
+        "claim",
+        f"Workspace base for issue #{issue_number}: {issue_base_commit}",
+    )
+    repo_root = get_repo_root()
+    worktrees_root = os.path.join(repo_root, "local_repositories", SCRATCH_WORKTREE_DIRNAME)
+    os.makedirs(worktrees_root, exist_ok=True)
+
+    run_id = build_issue_run_id(issue_number)
+    worktree_path = os.path.join(worktrees_root, run_id)
+
+    create_detached_worktree(
+        base_reachability_metadata_path,
+        worktree_path,
+        issue_base_commit,
+        f"Failed to create worktree for issue #{issue_number} from {issue_base_commit}",
+    )
+    try:
+        require_complete_reachability_repo(worktree_path)
+    except SystemExit:
+        remove_worktree(base_reachability_metadata_path, worktree_path)
+        raise
+    log_step_progress(
+        PHASE_CLAIM,
+        STEP_CREATE_ISSUE_WORKSPACE,
+        f"Workspace created for issue #{issue_number}: {os.path.relpath(worktree_path, repo_root)}",
+    )
+
+    scratch_metrics_repo_path = os.path.join(worktree_path, get_forge_subdir_name())
+    del canonical_metrics_repo_path, issue_number
+    return worktree_path, scratch_metrics_repo_path
+
+
+def cleanup_issue_workspace(claimed_issue: ClaimedIssue, canonical_metrics_repo_path: str) -> None:
+    """Remove the isolated issue worktrees for reachability-metadata and metrics."""
+    del canonical_metrics_repo_path
+    if claimed_issue.preflight_info_path:
+        shutil.rmtree(claimed_issue.preflight_info_path, ignore_errors=True)
+    if claimed_issue.worktree_path in preservation_failed_worktree_paths:
+        print(
+            (
+                f"[Keeping worktree for issue #{claimed_issue.issue['number']} because failed work "
+                "could not be pushed; cleanup skipped.]"
+            ),
+            file=sys.stderr,
+        )
+    else:
+        if is_fixture_testing_enabled():
+            log_stage(
+                "fixture-cleanup",
+                (
+                    f"Cleaning isolated fixture worktree for issue #{claimed_issue.issue['number']}: "
+                    f"{claimed_issue.worktree_path}"
+                ),
+            )
+        remove_worktree(claimed_issue.base_reachability_metadata_path, claimed_issue.worktree_path)
+        if is_fixture_testing_enabled():
+            log_stage(
+                "fixture-cleanup",
+                f"Cleaned isolated fixture worktree for issue #{claimed_issue.issue['number']}.",
+            )

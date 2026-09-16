@@ -38,7 +38,7 @@ from dispatcher.config import (
 from dispatcher.fixture_support import is_fixture_testing_enabled
 from dispatcher.github_api import get_authenticated_user
 from dispatcher.records import ClaimedIssue
-from dispatcher.worktrees import require_claimed_issue_worktree
+from dispatcher.worktrees import preservation_failed_worktree_paths, require_claimed_issue_worktree
 
 import json
 from utility_scripts.continuation_marker import ContinuationMarker
@@ -68,7 +68,6 @@ class FailurePreservationResult:
             "fixture_mode": self.fixture_mode,
         }
 
-preservation_failed_worktree_paths: set[str] = set()
 
 def _sanitize_branch_segment(value: str) -> str:
     """Return a branch-safe path segment."""

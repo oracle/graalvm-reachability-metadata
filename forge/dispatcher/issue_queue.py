@@ -51,6 +51,8 @@ from dispatcher.issue_cache import (
 from dispatcher.records import CachedIssueClaimSkip
 
 
+from dispatcher.records import ClaimedIssue
+
 def get_issue_by_number(issue_number: int) -> tuple[dict, str]:
     """Fetch a single issue by number and determine its pipeline label."""
     if is_fixture_testing_enabled():
@@ -497,3 +499,21 @@ def filter_user_requested_issues(issues: list[dict], user_requested_only: bool) 
         for issue in issues
         if get_issue_author_login(issue) not in excluded_author_set
     ]
+
+
+def get_issue_url(issue: dict) -> str:
+    """Return the issue URL, preferring the GitHub API payload."""
+    issue_url = issue.get("url")
+    if issue_url:
+        return issue_url
+    return f"https://github.com/{REPO}/issues/{issue['number']}"
+
+
+def format_issue_result_message(claimed_issue: ClaimedIssue, result: str) -> str:
+    """Return a concise multiline issue result message for a status banner."""
+    issue = claimed_issue.issue
+    return (
+        f"Issue #{issue['number']}: {issue['title']}\n"
+        f"Ticket: {get_issue_url(issue)}\n"
+        f"{result}"
+    )

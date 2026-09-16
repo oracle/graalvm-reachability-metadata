@@ -14,6 +14,8 @@ import sys
 from dispatcher.config import MAX_PARALLELISM, REVIEW_PERIOD_SUFFIX_SECONDS
 
 
+from utility_scripts.host_graalvm_checks import require_issue_graalvm_homes
+
 def validate_parallelism(value: str) -> int:
     """Parse and validate the allowed forge_metadata parallelism."""
     parsed = int(value)
@@ -86,3 +88,12 @@ def get_env_zero_one_bool(name: str, default: bool) -> bool:
         print(f"ERROR: {name} must be 0 or 1.", file=sys.stderr)
         sys.exit(1)
     return raw_value == "1"
+
+
+def validate_issue_processing_environment() -> None:
+    """Validate the GraalVM environment required before issue processing can start.
+
+    The requirement itself is defined once in `utility_scripts/host_requirements.py`
+    and is also enforced by the startup gate (§FS-forge-host-requirements).
+    """
+    require_issue_graalvm_homes()
