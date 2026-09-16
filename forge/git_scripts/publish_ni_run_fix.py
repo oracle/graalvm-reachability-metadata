@@ -22,7 +22,7 @@ from git_scripts.branch_publication import (
 )
 from git_scripts.publication_descriptor import descriptor_input_from_pending_metrics
 from utility_scripts.metadata_index import resolve_test_version
-from utility_scripts.metrics_writer import (
+from utility_scripts.library_measurements import (
     count_metadata_entries,
     count_test_only_metadata_entries,
     collect_version_coverage_metrics,

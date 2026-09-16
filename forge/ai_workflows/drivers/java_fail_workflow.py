@@ -29,7 +29,7 @@ from git_scripts.common_git import (
     ensure_gh_authenticated,
     switch_branch_quietly,
 )
-from utility_scripts import metrics_writer
+from utility_scripts import metrics_writer, run_metrics_payloads
 from utility_scripts.continuation_marker import (
     PHASE_FINALIZATION,
     PHASE_SETUP,
@@ -46,7 +46,7 @@ from utility_scripts.library_preparation_preflight import (
 from utility_scripts.logged_command import run_logged_command
 from utility_scripts.skip_record import apply_preflight_skip_record
 from utility_scripts.metadata_index import is_newer_than_latest_metadata_version
-from utility_scripts.metrics_writer import create_failure_run_metrics_output
+from utility_scripts.run_metrics_payloads import create_failure_run_metrics_output
 from utility_scripts.repo_path_resolver import require_complete_reachability_repo
 from utility_scripts.run_location import (
     STEP_NORMAL_SETUP,
@@ -548,7 +548,7 @@ def run_java_fail_workflow(config: JavaFailWorkflowConfig, argv=None):
         )
         if ending_commit is not None:
             print("[Version recorded as skipped; no fix was attempted.]")
-            run_metrics = metrics_writer.create_javac_fix_run_metrics_output_json(
+            run_metrics = run_metrics_payloads.create_javac_fix_run_metrics_output_json(
                 repo_path=reachability_repo_path,
                 package=group,
                 artifact=artifact,
@@ -739,7 +739,7 @@ def run_java_fail_workflow(config: JavaFailWorkflowConfig, argv=None):
         else:
             print("[Test fixing succeeded.]")
         ending_commit = subprocess.check_output(["git", "rev-parse", "HEAD"], text=True).strip()
-        run_metrics = metrics_writer.create_javac_fix_run_metrics_output_json(
+        run_metrics = run_metrics_payloads.create_javac_fix_run_metrics_output_json(
             repo_path=reachability_repo_path,
             package=group,
             artifact=artifact,

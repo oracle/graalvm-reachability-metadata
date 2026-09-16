@@ -26,7 +26,7 @@ from git_scripts.common_git import (
     delete_remote_branch_if_exists,
     switch_branch_quietly,
 )
-from utility_scripts import metrics_writer
+from utility_scripts import metrics_writer, run_metrics_payloads
 from utility_scripts.continuation_marker import (
     PHASE_EXPLORE,
     PHASE_FINALIZATION,
@@ -46,7 +46,7 @@ from utility_scripts.library_preparation_preflight import (
 from utility_scripts.skip_record import apply_preflight_skip_record
 from utility_scripts.logged_command import LoggedCommandResult, run_logged_command
 from utility_scripts.metadata_index import resolve_metadata_version, resolve_test_version
-from utility_scripts.metrics_writer import create_failure_run_metrics_output
+from utility_scripts.run_metrics_payloads import create_failure_run_metrics_output
 from utility_scripts.native_test_verification import global_output_dir
 from utility_scripts.repo_path_resolver import require_complete_reachability_repo
 from utility_scripts.run_location import (
@@ -430,7 +430,7 @@ def main(argv=None) -> int:
         )
         if ending_commit is not None:
             print("[Version recorded as skipped; no fix was attempted.]")
-            run_metrics = metrics_writer.create_java_run_fix_run_metrics_output_json(
+            run_metrics = run_metrics_payloads.create_java_run_fix_run_metrics_output_json(
                 repo_path=reachability_metadata_path,
                 package=group,
                 artifact=artifact,
@@ -611,7 +611,7 @@ def main(argv=None) -> int:
         if finalize_status == SUCCESS_WITH_INTERVENTION_STATUS:
             print("[pipeline] Finalization produced PR-eligible post-generation intervention output.")
         ending_commit = subprocess.check_output(["git", "rev-parse", "HEAD"], text=True).strip()
-        run_metrics = metrics_writer.create_java_run_fix_run_metrics_output_json(
+        run_metrics = run_metrics_payloads.create_java_run_fix_run_metrics_output_json(
             repo_path=reachability_metadata_path,
             package=group,
             artifact=artifact,

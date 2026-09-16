@@ -186,11 +186,11 @@ from utility_scripts.metadata_index import (
 )
 from utility_scripts.metrics_writer import (
     PENDING_METRICS_FILENAME,
-    calc_model_session_cost,
     load_execution_metrics_for_timestamp,
     read_pending_metrics,
     write_pending_metrics,
 )
+from utility_scripts.token_costs import calc_model_session_cost
 from utility_scripts.native_image_artifact import (
     ARTIFACT_REPOSITORY_URLS,
     artifact_is_published,
