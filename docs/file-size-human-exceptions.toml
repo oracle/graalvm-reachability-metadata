@@ -10,16 +10,6 @@ reason = """
 User-approved: behavior and architecture share one document until the promised FS split lands; docs/README.md records the same debt.
 """
 [[exceptions]]
-path = "forge/utility_scripts/code_coverage_profile_report.py"
-match = "exact"
-rules = ["source"]
-kind = "deferred"
-max_accepted = { value = 2000, unit = "lines" }
-until = "the file is split when next substantively edited"
-reason = """
-User-approved: pre-existing size debt surfaced by fissile adoption; this branch touches the file minimally.
-"""
-[[exceptions]]
 path = ".github/scripts/forge_pr_publisher/publisher.py"
 match = "exact"
 rules = ["source"]
@@ -30,62 +20,62 @@ reason = """
 User-approved: pre-existing size debt surfaced by fissile adoption; this branch touches the file minimally.
 """
 [[exceptions]]
-path = "forge/benchmarks/code_coverage_benchmark.py"
+path = "tests/tck-build-logic/src/main/groovy/org.graalvm.internal.tck.gradle"
 match = "exact"
 rules = ["source"]
-kind = "deferred"
-max_accepted = { value = 1700, unit = "lines" }
-until = "the file is split when next substantively edited"
+kind = "structural"
+max_accepted = { value = 1100, unit = "lines" }
+until = "indefinite"
 reason = """
-User-approved: pre-existing size debt surfaced by fissile adoption; this branch touches the file minimally.
+User-approved: precompiled script plugin whose bulk is Gradle DSL wiring over shared mutable
+script-local state (libraryGAV, nativeImageArgs, resolver closures feeding the graalvmNative
+binaries block). Splitting into further precompiled plugins changes apply-time vs body-time
+evaluation and cannot be proven semantics-identical; the CI-only tasks it registers are not
+verifiable locally. Pure-helper extraction tops out near 250 lines and does not reach budget.
 """
 [[exceptions]]
-path = "forge/tests/test_code_coverage_benchmark.py"
+path = "tests/tck-build-logic/src/main/groovy/org.graalvm.internal.tck-harness.gradle"
 match = "exact"
 rules = ["source"]
+kind = "structural"
+max_accepted = { value = 1100, unit = "lines" }
+until = "indefinite"
+reason = """
+User-approved: precompiled script plugin registering the harness task surface (59 tasks) over
+shared script-local state (diffCoordinates, matchingCoordinates, ci.json matrix helpers).
+Splitting is not provably semantics-identical: the generateMatrix*/GITHUB_OUTPUT and
+buildBaseLayer tasks are exercised only in GitHub Actions and cannot be verified locally.
+"""
+[[exceptions]]
+path = "forge/docs/architecture/architecture.md"
+match = "exact"
+rules = ["markdown-docs"]
+kind = "deferred"
+max_accepted = { value = 1000, unit = "lines" }
+until = "AR-forge-workflow-pipeline is split into per-stage declarations following the dispatcher package boundaries"
+reason = """
+User-approved: the bulk is one 868-line declaration (AR-forge-workflow-pipeline); carving it
+renumbers cited sections across ~27 sites and is deliberate spec work, not a mechanical split.
+"""
+[[exceptions]]
+path = "forge/docs/functional-spec/functional-spec.md"
+match = "exact"
+rules = ["markdown-docs"]
 kind = "deferred"
 max_accepted = { value = 800, unit = "lines" }
-until = "the file is split when next substantively edited"
+until = "its declarations are moved to topic files in the functional-spec folder home"
 reason = """
-User-approved: pre-existing size debt surfaced by fissile adoption; this branch touches the file minimally.
+User-approved: mechanical whole-declaration moves are possible but deferred; IDs are stable
+across files in the folder home, so the split carries no citation churn when it happens.
 """
 [[exceptions]]
-path = "forge/tests/test_code_coverage_profile_report.py"
+path = "forge/docs/functional-spec/publication.md"
 match = "exact"
-rules = ["source"]
-kind = "deferred"
-max_accepted = { value = 1200, unit = "lines" }
-until = "the file is split when next substantively edited"
-reason = """
-User-approved: pre-existing size debt surfaced by fissile adoption; this branch touches the file minimally.
-"""
-[[exceptions]]
-path = "forge/utility_scripts/code_coverage_finalize.py"
-match = "exact"
-rules = ["source"]
-kind = "deferred"
-max_accepted = { value = 900, unit = "lines" }
-until = "the file is split when next substantively edited"
-reason = """
-User-approved: pre-existing size debt surfaced by fissile adoption; this branch touches the file minimally.
-"""
-[[exceptions]]
-path = "forge/tests/test_code_coverage_api_rank.py"
-match = "exact"
-rules = ["source"]
-kind = "deferred"
-max_accepted = { value = 700, unit = "lines" }
-until = "the file is split when next substantively edited"
-reason = """
-User-approved: pre-existing size debt surfaced by fissile adoption; this branch touches the file minimally.
-"""
-[[exceptions]]
-path = "forge/utility_scripts/code_coverage_api_rank.py"
-match = "exact"
-rules = ["source"]
+rules = ["markdown-docs"]
 kind = "deferred"
 max_accepted = { value = 600, unit = "lines" }
-until = "the file is split when next substantively edited"
+until = "the review-side declarations move to a sibling file in the functional-spec folder home"
 reason = """
-User-approved: pre-existing size debt surfaced by fissile adoption; this branch touches the file minimally.
+User-approved: 65 lines over budget; the review trio (local-branch-review, automated-pr-review,
+human-intervention-policy) moves out whenever the file is next substantively edited.
 """
