@@ -40,9 +40,9 @@ from utility_scripts.edit_scope import format_resolved_edit_scope_context
 from utility_scripts.gradle_environment import gradle_command_environment
 from utility_scripts.issue_requested_metadata import format_issue_requested_metadata_context
 from utility_scripts.library_preparation_preflight import (
-    prepare_library_preparation_preflight,
     preflight_skip_record_entries,
 )
+from utility_scripts.library_preparation_setup import prepare_library_preparation_preflight
 from utility_scripts.logged_command import run_logged_command
 from utility_scripts.skip_record import apply_preflight_skip_record
 from utility_scripts.metadata_index import is_newer_than_latest_metadata_version

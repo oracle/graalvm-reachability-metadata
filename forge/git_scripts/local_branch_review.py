@@ -3,19 +3,21 @@
 # You should have received a copy of the CC0 legalcode along with this
 # work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 
-"""Cold pre-push review of a verified publication branch (§FS-local-branch-review)."""
+"""Cold pre-push review of a verified publication branch (§FS-local-branch-review).
+
+The verdict and finding records live in `local_review_records.py` and the
+isolated reviewer session mechanics in `local_review_session.py`; both are
+re-exported here.
+"""
 
 from __future__ import annotations
 
-import copy
 import json
 import os
-import shlex
 import shutil
 import subprocess
 import uuid
-from dataclasses import dataclass, field
-from datetime import datetime, timezone
+from dataclasses import dataclass
 from typing import Any
 
 from ai_workflows.agents.agent_runtime import (
@@ -24,7 +26,34 @@ from ai_workflows.agents.agent_runtime import (
     analysis_agent_run,
     get_analysis_agent,
 )
-from git_scripts.common_git import gh, gh_json, parse_coordinate_parts, stage_and_commit
+from git_scripts.common_git import gh, gh_json
+from git_scripts.local_review_records import (
+    FINDINGS_PREAMBLE,
+    FINDINGS_TITLE,
+    LOCAL_REVIEW_METRICS_KEY,
+    LocalBranchReviewOutcome,
+    LocalReviewVerdict,
+    ReviewExecution,
+    UNAVAILABLE_FINDING_BODY,
+    UNAVAILABLE_FINDING_TITLE,
+    _load_persisted_outcome,
+    _log_review,
+    _persist_outcome,
+    _record_outcome_finding,
+)
+from git_scripts.local_review_session import (
+    MAX_REVIEW_TEXT_CHARS,
+    REVIEW_SKILLS_BY_TASK_TYPE,
+    REVIEW_WORKTREE_DIRNAME,
+    _build_review_prompt,
+    _commit_reviewer_edits,
+    _create_review_worktree,
+    _git_stdout,
+    _read_verdict,
+    _remove_review_worktree,
+    _write_evidence,
+    _write_unavailable_log,
+)
 from git_scripts.review_finalization import (
     finalization_receipt_matches,
     publishable_tree_digest,
@@ -36,8 +65,6 @@ from utility_scripts.local_ci_verification import (
     run_local_ci_verification,
     write_verification_metrics,
 )
-from utility_scripts.metrics_writer import read_pending_metrics, write_pending_metrics
-from utility_scripts.stage_logger import log_stage
 from utility_scripts.task_logs import (
     build_timestamped_task_log_path,
     display_log_path,
@@ -45,123 +72,6 @@ from utility_scripts.task_logs import (
 )
 
 LOCAL_REVIEW_TIMEOUT_SECONDS: int = 3600
-LOCAL_REVIEW_METRICS_KEY: str = "local_review"
-REVIEW_WORKTREE_DIRNAME: str = "forge_prepublication_review_worktrees"
-FINDINGS_TITLE: str = "# Forge pre-push review findings"
-FINDINGS_PREAMBLE: str = (
-    "Rendered by Forge from the pre-push branch review of §FS-local-branch-review.\n"
-    "Newest entry first; every finding is recorded, including one the reviewer repaired."
-)
-UNAVAILABLE_FINDING_TITLE: str = "Pre-push review unavailable"
-UNAVAILABLE_FINDING_BODY: str = (
-    "Forge could not obtain a readable pre-push review verdict. This records a review "
-    "availability problem, not a reviewer finding against the branch."
-)
-MAX_REVIEW_TEXT_CHARS: int = 20_000
-
-REVIEW_SKILLS_BY_TASK_TYPE: dict[str, str] = {
-    "library-new-request": "review-library-new-request",
-    "library-update-request": "review-library-update-request",
-    "fixes-javac-fail": "review-fixes-javac-fail",
-    "fixes-java-run-fail": "review-fixes-java-run-fail",
-    "fixes-native-image-run-fail": "review-fixes-native-image-run-fail",
-    "not-for-native-image": "review-library-new-request",
-}
-
-@dataclass(frozen=True)
-class LocalReviewVerdict:
-    """The authoritative reviewer's structured decision."""
-
-    decision: str
-    review_comment: str
-    finding_title: str
-    finding_body: str
-    fix_note: str
-    action: str | None = None
-    infrastructure_issue: dict[str, str] | None = None
-
-
-@dataclass(frozen=True)
-class ReviewExecution:
-    """The observable result of the isolated reviewer process."""
-
-    verdict: LocalReviewVerdict | None
-    session_id: str
-    changed_paths: list[str] = field(default_factory=list)
-
-
-@dataclass
-class LocalBranchReviewOutcome:
-    """Reviewer decision plus the evidence Forge persists."""
-
-    model: str
-    session_id: str
-    local_ci_verification: LocalCIVerificationResult
-    verdict: LocalReviewVerdict
-    changed_paths: list[str] = field(default_factory=list)
-
-    @property
-    def is_approved(self) -> bool:
-        return self.verdict.decision == "approved"
-
-    @property
-    def review_comment(self) -> str:
-        return self.verdict.review_comment
-
-    def to_descriptor_payload(self) -> dict[str, Any]:
-        """Return the descriptor object consumed by trusted automation."""
-        payload: dict[str, Any] = {
-            "decision": self.verdict.decision,
-            "review_comment": self.verdict.review_comment,
-            "finding_title": self.verdict.finding_title,
-            "finding_body": self.verdict.finding_body,
-            "fix_note": self.verdict.fix_note,
-            "model": self.model,
-            "changed_paths": list(self.changed_paths[:200]),
-        }
-        # A session identifier, not a log path: the operator's `logs/` tree is
-        # gitignored, so a path here resolves for nobody who reads the pull
-        # request. §AR-publication-descriptor
-        if self.session_id:
-            payload["session_id"] = self.session_id
-        if self.verdict.action is not None:
-            payload["action"] = self.verdict.action
-        return payload
-
-    @classmethod
-    def from_descriptor_payload(
-            cls,
-            payload: dict[str, Any],
-            local_ci_verification: LocalCIVerificationResult,
-    ) -> LocalBranchReviewOutcome:
-        """Reconstruct a persisted verdict without re-running the reviewer."""
-        verdict = LocalReviewVerdict(
-            decision=str(payload["decision"]),
-            action=(
-                str(payload["action"])
-                if isinstance(payload.get("action"), str)
-                else None
-            ),
-            review_comment=str(payload["review_comment"]),
-            finding_title=str(payload["finding_title"]),
-            finding_body=str(payload["finding_body"]),
-            fix_note=str(payload["fix_note"]),
-        )
-        return cls(
-            model=str(payload["model"]),
-            session_id=str(payload.get("session_id") or ""),
-            local_ci_verification=local_ci_verification,
-            verdict=verdict,
-            changed_paths=[str(path) for path in payload.get("changed_paths", [])],
-        )
-
-
-def _log_review(message: str, indent_level: int = 0) -> None:
-    log_stage("local-review", message, indent_level=indent_level)
-
-
-def _git_stdout(repo_path: str, args: list[str]) -> str:
-    return subprocess.check_output(["git", *args], cwd=repo_path, text=True).strip()
 
 
 def review_model_name(model: str | None = None) -> str:
@@ -558,429 +468,3 @@ def _request_review(
         return ReviewExecution(verdict, session_id, changed_paths)
     finally:
         _remove_review_worktree(repo_path, worktree_path)
-
-
-def _commit_reviewer_edits(worktree_path: str, verified_sha: str) -> list[str]:
-    """Stage and commit actual review-worktree edits, excluding the findings record."""
-    reviewer_head: str = _git_stdout(worktree_path, ["rev-parse", "HEAD"])
-    if reviewer_head != verified_sha:
-        # Normalize an accidental reviewer commit back to worktree edits so
-        # Forge remains the only party that stages and commits the repair.
-        subprocess.run(["git", "reset", "--mixed", verified_sha], cwd=worktree_path, check=True)
-    subprocess.run(["git", "add", "-A"], cwd=worktree_path, check=True)
-    findings_path: str = os.path.join(worktree_path, FINDINGS_RELATIVE_PATH)
-    tracked_finding = subprocess.run(
-        ["git", "ls-files", "--error-unmatch", "--", FINDINGS_RELATIVE_PATH],
-        cwd=worktree_path,
-        stdout=subprocess.DEVNULL,
-        stderr=subprocess.DEVNULL,
-        check=False,
-    ).returncode == 0
-    if tracked_finding:
-        subprocess.run(
-            [
-                "git", "restore", "--source=HEAD", "--staged", "--worktree", "--",
-                FINDINGS_RELATIVE_PATH,
-            ],
-            cwd=worktree_path,
-            check=True,
-        )
-    elif os.path.isfile(findings_path):
-        os.remove(findings_path)
-        subprocess.run(
-            ["git", "restore", "--staged", "--", FINDINGS_RELATIVE_PATH],
-            cwd=worktree_path,
-            check=False,
-        )
-
-    changed_output: str = subprocess.check_output(
-        ["git", "diff", "--cached", "--name-only", "-z", "--diff-filter=ACMRTD"],
-        cwd=worktree_path,
-        text=True,
-    )
-    changed_paths: list[str] = [path for path in changed_output.split("\0") if path]
-    if changed_paths:
-        subprocess.run(
-            ["git", "commit", "-m", "Apply pre-push reviewer edits"],
-            cwd=worktree_path,
-            check=True,
-        )
-    return changed_paths
-
-
-def _create_review_worktree(repo_path: str, head_sha: str) -> str | None:
-    """Detach a cold worktree at the verified commit from the shared object store."""
-    worktree_root: str = os.path.join(
-        os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
-        "local_repositories",
-        REVIEW_WORKTREE_DIRNAME,
-    )
-    os.makedirs(worktree_root, exist_ok=True)
-    worktree_path: str = os.path.join(worktree_root, f"review-{uuid.uuid4().hex[:8]}")
-    result = subprocess.run(
-        ["git", "worktree", "add", "--detach", worktree_path, head_sha],
-        cwd=repo_path,
-        stdout=subprocess.PIPE,
-        stderr=subprocess.STDOUT,
-        text=True,
-        check=False,
-    )
-    if result.returncode != 0:
-        _log_review(
-            f"Failed to create the isolated review worktree: {result.stdout.strip()}",
-            indent_level=1,
-        )
-        return None
-    return worktree_path
-
-
-def _remove_review_worktree(repo_path: str, worktree_path: str) -> None:
-    subprocess.run(
-        ["git", "worktree", "remove", "--force", worktree_path],
-        cwd=repo_path,
-        stdout=subprocess.PIPE,
-        stderr=subprocess.STDOUT,
-        text=True,
-        check=False,
-    )
-    if os.path.isdir(worktree_path):
-        shutil.rmtree(worktree_path, ignore_errors=True)
-
-
-def _write_evidence(
-        evidence_path: str,
-        coordinates: str,
-        task_type: str,
-        local_ci_verification: LocalCIVerificationResult,
-        descriptor_input: Any,
-) -> None:
-    """Write local gate records and resolved descriptor statistics for the reviewer."""
-    evidence: dict[str, Any] = {
-        "coordinates": coordinates,
-        "task_type": task_type,
-        "local_ci_verification": local_ci_verification.to_metrics(),
-    }
-    render = getattr(descriptor_input, "render", None)
-    if isinstance(render, dict):
-        evidence["render"] = copy.deepcopy(render)
-    run_metrics = getattr(descriptor_input, "run_metrics", None)
-    if isinstance(run_metrics, dict):
-        evidence_run_metrics: dict[str, Any] = copy.deepcopy(run_metrics)
-        evidence_run_metrics.pop(LOCAL_REVIEW_METRICS_KEY, None)
-        evidence["run_metrics"] = evidence_run_metrics
-    for attribute in ("issue_number", "template_type", "status", "previous_coordinates"):
-        evidence[attribute] = getattr(descriptor_input, attribute, None)
-    with open(evidence_path, "w", encoding="utf-8") as evidence_file:
-        json.dump(evidence, evidence_file, indent=2, sort_keys=True, default=str)
-        evidence_file.write("\n")
-
-
-def _read_verdict(verdict_path: str) -> LocalReviewVerdict | None:
-    """Read one complete verdict, treating malformed output as unavailable."""
-    if not os.path.isfile(verdict_path):
-        _log_review("Review wrote no verdict file", indent_level=1)
-        return None
-    try:
-        with open(verdict_path, "r", encoding="utf-8") as verdict_file:
-            payload = json.load(verdict_file)
-    except (OSError, json.JSONDecodeError) as error:
-        _log_review(f"Review verdict could not be read: {error}", indent_level=1)
-        return None
-    if not isinstance(payload, dict) or payload.get("decision") not in {
-        "approved", "rejected",
-    }:
-        _log_review("Review verdict did not carry a valid decision", indent_level=1)
-        return None
-
-    decision: str = str(payload["decision"])
-    action: Any = payload.get("action")
-    if decision == "approved" and "action" in payload:
-        _log_review("Approved review verdict carried an action", indent_level=1)
-        return None
-    if decision == "rejected" and action not in {"human-intervention", "close"}:
-        _log_review("Rejected review verdict did not carry a valid action", indent_level=1)
-        return None
-
-    infrastructure_issue: dict[str, str] | None = None
-    raw_infrastructure_issue = payload.get("infrastructure_issue")
-    if raw_infrastructure_issue is not None:
-        if (
-                decision != "rejected"
-                or action != "human-intervention"
-                or not isinstance(raw_infrastructure_issue, dict)
-        ):
-            _log_review("Review verdict carried invalid infrastructure evidence", indent_level=1)
-            return None
-        issue_title = raw_infrastructure_issue.get("title")
-        issue_body = raw_infrastructure_issue.get("body")
-        if (
-                not isinstance(issue_title, str)
-                or not issue_title.strip()
-                or not isinstance(issue_body, str)
-                or not issue_body.strip()
-        ):
-            _log_review("Infrastructure evidence requires a title and body", indent_level=1)
-            return None
-        infrastructure_issue = {
-            "title": issue_title.strip(),
-            "body": issue_body.strip(),
-        }
-
-    values: dict[str, str] = {}
-    for key in ("review_comment", "finding_title", "finding_body", "fix_note"):
-        value = payload.get(key)
-        if not isinstance(value, str) or len(value) > MAX_REVIEW_TEXT_CHARS:
-            _log_review(f"Review verdict carried an invalid {key}", indent_level=1)
-            return None
-        values[key] = value
-    if not values["review_comment"].strip():
-        _log_review("Review verdict carried no review comment", indent_level=1)
-        return None
-    if bool(values["finding_title"].strip()) != bool(values["finding_body"].strip()):
-        _log_review("Review verdict carried an incomplete finding", indent_level=1)
-        return None
-    if decision == "rejected" and not values["finding_title"].strip():
-        _log_review("Review rejected the branch without a finding", indent_level=1)
-        return None
-    return LocalReviewVerdict(
-        decision=decision,
-        action=str(action) if isinstance(action, str) else None,
-        review_comment=values["review_comment"],
-        finding_title=values["finding_title"],
-        finding_body=values["finding_body"],
-        fix_note=values["fix_note"],
-        infrastructure_issue=infrastructure_issue,
-    )
-
-
-def _build_review_finalization_instructions(
-        coordinates: str,
-        task_type: str,
-        base_sha: str,
-        finalization_receipt_path: str,
-) -> list[str]:
-    """Give one reviewer every finalization duty. §FS-local-branch-review"""
-    if task_type == "not-for-native-image":
-        return [
-            "Before writing the verdict, ensure the marker and descriptor inputs are final. "
-            "This route has no library finalization callback or second semantic agent.",
-            "",
-        ]
-    command: str = shlex.join([
-        "python3",
-        "-m",
-        "git_scripts.review_finalization",
-        "--repo-path",
-        ".",
-        "--coordinates",
-        coordinates,
-        "--base-commit",
-        base_sha,
-        "--receipt-path",
-        finalization_receipt_path,
-    ])
-    return [
-        "If you edit the contribution, run the exact Forge-owned finalization command after your last "
-        "manual edit. This is the only semantic repair pass; it disables nested agents and includes "
-        "all three test lanes, foreign-metadata routing, deterministic allowed-package updates, "
-        "metadata and style checks, generated-test validity, and library statistics:",
-        f"- `PYTHONPATH=forge {command}`",
-        "If it fails, use its logs and resulting diff to repair the contribution, then run the exact "
-        "command again. A run that updates the publishable tree deliberately exits nonzero: inspect "
-        "those changes as part of the review and rerun it. Write the verdict only after the command "
-        "exits successfully, which proves a complete pass made no further publishable change. Do not "
-        "edit the contribution after that successful run. Forge will not run finalization again.",
-        "",
-    ]
-
-
-def _build_review_prompt(
-        *,
-        coordinates: str,
-        base_sha: str,
-        verified_sha: str,
-        task_type: str,
-        evidence_path: str,
-        verdict_path: str,
-        finalization_receipt_path: str,
-) -> str:
-    """Build the authoritative cold review-and-repair prompt from local evidence."""
-    skill: str = REVIEW_SKILLS_BY_TASK_TYPE[task_type]
-    return "\n".join([
-        f"Review the branch Forge is about to push for {coordinates}.",
-        "There is no pull request yet. Use these local equivalents:",
-        f"- Review `git diff {base_sha} {verified_sha}`; it is the eventual PR diff minus the descriptor.",
-        f"- Apply every relevant enumerated rule in `skills/{skill}/SKILL.md`.",
-        "- Apply the first matching disposition in §root/FS-contribution-contract.5.",
-        f"- Read local gate records and resolved render statistics from `{evidence_path}`.",
-        "- Ignore skill steps about `gh`, PR labels, reviews, merges, and remote CI status.",
-        "",
-        "This is a detached worktree and a cold session. Do not run `gh`, push, commit, or edit "
-        "forge/FINDINGS.md.",
-        "",
-        "Repair a violation when the complete fix stays inside the contribution's allowed files. "
-        "If the repaired tree satisfies every rule, approve it. Never edit shared infrastructure "
-        "or another coordinate. Reject with action human-intervention for shared infrastructure, "
-        "uncertainty, or anything else requiring a maintainer. When "
-        "§root/FS-contribution-contract.5.4 proves the library version is unsupportable and "
-        "the artifact has an index entry, repair the contribution into the skip record that "
-        "rule prescribes and approve it. Reject with action close only when that rule leaves "
-        "nothing to record.",
-        "For a shared infrastructure defect, include infrastructure_issue with a concise "
-        "non-empty title and a body containing the cause and reproducible evidence. Forge "
-        "will open or reuse that issue and add its link to the recorded finding.",
-        "",
-        *_build_review_finalization_instructions(
-            coordinates,
-            task_type,
-            base_sha,
-            finalization_receipt_path,
-        ),
-        f"Write exactly one JSON verdict to `{verdict_path}`. This is the only judgment Forge reads:",
-        json.dumps({
-            "decision": "approved",
-            "review_comment": "What you checked and concluded.",
-            "finding_title": "Reusable defect title, or empty when no finding.",
-            "finding_body": "Rule violation and evidence, or empty when no finding.",
-            "fix_note": "What you changed and why, or empty when you made no correction.",
-        }, indent=2),
-        "",
-        "For rejection, set decision to rejected, add action as human-intervention or close, "
-        "and provide a non-empty finding title and body. For approval, omit action. Keep a repaired "
-        "finding in the verdict even when the repaired tree is approved.",
-    ])
-
-
-def _record_outcome_finding(
-        *,
-        repo_path: str,
-        coordinates: str,
-        descriptor_input: Any,
-        outcome: LocalBranchReviewOutcome,
-) -> None:
-    """Record reviewer findings and the fixed outage finding after any checkpoint reset."""
-    if outcome.verdict is None:
-        title: str = UNAVAILABLE_FINDING_TITLE
-        body: str = UNAVAILABLE_FINDING_BODY
-    elif outcome.verdict.finding_title:
-        title = outcome.verdict.finding_title
-        body = outcome.verdict.finding_body
-    else:
-        return
-    _record_finding(
-        repo_path=repo_path,
-        coordinates=coordinates,
-        descriptor_input=descriptor_input,
-        title=title,
-        body=body,
-    )
-
-
-def _record_finding(
-        *,
-        repo_path: str,
-        coordinates: str,
-        descriptor_input: Any,
-        title: str,
-        body: str,
-) -> None:
-    """Render a stable newest-first finding entry and commit it."""
-    findings_path: str = os.path.join(repo_path, FINDINGS_RELATIVE_PATH)
-    entry: str = _render_finding_entry(coordinates, descriptor_input, title, body)
-    existing: str = ""
-    if os.path.isfile(findings_path):
-        with open(findings_path, "r", encoding="utf-8") as findings_file:
-            existing = findings_file.read()
-    if existing.startswith(FINDINGS_TITLE):
-        header, _, entries = existing.partition("\n## ")
-        header_block: str = header.rstrip("\n")
-        remaining: str = f"## {entries}" if entries else ""
-    else:
-        header_block = f"{FINDINGS_TITLE}\n\n{FINDINGS_PREAMBLE}"
-        remaining = existing.strip()
-    updated: str = f"{header_block}\n\n{entry}"
-    if remaining:
-        updated += f"\n{remaining.rstrip()}\n"
-    os.makedirs(os.path.dirname(findings_path), exist_ok=True)
-    with open(findings_path, "w", encoding="utf-8") as findings_file:
-        findings_file.write(updated)
-    stage_and_commit(
-        [FINDINGS_RELATIVE_PATH],
-        f"Record pre-push review finding for {coordinates}",
-        cwd=repo_path,
-    )
-    _log_review(f"Recorded '{title}' in {FINDINGS_RELATIVE_PATH}", indent_level=1)
-
-
-def _render_finding_entry(
-        coordinates: str,
-        descriptor_input: Any,
-        title: str,
-        body: str,
-) -> str:
-    """Render one finding only from its reviewer-supplied title and body."""
-    group, artifact, version = parse_coordinate_parts(coordinates)
-    issue_number = getattr(descriptor_input, "issue_number", None)
-    issue_reference: str = f" (#{issue_number})" if issue_number else ""
-    date: str = datetime.now(timezone.utc).strftime("%Y-%m-%d")
-    return "\n".join([
-        f"## {date} — {group}:{artifact}:{version}{issue_reference}",
-        "",
-        f"**{title}**",
-        "",
-        body,
-        "",
-    ])
-
-
-def _load_persisted_outcome(
-        metrics_repo_path: str | None,
-        local_ci_verification: LocalCIVerificationResult,
-        descriptor_input: Any,
-) -> LocalBranchReviewOutcome | None:
-    if metrics_repo_path is None:
-        return None
-    try:
-        metrics: dict[str, Any] = read_pending_metrics(metrics_repo_path)
-    except (OSError, ValueError, TypeError):
-        return None
-    state = metrics.get(LOCAL_REVIEW_METRICS_KEY)
-    if not isinstance(state, dict):
-        return None
-    expected_timestamp = getattr(descriptor_input, "timestamp", None)
-    if state.get("timestamp") != expected_timestamp:
-        return None
-    payload = state.get("outcome")
-    if not isinstance(payload, dict):
-        return None
-    try:
-        return LocalBranchReviewOutcome.from_descriptor_payload(
-            payload, local_ci_verification,
-        )
-    except (KeyError, TypeError, ValueError):
-        return None
-
-
-def _persist_outcome(
-        metrics_repo_path: str | None,
-        descriptor_input: Any,
-        outcome: LocalBranchReviewOutcome,
-) -> None:
-    """Stage the verdict with the run's durable in-flight publication data."""
-    if metrics_repo_path is None:
-        return
-    try:
-        metrics: dict[str, Any] = read_pending_metrics(metrics_repo_path)
-    except (OSError, ValueError, TypeError):
-        metrics = {}
-    metrics[LOCAL_REVIEW_METRICS_KEY] = {
-        "timestamp": getattr(descriptor_input, "timestamp", None),
-        "outcome": outcome.to_descriptor_payload(),
-    }
-    write_pending_metrics(metrics_repo_path, metrics)
-
-
-def _write_unavailable_log(log_path: str, detail: str) -> None:
-    os.makedirs(os.path.dirname(log_path), exist_ok=True)
-    with open(log_path, "w", encoding="utf-8") as log_file:
-        log_file.write(f"# Pre-push local review unavailable\n\n{detail}\n")

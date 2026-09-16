@@ -19,11 +19,12 @@ New-library support is the single-run workflow driver for new-library issues
 predefined strategy bundle, prepares source context, creates the scaffold
 checkpoint, runs the selected strategy — by default the dynamic-access workflow
 (§AR-dynamic-access-workflow) — finalizes metadata, and writes validated metrics.
+Its setup steps live in `add_new_library_setup.py` and its metrics publication
+in `add_new_library_metrics.py`.
 """
 
 import subprocess
 import argparse
-import json
 import os
 import sys
 
@@ -32,7 +33,6 @@ if __package__ in (None, ""):
 
 import ai_workflows.agents  # noqa: F401 - triggers agent registration
 import ai_workflows.core  # noqa: F401 - triggers strategy registration
-from ai_workflows.agents import Agent
 from ai_workflows.core.workflow_strategy import (
     RUN_STATUS_FAILURE,
     RUN_STATUS_CHUNK_READY,
@@ -41,11 +41,21 @@ from ai_workflows.core.workflow_strategy import (
     strategy_skips_initial_fix_phase,
 )
 from ai_workflows.core.workflow_strategy import WorkflowStrategy
-from git_scripts.common_git import (
-    build_ai_branch_name,
-    delete_remote_branch_if_exists,
-    switch_branch_quietly,
+from ai_workflows.drivers.add_new_library_metrics import (
+    METRICS_TASK_TYPE,
+    _should_create_failure_run_metrics,
+    run_benchmark_mode_generation,
+    write_add_new_library_support_metrics,
 )
+from ai_workflows.drivers.add_new_library_setup import (
+    DEFAULT_MODEL_NAME,
+    ScaffoldError,
+    create_feature_branch_for_library,
+    init_agent,
+    prepare_native_image_eligible_artifact,
+    run_scaffold,
+)
+from git_scripts.common_git import get_repo_root
 from utility_scripts import metrics_writer
 from utility_scripts.continuation_marker import (
     PHASE_FINALIZATION,
@@ -55,16 +65,11 @@ from utility_scripts.continuation_marker import (
 )
 from utility_scripts.dynamic_access_exhaust_report import resolve_workflow_exhaust_report
 from utility_scripts.edit_scope import format_resolved_edit_scope_context
-from utility_scripts.gradle_environment import gradle_command_environment
 from utility_scripts.issue_requested_metadata import format_issue_requested_metadata_context
-from utility_scripts.library_preparation_preflight import (
+from utility_scripts.library_preparation_setup import (
     apply_library_preparation_setup,
     prepare_library_preparation_preflight,
 )
-from utility_scripts.logged_command import LoggedCommandResult, run_logged_command
-from utility_scripts.metadata_index import is_not_for_native_image, write_not_for_native_image_marker
-from utility_scripts.native_image_artifact import evaluate_native_image_eligibility
-from utility_scripts.repo_path_resolver import require_complete_reachability_repo
 from utility_scripts.run_location import (
     STEP_NORMAL_SETUP,
     STEP_RUN_WORKFLOW_ENGINE,
@@ -75,16 +80,13 @@ from utility_scripts.run_location import (
     resolve_failure_location,
     run_step,
 )
-from utility_scripts.schema_validator import validate_benchmark_run_metrics
 from utility_scripts.source_context import (
-    discover_artifact_metadata,
     normalize_source_context_types,
     populate_artifact_urls,
     prepare_source_contexts,
     resolve_test_source_layout,
 )
 from utility_scripts.stage_logger import log_detail, log_stage
-from utility_scripts.task_logs import display_log_path
 from utility_scripts.test_quality_checks import (
     cleanup_scaffold_placeholder_tests,
     collect_generated_test_validity_issues,
@@ -100,17 +102,7 @@ from utility_scripts.workflow_setup import (
     validate_repo_paths,
 )
 
-DEFAULT_MODEL_NAME = "gpt-5.4"
 DEFAULT_STRATEGY_NAME = "optimistic_dynamic_access_iterative_pi_gpt-5.6-sol"
-METRICS_TASK_TYPE = "add_new_library_support"
-
-
-class ScaffoldError(RuntimeError):
-    """Raised when the Gradle scaffold task fails unexpectedly."""
-
-
-def get_repo_root():
-    return os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 
 def build_parser():
@@ -245,210 +237,6 @@ def parse_flags(argv_list):
         flags.issue_requested_metadata_context,
         flags.library_preparation_preflight_path,
         flags.continuation_marker_path,
-    )
-
-
-def resolve_add_new_library_support_metrics_json(
-        run_metrics: dict,
-        metrics_repo_dir: str,
-        metrics_repo_root: str | None,
-        is_benchmark_mode: bool,
-) -> str:
-    """Resolve the metrics JSON path for the current execution mode."""
-    if is_benchmark_mode:
-        return os.path.join(metrics_repo_dir, f"{METRICS_TASK_TYPE}.json")
-    return metrics_writer.resolve_workflow_metrics_json(
-        run_metrics,
-        metrics_repo_dir,
-        metrics_repo_root,
-        METRICS_TASK_TYPE,
-    )
-
-
-def create_feature_branch_for_library(group, artifact, library_version):
-    """
-    Reset the feature branch for the given coordinates to the current detached HEAD.
-    Branch name is in the following format:
-    ai/<login>/add-lib-support-<group>-<artifact>-<version>
-    """
-
-    new_branch = build_ai_branch_name(f"add-lib-support-{group}-{artifact}-{library_version}")
-    delete_remote_branch_if_exists(new_branch)
-    switch_branch_quietly(new_branch)
-
-
-def prepare_native_image_eligible_artifact(reachability_repo_path: str, library: str) -> bool:
-    """Return true when the coordinate should proceed to Native Image scaffold."""
-    package, artifact, _library_version = library.split(":")
-    if is_not_for_native_image(reachability_repo_path, package, artifact):
-        log_stage(
-            "native-image-eligibility",
-            f"{package}:{artifact} is already marked not-for-native-image",
-        )
-        return False
-
-    discover_artifact_metadata(reachability_repo_path, library)
-    eligibility = evaluate_native_image_eligibility(reachability_repo_path, library)
-    if not eligibility.not_for_native_image:
-        return True
-
-    marker_path = write_not_for_native_image_marker(
-        reachability_repo_path,
-        package,
-        artifact,
-        eligibility.reason or "Artifact is not applicable to GraalVM Native Image metadata.",
-        eligibility.replacement,
-    )
-    log_stage(
-        "native-image-eligibility",
-        (
-            f"Marked {package}:{artifact} as not-for-native-image in "
-            f"{os.path.relpath(marker_path, reachability_repo_path)}"
-        ),
-    )
-    return False
-
-
-def _metadata_already_exists(scaffold_proc: LoggedCommandResult) -> bool:
-    """Return True when Gradle reports that metadata for the library already exists."""
-    output = scaffold_proc.stdout
-    return "already exists" in output and "Use --force to overwrite existing metadata" in output
-
-
-def run_scaffold(library: str) -> bool:
-    """Run scaffold quietly while preserving its complete output.
-
-    §FS-forge-run-output-legibility §FS-durable-generation-logs
-    """
-    repo_path = os.getcwd()
-    require_complete_reachability_repo(repo_path)
-    scaffold_proc = run_logged_command(
-        ["./gradlew", "scaffold", f"--coordinates={library}", "--rerun-tasks"],
-        cwd=repo_path,
-        task_type="scaffold",
-        subject=library,
-        action="scaffold",
-        env=gradle_command_environment(repo_path),
-        stage="scaffold",
-        failure_is_detail=True,
-    )
-    if scaffold_proc.returncode == 0:
-        return True
-    if _metadata_already_exists(scaffold_proc):
-        return False
-    log_stage(
-        "scaffold",
-        f"scaffold failed with exit code {scaffold_proc.returncode} "
-        f"(log: {display_log_path(scaffold_proc.log_path)})",
-    )
-    raise ScaffoldError(scaffold_proc.stdout or "Gradle scaffold task failed")
-
-
-def init_agent(
-        strategy,
-        working_dir,
-        editable_files,
-        read_only_files,
-        library=None,
-        task_type="session",
-        verbose=False,
-        model_name=DEFAULT_MODEL_NAME,
-        persistent_instructions: str | None = None,
-        thinking_level: str | None = None,
-):
-    """Initialize the agent selected by the predefined strategy bundle.
-
-    Workflow drivers bind the backend, model, MCPs, prompt context, and persistent
-    instructions named by the bundle (§FS-forge-predefined-strategy-contract);
-    strategy code owns the iteration loop on the far side of that boundary
-    (§AR-forge-strategy-agent-boundary).
-    """
-    strategy_agent = strategy.get("agent")
-    if not strategy_agent:
-        print("ERROR: Strategy is missing required field: agent", file=sys.stderr)
-        sys.exit(1)
-
-    log_detail("init-agent", f"Initializing {strategy_agent} agent")
-    agent_class = Agent.get_class(strategy_agent)
-    return agent_class(
-        model_name=model_name,
-        editable_files=editable_files,
-        read_only_files=read_only_files,
-        working_dir=working_dir,
-        provider=strategy.get("provider"),
-        library=library,
-        task_type=task_type,
-        verbose=verbose,
-        mcps=strategy.get("mcps", []),
-        persistent_instructions=persistent_instructions,
-        thinking_level=thinking_level or strategy.get("thinking-level"),
-        agent_name=strategy.get("agent-command"),
-    )
-
-
-def _build_benchmark_metrics_entry(run_metrics: dict) -> dict:
-    """Return a benchmark metrics entry without workflow artifact paths."""
-    benchmark_entry = dict(run_metrics)
-    benchmark_entry.pop("artifacts", None)
-    return benchmark_entry
-
-
-def write_add_new_library_support_metrics(run_metrics, metrics_repo_dir, is_benchmark_mode, package, artifact,
-                                          library_version, metrics_repo_root=None):
-    """Write or update add_new_library_support metrics depending on the execution mode.
-
-    Non-benchmark runs publish through the shared workflow metrics writer
-    (§AR-forge-driver-finalization); benchmark mode updates the last benchmark
-    record instead of appending a run entry.
-    """
-    if not is_benchmark_mode:
-        log_detail("schema-validation", "Validating schema")
-        metrics_writer.write_workflow_run_metrics(run_metrics, metrics_repo_dir, metrics_repo_root, METRICS_TASK_TYPE)
-        log_detail("schema-validation", "Schema validated")
-        return
-
-    metrics_json = os.path.join(metrics_repo_dir, f"{METRICS_TASK_TYPE}.json")
-    if not os.path.isfile(metrics_json):
-        print(f"ERROR: Benchmark metrics file not found: {metrics_json}")
-        sys.exit(1)
-
-    with open(metrics_json, "r", encoding="utf-8") as f:
-        data = json.load(f)
-
-    benchmark_obj = data[-1]
-    metrics_array = benchmark_obj.get("metrics")
-    library_id = f"{package}:{artifact}:{library_version}"
-
-    updated = False
-    for index, item in enumerate(metrics_array):
-        if item.get("library") == library_id:
-            metrics_array[index] = _build_benchmark_metrics_entry(run_metrics)
-            updated = True
-            break
-
-    if not updated:
-        print(f"ERROR: No benchmark metrics entry found for library {library_id}.")
-        sys.exit(1)
-
-    with open(metrics_json, "w", encoding="utf-8") as f:
-        json.dump(data, f, indent=2, ensure_ascii=False)
-        f.write("\n")
-
-    log_detail("schema-validation", "Validating schema")
-    validate_benchmark_run_metrics(metrics_json)
-    log_detail("schema-validation", "Schema validated")
-
-
-def _should_create_failure_run_metrics(
-        workflow_status: str,
-        unittest_number: int,
-        scaffold_placeholder_quality_gate_failed: bool,
-) -> bool:
-    """Return True when normal coverage/metadata metrics must not be collected."""
-    return (
-        scaffold_placeholder_quality_gate_failed
-        or workflow_status == RUN_STATUS_FAILURE
-        or (unittest_number == 0 and workflow_status != SUCCESS_WITH_INTERVENTION_STATUS)
     )
 
 
@@ -715,21 +503,7 @@ def main(argv=None):
 
     if workflow_status in {RUN_STATUS_SUCCESS, RUN_STATUS_CHUNK_READY}:
         if is_benchmark_mode:
-            log_stage("generate-metadata", f"Benchmark mode: running generateMetadata and generateLibraryStats for {library}")
-            if not strategy_obj._run_gradle_command([
-                "./gradlew",
-                "generateMetadata",
-                f"-Pcoordinates={library}",
-                "--agentAllowedPackages=fromJar",
-            ]):
-                workflow_status = RUN_STATUS_FAILURE
-            elif not strategy_obj._run_gradle_command([
-                "./gradlew",
-                "generateLibraryStats",
-                f"-Pcoordinates={library}",
-            ]):
-                workflow_status = RUN_STATUS_FAILURE
-            elif not strategy_obj._commit_library_iteration():
+            if not run_benchmark_mode_generation(strategy_obj, library):
                 workflow_status = RUN_STATUS_FAILURE
         else:
             workflow_status = strategy_obj.finalize_run(checkpoint_commit_hash, workflow_status)

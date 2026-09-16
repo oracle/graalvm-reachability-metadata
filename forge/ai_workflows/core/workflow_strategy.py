@@ -61,7 +61,7 @@ from utility_scripts.issue_requested_metadata import (
     has_issue_requested_metadata_context as has_reporter_metadata_context,
 )
 from utility_scripts.task_logs import display_log_path
-from utility_scripts.library_preparation_preflight import NO_LIBRARY_PREPARATION_PREFLIGHT_CONTEXT
+from utility_scripts.library_preparation_setup import NO_LIBRARY_PREPARATION_PREFLIGHT_CONTEXT
 from utility_scripts.repo_path_resolver import require_complete_reachability_repo
 from utility_scripts.stage_logger import log_detail, log_stage
 from utility_scripts.strategy_loader import load_persistent_instructions, load_prompt_template

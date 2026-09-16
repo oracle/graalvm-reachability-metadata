@@ -50,15 +50,17 @@ from typing import Any, Optional
 from urllib.parse import quote
 
 import ai_workflows.core  # noqa: F401 - triggers strategy registration
-from ai_workflows.drivers.add_new_library_support import (
+from ai_workflows.drivers.add_new_library_setup import (
     DEFAULT_MODEL_NAME,
-    DEFAULT_STRATEGY_NAME as DEFAULT_NEW_LIBRARY_STRATEGY_NAME,
     ScaffoldError,
     create_feature_branch_for_library,
     init_agent as init_workflow_agent,
-    main as run_add_new_library_support_workflow,
     prepare_native_image_eligible_artifact,
     run_scaffold as run_new_library_scaffold,
+)
+from ai_workflows.drivers.add_new_library_support import (
+    DEFAULT_STRATEGY_NAME as DEFAULT_NEW_LIBRARY_STRATEGY_NAME,
+    main as run_add_new_library_support_workflow,
 )
 from ai_workflows.drivers.fix_javac_fail import (
     main as run_fix_javac_workflow,
@@ -73,8 +75,8 @@ from ai_workflows.drivers.fix_ni_run import (
 from ai_workflows.drivers.improve_library_coverage import (
     DEFAULT_STRATEGY_NAME as DEFAULT_LIBRARY_UPDATE_STRATEGY_NAME,
     main as run_improve_library_coverage_workflow,
-    prepare_library_update_target,
 )
+from ai_workflows.drivers.library_update_preparation import prepare_library_update_target
 from ai_workflows.drivers.library_update_router import (
     ROUTE_FIX_JAVA_RUN,
     ROUTE_FIX_JAVAC,
@@ -102,20 +104,22 @@ from ai_workflows.agents.agent_runtime import (
     get_analysis_agent,
 )
 from git_scripts.common_git import (
+    GitTransportError,
+    get_issue_project_item_status,
+    get_origin_owner,
+    run_git_transport,
+)
+from git_scripts.github_cli import (
     GITHUB_TRANSIENT_RETRY_ATTEMPTS,
     GitHubError,
     GitHubRateLimitExceeded,
-    GitTransportError,
     _format_github_retry_reason,
     _github_retry_delay_seconds,
     _log_github_transient_retry,
     ensure_gh_authenticated,
-    get_issue_project_item_status,
-    get_origin_owner,
     is_github_rate_limit_text,
     is_github_transient_failure_text,
     log_github_query,
-    run_git_transport,
     run_github_command_with_retries,
     run_github_json_with_retries,
     run_github_with_retries,
@@ -138,11 +142,13 @@ from git_scripts.publish_ni_run_fix import (
 from git_scripts.publish_improve_coverage import (
     main as run_publish_improve_coverage,
 )
-from git_scripts.local_branch_review import (
-    REVIEW_SKILLS_BY_TASK_TYPE,
+from git_scripts.local_review_records import (
     LocalReviewVerdict,
-    _read_verdict,
     _record_finding,
+)
+from git_scripts.local_review_session import (
+    REVIEW_SKILLS_BY_TASK_TYPE,
+    _read_verdict,
 )
 from git_scripts.publication_descriptor import validate_publication_descriptor
 from utility_scripts.dynamic_access_exhaust_report import (

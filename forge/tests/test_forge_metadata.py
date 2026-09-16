@@ -18,7 +18,7 @@ from unittest.mock import call, patch
 import forge_metadata
 from types import SimpleNamespace
 from ai_workflows.agents.agent_runtime import AgentRunResult, AgentSelection
-from git_scripts import common_git
+from git_scripts import common_git, github_cli
 from utility_scripts import host_requirements, run_location
 from utility_scripts.continuation_marker import (
     PHASE_EXPLORE,
@@ -890,7 +890,7 @@ class IssueClaimPreflightTests(unittest.TestCase):
                 "run",
                 side_effect=[failed_process, successful_process],
         ) as run, \
-                patch.object(common_git.time, "sleep") as sleep, \
+                patch.object(github_cli.time, "sleep") as sleep, \
                 patch("sys.stderr", new_callable=io.StringIO) as stderr:
             self.assertEqual(
                 forge_metadata.gh_json("api", "graphql"),
@@ -921,7 +921,7 @@ class IssueClaimPreflightTests(unittest.TestCase):
                 "run",
                 side_effect=[failed_process, successful_process],
         ) as run, \
-                patch.object(common_git.time, "sleep") as sleep, \
+                patch.object(github_cli.time, "sleep") as sleep, \
                 patch("sys.stderr", new_callable=io.StringIO):
             self.assertEqual(forge_metadata.get_authenticated_user(), "vjovanov")
 
@@ -952,7 +952,7 @@ class IssueClaimPreflightTests(unittest.TestCase):
                     "run",
                     side_effect=[failed_process, successful_process],
                 ) as run, \
-                patch.object(common_git.time, "sleep") as sleep, \
+                patch.object(github_cli.time, "sleep") as sleep, \
                 patch("sys.stderr", new_callable=io.StringIO) as stderr:
             forge_metadata.set_item_status("item-id", forge_metadata.STATUS_IN_PROGRESS)
 
