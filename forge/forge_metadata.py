@@ -477,6 +477,101 @@ from dispatcher.issue_cache import (  # noqa: F401 - re-exported dispatcher API
     _get_cached_issue_search_count,
     _set_cached_issue_search_count,
 )
+from dispatcher.github_api import (  # noqa: F401 - re-exported dispatcher API
+    get_authenticated_user,
+    is_authored_by_user,
+    resolve_authenticated_user,
+)
+from dispatcher.env_config import (  # noqa: F401 - re-exported dispatcher API
+    validate_parallelism,
+    validate_non_negative_integer,
+    validate_review_period,
+    get_env_non_negative_int,
+    get_env_parallelism,
+    get_env_zero_one_bool,
+)
+from dispatcher.issue_admin import (  # noqa: F401 - re-exported dispatcher API
+    set_issue_assignee,
+    clear_issue_assignees,
+    get_issue_assignees,
+    ensure_repo_label_exists,
+    post_issue_comment,
+    add_issue_label,
+    remove_issue_label,
+    add_pull_request_label,
+    remove_pull_request_label,
+    get_issue_comments,
+    comment_author_login,
+    close_issue,
+)
+from dispatcher.project_board import (  # noqa: F401 - re-exported dispatcher API
+    get_project_item_state,
+    get_project_item_id,
+    get_item_status,
+    get_project_field_info,
+    get_cached_field_info,
+    set_item_status,
+)
+from dispatcher.issue_queue import (  # noqa: F401 - re-exported dispatcher API
+    get_issue_by_number,
+    get_issue_claim_payload,
+    get_issue_body,
+    build_issue_search_query,
+    normalize_github_issue_search_item,
+    search_issues_with_label,
+    fetch_issue_search_page,
+    get_issue_search_page,
+    count_issues_with_label,
+    fetch_issue_search_count,
+    get_issue_search_count,
+    get_issues_with_label,
+    get_issue_label_names,
+    issue_has_label,
+    issue_is_resumable,
+    add_issue_label_to_payload,
+    get_issue_payload_assignees,
+    is_assigned_only_to_authenticated_user,
+    cached_skip_blocks_authenticated_user,
+    IssuePriorityTier,
+    ISSUE_PRIORITY_TIERS,
+    ISSUE_PRIORITY_TIERS_BY_NAME,
+    get_issue_priority_tier,
+    IssueQueueScanState,
+    get_prioritized_issues_with_label,
+    resolve_user_requested_only,
+    get_user_requested_issue_excluded_authors,
+    get_issue_author_login,
+    filter_user_requested_issues,
+)
+from dispatcher.claim_preflight import (  # noqa: F401 - re-exported dispatcher API
+    get_open_blocking_issue_numbers,
+    _get_issue_node_project_status,
+    _get_issue_node_project_item_state,
+    _get_issue_node_assignees,
+    _connection_has_next_page,
+    _open_issue_numbers_from_connection,
+    _project_item_status_preflight_fields,
+    _assignees_preflight_fields,
+    _extract_issue_claim_preflight,
+    get_issue_claim_cache_observation_from_payload,
+    refresh_issue_payload_for_claim,
+    get_issue_claim_cache_observation_from_preflight,
+    format_cached_issue_claim_skip,
+    get_cached_issue_claim_skips,
+    get_issue_claim_preflights,
+    issue_needs_claim_preflight,
+    get_issue_claim_preflights_or_empty,
+    should_skip_issue_from_preflight,
+    resolve_next_issue_claim_candidate_batch,
+)
+from dispatcher.issue_claiming import (  # noqa: F401 - re-exported dispatcher API
+    is_issue_blocked,
+    revert_claimed_issue,
+    revert_issue_claim,
+    revert_issue_claim_if_still_owned_by_user,
+    try_claim_issue,
+    try_claim_issue_with_local_lock,
+)
 
 
 
@@ -639,253 +734,12 @@ def validate_issue_processing_environment() -> None:
 
 
 
-def get_issue_by_number(issue_number: int) -> tuple[dict, str]:
-    """Fetch a single issue by number and determine its pipeline label."""
-    if is_fixture_testing_enabled():
-        data = require_fixture_github_state().get_issue_by_number(issue_number)
-    else:
-        data = gh_json(
-            "issue", "view",
-            str(issue_number),
-            "--repo", REPO,
-            "--json", "number,title,url,labels,assignees",
-        )
-    for label in data.get("labels", []):
-        label_name = label.get("name") if isinstance(label, dict) else None
-        if label_name in PIPELINE_LABELS:
-            return data, label_name
-    found_labels = [l.get("name", "?") for l in data.get("labels", []) if isinstance(l, dict)]
-    print(
-        f"ERROR: Issue #{issue_number} has no recognized pipeline label. "
-        f"Found labels: {found_labels}",
-        file=sys.stderr,
-    )
-    sys.exit(1)
+preservation_failed_worktree_paths: set[str] = set()
 
 
-def get_issue_claim_payload(issue_number: int) -> dict:
-    """Fetch mutable issue state immediately before claim decisions."""
-    return gh_json(
-        "issue", "view",
-        str(issue_number),
-        "--repo", REPO,
-        "--json", "number,title,url,state,labels,assignees",
-    )
 
 
-def get_issue_body(issue_number: int) -> str:
-    """Fetch an issue body only for workflows that explicitly need reporter context."""
-    if is_fixture_testing_enabled():
-        return require_fixture_github_state().get_issue_body(issue_number)
-    data = gh_json(
-        "issue", "view",
-        str(issue_number),
-        "--repo", REPO,
-        "--json", "body",
-    )
-    body = data.get("body")
-    return body if isinstance(body, str) else ""
 
-
-def build_issue_search_query(
-        label: str,
-        extra_labels: list[str] | None = None,
-        excluded_labels: list[str] | None = None,
-) -> str:
-    """Build a GitHub issue search query for open issues with all requested labels."""
-    label_terms = " ".join(
-        f'label:"{label_name}"'
-        for label_name in [label, *(extra_labels or [])]
-    )
-    excluded_terms = " ".join(
-        f'-label:"{label_name}"'
-        for label_name in (excluded_labels or [LABEL_NOT_FOR_NATIVE_IMAGE])
-    )
-    return f"repo:{REPO} is:issue is:open {label_terms} {excluded_terms}".strip()
-
-
-def normalize_github_issue_search_item(item: dict) -> dict:
-    """Convert a GitHub Search API issue item to the shape used by `gh issue list --json`."""
-    author = item.get("user") if isinstance(item.get("user"), dict) else {}
-    author_login = author.get("login")
-    return {
-        "number": item["number"],
-        "title": item.get("title", ""),
-        "author": {"login": author_login} if author_login else None,
-        "url": item.get("html_url") or item.get("url"),
-        "labels": [
-            {"name": label["name"]}
-            for label in item.get("labels", [])
-            if isinstance(label, dict) and label.get("name")
-        ],
-        "assignees": [
-            {"login": assignee["login"]}
-            for assignee in item.get("assignees", [])
-            if isinstance(assignee, dict) and assignee.get("login")
-        ],
-    }
-
-
-def search_issues_with_label(
-        label: str,
-        limit: int,
-        offset: int = 0,
-        extra_labels: list[str] | None = None,
-        excluded_labels: list[str] | None = None,
-) -> list[dict]:
-    """
-    Fetch open issues that carry the given label using GitHub search pagination.
-
-    `excluded_labels` are excluded on top of the always-excluded
-    `not-for-native-image` label, not instead of it.
-    """
-    if limit <= 0:
-        return []
-    if offset >= GITHUB_SEARCH_MAX_RESULTS:
-        return []
-    limit = min(limit, GITHUB_SEARCH_MAX_RESULTS - offset)
-
-    per_page = GITHUB_API_MAX_PAGE_SIZE
-    page = (offset // per_page) + 1
-    page_offset = offset % per_page
-    query = build_issue_search_query(
-        label,
-        extra_labels,
-        [LABEL_NOT_FOR_NATIVE_IMAGE, *(excluded_labels or [])],
-    )
-    items = get_issue_search_page(query, page, per_page)
-    return items[page_offset:page_offset + limit]
-
-
-def fetch_issue_search_page(query: str, page: int, per_page: int) -> list[dict]:
-    """Fetch and normalize one GitHub search result page for issues."""
-    data = gh_json(
-        "api", "--method", "GET", "/search/issues",
-        "-f", f"q={query}",
-        "-f", f"sort={ISSUE_SEARCH_SORT}",
-        "-f", f"order={ISSUE_SEARCH_ORDER}",
-        "-F", f"per_page={per_page}",
-        "-F", f"page={page}",
-    )
-    return [
-        normalize_github_issue_search_item(item)
-        for item in data.get("items", [])
-    ]
-
-
-def get_issue_search_page(query: str, page: int, per_page: int) -> list[dict]:
-    """Return one issue search page, using the shared local cache when fresh."""
-    if not is_issue_search_cache_enabled() or get_issue_search_cache_ttl_seconds() <= 0:
-        return fetch_issue_search_page(query, page, per_page)
-
-    ttl_seconds = get_issue_search_cache_ttl_seconds()
-    cache_key = build_issue_search_cache_key(
-        "page", query, ISSUE_SEARCH_SORT, ISSUE_SEARCH_ORDER, page, per_page
-    )
-    now = time.time()
-    cached_payload = _read_issue_search_cache_payload()
-    if cached_payload is not None:
-        cached_page = _get_cached_issue_search_page(cached_payload, cache_key, now, ttl_seconds)
-        if cached_page is not None:
-            return cached_page
-
-    with LocalIssueSearchCacheWriterLock():
-        now = time.time()
-        payload = _read_issue_search_cache_payload_or_empty(now)
-        cached_page = _get_cached_issue_search_page(payload, cache_key, now, ttl_seconds)
-        if cached_page is not None:
-            return cached_page
-
-        issues = fetch_issue_search_page(query, page, per_page)
-        _set_cached_issue_search_page(payload, cache_key, issues, now)
-        _write_issue_search_cache_payload(payload, now)
-        return issues
-
-
-def count_issues_with_label(
-        label: str,
-        extra_labels: list[str] | None = None,
-        user_requested_only: bool = False,
-        excluded_labels: list[str] | None = None,
-) -> int:
-    """Return GitHub's count of open issues carrying the given label set."""
-    if is_fixture_testing_enabled():
-        return require_fixture_github_state().count_open_issues_by_label(
-            label,
-            extra_labels,
-            excluded_labels,
-            excluded_authors=get_user_requested_issue_excluded_authors(user_requested_only),
-        )
-    query = build_issue_search_query(
-        label,
-        extra_labels,
-        [LABEL_NOT_FOR_NATIVE_IMAGE, *(excluded_labels or [])],
-    )
-    return get_issue_search_count(query)
-
-
-def fetch_issue_search_count(query: str) -> int:
-    """Fetch GitHub's count of open issues for a search query."""
-    data = gh_json(
-        "api", "--method", "GET", "/search/issues",
-        "-f", f"q={query}",
-        "-F", "per_page=1",
-    )
-    return int(data.get("total_count", 0))
-
-
-def get_issue_search_count(query: str) -> int:
-    """Return an issue search count, using the shared local cache when fresh."""
-    if not is_issue_search_cache_enabled() or get_issue_search_cache_ttl_seconds() <= 0:
-        return fetch_issue_search_count(query)
-
-    ttl_seconds = get_issue_search_cache_ttl_seconds()
-    cache_key = build_issue_search_cache_key("count", query)
-    now = time.time()
-    cached_payload = _read_issue_search_cache_payload()
-    if cached_payload is not None:
-        cached_count = _get_cached_issue_search_count(cached_payload, cache_key, now, ttl_seconds)
-        if cached_count is not None:
-            return cached_count
-
-    with LocalIssueSearchCacheWriterLock():
-        now = time.time()
-        payload = _read_issue_search_cache_payload_or_empty(now)
-        cached_count = _get_cached_issue_search_count(payload, cache_key, now, ttl_seconds)
-        if cached_count is not None:
-            return cached_count
-
-        total_count = fetch_issue_search_count(query)
-        _set_cached_issue_search_count(payload, cache_key, total_count, now)
-        _write_issue_search_cache_payload(payload, now)
-        return total_count
-
-
-def get_issues_with_label(
-        label: str,
-        limit: int,
-        offset: int = 0,
-        extra_labels: list[str] | None = None,
-        excluded_labels: list[str] | None = None,
-        user_requested_only: bool = False,
-) -> list[dict]:
-    """Fetch open issues that carry the given label (and any extra labels)."""
-    if is_fixture_testing_enabled():
-        return require_fixture_github_state().list_open_issues_by_label(
-            label,
-            limit,
-            offset,
-            extra_labels,
-            excluded_labels,
-            excluded_authors=get_user_requested_issue_excluded_authors(user_requested_only),
-        )
-    return search_issues_with_label(
-        label,
-        limit,
-        offset,
-        extra_labels,
-        excluded_labels,
-    )
 
 
 def get_pull_requests_with_label(
@@ -943,331 +797,9 @@ def attach_pull_request_state(
     return enriched_pull_request
 
 
-def get_issue_label_names(issue: dict) -> list[str]:
-    """Return the label names carried by a GitHub issue payload."""
-    return [
-        label["name"]
-        for label in issue.get("labels", [])
-        if isinstance(label, dict) and isinstance(label.get("name"), str) and label["name"]
-    ]
-
-
-def issue_has_label(issue: dict, label_name: str) -> bool:
-    """Return True when the GitHub issue payload contains the given label."""
-    return label_name in get_issue_label_names(issue)
-
-
-def issue_is_resumable(issue: dict) -> bool:
-    """Return True when an issue is explicitly eligible for run continuation."""
-    return issue_has_label(issue, LABEL_RESUMABLE)
-
-
-def add_issue_label_to_payload(issue: dict, label_name: str) -> None:
-    """Update a local issue payload after a label was applied remotely."""
-    if issue_has_label(issue, label_name):
-        return
-    labels = issue.get("labels")
-    if not isinstance(labels, list):
-        labels = []
-        issue["labels"] = labels
-    labels.append({"name": label_name})
-
-
-def get_issue_payload_assignees(issue: dict) -> Optional[list[str]]:
-    """Return assignee logins from an issue payload, or None if the payload omitted them."""
-    if "assignees" not in issue:
-        return None
-    return [
-        assignee["login"]
-        for assignee in issue.get("assignees", [])
-        if isinstance(assignee, dict) and assignee.get("login")
-    ]
-
-
-def is_assigned_only_to_authenticated_user(
-        assignees: list[str] | tuple[str, ...] | None,
-        authenticated_user: str | None,
-) -> bool:
-    """Return True when the assignee list is exactly the current worker user."""
-    if not authenticated_user:
-        return False
-    return tuple(assignees or ()) == (authenticated_user,)
-
-
-def cached_skip_blocks_authenticated_user(
-        cached_skip: CachedIssueClaimSkip,
-        authenticated_user: str | None,
-        take_blocked_issues: bool = DEFAULT_TAKE_BLOCKED_ISSUES,
-) -> bool:
-    """Return True when a cached negative observation should still block this worker."""
-    if take_blocked_issues and cached_skip.reason == ISSUE_CLAIM_CACHE_REASON_BLOCKED:
-        return False
-    if cached_skip.reason != ISSUE_CLAIM_CACHE_REASON_ASSIGNED:
-        return True
-    return not is_assigned_only_to_authenticated_user(cached_skip.assignees, authenticated_user)
-
-
 def pull_request_has_label(pr: dict, label_name: str) -> bool:
     """Return True when the GitHub pull request payload contains the given label."""
     return issue_has_label(pr, label_name)
-
-
-@dataclass(frozen=True)
-class IssuePriorityTier:
-    """One urgency tier of an issue queue, expressed as a GitHub label filter."""
-
-    name: str
-    extra_labels: tuple[str, ...]
-    excluded_labels: tuple[str, ...]
-
-
-# Drained in order; each tier excludes the labels of the tiers above it so that an
-# issue carrying several priority labels is served exactly once, in its highest tier.
-ISSUE_PRIORITY_TIERS: tuple[IssuePriorityTier, ...] = (
-    IssuePriorityTier(PRIORITY_HIGH, (LABEL_HIGH_PRIORITY,), ()),
-    IssuePriorityTier(LABEL_PRIORITY, (LABEL_PRIORITY,), (LABEL_HIGH_PRIORITY,)),
-    IssuePriorityTier(PRIORITY_NORMAL, (), (LABEL_HIGH_PRIORITY, LABEL_PRIORITY)),
-)
-
-
-ISSUE_PRIORITY_TIERS_BY_NAME: dict[str, IssuePriorityTier] = {
-    tier.name: tier
-    for tier in ISSUE_PRIORITY_TIERS
-}
-
-
-def get_issue_priority_tier(priority: str) -> IssuePriorityTier:
-    """Return the query filters for one CLI priority selector."""
-    return ISSUE_PRIORITY_TIERS_BY_NAME[priority]
-
-
-@dataclass
-class IssueQueueScanState:
-    """How far a prioritized queue scan has advanced through `ISSUE_PRIORITY_TIERS`."""
-
-    tier_index: int = 0
-    tier_offset: int = 0
-    scanned_count: int = 0
-
-    @property
-    def exhausted(self) -> bool:
-        """Whether every priority tier has been drained."""
-        return self.tier_index >= len(ISSUE_PRIORITY_TIERS)
-
-    @property
-    def current_tier(self) -> IssuePriorityTier:
-        """The tier the scan is currently paging through."""
-        return ISSUE_PRIORITY_TIERS[self.tier_index]
-
-    def advance_within_tier(self, fetched_count: int) -> None:
-        """Record that `fetched_count` issues were fetched from the current tier."""
-        self.tier_offset += fetched_count
-        self.scanned_count += fetched_count
-
-    def advance_to_next_tier(self) -> None:
-        """Move to the next, less urgent tier and restart its pagination."""
-        self.tier_index += 1
-        self.tier_offset = 0
-
-    def describe_position(self) -> str:
-        """Return a concise description of the scan position for progress logs."""
-        if self.exhausted:
-            return "all priority tiers drained"
-        return f"{self.current_tier.name} tier, offset {self.tier_offset}"
-
-
-def get_prioritized_issues_with_label(
-        label: str,
-        limit: int,
-        scan_state: IssueQueueScanState | None = None,
-        user_requested_only: bool = False,
-) -> tuple[list[dict], IssueQueueScanState]:
-    """
-    Fetch the next issue batch from the most urgent tier that still has issues.
-
-    Tiers are drained globally rather than ranked inside a batch: every
-    `high-priority` issue is served before any `priority` issue, and every
-    `priority` issue before any unlabeled one (§FS-forge-issue-resolution-goal).
-    An empty result means every tier is exhausted, so callers can stop scanning.
-    """
-    state = scan_state if scan_state is not None else IssueQueueScanState()
-    while not state.exhausted:
-        tier = state.current_tier
-        raw_issues = get_issues_with_label(
-            label,
-            limit,
-            state.tier_offset,
-            list(tier.extra_labels),
-            list(tier.excluded_labels),
-        )
-        if not raw_issues:
-            state.advance_to_next_tier()
-            continue
-        state.advance_within_tier(len(raw_issues))
-        issues = filter_user_requested_issues(raw_issues, user_requested_only)
-        if issues:
-            return issues, state
-    return [], state
-
-
-def get_project_item_state(issue_number: int) -> tuple[str | None, str | None]:
-    """
-    Fetch the project item ID and current Status field value for an issue via GraphQL.
-    Returns (item ID, status option name), or (None, None) if not found.
-    """
-    item_id, status = get_issue_project_item_status(
-        REPO,
-        PROJECT_NUMBER,
-        issue_number,
-        STATUS_FIELD_NAME,
-    )
-    if item_id:
-        status_text = status if status is not None else "unknown"
-        log_debug(
-            "project-item",
-            (
-                f"Issue #{issue_number} is linked to GitHub project item {item_id} "
-                f"in project {PROJECT_NUMBER} with Status '{status_text}'"
-            ),
-        )
-    return item_id, status
-
-
-def get_project_item_id(issue_number: int):
-    """
-    Fetch the project item ID for a given issue number via GraphQL.
-    Looks for the item linked to PROJECT_NUMBER.
-    Returns the item ID (PVTI_...) or None if not found.
-    """
-    item_id, _ = get_project_item_state(issue_number)
-    return item_id
-
-
-def get_item_status(item_id: str):
-    """
-    Query the current Status field value of a project item via GraphQL.
-    Returns the status option name (e.g. "Todo") or None.
-    """
-    query = """
-    query($item: ID!) {
-      node(id: $item) {
-        ... on ProjectV2Item {
-          fieldValues(first: 5) {
-            nodes {
-              ... on ProjectV2ItemFieldSingleSelectValue {
-                name
-                field { ... on ProjectV2FieldCommon { name } }
-              }
-            }
-          }
-        }
-      }
-    }
-    """
-    result = gh_json(
-        "api", "graphql",
-        "-f", f"query={query}",
-        "-f", f"item={item_id}",
-    )
-    nodes = (
-        result.get("data", {})
-        .get("node", {})
-        .get("fieldValues", {})
-        .get("nodes", [])
-    )
-    for node in nodes:
-        if node.get("field", {}).get("name") == STATUS_FIELD_NAME:
-            return node.get("name")
-    return None
-
-
-def get_project_field_info() -> tuple[str, str, dict[str, str]]:
-    """
-    Fetch the project node ID, Status field ID, and option name->ID mapping.
-    Returns (project_node_id, field_id, {option_name: option_id}).
-    """
-    owner, _ = REPO.split("/")
-    query = f"""
-    query {{
-      organization(login: "{owner}") {{
-        projectV2(number: {PROJECT_NUMBER}) {{
-          id
-          fields(first: 5) {{
-            nodes {{
-              ... on ProjectV2SingleSelectField {{
-                id
-                name
-                options {{
-                  id
-                  name
-                }}
-              }}
-            }}
-          }}
-        }}
-      }}
-    }}
-    """
-    result = gh_json("api", "graphql", "-f", f"query={query}")
-    project = (
-        result.get("data", {})
-        .get("organization", {})
-        .get("projectV2", {})
-    )
-    project_node_id = project.get("id")
-    fields = project.get("fields", {}).get("nodes", [])
-
-    for field in fields:
-        if field.get("name") == STATUS_FIELD_NAME:
-            field_id = field["id"]
-            options = {opt["name"]: opt["id"] for opt in field["options"]}
-            return project_node_id, field_id, options
-
-    print(
-        f"ERROR: Could not find field '{STATUS_FIELD_NAME}' in project {PROJECT_NUMBER}",
-        file=sys.stderr,
-    )
-    sys.exit(2)
-
-project_node_id: Optional[str] = None
-field_id: Optional[str] = None
-option_ids: Optional[dict[str, str]] = None
-ensured_issue_labels: set[str] = set()
-preservation_failed_worktree_paths: set[str] = set()
-
-
-
-
-
-
-def get_authenticated_user() -> str:
-    """Return the GitHub username of the currently authenticated gh user."""
-    if is_fixture_testing_enabled():
-        return FIXTURE_AUTHENTICATED_USER
-    result = run_github_with_retries(gh, ("api", "user", "--jq", ".login"))
-    return result.stdout.strip()
-
-
-def resolve_authenticated_user(authenticated_user: str | None = None) -> str:
-    """Resolve and log the authenticated GitHub username when remote work needs it."""
-    if authenticated_user is not None:
-        return authenticated_user
-    if is_fixture_testing_enabled():
-        log_debug("github-auth", f"Fixture authenticated as: {FIXTURE_AUTHENTICATED_USER}")
-        return FIXTURE_AUTHENTICATED_USER
-    ensure_gh_authenticated()
-    resolved_user = get_authenticated_user()
-    log_debug("github-auth", f"Authenticated as: {resolved_user}")
-    return resolved_user
-
-
-def is_authored_by_user(pr: dict, username: str) -> bool:
-    """Return True when the GitHub pull request author matches the authenticated user."""
-    author = pr.get("author")
-    if not isinstance(author, dict):
-        return False
-    return author.get("login") == username
-
 
 
 def get_pull_request_state(pr_number: int) -> dict:
@@ -2967,65 +2499,6 @@ def process_pull_requests_with_label(
 
 
 
-def set_issue_assignee(issue_number: int, username: str):
-    """Set a single assignee to an issue."""
-    gh(
-        "api",
-        "--method",
-        "PATCH",
-        f"/repos/{REPO}/issues/{issue_number}",
-        "-f",
-        f"assignees[]={username}",
-    )
-
-
-def clear_issue_assignees(issue_number: int):
-    """Remove all assignees from an issue."""
-    gh(
-        "api",
-        "--method",
-        "PATCH",
-        f"/repos/{REPO}/issues/{issue_number}",
-        "--input",
-        "-",
-        input_text='{"assignees":[]}',
-    )
-
-
-
-def get_issue_assignees(issue_number: int) -> list[str]:
-    """Return the list of assignee logins for an issue."""
-    data = gh_json(
-        "issue",
-        "view",
-        str(issue_number),
-        "--repo",
-        REPO,
-        "--json",
-        "assignees",
-    )
-    return [a["login"] for a in data.get("assignees", [])]
-
-
-def revert_issue_claim_if_still_owned_by_user(
-        item_id: str,
-        issue_number: int,
-        authenticated_user: str,
-        reason: str,
-) -> None:
-    """Revert a partially claimed issue only when we still own the assignment."""
-    assignees = get_issue_assignees(issue_number)
-    if assignees == [authenticated_user]:
-        revert_issue_claim(item_id, issue_number, reason)
-        return
-
-    print(
-        f"[Skipping revert for issue #{issue_number}: current assignees are {assignees}, "
-        f"not solely {authenticated_user}]",
-        file=sys.stderr,
-    )
-
-
 def extract_coordinate_parts(title: str) -> Optional[tuple[str, str, str]]:
     """
     Extract Maven coordinate parts (groupId, artifactId, version) from an issue title.
@@ -3080,32 +2553,6 @@ def load_current_metadata_version(
             file=sys.stderr,
         )
     return None
-
-
-def get_cached_field_info() -> tuple[str, str, dict[str, str]]:
-    global project_node_id, field_id, option_ids
-    if field_id is None:
-        project_node_id, field_id, option_ids = get_project_field_info()
-    return project_node_id, field_id, option_ids
-
-
-def set_item_status(item_id: str, status: str) -> None:
-    """
-    Update the Status field of a project item to the given status option name.
-    """
-    log_debug("project-status", f"Setting project item {item_id} -> {status}")
-    project_node_id, field_id, option_ids = get_cached_field_info()
-    option_id = option_ids.get(status)
-    run_github_command_with_retries(
-        gh,
-        (
-            "project", "item-edit",
-            "--id", item_id,
-            "--project-id", project_node_id,
-            "--field-id", field_id,
-            "--single-select-option-id", option_id,
-        ),
-    )
 
 
 def _load_pending_run_metrics(metrics_worktree_path: str) -> dict | None:
@@ -3644,160 +3091,6 @@ def run_human_intervention_analysis(
     return _build_human_intervention_fallback_comment(claimed_issue, candidate)
 
 
-def ensure_repo_label_exists(label_name: str, color: str, description: str) -> None:
-    """Ensure a repository label exists before applying it to an issue or pull request."""
-    if label_name in ensured_issue_labels:
-        return
-    if is_fixture_testing_enabled():
-        ensured_issue_labels.add(label_name)
-        return
-
-    encoded_label = quote(label_name, safe="")
-    label_lookup = gh("api", f"/repos/{REPO}/labels/{encoded_label}", check=False)
-    if label_lookup.returncode == 0:
-        ensured_issue_labels.add(label_name)
-        return
-
-    create_result = gh(
-        "api",
-        "--method",
-        "POST",
-        f"/repos/{REPO}/labels",
-        "-f",
-        f"name={label_name}",
-        "-f",
-        f"color={color}",
-        "-f",
-        f"description={description}",
-        check=False,
-    )
-    if create_result.returncode != 0:
-        error_output = "\n".join(
-            value for value in [create_result.stdout.strip(), create_result.stderr.strip()] if value
-        )
-        print(
-            f"ERROR: Failed to ensure label '{label_name}'.\n{error_output}",
-            file=sys.stderr,
-        )
-        create_result.check_returncode()
-
-    ensured_issue_labels.add(label_name)
-
-
-def post_issue_comment(issue_number: int, body: str) -> None:
-    """Post a comment to a GitHub issue."""
-    if is_fixture_testing_enabled():
-        require_fixture_github_state().post_issue_comment(
-            issue_number,
-            body,
-            FIXTURE_AUTHENTICATED_USER,
-        )
-        return
-    gh(
-        "issue",
-        "comment",
-        str(issue_number),
-        "--repo",
-        REPO,
-        "--body",
-        body,
-    )
-
-
-def add_issue_label(issue_number: int, label_name: str) -> None:
-    """Add a label to a GitHub issue, creating the label if necessary."""
-    label_color = HUMAN_INTERVENTION_LABEL_COLOR
-    label_description = HUMAN_INTERVENTION_LABEL_DESCRIPTION
-    if label_name == LABEL_NOT_FOR_NATIVE_IMAGE:
-        label_color = NOT_FOR_NATIVE_IMAGE_LABEL_COLOR
-        label_description = NOT_FOR_NATIVE_IMAGE_LABEL_DESCRIPTION
-    elif label_name == LABEL_PRIORITY:
-        label_color = PRIORITY_LABEL_COLOR
-        label_description = PRIORITY_LABEL_DESCRIPTION
-    elif label_name == LABEL_CHUNKED_DYNAMIC_ACCESS:
-        label_color = CHUNKED_DYNAMIC_ACCESS_LABEL_COLOR
-        label_description = CHUNKED_DYNAMIC_ACCESS_LABEL_DESCRIPTION
-    elif label_name == LABEL_RESUMABLE:
-        label_color = RESUMABLE_LABEL_COLOR
-        label_description = RESUMABLE_LABEL_DESCRIPTION
-    elif label_name == LABEL_LIBRARY_UNSUPPORTED_VERSION:
-        label_color = LIBRARY_UNSUPPORTED_VERSION_LABEL_COLOR
-        label_description = LIBRARY_UNSUPPORTED_VERSION_LABEL_DESCRIPTION
-    ensure_repo_label_exists(
-        label_name,
-        label_color,
-        label_description,
-    )
-    if is_fixture_testing_enabled():
-        require_fixture_github_state().add_issue_label(issue_number, label_name)
-        return
-    gh(
-        "issue",
-        "edit",
-        str(issue_number),
-        "--repo",
-        REPO,
-        "--add-label",
-        label_name,
-    )
-
-
-def remove_issue_label(issue_number: int, label_name: str) -> None:
-    """Remove a label from a GitHub issue if it is present."""
-    if is_fixture_testing_enabled():
-        require_fixture_github_state().remove_issue_label(issue_number, label_name)
-        return
-    result = gh(
-        "issue",
-        "edit",
-        str(issue_number),
-        "--repo",
-        REPO,
-        "--remove-label",
-        label_name,
-        check=False,
-    )
-    if result.returncode != 0 and "not found" not in (result.stderr or "").lower():
-        result.check_returncode()
-
-
-def add_pull_request_label(pr_number: int, label_name: str) -> None:
-    """Add a label to a GitHub pull request, creating the label if necessary."""
-    label_color = HUMAN_INTERVENTION_LABEL_COLOR
-    label_description = HUMAN_INTERVENTION_LABEL_DESCRIPTION
-    if label_name == LABEL_FORGE_MERGE_FOLLOW_UP:
-        label_color = FORGE_MERGE_FOLLOW_UP_LABEL_COLOR
-        label_description = FORGE_MERGE_FOLLOW_UP_LABEL_DESCRIPTION
-    ensure_repo_label_exists(
-        label_name,
-        label_color,
-        label_description,
-    )
-    gh(
-        "api",
-        "--method",
-        "POST",
-        f"/repos/{REPO}/issues/{pr_number}/labels",
-        "-f",
-        f"labels[]={label_name}",
-    )
-
-
-def remove_pull_request_label(pr_number: int, label_name: str) -> None:
-    """Remove a label from a pull request when present."""
-    encoded_label = quote(label_name, safe="")
-    result = gh(
-        "api",
-        "--method", "DELETE",
-        f"/repos/{REPO}/issues/{pr_number}/labels/{encoded_label}",
-        check=False,
-    )
-    if result.returncode != 0:
-        error_text = "\n".join((result.stderr or "", result.stdout or "")).lower()
-        if "not found" not in error_text and "404" not in error_text:
-            result.check_returncode()
-
-
 def _sanitize_branch_segment(value: str) -> str:
     """Return a branch-safe path segment."""
     return re.sub(r"[^A-Za-z0-9._-]+", "-", value).strip("-._") or "unknown"
@@ -3841,34 +3134,6 @@ def build_origin_branch_url(repo_path: str, branch_name: str) -> str:
         origin_owner = REPO.split("/", 1)[0]
     repo_name = REPO.split("/", 1)[1]
     return f"https://github.com/{origin_owner}/{repo_name}/tree/{quote(branch_name, safe='')}"
-
-
-def get_issue_comments(issue_number: int) -> list[dict]:
-    """Fetch issue comments used for continuation branch discovery."""
-    if is_fixture_testing_enabled():
-        return require_fixture_github_state().get_issue_comments(issue_number)
-    data = gh_json(
-        "issue",
-        "view",
-        str(issue_number),
-        "--repo",
-        REPO,
-        "--json",
-        "comments",
-    )
-    comments = data.get("comments")
-    return comments if isinstance(comments, list) else []
-
-
-def comment_author_login(comment: dict) -> str | None:
-    """Return the GitHub login that posted an issue comment."""
-    author = comment.get("author")
-    if isinstance(author, dict):
-        login = author.get("login")
-        return login if isinstance(login, str) and login else None
-    if isinstance(author, str) and author:
-        return author
-    return None
 
 
 def list_remote_branches_by_prefix(repo_path: str, branch_prefix: str) -> list[str]:
@@ -5570,118 +4835,6 @@ def invoke_pipeline(
     return True
 
 
-def validate_parallelism(value: str) -> int:
-    """Parse and validate the allowed forge_metadata parallelism."""
-    parsed = int(value)
-    if parsed < 1 or parsed > MAX_PARALLELISM:
-        raise argparse.ArgumentTypeError(
-            f"parallelism must be between 1 and {MAX_PARALLELISM}"
-        )
-    return parsed
-
-
-def validate_non_negative_integer(value: str) -> int:
-    """Parse and validate a non-negative integer argument."""
-    parsed = int(value)
-    if parsed < 0:
-        raise argparse.ArgumentTypeError("value must be greater than or equal to 0")
-    return parsed
-
-
-def validate_review_period(value: str) -> int:
-    """Parse a positive review period in seconds, supporting s/m/h/d suffixes."""
-    normalized = value.strip().lower()
-    match = re.fullmatch(r"(\d+)([smhd]?)", normalized)
-    if match is None:
-        raise argparse.ArgumentTypeError(
-            "period must be a positive integer in seconds or use s/m/h/d suffixes"
-        )
-
-    amount = int(match.group(1))
-    if amount < 1:
-        raise argparse.ArgumentTypeError("period must be greater than 0")
-
-    suffix = match.group(2) or "s"
-    return amount * REVIEW_PERIOD_SUFFIX_SECONDS[suffix]
-
-
-def get_env_non_negative_int(name: str, default: int) -> int:
-    """Read a non-negative integer environment variable."""
-    raw_value = os.environ.get(name)
-    if raw_value is None or raw_value == "":
-        return default
-    try:
-        value = int(raw_value)
-    except ValueError:
-        print(f"ERROR: {name} must be a non-negative integer.", file=sys.stderr)
-        sys.exit(1)
-    if value < 0:
-        print(f"ERROR: {name} must be a non-negative integer.", file=sys.stderr)
-        sys.exit(1)
-    return value
-
-
-def get_env_parallelism(name: str, default: int) -> int:
-    """Read an optional parallelism environment variable."""
-    raw_value = os.environ.get(name)
-    if raw_value is None or raw_value == "":
-        return default
-    try:
-        return validate_parallelism(raw_value)
-    except (ValueError, argparse.ArgumentTypeError) as exc:
-        print(f"ERROR: {name} {exc}", file=sys.stderr)
-        sys.exit(1)
-
-
-def get_env_zero_one_bool(name: str, default: bool) -> bool:
-    """Read an optional 0-or-1 boolean environment variable."""
-    raw_value = os.environ.get(name)
-    if raw_value is None or raw_value == "":
-        return default
-    if raw_value not in {"0", "1"}:
-        print(f"ERROR: {name} must be 0 or 1.", file=sys.stderr)
-        sys.exit(1)
-    return raw_value == "1"
-
-
-def resolve_user_requested_only(cli_override: bool | None = None) -> bool:
-    """Return whether issue queues should exclude configured non-user authors."""
-    if cli_override is not None:
-        return cli_override
-    return get_env_zero_one_bool("FORGE_USER_REQUESTED_ISSUES_ONLY", False)
-
-
-def get_user_requested_issue_excluded_authors(user_requested_only: bool) -> tuple[str, ...]:
-    """Return issue authors excluded when processing only user-requested issues."""
-    if user_requested_only:
-        return NON_USER_REQUESTED_ISSUE_AUTHORS
-    return ()
-
-
-def get_issue_author_login(issue: dict) -> str | None:
-    """Return the issue author login when the issue payload contains it."""
-    author = issue.get("author")
-    if isinstance(author, dict):
-        login = author.get("login")
-        return login if isinstance(login, str) and login else None
-    if isinstance(author, str) and author:
-        return author
-    return None
-
-
-def filter_user_requested_issues(issues: list[dict], user_requested_only: bool) -> list[dict]:
-    """Remove configured automation and maintainer-authored issues when requested."""
-    excluded_authors = get_user_requested_issue_excluded_authors(user_requested_only)
-    if not excluded_authors:
-        return issues
-    excluded_author_set = set(excluded_authors)
-    return [
-        issue
-        for issue in issues
-        if get_issue_author_login(issue) not in excluded_author_set
-    ]
-
-
 def get_work_queue_configs_from_environment(
         work_strategy_name_override: str | None = None,
         random_offset_override: bool | None = None,
@@ -6518,21 +5671,6 @@ def issue_has_issue_form_rejection_comment(issue_number: int, rejection: IssueFo
     )
 
 
-def close_issue(issue_number: int, reason: str) -> None:
-    """Close an issue Forge will never process and stop scanning it."""
-    log_stage("issue-close", f"Closing issue #{issue_number}: {reason}")
-    if is_fixture_testing_enabled():
-        require_fixture_github_state().close_issue(issue_number)
-    else:
-        gh("issue", "close", str(issue_number), "--repo", REPO, "--reason", "not planned")
-    record_issue_claim_cache_observations([
-        IssueClaimCacheObservation(
-            issue_number=issue_number,
-            reason=ISSUE_CLAIM_CACHE_REASON_CLOSED,
-        )
-    ])
-
-
 def reject_issue_form(
         issue: dict,
         rejection: IssueFormRejection,
@@ -6954,62 +6092,6 @@ def run_claimed_issue(
         started_at=started_at,
         failure_was_external=failure_was_external,
     )
-
-
-def revert_issue_claim(item_id: str, issue_number: int, reason: str) -> None:
-    """Reset an issue claim back to Todo and clear all assignment, with verification."""
-    if is_fixture_testing_enabled():
-        log_stage(
-            "issue-revert",
-            f"Fixture mode: no GitHub claim was created for issue #{issue_number}; skipping claim revert.",
-        )
-        return
-
-    # Claim-revert bookkeeping is narration, not failure output.
-    # §FS-forge-run-location-reporting.4
-    log_debug("issue-revert", f"Reverting issue #{issue_number} claim because {reason}")
-    revert_errors: list[Exception] = []
-    log_debug("issue-revert", f"Reverting issue #{issue_number}: setting project item {item_id} -> {STATUS_TODO}")
-    try:
-        set_item_status(item_id, STATUS_TODO)
-    except Exception as exc:
-        revert_errors.append(exc)
-        print(
-            f"ERROR: Issue #{issue_number} revert could not set project item {item_id} "
-            f"to {STATUS_TODO}: {format_github_exception_details(exc)}",
-            file=sys.stderr,
-        )
-    log_debug("issue-revert", f"Reverting issue #{issue_number}: clearing all assignees")
-    try:
-        clear_issue_assignees(issue_number)
-    except Exception as exc:
-        revert_errors.append(exc)
-        print(
-            f"ERROR: Issue #{issue_number} revert could not clear assignees: "
-            f"{format_github_exception_details(exc)}",
-            file=sys.stderr,
-        )
-    verified_status = get_item_status(item_id)
-    verified_assignees = get_issue_assignees(issue_number)
-    if verified_status != STATUS_TODO or verified_assignees:
-        verification_error = RuntimeError(
-            f"Issue #{issue_number} revert verification failed: "
-            f"status={verified_status!r}, assignees={verified_assignees!r}"
-        )
-        if revert_errors:
-            raise verification_error from revert_errors[0]
-        raise verification_error
-    invalidate_issue_claim_cache_entry(issue_number)
-    log_debug(
-        "issue-revert",
-        f"Issue #{issue_number} failed due to {reason}; verified revert with "
-        f"status={verified_status}, assignees={verified_assignees}",
-    )
-
-
-def revert_claimed_issue(claimed_issue: ClaimedIssue, reason: str) -> None:
-    """Reset a failed claimed issue back to Todo and clear its assignment."""
-    revert_issue_claim(claimed_issue.item_id, claimed_issue.issue["number"], reason)
 
 
 def build_chunked_dynamic_access_pr_args(
@@ -7795,620 +6877,6 @@ def process_claimed_issue_lifecycle(
             )
             traceback.print_exc()
 
-
-def get_open_blocking_issue_numbers(issue_number: int) -> list[int]:
-    """Return the numbers of currently open issues that block the given issue."""
-    owner, repo_name = REPO.split("/")
-    open_blockers: list[int] = []
-    cursor: str | None = None
-
-    while True:
-        after_clause = f', after: "{cursor}"' if cursor else ""
-        query = f"""
-        query {{
-          repository(owner: "{owner}", name: "{repo_name}") {{
-            issue(number: {issue_number}) {{
-              blockedBy(first: 100{after_clause}) {{
-                nodes {{
-                  number
-                  closed
-                }}
-                pageInfo {{
-                  hasNextPage
-                  endCursor
-                }}
-              }}
-            }}
-          }}
-        }}
-        """
-        result = gh_json("api", "graphql", "-f", f"query={query}")
-        issue = (
-            result.get("data", {})
-            .get("repository", {})
-            .get("issue", {})
-        )
-        blocked_by = issue.get("blockedBy", {}) if isinstance(issue, dict) else {}
-        for blocker in blocked_by.get("nodes", []):
-            if isinstance(blocker, dict) and not blocker.get("closed", False):
-                blocker_number = blocker.get("number")
-                if isinstance(blocker_number, int):
-                    open_blockers.append(blocker_number)
-
-        page_info = blocked_by.get("pageInfo", {}) if isinstance(blocked_by, dict) else {}
-        if not page_info.get("hasNextPage"):
-            return open_blockers
-        cursor = page_info.get("endCursor")
-        if not cursor:
-            return open_blockers
-
-
-def _get_issue_node_project_status(issue_node: dict) -> str | None:
-    project_items = issue_node.get("projectItems", {}) if isinstance(issue_node, dict) else {}
-    for item in project_items.get("nodes", []):
-        if str(item.get("project", {}).get("number")) != str(PROJECT_NUMBER):
-            continue
-        field_values = item.get("fieldValues", {})
-        for field_value in field_values.get("nodes", []):
-            field = field_value.get("field", {}) if isinstance(field_value, dict) else {}
-            if field.get("name") == STATUS_FIELD_NAME:
-                return field_value.get("name")
-    return None
-
-
-def _get_issue_node_project_item_state(issue_node: dict) -> tuple[str | None, str | None]:
-    project_items = issue_node.get("projectItems", {}) if isinstance(issue_node, dict) else {}
-    for item in project_items.get("nodes", []):
-        if not isinstance(item, dict):
-            continue
-        if str(item.get("project", {}).get("number")) != str(PROJECT_NUMBER):
-            continue
-        return item.get("id"), _get_issue_node_project_status(issue_node)
-    return None, None
-
-
-def _get_issue_node_assignees(issue_node: dict) -> list[str]:
-    assignees = issue_node.get("assignees", {}) if isinstance(issue_node, dict) else {}
-    return [
-        assignee["login"]
-        for assignee in assignees.get("nodes", [])
-        if isinstance(assignee, dict) and assignee.get("login")
-    ]
-
-
-def _connection_has_next_page(connection: dict) -> bool:
-    page_info = connection.get("pageInfo", {}) if isinstance(connection, dict) else {}
-    return bool(page_info.get("hasNextPage"))
-
-
-def _open_issue_numbers_from_connection(connection: dict) -> tuple[int, ...]:
-    if not isinstance(connection, dict):
-        return ()
-    open_numbers: list[int] = []
-    for node in connection.get("nodes", []):
-        if not isinstance(node, dict) or node.get("closed", False):
-            continue
-        issue_number = node.get("number")
-        if isinstance(issue_number, int):
-            open_numbers.append(issue_number)
-    return tuple(open_numbers)
-
-
-def _project_item_status_preflight_fields() -> str:
-    return """
-          projectItems(first: 5) {
-            nodes {
-              id
-              project {
-                number
-              }
-              fieldValues(first: 20) {
-                nodes {
-                  ... on ProjectV2ItemFieldSingleSelectValue {
-                    name
-                    field { ... on ProjectV2FieldCommon { name } }
-                  }
-                }
-              }
-            }
-          }
-    """
-
-
-def _assignees_preflight_fields() -> str:
-    return """
-          assignees(first: 10) {
-            nodes {
-              login
-            }
-            pageInfo {
-              hasNextPage
-              endCursor
-            }
-          }
-    """
-
-
-def _extract_issue_claim_preflight(issue_number: int, issue_node: dict | None) -> IssueClaimPreflight:
-    if not isinstance(issue_node, dict):
-        return IssueClaimPreflight(issue_number, None, None, (), (), False)
-
-    item_id, project_status = _get_issue_node_project_item_state(issue_node)
-    assignees = tuple(_get_issue_node_assignees(issue_node))
-    blocked_by = issue_node.get("blockedBy", {})
-    open_blockers = _open_issue_numbers_from_connection(blocked_by)
-    complete = (
-        not _connection_has_next_page(issue_node.get("assignees", {}))
-        and not _connection_has_next_page(blocked_by)
-    )
-
-    return IssueClaimPreflight(
-        issue_number=issue_number,
-        item_id=item_id,
-        project_status=project_status,
-        assignees=assignees,
-        open_blockers=open_blockers,
-        complete=complete,
-    )
-
-
-def get_issue_claim_cache_observation_from_payload(
-        issue: dict,
-        authenticated_user: str | None = None,
-) -> IssueClaimCacheObservation | None:
-    """Return a cache observation for locally visible negative issue state."""
-    issue_number = issue.get("number")
-    if not isinstance(issue_number, int):
-        return None
-    if issue_has_label(issue, LABEL_HUMAN_INTERVENTION) and not issue_is_resumable(issue):
-        return IssueClaimCacheObservation(
-            issue_number=issue_number,
-            reason=ISSUE_CLAIM_CACHE_REASON_HUMAN_INTERVENTION,
-        )
-    if issue_has_label(issue, LABEL_NOT_FOR_NATIVE_IMAGE):
-        return IssueClaimCacheObservation(
-            issue_number=issue_number,
-            reason=ISSUE_CLAIM_CACHE_REASON_NOT_FOR_NATIVE_IMAGE,
-        )
-    payload_assignees = get_issue_payload_assignees(issue)
-    if payload_assignees and not is_assigned_only_to_authenticated_user(payload_assignees, authenticated_user):
-        return IssueClaimCacheObservation(
-            issue_number=issue_number,
-            reason=ISSUE_CLAIM_CACHE_REASON_ASSIGNED,
-            assignees=tuple(payload_assignees),
-        )
-    return None
-
-
-def refresh_issue_payload_for_claim(
-        issue: dict,
-        required_label: str | None = None,
-        authenticated_user: str | None = None,
-) -> bool:
-    """Refresh mutable issue state and return whether it remains claimable.
-
-    The payload is re-read against live GitHub state at claim time rather than
-    trusted from the scan (§FS-forge-run-requirements.2).
-    """
-    issue_number = issue.get("number")
-    if not isinstance(issue_number, int):
-        return False
-
-    fresh_issue = get_issue_claim_payload(issue_number)
-    issue.clear()
-    issue.update(fresh_issue)
-
-    state = str(issue.get("state", "")).upper()
-    if state and state != "OPEN":
-        record_issue_claim_cache_observations([
-            IssueClaimCacheObservation(
-                issue_number=issue_number,
-                reason=ISSUE_CLAIM_CACHE_REASON_CLOSED,
-            )
-        ])
-        return False
-
-    if required_label is not None and not issue_has_label(issue, required_label):
-        log_stage(
-            "issue-claim",
-            f"Skipping issue #{issue_number}: it no longer has label '{required_label}'",
-        )
-        return False
-
-    observation = get_issue_claim_cache_observation_from_payload(issue, authenticated_user)
-    if observation is not None:
-        record_issue_claim_cache_observations([observation])
-        return False
-
-    return True
-
-
-def get_issue_claim_cache_observation_from_preflight(
-        preflight: IssueClaimPreflight,
-        authenticated_user: str | None = None,
-) -> IssueClaimCacheObservation | None:
-    """Return a cache observation for negative GraphQL preflight state."""
-    if not preflight.complete:
-        return None
-    if preflight.assignees and not is_assigned_only_to_authenticated_user(preflight.assignees, authenticated_user):
-        return IssueClaimCacheObservation(
-            issue_number=preflight.issue_number,
-            reason=ISSUE_CLAIM_CACHE_REASON_ASSIGNED,
-            assignees=preflight.assignees,
-        )
-    if preflight.open_blockers:
-        return IssueClaimCacheObservation(
-            issue_number=preflight.issue_number,
-            reason=ISSUE_CLAIM_CACHE_REASON_BLOCKED,
-            open_blockers=preflight.open_blockers,
-        )
-    if not preflight.item_id:
-        return IssueClaimCacheObservation(
-            issue_number=preflight.issue_number,
-            reason=ISSUE_CLAIM_CACHE_REASON_MISSING_PROJECT_ITEM,
-        )
-    if preflight.project_status != STATUS_TODO:
-        reason = (
-            ISSUE_CLAIM_CACHE_REASON_IN_PROGRESS
-            if preflight.project_status == STATUS_IN_PROGRESS
-            else ISSUE_CLAIM_CACHE_REASON_NON_TODO
-        )
-        return IssueClaimCacheObservation(
-            issue_number=preflight.issue_number,
-            reason=reason,
-            project_status=preflight.project_status,
-        )
-    return None
-
-
-def format_cached_issue_claim_skip(cached_skip: CachedIssueClaimSkip) -> str:
-    """Return a readable reason for a cached issue-claim skip."""
-    if cached_skip.reason == ISSUE_CLAIM_CACHE_REASON_ASSIGNED:
-        return f"recently cached as assigned to {list(cached_skip.assignees)}"
-    if cached_skip.reason == ISSUE_CLAIM_CACHE_REASON_HUMAN_INTERVENTION:
-        return f"recently cached with label '{LABEL_HUMAN_INTERVENTION}'"
-    if cached_skip.reason == ISSUE_CLAIM_CACHE_REASON_NOT_FOR_NATIVE_IMAGE:
-        return f"recently cached with label '{LABEL_NOT_FOR_NATIVE_IMAGE}'"
-    if cached_skip.reason == ISSUE_CLAIM_CACHE_REASON_BLOCKED:
-        blockers_text = ", ".join(f"#{blocker}" for blocker in cached_skip.open_blockers)
-        return f"recently cached as blocked by open issue(s) {blockers_text}"
-    if cached_skip.reason == ISSUE_CLAIM_CACHE_REASON_CLOSED:
-        return "recently cached as closed"
-    if cached_skip.reason == ISSUE_CLAIM_CACHE_REASON_MISSING_PROJECT_ITEM:
-        return f"recently cached as missing project {PROJECT_NUMBER} item"
-    if cached_skip.reason in {ISSUE_CLAIM_CACHE_REASON_NON_TODO, ISSUE_CLAIM_CACHE_REASON_IN_PROGRESS}:
-        return f"recently cached as not Todo (it was '{cached_skip.project_status}')"
-    return f"recently cached as {cached_skip.reason}"
-
-
-def get_cached_issue_claim_skips(
-        issues: list[dict],
-        authenticated_user: str | None = None,
-        take_blocked_issues: bool = DEFAULT_TAKE_BLOCKED_ISSUES,
-) -> dict[int, CachedIssueClaimSkip]:
-    """Return fresh cached skips for the given issue payloads."""
-    cache = read_issue_claim_cache()
-    if not cache:
-        return {}
-    issue_numbers = {
-        issue["number"]
-        for issue in issues
-        if isinstance(issue, dict) and isinstance(issue.get("number"), int)
-    }
-    return {
-        issue_number: cached_skip
-        for issue_number, cached_skip in cache.items()
-        if issue_number in issue_numbers
-        and cached_skip_blocks_authenticated_user(cached_skip, authenticated_user, take_blocked_issues)
-    }
-
-
-def get_issue_claim_preflights(
-        issue_numbers: list[int],
-        chunk_size: int = ISSUE_CLAIM_PREFLIGHT_CHUNK_SIZE,
-) -> dict[int, IssueClaimPreflight]:
-    """Fetch claim preflight state for issue candidates with chunked GraphQL calls."""
-    owner, repo_name = REPO.split("/")
-    preflights: dict[int, IssueClaimPreflight] = {}
-    issue_numbers = list(dict.fromkeys(issue_numbers))
-
-    for index in range(0, len(issue_numbers), chunk_size):
-        batch = issue_numbers[index:index + chunk_size]
-        issue_fields = "\n".join(
-            f"""
-        issue_{issue_number}: issue(number: {issue_number}) {{
-          number
-{_assignees_preflight_fields()}
-{_project_item_status_preflight_fields()}
-          blockedBy(first: 100) {{
-            nodes {{
-              number
-              closed
-            }}
-            pageInfo {{
-              hasNextPage
-              endCursor
-            }}
-          }}
-        }}
-            """
-            for issue_number in batch
-        )
-        query = f"""
-        query {{
-          repository(owner: "{owner}", name: "{repo_name}") {{
-{issue_fields}
-          }}
-        }}
-        """
-        result = gh_json("api", "graphql", "-f", f"query={query}", quiet=True)
-        repository = (
-            result.get("data", {})
-            .get("repository", {})
-        ) or {}
-        for issue_number in batch:
-            preflights[issue_number] = _extract_issue_claim_preflight(
-                issue_number,
-                repository.get(f"issue_{issue_number}"),
-            )
-
-    return preflights
-
-
-def issue_needs_claim_preflight(issue: dict, authenticated_user: str | None = None) -> bool:
-    """Return True when an issue needs GraphQL preflight before claim attempts."""
-    if issue_has_label(issue, LABEL_HUMAN_INTERVENTION) and not issue_is_resumable(issue):
-        return False
-    if issue_has_label(issue, LABEL_NOT_FOR_NATIVE_IMAGE):
-        return False
-    payload_assignees = get_issue_payload_assignees(issue)
-    if payload_assignees and not is_assigned_only_to_authenticated_user(payload_assignees, authenticated_user):
-        return False
-    return True
-
-
-def get_issue_claim_preflights_or_empty(
-        issues: list[dict],
-        authenticated_user: str | None = None,
-) -> dict[int, IssueClaimPreflight]:
-    issue_numbers = [
-        issue["number"]
-        for issue in issues
-        if isinstance(issue, dict) and isinstance(issue.get("number"), int)
-        and issue_needs_claim_preflight(issue, authenticated_user)
-    ]
-    if not issue_numbers:
-        return {}
-    try:
-        return get_issue_claim_preflights(issue_numbers)
-    except GitHubRateLimitExceeded:
-        raise
-    except Exception as exc:
-        print(
-            "ERROR: Failed to fetch batched claim preflight state; "
-            f"falling back to per-issue checks: {format_github_exception_details(exc)}",
-            file=sys.stderr,
-        )
-        return {}
-
-
-def should_skip_issue_from_preflight(
-        issue: dict,
-        preflight: IssueClaimPreflight | None,
-        cached_skip: CachedIssueClaimSkip | None = None,
-        authenticated_user: str | None = None,
-        take_blocked_issues: bool = DEFAULT_TAKE_BLOCKED_ISSUES,
-) -> bool:
-    number = issue["number"]
-
-    cached_chunked_issue_in_progress = (
-        cached_skip is not None
-        and cached_skip.reason == ISSUE_CLAIM_CACHE_REASON_IN_PROGRESS
-        and issue_has_label(issue, LABEL_CHUNKED_DYNAMIC_ACCESS)
-    )
-    cached_human_intervention_now_resumable = (
-        cached_skip is not None
-        and cached_skip.reason == ISSUE_CLAIM_CACHE_REASON_HUMAN_INTERVENTION
-        and issue_is_resumable(issue)
-    )
-    if (
-            cached_skip is not None
-            and not cached_chunked_issue_in_progress
-            and not cached_human_intervention_now_resumable
-            and cached_skip_blocks_authenticated_user(cached_skip, authenticated_user, take_blocked_issues)
-    ):
-        return True
-
-    if preflight is None or not preflight.complete:
-        return False
-
-    if preflight.assignees and not is_assigned_only_to_authenticated_user(preflight.assignees, authenticated_user):
-        return True
-
-    if preflight.open_blockers and not take_blocked_issues:
-        return True
-
-    if not preflight.item_id:
-        print(
-            f"ERROR: Issue #{number} is not linked to project {PROJECT_NUMBER}",
-            file=sys.stderr,
-        )
-        return True
-
-    if preflight.project_status != STATUS_TODO:
-        return True
-
-    return False
-
-
-def resolve_next_issue_claim_candidate_batch(
-        unresolved_candidates: list[tuple[dict, CachedIssueClaimSkip | None]],
-) -> list[tuple[dict, IssueClaimPreflight | None, CachedIssueClaimSkip | None]]:
-    """Resolve the next candidate batch through cache/local state only."""
-    batch_entries: list[tuple[dict, CachedIssueClaimSkip | None]] = []
-
-    while unresolved_candidates:
-        issue, cached_skip = unresolved_candidates.pop(0)
-        batch_entries.append((issue, cached_skip))
-
-    return [
-        (
-            issue,
-            None,
-            cached_skip,
-        )
-        for issue, cached_skip in batch_entries
-    ]
-
-
-def is_issue_blocked(issue_number: int) -> bool:
-    """Return True when the issue has at least one currently open blocking issue."""
-    return bool(get_open_blocking_issue_numbers(issue_number))
-
-
-@pipeline_step(
-    PHASE_CLAIM,
-    STEP_CLAIM_ISSUE,
-    operand=lambda arguments: f"issue #{arguments['issue']['number']}",
-)
-def try_claim_issue(
-        issue: dict,
-        authenticated_user: str,
-        required_label: str | None = None,
-        take_blocked_issues: bool = DEFAULT_TAKE_BLOCKED_ISSUES,
-) -> Optional[str]:
-    """
-    Attempt to exclusively claim an issue.
-
-    1. Take a non-blocking local per-issue lock so same-machine runners using the
-       same GitHub account cannot both interpret the same assignee as ownership.
-    2. Skip if the issue is assigned to someone else.
-    3. SET ourselves as the sole assignee (replaces, not appends).
-    4. Wait a random 5-10 s backoff so concurrent runners' SETs have time to land.
-    5. Re-read assignees — if we are still the sole assignee, the claim is ours.
-       If someone else overwrote us, back off.
-    6. On successful claim, move the project item to In Progress.
-    """
-    number = issue["number"]
-
-    claim_lock = try_acquire_issue_claim_lock(number)
-    if claim_lock is None:
-        return None
-
-    try:
-        if not refresh_issue_payload_for_claim(issue, required_label, authenticated_user):
-            return None
-        return try_claim_issue_with_local_lock(issue, authenticated_user, take_blocked_issues)
-    finally:
-        claim_lock.release()
-
-
-def try_claim_issue_with_local_lock(
-        issue: dict,
-        authenticated_user: str,
-        take_blocked_issues: bool = DEFAULT_TAKE_BLOCKED_ISSUES,
-) -> Optional[str]:
-    """Attempt the remote optimistic claim while holding the local per-issue lock."""
-    number = issue["number"]
-
-    if not take_blocked_issues:
-        open_blockers = get_open_blocking_issue_numbers(number)
-        if open_blockers:
-            record_issue_claim_cache_observations([
-                IssueClaimCacheObservation(
-                    issue_number=number,
-                    reason=ISSUE_CLAIM_CACHE_REASON_BLOCKED,
-                    open_blockers=tuple(open_blockers),
-                )
-            ])
-            return None
-
-    # The issue-list payload can be stale when another local runner just claimed
-    # the same issue as the same GitHub user, so always re-read after the lock.
-    assignees = get_issue_assignees(number)
-    if assignees and not is_assigned_only_to_authenticated_user(assignees, authenticated_user):
-        record_issue_claim_cache_observations([
-            IssueClaimCacheObservation(
-                issue_number=number,
-                reason=ISSUE_CLAIM_CACHE_REASON_ASSIGNED,
-                assignees=tuple(assignees),
-            )
-        ])
-        return None
-
-    item_id, current_status = get_project_item_state(number)
-    if not item_id:
-        print(
-            f"ERROR: Issue #{number} is not linked to project {PROJECT_NUMBER}",
-            file=sys.stderr,
-        )
-        record_issue_claim_cache_observations([
-            IssueClaimCacheObservation(
-                issue_number=number,
-                reason=ISSUE_CLAIM_CACHE_REASON_MISSING_PROJECT_ITEM,
-            )
-        ])
-        return None
-
-    if current_status != STATUS_TODO:
-        reason = (
-            ISSUE_CLAIM_CACHE_REASON_IN_PROGRESS
-            if current_status == STATUS_IN_PROGRESS
-            else ISSUE_CLAIM_CACHE_REASON_NON_TODO
-        )
-        record_issue_claim_cache_observations([
-            IssueClaimCacheObservation(
-                issue_number=number,
-                reason=reason,
-                project_status=current_status,
-            )
-        ])
-        return None
-
-    try:
-        # SET ourselves as the sole assignee
-        log_debug("issue-claim", f"Setting issue #{number} assignee to {authenticated_user}")
-        set_issue_assignee(number, authenticated_user)
-
-        # Random wait so concurrent runners' SETs have time to land.
-        backoff = random.uniform(CLAIM_BACKOFF_MIN, CLAIM_BACKOFF_MAX)
-        log_debug("issue-claim", f"Waiting {backoff:.1f}s before verifying claim on issue #{number}")
-        time.sleep(backoff)
-
-        # Verify we are still the assignee
-        assignees = get_issue_assignees(number)
-        if assignees != [authenticated_user]:
-            log_debug("issue-claim", f"Issue #{number}: assignee is now {assignees}, not us. Backing off.")
-            if assignees:
-                record_issue_claim_cache_observations([
-                    IssueClaimCacheObservation(
-                        issue_number=number,
-                        reason=ISSUE_CLAIM_CACHE_REASON_ASSIGNED,
-                        assignees=tuple(assignees),
-                    )
-                ])
-            return None
-
-        set_item_status(item_id, STATUS_IN_PROGRESS)
-        record_issue_claim_cache_observations([
-            IssueClaimCacheObservation(
-                issue_number=number,
-                reason=ISSUE_CLAIM_CACHE_REASON_IN_PROGRESS,
-                project_status=STATUS_IN_PROGRESS,
-            )
-        ])
-        log_step_progress(PHASE_CLAIM, STEP_CLAIM_ISSUE, f"Issue #{number} claimed")
-        log_debug("claim", f"Issue #{number} claimed; project status is In Progress")
-        return item_id
-    except BaseException as exc:
-        revert_issue_claim_if_still_owned_by_user(
-            item_id,
-            number,
-            authenticated_user,
-            "claim interrupted by Ctrl+C" if is_interrupt_exception(exc)
-            else f"claim failure ({type(exc).__name__})",
-        )
-        raise
 
 
 def get_issue_url(issue: dict) -> str:

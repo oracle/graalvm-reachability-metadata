@@ -16,7 +16,15 @@ from collections.abc import Callable
 from unittest.mock import call, patch
 
 import forge_metadata
-from dispatcher import fixture_support, github_api, issue_cache
+from dispatcher import (
+    claim_preflight,
+    fixture_support,
+    github_api,
+    issue_cache,
+    issue_claiming,
+    issue_queue,
+    project_board,
+)
 from types import SimpleNamespace
 from ai_workflows.agents.agent_runtime import AgentRunResult, AgentSelection
 from git_scripts import common_git, github_cli
@@ -554,7 +562,7 @@ class LibraryUpdateIssueTests(unittest.TestCase):
             "assignees": [],
         }
 
-        with patch.object(forge_metadata, "gh_json", return_value=issue_payload) as gh_json:
+        with patch.object(issue_queue, "gh_json", return_value=issue_payload) as gh_json:
             issue, label = forge_metadata.get_issue_by_number(1412)
 
         self.assertEqual(label, forge_metadata.LABEL_LIBRARY_UPDATE)
@@ -570,14 +578,14 @@ class LibraryUpdateIssueTests(unittest.TestCase):
             "assignees": [],
         }
 
-        with patch.object(forge_metadata, "gh_json", return_value=issue_payload) as gh_json:
+        with patch.object(issue_queue, "gh_json", return_value=issue_payload) as gh_json:
             issue = forge_metadata.get_issue_claim_payload(1412)
 
         self.assertNotIn("body", issue)
         self.assertNotIn("body", gh_json.call_args.args[-1])
 
     def test_issue_body_fetch_is_explicit_for_reporter_metadata_context(self) -> None:
-        with patch.object(forge_metadata, "gh_json", return_value={"body": "Missing reflection metadata"}) as gh_json:
+        with patch.object(issue_queue, "gh_json", return_value={"body": "Missing reflection metadata"}) as gh_json:
             body = forge_metadata.get_issue_body(1412)
 
         self.assertEqual(body, "Missing reflection metadata")
@@ -944,7 +952,7 @@ class IssueClaimPreflightTests(unittest.TestCase):
         )
 
         with patch.object(
-                forge_metadata,
+                project_board,
                 "get_cached_field_info",
                 return_value=("project-id", "field-id", {forge_metadata.STATUS_IN_PROGRESS: "option-id"}),
         ), \
@@ -965,7 +973,7 @@ class IssueClaimPreflightTests(unittest.TestCase):
         issue = {"number": 1412, "labels": []}
 
         with patch.object(
-                forge_metadata,
+                claim_preflight,
                 "get_issue_claim_preflights",
                 side_effect=forge_metadata.GitHubRateLimitExceeded("GitHub API rate limit exceeded"),
         ):
@@ -981,7 +989,7 @@ class IssueClaimPreflightTests(unittest.TestCase):
             stderr="GraphQL: Field 'blockedBy' doesn't exist on type 'Issue'",
         )
 
-        with patch.object(forge_metadata, "get_issue_claim_preflights", side_effect=error), \
+        with patch.object(claim_preflight, "get_issue_claim_preflights", side_effect=error), \
                 patch("sys.stderr", new_callable=io.StringIO) as stderr:
             self.assertEqual(
                 forge_metadata.get_issue_claim_preflights_or_empty([issue]),
@@ -1100,7 +1108,7 @@ class IssueClaimPreflightTests(unittest.TestCase):
             },
         }
 
-        with patch.object(forge_metadata, "gh_json", return_value=response) as gh_json:
+        with patch.object(claim_preflight, "gh_json", return_value=response) as gh_json:
             preflights = forge_metadata.get_issue_claim_preflights([1412])
 
         gh_json.assert_called_once()
@@ -1119,7 +1127,7 @@ class IssueClaimPreflightTests(unittest.TestCase):
             _empty_preflight_response([9]),
         ]
 
-        with patch.object(forge_metadata, "gh_json", side_effect=responses) as gh_json:
+        with patch.object(claim_preflight, "gh_json", side_effect=responses) as gh_json:
             preflights = forge_metadata.get_issue_claim_preflights(issue_numbers)
 
         self.assertEqual(gh_json.call_count, 3)
@@ -1149,7 +1157,7 @@ class IssueClaimPreflightTests(unittest.TestCase):
         fetched: list[list[int]] = []
         scan_state = None
         with patch.object(
-                forge_metadata,
+                issue_queue,
                 "get_issues_with_label",
                 side_effect=fake_get_issues,
         ) as get_issues:
@@ -1177,7 +1185,7 @@ class IssueClaimPreflightTests(unittest.TestCase):
 
     def test_tier_search_query_keeps_the_not_for_native_image_exclusion(self) -> None:
         with patch.dict(os.environ, {"FORGE_ISSUE_SEARCH_CACHE": "0"}), \
-                patch.object(forge_metadata, "gh_json", return_value={"items": []}) as gh_json:
+                patch.object(issue_queue, "gh_json", return_value={"items": []}) as gh_json:
             forge_metadata.search_issues_with_label(
                 forge_metadata.LABEL_LIBRARY_NEW,
                 25,
@@ -1203,7 +1211,7 @@ class IssueClaimPreflightTests(unittest.TestCase):
 
         with tempfile.TemporaryDirectory() as lock_root:
             with patch.object(issue_cache, "get_issue_claim_locks_root", return_value=lock_root), \
-                    patch.object(forge_metadata, "get_issue_claim_payload", return_value=fresh_issue):
+                    patch.object(claim_preflight, "get_issue_claim_payload", return_value=fresh_issue):
                 self.assertFalse(
                     forge_metadata.refresh_issue_payload_for_claim(
                         issue,
@@ -1227,7 +1235,7 @@ class IssueClaimPreflightTests(unittest.TestCase):
 
         with tempfile.TemporaryDirectory() as lock_root:
             with patch.object(issue_cache, "get_issue_claim_locks_root", return_value=lock_root), \
-                    patch.object(forge_metadata, "get_issue_claim_payload", return_value=fresh_issue):
+                    patch.object(claim_preflight, "get_issue_claim_payload", return_value=fresh_issue):
                 self.assertFalse(
                     forge_metadata.refresh_issue_payload_for_claim(
                         issue,
@@ -1246,7 +1254,7 @@ class IssueClaimPreflightTests(unittest.TestCase):
             "state": "OPEN",
         }
 
-        with patch.object(forge_metadata, "get_issue_claim_payload", return_value=fresh_issue), \
+        with patch.object(claim_preflight, "get_issue_claim_payload", return_value=fresh_issue), \
                 patch("sys.stdout", new_callable=io.StringIO) as stdout:
             self.assertFalse(
                 forge_metadata.refresh_issue_payload_for_claim(
@@ -1267,7 +1275,7 @@ class IssueClaimPreflightTests(unittest.TestCase):
 
         with tempfile.TemporaryDirectory() as lock_root:
             with patch.object(issue_cache, "get_issue_claim_locks_root", return_value=lock_root), \
-                    patch.object(forge_metadata, "get_issue_claim_payload", return_value=fresh_issue):
+                    patch.object(claim_preflight, "get_issue_claim_payload", return_value=fresh_issue):
                 self.assertFalse(
                     forge_metadata.refresh_issue_payload_for_claim(
                         issue,
@@ -1288,7 +1296,7 @@ class IssueClaimPreflightTests(unittest.TestCase):
             "assignees": [{"login": "automation-user"}],
         }
 
-        with patch.object(forge_metadata, "get_issue_claim_payload", return_value=fresh_issue):
+        with patch.object(claim_preflight, "get_issue_claim_payload", return_value=fresh_issue):
             self.assertTrue(
                 forge_metadata.refresh_issue_payload_for_claim(
                     issue,
@@ -1334,7 +1342,7 @@ class IssueClaimPreflightTests(unittest.TestCase):
         }
 
         with patch.object(
-                forge_metadata,
+                claim_preflight,
                 "get_issue_claim_preflights",
                 return_value={
                     4: _preflight(issue_number=4, assignees=("current-user",)),
@@ -1424,7 +1432,7 @@ class IssueClaimPreflightTests(unittest.TestCase):
 
         with patch.dict(os.environ, {"FORGE_ISSUE_SEARCH_CACHE": "0"}), \
                 patch.object(
-                        forge_metadata,
+                        issue_queue,
                         "gh_json",
                         return_value={"items": page_items},
                 ) as gh_json:
@@ -1454,7 +1462,7 @@ class IssueClaimPreflightTests(unittest.TestCase):
         ]
 
         with patch.dict(os.environ, {"FORGE_ISSUE_SEARCH_CACHE": "0"}), \
-                patch.object(forge_metadata, "gh_json", return_value={"items": page_items}) as gh_json:
+                patch.object(issue_queue, "gh_json", return_value={"items": page_items}) as gh_json:
             issues = forge_metadata.get_issues_with_label(
                 forge_metadata.LABEL_LIBRARY_NEW,
                 2,
@@ -1494,7 +1502,7 @@ class IssueClaimPreflightTests(unittest.TestCase):
             {"number": 2, "author": {"login": "external-user"}, "labels": []},
         ]
 
-        with patch.object(forge_metadata, "get_issues_with_label", return_value=issues) as get_issues:
+        with patch.object(issue_queue, "get_issues_with_label", return_value=issues) as get_issues:
             filtered, scan_state = forge_metadata.get_prioritized_issues_with_label(
                 forge_metadata.LABEL_LIBRARY_NEW,
                 25,
@@ -1518,7 +1526,7 @@ class IssueClaimPreflightTests(unittest.TestCase):
             [{"number": 2, "author": {"login": "external-user"}, "labels": []}],
         ]
 
-        with patch.object(forge_metadata, "get_issues_with_label", side_effect=batches) as get_issues:
+        with patch.object(issue_queue, "get_issues_with_label", side_effect=batches) as get_issues:
             filtered, scan_state = forge_metadata.get_prioritized_issues_with_label(
                 forge_metadata.LABEL_LIBRARY_NEW,
                 25,
@@ -1667,9 +1675,9 @@ class IssueClaimPreflightTests(unittest.TestCase):
                         "process_claimed_issue_lifecycle",
                         return_value=True,
                     ), \
-                    patch.object(forge_metadata, "get_open_blocking_issue_numbers") as get_open_blocking_issue_numbers, \
-                    patch.object(forge_metadata, "get_issue_assignees") as get_issue_assignees, \
-                    patch.object(forge_metadata, "get_project_item_state") as get_project_item_state:
+                    patch.object(issue_claiming, "get_open_blocking_issue_numbers") as get_open_blocking_issue_numbers, \
+                    patch.object(issue_claiming, "get_issue_assignees") as get_issue_assignees, \
+                    patch.object(issue_claiming, "get_project_item_state") as get_project_item_state:
                 processed = forge_metadata.process_issues_with_label(
                     forge_metadata.LABEL_LIBRARY_NEW,
                     1,
@@ -3902,7 +3910,7 @@ class ProjectItemStatusTests(unittest.TestCase):
 
     def test_forge_project_item_state_is_quiet_in_compact_output(self) -> None:
         with patch.object(
-                forge_metadata,
+                project_board,
                 "get_issue_project_item_status",
                 return_value=("project-item", forge_metadata.STATUS_TODO),
         ) as get_issue_project_item_status, \
@@ -3923,7 +3931,7 @@ class ProjectItemStatusTests(unittest.TestCase):
 
     def test_forge_project_item_state_is_available_in_verbose_output(self) -> None:
         with patch.object(
-                forge_metadata,
+                project_board,
                 "get_issue_project_item_status",
                 return_value=("project-item", forge_metadata.STATUS_TODO),
         ), patch.dict(os.environ, {"FORGE_VERBOSE": "1"}), \
@@ -3953,7 +3961,7 @@ class IssueClaimLockTests(unittest.TestCase):
                 self.assertIsNotNone(claim_lock)
                 try:
                     with patch.object(
-                            forge_metadata,
+                            issue_claiming,
                             "get_open_blocking_issue_numbers",
                     ) as get_open_blocking_issues:
                         self.assertIsNone(forge_metadata.try_claim_issue(issue, "automation-user"))
@@ -3970,10 +3978,10 @@ class IssueClaimLockTests(unittest.TestCase):
         }
         with tempfile.TemporaryDirectory() as lock_root:
             with patch.object(issue_cache, "get_issue_claim_locks_root", return_value=lock_root), \
-                    patch.object(forge_metadata, "refresh_issue_payload_for_claim", return_value=True), \
-                    patch.object(forge_metadata, "get_open_blocking_issue_numbers", return_value=[1392]), \
+                    patch.object(issue_claiming, "refresh_issue_payload_for_claim", return_value=True), \
+                    patch.object(issue_claiming, "get_open_blocking_issue_numbers", return_value=[1392]), \
                     patch.object(forge_metadata, "add_issue_label") as add_issue_label, \
-                    patch.object(forge_metadata, "get_issue_assignees") as get_issue_assignees:
+                    patch.object(issue_claiming, "get_issue_assignees") as get_issue_assignees:
                 self.assertIsNone(
                     forge_metadata.try_claim_issue(
                         issue,
@@ -3996,8 +4004,8 @@ class IssueClaimLockTests(unittest.TestCase):
         }
         with tempfile.TemporaryDirectory() as lock_root:
             with patch.object(issue_cache, "get_issue_claim_locks_root", return_value=lock_root), \
-                    patch.object(forge_metadata, "get_issue_claim_payload", return_value=fresh_issue), \
-                    patch.object(forge_metadata, "get_open_blocking_issue_numbers") as get_blockers:
+                    patch.object(claim_preflight, "get_issue_claim_payload", return_value=fresh_issue), \
+                    patch.object(issue_claiming, "get_open_blocking_issue_numbers") as get_blockers:
                 self.assertIsNone(
                     forge_metadata.try_claim_issue(
                         issue,
@@ -4019,10 +4027,10 @@ class IssueClaimLockTests(unittest.TestCase):
         }
         with tempfile.TemporaryDirectory() as lock_root:
             with patch.object(issue_cache, "get_issue_claim_locks_root", return_value=lock_root), \
-                    patch.object(forge_metadata, "refresh_issue_payload_for_claim", return_value=True), \
-                    patch.object(forge_metadata, "get_open_blocking_issue_numbers", return_value=[]), \
-                    patch.object(forge_metadata, "get_issue_assignees", return_value=["other-user"]), \
-                    patch.object(forge_metadata, "get_project_item_state") as get_project_item_state:
+                    patch.object(issue_claiming, "refresh_issue_payload_for_claim", return_value=True), \
+                    patch.object(issue_claiming, "get_open_blocking_issue_numbers", return_value=[]), \
+                    patch.object(issue_claiming, "get_issue_assignees", return_value=["other-user"]), \
+                    patch.object(issue_claiming, "get_project_item_state") as get_project_item_state:
                 self.assertIsNone(forge_metadata.try_claim_issue(issue, "automation-user"))
                 get_project_item_state.assert_not_called()
                 cache = forge_metadata.read_issue_claim_cache()
@@ -4038,19 +4046,19 @@ class IssueClaimLockTests(unittest.TestCase):
         }
         with tempfile.TemporaryDirectory() as lock_root:
             with patch.object(issue_cache, "get_issue_claim_locks_root", return_value=lock_root), \
-                    patch.object(forge_metadata, "refresh_issue_payload_for_claim", return_value=True), \
-                    patch.object(forge_metadata, "get_open_blocking_issue_numbers", return_value=[]), \
-                    patch.object(forge_metadata, "get_issue_assignees", side_effect=[
+                    patch.object(issue_claiming, "refresh_issue_payload_for_claim", return_value=True), \
+                    patch.object(issue_claiming, "get_open_blocking_issue_numbers", return_value=[]), \
+                    patch.object(issue_claiming, "get_issue_assignees", side_effect=[
                         ["automation-user"],
                         ["automation-user"],
                     ]), \
                     patch.object(
-                        forge_metadata,
+                        issue_claiming,
                         "get_project_item_state",
                         return_value=("project-item", forge_metadata.STATUS_TODO),
                     ), \
-                    patch.object(forge_metadata, "set_issue_assignee") as set_issue_assignee, \
-                    patch.object(forge_metadata, "set_item_status") as set_item_status, \
+                    patch.object(issue_claiming, "set_issue_assignee") as set_issue_assignee, \
+                    patch.object(issue_claiming, "set_item_status") as set_item_status, \
                     patch.object(forge_metadata.random, "uniform", return_value=0), \
                     patch.object(forge_metadata.time, "sleep"), \
                     patch.dict(os.environ, {"FORGE_VERBOSE": "0", "FORGE_DEBUG_LOGGING": "0"}), \
@@ -4070,16 +4078,16 @@ class IssueClaimLockTests(unittest.TestCase):
         issue = _search_issue(1412, [forge_metadata.LABEL_CHUNKED_DYNAMIC_ACCESS])
         with tempfile.TemporaryDirectory() as lock_root:
             with patch.object(issue_cache, "get_issue_claim_locks_root", return_value=lock_root), \
-                    patch.object(forge_metadata, "refresh_issue_payload_for_claim", return_value=True), \
-                    patch.object(forge_metadata, "get_open_blocking_issue_numbers", return_value=[]), \
-                    patch.object(forge_metadata, "get_issue_assignees", return_value=[]), \
+                    patch.object(issue_claiming, "refresh_issue_payload_for_claim", return_value=True), \
+                    patch.object(issue_claiming, "get_open_blocking_issue_numbers", return_value=[]), \
+                    patch.object(issue_claiming, "get_issue_assignees", return_value=[]), \
                     patch.object(
-                        forge_metadata,
+                        issue_claiming,
                         "get_project_item_state",
                         return_value=("project-item", forge_metadata.STATUS_IN_PROGRESS),
                     ), \
-                    patch.object(forge_metadata, "set_issue_assignee") as set_issue_assignee, \
-                    patch.object(forge_metadata, "set_item_status") as set_item_status, \
+                    patch.object(issue_claiming, "set_issue_assignee") as set_issue_assignee, \
+                    patch.object(issue_claiming, "set_item_status") as set_item_status, \
                     patch.object(forge_metadata.random, "uniform", return_value=0), \
                     patch.object(forge_metadata.time, "sleep"):
                 self.assertIsNone(
@@ -4098,17 +4106,17 @@ class IssueClaimLockTests(unittest.TestCase):
         }
         with tempfile.TemporaryDirectory() as lock_root:
             with patch.object(issue_cache, "get_issue_claim_locks_root", return_value=lock_root), \
-                    patch.object(forge_metadata, "refresh_issue_payload_for_claim", return_value=True), \
-                    patch.object(forge_metadata, "get_open_blocking_issue_numbers", return_value=[]), \
-                    patch.object(forge_metadata, "get_issue_assignees", side_effect=[[], ["automation-user"]]), \
+                    patch.object(issue_claiming, "refresh_issue_payload_for_claim", return_value=True), \
+                    patch.object(issue_claiming, "get_open_blocking_issue_numbers", return_value=[]), \
+                    patch.object(issue_claiming, "get_issue_assignees", side_effect=[[], ["automation-user"]]), \
                     patch.object(
-                        forge_metadata,
+                        issue_claiming,
                         "get_project_item_state",
                         return_value=("project-item", forge_metadata.STATUS_TODO),
                     ) as get_project_item_state, \
-                    patch.object(forge_metadata, "get_item_status") as get_item_status, \
-                    patch.object(forge_metadata, "set_issue_assignee") as set_issue_assignee, \
-                    patch.object(forge_metadata, "set_item_status") as set_item_status, \
+                    patch.object(issue_claiming, "get_item_status") as get_item_status, \
+                    patch.object(issue_claiming, "set_issue_assignee") as set_issue_assignee, \
+                    patch.object(issue_claiming, "set_item_status") as set_item_status, \
                     patch.object(forge_metadata.random, "uniform", return_value=0), \
                     patch.object(forge_metadata.time, "sleep"):
                 self.assertEqual(
@@ -4136,10 +4144,10 @@ class IssueClaimLockTests(unittest.TestCase):
                     ],
                 )
 
-                with patch.object(forge_metadata, "set_item_status") as set_item_status, \
-                        patch.object(forge_metadata, "clear_issue_assignees") as clear_issue_assignees, \
-                        patch.object(forge_metadata, "get_item_status", return_value=forge_metadata.STATUS_TODO), \
-                        patch.object(forge_metadata, "get_issue_assignees", return_value=[]):
+                with patch.object(issue_claiming, "set_item_status") as set_item_status, \
+                        patch.object(issue_claiming, "clear_issue_assignees") as clear_issue_assignees, \
+                        patch.object(issue_claiming, "get_item_status", return_value=forge_metadata.STATUS_TODO), \
+                        patch.object(issue_claiming, "get_issue_assignees", return_value=[]):
                     forge_metadata.revert_issue_claim("item-1", 1412, "test")
 
                 self.assertEqual(forge_metadata.read_issue_claim_cache(), {})
@@ -4155,10 +4163,10 @@ class IssueClaimLockTests(unittest.TestCase):
             stderr="non-200 OK status code: 502 Bad Gateway",
         )
 
-        with patch.object(forge_metadata, "set_item_status", side_effect=status_error), \
-                patch.object(forge_metadata, "clear_issue_assignees") as clear_issue_assignees, \
-                patch.object(forge_metadata, "get_item_status", return_value=forge_metadata.STATUS_TODO), \
-                patch.object(forge_metadata, "get_issue_assignees", return_value=[]), \
+        with patch.object(issue_claiming, "set_item_status", side_effect=status_error), \
+                patch.object(issue_claiming, "clear_issue_assignees") as clear_issue_assignees, \
+                patch.object(issue_claiming, "get_item_status", return_value=forge_metadata.STATUS_TODO), \
+                patch.object(issue_claiming, "get_issue_assignees", return_value=[]), \
                 patch("sys.stderr", new_callable=io.StringIO) as stderr:
             forge_metadata.revert_issue_claim("item-1", 1412, "test")
 
@@ -4179,7 +4187,7 @@ class IssueSearchCacheTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as lock_root:
             with patch.object(issue_cache, "get_issue_claim_locks_root", return_value=lock_root), \
                     patch.object(forge_metadata.time, "time", return_value=100.0), \
-                    patch.object(forge_metadata, "fetch_issue_search_page", return_value=[issue]) as fetch_page:
+                    patch.object(issue_queue, "fetch_issue_search_page", return_value=[issue]) as fetch_page:
                 self.assertEqual(
                     forge_metadata.get_issues_with_label(forge_metadata.LABEL_LIBRARY_NEW, 1),
                     [issue],
@@ -4195,7 +4203,7 @@ class IssueSearchCacheTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as lock_root:
             with patch.object(issue_cache, "get_issue_claim_locks_root", return_value=lock_root), \
                     patch.object(forge_metadata.time, "time", return_value=100.0), \
-                    patch.object(forge_metadata, "fetch_issue_search_count", return_value=42) as fetch_count:
+                    patch.object(issue_queue, "fetch_issue_search_count", return_value=42) as fetch_count:
                 self.assertEqual(forge_metadata.count_issues_with_label(forge_metadata.LABEL_LIBRARY_NEW), 42)
                 self.assertEqual(forge_metadata.count_issues_with_label(forge_metadata.LABEL_LIBRARY_NEW), 42)
 

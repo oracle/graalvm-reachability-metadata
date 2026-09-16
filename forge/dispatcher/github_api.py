@@ -14,6 +14,11 @@ import subprocess
 import sys
 import time
 
+from utility_scripts.stage_logger import log_debug
+
+from dispatcher.config import FIXTURE_AUTHENTICATED_USER
+from dispatcher.fixture_support import is_fixture_testing_enabled
+
 from git_scripts.github_cli import (
     GITHUB_TRANSIENT_RETRY_ATTEMPTS,
     GitHubError,
@@ -21,10 +26,12 @@ from git_scripts.github_cli import (
     _format_github_retry_reason,
     _github_retry_delay_seconds,
     _log_github_transient_retry,
+    ensure_gh_authenticated,
     is_github_rate_limit_text,
     is_github_transient_failure_text,
     log_github_query,
     run_github_json_with_retries,
+    run_github_with_retries,
 )
 
 
@@ -97,3 +104,32 @@ def format_github_exception_details(exc: Exception) -> str:
             return output
         return f"gh command exited with code {exc.returncode}"
     return repr(exc)
+
+
+def get_authenticated_user() -> str:
+    """Return the GitHub username of the currently authenticated gh user."""
+    if is_fixture_testing_enabled():
+        return FIXTURE_AUTHENTICATED_USER
+    result = run_github_with_retries(gh, ("api", "user", "--jq", ".login"))
+    return result.stdout.strip()
+
+
+def resolve_authenticated_user(authenticated_user: str | None = None) -> str:
+    """Resolve and log the authenticated GitHub username when remote work needs it."""
+    if authenticated_user is not None:
+        return authenticated_user
+    if is_fixture_testing_enabled():
+        log_debug("github-auth", f"Fixture authenticated as: {FIXTURE_AUTHENTICATED_USER}")
+        return FIXTURE_AUTHENTICATED_USER
+    ensure_gh_authenticated()
+    resolved_user = get_authenticated_user()
+    log_debug("github-auth", f"Authenticated as: {resolved_user}")
+    return resolved_user
+
+
+def is_authored_by_user(pr: dict, username: str) -> bool:
+    """Return True when the GitHub pull request author matches the authenticated user."""
+    author = pr.get("author")
+    if not isinstance(author, dict):
+        return False
+    return author.get("login") == username
