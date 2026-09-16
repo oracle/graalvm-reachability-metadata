@@ -53,9 +53,9 @@ from utility_scripts.native_test_verification import (
     DEFAULT_MAX_ITERATIONS,
     NativeTestVerificationResult,
     STATUS_FAILED as NATIVE_TEST_GATE_FAILED,
-    global_output_dir,
     verify_native_test_passes,
 )
+from utility_scripts.native_trace_metadata import global_output_dir
 from utility_scripts.issue_requested_metadata import (
     NO_REPORTER_METADATA_CONTEXT,
     has_issue_requested_metadata_context as has_reporter_metadata_context,

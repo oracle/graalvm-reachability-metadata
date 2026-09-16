@@ -16,7 +16,7 @@ from utility_scripts.run_location import (
     record_step_failure,
     run_step,
 )
-from utility_scripts.native_test_verification import global_output_dir
+from utility_scripts.native_trace_metadata import global_output_dir
 from utility_scripts.stage_logger import log_detail
 
 

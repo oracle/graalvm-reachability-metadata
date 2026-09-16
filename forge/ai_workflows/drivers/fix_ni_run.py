@@ -47,7 +47,7 @@ from utility_scripts.skip_record import apply_preflight_skip_record
 from utility_scripts.logged_command import LoggedCommandResult, run_logged_command
 from utility_scripts.metadata_index import resolve_metadata_version, resolve_test_version
 from utility_scripts.run_metrics_payloads import create_failure_run_metrics_output
-from utility_scripts.native_test_verification import global_output_dir
+from utility_scripts.native_trace_metadata import global_output_dir
 from utility_scripts.repo_path_resolver import require_complete_reachability_repo
 from utility_scripts.run_location import (
     STEP_NORMAL_SETUP,

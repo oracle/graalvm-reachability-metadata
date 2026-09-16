@@ -22,7 +22,7 @@ from utility_scripts.dynamic_access_report import (
 )
 from utility_scripts.dynamic_access_exhaust_report import DynamicAccessExhaustReport
 from utility_scripts.metadata_index import resolve_metadata_version, resolve_test_version
-from utility_scripts.native_test_verification import per_class_output_dir
+from utility_scripts.native_trace_metadata import per_class_output_dir
 from utility_scripts.run_location import (
     PHASE_EXPLORE as RUN_PHASE_EXPLORE,
     STEP_GENERATE_TESTS,

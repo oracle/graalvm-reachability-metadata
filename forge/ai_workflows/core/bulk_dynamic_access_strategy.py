@@ -33,7 +33,7 @@ from utility_scripts.dynamic_access_report import (
 )
 from utility_scripts.dynamic_access_exhaust_report import DynamicAccessExhaustReport
 from utility_scripts.metadata_index import resolve_test_version
-from utility_scripts.native_test_verification import global_output_dir
+from utility_scripts.native_trace_metadata import global_output_dir
 from utility_scripts.stage_logger import log_detail
 from utility_scripts.strategy_loader import load_strategy_by_name
 
