@@ -7,8 +7,7 @@
 
 Applies typed deterministic setup entries as idempotent source edits and
 renders the advisory-only prompt context (§AR-forge-orchestration.1.1). The
-preflight run and its record shapes live in `library_preparation_preflight.py`
-and `library_preflight_record.py`.
+preflight run and its record shapes live in `library_preparation_preflight.py`.
 """
 
 import os

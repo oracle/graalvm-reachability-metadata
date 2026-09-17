@@ -10,16 +10,6 @@ reason = """
 User-approved: behavior and architecture share one document until the promised FS split lands; docs/README.md records the same debt.
 """
 [[exceptions]]
-path = ".github/scripts/forge_pr_publisher/publisher.py"
-match = "exact"
-rules = ["source"]
-kind = "deferred"
-max_accepted = { value = 1700, unit = "lines" }
-until = "the file is split when next substantively edited"
-reason = """
-User-approved: pre-existing size debt surfaced by fissile adoption; this branch touches the file minimally.
-"""
-[[exceptions]]
 path = "tests/tck-build-logic/src/main/groovy/org.graalvm.internal.tck.gradle"
 match = "exact"
 rules = ["source"]
@@ -78,4 +68,54 @@ until = "the review-side declarations move to a sibling file in the functional-s
 reason = """
 User-approved: 65 lines over budget; the review trio (local-branch-review, automated-pr-review,
 human-intervention-policy) moves out whenever the file is next substantively edited.
+"""
+[[exceptions]]
+path = "forge/ai_workflows/core/dynamic_access_iterative_strategy.py"
+match = "exact"
+rules = ["source"]
+kind = "structural"
+max_accepted = { value = 1300, unit = "lines" }
+until = "indefinite"
+reason = """
+User-approved: one iterative strategy class whose phases share run state through self; the previous split into mixin bases sharing self was reverted in review as a boundary that existed only on disk. No seam short of redesigning the class.
+"""
+[[exceptions]]
+path = "forge/ai_workflows/core/workflow_strategy.py"
+match = "exact"
+rules = ["source"]
+kind = "structural"
+max_accepted = { value = 1100, unit = "lines" }
+until = "indefinite"
+reason = """
+User-approved: the workflow strategy base class with its issue-requested-metadata and finalization phases; all phases read and write the same self state, so the reverted mixin split moved lines, not responsibility.
+"""
+[[exceptions]]
+path = "forge/utility_scripts/fixture_github.py"
+match = "exact"
+rules = ["source"]
+kind = "structural"
+max_accepted = { value = 800, unit = "lines" }
+until = "indefinite"
+reason = """
+User-approved: fixture state and its file discovery/parsing form one closed format; the reverted loader split re-imported 16 names back into this module.
+"""
+[[exceptions]]
+path = "forge/utility_scripts/code_coverage_finalize.py"
+match = "exact"
+rules = ["source"]
+kind = "structural"
+max_accepted = { value = 800, unit = "lines" }
+until = "indefinite"
+reason = """
+User-approved: final-evidence assembly and target-outcome classification are one flow over the same report data; the reverted split re-imported 8 names back wholesale.
+"""
+[[exceptions]]
+path = "forge/git_scripts/local_branch_review.py"
+match = "exact"
+rules = ["source"]
+kind = "structural"
+max_accepted = { value = 800, unit = "lines" }
+until = "indefinite"
+reason = """
+User-approved: the reviewer session mechanics are inseparable from the review flow that drives them; the reverted split re-imported 11 names back wholesale.
 """

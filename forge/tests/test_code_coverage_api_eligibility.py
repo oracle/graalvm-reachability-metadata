@@ -11,7 +11,7 @@ import unittest
 
 from code_coverage_rank_test_utils import EXTRACTOR, _graph, _jacoco, _java_tool, _typed_graph
 from utility_scripts import code_coverage_api_rank as rank_module
-from utility_scripts.code_coverage_api_eligibility import eligible_targets, load_type_model
+from utility_scripts.code_coverage_api_rank import eligible_targets, load_type_model
 
 
 # Eligibility fixture. `Factory` is the only entry point with a public

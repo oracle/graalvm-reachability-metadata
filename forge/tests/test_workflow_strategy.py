@@ -224,7 +224,7 @@ class WorkflowStrategyTests(unittest.TestCase):
                 "_commit_library_iteration",
                 return_value=True,
         ), patch(
-                "ai_workflows.core.workflow_finalization.run_library_finalization",
+                "ai_workflows.core.workflow_strategy.run_library_finalization",
                 return_value=True,
         ), patch(
                 "ai_workflows.core.workflow_strategy.subprocess.check_output",
@@ -348,7 +348,7 @@ class WorkflowStrategyTests(unittest.TestCase):
                     ),
                 ), \
                 patch.object(strategy, "_commit_library_iteration", return_value=True), \
-                patch("ai_workflows.core.workflow_finalization.run_library_finalization",
+                patch("ai_workflows.core.workflow_strategy.run_library_finalization",
                       side_effect=fake_finalization), \
                 patch(
                     "ai_workflows.core.workflow_strategy.subprocess.check_output",
@@ -394,7 +394,7 @@ class WorkflowStrategyTests(unittest.TestCase):
 
         with patch.object(strategy, "verify_native_test_gate", return_value=False), \
                 patch.object(strategy, "_run_test_with_retry") as run_test, \
-                patch("ai_workflows.core.workflow_finalization.run_library_finalization") as finalize, \
+                patch("ai_workflows.core.workflow_strategy.run_library_finalization") as finalize, \
                 patch.object(strategy, "_commit_library_iteration") as commit:
             status, checkpoint = strategy._finalize_successful_iteration()
 

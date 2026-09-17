@@ -114,7 +114,7 @@ class PostGenerationFixTests(unittest.TestCase):
 
     def test_workflow_base_class_passes_parameters_this_function_accepts(self) -> None:
         """The caller drifted from this signature once; keep them bound."""
-        source = (_FORGE_ROOT / "ai_workflows" / "core" / "workflow_finalization.py").read_text()
+        source = (_FORGE_ROOT / "ai_workflows" / "core" / "workflow_strategy.py").read_text()
         calls = [
             node
             for node in ast.walk(ast.parse(source))

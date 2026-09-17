@@ -8,7 +8,7 @@ import tempfile
 import unittest
 from unittest.mock import patch
 
-from ai_workflows.drivers import add_new_library_setup, add_new_library_support, fix_ni_run_setup, java_fail_workspace
+from ai_workflows.drivers import add_new_library_setup, add_new_library_support, fix_ni_run, java_fail_workflow
 from utility_scripts.logged_command import LoggedCommandResult, run_logged_command
 from utility_scripts.continuation_marker import PHASE_SETUP
 from utility_scripts.run_location import enter_phase, reset_run_location
@@ -182,39 +182,39 @@ class LoggedCommandTests(unittest.TestCase):
         self.assertEqual(new_library_command.call_args.kwargs["subject"], "g:a:1.0")
 
         with patch.object(
-                fix_ni_run_setup,
+                fix_ni_run,
                 "require_complete_reachability_repo",
         ), patch.object(
-                fix_ni_run_setup,
+                fix_ni_run,
                 "gradle_command_environment",
                 return_value={},
         ), patch.object(
-                fix_ni_run_setup,
+                fix_ni_run,
                 "run_logged_command",
                 return_value=successful_result,
         ) as native_fix_command:
-            fix_ni_run_setup.run_fix_test_native_image_run("/repo", "g:a:1.0", "2.0")
+            fix_ni_run.run_fix_test_native_image_run("/repo", "g:a:1.0", "2.0")
 
         self.assertEqual(native_fix_command.call_args.kwargs["task_type"], "native-image-run-fix")
         self.assertEqual(native_fix_command.call_args.kwargs["subject"], "g:a:2.0")
 
         with patch.object(
-                java_fail_workspace,
+                java_fail_workflow,
                 "require_complete_reachability_repo",
         ), patch.object(
-                java_fail_workspace,
+                java_fail_workflow,
                 "gradle_command_environment",
                 return_value={},
         ), patch.object(
-                java_fail_workspace,
+                java_fail_workflow,
                 "run_logged_command",
                 return_value=successful_result,
         ) as java_fail_command, patch.object(
-                java_fail_workspace.os,
+                java_fail_workflow.os,
                 "getcwd",
                 return_value="/repo",
         ):
-            java_fail_workspace.run_gradle_task("addLibraryMetadataIndexJson", "g:a:2.0")
+            java_fail_workflow.run_gradle_task("addLibraryMetadataIndexJson", "g:a:2.0")
 
         self.assertEqual(java_fail_command.call_args.kwargs["task_type"], "java-fail-setup")
         self.assertEqual(java_fail_command.call_args.kwargs["subject"], "g:a:2.0")

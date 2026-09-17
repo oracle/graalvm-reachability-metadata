@@ -7,7 +7,7 @@ import unittest
 from unittest.mock import patch
 
 from ai_workflows.core.dynamic_access_iterative_strategy import DynamicAccessIterativeStrategy
-from ai_workflows.core.issue_requested_metadata_phase import (
+from ai_workflows.core.workflow_strategy import (
     ISSUE_REQUESTED_METADATA_FILL_PROMPT_KEY,
     ISSUE_REQUESTED_METADATA_PROMPT_KEY,
     ISSUE_REQUESTED_METADATA_TEST_ITERATIONS,
@@ -99,7 +99,7 @@ class IssueRequestedMetadataPhaseTests(unittest.TestCase):
             prompts.append(context)
             return AgentRunResult(0, "/tmp/log", False)
 
-        with patch("ai_workflows.core.issue_requested_metadata_phase.analysis_agent_run", side_effect=fake_run), \
+        with patch("ai_workflows.core.workflow_strategy.analysis_agent_run", side_effect=fake_run), \
                 patch.object(strategy, "_render_issue_requested_metadata_prompt", side_effect=lambda key, **_: key), \
                 patch("ai_workflows.core.workflow_strategy.subprocess.check_output", return_value="checkpoint\n"), \
                 patch("ai_workflows.core.workflow_strategy.subprocess.run"):
@@ -149,7 +149,7 @@ class IssueRequestedMetadataPhaseTests(unittest.TestCase):
         strategy = _RecordingStrategy([], issue_requested_metadata_context=self.REPORTER_CONTEXT)
 
         with patch(
-                "ai_workflows.core.issue_requested_metadata_phase.analysis_agent_run",
+                "ai_workflows.core.workflow_strategy.analysis_agent_run",
                 return_value=AgentRunResult(1, "/tmp/log", False, failure_message="boom"),
         ), patch.object(strategy, "_render_issue_requested_metadata_prompt", side_effect=lambda key, **_: key), \
                 patch("ai_workflows.core.workflow_strategy.subprocess.check_output", return_value="checkpoint\n"), \

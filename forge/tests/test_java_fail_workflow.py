@@ -11,7 +11,7 @@ import unittest
 from unittest.mock import patch
 
 from ai_workflows.drivers.java_fail_workflow import JAVAC_CONFIG, JAVA_RUN_CONFIG
-from ai_workflows.drivers.java_fail_workspace import (
+from ai_workflows.drivers.java_fail_workflow import (
     copy_and_prepare_project_dir,
     create_project_prep_checkpoint,
     reset_failed_java_fix_worktree,
@@ -38,7 +38,7 @@ class JavaFailWorkflowProjectPrepTests(unittest.TestCase):
             previous_cwd = os.getcwd()
             try:
                 os.chdir(temp_dir)
-                with patch("ai_workflows.drivers.java_fail_workspace.run_gradle_task") as run_gradle_task:
+                with patch("ai_workflows.drivers.java_fail_workflow.run_gradle_task") as run_gradle_task:
                     update_metadata_index_json(JAVAC_CONFIG, "org.example", "demo", "1.0.0")
             finally:
                 os.chdir(previous_cwd)
@@ -66,7 +66,7 @@ class JavaFailWorkflowProjectPrepTests(unittest.TestCase):
             previous_cwd = os.getcwd()
             try:
                 os.chdir(temp_dir)
-                with patch("ai_workflows.drivers.java_fail_workspace.run_gradle_task") as run_gradle_task:
+                with patch("ai_workflows.drivers.java_fail_workflow.run_gradle_task") as run_gradle_task:
                     update_metadata_index_json(JAVAC_CONFIG, "org.example", "demo", "3.0.0")
             finally:
                 os.chdir(previous_cwd)
@@ -94,7 +94,7 @@ class JavaFailWorkflowProjectPrepTests(unittest.TestCase):
             previous_cwd = os.getcwd()
             try:
                 os.chdir(temp_dir)
-                with patch("ai_workflows.drivers.java_fail_workspace.run_gradle_task") as run_gradle_task:
+                with patch("ai_workflows.drivers.java_fail_workflow.run_gradle_task") as run_gradle_task:
                     update_metadata_index_json(JAVAC_CONFIG, "org.example", "demo", "3.0.0-M5-javax")
             finally:
                 os.chdir(previous_cwd)
@@ -122,7 +122,7 @@ class JavaFailWorkflowProjectPrepTests(unittest.TestCase):
             previous_cwd = os.getcwd()
             try:
                 os.chdir(temp_dir)
-                with patch("ai_workflows.drivers.java_fail_workspace.run_gradle_task") as run_gradle_task:
+                with patch("ai_workflows.drivers.java_fail_workflow.run_gradle_task") as run_gradle_task:
                     update_metadata_index_json(JAVAC_CONFIG, "org.example", "demo", "1.0-alpha-8")
             finally:
                 os.chdir(previous_cwd)
@@ -150,7 +150,7 @@ class JavaFailWorkflowProjectPrepTests(unittest.TestCase):
             previous_cwd = os.getcwd()
             try:
                 os.chdir(temp_dir)
-                with patch("ai_workflows.drivers.java_fail_workspace.run_gradle_task") as run_gradle_task:
+                with patch("ai_workflows.drivers.java_fail_workflow.run_gradle_task") as run_gradle_task:
                     update_metadata_index_json(JAVAC_CONFIG, "org.example", "demo", "1.2.4")
             finally:
                 os.chdir(previous_cwd)
@@ -178,7 +178,7 @@ class JavaFailWorkflowProjectPrepTests(unittest.TestCase):
             previous_cwd = os.getcwd()
             try:
                 os.chdir(temp_dir)
-                with patch("ai_workflows.drivers.java_fail_workspace.run_gradle_task") as run_gradle_task:
+                with patch("ai_workflows.drivers.java_fail_workflow.run_gradle_task") as run_gradle_task:
                     update_metadata_index_json(JAVAC_CONFIG, "org.example", "demo", "1.5.0")
             finally:
                 os.chdir(previous_cwd)
@@ -206,7 +206,7 @@ class JavaFailWorkflowProjectPrepTests(unittest.TestCase):
             previous_cwd = os.getcwd()
             try:
                 os.chdir(temp_dir)
-                with patch("ai_workflows.drivers.java_fail_workspace.run_gradle_task") as run_gradle_task:
+                with patch("ai_workflows.drivers.java_fail_workflow.run_gradle_task") as run_gradle_task:
                     update_metadata_index_json(
                         JAVAC_CONFIG,
                         "org.example",
@@ -239,7 +239,7 @@ class JavaFailWorkflowProjectPrepTests(unittest.TestCase):
             previous_cwd = os.getcwd()
             try:
                 os.chdir(temp_dir)
-                with patch("ai_workflows.drivers.java_fail_workspace.run_gradle_task") as run_gradle_task:
+                with patch("ai_workflows.drivers.java_fail_workflow.run_gradle_task") as run_gradle_task:
                     update_metadata_index_json(JAVA_RUN_CONFIG, "org.example", "demo", "1.5.0")
             finally:
                 os.chdir(previous_cwd)
@@ -267,7 +267,7 @@ class JavaFailWorkflowProjectPrepTests(unittest.TestCase):
             previous_cwd = os.getcwd()
             try:
                 os.chdir(temp_dir)
-                with patch("ai_workflows.drivers.java_fail_workspace.run_gradle_task") as run_gradle_task:
+                with patch("ai_workflows.drivers.java_fail_workflow.run_gradle_task") as run_gradle_task:
                     update_metadata_index_json(JAVA_RUN_CONFIG, "org.example", "demo", "2.0.0")
             finally:
                 os.chdir(previous_cwd)
@@ -295,7 +295,7 @@ class JavaFailWorkflowProjectPrepTests(unittest.TestCase):
             previous_cwd = os.getcwd()
             try:
                 os.chdir(temp_dir)
-                with patch("ai_workflows.drivers.java_fail_workspace.shutil.copytree") as copytree:
+                with patch("ai_workflows.drivers.java_fail_workflow.shutil.copytree") as copytree:
                     copy_and_prepare_project_dir("org.example", "demo", "1.0.0", "1.0.0")
             finally:
                 os.chdir(previous_cwd)
@@ -305,11 +305,11 @@ class JavaFailWorkflowProjectPrepTests(unittest.TestCase):
                 self.assertEqual(file.read(), "version=1.0.0\n")
 
     def test_create_project_prep_checkpoint_allows_no_staged_changes(self) -> None:
-        with patch("ai_workflows.drivers.java_fail_workspace.build_ai_branch_name", return_value="ai/test-branch"), \
-                patch("ai_workflows.drivers.java_fail_workspace.delete_remote_branch_if_exists") as delete_remote, \
-                patch("ai_workflows.drivers.java_fail_workspace.subprocess.run") as run, \
+        with patch("ai_workflows.drivers.java_fail_workflow.build_ai_branch_name", return_value="ai/test-branch"), \
+                patch("ai_workflows.drivers.java_fail_workflow.delete_remote_branch_if_exists") as delete_remote, \
+                patch("ai_workflows.drivers.java_fail_workflow.subprocess.run") as run, \
                 patch(
-                    "ai_workflows.drivers.java_fail_workspace.subprocess.check_output",
+                    "ai_workflows.drivers.java_fail_workflow.subprocess.check_output",
                     return_value="abc123\n",
                 ) as check_output:
             run.side_effect = [
@@ -327,12 +327,12 @@ class JavaFailWorkflowProjectPrepTests(unittest.TestCase):
         check_output.assert_called_once_with(["git", "rev-parse", "HEAD"], text=True)
 
     def test_failed_workflow_reset_preserves_last_passing_candidate(self) -> None:
-        with patch("ai_workflows.drivers.java_fail_workspace.subprocess.run") as run, \
+        with patch("ai_workflows.drivers.java_fail_workflow.subprocess.run") as run, \
                 patch(
-                    "ai_workflows.drivers.java_fail_workspace.subprocess.check_output",
+                    "ai_workflows.drivers.java_fail_workflow.subprocess.check_output",
                     return_value="candidate\n",
                 ) as check_output, \
-                patch("ai_workflows.drivers.java_fail_workspace.shutil.rmtree") as rmtree:
+                patch("ai_workflows.drivers.java_fail_workflow.shutil.rmtree") as rmtree:
             ending_commit = reset_failed_java_fix_worktree(
                 reachability_repo_path="/repo",
                 commit_checkpoint="prep",
@@ -349,12 +349,12 @@ class JavaFailWorkflowProjectPrepTests(unittest.TestCase):
         rmtree.assert_not_called()
 
     def test_failed_workflow_reset_cleans_scaffold_when_no_candidate_passed(self) -> None:
-        with patch("ai_workflows.drivers.java_fail_workspace.subprocess.run") as run, \
+        with patch("ai_workflows.drivers.java_fail_workflow.subprocess.run") as run, \
                 patch(
-                    "ai_workflows.drivers.java_fail_workspace.subprocess.check_output",
+                    "ai_workflows.drivers.java_fail_workflow.subprocess.check_output",
                     return_value="prep\n",
                 ), \
-                patch("ai_workflows.drivers.java_fail_workspace.shutil.rmtree") as rmtree:
+                patch("ai_workflows.drivers.java_fail_workflow.shutil.rmtree") as rmtree:
             ending_commit = reset_failed_java_fix_worktree(
                 reachability_repo_path="/repo",
                 commit_checkpoint="prep",
