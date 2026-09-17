@@ -14,9 +14,11 @@ import com.nimbusds.jwt.JWT;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
 import io.micronaut.context.ApplicationContext;
+import io.micronaut.security.authentication.Authentication;
 import io.micronaut.security.token.jwt.encryption.secret.SecretEncryption;
 import io.micronaut.security.token.jwt.encryption.secret.SecretEncryptionConfiguration;
 import io.micronaut.security.token.jwt.generator.JwtTokenGenerator;
+import io.micronaut.security.token.jwt.generator.SignedRefreshTokenGenerator;
 import io.micronaut.security.token.jwt.signature.ec.ECSignatureGenerator;
 import io.micronaut.security.token.jwt.signature.ec.ECSignatureGeneratorConfiguration;
 import io.micronaut.security.token.jwt.signature.rsa.RSASignatureGenerator;
@@ -66,6 +68,23 @@ public class Micronaut_security_jwtTest {
             String wrongIssuerToken = generator.generateToken(validClaims("alice", "https://other.example"))
                     .orElseThrow();
             assertThat(validator.validate(wrongIssuerToken, null)).isEmpty();
+        }
+    }
+
+    @Test
+    void generatesAndValidatesSignedRefreshToken() {
+        Map<String, Object> configuration = Map.of(
+                "micronaut.security.token.jwt.generator.refresh-token.secret", SIGNING_SECRET);
+
+        try (ApplicationContext context = ApplicationContext.run(configuration)) {
+            SignedRefreshTokenGenerator generator = context.getBean(SignedRefreshTokenGenerator.class);
+            Authentication authentication = Authentication.build("refresh-user", Map.of("tenant", "reports"));
+            String refreshKey = generator.createKey(authentication);
+            String token = generator.generate(authentication, refreshKey).orElseThrow();
+
+            assertThat(refreshKey).isNotBlank();
+            assertThat(generator.validate(token)).contains(refreshKey);
+            assertThat(generator.validate(tamperSignature(token))).isEmpty();
         }
     }
 
