@@ -10,7 +10,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Hashtable;
+import java.util.Properties;
 import javax.net.SocketFactory;
 import oracle.security.pki.OracleWallet;
 import oracle.security.pki.ldap.LdapSSLSocketFactory;
@@ -22,7 +22,7 @@ public class LdapSSLSocketFactoryTest {
 
     @Test
     void createsDefaultSslSocketFactoryThroughConfiguredJcaFactories() {
-        SocketFactory socketFactory = new LdapSSLSocketFactory(new Hashtable<>());
+        SocketFactory socketFactory = new LdapSSLSocketFactory();
 
         assertThat(socketFactory).isInstanceOf(LdapSSLSocketFactory.class);
     }
@@ -35,7 +35,7 @@ public class LdapSSLSocketFactoryTest {
         Path walletFile = directory.resolve("ldap-wallet.p12");
         Files.write(walletFile, wallet.getWalletArrayB(false));
 
-        Hashtable<String, String> configuration = new Hashtable<>();
+        Properties configuration = new Properties();
         configuration.put(LdapSSLSocketFactory.WALLET_LOCATION, walletFile.toString());
         configuration.put(LdapSSLSocketFactory.WALLET_PASSWORD, password);
         SocketFactory socketFactory = new LdapSSLSocketFactory(configuration);
