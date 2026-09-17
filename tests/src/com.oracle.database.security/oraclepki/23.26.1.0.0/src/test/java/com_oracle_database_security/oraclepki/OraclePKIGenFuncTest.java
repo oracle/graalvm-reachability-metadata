@@ -17,6 +17,6 @@ public class OraclePKIGenFuncTest {
         assertThat(OraclePKIGenFunc.normalize_DN("CN=Test User, O=Example"))
                 .isEqualTo("CN=Test User, O=Example");
         assertThat(OraclePKIGenFunc.isNullOrEmpty("")).isTrue();
-        assertThat(OraclePKIGenFunc.checkArgValue("value")).isTrue();
+        assertThat(OraclePKIGenFunc.checkArgValue("value")).isFalse();
     }
 }

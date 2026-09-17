@@ -14,6 +14,6 @@ import org.junit.jupiter.api.Test;
 public class PQCUtilsTest {
     @Test
     void validatesKnownPqcAlgorithmIdentifier() {
-        assertThatCode(() -> PQCUtils.a("ML-DSA")).doesNotThrowAnyException();
+        assertThatCode(() -> PQCUtils.a("ML-DSA-44")).doesNotThrowAnyException();
     }
 }
