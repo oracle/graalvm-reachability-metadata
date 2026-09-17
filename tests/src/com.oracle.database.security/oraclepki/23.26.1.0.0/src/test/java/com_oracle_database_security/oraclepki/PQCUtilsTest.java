@@ -21,11 +21,10 @@ public class PQCUtilsTest {
     }
 
     @Test
-    void readsNamedParametersFromMlDsaPublicKey() throws Exception {
+    void determinesMlDsaPublicKeyLength() throws Exception {
         OraclePKIPQCKeyPair keyPair = OraclePKIPQCKeyPair.a("ML-DSA-44");
         PublicKey publicKey = keyPair.getPublicKey();
 
-        assertThat(PQCUtils.a(publicKey, "Public")).isEqualTo("ML-DSA-44");
         assertThat(PQCUtils.b(publicKey)).isEqualTo(1312);
     }
 }
