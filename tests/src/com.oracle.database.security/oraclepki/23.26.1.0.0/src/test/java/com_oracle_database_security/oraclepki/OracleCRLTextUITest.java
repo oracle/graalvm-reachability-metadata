@@ -6,11 +6,14 @@
  */
 package com_oracle_database_security.oraclepki;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
+import oracle.security.pki.textui.OracleCRLTextUI;
 import org.junit.jupiter.api.Test;
 
-class OraclepkiTest {
+public class OracleCRLTextUITest {
     @Test
-    void test() throws Exception {
-        System.out.println("This is just a placeholder, implement your test");
+    void reportsUsageForHelpCommand() {
+        assertThat(OracleCRLTextUI.command(new String[] {"help"})).isEqualTo(-1);
     }
 }
