@@ -7,28 +7,25 @@
 package com_oracle_database_security.oraclepki;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatCode;
 
+import java.security.KeyPairGenerator;
 import java.security.PublicKey;
 import java.security.spec.NamedParameterSpec;
-import oracle.security.pki.internal.pqc.util.OraclePKIPQCKeyPair;
-import oracle.security.pki.internal.pqc.util.PQCUtils;
+import oracle.security.pki.internal.pqc.keys.OraclePKIMLDSAPublicKey;
+import oracle.security.pki.util.CryptoUtils;
 import org.junit.jupiter.api.Test;
 
 public class PQCUtilsTest {
     @Test
-    void validatesKnownPqcAlgorithmIdentifier() {
-        assertThatCode(() -> PQCUtils.a("ML-DSA-44")).doesNotThrowAnyException();
-    }
+    void determinesMlDsaPublicKeyLengthThroughCryptoApi() throws Exception {
+        KeyPairGenerator generator = KeyPairGenerator.getInstance("ML-DSA");
+        generator.initialize(NamedParameterSpec.ML_DSA_44);
+        PublicKey generatedKey = generator.generateKeyPair().getPublic();
+        PublicKey namedKey =
+                new NamedParameterPublicKey(generatedKey, NamedParameterSpec.ML_DSA_44);
+        PublicKey oracleKey = new OraclePKIMLDSAPublicKey(namedKey);
 
-    @Test
-    void readsNamedParametersFromProviderIndependentPqcKey() throws Exception {
-        OraclePKIPQCKeyPair keyPair = OraclePKIPQCKeyPair.a("ML-DSA-44");
-        PublicKey publicKey =
-                new NamedParameterPublicKey(keyPair.getPublicKey(), NamedParameterSpec.ML_DSA_44);
-
-        assertThat(PQCUtils.a(publicKey, "Public")).isEqualTo("ML-DSA-44");
-        assertThat(PQCUtils.b(publicKey)).isEqualTo(1312);
+        assertThat(CryptoUtils.getPublicKeyBitLength(oracleKey)).isEqualTo(1312);
     }
 
     public static final class NamedParameterPublicKey implements PublicKey {
