@@ -40,6 +40,8 @@ from utility_scripts.native_trace_execution import (
     _summarize_gradle_failure_reason,
 )
 from utility_scripts.native_trace_metadata import (
+    global_output_dir,
+    per_class_output_dir,
     _existing_metadata_dirs,
     _finalize_staged_metadata,
     _merge_into_output,

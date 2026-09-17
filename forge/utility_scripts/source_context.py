@@ -27,6 +27,9 @@ from typing import Any
 from utility_scripts.metadata_index import find_index_entry_for_version, is_not_for_native_image_entry
 from utility_scripts.stage_logger import log_detail
 from utility_scripts.task_logs import display_log_path
+from utility_scripts.source_context_discovery import (  # noqa: F401 - re-exported for existing callers
+    populate_artifact_urls,
+)
 
 SOURCE_CONTEXT_FIELD_BY_TYPE = {
     "main": "source-code-url",

@@ -15,6 +15,11 @@ import sys
 import tempfile
 
 from utility_scripts.metadata_index import resolve_metadata_version
+from utility_scripts.run_metrics_payloads import (  # noqa: F401 - re-exported for existing callers
+    create_failure_run_metrics_output,
+    create_java_run_fix_run_metrics_output_json,
+    create_javac_fix_run_metrics_output_json,
+)
 from utility_scripts.schema_validator import validate_run_metrics
 from git_scripts.common_git import GitTransportError, git_remote_exists, run_git_transport
 

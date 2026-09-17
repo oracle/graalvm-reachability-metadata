@@ -7,7 +7,6 @@
 
 The module models fixture-backed GitHub state without importing
 `forge_metadata.py`. §AR-forge-control-plane
-
 """
 
 from __future__ import annotations
@@ -17,10 +16,127 @@ import os
 import re
 import shutil
 import sys
+from dataclasses import dataclass
 from datetime import datetime, timezone
 from typing import Any
-from dataclasses import dataclass
 
+try:
+    import yaml
+except ImportError:  # pragma: no cover - exercised only when the dependency is missing.
+    yaml = None
+
+
+ALLOWED_ISSUE_STATES = {"OPEN", "CLOSED"}
+ALLOWED_PROJECT_STATUSES = {"Todo", "In Progress", "Done"}
+LABEL_LIBRARY_NEW = "library-new-request"
+LABEL_JAVAC_FAIL = "fails-javac-compile"
+LABEL_JAVA_RUN_FAIL = "fails-java-run"
+LABEL_NI_RUN_FAIL = "fails-native-image-run"
+
+JsonObject = dict[str, Any]
+
+
+class FixtureValidationError(ValueError):
+    """Raised when a fixture file does not match the fixture GitHub contract."""
+
+
+class FixtureIssueNotFoundError(KeyError):
+    """Raised when fixture state is asked for an unknown issue number."""
+
+
+@dataclass
+class FixtureComment:
+    author: str
+    body: str
+    created_at: str | None = None
+
+    def to_json(self) -> JsonObject:
+        payload: JsonObject = {
+            "author": self.author,
+            "body": self.body,
+        }
+        if self.created_at is not None:
+            payload["created_at"] = self.created_at
+        return payload
+
+    def to_github_payload(self) -> JsonObject:
+        payload: JsonObject = {
+            "author": {"login": self.author},
+            "body": self.body,
+        }
+        if self.created_at is not None:
+            payload["createdAt"] = self.created_at
+        return payload
+
+
+@dataclass
+class FixtureIssue:
+    number: int
+    title: str
+    author: str
+    body: str
+    state: str
+    labels: list[str]
+    assignees: list[str]
+    project_number: int
+    project_item_id: str
+    project_status: str
+    blockers: list[int]
+    comments: list[FixtureComment]
+    continuation_marker: JsonObject | None
+    worktree_files: dict[str, str]
+    fixture_path: str
+    url: str
+
+    def issue_view_payload(self, include_body: bool = False, include_state: bool = True) -> JsonObject:
+        payload: JsonObject = {
+            "number": self.number,
+            "title": self.title,
+            "author": {"login": self.author},
+            "url": self.url,
+            "labels": [{"name": label} for label in self.labels],
+            "assignees": [{"login": assignee} for assignee in self.assignees],
+        }
+        if include_state:
+            payload["state"] = self.state
+        if include_body:
+            payload["body"] = self.body
+        return payload
+
+    def issue_search_payload(self) -> JsonObject:
+        return {
+            "number": self.number,
+            "title": self.title,
+            "author": {"login": self.author},
+            "url": self.url,
+            "labels": [{"name": label} for label in self.labels],
+            "assignees": [{"login": assignee} for assignee in self.assignees],
+        }
+
+    def to_json(self) -> JsonObject:
+        payload: JsonObject = {
+            "number": self.number,
+            "title": self.title,
+            "author": self.author,
+            "body": self.body,
+            "state": self.state,
+            "url": self.url,
+            "labels": list(self.labels),
+            "assignees": list(self.assignees),
+            "project": {
+                "number": self.project_number,
+                "item_id": self.project_item_id,
+                "status": self.project_status,
+            },
+            "blockers": list(self.blockers),
+            "comments": [comment.to_json() for comment in self.comments],
+            "fixture_path": self.fixture_path,
+        }
+        if self.continuation_marker is not None:
+            payload["continuation_marker"] = dict(self.continuation_marker)
+        if self.worktree_files:
+            payload["worktree_files"] = dict(self.worktree_files)
+        return payload
 
 
 class FixtureGitHubState:
@@ -382,7 +498,14 @@ class FixtureGitHubState:
 
 def load_fixture_github_state(fixture_paths: list[str] | None = None) -> FixtureGitHubState:
     """Load all requested YAML fixtures into mutable fixture GitHub state."""
-    issues: list[FixtureIssue] = load_fixture_issues(fixture_paths)
+    if yaml is None:
+        raise RuntimeError("PyYAML is required to load GitHub issue fixtures.")
+
+    issues: list[FixtureIssue] = []
+    for fixture_path in discover_fixture_paths(fixture_paths):
+        raw_document = _load_yaml_document(fixture_path)
+        for raw_issue in _iter_raw_issues(raw_document, fixture_path):
+            issues.append(normalize_fixture_issue(raw_issue, fixture_path))
     if not issues:
         raise FixtureValidationError("No GitHub issue fixtures were loaded")
     return FixtureGitHubState(issues)
@@ -486,139 +609,6 @@ def _repo_relative_path(path: str, repo_path: str) -> str:
 
 def _log_fixture_setup(message: str) -> None:
     print(f"[fixture-setup] {message}", file=sys.stderr)
-
-
-def _issue_has_all_labels(issue: FixtureIssue, labels: list[str]) -> bool:
-    return all(label in issue.labels for label in labels)
-
-
-def _issue_has_any_label(issue: FixtureIssue, labels: list[str]) -> bool:
-    return any(label in issue.labels for label in labels)
-
-
-
-def _utc_timestamp() -> str:
-    return datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
-
-
-try:
-    import yaml
-except ImportError:  # pragma: no cover - exercised only when the dependency is missing.
-    yaml = None
-
-
-ALLOWED_ISSUE_STATES = {"OPEN", "CLOSED"}
-ALLOWED_PROJECT_STATUSES = {"Todo", "In Progress", "Done"}
-LABEL_LIBRARY_NEW = "library-new-request"
-LABEL_JAVAC_FAIL = "fails-javac-compile"
-LABEL_JAVA_RUN_FAIL = "fails-java-run"
-LABEL_NI_RUN_FAIL = "fails-native-image-run"
-
-JsonObject = dict[str, Any]
-
-
-class FixtureValidationError(ValueError):
-    """Raised when a fixture file does not match the fixture GitHub contract."""
-
-
-class FixtureIssueNotFoundError(KeyError):
-    """Raised when fixture state is asked for an unknown issue number."""
-
-
-@dataclass
-class FixtureComment:
-    author: str
-    body: str
-    created_at: str | None = None
-
-    def to_json(self) -> JsonObject:
-        payload: JsonObject = {
-            "author": self.author,
-            "body": self.body,
-        }
-        if self.created_at is not None:
-            payload["created_at"] = self.created_at
-        return payload
-
-    def to_github_payload(self) -> JsonObject:
-        payload: JsonObject = {
-            "author": {"login": self.author},
-            "body": self.body,
-        }
-        if self.created_at is not None:
-            payload["createdAt"] = self.created_at
-        return payload
-
-
-@dataclass
-class FixtureIssue:
-    number: int
-    title: str
-    author: str
-    body: str
-    state: str
-    labels: list[str]
-    assignees: list[str]
-    project_number: int
-    project_item_id: str
-    project_status: str
-    blockers: list[int]
-    comments: list[FixtureComment]
-    continuation_marker: JsonObject | None
-    worktree_files: dict[str, str]
-    fixture_path: str
-    url: str
-
-    def issue_view_payload(self, include_body: bool = False, include_state: bool = True) -> JsonObject:
-        payload: JsonObject = {
-            "number": self.number,
-            "title": self.title,
-            "author": {"login": self.author},
-            "url": self.url,
-            "labels": [{"name": label} for label in self.labels],
-            "assignees": [{"login": assignee} for assignee in self.assignees],
-        }
-        if include_state:
-            payload["state"] = self.state
-        if include_body:
-            payload["body"] = self.body
-        return payload
-
-    def issue_search_payload(self) -> JsonObject:
-        return {
-            "number": self.number,
-            "title": self.title,
-            "author": {"login": self.author},
-            "url": self.url,
-            "labels": [{"name": label} for label in self.labels],
-            "assignees": [{"login": assignee} for assignee in self.assignees],
-        }
-
-    def to_json(self) -> JsonObject:
-        payload: JsonObject = {
-            "number": self.number,
-            "title": self.title,
-            "author": self.author,
-            "body": self.body,
-            "state": self.state,
-            "url": self.url,
-            "labels": list(self.labels),
-            "assignees": list(self.assignees),
-            "project": {
-                "number": self.project_number,
-                "item_id": self.project_item_id,
-                "status": self.project_status,
-            },
-            "blockers": list(self.blockers),
-            "comments": [comment.to_json() for comment in self.comments],
-            "fixture_path": self.fixture_path,
-        }
-        if self.continuation_marker is not None:
-            payload["continuation_marker"] = dict(self.continuation_marker)
-        if self.worktree_files:
-            payload["worktree_files"] = dict(self.worktree_files)
-        return payload
-
 
 
 def default_fixture_dir() -> str:
@@ -820,6 +810,14 @@ def _normalize_worktree_file_path(path: str, context: str) -> str:
     return normalized_path
 
 
+def _issue_has_all_labels(issue: FixtureIssue, labels: list[str]) -> bool:
+    return all(label in issue.labels for label in labels)
+
+
+def _issue_has_any_label(issue: FixtureIssue, labels: list[str]) -> bool:
+    return any(label in issue.labels for label in labels)
+
+
 def _normalize_named_values(raw_values: list[Any], field_name: str, object_key: str, context: str) -> list[str]:
     names: list[str] = []
     for index, raw_value in enumerate(raw_values):
@@ -902,15 +900,5 @@ def _is_yaml_path(path: str) -> bool:
     return path.endswith((".yaml", ".yml"))
 
 
-
-def load_fixture_issues(fixture_paths: list[str] | None = None) -> list[FixtureIssue]:
-    """Load all requested YAML fixture files into validated fixture issues."""
-    if yaml is None:
-        raise RuntimeError("PyYAML is required to load GitHub issue fixtures.")
-
-    issues: list[FixtureIssue] = []
-    for fixture_path in discover_fixture_paths(fixture_paths):
-        raw_document = _load_yaml_document(fixture_path)
-        for raw_issue in _iter_raw_issues(raw_document, fixture_path):
-            issues.append(normalize_fixture_issue(raw_issue, fixture_path))
-    return issues
+def _utc_timestamp() -> str:
+    return datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")

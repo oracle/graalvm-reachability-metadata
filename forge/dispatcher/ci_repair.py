@@ -16,8 +16,8 @@ from ai_workflows.agents.agent_runtime import analysis_agent_run
 from ai_workflows.agents.agent_runtime import get_analysis_agent
 from dataclasses import dataclass
 from git_scripts.common_git import run_git_transport
-from git_scripts.local_review_records import LocalReviewVerdict
-from git_scripts.local_review_records import _record_finding
+from git_scripts.local_branch_review import LocalReviewVerdict
+from git_scripts.local_branch_review import _record_finding
 from git_scripts.local_branch_review import REVIEW_SKILLS_BY_TASK_TYPE
 from git_scripts.local_branch_review import _read_verdict
 from git_scripts.publication_descriptor import validate_publication_descriptor

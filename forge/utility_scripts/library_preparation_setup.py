@@ -14,7 +14,6 @@ import os
 import re
 from typing import Any
 
-from utility_scripts.library_preparation_preflight import load_library_preparation_preflight
 from utility_scripts.metadata_index import (
     coordinate_parts as metadata_coordinate_parts,
     resolve_test_dir,
@@ -187,6 +186,9 @@ def prepare_library_preparation_preflight(
     Must run after the reachability repo path is resolved so source edits land in
     the right worktree (§AR-forge-orchestration.1.1).
     """
+    # Imported here to break the cycle with the re-export shim in
+    # library_preparation_preflight.
+    from utility_scripts.library_preparation_preflight import load_library_preparation_preflight
     preflight = load_library_preparation_preflight(preflight_path)
     apply_library_preparation_setup(preflight, reachability_repo_path)
     if isinstance(preflight, dict):
