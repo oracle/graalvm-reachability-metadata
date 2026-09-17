@@ -8,16 +8,39 @@ package com_oracle_database_security.oraclepki;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Hashtable;
 import javax.net.SocketFactory;
+import oracle.security.pki.OracleWallet;
 import oracle.security.pki.ldap.LdapSSLSocketFactory;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 public class LdapSSLSocketFactoryTest {
+    @TempDir Path directory;
+
     @Test
     void createsDefaultSslSocketFactoryThroughConfiguredJcaFactories() {
         SocketFactory socketFactory = new LdapSSLSocketFactory(new Hashtable<>());
 
+        assertThat(socketFactory).isInstanceOf(LdapSSLSocketFactory.class);
+    }
+
+    @Test
+    void createsSslSocketFactoryFromPasswordProtectedWallet() throws Exception {
+        String password = "wallet-password-01";
+        OracleWallet wallet = new OracleWallet();
+        wallet.create(password.toCharArray());
+        Path walletFile = directory.resolve("ldap-wallet.p12");
+        Files.write(walletFile, wallet.getWalletArrayB(false));
+
+        Hashtable<String, String> configuration = new Hashtable<>();
+        configuration.put(LdapSSLSocketFactory.WALLET_LOCATION, walletFile.toString());
+        configuration.put(LdapSSLSocketFactory.WALLET_PASSWORD, password);
+        SocketFactory socketFactory = new LdapSSLSocketFactory(configuration);
+
+        assertThat(walletFile).isNotEmptyFile();
         assertThat(socketFactory).isInstanceOf(LdapSSLSocketFactory.class);
     }
 }
