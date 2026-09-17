@@ -1,0 +1,81 @@
+{
+  "add_new_library_support:2026-09-17": {
+    "timestamp": "2026-09-17T03:25:39.351549Z",
+    "library": "io.micronaut.security:micronaut-security-ojdbc-extensions:5.3.2",
+    "starting_commit": "d1b58589297d28b3262f3d973f5ac8906667af22",
+    "ending_commit": "8e64efe448c5766bd153a26b9d1827a8b92d0cb0",
+    "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-sol",
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "status": "success",
+    "stats": {
+      "version": "5.3.2",
+      "dynamicAccess": {
+        "breakdown": {},
+        "coverageRatio": 1.0,
+        "coveredCalls": 0,
+        "totalCalls": 0
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 219,
+          "missed": 1217,
+          "ratio": 0.152507,
+          "total": 1436
+        },
+        "line": {
+          "covered": 42,
+          "missed": 256,
+          "ratio": 0.14094,
+          "total": 298
+        },
+        "method": {
+          "covered": 8,
+          "missed": 46,
+          "ratio": 0.148148,
+          "total": 54
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "no_action",
+      "issue_number": 10076,
+      "issue_label": "library-new-request",
+      "library": "io.micronaut.security:micronaut-security-ojdbc-extensions:5.3.2",
+      "summary": "micronaut-security-ojdbc-extensions implements Oracle JDBC's EndUserSecurityContextProvider SPI to propagate the authenticated Micronaut Security user's identity to DB connections via an OAuth2 client-credentials token fetch. All dependencies (ojdbc11, ojdbc-provider-common, micronaut-security-oauth2, etc.) are ordinary Maven Central artifacts already resolvable, and ojdbc11 is already supported in this repo's metadata. Upstream's own tests exercise the SPI registration, token-fetch HTTP flow, and role/attribute mapping using only an in-process embedded HTTP server as a mock OAuth2 endpoint — no live Oracle Database, no live OCI/IAM calls, no wallet/TNS_ADMIN files, and no Docker container are required for meaningful coverage.",
+      "deterministic_setup": [],
+      "agent_guidance": "Mirror upstream's test approach (micronaut-projects/micronaut-security, security-ojdbc-extensions module): stand up a local embedded Micronaut HTTP server/controller acting as a stub OAuth2 client-credentials token endpoint, then exercise ClientCredentialsClientDatabaseAccessTokenFetcher, MicronautEndUserSecurityContextProvider (SPI construction via META-INF/services), DefaultAttributesFetcher/DefaultDataRolesFetcher, and RolesUtils/JsonUtils against it. No live Oracle Database or OCI credentials are needed — this is testable entirely in-process.",
+      "risks": [],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#10076 Support for io.micronaut.security:micronaut-security-ojdbc-extensions:5.3.2; label=library-new-request; body_chars=52"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "sonnet",
+      "input_tokens_used": 2,
+      "output_tokens_used": 714
+    },
+    "metrics": {
+      "input_tokens_used": 281095,
+      "cached_input_tokens_used": 7311872,
+      "output_tokens_used": 32949,
+      "iterations": 11,
+      "cost_usd": 6.0499,
+      "generated_loc": 100,
+      "tested_library_loc": 42,
+      "metadata_entries": 8,
+      "test_only_metadata_entries": 4,
+      "code_coverage_percent": 14.09
+    },
+    "artifacts": {
+      "metadata_file": "metadata/io.micronaut.security/micronaut-security-ojdbc-extensions/5.3.2/reachability-metadata.json"
+    }
+  }
+}
