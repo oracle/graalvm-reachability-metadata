@@ -10,9 +10,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import io.micronaut.security.ojdbc.extensions.MicronautEndUserSecurityContextProvider;
 import java.util.Map;
+import java.util.ServiceLoader;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import oracle.jdbc.spi.EndUserSecurityContextProvider;
 import oracle.jdbc.spi.OracleResourceProvider;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
@@ -44,6 +46,17 @@ public class MicronautEndUserSecurityContextProviderConfigurationTest {
         assertParameter(parameters.get("endUserContextAttributes"), false, false, null);
         assertParameter(parameters.get("rolePrefix"), false, false, "ORACLE_DATA_ROLE_");
         assertParameter(parameters.get("attributeNames"), false, false, "ORACLE_CONTEXT_ATTRIBUTES");
+    }
+
+    @Test
+    @Timeout(value = 30, unit = TimeUnit.SECONDS)
+    void discoversProviderThroughOracleJdbcServiceProviderInterface() {
+        ServiceLoader<EndUserSecurityContextProvider> serviceLoader =
+                ServiceLoader.load(EndUserSecurityContextProvider.class);
+
+        assertThat(serviceLoader)
+                .anySatisfy(provider -> assertThat(provider.getName())
+                        .isEqualTo("ojdbc-provider-micronaut-end-user-security-context"));
     }
 
     private static void assertParameter(
