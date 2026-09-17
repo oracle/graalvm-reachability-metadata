@@ -17,7 +17,7 @@ public class OracleWalletImplTest {
         char[] password = "wallet-password-01".toCharArray();
         OracleWallet wallet = new OracleWallet();
         wallet.create(password);
-        byte[] encoded = wallet.getWalletArrayB(true);
+        byte[] encoded = wallet.getWalletArrayB(false);
 
         OracleWallet restored = new OracleWallet();
         restored.setWalletArray(encoded, password);

@@ -19,14 +19,15 @@ public class OracleWalletJksTest {
     @Test
     void savesAndReopensJksWallet() throws Exception {
         char[] password = "wallet-password-01".toCharArray();
+        Path walletFile = directory.resolve("wallet.jks");
         OracleWalletJks wallet = new OracleWalletJks();
         wallet.create(password);
-        wallet.saveAs(directory.toString());
+        wallet.saveAs(walletFile.toString());
 
         OracleWalletJks reopened = new OracleWalletJks();
-        reopened.open(directory.toString(), password);
+        reopened.open(walletFile.toString(), password);
 
-        assertThat(reopened.exists(directory.toString())).isTrue();
+        assertThat(reopened.exists(walletFile.toString())).isTrue();
         assertThat(reopened.getKeyStore().size()).isZero();
     }
 }

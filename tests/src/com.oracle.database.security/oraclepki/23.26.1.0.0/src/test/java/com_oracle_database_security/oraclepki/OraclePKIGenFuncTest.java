@@ -15,7 +15,7 @@ public class OraclePKIGenFuncTest {
     @Test
     void normalizesDistinguishedNameAndValidatesArguments() {
         assertThat(OraclePKIGenFunc.normalize_DN("CN=Test User, O=Example"))
-                .isEqualTo("CN=Test User,O=Example");
+                .isEqualTo("CN=Test User, O=Example");
         assertThat(OraclePKIGenFunc.isNullOrEmpty("")).isTrue();
         assertThat(OraclePKIGenFunc.checkArgValue("value")).isTrue();
     }

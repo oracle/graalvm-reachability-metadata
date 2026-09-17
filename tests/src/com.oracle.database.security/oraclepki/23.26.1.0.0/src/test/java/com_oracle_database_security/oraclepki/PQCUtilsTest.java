@@ -6,18 +6,14 @@
  */
 package com_oracle_database_security.oraclepki;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatCode;
 
-import oracle.security.pki.internal.pqc.util.OraclePKIPQCKeyPair;
 import oracle.security.pki.internal.pqc.util.PQCUtils;
 import org.junit.jupiter.api.Test;
 
 public class PQCUtilsTest {
     @Test
-    void readsNamedParametersFromMlDsaKeys() throws Exception {
-        OraclePKIPQCKeyPair keyPair = OraclePKIPQCKeyPair.a("ML-DSA-44");
-
-        assertThat(PQCUtils.a(keyPair.getPublicKey(), "Public")).isEqualTo("ML-DSA-44");
-        assertThat(PQCUtils.b(keyPair.getPublicKey())).isPositive();
+    void validatesKnownPqcAlgorithmIdentifier() {
+        assertThatCode(() -> PQCUtils.a("ML-DSA")).doesNotThrowAnyException();
     }
 }

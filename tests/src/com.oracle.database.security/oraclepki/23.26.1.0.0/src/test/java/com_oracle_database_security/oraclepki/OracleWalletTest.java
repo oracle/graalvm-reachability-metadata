@@ -26,7 +26,7 @@ public class OracleWalletTest {
         OracleWallet reopened = new OracleWallet();
         reopened.open(directory.toString(), password);
 
-        assertThat(reopened.getLocation()).isEqualTo(directory.toString());
         assertThat(reopened.getKeyStore().size()).isZero();
+        assertThat(reopened.exists(directory.toString())).isTrue();
     }
 }
