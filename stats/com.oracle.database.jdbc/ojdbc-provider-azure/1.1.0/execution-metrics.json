@@ -1,0 +1,82 @@
+{
+  "add_new_library_support:2026-09-17": {
+    "timestamp": "2026-09-17T13:17:01.942874Z",
+    "library": "com.oracle.database.jdbc:ojdbc-provider-azure:1.1.0",
+    "starting_commit": "1360583a61742a7a63b528087785d61bd87996cc",
+    "ending_commit": "5bdff3a47bdb4e4d61312ea749255bd9638fd112",
+    "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-sol",
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "status": "success",
+    "stats": {
+      "version": "1.1.0",
+      "dynamicAccess": {
+        "breakdown": {},
+        "coverageRatio": 1.0,
+        "coveredCalls": 0,
+        "totalCalls": 0
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 463,
+          "missed": 1332,
+          "ratio": 0.257939,
+          "total": 1795
+        },
+        "line": {
+          "covered": 107,
+          "missed": 346,
+          "ratio": 0.236203,
+          "total": 453
+        },
+        "method": {
+          "covered": 26,
+          "missed": 65,
+          "ratio": 0.285714,
+          "total": 91
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "no_action",
+      "issue_number": 10053,
+      "issue_label": "library-new-request",
+      "library": "com.oracle.database.jdbc:ojdbc-provider-azure:1.1.0",
+      "summary": "Standard Oracle JDBC Azure SPI provider module; Azure SDK deps are already transitive on the artifact's own POM, and meaningful coverage (ServiceLoader-discovered provider classes, parameter/builder metadata) doesn't require live Azure resources or a Docker emulator, matching precedent from software.amazon.awssdk:secretsmanager and com.oracle.oci.sdk tests in this repo.",
+      "deterministic_setup": [],
+      "agent_guidance": "This library exposes OracleResourceProvider/OracleConfigurationProvider SPI implementations for Azure Key Vault, Azure App Configuration, and Azure AD/Entra ID token auth, discovered via META-INF/services. Favor tests that exercise ServiceLoader discovery and provider metadata (getName(), getParameters()) and builder/parameter-parsing classes over tests that attempt live Azure calls — no com.azure Docker emulator is available in this repo and full token/secret retrieval against real Azure resources cannot be exercised here.",
+      "risks": [
+        "End-to-end paths that actually authenticate against Azure AD or fetch secrets from Key Vault/App Configuration cannot be exercised without live cloud credentials, so coverage will likely be limited to provider registration, parameter parsing, and builder configuration rather than full request/response flows."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#10053 Support for com.oracle.database.jdbc:ojdbc-provider-azure:1.1.0; label=library-new-request; body_chars=52"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "sonnet",
+      "input_tokens_used": 22,
+      "output_tokens_used": 7999
+    },
+    "metrics": {
+      "input_tokens_used": 637860,
+      "cached_input_tokens_used": 10586624,
+      "output_tokens_used": 35494,
+      "iterations": 14,
+      "cost_usd": 9.5474,
+      "generated_loc": 119,
+      "tested_library_loc": 107,
+      "metadata_entries": 64,
+      "code_coverage_percent": 23.62
+    },
+    "artifacts": {
+      "metadata_file": "metadata/com.oracle.database.jdbc/ojdbc-provider-azure/1.1.0/reachability-metadata.json"
+    }
+  }
+}
