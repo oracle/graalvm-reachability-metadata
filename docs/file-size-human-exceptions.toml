@@ -139,3 +139,23 @@ until = "indefinite"
 reason = """
 User-approved: the coverage-improvement driver and the library-update target preparation it owns are one flow; the reverted split was re-imported back by the driver, router, and dispatcher.
 """
+[[exceptions]]
+path = "forge/utility_scripts/library_preparation_preflight.py"
+match = "exact"
+rules = ["source"]
+kind = "structural"
+max_accepted = { value = 900, unit = "lines" }
+until = "indefinite"
+reason = """
+User-approved: the preflight run, its record parsing, and the deterministic setup application are one flow over the same record shapes; the reverted setup split ended up reachable only through this module's own re-export shim.
+"""
+[[exceptions]]
+path = "forge/utility_scripts/local_ci_verification.py"
+match = "exact"
+rules = ["source"]
+kind = "structural"
+max_accepted = { value = 1000, unit = "lines" }
+until = "indefinite"
+reason = """
+User-approved: local CI verification, its command plumbing, and failure reproduction are one flow; the reverted splits were shared by nothing outside this file.
+"""
