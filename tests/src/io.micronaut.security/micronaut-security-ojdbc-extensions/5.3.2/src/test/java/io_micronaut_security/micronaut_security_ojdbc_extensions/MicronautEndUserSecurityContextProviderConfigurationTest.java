@@ -50,13 +50,18 @@ public class MicronautEndUserSecurityContextProviderConfigurationTest {
 
     @Test
     @Timeout(value = 30, unit = TimeUnit.SECONDS)
-    void discoversProviderThroughOracleJdbcServiceProviderInterface() {
+    void discoversAndInvokesProviderThroughOracleJdbcServiceProviderInterface() {
         ServiceLoader<EndUserSecurityContextProvider> serviceLoader =
                 ServiceLoader.load(EndUserSecurityContextProvider.class);
+        EndUserSecurityContextProvider provider = serviceLoader.stream()
+                .map(ServiceLoader.Provider::get)
+                .filter(candidate -> candidate.getName()
+                        .equals("ojdbc-provider-micronaut-end-user-security-context"))
+                .findFirst()
+                .orElseThrow();
 
-        assertThat(serviceLoader)
-                .anySatisfy(provider -> assertThat(provider.getName())
-                        .isEqualTo("ojdbc-provider-micronaut-end-user-security-context"));
+        assertThat(provider.getParameters()).hasSize(8);
+        assertThat(provider.getEndUserSecurityContext(Map.of())).isNull();
     }
 
     private static void assertParameter(
