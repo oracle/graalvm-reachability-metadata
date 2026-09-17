@@ -1,0 +1,17 @@
+## Human intervention needed
+
+The automated job failed for `io.micronaut.security:micronaut-security-oauth2:5.3.2`.
+
+Preserved work: https://github.com/oracle/graalvm-reachability-metadata/tree/ai%2Fcugurm%2Fhuman-intervention%2Fissue-10073-library-new-request-io.micronaut.security-micronaut-security-oauth2-5.3.2-7b73a58a
+
+The most likely blocking stage is finalization metadata validation, not test execution. `checkMetadataFiles` failed five times while creating `MetadataFilesCheckerTask` because `com/networknt/schema/JsonSchema` was unavailable; validation never reached the generated metadata. The repair agent consequently made no changes. Earlier JVM and native test logs reached `BUILD SUCCESSFUL`, but dynamic-access coverage remained unavailable because `generateDynamicAccessCoverageReport` could not find `build/native/nativeTestCompile/dynamic-access`. Metrics report failure after 9 iterations and contain zeroed generated LOC, metadata, and coverage values, so they are not a reliable assessment of the preserved changes.
+
+Inspect:
+- `human-intervention-logs/io.micronaut.security:micronaut-security-oauth2:5.3.2/finalization/checkMetadataFiles-2026-09-17T04-14-29-541706Z.log`
+- `human-intervention-logs/io.micronaut.security:micronaut-security-oauth2:5.3.2/check-metadata-fix/pi.log`
+- `human-intervention-logs/io.micronaut.security:micronaut-security-oauth2:5.3.2/gradle/generateDynamicAccessCoverageReport-2026-09-17T03-58-33-897530Z.log`
+
+Manual next steps:
+1. Check out the preserved branch, repair or refresh the Gradle build-logic dependency providing `com.networknt.schema.JsonSchema`, then rerun `checkMetadataFiles` with `--stacktrace`.
+2. Investigate why the instrumented native build does not produce the `dynamic-access` directory, then regenerate the dynamic-access coverage report.
+3. Review the preserved tests and metadata and run the complete coordinate test suite before continuing publication.
