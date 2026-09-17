@@ -1,0 +1,40 @@
+Prompt:
+You are preparing a Forge workflow for a library issue. Decide whether the library needs setup beyond the normal generated test scaffold before meaningful coverage is reachable.
+
+Research the library yourself to make this decision. Investigate the resolved artifact and its dependencies, how the library is normally used, and its documentation. The JSON context below is only a starting point, not the limit of what you may consider. Do not modify the repository or apply any setup yourself — return only the decision. Local Gradle and Native Image verification remain authoritative.
+
+The setup can be one of three things: an extra Maven dependency, a Docker image the tests need, or an environment/system property the generated tests must set. Represent dependencies and Docker images as `deterministic_setup` entries the driver can apply before generation:
+  - {"kind": "dependency", "coordinate": "group:artifact:version", "scope": "testImplementation", "reason": "..."}
+  - {"kind": "docker_image", "image": "name:tag", "slug": "short-slug", "reason": "..."}
+If a test needs a Docker image that is already pinned under `tests/tck-build-logic/src/main/resources/allowed-docker-images/`, reuse the exact tag from that `Dockerfile-<slug>` instead of introducing a new one, since the allow-list permits a single shared tag per image.
+Put environment variables, system properties, and other test-code setup in `agent_guidance`. Do not restate deterministic entries as guidance.
+
+Return a single JSON object with this shape:
+{
+  "action": "no_action" | "advisory_preparation",
+  "summary": "short reason",
+  "deterministic_setup": [ ... dependency or docker_image entries, if any ... ],
+  "agent_guidance": "environment/system property/test setup guidance, if any",
+  "risks": ["risk notes, if any"]
+}
+
+Choose no_action unless your research finds concrete evidence that extra setup is needed.
+
+Context (starting point):
+{
+  "issue": {
+    "number": 10073,
+    "title": "Support for io.micronaut.security:micronaut-security-oauth2:5.3.2",
+    "label": "library-new-request",
+    "body": "### Reason for requesting the library\n\n_No response_",
+    "body_error": ""
+  },
+  "library": "io.micronaut.security:micronaut-security-oauth2:5.3.2",
+  "current_library": null,
+  "new_version": null,
+  "existing_tests": {}
+}
+
+Conversation:
+{"duration_api_ms":124581,"stop_reason":"end_turn","session_id":"5545c82e-8b2b-47c7-8f88-28fcba62b0b6","total_cost_usd":0.4898018,"usage":{"input_tokens":28,"cache_creation_input_tokens":55334,"cache_read_input_tokens":841254,"output_tokens":9858,"output_tokens_details":{"thinking_tokens":5509},"server_tool_use":{"web_search_requests":0,"web_fetch_requests":0},"service_tier":"standard","cache_creation":{"ephemeral_1h_input_tokens":55334,"ephemeral_5m_input_tokens":0},"inference_geo":"not_available","iterations":[{"input_tokens":2,"output_tokens":496,"cache_read_input_tokens":77182,"cache_creation_input_tokens":2048,"cache_creation":{"ephemeral_5m_input_tokens":0,"ephemeral_1h_input_tokens":2048},"type":"message"}],"speed":"standard"},"modelUsage":{"claude-haiku-4-5-20251001":{"inputTokens":1489,"outputTokens":18,"cacheReadInputTokens":0,"cacheCreationInputTokens":0,"webSearchRequests":0,"costUSD":0.001579,"contextWindow":200000,"maxOutputTokens":32000,"thinkingTokens":0,"canonicalModel":"claude-haiku-4-5","provider":"firstParty","costBasis":"list"},"claude-sonnet-5":{"inputTokens":28,"outputTokens":9858,"cacheReadInputTokens":841254,"cacheCreationInputTokens":55334,"webSearchRequests":0,"costUSD":0.4882228,"contextWindow":1000000,"maxOutputTokens":64000,"thinkingTokens":5509,"canonicalModel":"claude-sonnet-5","provider":"firstParty","costBasis":"list"}},"permission_denials":[],"terminal_reason":"completed","fast_mode_state":"off","fast_mode_disabled_reason":"sdk_opt_in_required","subagent_stats":{"spawned":0,"requested":{"background":0,"foreground":0,"unset":0},"started_in_background":0,"max_depth":0,"spawned_by_subagents":0,"completed":0,"failed":0,"killed":{"parent":0,"user":0,"system":0},"refused":{"depth_limit":0,"concurrency_limit":0,"budget":0},"by_type":{}},"is_error":false,"num_turns":17,"subtype":"success","api_error_status":null,"result":"Decision: **advisory_preparation**.\n\nResearch summary: `io.micronaut.security:micronaut-security-oauth2:5.3.2` is a pure client-side OAuth2/OIDC library (configuration classes, PKCE, state/nonce persistence, redirect handlers, token endpoint clients) driven entirely by application properties — no Docker image or live OAuth provider is needed, since tests can fake the authorization server with a local embedded Micronaut HTTP server. However, byte-level inspection of the jar shows its ID-token/JWKS validation classes (`DefaultReactiveOpenIdTokenResponseValidator`, `IdTokenLoginHandler`, `JwksUriSignatureFactory`) reference `io.micronaut.security.token.jwt.*` and `com.nimbusds.jwt.*` from the separate `io.micronaut.security:micronaut-security-jwt` artifact — checked both the POM and Gradle module metadata of `micronaut-security-oauth2`, `micronaut-security`, and `micronaut-reactor`, and none declare it as a dependency. Without adding it explicitly, the generated tests can't compile/exercise the OIDC token-validation path, a central piece of this library's functionality.\n\nReturned JSON includes that one `testImplementation` dependency as deterministic setup, plus guidance (no deterministic entry) recommending a locally-faked discovery/JWKS server and self-signed test ID tokens rather than any external provider.","ttft_ms":5309,"type":"result","duration_ms":126355,"uuid":"adf29a9b-3cd3-4c2e-8bc6-67ab20e2a7e3","ttft_stream_ms":2192,"time_to_request_ms":58,"first_content_frame_ms":2192,"queued_turn_count":0,"result_index":0}
+
