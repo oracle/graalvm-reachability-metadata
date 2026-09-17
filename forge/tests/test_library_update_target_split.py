@@ -12,7 +12,7 @@ import tempfile
 import unittest
 from unittest.mock import patch
 
-from ai_workflows.drivers.library_update_preparation import (
+from ai_workflows.drivers.improve_library_coverage import (
     prepare_library_update_target,
     reset_failed_library_update_worktree,
 )
@@ -417,7 +417,7 @@ class LibraryUpdateTargetSplitTests(unittest.TestCase):
 
             failed_result = subprocess.CompletedProcess(["./gradlew"], 17)
             with patch(
-                    "ai_workflows.drivers.library_update_preparation.run_logged_command",
+                    "ai_workflows.drivers.improve_library_coverage.run_logged_command",
                     return_value=failed_result,
             ):
                 with self.assertRaisesRegex(

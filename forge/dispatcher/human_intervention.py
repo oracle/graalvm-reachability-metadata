@@ -16,8 +16,8 @@ from ai_workflows.agents.agent_runtime import analysis_agent_run
 from ai_workflows.agents.agent_runtime import get_analysis_agent
 from ai_workflows.core.workflow_strategy import RUN_STATUS_CHUNK_READY
 from ai_workflows.core.workflow_strategy import RUN_STATUS_FAILURE
-from ai_workflows.drivers.add_new_library_setup import DEFAULT_MODEL_NAME
-from ai_workflows.drivers.add_new_library_setup import init_agent as init_workflow_agent
+from ai_workflows.drivers.add_new_library_support import DEFAULT_MODEL_NAME
+from ai_workflows.drivers.add_new_library_support import init_agent as init_workflow_agent
 from dataclasses import dataclass
 from git_scripts.common_git import GitTransportError
 from git_scripts.github_cli import GitHubError

@@ -8,7 +8,7 @@ import tempfile
 import unittest
 from unittest.mock import patch
 
-from ai_workflows.drivers import add_new_library_setup, add_new_library_support, fix_ni_run, java_fail_workflow
+from ai_workflows.drivers import add_new_library_support, add_new_library_support, fix_ni_run, java_fail_workflow
 from utility_scripts.logged_command import LoggedCommandResult, run_logged_command
 from utility_scripts.continuation_marker import PHASE_SETUP
 from utility_scripts.run_location import enter_phase, reset_run_location
@@ -128,8 +128,8 @@ class LoggedCommandTests(unittest.TestCase):
         )
         terminal = io.StringIO()
         enter_phase(PHASE_SETUP)
-        with patch.object(add_new_library_setup, "require_complete_reachability_repo"), \
-                patch.object(add_new_library_setup, "run_logged_command", return_value=already_exists), \
+        with patch.object(add_new_library_support, "require_complete_reachability_repo"), \
+                patch.object(add_new_library_support, "run_logged_command", return_value=already_exists), \
                 contextlib.redirect_stdout(terminal):
             self.assertFalse(add_new_library_support.run_scaffold("g:a:1.0"))
         self.assertEqual("", terminal.getvalue())
@@ -143,8 +143,8 @@ class LoggedCommandTests(unittest.TestCase):
             duration_seconds=1.0,
         )
         terminal = io.StringIO()
-        with patch.object(add_new_library_setup, "require_complete_reachability_repo"), \
-                patch.object(add_new_library_setup, "run_logged_command", return_value=failed), \
+        with patch.object(add_new_library_support, "require_complete_reachability_repo"), \
+                patch.object(add_new_library_support, "run_logged_command", return_value=failed), \
                 contextlib.redirect_stdout(terminal), \
                 self.assertRaises(add_new_library_support.ScaffoldError):
             add_new_library_support.run_scaffold("g:a:1.0")
@@ -161,18 +161,18 @@ class LoggedCommandTests(unittest.TestCase):
             duration_seconds=0.0,
         )
         with patch.object(
-                add_new_library_setup,
+                add_new_library_support,
                 "require_complete_reachability_repo",
         ), patch.object(
-                add_new_library_setup,
+                add_new_library_support,
                 "gradle_command_environment",
                 return_value={},
         ), patch.object(
-                add_new_library_setup,
+                add_new_library_support,
                 "run_logged_command",
                 return_value=successful_result,
         ) as new_library_command, patch.object(
-                add_new_library_setup.os,
+                add_new_library_support.os,
                 "getcwd",
                 return_value="/repo",
         ):

@@ -15,7 +15,7 @@ import tempfile
 from dataclasses import dataclass
 from typing import Any
 
-from ai_workflows.drivers.library_update_preparation import clone_library_update_support
+from ai_workflows.drivers.improve_library_coverage import clone_library_update_support
 from utility_scripts.gradle_environment import gradle_command_environment
 from utility_scripts.library_stats import stats_artifact_dir
 from utility_scripts.metadata_index import (

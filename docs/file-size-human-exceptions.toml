@@ -119,3 +119,23 @@ until = "indefinite"
 reason = """
 User-approved: the verdict records and reviewer session mechanics are inseparable from the review flow that drives them; the reverted splits re-imported their names back wholesale.
 """
+[[exceptions]]
+path = "forge/ai_workflows/drivers/add_new_library_support.py"
+match = "exact"
+rules = ["source"]
+kind = "structural"
+max_accepted = { value = 800, unit = "lines" }
+until = "indefinite"
+reason = """
+User-approved: one driver flow from scaffold through metrics publication; the reverted setup/metrics split was re-imported back by the driver and dispatcher, so the file boundary added hops without separating responsibility.
+"""
+[[exceptions]]
+path = "forge/ai_workflows/drivers/improve_library_coverage.py"
+match = "exact"
+rules = ["source"]
+kind = "structural"
+max_accepted = { value = 900, unit = "lines" }
+until = "indefinite"
+reason = """
+User-approved: the coverage-improvement driver and the library-update target preparation it owns are one flow; the reverted split was re-imported back by the driver, router, and dispatcher.
+"""

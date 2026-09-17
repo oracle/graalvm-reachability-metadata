@@ -10,7 +10,7 @@ import tempfile
 import unittest
 from unittest.mock import patch
 
-from ai_workflows.drivers.library_update_preparation import (
+from ai_workflows.drivers.improve_library_coverage import (
     prepare_library_update_target,
     reset_failed_library_update_worktree,
 )

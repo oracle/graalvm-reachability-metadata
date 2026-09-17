@@ -31,7 +31,7 @@ class AddNewLibrarySupportTests(unittest.TestCase):
             "thinking-level": "medium",
         }
 
-        with patch("ai_workflows.drivers.add_new_library_setup.Agent.get_class", return_value=agent_class):
+        with patch("ai_workflows.drivers.add_new_library_support.Agent.get_class", return_value=agent_class):
             init_agent(strategy, "/tmp/worktree", [], [], model_name="gpt-5.6-sol")
 
         self.assertEqual(agent_class.call_args.kwargs["thinking_level"], "medium")

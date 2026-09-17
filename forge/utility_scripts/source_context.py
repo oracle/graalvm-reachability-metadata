@@ -29,6 +29,7 @@ from utility_scripts.stage_logger import log_detail
 from utility_scripts.task_logs import display_log_path
 from utility_scripts.source_context_discovery import (  # noqa: F401 - re-exported for existing callers
     populate_artifact_urls,
+    discover_artifact_metadata,
 )
 
 SOURCE_CONTEXT_FIELD_BY_TYPE = {

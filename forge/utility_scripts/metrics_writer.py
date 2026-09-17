@@ -15,6 +15,10 @@ import sys
 import tempfile
 
 from utility_scripts.metadata_index import resolve_metadata_version
+from utility_scripts.library_measurements import (  # noqa: F401 - re-exported for existing callers
+    count_metadata_entries,
+    count_test_only_metadata_entries,
+)
 from utility_scripts.run_metrics_payloads import (  # noqa: F401 - re-exported for existing callers
     create_failure_run_metrics_output,
     create_java_run_fix_run_metrics_output_json,

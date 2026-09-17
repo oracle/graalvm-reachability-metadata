@@ -12,11 +12,11 @@ import json
 import os
 import subprocess
 import sys
-from ai_workflows.drivers.add_new_library_setup import ScaffoldError
-from ai_workflows.drivers.add_new_library_setup import create_feature_branch_for_library
-from ai_workflows.drivers.add_new_library_setup import prepare_native_image_eligible_artifact
-from ai_workflows.drivers.add_new_library_setup import run_scaffold as run_new_library_scaffold
-from ai_workflows.drivers.library_update_preparation import prepare_library_update_target
+from ai_workflows.drivers.add_new_library_support import ScaffoldError
+from ai_workflows.drivers.add_new_library_support import create_feature_branch_for_library
+from ai_workflows.drivers.add_new_library_support import prepare_native_image_eligible_artifact
+from ai_workflows.drivers.add_new_library_support import run_scaffold as run_new_library_scaffold
+from ai_workflows.drivers.improve_library_coverage import prepare_library_update_target
 from typing import Any
 from utility_scripts.continuation_marker import ContinuationMarker
 from utility_scripts.continuation_marker import PHASE_EXPLORE
