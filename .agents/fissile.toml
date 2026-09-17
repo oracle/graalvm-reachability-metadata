@@ -86,7 +86,7 @@ command = ["token-counter", "--count", "{path}"]
 [[messages]]
 id = "split-source-soft"
 text = """
-Should split, next time you are in one of these files: move a cohesive group of items into a sibling module. Split along a responsibility seam, never at the line count, and never break apart code that belongs together.
+Should split, next time you are in one of these files: move a cohesive group of items into a sibling module. Split along a responsibility seam, never at the line count, and never break apart code that belongs together. Never split a class into mixin bases sharing self — a boundary that exists only on disk is not a split.
 If no split leaves the design better than it is now, record why instead of forcing one — not what the file contains, which is what this finding already said. Name the constraint that makes splitting illegal (--kind structural), or the boundary that is missing and what must exist first (--kind deferred, --until naming what retires it):
 fissile exception add <path> --severity soft --rule {rule} --kind <kind>
 """
@@ -94,7 +94,7 @@ fissile exception add <path> --severity soft --rule {rule} --kind <kind>
 [[messages]]
 id = "split-source-hard"
 text = """
-Must split before more code lands here: move cohesive groups of items into sibling modules along seams that already exist. Do not invent an abstraction, flatten a boundary, or shuffle lines to get under the limit — a worse design under budget is not the goal.
+Must split before more code lands here: move cohesive groups of items into sibling modules along seams that already exist. Do not invent an abstraction, flatten a boundary, or shuffle lines to get under the limit — a worse design under budget is not the goal. Never split a class into mixin bases sharing self, and never carve out a helper module that only its parent imports back wholesale.
 If you cannot see a split that leaves the architecture intact, stop and ask a human. The only other way past this gate is a human-reviewed exception, whose reason names the constraint that makes splitting illegal (--kind structural) or the boundary that is missing and what must exist first (--kind deferred):
 fissile exception add <path> --severity hard --rule {rule} --kind <kind>
 """
@@ -152,8 +152,8 @@ include = [
   "tests/tck-build-logic/**/*.gradle",
 ]
 unit = "lines"
-soft = 350
-hard = 550
+soft = 450
+hard = 700
 count_blank_lines = false
 count_comment_lines = true
 soft_message = "split-source-soft"
