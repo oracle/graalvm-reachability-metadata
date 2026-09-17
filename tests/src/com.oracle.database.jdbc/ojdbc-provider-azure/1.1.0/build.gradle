@@ -16,6 +16,15 @@ dependencies {
 }
 
 graalvmNative {
+    binaries {
+        test {
+            buildArgs(
+                    "--exclude-config",
+                    ".*azure-core-.*\\.jar",
+                    "META-INF/native-image/com\\.azure/azure-core/native-image\\.properties")
+        }
+    }
+
     agent {
         defaultMode = "conditional"
         modes {
