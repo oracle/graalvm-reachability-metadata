@@ -87,6 +87,31 @@ public class Micronaut_security_oauth2Test {
     }
 
     @Test
+    void applicationContextBindsNamedOauthClientConfiguration() {
+        Map<String, Object> properties = Map.of(
+                "micronaut.security.oauth2.clients.inventory.client-id", "inventory-client",
+                "micronaut.security.oauth2.clients.inventory.client-secret", "inventory-secret",
+                "micronaut.security.oauth2.clients.inventory.scopes", List.of("catalog:read", "catalog:write"),
+                "micronaut.security.oauth2.clients.inventory.grant-type", "client_credentials",
+                "micronaut.security.oauth2.clients.inventory.token.url", "https://identity.example.test/token");
+
+        try (ApplicationContext context = ApplicationContext.run(properties, Environment.TEST)) {
+            OauthClientConfiguration client = context.getBeansOfType(OauthClientConfiguration.class).stream()
+                    .filter(configuration -> configuration.getName().equals("inventory"))
+                    .findFirst()
+                    .orElseThrow();
+
+            assertThat(client.getClientId()).isEqualTo("inventory-client");
+            assertThat(client.getClientSecret()).isEqualTo("inventory-secret");
+            assertThat(client.getScopes()).containsExactly("catalog:read", "catalog:write");
+            assertThat(client.getGrantType()).isEqualTo(GrantType.CLIENT_CREDENTIALS);
+            assertThat(client.getTokenEndpoint().getUrl()).isEqualTo("https://identity.example.test/token");
+            assertThat(client.getTokenEndpoint().getAuthenticationMethodsSupported())
+                    .containsExactly(AuthenticationMethods.CLIENT_SECRET_BASIC);
+        }
+    }
+
+    @Test
     void programmaticClientConfigurationPreservesEndpointsAndGrantPolicy() {
         OauthClientConfiguration client = OauthClientConfiguration.builder()
                 .name("company")
