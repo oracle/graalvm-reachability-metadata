@@ -153,7 +153,7 @@ from dispatcher.fixture_support import (
 )
 from dispatcher.github_api import resolve_authenticated_user
 from dispatcher.interrupts import (
-    _handle_sigint,
+    handle_sigint,
     clear_user_interrupt_requested,
     describe_active_shutdown_signal_path,
     is_gradle_bootstrap_interrupt,
@@ -413,7 +413,7 @@ def process_single_issue(
 def main() -> None:
     clear_user_interrupt_requested()
     previous_sigint_handler = signal.getsignal(signal.SIGINT)
-    signal.signal(signal.SIGINT, _handle_sigint)
+    signal.signal(signal.SIGINT, handle_sigint)
     args = parse_args()
     if args.verbose:
         enable_verbose_logging()

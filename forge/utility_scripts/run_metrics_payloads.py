@@ -15,7 +15,7 @@ from utility_scripts.library_measurements import (
     count_test_only_metadata_entries,
     load_library_stats_snapshot,
     resolve_metadata_artifact_path,
-    _resolve_test_version_dir,
+    resolve_test_version_dir,
 )
 from utility_scripts.source_context import resolve_test_source_layout
 from utility_scripts.stage_logger import log_plain_detail
@@ -59,7 +59,7 @@ def collect_and_print_metrics(
       - generated_loc (int)
       - total_entries (int)
     """
-    test_version = _resolve_test_version_dir(repo_path, package, artifact, library_version)
+    test_version = resolve_test_version_dir(repo_path, package, artifact, library_version)
     coordinate = f"{package}:{artifact}:{library_version}"
     module_dir = os.path.join(repo_path, "tests", "src", package, artifact, test_version)
     tests_root = resolve_test_source_layout(repo_path, coordinate, module_dir).source_root

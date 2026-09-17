@@ -481,7 +481,7 @@ def get_issue_search_cache_ttl_seconds() -> int:
     return value
 
 
-def _read_issue_search_cache_payload() -> dict | None:
+def read_issue_search_cache_payload() -> dict | None:
     cache_path = get_issue_search_cache_path()
     try:
         with open(cache_path, "r", encoding="utf-8") as cache_file:
@@ -511,11 +511,11 @@ def _empty_issue_search_cache_payload(now: float) -> dict:
     }
 
 
-def _read_issue_search_cache_payload_or_empty(now: float) -> dict:
-    return _read_issue_search_cache_payload() or _empty_issue_search_cache_payload(now)
+def read_issue_search_cache_payload_or_empty(now: float) -> dict:
+    return read_issue_search_cache_payload() or _empty_issue_search_cache_payload(now)
 
 
-def _write_issue_search_cache_payload(payload: dict, updated_at_epoch: float) -> None:
+def write_issue_search_cache_payload(payload: dict, updated_at_epoch: float) -> None:
     cache_path = get_issue_search_cache_path()
     os.makedirs(os.path.dirname(cache_path), exist_ok=True)
     payload["version"] = ISSUE_SEARCH_CACHE_VERSION
@@ -574,7 +574,7 @@ def _is_fresh_issue_search_entry(entry: dict, now: float, ttl_seconds: int) -> b
     return now - observed_at_epoch <= ttl_seconds
 
 
-def _get_cached_issue_search_page(
+def get_cached_issue_search_page(
         payload: dict,
         cache_key: str,
         now: float,
@@ -593,14 +593,14 @@ def _get_cached_issue_search_page(
     ]
 
 
-def _set_cached_issue_search_page(payload: dict, cache_key: str, issues: list[dict], now: float) -> None:
+def set_cached_issue_search_page(payload: dict, cache_key: str, issues: list[dict], now: float) -> None:
     payload.setdefault("pages", {})[cache_key] = {
         "observed_at_epoch": now,
         "issues": issues,
     }
 
 
-def _get_cached_issue_search_count(
+def get_cached_issue_search_count(
         payload: dict,
         cache_key: str,
         now: float,
@@ -615,7 +615,7 @@ def _get_cached_issue_search_count(
     return total_count
 
 
-def _set_cached_issue_search_count(payload: dict, cache_key: str, total_count: int, now: float) -> None:
+def set_cached_issue_search_count(payload: dict, cache_key: str, total_count: int, now: float) -> None:
     payload.setdefault("counts", {})[cache_key] = {
         "observed_at_epoch": now,
         "total_count": total_count,

@@ -117,7 +117,7 @@ class FinalizeSuccessfulIssueTests(unittest.TestCase):
 
         with patch.object(publication, "find_dynamic_access_exhaust_report_path", return_value=None), \
                 patch.object(publication, "require_claimed_issue_worktree"), \
-                patch.object(publication, "_load_pending_run_metrics", return_value={"status": "success"}), \
+                patch.object(publication, "load_pending_run_metrics", return_value={"status": "success"}), \
                 patch.object(publication, "metadata_coordinate_parts", return_value=("org.example", "lib", "1.0.0")), \
                 patch.object(publication, "is_not_for_native_image", return_value=True), \
                 patch.object(publication, "run_publish_not_for_native_image") as make_pr:

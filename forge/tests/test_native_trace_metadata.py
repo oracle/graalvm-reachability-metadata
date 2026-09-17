@@ -145,7 +145,7 @@ class MetadataAggregationTests(unittest.TestCase):
             GATE_SUBPROCESS_RUN,
             side_effect=self._fake_native_image_utils_merge(merge_calls),
         ):
-            self.assertTrue(ntm._finalize_staged_metadata(self.repo, "g:a:1.0", [self.output_dir]))
+            self.assertTrue(ntm.finalize_staged_metadata(self.repo, "g:a:1.0", [self.output_dir]))
 
         durable_metadata = json.loads(durable_metadata_path.read_text(encoding="utf-8"))
         methods = [
@@ -210,7 +210,7 @@ class PrintCollectedMetadataTests(unittest.TestCase):
 
         output = io.StringIO()
         with redirect_stdout(output):
-            ntm._print_collected_metadata(run_dir, 2)
+            ntm.print_collected_metadata(run_dir, 2)
 
         printed = output.getvalue()
         self.assertIn("cycle 2: collected metadata from 1 file(s)", printed)
@@ -223,7 +223,7 @@ class PrintCollectedMetadataTests(unittest.TestCase):
 
         output = io.StringIO()
         with redirect_stdout(output):
-            ntm._print_collected_metadata(run_dir, 1)
+            ntm.print_collected_metadata(run_dir, 1)
 
         self.assertIn("cycle 1: collected metadata: none", output.getvalue())
 
@@ -234,7 +234,7 @@ class PrintCollectedMetadataTests(unittest.TestCase):
 
         output = io.StringIO()
         with redirect_stdout(output):
-            ntm._print_collected_metadata(run_dir, 1)
+            ntm.print_collected_metadata(run_dir, 1)
 
         printed = output.getvalue()
         self.assertIn("cycle 1: collected metadata: none", printed)

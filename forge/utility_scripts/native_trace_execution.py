@@ -24,21 +24,21 @@ from utility_scripts.task_logs import (
     sanitize_library_log_segment,
 )
 
-_GATE_STAGE = "native-test-verify"
-_LOG_TASK_TYPE = "native-test-verify"
+GATE_STAGE = "native-test-verify"
+LOG_TASK_TYPE = "native-test-verify"
 
 # Gradle prints "...finished with non-zero exit value N" when the trace
 # binary's Exec returns a non-zero exit. We recover the binary's exit code
 # from this line because the Exec itself runs with ignoreExitValue=true and
 # Gradle's own exit code does not include it.
 _EXIT_VALUE_PATTERN = re.compile(r"exit\s+value\s+(\d+)", re.IGNORECASE)
-_FAILURE_LOG_TAIL_LINE_LIMIT = 20
+FAILURE_LOG_TAIL_LINE_LIMIT = 20
 _FAILED_TASK_PATTERN = re.compile(r"> Task :(\S+) FAILED")
 
 DEFAULT_CYCLE_TIMEOUT_SECONDS = 30 * 60
 
 
-def _run_generate_metadata(
+def run_generate_metadata(
         reachability_repo_path: str,
         coordinate: str,
         output_dir: str,
@@ -59,7 +59,7 @@ def _run_generate_metadata(
         "--agentAllowedPackages=fromJar",
         f"--metadataOutputDir={output_dir}",
     ]
-    return _run_logged_gradle_command(
+    return run_logged_gradle_command(
         reachability_repo_path=reachability_repo_path,
         cmd=cmd,
         log_path=log_path,
@@ -67,7 +67,7 @@ def _run_generate_metadata(
     ).returncode
 
 
-def _run_coordinate_test(
+def run_coordinate_test(
         reachability_repo_path: str,
         coordinate: str,
         metadata_config_dirs: list[str],
@@ -80,7 +80,7 @@ def _run_coordinate_test(
     cmd = ["./gradlew", "test", f"-Pcoordinates={coordinate}", *gradle_properties]
     if metadata_config_dirs:
         cmd.append(f"-PmetadataConfigDirs={','.join(metadata_config_dirs)}")
-    result = _run_logged_gradle_command(
+    result = run_logged_gradle_command(
         reachability_repo_path=reachability_repo_path,
         cmd=cmd,
         log_path=log_path,
@@ -90,7 +90,7 @@ def _run_coordinate_test(
     return result.returncode, _parse_first_failed_task(log_path)
 
 
-def _run_logged_gradle_command(
+def run_logged_gradle_command(
         reachability_repo_path: str,
         cmd: list[str],
         log_path: str,
@@ -99,7 +99,7 @@ def _run_logged_gradle_command(
 ) -> subprocess.CompletedProcess:
     """Run a Gradle command and write stdout/stderr to ``log_path``."""
     log_detail(
-        _GATE_STAGE,
+        GATE_STAGE,
         f"$ {' '.join(cmd)}  (log: {display_log_path(log_path)})",
         indent_level=1,
     )
@@ -130,7 +130,7 @@ def _parse_first_failed_task(log_path: str) -> str | None:
     return match.group(1) if match else None
 
 
-def _summarize_gradle_failure_reason(log_path: str) -> str:
+def summarize_gradle_failure_reason(log_path: str) -> str:
     """Extract a short, human-readable Gradle failure reason from a log."""
     try:
         with open(log_path, "r", encoding="utf-8", errors="replace") as handle:
@@ -187,7 +187,7 @@ def _trim_failure_reason(reason: str, max_length: int = 240) -> str:
     return reason[:max_length - 3].rstrip() + "..."
 
 
-def _run_native_trace_image_command(
+def run_native_trace_image_command(
         coordinate: str,
         run_dir: str,
         condition_packages: list[str],
@@ -206,7 +206,7 @@ def _run_native_trace_image_command(
     return " ".join(parts)
 
 
-def _run_native_trace_image(
+def run_native_trace_image(
         reachability_repo_path: str,
         coordinate: str,
         run_dir: str,
@@ -244,7 +244,7 @@ def _run_native_trace_image(
     if metadata_config_dirs:
         cmd.append(f"-PmetadataConfigDirs={','.join(metadata_config_dirs)}")
     log_detail(
-        _GATE_STAGE,
+        GATE_STAGE,
         f"$ {' '.join(cmd)}  (log: {display_log_path(log_path)})",
         indent_level=1,
     )
@@ -261,7 +261,7 @@ def _run_native_trace_image(
             )
         except subprocess.TimeoutExpired:
             log_stage(
-                _GATE_STAGE,
+                GATE_STAGE,
                 f"runNativeTraceImage exceeded {timeout_seconds}s timeout",
                 indent_level=1,
             )
@@ -276,7 +276,7 @@ def _run_native_trace_image(
     return result.returncode, binary_rc
 
 
-def _extract_failure_log_tail(log_path: str) -> str:
+def extract_failure_log_tail(log_path: str) -> str:
     """Extract a bounded tail from a native trace run log."""
     try:
         with open(log_path, "r", encoding="utf-8", errors="replace") as handle:
@@ -287,7 +287,7 @@ def _extract_failure_log_tail(log_path: str) -> str:
     if not lines:
         return "<empty log>"
 
-    excerpt = lines[-_FAILURE_LOG_TAIL_LINE_LIMIT:]
+    excerpt = lines[-FAILURE_LOG_TAIL_LINE_LIMIT:]
     if not excerpt:
         return "<no log excerpt available>"
     return "\n".join(excerpt)
@@ -331,9 +331,9 @@ def _parse_binary_exit_code(log_path: str) -> int | None:
         return None
 
 
-def _gate_log_path(coordinate: str, cycle_index: int, suffix: str) -> str:
+def gate_log_path(coordinate: str, cycle_index: int, suffix: str) -> str:
     return build_timestamped_task_log_path(
-        _LOG_TASK_TYPE,
+        LOG_TASK_TYPE,
         sanitize_library_log_segment(coordinate),
         f"cycle-{cycle_index}-{suffix}",
     )

@@ -198,8 +198,8 @@ class CodeCoverageBenchmarkConversionTests(unittest.TestCase):
             "seed",
         )
         commit = _git(runner, "rev-parse", "HEAD").stdout.strip()
-        benchmark._create_source_worktree(source, commit, runner)
-        self.addCleanup(benchmark._remove_worktree, source, runner)
+        benchmark.create_source_worktree(source, commit, runner)
+        self.addCleanup(benchmark.remove_worktree, source, runner)
         test_dir = source / "tests" / "src" / "com.example" / "demo" / "1.0.0"
         test_dir.mkdir(parents=True)
 
@@ -250,7 +250,7 @@ class CodeCoverageBenchmarkTerminalResultTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as directory:
             path = Path(directory) / "results" / "task.md"
             with patch.dict("os.environ", {"RHEI_RESULT_PATH": str(path)}):
-                benchmark._write_terminal_result("Prepared benchmark run.")
+                benchmark.write_terminal_result("Prepared benchmark run.")
             self.assertEqual(
                 "Prepared benchmark run.\n",
                 path.read_text(encoding="utf-8"),
@@ -258,7 +258,7 @@ class CodeCoverageBenchmarkTerminalResultTests(unittest.TestCase):
 
     def test_is_a_no_op_without_the_environment_variable(self) -> None:
         with patch.dict("os.environ", {}, clear=True):
-            benchmark._write_terminal_result("ignored")
+            benchmark.write_terminal_result("ignored")
 
     def test_publication_records_its_own_terminal_result(self) -> None:
         temporary = tempfile.TemporaryDirectory()
@@ -274,11 +274,11 @@ class CodeCoverageBenchmarkTerminalResultTests(unittest.TestCase):
         path = root / "results" / "publication.md"
 
         with patch.dict("os.environ", {"RHEI_RESULT_PATH": str(path)}), \
-                patch.object(benchmark, "_read_json", return_value={}), \
-                patch.object(benchmark, "_collect_result", return_value=result), \
+                patch.object(benchmark, "read_json", return_value={}), \
+                patch.object(benchmark, "collect_result", return_value=result), \
                 patch.object(
                     benchmark,
-                    "_publish_result",
+                    "publish_result",
                     return_value=benchmark.BenchmarkPublication(
                         "c" * 40, "ai/test/benchmark", "forge-benchmark-id", False,
                     ),
@@ -362,7 +362,7 @@ class CodeCoverageBenchmarkTemplateTests(unittest.TestCase):
         recorded = repository / "result.json"
         recorded.write_text("{}\n", encoding="utf-8")
 
-        benchmark._commit_paths(repository, [recorded], "Record benchmark")
+        benchmark.commit_paths(repository, [recorded], "Record benchmark")
 
         self.assertEqual(
             subprocess.run(

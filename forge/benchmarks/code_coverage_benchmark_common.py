@@ -41,12 +41,12 @@ class BenchmarkError(RuntimeError):
     """Raised when benchmark evidence or repository state is unsafe."""
 
 
-def _read_json(path: Path) -> Any:
+def read_json(path: Path) -> Any:
     with path.open(encoding="utf-8") as source:
         return json.load(source)
 
 
-def _write_json(path: Path, value: Any) -> None:
+def write_json(path: Path, value: Any) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     temporary = path.with_name(f".{path.name}.{uuid.uuid4().hex}.tmp")
     with temporary.open("w", encoding="utf-8") as destination:
@@ -55,13 +55,13 @@ def _write_json(path: Path, value: Any) -> None:
     os.replace(temporary, path)
 
 
-def _validate(value: Any, schema_path: Path) -> None:
-    schema: dict[str, Any] = _read_json(schema_path)
+def validate(value: Any, schema_path: Path) -> None:
+    schema: dict[str, Any] = read_json(schema_path)
     validator = Draft202012Validator(schema, format_checker=FormatChecker())
     validator.validate(value)
 
 
-def _git_output(repo_path: Path, *arguments: str) -> str:
+def git_output(repo_path: Path, *arguments: str) -> str:
     result = subprocess.run(
         ["git", *arguments],
         cwd=repo_path,
@@ -73,10 +73,10 @@ def _git_output(repo_path: Path, *arguments: str) -> str:
 
 
 def _runner_commit() -> str:
-    return _git_output(REPOSITORY_ROOT, "rev-parse", "HEAD")
+    return git_output(REPOSITORY_ROOT, "rev-parse", "HEAD")
 
 
-def _remove_worktree(
+def remove_worktree(
         path: Path,
         repository_root: Path = REPOSITORY_ROOT,
 ) -> None:
@@ -87,9 +87,9 @@ def _remove_worktree(
     )
 
 
-def _discard_source_worktree(path: Path) -> None:
+def discard_source_worktree(path: Path) -> None:
     try:
-        _remove_worktree(path)
+        remove_worktree(path)
     except (OSError, subprocess.SubprocessError) as error:
         print(
             f"ERROR: Could not remove published source worktree {path}: "
@@ -103,7 +103,7 @@ def _path_key(path: Path) -> str:
 
 
 def _registered_worktree_paths(repository_root: Path) -> set[str]:
-    output = _git_output(
+    output = git_output(
         repository_root,
         "worktree",
         "list",
@@ -126,7 +126,7 @@ def _remove_existing_source_worktree(
             f"Refusing to replace a non-source worktree path: {path}"
         )
     if _path_key(path) in _registered_worktree_paths(repository_root):
-        _remove_worktree(path, repository_root)
+        remove_worktree(path, repository_root)
     if not os.path.lexists(path):
         return
     if path.is_symlink() or path.is_file():
@@ -135,7 +135,7 @@ def _remove_existing_source_worktree(
         shutil.rmtree(path)
 
 
-def _create_source_worktree(
+def create_source_worktree(
         path: Path,
         suite_commit: str,
         repository_root: Path = REPOSITORY_ROOT,
@@ -149,47 +149,47 @@ def _create_source_worktree(
     )
 
 
-def _run_record_path(workspace: Path) -> Path:
+def run_record_path(workspace: Path) -> Path:
     return workspace / RUN_RECORD
 
 
-def _result_record_path(workspace: Path) -> Path:
+def result_record_path(workspace: Path) -> Path:
     return workspace / RESULT_RECORD
 
 
-def _publication_marker_path(workspace: Path) -> Path:
+def publication_marker_path(workspace: Path) -> Path:
     return workspace / PUBLICATION_MARKER
 
 
-def _ensure_run_record(
+def ensure_run_record(
         workspace: Path,
         identity: dict[str, Any],
 ) -> dict[str, Any]:
-    path = _run_record_path(workspace)
+    path = run_record_path(workspace)
     if path.is_file():
-        existing = _read_json(path)
+        existing = read_json(path)
         for key, value in identity.items():
             if existing.get(key) != value:
                 raise BenchmarkError(
                     f"Existing benchmark run record conflicts on '{key}'."
                 )
         return existing
-    _write_json(path, identity)
+    write_json(path, identity)
     return identity
 
 
-def _record_completion(
+def record_completion(
         workspace: Path,
         status: str,
         exit_code: int | None,
 ) -> None:
-    run_record = _read_json(_run_record_path(workspace))
+    run_record = read_json(run_record_path(workspace))
     run_record["requestedStatus"] = status
     run_record["rheiExitCode"] = exit_code
-    _write_json(_run_record_path(workspace), run_record)
+    write_json(run_record_path(workspace), run_record)
 
 
-def _write_terminal_result(message: str) -> None:
+def write_terminal_result(message: str) -> None:
     """Satisfy Rhei's terminal-result obligation for a program worker.
 
     Rhei requires a non-empty `runtime/results/<task-id>.md` on every edge into

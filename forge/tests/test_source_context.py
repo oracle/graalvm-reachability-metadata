@@ -17,7 +17,7 @@ from utility_scripts.source_context import (
 )
 from utility_scripts.source_context_discovery import (
     GradleBootstrapFailure,
-    _is_gradle_bootstrap_failure,
+    is_gradle_bootstrap_failure,
     discover_artifact_metadata,
 )
 
@@ -140,9 +140,9 @@ class DiscoverArtifactMetadataTests(unittest.TestCase):
             self.assertEqual(harness.run.call_count, 2)
 
     def test_downloaded_distribution_alone_is_not_a_bootstrap_failure(self) -> None:
-        self.assertFalse(_is_gradle_bootstrap_failure(WRAPPER_DOWNLOAD_SUCCESS_OUTPUT))
-        self.assertFalse(_is_gradle_bootstrap_failure("compileJava FAILED\n"))
-        self.assertFalse(_is_gradle_bootstrap_failure(None))
+        self.assertFalse(is_gradle_bootstrap_failure(WRAPPER_DOWNLOAD_SUCCESS_OUTPUT))
+        self.assertFalse(is_gradle_bootstrap_failure("compileJava FAILED\n"))
+        self.assertFalse(is_gradle_bootstrap_failure(None))
 
     def test_exhausted_bootstrap_retry_raises_gradle_bootstrap_failure(self) -> None:
         failed = subprocess.CompletedProcess([], 1, stdout=SPOTLESS_BOOTSTRAP_OUTPUT)

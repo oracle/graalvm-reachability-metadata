@@ -62,7 +62,7 @@ from dispatcher.fixture_support import (
     get_fixture_issue_artifact_dir,
     is_fixture_testing_enabled,
 )
-from dispatcher.human_intervention import _load_pending_run_metrics
+from dispatcher.human_intervention import load_pending_run_metrics
 from dispatcher.issue_admin import add_issue_label
 from dispatcher.records import ClaimedIssue
 from dispatcher.worktrees import require_claimed_issue_worktree
@@ -229,7 +229,7 @@ def build_publication_handoff(
         claimed_issue.worktree_path,
         claimed_issue.issue_coordinates,
     )
-    run_metrics = _load_pending_run_metrics(claimed_issue.scratch_metrics_repo_path)
+    run_metrics = load_pending_run_metrics(claimed_issue.scratch_metrics_repo_path)
     workflow_status = None if run_metrics is None else run_metrics.get("status")
     issue_number_args = ["--issue-number", str(issue_number)]
     chunked_dynamic_access_args = build_chunked_dynamic_access_pr_args(

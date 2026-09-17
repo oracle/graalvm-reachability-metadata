@@ -99,7 +99,7 @@ def _is_lambda_body(ref: MethodRef) -> bool:
     return ref.name.startswith("lambda$")
 
 
-def _is_synthetic_method(ref: MethodRef) -> bool:
+def is_synthetic_method(ref: MethodRef) -> bool:
     """Whether the compiler, not a person, owns this method name."""
     return ref.name.startswith(SYNTHETIC_METHOD_PREFIXES)
 
@@ -380,7 +380,7 @@ def load_call_graph(
         raise ProfileFormatError(f"Cannot load call-tree CSVs from '{reports_dir}'.") from error
 
 
-def _resolve_graph_id(graph: CallGraph, ref: MethodRef) -> int | None:
+def resolve_graph_id(graph: CallGraph, ref: MethodRef) -> int | None:
     """Resolve an exact graph method, or an unambiguous loose guidance match."""
     static_id: int | None = graph.key_to_id.get(ref.canonical_id)
     if static_id is not None:
@@ -389,7 +389,7 @@ def _resolve_graph_id(graph: CallGraph, ref: MethodRef) -> int | None:
     return loose_ids[0] if len(loose_ids) == 1 else None
 
 
-def _translated_ref(static_id: int, graph: CallGraph) -> MethodRef:
+def translated_ref(static_id: int, graph: CallGraph) -> MethodRef:
     """Return the source-level identity used to compare path steps.
 
     §AR-code-coverage-improvement.4.2.1
@@ -398,6 +398,6 @@ def _translated_ref(static_id: int, graph: CallGraph) -> MethodRef:
     return graph.path_aliases.get(creator_id, graph.methods[creator_id])
 
 
-def _format_static_id(static_id: int, graph: CallGraph) -> str:
+def format_static_id(static_id: int, graph: CallGraph) -> str:
     ref = graph.methods.get(static_id)
     return ref.canonical_id if ref is not None else f"#{static_id}"

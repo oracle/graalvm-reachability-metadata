@@ -22,11 +22,11 @@ import tempfile
 from utility_scripts.gradle_environment import gradle_command_environment
 from utility_scripts.metadata_index import resolve_metadata_version
 from utility_scripts.native_trace_execution import (
-    _FAILURE_LOG_TAIL_LINE_LIMIT,
-    _GATE_STAGE,
-    _extract_failure_log_tail,
-    _gate_log_path,
-    _run_logged_gradle_command,
+    FAILURE_LOG_TAIL_LINE_LIMIT,
+    GATE_STAGE,
+    extract_failure_log_tail,
+    gate_log_path,
+    run_logged_gradle_command,
 )
 from utility_scripts.stage_logger import log_detail, log_stage
 
@@ -34,36 +34,36 @@ _TRACE_SENTINEL_FILE_NAMES = frozenset({"binary-exit-code"})
 _AGGREGATED_METADATA_FILE_NAME = "reachability-metadata.json"
 
 
-def _print_collected_metadata(run_dir: str, cycle_number: int) -> None:
+def print_collected_metadata(run_dir: str, cycle_number: int) -> None:
     """Print the trace metadata collected in ``run_dir`` for one gate cycle."""
     metadata_files = _metadata_files(run_dir)
     if not metadata_files:
         log_detail(
-            _GATE_STAGE,
+            GATE_STAGE,
             f"cycle {cycle_number}: collected metadata: none ({run_dir})",
             indent_level=1,
         )
         return
 
     log_detail(
-        _GATE_STAGE,
+        GATE_STAGE,
         f"cycle {cycle_number}: collected metadata from {len(metadata_files)} file(s) ({run_dir})",
         indent_level=1,
     )
 
 
-def _print_failure_log_tail(log_path: str, cycle_number: int) -> None:
+def print_failure_log_tail(log_path: str, cycle_number: int) -> None:
     """Print the native trace failure log tail."""
     log_detail(
-        _GATE_STAGE,
-        f"cycle {cycle_number}: failure log tail (last {_FAILURE_LOG_TAIL_LINE_LIMIT} lines) from {log_path}:",
+        GATE_STAGE,
+        f"cycle {cycle_number}: failure log tail (last {FAILURE_LOG_TAIL_LINE_LIMIT} lines) from {log_path}:",
         indent_level=1,
     )
-    for line in _extract_failure_log_tail(log_path).splitlines():
-        log_detail(_GATE_STAGE, line, indent_level=2)
+    for line in extract_failure_log_tail(log_path).splitlines():
+        log_detail(GATE_STAGE, line, indent_level=2)
 
 
-def _print_metadata_progress(
+def print_metadata_progress(
         accepted_run_dirs: list[str],
         accepted_entry_count: int,
         current_entry_count: int,
@@ -71,7 +71,7 @@ def _print_metadata_progress(
 ) -> None:
     """Print trace-loop progress before a no-progress failure."""
     log_detail(
-        _GATE_STAGE,
+        GATE_STAGE,
         (
             f"metadata progress stalled ({reason}): "
             f"accepted_runs={len(accepted_run_dirs)}, "
@@ -82,12 +82,12 @@ def _print_metadata_progress(
     )
     if not accepted_run_dirs:
         return
-    log_detail(_GATE_STAGE, "accepted run dirs:", indent_level=1)
+    log_detail(GATE_STAGE, "accepted run dirs:", indent_level=1)
     for run_dir in accepted_run_dirs:
-        log_detail(_GATE_STAGE, run_dir, indent_level=2)
+        log_detail(GATE_STAGE, run_dir, indent_level=2)
 
 
-def _existing_metadata_dirs(paths: list[str]) -> list[str]:
+def existing_metadata_dirs(paths: list[str]) -> list[str]:
     return [
         path
         for path in paths
@@ -211,7 +211,7 @@ def _read_text_or_binary_summary(path: str) -> str:
 _MERGE_TIMEOUT_SECONDS = 5 * 60
 
 
-def _merge_into_output(
+def merge_into_output(
         reachability_repo_path: str,
         run_dirs: list[str],
         output_dir: str,
@@ -243,8 +243,8 @@ def _merge_metadata_dirs(
         f"-PinputDirs={','.join(input_dirs)}",
         f"-PoutputDir={output_dir}",
     ]
-    merge_log_path = _gate_log_path("native-trace", 0, "mergeNativeTraceMetadata")
-    result = _run_logged_gradle_command(
+    merge_log_path = gate_log_path("native-trace", 0, "mergeNativeTraceMetadata")
+    result = run_logged_gradle_command(
         reachability_repo_path=reachability_repo_path,
         cmd=cmd,
         log_path=merge_log_path,
@@ -253,7 +253,7 @@ def _merge_metadata_dirs(
     )
     if result.returncode != 0:
         log_stage(
-            _GATE_STAGE,
+            GATE_STAGE,
             f"mergeNativeTraceMetadata failed with exit code {result.returncode}",
             indent_level=1,
         )
@@ -266,22 +266,22 @@ def _merge_metadata_dirs(
 def _print_aggregated_metadata_path(output_dir: str) -> None:
     """Print only the path to the merged reachability metadata file."""
     log_detail(
-        _GATE_STAGE,
+        GATE_STAGE,
         os.path.join(output_dir, _AGGREGATED_METADATA_FILE_NAME),
         indent_level=1,
     )
 
 
-def _finalize_staged_metadata(
+def finalize_staged_metadata(
         reachability_repo_path: str,
         coordinate: str,
         metadata_dirs: list[str],
         env: dict[str, str] | None = None,
 ) -> bool:
     """Merge staged agent/trace metadata into the durable library metadata file."""
-    staged_metadata_dirs = _existing_metadata_dirs(metadata_dirs)
+    staged_metadata_dirs = existing_metadata_dirs(metadata_dirs)
     if not staged_metadata_dirs:
-        log_detail(_GATE_STAGE, "no staged reachability-metadata.json to finalize")
+        log_detail(GATE_STAGE, "no staged reachability-metadata.json to finalize")
         return True
 
     try:
@@ -293,7 +293,7 @@ def _finalize_staged_metadata(
             library_version,
         )
     except (OSError, ValueError) as exc:
-        log_stage(_GATE_STAGE, f"failed to resolve durable metadata path: {exc}", indent_level=1)
+        log_stage(GATE_STAGE, f"failed to resolve durable metadata path: {exc}", indent_level=1)
         return False
 
     durable_metadata_dir = os.path.join(
@@ -320,7 +320,7 @@ def _finalize_staged_metadata(
             merged_metadata_path = os.path.join(merged_output_dir, _AGGREGATED_METADATA_FILE_NAME)
             if not os.path.isfile(merged_metadata_path):
                 log_stage(
-                    _GATE_STAGE,
+                    GATE_STAGE,
                     "native-image-utils produced no reachability-metadata.json for durable aggregation",
                     indent_level=1,
                 )
@@ -329,16 +329,16 @@ def _finalize_staged_metadata(
                     durable_metadata_path,
                     merged_metadata_path,
             ):
-                log_detail(_GATE_STAGE, "native trace metadata already present in durable metadata")
+                log_detail(GATE_STAGE, "native trace metadata already present in durable metadata")
                 return True
 
             os.makedirs(durable_metadata_dir, exist_ok=True)
             shutil.copyfile(merged_metadata_path, durable_metadata_path)
     except OSError as exc:
-        log_stage(_GATE_STAGE, f"failed to aggregate native trace metadata: {exc}", indent_level=1)
+        log_stage(GATE_STAGE, f"failed to aggregate native trace metadata: {exc}", indent_level=1)
         return False
     log_detail(
-        _GATE_STAGE,
+        GATE_STAGE,
         f"finalized staged metadata into {os.path.relpath(durable_metadata_path, reachability_repo_path)}",
     )
     return True
@@ -349,7 +349,7 @@ def _same_file_contents(left_path: str, right_path: str) -> bool:
         return left_file.read() == right_file.read()
 
 
-def _reset_directory(path: str) -> None:
+def reset_directory(path: str) -> None:
     if os.path.exists(path):
         shutil.rmtree(path)
     os.makedirs(path, exist_ok=True)

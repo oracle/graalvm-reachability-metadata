@@ -34,33 +34,33 @@ from benchmarks.code_coverage_benchmark_common import (  # noqa: E402
     RESULT_RECORD,
     RUN_RECORD,
     BenchmarkError,
-    _create_source_worktree,
-    _discard_source_worktree,
-    _ensure_run_record,
-    _git_output,
-    _publication_marker_path,
-    _read_json,
-    _record_completion,
-    _remove_worktree,
-    _result_record_path,
-    _run_record_path,
+    create_source_worktree,
+    discard_source_worktree,
+    ensure_run_record,
+    git_output,
+    publication_marker_path,
+    read_json,
+    record_completion,
+    remove_worktree,
+    result_record_path,
+    run_record_path,
     _runner_commit,
-    _write_json,
-    _write_terminal_result,
+    write_json,
+    write_terminal_result,
 )
 from benchmarks.code_coverage_benchmark_conversion import convert_workspace  # noqa: E402
 from benchmarks.code_coverage_benchmark_metrics import (  # noqa: E402
-    _collect_result,
-    _failure_phase,
-    _final_metrics_path,
+    collect_result,
+    failure_phase,
+    final_metrics_path,
 )
 from benchmarks.code_coverage_benchmark_publication import (  # noqa: E402
     COMMIT_SUBJECT,
     BenchmarkPublication,
-    _commit_paths,
-    _merge_result,
-    _metrics_relative_path,
-    _publish_result,
+    commit_paths,
+    merge_result,
+    metrics_relative_path,
+    publish_result,
 )
 from benchmarks.code_coverage_benchmark_suite import (  # noqa: E402
     KNOWN_STRATEGIES,
@@ -87,7 +87,7 @@ def _verify_preconditions(suite: Suite, cells: list[MatrixCell]) -> None:
         cwd=REPOSITORY_ROOT,
         check=True,
     )
-    tracked_status = _git_output(
+    tracked_status = git_output(
         REPOSITORY_ROOT,
         "status",
         "--porcelain",
@@ -199,7 +199,7 @@ def _execute_cell(
     source_worktree = run_parent / "source"
     workspace = run_parent / suite.workspace_name
     try:
-        _create_source_worktree(source_worktree, suite.commit)
+        create_source_worktree(source_worktree, suite.commit)
     except (OSError, subprocess.SubprocessError) as error:
         configuration = cell.configuration
         print(
@@ -236,27 +236,27 @@ def _execute_cell(
         result = subprocess.run(
             command, cwd=FORGE_ROOT, check=False, env=environment
         )
-        _ensure_run_record(workspace, identity)
-        result_path = _result_record_path(workspace)
-        recorded_result = _read_json(result_path) if result_path.is_file() else None
+        ensure_run_record(workspace, identity)
+        result_path = result_record_path(workspace)
+        recorded_result = read_json(result_path) if result_path.is_file() else None
         status = (
             "success"
-            if _publication_marker_path(workspace).is_file()
+            if publication_marker_path(workspace).is_file()
             or (
                 isinstance(recorded_result, dict)
                 and recorded_result.get("status") == "success"
             )
             else "failure"
         )
-        _record_completion(workspace, status, result.returncode)
+        record_completion(workspace, status, result.returncode)
         # A workflow that already wrote its immutable record only failed to
         # push it, so Git publication is retried; a workflow that stopped
         # earlier is held for a human instead of publishing a crash-time
         # snapshot (§FS-code-coverage-benchmarking.3).
-        if not _publication_marker_path(workspace).is_file() and result_path.is_file():
+        if not publication_marker_path(workspace).is_file() and result_path.is_file():
             publish_workspace(workspace, exit_code=result.returncode)
-        if _publication_marker_path(workspace).is_file():
-            _discard_source_worktree(source_worktree)
+        if publication_marker_path(workspace).is_file():
+            discard_source_worktree(source_worktree)
             print(f"Preserved benchmark workspace: {workspace.resolve()}")
             return status == "success", True
     except (BenchmarkError, OSError, subprocess.SubprocessError) as error:
@@ -264,8 +264,8 @@ def _execute_cell(
         try:
             # The run record makes the held workspace discoverable by
             # retry-pending even when the failure preceded its first write.
-            _ensure_run_record(workspace, identity)
-            _record_completion(workspace, "failure", None)
+            ensure_run_record(workspace, identity)
+            record_completion(workspace, "failure", None)
         except (BenchmarkError, OSError) as record_error:
             print(
                 f"ERROR: Benchmark run {run_id} has no run record: "
@@ -281,7 +281,7 @@ def _report_pending_intervention(workspace: Path, source_worktree: Path) -> None
     launcher-local state: nothing is published, and the operator either resumes
     the workspace to terminal publication or explicitly publishes the failure
     (§FS-code-coverage-benchmarking.3)."""
-    phase = _failure_phase(workspace)
+    phase = failure_phase(workspace)
     reason = (
         f"stopped in the {phase} phase"
         if phase
@@ -304,13 +304,13 @@ def publish_workspace(
 ) -> dict[str, Any]:
     """Collect and idempotently publish one workspace's compact result."""
     workspace = workspace.resolve()
-    run: dict[str, Any] = _read_json(_run_record_path(workspace))
+    run: dict[str, Any] = read_json(run_record_path(workspace))
     known_exit = exit_code
     if known_exit is None:
         candidate = run.get("rheiExitCode")
         known_exit = candidate if type(candidate) is int else None
-    result = _collect_result(workspace, requested_status, known_exit)
-    publication = _publish_result(repository_root.resolve(), workspace, result)
+    result = collect_result(workspace, requested_status, known_exit)
+    publication = publish_result(repository_root.resolve(), workspace, result)
     marker = {
         "schemaVersion": "1.0.0",
         "runId": result["runId"],
@@ -325,9 +325,9 @@ def publish_workspace(
         "publicationState": (
             "merged" if publication.already_merged else "branch-pushed"
         ),
-        "resultPath": str(_metrics_relative_path(result["coordinate"])),
+        "resultPath": str(metrics_relative_path(result["coordinate"])),
     }
-    _write_json(_publication_marker_path(workspace), marker)
+    write_json(publication_marker_path(workspace), marker)
     print(
         f"Published benchmark result {result['runId']} on "
         + (
@@ -336,7 +336,7 @@ def publish_workspace(
             else f"branch {publication.branch}; trusted Actions will open the PR."
         )
     )
-    _write_terminal_result(
+    write_terminal_result(
         f"Published benchmark result {result['runId']} "
         f"({result['status']}) for {result['coordinate']} at "
         f"{marker['resultPath']}, publication commit "
@@ -450,7 +450,7 @@ def retry_pending(args: argparse.Namespace) -> int:
     pending = [
         path.parents[3]
         for path in run_records
-        if not _publication_marker_path(path.parents[3]).is_file()
+        if not publication_marker_path(path.parents[3]).is_file()
     ]
     print(f"Found {len(pending)} unpublished benchmark workspace(s).")
     if not pending:
@@ -458,11 +458,11 @@ def retry_pending(args: argparse.Namespace) -> int:
     failures = 0
     held = 0
     for workspace in pending:
-        run = _read_json(_run_record_path(workspace))
+        run = read_json(run_record_path(workspace))
         # Only a workspace with a written record retries publication; one
         # without a record is held for a human decision
         # (§FS-code-coverage-benchmarking.3).
-        if not _result_record_path(workspace).is_file():
+        if not result_record_path(workspace).is_file():
             held += 1
             _report_pending_intervention(workspace, Path(run["sourceWorktree"]))
             continue
@@ -470,7 +470,7 @@ def retry_pending(args: argparse.Namespace) -> int:
             publish_workspace(workspace)
             source = Path(run["sourceWorktree"])
             if source.exists():
-                _discard_source_worktree(source)
+                discard_source_worktree(source)
         except (BenchmarkError, OSError, subprocess.SubprocessError) as error:
             failures += 1
             print(

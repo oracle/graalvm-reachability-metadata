@@ -69,7 +69,7 @@ class IssueClaimCacheTests(unittest.TestCase):
                     ],
                     now=100.0,
                 )
-                issue_cache._write_issue_search_cache_payload(
+                issue_cache.write_issue_search_cache_payload(
                     issue_cache._empty_issue_search_cache_payload(100.0),
                     100.0,
                 )

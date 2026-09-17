@@ -64,7 +64,7 @@ from dispatcher.continuation import (
     restore_library_update_route_from_marker,
 )
 from dispatcher.dynamic_access import (
-    _dispatcher_uncovered_class_count,
+    dispatcher_uncovered_class_count,
     append_chunked_dynamic_access_workflow_args,
     dynamic_access_chunk_class_threshold,
     prepare_dynamic_access_chunking,

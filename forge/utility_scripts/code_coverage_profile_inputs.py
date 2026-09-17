@@ -31,7 +31,7 @@ class ProfileFormatError(RuntimeError):
     """Raised when report inputs violate the analyzer contract."""
 
 
-def _load_json_object(path: str, label: str) -> dict:
+def load_json_object(path: str, label: str) -> dict:
     try:
         with open(path, "r", encoding="utf-8") as json_file:
             document = json.load(json_file)
@@ -133,7 +133,7 @@ class TargetState:
         return self.status in TERMINAL_TARGET_STATUSES
 
 
-def _require_coordinate(document: dict, expected: str, label: str) -> None:
+def require_coordinate(document: dict, expected: str, label: str) -> None:
     actual = document.get("coordinate")
     if not isinstance(actual, str) or not actual.strip():
         raise ProfileFormatError(f"{label} is missing coordinate.")
@@ -143,7 +143,7 @@ def _require_coordinate(document: dict, expected: str, label: str) -> None:
         )
 
 
-def _parse_target_state(entry: object, path: str, index: int) -> tuple[str, TargetState]:
+def parse_target_state(entry: object, path: str, index: int) -> tuple[str, TargetState]:
     if not isinstance(entry, dict):
         raise ProfileFormatError(f"Target state '{path}' target {index} must be an object.")
 
@@ -201,14 +201,14 @@ def load_target_states(paths: list[str] | None, coordinate: str) -> dict[str, Ta
     """Load repeatable coordinate-scoped state files; later files take precedence."""
     states: dict[str, TargetState] = {}
     for path in paths or []:
-        document = _load_json_object(path, "target state")
-        _require_coordinate(document, coordinate, "Target state")
+        document = load_json_object(path, "target state")
+        require_coordinate(document, coordinate, "Target state")
         entries = document.get("targets")
         if not isinstance(entries, list):
             raise ProfileFormatError(f"Target state '{path}' must contain a targets list.")
         seen: set[str] = set()
         for index, entry in enumerate(entries, start=1):
-            method_id, state = _parse_target_state(entry, path, index)
+            method_id, state = parse_target_state(entry, path, index)
             if method_id in seen:
                 raise ProfileFormatError(
                     f"Target state '{path}' repeats target '{method_id}'."
@@ -218,7 +218,7 @@ def load_target_states(paths: list[str] | None, coordinate: str) -> dict[str, Ta
     return states
 
 
-def _target_state_to_json(method_id: str, state: TargetState) -> dict:
+def target_state_to_json(method_id: str, state: TargetState) -> dict:
     return {
         "id": method_id,
         "status": state.status,
@@ -229,7 +229,7 @@ def _target_state_to_json(method_id: str, state: TargetState) -> dict:
     }
 
 
-def _effective_target_state(
+def effective_target_state(
         method_id: str,
         target_states: dict[str, TargetState],
         attempt_counts: dict[str, int],

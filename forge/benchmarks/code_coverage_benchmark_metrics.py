@@ -24,11 +24,11 @@ from benchmarks.code_coverage_benchmark_common import (
     FORGE_ROOT,
     RESULT_SCHEMA_PATH,
     BenchmarkError,
-    _read_json,
-    _result_record_path,
-    _run_record_path,
-    _validate,
-    _write_json,
+    read_json,
+    result_record_path,
+    run_record_path,
+    validate,
+    write_json,
 )
 from utility_scripts.code_coverage_jacoco import load_jacoco_method_coverage
 
@@ -79,7 +79,7 @@ def _phase_coverage(
     }
 
 
-def _final_metrics_path(workspace: Path) -> Path:
+def final_metrics_path(workspace: Path) -> Path:
     return (
         workspace
         / "runtime"
@@ -92,12 +92,12 @@ def _final_metrics_path(workspace: Path) -> Path:
 def _coverage_from_final_metrics(
         workspace: Path,
 ) -> tuple[dict[str, Any], dict[str, Any], dict[str, Any]] | None:
-    path = _final_metrics_path(workspace)
+    path = final_metrics_path(workspace)
     if not path.is_file():
         return None
     try:
-        metrics: dict[str, Any] = _read_json(path)
-        _validate(metrics, FINAL_METRICS_SCHEMA_PATH)
+        metrics: dict[str, Any] = read_json(path)
+        validate(metrics, FINAL_METRICS_SCHEMA_PATH)
         checkpoints = {
             checkpoint["name"]: checkpoint
             for checkpoint in metrics["runCoverage"]["checkpoints"]
@@ -189,7 +189,7 @@ def _load_invocations(workspace: Path) -> tuple[list[dict[str, Any]], bool]:
     invocations: list[dict[str, Any]] = []
     for path in sorted(directory.glob("*.json")):
         try:
-            value = _read_json(path)
+            value = read_json(path)
         except (OSError, ValueError):
             continue
         if isinstance(value, dict):
@@ -247,10 +247,10 @@ def _phase_tokens(
 
 
 def _stop_passes(workspace: Path, phase: str) -> int | None:
-    final_metrics = _final_metrics_path(workspace)
+    final_metrics = final_metrics_path(workspace)
     if final_metrics.is_file():
         try:
-            for decision in _read_json(final_metrics).get("stopDecisions", []):
+            for decision in read_json(final_metrics).get("stopDecisions", []):
                 if decision.get("phase") == phase and type(decision.get("passes")) is int:
                     return int(decision["passes"])
         except (OSError, ValueError, TypeError):
@@ -265,7 +265,7 @@ def _stop_passes(workspace: Path, phase: str) -> int | None:
     )
     if path.is_file():
         try:
-            passes = _read_json(path).get("passes")
+            passes = read_json(path).get("passes")
             return passes if type(passes) is int and passes >= 0 else None
         except (OSError, ValueError, TypeError):
             return None
@@ -278,7 +278,7 @@ def _sum_nullable(left: int | None, right: int | None) -> int | None:
     return left + right
 
 
-def _failure_phase(workspace: Path) -> str | None:
+def failure_phase(workspace: Path) -> str | None:
     path = workspace / "runtime" / "state-transitions.log"
     if not path.is_file():
         return None
@@ -308,23 +308,23 @@ def _failure_phase(workspace: Path) -> str | None:
     return mapping.get(task)
 
 
-def _collect_result(
+def collect_result(
         workspace: Path,
         requested_status: str | None,
         exit_code: int | None,
 ) -> dict[str, Any]:
     # A written record is immutable for its runId, success or failure
     # (§FS-code-coverage-benchmarking.3).
-    result_path = _result_record_path(workspace)
+    result_path = result_record_path(workspace)
     if result_path.is_file():
-        existing: dict[str, Any] = _read_json(result_path)
-        _validate([existing], RESULT_SCHEMA_PATH)
+        existing: dict[str, Any] = read_json(result_path)
+        validate([existing], RESULT_SCHEMA_PATH)
         return existing
     if requested_status is None:
         raise BenchmarkError(
             "Publishing without a recorded result requires an explicit --status."
         )
-    run: dict[str, Any] = _read_json(_run_record_path(workspace))
+    run: dict[str, Any] = read_json(run_record_path(workspace))
     strategy = str(run.get("strategy", "guided"))
     if strategy == "naive":
         # The naive arm has no finalization: its last JaCoCo report is the
@@ -434,7 +434,7 @@ def _collect_result(
         "strategy": strategy,
         "status": status,
         "failure": None if status == "success" else {
-            "phase": _failure_phase(workspace),
+            "phase": failure_phase(workspace),
             "exitCode": exit_code,
         },
         "checkedInAllMethods": run["checkedInAllMethods"],
@@ -448,6 +448,6 @@ def _collect_result(
         "naive": naive,
         "total": total,
     }
-    _validate([result], RESULT_SCHEMA_PATH)
-    _write_json(result_path, result)
+    validate([result], RESULT_SCHEMA_PATH)
+    write_json(result_path, result)
     return result

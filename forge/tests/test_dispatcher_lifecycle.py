@@ -87,7 +87,7 @@ class InterruptHandlingTests(unittest.TestCase):
             reason="job_failed",
         )
 
-        with patch.object(human_intervention, "_load_pending_run_metrics", return_value=None), \
+        with patch.object(human_intervention, "load_pending_run_metrics", return_value=None), \
                 patch.object(human_intervention, "collect_issue_log_paths", return_value=[]), \
                 patch.object(worktrees, "require_claimed_issue_worktree", side_effect=RuntimeError("invalid")), \
                 patch.object(subprocess, "run") as run:

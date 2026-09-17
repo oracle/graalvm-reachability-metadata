@@ -19,13 +19,13 @@ from utility_scripts.code_coverage_jacoco import JacocoMethodCoverage
 from utility_scripts.code_coverage_model import MethodRef, method_ref_from_iprof
 from utility_scripts.code_coverage_profile_graph import (
     CallGraph,
-    _format_static_id,
-    _resolve_graph_id,
-    _translated_ref,
+    format_static_id,
+    resolve_graph_id,
+    translated_ref,
 )
 from utility_scripts.code_coverage_profile_inputs import (
     ProfileFormatError,
-    _load_json_object,
+    load_json_object,
 )
 
 # Stack frames owned by these packages are runtime/harness plumbing, never a
@@ -80,7 +80,7 @@ def _parse_ctx(ctx: str) -> list[tuple[int, int]]:
 
 def _load_sampled_profile(profile_path: str, graph: CallGraph) -> SampledProfile:
     """Parse a sampled `.iprof` and map its stacks onto static call-graph ids."""
-    document: dict = _load_json_object(profile_path, "sampled profile")
+    document: dict = load_json_object(profile_path, "sampled profile")
     if "samplingProfiles" not in document:
         raise ProfileFormatError(
             "Profile has no samplingProfiles section. Re-collect the profile with "
@@ -110,7 +110,7 @@ def _load_sampled_profile(profile_path: str, graph: CallGraph) -> SampledProfile
             if ref is None:
                 continue
             full_path.append((ref, bci))
-            static_id: int | None = _resolve_graph_id(graph, ref)
+            static_id: int | None = resolve_graph_id(graph, ref)
             if static_id is not None and (not path or path[-1][0] != static_id):
                 path.append((static_id, bci))
                 path_full_indexes.append(len(full_path) - 1)
@@ -192,7 +192,7 @@ def _multi_source_routes(
         distance, seed_rank, _, current = heapq.heappop(queue)
         if best_keys.get(current) != (distance, seed_rank):
             continue
-        current_ref_id: str = _translated_ref(current, graph).canonical_id
+        current_ref_id: str = translated_ref(current, graph).canonical_id
         for edge in graph.adjacency.get(current, []):
             # A functional-interface call site names no callee of its own, so
             # routing through it invents a reachability claim
@@ -202,7 +202,7 @@ def _multi_source_routes(
             callee: int = edge["callee"]
             semantic_step: int = int(
                 current_ref_id
-                != _translated_ref(callee, graph).canonical_id
+                != translated_ref(callee, graph).canonical_id
             )
             candidate_distance: int = distance + semantic_step
             candidate_key = (candidate_distance, seed_rank)
@@ -219,7 +219,7 @@ def _multi_source_routes(
     return routes
 
 
-def _sample_routes(graph: CallGraph, profile: SampledProfile) -> RouteMap:
+def sample_routes(graph: CallGraph, profile: SampledProfile) -> RouteMap:
     seeds: list[tuple[int, tuple, object]] = []
     for sample in profile.samples:
         test_index: int | None = _existing_test_frame_index(sample.full_path)
@@ -240,11 +240,11 @@ def _sample_routes(graph: CallGraph, profile: SampledProfile) -> RouteMap:
     return _multi_source_routes(graph, seeds)
 
 
-def _public_entry_routes(graph: CallGraph, inventory_refs: list[MethodRef]) -> RouteMap:
+def public_entry_routes(graph: CallGraph, inventory_refs: list[MethodRef]) -> RouteMap:
     seeds: list[tuple[int, tuple, object]] = []
     seen: set[int] = set()
     for ref in inventory_refs:
-        static_id: int | None = _resolve_graph_id(graph, ref)
+        static_id: int | None = resolve_graph_id(graph, ref)
         if static_id is None or static_id in seen:
             continue
         seen.add(static_id)
@@ -252,7 +252,7 @@ def _public_entry_routes(graph: CallGraph, inventory_refs: list[MethodRef]) -> R
     return _multi_source_routes(graph, seeds)
 
 
-def _route_to(target_id: int, routes: RouteMap) -> tuple[list[int], list[dict]]:
+def route_to(target_id: int, routes: RouteMap) -> tuple[list[int], list[dict]]:
     if target_id not in routes.distance:
         return [], []
     path: list[int] = [target_id]
@@ -271,7 +271,7 @@ def _route_to(target_id: int, routes: RouteMap) -> tuple[list[int], list[dict]]:
     return path, edges
 
 
-def _observed_contexts(profile: SampledProfile, graph: CallGraph) -> list[dict]:
+def observed_contexts(profile: SampledProfile, graph: CallGraph) -> list[dict]:
     contexts: list[dict] = []
     for sample in sorted(profile.samples, key=lambda item: (-item.count, item.context_id)):
         contexts.append({
@@ -279,12 +279,12 @@ def _observed_contexts(profile: SampledProfile, graph: CallGraph) -> list[dict]:
             "sampleCount": sample.count,
             "rawContext": sample.raw_context,
             "fullPath": [ref.canonical_id for ref, _ in sample.full_path],
-            "mappedPath": [_format_static_id(static_id, graph) for static_id, _ in sample.path],
+            "mappedPath": [format_static_id(static_id, graph) for static_id, _ in sample.path],
         })
     return contexts
 
 
-def _observed_methods(
+def observed_methods(
         profile: SampledProfile,
         graph: CallGraph,
         jacoco_methods: dict[str, JacocoMethodCoverage],

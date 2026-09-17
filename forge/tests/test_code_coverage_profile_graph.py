@@ -162,7 +162,7 @@ class CallGraphAndProfileTest(unittest.TestCase):
     def test_ambiguous_loose_overload_is_not_mapped(self) -> None:
         graph = graph_module.load_call_graph(FIXTURES)
         ambiguous = MethodRef("com.example.Registry", "resolve", ("unknown.Type",), "void")
-        self.assertIsNone(graph_module._resolve_graph_id(graph, ambiguous))
+        self.assertIsNone(graph_module.resolve_graph_id(graph, ambiguous))
 
 
 class SyntheticLambdaTest(unittest.TestCase):
@@ -457,15 +457,15 @@ class FactoryStubTranslationTest(unittest.TestCase):
             {first_constructor.canonical_id, second_constructor.canonical_id},
         )
 
-        routes = routes_module._public_entry_routes(graph, [self.CALLER])
-        selected, _ = routes_module._route_to(9, routes)
+        routes = routes_module.public_entry_routes(graph, [self.CALLER])
+        selected, _ = routes_module.route_to(9, routes)
 
         self.assertEqual(selected, semantic_path)
         self.assertEqual(routes.distance[9], 3)
         self.assertEqual(records_module._path_distance(selected, graph), 3)
 
     def test_unmatched_factory_remains_unchanged(self) -> None:
-        translated: list[MethodRef] = records_module._translated_path([1, 7], self.graph)
+        translated: list[MethodRef] = records_module.translated_path([1, 7], self.graph)
         rendered: str = render_module._display_path([1, 7], self.graph)
         self.assertEqual(translated[-1], self.UNMATCHED_FACTORY)
         self.assertIn("FactoryMethodHolder.External_generated()", rendered)

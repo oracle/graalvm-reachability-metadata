@@ -37,13 +37,13 @@ from dispatcher.fixture_support import is_fixture_testing_enabled, require_fixtu
 from dispatcher.github_api import gh, gh_json
 from dispatcher.issue_cache import (
     LocalIssueSearchCacheWriterLock,
-    _get_cached_issue_search_count,
-    _get_cached_issue_search_page,
-    _read_issue_search_cache_payload,
-    _read_issue_search_cache_payload_or_empty,
-    _write_issue_search_cache_payload,
-    _set_cached_issue_search_count,
-    _set_cached_issue_search_page,
+    get_cached_issue_search_count,
+    get_cached_issue_search_page,
+    read_issue_search_cache_payload,
+    read_issue_search_cache_payload_or_empty,
+    write_issue_search_cache_payload,
+    set_cached_issue_search_count,
+    set_cached_issue_search_page,
     build_issue_search_cache_key,
     get_issue_search_cache_ttl_seconds,
     is_issue_search_cache_enabled,
@@ -197,22 +197,22 @@ def get_issue_search_page(query: str, page: int, per_page: int) -> list[dict]:
         "page", query, ISSUE_SEARCH_SORT, ISSUE_SEARCH_ORDER, page, per_page
     )
     now = time.time()
-    cached_payload = _read_issue_search_cache_payload()
+    cached_payload = read_issue_search_cache_payload()
     if cached_payload is not None:
-        cached_page = _get_cached_issue_search_page(cached_payload, cache_key, now, ttl_seconds)
+        cached_page = get_cached_issue_search_page(cached_payload, cache_key, now, ttl_seconds)
         if cached_page is not None:
             return cached_page
 
     with LocalIssueSearchCacheWriterLock():
         now = time.time()
-        payload = _read_issue_search_cache_payload_or_empty(now)
-        cached_page = _get_cached_issue_search_page(payload, cache_key, now, ttl_seconds)
+        payload = read_issue_search_cache_payload_or_empty(now)
+        cached_page = get_cached_issue_search_page(payload, cache_key, now, ttl_seconds)
         if cached_page is not None:
             return cached_page
 
         issues = fetch_issue_search_page(query, page, per_page)
-        _set_cached_issue_search_page(payload, cache_key, issues, now)
-        _write_issue_search_cache_payload(payload, now)
+        set_cached_issue_search_page(payload, cache_key, issues, now)
+        write_issue_search_cache_payload(payload, now)
         return issues
 
 
@@ -256,22 +256,22 @@ def get_issue_search_count(query: str) -> int:
     ttl_seconds = get_issue_search_cache_ttl_seconds()
     cache_key = build_issue_search_cache_key("count", query)
     now = time.time()
-    cached_payload = _read_issue_search_cache_payload()
+    cached_payload = read_issue_search_cache_payload()
     if cached_payload is not None:
-        cached_count = _get_cached_issue_search_count(cached_payload, cache_key, now, ttl_seconds)
+        cached_count = get_cached_issue_search_count(cached_payload, cache_key, now, ttl_seconds)
         if cached_count is not None:
             return cached_count
 
     with LocalIssueSearchCacheWriterLock():
         now = time.time()
-        payload = _read_issue_search_cache_payload_or_empty(now)
-        cached_count = _get_cached_issue_search_count(payload, cache_key, now, ttl_seconds)
+        payload = read_issue_search_cache_payload_or_empty(now)
+        cached_count = get_cached_issue_search_count(payload, cache_key, now, ttl_seconds)
         if cached_count is not None:
             return cached_count
 
         total_count = fetch_issue_search_count(query)
-        _set_cached_issue_search_count(payload, cache_key, total_count, now)
-        _write_issue_search_cache_payload(payload, now)
+        set_cached_issue_search_count(payload, cache_key, total_count, now)
+        write_issue_search_cache_payload(payload, now)
         return total_count
 
 

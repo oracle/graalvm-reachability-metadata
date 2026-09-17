@@ -94,7 +94,7 @@ class WorkflowDriverDefaultTests(unittest.TestCase):
         with patch.object(dynamic_access, "_prepare_new_library_dynamic_access_report", return_value=True) \
                 as prepare_report, \
                 patch.object(dynamic_access, "_generate_dispatcher_dynamic_access_report") as generate_report, \
-                patch.object(dynamic_access, "_resolve_dynamic_access_report_path", return_value="/worktree/report.json"), \
+                patch.object(dynamic_access, "resolve_dynamic_access_report_path", return_value="/worktree/report.json"), \
                 patch.object(dynamic_access, "load_dynamic_access_coverage_report", return_value=_report(3)):
             for strategy_name in strategies:
                 with self.subTest(strategy=strategy_name):
@@ -112,7 +112,7 @@ class WorkflowDriverDefaultTests(unittest.TestCase):
     def test_bulk_deferral_names_an_unavailable_report(self) -> None:
         with patch.object(dynamic_access, "_prepare_new_library_dynamic_access_report", return_value=True), \
                 patch.object(dynamic_access, "_generate_dispatcher_dynamic_access_report"), \
-                patch.object(dynamic_access, "_resolve_dynamic_access_report_path", return_value="/worktree/report.json"), \
+                patch.object(dynamic_access, "resolve_dynamic_access_report_path", return_value="/worktree/report.json"), \
                 patch.object(dynamic_access, "load_dynamic_access_coverage_report", side_effect=FileNotFoundError):
             output = io.StringIO()
             with redirect_stdout(output):
@@ -136,7 +136,7 @@ class WorkflowDriverDefaultTests(unittest.TestCase):
     def test_library_update_preparation_precedes_the_deferred_decision(self) -> None:
         with patch.object(dynamic_access, "_prepare_library_update_dynamic_access_report") as prepare_target, \
                 patch.object(dynamic_access, "_generate_dispatcher_dynamic_access_report") as generate_report, \
-                patch.object(dynamic_access, "_resolve_dynamic_access_report_path", return_value="/worktree/report.json"), \
+                patch.object(dynamic_access, "resolve_dynamic_access_report_path", return_value="/worktree/report.json"), \
                 patch.object(dynamic_access, "load_dynamic_access_coverage_report", return_value=_report(2)):
             chunk_count = dynamic_access.prepare_dynamic_access_chunking(
                 _claimed_issue(forge_metadata.LABEL_LIBRARY_UPDATE),
@@ -165,7 +165,7 @@ class WorkflowDriverDefaultTests(unittest.TestCase):
 
         with patch.object(dynamic_access, "_prepare_new_library_dynamic_access_report") as prepare_report, \
                 patch.object(dynamic_access, "_generate_dispatcher_dynamic_access_report") as generate_report, \
-                patch.object(dynamic_access, "_resolve_dynamic_access_report_path", return_value="/worktree/report.json"), \
+                patch.object(dynamic_access, "resolve_dynamic_access_report_path", return_value="/worktree/report.json"), \
                 patch.object(dynamic_access, "load_dynamic_access_coverage_report", return_value=_report(3)), \
                 patch.dict(
                     "os.environ",
@@ -200,7 +200,7 @@ class WorkflowDriverDefaultTests(unittest.TestCase):
 
         with patch.object(dynamic_access, "_prepare_new_library_dynamic_access_report") as prepare_report, \
                 patch.object(dynamic_access, "_generate_dispatcher_dynamic_access_report") as generate_report, \
-                patch.object(dynamic_access, "_resolve_dynamic_access_report_path", return_value="/worktree/report.json"), \
+                patch.object(dynamic_access, "resolve_dynamic_access_report_path", return_value="/worktree/report.json"), \
                 patch.object(dynamic_access, "load_dynamic_access_coverage_report", return_value=_report(3)), \
                 patch.dict(
                     "os.environ",

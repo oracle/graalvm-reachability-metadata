@@ -23,9 +23,9 @@ from git_scripts.github_cli import (
     GITHUB_TRANSIENT_RETRY_ATTEMPTS,
     GitHubError,
     GitHubRateLimitExceeded,
-    _format_github_retry_reason,
-    _github_retry_delay_seconds,
-    _log_github_transient_retry,
+    format_github_retry_reason,
+    github_retry_delay_seconds,
+    log_github_transient_retry,
     ensure_gh_authenticated,
     is_github_rate_limit_text,
     is_github_transient_failure_text,
@@ -67,8 +67,8 @@ def gh(
             raise GitHubRateLimitExceeded("GitHub API rate limit exceeded")
         if is_github_transient_failure_text(error_text):
             if attempt < max_attempts:
-                _log_github_transient_retry(error_text, attempt, max_attempts, quiet)
-                time.sleep(_github_retry_delay_seconds(attempt))
+                log_github_transient_retry(error_text, attempt, max_attempts, quiet)
+                time.sleep(github_retry_delay_seconds(attempt))
                 continue
             # Only type the failure when this loop owns the retries; a single attempt
             # (max_attempts == 1) is driven by an outer retrier that needs the raw
@@ -76,7 +76,7 @@ def gh(
             if max_attempts > 1:
                 raise GitHubError(
                     f"GitHub transient failure after {max_attempts} attempts: "
-                    f"{_format_github_retry_reason(error_text)}"
+                    f"{format_github_retry_reason(error_text)}"
                 )
         if check:
             if not quiet:

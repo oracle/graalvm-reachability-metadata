@@ -39,7 +39,7 @@ from dispatcher.config import (
 )
 from dispatcher.fixture_support import is_fixture_testing_enabled
 from dispatcher.github_api import gh
-from dispatcher.human_intervention import _resolve_dynamic_access_report_path
+from dispatcher.human_intervention import resolve_dynamic_access_report_path
 from dispatcher.issue_admin import add_issue_label
 from dispatcher.issue_queue import (
     add_issue_label_to_payload,
@@ -193,7 +193,7 @@ def _generate_dispatcher_dynamic_access_report(claimed_issue: ClaimedIssue) -> N
 def _load_dispatcher_dynamic_access_report(claimed_issue: ClaimedIssue):
     """Load the dispatcher-generated dynamic-access report if it is usable."""
     try:
-        report = load_dynamic_access_coverage_report(_resolve_dynamic_access_report_path(claimed_issue))
+        report = load_dynamic_access_coverage_report(resolve_dynamic_access_report_path(claimed_issue))
     except FileNotFoundError:
         return None
     if not report.has_dynamic_access or report.total_calls <= 0:
@@ -269,14 +269,14 @@ def _prepare_dispatcher_dynamic_access_report(claimed_issue: ClaimedIssue) -> bo
     return True
 
 
-def _dispatcher_uncovered_class_count(claimed_issue: ClaimedIssue) -> str:
+def dispatcher_uncovered_class_count(claimed_issue: ClaimedIssue) -> str:
     """Return the prepared report's uncovered class count, or that it is unavailable.
 
     A library that reports no dynamic access counts zero; only a report that was
     never written is unavailable (§FS-forge-chunked-dynamic-access).
     """
     try:
-        report = load_dynamic_access_coverage_report(_resolve_dynamic_access_report_path(claimed_issue))
+        report = load_dynamic_access_coverage_report(resolve_dynamic_access_report_path(claimed_issue))
     except FileNotFoundError:
         return "unavailable"
     return str(uncovered_dynamic_access_class_count(report))
@@ -312,7 +312,7 @@ def prepare_dynamic_access_chunking(
             "Deferring chunk selection for '{strategy}' until its bulk phase completes; "
             "uncovered_classes={uncovered}, class_boundary={boundary}.".format(
                 strategy=strategy_name,
-                uncovered=_dispatcher_uncovered_class_count(claimed_issue),
+                uncovered=dispatcher_uncovered_class_count(claimed_issue),
                 boundary=chunk_boundary,
             ),
         )

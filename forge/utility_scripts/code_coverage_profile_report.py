@@ -52,17 +52,17 @@ from utility_scripts.code_coverage_jacoco import (
 from utility_scripts.code_coverage_model import MethodRef, parse_inventory_id
 from utility_scripts.code_coverage_profile_graph import (
     CallGraph,
-    _is_synthetic_method,
+    is_synthetic_method,
     load_call_graph,
 )
 from utility_scripts.code_coverage_profile_inputs import (
     ProfileFormatError,
     TargetState,
-    _effective_target_state,
-    _load_json_object,
-    _parse_target_state,
-    _require_coordinate,
-    _target_state_to_json,
+    effective_target_state,
+    load_json_object,
+    parse_target_state,
+    require_coordinate,
+    target_state_to_json,
     library_owners,
     load_library_line_numbers,
     load_library_methods,
@@ -71,21 +71,21 @@ from utility_scripts.code_coverage_profile_inputs import (
 from utility_scripts.code_coverage_profile_records import (
     MAX_LISTED_METHODS,
     NearCallRecord,
-    _build_record,
-    _classify_miss,
-    _method_evidence,
-    _prompt_selection_key,
-    _record_rank_key,
-    _record_to_json,
+    build_record,
+    classify_miss,
+    method_evidence,
+    prompt_selection_key,
+    record_rank_key,
+    record_to_json,
 )
 from utility_scripts.code_coverage_profile_render import write_lcov, write_markdown
 from utility_scripts.code_coverage_profile_routes import (
     RouteMap,
     SampledProfile,
-    _observed_contexts,
-    _observed_methods,
-    _public_entry_routes,
-    _sample_routes,
+    observed_contexts,
+    observed_methods,
+    public_entry_routes,
+    sample_routes,
     load_sampled_profile,
 )
 
@@ -153,15 +153,15 @@ def correlate(
         coverage.method_ref.canonical_id for coverage in deep_uncovered
     }
 
-    sampled_routes: RouteMap = _sample_routes(graph, profile)
-    entry_routes: RouteMap = _public_entry_routes(graph, [ref for ref, _ in inventory_refs])
+    sampled_routes: RouteMap = sample_routes(graph, profile)
+    entry_routes: RouteMap = public_entry_routes(graph, [ref for ref, _ in inventory_refs])
     uncovered_records: list[NearCallRecord] = [
-        _build_record(
+        build_record(
             coverage,
             graph,
             sampled_routes,
             entry_routes,
-            _effective_target_state(
+            effective_target_state(
                 coverage.method_ref.canonical_id,
                 states,
                 attempts,
@@ -170,7 +170,7 @@ def correlate(
         )
         for coverage in deep_uncovered
     ]
-    uncovered_records.sort(key=_record_rank_key)
+    uncovered_records.sort(key=record_rank_key)
     mathematical_ranks: dict[str, int] = {
         record.target_ref.canonical_id: rank
         for rank, record in enumerate(uncovered_records, start=1)
@@ -185,7 +185,7 @@ def correlate(
         record
         for record in uncovered_records
         if record.join_kind != "none"
-        and not _is_synthetic_method(record.target_ref)
+        and not is_synthetic_method(record.target_ref)
     ]
     actionable_records: list[NearCallRecord] = [
         record for record in bulk_records if not record.target_state.terminal
@@ -195,19 +195,19 @@ def correlate(
         for record in uncovered_records
         if record.join_kind != "none"
         and not record.target_state.terminal
-        and _is_synthetic_method(record.target_ref)
+        and is_synthetic_method(record.target_ref)
     )
     prompt_records: list[NearCallRecord] = sorted(
-        actionable_records, key=_prompt_selection_key,
+        actionable_records, key=prompt_selection_key,
     )[:effective_limit]
     miss_classifications: dict[str, dict] = {
-        record.target_ref.canonical_id: _classify_miss(
+        record.target_ref.canonical_id: classify_miss(
             record, graph, jacoco_methods, lines
         )
         for record in uncovered_records
     }
     uncovered_json: list[dict] = [
-        _record_to_json(
+        record_to_json(
             record,
             graph,
             mathematical_ranks[record.target_ref.canonical_id],
@@ -217,7 +217,7 @@ def correlate(
         for record in uncovered_records
     ]
     bulk_json: list[dict] = [
-        _record_to_json(
+        record_to_json(
             record,
             graph,
             mathematical_ranks[record.target_ref.canonical_id],
@@ -242,10 +242,10 @@ def correlate(
             "deepCovered": len(deep_coverage) - len(deep_uncovered),
             "deepUncovered": len(deep_uncovered),
             "deepSyntheticMethods": sum(
-                1 for coverage in deep_coverage if _is_synthetic_method(coverage.method_ref)
+                1 for coverage in deep_coverage if is_synthetic_method(coverage.method_ref)
             ),
             "deepSyntheticUncovered": sum(
-                1 for coverage in deep_uncovered if _is_synthetic_method(coverage.method_ref)
+                1 for coverage in deep_uncovered if is_synthetic_method(coverage.method_ref)
             ),
             "syntheticExcludedFromPrompt": synthetic_excluded,
             "nonLibraryMethodsExcluded": len(foreign_ids),
@@ -263,9 +263,9 @@ def correlate(
         },
         "inventory": inventory_report,
         "targetStates": [
-            _target_state_to_json(
+            target_state_to_json(
                 method_id,
-                _effective_target_state(
+                effective_target_state(
                     method_id,
                     states,
                     attempts,
@@ -275,7 +275,7 @@ def correlate(
             for method_id in sorted(set(states) | set(attempts))
         ],
         "deepMethods": [
-            _method_evidence(
+            method_evidence(
                 coverage,
                 graph_status=("present" if coverage.method_ref.canonical_id in graph_ids
                               else "not-present"),
@@ -284,7 +284,7 @@ def correlate(
         ],
         "diagnosticMethods": [
             *[
-                _method_evidence(jacoco_methods[method_id], graph_status="not-present")
+                method_evidence(jacoco_methods[method_id], graph_status="not-present")
                 for method_id in jacoco_only_ids
             ],
             *[
@@ -298,8 +298,8 @@ def correlate(
                 for method_id in graph_only_ids
             ],
         ],
-        "observed": _observed_contexts(profile, graph),
-        "observedMethods": _observed_methods(profile, graph, jacoco_methods),
+        "observed": observed_contexts(profile, graph),
+        "observedMethods": observed_methods(profile, graph, jacoco_methods),
         "uncoveredPaths": uncovered_json,
         "promptTargetIds": [record.target_ref.canonical_id for record in prompt_records],
         "bulkTargets": bulk_json,
@@ -327,7 +327,7 @@ def _previous_report(output_dir: str, iteration: int) -> dict | None:
     previous_path: str = os.path.join(output_dir, f"discovery-report-{iteration - 1}.json")
     if iteration <= 0 or not os.path.isfile(previous_path):
         return None
-    return _load_json_object(previous_path, "previous discovery report")
+    return load_json_object(previous_path, "previous discovery report")
 
 
 def _next_attempt_counts(previous: dict | None) -> dict[str, int]:
@@ -350,7 +350,7 @@ def _previous_target_states(previous: dict | None) -> dict[str, TargetState]:
         raise ProfileFormatError("Previous discovery report has invalid targetStates.")
     states: dict[str, TargetState] = {}
     for index, entry in enumerate(entries, start=1):
-        method_id, state = _parse_target_state(entry, "previous discovery report", index)
+        method_id, state = parse_target_state(entry, "previous discovery report", index)
         if method_id in states:
             raise ProfileFormatError(
                 f"Previous discovery report repeats target '{method_id}'."
@@ -403,8 +403,8 @@ def generate_report(
         library_methods,
     )
     profile: SampledProfile = load_sampled_profile(profile_path, graph)
-    inventory: dict = _load_json_object(api_inventory_path, "API inventory")
-    _require_coordinate(inventory, coordinate, "API inventory")
+    inventory: dict = load_json_object(api_inventory_path, "API inventory")
+    require_coordinate(inventory, coordinate, "API inventory")
     jacoco: JacocoCoverage = load_jacoco_coverage(jacoco_xml_paths)
     jacoco_methods: dict[str, JacocoMethodCoverage] = jacoco.methods
     previous: dict | None = _previous_report(output_dir, iteration)

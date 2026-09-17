@@ -58,7 +58,7 @@ from dispatcher.worktrees import cleanup_issue_workspace
 from utility_scripts.run_location import enter_phase
 from utility_scripts.run_location import run_step
 from dispatcher.config import LABEL_CHUNKED_DYNAMIC_ACCESS
-from dispatcher.human_intervention import _load_pending_run_metrics
+from dispatcher.human_intervention import load_pending_run_metrics
 from dispatcher.issue_admin import add_issue_label
 from dispatcher.publication import (
     build_publication_handoff,
@@ -339,7 +339,7 @@ def process_claimed_issue_lifecycle(
 
 def apply_chunked_dynamic_access_completion_follow_up(claimed_issue: ClaimedIssue) -> None:
     """Apply issue labels after a chunked dynamic-access part was published."""
-    run_metrics = _load_pending_run_metrics(claimed_issue.scratch_metrics_repo_path)
+    run_metrics = load_pending_run_metrics(claimed_issue.scratch_metrics_repo_path)
     workflow_status = None if run_metrics is None else run_metrics.get("status")
     exhaust_report_path = find_dynamic_access_exhaust_report_path(
         claimed_issue.worktree_path,

@@ -35,7 +35,7 @@ from dispatcher.driver_invocation import (
     run_library_preparation_preflight,
 )
 from dispatcher.dynamic_access import (
-    _dispatcher_uncovered_class_count,
+    dispatcher_uncovered_class_count,
     prepare_dynamic_access_chunking,
 )
 from dispatcher.fixture_support import is_fixture_testing_enabled
@@ -178,7 +178,7 @@ def invoke_pipeline(
                 claimed_issue,
                 run_strategy_name,
             )
-            uncovered_classes = _dispatcher_uncovered_class_count(claimed_issue)
+            uncovered_classes = dispatcher_uncovered_class_count(claimed_issue)
             budget_suffix = f", class budget {chunk_class_count}" if chunk_class_count is not None else ""
             inspection_result = (
                 "report unavailable"

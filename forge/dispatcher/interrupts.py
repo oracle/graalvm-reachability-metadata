@@ -103,7 +103,7 @@ def is_interrupt_exception(exc: BaseException) -> bool:
     return False
 
 
-def _handle_sigint(_signum, _frame) -> None:
+def handle_sigint(_signum, _frame) -> None:
     mark_user_interrupt_requested(INTERRUPT_REASON_CTRL_C)
     raise KeyboardInterrupt
 

@@ -12,7 +12,7 @@ import os
 import re
 import sys
 from typing import Optional
-from dispatcher.human_intervention import _repo_relative_path
+from dispatcher.human_intervention import repo_relative_path
 
 def extract_coordinate_parts(title: str) -> Optional[tuple[str, str, str]]:
     """
@@ -49,7 +49,7 @@ def load_current_metadata_version(
         artifact,
         "index.json",
     )
-    index_json_path_display = _repo_relative_path(index_json_path, reachability_metadata_path)
+    index_json_path_display = repo_relative_path(index_json_path, reachability_metadata_path)
     if not os.path.isfile(index_json_path):
         if report_errors:
             print(f"ERROR: Missing metadata index file: {index_json_path_display}", file=sys.stderr)

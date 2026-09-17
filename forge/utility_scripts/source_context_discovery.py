@@ -195,7 +195,7 @@ def discover_artifact_metadata(
     attempt_logs = [_format_gradle_attempt_log("initial", command, result)]
     _write_gradle_attempt_logs(log_path, attempt_logs)
 
-    if result.returncode != 0 and _is_gradle_bootstrap_failure(result.stdout):
+    if result.returncode != 0 and is_gradle_bootstrap_failure(result.stdout):
         retry_command = _discover_artifact_metadata_command(
             coordinate,
             effective_agent_command,
@@ -214,7 +214,7 @@ def discover_artifact_metadata(
         _write_gradle_attempt_logs(log_path, attempt_logs)
 
     if result.returncode != 0:
-        if _is_gradle_bootstrap_failure(result.stdout):
+        if is_gradle_bootstrap_failure(result.stdout):
             print(
                 f"ERROR: Gradle bootstrap failed for {coordinate}. See {log_path_display} for details.",
                 file=sys.stderr,
@@ -282,7 +282,7 @@ def _write_gradle_attempt_logs(log_path: str, attempt_logs: list[str]) -> None:
         log_file.write("\n\n".join(attempt_logs))
 
 
-def _is_gradle_bootstrap_failure(output: str | None) -> bool:
+def is_gradle_bootstrap_failure(output: str | None) -> bool:
     """Return True when Gradle failed before leaving root-build configuration."""
     return _is_spotless_plugin_bootstrap_failure(output) or _is_gradle_wrapper_download_failure(output)
 

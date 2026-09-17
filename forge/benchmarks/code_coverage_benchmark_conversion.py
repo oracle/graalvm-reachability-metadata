@@ -16,10 +16,10 @@ from pathlib import Path
 
 from benchmarks.code_coverage_benchmark_common import (
     BenchmarkError,
-    _ensure_run_record,
-    _git_output,
-    _write_json,
-    _write_terminal_result,
+    ensure_run_record,
+    git_output,
+    write_json,
+    write_terminal_result,
 )
 from utility_scripts.metadata_index import resolve_test_dir
 
@@ -29,11 +29,11 @@ def convert_workspace(args: argparse.Namespace) -> None:
     workspace = Path(args.workspace).resolve()
     source_worktree = Path(args.source_worktree).resolve()
     runner_forge_path = Path(args.runner_forge_path).resolve()
-    if _git_output(source_worktree, "rev-parse", "HEAD") != args.suite_commit:
+    if git_output(source_worktree, "rev-parse", "HEAD") != args.suite_commit:
         raise BenchmarkError(
             "Benchmark source worktree is not at the configured suite commit."
         )
-    if _git_output(runner_forge_path.parent, "rev-parse", "HEAD") != args.runner_commit:
+    if git_output(runner_forge_path.parent, "rev-parse", "HEAD") != args.runner_commit:
         raise BenchmarkError(
             "Benchmark runner checkout is not at the recorded runner commit."
         )
@@ -68,7 +68,7 @@ def convert_workspace(args: argparse.Namespace) -> None:
         ),
     }
     issue_dir = workspace / "runtime" / "code-coverage" / "issues"
-    _write_json(issue_dir / "conversion.json", conversion)
+    write_json(issue_dir / "conversion.json", conversion)
     (issue_dir / "inventory.md").write_text(
         f"# Benchmark input\n\n- Coordinate: `{args.coordinate}`\n"
         f"- Suite commit: `{args.suite_commit}`\n",
@@ -99,7 +99,7 @@ def convert_workspace(args: argparse.Namespace) -> None:
         "sourceWorktree": str(source_worktree),
         "runnerForgePath": str(runner_forge_path),
     }
-    _ensure_run_record(workspace, run_identity)
+    ensure_run_record(workspace, run_identity)
     work_path_output = (
         workspace
         / "runtime"
@@ -113,7 +113,7 @@ def convert_workspace(args: argparse.Namespace) -> None:
         "No GitHub issue or Project operation was performed.\n",
         encoding="utf-8",
     )
-    _write_terminal_result(
+    write_terminal_result(
         f"Prepared benchmark {args.run_id} for {args.coordinate} at suite "
         f"commit {args.suite_commit}. Conversion artifacts written; no GitHub "
         f"issue or Project operation was performed."

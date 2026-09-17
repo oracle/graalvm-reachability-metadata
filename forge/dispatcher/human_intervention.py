@@ -56,7 +56,7 @@ class HumanInterventionCandidate:
     coverage: DynamicAccessCoverageSnapshot | None = None
     reason: str = "low_dynamic_access_coverage"
 
-def _load_pending_run_metrics(metrics_worktree_path: str) -> dict | None:
+def load_pending_run_metrics(metrics_worktree_path: str) -> dict | None:
     """Load the pending run metrics from the metrics worktree."""
     try:
         return read_pending_metrics(metrics_worktree_path)
@@ -94,7 +94,7 @@ def _load_dynamic_access_snapshot_from_metrics(run_metrics: dict | None) -> Dyna
     )
 
 
-def _resolve_dynamic_access_report_path(claimed_issue: ClaimedIssue) -> str:
+def resolve_dynamic_access_report_path(claimed_issue: ClaimedIssue) -> str:
     """Resolve the dynamic-access coverage report path for a new-library issue."""
     group, artifact, version = claimed_issue.issue_coordinates.split(":")
     return os.path.join(
@@ -108,7 +108,7 @@ def _resolve_dynamic_access_report_path(claimed_issue: ClaimedIssue) -> str:
 
 def _load_dynamic_access_snapshot_from_report(claimed_issue: ClaimedIssue) -> DynamicAccessCoverageSnapshot | None:
     """Load dynamic-access coverage directly from the generated report as a fallback."""
-    report_path = _resolve_dynamic_access_report_path(claimed_issue)
+    report_path = resolve_dynamic_access_report_path(claimed_issue)
     try:
         report = load_dynamic_access_coverage_report(report_path)
     except FileNotFoundError:
@@ -157,7 +157,7 @@ def resolve_human_intervention_candidate(
     if claimed_issue.label not in {LABEL_LIBRARY_NEW, LABEL_LIBRARY_UPDATE}:
         return None
 
-    run_metrics = _load_pending_run_metrics(claimed_issue.scratch_metrics_repo_path)
+    run_metrics = load_pending_run_metrics(claimed_issue.scratch_metrics_repo_path)
     if not workflow_success:
         strategy_name = None
         workflow_status = RUN_STATUS_FAILURE
@@ -219,7 +219,7 @@ def _collect_human_intervention_read_only_files(claimed_issue: ClaimedIssue) -> 
         os.path.join(claimed_issue.worktree_path, "metadata", group, artifact, "index.json"),
         os.path.join(claimed_issue.worktree_path, "metadata", group, artifact, metadata_version),
         resolve_stats_file_path(claimed_issue.worktree_path, group, artifact, version),
-        _resolve_dynamic_access_report_path(claimed_issue),
+        resolve_dynamic_access_report_path(claimed_issue),
     ]
 
     read_only_files: list[str] = []
@@ -243,8 +243,8 @@ def _build_human_intervention_analysis_prompt(
 
     coverage = candidate.coverage
     coverage_percent = coverage.coverage_ratio * 100.0
-    report_path = _resolve_dynamic_access_report_path(claimed_issue)
-    report_path_display = _repo_relative_path(report_path, claimed_issue.worktree_path)
+    report_path = resolve_dynamic_access_report_path(claimed_issue)
+    report_path_display = repo_relative_path(report_path, claimed_issue.worktree_path)
     return (
         "Read-only analysis task. Do not modify files, create commits, or propose automated edits.\n\n"
         "Project issue details:\n"
@@ -294,7 +294,7 @@ def _sanitize_log_name(value: str) -> str:
     return re.sub(r"[^A-Za-z0-9_.-]+", "_", value).strip("_") or "unknown"
 
 
-def _repo_relative_path(path: str, repo_path: str) -> str:
+def repo_relative_path(path: str, repo_path: str) -> str:
     """Return a path relative to the given repository root."""
     return os.path.relpath(os.path.abspath(path), os.path.abspath(repo_path))
 
@@ -480,7 +480,7 @@ def run_codex_failed_generation_analysis(
         preservation_result: FailurePreservationResult | None = None,
 ) -> str:
     """Use the analysis agent to analyze a failed generation run."""
-    run_metrics = _load_pending_run_metrics(claimed_issue.scratch_metrics_repo_path)
+    run_metrics = load_pending_run_metrics(claimed_issue.scratch_metrics_repo_path)
     log_paths = collect_issue_log_paths(claimed_issue, started_at)
     if not claimed_issue_worktree_is_valid(claimed_issue, "failed-run analysis"):
         return _build_failed_generation_fallback_comment(

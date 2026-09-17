@@ -102,7 +102,7 @@ class FailureLogTailTests(unittest.TestCase):
             encoding="utf-8",
         )
 
-        excerpt = nte._extract_failure_log_tail(path)
+        excerpt = nte.extract_failure_log_tail(path)
 
         self.assertNotIn("line-329", excerpt)
         self.assertIn("line-330", excerpt)
@@ -124,7 +124,7 @@ class GradlePropertyThreadingTests(unittest.TestCase):
             "g:a:1.0", ["/tmp/agent"], gradle_properties=self._PROPERTY
         )
         self.assertIn("-PincludeCodeCoverageSuite=true", test_command)
-        trace_command = nte._run_native_trace_image_command(
+        trace_command = nte.run_native_trace_image_command(
             coordinate="g:a:1.0",
             run_dir="/tmp/run",
             condition_packages=["g"],
@@ -143,7 +143,7 @@ class GradlePropertyThreadingTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as scratch:
             log_path = os.path.join(scratch, "log.txt")
             with patch.object(nte.subprocess, "run", side_effect=_record):
-                nte._run_generate_metadata(
+                nte.run_generate_metadata(
                     reachability_repo_path=scratch,
                     coordinate="g:a:1.0",
                     output_dir=os.path.join(scratch, "agent"),
@@ -151,7 +151,7 @@ class GradlePropertyThreadingTests(unittest.TestCase):
                     env={},
                     gradle_properties=self._PROPERTY,
                 )
-                nte._run_coordinate_test(
+                nte.run_coordinate_test(
                     reachability_repo_path=scratch,
                     coordinate="g:a:1.0",
                     metadata_config_dirs=[],
@@ -160,7 +160,7 @@ class GradlePropertyThreadingTests(unittest.TestCase):
                     env={},
                     gradle_properties=self._PROPERTY,
                 )
-                nte._run_native_trace_image(
+                nte.run_native_trace_image(
                     reachability_repo_path=scratch,
                     coordinate="g:a:1.0",
                     run_dir=scratch,

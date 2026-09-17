@@ -81,14 +81,14 @@ class CodeCoverageBenchmarkLifecycleTests(unittest.TestCase):
         )
         commit = _git(repository, "rev-parse", "HEAD").stdout.strip()
 
-        benchmark._create_source_worktree(source, commit, repository)
+        benchmark.create_source_worktree(source, commit, repository)
         (source / "stale.txt").write_text("stale\n", encoding="utf-8")
 
-        benchmark._create_source_worktree(source, commit, repository)
+        benchmark.create_source_worktree(source, commit, repository)
 
         self.assertFalse((source / "stale.txt").exists())
         self.assertEqual(commit, _git(source, "rev-parse", "HEAD").stdout.strip())
-        benchmark._remove_worktree(source, repository)
+        benchmark.remove_worktree(source, repository)
 
     def test_removes_source_only_after_publication_marker(self) -> None:
         temporary = tempfile.TemporaryDirectory()
@@ -109,7 +109,7 @@ class CodeCoverageBenchmarkLifecycleTests(unittest.TestCase):
                 return_value="run-success",
         ), patch.object(
                 benchmark,
-                "_create_source_worktree",
+                "create_source_worktree",
         ), patch.object(
                 benchmark.subprocess,
                 "run",
@@ -119,7 +119,7 @@ class CodeCoverageBenchmarkLifecycleTests(unittest.TestCase):
                 "publish_workspace",
         ) as publish, patch.object(
                 benchmark_common,
-                "_remove_worktree",
+                "remove_worktree",
         ) as remove:
             outcome = benchmark._execute_cell(
                 self.suite,
@@ -137,10 +137,10 @@ class CodeCoverageBenchmarkLifecycleTests(unittest.TestCase):
 
         with patch.object(
                 benchmark_common,
-                "_remove_worktree",
+                "remove_worktree",
                 side_effect=error,
         ), patch("builtins.print") as output:
-            benchmark._discard_source_worktree(Path("/tmp/source"))
+            benchmark.discard_source_worktree(Path("/tmp/source"))
 
         output.assert_called_once()
 
@@ -156,7 +156,7 @@ class CodeCoverageBenchmarkLifecycleTests(unittest.TestCase):
                 return_value="run-skipped",
         ), patch.object(
                 benchmark,
-                "_create_source_worktree",
+                "create_source_worktree",
                 side_effect=error,
         ), patch.object(
                 benchmark.subprocess,
@@ -189,7 +189,7 @@ class CodeCoverageBenchmarkLifecycleTests(unittest.TestCase):
                 return_value="run-failure",
         ), patch.object(
                 benchmark,
-                "_create_source_worktree",
+                "create_source_worktree",
         ), patch.object(
                 benchmark.subprocess,
                 "run",
@@ -199,7 +199,7 @@ class CodeCoverageBenchmarkLifecycleTests(unittest.TestCase):
                 "publish_workspace",
         ) as publish, patch.object(
                 benchmark_common,
-                "_remove_worktree",
+                "remove_worktree",
         ) as remove, patch("builtins.print") as output:
             outcome = benchmark._execute_cell(
                 self.suite,
@@ -216,7 +216,7 @@ class CodeCoverageBenchmarkLifecycleTests(unittest.TestCase):
             any("PENDING HUMAN INTERVENTION" in message for message in messages)
         )
         workspace = root / "run-failure" / "code-coverage-99000"
-        run = benchmark._read_json(workspace / benchmark.RUN_RECORD)
+        run = benchmark.read_json(workspace / benchmark.RUN_RECORD)
         self.assertEqual("failure", run["requestedStatus"])
 
     def test_retries_publication_when_record_exists_without_marker(self) -> None:
@@ -244,7 +244,7 @@ class CodeCoverageBenchmarkLifecycleTests(unittest.TestCase):
                 return_value="run-retry",
         ), patch.object(
                 benchmark,
-                "_create_source_worktree",
+                "create_source_worktree",
         ), patch.object(
                 benchmark.subprocess,
                 "run",
@@ -255,7 +255,7 @@ class CodeCoverageBenchmarkLifecycleTests(unittest.TestCase):
                 side_effect=publish,
         ) as republish, patch.object(
                 benchmark_common,
-                "_remove_worktree",
+                "remove_worktree",
         ) as remove, patch("builtins.print"):
             outcome = benchmark._execute_cell(
                 self.suite,
@@ -372,7 +372,7 @@ class CodeCoverageBenchmarkMetricsTests(unittest.TestCase):
         self._write_invocation(workspace, "3", "deep-cover", 4, 5, 6)
         self._write_invocation(workspace, "4", "deep-fix", 7, 8, 9)
 
-        result = benchmark._collect_result(workspace, "success", 0)
+        result = benchmark.collect_result(workspace, "success", 0)
 
         self.assertEqual("success", result["status"])
         self.assertIsNone(result["failure"])
@@ -413,7 +413,7 @@ class CodeCoverageBenchmarkMetricsTests(unittest.TestCase):
             encoding="utf-8",
         )
 
-        result = benchmark._collect_result(workspace, "failure", 7)
+        result = benchmark.collect_result(workspace, "failure", 7)
 
         self.assertEqual("failure", result["status"])
         self.assertEqual({"phase": "deep", "exitCode": 7}, result["failure"])
@@ -431,15 +431,15 @@ class CodeCoverageBenchmarkMetricsTests(unittest.TestCase):
         later, even when terminal evidence appears after the write."""
         _, workspace = self._workspace()
         self._write_run(workspace)
-        recorded = benchmark._collect_result(workspace, "failure", 7)
+        recorded = benchmark.collect_result(workspace, "failure", 7)
         self.assertEqual("failure", recorded["status"])
 
-        final_metrics = benchmark._final_metrics_path(workspace)
+        final_metrics = benchmark.final_metrics_path(workspace)
         final_metrics.parent.mkdir(parents=True)
         shutil.copy2(FINAL_METRICS, final_metrics)
 
-        self.assertEqual(recorded, benchmark._collect_result(workspace, "success", 0))
-        self.assertEqual(recorded, benchmark._collect_result(workspace, None, None))
+        self.assertEqual(recorded, benchmark.collect_result(workspace, "success", 0))
+        self.assertEqual(recorded, benchmark.collect_result(workspace, None, None))
 
     def test_collecting_a_new_record_requires_an_explicit_status(self) -> None:
         """Without a written record there is no automatic failure default: the
@@ -447,8 +447,8 @@ class CodeCoverageBenchmarkMetricsTests(unittest.TestCase):
         _, workspace = self._workspace()
         self._write_run(workspace)
         with self.assertRaises(benchmark.BenchmarkError):
-            benchmark._collect_result(workspace, None, None)
-        self.assertFalse(benchmark._result_record_path(workspace).is_file())
+            benchmark.collect_result(workspace, None, None)
+        self.assertFalse(benchmark.result_record_path(workspace).is_file())
 
     def test_merge_is_idempotent_and_rejects_conflicts(self) -> None:
         temporary = tempfile.TemporaryDirectory()
@@ -456,13 +456,13 @@ class CodeCoverageBenchmarkMetricsTests(unittest.TestCase):
         path = Path(temporary.name) / "metrics.json"
         _, workspace = self._workspace()
         self._write_run(workspace)
-        result = benchmark._collect_result(workspace, "failure", 1)
+        result = benchmark.collect_result(workspace, "failure", 1)
 
-        self.assertTrue(benchmark._merge_result(path, result))
-        self.assertFalse(benchmark._merge_result(path, result))
+        self.assertTrue(benchmark.merge_result(path, result))
+        self.assertFalse(benchmark.merge_result(path, result))
         conflicting = dict(result, status="success", failure=None)
         with self.assertRaisesRegex(benchmark.BenchmarkError, "different metrics"):
-            benchmark._merge_result(path, conflicting)
+            benchmark.merge_result(path, conflicting)
 
     def test_publication_pushes_one_result_only_branch(self) -> None:
         temporary = tempfile.TemporaryDirectory()
@@ -491,15 +491,15 @@ class CodeCoverageBenchmarkMetricsTests(unittest.TestCase):
         workspace = root / "run-1" / "code-coverage-99000"
         workspace.mkdir(parents=True)
         self._write_run(workspace)
-        result = benchmark._collect_result(workspace, "failure", 1)
+        result = benchmark.collect_result(workspace, "failure", 1)
 
         with patch.object(
                 benchmark_publication,
                 "get_authenticated_login",
                 return_value="test-bot",
         ):
-            first = benchmark._publish_result(repository, workspace, result)
-            second = benchmark._publish_result(repository, workspace, result)
+            first = benchmark.publish_result(repository, workspace, result)
+            second = benchmark.publish_result(repository, workspace, result)
 
         self.assertEqual(first, second)
         self.assertFalse(first.already_merged)

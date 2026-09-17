@@ -24,10 +24,10 @@ from typing import Any, TextIO
 from benchmarks.code_coverage_benchmark_common import (
     RESULT_SCHEMA_PATH,
     BenchmarkError,
-    _git_output,
-    _read_json,
-    _validate,
-    _write_json,
+    git_output,
+    read_json,
+    validate,
+    write_json,
 )
 from git_scripts.common_git import (
     GitTransportError,
@@ -54,15 +54,15 @@ class BenchmarkPublication:
     already_merged: bool
 
 
-def _metrics_relative_path(coordinate: str) -> Path:
+def metrics_relative_path(coordinate: str) -> Path:
     group, artifact, version = coordinate.split(":")
     return Path("code-coverage-benchmarks") / group / artifact / f"{version}.json"
 
 
-def _merge_result(path: Path, result: dict[str, Any]) -> bool:
+def merge_result(path: Path, result: dict[str, Any]) -> bool:
     entries: list[dict[str, Any]] = []
     if path.is_file():
-        value = _read_json(path)
+        value = read_json(path)
         if not isinstance(value, list):
             raise BenchmarkError(f"Benchmark result file is not a list: {path}")
         entries = value
@@ -73,17 +73,17 @@ def _merge_result(path: Path, result: dict[str, Any]) -> bool:
             raise BenchmarkError(
                 f"Run ID {result['runId']} already has different metrics."
             )
-        _validate(entries, RESULT_SCHEMA_PATH)
+        validate(entries, RESULT_SCHEMA_PATH)
         return False
     entries.append(result)
     entries.sort(key=lambda entry: (entry["timestamp"], entry["runId"]))
-    _validate(entries, RESULT_SCHEMA_PATH)
-    _write_json(path, entries)
+    validate(entries, RESULT_SCHEMA_PATH)
+    write_json(path, entries)
     return True
 
 
 def _publish_lock(metrics_repo_path: Path) -> TextIO:
-    common_dir = _git_output(metrics_repo_path, "rev-parse", "--git-common-dir")
+    common_dir = git_output(metrics_repo_path, "rev-parse", "--git-common-dir")
     common_path = Path(common_dir)
     if not common_path.is_absolute():
         common_path = (metrics_repo_path / common_path).resolve()
@@ -126,7 +126,7 @@ def _discard_publication_worktree(
         )
 
 
-def _commit_paths(repository: Path, paths: list[Path], subject: str) -> str:
+def commit_paths(repository: Path, paths: list[Path], subject: str) -> str:
     subprocess.run(
         ["git", "add", "--", *(str(path) for path in paths)],
         cwd=repository,
@@ -140,7 +140,7 @@ def _commit_paths(repository: Path, paths: list[Path], subject: str) -> str:
         cwd=repository,
         check=True,
     )
-    return _git_output(repository, "rev-parse", "HEAD")
+    return git_output(repository, "rev-parse", "HEAD")
 
 
 def _publication_identity(
@@ -200,21 +200,21 @@ def _fetch_existing_publication(
     entries = _json_at_ref(
         repository_root,
         remote_ref,
-        _metrics_relative_path(result["coordinate"]),
+        metrics_relative_path(result["coordinate"]),
     )
     if not isinstance(entries, list):
         raise BenchmarkError(f"Existing publication branch is incomplete: {branch}")
     if result not in entries:
         raise BenchmarkError(f"Existing publication branch conflicts with run {result['runId']}")
-    return _git_output(repository_root, "rev-parse", remote_ref)
+    return git_output(repository_root, "rev-parse", remote_ref)
 
 
-def _publish_result(
+def publish_result(
         repository_root: Path,
         workspace: Path,
         result: dict[str, Any],
 ) -> BenchmarkPublication:
-    relative_path = _metrics_relative_path(result["coordinate"])
+    relative_path = metrics_relative_path(result["coordinate"])
     _, publication_id, branch = _publication_identity(repository_root, result)
     lock_handle = _publish_lock(repository_root)
     try:
@@ -241,15 +241,15 @@ def _publish_result(
                     "origin/master",
                 )
                 created = True
-                changed = _merge_result(publisher / relative_path, result)
+                changed = merge_result(publisher / relative_path, result)
                 if not changed:
                     return BenchmarkPublication(
-                        _git_output(publisher, "rev-parse", "HEAD"),
+                        git_output(publisher, "rev-parse", "HEAD"),
                         None,
                         publication_id,
                         True,
                     )
-                result_commit = _commit_paths(
+                result_commit = commit_paths(
                     publisher,
                     [relative_path],
                     COMMIT_SUBJECT,

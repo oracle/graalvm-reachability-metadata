@@ -22,7 +22,7 @@ from utility_scripts.code_coverage_profile_inputs import (
 from utility_scripts.code_coverage_profile_records import (
     MAX_LISTED_METHODS,
     NearCallRecord,
-    _edge_miss_classification,
+    edge_miss_classification,
 )
 from utility_scripts.code_coverage_profile_routes import (
     Sample,
@@ -262,7 +262,7 @@ class DeepCorrelationTest(unittest.TestCase):
             report_paths=("fixture.xml",),
         )
 
-        classification: dict = _edge_miss_classification(
+        classification: dict = edge_miss_classification(
             edge,
             graph,
             {caller.canonical_id: caller_coverage},

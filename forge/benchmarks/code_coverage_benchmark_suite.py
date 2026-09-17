@@ -20,8 +20,8 @@ from ai_workflows.agents.agent_runtime import PROVIDER_AWARE_BACKENDS
 from benchmarks.code_coverage_benchmark_common import (
     FORGE_ROOT,
     BenchmarkError,
-    _read_json,
-    _validate,
+    read_json,
+    validate,
 )
 
 SUITE_PATH = FORGE_ROOT / "benchmarks" / "code_coverage_suite.json"
@@ -112,8 +112,8 @@ class Suite:
 
 def load_suite(path: Path = SUITE_PATH) -> Suite:
     """Load and semantically validate the fixed benchmark suite."""
-    raw: dict[str, Any] = _read_json(path)
-    _validate(raw, SUITE_SCHEMA_PATH)
+    raw: dict[str, Any] = read_json(path)
+    validate(raw, SUITE_SCHEMA_PATH)
     libraries = tuple(
         Library(
             index=int(item["index"]),

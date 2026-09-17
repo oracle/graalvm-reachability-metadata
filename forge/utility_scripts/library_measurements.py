@@ -161,7 +161,7 @@ def count_test_only_metadata_entries(
     if legacy_test_config_paths:
         raise ValueError(format_legacy_test_native_image_config_error(legacy_test_config_paths))
 
-    test_version = _resolve_test_version_dir(repo_path, package, artifact, library_version)
+    test_version = resolve_test_version_dir(repo_path, package, artifact, library_version)
     reach_json = os.path.join(
         repo_path,
         "tests",
@@ -183,7 +183,7 @@ def count_test_only_metadata_entries(
     return int(counts.get("total", 0))
 
 
-def _resolve_test_version_dir(repo_path: str, package: str, artifact: str, library_version: str) -> str:
+def resolve_test_version_dir(repo_path: str, package: str, artifact: str, library_version: str) -> str:
     """Resolve the tests/src directory name for a library version using metadata index.json."""
     return resolve_test_version(repo_path, package, artifact, library_version)
 

@@ -17,7 +17,7 @@ import os
 import re
 
 
-def _default_condition_packages(reachability_repo_path: str, coordinate: str) -> list[str]:
+def default_condition_packages(reachability_repo_path: str, coordinate: str) -> list[str]:
     """Return native-trace condition packages for ``coordinate``.
 
     Native tracing conditions must be package roots that can actually appear on

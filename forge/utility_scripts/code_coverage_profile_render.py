@@ -19,8 +19,8 @@ from utility_scripts.code_coverage_profile_graph import CallGraph
 from utility_scripts.code_coverage_profile_records import (
     MAX_LISTED_METHODS,
     NearCallRecord,
-    _simple_owner,
-    _translated_path,
+    simple_owner,
+    translated_path,
 )
 from utility_scripts.code_coverage_profile_routes import Sample, SampledProfile
 
@@ -28,7 +28,7 @@ MAX_RENDERED_DISPATCH_CANDIDATES = 12
 
 
 def _display_method(ref: MethodRef, qualify_owner: bool) -> str:
-    owner = _simple_owner(ref.owner)
+    owner = simple_owner(ref.owner)
     arguments = "..." if ref.params else ""
     if ref.name == "<init>":
         return f"{owner}({arguments})"
@@ -40,7 +40,7 @@ def _display_path(static_path: list[int], graph: CallGraph, limit: int = 6) -> s
     # Generated lambda classes and extracted bodies carry compiler-chosen names;
     # the agent can only act on the method that creates them
     # (§AR-code-coverage-improvement.4.2.1).
-    path: list[MethodRef] = _translated_path(static_path, graph)
+    path: list[MethodRef] = translated_path(static_path, graph)
     selected: list[MethodRef | None]
     if len(path) <= limit:
         selected = list(path)
@@ -66,7 +66,7 @@ def _line_location(evidence: dict | None) -> str:
     return f"{os.path.basename(source_path)}:{evidence['line']}"
 
 
-def _classification_lines(classification: dict) -> list[str]:
+def classification_lines(classification: dict) -> list[str]:
     target: dict | None = classification.get("target")
     if target is None:
         target_line: str = "  target line unavailable"
@@ -136,7 +136,7 @@ def _prompt_line(record: NearCallRecord, graph: CallGraph, notes: dict[str, dict
         "nearestCovered": None,
         "candidates": [],
     })
-    return "\n".join([path_line, *_classification_lines(classification)])
+    return "\n".join([path_line, *classification_lines(classification)])
 
 
 def write_markdown(

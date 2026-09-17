@@ -19,12 +19,12 @@ from utility_scripts.code_coverage_jacoco import JacocoLineCoverage, JacocoMetho
 from utility_scripts.code_coverage_model import MethodRef
 from utility_scripts.code_coverage_profile_graph import (
     CallGraph,
-    _format_static_id,
-    _is_synthetic_method,
-    _translated_ref,
+    format_static_id,
+    is_synthetic_method,
+    translated_ref,
 )
 from utility_scripts.code_coverage_profile_inputs import TargetState
-from utility_scripts.code_coverage_profile_routes import RouteMap, Sample, _route_to
+from utility_scripts.code_coverage_profile_routes import RouteMap, Sample, route_to
 
 MAX_LISTED_METHODS = 200
 
@@ -79,7 +79,7 @@ class NearCallRecord:
         return self.sample.count if self.sample is not None else 0
 
 
-def _build_record(
+def build_record(
         coverage: JacocoMethodCoverage,
         graph: CallGraph,
         sampled_routes: RouteMap,
@@ -99,7 +99,7 @@ def _build_record(
             sampled_join_path_index=None,
         )
     if target_id in sampled_routes.distance:
-        path, edges = _route_to(target_id, sampled_routes)
+        path, edges = route_to(target_id, sampled_routes)
         sample, path_index = sampled_routes.payload[target_id]
         return NearCallRecord(
             coverage=coverage,
@@ -113,7 +113,7 @@ def _build_record(
             semantic_distance=_path_distance(path, graph),
         )
     if target_id in entry_routes.distance:
-        path, edges = _route_to(target_id, entry_routes)
+        path, edges = route_to(target_id, entry_routes)
         return NearCallRecord(
             coverage=coverage,
             target_id=target_id,
@@ -137,21 +137,21 @@ def _build_record(
     )
 
 
-def _record_rank_key(record: NearCallRecord) -> tuple:
+def record_rank_key(record: NearCallRecord) -> tuple:
     join_order: dict[str, int] = {"sampled": 0, "public-entry": 1, "none": 2}
     distance: int = record.distance if record.distance is not None else sys.maxsize
     return (distance, join_order[record.join_kind], -record.sample_count, record.target_ref.canonical_id)
 
 
-def _prompt_selection_key(record: NearCallRecord) -> tuple:
-    return (record.attempt_count, *_record_rank_key(record))
+def prompt_selection_key(record: NearCallRecord) -> tuple:
+    return (record.attempt_count, *record_rank_key(record))
 
 
-def _method_evidence(coverage: JacocoMethodCoverage, graph_status: str = "present") -> dict:
+def method_evidence(coverage: JacocoMethodCoverage, graph_status: str = "present") -> dict:
     return {
         "id": coverage.method_ref.canonical_id,
         "status": coverage.status,
-        "synthetic": _is_synthetic_method(coverage.method_ref),
+        "synthetic": is_synthetic_method(coverage.method_ref),
         "graphStatus": graph_status,
         "sourcePath": coverage.source_path,
         "sourceLine": coverage.source_line,
@@ -161,8 +161,8 @@ def _method_evidence(coverage: JacocoMethodCoverage, graph_status: str = "presen
 
 def _edge_to_json(edge: dict, graph: CallGraph) -> dict:
     return {
-        "caller": _format_static_id(edge["caller"], graph),
-        "callee": _format_static_id(edge["callee"], graph),
+        "caller": format_static_id(edge["caller"], graph),
+        "callee": format_static_id(edge["callee"], graph),
         "bci": edge["bci"],
         "invokeId": edge.get("invoke_id"),
         "isDirect": edge["is_direct"],
@@ -300,7 +300,7 @@ def _inferred_invoking_line(
     return next((record for record in region if record[1].covered), None)
 
 
-def _edge_miss_classification(
+def edge_miss_classification(
         edge: dict,
         graph: CallGraph,
         jacoco_methods: dict[str, JacocoMethodCoverage],
@@ -385,7 +385,7 @@ def _edge_miss_classification(
     return {"kind": "no-fork", **base}
 
 
-def _classify_miss(
+def classify_miss(
         record: NearCallRecord,
         graph: CallGraph,
         jacoco_methods: dict[str, JacocoMethodCoverage],
@@ -411,7 +411,7 @@ def _classify_miss(
             seen.add(key)
             unique_edges.append(edge)
     classifications: list[dict] = [
-        _edge_miss_classification(
+        edge_miss_classification(
             edge, graph, jacoco_methods, jacoco_lines
         )
         for edge in unique_edges
@@ -478,15 +478,15 @@ def _hand_off_note(record: NearCallRecord, graph: CallGraph) -> str | None:
         for outgoing in graph.adjacency.get(edge["caller"], []):
             callee: MethodRef = graph.methods[outgoing["callee"]]
             if callee.name in HAND_OFF_METHOD_NAMES:
-                return f"{_simple_owner(callee.owner)}.{callee.name}"
+                return f"{simple_owner(callee.owner)}.{callee.name}"
     return None
 
 
-def _translated_path(static_path: list[int], graph: CallGraph) -> list[MethodRef]:
+def translated_path(static_path: list[int], graph: CallGraph) -> list[MethodRef]:
     """Replace synthetic nodes by source-level methods, collapsing repeats."""
     translated: list[MethodRef] = []
     for static_id in static_path:
-        ref: MethodRef = _translated_ref(static_id, graph)
+        ref: MethodRef = translated_ref(static_id, graph)
         if not translated or translated[-1].canonical_id != ref.canonical_id:
             translated.append(ref)
     return translated
@@ -494,10 +494,10 @@ def _translated_path(static_path: list[int], graph: CallGraph) -> list[MethodRef
 
 def _path_distance(static_path: list[int], graph: CallGraph) -> int:
     """Count edges in the source-level path used for prompt ranking."""
-    return max(0, len(_translated_path(static_path, graph)) - 1)
+    return max(0, len(translated_path(static_path, graph)) - 1)
 
 
-def _record_to_json(
+def record_to_json(
         record: NearCallRecord,
         graph: CallGraph,
         rank: int,
@@ -524,19 +524,19 @@ def _record_to_json(
         "stepsRemaining": record.distance,
         "sampleCount": record.sample_count,
         "sampleContextId": record.sample.context_id if record.sample is not None else None,
-        "synthetic": _is_synthetic_method(record.target_ref),
+        "synthetic": is_synthetic_method(record.target_ref),
         "closures": _closure_stats(record, graph, jacoco_methods),
         "handOff": _hand_off_note(record, graph),
         "missClassification": miss_classification,
         "reachingPath": (
             [
                 ref.canonical_id
-                for ref in _translated_path(record.static_path, graph)
+                for ref in translated_path(record.static_path, graph)
             ]
             if graph_present else None
         ),
         "reachingPathRaw": (
-            [_format_static_id(static_id, graph) for static_id in record.static_path]
+            [format_static_id(static_id, graph) for static_id in record.static_path]
             if graph_present else None
         ),
         "edges": (
@@ -546,5 +546,5 @@ def _record_to_json(
     }
 
 
-def _simple_owner(owner: str) -> str:
+def simple_owner(owner: str) -> str:
     return owner.rsplit(".", 1)[-1].replace("$", ".")

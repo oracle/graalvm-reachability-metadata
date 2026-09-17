@@ -124,7 +124,7 @@ def is_github_transient_errors(errors: object) -> bool:
     return False
 
 
-def _github_error_text_from_exception(exc: subprocess.CalledProcessError) -> str:
+def github_error_text_from_exception(exc: subprocess.CalledProcessError) -> str:
     return "\n".join(
         text.strip()
         for text in (exc.stderr, exc.stdout)
@@ -132,7 +132,7 @@ def _github_error_text_from_exception(exc: subprocess.CalledProcessError) -> str
     )
 
 
-def _format_github_retry_reason(reason: str) -> str:
+def format_github_retry_reason(reason: str) -> str:
     for line in reason.splitlines():
         line = line.strip()
         if line:
@@ -140,23 +140,23 @@ def _format_github_retry_reason(reason: str) -> str:
     return "empty GitHub response"
 
 
-def _github_retry_delay_seconds(attempt: int) -> float:
+def github_retry_delay_seconds(attempt: int) -> float:
     return GITHUB_TRANSIENT_RETRY_BASE_DELAY_SECONDS * (2 ** (attempt - 1))
 
 
-def _log_github_transient_retry(reason: str, attempt: int, max_attempts: int, quiet: bool) -> None:
+def log_github_transient_retry(reason: str, attempt: int, max_attempts: int, quiet: bool) -> None:
     if quiet:
         return
-    delay = _github_retry_delay_seconds(attempt)
+    delay = github_retry_delay_seconds(attempt)
     print(
         "ERROR: GitHub API transient failure: "
-        f"{_format_github_retry_reason(reason)}. "
+        f"{format_github_retry_reason(reason)}. "
         f"Retrying in {delay:.1f}s (attempt {attempt + 1}/{max_attempts}).",
         file=sys.stderr,
     )
 
 
-def _split_github_arg_key_value(arg: str) -> tuple[str, str] | None:
+def split_github_arg_key_value(arg: str) -> tuple[str, str] | None:
     if "=" not in arg:
         return None
     key, value = arg.split("=", 1)
@@ -165,8 +165,8 @@ def _split_github_arg_key_value(arg: str) -> tuple[str, str] | None:
     return key, value
 
 
-def _format_github_log_arg(arg: str) -> str:
-    key_value = _split_github_arg_key_value(arg)
+def format_github_log_arg(arg: str) -> str:
+    key_value = split_github_arg_key_value(arg)
     if key_value is None:
         return arg
     key, value = key_value
@@ -175,7 +175,7 @@ def _format_github_log_arg(arg: str) -> str:
     return f"{key}={value}"
 
 
-def _format_github_log_args(args: Iterable[str]) -> list[str]:
+def format_github_log_args(args: Iterable[str]) -> list[str]:
     formatted_args: list[str] = []
     redact_next = False
     for arg in args:
@@ -183,7 +183,7 @@ def _format_github_log_args(args: Iterable[str]) -> list[str]:
             formatted_args.append("<redacted>")
             redact_next = False
             continue
-        formatted_args.append(_format_github_log_arg(arg))
+        formatted_args.append(format_github_log_arg(arg))
         if arg in GITHUB_LOG_REDACTED_FLAGS:
             redact_next = True
     return formatted_args
@@ -198,11 +198,11 @@ def log_github_query(args: Iterable[str]) -> None:
     """Print one console line for a GitHub CLI query."""
     if not should_log_github_queries():
         return
-    formatted_args = _format_github_log_args(args)
+    formatted_args = format_github_log_args(args)
     print(f"[github-query] gh {' '.join(formatted_args)}")
 
 
-def _gh_runner_accepts_max_attempts(gh_runner: Callable[..., subprocess.CompletedProcess]) -> bool:
+def gh_runner_accepts_max_attempts(gh_runner: Callable[..., subprocess.CompletedProcess]) -> bool:
     try:
         signature = inspect.signature(gh_runner)
     except (TypeError, ValueError):
@@ -213,12 +213,12 @@ def _gh_runner_accepts_max_attempts(gh_runner: Callable[..., subprocess.Complete
     )
 
 
-def _run_gh_runner_once(
+def run_gh_runner_once(
         gh_runner: Callable[..., subprocess.CompletedProcess],
         args: tuple[str, ...],
         quiet: bool,
 ) -> subprocess.CompletedProcess:
-    if _gh_runner_accepts_max_attempts(gh_runner):
+    if gh_runner_accepts_max_attempts(gh_runner):
         return gh_runner(*args, quiet=quiet, max_attempts=1)
     return gh_runner(*args, quiet=quiet)
 
@@ -255,8 +255,8 @@ def gh(
             raise GitHubRateLimitExceeded("GitHub API rate limit exceeded")
         if is_github_transient_failure_text(error_text):
             if attempt < max_attempts:
-                _log_github_transient_retry(error_text, attempt, max_attempts, quiet)
-                time.sleep(_github_retry_delay_seconds(attempt))
+                log_github_transient_retry(error_text, attempt, max_attempts, quiet)
+                time.sleep(github_retry_delay_seconds(attempt))
                 continue
             # Only type the failure when this loop owns the retries; a single attempt
             # (max_attempts == 1) is driven by an outer retrier that needs the raw
@@ -264,7 +264,7 @@ def gh(
             if max_attempts > 1:
                 raise GitHubError(
                     f"GitHub transient failure after {max_attempts} attempts: "
-                    f"{_format_github_retry_reason(error_text)}"
+                    f"{format_github_retry_reason(error_text)}"
                 )
         if check:
             if not quiet:
@@ -286,17 +286,17 @@ def run_github_json_with_retries(
     for attempt in range(1, max_attempts + 1):
         command_quiet = quiet or attempt < max_attempts
         try:
-            result = _run_gh_runner_once(gh_runner, args, command_quiet)
+            result = run_gh_runner_once(gh_runner, args, command_quiet)
         except subprocess.CalledProcessError as exc:
-            error_text = _github_error_text_from_exception(exc)
+            error_text = github_error_text_from_exception(exc)
             if is_github_transient_failure_text(error_text):
                 if attempt < max_attempts:
-                    _log_github_transient_retry(error_text, attempt, max_attempts, quiet)
-                    time.sleep(_github_retry_delay_seconds(attempt))
+                    log_github_transient_retry(error_text, attempt, max_attempts, quiet)
+                    time.sleep(github_retry_delay_seconds(attempt))
                     continue
                 raise GitHubError(
                     f"GitHub transient failure after {max_attempts} attempts: "
-                    f"{_format_github_retry_reason(error_text)}"
+                    f"{format_github_retry_reason(error_text)}"
                 ) from exc
             raise
 
@@ -306,8 +306,8 @@ def run_github_json_with_retries(
                 raise GitHubRateLimitExceeded("GitHub API rate limit exceeded")
             if is_github_transient_errors(data["errors"]):
                 if attempt < max_attempts:
-                    _log_github_transient_retry(str(data["errors"]), attempt, max_attempts, quiet)
-                    time.sleep(_github_retry_delay_seconds(attempt))
+                    log_github_transient_retry(str(data["errors"]), attempt, max_attempts, quiet)
+                    time.sleep(github_retry_delay_seconds(attempt))
                     continue
                 raise GitHubError(f"GitHub transient GraphQL failure after {max_attempts} attempts")
             if not quiet:
@@ -329,17 +329,17 @@ def run_github_command_with_retries(
     for attempt in range(1, max_attempts + 1):
         command_quiet = quiet or attempt < max_attempts
         try:
-            return _run_gh_runner_once(gh_runner, args, command_quiet)
+            return run_gh_runner_once(gh_runner, args, command_quiet)
         except subprocess.CalledProcessError as exc:
-            error_text = _github_error_text_from_exception(exc)
+            error_text = github_error_text_from_exception(exc)
             if is_github_transient_failure_text(error_text):
                 if attempt < max_attempts:
-                    _log_github_transient_retry(error_text, attempt, max_attempts, quiet)
-                    time.sleep(_github_retry_delay_seconds(attempt))
+                    log_github_transient_retry(error_text, attempt, max_attempts, quiet)
+                    time.sleep(github_retry_delay_seconds(attempt))
                     continue
                 raise GitHubError(
                     f"GitHub transient failure after {max_attempts} attempts: "
-                    f"{_format_github_retry_reason(error_text)}"
+                    f"{format_github_retry_reason(error_text)}"
                 ) from exc
             raise
 
