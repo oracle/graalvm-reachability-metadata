@@ -10,7 +10,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 
 import java.security.PublicKey;
-import oracle.security.pki.internal.pqc.keys.OraclePKIPQCPublicKey;
 import oracle.security.pki.internal.pqc.util.OraclePKIPQCKeyPair;
 import oracle.security.pki.internal.pqc.util.PQCUtils;
 import org.junit.jupiter.api.Test;
@@ -24,7 +23,7 @@ public class PQCUtilsTest {
     @Test
     void readsNamedParametersFromMlDsaPublicKey() throws Exception {
         OraclePKIPQCKeyPair keyPair = OraclePKIPQCKeyPair.a("ML-DSA-44");
-        PublicKey publicKey = ((OraclePKIPQCPublicKey) keyPair.getPublicKey()).a();
+        PublicKey publicKey = keyPair.getPublicKey();
 
         assertThat(PQCUtils.a(publicKey, "Public")).isEqualTo("ML-DSA-44");
         assertThat(PQCUtils.b(publicKey)).isEqualTo(1312);
