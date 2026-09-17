@@ -46,6 +46,7 @@ file rather than by prefix.
 | [§AR-code-coverage-benchmarking](code-coverage/benchmarking.md#ar-code-coverage-benchmarking-code-coverage-benchmark-architecture) | Fixed-input benchmark execution, metrics publication, and preserved workspaces |
 | [§AR-do-work-loop](do-work.md#ar-do-work-loop-do-work-loop-architecture) | do-work loop architecture |
 | [§AR-forge-orchestration](orchestration-scripts.md#ar-forge-orchestration-forge-orchestration-scripts) | Forge orchestration scripts |
+| [§AR-forge-dispatcher-decomposition](dispatcher-package.md#ar-forge-dispatcher-decomposition-dispatcher-package-boundaries) | Dispatcher package boundaries |
 | [§AR-forge-publication](git-scripts.md#ar-forge-publication-forge-branch-and-pull-request-publication) | Forge branch and pull-request publication |
 | [§AR-pr-eligibility](git-scripts.md#ar-pr-eligibility-pr-eligibility-boundary) | PR eligibility boundary |
 | [§AR-shared-publication-pipeline](git-scripts.md#ar-shared-publication-pipeline-shared-branch-publication-pipeline) | Shared branch publication pipeline |

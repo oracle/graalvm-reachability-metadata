@@ -19,7 +19,7 @@ sys.path.insert(0, str(_FORGE_ROOT))
 
 from ai_workflows.core.metadata_fix import run_metadata_fix  # noqa: E402
 from ai_workflows.agents.agent_runtime import AgentRunResult  # noqa: E402
-from utility_scripts.host_requirements import GRAALVM_SCHEMA_PATH  # noqa: E402
+from utility_scripts.host_graalvm_checks import GRAALVM_SCHEMA_PATH  # noqa: E402
 
 
 class FixMetadataCodexTests(unittest.TestCase):

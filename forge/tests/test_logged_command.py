@@ -8,7 +8,7 @@ import tempfile
 import unittest
 from unittest.mock import patch
 
-from ai_workflows.drivers import add_new_library_support, fix_ni_run, java_fail_workflow
+from ai_workflows.drivers import add_new_library_support, add_new_library_support, fix_ni_run, java_fail_workflow
 from utility_scripts.logged_command import LoggedCommandResult, run_logged_command
 from utility_scripts.continuation_marker import PHASE_SETUP
 from utility_scripts.run_location import enter_phase, reset_run_location

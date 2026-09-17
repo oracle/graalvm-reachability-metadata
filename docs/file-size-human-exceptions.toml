@@ -10,82 +10,152 @@ reason = """
 User-approved: behavior and architecture share one document until the promised FS split lands; docs/README.md records the same debt.
 """
 [[exceptions]]
-path = "forge/utility_scripts/code_coverage_profile_report.py"
+path = "tests/tck-build-logic/src/main/groovy/org.graalvm.internal.tck.gradle"
 match = "exact"
 rules = ["source"]
-kind = "deferred"
-max_accepted = { value = 2000, unit = "lines" }
-until = "the file is split when next substantively edited"
+kind = "structural"
+max_accepted = { value = 1100, unit = "lines" }
+until = "indefinite"
 reason = """
-User-approved: pre-existing size debt surfaced by fissile adoption; this branch touches the file minimally.
+User-approved: precompiled script plugin whose bulk is Gradle DSL wiring over shared mutable
+script-local state (libraryGAV, nativeImageArgs, resolver closures feeding the graalvmNative
+binaries block). Splitting into further precompiled plugins changes apply-time vs body-time
+evaluation and cannot be proven semantics-identical; the CI-only tasks it registers are not
+verifiable locally. Pure-helper extraction tops out near 250 lines and does not reach budget.
 """
 [[exceptions]]
-path = ".github/scripts/forge_pr_publisher/publisher.py"
+path = "tests/tck-build-logic/src/main/groovy/org.graalvm.internal.tck-harness.gradle"
 match = "exact"
 rules = ["source"]
-kind = "deferred"
-max_accepted = { value = 1700, unit = "lines" }
-until = "the file is split when next substantively edited"
+kind = "structural"
+max_accepted = { value = 1100, unit = "lines" }
+until = "indefinite"
 reason = """
-User-approved: pre-existing size debt surfaced by fissile adoption; this branch touches the file minimally.
+User-approved: precompiled script plugin registering the harness task surface (59 tasks) over
+shared script-local state (diffCoordinates, matchingCoordinates, ci.json matrix helpers).
+Splitting is not provably semantics-identical: the generateMatrix*/GITHUB_OUTPUT and
+buildBaseLayer tasks are exercised only in GitHub Actions and cannot be verified locally.
 """
 [[exceptions]]
-path = "forge/benchmarks/code_coverage_benchmark.py"
+path = "forge/docs/architecture/architecture.md"
 match = "exact"
-rules = ["source"]
+rules = ["markdown-docs"]
 kind = "deferred"
-max_accepted = { value = 1700, unit = "lines" }
-until = "the file is split when next substantively edited"
+max_accepted = { value = 1000, unit = "lines" }
+until = "AR-forge-workflow-pipeline is split into per-stage declarations following the dispatcher package boundaries"
 reason = """
-User-approved: pre-existing size debt surfaced by fissile adoption; this branch touches the file minimally.
+User-approved: the bulk is one 868-line declaration (AR-forge-workflow-pipeline); carving it
+renumbers cited sections across ~27 sites and is deliberate spec work, not a mechanical split.
 """
 [[exceptions]]
-path = "forge/tests/test_code_coverage_benchmark.py"
+path = "forge/docs/functional-spec/functional-spec.md"
 match = "exact"
-rules = ["source"]
+rules = ["markdown-docs"]
 kind = "deferred"
 max_accepted = { value = 800, unit = "lines" }
-until = "the file is split when next substantively edited"
+until = "its declarations are moved to topic files in the functional-spec folder home"
 reason = """
-User-approved: pre-existing size debt surfaced by fissile adoption; this branch touches the file minimally.
+User-approved: mechanical whole-declaration moves are possible but deferred; IDs are stable
+across files in the folder home, so the split carries no citation churn when it happens.
 """
 [[exceptions]]
-path = "forge/tests/test_code_coverage_profile_report.py"
+path = "forge/docs/functional-spec/publication.md"
+match = "exact"
+rules = ["markdown-docs"]
+kind = "deferred"
+max_accepted = { value = 600, unit = "lines" }
+until = "the review-side declarations move to a sibling file in the functional-spec folder home"
+reason = """
+User-approved: 65 lines over budget; the review trio (local-branch-review, automated-pr-review,
+human-intervention-policy) moves out whenever the file is next substantively edited.
+"""
+[[exceptions]]
+path = "forge/ai_workflows/core/dynamic_access_iterative_strategy.py"
 match = "exact"
 rules = ["source"]
-kind = "deferred"
-max_accepted = { value = 1200, unit = "lines" }
-until = "the file is split when next substantively edited"
+kind = "structural"
+max_accepted = { value = 1300, unit = "lines" }
+until = "indefinite"
 reason = """
-User-approved: pre-existing size debt surfaced by fissile adoption; this branch touches the file minimally.
+User-approved: one iterative strategy class whose phases share run state through self; the previous split into mixin bases sharing self was reverted in review as a boundary that existed only on disk. No seam short of redesigning the class.
+"""
+[[exceptions]]
+path = "forge/ai_workflows/core/workflow_strategy.py"
+match = "exact"
+rules = ["source"]
+kind = "structural"
+max_accepted = { value = 1100, unit = "lines" }
+until = "indefinite"
+reason = """
+User-approved: the workflow strategy base class with its issue-requested-metadata and finalization phases; all phases read and write the same self state, so the reverted mixin split moved lines, not responsibility.
+"""
+[[exceptions]]
+path = "forge/utility_scripts/fixture_github.py"
+match = "exact"
+rules = ["source"]
+kind = "structural"
+max_accepted = { value = 800, unit = "lines" }
+until = "indefinite"
+reason = """
+User-approved: fixture state and its file discovery/parsing form one closed format; the reverted loader split re-imported 16 names back into this module.
 """
 [[exceptions]]
 path = "forge/utility_scripts/code_coverage_finalize.py"
 match = "exact"
 rules = ["source"]
-kind = "deferred"
+kind = "structural"
 max_accepted = { value = 900, unit = "lines" }
-until = "the file is split when next substantively edited"
+until = "indefinite"
 reason = """
-User-approved: pre-existing size debt surfaced by fissile adoption; this branch touches the file minimally.
+User-approved: final-evidence assembly, report reading, and target-outcome classification are one flow over the same report data; the reverted splits re-imported their names back wholesale.
 """
 [[exceptions]]
-path = "forge/tests/test_code_coverage_api_rank.py"
+path = "forge/git_scripts/local_branch_review.py"
 match = "exact"
 rules = ["source"]
-kind = "deferred"
-max_accepted = { value = 700, unit = "lines" }
-until = "the file is split when next substantively edited"
+kind = "structural"
+max_accepted = { value = 1000, unit = "lines" }
+until = "indefinite"
 reason = """
-User-approved: pre-existing size debt surfaced by fissile adoption; this branch touches the file minimally.
+User-approved: the verdict records and reviewer session mechanics are inseparable from the review flow that drives them; the reverted splits re-imported their names back wholesale.
 """
 [[exceptions]]
-path = "forge/utility_scripts/code_coverage_api_rank.py"
+path = "forge/ai_workflows/drivers/add_new_library_support.py"
 match = "exact"
 rules = ["source"]
-kind = "deferred"
-max_accepted = { value = 600, unit = "lines" }
-until = "the file is split when next substantively edited"
+kind = "structural"
+max_accepted = { value = 800, unit = "lines" }
+until = "indefinite"
 reason = """
-User-approved: pre-existing size debt surfaced by fissile adoption; this branch touches the file minimally.
+User-approved: one driver flow from scaffold through metrics publication; the reverted setup/metrics split was re-imported back by the driver and dispatcher, so the file boundary added hops without separating responsibility.
+"""
+[[exceptions]]
+path = "forge/ai_workflows/drivers/improve_library_coverage.py"
+match = "exact"
+rules = ["source"]
+kind = "structural"
+max_accepted = { value = 900, unit = "lines" }
+until = "indefinite"
+reason = """
+User-approved: the coverage-improvement driver and the library-update target preparation it owns are one flow; the reverted split was re-imported back by the driver, router, and dispatcher.
+"""
+[[exceptions]]
+path = "forge/utility_scripts/library_preparation_preflight.py"
+match = "exact"
+rules = ["source"]
+kind = "structural"
+max_accepted = { value = 900, unit = "lines" }
+until = "indefinite"
+reason = """
+User-approved: the preflight run, its record parsing, and the deterministic setup application are one flow over the same record shapes; the reverted setup split ended up reachable only through this module's own re-export shim.
+"""
+[[exceptions]]
+path = "forge/utility_scripts/local_ci_verification.py"
+match = "exact"
+rules = ["source"]
+kind = "structural"
+max_accepted = { value = 1000, unit = "lines" }
+until = "indefinite"
+reason = """
+User-approved: local CI verification, its command plumbing, and failure reproduction are one flow; the reverted splits were shared by nothing outside this file.
 """

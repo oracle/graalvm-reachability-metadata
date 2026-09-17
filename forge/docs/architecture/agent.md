@@ -41,7 +41,7 @@ The registry exposes `claude-code`, `pi`, `codex`, and `opencode`. Each adapter
 starts its CLI unattended, with the tools that backend provides, so a repair
 step can reproduce the failure it was given rather than editing blind.
 
-`source_context.url_fetch_agent_command` builds the command string for URL-field
+`source_context_discovery.url_fetch_agent_command` builds the command string for URL-field
 discovery, which Gradle invokes directly instead of through an adapter.
 
 [`PiAgent`](../../ai_workflows/agents/pi_agent.py) registers the `pi` backend and
@@ -102,7 +102,7 @@ discovery command string alike.
 `AgentSelection` without running anything. A step that hands its prompt to an
 adapter calls `analysis_agent_run(...)` or `setup_agent_run(...)` instead; the
 getters exist for the two Gradle tasks, which own their own process and take
-the role as a command string built by `source_context.url_fetch_agent_command`.
+the role as a command string built by `source_context_discovery.url_fetch_agent_command`.
 
 The test role has no runtime selection. A predefined strategy names the
 `agent`, `model`, and `provider` it was written and measured against. The

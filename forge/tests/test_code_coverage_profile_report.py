@@ -3,198 +3,56 @@
 # You should have received a copy of the CC0 legalcode along with this
 # work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 
-"""Tests for JaCoCo-exact deep paths with sampled-PGO guidance."""
+"""Tests for the deep-method correlation over JaCoCo and the sampled graph."""
 
-import json
 import os
-import shutil
 import tempfile
 import unittest
 
-from utility_scripts.code_coverage_jacoco import (
-    JacocoLineCoverage,
-    JacocoMethodCoverage,
-    JacocoReportError,
-    load_jacoco_method_coverage,
-)
-from utility_scripts.code_coverage_model import (
-    MethodRef,
-    method_ref_from_call_tree_row,
-    method_ref_from_iprof,
-    normalize_type_name,
-    parse_inventory_id,
-)
+from utility_scripts.code_coverage_jacoco import JacocoLineCoverage, JacocoMethodCoverage
+from utility_scripts.code_coverage_model import MethodRef
 from utility_scripts import code_coverage_profile_report as report_module
+from utility_scripts.code_coverage_profile_graph import CallGraph, load_call_graph
+from utility_scripts.code_coverage_profile_inputs import (
+    ProfileFormatError,
+    TargetState,
+    load_library_line_numbers,
+    load_library_methods,
+)
+from utility_scripts.code_coverage_profile_records import (
+    MAX_LISTED_METHODS,
+    NearCallRecord,
+    edge_miss_classification,
+)
+from utility_scripts.code_coverage_profile_routes import (
+    Sample,
+    SampledProfile,
+    load_sampled_profile,
+)
 
-FIXTURES = os.path.join(os.path.dirname(__file__), "fixtures", "code_coverage")
-JACOCO_PATH = os.path.join(FIXTURES, "near_call_jacoco.xml")
-
-INIT_ID = "com.example.Registry#init():void"
-RESOLVE_ID = "com.example.Registry#resolve(java.lang.String):void"
-RESOLVE_INTEGER_ID = "com.example.Registry#resolve(java.lang.Integer):void"
-LOAD_ID = "com.example.Registry#load(java.lang.String):com.example.Driver"
-RELOAD_ID = "com.example.Registry#reload():void"
-ORPHAN_ID = "com.example.Registry#orphan(int):void"
-OF_ID = "com.example.parser.Config#of():com.example.parser.Config"
-PARSE_ID = "com.example.parser.Config#parse(java.lang.String):com.example.parser.Config"
-JACOCO_ONLY_ID = "com.example.diagnostic.JacocoOnly#ghost():void"
-
-
-def _load_inventory() -> dict:
-    with open(os.path.join(FIXTURES, "near_call_inventory.json"), encoding="utf-8") as inventory_file:
-        return json.load(inventory_file)
-
-
-def _load_jacoco() -> dict[str, JacocoMethodCoverage]:
-    return load_jacoco_method_coverage([JACOCO_PATH])
-
-
-def _coverage(ref: MethodRef, covered: bool = False) -> JacocoMethodCoverage:
-    return JacocoMethodCoverage(
-        method_ref=ref,
-        covered=covered,
-        source_path=f"{ref.owner.replace('.', '/')}.java",
-        source_line=1,
-        report_paths=("fixture.xml",),
-    )
-
-
-class MethodIdentityTest(unittest.TestCase):
-
-    def test_normalize_array_descriptors(self) -> None:
-        self.assertEqual(normalize_type_name("[B"), "byte[]")
-        self.assertEqual(normalize_type_name("[Ljava.lang.String;"), "java.lang.String[]")
-        self.assertEqual(normalize_type_name("java/lang/String"), "java.lang.String")
-
-    def test_iprof_signature_is_decl_ret_params(self) -> None:
-        types = {1: "void", 30: "com.example.Registry", 31: "java.lang.String"}
-        ref = method_ref_from_iprof({"id": 7, "name": "resolve", "signature": [30, 1, 31]}, types)
-        self.assertEqual(ref.canonical_id, RESOLVE_ID)
-
-    def test_call_tree_row_and_inventory_id_agree(self) -> None:
-        row = {
-            "Type": "com.example.Registry",
-            "Name": "load",
-            "Parameters": "java.lang.String",
-            "Return": "com.example.Driver",
-        }
-        self.assertEqual(
-            method_ref_from_call_tree_row(row).canonical_id,
-            parse_inventory_id(LOAD_ID).canonical_id,
-        )
-
-    def test_inventory_id_requires_exact_canonical_round_trip(self) -> None:
-        invalid = ("A#m(int,):void", "A#m(,):void", "A#m():", "A#m()")
-        for target_id in invalid:
-            with self.subTest(target_id=target_id):
-                self.assertIsNone(parse_inventory_id(target_id))
-
-
-class CallGraphAndProfileTest(unittest.TestCase):
-
-    def test_call_graph_csv_loaded_via_prefix_match(self) -> None:
-        graph = report_module.load_call_graph(FIXTURES)
-        self.assertEqual(len(graph.methods), 10)
-        self.assertIn(LOAD_ID, graph.key_to_id)
-        self.assertEqual(len(graph.loose_to_ids["com.example.Registry#resolve/1"]), 2)
-
-    def test_call_graph_maps_invoke_bci_through_library_line_table(self) -> None:
-        graph = report_module.load_call_graph(
-            FIXTURES,
-            line_numbers={INIT_ID: ((0, 7), (8, 11), (20, 18))},
-        )
-
-        target_id: int = graph.key_to_id[RESOLVE_ID]
-        edge: dict = next(
-            candidate
-            for candidate in graph.reverse_adjacency[target_id]
-            if candidate["caller"] == graph.key_to_id[INIT_ID]
-        )
-        self.assertEqual(edge["bci"], "10")
-        self.assertEqual(edge["source_line"], 11)
-
-    def test_call_graph_selects_one_complete_suffix_atomically(self) -> None:
-        with tempfile.TemporaryDirectory(prefix="call-tree-triplet-") as reports_dir:
-            for kind in ("methods", "invokes", "targets"):
-                source = os.path.join(
-                    FIXTURES, f"call_tree_{kind}_demo_20260101.csv"
-                )
-                shutil.copy(source, reports_dir)
-                with open(
-                        os.path.join(reports_dir, f"call_tree_{kind}.csv"),
-                        "w",
-                        encoding="utf-8",
-                ) as stale_file:
-                    stale_file.write(
-                        "Id\n" if kind != "targets" else "InvokeId,TargetId\n"
-                    )
-            shutil.copy(
-                os.path.join(FIXTURES, "call_tree_methods_demo_20260101.csv"),
-                os.path.join(reports_dir, "call_tree_methods_zzz_incomplete.csv"),
-            )
-
-            graph = report_module.load_call_graph(reports_dir)
-
-        self.assertEqual(len(graph.methods), 10)
-        self.assertIn(LOAD_ID, graph.key_to_id)
-
-    def test_instrumented_profile_is_rejected(self) -> None:
-        graph = report_module.load_call_graph(FIXTURES)
-        with self.assertRaises(report_module.ProfileFormatError):
-            report_module.load_sampled_profile(
-                os.path.join(FIXTURES, "near_call_instrumented.iprof"), graph
-            )
-
-    def test_sampled_stack_maps_root_first_and_counts_positive_observations(self) -> None:
-        graph = report_module.load_call_graph(FIXTURES)
-        profile = report_module.load_sampled_profile(
-            os.path.join(FIXTURES, "near_call_sampling.iprof"), graph
-        )
-        self.assertEqual(profile.total_sample_count, 42)
-        self.assertEqual(profile.samples[0].context_id, "sample-1")
-        names = [graph.methods[static_id].name for static_id, _ in profile.samples[0].path]
-        self.assertEqual(names, ["run", "testInit", "init"])
-        self.assertEqual(profile.sample_counts[graph.key_to_id[INIT_ID]], 42)
-
-    def test_non_positive_sample_contexts_are_not_observations(self) -> None:
-        graph = report_module.load_call_graph(FIXTURES)
-        with open(
-                os.path.join(FIXTURES, "near_call_sampling.iprof"),
-                encoding="utf-8",
-        ) as profile_file:
-            document = json.load(profile_file)
-        context = document["samplingProfiles"][0]["ctx"]
-        document["samplingProfiles"] = [
-            {"ctx": context, "records": [0]},
-            {"ctx": context, "records": [-2]},
-            *document["samplingProfiles"],
-        ]
-
-        with tempfile.TemporaryDirectory(prefix="sample-counts-") as temp_dir:
-            profile_path = os.path.join(temp_dir, "profile.iprof")
-            with open(profile_path, "w", encoding="utf-8") as profile_file:
-                json.dump(document, profile_file)
-            profile = report_module.load_sampled_profile(profile_path, graph)
-
-        self.assertEqual(profile.context_count, 1)
-        self.assertEqual(profile.total_sample_count, 42)
-        self.assertEqual(len(profile.samples), 1)
-        self.assertEqual(profile.samples[0].context_id, "sample-3")
-        self.assertEqual(len(profile.sample_counts), 3)
-        self.assertEqual(set(profile.sample_counts.values()), {42})
-
-
-    def test_ambiguous_loose_overload_is_not_mapped(self) -> None:
-        graph = report_module.load_call_graph(FIXTURES)
-        ambiguous = MethodRef("com.example.Registry", "resolve", ("unknown.Type",), "void")
-        self.assertIsNone(report_module._resolve_graph_id(graph, ambiguous))
+from tests.code_coverage_profile_support import (
+    FIXTURES,
+    INIT_ID,
+    JACOCO_ONLY_ID,
+    JACOCO_PATH,
+    LOAD_ID,
+    OF_ID,
+    ORPHAN_ID,
+    PARSE_ID,
+    RELOAD_ID,
+    RESOLVE_ID,
+    RESOLVE_INTEGER_ID,
+    _coverage,
+    _load_inventory,
+    _load_jacoco,
+)
 
 
 class DeepCorrelationTest(unittest.TestCase):
 
     def setUp(self) -> None:
-        self.graph = report_module.load_call_graph(FIXTURES)
-        self.profile = report_module.load_sampled_profile(
+        self.graph = load_call_graph(FIXTURES)
+        self.profile = load_sampled_profile(
             os.path.join(FIXTURES, "near_call_sampling.iprof"), self.graph
         )
         self.inventory = _load_inventory()
@@ -202,9 +60,9 @@ class DeepCorrelationTest(unittest.TestCase):
 
     def _run(
             self,
-            max_listed: int = report_module.MAX_LISTED_METHODS,
+            max_listed: int = MAX_LISTED_METHODS,
             attempts: dict[str, int] | None = None,
-    ) -> tuple[dict, list[report_module.NearCallRecord]]:
+    ) -> tuple[dict, list[NearCallRecord]]:
         return report_module.correlate(
             self.profile,
             self.graph,
@@ -252,8 +110,8 @@ class DeepCorrelationTest(unittest.TestCase):
         uncovered = MethodRef("example.Internal", "uncovered", (), "void")
 
         report, _ = report_module.correlate(
-            report_module.SampledProfile(),
-            report_module.CallGraph(),
+            SampledProfile(),
+            CallGraph(),
             {"targets": []},
             {
                 covered.canonical_id: _coverage(covered, covered=True),
@@ -272,7 +130,6 @@ class DeepCorrelationTest(unittest.TestCase):
             [uncovered.canonical_id],
         )
         self.assertEqual(report["promptTargetIds"], [])
-
 
     def test_same_arity_overloads_keep_exact_jacoco_status(self) -> None:
         report, _ = self._run()
@@ -337,7 +194,7 @@ class DeepCorrelationTest(unittest.TestCase):
             **target_edge,
             "callee": 3,
         }
-        graph = report_module.CallGraph(
+        graph = CallGraph(
             methods={1: caller, 2: target, 3: suite_handler},
             key_to_id={
                 caller.canonical_id: 1,
@@ -356,7 +213,7 @@ class DeepCorrelationTest(unittest.TestCase):
             report_paths=("fixture.xml",),
         )
         report, _ = report_module.correlate(
-            report_module.SampledProfile(),
+            SampledProfile(),
             graph,
             {"targets": [{"id": caller.canonical_id, "kind": "method"}]},
             {
@@ -393,7 +250,7 @@ class DeepCorrelationTest(unittest.TestCase):
             "invoke_id": 10,
             "source_line": 3,
         }
-        graph = report_module.CallGraph(
+        graph = CallGraph(
             methods={1: caller, 2: target},
             invoke_fan_out={10: [2]},
         )
@@ -405,7 +262,7 @@ class DeepCorrelationTest(unittest.TestCase):
             report_paths=("fixture.xml",),
         )
 
-        classification: dict = report_module._edge_miss_classification(
+        classification: dict = edge_miss_classification(
             edge,
             graph,
             {caller.canonical_id: caller_coverage},
@@ -426,7 +283,7 @@ class DeepCorrelationTest(unittest.TestCase):
         app = MethodRef("app.Service", "work", (), "void")
         bridge = MethodRef("app.Service", "bridge", (), "void")
         target = MethodRef("app.Internal", "target", (), "void")
-        graph = report_module.CallGraph(
+        graph = CallGraph(
             methods={1: framework, 2: app, 3: bridge, 4: target},
             key_to_id={ref.canonical_id: method_id for method_id, ref in {
                 1: framework, 2: app, 3: bridge, 4: target,
@@ -437,7 +294,7 @@ class DeepCorrelationTest(unittest.TestCase):
                 3: [{"caller": 3, "callee": 4, "bci": "3", "is_direct": "true", "kind": "call"}],
             },
         )
-        sample = report_module.Sample(
+        sample = Sample(
             context_id="sample-1",
             raw_context="",
             path=[(1, 0), (2, 0)],
@@ -445,7 +302,7 @@ class DeepCorrelationTest(unittest.TestCase):
             path_full_indexes=[0, 1],
             count=1,
         )
-        profile = report_module.SampledProfile(samples=[sample])
+        profile = SampledProfile(samples=[sample])
         report, _ = report_module.correlate(
             profile,
             graph,
@@ -460,7 +317,7 @@ class DeepCorrelationTest(unittest.TestCase):
         entry = MethodRef("bulk.PublicApi", "start", (), "void")
         refs = [MethodRef("bulk.Targets", f"method{index:03d}", (), "void") for index in range(201)]
         methods = {1: entry, **{index + 2: ref for index, ref in enumerate(refs)}}
-        graph = report_module.CallGraph(
+        graph = CallGraph(
             methods=methods,
             key_to_id={ref.canonical_id: method_id for method_id, ref in methods.items()},
             adjacency={
@@ -482,7 +339,7 @@ class DeepCorrelationTest(unittest.TestCase):
         }
         inventory = {"targets": [{"id": entry.canonical_id, "kind": "method"}]}
         first, _ = report_module.correlate(
-            report_module.SampledProfile(), graph, inventory, jacoco, max_listed=1000
+            SampledProfile(), graph, inventory, jacoco, max_listed=1000
         )
         self.assertEqual(len(first["uncoveredPaths"]), 201)
         self.assertEqual(len(first["promptTargetIds"]), 200)
@@ -491,400 +348,17 @@ class DeepCorrelationTest(unittest.TestCase):
             if entry["id"] not in first["promptTargetIds"]
         )
         attempted_states = {
-            method_id: report_module.TargetState(status="attempted", attempt_count=1)
+            method_id: TargetState(status="attempted", attempt_count=1)
             for method_id in first["promptTargetIds"]
         }
         second, _ = report_module.correlate(
-            report_module.SampledProfile(), graph, inventory, jacoco,
+            SampledProfile(), graph, inventory, jacoco,
             max_listed=200, target_states=attempted_states,
         )
         self.assertEqual(second["promptTargetIds"][0], omitted["id"])
         rotated = next(entry for entry in second["uncoveredPaths"] if entry["id"] == omitted["id"])
         self.assertEqual(rotated["rank"], 201)
         self.assertEqual(rotated["attemptCount"], 0)
-
-
-class ReportArtifactsTest(unittest.TestCase):
-
-    def setUp(self) -> None:
-        self.output_dir = tempfile.mkdtemp(prefix="near-call-report-")
-        self.addCleanup(shutil.rmtree, self.output_dir, True)
-
-    def _write_json(self, name: str, document: dict) -> str:
-        path = os.path.join(self.output_dir, name)
-        with open(path, "w", encoding="utf-8") as json_file:
-            json.dump(document, json_file)
-        return path
-
-    def _generate(
-            self,
-            iteration: int = 1,
-            *,
-            profile_path: str | None = None,
-            reports_dir: str = FIXTURES,
-            api_inventory_path: str | None = None,
-            coordinate: str = "com.example:demo:1.0.0",
-            max_listed: int = report_module.MAX_LISTED_METHODS,
-            target_state_paths: list[str] | None = None,
-    ) -> dict:
-        return report_module.generate_report(
-            profile_path=profile_path or os.path.join(FIXTURES, "near_call_sampling.iprof"),
-            reports_dir=reports_dir,
-            api_inventory_path=api_inventory_path or os.path.join(
-                FIXTURES, "near_call_inventory.json"
-            ),
-            jacoco_xml_paths=[JACOCO_PATH],
-            coordinate=coordinate,
-            iteration=iteration,
-            output_dir=self.output_dir,
-            max_listed=max_listed,
-            target_state_paths=target_state_paths,
-        )
-
-    def test_report_is_compact_and_json_is_complete(self) -> None:
-        report = self._generate()
-        self.assertEqual(report["profileKind"], "sampled-guidance")
-        self.assertEqual(len(report["uncoveredPaths"]), 6)
-        for name in ("discovery-report-1.json", "discovery-report-1.md", "coverage-1.lcov"):
-            self.assertTrue(os.path.isfile(os.path.join(self.output_dir, name)), name)
-        with open(os.path.join(self.output_dir, "discovery-report-1.md"), encoding="utf-8") as md_file:
-            markdown = md_file.read()
-        self.assertIn("## Observed (sampled guidance only)", markdown)
-        self.assertIn("## Uncovered paths (JaCoCo-exact, top 200)", markdown)
-        expected_paths: tuple[str, ...] = (
-            "`Registry.init() → resolve(...)`",
-            "`Registry.init() → resolve(...) → load(...)`",
-            "`Registry.init() → resolve(...) → load(...) → reload()`",
-            "`Config.of() → parse(...)`",
-        )
-        for path in expected_paths:
-            self.assertIn(path, markdown)
-        for target in report["bulkTargets"]:
-            self.assertIn("missClassification", target)
-            self.assertIn(
-                target["missClassification"]["kind"],
-                {"dispatched-elsewhere", "fork-not-taken", "no-fork"},
-            )
-        self.assertEqual(markdown.count("  target "), len(report["bulkTargets"]))
-        path_lines = [line for line in markdown.splitlines() if line.startswith("`")]
-        for line in path_lines:
-            self.assertNotIn("#", line)
-            self.assertNotIn(":void", line)
-        instruction = (
-            "Attempt every listed uncovered path in this iteration through public API "
-            "behavior; never invoke internal targets directly."
-        )
-        self.assertEqual(markdown.count(instruction), 1)
-        self.assertNotIn("sibling", markdown)
-        self.assertNotIn(" samples to ", markdown)
-        self.assertNotIn(" step(s)", markdown)
-        self.assertNotIn("###", markdown)
-        self.assertEqual(markdown.count("additional uncovered paths are retained in JSON"), 1)
-        self.assertNotIn("Detailed near-call guidance", markdown)
-
-    def test_markdown_shows_next_sampled_frame_and_all_selected_groups(self) -> None:
-        root = MethodRef("example.CoverageTest", "run", (), "void")
-        join = MethodRef("example.Library", "dispatch", (), "void")
-        observed = MethodRef("example.Library", "parseJson", (), "void")
-        targets = [
-            MethodRef("example.Library", f"parseAlternative{index}", (), "void")
-            for index in range(21)
-        ]
-        methods = {
-            1: root,
-            2: join,
-            3: observed,
-            **{index + 4: target for index, target in enumerate(targets)},
-        }
-        graph = report_module.CallGraph(
-            methods=methods,
-            key_to_id={ref.canonical_id: method_id for method_id, ref in methods.items()},
-        )
-        records: list[report_module.NearCallRecord] = []
-        for index, target in enumerate(targets):
-            sample = report_module.Sample(
-                context_id=f"sample-{index}",
-                raw_context="",
-                path=[(1, 0), (2, 1), (3, 2)],
-                full_path=[(root, 0), (join, 1), (observed, 2)],
-                path_full_indexes=[0, 1, 2],
-                count=1,
-            )
-            records.append(report_module.NearCallRecord(
-                coverage=_coverage(target),
-                target_id=index + 4,
-                target_state=report_module.TargetState(),
-                join_kind="sampled",
-                static_path=[2, index + 4],
-                static_path_edges=[],
-                sample=sample,
-                sampled_join_path_index=1,
-            ))
-        report = {
-            "summary": {
-                "inventoryCovered": 1,
-                "inventoryUncovered": 0,
-                "inventoryUnknown": 0,
-                "deepCovered": 0,
-                "deepUncovered": len(records),
-                "listedUncovered": len(records),
-                "omittedUncovered": 0,
-                "samplingContexts": len(records),
-                "totalSampleCount": len(records),
-            },
-            "bulkTargets": [],
-            "caveats": [],
-        }
-        markdown_path = os.path.join(self.output_dir, "all-groups.md")
-
-        report_module.write_markdown(
-            report,
-            records,
-            graph,
-            "example:library:1",
-            0,
-            None,
-            markdown_path,
-        )
-
-        with open(markdown_path, encoding="utf-8") as markdown_file:
-            markdown = markdown_file.read()
-        first_group = (
-            "Observed:\n"
-            "`Library.dispatch() → parseJson()`\n\n"
-            "Uncovered paths:\n"
-            "`Library.dispatch() → parseAlternative0()`\n"
-        )
-        self.assertIn(first_group, markdown)
-        self.assertEqual(markdown.count("Observed:\n"), 21)
-        self.assertIn(
-            "`Library.dispatch() → parseAlternative20()`",
-            markdown,
-        )
-        self.assertNotIn("###", markdown)
-        self.assertNotIn("sibling", markdown)
-        self.assertNotIn(" step(s)", markdown)
-
-    def test_target_state_is_retained_and_terminal_targets_are_not_prompted(self) -> None:
-        state_path = self._write_json("deep-cover-0.json", {
-            "coordinate": "com.example:demo:1.0.0",
-            "targets": [
-                {
-                    "id": RESOLVE_INTEGER_ID,
-                    "status": "completed",
-                    "attemptCount": 1,
-                    "lastAttemptedIteration": 1,
-                },
-                {
-                    "id": PARSE_ID,
-                    "status": "skipped",
-                    "attemptCount": 0,
-                    "reason": "No supported public behavior reaches this branch.",
-                },
-                {
-                    "id": LOAD_ID,
-                    "status": "exhausted",
-                    "attemptCount": 2,
-                    "lastAttemptedIteration": 1,
-                    "reason": "Meaningful inputs were exhausted.",
-                },
-                {
-                    "id": RELOAD_ID,
-                    "status": "attempted",
-                    "attemptCount": 3,
-                    "lastAttemptedIteration": 1,
-                },
-            ],
-        })
-
-        report = self._generate(iteration=0, target_state_paths=[state_path])
-
-        by_id = {entry["id"]: entry for entry in report["uncoveredPaths"]}
-        self.assertEqual(report["promptTargetIds"], [RESOLVE_ID])
-        self.assertEqual(report["summary"]["terminalUncovered"], 3)
-        for method_id in (PARSE_ID, LOAD_ID, RELOAD_ID):
-            self.assertTrue(by_id[method_id]["terminal"])
-            self.assertNotIn(method_id, report["promptTargetIds"])
-        self.assertEqual(by_id[RELOAD_ID]["targetStatus"], "exhausted")
-        self.assertEqual(by_id[RELOAD_ID]["attemptCount"], 3)
-        self.assertEqual(
-            by_id[RELOAD_ID]["stateReason"],
-            "3 attempts without coverage change",
-        )
-        bulk = {entry["id"]: entry for entry in report["bulkTargets"]}
-        self.assertEqual(bulk[RELOAD_ID]["targetStatus"], "exhausted")
-        persisted = {entry["id"]: entry for entry in report["targetStates"]}
-        self.assertEqual(persisted[RESOLVE_INTEGER_ID]["status"], "completed")
-        self.assertEqual(persisted[PARSE_ID]["status"], "skipped")
-        self.assertEqual(persisted[LOAD_ID]["status"], "exhausted")
-        self.assertEqual(persisted[RELOAD_ID]["status"], "exhausted")
-
-    def test_uncovered_targets_are_exhausted_after_attempt_threshold(self) -> None:
-        reports: list[dict] = [
-            self._generate(iteration=iteration)
-            for iteration in range(report_module.MAX_UNCOVERED_ATTEMPTS + 1)
-        ]
-
-        report: dict = reports[-1]
-        bulk = {entry["id"]: entry for entry in report["bulkTargets"]}
-        target = bulk[RESOLVE_ID]
-        self.assertNotIn(RESOLVE_ID, report["promptTargetIds"])
-        self.assertIn(RESOLVE_ID, {entry["id"] for entry in report["uncoveredPaths"]})
-        self.assertEqual(target["attemptCount"], report_module.MAX_UNCOVERED_ATTEMPTS)
-        self.assertEqual(target["targetStatus"], "exhausted")
-        self.assertEqual(target["stateReason"], "3 attempts without coverage change")
-
-    def test_covered_target_is_not_exhausted_before_threshold(self) -> None:
-        state_path = self._write_json("deep-cover-0.json", {
-            "coordinate": "com.example:demo:1.0.0",
-            "targets": [{
-                "id": RESOLVE_INTEGER_ID,
-                "status": "attempted",
-                "attemptCount": report_module.MAX_UNCOVERED_ATTEMPTS - 1,
-            }],
-        })
-
-        report = self._generate(iteration=0, target_state_paths=[state_path])
-
-        persisted = {entry["id"]: entry for entry in report["targetStates"]}
-        self.assertEqual(persisted[RESOLVE_INTEGER_ID]["status"], "attempted")
-        self.assertIsNone(persisted[RESOLVE_INTEGER_ID]["reason"])
-
-    def test_target_state_rejects_unknown_status(self) -> None:
-        state_path = self._write_json("bad-state.json", {
-            "coordinate": "com.example:demo:1.0.0",
-            "targets": [{
-                "id": RESOLVE_ID,
-                "status": "mystery",
-                "attemptCount": 0,
-            }],
-        })
-
-        with self.assertRaisesRegex(report_module.ProfileFormatError, "unknown status"):
-            self._generate(iteration=0, target_state_paths=[state_path])
-
-    def test_target_state_cannot_override_jacoco_or_reference_non_deep_ids(self) -> None:
-        cases = (
-            (
-                "completed-uncovered",
-                RESOLVE_ID,
-                "completed",
-                "completed but current JaCoCo reports it uncovered",
-            ),
-            (
-                "public-api",
-                INIT_ID,
-                "attempted",
-                "not in the current deep JaCoCo universe",
-            ),
-            (
-                "unknown-id",
-                "com.example.Registry#typo():void",
-                "attempted",
-                "not in the current deep JaCoCo universe",
-            ),
-        )
-        for name, method_id, status, error_pattern in cases:
-            with self.subTest(name=name):
-                state_path = self._write_json(f"{name}.json", {
-                    "coordinate": "com.example:demo:1.0.0",
-                    "targets": [{
-                        "id": method_id,
-                        "status": status,
-                        "attemptCount": 1,
-                    }],
-                })
-                with self.assertRaisesRegex(
-                        report_module.ProfileFormatError,
-                        error_pattern,
-                ):
-                    self._generate(iteration=0, target_state_paths=[state_path])
-
-
-    def test_input_paths_and_invalid_json_fail_closed(self) -> None:
-        missing = os.path.join(self.output_dir, "missing")
-        with self.assertRaisesRegex(report_module.ProfileFormatError, "call-tree CSVs"):
-            report_module.load_call_graph(missing)
-
-        graph = report_module.load_call_graph(FIXTURES)
-        with self.assertRaisesRegex(report_module.ProfileFormatError, "sampled profile"):
-            report_module.load_sampled_profile(missing, graph)
-        with self.assertRaisesRegex(report_module.ProfileFormatError, "API inventory"):
-            self._generate(iteration=0, api_inventory_path=missing)
-
-        invalid_json = os.path.join(self.output_dir, "invalid-inventory.json")
-        with open(invalid_json, "w", encoding="utf-8") as invalid_file:
-            invalid_file.write("{")
-        with self.assertRaisesRegex(report_module.ProfileFormatError, "Invalid JSON"):
-            self._generate(iteration=0, api_inventory_path=invalid_json)
-
-    def test_inventory_coordinate_is_required_and_must_match(self) -> None:
-        inventories = (
-            ("missing-coordinate.json", {"targets": []}),
-            (
-                "wrong-coordinate.json",
-                {"coordinate": "com.example:other:1.0.0", "targets": []},
-            ),
-        )
-        for name, document in inventories:
-            with self.subTest(name=name):
-                path = self._write_json(name, document)
-                with self.assertRaisesRegex(report_module.ProfileFormatError, "coordinate"):
-                    self._generate(iteration=0, api_inventory_path=path)
-
-    def test_report_zero_is_valid_and_negative_options_are_rejected(self) -> None:
-        baseline = self._generate(iteration=0)
-        self.assertEqual(baseline["iteration"], 0)
-        self.assertTrue(os.path.isfile(
-            os.path.join(self.output_dir, "discovery-report-0.json")
-        ))
-
-        next_report = self._generate(iteration=1)
-        next_paths = {entry["id"]: entry for entry in next_report["uncoveredPaths"]}
-        for method_id in baseline["promptTargetIds"]:
-            self.assertEqual(next_paths[method_id]["attemptCount"], 1)
-
-        with self.assertRaisesRegex(report_module.ProfileFormatError, "iteration"):
-            self._generate(iteration=-1)
-        with self.assertRaisesRegex(report_module.ProfileFormatError, "max_listed"):
-            self._generate(iteration=0, max_listed=0)
-
-
-    def test_lcov_contains_only_positive_sampled_observations(self) -> None:
-        self._generate()
-        with open(os.path.join(self.output_dir, "coverage-1.lcov"), encoding="utf-8") as lcov_file:
-            lcov = lcov_file.read()
-        self.assertIn("TN:sampled-pgo-guidance", lcov)
-        self.assertIn(f"FNDA:42,{INIT_ID}", lcov)
-        self.assertNotIn("FNDA:0", lcov)
-        self.assertNotIn(f"FNDA:42,{LOAD_ID}", lcov)
-
-    def test_lcov_preserves_overload_identity(self) -> None:
-        graph = report_module.load_call_graph(FIXTURES)
-        profile = report_module.SampledProfile(sample_counts={
-            graph.key_to_id[RESOLVE_ID]: 2,
-            graph.key_to_id[RESOLVE_INTEGER_ID]: 3,
-        })
-        lcov_path = os.path.join(self.output_dir, "overloads.lcov")
-
-        report_module.write_lcov(profile, graph, _load_jacoco(), lcov_path)
-
-        with open(lcov_path, encoding="utf-8") as lcov_file:
-            lcov = lcov_file.read()
-        self.assertIn(f"FNDA:2,{RESOLVE_ID}", lcov)
-        self.assertIn(f"FNDA:3,{RESOLVE_INTEGER_ID}", lcov)
-
-    def test_missing_jacoco_evidence_is_rejected(self) -> None:
-        with self.assertRaises(JacocoReportError):
-            report_module.generate_report(
-                profile_path=os.path.join(FIXTURES, "near_call_sampling.iprof"),
-                reports_dir=FIXTURES,
-                api_inventory_path=os.path.join(FIXTURES, "near_call_inventory.json"),
-                jacoco_xml_paths=[],
-                coordinate="com.example:demo:1.0.0",
-                iteration=1,
-                output_dir=self.output_dir,
-            )
 
 
 class LibraryMethodFilterTest(unittest.TestCase):
@@ -900,8 +374,8 @@ class LibraryMethodFilterTest(unittest.TestCase):
 
     def _report(self, library_methods: set[str] | None) -> dict:
         report, _ = report_module.correlate(
-            report_module.SampledProfile(),
-            report_module.CallGraph(),
+            SampledProfile(),
+            CallGraph(),
             {"targets": []},
             {
                 self.LIB.canonical_id: _coverage(self.LIB, covered=True),
@@ -928,8 +402,8 @@ class LibraryMethodFilterTest(unittest.TestCase):
             path = os.path.join(directory, "methods.csv")
             with open(path, "w", encoding="utf-8") as handle:
                 handle.write("name,hasCode\n\"a.B#c():void\",true\n")
-            with self.assertRaises(report_module.ProfileFormatError) as raised:
-                report_module.load_library_methods(path)
+            with self.assertRaises(ProfileFormatError) as raised:
+                load_library_methods(path)
             self.assertIn("id", str(raised.exception))
 
     def test_loading_reads_canonical_ids_from_the_extractor_csv(self) -> None:
@@ -938,7 +412,7 @@ class LibraryMethodFilterTest(unittest.TestCase):
             with open(path, "w", encoding="utf-8") as handle:
                 handle.write("id,hasCode,isPublicApi\n")
                 handle.write(f'"{self.LIB.canonical_id}",true,false\n')
-            self.assertEqual(report_module.load_library_methods(path), {self.LIB.canonical_id})
+            self.assertEqual(load_library_methods(path), {self.LIB.canonical_id})
 
     def test_loading_reads_bytecode_line_numbers_from_extractor_csv(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
@@ -950,315 +424,9 @@ class LibraryMethodFilterTest(unittest.TestCase):
                 )
 
             self.assertEqual(
-                report_module.load_library_line_numbers(path),
+                load_library_line_numbers(path),
                 {self.LIB.canonical_id: ((0, 11), (8, 15))},
             )
-
-
-class SyntheticLambdaTest(unittest.TestCase):
-    """Lambda attribution and route honesty (§AR-code-coverage-improvement.4.2.1).
-
-    The graph models one closure end to end: `reload` captures it, the generated
-    class carries it, its body calls `persist`, and an unrelated `drain` invokes
-    the functional interface alongside a real implementation.
-    """
-
-    METHODS = [
-        (1, "reload", "com.example.Registry", "empty", "void"),
-        (2, "<init>", "com.example.Registry$$Lambda/0x1", "com.example.Registry", "void"),
-        (3, "run", "com.example.Registry$$Lambda/0x1", "empty", "void"),
-        (4, "lambda$reload$0", "com.example.Registry", "empty", "void"),
-        (5, "drain", "com.example.Worker", "empty", "void"),
-        (6, "run", "com.example.RealTask", "empty", "void"),
-        (7, "init", "com.example.Registry", "empty", "void"),
-        (8, "submit", "com.example.Executor", "java.lang.Runnable", "void"),
-        (9, "persist", "com.example.Registry", "empty", "void"),
-    ]
-    #: `(invoke id, caller, direct, [targets])`.
-    INVOKES = [
-        (1, 7, "true", [1]),
-        (2, 1, "true", [2]),
-        (3, 1, "true", [8]),
-        (4, 3, "true", [4]),
-        (5, 5, "false", [3, 6]),
-        (6, 7, "true", [5]),
-        (7, 4, "true", [9]),
-    ]
-
-    INIT = "com.example.Registry#init():void"
-    RELOAD = "com.example.Registry#reload():void"
-    BODY = "com.example.Registry#lambda$reload$0():void"
-    PERSIST = "com.example.Registry#persist():void"
-    REAL_RUN = "com.example.RealTask#run():void"
-    DRAIN = "com.example.Worker#drain():void"
-
-    def setUp(self) -> None:
-        self.directory = tempfile.mkdtemp(prefix="synthetic-lambda-")
-        self.addCleanup(shutil.rmtree, self.directory)
-        with open(
-                os.path.join(self.directory, "call_tree_methods_demo.csv"),
-                "w", encoding="utf-8",
-        ) as handle:
-            handle.write("Id,Name,Type,Parameters,Return,Display,Flags,IsEntryPoint\n")
-            for static_id, name, owner, params, return_type in self.METHODS:
-                handle.write(f"{static_id},{name},{owner},{params},{return_type},d,,false\n")
-        with open(
-                os.path.join(self.directory, "call_tree_invokes_demo.csv"),
-                "w", encoding="utf-8",
-        ) as handle:
-            handle.write("Id,MethodId,BytecodeIndexes,IsDirect\n")
-            for invoke_id, caller, direct, _ in self.INVOKES:
-                handle.write(f"{invoke_id},{caller},{invoke_id},{direct}\n")
-        with open(
-                os.path.join(self.directory, "call_tree_targets_demo.csv"),
-                "w", encoding="utf-8",
-        ) as handle:
-            handle.write("InvokeId,TargetId\n")
-            for invoke_id, _, _, targets in self.INVOKES:
-                for target in targets:
-                    handle.write(f"{invoke_id},{target}\n")
-
-        self.graph = report_module.load_call_graph(self.directory)
-        covered: set[str] = {self.INIT, self.DRAIN}
-        self.jacoco = {
-            ref.canonical_id: _coverage(ref, covered=ref.canonical_id in covered)
-            for ref in self.graph.methods.values()
-        }
-        self.report, self.records = report_module.correlate(
-            report_module.SampledProfile(),
-            self.graph,
-            {"targets": [{"id": self.INIT, "kind": "method"}]},
-            self.jacoco,
-        )
-        self.paths = {entry["id"]: entry for entry in self.report["uncoveredPaths"]}
-
-    def test_lambda_body_stays_in_the_denominator_but_never_reaches_the_prompt(self) -> None:
-        self.assertIn(self.BODY, {entry["id"] for entry in self.report["deepMethods"]})
-        self.assertNotIn(self.BODY, self.report["promptTargetIds"])
-        self.assertIn(self.RELOAD, self.report["promptTargetIds"])
-        self.assertEqual(self.report["summary"]["deepSyntheticMethods"], 1)
-        self.assertEqual(self.report["summary"]["deepSyntheticUncovered"], 1)
-        self.assertEqual(self.report["summary"]["syntheticExcludedFromPrompt"], 1)
-
-    def test_closure_count_moves_onto_the_creating_method(self) -> None:
-        reload_entry = self.paths[self.RELOAD]
-        self.assertEqual(reload_entry["closures"], {"total": 1, "unexecuted": 1})
-        self.assertIsNone(self.paths[self.PERSIST]["closures"])
-
-    def test_prompt_paths_carry_no_compiler_owned_name(self) -> None:
-        persist = self.paths[self.PERSIST]
-        self.assertEqual(persist["reachingPath"], [self.INIT, self.RELOAD, self.PERSIST])
-        self.assertIn(self.BODY, persist["reachingPathRaw"])
-        rendered = report_module._display_path(
-            [self.graph.key_to_id[method_id] for method_id in persist["reachingPathRaw"]],
-            self.graph,
-        )
-        self.assertNotIn("lambda$", rendered)
-        self.assertNotIn("$$Lambda", rendered)
-
-    def test_route_uses_the_creation_edge_and_reports_the_hand_off(self) -> None:
-        persist = self.paths[self.PERSIST]
-        self.assertEqual(
-            [edge["kind"] for edge in persist["edges"]], ["call", "creation", "call"]
-        )
-        self.assertEqual(persist["handOff"], "Executor.submit")
-
-    def test_dispatch_stays_in_the_graph_but_never_carries_a_route(self) -> None:
-        drain_edges = self.graph.adjacency[self.graph.key_to_id[self.DRAIN]]
-        self.assertEqual({edge["kind"] for edge in drain_edges}, {"dispatch"})
-        self.assertIn(
-            self.graph.key_to_id[self.REAL_RUN],
-            {edge["callee"] for edge in drain_edges},
-        )
-        self.assertEqual(self.paths[self.REAL_RUN]["joinKind"], "none")
-        self.assertNotIn(self.REAL_RUN, self.report["promptTargetIds"])
-
-    def test_markdown_states_the_closure_and_the_thread_hand_off(self) -> None:
-        markdown_path = os.path.join(self.directory, "deep.md")
-        report_module.write_markdown(
-            self.report, self.records, self.graph, "example:library:1", 0, None, markdown_path
-        )
-        with open(markdown_path, encoding="utf-8") as handle:
-            markdown = handle.read()
-        self.assertIn("1 closures, 1 never executed", markdown)
-        self.assertIn("runs on another thread via `Executor.submit`", markdown)
-        self.assertNotIn("lambda$", markdown)
-
-
-class FactoryStubTranslationTest(unittest.TestCase):
-    """Native Image factory paths use verified constructors.
-
-    §AR-code-coverage-improvement.4.2.1
-    """
-
-    CALLER = MethodRef("com.example.Api", "start", (), "void")
-    ALPHA_FACTORY = MethodRef(
-        report_module.FACTORY_METHOD_HOLDER,
-        "AlphaEntry_generated",
-        ("java.lang.String",),
-        "com.example.AlphaEntry",
-    )
-    ALPHA_CONSTRUCTOR = MethodRef(
-        "com.example.AlphaEntry", "<init>", ("java.lang.String",), "void",
-    )
-    ALPHA_TARGET = MethodRef("com.example.AlphaEntry", "read", (), "void")
-    ZULU_FACTORY = MethodRef(
-        report_module.FACTORY_METHOD_HOLDER,
-        "ZuluEntry_generated",
-        (),
-        "com.example.ZuluEntry",
-    )
-    ZULU_CONSTRUCTOR = MethodRef("com.example.ZuluEntry", "<init>", (), "void")
-    ZULU_TARGET = MethodRef("com.example.ZuluEntry", "read", (), "void")
-    UNMATCHED_FACTORY = MethodRef(
-        report_module.FACTORY_METHOD_HOLDER,
-        "External_generated",
-        (),
-        "external.Entry",
-    )
-
-    def setUp(self) -> None:
-        methods: dict[int, MethodRef] = {
-            1: self.CALLER,
-            2: self.ALPHA_FACTORY,
-            3: self.ALPHA_CONSTRUCTOR,
-            4: self.ALPHA_TARGET,
-            5: self.ZULU_FACTORY,
-            6: self.ZULU_TARGET,
-            7: self.UNMATCHED_FACTORY,
-        }
-
-        def edge(caller: int, callee: int) -> dict:
-            return {
-                "caller": caller,
-                "callee": callee,
-                "bci": "",
-                "is_direct": "true",
-                "kind": "call",
-            }
-
-        self.graph = report_module.CallGraph(
-            methods=methods,
-            key_to_id={
-                ref.canonical_id: static_id for static_id, ref in methods.items()
-            },
-            adjacency={
-                1: [edge(1, 2), edge(1, 5)],
-                2: [edge(2, 3)],
-                3: [edge(3, 4)],
-                5: [edge(5, 6)],
-            },
-        )
-        library_methods: set[str] = {
-            self.ALPHA_CONSTRUCTOR.canonical_id,
-            self.ZULU_CONSTRUCTOR.canonical_id,
-        }
-        report_module._index_factory_stubs(self.graph, library_methods)
-        jacoco: dict[str, JacocoMethodCoverage] = {
-            ref.canonical_id: _coverage(ref)
-            for ref in (self.ALPHA_TARGET, self.ZULU_TARGET)
-        }
-        self.report, _ = report_module.correlate(
-            report_module.SampledProfile(),
-            self.graph,
-            {"targets": [{"id": self.CALLER.canonical_id, "kind": "method"}]},
-            jacoco,
-        )
-        self.paths: dict[str, dict] = {
-            entry["id"]: entry for entry in self.report["uncoveredPaths"]
-        }
-
-    def test_verified_factories_render_as_constructors(self) -> None:
-        alpha_path: str = report_module._display_path([1, 2, 3, 4], self.graph)
-        zulu_path: str = report_module._display_path([1, 5, 6], self.graph)
-
-        self.assertEqual(alpha_path, "Api.start() → AlphaEntry(...) → read()")
-        self.assertEqual(zulu_path, "Api.start() → ZuluEntry() → read()")
-        self.assertNotIn("FactoryMethodHolder", alpha_path)
-        self.assertNotIn("FactoryMethodHolder", zulu_path)
-
-    def test_semantic_distance_collapses_only_a_duplicate_constructor(self) -> None:
-        alpha: dict = self.paths[self.ALPHA_TARGET.canonical_id]
-        zulu: dict = self.paths[self.ZULU_TARGET.canonical_id]
-
-        self.assertEqual(alpha["stepsRemaining"], 2)
-        self.assertEqual(zulu["stepsRemaining"], 2)
-        self.assertEqual(
-            alpha["reachingPath"],
-            [
-                self.CALLER.canonical_id,
-                self.ALPHA_CONSTRUCTOR.canonical_id,
-                self.ALPHA_TARGET.canonical_id,
-            ],
-        )
-        self.assertIn(self.ALPHA_FACTORY.canonical_id, alpha["reachingPathRaw"])
-        self.assertIn(self.ALPHA_CONSTRUCTOR.canonical_id, alpha["reachingPathRaw"])
-        self.assertEqual(len(alpha["reachingPathRaw"]), 4)
-        self.assertEqual(len(zulu["reachingPathRaw"]), 3)
-
-    def test_semantic_distance_controls_ranking(self) -> None:
-        self.assertEqual(
-            self.report["promptTargetIds"],
-            [self.ALPHA_TARGET.canonical_id, self.ZULU_TARGET.canonical_id],
-        )
-
-    def test_route_selection_uses_semantic_distance(self) -> None:
-        first_factory = MethodRef(
-            report_module.FACTORY_METHOD_HOLDER, "First_generated", (), "com.example.First",
-        )
-        first_constructor = MethodRef("com.example.First", "<init>", (), "void")
-        second_factory = MethodRef(
-            report_module.FACTORY_METHOD_HOLDER, "Second_generated", (), "com.example.Second",
-        )
-        second_constructor = MethodRef("com.example.Second", "<init>", (), "void")
-        raw_steps: list[MethodRef] = [
-            MethodRef("com.example.Raw", name, (), "void")
-            for name in ("one", "two", "three")
-        ]
-        target = MethodRef("com.example.Target", "hit", (), "void")
-        refs: list[MethodRef] = [
-            self.CALLER,
-            first_factory,
-            first_constructor,
-            second_factory,
-            second_constructor,
-            *raw_steps,
-            target,
-        ]
-        graph = report_module.CallGraph(
-            methods={index: ref for index, ref in enumerate(refs, start=1)},
-            key_to_id={ref.canonical_id: index for index, ref in enumerate(refs, start=1)},
-        )
-
-        def add_edge(caller: int, callee: int) -> None:
-            graph.adjacency.setdefault(caller, []).append({
-                "caller": caller,
-                "callee": callee,
-                "kind": "call",
-            })
-
-        semantic_path: list[int] = [1, 2, 3, 4, 5, 9]
-        raw_shorter_path: list[int] = [1, 6, 7, 8, 9]
-        for path in (semantic_path, raw_shorter_path):
-            for caller, callee in zip(path, path[1:]):
-                add_edge(caller, callee)
-        report_module._index_factory_stubs(
-            graph,
-            {first_constructor.canonical_id, second_constructor.canonical_id},
-        )
-
-        routes = report_module._public_entry_routes(graph, [self.CALLER])
-        selected, _ = report_module._route_to(9, routes)
-
-        self.assertEqual(selected, semantic_path)
-        self.assertEqual(routes.distance[9], 3)
-        self.assertEqual(report_module._path_distance(selected, graph), 3)
-
-    def test_unmatched_factory_remains_unchanged(self) -> None:
-        translated: list[MethodRef] = report_module._translated_path([1, 7], self.graph)
-        rendered: str = report_module._display_path([1, 7], self.graph)
-        self.assertEqual(translated[-1], self.UNMATCHED_FACTORY)
-        self.assertIn("FactoryMethodHolder.External_generated()", rendered)
 
 
 if __name__ == "__main__":
