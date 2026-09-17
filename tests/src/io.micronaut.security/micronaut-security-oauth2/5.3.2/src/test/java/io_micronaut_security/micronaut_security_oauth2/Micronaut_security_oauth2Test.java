@@ -11,9 +11,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 import io.micronaut.context.ApplicationContext;
 import io.micronaut.context.env.Environment;
 import io.micronaut.http.HttpHeaders;
+import io.micronaut.http.HttpRequest;
 import io.micronaut.http.HttpStatus;
+import io.micronaut.http.MutableHttpRequest;
 import io.micronaut.http.MutableHttpResponse;
 import io.micronaut.security.oauth2.client.DefaultOpenIdProviderMetadata;
+import io.micronaut.security.oauth2.client.clientcredentials.propagation.ClientCredentialsTokenPropagator;
+import io.micronaut.security.oauth2.client.clientcredentials.propagation.DefaultClientCredentialsTokenPropagator;
 import io.micronaut.security.oauth2.configuration.OauthClientConfiguration;
 import io.micronaut.security.oauth2.configuration.OauthConfigurationProperties;
 import io.micronaut.security.oauth2.configuration.endpoints.SecureEndpointConfiguration;
@@ -196,6 +200,18 @@ public class Micronaut_security_oauth2Test {
                         "client_id", "service-client",
                         "client_secret", "service-secret",
                         "scope", "catalog:read catalog:write"));
+    }
+
+    @Test
+    void clientCredentialsPropagatorWritesAndRecoversBearerToken() {
+        ClientCredentialsTokenPropagator propagator = new DefaultClientCredentialsTokenPropagator();
+        MutableHttpRequest<?> request = HttpRequest.GET("https://inventory.example.test/items");
+
+        propagator.writeToken(request, "service-access-token");
+
+        assertThat(request.getHeaders().get(HttpHeaders.AUTHORIZATION))
+                .isEqualTo("Bearer service-access-token");
+        assertThat(propagator.findToken(request)).contains("service-access-token");
     }
 
     @Test
