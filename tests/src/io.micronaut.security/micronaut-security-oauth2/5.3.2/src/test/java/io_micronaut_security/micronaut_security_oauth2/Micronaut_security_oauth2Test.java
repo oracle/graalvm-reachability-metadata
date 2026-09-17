@@ -10,6 +10,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import io.micronaut.context.ApplicationContext;
 import io.micronaut.context.env.Environment;
+import io.micronaut.http.HttpHeaders;
+import io.micronaut.http.HttpStatus;
+import io.micronaut.http.MutableHttpResponse;
 import io.micronaut.security.oauth2.client.DefaultOpenIdProviderMetadata;
 import io.micronaut.security.oauth2.configuration.OauthClientConfiguration;
 import io.micronaut.security.oauth2.configuration.OauthConfigurationProperties;
@@ -20,6 +23,8 @@ import io.micronaut.security.oauth2.endpoint.authorization.pkce.Pkce;
 import io.micronaut.security.oauth2.endpoint.authorization.pkce.PkceConfigurationProperties;
 import io.micronaut.security.oauth2.endpoint.authorization.pkce.PkceGenerator;
 import io.micronaut.security.oauth2.endpoint.authorization.pkce.S256PkceGenerator;
+import io.micronaut.security.oauth2.endpoint.authorization.request.AuthorizationRequest;
+import io.micronaut.security.oauth2.endpoint.authorization.request.DefaultAuthorizationRedirectHandler;
 import io.micronaut.security.oauth2.endpoint.authorization.state.DefaultState;
 import io.micronaut.security.oauth2.endpoint.token.response.Address;
 import io.micronaut.security.oauth2.endpoint.token.response.OpenIdTokenResponse;
@@ -32,6 +37,7 @@ import io.micronaut.security.oauth2.metadata.ProtectedResourceMetadata;
 import java.net.URI;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 
@@ -114,6 +120,51 @@ public class Micronaut_security_oauth2Test {
         assertThat(tokenEndpoint.getUrl()).isEqualTo("https://identity.example.test/token");
         assertThat(tokenEndpoint.getAuthenticationMethodsSupported())
                 .containsExactly(AuthenticationMethods.CLIENT_SECRET_BASIC);
+    }
+
+    @Test
+    void authorizationRedirectHandlerBuildsAuthorizationRequestLocation() {
+        AuthorizationRequest authorizationRequest = new AuthorizationRequest() {
+            @Override
+            public List<String> getScopes() {
+                return List.of("openid");
+            }
+
+            @Override
+            public String getClientId() {
+                return "browser-client";
+            }
+
+            @Override
+            public Optional<String> getState(MutableHttpResponse<?> response) {
+                return Optional.of("request-state");
+            }
+
+            @Override
+            public String getResponseType() {
+                return "code";
+            }
+
+            @Override
+            public Optional<String> getRedirectUri() {
+                return Optional.of("https://app.example.test/callback");
+            }
+        };
+
+        MutableHttpResponse<?> response = new DefaultAuthorizationRedirectHandler()
+                .redirect(authorizationRequest, "https://identity.example.test/authorize");
+
+        assertThat(response.getStatus().getCode()).isEqualTo(HttpStatus.FOUND.getCode());
+        URI location = URI.create(response.getHeaders().get(HttpHeaders.LOCATION));
+        assertThat(location.getScheme()).isEqualTo("https");
+        assertThat(location.getAuthority()).isEqualTo("identity.example.test");
+        assertThat(location.getPath()).isEqualTo("/authorize");
+        assertThat(location.getQuery())
+                .contains("scope=openid")
+                .contains("response_type=code")
+                .contains("client_id=browser-client")
+                .contains("redirect_uri=https://app.example.test/callback")
+                .contains("state=request-state");
     }
 
     @Test
