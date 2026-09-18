@@ -26,6 +26,7 @@ import com.azure.core.util.ProgressReporter;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.InetAddress;
@@ -34,6 +35,7 @@ import java.net.URL;
 import java.net.http.HttpClient.Builder;
 import java.net.http.HttpClient.Redirect;
 import java.nio.ByteBuffer;
+import java.nio.channels.Channels;
 import java.time.Duration;
 import java.util.Base64;
 import java.util.List;
@@ -145,6 +147,61 @@ public class Azure_core_http_jdk_httpclientTest {
                 assertThat(response.getStatusCode()).isEqualTo(201);
                 assertThat(response.getHeaders().getValue(HttpHeaderName.CONTENT_LENGTH)).isEqualTo("7");
                 assertThat(response.getBodyAsByteArray().block(IO_TIMEOUT)).containsExactly("created".getBytes(UTF_8));
+            }
+        }
+    }
+
+    @Test
+    void eagerlyReadResponseSupportsReplayableBodyRepresentations() throws Exception {
+        byte[] expectedBody = "replayable response".getBytes(UTF_8);
+        try (TestHttpServer server = TestHttpServer.create(exchange -> {
+            exchange.getResponseHeaders().set("X-Response-Mode", "eager");
+            writeResponse(exchange, 200, "replayable response");
+        })) {
+            HttpClient client = new JdkHttpClientBuilder()
+                    .configuration(Configuration.NONE)
+                    .connectionTimeout(IO_TIMEOUT)
+                    .writeTimeout(IO_TIMEOUT)
+                    .responseTimeout(IO_TIMEOUT)
+                    .readTimeout(IO_TIMEOUT)
+                    .build();
+            HttpRequest request = new HttpRequest(HttpMethod.GET, server.url("/eager"));
+            Context context = Context.NONE.addData("azure-eagerly-read-response", true);
+
+            try (HttpResponse response = client.send(request, context).block(IO_TIMEOUT)) {
+                assertThat(response).isNotNull();
+                assertThat(response.getStatusCode()).isEqualTo(200);
+                assertThat(response.getHeaderValue("X-Response-Mode")).isEqualTo("eager");
+                assertThat(response.getBodyAsString(UTF_8).block(IO_TIMEOUT)).isEqualTo("replayable response");
+                assertThat(response.getBodyAsBinaryData().toBytes()).containsExactly(expectedBody);
+                assertThat(response.buffer()).isSameAs(response);
+
+                ByteBuffer bodyBuffer = response.getBody().blockFirst(IO_TIMEOUT);
+                assertThat(bodyBuffer).isNotNull();
+                byte[] bodyFromFlux = new byte[bodyBuffer.remaining()];
+                bodyBuffer.get(bodyFromFlux);
+                assertThat(bodyFromFlux).containsExactly(expectedBody);
+
+                ByteArrayOutputStream destination = new ByteArrayOutputStream();
+                response.writeBodyTo(Channels.newChannel(destination));
+                assertThat(destination.toByteArray()).containsExactly(expectedBody);
+            }
+        }
+    }
+
+    @Test
+    void providerCreatesDefaultClientWithoutOptions() throws Exception {
+        try (TestHttpServer server = TestHttpServer.create(exchange -> {
+            assertThat(exchange.getRequestMethod()).isEqualTo("GET");
+            writeResponse(exchange, 200, "default provider response");
+        })) {
+            HttpClient client = new JdkHttpClientProvider().createInstance();
+            HttpRequest request = new HttpRequest(HttpMethod.GET, server.url("/default-options"));
+
+            try (HttpResponse response = client.send(request).block(IO_TIMEOUT)) {
+                assertThat(response).isNotNull();
+                assertThat(response.getStatusCode()).isEqualTo(200);
+                assertThat(response.getBodyAsString().block(IO_TIMEOUT)).isEqualTo("default provider response");
             }
         }
     }
