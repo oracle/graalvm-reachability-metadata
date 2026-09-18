@@ -1,0 +1,77 @@
+{
+  "continueFrom": "explore",
+  "coordinate": "io.micronaut.security:micronaut-security-annotations:5.3.2",
+  "failure": {
+    "operand": "reporter-requested metadata",
+    "phase": "explore",
+    "step": "generate_tests()"
+  },
+  "issueNumber": 10074,
+  "label": "library-new-request",
+  "libraryPreparationPreflight": {
+    "action": "no_action",
+    "agent_guidance": "Test these annotations (@Secured, @RunAs, @CreatedBy, @UpdatedBy) via plain reflection on annotated classes/methods/fields (retention, target, declared values) \u2014 enforcement/interception logic lives in the separate io.micronaut.security:micronaut-security core artifact, not in this jar, so don't assume AOP interception or a running security filter is exercisable here. No testAnnotationProcessor is needed since these annotations are plain markers, not code-generating (unlike micronaut-sourcegen-annotations).",
+    "applied_setup": [],
+    "deterministic_setup": [],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#10074 Support for io.micronaut.security:micronaut-security-annotations:5.3.2; label=library-new-request; body_chars=39"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "0 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 2,
+    "issue_label": "library-new-request",
+    "issue_number": 10074,
+    "library": "io.micronaut.security:micronaut-security-annotations:5.3.2",
+    "model": "sonnet",
+    "output_tokens_used": 681,
+    "risks": [
+      "The internal SecuredEvaluationContextRegistrar SPI class only participates in Micronaut's compile-time expression-evaluation processing when a consumer uses expression-style @Secured values; ordinary role-string usage won't exercise it, so it may end up with little or no direct coverage \u2014 that's expected given this artifact's scope."
+    ],
+    "status": "completed",
+    "summary": "micronaut-security-annotations:5.3.2 is a small marker-annotation jar (RUNTIME retention, no code-gen, no bound interceptor); its only compile deps (micronaut-inject/micronaut-aop) resolve transitively via the artifact itself, so the generated scaffold's testImplementation on the coordinate is sufficient. No Docker image, extra dependency, or env/system property is needed."
+  },
+  "libraryUpdateRoute": null,
+  "newVersion": null,
+  "phases": {
+    "explore": {
+      "chunkClassCount": null,
+      "chunkProcessedClassCount": 0,
+      "exhaustedClasses": [],
+      "iteration": 5,
+      "status": "running"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": null,
+      "status": "skipped"
+    },
+    "publication": {
+      "branch": null,
+      "coverageFollowUpIssueNumber": null,
+      "isPushed": false,
+      "publicationId": null,
+      "publicationTimestamp": null,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": true,
+      "status": "completed"
+    }
+  },
+  "preservedBranch": "ai/cugurm/human-intervention/issue-10074-library-new-request-io.micronaut.security-micronaut-security-annotations-5.3.2-d35c6fb2",
+  "publicationMetrics": {
+    "extras": {},
+    "library": "io.micronaut.security:micronaut-security-annotations:5.3.2",
+    "timestamp": "2026-09-18T12:13:00.084838Z"
+  },
+  "schemaVersion": 1,
+  "strategyName": "optimistic_dynamic_access_iterative_pi_gpt-5.6-sol"
+}
