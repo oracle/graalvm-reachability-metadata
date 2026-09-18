@@ -26,6 +26,7 @@ import io.micronaut.http.client.AsyncHttpClient;
 import io.micronaut.http.client.BlockingHttpClient;
 import io.micronaut.http.client.DefaultHttpClientConfiguration;
 import io.micronaut.http.client.HttpClient;
+import io.micronaut.http.client.StreamingHttpClient;
 import io.micronaut.http.client.annotation.Client;
 import io.micronaut.http.client.sse.SseClient;
 import io.micronaut.http.sse.Event;
@@ -40,6 +41,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Function;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 import org.reactivestreams.Publisher;
@@ -90,6 +92,20 @@ public class Micronaut_http_client_coreTest {
 
     @Test
     @Timeout(55)
+    void streamsResponseBytesThroughTheStreamingClientFactory() throws Exception {
+        try (TestServer server = TestServer.start();
+                StreamingHttpClient client =
+                        StreamingHttpClient.create(server.baseUri().toURL(), clientConfiguration())) {
+            String response = awaitFirst(
+                    client.dataStream(HttpRequest.GET("/stream?mode=bytes")),
+                    buffer -> buffer.toString(StandardCharsets.UTF_8));
+
+            assertThat(response).isEqualTo("GET|/stream|mode=bytes|none|none|");
+        }
+    }
+
+    @Test
+    @Timeout(55)
     void consumesServerSentEventsWithProtocolFields() throws Exception {
         try (TestServer server = TestServer.start()) {
             DefaultHttpClientConfiguration configuration = clientConfiguration();
@@ -135,7 +151,12 @@ public class Micronaut_http_client_coreTest {
     }
 
     private static <T> T awaitFirst(Publisher<T> publisher) throws Exception {
-        FirstItemSubscriber<T> subscriber = new FirstItemSubscriber<>();
+        return awaitFirst(publisher, Function.identity());
+    }
+
+    private static <T, R> R awaitFirst(Publisher<T> publisher, Function<? super T, ? extends R> mapper)
+            throws Exception {
+        FirstItemSubscriber<T, R> subscriber = new FirstItemSubscriber<>(mapper);
         publisher.subscribe(subscriber);
         return subscriber.result.get(20, TimeUnit.SECONDS);
     }
@@ -227,9 +248,14 @@ public class Micronaut_http_client_coreTest {
         }
     }
 
-    private static final class FirstItemSubscriber<T> implements Subscriber<T> {
-        private final CompletableFuture<T> result = new CompletableFuture<>();
+    private static final class FirstItemSubscriber<T, R> implements Subscriber<T> {
+        private final CompletableFuture<R> result = new CompletableFuture<>();
+        private final Function<? super T, ? extends R> mapper;
         private Subscription subscription;
+
+        private FirstItemSubscriber(Function<? super T, ? extends R> mapper) {
+            this.mapper = mapper;
+        }
 
         @Override
         public void onSubscribe(Subscription subscription) {
@@ -239,8 +265,13 @@ public class Micronaut_http_client_coreTest {
 
         @Override
         public void onNext(T item) {
-            result.complete(item);
-            subscription.cancel();
+            try {
+                result.complete(mapper.apply(item));
+            } catch (RuntimeException exception) {
+                result.completeExceptionally(exception);
+            } finally {
+                subscription.cancel();
+            }
         }
 
         @Override
