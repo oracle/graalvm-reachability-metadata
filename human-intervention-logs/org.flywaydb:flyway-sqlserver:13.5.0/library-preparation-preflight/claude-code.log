@@ -1,0 +1,23 @@
+## Research summary
+
+**Library:** `org.flywaydb:flyway-sqlserver:13.5.0` — a thin driver module (`flyway-core` + Lombok only; no other runtime deps per its POM) that adds SQL Server support to Flyway.
+
+**Existing scaffold:** `tests/src/org.flywaydb/flyway-sqlserver/11.8.1/` already covers this shape — it starts `mcr.microsoft.com/mssql/server:2022-CU14-ubuntu-22.04` via Docker in `@BeforeAll` (image is already allow-listed at `tests/tck-build-logic/.../Dockerfile-mssql_server` with that exact tag), depends on `com.microsoft.sqlserver:mssql-jdbc:12.2.0.jre11` for the JDBC driver, and runs a plain `Flyway.migrate()` against it. This exact scaffold (same `test-version = 11.8.1`) already covers `12.3.0` through `13.4.0` per `metadata/org.flywaydb/flyway-sqlserver/index.json`, spanning a major version bump (12→13) without needing scaffold changes — strong evidence the harness generalizes across this range.
+
+**13.5.0 release notes** (Red Gate release notes page) show only: `jackson-databind` became optional in `flyway-core`, JSON support moved to a new `flyway-core-utilities` module, and minor transitive library bumps. None of this is exercised by the existing test — it never touches JSON serialization or `MigrateResult` reporting, only `migrate().success`/`migrationsExecuted`. `flyway-core`'s own 13.5.0 test scaffold (already in-repo) likewise needed no `flyway-core-utilities` dependency.
+
+The issue's log excerpt is truncated before any actual error/exception line (it cuts off mid successful-looking analysis/build summary), so there's no concrete failing operation to trace into library source — per the supportability protocol, that uncertainty alone rules out `skip_unsupported`.
+
+No evidence surfaced for a new Docker image, new Maven dependency, or new environment/system property beyond what the generated scaffold (copied from `11.8.1`, reusing the same pinned `mssql-jdbc` and `mssql/server` image) already provides.
+
+```json
+{
+  "action": "no_action",
+  "summary": "flyway-sqlserver is a thin driver over flyway-core with no new runtime deps in 13.5.0; the existing scaffold (mssql-jdbc + already-allow-listed mssql/server Docker image) already covers versions 12.3.0-13.4.0 unchanged, and 13.5.0's only notable change (optional jackson-databind, JSON moved to flyway-core-utilities) isn't exercised by the test.",
+  "deterministic_setup": [],
+  "agent_guidance": "",
+  "risks": [
+    "Issue log is truncated before the actual failure line, so the real cause of the native-image run failure (likely a metadata coverage gap from new code paths in 13.5.0) should be confirmed by running checkMetadataFiles/test locally rather than assumed from this research alone."
+  ]
+}
+```
