@@ -1,0 +1,20 @@
+## Human intervention needed
+
+The automated job failed during test generation/exploration for `com.azure:azure-core-http-jdk-httpclient:1.1.4`.
+
+Preserved work: https://github.com/oracle/graalvm-reachability-metadata/tree/ai%2Fcugurm%2Fhuman-intervention%2Fissue-10052-library-new-request-com.azure-azure-core-http-jdk-httpclient-1.1.4-61d5a329
+
+The most likely blocker is dynamic-access reporting. Repeated `generateDynamicAccessCoverageReport` runs failed because `nativeTestCompile/dynamic-access` was not produced, so coverage could not be distinguished from genuinely having no dynamic access. The continuation marker remains at exploration iteration 7 with publication pending and no publication metrics. Later recovery did make all 7 generated native tests pass, and metadata, style, and statistics checks succeeded, so final validation itself was not the failure.
+
+Please inspect:
+
+- `logs/com.azure:azure-core-http-jdk-httpclient:1.1.4/gradle/generateDynamicAccessCoverageReport-2026-09-18T01-25-40-462258Z.log`
+- `logs/com.azure:azure-core-http-jdk-httpclient:1.1.4/gradle-test/gradle-test-2026-09-18T01-35-51-213886Z.log`
+- `logs/com.azure:azure-core-http-jdk-httpclient:1.1.4/gradle-test/gradle-test-2026-09-18T01-44-03-439994Z.log`
+- `logs/com.azure:azure-core-http-jdk-httpclient:1.1.4/metadata-fix/pi.log`
+
+Manual next steps:
+
+1. Determine why Native Image tracking produces no dynamic-access output and establish whether the library truly has no dynamic access.
+2. Review and preferably remove the generated `--initialize-at-build-time` workaround in `build.gradle`, replacing it with a solution that does not mask Native Image behavior.
+3. Rerun the coordinate tests and dynamic-access report on all required lanes, then regenerate trustworthy coverage and execution metrics before publication.
