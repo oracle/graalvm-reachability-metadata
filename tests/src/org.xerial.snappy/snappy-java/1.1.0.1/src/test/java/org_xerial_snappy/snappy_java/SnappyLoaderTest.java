@@ -8,9 +8,9 @@ package org_xerial_snappy.snappy_java;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.File;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.nio.charset.StandardCharsets;
@@ -20,6 +20,7 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.ServiceLoader;
 import java.util.concurrent.Callable;
+import java.util.stream.Stream;
 
 import org.graalvm.internal.tck.NativeImageSupport;
 import org.junit.jupiter.api.Test;
@@ -36,15 +37,15 @@ public class SnappyLoaderTest {
     Path tempDir;
 
     @Test
-    void loadsSystemLibraryFallbackAndBundledNativeLibrary() throws Exception {
+    void loadsConfiguredAndBundledNativeLibrary() throws Exception {
         clearSnappyProperties();
 
         try {
             System.setProperty(CHILD_TEMPDIR_PROPERTY, tempDir.resolve("child-loader").toString());
-            assertThat(runCallableProvider(SystemLibraryCallable.class.getName())).isTrue();
-            assertThat(runCallableProvider(BundledLibraryCallable.class.getName())).isTrue();
-        } catch (Throwable throwable) {
-            rethrowUnlessUnsupportedFeatureError(throwable);
+            NativeImageSupport.runToleratingUnsupportedFeature(() -> {
+                assertThat(runCallableProvider(BundledLibraryCallable.class.getName())).isTrue();
+                assertThat(runCallableProvider(ConfiguredLibraryCallable.class.getName())).isTrue();
+            });
         } finally {
             clearSnappyProperties();
             System.clearProperty(CHILD_TEMPDIR_PROPERTY);
@@ -91,38 +92,15 @@ public class SnappyLoaderTest {
         System.clearProperty(SnappyLoader.KEY_SNAPPY_LIB_NAME);
     }
 
-    private static void rethrowUnlessUnsupportedFeatureError(Throwable throwable) {
-        for (Throwable current = throwable; current != null; current = current.getCause()) {
-            if (current instanceof Error error && NativeImageSupport.isUnsupportedFeatureError(error)) {
-                return;
-            }
+    private static Path findExtractedNativeLibrary(Path directory, Path staleLibrary) throws IOException {
+        String extractedLibraryPrefix = "snappy-" + SnappyLoader.getVersion() + "-";
+        try (Stream<Path> files = Files.list(directory)) {
+            return files.filter(Files::isRegularFile)
+                    .filter(path -> !path.equals(staleLibrary))
+                    .filter(path -> path.getFileName().toString().startsWith(extractedLibraryPrefix))
+                    .findFirst()
+                    .orElseThrow();
         }
-        if (hasUnsupportedSnappyNativeLoaderFailure(throwable)) {
-            return;
-        }
-        if (throwable instanceof Exception exception) {
-            throw new RuntimeException(exception);
-        }
-        throw (Error) throwable;
-    }
-
-    private static boolean hasUnsupportedSnappyNativeLoaderFailure(Throwable throwable) {
-        if (!"runtime".equals(System.getProperty("org.graalvm.nativeimage.imagecode"))) {
-            return false;
-        }
-
-        for (Throwable current = throwable; current != null; current = current.getCause()) {
-            if (!current.getClass().getName().equals("org.xerial.snappy.SnappyError")) {
-                continue;
-            }
-            for (StackTraceElement stackTraceElement : current.getStackTrace()) {
-                if (stackTraceElement.getClassName().equals("org.xerial.snappy.SnappyLoader")
-                        && stackTraceElement.getMethodName().equals("injectSnappyNativeLoader")) {
-                    return true;
-                }
-            }
-        }
-        return false;
     }
 
     private static final class ChildFirstClassLoader extends URLClassLoader {
@@ -195,8 +173,10 @@ public class SnappyLoaderTest {
                 byte[] input = "SnappyLoader extracts the bundled JNI library".getBytes(StandardCharsets.UTF_8);
                 byte[] compressed = Snappy.compress(input);
                 assertThat(Snappy.uncompress(compressed)).isEqualTo(input);
-                assertThat(Files.size(staleExtractedLibrary)).isGreaterThan((long) "stale native library".length());
-                return SnappyLoader.isNativeLibraryLoaded();
+                assertThat(Files.readString(staleExtractedLibrary)).isEqualTo("stale native library");
+                Path extractedNativeLibrary = findExtractedNativeLibrary(nativeLibraryDirectory, staleExtractedLibrary);
+                assertThat(Files.size(extractedNativeLibrary)).isGreaterThan(Files.size(staleExtractedLibrary));
+                return true;
             } finally {
                 clearSnappyProperties();
                 Thread.currentThread().setContextClassLoader(previousClassLoader);
@@ -204,18 +184,30 @@ public class SnappyLoaderTest {
         }
     }
 
-    public static class SystemLibraryCallable implements Callable<Boolean> {
+    public static class ConfiguredLibraryCallable implements Callable<Boolean> {
         @Override
         public Boolean call() throws Exception {
             ClassLoader previousClassLoader = Thread.currentThread().getContextClassLoader();
-            Thread.currentThread().setContextClassLoader(SystemLibraryCallable.class.getClassLoader());
+            Thread.currentThread().setContextClassLoader(ConfiguredLibraryCallable.class.getClassLoader());
             try {
                 clearSnappyProperties();
-                System.setProperty(SnappyLoader.KEY_SNAPPY_USE_SYSTEMLIB, "true");
-                byte[] input = "SnappyLoader invokes loadLibrary on the native loader".getBytes(StandardCharsets.UTF_8);
+                Path childTempDirectory = Path.of(System.getProperty(CHILD_TEMPDIR_PROPERTY));
+                Path bundledLibraryDirectory = childTempDirectory.resolve("bundled");
+                String staleLibraryName = "snappy-" + SnappyLoader.getVersion() + "-"
+                        + System.mapLibraryName("snappyjava");
+                Path extractedNativeLibrary = findExtractedNativeLibrary(
+                        bundledLibraryDirectory, bundledLibraryDirectory.resolve(staleLibraryName));
+                Path configuredLibraryDirectory = childTempDirectory.resolve("configured");
+                Files.createDirectories(configuredLibraryDirectory);
+                Path configuredLibraryFile = configuredLibraryDirectory.resolve(extractedNativeLibrary.getFileName());
+                Path configuredNativeLibrary = Files.copy(extractedNativeLibrary, configuredLibraryFile);
+
+                System.setProperty(SnappyLoader.KEY_SNAPPY_LIB_PATH, configuredLibraryDirectory.toString());
+                System.setProperty(SnappyLoader.KEY_SNAPPY_LIB_NAME, configuredNativeLibrary.getFileName().toString());
+                byte[] input = "SnappyLoader loads a configured native library".getBytes(StandardCharsets.UTF_8);
                 byte[] compressed = Snappy.compress(input);
                 assertThat(Snappy.uncompress(compressed)).isEqualTo(input);
-                return SnappyLoader.isNativeLibraryLoaded();
+                return true;
             } finally {
                 clearSnappyProperties();
                 Thread.currentThread().setContextClassLoader(previousClassLoader);
