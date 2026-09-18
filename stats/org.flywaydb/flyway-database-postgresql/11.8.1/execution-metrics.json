@@ -1,0 +1,143 @@
+{
+  "fix_java_run_fail:2026-09-18": {
+    "timestamp": "2026-09-18T11:23:51.107436Z",
+    "library": "org.flywaydb:flyway-database-postgresql:11.8.1",
+    "starting_commit": "6bc0e8c23abc0a7ae3ec0968bce23a600b680bd9",
+    "ending_commit": "3c79b0b06c44937a23f098f0db8e395230985ccb",
+    "previous_library": "org.flywaydb:flyway-database-postgresql:10.19.0",
+    "strategy_name": "java_run_iterative_with_coverage_sources_pi_gpt-5.6-sol",
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "status": "success",
+    "stats": {
+      "version": "11.8.1",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 6,
+            "totalCalls": 6
+          }
+        },
+        "coverageRatio": 1.0,
+        "coveredCalls": 6,
+        "totalCalls": 6
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 915,
+          "missed": 2541,
+          "ratio": 0.264757,
+          "total": 3456
+        },
+        "line": {
+          "covered": 179,
+          "missed": 420,
+          "ratio": 0.298831,
+          "total": 599
+        },
+        "method": {
+          "covered": 67,
+          "missed": 111,
+          "ratio": 0.376404,
+          "total": 178
+        }
+      }
+    },
+    "previous_library_stats": {
+      "version": "10.19.0",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 6,
+            "totalCalls": 6
+          }
+        },
+        "coverageRatio": 1.0,
+        "coveredCalls": 6,
+        "totalCalls": 6
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 906,
+          "missed": 2486,
+          "ratio": 0.267099,
+          "total": 3392
+        },
+        "line": {
+          "covered": 177,
+          "missed": 411,
+          "ratio": 0.30102,
+          "total": 588
+        },
+        "method": {
+          "covered": 67,
+          "missed": 116,
+          "ratio": 0.36612,
+          "total": 183
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "advisory_preparation",
+      "issue_number": 9378,
+      "issue_label": "fails-java-run",
+      "library": "org.flywaydb:flyway-database-postgresql:11.8.1",
+      "summary": "flyway-core's PluginRegister.getCopy() requires com.fasterxml.jackson.databind.ObjectMapper, which flyway-core declares as a required (non-optional) POM dependency but which isn't pulled onto the test classpath transitively; sibling test projects (flyway-sqlserver:11.8.1, flyway-core:12.5.0) already add it explicitly for the same Flyway 11.x line.",
+      "deterministic_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "com.fasterxml.jackson.core:jackson-databind:2.15.2",
+          "scope": "testImplementation",
+          "reason": "flyway-core (pulled in via flyway-database-postgresql) requires com.fasterxml.jackson.databind.ObjectMapper at Flyway configuration time (PluginRegister.getCopy -> ClassicConfiguration.configure); it is missing from the resolved test classpath, matching the fix already applied for flyway-sqlserver:1\n...[truncated]"
+        }
+      ],
+      "agent_guidance": "",
+      "risks": [
+        "Verify the resolved flyway-database-postgresql:11.8.1 dependency tree still needs jackson-databind explicitly (it may pull a different Jackson version transitively that could conflict) before finalizing."
+      ],
+      "applied_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "com.fasterxml.jackson.core:jackson-databind:2.15.2",
+          "result": "skipped",
+          "reason": "build_gradle_absent"
+        }
+      ],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#9378 [Automation] java run fails for org.flywaydb:flyway-database-postgresql:11.8.1; label=fails-java-run; body_chars=8015"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "11 existing test file path(s) included"
+        }
+      ],
+      "current_library": "org.flywaydb:flyway-database-postgresql:10.19.0",
+      "new_version": "11.8.1",
+      "model": "sonnet",
+      "input_tokens_used": 14,
+      "output_tokens_used": 4143
+    },
+    "metrics": {
+      "input_tokens_used": 39418,
+      "cached_input_tokens_used": 146304,
+      "output_tokens_used": 1476,
+      "iterations": 3,
+      "cost_usd": 0.3146,
+      "tested_library_loc": 179,
+      "metadata_entries": 104,
+      "test_only_metadata_entries": 37,
+      "previous_library_metadata_entries": 91,
+      "previous_library_test_only_metadata_entries": 35,
+      "code_coverage_percent": 29.88,
+      "previous_library_coverage_percent": 30.1
+    },
+    "artifacts": {
+      "metadata_file": "metadata/org.flywaydb/flyway-database-postgresql/11.8.1/reachability-metadata.json"
+    }
+  }
+}
