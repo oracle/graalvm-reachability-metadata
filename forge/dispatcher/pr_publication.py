@@ -12,6 +12,7 @@ import contextlib
 import importlib
 import os
 import subprocess
+import sys
 from git_scripts.common_git import run_git_transport
 from typing import Any
 from dispatcher.config import (

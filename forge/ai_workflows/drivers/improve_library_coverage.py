@@ -36,6 +36,7 @@ import ai_workflows.core  # noqa: F401 - triggers strategy registration
 from ai_workflows.agents import Agent
 from ai_workflows.core.workflow_strategy import (
     RUN_STATUS_CHUNK_READY,
+    RUN_STATUS_FAILURE,
     RUN_STATUS_SUCCESS,
     SUCCESS_WITH_INTERVENTION_STATUS,
     WorkflowStrategy,
