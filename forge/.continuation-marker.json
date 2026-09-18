@@ -1,0 +1,74 @@
+{
+  "continueFrom": "setup",
+  "coordinate": "org.springframework:spring-context:6.0.4",
+  "failure": {
+    "operand": "org.springframework:spring-context:6.0.4",
+    "phase": "setup",
+    "step": "normal_setup()"
+  },
+  "issueNumber": 9929,
+  "label": "fails-native-image-run",
+  "libraryPreparationPreflight": {
+    "action": "no_action",
+    "agent_guidance": "Verify the generated 6.0.4 scaffold retains the 6.0.2 project's customizations: testImplementation deps org.glassfish:javax.ejb:3.1 and org.assertj:assertj-core:3.22.0, the systemProperty/runtimeArgs spring.objenesis.ignore=true, and the generatePredefinedCglibProxyClasses build-time task (avoids CGLIB runtime bytecode generation under Native Image). The reported failure log is truncated before the actual runtime error; investigate the full run log to find the real cause before assuming it needs new setup.",
+    "applied_setup": [],
+    "current_library": "org.springframework:spring-context:6.0.2",
+    "deterministic_setup": [],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#9929 [Automation] native-image run fails for org.springframework:spring-context:6.0.4; label=fails-native-image-run; body_chars=8015"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "33 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 22,
+    "issue_label": "fails-native-image-run",
+    "issue_number": 9929,
+    "library": "org.springframework:spring-context:6.0.4",
+    "model": "sonnet",
+    "new_version": "6.0.4",
+    "output_tokens_used": 6798,
+    "risks": [
+      "Issue log excerpt cuts off right after native image build succeeds, before the actual runtime failure \u2014 root cause is unverified from the given evidence alone."
+    ],
+    "status": "completed",
+    "summary": "6.0.4 is a patch bump with an identical dependency graph to 6.0.2 and no dynamic-access-relevant API surface change (the only new class, KotlinReflectionBeanRegistrationAotProcessor, is Kotlin-AOT-only and inert here); existing 6.0.2 scaffold customizations (assertj/javax.ejb deps, spring.objenesis.ignore, CGLIB pregeneration) carry forward via normal scaffold generation."
+  },
+  "libraryUpdateRoute": null,
+  "newVersion": "6.0.4",
+  "phases": {
+    "explore": {
+      "chunkClassCount": null,
+      "chunkProcessedClassCount": 0,
+      "exhaustedClasses": [],
+      "status": "pending"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": null,
+      "status": "pending"
+    },
+    "publication": {
+      "branch": null,
+      "coverageFollowUpIssueNumber": null,
+      "isPushed": false,
+      "publicationId": null,
+      "publicationTimestamp": null,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": false,
+      "status": "running"
+    }
+  },
+  "preservedBranch": "ai/cugurm/human-intervention/issue-9929-fails-native-image-run-org.springframework-spring-context-6.0.4-cff4cef8",
+  "publicationMetrics": null,
+  "schemaVersion": 1,
+  "strategyName": "library_update_pi_gpt-5.6-sol"
+}
