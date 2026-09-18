@@ -1,0 +1,40 @@
+Prompt:
+You are preparing a Forge workflow for a library issue. Decide whether the library needs setup beyond the normal generated test scaffold before meaningful coverage is reachable.
+
+Research the library yourself to make this decision. Investigate the resolved artifact and its dependencies, how the library is normally used, and its documentation. The JSON context below is only a starting point, not the limit of what you may consider. Do not modify the repository or apply any setup yourself — return only the decision. Local Gradle and Native Image verification remain authoritative.
+
+The setup can be one of three things: an extra Maven dependency, a Docker image the tests need, or an environment/system property the generated tests must set. Represent dependencies and Docker images as `deterministic_setup` entries the driver can apply before generation:
+  - {"kind": "dependency", "coordinate": "group:artifact:version", "scope": "testImplementation", "reason": "..."}
+  - {"kind": "docker_image", "image": "name:tag", "slug": "short-slug", "reason": "..."}
+If a test needs a Docker image that is already pinned under `tests/tck-build-logic/src/main/resources/allowed-docker-images/`, reuse the exact tag from that `Dockerfile-<slug>` instead of introducing a new one, since the allow-list permits a single shared tag per image.
+Put environment variables, system properties, and other test-code setup in `agent_guidance`. Do not restate deterministic entries as guidance.
+
+Return a single JSON object with this shape:
+{
+  "action": "no_action" | "advisory_preparation",
+  "summary": "short reason",
+  "deterministic_setup": [ ... dependency or docker_image entries, if any ... ],
+  "agent_guidance": "environment/system property/test setup guidance, if any",
+  "risks": ["risk notes, if any"]
+}
+
+Choose no_action unless your research finds concrete evidence that extra setup is needed.
+
+Context (starting point):
+{
+  "issue": {
+    "number": 10052,
+    "title": "Support for com.azure:azure-core-http-jdk-httpclient:1.1.4",
+    "label": "library-new-request",
+    "body": "### Reason for requesting the library\n\n_No response_",
+    "body_error": ""
+  },
+  "library": "com.azure:azure-core-http-jdk-httpclient:1.1.4",
+  "current_library": null,
+  "new_version": null,
+  "existing_tests": {}
+}
+
+Conversation:
+{"duration_api_ms":91028,"stop_reason":"end_turn","session_id":"5e113448-693a-4249-a75e-ef735e6a9f5d","total_cost_usd":0.38683539999999994,"usage":{"input_tokens":26,"cache_creation_input_tokens":48622,"cache_read_input_tokens":611582,"output_tokens":6840,"output_tokens_details":{"thinking_tokens":2489},"server_tool_use":{"web_search_requests":0,"web_fetch_requests":0},"service_tier":"standard","cache_creation":{"ephemeral_1h_input_tokens":48622,"ephemeral_5m_input_tokens":0},"inference_geo":"not_available","iterations":[{"input_tokens":2,"output_tokens":242,"cache_read_input_tokens":66103,"cache_creation_input_tokens":1050,"cache_creation":{"ephemeral_5m_input_tokens":0,"ephemeral_1h_input_tokens":1050},"type":"message"}],"speed":"standard"},"modelUsage":{"claude-haiku-4-5-20251001":{"inputTokens":1489,"outputTokens":18,"cacheReadInputTokens":0,"cacheCreationInputTokens":0,"webSearchRequests":0,"costUSD":0.001579,"contextWindow":200000,"maxOutputTokens":32000,"thinkingTokens":0,"canonicalModel":"claude-haiku-4-5","provider":"firstParty","costBasis":"list"},"claude-sonnet-5":{"inputTokens":26,"outputTokens":6840,"cacheReadInputTokens":611582,"cacheCreationInputTokens":48622,"webSearchRequests":0,"costUSD":0.38525639999999994,"contextWindow":1000000,"maxOutputTokens":64000,"thinkingTokens":2489,"canonicalModel":"claude-sonnet-5","provider":"firstParty","costBasis":"list"}},"permission_denials":[],"terminal_reason":"completed","fast_mode_state":"off","fast_mode_disabled_reason":"sdk_opt_in_required","subagent_stats":{"spawned":0,"requested":{"background":0,"foreground":0,"unset":0},"started_in_background":0,"max_depth":0,"spawned_by_subagents":0,"completed":0,"failed":0,"killed":{"parent":0,"user":0,"system":0},"refused":{"depth_limit":0,"concurrency_limit":0,"budget":0},"by_type":{}},"is_error":false,"num_turns":18,"subtype":"success","api_error_status":null,"result":"```json\n{\n  \"action\": \"no_action\",\n  \"summary\": \"azure-core-http-jdk-httpclient is a thin HttpClient SPI wrapper over the JDK's built-in java.net.http.HttpClient, with its only compile dependency (azure-core) auto-resolved by Gradle. Analogous HTTP-client-implementation libraries in this repo (e.g. software.amazon.awssdk:apache-client) are tested with a loopback com.sun.net.httpserver.HttpServer requiring no Docker image, no extra Maven dependency, and no env/system-property setup — the same approach applies here.\",\n  \"deterministic_setup\": [],\n  \"agent_guidance\": \"\",\n  \"risks\": []\n}\n```","ttft_ms":4705,"type":"result","duration_ms":91225,"uuid":"e3acf0c2-a5ed-48f0-b2c7-563a4fa5c1d6","ttft_stream_ms":2003,"time_to_request_ms":75,"first_content_frame_ms":2003,"queued_turn_count":0,"result_index":0}
+
