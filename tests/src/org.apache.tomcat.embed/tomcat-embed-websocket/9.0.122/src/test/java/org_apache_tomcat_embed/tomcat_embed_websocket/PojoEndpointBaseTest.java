@@ -102,7 +102,8 @@ public class PojoEndpointBaseTest {
         private final Lock lock = new ReentrantLock();
 
         @Override
-        protected void doWrite(SendHandler handler, long blockingWriteTimeoutExpiry, ByteBuffer... data) {
+        protected void doWrite(
+                SendHandler handler, boolean blocking, long blockingWriteTimeoutExpiry, ByteBuffer... data) {
             handler.onResult(new SendResult());
         }
 
