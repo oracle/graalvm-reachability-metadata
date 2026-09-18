@@ -1,0 +1,18 @@
+## Human intervention needed
+
+The automated job failed while generating/refining tests for `io.micronaut.security:micronaut-security-annotations:5.3.2`.
+
+Preserved work: https://github.com/oracle/graalvm-reachability-metadata/tree/ai%2Fcugurm%2Fhuman-intervention%2Fissue-10074-library-new-request-io.micronaut.security-micronaut-security-annotations-5.3.2-d35c6fb2
+
+The most likely failing stage is `explore/generate_tests()` for reporter-requested metadata. Native tests initially passed with zero test failures, but dynamic-access reporting failed twice because `build/native/nativeTestCompile/dynamic-access` was not produced. The fallback test refinements then caused successive `generateMetadata` compilation failures: first Micronaut rejected AOP advice on the final `SpecializedOperations` class, then AssertJ 3.22 could not resolve `containsEmpty()`. The final edit was not verified before the retry budget was exhausted. Metrics record failure after 8 iterations with dynamic-access coverage unavailable and finalization still pending.
+
+Inspect these preserved logs:
+- `human-intervention-logs/io.micronaut.security:micronaut-security-annotations:5.3.2/gradle/generateDynamicAccessCoverageReport-2026-09-18T12-03-31-565239Z.log`
+- `human-intervention-logs/io.micronaut.security:micronaut-security-annotations:5.3.2/issue-requested-metadata/pi-generation-2026-09-18T12-10-50-491589Z.log`
+- `human-intervention-logs/io.micronaut.security:micronaut-security-annotations:5.3.2/issue-requested-metadata/pi-generation-2026-09-18T12-11-55-047373Z.log`
+- `human-intervention-logs/io.micronaut.security:micronaut-security-annotations:5.3.2/native-test-verify/cycle-0-finalizedTest-2026-09-18T12-02-15-599206Z.log`
+
+Manual next steps:
+1. Check out the preserved branch and review the checkpointed tests, especially the annotation-processor dependency and `SecuredEvaluationContextRegistrarTest`.
+2. Reproduce why the native build does not emit the dynamic-access directory and determine whether this annotation-only artifact should use the no-dynamic-access fallback.
+3. After correcting the tests/reporting path, rerun `generateMetadata`, `generateDynamicAccessCoverageReport`, and the full coordinate-scoped `test` task before finalization.
