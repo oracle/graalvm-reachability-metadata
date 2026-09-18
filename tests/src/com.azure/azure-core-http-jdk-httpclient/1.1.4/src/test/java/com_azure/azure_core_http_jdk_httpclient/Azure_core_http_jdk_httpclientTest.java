@@ -32,6 +32,7 @@ import java.net.URL;
 import java.net.http.HttpClient.Builder;
 import java.net.http.HttpClient.Redirect;
 import java.time.Duration;
+import java.util.Base64;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -190,6 +191,50 @@ public class Azure_core_http_jdk_httpclientTest {
                 assertThat(response.getStatusCode()).isEqualTo(200);
                 assertThat(response.getBodyAsString().block(IO_TIMEOUT)).isEqualTo("response from proxy");
                 assertThat(requests).hasValue(1);
+            }
+        }
+    }
+
+    @Test
+    void proxyCredentialsAuthenticateAfterChallenge() throws Exception {
+        String expectedAuthorization = "Basic "
+                + Base64.getEncoder().encodeToString("azure-user:azure-password".getBytes(UTF_8));
+        AtomicInteger challenges = new AtomicInteger();
+        AtomicInteger authenticatedRequests = new AtomicInteger();
+        try (TestHttpServer proxy = TestHttpServer.create(exchange -> {
+            String authorization = exchange.getRequestHeaders().getFirst("Proxy-Authorization");
+            if (authorization == null) {
+                challenges.incrementAndGet();
+                exchange.getResponseHeaders().set("Proxy-Authenticate", "Basic realm=\"azure-test\"");
+                exchange.sendResponseHeaders(407, -1);
+                return;
+            }
+
+            assertThat(authorization).isEqualTo(expectedAuthorization);
+            assertThat(exchange.getRequestURI().toString()).isEqualTo("http://azure.example/authenticated");
+            authenticatedRequests.incrementAndGet();
+            writeResponse(exchange, 200, "authenticated proxy response");
+        })) {
+            ProxyOptions proxyOptions = new ProxyOptions(
+                            ProxyOptions.Type.HTTP,
+                            new InetSocketAddress(InetAddress.getLoopbackAddress(), proxy.port()))
+                    .setCredentials("azure-user", "azure-password");
+            HttpClient client = new JdkHttpClientBuilder()
+                    .configuration(Configuration.NONE)
+                    .proxy(proxyOptions)
+                    .connectionTimeout(IO_TIMEOUT)
+                    .writeTimeout(IO_TIMEOUT)
+                    .responseTimeout(IO_TIMEOUT)
+                    .readTimeout(IO_TIMEOUT)
+                    .build();
+            HttpRequest request = new HttpRequest(HttpMethod.GET, new URL("http://azure.example/authenticated"));
+
+            try (HttpResponse response = client.send(request).block(IO_TIMEOUT)) {
+                assertThat(response).isNotNull();
+                assertThat(response.getStatusCode()).isEqualTo(200);
+                assertThat(response.getBodyAsString().block(IO_TIMEOUT)).isEqualTo("authenticated proxy response");
+                assertThat(challenges).hasValue(1);
+                assertThat(authenticatedRequests).hasValue(1);
             }
         }
     }
