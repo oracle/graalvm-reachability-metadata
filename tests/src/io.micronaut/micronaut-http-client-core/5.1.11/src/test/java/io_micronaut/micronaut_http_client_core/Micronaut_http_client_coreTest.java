@@ -26,6 +26,8 @@ import io.micronaut.http.client.BlockingHttpClient;
 import io.micronaut.http.client.DefaultHttpClientConfiguration;
 import io.micronaut.http.client.HttpClient;
 import io.micronaut.http.client.annotation.Client;
+import io.micronaut.http.client.sse.SseClient;
+import io.micronaut.http.sse.Event;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
@@ -33,10 +35,15 @@ import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
+import org.reactivestreams.Publisher;
+import org.reactivestreams.Subscriber;
+import org.reactivestreams.Subscription;
 
 public class Micronaut_http_client_coreTest {
     private static final Duration HTTP_TIMEOUT = Duration.ofSeconds(10);
@@ -59,6 +66,23 @@ public class Micronaut_http_client_coreTest {
                 assertThat(response.getContentType()).contains(MediaType.TEXT_PLAIN_TYPE);
                 assertThat(response.body())
                         .isEqualTo("POST|/echo|mode=full|request-17|none|native request");
+            }
+        }
+    }
+
+    @Test
+    @Timeout(55)
+    void consumesServerSentEventsWithProtocolFields() throws Exception {
+        try (TestServer server = TestServer.start()) {
+            DefaultHttpClientConfiguration configuration = clientConfiguration();
+            SseClient sseClient = SseClient.create(server.baseUri().toURL(), configuration);
+            try (HttpClient client = (HttpClient) sseClient) {
+                Event<String> event = awaitFirst(sseClient.eventStream("/events", String.class));
+
+                assertThat(event.getData()).isEqualTo("available");
+                assertThat(event.getId()).isEqualTo("event-7");
+                assertThat(event.getName()).isEqualTo("inventory");
+                assertThat(event.getRetry()).isEqualTo(Duration.ofMillis(1500));
             }
         }
     }
@@ -90,6 +114,12 @@ public class Micronaut_http_client_coreTest {
         configuration.setReadTimeout(HTTP_TIMEOUT);
         configuration.setRequestTimeout(HTTP_TIMEOUT);
         return configuration;
+    }
+
+    private static <T> T awaitFirst(Publisher<T> publisher) throws Exception {
+        FirstItemSubscriber<T> subscriber = new FirstItemSubscriber<>();
+        publisher.subscribe(subscriber);
+        return subscriber.result.get(20, TimeUnit.SECONDS);
     }
 
     @Client("catalog")
@@ -142,6 +172,21 @@ public class Micronaut_http_client_coreTest {
 
         private static void respond(HttpExchange exchange) throws IOException {
             try (exchange) {
+                if (exchange.getRequestURI().getPath().equals("/events")) {
+                    String eventPayload = """
+                            id: event-7
+                            event: inventory
+                            retry: 1500
+                            data: available
+
+                            """;
+                    byte[] eventBytes = eventPayload.getBytes(StandardCharsets.UTF_8);
+                    exchange.getResponseHeaders().set("Content-Type", "text/event-stream");
+                    exchange.sendResponseHeaders(HttpStatus.OK.getCode(), eventBytes.length);
+                    exchange.getResponseBody().write(eventBytes);
+                    return;
+                }
+
                 String body = new String(exchange.getRequestBody().readAllBytes(), StandardCharsets.UTF_8);
                 String response = String.join(
                         "|",
@@ -161,6 +206,33 @@ public class Micronaut_http_client_coreTest {
         private static String header(HttpExchange exchange, String name, String fallback) {
             String value = exchange.getRequestHeaders().getFirst(name);
             return value == null ? fallback : value;
+        }
+    }
+
+    private static final class FirstItemSubscriber<T> implements Subscriber<T> {
+        private final CompletableFuture<T> result = new CompletableFuture<>();
+        private Subscription subscription;
+
+        @Override
+        public void onSubscribe(Subscription subscription) {
+            this.subscription = subscription;
+            subscription.request(1);
+        }
+
+        @Override
+        public void onNext(T item) {
+            result.complete(item);
+            subscription.cancel();
+        }
+
+        @Override
+        public void onError(Throwable throwable) {
+            result.completeExceptionally(throwable);
+        }
+
+        @Override
+        public void onComplete() {
+            result.completeExceptionally(new IllegalStateException("SSE stream completed without an event"));
         }
     }
 }
