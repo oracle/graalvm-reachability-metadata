@@ -1,0 +1,125 @@
+Command: ./gradlew fixTestNativeImageRun -PtestLibraryCoordinates=org.springframework:spring-context:6.0.2 -PnewLibraryVersion=6.0.4
+Working directory: /home/oracle/oracle/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9929-9d6a34a5
+
+--- output ---
+Starting a Gradle Daemon, 30 stopped Daemons could not be reused, use --status for details
+> Task :tck-build-logic:extractPluginRequests FROM-CACHE
+> Task :tck-build-logic:generatePluginAdapters FROM-CACHE
+> Task :tck-build-logic:compileJava FROM-CACHE
+> Task :tck-build-logic:compileGroovy FROM-CACHE
+> Task :tck-build-logic:compileGroovyPlugins FROM-CACHE
+> Task :tck-build-logic:pluginDescriptors
+> Task :tck-build-logic:processResources
+> Task :tck-build-logic:classes
+> Task :tck-build-logic:jar
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :fixTestNativeImageRun
+[34m[INFO] Generating metadata...[0m
+
+> Task :fixTestNativeImageRun FAILED
+
+[Incubating] Problems report is available at: file:///home/oracle/oracle/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9929-9d6a34a5/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':fixTestNativeImageRun'.
+> Cannot generate metadata. See output:
+  Starting a Gradle Daemon, 1 busy and 30 stopped Daemons could not be reused, use --status for details
+  > Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+  > Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+  > Task :tck-build-logic:compileJava UP-TO-DATE
+  > Task :tck-build-logic:compileGroovy UP-TO-DATE
+  > Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+  > Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+  > Task :tck-build-logic:processResources UP-TO-DATE
+  > Task :tck-build-logic:classes UP-TO-DATE
+  > Task :tck-build-logic:jar UP-TO-DATE
+  > Task :checkTestTimeoutAnnotations
+  > Task :compileJava NO-SOURCE
+  > Task :processResources NO-SOURCE
+  > Task :classes UP-TO-DATE
+  > Task :processTestResources
+  > Task :tck-test-support:compileJava
+  > Task :tck-test-support:processResources
+  > Task :tck-test-support:classes
+  > Task :tck-test-support:jar
+  
+  > Task :compileTestJava
+  warning: unknown enum constant When.MAYBE
+    reason: class file for javax.annotation.meta.When not found
+  Note: /home/oracle/oracle/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9929-9d6a34a5/tests/src/org.springframework/spring-context/6.0.2/src/test/java/org_springframework/spring_context/ResourceBundleMessageSourceInnerMessageSourceControlTest.java uses or overrides a deprecated API.
+  Note: Recompile with -Xlint:deprecation for details.
+  1 warning
+  
+  > Task :testClasses
+  
+  > Task :generatePredefinedCglibProxyClasses FAILED
+  [native-image-plugin] Instrumenting task with the native-image-agent: generatePredefinedCglibProxyClasses
+  [0,058s][warning][jni,resolve] Re-registering of platform native method: jdk.internal.misc.Unsafe.allocateInstance(Ljava/lang/Class;)Ljava/lang/Object; from code in a different classloader
+  Exception in thread "main" java.lang.UnsupportedOperationException: CGLIB runtime enhancement not supported on native image. Make sure to include a pre-generated class on the classpath instead: org_springframework.spring_context.ConfigurationClassEnhancerInnerBeanMethodInterceptorTest$CglibProxyConfiguration$$SpringCGLIB$$0
+  	at org.springframework.cglib.core.AbstractClassGenerator.generate(AbstractClassGenerator.java:359)
+  	at org.springframework.cglib.proxy.Enhancer.generate(Enhancer.java:575)
+  	at org.springframework.cglib.core.AbstractClassGenerator$ClassLoaderData.lambda$new$1(AbstractClassGenerator.java:103)
+  	at org.springframework.cglib.core.internal.LoadingCache.lambda$createEntry$1(LoadingCache.java:52)
+  	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:328)
+  	at org.springframework.cglib.core.internal.LoadingCache.createEntry(LoadingCache.java:57)
+  	at org.springframework.cglib.core.internal.LoadingCache.get(LoadingCache.java:34)
+  	at org.springframework.cglib.core.AbstractClassGenerator$ClassLoaderData.get(AbstractClassGenerator.java:126)
+  	at org.springframework.cglib.core.AbstractClassGenerator.create(AbstractClassGenerator.java:313)
+  	at org.springframework.cglib.proxy.Enhancer.createHelper(Enhancer.java:562)
+  	at org.springframework.cglib.proxy.Enhancer.createClass(Enhancer.java:407)
+  	at org.springframework.context.annotation.ConfigurationClassEnhancer.createClass(ConfigurationClassEnhancer.java:138)
+  	at org.springframework.context.annotation.ConfigurationClassEnhancer.enhance(ConfigurationClassEnhancer.java:109)
+  	at org.springframework.context.annotation.ConfigurationClassPostProcessor.enhanceConfigurationClasses(ConfigurationClassPostProcessor.java:514)
+  	at org.springframework.context.annotation.ConfigurationClassPostProcessor.postProcessBeanFactory(ConfigurationClassPostProcessor.java:304)
+  	at org.springframework.context.support.PostProcessorRegistrationDelegate.invokeBeanFactoryPostProcessors(PostProcessorRegistrationDelegate.java:358)
+  	at org.springframework.context.support.PostProcessorRegistrationDelegate.invokeBeanFactoryPostProcessors(PostProcessorRegistrationDelegate.java:150)
+  	at org.springframework.context.support.AbstractApplicationContext.invokeBeanFactoryPostProcessors(AbstractApplicationContext.java:745)
+  	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:565)
+  	at org.springframework.context.annotation.AnnotationConfigApplicationContext.<init>(AnnotationConfigApplicationContext.java:93)
+  	at org_springframework.spring_context.PredefinedCglibProxyClassesGenerator.generateCglibFactoryBeanProxyClasses(PredefinedCglibProxyClassesGenerator.java:56)
+  	at org_springframework.spring_context.PredefinedCglibProxyClassesGenerator.main(PredefinedCglibProxyClassesGenerator.java:49)
+  
+  [Incubating] Problems report is available at: file:///home/oracle/oracle/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9929-9d6a34a5/tests/src/org.springframework/spring-context/6.0.2/build/reports/problems/problems-report.html
+  
+  FAILURE: Build failed with an exception.
+  
+  * What went wrong:
+  Execution failed for task ':generatePredefinedCglibProxyClasses'.
+  > Process 'command '/home/oracle/.local/graalvm/graalvm-25.4.4.1.1-dev+1.1/bin/java'' finished with non-zero exit value 1
+  
+  * Try:
+  > Run with --stacktrace option to get the stack trace.
+  > Run with --info or --debug option to get more log output.
+  > Run with --scan to generate a Build Scan (Powered by Develocity).
+  > Get more help at https://help.gradle.org.
+  
+  Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+  
+  You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+  
+  For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+  
+  BUILD FAILED in 9s
+  15 actionable tasks: 7 executed, 8 up-to-date
+
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD FAILED in 16s
+9 actionable tasks: 4 executed, 5 from cache

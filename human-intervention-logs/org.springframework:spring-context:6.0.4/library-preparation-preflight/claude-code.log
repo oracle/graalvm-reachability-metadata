@@ -1,0 +1,12 @@
+```json
+{
+  "action": "no_action",
+  "summary": "Routine patch bump (6.0.2 -> 6.0.4); release notes show only bug fixes and native-image AOT improvements, no new dependency/Docker/env requirement, and existing scaffold (CGLIB proxy generation task, spring.objenesis.ignore property, user-code-filter.json) already carries forward automatically.",
+  "deterministic_setup": [],
+  "agent_guidance": "",
+  "risks": [
+    "The issue's failure log is truncated right after a successful native-image build completes; the actual native-image run failure (exception/stack trace) is not visible in the provided evidence, so the root cause is unverified until local Gradle/Native Image runs are executed.",
+    "If local verification reproduces a genuine reflective/proxy access gap, treat it as a normal metadata coverage gap (repairable via reachability-metadata.json), not a Native Image limitation — nothing in the 6.0.3/6.0.4 changelog points to an unsupportable mechanism (no new runtime codegen, agent self-attach, or classloader changes)."
+  ]
+}
+```
