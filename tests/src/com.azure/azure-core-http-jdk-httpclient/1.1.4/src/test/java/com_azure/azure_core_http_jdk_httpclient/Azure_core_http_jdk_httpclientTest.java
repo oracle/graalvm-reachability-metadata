@@ -190,11 +190,12 @@ public class Azure_core_http_jdk_httpclientTest {
     }
 
     @Test
-    void contextCanDiscardResponseBodyWhileRetainingResponseMetadata() throws Exception {
+    void synchronousContextEagerlyReadsResponseBodyWhileRetainingResponseMetadata() throws Exception {
+        byte[] expectedBody = "eager synchronous response".getBytes(UTF_8);
         try (TestHttpServer server = TestHttpServer.create(exchange -> {
-            assertThat(exchange.getRequestURI().getPath()).isEqualTo("/discard-body");
-            exchange.getResponseHeaders().set("X-Response-Mode", "discarded");
-            writeResponse(exchange, 206, "body that the client must discard");
+            assertThat(exchange.getRequestURI().getPath()).isEqualTo("/eager-sync");
+            exchange.getResponseHeaders().set("X-Response-Mode", "eager");
+            writeResponse(exchange, 206, "eager synchronous response");
         })) {
             HttpClient client = new JdkHttpClientBuilder()
                     .configuration(Configuration.NONE)
@@ -203,14 +204,14 @@ public class Azure_core_http_jdk_httpclientTest {
                     .responseTimeout(IO_TIMEOUT)
                     .readTimeout(IO_TIMEOUT)
                     .build();
-            HttpRequest request = new HttpRequest(HttpMethod.GET, server.url("/discard-body"));
-            Context context = Context.NONE.addData("azure-ignore-response-body", true);
+            HttpRequest request = new HttpRequest(HttpMethod.GET, server.url("/eager-sync"));
+            Context context = Context.NONE.addData("azure-eagerly-read-response", true);
 
-            try (HttpResponse response = client.send(request, context).block(IO_TIMEOUT)) {
-                assertThat(response).isNotNull();
+            try (HttpResponse response = client.sendSync(request, context)) {
                 assertThat(response.getStatusCode()).isEqualTo(206);
-                assertThat(response.getHeaderValue("X-Response-Mode")).isEqualTo("discarded");
+                assertThat(response.getHeaderValue("X-Response-Mode")).isEqualTo("eager");
                 assertThat(response.getRequest()).isSameAs(request);
+                assertThat(response.getBodyAsByteArray().block(IO_TIMEOUT)).containsExactly(expectedBody);
             }
         }
     }
