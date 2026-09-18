@@ -291,6 +291,43 @@ public class Azure_core_http_jdk_httpclientTest {
     }
 
     @Test
+    void nonProxyHostsBypassConfiguredProxy() throws Exception {
+        AtomicInteger destinationRequests = new AtomicInteger();
+        AtomicInteger proxyRequests = new AtomicInteger();
+        try (TestHttpServer destination = TestHttpServer.create(exchange -> {
+                    destinationRequests.incrementAndGet();
+                    assertThat(exchange.getRequestURI().getPath()).isEqualTo("/direct");
+                    writeResponse(exchange, 200, "direct response");
+                });
+                TestHttpServer proxy = TestHttpServer.create(exchange -> {
+                    proxyRequests.incrementAndGet();
+                    writeResponse(exchange, 200, "proxy response");
+                })) {
+            ProxyOptions proxyOptions = new ProxyOptions(
+                            ProxyOptions.Type.HTTP,
+                            new InetSocketAddress(InetAddress.getLoopbackAddress(), proxy.port()))
+                    .setNonProxyHosts(destination.url("/").getHost());
+            HttpClient client = new JdkHttpClientBuilder()
+                    .configuration(Configuration.NONE)
+                    .proxy(proxyOptions)
+                    .connectionTimeout(IO_TIMEOUT)
+                    .writeTimeout(IO_TIMEOUT)
+                    .responseTimeout(IO_TIMEOUT)
+                    .readTimeout(IO_TIMEOUT)
+                    .build();
+            HttpRequest request = new HttpRequest(HttpMethod.GET, destination.url("/direct"));
+
+            try (HttpResponse response = client.send(request).block(IO_TIMEOUT)) {
+                assertThat(response).isNotNull();
+                assertThat(response.getStatusCode()).isEqualTo(200);
+                assertThat(response.getBodyAsString().block(IO_TIMEOUT)).isEqualTo("direct response");
+                assertThat(destinationRequests).hasValue(1);
+                assertThat(proxyRequests).hasValue(0);
+            }
+        }
+    }
+
+    @Test
     void proxyCredentialsAuthenticateAfterChallenge() throws Exception {
         String expectedAuthorization = "Basic "
                 + Base64.getEncoder().encodeToString("azure-user:azure-password".getBytes(UTF_8));
