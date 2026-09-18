@@ -20,7 +20,9 @@ import com.azure.core.http.jdk.httpclient.JdkHttpClientBuilder;
 import com.azure.core.http.jdk.httpclient.JdkHttpClientProvider;
 import com.azure.core.util.Configuration;
 import com.azure.core.util.Context;
+import com.azure.core.util.Contexts;
 import com.azure.core.util.HttpClientOptions;
+import com.azure.core.util.ProgressReporter;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
@@ -31,15 +33,18 @@ import java.net.InetSocketAddress;
 import java.net.URL;
 import java.net.http.HttpClient.Builder;
 import java.net.http.HttpClient.Redirect;
+import java.nio.ByteBuffer;
 import java.time.Duration;
 import java.util.Base64;
 import java.util.List;
+import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
+import reactor.core.publisher.Flux;
 
 @Timeout(60)
 public class Azure_core_http_jdk_httpclientTest {
@@ -140,6 +145,39 @@ public class Azure_core_http_jdk_httpclientTest {
                 assertThat(response.getStatusCode()).isEqualTo(201);
                 assertThat(response.getHeaders().getValue(HttpHeaderName.CONTENT_LENGTH)).isEqualTo("7");
                 assertThat(response.getBodyAsByteArray().block(IO_TIMEOUT)).containsExactly("created".getBytes(UTF_8));
+            }
+        }
+    }
+
+    @Test
+    void asynchronousUploadReportsProgressForStreamingBody() throws Exception {
+        byte[] firstChunk = "first".getBytes(UTF_8);
+        byte[] secondChunk = "-second".getBytes(UTF_8);
+        ConcurrentLinkedDeque<Long> uploadProgress = new ConcurrentLinkedDeque<>();
+        try (TestHttpServer server = TestHttpServer.create(exchange -> {
+            assertThat(exchange.getRequestMethod()).isEqualTo("POST");
+            assertThat(exchange.getRequestBody().readAllBytes()).isEqualTo("first-second".getBytes(UTF_8));
+            writeResponse(exchange, 200, "uploaded");
+        })) {
+            HttpClient client = new JdkHttpClientBuilder()
+                    .configuration(Configuration.NONE)
+                    .connectionTimeout(IO_TIMEOUT)
+                    .writeTimeout(IO_TIMEOUT)
+                    .responseTimeout(IO_TIMEOUT)
+                    .readTimeout(IO_TIMEOUT)
+                    .build();
+            HttpRequest request = new HttpRequest(HttpMethod.POST, server.url("/stream"))
+                    .setHeader(HttpHeaderName.CONTENT_LENGTH, "12")
+                    .setBody(Flux.just(ByteBuffer.wrap(firstChunk), ByteBuffer.wrap(secondChunk)));
+            Context context = Contexts.with(Context.NONE)
+                    .setHttpRequestProgressReporter(ProgressReporter.withProgressListener(uploadProgress::add))
+                    .getContext();
+
+            try (HttpResponse response = client.send(request, context).block(IO_TIMEOUT)) {
+                assertThat(response).isNotNull();
+                assertThat(response.getStatusCode()).isEqualTo(200);
+                assertThat(response.getBodyAsString().block(IO_TIMEOUT)).isEqualTo("uploaded");
+                assertThat(uploadProgress).containsExactly(5L, 12L);
             }
         }
     }
