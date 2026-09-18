@@ -7,7 +7,7 @@
 (§AR-forge-dispatcher-decomposition, §FS-forge-issue-resolution-goal)."""
 
 
-import concurrent
+import concurrent.futures
 import os
 import random
 import sys

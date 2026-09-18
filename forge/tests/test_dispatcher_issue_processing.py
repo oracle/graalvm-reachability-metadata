@@ -392,3 +392,22 @@ class WorkQueueSchedulerTests(unittest.TestCase):
         validate_environment.assert_not_called()
         process_issues.assert_not_called()
         process_reviews.assert_not_called()
+
+
+class IssueProcessingImportTests(unittest.TestCase):
+    def test_fresh_interpreter_resolves_thread_pool_executor(self) -> None:
+        # A bare `import concurrent` leaves `concurrent.futures` unloaded unless another
+        # module happens to import it first; the queue loop must not depend on that.
+        probe = (
+            "import dispatcher.issue_processing as processing; "
+            "print(processing.concurrent.futures.ThreadPoolExecutor.__name__)"
+        )
+        result = subprocess.run(
+            [sys.executable, "-c", probe],
+            cwd=os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(result.stdout.strip(), "ThreadPoolExecutor")
