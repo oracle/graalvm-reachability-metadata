@@ -1,0 +1,74 @@
+{
+  "continueFrom": "setup",
+  "coordinate": "org.xerial.snappy:snappy-java:1.1.0.1",
+  "failure": {
+    "operand": "org.xerial.snappy:snappy-java:1.1.0.1",
+    "phase": "setup",
+    "step": "normal_setup()"
+  },
+  "issueNumber": 10048,
+  "label": "fails-javac-compile",
+  "libraryPreparationPreflight": {
+    "action": "advisory_preparation",
+    "agent_guidance": "The javac failure is caused solely by org.xerial.snappy.SnappyLoader.isNativeLibraryLoaded() being removed in 1.1.0.1 (replaced internally by a private `isLoaded` field with no public accessor); getVersion(), KEY_SNAPPY_TEMPDIR, and KEY_SNAPPY_USE_SYSTEMLIB are unchanged. Update the two call sites in SnappyLoaderTest.java to stop calling the removed method \u2014 verify native loading indirectly (e.g. via successful Snappy.compress/uncompress and/or Snappy.getNativeLibraryVersion()) instead of asserting the old boolean return. Separately, snappy-java bundles per-OS/arch JNI libraries inside the jar under org/xerial/snappy/native/<os>/<arch>/; this is NOT part of the normal generated scaffold. Preserve the existing build.gradle's extractSnappyNativeLibrary Copy task, the `-Djava.library.path=<extracted dir>` and `--add-opens=java.base/java.lang=ALL-UNNAMED` test jvmArgs, and the matching `--add-opens` native-image buildArg \u2014 the resource layout is unchanged in 1.1.0.1 so this logic carries over unmodified.",
+    "applied_setup": [],
+    "current_library": "org.xerial.snappy:snappy-java:1.0.4.1",
+    "deterministic_setup": [],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#10048 [Automation] javac compile fails for org.xerial.snappy:snappy-java:1.1.0.1; label=fails-javac-compile; body_chars=8015"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "7 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 22,
+    "issue_label": "fails-javac-compile",
+    "issue_number": 10048,
+    "library": "org.xerial.snappy:snappy-java:1.1.0.1",
+    "model": "sonnet",
+    "new_version": "1.1.0.1",
+    "output_tokens_used": 9587,
+    "risks": [
+      "If the fix only patches the two isNativeLibraryLoaded() call sites without re-running compileTestJava, other now-removed/renamed SnappyLoader members used elsewhere in the test could still surface later, though none were found in this pass."
+    ],
+    "status": "completed",
+    "summary": "Compile failure is a pure API removal (SnappyLoader.isNativeLibraryLoaded() dropped in 1.1.0.1); no new dependency/Docker/env setup is needed, but the existing non-scaffold native-library build logic must be preserved."
+  },
+  "libraryUpdateRoute": null,
+  "newVersion": "1.1.0.1",
+  "phases": {
+    "explore": {
+      "chunkClassCount": null,
+      "chunkProcessedClassCount": 0,
+      "exhaustedClasses": [],
+      "status": "pending"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": null,
+      "status": "pending"
+    },
+    "publication": {
+      "branch": null,
+      "coverageFollowUpIssueNumber": null,
+      "isPushed": false,
+      "publicationId": null,
+      "publicationTimestamp": null,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": false,
+      "status": "running"
+    }
+  },
+  "preservedBranch": "ai/cugurm/human-intervention/issue-10048-fails-javac-compile-org.xerial.snappy-snappy-java-1.1.0.1-1b8ec929",
+  "publicationMetrics": null,
+  "schemaVersion": 1,
+  "strategyName": "javac_iterative_with_coverage_sources_pi_gpt-5.6-sol"
+}

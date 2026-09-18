@@ -1,0 +1,16 @@
+I researched the actual jars from Maven Central (1.0.4.1 vs 1.1.0.1) to trace the compile failure and confirm whether any extra setup is required.
+
+**Findings:**
+- `org.xerial.snappy.SnappyLoader.isNativeLibraryLoaded()` (public, present in 1.0.4.1) was removed in 1.1.0.1's `SnappyLoader` refactor. The class now tracks load state via a private `isLoaded` field with no public accessor. `getVersion()`, `KEY_SNAPPY_TEMPDIR`, and `KEY_SNAPPY_USE_SYSTEMLIB` are unchanged. This is a pure API-surface rename/removal between versions — nothing about runtime bytecode generation, self-attach, or any Native-Image-unsupportable mechanism. Purely repairable by updating the two call sites in `SnappyLoaderTest.java` to stop calling the removed method (e.g. verify native loading indirectly via successful `Snappy.compress/uncompress`).
+- The bundled native-library resource layout (`org/xerial/snappy/native/<os>/<arch>/lib...`) is unchanged between versions, so the existing custom `build.gradle` (native-library extraction task, `--add-opens java.base/java.lang=ALL-UNNAMED`, `-Djava.library.path`) still applies as-is and must simply be preserved, not regenerated from the bare scaffold.
+- No new Maven dependency or Docker image is needed; `assertj-core` is already present and no Docker image is used by this test suite.
+
+```json
+{
+  "action": "advisory_preparation",
+  "summary": "Compile failure is a pure API removal (SnappyLoader.isNativeLibraryLoaded() dropped in 1.1.0.1); no new dependency/Docker/env setup is needed, but the existing non-scaffold native-library build logic must be preserved.",
+  "deterministic_setup": [],
+  "agent_guidance": "The javac failure is caused solely by org.xerial.snappy.SnappyLoader.isNativeLibraryLoaded() being removed in 1.1.0.1 (replaced internally by a private `isLoaded` field with no public accessor); getVersion(), KEY_SNAPPY_TEMPDIR, and KEY_SNAPPY_USE_SYSTEMLIB are unchanged. Update the two call sites in SnappyLoaderTest.java to stop calling the removed method — verify native loading indirectly (e.g. via successful Snappy.compress/uncompress and/or Snappy.getNativeLibraryVersion()) instead of asserting the old boolean return. Separately, snappy-java bundles per-OS/arch JNI libraries inside the jar under org/xerial/snappy/native/<os>/<arch>/; this is NOT part of the normal generated scaffold. Preserve the existing build.gradle's extractSnappyNativeLibrary Copy task, the `-Djava.library.path=<extracted dir>` and `--add-opens=java.base/java.lang=ALL-UNNAMED` test jvmArgs, and the matching `--add-opens` native-image buildArg — the resource layout is unchanged in 1.1.0.1 so this logic carries over unmodified.",
+  "risks": ["If the fix only patches the two isNativeLibraryLoaded() call sites without re-running compileTestJava, other now-removed/renamed SnappyLoader members used elsewhere in the test could still surface later, though none were found in this pass."]
+}
+```
