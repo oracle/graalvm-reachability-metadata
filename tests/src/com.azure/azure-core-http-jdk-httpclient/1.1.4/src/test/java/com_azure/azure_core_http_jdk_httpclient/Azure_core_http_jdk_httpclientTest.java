@@ -6,6 +6,7 @@
  */
 package com_azure.azure_core_http_jdk_httpclient;
 
+import static java.net.http.HttpClient.newBuilder;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -28,6 +29,8 @@ import java.io.OutputStream;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.URL;
+import java.net.http.HttpClient.Builder;
+import java.net.http.HttpClient.Redirect;
 import java.time.Duration;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -70,6 +73,42 @@ public class Azure_core_http_jdk_httpclientTest {
                 assertThat(response.getHeaderValue(HttpHeaderName.fromString("X-Result")))
                         .contains("first", "second");
                 assertThat(response.getBodyAsString().block(IO_TIMEOUT)).isEqualTo("hello from jdk client");
+            }
+        } finally {
+            shutdown(clientExecutor);
+        }
+    }
+
+    @Test
+    void customJdkClientBuilderFollowsRedirects() throws Exception {
+        ExecutorService clientExecutor = newDaemonExecutor("azure-jdk-redirect-client");
+        AtomicInteger destinationRequests = new AtomicInteger();
+        try (TestHttpServer server = TestHttpServer.create(exchange -> {
+            if (exchange.getRequestURI().getPath().equals("/redirect")) {
+                exchange.getResponseHeaders().set("Location", "/destination");
+                exchange.sendResponseHeaders(302, -1);
+                return;
+            }
+
+            assertThat(exchange.getRequestURI().getPath()).isEqualTo("/destination");
+            destinationRequests.incrementAndGet();
+            writeResponse(exchange, 200, "redirect followed");
+        })) {
+            Builder jdkClientBuilder = newBuilder().executor(clientExecutor).followRedirects(Redirect.ALWAYS);
+            HttpClient client = new JdkHttpClientBuilder(jdkClientBuilder)
+                    .configuration(Configuration.NONE)
+                    .connectionTimeout(IO_TIMEOUT)
+                    .writeTimeout(IO_TIMEOUT)
+                    .responseTimeout(IO_TIMEOUT)
+                    .readTimeout(IO_TIMEOUT)
+                    .build();
+            HttpRequest request = new HttpRequest(HttpMethod.GET, server.url("/redirect"));
+
+            try (HttpResponse response = client.send(request).block(IO_TIMEOUT)) {
+                assertThat(response).isNotNull();
+                assertThat(response.getStatusCode()).isEqualTo(200);
+                assertThat(response.getBodyAsString().block(IO_TIMEOUT)).isEqualTo("redirect followed");
+                assertThat(destinationRequests).hasValue(1);
             }
         } finally {
             shutdown(clientExecutor);
