@@ -1,0 +1,22 @@
+## Findings
+
+**Root cause of the failure (verified from source, not speculation):** I diffed `ObjectInstantiator.java` between 5.28.5 and 5.28.8 (via GitHub raw source):
+
+- 5.28.5: `constructor.getDeclaringClass().getCanonicalName()`
+- 5.28.8: `constructor.getDeclaringClass().getName()`
+
+`ConstructorFinderTest` asserts the thrown `ValueException` message contains `PersonWithPrimitiveAge.class.getCanonicalName()`. For a nested static test class, `getName()` yields `...ConstructorFinderTest$PersonWithPrimitiveAge` while `getCanonicalName()` yields `...ConstructorFinderTest.PersonWithPrimitiveAge` — the `$` vs `.` mismatch is why the assertion fails. This is a plain JVM-level (`java run`) test-assertion failure caused by an upstream error-message formatting change, confirmed by reading the actual library source for both versions.
+
+**Unsupportable-under-Native-Image check:** Stops at step 1 — the failure evidence is a JUnit message-content assertion failing during the JVM `javaTest` task, not any native-image-unsupported operation (no runtime bytecode/class generation, lambda definition, agent self-attach, redefinition, substitution, or classloader path involved). Not eligible for `skip_unsupported`.
+
+**Setup investigation:** The existing tests (`ConstructorFinderTest`, `ObjectInstantiatorTest`, `ListValueTest`, `ValuesTest`, `UnsupportedDateTimeValueTest`) are pure in-memory `Value`/mapping unit tests — no Bolt connection, no server, no Testcontainers/Docker. Dependencies are just the driver itself and `assertj-core`, both already declared. No documentation or dependency-tree evidence points to any additional Maven dependency, Docker image, or system property needed for coverage of this artifact.
+
+```json
+{
+  "action": "no_action",
+  "summary": "Generated scaffold is sufficient; the reported failure is a pure JVM test-assertion mismatch caused by neo4j-java-driver 5.28.8 switching ObjectInstantiator's error message from getCanonicalName() to getName() for the target class, not a missing setup or a Native Image limitation.",
+  "deterministic_setup": [],
+  "agent_guidance": "",
+  "risks": ["ConstructorFinderTest's assertion on the exception message (expects canonical name with '.') will keep failing against 5.28.8+ since the library now uses getName() (binary name with '$') in ObjectInstantiator; this needs a test-code fix, not environment/dependency setup."]
+}
+```

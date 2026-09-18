@@ -1,0 +1,74 @@
+{
+  "continueFrom": "setup",
+  "coordinate": "org.neo4j.driver:neo4j-java-driver:5.28.8",
+  "failure": {
+    "operand": "org.neo4j.driver:neo4j-java-driver:5.28.8",
+    "phase": "setup",
+    "step": "normal_setup()"
+  },
+  "issueNumber": 9393,
+  "label": "fails-java-run",
+  "libraryPreparationPreflight": {
+    "action": "no_action",
+    "agent_guidance": "",
+    "applied_setup": [],
+    "current_library": "org.neo4j.driver:neo4j-java-driver:5.28.5",
+    "deterministic_setup": [],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#9393 [Automation] java run fails for org.neo4j.driver:neo4j-java-driver:5.28.8; label=fails-java-run; body_chars=8015"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "11 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 12,
+    "issue_label": "fails-java-run",
+    "issue_number": 9393,
+    "library": "org.neo4j.driver:neo4j-java-driver:5.28.8",
+    "model": "sonnet",
+    "new_version": "5.28.8",
+    "output_tokens_used": 6264,
+    "risks": [
+      "ConstructorFinderTest's assertion on the exception message (expects canonical name with '.') will keep failing against 5.28.8+ since the library now uses getName() (binary name with '$') in ObjectInstantiator; this needs a test-code fix, not environment/dependency setup."
+    ],
+    "status": "completed",
+    "summary": "Generated scaffold is sufficient; the reported failure is a pure JVM test-assertion mismatch caused by neo4j-java-driver 5.28.8 switching ObjectInstantiator's error message from getCanonicalName() to getName() for the target class, not a missing setup or a Native Image limitation."
+  },
+  "libraryUpdateRoute": null,
+  "newVersion": "5.28.8",
+  "phases": {
+    "explore": {
+      "chunkClassCount": null,
+      "chunkProcessedClassCount": 0,
+      "exhaustedClasses": [],
+      "status": "pending"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": null,
+      "status": "pending"
+    },
+    "publication": {
+      "branch": null,
+      "coverageFollowUpIssueNumber": null,
+      "isPushed": false,
+      "publicationId": null,
+      "publicationTimestamp": null,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": false,
+      "status": "running"
+    }
+  },
+  "preservedBranch": "ai/cugurm/human-intervention/issue-9393-fails-java-run-org.neo4j.driver-neo4j-java-driver-5.28.8-6bf2ddf0",
+  "publicationMetrics": null,
+  "schemaVersion": 1,
+  "strategyName": "java_run_iterative_with_coverage_sources_pi_gpt-5.6-sol"
+}
