@@ -86,6 +86,11 @@ public class PostgreSQLCopyParsedStatementTest {
                 .setTransactionalLock(false);
 
         Flyway flyway = new Flyway(configuration);
+        PostgreSQLConfigurationExtension copiedExtension = flyway.getConfiguration()
+                .getPluginRegister()
+                .getPlugin(PostgreSQLConfigurationExtension.class);
+        assertThat(copiedExtension.isTransactionalLock()).isFalse();
+
         MigrateResult migration = flyway.migrate();
 
         assertThat(migration.success).isTrue();
