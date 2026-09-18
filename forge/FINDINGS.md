@@ -3,6 +3,12 @@
 Rendered by Forge from the pre-push branch review of §FS-local-branch-review.
 Newest entry first; every non-approval is recorded, including one a repair later cleared.
 
+## 2026-09-18 — io.micronaut:micronaut-http-client-core:5.1.11 (#10079)
+
+**Test dependencies pin the requested artifact version**
+
+The coordinate build script hardcoded version 5.1.11 for micronaut-http-client and micronaut-inject-java instead of using the TCK-selected library version. This violated the version-agnostic test requirement in §FS-test-contract.2.5 because a copied suite would continue resolving those dependencies at 5.1.11.
+
 ## 2026-09-15 — org.springframework.integration:spring-integration-sftp:7.1.1 (#9952)
 
 **Unbounded asynchronous reply waits in generated tests**
