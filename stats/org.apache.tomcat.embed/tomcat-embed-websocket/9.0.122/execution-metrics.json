@@ -1,0 +1,126 @@
+{
+  "fix_javac_fail:2026-09-18": {
+    "timestamp": "2026-09-18T10:29:06.272772Z",
+    "library": "org.apache.tomcat.embed:tomcat-embed-websocket:9.0.122",
+    "starting_commit": "ab5d9efba643c51215a57ca12f7e712df598d661",
+    "ending_commit": "2cb8779d7ab4cb30563849e9e6807ba954ca3ce0",
+    "previous_library": "org.apache.tomcat.embed:tomcat-embed-websocket:9.0.83",
+    "strategy_name": "javac_iterative_with_coverage_sources_pi_gpt-5.6-sol",
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "status": "success",
+    "stats": {
+      "version": "9.0.122",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 31,
+            "totalCalls": 31
+          }
+        },
+        "coverageRatio": 1.0,
+        "coveredCalls": 31,
+        "totalCalls": 31
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 3639,
+          "missed": 19385,
+          "ratio": 0.158052,
+          "total": 23024
+        },
+        "line": {
+          "covered": 919,
+          "missed": 4434,
+          "ratio": 0.171679,
+          "total": 5353
+        },
+        "method": {
+          "covered": 176,
+          "missed": 615,
+          "ratio": 0.222503,
+          "total": 791
+        }
+      }
+    },
+    "previous_library_stats": {
+      "version": "9.0.83",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 31,
+            "totalCalls": 31
+          }
+        },
+        "coverageRatio": 1.0,
+        "coveredCalls": 31,
+        "totalCalls": 31
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 3629,
+          "missed": 18395,
+          "ratio": 0.164775,
+          "total": 22024
+        },
+        "line": {
+          "covered": 909,
+          "missed": 4161,
+          "ratio": 0.17929,
+          "total": 5070
+        },
+        "method": {
+          "covered": 175,
+          "missed": 588,
+          "ratio": 0.229358,
+          "total": 763
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "no_action",
+      "issue_number": 10047,
+      "issue_label": "fails-javac-compile",
+      "library": "org.apache.tomcat.embed:tomcat-embed-websocket:9.0.122",
+      "summary": "javac failure is pure test/library API drift: Tomcat added a boolean 'blocking' parameter to the abstract WsRemoteEndpointImplBase.doWrite method between 9.0.83 and 9.0.122, so the existing test overrides (3-arg form) no longer override anything; fixable by updating the overrides, no extra dependency/Docker/env setup required.",
+      "deterministic_setup": [],
+      "agent_guidance": "Update the doWrite override signature in WsRemoteEndpointImplBaseTest, PojoEndpointBaseTest, PojoMessageHandlerWholeBaseTest, PojoMessageHandlerPartialBaseTest, and UtilTest from `doWrite(SendHandler handler, long blockingWriteTimeoutExpiry, ByteBuffer... data)` to `doWrite(SendHandler handler, boolean blocking, long writeTimeoutExpiry, ByteBuffer... data)` (confirmed against the 9.0.122 Tomcat source) so they again override the abstract method.",
+      "risks": [],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#10047 [Automation] javac compile fails for org.apache.tomcat.embed:tomcat-embed-websocket:9.0.122; label=fails-javac-compile; body_chars=8015"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "18 existing test file path(s) included"
+        }
+      ],
+      "current_library": "org.apache.tomcat.embed:tomcat-embed-websocket:9.0.83",
+      "new_version": "9.0.122",
+      "model": "sonnet",
+      "input_tokens_used": 18,
+      "output_tokens_used": 5463
+    },
+    "metrics": {
+      "input_tokens_used": 38604,
+      "cached_input_tokens_used": 111488,
+      "output_tokens_used": 1856,
+      "iterations": 3,
+      "cost_usd": 0.3044,
+      "tested_library_loc": 919,
+      "metadata_entries": 25,
+      "test_only_metadata_entries": 66,
+      "previous_library_metadata_entries": 1,
+      "code_coverage_percent": 17.17,
+      "previous_library_coverage_percent": 17.93
+    },
+    "artifacts": {
+      "metadata_file": "metadata/org.apache.tomcat.embed/tomcat-embed-websocket/9.0.122/reachability-metadata.json"
+    }
+  }
+}
