@@ -15,6 +15,7 @@ import io.micronaut.http.filter.ServerFilterPhase;
 import io.micronaut.security.authentication.Authentication;
 import io.micronaut.security.authentication.BasicAuthUtils;
 import io.micronaut.security.authentication.UsernamePasswordCredentials;
+import io.micronaut.security.authentication.WwwAuthenticateChallenge;
 import io.micronaut.security.config.InterceptUrlMapPattern;
 import io.micronaut.security.config.RedirectConfigurationProperties;
 import io.micronaut.security.config.SecurityConfigurationProperties;
@@ -128,6 +129,25 @@ public class Micronaut_securityTest {
         assertThat(BasicAuthUtils.parseCredentials("Basic " + Base64.getEncoder().encodeToString(
                         "missing-delimiter".getBytes(StandardCharsets.UTF_8))))
                 .isEmpty();
+    }
+
+    @Test
+    void wwwAuthenticateChallengeRendersSchemeAndEscapedParameters() {
+        WwwAuthenticateChallenge challenge = WwwAuthenticateChallenge.builder()
+                .authScheme("Bearer")
+                .param("realm", "inventory \"portal\"")
+                .param("error", "invalid_token")
+                .param("retry", 30)
+                .build();
+
+        assertThat(challenge.authScheme()).isEqualTo("Bearer");
+        assertThat(challenge.authParameters())
+                .containsExactly(
+                        Map.entry("realm", "inventory \"portal\""),
+                        Map.entry("error", "invalid_token"),
+                        Map.entry("retry", 30));
+        assertThat(challenge.toString())
+                .isEqualTo("Bearer realm=\"inventory \\\"portal\\\"\", error=\"invalid_token\", retry=30");
     }
 
     @Test
