@@ -190,6 +190,32 @@ public class Azure_core_http_jdk_httpclientTest {
     }
 
     @Test
+    void contextCanDiscardResponseBodyWhileRetainingResponseMetadata() throws Exception {
+        try (TestHttpServer server = TestHttpServer.create(exchange -> {
+            assertThat(exchange.getRequestURI().getPath()).isEqualTo("/discard-body");
+            exchange.getResponseHeaders().set("X-Response-Mode", "discarded");
+            writeResponse(exchange, 206, "body that the client must discard");
+        })) {
+            HttpClient client = new JdkHttpClientBuilder()
+                    .configuration(Configuration.NONE)
+                    .connectionTimeout(IO_TIMEOUT)
+                    .writeTimeout(IO_TIMEOUT)
+                    .responseTimeout(IO_TIMEOUT)
+                    .readTimeout(IO_TIMEOUT)
+                    .build();
+            HttpRequest request = new HttpRequest(HttpMethod.GET, server.url("/discard-body"));
+            Context context = Context.NONE.addData("azure-ignore-response-body", true);
+
+            try (HttpResponse response = client.send(request, context).block(IO_TIMEOUT)) {
+                assertThat(response).isNotNull();
+                assertThat(response.getStatusCode()).isEqualTo(206);
+                assertThat(response.getHeaderValue("X-Response-Mode")).isEqualTo("discarded");
+                assertThat(response.getRequest()).isSameAs(request);
+            }
+        }
+    }
+
+    @Test
     void providerCreatesDefaultClientWithoutOptions() throws Exception {
         try (TestHttpServer server = TestHttpServer.create(exchange -> {
             assertThat(exchange.getRequestMethod()).isEqualTo("GET");
