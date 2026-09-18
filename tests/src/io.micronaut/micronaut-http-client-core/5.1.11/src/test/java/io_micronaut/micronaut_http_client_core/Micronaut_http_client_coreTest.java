@@ -22,6 +22,7 @@ import io.micronaut.http.annotation.Header;
 import io.micronaut.http.annotation.PathVariable;
 import io.micronaut.http.annotation.QueryValue;
 import io.micronaut.http.annotation.RequestFilter;
+import io.micronaut.http.client.AsyncHttpClient;
 import io.micronaut.http.client.BlockingHttpClient;
 import io.micronaut.http.client.DefaultHttpClientConfiguration;
 import io.micronaut.http.client.HttpClient;
@@ -66,6 +67,23 @@ public class Micronaut_http_client_coreTest {
                 assertThat(response.getContentType()).contains(MediaType.TEXT_PLAIN_TYPE);
                 assertThat(response.body())
                         .isEqualTo("POST|/echo|mode=full|request-17|none|native request");
+            }
+        }
+    }
+
+    @Test
+    @Timeout(55)
+    void retrievesResponsesThroughTheCompletionStageClientApi() throws Exception {
+        try (TestServer server = TestServer.start()) {
+            DefaultHttpClientConfiguration configuration = clientConfiguration();
+            try (AsyncHttpClient client =
+                    HttpClient.create(server.baseUri().toURL(), configuration).toAsync()) {
+                String response = client.retrieve(HttpRequest.GET("/async?source=completion-stage"))
+                        .toCompletableFuture()
+                        .get(20, TimeUnit.SECONDS);
+
+                assertThat(response)
+                        .isEqualTo("GET|/async|source=completion-stage|none|none|");
             }
         }
     }
