@@ -23,7 +23,7 @@ public class ConstructorFinderTest {
         assertThatThrownBy(() -> value.as(PersonWithPrimitiveAge.class))
                 .isInstanceOf(ValueException.class)
                 .hasMessageContaining("Failed to map 'age' property to 'int'")
-                .hasMessageContaining(PersonWithPrimitiveAge.class.getCanonicalName());
+                .hasMessageContaining(PersonWithPrimitiveAge.class.getName());
     }
 
     public static class PersonWithPrimitiveAge {
