@@ -209,7 +209,8 @@ class GitWorktreeRegressionTests(unittest.TestCase):
             _commit_file(reachability_repo, "newer.txt", "newer state\n", "advance local branch")
 
             with patch.object(worktrees, "get_repo_root", return_value=metrics_root), \
-                    patch.object(worktrees, "require_complete_reachability_repo") as validate:
+                    patch.object(worktrees, "require_complete_reachability_repo") as validate, \
+                    patch.object(worktrees, "stop_gradle_daemons"):
                 worktree_path, scratch_metrics_path = worktrees.create_issue_workspace(
                     reachability_repo,
                     metrics_root,
@@ -223,6 +224,49 @@ class GitWorktreeRegressionTests(unittest.TestCase):
             self.assertEqual(scratch_metrics_path, os.path.join(worktree_path, "forge"))
             validate.assert_called_once_with(worktree_path)
             _git(["worktree", "remove", "--force", worktree_path], cwd=reachability_repo)
+
+    def test_create_issue_workspace_recycles_gradle_daemons_from_the_new_worktree(self) -> None:
+        """A fresh worktree bounds the daemon pool (§FS-forge-run-requirements.4)."""
+        with tempfile.TemporaryDirectory() as temp_dir:
+            reachability_repo = _create_reachability_repo(os.path.join(temp_dir, "graalvm-reachability-metadata"))
+            metrics_root = os.path.join(reachability_repo, "forge")
+            base_commit = _git(["rev-parse", "HEAD"], cwd=reachability_repo).stdout.strip()
+
+            with patch.object(worktrees, "get_repo_root", return_value=metrics_root), \
+                    patch.object(worktrees, "require_complete_reachability_repo") as validate, \
+                    patch.object(worktrees, "stop_gradle_daemons", return_value=False) as stop_daemons:
+                worktree_path, _ = worktrees.create_issue_workspace(
+                    reachability_repo,
+                    metrics_root,
+                    issue_number=1412,
+                    issue_base_commit=base_commit,
+                )
+
+            # Daemons are stopped after the worktree is validated and from inside it,
+            # and a failed stop never fails the claim.
+            self.assertTrue(os.path.isdir(worktree_path))
+            stop_daemons.assert_called_once_with(worktree_path, "issue-1412", "new workspace for issue #1412")
+            validate.assert_called_once_with(worktree_path)
+            _git(["worktree", "remove", "--force", worktree_path], cwd=reachability_repo)
+
+    def test_create_issue_workspace_does_not_touch_daemons_when_the_worktree_is_incomplete(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            reachability_repo = _create_reachability_repo(os.path.join(temp_dir, "graalvm-reachability-metadata"))
+            metrics_root = os.path.join(reachability_repo, "forge")
+            base_commit = _git(["rev-parse", "HEAD"], cwd=reachability_repo).stdout.strip()
+
+            with patch.object(worktrees, "get_repo_root", return_value=metrics_root), \
+                    patch.object(worktrees, "require_complete_reachability_repo", side_effect=SystemExit(1)), \
+                    patch.object(worktrees, "stop_gradle_daemons") as stop_daemons:
+                with self.assertRaises(SystemExit):
+                    worktrees.create_issue_workspace(
+                        reachability_repo,
+                        metrics_root,
+                        issue_number=1412,
+                        issue_base_commit=base_commit,
+                    )
+
+            stop_daemons.assert_not_called()
 
     def test_failed_work_preservation_rejects_broken_nested_worktree_without_switching_parent(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:

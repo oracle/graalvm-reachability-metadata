@@ -13,6 +13,7 @@ import sys
 import uuid
 from git_scripts.common_git import GitTransportError
 from git_scripts.common_git import run_git_transport
+from utility_scripts.gradle_daemons import stop_gradle_daemons
 from utility_scripts.repo_path_resolver import get_repo_root
 from utility_scripts.repo_path_resolver import git_env_limited_to_repo_root
 from utility_scripts.repo_path_resolver import require_complete_reachability_repo
@@ -292,6 +293,9 @@ def create_issue_workspace(
     except SystemExit:
         remove_worktree(base_reachability_metadata_path, worktree_path)
         raise
+    # The fresh worktree bounds the daemon pool: a daemon left by an earlier
+    # worktree may hold its build logic. Best effort. §FS-forge-run-requirements.4
+    stop_gradle_daemons(worktree_path, f"issue-{issue_number}", f"new workspace for issue #{issue_number}")
     log_step_progress(
         PHASE_CLAIM,
         STEP_CREATE_ISSUE_WORKSPACE,
