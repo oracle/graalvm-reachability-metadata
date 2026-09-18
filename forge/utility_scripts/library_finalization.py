@@ -15,6 +15,7 @@ from utility_scripts.foreign_metadata_owner_issue import (
     ensure_foreign_metadata_owner_issue,
     load_foreign_metadata_owner_failure,
 )
+from utility_scripts.gradle_daemons import run_with_stale_daemon_retry
 from utility_scripts.gradle_environment import gradle_command_environment
 from utility_scripts.logged_command import LoggedCommandResult, run_logged_command
 from utility_scripts.metadata_index import find_index_entry_for_version
@@ -80,21 +81,30 @@ def _run_finalization_agent_fix(
 
 
 def _run_gradle_command_with_output(repo_path: str, command: list[str]) -> LoggedCommandResult:
-    """Run a finalization Gradle command quietly with durable output."""
+    """Run a finalization Gradle command quietly with durable output.
+
+    A stale daemon that cannot load the build logic is recycled and the gate
+    rerun once. §FS-local-ci-equivalent-verification.1
+    """
     require_complete_reachability_repo(repo_path)
     action = command[1] if len(command) > 1 else "gradle"
     coordinate_argument = next(
         (argument for argument in command if argument.startswith("-Pcoordinates=")),
         "-Pcoordinates=unknown",
     )
-    return run_logged_command(
-        command,
-        cwd=repo_path,
-        task_type="finalization",
-        subject=coordinate_argument.removeprefix("-Pcoordinates="),
-        action=action,
-        env=gradle_command_environment(repo_path),
-        stage="finalization",
+    subject = coordinate_argument.removeprefix("-Pcoordinates=")
+    return run_with_stale_daemon_retry(
+        repo_path,
+        subject,
+        lambda: run_logged_command(
+            command,
+            cwd=repo_path,
+            task_type="finalization",
+            subject=subject,
+            action=action,
+            env=gradle_command_environment(repo_path),
+            stage="finalization",
+        ),
     )
 
 

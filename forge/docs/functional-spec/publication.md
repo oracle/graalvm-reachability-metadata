@@ -60,7 +60,13 @@ rejects legacy test-only Native Image configuration: if uncommitted or changed
 `META-INF/native-image` test configuration files appear under the generated test
 sources, the run fails rather than publishing them, because that config form is
 no longer accepted and the reachability metadata belongs in the coordinate's
-`metadata/` directory.
+`metadata/` directory. A finalization gate that fails before Gradle can create
+its task — a reused daemon reporting that a build-logic class cannot be loaded
+or that a task type cannot be decorated — is a stale daemon, not a metadata
+verdict: Forge stops the daemons of the run's Gradle user home
+(§FS-forge-run-requirements.4), reruns that gate exactly once, and lets only the
+rerun's outcome reach metadata repair or human intervention
+(§FS-human-intervention-policy).
 
 ### 2. Pre-publication gate
 

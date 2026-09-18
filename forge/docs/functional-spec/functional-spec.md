@@ -442,10 +442,20 @@ worktree created from that commit, scratch metrics repository, setup-evidence
 directory, issue context, one GraalVM environment pinned for the whole run, and
 the continuation marker (§FS-forge-run-continuation). The pinned commit keeps
 repository-dependent checks and generated work on one base even if `master`
-advances during the run. The driver owns normal and neural setup inside that
-context, including the persisted library preparation result; it does not own
-queue policy or repository resolution. The gap between this requirement and
-the current implementation is §ROADMAP-forge-dispatcher-owned-run-preconditions.
+advances during the run. The worktree is also the boundary of the run's Gradle
+daemon pool. Every run of one checkout shares one Gradle user home so plugin
+resolution is paid once, but a daemon that outlives the worktree that started
+it can keep that worktree's build logic loaded and fail a later run's Gradle
+task before the task exists — a failure that says nothing about the claimed
+library. Creating the worktree therefore stops the daemons of that Gradle user
+home, and only those: daemons of any other Gradle user home are not Forge's to
+stop. Stopping is best effort; a daemon that cannot be stopped is reported and
+does not fail the claim, because the finalization gates recover from a stale
+daemon on their own (§FS-local-ci-equivalent-verification.1). The driver owns
+normal and neural setup inside that context, including the persisted library
+preparation result; it does not own queue policy or repository resolution. The
+gap between this requirement and the current implementation is
+§ROADMAP-forge-dispatcher-owned-run-preconditions.
 
 ## FS-forge-outputs: Run outputs
 
