@@ -1,0 +1,102 @@
+{
+  "base_commit": "8202987fb0edf710d5667e2dce4e637703d321ef",
+  "branch": "ai/cugurm/fix-javac-org.apache.tomcat.embed-tomcat-embed-websocket-9.0.122-forge-10047-20260918102906272772-35a4a9874d0a",
+  "follow_ups": [],
+  "forge": {
+    "branch": "master",
+    "commit": "8202987fb0edf710d5667e2dce4e637703d321ef",
+    "monitored_branch": "origin/master"
+  },
+  "issue_number": 10047,
+  "library": {
+    "artifact": "tomcat-embed-websocket",
+    "coordinates": "org.apache.tomcat.embed:tomcat-embed-websocket:9.0.122",
+    "group": "org.apache.tomcat.embed",
+    "version": "9.0.122"
+  },
+  "local_ci_verification": {
+    "base_commit": "8202987fb0edf710d5667e2dce4e637703d321ef",
+    "commands": [
+      {
+        "command": [
+          "./gradlew",
+          "generateChangedIndexFileCoordinatesList",
+          "-PbaseCommit=origin/master",
+          "-PnewCommit=HEAD"
+        ],
+        "env": {
+          "GITHUB_OUTPUT": "/tmp/tmpgkqsrodp"
+        },
+        "gate": "changed-index-coordinates",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :generateChangedIndexFileCoordinatesList\n\n[Incubating] Problems report is available at: file:///home/oracle/oracle/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10047-f123b21e/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 3s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      },
+      {
+        "command": [
+          "./gradlew",
+          "validateIndexFiles",
+          "-Pcoordinates=org.apache.tomcat.embed:tomcat-embed-websocket"
+        ],
+        "env": {},
+        "gate": "index-file-validation",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :validateIndexFiles\n✅ metadata/org.apache.tomcat.embed/tomcat-embed-websocket/index.json: Valid\n\n[Incubating] Problems report is available at: file:///home/oracle/oracle/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10047-f123b21e/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 3s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      }
+    ],
+    "failure_command": null,
+    "failure_gate": null,
+    "final_commit": "8ee5da8532ee6b8ebb0a51fb48add9f0413a9879",
+    "fixups": [],
+    "human_intervention_required": false,
+    "repo_fix_paths": [],
+    "status": "success"
+  },
+  "local_review": {
+    "changed_paths": [],
+    "decision": "approved",
+    "finding_body": "",
+    "finding_title": "",
+    "fix_note": "",
+    "model": "gpt-5.6-sol",
+    "review_comment": "Verified the diff is confined to org.apache.tomcat.embed:tomcat-embed-websocket:9.0.122 support files and the artifact index. The five test edits narrowly adapt WsRemoteEndpointImplBase.doWrite overrides to Tomcat 9.0.122's added blocking parameter without deleting assertions, weakening coverage, or dodging Native Image. The index gate is green, only reachability-metadata.json is used, and overall plus reflection dynamic-access coverage is preserved at 31/31 (100%) from 9.0.83 to 9.0.122. The exact Forge finalization command completed successfully with all three test lanes, metadata validation, Spotless, Checkstyle, and regenerated statistics, and made no publishable change.",
+    "session_id": "882a67cd80cf41f1"
+  },
+  "metrics": {
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "path": "stats/org.apache.tomcat.embed/tomcat-embed-websocket/9.0.122/execution-metrics.json",
+    "summary": {
+      "cached_input_tokens_used": 111488,
+      "code_coverage_percent": 17.17,
+      "cost_usd": 0.3044,
+      "input_tokens_used": 38604,
+      "iterations": 3,
+      "metadata_entries": 25,
+      "output_tokens_used": 1856,
+      "previous_library_coverage_percent": 17.93,
+      "previous_library_metadata_entries": 1,
+      "test_only_metadata_entries": 66,
+      "tested_library_loc": 919
+    },
+    "timestamp": "2026-09-18T10:29:06.272772Z"
+  },
+  "modifiers": {
+    "chunk_final": true,
+    "chunked_dynamic_access": false,
+    "human_intervention": false
+  },
+  "previous_library": {
+    "artifact": "tomcat-embed-websocket",
+    "coordinates": "org.apache.tomcat.embed:tomcat-embed-websocket:9.0.83",
+    "group": "org.apache.tomcat.embed",
+    "version": "9.0.83"
+  },
+  "producer": "cugurm",
+  "publication_id": "forge-10047-20260918102906272772-35a4a9874d0a",
+  "render": {},
+  "schema_version": 1,
+  "strategy_name": "javac_iterative_with_coverage_sources_pi_gpt-5.6-sol",
+  "task_type": "fixes-javac-fail",
+  "template_type": "fixes-javac-fail",
+  "timestamp": "2026-09-18T10:29:06.272772Z"
+}
