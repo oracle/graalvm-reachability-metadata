@@ -1,0 +1,127 @@
+{
+  "fix_java_run_fail:2026-09-19": {
+    "timestamp": "2026-09-19T19:40:15.064827Z",
+    "library": "org.springframework:spring-aop:6.1.7",
+    "starting_commit": "8fc63b11a22796dc616765c7a9f9453910301a15",
+    "ending_commit": "6fbc57c13a95b1a7476c1ca9712cb06fdd296f34",
+    "previous_library": "org.springframework:spring-aop:6.1.0",
+    "strategy_name": "java_run_iterative_with_coverage_sources_pi_gpt-5.6-sol",
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "status": "success",
+    "stats": {
+      "version": "6.1.7",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 23,
+            "totalCalls": 23
+          }
+        },
+        "coverageRatio": 1.0,
+        "coveredCalls": 23,
+        "totalCalls": 23
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 4465,
+          "missed": 18469,
+          "ratio": 0.194689,
+          "total": 22934
+        },
+        "line": {
+          "covered": 1117,
+          "missed": 4330,
+          "ratio": 0.205067,
+          "total": 5447
+        },
+        "method": {
+          "covered": 309,
+          "missed": 1127,
+          "ratio": 0.215181,
+          "total": 1436
+        }
+      }
+    },
+    "previous_library_stats": {
+      "version": "6.1.0",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 23,
+            "totalCalls": 23
+          }
+        },
+        "coverageRatio": 1.0,
+        "coveredCalls": 23,
+        "totalCalls": 23
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 4351,
+          "missed": 18470,
+          "ratio": 0.190658,
+          "total": 22821
+        },
+        "line": {
+          "covered": 1077,
+          "missed": 4340,
+          "ratio": 0.198819,
+          "total": 5417
+        },
+        "method": {
+          "covered": 302,
+          "missed": 1140,
+          "ratio": 0.209431,
+          "total": 1442
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "no_action",
+      "issue_number": 9398,
+      "issue_label": "fails-java-run",
+      "library": "org.springframework:spring-aop:6.1.7",
+      "summary": "Failure is a genuine upstream behavior change, not a setup gap: Spring removed AbstractAspectJAdvisorFactory.compiledByAjc()/its ajc$-marker check between 6.1.0 and 6.1.7, so isAspect() now accepts AJC-compiled-marker classes it used to reject. The 6.1.0 test still asserts the old rejection behavior. No new Maven dependency, Docker image, or env/system property is needed — the resolved dependency graph (POM) is identical aside from version bumps, and the operation involved (AnnotationUtils.findAnnotation) is plain reflection with no Native Image implications.",
+      "deterministic_setup": [],
+      "agent_guidance": "The failing assertion in AbstractAspectJAdvisorFactoryTest.rejectsAnnotationStyleAspectWithAjcCompiledMarkerField encodes 6.1.0-era behavior (isAspect() used to call a private compiledByAjc(Class<?>) helper that scanned declared fields for an 'ajc$' prefix and rejected such classes). That helper and the check were removed in AbstractAspectJAdvisorFactory by 6.1.7 (org/springframework/aop/aspectj/annotation/AbstractAspectJAdvisorFactory.java), so isAspect() now returns true for AjcCompiledMarkerAspect. This is a test logic update, not an environment/dependency/Docker setup gap.",
+      "risks": [],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#9398 [Automation] java run fails for org.springframework:spring-aop:6.1.7; label=fails-java-run; body_chars=8015"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "20 existing test file path(s) included"
+        }
+      ],
+      "current_library": "org.springframework:spring-aop:6.1.0",
+      "new_version": "6.1.7",
+      "model": "sonnet",
+      "input_tokens_used": 16,
+      "output_tokens_used": 5444
+    },
+    "metrics": {
+      "input_tokens_used": 124218,
+      "cached_input_tokens_used": 1173376,
+      "output_tokens_used": 8167,
+      "iterations": 4,
+      "cost_usd": 1.4528,
+      "tested_library_loc": 1117,
+      "metadata_entries": 60,
+      "test_only_metadata_entries": 135,
+      "previous_library_metadata_entries": 54,
+      "previous_library_test_only_metadata_entries": 24,
+      "code_coverage_percent": 20.51,
+      "previous_library_coverage_percent": 19.88
+    },
+    "artifacts": {
+      "metadata_file": "metadata/org.springframework/spring-aop/6.1.7/reachability-metadata.json"
+    }
+  }
+}
