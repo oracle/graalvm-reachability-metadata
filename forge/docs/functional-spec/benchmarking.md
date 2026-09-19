@@ -252,8 +252,9 @@ is the reviewer's to judge, like any other reviewed change. The publisher
 opens one pull request for the run, labeled `GenAI`,
 `code-coverage-improvement`, and `rhei` so the run sits in the same triage
 queue as the coverage-improvement PRs it measures, and renders the run
-identity, status, configuration, coverage gain, and token totals from the
-entries the diff appends. Repository CI and the normal merge boundary remain
+identity, status, configuration, coverage gain, the final total coverage as a
+percentage of the run's method universe, and token totals from the entries the
+diff appends. Repository CI and the normal merge boundary remain
 responsible for accepting it. §FS-forge-publication-readiness
 
 When Rhei terminates before reaching benchmark publication, the launcher must
