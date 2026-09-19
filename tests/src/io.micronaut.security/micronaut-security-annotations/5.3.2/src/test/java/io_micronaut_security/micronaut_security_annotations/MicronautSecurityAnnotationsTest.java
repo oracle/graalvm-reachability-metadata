@@ -22,9 +22,10 @@ import org.junit.jupiter.api.Timeout;
 public class MicronautSecurityAnnotationsTest {
     @Test
     void securedRolesAreAvailableOnTypesAndMethodsAtRuntime() throws NoSuchMethodException {
-        Secured inheritedSecurity = SpecializedOperations.class.getAnnotation(Secured.class);
-        Method audit = SecuredOperations.class.getMethod("audit");
-        Secured methodSecurity = audit.getAnnotation(Secured.class);
+        Class<SpecializedOperations> specializedOperationsAnnotationAccess = SpecializedOperations.class;
+        Secured inheritedSecurity = specializedOperationsAnnotationAccess.getAnnotation(Secured.class);
+        Method auditAnnotationAccess = SecuredOperations.class.getMethod("audit");
+        Secured methodSecurity = auditAnnotationAccess.getAnnotation(Secured.class);
 
         assertThat(inheritedSecurity.value()).containsExactly("ROLE_OPERATOR", "isAuthenticated()");
         assertThat(methodSecurity.value()).containsExactly("ROLE_AUDITOR");
@@ -33,8 +34,10 @@ public class MicronautSecurityAnnotationsTest {
 
     @Test
     void runAsConfigurationRetainsIdentityRolesAttributesAndDefaults() throws NoSuchMethodException {
-        RunAs inheritedRunAs = SpecializedOperations.class.getAnnotation(RunAs.class);
-        RunAs methodRunAs = SecuredOperations.class.getMethod("audit").getAnnotation(RunAs.class);
+        Class<SpecializedOperations> specializedOperationsAnnotationAccess = SpecializedOperations.class;
+        RunAs inheritedRunAs = specializedOperationsAnnotationAccess.getAnnotation(RunAs.class);
+        Method auditAnnotationAccess = SecuredOperations.class.getMethod("audit");
+        RunAs methodRunAs = auditAnnotationAccess.getAnnotation(RunAs.class);
 
         assertThat(inheritedRunAs.value()).containsExactly("ROLE_SUPPORT");
         assertThat(inheritedRunAs.name()).isEqualTo("service-account");
@@ -55,13 +58,13 @@ public class MicronautSecurityAnnotationsTest {
 
     @Test
     void auditingMarkersAreVisibleOnEntityPropertiesAtRuntime() throws NoSuchFieldException, NoSuchMethodException {
-        Field creator = AuditedRecord.class.getField("creator");
-        Method updater = AuditedRecord.class.getMethod("getUpdater");
+        Field creatorAnnotationAccess = AuditedRecord.class.getField("creator");
+        Method updaterAnnotationAccess = AuditedRecord.class.getMethod("getUpdater");
 
-        assertThat(creator.getAnnotation(CreatedBy.class)).isNotNull();
-        assertThat(creator.getAnnotation(UpdatedBy.class)).isNull();
-        assertThat(updater.getAnnotation(UpdatedBy.class)).isNotNull();
-        assertThat(updater.getAnnotation(CreatedBy.class)).isNull();
+        assertThat(creatorAnnotationAccess.getAnnotation(CreatedBy.class)).isNotNull();
+        assertThat(creatorAnnotationAccess.getAnnotation(UpdatedBy.class)).isNull();
+        assertThat(updaterAnnotationAccess.getAnnotation(UpdatedBy.class)).isNotNull();
+        assertThat(updaterAnnotationAccess.getAnnotation(CreatedBy.class)).isNull();
     }
 
     @Secured({"ROLE_OPERATOR", "isAuthenticated()"})
