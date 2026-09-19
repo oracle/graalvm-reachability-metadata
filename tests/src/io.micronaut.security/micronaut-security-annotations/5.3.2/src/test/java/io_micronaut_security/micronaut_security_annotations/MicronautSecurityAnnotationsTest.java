@@ -82,7 +82,7 @@ public class MicronautSecurityAnnotationsTest {
         }
     }
 
-    public static final class SpecializedOperations extends SecuredOperations {}
+    public static class SpecializedOperations extends SecuredOperations {}
 
     public static final class AuditedRecord {
         @CreatedBy
