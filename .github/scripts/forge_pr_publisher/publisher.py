@@ -1105,6 +1105,15 @@ def _benchmark_metric(value: Any, suffix: str = "") -> str:
     return f"{value:,}{suffix}" if isinstance(value, int) else f"{value}{suffix}"
 
 
+def _benchmark_total_coverage(coverage: dict[str, Any]) -> str:
+    """Final coverage as a percentage of the method universe, or n/a when unmeasured."""
+    covered = coverage.get("coveredAfter")
+    universe = coverage.get("allMethods")
+    if not isinstance(covered, int) or not isinstance(universe, int) or universe <= 0:
+        return "n/a"
+    return f"{100.0 * covered / universe:.1f}%"
+
+
 def _render_code_coverage_benchmark_result(
         descriptor: dict[str, Any],
         _validated: ValidatedPublication | None,
@@ -1136,6 +1145,7 @@ def _render_code_coverage_benchmark_result(
         f"{_benchmark_metric(coverage['coveredAfter'])}",
         f"- Methods gained: {_benchmark_metric(coverage['methodsGained'])}",
         f"- Coverage gained: {_benchmark_metric(coverage['percentagePointsGained'], 'pp')}",
+        f"- Total coverage: {_benchmark_total_coverage(coverage)}",
         f"- Method universe: {_benchmark_metric(coverage['allMethods'])}",
         f"- Input tokens: {_benchmark_metric(tokens['input'])}",
         f"- Cached input tokens: {_benchmark_metric(tokens['cachedInputRead'])}",

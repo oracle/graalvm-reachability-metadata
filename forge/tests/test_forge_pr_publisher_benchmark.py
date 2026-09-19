@@ -128,6 +128,7 @@ class BenchmarkResultPublisherTests(unittest.TestCase):
         self.assertIn("[Benchmark] Record com.example:demo:1.0.0 result", title)
         self.assertIn("- Status: `failure`", body)
         self.assertIn("- Covered methods: 10 → 25", body)
+        self.assertIn("- Total coverage: 25.0%", body)
         self.assertIn("- Failure phase: `api`", body)
         self.assertNotIn("Fixes:", body)
 
