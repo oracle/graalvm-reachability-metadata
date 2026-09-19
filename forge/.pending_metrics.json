@@ -1,0 +1,81 @@
+{
+  "timestamp": "2026-09-19T20:05:04.444010Z",
+  "library": "org.flywaydb:flyway-sqlserver:13.5.0",
+  "starting_commit": "14418d9ff8272703dd5e8c048cbad27b3f763db5",
+  "ending_commit": "14418d9ff8272703dd5e8c048cbad27b3f763db5",
+  "strategy_name": "library_update_pi_gpt-5.6-sol",
+  "agent": "pi",
+  "model": "gpt-5.6-sol",
+  "status": "failure",
+  "library_preparation_preflight": {
+    "status": "completed",
+    "action": "advisory_preparation",
+    "issue_number": 9843,
+    "issue_label": "fails-native-image-run",
+    "library": "org.flywaydb:flyway-sqlserver:13.5.0",
+    "summary": "flyway-sqlserver needs a live SQL Server container plus an explicit JDBC driver dependency to exercise a real migration; the existing 11.8.1 scaffold already supplies both and a prior automation run validated the identical setup for 13.5.0.",
+    "deterministic_setup": [
+      {
+        "kind": "dependency",
+        "coordinate": "com.microsoft.sqlserver:mssql-jdbc:12.2.0.jre11",
+        "scope": "testImplementation",
+        "reason": "flyway-sqlserver does not bundle a JDBC driver (verified in its 13.5.0 POM); Flyway's own docs require a driver to be supplied separately, and the repository already trusts this exact driver version for this test."
+      },
+      {
+        "kind": "docker_image",
+        "image": "mcr.microsoft.com/mssql/server:2022-CU14-ubuntu-22.04",
+        "slug": "mssql_server",
+        "reason": "Meaningful migration coverage requires a real SQL Server instance; reuse the exact tag already pinned under tests/tck-build-logic/.../Dockerfile-mssql_server rather than introducing a new allow-list entry."
+      }
+    ],
+    "agent_guidance": "Keep the existing FixedResourceProvider approach (hardcoded migration resource list) rather than relying on classpath resource enumeration, since GraalVM Native Image cannot enumerate classpath resources generically. Start the mssql/server container on 1433/tcp with ACCEPT_EULA=Y and a fixed SA password, poll until a JDBC connection succeeds (Awaitility, as in the current test) before invoking Flyway.migrate(), and tear the container process down in an @AfterAll. Run the migration through SQLServerDataSource against the two existing V1/V2 SQL migration resources and assert migrationsExecuted == 2. Note: the issue's reproducer command references coordinates=org.flywaydb:flyway-sqlserver:12.3.0 while the title/body target 13.5.0 — treat 13.5.0 as the authoritative target coordinate for local Gradle/Native Image verification.",
+    "risks": [
+      "Test requires Docker and exclusive use of host port 1433, consistent with the current scaffold.",
+      "Issue reproducer coordinate (12.3.0) does not match the stated target version (13.5.0); local verification should not be misled by the mismatch."
+    ],
+    "applied_setup": [
+      {
+        "kind": "dependency",
+        "coordinate": "com.microsoft.sqlserver:mssql-jdbc:12.2.0.jre11",
+        "result": "skipped",
+        "reason": "build_gradle_absent"
+      },
+      {
+        "kind": "docker_image",
+        "image": "mcr.microsoft.com/mssql/server:2022-CU14-ubuntu-22.04",
+        "slug": "mssql_server",
+        "result": "already_present",
+        "target": "tests/tck-build-logic/src/main/resources/allowed-docker-images/Dockerfile-mssql_server"
+      }
+    ],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#9843 [Automation] native-image run fails for org.flywaydb:flyway-sqlserver:13.5.0; label=fails-native-image-run; body_chars=8015"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "11 existing test file path(s) included"
+      }
+    ],
+    "current_library": "org.flywaydb:flyway-sqlserver:11.8.1",
+    "new_version": "13.5.0",
+    "model": "sonnet",
+    "input_tokens_used": 34,
+    "output_tokens_used": 12996
+  },
+  "metrics": {
+    "input_tokens_used": 0,
+    "cached_input_tokens_used": 0,
+    "output_tokens_used": 0,
+    "iterations": 3,
+    "cost_usd": 0.0,
+    "generated_loc": 0,
+    "tested_library_loc": 0,
+    "metadata_entries": 0,
+    "code_coverage_percent": 0.0
+  },
+  "artifacts": {
+    "metadata_file": "None"
+  }
+}

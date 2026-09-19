@@ -1,0 +1,92 @@
+{
+  "continueFrom": "finalization",
+  "coordinate": "org.flywaydb:flyway-sqlserver:13.5.0",
+  "failure": {
+    "operand": "reporter-requested metadata",
+    "phase": "explore",
+    "step": "generate_tests()"
+  },
+  "issueNumber": 9843,
+  "label": "fails-native-image-run",
+  "libraryPreparationPreflight": {
+    "action": "advisory_preparation",
+    "agent_guidance": "Keep the existing FixedResourceProvider approach (hardcoded migration resource list) rather than relying on classpath resource enumeration, since GraalVM Native Image cannot enumerate classpath resources generically. Start the mssql/server container on 1433/tcp with ACCEPT_EULA=Y and a fixed SA password, poll until a JDBC connection succeeds (Awaitility, as in the current test) before invoking Flyway.migrate(), and tear the container process down in an @AfterAll. Run the migration through SQLServerDataSource against the two existing V1/V2 SQL migration resources and assert migrationsExecuted == 2. Note: the issue's reproducer command references coordinates=org.flywaydb:flyway-sqlserver:12.3.0 while the title/body target 13.5.0 \u2014 treat 13.5.0 as the authoritative target coordinate for local Gradle/Native Image verification.",
+    "applied_setup": [],
+    "current_library": "org.flywaydb:flyway-sqlserver:11.8.1",
+    "deterministic_setup": [
+      {
+        "coordinate": "com.microsoft.sqlserver:mssql-jdbc:12.2.0.jre11",
+        "kind": "dependency",
+        "reason": "flyway-sqlserver does not bundle a JDBC driver (verified in its 13.5.0 POM); Flyway's own docs require a driver to be supplied separately, and the repository already trusts this exact driver version for this test.",
+        "scope": "testImplementation"
+      },
+      {
+        "image": "mcr.microsoft.com/mssql/server:2022-CU14-ubuntu-22.04",
+        "kind": "docker_image",
+        "reason": "Meaningful migration coverage requires a real SQL Server instance; reuse the exact tag already pinned under tests/tck-build-logic/.../Dockerfile-mssql_server rather than introducing a new allow-list entry.",
+        "slug": "mssql_server"
+      }
+    ],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#9843 [Automation] native-image run fails for org.flywaydb:flyway-sqlserver:13.5.0; label=fails-native-image-run; body_chars=8015"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "11 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 34,
+    "issue_label": "fails-native-image-run",
+    "issue_number": 9843,
+    "library": "org.flywaydb:flyway-sqlserver:13.5.0",
+    "model": "sonnet",
+    "new_version": "13.5.0",
+    "output_tokens_used": 12996,
+    "risks": [
+      "Test requires Docker and exclusive use of host port 1433, consistent with the current scaffold.",
+      "Issue reproducer coordinate (12.3.0) does not match the stated target version (13.5.0); local verification should not be misled by the mismatch."
+    ],
+    "status": "completed",
+    "summary": "flyway-sqlserver needs a live SQL Server container plus an explicit JDBC driver dependency to exercise a real migration; the existing 11.8.1 scaffold already supplies both and a prior automation run validated the identical setup for 13.5.0."
+  },
+  "libraryUpdateRoute": null,
+  "newVersion": "13.5.0",
+  "phases": {
+    "explore": {
+      "chunkClassCount": null,
+      "chunkProcessedClassCount": 0,
+      "exhaustedClasses": [],
+      "status": "skipped"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": null,
+      "status": "completed"
+    },
+    "publication": {
+      "branch": null,
+      "coverageFollowUpIssueNumber": null,
+      "isPushed": false,
+      "publicationId": null,
+      "publicationTimestamp": null,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": true,
+      "status": "completed"
+    }
+  },
+  "preservedBranch": "ai/cugurm/human-intervention/issue-9843-fails-native-image-run-org.flywaydb-flyway-sqlserver-13.5.0-bc3d7cc1",
+  "publicationMetrics": {
+    "extras": {},
+    "library": "org.flywaydb:flyway-sqlserver:13.5.0",
+    "timestamp": "2026-09-19T20:05:04.444010Z"
+  },
+  "schemaVersion": 1,
+  "strategyName": "library_update_pi_gpt-5.6-sol"
+}
