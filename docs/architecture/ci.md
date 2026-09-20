@@ -36,6 +36,25 @@ These run on `pull_request` and are the per-PR merge gates
 `detect-file-changes` action (§AR-detect-file-changes) so a PR that does not
 touch the guarded paths is a no-op.
 
+### AR-required-status-checks: Required status checks on the default branch
+
+The merge gate is a GitHub ruleset on the default branch that requires one
+status check per PR-validation workflow (§FS-repository-functional-spec.5.3).
+Matrix workflows expose a single always-running aggregator job that succeeds
+when its matrix passed or nothing relevant changed, and that aggregator — not
+the per-library or per-project matrix job — is the required context; single-job
+workflows are required by their job name. Without the ruleset, an approval plus
+auto-merge merges as soon as the organization's OCA check passes, which is how a
+head whose Spring AOT smoke matrix had already failed reached `master`.
+
+The ruleset lives in `.github/rulesets/master-required-checks.json` and is
+applied with `.github/scripts/apply_required_checks_ruleset.py` by a repository
+administrator (creating or updating the ruleset by name). The same script's
+`--check` mode runs in the grund-check workflow (§AR-grund-check) and fails when
+a required context no longer matches a `pull_request` job name, so renaming a
+gate job without updating the ruleset cannot land unnoticed. Contexts are job
+display names, emoji included.
+
 ### AR-test-changed-metadata: Test changed metadata
 
 Triggers on PRs touching `metadata/` or `tests/src/`. Runs
