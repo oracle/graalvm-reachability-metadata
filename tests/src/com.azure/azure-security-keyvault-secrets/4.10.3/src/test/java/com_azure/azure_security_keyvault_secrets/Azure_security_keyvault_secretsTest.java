@@ -105,6 +105,29 @@ public class Azure_security_keyvault_secretsTest {
     }
 
     @Test
+    void synchronousClientRecoversDeletedSecret() {
+        KeyVaultHttpClient httpClient = new KeyVaultHttpClient();
+        AtomicInteger tokenRequests = new AtomicInteger();
+        SecretClient client = newBuilder(httpClient, tokenRequests).buildClient();
+
+        PollResponse<KeyVaultSecret> recovery = client.beginRecoverDeletedSecret(SECRET_NAME)
+                .setPollInterval(Duration.ofMillis(1))
+                .waitForCompletion(IO_TIMEOUT);
+
+        assertThat(recovery.getStatus()).isEqualTo(LongRunningOperationStatus.SUCCESSFULLY_COMPLETED);
+        assertSecret(recovery.getValue());
+        assertThat(tokenRequests).hasValueGreaterThan(0);
+        assertThat(httpClient.authorizedRequests()).anySatisfy(request -> {
+            assertThat(request.getHttpMethod()).isEqualTo(HttpMethod.POST);
+            assertThat(request.getUrl().getPath()).isEqualTo("/deletedsecrets/" + SECRET_NAME + "/recover");
+        });
+        assertThat(httpClient.authorizedRequests()).anySatisfy(request -> {
+            assertThat(request.getHttpMethod()).isEqualTo(HttpMethod.GET);
+            assertThat(request.getUrl().getPath()).startsWith("/secrets/" + SECRET_NAME);
+        });
+    }
+
+    @Test
     void asynchronousClientHandlesBackupRestoreAndPagedResults() {
         KeyVaultHttpClient httpClient = new KeyVaultHttpClient();
         AtomicInteger tokenRequests = new AtomicInteger();
@@ -202,6 +225,9 @@ public class Azure_security_keyvault_secretsTest {
             }
             if (method == HttpMethod.POST && path.equals("/secrets/" + SECRET_NAME + "/backup")) {
                 return jsonResponse(request, 200, "{\"value\":\"AQIDBA==\"}");
+            }
+            if (method == HttpMethod.POST && path.equals("/deletedsecrets/" + SECRET_NAME + "/recover")) {
+                return jsonResponse(request, 200, secretJson());
             }
             if (method == HttpMethod.POST && path.equals("/secrets/restore")) {
                 return jsonResponse(request, 200, secretJson());
