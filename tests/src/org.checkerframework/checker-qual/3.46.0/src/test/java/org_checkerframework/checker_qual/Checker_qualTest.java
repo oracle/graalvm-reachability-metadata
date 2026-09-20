@@ -59,7 +59,7 @@ import org.checkerframework.framework.qual.TypeUseLocation;
 import org.checkerframework.framework.qual.UpperBoundFor;
 import org.junit.jupiter.api.Test;
 
-class Checker_qualTest {
+public class Checker_qualTest {
     @Test
     void coreQualifierAnnotationsExposeRuntimeContracts() throws NoSuchMethodException {
         assertTypeUseQualifierContract(NonNull.class);
