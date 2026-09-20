@@ -59,6 +59,6 @@ public class VisualStudioCodeCredentialTest {
     private static void assertInvalidRequest(VisualStudioCodeCredential credential) {
         assertThatThrownBy(() -> credential.getToken(new TokenRequestContext()).block(IO_TIMEOUT))
                 .isInstanceOf(ClientAuthenticationException.class)
-                .hasMessageContaining("Visual Studio Code Authentication");
+                .hasMessageContaining("Interactive Browser Authentication");
     }
 }
