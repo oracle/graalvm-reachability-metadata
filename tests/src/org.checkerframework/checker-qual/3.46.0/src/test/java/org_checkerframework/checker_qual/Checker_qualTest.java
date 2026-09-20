@@ -240,7 +240,7 @@ class Checker_qualTest {
         Repeatable defaultQualifierRepeatable = getRequiredAnnotation(DefaultQualifier.class, Repeatable.class);
 
         Assertions.assertThat(getSingleAnnotation(DefaultQualifier.class, Documented.class)).isNotNull();
-        Assertions.assertThat(defaultQualifierRetention.value()).isEqualTo(RetentionPolicy.SOURCE);
+        Assertions.assertThat(defaultQualifierRetention.value()).isEqualTo(RetentionPolicy.RUNTIME);
         Assertions.assertThat(defaultQualifierTarget.value()).containsExactlyInAnyOrder(
                 ElementType.PACKAGE,
                 ElementType.TYPE,
