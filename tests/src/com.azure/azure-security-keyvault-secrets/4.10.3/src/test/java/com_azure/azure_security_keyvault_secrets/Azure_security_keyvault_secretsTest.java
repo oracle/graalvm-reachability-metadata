@@ -25,6 +25,7 @@ import com.azure.security.keyvault.secrets.SecretClient;
 import com.azure.security.keyvault.secrets.SecretClientBuilder;
 import com.azure.security.keyvault.secrets.models.DeletedSecret;
 import com.azure.security.keyvault.secrets.models.KeyVaultSecret;
+import com.azure.security.keyvault.secrets.models.KeyVaultSecretIdentifier;
 import com.azure.security.keyvault.secrets.models.SecretProperties;
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
@@ -45,6 +46,25 @@ public class Azure_security_keyvault_secretsTest {
     private static final String SECRET_NAME = "integration-secret";
     private static final String SECRET_VERSION = "version-1";
     private static final String SECRET_VALUE = "correct horse battery staple";
+
+    @Test
+    void secretIdentifiersExposeVaultNameAndOptionalVersion() {
+        String versionedId = VAULT_URL + "/secrets/" + SECRET_NAME + "/" + SECRET_VERSION;
+        KeyVaultSecretIdentifier versionedIdentifier = new KeyVaultSecretIdentifier(versionedId);
+
+        assertThat(versionedIdentifier.getSourceId()).isEqualTo(versionedId);
+        assertThat(versionedIdentifier.getVaultUrl()).isEqualTo(VAULT_URL);
+        assertThat(versionedIdentifier.getName()).isEqualTo(SECRET_NAME);
+        assertThat(versionedIdentifier.getVersion()).isEqualTo(SECRET_VERSION);
+
+        String versionlessId = VAULT_URL + "/secrets/" + SECRET_NAME;
+        KeyVaultSecretIdentifier versionlessIdentifier = new KeyVaultSecretIdentifier(versionlessId);
+
+        assertThat(versionlessIdentifier.getSourceId()).isEqualTo(versionlessId);
+        assertThat(versionlessIdentifier.getVaultUrl()).isEqualTo(VAULT_URL);
+        assertThat(versionlessIdentifier.getName()).isEqualTo(SECRET_NAME);
+        assertThat(versionlessIdentifier.getVersion()).isNull();
+    }
 
     @Test
     void synchronousClientPerformsSecretLifecycle() {
