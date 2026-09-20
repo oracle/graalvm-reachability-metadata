@@ -11,29 +11,28 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import com.azure.core.credential.TokenRequestContext;
 import com.azure.core.exception.ClientAuthenticationException;
 import com.azure.core.util.Configuration;
-import com.azure.identity.InteractiveBrowserCredential;
-import com.azure.identity.broker.InteractiveBrowserBrokerCredentialBuilder;
+import com.azure.identity.DefaultAzureCredential;
+import com.azure.identity.DefaultAzureCredentialBuilder;
 import java.time.Duration;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 
 @Timeout(60)
-public class IdentityClientBaseTest {
+public class BrokerCredentialTest {
     private static final Duration IO_TIMEOUT = Duration.ofSeconds(10);
 
     @Test
-    void brokerCreatesPublicClientBeforeAuthentication() {
-        InteractiveBrowserCredential credential = new InteractiveBrowserBrokerCredentialBuilder()
-                .clientId("identity-client")
+    void developmentChainCreatesBrokerCredential() {
+        Configuration configuration
+                = Configuration.NONE.clone().put("AZURE_TOKEN_CREDENTIALS", "dev");
+        DefaultAzureCredential credential = new DefaultAzureCredentialBuilder()
                 .tenantId("identity-tenant")
-                .setWindowHandle(0)
-                .configuration(Configuration.NONE)
+                .configuration(configuration)
+                .credentialProcessTimeout(IO_TIMEOUT)
                 .build();
-        TokenRequestContext request
-                = new TokenRequestContext().addScopes("https://management.azure.com/.default");
 
-        assertThatThrownBy(() -> credential.authenticate(request).block(IO_TIMEOUT))
+        assertThatThrownBy(() -> credential.getToken(new TokenRequestContext()).block(IO_TIMEOUT))
                 .isInstanceOf(ClientAuthenticationException.class)
-                .hasMessageContaining("Interactive Browser Authentication");
+                .hasMessageContaining("DefaultAzureCredential");
     }
 }
