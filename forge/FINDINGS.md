@@ -3,6 +3,12 @@
 Rendered by Forge from the pre-push branch review of §FS-local-branch-review.
 Newest entry first; every non-approval is recorded, including one a repair later cleared.
 
+## 2026-09-20 — com.azure:azure-identity:1.18.0 (#10071)
+
+**Native-image initialization flags were scoped to all binaries**
+
+The coordinate build applied its class-specific initialization flags through graalvmNative.binaries.all rather than the test binary. FS-test-contract.2.7 requires native build flags to be as narrow as possible. Removing the flags reproduced the transitive Azure Core image-heap initialization failure, confirming that the flags themselves are necessary; only their binary scope needed correction.
+
 ## 2026-09-18 — io.micronaut:micronaut-http-client-core:5.1.11 (#10079)
 
 **Test dependencies pin the requested artifact version**
