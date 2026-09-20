@@ -42,7 +42,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.function.Function;
 import java.util.function.IntSupplier;
 
 import io.netty.channel.EventLoopGroup;
@@ -157,7 +156,7 @@ public class Neo4j_bolt_connection_nettyTest {
             assertThat(runSummary.resultAvailableAfter()).isEqualTo(3L);
             assertThat(runSummary.databaseName()).contains("neo4j");
             assertThat(querySummaries.valuesList()).hasSize(1);
-            assertThat(querySummaries.valuesList().get(0)[0].asString()).isEqualTo("Alice");
+            assertThat(querySummaries.valuesList().get(0).get(0).asString()).isEqualTo("Alice");
             assertThat(querySummaries.pullSummary().hasMore()).isFalse();
             assertThat(querySummaries.pullSummary().metadata().get("type").asString()).isEqualTo("r");
 
@@ -781,6 +780,11 @@ public class Neo4j_bolt_connection_nettyTest {
 
     private record SimpleValue(Type type, Object rawValue) implements Value {
         @Override
+        public Type boltValueType() {
+            return type;
+        }
+
+        @Override
         public boolean asBoolean() {
             return (Boolean) rawValue;
         }
@@ -831,12 +835,12 @@ public class Neo4j_bolt_connection_nettyTest {
         }
 
         @Override
-        public IsoDuration asIsoDuration() {
+        public IsoDuration asBoltIsoDuration() {
             throw new UnsupportedOperationException("Durations are not used by these tests");
         }
 
         @Override
-        public Point asPoint() {
+        public Point asBoltPoint() {
             throw new UnsupportedOperationException("Points are not used by these tests");
         }
 
@@ -867,12 +871,12 @@ public class Neo4j_bolt_connection_nettyTest {
         }
 
         @Override
-        public Value get(String key) {
+        public Value getBoltValue(String key) {
             return asMapValue().getOrDefault(key, new SimpleValue(Type.NULL, null));
         }
 
         @Override
-        public Iterable<Value> values() {
+        public Iterable<Value> boltValues() {
             if (type == Type.LIST) {
                 return asListValue();
             }
@@ -885,10 +889,8 @@ public class Neo4j_bolt_connection_nettyTest {
         }
 
         @Override
-        public <T> Map<String, T> asMap(Function<Value, T> mapFunction) {
-            Map<String, T> mapped = new LinkedHashMap<>();
-            asMapValue().forEach((key, value) -> mapped.put(key, mapFunction.apply(value)));
-            return mapped;
+        public Map<String, Value> asBoltMap() {
+            return asMapValue();
         }
 
         @SuppressWarnings("unchecked")
