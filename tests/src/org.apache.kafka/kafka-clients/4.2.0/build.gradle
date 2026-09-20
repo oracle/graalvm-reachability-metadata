@@ -20,6 +20,13 @@ dependencies {
     testImplementation "org.bouncycastle:bcpkix-jdk18on:1.80"
 }
 
+tasks.withType(Test).configureEach {
+    systemProperty 'junit.jupiter.extensions.autodetection.enabled', 'true'
+    jvmArgs += [
+        '--add-exports=java.security.jgss/sun.security.krb5=ALL-UNNAMED'
+    ]
+}
+
 graalvmNative {
     agent {
         defaultMode = "conditional"
@@ -28,6 +35,12 @@ graalvmNative {
                 userCodeFilterPath = "metadata-user-code-filter.json"
                 extraFilterPath = "metadata-extra-filter.json"
             }
+        }
+    }
+    binaries {
+        all {
+            runtimeArgs.add('-Djunit.jupiter.extensions.autodetection.enabled=true')
+            buildArgs.add('--add-exports=java.security.jgss/sun.security.krb5=ALL-UNNAMED')
         }
     }
 }
