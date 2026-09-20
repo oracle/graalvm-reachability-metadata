@@ -21,8 +21,10 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class AjOrgObjectwebAsmConstantsTest {
     @Test
-    void checksExperimentalClassVisitorCallerBytecode() {
-        assertExperimentalApiRejected(ExperimentalClassApiVisitor::new);
+    void acceptsExperimentalClassVisitorCompiledForPreview() {
+        ClassVisitor visitor = new ExperimentalClassApiVisitor();
+
+        assertThat(visitor.getDelegate()).isNull();
     }
 
     @Test
@@ -53,9 +55,7 @@ public class AjOrgObjectwebAsmConstantsTest {
     private static void assertExperimentalApiRejected(ThrowingCallable callable) {
         assertThatThrownBy(callable)
                 .isInstanceOf(IllegalStateException.class)
-                .satisfies(throwable -> assertThat(throwable.getMessage()).isIn(
-                        "ASM9_EXPERIMENTAL can only be used by classes compiled with --enable-preview",
-                        "Bytecode not available, can't check class version"));
+                .hasMessage("ASM9_EXPERIMENTAL can only be used by classes compiled with --enable-preview");
     }
 }
 

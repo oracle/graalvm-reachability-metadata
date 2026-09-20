@@ -4,6 +4,8 @@
  * You should have received a copy of the CC0 legalcode along with this
  * work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
  */
+import org.gradle.api.GradleException
+
 plugins {
     id "org.graalvm.internal.tck"
 }
@@ -15,8 +17,28 @@ dependencies {
     testImplementation 'org.assertj:assertj-core:3.22.0'
 }
 
+tasks.named("compileTestJava").configure {
+    doLast {
+        // ASM experimental visitors require the caller class file's preview minor version.
+        File visitorClass = destinationDirectory.file(
+                "org_aspectj/aspectjweaver/ExperimentalClassApiVisitor.class"
+        ).get().asFile
+        byte[] classBytes = visitorClass.bytes
+        if (classBytes.length < 8
+                || classBytes[0] != (byte) 0xCA
+                || classBytes[1] != (byte) 0xFE
+                || classBytes[2] != (byte) 0xBA
+                || classBytes[3] != (byte) 0xBE) {
+            throw new GradleException("Unexpected ExperimentalClassApiVisitor class file")
+        }
+        classBytes[4] = (byte) 0xFF
+        classBytes[5] = (byte) 0xFF
+        visitorClass.bytes = classBytes
+    }
+}
+
 tasks.withType(Test).configureEach {
-    jvmArgs "--add-opens=java.base/java.lang=ALL-UNNAMED"
+    jvmArgs "--enable-preview", "--add-opens=java.base/java.lang=ALL-UNNAMED"
 }
 
 graalvmNative {
@@ -30,6 +52,7 @@ graalvmNative {
     }
     binaries {
         all {
+            buildArgs.add("--enable-preview")
             buildArgs.add("--add-opens=java.base/java.lang=ALL-UNNAMED")
         }
     }
