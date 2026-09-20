@@ -19,6 +19,7 @@ import org.aspectj.weaver.loadtime.ClassLoaderWeavingAdaptor;
 import org.aspectj.weaver.loadtime.IWeavingContext;
 import org.aspectj.weaver.loadtime.definition.Definition;
 import org.aspectj.weaver.tools.WeavingAdaptor;
+import org.graalvm.internal.tck.NativeImageSupport;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -27,20 +28,21 @@ public class ClassLoaderWeavingAdaptorTest {
     private static final String LINT_RESOURCE = "aspectj-ltw-lint.properties";
 
     @Test
-    void initializesLoadTimeWeaverWithLintResource() {
+    void initializesLoadTimeWeaverWithLintResourceAndGeneratedConcreteAspect() throws Exception {
         ResourceTrackingClassLoader loader = new ResourceTrackingClassLoader(
                 ClassLoaderWeavingAdaptorTest.class.getClassLoader(),
                 LINT_RESOURCE,
                 "adviceDidNotMatch=ignore\n"
         );
-        Definition definition = new Definition();
-        definition.appendWeaverOptions("-Xlintfile:" + LINT_RESOURCE);
+        Definition definition = concreteAspectDefinition();
         ClassLoaderWeavingAdaptor adaptor = new ClassLoaderWeavingAdaptor();
 
-        adaptor.initialize(loader, new StaticWeavingContext(loader, definition));
+        NativeImageSupport.runToleratingUnsupportedFeature(() -> {
+            adaptor.initialize(loader, new StaticWeavingContext(loader, definition));
+            assertThat(adaptor.getMessageHolder()).isNotNull();
+        });
 
         assertThat(loader.resourceRequestCount()).isEqualTo(1);
-        assertThat(adaptor.getMessageHolder()).isNotNull();
     }
 
     @Test
@@ -53,6 +55,18 @@ public class ClassLoaderWeavingAdaptorTest {
 
         boolean matches = (boolean) startsWith.invokeExact("aspectj", "aspect");
         assertThat(matches).isTrue();
+    }
+
+    private static Definition concreteAspectDefinition() {
+        Definition definition = new Definition();
+        definition.appendWeaverOptions("-Xlintfile:" + LINT_RESOURCE);
+        definition.getConcreteAspects().add(new Definition.ConcreteAspect(
+                "org_aspectj.aspectjweaver.generated.LoadTimeConcreteAspect",
+                null,
+                "org_aspectj.aspectjweaver..*",
+                null
+        ));
+        return definition;
     }
 
     private static final class StaticWeavingContext implements IWeavingContext {
