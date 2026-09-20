@@ -50,7 +50,7 @@ public class JettyRequestUpgradeStrategyTest {
     }
 
     @Test
-    void upgradeCreatesJettyWebSocketCreatorProxyBeforeLookingUpContainer() {
+    void upgradeCreatesJettyWebSocketAdapterBeforeLookingUpContainer() {
         RequestUpgradeStrategy strategy = new JettyRequestUpgradeStrategy();
         MockServletContext servletContext = new MockServletContext();
         MockHttpServletRequest servletRequest = new MockHttpServletRequest(servletContext, "GET", "/ws");
@@ -59,7 +59,7 @@ public class JettyRequestUpgradeStrategyTest {
         HandshakeInfo handshakeInfo = new HandshakeInfo(REQUEST_URI, new HttpHeaders(), Mono.empty(), "chat");
 
         // The mock servlet context intentionally has no Jetty container; by the time this fails,
-        // the strategy has already created the JettyWebSocketCreator proxy.
+        // the strategy has already created the Jetty WebSocket handler adapter.
         assertThatThrownBy(() -> strategy.upgrade(exchange, session -> Mono.empty(), "chat", () -> handshakeInfo)
                 .block(Duration.ofSeconds(10)))
                 .isInstanceOf(RuntimeException.class);
@@ -80,7 +80,7 @@ public class JettyRequestUpgradeStrategyTest {
         private final MockHttpServletRequest servletRequest;
 
         private NativeServerHttpRequest(MockHttpServletRequest servletRequest) {
-            super(REQUEST_URI, "", new HttpHeaders());
+            super(HttpMethod.valueOf(servletRequest.getMethod()), REQUEST_URI, "", new HttpHeaders());
             this.servletRequest = servletRequest;
         }
 
