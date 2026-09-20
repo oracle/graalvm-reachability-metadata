@@ -1,0 +1,22 @@
+## Research summary
+
+I compared the 5.3.31 scaffold (`tests/src/org.springframework/spring-aspects/5.3.31/`) against what `org.springframework:spring-aspects:6.0.0` actually resolves to:
+
+- **spring-aspects 6.0.0 POM**: single dependency `org.aspectj:aspectjweaver:1.9.9.1` — the exact same AspectJ weaver version already visible in the 5.3.31 failure log (`aspectjweaver-1.9.9.1.jar`). No AspectJ version bump.
+- **spring-tx 6.0.0** Gradle module metadata: depends only on `spring-beans`/`spring-core` at matching version — no new `jakarta.*` annotation dependency pulled in for the transaction-aspect path the test exercises.
+- **spring-context 6.0.0** POM: depends only on `spring-aop`, `spring-beans`, `spring-core`, `spring-expression` at matching version.
+- The test class (`Spring_aspectsTest.java`) calls `AnnotationBeanConfigurerAspect.aspectOf()` etc. directly — it exercises the AspectJ aspects that ship pre-woven inside `spring-aspects.jar` itself, and never performs its own compile-time or load-time weaving, so no `-javaagent`, no `ajc` plugin, and no extra build-time weaving setup is needed at test-build time (consistent with 5.3.31 working without one).
+- Nothing in the test touches a database, cache server, message broker, or other out-of-process service — everything is in-memory (`ConcurrentMapCacheManager`, `SyncTaskExecutor`, hand-rolled `PlatformTransactionManager`) — so no Docker image is implicated.
+- The existing `testImplementation "org.springframework:spring-aspects:$libraryVersion"` (and peers) already parameterize on `tck.testedLibraryVersion`, so bumping to 6.0.0 requires no build.gradle edits, and JDK 25 already satisfies Spring 6's Java 17+ baseline.
+
+For the unsupportability check: the issue's failure log is truncated right after one test reports `SUCCESSFUL`, with no exception, stack trace, or named failing operation before the cutoff. Step 1 (FAILURE) cannot be completed from the evidence given, so per the rules this stays repairable — no skip verdict.
+
+```json
+{
+  "action": "no_action",
+  "summary": "spring-aspects 6.0.0 resolves the same aspectjweaver 1.9.9.1 and only same-version Spring peer artifacts as 5.3.31; the test exercises pre-woven aspects in-memory with no external service, agent, or new transitive dependency, so the generated scaffold is sufficient. The native-image run failure log is truncated before any failing operation is shown, so it cannot support an unsupportable verdict either — this is a normal repair-coverage case.",
+  "deterministic_setup": [],
+  "agent_guidance": "",
+  "risks": ["The issue's failure log is truncated before the actual failing test/exception, so the specific missing reachability metadata is not yet known from this evidence alone; the repair workflow will need to reproduce locally to see the real stack trace."]
+}
+```
