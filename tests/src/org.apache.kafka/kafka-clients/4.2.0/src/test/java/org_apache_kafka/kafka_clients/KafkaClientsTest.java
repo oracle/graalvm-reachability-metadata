@@ -23,6 +23,7 @@ import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.clients.producer.RoundRobinPartitioner;
 import org.apache.kafka.common.TopicPartition;
 import org.apache.kafka.common.config.SaslConfigs;
+import org.apache.kafka.common.security.scram.ScramLoginModule;
 import org.apache.kafka.common.serialization.BooleanDeserializer;
 import org.apache.kafka.common.serialization.BooleanSerializer;
 import org.apache.kafka.common.serialization.ByteArrayDeserializer;
@@ -53,6 +54,9 @@ import org.apache.kafka.common.serialization.VoidSerializer;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
+
+import javax.security.sasl.Sasl;
+import javax.security.sasl.SaslClient;
 
 import java.time.Duration;
 import java.util.ArrayList;
@@ -255,6 +259,26 @@ public class KafkaClientsTest {
             assertThatThrownBy(() -> consumer.partitionsFor("non-existent-topic"))
                     .isNotInstanceOf(UnsupportedOperationException.class);
         }
+    }
+
+    @Test
+    void testScramProviderCreatesClientFactory() throws Exception {
+        ScramLoginModule loginModule = new ScramLoginModule();
+
+        Map<String, String> saslProperties = new HashMap<>();
+        SaslClient client = Sasl.createSaslClient(
+                new String[] {"SCRAM-SHA-512"},
+                null,
+                "kafka",
+                "localhost",
+                saslProperties,
+                callbacks -> {
+                });
+
+        assertThat(loginModule).isNotNull();
+        assertThat(client).isNotNull();
+        assertThat(client.getClass().getName())
+                .isEqualTo("org.apache.kafka.common.security.scram.internals.ScramSaslClient");
     }
 
 }

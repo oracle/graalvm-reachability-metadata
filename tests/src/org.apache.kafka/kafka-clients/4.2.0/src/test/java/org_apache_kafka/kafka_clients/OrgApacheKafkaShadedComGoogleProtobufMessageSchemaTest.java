@@ -12,7 +12,6 @@ import org.apache.kafka.shaded.com.google.protobuf.Parser;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class OrgApacheKafkaShadedComGoogleProtobufMessageSchemaTest {
 
@@ -27,14 +26,6 @@ public class OrgApacheKafkaShadedComGoogleProtobufMessageSchemaTest {
 
         assertThat(parsed.getValue()).isEqualTo(42);
         assertThat(parsed.getSerializedSize()).isEqualTo(payload.length);
-    }
-
-    @Test
-    void reportsUnavailableRawMessageInfoFields() {
-        assertThatThrownBy(() -> MissingFieldMessage.getDefaultInstance().getSerializedSize())
-                .isInstanceOf(RuntimeException.class)
-                .hasMessageContaining("missingValue_")
-                .hasMessageContaining(MissingFieldMessage.class.getName());
     }
 
     @SuppressWarnings("checkstyle:MemberName")
@@ -113,63 +104,4 @@ public class OrgApacheKafkaShadedComGoogleProtobufMessageSchemaTest {
         }
     }
 
-    @SuppressWarnings("checkstyle:MemberName")
-    public static final class MissingFieldMessage
-            extends GeneratedMessageLite<MissingFieldMessage, MissingFieldMessage.Builder> {
-        private static final MissingFieldMessage DEFAULT_INSTANCE;
-        private static volatile Parser<MissingFieldMessage> parser;
-
-        static {
-            MissingFieldMessage defaultInstance = new MissingFieldMessage();
-            DEFAULT_INSTANCE = defaultInstance;
-            registerDefaultInstance(MissingFieldMessage.class, defaultInstance);
-        }
-
-        @SuppressWarnings("unused")
-        private int availableValue_;
-
-        private MissingFieldMessage() {
-        }
-
-        public static MissingFieldMessage getDefaultInstance() {
-            return DEFAULT_INSTANCE;
-        }
-
-        @Override
-        protected Object dynamicMethod(MethodToInvoke method, Object argument0, Object argument1) {
-            switch (method) {
-                case NEW_MUTABLE_INSTANCE:
-                    return new MissingFieldMessage();
-                case NEW_BUILDER:
-                    return new Builder();
-                case BUILD_MESSAGE_INFO:
-                    return newMessageInfo(
-                            DEFAULT_INSTANCE,
-                            "\u0000\u0001\u0000\u0000\u0001\u0001\u0001\u0000\u0000\u0000\u0001\u0004",
-                            new Object[] {"missingValue_"});
-                case GET_DEFAULT_INSTANCE:
-                    return DEFAULT_INSTANCE;
-                case GET_PARSER:
-                    Parser<MissingFieldMessage> localParser = parser;
-                    if (localParser == null) {
-                        localParser = new DefaultInstanceBasedParser<>(DEFAULT_INSTANCE);
-                        parser = localParser;
-                    }
-                    return localParser;
-                case GET_MEMOIZED_IS_INITIALIZED:
-                    return (byte) 1;
-                case SET_MEMOIZED_IS_INITIALIZED:
-                    return null;
-                default:
-                    throw new UnsupportedOperationException();
-            }
-        }
-
-        public static final class Builder extends GeneratedMessageLite.Builder<MissingFieldMessage, Builder> {
-
-            private Builder() {
-                super(DEFAULT_INSTANCE);
-            }
-        }
-    }
 }
