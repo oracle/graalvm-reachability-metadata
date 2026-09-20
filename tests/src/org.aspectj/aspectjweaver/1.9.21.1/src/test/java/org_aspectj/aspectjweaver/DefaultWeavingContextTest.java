@@ -6,10 +6,13 @@
  */
 package org_aspectj.aspectjweaver;
 
+import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 import org.aspectj.weaver.loadtime.DefaultWeavingContext;
@@ -18,8 +21,24 @@ import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class DefaultWeavingContextTest {
+    private static final String CLASSPATH_RESOURCE = "org_aspectj/aspectjweaver/classpath-resource.txt";
     private static final String LOCAL_ONLY_TYPE = "example.LocalOnlyAspect";
     private static final String SHARED_TYPE = "example.SharedAspect";
+
+    @Test
+    void enumeratesResourcesFromConfiguredLoader() throws Exception {
+        DefaultWeavingContext context = new DefaultWeavingContext(
+                DefaultWeavingContextTest.class.getClassLoader()
+        );
+
+        List<URL> resources = Collections.list(context.getResources(CLASSPATH_RESOURCE));
+
+        assertThat(resources).hasSize(1);
+        try (InputStream resource = resources.get(0).openStream()) {
+            assertThat(new String(resource.readAllBytes(), StandardCharsets.UTF_8))
+                    .isEqualTo("loaded through ClassPath.getInputStream\n");
+        }
+    }
 
     @Test
     void reportsClassAsLocallyDefinedWhenOnlyConfiguredLoaderFindsResource() throws Exception {
