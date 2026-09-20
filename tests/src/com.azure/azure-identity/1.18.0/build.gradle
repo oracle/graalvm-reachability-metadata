@@ -24,4 +24,12 @@ graalvmNative {
             }
         }
     }
+    binaries {
+        all {
+            buildArgs.addAll([
+                    '--initialize-at-build-time=org.slf4j.helpers.SubstituteLoggerFactory,org.slf4j.helpers.NOPLoggerFactory',
+                    '--initialize-at-build-time=com.fasterxml.jackson.core.Base64Variant,com.fasterxml.jackson.core.Base64Variant$PaddingReadBehaviour'
+            ])
+        }
+    }
 }
