@@ -63,7 +63,7 @@ no longer accepted and the reachability metadata belongs in the coordinate's
 `metadata/` directory. A finalization gate that fails before Gradle can create
 its task — a reused daemon reporting that a build-logic class cannot be loaded
 or that a task type cannot be decorated — is a stale daemon, not a metadata
-verdict: Forge stops the daemons of the run's Gradle user home
+verdict: Forge stops the daemons of the worktree's Gradle user home
 (§FS-forge-run-requirements.4), reruns that gate exactly once, and lets only the
 rerun's outcome reach metadata repair or human intervention
 (§FS-human-intervention-policy).
