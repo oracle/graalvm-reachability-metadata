@@ -1,6 +1,6 @@
-# Per-PR gate that runs `grund check` over both namespaces, so a citation that stops resolving,
-# or a managed AGENTS.md block that drifts from its grund.toml, fails the PR instead of rotting.
-# §AR-grund-check; enforces §FS-repository-functional-spec.5.6.
+# Per-PR gate: `grund check` over both namespaces (§AR-grund-check, enforces
+# §FS-repository-functional-spec.5.6), plus the check that the required-status-check ruleset
+# still matches the gate job names (§AR-required-status-checks).
 name: "Validate grund citations"
 
 on:
@@ -42,6 +42,8 @@ jobs:
             - 'skills/**'
             - '.github/workflows/**'
             - '.github/actions/**'
+            - '.github/rulesets/**'
+            - '.github/scripts/apply_required_checks_ruleset.py'
             - 'forge/AGENTS.md'
             - 'forge/README.md'
             - 'forge/DEVELOPING.md'
@@ -64,3 +66,11 @@ jobs:
         # cross-namespace citations is in scope, so this one run covers Forge too.
         run: |
           grund check
+
+      - name: "🔒 Check required status checks match gate jobs"
+        if: steps.filter.outputs.changed == 'true'
+        # A renamed gate job would silently orphan its required context; the ruleset is code,
+        # so verify it here (§AR-required-status-checks).
+        run: |
+          python3 -m pip install --quiet pyyaml
+          python3 .github/scripts/apply_required_checks_ruleset.py --check
