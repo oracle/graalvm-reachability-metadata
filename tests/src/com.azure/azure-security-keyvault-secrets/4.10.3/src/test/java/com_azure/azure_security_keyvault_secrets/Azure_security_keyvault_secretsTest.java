@@ -8,9 +8,11 @@ package com_azure.azure_security_keyvault_secrets;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import com.azure.core.credential.AccessToken;
 import com.azure.core.credential.TokenCredential;
+import com.azure.core.exception.ResourceNotFoundException;
 import com.azure.core.http.HttpClient;
 import com.azure.core.http.HttpHeaderName;
 import com.azure.core.http.HttpHeaders;
@@ -121,6 +123,24 @@ public class Azure_security_keyvault_secretsTest {
         assertThat(httpClient.authorizedRequests()).anySatisfy(request -> {
             assertThat(request.getHttpMethod()).isEqualTo(HttpMethod.DELETE);
             assertThat(request.getUrl().getPath()).isEqualTo("/deletedsecrets/" + SECRET_NAME);
+        });
+    }
+
+    @Test
+    void synchronousClientMapsServiceErrorsToPublicExceptionTypes() {
+        KeyVaultHttpClient httpClient = new KeyVaultHttpClient();
+        AtomicInteger tokenRequests = new AtomicInteger();
+        SecretClient client = newBuilder(httpClient, tokenRequests).buildClient();
+
+        assertThatThrownBy(() -> client.getSecret("missing-secret"))
+                .isInstanceOf(ResourceNotFoundException.class)
+                .hasMessageContaining("NotFound")
+                .hasMessageContaining("unknown route");
+
+        assertThat(tokenRequests).hasValueGreaterThan(0);
+        assertThat(httpClient.authorizedRequests()).anySatisfy(request -> {
+            assertThat(request.getHttpMethod()).isEqualTo(HttpMethod.GET);
+            assertThat(request.getUrl().getPath()).isEqualTo("/secrets/missing-secret/");
         });
     }
 
