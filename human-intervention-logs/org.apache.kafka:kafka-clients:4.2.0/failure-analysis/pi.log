@@ -1,0 +1,15 @@
+## Human intervention needed
+
+The automated job failed during `explore/generate_tests()` for `org.apache.kafka.common.config.AbstractConfigTest$1RestrictedClassLoader` after 33 iterations. Preserved work: https://github.com/oracle/graalvm-reachability-metadata/tree/ai%2Fkimeta%2Fhuman-intervention%2Fissue-7506-library-update-request-org.apache.kafka-kafka-clients-4.2.0-da2c5511
+
+The continuation marker identifies the failing generation target. The generation log concludes that its custom-class-loader path is unsupported by Native Image and leaves it uncovered. Coverage stopped at 87/116 calls (75.00%). The preserved suite also does not currently pass: the latest native test ran 87 tests but failed both `OrgApacheKafkaCommonUtilsSerializerTest` methods—one with a resource-deserialization `NullPointerException`, the other with missing reflection metadata for `TopicPartition.serialVersionUID`. The final coverage-report attempt then failed while loading `com/fasterxml/jackson/databind/ObjectMapper`.
+
+Inspect:
+- `human-intervention-logs/org.apache.kafka:kafka-clients:4.2.0/improve-library-coverage/pi-generation-2026-09-20T02-52-04-880875Z.log`
+- `human-intervention-logs/org.apache.kafka:kafka-clients:4.2.0/gradle-test/gradle-test-2026-09-20T07-36-01-400043Z.log`
+- `human-intervention-logs/org.apache.kafka:kafka-clients:4.2.0/gradle/generateDynamicAccessCoverageReport-2026-09-20T07-38-34-173816Z.log`
+
+Manual next steps:
+1. Confirm that the `RestrictedClassLoader` call site should be recorded as exhausted/unsupported rather than covered by a skipped or JVM-only test.
+2. Repair or remove the two generated serializer tests as appropriate, regenerate metadata/resources, and verify the `TopicPartition.serialVersionUID` registration.
+3. Resolve the coverage-report `ObjectMapper` classpath failure, then rerun the coordinate’s Gradle test and dynamic-access coverage tasks.
