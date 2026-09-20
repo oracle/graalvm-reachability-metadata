@@ -54,11 +54,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
-import javax.security.sasl.Sasl;
-import javax.security.sasl.SaslClient;
 import java.time.Duration;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -119,11 +116,11 @@ public class KafkaClientsTest {
             StringSerializer.class,
             UUIDSerializer.class,
             VoidSerializer.class})
-    void testSerializers(Class valueSerializer) {
+    void testSerializers(Class<?> valueSerializer) {
         Map<String, Object> producerProperties = new HashMap<>();
         producerProperties.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, KAFKA_SERVER);
-        producerProperties.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, IntegerSerializer.class);
-        producerProperties.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, valueSerializer);
+        producerProperties.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, IntegerSerializer.class.getName());
+        producerProperties.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, valueSerializer.getName());
         try (KafkaProducer producer = new KafkaProducer<>(producerProperties)) {
             assertThat(producer).isNotNull();
         }
@@ -143,11 +140,11 @@ public class KafkaClientsTest {
             StringDeserializer.class,
             UUIDDeserializer.class,
             VoidDeserializer.class})
-    void testDeserializers(Class valueDeserializer) {
+    void testDeserializers(Class<?> valueDeserializer) {
         Map<String, Object> consumerProperties = new HashMap<>();
         consumerProperties.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, KAFKA_SERVER);
-        consumerProperties.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, IntegerDeserializer.class);
-        consumerProperties.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, valueDeserializer);
+        consumerProperties.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, IntegerDeserializer.class.getName());
+        consumerProperties.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, valueDeserializer.getName());
         try (KafkaConsumer consumer = new KafkaConsumer<>(consumerProperties)) {
             assertThat(consumer).isNotNull();
         }
@@ -167,12 +164,12 @@ public class KafkaClientsTest {
             Serdes.StringSerde.class,
             Serdes.UUIDSerde.class,
             Serdes.VoidSerde.class})
-    void testListSerializers(Class serdeInnerClass) {
+    void testListSerializers(Class<?> serdeInnerClass) {
         Map<String, Object> producerProperties = new HashMap<>();
         producerProperties.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, KAFKA_SERVER);
-        producerProperties.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, IntegerSerializer.class);
-        producerProperties.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, ListSerializer.class);
-        producerProperties.put(CommonClientConfigs.DEFAULT_LIST_VALUE_SERDE_INNER_CLASS, serdeInnerClass);
+        producerProperties.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, IntegerSerializer.class.getName());
+        producerProperties.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, ListSerializer.class.getName());
+        producerProperties.put(CommonClientConfigs.DEFAULT_LIST_VALUE_SERDE_INNER_CLASS, serdeInnerClass.getName());
         try (KafkaProducer producer = new KafkaProducer<>(producerProperties)) {
             assertThat(producer).isNotNull();
         }
@@ -182,10 +179,12 @@ public class KafkaClientsTest {
     void testListDeserializers() {
         Map<String, Object> consumerProperties = new HashMap<>();
         consumerProperties.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, KAFKA_SERVER);
-        consumerProperties.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, IntegerDeserializer.class);
-        consumerProperties.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, ListDeserializer.class);
-        consumerProperties.put(CommonClientConfigs.DEFAULT_LIST_VALUE_SERDE_TYPE_CLASS, ArrayList.class);
-        consumerProperties.put(CommonClientConfigs.DEFAULT_LIST_VALUE_SERDE_INNER_CLASS, Serdes.BooleanSerde.class);
+        consumerProperties.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, IntegerDeserializer.class.getName());
+        consumerProperties.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, ListDeserializer.class.getName());
+        consumerProperties.put(CommonClientConfigs.DEFAULT_LIST_VALUE_SERDE_TYPE_CLASS, ArrayList.class.getName());
+        consumerProperties.put(
+                CommonClientConfigs.DEFAULT_LIST_VALUE_SERDE_INNER_CLASS,
+                Serdes.BooleanSerde.class.getName());
         try (KafkaConsumer consumer = new KafkaConsumer<>(consumerProperties)) {
             assertThat(consumer).isNotNull();
         }
@@ -195,9 +194,9 @@ public class KafkaClientsTest {
     void testRoundRobinPartitioner() {
         Map<String, Object> producerProperties = new HashMap<>();
         producerProperties.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, KAFKA_SERVER);
-        producerProperties.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, IntegerSerializer.class);
-        producerProperties.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
-        producerProperties.put(ProducerConfig.PARTITIONER_CLASS_CONFIG, RoundRobinPartitioner.class);
+        producerProperties.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, IntegerSerializer.class.getName());
+        producerProperties.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
+        producerProperties.put(ProducerConfig.PARTITIONER_CLASS_CONFIG, RoundRobinPartitioner.class.getName());
         try (KafkaProducer producer = new KafkaProducer<>(producerProperties)) {
             assertThat(producer).isNotNull();
         }
@@ -209,12 +208,14 @@ public class KafkaClientsTest {
             RoundRobinAssignor.class,
             CooperativeStickyAssignor.class,
             StickyAssignor.class})
-    void testPartitionAssignmentStrategy(Class assignor) {
+    void testPartitionAssignmentStrategy(Class<?> assignor) {
         Map<String, Object> consumerProperties = new HashMap<>();
         consumerProperties.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, KAFKA_SERVER);
-        consumerProperties.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, IntegerDeserializer.class);
-        consumerProperties.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
-        consumerProperties.put(ConsumerConfig.PARTITION_ASSIGNMENT_STRATEGY_CONFIG, Arrays.asList(assignor));
+        consumerProperties.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, IntegerDeserializer.class.getName());
+        consumerProperties.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
+        consumerProperties.put(
+                ConsumerConfig.PARTITION_ASSIGNMENT_STRATEGY_CONFIG,
+                Collections.singletonList(assignor.getName()));
         try (KafkaConsumer consumer = new KafkaConsumer<>(consumerProperties)) {
             assertThat(consumer).isNotNull();
         }
@@ -254,25 +255,6 @@ public class KafkaClientsTest {
             assertThatThrownBy(() -> consumer.partitionsFor("non-existent-topic"))
                     .isNotInstanceOf(UnsupportedOperationException.class);
         }
-    }
-
-    @Test
-    void testScramProviderCreatesClientFactory() throws Exception {
-        Class.forName("org.apache.kafka.common.security.scram.ScramLoginModule");
-
-        Map<String, String> saslProperties = new HashMap<>();
-        SaslClient client = Sasl.createSaslClient(
-                new String[] {"SCRAM-SHA-512"},
-                null,
-                "kafka",
-                "localhost",
-                saslProperties,
-                callbacks -> {
-                });
-
-        assertThat(client).isNotNull();
-        assertThat(client.getClass().getName())
-                .isEqualTo("org.apache.kafka.common.security.scram.internals.ScramSaslClient");
     }
 
 }

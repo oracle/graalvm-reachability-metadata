@@ -9,6 +9,7 @@ package org_apache_kafka.kafka_clients;
 import com.sun.security.auth.module.Krb5LoginModule;
 
 import org.apache.kafka.common.security.kerberos.KerberosError;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 
@@ -25,6 +26,7 @@ import javax.security.auth.login.LoginException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@Order(1)
 public class OrgApacheKafkaCommonSecurityKerberosKerberosErrorTest {
 
     @Test
