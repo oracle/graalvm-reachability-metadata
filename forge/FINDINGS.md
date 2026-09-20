@@ -3,6 +3,12 @@
 Rendered by Forge from the pre-push branch review of §FS-local-branch-review.
 Newest entry first; every non-approval is recorded, including one a repair later cleared.
 
+## 2026-09-20 — org.checkerframework:checker-qual:3.46.0 (#9374)
+
+**Generated Java test class was not public**
+
+The added Checker_qualTest top-level class was declared package-private, violating FS-test-contract.1.2, which requires every top-level test class to be public. The violation was wholly within the target coordinate's new test source and was repairable under FS-contribution-contract.5.1.
+
 ## 2026-09-18 — io.micronaut:micronaut-http-client-core:5.1.11 (#10079)
 
 **Test dependencies pin the requested artifact version**
