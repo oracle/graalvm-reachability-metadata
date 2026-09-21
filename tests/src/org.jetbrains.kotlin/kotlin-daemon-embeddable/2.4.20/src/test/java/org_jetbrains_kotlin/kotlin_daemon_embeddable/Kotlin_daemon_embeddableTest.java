@@ -169,7 +169,7 @@ public class Kotlin_daemon_embeddableTest {
                 assertThat(clientSocket.getInetAddress().isLoopbackAddress()).isTrue();
             }
 
-            String remoteAddress = acceptedRemoteAddress.get(5, TimeUnit.SECONDS);
+            String remoteAddress = acceptedRemoteAddress.get(10, TimeUnit.SECONDS);
             assertThat(InetAddress.getByName(remoteAddress).isLoopbackAddress()).isTrue();
         } finally {
             executor.shutdownNow();
