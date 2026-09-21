@@ -1,0 +1,31 @@
+## Research summary
+
+I reproduced the failure locally with the actual test scaffold pointed at 1.12.2:
+
+```
+env GVM_TCK_LV=1.12.2 ./gradlew clean javaTest -Pcoordinates=org.apache.avro:avro:1.12.1
+```
+
+4 tests fail, all with the same new exception type:
+
+```
+java.lang.SecurityException: Forbidden org_apache_avro.avro.ReflectDataTest$TypeEncodedValue! This class is not trusted to be included in Avro schemas.
+You may either use the system properties org.apache.avro.SERIALIZABLE_CLASSES and org.apache.avro.SERIALIZABLE_PACKAGES ...
+	at org.apache.avro.util.ClassSecurityValidator$ClassSecurityPredicate.forbiddenClass
+	at org.apache.avro.reflect.ReflectData.getClassProp
+	at org.apache.avro.specific.SpecificData.lambda$getClass$2
+```
+
+This matches Avro 1.12.2's release notes: it hardened `SpecificData`/`ReflectData` class resolution from schema `java-class`/`java-element-class` properties behind a new `org.apache.avro.util.ClassSecurityValidator`, deny-by-default for anything outside a small built-in trusted set (`DEFAULT_TRUSTED_CLASSES`), configurable via the `org.apache.avro.SERIALIZABLE_CLASSES` / `org.apache.avro.SERIALIZABLE_PACKAGES` system properties or the `ClassSecurityValidator` API. The existing 1.12.1 tests use custom POJOs (`ReflectDataTest$TypeEncodedValue`, `SpecificDataTest$GeneratedRecordNoArg`) that used to resolve fine and are now rejected purely because they aren't on the trusted list — nothing to do with Native Image itself.
+
+This is plain-JVM (`java run`) behavior, not a native-image trace, and the mechanism is an allowlist check, not runtime bytecode generation/class definition/agent-attach/etc. — fully repairable by generated test code trusting its own test package. No extra Maven dependency or Docker image is needed.
+
+```json
+{
+  "action": "advisory_preparation",
+  "summary": "Avro 1.12.2 added ClassSecurityValidator, which rejects schema-driven class resolution (ReflectData/SpecificData getClassProp/getClass) for any class not explicitly trusted; the generated test's own POJOs now throw SecurityException unless the test package is added to org.apache.avro.SERIALIZABLE_PACKAGES (or SERIALIZABLE_CLASSES).",
+  "deterministic_setup": [],
+  "agent_guidance": "Reproduced locally: `env GVM_TCK_LV=1.12.2 ./gradlew clean javaTest -Pcoordinates=org.apache.avro:avro:1.12.1` fails 4 tests with `java.lang.SecurityException: Forbidden <TestClass>! This class is not trusted to be included in Avro schemas.` (thrown from org.apache.avro.util.ClassSecurityValidator via ReflectData.getClassProp / SpecificData.getClass). This is a new deny-by-default allowlist in 1.12.2, not a Native Image issue. Generated tests must add the test package to the trust list, e.g. in build.gradle's `test` task: `systemProperty 'org.apache.avro.SERIALIZABLE_PACKAGES', 'org_apache_avro.avro'` (or `org.apache.avro.SERIALIZABLE_CLASSES` for a narrower per-class allowlist, or call `ClassSecurityValidator.setGlobal(...)`/pass a custom predicate in test code). Apply this only to the generated test module's own package — do not trust `org.apache.avro` or wildcard packages.",
+  "risks": ["If the fix instead widens ClassSecurityValidator trust broadly (e.g. all packages) rather than scoping to the test's own package, it would defeat the point of the security hardening being tested/exercised — keep the trust list scoped to the generated test package only."]
+}
+```

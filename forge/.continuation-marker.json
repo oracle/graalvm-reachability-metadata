@@ -1,0 +1,81 @@
+{
+  "continueFrom": "explore",
+  "coordinate": "org.apache.avro:avro:1.12.2",
+  "failure": {
+    "operand": "reporter-requested metadata",
+    "phase": "explore",
+    "step": "generate_tests()"
+  },
+  "issueNumber": 9363,
+  "label": "fails-java-run",
+  "libraryPreparationPreflight": {
+    "action": "advisory_preparation",
+    "agent_guidance": "Reproduced locally: `env GVM_TCK_LV=1.12.2 ./gradlew clean javaTest -Pcoordinates=org.apache.avro:avro:1.12.1` fails 4 tests with `java.lang.SecurityException: Forbidden <TestClass>! This class is not trusted to be included in Avro schemas.` (thrown from org.apache.avro.util.ClassSecurityValidator via ReflectData.getClassProp / SpecificData.getClass). This is a new deny-by-default allowlist in 1.12.2, not a Native Image issue. Generated tests must add the test package to the trust list, e.g. in build.gradle's `test` task: `systemProperty 'org.apache.avro.SERIALIZABLE_PACKAGES', 'org_apache_avro.avro'` (or `org.apache.avro.SERIALIZABLE_CLASSES` for a narrower per-class allowlist, or call `ClassSecurityValidator.setGlobal(...)`/pass a custom predicate in test code). Apply this only to the generated test module's own package \u2014 do not trust `org.apache.avro` or wildcard packages.",
+    "applied_setup": [],
+    "current_library": "org.apache.avro:avro:1.12.1",
+    "deterministic_setup": [],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#9363 [Automation] java run fails for org.apache.avro:avro:1.12.2; label=fails-java-run; body_chars=8015"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "15 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 26,
+    "issue_label": "fails-java-run",
+    "issue_number": 9363,
+    "library": "org.apache.avro:avro:1.12.2",
+    "model": "sonnet",
+    "new_version": "1.12.2",
+    "output_tokens_used": 7368,
+    "risks": [
+      "If the fix instead widens ClassSecurityValidator trust broadly (e.g. all packages) rather than scoping to the test's own package, it would defeat the point of the security hardening being tested/exercised \u2014 keep the trust list scoped to the generated test package only."
+    ],
+    "status": "completed",
+    "summary": "Avro 1.12.2 added ClassSecurityValidator, which rejects schema-driven class resolution (ReflectData/SpecificData getClassProp/getClass) for any class not explicitly trusted; the generated test's own POJOs now throw SecurityException unless the test package is added to org.apache.avro.SERIALIZABLE_PACKAGES (or SERIALIZABLE_CLASSES)."
+  },
+  "libraryUpdateRoute": null,
+  "newVersion": "1.12.2",
+  "phases": {
+    "explore": {
+      "chunkClassCount": null,
+      "chunkProcessedClassCount": 1,
+      "exhaustedClasses": [
+        "org.apache.avro.reflect.ReflectionUtil"
+      ],
+      "iteration": 2,
+      "status": "pending"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": 1,
+      "status": "completed"
+    },
+    "publication": {
+      "branch": null,
+      "coverageFollowUpIssueNumber": null,
+      "isPushed": false,
+      "publicationId": null,
+      "publicationTimestamp": null,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": true,
+      "status": "completed"
+    }
+  },
+  "preservedBranch": "ai/kimeta/human-intervention/issue-9363-fails-java-run-org.apache.avro-avro-1.12.2-bd6039c3",
+  "publicationMetrics": {
+    "extras": {},
+    "library": "org.apache.avro:avro:1.12.2",
+    "timestamp": "2026-09-21T02:41:54.072193Z"
+  },
+  "schemaVersion": 1,
+  "strategyName": "java_run_iterative_with_coverage_sources_pi_gpt-5.6-sol"
+}

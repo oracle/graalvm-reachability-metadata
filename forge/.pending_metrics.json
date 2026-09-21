@@ -1,0 +1,53 @@
+{
+  "timestamp": "2026-09-21T02:41:54.072193Z",
+  "library": "org.apache.avro:avro:1.12.2",
+  "starting_commit": "d179ad96f0869ccc5dd24cd876bd3ee882914ecc",
+  "ending_commit": "d179ad96f0869ccc5dd24cd876bd3ee882914ecc",
+  "strategy_name": "java_run_iterative_with_coverage_sources_pi_gpt-5.6-sol",
+  "agent": "pi",
+  "model": "gpt-5.6-sol",
+  "status": "failure",
+  "library_preparation_preflight": {
+    "status": "completed",
+    "action": "advisory_preparation",
+    "issue_number": 9363,
+    "issue_label": "fails-java-run",
+    "library": "org.apache.avro:avro:1.12.2",
+    "summary": "Avro 1.12.2 added ClassSecurityValidator, which rejects schema-driven class resolution (ReflectData/SpecificData getClassProp/getClass) for any class not explicitly trusted; the generated test's own POJOs now throw SecurityException unless the test package is added to org.apache.avro.SERIALIZABLE_PACKAGES (or SERIALIZABLE_CLASSES).",
+    "deterministic_setup": [],
+    "agent_guidance": "Reproduced locally: `env GVM_TCK_LV=1.12.2 ./gradlew clean javaTest -Pcoordinates=org.apache.avro:avro:1.12.1` fails 4 tests with `java.lang.SecurityException: Forbidden <TestClass>! This class is not trusted to be included in Avro schemas.` (thrown from org.apache.avro.util.ClassSecurityValidator via ReflectData.getClassProp / SpecificData.getClass). This is a new deny-by-default allowlist in 1.12.2, not a Native Image issue. Generated tests must add the test package to the trust list, e.g. in build.gradle's `test` task: `systemProperty 'org.apache.avro.SERIALIZABLE_PACKAGES', 'org_apache_avro.avro'` (or `org.apache.avro.SERIALIZABLE_CLASSES` for a narrower per-class allowlist, or call `ClassSecurityValidator.setGlobal(...)`/pass a custom predicate in test code). Apply this only to the generated test module's own package — do not trust `org.apache.avro` or wildcard packages.",
+    "risks": [
+      "If the fix instead widens ClassSecurityValidator trust broadly (e.g. all packages) rather than scoping to the test's own package, it would defeat the point of the security hardening being tested/exercised — keep the trust list scoped to the generated test package only."
+    ],
+    "applied_setup": [],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#9363 [Automation] java run fails for org.apache.avro:avro:1.12.2; label=fails-java-run; body_chars=8015"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "15 existing test file path(s) included"
+      }
+    ],
+    "current_library": "org.apache.avro:avro:1.12.1",
+    "new_version": "1.12.2",
+    "model": "sonnet",
+    "input_tokens_used": 26,
+    "output_tokens_used": 7368
+  },
+  "metrics": {
+    "input_tokens_used": 162574,
+    "cached_input_tokens_used": 1000576,
+    "output_tokens_used": 12341,
+    "iterations": 7,
+    "cost_usd": 1.6834,
+    "generated_loc": 0,
+    "tested_library_loc": 0,
+    "metadata_entries": 0,
+    "code_coverage_percent": 0.0
+  },
+  "artifacts": {
+    "metadata_file": "None"
+  }
+}
