@@ -33,7 +33,11 @@ public class DBDocVisitorTest {
             Database database = new H2Database();
             database.setConnection(new JdbcConnection(connection));
 
-            try (Liquibase liquibase = new Liquibase("changelog.xml", new ClassLoaderResourceAccessor(), database)) {
+            try (Liquibase liquibase = new Liquibase(
+                    "dbdoc-changelog.xml",
+                    new ClassLoaderResourceAccessor(),
+                    database
+            )) {
                 liquibase.update();
 
                 liquibase.generateDocumentation(outputDirectory.toString());
