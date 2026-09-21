@@ -455,6 +455,47 @@ class CodeCoverageBenchmarkMetricsTests(unittest.TestCase):
         self.assertIsNone(result["total"]["tokens"]["input"])
         self.assertIsNone(result["total"]["coverage"]["allMethods"])
 
+    def test_unmeasured_invocation_keeps_the_measured_ones(self) -> None:
+        """A phase keeps the tokens it measured when one invocation has none.
+
+        An invocation killed on a timeout emits no usage, so Rhei records its
+        token values as unknown. The invocations that did report are still
+        valid measurements and must survive it
+        (§FS-code-coverage-benchmarking.4).
+        """
+        _, workspace = self._workspace()
+        self._write_run(workspace)
+        self._write_invocation(workspace, "1", "deep-cover", 10, 20, 3, 3)
+        self._write_invocation(workspace, "2", "deep-cover", 1, 2, 3, 1)
+        _write_json(
+            workspace
+            / "runtime"
+            / "accounting"
+            / "invocations"
+            / "3.json",
+            {
+                "state": "deep-cover",
+                "agent": "claude-code",
+                "model": "anthropic/claude-sonnet-5",
+                "extraction_status": "no-usage-emitted",
+                "tokens": {
+                    "input": {
+                        "total": {"status": "unknown"},
+                        "cached_read": {"status": "unknown"},
+                        "cache_write": {"status": "unknown"},
+                    },
+                    "output": {"total": {"status": "unknown"}},
+                },
+            },
+        )
+
+        result = benchmark.collect_result(workspace, "failure", 7)
+
+        self.assertEqual(
+            {"input": 11, "cachedInputRead": 22, "cachedInputWrite": 4, "output": 6},
+            result["deep"]["tokens"],
+        )
+
     def test_written_record_is_immutable_for_its_run_id(self) -> None:
         """A written record is returned verbatim whatever status is requested
         later, even when terminal evidence appears after the write."""
