@@ -13,7 +13,8 @@ import sys
 import uuid
 from git_scripts.common_git import GitTransportError
 from git_scripts.common_git import run_git_transport
-from utility_scripts.gradle_daemons import stop_gradle_daemons
+from utility_scripts.gradle_dependency_cache import discard_worktree_gradle_home
+from utility_scripts.gradle_dependency_cache import ensure_shared_dependency_cache
 from utility_scripts.repo_path_resolver import get_repo_root
 from utility_scripts.repo_path_resolver import git_env_limited_to_repo_root
 from utility_scripts.repo_path_resolver import require_complete_reachability_repo
@@ -100,7 +101,11 @@ def create_detached_worktree(
         start_ref: str,
         error_message: str,
 ) -> None:
-    """Create a detached worktree from the requested starting ref."""
+    """Create a detached worktree from the requested starting ref.
+
+    The first worktree of a process also readies the Gradle dependency cache
+    every worktree reads (§FS-forge-run-requirements.4).
+    """
     try:
         subprocess.run(
             ["git", "worktree", "add", "--detach", worktree_path, start_ref],
@@ -113,6 +118,7 @@ def create_detached_worktree(
     except subprocess.CalledProcessError as exc:
         print(f"ERROR: {error_message}: {exc.stdout}", file=sys.stderr)
         raise
+    ensure_shared_dependency_cache(repo_path, worktree_path)
 
 
 def fetch_default_base_ref(repo_path: str, operation: str) -> str:
@@ -179,7 +185,11 @@ def fetch_issue_base_commit(repo_path: str) -> str:
     return commit
 
 def remove_worktree(repo_path: str, worktree_path: str) -> None:
-    """Remove a detached worktree when it exists."""
+    """Remove a detached worktree when it exists, with its Gradle daemons and home.
+
+    §FS-forge-run-requirements.4
+    """
+    discard_worktree_gradle_home(worktree_path, repo_path)
     subprocess.run(
         ["git", "worktree", "remove", "--force", worktree_path],
         cwd=repo_path,
@@ -293,9 +303,6 @@ def create_issue_workspace(
     except SystemExit:
         remove_worktree(base_reachability_metadata_path, worktree_path)
         raise
-    # The fresh worktree bounds the daemon pool: a daemon left by an earlier
-    # worktree may hold its build logic. Best effort. §FS-forge-run-requirements.4
-    stop_gradle_daemons(worktree_path, f"issue-{issue_number}", f"new workspace for issue #{issue_number}")
     log_step_progress(
         PHASE_CLAIM,
         STEP_CREATE_ISSUE_WORKSPACE,

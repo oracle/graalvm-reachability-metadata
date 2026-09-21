@@ -1,0 +1,104 @@
+{
+  "base_commit": "1991a431a9918e73440a77bec239141ab2320867",
+  "branch": "ai/kimeta/fix-java-run-org.checkerframework-checker-qual-3.46.0-forge-9374-20260920013435680751-56bdc939dcea",
+  "follow_ups": [],
+  "forge": {
+    "branch": "master",
+    "commit": "e9c78cac1f5f58ce24aefa3817bcc4848196e181",
+    "monitored_branch": "origin/master"
+  },
+  "issue_number": 9374,
+  "library": {
+    "artifact": "checker-qual",
+    "coordinates": "org.checkerframework:checker-qual:3.46.0",
+    "group": "org.checkerframework",
+    "version": "3.46.0"
+  },
+  "local_ci_verification": {
+    "base_commit": "1991a431a9918e73440a77bec239141ab2320867",
+    "commands": [
+      {
+        "command": [
+          "./gradlew",
+          "generateChangedIndexFileCoordinatesList",
+          "-PbaseCommit=origin/master",
+          "-PnewCommit=HEAD"
+        ],
+        "env": {
+          "GITHUB_OUTPUT": "/tmp/tmpcfztuhlm"
+        },
+        "gate": "changed-index-coordinates",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :generateChangedIndexFileCoordinatesList\n\n[Incubating] Problems report is available at: file:///home/oracle/oracle/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9374-baddf333/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 1s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      },
+      {
+        "command": [
+          "./gradlew",
+          "validateIndexFiles",
+          "-Pcoordinates=org.checkerframework:checker-qual"
+        ],
+        "env": {},
+        "gate": "index-file-validation",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :validateIndexFiles\n✅ metadata/org.checkerframework/checker-qual/index.json: Valid\n\n[Incubating] Problems report is available at: file:///home/oracle/oracle/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9374-baddf333/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 888ms\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      }
+    ],
+    "failure_command": null,
+    "failure_gate": null,
+    "final_commit": "e2f0d0f8fca7b20d980bd95619c174024ecd1483",
+    "fixups": [],
+    "human_intervention_required": false,
+    "repo_fix_paths": [],
+    "status": "success"
+  },
+  "local_review": {
+    "changed_paths": [
+      "tests/src/org.checkerframework/checker-qual/3.46.0/src/test/java/org_checkerframework/checker_qual/Checker_qualTest.java"
+    ],
+    "decision": "approved",
+    "finding_body": "The added Checker_qualTest top-level class was declared package-private, violating FS-test-contract.1.2, which requires every top-level test class to be public. The violation was wholly within the target coordinate's new test source and was repairable under FS-contribution-contract.5.1.",
+    "finding_title": "Generated Java test class was not public",
+    "fix_note": "Changed Checker_qualTest to a public class so the generated test satisfies the public test-class contract, then ran the exact Forge-owned finalization command to a stable successful pass.",
+    "model": "gpt-5.6-sol",
+    "review_comment": "Reviewed the full contribution diff and local evidence. The change is confined to org.checkerframework:checker-qual:3.46.0, preserves the existing test coverage while updating the changed DefaultQualifier retention expectation from SOURCE to RUNTIME, and introduces no native-image skip, swallowed failure, legacy metadata, or unrelated infrastructure change. Dynamic-access coverage passes the repair gate at 0/0 to 0/0 with no breakdown scopes. The recorded index gates passed, and the exact Forge finalization command completed cleanly after the repair across all three native test lanes, metadata validation, style checks, generated-test validation, and regenerated statistics.",
+    "session_id": "bcd8244d79604678"
+  },
+  "metrics": {
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "path": "stats/org.checkerframework/checker-qual/3.46.0/execution-metrics.json",
+    "summary": {
+      "cached_input_tokens_used": 143872,
+      "code_coverage_percent": 80.85,
+      "cost_usd": 0.2881,
+      "input_tokens_used": 37376,
+      "iterations": 3,
+      "metadata_entries": 0,
+      "output_tokens_used": 978,
+      "previous_library_coverage_percent": 80.52,
+      "previous_library_metadata_entries": 0,
+      "test_only_metadata_entries": 9,
+      "tested_library_loc": 190
+    },
+    "timestamp": "2026-09-20T01:34:35.680751Z"
+  },
+  "modifiers": {
+    "chunk_final": true,
+    "chunked_dynamic_access": false,
+    "human_intervention": false
+  },
+  "previous_library": {
+    "artifact": "checker-qual",
+    "coordinates": "org.checkerframework:checker-qual:3.12.0",
+    "group": "org.checkerframework",
+    "version": "3.12.0"
+  },
+  "producer": "kimeta",
+  "publication_id": "forge-9374-20260920013435680751-56bdc939dcea",
+  "render": {},
+  "schema_version": 1,
+  "strategy_name": "java_run_iterative_with_coverage_sources_pi_gpt-5.6-sol",
+  "task_type": "fixes-java-run-fail",
+  "template_type": "fixes-java-run-fail",
+  "timestamp": "2026-09-20T01:34:35.680751Z"
+}

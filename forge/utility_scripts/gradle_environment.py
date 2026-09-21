@@ -18,25 +18,93 @@ _GRADLE_DISTRIBUTIONS_DIR = "wrapper-dists"
 _GRADLE_PROPERTIES_FILENAME = "gradle.properties"
 _DEFAULT_HOST_GRADLE_HOME_DIR = ".gradle"
 _GRADLE_JAVA_HOME_OPTION = "-Dorg.gradle.java.home="
+_WORKTREE_HOMES_DIR = "worktree-homes"
+_READ_ONLY_DEPENDENCY_CACHE_DIR = "ro-dep-cache"
+GRADLE_MODULES_CACHE_DIR = "modules-2"
+WORKTREE_MARKER_FILENAME = "forge-worktree-path"
+
+
+def checkout_gradle_home_for_repo(repo_path: str) -> str:
+    """Return the long-lived Forge Gradle user home of the checkout containing `repo_path`."""
+    return _resolve_checkout_gradle_home(repo_path, os.environ.get(FORGE_GRADLE_USER_HOME_ENV))
 
 
 def gradle_user_home_for_repo(repo_path: str) -> str:
-    """Return the Forge Gradle user home for a reachability-metadata checkout."""
-    return _resolve_gradle_user_home(repo_path, os.environ.get(FORGE_GRADLE_USER_HOME_ENV))
+    """Return the Gradle user home a build under `repo_path` uses.
+
+    A linked worktree builds in its own home so its daemons serve it alone; the
+    checkout itself builds in the long-lived home (§FS-forge-run-requirements.4).
+    """
+    checkout_home = checkout_gradle_home_for_repo(repo_path)
+    worktree_root = _resolve_linked_worktree_root(repo_path)
+    if worktree_root is None:
+        return checkout_home
+    return worktree_gradle_home(checkout_home, worktree_root)
+
+
+def worktree_gradle_home(checkout_home: str, worktree_root: str) -> str:
+    """Return the Gradle user home dedicated to one linked worktree."""
+    resolved_root = os.path.realpath(worktree_root)
+    digest = hashlib.sha256(resolved_root.encode("utf-8")).hexdigest()[:8]
+    return os.path.join(worktree_gradle_homes_root(checkout_home), f"{os.path.basename(resolved_root)}-{digest}")
+
+
+def worktree_gradle_homes_root(checkout_home: str) -> str:
+    """Return the directory holding every worktree home of one checkout home."""
+    return os.path.join(checkout_home, _WORKTREE_HOMES_DIR)
+
+
+def read_only_dependency_cache_path(checkout_home: str) -> str:
+    """Return where the checkout home's published dependency cache lives."""
+    return os.path.join(checkout_home, _READ_ONLY_DEPENDENCY_CACHE_DIR)
+
+
+def is_linked_worktree(repo_path: str) -> bool:
+    """Return True when `repo_path` lies in a linked git worktree rather than the checkout."""
+    return _resolve_linked_worktree_root(repo_path) is not None
 
 
 def gradle_command_environment(repo_path: str, base_env: dict[str, str] | None = None) -> dict[str, str]:
-    """Return an environment that keeps Gradle state scoped to one checkout."""
+    """Return an environment that keeps Gradle daemons scoped to one worktree.
+
+    Dependencies stay shared: a worktree reads the checkout home's published
+    dependency cache through `GRADLE_RO_DEP_CACHE` and downloads only what that
+    copy lacks (§FS-forge-run-requirements.4).
+    """
     env = dict(os.environ if base_env is None else base_env)
     _align_graalvm_java_home(env)
     user_home_override = env.get(FORGE_GRADLE_USER_HOME_ENV)
-    gradle_user_home = _resolve_gradle_user_home(repo_path, user_home_override)
-    os.makedirs(gradle_user_home, exist_ok=True)
+    checkout_home = _resolve_checkout_gradle_home(repo_path, user_home_override)
+    os.makedirs(checkout_home, exist_ok=True)
     if not user_home_override:
-        _share_gradle_wrapper_distributions(gradle_user_home, env.get(FORGE_GRADLE_DISTRIBUTIONS_HOME_ENV))
-        _share_host_gradle_properties(gradle_user_home, env)
-    env["GRADLE_USER_HOME"] = gradle_user_home
+        _share_gradle_wrapper_distributions(checkout_home, env.get(FORGE_GRADLE_DISTRIBUTIONS_HOME_ENV))
+        _share_host_gradle_properties(checkout_home, env)
+    worktree_root = _resolve_linked_worktree_root(repo_path)
+    if worktree_root is None:
+        env["GRADLE_USER_HOME"] = checkout_home
+        return env
+    worktree_home = worktree_gradle_home(checkout_home, worktree_root)
+    _prepare_worktree_gradle_home(worktree_home, checkout_home, worktree_root)
+    env["GRADLE_USER_HOME"] = worktree_home
+    read_only_cache = read_only_dependency_cache_path(checkout_home)
+    if os.path.isdir(os.path.join(read_only_cache, GRADLE_MODULES_CACHE_DIR)):
+        env["GRADLE_RO_DEP_CACHE"] = read_only_cache
     return env
+
+
+def _prepare_worktree_gradle_home(worktree_home: str, checkout_home: str, worktree_root: str) -> None:
+    """Create a worktree home that borrows the checkout home's wrapper and properties."""
+    os.makedirs(worktree_home, exist_ok=True)
+    marker_path = os.path.join(worktree_home, WORKTREE_MARKER_FILENAME)
+    if not os.path.exists(marker_path):
+        with open(marker_path, "w", encoding="utf-8") as marker_file:
+            marker_file.write(os.path.realpath(worktree_root) + "\n")
+    checkout_dists = os.path.join(checkout_home, "wrapper", "dists")
+    os.makedirs(checkout_dists, exist_ok=True)
+    _share_gradle_wrapper_distributions(worktree_home, checkout_dists)
+    checkout_properties = os.path.join(checkout_home, _GRADLE_PROPERTIES_FILENAME)
+    if os.path.isfile(checkout_properties):
+        _link_gradle_properties(worktree_home, checkout_properties)
 
 
 def _align_graalvm_java_home(env: dict[str, str]) -> None:
@@ -76,7 +144,7 @@ def _has_native_image(home: str) -> bool:
     return os.path.isfile(os.path.join(home, "bin", "native-image"))
 
 
-def _resolve_gradle_user_home(repo_path: str, override: str | None) -> str:
+def _resolve_checkout_gradle_home(repo_path: str, override: str | None) -> str:
     if override:
         return os.path.abspath(os.path.expanduser(override))
 
@@ -87,11 +155,26 @@ def _resolve_gradle_user_home(repo_path: str, override: str | None) -> str:
 def _gradle_cache_identity(repo_path: str) -> str:
     """Return the cache key shared by every linked worktree of one checkout.
 
-    Keying on the common git directory lets all issue worktrees of a checkout
-    resolve the root build's plugins once instead of once per issue
-    (§FS-human-intervention-policy).
+    Keying on the common git directory gives all issue worktrees of a checkout
+    one home to publish dependencies from, so the root build's plugins are
+    resolved once instead of once per issue (§FS-forge-run-requirements.4).
     """
     return _resolve_git_common_dir(repo_path) or os.path.realpath(repo_path)
+
+
+def _resolve_linked_worktree_root(repo_path: str) -> str | None:
+    """Return the root of the linked worktree containing `repo_path`, if any.
+
+    A linked worktree carries a `.git` file pointing into the checkout's common
+    git directory; the checkout itself carries a `.git` directory.
+    """
+    entry = _find_git_entry(repo_path)
+    if entry is None:
+        return None
+    root, git_path = entry
+    if not os.path.isfile(git_path):
+        return None
+    return root if _resolve_linked_git_dir(root, git_path) is not None else None
 
 
 def _resolve_git_common_dir(repo_path: str) -> str | None:
@@ -113,13 +196,22 @@ def _resolve_git_common_dir(repo_path: str) -> str | None:
 
 def _resolve_git_dir(repo_path: str) -> str | None:
     """Return the git directory of the checkout containing `repo_path`."""
+    entry = _find_git_entry(repo_path)
+    if entry is None:
+        return None
+    root, git_path = entry
+    if os.path.isdir(git_path):
+        return git_path
+    return _resolve_linked_git_dir(root, git_path)
+
+
+def _find_git_entry(repo_path: str) -> tuple[str, str] | None:
+    """Return the nearest enclosing directory with a `.git` entry and that entry."""
     current = os.path.realpath(repo_path)
     while True:
         git_path = os.path.join(current, ".git")
-        if os.path.isdir(git_path):
-            return git_path
-        if os.path.isfile(git_path):
-            return _resolve_linked_git_dir(current, git_path)
+        if os.path.isdir(git_path) or os.path.isfile(git_path):
+            return current, git_path
         parent = os.path.dirname(current)
         if parent == current:
             return None
@@ -166,7 +258,10 @@ def _share_host_gradle_properties(gradle_user_home: str, env: dict[str, str]) ->
     host_properties = _resolve_host_gradle_properties(gradle_user_home, env)
     if host_properties is None:
         return
+    _link_gradle_properties(gradle_user_home, host_properties)
 
+
+def _link_gradle_properties(gradle_user_home: str, properties_path: str) -> None:
     link_path = os.path.join(gradle_user_home, _GRADLE_PROPERTIES_FILENAME)
     if os.path.islink(link_path) or os.path.exists(link_path):
         return
@@ -174,7 +269,7 @@ def _share_host_gradle_properties(gradle_user_home: str, env: dict[str, str]) ->
     # Linked rather than copied so host credentials in the file are not duplicated
     # into a shared temporary directory.
     try:
-        os.symlink(host_properties, link_path)
+        os.symlink(properties_path, link_path)
     except OSError:
         return
 
