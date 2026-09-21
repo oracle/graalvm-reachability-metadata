@@ -17,9 +17,9 @@ dependencies {
 
 graalvmNative {
     binaries {
-        all {
-            buildArgs.add('--initialize-at-build-time=org.slf4j.helpers.SubstituteLoggerFactory')
+        test {
             buildArgs.add('--initialize-at-build-time=org.slf4j.helpers.NOPLoggerFactory')
+            buildArgs.add('--initialize-at-build-time=org.slf4j.helpers.SubstituteLoggerFactory')
             buildArgs.add('--initialize-at-build-time=com.fasterxml.jackson.core.Base64Variant')
             buildArgs.add(
                     '--initialize-at-build-time=com.fasterxml.jackson.core.Base64Variant$PaddingReadBehaviour')
