@@ -36,6 +36,8 @@ import java.nio.ByteBuffer;
 import java.nio.channels.Channels;
 import java.time.Duration;
 import java.util.List;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -44,6 +46,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 import reactor.core.publisher.Flux;
+import reactor.netty.resources.ConnectionProvider;
 
 @Timeout(60)
 public class Azure_core_http_nettyTest {
@@ -197,6 +200,34 @@ public class Azure_core_http_nettyTest {
                 assertThat(destinationRequests).hasValue(1);
                 assertThat(proxyRequests).hasValue(0);
             }
+        }
+    }
+
+    @Test
+    void connectionProviderReusesPooledConnection() throws Exception {
+        Set<Integer> remotePorts = ConcurrentHashMap.newKeySet();
+        ConnectionProvider connectionProvider = ConnectionProvider.builder("azure-netty-test-pool")
+                .maxConnections(1)
+                .pendingAcquireTimeout(IO_TIMEOUT)
+                .build();
+        try (TestHttpServer server = TestHttpServer.create(exchange -> {
+            remotePorts.add(exchange.getRemoteAddress().getPort());
+            writeResponse(exchange, 200, "pooled response");
+        })) {
+            HttpClient client = configuredBuilder().connectionProvider(connectionProvider).build();
+
+            for (int requestNumber = 0; requestNumber < 2; requestNumber++) {
+                HttpRequest request = new HttpRequest(HttpMethod.GET, server.url("/pooled/" + requestNumber));
+                try (HttpResponse response = client.send(request).block(IO_TIMEOUT)) {
+                    assertThat(response).isNotNull();
+                    assertThat(response.getStatusCode()).isEqualTo(200);
+                    assertThat(response.getBodyAsString().block(IO_TIMEOUT)).isEqualTo("pooled response");
+                }
+            }
+
+            assertThat(remotePorts).hasSize(1);
+        } finally {
+            connectionProvider.disposeLater().block(IO_TIMEOUT);
         }
     }
 
