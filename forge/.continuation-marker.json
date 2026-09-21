@@ -1,0 +1,79 @@
+{
+  "continueFrom": "finalization",
+  "coordinate": "org.springframework:spring-aspects:6.0.0",
+  "failure": {
+    "operand": "reporter-requested metadata",
+    "phase": "explore",
+    "step": "generate_tests()"
+  },
+  "issueNumber": 9399,
+  "label": "fails-native-image-run",
+  "libraryPreparationPreflight": {
+    "action": "no_action",
+    "agent_guidance": "",
+    "applied_setup": [],
+    "current_library": "org.springframework:spring-aspects:5.3.31",
+    "deterministic_setup": [],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#9399 [Automation] native-image run fails for org.springframework:spring-aspects:6.0.0; label=fails-native-image-run; body_chars=8015"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "9 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 44,
+    "issue_label": "fails-native-image-run",
+    "issue_number": 9399,
+    "library": "org.springframework:spring-aspects:6.0.0",
+    "model": "sonnet",
+    "new_version": "6.0.0",
+    "output_tokens_used": 10842,
+    "risks": [
+      "The issue's failure log is truncated before the actual failing test/exception is shown, so the real native-image run error is unknown from the issue alone; the fixing agent must reproduce locally (checkMetadataFiles/test with GVM_TCK_LV=6.0.0) to see the actual failure before diagnosing.",
+      "A prior automated attempt at this same issue (branch ai/kimeta/human-intervention/issue-9399-...) reached this identical no_action preparation conclusion and was later escalated to human intervention \u2014 but the escalation happened during the fix phase's generate_tests() step over 'reporter-requested metadata' coverage, not because of missing setup, so it does not change this preparation decision."
+    ],
+    "status": "completed",
+    "summary": "spring-aspects 6.0.0 resolves the identical org.aspectj:aspectjweaver:1.9.9.1 already used by 5.3.31 (verified from the resolved POM and cached jar), and every aspect the existing test exercises (AnnotationBeanConfigurerAspect, AnnotationCacheAspect, AnnotationTransactionAspect, AnnotationAsyncExecutionAspect, GenericInterfaceDrivenDependencyInjectionAspect) is a compile-time-woven singleton accessed via the generated .aspectOf() method \u2014 none of it involves load-time weaving, a Java agent, a database, or an environment/system property. The generated scaffold (build.gradle, user-code-filter.json) mirrors the working 5.3.31 setup and needs nothing extra."
+  },
+  "libraryUpdateRoute": null,
+  "newVersion": "6.0.0",
+  "phases": {
+    "explore": {
+      "chunkClassCount": null,
+      "chunkProcessedClassCount": 0,
+      "exhaustedClasses": [],
+      "status": "skipped"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": null,
+      "status": "completed"
+    },
+    "publication": {
+      "branch": null,
+      "coverageFollowUpIssueNumber": null,
+      "isPushed": false,
+      "publicationId": null,
+      "publicationTimestamp": null,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": true,
+      "status": "completed"
+    }
+  },
+  "preservedBranch": "ai/kimeta/human-intervention/issue-9399-fails-native-image-run-org.springframework-spring-aspects-6.0.0-740fda1b",
+  "publicationMetrics": {
+    "extras": {},
+    "library": "org.springframework:spring-aspects:6.0.0",
+    "timestamp": "2026-09-21T21:41:24.993997Z"
+  },
+  "schemaVersion": 1,
+  "strategyName": "library_update_pi_gpt-5.6-sol"
+}

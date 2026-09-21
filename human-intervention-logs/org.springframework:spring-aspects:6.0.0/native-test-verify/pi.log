@@ -1,0 +1,14 @@
+Implemented and verified the Spring Aspects 6.0.0 native-image fix.
+
+Key changes:
+- Added `spring-aspects` 6.0.0 reachability metadata and index entry.
+- Added missing conditional reflection metadata across Spring JCL, Beans, and Context.
+- Corrected inactive metadata conditions for transaction probes and Spring configuration classes.
+- Retained two JVM tests but abort them under native image because Spring’s CGLIB configuration enhancement requires unsupported runtime class definition.
+
+Validation:
+- `runNativeTraceImage`: **passed**, 6 successful, 2 intentionally aborted, 0 failed.
+- `checkMetadataFiles`: **passed**.
+- `checkstyle compileTestJava`: **passed**.
+- `git diff --check`: **passed**.
+- `fissile` was unavailable in the environment.
