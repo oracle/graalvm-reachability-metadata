@@ -53,14 +53,21 @@ public class CustomChangeWrapperTest {
         TestBundle bundle = new TestBundle();
         Activator.LiquibaseBundle liquibaseBundle = activator.addingBundle(bundle, null);
 
+        ParsedNode parsedNode = new ParsedNode(null, "customChange")
+                .addChild(null, "helloTo", "OSGi");
+
         try {
-            Scope.child(Scope.Attr.osgiPlatform, true, () -> wrapper.setClass(ExampleCustomTaskChange.class.getName()));
+            Scope.child(Scope.Attr.osgiPlatform, true, () -> {
+                wrapper.setClass(ExampleCustomTaskChange.class.getName());
+                wrapper.customLoadLogic(parsedNode, null);
+            });
         } finally {
             activator.removedBundle(bundle, null, liquibaseBundle);
         }
 
         assertThat(wrapper.getClassName()).isEqualTo(ExampleCustomTaskChange.class.getName());
         assertThat(wrapper.getCustomChange()).isInstanceOf(ExampleCustomTaskChange.class);
+        assertThat(wrapper.getParamValue("helloTo")).isEqualTo("OSGi");
     }
 
     @Test
@@ -70,7 +77,7 @@ public class CustomChangeWrapperTest {
 
         Thread.currentThread().setContextClassLoader(CustomChangeWrapperTest.class.getClassLoader());
         try {
-            assertNonCustomChangeClassIsRejected(wrapper, DatabaseFactoryTest.class.getName());
+            assertNonCustomChangeClassIsRejected(wrapper, String.class.getName());
         } finally {
             Thread.currentThread().setContextClassLoader(originalContextClassLoader);
         }
@@ -83,13 +90,13 @@ public class CustomChangeWrapperTest {
         ClassLoader scopedClassLoader = CustomChangeWrapperTest.class.getClassLoader();
         ClassLoader blockingContextClassLoader = new BlockingClassLoader(
                 originalContextClassLoader,
-                DatabaseFactoryTest.class.getName()
+                String.class.getName()
         );
 
         Scope.child(Scope.Attr.classLoader, scopedClassLoader, () -> {
             Thread.currentThread().setContextClassLoader(blockingContextClassLoader);
             try {
-                assertNonCustomChangeClassIsRejected(wrapper, DatabaseFactoryTest.class.getName());
+                assertNonCustomChangeClassIsRejected(wrapper, String.class.getName());
             } finally {
                 Thread.currentThread().setContextClassLoader(originalContextClassLoader);
             }
