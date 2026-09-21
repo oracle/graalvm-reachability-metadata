@@ -38,6 +38,7 @@ import org.jetbrains.kotlin.daemon.common.DaemonParamsKt;
 import org.jetbrains.kotlin.daemon.common.DaemonReportCategory;
 import org.jetbrains.kotlin.daemon.common.DaemonWithMetadata;
 import org.jetbrains.kotlin.daemon.common.DummyProfiler;
+import org.jetbrains.kotlin.daemon.common.JavaLanguageVersion;
 import org.jetbrains.kotlin.daemon.common.LoopbackNetworkInterface;
 import org.jetbrains.kotlin.daemon.common.RemoteInputStream;
 import org.jetbrains.kotlin.daemon.common.RemoteOutputStream;
@@ -50,7 +51,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-class Kotlin_daemon_embeddableTest {
+public class Kotlin_daemon_embeddableTest {
 
     @Test
     void configureDaemonOptionsUsesSystemPropertiesAndDefaults(@TempDir Path tempDir) {
@@ -176,22 +177,25 @@ class Kotlin_daemon_embeddableTest {
     }
 
     @Test
-    void compilerIdDigestIsStableAcrossClasspathOrderAndDuplicates() {
+    void runFileDigestIsStableAcrossClasspathOrderAndDuplicates() {
+        JavaLanguageVersion javaLanguageVersion = currentJavaLanguageVersion();
         CompilerId orderedWithDuplicates = new CompilerId(List.of("b.jar", "a.jar", "a.jar"), "embedded-test");
         CompilerId orderedWithoutDuplicates = new CompilerId(List.of("a.jar", "b.jar"), "other-version");
         CompilerId differentClasspath = new CompilerId(List.of("a.jar", "c.jar"), "embedded-test");
 
-        assertThat(orderedWithDuplicates.digest()).isEqualTo(orderedWithoutDuplicates.digest());
-        assertThat(orderedWithDuplicates.digest()).isNotEqualTo(differentClasspath.digest());
-        assertThat(orderedWithDuplicates.digest()).hasSize(32).matches("[0-9a-f]+$");
+        String digest = runFileDigest(javaLanguageVersion, orderedWithDuplicates);
+        assertThat(digest).isEqualTo(runFileDigest(javaLanguageVersion, orderedWithoutDuplicates));
+        assertThat(digest).isNotEqualTo(runFileDigest(javaLanguageVersion, differentClasspath));
+        assertThat(digest).hasSize(32).matches("[0-9a-f]+$");
     }
 
     @Test
     void walkDaemonsDeletesOrphanedRunFiles(@TempDir Path tempDir) throws Exception {
+        JavaLanguageVersion javaLanguageVersion = currentJavaLanguageVersion();
         CompilerId compilerId = new CompilerId(List.of(tempDir.resolve("compiler.jar").toString()), "embedded-test");
         Path runFile = tempDir.resolve(ClientUtilsKt.makeRunFilenameString(
                 "2024-04-20T12:34:56.789Z",
-                compilerId.digest(),
+                runFileDigest(javaLanguageVersion, compilerId),
                 "17042",
                 ""
         ));
@@ -205,6 +209,7 @@ class Kotlin_daemon_embeddableTest {
         List<DaemonWithMetadata> daemons = SequencesKt.toList(ClientUtilsKt.walkDaemons(
                 tempDir.toFile(),
                 compilerId,
+                javaLanguageVersion,
                 referenceFile.toFile(),
                 (Function2<File, Integer, Boolean>) (file, daemonPort) -> true,
                 (Function2<DaemonReportCategory, String, Unit>) (category, message) -> {
@@ -278,6 +283,19 @@ class Kotlin_daemon_embeddableTest {
         assertThat(bytesRead).isEqualTo(2);
         assertThat(destination).containsExactly(99, 20, 30, 99, 99);
         assertThat(client.read()).isEqualTo(40);
+    }
+
+    private static JavaLanguageVersion currentJavaLanguageVersion() {
+        return JavaLanguageVersion.Companion.of(Runtime.version().feature());
+    }
+
+    private static String runFileDigest(JavaLanguageVersion javaLanguageVersion, CompilerId compilerId) {
+        return DaemonParamsKt.makeRunFileDigest(
+                javaLanguageVersion,
+                compilerId.getCompilerClasspath().stream()
+                        .map(classpathEntry -> Path.of(classpathEntry))
+                        .toList()
+        );
     }
 
     private static Map<CompilerSystemProperties, String> snapshotProperties(CompilerSystemProperties... properties) {
