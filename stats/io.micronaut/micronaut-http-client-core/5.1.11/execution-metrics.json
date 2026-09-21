@@ -1,0 +1,110 @@
+{
+  "add_new_library_support:2026-09-18": {
+    "timestamp": "2026-09-18T03:46:58.425614Z",
+    "library": "io.micronaut:micronaut-http-client-core:5.1.11",
+    "starting_commit": "e03e90eb299326caaa1c4f3a91e13255f9dfdafa",
+    "ending_commit": "8b114cda1b77991826a06311cb49ee042a064c6d",
+    "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-sol",
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "status": "success",
+    "stats": {
+      "version": "5.1.11",
+      "dynamicAccess": {
+        "breakdown": {},
+        "coverageRatio": 1.0,
+        "coveredCalls": 0,
+        "totalCalls": 0
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 2725,
+          "missed": 4109,
+          "ratio": 0.398742,
+          "total": 6834
+        },
+        "line": {
+          "covered": 599,
+          "missed": 939,
+          "ratio": 0.389467,
+          "total": 1538
+        },
+        "method": {
+          "covered": 181,
+          "missed": 353,
+          "ratio": 0.338951,
+          "total": 534
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "advisory_preparation",
+      "issue_number": 10079,
+      "issue_label": "library-new-request",
+      "library": "io.micronaut:micronaut-http-client-core:5.1.11",
+      "summary": "micronaut-http-client-core only contains the HttpClient/HttpClientFactory abstractions and @Client annotation/interceptor/filter machinery; there is no bundled or transitive HttpClientFactory implementation, so HttpClient.create(...) throws IllegalStateException at runtime without a concrete client engine on the classpath, and @Client-based coverage needs the DI annotation processor to compile.",
+      "deterministic_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "io.micronaut:micronaut-http-client:5.1.11",
+          "scope": "testImplementation",
+          "reason": "Provides the Netty-based HttpClientFactory implementation (io.micronaut.http.client.netty.DefaultNettyHttpClientRegistry/NettyHttpClient) that micronaut-http-client-core's HttpClientFactoryResolver looks up via service loading; without it, any HttpClient.create(...) call throws 'No HttpClientFactory\n...[truncated]"
+        },
+        {
+          "kind": "dependency",
+          "coordinate": "io.micronaut:micronaut-inject-java:5.1.11",
+          "scope": "testImplementation",
+          "reason": "micronaut-http-client-core's public surface centers on declarative @Client interfaces and @Filter classes (io.micronaut.http.client.annotation/interceptor/filter packages); compiling and exercising those annotations requires Micronaut's compile-time DI annotation processor, matching the processor al\n...[truncated]"
+        }
+      ],
+      "agent_guidance": "Tests should exercise both the imperative HttpClient/BlockingHttpClient path and, since the interceptor/annotation/bind/filter packages are the module's main added value, at least one declarative @Client interface plus an HTTP filter, resolved through ApplicationContext. Needs a real target endpoint: reuse a Micronaut EmbeddedServer (requires also adding io.micronaut:micronaut-http-server-netty as testImplementation if the driver doesn't already scaffold it) started on a random port (micronaut.server.port=-1), or fall back to a plain JDK com.sun.net.httpserver.HttpServer if avoiding another Micronaut module is preferred. No Docker image or environment/system property is needed beyond that.",
+      "risks": [
+        "If the driver's normal scaffold for io.micronaut:* libraries already auto-adds micronaut-inject-java and/or a client implementation project-wide, the second dependency entry would be redundant (harmless but worth checking against the generator defaults).",
+        "Choosing micronaut-http-client (Netty) as the implementation is a test-time choice; io.micronaut:micronaut-http-client-jdk is an alternative concrete implementation and could be used instead if the driver prefers avoiding the Netty dependency chain."
+      ],
+      "applied_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "io.micronaut:micronaut-http-client:5.1.11",
+          "result": "applied",
+          "target": "tests/src/io.micronaut/micronaut-http-client-core/5.1.11/build.gradle"
+        },
+        {
+          "kind": "dependency",
+          "coordinate": "io.micronaut:micronaut-inject-java:5.1.11",
+          "result": "applied",
+          "target": "tests/src/io.micronaut/micronaut-http-client-core/5.1.11/build.gradle"
+        }
+      ],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#10079 Support for io.micronaut:micronaut-http-client-core:5.1.11; label=library-new-request; body_chars=39"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "sonnet",
+      "input_tokens_used": 36,
+      "output_tokens_used": 12651
+    },
+    "metrics": {
+      "input_tokens_used": 204335,
+      "cached_input_tokens_used": 2652544,
+      "output_tokens_used": 21534,
+      "iterations": 8,
+      "cost_usd": 2.994,
+      "generated_loc": 251,
+      "tested_library_loc": 599,
+      "metadata_entries": 178,
+      "test_only_metadata_entries": 57,
+      "code_coverage_percent": 38.95
+    },
+    "artifacts": {
+      "metadata_file": "metadata/io.micronaut/micronaut-http-client-core/5.1.11/reachability-metadata.json"
+    }
+  }
+}

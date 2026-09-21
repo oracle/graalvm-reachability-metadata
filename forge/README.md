@@ -122,11 +122,14 @@ fast instead of prompting for an administrator password if a command or script
 would require elevated privileges.
 §FS-local-ci-equivalent-verification
 
-Forge scopes `GRADLE_USER_HOME` per reachability-repo worktree so parallel
-workers do not share Gradle daemons, but reuses one shared Gradle wrapper
-distribution cache under the system temp directory. Set
-`FORGE_GRADLE_DISTRIBUTIONS_HOME` to override that cache location, or
-`FORGE_GRADLE_USER_HOME` to override the full Gradle user home.
+Forge scopes `GRADLE_USER_HOME` per reachability-repo worktree so worktrees do
+not share Gradle daemons, and shares downloaded dependencies between them
+through Gradle's read-only dependency cache (`GRADLE_RO_DEP_CACHE`), published
+from the checkout's long-lived Gradle user home before each run creates its
+first worktree. Gradle wrapper distributions are shared under the system temp
+directory. Set `FORGE_GRADLE_DISTRIBUTIONS_HOME` to override that cache
+location, or `FORGE_GRADLE_USER_HOME` to move the checkout's Gradle user home,
+under which the worktree homes and the published dependency cache then live.
 §AR-forge-workflow-boundary
 
 ## Manual Workflows

@@ -8,6 +8,23 @@ Newest entry first; every non-approval is recorded, including one a repair later
 **Native Image coverage was bypassed by test-created runtime class loading**
 
 The original test created child-loaded copies of the library and test providers with URLClassLoader.defineClass, then wrapped the entire library exercise in NativeImageSupport.runToleratingUnsupportedFeature. Because the unsupported operation came from the test harness rather than unavoidable library behavior, Native Image could accept the class-definition failure before executing the Snappy assertions, violating the native-execution and no-runtime-class-definition rules. The accompanying --add-opens native build flag was also unnecessary for the repaired public-API path.
+## 2026-09-20 — org.aspectj:aspectjweaver:1.9.21.1 (#9373)
+
+**Test-created native flag and weakened runtime coverage**
+
+The contribution rewrote a test class file to preview bytecode and added --enable-preview to the JVM and Native Image solely for that test, violating the native flag necessity rule in FS-test-contract.2.7 because the need originated in test code rather than AspectJ. It also removed the existing generated-concrete-aspect behavior from ClassLoaderWeavingAdaptorTest instead of preserving that meaningful behavior, violating the no-weakening repair rule in FS-test-contract.2.9.
+
+## 2026-09-20 — org.checkerframework:checker-qual:3.46.0 (#9374)
+
+**Generated Java test class was not public**
+
+The added Checker_qualTest top-level class was declared package-private, violating FS-test-contract.1.2, which requires every top-level test class to be public. The violation was wholly within the target coordinate's new test source and was repairable under FS-contribution-contract.5.1.
+
+## 2026-09-18 — io.micronaut:micronaut-http-client-core:5.1.11 (#10079)
+
+**Test dependencies pin the requested artifact version**
+
+The coordinate build script hardcoded version 5.1.11 for micronaut-http-client and micronaut-inject-java instead of using the TCK-selected library version. This violated the version-agnostic test requirement in §FS-test-contract.2.5 because a copied suite would continue resolving those dependencies at 5.1.11.
 
 ## 2026-09-15 — org.springframework.integration:spring-integration-sftp:7.1.1 (#9952)
 
