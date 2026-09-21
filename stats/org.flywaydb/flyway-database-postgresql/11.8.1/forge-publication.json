@@ -1,0 +1,103 @@
+{
+  "base_commit": "8202987fb0edf710d5667e2dce4e637703d321ef",
+  "branch": "ai/cugurm/fix-java-run-org.flywaydb-flyway-database-postgresql-11.8.1-forge-9378-20260918112351107436-8573bcbd8fa9",
+  "follow_ups": [],
+  "forge": {
+    "branch": "master",
+    "commit": "8202987fb0edf710d5667e2dce4e637703d321ef",
+    "monitored_branch": "origin/master"
+  },
+  "issue_number": 9378,
+  "library": {
+    "artifact": "flyway-database-postgresql",
+    "coordinates": "org.flywaydb:flyway-database-postgresql:11.8.1",
+    "group": "org.flywaydb",
+    "version": "11.8.1"
+  },
+  "local_ci_verification": {
+    "base_commit": "8202987fb0edf710d5667e2dce4e637703d321ef",
+    "commands": [
+      {
+        "command": [
+          "./gradlew",
+          "generateChangedIndexFileCoordinatesList",
+          "-PbaseCommit=origin/master",
+          "-PnewCommit=HEAD"
+        ],
+        "env": {
+          "GITHUB_OUTPUT": "/tmp/tmpv80ucq57"
+        },
+        "gate": "changed-index-coordinates",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :generateChangedIndexFileCoordinatesList\n\n[Incubating] Problems report is available at: file:///home/oracle/oracle/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9378-439c2d88/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 4s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      },
+      {
+        "command": [
+          "./gradlew",
+          "validateIndexFiles",
+          "-Pcoordinates=org.flywaydb:flyway-database-postgresql"
+        ],
+        "env": {},
+        "gate": "index-file-validation",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :validateIndexFiles\n✅ metadata/org.flywaydb/flyway-database-postgresql/index.json: Valid\n\n[Incubating] Problems report is available at: file:///home/oracle/oracle/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9378-439c2d88/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 4s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      }
+    ],
+    "failure_command": null,
+    "failure_gate": null,
+    "final_commit": "3e4acfcc86cfa7ce91d3ba3c57b427d1e981d462",
+    "fixups": [],
+    "human_intervention_required": false,
+    "repo_fix_paths": [],
+    "status": "success"
+  },
+  "local_review": {
+    "changed_paths": [],
+    "decision": "approved",
+    "finding_body": "",
+    "finding_title": "",
+    "fix_note": "",
+    "model": "gpt-5.6-sol",
+    "review_comment": "Reviewed the contribution diff and local evidence under the fixes-java-run-fail rules and the contribution disposition ladder. The change stays within org.flywaydb:flyway-database-postgresql:11.8.1, adds the missing Jackson runtime dependency used by Flyway configuration copying, preserves the PostgreSQL migration/COPY assertions, and does not skip or weaken JVM or Native Image execution. JVM and Native Image result records pass, metadata and Checkstyle evidence is clean, and index validation passed. Dynamic-access coverage is preserved at 6/6 overall and 6/6 reflection versus 6/6 in 10.19.0, so every repair coverage comparison passes. No blocking must violation was found.",
+    "session_id": "ead797b820084706"
+  },
+  "metrics": {
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "path": "stats/org.flywaydb/flyway-database-postgresql/11.8.1/execution-metrics.json",
+    "summary": {
+      "cached_input_tokens_used": 146304,
+      "code_coverage_percent": 29.88,
+      "cost_usd": 0.3146,
+      "input_tokens_used": 39418,
+      "iterations": 3,
+      "metadata_entries": 104,
+      "output_tokens_used": 1476,
+      "previous_library_coverage_percent": 30.1,
+      "previous_library_metadata_entries": 91,
+      "previous_library_test_only_metadata_entries": 35,
+      "test_only_metadata_entries": 37,
+      "tested_library_loc": 179
+    },
+    "timestamp": "2026-09-18T11:23:51.107436Z"
+  },
+  "modifiers": {
+    "chunk_final": true,
+    "chunked_dynamic_access": false,
+    "human_intervention": false
+  },
+  "previous_library": {
+    "artifact": "flyway-database-postgresql",
+    "coordinates": "org.flywaydb:flyway-database-postgresql:10.19.0",
+    "group": "org.flywaydb",
+    "version": "10.19.0"
+  },
+  "producer": "cugurm",
+  "publication_id": "forge-9378-20260918112351107436-8573bcbd8fa9",
+  "render": {},
+  "schema_version": 1,
+  "strategy_name": "java_run_iterative_with_coverage_sources_pi_gpt-5.6-sol",
+  "task_type": "fixes-java-run-fail",
+  "template_type": "fixes-java-run-fail",
+  "timestamp": "2026-09-18T11:23:51.107436Z"
+}

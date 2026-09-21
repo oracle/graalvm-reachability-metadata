@@ -12,9 +12,15 @@ from unittest.mock import patch
 from utility_scripts.gradle_environment import (
     FORGE_GRADLE_DISTRIBUTIONS_HOME_ENV,
     FORGE_GRADLE_USER_HOME_ENV,
+    GRADLE_MODULES_CACHE_DIR,
+    WORKTREE_MARKER_FILENAME,
     _resolve_git_common_dir,
+    checkout_gradle_home_for_repo,
     gradle_command_environment,
     gradle_user_home_for_repo,
+    is_linked_worktree,
+    read_only_dependency_cache_path,
+    worktree_gradle_homes_root,
 )
 
 
@@ -81,7 +87,8 @@ class GradleEnvironmentTests(unittest.TestCase):
             self.assertEqual(os.path.basename(os.path.dirname(gradle_home)), "metadata-forge-gradle")
             self.assertEqual(gradle_home, equivalent_gradle_home)
 
-    def test_linked_worktrees_share_gradle_home_with_main_checkout(self) -> None:
+    def test_linked_worktree_builds_in_its_own_home_under_the_checkout_home(self) -> None:
+        """Daemons are bounded by the worktree (§FS-forge-run-requirements.4)."""
         with tempfile.TemporaryDirectory() as temp_dir:
             repo_path = os.path.join(temp_dir, "repo")
             worktree_path = os.path.join(temp_dir, "linked")
@@ -90,8 +97,46 @@ class GradleEnvironmentTests(unittest.TestCase):
             with patch.dict(os.environ, {}, clear=True):
                 main_gradle_home = gradle_user_home_for_repo(repo_path)
                 worktree_gradle_home = gradle_user_home_for_repo(worktree_path)
+                nested_gradle_home = gradle_user_home_for_repo(os.path.join(worktree_path, "tests"))
+                worktree_checkout_home = checkout_gradle_home_for_repo(worktree_path)
 
-            self.assertEqual(main_gradle_home, worktree_gradle_home)
+            self.assertEqual(worktree_checkout_home, main_gradle_home)
+            self.assertNotEqual(worktree_gradle_home, main_gradle_home)
+            self.assertEqual(os.path.dirname(worktree_gradle_home), worktree_gradle_homes_root(main_gradle_home))
+            self.assertTrue(os.path.basename(worktree_gradle_home).startswith("linked-"))
+            self.assertEqual(nested_gradle_home, worktree_gradle_home)
+            self.assertTrue(is_linked_worktree(worktree_path))
+            self.assertFalse(is_linked_worktree(repo_path))
+
+    def test_worktree_environment_borrows_the_checkout_home_and_reads_its_published_cache(self) -> None:
+        """Dependencies stay shared read-only (§FS-forge-run-requirements.4)."""
+        with tempfile.TemporaryDirectory() as temp_dir, tempfile.TemporaryDirectory() as host_home:
+            repo_path = os.path.join(temp_dir, "repo")
+            worktree_path = os.path.join(temp_dir, "linked")
+            _init_git_repo_with_worktree(repo_path, worktree_path)
+            host_properties = _write_host_gradle_properties(host_home)
+
+            with patch.dict(os.environ, {"HOME": host_home}, clear=True):
+                unpublished_env = gradle_command_environment(worktree_path)
+                checkout_home = checkout_gradle_home_for_repo(worktree_path)
+                published_cache = os.path.join(read_only_dependency_cache_path(checkout_home), GRADLE_MODULES_CACHE_DIR)
+                os.makedirs(published_cache, exist_ok=True)
+                env = gradle_command_environment(worktree_path)
+
+            worktree_home = env["GRADLE_USER_HOME"]
+            self.assertNotIn("GRADLE_RO_DEP_CACHE", unpublished_env)
+            self.assertEqual(env["GRADLE_RO_DEP_CACHE"], os.path.dirname(published_cache))
+            self.assertEqual(worktree_home, gradle_user_home_for_repo(worktree_path))
+            with open(os.path.join(worktree_home, WORKTREE_MARKER_FILENAME), encoding="utf-8") as marker_file:
+                self.assertEqual(marker_file.read().strip(), os.path.realpath(worktree_path))
+            worktree_dists = os.path.join(worktree_home, "wrapper", "dists")
+            self.assertEqual(
+                os.path.realpath(worktree_dists),
+                os.path.realpath(os.path.join(checkout_home, "wrapper", "dists")),
+            )
+            worktree_properties = os.path.join(worktree_home, "gradle.properties")
+            self.assertTrue(os.path.islink(worktree_properties))
+            self.assertEqual(os.path.realpath(worktree_properties), os.path.realpath(host_properties))
 
     def test_common_dir_resolution_matches_git_rev_parse(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:

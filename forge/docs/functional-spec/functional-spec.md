@@ -443,18 +443,27 @@ directory, issue context, one GraalVM environment pinned for the whole run, and
 the continuation marker (§FS-forge-run-continuation). The pinned commit keeps
 repository-dependent checks and generated work on one base even if `master`
 advances during the run. The worktree is also the boundary of the run's Gradle
-daemon pool. Every run of one checkout shares one Gradle user home so plugin
-resolution is paid once, but a daemon that outlives the worktree that started
-it can keep that worktree's build logic loaded and fail a later run's Gradle
-task before the task exists — a failure that says nothing about the claimed
-library. Creating the worktree therefore stops the daemons of that Gradle user
-home, and only those: daemons of any other Gradle user home are not Forge's to
-stop. Stopping is best effort; a daemon that cannot be stopped is reported and
-does not fail the claim, because the finalization gates recover from a stale
-daemon on their own (§FS-local-ci-equivalent-verification.1). The driver owns
-normal and neural setup inside that context, including the persisted library
-preparation result; it does not own queue policy or repository resolution. The
-gap between this requirement and the current implementation is
+daemons. Every worktree builds in its own Gradle user home, so the daemons it
+starts serve that worktree alone: a daemon can neither pick up the build logic
+of another worktree nor be stopped by another worktree's run, and removing the
+worktree stops its daemons and discards its home with it. A daemon that keeps
+one worktree's build logic loaded can therefore fail only that worktree's
+Gradle tasks, and the finalization gates recover from such a stale daemon on
+their own (§FS-local-ci-equivalent-verification.1). What stays shared is the
+downloaded dependencies, so plugin and dependency resolution is still paid once
+per checkout rather than once per issue: the checkout keeps one long-lived
+Gradle user home, and as a Forge process creates its first worktree it warms
+that home by configuring the build of that worktree, never of the monitored
+checkout, and publishes a copy of the home's dependency cache that worktrees
+read through Gradle's read-only dependency cache, downloading only what the
+copy lacks. The copy is never written while worktrees use it. Warming and
+publishing are best effort: when either fails, the failure is reported, the run
+continues, and worktrees merely download more. A worktree home whose worktree
+no longer exists is an orphan that a later Forge process stops and removes
+before it publishes. The driver owns normal and neural setup inside that
+context, including the persisted library preparation result; it does not own
+queue policy or repository resolution. The gap between this requirement and
+the current implementation is
 §ROADMAP-forge-dispatcher-owned-run-preconditions.
 
 ## FS-forge-outputs: Run outputs
