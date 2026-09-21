@@ -43,10 +43,14 @@ import java.util.Properties;
 import java.util.concurrent.Executor;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assumptions.assumeFalse;
 
 public class Spring_aspectsTest {
     @Test
     void springConfiguredRegistersTheSingletonBeanConfigurerAspect() {
+        assumeFalse(isNativeImageRuntime(),
+                "Spring configuration enhancement requires runtime class definition");
+
         try (AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(SpringConfiguredTestConfiguration.class)) {
             BeanDefinition beanDefinition = context.getBeanFactory()
                     .getBeanDefinition(SpringConfiguredConfiguration.BEAN_CONFIGURER_ASPECT_BEAN_NAME);
@@ -96,6 +100,9 @@ public class Spring_aspectsTest {
 
     @Test
     void aspectjModeRegistersCacheTransactionAndAsyncInfrastructureAspects() {
+        assumeFalse(isNativeImageRuntime(),
+                "Spring configuration enhancement requires runtime class definition");
+
         try (AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(AspectJInfrastructureConfiguration.class)) {
             AnnotationCacheAspect cacheAspect = context.getBean(
                     CacheManagementConfigUtils.CACHE_ASPECT_BEAN_NAME,
@@ -177,6 +184,10 @@ public class Spring_aspectsTest {
 
         assertThat(service.getMessage()).isEqualTo("configured through interface aspect");
         assertThat(aspect.wasInvoked()).isTrue();
+    }
+
+    private static boolean isNativeImageRuntime() {
+        return "runtime".equals(System.getProperty("org.graalvm.nativeimage.imagecode"));
     }
 
     @EnableSpringConfigured
