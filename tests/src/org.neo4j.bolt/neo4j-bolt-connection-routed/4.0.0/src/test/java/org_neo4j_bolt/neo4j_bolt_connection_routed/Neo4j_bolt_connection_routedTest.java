@@ -10,6 +10,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.net.InetAddress;
+import java.net.URI;
 import java.time.Clock;
 import java.time.Duration;
 import java.util.ArrayDeque;
@@ -17,7 +18,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.Set;
@@ -30,38 +30,30 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 import java.util.function.Function;
-import java.util.function.Supplier;
 import org.junit.jupiter.api.Test;
 import org.neo4j.bolt.connection.AccessMode;
 import org.neo4j.bolt.connection.AuthInfo;
-import org.neo4j.bolt.connection.AuthToken;
-import org.neo4j.bolt.connection.BoltAgent;
 import org.neo4j.bolt.connection.BoltConnection;
-import org.neo4j.bolt.connection.BoltConnectionProvider;
+import org.neo4j.bolt.connection.BoltConnectionParameters;
+import org.neo4j.bolt.connection.BoltConnectionSource;
 import org.neo4j.bolt.connection.BoltConnectionState;
 import org.neo4j.bolt.connection.BoltProtocolVersion;
 import org.neo4j.bolt.connection.BoltServerAddress;
 import org.neo4j.bolt.connection.ClusterComposition;
 import org.neo4j.bolt.connection.DatabaseName;
-import org.neo4j.bolt.connection.DatabaseNameUtil;
 import org.neo4j.bolt.connection.DomainNameResolver;
 import org.neo4j.bolt.connection.LoggingProvider;
-import org.neo4j.bolt.connection.NotificationConfig;
 import org.neo4j.bolt.connection.ResponseHandler;
-import org.neo4j.bolt.connection.RoutingContext;
-import org.neo4j.bolt.connection.SecurityPlan;
-import org.neo4j.bolt.connection.SecurityPlans;
+import org.neo4j.bolt.connection.RoutedBoltConnectionParameters;
 import org.neo4j.bolt.connection.exception.BoltServiceUnavailableException;
 import org.neo4j.bolt.connection.message.Message;
 import org.neo4j.bolt.connection.message.Messages;
 import org.neo4j.bolt.connection.routed.ClusterCompositionLookupResult;
 import org.neo4j.bolt.connection.routed.Rediscovery;
-import org.neo4j.bolt.connection.routed.RoutedBoltConnectionProvider;
+import org.neo4j.bolt.connection.routed.RoutedBoltConnectionSource;
 import org.neo4j.bolt.connection.routed.RoutingTable;
 
 public class Neo4j_bolt_connection_routedTest {
-    private static final SecurityPlan SECURITY_PLAN = SecurityPlans.unencrypted();
-    private static final BoltAgent BOLT_AGENT = new BoltAgent("test-client", "test-platform", "Java", "JDK");
     private static final Duration WAIT_TIMEOUT = Duration.ofSeconds(10);
 
     @Test
@@ -96,7 +88,7 @@ public class Neo4j_bolt_connection_routedTest {
                 linkedSet(firstWriter, secondWriter),
                 linkedSet(new BoltServerAddress("router.example", 7687)),
                 "neo4j")));
-        RoutedBoltConnectionProvider provider = routedProvider(address -> {
+        RoutedBoltConnectionSource provider = routedProvider(address -> {
             if (address.equals(firstWriter)) {
                 return firstProvider;
             }
@@ -110,7 +102,7 @@ public class Neo4j_bolt_connection_routedTest {
         BoltConnection firstConnection = await(connect(provider, null, AccessMode.WRITE, resolvedDatabase::set));
         BoltConnection secondConnection = await(connect(
                 provider,
-                DatabaseNameUtil.database("neo4j"),
+                DatabaseName.database("neo4j"),
                 AccessMode.WRITE,
                 Neo4j_bolt_connection_routedTest::ignore));
 
@@ -127,7 +119,7 @@ public class Neo4j_bolt_connection_routedTest {
         await(firstConnection.close());
         BoltConnection thirdConnection = await(connect(
                 provider,
-                DatabaseNameUtil.database("neo4j"),
+                DatabaseName.database("neo4j"),
                 AccessMode.WRITE,
                 Neo4j_bolt_connection_routedTest::ignore));
 
@@ -155,7 +147,7 @@ public class Neo4j_bolt_connection_routedTest {
                 linkedSet(failingWriter, workingWriter),
                 linkedSet(new BoltServerAddress("router.example", 7687)),
                 "neo4j")));
-        RoutedBoltConnectionProvider provider = routedProvider(address -> {
+        RoutedBoltConnectionSource provider = routedProvider(address -> {
             if (address.equals(failingWriter)) {
                 return failingProvider;
             }
@@ -167,7 +159,7 @@ public class Neo4j_bolt_connection_routedTest {
 
         BoltConnection recoveredConnection = await(connect(
                 provider,
-                DatabaseNameUtil.database("neo4j"),
+                DatabaseName.database("neo4j"),
                 AccessMode.WRITE,
                 Neo4j_bolt_connection_routedTest::ignore));
 
@@ -178,7 +170,7 @@ public class Neo4j_bolt_connection_routedTest {
         await(recoveredConnection.close());
         BoltConnection nextConnection = await(connect(
                 provider,
-                DatabaseNameUtil.database("neo4j"),
+                DatabaseName.database("neo4j"),
                 AccessMode.WRITE,
                 Neo4j_bolt_connection_routedTest::ignore));
 
@@ -202,7 +194,7 @@ public class Neo4j_bolt_connection_routedTest {
                 linkedSet(failingWriter, workingWriter),
                 linkedSet(new BoltServerAddress("router.example", 7687)),
                 "neo4j")));
-        RoutedBoltConnectionProvider provider = routedProvider(address -> {
+        RoutedBoltConnectionSource provider = routedProvider(address -> {
             if (address.equals(failingWriter)) {
                 return failingProvider;
             }
@@ -213,7 +205,7 @@ public class Neo4j_bolt_connection_routedTest {
         }, rediscovery);
         BoltConnection failedConnection = await(connect(
                 provider,
-                DatabaseNameUtil.database("neo4j"),
+                DatabaseName.database("neo4j"),
                 AccessMode.WRITE,
                 Neo4j_bolt_connection_routedTest::ignore));
         failingProvider.connections()
@@ -233,7 +225,7 @@ public class Neo4j_bolt_connection_routedTest {
         await(failedConnection.close());
         BoltConnection recoveredConnection = await(connect(
                 provider,
-                DatabaseNameUtil.database("neo4j"),
+                DatabaseName.database("neo4j"),
                 AccessMode.WRITE,
                 Neo4j_bolt_connection_routedTest::ignore));
 
@@ -262,7 +254,7 @@ public class Neo4j_bolt_connection_routedTest {
                         linkedSet(modernRouter),
                         "neo4j")),
                 List.of(unavailableRouter, modernRouter));
-        RoutedBoltConnectionProvider provider = routedProvider(address -> {
+        RoutedBoltConnectionSource provider = routedProvider(address -> {
             if (address.equals(unavailableRouter)) {
                 return unavailableProvider;
             }
@@ -272,10 +264,8 @@ public class Neo4j_bolt_connection_routedTest {
             throw new IllegalArgumentException("Unexpected address: " + address);
         }, rediscovery);
 
-        Boolean supportsMultiDb = await(provider.supportsMultiDb(
-                null, null, null, null, 10_000, SECURITY_PLAN, null));
-        Boolean supportsSessionAuth = await(provider.supportsSessionAuth(
-                null, null, null, null, 10_000, SECURITY_PLAN, null));
+        Boolean supportsMultiDb = await(provider.supportsMultiDb());
+        Boolean supportsSessionAuth = await(provider.supportsSessionAuth());
 
         assertThat(supportsMultiDb).isTrue();
         assertThat(supportsSessionAuth).isTrue();
@@ -298,9 +288,9 @@ public class Neo4j_bolt_connection_routedTest {
                 linkedSet(router),
                 linkedSet(router),
                 "system")), List.of(router));
-        RoutedBoltConnectionProvider provider = routedProvider(address -> routerProvider, rediscovery);
+        RoutedBoltConnectionSource provider = routedProvider(address -> routerProvider, rediscovery);
 
-        await(provider.verifyConnectivity(null, null, null, null, 10_000, SECURITY_PLAN, null));
+        await(provider.verifyConnectivity());
 
         assertThat(rediscovery.resolveCount()).isEqualTo(1);
         assertThat(rediscovery.lookupCount()).isEqualTo(1);
@@ -325,9 +315,9 @@ public class Neo4j_bolt_connection_routedTest {
                 linkedSet(router),
                 linkedSet(router),
                 null)), List.of(router));
-        RoutedBoltConnectionProvider provider = routedProvider(address -> routerProvider, rediscovery);
+        RoutedBoltConnectionSource provider = routedProvider(address -> routerProvider, rediscovery);
 
-        await(provider.verifyConnectivity(null, null, null, null, 10_000, SECURITY_PLAN, null));
+        await(provider.verifyConnectivity());
 
         assertThat(rediscovery.resolveCount()).isEqualTo(1);
         assertThat(rediscovery.lookupCount()).isEqualTo(1);
@@ -352,13 +342,13 @@ public class Neo4j_bolt_connection_routedTest {
                 linkedSet(writer),
                 linkedSet(writer),
                 "neo4j")));
-        RoutedBoltConnectionProvider provider = routedProvider(address -> writerProvider, rediscovery);
+        RoutedBoltConnectionSource provider = routedProvider(address -> writerProvider, rediscovery);
 
         await(provider.close());
 
         assertThatThrownBy(() -> await(connect(
                         provider,
-                        DatabaseNameUtil.database("neo4j"),
+                        DatabaseName.database("neo4j"),
                         AccessMode.WRITE,
                         Neo4j_bolt_connection_routedTest::ignore)))
                 .isInstanceOf(IllegalStateException.class)
@@ -366,45 +356,33 @@ public class Neo4j_bolt_connection_routedTest {
     }
 
     private static CompletionStage<BoltConnection> connect(
-            RoutedBoltConnectionProvider provider,
+            RoutedBoltConnectionSource provider,
             DatabaseName databaseName,
             AccessMode mode,
             Consumer<DatabaseName> databaseNameConsumer) {
-        return provider.connect(
-                null,
-                RoutingContext.EMPTY,
-                BOLT_AGENT,
-                "test-user-agent",
-                10_000,
-                SECURITY_PLAN,
-                databaseName,
-                () -> CompletableFuture.completedFuture(null),
-                mode,
-                Collections.emptySet(),
-                null,
-                null,
-                null,
-                databaseNameConsumer,
-                Collections.emptyMap());
+        RoutedBoltConnectionParameters parameters = RoutedBoltConnectionParameters.builder()
+                .withDatabaseName(databaseName)
+                .withAccessMode(mode)
+                .withDatabaseNameListener(databaseNameConsumer)
+                .withBookmarks(Collections.emptySet())
+                .build();
+        return provider.getConnection(parameters);
     }
 
-    private static RoutedBoltConnectionProvider routedProvider(
-            Function<BoltServerAddress, BoltConnectionProvider> providerFactory, Rediscovery rediscovery) {
+    private static RoutedBoltConnectionSource routedProvider(
+            Function<BoltServerAddress, BoltConnectionSource<BoltConnectionParameters>> providerFactory,
+            Rediscovery rediscovery) {
         DomainNameResolver domainNameResolver = host -> new InetAddress[0];
-        return new RoutedBoltConnectionProvider(
-                providerFactory,
+        return new RoutedBoltConnectionSource(
+                (uri, expectedHostname) -> providerFactory.apply(new BoltServerAddress(uri)),
                 address -> Set.of(address),
                 domainNameResolver,
                 60_000,
                 rediscovery,
                 Clock.systemUTC(),
                 new NoopLoggingProvider(),
-                BoltServerAddress.LOCAL_DEFAULT,
-                RoutingContext.EMPTY,
-                BOLT_AGENT,
-                "test-user-agent",
-                10_000,
-                null);
+                URI.create("neo4j://localhost:7687"),
+                List.of());
     }
 
     @SafeVarargs
@@ -455,13 +433,9 @@ public class Neo4j_bolt_connection_routedTest {
 
         @Override
         public CompletionStage<ClusterCompositionLookupResult> lookupClusterComposition(
-                SecurityPlan securityPlan,
                 RoutingTable routingTable,
-                Function<BoltServerAddress, BoltConnectionProvider> connectionProviderGetter,
-                Set<String> bookmarks,
-                String impersonatedUser,
-                Supplier<CompletionStage<AuthToken>> authTokenStageSupplier,
-                BoltProtocolVersion minVersion) {
+                Function<BoltServerAddress, BoltConnectionSource<BoltConnectionParameters>> connectionSourceGetter,
+                RoutedBoltConnectionParameters parameters) {
             lookupCount.incrementAndGet();
             lookupDatabases.add(routingTable.database());
             return CompletableFuture.completedFuture(lookupResult);
@@ -486,7 +460,7 @@ public class Neo4j_bolt_connection_routedTest {
         }
     }
 
-    private static final class RecordingProvider implements BoltConnectionProvider {
+    private static final class RecordingProvider implements BoltConnectionSource<BoltConnectionParameters> {
         private final BoltServerAddress address;
         private final BoltProtocolVersion protocolVersion;
         private final ArrayDeque<Throwable> failures = new ArrayDeque<>();
@@ -504,22 +478,12 @@ public class Neo4j_bolt_connection_routedTest {
         }
 
         @Override
-        public CompletionStage<BoltConnection> connect(
-                BoltServerAddress address,
-                RoutingContext routingContext,
-                BoltAgent boltAgent,
-                String userAgent,
-                int connectTimeoutMillis,
-                SecurityPlan securityPlan,
-                DatabaseName databaseName,
-                Supplier<CompletionStage<AuthToken>> authTokenStageSupplier,
-                AccessMode mode,
-                Set<String> bookmarks,
-                String impersonatedUser,
-                BoltProtocolVersion minVersion,
-                NotificationConfig notificationConfig,
-                Consumer<DatabaseName> databaseNameConsumer,
-                Map<String, Object> additionalParameters) {
+        public CompletionStage<BoltConnection> getConnection() {
+            return getConnection(BoltConnectionParameters.defaultParameters());
+        }
+
+        @Override
+        public CompletionStage<BoltConnection> getConnection(BoltConnectionParameters parameters) {
             connectAttempts.incrementAndGet();
             Throwable failure = failures.pollFirst();
             if (failure != null) {
@@ -531,38 +495,17 @@ public class Neo4j_bolt_connection_routedTest {
         }
 
         @Override
-        public CompletionStage<Void> verifyConnectivity(
-                BoltServerAddress address,
-                RoutingContext routingContext,
-                BoltAgent boltAgent,
-                String userAgent,
-                int connectTimeoutMillis,
-                SecurityPlan securityPlan,
-                AuthToken authToken) {
+        public CompletionStage<Void> verifyConnectivity() {
             return CompletableFuture.completedFuture(null);
         }
 
         @Override
-        public CompletionStage<Boolean> supportsMultiDb(
-                BoltServerAddress address,
-                RoutingContext routingContext,
-                BoltAgent boltAgent,
-                String userAgent,
-                int connectTimeoutMillis,
-                SecurityPlan securityPlan,
-                AuthToken authToken) {
+        public CompletionStage<Boolean> supportsMultiDb() {
             return CompletableFuture.completedFuture(true);
         }
 
         @Override
-        public CompletionStage<Boolean> supportsSessionAuth(
-                BoltServerAddress address,
-                RoutingContext routingContext,
-                BoltAgent boltAgent,
-                String userAgent,
-                int connectTimeoutMillis,
-                SecurityPlan securityPlan,
-                AuthToken authToken) {
+        public CompletionStage<Boolean> supportsSessionAuth() {
             return CompletableFuture.completedFuture(true);
         }
 
