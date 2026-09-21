@@ -16,6 +16,7 @@ import io.micronaut.http.client.DefaultHttpClientConfiguration;
 import io.micronaut.http.client.LoadBalancer;
 import io.micronaut.runtime.server.EmbeddedServer;
 import io.micronaut.websocket.CloseReason;
+import io.micronaut.websocket.WebSocketBroadcaster;
 import io.micronaut.websocket.WebSocketClient;
 import io.micronaut.websocket.WebSocketClientRegistry;
 import io.micronaut.websocket.WebSocketSession;
@@ -25,6 +26,7 @@ import io.micronaut.websocket.annotation.OnError;
 import io.micronaut.websocket.annotation.OnMessage;
 import io.micronaut.websocket.annotation.OnOpen;
 import io.micronaut.websocket.annotation.ServerWebSocket;
+import jakarta.inject.Inject;
 import java.time.Duration;
 import java.util.Locale;
 import java.util.Map;
@@ -88,6 +90,21 @@ public class Micronaut_websocketTest {
                     .containsEntry("status", "accepted")
                     .containsEntry("item", "notebook")
                     .containsEntry("quantity", 3);
+        }
+    }
+
+    @Test
+    @Timeout(55)
+    void broadcastsMessagesToSessionsSelectedByUriVariable() throws Exception {
+        try (EmbeddedServer server = startServer();
+                WebSocketClient webSocketClient = createClient(server);
+                BroadcastClient listener =
+                        connect(webSocketClient, BroadcastClient.class, "/broadcast/listeners");
+                BroadcastClient publisher =
+                        connect(webSocketClient, BroadcastClient.class, "/broadcast/publishers")) {
+            publisher.send("release-ready");
+
+            assertThat(listener.takeMessage()).isEqualTo("announcement:release-ready");
         }
     }
 
@@ -233,6 +250,58 @@ public class Micronaut_websocketTest {
         public abstract void send(Map<String, Object> message);
 
         Map<String, Object> takeMessage() throws InterruptedException {
+            return messages.poll(EVENT_TIMEOUT_SECONDS, TimeUnit.SECONDS);
+        }
+
+        @Override
+        public void close() {
+            if (session != null && session.isOpen()) {
+                session.close(CloseReason.NORMAL);
+            }
+        }
+    }
+
+    @ServerWebSocket("/broadcast/{audience}")
+    public static final class BroadcastSocket {
+        private final WebSocketBroadcaster broadcaster;
+
+        @Inject
+        public BroadcastSocket(WebSocketBroadcaster broadcaster) {
+            this.broadcaster = broadcaster;
+        }
+
+        @OnMessage
+        public void onMessage(String message) {
+            broadcaster.broadcastAsync(
+                    "announcement:" + message,
+                    MediaType.TEXT_PLAIN_TYPE,
+                    session ->
+                            session.getUriVariables()
+                                    .get("audience", String.class)
+                                    .filter("listeners"::equals)
+                                    .isPresent());
+        }
+    }
+
+    @ClientWebSocket("/broadcast/{audience}")
+    public abstract static class BroadcastClient implements AutoCloseable {
+        private final BlockingQueue<String> messages = new LinkedBlockingQueue<>();
+        private WebSocketSession session;
+
+        @OnOpen
+        public void onOpen(WebSocketSession session) {
+            this.session = session;
+        }
+
+        @OnMessage
+        public void onMessage(String message) {
+            messages.add(message);
+        }
+
+        @Produces(MediaType.TEXT_PLAIN)
+        public abstract void send(String message);
+
+        String takeMessage() throws InterruptedException {
             return messages.poll(EVENT_TIMEOUT_SECONDS, TimeUnit.SECONDS);
         }
 
