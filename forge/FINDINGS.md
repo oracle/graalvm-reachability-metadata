@@ -3,6 +3,12 @@
 Rendered by Forge from the pre-push branch review of §FS-local-branch-review.
 Newest entry first; every non-approval is recorded, including one a repair later cleared.
 
+## 2026-09-21 — net.bytebuddy:byte-buddy-agent:1.12.4 (#9360)
+
+**Generated test shadows an optional dependency API type**
+
+The contribution declared tests/src/net.bytebuddy/byte-buddy-agent/1.12.4/src/test/java/com/ibm/tools/attach/VirtualMachine.java in the real com.ibm.tools.attach package to make the optional J9 attachment path available. This is a source shadow for a dependency API and violates FS-test-contract.2.3 and FS-contribution-contract.4.7.
+
 ## 2026-09-21 — com.azure:azure-data-appconfiguration:1.8.4 (#10070)
 
 **Native Image build flags were scoped too broadly**
