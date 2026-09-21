@@ -8,6 +8,11 @@ Newest entry first; every non-approval is recorded, including one a repair later
 **Coverage improvement removed baseline behavior and counted an asserted failure**
 
 The contribution deleted the existing SCRAM provider behavior test from KafkaClientsTest, contrary to the no-weakening rule, and added reportsUnavailableRawMessageInfoFields, which deliberately supplied a nonexistent protobuf field and asserted the resulting RuntimeException while exercising the reflective call site. That is coverage bought by asserting breakage under FS-contribution-contract.4.4 / FS-test-contract.2.6.
+## 2026-09-20 — org.aspectj:aspectjweaver:1.9.21.1 (#9373)
+
+**Test-created native flag and weakened runtime coverage**
+
+The contribution rewrote a test class file to preview bytecode and added --enable-preview to the JVM and Native Image solely for that test, violating the native flag necessity rule in FS-test-contract.2.7 because the need originated in test code rather than AspectJ. It also removed the existing generated-concrete-aspect behavior from ClassLoaderWeavingAdaptorTest instead of preserving that meaningful behavior, violating the no-weakening repair rule in FS-test-contract.2.9.
 
 ## 2026-09-20 — org.checkerframework:checker-qual:3.46.0 (#9374)
 
