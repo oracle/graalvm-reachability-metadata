@@ -34,6 +34,7 @@ import java.net.URLDecoder;
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import java.time.Duration;
+import java.time.OffsetDateTime;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -209,6 +210,51 @@ public class AzureDataAppConfigurationTest {
                 .contains("$Select=key,value,tags");
         assertThat(httpClient.requests().get(1).getUrl().getPath()).isEqualTo("/labels");
         assertThat(httpClient.requests().get(2).getUrl().getPath()).isEqualTo("/snapshots");
+    }
+
+    @Test
+    void listsConfigurationSettingRevisionsAtPointInTime() {
+        String revisionResponse = """
+                {
+                  "items": [{
+                    "key": "app:message",
+                    "label": "production",
+                    "content_type": "text/plain",
+                    "value": "previous message",
+                    "last_modified": "2024-04-30T09:15:00Z",
+                    "tags": {"owner": "platform"},
+                    "locked": false,
+                    "etag": "etag-previous"
+                  }]
+                }
+                """;
+        RecordingHttpClient httpClient = new RecordingHttpClient(revisionResponse);
+        ConfigurationClient client = newClient(httpClient);
+        SettingSelector selector = new SettingSelector()
+                .setKeyFilter("app:message")
+                .setLabelFilter("production")
+                .setAcceptDatetime(OffsetDateTime.parse("2024-05-01T12:00:00Z"));
+
+        List<ConfigurationSetting> revisions = new ArrayList<>();
+        client.listRevisions(selector).forEach(revisions::add);
+
+        assertThat(revisions).hasSize(1);
+        ConfigurationSetting revision = revisions.get(0);
+        assertThat(revision.getKey()).isEqualTo("app:message");
+        assertThat(revision.getLabel()).isEqualTo("production");
+        assertThat(revision.getValue()).isEqualTo("previous message");
+        assertThat(revision.getLastModified()).hasToString("2024-04-30T09:15Z");
+        assertThat(revision.getETag()).isEqualTo("etag-previous");
+        assertThat(revision.isReadOnly()).isFalse();
+        assertThat(revision.getTags()).containsEntry("owner", "platform");
+        assertThat(httpClient.requests()).hasSize(1);
+        HttpRequest request = httpClient.requests().get(0);
+        assertRequest(request, HttpMethod.GET, "/revisions");
+        assertThat(URLDecoder.decode(request.getUrl().getQuery(), UTF_8))
+                .contains("key=app:message")
+                .contains("label=production");
+        assertThat(request.getHeaders().getValue("Accept-Datetime"))
+                .isEqualTo("Wed, 1 May 2024 12:00:00 GMT");
     }
 
     @Test
