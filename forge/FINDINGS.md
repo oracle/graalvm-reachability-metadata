@@ -3,6 +3,12 @@
 Rendered by Forge from the pre-push branch review of §FS-local-branch-review.
 Newest entry first; every non-approval is recorded, including one a repair later cleared.
 
+## 2026-09-21 — org.jetbrains.kotlin:kotlin-daemon-embeddable:2.4.20 (#9926)
+
+**Generated tests violated metadata-generation and bounded-wait contracts**
+
+The added build.gradle generated reflection-config.json and resource-config.json under META-INF/native-image, contrary to FS-test-contract.2.7, and the loopback socket test left accept and read operations unbounded, contrary to FS-test-contract.1.6. These were contribution-local violations. Finalization passing all three native lanes after removal also proved the generated legacy configuration placeholders were unnecessary.
+
 ## 2026-09-21 — net.bytebuddy:byte-buddy-agent:1.12.4 (#9360)
 
 **Generated test shadows an optional dependency API type**
