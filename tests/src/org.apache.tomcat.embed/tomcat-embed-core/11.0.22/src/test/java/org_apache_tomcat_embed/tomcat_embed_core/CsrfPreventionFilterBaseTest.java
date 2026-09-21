@@ -12,6 +12,7 @@ import java.util.Enumeration;
 
 import jakarta.servlet.FilterConfig;
 import jakarta.servlet.ServletContext;
+import org.apache.catalina.core.StandardContext;
 import org.apache.catalina.filters.CsrfPreventionFilter;
 import org.junit.jupiter.api.Test;
 
@@ -24,12 +25,13 @@ public class CsrfPreventionFilterBaseTest {
         TestCsrfFilter filter = new TestCsrfFilter();
         filter.setRandomClass(ZeroSecureRandom.class.getName());
 
-        filter.init(filterConfig("csrf"));
+        ServletContext servletContext = new StandardContext().getServletContext();
+        filter.init(filterConfig("csrf", servletContext));
 
         assertThat(filter.nonce()).isEqualTo("00000000000000000000000000000000");
     }
 
-    private static FilterConfig filterConfig(String name) {
+    private static FilterConfig filterConfig(String name, ServletContext servletContext) {
         return new FilterConfig() {
             @Override
             public String getFilterName() {
@@ -38,7 +40,7 @@ public class CsrfPreventionFilterBaseTest {
 
             @Override
             public ServletContext getServletContext() {
-                return null;
+                return servletContext;
             }
 
             @Override
