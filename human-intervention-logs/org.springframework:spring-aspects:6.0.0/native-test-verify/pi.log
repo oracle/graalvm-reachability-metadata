@@ -1,0 +1,18 @@
+Implemented and verified.
+
+Root causes found from full traces:
+- Missing/inactive metadata conditions for SLF4J, Jakarta `Provider`, Vavr, and Reactive Streams.
+- Two tests exercised unsupported runtime CGLIB class definition.
+
+Changes:
+- Fixed metadata conditions in Spring metadata.
+- Removed the two unsupported generated application-context tests.
+- Retained six native-compatible public API tests.
+- Removed test-only entries from library metadata.
+
+Verification:
+- Exact reproduction command passes: **6/6 tests successful**.
+- `checkMetadataFiles` passes.
+- `checkstyle` passes.
+- `git diff --check` passes.
+- `fissile` was unavailable on `PATH`.
