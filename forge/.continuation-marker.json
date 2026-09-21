@@ -1,0 +1,78 @@
+{
+  "continueFrom": "finalization",
+  "coordinate": "org.springframework:spring-aspects:6.0.0",
+  "failure": {
+    "operand": "reporter-requested metadata",
+    "phase": "explore",
+    "step": "generate_tests()"
+  },
+  "issueNumber": 9399,
+  "label": "fails-native-image-run",
+  "libraryPreparationPreflight": {
+    "action": "no_action",
+    "agent_guidance": "If native-image run fails again inside AnnotationConfigApplicationContext bootstrap (e.g. @EnableSpringConfigured / @EnableCaching(mode=ASPECTJ) / @EnableAsync(mode=ASPECTJ) / @EnableTransactionManagement(mode=ASPECTJ) processing), look at branch ai/vjovanov/fix-native-image-run-org.springframework-spring-aspects-6.0.0 (commit cc55b97c2de) for a reference repair: it adds reflection entries for ConfigurationClassPostProcessor, SpringConfiguredConfiguration, AdviceModeImportSelector, AsyncConfigurationSelector, CachingConfigurationSelector, TransactionManagementConfigurationSelector, and the AspectJ*Configuration classes reached from AnnotationConfigApplicationContext, and rewrites the shared Spring_aspectsTest.java to instantiate SpringConfiguredConfiguration/AspectJCachingConfiguration/AspectJTransactionManagementConfiguration/AspectJAsyncConfiguration directly (verifying their @Bean/@Role-annotated factory methods via reflection) instead of driving them through AnnotationConfigApplicationContext. Note this test file is shared between the 5.3.31 and 6.0.0 test scaffolds (version selected via -Pcoordinates), so any rewrite must keep passing for 5.3.31 too.",
+    "applied_setup": [],
+    "current_library": "org.springframework:spring-aspects:5.3.31",
+    "deterministic_setup": [],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#9399 [Automation] native-image run fails for org.springframework:spring-aspects:6.0.0; label=fails-native-image-run; body_chars=8015"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "9 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 16,
+    "issue_label": "fails-native-image-run",
+    "issue_number": 9399,
+    "library": "org.springframework:spring-aspects:6.0.0",
+    "model": "sonnet",
+    "new_version": "6.0.0",
+    "output_tokens_used": 8330,
+    "risks": [
+      "The truncated CI log did not show which assertion/exception actually failed at runtime, so the exact root cause inside AnnotationConfigApplicationContext's bootstrap wasn't independently re-derived here \u2014 reuse of the branch above as a starting point should still be verified against a fresh native-image run rather than assumed correct as-is."
+    ],
+    "status": "completed",
+    "summary": "A prior fix attempt (branch ai/vjovanov/fix-native-image-run-org.springframework-spring-aspects-6.0.0, commit cc55b97c2de) resolved the equivalent failure purely via reachability-metadata additions and a test rewrite that avoids AnnotationConfigApplicationContext's ASM/selector-driven config processing in favor of directly exercising the AspectJ *Configuration classes; no build.gradle, dependency, Docker image, or env/system-property change was involved."
+  },
+  "libraryUpdateRoute": null,
+  "newVersion": "6.0.0",
+  "phases": {
+    "explore": {
+      "chunkClassCount": null,
+      "chunkProcessedClassCount": 0,
+      "exhaustedClasses": [],
+      "status": "skipped"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": null,
+      "status": "completed"
+    },
+    "publication": {
+      "branch": null,
+      "coverageFollowUpIssueNumber": null,
+      "isPushed": false,
+      "publicationId": null,
+      "publicationTimestamp": null,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": true,
+      "status": "completed"
+    }
+  },
+  "preservedBranch": "ai/kimeta/human-intervention/issue-9399-fails-native-image-run-org.springframework-spring-aspects-6.0.0-2d19ace5",
+  "publicationMetrics": {
+    "extras": {},
+    "library": "org.springframework:spring-aspects:6.0.0",
+    "timestamp": "2026-09-21T03:35:33.171048Z"
+  },
+  "schemaVersion": 1,
+  "strategyName": "library_update_pi_gpt-5.6-sol"
+}

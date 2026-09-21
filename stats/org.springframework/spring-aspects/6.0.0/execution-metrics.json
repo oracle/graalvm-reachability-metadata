@@ -1,0 +1,55 @@
+{
+  "fix_ni_run:2026-09-21": {
+    "timestamp": "2026-09-21T03:35:33.171048Z",
+    "library": "org.springframework:spring-aspects:6.0.0",
+    "starting_commit": "4c9c054b6ef47813fd22a87bfb29ffa133d468f1",
+    "ending_commit": "4c9c054b6ef47813fd22a87bfb29ffa133d468f1",
+    "strategy_name": "library_update_pi_gpt-5.6-sol",
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "status": "failure",
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "no_action",
+      "issue_number": 9399,
+      "issue_label": "fails-native-image-run",
+      "library": "org.springframework:spring-aspects:6.0.0",
+      "summary": "A prior fix attempt (branch ai/vjovanov/fix-native-image-run-org.springframework-spring-aspects-6.0.0, commit cc55b97c2de) resolved the equivalent failure purely via reachability-metadata additions and a test rewrite that avoids AnnotationConfigApplicationContext's ASM/selector-driven config processing in favor of directly exercising the AspectJ *Configuration classes; no build.gradle, dependency, Docker image, or env/system-property change was involved.",
+      "deterministic_setup": [],
+      "agent_guidance": "If native-image run fails again inside AnnotationConfigApplicationContext bootstrap (e.g. @EnableSpringConfigured / @EnableCaching(mode=ASPECTJ) / @EnableAsync(mode=ASPECTJ) / @EnableTransactionManagement(mode=ASPECTJ) processing), look at branch ai/vjovanov/fix-native-image-run-org.springframework-spring-aspects-6.0.0 (commit cc55b97c2de) for a reference repair: it adds reflection entries for ConfigurationClassPostProcessor, SpringConfiguredConfiguration, AdviceModeImportSelector, AsyncConfigurationSelector, CachingConfigurationSelector, TransactionManagementConfigurationSelector, and the AspectJ*Configuration classes reached from AnnotationConfigApplicationContext, and rewrites the shared Spring_aspectsTest.java to instantiate SpringConfiguredConfiguration/AspectJCachingConfiguration/AspectJTransactionManagementConfiguration/AspectJAsyncConfiguration directly (verifying their @Bean/@Role-annotated factory methods via reflection) instead of driving them through AnnotationConfigApplicationContext. Note this test file is shared between the 5.3.31 and 6.0.0 test scaffolds (version selected via -Pcoordinates), so any rewrite must keep passing for 5.3.31 too.",
+      "risks": [
+        "The truncated CI log did not show which assertion/exception actually failed at runtime, so the exact root cause inside AnnotationConfigApplicationContext's bootstrap wasn't independently re-derived here — reuse of the branch above as a starting point should still be verified against a fresh native-image run rather than assumed correct as-is."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#9399 [Automation] native-image run fails for org.springframework:spring-aspects:6.0.0; label=fails-native-image-run; body_chars=8015"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "9 existing test file path(s) included"
+        }
+      ],
+      "current_library": "org.springframework:spring-aspects:5.3.31",
+      "new_version": "6.0.0",
+      "model": "sonnet",
+      "input_tokens_used": 16,
+      "output_tokens_used": 8330
+    },
+    "metrics": {
+      "input_tokens_used": 0,
+      "cached_input_tokens_used": 0,
+      "output_tokens_used": 0,
+      "iterations": 3,
+      "cost_usd": 0.0,
+      "generated_loc": 0,
+      "tested_library_loc": 0,
+      "metadata_entries": 0,
+      "code_coverage_percent": 0.0
+    },
+    "artifacts": {
+      "metadata_file": "None"
+    }
+  }
+}

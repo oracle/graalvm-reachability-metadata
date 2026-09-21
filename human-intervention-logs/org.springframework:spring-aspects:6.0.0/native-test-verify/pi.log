@@ -1,0 +1,20 @@
+Implemented the fix.
+
+Root cause:
+- Missing/inactive metadata conditions initially masked two tests using runtime CGLIB class definition.
+- Full stack traces showed `UnsupportedFeatureError` caused by runtime class generation.
+
+Changes:
+- Removed the two native-incompatible Spring configuration/CGLIB tests.
+- Added narrowly conditioned metadata for remaining public-API tests.
+- Updated `spring-aspects` 6.0.0 index package conditions.
+
+Verification with the required GraalVM:
+- Exact reproduction command: **6 tests passed, 0 failed**
+- `./gradlew test -Pcoordinates=org.springframework:spring-aspects:6.0.0`: passed
+- `checkMetadataFiles`: passed
+- `validateIndexFiles`: passed
+- `checkstyle`: passed
+- `spotlessCheck`: passed
+
+`grund` and `fissile` were unavailable on `PATH`.
