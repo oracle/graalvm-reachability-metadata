@@ -17,6 +17,24 @@ dependencies {
     testImplementation "org.osgi:osgi.core:8.0.0"
 }
 
+String launcherHome = projectDir.absolutePath
+String launcherParentClassLoader = "thread"
+
+tasks.named("test") {
+    environment("LIQUIBASE_HOME", launcherHome)
+    environment("LIQUIBASE_LAUNCHER_PARENT_CLASSLOADER", launcherParentClassLoader)
+}
+
+tasks.named("nativeTest") {
+    environment.put("LIQUIBASE_HOME", launcherHome)
+    environment.put("LIQUIBASE_LAUNCHER_PARENT_CLASSLOADER", launcherParentClassLoader)
+}
+
+tasks.named("runNativeTraceImage") {
+    environment("LIQUIBASE_HOME", launcherHome)
+    environment("LIQUIBASE_LAUNCHER_PARENT_CLASSLOADER", launcherParentClassLoader)
+}
+
 graalvmNative {
     agent {
         defaultMode = "conditional"

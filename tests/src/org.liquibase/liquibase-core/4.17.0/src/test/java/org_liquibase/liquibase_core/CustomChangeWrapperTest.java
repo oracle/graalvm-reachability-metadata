@@ -32,6 +32,7 @@ import java.util.List;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class CustomChangeWrapperTest {
 
@@ -120,12 +121,9 @@ public class CustomChangeWrapperTest {
     }
 
     private static void assertNonCustomChangeClassIsRejected(CustomChangeWrapper wrapper, String className) {
-        try {
-            wrapper.setClass(className);
-        } catch (CustomChangeException e) {
-            assertThat(e).hasCauseInstanceOf(ClassCastException.class);
-        }
-
+        assertThatThrownBy(() -> wrapper.setClass(className))
+                .isInstanceOf(CustomChangeException.class)
+                .hasCauseInstanceOf(ClassCastException.class);
         assertThat(wrapper.getClassName()).isEqualTo(className);
         assertThat(wrapper.getCustomChange()).isNull();
     }
