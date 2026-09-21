@@ -3,6 +3,12 @@
 Rendered by Forge from the pre-push branch review of §FS-local-branch-review.
 Newest entry first; every non-approval is recorded, including one a repair later cleared.
 
+## 2026-09-21 — org.apache.tomcat.embed:tomcat-embed-core:11.0.18 (#8328)
+
+**Generated metadata leaked test-only registrations and masked requested metadata**
+
+The generated tree violated the metadata/test contracts: shipped metadata added target test classes plus JUnit and Gradle test resources; test-only metadata added machine-local /tmp/junit resource globs and unstable BootstrapTest$$Lambda/0x... conditions; and its duplicate AbstractProtocol.setProperty registration allowed the public test to pass without relying on the requested shipped registration. The test edit also removed the existing setProperty assertions from the parameterized protocol cases, weakening an existing passing test contrary to FS-test-contract.2.9.
+
 ## 2026-09-20 — com.azure:azure-identity:1.18.0 (#10071)
 
 **Native-image initialization flags were scoped to all binaries**
