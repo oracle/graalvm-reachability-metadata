@@ -3,11 +3,12 @@
 Rendered by Forge from the pre-push branch review of §FS-local-branch-review.
 Newest entry first; every non-approval is recorded, including one a repair later cleared.
 
-## 2026-09-18 — org.xerial.snappy:snappy-java:1.1.0.1 (#10048)
+## 2026-09-20 — com.azure:azure-identity:1.18.0 (#10071)
 
-**Native Image coverage was bypassed by test-created runtime class loading**
+**Native-image initialization flags were scoped to all binaries**
 
-The original test created child-loaded copies of the library and test providers with URLClassLoader.defineClass, then wrapped the entire library exercise in NativeImageSupport.runToleratingUnsupportedFeature. Because the unsupported operation came from the test harness rather than unavoidable library behavior, Native Image could accept the class-definition failure before executing the Snappy assertions, violating the native-execution and no-runtime-class-definition rules. The accompanying --add-opens native build flag was also unnecessary for the repaired public-API path.
+The coordinate build applied its class-specific initialization flags through graalvmNative.binaries.all rather than the test binary. FS-test-contract.2.7 requires native build flags to be as narrow as possible. Removing the flags reproduced the transitive Azure Core image-heap initialization failure, confirming that the flags themselves are necessary; only their binary scope needed correction.
+
 ## 2026-09-20 — org.aspectj:aspectjweaver:1.9.21.1 (#9373)
 
 **Test-created native flag and weakened runtime coverage**
@@ -19,6 +20,12 @@ The contribution rewrote a test class file to preview bytecode and added --enabl
 **Generated Java test class was not public**
 
 The added Checker_qualTest top-level class was declared package-private, violating FS-test-contract.1.2, which requires every top-level test class to be public. The violation was wholly within the target coordinate's new test source and was repairable under FS-contribution-contract.5.1.
+
+## 2026-09-18 — org.xerial.snappy:snappy-java:1.1.0.1 (#10048)
+
+**Native Image coverage was bypassed by test-created runtime class loading**
+
+The original test created child-loaded copies of the library and test providers with URLClassLoader.defineClass, then wrapped the entire library exercise in NativeImageSupport.runToleratingUnsupportedFeature. Because the unsupported operation came from the test harness rather than unavoidable library behavior, Native Image could accept the class-definition failure before executing the Snappy assertions, violating the native-execution and no-runtime-class-definition rules. The accompanying --add-opens native build flag was also unnecessary for the repaired public-API path.
 
 ## 2026-09-18 — io.micronaut:micronaut-http-client-core:5.1.11 (#10079)
 
