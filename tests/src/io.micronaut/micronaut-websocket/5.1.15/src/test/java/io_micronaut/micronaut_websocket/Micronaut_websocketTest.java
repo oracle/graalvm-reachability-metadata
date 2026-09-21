@@ -19,6 +19,7 @@ import io.micronaut.websocket.CloseReason;
 import io.micronaut.websocket.WebSocketBroadcaster;
 import io.micronaut.websocket.WebSocketClient;
 import io.micronaut.websocket.WebSocketClientRegistry;
+import io.micronaut.websocket.WebSocketPongMessage;
 import io.micronaut.websocket.WebSocketSession;
 import io.micronaut.websocket.annotation.ClientWebSocket;
 import io.micronaut.websocket.annotation.OnClose;
@@ -27,6 +28,7 @@ import io.micronaut.websocket.annotation.OnMessage;
 import io.micronaut.websocket.annotation.OnOpen;
 import io.micronaut.websocket.annotation.ServerWebSocket;
 import jakarta.inject.Inject;
+import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.Locale;
 import java.util.Map;
@@ -75,6 +77,20 @@ public class Micronaut_websocketTest {
                 assertThat(TextSocket.takeEvent()).isEqualTo("message:engineering:raise-error");
                 assertThat(TextSocket.takeEvent()).contains("error:", "deliberate error");
             }
+        }
+    }
+
+    @Test
+    @Timeout(55)
+    void sendsPingAndReceivesPongWithMatchingContent() throws Exception {
+        byte[] pingContent = "health-check".getBytes(StandardCharsets.UTF_8);
+
+        try (EmbeddedServer server = startServer();
+                WebSocketClient webSocketClient = createClient(server);
+                TextClient client = connect(webSocketClient, TextClient.class, "/websocket/operations")) {
+            client.sendPing(pingContent).get(EVENT_TIMEOUT_SECONDS, TimeUnit.SECONDS);
+
+            assertThat(client.takePong()).containsExactly(pingContent);
         }
     }
 
@@ -177,6 +193,7 @@ public class Micronaut_websocketTest {
     @ClientWebSocket("/websocket/{room}")
     public abstract static class TextClient implements AutoCloseable {
         private final BlockingQueue<String> messages = new LinkedBlockingQueue<>();
+        private final BlockingQueue<byte[]> pongs = new LinkedBlockingQueue<>();
         private final BlockingQueue<CloseReason> closeReasons = new LinkedBlockingQueue<>();
         private WebSocketSession session;
 
@@ -188,6 +205,11 @@ public class Micronaut_websocketTest {
         @OnMessage
         public void onMessage(String message) {
             messages.add(message);
+        }
+
+        @OnMessage
+        public void onPong(WebSocketPongMessage pong) {
+            pongs.add(pong.getContent().toByteArray());
         }
 
         @OnClose
@@ -203,8 +225,16 @@ public class Micronaut_websocketTest {
         @Produces(MediaType.TEXT_PLAIN)
         public abstract void send(String message);
 
+        CompletableFuture<?> sendPing(byte[] content) {
+            return session.sendPingAsync(content);
+        }
+
         String takeMessage() throws InterruptedException {
             return messages.poll(EVENT_TIMEOUT_SECONDS, TimeUnit.SECONDS);
+        }
+
+        byte[] takePong() throws InterruptedException {
+            return pongs.poll(EVENT_TIMEOUT_SECONDS, TimeUnit.SECONDS);
         }
 
         CloseReason takeCloseReason() throws InterruptedException {
