@@ -258,6 +258,25 @@ public class AzureDataAppConfigurationTest {
     }
 
     @Test
+    void archivesAndRecoversSnapshot() {
+        String archivedSnapshotResponse = SNAPSHOT_RESPONSE.replace("\"ready\"", "\"archived\"");
+        RecordingHttpClient httpClient =
+                new RecordingHttpClient(archivedSnapshotResponse, SNAPSHOT_RESPONSE);
+        ConfigurationClient client = newClient(httpClient);
+
+        ConfigurationSnapshot archived = client.archiveSnapshot("production-release");
+        ConfigurationSnapshot recovered = client.recoverSnapshot("production-release");
+
+        assertThat(archived.getName()).isEqualTo("production-release");
+        assertThat(archived.getStatus()).isEqualTo(ConfigurationSnapshotStatus.ARCHIVED);
+        assertThat(recovered.getName()).isEqualTo("production-release");
+        assertThat(recovered.getStatus()).isEqualTo(ConfigurationSnapshotStatus.READY);
+        assertThat(httpClient.requests()).hasSize(2);
+        assertRequest(httpClient.requests().get(0), HttpMethod.PATCH, "/snapshots/production-release");
+        assertRequest(httpClient.requests().get(1), HttpMethod.PATCH, "/snapshots/production-release");
+    }
+
+    @Test
     void getsSnapshotAndUpdatesSettingAsynchronously() {
         RecordingHttpClient snapshotHttpClient = new RecordingHttpClient(SNAPSHOT_RESPONSE);
         ConfigurationClient client = newClient(snapshotHttpClient);
