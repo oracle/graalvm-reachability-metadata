@@ -150,9 +150,12 @@ public class Kotlin_daemon_embeddableTest {
     void loopbackSocketFactoriesExchangeDataOverLoopback() throws Exception {
         LoopbackNetworkInterface loopback = LoopbackNetworkInterface.INSTANCE;
         ExecutorService executor = Executors.newSingleThreadExecutor();
+        int socketTimeoutMillis = (int) TimeUnit.SECONDS.toMillis(10);
         try (ServerSocket serverSocket = loopback.getServerLoopbackSocketFactory().createServerSocket(0)) {
+            serverSocket.setSoTimeout(socketTimeoutMillis);
             Future<String> acceptedRemoteAddress = executor.submit(() -> {
                 try (Socket acceptedSocket = serverSocket.accept()) {
+                    acceptedSocket.setSoTimeout(socketTimeoutMillis);
                     int received = acceptedSocket.getInputStream().read();
                     acceptedSocket.getOutputStream().write(received + 1);
                     acceptedSocket.getOutputStream().flush();
@@ -162,6 +165,7 @@ public class Kotlin_daemon_embeddableTest {
 
             try (Socket clientSocket = loopback.getClientLoopbackSocketFactory()
                     .createSocket(loopback.getLoopbackInetAddressName(), serverSocket.getLocalPort())) {
+                clientSocket.setSoTimeout(socketTimeoutMillis);
                 clientSocket.getOutputStream().write(41);
                 clientSocket.getOutputStream().flush();
 
