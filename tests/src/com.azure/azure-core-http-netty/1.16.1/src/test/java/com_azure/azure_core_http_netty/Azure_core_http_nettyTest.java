@@ -17,6 +17,7 @@ import com.azure.core.http.HttpResponse;
 import com.azure.core.http.ProxyOptions;
 import com.azure.core.http.netty.NettyAsyncHttpClientBuilder;
 import com.azure.core.http.netty.NettyAsyncHttpClientProvider;
+import com.azure.core.util.BinaryData;
 import com.azure.core.util.Configuration;
 import com.azure.core.util.Context;
 import com.azure.core.util.Contexts;
@@ -34,6 +35,8 @@ import java.net.InetSocketAddress;
 import java.net.URL;
 import java.nio.ByteBuffer;
 import java.nio.channels.Channels;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.time.Duration;
 import java.util.List;
 import java.util.Set;
@@ -45,6 +48,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
+import org.junit.jupiter.api.io.TempDir;
 import reactor.core.publisher.Flux;
 import reactor.netty.resources.ConnectionProvider;
 
@@ -155,6 +159,30 @@ public class Azure_core_http_nettyTest {
                 assertThat(response.getBodyAsString().block(IO_TIMEOUT)).isEqualTo("uploaded");
                 assertThat(uploadProgress).isNotEmpty();
                 assertThat(uploadProgress.getLast()).isEqualTo(12L);
+            }
+        }
+    }
+
+    @Test
+    void uploadsFileBackedBinaryData(@TempDir Path tempDirectory) throws Exception {
+        byte[] expectedBody = "file-backed request body".getBytes(UTF_8);
+        Path uploadFile = Files.write(tempDirectory.resolve("request-body.txt"), expectedBody);
+        try (TestHttpServer server = TestHttpServer.create(exchange -> {
+            assertThat(exchange.getRequestMethod()).isEqualTo("PUT");
+            assertThat(exchange.getRequestHeaders().getFirst("Content-Length"))
+                    .isEqualTo(Integer.toString(expectedBody.length));
+            assertThat(exchange.getRequestBody().readAllBytes()).isEqualTo(expectedBody);
+            writeResponse(exchange, 200, "stored");
+        })) {
+            HttpClient client = configuredBuilder().build();
+            HttpRequest request = new HttpRequest(HttpMethod.PUT, server.url("/files/request-body.txt"))
+                    .setHeader(HttpHeaderName.CONTENT_LENGTH, Integer.toString(expectedBody.length))
+                    .setBody(BinaryData.fromFile(uploadFile));
+
+            try (HttpResponse response = client.send(request).block(IO_TIMEOUT)) {
+                assertThat(response).isNotNull();
+                assertThat(response.getStatusCode()).isEqualTo(200);
+                assertThat(response.getBodyAsString().block(IO_TIMEOUT)).isEqualTo("stored");
             }
         }
     }
