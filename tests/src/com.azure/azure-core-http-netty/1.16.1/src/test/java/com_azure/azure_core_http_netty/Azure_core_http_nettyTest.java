@@ -56,6 +56,10 @@ import reactor.netty.resources.ConnectionProvider;
 public class Azure_core_http_nettyTest {
     private static final Duration IO_TIMEOUT = Duration.ofSeconds(10);
 
+    static {
+        Configuration.getGlobalConfiguration().put(Configuration.PROPERTY_AZURE_LOG_LEVEL, "verbose");
+    }
+
     @Test
     void builderSendsRequestAndStreamsResponse() throws Exception {
         try (TestHttpServer server = TestHttpServer.create(exchange -> {

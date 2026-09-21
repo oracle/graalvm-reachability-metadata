@@ -11,6 +11,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 
 import com.azure.core.http.netty.implementation.NettyUtility;
+import com.azure.core.util.Configuration;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import java.nio.ByteBuffer;
@@ -21,6 +22,7 @@ import org.junit.jupiter.api.Timeout;
 public class NettyUtilityTest {
     @Test
     void validatesClasspathVersionsAndCopiesBuffersIndependently() {
+        Configuration.getGlobalConfiguration().put(Configuration.PROPERTY_AZURE_LOG_LEVEL, "verbose");
         ByteBuf source = Unpooled.wrappedBuffer("netty-data".getBytes(UTF_8));
         try {
             ByteBuffer copy = NettyUtility.deepCopyBuffer(source);
