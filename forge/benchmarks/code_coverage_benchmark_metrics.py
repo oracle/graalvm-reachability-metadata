@@ -250,10 +250,19 @@ def _phase_tokens(
         }
 
     def total(*keys: str) -> int | None:
-        values = [_nested_token(invocation, *keys) for invocation in relevant]
-        if any(value is None for value in values):
-            return None
-        return sum(value for value in values if value is not None)
+        # An invocation killed before it emitted usage reports nothing, and its
+        # tokens cannot be reconstructed from anywhere else. Discarding the
+        # invocations that did report would drop a phase's whole accounting over
+        # one missing record, so the measured ones are kept and only a phase
+        # that measured nothing stays null (§FS-code-coverage-benchmarking.4).
+        values = [
+            value
+            for value in (
+                _nested_token(invocation, *keys) for invocation in relevant
+            )
+            if value is not None
+        ]
+        return sum(values) if values else None
 
     cached_read = total("tokens", "input", "cached_read")
     cache_write = total("tokens", "input", "cache_write")
