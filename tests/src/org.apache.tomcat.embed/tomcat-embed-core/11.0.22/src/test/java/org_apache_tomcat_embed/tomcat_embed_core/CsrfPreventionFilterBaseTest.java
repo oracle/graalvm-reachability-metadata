@@ -6,29 +6,38 @@
  */
 package org_apache_tomcat_embed.tomcat_embed_core;
 
+import java.nio.file.Path;
 import java.security.SecureRandom;
 import java.util.Collections;
 import java.util.Enumeration;
 
 import jakarta.servlet.FilterConfig;
 import jakarta.servlet.ServletContext;
-import org.apache.catalina.core.StandardContext;
+import org.apache.catalina.Context;
 import org.apache.catalina.filters.CsrfPreventionFilter;
+import org.apache.catalina.startup.Tomcat;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class CsrfPreventionFilterBaseTest {
 
     @Test
-    void initializesConfiguredRandomSourceAndGeneratesNonce() throws Exception {
+    void initializesConfiguredRandomSourceAndGeneratesNonce(@TempDir Path baseDirectory) throws Exception {
+        Tomcat tomcat = new Tomcat();
+        tomcat.setBaseDir(baseDirectory.resolve("base").toString());
+        Context context = tomcat.addContext("", baseDirectory.toString());
         TestCsrfFilter filter = new TestCsrfFilter();
         filter.setRandomClass(ZeroSecureRandom.class.getName());
 
-        ServletContext servletContext = new StandardContext().getServletContext();
-        filter.init(filterConfig("csrf", servletContext));
+        try {
+            filter.init(filterConfig("csrf", context.getServletContext()));
 
-        assertThat(filter.nonce()).isEqualTo("00000000000000000000000000000000");
+            assertThat(filter.nonce()).isEqualTo("00000000000000000000000000000000");
+        } finally {
+            tomcat.destroy();
+        }
     }
 
     private static FilterConfig filterConfig(String name, ServletContext servletContext) {
