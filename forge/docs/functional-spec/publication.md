@@ -560,16 +560,29 @@ or label alone is insufficient.
 **Approved heads are approved deterministically.** For a normal generated task,
 `local_review.decision` must be `approved`; a diff-validated benchmark-result
 head is approved by definition because it records measurements rather
-than a mergeable generated contribution. If the head changes an index file,
-Forge validates the current-base merge candidate before approval because
-enabling auto-merge on an already-green head may merge it immediately. Forge
-then submits the GitHub approval with an explicit commit ID equal to the
-validated head and immediately enables auto-merge for the pull request with the
-same expected head. Forge never directly merges an approved pull request:
-pending required checks wait, and GitHub queues or merges only after every
-required CI and repository merge gate is successful and non-blocking. A later
-push must earn a new exact-head approval rather than carrying the old approval
-forward.
+than a mergeable generated contribution.
+
+**Forge is the merge gate, so it approves and arms only what it has seen pass.**
+Forge may approve a head and enable auto-merge only after reading that exact
+head's entire check rollup as successful. It may not delegate that judgment to
+GitHub's required-status-check set: that set is a repository setting covering
+some of the gates, so a head whose required checks are green while another gate
+is red would merge the moment auto-merge is armed. A pending rollup is left
+untouched and reconsidered on a later pass — unapproved, unarmed, and without
+spending a merge-candidate validation on a head whose verdict is not in yet. A
+failed rollup enters diagnosis and gives up any auto-merge request surviving
+from an earlier pass. Requiring every gate on the default branch is a
+second, independent enforcement of the same rule
+(§root/AR-required-status-checks) and never a substitute for this one.
+
+Once the rollup is green, an index-changing head has its current-base merge
+candidate validated before approval, because arming auto-merge on an
+already-green head may merge it immediately. Forge then submits the GitHub
+approval with an explicit commit ID equal to the validated head and enables
+auto-merge for the pull request with the same expected head. Forge never
+directly merges an approved pull request: GitHub queues or merges only once
+every repository merge gate is also non-blocking. A later push must earn a new
+exact-head approval rather than carrying the old approval forward.
 
 **Rejected heads are acted on immediately.** A rejected descriptor never
 receives an approval or auto-merge request and does not wait for CI. Before
@@ -637,9 +650,10 @@ resolution may never modify or drop an existing entry, and a run ID appearing
 on both sides with different content is a real disagreement that escalates
 like any other conflict. Conflict refresh is deterministic queue maintenance,
 not review: before CI state can make a pull request eligible for an agent,
-Forge first approves the validated head and enables auto-merge, then merges the
-base branch into a conflicting same-repository head and pushes the result when
-that merge left no conflict behind. A merge that still conflicts — in the
+Forge merges the base branch into a conflicting same-repository head and pushes
+the result when that merge left no conflict behind. It approves and arms
+nothing on the way, because the push restarts the checks and the refreshed head
+must earn its own exact-head approval. A merge that still conflicts — in the
 ledger or in any other file — is a real disagreement over content and takes the
 human-intervention path instead, as does a head Forge cannot push to. Before
 applying that label, Forge disables auto-merge and dismisses its approval so no
