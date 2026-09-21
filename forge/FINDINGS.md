@@ -15,6 +15,12 @@ The contribution rewrote a test class file to preview bytecode and added --enabl
 
 The added Checker_qualTest top-level class was declared package-private, violating FS-test-contract.1.2, which requires every top-level test class to be public. The violation was wholly within the target coordinate's new test source and was repairable under FS-contribution-contract.5.1.
 
+## 2026-09-19 — org.springframework.boot:spring-boot-actuator-autoconfigure:4.0.0 (#10003)
+
+**Pre-push review unavailable**
+
+Forge could not obtain a readable pre-push review verdict. This records a review availability problem, not a reviewer finding against the branch.
+
 ## 2026-09-18 — io.micronaut:micronaut-http-client-core:5.1.11 (#10079)
 
 **Test dependencies pin the requested artifact version**
