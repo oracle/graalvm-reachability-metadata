@@ -28,6 +28,15 @@ public class ReflectionUtilTest {
     }
 
     @Test
+    void createsInstanceUsingOneArgumentConstructorFunction() {
+        Function<String, ConstructedWithString> constructor = ReflectionUtil.getConstructorAsFunction(String.class,
+                ConstructedWithString.class);
+
+        assertThat(constructor).isNotNull();
+        assertThat(constructor.apply("value").value()).isEqualTo("value");
+    }
+
+    @Test
     void returnsNullWhenOneArgumentConstructorIsNotAccessible() {
         Function<String, PrivateStringConstructor> constructor = ReflectionUtil.getConstructorAsFunction(String.class,
                 PrivateStringConstructor.class);

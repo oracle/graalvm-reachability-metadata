@@ -9,6 +9,7 @@ plugins {
 }
 
 String libraryVersion = tck.testedLibraryVersion.get()
+String serializablePackages = "org_apache_avro.avro"
 
 dependencies {
     testImplementation "org.apache.avro:avro:$libraryVersion"
@@ -21,7 +22,14 @@ tasks.named("test") {
         resourceDir.mkdirs()
     }
     workingDir = resourceDir
-    jvmArgs("-Djdk.invoke.LambdaMetafactory.dumpProxyClassFiles=true")
+    jvmArgs(
+            "-Djdk.invoke.LambdaMetafactory.dumpProxyClassFiles=true",
+            "-Dorg.apache.avro.SERIALIZABLE_PACKAGES=${serializablePackages}"
+    )
+}
+
+tasks.named("nativeTest") {
+    runtimeArgs.add("-Dorg.apache.avro.SERIALIZABLE_PACKAGES=${serializablePackages}")
 }
 
 graalvmNative {
