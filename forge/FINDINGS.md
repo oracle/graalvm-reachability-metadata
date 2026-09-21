@@ -8,6 +8,11 @@ Newest entry first; every non-approval is recorded, including one a repair later
 **Generated test dependencies pin the requested library version**
 
 The coordinate build script hardcoded version 5.1.15 for three Micronaut companion artifacts even though it already derives the tested version as libraryVersion. This violated the version-agnostic test requirement in FS-test-contract.2.5 and Review Signal #4 because the suite would keep those dependencies pinned when reused for a later tested version.
+## 2026-09-21 — com.azure:azure-data-appconfiguration:1.8.4 (#10070)
+
+**Native Image build flags were scoped too broadly**
+
+`build.gradle` applied four class-initialization arguments to `graalvmNative.binaries.all`, contrary to the narrowest-flag requirement in `FS-test-contract.2.7`. Removing the flags reproduced image-heap failures for `NOPLoggerFactory`, `SubstituteLoggerFactory`, `Base64Variant`, and `Base64Variant$PaddingReadBehaviour`, establishing that the transitive Azure/Jackson/SLF4J paths require them; only their binary scope needed correction.
 
 ## 2026-09-20 — com.azure:azure-identity:1.18.0 (#10071)
 
