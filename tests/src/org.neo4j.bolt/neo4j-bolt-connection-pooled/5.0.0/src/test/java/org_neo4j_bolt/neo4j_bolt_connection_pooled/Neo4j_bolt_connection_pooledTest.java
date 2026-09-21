@@ -31,7 +31,6 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.Function;
 import java.util.function.IntSupplier;
 
 import org.junit.jupiter.api.Test;
@@ -751,7 +750,7 @@ public class Neo4j_bolt_connection_pooledTest {
 
     private record SimpleValue(String value) implements Value {
         @Override
-        public Type type() {
+        public Type boltValueType() {
             return Type.STRING;
         }
 
@@ -806,12 +805,12 @@ public class Neo4j_bolt_connection_pooledTest {
         }
 
         @Override
-        public IsoDuration asIsoDuration() {
+        public IsoDuration asBoltIsoDuration() {
             throw new UnsupportedOperationException("Duration values are not used by these tests");
         }
 
         @Override
-        public Point asPoint() {
+        public Point asBoltPoint() {
             throw new UnsupportedOperationException("Point values are not used by these tests");
         }
 
@@ -836,12 +835,12 @@ public class Neo4j_bolt_connection_pooledTest {
         }
 
         @Override
-        public Value get(String key) {
+        public Value getBoltValue(String key) {
             return null;
         }
 
         @Override
-        public Iterable<Value> values() {
+        public Iterable<Value> boltValues() {
             return Collections.emptyList();
         }
 
@@ -851,7 +850,7 @@ public class Neo4j_bolt_connection_pooledTest {
         }
 
         @Override
-        public <T> Map<String, T> asMap(Function<Value, T> mapFunction) {
+        public Map<String, Value> asBoltMap() {
             return Collections.emptyMap();
         }
     }
