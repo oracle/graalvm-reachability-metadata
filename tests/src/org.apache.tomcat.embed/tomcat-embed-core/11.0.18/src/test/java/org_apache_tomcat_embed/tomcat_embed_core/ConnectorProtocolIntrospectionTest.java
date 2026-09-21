@@ -9,6 +9,7 @@ package org_apache_tomcat_embed.tomcat_embed_core;
 import org.apache.catalina.LifecycleException;
 import org.apache.catalina.LifecycleState;
 import org.apache.catalina.connector.Connector;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
@@ -16,12 +17,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class ConnectorProtocolIntrospectionTest {
 
-    @ParameterizedTest
-    @ValueSource(strings = {"HTTP/1.1", "org.apache.coyote.http11.Http11NioProtocol",
-            "org.apache.coyote.http11.Http11Nio2Protocol"})
-    void connectorReadsAndUpdatesProtocolHandlerPropertiesThroughPublicApi(String protocol) throws Exception {
-        Connector connector = new Connector(protocol);
-        connector.setPort(0);
+    @Test
+    void defaultConnectorReadsAndUpdatesFallbackProtocolProperty() throws LifecycleException {
+        Connector connector = new Connector();
 
         try {
             Object bindOnInitBeforeUpdate = connector.getProperty("bindOnInit");
@@ -31,7 +29,19 @@ public class ConnectorProtocolIntrospectionTest {
             assertThat(bindOnInitBeforeUpdate).isNull();
             assertThat(bindOnInitUpdated).isTrue();
             assertThat(bindOnInitAfterUpdate).isEqualTo("false");
+        } finally {
+            stopAndDestroy(connector);
+        }
+    }
 
+    @ParameterizedTest
+    @ValueSource(strings = {"HTTP/1.1", "org.apache.coyote.http11.Http11NioProtocol",
+            "org.apache.coyote.http11.Http11Nio2Protocol"})
+    void connectorReadsProtocolHandlerPropertiesThroughPublicApi(String protocol) throws Exception {
+        Connector connector = new Connector(protocol);
+        connector.setPort(0);
+
+        try {
             connector.init();
             connector.start();
 
