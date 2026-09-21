@@ -158,5 +158,78 @@
       "test_file": "tests/src/org.apache.tomcat.embed/tomcat-embed-core/11.0.18/src/test/java/tomcat/NamingContextListenerTest.java",
       "metadata_file": "metadata/org.apache.tomcat.embed/tomcat-embed-core/11.0.18/reachability-metadata.json"
     }
+  },
+  "improve_library_coverage:2026-09-21": {
+    "timestamp": "2026-09-21T01:43:11.448907Z",
+    "library": "org.apache.tomcat.embed:tomcat-embed-core:11.0.18",
+    "starting_commit": "45c488137e9890683c13888bae621c92db730c97",
+    "ending_commit": "b7e1aa6d753b66fd26ad0af21f55e34221bf41c4",
+    "strategy_name": "library_update_optimistic_pi_gpt-5.6-sol",
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "status": "success",
+    "stats": {
+      "version": "11.0.18",
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 63983,
+          "missed": 281539,
+          "ratio": 0.185178,
+          "total": 345522
+        },
+        "line": {
+          "covered": 15638,
+          "missed": 65660,
+          "ratio": 0.192354,
+          "total": 81298
+        },
+        "method": {
+          "covered": 2937,
+          "missed": 9836,
+          "ratio": 0.229938,
+          "total": 12773
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "no_action",
+      "issue_number": 8328,
+      "issue_label": "library-update-request",
+      "library": "org.apache.tomcat.embed:tomcat-embed-core:11.0.18",
+      "summary": "Pure in-process reflection issue in a plain JVM library (no external service/network/native dependency). The generated scaffold already includes the needed compile-time dependencies (jakarta.servlet-api, jakarta.annotation-api) and already contains a test (ConnectorProtocolIntrospectionTest) that starts a real Connector and calls getProperty/setProperty('bindOnInit'), exercising the exact path from the issue. The shipped metadata already registers AbstractProtocol.getProperty(String) under a typeReached:IntrospectionUtils condition but is missing setProperty(String,String) — this is a metadata-coverage gap to close via normal generation/agent tracing, not missing test infrastructure.",
+      "deterministic_setup": [],
+      "agent_guidance": "",
+      "risks": [],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#8328 Update existing library: org.apache.tomcat.embed:tomcat-embed-core:11.0.18; label=library-update-request; body_chars=2556"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "30 existing test file path(s) included"
+        }
+      ],
+      "model": "sonnet",
+      "input_tokens_used": 16,
+      "output_tokens_used": 7271
+    },
+    "metrics": {
+      "input_tokens_used": 158293,
+      "cached_input_tokens_used": 934784,
+      "output_tokens_used": 8392,
+      "iterations": 6,
+      "cost_usd": 1.5107,
+      "generated_loc": 2268,
+      "tested_library_loc": 15638,
+      "metadata_entries": 1987,
+      "test_only_metadata_entries": 261,
+      "code_coverage_percent": 19.24
+    },
+    "artifacts": {
+      "metadata_file": "metadata/org.apache.tomcat.embed/tomcat-embed-core/11.0.18/reachability-metadata.json"
+    }
   }
 }
