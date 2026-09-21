@@ -26,18 +26,15 @@
     "status": "success"
   },
   "local_review": {
-    "changed_paths": [
-      "stats/org.liquibase/liquibase-core/4.17.0/stats.json",
-      "tests/src/org.liquibase/liquibase-core/4.17.0/build.gradle",
-      "tests/src/org.liquibase/liquibase-core/4.17.0/src/test/java/org_liquibase/liquibase_core/CustomChangeWrapperTest.java"
-    ],
-    "decision": "approved",
-    "finding_body": "CustomChangeWrapperTest added an OSGi Bundle/Activator scenario and org.osgi dependency specifically to exercise Liquibase's OSGi class-loader branch. FS-test-contract.4.5 forbids tests targeting OSGi class-loader paths because they depend on runtime class-loading behavior Native Image cannot support.",
-    "finding_title": "Generated tests exercise prohibited OSGi class-loader behavior",
-    "fix_note": "Removed the OSGi-only test scenario, its Bundle test double, and the unnecessary org.osgi test dependency, then regenerated statistics. The remaining tests continue to exercise Liquibase public behavior and exceed the library-update coverage baseline; Forge finalization reached a clean successful pass with no further publishable changes.",
+    "action": "human-intervention",
+    "changed_paths": [],
+    "decision": "rejected",
+    "finding_body": "FS-library-update-tested-version-split requires Forge to catch regenerated-test incompatibility before a library-update branch becomes PR-eligible. The 4.20.0 and 4.23.0 index entries both declare test-version 4.17.0, so changes under tests/src/org.liquibase/liquibase-core/4.17.0 affect both entries in CI. Forge's alias splitter inspected only the target 4.17.0 entry, whose tested-versions list contains only 4.17.0; the publication descriptor consequently records render.alias_split as null and local verification as successful. After the scoped YAML API adaptation, ./gradlew test for 4.17.0 passes, while ./gradlew test for 4.20.0 builds successfully through the JVM lane but reports 11 native-test failures, and ./gradlew checkstyle compileTestJava for 4.23.0 fails because liquibase.hub.core and liquibase.hub.model were removed. Keeping the regenerated 4.17.0 coverage while retaining the baseline suite for these downstream aliases requires changing the artifact index and creating or selecting another version's test directory. Those are outside the permitted 4.17.0 repair file set, so this is disposition 5.3 followed by 5.5 rather than a contribution-local repair.\n\nInfrastructure issue: https://github.com/oracle/graalvm-reachability-metadata/issues/10138 (#10138)",
+    "finding_title": "Forge missed downstream test-version aliases before publication",
+    "fix_note": "Adapted YamlSerializerInnerLiquibaseRepresenterTest to use YamlChangeLogSerializer's configured SnakeYAML instance instead of directly constructing the version-specific LiquibaseRepresenter. Verified 4.17.0 with the full test task, metadata and index validation, Spotless, and dynamic-access coverage (176/198); verified that 4.20.0 then compiles and passes JVM tests. The remaining reverse-alias failures cannot be repaired inside the allowed 4.17.0 files without weakening tests, so no complete repair was possible.",
     "model": "gpt-5.6-sol",
-    "review_comment": "Reviewed the target-coordinate diff, generated tests, metadata split, security-sensitive file/socket use, and local gate evidence. Dynamic-access coverage remains non-regressing after repair, increasing from the 27.7778% baseline to 88.8889% (176/198), with reflection at 87.9121% and resources at 100%. The final tree stays within the allowed coordinate files, uses only reachability-metadata.json, and the required Forge finalization completed successfully with current-defaults/latest, future-defaults/latest, and current-defaults/GraalVM 25 test lanes plus metadata, style, generated-test, and statistics checks.",
-    "session_id": "88aeea62b99b4f50"
+    "review_comment": "Reproduced the required-CI failures for every index entry that consumes the changed 4.17.0 test suite. A version-neutral YAML serializer repair makes the target 4.17.0 suite pass and lets 4.20.0 compile and pass its JVM tests, but 4.20.0 still has 11 native-test failures and 4.23.0 cannot compile because Liquibase removed the Hub APIs used by StandardHubServiceTest. Deleting or version-skipping those generated scenarios would weaken the evidence. The safe repair is to preserve the baseline suite for the downstream test-version aliases, which requires index and other-version changes outside this repair boundary. The contribution is therefore not ready to merge.",
+    "session_id": "733d25d96e174ed4"
   },
   "metrics": {
     "agent": "pi",
