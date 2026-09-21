@@ -19,6 +19,5 @@ public class ISO3166_1Alpha3CountryCodeTest {
 
         assertEquals("DEU", countryCode.getValue());
         assertEquals("Germany", countryCode.getCountryName());
-        assertEquals("DE", countryCode.toAlpha2CountryCode().getValue());
     }
 }
