@@ -1,0 +1,132 @@
+{
+  "fix_javac_fail:2026-09-18": {
+    "timestamp": "2026-09-18T04:22:13.138848Z",
+    "library": "org.xerial.snappy:snappy-java:1.1.0.1",
+    "starting_commit": "975976195dd7c276b8cbd4e67b8988b95168c220",
+    "ending_commit": "9353d431e0ab6e093ca4ff8be87807cf51e821ec",
+    "previous_library": "org.xerial.snappy:snappy-java:1.0.4.1",
+    "strategy_name": "javac_iterative_with_coverage_sources_pi_gpt-5.6-sol",
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "status": "success",
+    "stats": {
+      "version": "1.1.0.1",
+      "dynamicAccess": {
+        "breakdown": {
+          "resources": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 4,
+            "totalCalls": 4
+          }
+        },
+        "coverageRatio": 1.0,
+        "coveredCalls": 4,
+        "totalCalls": 4
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 555,
+          "missed": 11666,
+          "ratio": 0.045414,
+          "total": 12221
+        },
+        "line": {
+          "covered": 137,
+          "missed": 759,
+          "ratio": 0.152902,
+          "total": 896
+        },
+        "method": {
+          "covered": 24,
+          "missed": 166,
+          "ratio": 0.126316,
+          "total": 190
+        }
+      }
+    },
+    "previous_library_stats": {
+      "version": "1.0.4.1",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 8,
+            "totalCalls": 8
+          },
+          "resources": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 5,
+            "totalCalls": 5
+          }
+        },
+        "coverageRatio": 1.0,
+        "coveredCalls": 13,
+        "totalCalls": 13
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 676,
+          "missed": 1927,
+          "ratio": 0.2597,
+          "total": 2603
+        },
+        "line": {
+          "covered": 137,
+          "missed": 417,
+          "ratio": 0.247292,
+          "total": 554
+        },
+        "method": {
+          "covered": 26,
+          "missed": 108,
+          "ratio": 0.19403,
+          "total": 134
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "no_action",
+      "issue_number": 10048,
+      "issue_label": "fails-javac-compile",
+      "library": "org.xerial.snappy:snappy-java:1.1.0.1",
+      "summary": "javac failure is a test-source API mismatch (SnappyLoader.isNativeLibraryLoaded() doesn't exist in 1.1.0.1's SnappyLoader, verified against the sources jar), not missing dependency/Docker/env setup; native library layout and loading mechanism are unchanged from the already-supported 1.0.4.1.",
+      "deterministic_setup": [],
+      "agent_guidance": "SnappyLoader.isNativeLibraryLoaded() is not present in org.xerial.snappy:snappy-java:1.1.0.1's SnappyLoader (confirmed against the sources jar; only the private isLoaded field exists, no public accessor). Generated tests for 1.1.0.1 must not call this method. Instead, treat a successful Snappy.compress/Snappy.uncompress round-trip (as the test already does) as proof the native library loaded, mirroring the existing rethrowUnlessUnsupportedFeatureError/hasUnsupportedSnappyNativeLoaderFailure pattern in SnappyLoaderTest.java.",
+      "risks": [],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#10048 [Automation] javac compile fails for org.xerial.snappy:snappy-java:1.1.0.1; label=fails-javac-compile; body_chars=8015"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "7 existing test file path(s) included"
+        }
+      ],
+      "current_library": "org.xerial.snappy:snappy-java:1.0.4.1",
+      "new_version": "1.1.0.1",
+      "model": "sonnet",
+      "input_tokens_used": 24,
+      "output_tokens_used": 5574
+    },
+    "metrics": {
+      "input_tokens_used": 55107,
+      "cached_input_tokens_used": 593664,
+      "output_tokens_used": 8177,
+      "iterations": 4,
+      "cost_usd": 0.8176,
+      "tested_library_loc": 137,
+      "metadata_entries": 5,
+      "test_only_metadata_entries": 10,
+      "previous_library_metadata_entries": 8,
+      "previous_library_test_only_metadata_entries": 1,
+      "code_coverage_percent": 15.29,
+      "previous_library_coverage_percent": 24.73
+    },
+    "artifacts": {
+      "metadata_file": "metadata/org.xerial.snappy/snappy-java/1.1.0.1/reachability-metadata.json"
+    }
+  }
+}
