@@ -3,6 +3,12 @@
 Rendered by Forge from the pre-push branch review of §FS-local-branch-review.
 Newest entry first; every non-approval is recorded, including one a repair later cleared.
 
+## 2026-09-21 — org.liquibase:liquibase-core:4.17.0 (#3996)
+
+**Generated tests exercise prohibited OSGi class-loader behavior**
+
+CustomChangeWrapperTest added an OSGi Bundle/Activator scenario and org.osgi dependency specifically to exercise Liquibase's OSGi class-loader branch. FS-test-contract.4.5 forbids tests targeting OSGi class-loader paths because they depend on runtime class-loading behavior Native Image cannot support.
+
 ## 2026-09-20 — com.azure:azure-identity:1.18.0 (#10071)
 
 **Native-image initialization flags were scoped to all binaries**
