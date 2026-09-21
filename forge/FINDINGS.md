@@ -3,6 +3,11 @@
 Rendered by Forge from the pre-push branch review of §FS-local-branch-review.
 Newest entry first; every non-approval is recorded, including one a repair later cleared.
 
+## 2026-09-18 — org.xerial.snappy:snappy-java:1.1.0.1 (#10048)
+
+**Native Image coverage was bypassed by test-created runtime class loading**
+
+The original test created child-loaded copies of the library and test providers with URLClassLoader.defineClass, then wrapped the entire library exercise in NativeImageSupport.runToleratingUnsupportedFeature. Because the unsupported operation came from the test harness rather than unavoidable library behavior, Native Image could accept the class-definition failure before executing the Snappy assertions, violating the native-execution and no-runtime-class-definition rules. The accompanying --add-opens native build flag was also unnecessary for the repaired public-API path.
 ## 2026-09-20 — org.aspectj:aspectjweaver:1.9.21.1 (#9373)
 
 **Test-created native flag and weakened runtime coverage**
