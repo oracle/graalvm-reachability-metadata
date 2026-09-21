@@ -20,18 +20,15 @@ public class ByteBuddyAgentInnerAttachmentProviderInnerAccessorInnerSimpleTest {
     @Test
     void createsExternalAttachmentAccessorFromProvidedClassLoader(@TempDir Path temporaryDirectory) {
         File toolsJar = temporaryDirectory.resolve("tools.jar").toFile();
-        RecordingClassLoader classLoader = new RecordingClassLoader();
+        ByteBuddyAgent.AttachmentProvider.Accessor accessor = ByteBuddyAgent.AttachmentProvider.Accessor.Simple.of(
+                ClassLoader.getSystemClassLoader(), toolsJar);
 
-        ByteBuddyAgent.AttachmentProvider.Accessor accessor =
-                ByteBuddyAgent.AttachmentProvider.Accessor.Simple.of(classLoader, toolsJar);
-
-        assertThat(classLoader.requestedName)
-                .isEqualTo(ByteBuddyAgent.AttachmentProvider.Accessor.VIRTUAL_MACHINE_TYPE_NAME);
         assertThat(accessor.isAvailable()).isTrue();
         assertThat(accessor.isExternalAttachmentRequired()).isTrue();
-        assertThat(accessor.getVirtualMachineType()).isEqualTo(RecordingVirtualMachine.class);
+        assertThat(accessor.getVirtualMachineType().getName())
+                .isEqualTo(ByteBuddyAgent.AttachmentProvider.Accessor.VIRTUAL_MACHINE_TYPE_NAME);
         assertThat(accessor.getExternalAttachment().getVirtualMachineType())
-                .isEqualTo(RecordingVirtualMachine.class.getName());
+                .isEqualTo(ByteBuddyAgent.AttachmentProvider.Accessor.VIRTUAL_MACHINE_TYPE_NAME);
         assertThat(accessor.getExternalAttachment().getClassPath()).containsExactly(toolsJar);
     }
 
@@ -49,26 +46,6 @@ public class ByteBuddyAgentInnerAttachmentProviderInnerAccessorInnerSimpleTest {
         assertThat(accessor.getExternalAttachment().getVirtualMachineType())
                 .isEqualTo(ByteBuddyAgent.AttachmentProvider.Accessor.VIRTUAL_MACHINE_TYPE_NAME_J9);
         assertThat(accessor.getExternalAttachment().getClassPath()).isEmpty();
-    }
-
-    private static final class RecordingClassLoader extends ClassLoader {
-        private String requestedName;
-
-        private RecordingClassLoader() {
-            super(null);
-        }
-
-        @Override
-        public Class<?> loadClass(String name) throws ClassNotFoundException {
-            requestedName = name;
-            if (ByteBuddyAgent.AttachmentProvider.Accessor.VIRTUAL_MACHINE_TYPE_NAME.equals(name)) {
-                return RecordingVirtualMachine.class;
-            }
-            throw new ClassNotFoundException(name);
-        }
-    }
-
-    public static final class RecordingVirtualMachine {
     }
 
     private static boolean isJ9VirtualMachineAvailableFromSystemClassLoader() {
