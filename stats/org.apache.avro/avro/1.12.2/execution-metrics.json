@@ -1,0 +1,130 @@
+{
+  "fix_java_run_fail:2026-09-21": {
+    "timestamp": "2026-09-21T11:41:38.634829Z",
+    "library": "org.apache.avro:avro:1.12.2",
+    "starting_commit": "c4d33cbc00aefd8bc4340cd90dfe268541455726",
+    "ending_commit": "852b253d9ef944a677e5628469f36d7a1183c97c",
+    "previous_library": "org.apache.avro:avro:1.12.1",
+    "strategy_name": "java_run_iterative_with_coverage_sources_pi_gpt-5.6-sol",
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "status": "success",
+    "stats": {
+      "version": "1.12.2",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 0.95,
+            "coveredCalls": 38,
+            "totalCalls": 40
+          }
+        },
+        "coverageRatio": 0.95,
+        "coveredCalls": 38,
+        "totalCalls": 40
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 9588,
+          "missed": 44625,
+          "ratio": 0.176858,
+          "total": 54213
+        },
+        "line": {
+          "covered": 2227,
+          "missed": 9711,
+          "ratio": 0.186547,
+          "total": 11938
+        },
+        "method": {
+          "covered": 614,
+          "missed": 2236,
+          "ratio": 0.215439,
+          "total": 2850
+        }
+      }
+    },
+    "previous_library_stats": {
+      "version": "1.12.1",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 0.926829,
+            "coveredCalls": 38,
+            "totalCalls": 41
+          }
+        },
+        "coverageRatio": 0.926829,
+        "coveredCalls": 38,
+        "totalCalls": 41
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 9184,
+          "missed": 43877,
+          "ratio": 0.173084,
+          "total": 53061
+        },
+        "line": {
+          "covered": 2127,
+          "missed": 9527,
+          "ratio": 0.182512,
+          "total": 11654
+        },
+        "method": {
+          "covered": 578,
+          "missed": 2213,
+          "ratio": 0.207094,
+          "total": 2791
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "advisory_preparation",
+      "issue_number": 9363,
+      "issue_label": "fails-java-run",
+      "library": "org.apache.avro:avro:1.12.2",
+      "summary": "Avro 1.12.2 added a ClassSecurityValidator allow-list gate on reflect/specific-data (de)serialization; test-declared record classes now throw SecurityException unless trusted via org.apache.avro.SERIALIZABLE_CLASSES/SERIALIZABLE_PACKAGES system properties.",
+      "deterministic_setup": [],
+      "agent_guidance": "Generated tests that exercise reflect-based or specific-data (de)serialization of test-declared record classes (e.g. via ReflectDatumWriter/ReflectDatumReader, SpecificData.getClass/getNewRecordSupplier, or any encodeRecord/decodeRecord helper that touches classes under the generated package) will hit org.apache.avro.util.ClassSecurityValidator's default deny-list starting with avro 1.12.2. Trust the generated test package by adding a JVM system property, e.g. in the test task's jvmArgs: -Dorg.apache.avro.SERIALIZABLE_PACKAGES=org_apache_avro.avro (match whatever package the generated test classes actually live under). This must be set as a JVM-level -D flag (or equivalent Gradle jvmArgs), not via System.setProperty() inside test code, because ClassSecurityValidator.SystemPropertiesPredicate reads the property once in a static initializer at class-load time, so setting it later in a test method or @BeforeAll has no effect. Alternatively, tests may call the org.apache.avro.util.ClassSecurityValidator API (e.g. ClassSecurityValidator.setGlobal(...)) directly before any schema-related class loading occurs, but the jvmArgs system-property approach mirrors the existing pattern already used in this project's build.gradle (-Djdk.invoke.LambdaMetafactory.dumpProxyClassFiles=true) and is simpler to keep correct.",
+      "risks": [
+        "If the generated test package differs from org_apache_avro.avro, the SERIALIZABLE_PACKAGES value must be updated to match, or affected tests will still fail with SecurityException.",
+        "Setting the property programmatically after JVM/class-loader startup (e.g. via System.setProperty in a test method) will silently not take effect since the predicate is cached at class-load time — must be a JVM start-up level -D flag."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#9363 [Automation] java run fails for org.apache.avro:avro:1.12.2; label=fails-java-run; body_chars=8015"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "15 existing test file path(s) included"
+        }
+      ],
+      "current_library": "org.apache.avro:avro:1.12.1",
+      "new_version": "1.12.2",
+      "model": "sonnet",
+      "input_tokens_used": 18,
+      "output_tokens_used": 6362
+    },
+    "metrics": {
+      "input_tokens_used": 150869,
+      "cached_input_tokens_used": 1081728,
+      "output_tokens_used": 8468,
+      "iterations": 5,
+      "cost_usd": 1.5492,
+      "tested_library_loc": 2227,
+      "metadata_entries": 26,
+      "test_only_metadata_entries": 57,
+      "previous_library_metadata_entries": 61,
+      "previous_library_test_only_metadata_entries": 53,
+      "code_coverage_percent": 18.65,
+      "previous_library_coverage_percent": 18.25
+    },
+    "artifacts": {
+      "metadata_file": "metadata/org.apache.avro/avro/1.12.2/reachability-metadata.json"
+    }
+  }
+}
