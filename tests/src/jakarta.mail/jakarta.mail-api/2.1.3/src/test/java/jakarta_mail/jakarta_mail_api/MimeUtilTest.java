@@ -18,7 +18,7 @@ public class MimeUtilTest {
     private static final String CONTENT_TYPE_HANDLER_PROPERTY = "mail.mime.contenttypehandler";
 
     @Test
-    void cleansMimeBodyPartContentTypeUsingConfiguredHandler() throws Exception {
+    void cleansMimeBodyPartContentTypeUsingHandlerFromContextClassLoader() throws Exception {
         withSystemProperty(CONTENT_TYPE_HANDLER_PROPERTY, ContentTypeHandler.class.getName(), () -> {
             MimeBodyPart bodyPart = new MimeBodyPart();
             bodyPart.setHeader("Content-Type", "application/x-unknown; x-raw=true");
