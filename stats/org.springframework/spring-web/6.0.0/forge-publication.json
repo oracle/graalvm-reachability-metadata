@@ -1,0 +1,103 @@
+{
+  "base_commit": "b58e5fcb780d6e9fe5396624d335a82d53d69001",
+  "branch": "ai/kimeta/fix-javac-org.springframework-spring-web-6.0.0-forge-9930-20260921021029213824-5790a8b177d8",
+  "follow_ups": [],
+  "forge": {
+    "branch": "master",
+    "commit": "36568d2db2830705cecfdded8fb66f0cf58eb29f",
+    "monitored_branch": "origin/master"
+  },
+  "issue_number": 9930,
+  "library": {
+    "artifact": "spring-web",
+    "coordinates": "org.springframework:spring-web:6.0.0",
+    "group": "org.springframework",
+    "version": "6.0.0"
+  },
+  "local_ci_verification": {
+    "base_commit": "b58e5fcb780d6e9fe5396624d335a82d53d69001",
+    "commands": [
+      {
+        "command": [
+          "./gradlew",
+          "generateChangedIndexFileCoordinatesList",
+          "-PbaseCommit=origin/master",
+          "-PnewCommit=HEAD"
+        ],
+        "env": {
+          "GITHUB_OUTPUT": "/tmp/tmp4hhwot_1"
+        },
+        "gate": "changed-index-coordinates",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :generateChangedIndexFileCoordinatesList\n\n[Incubating] Problems report is available at: file:///home/oracle/oracle/metadata2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9930-b355373d/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 1s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      },
+      {
+        "command": [
+          "./gradlew",
+          "validateIndexFiles",
+          "-Pcoordinates=org.springframework:spring-web"
+        ],
+        "env": {},
+        "gate": "index-file-validation",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :validateIndexFiles\n✅ metadata/org.springframework/spring-web/index.json: Valid\n\n[Incubating] Problems report is available at: file:///home/oracle/oracle/metadata2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9930-b355373d/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 836ms\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      }
+    ],
+    "failure_command": null,
+    "failure_gate": null,
+    "final_commit": "2798634274787b49c9575a0d59194ee63195ab1f",
+    "fixups": [],
+    "human_intervention_required": false,
+    "repo_fix_paths": [],
+    "status": "success"
+  },
+  "local_review": {
+    "changed_paths": [],
+    "decision": "approved",
+    "finding_body": "",
+    "finding_title": "",
+    "fix_note": "",
+    "model": "gpt-5.6-sol",
+    "review_comment": "Checked the allowed-file scope, the Spring 6 Jakarta/Jetty compile adaptation, test-contract and Native Image guardrails, index integrity, metadata format, local gate evidence, and the overall/reflection repair comparison (18/22, 81.82% to 15/15, 100%). The two omitted remoting tests target packages absent from the Spring Web 6.0.0 artifact, so their omission is an upstream-surface change rather than coverage weakening. `checkMetadataFiles`, `compileTestJava`, and `javaTest` pass locally. The contribution satisfies the applicable rules.",
+    "session_id": "84c0a142c8434ddf"
+  },
+  "metrics": {
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "path": "stats/org.springframework/spring-web/6.0.0/execution-metrics.json",
+    "summary": {
+      "cached_input_tokens_used": 1123200,
+      "code_coverage_percent": 3.67,
+      "cost_usd": 1.449,
+      "input_tokens_used": 127481,
+      "iterations": 5,
+      "metadata_entries": 115,
+      "output_tokens_used": 8333,
+      "previous_library_coverage_percent": 3.89,
+      "previous_library_metadata_entries": 116,
+      "previous_library_test_only_metadata_entries": 34,
+      "test_only_metadata_entries": 62,
+      "tested_library_loc": 843
+    },
+    "timestamp": "2026-09-21T02:10:29.213824Z"
+  },
+  "modifiers": {
+    "chunk_final": true,
+    "chunked_dynamic_access": false,
+    "human_intervention": false
+  },
+  "previous_library": {
+    "artifact": "spring-web",
+    "coordinates": "org.springframework:spring-web:5.3.32",
+    "group": "org.springframework",
+    "version": "5.3.32"
+  },
+  "producer": "kimeta",
+  "publication_id": "forge-9930-20260921021029213824-5790a8b177d8",
+  "render": {},
+  "schema_version": 1,
+  "strategy_name": "javac_iterative_with_coverage_sources_pi_gpt-5.6-sol",
+  "task_type": "fixes-javac-fail",
+  "template_type": "fixes-javac-fail",
+  "timestamp": "2026-09-21T02:10:29.213824Z"
+}
