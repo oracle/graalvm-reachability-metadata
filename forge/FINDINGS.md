@@ -5,6 +5,14 @@ Newest entry first; every non-approval is recorded, including one a repair later
 
 ## 2026-09-21 — org.liquibase:liquibase-core:4.17.0 (#3996)
 
+**Forge missed downstream test-version aliases before publication**
+
+FS-library-update-tested-version-split requires Forge to catch regenerated-test incompatibility before a library-update branch becomes PR-eligible. The 4.20.0 and 4.23.0 index entries both declare test-version 4.17.0, so changes under tests/src/org.liquibase/liquibase-core/4.17.0 affect both entries in CI. Forge's alias splitter inspected only the target 4.17.0 entry, whose tested-versions list contains only 4.17.0; the publication descriptor consequently records render.alias_split as null and local verification as successful. After the scoped YAML API adaptation, ./gradlew test for 4.17.0 passes, while ./gradlew test for 4.20.0 builds successfully through the JVM lane but reports 11 native-test failures, and ./gradlew checkstyle compileTestJava for 4.23.0 fails because liquibase.hub.core and liquibase.hub.model were removed. Keeping the regenerated 4.17.0 coverage while retaining the baseline suite for these downstream aliases requires changing the artifact index and creating or selecting another version's test directory. Those are outside the permitted 4.17.0 repair file set, so this is disposition 5.3 followed by 5.5 rather than a contribution-local repair.
+
+Infrastructure issue: https://github.com/oracle/graalvm-reachability-metadata/issues/10138 (#10138)
+
+## 2026-09-21 — org.liquibase:liquibase-core:4.17.0 (#3996)
+
 **Generated tests exercise prohibited OSGi class-loader behavior**
 
 CustomChangeWrapperTest added an OSGi Bundle/Activator scenario and org.osgi dependency specifically to exercise Liquibase's OSGi class-loader branch. FS-test-contract.4.5 forbids tests targeting OSGi class-loader paths because they depend on runtime class-loading behavior Native Image cannot support.
