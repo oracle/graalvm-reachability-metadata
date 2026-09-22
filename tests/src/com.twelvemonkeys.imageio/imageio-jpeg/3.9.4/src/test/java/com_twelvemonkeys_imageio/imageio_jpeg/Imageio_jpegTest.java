@@ -6,10 +6,17 @@
  */
 package com_twelvemonkeys_imageio.imageio_jpeg;
 
+import com.twelvemonkeys.imageio.color.ColorSpaces;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
+import java.awt.Transparency;
+import java.awt.color.ColorSpace;
 import java.awt.image.BufferedImage;
+import java.awt.image.ColorModel;
+import java.awt.image.ComponentColorModel;
+import java.awt.image.DataBuffer;
+import java.awt.image.WritableRaster;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -70,6 +77,27 @@ public class Imageio_jpegTest {
             assertColorCloseTo(decoded.getRGB(36, 8), Color.GREEN, 20);
             assertColorCloseTo(decoded.getRGB(12, 24), Color.BLUE, 20);
             assertColorCloseTo(decoded.getRGB(36, 24), Color.YELLOW, 20);
+        } finally {
+            reader.dispose();
+        }
+    }
+
+    @Test
+    void writesCmykJpegAndConvertsItToRgb() throws IOException {
+        BufferedImage source = createCmykQuadrants(48, 32);
+        byte[] encoded = writeJpeg(source, false);
+        ImageReader reader = newJpegReader();
+
+        try (ImageInputStream input = ImageIO.createImageInputStream(new ByteArrayInputStream(encoded))) {
+            reader.setInput(input);
+
+            BufferedImage decoded = reader.read(0);
+            assertThat(decoded.getWidth()).isEqualTo(48);
+            assertThat(decoded.getHeight()).isEqualTo(32);
+            assertColorCloseTo(decoded.getRGB(12, 8), Color.CYAN, 130);
+            assertColorCloseTo(decoded.getRGB(36, 8), Color.MAGENTA, 130);
+            assertColorCloseTo(decoded.getRGB(12, 24), Color.YELLOW, 130);
+            assertColorCloseTo(decoded.getRGB(36, 24), Color.BLACK, 50);
         } finally {
             reader.dispose();
         }
@@ -187,6 +215,29 @@ public class Imageio_jpegTest {
         } finally {
             graphics.dispose();
         }
+        return image;
+    }
+
+    private static BufferedImage createCmykQuadrants(int width, int height) {
+        ColorSpace colorSpace = ColorSpaces.getColorSpace(ColorSpaces.CS_GENERIC_CMYK);
+        ColorModel colorModel = new ComponentColorModel(
+                colorSpace, false, false, Transparency.OPAQUE, DataBuffer.TYPE_BYTE);
+        WritableRaster raster = colorModel.createCompatibleWritableRaster(width, height);
+        BufferedImage image = new BufferedImage(colorModel, raster, false, null);
+        int[][] colors = {
+            {255, 0, 0, 0},
+            {0, 255, 0, 0},
+            {0, 0, 255, 0},
+            {0, 0, 0, 255}
+        };
+
+        for (int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x++) {
+                int quadrant = (y < height / 2 ? 0 : 2) + (x < width / 2 ? 0 : 1);
+                raster.setPixel(x, y, colors[quadrant]);
+            }
+        }
+
         return image;
     }
 
