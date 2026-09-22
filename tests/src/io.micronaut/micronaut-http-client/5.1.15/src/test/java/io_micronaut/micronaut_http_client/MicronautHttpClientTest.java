@@ -21,6 +21,8 @@ import io.micronaut.http.client.DefaultHttpClientConfiguration;
 import io.micronaut.http.client.HttpClient;
 import io.micronaut.http.client.exceptions.HttpClientResponseException;
 import io.micronaut.http.client.multipart.MultipartBody;
+import io.micronaut.http.client.sse.SseClient;
+import io.micronaut.http.sse.Event;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.InetAddress;
@@ -28,12 +30,19 @@ import java.net.InetSocketAddress;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import java.util.zip.GZIPOutputStream;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
+import org.reactivestreams.Publisher;
+import org.reactivestreams.Subscriber;
+import org.reactivestreams.Subscription;
 
 public class MicronautHttpClientTest {
     private static final Duration HTTP_TIMEOUT = Duration.ofSeconds(10);
@@ -104,6 +113,27 @@ public class MicronautHttpClientTest {
 
     @Test
     @Timeout(55)
+    void decodesServerSentEventFieldsAcrossResponseChunks() throws Exception {
+        try (TestServer server = TestServer.start();
+                HttpClient client = HttpClient.create(server.baseUri().toURL(), clientConfiguration())) {
+            HttpRequest<?> request = HttpRequest.GET("/events").accept(MediaType.TEXT_EVENT_STREAM_TYPE);
+
+            List<Event<String>> events =
+                    awaitAll(((SseClient) client).eventStream(request, String.class));
+
+            assertThat(events).hasSize(2);
+            assertThat(events.get(0).getId()).isEqualTo("stock-41");
+            assertThat(events.get(0).getName()).isEqualTo("stock-change");
+            assertThat(events.get(0).getRetry()).isEqualTo(Duration.ofSeconds(12));
+            assertThat(events.get(0).getData()).isEqualTo("native-widget available");
+            assertThat(events.get(1).getId()).isEqualTo("stock-42");
+            assertThat(events.get(1).getName()).isEqualTo("stock-change");
+            assertThat(events.get(1).getData()).isEqualTo("backup-widget");
+        }
+    }
+
+    @Test
+    @Timeout(55)
     void exposesStatusHeadersAndBodyForErrorResponses() throws Exception {
         try (TestServer server = TestServer.start();
                 HttpClient client = HttpClient.create(server.baseUri().toURL(), clientConfiguration())) {
@@ -135,6 +165,37 @@ public class MicronautHttpClientTest {
         return output.toByteArray();
     }
 
+    private static <T> List<T> awaitAll(Publisher<T> publisher) throws Exception {
+        CollectingSubscriber<T> subscriber = new CollectingSubscriber<>();
+        publisher.subscribe(subscriber);
+        return subscriber.result.get(HTTP_TIMEOUT.toSeconds(), TimeUnit.SECONDS);
+    }
+
+    private static final class CollectingSubscriber<T> implements Subscriber<T> {
+        private final CompletableFuture<List<T>> result = new CompletableFuture<>();
+        private final List<T> items = new ArrayList<>();
+
+        @Override
+        public void onSubscribe(Subscription subscription) {
+            subscription.request(Long.MAX_VALUE);
+        }
+
+        @Override
+        public void onNext(T item) {
+            items.add(item);
+        }
+
+        @Override
+        public void onError(Throwable throwable) {
+            result.completeExceptionally(throwable);
+        }
+
+        @Override
+        public void onComplete() {
+            result.complete(List.copyOf(items));
+        }
+    }
+
     private static final class TestServer implements AutoCloseable {
         private final HttpServer server;
         private final ExecutorService executor;
@@ -152,6 +213,7 @@ public class MicronautHttpClientTest {
             server.createContext("/compressed", TestServer::compressed);
             server.createContext("/multipart", TestServer::multipart);
             server.createContext("/json", TestServer::json);
+            server.createContext("/events", TestServer::events);
             server.createContext("/error", TestServer::error);
             server.start();
             return new TestServer(server, executor);
@@ -230,6 +292,26 @@ public class MicronautHttpClientTest {
                 exchange.getResponseHeaders().set("Content-Type", MediaType.APPLICATION_JSON);
                 exchange.sendResponseHeaders(HttpStatus.OK.getCode(), response.length);
                 exchange.getResponseBody().write(response);
+            }
+        }
+
+        private static void events(HttpExchange exchange) throws IOException {
+            try (exchange) {
+                String accept = exchange.getRequestHeaders().getFirst("Accept");
+                if (accept == null || !accept.contains(MediaType.TEXT_EVENT_STREAM)) {
+                    exchange.sendResponseHeaders(HttpStatus.NOT_ACCEPTABLE.getCode(), -1);
+                    return;
+                }
+                exchange.getResponseHeaders().set("Content-Type", MediaType.TEXT_EVENT_STREAM);
+                exchange.sendResponseHeaders(HttpStatus.OK.getCode(), 0);
+                exchange.getResponseBody()
+                        .write(("id: stock-41\nevent: stock-change\nretry: 12000\ndata: native-"
+                                        + "widget avail")
+                                .getBytes(StandardCharsets.UTF_8));
+                exchange.getResponseBody().flush();
+                exchange.getResponseBody()
+                        .write(("able\n\nid: stock-42\nevent: stock-change\ndata: backup-widget\n\n")
+                                .getBytes(StandardCharsets.UTF_8));
             }
         }
 
