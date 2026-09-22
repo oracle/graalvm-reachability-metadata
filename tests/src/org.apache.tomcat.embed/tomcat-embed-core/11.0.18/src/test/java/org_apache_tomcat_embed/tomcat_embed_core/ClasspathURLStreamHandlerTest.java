@@ -29,7 +29,7 @@ public class ClasspathURLStreamHandlerTest {
     void fallsBackToHandlerClassResource() throws Exception {
         Thread thread = Thread.currentThread();
         ClassLoader originalLoader = thread.getContextClassLoader();
-        thread.setContextClassLoader(null);
+        thread.setContextClassLoader(ClassLoader.getPlatformClassLoader());
         try {
             URL resource = new URL(null, "classpath:/server-embed.xml", new ClasspathURLStreamHandler());
             try (InputStream input = resource.openStream()) {
