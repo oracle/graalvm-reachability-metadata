@@ -8,6 +8,11 @@ Newest entry first; every non-approval is recorded, including one a repair later
 **Generated test dependencies pin the requested library version**
 
 The coordinate build script hardcoded version 5.1.15 for three Micronaut companion artifacts even though it already derives the tested version as libraryVersion. This violated the version-agnostic test requirement in FS-test-contract.2.5 and Review Signal #4 because the suite would keep those dependencies pinned when reused for a later tested version.
+## 2026-09-22 — io.micronaut:micronaut-http-client:5.1.15 (#10140)
+
+**Generated library statistics were stale**
+
+The first Forge finalization pass regenerated stats/io.micronaut/micronaut-http-client/5.1.15/stats.json and changed instruction coverage from 5777 to 5775 covered instructions and line coverage from 1301 to 1300 covered lines. Because the publishable tree changed, finalization correctly exited nonzero and required another pass.
 ## 2026-09-22 — org.relaxng:jing:20181222 (#10162)
 
 **Stale generated library coverage statistics**
