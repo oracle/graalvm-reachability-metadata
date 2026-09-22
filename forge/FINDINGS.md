@@ -3,6 +3,11 @@
 Rendered by Forge from the pre-push branch review of §FS-local-branch-review.
 Newest entry first; every non-approval is recorded, including one a repair later cleared.
 
+## 2026-09-20 — org.apache.kafka:kafka-clients:4.2.0 (#7506)
+
+**Coverage improvement removed baseline behavior and counted an asserted failure**
+
+The contribution deleted the existing SCRAM provider behavior test from KafkaClientsTest, contrary to the no-weakening rule, and added reportsUnavailableRawMessageInfoFields, which deliberately supplied a nonexistent protobuf field and asserted the resulting RuntimeException while exercising the reflective call site. That is coverage bought by asserting breakage under FS-contribution-contract.4.4 / FS-test-contract.2.6.
 ## 2026-09-22 — org.orbisgis:h2gis:2.2.5 (#10139)
 
 **Unrelated KML coverage broadened the H2GIS update**

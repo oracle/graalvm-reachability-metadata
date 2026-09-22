@@ -17,6 +17,14 @@ dependencies {
     testImplementation 'org.assertj:assertj-core:3.22.0'
     testImplementation 'ch.qos.logback:logback-classic:1.4.5'
     testRuntimeOnly 'org.robolectric:android-all:14-robolectric-10818077'
+    testImplementation "org.bouncycastle:bcpkix-jdk18on:1.80"
+}
+
+tasks.withType(Test).configureEach {
+    systemProperty 'junit.jupiter.extensions.autodetection.enabled', 'true'
+    jvmArgs += [
+        '--add-exports=java.security.jgss/sun.security.krb5=ALL-UNNAMED'
+    ]
 }
 
 graalvmNative {
@@ -27,6 +35,12 @@ graalvmNative {
                 userCodeFilterPath = "metadata-user-code-filter.json"
                 extraFilterPath = "metadata-extra-filter.json"
             }
+        }
+    }
+    binaries {
+        test {
+            runtimeArgs.add('-Djunit.jupiter.extensions.autodetection.enabled=true')
+            buildArgs.add('--add-exports=java.security.jgss/sun.security.krb5=ALL-UNNAMED')
         }
     }
 }
