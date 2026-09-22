@@ -7,7 +7,6 @@
 package org_apache_tomcat_embed.tomcat_embed_core;
 
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
 import jakarta.servlet.ServletOutputStream;
@@ -31,6 +30,7 @@ public class ServletOutputStreamTest {
 
     private static final class RecordingServletOutputStream extends ServletOutputStream {
         private final ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        private WriteListener writeListener;
 
         @Override
         public void write(int value) {
@@ -43,8 +43,8 @@ public class ServletOutputStreamTest {
         }
 
         @Override
-        public void setWriteListener(WriteListener writeListener) throws IOException {
-            writeListener.onWritePossible();
+        public void setWriteListener(WriteListener writeListener) {
+            this.writeListener = writeListener;
         }
 
         private String contents() {
