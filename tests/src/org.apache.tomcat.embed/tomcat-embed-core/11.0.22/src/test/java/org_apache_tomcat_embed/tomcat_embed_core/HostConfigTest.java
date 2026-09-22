@@ -15,6 +15,7 @@ import java.util.jar.JarOutputStream;
 
 import org.apache.catalina.Host;
 import org.apache.catalina.LifecycleState;
+import org.apache.catalina.core.StandardHost;
 import org.apache.catalina.startup.HostConfig;
 import org.apache.catalina.startup.Tomcat;
 import org.junit.jupiter.api.Test;
@@ -80,7 +81,7 @@ public class HostConfigTest {
         Tomcat tomcat = new Tomcat();
         tomcat.setBaseDir(temporaryDirectory.resolve("war-base").toString());
         tomcat.setPort(0);
-        Host host = tomcat.getHost();
+        StandardHost host = (StandardHost) tomcat.getHost();
         host.setAppBase(appBase.toString());
         host.setAutoDeploy(false);
         host.setDeployOnStartup(true);
