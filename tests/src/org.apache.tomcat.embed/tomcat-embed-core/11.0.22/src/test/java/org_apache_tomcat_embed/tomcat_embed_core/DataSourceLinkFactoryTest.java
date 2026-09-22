@@ -31,10 +31,10 @@ public class DataSourceLinkFactoryTest {
     void suppliesConfiguredCredentialsThroughDataSourceProxy() throws Exception {
         RecordingDataSource target = new RecordingDataSource();
         NamingContext globalContext = new NamingContext(new Hashtable<>(), "global-data-source");
-        globalContext.bind("shared/dataSource", target);
+        globalContext.bind("sharedDataSource", target);
         DataSourceLinkFactory.setGlobalContext(globalContext);
-        ResourceLinkFactory.registerGlobalResourceAccess(globalContext, "local/dataSource", "shared/dataSource");
-        ResourceLinkRef reference = new ResourceLinkRef(DataSource.class.getName(), "shared/dataSource", null, null);
+        ResourceLinkFactory.registerGlobalResourceAccess(globalContext, "localDataSource", "sharedDataSource");
+        ResourceLinkRef reference = new ResourceLinkRef(DataSource.class.getName(), "sharedDataSource", null, null);
         reference.add(new StringRefAddr("username", "tomcat"));
         reference.add(new StringRefAddr("password", "secret"));
 
@@ -47,7 +47,7 @@ public class DataSourceLinkFactoryTest {
             assertThat(target.credentials()).hasValue("tomcat:secret");
             assertThat(dataSource.unwrap(DataSource.class)).isSameAs(target);
         } finally {
-            ResourceLinkFactory.deregisterGlobalResourceAccess(globalContext, "local/dataSource");
+            ResourceLinkFactory.deregisterGlobalResourceAccess(globalContext, "localDataSource");
         }
     }
 

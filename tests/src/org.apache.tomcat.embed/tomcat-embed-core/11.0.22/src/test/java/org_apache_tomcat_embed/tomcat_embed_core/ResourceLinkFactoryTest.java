@@ -20,17 +20,17 @@ public class ResourceLinkFactoryTest {
     @Test
     void resolvesRegisteredGlobalResourceWithExpectedType() throws Exception {
         NamingContext globalContext = new NamingContext(new Hashtable<>(), "global");
-        globalContext.bind("shared/message", "configured-value");
+        globalContext.bind("sharedMessage", "configured-value");
         ResourceLinkFactory.setGlobalContext(globalContext);
-        ResourceLinkFactory.registerGlobalResourceAccess(globalContext, "local/message", "shared/message");
-        ResourceLinkRef reference = new ResourceLinkRef(String.class.getName(), "shared/message", null, null);
+        ResourceLinkFactory.registerGlobalResourceAccess(globalContext, "localMessage", "sharedMessage");
+        ResourceLinkRef reference = new ResourceLinkRef(String.class.getName(), "sharedMessage", null, null);
 
         try {
             Object resource = new ResourceLinkFactory().getObjectInstance(reference, null, null, null);
 
             assertThat(resource).isEqualTo("configured-value");
         } finally {
-            ResourceLinkFactory.deregisterGlobalResourceAccess(globalContext, "local/message");
+            ResourceLinkFactory.deregisterGlobalResourceAccess(globalContext, "localMessage");
         }
     }
 }
