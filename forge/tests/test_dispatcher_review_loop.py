@@ -127,6 +127,37 @@ class PullRequestReviewSelectionTests(unittest.TestCase):
         self.assertEqual(["resolve", "withdraw"], events)
         validate_indexes.assert_not_called()
 
+    def test_unsettled_mergeability_is_neither_approved_nor_resolved(self) -> None:
+        state = _pull_request_state(9656, "SUCCESS", mergeable="UNKNOWN")
+        events: list[str] = []
+        with (
+                patch.object(
+                    review_loop, "validate_pull_request_publication",
+                    return_value=_validated_publication(),
+                ),
+                patch.object(
+                    review_loop, "validate_pull_request_indexes_before_merge",
+                ) as validate_indexes,
+                patch.object(
+                    review_loop, "approve_pull_request_from_descriptor",
+                    side_effect=lambda *_: events.append("approve"),
+                ),
+                patch.object(
+                    review_loop, "enable_pull_request_auto_merge",
+                    side_effect=lambda *_: events.append("auto-merge"),
+                ),
+                patch.object(
+                    review_loop, "resolve_pull_request_merge_conflict",
+                    side_effect=lambda *_: events.append("resolve") or False,
+                ),
+                patch.object(review_loop, "add_pull_request_label") as add_label,
+        ):
+            review_loop._process_descriptor_pull_request(state, "/tmp/reachability")
+
+        self.assertEqual([], events)
+        validate_indexes.assert_not_called()
+        add_label.assert_not_called()
+
     def test_human_intervention_withdraws_only_forge_approval(self) -> None:
         state = _pull_request_state(9656, "FAILURE")
         state["reviewDecision"] = "APPROVED"

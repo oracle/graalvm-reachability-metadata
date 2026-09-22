@@ -666,8 +666,10 @@ GitHub computes mergeability lazily: a state read taken after any base-branch
 push answers `UNKNOWN` until a background recomputation settles it, and the
 read itself is what triggers that recomputation. An `UNKNOWN` answer is an
 unanswered question, never evidence of a clean head: Forge re-polls with
-bounded backoff until the answer settles before classifying the head as
-conflicting or not.
+bounded backoff before classifying the head as conflicting or not. An answer
+still unsettled when that backoff runs out leaves the pull request waiting for
+a later pass, approved and armed by nothing, because a head GitHub has not
+called clean has not earned the merge gate.
 
 Because GitHub may complete an armed merge between worker passes, Forge also
 reconciles the existing chunk and follow-up issue transitions from the merged
