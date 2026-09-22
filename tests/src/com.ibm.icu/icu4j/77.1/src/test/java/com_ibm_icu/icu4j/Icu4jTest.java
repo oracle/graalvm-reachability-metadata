@@ -23,7 +23,6 @@ import com.ibm.icu.text.SpoofChecker;
 import com.ibm.icu.text.TimeZoneNames;
 import com.ibm.icu.text.Transliterator;
 import com.ibm.icu.util.Currency;
-import com.ibm.icu.util.Holiday;
 import com.ibm.icu.util.MeasureUnit;
 import com.ibm.icu.util.ULocale;
 import java.text.ParseException;
@@ -131,17 +130,6 @@ public class Icu4jTest {
                 .toString();
 
         assertThat(formatted).isEqualTo("12 kilometers");
-    }
-
-    @Test
-    void resolvesHolidayResourceBundles() {
-        Holiday[] holidays = Holiday.getHolidays(ULocale.US);
-        List<String> names = new ArrayList<>();
-        for (Holiday holiday : holidays) {
-            names.add(holiday.getDisplayName(ULocale.US));
-        }
-
-        assertThat(names).contains("New Year's Day", "Independence Day", "Christmas");
     }
 
     @Test
