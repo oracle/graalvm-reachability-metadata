@@ -3,6 +3,12 @@
 Rendered by Forge from the pre-push branch review of §FS-local-branch-review.
 Newest entry first; every non-approval is recorded, including one a repair later cleared.
 
+## 2026-09-22 — org.orbisgis:h2gis:2.2.5 (#10139)
+
+**Unrelated KML coverage broadened the H2GIS update**
+
+The generated contribution added STAsKmlTest and ST_AsKml method metadata even though issue #10139 requests the GeoJSON, SRID, geometry-metadata, spatial-predicate, and distance methods. This unrelated feature expansion violated the no-scope-creep requirement in FS-test-contract.2.9.
+
 ## 2026-09-22 — io.micronaut:micronaut-http-client:5.1.15 (#10140)
 
 **Generated library statistics were stale**
