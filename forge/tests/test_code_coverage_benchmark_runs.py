@@ -401,6 +401,35 @@ class CodeCoverageBenchmarkMetricsTests(unittest.TestCase):
         )
         self.assertEqual(-1, result["measuredAllMethodsDifference"])
 
+    def test_input_stays_disjoint_from_cached_input(self) -> None:
+        """A Rhei total that already contains the cached classes is restated.
+
+        Newer Rhei runtimes report `input.total` inclusive of cached read and
+        cache write; the record must still publish ordinary input separately
+        (§FS-code-coverage-benchmarking.4).
+        """
+        _, workspace = self._workspace()
+        self._write_run(workspace)
+        final_dir = workspace / "runtime" / "code-coverage" / "finalization"
+        final_dir.mkdir(parents=True)
+        shutil.copy2(FINAL_METRICS, final_dir / "final-metrics.json")
+        # api: total 100 = 60 cached_read + 5 cache_write + 35 ordinary.
+        self._write_invocation(workspace, "1", "api-cover", 100, 60, 7, 5)
+        # deep: an older runtime, whose total already excludes the 8 cached.
+        self._write_invocation(workspace, "2", "deep-cover", 3, 8, 9)
+
+        result = benchmark.collect_result(workspace, "success", 0)
+
+        self.assertEqual(
+            {"input": 35, "cachedInputRead": 60, "cachedInputWrite": 5, "output": 7},
+            result["api"]["tokens"],
+        )
+        self.assertEqual(
+            {"input": 3, "cachedInputRead": 8, "cachedInputWrite": 0, "output": 9},
+            result["deep"]["tokens"],
+        )
+        self.assertEqual(38, result["total"]["tokens"]["input"])
+
     def test_partial_failure_keeps_known_accounting_and_nulls(self) -> None:
         _, workspace = self._workspace()
         self._write_run(workspace)
@@ -425,6 +454,47 @@ class CodeCoverageBenchmarkMetricsTests(unittest.TestCase):
         self.assertIsNone(result["deep"]["coverPasses"])
         self.assertIsNone(result["total"]["tokens"]["input"])
         self.assertIsNone(result["total"]["coverage"]["allMethods"])
+
+    def test_unmeasured_invocation_keeps_the_measured_ones(self) -> None:
+        """A phase keeps the tokens it measured when one invocation has none.
+
+        An invocation killed on a timeout emits no usage, so Rhei records its
+        token values as unknown. The invocations that did report are still
+        valid measurements and must survive it
+        (§FS-code-coverage-benchmarking.4).
+        """
+        _, workspace = self._workspace()
+        self._write_run(workspace)
+        self._write_invocation(workspace, "1", "deep-cover", 10, 20, 3, 3)
+        self._write_invocation(workspace, "2", "deep-cover", 1, 2, 3, 1)
+        _write_json(
+            workspace
+            / "runtime"
+            / "accounting"
+            / "invocations"
+            / "3.json",
+            {
+                "state": "deep-cover",
+                "agent": "claude-code",
+                "model": "anthropic/claude-sonnet-5",
+                "extraction_status": "no-usage-emitted",
+                "tokens": {
+                    "input": {
+                        "total": {"status": "unknown"},
+                        "cached_read": {"status": "unknown"},
+                        "cache_write": {"status": "unknown"},
+                    },
+                    "output": {"total": {"status": "unknown"}},
+                },
+            },
+        )
+
+        result = benchmark.collect_result(workspace, "failure", 7)
+
+        self.assertEqual(
+            {"input": 11, "cachedInputRead": 22, "cachedInputWrite": 4, "output": 6},
+            result["deep"]["tokens"],
+        )
 
     def test_written_record_is_immutable_for_its_run_id(self) -> None:
         """A written record is returned verbatim whatever status is requested

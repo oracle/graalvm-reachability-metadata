@@ -1,0 +1,121 @@
+{
+  "add_new_library_support:2026-09-21": {
+    "timestamp": "2026-09-21T14:05:38.854244Z",
+    "library": "io.micronaut:micronaut-websocket:5.1.15",
+    "starting_commit": "86e4cba4d2a6e5ead33bbb791f9544354cc0f6ce",
+    "ending_commit": "3eda6953b28527f2cbd013db90b5b7875c833a7f",
+    "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-sol",
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "status": "success",
+    "stats": {
+      "version": "5.1.15",
+      "dynamicAccess": {
+        "breakdown": {},
+        "coverageRatio": 1.0,
+        "coveredCalls": 0,
+        "totalCalls": 0
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 637,
+          "missed": 448,
+          "ratio": 0.587097,
+          "total": 1085
+        },
+        "line": {
+          "covered": 149,
+          "missed": 108,
+          "ratio": 0.579767,
+          "total": 257
+        },
+        "method": {
+          "covered": 43,
+          "missed": 51,
+          "ratio": 0.457447,
+          "total": 94
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "advisory_preparation",
+      "issue_number": 10141,
+      "issue_label": "library-new-request",
+      "library": "io.micronaut:micronaut-websocket:5.1.15",
+      "summary": "micronaut-websocket only ships the WebSocket API/annotations (@ServerWebSocket, @ClientWebSocket) and depends solely on micronaut-http and micronaut-http-client-core (interfaces, per its POM). There is no Netty-based implementation in this artifact, so a scaffold testing only micronaut-websocket cannot actually open a socket connection. The identical pattern already exists in this repo for micronaut-http-server (also API-only): its tests add micronaut-http-server-netty and micronaut-http-client as testImplementation to get a concrete, testable implementation.",
+      "deterministic_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "io.micronaut:micronaut-http-server-netty:5.1.15",
+          "scope": "testImplementation",
+          "reason": "micronaut-websocket only defines the @ServerWebSocket API; the Netty server-side WebSocket handling that actually accepts and drives socket frames is implemented in micronaut-http-server-netty (same pattern used for micronaut-http-server, its closest analog in this repo)."
+        },
+        {
+          "kind": "dependency",
+          "coordinate": "io.micronaut:micronaut-http-client:5.1.15",
+          "scope": "testImplementation",
+          "reason": "micronaut-websocket only depends on micronaut-http-client-core (the client interface); the concrete @ClientWebSocket implementation used to connect out to a server and exercise send/receive/close callbacks lives in micronaut-http-client."
+        },
+        {
+          "kind": "dependency",
+          "coordinate": "io.micronaut:micronaut-jackson-databind:5.1.15",
+          "scope": "testImplementation",
+          "reason": "Consistent with the sibling micronaut-http-server/micronaut-http-client-core test scaffolds, which add Jackson databind so message bodies exchanged over HTTP/WebSocket can be serialized/deserialized rather than restricted to plain text frames."
+        }
+      ],
+      "agent_guidance": "Follow the micronaut-http-server test scaffold shape as the closest precedent: a real Micronaut server with a @ServerWebSocket bean and a @ClientWebSocket (or WebSocketClient) bean, started on a random port, exchanging text/JSON messages, and covering @OnOpen/@OnMessage/@OnClose/@OnError to reach broad reachability metadata coverage. No Docker image, environment variable, or system property is needed — everything runs in-process.",
+      "risks": [
+        "If 5.1.15 versions of micronaut-http-server-netty/micronaut-http-client are not yet published or resolvable, fall back to matching whatever micronaut-core-family version is actually resolved for the other io.micronaut artifacts in this build."
+      ],
+      "applied_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "io.micronaut:micronaut-http-server-netty:5.1.15",
+          "result": "applied",
+          "target": "tests/src/io.micronaut/micronaut-websocket/5.1.15/build.gradle"
+        },
+        {
+          "kind": "dependency",
+          "coordinate": "io.micronaut:micronaut-http-client:5.1.15",
+          "result": "applied",
+          "target": "tests/src/io.micronaut/micronaut-websocket/5.1.15/build.gradle"
+        },
+        {
+          "kind": "dependency",
+          "coordinate": "io.micronaut:micronaut-jackson-databind:5.1.15",
+          "result": "applied",
+          "target": "tests/src/io.micronaut/micronaut-websocket/5.1.15/build.gradle"
+        }
+      ],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#10141 Support for io.micronaut:micronaut-websocket:5.1.15; label=library-new-request; body_chars=39"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "sonnet",
+      "input_tokens_used": 24,
+      "output_tokens_used": 6021
+    },
+    "metrics": {
+      "input_tokens_used": 272803,
+      "cached_input_tokens_used": 3856000,
+      "output_tokens_used": 25820,
+      "iterations": 11,
+      "cost_usd": 4.0666,
+      "generated_loc": 315,
+      "tested_library_loc": 149,
+      "metadata_entries": 23,
+      "test_only_metadata_entries": 259,
+      "code_coverage_percent": 57.98
+    },
+    "artifacts": {
+      "metadata_file": "metadata/io.micronaut/micronaut-websocket/5.1.15/reachability-metadata.json"
+    }
+  }
+}
