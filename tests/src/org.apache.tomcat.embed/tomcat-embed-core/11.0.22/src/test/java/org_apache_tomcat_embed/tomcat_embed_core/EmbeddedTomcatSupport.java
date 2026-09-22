@@ -16,6 +16,8 @@ import java.time.Duration;
 
 import jakarta.servlet.http.HttpServlet;
 import org.apache.catalina.Context;
+import org.apache.catalina.Lifecycle;
+import org.apache.catalina.LifecycleListener;
 import org.apache.catalina.Valve;
 import org.apache.catalina.connector.Connector;
 import org.apache.catalina.core.StandardHost;
@@ -31,8 +33,22 @@ final class EmbeddedTomcatSupport implements AutoCloseable {
         connector.setPort(0);
         tomcat.setConnector(connector);
         Context context = tomcat.addContext("", baseDirectory.toString());
+        configureContextWithoutWebappScanning(context);
         Tomcat.addServlet(context, "test-servlet", servlet);
         context.addServletMappingDecoded("/test", "test-servlet");
+    }
+
+    static void configureContextWithoutWebappScanning(Context context) {
+        for (LifecycleListener listener : context.findLifecycleListeners()) {
+            if (listener instanceof Tomcat.FixContextListener) {
+                context.removeLifecycleListener(listener);
+            }
+        }
+        context.addLifecycleListener(event -> {
+            if (Lifecycle.CONFIGURE_START_EVENT.equals(event.getType())) {
+                context.setConfigured(true);
+            }
+        });
     }
 
     Connector connector() {

@@ -27,7 +27,7 @@ public class CatalinaTest {
         Path serverXml = temporaryDirectory.resolve("server.xml");
         Files.writeString(serverXml, "<Server port=\"-1\" shutdown=\"SHUTDOWN\"/>");
         Catalina catalina = new Catalina();
-        catalina.setConfigFile(serverXml.toString());
+        catalina.setConfigFile(serverXml.toUri().toString());
         catalina.setUseGeneratedCode(true);
         catalina.setGeneratedCodePackage(getClass().getPackageName());
 
