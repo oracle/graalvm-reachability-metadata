@@ -1,0 +1,81 @@
+{
+  "add_new_library_support:2026-09-22": {
+    "timestamp": "2026-09-22T03:04:48.283436Z",
+    "library": "io.micronaut:micronaut-http-client:5.1.15",
+    "starting_commit": "4057482dcaa621ec156b2215aa6a012f20aaab5a",
+    "ending_commit": "018514eb59a22b70e48a8d7a860176631b86c8ae",
+    "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-sol",
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "status": "success",
+    "stats": {
+      "version": "5.1.15",
+      "dynamicAccess": {
+        "breakdown": {},
+        "coverageRatio": 1.0,
+        "coveredCalls": 0,
+        "totalCalls": 0
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 5777,
+          "missed": 10892,
+          "ratio": 0.346571,
+          "total": 16669
+        },
+        "line": {
+          "covered": 1301,
+          "missed": 2418,
+          "ratio": 0.349825,
+          "total": 3719
+        },
+        "method": {
+          "covered": 331,
+          "missed": 581,
+          "ratio": 0.362939,
+          "total": 912
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "no_action",
+      "issue_number": 10140,
+      "issue_label": "library-new-request",
+      "library": "io.micronaut:micronaut-http-client:5.1.15",
+      "summary": "micronaut-http-client is the Netty-based client implementation already exercised transitively by this repo's micronaut-http-client-core and micronaut-http-server-netty tests, which round-trip it against an in-process HTTP server with no Docker image, network dependency, or special env/system property. Standard generated scaffold (annotation processor + companion Micronaut deps) is sufficient.",
+      "deterministic_setup": [],
+      "agent_guidance": "Follow the sibling scaffold pattern used for io.micronaut/micronaut-http-client-core and io.micronaut/micronaut-http-server-netty: testAnnotationProcessor 'io.micronaut:micronaut-inject-java:$libraryVersion' for @Client/@ClientFilter bean compilation, plus assertj-core and (if exercising JSON binding) micronaut-jackson-databind. Use an in-process server (java.com.sun.net.httpserver.HttpServer, as in micronaut-http-client-core's test, or micronaut-http-server-netty) as the test peer instead of any external service.",
+      "risks": [],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#10140 Support for io.micronaut:micronaut-http-client:5.1.15; label=library-new-request; body_chars=52"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "sonnet",
+      "input_tokens_used": 20,
+      "output_tokens_used": 6785
+    },
+    "metrics": {
+      "input_tokens_used": 218365,
+      "cached_input_tokens_used": 3646848,
+      "output_tokens_used": 25069,
+      "iterations": 9,
+      "cost_usd": 3.6673,
+      "generated_loc": 290,
+      "tested_library_loc": 1301,
+      "metadata_entries": 103,
+      "test_only_metadata_entries": 19,
+      "code_coverage_percent": 34.98
+    },
+    "artifacts": {
+      "metadata_file": "metadata/io.micronaut/micronaut-http-client/5.1.15/reachability-metadata.json"
+    }
+  }
+}

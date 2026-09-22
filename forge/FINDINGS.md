@@ -8,6 +8,11 @@ Newest entry first; every non-approval is recorded, including one a repair later
 **Runtime-lambda re-scope left unjustified metadata**
 
 The positive ReflectionUtil.getConstructorAsFunction scenario had been dropped after Native Image runtime lambda definition failed, but the contribution still shipped its manually added lambda registration and retained test-only ConstructedWithString metadata. That left requested metadata without the public-API test required by FS-test-contract.1.5 and FS-test-contract.2.7. The scenario itself is a valid FS-test-contract.4.3.2 re-scope: it concretely uses runtime LambdaMetafactory class definition, Native Image reports UnsupportedFeatureError, Avro catches Throwable and returns null so the refusal cannot be verified, and the remaining public-API tests still pass the repair coverage gate.
+## 2026-09-22 — io.micronaut:micronaut-http-client:5.1.15 (#10140)
+
+**Generated library statistics were stale**
+
+The first Forge finalization pass regenerated stats/io.micronaut/micronaut-http-client/5.1.15/stats.json and changed instruction coverage from 5777 to 5775 covered instructions and line coverage from 1301 to 1300 covered lines. Because the publishable tree changed, finalization correctly exited nonzero and required another pass.
 ## 2026-09-22 — org.relaxng:jing:20181222 (#10162)
 
 **Stale generated library coverage statistics**
