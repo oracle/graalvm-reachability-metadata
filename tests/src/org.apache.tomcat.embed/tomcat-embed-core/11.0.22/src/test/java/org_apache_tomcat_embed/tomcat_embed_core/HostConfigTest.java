@@ -41,11 +41,6 @@ public class HostConfigTest {
                 """);
         Path configBase = base.resolve("conf/Catalina/localhost");
         Files.createDirectories(configBase);
-        Files.writeString(configBase.resolve("context.xml.default"), "<Context />");
-        Files.writeString(configBase.resolve("web.xml.default"), """
-                <?xml version="1.0" encoding="UTF-8"?>
-                <web-app xmlns="https://jakarta.ee/xml/ns/jakartaee" version="6.0"/>
-                """);
         Files.writeString(configBase.resolve("sample.xml"),
                 "<Context docBase=\"" + application.toAbsolutePath() + "\" />");
 
