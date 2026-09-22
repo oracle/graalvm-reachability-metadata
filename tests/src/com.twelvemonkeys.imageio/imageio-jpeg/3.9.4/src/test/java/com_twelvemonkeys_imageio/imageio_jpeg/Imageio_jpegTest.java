@@ -125,6 +125,30 @@ public class Imageio_jpegTest {
         }
     }
 
+    @Test
+    void readsEmbeddedJfifThumbnail() throws IOException {
+        BufferedImage thumbnail = createColorQuadrants(4, 4);
+        byte[] encoded = withJfifThumbnail(writeJpeg(createColorQuadrants(24, 16), false), thumbnail);
+        ImageReader reader = newJpegReader();
+
+        try (ImageInputStream input = ImageIO.createImageInputStream(new ByteArrayInputStream(encoded))) {
+            reader.setInput(input);
+
+            assertThat(reader.readerSupportsThumbnails()).isTrue();
+            assertThat(reader.getNumThumbnails(0)).isEqualTo(1);
+            assertThat(reader.getThumbnailWidth(0, 0)).isEqualTo(4);
+            assertThat(reader.getThumbnailHeight(0, 0)).isEqualTo(4);
+
+            BufferedImage decoded = reader.readThumbnail(0, 0);
+            assertThat(new Color(decoded.getRGB(1, 1))).isEqualTo(Color.RED);
+            assertThat(new Color(decoded.getRGB(3, 1))).isEqualTo(Color.GREEN);
+            assertThat(new Color(decoded.getRGB(1, 3))).isEqualTo(Color.BLUE);
+            assertThat(new Color(decoded.getRGB(3, 3))).isEqualTo(Color.YELLOW);
+        } finally {
+            reader.dispose();
+        }
+    }
+
     private static byte[] writeJpeg(BufferedImage image, boolean progressive) throws IOException {
         ImageWriter writer = newJpegWriter();
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
@@ -164,6 +188,49 @@ public class Imageio_jpegTest {
             graphics.dispose();
         }
         return image;
+    }
+
+    private static byte[] withJfifThumbnail(byte[] jpeg, BufferedImage thumbnail) {
+        int segmentOffset = findJfifSegment(jpeg);
+        int oldSegmentLength = (jpeg[segmentOffset + 2] & 0xff) << 8 | jpeg[segmentOffset + 3] & 0xff;
+        int thumbnailLength = thumbnail.getWidth() * thumbnail.getHeight() * 3;
+        int newSegmentLength = 16 + thumbnailLength;
+        int oldSegmentEnd = segmentOffset + 2 + oldSegmentLength;
+        byte[] result = new byte[jpeg.length - oldSegmentLength + newSegmentLength];
+
+        System.arraycopy(jpeg, 0, result, 0, segmentOffset + 16);
+        result[segmentOffset + 2] = (byte) (newSegmentLength >>> 8);
+        result[segmentOffset + 3] = (byte) newSegmentLength;
+        result[segmentOffset + 16] = (byte) thumbnail.getWidth();
+        result[segmentOffset + 17] = (byte) thumbnail.getHeight();
+
+        int pixelOffset = segmentOffset + 18;
+        for (int y = 0; y < thumbnail.getHeight(); y++) {
+            for (int x = 0; x < thumbnail.getWidth(); x++) {
+                int rgb = thumbnail.getRGB(x, y);
+                result[pixelOffset++] = (byte) (rgb >>> 16);
+                result[pixelOffset++] = (byte) (rgb >>> 8);
+                result[pixelOffset++] = (byte) rgb;
+            }
+        }
+
+        System.arraycopy(jpeg, oldSegmentEnd, result, pixelOffset, jpeg.length - oldSegmentEnd);
+        return result;
+    }
+
+    private static int findJfifSegment(byte[] jpeg) {
+        for (int offset = 2; offset + 9 < jpeg.length; offset++) {
+            if ((jpeg[offset] & 0xff) == 0xff
+                    && (jpeg[offset + 1] & 0xff) == 0xe0
+                    && jpeg[offset + 4] == 'J'
+                    && jpeg[offset + 5] == 'F'
+                    && jpeg[offset + 6] == 'I'
+                    && jpeg[offset + 7] == 'F'
+                    && jpeg[offset + 8] == 0) {
+                return offset;
+            }
+        }
+        throw new AssertionError("JPEG writer did not produce a JFIF segment");
     }
 
     private static ImageReader newJpegReader() {
