@@ -1,10 +1,10 @@
 {
-  "base_commit": "5d7a641b3c5e6f7038354a07ad1359b12ecf5726",
-  "branch": "ai/kimeta/improve-coverage-org.apache.tomcat.embed-tomcat-embed-core-11.0.22-chunked-forge-10144-20260922070311987655-8d3166f90a3c",
+  "base_commit": "7d38dcd37945e57a1cb1ec02e7ab6fe7486ecea6",
+  "branch": "ai/kimeta/improve-coverage-org.apache.tomcat.embed-tomcat-embed-core-11.0.22-chunked-forge-10144-20260922173002294685-b36de9040084",
   "follow_ups": [],
   "forge": {
     "branch": "master",
-    "commit": "5d7a641b3c5e6f7038354a07ad1359b12ecf5726",
+    "commit": "9932805abe145b26f05f0f247fc0aca403d760d9",
     "monitored_branch": "origin/master"
   },
   "issue_number": 10144,
@@ -15,11 +15,11 @@
     "version": "11.0.22"
   },
   "local_ci_verification": {
-    "base_commit": "5d7a641b3c5e6f7038354a07ad1359b12ecf5726",
+    "base_commit": "7d38dcd37945e57a1cb1ec02e7ab6fe7486ecea6",
     "commands": [],
     "failure_command": null,
     "failure_gate": null,
-    "final_commit": "b92b9dfbb1f30ae11a08b49efb9f718335e9c0e4",
+    "final_commit": "747c560108a5416f4f4f526c389d39a90ec9580b",
     "fixups": [],
     "human_intervention_required": false,
     "repo_fix_paths": [],
@@ -30,33 +30,35 @@
       "metadata/org.apache.tomcat.embed/tomcat-embed-core/11.0.22/reachability-metadata.json",
       "stats/org.apache.tomcat.embed/tomcat-embed-core/11.0.22/stats.json",
       "tests/src/org.apache.tomcat.embed/tomcat-embed-core/11.0.22/src/test/java/org_apache_tomcat_embed/tomcat_embed_core/HostConfigTest.java",
+      "tests/src/org.apache.tomcat.embed/tomcat-embed-core/11.0.22/src/test/java/org_apache_tomcat_embed/tomcat_embed_core/RecordingLog.java",
+      "tests/src/org.apache.tomcat.embed/tomcat-embed-core/11.0.22/src/test/java/org_apache_tomcat_embed/tomcat_embed_core/WebappClassLoaderBaseInnerPrivilegedJavaseGetResourceTest.java",
       "tests/src/org.apache.tomcat.embed/tomcat-embed-core/11.0.22/src/test/resources/META-INF/native-image/reachability-metadata.json"
     ],
     "decision": "approved",
-    "finding_body": "The contribution added absolute /tmp/junit... resource globs for HostConfig descriptor defaults and retained stale JAAS temporary-file globs in test-only metadata. Machine-local temporary paths must use normal file APIs rather than Native Image resource metadata under FS-test-contract.4.4.",
-    "finding_title": "Generated metadata captured machine-local temporary resources",
-    "fix_note": "Removed the unnecessary temporary HostConfig default files and all machine-local temporary resource entries while preserving descriptor deployment coverage, then regenerated statistics and ran the exact Forge finalizer to a stable successful pass.",
+    "finding_body": "The contribution deleted HostConfigTest.deploysContextDescriptorAtServerStartup, weakening an existing passing scenario contrary to FS-test-contract.2.9; marked WebappClassLoaderBase$PrivilegedJavaseGetResource complete without its required dedicated test file under FS-test-contract.1.8; and retained six HostConfig plus three JAAS /tmp/junit... resource globs, contrary to FS-test-contract.4.4. It also retained an unused RecordingLog helper with 106 unjustified test-only reflection registrations and shipped test-owned or nonexistent resource entries.",
+    "finding_title": "Generated coverage removed an existing scenario and retained transient test metadata",
+    "fix_note": "Restored the HostConfig descriptor scenario, restored the dedicated WebappClassLoaderBase inner-class test, removed machine-local and other unjustified/test-owned metadata, removed the unused RecordingLog helper and its registrations, and regenerated stats. The final stable Forge pass increased coverage to 434/453 calls and made no further publishable change.",
     "model": "gpt-5.6-sol",
-    "review_comment": "Reviewed the contribution scope, chunked dynamic-access evidence, requested AbstractProtocol#getProperty(String) registration and its public Connector API test, test-contract guardrails, and metadata format. Coverage remains nonzero at 402/453 calls (0.887417), and the exact Forge finalizer passed all three native lanes, metadata validation, style checks, generated-test validity, and stable statistics without further publishable changes.",
-    "session_id": "d37ca8bd38474c4c"
+    "review_comment": "Reviewed the single-coordinate diff, issue-requested AbstractProtocol#getProperty(String) coverage, chunked dynamic-access evidence, test contract, metadata format, and scope. The repaired tree reports 434/453 covered dynamic-access calls (nonzero as required for a chunked contribution), contains no legacy metadata files, and passed the exact Forge finalization command unchanged on its final run, including all three native lanes, metadata/style checks, and regenerated statistics.",
+    "session_id": "6adb055b0eea499b"
   },
   "metrics": {
     "agent": "pi",
     "model": "gpt-5.6-sol",
     "path": "stats/org.apache.tomcat.embed/tomcat-embed-core/11.0.22/execution-metrics.json",
     "summary": {
-      "cached_input_tokens_used": 12063744,
-      "code_coverage_percent": 24.09,
-      "cost_usd": 10.6229,
-      "generated_loc": 4690,
-      "input_tokens_used": 551192,
-      "iterations": 9,
-      "metadata_entries": 2224,
-      "output_tokens_used": 61166,
-      "test_only_metadata_entries": 489,
-      "tested_library_loc": 19682
+      "cached_input_tokens_used": 19818752,
+      "code_coverage_percent": 24.4,
+      "cost_usd": 21.9857,
+      "generated_loc": 5295,
+      "input_tokens_used": 1667101,
+      "iterations": 27,
+      "metadata_entries": 2266,
+      "output_tokens_used": 124692,
+      "test_only_metadata_entries": 725,
+      "tested_library_loc": 19937
     },
-    "timestamp": "2026-09-22T07:03:11.987655Z"
+    "timestamp": "2026-09-22T17:30:02.294685Z"
   },
   "modifiers": {
     "chunk_final": false,
@@ -64,53 +66,53 @@
     "human_intervention": false
   },
   "producer": "kimeta",
-  "publication_id": "forge-10144-20260922070311987655-8d3166f90a3c",
+  "publication_id": "forge-10144-20260922173002294685-b36de9040084",
   "render": {
     "alias_split": null,
-    "baseline_metadata_entries": 2079,
+    "baseline_metadata_entries": 2220,
     "baseline_stats": {
       "dynamicAccess": {
         "breakdown": {
           "reflection": {
-            "coverageRatio": 0.82,
-            "coveredCalls": 328,
-            "totalCalls": 400
+            "coverageRatio": 0.88835,
+            "coveredCalls": 366,
+            "totalCalls": 412
           },
           "resources": {
-            "coverageRatio": 0.829268,
-            "coveredCalls": 34,
+            "coverageRatio": 0.878049,
+            "coveredCalls": 36,
             "totalCalls": 41
           }
         },
-        "coverageRatio": 0.820862,
-        "coveredCalls": 362,
-        "totalCalls": 441
+        "coverageRatio": 0.887417,
+        "coveredCalls": 402,
+        "totalCalls": 453
       },
       "libraryCoverage": {
         "instruction": {
-          "covered": 76878,
-          "missed": 270249,
-          "ratio": 0.221469,
+          "covered": 84747,
+          "missed": 262380,
+          "ratio": 0.244138,
           "total": 347127
         },
         "line": {
-          "covered": 17741,
-          "missed": 63962,
-          "ratio": 0.21714,
+          "covered": 19656,
+          "missed": 62047,
+          "ratio": 0.240579,
           "total": 81703
         },
         "method": {
-          "covered": 3262,
-          "missed": 9551,
-          "ratio": 0.254585,
+          "covered": 3582,
+          "missed": 9231,
+          "ratio": 0.27956,
           "total": 12813
         }
       },
       "version": "11.0.22"
     },
-    "baseline_test_only_entries": 355,
-    "current_metadata_entries": 2220,
-    "current_test_only_entries": 483,
+    "baseline_test_only_entries": 483,
+    "current_metadata_entries": 2256,
+    "current_test_only_entries": 504,
     "dynamic_access": {
       "classThreshold": 15,
       "completedClasses": [
@@ -173,19 +175,40 @@
         "org.apache.catalina.valves.ProxyErrorReportValve",
         "org.apache.catalina.webresources.ClasspathURLStreamHandler",
         "org.apache.tomcat.util.compat.Jre20Compat",
-        "org.apache.tomcat.util.net.SSLUtilBase"
+        "org.apache.tomcat.util.net.SSLUtilBase",
+        "org.apache.catalina.session.ManagerBase",
+        "org.apache.catalina.util.CustomObjectInputStream",
+        "org.apache.catalina.valves.FilterValve",
+        "org.apache.catalina.valves.JDBCAccessLogValve",
+        "org.apache.naming.factory.FactoryBase",
+        "org.apache.tomcat.util.IntrospectionUtils",
+        "org.apache.tomcat.util.digester.Digester",
+        "org.apache.catalina.startup.Tool",
+        "org.apache.naming.NamingContext",
+        "org.apache.juli.logging.LogFactory",
+        "org.apache.juli.logging.DirectJDKLog",
+        "jakarta.servlet.http.HttpServlet$NoBodyOutputStream",
+        "org.apache.catalina.core.DefaultInstanceManager",
+        "org.apache.catalina.loader.WebappClassLoaderBase$PrivilegedJavaseGetResource",
+        "org.apache.catalina.util.CharsetMapper",
+        "org.apache.juli.ClassLoaderLogManager",
+        "org.apache.naming.StringManager",
+        "org.apache.tomcat.util.modeler.ManagedBean"
       ],
       "coordinate": "org.apache.tomcat.embed:tomcat-embed-core:11.0.22",
       "currentChunkClassCount": 15,
       "exhaustedClasses": [
         "org.apache.tomcat.util.compat.JreCompat",
-        "org.apache.catalina.util.ServerInfo"
+        "org.apache.catalina.util.ServerInfo",
+        "org.apache.catalina.core.AprLifecycleListener",
+        "org.apache.catalina.loader.WebappClassLoaderBase",
+        "org.apache.catalina.core.OpenSSLLifecycleListener"
       ],
       "failedClasses": [],
       "issueNumber": 8328,
-      "latestChunkBranch": "ai/kimeta/improve-coverage-org.apache.tomcat.embed-tomcat-embed-core-11.0.22-chunked-forge-10144-20260922070311987655-8d3166f90a3c",
+      "latestChunkBranch": "ai/kimeta/improve-coverage-org.apache.tomcat.embed-tomcat-embed-core-11.0.22-chunked-forge-10144-20260922173002294685-b36de9040084",
       "latestChunkCommit": "00adf70df20b37d8e27b0f989d8f32379c0927b5",
-      "latestChunkPublicationId": "forge-10144-20260922070311987655-8d3166f90a3c",
+      "latestChunkPublicationId": "forge-10144-20260922173002294685-b36de9040084",
       "latestChunkPullRequest": 8579,
       "skippedClasses": []
     },
@@ -193,37 +216,37 @@
       "dynamicAccess": {
         "breakdown": {
           "reflection": {
-            "coverageRatio": 0.88835,
-            "coveredCalls": 366,
+            "coverageRatio": 0.958738,
+            "coveredCalls": 395,
             "totalCalls": 412
           },
           "resources": {
-            "coverageRatio": 0.878049,
-            "coveredCalls": 36,
+            "coverageRatio": 0.95122,
+            "coveredCalls": 39,
             "totalCalls": 41
           }
         },
-        "coverageRatio": 0.887417,
-        "coveredCalls": 402,
+        "coverageRatio": 0.958057,
+        "coveredCalls": 434,
         "totalCalls": 453
       },
       "libraryCoverage": {
         "instruction": {
-          "covered": 84747,
-          "missed": 262380,
-          "ratio": 0.244138,
+          "covered": 86348,
+          "missed": 260779,
+          "ratio": 0.24875,
           "total": 347127
         },
         "line": {
-          "covered": 19656,
-          "missed": 62047,
-          "ratio": 0.240579,
+          "covered": 20067,
+          "missed": 61636,
+          "ratio": 0.245609,
           "total": 81703
         },
         "method": {
-          "covered": 3582,
-          "missed": 9231,
-          "ratio": 0.27956,
+          "covered": 3652,
+          "missed": 9161,
+          "ratio": 0.285023,
           "total": 12813
         }
       },
@@ -242,5 +265,5 @@
   "strategy_name": "library_update_optimistic_pi_gpt-5.6-sol",
   "task_type": "library-update-request",
   "template_type": "library-update-request",
-  "timestamp": "2026-09-22T07:03:11.987655Z"
+  "timestamp": "2026-09-22T17:30:02.294685Z"
 }
