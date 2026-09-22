@@ -1,0 +1,137 @@
+{
+  "base_commit": "5d7a641b3c5e6f7038354a07ad1359b12ecf5726",
+  "branch": "ai/kimeta/add-lib-support-nu.validator-galimatias-0.1.3-chunked-forge-10161-20260922094453346825-639ad421b366",
+  "follow_ups": [],
+  "forge": {
+    "branch": "master",
+    "commit": "5d7a641b3c5e6f7038354a07ad1359b12ecf5726",
+    "monitored_branch": "origin/master"
+  },
+  "issue_number": 10161,
+  "library": {
+    "artifact": "galimatias",
+    "coordinates": "nu.validator:galimatias:0.1.3",
+    "group": "nu.validator",
+    "version": "0.1.3"
+  },
+  "local_ci_verification": {
+    "base_commit": "5d7a641b3c5e6f7038354a07ad1359b12ecf5726",
+    "commands": [
+      {
+        "command": [
+          "./gradlew",
+          "generateChangedIndexFileCoordinatesList",
+          "-PbaseCommit=origin/master",
+          "-PnewCommit=HEAD"
+        ],
+        "env": {
+          "GITHUB_OUTPUT": "/tmp/tmpxo3n_llg"
+        },
+        "gate": "changed-index-coordinates",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :generateChangedIndexFileCoordinatesList\n\n[Incubating] Problems report is available at: file:///home/oracle/oracle/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10161-a3adfd73/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 3s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      },
+      {
+        "command": [
+          "./gradlew",
+          "validateIndexFiles",
+          "-Pcoordinates=nu.validator:galimatias"
+        ],
+        "env": {},
+        "gate": "index-file-validation",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :validateIndexFiles\n✅ metadata/nu.validator/galimatias/index.json: Valid\n\n[Incubating] Problems report is available at: file:///home/oracle/oracle/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10161-a3adfd73/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 2s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      }
+    ],
+    "failure_command": null,
+    "failure_gate": null,
+    "final_commit": "7555f65edd19459d23cec43e82f9c4dd875ea96c",
+    "fixups": [],
+    "human_intervention_required": false,
+    "repo_fix_paths": [],
+    "status": "success"
+  },
+  "local_review": {
+    "changed_paths": [],
+    "decision": "approved",
+    "finding_body": "",
+    "finding_title": "",
+    "fix_note": "",
+    "model": "gpt-5.6-sol",
+    "review_comment": "Verified the contribution is limited to nu.validator:galimatias:0.1.3 and its allowed metadata, index, stats, and test files. The public test is outside the library package, exercises and asserts Galimatias behavior, is not scaffold-only or version-pinned, and does not skip or tolerate Native Image execution. The only metadata file is reachability-metadata.json. Recorded dynamic-access coverage is 1/1 (100%), above the new-library threshold, and 1 covered call versus 4 reported metadata entries does not trigger the mismatch guardrail. Local index evidence passed, and the stable Forge finalization pass completed all three native lanes, metadata validation, style checks, generated-test checks, allowed-package handling, and statistics generation without changing the publishable tree.",
+    "session_id": "e3a3a74225fb416e"
+  },
+  "metrics": {
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "path": "stats/nu.validator/galimatias/0.1.3/execution-metrics.json",
+    "summary": {
+      "cached_input_tokens_used": 479744,
+      "code_coverage_percent": 14.2,
+      "cost_usd": 0.6543,
+      "generated_loc": 26,
+      "input_tokens_used": 55301,
+      "iterations": 3,
+      "metadata_entries": 4,
+      "output_tokens_used": 4597,
+      "tested_library_loc": 376
+    },
+    "timestamp": "2026-09-22T09:44:53.346825Z"
+  },
+  "modifiers": {
+    "chunk_final": true,
+    "chunked_dynamic_access": true,
+    "human_intervention": false
+  },
+  "producer": "kimeta",
+  "publication_id": "forge-10161-20260922094453346825-639ad421b366",
+  "render": {
+    "dynamic_access": null,
+    "dynamic_access_evidence": {
+      "covered_call_sites": [
+        "[resources] java.lang.Class#getResourceAsStream(java.lang.String) <- io.mola.galimatias.TestURLLoader.loadTestURLs(TestURLLoader.java:78) (line 78)"
+      ],
+      "metadata_rules": []
+    },
+    "library_stats": {
+      "dynamicAccess": {
+        "breakdown": {
+          "resources": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 1,
+            "totalCalls": 1
+          }
+        },
+        "coverageRatio": 1.0,
+        "coveredCalls": 1,
+        "totalCalls": 1
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 1792,
+          "missed": 11840,
+          "ratio": 0.131455,
+          "total": 13632
+        },
+        "line": {
+          "covered": 376,
+          "missed": 2271,
+          "ratio": 0.142048,
+          "total": 2647
+        },
+        "method": {
+          "covered": 50,
+          "missed": 335,
+          "ratio": 0.12987,
+          "total": 385
+        }
+      },
+      "version": "0.1.3"
+    }
+  },
+  "schema_version": 1,
+  "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-sol",
+  "task_type": "library-new-request",
+  "template_type": "library-new-request",
+  "timestamp": "2026-09-22T09:44:53.346825Z"
+}
