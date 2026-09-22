@@ -3,6 +3,11 @@
 Rendered by Forge from the pre-push branch review of §FS-local-branch-review.
 Newest entry first; every non-approval is recorded, including one a repair later cleared.
 
+## 2026-09-21 — io.micronaut:micronaut-websocket:5.1.15 (#10141)
+
+**Generated test dependencies pin the requested library version**
+
+The coordinate build script hardcoded version 5.1.15 for three Micronaut companion artifacts even though it already derives the tested version as libraryVersion. This violated the version-agnostic test requirement in FS-test-contract.2.5 and Review Signal #4 because the suite would keep those dependencies pinned when reused for a later tested version.
 ## 2026-09-22 — io.micronaut:micronaut-http-client:5.1.15 (#10140)
 
 **Generated library statistics were stale**
