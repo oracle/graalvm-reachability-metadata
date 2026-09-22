@@ -9,6 +9,7 @@ package com_ibm_icu.icu4j;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.ibm.icu.number.NumberFormatter;
+import com.ibm.icu.text.Bidi;
 import com.ibm.icu.text.BreakIterator;
 import com.ibm.icu.text.Collator;
 import com.ibm.icu.text.CurrencyMetaInfo;
@@ -33,6 +34,15 @@ import java.util.Map;
 import org.junit.jupiter.api.Test;
 
 public class Icu4jTest {
+    @Test
+    void reordersMixedDirectionTextForDisplay() {
+        Bidi bidi = new Bidi("abc\u05d0\u05d1\u05d2", Bidi.DIRECTION_LEFT_TO_RIGHT);
+
+        assertThat(bidi.getDirection()).isEqualTo(Bidi.MIXED);
+        assertThat(bidi.countRuns()).isEqualTo(2);
+        assertThat(bidi.writeReordered(Bidi.DO_MIRRORING)).isEqualTo("abc\u05d2\u05d1\u05d0");
+    }
+
     @Test
     void formatsAndParsesLocalizedCurrency() throws ParseException {
         Currency currency = Currency.getInstance(ULocale.US);
