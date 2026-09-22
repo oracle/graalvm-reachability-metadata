@@ -1,0 +1,257 @@
+{
+  "base_commit": "d6c776fdfa805b9e417995bcf5719ca4fd7be8c4",
+  "branch": "ai/kimeta/improve-coverage-org.apache.tomcat.embed-tomcat-embed-core-11.0.22-chunked-forge-10144-20260922013116104667-25829a958d3e",
+  "follow_ups": [],
+  "forge": {
+    "branch": "master",
+    "commit": "d6c776fdfa805b9e417995bcf5719ca4fd7be8c4",
+    "monitored_branch": "origin/master"
+  },
+  "issue_number": 10144,
+  "library": {
+    "artifact": "tomcat-embed-core",
+    "coordinates": "org.apache.tomcat.embed:tomcat-embed-core:11.0.22",
+    "group": "org.apache.tomcat.embed",
+    "version": "11.0.22"
+  },
+  "local_ci_verification": {
+    "base_commit": "d6c776fdfa805b9e417995bcf5719ca4fd7be8c4",
+    "commands": [
+      {
+        "command": [
+          "./gradlew",
+          "generateChangedIndexFileCoordinatesList",
+          "-PbaseCommit=origin/master",
+          "-PnewCommit=HEAD"
+        ],
+        "env": {
+          "GITHUB_OUTPUT": "/tmp/tmpodpqmo75"
+        },
+        "gate": "changed-index-coordinates",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :generateChangedIndexFileCoordinatesList\n\n[Incubating] Problems report is available at: file:///home/oracle/oracle/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10144-fb81f14e/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 2s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      },
+      {
+        "command": [
+          "./gradlew",
+          "validateIndexFiles",
+          "-Pcoordinates=org.apache.tomcat.embed:tomcat-embed-core"
+        ],
+        "env": {},
+        "gate": "index-file-validation",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :validateIndexFiles\n✅ metadata/org.apache.tomcat.embed/tomcat-embed-core/index.json: Valid\n\n[Incubating] Problems report is available at: file:///home/oracle/oracle/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10144-fb81f14e/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 2s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      }
+    ],
+    "failure_command": null,
+    "failure_gate": null,
+    "final_commit": "888054e751c41a5c6d3fb17f56699b949864d83b",
+    "fixups": [],
+    "human_intervention_required": false,
+    "repo_fix_paths": [],
+    "status": "success"
+  },
+  "local_review": {
+    "changed_paths": [
+      "stats/org.apache.tomcat.embed/tomcat-embed-core/11.0.22/stats.json",
+      "tests/src/org.apache.tomcat.embed/tomcat-embed-core/11.0.22/src/test/java/org_apache_tomcat_embed/tomcat_embed_core/DataSourceLinkFactoryInnerDataSourceHandlerTest.java",
+      "tests/src/org.apache.tomcat.embed/tomcat-embed-core/11.0.22/src/test/java/org_apache_tomcat_embed/tomcat_embed_core/DataSourceLinkFactoryTest.java",
+      "tests/src/org.apache.tomcat.embed/tomcat-embed-core/11.0.22/src/test/java/org_apache_tomcat_embed/tomcat_embed_core/SetPublicIdRuleTest.java"
+    ],
+    "decision": "approved",
+    "finding_body": "The exhaust report marked org.apache.naming.factory.DataSourceLinkFactory$DataSourceHandler and org.apache.tomcat.util.descriptor.web.SetPublicIdRule as completed, but the original contribution had no dedicated DataSourceLinkFactoryInnerDataSourceHandlerTest or SetPublicIdRuleTest. This violated the one-file-per-dynamic-access-class requirement in §FS-test-contract.1.8.",
+    "finding_title": "Completed dynamic-access classes lacked dedicated test files",
+    "fix_note": "Added dedicated public-API tests for the data-source handler credential path and web.xml public-ID parsing, narrowed DataSourceLinkFactoryTest to the outer proxy behavior, and accepted the finalizer's regenerated library-coverage statistics.",
+    "model": "gpt-5.6-sol",
+    "review_comment": "Reviewed the contribution scope, index integrity, issue-requested AbstractProtocol#getProperty(String) metadata and its Connector public-API coverage, test-contract guardrails, and legacy-config exclusions. Dynamic-access coverage is 362/441 (0.820862), above the 0.578704 baseline even without the chunk exemption. After repair, the exact Forge finalizer passed all three native lanes, metadata and style checks, generated-test validation, and stable statistics without further publishable changes.",
+    "session_id": "4132ed1020934a42"
+  },
+  "metrics": {
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "path": "stats/org.apache.tomcat.embed/tomcat-embed-core/11.0.22/execution-metrics.json",
+    "summary": {
+      "cached_input_tokens_used": 13026048,
+      "code_coverage_percent": 21.7,
+      "cost_usd": 9.9524,
+      "generated_loc": 3828,
+      "input_tokens_used": 383833,
+      "iterations": 7,
+      "metadata_entries": 2079,
+      "output_tokens_used": 50672,
+      "test_only_metadata_entries": 355,
+      "tested_library_loc": 17726
+    },
+    "timestamp": "2026-09-22T01:31:16.104667Z"
+  },
+  "modifiers": {
+    "chunk_final": false,
+    "chunked_dynamic_access": true,
+    "human_intervention": false
+  },
+  "producer": "kimeta",
+  "publication_id": "forge-10144-20260922013116104667-25829a958d3e",
+  "render": {
+    "alias_split": null,
+    "baseline_metadata_entries": 1960,
+    "baseline_stats": {
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 0.57289,
+            "coveredCalls": 224,
+            "totalCalls": 391
+          },
+          "resources": {
+            "coverageRatio": 0.634146,
+            "coveredCalls": 26,
+            "totalCalls": 41
+          }
+        },
+        "coverageRatio": 0.578704,
+        "coveredCalls": 250,
+        "totalCalls": 432
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 63988,
+          "missed": 281534,
+          "ratio": 0.185192,
+          "total": 345522
+        },
+        "line": {
+          "covered": 15641,
+          "missed": 65657,
+          "ratio": 0.192391,
+          "total": 81298
+        },
+        "method": {
+          "covered": 2937,
+          "missed": 9836,
+          "ratio": 0.229938,
+          "total": 12773
+        }
+      },
+      "version": "11.0.22"
+    },
+    "baseline_test_only_entries": 257,
+    "current_metadata_entries": 2079,
+    "current_test_only_entries": 355,
+    "dynamic_access": {
+      "classThreshold": 15,
+      "completedClasses": [
+        "org.apache.catalina.startup.Tomcat",
+        "org.apache.catalina.startup.WebappServiceLoader",
+        "org.apache.juli.FileHandler",
+        "org.apache.naming.factory.BeanFactory",
+        "org.apache.naming.factory.ResourceFactory",
+        "org.apache.tomcat.util.compat.Jre19Compat",
+        "org.apache.catalina.core.NamingContextListener",
+        "org.apache.catalina.startup.CatalinaBaseConfigurationSource",
+        "org.apache.naming.factory.LookupFactory",
+        "org.apache.catalina.authenticator.AuthenticatorBase",
+        "org.apache.catalina.authenticator.jaspic.AuthConfigFactoryImpl",
+        "org.apache.catalina.deploy.NamingResourcesImpl",
+        "org.apache.catalina.realm.JAASRealm",
+        "org.apache.catalina.startup.ContextConfig",
+        "jakarta.security.auth.message.config.AuthConfigFactory",
+        "jakarta.servlet.HttpConstraintElement",
+        "jakarta.servlet.HttpMethodConstraintElement",
+        "jakarta.servlet.ServletOutputStream",
+        "jakarta.servlet.ServletRequestWrapper",
+        "jakarta.servlet.ServletResponseWrapper",
+        "jakarta.servlet.http.Cookie",
+        "jakarta.servlet.http.CookieNameValidator",
+        "org.apache.catalina.authenticator.jaspic.SimpleServerAuthConfig",
+        "org.apache.catalina.core.JreMemoryLeakPreventionListener",
+        "org.apache.catalina.core.StandardContext",
+        "org.apache.catalina.filters.CsrfPreventionFilterBase",
+        "org.apache.catalina.filters.RateLimitFilter",
+        "org.apache.catalina.loader.WebappLoader",
+        "org.apache.catalina.manager.util.SessionUtils",
+        "org.apache.catalina.mbeans.BaseCatalinaMBean",
+        "org.apache.catalina.realm.JAASMemoryLoginModule",
+        "org.apache.catalina.realm.JNDIRealm",
+        "org.apache.catalina.servlets.WebdavServlet",
+        "org.apache.catalina.session.StandardManager",
+        "org.apache.catalina.startup.UserConfig",
+        "org.apache.catalina.util.SessionIdGeneratorBase",
+        "org.apache.catalina.valves.rewrite.RewriteValve",
+        "org.apache.naming.factory.DataSourceLinkFactory",
+        "org.apache.naming.factory.DataSourceLinkFactory$DataSourceHandler",
+        "org.apache.naming.factory.EjbFactory",
+        "org.apache.naming.factory.ResourceLinkFactory",
+        "org.apache.tomcat.SimpleInstanceManager",
+        "org.apache.tomcat.util.buf.ByteBufferUtilsUnsafe",
+        "org.apache.tomcat.util.compat.Jre21Compat",
+        "org.apache.tomcat.util.descriptor.web.SetPublicIdRule",
+        "org.apache.tomcat.util.net.SSLImplementation"
+      ],
+      "coordinate": "org.apache.tomcat.embed:tomcat-embed-core:11.0.22",
+      "currentChunkClassCount": 15,
+      "exhaustedClasses": [
+        "org.apache.tomcat.util.compat.JreCompat"
+      ],
+      "failedClasses": [],
+      "issueNumber": 8328,
+      "latestChunkBranch": "ai/kimeta/improve-coverage-org.apache.tomcat.embed-tomcat-embed-core-11.0.22-chunked-forge-10144-20260922013116104667-25829a958d3e",
+      "latestChunkCommit": "00adf70df20b37d8e27b0f989d8f32379c0927b5",
+      "latestChunkPublicationId": "forge-10144-20260922013116104667-25829a958d3e",
+      "latestChunkPullRequest": 8579,
+      "skippedClasses": []
+    },
+    "library_stats": {
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 0.82,
+            "coveredCalls": 328,
+            "totalCalls": 400
+          },
+          "resources": {
+            "coverageRatio": 0.829268,
+            "coveredCalls": 34,
+            "totalCalls": 41
+          }
+        },
+        "coverageRatio": 0.820862,
+        "coveredCalls": 362,
+        "totalCalls": 441
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 76878,
+          "missed": 270249,
+          "ratio": 0.221469,
+          "total": 347127
+        },
+        "line": {
+          "covered": 17741,
+          "missed": 63962,
+          "ratio": 0.21714,
+          "total": 81703
+        },
+        "method": {
+          "covered": 3262,
+          "missed": 9551,
+          "ratio": 0.254585,
+          "total": 12813
+        }
+      },
+      "version": "11.0.22"
+    },
+    "library_update_target": {
+      "match_type": "tested-version",
+      "matched_metadata_version": "11.0.22",
+      "matched_test_version": "11.0.22",
+      "requested_coordinate": "org.apache.tomcat.embed:tomcat-embed-core:11.0.22",
+      "resolved_metadata_version": "11.0.22",
+      "resolved_test_version": "11.0.22"
+    }
+  },
+  "schema_version": 1,
+  "strategy_name": "library_update_optimistic_pi_gpt-5.6-sol",
+  "task_type": "library-update-request",
+  "template_type": "library-update-request",
+  "timestamp": "2026-09-22T01:31:16.104667Z"
+}
