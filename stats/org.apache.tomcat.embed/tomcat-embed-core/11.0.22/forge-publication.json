@@ -26,21 +26,15 @@
     "status": "success"
   },
   "local_review": {
-    "changed_paths": [
-      "metadata/org.apache.tomcat.embed/tomcat-embed-core/11.0.22/reachability-metadata.json",
-      "stats/org.apache.tomcat.embed/tomcat-embed-core/11.0.22/stats.json",
-      "tests/src/org.apache.tomcat.embed/tomcat-embed-core/11.0.22/src/test/java/org_apache_tomcat_embed/tomcat_embed_core/HostConfigTest.java",
-      "tests/src/org.apache.tomcat.embed/tomcat-embed-core/11.0.22/src/test/java/org_apache_tomcat_embed/tomcat_embed_core/RecordingLog.java",
-      "tests/src/org.apache.tomcat.embed/tomcat-embed-core/11.0.22/src/test/java/org_apache_tomcat_embed/tomcat_embed_core/WebappClassLoaderBaseInnerPrivilegedJavaseGetResourceTest.java",
-      "tests/src/org.apache.tomcat.embed/tomcat-embed-core/11.0.22/src/test/resources/META-INF/native-image/reachability-metadata.json"
-    ],
-    "decision": "approved",
-    "finding_body": "The contribution deleted HostConfigTest.deploysContextDescriptorAtServerStartup, weakening an existing passing scenario contrary to FS-test-contract.2.9; marked WebappClassLoaderBase$PrivilegedJavaseGetResource complete without its required dedicated test file under FS-test-contract.1.8; and retained six HostConfig plus three JAAS /tmp/junit... resource globs, contrary to FS-test-contract.4.4. It also retained an unused RecordingLog helper with 106 unjustified test-only reflection registrations and shipped test-owned or nonexistent resource entries.",
-    "finding_title": "Generated coverage removed an existing scenario and retained transient test metadata",
-    "fix_note": "Restored the HostConfig descriptor scenario, restored the dedicated WebappClassLoaderBase inner-class test, removed machine-local and other unjustified/test-owned metadata, removed the unused RecordingLog helper and its registrations, and regenerated stats. The final stable Forge pass increased coverage to 434/453 calls and made no further publishable change.",
+    "action": "human-intervention",
+    "changed_paths": [],
+    "decision": "rejected",
+    "finding_body": "The transient verdict requested workflow runs that were not failed on the exact reviewed head: 35792627095",
+    "finding_title": "Transient CI diagnosis selected unrelated runs",
+    "fix_note": "No workflow was rerun.",
     "model": "gpt-5.6-sol",
-    "review_comment": "Reviewed the single-coordinate diff, issue-requested AbstractProtocol#getProperty(String) coverage, chunked dynamic-access evidence, test contract, metadata format, and scope. The repaired tree reports 434/453 covered dynamic-access calls (nonzero as required for a chunked contribution), contains no legacy metadata files, and passed the exact Forge finalization command unchanged on its final run, including all three native lanes, metadata/style checks, and regenerated statistics.",
-    "session_id": "6adb055b0eea499b"
+    "review_comment": "The current-head future-defaults-all job failed before metadata validation or tests: Maven Central returned HTTP 429 Too Many Requests while Gradle resolved three shared build-logic dependencies during pullAllowedDockerImages. Both current-defaults jobs in the same run completed successfully. This is an external transient rate limit, not a contribution failure; the complete single-coordinate diff remains unchanged and the failed current-head workflow run should be rerun.",
+    "session_id": "268dcd76cbc24629"
   },
   "metrics": {
     "agent": "pi",
