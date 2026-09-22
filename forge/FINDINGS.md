@@ -3,6 +3,12 @@
 Rendered by Forge from the pre-push branch review of §FS-local-branch-review.
 Newest entry first; every non-approval is recorded, including one a repair later cleared.
 
+## 2026-09-22 — io.micronaut:micronaut-http-client:5.1.15 (#10140)
+
+**Generated library statistics were stale**
+
+The first Forge finalization pass regenerated stats/io.micronaut/micronaut-http-client/5.1.15/stats.json and changed instruction coverage from 5777 to 5775 covered instructions and line coverage from 1301 to 1300 covered lines. Because the publishable tree changed, finalization correctly exited nonzero and required another pass.
+
 ## 2026-09-21 — org.jetbrains.kotlin:kotlin-daemon-embeddable:2.4.20 (#9926)
 
 **Generated tests violated metadata-generation and bounded-wait contracts**
