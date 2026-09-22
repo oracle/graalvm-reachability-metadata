@@ -23,7 +23,7 @@ public class ProxyErrorReportValveTest {
         ProxyErrorReportValve valve = new ProxyErrorReportValve();
         valve.setUsePropertiesFile(true);
         try (EmbeddedTomcatSupport server = new EmbeddedTomcatSupport(baseDirectory, new UnsupportedMethodServlet())) {
-            server.addHostValve(valve);
+            server.replaceErrorReportValve(valve);
             server.start();
 
             HttpResponse<String> response = server.request("GET");

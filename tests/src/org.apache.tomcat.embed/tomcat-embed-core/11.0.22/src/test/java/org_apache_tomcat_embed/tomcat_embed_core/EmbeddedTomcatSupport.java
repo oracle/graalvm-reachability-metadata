@@ -18,6 +18,7 @@ import jakarta.servlet.http.HttpServlet;
 import org.apache.catalina.Context;
 import org.apache.catalina.Valve;
 import org.apache.catalina.connector.Connector;
+import org.apache.catalina.core.StandardHost;
 import org.apache.catalina.startup.Tomcat;
 
 final class EmbeddedTomcatSupport implements AutoCloseable {
@@ -38,8 +39,10 @@ final class EmbeddedTomcatSupport implements AutoCloseable {
         return connector;
     }
 
-    void addHostValve(Valve valve) {
-        tomcat.getHost().getPipeline().addValve(valve);
+    void replaceErrorReportValve(Valve valve) {
+        StandardHost host = (StandardHost) tomcat.getHost();
+        host.setErrorReportValveClass(null);
+        host.getPipeline().addValve(valve);
     }
 
     void start() throws Exception {
