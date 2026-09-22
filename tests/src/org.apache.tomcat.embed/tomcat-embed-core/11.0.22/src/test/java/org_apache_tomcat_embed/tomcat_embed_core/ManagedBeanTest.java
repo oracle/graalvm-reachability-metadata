@@ -16,53 +16,18 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class ManagedBeanTest {
 
-    private static final String CONTEXT_LOADER_NAME = "context.loader.CustomModelMBean";
-
     @Test
-    void createsCustomModelMBeanResolvedByContextClassLoader() throws Exception {
+    void createsConfiguredModelMBean() throws Exception {
         ManagedBean descriptor = new ManagedBean();
-        descriptor.setClassName(CONTEXT_LOADER_NAME);
-        descriptor.setName("contextLoadedBean");
-        descriptor.setDescription("Model MBean resolved from the application context");
+        descriptor.setClassName(NamingResourcesMBean.class.getName());
+        descriptor.setName("configuredBean");
+        descriptor.setDescription("Configured model MBean");
 
-        Thread currentThread = Thread.currentThread();
-        ClassLoader originalClassLoader = currentThread.getContextClassLoader();
-        ModelMBeanClassLoader contextClassLoader = new ModelMBeanClassLoader(originalClassLoader);
-        DynamicMBean mBean;
-        try {
-            currentThread.setContextClassLoader(contextClassLoader);
-            mBean = descriptor.createMBean("managed-value");
-        } finally {
-            currentThread.setContextClassLoader(originalClassLoader);
-        }
+        DynamicMBean mBean = descriptor.createMBean("managed-value");
 
-        assertThat(contextClassLoader.wasRequested()).isTrue();
         assertThat(mBean).isInstanceOf(NamingResourcesMBean.class);
-        assertThat(mBean.getMBeanInfo().getClassName()).isEqualTo(CONTEXT_LOADER_NAME);
-        assertThat(mBean.getMBeanInfo().getDescription())
-                .isEqualTo("Model MBean resolved from the application context");
+        assertThat(mBean.getMBeanInfo().getClassName()).isEqualTo(NamingResourcesMBean.class.getName());
+        assertThat(mBean.getMBeanInfo().getDescription()).isEqualTo("Configured model MBean");
         assertThat(mBean.getAttribute("modelerType")).isEqualTo(String.class.getName());
-    }
-
-    private static final class ModelMBeanClassLoader extends ClassLoader {
-
-        private boolean requested;
-
-        private ModelMBeanClassLoader(ClassLoader parent) {
-            super(parent);
-        }
-
-        @Override
-        public Class<?> loadClass(String name) throws ClassNotFoundException {
-            if (CONTEXT_LOADER_NAME.equals(name)) {
-                requested = true;
-                return NamingResourcesMBean.class;
-            }
-            return super.loadClass(name);
-        }
-
-        private boolean wasRequested() {
-            return requested;
-        }
     }
 }

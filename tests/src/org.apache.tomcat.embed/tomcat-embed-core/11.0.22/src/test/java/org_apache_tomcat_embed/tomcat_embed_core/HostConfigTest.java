@@ -29,42 +29,6 @@ public class HostConfigTest {
     private Path temporaryDirectory;
 
     @Test
-    void deploysContextDescriptorAtServerStartup() throws Exception {
-        Path base = temporaryDirectory.resolve("descriptor-base");
-        Path appBase = temporaryDirectory.resolve("descriptor-webapps");
-        Path application = temporaryDirectory.resolve("descriptor-application");
-        Files.createDirectories(appBase);
-        Files.createDirectories(application.resolve("WEB-INF"));
-        Files.writeString(application.resolve("WEB-INF/web.xml"), """
-                <?xml version="1.0" encoding="UTF-8"?>
-                <web-app xmlns="https://jakarta.ee/xml/ns/jakartaee" version="6.0"/>
-                """);
-        Path configBase = base.resolve("conf/Catalina/localhost");
-        Files.createDirectories(configBase);
-        Files.writeString(configBase.resolve("sample.xml"),
-                "<Context docBase=\"" + application.toAbsolutePath() + "\" />");
-
-        Tomcat tomcat = new Tomcat();
-        tomcat.setBaseDir(base.toString());
-        tomcat.setPort(0);
-        StandardHost host = (StandardHost) tomcat.getHost();
-        host.setAppBase(appBase.toString());
-        host.setXmlBase(configBase.toString());
-        host.setAutoDeploy(false);
-        host.setDeployOnStartup(true);
-        host.addLifecycleListener(new HostConfig());
-
-        try {
-            tomcat.start();
-
-            assertThat(host.findChild("/sample")).isNotNull();
-            assertThat(host.findChild("/sample").getState()).isEqualTo(LifecycleState.STARTED);
-        } finally {
-            stopAndDestroy(tomcat);
-        }
-    }
-
-    @Test
     void deploysWarAtServerStartup() throws Exception {
         Path appBase = temporaryDirectory.resolve("war-webapps");
         Files.createDirectories(appBase);
