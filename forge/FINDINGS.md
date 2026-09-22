@@ -8,6 +8,22 @@ Newest entry first; every non-approval is recorded, including one a repair later
 **Test-only metadata shadowed shipped registrations**
 
 The generated test-only reachability metadata duplicated shipped registrations for POJODefinition, array types, LinkedHashMap, and TreeMap behind test-class conditions, so those registrations could satisfy native tests without exercising the shipped library-conditioned entries. It also contained unstable $$Lambda/0x... conditions and nanoTime-derived missing-class targets, which are not stable valid evidence. The contribution additionally changed tracked native test-result XML even though that generated path is repository-ignored.
+## 2026-09-22 — org.orbisgis:h2gis:2.2.5 (#10139)
+
+**Unrelated KML coverage broadened the H2GIS update**
+
+The generated contribution added STAsKmlTest and ST_AsKml method metadata even though issue #10139 requests the GeoJSON, SRID, geometry-metadata, spatial-predicate, and distance methods. This unrelated feature expansion violated the no-scope-creep requirement in FS-test-contract.2.9.
+
+## 2026-09-21 — org.apache.avro:avro:1.12.2 (#9363)
+
+**Runtime-lambda re-scope left unjustified metadata**
+
+The positive ReflectionUtil.getConstructorAsFunction scenario had been dropped after Native Image runtime lambda definition failed, but the contribution still shipped its manually added lambda registration and retained test-only ConstructedWithString metadata. That left requested metadata without the public-API test required by FS-test-contract.1.5 and FS-test-contract.2.7. The scenario itself is a valid FS-test-contract.4.3.2 re-scope: it concretely uses runtime LambdaMetafactory class definition, Native Image reports UnsupportedFeatureError, Avro catches Throwable and returns null so the refusal cannot be verified, and the remaining public-API tests still pass the repair coverage gate.
+## 2026-09-21 — io.micronaut:micronaut-websocket:5.1.15 (#10141)
+
+**Generated test dependencies pin the requested library version**
+
+The coordinate build script hardcoded version 5.1.15 for three Micronaut companion artifacts even though it already derives the tested version as libraryVersion. This violated the version-agnostic test requirement in FS-test-contract.2.5 and Review Signal #4 because the suite would keep those dependencies pinned when reused for a later tested version.
 ## 2026-09-22 — io.micronaut:micronaut-http-client:5.1.15 (#10140)
 
 **Generated library statistics were stale**
