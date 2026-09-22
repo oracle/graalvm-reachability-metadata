@@ -16,13 +16,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class OpenSSLLifecycleListenerTest {
 
     @Test
-    void configuresAndManagesFfmOpenSslLifecycle() throws Exception {
+    void disablesAndManagesFfmOpenSslLifecycle() throws Exception {
         OpenSSLLifecycleListener listener = new OpenSSLLifecycleListener();
-        listener.setSSLEngine("on");
+        listener.setSSLEngine("off");
         listener.setSSLRandomSeed("builtin");
         listener.setFIPSMode("off");
 
-        assertThat(listener.getSSLEngine()).isEqualTo("on");
+        assertThat(listener.getSSLEngine()).isEqualTo("off");
         assertThat(listener.getSSLRandomSeed()).isEqualTo("builtin");
         assertThat(listener.getFIPSMode()).isEqualTo("off");
         assertThat(listener.isFIPSModeActive()).isFalse();
@@ -32,9 +32,8 @@ public class OpenSSLLifecycleListenerTest {
         try {
             server.init();
             assertThat(server.getState()).isEqualTo(LifecycleState.INITIALIZED);
-            boolean available = OpenSSLLifecycleListener.isAvailable();
-            String installedVersion = OpenSSLLifecycleListener.getInstalledOpenSslVersion();
-            assertThat(installedVersion == null).isEqualTo(!available);
+            assertThat(OpenSSLLifecycleListener.isAvailable()).isFalse();
+            assertThat(OpenSSLLifecycleListener.getInstalledOpenSslVersion()).isNull();
         } finally {
             server.destroy();
         }
