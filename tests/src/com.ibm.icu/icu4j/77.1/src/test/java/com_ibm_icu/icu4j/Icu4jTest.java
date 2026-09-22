@@ -18,6 +18,7 @@ import com.ibm.icu.text.MessageFormat;
 import com.ibm.icu.text.Normalizer2;
 import com.ibm.icu.text.NumberFormat;
 import com.ibm.icu.text.RuleBasedNumberFormat;
+import com.ibm.icu.text.SpoofChecker;
 import com.ibm.icu.text.TimeZoneNames;
 import com.ibm.icu.text.Transliterator;
 import com.ibm.icu.util.Currency;
@@ -145,6 +146,22 @@ public class Icu4jTest {
         assertThat(format.format(arguments)).isEqualTo("1 file");
         arguments.put("count", 12);
         assertThat(format.format(arguments)).isEqualTo("12 files");
+    }
+
+    @Test
+    void detectsVisuallyConfusableIdentifiers() {
+        SpoofChecker checker = new SpoofChecker.Builder()
+                .setAllowedChars(SpoofChecker.RECOMMENDED.cloneAsThawed().addAll(SpoofChecker.INCLUSION))
+                .setRestrictionLevel(SpoofChecker.RestrictionLevel.MODERATELY_RESTRICTIVE)
+                .setChecks(SpoofChecker.ALL_CHECKS)
+                .build();
+        SpoofChecker.CheckResult result = new SpoofChecker.CheckResult();
+        String suspiciousIdentifier = "p\u0430yp\u0430l";
+
+        assertThat(checker.failsChecks("paypal")).isFalse();
+        assertThat(checker.failsChecks(suspiciousIdentifier, result)).isTrue();
+        assertThat(result.checks & SpoofChecker.RESTRICTION_LEVEL).isEqualTo(SpoofChecker.RESTRICTION_LEVEL);
+        assertThat(checker.areConfusable("paypal", suspiciousIdentifier)).isNotZero();
     }
 
     @Test
