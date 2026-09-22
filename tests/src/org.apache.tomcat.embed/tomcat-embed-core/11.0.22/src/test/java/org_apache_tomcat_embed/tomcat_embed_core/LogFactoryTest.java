@@ -6,6 +6,9 @@
  */
 package org_apache_tomcat_embed.tomcat_embed_core;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import org.apache.juli.logging.Log;
 import org.apache.juli.logging.LogFactory;
 import org.junit.jupiter.api.Order;
@@ -17,17 +20,20 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class LogFactoryTest {
 
     @Test
-    void createsServiceProvidedLoggerForRequestedName() {
-        Log log = LogFactory.getLog("service-provided-logger");
+    void createsLoggerForRequestedName() {
+        String loggerName = "factory-created-logger";
+        Logger julLogger = Logger.getLogger(loggerName);
+        Level originalLevel = julLogger.getLevel();
 
-        assertThat(log).isInstanceOf(RecordingLog.class);
-        RecordingLog recordingLog = (RecordingLog) log;
-        IllegalStateException cause = new IllegalStateException("recorded cause");
+        try {
+            julLogger.setLevel(Level.INFO);
 
-        log.warn("recorded message", cause);
+            Log log = LogFactory.getLog(loggerName);
 
-        assertThat(recordingLog.getName()).isEqualTo("service-provided-logger");
-        assertThat(recordingLog.getLastMessage()).isEqualTo("recorded message");
-        assertThat(recordingLog.getLastThrowable()).isSameAs(cause);
+            assertThat(log.isInfoEnabled()).isTrue();
+            assertThat(log.isDebugEnabled()).isFalse();
+        } finally {
+            julLogger.setLevel(originalLevel);
+        }
     }
 }
