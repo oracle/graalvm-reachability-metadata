@@ -28,7 +28,15 @@ public class FactoryBaseTest {
         ResourceRef reference = new ResourceRef(String.class.getName(), null, null, null, true);
         reference.add(new StringRefAddr(Constants.FACTORY, TextObjectFactory.class.getName()));
 
-        Object value = new ResourceFactory().getObjectInstance(reference, null, null, null);
+        Thread thread = Thread.currentThread();
+        ClassLoader originalClassLoader = thread.getContextClassLoader();
+        Object value;
+        try {
+            thread.setContextClassLoader(null);
+            value = new ResourceFactory().getObjectInstance(reference, null, null, null);
+        } finally {
+            thread.setContextClassLoader(originalClassLoader);
+        }
 
         assertThat(value).isEqualTo("created:" + String.class.getName());
     }
