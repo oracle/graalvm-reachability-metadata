@@ -8,6 +8,11 @@ Newest entry first; every non-approval is recorded, including one a repair later
 **Coverage improvement removed baseline behavior and counted an asserted failure**
 
 The contribution deleted the existing SCRAM provider behavior test from KafkaClientsTest, contrary to the no-weakening rule, and added reportsUnavailableRawMessageInfoFields, which deliberately supplied a nonexistent protobuf field and asserted the resulting RuntimeException while exercising the reflective call site. That is coverage bought by asserting breakage under FS-contribution-contract.4.4 / FS-test-contract.2.6.
+## 2026-09-22 — io.micronaut:micronaut-http-client:5.1.15 (#10140)
+
+**Generated library statistics were stale**
+
+The first Forge finalization pass regenerated stats/io.micronaut/micronaut-http-client/5.1.15/stats.json and changed instruction coverage from 5777 to 5775 covered instructions and line coverage from 1301 to 1300 covered lines. Because the publishable tree changed, finalization correctly exited nonzero and required another pass.
 ## 2026-09-22 — org.relaxng:jing:20181222 (#10162)
 
 **Stale generated library coverage statistics**
