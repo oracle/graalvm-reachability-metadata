@@ -8,6 +8,11 @@ Newest entry first; every non-approval is recorded, including one a repair later
 **Coverage improvement removed baseline behavior and counted an asserted failure**
 
 The contribution deleted the existing SCRAM provider behavior test from KafkaClientsTest, contrary to the no-weakening rule, and added reportsUnavailableRawMessageInfoFields, which deliberately supplied a nonexistent protobuf field and asserted the resulting RuntimeException while exercising the reflective call site. That is coverage bought by asserting breakage under FS-contribution-contract.4.4 / FS-test-contract.2.6.
+## 2026-09-21 — io.micronaut:micronaut-websocket:5.1.15 (#10141)
+
+**Generated test dependencies pin the requested library version**
+
+The coordinate build script hardcoded version 5.1.15 for three Micronaut companion artifacts even though it already derives the tested version as libraryVersion. This violated the version-agnostic test requirement in FS-test-contract.2.5 and Review Signal #4 because the suite would keep those dependencies pinned when reused for a later tested version.
 ## 2026-09-22 — io.micronaut:micronaut-http-client:5.1.15 (#10140)
 
 **Generated library statistics were stale**
