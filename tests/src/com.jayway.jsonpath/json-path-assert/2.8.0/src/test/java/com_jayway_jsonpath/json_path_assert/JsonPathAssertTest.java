@@ -34,11 +34,13 @@ import static com.jayway.jsonpath.matchers.JsonPathMatchers.withJsonPath;
 import static com.jayway.jsonpath.matchers.JsonPathMatchers.withoutJsonPath;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class JsonPathAssertTest {
     private static final String JSON =
@@ -79,6 +81,35 @@ public class JsonPathAssertTest {
         assertThat(parsedJson, isJson(withJsonPath("$.profile.level", equalTo(3))));
         assertThat(context, isJson(withJsonPath("$.tags", contains("native", "json"))));
         assertThat(JSON, isJsonString(withJsonPath("$.name", equalTo("Ada"))));
+    }
+
+    @Test
+    void reportsDetailedMatcherMismatches() {
+        ReadContext context = JsonPath.parse(JSON);
+
+        AssertionError wrongValue = assertThrows(
+                AssertionError.class,
+                () -> assertThat(context, withJsonPath("$.name", equalTo("Grace"))));
+        assertThat(
+                wrongValue.getMessage(),
+                containsString("json path \"$['name']\" was evaluated to \"Ada\""));
+
+        AssertionError missingPath = assertThrows(
+                AssertionError.class,
+                () -> assertThat(context, withJsonPath("$.address.city", equalTo("Paris"))));
+        assertThat(
+                missingPath.getMessage(),
+                containsString("json path \"$['address']['city']\" was not found"));
+
+        AssertionError unexpectedPath = assertThrows(
+                AssertionError.class, () -> assertThat(context, withoutJsonPath("$.profile.role")));
+        assertThat(
+                unexpectedPath.getMessage(),
+                containsString("$['profile']['role'] was evaluated to \"engineer\""));
+
+        AssertionError malformedJson =
+                assertThrows(AssertionError.class, () -> assertThat("{\"name\":", isJson()));
+        assertThat(malformedJson.getMessage(), containsString("which failed with"));
     }
 
     @Test
