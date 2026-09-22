@@ -114,21 +114,22 @@ public class MicronautHttpClientTest {
     @Test
     @Timeout(55)
     void decodesServerSentEventFieldsAcrossResponseChunks() throws Exception {
-        try (TestServer server = TestServer.start();
-                HttpClient client = HttpClient.create(server.baseUri().toURL(), clientConfiguration())) {
-            HttpRequest<?> request = HttpRequest.GET("/events").accept(MediaType.TEXT_EVENT_STREAM_TYPE);
+        try (TestServer server = TestServer.start()) {
+            SseClient sseClient = SseClient.create(server.baseUri().toURL(), clientConfiguration());
+            try (HttpClient client = (HttpClient) sseClient) {
+                HttpRequest<?> request = HttpRequest.GET("/events").accept(MediaType.TEXT_EVENT_STREAM_TYPE);
 
-            List<Event<String>> events =
-                    awaitAll(((SseClient) client).eventStream(request, String.class));
+                List<Event<String>> events = awaitAll(sseClient.eventStream(request, String.class));
 
-            assertThat(events).hasSize(2);
-            assertThat(events.get(0).getId()).isEqualTo("stock-41");
-            assertThat(events.get(0).getName()).isEqualTo("stock-change");
-            assertThat(events.get(0).getRetry()).isEqualTo(Duration.ofSeconds(12));
-            assertThat(events.get(0).getData()).isEqualTo("native-widget available");
-            assertThat(events.get(1).getId()).isEqualTo("stock-42");
-            assertThat(events.get(1).getName()).isEqualTo("stock-change");
-            assertThat(events.get(1).getData()).isEqualTo("backup-widget");
+                assertThat(events).hasSize(2);
+                assertThat(events.get(0).getId()).isEqualTo("stock-41");
+                assertThat(events.get(0).getName()).isEqualTo("stock-change");
+                assertThat(events.get(0).getRetry()).isEqualTo(Duration.ofSeconds(12));
+                assertThat(events.get(0).getData()).isEqualTo("native-widget available");
+                assertThat(events.get(1).getId()).isEqualTo("stock-42");
+                assertThat(events.get(1).getName()).isEqualTo("stock-change");
+                assertThat(events.get(1).getData()).isEqualTo("backup-widget");
+            }
         }
     }
 
