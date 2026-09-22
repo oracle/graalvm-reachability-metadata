@@ -39,6 +39,7 @@ from dispatcher.issue_admin import (
 )
 from dispatcher.pr_merge import (
     is_pull_request_conflicting,
+    is_pull_request_mergeability_unsettled,
     mark_pull_request_merge_follow_up_pending,
     reconcile_auto_merged_pull_request_follow_ups,
     resolve_pull_request_merge_conflict,
@@ -196,6 +197,15 @@ def _process_descriptor_pull_request(
         for label_name in (LABEL_HUMAN_INTERVENTION, LABEL_HUMAN_INTERVENTION_FIXED):
             if pull_request_has_label(pull_request, label_name):
                 remove_pull_request_label(pr_number, label_name)
+
+    if is_pull_request_mergeability_unsettled(pull_request):
+        # Approving here would arm auto-merge on a head GitHub never called clean
+        # (§FS-automated-pr-review).
+        print(
+            f"[Skipping PR #{pr_number}: GitHub never settled its mergeability; "
+            f"deferring to a later pass.]"
+        )
+        return
 
     if is_pull_request_conflicting(pull_request):
         # Queue maintenance, not review: the refreshed head restarts CI and earns

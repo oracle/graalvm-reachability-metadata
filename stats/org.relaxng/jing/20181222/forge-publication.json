@@ -1,0 +1,137 @@
+{
+  "base_commit": "5d7a641b3c5e6f7038354a07ad1359b12ecf5726",
+  "branch": "ai/kimeta/add-lib-support-org.relaxng-jing-20181222-forge-10162-20260922085254638570-37e54fd50a5f",
+  "follow_ups": [],
+  "forge": {
+    "branch": "master",
+    "commit": "5d7a641b3c5e6f7038354a07ad1359b12ecf5726",
+    "monitored_branch": "origin/master"
+  },
+  "issue_number": 10162,
+  "library": {
+    "artifact": "jing",
+    "coordinates": "org.relaxng:jing:20181222",
+    "group": "org.relaxng",
+    "version": "20181222"
+  },
+  "local_ci_verification": {
+    "base_commit": "5d7a641b3c5e6f7038354a07ad1359b12ecf5726",
+    "commands": [
+      {
+        "command": [
+          "./gradlew",
+          "generateChangedIndexFileCoordinatesList",
+          "-PbaseCommit=origin/master",
+          "-PnewCommit=HEAD"
+        ],
+        "env": {
+          "GITHUB_OUTPUT": "/tmp/tmp6zs20tbg"
+        },
+        "gate": "changed-index-coordinates",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :generateChangedIndexFileCoordinatesList\n\n[Incubating] Problems report is available at: file:///home/oracle/oracle/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10162-b94ed80c/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 3s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      },
+      {
+        "command": [
+          "./gradlew",
+          "validateIndexFiles",
+          "-Pcoordinates=org.relaxng:jing"
+        ],
+        "env": {},
+        "gate": "index-file-validation",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :validateIndexFiles\n✅ metadata/org.relaxng/jing/index.json: Valid\n\n[Incubating] Problems report is available at: file:///home/oracle/oracle/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10162-b94ed80c/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 2s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      }
+    ],
+    "failure_command": null,
+    "failure_gate": null,
+    "final_commit": "88eb200967fb1596fb096738539195f6223838a3",
+    "fixups": [],
+    "human_intervention_required": false,
+    "repo_fix_paths": [],
+    "status": "success"
+  },
+  "local_review": {
+    "changed_paths": [
+      "stats/org.relaxng/jing/20181222/stats.json"
+    ],
+    "decision": "approved",
+    "finding_body": "The committed stats did not match deterministic generation from the contribution: the first Forge finalization pass changed instruction/line/method covered counts from 14944/3138/902 to 14986/3146/904. The resulting publishable-tree mutation proved the checked-in derived statistics were stale and required regeneration before approval.",
+    "finding_title": "Stale generated library coverage statistics",
+    "fix_note": "Ran the exact Forge-owned finalization command, retained its deterministic stats.json refresh, and reran the same command successfully to prove the repaired publishable tree is stable.",
+    "model": "gpt-5.6-sol",
+    "review_comment": "Reviewed the single-coordinate diff and local evidence. The tests exercise Jing public validation APIs, use a separate version-agnostic test package, and contain no scaffold, Native Image skip/tolerance, visibility bypass, legacy metadata format, or native build/run flag. The reported dynamic-access result is N/A (0/0), so the percentage and entry-count mismatch gates do not apply. Index validation passed, and the stable Forge finalization pass completed all three native lanes, metadata validation, style checks, generated-test checks, and statistics generation without another publishable change.",
+    "session_id": "5e4111ca740e4225"
+  },
+  "metrics": {
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "path": "stats/org.relaxng/jing/20181222/execution-metrics.json",
+    "summary": {
+      "cached_input_tokens_used": 5898880,
+      "code_coverage_percent": 19.38,
+      "cost_usd": 5.5588,
+      "generated_loc": 267,
+      "input_tokens_used": 320818,
+      "iterations": 10,
+      "metadata_entries": 40,
+      "output_tokens_used": 33509,
+      "test_only_metadata_entries": 16,
+      "tested_library_loc": 3138
+    },
+    "timestamp": "2026-09-22T08:52:54.638570Z"
+  },
+  "modifiers": {
+    "chunk_final": true,
+    "chunked_dynamic_access": false,
+    "human_intervention": false
+  },
+  "producer": "kimeta",
+  "publication_id": "forge-10162-20260922085254638570-37e54fd50a5f",
+  "render": {
+    "dynamic_access": null,
+    "dynamic_access_evidence": {
+      "covered_call_sites": [],
+      "metadata_rules": [
+        "when `com.thaiopensource.datatype.DatatypeLibraryLoader` is reached, make `com.thaiopensource.datatype.xsd.DatatypeLibraryFactoryImpl.<init>()` available for reflection",
+        "when `com.thaiopensource.datatype.xsd.DatatypeLibraryFactoryImpl` is reached, make `com.thaiopensource.datatype.xsd.regex.java.RegexEngineImpl.<init>()` available for reflection",
+        "when `com.thaiopensource.resolver.xml.sax.SAXResolver` is reached, make `org.apache.xerces.impl.dv.dtd.DTDDVFactoryImpl.<init>()` available for reflection",
+        "when `com.thaiopensource.resolver.xml.sax.SAXResolver` is reached, make `org.apache.xerces.jaxp.SAXParserFactoryImpl` available for reflection",
+        "when `com.thaiopensource.resolver.xml.sax.SAXResolver` is reached, make `org.apache.xerces.parsers.XIncludeAwareParserConfiguration.<init>()` available for reflection",
+        "when `com.thaiopensource.validate.rng.SAXSchemaReader` is reached, make `sun.security.x509.AuthorityInfoAccessExtension` available for reflection",
+        "when `com.thaiopensource.validate.rng.SAXSchemaReader` is reached, make `sun.security.x509.AuthorityKeyIdentifierExtension` available for reflection",
+        "when `com.thaiopensource.validate.rng.SAXSchemaReader` is reached, make `sun.security.x509.BasicConstraintsExtension` available for reflection",
+        "... and 6 more"
+      ]
+    },
+    "library_stats": {
+      "dynamicAccess": "N/A",
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 14986,
+          "missed": 56436,
+          "ratio": 0.209823,
+          "total": 71422
+        },
+        "line": {
+          "covered": 3146,
+          "missed": 13049,
+          "ratio": 0.194257,
+          "total": 16195
+        },
+        "method": {
+          "covered": 904,
+          "missed": 2499,
+          "ratio": 0.265648,
+          "total": 3403
+        }
+      },
+      "version": "20181222"
+    }
+  },
+  "schema_version": 1,
+  "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-sol",
+  "task_type": "library-new-request",
+  "template_type": "library-new-request",
+  "timestamp": "2026-09-22T08:52:54.638570Z"
+}

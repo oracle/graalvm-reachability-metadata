@@ -1,0 +1,246 @@
+{
+  "base_commit": "5d7a641b3c5e6f7038354a07ad1359b12ecf5726",
+  "branch": "ai/kimeta/improve-coverage-org.apache.tomcat.embed-tomcat-embed-core-11.0.22-chunked-forge-10144-20260922070311987655-8d3166f90a3c",
+  "follow_ups": [],
+  "forge": {
+    "branch": "master",
+    "commit": "5d7a641b3c5e6f7038354a07ad1359b12ecf5726",
+    "monitored_branch": "origin/master"
+  },
+  "issue_number": 10144,
+  "library": {
+    "artifact": "tomcat-embed-core",
+    "coordinates": "org.apache.tomcat.embed:tomcat-embed-core:11.0.22",
+    "group": "org.apache.tomcat.embed",
+    "version": "11.0.22"
+  },
+  "local_ci_verification": {
+    "base_commit": "5d7a641b3c5e6f7038354a07ad1359b12ecf5726",
+    "commands": [],
+    "failure_command": null,
+    "failure_gate": null,
+    "final_commit": "b92b9dfbb1f30ae11a08b49efb9f718335e9c0e4",
+    "fixups": [],
+    "human_intervention_required": false,
+    "repo_fix_paths": [],
+    "status": "success"
+  },
+  "local_review": {
+    "changed_paths": [
+      "metadata/org.apache.tomcat.embed/tomcat-embed-core/11.0.22/reachability-metadata.json",
+      "stats/org.apache.tomcat.embed/tomcat-embed-core/11.0.22/stats.json",
+      "tests/src/org.apache.tomcat.embed/tomcat-embed-core/11.0.22/src/test/java/org_apache_tomcat_embed/tomcat_embed_core/HostConfigTest.java",
+      "tests/src/org.apache.tomcat.embed/tomcat-embed-core/11.0.22/src/test/resources/META-INF/native-image/reachability-metadata.json"
+    ],
+    "decision": "approved",
+    "finding_body": "The contribution added absolute /tmp/junit... resource globs for HostConfig descriptor defaults and retained stale JAAS temporary-file globs in test-only metadata. Machine-local temporary paths must use normal file APIs rather than Native Image resource metadata under FS-test-contract.4.4.",
+    "finding_title": "Generated metadata captured machine-local temporary resources",
+    "fix_note": "Removed the unnecessary temporary HostConfig default files and all machine-local temporary resource entries while preserving descriptor deployment coverage, then regenerated statistics and ran the exact Forge finalizer to a stable successful pass.",
+    "model": "gpt-5.6-sol",
+    "review_comment": "Reviewed the contribution scope, chunked dynamic-access evidence, requested AbstractProtocol#getProperty(String) registration and its public Connector API test, test-contract guardrails, and metadata format. Coverage remains nonzero at 402/453 calls (0.887417), and the exact Forge finalizer passed all three native lanes, metadata validation, style checks, generated-test validity, and stable statistics without further publishable changes.",
+    "session_id": "d37ca8bd38474c4c"
+  },
+  "metrics": {
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "path": "stats/org.apache.tomcat.embed/tomcat-embed-core/11.0.22/execution-metrics.json",
+    "summary": {
+      "cached_input_tokens_used": 12063744,
+      "code_coverage_percent": 24.09,
+      "cost_usd": 10.6229,
+      "generated_loc": 4690,
+      "input_tokens_used": 551192,
+      "iterations": 9,
+      "metadata_entries": 2224,
+      "output_tokens_used": 61166,
+      "test_only_metadata_entries": 489,
+      "tested_library_loc": 19682
+    },
+    "timestamp": "2026-09-22T07:03:11.987655Z"
+  },
+  "modifiers": {
+    "chunk_final": false,
+    "chunked_dynamic_access": true,
+    "human_intervention": false
+  },
+  "producer": "kimeta",
+  "publication_id": "forge-10144-20260922070311987655-8d3166f90a3c",
+  "render": {
+    "alias_split": null,
+    "baseline_metadata_entries": 2079,
+    "baseline_stats": {
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 0.82,
+            "coveredCalls": 328,
+            "totalCalls": 400
+          },
+          "resources": {
+            "coverageRatio": 0.829268,
+            "coveredCalls": 34,
+            "totalCalls": 41
+          }
+        },
+        "coverageRatio": 0.820862,
+        "coveredCalls": 362,
+        "totalCalls": 441
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 76878,
+          "missed": 270249,
+          "ratio": 0.221469,
+          "total": 347127
+        },
+        "line": {
+          "covered": 17741,
+          "missed": 63962,
+          "ratio": 0.21714,
+          "total": 81703
+        },
+        "method": {
+          "covered": 3262,
+          "missed": 9551,
+          "ratio": 0.254585,
+          "total": 12813
+        }
+      },
+      "version": "11.0.22"
+    },
+    "baseline_test_only_entries": 355,
+    "current_metadata_entries": 2220,
+    "current_test_only_entries": 483,
+    "dynamic_access": {
+      "classThreshold": 15,
+      "completedClasses": [
+        "org.apache.catalina.startup.Tomcat",
+        "org.apache.catalina.startup.WebappServiceLoader",
+        "org.apache.juli.FileHandler",
+        "org.apache.naming.factory.BeanFactory",
+        "org.apache.naming.factory.ResourceFactory",
+        "org.apache.tomcat.util.compat.Jre19Compat",
+        "org.apache.catalina.core.NamingContextListener",
+        "org.apache.catalina.startup.CatalinaBaseConfigurationSource",
+        "org.apache.naming.factory.LookupFactory",
+        "org.apache.catalina.authenticator.AuthenticatorBase",
+        "org.apache.catalina.authenticator.jaspic.AuthConfigFactoryImpl",
+        "org.apache.catalina.deploy.NamingResourcesImpl",
+        "org.apache.catalina.realm.JAASRealm",
+        "org.apache.catalina.startup.ContextConfig",
+        "jakarta.security.auth.message.config.AuthConfigFactory",
+        "jakarta.servlet.HttpConstraintElement",
+        "jakarta.servlet.HttpMethodConstraintElement",
+        "jakarta.servlet.ServletOutputStream",
+        "jakarta.servlet.ServletRequestWrapper",
+        "jakarta.servlet.ServletResponseWrapper",
+        "jakarta.servlet.http.Cookie",
+        "jakarta.servlet.http.CookieNameValidator",
+        "org.apache.catalina.authenticator.jaspic.SimpleServerAuthConfig",
+        "org.apache.catalina.core.JreMemoryLeakPreventionListener",
+        "org.apache.catalina.core.StandardContext",
+        "org.apache.catalina.filters.CsrfPreventionFilterBase",
+        "org.apache.catalina.filters.RateLimitFilter",
+        "org.apache.catalina.loader.WebappLoader",
+        "org.apache.catalina.manager.util.SessionUtils",
+        "org.apache.catalina.mbeans.BaseCatalinaMBean",
+        "org.apache.catalina.realm.JAASMemoryLoginModule",
+        "org.apache.catalina.realm.JNDIRealm",
+        "org.apache.catalina.servlets.WebdavServlet",
+        "org.apache.catalina.session.StandardManager",
+        "org.apache.catalina.startup.UserConfig",
+        "org.apache.catalina.util.SessionIdGeneratorBase",
+        "org.apache.catalina.valves.rewrite.RewriteValve",
+        "org.apache.naming.factory.DataSourceLinkFactory",
+        "org.apache.naming.factory.DataSourceLinkFactory$DataSourceHandler",
+        "org.apache.naming.factory.EjbFactory",
+        "org.apache.naming.factory.ResourceLinkFactory",
+        "org.apache.tomcat.SimpleInstanceManager",
+        "org.apache.tomcat.util.buf.ByteBufferUtilsUnsafe",
+        "org.apache.tomcat.util.compat.Jre21Compat",
+        "org.apache.tomcat.util.descriptor.web.SetPublicIdRule",
+        "org.apache.tomcat.util.net.SSLImplementation",
+        "jakarta.servlet.http.HttpServlet",
+        "jakarta.servlet.http.HttpServlet$TomcatHack",
+        "org.apache.catalina.authenticator.SingleSignOnEntry",
+        "org.apache.catalina.connector.Request",
+        "org.apache.catalina.core.StandardWrapper",
+        "org.apache.catalina.mbeans.MBeanFactory",
+        "org.apache.catalina.realm.RealmBase",
+        "org.apache.catalina.startup.Catalina",
+        "org.apache.catalina.startup.ConnectorCreateRule",
+        "org.apache.catalina.startup.HostConfig",
+        "org.apache.catalina.valves.ProxyErrorReportValve",
+        "org.apache.catalina.webresources.ClasspathURLStreamHandler",
+        "org.apache.tomcat.util.compat.Jre20Compat",
+        "org.apache.tomcat.util.net.SSLUtilBase"
+      ],
+      "coordinate": "org.apache.tomcat.embed:tomcat-embed-core:11.0.22",
+      "currentChunkClassCount": 15,
+      "exhaustedClasses": [
+        "org.apache.tomcat.util.compat.JreCompat",
+        "org.apache.catalina.util.ServerInfo"
+      ],
+      "failedClasses": [],
+      "issueNumber": 8328,
+      "latestChunkBranch": "ai/kimeta/improve-coverage-org.apache.tomcat.embed-tomcat-embed-core-11.0.22-chunked-forge-10144-20260922070311987655-8d3166f90a3c",
+      "latestChunkCommit": "00adf70df20b37d8e27b0f989d8f32379c0927b5",
+      "latestChunkPublicationId": "forge-10144-20260922070311987655-8d3166f90a3c",
+      "latestChunkPullRequest": 8579,
+      "skippedClasses": []
+    },
+    "library_stats": {
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 0.88835,
+            "coveredCalls": 366,
+            "totalCalls": 412
+          },
+          "resources": {
+            "coverageRatio": 0.878049,
+            "coveredCalls": 36,
+            "totalCalls": 41
+          }
+        },
+        "coverageRatio": 0.887417,
+        "coveredCalls": 402,
+        "totalCalls": 453
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 84747,
+          "missed": 262380,
+          "ratio": 0.244138,
+          "total": 347127
+        },
+        "line": {
+          "covered": 19656,
+          "missed": 62047,
+          "ratio": 0.240579,
+          "total": 81703
+        },
+        "method": {
+          "covered": 3582,
+          "missed": 9231,
+          "ratio": 0.27956,
+          "total": 12813
+        }
+      },
+      "version": "11.0.22"
+    },
+    "library_update_target": {
+      "match_type": "tested-version",
+      "matched_metadata_version": "11.0.22",
+      "matched_test_version": "11.0.22",
+      "requested_coordinate": "org.apache.tomcat.embed:tomcat-embed-core:11.0.22",
+      "resolved_metadata_version": "11.0.22",
+      "resolved_test_version": "11.0.22"
+    }
+  },
+  "schema_version": 1,
+  "strategy_name": "library_update_optimistic_pi_gpt-5.6-sol",
+  "task_type": "library-update-request",
+  "template_type": "library-update-request",
+  "timestamp": "2026-09-22T07:03:11.987655Z"
+}
