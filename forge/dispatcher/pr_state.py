@@ -11,6 +11,7 @@ import contextlib
 import importlib
 import os
 import subprocess
+import time
 from git_scripts.common_git import run_git_transport
 from typing import Any
 from dispatcher.config import (
@@ -104,8 +105,34 @@ def pull_request_has_label(pr: dict, label_name: str) -> bool:
     return issue_has_label(pr, label_name)
 
 
+"""Backoff delays for re-polling a lazily computed `mergeable` answer.
+
+GitHub recomputes mergeability in the background after every base-branch push
+and answers `UNKNOWN` until that finishes (§FS-automated-pr-review)."""
+MERGEABILITY_POLL_DELAYS_SECONDS: tuple[int, ...] = (2, 4, 8)
+
+
 def get_pull_request_state(pr_number: int) -> dict:
-    """Fetch the latest review and merge state for a pull request."""
+    """Fetch review and merge state, re-polling until mergeability settles.
+
+    The fetch itself triggers GitHub's recomputation, so an `UNKNOWN` answer
+    is re-polled with bounded backoff instead of being classified as a clean
+    head (§FS-automated-pr-review)."""
+    pull_request = fetch_pull_request_state(pr_number)
+    for delay_seconds in MERGEABILITY_POLL_DELAYS_SECONDS:
+        if pull_request.get("mergeable") != "UNKNOWN":
+            return pull_request
+        print(
+            f"[Mergeability of PR #{pr_number} is still being computed; "
+            f"re-polling in {delay_seconds}s.]"
+        )
+        time.sleep(delay_seconds)
+        pull_request = fetch_pull_request_state(pr_number)
+    return pull_request
+
+
+def fetch_pull_request_state(pr_number: int) -> dict:
+    """Fetch the latest review and merge state for a pull request once."""
     owner, repo_name = REPO.split("/")
     query = f"""
     query {{

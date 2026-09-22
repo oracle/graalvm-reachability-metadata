@@ -1,0 +1,158 @@
+{
+  "base_commit": "1991a431a9918e73440a77bec239141ab2320867",
+  "branch": "ai/kimeta/add-lib-support-com.azure-azure-identity-1.18.0-chunked-forge-10071-20260920092708661130-8d46c353beb4",
+  "follow_ups": [],
+  "forge": {
+    "branch": "master",
+    "commit": "e9c78cac1f5f58ce24aefa3817bcc4848196e181",
+    "monitored_branch": "origin/master"
+  },
+  "issue_number": 10071,
+  "library": {
+    "artifact": "azure-identity",
+    "coordinates": "com.azure:azure-identity:1.18.0",
+    "group": "com.azure",
+    "version": "1.18.0"
+  },
+  "local_ci_verification": {
+    "base_commit": "1991a431a9918e73440a77bec239141ab2320867",
+    "commands": [
+      {
+        "command": [
+          "./gradlew",
+          "generateChangedIndexFileCoordinatesList",
+          "-PbaseCommit=origin/master",
+          "-PnewCommit=HEAD"
+        ],
+        "env": {
+          "GITHUB_OUTPUT": "/tmp/tmpwbrfl65z"
+        },
+        "gate": "changed-index-coordinates",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :generateChangedIndexFileCoordinatesList\n\n[Incubating] Problems report is available at: file:///home/oracle/oracle/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10071-24484e37/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 1s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      },
+      {
+        "command": [
+          "./gradlew",
+          "validateIndexFiles",
+          "-Pcoordinates=com.azure:azure-identity"
+        ],
+        "env": {},
+        "gate": "index-file-validation",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :validateIndexFiles\n✅ metadata/com.azure/azure-identity/index.json: Valid\n\n[Incubating] Problems report is available at: file:///home/oracle/oracle/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10071-24484e37/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 887ms\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      }
+    ],
+    "failure_command": null,
+    "failure_gate": null,
+    "final_commit": "4489a1c827dd38450b9a1e11fb06519f7365b521",
+    "fixups": [],
+    "human_intervention_required": false,
+    "repo_fix_paths": [],
+    "status": "success"
+  },
+  "local_review": {
+    "changed_paths": [
+      "tests/src/com.azure/azure-identity/1.18.0/build.gradle"
+    ],
+    "decision": "approved",
+    "finding_body": "The coordinate build applied its class-specific initialization flags through graalvmNative.binaries.all rather than the test binary. FS-test-contract.2.7 requires native build flags to be as narrow as possible. Removing the flags reproduced the transitive Azure Core image-heap initialization failure, confirming that the flags themselves are necessary; only their binary scope needed correction.",
+    "finding_title": "Native-image initialization flags were scoped to all binaries",
+    "fix_note": "Changed graalvmNative.binaries.all to graalvmNative.binaries.test so the necessary class-specific initialization flags apply only to the native test binary, then ran the exact Forge finalization command successfully.",
+    "model": "gpt-5.6-sol",
+    "review_comment": "Reviewed the complete contribution diff and local evidence. The change is confined to com.azure:azure-identity:1.18.0, uses only reachability-metadata.json, and provides public, non-scaffold, version-agnostic tests in a separate package without Native Image skips. Reported dynamic-access coverage is 9/10 (90%), above the new-library gate, and 9 covered calls do not trigger the entry-count mismatch check against 430 library plus 44 test-only entries. The required class-specific initialization flags are supported by a reproduced image-heap failure originating in transitive Azure Core configuration. Forge finalization passed all three test lanes, metadata splitting and validation, style checks, generated-test validity, and statistics generation without further publishable changes.",
+    "session_id": "59fedacf85f4458f"
+  },
+  "metrics": {
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "path": "stats/com.azure/azure-identity/1.18.0/execution-metrics.json",
+    "summary": {
+      "cached_input_tokens_used": 14685440,
+      "code_coverage_percent": 30.25,
+      "cost_usd": 13.5417,
+      "generated_loc": 350,
+      "input_tokens_used": 809629,
+      "iterations": 18,
+      "metadata_entries": 430,
+      "output_tokens_used": 71696,
+      "test_only_metadata_entries": 44,
+      "tested_library_loc": 1143
+    },
+    "timestamp": "2026-09-20T09:27:08.661130Z"
+  },
+  "modifiers": {
+    "chunk_final": true,
+    "chunked_dynamic_access": true,
+    "human_intervention": false
+  },
+  "producer": "kimeta",
+  "publication_id": "forge-10071-20260920092708661130-8d46c353beb4",
+  "render": {
+    "dynamic_access": null,
+    "dynamic_access_evidence": {
+      "covered_call_sites": [
+        "[reflection] java.lang.Class#getMethod(java.lang.String, java.lang.Class[]) <- com.azure.identity.implementation.IdentityClientBase.getPublicClient(IdentityClientBase.java:354) (line 354)",
+        "[reflection] java.lang.reflect.Constructor#newInstance(java.lang.Object[]) <- com.azure.identity.BrokerCredential.createBrokerCredential(BrokerCredential.java:62) (line 62)",
+        "[reflection] java.lang.reflect.Method#invoke(java.lang.Object, java.lang.Object[]) <- com.azure.identity.BrokerCredential.createBrokerCredential(BrokerCredential.java:63) (line 63)",
+        "[reflection] java.lang.reflect.Method#invoke(java.lang.Object, java.lang.Object[]) <- com.azure.identity.BrokerCredential.createBrokerCredential(BrokerCredential.java:64) (line 64)",
+        "[reflection] java.lang.reflect.Method#invoke(java.lang.Object, java.lang.Object[]) <- com.azure.identity.BrokerCredential.createBrokerCredential(BrokerCredential.java:68) (line 68)",
+        "[reflection] java.lang.reflect.Constructor#newInstance(java.lang.Object[]) <- com.azure.identity.VisualStudioCodeCredential.getBrokerAuthCredential(VisualStudioCodeCredential.java:85) (line 85)",
+        "[reflection] java.lang.reflect.Method#invoke(java.lang.Object, java.lang.Object[]) <- com.azure.identity.VisualStudioCodeCredential.getBrokerAuthCredential(VisualStudioCodeCredential.java:87) (line 87)",
+        "[reflection] java.lang.reflect.Method#invoke(java.lang.Object, java.lang.Object[]) <- com.azure.identity.VisualStudioCodeCredential.getBrokerAuthCredential(VisualStudioCodeCredential.java:93) (line 93)",
+        "... and 1 more"
+      ],
+      "metadata_rules": [
+        "when `com.azure.identity.implementation.IdentityClientBase` is reached, make `com.azure.core.http.HttpHeaderName.<init>()` available for reflection",
+        "when `com.azure.identity.implementation.util.IdentityUtil` is reached, make `com.azure.core.http.HttpHeaderName.<init>()` available for reflection",
+        "when `com.azure.identity.implementation.HttpPipelineAdapter` is reached, make `com.azure.core.http.HttpRequest` available for reflection",
+        "when `com.azure.identity.implementation.IdentityClientBase` is reached, make `com.azure.core.http.ProxyOptions` available for reflection",
+        "when `com.azure.identity.implementation.IdentityClientBase` is reached, make `com.azure.core.http.netty.NettyAsyncHttpClient` available for reflection",
+        "when `com.azure.identity.implementation.IdentityClientBase` is reached, make `com.azure.core.http.netty.NettyAsyncHttpClientBuilder` available for reflection",
+        "when `com.azure.identity.implementation.IdentityClientBase` is reached, make `com.azure.core.http.netty.NettyAsyncHttpClientProvider` available for reflection",
+        "when `com.azure.identity.implementation.IdentityClientBase` is reached, make `com.azure.core.http.netty.implementation.NettyUtility` available for reflection",
+        "... and 231 more"
+      ]
+    },
+    "library_stats": {
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 0.9,
+            "coveredCalls": 9,
+            "totalCalls": 10
+          }
+        },
+        "coverageRatio": 0.9,
+        "coveredCalls": 9,
+        "totalCalls": 10
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 4888,
+          "missed": 12142,
+          "ratio": 0.287023,
+          "total": 17030
+        },
+        "line": {
+          "covered": 1143,
+          "missed": 2636,
+          "ratio": 0.302461,
+          "total": 3779
+        },
+        "method": {
+          "covered": 309,
+          "missed": 619,
+          "ratio": 0.332974,
+          "total": 928
+        }
+      },
+      "version": "1.18.0"
+    }
+  },
+  "schema_version": 1,
+  "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-sol",
+  "task_type": "library-new-request",
+  "template_type": "library-new-request",
+  "timestamp": "2026-09-20T09:27:08.661130Z"
+}
