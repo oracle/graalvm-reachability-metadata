@@ -1,0 +1,103 @@
+{
+  "add_new_library_support:2026-09-22": {
+    "timestamp": "2026-09-22T09:44:53.346825Z",
+    "library": "nu.validator:galimatias:0.1.3",
+    "starting_commit": "d00aed7c41e9fa1c8dd1feae9327b73f132e0b5f",
+    "ending_commit": "f419f8e539c8e6827d24ec81c232c5cf2f265765",
+    "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-sol",
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "status": "success",
+    "stats": {
+      "version": "0.1.3",
+      "dynamicAccess": {
+        "breakdown": {
+          "resources": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 1,
+            "totalCalls": 1
+          }
+        },
+        "coverageRatio": 1.0,
+        "coveredCalls": 1,
+        "totalCalls": 1
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 1792,
+          "missed": 11840,
+          "ratio": 0.131455,
+          "total": 13632
+        },
+        "line": {
+          "covered": 376,
+          "missed": 2271,
+          "ratio": 0.142048,
+          "total": 2647
+        },
+        "method": {
+          "covered": 50,
+          "missed": 335,
+          "ratio": 0.12987,
+          "total": 385
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "advisory_preparation",
+      "issue_number": 10161,
+      "issue_label": "library-new-request",
+      "library": "nu.validator:galimatias:0.1.3",
+      "summary": "galimatias declares com.ibm.icu:icu4j as an optional compile dependency, but URLUtils statically initializes ICU4J's IDNA and Domain parsing calls it unconditionally, so even plain http(s) URL parsing needs ICU4J on the classpath at runtime and for Native Image analysis.",
+      "deterministic_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "com.ibm.icu:icu4j:78.3",
+          "scope": "testImplementation",
+          "reason": "icu4j is marked optional=true in galimatias's POM so it is not pulled in transitively, but URLUtils's static IDNA field and Domain's domainToASCII call make it required for parsing any URL with a hostname, not just IDN-specific use."
+        }
+      ],
+      "agent_guidance": "Generated tests naturally exercise URLUtils/Domain (any host-bearing URL triggers ICU4J's IDNA init), so no special test-code setup beyond normal parsing coverage is needed; consider also exercising Domain.toUnicode()/URLUtils.domainToUnicode/domainToASCII directly (e.g. with an internationalized domain like xn--nxasmq6b or a Unicode domain) so the tracing agent captures ICU4J's UTS46/IDNA reflection and resource-bundle usage for Native Image.",
+      "risks": [
+        "icu4j 78.3 is much newer than the 4.0.1 galimatias itself pins; IDNA.getUTS46Instance has been stable since ICU4J 4.6 so this should be source/binary compatible, but verify via javaTest/nativeTestCompile before relying on it.",
+        "If generated tests only parse simple ASCII domains, ICU4J's IDNA class-init path still runs (confirmed above) but Unicode-specific code paths (domainToUnicode) may go uncovered unless explicitly tested."
+      ],
+      "applied_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "com.ibm.icu:icu4j:78.3",
+          "result": "applied",
+          "target": "tests/src/nu.validator/galimatias/0.1.3/build.gradle"
+        }
+      ],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#10161 Support for nu.validator:galimatias:0.1.3; label=library-new-request; body_chars=39"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "sonnet",
+      "input_tokens_used": 34,
+      "output_tokens_used": 11676
+    },
+    "metrics": {
+      "input_tokens_used": 55301,
+      "cached_input_tokens_used": 479744,
+      "output_tokens_used": 4597,
+      "iterations": 3,
+      "cost_usd": 0.6543,
+      "generated_loc": 26,
+      "tested_library_loc": 376,
+      "metadata_entries": 4,
+      "code_coverage_percent": 14.2
+    },
+    "artifacts": {
+      "metadata_file": "metadata/nu.validator/galimatias/0.1.3/reachability-metadata.json"
+    }
+  }
+}

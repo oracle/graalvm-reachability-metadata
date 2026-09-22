@@ -1,0 +1,104 @@
+{
+  "base_commit": "31e6b78b3d3a098d63b725f972290eb8e324b34f",
+  "branch": "ai/kimeta/fix-javac-org.jetbrains.kotlin-kotlin-daemon-embeddable-2.4.20-forge-9926-20260921185653450407-898622adfe5e",
+  "follow_ups": [],
+  "forge": {
+    "branch": "master",
+    "commit": "36568d2db2830705cecfdded8fb66f0cf58eb29f",
+    "monitored_branch": "origin/master"
+  },
+  "issue_number": 9926,
+  "library": {
+    "artifact": "kotlin-daemon-embeddable",
+    "coordinates": "org.jetbrains.kotlin:kotlin-daemon-embeddable:2.4.20",
+    "group": "org.jetbrains.kotlin",
+    "version": "2.4.20"
+  },
+  "local_ci_verification": {
+    "base_commit": "31e6b78b3d3a098d63b725f972290eb8e324b34f",
+    "commands": [
+      {
+        "command": [
+          "./gradlew",
+          "generateChangedIndexFileCoordinatesList",
+          "-PbaseCommit=origin/master",
+          "-PnewCommit=HEAD"
+        ],
+        "env": {
+          "GITHUB_OUTPUT": "/tmp/tmp3071n6l0"
+        },
+        "gate": "changed-index-coordinates",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :generateChangedIndexFileCoordinatesList\n\n[Incubating] Problems report is available at: file:///home/oracle/oracle/metadata2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9926-e108861c/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 1s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      },
+      {
+        "command": [
+          "./gradlew",
+          "validateIndexFiles",
+          "-Pcoordinates=org.jetbrains.kotlin:kotlin-daemon-embeddable"
+        ],
+        "env": {},
+        "gate": "index-file-validation",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :validateIndexFiles\n✅ metadata/org.jetbrains.kotlin/kotlin-daemon-embeddable/index.json: Valid\n\n[Incubating] Problems report is available at: file:///home/oracle/oracle/metadata2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9926-e108861c/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 668ms\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      }
+    ],
+    "failure_command": null,
+    "failure_gate": null,
+    "final_commit": "998d7cb02f1cec1643c7d9708e9630231900ca29",
+    "fixups": [],
+    "human_intervention_required": false,
+    "repo_fix_paths": [],
+    "status": "success"
+  },
+  "local_review": {
+    "changed_paths": [
+      "tests/src/org.jetbrains.kotlin/kotlin-daemon-embeddable/2.4.20/build.gradle",
+      "tests/src/org.jetbrains.kotlin/kotlin-daemon-embeddable/2.4.20/src/test/java/org_jetbrains_kotlin/kotlin_daemon_embeddable/Kotlin_daemon_embeddableTest.java"
+    ],
+    "decision": "approved",
+    "finding_body": "The added build.gradle generated reflection-config.json and resource-config.json under META-INF/native-image, contrary to FS-test-contract.2.7, and the loopback socket test left accept and read operations unbounded, contrary to FS-test-contract.1.6. These were contribution-local violations. Finalization passing all three native lanes after removal also proved the generated legacy configuration placeholders were unnecessary.",
+    "finding_title": "Generated tests violated metadata-generation and bounded-wait contracts",
+    "fix_note": "Removed the task and generated resource wiring that wrote empty legacy Native Image configuration files. Added 10-second accept and socket-read timeouts to bound every loopback I/O wait while satisfying the minimum timeout rule. Re-ran the exact Forge review finalization command successfully; it made no further publishable change.",
+    "model": "gpt-5.6-sol",
+    "review_comment": "Reviewed the target-only diff under the fixes-javac-fail skill and the contribution and test contracts. The repair correctly replaces the removed CompilerId.digest() API with makeRunFileDigest(JavaLanguageVersion, List<Path>) and supplies JavaLanguageVersion to walkDaemons while preserving assertions and native execution. Overall and resources dynamic-access coverage improve from 0/1 (0%) to 1/1 (100%), satisfying the ordered repair gate. Local index validation passed, and the authoritative finalization completed all three test lanes plus metadata, style, generated-test, and statistics checks without further publishable changes after the repairs. The repaired tree is approved.",
+    "session_id": "bffcd2503f7942c3"
+  },
+  "metrics": {
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "path": "stats/org.jetbrains.kotlin/kotlin-daemon-embeddable/2.4.20/execution-metrics.json",
+    "summary": {
+      "cached_input_tokens_used": 600064,
+      "code_coverage_percent": 17.86,
+      "cost_usd": 1.1954,
+      "input_tokens_used": 140577,
+      "iterations": 4,
+      "metadata_entries": 23,
+      "output_tokens_used": 6417,
+      "previous_library_coverage_percent": 12.37,
+      "previous_library_metadata_entries": 0,
+      "tested_library_loc": 367
+    },
+    "timestamp": "2026-09-21T18:56:53.450407Z"
+  },
+  "modifiers": {
+    "chunk_final": true,
+    "chunked_dynamic_access": false,
+    "human_intervention": false
+  },
+  "previous_library": {
+    "artifact": "kotlin-daemon-embeddable",
+    "coordinates": "org.jetbrains.kotlin:kotlin-daemon-embeddable:2.3.20",
+    "group": "org.jetbrains.kotlin",
+    "version": "2.3.20"
+  },
+  "producer": "kimeta",
+  "publication_id": "forge-9926-20260921185653450407-898622adfe5e",
+  "render": {},
+  "schema_version": 1,
+  "strategy_name": "javac_iterative_with_coverage_sources_pi_gpt-5.6-sol",
+  "task_type": "fixes-javac-fail",
+  "template_type": "fixes-javac-fail",
+  "timestamp": "2026-09-21T18:56:53.450407Z"
+}

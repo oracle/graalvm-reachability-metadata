@@ -8,6 +8,36 @@ Newest entry first; every non-approval is recorded, including one a repair later
 **Generated test dependencies pin the requested library version**
 
 The coordinate build script hardcoded version 5.1.15 for three Micronaut companion artifacts even though it already derives the tested version as libraryVersion. This violated the version-agnostic test requirement in FS-test-contract.2.5 and Review Signal #4 because the suite would keep those dependencies pinned when reused for a later tested version.
+## 2026-09-22 — org.relaxng:jing:20181222 (#10162)
+
+**Stale generated library coverage statistics**
+
+The committed stats did not match deterministic generation from the contribution: the first Forge finalization pass changed instruction/line/method covered counts from 14944/3138/902 to 14986/3146/904. The resulting publishable-tree mutation proved the checked-in derived statistics were stale and required regeneration before approval.
+
+## 2026-09-22 — org.apache.tomcat.embed:tomcat-embed-core:11.0.22 (#10144)
+
+**Generated metadata captured machine-local temporary resources**
+
+The contribution added absolute /tmp/junit... resource globs for HostConfig descriptor defaults and retained stale JAAS temporary-file globs in test-only metadata. Machine-local temporary paths must use normal file APIs rather than Native Image resource metadata under FS-test-contract.4.4.
+
+## 2026-09-22 — org.apache.tomcat.embed:tomcat-embed-core:11.0.22 (#10144)
+
+**Completed dynamic-access classes lacked dedicated test files**
+
+The exhaust report marked org.apache.naming.factory.DataSourceLinkFactory$DataSourceHandler and org.apache.tomcat.util.descriptor.web.SetPublicIdRule as completed, but the original contribution had no dedicated DataSourceLinkFactoryInnerDataSourceHandlerTest or SetPublicIdRuleTest. This violated the one-file-per-dynamic-access-class requirement in §FS-test-contract.1.8.
+
+## 2026-09-21 — org.jetbrains.kotlin:kotlin-daemon-embeddable:2.4.20 (#9926)
+
+**Generated tests violated metadata-generation and bounded-wait contracts**
+
+The added build.gradle generated reflection-config.json and resource-config.json under META-INF/native-image, contrary to FS-test-contract.2.7, and the loopback socket test left accept and read operations unbounded, contrary to FS-test-contract.1.6. These were contribution-local violations. Finalization passing all three native lanes after removal also proved the generated legacy configuration placeholders were unnecessary.
+
+## 2026-09-21 — net.bytebuddy:byte-buddy-agent:1.12.4 (#9360)
+
+**Generated test shadows an optional dependency API type**
+
+The contribution declared tests/src/net.bytebuddy/byte-buddy-agent/1.12.4/src/test/java/com/ibm/tools/attach/VirtualMachine.java in the real com.ibm.tools.attach package to make the optional J9 attachment path available. This is a source shadow for a dependency API and violates FS-test-contract.2.3 and FS-contribution-contract.4.7.
+
 ## 2026-09-21 — com.azure:azure-data-appconfiguration:1.8.4 (#10070)
 
 **Native Image build flags were scoped too broadly**
