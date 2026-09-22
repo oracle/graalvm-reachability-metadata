@@ -3,6 +3,12 @@
 Rendered by Forge from the pre-push branch review of §FS-local-branch-review.
 Newest entry first; every non-approval is recorded, including one a repair later cleared.
 
+## 2026-09-22 — org.relaxng:jing:20181222 (#10162)
+
+**Stale generated library coverage statistics**
+
+The committed stats did not match deterministic generation from the contribution: the first Forge finalization pass changed instruction/line/method covered counts from 14944/3138/902 to 14986/3146/904. The resulting publishable-tree mutation proved the checked-in derived statistics were stale and required regeneration before approval.
+
 ## 2026-09-22 — org.apache.tomcat.embed:tomcat-embed-core:11.0.22 (#10144)
 
 **Completed dynamic-access classes lacked dedicated test files**
