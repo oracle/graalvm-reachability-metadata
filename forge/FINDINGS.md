@@ -8,6 +8,21 @@ Newest entry first; every non-approval is recorded, including one a repair later
 **Generated metadata includes test-only and machine-local resources**
 
 FS-test-contract.4.4 forbids resource metadata for temporary machine-local paths, and FS-metadata requires test-only resources to stay out of shipped metadata. The generated tree contained five /tmp/junit.../jaas-realm-file.config globs in test-only metadata and nine JUnit, Gradle-worker, or generated test-class resource globs in shipped metadata.
+## 2026-09-15 — com.fasterxml.jackson.jr:jackson-jr-objects:2.21.0 (#8916)
+
+**Test-only metadata shadowed shipped registrations**
+
+The generated test-only reachability metadata duplicated shipped registrations for POJODefinition, array types, LinkedHashMap, and TreeMap behind test-class conditions, so those registrations could satisfy native tests without exercising the shipped library-conditioned entries. It also contained unstable $$Lambda/0x... conditions and nanoTime-derived missing-class targets, which are not stable valid evidence. The contribution additionally changed tracked native test-result XML even though that generated path is repository-ignored.
+## 2026-09-20 — org.apache.kafka:kafka-clients:4.2.0 (#7506)
+
+**Coverage improvement removed baseline behavior and counted an asserted failure**
+
+The contribution deleted the existing SCRAM provider behavior test from KafkaClientsTest, contrary to the no-weakening rule, and added reportsUnavailableRawMessageInfoFields, which deliberately supplied a nonexistent protobuf field and asserted the resulting RuntimeException while exercising the reflective call site. That is coverage bought by asserting breakage under FS-contribution-contract.4.4 / FS-test-contract.2.6.
+## 2026-09-22 — org.orbisgis:h2gis:2.2.5 (#10139)
+
+**Unrelated KML coverage broadened the H2GIS update**
+
+The generated contribution added STAsKmlTest and ST_AsKml method metadata even though issue #10139 requests the GeoJSON, SRID, geometry-metadata, spatial-predicate, and distance methods. This unrelated feature expansion violated the no-scope-creep requirement in FS-test-contract.2.9.
 
 ## 2026-09-21 — org.apache.avro:avro:1.12.2 (#9363)
 

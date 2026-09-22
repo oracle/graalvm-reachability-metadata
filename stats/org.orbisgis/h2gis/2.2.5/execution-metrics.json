@@ -79,5 +79,86 @@
     "artifacts": {
       "metadata_file": "metadata/org.orbisgis/h2gis/2.2.5/reachability-metadata.json"
     }
+  },
+  "improve_library_coverage:2026-09-22": {
+    "timestamp": "2026-09-22T18:57:09.696313Z",
+    "library": "org.orbisgis:h2gis:2.2.5",
+    "starting_commit": "724b7399cda570271c6ba9a5f864c4831136750a",
+    "ending_commit": "055174c60af3b99961e88cab71f27a53d9021473",
+    "strategy_name": "library_update_optimistic_pi_gpt-5.6-sol",
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "status": "success",
+    "stats": {
+      "version": "2.2.5",
+      "dynamicAccess": {
+        "breakdown": {},
+        "coverageRatio": 1.0,
+        "coveredCalls": 0,
+        "totalCalls": 0
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 5881,
+          "missed": 57734,
+          "ratio": 0.092447,
+          "total": 63615
+        },
+        "line": {
+          "covered": 1500,
+          "missed": 12925,
+          "ratio": 0.103986,
+          "total": 14425
+        },
+        "method": {
+          "covered": 589,
+          "missed": 1655,
+          "ratio": 0.262478,
+          "total": 2244
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "no_action",
+      "issue_number": 10139,
+      "issue_label": "library-update-request",
+      "library": "org.orbisgis:h2gis:2.2.5",
+      "summary": "org.orbisgis:h2gis is a pure-JVM, in-memory library (H2 + JTS + CTS pulled transitively via the single h2gis coordinate already in build.gradle). No GDAL/raster support, no Docker service, and no env/system-property is required to reach the missing reflective calls (ST_GeomFromGeoJSON, ST_AsGeoJSON, ST_SetSRID, FindGeometryMetadata, ST_DWithin, ST_Intersects, ST_Within, ST_DistanceSphere) — they're all in the org.h2gis.functions.** package already covered by user-code-filter.json.",
+      "deterministic_setup": [],
+      "agent_guidance": "The existing H2gisTest already calls ST_GeomFromGeoJSON and ST_Intersects with literal SQL arguments, which the agent apparently already captures. The issue reporter's failure occurs when these functions are invoked with bound JDBC parameters (PreparedStatement placeholders, e.g. `ST_SetSRID(ST_GeomFromGeoJSON(?), 4326)`), not literals, and through the specific composed forms (ST_SetSRID wrapping ST_GeomFromGeoJSON, ST_DWithin/ST_Within/ST_DistanceSphere as predicates, FindGeometryMetadata as a stored-procedure style call). New/updated test cases should exercise each of the eight listed functions via PreparedStatement bind parameters (matching the Micronaut Data code path) rather than only inline literals, then regenerate metadata with the native-image agent so it records the actual reflective call site.",
+      "risks": [
+        "If agent-recorded metadata still differs based on argument literal-vs-bound-parameter resolution paths inside H2's function alias mechanism, coverage may need to include both forms per function to avoid re-missing the same class under a different call shape."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#10139 Update existing library: org.orbisgis:h2gis:2.2.5; label=library-update-request; body_chars=3497"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "7 existing test file path(s) included"
+        }
+      ],
+      "model": "sonnet",
+      "input_tokens_used": 16,
+      "output_tokens_used": 4559
+    },
+    "metrics": {
+      "input_tokens_used": 213707,
+      "cached_input_tokens_used": 2377600,
+      "output_tokens_used": 18882,
+      "iterations": 5,
+      "cost_usd": 2.8238,
+      "generated_loc": 337,
+      "tested_library_loc": 1500,
+      "metadata_entries": 261,
+      "test_only_metadata_entries": 83,
+      "code_coverage_percent": 10.4
+    },
+    "artifacts": {
+      "metadata_file": "metadata/org.orbisgis/h2gis/2.2.5/reachability-metadata.json"
+    }
   }
 }
