@@ -47,8 +47,9 @@ public class HostConfigTest {
         Tomcat tomcat = new Tomcat();
         tomcat.setBaseDir(base.toString());
         tomcat.setPort(0);
-        Host host = tomcat.getHost();
+        StandardHost host = (StandardHost) tomcat.getHost();
         host.setAppBase(appBase.toString());
+        host.setXmlBase(configBase.toString());
         host.setAutoDeploy(false);
         host.setDeployOnStartup(true);
         host.addLifecycleListener(new HostConfig());

@@ -11,6 +11,7 @@ import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
 
 import org.apache.catalina.LifecycleState;
+import org.apache.catalina.core.StandardEngine;
 import org.apache.catalina.realm.MemoryRealm;
 import org.apache.catalina.realm.MessageDigestCredentialHandler;
 import org.apache.catalina.realm.RealmBase;
@@ -24,6 +25,9 @@ public class RealmBaseTest {
     @Test
     void initializesConfiguredCertificateUsernameRetriever() throws Exception {
         MemoryRealm realm = new MemoryRealm();
+        StandardEngine engine = new StandardEngine();
+        engine.setName("realm-engine");
+        engine.setRealm(realm);
         realm.setX509UsernameRetrieverClassName(X509SubjectDnRetriever.class.getName());
 
         try {
