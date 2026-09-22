@@ -8,6 +8,8 @@ package com_jayway_jsonpath.json_path_assert;
 
 import com.jayway.jsonassert.JsonAssert;
 import com.jayway.jsonassert.JsonAsserter;
+import com.jayway.jsonpath.Criteria;
+import com.jayway.jsonpath.Filter;
 import com.jayway.jsonpath.JsonPath;
 import com.jayway.jsonpath.ReadContext;
 import java.io.ByteArrayInputStream;
@@ -77,6 +79,27 @@ public class JsonPathAssertTest {
         assertThat(parsedJson, isJson(withJsonPath("$.profile.level", equalTo(3))));
         assertThat(context, isJson(withJsonPath("$.tags", contains("native", "json"))));
         assertThat(JSON, isJsonString(withJsonPath("$.name", equalTo("Ada"))));
+    }
+
+    @Test
+    void matchesJsonPathsUsingFilterPredicates() {
+        ReadContext context = JsonPath.parse(
+                """
+                {
+                  "people": [
+                    {"name": "Ada", "role": "engineer", "active": true},
+                    {"name": "Grace", "role": "engineer", "active": false},
+                    {"name": "Linus", "role": "manager", "active": true}
+                  ]
+                }
+                """);
+        Filter activeEngineers = Filter.filter(
+                Criteria.where("role").is("engineer").and("active").is(true));
+        JsonPath activeEngineerNames =
+                JsonPath.compile("$.people[?].name", activeEngineers);
+
+        assertThat(context, withJsonPath(activeEngineerNames, contains("Ada")));
+        assertThat(context, withJsonPath("$.people[?].name", activeEngineers));
     }
 
     @Test
