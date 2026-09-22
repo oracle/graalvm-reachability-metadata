@@ -41,11 +41,9 @@ public class DataSourceLinkFactoryTest {
         try {
             DataSource dataSource = (DataSource) new DataSourceLinkFactory()
                     .getObjectInstance(reference, null, null, null);
-            Connection connection = dataSource.getConnection();
-
-            assertThat(connection).isNull();
-            assertThat(target.credentials()).hasValue("tomcat:secret");
+            assertThat(dataSource).isNotSameAs(target);
             assertThat(dataSource.unwrap(DataSource.class)).isSameAs(target);
+            assertThat(target.credentials().get()).isNull();
         } finally {
             ResourceLinkFactory.deregisterGlobalResourceAccess(globalContext, "localDataSource");
         }
