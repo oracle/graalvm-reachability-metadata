@@ -9,6 +9,11 @@ Newest entry first; every non-approval is recorded, including one a repair later
 
 The contribution deleted HostConfigTest.deploysContextDescriptorAtServerStartup, weakening an existing passing scenario contrary to FS-test-contract.2.9; marked WebappClassLoaderBase$PrivilegedJavaseGetResource complete without its required dedicated test file under FS-test-contract.1.8; and retained six HostConfig plus three JAAS /tmp/junit... resource globs, contrary to FS-test-contract.4.4. It also retained an unused RecordingLog helper with 106 unjustified test-only reflection registrations and shipped test-owned or nonexistent resource entries.
 
+## 2026-09-21 — org.apache.avro:avro:1.12.2 (#9363)
+
+**Runtime-lambda re-scope left unjustified metadata**
+
+The positive ReflectionUtil.getConstructorAsFunction scenario had been dropped after Native Image runtime lambda definition failed, but the contribution still shipped its manually added lambda registration and retained test-only ConstructedWithString metadata. That left requested metadata without the public-API test required by FS-test-contract.1.5 and FS-test-contract.2.7. The scenario itself is a valid FS-test-contract.4.3.2 re-scope: it concretely uses runtime LambdaMetafactory class definition, Native Image reports UnsupportedFeatureError, Avro catches Throwable and returns null so the refusal cannot be verified, and the remaining public-API tests still pass the repair coverage gate.
 ## 2026-09-21 — io.micronaut:micronaut-websocket:5.1.15 (#10141)
 
 **Generated test dependencies pin the requested library version**
