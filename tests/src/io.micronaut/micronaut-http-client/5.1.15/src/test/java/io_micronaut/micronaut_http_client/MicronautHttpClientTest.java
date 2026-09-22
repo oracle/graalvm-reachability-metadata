@@ -11,6 +11,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpServer;
+import io.micronaut.core.type.Argument;
 import io.micronaut.http.HttpRequest;
 import io.micronaut.http.HttpResponse;
 import io.micronaut.http.HttpStatus;
@@ -27,6 +28,7 @@ import java.net.InetSocketAddress;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
+import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.zip.GZIPOutputStream;
@@ -79,6 +81,29 @@ public class MicronautHttpClientTest {
 
     @Test
     @Timeout(55)
+    void serializesAndDeserializesJsonBodies() throws Exception {
+        Map<String, Object> order = Map.of("item", "native-widget", "quantity", 3);
+
+        try (TestServer server = TestServer.start();
+                HttpClient client = HttpClient.create(server.baseUri().toURL(), clientConfiguration())) {
+            HttpRequest<Map<String, Object>> request = HttpRequest.POST("/json", order)
+                    .contentType(MediaType.APPLICATION_JSON_TYPE)
+                    .accept(MediaType.APPLICATION_JSON_TYPE);
+
+            HttpResponse<Map<String, Object>> response = client.toBlocking()
+                    .exchange(request, Argument.mapOf(String.class, Object.class));
+
+            assertThat(response.code()).isEqualTo(HttpStatus.OK.getCode());
+            assertThat(response.getContentType()).contains(MediaType.APPLICATION_JSON_TYPE);
+            assertThat(response.body())
+                    .containsEntry("accepted", true)
+                    .containsEntry("item", "native-widget")
+                    .containsEntry("quantity", 3);
+        }
+    }
+
+    @Test
+    @Timeout(55)
     void exposesStatusHeadersAndBodyForErrorResponses() throws Exception {
         try (TestServer server = TestServer.start();
                 HttpClient client = HttpClient.create(server.baseUri().toURL(), clientConfiguration())) {
@@ -126,6 +151,7 @@ public class MicronautHttpClientTest {
             server.createContext("/redirect", TestServer::redirect);
             server.createContext("/compressed", TestServer::compressed);
             server.createContext("/multipart", TestServer::multipart);
+            server.createContext("/json", TestServer::json);
             server.createContext("/error", TestServer::error);
             server.start();
             return new TestServer(server, executor);
@@ -187,6 +213,23 @@ public class MicronautHttpClientTest {
                 exchange.getResponseHeaders().set("X-Transfer-Mode", "chunked");
                 exchange.sendResponseHeaders(HttpStatus.OK.getCode(), 0);
                 exchange.getResponseBody().write(responseBytes);
+            }
+        }
+
+        private static void json(HttpExchange exchange) throws IOException {
+            try (exchange) {
+                String contentType = exchange.getRequestHeaders().getFirst("Content-Type");
+                String requestBody = new String(exchange.getRequestBody().readAllBytes(), StandardCharsets.UTF_8);
+                boolean accepted = contentType != null
+                        && contentType.startsWith(MediaType.APPLICATION_JSON)
+                        && requestBody.contains("\"item\":\"native-widget\"")
+                        && requestBody.contains("\"quantity\":3");
+                String responseBody = String.format(
+                        "{\"accepted\":%s,\"item\":\"native-widget\",\"quantity\":3}", accepted);
+                byte[] response = responseBody.getBytes(StandardCharsets.UTF_8);
+                exchange.getResponseHeaders().set("Content-Type", MediaType.APPLICATION_JSON);
+                exchange.sendResponseHeaders(HttpStatus.OK.getCode(), response.length);
+                exchange.getResponseBody().write(response);
             }
         }
 
