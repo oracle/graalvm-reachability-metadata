@@ -1,0 +1,252 @@
+{
+  "improve_library_coverage:2026-05-20": {
+    "timestamp": "2026-05-20T18:27:17.141666Z",
+    "library": "org.apache.tomcat.embed:tomcat-embed-core:11.0.22",
+    "starting_commit": "11e43e8f03cb540f430a627d6e0876a66bb2e56b",
+    "ending_commit": "e3c8b1746ea1f7f4ccd418dd40fa0e10c6a2ba6f",
+    "strategy_name": "library_update_pi_gpt-5.5",
+    "agent": "pi",
+    "model": "oca/gpt-5.5",
+    "status": "success",
+    "stats": {
+      "version": "11.0.22",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 0.368286,
+            "coveredCalls": 144,
+            "totalCalls": 391
+          },
+          "resources": {
+            "coverageRatio": 0.341463,
+            "coveredCalls": 14,
+            "totalCalls": 41
+          }
+        },
+        "coverageRatio": 0.365741,
+        "coveredCalls": 158,
+        "totalCalls": 432
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 49769,
+          "missed": 295753,
+          "ratio": 0.14404,
+          "total": 345522
+        },
+        "line": {
+          "covered": 12109,
+          "missed": 69189,
+          "ratio": 0.148946,
+          "total": 81298
+        },
+        "method": {
+          "covered": 2348,
+          "missed": 10425,
+          "ratio": 0.183825,
+          "total": 12773
+        }
+      }
+    },
+    "metrics": {
+      "input_tokens_used": 417692,
+      "cached_input_tokens_used": 5881856,
+      "output_tokens_used": 59086,
+      "iterations": 9,
+      "cost_usd": 4.7135,
+      "generated_loc": 674,
+      "tested_library_loc": 12109,
+      "metadata_entries": 463,
+      "test_only_metadata_entries": 156,
+      "code_coverage_percent": 14.89
+    },
+    "artifacts": {
+      "test_file": "tests/src/org.apache.tomcat.embed/tomcat-embed-core/11.0.22/src/test/java/tomcat/TomcatTests.java",
+      "metadata_file": "metadata/org.apache.tomcat.embed/tomcat-embed-core/11.0.22/reachability-metadata.json"
+    }
+  },
+  "improve_library_coverage:2026-06-22": {
+    "timestamp": "2026-06-22T22:18:01.900250Z",
+    "library": "org.apache.tomcat.embed:tomcat-embed-core:11.0.22",
+    "starting_commit": "ff02b80648c605f2de2a04206fe73e4365729f77",
+    "ending_commit": "b03ad2d18fbce4a24b70ac1b76547cdebcb051d6",
+    "strategy_name": "dynamic_access_main_sources_pi_gpt-5.5",
+    "agent": "pi",
+    "model": "oca/gpt-5.5",
+    "status": "chunk_ready",
+    "stats": {
+      "version": "11.0.22",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 0.57289,
+            "coveredCalls": 224,
+            "totalCalls": 391
+          },
+          "resources": {
+            "coverageRatio": 0.634146,
+            "coveredCalls": 26,
+            "totalCalls": 41
+          }
+        },
+        "coverageRatio": 0.578704,
+        "coveredCalls": 250,
+        "totalCalls": 432
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 63988,
+          "missed": 281534,
+          "ratio": 0.185192,
+          "total": 345522
+        },
+        "line": {
+          "covered": 15641,
+          "missed": 65657,
+          "ratio": 0.192391,
+          "total": 81298
+        },
+        "method": {
+          "covered": 2937,
+          "missed": 9836,
+          "ratio": 0.229938,
+          "total": 12773
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "action": "no_action",
+      "agent_guidance": "",
+      "applied_setup": [],
+      "deterministic_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#8328 Update existing library: org.apache.tomcat.embed:tomcat-embed-core:11.0.22; label=library-update-request; body_chars=2556"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "12 existing test file path(s) included"
+        }
+      ],
+      "input_tokens_used": 54059,
+      "issue_label": "library-update-request",
+      "issue_number": 8328,
+      "library": "org.apache.tomcat.embed:tomcat-embed-core:11.0.22",
+      "model": "oca/gpt-5.5",
+      "output_tokens_used": 3640,
+      "risks": [
+        "Optional Tomcat areas such as JSP/Jasper, WebSocket, APR/native SSL, clustering, or external persistence would need additional artifacts or native libraries, but they are not needed for the reported Connector.getProperty/setProperty coverage path.",
+        "Tests should avoid fixed ports and external services; use local embedded Tomcat/Connector APIs and clean lifecycle shutdown, with Gradle/native-image verification remaining authoritative."
+      ],
+      "status": "completed",
+      "summary": "No extra setup is required: tomcat-embed-core 11.0.22 resolves with only tomcat-annotations-api as a compile dependency, bundles the servlet/security APIs needed for direct embedded-core usage, and the reported Connector/AbstractProtocol introspection path is reachable with the library itself."
+    },
+    "metrics": {
+      "input_tokens_used": 1140600,
+      "cached_input_tokens_used": 12026368,
+      "output_tokens_used": 125404,
+      "iterations": 21,
+      "cost_usd": 9.7753,
+      "generated_loc": 2258,
+      "tested_library_loc": 15641,
+      "metadata_entries": 1966,
+      "test_only_metadata_entries": 251,
+      "code_coverage_percent": 19.24
+    },
+    "artifacts": {
+      "test_file": "tests/src/org.apache.tomcat.embed/tomcat-embed-core/11.0.22/src/test/java/tomcat/NamingContextListenerTest.java",
+      "metadata_file": "metadata/org.apache.tomcat.embed/tomcat-embed-core/11.0.22/reachability-metadata.json"
+    }
+  },
+  "improve_library_coverage:2026-09-22": {
+    "timestamp": "2026-09-22T01:31:16.104667Z",
+    "library": "org.apache.tomcat.embed:tomcat-embed-core:11.0.22",
+    "starting_commit": "67d67d788907378dcff0cf49e76e670c0a365ac6",
+    "ending_commit": "ade4c440ed5461ca60cd00785912d6e5ecfe6dac",
+    "strategy_name": "library_update_optimistic_pi_gpt-5.6-sol",
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "status": "chunk_ready",
+    "stats": {
+      "version": "11.0.22",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 0.82,
+            "coveredCalls": 328,
+            "totalCalls": 400
+          },
+          "resources": {
+            "coverageRatio": 0.829268,
+            "coveredCalls": 34,
+            "totalCalls": 41
+          }
+        },
+        "coverageRatio": 0.820862,
+        "coveredCalls": 362,
+        "totalCalls": 441
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 76830,
+          "missed": 270297,
+          "ratio": 0.221331,
+          "total": 347127
+        },
+        "line": {
+          "covered": 17726,
+          "missed": 63977,
+          "ratio": 0.216957,
+          "total": 81703
+        },
+        "method": {
+          "covered": 3261,
+          "missed": 9552,
+          "ratio": 0.254507,
+          "total": 12813
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "no_action",
+      "issue_number": 10144,
+      "issue_label": "library-update-request",
+      "library": "org.apache.tomcat.embed:tomcat-embed-core:11.0.22",
+      "summary": "Version bump for an existing, well-covered library; the missing target AbstractProtocol#getProperty(String) is a public method already reachable through the existing ConnectorProtocolIntrospectionTest pattern (Connector.getProperty -> IntrospectionUtils reflection into the protocol handler). No new dependency, Docker image, or env/system property is needed beyond the current scaffold.",
+      "deterministic_setup": [],
+      "agent_guidance": "",
+      "risks": [],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#10144 Update existing library: org.apache.tomcat.embed:tomcat-embed-core:11.0.22; label=library-update-request; body_chars=303"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "30 existing test file path(s) included"
+        }
+      ],
+      "model": "sonnet",
+      "input_tokens_used": 10,
+      "output_tokens_used": 3127
+    },
+    "metrics": {
+      "input_tokens_used": 383833,
+      "cached_input_tokens_used": 13026048,
+      "output_tokens_used": 50672,
+      "iterations": 7,
+      "cost_usd": 9.9524,
+      "generated_loc": 3828,
+      "tested_library_loc": 17726,
+      "metadata_entries": 2079,
+      "test_only_metadata_entries": 355,
+      "code_coverage_percent": 21.7
+    },
+    "artifacts": {
+      "metadata_file": "metadata/org.apache.tomcat.embed/tomcat-embed-core/11.0.22/reachability-metadata.json"
+    }
+  }
+}
