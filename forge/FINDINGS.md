@@ -9,6 +9,11 @@ Newest entry first; every non-approval is recorded, including one a repair later
 
 The generated contribution added STAsKmlTest and ST_AsKml method metadata even though issue #10139 requests the GeoJSON, SRID, geometry-metadata, spatial-predicate, and distance methods. This unrelated feature expansion violated the no-scope-creep requirement in FS-test-contract.2.9.
 
+## 2026-09-21 — io.micronaut:micronaut-websocket:5.1.15 (#10141)
+
+**Generated test dependencies pin the requested library version**
+
+The coordinate build script hardcoded version 5.1.15 for three Micronaut companion artifacts even though it already derives the tested version as libraryVersion. This violated the version-agnostic test requirement in FS-test-contract.2.5 and Review Signal #4 because the suite would keep those dependencies pinned when reused for a later tested version.
 ## 2026-09-22 — io.micronaut:micronaut-http-client:5.1.15 (#10140)
 
 **Generated library statistics were stale**
