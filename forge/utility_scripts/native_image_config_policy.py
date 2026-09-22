@@ -105,7 +105,7 @@ def is_legacy_test_native_image_config_path(path: str) -> bool:
 def _discard_git_ignored_paths(repo_path: str, paths: list[str]) -> list[str]:
     """Drop paths git ignores: the Gradle native plugin generates split-config
     files under `build/`, and an ignored file can never be committed, so it is
-    not a policy violation (§AR-code-coverage-improvement.4)."""
+    not a policy violation (§AR-code-coverage-improvement.5)."""
     if not paths:
         return paths
     result = subprocess.run(

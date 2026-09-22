@@ -31,7 +31,7 @@ STRATEGIES_PATH = Path(os.path.join(REPO_ROOT, "strategies", "predefined_strateg
 BENCHMARK_WORKTREE_DIRNAME = "forge_benchmark_worktrees"
 
 from utility_scripts.repo_path_resolver import resolve_repo_roots
-from utility_scripts.metrics_writer import count_metadata_entries
+from utility_scripts.library_measurements import count_metadata_entries
 from git_scripts.common_git import build_ai_branch_name
 
 

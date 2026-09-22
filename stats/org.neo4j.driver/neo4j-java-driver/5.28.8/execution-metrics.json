@@ -1,0 +1,129 @@
+{
+  "fix_java_run_fail:2026-09-18": {
+    "timestamp": "2026-09-18T04:59:34.773987Z",
+    "library": "org.neo4j.driver:neo4j-java-driver:5.28.8",
+    "starting_commit": "d106e8b98266cf5377111af608b6243cbe43f428",
+    "ending_commit": "73d220d77f9202d97e5d0f5f00ce3e9fdbe2c457",
+    "previous_library": "org.neo4j.driver:neo4j-java-driver:5.28.5",
+    "strategy_name": "java_run_iterative_with_coverage_sources_pi_gpt-5.6-sol",
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "status": "success",
+    "stats": {
+      "version": "5.28.8",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 7,
+            "totalCalls": 7
+          }
+        },
+        "coverageRatio": 1.0,
+        "coveredCalls": 7,
+        "totalCalls": 7
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 1358,
+          "missed": 30825,
+          "ratio": 0.042196,
+          "total": 32183
+        },
+        "line": {
+          "covered": 295,
+          "missed": 7245,
+          "ratio": 0.039125,
+          "total": 7540
+        },
+        "method": {
+          "covered": 91,
+          "missed": 2396,
+          "ratio": 0.03659,
+          "total": 2487
+        }
+      }
+    },
+    "previous_library_stats": {
+      "version": "5.28.5",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 7,
+            "totalCalls": 7
+          }
+        },
+        "coverageRatio": 1.0,
+        "coveredCalls": 7,
+        "totalCalls": 7
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 1329,
+          "missed": 31960,
+          "ratio": 0.039923,
+          "total": 33289
+        },
+        "line": {
+          "covered": 293,
+          "missed": 7351,
+          "ratio": 0.038331,
+          "total": 7644
+        },
+        "method": {
+          "covered": 88,
+          "missed": 2531,
+          "ratio": 0.033601,
+          "total": 2619
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "no_action",
+      "issue_number": 9393,
+      "issue_label": "fails-java-run",
+      "library": "org.neo4j.driver:neo4j-java-driver:5.28.8",
+      "summary": "Failure is a pure JVM assertion mismatch: 5.28.8's ObjectInstantiator switched the mapping-error message from Class.getCanonicalName() to Class.getName(), so ConstructorFinderTest's canonical-name substring check no longer matches. No I/O, DB, or external resource is involved; no extra dependency, Docker image, or env/system property is needed.",
+      "deterministic_setup": [],
+      "agent_guidance": "",
+      "risks": [
+        "ConstructorFinder also gained new constructor-selection/accessibility logic (trySetAccessible, entity-vs-map containsKey dispatch) between 5.28.5 and 5.28.8; verify other mapping tests still hold, not just the message-format one."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#9393 [Automation] java run fails for org.neo4j.driver:neo4j-java-driver:5.28.8; label=fails-java-run; body_chars=8015"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "11 existing test file path(s) included"
+        }
+      ],
+      "current_library": "org.neo4j.driver:neo4j-java-driver:5.28.5",
+      "new_version": "5.28.8",
+      "model": "sonnet",
+      "input_tokens_used": 16,
+      "output_tokens_used": 5185
+    },
+    "metrics": {
+      "input_tokens_used": 36970,
+      "cached_input_tokens_used": 143616,
+      "output_tokens_used": 832,
+      "iterations": 3,
+      "cost_usd": 0.2817,
+      "tested_library_loc": 295,
+      "metadata_entries": 3,
+      "test_only_metadata_entries": 6,
+      "previous_library_metadata_entries": 11,
+      "previous_library_test_only_metadata_entries": 1,
+      "code_coverage_percent": 3.91,
+      "previous_library_coverage_percent": 3.83
+    },
+    "artifacts": {
+      "metadata_file": "metadata/org.neo4j.driver/neo4j-java-driver/5.28.8/reachability-metadata.json"
+    }
+  }
+}

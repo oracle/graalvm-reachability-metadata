@@ -1,0 +1,171 @@
+# fissile configuration.
+#
+# Scoped to the hand-written infrastructure only: forge/ (Python automation),
+# tests/tck-build-logic/ (Java/Groovy/Gradle harness build logic), and the
+# repository docs. Everything else — shipped metadata, per-library test
+# projects, generated stats — is deliberately outside the budget system.
+
+fissile_config_version = 1
+
+[scan]
+# `audit` walks these roots; `check --staged` ignores them and takes its file
+# set from git. Both honor `exclude` and `.gitignore`. The default walks the
+# whole repository so adoption needs no layout guess; narrow it to specific
+# roots once you know which directories are worth auditing.
+include = ["forge", "tests/tck-build-logic", "docs"]
+exclude = [
+  # Transient agent-run workspaces and their generated reports live under
+  # forge/ but are outputs, not hand-written infrastructure.
+  "forge/code-coverage-*/**",
+  "forge/local_repositories/**",
+  "target/**",
+  "node_modules/**",
+  ".git/**",
+  "dist/**",
+  "build/**",
+  "vendor/**",
+  "**/*.lock",
+  "**/*.min.*",
+  "**/*.png",
+  "**/*.jpg",
+  "**/*.jpeg",
+  "**/*.gif",
+  "**/*.webp",
+  "**/*.pdf",
+]
+respect_gitignore = true
+
+[output]
+format = "text" # text | json
+color = "auto"  # auto | always | never
+success = "ok"
+
+[exceptions]
+soft_registry = "docs/file-size-agent-exceptions.toml"
+hard_registry = "docs/file-size-human-exceptions.toml"
+# What to do about an exception entry that has outlived its file. Both `check`
+# and `audit --stale-exceptions` report under this key, so `error` fails a
+# commit as well as a CI audit.
+stale = "warn" # warn | error | ignore
+
+# A ceiling written by `exception add` or `exception retune` is rounded up to
+# this step, so it reads as a decision rather than as whatever the file measured
+# that day. The same step is the slack `audit --stale-exceptions` tolerates
+# before calling a ceiling loose. Set a unit to 1 to record exact measurements.
+[exceptions.bump]
+lines = 100
+bytes = 4096
+tokens = 1000
+
+[tokens]
+# Token budgets are opt-in; bytes and lines work without external tooling.
+enabled = false
+command = ["token-counter", "--count", "{path}"]
+
+# Messages are the part of this file worth rewriting first: they are what the
+# check teaches when it fires. The defaults below are deliberately generic —
+# they know nothing about this repository's layout. Replace them with guidance
+# that names real destinations ("move transport code under src/api/"), and, if
+# this project keeps architecture docs with stable IDs, point at the one that
+# decides where extracted code belongs. Cite only IDs declared in *this*
+# repository; an ID borrowed from another project resolves nowhere here.
+#
+# Soft and hard are separate messages on purpose: a warning asks for a split
+# next time the file is touched, a block has to say what to do when no safe
+# split exists. Keep both escape hatches in the text — a rule that only ever
+# says "split this" gets satisfied by bad splits.
+#
+# Where a message names the exception route, keep it saying what the reason has
+# to establish, not merely that a reason is required: "record the debt" reads as
+# satisfied by any sentence, and what comes back is a description of the file.
+#
+# `{path}` and `{actual}` differ per file, so a message using either is printed
+# once per file instead of once per group. `{rule}`, `{severity}`, `{limit}`,
+# and `{unit}` are constant within a group and stay grouped.
+
+[[messages]]
+id = "split-source-soft"
+text = """
+Should split, next time you are in one of these files: move a cohesive group of items into a sibling module. Split along a responsibility seam, never at the line count, and never break apart code that belongs together. Never split a class into mixin bases sharing self — a boundary that exists only on disk is not a split.
+If no split leaves the design better than it is now, record why instead of forcing one — not what the file contains, which is what this finding already said. Name the constraint that makes splitting illegal (--kind structural), or the boundary that is missing and what must exist first (--kind deferred, --until naming what retires it):
+fissile exception add <path> --severity soft --rule {rule} --kind <kind>
+"""
+
+[[messages]]
+id = "split-source-hard"
+text = """
+Must split before more code lands here: move cohesive groups of items into sibling modules along seams that already exist. Do not invent an abstraction, flatten a boundary, or shuffle lines to get under the limit — a worse design under budget is not the goal. Never split a class into mixin bases sharing self, and never carve out a helper module that only its parent imports back wholesale.
+If you cannot see a split that leaves the architecture intact, stop and ask a human. The only other way past this gate is a human-reviewed exception, whose reason names the constraint that makes splitting illegal (--kind structural) or the boundary that is missing and what must exist first (--kind deferred):
+fissile exception add <path> --severity hard --rule {rule} --kind <kind>
+"""
+
+[[messages]]
+id = "split-doc-soft"
+text = """
+Should split, next time you edit one of these documents: keep one focused subject per file and move secondary detail into a child document the parent links.
+If the document has to be read whole, record it rather than cutting it up — naming what makes it indivisible (--kind structural), or the child document that does not exist yet (--kind deferred, --until naming what retires it):
+fissile exception add <path> --severity soft --rule {rule} --kind <kind>
+"""
+
+[[messages]]
+id = "split-doc-hard"
+text = """
+Must split before adding more: move secondary detail into child documents the parent links, leaving one focused subject per file.
+If no split keeps the document coherent, ask a human rather than cutting at an arbitrary heading; a human-reviewed exception is the alternative:
+fissile exception add <path> --severity hard --rule {rule}
+"""
+
+[[messages]]
+id = "large-file-soft"
+text = """
+Large for a hand-written file. If it is generated, vendored, or binary, add it to [scan].exclude — the budget system should not reason about it at all. If it is real content, give it a rule of its own with a limit and guidance that fit it.
+"""
+
+[[messages]]
+id = "large-file-hard"
+text = """
+Very large file. Exclude it in [scan].exclude if it is generated, vendored, or binary; give it its own rule if this file type is simply bigger than the catch-all assumes.
+If it is hand-written content that has to stay this size, that is a human's call, and the exception names what makes it indivisible (--kind structural) or what must exist before it can be split (--kind deferred):
+fissile exception add <path> --severity hard --rule {rule} --kind <kind>
+"""
+
+[[rules]]
+id = "large-file-default"
+include = ["forge/**/*", "tests/tck-build-logic/**/*", "docs/**/*"]
+unit = "bytes"
+soft = 524288
+hard = 1048576
+soft_message = "large-file-soft"
+hard_message = "large-file-hard"
+
+# Hand-written source in the two infrastructure roots: Forge's Python
+# automation and the TCK harness's Java/Groovy/Gradle build logic. Data and
+# generated formats (.json, .yaml, .csv) are deliberately absent — they fall
+# to the byte catch-all, because a large generated file is not the same
+# problem as a large hand-written module.
+[[rules]]
+id = "source"
+include = [
+  "forge/**/*.py",
+  "tests/tck-build-logic/**/*.java",
+  "tests/tck-build-logic/**/*.groovy",
+  "tests/tck-build-logic/**/*.gradle",
+]
+unit = "lines"
+soft = 450
+hard = 700
+count_blank_lines = false
+count_comment_lines = true
+soft_message = "split-source-soft"
+hard_message = "split-source-hard"
+
+[[rules]]
+id = "markdown-docs"
+include = ["docs/**/*.md", "forge/**/*.md", "tests/tck-build-logic/**/*.md"]
+unit = "lines"
+soft = 250
+hard = 500
+count_blank_lines = false
+count_comment_lines = true
+soft_message = "split-doc-soft"
+hard_message = "split-doc-hard"

@@ -137,7 +137,7 @@ public class com.example.Mixed {
 
         270 of the repository's artifacts declare more than one allowed
         package; keeping only one silently shrinks the whole API target
-        universe (§AR-code-coverage-improvement.4).
+        universe (§AR-code-coverage-improvement.5).
         """
         names = [
             "ch/qos/logback/classic/Logger.class",

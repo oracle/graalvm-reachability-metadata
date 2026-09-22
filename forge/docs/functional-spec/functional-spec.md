@@ -95,7 +95,7 @@ initial metadata check performs none of this work.
 | **Reachability metadata** | JSON describing reflection, JNI, resource, serialization, and proxy access for a library, consumed by GraalVM `native-image`. |
 | **Reachability repo** | Local checkout or worktree of `oracle/graalvm-reachability-metadata`. The build and metadata-generation Gradle tasks run inside it. The parent checkout of `forge/` is used by default. |
 | **Forge metrics directory** | The `forge/` subdirectory of the reachability checkout, used as the transient staging area for a run's in-flight metrics (`.pending_metrics.json`) until local finalization writes the publication descriptor. Durable per-library run metrics persist to `stats/<group>/<artifact>/<version>/execution-metrics.json` (§FS-forge-run-metrics). |
-| **Forge publication descriptor** | Versioned, schema-validated JSON committed at `stats/<group>/<artifact>/<version>/forge-publication.json`, or below a further publication-identifier segment where one coordinate carries many publications (§FS-code-coverage-benchmarking.3). It is the durable, branch-controlled data handoff from locally verified Forge generation to the trusted Actions publisher (§AR-publication-descriptor). |
+| **Forge publication descriptor** | Versioned, schema-validated JSON committed at `stats/<group>/<artifact>/<version>/forge-publication.json`. It is the durable, branch-controlled data handoff from locally verified Forge generation to the trusted Actions publisher (§AR-publication-descriptor). Benchmark-result publications carry no descriptor: their branch diff is the handoff (§FS-code-coverage-benchmarking.3). |
 | **Forge publication ID** | A run-unique identity derived before the publication commit and recorded in the descriptor. Chunked runs also record it and the unique head branch in their exhaust report so a later run can resolve the preceding PR without committing a GitHub-assigned PR number after publication (§AR-chunked-linking). |
 | **Forge Actions publisher** | Default-branch code triggered through a successful unprivileged Branch Ready run. It treats the feature branch as data, revalidates the exact head SHA and descriptor, renders the PR, and performs publication-related GitHub mutations with a short-lived GitHub App token (§AR-actions-publication). |
 | **Coordinate** | Maven coordinate of the target library, formatted `group:artifact:version`. |
@@ -442,10 +442,29 @@ worktree created from that commit, scratch metrics repository, setup-evidence
 directory, issue context, one GraalVM environment pinned for the whole run, and
 the continuation marker (§FS-forge-run-continuation). The pinned commit keeps
 repository-dependent checks and generated work on one base even if `master`
-advances during the run. The driver owns normal and neural setup inside that
+advances during the run. The worktree is also the boundary of the run's Gradle
+daemons. Every worktree builds in its own Gradle user home, so the daemons it
+starts serve that worktree alone: a daemon can neither pick up the build logic
+of another worktree nor be stopped by another worktree's run, and removing the
+worktree stops its daemons and discards its home with it. A daemon that keeps
+one worktree's build logic loaded can therefore fail only that worktree's
+Gradle tasks, and the finalization gates recover from such a stale daemon on
+their own (§FS-local-ci-equivalent-verification.1). What stays shared is the
+downloaded dependencies, so plugin and dependency resolution is still paid once
+per checkout rather than once per issue: the checkout keeps one long-lived
+Gradle user home, and as a Forge process creates its first worktree it warms
+that home by configuring the build of that worktree, never of the monitored
+checkout, and publishes a copy of the home's dependency cache that worktrees
+read through Gradle's read-only dependency cache, downloading only what the
+copy lacks. The copy is never written while worktrees use it. Warming and
+publishing are best effort: when either fails, the failure is reported, the run
+continues, and worktrees merely download more. A worktree home whose worktree
+no longer exists is an orphan that a later Forge process stops and removes
+before it publishes. The driver owns normal and neural setup inside that
 context, including the persisted library preparation result; it does not own
 queue policy or repository resolution. The gap between this requirement and
-the current implementation is §ROADMAP-forge-dispatcher-owned-run-preconditions.
+the current implementation is
+§ROADMAP-forge-dispatcher-owned-run-preconditions.
 
 ## FS-forge-outputs: Run outputs
 

@@ -13,7 +13,7 @@ the coordinate's committed stats.
 
 They are not a metadata workflow. The metadata they touch is a side effect of the
 native-metadata preparation the deep phase needs for its PGO sampling builds
-(§forge/AR-code-coverage-improvement-architecture.1), produced by a tracing agent
+(§forge/AR-code-coverage-improvement.3), produced by a tracing agent
 run over a suite whose purpose is to reach as much code as possible.
 
 The PR number or URL can be passed as an optional argument (for example, `9500`).
@@ -123,7 +123,7 @@ Not rules on their own, but worth a comment or a question:
   workflow (§forge/AR-code-coverage-improvement.2).
 - **Test quality.** Tests should assert real behavior. Calling internal or
   package-private methods directly, or reflecting into non-public members, purely
-  to move the number is against §forge/AR-code-coverage-improvement.5; the deep
+  to move the number is against §forge/AR-code-coverage-improvement.6; the deep
   phase is where it concentrates. Raise it, and block when a test asserts nothing.
 - **Package placement.** Tests in library packages bypass visibility boundaries
   (§FS-test-contract) and are what makes rule 3 need a human. Ask for a package
@@ -137,7 +137,7 @@ Not rules on their own, but worth a comment or a question:
   `NativeImageSupport.isUnsupportedFeatureError(e)` is acceptable only for
   genuinely open-ended dynamic class loading.
 - **PGO claims.** Sampled profiles are navigation, never coverage
-  (§forge/AR-code-coverage-improvement.6).
+  (§forge/AR-code-coverage-improvement.7).
 - **Local evidence.** `local_ci_verification.status` in `forge-publication.json`
   must be `success` with `human_intervention_required` false.
 

@@ -11,7 +11,7 @@ import unittest
 from utility_scripts import code_coverage_stop as module
 
 #: Per-pass yields of four measured runs, used as the rule's regression guard
-#: (§AR-code-coverage-improvement.3.3). The two commons-compress phases saturate
+#: (§AR-code-coverage-improvement.4.3). The two commons-compress phases saturate
 #: and the rule must act on them; the two kafka-streams runs stay productive to
 #: their last pass and the rule must stay silent on them, including the unguided
 #: run whose fifth pass produced 38% of its coverage after two dull passes.

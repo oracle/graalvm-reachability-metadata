@@ -23,7 +23,7 @@ from git_scripts.branch_publication import (
 from git_scripts.publication_descriptor import descriptor_input_from_pending_metrics
 from utility_scripts.library_stats import stats_artifact_dir
 from utility_scripts.metadata_index import resolve_metadata_version, resolve_test_version
-from utility_scripts.metrics_writer import (
+from utility_scripts.library_measurements import (
     count_metadata_entries,
     count_test_only_metadata_entries,
 )
@@ -32,10 +32,8 @@ from utility_scripts.dynamic_access_exhaust_report import (
     find_dynamic_access_exhaust_report_path,
 )
 from utility_scripts.repo_path_resolver import resolve_repo_roots
-from utility_scripts.library_update_alias_split import (
-    ensure_alias_split_follow_up_issue,
-    maybe_split_library_update_tested_versions,
-)
+from utility_scripts.library_update_alias_split import maybe_split_library_update_tested_versions
+from utility_scripts.library_update_follow_up_issue import ensure_alias_split_follow_up_issue
 
 BASELINE_STATS_FILENAME = ".baseline-stats.json"
 LIBRARY_UPDATE_TARGET_FILENAME = ".library_update_target.json"

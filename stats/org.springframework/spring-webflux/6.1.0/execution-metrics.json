@@ -1,0 +1,144 @@
+{
+  "fix_javac_fail:2026-09-20": {
+    "timestamp": "2026-09-20T01:15:11.861982Z",
+    "library": "org.springframework:spring-webflux:6.1.0",
+    "starting_commit": "c908ac3a222d911996d4a046e2e80fd2c7b5b53d",
+    "ending_commit": "58d1ae4677f20f3a12d7ea8a6800970dfea5b45e",
+    "previous_library": "org.springframework:spring-webflux:6.0.0",
+    "strategy_name": "javac_iterative_with_coverage_sources_pi_gpt-5.6-sol",
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "status": "success",
+    "stats": {
+      "version": "6.1.0",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 1,
+            "totalCalls": 1
+          }
+        },
+        "coverageRatio": 1.0,
+        "coveredCalls": 1,
+        "totalCalls": 1
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 408,
+          "missed": 43625,
+          "ratio": 0.009266,
+          "total": 44033
+        },
+        "line": {
+          "covered": 119,
+          "missed": 9620,
+          "ratio": 0.012219,
+          "total": 9739
+        },
+        "method": {
+          "covered": 30,
+          "missed": 3449,
+          "ratio": 0.008623,
+          "total": 3479
+        }
+      }
+    },
+    "previous_library_stats": {
+      "version": "6.0.0",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 1,
+            "totalCalls": 1
+          }
+        },
+        "coverageRatio": 1.0,
+        "coveredCalls": 1,
+        "totalCalls": 1
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 394,
+          "missed": 42170,
+          "ratio": 0.009257,
+          "total": 42564
+        },
+        "line": {
+          "covered": 117,
+          "missed": 9323,
+          "ratio": 0.012394,
+          "total": 9440
+        },
+        "method": {
+          "covered": 32,
+          "missed": 3340,
+          "ratio": 0.00949,
+          "total": 3372
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "advisory_preparation",
+      "issue_number": 9966,
+      "issue_label": "fails-javac-compile",
+      "library": "org.springframework:spring-webflux:6.1.0",
+      "summary": "spring-webflux 6.1.0 dropped the client-side JettyWebSocketClient wrapper entirely (no setup needed there) but its server-side JettyRequestUpgradeStrategy now uses Jetty 12's EE10 WebSocket server API, which is not a transitive dependency and must be added explicitly, matching the existing per-version Jetty pin pattern used for 5.3.31 and 6.0.0.",
+      "deterministic_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "org.eclipse.jetty.ee10.websocket:jetty-ee10-websocket-jetty-server:12.0.3",
+          "scope": "testImplementation",
+          "reason": "JettyRequestUpgradeStrategy in spring-webflux 6.1.0 loads org.eclipse.jetty.ee10.websocket.server.JettyWebSocketServerContainer (Jetty 12 EE10 API) instead of the Jetty 11 websocket-jetty-server API used by 6.0.0; this class ships outside spring-webflux and Jetty is only an optional runtime integrat\n...[truncated]"
+        }
+      ],
+      "agent_guidance": "Do not try to preserve a JettyWebSocketClient-based test: the class was removed from org.springframework.web.reactive.socket.client in 6.1.0 (only ReactorNettyWebSocketClient, TomcatWebSocketClient, UndertowWebSocketClient, StandardWebSocketClient, ReactorNetty2WebSocketClient remain). Only the server-side JettyRequestUpgradeStrategy test is portable to 6.1.0; regenerate it against current sources so the AbstractServerHttpRequest subclass constructor call includes the new leading HttpMethod parameter.",
+      "risks": [
+        "The old websocket-jetty-server:11.0.12 dependency in the 6.0.0 build.gradle is source- and binary-incompatible with 6.1.0's JettyRequestUpgradeStrategy; carrying it forward unchanged would reproduce the current javac failure.",
+        "jetty-ee10-websocket-jetty-client has no Maven Central artifact (verified 404) — there is no drop-in client replacement, confirming client-side Jetty WebSocket coverage cannot be retained for 6.1.0."
+      ],
+      "applied_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "org.eclipse.jetty.ee10.websocket:jetty-ee10-websocket-jetty-server:12.0.3",
+          "result": "skipped",
+          "reason": "build_gradle_absent"
+        }
+      ],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#9966 [Automation] javac compile fails for org.springframework:spring-webflux:6.1.0; label=fails-javac-compile; body_chars=8015"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "10 existing test file path(s) included"
+        }
+      ],
+      "current_library": "org.springframework:spring-webflux:6.0.0",
+      "new_version": "6.1.0",
+      "model": "sonnet",
+      "input_tokens_used": 24,
+      "output_tokens_used": 11906
+    },
+    "metrics": {
+      "input_tokens_used": 42011,
+      "cached_input_tokens_used": 228608,
+      "output_tokens_used": 1928,
+      "iterations": 3,
+      "cost_usd": 0.3822,
+      "tested_library_loc": 119,
+      "metadata_entries": 43,
+      "test_only_metadata_entries": 6,
+      "previous_library_metadata_entries": 78,
+      "previous_library_test_only_metadata_entries": 6,
+      "code_coverage_percent": 1.22,
+      "previous_library_coverage_percent": 1.24
+    },
+    "artifacts": {
+      "metadata_file": "metadata/org.springframework/spring-webflux/6.1.0/reachability-metadata.json"
+    }
+  }
+}

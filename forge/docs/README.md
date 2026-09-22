@@ -52,7 +52,7 @@ whether a document describes structure or behavior.
 
 ### A component still awaiting its split
 
-[architecture/code-coverage-improvement.md](architecture/code-coverage-improvement.md)
+[architecture/code-coverage/workflow.md](architecture/code-coverage/workflow.md)
 keeps behavior and architecture in one document. It is
 the only component documented that way. The split — behavior into the functional
 spec, engine into [architecture/workflows.md](architecture/workflows.md), driver

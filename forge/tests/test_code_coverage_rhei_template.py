@@ -14,6 +14,8 @@ _TEMPLATE_NUMBERS: dict[str, int] = {
     "measure_visits": 16,
     "coverage_iterations": 5,
     "fix_passes": 2,
+    "naive_iterations": 30,
+    "naive_measure_visits": 40,
 }
 
 
@@ -39,7 +41,7 @@ class CodeCoverageRheiTemplateTests(unittest.TestCase):
     def test_deep_cover_preserves_java_package_visibility(self) -> None:
         """Deep-cover prompts must reach internals through public behavior.
 
-        §AR-code-coverage-improvement.3.2
+        §AR-code-coverage-improvement.4.2
         """
         forge_root: str = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
         states_paths: tuple[str, ...] = (
@@ -98,8 +100,8 @@ class CodeCoverageRheiTemplateTests(unittest.TestCase):
         with open(states_path, encoding="utf-8") as states_file:
             source: str = states_file.read()
 
-        self.assertEqual(source.count("begin_measurement("), 2)
-        self.assertEqual(source.count("complete_measurement("), 4)
+        self.assertEqual(source.count("begin_measurement("), 3)
+        self.assertEqual(source.count("complete_measurement("), 6)
         self.assertNotIn(
             'iteration = len(list(validation.glob("api-cover-report-*.json")))',
             source,

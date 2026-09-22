@@ -101,7 +101,7 @@ The `forge/` toolkit composes LLM agents (Aider, Codex, Pi) with deterministic G
 3. **Fix native-image runtime failures** raised by a library version bump.
 4. **Improve coverage** of already-supported libraries by targeting uncovered dynamic-access call sites.
 5. **Record code coverage benchmarks** — publish compact, reproducible benchmark
-   results through descriptor-backed pull requests without shipping generated tests.
+   results through diff-validated pull requests without shipping generated tests.
 
 Each Forge run records per-library metrics under `stats/<group>/<artifact>/<version>/execution-metrics.json` and, when invoked through a publication script or the benchmark result publisher, pushes a verified branch that trusted GitHub Actions turn into a PR ready for review. See [forge/README.md](../../forge/README.md) and [forge/docs/functional-spec/functional-spec.md](../../forge/docs/functional-spec/functional-spec.md).
 
@@ -243,6 +243,7 @@ All four elements are versioned through the schema `$id` URLs and the GitHub Rel
 ### 5.3 CI gates
 
 - **PR gates.** Every PR is gated on the relevant subset of: `checkstyle`, `spotlessCheck`, `validateIndexFiles`, `checkMetadataFiles`, `validateLibraryStats`, `library-and-framework-list-validation`, `grund check`, and the appropriate `test-*` workflow (§PRCPL-prefer-algorithmic).
+- **Gates are enforced by GitHub, not by convention.** Each PR gate reports one always-present status check on the pull request, and the default branch requires every one of those checks to pass before any merge — including merges requested through auto-merge by repository automation (§FS-repository-functional-spec.4.6). A check whose workflow found nothing relevant to test reports success rather than staying absent, so the requirement never blocks an unrelated PR. The required set is kept as code in the repository and applied by an administrator; it must list exactly the gate checks, so a gate that is renamed or added is a change to that set.
 - **Docker isolation.** Docker images used in tests are pre-pulled from `allowed-docker-images`, after which the runner disables Docker networking for deterministic, isolated test runs.
 - **Release style gate.** The release workflow runs `spotlessCheck` before packaging.
 - **Spring AOT scope.** The Spring AOT smoke matrix runs only when `metadata/` changes affect a Spring AOT project.

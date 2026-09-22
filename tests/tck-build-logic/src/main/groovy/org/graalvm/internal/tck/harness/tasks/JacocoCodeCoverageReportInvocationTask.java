@@ -12,7 +12,7 @@ import java.util.List;
 /**
  * Task that generates the combined JaCoCo report over the regular and
  * code-coverage-improvement suites ("jacocoCodeCoverageReport") on subprojects
- * (§forge/AR-code-coverage-improvement.3.1).
+ * (§forge/AR-code-coverage-improvement.4.1).
  */
 @SuppressWarnings("unused")
 public abstract class JacocoCodeCoverageReportInvocationTask extends AllCoordinatesExecTask {

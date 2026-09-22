@@ -1,0 +1,31 @@
+{
+  "name": "Required CI on the default branch",
+  "target": "branch",
+  "enforcement": "active",
+  "conditions": {
+    "ref_name": {
+      "include": ["~DEFAULT_BRANCH"],
+      "exclude": []
+    }
+  },
+  "rules": [
+    {
+      "type": "required_status_checks",
+      "parameters": {
+        "strict_required_status_checks_policy": false,
+        "do_not_enforce_on_create": false,
+        "required_status_checks": [
+          { "context": "🧪 All metadata tests have passed" },
+          { "context": "🧪 All affected Spring AOT smoke tests passed (4.1.x)" },
+          { "context": "🧪 All build-logic triggered tests have passed" },
+          { "context": "📋 Check style according to checkstyle.xml" },
+          { "context": "📋 Validate changed JSON files" },
+          { "context": "📊 Validate library stats JSON" },
+          { "context": "📋 Validate the JSON file" },
+          { "context": "🧭 Validate grund citations" },
+          { "context": "🔎 Scan docker images" }
+        ]
+      }
+    }
+  ]
+}

@@ -7,7 +7,7 @@ import os
 import sys
 
 from utility_scripts.gradle_environment import gradle_command_environment, pin_gradle_java_home
-from utility_scripts.host_requirements import (
+from utility_scripts.host_graalvm_checks import (
     GRAALVM_SCHEMA_PATH,
     check_graalvm_installation,
     require_graalvm_home_env,

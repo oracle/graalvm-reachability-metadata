@@ -3,9 +3,9 @@
 # You should have received a copy of the CC0 legalcode along with this
 # work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 
-# The deep phase this prepares for: §AR-code-coverage-improvement.3.2. Running
+# The deep phase this prepares for: §AR-code-coverage-improvement.4.2. Running
 # once between the phases as a deterministic program whose exit code is the
-# state transition: §AR-code-coverage-improvement.4 item 5.
+# state transition: §AR-code-coverage-improvement.5 item 5.
 
 """
 Native-metadata preparation for the code coverage improvement workflow.

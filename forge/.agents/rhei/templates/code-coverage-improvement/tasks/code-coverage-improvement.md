@@ -96,6 +96,7 @@
   - `runtime/code-coverage/prepare/baseline.md`
   - `runtime/code-coverage/work/code-coverage-{{issue_number}}.code-coverage-prepare.md`
 
+{% if strategy != "naive" %}
 ### Task code-coverage-api-inventory: Generate API inventory
 **State:** api-inventory
 **Prior:** Task code-coverage-prepare
@@ -104,7 +105,7 @@
   `forge/utility_scripts/code_coverage_api_inventory.py` with the resolved
   coordinate, every `libraryJars` entry, and every `allowedPackages` entry
   from `runtime/code-coverage/prepare/library.json`
-  (§AR-code-coverage-improvement.4, §root/FS-metadata).
+  (§AR-code-coverage-improvement.5, §root/FS-metadata).
 - Purpose: deterministically describe public user-callable API targets for the
   coordinate, across the artifact's whole committed allowed-package scope.
 - The canonical target `id` carries the full target identity; fields are
@@ -137,7 +138,7 @@
 - Loop: measure -> cover -> measure. Measurement always writes the report to the
   fixed location and lists only exact JaCoCo-uncovered public targets in the
   prompt, ordered by unlocked internal code rather than by identifier
-  (§AR-code-coverage-improvement.3.1.1); the cover agent generates meaningful
+  (§AR-code-coverage-improvement.4.1.1); the cover agent generates meaningful
   behavior tests in the dedicated coverage suite and always returns to
   measurement. The phase completes when no uncovered public target remains or
   the iteration budget is spent. Only re-measurement moves the loop forward;
@@ -152,7 +153,7 @@
   resolved worktree, coordinate, and absolute coverage-suite root from
   `runtime/code-coverage/issues/conversion.json`.
 - Purpose: prepare reachability metadata once after public API coverage so the
-  deep sampled-PGO builds can run §AR-code-coverage-improvement.4.
+  deep sampled-PGO builds can run §AR-code-coverage-improvement.5.
 - The helper drives the shared native test verification gate
   (§FS-native-test-verification-gate) with `-PincludeCodeCoverageSuite=true`
   on every Gradle command: staged JVM-agent metadata first, the exit-172
@@ -185,7 +186,7 @@
   absent from `runtime/code-coverage/graph/methods.csv`. The method list keeps
   the library's own `test`-classifier classes out of the universe, since JaCoCo
   reports them in the library's own packages
-  (§AR-code-coverage-improvement.3.2).
+  (§AR-code-coverage-improvement.4.2).
 - Prompt location: `runtime/code-coverage/prompts/deep-cover-prompt.md`, taken
   by the measurement program from the analyzer's compact
   `Observed` / `Uncovered paths` Markdown when the loop continues.
@@ -264,10 +265,33 @@
   - `runtime/code-coverage/finalization/final-summary.md`
   - `runtime/code-coverage/finalization/final-metrics.json`
 
+{% endif %}
+{% if strategy == "naive" %}
+### Task code-coverage-naive-coverage: Naive baseline coverage loop
+**State:** naive-measure
+**Prior:** Task code-coverage-prepare
+
+- Benchmark-only baseline arm (§AR-code-coverage-benchmarking.3). Measurement
+  programs, driven by the `naive-measure` state in numbered steps:
+  - `forge/utility_scripts/code_coverage_naive.py measure` — JVM JaCoCo run
+    summarized straight from the frozen JaCoCo method universe; no
+    API-inventory join, ranking, or call-graph input (step 2).
+  - `forge/utility_scripts/code_coverage_naive.py render` — fills
+    `prompt_templates/code_coverage/naive-baseline-iteration.md` with the
+    report's numbers (step 4).
+- Fixed report location: `runtime/code-coverage/validation/naive-cover-report.json`
+  (iteration history stays at `naive-cover-report-<n>.json`).
+- Prompt location: `runtime/code-coverage/prompts/naive-cover-prompt.md`.
+- Loop: measure -> cover -> measure, budget {{naive_iterations}} passes with
+  the shared marginal-yield stop rule (§FS-code-coverage-benchmarking.7). The
+  cover agent receives only the rendered naive prompt. Only re-measurement
+  moves the loop forward; the agent cannot claim coverage.
+
+{% endif %}
 {% if benchmark %}
 ### Task code-coverage-benchmark-publication: Publish benchmark metrics
 **State:** benchmark-publication
-**Prior:** Task code-coverage-finalization
+**Prior:** Task code-coverage-{% if strategy == "naive" %}naive-coverage{% else %}finalization{% endif %}
 
 - Helper: `{{benchmark_runner_forge_path}}/benchmarks/code_coverage_benchmark.py publish`
 - Purpose: collect the finalized and partial Rhei evidence, write
@@ -291,7 +315,7 @@
   `forge/git_scripts/publish_code_coverage_improvement.py` with the resolved
   worktree, coordinate, and repository-relative coverage suite path from
   `runtime/code-coverage/issues/conversion.json`, the issue number, and the
-  run's worker agent target (§AR-code-coverage-improvement.4).
+  run's worker agent target (§AR-code-coverage-improvement.5).
 - Purpose: push the verified code coverage improvement as a publication branch
   that trusted GitHub Actions turn into a pull request. The program opens no
   pull request and never calls `gh pr create`

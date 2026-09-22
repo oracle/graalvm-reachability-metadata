@@ -141,7 +141,12 @@ class ExistingForgePublicationTests(unittest.TestCase):
                     f"refs/remotes/origin/{BRANCH}^{{commit}}",
             ):
                 return HEAD_SHA
+            if args == ("merge-base", "refs/remotes/origin/master", HEAD_SHA):
+                return "b" * 40
             if args == (
+                    "diff", "--name-only", "--diff-filter=ACMRTD",
+                    "b" * 40, HEAD_SHA,
+            ) or args == (
                     "diff", "--name-only", "--diff-filter=ACMRTD",
                     f"refs/remotes/origin/master...{HEAD_SHA}",
             ):

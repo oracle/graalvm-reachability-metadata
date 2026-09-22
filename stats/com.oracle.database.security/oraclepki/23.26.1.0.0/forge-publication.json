@@ -1,0 +1,156 @@
+{
+  "base_commit": "322a6b7ae412f9e93e8ed517eec4f108b1ac2b37",
+  "branch": "ai/cugurm/add-lib-support-com.oracle.database.security-oraclepki-23.26.1.0.0-chunked-forge-10054-20260917122003041770-86034a4c3b22",
+  "follow_ups": [],
+  "forge": {
+    "branch": "master",
+    "commit": "322a6b7ae412f9e93e8ed517eec4f108b1ac2b37",
+    "monitored_branch": "origin/master"
+  },
+  "issue_number": 10054,
+  "library": {
+    "artifact": "oraclepki",
+    "coordinates": "com.oracle.database.security:oraclepki:23.26.1.0.0",
+    "group": "com.oracle.database.security",
+    "version": "23.26.1.0.0"
+  },
+  "local_ci_verification": {
+    "base_commit": "322a6b7ae412f9e93e8ed517eec4f108b1ac2b37",
+    "commands": [
+      {
+        "command": [
+          "./gradlew",
+          "generateChangedIndexFileCoordinatesList",
+          "-PbaseCommit=origin/master",
+          "-PnewCommit=HEAD"
+        ],
+        "env": {
+          "GITHUB_OUTPUT": "/tmp/tmpzln7q8ue"
+        },
+        "gate": "changed-index-coordinates",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :generateChangedIndexFileCoordinatesList\n\n[Incubating] Problems report is available at: file:///home/oracle/oracle/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10054-90c4d43a/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 2s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      },
+      {
+        "command": [
+          "./gradlew",
+          "validateIndexFiles",
+          "-Pcoordinates=com.oracle.database.security:oraclepki"
+        ],
+        "env": {},
+        "gate": "index-file-validation",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :validateIndexFiles\n✅ metadata/com.oracle.database.security/oraclepki/index.json: Valid\n\n[Incubating] Problems report is available at: file:///home/oracle/oracle/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10054-90c4d43a/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 991ms\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      }
+    ],
+    "failure_command": null,
+    "failure_gate": null,
+    "final_commit": "1d3a9373f844aadf0f0a7f69aede938c9e5d3231",
+    "fixups": [],
+    "human_intervention_required": false,
+    "repo_fix_paths": [],
+    "status": "success"
+  },
+  "local_review": {
+    "changed_paths": [],
+    "decision": "approved",
+    "finding_body": "",
+    "finding_title": "",
+    "fix_note": "",
+    "model": "gpt-5.6-sol",
+    "review_comment": "Reviewed the complete single-coordinate diff and local evidence. Changes stay within oraclepki metadata, index, stats, and test paths; only reachability-metadata.json is used. The public, library-specific tests use a separate test package and contain no scaffold placeholder, native-image skip or tolerated failure, hardcoded version assertion, direct reflection shortcut, compatibility override, or native build/run flag. Resolved dynamic-access coverage is 38/38 (100%), above the new-library gate, and 38 covered calls do not trigger the mismatch guardrail against 184 reported library-plus-test metadata entries. The recorded local gates succeeded and the index is valid. Every applicable must is satisfied, so the contribution is approved under the disposition ladder.",
+    "session_id": "615f331518d74612"
+  },
+  "metrics": {
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "path": "stats/com.oracle.database.security/oraclepki/23.26.1.0.0/execution-metrics.json",
+    "summary": {
+      "cached_input_tokens_used": 12579840,
+      "code_coverage_percent": 18.18,
+      "cost_usd": 10.2231,
+      "generated_loc": 649,
+      "input_tokens_used": 496135,
+      "iterations": 13,
+      "metadata_entries": 147,
+      "output_tokens_used": 48417,
+      "test_only_metadata_entries": 37,
+      "tested_library_loc": 0
+    },
+    "timestamp": "2026-09-17T12:20:03.041770Z"
+  },
+  "modifiers": {
+    "chunk_final": true,
+    "chunked_dynamic_access": true,
+    "human_intervention": false
+  },
+  "producer": "cugurm",
+  "publication_id": "forge-10054-20260917122003041770-86034a4c3b22",
+  "render": {
+    "dynamic_access": null,
+    "dynamic_access_evidence": {
+      "covered_call_sites": [
+        "[resources] java.util.ResourceBundle#getBundle(java.lang.String) <- oracle.security.pki.FileLockProvider.<clinit>(Unknown Source)",
+        "[resources] java.util.ResourceBundle#getBundle(java.lang.String) <- oracle.security.pki.FileLocker.<clinit>(Unknown Source)",
+        "[reflection] java.lang.Class#forName(java.lang.String) <- oracle.security.pki.JCEUtil.a(Unknown Source)",
+        "[reflection] java.lang.Class#newInstance() <- oracle.security.pki.JCEUtil.a(Unknown Source)",
+        "[resources] java.util.ResourceBundle#getBundle(java.lang.String) <- oracle.security.pki.OracleCRL.<clinit>(Unknown Source)",
+        "[resources] java.util.ResourceBundle#getBundle(java.lang.String) <- oracle.security.pki.OracleKeyStoreSpi.<clinit>(Unknown Source)",
+        "[resources] java.util.ResourceBundle#getBundle(java.lang.String) <- oracle.security.pki.OracleSecretStore.<clinit>(Unknown Source)",
+        "[resources] java.util.ResourceBundle#getBundle(java.lang.String) <- oracle.security.pki.OracleSecretStoreTextUI.<clinit>(Unknown Source)",
+        "... and 30 more"
+      ],
+      "metadata_rules": [
+        "when `oracle.security.pki.internal.core.JCEPBE` is reached, make `com.sun.crypto.provider.AESCipher$General.<init>()` available for reflection",
+        "when `oracle.security.pki.ldap.LdapSSLSocketFactory` is reached, make `com.sun.crypto.provider.AESCipher$General.<init>()` available for reflection",
+        "when `oracle.security.pki.ldap.LdapSSLSocketFactory` is reached, make `com.sun.crypto.provider.ARCFOURCipher.<init>()` available for reflection",
+        "when `oracle.security.pki.ldap.LdapSSLSocketFactory` is reached, make `com.sun.crypto.provider.ChaCha20Cipher$ChaCha20Poly1305.<init>()` available for reflection",
+        "when `oracle.security.pki.ldap.LdapSSLSocketFactory` is reached, make `com.sun.crypto.provider.DESCipher.<init>()` available for reflection",
+        "when `oracle.security.pki.ldap.LdapSSLSocketFactory` is reached, make `com.sun.crypto.provider.DESedeCipher.<init>()` available for reflection",
+        "when `oracle.security.pki.ldap.LdapSSLSocketFactory` is reached, make `com.sun.crypto.provider.GaloisCounterMode$AESGCM.<init>()` available for reflection",
+        "when `oracle.security.pki.internal.core.JCEPBE` is reached, make `com.sun.crypto.provider.HmacCore$HmacSHA256.<init>()` available for reflection",
+        "... and 72 more"
+      ]
+    },
+    "library_stats": {
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 14,
+            "totalCalls": 14
+          },
+          "resources": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 24,
+            "totalCalls": 24
+          }
+        },
+        "coverageRatio": 1.0,
+        "coveredCalls": 38,
+        "totalCalls": 38
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 22543,
+          "missed": 101478,
+          "ratio": 0.181768,
+          "total": 124021
+        },
+        "line": "N/A",
+        "method": {
+          "covered": 841,
+          "missed": 2042,
+          "ratio": 0.29171,
+          "total": 2883
+        }
+      },
+      "version": "23.26.1.0.0"
+    }
+  },
+  "schema_version": 1,
+  "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-sol",
+  "task_type": "library-new-request",
+  "template_type": "library-new-request",
+  "timestamp": "2026-09-17T12:20:03.041770Z"
+}

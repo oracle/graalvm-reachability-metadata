@@ -19,6 +19,7 @@ rather than by kind.
 | [§AR-test-changed-metadata](ci.md#ar-test-changed-metadata-test-changed-metadata) | Test changed metadata |
 | [§AR-test-changed-infrastructure](ci.md#ar-test-changed-infrastructure-test-changed-infrastructure) | Test changed infrastructure |
 | [§AR-test-affected-spring-aot](ci.md#ar-test-affected-spring-aot-test-affected-spring-aot-smoke-tests) | Test affected Spring AOT smoke tests |
+| [§AR-required-status-checks](ci.md#ar-required-status-checks-required-status-checks-on-the-default-branch) | Required status checks on the default branch |
 | [§AR-index-file-validation](ci.md#ar-index-file-validation-validate-indexjson-files) | Validate index.json files |
 | [§AR-library-stats-validation](ci.md#ar-library-stats-validation-validate-library-stats) | Validate library stats |
 | [§AR-library-and-framework-list-validation](ci.md#ar-library-and-framework-list-validation-validate-library-and-framework-list) | Validate library-and-framework list |

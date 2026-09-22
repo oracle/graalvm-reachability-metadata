@@ -3,7 +3,7 @@
 # You should have received a copy of the CC0 legalcode along with this
 # work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 
-"""Line-level JaCoCo miss diagnoses (§AR-code-coverage-improvement.3.2)."""
+"""Line-level JaCoCo miss diagnoses (§AR-code-coverage-improvement.4.2)."""
 
 import os
 import tempfile
@@ -15,7 +15,10 @@ from utility_scripts.code_coverage_jacoco import (
     load_jacoco_coverage,
 )
 from utility_scripts.code_coverage_model import MethodRef
-from utility_scripts import code_coverage_profile_report as report_module
+from utility_scripts.code_coverage_profile_graph import CallGraph
+from utility_scripts.code_coverage_profile_inputs import TargetState
+from utility_scripts.code_coverage_profile_records import NearCallRecord, classify_miss
+from utility_scripts.code_coverage_profile_render import classification_lines
 
 
 JACOCO_XML = """\
@@ -136,23 +139,23 @@ class JacocoLineCoverageTest(unittest.TestCase):
             "invoke_id": invoke_id,
             "source_line": source_line,
         }
-        graph = report_module.CallGraph(
+        graph = CallGraph(
             methods=methods,
             key_to_id={method.canonical_id: method_id for method_id, method in methods.items()},
             reverse_adjacency={2: [edge]},
             invoke_fan_out={invoke_id: [2, *candidate_ids]},
         )
-        record = report_module.NearCallRecord(
+        record = NearCallRecord(
             coverage=self.coverage.methods[target.canonical_id],
             target_id=2,
-            target_state=report_module.TargetState(),
+            target_state=TargetState(),
             join_kind="public-entry",
             static_path=[1, 2],
             static_path_edges=[edge],
             sample=None,
             sampled_join_path_index=None,
         )
-        return report_module._classify_miss(
+        return classify_miss(
             record, graph, self.coverage.methods, self.coverage.lines
         )
 
@@ -192,7 +195,7 @@ class JacocoLineCoverageTest(unittest.TestCase):
         self.assertEqual(classification["target"]["line"], 137)
         self.assertEqual(classification["fork"]["line"], 129)
         self.assertEqual((classification["fork"]["mb"], classification["fork"]["cb"]), (2, 2))
-        rendered: str = "\n".join(report_module._classification_lines(classification))
+        rendered: str = "\n".join(classification_lines(classification))
         self.assertIn("CacheInterceptor.java:137` never ran", rendered)
         self.assertIn("CacheInterceptor.java:129` ran, 2 of 4 branches taken", rendered)
 
@@ -217,7 +220,7 @@ class JacocoLineCoverageTest(unittest.TestCase):
         self.assertEqual(classification["target"]["line"], 40)
         self.assertEqual(classification["nearestCovered"]["line"], 37)
         self.assertIsNone(classification["fork"])
-        rendered: str = "\n".join(report_module._classification_lines(classification))
+        rendered: str = "\n".join(classification_lines(classification))
         self.assertIn("FaultHidingSink.java:37", rendered)
         self.assertIn("reached only by an exception or external event", rendered)
 
@@ -248,7 +251,7 @@ class JacocoLineCoverageTest(unittest.TestCase):
             if candidate["coverageSuite"]
         ]
         self.assertEqual(len(suite_candidates), 3)
-        rendered: str = "\n".join(report_module._classification_lines(classification))
+        rendered: str = "\n".join(classification_lines(classification))
         self.assertIn("Http2Connection.java:834` RAN", rendered)
         self.assertIn("different implementation answered", rendered)
         self.assertEqual(rendered.count("[coverage suite]"), 3)

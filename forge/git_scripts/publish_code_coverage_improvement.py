@@ -9,7 +9,7 @@ This helper owns the local half only: expected-path staging, the shared
 publication pipeline, and a descriptor carrying the finalized JaCoCo evidence
 and per-phase token accounting. Trusted GitHub Actions render that data and open
 the pull request (§AR-shared-publication-pipeline, §AR-publication-descriptor,
-§AR-forge-verification-publication-boundary, §AR-code-coverage-improvement.4).
+§AR-forge-verification-publication-boundary, §AR-code-coverage-improvement.5).
 """
 
 from __future__ import annotations
@@ -39,12 +39,12 @@ MAX_COMMIT_SUBJECT_LENGTH = 60
 
 #: The finalized evidence the trusted coverage template renders. `runCoverage`
 #: is the whole-run accounting the body is built from; the per-phase blocks ride
-#: along as each phase's own guidance record (§AR-code-coverage-improvement.4.1).
+#: along as each phase's own guidance record (§AR-code-coverage-improvement.5.1).
 #: Everything else `final-metrics.json` records — per-target rosters, sampled PGO
 #: guidance, the validation command list — stays in the finalization artifacts a
 #: reviewer reads from the run, so the descriptor holds render inputs and nothing else.
 #: `stopDecisions` rides along because a phase that ended before its budget reads
-#: as a broken run unless the body says why (§AR-code-coverage-improvement.3.3).
+#: as a broken run unless the body says why (§AR-code-coverage-improvement.4.3).
 COVERAGE_RENDER_KEYS: tuple[str, ...] = (
     "coordinate",
     "coverageSuitePath",
@@ -108,7 +108,7 @@ def model_slug(worker_agent: str) -> str:
     """Return the branch segment naming the model a Rhei target generates with.
 
     A Rhei target reads `<agent>[<mode>]:<provider>/<model>`, and only the model
-    identifies what produced the run (§AR-code-coverage-improvement.4).
+    identifies what produced the run (§AR-code-coverage-improvement.5).
     """
     target: str = worker_agent.split(":", 1)[-1]
     model: str = re.split(r"[/:]", target)[-1]
@@ -126,7 +126,7 @@ def thinking_level(worker_agent: str) -> str:
     """Return the thinking mode selected by a Rhei worker target.
 
     The bracketed mode is the workflow's reasoning level
-    (§AR-code-coverage-improvement.4).
+    (§AR-code-coverage-improvement.5).
     """
     agent_target: str = worker_agent.split(":", 1)[0]
     match: re.Match[str] | None = re.fullmatch(
@@ -270,7 +270,7 @@ def publish(
     # The branch names the model that generated the run, so runs of one
     # coordinate on different models never collide, and the publication ID the
     # pipeline appends separates repeated runs of one model
-    # (§AR-code-coverage-improvement.4).
+    # (§AR-code-coverage-improvement.5).
     model: str = model_slug(worker_agent)
     thinking: str = thinking_level(worker_agent)
     suffix: str = f"-{branch_suffix}" if branch_suffix else ""

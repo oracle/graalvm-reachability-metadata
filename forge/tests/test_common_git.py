@@ -9,7 +9,7 @@ import subprocess
 import unittest
 from unittest.mock import patch
 
-from git_scripts import common_git
+from git_scripts import common_git, github_cli
 
 
 class ForgeRevisionSectionTests(unittest.TestCase):
@@ -247,7 +247,7 @@ class GitHubRateLimitTests(unittest.TestCase):
         )
 
         with patch.object(common_git.subprocess, "run", side_effect=[failed_process, successful_process]) as run, \
-                patch.object(common_git.time, "sleep") as sleep, \
+                patch.object(github_cli.time, "sleep") as sleep, \
                 patch("sys.stderr", new_callable=io.StringIO) as stderr:
             common_git.gh("issue", "comment", "1412", "--body", "body")
 
@@ -270,7 +270,7 @@ class GitHubRateLimitTests(unittest.TestCase):
         )
 
         with patch.object(common_git.subprocess, "run", side_effect=[failed_process, successful_process]) as run, \
-                patch.object(common_git.time, "sleep") as sleep, \
+                patch.object(github_cli.time, "sleep") as sleep, \
                 patch("sys.stderr", new_callable=io.StringIO):
             result = common_git.gh("pr", "view", "--repo", "example/repo", check=False)
 
@@ -286,7 +286,7 @@ class GitHubRateLimitTests(unittest.TestCase):
             stderr="",
         )
 
-        with patch.object(common_git, "gh", return_value=completed_process):
+        with patch.object(github_cli, "gh", return_value=completed_process):
             with self.assertRaises(common_git.GitHubRateLimitExceeded):
                 common_git.gh_json("api", "graphql")
 
@@ -304,8 +304,8 @@ class GitHubRateLimitTests(unittest.TestCase):
             stderr="",
         )
 
-        with patch.object(common_git, "gh", side_effect=[transient_process, successful_process]) as gh, \
-                patch.object(common_git.time, "sleep") as sleep, \
+        with patch.object(github_cli, "gh", side_effect=[transient_process, successful_process]) as gh, \
+                patch.object(github_cli.time, "sleep") as sleep, \
                 patch("sys.stderr", new_callable=io.StringIO):
             self.assertEqual(
                 common_git.gh_json("api", "graphql"),
@@ -330,7 +330,7 @@ class GitHubRateLimitTests(unittest.TestCase):
         )
 
         with patch.object(common_git.subprocess, "run", side_effect=[failed_process, successful_process]) as run, \
-                patch.object(common_git.time, "sleep") as sleep, \
+                patch.object(github_cli.time, "sleep") as sleep, \
                 patch("sys.stderr", new_callable=io.StringIO):
             self.assertEqual(common_git.get_authenticated_login(cwd="/repo"), "vjovanov")
 

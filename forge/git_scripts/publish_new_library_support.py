@@ -22,10 +22,8 @@ from git_scripts.branch_publication import (
     stage_library_version_paths,
 )
 from git_scripts.publication_descriptor import descriptor_input_from_pending_metrics
-from utility_scripts.metrics_writer import (
-    collect_new_library_support_quality_issues,
-    read_pending_metrics,
-)
+from utility_scripts.metrics_writer import read_pending_metrics
+from utility_scripts.run_metrics_payloads import collect_new_library_support_quality_issues
 from utility_scripts.dynamic_access_exhaust_report import (
     DynamicAccessExhaustReport,
     find_dynamic_access_exhaust_report_path,

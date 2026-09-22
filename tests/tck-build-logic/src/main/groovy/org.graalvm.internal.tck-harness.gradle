@@ -41,7 +41,7 @@ import org.graalvm.internal.tck.harness.tasks.DiscoverArtifactMetadata
 import org.graalvm.internal.tck.harness.tasks.PopulateArtifactURLs
 import org.graalvm.internal.tck.utils.CoordinateUtils
 import org.graalvm.internal.tck.utils.BaseLayerUtils
-import org.graalvm.internal.tck.utils.MetadataGenerationUtils
+import org.graalvm.internal.tck.utils.MetadataIndexUpdateUtils
 import org.graalvm.internal.tck.harness.tasks.JacocoTestReportInvocationTask
 import org.graalvm.internal.tck.harness.tasks.CodeCoverageTestInvocationTask
 import org.graalvm.internal.tck.harness.tasks.JacocoCodeCoverageReportInvocationTask
@@ -304,7 +304,7 @@ tasks.register("mergeNativeTraceMetadata", Exec) { Exec task ->
     }
 }
 
-// §forge/AR-code-coverage-improvement.3.2
+// §forge/AR-code-coverage-improvement.4.2
 
 // gradle nativeTestPGOSampling -Pcoordinates=<maven-coordinates>
 tasks.register("nativeTestPGOSampling", NativeTestPGOSamplingInvocationTask.class) { task ->
@@ -312,7 +312,7 @@ tasks.register("nativeTestPGOSampling", NativeTestPGOSamplingInvocationTask.clas
     task.setGroup(LifecycleBasePlugin.BUILD_GROUP)
 }
 
-// §forge/AR-code-coverage-improvement.3.2
+// §forge/AR-code-coverage-improvement.4.2
 
 // gradle runNativeTestPGO -Pcoordinates=<maven-coordinates> -PpgoProfilePath=<path>
 tasks.register("runNativeTestPGO", RunNativeTestPGOInvocationTask.class) { task ->
@@ -329,7 +329,7 @@ tasks.register("jacocoTestReport", JacocoTestReportInvocationTask.class) { task 
     task.setGroup(JavaBasePlugin.VERIFICATION_GROUP)
 }
 
-// §forge/AR-code-coverage-improvement.3.1
+// §forge/AR-code-coverage-improvement.4.1
 
 // gradle codeCoverageTest -Pcoordinates=<maven-coordinates>
 tasks.register("codeCoverageTest", CodeCoverageTestInvocationTask.class) { task ->
@@ -337,7 +337,7 @@ tasks.register("codeCoverageTest", CodeCoverageTestInvocationTask.class) { task 
     task.setGroup(JavaBasePlugin.VERIFICATION_GROUP)
 }
 
-// §forge/AR-code-coverage-improvement.3.1
+// §forge/AR-code-coverage-improvement.4.1
 
 // gradle jacocoCodeCoverageReport -Pcoordinates=<maven-coordinates>
 tasks.register("jacocoCodeCoverageReport", JacocoCodeCoverageReportInvocationTask.class) { task ->
@@ -947,7 +947,7 @@ tasks.register("addLibraryAsLatestMetadataIndexJson", DefaultTask) { task ->
         def coordsStr = project.findProperty("coordinates").toString()
         def coords = CoordinateUtils.fromString(coordsStr)
         def testVersion = project.hasProperty("testVersion") ? project.findProperty("testVersion").toString() : null
-        MetadataGenerationUtils.makeVersionLatestInIndexJson(project.layout, coords, testVersion)
+        MetadataIndexUpdateUtils.makeVersionLatestInIndexJson(project.layout, coords, testVersion)
     }
 }
 
@@ -964,7 +964,7 @@ tasks.register("addLibraryMetadataIndexJson", DefaultTask) { task ->
         def coordsStr = project.findProperty("coordinates").toString()
         def coords = CoordinateUtils.fromString(coordsStr)
         def testVersion = project.hasProperty("testVersion") ? project.findProperty("testVersion").toString() : null
-        MetadataGenerationUtils.addVersionToIndexJson(project.layout, coords, testVersion)
+        MetadataIndexUpdateUtils.addVersionToIndexJson(project.layout, coords, testVersion)
     }
 }
 

@@ -194,7 +194,6 @@ public final class LibraryStatsSchemaValidator {
                 + " (expected stats/<groupId>/<artifactId>/<metadataVersion>/stats.json, "
                 + "stats/<groupId>/<artifactId>/<metadataVersion>/execution-metrics.json, "
                 + "stats/<groupId>/<artifactId>/<metadataVersion>/forge-publication.json, "
-                + "stats/<groupId>/<artifactId>/<metadataVersion>/<publicationId>/forge-publication.json, "
                 + "or stats/schemas/*.json)");
         return null;
     }
@@ -215,7 +214,7 @@ public final class LibraryStatsSchemaValidator {
     /// independently (§forge/FS-forge-generation-benchmarking.3), adding one path component.
     private static boolean isForgePublicationFile(Path relativePath) {
         int nameCount = relativePath.getNameCount();
-        return (nameCount == 4 || nameCount == 5)
+        return nameCount == 4
                 && "forge-publication.json".equals(relativePath.getName(nameCount - 1).toString());
     }
 
