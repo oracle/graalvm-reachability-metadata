@@ -11,6 +11,12 @@ The committed stats did not match deterministic generation from the contribution
 
 ## 2026-09-22 — org.apache.tomcat.embed:tomcat-embed-core:11.0.22 (#10144)
 
+**Generated metadata captured machine-local temporary resources**
+
+The contribution added absolute /tmp/junit... resource globs for HostConfig descriptor defaults and retained stale JAAS temporary-file globs in test-only metadata. Machine-local temporary paths must use normal file APIs rather than Native Image resource metadata under FS-test-contract.4.4.
+
+## 2026-09-22 — org.apache.tomcat.embed:tomcat-embed-core:11.0.22 (#10144)
+
 **Completed dynamic-access classes lacked dedicated test files**
 
 The exhaust report marked org.apache.naming.factory.DataSourceLinkFactory$DataSourceHandler and org.apache.tomcat.util.descriptor.web.SetPublicIdRule as completed, but the original contribution had no dedicated DataSourceLinkFactoryInnerDataSourceHandlerTest or SetPublicIdRuleTest. This violated the one-file-per-dynamic-access-class requirement in §FS-test-contract.1.8.

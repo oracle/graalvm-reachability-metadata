@@ -29,6 +29,7 @@ public class WebdavServletTest {
         tomcat.setBaseDir(temporaryDirectory.resolve("base").toString());
         tomcat.setPort(0);
         Context context = tomcat.addContext("", temporaryDirectory.toString());
+        EmbeddedTomcatSupport.configureContextWithoutWebappScanning(context);
         Wrapper wrapper = Tomcat.addServlet(context, "webdav", new WebdavServlet());
         wrapper.addInitParameter("propertyStore", WebdavServlet.MemoryPropertyStore.class.getName());
         wrapper.setLoadOnStartup(1);

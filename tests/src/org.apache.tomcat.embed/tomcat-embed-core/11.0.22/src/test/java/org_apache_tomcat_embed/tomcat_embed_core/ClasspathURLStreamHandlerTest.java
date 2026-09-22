@@ -18,7 +18,8 @@ public class ClasspathURLStreamHandlerTest {
 
     @Test
     void opensClasspathResourceThroughUrlConnection() throws Exception {
-        URL url = new URL(null, "classpath:server-embed.xml", new ClasspathURLStreamHandler());
+        URL url = new URL(null, "classpath:/org/apache/catalina/webresources/LocalStrings.properties",
+                new ClasspathURLStreamHandler());
 
         try (InputStream input = url.openConnection().getInputStream()) {
             assertThat(input.readAllBytes()).isNotEmpty();

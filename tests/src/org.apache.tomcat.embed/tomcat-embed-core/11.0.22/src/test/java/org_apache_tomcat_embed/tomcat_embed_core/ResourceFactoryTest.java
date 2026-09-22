@@ -20,7 +20,7 @@ import org.junit.jupiter.params.provider.CsvSource;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class ResourceFactoryTest implements ObjectFactory {
+public class ResourceFactoryTest {
 
     @ParameterizedTest
     @CsvSource({
@@ -29,7 +29,7 @@ public class ResourceFactoryTest implements ObjectFactory {
     })
     void createsDefaultResourceFactory(String resourceClassName, String factoryPropertyName) throws Exception {
         String previousFactoryClassName = System.getProperty(factoryPropertyName);
-        System.setProperty(factoryPropertyName, ResourceFactoryTest.class.getName());
+        System.setProperty(factoryPropertyName, TestObjectFactory.class.getName());
         try {
             ResourceRef reference = new ResourceRef(resourceClassName, null, null, null, true);
 
@@ -41,10 +41,13 @@ public class ResourceFactoryTest implements ObjectFactory {
         }
     }
 
-    @Override
-    public Object getObjectInstance(Object obj, Name name, Context nameCtx, Hashtable<?, ?> environment) {
-        assertThat(obj).isInstanceOf(Reference.class);
-        return "created " + ((Reference) obj).getClassName();
+    public static final class TestObjectFactory implements ObjectFactory {
+
+        @Override
+        public Object getObjectInstance(Object obj, Name name, Context nameCtx, Hashtable<?, ?> environment) {
+            assertThat(obj).isInstanceOf(Reference.class);
+            return "created " + ((Reference) obj).getClassName();
+        }
     }
 
     private static void restoreProperty(String propertyName, String previousValue) {
