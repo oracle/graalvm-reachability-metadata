@@ -144,6 +144,12 @@
       "condition" : {
         "typeReached" : "org.apache.tomcat.util.modeler.Registry"
       },
+      "type" : "com.sun.management.internal.HotSpotAOTCacheImpl"
+    },
+    {
+      "condition" : {
+        "typeReached" : "org.apache.tomcat.util.modeler.Registry"
+      },
       "type" : "com.sun.management.internal.HotSpotDiagnostic"
     },
     {
@@ -412,6 +418,12 @@
     },
     {
       "condition" : {
+        "typeReached" : "org.apache.catalina.util.CustomObjectInputStream"
+      },
+      "type" : "java.lang.Integer"
+    },
+    {
+      "condition" : {
         "typeReached" : "org.apache.tomcat.util.modeler.Registry"
       },
       "type" : "java.lang.Integer",
@@ -455,6 +467,12 @@
           "name" : "serialVersionUID"
         }
       ]
+    },
+    {
+      "condition" : {
+        "typeReached" : "org.apache.catalina.util.CustomObjectInputStream"
+      },
+      "type" : "java.lang.Number"
     },
     {
       "condition" : {
@@ -530,13 +548,34 @@
       "condition" : {
         "typeReached" : "org.apache.tomcat.util.compat.Jre21Compat"
       },
-      "type" : "java.lang.Thread"
+      "type" : "java.lang.Thread",
+      "methods" : [
+        {
+          "name" : "ofVirtual",
+          "parameterTypes" : [ ]
+        }
+      ]
     },
     {
       "condition" : {
         "typeReached" : "org.apache.tomcat.util.compat.Jre21Compat"
       },
-      "type" : "java.lang.Thread$Builder"
+      "type" : "java.lang.Thread$Builder",
+      "methods" : [
+        {
+          "name" : "name",
+          "parameterTypes" : [
+            "java.lang.String",
+            "long"
+          ]
+        },
+        {
+          "name" : "start",
+          "parameterTypes" : [
+            "java.lang.Runnable"
+          ]
+        }
+      ]
     },
     {
       "condition" : {
@@ -777,6 +816,18 @@
           "parameterTypes" : [
             "java.net.ProtocolFamily"
           ]
+        }
+      ]
+    },
+    {
+      "condition" : {
+        "typeReached" : "org.apache.catalina.filters.CsrfPreventionFilterBase"
+      },
+      "type" : "java.security.SecureRandom",
+      "methods" : [
+        {
+          "name" : "<init>",
+          "parameterTypes" : [ ]
         }
       ]
     },
@@ -1026,13 +1077,30 @@
       "condition" : {
         "typeReached" : "org.apache.tomcat.util.compat.Jre20Compat"
       },
-      "type" : "javax.net.ssl.SSLParameters"
+      "type" : "javax.net.ssl.SSLParameters",
+      "methods" : [
+        {
+          "name" : "setNamedGroups",
+          "parameterTypes" : [
+            "java.lang.String[]"
+          ]
+        }
+      ]
     },
     {
       "condition" : {
         "typeReached" : "org.apache.tomcat.util.compat.Jre21Compat"
       },
-      "type" : "javax.security.auth.Subject"
+      "type" : "javax.security.auth.Subject",
+      "methods" : [
+        {
+          "name" : "callAs",
+          "parameterTypes" : [
+            "javax.security.auth.Subject",
+            "java.util.concurrent.Callable"
+          ]
+        }
+      ]
     },
     {
       "condition" : {
@@ -1051,6 +1119,12 @@
         "typeReached" : "org.apache.tomcat.util.digester.Digester"
       },
       "type" : "jdk.internal.misc.Unsafe"
+    },
+    {
+      "condition" : {
+        "typeReached" : "org.apache.tomcat.util.modeler.Registry"
+      },
+      "type" : "jdk.management.HotSpotAOTCacheMXBean"
     },
     {
       "condition" : {
@@ -1573,6 +1647,18 @@
     },
     {
       "condition" : {
+        "typeReached" : "org.apache.catalina.core.StandardContext"
+      },
+      "type" : "org.apache.catalina.core.StandardWrapper",
+      "methods" : [
+        {
+          "name" : "<init>",
+          "parameterTypes" : [ ]
+        }
+      ]
+    },
+    {
+      "condition" : {
         "typeReached" : "org.apache.catalina.startup.Catalina"
       },
       "type" : "org.apache.catalina.ha.ClusterRuleSet"
@@ -1789,6 +1875,30 @@
     },
     {
       "condition" : {
+        "typeReached" : "org.apache.catalina.realm.RealmBase"
+      },
+      "type" : "org.apache.catalina.realm.MessageDigestCredentialHandler",
+      "methods" : [
+        {
+          "name" : "<init>",
+          "parameterTypes" : [ ]
+        },
+        {
+          "name" : "setAlgorithm",
+          "parameterTypes" : [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name" : "setEncoding",
+          "parameterTypes" : [
+            "java.lang.String"
+          ]
+        }
+      ]
+    },
+    {
+      "condition" : {
         "typeReached" : "org.apache.catalina.startup.Bootstrap"
       },
       "type" : "org.apache.catalina.startup.Catalina",
@@ -1889,6 +1999,12 @@
     },
     {
       "condition" : {
+        "typeReached" : "org.apache.catalina.core.JreMemoryLeakPreventionListener"
+      },
+      "type" : "org.apache.catalina.startup.Tomcat"
+    },
+    {
+      "condition" : {
         "typeReached" : "org.apache.catalina.core.StandardContext"
       },
       "type" : "org.apache.catalina.startup.Tomcat$ExistingStandardWrapper"
@@ -1898,6 +2014,18 @@
         "typeReached" : "org.apache.catalina.startup.Tomcat"
       },
       "type" : "org.apache.catalina.startup.Tomcat$SimpleRealm"
+    },
+    {
+      "condition" : {
+        "typeReached" : "org.apache.catalina.core.StandardContext"
+      },
+      "type" : "org.apache.catalina.startup.VersionLoggerListener",
+      "methods" : [
+        {
+          "name" : "<init>",
+          "parameterTypes" : [ ]
+        }
+      ]
     },
     {
       "condition" : {
@@ -1916,6 +2044,30 @@
         "typeReached" : "org.apache.catalina.startup.WebappServiceLoader"
       },
       "type" : "org.apache.catalina.util.CharsetMapper",
+      "methods" : [
+        {
+          "name" : "<init>",
+          "parameterTypes" : [ ]
+        }
+      ]
+    },
+    {
+      "condition" : {
+        "typeReached" : "org.apache.catalina.filters.RateLimitFilter"
+      },
+      "type" : "org.apache.catalina.util.FastRateLimiter",
+      "methods" : [
+        {
+          "name" : "<init>",
+          "parameterTypes" : [ ]
+        }
+      ]
+    },
+    {
+      "condition" : {
+        "typeReached" : "org.apache.catalina.valves.rewrite.RewriteValve"
+      },
+      "type" : "org.apache.catalina.valves.rewrite.InternalRewriteMap$LowerCase",
       "methods" : [
         {
           "name" : "<init>",
@@ -2516,6 +2668,30 @@
     },
     {
       "condition" : {
+        "typeReached" : "org.apache.tomcat.SimpleInstanceManager"
+      },
+      "type" : "org.apache.tomcat.util.net.jsse.JSSEImplementation",
+      "methods" : [
+        {
+          "name" : "<init>",
+          "parameterTypes" : [ ]
+        }
+      ]
+    },
+    {
+      "condition" : {
+        "typeReached" : "org.apache.tomcat.util.net.SSLImplementation"
+      },
+      "type" : "org.apache.tomcat.util.net.jsse.JSSEImplementation",
+      "methods" : [
+        {
+          "name" : "<init>",
+          "parameterTypes" : [ ]
+        }
+      ]
+    },
+    {
+      "condition" : {
         "typeReached" : "org.apache.catalina.loader.WebappClassLoaderBase"
       },
       "type" : "org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker",
@@ -2684,6 +2860,49 @@
     },
     {
       "condition" : {
+        "typeReached" : "org.apache.tomcat.util.buf.ByteBufferUtilsUnsafe"
+      },
+      "type" : "sun.misc.Unsafe",
+      "fields" : [
+        {
+          "name" : "theUnsafe"
+        }
+      ],
+      "methods" : [
+        {
+          "name" : "invokeCleaner",
+          "parameterTypes" : [
+            "java.nio.ByteBuffer"
+          ]
+        }
+      ]
+    },
+    {
+      "condition" : {
+        "typeReached" : "org.apache.tomcat.util.modeler.modules.MbeansDescriptorsDigesterSource"
+      },
+      "type" : "sun.net.www.protocol.jar.Handler",
+      "methods" : [
+        {
+          "name" : "<init>",
+          "parameterTypes" : [ ]
+        }
+      ]
+    },
+    {
+      "condition" : {
+        "typeReached" : "org.apache.tomcat.util.scan.StandardJarScanner"
+      },
+      "type" : "sun.net.www.protocol.jrt.Handler",
+      "methods" : [
+        {
+          "name" : "<init>",
+          "parameterTypes" : [ ]
+        }
+      ]
+    },
+    {
+      "condition" : {
         "typeReached" : "org.apache.catalina.loader.WebappClassLoaderBase"
       },
       "type" : "sun.rmi.transport.ObjectTable",
@@ -2707,9 +2926,73 @@
     },
     {
       "condition" : {
+        "typeReached" : "org.apache.tomcat.util.security.ConcurrentMessageDigest"
+      },
+      "type" : "sun.security.provider.MD5",
+      "methods" : [
+        {
+          "name" : "<init>",
+          "parameterTypes" : [ ]
+        }
+      ]
+    },
+    {
+      "condition" : {
+        "typeReached" : "org.apache.catalina.filters.CsrfPreventionFilterBase"
+      },
+      "type" : "sun.security.provider.NativePRNG",
+      "methods" : [
+        {
+          "name" : "<init>",
+          "parameterTypes" : [
+            "java.security.SecureRandomParameters"
+          ]
+        }
+      ]
+    },
+    {
+      "condition" : {
+        "typeReached" : "org.apache.catalina.realm.DigestCredentialHandlerBase"
+      },
+      "type" : "sun.security.provider.NativePRNG",
+      "methods" : [
+        {
+          "name" : "<init>",
+          "parameterTypes" : [
+            "java.security.SecureRandomParameters"
+          ]
+        }
+      ]
+    },
+    {
+      "condition" : {
         "typeReached" : "org.apache.catalina.util.SessionIdGeneratorBase"
       },
       "type" : "sun.security.provider.SHA",
+      "methods" : [
+        {
+          "name" : "<init>",
+          "parameterTypes" : [ ]
+        }
+      ]
+    },
+    {
+      "condition" : {
+        "typeReached" : "org.apache.tomcat.util.security.ConcurrentMessageDigest"
+      },
+      "type" : "sun.security.provider.SHA",
+      "methods" : [
+        {
+          "name" : "<init>",
+          "parameterTypes" : [ ]
+        }
+      ]
+    },
+    {
+      "condition" : {
+        "typeReached" : "org.apache.tomcat.util.security.ConcurrentMessageDigest"
+      },
+      "type" : "sun.security.provider.SHA2$SHA256",
       "methods" : [
         {
           "name" : "<init>",
@@ -2961,6 +3244,24 @@
     },
     {
       "condition" : {
+        "typeReached" : "jakarta.servlet.HttpConstraintElement"
+      },
+      "glob" : "jakarta/servlet/LocalStrings.properties"
+    },
+    {
+      "condition" : {
+        "typeReached" : "jakarta.servlet.HttpConstraintElement"
+      },
+      "glob" : "jakarta/servlet/LocalStrings_en.properties"
+    },
+    {
+      "condition" : {
+        "typeReached" : "jakarta.servlet.HttpConstraintElement"
+      },
+      "glob" : "jakarta/servlet/LocalStrings_en_US.properties"
+    },
+    {
+      "condition" : {
         "typeReached" : "org.apache.catalina.startup.ContextConfig"
       },
       "glob" : "jakarta/servlet/Registration$Dynamic.class"
@@ -3033,7 +3334,7 @@
     },
     {
       "condition" : {
-        "typeReached" : "jakarta.servlet.http.HttpServlet"
+        "typeReached" : "jakarta.servlet.http.Cookie"
       },
       "glob" : "jakarta/servlet/http/LocalStrings.properties"
     },
@@ -3041,7 +3342,25 @@
       "condition" : {
         "typeReached" : "jakarta.servlet.http.HttpServlet"
       },
+      "glob" : "jakarta/servlet/http/LocalStrings.properties"
+    },
+    {
+      "condition" : {
+        "typeReached" : "jakarta.servlet.http.Cookie"
+      },
       "glob" : "jakarta/servlet/http/LocalStrings_en.properties"
+    },
+    {
+      "condition" : {
+        "typeReached" : "jakarta.servlet.http.HttpServlet"
+      },
+      "glob" : "jakarta/servlet/http/LocalStrings_en.properties"
+    },
+    {
+      "condition" : {
+        "typeReached" : "jakarta.servlet.http.Cookie"
+      },
+      "glob" : "jakarta/servlet/http/LocalStrings_en_US.properties"
     },
     {
       "condition" : {
@@ -4521,6 +4840,12 @@
     },
     {
       "condition" : {
+        "typeReached" : "org.apache.catalina.filters.FilterBase"
+      },
+      "glob" : "org/apache/catalina/filters/LocalStrings.properties"
+    },
+    {
+      "condition" : {
         "typeReached" : "org.apache.catalina.startup.ContextConfig"
       },
       "glob" : "org/apache/catalina/filters/RequestFilter.class"
@@ -4803,6 +5128,12 @@
     },
     {
       "condition" : {
+        "typeReached" : "org.apache.catalina.valves.rewrite.QuotedStringTokenizer"
+      },
+      "glob" : "org/apache/catalina/valves/rewrite/LocalStrings.properties"
+    },
+    {
+      "condition" : {
         "typeReached" : "org.apache.catalina.startup.ContextConfig"
       },
       "glob" : "org/apache/catalina/valves/rewrite/RewriteMap.class"
@@ -4824,6 +5155,12 @@
         "typeReached" : "org.apache.catalina.startup.ContextConfig"
       },
       "glob" : "org/apache/catalina/webresources/AbstractResourceSet.class"
+    },
+    {
+      "condition" : {
+        "typeReached" : "org.apache.catalina.webresources.ClasspathURLStreamHandler"
+      },
+      "glob" : "org/apache/catalina/webresources/LocalStrings.properties"
     },
     {
       "condition" : {
@@ -5529,6 +5866,12 @@
     },
     {
       "condition" : {
+        "typeReached" : "org.apache.tomcat.util.net.jsse.JSSESupport"
+      },
+      "glob" : "org/apache/tomcat/util/net/jsse/LocalStrings.properties"
+    },
+    {
+      "condition" : {
         "typeReached" : "org.apache.tomcat.util.modeler.Registry"
       },
       "glob" : "org/apache/tomcat/util/net/mbeans-descriptors.xml"
@@ -5544,6 +5887,12 @@
         "typeReached" : "org.apache.tomcat.util.scan.StandardJarScanner"
       },
       "glob" : "org/apache/tomcat/util/scan/LocalStrings.properties"
+    },
+    {
+      "condition" : {
+        "typeReached" : "org.apache.tomcat.util.security.ConcurrentMessageDigest"
+      },
+      "glob" : "org/apache/tomcat/util/security/LocalStrings.properties"
     },
     {
       "condition" : {
@@ -9305,6 +9654,12 @@
       "condition" : {
         "typeReached" : "org.apache.catalina.startup.ContextConfig"
       },
+      "glob" : "org/junit/platform/launcher/TestExecutionListener.class"
+    },
+    {
+      "condition" : {
+        "typeReached" : "org.apache.catalina.startup.ContextConfig"
+      },
       "glob" : "org/junit/rules/TestRule.class"
     },
     {
@@ -9395,7 +9750,55 @@
       "condition" : {
         "typeReached" : "org.apache.catalina.startup.ContextConfig"
       },
+      "glob" : "org_apache_tomcat_embed/tomcat_embed_core/ContextConfigTest$MatchingServlet.class"
+    },
+    {
+      "condition" : {
+        "typeReached" : "org.apache.catalina.startup.ContextConfig"
+      },
+      "glob" : "org_apache_tomcat_embed/tomcat_embed_core/ContextConfigTest$TrackedServlet.class"
+    },
+    {
+      "condition" : {
+        "typeReached" : "org.apache.catalina.startup.ContextConfig"
+      },
+      "glob" : "org_apache_tomcat_embed/tomcat_embed_core/JAASRealmTest$NamedPrincipal.class"
+    },
+    {
+      "condition" : {
+        "typeReached" : "org.apache.catalina.startup.WebAnnotationSet"
+      },
+      "glob" : "org_apache_tomcat_embed/tomcat_embed_core/TomcatTests$MyServlet.class"
+    },
+    {
+      "condition" : {
+        "typeReached" : "org.apache.catalina.loader.WebappClassLoaderBase"
+      },
+      "glob" : "org_apache_tomcat_embed/tomcat_embed_core/TomcatTests.class"
+    },
+    {
+      "condition" : {
+        "typeReached" : "org.apache.catalina.startup.ContextConfig"
+      },
+      "glob" : "worker/org/gradle/internal/classloader/ClassLoaderHierarchy.class"
+    },
+    {
+      "condition" : {
+        "typeReached" : "org.apache.catalina.startup.ContextConfig"
+      },
+      "glob" : "worker/org/gradle/internal/classloader/ClassLoaderSpec.class"
+    },
+    {
+      "condition" : {
+        "typeReached" : "org.apache.catalina.startup.ContextConfig"
+      },
       "glob" : "worker/org/gradle/internal/classloader/ClassLoaderUtils$AbstractClassLoaderLookuper.class"
+    },
+    {
+      "condition" : {
+        "typeReached" : "org.apache.catalina.startup.ContextConfig"
+      },
+      "glob" : "worker/org/gradle/internal/classloader/ClassLoaderUtils$ClassDefiner.class"
     },
     {
       "condition" : {
@@ -10622,6 +11025,9 @@
       "glob" : "jdk/jfr/internal/query/view.ini"
     },
     {
+      "bundle" : "jakarta.servlet.LocalStrings"
+    },
+    {
       "bundle" : "jakarta.servlet.http.LocalStrings"
     },
     {
@@ -10638,6 +11044,9 @@
     },
     {
       "bundle" : "org.apache.catalina.deploy.LocalStrings"
+    },
+    {
+      "bundle" : "org.apache.catalina.filters.LocalStrings"
     },
     {
       "bundle" : "org.apache.catalina.loader.LocalStrings"
@@ -10662,6 +11071,9 @@
     },
     {
       "bundle" : "org.apache.catalina.valves.LocalStrings"
+    },
+    {
+      "bundle" : "org.apache.catalina.valves.rewrite.LocalStrings"
     },
     {
       "bundle" : "org.apache.catalina.webresources.LocalStrings"
@@ -10718,7 +11130,13 @@
       "bundle" : "org.apache.tomcat.util.net.LocalStrings"
     },
     {
+      "bundle" : "org.apache.tomcat.util.net.jsse.LocalStrings"
+    },
+    {
       "bundle" : "org.apache.tomcat.util.scan.LocalStrings"
+    },
+    {
+      "bundle" : "org.apache.tomcat.util.security.LocalStrings"
     },
     {
       "bundle" : "org.apache.tomcat.util.threads.LocalStrings"
