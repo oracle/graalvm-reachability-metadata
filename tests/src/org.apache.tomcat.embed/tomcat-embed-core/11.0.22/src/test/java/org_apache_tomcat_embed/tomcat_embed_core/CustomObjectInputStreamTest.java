@@ -24,7 +24,7 @@ public class CustomObjectInputStreamTest {
     @Test
     void deserializesApplicationObjectAndProxyWithProvidedClassLoader() throws Exception {
         Greeting original = (Greeting) Proxy.newProxyInstance(getClass().getClassLoader(),
-                new Class<?>[] { Greeting.class }, new GreetingHandler());
+                new Class<?>[] {Greeting.class }, new GreetingHandler());
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
         try (ObjectOutputStream output = new ObjectOutputStream(bytes)) {
             output.writeObject(new Payload("payload"));

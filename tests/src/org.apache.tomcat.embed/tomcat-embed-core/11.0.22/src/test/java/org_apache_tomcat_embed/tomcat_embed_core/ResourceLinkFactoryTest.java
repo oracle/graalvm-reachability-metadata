@@ -19,7 +19,7 @@ public class ResourceLinkFactoryTest {
 
     @Test
     void resolvesRegisteredGlobalResourceWithExpectedType() throws Exception {
-        NamingContext globalContext = new NamingContext(new Hashtable<>(), "global");
+        NamingContext globalContext = new NamingContext((Hashtable<String, Object>) (Hashtable<?, ?>) new java.util.Properties(), "global");
         globalContext.bind("sharedMessage", "configured-value");
         ResourceLinkFactory.setGlobalContext(globalContext);
         ResourceLinkFactory.registerGlobalResourceAccess(globalContext, "localMessage", "sharedMessage");

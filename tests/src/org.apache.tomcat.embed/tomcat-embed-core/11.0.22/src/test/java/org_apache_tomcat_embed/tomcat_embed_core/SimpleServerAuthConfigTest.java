@@ -30,7 +30,7 @@ public class SimpleServerAuthConfigTest {
     @Test
     void createsAndInitializesConfiguredServerAuthModule() throws Exception {
         INITIALIZED.set(false);
-        Map<String,Object> properties = Map.of(
+        Map<String, Object> properties = Map.of(
                 "org.apache.catalina.authenticator.jaspic.ServerAuthModule.1", TestServerAuthModule.class.getName());
         SimpleServerAuthConfig config = new SimpleServerAuthConfig("HttpServlet", "localhost /app", null, properties);
 
@@ -49,13 +49,13 @@ public class SimpleServerAuthConfigTest {
 
         @Override
         public void initialize(MessagePolicy requestPolicy, MessagePolicy responsePolicy, CallbackHandler handler,
-                Map<String,Object> options) {
+                Map<String, Object> options) {
             INITIALIZED.set("value".equals(options.get("test")));
         }
 
         @Override
         public Class<?>[] getSupportedMessageTypes() {
-            return new Class<?>[] { Object.class };
+            return new Class<?>[] {Object.class };
         }
 
         @Override

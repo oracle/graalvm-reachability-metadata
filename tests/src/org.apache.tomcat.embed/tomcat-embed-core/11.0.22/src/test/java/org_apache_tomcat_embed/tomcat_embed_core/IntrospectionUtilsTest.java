@@ -20,7 +20,7 @@ public class IntrospectionUtilsTest {
         boolean namedPropertySet = IntrospectionUtils.setProperty(component, "port", "8080");
         boolean fallbackPropertySet = IntrospectionUtils.setProperty(component, "mode", "strict");
         Object description = IntrospectionUtils.callMethodN(component, "describe",
-                new Object[] { "server", Integer.valueOf(2) }, new Class<?>[] { String.class, Integer.class });
+                new Object[] {"server", Integer.valueOf(2) }, new Class<?>[] {String.class, Integer.class });
 
         assertThat(namedPropertySet).isTrue();
         assertThat(fallbackPropertySet).isTrue();

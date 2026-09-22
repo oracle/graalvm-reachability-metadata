@@ -30,7 +30,7 @@ public class DataSourceLinkFactoryTest {
     @Test
     void suppliesConfiguredCredentialsThroughDataSourceProxy() throws Exception {
         RecordingDataSource target = new RecordingDataSource();
-        NamingContext globalContext = new NamingContext(new Hashtable<>(), "global-data-source");
+        NamingContext globalContext = new NamingContext((Hashtable<String, Object>) (Hashtable<?, ?>) new java.util.Properties(), "global-data-source");
         globalContext.bind("sharedDataSource", target);
         DataSourceLinkFactory.setGlobalContext(globalContext);
         ResourceLinkFactory.registerGlobalResourceAccess(globalContext, "localDataSource", "sharedDataSource");
