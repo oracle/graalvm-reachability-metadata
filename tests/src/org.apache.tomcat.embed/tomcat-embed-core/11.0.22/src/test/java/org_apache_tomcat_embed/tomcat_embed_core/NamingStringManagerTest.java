@@ -14,6 +14,21 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class NamingStringManagerTest {
 
     @Test
+    void retriesMissingBundleWithContextClassLoader() {
+        Thread thread = Thread.currentThread();
+        ClassLoader originalClassLoader = thread.getContextClassLoader();
+        StringManager manager;
+        try {
+            thread.setContextClassLoader(NamingStringManagerTest.class.getClassLoader());
+            manager = StringManager.getManager("missing.naming.messages");
+        } finally {
+            thread.setContextClassLoader(originalClassLoader);
+        }
+
+        assertThat(manager.getString("missing-key")).isNull();
+    }
+
+    @Test
     void representsPackageWithoutAMessageBundle() {
         StringManager manager = StringManager.getManager(NamingStringManagerTest.class);
 

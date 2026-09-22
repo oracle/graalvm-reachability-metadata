@@ -24,6 +24,24 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class FactoryBaseTest {
 
     @Test
+    void loadsExplicitlyConfiguredObjectFactoryFromContextClassLoader() throws Exception {
+        ResourceRef reference = new ResourceRef(String.class.getName(), null, null, null, true);
+        reference.add(new StringRefAddr(Constants.FACTORY, TextObjectFactory.class.getName()));
+
+        Thread thread = Thread.currentThread();
+        ClassLoader originalClassLoader = thread.getContextClassLoader();
+        Object value;
+        try {
+            thread.setContextClassLoader(FactoryBaseTest.class.getClassLoader());
+            value = new ResourceFactory().getObjectInstance(reference, null, null, null);
+        } finally {
+            thread.setContextClassLoader(originalClassLoader);
+        }
+
+        assertThat(value).isEqualTo("created:" + String.class.getName());
+    }
+
+    @Test
     void createsExplicitlyConfiguredObjectFactory() throws Exception {
         ResourceRef reference = new ResourceRef(String.class.getName(), null, null, null, true);
         reference.add(new StringRefAddr(Constants.FACTORY, TextObjectFactory.class.getName()));
