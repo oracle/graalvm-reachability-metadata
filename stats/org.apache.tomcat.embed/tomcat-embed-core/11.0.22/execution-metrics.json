@@ -160,10 +160,10 @@
     }
   },
   "improve_library_coverage:2026-09-22": {
-    "timestamp": "2026-09-22T07:03:11.987655Z",
+    "timestamp": "2026-09-22T17:30:02.294685Z",
     "library": "org.apache.tomcat.embed:tomcat-embed-core:11.0.22",
-    "starting_commit": "341b9db191dafc97112f1e740b61a03bdfc5c9f8",
-    "ending_commit": "08517c3a1ebd672f7c68ab2e1a3f099783d4f262",
+    "starting_commit": "0a78d8a0d2e1aa8adc5190626caed66796618bcc",
+    "ending_commit": "b01b7c57d56bdd0b1441bd8436552b8db99088dc",
     "strategy_name": "library_update_optimistic_pi_gpt-5.6-sol",
     "agent": "pi",
     "model": "gpt-5.6-sol",
@@ -173,37 +173,37 @@
       "dynamicAccess": {
         "breakdown": {
           "reflection": {
-            "coverageRatio": 0.88835,
-            "coveredCalls": 366,
+            "coverageRatio": 0.951456,
+            "coveredCalls": 392,
             "totalCalls": 412
           },
           "resources": {
-            "coverageRatio": 0.878049,
-            "coveredCalls": 36,
+            "coverageRatio": 0.926829,
+            "coveredCalls": 38,
             "totalCalls": 41
           }
         },
-        "coverageRatio": 0.887417,
-        "coveredCalls": 402,
+        "coverageRatio": 0.949227,
+        "coveredCalls": 430,
         "totalCalls": 453
       },
       "libraryCoverage": {
         "instruction": {
-          "covered": 84830,
-          "missed": 262297,
-          "ratio": 0.244377,
+          "covered": 85734,
+          "missed": 261393,
+          "ratio": 0.246982,
           "total": 347127
         },
         "line": {
-          "covered": 19682,
-          "missed": 62021,
-          "ratio": 0.240897,
+          "covered": 19937,
+          "missed": 61766,
+          "ratio": 0.244018,
           "total": 81703
         },
         "method": {
-          "covered": 3582,
-          "missed": 9231,
-          "ratio": 0.27956,
+          "covered": 3642,
+          "missed": 9171,
+          "ratio": 0.284243,
           "total": 12813
         }
       }
@@ -214,7 +214,7 @@
       "issue_number": 10144,
       "issue_label": "library-update-request",
       "library": "org.apache.tomcat.embed:tomcat-embed-core:11.0.22",
-      "summary": "The reported gap (AbstractProtocol#getProperty(String)) is already resolved: shipped metadata for 11.0.22 already registers this method, and ConnectorProtocolIntrospectionTest already exercises it through the public Connector API using only the existing scaffold dependencies (jakarta.servlet-api, jakarta.annotation-api, assertj-core) and the already-configured --add-opens JVM args. This was landed by merged PR #10156. No Docker image, extra Maven dependency, or environment/system property is needed to reach this coverage.",
+      "summary": "AbstractProtocol#getProperty(String) is reached via plain-Java IntrospectionUtils reflection on the existing HTTP/1.1, Http11NioProtocol, and Http11Nio2Protocol connectors — no APR/native/OpenSSL involved. The generated scaffold already ships this exact dependency set and JVM flags (see ConnectorProtocolIntrospectionTest.java), and the shipped 11.0.22 metadata already has a getProperty(String) entry for this type, so this is a metadata-condition coverage gap, not a missing-infrastructure gap.",
       "deterministic_setup": [],
       "agent_guidance": "",
       "risks": [],
@@ -230,20 +230,20 @@
         }
       ],
       "model": "sonnet",
-      "input_tokens_used": 16,
-      "output_tokens_used": 4330
+      "input_tokens_used": 10,
+      "output_tokens_used": 3437
     },
     "metrics": {
-      "input_tokens_used": 551192,
-      "cached_input_tokens_used": 12063744,
-      "output_tokens_used": 61166,
-      "iterations": 9,
-      "cost_usd": 10.6229,
-      "generated_loc": 4690,
-      "tested_library_loc": 19682,
-      "metadata_entries": 2224,
-      "test_only_metadata_entries": 489,
-      "code_coverage_percent": 24.09
+      "input_tokens_used": 1667101,
+      "cached_input_tokens_used": 19818752,
+      "output_tokens_used": 124692,
+      "iterations": 27,
+      "cost_usd": 21.9857,
+      "generated_loc": 5295,
+      "tested_library_loc": 19937,
+      "metadata_entries": 2266,
+      "test_only_metadata_entries": 725,
+      "code_coverage_percent": 24.4
     },
     "artifacts": {
       "metadata_file": "metadata/org.apache.tomcat.embed/tomcat-embed-core/11.0.22/reachability-metadata.json"
