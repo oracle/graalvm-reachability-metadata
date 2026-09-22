@@ -11,7 +11,9 @@ import java.nio.file.Path;
 
 import org.apache.catalina.LifecycleState;
 import org.apache.catalina.core.StandardContext;
+import org.apache.catalina.core.StandardEngine;
 import org.apache.catalina.core.StandardHost;
+import org.apache.catalina.core.StandardService;
 import org.apache.catalina.loader.ParallelWebappClassLoader;
 import org.apache.catalina.loader.WebappLoader;
 import org.apache.catalina.webresources.StandardRoot;
@@ -34,8 +36,13 @@ public class WebappLoaderTest {
         context.setName("loader-test");
         context.setPath("/loader-test");
         context.setDocBase(temporaryDirectory.toString());
+        StandardService service = new StandardService();
+        StandardEngine engine = new StandardEngine();
+        engine.setName("loader-engine");
+        service.setContainer(engine);
         StandardHost host = new StandardHost();
         host.setName("localhost");
+        engine.addChild(host);
         context.setParent(host);
 
         StandardRoot resources = new StandardRoot(context);

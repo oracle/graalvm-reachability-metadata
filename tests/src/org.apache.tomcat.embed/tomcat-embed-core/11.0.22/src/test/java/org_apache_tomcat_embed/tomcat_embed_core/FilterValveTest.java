@@ -17,6 +17,9 @@ import jakarta.servlet.ServletResponse;
 
 import org.apache.catalina.LifecycleState;
 import org.apache.catalina.core.StandardContext;
+import org.apache.catalina.core.StandardEngine;
+import org.apache.catalina.core.StandardHost;
+import org.apache.catalina.core.StandardService;
 import org.apache.catalina.valves.FilterValve;
 import org.junit.jupiter.api.Test;
 
@@ -27,8 +30,19 @@ public class FilterValveTest {
     @Test
     void startsConfiguredServletFilter() throws Exception {
         RecordingFilter.reset();
+        StandardService service = new StandardService();
+        StandardEngine engine = new StandardEngine();
+        engine.setName("filter-engine");
+        service.setContainer(engine);
+        StandardHost host = new StandardHost();
+        host.setName("localhost");
+        engine.addChild(host);
+        StandardContext context = new StandardContext();
+        context.setName("filter-valve-test");
+        context.setPath("/filter-valve-test");
+        context.setParent(host);
         FilterValve valve = new FilterValve();
-        valve.setContainer(new StandardContext());
+        valve.setContainer(context);
         valve.setFilterClass(RecordingFilter.class.getName());
         valve.addInitParam("mode", "audit");
 

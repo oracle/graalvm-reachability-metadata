@@ -48,7 +48,9 @@ public class JAASMemoryLoginModuleTest {
         assertThat(module.commit()).isTrue();
         assertThat(subject.getPrincipals().stream().map(principal -> principal.getName())).contains("alice");
         assertThat(module.logout()).isTrue();
-        assertThat(subject.getPrincipals()).isEmpty();
+        assertThat(subject.getPrincipals().stream().map(principal -> principal.getName()))
+                .contains("admin")
+                .doesNotContain("alice");
     }
 
     private static void supplyCredentials(Callback[] callbacks) {
