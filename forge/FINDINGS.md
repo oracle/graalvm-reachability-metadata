@@ -8,6 +8,12 @@ Newest entry first; every non-approval is recorded, including one a repair later
 **Coverage improvement removed baseline behavior and counted an asserted failure**
 
 The contribution deleted the existing SCRAM provider behavior test from KafkaClientsTest, contrary to the no-weakening rule, and added reportsUnavailableRawMessageInfoFields, which deliberately supplied a nonexistent protobuf field and asserted the resulting RuntimeException while exercising the reflective call site. That is coverage bought by asserting breakage under FS-contribution-contract.4.4 / FS-test-contract.2.6.
+## 2026-09-22 — org.orbisgis:h2gis:2.2.5 (#10139)
+
+**Unrelated KML coverage broadened the H2GIS update**
+
+The generated contribution added STAsKmlTest and ST_AsKml method metadata even though issue #10139 requests the GeoJSON, SRID, geometry-metadata, spatial-predicate, and distance methods. This unrelated feature expansion violated the no-scope-creep requirement in FS-test-contract.2.9.
+
 ## 2026-09-21 — org.apache.avro:avro:1.12.2 (#9363)
 
 **Runtime-lambda re-scope left unjustified metadata**
