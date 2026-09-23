@@ -59,7 +59,8 @@ public class ReflectionSerializableTest {
 
         @Override
         public XmlWriter toXml(XmlWriter writer, String rootElementName) throws XMLStreamException {
-            return writer.writeStartElement(rootElementName)
+            String elementName = rootElementName == null ? "widget" : rootElementName;
+            return writer.writeStartElement(elementName)
                     .writeStringElement("name", name)
                     .writeEndElement();
         }
