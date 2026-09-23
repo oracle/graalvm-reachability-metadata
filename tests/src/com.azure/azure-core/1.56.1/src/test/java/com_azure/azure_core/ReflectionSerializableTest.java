@@ -43,13 +43,15 @@ public class ReflectionSerializableTest {
             if (reader.currentToken() == XmlToken.START_DOCUMENT) {
                 reader.nextElement();
             }
-            reader.processNextElement((namespace, localName, element) -> {
-                if ("name".equals(localName)) {
-                    name[0] = element.getStringElement();
-                } else {
-                    element.skipElement();
-                }
-            });
+            while (reader.nextElement() != XmlToken.END_ELEMENT) {
+                reader.processNextElement((namespace, localName, element) -> {
+                    if ("name".equals(localName)) {
+                        name[0] = element.getStringElement();
+                    } else {
+                        element.skipElement();
+                    }
+                });
+            }
             return new XmlWidget(name[0]);
         }
 
