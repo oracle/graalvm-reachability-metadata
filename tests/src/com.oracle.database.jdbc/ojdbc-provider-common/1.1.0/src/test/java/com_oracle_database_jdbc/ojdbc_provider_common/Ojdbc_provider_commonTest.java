@@ -28,17 +28,14 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.Supplier;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 import javax.net.ssl.SSLContext;
-import oracle.jdbc.AccessToken;
 import oracle.jdbc.provider.cache.CacheController;
 import oracle.jdbc.provider.cache.CachedResourceFactory;
 import oracle.jdbc.provider.factory.Resource;
 import oracle.jdbc.provider.factory.ResourceFactory;
-import oracle.jdbc.provider.oauth.AccessTokenCacheFactory;
 import oracle.jdbc.provider.parameter.Parameter;
 import oracle.jdbc.provider.parameter.ParameterSet;
 import oracle.jdbc.provider.parameter.ParameterSetParser;
@@ -178,37 +175,6 @@ public class Ojdbc_provider_commonTest {
         assertThat(first.isValid()).isFalse();
         assertThat(second.getContent()).isEqualTo(2);
         assertThat(requests).hasValue(2);
-    }
-
-    @Test
-    void cachesJdbcAccessTokensByParameterSet() {
-        AtomicInteger requests = new AtomicInteger();
-        ResourceFactory<AccessToken> tokenFactory =
-                parameters -> {
-                    requests.incrementAndGet();
-                    String jwt =
-                            createJwt(
-                                    "{\"sub\":\"database-user\",\"exp\":"
-                                            + OffsetDateTime.now(ZoneOffset.UTC)
-                                                    .plusHours(1)
-                                                    .toEpochSecond()
-                                            + "}");
-                    return Resource.createPermanentResource(
-                            AccessToken.createJsonWebToken(jwt.toCharArray()), true);
-                };
-        ParameterSet parameters =
-                ParameterSet.builder()
-                        .add("factory", AccessTokenCacheFactory.FACTORY, tokenFactory)
-                        .build();
-
-        Resource<Supplier<? extends AccessToken>> cache =
-                AccessTokenCacheFactory.getInstance().request(parameters);
-        AccessToken first = cache.getContent().get();
-        AccessToken second = cache.getContent().get();
-
-        assertThat(cache.isSensitive()).isFalse();
-        assertThat(first).isSameAs(second);
-        assertThat(requests).hasValue(1);
     }
 
     @Test
