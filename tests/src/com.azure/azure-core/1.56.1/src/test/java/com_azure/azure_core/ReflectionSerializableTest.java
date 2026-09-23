@@ -53,6 +53,10 @@ public class ReflectionSerializableTest {
             return new XmlWidget(name[0]);
         }
 
+        public static XmlWidget fromXml(XmlReader reader, String rootElementName) throws XMLStreamException {
+            return fromXml(reader);
+        }
+
         @Override
         public XmlWriter toXml(XmlWriter writer, String rootElementName) throws XMLStreamException {
             return writer.writeStartElement(rootElementName)

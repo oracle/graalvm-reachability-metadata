@@ -11,6 +11,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import com.azure.core.annotation.HeaderCollection;
 import com.azure.core.http.HttpHeaders;
 import com.azure.core.util.serializer.JacksonAdapter;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Map;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
@@ -28,6 +29,7 @@ public class ObjectMapperShimTest {
     }
 
     public static final class StrongHeaders {
+        @JsonProperty("request-id")
         private String requestId;
 
         @HeaderCollection("x-detail-")
