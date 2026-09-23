@@ -14,6 +14,7 @@ import com.nimbusds.common.contenttype.ContentType;
 import com.nimbusds.common.contenttype.ContentType.Parameter;
 import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
+import java.util.List;
 import org.junit.jupiter.api.Test;
 
 public class Content_typeTest {
@@ -57,6 +58,34 @@ public class Content_typeTest {
         assertThat(contentType.matches(null)).isFalse();
         assertThat(contentType).isEqualTo(ContentType.APPLICATION_JSON);
         assertThat(contentType.hashCode()).isEqualTo(ContentType.APPLICATION_JSON.hashCode());
+    }
+
+    @Test
+    void exposesPredefinedCommonMediaTypes() {
+        assertThat(
+                        List.of(
+                                ContentType.APPLICATION_JOSE,
+                                ContentType.APPLICATION_JWT,
+                                ContentType.APPLICATION_URLENCODED,
+                                ContentType.IMAGE_APNG,
+                                ContentType.IMAGE_AVIF,
+                                ContentType.IMAGE_GIF,
+                                ContentType.IMAGE_JPEG,
+                                ContentType.IMAGE_SVG_XML,
+                                ContentType.IMAGE_WEBP,
+                                ContentType.APPLICATION_PDF))
+                .extracting(ContentType::toString)
+                .containsExactly(
+                        "application/jose; charset=UTF-8",
+                        "application/jwt; charset=UTF-8",
+                        "application/x-www-form-urlencoded; charset=UTF-8",
+                        "image/apng",
+                        "image/avif",
+                        "image/gif",
+                        "image/jpeg",
+                        "image/svg+xml",
+                        "image/webp",
+                        "application/pdf");
     }
 
     @Test
