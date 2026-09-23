@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test;
 
 public class ASMCreatorParameterNameResolverTest {
     @Test
-    void resolvesConstructorParameterNamesFromDebugInformation() {
-        GensonScenarios.deserializeUsingDebugParameterNames();
+    void readsLibraryBytecodeWhileCreatingSerializer() {
+        GensonScenarios.serializeUsingDebugParameterResolver();
     }
 }
