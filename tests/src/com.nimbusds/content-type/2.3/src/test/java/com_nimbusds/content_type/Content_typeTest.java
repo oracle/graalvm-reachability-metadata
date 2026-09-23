@@ -41,6 +41,7 @@ public class Content_typeTest {
 
         assertThat(contentType.getBaseSubType()).isEqualTo("png");
         assertThat(contentType.getSubTypeSuffix()).isNull();
+        assertThat(contentType.hasSubTypeSuffix("png")).isFalse();
         assertThat(contentType.hasSubTypeSuffix(null)).isFalse();
         assertThat(contentType.getParameters()).isEmpty();
         assertThat(contentType).isEqualTo(ContentType.IMAGE_PNG);
@@ -54,9 +55,13 @@ public class Content_typeTest {
 
         assertThat(contentType.getParameters()).containsExactly(Parameter.CHARSET_UTF_8);
         assertThat(contentType.matches(sameTypeWithDifferentParameter)).isTrue();
+        assertThat(contentType.matches(new ContentType("application", "xml"))).isFalse();
         assertThat(contentType.matches(ContentType.TEXT_PLAIN)).isFalse();
         assertThat(contentType.matches(null)).isFalse();
         assertThat(contentType).isEqualTo(ContentType.APPLICATION_JSON);
+        assertThat(contentType).isNotEqualTo(sameTypeWithDifferentParameter);
+        assertThat(contentType).isNotEqualTo(null);
+        assertThat(contentType).isNotEqualTo("application/json; charset=UTF-8");
         assertThat(contentType.hashCode()).isEqualTo(ContentType.APPLICATION_JSON.hashCode());
     }
 
@@ -97,6 +102,9 @@ public class Content_typeTest {
         assertThat(upperCase.getValue()).isEqualTo("UTF-8");
         assertThat(upperCase.toString()).isEqualTo("CHARSET=UTF-8");
         assertThat(upperCase).isEqualTo(lowerCase);
+        assertThat(upperCase).isNotEqualTo(new Parameter("charset", "US-ASCII"));
+        assertThat(upperCase).isNotEqualTo(null);
+        assertThat(upperCase).isNotEqualTo("charset=UTF-8");
         assertThat(upperCase.hashCode()).isEqualTo(lowerCase.hashCode());
     }
 
@@ -117,12 +125,19 @@ public class Content_typeTest {
     @Test
     void rejectsInvalidContentTypesAndParameters() {
         assertThatExceptionOfType(ParseException.class).isThrownBy(() -> ContentType.parse(null));
+        assertThatExceptionOfType(ParseException.class).isThrownBy(() -> ContentType.parse(" "));
         assertThatExceptionOfType(ParseException.class).isThrownBy(() -> ContentType.parse("application"));
         assertThatExceptionOfType(ParseException.class)
                 .isThrownBy(() -> ContentType.parse("application/json; charset"));
+        assertThatExceptionOfType(ParseException.class)
+                .isThrownBy(() -> ContentType.parse("application/json; charset="));
+        assertThatIllegalArgumentException().isThrownBy(() -> new ContentType(null, "json"));
         assertThatIllegalArgumentException().isThrownBy(() -> new ContentType(" ", "json"));
+        assertThatIllegalArgumentException().isThrownBy(() -> new ContentType("application", null));
         assertThatIllegalArgumentException().isThrownBy(() -> new ContentType("application", " "));
+        assertThatIllegalArgumentException().isThrownBy(() -> new Parameter(null, "value"));
         assertThatIllegalArgumentException().isThrownBy(() -> new Parameter("", "value"));
+        assertThatIllegalArgumentException().isThrownBy(() -> new Parameter("name", null));
         assertThatIllegalArgumentException().isThrownBy(() -> new Parameter("name", ""));
     }
 }
