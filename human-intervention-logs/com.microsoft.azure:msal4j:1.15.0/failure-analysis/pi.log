@@ -1,0 +1,13 @@
+## Human intervention needed
+
+The automated job failed for `com.microsoft.azure:msal4j:1.15.0`. Preserved work is available at https://github.com/oracle/graalvm-reachability-metadata/tree/ai%2Fkimeta%2Fhuman-intervention%2Fissue-10067-library-new-request-com.microsoft.azure-msal4j-1.15.0-e3ce4933.
+
+The terminal failure occurred during native-test execution. `human-intervention-logs/com.microsoft.azure:msal4j:1.15.0/gradle-test/gradle-test-2026-09-23T03-39-38-569431Z.log` shows that the native image built and three tests passed, but `acquiresAuthorizationCodeTokenAndCreatesAccount()` failed with `MissingReflectionRegistrationError` for `IdTokenCacheEntity.credentialType`. Earlier runs failed successively on other token-cache fields, including `RefreshTokenCacheEntity.family_id`, indicating incomplete reflection metadata rather than a compilation problem.
+
+The final generated test method is also absent from the preserved test sources, although it appears in the terminal run. The last agent log, `human-intervention-logs/com.microsoft.azure:msal4j:1.15.0/issue-requested-metadata/pi-generation-2026-09-23T03-37-55-974498Z.log`, records a metadata edit but explicitly says tests were not rerun. Metrics in `stats/com.microsoft.azure/msal4j/1.15.0/execution-metrics.json` report failure after 12 iterations, zero accepted generated LOC/metadata entries, and no coverage result.
+
+Manual next steps:
+
+1. Restore or recreate `acquiresAuthorizationCodeTokenAndCreatesAccount()` from the generation log and verify it passes on the JVM.
+2. Recollect complete token-cache serialization metadata, including the reported `IdTokenCacheEntity` field, preferably with the metadata agent or native tracing rather than one-field-at-a-time edits.
+3. Run `checkMetadataFiles` and the full coordinate-scoped `test` task, then regenerate dynamic-access coverage and stats once all native tests pass.
