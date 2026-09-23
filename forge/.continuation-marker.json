@@ -1,0 +1,77 @@
+{
+  "continueFrom": "explore",
+  "coordinate": "com.microsoft.azure:msal4j:1.15.0",
+  "failure": {
+    "operand": "reporter-requested metadata",
+    "phase": "explore",
+    "step": "generate_tests()"
+  },
+  "issueNumber": 10067,
+  "label": "library-new-request",
+  "libraryPreparationPreflight": {
+    "action": "no_action",
+    "agent_guidance": "Exercise ConfidentialClientApplication/PublicClientApplication builder paths, token cache (de)serialization, and claims/authority parsing without contacting a live Azure AD tenant. If HTTP interaction needs to be exercised reflectively, stub it with an in-process com.sun.net.httpserver.HttpServer or mock the HTTP client rather than reaching out to login.microsoftonline.com; do not use real tenant credentials or introduce a live-network integration test.",
+    "applied_setup": [],
+    "deterministic_setup": [],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#10067 Support for com.microsoft.azure:msal4j:1.15.0; label=library-new-request; body_chars=39"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "0 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 20,
+    "issue_label": "library-new-request",
+    "issue_number": 10067,
+    "library": "com.microsoft.azure:msal4j:1.15.0",
+    "model": "sonnet",
+    "output_tokens_used": 5410,
+    "risks": [
+      "msal4j exposes integrated Windows auth and broker support that rely on native/OS-specific code paths (JNA, WAM broker); these are unlikely to be reachable or meaningfully testable in this Linux CI/native-image environment and may need to be left uncovered rather than forced."
+    ],
+    "status": "completed",
+    "summary": "msal4j is a token-acquisition SDK (client-credentials, auth-code, device-code, ROPC flows) used entirely in-process. Its own upstream test suite (v1.15.0 pom) tests via Mockito-mocked HTTP interactions and builder/config assertions, not live Azure AD calls or containers. The already-shipped com.azure:azure-identity tests, which wrap msal4j for the same token-acquisition purpose, follow the identical pattern in this repo \u2014 self-contained builder/credential-chaining tests with no Docker image or extra Maven dependency, only the default assertj/junit scaffold."
+  },
+  "libraryUpdateRoute": null,
+  "newVersion": null,
+  "phases": {
+    "explore": {
+      "chunkClassCount": null,
+      "chunkProcessedClassCount": 0,
+      "exhaustedClasses": [],
+      "iteration": 6,
+      "status": "running"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": null,
+      "status": "skipped"
+    },
+    "publication": {
+      "branch": null,
+      "coverageFollowUpIssueNumber": null,
+      "isPushed": false,
+      "publicationId": null,
+      "publicationTimestamp": null,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": true,
+      "status": "completed"
+    }
+  },
+  "preservedBranch": "ai/kimeta/human-intervention/issue-10067-library-new-request-com.microsoft.azure-msal4j-1.15.0-e3ce4933",
+  "publicationMetrics": {
+    "extras": {},
+    "library": "com.microsoft.azure:msal4j:1.15.0",
+    "timestamp": "2026-09-23T03:40:57.386746Z"
+  },
+  "schemaVersion": 1,
+  "strategyName": "optimistic_dynamic_access_iterative_pi_gpt-5.6-sol"
+}

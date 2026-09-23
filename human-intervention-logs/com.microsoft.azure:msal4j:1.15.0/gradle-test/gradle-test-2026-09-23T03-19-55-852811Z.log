@@ -1,0 +1,173 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :tckTest
+====================
+Testing library: com.microsoft.azure:msal4j:1.15.0
+Command: `/home/oracle/oracle/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10067-bc8f74f5/gradlew nativeTest`
+Executing test...
+-------
+Starting a Gradle Daemon, 1 busy and 8 stopped Daemons could not be reused, use --status for details
+Shared read-only dependency cache is an incubating feature.
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+> Task :compileJava NO-SOURCE
+> Task :processResources NO-SOURCE
+> Task :classes UP-TO-DATE
+> Task :tck-test-support:compileJava UP-TO-DATE
+> Task :jar UP-TO-DATE
+> Task :tck-test-support:processResources UP-TO-DATE
+> Task :tck-test-support:classes UP-TO-DATE
+> Task :tck-test-support:jar UP-TO-DATE
+> Task :compileTestJava UP-TO-DATE
+> Task :checkTestTimeoutAnnotations
+> Task :processTestResources NO-SOURCE
+> Task :testClasses UP-TO-DATE
+> Task :test UP-TO-DATE
+> Task :generateTestResourcesConfigFile UP-TO-DATE
+> Task :nativeTestCompile UP-TO-DATE
+
+
+> Task :nativeTest FAILED
+FAILURE: Build failed with an exception.
+[junit-platform-native] WARNING: -djunit.platform.listeners.uid.tracking.output.dir not specified, trying to find test-ids on default Gradle/Maven locations. As this is a fallback mode, it could take a while. This should only happen if you are running tests executable manually and you didn't pass uid output directory with -djunit.platform.listeners.uid.tracking.output.dir=<path>.
+
+[junit-platform-native] WARNING: Using test-ids from default Gradle project location:/home/oracle/oracle/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10067-bc8f74f5/tests/src/com.microsoft.azure/msal4j/1.15.0/build/test-results/test/testlist
+* What went wrong:
+[junit-platform-native] Running in 'test listener' mode using files matching pattern [junit-platform-unique-ids*] found in folder [/home/oracle/oracle/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10067-bc8f74f5/tests/src/com.microsoft.azure/msal4j/1.15.0/build/test-results/test/testlist] and its subfolders.
+Execution failed for task ':nativeTest'.
+JUnit Platform on Native Image - report
+> Process 'command '/home/oracle/oracle/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10067-bc8f74f5/tests/src/com.microsoft.azure/msal4j/1.15.0/build/native/nativeTestCompile/com.microsoft.azure.msal4j_tests-tests'' finished with non-zero exit value 1
+----------------------------------------
+
+
+* Try:
+com_microsoft_azure.msal4j.ClaimsRequestTest > formatsAndParsesIdTokenClaims() FAILED
+> Run with --stacktrace option to get the stack trace.
+
+> Run with --info or --debug option to get more log output.
+com_microsoft_azure.msal4j.Msal4jTest > createsAuthorizationCodeRequestUrl() FAILED
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+
+> com_microsoft_azure.msal4j.Msal4jTest > acquiresAndCachesClientCredentialToken() FAILED
+Get more help at https://help.gradle.org.
+
+
+Failures (3):
+  JUnit Jupiter:ClaimsRequestTest:formatsAndParsesIdTokenClaims()
+    MethodSource [className = 'com_microsoft_azure.msal4j.ClaimsRequestTest', methodName = 'formatsAndParsesIdTokenClaims', methodParameterTypes = '']
+    => org.opentest4j.AssertionFailedError: 
+expected: "{"id_token":{"groups":{"essential":true,"values":["engineering","operations"]},"email":null}}"
+ but was: "{"id_token":{}}"
+       org.graalvm.nativeimage.builder/com.oracle.svm.core.reflect.SubstrateConstructorAccessor.newInstance(SubstrateConstructorAccessor.java:68)
+
+       java.base@25.0.4.1.1/java.lang.reflect.Constructor.newInstanceWithCaller(Constructor.java:499)
+BUILD FAILED in 13s
+       com_microsoft_azure.msal4j.ClaimsRequestTest.formatsAndParsesIdTokenClaims(ClaimsRequestTest.java:29)
+       org.graalvm.nativeimage.builder/com.oracle.svm.core.reflect.SubstrateMethodAccessor.invoke(SubstrateMethodAccessor.java:118)
+       java.base@25.0.4.1.1/java.lang.reflect.Method.invoke(Method.java:565)
+       org.junit.platform.commons.util.ReflectionUtils.invokeMethod(ReflectionUtils.java:727)
+       org.junit.jupiter.engine.execution.MethodInvocation.proceed(MethodInvocation.java:60)
+       org.junit.jupiter.engine.execution.InvocationInterceptorChain$ValidatingInvocation.proceed(InvocationInterceptorChain.java:131)
+       org.junit.jupiter.api.AssertTimeoutPreemptively.lambda$submitTask$3(AssertTimeoutPreemptively.java:95)
+       java.base@25.0.4.1.1/java.util.concurrent.FutureTask.run(FutureTask.java:328)
+       [...]
+  JUnit Jupiter:Msal4jTest:createsAuthorizationCodeRequestUrl()
+    MethodSource [className = 'com_microsoft_azure.msal4j.Msal4jTest', methodName = 'createsAuthorizationCodeRequestUrl', methodParameterTypes = '']
+    => com.microsoft.aad.msal4j.MsalClientException: java.net.MalformedURLException: Accessing a URL protocol that was not enabled. The URL protocol https is supported but not enabled by default. It must be enabled by adding the sun.net.www.protocol.https.Handler to reachability metadata.
+       com.microsoft.aad.msal4j.AbstractApplicationBase$Builder.createDefaultAADAuthority(AbstractApplicationBase.java:276)
+       com.microsoft.aad.msal4j.AbstractApplicationBase$Builder.<init>(AbstractApplicationBase.java:101)
+       com.microsoft.aad.msal4j.AbstractClientApplicationBase$Builder.<init>(AbstractClientApplicationBase.java:135)
+       com.microsoft.aad.msal4j.PublicClientApplication$Builder.<init>(PublicClientApplication.java:189)
+       com.microsoft.aad.msal4j.PublicClientApplication$Builder.<init>(PublicClientApplication.java:186)
+       [...]
+     Caused by: java.net.MalformedURLException: Accessing a URL protocol that was not enabled. The URL protocol https is supported but not enabled by default. It must be enabled by adding the sun.net.www.protocol.https.Handler to reachability metadata.
+       org.graalvm.nativeimage.builder/com.oracle.svm.core.jdk.JavaNetSubstitutions.unsupported(JavaNetSubstitutions.java:357)
+       org.graalvm.nativeimage.builder/com.oracle.svm.core.jdk.Target_java_net_URL$DefaultFactory.createURLStreamHandler(JavaNetSubstitutions.java:195)
+       java.base@25.0.4.1.1/java.net.URL.getURLStreamHandler(URL.java:141)
+       java.base@25.0.4.1.1/java.net.URL.<init>(URL.java:741)
+       java.base@25.0.4.1.1/java.net.URL.<init>(URL.java:630)
+       [...]
+  JUnit Jupiter:Msal4jTest:acquiresAndCachesClientCredentialToken()
+    MethodSource [className = 'com_microsoft_azure.msal4j.Msal4jTest', methodName = 'acquiresAndCachesClientCredentialToken', methodParameterTypes = '']
+    => com.microsoft.aad.msal4j.MsalClientException: java.net.MalformedURLException: Accessing a URL protocol that was not enabled. The URL protocol https is supported but not enabled by default. It must be enabled by adding the sun.net.www.protocol.https.Handler to reachability metadata.
+       com.microsoft.aad.msal4j.AbstractApplicationBase$Builder.createDefaultAADAuthority(AbstractApplicationBase.java:276)
+       com.microsoft.aad.msal4j.AbstractApplicationBase$Builder.<init>(AbstractApplicationBase.java:101)
+       com.microsoft.aad.msal4j.AbstractClientApplicationBase$Builder.<init>(AbstractClientApplicationBase.java:135)
+       com.microsoft.aad.msal4j.ConfidentialClientApplication$Builder.<init>(ConfidentialClientApplication.java:142)
+       com.microsoft.aad.msal4j.ConfidentialClientApplication$Builder.<init>(ConfidentialClientApplication.java:136)
+       [...]
+     Caused by: java.net.MalformedURLException: Accessing a URL protocol that was not enabled. The URL protocol https is supported but not enabled by default. It must be enabled by adding the sun.net.www.protocol.https.Handler to reachability metadata.
+       org.graalvm.nativeimage.builder/com.oracle.svm.core.jdk.JavaNetSubstitutions.unsupported(JavaNetSubstitutions.java:357)
+       org.graalvm.nativeimage.builder/com.oracle.svm.core.jdk.Target_java_net_URL$DefaultFactory.createURLStreamHandler(JavaNetSubstitutions.java:195)
+       java.base@25.0.4.1.1/java.net.URL.getURLStreamHandler(URL.java:141)
+       java.base@25.0.4.1.1/java.net.URL.<init>(URL.java:741)
+       java.base@25.0.4.1.1/java.net.URL.<init>(URL.java:630)
+       [...]
+
+Test run finished after 11 ms
+[         4 containers found      ]
+[         0 containers skipped    ]
+[         4 containers started    ]
+[         0 containers aborted    ]
+[         4 containers successful ]
+[         0 containers failed     ]
+[         3 tests found           ]
+[         0 tests skipped         ]
+[         3 tests started         ]
+[         0 tests aborted         ]
+[         0 tests successful      ]
+[         3 tests failed          ]
+
+
+[Incubating] Problems report is available at: file:///home/oracle/oracle/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10067-bc8f74f5/tests/src/com.microsoft.azure/msal4j/1.15.0/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+18 actionable tasks: 2 executed, 16 up-to-date
+
+> Task :tckTest FAILED
+
+[Incubating] Problems report is available at: file:///home/oracle/oracle/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10067-bc8f74f5/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':tckTest'.
+> Test for com.microsoft.azure:msal4j:1.15.0 failed with exit code 1.
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD FAILED in 16s
+9 actionable tasks: 1 executed, 8 up-to-date
