@@ -40,6 +40,7 @@ import com.azure.core.http.rest.PagedResponse;
 import com.azure.core.http.rest.PagedResponseBase;
 import com.azure.core.http.rest.Response;
 import com.azure.core.http.rest.RestProxy;
+import com.azure.core.models.AzureCloud;
 import com.azure.core.models.CloudEvent;
 import com.azure.core.models.CloudEventDataFormat;
 import com.azure.core.models.GeoPoint;
@@ -259,6 +260,16 @@ public class Azure_coreTest {
         assertThat(finalResponse.getValue()).isEqualTo("finished");
         assertThat(poller.getFinalResult(IO_TIMEOUT)).isEqualTo("result-for-finished");
         assertThat(pollCalls).hasValue(2);
+    }
+
+    @Test
+    void azureCloudFactorySupportsKnownAndCustomCloudNames() {
+        AzureCloud publicCloud = AzureCloud.fromString("AZURE_PUBLIC_CLOUD");
+        AzureCloud privateCloud = AzureCloud.fromString("CONTOSO_PRIVATE_CLOUD");
+
+        assertThat(publicCloud).isSameAs(AzureCloud.AZURE_PUBLIC_CLOUD);
+        assertThat(privateCloud.getValue()).isEqualTo("CONTOSO_PRIVATE_CLOUD");
+        assertThat(AzureCloud.fromString("CONTOSO_PRIVATE_CLOUD")).isSameAs(privateCloud);
     }
 
     @Test
