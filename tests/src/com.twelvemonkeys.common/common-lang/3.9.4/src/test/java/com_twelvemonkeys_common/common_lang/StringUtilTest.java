@@ -17,7 +17,7 @@ public class StringUtilTest {
     @Test
     void resolvesColorConstantsByExactAndNormalizedNames() {
         assertThat(StringUtil.toColor("darkGray")).isEqualTo(Color.darkGray);
-        assertThat(StringUtil.toColor("RED")).isEqualTo(Color.red);
+        assertThat(StringUtil.toColor("ReD")).isEqualTo(Color.red);
     }
 
     @Test
