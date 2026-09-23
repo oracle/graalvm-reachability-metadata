@@ -15,12 +15,11 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.SQLRecoverableException;
 import java.sql.Statement;
-import oracle.jdbc.datasource.impl.OracleConnectionBuilderImpl;
 import oracle.jdbc.internal.OracleConnection;
 import oracle.jdbc.proxy.ProxyFactory;
 import oracle.jdbc.proxy.oracle$1jdbc$1replay$1driver$1NonTxnReplayableConnection$2java$1sql$1Connection$$$Proxy;
-import oracle.jdbc.replay.OracleDataSourceImpl;
 import oracle.jdbc.replay.driver.NonTxnReplayableConnection;
+import oracle.jdbc.replay.internal.OracleDataSource;
 import org.junit.jupiter.api.Test;
 
 public class NonTxnReplayableBaseTest {
@@ -35,7 +34,7 @@ public class NonTxnReplayableBaseTest {
 
         try (Connection connection = replayConnectionFor(factory, originalConnection)) {
             NonTxnReplayableConnection replayableConnection = (NonTxnReplayableConnection) connection;
-            replayableConnection.initialize(dataSource, null);
+            replayableConnection.initialize(dataSource.asDataSource(), null);
             replayableConnection.beginRequest();
             try {
                 assertThat(connection.getCatalog()).isEqualTo("replayed-catalog");
@@ -156,18 +155,28 @@ public class NonTxnReplayableBaseTest {
         }
     }
 
-    private static final class OfflineReplayDataSource extends OracleDataSourceImpl {
+    private static final class OfflineReplayDataSource implements InvocationHandler {
         private final OracleConnection replacementConnection;
         private int reconnects;
 
-        private OfflineReplayDataSource(OracleConnection replacementConnection) throws SQLException {
+        private OfflineReplayDataSource(OracleConnection replacementConnection) {
             this.replacementConnection = replacementConnection;
         }
 
+        private OracleDataSource asDataSource() {
+            return (OracleDataSource) Proxy.newProxyInstance(
+                    OracleDataSource.class.getClassLoader(),
+                    new Class<?>[] {OracleDataSource.class},
+                    this);
+        }
+
         @Override
-        public Connection getConnectionNoProxy(OracleConnectionBuilderImpl connectionBuilder) {
-            reconnects++;
-            return replacementConnection;
+        public Object invoke(Object proxy, Method method, Object[] arguments) {
+            if (method.getName().equals("getConnectionNoProxy")) {
+                reconnects++;
+                return replacementConnection;
+            }
+            return defaultValue(method.getReturnType());
         }
 
         private int getReconnects() {
