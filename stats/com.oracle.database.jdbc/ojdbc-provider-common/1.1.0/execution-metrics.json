@@ -1,0 +1,84 @@
+{
+  "add_new_library_support:2026-09-23": {
+    "timestamp": "2026-09-23T07:39:31.958149Z",
+    "library": "com.oracle.database.jdbc:ojdbc-provider-common:1.1.0",
+    "starting_commit": "51a4ba6ea023dc78ce0d784c966fce769576799c",
+    "ending_commit": "b2c7e56c3e1f901fa353be3cfaef436d6f7f1545",
+    "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-sol",
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "status": "success",
+    "stats": {
+      "version": "1.1.0",
+      "dynamicAccess": {
+        "breakdown": {},
+        "coverageRatio": 1.0,
+        "coveredCalls": 0,
+        "totalCalls": 0
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 2003,
+          "missed": 840,
+          "ratio": 0.704537,
+          "total": 2843
+        },
+        "line": {
+          "covered": 514,
+          "missed": 217,
+          "ratio": 0.703146,
+          "total": 731
+        },
+        "method": {
+          "covered": 139,
+          "missed": 26,
+          "ratio": 0.842424,
+          "total": 165
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "no_action",
+      "issue_number": 10064,
+      "issue_label": "library-new-request",
+      "library": "com.oracle.database.jdbc:ojdbc-provider-common:1.1.0",
+      "summary": "ojdbc-provider-common is a pure in-process SPI/utility module (caching, parameter parsing, PEM/wallet/JWT parsing, local OAuth redirect server) depending only on ojdbc8 and oraclepki, both already present in this repo. No network/DB calls are made by the module itself, and the sibling ojdbc-provider-azure module (same parent, same dependency shape) already ships with no Docker image or extra env/system-property setup — only its own library coordinate as testImplementation.",
+      "deterministic_setup": [],
+      "agent_guidance": "",
+      "risks": [
+        "RedirectServerTest (upstream) binds a local HTTP server for OAuth callback capture; if the generated tests exercise similar behavior, ensure a free/ephemeral port is used so native-image tests aren't flaky in parallel runs — this is a test-code concern, not an environment setup need.",
+        "Confirm during generation whether ojdbc8/oraclepki transitive versions resolved via ojdbc-provider-common match what's already validated elsewhere in the repo, in case of version drift."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#10064 Support for com.oracle.database.jdbc:ojdbc-provider-common:1.1.0; label=library-new-request; body_chars=39"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "sonnet",
+      "input_tokens_used": 14,
+      "output_tokens_used": 5180
+    },
+    "metrics": {
+      "input_tokens_used": 324227,
+      "cached_input_tokens_used": 4711808,
+      "output_tokens_used": 25373,
+      "iterations": 8,
+      "cost_usd": 4.7382,
+      "generated_loc": 355,
+      "tested_library_loc": 514,
+      "metadata_entries": 14,
+      "test_only_metadata_entries": 32,
+      "code_coverage_percent": 70.31
+    },
+    "artifacts": {
+      "metadata_file": "metadata/com.oracle.database.jdbc/ojdbc-provider-common/1.1.0/reachability-metadata.json"
+    }
+  }
+}
