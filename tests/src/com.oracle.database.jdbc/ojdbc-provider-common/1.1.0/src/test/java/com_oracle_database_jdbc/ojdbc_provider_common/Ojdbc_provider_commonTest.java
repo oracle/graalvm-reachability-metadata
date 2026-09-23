@@ -46,6 +46,7 @@ import oracle.jdbc.provider.parameter.UriParameters;
 import oracle.jdbc.provider.resource.ResourceParameter;
 import oracle.jdbc.provider.util.FileUtils;
 import oracle.jdbc.provider.util.JsonWebTokenParser;
+import oracle.jdbc.provider.util.ParameterUtils;
 import oracle.jdbc.provider.util.PemData;
 import oracle.jdbc.provider.util.TNSNames;
 import oracle.jdbc.provider.util.TlsUtils;
@@ -85,6 +86,37 @@ public class Ojdbc_provider_commonTest {
                 parameters.copyBuilder().add("region", region, "eu-frankfurt-1").build();
         assertThat(copy.getRequired(region)).isEqualTo("eu-frankfurt-1");
         assertThat(parameters.getRequired(region)).isEqualTo("us-phoenix-1");
+    }
+
+    @Test
+    void resolvesParametersBeforeSystemPropertyFallbacks() {
+        String propertyName = "ojdbc.provider.test.service";
+        String previousValue = System.getProperty(propertyName);
+        Parameter<String> service = Parameter.create();
+        ParameterSet configured =
+                ParameterSet.builder().add("service", service, "orders").build();
+
+        try {
+            System.setProperty(propertyName, "inventory");
+
+            assertThat(
+                            ParameterUtils.getParameterWithFallback(
+                                    service, propertyName, "UNUSED_SERVICE_ENV", configured))
+                    .isEqualTo("orders");
+            assertThat(
+                            ParameterUtils.getParameterWithFallback(
+                                    service,
+                                    propertyName,
+                                    "UNUSED_SERVICE_ENV",
+                                    ParameterSet.empty()))
+                    .isEqualTo("inventory");
+        } finally {
+            if (previousValue == null) {
+                System.clearProperty(propertyName);
+            } else {
+                System.setProperty(propertyName, previousValue);
+            }
+        }
     }
 
     @Test
