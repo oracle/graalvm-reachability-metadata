@@ -13,12 +13,22 @@ String libraryVersion = tck.testedLibraryVersion.get()
 dependencies {
     testImplementation "com.oracle.database.jdbc:ojdbc8:$libraryVersion"
     testImplementation 'org.assertj:assertj-core:3.22.0'
-    testImplementation "com.oracle.database.jdbc:ucp:23.26.1.0.0"
-    testImplementation "com.oracle.database.security:oraclepki:23.26.1.0.0"
-    testImplementation "com.oracle.database.xml:xdb:23.26.1.0.0"
-    testImplementation "com.oracle.database.xml:xmlparserv2:23.26.1.0.0"
-    testImplementation "com.oracle.database.observability:dms:11.2.0.4"
-    testImplementation "jakarta.json:jakarta.json-api:2.1.3"
+    testImplementation "com.oracle.database.jdbc:ucp:$libraryVersion"
+    testImplementation "com.oracle.database.security:oraclepki:$libraryVersion"
+    testImplementation "com.oracle.database.xml:xdb:$libraryVersion"
+    testImplementation "com.oracle.database.xml:xmlparserv2:$libraryVersion"
+    testImplementation 'com.oracle.database.observability:dms:11.2.0.4'
+    testImplementation 'jakarta.json:jakarta.json-api:2.1.3'
+}
+
+String observabilityProperty = "oracle.jdbc.diagnostic.enableObservability"
+
+tasks.withType(Test).configureEach {
+    systemProperty observabilityProperty, "true"
+}
+
+tasks.named("nativeTest") {
+    runtimeArgs.add("-D$observabilityProperty=true")
 }
 
 graalvmNative {
