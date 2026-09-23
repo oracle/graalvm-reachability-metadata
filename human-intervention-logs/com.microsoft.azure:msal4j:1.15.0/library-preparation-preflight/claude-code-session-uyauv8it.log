@@ -1,0 +1,40 @@
+Prompt:
+You are preparing a Forge workflow for a library issue. Decide whether the library needs setup beyond the normal generated test scaffold before meaningful coverage is reachable.
+
+Research the library yourself to make this decision. Investigate the resolved artifact and its dependencies, how the library is normally used, and its documentation. The JSON context below is only a starting point, not the limit of what you may consider. Do not modify the repository or apply any setup yourself — return only the decision. Local Gradle and Native Image verification remain authoritative.
+
+The setup can be one of three things: an extra Maven dependency, a Docker image the tests need, or an environment/system property the generated tests must set. Represent dependencies and Docker images as `deterministic_setup` entries the driver can apply before generation:
+  - {"kind": "dependency", "coordinate": "group:artifact:version", "scope": "testImplementation", "reason": "..."}
+  - {"kind": "docker_image", "image": "name:tag", "slug": "short-slug", "reason": "..."}
+If a test needs a Docker image that is already pinned under `tests/tck-build-logic/src/main/resources/allowed-docker-images/`, reuse the exact tag from that `Dockerfile-<slug>` instead of introducing a new one, since the allow-list permits a single shared tag per image.
+Put environment variables, system properties, and other test-code setup in `agent_guidance`. Do not restate deterministic entries as guidance.
+
+Return a single JSON object with this shape:
+{
+  "action": "no_action" | "advisory_preparation",
+  "summary": "short reason",
+  "deterministic_setup": [ ... dependency or docker_image entries, if any ... ],
+  "agent_guidance": "environment/system property/test setup guidance, if any",
+  "risks": ["risk notes, if any"]
+}
+
+Choose no_action unless your research finds concrete evidence that extra setup is needed.
+
+Context (starting point):
+{
+  "issue": {
+    "number": 10067,
+    "title": "Support for com.microsoft.azure:msal4j:1.15.0",
+    "label": "library-new-request",
+    "body": "_This issue was created by automation._",
+    "body_error": ""
+  },
+  "library": "com.microsoft.azure:msal4j:1.15.0",
+  "current_library": null,
+  "new_version": null,
+  "existing_tests": {}
+}
+
+Conversation:
+{"duration_api_ms":64293,"stop_reason":"end_turn","session_id":"e5f2286e-a04d-4e87-96e4-cf01a1b2101d","total_cost_usd":0.318242,"usage":{"input_tokens":20,"cache_creation_input_tokens":38035,"cache_read_input_tokens":525860,"output_tokens":5410,"output_tokens_details":{"thinking_tokens":1950},"server_tool_use":{"web_search_requests":0,"web_fetch_requests":0},"service_tier":"standard","cache_creation":{"ephemeral_1h_input_tokens":38035,"ephemeral_5m_input_tokens":0},"inference_geo":"not_available","iterations":[{"input_tokens":2,"output_tokens":552,"cache_read_input_tokens":61530,"cache_creation_input_tokens":509,"cache_creation":{"ephemeral_5m_input_tokens":0,"ephemeral_1h_input_tokens":509},"type":"message"}],"speed":"standard"},"modelUsage":{"claude-sonnet-5":{"inputTokens":20,"outputTokens":5410,"cacheReadInputTokens":525860,"cacheCreationInputTokens":38035,"webSearchRequests":0,"costUSD":0.311452,"contextWindow":1000000,"maxOutputTokens":64000,"thinkingTokens":1950,"canonicalModel":"claude-sonnet-5","provider":"firstParty","costBasis":"list"},"claude-haiku-4-5-20251001":{"inputTokens":3615,"outputTokens":635,"cacheReadInputTokens":0,"cacheCreationInputTokens":0,"webSearchRequests":0,"costUSD":0.00679,"contextWindow":200000,"maxOutputTokens":32000,"thinkingTokens":0,"canonicalModel":"claude-haiku-4-5","provider":"firstParty","costBasis":"list"}},"permission_denials":[],"terminal_reason":"completed","fast_mode_state":"off","fast_mode_disabled_reason":"sdk_opt_in_required","subagent_stats":{"spawned":0,"requested":{"background":0,"foreground":0,"unset":0},"started_in_background":0,"max_depth":0,"spawned_by_subagents":0,"completed":0,"failed":0,"killed":{"parent":0,"user":0,"system":0},"refused":{"depth_limit":0,"concurrency_limit":0,"budget":0},"by_type":{}},"is_error":false,"num_turns":16,"subtype":"success","api_error_status":null,"result":"Confirmed — assertj-core is already in the default scaffold. No additional setup is needed.\n\n```json\n{\n  \"action\": \"no_action\",\n  \"summary\": \"msal4j is a token-acquisition SDK (client-credentials, auth-code, device-code, ROPC flows) used entirely in-process. Its own upstream test suite (v1.15.0 pom) tests via Mockito-mocked HTTP interactions and builder/config assertions, not live Azure AD calls or containers. The already-shipped com.azure:azure-identity tests, which wrap msal4j for the same token-acquisition purpose, follow the identical pattern in this repo — self-contained builder/credential-chaining tests with no Docker image or extra Maven dependency, only the default assertj/junit scaffold.\",\n  \"deterministic_setup\": [],\n  \"agent_guidance\": \"Exercise ConfidentialClientApplication/PublicClientApplication builder paths, token cache (de)serialization, and claims/authority parsing without contacting a live Azure AD tenant. If HTTP interaction needs to be exercised reflectively, stub it with an in-process com.sun.net.httpserver.HttpServer or mock the HTTP client rather than reaching out to login.microsoftonline.com; do not use real tenant credentials or introduce a live-network integration test.\",\n  \"risks\": [\n    \"msal4j exposes integrated Windows auth and broker support that rely on native/OS-specific code paths (JNA, WAM broker); these are unlikely to be reachable or meaningfully testable in this Linux CI/native-image environment and may need to be left uncovered rather than forced.\"\n  ]\n}\n```","ttft_ms":3646,"type":"result","duration_ms":64329,"uuid":"349c9a09-9d21-46d9-aa46-7f85100c7e3c","ttft_stream_ms":1117,"time_to_request_ms":74,"first_content_frame_ms":1118,"queued_turn_count":0,"result_index":0}
+
