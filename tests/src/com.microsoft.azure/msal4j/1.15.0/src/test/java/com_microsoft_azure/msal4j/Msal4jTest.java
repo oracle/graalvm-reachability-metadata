@@ -26,6 +26,7 @@ import com.microsoft.aad.msal4j.IHttpResponse;
 import com.microsoft.aad.msal4j.OnBehalfOfParameters;
 import com.microsoft.aad.msal4j.Prompt;
 import com.microsoft.aad.msal4j.PublicClientApplication;
+import com.microsoft.aad.msal4j.RefreshTokenParameters;
 import com.microsoft.aad.msal4j.ResponseMode;
 import com.microsoft.aad.msal4j.TokenSource;
 import com.microsoft.aad.msal4j.UserAssertion;
@@ -136,6 +137,28 @@ public class Msal4jTest {
                 .contains("code_verifier=0123456789012345678901234567890123456789012")
                 .contains("grant_type=authorization_code")
                 .contains("redirect_uri=https%3A%2F%2Fapplication.example.test%2Fcallback")
+                .contains("scope=")
+                .contains("api%3A%2F%2Fresource%2F.default");
+    }
+
+    @Test
+    void acquiresTokenWithRefreshToken() throws Exception {
+        RecordingTokenClient httpClient = new RecordingTokenClient();
+        PublicClientApplication application = newPublicApplication(httpClient);
+        RefreshTokenParameters parameters = RefreshTokenParameters.builder(SCOPES, "refresh-token").build();
+
+        IAuthenticationResult result = application.acquireToken(parameters).get(10, SECONDS);
+
+        assertThat(result.accessToken()).isEqualTo("access-token");
+        assertThat(result.metadata().tokenSource()).isEqualTo(TokenSource.IDENTITY_PROVIDER);
+        assertThat(httpClient.requests).hasSize(1);
+        HttpRequest tokenRequest = httpClient.requests.get(0);
+        assertThat(tokenRequest.httpMethod()).isEqualTo(HttpMethod.POST);
+        assertThat(tokenRequest.url().toString()).isEqualTo(AUTHORITY + "/oauth2/v2.0/token");
+        assertThat(tokenRequest.body())
+                .contains("client_id=public-client-id")
+                .contains("grant_type=refresh_token")
+                .contains("refresh_token=refresh-token")
                 .contains("scope=")
                 .contains("api%3A%2F%2Fresource%2F.default");
     }
