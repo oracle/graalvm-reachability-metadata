@@ -8,10 +8,10 @@ package com_owlike.genson;
 
 import org.junit.jupiter.api.Test;
 
-public class JAXBBundleTest {
+public class ASMCreatorParameterNameResolverTest {
     @Test
-    void honorsJaxbMethodAnnotations() {
-        GensonScenarios.roundTripJaxbBean();
-        GensonScenarios.honorJaxbTransientAccessor();
+    void resolvesConstructorParameterNamesFromDebugInformation() {
+        GensonScenarios.deserializeUsingDebugParameterNames();
+        GensonScenarios.deserializeJdkTypeUsingDebugParameterNames();
     }
 }

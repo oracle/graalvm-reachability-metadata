@@ -21,9 +21,13 @@ import com.owlike.genson.annotation.JsonProperty;
 import com.owlike.genson.ext.jaxb.JAXBBundle;
 import com.owlike.genson.stream.ObjectReader;
 import com.owlike.genson.stream.ObjectWriter;
+import java.awt.Point;
 import java.util.Arrays;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlEnumValue;
+import javax.xml.bind.annotation.XmlTransient;
+import javax.xml.bind.annotation.adapters.XmlAdapter;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 final class GensonScenarios {
     private GensonScenarios() {}
@@ -159,6 +163,59 @@ final class GensonScenarios {
 
         assertThat(genson.serialize(JaxbColor.GREEN)).isEqualTo("\"green-value\"");
         assertThat(genson.deserialize("\"green-value\"", JaxbColor.class)).isEqualTo(JaxbColor.GREEN);
+    }
+
+    static void honorJaxbTransientAccessor() {
+        Genson genson = new GensonBuilder().withBundle(new JAXBBundle()).create();
+        TransientJaxbBean source = new TransientJaxbBean();
+        source.setVisible("shown");
+        source.setSecret("hidden");
+
+        String json = genson.serialize(source);
+        TransientJaxbBean restored =
+                genson.deserialize("{\"visible\":\"changed\",\"secret\":\"ignored\"}", TransientJaxbBean.class);
+
+        assertThat(json).contains("visible").doesNotContain("secret");
+        assertThat(restored.getVisible()).isEqualTo("changed");
+        assertThat(restored.getSecret()).isNull();
+    }
+
+    static void roundTripJaxbAdaptedProperty() {
+        Genson genson = new GensonBuilder().withBundle(new JAXBBundle()).create();
+        AdaptedJaxbBean source = new AdaptedJaxbBean();
+        source.code = new AdaptedCode("alpha");
+
+        String json = genson.serialize(source);
+        AdaptedJaxbBean restored = genson.deserialize(json, AdaptedJaxbBean.class);
+
+        assertThat(json).isEqualTo("{\"code\":\"code:alpha\"}");
+        assertThat(restored.code.value).isEqualTo("alpha");
+    }
+
+    static void deserializeUsingDebugParameterNames() {
+        Genson genson = new GensonBuilder().useConstructorWithArguments(true).create();
+
+        DebugConstructorBean value =
+                genson.deserialize("{\"aliases\":[\"primary\",\"secondary\"]}", DebugConstructorBean.class);
+
+        assertThat(value.aliases).containsExactly("primary", "secondary");
+    }
+
+    static void deserializeUsingDebugFactoryParameterNames() {
+        Genson genson = new GensonBuilder().useConstructorWithArguments(true).create();
+
+        DebugFactoryBean value =
+                genson.deserialize("{\"aliases\":[\"primary\",\"secondary\"]}", DebugFactoryBean.class);
+
+        assertThat(value.aliases).containsExactly("primary", "secondary");
+    }
+
+    static void deserializeJdkTypeUsingDebugParameterNames() {
+        Genson genson = new GensonBuilder().useConstructorWithArguments(true).create();
+
+        Point point = genson.deserialize("{\"x\":12,\"y\":34}", Point.class);
+
+        assertThat(point).isEqualTo(new Point(12, 34));
     }
 
     static void resolveGenericArrayType() {
@@ -298,6 +355,76 @@ final class GensonScenarios {
         @XmlEnumValue("green-value")
         GREEN,
         RED
+    }
+
+    public static class TransientJaxbBean {
+        private String visible;
+        private String secret;
+
+        public String getVisible() {
+            return visible;
+        }
+
+        public void setVisible(String visible) {
+            this.visible = visible;
+        }
+
+        @XmlTransient
+        public String getSecret() {
+            return secret;
+        }
+
+        public void setSecret(String secret) {
+            this.secret = secret;
+        }
+    }
+
+    public static class AdaptedJaxbBean {
+        @XmlJavaTypeAdapter(AdaptedCodeAdapter.class)
+        public AdaptedCode code;
+    }
+
+    public static class AdaptedCode {
+        final String value;
+
+        public AdaptedCode(String value) {
+            this.value = value;
+        }
+    }
+
+    public static class AdaptedCodeAdapter extends XmlAdapter<String, AdaptedCode> {
+        public AdaptedCodeAdapter() {}
+
+        @Override
+        public AdaptedCode unmarshal(String value) {
+            return new AdaptedCode(value.substring("code:".length()));
+        }
+
+        @Override
+        public String marshal(AdaptedCode value) {
+            return "code:" + value.value;
+        }
+    }
+
+    public static class DebugConstructorBean {
+        final String[] aliases;
+
+        public DebugConstructorBean(String[] aliases) {
+            this.aliases = aliases;
+        }
+    }
+
+    public static class DebugFactoryBean {
+        final String[] aliases;
+
+        private DebugFactoryBean(String[] aliases) {
+            this.aliases = aliases;
+        }
+
+        @JsonCreator
+        public static DebugFactoryBean create(String[] aliases) {
+            return new DebugFactoryBean(aliases);
+        }
     }
 
     public static class GenericArrayBean<T> {
