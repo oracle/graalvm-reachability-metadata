@@ -1,13 +1,13 @@
 ## Human intervention needed
 
-The automated job failed for `com.microsoft.azure:msal4j:1.15.0`. Preserved work is available at https://github.com/oracle/graalvm-reachability-metadata/tree/ai%2Fkimeta%2Fhuman-intervention%2Fissue-10067-library-new-request-com.microsoft.azure-msal4j-1.15.0-e3ce4933.
+The automated job failed for `com.microsoft.azure:msal4j:1.15.0`. Preserved work is available at https://github.com/oracle/graalvm-reachability-metadata/tree/ai%2Fkimeta%2Fhuman-intervention%2Fissue-10067-library-new-request-com.microsoft.azure-msal4j-1.15.0-fa2117c4.
 
-The terminal failure occurred during native-test execution. `human-intervention-logs/com.microsoft.azure:msal4j:1.15.0/gradle-test/gradle-test-2026-09-23T03-39-38-569431Z.log` shows that the native image built and three tests passed, but `acquiresAuthorizationCodeTokenAndCreatesAccount()` failed with `MissingReflectionRegistrationError` for `IdTokenCacheEntity.credentialType`. Earlier runs failed successively on other token-cache fields, including `RefreshTokenCacheEntity.family_id`, indicating incomplete reflection metadata rather than a compilation problem.
+The most likely failing stage is dynamic-access reporting or the subsequent publication handoff, not test execution. `human-intervention-logs/com.microsoft.azure:msal4j:1.15.0/dynamic-access-report/generateDynamicAccessCoverageReport-2026-09-23T04-38-26-972619Z.log` reports that `nativeTestCompile/dynamic-access` was not produced and fails rather than creating an ambiguous empty report. The same failure appears in `human-intervention-logs/com.microsoft.azure:msal4j:1.15.0/gradle/generateDynamicAccessCoverageReport-2026-09-23T05-06-32-894895Z.log`.
 
-The final generated test method is also absent from the preserved test sources, although it appears in the terminal run. The last agent log, `human-intervention-logs/com.microsoft.azure:msal4j:1.15.0/issue-requested-metadata/pi-generation-2026-09-23T03-37-55-974498Z.log`, records a metadata edit but explicitly says tests were not rerun. Metrics in `stats/com.microsoft.azure/msal4j/1.15.0/execution-metrics.json` report failure after 12 iterations, zero accepted generated LOC/metadata entries, and no coverage result.
+Later evidence shows the generated work itself completed successfully: `human-intervention-logs/com.microsoft.azure:msal4j:1.15.0/gradle-test/gradle-test-2026-09-23T05-26-50-072812Z.log` records all 10 native tests passing, while metadata validation, Checkstyle, Spotless, and statistics generation also pass. The preserved `execution-metrics.json` records success with 435 generated lines and 38.45% code coverage, but incorrectly represents the unavailable dynamic-access data as 0/0; no publication descriptor was produced for this coordinate.
 
 Manual next steps:
 
-1. Restore or recreate `acquiresAuthorizationCodeTokenAndCreatesAccount()` from the generation log and verify it passes on the JVM.
-2. Recollect complete token-cache serialization metadata, including the reported `IdTokenCacheEntity` field, preferably with the metadata agent or native tracing rather than one-field-at-a-time edits.
-3. Run `checkMetadataFiles` and the full coordinate-scoped `test` task, then regenerate dynamic-access coverage and stats once all native tests pass.
+1. Cleanly rebuild the trace-enabled native test and determine why `-H:TrackDynamicAccess` creates no `dynamic-access` output directory, then rerun `generateDynamicAccessCoverageReport`.
+2. Revalidate the preserved branch with coordinate-scoped index, metadata, and full test tasks, confirming the 10 JVM/native tests remain green.
+3. Regenerate stats and publication data from a real dynamic-access result, avoiding conversion of unavailable coverage into a synthetic 0/0 result, then resume publication.
