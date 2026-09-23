@@ -23,10 +23,12 @@ import com.microsoft.aad.msal4j.HttpResponse;
 import com.microsoft.aad.msal4j.IAuthenticationResult;
 import com.microsoft.aad.msal4j.IHttpClient;
 import com.microsoft.aad.msal4j.IHttpResponse;
+import com.microsoft.aad.msal4j.OnBehalfOfParameters;
 import com.microsoft.aad.msal4j.Prompt;
 import com.microsoft.aad.msal4j.PublicClientApplication;
 import com.microsoft.aad.msal4j.ResponseMode;
 import com.microsoft.aad.msal4j.TokenSource;
+import com.microsoft.aad.msal4j.UserAssertion;
 import com.microsoft.aad.msal4j.UserNamePasswordParameters;
 import java.net.URI;
 import java.net.URL;
@@ -85,6 +87,33 @@ public class Msal4jTest {
 
         assertThat(restoredResult.accessToken()).isEqualTo("access-token");
         assertThat(restoredHttpClient.requests).isEmpty();
+    }
+
+    @Test
+    void acquiresTokenOnBehalfOfUser() throws Exception {
+        RecordingTokenClient httpClient = new RecordingTokenClient();
+        ConfidentialClientApplication application = newConfidentialApplication(httpClient);
+        String userAccessToken =
+                "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJkZWxlZ2F0ZWQtdXNlciJ9.c2lnbmF0dXJl";
+        OnBehalfOfParameters parameters =
+                OnBehalfOfParameters.builder(SCOPES, new UserAssertion(userAccessToken)).build();
+
+        IAuthenticationResult result = application.acquireToken(parameters).get(10, SECONDS);
+
+        assertThat(result.accessToken()).isEqualTo("access-token");
+        assertThat(result.metadata().tokenSource()).isEqualTo(TokenSource.IDENTITY_PROVIDER);
+        assertThat(httpClient.requests).hasSize(1);
+        HttpRequest tokenRequest = httpClient.requests.get(0);
+        assertThat(tokenRequest.httpMethod()).isEqualTo(HttpMethod.POST);
+        assertThat(tokenRequest.url().toString()).isEqualTo(AUTHORITY + "/oauth2/v2.0/token");
+        assertThat(tokenRequest.body())
+                .contains("assertion=" + userAccessToken)
+                .contains("client_id=client-id")
+                .contains("client_secret=client-secret")
+                .contains("grant_type=urn%3Aietf%3Aparams%3Aoauth%3Agrant-type%3Ajwt-bearer")
+                .contains("requested_token_use=on_behalf_of")
+                .contains("scope=")
+                .contains("api%3A%2F%2Fresource%2F.default");
     }
 
     @Test
