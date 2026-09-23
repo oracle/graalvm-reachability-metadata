@@ -59,8 +59,7 @@ public class SystemUtilTest {
         public CloneableValue clone() {
             try {
                 return (CloneableValue) super.clone();
-            }
-            catch (CloneNotSupportedException exception) {
+            } catch (CloneNotSupportedException exception) {
                 throw new AssertionError(exception);
             }
         }
