@@ -72,6 +72,20 @@ public class Content_typeTest {
     }
 
     @Test
+    void exposesParametersAsUnmodifiableList() {
+        ContentType contentType =
+                new ContentType("application", "problem+json", new Parameter("profile", "validation"));
+
+        assertThatExceptionOfType(UnsupportedOperationException.class)
+                .isThrownBy(
+                        () ->
+                                contentType
+                                        .getParameters()
+                                        .add(new Parameter("charset", "UTF-8")));
+        assertThat(contentType.toString()).isEqualTo("application/problem+json; profile=validation");
+    }
+
+    @Test
     void rejectsInvalidContentTypesAndParameters() {
         assertThatExceptionOfType(ParseException.class).isThrownBy(() -> ContentType.parse(null));
         assertThatExceptionOfType(ParseException.class).isThrownBy(() -> ContentType.parse("application"));
