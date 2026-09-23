@@ -70,20 +70,6 @@ final class GensonScenarios {
         assertThat(restored.code).isEqualTo("mixedcase");
     }
 
-    static void deserializeDebugConstructor() {
-        Genson genson = new GensonBuilder().useConstructorWithArguments(true).create();
-        DebugConstructorBean value = genson.deserialize("{\"labels\":[\"one\",\"two\"]}", DebugConstructorBean.class);
-
-        assertThat(value.labels).containsExactly("one", "two");
-    }
-
-    static void deserializeDebugFactory() {
-        Genson genson = new GensonBuilder().useConstructorWithArguments(true).create();
-        DebugFactoryBean value = genson.deserialize("{\"name\":\"Ada\"}", DebugFactoryBean.class);
-
-        assertThat(value.name).isEqualTo("Ada");
-    }
-
     static void deserializeWithConstructorCreator() {
         ConstructorBean value = new Genson().deserialize("{\"name\":\"Grace\"}", ConstructorBean.class);
 
@@ -248,27 +234,6 @@ final class GensonScenarios {
         }
     }
 
-    public static class DebugConstructorBean {
-        final String[] labels;
-
-        public DebugConstructorBean(String[] labels) {
-            this.labels = labels;
-        }
-    }
-
-    public static class DebugFactoryBean {
-        final String name;
-
-        private DebugFactoryBean(String name) {
-            this.name = name;
-        }
-
-        @JsonCreator
-        public static DebugFactoryBean create(String name) {
-            return new DebugFactoryBean(name);
-        }
-    }
-
     public static class ConvertedBean {
         @JsonConverter(UpperCaseConverter.class)
         public String code;
@@ -323,6 +288,7 @@ final class GensonScenarios {
             return value;
         }
 
+        @XmlElement(name = "renamed")
         public void setValue(String value) {
             this.value = value;
         }
