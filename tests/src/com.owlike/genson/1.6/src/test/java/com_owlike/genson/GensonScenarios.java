@@ -193,16 +193,14 @@ final class GensonScenarios {
         assertThat(restored.code.value).isEqualTo("alpha");
     }
 
-    static void serializeUsingDebugParameterResolver() {
-        Genson genson =
-                new GensonBuilder()
-                        .useConstructorWithArguments(true)
-                        .useMethods(false)
-                        .useFields(true, VisibilityFilter.PRIVATE)
-                        .create();
-        VisibilityFilter filter = new VisibilityFilter(Modifier.PRIVATE);
+    static void deserializeUsingDebugParameterNames() {
+        Genson genson = new GensonBuilder().useConstructorWithArguments(true).create();
 
-        assertThat(genson.serialize(filter)).isEqualTo("{\"filter\":" + Modifier.PRIVATE + "}");
+        VisibilityFilter filter =
+                genson.deserialize("{\"modifier\":[" + Modifier.PRIVATE + "]}", VisibilityFilter.class);
+
+        assertThat(filter.isVisible(Modifier.PRIVATE)).isFalse();
+        assertThat(filter.isVisible(Modifier.PUBLIC)).isTrue();
     }
 
     static void resolveGenericArrayType() {

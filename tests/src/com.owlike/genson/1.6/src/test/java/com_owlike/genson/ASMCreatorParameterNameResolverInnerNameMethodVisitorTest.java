@@ -8,9 +8,9 @@ package com_owlike.genson;
 
 import org.junit.jupiter.api.Test;
 
-public class ASMCreatorParameterNameResolverTest {
+public class ASMCreatorParameterNameResolverInnerNameMethodVisitorTest {
     @Test
-    void resolvesConstructorParameterNamesFromDebugInformation() {
+    void locatesPublicMethodsUsingDebugParameterTypes() {
         GensonScenarios.deserializeUsingDebugParameterNames();
     }
 }
