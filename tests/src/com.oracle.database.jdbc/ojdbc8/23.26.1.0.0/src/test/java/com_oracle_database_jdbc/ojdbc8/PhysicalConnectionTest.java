@@ -21,12 +21,16 @@ public class PhysicalConnectionTest {
         configuration.setProperty(
                 OracleConnection.CONNECTION_PROPERTY_DEFAULT_ROW_PREFETCH, "37");
         configuration.setProperty(
+                OracleConnection.CONNECTION_PROPERTY_DEFAULT_CONNECTION_VALIDATION, "LOCAL");
+        configuration.setProperty(
                 OracleConnection.CONNECTION_PROPERTY_WALLET_LOCATION, "test-wallet");
         DetachedT2CConnection connection = new DetachedT2CConnection(configuration);
 
         assertThat(connection.getProperties())
                 .containsEntry(
                         OracleConnection.CONNECTION_PROPERTY_DEFAULT_ROW_PREFETCH, "37")
+                .containsEntry(
+                        OracleConnection.CONNECTION_PROPERTY_DEFAULT_CONNECTION_VALIDATION, "LOCAL")
                 .containsEntry(
                         OracleConnection.CONNECTION_PROPERTY_WALLET_LOCATION, "test-wallet");
 
