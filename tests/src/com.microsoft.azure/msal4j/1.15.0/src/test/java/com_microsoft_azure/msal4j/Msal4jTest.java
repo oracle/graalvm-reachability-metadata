@@ -10,20 +10,28 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.assertj.core.api.Assertions.assertThat;
 
+import com.microsoft.aad.msal4j.AuthorizationCodeParameters;
 import com.microsoft.aad.msal4j.AuthorizationRequestUrlParameters;
 import com.microsoft.aad.msal4j.ClientCredentialFactory;
 import com.microsoft.aad.msal4j.ClientCredentialParameters;
 import com.microsoft.aad.msal4j.ConfidentialClientApplication;
+import com.microsoft.aad.msal4j.DeviceCode;
+import com.microsoft.aad.msal4j.DeviceCodeFlowParameters;
 import com.microsoft.aad.msal4j.HttpMethod;
 import com.microsoft.aad.msal4j.HttpRequest;
 import com.microsoft.aad.msal4j.HttpResponse;
 import com.microsoft.aad.msal4j.IAuthenticationResult;
 import com.microsoft.aad.msal4j.IHttpClient;
 import com.microsoft.aad.msal4j.IHttpResponse;
+import com.microsoft.aad.msal4j.OnBehalfOfParameters;
 import com.microsoft.aad.msal4j.Prompt;
 import com.microsoft.aad.msal4j.PublicClientApplication;
+import com.microsoft.aad.msal4j.RefreshTokenParameters;
 import com.microsoft.aad.msal4j.ResponseMode;
 import com.microsoft.aad.msal4j.TokenSource;
+import com.microsoft.aad.msal4j.UserAssertion;
+import com.microsoft.aad.msal4j.UserNamePasswordParameters;
+import java.net.URI;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.util.ArrayList;
@@ -31,6 +39,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicReference;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 
@@ -82,6 +91,108 @@ public class Msal4jTest {
     }
 
     @Test
+    void exchangesAuthorizationCodeForToken() throws Exception {
+        RecordingTokenClient httpClient = new RecordingTokenClient();
+        PublicClientApplication application = newPublicApplication(httpClient);
+        String codeVerifier = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFG";
+        AuthorizationCodeParameters parameters = AuthorizationCodeParameters.builder(
+                        "authorization-code", URI.create("https://application.example.test/callback"))
+                .scopes(SCOPES)
+                .codeVerifier(codeVerifier)
+                .build();
+
+        IAuthenticationResult result = application.acquireToken(parameters).get(10, SECONDS);
+
+        assertTokenResult(result);
+        assertThat(httpClient.requests).hasSize(1);
+        String requestBody = URLDecoder.decode(httpClient.requests.get(0).body(), UTF_8);
+        assertThat(requestBody)
+                .contains("grant_type=authorization_code")
+                .contains("code=authorization-code")
+                .contains("code_verifier=" + codeVerifier)
+                .contains("redirect_uri=https://application.example.test/callback");
+    }
+
+    @Test
+    void acquiresTokenWithUserNameAndPassword() throws Exception {
+        RecordingTokenClient httpClient = new RecordingTokenClient();
+        PublicClientApplication application = newPublicApplication(httpClient);
+        UserNamePasswordParameters parameters = UserNamePasswordParameters.builder(
+                        SCOPES, "user@example.test", "correct horse battery staple".toCharArray())
+                .build();
+
+        IAuthenticationResult result = application.acquireToken(parameters).get(10, SECONDS);
+
+        assertTokenResult(result);
+        assertThat(httpClient.requests).hasSize(2);
+        assertThat(httpClient.requests.get(0).httpMethod()).isEqualTo(HttpMethod.GET);
+        String requestBody = URLDecoder.decode(httpClient.requests.get(1).body(), UTF_8);
+        assertThat(requestBody)
+                .contains("grant_type=password")
+                .contains("username=user@example.test")
+                .contains("password=correct horse battery staple");
+    }
+
+    @Test
+    void acquiresTokenWithDeviceCodeFlow() throws Exception {
+        RecordingTokenClient httpClient = new RecordingTokenClient();
+        PublicClientApplication application = newPublicApplication(httpClient);
+        AtomicReference<DeviceCode> displayedCode = new AtomicReference<>();
+        DeviceCodeFlowParameters parameters = DeviceCodeFlowParameters.builder(SCOPES, displayedCode::set).build();
+
+        IAuthenticationResult result = application.acquireToken(parameters).get(10, SECONDS);
+
+        assertTokenResult(result);
+        assertThat(displayedCode.get()).isNotNull();
+        assertThat(displayedCode.get().userCode()).isEqualTo("ABCD-EFGH");
+        assertThat(displayedCode.get().verificationUri()).isEqualTo("https://microsoft.com/devicelogin");
+        assertThat(displayedCode.get().message()).contains("ABCD-EFGH");
+        assertThat(httpClient.requests).hasSize(2);
+        assertThat(httpClient.requests.get(0).url().getPath()).endsWith("/oauth2/v2.0/devicecode");
+        String tokenRequestBody = URLDecoder.decode(httpClient.requests.get(1).body(), UTF_8);
+        assertThat(tokenRequestBody)
+                .contains("grant_type=device_code")
+                .contains("device_code=device-code-value");
+    }
+
+    @Test
+    void acquiresTokenOnBehalfOfUserAssertion() throws Exception {
+        RecordingTokenClient httpClient = new RecordingTokenClient();
+        ConfidentialClientApplication application = newConfidentialApplication(httpClient);
+        String userAssertion = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1c2VyIn0.signature";
+        OnBehalfOfParameters parameters =
+                OnBehalfOfParameters.builder(SCOPES, new UserAssertion(userAssertion)).build();
+
+        IAuthenticationResult result = application.acquireToken(parameters).get(10, SECONDS);
+
+        assertTokenResult(result);
+        assertThat(httpClient.requests).hasSize(1);
+        String requestBody = URLDecoder.decode(httpClient.requests.get(0).body(), UTF_8);
+        assertThat(requestBody)
+                .contains("grant_type=urn:ietf:params:oauth:grant-type:jwt-bearer")
+                .contains("requested_token_use=on_behalf_of")
+                .contains("assertion=" + userAssertion)
+                .contains("client_secret=client-secret");
+    }
+
+    @Test
+    void redeemsRefreshToken() throws Exception {
+        RecordingTokenClient httpClient = new RecordingTokenClient();
+        PublicClientApplication application = newPublicApplication(httpClient);
+        RefreshTokenParameters parameters =
+                RefreshTokenParameters.builder(SCOPES, "existing-refresh-token").build();
+
+        IAuthenticationResult result = application.acquireToken(parameters).get(10, SECONDS);
+
+        assertTokenResult(result);
+        assertThat(httpClient.requests).hasSize(1);
+        String requestBody = URLDecoder.decode(httpClient.requests.get(0).body(), UTF_8);
+        assertThat(requestBody)
+                .contains("grant_type=refresh_token")
+                .contains("refresh_token=existing-refresh-token");
+    }
+
+    @Test
     void createsAuthorizationCodeRequestUrl() throws Exception {
         PublicClientApplication application = PublicClientApplication.builder("public-client-id")
                 .authority(AUTHORITY)
@@ -117,6 +228,23 @@ public class Msal4jTest {
                 .contains("response_mode=query");
     }
 
+    private static void assertTokenResult(IAuthenticationResult result) {
+        assertThat(result.accessToken()).isEqualTo("access-token");
+        assertThat(result.environment()).isEqualTo("login.microsoftonline.com");
+        assertThat(result.scopes()).contains("api://resource/.default");
+        assertThat(result.expiresOnDate()).isAfter(new Date());
+        assertThat(result.metadata().tokenSource()).isEqualTo(TokenSource.IDENTITY_PROVIDER);
+    }
+
+    private static PublicClientApplication newPublicApplication(IHttpClient httpClient) throws Exception {
+        return PublicClientApplication.builder("public-client-id")
+                .authority(AUTHORITY)
+                .validateAuthority(false)
+                .instanceDiscovery(false)
+                .httpClient(httpClient)
+                .build();
+    }
+
     private static ConfidentialClientApplication newConfidentialApplication(IHttpClient httpClient)
             throws Exception {
         return ConfidentialClientApplication.builder(
@@ -131,6 +259,16 @@ public class Msal4jTest {
     }
 
     private static final class RecordingTokenClient implements IHttpClient {
+        private static final String DEVICE_CODE_RESPONSE = """
+                {
+                  "user_code": "ABCD-EFGH",
+                  "device_code": "device-code-value",
+                  "verification_uri": "https://microsoft.com/devicelogin",
+                  "expires_in": 900,
+                  "interval": 1,
+                  "message": "Use code ABCD-EFGH to sign in."
+                }
+                """;
         private static final String TOKEN_RESPONSE = """
                 {
                   "token_type": "Bearer",
@@ -146,7 +284,10 @@ public class Msal4jTest {
         @Override
         public IHttpResponse send(HttpRequest request) {
             requests.add(request);
-            HttpResponse response = new HttpResponse().statusCode(200).body(TOKEN_RESPONSE);
+            String responseBody = request.url().getPath().endsWith("/devicecode")
+                    ? DEVICE_CODE_RESPONSE
+                    : TOKEN_RESPONSE;
+            HttpResponse response = new HttpResponse().statusCode(200).body(responseBody);
             response.addHeaders(Map.of("Content-Type", List.of("application/json")));
             return response;
         }
