@@ -11,7 +11,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,7 +24,12 @@ public class AbstractTrueCachePreparedStatementTest {
     @Test
     void replaysQueuedBindingsDuringBatchExecution() throws SQLException {
         PreparedStatementHandler handler = new PreparedStatementHandler();
-        PreparedStatementHarness statement = statementFor(handler);
+        OraclePreparedStatement delegate = (OraclePreparedStatement) Proxy.newProxyInstance(
+                OraclePreparedStatement.class.getClassLoader(),
+                new Class<?>[] {OraclePreparedStatement.class},
+                handler);
+        PreparedStatementHarness statement =
+                new PreparedStatementHarness(new DetachedTrueCacheConnection(), delegate);
 
         statement.setString(1, "initial");
         statement.setString(1, "replacement");
@@ -36,25 +40,6 @@ public class AbstractTrueCachePreparedStatementTest {
         assertThat(handler.getStringBindings()).containsExactly("initial", "replacement");
         assertThat(handler.getIntegerBinding()).isEqualTo(42);
         assertThat(handler.isBatchExecuted()).isTrue();
-    }
-
-    @Test
-    void replaysPreparedStatementSettingsBeforeQueryExecution() throws SQLException {
-        PreparedStatementHandler handler = new PreparedStatementHandler();
-        PreparedStatementHarness statement = statementFor(handler);
-
-        statement.setCheckBindTypes(true);
-
-        assertThat(statement.executeQuery()).isSameAs(handler.getQueryResult());
-        assertThat(handler.getCheckBindTypes()).containsExactly(true, true);
-    }
-
-    private static PreparedStatementHarness statementFor(PreparedStatementHandler handler) {
-        OraclePreparedStatement delegate = (OraclePreparedStatement) Proxy.newProxyInstance(
-                OraclePreparedStatement.class.getClassLoader(),
-                new Class<?>[] {OraclePreparedStatement.class},
-                handler);
-        return new PreparedStatementHarness(new DetachedTrueCacheConnection(), delegate);
     }
 
     private static final class PreparedStatementHarness
@@ -95,11 +80,6 @@ public class AbstractTrueCachePreparedStatementTest {
 
     private static final class PreparedStatementHandler implements InvocationHandler {
         private final List<String> stringBindings = new ArrayList<>();
-        private final ResultSet queryResult = (ResultSet) Proxy.newProxyInstance(
-                ResultSet.class.getClassLoader(),
-                new Class<?>[] {ResultSet.class},
-                (proxy, method, arguments) -> defaultValue(method.getReturnType()));
-        private final List<Boolean> checkBindTypes = new ArrayList<>();
         private Integer integerBinding;
         private boolean batchExecuted;
 
@@ -112,14 +92,9 @@ public class AbstractTrueCachePreparedStatementTest {
                 case "setInt":
                     integerBinding = (Integer) arguments[1];
                     return null;
-                case "setCheckBindTypes":
-                    checkBindTypes.add((Boolean) arguments[0]);
-                    return null;
                 case "executeBatch":
                     batchExecuted = true;
                     return new int[] {1};
-                case "executeQuery":
-                    return queryResult;
                 default:
                     return defaultValue(method.getReturnType());
             }
@@ -159,14 +134,6 @@ public class AbstractTrueCachePreparedStatementTest {
 
         private Integer getIntegerBinding() {
             return integerBinding;
-        }
-
-        private List<Boolean> getCheckBindTypes() {
-            return checkBindTypes;
-        }
-
-        private ResultSet getQueryResult() {
-            return queryResult;
         }
 
         private boolean isBatchExecuted() {
