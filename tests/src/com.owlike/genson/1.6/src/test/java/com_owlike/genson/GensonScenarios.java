@@ -30,7 +30,7 @@ import javax.xml.bind.annotation.adapters.XmlAdapter;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 final class GensonScenarios {
-    private GensonScenarios() {}
+    private GensonScenarios() { }
 
     static void roundTripMixedBean() {
         Genson genson = new Genson();
@@ -287,7 +287,7 @@ final class GensonScenarios {
     }
 
     public static class UpperCaseConverter implements Converter<String> {
-        public UpperCaseConverter() {}
+        public UpperCaseConverter() { }
 
         @Override
         public void serialize(String object, ObjectWriter writer, Context ctx) {
@@ -303,7 +303,7 @@ final class GensonScenarios {
     public static class ViewedPerson {
         String name;
 
-        public ViewedPerson() {}
+        public ViewedPerson() { }
 
         ViewedPerson(String name) {
             this.name = name;
@@ -311,7 +311,7 @@ final class GensonScenarios {
     }
 
     public static class PersonView implements BeanView<ViewedPerson> {
-        public PersonView() {}
+        public PersonView() { }
 
         @JsonCreator
         public static ViewedPerson create() {
@@ -383,7 +383,7 @@ final class GensonScenarios {
     }
 
     public static class AdaptedCodeAdapter extends XmlAdapter<String, AdaptedCode> {
-        public AdaptedCodeAdapter() {}
+        public AdaptedCodeAdapter() { }
 
         @Override
         public AdaptedCode unmarshal(String value) {
