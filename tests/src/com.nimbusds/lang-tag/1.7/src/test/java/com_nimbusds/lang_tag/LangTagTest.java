@@ -73,6 +73,15 @@ public class LangTagTest {
     }
 
     @Test
+    void supportsNumericRegionCodes() throws LangTagException {
+        LangTag tag = LangTag.parse("es-419");
+
+        assertThat(tag.getPrimaryLanguage()).isEqualTo("es");
+        assertThat(tag.getRegion()).isEqualTo("419");
+        assertThat(tag).hasToString("es-419");
+    }
+
+    @Test
     void stripsAndExtractsLanguageTagFragments() throws LangTagException {
         assertThat(LangTagUtils.strip("https://example.test/content#en-US"))
                 .isEqualTo("https://example.test/content");
