@@ -1,0 +1,109 @@
+{
+  "add_new_library_support:2026-09-23": {
+    "timestamp": "2026-09-23T02:45:36.790075Z",
+    "library": "isorelax:isorelax:20030108",
+    "starting_commit": "7f9a2f5cd43664e42b4dfd88e80e85b8d85519dd",
+    "ending_commit": "d3093b73ba42f59e46977b96abc92c88f712b2c0",
+    "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-sol",
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "status": "success",
+    "stats": {
+      "version": "20030108",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 3,
+            "totalCalls": 3
+          },
+          "resources": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 4,
+            "totalCalls": 4
+          }
+        },
+        "coverageRatio": 1.0,
+        "coveredCalls": 7,
+        "totalCalls": 7
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 318,
+          "missed": 5445,
+          "ratio": 0.05518,
+          "total": 5763
+        },
+        "line": {
+          "covered": 84,
+          "missed": 1491,
+          "ratio": 0.053333,
+          "total": 1575
+        },
+        "method": {
+          "covered": 16,
+          "missed": 402,
+          "ratio": 0.038278,
+          "total": 418
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "advisory_preparation",
+      "issue_number": 10163,
+      "issue_label": "library-new-request",
+      "library": "isorelax:isorelax:20030108",
+      "summary": "isorelax is an API-only artifact whose bundled SwiftVerifierFactory implementation references jp.co.swiftinc.relax.schema.Grammar, a class not published anywhere; real validation requires net.java.dev.msv:msv-core, which itself pins isorelax:isorelax:20030108 as its dependency.",
+      "deterministic_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "net.java.dev.msv:msv-core:2022.7",
+          "scope": "testImplementation",
+          "reason": "Provides the only usable org.iso_relax.verifier.VerifierFactory implementations (RELAXCoreFactoryImpl, RELAXNGFactoryImpl, TheFactoryImpl, etc.); isorelax's own bundled SwiftVerifierFactory throws NoClassDefFoundError because jp.co.swiftinc.relax.schema.Grammar was never published, and isorelax ship\n...[truncated]"
+        }
+      ],
+      "agent_guidance": "Do not call VerifierFactory.newInstance() (no-arg or by URI) — it resolves implementations only via META-INF/services/org.iso_relax.verifier.VerifierFactoryLoader, and neither isorelax nor msv-core ship that file, so it will throw VerifierConfigurationException. Instead directly instantiate an MSV factory class, e.g. `new com.sun.msv.verifier.jarv.TheFactoryImpl()` (or RELAXCoreFactoryImpl/RELAXNGFactoryImpl for a specific schema language), then exercise `compileSchema(InputSource)` -> `Schema.newVerifier()` -> `Verifier.verify(...)`/`getVerifierHandler()` against a small embedded RELAX Core (.rxm) or RELAX NG (.rng) schema and both a valid and invalid XML instance, to cover org.iso_relax.verifier's Verifier, VerifierHandler, VerifierFilter, Schema, and exception classes. Do not use jp.gr.xml.relax.swift.SwiftVerifierFactory — it is non-functional without an unpublished proprietary engine.",
+      "risks": [
+        "msv-core (2022.7) is a much newer artifact than isorelax (2003); confirm at test time that its transitive deps (xsdlib, relaxngDatatype, optional xerces/xml-resolver) resolve cleanly and don't conflict with anything else in the test classpath.",
+        "If reviewers prefer isorelax to be tested in complete isolation (no companion library), this dependency should be reconsidered — but without it, no test can drive real schema validation, only class loading/exception construction."
+      ],
+      "applied_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "net.java.dev.msv:msv-core:2022.7",
+          "result": "applied",
+          "target": "tests/src/isorelax/isorelax/20030108/build.gradle"
+        }
+      ],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#10163 Support for isorelax:isorelax:20030108; label=library-new-request; body_chars=39"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "sonnet",
+      "input_tokens_used": 34,
+      "output_tokens_used": 11021
+    },
+    "metrics": {
+      "input_tokens_used": 145979,
+      "cached_input_tokens_used": 760576,
+      "output_tokens_used": 10896,
+      "iterations": 5,
+      "cost_usd": 1.4371,
+      "generated_loc": 77,
+      "tested_library_loc": 84,
+      "metadata_entries": 20,
+      "test_only_metadata_entries": 16,
+      "code_coverage_percent": 5.33
+    },
+    "artifacts": {
+      "metadata_file": "metadata/isorelax/isorelax/20030108/reachability-metadata.json"
+    }
+  }
+}
