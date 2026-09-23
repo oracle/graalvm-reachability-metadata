@@ -8,9 +8,9 @@ package com_owlike.genson;
 
 import org.junit.jupiter.api.Test;
 
-public class GensonTest {
+public class TypeUtilTest {
     @Test
-    void resolvesUnregisteredClassAlias() throws Exception {
-        GensonScenarios.resolveClassName();
+    void resolvesGenericArrayType() {
+        GensonScenarios.resolveGenericArrayType();
     }
 }

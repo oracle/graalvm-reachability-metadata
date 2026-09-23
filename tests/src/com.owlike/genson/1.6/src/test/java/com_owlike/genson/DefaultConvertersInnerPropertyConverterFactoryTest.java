@@ -8,9 +8,9 @@ package com_owlike.genson;
 
 import org.junit.jupiter.api.Test;
 
-public class GensonTest {
+public class DefaultConvertersInnerPropertyConverterFactoryTest {
     @Test
-    void resolvesUnregisteredClassAlias() throws Exception {
-        GensonScenarios.resolveClassName();
+    void instantiatesPropertyConverter() {
+        GensonScenarios.roundTripConvertedProperty();
     }
 }
