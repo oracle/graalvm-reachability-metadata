@@ -1,0 +1,14 @@
+Implemented fixes for `com.microsoft.azure:msal4j:1.15.0`:
+
+- Removed two invalid test-conditioned entries from `reachability-metadata.json`.
+- Enabled required HTTP/HTTPS URL protocols for the native test build in `build.gradle`.
+- Preserved the pre-existing `forge/.continuation-marker.json` modification.
+
+Verified with the required GraalVM 25.0.4 distribution:
+
+- `checkMetadataFiles` — passed
+- `checkstyle` — passed
+- `spotlessCheck` — passed
+- Clean `./gradlew test -Pcoordinates=com.microsoft.azure:msal4j:1.15.0` — passed, all 10 native tests successful
+
+`fissile check --staged` could not run because `fissile` is unavailable on `PATH`.
