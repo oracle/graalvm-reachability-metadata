@@ -19,10 +19,9 @@ import com.owlike.genson.annotation.JsonConverter;
 import com.owlike.genson.annotation.JsonCreator;
 import com.owlike.genson.annotation.JsonProperty;
 import com.owlike.genson.ext.jaxb.JAXBBundle;
-import com.owlike.genson.reflect.VisibilityFilter;
+import com.owlike.genson.reflect.BeanMutatorAccessorResolver.StandardMutaAccessorResolver;
 import com.owlike.genson.stream.ObjectReader;
 import com.owlike.genson.stream.ObjectWriter;
-import java.lang.reflect.Modifier;
 import java.util.Arrays;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlEnumValue;
@@ -193,16 +192,20 @@ final class GensonScenarios {
         assertThat(restored.code.value).isEqualTo("alpha");
     }
 
-    static void serializeUsingDebugParameterResolver() {
-        Genson genson =
-                new GensonBuilder()
-                        .useConstructorWithArguments(true)
-                        .useMethods(false)
-                        .useFields(true, VisibilityFilter.PRIVATE)
-                        .create();
-        VisibilityFilter filter = new VisibilityFilter(Modifier.PRIVATE);
+    static void deserializeResolverUsingDebugParameterResolver() {
+        Genson debugInfoGenson = new GensonBuilder().useConstructorWithArguments(true).create();
 
-        assertThat(genson.serialize(filter)).isEqualTo("{\"filter\":" + Modifier.PRIVATE + "}");
+        StandardMutaAccessorResolver resolver =
+                debugInfoGenson.deserialize("{}", StandardMutaAccessorResolver.class);
+        Genson genson = new GensonBuilder().set(resolver).create();
+        FieldBean source = new FieldBean();
+        source.value = "resolved";
+
+        String json = genson.serialize(source);
+        FieldBean restored = genson.deserialize(json, FieldBean.class);
+
+        assertThat(json).isEqualTo("{\"value\":\"resolved\"}");
+        assertThat(restored.value).isEqualTo("resolved");
     }
 
     static void resolveGenericArrayType() {

@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test;
 
 public class ASMCreatorParameterNameResolverTest {
     @Test
-    void readsLibraryBytecodeWhileCreatingSerializer() {
-        GensonScenarios.serializeUsingDebugParameterResolver();
+    void readsLibraryBytecodeWhileCreatingResolver() {
+        GensonScenarios.deserializeResolverUsingDebugParameterResolver();
     }
 }
