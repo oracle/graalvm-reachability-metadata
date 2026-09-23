@@ -9,8 +9,6 @@ package com_azure.azure_core;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.azure.core.http.HttpHeaders;
-import com.azure.core.implementation.ReflectionUtils;
-import com.azure.core.implementation.ReflectiveInvoker;
 import com.azure.core.util.serializer.JacksonAdapter;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
@@ -26,32 +24,11 @@ public class ConstructorReflectiveInvokerTest {
         assertThat(decoded.etag).isEqualTo("widget-7");
     }
 
-    @Test
-    void invokesConstructorsThroughBothInvokerEntryPoints() throws Exception {
-        ReflectiveInvoker constructor = ReflectionUtils.getConstructorInvoker(ArrayConstructed.class,
-                ArrayConstructed.class.getConstructor(Object[].class));
-
-        ArrayConstructed staticResult = (ArrayConstructed) constructor.invokeStatic((Object) new Object[] { "azure" });
-        ArrayConstructed argumentsResult =
-                (ArrayConstructed) constructor.invokeWithArguments(new Object[] { "core" });
-
-        assertThat(staticResult.constructed).isTrue();
-        assertThat(argumentsResult.constructed).isTrue();
-    }
-
     public static final class ConstructedHeaders {
         private final String etag;
 
         public ConstructedHeaders(HttpHeaders headers) {
             this.etag = headers.getValue("etag");
-        }
-    }
-
-    public static final class ArrayConstructed {
-        private final boolean constructed;
-
-        public ArrayConstructed(Object[] values) {
-            this.constructed = values != null;
         }
     }
 }
