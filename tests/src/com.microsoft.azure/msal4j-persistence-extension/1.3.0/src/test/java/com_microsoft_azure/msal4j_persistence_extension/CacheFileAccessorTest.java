@@ -12,6 +12,7 @@ import com.microsoft.aad.msal4jextensions.persistence.CacheFileAccessor;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.attribute.FileTime;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -20,13 +21,20 @@ public class CacheFileAccessorTest {
     private Path cacheDirectory;
 
     @Test
-    void deletesExistingCacheAndAllowsDeletingItAgain() throws IOException {
+    void writesReadsUpdatesAndDeletesCacheFile() throws IOException {
         Path cacheFile = cacheDirectory.resolve("token-cache.json");
-        Files.writeString(cacheFile, "cached-token-data");
         CacheFileAccessor cacheAccessor = new CacheFileAccessor(cacheFile.toString());
+        byte[] cachedTokenData = {1, 2, 3, 4};
+
+        cacheAccessor.write(cachedTokenData);
+
+        assertThat(cacheAccessor.read()).containsExactly(cachedTokenData);
+
+        Files.setLastModifiedTime(cacheFile, FileTime.fromMillis(1));
+        cacheAccessor.updateCacheFileLastModifiedTime();
+        assertThat(Files.getLastModifiedTime(cacheFile).toMillis()).isGreaterThan(1);
 
         cacheAccessor.delete();
-
         assertThat(cacheFile).doesNotExist();
 
         cacheAccessor.delete();
