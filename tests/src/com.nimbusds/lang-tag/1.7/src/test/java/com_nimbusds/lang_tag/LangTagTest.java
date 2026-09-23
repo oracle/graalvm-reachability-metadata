@@ -82,6 +82,17 @@ public class LangTagTest {
     }
 
     @Test
+    void handlesAbsentLanguageTagValues() throws LangTagException {
+        assertThat(LangTag.parse(null)).isNull();
+        assertThat(LangTag.parse("   ")).isNull();
+        assertThat(LangTagUtils.strip((String) null)).isNull();
+        assertThat(LangTagUtils.extract(null)).isNull();
+        assertThat(LangTagUtils.parseLangTagList((String) null)).isNull();
+        assertThat(LangTagUtils.split(null)).isNull();
+        assertThat(LangTagUtils.concat(null)).isNull();
+    }
+
+    @Test
     void stripsAndExtractsLanguageTagFragments() throws LangTagException {
         assertThat(LangTagUtils.strip("https://example.test/content#en-US"))
                 .isEqualTo("https://example.test/content");
