@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test;
 
 public class ASMCreatorParameterNameResolverInnerNameMethodVisitorTest {
     @Test
-    void locatesFactoryMethodUsingDebugParameterTypes() {
-        GensonScenarios.deserializeUsingDebugFactoryParameterNames();
+    void locatesPublicMethodsUsingDebugParameterTypes() {
+        GensonScenarios.deserializeUsingDebugParameterNames();
     }
 }

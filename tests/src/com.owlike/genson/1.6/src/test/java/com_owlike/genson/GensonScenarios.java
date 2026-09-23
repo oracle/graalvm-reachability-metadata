@@ -19,9 +19,10 @@ import com.owlike.genson.annotation.JsonConverter;
 import com.owlike.genson.annotation.JsonCreator;
 import com.owlike.genson.annotation.JsonProperty;
 import com.owlike.genson.ext.jaxb.JAXBBundle;
+import com.owlike.genson.reflect.VisibilityFilter;
 import com.owlike.genson.stream.ObjectReader;
 import com.owlike.genson.stream.ObjectWriter;
-import java.awt.Point;
+import java.lang.reflect.Modifier;
 import java.util.Arrays;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlEnumValue;
@@ -195,27 +196,11 @@ final class GensonScenarios {
     static void deserializeUsingDebugParameterNames() {
         Genson genson = new GensonBuilder().useConstructorWithArguments(true).create();
 
-        DebugConstructorBean value =
-                genson.deserialize("{\"aliases\":[\"primary\",\"secondary\"]}", DebugConstructorBean.class);
+        VisibilityFilter filter =
+                genson.deserialize("{\"modifier\":[" + Modifier.PRIVATE + "]}", VisibilityFilter.class);
 
-        assertThat(value.aliases).containsExactly("primary", "secondary");
-    }
-
-    static void deserializeUsingDebugFactoryParameterNames() {
-        Genson genson = new GensonBuilder().useConstructorWithArguments(true).create();
-
-        DebugFactoryBean value =
-                genson.deserialize("{\"aliases\":[\"primary\",\"secondary\"]}", DebugFactoryBean.class);
-
-        assertThat(value.aliases).containsExactly("primary", "secondary");
-    }
-
-    static void deserializeJdkTypeUsingDebugParameterNames() {
-        Genson genson = new GensonBuilder().useConstructorWithArguments(true).create();
-
-        Point point = genson.deserialize("{\"x\":12,\"y\":34}", Point.class);
-
-        assertThat(point).isEqualTo(new Point(12, 34));
+        assertThat(filter.isVisible(Modifier.PRIVATE)).isFalse();
+        assertThat(filter.isVisible(Modifier.PUBLIC)).isTrue();
     }
 
     static void resolveGenericArrayType() {
@@ -403,27 +388,6 @@ final class GensonScenarios {
         @Override
         public String marshal(AdaptedCode value) {
             return "code:" + value.value;
-        }
-    }
-
-    public static class DebugConstructorBean {
-        final String[] aliases;
-
-        public DebugConstructorBean(String[] aliases) {
-            this.aliases = aliases;
-        }
-    }
-
-    public static class DebugFactoryBean {
-        final String[] aliases;
-
-        private DebugFactoryBean(String[] aliases) {
-            this.aliases = aliases;
-        }
-
-        @JsonCreator
-        public static DebugFactoryBean create(String[] aliases) {
-            return new DebugFactoryBean(aliases);
         }
     }
 

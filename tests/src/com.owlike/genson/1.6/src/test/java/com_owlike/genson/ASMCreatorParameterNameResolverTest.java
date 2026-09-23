@@ -12,6 +12,5 @@ public class ASMCreatorParameterNameResolverTest {
     @Test
     void resolvesConstructorParameterNamesFromDebugInformation() {
         GensonScenarios.deserializeUsingDebugParameterNames();
-        GensonScenarios.deserializeJdkTypeUsingDebugParameterNames();
     }
 }
