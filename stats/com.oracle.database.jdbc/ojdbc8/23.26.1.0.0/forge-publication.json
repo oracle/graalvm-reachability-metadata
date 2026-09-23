@@ -1,0 +1,223 @@
+{
+  "base_commit": "91dfda3002a0655a12bf62647c8e1334939f7ccc",
+  "branch": "ai/kimeta/add-lib-support-com.oracle.database.jdbc-ojdbc8-23.26.1.0.0-chunked-forge-10059-20260923143748580409-16595d6fcb51",
+  "follow_ups": [],
+  "forge": {
+    "branch": "master",
+    "commit": "c916e61a569168a6e089f968aa11f6681a84aec4",
+    "monitored_branch": "origin/master"
+  },
+  "issue_number": 10059,
+  "library": {
+    "artifact": "ojdbc8",
+    "coordinates": "com.oracle.database.jdbc:ojdbc8:23.26.1.0.0",
+    "group": "com.oracle.database.jdbc",
+    "version": "23.26.1.0.0"
+  },
+  "local_ci_verification": {
+    "base_commit": "91dfda3002a0655a12bf62647c8e1334939f7ccc",
+    "commands": [
+      {
+        "command": [
+          "./gradlew",
+          "generateChangedIndexFileCoordinatesList",
+          "-PbaseCommit=origin/master",
+          "-PnewCommit=HEAD"
+        ],
+        "env": {
+          "GITHUB_OUTPUT": "/tmp/tmp0winpcxf"
+        },
+        "gate": "changed-index-coordinates",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :generateChangedIndexFileCoordinatesList\n\n[Incubating] Problems report is available at: file:///home/oracle/oracle/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10059-05894ffe/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 3s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      },
+      {
+        "command": [
+          "./gradlew",
+          "validateIndexFiles",
+          "-Pcoordinates=com.oracle.database.jdbc:ojdbc8"
+        ],
+        "env": {},
+        "gate": "index-file-validation",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :validateIndexFiles\n✅ metadata/com.oracle.database.jdbc/ojdbc8/index.json: Valid\n\n[Incubating] Problems report is available at: file:///home/oracle/oracle/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10059-05894ffe/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 2s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      }
+    ],
+    "failure_command": null,
+    "failure_gate": null,
+    "final_commit": "0453adf2a4c07c8be357b0e2d82746884f051641",
+    "fixups": [],
+    "human_intervention_required": false,
+    "repo_fix_paths": [],
+    "status": "success"
+  },
+  "local_review": {
+    "changed_paths": [
+      "stats/com.oracle.database.jdbc/ojdbc8/23.26.1.0.0/stats.json",
+      "tests/src/com.oracle.database.jdbc/ojdbc8/23.26.1.0.0/src/test/java/com_oracle_database_jdbc/ojdbc8/DMSFactoryTest.java",
+      "tests/src/com.oracle.database.jdbc/ojdbc8/23.26.1.0.0/src/test/java/com_oracle_database_jdbc/ojdbc8/GeneratedPhysicalConnectionAnonymous1Test.java"
+    ],
+    "decision": "approved",
+    "finding_body": "The exhaust report marked oracle.jdbc.driver.DMSFactory and oracle.jdbc.driver.GeneratedPhysicalConnection$1 as completed, but the contribution had no dedicated DMSFactoryTest or GeneratedPhysicalConnectionAnonymous1Test. This violated the one-test-file-per-dynamic-access-class requirement in FS-test-contract.1.8.",
+    "finding_title": "Completed dynamic-access classes lacked dedicated test files",
+    "fix_note": "Added dedicated public-API tests for DMSFactory observability and GeneratedPhysicalConnection$1 initialization behavior, then accepted Forge's regenerated library coverage statistics. The exact Forge-owned finalization command was rerun until it exited successfully with no further publishable change.",
+    "model": "gpt-5.6-sol",
+    "review_comment": "Reviewed the single-coordinate diff, all added tests and build configuration, index/metadata format and scope, local gate evidence, and resolved statistics. The contribution has no scaffold, native-image dodge, version pin, package overlap, legacy metadata, or coverage-gate violation; reported dynamic-access coverage is 138/177 (77.9661%), and the 138 covered calls do not trigger the entry-count mismatch probe against 2,530 reported entries. After repair, Forge finalization passed all three native lanes, metadata validation, style checks, generated-test validity, and statistics generation without further publishable changes.",
+    "session_id": "d7d9d945b2e041f3"
+  },
+  "metrics": {
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "path": "stats/com.oracle.database.jdbc/ojdbc8/23.26.1.0.0/execution-metrics.json",
+    "summary": {
+      "cached_input_tokens_used": 13519744,
+      "code_coverage_percent": 8.2,
+      "cost_usd": 10.3328,
+      "generated_loc": 2365,
+      "input_tokens_used": 491424,
+      "iterations": 7,
+      "metadata_entries": 2400,
+      "output_tokens_used": 37193,
+      "test_only_metadata_entries": 130,
+      "tested_library_loc": 12851
+    },
+    "timestamp": "2026-09-23T14:37:48.580409Z"
+  },
+  "modifiers": {
+    "chunk_final": false,
+    "chunked_dynamic_access": true,
+    "human_intervention": false
+  },
+  "producer": "kimeta",
+  "publication_id": "forge-10059-20260923143748580409-16595d6fcb51",
+  "render": {
+    "dynamic_access": {
+      "classThreshold": 15,
+      "completedClasses": [
+        "oracle.jdbc.OracleConnectionWrapper",
+        "oracle.jdbc.OracleConnectionWrapper$CloseInvocationHandler",
+        "oracle.jdbc.downloadmanager.DependencyDownloader",
+        "oracle.jdbc.driver.BufferCache",
+        "oracle.jdbc.driver.DMSFactory",
+        "oracle.jdbc.driver.ErrorMessageFramework",
+        "oracle.jdbc.driver.GeneratedPhysicalConnection$1",
+        "oracle.jdbc.driver.JavaToJavaConverter",
+        "oracle.jdbc.driver.OracleArray",
+        "oracle.jdbc.driver.OracleDriver",
+        "oracle.jdbc.driver.OracleRef",
+        "oracle.jdbc.driver.OracleStruct",
+        "oracle.jdbc.driver.T4CDriverExtension",
+        "oracle.jdbc.driver.cli.TcpFastOpenLibraryInstaller",
+        "oracle.jdbc.driver.cli.urlbuilder.BuildUrlCommand",
+        "oracle.jdbc.driver.configuration.OracleConfigurationFileProvider",
+        "oracle.jdbc.driver.json.Jsonp",
+        "oracle.jdbc.driver.json.OracleJsonExceptions",
+        "oracle.jdbc.driver.json.binary.OsonAbstractArray",
+        "oracle.jdbc.internal.OpaqueString",
+        "oracle.jdbc.oracore.OracleTypeADT",
+        "oracle.jdbc.oracore.OracleTypeCOLLECTION",
+        "oracle.jdbc.oracore.OracleTypeOPAQUE",
+        "oracle.jdbc.oracore.OracleTypeUPT",
+        "oracle.jdbc.oracore.Util",
+        "oracle.jdbc.pool.OraclePooledConnection",
+        "oracle.jdbc.proxy.ProxyExport",
+        "oracle.jdbc.proxy.ProxyFactory",
+        "oracle.jdbc.replay.driver.TxnReplayableConnection",
+        "oracle.jdbc.replay.driver.TxnReplayableRef",
+        "oracle.jdbc.replay.driver.TxnReplayableResultSet",
+        "oracle.jdbc.replay.driver.TxnReplayableStatement",
+        "oracle.jdbc.util.OracleServerProcessWrapper",
+        "oracle.net.ano.Ano",
+        "oracle.net.ano.RadiusAuthenticationService",
+        "oracle.net.jdbc.nl.NetStrings",
+        "oracle.net.ns.NetErrorMessage",
+        "oracle.net.nt.CustomSSLSocketFactory",
+        "oracle.sql.ARRAY",
+        "oracle.sql.CharacterSet$CharacterSetNamesMapHolder",
+        "oracle.sql.ConverterArchive",
+        "oracle.sql.OPAQUE",
+        "oracle.sql.STRUCT",
+        "oracle.sql.TypeDescriptor"
+      ],
+      "coordinate": "com.oracle.database.jdbc:ojdbc8:23.26.1.0.0",
+      "currentChunkClassCount": 15,
+      "exhaustedClasses": [],
+      "failedClasses": [],
+      "issueNumber": 10059,
+      "latestChunkBranch": "ai/kimeta/add-lib-support-com.oracle.database.jdbc-ojdbc8-23.26.1.0.0-chunked-forge-10059-20260923143748580409-16595d6fcb51",
+      "latestChunkCommit": null,
+      "latestChunkPublicationId": "forge-10059-20260923143748580409-16595d6fcb51",
+      "latestChunkPullRequest": null,
+      "skippedClasses": []
+    },
+    "dynamic_access_evidence": {
+      "covered_call_sites": [
+        "[reflection] java.lang.Class#forName(java.lang.String) <- oracle.jdbc.driver.PhysicalConnection.classForNameAndSchema(PhysicalConnection.java:7177) (line 7177)",
+        "[reflection] java.lang.Class#forName(java.lang.String) <- oracle.jdbc.driver.PhysicalConnection.registerSQLType(PhysicalConnection.java:4583) (line 4583)",
+        "[reflection] java.lang.Class#getDeclaredFields() <- oracle.jdbc.driver.PhysicalConnection.getProperties(PhysicalConnection.java:2193) (line 2193)",
+        "[reflection] java.lang.Class#getField(java.lang.String) <- oracle.jdbc.driver.PhysicalConnection.getProperties(PhysicalConnection.java:2209) (line 2209)",
+        "[reflection] java.lang.Class#newInstance() <- oracle.jdbc.driver.PhysicalConnection.getJavaObject(PhysicalConnection.java:4629) (line 4629)",
+        "[reflection] java.lang.reflect.Field#get(java.lang.Object) <- oracle.jdbc.driver.PhysicalConnection.getProperties(PhysicalConnection.java:2216) (line 2216)",
+        "[reflection] java.lang.reflect.Field#get(java.lang.Object) <- oracle.jdbc.driver.PhysicalConnection.getProperties(PhysicalConnection.java:2237) (line 2237)",
+        "[reflection] java.lang.reflect.Field#get(java.lang.Object) <- oracle.jdbc.driver.PhysicalConnection.getProperties(PhysicalConnection.java:2256) (line 2256)",
+        "... and 130 more"
+      ],
+      "metadata_rules": [
+        "when `oracle.jdbc.diagnostics.OracleDiagnosticsMXBean` is reached, make `boolean[]` available for reflection",
+        "when `oracle.jdbc.diagnostics.OracleDiagnosticsMXBean` is reached, make `byte[]` available for reflection",
+        "when `oracle.jdbc.diagnostics.OracleDiagnosticsMXBean` is reached, make `char[]` available for reflection",
+        "when `oracle.jdbc.driver.BufferCache` is reached, make `char[]` available for reflection",
+        "when `oracle.net.nt.ExtendedSSLContext` is reached, make `com.sun.crypto.provider.AESCipher$General.<init>()` available for reflection",
+        "when `oracle.security.pki.C041` is reached, make `com.sun.crypto.provider.AESCipher$General.<init>()` available for reflection",
+        "when `oracle.security.pki.JCEUtil` is reached, make `com.sun.crypto.provider.AESCipher$General.<init>()` available for reflection",
+        "when `oracle.security.pki.internal.core.JCEPBE` is reached, make `com.sun.crypto.provider.AESCipher$General.<init>()` available for reflection",
+        "... and 415 more"
+      ]
+    },
+    "library_stats": {
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 0.771084,
+            "coveredCalls": 128,
+            "totalCalls": 166
+          },
+          "resources": {
+            "coverageRatio": 0.909091,
+            "coveredCalls": 10,
+            "totalCalls": 11
+          }
+        },
+        "coverageRatio": 0.779661,
+        "coveredCalls": 138,
+        "totalCalls": 177
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 92630,
+          "missed": 1388736,
+          "ratio": 0.06253,
+          "total": 1481366
+        },
+        "line": {
+          "covered": 12856,
+          "missed": 143778,
+          "ratio": 0.082077,
+          "total": 156634
+        },
+        "method": {
+          "covered": 2166,
+          "missed": 34865,
+          "ratio": 0.058492,
+          "total": 37031
+        }
+      },
+      "version": "23.26.1.0.0"
+    }
+  },
+  "schema_version": 1,
+  "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-sol",
+  "task_type": "library-new-request",
+  "template_type": "library-new-request",
+  "timestamp": "2026-09-23T14:37:48.580409Z"
+}
