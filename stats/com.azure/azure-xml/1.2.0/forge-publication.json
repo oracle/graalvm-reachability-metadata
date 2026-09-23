@@ -1,0 +1,148 @@
+{
+  "base_commit": "5244f15ab082e19f73bf53338d6318c2ac7ca4d9",
+  "branch": "ai/kimeta/add-lib-support-com.azure-azure-xml-1.2.0-chunked-forge-10061-20260923125522862707-c23e47894df9",
+  "follow_ups": [],
+  "forge": {
+    "branch": "master",
+    "commit": "5244f15ab082e19f73bf53338d6318c2ac7ca4d9",
+    "monitored_branch": "origin/master"
+  },
+  "issue_number": 10061,
+  "library": {
+    "artifact": "azure-xml",
+    "coordinates": "com.azure:azure-xml:1.2.0",
+    "group": "com.azure",
+    "version": "1.2.0"
+  },
+  "local_ci_verification": {
+    "base_commit": "5244f15ab082e19f73bf53338d6318c2ac7ca4d9",
+    "commands": [
+      {
+        "command": [
+          "./gradlew",
+          "generateChangedIndexFileCoordinatesList",
+          "-PbaseCommit=origin/master",
+          "-PnewCommit=HEAD"
+        ],
+        "env": {
+          "GITHUB_OUTPUT": "/tmp/tmp6rpax1t3"
+        },
+        "gate": "changed-index-coordinates",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :generateChangedIndexFileCoordinatesList\n\n[Incubating] Problems report is available at: file:///home/oracle/oracle/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10061-617ec126/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 3s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      },
+      {
+        "command": [
+          "./gradlew",
+          "validateIndexFiles",
+          "-Pcoordinates=com.azure:azure-xml"
+        ],
+        "env": {},
+        "gate": "index-file-validation",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :validateIndexFiles\n✅ metadata/com.azure/azure-xml/index.json: Valid\n\n[Incubating] Problems report is available at: file:///home/oracle/oracle/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10061-617ec126/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 2s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      }
+    ],
+    "failure_command": null,
+    "failure_gate": null,
+    "final_commit": "a87167839050b34bb89e2e7e95b3ab35c8963cc0",
+    "fixups": [],
+    "human_intervention_required": false,
+    "repo_fix_paths": [],
+    "status": "success"
+  },
+  "local_review": {
+    "changed_paths": [],
+    "decision": "approved",
+    "finding_body": "",
+    "finding_title": "",
+    "fix_note": "",
+    "model": "gpt-5.6-sol",
+    "review_comment": "Reviewed the requested commit range against the new-library review rules and contribution contract. The diff is limited to com.azure:azure-xml:1.2.0, uses only reachability-metadata.json, and adds a public, version-agnostic consumer-package test that exercises XmlReader behavior without scaffold code, Native Image skips, tolerated failures, reflection shortcuts, runtime class definition, JVM overrides, or native build/run flags. Recorded dynamic-access coverage is 1/1 (100%), above the new-library gate; the reported 51 total metadata entries do not trigger the entry-count mismatch check. Local index gates succeeded and the generation record reports successful library verification and resolved statistics. No blocking must violation was found.",
+    "session_id": "7d731d2c034c4a8b"
+  },
+  "metrics": {
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "path": "stats/com.azure/azure-xml/1.2.0/execution-metrics.json",
+    "summary": {
+      "cached_input_tokens_used": 719744,
+      "code_coverage_percent": 13.21,
+      "cost_usd": 0.8385,
+      "generated_loc": 45,
+      "input_tokens_used": 70014,
+      "iterations": 3,
+      "metadata_entries": 22,
+      "output_tokens_used": 4283,
+      "test_only_metadata_entries": 29,
+      "tested_library_loc": 1327
+    },
+    "timestamp": "2026-09-23T12:55:22.862707Z"
+  },
+  "modifiers": {
+    "chunk_final": true,
+    "chunked_dynamic_access": true,
+    "human_intervention": false
+  },
+  "producer": "kimeta",
+  "publication_id": "forge-10061-20260923125522862707-c23e47894df9",
+  "render": {
+    "dynamic_access": null,
+    "dynamic_access_evidence": {
+      "covered_call_sites": [
+        "[reflection] java.lang.reflect.Array#newInstance(java.lang.Class, int) <- com.azure.xml.implementation.aalto.util.DataUtil.growAnyArrayBy(DataUtil.java:44) (line 44)"
+      ],
+      "metadata_rules": [
+        "when `com.azure.xml.implementation.aalto.util.DataUtil` is reached, make `com.azure.xml.implementation.aalto.in.NsBinding[]` available for reflection",
+        "when `com.azure.xml.XmlReader` is reached, make `com.sun.xml.internal.stream.XMLInputFactoryImpl.<init>()` available for reflection",
+        "when `com.azure.xml.XmlReader` is reached, make `sun.security.provider.SHA2$SHA256.<init>()` available for reflection",
+        "when `com.azure.xml.implementation.aalto.in.CharBasedPNameTable` is reached, make `sun.security.provider.SHA2$SHA256.<init>()` available for reflection",
+        "when `com.azure.xml.implementation.aalto.in.CharSourceBootstrapper` is reached, make `sun.security.provider.SHA2$SHA256.<init>()` available for reflection",
+        "when `com.azure.xml.implementation.aalto.in.ReaderConfig` is reached, make `sun.security.provider.SHA2$SHA256.<init>()` available for reflection",
+        "when `com.azure.xml.implementation.aalto.in.ReaderConfig$EncodingContext` is reached, make `sun.security.provider.SHA2$SHA256.<init>()` available for reflection",
+        "when `com.azure.xml.implementation.aalto.in.ReaderScanner` is reached, make `sun.security.provider.SHA2$SHA256.<init>()` available for reflection",
+        "... and 3 more"
+      ]
+    },
+    "library_stats": {
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 1,
+            "totalCalls": 1
+          }
+        },
+        "coverageRatio": 1.0,
+        "coveredCalls": 1,
+        "totalCalls": 1
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 4999,
+          "missed": 36052,
+          "ratio": 0.121775,
+          "total": 41051
+        },
+        "line": {
+          "covered": 1327,
+          "missed": 8719,
+          "ratio": 0.132092,
+          "total": 10046
+        },
+        "method": {
+          "covered": 164,
+          "missed": 921,
+          "ratio": 0.151152,
+          "total": 1085
+        }
+      },
+      "version": "1.2.0"
+    }
+  },
+  "schema_version": 1,
+  "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-sol",
+  "task_type": "library-new-request",
+  "template_type": "library-new-request",
+  "timestamp": "2026-09-23T12:55:22.862707Z"
+}
