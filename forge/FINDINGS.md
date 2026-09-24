@@ -14,6 +14,7 @@ The transient verdict requested workflow runs that were not failed on the exact 
 **Generated coverage removed an existing scenario and retained transient test metadata**
 
 The contribution deleted HostConfigTest.deploysContextDescriptorAtServerStartup, weakening an existing passing scenario contrary to FS-test-contract.2.9; marked WebappClassLoaderBase$PrivilegedJavaseGetResource complete without its required dedicated test file under FS-test-contract.1.8; and retained six HostConfig plus three JAAS /tmp/junit... resource globs, contrary to FS-test-contract.4.4. It also retained an unused RecordingLog helper with 106 unjustified test-only reflection registrations and shipped test-owned or nonexistent resource entries.
+
 ## 2026-09-23 — com.azure:azure-json:1.4.0 (#10060)
 
 **New-library dynamic-access coverage is below the required threshold**
