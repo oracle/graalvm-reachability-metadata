@@ -1,0 +1,148 @@
+{
+  "base_commit": "cb6ea464f9bc578cdaff46e6ab03d2400ed1c24e",
+  "branch": "ai/kimeta/add-lib-support-com.twelvemonkeys.common-common-image-3.9.4-chunked-forge-10166-20260923002401653073-2410f3dd0772",
+  "follow_ups": [],
+  "forge": {
+    "branch": "master",
+    "commit": "7762b194e7968d3d9d6da739e20303610d82187c",
+    "monitored_branch": "origin/master"
+  },
+  "issue_number": 10166,
+  "library": {
+    "artifact": "common-image",
+    "coordinates": "com.twelvemonkeys.common:common-image:3.9.4",
+    "group": "com.twelvemonkeys.common",
+    "version": "3.9.4"
+  },
+  "local_ci_verification": {
+    "base_commit": "cb6ea464f9bc578cdaff46e6ab03d2400ed1c24e",
+    "commands": [
+      {
+        "command": [
+          "./gradlew",
+          "generateChangedIndexFileCoordinatesList",
+          "-PbaseCommit=origin/master",
+          "-PnewCommit=HEAD"
+        ],
+        "env": {
+          "GITHUB_OUTPUT": "/tmp/tmp3sqqdml1"
+        },
+        "gate": "changed-index-coordinates",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :generateChangedIndexFileCoordinatesList\n\n[Incubating] Problems report is available at: file:///home/oracle/oracle/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10166-5ecb7eb9/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 3s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      },
+      {
+        "command": [
+          "./gradlew",
+          "validateIndexFiles",
+          "-Pcoordinates=com.twelvemonkeys.common:common-image"
+        ],
+        "env": {},
+        "gate": "index-file-validation",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :validateIndexFiles\n✅ metadata/com.twelvemonkeys.common/common-image/index.json: Valid\n\n[Incubating] Problems report is available at: file:///home/oracle/oracle/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10166-5ecb7eb9/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 2s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      }
+    ],
+    "failure_command": null,
+    "failure_gate": null,
+    "final_commit": "6697c451dbffce31a88a1d56ef6da8f1134f81c5",
+    "fixups": [],
+    "human_intervention_required": false,
+    "repo_fix_paths": [],
+    "status": "success"
+  },
+  "local_review": {
+    "changed_paths": [],
+    "decision": "approved",
+    "finding_body": "",
+    "finding_title": "",
+    "fix_note": "",
+    "model": "gpt-5.6-sol",
+    "review_comment": "Checked the single-coordinate diff, test source and build configuration, metadata file presence and format, index and stats scope, and the local gate evidence. The public-API tests are non-scaffold, version-agnostic, in a separate package, and do not dodge Native Image. Reported dynamic-access coverage is 1/1 (100%), the entry-count mismatch guardrail does not trigger, and the recorded index gates passed at the reviewed head with no fixups.",
+    "session_id": "cf04a7b894724e98"
+  },
+  "metrics": {
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "path": "stats/com.twelvemonkeys.common/common-image/3.9.4/execution-metrics.json",
+    "summary": {
+      "cached_input_tokens_used": 599552,
+      "code_coverage_percent": 4.62,
+      "cost_usd": 0.784,
+      "generated_loc": 41,
+      "input_tokens_used": 73474,
+      "iterations": 3,
+      "metadata_entries": 265,
+      "output_tokens_used": 3892,
+      "test_only_metadata_entries": 62,
+      "tested_library_loc": 120
+    },
+    "timestamp": "2026-09-23T00:24:01.653073Z"
+  },
+  "modifiers": {
+    "chunk_final": true,
+    "chunked_dynamic_access": true,
+    "human_intervention": false
+  },
+  "producer": "kimeta",
+  "publication_id": "forge-10166-20260923002401653073-2410f3dd0772",
+  "render": {
+    "dynamic_access": null,
+    "dynamic_access_evidence": {
+      "covered_call_sites": [
+        "[reflection] java.lang.reflect.Array#newInstance(java.lang.Class, int) <- com.twelvemonkeys.image.BufferedImageFactory$Consumer.setPixelsImpl(BufferedImageFactory.java:396) (line 396)"
+      ],
+      "metadata_rules": [
+        "when `com.twelvemonkeys.image.BufferedImageFactory$Consumer` is reached, make `byte[]` available for reflection",
+        "when `com.twelvemonkeys.image.ImageUtil$1` is reached, make `com.twelvemonkeys.image.ImageUtil$1` available for reflection",
+        "when `com.twelvemonkeys.image.BufferedImageFactory$Consumer` is reached, make `int[]` available for reflection",
+        "when `com.twelvemonkeys.image.ImageUtil` is reached, make `java.awt.AlphaComposite` available for reflection",
+        "when `com.twelvemonkeys.image.ImageUtil` is reached, make `java.awt.Color.getRGB()` available for reflection",
+        "when `com.twelvemonkeys.image.ImageUtil` is reached, make `java.awt.Component.getLocationOnScreen_NoTreeLock()` available for reflection",
+        "when `com.twelvemonkeys.image.ImageUtil` is reached, make `java.awt.Component.getParent_NoClientCode()` available for reflection",
+        "when `com.twelvemonkeys.image.ImageUtil` is reached, make `java.awt.Rectangle.<init>(int, int, int, int)` available for reflection",
+        "... and 55 more"
+      ]
+    },
+    "library_stats": {
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 1,
+            "totalCalls": 1
+          }
+        },
+        "coverageRatio": 1.0,
+        "coveredCalls": 1,
+        "totalCalls": 1
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 576,
+          "missed": 13293,
+          "ratio": 0.041531,
+          "total": 13869
+        },
+        "line": {
+          "covered": 120,
+          "missed": 2475,
+          "ratio": 0.046243,
+          "total": 2595
+        },
+        "method": {
+          "covered": 21,
+          "missed": 338,
+          "ratio": 0.058496,
+          "total": 359
+        }
+      },
+      "version": "3.9.4"
+    }
+  },
+  "schema_version": 1,
+  "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-sol",
+  "task_type": "library-new-request",
+  "template_type": "library-new-request",
+  "timestamp": "2026-09-23T00:24:01.653073Z"
+}

@@ -1,0 +1,142 @@
+{
+  "base_commit": "66cb41a7deef53db99b9fcff229c9d6017b21826",
+  "branch": "ai/kimeta/add-lib-support-com.twelvemonkeys.imageio-imageio-metadata-3.9.4-chunked-forge-10168-20260922234929550364-491ae43a5921",
+  "follow_ups": [],
+  "forge": {
+    "branch": "master",
+    "commit": "7762b194e7968d3d9d6da739e20303610d82187c",
+    "monitored_branch": "origin/master"
+  },
+  "issue_number": 10168,
+  "library": {
+    "artifact": "imageio-metadata",
+    "coordinates": "com.twelvemonkeys.imageio:imageio-metadata:3.9.4",
+    "group": "com.twelvemonkeys.imageio",
+    "version": "3.9.4"
+  },
+  "local_ci_verification": {
+    "base_commit": "66cb41a7deef53db99b9fcff229c9d6017b21826",
+    "commands": [
+      {
+        "command": [
+          "./gradlew",
+          "generateChangedIndexFileCoordinatesList",
+          "-PbaseCommit=origin/master",
+          "-PnewCommit=HEAD"
+        ],
+        "env": {
+          "GITHUB_OUTPUT": "/tmp/tmpi4o2j4r7"
+        },
+        "gate": "changed-index-coordinates",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :generateChangedIndexFileCoordinatesList\n\n[Incubating] Problems report is available at: file:///home/oracle/oracle/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10168-7761c5db/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 3s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      },
+      {
+        "command": [
+          "./gradlew",
+          "validateIndexFiles",
+          "-Pcoordinates=com.twelvemonkeys.imageio:imageio-metadata"
+        ],
+        "env": {},
+        "gate": "index-file-validation",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :validateIndexFiles\n✅ metadata/com.twelvemonkeys.imageio/imageio-metadata/index.json: Valid\n\n[Incubating] Problems report is available at: file:///home/oracle/oracle/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10168-7761c5db/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 2s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      }
+    ],
+    "failure_command": null,
+    "failure_gate": null,
+    "final_commit": "43c4ecfb6765b05e76294e1a59fdeed6177262e3",
+    "fixups": [],
+    "human_intervention_required": false,
+    "repo_fix_paths": [],
+    "status": "success"
+  },
+  "local_review": {
+    "changed_paths": [],
+    "decision": "approved",
+    "finding_body": "",
+    "finding_title": "",
+    "fix_note": "",
+    "model": "gpt-5.6-sol",
+    "review_comment": "Verified the single-coordinate diff stays within the allowed metadata, stats, and test paths; uses only reachability-metadata.json; and has a public, version-agnostic, non-scaffold test in a separate package that exercises PSDReader and PSDEntry behavior without Native Image skips, failure tolerance, reflection shortcuts, or native flags. The resolved statistics report 2/2 dynamic-access calls covered (100%), above the new-library gate, with 12 reported metadata entries and no entry-count mismatch. The recorded local gates succeeded, including index validation, and the index has one latest entry for 3.9.4. No blocking contribution-contract violation was found.",
+    "session_id": "58e7ef34b8bc4670"
+  },
+  "metrics": {
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "path": "stats/com.twelvemonkeys.imageio/imageio-metadata/3.9.4/execution-metrics.json",
+    "summary": {
+      "cached_input_tokens_used": 756992,
+      "code_coverage_percent": 4.67,
+      "cost_usd": 0.9504,
+      "generated_loc": 48,
+      "input_tokens_used": 87896,
+      "iterations": 3,
+      "metadata_entries": 3,
+      "output_tokens_used": 4415,
+      "test_only_metadata_entries": 9,
+      "tested_library_loc": 73
+    },
+    "timestamp": "2026-09-22T23:49:29.550364Z"
+  },
+  "modifiers": {
+    "chunk_final": true,
+    "chunked_dynamic_access": true,
+    "human_intervention": false
+  },
+  "producer": "kimeta",
+  "publication_id": "forge-10168-20260922234929550364-491ae43a5921",
+  "render": {
+    "dynamic_access": null,
+    "dynamic_access_evidence": {
+      "covered_call_sites": [
+        "[reflection] java.lang.Class#getDeclaredFields() <- com.twelvemonkeys.imageio.metadata.psd.PSDEntry.getFieldName(PSDEntry.java:63) (line 63)",
+        "[reflection] java.lang.reflect.Field#get(java.lang.Object) <- com.twelvemonkeys.imageio.metadata.psd.PSDEntry.getFieldName(PSDEntry.java:70) (line 70)"
+      ],
+      "metadata_rules": [
+        "when `com.twelvemonkeys.imageio.metadata.psd.PSDEntry` is reached, make `com.twelvemonkeys.imageio.metadata.psd.PSD` available for reflection",
+        "when `com.twelvemonkeys.imageio.metadata.psd.PSDEntry` is reached, make `com.twelvemonkeys.imageio.plugins.psd.PSD` available for reflection"
+      ]
+    },
+    "library_stats": {
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 2,
+            "totalCalls": 2
+          }
+        },
+        "coverageRatio": 1.0,
+        "coveredCalls": 2,
+        "totalCalls": 2
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 317,
+          "missed": 9452,
+          "ratio": 0.03245,
+          "total": 9769
+        },
+        "line": {
+          "covered": 73,
+          "missed": 1490,
+          "ratio": 0.046705,
+          "total": 1563
+        },
+        "method": {
+          "covered": 20,
+          "missed": 259,
+          "ratio": 0.071685,
+          "total": 279
+        }
+      },
+      "version": "3.9.4"
+    }
+  },
+  "schema_version": 1,
+  "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-sol",
+  "task_type": "library-new-request",
+  "template_type": "library-new-request",
+  "timestamp": "2026-09-22T23:49:29.550364Z"
+}
