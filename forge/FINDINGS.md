@@ -3,6 +3,18 @@
 Rendered by Forge from the pre-push branch review of §FS-local-branch-review.
 Newest entry first; every non-approval is recorded, including one a repair later cleared.
 
+## 2026-09-22 — org.apache.tomcat.embed:tomcat-embed-core:11.0.18 (#8328)
+
+**Transient CI diagnosis selected unrelated runs**
+
+The transient verdict requested workflow runs that were not failed on the exact reviewed head: 35797184278
+
+## 2026-09-22 — org.apache.tomcat.embed:tomcat-embed-core:11.0.18 (#8328)
+
+**Generated metadata includes test-only and machine-local resources**
+
+FS-test-contract.4.4 forbids resource metadata for temporary machine-local paths, and FS-metadata requires test-only resources to stay out of shipped metadata. The generated tree contained five /tmp/junit.../jaas-realm-file.config globs in test-only metadata and nine JUnit, Gradle-worker, or generated test-class resource globs in shipped metadata.
+
 ## 2026-09-22 — org.apache.tomcat.embed:tomcat-embed-core:11.0.22 (#10144)
 
 **Transient CI diagnosis selected unrelated runs**
