@@ -14,6 +14,7 @@ The transient verdict requested workflow runs that were not failed on the exact 
 **Generated metadata includes test-only and machine-local resources**
 
 FS-test-contract.4.4 forbids resource metadata for temporary machine-local paths, and FS-metadata requires test-only resources to stay out of shipped metadata. The generated tree contained five /tmp/junit.../jaas-realm-file.config globs in test-only metadata and nine JUnit, Gradle-worker, or generated test-class resource globs in shipped metadata.
+
 ## 2026-09-22 — org.apache.tomcat.embed:tomcat-embed-core:11.0.22 (#10144)
 
 **Transient CI diagnosis selected unrelated runs**
