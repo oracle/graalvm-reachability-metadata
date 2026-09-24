@@ -55,6 +55,7 @@ public class WebappClassLoaderBaseTest {
 
             loader.setDelegate(false);
             assertThat(loader.getResource(PARENT_ONLY_RESOURCE)).isNotNull();
+            assertThat(loader.loadClass(PARENT_ONLY_CLASS)).isSameAs(TomcatTests.class);
             try (InputStream stream = loader.getResourceAsStream(PARENT_ONLY_RESOURCE)) {
                 assertThat(stream).isNotNull();
             }

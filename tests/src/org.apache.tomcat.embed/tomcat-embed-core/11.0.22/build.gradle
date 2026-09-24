@@ -16,11 +16,16 @@ dependencies {
 	testRuntimeOnly "org.apache.tomcat:tomcat-coyote-ffm:$libraryVersion"
 	testImplementation 'jakarta.annotation:jakarta.annotation-api:3.0.0'
 	testImplementation 'jakarta.servlet:jakarta.servlet-api:5.0.0'
+	testImplementation 'com.h2database:h2:2.2.224'
 	testImplementation 'org.assertj:assertj-core:3.22.0'
 	testRuntimeOnly 'org.apache.tomcat:jakartaee-migration:1.0.6'
 }
 
+String digesterPropertySource =
+        '-Dorg.apache.tomcat.util.digester.PROPERTY_SOURCE=org.apache.tomcat.util.digester.SystemPropertySource'
+
 tasks.withType(Test).configureEach {
+    jvmArgs digesterPropertySource
     jvmArgs '--add-opens=java.base/java.io=ALL-UNNAMED'
     jvmArgs '--add-opens=java.base/java.lang=ALL-UNNAMED'
     jvmArgs '--add-opens=java.base/java.lang.reflect=ALL-UNNAMED'
@@ -30,13 +35,14 @@ tasks.withType(Test).configureEach {
 
 tasks.named("nativeTest") {
     runtimeArgs.add("-Djava.home=${javaHome}")
+    runtimeArgs.add(digesterPropertySource)
 }
 
 graalvmNative {
     binaries {
         test {
             buildArgs.add('--allow-incomplete-classpath')
-            runtimeArgs("-Djava.home=${javaHome}")
+            runtimeArgs("-Djava.home=${javaHome}", digesterPropertySource)
         }
     }
     agent {

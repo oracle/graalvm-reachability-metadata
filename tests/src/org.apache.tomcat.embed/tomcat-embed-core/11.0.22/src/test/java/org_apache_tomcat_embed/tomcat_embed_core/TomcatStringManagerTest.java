@@ -14,6 +14,22 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class TomcatStringManagerTest {
 
     @Test
+    void retriesMissingBundleWithContextClassLoader() {
+        Thread thread = Thread.currentThread();
+        ClassLoader originalClassLoader = thread.getContextClassLoader();
+        StringManager manager;
+        try {
+            thread.setContextClassLoader(TomcatStringManagerTest.class.getClassLoader());
+            manager = StringManager.getManager("missing.tomcat.messages");
+        } finally {
+            thread.setContextClassLoader(originalClassLoader);
+        }
+
+        assertThat(manager.getLocale()).isNull();
+        assertThat(manager.getString("missing-key")).isNull();
+    }
+
+    @Test
     void representsPackageWithoutAMessageBundle() {
         StringManager manager = StringManager.getManager("example.without.messages");
 

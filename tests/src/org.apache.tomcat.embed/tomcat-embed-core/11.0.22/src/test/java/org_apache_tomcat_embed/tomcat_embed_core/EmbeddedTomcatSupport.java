@@ -19,6 +19,7 @@ import org.apache.catalina.Context;
 import org.apache.catalina.Lifecycle;
 import org.apache.catalina.LifecycleListener;
 import org.apache.catalina.Valve;
+import org.apache.catalina.Wrapper;
 import org.apache.catalina.connector.Connector;
 import org.apache.catalina.core.StandardHost;
 import org.apache.catalina.startup.Tomcat;
@@ -27,6 +28,7 @@ final class EmbeddedTomcatSupport implements AutoCloseable {
 
     private final Tomcat tomcat = new Tomcat();
     private final Connector connector = new Connector();
+    private final Wrapper servletWrapper;
 
     EmbeddedTomcatSupport(Path baseDirectory, HttpServlet servlet) throws Exception {
         tomcat.setBaseDir(baseDirectory.toString());
@@ -34,7 +36,7 @@ final class EmbeddedTomcatSupport implements AutoCloseable {
         tomcat.setConnector(connector);
         Context context = tomcat.addContext("", baseDirectory.toString());
         configureContextWithoutWebappScanning(context);
-        Tomcat.addServlet(context, "test-servlet", servlet);
+        servletWrapper = Tomcat.addServlet(context, "test-servlet", servlet);
         context.addServletMappingDecoded("/test", "test-servlet");
     }
 
@@ -53,6 +55,10 @@ final class EmbeddedTomcatSupport implements AutoCloseable {
 
     Connector connector() {
         return connector;
+    }
+
+    void addServletInitParameter(String name, String value) {
+        servletWrapper.addInitParameter(name, value);
     }
 
     void replaceErrorReportValve(Valve valve) {

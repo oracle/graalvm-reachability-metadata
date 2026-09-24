@@ -14,11 +14,33 @@ import javax.naming.Reference;
 import javax.naming.spi.ObjectFactory;
 
 import org.apache.naming.NamingContext;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@Order(1)
 public class NamingContextTest {
+
+    private static final String IMAGE_CODE_PROPERTY = "org.graalvm.nativeimage.imagecode";
+    private static String previousImageCode;
+
+    @BeforeAll
+    static void enableNativeImageObjectFactoryPath() {
+        previousImageCode = System.getProperty(IMAGE_CODE_PROPERTY);
+        System.setProperty(IMAGE_CODE_PROPERTY, "runtime");
+    }
+
+    @AfterAll
+    static void restoreNativeImageProperty() {
+        if (previousImageCode == null) {
+            System.clearProperty(IMAGE_CODE_PROPERTY);
+        } else {
+            System.setProperty(IMAGE_CODE_PROPERTY, previousImageCode);
+        }
+    }
 
     @Test
     void resolvesReferenceWithItsConfiguredObjectFactory() throws Exception {
