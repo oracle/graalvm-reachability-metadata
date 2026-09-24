@@ -54,6 +54,16 @@ public class DefaultInstanceManagerTest {
     }
 
     @Test
+    void constructsApplicationClassesVisibleToBothClassLoaders() throws Exception {
+        DefaultInstanceManager manager = instanceManager(new NamingContext(null, "empty"),
+                testClassLoader(), testClassLoader());
+
+        Object component = manager.newInstance(WebappLoadedComponent.class.getName());
+
+        assertThat(component).isInstanceOf(WebappLoadedComponent.class);
+    }
+
+    @Test
     void loadsCatalinaClassesWithContainerClassLoader() throws Exception {
         DefaultInstanceManager manager = instanceManager(new NamingContext(null, "empty"),
                 testClassLoader(), testClassLoader());

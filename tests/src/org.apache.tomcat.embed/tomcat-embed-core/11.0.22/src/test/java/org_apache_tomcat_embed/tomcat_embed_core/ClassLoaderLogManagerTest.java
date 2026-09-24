@@ -7,6 +7,8 @@
 package org_apache_tomcat_embed.tomcat_embed_core;
 
 import java.io.ByteArrayInputStream;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.nio.charset.StandardCharsets;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.Logger;
@@ -17,6 +19,25 @@ import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class ClassLoaderLogManagerTest {
+
+    @Test
+    void readsConfigurationFromContextUrlClassLoader() throws Exception {
+        URL configuration = ClassLoaderLogManagerTest.class.getResource("/classloader-logging.properties");
+        assertThat(configuration).isNotNull();
+
+        Thread thread = Thread.currentThread();
+        ClassLoader originalClassLoader = thread.getContextClassLoader();
+        ClassLoaderLogManager manager = new ClassLoaderLogManager();
+        try (URLClassLoader classLoader = new LoggingConfigurationClassLoader(configuration)) {
+            thread.setContextClassLoader(classLoader);
+            manager.readConfiguration();
+
+            assertThat(manager.getProperty("integration.logger.level")).isEqualTo("FINE");
+        } finally {
+            thread.setContextClassLoader(originalClassLoader);
+            manager.shutdown();
+        }
+    }
 
     @Test
     void createsHandlersDeclaredInLoggingConfiguration() throws Exception {
@@ -33,6 +54,23 @@ public class ClassLoaderLogManagerTest {
             assertThat(rootLogger.getHandlers()[0]).isInstanceOf(ConsoleHandler.class);
         } finally {
             manager.shutdown();
+        }
+    }
+
+    private static final class LoggingConfigurationClassLoader extends URLClassLoader {
+        private final URL configuration;
+
+        private LoggingConfigurationClassLoader(URL configuration) {
+            super(new URL[0], null);
+            this.configuration = configuration;
+        }
+
+        @Override
+        public URL findResource(String name) {
+            if ("logging.properties".equals(name)) {
+                return configuration;
+            }
+            return null;
         }
     }
 }

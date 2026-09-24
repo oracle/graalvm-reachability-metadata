@@ -23,6 +23,7 @@ public class HttpServletInnerNoBodyOutputStreamTest {
     @Test
     void headCountsGeneratedContentWithoutReturningABody(@TempDir Path baseDirectory) throws Exception {
         try (EmbeddedTomcatSupport server = new EmbeddedTomcatSupport(baseDirectory, new ContentServlet())) {
+            server.addServletInitParameter(HttpServlet.LEGACY_DO_HEAD, Boolean.TRUE.toString());
             server.start();
 
             HttpResponse<String> response = server.request("HEAD");

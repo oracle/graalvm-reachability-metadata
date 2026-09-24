@@ -14,6 +14,29 @@ The transient verdict requested workflow runs that were not failed on the exact 
 **Generated metadata includes test-only and machine-local resources**
 
 FS-test-contract.4.4 forbids resource metadata for temporary machine-local paths, and FS-metadata requires test-only resources to stay out of shipped metadata. The generated tree contained five /tmp/junit.../jaas-realm-file.config globs in test-only metadata and nine JUnit, Gradle-worker, or generated test-class resource globs in shipped metadata.
+## 2026-09-22 — org.apache.tomcat.embed:tomcat-embed-core:11.0.22 (#10144)
+
+**Transient CI diagnosis selected unrelated runs**
+
+The transient verdict requested workflow runs that were not failed on the exact reviewed head: 35792627095
+
+## 2026-09-22 — org.apache.tomcat.embed:tomcat-embed-core:11.0.22 (#10144)
+
+**Generated coverage removed an existing scenario and retained transient test metadata**
+
+The contribution deleted HostConfigTest.deploysContextDescriptorAtServerStartup, weakening an existing passing scenario contrary to FS-test-contract.2.9; marked WebappClassLoaderBase$PrivilegedJavaseGetResource complete without its required dedicated test file under FS-test-contract.1.8; and retained six HostConfig plus three JAAS /tmp/junit... resource globs, contrary to FS-test-contract.4.4. It also retained an unused RecordingLog helper with 106 unjustified test-only reflection registrations and shipped test-owned or nonexistent resource entries.
+
+## 2026-09-23 — com.azure:azure-json:1.4.0 (#10060)
+
+**New-library dynamic-access coverage is below the required threshold**
+
+The submitted stats reported 0 of 4 dynamic-access calls covered (0%), violating the requirement that a new-library contribution with calls to cover exceed 20% coverage.
+## 2026-09-23 — com.oracle.database.jdbc:ojdbc8:23.26.1.0.0 (#10059)
+
+**Completed dynamic-access classes lacked dedicated test files**
+
+The exhaust report marked oracle.jdbc.driver.DMSFactory and oracle.jdbc.driver.GeneratedPhysicalConnection$1 as completed, but the contribution had no dedicated DMSFactoryTest or GeneratedPhysicalConnectionAnonymous1Test. This violated the one-test-file-per-dynamic-access-class requirement in FS-test-contract.1.8.
+
 ## 2026-09-15 — com.fasterxml.jackson.jr:jackson-jr-objects:2.21.0 (#8916)
 
 **Test-only metadata shadowed shipped registrations**

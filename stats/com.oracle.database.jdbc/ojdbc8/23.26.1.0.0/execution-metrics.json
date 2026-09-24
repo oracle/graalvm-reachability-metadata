@@ -1,0 +1,181 @@
+{
+  "add_new_library_support:2026-09-23": {
+    "timestamp": "2026-09-23T14:37:48.580409Z",
+    "library": "com.oracle.database.jdbc:ojdbc8:23.26.1.0.0",
+    "starting_commit": "c3687603468e66cc19f32e90c5c0f10689b0c42d",
+    "ending_commit": "df47028fd81ca2a1cfbb0a39dcd806df7ad27eb9",
+    "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-sol",
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "status": "chunk_ready",
+    "stats": {
+      "version": "23.26.1.0.0",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 0.771084,
+            "coveredCalls": 128,
+            "totalCalls": 166
+          },
+          "resources": {
+            "coverageRatio": 0.909091,
+            "coveredCalls": 10,
+            "totalCalls": 11
+          }
+        },
+        "coverageRatio": 0.779661,
+        "coveredCalls": 138,
+        "totalCalls": 177
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 92604,
+          "missed": 1388762,
+          "ratio": 0.062513,
+          "total": 1481366
+        },
+        "line": {
+          "covered": 12851,
+          "missed": 143783,
+          "ratio": 0.082045,
+          "total": 156634
+        },
+        "method": {
+          "covered": 2162,
+          "missed": 34869,
+          "ratio": 0.058384,
+          "total": 37031
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "advisory_preparation",
+      "issue_number": 10059,
+      "issue_label": "library-new-request",
+      "library": "com.oracle.database.jdbc:ojdbc8:23.26.1.0.0",
+      "summary": "ojdbc8's POM declares zero dependencies, so the generated scaffold test would only exercise basic driver registration. The near-identical sibling ojdbc11 (same vendor, same driver internals, same dependency-free POM shape) required four extra test-scope Maven dependencies plus a system property to reach its optional code paths (XML DB, PKI wallet auth, connection pooling, JSON/OSON, observability) without a live database. All four coordinates publish at ojdbc8's exact version (23.26.1.0.0), so the same setup applies here.",
+      "deterministic_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "com.oracle.database.jdbc:ucp:23.26.1.0.0",
+          "scope": "testImplementation",
+          "reason": "Universal Connection Pool classes are optionally referenced by the thin driver's internals; without ucp on the classpath those pooling code paths are never loaded during agent tracing."
+        },
+        {
+          "kind": "dependency",
+          "coordinate": "com.oracle.database.security:oraclepki:23.26.1.0.0",
+          "scope": "testImplementation",
+          "reason": "PKI/wallet-based authentication (SEPS, SSL wallet) is an optional driver integration only reachable when oraclepki is present."
+        },
+        {
+          "kind": "dependency",
+          "coordinate": "com.oracle.database.xml:xdb:23.26.1.0.0",
+          "scope": "testImplementation",
+          "reason": "XML DB type support (XMLType, OPAQUE/ADT mapping) is optional and only loaded when xdb is on the classpath."
+        },
+        {
+          "kind": "dependency",
+          "coordinate": "com.oracle.database.xml:xmlparserv2:23.26.1.0.0",
+          "scope": "testImplementation",
+          "reason": "Paired with xdb for XML DB type marshalling used by the driver's optional XML code paths."
+        },
+        {
+          "kind": "dependency",
+          "coordinate": "com.oracle.database.observability:dms:11.2.0.4",
+          "scope": "testImplementation",
+          "reason": "Oracle's Dynamic Monitoring Service classes back the driver's optional observability/diagnostics instrumentation."
+        },
+        {
+          "kind": "dependency",
+          "coordinate": "jakarta.json:jakarta.json-api:2.1.3",
+          "scope": "testImplementation",
+          "reason": "Backs the driver's optional OSON/JSON type support code paths."
+        },
+        {
+          "kind": "dependency",
+          "coordinate": "org.assertj:assertj-core:3.22.0",
+          "scope": "testImplementation",
+          "reason": "Assertion library used throughout the sibling ojdbc11 test suite for readable multi-field assertions; reuse for consistency if tests are written in that style."
+        }
+      ],
+      "agent_guidance": "Set the system property oracle.jdbc.diagnostic.enableObservability=true for both the JVM test task and the native test run (add -Doracle.jdbc.diagnostic.enableObservability=true to nativeTest runtimeArgs) so the driver's DMS-backed observability code paths are exercised, matching the ojdbc11 precedent. No live Oracle Database or Docker image is required — ojdbc11's coverage is achieved entirely through unit-style tests against driver-internal classes (connection wrappers, type converters, proxy factories, auth services) without an actual database connection, so ojdbc8 should follow the same pattern rather than introducing a Docker-based Oracle DB image.",
+      "risks": [
+        "ojdbc8 targets JDK 8/11 compatibility and may lack some newer JDBC 4.3 features present in ojdbc11 (which targets JDBC 4.3) — verify during generation which of ojdbc11's optional integrations (e.g., OSON, sharding, transaction replay) actually exist in ojdbc8's internals before assuming full parity.",
+        "The dms coordinate/version is independent of the driver's own version scheme; confirm 11.2.0.4 is still the version compatible with the 23.x driver line at generation time."
+      ],
+      "applied_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "com.oracle.database.jdbc:ucp:23.26.1.0.0",
+          "result": "applied",
+          "target": "tests/src/com.oracle.database.jdbc/ojdbc8/23.26.1.0.0/build.gradle"
+        },
+        {
+          "kind": "dependency",
+          "coordinate": "com.oracle.database.security:oraclepki:23.26.1.0.0",
+          "result": "applied",
+          "target": "tests/src/com.oracle.database.jdbc/ojdbc8/23.26.1.0.0/build.gradle"
+        },
+        {
+          "kind": "dependency",
+          "coordinate": "com.oracle.database.xml:xdb:23.26.1.0.0",
+          "result": "applied",
+          "target": "tests/src/com.oracle.database.jdbc/ojdbc8/23.26.1.0.0/build.gradle"
+        },
+        {
+          "kind": "dependency",
+          "coordinate": "com.oracle.database.xml:xmlparserv2:23.26.1.0.0",
+          "result": "applied",
+          "target": "tests/src/com.oracle.database.jdbc/ojdbc8/23.26.1.0.0/build.gradle"
+        },
+        {
+          "kind": "dependency",
+          "coordinate": "com.oracle.database.observability:dms:11.2.0.4",
+          "result": "applied",
+          "target": "tests/src/com.oracle.database.jdbc/ojdbc8/23.26.1.0.0/build.gradle"
+        },
+        {
+          "kind": "dependency",
+          "coordinate": "jakarta.json:jakarta.json-api:2.1.3",
+          "result": "applied",
+          "target": "tests/src/com.oracle.database.jdbc/ojdbc8/23.26.1.0.0/build.gradle"
+        },
+        {
+          "kind": "dependency",
+          "coordinate": "org.assertj:assertj-core:3.22.0",
+          "result": "already_present",
+          "target": "tests/src/com.oracle.database.jdbc/ojdbc8/23.26.1.0.0/build.gradle"
+        }
+      ],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#10059 Support for com.oracle.database.jdbc:ojdbc8:23.26.1.0.0; label=library-new-request; body_chars=39"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "sonnet",
+      "input_tokens_used": 20,
+      "output_tokens_used": 7164
+    },
+    "metrics": {
+      "input_tokens_used": 491424,
+      "cached_input_tokens_used": 13519744,
+      "output_tokens_used": 37193,
+      "iterations": 7,
+      "cost_usd": 10.3328,
+      "generated_loc": 2365,
+      "tested_library_loc": 12851,
+      "metadata_entries": 2400,
+      "test_only_metadata_entries": 130,
+      "code_coverage_percent": 8.2
+    },
+    "artifacts": {
+      "metadata_file": "metadata/com.oracle.database.jdbc/ojdbc8/23.26.1.0.0/reachability-metadata.json"
+    }
+  }
+}

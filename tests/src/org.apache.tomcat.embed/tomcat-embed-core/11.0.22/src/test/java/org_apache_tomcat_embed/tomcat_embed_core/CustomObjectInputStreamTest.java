@@ -13,6 +13,8 @@ import java.io.Serializable;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.catalina.util.CustomObjectInputStream;
 import org.junit.jupiter.api.Test;
@@ -36,6 +38,25 @@ public class CustomObjectInputStreamTest {
             assertThat(input.readObject()).isEqualTo(new Payload("payload"));
             Greeting restored = (Greeting) input.readObject();
             assertThat(restored.message()).isEqualTo("hello");
+        }
+    }
+
+    @Test
+    void fallsBackToStandardResolutionForBootstrapClasses() throws Exception {
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        try (ObjectOutputStream output = new ObjectOutputStream(bytes)) {
+            output.writeObject(new ArrayList<>(List.of("bootstrap-value")));
+        }
+
+        ClassLoader rejectingLoader = new ClassLoader(null) {
+            @Override
+            public Class<?> loadClass(String name) throws ClassNotFoundException {
+                throw new ClassNotFoundException(name);
+            }
+        };
+        try (CustomObjectInputStream input = new CustomObjectInputStream(
+                new ByteArrayInputStream(bytes.toByteArray()), rejectingLoader)) {
+            assertThat(input.readObject()).isEqualTo(List.of("bootstrap-value"));
         }
     }
 
