@@ -3,6 +3,11 @@
 Rendered by Forge from the pre-push branch review of §FS-local-branch-review.
 Newest entry first; every non-approval is recorded, including one a repair later cleared.
 
+## 2026-09-23 — com.azure:azure-json:1.4.0 (#10060)
+
+**New-library dynamic-access coverage is below the required threshold**
+
+The submitted stats reported 0 of 4 dynamic-access calls covered (0%), violating the requirement that a new-library contribution with calls to cover exceed 20% coverage.
 ## 2026-09-23 — com.oracle.database.jdbc:ojdbc8:23.26.1.0.0 (#10059)
 
 **Completed dynamic-access classes lacked dedicated test files**
