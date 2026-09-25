@@ -12,10 +12,12 @@ import org.apache.catalina.core.OpenSSLLifecycleListener;
 import org.apache.tomcat.util.net.openssl.OpenSSLStatus;
 import org.apache.tomcat.util.net.openssl.ciphers.Cipher;
 import org.apache.tomcat.util.net.openssl.ciphers.OpenSSLCipherConfigurationParser;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@Order(Integer.MAX_VALUE)
 public class OpenSSLCipherConfigurationParserTest {
 
     @Test
