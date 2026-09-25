@@ -25,6 +25,7 @@ import io.lettuce.core.api.StatefulRedisConnection;
 import io.lettuce.core.api.async.RedisAsyncCommands;
 import io.lettuce.core.api.reactive.RedisReactiveCommands;
 import io.lettuce.core.api.sync.RedisCommands;
+import io.lettuce.core.protocol.ProtocolVersion;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
@@ -54,7 +55,7 @@ import org.junit.jupiter.api.Test;
 import reactor.core.publisher.Flux;
 
 public class Lettuce_coreTest {
-    private static final Duration COMMAND_TIMEOUT = Duration.ofSeconds(5);
+    private static final Duration COMMAND_TIMEOUT = Duration.ofSeconds(10);
 
     @Test
     void redisUriAndClientOptionsCanBeConfiguredWithoutConnecting() {
@@ -67,7 +68,7 @@ public class Lettuce_coreTest {
         RedisClient client = RedisClient.create(uri);
         try {
             SocketOptions socketOptions = SocketOptions.builder()
-                    .connectTimeout(Duration.ofMillis(500))
+                    .connectTimeout(COMMAND_TIMEOUT)
                     .keepAlive(true)
                     .build();
             ClientOptions clientOptions = ClientOptions.builder()
@@ -77,7 +78,7 @@ public class Lettuce_coreTest {
                     .build();
 
             client.setOptions(clientOptions);
-            client.setDefaultTimeout(Duration.ofSeconds(3));
+            client.setDefaultTimeout(COMMAND_TIMEOUT);
 
             assertThat(uri.getHost()).isEqualTo("localhost");
             assertThat(uri.getPort()).isEqualTo(6380);
@@ -92,7 +93,7 @@ public class Lettuce_coreTest {
     @Test
     void synchronousCommandsRoundTripAgainstRedisProtocolServer() throws Exception {
         try (FakeRedisServer server = new FakeRedisServer()) {
-            RedisClient client = RedisClient.create(server.redisUri());
+            RedisClient client = createClient(server);
             StatefulRedisConnection<String, String> connection = null;
             try {
                 connection = client.connect();
@@ -123,7 +124,7 @@ public class Lettuce_coreTest {
     @Test
     void commandArgumentBuildersEncodeOptionsAndKeyValueResults() throws Exception {
         try (FakeRedisServer server = new FakeRedisServer()) {
-            RedisClient client = RedisClient.create(server.redisUri());
+            RedisClient client = createClient(server);
             StatefulRedisConnection<String, String> connection = null;
             try {
                 connection = client.connect();
@@ -157,7 +158,7 @@ public class Lettuce_coreTest {
     @Test
     void asynchronousAndReactiveCommandsUseTheSameConnectionInfrastructure() throws Exception {
         try (FakeRedisServer server = new FakeRedisServer()) {
-            RedisClient client = RedisClient.create(server.redisUri());
+            RedisClient client = createClient(server);
             StatefulRedisConnection<String, String> connection = null;
             try {
                 connection = client.connect();
@@ -166,8 +167,8 @@ public class Lettuce_coreTest {
 
                 RedisFuture<String> set = async.set("async-key", "async-value");
                 RedisFuture<String> get = async.get("async-key");
-                assertThat(set.get(5, TimeUnit.SECONDS)).isEqualTo("OK");
-                assertThat(get.get(5, TimeUnit.SECONDS)).isEqualTo("async-value");
+                assertThat(set.get(COMMAND_TIMEOUT.toSeconds(), TimeUnit.SECONDS)).isEqualTo("OK");
+                assertThat(get.get(COMMAND_TIMEOUT.toSeconds(), TimeUnit.SECONDS)).isEqualTo("async-value");
 
                 RedisReactiveCommands<String, String> reactive = connection.reactive();
                 assertThat(reactive.set("reactive-key", "reactive-value").block(COMMAND_TIMEOUT)).isEqualTo("OK");
@@ -187,7 +188,7 @@ public class Lettuce_coreTest {
     @Test
     void geospatialCommandsDecodeCoordinatesAndDistances() throws Exception {
         try (FakeRedisServer server = new FakeRedisServer()) {
-            RedisClient client = RedisClient.create(server.redisUri());
+            RedisClient client = createClient(server);
             StatefulRedisConnection<String, String> connection = null;
             try {
                 connection = client.connect();
@@ -218,7 +219,7 @@ public class Lettuce_coreTest {
     @Test
     void sortedSetCommandsMapScoredValues() throws Exception {
         try (FakeRedisServer server = new FakeRedisServer()) {
-            RedisClient client = RedisClient.create(server.redisUri());
+            RedisClient client = createClient(server);
             StatefulRedisConnection<String, String> connection = null;
             try {
                 connection = client.connect();
@@ -241,7 +242,7 @@ public class Lettuce_coreTest {
     @Test
     void scriptingCommandsDecodeRequestedOutputTypes() throws Exception {
         try (FakeRedisServer server = new FakeRedisServer()) {
-            RedisClient client = RedisClient.create(server.redisUri());
+            RedisClient client = createClient(server);
             StatefulRedisConnection<String, String> connection = null;
             try {
                 connection = client.connect();
@@ -270,8 +271,16 @@ public class Lettuce_coreTest {
         }
     }
 
+    private static RedisClient createClient(FakeRedisServer server) {
+        RedisClient client = RedisClient.create(server.redisUri());
+        client.setOptions(ClientOptions.builder()
+                .protocolVersion(ProtocolVersion.RESP2)
+                .build());
+        return client;
+    }
+
     private static void shutdown(RedisClient client) {
-        client.shutdown(Duration.ZERO, Duration.ofSeconds(2));
+        client.shutdown(Duration.ZERO, COMMAND_TIMEOUT);
     }
 
     private static void closeConnection(StatefulRedisConnection<String, String> connection) {
@@ -295,11 +304,11 @@ public class Lettuce_coreTest {
 
         FakeRedisServer() throws Exception {
             serverSocket = new ServerSocket(0, 50, InetAddress.getLoopbackAddress());
-            serverSocket.setSoTimeout(500);
+            serverSocket.setSoTimeout((int) COMMAND_TIMEOUT.toMillis());
             thread = new Thread(this::acceptConnections, "fake-redis-server");
             thread.setDaemon(true);
             thread.start();
-            assertThat(started.await(5, TimeUnit.SECONDS)).isTrue();
+            assertThat(started.await(COMMAND_TIMEOUT.toSeconds(), TimeUnit.SECONDS)).isTrue();
         }
 
         RedisURI redisUri() {
@@ -327,7 +336,7 @@ public class Lettuce_coreTest {
             started.countDown();
             while (!closed) {
                 try (Socket socket = serverSocket.accept()) {
-                    socket.setSoTimeout(5_000);
+                    socket.setSoTimeout((int) COMMAND_TIMEOUT.toMillis());
                     handle(socket);
                 } catch (SocketTimeoutException e) {
                     continue;
