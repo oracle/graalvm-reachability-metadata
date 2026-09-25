@@ -36,4 +36,12 @@ public class TomcatStringManagerTest {
         assertThat(manager.getLocale()).isNull();
         assertThat(manager.getString("missing-key")).isNull();
     }
+
+    @Test
+    void loadsAndFormatsTomcatMessages() {
+        StringManager manager = StringManager.getManager("org.apache.tomcat.util");
+
+        assertThat(manager.getString("diagnostics.setPropertyFail", "name", "expected", "actual"))
+                .contains("name", "expected", "actual");
+    }
 }
