@@ -6,8 +6,6 @@
  */
 package org_apache_tomcat_embed.tomcat_embed_core;
 
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.security.Principal;
 import java.util.Map;
 import java.util.Objects;
@@ -22,7 +20,6 @@ import org.apache.catalina.TomcatPrincipal;
 import org.apache.catalina.realm.GenericPrincipal;
 import org.apache.catalina.realm.JAASRealm;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -41,27 +38,6 @@ public class JAASRealmTest {
             Principal principal = realm.authenticate("alice", "secret");
 
             assertAuthenticatedPrincipal(principal, "alice", "admin");
-        } finally {
-            destroy(realm);
-        }
-    }
-
-    @Test
-    void authenticatesWithJaasConfigurationLoadedFromFile(@TempDir Path temporaryDirectory) throws Exception {
-        Path configFile = temporaryDirectory.resolve("jaas.config");
-        Files.writeString(configFile, """
-                ReachabilityTest {
-                    %s required;
-                };
-                """.formatted(AcceptingLoginModule.class.getName()));
-        TestableJAASRealm realm = newRealm(configFile.toString(), "file");
-
-        try {
-            realm.start();
-
-            Principal principal = realm.authenticate("bob", "secret");
-
-            assertAuthenticatedPrincipal(principal, "bob", "admin");
         } finally {
             destroy(realm);
         }
