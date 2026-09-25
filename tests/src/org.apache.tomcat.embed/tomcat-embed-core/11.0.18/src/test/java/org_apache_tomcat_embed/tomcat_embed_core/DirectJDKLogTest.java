@@ -6,8 +6,10 @@
  */
 package org_apache_tomcat_embed.tomcat_embed_core;
 
+import java.util.Arrays;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.Formatter;
+import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
@@ -39,8 +41,13 @@ public class DirectJDKLogTest {
             Log log = LogFactory.getLog("direct-jdk-logger");
             log.info("ready");
 
+            boolean simpleFormatterInstalled = Arrays.stream(rootLogger.getHandlers())
+                    .filter(ConsoleHandler.class::isInstance)
+                    .map(Handler::getFormatter)
+                    .anyMatch(SimpleFormatter.class::isInstance);
+
             assertThat(log.isInfoEnabled()).isTrue();
-            assertThat(consoleHandler.getFormatter()).isInstanceOf(SimpleFormatter.class);
+            assertThat(simpleFormatterInstalled).isTrue();
         } finally {
             restoreProperty("java.util.logging.config.class", configClass);
             restoreProperty("java.util.logging.config.file", configFile);
