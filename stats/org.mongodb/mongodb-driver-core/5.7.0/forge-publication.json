@@ -1,0 +1,103 @@
+{
+  "base_commit": "a39bf7521d0089ee82cc1b95a0c812bb59cb7f32",
+  "branch": "ai/kimeta/fix-javac-org.mongodb-mongodb-driver-core-5.7.0-forge-9388-20260925103528508241-e0a62119f258",
+  "follow_ups": [],
+  "forge": {
+    "branch": "master",
+    "commit": "a39bf7521d0089ee82cc1b95a0c812bb59cb7f32",
+    "monitored_branch": "origin/master"
+  },
+  "issue_number": 9388,
+  "library": {
+    "artifact": "mongodb-driver-core",
+    "coordinates": "org.mongodb:mongodb-driver-core:5.7.0",
+    "group": "org.mongodb",
+    "version": "5.7.0"
+  },
+  "local_ci_verification": {
+    "base_commit": "a39bf7521d0089ee82cc1b95a0c812bb59cb7f32",
+    "commands": [
+      {
+        "command": [
+          "./gradlew",
+          "generateChangedIndexFileCoordinatesList",
+          "-PbaseCommit=origin/master",
+          "-PnewCommit=HEAD"
+        ],
+        "env": {
+          "GITHUB_OUTPUT": "/tmp/tmp86y2nzf8"
+        },
+        "gate": "changed-index-coordinates",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :generateChangedIndexFileCoordinatesList\n\n[Incubating] Problems report is available at: file:///home/oracle/oracle/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9388-e4dc527d/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 3s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      },
+      {
+        "command": [
+          "./gradlew",
+          "validateIndexFiles",
+          "-Pcoordinates=org.mongodb:mongodb-driver-core"
+        ],
+        "env": {},
+        "gate": "index-file-validation",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :validateIndexFiles\n✅ metadata/org.mongodb/mongodb-driver-core/index.json: Valid\n\n[Incubating] Problems report is available at: file:///home/oracle/oracle/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9388-e4dc527d/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 2s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      }
+    ],
+    "failure_command": null,
+    "failure_gate": null,
+    "final_commit": "1b7034dfb02cd9a35237b061f24c2c61f55f9b60",
+    "fixups": [],
+    "human_intervention_required": false,
+    "repo_fix_paths": [],
+    "status": "success"
+  },
+  "local_review": {
+    "action": "human-intervention",
+    "changed_paths": [],
+    "decision": "rejected",
+    "finding_body": "FS-test-contract.2.1 forbids test-side reflection that bypasses the library behavior a consumer can invoke. tests/src/org.mongodb/mongodb-driver-core/5.7.0/src/test/java/org_mongodb/mongodb_driver_core/DirectBufferDeallocatorInnerJava8DeallocatorTest.java uses getDeclaredClasses, getDeclaredField, getDeclaredMethod, setAccessible, Unsafe.allocateInstance, and direct private-field mutation to manufacture DirectBufferDeallocator$Java8Deallocator execution on the JDK 25 lanes. The normal public constructor selects the Java 9 implementation there. I could not safely rewrite the scenario without that bypass; removing it would delete an inherited passing scenario and may reduce the reported 13/13 dynamic-access coverage. A maintainer must decide how to make or retire this historical coverage without violating the contribution contract.",
+    "finding_title": "Test-side reflection forces an unreachable implementation path",
+    "fix_note": "Raised all explicit connection, read, server-selection, and operation timeouts in ByteBufBsonArrayTest and SocketStreamHelperTest to the required 10-second minimum, updating the corresponding assertions. The exact Forge finalization command completed successfully afterward and made no further publishable change.",
+    "model": "gpt-5.6-sol",
+    "review_comment": "Reviewed the complete coordinate-scoped diff, local gate evidence, compile-signature adaptation, metadata format, index integrity, test behavior, security-sensitive operations, and old/new dynamic-access statistics. Overall and reflection coverage both remain 13/13 (100%). The Forge-owned finalization command then passed all three native lanes, metadata validation, style checks, generated-test checks, and statistics generation without further publishable changes. The contribution still requires maintainer intervention because DirectBufferDeallocatorInnerJava8DeallocatorTest directly reflects into and unsafe-allocates MongoDB implementation classes to force the Java 8 deallocator path, contrary to FS-test-contract.2.1. A compliant local rewrite that preserves this scenario is not evident on the JDK 25 test lanes, while deleting it would weaken inherited coverage and violate the repair constraints.",
+    "session_id": "fad71b5c68f44fcb"
+  },
+  "metrics": {
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "path": "stats/org.mongodb/mongodb-driver-core/5.7.0/execution-metrics.json",
+    "summary": {
+      "cached_input_tokens_used": 113152,
+      "code_coverage_percent": 12.57,
+      "cost_usd": 0.2696,
+      "input_tokens_used": 37872,
+      "iterations": 3,
+      "metadata_entries": 30,
+      "output_tokens_used": 785,
+      "previous_library_coverage_percent": 13.39,
+      "previous_library_metadata_entries": 17,
+      "test_only_metadata_entries": 15,
+      "tested_library_loc": 3538
+    },
+    "timestamp": "2026-09-25T10:35:28.508241Z"
+  },
+  "modifiers": {
+    "chunk_final": true,
+    "chunked_dynamic_access": false,
+    "human_intervention": false
+  },
+  "previous_library": {
+    "artifact": "mongodb-driver-core",
+    "coordinates": "org.mongodb:mongodb-driver-core:5.2.0",
+    "group": "org.mongodb",
+    "version": "5.2.0"
+  },
+  "producer": "kimeta",
+  "publication_id": "forge-9388-20260925103528508241-e0a62119f258",
+  "render": {},
+  "schema_version": 1,
+  "strategy_name": "javac_iterative_with_coverage_sources_pi_gpt-5.6-sol",
+  "task_type": "fixes-javac-fail",
+  "template_type": "fixes-javac-fail",
+  "timestamp": "2026-09-25T10:35:28.508241Z"
+}
