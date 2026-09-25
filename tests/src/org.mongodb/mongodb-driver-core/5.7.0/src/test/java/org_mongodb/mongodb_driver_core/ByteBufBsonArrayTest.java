@@ -8,7 +8,6 @@ package org_mongodb.mongodb_driver_core;
 
 import com.mongodb.LoggerSettings;
 import com.mongodb.MongoDriverInformation;
-import com.mongodb.ReadConcern;
 import com.mongodb.ReadPreference;
 import com.mongodb.ServerAddress;
 import com.mongodb.connection.AsyncCompletionHandler;
@@ -91,8 +90,7 @@ public class ByteBufBsonArrayTest {
                 Collections.emptyList(),
                 null,
                 null);
-        final ClusterBinding binding = new ClusterBinding(cluster, ReadPreference.primary(), ReadConcern.DEFAULT,
-                operationContext);
+        final ClusterBinding binding = new ClusterBinding(cluster, ReadPreference.primary());
         try {
             final BsonDocument matchStage = new BsonDocument("$match",
                     new BsonDocument("status", new BsonString("active")));
@@ -102,7 +100,7 @@ public class ByteBufBsonArrayTest {
                     .append("cursor", new BsonDocument());
             final CommandReadOperation<BsonDocument> operation = new CommandReadOperation<>("test", command,
                     new BsonDocumentCodec());
-            final BsonDocument result = operation.execute(binding);
+            final BsonDocument result = operation.execute(binding, operationContext);
 
             assertThat(result.getNumber("ok").doubleValue()).isEqualTo(1.0);
             assertThat(commandListener.pipelineValues).containsExactly(matchStage, limitStage);
