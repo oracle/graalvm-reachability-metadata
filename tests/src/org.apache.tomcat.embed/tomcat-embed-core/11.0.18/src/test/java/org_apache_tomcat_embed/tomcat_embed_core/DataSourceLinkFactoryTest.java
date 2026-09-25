@@ -29,7 +29,8 @@ public class DataSourceLinkFactoryTest {
 
     @Test
     void wrapsGlobalDataSourceWithConfiguredCredentials() throws Exception {
-        NamingContext global = new NamingContext(new Hashtable<>(), "global");
+        NamingContext global = new NamingContext(
+                (Hashtable<String, Object>) (Hashtable<?, ?>) new java.util.Properties(), "global");
         RecordingDataSource dataSource = new RecordingDataSource();
         global.createSubcontext("jdbc");
         global.bind("jdbc/global", dataSource);

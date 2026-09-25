@@ -59,7 +59,7 @@ public class FilterValveTest {
 
     @Test
     void providesServletContextProxyWhenAttachedOutsideAContext() throws Exception {
-        RecordingFilter.SERVLET_CONTEXT = null;
+        RecordingFilter.servletContext = null;
         StandardServer server = new StandardServer();
         StandardService service = new StandardService();
         server.addService(service);
@@ -77,8 +77,8 @@ public class FilterValveTest {
         try {
             valve.start();
 
-            assertThat(RecordingFilter.SERVLET_CONTEXT).isNotNull();
-            assertThat(RecordingFilter.SERVLET_CONTEXT.getAttribute(ScheduledThreadPoolExecutor.class.getName()))
+            assertThat(RecordingFilter.servletContext).isNotNull();
+            assertThat(RecordingFilter.servletContext.getAttribute(ScheduledThreadPoolExecutor.class.getName()))
                     .isSameAs(server.getUtilityExecutor());
         } finally {
             if (valve.getState().isAvailable()) {
@@ -94,12 +94,12 @@ public class FilterValveTest {
     public static class RecordingFilter implements Filter {
         static final AtomicBoolean INITIALIZED = new AtomicBoolean();
         static final AtomicBoolean DESTROYED = new AtomicBoolean();
-        static ServletContext SERVLET_CONTEXT;
+        static ServletContext servletContext;
 
         @Override
         public void init(FilterConfig filterConfig) {
             INITIALIZED.set("recording".equals(filterConfig.getInitParameter("mode")));
-            SERVLET_CONTEXT = filterConfig.getServletContext();
+            servletContext = filterConfig.getServletContext();
         }
 
         @Override
