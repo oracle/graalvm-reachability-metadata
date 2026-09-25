@@ -1,0 +1,56 @@
+{
+  "fix_ni_run:2026-09-25": {
+    "timestamp": "2026-09-25T12:34:14.822532Z",
+    "library": "org.springframework:spring-aspects:6.0.0",
+    "starting_commit": "5667b1fec3a607f5e7209ed97157a9f3fa3610d5",
+    "ending_commit": "5667b1fec3a607f5e7209ed97157a9f3fa3610d5",
+    "strategy_name": "library_update_pi_gpt-5.6-sol",
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "status": "failure",
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "advisory_preparation",
+      "issue_number": 9399,
+      "issue_label": "fails-native-image-run",
+      "library": "org.springframework:spring-aspects:6.0.0",
+      "summary": "No extra dependency/Docker/env setup needed; flag that Spring-context-driven @Enable*(mode=ASPECTJ)/@EnableSpringConfigured flows CGLIB-enhance library-internal @Configuration classes at runtime and must be avoided in generated tests.",
+      "deterministic_setup": [],
+      "agent_guidance": "Do not exercise @EnableSpringConfigured, @EnableTransactionManagement(mode = AdviceMode.ASPECTJ), @EnableCaching(mode = AdviceMode.ASPECTJ), or @EnableAsync(mode = AdviceMode.ASPECTJ) through a real AnnotationConfigApplicationContext.refresh(). Spring's ConfigurationClassPostProcessor unconditionally CGLIB-enhances the library's own internal full @Configuration classes (org.springframework.context.annotation.aspectj.SpringConfiguredConfiguration, org.springframework.transaction.aspectj.AspectJTransactionManagementConfiguration, and the equivalent cache/async ones), which calls org.springframework.cglib.core.ReflectUtils.defineClass at runtime and fails under Native Image with UnsupportedFeatureError (verified locally against 6.0.0 with GVM_TCK_LV=6.0.0 GVM_TCK_NATIVE_IMAGE_MODE=current-defaults). This repo's reachability-metadata.json format has no predefined-classes support to register that runtime-defined class, so there is no metadata fix. Instead, cover these aspects the way the existing 5.3.31 suite already does for its passing tests: obtain the aspect via its static aspectOf() accessor (AnnotationBeanConfigurerAspect.aspectOf(), AnnotationTransactionAspect.aspectOf(), AnnotationCacheAspect.aspectOf(), AnnotationAsyncExecutionAspect.aspectOf()) and configure/invoke it directly, or use GenericInterfaceDrivenDependencyInjectionAspect directly, instead of booting a full ApplicationContext through the @Enable* annotations.",
+      "risks": [
+        "Avoiding the ApplicationContext-driven @Enable*(mode=ASPECTJ)/@EnableSpringConfigured flow means the generated test won't cover Spring's bean-registration/@Configuration integration path of spring-aspects, only the direct aspectOf()-based usage — this is an inherent Native Image limitation (runtime CGLIB class definition) with no metadata-based fix available in this repo's format, not a scaffold or dependency gap.",
+        "This CGLIB/@Configuration enhancement issue is likely generic to other Spring modules tested under the current stricter native-image default mode, not unique to spring-aspects 6.0.0 — worth flagging if similar failures show up on other spring-* version bumps."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#9399 [Automation] native-image run fails for org.springframework:spring-aspects:6.0.0; label=fails-native-image-run; body_chars=8015"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "9 existing test file path(s) included"
+        }
+      ],
+      "current_library": "org.springframework:spring-aspects:5.3.31",
+      "new_version": "6.0.0",
+      "model": "sonnet",
+      "input_tokens_used": 60,
+      "output_tokens_used": 24823
+    },
+    "metrics": {
+      "input_tokens_used": 0,
+      "cached_input_tokens_used": 0,
+      "output_tokens_used": 0,
+      "iterations": 3,
+      "cost_usd": 0.0,
+      "generated_loc": 0,
+      "tested_library_loc": 0,
+      "metadata_entries": 0,
+      "code_coverage_percent": 0.0
+    },
+    "artifacts": {
+      "metadata_file": "None"
+    }
+  }
+}

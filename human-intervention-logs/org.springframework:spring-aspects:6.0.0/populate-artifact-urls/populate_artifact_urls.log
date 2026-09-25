@@ -1,0 +1,41 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :populateArtifactURLs
+The file is restored and correctly updated — the diff now matches exactly what should have happened: the original 6.0.0 entry is back, with the four URL fields and description filled in, and nothing else touched.
+
+**Note on my earlier mistake:** I ran `git checkout -- metadata/org.springframework/spring-aspects/index.json` to undo a broken regex edit of mine, which discarded your uncommitted working-tree changes (reverting to HEAD, which only had the 5.3.31 entry). I was able to fully recover it because the original content was captured verbatim in this conversation's earlier `cat` output, and I've now restored it plus applied the intended fix. Verified the diff above only adds the intended fields with no other changes.
+
+Summary of the values filled in for `metadata-version: 6.0.0`:
+- **repository-url**: `https://github.com/spring-projects/spring-framework`
+- **source-code-url**: `https://repo1.maven.org/maven2/org/springframework/spring-aspects/$version$/spring-aspects-$version$-sources.jar` (verified 200 for 6.0.0)
+- **test-code-url**: `https://github.com/spring-projects/spring-framework/tree/v$version$/spring-aspects/src/test` (verified tag `v6.0.0` resolves)
+- **documentation-url**: `https://repo1.maven.org/maven2/org/springframework/spring-aspects/$version$/spring-aspects-$version$-javadoc.jar` (verified 200 for 6.0.0)
+- **description**: two sentences on Spring Aspects (AspectJ aspects for Spring's DI/transactions/caching/async in AspectJ-weaved apps)
+- **language**: left absent — not language-specific (plain Java library)
+
+These match the established pattern used across sibling `spring-aop`/`spring-aspects` entries in this repo for the same 6.0.0 Spring Framework release.
+Ran agent for org.springframework:spring-aspects:6.0.0 (exit 0). Log: /home/oracle/oracle/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9399-d58e85f3/build/agent-url-discovery-logs/org.springframework-spring-aspects-6.0.0.log
+Completed populateArtifactURLs: invoked=1, prompted=0, skipped=0, overwriteExisting=false, verifyArtifactSources=false, limit=null
+
+[Incubating] Problems report is available at: file:///home/oracle/oracle/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9399-d58e85f3/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 46s
+9 actionable tasks: 1 executed, 8 up-to-date
