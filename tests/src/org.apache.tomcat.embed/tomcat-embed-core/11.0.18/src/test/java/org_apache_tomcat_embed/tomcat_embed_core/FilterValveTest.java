@@ -13,12 +13,19 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import jakarta.servlet.Filter;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.FilterConfig;
+import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
 import org.apache.catalina.Context;
+import org.apache.catalina.LifecycleState;
+import org.apache.catalina.core.StandardEngine;
+import org.apache.catalina.core.StandardHost;
+import org.apache.catalina.core.StandardServer;
+import org.apache.catalina.core.StandardService;
 import org.apache.catalina.startup.Tomcat;
 import org.apache.catalina.valves.FilterValve;
+import org.apache.tomcat.util.threads.ScheduledThreadPoolExecutor;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -50,13 +57,49 @@ public class FilterValveTest {
         assertThat(RecordingFilter.DESTROYED).isTrue();
     }
 
+    @Test
+    void providesServletContextProxyWhenAttachedOutsideAContext() throws Exception {
+        RecordingFilter.SERVLET_CONTEXT = null;
+        StandardServer server = new StandardServer();
+        StandardService service = new StandardService();
+        server.addService(service);
+        StandardEngine engine = new StandardEngine();
+        engine.setName("proxy-filter-engine");
+        service.setContainer(engine);
+        StandardHost host = new StandardHost();
+        host.setName("localhost");
+        engine.addChild(host);
+
+        FilterValve valve = new FilterValve();
+        valve.setContainer(host);
+        valve.setFilterClassName(RecordingFilter.class.getName());
+
+        try {
+            valve.start();
+
+            assertThat(RecordingFilter.SERVLET_CONTEXT).isNotNull();
+            assertThat(RecordingFilter.SERVLET_CONTEXT.getAttribute(ScheduledThreadPoolExecutor.class.getName()))
+                    .isSameAs(server.getUtilityExecutor());
+        } finally {
+            if (valve.getState().isAvailable()) {
+                valve.stop();
+            }
+            if (valve.getState() != LifecycleState.DESTROYED) {
+                valve.destroy();
+            }
+            server.destroy();
+        }
+    }
+
     public static class RecordingFilter implements Filter {
         static final AtomicBoolean INITIALIZED = new AtomicBoolean();
         static final AtomicBoolean DESTROYED = new AtomicBoolean();
+        static ServletContext SERVLET_CONTEXT;
 
         @Override
         public void init(FilterConfig filterConfig) {
             INITIALIZED.set("recording".equals(filterConfig.getInitParameter("mode")));
+            SERVLET_CONTEXT = filterConfig.getServletContext();
         }
 
         @Override

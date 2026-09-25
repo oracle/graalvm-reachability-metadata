@@ -8,24 +8,43 @@ package org_apache_tomcat_embed.tomcat_embed_core;
 
 import java.io.ByteArrayInputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.concurrent.atomic.AtomicReference;
 
 import org.apache.tomcat.util.digester.Digester;
+import org.apache.tomcat.util.digester.Rule;
 import org.junit.jupiter.api.Test;
+import org.xml.sax.Attributes;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class DigesterTest {
 
     @Test
-    void parsesXmlWithPushedRootObject() throws Exception {
-        Digester digester = new Digester();
-        StringBuilder root = new StringBuilder("root");
-        digester.push(root);
+    void parsesXmlUsingConfiguredPropertySource() throws Exception {
+        String propertyName = "tomcat.test.digester.message";
+        String originalValue = System.getProperty(propertyName);
+        System.setProperty(propertyName, "resolved-message");
 
-        try (ByteArrayInputStream input =
-                new ByteArrayInputStream("<configuration/>".getBytes(StandardCharsets.UTF_8))) {
-            Object parsedRoot = digester.parse(input);
-            assertThat(parsedRoot).isSameAs(root);
+        AtomicReference<String> parsedMessage = new AtomicReference<>();
+        Digester digester = new Digester();
+        digester.addRule("message", new Rule() {
+            @Override
+            public void begin(String namespace, String name, Attributes attributes) {
+                parsedMessage.set(attributes.getValue("text"));
+            }
+        });
+
+        try {
+            String xml = "<message text=\"${" + propertyName + "}\"/>";
+            digester.parse(new ByteArrayInputStream(xml.getBytes(StandardCharsets.UTF_8)));
+        } finally {
+            if (originalValue == null) {
+                System.clearProperty(propertyName);
+            } else {
+                System.setProperty(propertyName, originalValue);
+            }
         }
+
+        assertThat(parsedMessage.get()).isEqualTo("resolved-message");
     }
 }
