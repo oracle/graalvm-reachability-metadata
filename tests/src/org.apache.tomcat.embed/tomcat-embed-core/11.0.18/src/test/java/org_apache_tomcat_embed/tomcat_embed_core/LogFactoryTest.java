@@ -6,6 +6,10 @@
  */
 package org_apache_tomcat_embed.tomcat_embed_core;
 
+import java.util.logging.Handler;
+import java.util.logging.LogRecord;
+import java.util.logging.Logger;
+
 import org.apache.juli.logging.Log;
 import org.apache.juli.logging.LogFactory;
 import org.junit.jupiter.api.Order;
@@ -17,125 +21,46 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class LogFactoryTest {
 
     @Test
-    void createsDiscoveredLoggerWithRequestedName() {
-        Log log = LogFactory.getLog("factory-created-logger");
+    void createsLoggerWithRequestedName() {
+        String loggerName = "factory-created-logger";
+        Logger logger = Logger.getLogger(loggerName);
+        CapturingHandler handler = new CapturingHandler();
+        boolean previousUseParentHandlers = logger.getUseParentHandlers();
+        logger.setUseParentHandlers(false);
+        logger.addHandler(handler);
 
-        assertThat(log).isInstanceOf(TestLog.class);
-        TestLog testLog = (TestLog) log;
-        testLog.info("ready");
+        try {
+            Log log = LogFactory.getFactory().getInstance(loggerName);
+            log.info("ready");
 
-        assertThat(testLog.getName()).isEqualTo("factory-created-logger");
-        assertThat(testLog.getMessage()).isEqualTo("ready");
+            assertThat(handler.getRecord()).isNotNull();
+            assertThat(handler.getRecord().getLoggerName()).isEqualTo(loggerName);
+            assertThat(handler.getRecord().getMessage()).isEqualTo("ready");
+        } finally {
+            logger.removeHandler(handler);
+            logger.setUseParentHandlers(previousUseParentHandlers);
+            handler.close();
+        }
     }
 
-    public static final class TestLog implements Log {
-        private final String name;
-        private Object message;
+    private static final class CapturingHandler extends Handler {
+        private LogRecord record;
 
-        public TestLog() {
-            this("service-provider");
-        }
-
-        public TestLog(String name) {
-            this.name = name;
-        }
-
-        public String getName() {
-            return name;
-        }
-
-        public Object getMessage() {
-            return message;
+        @Override
+        public void publish(LogRecord value) {
+            record = value;
         }
 
         @Override
-        public boolean isDebugEnabled() {
-            return false;
+        public void flush() {
         }
 
         @Override
-        public boolean isErrorEnabled() {
-            return true;
+        public void close() {
         }
 
-        @Override
-        public boolean isFatalEnabled() {
-            return true;
-        }
-
-        @Override
-        public boolean isInfoEnabled() {
-            return true;
-        }
-
-        @Override
-        public boolean isTraceEnabled() {
-            return false;
-        }
-
-        @Override
-        public boolean isWarnEnabled() {
-            return true;
-        }
-
-        @Override
-        public void trace(Object value) {
-            message = value;
-        }
-
-        @Override
-        public void trace(Object value, Throwable throwable) {
-            message = value;
-        }
-
-        @Override
-        public void debug(Object value) {
-            message = value;
-        }
-
-        @Override
-        public void debug(Object value, Throwable throwable) {
-            message = value;
-        }
-
-        @Override
-        public void info(Object value) {
-            message = value;
-        }
-
-        @Override
-        public void info(Object value, Throwable throwable) {
-            message = value;
-        }
-
-        @Override
-        public void warn(Object value) {
-            message = value;
-        }
-
-        @Override
-        public void warn(Object value, Throwable throwable) {
-            message = value;
-        }
-
-        @Override
-        public void error(Object value) {
-            message = value;
-        }
-
-        @Override
-        public void error(Object value, Throwable throwable) {
-            message = value;
-        }
-
-        @Override
-        public void fatal(Object value) {
-            message = value;
-        }
-
-        @Override
-        public void fatal(Object value, Throwable throwable) {
-            message = value;
+        public LogRecord getRecord() {
+            return record;
         }
     }
 }
