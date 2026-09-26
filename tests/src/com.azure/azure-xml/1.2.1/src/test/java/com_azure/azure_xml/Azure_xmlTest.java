@@ -30,7 +30,7 @@ public class Azure_xmlTest {
     @Test
     void roundTripsSerializableModelWithTypedValues() throws XMLStreamException {
         Inventory expected = new Inventory("storage & compute", true, 19.75D, 2.5F, 42, 9_000_000_000L,
-            new byte[] { 0, 1, 2, 127 }, new BigDecimal("1234.50"), "left & <right>");
+            new byte[] {0, 1, 2, 127 }, new BigDecimal("1234.50"), "left & <right>");
         ByteArrayOutputStream output = new ByteArrayOutputStream();
 
         try (XmlWriter writer = XmlWriter.toStream(output)) {
