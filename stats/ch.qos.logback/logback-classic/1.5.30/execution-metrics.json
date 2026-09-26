@@ -1,0 +1,140 @@
+{
+  "fix_java_run_fail:2026-09-26": {
+    "timestamp": "2026-09-26T13:51:14.502898Z",
+    "library": "ch.qos.logback:logback-classic:1.5.30",
+    "starting_commit": "f1dadb62bd84a89e385cf7a38b593448eb4cc0d6",
+    "ending_commit": "b216bcd309ed53c1a6191fecf734c161f4155c8d",
+    "previous_library": "ch.qos.logback:logback-classic:1.5.29",
+    "strategy_name": "java_run_iterative_with_coverage_sources_pi_gpt-5.6-sol",
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "status": "success",
+    "stats": {
+      "version": "1.5.30",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 15,
+            "totalCalls": 15
+          },
+          "resources": {
+            "coverageRatio": 0.5,
+            "coveredCalls": 1,
+            "totalCalls": 2
+          }
+        },
+        "coverageRatio": 0.941176,
+        "coveredCalls": 16,
+        "totalCalls": 17
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 5809,
+          "missed": 12759,
+          "ratio": 0.31285,
+          "total": 18568
+        },
+        "line": {
+          "covered": 1583,
+          "missed": 3542,
+          "ratio": 0.308878,
+          "total": 5125
+        },
+        "method": {
+          "covered": 379,
+          "missed": 747,
+          "ratio": 0.33659,
+          "total": 1126
+        }
+      }
+    },
+    "previous_library_stats": {
+      "version": "1.5.29",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 15,
+            "totalCalls": 15
+          },
+          "resources": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 1,
+            "totalCalls": 1
+          }
+        },
+        "coverageRatio": 1.0,
+        "coveredCalls": 16,
+        "totalCalls": 16
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 5910,
+          "missed": 12623,
+          "ratio": 0.318891,
+          "total": 18533
+        },
+        "line": {
+          "covered": 1604,
+          "missed": 3511,
+          "ratio": 0.313587,
+          "total": 5115
+        },
+        "method": {
+          "covered": 385,
+          "missed": 740,
+          "ratio": 0.342222,
+          "total": 1125
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "no_action",
+      "issue_number": 9327,
+      "issue_label": "fails-java-run",
+      "library": "ch.qos.logback:logback-classic:1.5.30",
+      "summary": "logback-classic 1.5.30 is a broken upstream release (jar is missing META-INF/services/org.slf4j.spi.SLF4JServiceProvider, confirmed by diffing the Maven Central jars for 1.5.29/1.5.30/1.5.31), which breaks SLF4J binding before native-image is even involved; no dependency, Docker image, or env/property setup can compensate for a missing service file in the artifact itself.",
+      "deterministic_setup": [],
+      "agent_guidance": "",
+      "risks": [
+        "The java-run failure is caused by a packaging defect in the 1.5.30 artifact itself (missing META-INF/services), not by test/metadata gaps; generated tests will keep failing regardless of setup changes.",
+        "Logback fixed this the same day in 1.5.31, which restores the service file; this version may simply need to be skipped/superseded rather than fixed via metadata."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#9327 [Automation] java run fails for ch.qos.logback:logback-classic:1.5.30; label=fails-java-run; body_chars=8015"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "21 existing test file path(s) included"
+        }
+      ],
+      "current_library": "ch.qos.logback:logback-classic:1.5.29",
+      "new_version": "1.5.30",
+      "model": "sonnet",
+      "input_tokens_used": 20,
+      "output_tokens_used": 5623
+    },
+    "metrics": {
+      "input_tokens_used": 419300,
+      "cached_input_tokens_used": 3826816,
+      "output_tokens_used": 25859,
+      "iterations": 11,
+      "cost_usd": 4.7857,
+      "tested_library_loc": 1583,
+      "metadata_entries": 44,
+      "test_only_metadata_entries": 81,
+      "previous_library_metadata_entries": 241,
+      "previous_library_test_only_metadata_entries": 74,
+      "code_coverage_percent": 30.89,
+      "previous_library_coverage_percent": 31.36
+    },
+    "artifacts": {
+      "metadata_file": "metadata/ch.qos.logback/logback-classic/1.5.30/reachability-metadata.json"
+    }
+  }
+}
