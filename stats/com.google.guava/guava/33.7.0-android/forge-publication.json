@@ -1,0 +1,104 @@
+{
+  "base_commit": "3be8e51b85ccb1ccb7ac4f54aaa71c1b0ab4aa28",
+  "branch": "ai/kimeta/fix-java-run-com.google.guava-guava-33.7.0-android-forge-9330-20260926061742969290-24a8ddfbd14b",
+  "follow_ups": [],
+  "forge": {
+    "branch": "master",
+    "commit": "3be8e51b85ccb1ccb7ac4f54aaa71c1b0ab4aa28",
+    "monitored_branch": "origin/master"
+  },
+  "issue_number": 9330,
+  "library": {
+    "artifact": "guava",
+    "coordinates": "com.google.guava:guava:33.7.0-android",
+    "group": "com.google.guava",
+    "version": "33.7.0-android"
+  },
+  "local_ci_verification": {
+    "base_commit": "3be8e51b85ccb1ccb7ac4f54aaa71c1b0ab4aa28",
+    "commands": [
+      {
+        "command": [
+          "./gradlew",
+          "generateChangedIndexFileCoordinatesList",
+          "-PbaseCommit=origin/master",
+          "-PnewCommit=HEAD"
+        ],
+        "env": {
+          "GITHUB_OUTPUT": "/tmp/tmpxk95bk74"
+        },
+        "gate": "changed-index-coordinates",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :generateChangedIndexFileCoordinatesList\n\n[Incubating] Problems report is available at: file:///home/oracle/oracle/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9330-ecd88249/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 3s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      },
+      {
+        "command": [
+          "./gradlew",
+          "validateIndexFiles",
+          "-Pcoordinates=com.google.guava:guava"
+        ],
+        "env": {},
+        "gate": "index-file-validation",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :validateIndexFiles\n✅ metadata/com.google.guava/guava/index.json: Valid\n\n[Incubating] Problems report is available at: file:///home/oracle/oracle/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9330-ecd88249/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 2s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      }
+    ],
+    "failure_command": null,
+    "failure_gate": null,
+    "final_commit": "bc502a54d24110e71b9cdd4ae36f44d10063fe80",
+    "fixups": [],
+    "human_intervention_required": false,
+    "repo_fix_paths": [],
+    "status": "success"
+  },
+  "local_review": {
+    "action": "human-intervention",
+    "changed_paths": [],
+    "decision": "rejected",
+    "finding_body": "The contribution is for com.google.guava:guava:33.7.0-android, but its test configurations select the standard-jvm variant declared by guava-33.7.0-android.module, whose file is ../33.7.0-jre/guava-33.7.0-jre.jar. The Forge test logs confirm that exact JRE jar on the JVM and Native Image classpaths. The repaired CompactHashMapTest also hardcodes the JRE artifact's serialVersionUID (-3875695063200762544), while the published guava-33.7.0-android.jar reports 8625094044164741507. As a local diagnostic with no contribution edit, forcing Gradle's TargetJvmEnvironment to android selected guava-33.7.0-android.jar and the JVM lane failed both CompactHashMapTest and CompactHashSetTest with incompatible stream/local serialVersionUID values. Thus the green lanes do not establish FS-test-contract.1.4 behavior for the artifact this metadata version names. The cause is established: the compatibility run identifies an -android Maven version, while the shared standard-JVM TCK attribute selects Guava's JRE variant. A contribution-local switch would merely reverse the untested variant and cannot establish which artifact(s) one metadata-version bucket must cover. Per FS-contribution-contract.5.2-.5.5, shared infrastructure and this policy uncertainty require human intervention.\n\nInfrastructure issue: https://github.com/oracle/graalvm-reachability-metadata/issues/10211 (#10211)",
+    "finding_title": "Target coordinate is verified against the wrong published variant",
+    "fix_note": "",
+    "model": "gpt-5.6-sol",
+    "review_comment": "Reviewed the complete contribution, local gate evidence, generation logs, target resolution, and the ordered repair-coverage gates. Index validation is green. Coverage passes: overall 119/119 (100%) to 115/120 (95.8333%), reflection 115/115 (100%) to 113/116 (97.4138%), and resources 4/4 to 2/4 (the small-report loss is exactly two, not more than two). Approval is blocked because the suite does not test the Android artifact named by the contribution: Gradle selects Guava's standard-JVM variant and runs guava-33.7.0-jre.jar. This requires a maintainer decision and shared compatibility/harness support for multi-variant coordinates.\n\nInfrastructure issue: https://github.com/oracle/graalvm-reachability-metadata/issues/10211 (#10211)",
+    "session_id": "15f7ab73d7a34ecc"
+  },
+  "metrics": {
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "path": "stats/com.google.guava/guava/33.7.0-android/execution-metrics.json",
+    "summary": {
+      "cached_input_tokens_used": 2032128,
+      "code_coverage_percent": 11.58,
+      "cost_usd": 3.0588,
+      "input_tokens_used": 324229,
+      "iterations": 7,
+      "metadata_entries": 137,
+      "output_tokens_used": 14055,
+      "previous_library_coverage_percent": 12.24,
+      "previous_library_metadata_entries": 142,
+      "previous_library_test_only_metadata_entries": 171,
+      "test_only_metadata_entries": 163,
+      "tested_library_loc": 4559
+    },
+    "timestamp": "2026-09-26T06:17:42.969290Z"
+  },
+  "modifiers": {
+    "chunk_final": true,
+    "chunked_dynamic_access": false,
+    "human_intervention": false
+  },
+  "previous_library": {
+    "artifact": "guava",
+    "coordinates": "com.google.guava:guava:33.6.0-jre",
+    "group": "com.google.guava",
+    "version": "33.6.0-jre"
+  },
+  "producer": "kimeta",
+  "publication_id": "forge-9330-20260926061742969290-24a8ddfbd14b",
+  "render": {},
+  "schema_version": 1,
+  "strategy_name": "java_run_iterative_with_coverage_sources_pi_gpt-5.6-sol",
+  "task_type": "fixes-java-run-fail",
+  "template_type": "fixes-java-run-fail",
+  "timestamp": "2026-09-26T06:17:42.969290Z"
+}
