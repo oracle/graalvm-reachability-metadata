@@ -15,9 +15,11 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.math.BigDecimal;
 import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
+import javax.xml.stream.XMLStreamWriter;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 
@@ -88,6 +90,34 @@ public class Azure_xmlTest {
             assertEquals("catalog", reader.getLocalName());
         } finally {
             reader.close();
+        }
+    }
+
+    @Test
+    void interoperatesWithCallerProvidedStaxStreams() throws XMLStreamException {
+        StringWriter output = new StringWriter();
+        XMLStreamWriter streamWriter = XMLOutputFactory.newFactory().createXMLStreamWriter(output);
+
+        try (XmlWriter writer = XmlWriter.fromXmlStreamWriter(streamWriter)) {
+            writer.writeStartDocument()
+                .writeStartElement("metrics")
+                .writeBooleanElement("enabled", true)
+                .writeIntElement("count", 7)
+                .writeEndElement();
+        }
+
+        XMLStreamReader streamReader = XMLInputFactory.newFactory()
+            .createXMLStreamReader(new StringReader(output.toString()));
+        try (XmlReader reader = XmlReader.fromXmlStreamReader(streamReader)) {
+            assertEquals(XmlToken.START_DOCUMENT, reader.currentToken());
+            assertEquals(XmlToken.START_ELEMENT, reader.nextElement());
+            assertTrue(reader.elementNameMatches("metrics"));
+            assertEquals(XmlToken.START_ELEMENT, reader.nextElement());
+            assertTrue(reader.getBooleanElement());
+            assertEquals(XmlToken.START_ELEMENT, reader.nextElement());
+            assertEquals(7, reader.getIntElement());
+            assertEquals(XmlToken.END_ELEMENT, reader.nextElement());
+            assertEquals(XmlToken.END_DOCUMENT, reader.nextElement());
         }
     }
 
