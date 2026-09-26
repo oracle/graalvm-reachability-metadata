@@ -14,7 +14,6 @@ import io.lettuce.core.codec.StringCodec;
 import io.lettuce.core.support.AsyncConnectionPoolSupport;
 import io.lettuce.core.support.BoundedAsyncPool;
 import io.lettuce.core.support.BoundedPoolConfig;
-import io.lettuce.core.support.ConnectionWrapping;
 import java.util.concurrent.TimeUnit;
 import org.junit.jupiter.api.Test;
 
@@ -31,12 +30,13 @@ public class ConnectionWrappingInnerReturnObjectOnCloseInvocationHandlerTest {
                                     .build());
             try {
                 StatefulRedisConnection<String, String> first = acquire(pool);
-                Object target = ConnectionWrapping.unwrap(first);
                 assertThat(first.sync().ping()).isEqualTo("PONG");
                 first.close();
 
                 StatefulRedisConnection<String, String> second = acquire(pool);
-                assertThat(ConnectionWrapping.unwrap(second)).isSameAs(target);
+                assertThat(second).isNotSameAs(first);
+                assertThat(pool.getObjectCount()).isEqualTo(1);
+                assertThat(second.sync().ping()).isEqualTo("PONG");
                 second.close();
             } finally {
                 pool.closeAsync().get(LettuceTestSupport.TIMEOUT.toSeconds(), TimeUnit.SECONDS);
