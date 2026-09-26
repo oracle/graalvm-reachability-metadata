@@ -26,6 +26,12 @@
     },
     {
       "condition" : {
+        "typeReached" : "io.lettuce.core.protocol.ReconnectionHandler"
+      },
+      "type" : "io.lettuce.core.ConnectionBuilder$PlainChannelInitializer"
+    },
+    {
+      "condition" : {
         "typeReached" : "io.lettuce.core.ConnectionBuilder$PlainChannelInitializer"
       },
       "type" : "io.lettuce.core.ConnectionEventTrigger"
@@ -47,6 +53,36 @@
         "typeReached" : "io.lettuce.core.RedisPublisher$RedisSubscription"
       },
       "type" : "io.lettuce.core.RedisPublisher$RedisSubscription"
+    },
+    {
+      "condition" : {
+        "typeReached" : "io.lettuce.core.support.$Proxy46"
+      },
+      "type" : "io.lettuce.core.api.StatefulConnection",
+      "methods" : [
+        {
+          "name" : "isOpen",
+          "parameterTypes" : [ ]
+        }
+      ]
+    },
+    {
+      "condition" : {
+        "typeReached" : "io.lettuce.core.support.ConnectionWrapping$ReturnObjectOnCloseInvocationHandler"
+      },
+      "type" : "io.lettuce.core.api.StatefulRedisConnection"
+    },
+    {
+      "condition" : {
+        "typeReached" : "io.lettuce.core.cluster.NodeSelectionInvocationHandler"
+      },
+      "type" : "io.lettuce.core.api.async.BaseRedisAsyncCommands",
+      "methods" : [
+        {
+          "name" : "ping",
+          "parameterTypes" : [ ]
+        }
+      ]
     },
     {
       "condition" : {
@@ -140,6 +176,38 @@
     },
     {
       "condition" : {
+        "typeReached" : "io.lettuce.core.cluster.NodeSelectionInvocationHandler"
+      },
+      "type" : "io.lettuce.core.cluster.NodeSelectionInvocationHandler"
+    },
+    {
+      "condition" : {
+        "typeReached" : "io.lettuce.core.cluster.ClusterFutureSyncInvocationHandler"
+      },
+      "type" : "io.lettuce.core.cluster.StatefulRedisClusterConnectionImpl"
+    },
+    {
+      "condition" : {
+        "typeReached" : "io.lettuce.core.cluster.ClusterFutureSyncInvocationHandler"
+      },
+      "type" : "io.lettuce.core.cluster.api.StatefulRedisClusterConnection",
+      "methods" : [
+        {
+          "name" : "getConnection",
+          "parameterTypes" : [
+            "java.lang.String"
+          ]
+        }
+      ]
+    },
+    {
+      "condition" : {
+        "typeReached" : "io.lettuce.core.cluster.ClusterFutureSyncInvocationHandler"
+      },
+      "type" : "io.lettuce.core.cluster.api.sync.RedisClusterCommands"
+    },
+    {
+      "condition" : {
         "typeReached" : "io.lettuce.core.internal.AbstractInvocationHandler$MethodTranslator"
       },
       "type" : "io.lettuce.core.cluster.api.sync.RedisClusterCommands"
@@ -230,6 +298,26 @@
     },
     {
       "condition" : {
+        "typeReached" : "io.lettuce.core.protocol.ConnectionWatchdog"
+      },
+      "type" : "io.lettuce.core.event.connection.JfrReconnectAttemptEvent",
+      "methods" : [
+        {
+          "name" : "<init>",
+          "parameterTypes" : [
+            "io.lettuce.core.event.connection.ReconnectAttemptEvent"
+          ]
+        }
+      ]
+    },
+    {
+      "condition" : {
+        "typeReached" : "io.lettuce.core.internal.AsyncConnectionProvider$Sync"
+      },
+      "type" : "io.lettuce.core.internal.AsyncConnectionProvider$Sync"
+    },
+    {
+      "condition" : {
         "typeReached" : "io.lettuce.core.metrics.DefaultCommandLatencyCollector"
       },
       "type" : "io.lettuce.core.metrics.DefaultCommandLatencyCollector"
@@ -284,6 +372,12 @@
     },
     {
       "condition" : {
+        "typeReached" : "io.lettuce.core.ConnectionBuilder$PlainChannelInitializer"
+      },
+      "type" : "io.lettuce.core.pubsub.PubSubCommandHandler"
+    },
+    {
+      "condition" : {
         "typeReached" : "io.lettuce.core.protocol.CommandHandler"
       },
       "type" : "io.netty.buffer.AbstractReferenceCountedByteBuf",
@@ -301,7 +395,19 @@
     },
     {
       "condition" : {
+        "typeReached" : "io.lettuce.core.protocol.ReconnectionHandler"
+      },
+      "type" : "io.netty.channel.DefaultChannelPipeline$HeadContext"
+    },
+    {
+      "condition" : {
         "typeReached" : "io.lettuce.core.AbstractRedisClient"
+      },
+      "type" : "io.netty.channel.DefaultChannelPipeline$TailContext"
+    },
+    {
+      "condition" : {
+        "typeReached" : "io.lettuce.core.protocol.ReconnectionHandler"
       },
       "type" : "io.netty.channel.DefaultChannelPipeline$TailContext"
     },
@@ -334,6 +440,18 @@
         "typeReached" : "io.lettuce.core.ConnectionBuilder"
       },
       "type" : "io.netty.channel.socket.nio.NioSocketChannel"
+    },
+    {
+      "condition" : {
+        "typeReached" : "io.lettuce.core.protocol.ReconnectionHandler"
+      },
+      "type" : "io.netty.channel.socket.nio.NioSocketChannel",
+      "methods" : [
+        {
+          "name" : "<init>",
+          "parameterTypes" : [ ]
+        }
+      ]
     },
     {
       "condition" : {
@@ -463,6 +581,82 @@
     },
     {
       "condition" : {
+        "typeReached" : "io.lettuce.core.dynamic.ReactiveTypes"
+      },
+      "type" : "io.reactivex$Flowable"
+    },
+    {
+      "condition" : {
+        "typeReached" : "io.lettuce.core.dynamic.ReactiveTypes"
+      },
+      "type" : "io.reactivex.Flowable"
+    },
+    {
+      "condition" : {
+        "typeReached" : "io.lettuce.core.dynamic.ReactiveTypes"
+      },
+      "type" : "io.reactivex.rxjava3.core$Flowable"
+    },
+    {
+      "condition" : {
+        "typeReached" : "io.lettuce.core.dynamic.ReactiveTypes"
+      },
+      "type" : "io.reactivex.rxjava3.core.Flowable"
+    },
+    {
+      "condition" : {
+        "typeReached" : "io.lettuce.core.dynamic.support.TypeWrapper$MethodParameterTypeProvider"
+      },
+      "type" : "java.lang.Class[]",
+      "serializable" : true
+    },
+    {
+      "condition" : {
+        "typeReached" : "io.lettuce.core.dynamic.support.ReflectionUtils"
+      },
+      "type" : "java.lang.Object"
+    },
+    {
+      "condition" : {
+        "typeReached" : "io.lettuce.core.dynamic.support.GenericArrayTypeInformation"
+      },
+      "type" : "java.lang.Object[]"
+    },
+    {
+      "condition" : {
+        "typeReached" : "io.lettuce.core.dynamic.support.ResolvableType"
+      },
+      "type" : "java.lang.String[]"
+    },
+    {
+      "condition" : {
+        "typeReached" : "io.lettuce.core.pubsub.StatefulRedisPubSubConnectionImpl"
+      },
+      "type" : "java.lang.String[]"
+    },
+    {
+      "condition" : {
+        "typeReached" : "io.lettuce.core.internal.DefaultMethods$MethodHandleLookup$2"
+      },
+      "type" : "java.lang.invoke.MethodHandles",
+      "methods" : [
+        {
+          "name" : "privateLookupIn",
+          "parameterTypes" : [
+            "java.lang.Class",
+            "java.lang.invoke.MethodHandles$Lookup"
+          ]
+        }
+      ]
+    },
+    {
+      "condition" : {
+        "typeReached" : "io.lettuce.core.internal.DefaultMethods$MethodHandleLookup"
+      },
+      "type" : "java.lang.invoke.MethodHandles$Lookup"
+    },
+    {
+      "condition" : {
         "typeReached" : "io.lettuce.core.resource.DefaultClientResources"
       },
       "type" : "java.lang.management.ManagementFactory",
@@ -481,6 +675,38 @@
       "methods" : [
         {
           "name" : "getInputArguments",
+          "parameterTypes" : [ ]
+        }
+      ]
+    },
+    {
+      "condition" : {
+        "typeReached" : "io.lettuce.core.dynamic.support.$Proxy48"
+      },
+      "type" : "java.lang.reflect.ParameterizedType",
+      "methods" : [
+        {
+          "name" : "getActualTypeArguments",
+          "parameterTypes" : [ ]
+        },
+        {
+          "name" : "getRawType",
+          "parameterTypes" : [ ]
+        }
+      ]
+    },
+    {
+      "condition" : {
+        "typeReached" : "io.lettuce.core.dynamic.support.$Proxy49"
+      },
+      "type" : "java.lang.reflect.TypeVariable",
+      "methods" : [
+        {
+          "name" : "getBounds",
+          "parameterTypes" : [ ]
+        },
+        {
+          "name" : "getName",
           "parameterTypes" : [ ]
         }
       ]
@@ -534,6 +760,23 @@
     },
     {
       "condition" : {
+        "typeReached" : "io.lettuce.core.ConnectionBuilder$ExtendedNioSocketOptions"
+      },
+      "type" : "jdk.net.ExtendedSocketOptions",
+      "fields" : [
+        {
+          "name" : "TCP_KEEPCOUNT"
+        },
+        {
+          "name" : "TCP_KEEPIDLE"
+        },
+        {
+          "name" : "TCP_KEEPINTERVAL"
+        }
+      ]
+    },
+    {
+      "condition" : {
         "typeReached" : "io.lettuce.core.metrics.DefaultCommandLatencyCollector"
       },
       "type" : "org.HdrHistogram$Histogram"
@@ -560,7 +803,24 @@
       "condition" : {
         "typeReached" : "io.lettuce.core.Operators"
       },
-      "type" : "reactor.core.publisher.Hooks"
+      "type" : "reactor.core.publisher.Hooks",
+      "fields" : [
+        {
+          "name" : "onOperatorErrorHook"
+        }
+      ]
+    },
+    {
+      "condition" : {
+        "typeReached" : "io.lettuce.core.dynamic.ReactiveTypes"
+      },
+      "type" : "reactor.core.publisher.Mono"
+    },
+    {
+      "condition" : {
+        "typeReached" : "io.lettuce.core.protocol.ReconnectionHandler"
+      },
+      "type" : "reactor.core.publisher.Operators$MultiSubscriptionSubscriber"
     },
     {
       "condition" : {
@@ -597,6 +857,18 @@
         "typeReached" : "io.lettuce.core.Operators"
       },
       "type" : "reactor.util.concurrent.SpscLinkedArrayQueue"
+    },
+    {
+      "condition" : {
+        "typeReached" : "io.lettuce.core.dynamic.ReactiveTypes"
+      },
+      "type" : "rx$Completable"
+    },
+    {
+      "condition" : {
+        "typeReached" : "io.lettuce.core.dynamic.ReactiveTypes"
+      },
+      "type" : "rx.Completable"
     },
     {
       "condition" : {
@@ -639,6 +911,17 @@
     },
     {
       "condition" : {
+        "typeReached" : "io.lettuce.core.support.ConnectionWrapping"
+      },
+      "type" : {
+        "proxy" : [
+          "io.lettuce.core.api.async.RedisAsyncCommands",
+          "io.lettuce.core.cluster.api.async.RedisClusterAsyncCommands"
+        ]
+      }
+    },
+    {
+      "condition" : {
         "typeReached" : "io.lettuce.core.RedisChannelHandler"
       },
       "type" : {
@@ -647,15 +930,259 @@
           "io.lettuce.core.cluster.api.sync.RedisClusterCommands"
         ]
       }
+    },
+    {
+      "condition" : {
+        "typeReached" : "io.lettuce.core.StatefulRedisConnectionImpl"
+      },
+      "type" : {
+        "proxy" : [
+          "io.lettuce.core.api.sync.RedisCommands",
+          "io.lettuce.core.cluster.api.sync.RedisClusterCommands"
+        ]
+      }
+    },
+    {
+      "condition" : {
+        "typeReached" : "io.lettuce.core.cluster.RedisAdvancedClusterAsyncCommandsImpl"
+      },
+      "type" : {
+        "proxy" : [
+          "io.lettuce.core.cluster.api.async.NodeSelectionAsyncCommands",
+          "io.lettuce.core.cluster.api.async.AsyncNodeSelection"
+        ]
+      }
+    },
+    {
+      "condition" : {
+        "typeReached" : "io.lettuce.core.cluster.ClusterFutureSyncInvocationHandler"
+      },
+      "type" : {
+        "proxy" : [
+          "io.lettuce.core.cluster.api.sync.NodeSelectionCommands",
+          "io.lettuce.core.cluster.api.sync.NodeSelection"
+        ]
+      }
+    },
+    {
+      "condition" : {
+        "typeReached" : "io.lettuce.core.cluster.StatefulRedisClusterConnectionImpl"
+      },
+      "type" : {
+        "proxy" : [
+          "io.lettuce.core.cluster.api.sync.RedisAdvancedClusterCommands"
+        ]
+      }
+    },
+    {
+      "condition" : {
+        "typeReached" : "io.lettuce.core.cluster.RedisClusterPubSubAsyncCommandsImpl"
+      },
+      "type" : {
+        "proxy" : [
+          "io.lettuce.core.cluster.pubsub.api.async.NodeSelectionPubSubAsyncCommands",
+          "io.lettuce.core.cluster.pubsub.api.async.PubSubAsyncNodeSelection"
+        ]
+      }
+    },
+    {
+      "condition" : {
+        "typeReached" : "io.lettuce.core.cluster.RedisClusterPubSubReactiveCommandsImpl"
+      },
+      "type" : {
+        "proxy" : [
+          "io.lettuce.core.cluster.pubsub.api.reactive.NodeSelectionPubSubReactiveCommands",
+          "io.lettuce.core.cluster.pubsub.api.reactive.PubSubReactiveNodeSelection"
+        ]
+      }
+    },
+    {
+      "condition" : {
+        "typeReached" : "io.lettuce.core.cluster.StatefulRedisClusterPubSubConnectionImpl"
+      },
+      "type" : {
+        "proxy" : [
+          "io.lettuce.core.cluster.pubsub.api.sync.RedisClusterPubSubCommands",
+          "io.lettuce.core.pubsub.api.sync.RedisPubSubCommands"
+        ]
+      }
+    },
+    {
+      "condition" : {
+        "typeReached" : "io.lettuce.core.pubsub.StatefulRedisPubSubConnectionImpl"
+      },
+      "type" : {
+        "proxy" : [
+          "io.lettuce.core.pubsub.api.sync.RedisPubSubCommands"
+        ]
+      }
+    },
+    {
+      "condition" : {
+        "typeReached" : "io.lettuce.core.support.ConnectionWrapping"
+      },
+      "type" : {
+        "proxy" : [
+          "io.lettuce.core.support.ConnectionWrapping$HasTargetConnection",
+          "io.lettuce.core.api.StatefulRedisConnection"
+        ]
+      }
+    },
+    {
+      "condition" : {
+        "typeReached" : "io.lettuce.core.dynamic.output.OutputRegistry"
+      },
+      "type" : {
+        "proxy" : [
+          "java.lang.reflect.ParameterizedType",
+          "io.lettuce.core.dynamic.support.TypeWrapper$SerializableTypeProxy",
+          "java.io.Serializable"
+        ]
+      }
+    },
+    {
+      "condition" : {
+        "typeReached" : "io.lettuce.core.dynamic.output.OutputRegistry$2"
+      },
+      "type" : {
+        "proxy" : [
+          "java.lang.reflect.ParameterizedType",
+          "io.lettuce.core.dynamic.support.TypeWrapper$SerializableTypeProxy",
+          "java.io.Serializable"
+        ]
+      }
+    },
+    {
+      "condition" : {
+        "typeReached" : "io.lettuce.core.dynamic.support.ResolvableType"
+      },
+      "type" : {
+        "proxy" : [
+          "java.lang.reflect.ParameterizedType",
+          "io.lettuce.core.dynamic.support.TypeWrapper$SerializableTypeProxy",
+          "java.io.Serializable"
+        ]
+      },
+      "serializable" : true
+    },
+    {
+      "condition" : {
+        "typeReached" : "io.lettuce.core.dynamic.support.TypeDiscoverer"
+      },
+      "type" : {
+        "proxy" : [
+          "java.lang.reflect.ParameterizedType",
+          "io.lettuce.core.dynamic.support.TypeWrapper$SerializableTypeProxy",
+          "java.io.Serializable"
+        ]
+      }
+    },
+    {
+      "condition" : {
+        "typeReached" : "io.lettuce.core.dynamic.support.TypeWrapper"
+      },
+      "type" : {
+        "proxy" : [
+          "java.lang.reflect.ParameterizedType",
+          "io.lettuce.core.dynamic.support.TypeWrapper$SerializableTypeProxy",
+          "java.io.Serializable"
+        ]
+      }
+    },
+    {
+      "condition" : {
+        "typeReached" : "io.lettuce.core.dynamic.ConversionService"
+      },
+      "type" : {
+        "proxy" : [
+          "java.lang.reflect.TypeVariable",
+          "io.lettuce.core.dynamic.support.TypeWrapper$SerializableTypeProxy",
+          "java.io.Serializable"
+        ]
+      }
+    },
+    {
+      "condition" : {
+        "typeReached" : "io.lettuce.core.dynamic.output.OutputRegistry"
+      },
+      "type" : {
+        "proxy" : [
+          "java.lang.reflect.TypeVariable",
+          "io.lettuce.core.dynamic.support.TypeWrapper$SerializableTypeProxy",
+          "java.io.Serializable"
+        ]
+      }
+    },
+    {
+      "condition" : {
+        "typeReached" : "io.lettuce.core.dynamic.output.OutputRegistry$2"
+      },
+      "type" : {
+        "proxy" : [
+          "java.lang.reflect.TypeVariable",
+          "io.lettuce.core.dynamic.support.TypeWrapper$SerializableTypeProxy",
+          "java.io.Serializable"
+        ]
+      }
+    },
+    {
+      "condition" : {
+        "typeReached" : "io.lettuce.core.dynamic.support.ClassTypeInformation"
+      },
+      "type" : {
+        "proxy" : [
+          "java.lang.reflect.TypeVariable",
+          "io.lettuce.core.dynamic.support.TypeWrapper$SerializableTypeProxy",
+          "java.io.Serializable"
+        ]
+      }
+    },
+    {
+      "condition" : {
+        "typeReached" : "io.lettuce.core.dynamic.support.TypeDiscoverer"
+      },
+      "type" : {
+        "proxy" : [
+          "java.lang.reflect.TypeVariable",
+          "io.lettuce.core.dynamic.support.TypeWrapper$SerializableTypeProxy",
+          "java.io.Serializable"
+        ]
+      }
     }
   ],
   "resources" : [
+    {
+      "condition" : {
+        "typeReached" : "io.lettuce.core.protocol.ConnectionWatchdog"
+      },
+      "glob" : "META-INF/services/java.time.zone.ZoneRulesProvider"
+    },
+    {
+      "condition" : {
+        "typeReached" : "io.lettuce.core.protocol.ConnectionWatchdog"
+      },
+      "module" : "java.logging",
+      "glob" : "sun/util/logging/resources/logging_en.properties"
+    },
+    {
+      "condition" : {
+        "typeReached" : "io.lettuce.core.protocol.ConnectionWatchdog"
+      },
+      "module" : "java.logging",
+      "glob" : "sun/util/logging/resources/logging_en_US.properties"
+    },
     {
       "condition" : {
         "typeReached" : "io.lettuce.core.event.connection.JfrConnectionCreatedEvent"
       },
       "module" : "jdk.jfr",
       "glob" : "jdk/jfr/internal/types/metadata.bin"
+    },
+    {
+      "condition" : {
+        "typeReached" : "io.lettuce.core.protocol.ConnectionWatchdog"
+      },
+      "bundle" : "sun.util.logging.resources.logging"
     }
   ]
 }
