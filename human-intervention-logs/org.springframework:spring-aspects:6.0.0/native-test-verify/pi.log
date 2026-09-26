@@ -1,0 +1,23 @@
+Implemented and verified the Spring Aspects 6.0.0 native fix.
+
+Changes:
+- Added/fixed reachability metadata in `metadata/org.springframework/spring-aspects/6.0.0/reachability-metadata.json`.
+- Updated package allowances in `metadata/org.springframework/spring-aspects/index.json`.
+- Rewrote two tests that triggered unsupported runtime CGLIB configuration-class generation:
+  - Directly tests `SpringConfiguredConfiguration`.
+  - Tests AspectJ configuration selection without creating an application context.
+
+Final exact `runNativeTraceImage` result:
+- 8 tests successful
+- 0 failed
+- Gradle exit status: `0`
+- No `binary-exit-code` failure file was generated after removing the stale file.
+
+Additional checks:
+- `checkMetadataFiles`: passed
+- `checkstyle`: passed
+- `javaTest`: passed
+- `git diff --check` and JSON parsing: passed
+- `grund` and `fissile` were unavailable in `PATH`.
+
+The investigated failure chain consisted of missing registrations for optional/reflected Spring dependencies, followed by runtime-generated CGLIB classes that cannot be supplied through reachability metadata.

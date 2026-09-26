@@ -1,0 +1,18 @@
+Based on my research:
+
+**Setup decision — `no_action`.** The `spring-aspects` POM (5.3.31 and 6.0.0 alike) declares only one dependency, `org.aspectj:aspectjweaver:1.9.9.1` (compile scope); the existing test module already pulls in `spring-context`, `spring-tx`, and `assertj-core` for compilation, and nothing in the 6.0.0 dependency graph or Spring's own aspects (`AnnotationBeanConfigurerAspect`, `GenericInterfaceDrivenDependencyInjectionAspect`, `AnnotationCacheAspect`, `AnnotationTransactionAspect`, `AnnotationAsyncExecutionAspect`) requires a Docker service, an extra Maven artifact, or a special env/system property — they're plain compile-time-woven AspectJ aspects exercised via `AnnotationConfigApplicationContext`, same shape as the passing 5.3.31 suite. The failure is a `nativeTest` run failure in `current-defaults` mode (stricter closed-world checking), which is the standard signal for missing/needs-updated `reachability-metadata.json`, not missing test infrastructure.
+
+**Unsupportable check — repairable, not skip.** The issue's failure log is truncated mid-output (cuts off right after one test reports SUCCESSFUL, before the actual failing test/assertion is shown), so step 1 (FAILURE) and step 2 (TRACE) can't be completed from evidence in hand — no failing symbol or library source line is visible to trace. Per the rules, that uncertainty alone forces "repairable."
+
+```json
+{
+  "action": "no_action",
+  "summary": "Test scaffold's existing testImplementation deps (spring-context, spring-tx, assertj-core) plus spring-aspects' own aspectjweaver dependency are already sufficient for 6.0.0; no new Docker image, Maven dependency, or env/system-property setup is evidenced.",
+  "deterministic_setup": [],
+  "agent_guidance": "Failure occurred in current-defaults native-image mode, which is stricter than the conditional-agent mode the existing 5.3.31 metadata was generated under. Re-run generateMetadata for org.springframework:spring-aspects:6.0.0 to pick up any new reflective/proxy accesses introduced in Spring 6's aspect infrastructure classes before assuming code changes are needed.",
+  "risks": [
+    "Issue's failure log is truncated right after the first test result line, before the actual failing test/assertion appears, so the precise cause (metadata gap vs. behavioral change) is not confirmed locally.",
+    "Spring 6 moves to a Java 17+ / jakarta baseline; if new tests are added exercising jakarta.annotation-based configurable objects, verify jakarta.annotation-api is already on the classpath transitively before adding it explicitly."
+  ]
+}
+```
