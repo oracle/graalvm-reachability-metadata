@@ -3,6 +3,14 @@
 Rendered by Forge from the pre-push branch review of §FS-local-branch-review.
 Newest entry first; every non-approval is recorded, including one a repair later cleared.
 
+## 2026-09-26 — com.google.guava:guava:33.7.0-android (#9330)
+
+**Target coordinate is verified against the wrong published variant**
+
+The contribution is for com.google.guava:guava:33.7.0-android, but its test configurations select the standard-jvm variant declared by guava-33.7.0-android.module, whose file is ../33.7.0-jre/guava-33.7.0-jre.jar. The Forge test logs confirm that exact JRE jar on the JVM and Native Image classpaths. The repaired CompactHashMapTest also hardcodes the JRE artifact's serialVersionUID (-3875695063200762544), while the published guava-33.7.0-android.jar reports 8625094044164741507. As a local diagnostic with no contribution edit, forcing Gradle's TargetJvmEnvironment to android selected guava-33.7.0-android.jar and the JVM lane failed both CompactHashMapTest and CompactHashSetTest with incompatible stream/local serialVersionUID values. Thus the green lanes do not establish FS-test-contract.1.4 behavior for the artifact this metadata version names. The cause is established: the compatibility run identifies an -android Maven version, while the shared standard-JVM TCK attribute selects Guava's JRE variant. A contribution-local switch would merely reverse the untested variant and cannot establish which artifact(s) one metadata-version bucket must cover. Per FS-contribution-contract.5.2-.5.5, shared infrastructure and this policy uncertainty require human intervention.
+
+Infrastructure issue: https://github.com/oracle/graalvm-reachability-metadata/issues/10211 (#10211)
+
 ## 2026-09-25 — org.apache.tomcat.embed:tomcat-embed-core:11.0.22 (#10144)
 
 **Coverage update weakened a baseline logging test and dropped required test metadata**
