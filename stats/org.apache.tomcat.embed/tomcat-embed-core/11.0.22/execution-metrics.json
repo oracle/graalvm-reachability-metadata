@@ -248,5 +248,97 @@
     "artifacts": {
       "metadata_file": "metadata/org.apache.tomcat.embed/tomcat-embed-core/11.0.22/reachability-metadata.json"
     }
+  },
+  "improve_library_coverage:2026-09-25": {
+    "timestamp": "2026-09-25T18:38:59.218761Z",
+    "library": "org.apache.tomcat.embed:tomcat-embed-core:11.0.22",
+    "starting_commit": "ad76a32a5f9e72238b9b79fa7526e3135a508f56",
+    "ending_commit": "c5e02a588c76cda1ad0e036b9b4176e9d9aa69c8",
+    "strategy_name": "library_update_optimistic_pi_gpt-5.6-sol",
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "status": "success",
+    "stats": {
+      "version": "11.0.22",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 0.958738,
+            "coveredCalls": 395,
+            "totalCalls": 412
+          },
+          "resources": {
+            "coverageRatio": 0.97561,
+            "coveredCalls": 40,
+            "totalCalls": 41
+          }
+        },
+        "coverageRatio": 0.960265,
+        "coveredCalls": 435,
+        "totalCalls": 453
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 86502,
+          "missed": 260625,
+          "ratio": 0.249194,
+          "total": 347127
+        },
+        "line": {
+          "covered": 20106,
+          "missed": 61597,
+          "ratio": 0.246086,
+          "total": 81703
+        },
+        "method": {
+          "covered": 3654,
+          "missed": 9159,
+          "ratio": 0.285179,
+          "total": 12813
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "no_action",
+      "issue_number": 10144,
+      "issue_label": "library-update-request",
+      "library": "org.apache.tomcat.embed:tomcat-embed-core:11.0.22",
+      "summary": "tomcat-embed-core:11.0.22 already has a mature test scaffold (3 prior GenAI coverage PRs) with all required test dependencies (jakarta.servlet-api, jakarta.annotation-api, h2, assertj, tomcat-coyote-ffm) and JVM args already declared in build.gradle. The reported reflection target, AbstractProtocol#getProperty(String), is a plain in-process reflective property accessor reached through IntrospectionUtils — no Docker image or external service is involved (no tomcat entries exist in the Docker allow-list, consistent with this being an embeddable library). Metadata already records getProperty under the IntrospectionUtils condition, and an existing test (ConnectorProtocolIntrospectionTest) exercises Connector.getProperty end-to-end, so the gap is closeable with ordinary generated coverage work, not new setup.",
+      "deterministic_setup": [],
+      "agent_guidance": "",
+      "risks": [
+        "Confirm via checkMetadataFiles/test runs that getProperty is reached under the condition matching the reporter's Spring Boot usage path, not just the existing IntrospectionUtils-typeReached condition, since native-image conditions are path-sensitive."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#10144 Update existing library: org.apache.tomcat.embed:tomcat-embed-core:11.0.22; label=library-update-request; body_chars=303"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "40 existing test file path(s) included"
+        }
+      ],
+      "model": "sonnet",
+      "input_tokens_used": 16,
+      "output_tokens_used": 5102
+    },
+    "metrics": {
+      "input_tokens_used": 525630,
+      "cached_input_tokens_used": 9924992,
+      "output_tokens_used": 58531,
+      "iterations": 13,
+      "cost_usd": 9.3466,
+      "generated_loc": 5293,
+      "tested_library_loc": 20106,
+      "metadata_entries": 2269,
+      "test_only_metadata_entries": 513,
+      "code_coverage_percent": 24.61
+    },
+    "artifacts": {
+      "metadata_file": "metadata/org.apache.tomcat.embed/tomcat-embed-core/11.0.22/reachability-metadata.json"
+    }
   }
 }

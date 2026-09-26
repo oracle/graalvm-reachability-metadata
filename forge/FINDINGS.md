@@ -8,6 +8,11 @@ Newest entry first; every non-approval is recorded, including one a repair later
 **Generated library statistics were stale**
 
 The first review-finalization pass regenerated `stats.json`, correcting covered instruction and line counts from 92,681/12,870 to 92,680/12,869. Because the publishable tree changed, that pass exited nonzero as required; the exact finalization command then passed without further changes.
+## 2026-09-25 — org.apache.tomcat.embed:tomcat-embed-core:11.0.22 (#10144)
+
+**Coverage update weakened a baseline logging test and dropped required test metadata**
+
+The contribution removed the formatter setup and assertion from DirectJDKLogTest, weakening an existing passing scenario contrary to FS-test-contract.2.9. It also removed test-only serialization registrations required by unchanged CustomObjectInputStreamTest behavior: finalization reproduced a MissingReflectionRegistrationError for java.util.ArrayList on the latest lane and an UnsupportedFeatureError for java.lang.reflect.Proxy on GraalVM 25. Generated shipped metadata additionally contained test-owned or nonexistent resource entries for TomcatTests$MyServlet, synthetic LocalStrings bundles, and NoSuchRuntimeClass, contrary to the no-test-only-shipped-metadata requirement.
 
 ## 2026-09-22 — org.apache.tomcat.embed:tomcat-embed-core:11.0.18 (#8328)
 
