@@ -9,6 +9,7 @@ package io_lettuce.lettuce_core;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import io.lettuce.core.internal.LettuceClassUtils;
+import java.util.Map;
 import org.junit.jupiter.api.Test;
 
 public class LettuceClassUtilsTest {
@@ -16,5 +17,6 @@ public class LettuceClassUtilsTest {
     void loadsPresentClassesByName() {
         assertThat(LettuceClassUtils.isPresent("reactor.core.publisher.Mono")).isTrue();
         assertThat(LettuceClassUtils.findClass("java.lang.String")).isEqualTo(String.class);
+        assertThat(LettuceClassUtils.findClass("java.util.Map.Entry")).isEqualTo(Map.Entry.class);
     }
 }

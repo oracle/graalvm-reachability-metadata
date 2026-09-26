@@ -30,6 +30,7 @@ public class ConnectionWrappingInnerReturnObjectOnCloseInvocationHandlerTest {
                                     .build());
             try {
                 StatefulRedisConnection<String, String> first = acquire(pool);
+                assertThat(first.isOpen()).isTrue();
                 assertThat(first.sync().ping()).isEqualTo("PONG");
                 first.close();
 
