@@ -97,6 +97,11 @@ class AnnotationsTest {
             }
 
             @Override
+            public Class<? extends Exception> exception() {
+                return IllegalStateException.class;
+            }
+
+            @Override
             public Class<? extends Annotation> annotationType() {
                 return NotNull.class;
             }
@@ -129,6 +134,11 @@ class AnnotationsTest {
             }
         };
         Nls nls = new Nls() {
+            @Override
+            public Capitalization capitalization() {
+                return Capitalization.Title;
+            }
+
             @Override
             public Class<? extends Annotation> annotationType() {
                 return Nls.class;
@@ -287,6 +297,7 @@ class AnnotationsTest {
         };
 
         assertThat(notNull.value()).isEqualTo("result");
+        assertThat(notNull.exception()).isSameAs(IllegalStateException.class);
         assertThat(notNull.annotationType()).isSameAs(NotNull.class);
 
         assertThat(nullable.value()).isEqualTo("optional value");
@@ -296,6 +307,7 @@ class AnnotationsTest {
         assertThat(contract.pure()).isTrue();
         assertThat(contract.annotationType()).isSameAs(Contract.class);
 
+        assertThat(nls.capitalization()).isSameAs(Nls.Capitalization.Title);
         assertThat(nls.annotationType()).isSameAs(Nls.class);
         assertThat(nonNls.annotationType()).isSameAs(NonNls.class);
 
@@ -462,8 +474,8 @@ class AnnotationsTest {
             this.bundleKey = bundleKey;
         }
 
-        @NotNull("formatted message")
-        @Nls
+        @NotNull(value = "formatted message", exception = IllegalStateException.class)
+        @Nls(capitalization = Nls.Capitalization.Sentence)
         private String format(@PrintFormat String template, @Subst("fallback") @Nullable("suffix") String suffix) {
             @Subst("fallback") String resolvedSuffix = suffix == null ? "fallback" : suffix;
             return String.format(Locale.ROOT, template + " %s", identifier, resolvedSuffix);
