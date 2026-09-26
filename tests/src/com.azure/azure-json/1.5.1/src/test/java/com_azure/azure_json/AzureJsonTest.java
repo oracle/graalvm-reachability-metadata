@@ -54,6 +54,21 @@ public class AzureJsonTest {
     }
 
     @Test
+    void createsByteArrayReaderAndOutputStreamWriterThroughProviderDiscovery() throws IOException {
+        ByteArrayOutputStream output = new ByteArrayOutputStream();
+        JsonOptions options = new JsonOptions();
+
+        try (JsonWriter writer = JsonProviders.createWriter(output, options)) {
+            writer.writeStartObject().writeStringField("provider", "discovered").writeEndObject();
+        }
+
+        try (JsonReader reader = JsonProviders.createReader(output.toByteArray(), options)) {
+            Map<String, String> value = reader.readMap(JsonReader::getString);
+            assertEquals(Map.of("provider", "discovered"), value);
+        }
+    }
+
+    @Test
     void writesAndReadsNestedUntypedValues() throws IOException {
         Map<String, Object> source = new LinkedHashMap<>();
         source.put("enabled", true);
