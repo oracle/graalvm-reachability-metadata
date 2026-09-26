@@ -50,5 +50,97 @@
     "artifacts": {
       "metadata_file": "None"
     }
+  },
+  "add_new_library_support:2026-09-26": {
+    "timestamp": "2026-09-26T10:16:06.649594Z",
+    "library": "io.micrometer:micrometer-registry-statsd:1.16.5",
+    "starting_commit": "03dc22b072f31c60c2587436438599679177377b",
+    "ending_commit": "d58326eb19fbe6da096325349c7e7f38797ec618",
+    "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-sol",
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "status": "success",
+    "stats": {
+      "version": "1.16.5",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 0.12987,
+            "coveredCalls": 20,
+            "totalCalls": 154
+          },
+          "resources": {
+            "coverageRatio": 0.166667,
+            "coveredCalls": 1,
+            "totalCalls": 6
+          }
+        },
+        "coverageRatio": 0.13125,
+        "coveredCalls": 21,
+        "totalCalls": 160
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 37141,
+          "missed": 409025,
+          "ratio": 0.083245,
+          "total": 446166
+        },
+        "line": {
+          "covered": 9568,
+          "missed": 97548,
+          "ratio": 0.089324,
+          "total": 107116
+        },
+        "method": {
+          "covered": 2594,
+          "missed": 23408,
+          "ratio": 0.099762,
+          "total": 26002
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "action": "advisory_preparation",
+      "agent_guidance": "Exercise StatsdMeterRegistry with a plain java.net.DatagramSocket bound to localhost on an ephemeral port as the 'StatsD server' (set via StatsdConfig.host()/port()) instead of a real StatsD/Datadog agent or Docker container — the wire protocol is just UDP text lines. Since publishing is async, poll/await the socket receive with a timeout rather than sleeping a fixed duration, and always call registry.close() in a finally block to stop the shaded reactor-netty client and avoid hanging the test JVM. When investigating the reported native-image bug, note the jar already bundles META-INF/native-image config for io.netty/io.projectreactor under their real (unshaded) coordinates — the gap is that the shaded class names (io.micrometer.shaded.io.netty.*, io.micrometer.shaded.io.netty.util.internal.shaded.org.jctools.*) aren't covered, matching the initialize-at-run-time and reflection metadata listed in the issue (DNS resolver holders, epoll/unix transport classes, JCTools MPSC queue field-offset classes). Confirm exact `initialize-at-run-time` needs by running native-image-agent trace plus fixTestNativeImageRun rather than copying the issue's list verbatim, since it was captured against a different Micrometer/Netty pairing (Micronaut, not this repo's harness).",
+      "applied_setup": [],
+      "deterministic_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#2486 Support for io.micrometer:micrometer-registry-statsd:1.16.5; label=library-new-request; body_chars=3785"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "input_tokens_used": 20,
+      "issue_label": "library-new-request",
+      "issue_number": 2486,
+      "library": "io.micrometer:micrometer-registry-statsd:1.16.5",
+      "model": "sonnet",
+      "output_tokens_used": 8464,
+      "risks": [
+        "The reported failure ('stops publishing after running for a while') is a delayed/lazy class-initialization issue — a short-lived JVM/native-image test run may not trigger it, so coverage should specifically exercise the DNS-resolution and scheduled-task code paths the issue calls out, not just a single metric publish.",
+        "Shaded package layout can change between micrometer versions; verify class names against the actual 1.16.5 jar (already done here) rather than assuming the issue's Micronaut-reported list is exhaustive or current."
+      ],
+      "status": "completed",
+      "summary": "All Netty/reactor-netty/JCTools classes referenced by the issue are shaded inside micrometer-registry-statsd itself (no separate dependency exists to add). Testing needs no Docker StatsD server or env vars — StatsdConfig.host()/port() can point at a local DatagramSocket. The real work is native-image metadata (initialize-at-run-time + reflection) for the shaded classes, which is the normal generation/fix workflow, not extra setup."
+    },
+    "metrics": {
+      "input_tokens_used": 92838,
+      "cached_input_tokens_used": 1136512,
+      "output_tokens_used": 6281,
+      "iterations": 52,
+      "cost_usd": 1.2209,
+      "generated_loc": 161,
+      "tested_library_loc": 9568,
+      "metadata_entries": 196,
+      "code_coverage_percent": 8.93
+    },
+    "artifacts": {
+      "metadata_file": "metadata/io.micrometer/micrometer-registry-statsd/1.16.5/reachability-metadata.json"
+    }
   }
 }
