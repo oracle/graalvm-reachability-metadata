@@ -43,7 +43,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class AnnotationsTest {
+public class AnnotationsTest {
     @Test
     void publicTypesAndConstantsAreUsable() {
         assertThat(NotNull.class).isNotNull();
