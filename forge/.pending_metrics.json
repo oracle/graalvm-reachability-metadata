@@ -1,0 +1,54 @@
+{
+  "timestamp": "2026-09-26T23:37:22.001002Z",
+  "library": "org.hibernate:hibernate-spatial:8.0.0.Beta1",
+  "starting_commit": "e1d933e99e76895148cfc37ff0755622891b6544",
+  "ending_commit": "e1d933e99e76895148cfc37ff0755622891b6544",
+  "strategy_name": "javac_iterative_with_coverage_sources_pi_gpt-5.6-sol",
+  "agent": "pi",
+  "model": "gpt-5.6-sol",
+  "status": "failure",
+  "library_preparation_preflight": {
+    "status": "completed",
+    "action": "advisory_preparation",
+    "issue_number": 9383,
+    "issue_label": "fails-javac-compile",
+    "library": "org.hibernate:hibernate-spatial:8.0.0.Beta1",
+    "summary": "hibernate-spatial:8.0.0.Beta1 transitively pulls in org.hibernate.orm:hibernate-platform (endorseStrictVersions=true), whose Gradle module metadata constrains the same legacy org.hibernate:hibernate-spatial coordinate the scaffold hardcodes a version for, so Gradle reports conflicting version constraints and fails before compilation/native-image ever run.",
+    "deterministic_setup": [],
+    "agent_guidance": "Do not leave the generated dependency as a bare hardcoded-version `testImplementation \"org.hibernate:hibernate-spatial:$libraryVersion\"` for 8.0.0.Beta1 — it will hit Gradle's 'Component is the target of multiple version constraints with conflicting requirements' error because hibernate-spatial transitively depends on org.hibernate.orm:hibernate-platform, which itself constrains the same legacy org.hibernate:hibernate-spatial GA back to the same version. Work around it in build.gradle, e.g.: `testImplementation(\"org.hibernate:hibernate-spatial:$libraryVersion\") { exclude group: 'org.hibernate.orm', module: 'hibernate-platform' }`, or declare the dependency directly under the new coordinate `org.hibernate.orm:hibernate-spatial:$libraryVersion` instead of the legacy relocated one. Confirm the chosen fix still resolves cleanly and doesn't hide a real version conflict among other hibernate-orm submodules pulled in transitively (hibernate-core, etc.).",
+    "risks": [
+      "This is hibernate-orm's first 8.x Beta; the self-referencing platform constraint may be a publishing artifact of the new modularized build that changes or disappears in later Beta/RC/Final releases — re-verify the exact conflict shape rather than assuming this workaround still applies to a newer version.",
+      "Excluding hibernate-platform from the dependency could suppress intended version alignment across other transitive hibernate-orm modules; check for new conflicts after applying the exclusion."
+    ],
+    "applied_setup": [],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#9383 [Automation] javac compile fails for org.hibernate:hibernate-spatial:8.0.0.Beta1; label=fails-javac-compile; body_chars=8015"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "5 existing test file path(s) included"
+      }
+    ],
+    "current_library": "org.hibernate:hibernate-spatial:6.5.0.Final",
+    "new_version": "8.0.0.Beta1",
+    "model": "sonnet",
+    "input_tokens_used": 14,
+    "output_tokens_used": 18578
+  },
+  "metrics": {
+    "input_tokens_used": 63263,
+    "cached_input_tokens_used": 221312,
+    "output_tokens_used": 1675,
+    "iterations": 6,
+    "cost_usd": 0.4773,
+    "generated_loc": 0,
+    "tested_library_loc": 0,
+    "metadata_entries": 0,
+    "code_coverage_percent": 0.0
+  },
+  "artifacts": {
+    "metadata_file": "None"
+  }
+}

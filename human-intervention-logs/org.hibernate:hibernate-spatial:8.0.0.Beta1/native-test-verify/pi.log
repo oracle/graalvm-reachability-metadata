@@ -1,0 +1,18 @@
+Implemented metadata support for `org.hibernate:hibernate-spatial:8.0.0.Beta1`:
+
+- Corrected dependency coordinates to `org.hibernate.orm:hibernate-spatial`.
+- Added explicit metadata configuration because repository coordinates differ from Maven coordinates.
+- Added conditional metadata for:
+  - Hibernate service resources.
+  - JBoss Logging provider discovery.
+  - Jackson class probes.
+  - `HSMessageLogger_$logger` construction.
+
+Validation with the requested GraalVM:
+
+- `checkMetadataFiles`: passed.
+- Full `test`, including native-image execution: passed, 1/1 tests successful.
+- The trace-enabled executable still reports a JUnit discovery failure and recursive `StackOverflowError`. This also occurred with an empty test and unrelated condition packages, demonstrating a GraalVM metadata-tracing/JUnit infrastructure issue rather than Hibernate Spatial behavior.
+- Running the same binary without runtime tracing exposed the complete missing-registration chain; after the fixes, it passes.
+
+`grund` and `fissile` checks could not run because those executables are unavailable in this environment.
