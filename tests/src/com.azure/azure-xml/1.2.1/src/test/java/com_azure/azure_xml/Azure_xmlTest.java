@@ -11,8 +11,13 @@ import com.azure.xml.XmlSerializable;
 import com.azure.xml.XmlToken;
 import com.azure.xml.XmlWriter;
 import java.io.ByteArrayOutputStream;
+import java.io.StringReader;
+import java.io.StringWriter;
 import java.math.BigDecimal;
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 
@@ -53,6 +58,37 @@ public class Azure_xmlTest {
         assertEquals(expected.description, actual.description);
         assertTrue(actual.markerSeen);
         assertNull(actual.omitted);
+    }
+
+    @Test
+    void writesNamespaceQualifiedXmlToCharacterWriter() throws XMLStreamException {
+        String namespace = "urn:catalog";
+        StringWriter output = new StringWriter();
+
+        try (XmlWriter writer = XmlWriter.toWriter(output)) {
+            writer.writeStartDocument()
+                .writeStartElement("catalog")
+                .writeNamespace(namespace)
+                .writeStringElement(namespace, "name", "storage & compute")
+                .writeEndElement();
+        }
+
+        XMLStreamReader reader = XMLInputFactory.newFactory()
+            .createXMLStreamReader(new StringReader(output.toString()));
+        try {
+            assertEquals(XMLStreamConstants.START_ELEMENT, reader.nextTag());
+            assertEquals(namespace, reader.getNamespaceURI());
+            assertEquals("catalog", reader.getLocalName());
+            assertEquals(namespace, reader.getNamespaceURI(""));
+            assertEquals(XMLStreamConstants.START_ELEMENT, reader.nextTag());
+            assertEquals(namespace, reader.getNamespaceURI());
+            assertEquals("name", reader.getLocalName());
+            assertEquals("storage & compute", reader.getElementText());
+            assertEquals(XMLStreamConstants.END_ELEMENT, reader.nextTag());
+            assertEquals("catalog", reader.getLocalName());
+        } finally {
+            reader.close();
+        }
     }
 
     @Test
