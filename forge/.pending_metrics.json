@@ -1,0 +1,53 @@
+{
+  "timestamp": "2026-09-26T11:51:52.364354Z",
+  "library": "org.hibernate:hibernate-spatial:8.0.0.Beta1",
+  "starting_commit": "4f43c2003d93843d9f03da17adfe1a1bbfc02b8b",
+  "ending_commit": "4f43c2003d93843d9f03da17adfe1a1bbfc02b8b",
+  "strategy_name": "javac_iterative_with_coverage_sources_pi_gpt-5.6-sol",
+  "agent": "pi",
+  "model": "gpt-5.6-sol",
+  "status": "failure",
+  "library_preparation_preflight": {
+    "status": "completed",
+    "action": "no_action",
+    "issue_number": 9383,
+    "issue_label": "fails-javac-compile",
+    "library": "org.hibernate:hibernate-spatial:8.0.0.Beta1",
+    "summary": "Failure is a Gradle dependency-resolution conflict from a self-referential hibernate-platform BOM in hibernate-orm 8.0.0.Beta1's own published metadata (hibernate-spatial's relocation POM pulls in hibernate-platform, which itself manages hibernate-spatial's version), not something fixable via an extra dependency, Docker image, or test property.",
+    "deterministic_setup": [],
+    "agent_guidance": "",
+    "risks": [
+      "The Beta1 dependency graph may remain unresolvable by Gradle regardless of test setup until Hibernate publishes a fixed release; this is not a Native Image capability issue, so it should not be skipped — only attempted, and left to fail naturally if the upstream metadata bug persists."
+    ],
+    "applied_setup": [],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#9383 [Automation] javac compile fails for org.hibernate:hibernate-spatial:8.0.0.Beta1; label=fails-javac-compile; body_chars=8015"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "5 existing test file path(s) included"
+      }
+    ],
+    "current_library": "org.hibernate:hibernate-spatial:6.5.0.Final",
+    "new_version": "8.0.0.Beta1",
+    "model": "sonnet",
+    "input_tokens_used": 12,
+    "output_tokens_used": 11315
+  },
+  "metrics": {
+    "input_tokens_used": 80782,
+    "cached_input_tokens_used": 117632,
+    "output_tokens_used": 2378,
+    "iterations": 6,
+    "cost_usd": 0.534,
+    "generated_loc": 0,
+    "tested_library_loc": 0,
+    "metadata_entries": 0,
+    "code_coverage_percent": 0.0
+  },
+  "artifacts": {
+    "metadata_file": "None"
+  }
+}

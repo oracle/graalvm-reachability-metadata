@@ -1,0 +1,17 @@
+Based on my research, here's the decision:
+
+**Setup research:** `org.hibernate:hibernate-spatial:8.0.0.Beta1` is a pure relocation POM (packaging `pom`, no dependencies) pointing to `org.hibernate.orm:hibernate-spatial:8.0.0.Beta1`. That real artifact imports the `org.hibernate.orm:hibernate-platform:8.0.0.Beta1` BOM, which itself manages `hibernate-spatial` (self-referential — the platform BOM lists all Hibernate ORM modules, including hibernate-spatial, as managed dependencies). This creates two paths to the same module (the direct relocated dependency edge and the BOM's own self-management constraint), and Gradle's resolver reports them as conflicting even though the versions match textually — this is a defect in the library's own published Beta metadata, not something a `testImplementation` dependency, Docker image, or system property can work around. The existing test's `build.gradle` already does nothing unusual (`testImplementation "org.hibernate:hibernate-spatial:$libraryVersion"`), so there's no harness-side lever that plausibly fixes a circular-BOM resolution conflict.
+
+**Native Image supportability:** The failure occurs entirely at Gradle dependency-resolution time (`Could not resolve all dependencies for configuration ':nativeImageTestClasspath'`), before compilation or native-image ever runs. It has no connection to runtime bytecode generation, lambda definition, agent self-attach, class redefinition, substitution paths, or classloader tricks — it's a build metadata bug. Per the rules, any step that doesn't clearly show one of the listed mechanisms means repairable, so this must not be marked `skip_unsupported`.
+
+```json
+{
+  "action": "no_action",
+  "summary": "Failure is a Gradle dependency-resolution conflict from a self-referential hibernate-platform BOM in hibernate-orm 8.0.0.Beta1's own published metadata (hibernate-spatial's relocation POM pulls in hibernate-platform, which itself manages hibernate-spatial's version), not something fixable via an extra dependency, Docker image, or test property.",
+  "deterministic_setup": [],
+  "agent_guidance": "",
+  "risks": [
+    "The Beta1 dependency graph may remain unresolvable by Gradle regardless of test setup until Hibernate publishes a fixed release; this is not a Native Image capability issue, so it should not be skipped — only attempted, and left to fail naturally if the upstream metadata bug persists."
+  ]
+}
+```
