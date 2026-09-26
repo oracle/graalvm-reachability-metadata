@@ -27,13 +27,13 @@ public class ReflectionUtilsTest {
         String store(@Param("key") String key, @Param("value") String value);
     }
 
-    interface DefaultNamedCommands {
+    public interface DefaultNamedCommands {
         default String label() {
             return "commands";
         }
     }
 
-    static final class CommandFixture implements DefaultNamedCommands {
+    public static final class CommandFixture implements DefaultNamedCommands {
         public final String name = "fixture";
 
         public String command() {
