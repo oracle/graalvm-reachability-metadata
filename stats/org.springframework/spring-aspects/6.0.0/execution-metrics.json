@@ -1,0 +1,55 @@
+{
+  "fix_ni_run:2026-09-26": {
+    "timestamp": "2026-09-26T07:24:57.612596Z",
+    "library": "org.springframework:spring-aspects:6.0.0",
+    "starting_commit": "cb6f9b1769c3e26bbdf8244873feafc3dd12fe32",
+    "ending_commit": "cb6f9b1769c3e26bbdf8244873feafc3dd12fe32",
+    "strategy_name": "library_update_pi_gpt-5.6-sol",
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "status": "failure",
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "no_action",
+      "issue_number": 9399,
+      "issue_label": "fails-native-image-run",
+      "library": "org.springframework:spring-aspects:6.0.0",
+      "summary": "spring-aspects 6.0.0 pulls the same aspectjweaver 1.9.9.1 as 5.3.31 and its coverage uses AdviceMode.ASPECTJ / proxyBeanMethods=false (no CGLIB), so it needs none of the spring.objenesis.ignore + predefined-CGLIB-proxy setup that sibling spring-context/spring-aop 6.0.0 tests require; the truncated issue log gives no concrete evidence of a setup gap.",
+      "deterministic_setup": [],
+      "agent_guidance": "If generated coverage for this version adds any proxy-based (non-ASPECTJ-mode) AOP path — e.g. testing @EnableCaching/@EnableTransactionManagement/@EnableAsync without mode=ASPECTJ, or any CGLIB-backed proxy creation — mirror the precedent from tests/src/org.springframework/spring-context/6.0.0/build.gradle and tests/src/org.springframework/spring-aop/6.0.0/build.gradle: set system property spring.objenesis.ignore=true for the Test tasks and nativeTest runtimeArgs, add the matching graalvmNative binaries.test buildArgs entry, and add the generatePredefinedCglibProxyClasses JavaExec step wired into nativeTestCompile/nativeTraceImage. Otherwise no extra setup is expected beyond a straight version bump of the existing 5.3.31 scaffold.",
+      "risks": [
+        "Issue's failure log is truncated before the actual failing assertion, so the true root cause of the native-image run failure is unverified beyond this setup analysis."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#9399 [Automation] native-image run fails for org.springframework:spring-aspects:6.0.0; label=fails-native-image-run; body_chars=8015"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "9 existing test file path(s) included"
+        }
+      ],
+      "current_library": "org.springframework:spring-aspects:5.3.31",
+      "new_version": "6.0.0",
+      "model": "sonnet",
+      "input_tokens_used": 16,
+      "output_tokens_used": 10372
+    },
+    "metrics": {
+      "input_tokens_used": 0,
+      "cached_input_tokens_used": 0,
+      "output_tokens_used": 0,
+      "iterations": 3,
+      "cost_usd": 0.0,
+      "generated_loc": 0,
+      "tested_library_loc": 0,
+      "metadata_entries": 0,
+      "code_coverage_percent": 0.0
+    },
+    "artifacts": {
+      "metadata_file": "None"
+    }
+  }
+}

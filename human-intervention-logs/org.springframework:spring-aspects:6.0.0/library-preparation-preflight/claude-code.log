@@ -1,0 +1,19 @@
+## Research summary
+
+**Resolved artifact & deps.** `spring-aspects:6.0.0`'s POM pulls the identical `org.aspectj:aspectjweaver:1.9.9.1` that `5.3.31` already uses (verified against Maven Central) — the same version visible in the issue's own build report (`aspectjweaver-1.9.9.1.jar`). `spring-context`/`spring-tx`/`spring-beans`/`spring-core` at `6.0.0` show no new mandatory transitive deps relevant to this module. spring-aspects ships pre-woven (compile-time AspectJ-woven) classes, so no javaagent/load-time-weaving setup is involved.
+
+**How the existing test uses the library.** The current `Spring_aspectsTest.java` exercises `@Configurable`, `AnnotationBeanConfigurerAspect`, and `AdviceMode.ASPECTJ` for caching/tx/async — explicitly `@Configuration(proxyBeanMethods = false)`, i.e. deliberately avoiding CGLIB proxying. This matters because sibling modules `spring-context` and `spring-aop` (already tested at `6.0.0` in this repo) *do* need extra native-image setup — a `spring.objenesis.ignore=true` system property plus a pre-generated-CGLIB-proxy-classes build step — specifically because their tests instantiate CGLIB proxies via Objenesis. `spring-tx` at `6.0.0`, which (like spring-aspects) doesn't exercise CGLIB proxy creation, needed no such setup — only its own extra `jakarta.transaction-api`/`javax.transaction-api` test deps for its own coverage, unrelated to spring-aspects.
+
+**No Docker/DB/network involved** — build.gradle has no testcontainers or external service usage, and the module is a pure in-JVM AOP/DI test.
+
+**Unsupportable-verdict check:** the issue's log is truncated right after a passing test (`genericInterfaceDrivenAspectConfiguresConfigurableObjects() SUCCESSFUL`); the actual failing operation is never shown. Per the rules, missing FAILURE evidence means the process stops there — repairable is the only justified conclusion, not skip_unsupported.
+
+```json
+{
+  "action": "no_action",
+  "summary": "spring-aspects 6.0.0 pulls the same aspectjweaver 1.9.9.1 as 5.3.31 and its coverage uses AdviceMode.ASPECTJ / proxyBeanMethods=false (no CGLIB), so it needs none of the spring.objenesis.ignore + predefined-CGLIB-proxy setup that sibling spring-context/spring-aop 6.0.0 tests require; the truncated issue log gives no concrete evidence of a setup gap.",
+  "deterministic_setup": [],
+  "agent_guidance": "If generated coverage for this version adds any proxy-based (non-ASPECTJ-mode) AOP path — e.g. testing @EnableCaching/@EnableTransactionManagement/@EnableAsync without mode=ASPECTJ, or any CGLIB-backed proxy creation — mirror the precedent from tests/src/org.springframework/spring-context/6.0.0/build.gradle and tests/src/org.springframework/spring-aop/6.0.0/build.gradle: set system property spring.objenesis.ignore=true for the Test tasks and nativeTest runtimeArgs, add the matching graalvmNative binaries.test buildArgs entry, and add the generatePredefinedCglibProxyClasses JavaExec step wired into nativeTestCompile/nativeTraceImage. Otherwise no extra setup is expected beyond a straight version bump of the existing 5.3.31 scaffold.",
+  "risks": ["Issue's failure log is truncated before the actual failing assertion, so the true root cause of the native-image run failure is unverified beyond this setup analysis."]
+}
+```
