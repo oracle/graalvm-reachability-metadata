@@ -1,0 +1,44 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :populateArtifactURLs
+Both Edit and Write are blocked by the current permission mode ("don't ask mode" denying file modification tools). I can't bypass this — it's an explicit denial, not a prompt I can retry past.
+
+Here's what I found so far so you can apply it yourself (or re-enable file-write permissions and I'll do it):
+
+**For `metadata-version: 8.0.0.Beta1`** (all URLs verified with HTTP 200, following the same pattern as the existing 7.2.0.Final/6.5.0.Final entries):
+
+- `source-code-url`: `https://repo1.maven.org/maven2/org/hibernate/orm/hibernate-spatial/$version$/hibernate-spatial-$version$-sources.jar`
+- `repository-url`: `https://github.com/hibernate/hibernate-orm`
+- `test-code-url`: `https://github.com/hibernate/hibernate-orm/tree/$version$/hibernate-spatial/src/test`
+- `documentation-url`: `https://repo1.maven.org/maven2/org/hibernate/orm/hibernate-spatial/$version$/hibernate-spatial-$version$-javadoc.jar`
+- `description`: "Hibernate Spatial integrates Spatial/GIS data support into Hibernate ORM. It lets Hibernate map and query geospatial types and functions through supported spatial databases."
+- `language`: not language-specific — leave absent.
+
+Note: unlike the 7.2.0.Final entry (which needed the tag without the `.Final` suffix, e.g. `7.2.0`), the `8.0.0.Beta1` tag works verbatim in the GitHub tree URL, so `$version$` substitutes cleanly for all three templated URLs.
+
+Do you want to switch the session out of "don't ask" mode (or grant Edit/Write permission) so I can write this in?
+Ran agent for org.hibernate:hibernate-spatial:8.0.0.Beta1 (exit 0). Log: /home/oracle/oracle/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9383-44fc3823/build/agent-url-discovery-logs/org.hibernate-hibernate-spatial-8.0.0.Beta1.log
+Completed populateArtifactURLs: invoked=1, prompted=0, skipped=0, overwriteExisting=false, verifyArtifactSources=false, limit=null
+
+[Incubating] Problems report is available at: file:///home/oracle/oracle/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9383-44fc3823/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 54s
+9 actionable tasks: 1 executed, 8 up-to-date

@@ -1,0 +1,56 @@
+{
+  "fix_javac_fail:2026-09-26": {
+    "timestamp": "2026-09-26T19:38:26.324250Z",
+    "library": "org.hibernate:hibernate-spatial:8.0.0.Beta1",
+    "starting_commit": "add8eb5ade253ec3e7d6f5358173608be98d2712",
+    "ending_commit": "add8eb5ade253ec3e7d6f5358173608be98d2712",
+    "strategy_name": "javac_iterative_with_coverage_sources_pi_gpt-5.6-sol",
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "status": "failure",
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "advisory_preparation",
+      "issue_number": 9383,
+      "issue_label": "fails-javac-compile",
+      "library": "org.hibernate:hibernate-spatial:8.0.0.Beta1",
+      "summary": "8.0.0.Beta1 is the first hibernate-spatial release published with Gradle Module Metadata that aliases the org.hibernate.orm:hibernate-spatial capability back onto org.hibernate:hibernate-spatial, which collides with the plain-POM relocation artifact under the same old coordinate; Gradle cannot resolve the resulting capability conflict without an explicit capabilitiesResolution rule.",
+      "deterministic_setup": [],
+      "agent_guidance": "Keep the generated `testImplementation \"org.hibernate:hibernate-spatial:$libraryVersion\"` dependency as-is, but add a capability resolution rule to the test project's build.gradle so Gradle picks the org.hibernate.orm variant instead of failing on the capability conflict introduced by 8.0.0.Beta1's Gradle module metadata:\n\nconfigurations.all {\n    resolutionStrategy.capabilitiesResolution.withCapability(\"org.hibernate:hibernate-spatial\") {\n        def ormCandidate = candidates.find { it.id instanceof ModuleComponentIdentifier && it.id.group == 'org.hibernate.orm' && it.id.module == 'hibernate-spatial' }\n        if (ormCandidate != null) {\n            select(ormCandidate)\n        }\n    }\n}\n\nVerified in an isolated scratch Gradle project (not in this repo) that this rule alone turns the failing compileClasspath/testCompileClasspath resolution into a clean one; plain extra testImplementation dependencies or excludes do not fix it.",
+      "risks": [
+        "This is an upstream Hibernate packaging regression specific to how 8.0.0.Beta1 was published (Gradle module metadata added for org.hibernate.orm:hibernate-spatial with a self-conflicting capability alias); 8.0.0.Alpha1 had no such .module file and was unaffected. Future 8.0.0 releases should be re-checked to see if Hibernate keeps this capability aliasing or fixes it upstream.",
+        "The fix was verified only in an isolated scratch project against Maven Central metadata, not against this repo's actual testCompileClasspath/nativeImageTestClasspath configurations — local Gradle/Native Image verification in this repo should confirm the rule applies cleanly there too."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#9383 [Automation] javac compile fails for org.hibernate:hibernate-spatial:8.0.0.Beta1; label=fails-javac-compile; body_chars=8015"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "5 existing test file path(s) included"
+        }
+      ],
+      "current_library": "org.hibernate:hibernate-spatial:6.5.0.Final",
+      "new_version": "8.0.0.Beta1",
+      "model": "sonnet",
+      "input_tokens_used": 46,
+      "output_tokens_used": 20265
+    },
+    "metrics": {
+      "input_tokens_used": 33930,
+      "cached_input_tokens_used": 102784,
+      "output_tokens_used": 884,
+      "iterations": 6,
+      "cost_usd": 0.2476,
+      "generated_loc": 0,
+      "tested_library_loc": 0,
+      "metadata_entries": 0,
+      "code_coverage_percent": 0.0
+    },
+    "artifacts": {
+      "metadata_file": "None"
+    }
+  }
+}

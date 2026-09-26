@@ -1,0 +1,16 @@
+Implemented the Hibernate Spatial native-image fix.
+
+Changes:
+- Replaced unsupported `SpatialInitializer` bootstrap test with an `H2GISWkb` public API round-trip test.
+- Added conditional reflection/resource metadata for Geolatte codecs and Hibernate logging.
+- Ensured metadata for relocated `org.hibernate.orm:hibernate-spatial` is explicitly applied.
+- Retained capability resolution for the relocated artifact.
+
+Validation:
+- Exact reproduction command: exited `0`, `BUILD SUCCESSFUL`.
+- `checkMetadataFiles`, `checkstyle`, and JVM/native tests passed.
+- Native test: 1 test successful.
+
+The specified development GraalVM still emits a post-task `JUnitException`/`StackOverflowError` when metadata tracing is enabled. The same behavior reproduces unchanged on the existing `6.5.0.Final` test, indicating a tracer/toolchain regression rather than this coordinate. Normal native execution is clean.
+
+`grund` and `fissile` were unavailable in the environment.

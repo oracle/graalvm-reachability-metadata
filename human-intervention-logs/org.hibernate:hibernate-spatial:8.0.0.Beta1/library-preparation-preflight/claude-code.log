@@ -1,0 +1,24 @@
+## Findings
+
+I reproduced the failure locally (`compileTestJava` with `GVM_TCK_LV=8.0.0.Beta1`) and confirmed it's not a code-generation problem — it's a real Gradle dependency-resolution conflict, verified in an isolated scratch project outside the repo:
+
+- `org.hibernate:hibernate-spatial:8.0.0.Beta1` is a plain Maven-POM relocation to `org.hibernate.orm:hibernate-spatial:8.0.0.Beta1`.
+- Starting with **8.0.0.Beta1**, Hibernate began publishing Gradle Module Metadata (`.module`) for `org.hibernate.orm:hibernate-spatial`, which declares it also provides the capability `org.hibernate:hibernate-spatial:8.0.0.Beta1` (for back-compat).
+- Gradle now sees two distinct components both claiming that same capability/version (the plain relocation POM vs. the aliased capability in the `.module` file) and fails with "Cannot select module with conflict on capability ... also provided by [...]".
+- `8.0.0.Alpha1` (already tested successfully) had **no** `.module` file for `org.hibernate.orm:hibernate-spatial`, so the conflict didn't exist yet — this is a new upstream packaging change in Beta1, not a native-image or reflection issue.
+- I verified a working fix: adding a `resolutionStrategy.capabilitiesResolution` rule (selecting the `org.hibernate.orm:hibernate-spatial` candidate for the `org.hibernate:hibernate-spatial` capability) resolves cleanly, without touching the existing `testImplementation "org.hibernate:hibernate-spatial:$libraryVersion"` line. Adding it as a plain extra dependency, or excluding the platform, did **not** fix it.
+
+This isn't a Native Image unsupportability case at all — it never reaches compilation of reflective/dynamic-access code; it fails at Gradle dependency graph resolution due to upstream POM/module-metadata packaging.
+
+```json
+{
+  "action": "advisory_preparation",
+  "summary": "8.0.0.Beta1 is the first hibernate-spatial release published with Gradle Module Metadata that aliases the org.hibernate.orm:hibernate-spatial capability back onto org.hibernate:hibernate-spatial, which collides with the plain-POM relocation artifact under the same old coordinate; Gradle cannot resolve the resulting capability conflict without an explicit capabilitiesResolution rule.",
+  "deterministic_setup": [],
+  "agent_guidance": "Keep the generated `testImplementation \"org.hibernate:hibernate-spatial:$libraryVersion\"` dependency as-is, but add a capability resolution rule to the test project's build.gradle so Gradle picks the org.hibernate.orm variant instead of failing on the capability conflict introduced by 8.0.0.Beta1's Gradle module metadata:\n\nconfigurations.all {\n    resolutionStrategy.capabilitiesResolution.withCapability(\"org.hibernate:hibernate-spatial\") {\n        def ormCandidate = candidates.find { it.id instanceof ModuleComponentIdentifier && it.id.group == 'org.hibernate.orm' && it.id.module == 'hibernate-spatial' }\n        if (ormCandidate != null) {\n            select(ormCandidate)\n        }\n    }\n}\n\nVerified in an isolated scratch Gradle project (not in this repo) that this rule alone turns the failing compileClasspath/testCompileClasspath resolution into a clean one; plain extra testImplementation dependencies or excludes do not fix it.",
+  "risks": [
+    "This is an upstream Hibernate packaging regression specific to how 8.0.0.Beta1 was published (Gradle module metadata added for org.hibernate.orm:hibernate-spatial with a self-conflicting capability alias); 8.0.0.Alpha1 had no such .module file and was unaffected. Future 8.0.0 releases should be re-checked to see if Hibernate keeps this capability aliasing or fixes it upstream.",
+    "The fix was verified only in an isolated scratch project against Maven Central metadata, not against this repo's actual testCompileClasspath/nativeImageTestClasspath configurations — local Gradle/Native Image verification in this repo should confirm the rule applies cleanly there too."
+  ]
+}
+```
