@@ -1,0 +1,140 @@
+{
+  "fix_java_run_fail:2026-09-26": {
+    "timestamp": "2026-09-26T06:17:42.969290Z",
+    "library": "com.google.guava:guava:33.7.0-android",
+    "starting_commit": "859c950edfe841d773c5dc1dbdbbb1dc819c9436",
+    "ending_commit": "5d71c2ca1c76e0de35cea546dba36eff25161f5e",
+    "previous_library": "com.google.guava:guava:33.6.0-jre",
+    "strategy_name": "java_run_iterative_with_coverage_sources_pi_gpt-5.6-sol",
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "status": "success",
+    "stats": {
+      "version": "33.7.0-android",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 0.974138,
+            "coveredCalls": 113,
+            "totalCalls": 116
+          },
+          "resources": {
+            "coverageRatio": 0.5,
+            "coveredCalls": 2,
+            "totalCalls": 4
+          }
+        },
+        "coverageRatio": 0.958333,
+        "coveredCalls": 115,
+        "totalCalls": 120
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 18785,
+          "missed": 164471,
+          "ratio": 0.102507,
+          "total": 183256
+        },
+        "line": {
+          "covered": 4559,
+          "missed": 34804,
+          "ratio": 0.115819,
+          "total": 39363
+        },
+        "method": {
+          "covered": 1576,
+          "missed": 11496,
+          "ratio": 0.120563,
+          "total": 13072
+        }
+      }
+    },
+    "previous_library_stats": {
+      "version": "33.6.0-jre",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 115,
+            "totalCalls": 115
+          },
+          "resources": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 4,
+            "totalCalls": 4
+          }
+        },
+        "coverageRatio": 1.0,
+        "coveredCalls": 119,
+        "totalCalls": 119
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 19881,
+          "missed": 163404,
+          "ratio": 0.10847,
+          "total": 183285
+        },
+        "line": {
+          "covered": 4811,
+          "missed": 34479,
+          "ratio": 0.122448,
+          "total": 39290
+        },
+        "method": {
+          "covered": 1668,
+          "missed": 11426,
+          "ratio": 0.127387,
+          "total": 13094
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "no_action",
+      "issue_number": 9330,
+      "issue_label": "fails-java-run",
+      "library": "com.google.guava:guava:33.7.0-android",
+      "summary": "The android and jre flavors of guava:33.7.0 share identical runtime dependencies and identical source for every mechanism the existing 33.6.0-jre scaffold exercises (AbstractFutureState atomic-helper selection, FinalizableReferenceQueue decoupled classloading, ClassPath scanning), so the normal generated scaffold (which already parameterizes the dependency coordinate via tck.testedLibraryVersion) needs no extra dependency, Docker image, or env/system-property setup.",
+      "deterministic_setup": [],
+      "agent_guidance": "",
+      "risks": [
+        "The issue's runner log is truncated before the actual failing stage output, so the real cause of the reported java-run/native-image-run failure is unverified from this analysis alone — confirm with a local ./gradlew test -Pcoordinates=com.google.guava:guava:33.6.0-jre run using GVM_TCK_LV=33.7.0-android before concluding the fix scope.",
+        "The compatibility-automation flow appears to be comparing 33.7.0-android against 33.6.0-jre as if it were a plain version bump; since '-android' and '-jre' are separate artifact classifiers with independent release cadences, double-check whether 33.7.0-android should instead be tracked as its own metadata-version lineage rather than folded into the -jre line."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#9330 [Automation] java run fails for com.google.guava:guava:33.7.0-android; label=fails-java-run; body_chars=8015"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "40 existing test file path(s) included"
+        }
+      ],
+      "current_library": "com.google.guava:guava:33.6.0-jre",
+      "new_version": "33.7.0-android",
+      "model": "sonnet",
+      "input_tokens_used": 30,
+      "output_tokens_used": 11135
+    },
+    "metrics": {
+      "input_tokens_used": 324229,
+      "cached_input_tokens_used": 2032128,
+      "output_tokens_used": 14055,
+      "iterations": 7,
+      "cost_usd": 3.0588,
+      "tested_library_loc": 4559,
+      "metadata_entries": 137,
+      "test_only_metadata_entries": 163,
+      "previous_library_metadata_entries": 142,
+      "previous_library_test_only_metadata_entries": 171,
+      "code_coverage_percent": 11.58,
+      "previous_library_coverage_percent": 12.24
+    },
+    "artifacts": {
+      "metadata_file": "metadata/com.google.guava/guava/33.7.0-android/reachability-metadata.json"
+    }
+  }
+}
