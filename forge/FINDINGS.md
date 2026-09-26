@@ -3,6 +3,12 @@
 Rendered by Forge from the pre-push branch review of §FS-local-branch-review.
 Newest entry first; every non-approval is recorded, including one a repair later cleared.
 
+## 2026-09-26 — io.lettuce:lettuce-core:6.2.6.RELEASE (#10205)
+
+**Resource-bundle metadata entry missing a reachability condition**
+
+The added sun.util.logging.resources.logging bundle entry had no condition, violating the requirement that every shipped metadata entry be gated by condition.typeReached. Nearby reconnect logging resources were already gated on io.lettuce.core.protocol.ConnectionWatchdog, establishing the valid pre-access condition for the same behavior.
+
 ## 2026-09-25 — org.apache.tomcat.embed:tomcat-embed-core:11.0.22 (#10144)
 
 **Coverage update weakened a baseline logging test and dropped required test metadata**
