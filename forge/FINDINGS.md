@@ -8,6 +8,11 @@ Newest entry first; every non-approval is recorded, including one a repair later
 **Resource-bundle metadata entry missing a reachability condition**
 
 The added sun.util.logging.resources.logging bundle entry had no condition, violating the requirement that every shipped metadata entry be gated by condition.typeReached. Nearby reconnect logging resources were already gated on io.lettuce.core.protocol.ConnectionWatchdog, establishing the valid pre-access condition for the same behavior.
+## 2026-09-26 — org.jetbrains:annotations:15.0 (#9386)
+
+**Top-level test class was not public**
+
+The new AnnotationsTest was declared package-private in tests/src/org.jetbrains/annotations/15.0/src/test/java/org_jetbrains/annotations/AnnotationsTest.java, while the test contract requires every top-level test class to be public. This was a contribution-local must violation repairable under contribution-contract disposition 5.1.
 
 ## 2026-09-25 — org.apache.tomcat.embed:tomcat-embed-core:11.0.22 (#10144)
 

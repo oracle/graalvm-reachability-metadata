@@ -1,0 +1,150 @@
+{
+  "base_commit": "3be8e51b85ccb1ccb7ac4f54aaa71c1b0ab4aa28",
+  "branch": "ai/kimeta/add-lib-support-io.micrometer-micrometer-registry-statsd-1.16.5-chunked-forge-2486-20260926101606649594-4fd0535f74d0",
+  "follow_ups": [],
+  "forge": {
+    "branch": "master",
+    "commit": "3be8e51b85ccb1ccb7ac4f54aaa71c1b0ab4aa28",
+    "monitored_branch": "origin/master"
+  },
+  "issue_number": 2486,
+  "library": {
+    "artifact": "micrometer-registry-statsd",
+    "coordinates": "io.micrometer:micrometer-registry-statsd:1.16.5",
+    "group": "io.micrometer",
+    "version": "1.16.5"
+  },
+  "local_ci_verification": {
+    "base_commit": "3be8e51b85ccb1ccb7ac4f54aaa71c1b0ab4aa28",
+    "commands": [
+      {
+        "command": [
+          "./gradlew",
+          "generateChangedIndexFileCoordinatesList",
+          "-PbaseCommit=origin/master",
+          "-PnewCommit=HEAD"
+        ],
+        "env": {
+          "GITHUB_OUTPUT": "/tmp/tmp5u6oswv9"
+        },
+        "gate": "changed-index-coordinates",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :generateChangedIndexFileCoordinatesList\n\n[Incubating] Problems report is available at: file:///home/oracle/oracle/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2486-4ee9915c/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 3s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      },
+      {
+        "command": [
+          "./gradlew",
+          "validateIndexFiles",
+          "-Pcoordinates=io.micrometer:micrometer-registry-statsd"
+        ],
+        "env": {},
+        "gate": "index-file-validation",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :validateIndexFiles\n✅ metadata/io.micrometer/micrometer-registry-statsd/index.json: Valid\n\n[Incubating] Problems report is available at: file:///home/oracle/oracle/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/2486-4ee9915c/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 2s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      }
+    ],
+    "failure_command": null,
+    "failure_gate": null,
+    "final_commit": "35e4e501743bbec441ea134378a5b03d4bf8647f",
+    "fixups": [],
+    "human_intervention_required": false,
+    "repo_fix_paths": [],
+    "status": "success"
+  },
+  "local_review": {
+    "changed_paths": [],
+    "decision": "approved",
+    "finding_body": "",
+    "finding_title": "",
+    "fix_note": "",
+    "model": "gpt-5.6-sol",
+    "review_comment": "Reviewed the eventual PR diff and local evidence against the library-new-request rules and contribution disposition contract. The diff is scoped to io.micrometer:micrometer-registry-statsd:1.16.5, uses only reachability-metadata.json, and keeps the public tests in a separate package. The tests exercise asserted UDP and TCP StatsD publishing with bounded 10-second I/O waits and clean registry/socket shutdown, without scaffold code, version-pinned test logic, visibility bypasses, Native Image skips, swallowed failures, runtime class definition, JVM overrides, or native build/run flags. This is a chunked dynamic-access contribution, so percentage thresholds are exempt; its reported 21 covered calls satisfy the nonzero covered-call gate, and 21 covered calls versus 196 reported metadata entries does not trigger the entry-count mismatch check. The recorded index gates passed, and no enumerated must violation was found.",
+    "session_id": "3950716264c849e5"
+  },
+  "metrics": {
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "path": "stats/io.micrometer/micrometer-registry-statsd/1.16.5/execution-metrics.json",
+    "summary": {
+      "cached_input_tokens_used": 1136512,
+      "code_coverage_percent": 8.93,
+      "cost_usd": 1.2209,
+      "generated_loc": 161,
+      "input_tokens_used": 92838,
+      "iterations": 52,
+      "metadata_entries": 196,
+      "output_tokens_used": 6281,
+      "tested_library_loc": 9568
+    },
+    "timestamp": "2026-09-26T10:16:06.649594Z"
+  },
+  "modifiers": {
+    "chunk_final": true,
+    "chunked_dynamic_access": true,
+    "human_intervention": false
+  },
+  "producer": "kimeta",
+  "publication_id": "forge-2486-20260926101606649594-4fd0535f74d0",
+  "render": {
+    "dynamic_access": null,
+    "dynamic_access_evidence": {
+      "covered_call_sites": [],
+      "metadata_rules": [
+        "when `io.micrometer.statsd.StatsdMeterRegistry` is reached, make `ch.qos.logback.classic.turbo.TurboFilter` available for reflection",
+        "when `io.micrometer.shaded.reactor.core.publisher.ContextPropagationSupport` is reached, make `io.micrometer.context.ContextRegistry` available for reflection",
+        "when `io.micrometer.shaded.io.netty.buffer.AbstractByteBufAllocator` is reached, make `io.micrometer.shaded.io.netty.buffer.AbstractByteBufAllocator` available for reflection",
+        "when `io.micrometer.shaded.io.netty.buffer.AbstractReferenceCountedByteBuf` is reached, make `io.micrometer.shaded.io.netty.buffer.AbstractReferenceCountedByteBuf` available for reflection",
+        "when `io.micrometer.shaded.io.netty.channel.AbstractChannelHandlerContext` is reached, make `io.micrometer.shaded.io.netty.channel.AbstractChannelHandlerContext` available for reflection",
+        "when `io.micrometer.shaded.io.netty.channel.epoll.Native` is reached, make `io.micrometer.shaded.io.netty.channel.ChannelException` available for reflection",
+        "when `io.micrometer.shaded.io.netty.channel.ChannelOutboundBuffer` is reached, make `io.micrometer.shaded.io.netty.channel.ChannelOutboundBuffer` available for reflection",
+        "when `io.micrometer.shaded.io.netty.channel.DefaultChannelConfig` is reached, make `io.micrometer.shaded.io.netty.channel.DefaultChannelConfig` available for reflection",
+        "... and 113 more"
+      ]
+    },
+    "library_stats": {
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 0.12987,
+            "coveredCalls": 20,
+            "totalCalls": 154
+          },
+          "resources": {
+            "coverageRatio": 0.166667,
+            "coveredCalls": 1,
+            "totalCalls": 6
+          }
+        },
+        "coverageRatio": 0.13125,
+        "coveredCalls": 21,
+        "totalCalls": 160
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 37141,
+          "missed": 409025,
+          "ratio": 0.083245,
+          "total": 446166
+        },
+        "line": {
+          "covered": 9568,
+          "missed": 97548,
+          "ratio": 0.089324,
+          "total": 107116
+        },
+        "method": {
+          "covered": 2594,
+          "missed": 23408,
+          "ratio": 0.099762,
+          "total": 26002
+        }
+      },
+      "version": "1.16.5"
+    }
+  },
+  "schema_version": 1,
+  "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-sol",
+  "task_type": "library-new-request",
+  "template_type": "library-new-request",
+  "timestamp": "2026-09-26T10:16:06.649594Z"
+}
