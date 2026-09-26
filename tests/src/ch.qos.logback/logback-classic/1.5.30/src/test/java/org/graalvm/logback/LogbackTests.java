@@ -28,6 +28,7 @@ import ch.qos.logback.classic.PatternLayout;
 import ch.qos.logback.classic.encoder.PatternLayoutEncoder;
 import ch.qos.logback.classic.log4j.XMLLayout;
 import ch.qos.logback.classic.spi.ILoggingEvent;
+import ch.qos.logback.classic.spi.LogbackServiceProvider;
 import ch.qos.logback.classic.util.LogbackMDCAdapter;
 import ch.qos.logback.core.Appender;
 import ch.qos.logback.core.ConsoleAppender;
@@ -211,17 +212,18 @@ public class LogbackTests {
   }
 
   @Test
-  void slf4jCanBeDetected() {
-    boolean slf4jAvailable = isClassPresent("org.slf4j.Logger") && isClassPresent("org.slf4j.spi.SLF4JServiceProvider");
-    assertThat(slf4jAvailable).isTrue();
-  }
-
-  private boolean isClassPresent(String className) {
+  void logbackServiceProviderInitializesAndLogs() {
+    LogbackServiceProvider provider = new LogbackServiceProvider();
+    provider.initialize();
+    LoggerContext providerContext = (LoggerContext) provider.getLoggerFactory();
     try {
-      Class.forName(className);
-      return true;
-    } catch (ClassNotFoundException ex) {
-      return false;
+      Logger logger = providerContext.getLogger("service-provider-test");
+      logger.info("message from Logback service provider");
+
+      assertThat(provider.getMDCAdapter()).isSameAs(providerContext.getMDCAdapter());
+      assertThat(outputStreamCaptor.toString()).contains("message from Logback service provider");
+    } finally {
+      providerContext.stop();
     }
   }
 
