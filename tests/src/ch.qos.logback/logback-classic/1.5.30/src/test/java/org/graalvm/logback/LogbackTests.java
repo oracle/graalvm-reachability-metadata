@@ -28,6 +28,7 @@ import ch.qos.logback.classic.PatternLayout;
 import ch.qos.logback.classic.encoder.PatternLayoutEncoder;
 import ch.qos.logback.classic.log4j.XMLLayout;
 import ch.qos.logback.classic.spi.ILoggingEvent;
+import ch.qos.logback.classic.util.LogbackMDCAdapter;
 import ch.qos.logback.core.Appender;
 import ch.qos.logback.core.ConsoleAppender;
 import ch.qos.logback.core.FileAppender;
@@ -50,7 +51,6 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
-import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -58,7 +58,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class LogbackTests {
 
-  private static final LoggerContext context = (LoggerContext) LoggerFactory.getILoggerFactory();
+  private static final LoggerContext context = new LoggerContext();
 
   private static final Map<String, String> layoutResultMap = new HashMap<>();
   static {
@@ -74,11 +74,13 @@ public class LogbackTests {
 
   @BeforeAll
   void beforeAll() throws IOException {
+    context.setMDCAdapter(new LogbackMDCAdapter());
     tempDirPath = Files.createTempDirectory("logback-metadata-test");
   }
 
   @AfterAll
   void afterAll() {
+    context.stop();
     if (tempDirPath != null) {
       try {
         Files.walk(tempDirPath)
