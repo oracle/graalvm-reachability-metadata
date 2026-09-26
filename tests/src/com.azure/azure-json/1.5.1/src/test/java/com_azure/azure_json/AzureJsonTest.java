@@ -122,6 +122,32 @@ public class AzureJsonTest {
     }
 
     @Test
+    void preservesRemainingObjectFieldsAsJson() throws IOException {
+        String json = "{\"id\":\"record-7\",\"status\":\"active\","
+            + "\"metadata\":{\"region\":\"west\",\"retries\":2},\"tags\":[\"primary\",\"archived\"]}";
+
+        String remainingFields;
+        try (JsonReader reader = JsonProviders.createReader(json)) {
+            assertEquals(JsonToken.START_OBJECT, reader.nextToken());
+            assertEquals(JsonToken.FIELD_NAME, reader.nextToken());
+            assertEquals("id", reader.getFieldName());
+            assertEquals(JsonToken.STRING, reader.nextToken());
+            assertEquals("record-7", reader.getString());
+            assertEquals(JsonToken.FIELD_NAME, reader.nextToken());
+            assertEquals("status", reader.getFieldName());
+
+            remainingFields = reader.readRemainingFieldsAsJsonObject();
+        }
+
+        try (JsonReader reader = JsonProviders.createReader(remainingFields)) {
+            Map<String, Object> values = reader.readMap(JsonReader::readUntyped);
+            assertEquals("active", values.get("status"));
+            assertEquals(Map.of("region", "west", "retries", 2), values.get("metadata"));
+            assertEquals(Arrays.asList("primary", "archived"), values.get("tags"));
+        }
+    }
+
+    @Test
     void returnsJsonEscapedTextForStringTokens() throws IOException {
         String json = "{\"display\\nname\":\"line\\n\\\"quoted\\\"\"}";
 
