@@ -179,7 +179,7 @@ public class ServletTest {
 
         @Override
         public StringBuffer getRequestURL() {
-            return new StringBuffer("http://localhost:8080").append(requestUri);
+            return new java.lang.StringBuffer("http://localhost:8080").append(requestUri);
         }
 
         @Override
