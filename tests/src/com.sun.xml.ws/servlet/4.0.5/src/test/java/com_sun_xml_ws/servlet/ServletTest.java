@@ -27,6 +27,7 @@ import javax.xml.namespace.QName;
 import com.sun.xml.ws.api.server.BoundEndpoint;
 import com.sun.xml.ws.developer.servlet.HttpSessionScopeFeature;
 import com.sun.xml.ws.transport.http.servlet.ServletAdapterList;
+import com.sun.xml.ws.transport.http.servlet.ServletConnectionImpl;
 import com.sun.xml.ws.transport.http.servlet.ServletModule;
 import jakarta.servlet.AsyncContext;
 import jakarta.servlet.DispatcherType;
@@ -79,6 +80,27 @@ public class ServletTest {
 
         assertThat(adapters).isEmpty();
         assertThat(address).isNull();
+    }
+
+    @Test
+    void exposesServletRequestThroughWebServiceConnection() {
+        MemoryHttpServletRequest request = new MemoryHttpServletRequest(
+                "/application", "/application/services/echo");
+        request.addHeader("X-Request-ID", "request-42");
+        request.setAttribute("tenant", "example");
+        ServletConnectionImpl connection = new ServletConnectionImpl(null, null, request, null);
+
+        Map<String, List<String>> headers = connection.getRequestHeaders();
+
+        assertThat(headers).containsEntry("X-Request-ID", List.of("request-42"));
+        assertThat(connection.getRequestHeader("x-request-id")).isEqualTo("request-42");
+        assertThat(connection.getRequestHeaderValues("X-Request-ID")).containsExactly("request-42");
+        assertThat(connection.getRequestMethod()).isEqualTo("GET");
+        assertThat(connection.getRequestURI()).isEqualTo("/application/services/echo");
+        assertThat(connection.getPathInfo()).isEqualTo("/services/echo");
+        assertThat(connection.getRequestAttribute("tenant")).isEqualTo("example");
+        assertThat(connection.getRequest()).isSameAs(request);
+        assertThat(connection.getWebServiceContextDelegate()).isSameAs(connection);
     }
 
     @Test
