@@ -122,6 +122,23 @@ public class AzureJsonTest {
     }
 
     @Test
+    void returnsJsonEscapedTextForStringTokens() throws IOException {
+        String json = "{\"display\\nname\":\"line\\n\\\"quoted\\\"\"}";
+
+        try (JsonReader reader = JsonProviders.createReader(json)) {
+            assertEquals(JsonToken.START_OBJECT, reader.nextToken());
+            assertEquals(JsonToken.FIELD_NAME, reader.nextToken());
+            assertEquals("display\nname", reader.getText());
+            assertEquals("display\\nname", reader.getRawText());
+
+            assertEquals(JsonToken.STRING, reader.nextToken());
+            assertEquals("line\n\"quoted\"", reader.getText());
+            assertEquals("line\\n\\\"quoted\\\"", reader.getRawText());
+            assertEquals(JsonToken.END_OBJECT, reader.nextToken());
+        }
+    }
+
+    @Test
     void readsJsonWithConfiguredCommentsAndNonNumericNumbers() throws IOException {
         JsonOptions options = new JsonOptions().setJsoncSupported(true).setNonNumericNumbersSupported(true);
         String json = "/* configuration */ {\"limit\":NaN,\"active\":false}";
