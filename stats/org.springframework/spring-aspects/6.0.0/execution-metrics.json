@@ -1,0 +1,56 @@
+{
+  "fix_ni_run:2026-09-26": {
+    "timestamp": "2026-09-26T14:57:29.887615Z",
+    "library": "org.springframework:spring-aspects:6.0.0",
+    "starting_commit": "25f92cb2ef0ed9576de490d9fb5dd7131c14d6db",
+    "ending_commit": "25f92cb2ef0ed9576de490d9fb5dd7131c14d6db",
+    "strategy_name": "library_update_pi_gpt-5.6-sol",
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "status": "failure",
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "advisory_preparation",
+      "issue_number": 9399,
+      "issue_label": "fails-native-image-run",
+      "library": "org.springframework:spring-aspects:6.0.0",
+      "summary": "spring-aspects 6.0.0 CGLIB-enhances Spring's internal @EnableTransactionManagement/@EnableSpringConfigured configuration classes (AspectJTransactionManagementConfiguration, SpringConfiguredConfiguration), which fails native-image with 'Classes cannot be defined at runtime'; this repo already has a working predefined-CGLIB-class workaround for the same pattern in spring-context/spring-aop 6.0.0, so it needs porting rather than new dependencies.",
+      "deterministic_setup": [],
+      "agent_guidance": "Reproduce first with `env GVM_TCK_LV=6.0.0 GVM_TCK_NATIVE_IMAGE_MODE=current-defaults ./gradlew clean test -Pcoordinates=org.springframework:spring-aspects:5.3.31` to confirm the exact failing proxy class names before generating metadata. Mirror the pattern already used in tests/src/org.springframework/spring-context/6.0.0 and tests/src/org.springframework/spring-aop/6.0.0: add a PredefinedCglibProxyClassesGenerator (JavaExec) that exercises the code paths creating AspectJTransactionManagementConfiguration$$SpringCGLIB$$0 and SpringConfiguredConfiguration$$SpringCGLIB$$0 (via aspectjModeRegistersCacheTransactionAndAsyncInfrastructureAspects()/springConfiguredRegistersTheSingletonBeanConfigurerAspect()-style setup), dumping .class bytes into the test classes dir via the cglib.debugLocation system property; wire a generatePredefinedCglibProxyClasses task that nativeTestCompile/nativeTraceImage depend on. Set spring.objenesis.ignore=true as a systemProperty on Test tasks and as a nativeTest runtimeArgs / graalvmNative.binaries.test buildArgs entry. Register the generated proxy classes in reachability-metadata.json as reflection entries with condition.typeReached = org.springframework.cglib.proxy.Enhancer, following the exact structure in spring-context/6.0.0's reachability-metadata.json.",
+      "risks": [
+        "The exact CGLIB proxy class names/count depend on which internal @Configuration classes get enhanced for spring-aspects' AnnotationTransactionAspect/AnnotationCacheAspect/AnnotationAsyncExecutionAspect/AnnotationBeanConfigurerAspect wiring; must be verified locally via reproduction rather than assumed from the spring-context precedent.",
+        "Only 2 of 8 tests failed in this reproduction; other tests may reveal further CGLIB proxy classes once the metadata/test suite is regenerated against 6.0.0 rather than reused from 5.3.31."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#9399 [Automation] native-image run fails for org.springframework:spring-aspects:6.0.0; label=fails-native-image-run; body_chars=8015"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "9 existing test file path(s) included"
+        }
+      ],
+      "current_library": "org.springframework:spring-aspects:5.3.31",
+      "new_version": "6.0.0",
+      "model": "sonnet",
+      "input_tokens_used": 38,
+      "output_tokens_used": 16465
+    },
+    "metrics": {
+      "input_tokens_used": 0,
+      "cached_input_tokens_used": 0,
+      "output_tokens_used": 0,
+      "iterations": 3,
+      "cost_usd": 0.0,
+      "generated_loc": 0,
+      "tested_library_loc": 0,
+      "metadata_entries": 0,
+      "code_coverage_percent": 0.0
+    },
+    "artifacts": {
+      "metadata_file": "None"
+    }
+  }
+}

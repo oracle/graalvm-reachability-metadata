@@ -1,0 +1,30 @@
+## Findings
+
+I reproduced the failure locally (`GVM_TCK_LV=6.0.0 GVM_TCK_NATIVE_IMAGE_MODE=current-defaults ./gradlew clean test -Pcoordinates=org.springframework:spring-aspects:5.3.31`) since the issue's log was truncated right before the actual failure detail.
+
+**Real failure** (2 of 8 tests): CGLIB tries to define proxy classes for Spring's own internal `@Configuration` infrastructure classes at native-image runtime:
+```
+org.springframework.cglib.core.CodeGenerationException: com.oracle.svm.core.jdk.UnsupportedFeatureError-->
+Classes cannot be defined at runtime by default when using ahead-of-time Native Image compilation.
+Tried to define class: org/springframework/transaction/aspectj/AspectJTransactionManagementConfiguration$$SpringCGLIB$$0
+```
+and the same for `org/springframework/context/annotation/aspectj/SpringConfiguredConfiguration$$SpringCGLIB$$0`.
+
+This is Spring 6's `ConfigurationClassPostProcessor` CGLIB-enhancing its own internal config classes (imported via `@EnableTransactionManagement`/`@EnableSpringConfigured`), unrelated to the user's own `@Configuration(proxyBeanMethods = false)` test classes.
+
+**This is not an unsupportable mechanism** — this repo already has a proven, working pattern for exactly this CGLIB-proxy-at-build-time problem (`PredefinedCglibProxyClassesGenerator` used in `org.springframework/spring-context/6.0.0`, `spring-aop/6.0.0`, `spring-shell-core-autoconfigure/4.0.2`, `spring-cloud-function-context/5.0.x`): a JavaExec task runs the code path in a plain JVM before `nativeTestCompile`, dumping the exact `...$$SpringCGLIB$$N.class` bytes into the test classes dir so they're ordinary compiled classes by the time native-image builds, plus reflection metadata (`condition.typeReached: org.springframework.cglib.proxy.Enhancer`) and the `spring.objenesis.ignore=true` system property (test + native runtime arg). A viable fallback exists, so per the grounding rules this is repairable, not `skip_unsupported`.
+
+## Decision
+
+```json
+{
+  "action": "advisory_preparation",
+  "summary": "spring-aspects 6.0.0 CGLIB-enhances Spring's internal @EnableTransactionManagement/@EnableSpringConfigured configuration classes (AspectJTransactionManagementConfiguration, SpringConfiguredConfiguration), which fails native-image with 'Classes cannot be defined at runtime'; this repo already has a working predefined-CGLIB-class workaround for the same pattern in spring-context/spring-aop 6.0.0, so it needs porting rather than new dependencies.",
+  "deterministic_setup": [],
+  "agent_guidance": "Reproduce first with `env GVM_TCK_LV=6.0.0 GVM_TCK_NATIVE_IMAGE_MODE=current-defaults ./gradlew clean test -Pcoordinates=org.springframework:spring-aspects:5.3.31` to confirm the exact failing proxy class names before generating metadata. Mirror the pattern already used in tests/src/org.springframework/spring-context/6.0.0 and tests/src/org.springframework/spring-aop/6.0.0: add a PredefinedCglibProxyClassesGenerator (JavaExec) that exercises the code paths creating AspectJTransactionManagementConfiguration$$SpringCGLIB$$0 and SpringConfiguredConfiguration$$SpringCGLIB$$0 (via aspectjModeRegistersCacheTransactionAndAsyncInfrastructureAspects()/springConfiguredRegistersTheSingletonBeanConfigurerAspect()-style setup), dumping .class bytes into the test classes dir via the cglib.debugLocation system property; wire a generatePredefinedCglibProxyClasses task that nativeTestCompile/nativeTraceImage depend on. Set spring.objenesis.ignore=true as a systemProperty on Test tasks and as a nativeTest runtimeArgs / graalvmNative.binaries.test buildArgs entry. Register the generated proxy classes in reachability-metadata.json as reflection entries with condition.typeReached = org.springframework.cglib.proxy.Enhancer, following the exact structure in spring-context/6.0.0's reachability-metadata.json.",
+  "risks": [
+    "The exact CGLIB proxy class names/count depend on which internal @Configuration classes get enhanced for spring-aspects' AnnotationTransactionAspect/AnnotationCacheAspect/AnnotationAsyncExecutionAspect/AnnotationBeanConfigurerAspect wiring; must be verified locally via reproduction rather than assumed from the spring-context precedent.",
+    "Only 2 of 8 tests failed in this reproduction; other tests may reveal further CGLIB proxy classes once the metadata/test suite is regenerated against 6.0.0 rather than reused from 5.3.31."
+  ]
+}
+```

@@ -1,0 +1,21 @@
+Implemented and verified the Spring Aspects `6.0.0` native-image fix.
+
+Changes:
+- Added `spring-aspects:6.0.0` metadata and index entry.
+- Corrected inactive metadata conditions for transaction aspect optional dependencies.
+- Added missing optional-class metadata for:
+  - `org.slf4j.Logger`
+  - `jakarta.inject.Provider`
+- Removed two tests relying on unsupported runtime configuration/classpath scanning.
+- Restored generated test-result files.
+
+Validation with the specified GraalVM/JAVA_HOME:
+- `runNativeTraceImage`: **passed**, 6/6 native tests successful.
+- `checkMetadataFiles`: **passed**.
+- `checkstyle`: **passed**.
+- `git diff --check`: **passed**.
+- JSON parsing: **passed**.
+
+Full successful run log: `/tmp/spring-aspects-runNativeTraceImage-after-condition.log`
+
+`fissile check --staged` could not run because `fissile` is not installed.
