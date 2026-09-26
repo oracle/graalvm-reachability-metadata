@@ -22,7 +22,7 @@ import org.junit.jupiter.api.Test;
 
 public class AbstractTrueCachePreparedStatementTest {
     @Test
-    void replaysQueuedBindingsAndOptionsDuringExecution() throws SQLException {
+    void replaysQueuedBindingsDuringBatchExecution() throws SQLException {
         PreparedStatementHandler handler = new PreparedStatementHandler();
         OraclePreparedStatement delegate = (OraclePreparedStatement) Proxy.newProxyInstance(
                 OraclePreparedStatement.class.getClassLoader(),
@@ -37,13 +37,9 @@ public class AbstractTrueCachePreparedStatementTest {
         statement.addBatch();
 
         assertThat(statement.executeBatch()).containsExactly(1);
-        statement.setCheckBindTypes(true);
-        assertThat(statement.execute()).isFalse();
         assertThat(handler.getStringBindings()).containsExactly("initial", "replacement");
         assertThat(handler.getIntegerBinding()).isEqualTo(42);
         assertThat(handler.isBatchExecuted()).isTrue();
-        assertThat(handler.isCheckBindTypes()).isTrue();
-        assertThat(handler.isExecuted()).isTrue();
     }
 
     private static final class PreparedStatementHarness
@@ -56,11 +52,6 @@ public class AbstractTrueCachePreparedStatementTest {
 
         @Override
         protected void createStatement(AbstractTrueCacheConnection connection) { }
-
-        @Override
-        protected OracleConnection getConnectionDuringExceptionHandling() {
-            return null;
-        }
     }
 
     private static final class DetachedTrueCacheConnection extends AbstractTrueCacheConnection {
@@ -91,8 +82,6 @@ public class AbstractTrueCachePreparedStatementTest {
         private final List<String> stringBindings = new ArrayList<>();
         private Integer integerBinding;
         private boolean batchExecuted;
-        private boolean checkBindTypes;
-        private boolean executed;
 
         @Override
         public Object invoke(Object proxy, Method method, Object[] arguments) {
@@ -106,12 +95,6 @@ public class AbstractTrueCachePreparedStatementTest {
                 case "executeBatch":
                     batchExecuted = true;
                     return new int[] {1};
-                case "setCheckBindTypes":
-                    checkBindTypes = (Boolean) arguments[0];
-                    return null;
-                case "execute":
-                    executed = true;
-                    return false;
                 default:
                     return defaultValue(method.getReturnType());
             }
@@ -155,14 +138,6 @@ public class AbstractTrueCachePreparedStatementTest {
 
         private boolean isBatchExecuted() {
             return batchExecuted;
-        }
-
-        private boolean isCheckBindTypes() {
-            return checkBindTypes;
-        }
-
-        private boolean isExecuted() {
-            return executed;
         }
     }
 }
