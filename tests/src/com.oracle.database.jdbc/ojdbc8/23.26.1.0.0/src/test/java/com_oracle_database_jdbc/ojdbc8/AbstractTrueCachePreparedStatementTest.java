@@ -56,6 +56,11 @@ public class AbstractTrueCachePreparedStatementTest {
 
         @Override
         protected void createStatement(AbstractTrueCacheConnection connection) { }
+
+        @Override
+        protected OracleConnection getConnectionDuringExceptionHandling() {
+            return null;
+        }
     }
 
     private static final class DetachedTrueCacheConnection extends AbstractTrueCacheConnection {
