@@ -16,6 +16,13 @@ dependencies {
 }
 
 graalvmNative {
+    binaries {
+        test {
+            buildArgs.add('--initialize-at-build-time=org.slf4j.helpers.NOPLoggerFactory,'
+                    + 'org.slf4j.helpers.SubstituteLoggerFactory')
+        }
+    }
+
     agent {
         defaultMode = "conditional"
         modes {

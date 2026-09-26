@@ -6,11 +6,24 @@
  */
 package com_azure.azure_core;
 
-import org.junit.jupiter.api.Test;
+import static org.assertj.core.api.Assertions.assertThat;
 
-class Azure_coreTest {
+import com.azure.core.util.LibraryTelemetryOptions;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
+
+@Timeout(60)
+public class Azure_coreTest {
     @Test
-    void test() throws Exception {
-        System.out.println("This is just a placeholder, implement your test");
+    void libraryTelemetryOptionsRetainClientIdentityAndSchema() {
+        LibraryTelemetryOptions options = new LibraryTelemetryOptions("contoso-storage")
+                .setLibraryVersion("client-version")
+                .setResourceProviderNamespace("Microsoft.Storage")
+                .setSchemaUrl("https://opentelemetry.io/schemas/example");
+
+        assertThat(options.getLibraryName()).isEqualTo("contoso-storage");
+        assertThat(options.getLibraryVersion()).isEqualTo("client-version");
+        assertThat(options.getResourceProviderNamespace()).isEqualTo("Microsoft.Storage");
+        assertThat(options.getSchemaUrl()).isEqualTo("https://opentelemetry.io/schemas/example");
     }
 }
