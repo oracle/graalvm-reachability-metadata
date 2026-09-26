@@ -50,8 +50,7 @@ public class StatsdMeterRegistryTransportTest {
                 Counter counter = registry.counter("requests.processed", "status", "ok");
 
                 publishUntilReceived(counter, expectedMetricsReceived);
-            }
-            finally {
+            } finally {
                 registry.close();
             }
 
@@ -80,8 +79,7 @@ public class StatsdMeterRegistryTransportTest {
                 Counter counter = registry.counter("jobs.completed", "result", "success");
 
                 publishUntilReceived(counter, expectedMetricReceived);
-            }
-            finally {
+            } finally {
                 registry.close();
             }
 
@@ -113,11 +111,9 @@ public class StatsdMeterRegistryTransportTest {
                         StandardCharsets.UTF_8));
             }
             received.set(payloads.toString());
-        }
-        catch (Throwable failure) {
+        } catch (Throwable failure) {
             receiverFailure.set(failure);
-        }
-        finally {
+        } finally {
             expectedMetricsReceived.countDown();
         }
     }
@@ -140,11 +136,9 @@ public class StatsdMeterRegistryTransportTest {
                 payload.append(new String(bytes, 0, length, StandardCharsets.UTF_8));
             }
             received.set(payload.toString());
-        }
-        catch (Throwable failure) {
+        } catch (Throwable failure) {
             receiverFailure.set(failure);
-        }
-        finally {
+        } finally {
             expectedMetricReceived.countDown();
         }
     }
