@@ -24,14 +24,19 @@ public class CompactHashMapTest {
     private static final long COMPACT_HASH_MAP_SERIAL_VERSION_UID = -3875695063200762544L;
 
     @Test
-    void roundTripSerializesCompactHashMapKeysAndValues() throws Exception {
+    void deserializesMutatesAndRoundTripsCompactHashMap() throws Exception {
         Map<String, String> restored = readSerializedCompactHashMap();
 
         assertThat(restored).containsExactly(entry("alpha", "one"), entry("beta", "two"));
+        assertThat(restored.put("gamma", "three")).isNull();
 
         Map<String, String> roundTripped = roundTrip(restored);
 
-        assertThat(roundTripped).containsExactly(entry("alpha", "one"), entry("beta", "two"));
+        assertThat(roundTripped)
+                .containsExactly(
+                        entry("alpha", "one"),
+                        entry("beta", "two"),
+                        entry("gamma", "three"));
     }
 
     private static Map<String, String> readSerializedCompactHashMap()
