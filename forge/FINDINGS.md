@@ -8,6 +8,12 @@ Newest entry first; every non-approval is recorded, including one a repair later
 **Generated library statistics were stale**
 
 The first review-finalization pass regenerated `stats.json`, correcting covered instruction and line counts from 92,681/12,870 to 92,680/12,869. Because the publishable tree changed, that pass exited nonzero as required; the exact finalization command then passed without further changes.
+## 2026-09-26 — org.jetbrains:annotations:15.0 (#9386)
+
+**Top-level test class was not public**
+
+The new AnnotationsTest was declared package-private in tests/src/org.jetbrains/annotations/15.0/src/test/java/org_jetbrains/annotations/AnnotationsTest.java, while the test contract requires every top-level test class to be public. This was a contribution-local must violation repairable under contribution-contract disposition 5.1.
+
 ## 2026-09-25 — org.apache.tomcat.embed:tomcat-embed-core:11.0.22 (#10144)
 
 **Coverage update weakened a baseline logging test and dropped required test metadata**
