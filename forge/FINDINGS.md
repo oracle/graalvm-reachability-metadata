@@ -3,6 +3,12 @@
 Rendered by Forge from the pre-push branch review of §FS-local-branch-review.
 Newest entry first; every non-approval is recorded, including one a repair later cleared.
 
+## 2026-09-26 — ch.qos.logback:logback-classic:1.5.30 (#9327)
+
+**Runtime repair bypasses missing SLF4J provider registration**
+
+FS-test-contract.2.9 and FS-contribution-contract.4.8 prohibit making a runtime repair green by removing the failing behavior. The baseline obtains its LoggerContext through LoggerFactory.getILoggerFactory(), but the 1.5.30 test replaces that integration path with new LoggerContext() and manually constructs LogbackServiceProvider. Reproducible artifact evidence shows META-INF/services/org.slf4j.spi.SLF4JServiceProvider is present in the 1.5.29 and 1.5.31 JARs but absent from the 1.5.30 JAR; the supplied preflight record independently identifies this as the upstream 1.5.30 packaging defect. Consequently the green tests prove direct Logback APIs while bypassing the broken SLF4J provider discovery that caused the reported JVM failure. Restoring that path cannot be repaired within the contribution without supplying a fake missing artifact resource or testing a different version. FS-contribution-contract.5.4 does not apply because this is a JVM packaging defect, not dynamic access reachable only through behavior unsupported by Native Image, so disposition 5.5 requires human intervention. Separate contribution-local violations were repaired: a deleted baseline context-selector scenario, three explicit 5-second socket timeouts, and machine-local /tmp resource metadata produced by passing a temporary model as a path rather than a file URI.
+
 ## 2026-09-26 — org.jetbrains:annotations:15.0 (#9386)
 
 **Top-level test class was not public**
