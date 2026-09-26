@@ -37,7 +37,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class AzureJsonTest {
     @Test
     void roundTripsSerializableModelThroughStreams() throws IOException {
-        Message original = new Message("created", 3, new byte[] { 1, 2, 3, 4 }, Arrays.asList("azure", "json"));
+        Message original = new Message("created", 3, new byte[] {1, 2, 3, 4}, Arrays.asList("azure", "json"));
         ByteArrayOutputStream output = new ByteArrayOutputStream();
 
         original.toJson(output);
@@ -48,7 +48,7 @@ public class AzureJsonTest {
 
         assertEquals("created", restored.name);
         assertEquals(3, restored.count);
-        assertArrayEquals(new byte[] { 1, 2, 3, 4 }, restored.payload);
+        assertArrayEquals(new byte[] {1, 2, 3, 4}, restored.payload);
         assertEquals(Arrays.asList("azure", "json"), restored.labels);
         assertEquals(original.toJsonString(), new String(original.toJsonBytes(), StandardCharsets.UTF_8));
     }
