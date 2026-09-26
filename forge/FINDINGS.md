@@ -8,6 +8,12 @@ Newest entry first; every non-approval is recorded, including one a repair later
 **Generated library statistics were stale**
 
 The first review-finalization pass regenerated `stats.json`, correcting covered instruction and line counts from 92,681/12,870 to 92,680/12,869. Because the publishable tree changed, that pass exited nonzero as required; the exact finalization command then passed without further changes.
+## 2026-09-26 — com.azure:azure-json:1.5.1 (#10056)
+
+**Generated library statistics were stale**
+
+The first exact finalization run regenerated stats/com.azure/azure-json/1.5.1/stats.json and changed the covered instruction, line, and method counts from 10326/2450/486 to 10270/2435/484, then exited nonzero because the publishable tree changed. This contribution-local generated-evidence mismatch was repairable under §FS-contribution-contract.5.1.
+
 ## 2026-09-26 — org.jetbrains:annotations:15.0 (#9386)
 
 **Top-level test class was not public**
