@@ -1,10 +1,10 @@
 {
-  "base_commit": "91dfda3002a0655a12bf62647c8e1334939f7ccc",
-  "branch": "ai/kimeta/add-lib-support-com.oracle.database.jdbc-ojdbc8-23.26.1.0.0-chunked-forge-10059-20260923143748580409-16595d6fcb51",
+  "base_commit": "a39bf7521d0089ee82cc1b95a0c812bb59cb7f32",
+  "branch": "ai/kimeta/add-lib-support-com.oracle.database.jdbc-ojdbc8-23.26.1.0.0-chunked-forge-10059-20260926034717067287-936aca7bb96c",
   "follow_ups": [],
   "forge": {
     "branch": "master",
-    "commit": "c916e61a569168a6e089f968aa11f6681a84aec4",
+    "commit": "a39bf7521d0089ee82cc1b95a0c812bb59cb7f32",
     "monitored_branch": "origin/master"
   },
   "issue_number": 10059,
@@ -15,37 +15,11 @@
     "version": "23.26.1.0.0"
   },
   "local_ci_verification": {
-    "base_commit": "91dfda3002a0655a12bf62647c8e1334939f7ccc",
-    "commands": [
-      {
-        "command": [
-          "./gradlew",
-          "generateChangedIndexFileCoordinatesList",
-          "-PbaseCommit=origin/master",
-          "-PnewCommit=HEAD"
-        ],
-        "env": {
-          "GITHUB_OUTPUT": "/tmp/tmp0winpcxf"
-        },
-        "gate": "changed-index-coordinates",
-        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :generateChangedIndexFileCoordinatesList\n\n[Incubating] Problems report is available at: file:///home/oracle/oracle/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10059-05894ffe/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 3s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
-        "returncode": 0
-      },
-      {
-        "command": [
-          "./gradlew",
-          "validateIndexFiles",
-          "-Pcoordinates=com.oracle.database.jdbc:ojdbc8"
-        ],
-        "env": {},
-        "gate": "index-file-validation",
-        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :validateIndexFiles\n✅ metadata/com.oracle.database.jdbc/ojdbc8/index.json: Valid\n\n[Incubating] Problems report is available at: file:///home/oracle/oracle/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10059-05894ffe/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 2s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
-        "returncode": 0
-      }
-    ],
+    "base_commit": "a39bf7521d0089ee82cc1b95a0c812bb59cb7f32",
+    "commands": [],
     "failure_command": null,
     "failure_gate": null,
-    "final_commit": "0453adf2a4c07c8be357b0e2d82746884f051641",
+    "final_commit": "caf16997e4ae3936822de2cc4aa2ebe3e106bd12",
     "fixups": [],
     "human_intervention_required": false,
     "repo_fix_paths": [],
@@ -53,35 +27,33 @@
   },
   "local_review": {
     "changed_paths": [
-      "stats/com.oracle.database.jdbc/ojdbc8/23.26.1.0.0/stats.json",
-      "tests/src/com.oracle.database.jdbc/ojdbc8/23.26.1.0.0/src/test/java/com_oracle_database_jdbc/ojdbc8/DMSFactoryTest.java",
-      "tests/src/com.oracle.database.jdbc/ojdbc8/23.26.1.0.0/src/test/java/com_oracle_database_jdbc/ojdbc8/GeneratedPhysicalConnectionAnonymous1Test.java"
+      "stats/com.oracle.database.jdbc/ojdbc8/23.26.1.0.0/stats.json"
     ],
     "decision": "approved",
-    "finding_body": "The exhaust report marked oracle.jdbc.driver.DMSFactory and oracle.jdbc.driver.GeneratedPhysicalConnection$1 as completed, but the contribution had no dedicated DMSFactoryTest or GeneratedPhysicalConnectionAnonymous1Test. This violated the one-test-file-per-dynamic-access-class requirement in FS-test-contract.1.8.",
-    "finding_title": "Completed dynamic-access classes lacked dedicated test files",
-    "fix_note": "Added dedicated public-API tests for DMSFactory observability and GeneratedPhysicalConnection$1 initialization behavior, then accepted Forge's regenerated library coverage statistics. The exact Forge-owned finalization command was rerun until it exited successfully with no further publishable change.",
+    "finding_body": "The first review-finalization pass regenerated `stats.json`, correcting covered instruction and line counts from 92,681/12,870 to 92,680/12,869. Because the publishable tree changed, that pass exited nonzero as required; the exact finalization command then passed without further changes.",
+    "finding_title": "Generated library statistics were stale",
+    "fix_note": "Regenerated the coordinate's library statistics through the required Forge finalizer and retained the corrected `stats.json`; reran finalization to a stable successful pass.",
     "model": "gpt-5.6-sol",
-    "review_comment": "Reviewed the single-coordinate diff, all added tests and build configuration, index/metadata format and scope, local gate evidence, and resolved statistics. The contribution has no scaffold, native-image dodge, version pin, package overlap, legacy metadata, or coverage-gate violation; reported dynamic-access coverage is 138/177 (77.9661%), and the 138 covered calls do not trigger the entry-count mismatch probe against 2,530 reported entries. After repair, Forge finalization passed all three native lanes, metadata validation, style checks, generated-test validity, and statistics generation without further publishable changes.",
-    "session_id": "d7d9d945b2e041f3"
+    "review_comment": "Reviewed the single-coordinate chunk diff, changed tests, build configuration, metadata file scope, local gate evidence, and resolved statistics. The tests remain version-agnostic, use a separate test package, run under Native Image, and contain no scaffold, skip, unsupported-error tolerance, legacy metadata, or unrelated-coordinate changes. Dynamic-access coverage is 138/177 (77.966%), and the reported 2,530 metadata entries do not trigger the mismatch guardrail. The Forge-owned finalizer passed all three native lanes, metadata validation, style checks, generated-test validation, and statistics generation, then completed a stable second pass with no further publishable change.",
+    "session_id": "796fa3c268714fcb"
   },
   "metrics": {
     "agent": "pi",
     "model": "gpt-5.6-sol",
     "path": "stats/com.oracle.database.jdbc/ojdbc8/23.26.1.0.0/execution-metrics.json",
     "summary": {
-      "cached_input_tokens_used": 13519744,
-      "code_coverage_percent": 8.2,
-      "cost_usd": 10.3328,
-      "generated_loc": 2365,
-      "input_tokens_used": 491424,
-      "iterations": 7,
+      "cached_input_tokens_used": 34884992,
+      "code_coverage_percent": 8.22,
+      "cost_usd": 31.8234,
+      "generated_loc": 2425,
+      "input_tokens_used": 2162099,
+      "iterations": 42,
       "metadata_entries": 2400,
-      "output_tokens_used": 37193,
+      "output_tokens_used": 119015,
       "test_only_metadata_entries": 130,
-      "tested_library_loc": 12851
+      "tested_library_loc": 12870
     },
-    "timestamp": "2026-09-23T14:37:48.580409Z"
+    "timestamp": "2026-09-26T03:47:17.067287Z"
   },
   "modifiers": {
     "chunk_final": false,
@@ -89,7 +61,7 @@
     "human_intervention": false
   },
   "producer": "kimeta",
-  "publication_id": "forge-10059-20260923143748580409-16595d6fcb51",
+  "publication_id": "forge-10059-20260926034717067287-936aca7bb96c",
   "render": {
     "dynamic_access": {
       "classThreshold": 15,
@@ -141,12 +113,31 @@
       ],
       "coordinate": "com.oracle.database.jdbc:ojdbc8:23.26.1.0.0",
       "currentChunkClassCount": 15,
-      "exhaustedClasses": [],
-      "failedClasses": [],
+      "exhaustedClasses": [
+        "oracle.jdbc.driver.AbstractShardingPreparedStatement",
+        "oracle.jdbc.driver.AbstractShardingStatement",
+        "oracle.jdbc.driver.AbstractShardingConnection",
+        "oracle.jdbc.driver.PhysicalConnection",
+        "oracle.jdbc.driver.AbstractTrueCachePreparedStatement",
+        "oracle.jdbc.driver.T4CConnection",
+        "oracle.jdbc.proxy.AnnotationsRegistry$Value",
+        "oracle.jdbc.proxy.ClassGenerator",
+        "oracle.jdbc.proxy.GeneratedProxiesRegistry$Key",
+        "oracle.net.nt.SdpNTAdapter",
+        "oracle.jdbc.TcpFastOpenLibraryInstaller",
+        "oracle.jdbc.driver.DirectPathBufferMarshaler",
+        "oracle.jdbc.driver.Redirector",
+        "oracle.jdbc.driver.Redirector$3",
+        "oracle.jdbc.driver.ShardingDriverExtension"
+      ],
+      "failedClasses": [
+        "oracle.jdbc.driver.AbstractTrueCachePreparedStatement",
+        "oracle.jdbc.proxy.ClassGenerator"
+      ],
       "issueNumber": 10059,
-      "latestChunkBranch": "ai/kimeta/add-lib-support-com.oracle.database.jdbc-ojdbc8-23.26.1.0.0-chunked-forge-10059-20260923143748580409-16595d6fcb51",
+      "latestChunkBranch": "ai/kimeta/add-lib-support-com.oracle.database.jdbc-ojdbc8-23.26.1.0.0-chunked-forge-10059-20260926034717067287-936aca7bb96c",
       "latestChunkCommit": null,
-      "latestChunkPublicationId": "forge-10059-20260923143748580409-16595d6fcb51",
+      "latestChunkPublicationId": "forge-10059-20260926034717067287-936aca7bb96c",
       "latestChunkPullRequest": null,
       "skippedClasses": []
     },
@@ -194,21 +185,21 @@
       },
       "libraryCoverage": {
         "instruction": {
-          "covered": 92630,
-          "missed": 1388736,
-          "ratio": 0.06253,
+          "covered": 92680,
+          "missed": 1388686,
+          "ratio": 0.062564,
           "total": 1481366
         },
         "line": {
-          "covered": 12856,
-          "missed": 143778,
-          "ratio": 0.082077,
+          "covered": 12869,
+          "missed": 143765,
+          "ratio": 0.08216,
           "total": 156634
         },
         "method": {
-          "covered": 2166,
-          "missed": 34865,
-          "ratio": 0.058492,
+          "covered": 2171,
+          "missed": 34860,
+          "ratio": 0.058627,
           "total": 37031
         }
       },
@@ -219,5 +210,5 @@
   "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-sol",
   "task_type": "library-new-request",
   "template_type": "library-new-request",
-  "timestamp": "2026-09-23T14:37:48.580409Z"
+  "timestamp": "2026-09-26T03:47:17.067287Z"
 }
