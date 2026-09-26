@@ -19,4 +19,11 @@ public class NamingStringManagerTest {
 
         assertThat(manager.getString("missing-key")).isNull();
     }
+
+    @Test
+    void loadsAndFormatsNamingMessages() {
+        StringManager manager = StringManager.getManager("org.apache.naming");
+
+        assertThat(manager.getString("contextBindings.unknownContext", "sample")).contains("sample");
+    }
 }
