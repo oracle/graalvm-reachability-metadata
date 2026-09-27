@@ -7,6 +7,7 @@
 package org_apache_bval.bval_jsr;
 
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import jakarta.validation.Configuration;
 import jakarta.validation.Validation;
@@ -21,6 +22,7 @@ public class ConfigurationImplTest {
 
     @Test
     void loadsAndCreatesProviderNamedByBootstrapXml() {
+        AlternateProvider.resetInstancesCreated();
         Configuration<?> configuration = Validation.byDefaultProvider()
                 .providerResolver(() -> List.of(new ApacheValidationProvider())).configure();
         configuration.addProperty(ApacheValidatorConfiguration.Properties.VALIDATION_XML_PATH,
@@ -28,9 +30,24 @@ public class ConfigurationImplTest {
 
         try (ValidatorFactory factory = configuration.buildValidatorFactory()) {
             assertThat(factory.getValidator()).isNotNull();
+            assertThat(AlternateProvider.instancesCreated()).isOne();
         }
     }
 
     public static class AlternateProvider extends ApacheValidationProvider {
+
+        private static final AtomicInteger INSTANCES_CREATED = new AtomicInteger();
+
+        public AlternateProvider() {
+            INSTANCES_CREATED.incrementAndGet();
+        }
+
+        static void resetInstancesCreated() {
+            INSTANCES_CREATED.set(0);
+        }
+
+        static int instancesCreated() {
+            return INSTANCES_CREATED.get();
+        }
     }
 }
