@@ -19,6 +19,7 @@ import jakarta.validation.Constraint;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 import jakarta.validation.ConstraintViolation;
+import jakarta.validation.GroupSequence;
 import jakarta.validation.Payload;
 import jakarta.validation.Valid;
 import jakarta.validation.Validation;
@@ -144,6 +145,29 @@ public class Bval_jsrTest {
         }
     }
 
+    @Test
+    void groupSequenceStopsAfterFirstFailingGroup() {
+        try (ValidatorFactory factory = Validation.buildDefaultValidatorFactory()) {
+            Validator validator = factory.getValidator();
+
+            Set<ConstraintViolation<Registration>> basicViolations = validator
+                    .validate(new Registration("", "123"), CompleteRegistration.class);
+            assertThat(basicViolations).singleElement().satisfies((violation) -> {
+                assertThat(violation.getPropertyPath().toString()).isEqualTo("username");
+                assertThat(violation.getConstraintDescriptor().getGroups()).containsExactly(BasicChecks.class);
+            });
+
+            Set<ConstraintViolation<Registration>> detailViolations = validator
+                    .validate(new Registration("Ada", "123"), CompleteRegistration.class);
+            assertThat(detailViolations).singleElement().satisfies((violation) -> {
+                assertThat(violation.getPropertyPath().toString()).isEqualTo("accessCode");
+                assertThat(violation.getConstraintDescriptor().getGroups()).containsExactly(DetailChecks.class);
+            });
+
+            assertThat(validator.validate(new Registration("Ada", "12345"), CompleteRegistration.class)).isEmpty();
+        }
+    }
+
     private static void assertViolation(Set<? extends ConstraintViolation<?>> violations, String property,
             Class<?> annotationType) {
         assertThat(violations).anySatisfy((violation) -> {
@@ -198,6 +222,30 @@ public class Bval_jsrTest {
         @Size(min = 4)
         public String reserve(@NotBlank String code, @Min(1) int quantity) {
             return code.repeat(quantity);
+        }
+    }
+
+    public interface BasicChecks {
+    }
+
+    public interface DetailChecks {
+    }
+
+    @GroupSequence({BasicChecks.class, DetailChecks.class})
+    public interface CompleteRegistration {
+    }
+
+    public static class Registration {
+
+        @NotBlank(groups = BasicChecks.class)
+        private final String username;
+
+        @Size(min = 5, groups = DetailChecks.class)
+        private final String accessCode;
+
+        public Registration(String username, String accessCode) {
+            this.username = username;
+            this.accessCode = accessCode;
         }
     }
 
