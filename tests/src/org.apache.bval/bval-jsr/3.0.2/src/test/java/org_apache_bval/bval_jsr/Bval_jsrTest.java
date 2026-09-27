@@ -33,6 +33,7 @@ import jakarta.validation.constraints.Size;
 import jakarta.validation.executable.ExecutableValidator;
 import jakarta.validation.metadata.BeanDescriptor;
 import jakarta.validation.metadata.PropertyDescriptor;
+import org.apache.bval.jsr.CascadingPropertyValidator;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -90,6 +91,23 @@ public class Bval_jsrTest {
                 assertThat(violation.getRootBeanClass()).isEqualTo(Customer.class);
                 assertThat(violation.getInvalidValue()).isEqualTo("also-invalid");
             });
+        }
+    }
+
+    @Test
+    void cascadingPropertyValidatorValidatesTheSelectedPropertyGraph() {
+        try (ValidatorFactory factory = Validation.buildDefaultValidatorFactory()) {
+            Customer customer = new Customer("Ada", "ada@example.org", 12, new Address(""),
+                    List.of("priority"), "ACC-42");
+            CascadingPropertyValidator validator = factory.getValidator().unwrap(CascadingPropertyValidator.class);
+
+            assertThat(validator.validateProperty(customer, "address")).isEmpty();
+            assertThat(validator.validateProperty(customer, "address", true)).singleElement()
+                    .satisfies((violation) -> {
+                        assertThat(violation.getPropertyPath().toString()).isEqualTo("address.street");
+                        assertThat(violation.getInvalidValue()).isEqualTo("");
+                        assertThat(violation.getConstraintDescriptor().getAnnotation()).isInstanceOf(NotBlank.class);
+                    });
         }
     }
 
