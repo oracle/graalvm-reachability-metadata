@@ -1,0 +1,20 @@
+## Decision
+
+**Repairable — not a Native Image unsupportability case.** The failure occurs at Gradle dependency-classpath resolution (`nativeImageTestClasspath`), before any javac or Native Image work happens. There's no dynamic-access call, bytecode generation, or Native Image mechanism involved — the FAILURE/TRACE/CLASSIFY chain never gets past step 1: the failing operation is Gradle resolving a Maven coordinate, not code the image executes.
+
+**Root cause (verified by reproduction):** `org.hibernate:hibernate-spatial:8.0.0.Beta1` is a Maven *relocation POM* (packaging `pom`, `<distributionManagement><relocation>`) pointing to `org.hibernate.orm:hibernate-spatial:8.0.0.Beta1`. The real artifact's Gradle module metadata declares dual capabilities (`org.hibernate:hibernate-spatial` and `org.hibernate.orm:hibernate-spatial`) and imports `org.hibernate.orm:hibernate-platform` (a BOM) with `endorseStrictVersions: true`. The platform BOM in turn declares a dependency constraint back on `org.hibernate:hibernate-spatial:8.0.0.Beta1` itself. This self-referential constraint loop through the old-groupId relocation makes Gradle report `Component is the target of multiple version constraints with conflicting requirements` — a real upstream Hibernate 8 publishing quirk, reproduced locally with a minimal Gradle project.
+
+Switching the test dependency to the new coordinate `org.hibernate.orm:hibernate-spatial:8.0.0.Beta1` resolves cleanly (verified: full dependency tree resolves, no conflict). The existing test's imports (`org.hibernate.spatial.integration.SpatialInitializer`, `org.hibernate.boot.registry.StandardServiceRegistryBuilder`) are present unchanged in the 8.0.0.Beta1 jars, and the test needs no database/Docker (it only builds a `StandardServiceRegistryBuilder`, no connection).
+
+```json
+{
+  "action": "advisory_preparation",
+  "summary": "org.hibernate:hibernate-spatial:8.0.0.Beta1 is a Maven relocation POM to org.hibernate.orm:hibernate-spatial, and its platform BOM has a self-referential constraint back through the old groupId, causing Gradle to fail resolution with a version-constraint conflict; using the new org.hibernate.orm groupId for this version resolves cleanly.",
+  "deterministic_setup": [],
+  "agent_guidance": "For libraryVersion 8.0.0.Beta1 (and any other org.hibernate.orm-era 8.x version), change the generated build.gradle's testImplementation coordinate from \"org.hibernate:hibernate-spatial:$libraryVersion\" to \"org.hibernate.orm:hibernate-spatial:$libraryVersion\". The old org.hibernate:hibernate-spatial coordinate is only a relocation stub for 8.x and fails Gradle dependency resolution (\"Component is the target of multiple version constraints with conflicting requirements\") due to a self-referential constraint in org.hibernate.orm:hibernate-platform's BOM. Verified locally: the org.hibernate.orm coordinate resolves the full graph without conflict, and the existing test's imports (org.hibernate.spatial.integration.SpatialInitializer, org.hibernate.boot.registry.StandardServiceRegistryBuilder) are unchanged in the 8.0.0.Beta1 jars, so no other source changes are needed. No database or Docker image is required — the existing test only builds a StandardServiceRegistryBuilder.",
+  "risks": [
+    "If this repository's existing tests for org.hibernate:hibernate-spatial (6.5.0.Final, 7.2.0.Final) still use the old org.hibernate groupId, the fix must be conditional on version (e.g. only for 8.x+) rather than a blanket coordinate change, or applied per-version-directory.",
+    "8.0.0.Beta1 is a pre-release; upstream may still change the relocation/BOM structure before GA, so this workaround should be re-verified against later 8.x releases before generalizing."
+  ]
+}
+```

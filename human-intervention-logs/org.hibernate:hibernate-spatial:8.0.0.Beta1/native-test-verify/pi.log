@@ -1,0 +1,16 @@
+Implemented the test rewrite:
+
+- Corrected dependency coordinates to `org.hibernate.orm:hibernate-spatial`.
+- Replaced `SpatialInitializer` usage with public `JTSGeometryJavaType` geometry parsing.
+- Added the required empty `8.0.0.Beta1` metadata file.
+- Removed speculative logger metadata.
+
+Validation:
+
+- `./gradlew test -Pcoordinates=org.hibernate:hibernate-spatial:8.0.0.Beta1` passes, including the native test.
+- `checkMetadataFiles` and `checkstyle` pass.
+- The exact trace command reports Gradle success but its native executable still exits with JUnit discovery failure and `StackOverflowError`.
+
+The remaining trace failure is independent of the test: it reproduced with a trivial `assertThat(true)` test and an unmatched trace condition. Enabling `-XX:TraceMetadata` in the supplied GraalVM causes JUnit discovery itself to fail; without tracing, the rewritten native test passes. The trace output remains `{}`, so there is no library metadata gap to apply.
+
+`fissile` was unavailable in the environment.

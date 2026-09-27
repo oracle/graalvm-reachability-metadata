@@ -1,0 +1,79 @@
+{
+  "continueFrom": "explore",
+  "coordinate": "org.hibernate:hibernate-spatial:8.0.0.Beta1",
+  "failure": {
+    "operand": "reporter-requested metadata",
+    "phase": "explore",
+    "step": "generate_tests()"
+  },
+  "issueNumber": 9383,
+  "label": "fails-javac-compile",
+  "libraryPreparationPreflight": {
+    "action": "advisory_preparation",
+    "agent_guidance": "For libraryVersion 8.0.0.Beta1 (and any other org.hibernate.orm-era 8.x version), change the generated build.gradle's testImplementation coordinate from \"org.hibernate:hibernate-spatial:$libraryVersion\" to \"org.hibernate.orm:hibernate-spatial:$libraryVersion\". The old org.hibernate:hibernate-spatial coordinate is only a relocation stub for 8.x and fails Gradle dependency resolution (\"Component is the target of multiple version constraints with conflicting requirements\") due to a self-referential constraint in org.hibernate.orm:hibernate-platform's BOM. Verified locally: the org.hibernate.orm coordinate resolves the full graph without conflict, and the existing test's imports (org.hibernate.spatial.integration.SpatialInitializer, org.hibernate.boot.registry.StandardServiceRegistryBuilder) are unchanged in the 8.0.0.Beta1 jars, so no other source changes are needed. No database or Docker image is required \u2014 the existing test only builds a StandardServiceRegistryBuilder.",
+    "applied_setup": [],
+    "current_library": "org.hibernate:hibernate-spatial:6.5.0.Final",
+    "deterministic_setup": [],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#9383 [Automation] javac compile fails for org.hibernate:hibernate-spatial:8.0.0.Beta1; label=fails-javac-compile; body_chars=8015"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "5 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 34,
+    "issue_label": "fails-javac-compile",
+    "issue_number": 9383,
+    "library": "org.hibernate:hibernate-spatial:8.0.0.Beta1",
+    "model": "sonnet",
+    "new_version": "8.0.0.Beta1",
+    "output_tokens_used": 12557,
+    "risks": [
+      "If this repository's existing tests for org.hibernate:hibernate-spatial (6.5.0.Final, 7.2.0.Final) still use the old org.hibernate groupId, the fix must be conditional on version (e.g. only for 8.x+) rather than a blanket coordinate change, or applied per-version-directory.",
+      "8.0.0.Beta1 is a pre-release; upstream may still change the relocation/BOM structure before GA, so this workaround should be re-verified against later 8.x releases before generalizing."
+    ],
+    "status": "completed",
+    "summary": "org.hibernate:hibernate-spatial:8.0.0.Beta1 is a Maven relocation POM to org.hibernate.orm:hibernate-spatial, and its platform BOM has a self-referential constraint back through the old groupId, causing Gradle to fail resolution with a version-constraint conflict; using the new org.hibernate.orm groupId for this version resolves cleanly."
+  },
+  "libraryUpdateRoute": null,
+  "newVersion": "8.0.0.Beta1",
+  "phases": {
+    "explore": {
+      "chunkClassCount": null,
+      "chunkProcessedClassCount": 0,
+      "exhaustedClasses": [],
+      "status": "running"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": 1,
+      "status": "completed"
+    },
+    "publication": {
+      "branch": null,
+      "coverageFollowUpIssueNumber": null,
+      "isPushed": false,
+      "publicationId": null,
+      "publicationTimestamp": null,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": true,
+      "status": "completed"
+    }
+  },
+  "preservedBranch": "ai/kimeta/human-intervention/issue-9383-fails-javac-compile-org.hibernate-hibernate-spatial-8.0.0.Beta1-ead56754",
+  "publicationMetrics": {
+    "extras": {},
+    "library": "org.hibernate:hibernate-spatial:8.0.0.Beta1",
+    "timestamp": "2026-09-27T03:52:46.678618Z"
+  },
+  "schemaVersion": 1,
+  "strategyName": "javac_iterative_with_coverage_sources_pi_gpt-5.6-sol"
+}

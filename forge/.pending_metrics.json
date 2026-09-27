@@ -1,0 +1,54 @@
+{
+  "timestamp": "2026-09-27T03:52:46.678618Z",
+  "library": "org.hibernate:hibernate-spatial:8.0.0.Beta1",
+  "starting_commit": "dbadc8cf793d3fb0cb1e670a29360df5a53f5a81",
+  "ending_commit": "dbadc8cf793d3fb0cb1e670a29360df5a53f5a81",
+  "strategy_name": "javac_iterative_with_coverage_sources_pi_gpt-5.6-sol",
+  "agent": "pi",
+  "model": "gpt-5.6-sol",
+  "status": "failure",
+  "library_preparation_preflight": {
+    "status": "completed",
+    "action": "advisory_preparation",
+    "issue_number": 9383,
+    "issue_label": "fails-javac-compile",
+    "library": "org.hibernate:hibernate-spatial:8.0.0.Beta1",
+    "summary": "org.hibernate:hibernate-spatial:8.0.0.Beta1 is a Maven relocation POM to org.hibernate.orm:hibernate-spatial, and its platform BOM has a self-referential constraint back through the old groupId, causing Gradle to fail resolution with a version-constraint conflict; using the new org.hibernate.orm groupId for this version resolves cleanly.",
+    "deterministic_setup": [],
+    "agent_guidance": "For libraryVersion 8.0.0.Beta1 (and any other org.hibernate.orm-era 8.x version), change the generated build.gradle's testImplementation coordinate from \"org.hibernate:hibernate-spatial:$libraryVersion\" to \"org.hibernate.orm:hibernate-spatial:$libraryVersion\". The old org.hibernate:hibernate-spatial coordinate is only a relocation stub for 8.x and fails Gradle dependency resolution (\"Component is the target of multiple version constraints with conflicting requirements\") due to a self-referential constraint in org.hibernate.orm:hibernate-platform's BOM. Verified locally: the org.hibernate.orm coordinate resolves the full graph without conflict, and the existing test's imports (org.hibernate.spatial.integration.SpatialInitializer, org.hibernate.boot.registry.StandardServiceRegistryBuilder) are unchanged in the 8.0.0.Beta1 jars, so no other source changes are needed. No database or Docker image is required — the existing test only builds a StandardServiceRegistryBuilder.",
+    "risks": [
+      "If this repository's existing tests for org.hibernate:hibernate-spatial (6.5.0.Final, 7.2.0.Final) still use the old org.hibernate groupId, the fix must be conditional on version (e.g. only for 8.x+) rather than a blanket coordinate change, or applied per-version-directory.",
+      "8.0.0.Beta1 is a pre-release; upstream may still change the relocation/BOM structure before GA, so this workaround should be re-verified against later 8.x releases before generalizing."
+    ],
+    "applied_setup": [],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#9383 [Automation] javac compile fails for org.hibernate:hibernate-spatial:8.0.0.Beta1; label=fails-javac-compile; body_chars=8015"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "5 existing test file path(s) included"
+      }
+    ],
+    "current_library": "org.hibernate:hibernate-spatial:6.5.0.Final",
+    "new_version": "8.0.0.Beta1",
+    "model": "sonnet",
+    "input_tokens_used": 34,
+    "output_tokens_used": 12557
+  },
+  "metrics": {
+    "input_tokens_used": 34959,
+    "cached_input_tokens_used": 105472,
+    "output_tokens_used": 922,
+    "iterations": 6,
+    "cost_usd": 0.2552,
+    "generated_loc": 0,
+    "tested_library_loc": 0,
+    "metadata_entries": 0,
+    "code_coverage_percent": 0.0
+  },
+  "artifacts": {
+    "metadata_file": "None"
+  }
+}
