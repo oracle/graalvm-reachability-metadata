@@ -26,16 +26,15 @@
     "status": "success"
   },
   "local_review": {
-    "changed_paths": [
-      "metadata/io.lettuce/lettuce-core/6.2.6.RELEASE/reachability-metadata.json"
-    ],
-    "decision": "approved",
-    "finding_body": "The added sun.util.logging.resources.logging bundle entry had no condition, violating the requirement that every shipped metadata entry be gated by condition.typeReached. Nearby reconnect logging resources were already gated on io.lettuce.core.protocol.ConnectionWatchdog, establishing the valid pre-access condition for the same behavior.",
-    "finding_title": "Resource-bundle metadata entry missing a reachability condition",
-    "fix_note": "Added condition.typeReached = io.lettuce.core.protocol.ConnectionWatchdog to the resource-bundle entry, then ran the exact Forge-owned finalization command to a stable successful pass.",
+    "action": "human-intervention",
+    "changed_paths": [],
+    "decision": "rejected",
+    "finding_body": "The transient verdict requested workflow runs that were not failed on the exact reviewed head: 36289510984",
+    "finding_title": "Transient CI diagnosis selected unrelated runs",
+    "fix_note": "No workflow was rerun.",
     "model": "gpt-5.6-sol",
-    "review_comment": "Reviewed the target-coordinate diff, local gate evidence, metadata, and generated tests. The change stays within io.lettuce:lettuce-core:6.2.6.RELEASE, raises dynamic-access coverage from 14.5455% (8/55) to 94.5455% (52/55), uses library API paths without native skips or legacy metadata, and keeps loopback test servers bounded and isolated. After the repair, Forge finalization passed current-defaults, future-defaults-all, and GraalVM 25 test lanes plus metadata, style, generated-test, and statistics checks without further publishable changes.",
-    "session_id": "a61de908ddfa43cf"
+    "review_comment": "Current-head Forge Branch Ready run 36289510984 was cancelled only while uploading the trusted publication preview; descriptor and diff validation had already succeeded, gh run view provided no failure log, and every contribution CI check, including all io.lettuce:lettuce-core:6.2.6.RELEASE metadata lanes, passed on head 5b2a1e9feb6fda00faf7dd187e3a7498f6fb2714. The complete target-coordinate diff also satisfies the chunked library-update review rules, so this is transient GitHub Actions cancellation rather than a contribution or shared-repository defect. No files were edited.",
+    "session_id": "9ad7c75414d649f2"
   },
   "metrics": {
     "agent": "pi",
