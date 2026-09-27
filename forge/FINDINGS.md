@@ -3,6 +3,12 @@
 Rendered by Forge from the pre-push branch review of §FS-local-branch-review.
 Newest entry first; every non-approval is recorded, including one a repair later cleared.
 
+## 2026-09-27 — io.lettuce:lettuce-core:6.2.6.RELEASE (#10205)
+
+**Transient CI diagnosis selected unrelated runs**
+
+The transient verdict requested workflow runs that were not failed on the exact reviewed head: 36289510984
+
 ## 2026-09-26 — io.lettuce:lettuce-core:6.2.6.RELEASE (#10205)
 
 **Resource-bundle metadata entry missing a reachability condition**
