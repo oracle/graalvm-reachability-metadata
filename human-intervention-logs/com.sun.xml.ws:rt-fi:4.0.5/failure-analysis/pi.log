@@ -1,0 +1,18 @@
+## Human intervention needed
+
+The automated job failed while generating tests/metadata for `com.sun.xml.ws:rt-fi:4.0.5`. Preserved work is available at https://github.com/oracle/graalvm-reachability-metadata/tree/ai%2Fkimeta%2Fhuman-intervention%2Fissue-9947-library-new-request-com.sun.xml.ws-rt-fi-4.0.5-bb01e629.
+
+The most likely failing stage is `nativeTestCompile` during iterative test generation. JVM tests completed successfully, but Native Image repeatedly rejected `com.sun.istack.localization.Localizer` and `LocalizableMessageFactory` objects embedded in the image heap through `ContextClassloaderLocalMessages`. The dynamic-access run also reported similar class-initialization failures for several `com.sun.xml.fastinfoset.algorithm.*` classes. Agent-collected metadata allowed an intermediate verification run to pass, but the finalized normal test still failed. Reachability metadata cannot directly fix this class-initialization problem, and shipped build-time initialization directives are not permitted.
+
+The metrics confirm that the workflow exhausted 24 iterations with status `failure`, no finalized metadata artifact, zero recorded generated LOC/metadata entries, and unavailable dynamic-access coverage.
+
+Inspect:
+- `human-intervention-logs/com.sun.xml.ws:rt-fi:4.0.5/gradle-test/gradle-test-2026-09-27T01-41-23-322964Z.log`
+- `human-intervention-logs/com.sun.xml.ws:rt-fi:4.0.5/gradle/generateDynamicAccessCoverageReport-2026-09-27T01-32-38-149689Z.log`
+- `human-intervention-logs/com.sun.xml.ws:rt-fi:4.0.5/issue-requested-metadata/pi.log`
+- `stats/com.sun.xml.ws/rt-fi/4.0.5/execution-metrics.json`
+
+Manual next steps:
+1. Clean the coordinate’s build outputs and rerun `javaTest` and `nativeTestCompile` from the preserved branch to verify the currently preserved, narrowed tests rather than stale compiled classes.
+2. If the image-heap failure remains, use Native Image object-instantiation tracing for `Localizer`, `LocalizableMessageFactory`, and the reported Fast Infoset algorithm classes; determine whether the tests can avoid the problematic transitive JAX-WS path or whether this requires an upstream/GraalVM fix.
+3. After `nativeTestCompile` passes without prohibited initialization flags, regenerate metadata and the dynamic-access coverage report, then run the full coordinate-scoped test and validation tasks.
