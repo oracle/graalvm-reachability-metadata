@@ -11,19 +11,20 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.util.Properties;
 import org.hyperledger.fabric.metrics.Metrics;
 import org.hyperledger.fabric.metrics.MetricsProvider;
-import org.hyperledger.fabric.metrics.impl.NullProvider;
 import org.junit.jupiter.api.Test;
 
 public class MetricsTest {
+    private static final String PROVIDER_CLASS = "org.hyperledger.fabric.metrics.impl.NullProvider";
+
     @Test
     void loadsConfiguredMetricsProvider() {
         Properties properties = new Properties();
         properties.setProperty("CHAINCODE_METRICS_ENABLED", "true");
-        properties.setProperty("CHAINCODE_METRICS_PROVIDER", NullProvider.class.getName());
+        properties.setProperty("CHAINCODE_METRICS_PROVIDER", PROVIDER_CLASS);
 
         MetricsProvider provider = Metrics.initialize(properties);
 
-        assertThat(provider).isInstanceOf(NullProvider.class);
+        assertThat(provider.getClass().getName()).isEqualTo(PROVIDER_CLASS);
         assertThat(Metrics.getProvider()).isSameAs(provider);
     }
 }
