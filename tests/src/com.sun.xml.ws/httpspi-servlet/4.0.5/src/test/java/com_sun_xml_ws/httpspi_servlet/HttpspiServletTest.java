@@ -20,6 +20,7 @@ import java.util.Map;
 import java.util.Set;
 
 import com.sun.xml.ws.transport.httpspi.servlet.EndpointHttpContext;
+import com.sun.xml.ws.transport.httpspi.servlet.Headers;
 import com.sun.xml.ws.transport.httpspi.servlet.ServletResourceLoader;
 import jakarta.servlet.Filter;
 import jakarta.servlet.FilterRegistration;
@@ -58,6 +59,23 @@ public class HttpspiServletTest {
         assertThat(context.getPath()).isEqualTo("/greetings/*");
         assertThat(context.getAttribute("tenant")).isNull();
         assertThat(context.getAttributeNames()).isNull();
+    }
+
+    @Test
+    void managesCaseInsensitiveMultiValuedHeaders() {
+        Headers headers = new Headers();
+
+        headers.add("Content-Type", "application/soap+xml");
+        headers.add("content-type", "charset=UTF-8");
+
+        assertThat(headers.get("CONTENT-TYPE"))
+                .containsExactly("application/soap+xml", "charset=UTF-8");
+        assertThat(headers.getFirst("content-TYPE")).isEqualTo("application/soap+xml");
+
+        headers.set("CONTENT-TYPE", "text/xml");
+
+        assertThat(headers.get("Content-Type")).containsExactly("text/xml");
+        assertThat(headers).containsOnlyKeys("Content-type");
     }
 
     private static UnsupportedOperationException unsupported() {
