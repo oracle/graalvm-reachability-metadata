@@ -77,10 +77,10 @@ public class BodySizeUtilTest {
                     request);
 
             assertThat(response).isEqualTo(expectedResponse);
-            assertThat(clientSizes.get())
-                    .isEqualTo(new MessageSizes(request.getSerializedSize(), expectedResponse.getSerializedSize()));
-            assertThat(serverSizes.get())
-                    .isEqualTo(new MessageSizes(request.getSerializedSize(), expectedResponse.getSerializedSize()));
+            MessageSizes expectedSizes =
+                    new MessageSizes(request.toByteArray().length, expectedResponse.toByteArray().length);
+            assertThat(clientSizes.get()).isEqualTo(expectedSizes);
+            assertThat(serverSizes.get()).isEqualTo(expectedSizes);
         } finally {
             channel.shutdownNow();
             assertThat(channel.awaitTermination(10, TimeUnit.SECONDS)).isTrue();
