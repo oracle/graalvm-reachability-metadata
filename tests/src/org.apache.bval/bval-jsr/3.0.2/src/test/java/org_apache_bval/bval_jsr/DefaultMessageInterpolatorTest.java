@@ -27,7 +27,7 @@ public class DefaultMessageInterpolatorTest {
     void interpolatesPrimitiveArrayAnnotationAttribute() {
         try (ValidatorFactory factory = ValidationTestSupport.factory()) {
             assertThat(factory.getValidator().validate(new NumberBean()).iterator().next().getMessage())
-                    .isEqualTo("allowed values [2, 4]");
+                    .isEqualTo("allowed values [2, 4]; 3 is invalid");
         }
     }
 
@@ -41,7 +41,7 @@ public class DefaultMessageInterpolatorTest {
     @Target(ElementType.FIELD)
     @Retention(RetentionPolicy.RUNTIME)
     public @interface AllowedNumbers {
-        String message() default "allowed values {numbers}";
+        String message() default "{allowed.numbers}";
         Class<?>[] groups() default {};
         Class<? extends Payload>[] payload() default {};
         int[] numbers();
