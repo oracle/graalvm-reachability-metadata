@@ -1,0 +1,39 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :populateArtifactURLs
+I checked the actual file — it already matches the values shown in the prompt exactly. Only `language` is absent among the requested fields.
+
+**Findings:**
+- **Repository URL:** `https://github.com/eclipse-ee4j/orb-gmbal-pfl` (already set, correct — canonical root, no version path)
+- **Source code URL:** `https://github.com/eclipse-ee4j/orb-gmbal-pfl/tree/$version$/pfl-dynamic` (already set)
+- **Test suite URL:** `https://github.com/eclipse-ee4j/orb-gmbal-pfl/tree/$version$/pfl-dynamic/src/test/java/org/glassfish/pfl/dynamic` (already set)
+- **Documentation URL:** `N/A` (already set — no versioned docs site exists for this module)
+- **Description:** already set, and it's a correct two-sentence explanation (ASM-based dynamic bytecode/class generation for RMI-IIOP stubs/skeletons, plus object-copy utilities for the GlassFish CORBA ORB)
+- **Language:** `pfl-dynamic` is a plain Java library (part of the Eclipse ORB gmbal-pfl suite) — it is **not** Kotlin/Groovy/Scala-specific, so the `language` field should stay absent.
+
+Since every field except `language` already has a non-blank value, and `language` correctly stays unset for this non-language-specific library, **no changes to the file are needed** — it already satisfies all the requirements as-is.
+Ran agent for org.glassfish.pfl:pfl-dynamic:5.1.1 (exit 0). Log: /home/oracle/oracle/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9943-13027a7e/build/agent-url-discovery-logs/org.glassfish.pfl-pfl-dynamic-5.1.1.log
+Completed populateArtifactURLs: invoked=1, prompted=0, skipped=0, overwriteExisting=false, verifyArtifactSources=false, limit=null
+
+[Incubating] Problems report is available at: file:///home/oracle/oracle/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9943-13027a7e/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 30s
+9 actionable tasks: 1 executed, 8 up-to-date

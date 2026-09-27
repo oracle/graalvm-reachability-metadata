@@ -1,0 +1,21 @@
+Based on my research into `org.glassfish.pfl:pfl-dynamic:5.1.1` (fetched the POM, source jar, and its `pfl-basic` dependency's source), this is a standalone bytecode-generation/object-copying utility library (part of the GlassFish CORBA ORB stack) with no external service, database, or network dependency:
+
+- **Dependencies**: `pfl-basic`, `org.ow2.asm:asm`, `org.ow2.asm:asm-util` are all plain compile-scope transitive dependencies of `pfl-dynamic` — Gradle resolves them automatically from the coordinate alone. `jakarta.ejb-api` and `junit` are test-scope deps of the upstream library itself, not needed by consumers.
+- **Runtime behavior**: Its core feature (`ObjectCopierFactory`/`ClassCopierOrdinaryImpl`) uses `sun.misc.Unsafe` and `sun.reflect.ReflectionFactory` via `pfl-basic`'s `Bridge` class — both live in the `jdk.unsupported` module, which is exported unconditionally to the unnamed module (classpath), so no `--add-opens`/`--add-exports` flags are needed on JDK 25.
+- Old `SecurityManager` permission checks (`RuntimePermission("reflectionFactoryAccess")`, etc.) are no-ops since JDK 24 removed the Security Manager, so no policy file is needed either.
+- An optional experimental code-gen-based copier is gated behind `Boolean.getBoolean("org.glassfish.dynamic.codegen.UseCodegenReflectiveCopyobject")`, defaulting to `false` — the default Unsafe-based copier path is what tests would exercise, no property needed for meaningful coverage.
+- No Docker image or external service is involved anywhere in the library.
+
+I found no concrete evidence that setup beyond the normal generated scaffold is needed.
+
+```json
+{
+  "action": "no_action",
+  "summary": "pfl-dynamic is a standalone bytecode-generation/object-copying utility with only ordinary transitive Maven dependencies (pfl-basic, asm, asm-util) that Gradle resolves automatically. It uses sun.misc.Unsafe/sun.reflect.ReflectionFactory, which live in the always-exported jdk.unsupported module, so no extra JVM flags, Docker image, or system property is required to reach meaningful coverage on JDK 25.",
+  "deterministic_setup": [],
+  "agent_guidance": "Optional, not required: the default reflective/Unsafe object copier is exercised without any special setup. If a test also wants to cover the experimental ASM-codegen copier path in ClassCopierOrdinaryImpl, it can set the system property org.glassfish.dynamic.codegen.UseCodegenReflectiveCopyobject=true, but this is not needed for baseline coverage.",
+  "risks": [
+    "The library performs runtime ASM bytecode generation and Unsafe-based field access; if this proves incompatible with Native Image at build/run time, that is a native-image compatibility issue to resolve in code/metadata, not something fixable via the dependency/docker/env-var setup categories covered here."
+  ]
+}
+```
