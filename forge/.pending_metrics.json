@@ -1,0 +1,49 @@
+{
+  "timestamp": "2026-09-27T11:14:05.479682Z",
+  "library": "com.sun.xml.ws:httpspi-servlet:4.0.5",
+  "starting_commit": "b925db2c104ca6b8de09dae1a327b905fdaa71b8",
+  "ending_commit": "9589b5f2c620a0153096698ee5fa1655adba43c6",
+  "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-sol",
+  "agent": "pi",
+  "model": "gpt-5.6-sol",
+  "status": "failure",
+  "library_preparation_preflight": {
+    "status": "completed",
+    "action": "no_action",
+    "issue_number": 9946,
+    "issue_label": "library-new-request",
+    "library": "com.sun.xml.ws:httpspi-servlet:4.0.5",
+    "summary": "httpspi-servlet depends only on already-supported com.sun.xml.ws:rt and jakarta.servlet-api (transitively resolved); it's structurally identical to the already-merged com.sun.xml.ws:servlet module, which needed no Docker image, extra dependency, or env/system-property setup — tests just hand-roll in-memory Servlet API fakes.",
+    "deterministic_setup": [],
+    "agent_guidance": "Mirror the com.sun.xml.ws:servlet test approach: implement lightweight in-memory fakes of ServletContext/HttpServletRequest/ServletConfig as needed (see tests/src/com.sun.xml.ws/servlet/4.0.5/src/test/java/com_sun_xml_ws/servlet/ServletTest.java) to exercise WSSPIServlet, WSSPIContextListener, DeploymentDescriptorParser, EndpointAdapterFactory, and Headers directly — no real servlet container or network I/O is required.",
+    "risks": [],
+    "applied_setup": [],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#9946 Support for com.sun.xml.ws:httpspi-servlet:4.0.5; label=library-new-request; body_chars=39"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "0 existing test file path(s) included"
+      }
+    ],
+    "model": "sonnet",
+    "input_tokens_used": 20,
+    "output_tokens_used": 4879
+  },
+  "metrics": {
+    "input_tokens_used": 366102,
+    "cached_input_tokens_used": 5607552,
+    "output_tokens_used": 35291,
+    "iterations": 13,
+    "cost_usd": 5.693,
+    "generated_loc": 0,
+    "tested_library_loc": 0,
+    "metadata_entries": 0,
+    "code_coverage_percent": 0.0
+  },
+  "artifacts": {
+    "metadata_file": "None"
+  }
+}

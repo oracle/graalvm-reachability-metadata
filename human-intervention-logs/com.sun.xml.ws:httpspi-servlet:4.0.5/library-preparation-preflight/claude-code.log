@@ -1,0 +1,9 @@
+```json
+{
+  "action": "no_action",
+  "summary": "httpspi-servlet depends only on already-supported com.sun.xml.ws:rt and jakarta.servlet-api (transitively resolved); it's structurally identical to the already-merged com.sun.xml.ws:servlet module, which needed no Docker image, extra dependency, or env/system-property setup — tests just hand-roll in-memory Servlet API fakes.",
+  "deterministic_setup": [],
+  "agent_guidance": "Mirror the com.sun.xml.ws:servlet test approach: implement lightweight in-memory fakes of ServletContext/HttpServletRequest/ServletConfig as needed (see tests/src/com.sun.xml.ws/servlet/4.0.5/src/test/java/com_sun_xml_ws/servlet/ServletTest.java) to exercise WSSPIServlet, WSSPIContextListener, DeploymentDescriptorParser, EndpointAdapterFactory, and Headers directly — no real servlet container or network I/O is required.",
+  "risks": []
+}
+```
