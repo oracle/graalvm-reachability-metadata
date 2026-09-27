@@ -1,0 +1,18 @@
+Based on my research:
+
+**Setup decision — `no_action`.** I checked the resolved `spring-aspects:6.0.0` POM: its only dependency is `org.aspectj:aspectjweaver:1.9.9.1` (compile scope), which is the exact same AspectJ version already resolved and logged in the current 5.3.31 native-image run (`aspectjweaver-1.9.9.1.jar` appears in the build report in the issue). The existing `build.gradle` already parameterizes `spring-aspects`, `spring-context`, and `spring-tx` via `$libraryVersion`, so bumping to 6.0.0 requires no new Maven coordinate. Spring Framework 6.0 raises the baseline to Java 17 (already satisfied by JDK 25) and moves `javax.*` → `jakarta.*`, but the existing test class only imports Spring's own aspect/bean/cache/transaction types — none of the touched code paths reference `javax`/`jakarta` annotations directly. No Docker image or special environment/system property is implicated by anything in the library's usage (pure in-process AOP/DI, no external service). The native-image *build* in the log actually succeeds and even completes analysis/compilation — the failure happens later, mid `nativeTest` execution, which points to a behavioral/metadata gap in generated coverage rather than a missing environment prerequisite.
+
+**Unsupportable-verdict check — did not reach a skip verdict.** The issue's log is truncated right at `genericInterfaceDrivenAspectConfiguresConfigurableObjects() SUCCESSFUL`, before the actual failing test name or exception is shown, and I have no repo/CI credentials here to pull the full run log. Per the required order of steps, step 1 (state the failing operation from the issue's failure evidence alone) cannot be completed without that evidence, so I stopped there — the safe default is repairable, not skip_unsupported.
+
+```json
+{
+  "action": "no_action",
+  "summary": "spring-aspects 6.0.0's only added dependency (aspectjweaver 1.9.9.1) is already the version resolved by the current test, and the generated scaffold already parameterizes spring-aspects/spring-context/spring-tx by $libraryVersion; no Docker image or special env/system property is implicated by the library's usage or the truncated failure log.",
+  "deterministic_setup": [],
+  "agent_guidance": "",
+  "risks": [
+    "The issue's log excerpt is truncated before the actual failing test/exception; the real cause is unknown and may need standard metadata regeneration (generateMetadata/fixTestNativeImageRun) rather than any extra setup.",
+    "Could not fetch the full GitHub Actions run log (no gh auth in this environment) to confirm the precise failure."
+  ]
+}
+```

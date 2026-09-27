@@ -1,0 +1,46 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :populateArtifactURLs
+I'm blocked from editing this file directly — the Edit tool was denied in this session's current permission mode. Could you approve the Edit tool, or let me know if you'd like me to apply the change another way (e.g., you run a patch I provide)?
+
+Here's the exact change I intended to make to `metadata/org.springframework/spring-aspects/index.json`, adding these fields to the `"metadata-version": "6.0.0"` entry (matching the style already used by the `5.3.31` entry in the same file):
+
+```json
+"source-code-url" : "https://repo1.maven.org/maven2/org/springframework/spring-aspects/$version$/spring-aspects-$version$-sources.jar",
+"repository-url" : "https://github.com/spring-projects/spring-framework",
+"test-code-url" : "https://github.com/spring-projects/spring-framework/tree/v$version$/spring-aspects/src/test",
+"documentation-url" : "https://repo1.maven.org/maven2/org/springframework/spring-aspects/$version$/spring-aspects-$version$-javadoc.jar",
+"description" : "Spring Aspects provides AspectJ aspects that let Spring facilities such as dependency injection, transaction management, caching, and asynchronous execution participate in AspectJ-weaved applications. It is part of the Spring Framework and supplies runtime support for applying those cross-cutting concerns outside standard proxy-based Spring AOP."
+```
+
+No `language` field, since spring-aspects isn't language-specific (plain Java/AspectJ, not tied to Kotlin/Groovy/Scala).
+
+Verified for tested-version `6.0.0`:
+- Maven sources jar: `https://repo1.maven.org/maven2/org/springframework/spring-aspects/6.0.0/spring-aspects-6.0.0-sources.jar` → HTTP 200
+- Maven javadoc jar: `https://repo1.maven.org/maven2/org/springframework/spring-aspects/6.0.0/spring-aspects-6.0.0-javadoc.jar` → HTTP 200
+- GitHub tag `v6.0.0`, path `spring-aspects/src/test`: → HTTP 200
+Ran agent for org.springframework:spring-aspects:6.0.0 (exit 0). Log: /home/oracle/oracle/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9399-b733abe1/build/agent-url-discovery-logs/org.springframework-spring-aspects-6.0.0.log
+Completed populateArtifactURLs: invoked=1, prompted=0, skipped=0, overwriteExisting=false, verifyArtifactSources=false, limit=null
+
+[Incubating] Problems report is available at: file:///home/oracle/oracle/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9399-b733abe1/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 35s
+9 actionable tasks: 1 executed, 8 up-to-date
