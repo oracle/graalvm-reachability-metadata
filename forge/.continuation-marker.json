@@ -1,0 +1,78 @@
+{
+  "continueFrom": "explore",
+  "coordinate": "org.hibernate:hibernate-spatial:8.0.0.Beta1",
+  "failure": {
+    "operand": "reporter-requested metadata",
+    "phase": "explore",
+    "step": "generate_tests()"
+  },
+  "issueNumber": 9383,
+  "label": "fails-javac-compile",
+  "libraryPreparationPreflight": {
+    "action": "advisory_preparation",
+    "agent_guidance": "In the generated build.gradle for org.hibernate:hibernate-spatial:8.0.0.Beta1, change the main test dependency from `testImplementation \"org.hibernate:hibernate-spatial:$libraryVersion\"` to `testImplementation \"org.hibernate.orm:hibernate-spatial:$libraryVersion\"`. Verified locally: the org.hibernate group id is a Maven POM relocation stub (packaging=pom, distributionManagement/relocation) for hibernate-orm 7.0.0.Final and later, including 8.0.0.Beta1; resolving it directly conflicts with the hibernate-platform BOM's endorsed strict version constraints, while depending on org.hibernate.orm:hibernate-spatial directly resolves cleanly (hibernate-core, geolatte-geom, jts-core, slf4j-api all pulled in without conflict). No other source changes are needed \u2014 the existing test (HibernateSpatialTest.java, using org.hibernate.boot.registry.StandardServiceRegistryBuilder and org.hibernate.spatial.integration.SpatialInitializer) compiles unchanged against 8.0.0.Beta1; both classes are still present in the 8.0.0.Beta1 jars under the same package names. No Docker image or system property is needed \u2014 the test only builds a StandardServiceRegistryBuilder, no live database.",
+    "applied_setup": [],
+    "current_library": "org.hibernate:hibernate-spatial:6.5.0.Final",
+    "deterministic_setup": [],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#9383 [Automation] javac compile fails for org.hibernate:hibernate-spatial:8.0.0.Beta1; label=fails-javac-compile; body_chars=8015"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "5 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 40,
+    "issue_label": "fails-javac-compile",
+    "issue_number": 9383,
+    "library": "org.hibernate:hibernate-spatial:8.0.0.Beta1",
+    "model": "sonnet",
+    "new_version": "8.0.0.Beta1",
+    "output_tokens_used": 15561,
+    "risks": [
+      "This same org.hibernate \u2192 org.hibernate.orm relocation affects every hibernate-spatial version from 7.0.0.Final onward, not just 8.0.0.Beta1, so any future version bump for this library will need the same coordinate fix."
+    ],
+    "status": "completed",
+    "summary": "The failure isn't a javac issue \u2014 it's a Gradle dependency-resolution conflict caused by Hibernate ORM's Maven group relocation. As of hibernate-orm 7.0.0.Final, org.hibernate:hibernate-spatial became a POM-only relocation stub pointing to org.hibernate.orm:hibernate-spatial, and the relocated module's Gradle metadata pulls in org.hibernate.orm:hibernate-platform with endorseStrictVersions=true, which declares constraints on both the old and new group:artifact simultaneously. Requesting the old coordinate directly (as the generated scaffold does, `testImplementation \"org.hibernate:hibernate-spatial:$libraryVersion\"`) collides with that platform constraint and fails with 'Component is the target of multiple version constraints with conflicting requirements' \u2014 reproduced locally with a scratch Gradle project. The fix is not an additional dependency: adding org.hibernate.orm:hibernate-spatial alongside the old coordinate still fails (verified). The generated build.gradle must use the new \n...[truncated]"
+  },
+  "libraryUpdateRoute": null,
+  "newVersion": "8.0.0.Beta1",
+  "phases": {
+    "explore": {
+      "chunkClassCount": null,
+      "chunkProcessedClassCount": 0,
+      "exhaustedClasses": [],
+      "status": "running"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": 1,
+      "status": "completed"
+    },
+    "publication": {
+      "branch": null,
+      "coverageFollowUpIssueNumber": null,
+      "isPushed": false,
+      "publicationId": null,
+      "publicationTimestamp": null,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": true,
+      "status": "completed"
+    }
+  },
+  "preservedBranch": "ai/kimeta/human-intervention/issue-9383-fails-javac-compile-org.hibernate-hibernate-spatial-8.0.0.Beta1-bd810d62",
+  "publicationMetrics": {
+    "extras": {},
+    "library": "org.hibernate:hibernate-spatial:8.0.0.Beta1",
+    "timestamp": "2026-09-27T20:51:24.199297Z"
+  },
+  "schemaVersion": 1,
+  "strategyName": "javac_iterative_with_coverage_sources_pi_gpt-5.6-sol"
+}

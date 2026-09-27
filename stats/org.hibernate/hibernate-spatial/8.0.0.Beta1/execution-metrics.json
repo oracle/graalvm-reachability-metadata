@@ -1,0 +1,55 @@
+{
+  "fix_javac_fail:2026-09-27": {
+    "timestamp": "2026-09-27T20:51:24.199297Z",
+    "library": "org.hibernate:hibernate-spatial:8.0.0.Beta1",
+    "starting_commit": "8a33ca77da89d98cd7004628233f7b2789638bf0",
+    "ending_commit": "8a33ca77da89d98cd7004628233f7b2789638bf0",
+    "strategy_name": "javac_iterative_with_coverage_sources_pi_gpt-5.6-sol",
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "status": "failure",
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "advisory_preparation",
+      "issue_number": 9383,
+      "issue_label": "fails-javac-compile",
+      "library": "org.hibernate:hibernate-spatial:8.0.0.Beta1",
+      "summary": "The failure isn't a javac issue — it's a Gradle dependency-resolution conflict caused by Hibernate ORM's Maven group relocation. As of hibernate-orm 7.0.0.Final, org.hibernate:hibernate-spatial became a POM-only relocation stub pointing to org.hibernate.orm:hibernate-spatial, and the relocated module's Gradle metadata pulls in org.hibernate.orm:hibernate-platform with endorseStrictVersions=true, which declares constraints on both the old and new group:artifact simultaneously. Requesting the old coordinate directly (as the generated scaffold does, `testImplementation \"org.hibernate:hibernate-spatial:$libraryVersion\"`) collides with that platform constraint and fails with 'Component is the target of multiple version constraints with conflicting requirements' — reproduced locally with a scratch Gradle project. The fix is not an additional dependency: adding org.hibernate.orm:hibernate-spatial alongside the old coordinate still fails (verified). The generated build.gradle must use the new \n...[truncated]",
+      "deterministic_setup": [],
+      "agent_guidance": "In the generated build.gradle for org.hibernate:hibernate-spatial:8.0.0.Beta1, change the main test dependency from `testImplementation \"org.hibernate:hibernate-spatial:$libraryVersion\"` to `testImplementation \"org.hibernate.orm:hibernate-spatial:$libraryVersion\"`. Verified locally: the org.hibernate group id is a Maven POM relocation stub (packaging=pom, distributionManagement/relocation) for hibernate-orm 7.0.0.Final and later, including 8.0.0.Beta1; resolving it directly conflicts with the hibernate-platform BOM's endorsed strict version constraints, while depending on org.hibernate.orm:hibernate-spatial directly resolves cleanly (hibernate-core, geolatte-geom, jts-core, slf4j-api all pulled in without conflict). No other source changes are needed — the existing test (HibernateSpatialTest.java, using org.hibernate.boot.registry.StandardServiceRegistryBuilder and org.hibernate.spatial.integration.SpatialInitializer) compiles unchanged against 8.0.0.Beta1; both classes are still present in the 8.0.0.Beta1 jars under the same package names. No Docker image or system property is needed — the test only builds a StandardServiceRegistryBuilder, no live database.",
+      "risks": [
+        "This same org.hibernate → org.hibernate.orm relocation affects every hibernate-spatial version from 7.0.0.Final onward, not just 8.0.0.Beta1, so any future version bump for this library will need the same coordinate fix."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#9383 [Automation] javac compile fails for org.hibernate:hibernate-spatial:8.0.0.Beta1; label=fails-javac-compile; body_chars=8015"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "5 existing test file path(s) included"
+        }
+      ],
+      "current_library": "org.hibernate:hibernate-spatial:6.5.0.Final",
+      "new_version": "8.0.0.Beta1",
+      "model": "sonnet",
+      "input_tokens_used": 40,
+      "output_tokens_used": 15561
+    },
+    "metrics": {
+      "input_tokens_used": 35115,
+      "cached_input_tokens_used": 105728,
+      "output_tokens_used": 832,
+      "iterations": 6,
+      "cost_usd": 0.2535,
+      "generated_loc": 0,
+      "tested_library_loc": 0,
+      "metadata_entries": 0,
+      "code_coverage_percent": 0.0
+    },
+    "artifacts": {
+      "metadata_file": "None"
+    }
+  }
+}

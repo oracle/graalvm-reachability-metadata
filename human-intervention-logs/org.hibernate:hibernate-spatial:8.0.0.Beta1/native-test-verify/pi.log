@@ -1,0 +1,15 @@
+Implemented:
+
+- Added dependency substitution from relocated `org.hibernate` coordinates to `org.hibernate.orm`.
+- Explicitly applied the coordinate’s metadata directory.
+- Added reflection and service-resource metadata for Hibernate Spatial initialization.
+
+Validation:
+
+- `checkMetadataFiles` and `checkstyle`: pass.
+- Native executable without tracing: **1 test passed**.
+- Exact `runNativeTraceImage`: Gradle succeeds, but traced binary still exits `1` during JUnit discovery:
+  - `JUnitException: TestEngine with ID 'junit-jupiter' failed to discover tests`
+  - uncaught-exception reporting recursively ends in `StackOverflowError`.
+
+The same trace failure occurs before test execution, with Jupiter and Vintage, with explicit test reflection metadata, and even without conditional tracing. This isolates the remaining failure to the specified GraalVM’s runtime metadata tracer interacting with JUnit discovery, rather than Hibernate metadata or the generated test.
