@@ -9,6 +9,29 @@ Newest entry first; every non-approval is recorded, including one a repair later
 
 Forge could not obtain a readable pre-push review verdict. This records a review availability problem, not a reviewer finding against the branch.
 
+## 2026-09-26 — com.oracle.database.jdbc:ojdbc8:23.26.1.0.0 (#10059)
+
+**Generated library statistics were stale**
+
+The first review-finalization pass regenerated `stats.json`, correcting covered instruction and line counts from 92,681/12,870 to 92,680/12,869. Because the publishable tree changed, that pass exited nonzero as required; the exact finalization command then passed without further changes.
+## 2026-09-26 — com.azure:azure-json:1.5.1 (#10056)
+
+**Generated library statistics were stale**
+
+The first exact finalization run regenerated stats/com.azure/azure-json/1.5.1/stats.json and changed the covered instruction, line, and method counts from 10326/2450/486 to 10270/2435/484, then exited nonzero because the publishable tree changed. This contribution-local generated-evidence mismatch was repairable under §FS-contribution-contract.5.1.
+
+## 2026-09-26 — org.jetbrains:annotations:15.0 (#9386)
+
+**Top-level test class was not public**
+
+The new AnnotationsTest was declared package-private in tests/src/org.jetbrains/annotations/15.0/src/test/java/org_jetbrains/annotations/AnnotationsTest.java, while the test contract requires every top-level test class to be public. This was a contribution-local must violation repairable under contribution-contract disposition 5.1.
+
+## 2026-09-25 — org.apache.tomcat.embed:tomcat-embed-core:11.0.22 (#10144)
+
+**Coverage update weakened a baseline logging test and dropped required test metadata**
+
+The contribution removed the formatter setup and assertion from DirectJDKLogTest, weakening an existing passing scenario contrary to FS-test-contract.2.9. It also removed test-only serialization registrations required by unchanged CustomObjectInputStreamTest behavior: finalization reproduced a MissingReflectionRegistrationError for java.util.ArrayList on the latest lane and an UnsupportedFeatureError for java.lang.reflect.Proxy on GraalVM 25. Generated shipped metadata additionally contained test-owned or nonexistent resource entries for TomcatTests$MyServlet, synthetic LocalStrings bundles, and NoSuchRuntimeClass, contrary to the no-test-only-shipped-metadata requirement.
+
 ## 2026-09-22 — org.apache.tomcat.embed:tomcat-embed-core:11.0.18 (#8328)
 
 **Transient CI diagnosis selected unrelated runs**

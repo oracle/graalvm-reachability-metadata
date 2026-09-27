@@ -27,9 +27,13 @@ public class ConnectorProtocolIntrospectionTest {
             connector.getProperty("bindOnInit");
             boolean bindOnInitUpdated = connector.setProperty("bindOnInit", "false");
             Object bindOnInitAfterUpdate = connector.getProperty("bindOnInit");
+            boolean socketTimeoutUpdated = connector.setProperty("socket.soTimeout", "15000");
+            Object socketTimeoutAfterUpdate = connector.getProperty("socket.soTimeout");
 
             assertThat(bindOnInitUpdated).isTrue();
             assertThat(bindOnInitAfterUpdate).isEqualTo("false");
+            assertThat(socketTimeoutUpdated).isTrue();
+            assertThat(socketTimeoutAfterUpdate).isEqualTo("15000");
 
             connector.init();
             connector.start();
