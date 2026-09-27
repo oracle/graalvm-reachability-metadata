@@ -1,0 +1,56 @@
+{
+  "fix_ni_run:2026-09-27": {
+    "timestamp": "2026-09-27T00:47:05.370309Z",
+    "library": "org.springframework:spring-aspects:6.0.0",
+    "starting_commit": "df3c08e30182437a62917d07d130e73b58995c9d",
+    "ending_commit": "df3c08e30182437a62917d07d130e73b58995c9d",
+    "strategy_name": "library_update_pi_gpt-5.6-sol",
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "status": "failure",
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "advisory_preparation",
+      "issue_number": 9399,
+      "issue_label": "fails-native-image-run",
+      "library": "org.springframework:spring-aspects:6.0.0",
+      "summary": "spring-aspects 6.0.0's @EnableSpringConfigured imports SpringConfiguredConfiguration, a @Configuration bean CGLIB-enhances at runtime; Native Image rejects that runtime class definition unless the proxy class is pre-generated onto the test classpath, the same fix already applied for spring-context/6.0.0 and spring-aop/6.0.0 in this repo.",
+      "deterministic_setup": [],
+      "agent_guidance": "Local reproduction (env GVM_TCK_LV=6.0.0 ./gradlew test -Pcoordinates=org.springframework:spring-aspects:5.3.31) fails native run with: com.oracle.svm.core.jdk.UnsupportedFeatureError: Classes cannot be defined at runtime ... Tried to define class: org/springframework/context/annotation/aspectj/SpringConfiguredConfiguration$$SpringCGLIB$$0. SpringConfiguredConfiguration (in spring-aspects itself) is a plain @Configuration (proxyBeanMethods=true by default) auto-imported by @EnableSpringConfigured, and Spring CGLIB-enhances it at runtime for @Bean method interception. This is the exact same class of failure already fixed for org.springframework:spring-context:6.0.0 and org.springframework:spring-aop:6.0.0 in this repo — mirror that pattern for spring-aspects: (1) add system property spring.objenesis.ignore=true to `tasks.withType(Test).configureEach`, to `nativeTest` runtimeArgs, and to `graalvmNative.binaries.test.buildArgs`; (2) add a `generatePredefinedCglibProxyClasses` JavaExec task (see PredefinedCglibProxyClassesGenerator.java under tests/src/org.springframework/spring-context/6.0.0/src/test/java and tests/src/org.springframework/spring-aop/6.0.0/src/test/java) that forks a JVM with `-Dcglib.debugLocation=<compiled test classes dir>` and `-Dspring.objenesis.ignore=true`, exercises the code path that triggers the CGLIB enhancement (e.g. instantiate the @EnableSpringConfigured config, as in the existing springConfiguredRegistersTheSingletonBeanConfigurerAspect test) so SpringConfiguredConfiguration$$SpringCGLIB$$0.class is dumped onto the compiled test-classes directory, then verify that expected class file exists; (3) make `nativeTestCompile` and `nativeTraceImage` depend on that task. Do not add the `org.glassfish:javax.ejb:3.1` dependency used in spring-context/6.0.0 — that's unrelated to this fix. If future test coverage adds @EnableCaching/@EnableTransactionManagement/@EnableAsync with the default AdviceMode.PROXY (the current test only uses AdviceMode.ASPE\n...[truncated]",
+      "risks": [
+        "The predefinition workaround relies on CGLIB's debug-location dump landing exactly on the native-image build classpath before analysis; if class naming/hashing changes in a later spring-aspects/spring-core patch, the generator's expected-class-file check will need updating.",
+        "Only the AdviceMode.ASPECTJ-based aspects and the @EnableSpringConfigured path were verified; any newly added test exercising proxy-based (CGLIB) advice modes would need the same predefinition treatment or it will hit the identical runtime-class-definition error."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#9399 [Automation] native-image run fails for org.springframework:spring-aspects:6.0.0; label=fails-native-image-run; body_chars=8015"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "9 existing test file path(s) included"
+        }
+      ],
+      "current_library": "org.springframework:spring-aspects:5.3.31",
+      "new_version": "6.0.0",
+      "model": "sonnet",
+      "input_tokens_used": 42,
+      "output_tokens_used": 18045
+    },
+    "metrics": {
+      "input_tokens_used": 0,
+      "cached_input_tokens_used": 0,
+      "output_tokens_used": 0,
+      "iterations": 3,
+      "cost_usd": 0.0,
+      "generated_loc": 0,
+      "tested_library_loc": 0,
+      "metadata_entries": 0,
+      "code_coverage_percent": 0.0
+    },
+    "artifacts": {
+      "metadata_file": "None"
+    }
+  }
+}
