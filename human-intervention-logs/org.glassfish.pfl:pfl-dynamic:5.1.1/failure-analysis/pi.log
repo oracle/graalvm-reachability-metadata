@@ -1,0 +1,15 @@
+# Human intervention needed
+
+The automated job failed in `explore/generate_tests()` while handling reporter-requested metadata. Preserved work: https://github.com/oracle/graalvm-reachability-metadata/tree/ai%2Fkimeta%2Fhuman-intervention%2Fissue-9943-library-new-request-org.glassfish.pfl-pfl-dynamic-5.1.1-1b8faa63
+
+The most likely cause is stale Gradle output combined with ineffective conditional metadata. Three consecutive native-test runs execute the removed `appliesReadResolveToTheCopiedObject()` test and fail with `MissingReflectionRegistrationError` for `java.lang.Object()`; however, the ending commit contains no such test method, while its compiled class still does. The metadata already registers that constructor, but conditions it on the test class, and the final generation agent therefore made no repair. The run exhausted 14 iterations at 13/17 dynamic-access calls (76.47%), leaving three target classes exhausted and finalization pending.
+
+Inspect:
+- `human-intervention-logs/org.glassfish.pfl:pfl-dynamic:5.1.1/gradle-test/gradle-test-2026-09-27T12-39-44-745329Z.log`
+- `human-intervention-logs/org.glassfish.pfl:pfl-dynamic:5.1.1/issue-requested-metadata/pi-generation-2026-09-27T12-39-13-421768Z.log`
+- `forge/.continuation-marker.json` and `tests/src/org.glassfish.pfl/pfl-dynamic/5.1.1/dynamic-access-exhaust-report.json`
+
+Manual next steps:
+1. Clean the coordinate’s build outputs and rerun the JVM/native tests to confirm the removed test is no longer executed.
+2. Rework the `java.lang.Object()` constructor registration to use an appropriate library-owned `typeReached` condition, then validate and rerun the native test.
+3. Review the four remaining call sites in the coverage report, add viable targeted tests if appropriate, and complete the coordinate-scoped verification gates.
