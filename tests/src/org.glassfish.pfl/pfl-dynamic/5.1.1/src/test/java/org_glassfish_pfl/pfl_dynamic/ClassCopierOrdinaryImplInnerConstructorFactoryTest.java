@@ -21,7 +21,7 @@ public class ClassCopierOrdinaryImplInnerConstructorFactoryTest {
         ConstructorValue copy = (ConstructorValue) copier.copy(source);
 
         assertThat(copy).isNotSameAs(source);
-        assertThat(copy.parentText).isEqualTo("constructed");
+        assertThat(copy.parentText()).isEqualTo("constructed");
         assertThat(copy.number).isEqualTo(9);
     }
 
@@ -34,6 +34,10 @@ public class ClassCopierOrdinaryImplInnerConstructorFactoryTest {
 
         public ConstructorParent(String parentText) {
             this.parentText = parentText;
+        }
+
+        public String parentText() {
+            return parentText;
         }
     }
 
