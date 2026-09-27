@@ -3,6 +3,12 @@
 Rendered by Forge from the pre-push branch review of §FS-local-branch-review.
 Newest entry first; every non-approval is recorded, including one a repair later cleared.
 
+## 2026-09-25 — org.apache.tomcat.embed:tomcat-embed-core:11.0.18 (#8328)
+
+**Pre-push review unavailable**
+
+Forge could not obtain a readable pre-push review verdict. This records a review availability problem, not a reviewer finding against the branch.
+
 ## 2026-09-26 — com.oracle.database.jdbc:ojdbc8:23.26.1.0.0 (#10059)
 
 **Generated library statistics were stale**
