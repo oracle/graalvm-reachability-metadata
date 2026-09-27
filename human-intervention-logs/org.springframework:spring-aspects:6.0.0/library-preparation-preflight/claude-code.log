@@ -1,0 +1,21 @@
+Based on my research:
+
+- **spring-aspects 6.0.0's only dependency is `aspectjweaver:1.9.9.1`** — identical to what 5.3.31 already resolves and what the CI log shows working (`aspectjweaver-1.9.9.1.jar` in the built image, analysis/build/image-creation all succeeded).
+- Sibling Spring 6.0.0 modules (`spring-context`, `spring-aop`, `spring-tx`, `spring-web`, `spring-webflux`, `spring-test`) already have working native-image tests in this repo at 6.0.0, so nothing about the 6.0.0 line structurally blocks Native Image.
+- The existing 5.3.31 test suite doesn't rely on runtime/load-time weaving of user code — it invokes the compile-time-woven aspects (`AnnotationBeanConfigurerAspect.aspectOf()`, etc.) directly, avoiding any Native Image–incompatible weaving path.
+- The log is truncated exactly where the actual nativeTest failure detail would appear (cut off after one test `SUCCESSFUL`), so there's no visible stack trace or failure signature to trace into library source. Per the rules, that alone rules out an unsupportable verdict — a red test with no visible mechanism is not evidence of a Native Image limitation, and repairable is the safe default.
+- No Docker image, extra Maven dependency, or environment/system property is indicated by anything in the artifact, its POM, or its usage pattern.
+
+Final decision:
+
+```json
+{
+  "action": "no_action",
+  "summary": "spring-aspects 6.0.0 pulls the same aspectjweaver:1.9.9.1 already used successfully by 5.3.31; sibling Spring 6.0.0 modules already pass native-image tests in this repo; the CI log shows the native image built and ran successfully with only a test-level failure whose detail is truncated, giving no evidence of missing setup.",
+  "deterministic_setup": [],
+  "agent_guidance": "",
+  "risks": ["The CI log truncates before the actual nativeTest assertion failure; generation/testing may need to adjust test expectations for Spring 6 behavior changes (e.g. proxy/config differences), but this is ordinary metadata/test work, not environment setup."]
+}
+```
+
+No unsupportable verdict: the failure evidence doesn't identify any failing operation to trace, and multiple Spring 6.0.0 modules already work under Native Image in this repo, so `skip_unsupported` doesn't apply here.
