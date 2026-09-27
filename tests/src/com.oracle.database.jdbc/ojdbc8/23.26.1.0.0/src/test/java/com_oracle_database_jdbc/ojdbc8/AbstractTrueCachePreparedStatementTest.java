@@ -36,10 +36,13 @@ public class AbstractTrueCachePreparedStatementTest {
         statement.setInt(2, 42);
         statement.setEscapeProcessing(false);
         statement.clearWarnings();
-        statement.addBatch();
 
+        assertThat(statement.executeUpdate()).isEqualTo(1);
+
+        statement.setString(1, "batch");
+        statement.addBatch();
         assertThat(statement.executeBatch()).containsExactly(1);
-        assertThat(handler.getStringBindings()).containsExactly("initial", "replacement");
+        assertThat(handler.getStringBindings()).containsExactly("initial", "replacement", "batch");
         assertThat(handler.getIntegerBinding()).isEqualTo(42);
         assertThat(handler.isEscapeProcessingEnabled()).isFalse();
         assertThat(handler.isBatchExecuted()).isTrue();
@@ -99,6 +102,8 @@ public class AbstractTrueCachePreparedStatementTest {
                 case "setEscapeProcessing":
                     escapeProcessingEnabled = (Boolean) arguments[0];
                     return null;
+                case "executeUpdate":
+                    return 1;
                 case "executeBatch":
                     batchExecuted = true;
                     return new int[] {1};
