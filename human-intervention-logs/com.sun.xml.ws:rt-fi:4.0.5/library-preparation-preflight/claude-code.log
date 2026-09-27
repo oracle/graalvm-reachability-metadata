@@ -1,0 +1,11 @@
+All confirmed plain, no special setup. Both direct dependencies of `rt-fi` — `com.sun.xml.ws:jaxws-rt` (the relocated `rt` artifact) and `com.sun.xml.fastinfoset:FastInfoset` — already have metadata in this repo, and their own test scaffolds are plain unit tests with no Docker, no extra Maven deps, and no env/system properties. `rt-fi` itself is a tiny 8-class module (SOAP 1.1/1.2 Fast Infoset codecs) whose only two dependencies are declared as regular (non-optional) compile-scope deps in its POM, so Gradle's normal transitive resolution from `testImplementation "com.sun.xml.ws:rt-fi:$libraryVersion"` already pulls in everything needed. It performs pure in-memory XML/SOAP encoding — no network, filesystem, or external service involved.
+
+```json
+{
+  "action": "no_action",
+  "summary": "rt-fi is a small (8-class) SOAP Fast Infoset codec module; its only dependencies (jaxws-rt and FastInfoset) are normal compile-scope POM deps already covered by transitive resolution, and both already have metadata/tests in this repo with no Docker/env setup. Coverage is pure in-memory codec logic, reachable from the generated scaffold alone.",
+  "deterministic_setup": [],
+  "agent_guidance": "",
+  "risks": []
+}
+```
