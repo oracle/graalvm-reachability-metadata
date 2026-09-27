@@ -1,0 +1,54 @@
+{
+  "timestamp": "2026-09-27T14:52:41.553226Z",
+  "library": "org.springframework:spring-aspects:6.0.0",
+  "starting_commit": "a14bf26b34fcd6cc6838b71617475e072337107a",
+  "ending_commit": "a14bf26b34fcd6cc6838b71617475e072337107a",
+  "strategy_name": "library_update_pi_gpt-5.6-sol",
+  "agent": "pi",
+  "model": "gpt-5.6-sol",
+  "status": "failure",
+  "library_preparation_preflight": {
+    "status": "completed",
+    "action": "no_action",
+    "issue_number": 9399,
+    "issue_label": "fails-native-image-run",
+    "library": "org.springframework:spring-aspects:6.0.0",
+    "summary": "spring-aspects 6.0.0 and its Spring Framework siblings (spring-context/spring-beans/spring-core 6.0.0) pull the same aspectjweaver 1.9.9.1 as the existing 5.3.31 scaffold, add no new transitive runtime dependency, and require no Docker service or special environment; the generated test scaffold's build.gradle already parameterizes the library version. The native-image build itself succeeds in the failure log — only nativeTest exits non-zero, and the log truncates before showing which assertion failed, so there is no concrete evidence of a setup gap.",
+    "deterministic_setup": [],
+    "agent_guidance": "",
+    "risks": [
+      "The provided failure log is truncated right where the failing test name/exception would appear, so the actual runtime failure cause is unknown; the fixing agent will need to re-run `GVM_TCK_LV=6.0.0 ./gradlew test -Pcoordinates=org.springframework:spring-aspects:5.3.31` locally to capture the real stack trace before attempting a metadata or test fix.",
+      "Not evaluated as skip_unsupported due to insufficient failure evidence, not because a mechanism was ruled out — revisit if the full trace shows runtime bytecode generation, agent self-attach, or similar."
+    ],
+    "applied_setup": [],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#9399 [Automation] native-image run fails for org.springframework:spring-aspects:6.0.0; label=fails-native-image-run; body_chars=8015"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "9 existing test file path(s) included"
+      }
+    ],
+    "current_library": "org.springframework:spring-aspects:5.3.31",
+    "new_version": "6.0.0",
+    "model": "sonnet",
+    "input_tokens_used": 20,
+    "output_tokens_used": 7036
+  },
+  "metrics": {
+    "input_tokens_used": 0,
+    "cached_input_tokens_used": 0,
+    "output_tokens_used": 0,
+    "iterations": 3,
+    "cost_usd": 0.0,
+    "generated_loc": 0,
+    "tested_library_loc": 0,
+    "metadata_entries": 0,
+    "code_coverage_percent": 0.0
+  },
+  "artifacts": {
+    "metadata_file": "None"
+  }
+}
