@@ -1,0 +1,78 @@
+{
+  "continueFrom": "explore",
+  "coordinate": "org.hibernate:hibernate-spatial:8.0.0.Beta1",
+  "failure": {
+    "operand": "reporter-requested metadata",
+    "phase": "explore",
+    "step": "generate_tests()"
+  },
+  "issueNumber": 9383,
+  "label": "fails-javac-compile",
+  "libraryPreparationPreflight": {
+    "action": "advisory_preparation",
+    "agent_guidance": "For this version, change the generated build.gradle test dependency from `testImplementation \"org.hibernate:hibernate-spatial:$libraryVersion\"` to `testImplementation \"org.hibernate.orm:hibernate-spatial:$libraryVersion\"`. Do not add the org.hibernate.orm coordinate alongside the old org.hibernate one \u2014 keeping both present still fails resolution, since org.hibernate:hibernate-spatial is a Gradle-metadata relocation whose target reimports a platform BOM that redeclares both coordinates, producing a version-constraint cycle. Existing test code (SpatialInitializer, StandardServiceRegistryBuilder) is unchanged in the relocated artifact and needs no source changes.",
+    "applied_setup": [],
+    "current_library": "org.hibernate:hibernate-spatial:6.5.0.Final",
+    "deterministic_setup": [],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#9383 [Automation] javac compile fails for org.hibernate:hibernate-spatial:8.0.0.Beta1; label=fails-javac-compile; body_chars=8015"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "5 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 26,
+    "issue_label": "fails-javac-compile",
+    "issue_number": 9383,
+    "library": "org.hibernate:hibernate-spatial:8.0.0.Beta1",
+    "model": "sonnet",
+    "new_version": "8.0.0.Beta1",
+    "output_tokens_used": 11573,
+    "risks": [
+      "If a future patch of hibernate-spatial 8.x un-relocates or changes the platform BOM's constraint shape, this workaround may no longer be needed or may need adjusting."
+    ],
+    "status": "completed",
+    "summary": "org.hibernate:hibernate-spatial:8.0.0.Beta1 is a Maven relocation POM to org.hibernate.orm:hibernate-spatial; combined with the hibernate-platform BOM's dual-coordinate constraints, depending on the old org.hibernate coordinate causes an unresolvable Gradle capability/version-constraint conflict, not a real compile error."
+  },
+  "libraryUpdateRoute": null,
+  "newVersion": "8.0.0.Beta1",
+  "phases": {
+    "explore": {
+      "chunkClassCount": null,
+      "chunkProcessedClassCount": 0,
+      "exhaustedClasses": [],
+      "status": "running"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": 1,
+      "status": "completed"
+    },
+    "publication": {
+      "branch": null,
+      "coverageFollowUpIssueNumber": null,
+      "isPushed": false,
+      "publicationId": null,
+      "publicationTimestamp": null,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": true,
+      "status": "completed"
+    }
+  },
+  "preservedBranch": "ai/kimeta/human-intervention/issue-9383-fails-javac-compile-org.hibernate-hibernate-spatial-8.0.0.Beta1-c4211a38",
+  "publicationMetrics": {
+    "extras": {},
+    "library": "org.hibernate:hibernate-spatial:8.0.0.Beta1",
+    "timestamp": "2026-09-27T13:39:19.357169Z"
+  },
+  "schemaVersion": 1,
+  "strategyName": "javac_iterative_with_coverage_sources_pi_gpt-5.6-sol"
+}

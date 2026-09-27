@@ -1,0 +1,19 @@
+## Findings
+
+The issue is mislabeled as a javac-compile failure; the actual failure is Gradle dependency resolution, unrelated to Native Image at all — so `skip_unsupported` doesn't apply here (no runtime bytecode gen/lambda/agent-attach mechanism is even in play).
+
+Root cause, verified by reproduction:
+- `org.hibernate:hibernate-spatial:8.0.0.Beta1` is a Maven **relocation POM** pointing to `org.hibernate.orm:hibernate-spatial:8.0.0.Beta1` (Hibernate ORM 7+ moved groupId).
+- The relocated artifact's Gradle module metadata imports the `org.hibernate.orm:hibernate-platform:8.0.0.Beta1` BOM with `endorseStrictVersions`, and that BOM declares constraints on **both** `org.hibernate:hibernate-spatial` and `org.hibernate.orm:hibernate-spatial` at the same version. This creates a capability/version-constraint cycle that Gradle reports as "multiple version constraints with conflicting requirements" whenever anything still depends on the old `org.hibernate:hibernate-spatial` coordinate.
+- I reproduced this in an isolated Gradle project: `implementation "org.hibernate:hibernate-spatial:8.0.0.Beta1"` fails exactly as in the CI log. Switching to `implementation "org.hibernate.orm:hibernate-spatial:8.0.0.Beta1"` resolves cleanly (pulls `hibernate-core`, `geolatte-geom`, etc. correctly). Adding the new coordinate *alongside* the old one still fails both — so this isn't a simple additive dependency; the existing `testImplementation "org.hibernate:hibernate-spatial:$libraryVersion"` line itself must be pointed at `org.hibernate.orm:hibernate-spatial` for this version.
+- The existing test code (`SpatialInitializer`, `StandardServiceRegistryBuilder`) is present unchanged in the relocated 8.0.0.Beta1 jars, so no test-code changes are needed beyond the dependency coordinate.
+
+```json
+{
+  "action": "advisory_preparation",
+  "summary": "org.hibernate:hibernate-spatial:8.0.0.Beta1 is a Maven relocation POM to org.hibernate.orm:hibernate-spatial; combined with the hibernate-platform BOM's dual-coordinate constraints, depending on the old org.hibernate coordinate causes an unresolvable Gradle capability/version-constraint conflict, not a real compile error.",
+  "deterministic_setup": [],
+  "agent_guidance": "For this version, change the generated build.gradle test dependency from `testImplementation \"org.hibernate:hibernate-spatial:$libraryVersion\"` to `testImplementation \"org.hibernate.orm:hibernate-spatial:$libraryVersion\"`. Do not add the org.hibernate.orm coordinate alongside the old org.hibernate one — keeping both present still fails resolution, since org.hibernate:hibernate-spatial is a Gradle-metadata relocation whose target reimports a platform BOM that redeclares both coordinates, producing a version-constraint cycle. Existing test code (SpatialInitializer, StandardServiceRegistryBuilder) is unchanged in the relocated artifact and needs no source changes.",
+  "risks": ["If a future patch of hibernate-spatial 8.x un-relocates or changes the platform BOM's constraint shape, this workaround may no longer be needed or may need adjusting."]
+}
+```

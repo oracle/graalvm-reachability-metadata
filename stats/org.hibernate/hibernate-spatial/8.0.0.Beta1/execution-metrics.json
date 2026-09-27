@@ -1,0 +1,55 @@
+{
+  "fix_javac_fail:2026-09-27": {
+    "timestamp": "2026-09-27T13:39:19.357169Z",
+    "library": "org.hibernate:hibernate-spatial:8.0.0.Beta1",
+    "starting_commit": "2c66831e8de19946a0142722760d18eebcd5f6a1",
+    "ending_commit": "2c66831e8de19946a0142722760d18eebcd5f6a1",
+    "strategy_name": "javac_iterative_with_coverage_sources_pi_gpt-5.6-sol",
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "status": "failure",
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "advisory_preparation",
+      "issue_number": 9383,
+      "issue_label": "fails-javac-compile",
+      "library": "org.hibernate:hibernate-spatial:8.0.0.Beta1",
+      "summary": "org.hibernate:hibernate-spatial:8.0.0.Beta1 is a Maven relocation POM to org.hibernate.orm:hibernate-spatial; combined with the hibernate-platform BOM's dual-coordinate constraints, depending on the old org.hibernate coordinate causes an unresolvable Gradle capability/version-constraint conflict, not a real compile error.",
+      "deterministic_setup": [],
+      "agent_guidance": "For this version, change the generated build.gradle test dependency from `testImplementation \"org.hibernate:hibernate-spatial:$libraryVersion\"` to `testImplementation \"org.hibernate.orm:hibernate-spatial:$libraryVersion\"`. Do not add the org.hibernate.orm coordinate alongside the old org.hibernate one — keeping both present still fails resolution, since org.hibernate:hibernate-spatial is a Gradle-metadata relocation whose target reimports a platform BOM that redeclares both coordinates, producing a version-constraint cycle. Existing test code (SpatialInitializer, StandardServiceRegistryBuilder) is unchanged in the relocated artifact and needs no source changes.",
+      "risks": [
+        "If a future patch of hibernate-spatial 8.x un-relocates or changes the platform BOM's constraint shape, this workaround may no longer be needed or may need adjusting."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#9383 [Automation] javac compile fails for org.hibernate:hibernate-spatial:8.0.0.Beta1; label=fails-javac-compile; body_chars=8015"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "5 existing test file path(s) included"
+        }
+      ],
+      "current_library": "org.hibernate:hibernate-spatial:6.5.0.Final",
+      "new_version": "8.0.0.Beta1",
+      "model": "sonnet",
+      "input_tokens_used": 26,
+      "output_tokens_used": 11573
+    },
+    "metrics": {
+      "input_tokens_used": 33127,
+      "cached_input_tokens_used": 101760,
+      "output_tokens_used": 509,
+      "iterations": 6,
+      "cost_usd": 0.2318,
+      "generated_loc": 0,
+      "tested_library_loc": 0,
+      "metadata_entries": 0,
+      "code_coverage_percent": 0.0
+    },
+    "artifacts": {
+      "metadata_file": "None"
+    }
+  }
+}

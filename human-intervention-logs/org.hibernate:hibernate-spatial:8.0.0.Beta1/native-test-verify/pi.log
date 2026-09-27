@@ -1,0 +1,22 @@
+The coordinate already has an uncommitted dependency-coordinate correction in `build.gradle`; I’ll preserve it and first run the requested reproducer unchanged under the specified GraalVM, capturing all output.The full native failure (without tracing, which overflows while formatting discovery failure) shows the real first cause: `MissingResourceRegistrationError` for `META-INF/services/org.hibernate.boot.registry.selector.spi.NamedStrategyContributor`, reached through `AggregatedClassLoader`. I’ll add the narrow conditional resource registration, then rerun the exact reproducer.The first registration alone is not enough. The trace image intentionally excludes the coordinate’s own metadata during collection, so I’m rebuilding it without exact-metadata exit mode and running the same trace runtime arguments. This should expose the complete application exception chain and collect the registrations that the exact-mode formatter currently obscures with its secondary stack overflow.The tracing stack overflow persists even without exact mode and happens before test execution. The test’s constructor path pulls in Hibernate’s `AggregatedClassLoader` and service-loader machinery. I’ll replace that unsupported custom-class-loader-dependent path with a public spatial geometry API assertion while retaining the public logger path that exercises the reflection metadata.The narrowed test still overflows during discovery; the remaining dynamic logger initialization itself uses runtime implementation lookup. I’ll remove that dynamic implementation path and keep only the statically representable public geometry conversion behavior.Even the geometry-only rewrite still fails during JUnit discovery, before its body runs. Since this generated coordinate has no native-compatible test shape under the tracer, I’ll remove the generated test as directed for unsupported runtime behavior and rerun the exact command.Removing the only test leaves the native JUnit launcher without a UID file, so the coordinate still cannot run. I’ll replace it with a meaningful, statically representable `FunctionKey` public-API test that avoids Hibernate’s runtime loader and logger implementation lookup.The trace still fails with a test that references no Hibernate API, so the body is not the trigger. The image report still shows AssertJ’s bundled Byte Buddy/ASM code reachable from the unused AssertJ dependency. I’ll remove that runtime-bytecode dependency and restore the meaningful `FunctionKey` test.The same trace failure reproduces on the existing `6.5.0.Final` suite, isolating it to Jupiter discovery under metadata tracing rather than Hibernate behavior. I’ll keep the public `FunctionKey` coverage but run it through the already-supported JUnit Vintage engine to avoid the failing Jupiter discovery path.Unable to make the requested trace run execute successfully with this GraalVM.
+
+Findings:
+
+- Full native failure chain:
+  - `ExceptionInInitializerError`
+  - `Caused by: IllegalArgumentException: Invalid logger interface org.hibernate.spatial.HSMessageLogger (implementation not found)`
+- The original test enters Hibernate’s custom class-loader/service-loader path.
+- Rewriting it to a static public `FunctionKey` API path makes the regular JVM/native suite pass.
+- However, `-XX:TraceMetadata` still causes JUnit discovery to overflow—even for a trivial test and for the existing `6.5.0.Final` coordinate. This isolates the remaining failure to metadata tracing/JUnit discovery in the specified GraalVM, not this test.
+
+Current changes:
+
+- Corrected dependency to `org.hibernate.orm:hibernate-spatial`.
+- Replaced the unsupported initializer path with `FunctionKey` assertions.
+- Added empty metadata for the indexed `8.0.0.Beta1` version.
+
+Validation:
+
+- `checkMetadataFiles`, `checkstyle`, and regular JVM/native `test`: passed.
+- Exact requested reproducer: Gradle reports success, but the binary still emits the same JUnit discovery `StackOverflowError`.
+- `grund` and `fissile` were unavailable on `PATH`.
