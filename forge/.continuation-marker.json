@@ -1,0 +1,79 @@
+{
+  "continueFrom": "finalization",
+  "coordinate": "org.springframework:spring-aspects:6.0.0",
+  "failure": {
+    "operand": "reporter-requested metadata",
+    "phase": "explore",
+    "step": "generate_tests()"
+  },
+  "issueNumber": 9399,
+  "label": "fails-native-image-run",
+  "libraryPreparationPreflight": {
+    "action": "advisory_preparation",
+    "agent_guidance": "Do not exercise @EnableSpringConfigured, @EnableTransactionManagement(mode = AdviceMode.ASPECTJ), @EnableCaching(mode = AdviceMode.ASPECTJ), or @EnableAsync(mode = AdviceMode.ASPECTJ) through a real AnnotationConfigApplicationContext.refresh() in the generated 6.0.0 test. Spring's ConfigurationClassPostProcessor CGLIB-enhances the library's own internal full @Configuration classes (org.springframework.context.annotation.aspectj.SpringConfiguredConfiguration, org.springframework.transaction.aspectj.AspectJTransactionManagementConfiguration, org.springframework.scheduling.aspectj.AspectJAsyncConfiguration, org.springframework.cache.aspectj.AspectJCachingConfiguration/AspectJJCacheConfiguration) at runtime, and also triggers ASM-based classpath-resource reads of selector classes such as org/springframework/scheduling/annotation/AsyncConfigurationSelector.class and org/springframework/context/annotation/aspectj/SpringConfiguredConfiguration.class, which fail as missing resources under Native Image. There is no reachability-metadata fix for the runtime CGLIB class definition. Instead cover these aspects the way the passing majority of the existing 5.3.31 suite already does: obtain the aspect via its static aspectOf() accessor (AnnotationBeanConfigurerAspect.aspectOf(), AnnotationTransactionAspect.aspectOf(), AnnotationCacheAspect.aspectOf(), AnnotationAsyncExecutionAspect.aspectOf()) and configure/invoke it directly, or use GenericInterfaceDrivenDependencyInjectionAspect directly, instead of booting a full ApplicationContext through the @Enable* annotations.",
+    "applied_setup": [],
+    "current_library": "org.springframework:spring-aspects:5.3.31",
+    "deterministic_setup": [],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#9399 [Automation] native-image run fails for org.springframework:spring-aspects:6.0.0; label=fails-native-image-run; body_chars=8015"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "9 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 38,
+    "issue_label": "fails-native-image-run",
+    "issue_number": 9399,
+    "library": "org.springframework:spring-aspects:6.0.0",
+    "model": "sonnet",
+    "new_version": "6.0.0",
+    "output_tokens_used": 16463,
+    "risks": [
+      "Dropping the ApplicationContext-driven @Enable*(mode=ASPECTJ)/@EnableSpringConfigured flow means the 6.0.0 test loses coverage of Spring's bean-registration/@Configuration integration path that the 5.3.31 suite does exercise \u2014 this is an inherent Native Image limitation (runtime CGLIB class definition on the library's own full-mode @Configuration classes), not a scaffold or dependency gap, so it cannot be recovered via metadata.",
+      "This is likely a generic risk for other spring-* modules moving to the stricter current-defaults native-image mode wherever a library ships its own full-mode @Configuration classes, not unique to spring-aspects 6.0.0."
+    ],
+    "status": "completed",
+    "summary": "No extra dependency/Docker/env setup needed. The two tests that boot a real AnnotationConfigApplicationContext through @EnableSpringConfigured / @Enable*(mode = AdviceMode.ASPECTJ) trigger CGLIB runtime-enhancement of spring-aspects' own full-mode @Configuration classes (SpringConfiguredConfiguration, AspectJTransactionManagementConfiguration, AspectJAsyncConfiguration, AspectJCachingConfiguration) and ASM-based classpath-resource reads of selector classes (e.g. AsyncConfigurationSelector.class) \u2014 both unsupported/unregistered under Native Image. Rewrite those tests to exercise the aspects directly instead."
+  },
+  "libraryUpdateRoute": null,
+  "newVersion": "6.0.0",
+  "phases": {
+    "explore": {
+      "chunkClassCount": null,
+      "chunkProcessedClassCount": 0,
+      "exhaustedClasses": [],
+      "status": "skipped"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": null,
+      "status": "completed"
+    },
+    "publication": {
+      "branch": null,
+      "coverageFollowUpIssueNumber": null,
+      "isPushed": false,
+      "publicationId": null,
+      "publicationTimestamp": null,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": true,
+      "status": "completed"
+    }
+  },
+  "preservedBranch": "ai/kimeta/human-intervention/issue-9399-fails-native-image-run-org.springframework-spring-aspects-6.0.0-147117c5",
+  "publicationMetrics": {
+    "extras": {},
+    "library": "org.springframework:spring-aspects:6.0.0",
+    "timestamp": "2026-09-27T22:12:19.193579Z"
+  },
+  "schemaVersion": 1,
+  "strategyName": "library_update_pi_gpt-5.6-sol"
+}

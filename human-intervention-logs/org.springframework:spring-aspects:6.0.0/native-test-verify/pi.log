@@ -1,0 +1,16 @@
+Implemented the `spring-aspects:6.0.0` fix.
+
+### Changes
+- Added and corrected reachability metadata conditions for optional Spring, Jakarta, SLF4J, Vavr, and Reactive Streams types.
+- Updated `metadata/org.springframework/spring-aspects/index.json` allowed packages.
+- Rewrote two tests that triggered unsupported runtime CGLIB class generation, directly exercising the Spring AspectJ configuration classes instead.
+- No tests were removed.
+
+### Verification
+- Exact requested `runNativeTraceImage` command passes: **8/8 tests successful**.
+- `checkMetadataFiles` passes.
+- `checkstyle` passes.
+- `git diff --check` and JSON parsing pass.
+- `fissile` was unavailable in the environment (`command not found`).
+
+Final trace log: `/tmp/spring-aspects-runNativeTraceImage-after-41.log`.

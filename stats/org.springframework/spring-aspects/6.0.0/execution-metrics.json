@@ -1,0 +1,56 @@
+{
+  "fix_ni_run:2026-09-27": {
+    "timestamp": "2026-09-27T22:12:19.193579Z",
+    "library": "org.springframework:spring-aspects:6.0.0",
+    "starting_commit": "b2b4bad7c996264fd90604142ecdff93c751a0d7",
+    "ending_commit": "b2b4bad7c996264fd90604142ecdff93c751a0d7",
+    "strategy_name": "library_update_pi_gpt-5.6-sol",
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "status": "failure",
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "advisory_preparation",
+      "issue_number": 9399,
+      "issue_label": "fails-native-image-run",
+      "library": "org.springframework:spring-aspects:6.0.0",
+      "summary": "No extra dependency/Docker/env setup needed. The two tests that boot a real AnnotationConfigApplicationContext through @EnableSpringConfigured / @Enable*(mode = AdviceMode.ASPECTJ) trigger CGLIB runtime-enhancement of spring-aspects' own full-mode @Configuration classes (SpringConfiguredConfiguration, AspectJTransactionManagementConfiguration, AspectJAsyncConfiguration, AspectJCachingConfiguration) and ASM-based classpath-resource reads of selector classes (e.g. AsyncConfigurationSelector.class) — both unsupported/unregistered under Native Image. Rewrite those tests to exercise the aspects directly instead.",
+      "deterministic_setup": [],
+      "agent_guidance": "Do not exercise @EnableSpringConfigured, @EnableTransactionManagement(mode = AdviceMode.ASPECTJ), @EnableCaching(mode = AdviceMode.ASPECTJ), or @EnableAsync(mode = AdviceMode.ASPECTJ) through a real AnnotationConfigApplicationContext.refresh() in the generated 6.0.0 test. Spring's ConfigurationClassPostProcessor CGLIB-enhances the library's own internal full @Configuration classes (org.springframework.context.annotation.aspectj.SpringConfiguredConfiguration, org.springframework.transaction.aspectj.AspectJTransactionManagementConfiguration, org.springframework.scheduling.aspectj.AspectJAsyncConfiguration, org.springframework.cache.aspectj.AspectJCachingConfiguration/AspectJJCacheConfiguration) at runtime, and also triggers ASM-based classpath-resource reads of selector classes such as org/springframework/scheduling/annotation/AsyncConfigurationSelector.class and org/springframework/context/annotation/aspectj/SpringConfiguredConfiguration.class, which fail as missing resources under Native Image. There is no reachability-metadata fix for the runtime CGLIB class definition. Instead cover these aspects the way the passing majority of the existing 5.3.31 suite already does: obtain the aspect via its static aspectOf() accessor (AnnotationBeanConfigurerAspect.aspectOf(), AnnotationTransactionAspect.aspectOf(), AnnotationCacheAspect.aspectOf(), AnnotationAsyncExecutionAspect.aspectOf()) and configure/invoke it directly, or use GenericInterfaceDrivenDependencyInjectionAspect directly, instead of booting a full ApplicationContext through the @Enable* annotations.",
+      "risks": [
+        "Dropping the ApplicationContext-driven @Enable*(mode=ASPECTJ)/@EnableSpringConfigured flow means the 6.0.0 test loses coverage of Spring's bean-registration/@Configuration integration path that the 5.3.31 suite does exercise — this is an inherent Native Image limitation (runtime CGLIB class definition on the library's own full-mode @Configuration classes), not a scaffold or dependency gap, so it cannot be recovered via metadata.",
+        "This is likely a generic risk for other spring-* modules moving to the stricter current-defaults native-image mode wherever a library ships its own full-mode @Configuration classes, not unique to spring-aspects 6.0.0."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#9399 [Automation] native-image run fails for org.springframework:spring-aspects:6.0.0; label=fails-native-image-run; body_chars=8015"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "9 existing test file path(s) included"
+        }
+      ],
+      "current_library": "org.springframework:spring-aspects:5.3.31",
+      "new_version": "6.0.0",
+      "model": "sonnet",
+      "input_tokens_used": 38,
+      "output_tokens_used": 16463
+    },
+    "metrics": {
+      "input_tokens_used": 0,
+      "cached_input_tokens_used": 0,
+      "output_tokens_used": 0,
+      "iterations": 3,
+      "cost_usd": 0.0,
+      "generated_loc": 0,
+      "tested_library_loc": 0,
+      "metadata_entries": 0,
+      "code_coverage_percent": 0.0
+    },
+    "artifacts": {
+      "metadata_file": "None"
+    }
+  }
+}
