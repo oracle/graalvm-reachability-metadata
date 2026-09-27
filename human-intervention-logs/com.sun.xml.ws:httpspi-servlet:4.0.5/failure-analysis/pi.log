@@ -1,0 +1,17 @@
+## Human intervention needed
+
+The automated job failed in `explore/generate_tests()` while generating reporter-requested metadata for `com.sun.xml.ws:httpspi-servlet:4.0.5`.
+
+Preserved work: https://github.com/oracle/graalvm-reachability-metadata/tree/ai%2Fkimeta%2Fhuman-intervention%2Fissue-9946-library-new-request-com.sun.xml.ws-httpspi-servlet-4.0.5-0b98a66b
+
+The likely blocker is Native Image class initialization rather than missing reachability metadata. The final `nativeTestCompile` repeatedly fails because `com.ctc.wstx.stax.WstxInputFactory` is stored in the image heap while configured for runtime initialization, reached through `DeploymentDescriptorParserTest.java:48`. The metadata agent reported that the traced reflection and service-resource entries were already present and made no further changes because the required initialization option cannot be represented by a conditional `typeReached` entry. Metrics record failure after 13 iterations, with no final coverage or metadata measurements.
+
+Inspect:
+- `logs/com.sun.xml.ws:httpspi-servlet:4.0.5/gradle-test/gradle-test-2026-09-27T11-13-33-423121Z.log`
+- `logs/com.sun.xml.ws:httpspi-servlet:4.0.5/issue-requested-metadata/pi.log`
+- `logs/com.sun.xml.ws:httpspi-servlet:4.0.5/issue-requested-metadata/pi-generation-2026-09-27T11-11-41-102690Z.log`
+
+Manual next steps:
+1. Review `DeploymentDescriptorParserTest` on the preserved branch and decide whether it should be rewritten to avoid embedding `WstxInputFactory`, or whether a supported class-initialization configuration is appropriate.
+2. Re-run `./gradlew test -Pcoordinates=com.sun.xml.ws:httpspi-servlet:4.0.5` and confirm both JVM and Native Image tests pass.
+3. Validate the retained metadata with `./gradlew checkMetadataFiles -Pcoordinates=com.sun.xml.ws:httpspi-servlet:4.0.5` before preparing the contribution.
