@@ -24,6 +24,8 @@ public class PhysicalConnectionTest {
                 OracleConnection.CONNECTION_PROPERTY_WALLET_LOCATION, "test-wallet");
         configuration.setProperty(
                 OracleConnection.CONNECTION_PROPERTY_ONS_WALLET_FILE, "test-ons-wallet");
+        configuration.setProperty(
+                OracleConnection.CONNECTION_PROPERTY_DEFAULT_CONNECTION_VALIDATION, "LOCAL");
         DetachedT2CConnection connection = new DetachedT2CConnection(configuration);
 
         assertThat(connection.getProperties())
@@ -33,7 +35,10 @@ public class PhysicalConnectionTest {
                         OracleConnection.CONNECTION_PROPERTY_WALLET_LOCATION, "test-wallet")
                 .containsEntry(
                         OracleConnection.CONNECTION_PROPERTY_ONS_WALLET_FILE,
-                        "test-ons-wallet");
+                        "test-ons-wallet")
+                .containsEntry(
+                        OracleConnection.CONNECTION_PROPERTY_DEFAULT_CONNECTION_VALIDATION,
+                        "LOCAL");
 
         String sqlType = "APP.TEST_TYPE";
         connection.registerSQLType(sqlType, MappedValue.class.getName());
