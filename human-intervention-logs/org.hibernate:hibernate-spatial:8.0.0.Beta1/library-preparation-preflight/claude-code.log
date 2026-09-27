@@ -1,0 +1,30 @@
+## Research summary
+
+The issue's failure log is a red herring about "javac compile" — the actual error happens during **dependency resolution** (`:nativeTestCompile` → `nativeImageTestClasspath`), before any Java source is even touched:
+
+```
+Could not resolve org.hibernate:hibernate-spatial:8.0.0.Beta1.
+> Component is the target of multiple version constraints with conflicting requirements: 8.0.0.Beta1 (1 other path to this version)
+```
+
+I traced this to a genuine upstream metadata bug and reproduced it in an isolated Gradle project:
+
+- `org.hibernate:hibernate-spatial:8.0.0.Beta1` is only a POM **relocation stub** pointing to `org.hibernate.orm:hibernate-spatial:8.0.0.Beta1`.
+- `org.hibernate.orm:hibernate-spatial:8.0.0.Beta1` imports the `hibernate-platform` BOM, which (via published Gradle Module Metadata, new in this Beta) declares `dependencyManagement`/constraint entries for **both** `org.hibernate.orm:hibernate-spatial:8.0.0.Beta1` and `org.hibernate:hibernate-spatial:8.0.0.Beta1` pointing back at itself.
+- Because the old coordinate is a relocation pointer into the same component, Gradle sees two conflicting constraint paths reaching the same module/version and fails resolution outright.
+- I verified with `./gradlew dependencyInsight` against a minimal project: requesting `org.hibernate:hibernate-spatial:8.0.0.Beta1` alone → **FAILED** (reproduces the issue exactly); requesting `org.hibernate.orm:hibernate-spatial:8.0.0.Beta1` alone → **resolves cleanly**; requesting both together → fails worse. So the only viable fix is a coordinate swap in the test's dependency, not an additive fix.
+
+This has nothing to do with Native Image mechanisms (no runtime codegen, agent self-attach, class redefinition, substitutions, or classloader tricks involved) — it's purely a Gradle build-graph conflict caused by Hibernate's own Beta1 metadata publishing. So the `skip_unsupported` path doesn't apply at all; this is squarely repairable.
+
+```json
+{
+  "action": "advisory_preparation",
+  "summary": "org.hibernate:hibernate-spatial:8.0.0.Beta1 is only a Maven relocation stub to org.hibernate.orm:hibernate-spatial:8.0.0.Beta1, and Hibernate's hibernate-platform BOM (published with Gradle Module Metadata starting in this Beta) declares conflicting version constraints for both the old and new coordinate of the same component, so Gradle refuses to resolve the plain org.hibernate:hibernate-spatial dependency at all.",
+  "deterministic_setup": [],
+  "agent_guidance": "Generated test's build.gradle must depend on `org.hibernate.orm:hibernate-spatial:$libraryVersion` instead of `org.hibernate:hibernate-spatial:$libraryVersion` for this version. Verified by reproduction: requesting the org.hibernate coordinate alone fails with 'Component is the target of multiple version constraints with conflicting requirements'; requesting org.hibernate.orm:hibernate-spatial alone resolves cleanly; requesting both together fails worse (two conflicting paths instead of one). Do not add the org.hibernate.orm coordinate alongside the org.hibernate one — it must replace it. Java package names (org.hibernate.*) and metadata allowed-packages are unaffected by this coordinate change.",
+  "risks": [
+    "This is an upstream Hibernate ORM metadata defect scoped to how hibernate-platform's BOM publishes dual-groupId constraints for a relocated artifact; it may also affect other 8.0.0.x pre-release builds that share this BOM shape, and could disappear or change in later 8.0.0 releases (Beta2/RC/Final) if Hibernate fixes their published module metadata — worth re-checking resolution behavior when bumping past 8.0.0.Beta1.",
+    "The library's canonical coordinate for metadata/index.json purposes should remain org.hibernate:hibernate-spatial (matching existing tested versions); only the test project's dependency declaration needs the org.hibernate.orm groupId for this version."
+  ]
+}
+```

@@ -1,0 +1,79 @@
+{
+  "continueFrom": "explore",
+  "coordinate": "org.hibernate:hibernate-spatial:8.0.0.Beta1",
+  "failure": {
+    "operand": "reporter-requested metadata",
+    "phase": "explore",
+    "step": "generate_tests()"
+  },
+  "issueNumber": 9383,
+  "label": "fails-javac-compile",
+  "libraryPreparationPreflight": {
+    "action": "advisory_preparation",
+    "agent_guidance": "Generated test's build.gradle must depend on `org.hibernate.orm:hibernate-spatial:$libraryVersion` instead of `org.hibernate:hibernate-spatial:$libraryVersion` for this version. Verified by reproduction: requesting the org.hibernate coordinate alone fails with 'Component is the target of multiple version constraints with conflicting requirements'; requesting org.hibernate.orm:hibernate-spatial alone resolves cleanly; requesting both together fails worse (two conflicting paths instead of one). Do not add the org.hibernate.orm coordinate alongside the org.hibernate one \u2014 it must replace it. Java package names (org.hibernate.*) and metadata allowed-packages are unaffected by this coordinate change.",
+    "applied_setup": [],
+    "current_library": "org.hibernate:hibernate-spatial:6.5.0.Final",
+    "deterministic_setup": [],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#9383 [Automation] javac compile fails for org.hibernate:hibernate-spatial:8.0.0.Beta1; label=fails-javac-compile; body_chars=8015"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "5 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 36,
+    "issue_label": "fails-javac-compile",
+    "issue_number": 9383,
+    "library": "org.hibernate:hibernate-spatial:8.0.0.Beta1",
+    "model": "sonnet",
+    "new_version": "8.0.0.Beta1",
+    "output_tokens_used": 19454,
+    "risks": [
+      "This is an upstream Hibernate ORM metadata defect scoped to how hibernate-platform's BOM publishes dual-groupId constraints for a relocated artifact; it may also affect other 8.0.0.x pre-release builds that share this BOM shape, and could disappear or change in later 8.0.0 releases (Beta2/RC/Final) if Hibernate fixes their published module metadata \u2014 worth re-checking resolution behavior when bumping past 8.0.0.Beta1.",
+      "The library's canonical coordinate for metadata/index.json purposes should remain org.hibernate:hibernate-spatial (matching existing tested versions); only the test project's dependency declaration needs the org.hibernate.orm groupId for this version."
+    ],
+    "status": "completed",
+    "summary": "org.hibernate:hibernate-spatial:8.0.0.Beta1 is only a Maven relocation stub to org.hibernate.orm:hibernate-spatial:8.0.0.Beta1, and Hibernate's hibernate-platform BOM (published with Gradle Module Metadata starting in this Beta) declares conflicting version constraints for both the old and new coordinate of the same component, so Gradle refuses to resolve the plain org.hibernate:hibernate-spatial dependency at all."
+  },
+  "libraryUpdateRoute": null,
+  "newVersion": "8.0.0.Beta1",
+  "phases": {
+    "explore": {
+      "chunkClassCount": null,
+      "chunkProcessedClassCount": 0,
+      "exhaustedClasses": [],
+      "status": "running"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": 1,
+      "status": "completed"
+    },
+    "publication": {
+      "branch": null,
+      "coverageFollowUpIssueNumber": null,
+      "isPushed": false,
+      "publicationId": null,
+      "publicationTimestamp": null,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": true,
+      "status": "completed"
+    }
+  },
+  "preservedBranch": "ai/kimeta/human-intervention/issue-9383-fails-javac-compile-org.hibernate-hibernate-spatial-8.0.0.Beta1-bbce768b",
+  "publicationMetrics": {
+    "extras": {},
+    "library": "org.hibernate:hibernate-spatial:8.0.0.Beta1",
+    "timestamp": "2026-09-27T09:05:32.191205Z"
+  },
+  "schemaVersion": 1,
+  "strategyName": "javac_iterative_with_coverage_sources_pi_gpt-5.6-sol"
+}

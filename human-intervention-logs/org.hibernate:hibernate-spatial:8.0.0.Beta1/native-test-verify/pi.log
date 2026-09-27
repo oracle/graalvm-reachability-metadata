@@ -1,0 +1,15 @@
+Implemented the native-compatible rewrite:
+
+- Updated `build.gradle` to use relocated coordinates:
+  `org.hibernate.orm:hibernate-spatial:8.0.0.Beta1`.
+- Replaced broad `SpatialInitializer` service initialization with direct JTS geometry parsing.
+- Added empty coordinate metadata so the legacy coordinate remains discoverable.
+
+Validation:
+
+- `./gradlew test -Pcoordinates=org.hibernate:hibernate-spatial:8.0.0.Beta1` — passed, including native test.
+- `checkMetadataFiles` — passed.
+- `checkstyle` — passed.
+- Exact `runNativeTraceImage` command — exited successfully.
+
+The specified GraalVM’s experimental metadata tracer still prints a JUnit discovery `StackOverflowError`; this occurs before test execution whenever `-XX:TraceMetadata` is enabled. The same native executable runs the rewritten test successfully without tracing. `fissile` was unavailable in `PATH`.

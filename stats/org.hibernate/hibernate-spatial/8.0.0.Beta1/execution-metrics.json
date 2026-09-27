@@ -1,0 +1,56 @@
+{
+  "fix_javac_fail:2026-09-27": {
+    "timestamp": "2026-09-27T09:05:32.191205Z",
+    "library": "org.hibernate:hibernate-spatial:8.0.0.Beta1",
+    "starting_commit": "81cc63e128b2bb320378727ba02fbb9d719e9d93",
+    "ending_commit": "81cc63e128b2bb320378727ba02fbb9d719e9d93",
+    "strategy_name": "javac_iterative_with_coverage_sources_pi_gpt-5.6-sol",
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "status": "failure",
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "advisory_preparation",
+      "issue_number": 9383,
+      "issue_label": "fails-javac-compile",
+      "library": "org.hibernate:hibernate-spatial:8.0.0.Beta1",
+      "summary": "org.hibernate:hibernate-spatial:8.0.0.Beta1 is only a Maven relocation stub to org.hibernate.orm:hibernate-spatial:8.0.0.Beta1, and Hibernate's hibernate-platform BOM (published with Gradle Module Metadata starting in this Beta) declares conflicting version constraints for both the old and new coordinate of the same component, so Gradle refuses to resolve the plain org.hibernate:hibernate-spatial dependency at all.",
+      "deterministic_setup": [],
+      "agent_guidance": "Generated test's build.gradle must depend on `org.hibernate.orm:hibernate-spatial:$libraryVersion` instead of `org.hibernate:hibernate-spatial:$libraryVersion` for this version. Verified by reproduction: requesting the org.hibernate coordinate alone fails with 'Component is the target of multiple version constraints with conflicting requirements'; requesting org.hibernate.orm:hibernate-spatial alone resolves cleanly; requesting both together fails worse (two conflicting paths instead of one). Do not add the org.hibernate.orm coordinate alongside the org.hibernate one — it must replace it. Java package names (org.hibernate.*) and metadata allowed-packages are unaffected by this coordinate change.",
+      "risks": [
+        "This is an upstream Hibernate ORM metadata defect scoped to how hibernate-platform's BOM publishes dual-groupId constraints for a relocated artifact; it may also affect other 8.0.0.x pre-release builds that share this BOM shape, and could disappear or change in later 8.0.0 releases (Beta2/RC/Final) if Hibernate fixes their published module metadata — worth re-checking resolution behavior when bumping past 8.0.0.Beta1.",
+        "The library's canonical coordinate for metadata/index.json purposes should remain org.hibernate:hibernate-spatial (matching existing tested versions); only the test project's dependency declaration needs the org.hibernate.orm groupId for this version."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#9383 [Automation] javac compile fails for org.hibernate:hibernate-spatial:8.0.0.Beta1; label=fails-javac-compile; body_chars=8015"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "5 existing test file path(s) included"
+        }
+      ],
+      "current_library": "org.hibernate:hibernate-spatial:6.5.0.Final",
+      "new_version": "8.0.0.Beta1",
+      "model": "sonnet",
+      "input_tokens_used": 36,
+      "output_tokens_used": 19454
+    },
+    "metrics": {
+      "input_tokens_used": 33436,
+      "cached_input_tokens_used": 102272,
+      "output_tokens_used": 607,
+      "iterations": 6,
+      "cost_usd": 0.2365,
+      "generated_loc": 0,
+      "tested_library_loc": 0,
+      "metadata_entries": 0,
+      "code_coverage_percent": 0.0
+    },
+    "artifacts": {
+      "metadata_file": "None"
+    }
+  }
+}
