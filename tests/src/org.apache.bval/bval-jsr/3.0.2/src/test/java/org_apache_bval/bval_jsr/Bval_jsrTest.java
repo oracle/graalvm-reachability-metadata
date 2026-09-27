@@ -112,6 +112,7 @@ public class Bval_jsrTest {
     }
 
     @Test
+    @SuppressWarnings("annotationAccess")
     void constraintMetadataDescribesConstrainedProperties() {
         try (ValidatorFactory factory = Validation.buildDefaultValidatorFactory()) {
             BeanDescriptor bean = factory.getValidator().getConstraintsForClass(Customer.class);

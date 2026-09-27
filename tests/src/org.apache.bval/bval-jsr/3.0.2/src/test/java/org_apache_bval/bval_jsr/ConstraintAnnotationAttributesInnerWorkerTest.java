@@ -15,6 +15,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class ConstraintAnnotationAttributesInnerWorkerTest {
 
     @Test
+    @SuppressWarnings("annotationAccess")
     void readsStandardConstraintMembers() {
         try (ValidatorFactory factory = ValidationTestSupport.factory()) {
             assertThat(factory.getValidator().getConstraintsForClass(Bean.class)
