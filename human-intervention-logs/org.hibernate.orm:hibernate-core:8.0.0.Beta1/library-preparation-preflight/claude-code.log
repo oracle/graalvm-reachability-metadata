@@ -1,0 +1,16 @@
+Research summary: this is a routine version bump. The javac failure is caused by two internal Hibernate classes (`org.hibernate.generator.internal.SourceGeneration` and `org.hibernate.sql.results.graph.embeddable.EmbeddableLoadingLogger`) that no longer exist in `hibernate-core:8.0.0.Beta1` — confirmed by inspecting the jar directly, both symbols are absent from the 8.0.0.Beta1 artifact while present-named differently/removed. This is a normal internal-API rename that the standard test-source fix addresses (updating the two test files), not a missing environment dependency.
+
+I checked for anything requiring extra setup:
+- **Dialect tests** (`MySQLDialectHibernateTest`, etc.) all point at `jdbc:h2:mem:test;MODE=X` — no real database or Docker image is used, so no `docker_image` entry is warranted.
+- **Dependencies**: the POM/module for 8.0.0.Beta1 shows routine transitive bumps (hibernate-models 1.0.1→1.2.0, byte-buddy →1.18.10, jakarta.persistence-api 4.0.0-M5) — all deps already declared in `build.gradle` as testImplementation/testCompileOnly; these are ordinary version-alignment edits within the existing scaffold, not a new dependency type.
+- No Java agent self-attach, runtime class generation, or classloader tricks are implicated by this failure — it's purely a compile-time symbol rename, so the Native-Image-unsupportable checklist doesn't apply either.
+
+```json
+{
+  "action": "no_action",
+  "summary": "javac failure is caused by two internal Hibernate classes (org.hibernate.generator.internal.SourceGeneration, org.hibernate.sql.results.graph.embeddable.EmbeddableLoadingLogger) that were removed/renamed in 8.0.0.Beta1 — verified absent from the artifact jar. This is a normal test-source update, not missing setup; dialect tests use in-memory H2 compatibility modes (no Docker), and dependency version bumps (hibernate-models, byte-buddy, jakarta.persistence-api) are routine scaffold maintenance on already-declared testImplementation dependencies.",
+  "deterministic_setup": [],
+  "agent_guidance": "",
+  "risks": []
+}
+```

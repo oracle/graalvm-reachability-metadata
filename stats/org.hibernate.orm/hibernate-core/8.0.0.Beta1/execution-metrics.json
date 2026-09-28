@@ -1,0 +1,53 @@
+{
+  "fix_javac_fail:2026-09-28": {
+    "timestamp": "2026-09-28T16:20:15.672669Z",
+    "library": "org.hibernate.orm:hibernate-core:8.0.0.Beta1",
+    "starting_commit": "8ed4c365b4b50e40fe05001ba43cb807a81f2ece",
+    "ending_commit": "8ed4c365b4b50e40fe05001ba43cb807a81f2ece",
+    "strategy_name": "javac_iterative_with_coverage_sources_pi_gpt-5.6-luna",
+    "agent": "pi",
+    "model": "gpt-5.6-luna",
+    "status": "failure",
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "no_action",
+      "issue_number": 9380,
+      "issue_label": "fails-javac-compile",
+      "library": "org.hibernate.orm:hibernate-core:8.0.0.Beta1",
+      "summary": "javac failure is caused by two internal Hibernate classes (org.hibernate.generator.internal.SourceGeneration, org.hibernate.sql.results.graph.embeddable.EmbeddableLoadingLogger) that were removed/renamed in 8.0.0.Beta1 — verified absent from the artifact jar. This is a normal test-source update, not missing setup; dialect tests use in-memory H2 compatibility modes (no Docker), and dependency version bumps (hibernate-models, byte-buddy, jakarta.persistence-api) are routine scaffold maintenance on already-declared testImplementation dependencies.",
+      "deterministic_setup": [],
+      "agent_guidance": "",
+      "risks": [],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#9380 [Automation] javac compile fails for org.hibernate.orm:hibernate-core:8.0.0.Beta1; label=fails-javac-compile; body_chars=8015"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "32 existing test file path(s) included"
+        }
+      ],
+      "current_library": "org.hibernate.orm:hibernate-core:7.1.0.Final",
+      "new_version": "8.0.0.Beta1",
+      "model": "sonnet",
+      "input_tokens_used": 18,
+      "output_tokens_used": 6146
+    },
+    "metrics": {
+      "input_tokens_used": 53889,
+      "cached_input_tokens_used": 390144,
+      "output_tokens_used": 3109,
+      "iterations": 5,
+      "cost_usd": 0.1116,
+      "generated_loc": 0,
+      "tested_library_loc": 0,
+      "metadata_entries": 0,
+      "code_coverage_percent": 0.0
+    },
+    "artifacts": {
+      "metadata_file": "None"
+    }
+  }
+}

@@ -1,0 +1,213 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :tckTest
+====================
+Testing library: org.hibernate.orm:hibernate-core:8.0.0.Beta1
+Command: `/home/oracle/oracle/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9380-bf36f91c/gradlew nativeTest`
+Executing test...
+-------
+Starting a Gradle Daemon, 1 busy and 14 stopped Daemons could not be reused, use --status for details
+Shared read-only dependency cache is an incubating feature.
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+> Task :compileJava NO-SOURCE
+> Task :processResources NO-SOURCE
+> Task :classes UP-TO-DATE
+> Task :tck-test-support:compileJava UP-TO-DATE
+> Task :jar UP-TO-DATE
+> Task :tck-test-support:processResources UP-TO-DATE
+> Task :tck-test-support:classes UP-TO-DATE
+> Task :tck-test-support:jar UP-TO-DATE
+> Task :compileTestJava UP-TO-DATE
+> Task :checkTestTimeoutAnnotations
+> Task :processTestResources UP-TO-DATE
+> Task :testClasses UP-TO-DATE
+> Task :test UP-TO-DATE
+> Task :generateTestResourcesConfigFile UP-TO-DATE
+> Task :nativeTestCompile UP-TO-DATE
+
+> Task :nativeTest FAILED
+[junit-platform-native] WARNING: -djunit.platform.listeners.uid.tracking.output.dir not specified, trying to find test-ids on default Gradle/Maven locations. As this is a fallback mode, it could take a while. This should only happen if you are running tests executable manually and you didn't pass uid output directory with -djunit.platform.listeners.uid.tracking.output.dir=<path>.
+[junit-platform-native] WARNING: Using test-ids from default Gradle project location:/home/oracle/oracle/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9380-bf36f91c/tests/src/org.hibernate.orm/hibernate-core/8.0.0.Beta1/build/test-results/test/testlist
+[junit-platform-native] Running in 'test listener' mode using files matching pattern [junit-platform-unique-ids*] found in folder [/home/oracle/oracle/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9380-bf36f91c/tests/src/org.hibernate.orm/hibernate-core/8.0.0.Beta1/build/test-results/test/testlist] and its subfolders.
+JUnit Platform on Native Image - report
+----------------------------------------
+
+Sep 28, 2026 6:20:14 PM org.hibernate.Version logVersion
+INFO: HHH000001: Hibernate ORM core version 8.0.0.Beta1
+Sep 28, 2026 6:20:14 PM org.hibernate.engine.jdbc.connections.internal.DriverManagerConnectionProvider configure
+WARN: HHH10001002: Using built-in connection pool (not intended for production use)
+Sep 28, 2026 6:20:14 PM org.hibernate.engine.jdbc.env.internal.JdbcEnvironmentInitiator logConnectionInfo
+INFO: HHH10001005: Database info:
+	Database JDBC URL [jdbc:h2:mem:timestamp_generation]
+	Database driver: H2 JDBC Driver
+	Database dialect: H2Dialect
+	Database version: 2.3.232
+org_hibernate_orm.hibernate_core.CurrentTimestampGenerationTest > generatesCreationTimestampWhenEntityIsPersisted() FAILED
+	Default catalog/schema: TIMESTAMP_GENERATION/PUBLIC
+	Autocommit mode: false
+
+	Isolation level: READ_COMMITTED
+org_hibernate_orm.hibernate_core.HibernateDialectTest > listHibernateDialectOverrides() SUCCESSFUL
+	JDBC fetch size: 100
+
+	Pool: DriverManagerConnectionProvider
+org_hibernate_orm.hibernate_core.HibernateDialectTest > testHibernateDialects() SUCCESSFUL
+	Minimum pool size: 1
+
+	Maximum pool size: 20
+org_hibernate_orm.hibernate_core.LoggerTest > jaxbLogger() SUCCESSFULSep 28, 2026 6:20:14 PM org.hibernate.engine.jdbc.connections.internal.DriverManagerConnectionProvider configure
+
+WARN: HHH10001002: Using built-in connection pool (not intended for production use)
+
+Sep 28, 2026 6:20:14 PM org.hibernate.engine.jdbc.env.internal.JdbcEnvironmentInitiator logConnectionInfo
+org_hibernate_orm.hibernate_core.LoggerTest > jdbcLogger() SUCCESSFUL
+INFO: HHH10001005: Database info:
+
+	Database JDBC URL [jdbc:h2:mem:loading_logger]
+org_hibernate_orm.hibernate_core.LoggerTest > persistAndLoadEntity() FAILED
+	Database driver: H2 JDBC Driver
+
+	Database dialect: H2Dialect
+org_hibernate_orm.hibernate_core.LoggerTest > urlMessageBundleLogger() SUCCESSFUL
+	Database version: 2.3.232
+
+	Default catalog/schema: LOADING_LOGGER/PUBLIC
+org_hibernate_orm.hibernate_core.LoggerTest > beansMessageLogger() SUCCESSFUL
+	Autocommit mode: false
+
+	Isolation level: READ_COMMITTED
+org_hibernate_orm.hibernate_core.LoggerTest > secondLevelCacheLogger() SUCCESSFUL
+	JDBC fetch size: 100
+
+	Pool: DriverManagerConnectionProvider
+org_hibernate_orm.hibernate_core.OptimizerTest > testOptimizers() SUCCESSFUL
+	Minimum pool size: 1
+
+	Maximum pool size: 20
+
+Sep 28, 2026 6:20:14 PM org_hibernate_orm.hibernate_core.LoggerTest urlMessageBundleLogger
+Failures (2):
+WARN: HHH10000004: Expecting resource named by URL [file:] to be a directory, but it was not.  URL will be ignored
+  JUnit Jupiter:CurrentTimestampGenerationTest:generatesCreationTimestampWhenEntityIsPersisted()
+    MethodSource [className = 'org_hibernate_orm.hibernate_core.CurrentTimestampGenerationTest', methodName = 'generatesCreationTimestampWhenEntityIsPersisted', methodParameterTypes = '']
+    => java.util.ServiceConfigurationError: org.hibernate.bytecode.spi.BytecodeProvider: Provider org.hibernate.bytecode.internal.bytebuddy.BytecodeProviderImpl could not be instantiated
+       java.base@25.0.4.1.1/java.util.ServiceLoader.fail(ServiceLoader.java:552)
+       java.base@25.0.4.1.1/java.util.ServiceLoader$ProviderImpl.newInstance(ServiceLoader.java:712)
+       java.base@25.0.4.1.1/java.util.ServiceLoader$ProviderImpl.get(ServiceLoader.java:672)
+       org.hibernate.boot.registry.classloading.internal.AggregatedServiceLoader$ClassPathAndModulePathAggregatedServiceLoader.collectServiceIfNotDuplicate(AggregatedServiceLoader.java:177)
+       org.hibernate.boot.registry.classloading.internal.AggregatedServiceLoader$ClassPathAndModulePathAggregatedServiceLoader.loadAll(AggregatedServiceLoader.java:119)
+       [...]
+     Caused by: com.oracle.svm.core.jdk.UnsupportedFeatureError: Classes cannot be defined at runtime by default when using ahead-of-time Native Image compilation. Tried to define class:
+
+    net.bytebuddy.utility.Invoker$Dispatcher
+
+To make this work, you have the following options:
+  1) Modify or reconfigure your application (or a third-party library) so that it does not generate classes at runtime or load them via non-built-in class loaders.
+  2) If the classes must be generated, try to generate them at build time in a static initializer of a dedicated class. The generated java.lang.Class objects should be stored in static fields and the dedicated class initialized by passing '--initialize-at-build-time=<class_name>' as the build argument.
+  3) If none of the above is applicable, use the tracing agent to run this application and collect predefined classes with 'java -agentlib:native-image-agent=config-output-dir=<config-dir>,experimental-class-define-support <application-arguments>'. Note that this is an experimental feature and that it does not guarantee success. Furthermore, the resulting classes can contain entries from the classpath that should be manually filtered out to reduce image size. The agent should be used only in cases where modifying the source of the project is not possible.
+
+       org.graalvm.nativeimage.shared/com.oracle.svm.shared.util.VMError.unsupportedFeature(VMError.java:123)
+       org.graalvm.nativeimage.builder/com.oracle.svm.core.hub.RuntimeClassLoading.throwNoBytecodeClasses(RuntimeClassLoading.java:197)
+       org.graalvm.nativeimage.builder/com.oracle.svm.core.hub.RuntimeClassLoading.defineClass(RuntimeClassLoading.java:178)
+       java.base@25.0.4.1.1/java.lang.ClassLoader.defineClass(ClassLoader.java:321)
+       net.bytebuddy.utility.dispatcher.JavaDispatcher$DynamicClassLoader.invoker(JavaDispatcher.java:1400)
+       [...]
+  JUnit Jupiter:LoggerTest:persistAndLoadEntity()
+    MethodSource [className = 'org_hibernate_orm.hibernate_core.LoggerTest', methodName = 'persistAndLoadEntity', methodParameterTypes = '']
+    => java.util.ServiceConfigurationError: org.hibernate.bytecode.spi.BytecodeProvider: Provider org.hibernate.bytecode.internal.bytebuddy.BytecodeProviderImpl could not be instantiated
+       java.base@25.0.4.1.1/java.util.ServiceLoader.fail(ServiceLoader.java:552)
+       java.base@25.0.4.1.1/java.util.ServiceLoader$ProviderImpl.newInstance(ServiceLoader.java:712)
+       java.base@25.0.4.1.1/java.util.ServiceLoader$ProviderImpl.get(ServiceLoader.java:672)
+       org.hibernate.boot.registry.classloading.internal.AggregatedServiceLoader$ClassPathAndModulePathAggregatedServiceLoader.collectServiceIfNotDuplicate(AggregatedServiceLoader.java:177)
+       org.hibernate.boot.registry.classloading.internal.AggregatedServiceLoader$ClassPathAndModulePathAggregatedServiceLoader.loadAll(AggregatedServiceLoader.java:119)
+       [...]
+     Caused by: java.lang.NoClassDefFoundError: Could not initialize class net.bytebuddy.description.type.TypeDescription$ForLoadedType
+       net.bytebuddy.matcher.ElementMatchers.isFinalizer(ElementMatchers.java:1651)
+       org.hibernate.bytecode.internal.bytebuddy.ByteBuddyState$ProxyDefinitionHelpers.<init>(ByteBuddyState.java:255)
+       org.hibernate.bytecode.internal.bytebuddy.ByteBuddyState.<init>(ByteBuddyState.java:60)
+       org.hibernate.bytecode.internal.bytebuddy.BytecodeProviderImpl.<init>(BytecodeProviderImpl.java:107)
+       org.hibernate.bytecode.internal.bytebuddy.BytecodeProviderImpl.<init>(BytecodeProviderImpl.java:99)
+       [...]
+
+Test run finished after 43 ms
+[         6 containers found      ]
+[         0 containers skipped    ]
+[         6 containers started    ]
+[         0 containers aborted    ]
+[         6 containers successful ]
+[         0 containers failed     ]
+[        10 tests found           ]
+[         0 tests skipped         ]
+[        10 tests started         ]
+[         0 tests aborted         ]
+[         8 tests successful      ]
+[         2 tests failed          ]
+
+
+
+FAILURE: Build failed with an exception.
+[Incubating] Problems report is available at: file:///home/oracle/oracle/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9380-bf36f91c/tests/src/org.hibernate.orm/hibernate-core/8.0.0.Beta1/build/reports/problems/problems-report.html
+
+* What went wrong:
+Execution failed for task ':nativeTest'.
+> Process 'command '/home/oracle/oracle/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9380-bf36f91c/tests/src/org.hibernate.orm/hibernate-core/8.0.0.Beta1/build/native/nativeTestCompile/org.hibernate.orm.hibernate-core_tests-tests'' finished with non-zero exit value 1
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+BUILD FAILED in 13s
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+19 actionable tasks: 2 executed, 17 up-to-date
+
+> Task :tckTest FAILED
+
+[Incubating] Problems report is available at: file:///home/oracle/oracle/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9380-bf36f91c/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':tckTest'.
+> Test for org.hibernate.orm:hibernate-core:8.0.0.Beta1 failed with exit code 1.
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD FAILED in 17s
+9 actionable tasks: 1 executed, 8 up-to-date

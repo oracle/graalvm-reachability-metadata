@@ -1,0 +1,78 @@
+{
+  "continueFrom": "finalization",
+  "coordinate": "org.hibernate.orm:hibernate-core:8.0.0.Beta1",
+  "failure": {
+    "operand": "reporter-requested metadata",
+    "phase": "explore",
+    "step": "generate_tests()"
+  },
+  "issueNumber": 9380,
+  "label": "fails-javac-compile",
+  "libraryPreparationPreflight": {
+    "action": "no_action",
+    "agent_guidance": "",
+    "applied_setup": [],
+    "current_library": "org.hibernate.orm:hibernate-core:7.1.0.Final",
+    "deterministic_setup": [],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#9380 [Automation] javac compile fails for org.hibernate.orm:hibernate-core:8.0.0.Beta1; label=fails-javac-compile; body_chars=8015"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "32 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 18,
+    "issue_label": "fails-javac-compile",
+    "issue_number": 9380,
+    "library": "org.hibernate.orm:hibernate-core:8.0.0.Beta1",
+    "model": "sonnet",
+    "new_version": "8.0.0.Beta1",
+    "output_tokens_used": 6146,
+    "risks": [],
+    "status": "completed",
+    "summary": "javac failure is caused by two internal Hibernate classes (org.hibernate.generator.internal.SourceGeneration, org.hibernate.sql.results.graph.embeddable.EmbeddableLoadingLogger) that were removed/renamed in 8.0.0.Beta1 \u2014 verified absent from the artifact jar. This is a normal test-source update, not missing setup; dialect tests use in-memory H2 compatibility modes (no Docker), and dependency version bumps (hibernate-models, byte-buddy, jakarta.persistence-api) are routine scaffold maintenance on already-declared testImplementation dependencies."
+  },
+  "libraryUpdateRoute": null,
+  "newVersion": "8.0.0.Beta1",
+  "phases": {
+    "explore": {
+      "chunkClassCount": null,
+      "chunkProcessedClassCount": 0,
+      "deferredClassThreshold": 15,
+      "deferredUncoveredClassCount": 160,
+      "exhaustedClasses": [],
+      "status": "skipped"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": 1,
+      "status": "completed"
+    },
+    "publication": {
+      "branch": null,
+      "coverageFollowUpIssueNumber": null,
+      "isPushed": false,
+      "publicationId": null,
+      "publicationTimestamp": null,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": true,
+      "status": "completed"
+    }
+  },
+  "preservedBranch": "ai/kimeta/human-intervention/issue-9380-fails-javac-compile-org.hibernate.orm-hibernate-core-8.0.0.Beta1-03b233b5",
+  "publicationMetrics": {
+    "extras": {},
+    "library": "org.hibernate.orm:hibernate-core:8.0.0.Beta1",
+    "timestamp": "2026-09-28T16:20:15.672669Z"
+  },
+  "schemaVersion": 1,
+  "strategyName": "javac_iterative_with_coverage_sources_pi_gpt-5.6-luna"
+}

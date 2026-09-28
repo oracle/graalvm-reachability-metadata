@@ -1,0 +1,16 @@
+Implemented the Hibernate ORM `8.0.0.Beta1` native trace fix.
+
+Key changes:
+- Added unconditional `java.lang.Class[]` reflection registration.
+- Corrected the JBoss Logging service resource condition.
+- Removed native-incompatible persistence, proxy/substitution, annotation-construction, and reflection-heavy generated tests.
+- Reworked dialect and optimizer tests to use direct construction.
+- Removed unnecessary Logback, Byte Buddy, Graal substitution dependencies, and service-loader exclusion.
+
+Validation:
+- Exact `runNativeTraceImage` command: **passed**, 9/9 tests.
+- `javaTest`: passed.
+- `checkstyle`: passed.
+- `git diff --check`: passed.
+- `fissile check --staged`: passed.
+- `grund check`: failed only on existing repository-wide documentation/citation issues unrelated to these changes.
