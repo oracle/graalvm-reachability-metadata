@@ -1,0 +1,18 @@
+## Human intervention needed
+
+The automated job failed in `explore/generate_tests()` while generating reporter-requested metadata for `org.hibernate.orm:hibernate-core:8.0.0.Beta1`.
+
+Preserved work and diagnostic logs: https://github.com/oracle/graalvm-reachability-metadata/tree/ai%2Fkimeta%2Fhuman-intervention%2Fissue-9380-fails-javac-compile-org.hibernate.orm-hibernate-core-8.0.0.Beta1-03b233b5
+
+The original javac failure was identified and repaired by removing the deleted `SourceGeneration` test and replacing `EmbeddableLoadingLogger` with `LoadingLogger`. The later native test stage did not converge: the final Gradle run passed 8 of 10 tests, but `CurrentTimestampGenerationTest.generatesCreationTimestampWhenEntityIsPersisted()` and `LoggerTest.persistAndLoadEntity()` failed because Hibernate’s `BytecodeProviderImpl` attempted to define `net.bytebuddy.utility.Invoker$Dispatcher` at runtime, which Native Image rejects. Five iterations were exhausted; metrics record `status: failure`, `generated_loc: 0`, identical starting/ending commits, and no durable dynamic-access coverage.
+
+Inspect:
+- `human-intervention-logs/org.hibernate.orm:hibernate-core:8.0.0.Beta1/gradle-test/gradle-test-2026-09-28T16-19-57-817101Z.log`
+- `human-intervention-logs/org.hibernate.orm:hibernate-core:8.0.0.Beta1/issue-requested-metadata/pi.log`
+- `human-intervention-logs/org.hibernate.orm:hibernate-core:8.0.0.Beta1/issue-requested-metadata/pi-generation-2026-09-28T16-19-01-495713Z.log`
+- `forge/.pending_metrics.json`
+
+Manual next steps:
+1. Reapply and verify the javac compatibility changes, then run `compileTestJava` and `javaTest` for the coordinate.
+2. Determine the supported Hibernate 8 Native Image bytecode-provider configuration or update the existing substitutions/build arguments so Byte Buddy does not define classes at runtime.
+3. Run the complete coordinate test and regenerate metadata/coverage only after the two native tests pass.
