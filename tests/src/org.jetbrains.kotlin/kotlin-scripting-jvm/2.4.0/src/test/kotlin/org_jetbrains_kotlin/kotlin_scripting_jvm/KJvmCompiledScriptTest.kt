@@ -9,9 +9,6 @@
 package org_jetbrains_kotlin.kotlin_scripting_jvm
 
 import java.io.ByteArrayInputStream
-import java.io.ByteArrayOutputStream
-import java.io.ObjectInputStream
-import java.io.ObjectOutputStream
 import kotlin.coroutines.Continuation
 import kotlin.coroutines.EmptyCoroutineContext
 import kotlin.coroutines.startCoroutine
@@ -19,15 +16,17 @@ import kotlin.reflect.KClass
 import kotlin.script.experimental.api.ResultWithDiagnostics
 import kotlin.script.experimental.api.ScriptCompilationConfiguration
 import kotlin.script.experimental.api.ScriptEvaluationConfiguration
-import kotlin.script.experimental.jvm.impl.KJvmCompiledModuleFromClassLoader
 import kotlin.script.experimental.jvm.impl.KJvmCompiledScript
+import kotlin.script.experimental.jvm.impl.createScriptFromClassLoader
+import kotlin.script.experimental.jvm.impl.scriptMetadataPath
+import kotlin.script.experimental.jvm.impl.toBytes
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 
 public class KJvmCompiledScriptTest {
     @Test
-    public fun restoresCompiledScriptAndResolvesItsClass(): Unit {
+    public fun restoresCompiledScriptFromItsMetadataResource(): Unit {
         val original: KJvmCompiledScript = KJvmCompiledScript(
             sourceLocationId = "memory://serializable-script.kts",
             compilationConfiguration = ScriptCompilationConfiguration {},
@@ -36,32 +35,33 @@ public class KJvmCompiledScriptTest {
             otherScripts = emptyList(),
             compiledModule = null,
         )
+        val serialized: ByteArray = original.toBytes()
+        val metadataPath: String = scriptMetadataPath(RoundTripScript::class.java.name)
+        val classLoader: ClassLoader = SerializedScriptClassLoader(
+            parent = RoundTripScript::class.java.classLoader,
+            resourcePath = metadataPath,
+            serializedScript = serialized,
+        )
 
-        val serialized: ByteArray = ByteArrayOutputStream().use { output: ByteArrayOutputStream ->
-            ObjectOutputStream(output).use { objectOutput: ObjectOutputStream ->
-                objectOutput.writeObject(original)
-            }
-            output.toByteArray()
-        }
-        val restored: KJvmCompiledScript = ByteArrayInputStream(serialized).use { input: ByteArrayInputStream ->
-            ObjectInputStream(input).use { objectInput: ObjectInputStream ->
-                objectInput.readObject() as KJvmCompiledScript
-            }
-        }
+        val restored: KJvmCompiledScript = createScriptFromClassLoader(
+            RoundTripScript::class.java.name,
+            classLoader,
+        )
 
         assertEquals(original.sourceLocationId, restored.sourceLocationId)
-        val resolvable: KJvmCompiledScript = KJvmCompiledScript(
-            sourceLocationId = restored.sourceLocationId,
-            compilationConfiguration = restored.compilationConfiguration,
-            scriptClassFQName = RoundTripScript::class.java.name,
-            resultField = null,
-            otherScripts = emptyList(),
-            compiledModule = KJvmCompiledModuleFromClassLoader(RoundTripScript::class.java.classLoader),
-        )
-        val resolved: ResultWithDiagnostics<KClass<*>> = resolveClass(resolvable)
+        val resolved: ResultWithDiagnostics<KClass<*>> = resolveClass(restored)
         assertTrue(resolved is ResultWithDiagnostics.Success<*>)
         val resolvedClass: KClass<*> = (resolved as ResultWithDiagnostics.Success<KClass<*>>).value
         assertEquals(RoundTripScript::class, resolvedClass)
+    }
+
+    private class SerializedScriptClassLoader(
+        parent: ClassLoader,
+        private val resourcePath: String,
+        private val serializedScript: ByteArray,
+    ) : ClassLoader(parent) {
+        override fun getResourceAsStream(name: String): ByteArrayInputStream? =
+            if (name == resourcePath) ByteArrayInputStream(serializedScript) else null
     }
 
     private fun resolveClass(script: KJvmCompiledScript): ResultWithDiagnostics<KClass<*>> {
