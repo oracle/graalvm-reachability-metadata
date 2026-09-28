@@ -10,8 +10,11 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.SQLXML;
 import java.time.Duration;
 import java.util.Properties;
+
+import javax.xml.transform.dom.DOMSource;
 
 import org.awaitility.Awaitility;
 import org.junit.jupiter.api.AfterAll;
@@ -98,6 +101,24 @@ public class PgConnectionTest {
 
             assertThat((Throwable) exception).isNotNull();
             assertThat(exception.getSQLState()).isEqualTo(PSQLState.INVALID_PARAMETER_VALUE.getState());
+        }
+    }
+
+    @Test
+    void customXmlFactoryFactoryCreatesXmlThroughPublicConnectionApi() throws Exception {
+        Properties properties = newConnectionProperties();
+        PGProperty.XML_FACTORY_FACTORY.set(properties, TestXmlFactoryFactory.class.getName());
+
+        try (Connection connection = openConnection(properties)) {
+            SQLXML xml = connection.createSQLXML();
+            try {
+                xml.setString("<message>hello</message>");
+                DOMSource source = xml.getSource(DOMSource.class);
+
+                assertThat(source.getNode().getFirstChild().getTextContent()).isEqualTo("hello");
+            } finally {
+                xml.free();
+            }
         }
     }
 
