@@ -15,8 +15,7 @@ import kotlin.script.experimental.api.ResultWithDiagnostics
 import kotlin.script.experimental.api.ScriptCompilationConfiguration
 import kotlin.script.experimental.jvm.impl.KJvmCompiledModuleFromClassLoader
 import kotlin.script.experimental.jvm.impl.KJvmCompiledScript
-import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertTrue
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
 public class KJvmCompiledScriptTest {
@@ -25,17 +24,17 @@ public class KJvmCompiledScriptTest {
         val script: KJvmCompiledScript = KJvmCompiledScript(
             sourceLocationId = "memory://compiled-script.kts",
             compilationConfiguration = ScriptCompilationConfiguration {},
-            scriptClassFQName = RoundTripScript::class.java.name,
+            scriptClassFQName = LoadableScriptFixture::class.java.name,
             resultField = "result" to KotlinType(String::class),
             otherScripts = emptyList(),
-            compiledModule = KJvmCompiledModuleFromClassLoader(RoundTripScript::class.java.classLoader),
+            compiledModule = KJvmCompiledModuleFromClassLoader(LoadableScriptFixture::class.java.classLoader),
         )
 
         val result: ResultWithDiagnostics<KClass<*>> = runSuspendingGetClass(script)
 
-        assertTrue(result is ResultWithDiagnostics.Success<*>)
-        val resolvedClass: KClass<*> = (result as ResultWithDiagnostics.Success<KClass<*>>).value
-        assertEquals(RoundTripScript::class, resolvedClass)
+        assertThat(result).isInstanceOf(ResultWithDiagnostics.Success::class.java)
+        val success: ResultWithDiagnostics.Success<KClass<*>> = result as ResultWithDiagnostics.Success<KClass<*>>
+        assertThat(success.value).isEqualTo(LoadableScriptFixture::class)
     }
 
     private fun runSuspendingGetClass(script: KJvmCompiledScript): ResultWithDiagnostics<KClass<*>> {
@@ -53,4 +52,9 @@ public class KJvmCompiledScriptTest {
 
         return requireNotNull(result).getOrThrow()
     }
+}
+
+public class LoadableScriptFixture {
+    @Suppress("unused")
+    public val result: String = "loaded"
 }

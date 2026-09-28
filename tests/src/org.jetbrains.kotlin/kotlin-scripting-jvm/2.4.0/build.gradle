@@ -14,6 +14,7 @@ int testJvmVersion = tck.testJvmVersion.get()
 
 dependencies {
     testImplementation "org.jetbrains.kotlin:kotlin-scripting-jvm:$libraryVersion"
+    testImplementation 'org.assertj:assertj-core:3.22.0'
 }
 
 kotlin {
@@ -31,11 +32,6 @@ graalvmNative {
             conditional {
                 userCodeFilterPath = "user-code-filter.json"
             }
-        }
-    }
-    binaries {
-        test {
-            mainClass = 'org_jetbrains_kotlin.kotlin_scripting_jvm.JvmDependencyTest'
         }
     }
 }

@@ -11,7 +11,6 @@ package org_jetbrains_kotlin.kotlin_scripting_jvm
 import java.io.File
 import java.net.URL
 import java.sql.DriverManager
-import kotlin.script.experimental.jvm.impl.KJvmCompiledModuleFromClassLoader
 import kotlin.script.experimental.jvm.impl.getResourceRoot
 import kotlin.script.experimental.jvm.impl.tryGetResourcePathForClass
 import kotlin.script.experimental.jvm.impl.tryGetResourcePathForClassByName
@@ -21,28 +20,28 @@ import org.junit.jupiter.api.Test
 public class PathUtilKtTest {
     @Test
     public fun resolvesResourceRootFromClassResource(): Unit {
-        val libraryClass: Class<KJvmCompiledModuleFromClassLoader> = KJvmCompiledModuleFromClassLoader::class.java
-        val classResourcePath: String = libraryClass.absoluteClassResourcePath()
-        val classResource: URL? = libraryClass.getResource(classResourcePath)
+        val testClass: Class<PathUtilKtTest> = PathUtilKtTest::class.java
+        val classResourcePath: String = testClass.absoluteClassResourcePath()
+        val classResource: URL? = testClass.getResource(classResourcePath)
 
-        val resourcePath: File? = tryGetResourcePathForClass(libraryClass)
+        val resourcePath: File? = tryGetResourcePathForClass(testClass)
 
         assertExtractedRootMatchesResourceProtocol(classResource, resourcePath)
     }
 
     @Test
     public fun loadsClassByNameBeforeResolvingItsResourceRoot(): Unit {
-        val libraryClass: Class<KJvmCompiledModuleFromClassLoader> = KJvmCompiledModuleFromClassLoader::class.java
-        val classResource: URL? = libraryClass.getResource(libraryClass.absoluteClassResourcePath())
+        val testClass: Class<PathUtilKtTest> = PathUtilKtTest::class.java
+        val classResource: URL? = testClass.getResource(testClass.absoluteClassResourcePath())
 
-        val resourcePath: File? = tryGetResourcePathForClassByName(libraryClass.name, libraryClass.classLoader)
+        val resourcePath: File? = tryGetResourcePathForClassByName(testClass.name, testClass.classLoader)
 
         assertExtractedRootMatchesResourceProtocol(classResource, resourcePath)
     }
 
     @Test
     public fun fallsBackToSystemResourceWhenContextClassLoaderCannotSeeResource(): Unit {
-        val resourcePath: String = KJvmCompiledModuleFromClassLoader::class.java.absoluteClassResourcePath()
+        val resourcePath: String = "/org/junit/jupiter/api/Test.class"
         val systemResource: URL? = ClassLoader.getSystemResource(resourcePath.removePrefix("/"))
 
         val resourceRoot: String? = getResourceRoot(DriverManager::class.java, resourcePath)
