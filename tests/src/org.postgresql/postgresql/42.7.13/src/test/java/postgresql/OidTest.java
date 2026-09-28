@@ -26,9 +26,10 @@ public class OidTest {
     }
 
     @Test
-    void knownOidNamesResolveToValues() throws Exception {
+    void knownOidNamesResolveToValuesIncludingRefcursor() throws Exception {
         assertThat(Oid.valueOf("int4")).isEqualTo(23);
         assertThat(Oid.valueOf("INT4")).isEqualTo(23);
+        assertThat(Oid.valueOf("refcursor")).isEqualTo(1790);
         assertThat(Oid.valueOf("2950")).isEqualTo(2950);
     }
 
