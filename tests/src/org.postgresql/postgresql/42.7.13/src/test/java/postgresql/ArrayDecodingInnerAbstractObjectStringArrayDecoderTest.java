@@ -17,6 +17,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.Duration;
 import java.util.Properties;
+import java.util.concurrent.TimeUnit;
 
 import org.awaitility.Awaitility;
 import org.junit.jupiter.api.AfterAll;
@@ -47,9 +48,9 @@ public class ArrayDecodingInnerAbstractObjectStringArrayDecoderTest {
         databasePort = Integer.parseInt(commandOutput("docker", "inspect", "--format",
                 "{{(index (index .NetworkSettings.Ports \"5432/tcp\") 0).HostPort}}", containerId));
 
-        Awaitility.await().atMost(Duration.ofMinutes(1)).ignoreExceptions().until(() -> {
+        Awaitility.await().atMost(Duration.ofSeconds(50)).ignoreExceptions().until(() -> {
             try (Connection connection = openConnection()) {
-                return connection.isValid(1);
+                return connection.isValid(10);
             }
         });
     }
@@ -113,8 +114,12 @@ public class ArrayDecodingInnerAbstractObjectStringArrayDecoderTest {
 
     private static String commandOutput(String... command) throws IOException, InterruptedException {
         Process process = new ProcessBuilder(command).redirectErrorStream(true).start();
+        if (!process.waitFor(30, TimeUnit.SECONDS)) {
+            process.destroyForcibly();
+            throw new IllegalStateException("Command timed out: " + String.join(" ", command));
+        }
         byte[] output = process.getInputStream().readAllBytes();
-        int exitCode = process.waitFor();
+        int exitCode = process.exitValue();
         String text = new String(output, StandardCharsets.UTF_8).trim();
         if (exitCode != 0) {
             throw new IllegalStateException(

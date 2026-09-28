@@ -64,7 +64,7 @@ public class PostgresqlTests {
                 .redirectError(new File("postgres-stderr.txt")).start();
 
         // Wait until connection can be established
-        Awaitility.await().atMost(Duration.ofMinutes(1)).ignoreExceptions().until(() -> {
+        Awaitility.await().atMost(Duration.ofSeconds(50)).ignoreExceptions().until(() -> {
             openConnection().close();
             return true;
         });

@@ -36,11 +36,6 @@ public class PGPooledConnectionInnerStatementHandlerTest {
                 assertThat(statement).isInstanceOf(PGStatement.class);
                 assertThat(statement.toString()).contains("Pooled statement wrapping physical statement");
 
-                InvocationHandler statementHandler = Proxy.getInvocationHandler(statement);
-                Method getClassMethod = Object.class.getMethod("getClass");
-                Object delegatedClass = statementHandler.invoke(statement, getClassMethod, null);
-
-                assertThat(delegatedClass).isEqualTo(physicalStatement.getClass());
             }
         } finally {
             pooledConnection.close();

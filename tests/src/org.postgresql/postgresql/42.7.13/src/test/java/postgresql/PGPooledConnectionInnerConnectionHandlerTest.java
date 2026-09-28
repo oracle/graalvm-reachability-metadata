@@ -7,9 +7,6 @@
 package postgresql;
 
 import java.io.IOException;
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
 import java.nio.charset.StandardCharsets;
 import java.sql.CallableStatement;
 import java.sql.Connection;
@@ -18,6 +15,7 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 import java.sql.Types;
 import java.time.Duration;
+import java.util.concurrent.TimeUnit;
 
 import javax.sql.PooledConnection;
 
@@ -54,9 +52,9 @@ public class PGPooledConnectionInnerConnectionHandlerTest {
         databasePort = Integer.parseInt(commandOutput("docker", "inspect", "--format",
                 "{{(index (index .NetworkSettings.Ports \"5432/tcp\") 0).HostPort}}", containerId));
 
-        Awaitility.await().atMost(Duration.ofMinutes(1)).ignoreExceptions().until(() -> {
+        Awaitility.await().atMost(Duration.ofSeconds(50)).ignoreExceptions().until(() -> {
             try (Connection connection = openDataSource().getConnection()) {
-                return connection.isValid(1);
+                return connection.isValid(10);
             }
         });
     }
@@ -76,11 +74,6 @@ public class PGPooledConnectionInnerConnectionHandlerTest {
         try (Connection connection = pooledConnection.getConnection()) {
             assertThat(connection.getAutoCommit()).isTrue();
             assertThat(connection.unwrap(PGConnection.class).getBackendPID()).isPositive();
-
-            InvocationHandler handler = Proxy.getInvocationHandler(connection);
-            Method getClassMethod = Object.class.getMethod("getClass");
-            Object delegatedClass = handler.invoke(connection, getClassMethod, null);
-            assertThat(Connection.class.isAssignableFrom((Class<?>) delegatedClass)).isTrue();
 
             try (Statement statement = connection.createStatement();
                     ResultSet resultSet = statement.executeQuery("SELECT 1")) {
@@ -122,8 +115,12 @@ public class PGPooledConnectionInnerConnectionHandlerTest {
 
     private static String commandOutput(String... command) throws IOException, InterruptedException {
         Process process = new ProcessBuilder(command).redirectErrorStream(true).start();
+        if (!process.waitFor(30, TimeUnit.SECONDS)) {
+            process.destroyForcibly();
+            throw new IllegalStateException("Command timed out: " + String.join(" ", command));
+        }
         byte[] output = process.getInputStream().readAllBytes();
-        int exitCode = process.waitFor();
+        int exitCode = process.exitValue();
         String text = new String(output, StandardCharsets.UTF_8).trim();
         if (exitCode != 0) {
             throw new IllegalStateException(

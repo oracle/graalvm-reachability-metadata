@@ -17,12 +17,6 @@ dependencies {
     testImplementation 'net.java.dev.jna:jna-platform:5.12.1'
 }
 
-test {
-    // Isolate TimestampUtilsTest so it can set java.version before pgjdbc caches JavaVersion.
-    forkEvery = 1
-    jvmArgs '--add-opens=java.base/java.util=ALL-UNNAMED'
-}
-
 graalvmNative {
     agent {
         defaultMode = "conditional"

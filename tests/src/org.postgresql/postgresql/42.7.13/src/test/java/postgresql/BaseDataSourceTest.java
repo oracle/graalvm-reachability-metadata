@@ -22,7 +22,7 @@ public class BaseDataSourceTest {
         source.setUser("sample-user");
         source.setPassword("sample-password");
         source.setApplicationName("metadata-coverage");
-        source.setConnectTimeout(7);
+        source.setConnectTimeout(10);
         source.setSsl(true);
 
         PGSimpleDataSource target = new PGSimpleDataSource();
@@ -34,7 +34,7 @@ public class BaseDataSourceTest {
         assertThat(target.getUser()).isEqualTo("sample-user");
         assertThat(target.getPassword()).isEqualTo("sample-password");
         assertThat(target.getApplicationName()).isEqualTo("metadata-coverage");
-        assertThat(target.getConnectTimeout()).isEqualTo(7);
+        assertThat(target.getConnectTimeout()).isEqualTo(10);
         assertThat(target.getSsl()).isTrue();
     }
 }
