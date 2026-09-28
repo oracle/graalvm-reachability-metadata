@@ -3,6 +3,12 @@
 Rendered by Forge from the pre-push branch review of §FS-local-branch-review.
 Newest entry first; every non-approval is recorded, including one a repair later cleared.
 
+## 2026-09-28 — org.postgresql:postgresql:42.7.13 (#9394)
+
+**Generated tests used artificial dynamic-access paths and invalid execution bounds**
+
+The generated suite violated test-contract musts: pooled-connection tests directly obtained InvocationHandlers and manually invoked Object.getClass instead of reaching reflection through ordinary library behavior; TimestampUtilsTest forced java.version to Java 8 and required --add-opens to exercise a path unavailable on the resolved JDK; generated test metadata contained unstable lambda class names as typeReached conditions; and several explicit database timeouts were below 10 seconds while Docker process waits were unbounded. These contradicted FS-test-contract.2.1, FS-test-contract.2.8, FS-test-contract.1.7, FS-test-contract.1.6, and the condition-cheating rule in FS-contribution-contract.4.
+
 ## 2026-09-25 — org.apache.tomcat.embed:tomcat-embed-core:11.0.18 (#8328)
 
 **Pre-push review unavailable**
