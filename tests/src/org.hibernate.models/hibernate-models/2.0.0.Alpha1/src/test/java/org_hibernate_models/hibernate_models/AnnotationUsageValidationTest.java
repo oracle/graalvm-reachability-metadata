@@ -20,6 +20,7 @@ import static org.assertj.core.api.Assertions.assertThatCode;
 
 public class AnnotationUsageValidationTest {
     @Test
+    @SuppressWarnings("annotationAccess")
     public void validatesValuesObtainedFromPublicAnnotationUsage() {
         final ModelsContext context = newModelsContext();
         final AnnotationDescriptor<ValidatedLabel> descriptor = context.getAnnotationDescriptorRegistry()
