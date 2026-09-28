@@ -22,7 +22,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class OrmAnnotationDescriptorInnerJdkCreatorTest {
     @Test
     public void createsMutableAnnotationUsageFromJdkAnnotation() {
-        final JdkLabel jdkAnnotation = AnnotationAccess.getAnnotation(AnnotatedEntity.class, JdkLabel.class);
+        final JdkLabel jdkAnnotation = getAnnotation(AnnotatedEntity.class, JdkLabel.class);
         final ModelsContext context = newModelsContext();
         final OrmAnnotationDescriptor<JdkLabel, JdkLabelUsage> descriptor = new OrmAnnotationDescriptor<>(
                 JdkLabel.class,
@@ -43,6 +43,12 @@ public class OrmAnnotationDescriptorInnerJdkCreatorTest {
         return new BasicModelsContextImpl(SimpleClassLoading.SIMPLE_CLASS_LOADING, false, null);
     }
 
+    private static <A extends Annotation> A getAnnotation(
+            AnnotatedElement annotatedElementAnnotationAccess,
+            Class<A> annotationType) {
+        return annotatedElementAnnotationAccess.getAnnotation(annotationType);
+    }
+
     @JdkLabel(value = "entity-name", priority = 7)
     private static final class AnnotatedEntity {
     }
@@ -52,20 +58,6 @@ public class OrmAnnotationDescriptorInnerJdkCreatorTest {
         String value();
 
         int priority() default 0;
-    }
-
-    private static final class AnnotationAccess {
-        private AnnotationAccess() {
-        }
-
-        private static <A extends Annotation> A getAnnotation(AnnotatedElement element, Class<A> annotationType) {
-            try {
-                return annotationType.cast(AnnotatedElement.class.getMethod("getAnnotation", Class.class)
-                        .invoke(element, annotationType));
-            } catch (ReflectiveOperationException ex) {
-                throw new AssertionError(ex);
-            }
-        }
     }
 
     public static final class JdkLabelUsage implements JdkLabel {

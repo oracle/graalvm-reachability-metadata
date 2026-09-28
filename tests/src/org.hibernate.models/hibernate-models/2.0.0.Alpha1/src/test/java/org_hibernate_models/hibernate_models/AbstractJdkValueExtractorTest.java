@@ -24,7 +24,7 @@ public class AbstractJdkValueExtractorTest {
     @Test
     public void extractsAttributeValueFromJdkAnnotationUsage() {
         final ModelsContext context = newModelsContext();
-        final ExtractedLabel label = AnnotationAccess.getAnnotation(AnnotatedEntity.class, ExtractedLabel.class);
+        final ExtractedLabel label = getAnnotation(AnnotatedEntity.class, ExtractedLabel.class);
         final AnnotationDescriptor<ExtractedLabel> descriptor = context.getAnnotationDescriptorRegistry()
                 .getDescriptor(ExtractedLabel.class);
         final AttributeDescriptor<String> valueAttribute = descriptor.getAttribute("value");
@@ -39,7 +39,7 @@ public class AbstractJdkValueExtractorTest {
     @Test
     public void extractsNamedAttributeValueThroughAnnotationDescriptorLookup() {
         final ModelsContext context = newModelsContext();
-        final ExtractedLabel label = AnnotationAccess.getAnnotation(AnnotatedEntity.class, ExtractedLabel.class);
+        final ExtractedLabel label = getAnnotation(AnnotatedEntity.class, ExtractedLabel.class);
         final AnnotationDescriptor<ExtractedLabel> descriptor = context.getAnnotationDescriptorRegistry()
                 .getDescriptor(ExtractedLabel.class);
         final AttributeDescriptor<Integer> priorityAttribute = descriptor.getAttribute("priority");
@@ -55,18 +55,10 @@ public class AbstractJdkValueExtractorTest {
         return new BasicModelsContextImpl(SimpleClassLoading.SIMPLE_CLASS_LOADING, false, null);
     }
 
-    private static final class AnnotationAccess {
-        private AnnotationAccess() {
-        }
-
-        private static <A extends Annotation> A getAnnotation(AnnotatedElement element, Class<A> annotationType) {
-            try {
-                return annotationType.cast(AnnotatedElement.class.getMethod("getAnnotation", Class.class)
-                        .invoke(element, annotationType));
-            } catch (ReflectiveOperationException ex) {
-                throw new AssertionError(ex);
-            }
-        }
+    private static <A extends Annotation> A getAnnotation(
+            AnnotatedElement annotatedElementAnnotationAccess,
+            Class<A> annotationType) {
+        return annotatedElementAnnotationAccess.getAnnotation(annotationType);
     }
 
     @ExtractedLabel(value = "runtime-label", priority = 11)
