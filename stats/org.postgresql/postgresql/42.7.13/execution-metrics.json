@@ -1,0 +1,139 @@
+{
+  "fix_ni_run:2026-09-28": {
+    "timestamp": "2026-09-28T18:05:44.268318Z",
+    "library": "org.postgresql:postgresql:42.7.13",
+    "starting_commit": "3e5874ef7cd88a8507debb7cf9d5b7c4bcf22ea5",
+    "ending_commit": "85024c0bab752aa167d94ff750688a467ffa4cd8",
+    "previous_library": "org.postgresql:postgresql:42.7.3",
+    "strategy_name": "library_update_pi_gpt-5.6-luna",
+    "agent": "pi",
+    "model": "gpt-5.6-luna",
+    "status": "success",
+    "stats": {
+      "version": "42.7.13",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 0.979592,
+            "coveredCalls": 48,
+            "totalCalls": 49
+          },
+          "resources": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 4,
+            "totalCalls": 4
+          }
+        },
+        "coverageRatio": 0.981132,
+        "coveredCalls": 52,
+        "totalCalls": 53
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 31787,
+          "missed": 114928,
+          "ratio": 0.216658,
+          "total": 146715
+        },
+        "line": {
+          "covered": 6406,
+          "missed": 24135,
+          "ratio": 0.209751,
+          "total": 30541
+        },
+        "method": {
+          "covered": 1175,
+          "missed": 2804,
+          "ratio": 0.2953,
+          "total": 3979
+        }
+      }
+    },
+    "previous_library_stats": {
+      "version": "42.7.3",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 0.957447,
+            "coveredCalls": 45,
+            "totalCalls": 47
+          },
+          "resources": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 4,
+            "totalCalls": 4
+          }
+        },
+        "coverageRatio": 0.960784,
+        "coveredCalls": 49,
+        "totalCalls": 51
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 29138,
+          "missed": 107759,
+          "ratio": 0.212846,
+          "total": 136897
+        },
+        "line": {
+          "covered": 5947,
+          "missed": 21857,
+          "ratio": 0.21389,
+          "total": 27804
+        },
+        "method": {
+          "covered": 1103,
+          "missed": 2769,
+          "ratio": 0.284866,
+          "total": 3872
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "no_action",
+      "issue_number": 9394,
+      "issue_label": "fails-native-image-run",
+      "library": "org.postgresql:postgresql:42.7.13",
+      "summary": "42.7.13 adds no new external dependencies (per pgjdbc CHANGELOG.md); its new features (classLoaderStrategy, scramMaxIterations, flushCacheOnDdl, prepared-statement cache invalidation on PostgreSQL 18 GUC_REPORT) all use safe defaults requiring no extra config, and the existing postgres:18-alpine Docker pin already satisfies the PostgreSQL 18+ requirement those features target. The truncated failure log shows no concrete failure evidence, just many passing tests, consistent with a routine reachability-metadata gap the generated scaffold plus native-image-agent regeneration should resolve.",
+      "deterministic_setup": [],
+      "agent_guidance": "",
+      "risks": [
+        "Full failure detail was truncated in the issue log; if regeneration does not resolve the native-image run failure, re-check whether it stems from the new classLoaderStrategy class-loading logic (driver-first/driver/context-first modes) introduced in 42.7.13, which touches class loading paths not exercised by the 42.7.3 metadata."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#9394 [Automation] native-image run fails for org.postgresql:postgresql:42.7.13; label=fails-native-image-run; body_chars=8015"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "22 existing test file path(s) included"
+        }
+      ],
+      "current_library": "org.postgresql:postgresql:42.7.3",
+      "new_version": "42.7.13",
+      "model": "sonnet",
+      "input_tokens_used": 18,
+      "output_tokens_used": 5053
+    },
+    "metrics": {
+      "input_tokens_used": 387320,
+      "cached_input_tokens_used": 3956736,
+      "output_tokens_used": 24364,
+      "iterations": 10,
+      "cost_usd": 0.9292,
+      "tested_library_loc": 6406,
+      "metadata_entries": 296,
+      "test_only_metadata_entries": 96,
+      "previous_library_metadata_entries": 268,
+      "previous_library_test_only_metadata_entries": 1,
+      "code_coverage_percent": 20.98,
+      "previous_library_coverage_percent": 21.39
+    },
+    "artifacts": {
+      "metadata_file": "metadata/org.postgresql/postgresql/42.7.13/reachability-metadata.json"
+    }
+  }
+}
