@@ -8,7 +8,7 @@ package org_hibernate_models.hibernate_models;
 
 import org.hibernate.models.internal.BasicModelsContextImpl;
 import org.hibernate.models.internal.SimpleClassLoading;
-import org.hibernate.models.internal.jdk.JdkClassDetails;
+import org.hibernate.models.jdk.JdkClassDetails;
 import org.hibernate.models.spi.FieldDetails;
 import org.hibernate.models.spi.MethodDetails;
 import org.hibernate.models.spi.ModelsContext;

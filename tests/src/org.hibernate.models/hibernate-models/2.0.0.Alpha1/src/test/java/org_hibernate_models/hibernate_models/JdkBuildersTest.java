@@ -8,7 +8,7 @@ package org_hibernate_models.hibernate_models;
 
 import org.hibernate.models.internal.BasicModelsContextImpl;
 import org.hibernate.models.internal.SimpleClassLoading;
-import org.hibernate.models.internal.jdk.JdkBuilders;
+import org.hibernate.models.jdk.JdkBuilders;
 import org.hibernate.models.spi.ClassDetails;
 import org.hibernate.models.spi.ModelsContext;
 import org.junit.jupiter.api.Test;

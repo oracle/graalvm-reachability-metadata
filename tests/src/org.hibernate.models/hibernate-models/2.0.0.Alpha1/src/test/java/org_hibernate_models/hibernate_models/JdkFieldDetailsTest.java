@@ -10,7 +10,7 @@ import java.lang.reflect.Field;
 
 import org.hibernate.models.internal.BasicModelsContextImpl;
 import org.hibernate.models.internal.SimpleClassLoading;
-import org.hibernate.models.internal.jdk.JdkClassDetails;
+import org.hibernate.models.jdk.JdkClassDetails;
 import org.hibernate.models.spi.FieldDetails;
 import org.hibernate.models.spi.ModelsContext;
 import org.junit.jupiter.api.Test;
