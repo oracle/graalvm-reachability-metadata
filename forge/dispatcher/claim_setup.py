@@ -45,10 +45,12 @@ from dispatcher.dynamic_access import (
     resolve_chunked_dynamic_access_exhaust_report,
     verify_chunked_dynamic_access_base_contains_published_commit,
 )
+from dispatcher.failure_follow_up import release_claim_after_logical_setup_failure
 from dispatcher.fixture_support import (
     is_fixture_testing_enabled,
     require_fixture_github_state,
 )
+from dispatcher.human_intervention import is_external_failure_exception
 from dispatcher.interrupts import is_interrupt_exception
 from dispatcher.issue_admin import (
     add_issue_label,
@@ -233,6 +235,9 @@ def claim_issue_for_processing(
     scratch_metrics_repo_path: str | None = None
     preflight_info_path: str | None = None
     handoff_complete = False
+    # Workspace creation is host state, not an issue precondition, so its failure
+    # never labels the issue. §FS-forge-run-requirements.2
+    preconditions_started: bool = False
     failure_stage = "claim setup"
     try:
         worktree_path, scratch_metrics_repo_path = create_issue_workspace(
@@ -242,6 +247,7 @@ def claim_issue_for_processing(
             issue_base_commit,
         )
         preflight_info_path = create_preflight_info_dir(worktree_path)
+        preconditions_started = True
 
         # The claim makes form rejection exclusive, while the pinned worktree
         # makes every repository lookup independent from the Forge code branch.
@@ -291,9 +297,12 @@ def claim_issue_for_processing(
             )
             return None
         if claim_metadata is None:
-            revert_issue_claim(
+            release_claim_after_logical_setup_failure(
+                issue,
+                label,
                 item_id,
-                issue["number"],
+                failure_stage,
+                "The issue form was accepted, but claim metadata could not be built from the title.",
                 "issue-form accepted but claim metadata could not be built",
             )
             return None
@@ -307,9 +316,13 @@ def claim_issue_for_processing(
                     "but no valid continuation marker was found on a preserved branch."
                 ),
             )
-            revert_issue_claim(
+            release_claim_after_logical_setup_failure(
+                issue,
+                label,
                 item_id,
-                issue["number"],
+                "continuation check",
+                f"Label '{LABEL_RESUMABLE}' is present, but no valid continuation marker was "
+                "found on a preserved branch.",
                 "resumable issue has no valid continuation marker",
             )
             return None
@@ -362,12 +375,27 @@ def claim_issue_for_processing(
                 f"ERROR: Issue #{issue['number']} {failure_stage} failed: {exc!r}",
                 file=sys.stderr,
             )
-        revert_issue_claim(
-            item_id,
-            issue["number"],
+        revert_reason: str = (
             f"{failure_stage} interrupted by Ctrl+C" if is_interrupt_exception(exc)
-            else f"{failure_stage} failure ({type(exc).__name__})",
+            else f"{failure_stage} failure ({type(exc).__name__})"
         )
+        # A failed precondition repeats on every retry unless it is external.
+        # §FS-forge-run-requirements.2
+        if (
+                preconditions_started
+                and isinstance(exc, Exception)
+                and not is_external_failure_exception(exc)
+        ):
+            release_claim_after_logical_setup_failure(
+                issue,
+                label,
+                item_id,
+                failure_stage,
+                f"{type(exc).__name__}: {exc}",
+                revert_reason,
+            )
+        else:
+            revert_issue_claim(item_id, issue["number"], revert_reason)
         if isinstance(exc, Exception):
             return None
         raise

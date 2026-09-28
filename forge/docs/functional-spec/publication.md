@@ -522,7 +522,9 @@ failure is external, Forge takes no issue action: it applies no
 `human-intervention` label and posts no comment, and silently releases the issue
 claim (status back to `Todo`, assignees cleared) so the issue is retried later.
 Rate limits and shared bootstrap failures additionally stop the current run for
-a later retry.
+a later retry. The same classification applies to every issue queue, including
+the `fails-*` repair queues, and to the claim-time preconditions that run before
+any workflow phase (§FS-forge-run-requirements.2).
 
 The label can appear on issues or pull requests. On an issue, it means Forge
 could not safely produce a PR-ready result and posted enough diagnostics for a
