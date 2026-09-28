@@ -3,6 +3,12 @@
 Rendered by Forge from the pre-push branch review of §FS-local-branch-review.
 Newest entry first; every non-approval is recorded, including one a repair later cleared.
 
+## 2026-09-28 — org.hibernate.models:hibernate-models:2.0.0.Alpha1 (#9379)
+
+**Test-side reflection bypasses the annotation API**
+
+`AbstractJdkValueExtractorTest` and `OrmAnnotationDescriptorInnerJdkCreatorTest` obtained annotations by reflectively looking up and invoking `AnnotatedElement.getAnnotation`. That unnecessary test-side reflection violated the no-reflection-shortcuts rule in `FS-test-contract.2.1`; the annotation instance can be obtained through the normal public annotation API without changing the tested Hibernate Models behavior.
+
 ## 2026-09-28 — org.postgresql:postgresql:42.7.13 (#9394)
 
 **Generated tests used artificial dynamic-access paths and invalid execution bounds**
