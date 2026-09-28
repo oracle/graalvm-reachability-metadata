@@ -11,6 +11,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketTimeoutException;
 import java.sql.DriverManager;
 import java.util.Properties;
 import java.util.concurrent.atomic.AtomicReference;
@@ -25,7 +26,7 @@ import static org.assertj.core.api.Assertions.catchThrowableOfType;
 /**
  * Exercises the public connection path that selects the driver's SSPI implementation.
  */
-public class ConnectionFactoryImplTest {
+public class SSPIClientTest {
 
     @Test
     void connectionWithSspiAuthenticationLoadsSspiClient() throws Exception {
@@ -59,6 +60,7 @@ public class ConnectionFactoryImplTest {
         try (Socket socket = server.accept();
                 DataInputStream input = new DataInputStream(socket.getInputStream());
                 DataOutputStream output = new DataOutputStream(socket.getOutputStream())) {
+            socket.setSoTimeout(15_000);
             int startupLength = input.readInt();
             byte[] startupPacket = input.readNBytes(startupLength - Integer.BYTES);
             if (startupPacket.length != startupLength - Integer.BYTES) {
@@ -69,6 +71,32 @@ public class ConnectionFactoryImplTest {
             output.writeInt(8);
             output.writeInt(9);
             output.flush();
+
+            int responseType = input.read();
+            if (responseType < 0) {
+                return;
+            }
+            if (responseType != 'p') {
+                throw new IOException("Unexpected SSPI response type");
+            }
+            int responseLength = input.readInt();
+            byte[] responseToken = input.readNBytes(responseLength - Integer.BYTES);
+            if (responseToken.length != responseLength - Integer.BYTES) {
+                throw new IOException("Incomplete SSPI response");
+            }
+
+            output.writeByte('R');
+            output.writeInt(12);
+            output.writeInt(8);
+            output.writeInt(1);
+            output.writeByte(0);
+            output.flush();
+
+            if (input.read() != 'p') {
+                throw new IOException("Missing SSPI continuation response");
+            }
+        } catch (SocketTimeoutException ignored) {
+            // SSPI is unavailable on non-Windows hosts, so the client may close after the first request.
         } catch (Throwable failure) {
             serverFailure.set(failure);
         }
