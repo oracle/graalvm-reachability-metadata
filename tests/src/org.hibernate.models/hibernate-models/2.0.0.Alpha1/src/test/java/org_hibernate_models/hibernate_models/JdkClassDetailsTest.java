@@ -6,9 +6,12 @@
  */
 package org_hibernate_models.hibernate_models;
 
+import java.util.List;
+
 import org.hibernate.models.internal.BasicModelsContextImpl;
 import org.hibernate.models.internal.SimpleClassLoading;
 import org.hibernate.models.jdk.JdkClassDetails;
+import org.hibernate.models.spi.ClassDetails;
 import org.hibernate.models.spi.FieldDetails;
 import org.hibernate.models.spi.MethodDetails;
 import org.hibernate.models.spi.ModelsContext;
@@ -18,6 +21,20 @@ import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class JdkClassDetailsTest {
+    @Test
+    public void exposesDeclaredConstructorsForClassBackedDetails() {
+        final JdkClassDetails details = classDetails(EntityLikeModel.class);
+
+        assertThat(details.getConstructors())
+                .extracting(constructor -> constructor.getArgumentTypes().stream()
+                        .map(ClassDetails::getName)
+                        .toList())
+                .containsExactlyInAnyOrder(List.of(), List.of(String.class.getName()));
+        assertThat(details.getConstructors())
+                .allSatisfy(constructor -> assertThat(constructor.getDeclaringType().getName())
+                        .isEqualTo(EntityLikeModel.class.getName()));
+    }
+
     @Test
     public void exposesDeclaredFieldsAndMethodsForClassBackedDetails() {
         final JdkClassDetails details = classDetails(EntityLikeModel.class);
@@ -50,6 +67,13 @@ public class JdkClassDetailsTest {
 
     private static final class EntityLikeModel {
         private String identifier;
+
+        private EntityLikeModel() {
+        }
+
+        private EntityLikeModel(String identifier) {
+            this.identifier = identifier;
+        }
         private String displayName;
 
         String getDisplayName() {
