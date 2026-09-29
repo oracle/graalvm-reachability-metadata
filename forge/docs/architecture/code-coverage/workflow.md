@@ -576,7 +576,14 @@ failure: the run continues into the next phase exactly as a spent budget does.
 Only a completed cover-agent pass advances the yield series. When measurement
 fails after writing a report, its fix state returns to the same logical
 measurement iteration and overwrites that report; the repair retry contributes
-no additional yield.
+no additional yield. A report the measurement program did not write does not
+enter the series either: a cover agent that runs the measurement tooling on its
+own writes reports the evaluator cannot tell from measured passes, and a
+measured xhigh run lost thirteen of its fifteen API passes to two zero-yield
+entries of that kind. Measurement therefore seals the report count it closes
+with, and the next measurement sets aside every report beyond that seal before
+it opens its iteration, so the recorded series holds exactly one report per
+completed pass whatever the agent wrote in between.
 
 Three properties of the rule are deliberate, and each is a correction of a rule
 that looked reasonable and would have destroyed a measured run.
