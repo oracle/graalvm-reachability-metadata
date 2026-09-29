@@ -3,6 +3,14 @@
 Rendered by Forge from the pre-push branch review of §FS-local-branch-review.
 Newest entry first; every non-approval is recorded, including one a repair later cleared.
 
+## 2026-09-29 — org.eclipse.jetty:jetty-io:9.4.19.v20190610 (#9377)
+
+**Review finalization hashes unstable abbreviated Git object IDs**
+
+The exact review finalization command repeatedly exits 1 with `Review finalization changed the publishable tree` after every substantive gate passes. `publishable_tree_digest()` hashes raw `git diff --binary HEAD --` output. During `generateLibraryStats`, Git's adaptive object abbreviation grows, changing only the diff header from `index e80d11edc3..92d6c8b6b5` (1918 bytes) to `index e80d11edc34..92d6c8b6b57` (1920 bytes); the patch body and worktree content are unchanged. Because the fix belongs in shared `forge/git_scripts/review_finalization.py`, FS-contribution-contract.5.3 requires escalation rather than a contribution-local repair.
+
+Infrastructure issue: https://github.com/oracle/graalvm-reachability-metadata/issues/10242 (#10242)
+
 ## 2026-09-28 — org.postgresql:postgresql:42.7.13 (#9394)
 
 **Generated tests used artificial dynamic-access paths and invalid execution bounds**
