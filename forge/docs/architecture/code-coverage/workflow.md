@@ -228,7 +228,8 @@ split into deterministic utilities plus a workflow engine:
   and call-tree CSVs are produced by the `nativeTestPGOSampling` and
   `runNativeTestPGO` harness tasks (`--pgo-sampling
   -H:PGOSamplingPeriodMicros=<micros> -H:+PrintAnalysisCallTree
-  -H:PrintAnalysisCallTreeType=CSV`; the run dumps the profile through
+  -H:PrintAnalysisCallTreeType=CSV`, the sampling period only on a
+  toolchain that advertises it (§root/AR-test-harness); the run dumps the profile through
   `-XX:ProfilesDumpFile`). Profile `<`-chain contexts are leaf-first
   (`callee:bci<caller:bci`), so sampled stacks read right-to-left from the root.
 - **Identity model** — normalizes API inventory, JaCoCo, call-tree CSV, and
