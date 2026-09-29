@@ -1,0 +1,145 @@
+{
+  "base_commit": "7d38dcd37945e57a1cb1ec02e7ab6fe7486ecea6",
+  "branch": "ai/kimeta/add-lib-support-com.twelvemonkeys.imageio-imageio-core-3.9.4-chunked-forge-10167-20260922212107949006-b9f5a90f7733",
+  "follow_ups": [],
+  "forge": {
+    "branch": "master",
+    "commit": "9932805abe145b26f05f0f247fc0aca403d760d9",
+    "monitored_branch": "origin/master"
+  },
+  "issue_number": 10167,
+  "library": {
+    "artifact": "imageio-core",
+    "coordinates": "com.twelvemonkeys.imageio:imageio-core:3.9.4",
+    "group": "com.twelvemonkeys.imageio",
+    "version": "3.9.4"
+  },
+  "local_ci_verification": {
+    "base_commit": "7d38dcd37945e57a1cb1ec02e7ab6fe7486ecea6",
+    "commands": [
+      {
+        "command": [
+          "./gradlew",
+          "generateChangedIndexFileCoordinatesList",
+          "-PbaseCommit=origin/master",
+          "-PnewCommit=HEAD"
+        ],
+        "env": {
+          "GITHUB_OUTPUT": "/tmp/tmp8zdt7kxt"
+        },
+        "gate": "changed-index-coordinates",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :generateChangedIndexFileCoordinatesList\n\n[Incubating] Problems report is available at: file:///home/oracle/oracle/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10167-09800832/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 4s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      },
+      {
+        "command": [
+          "./gradlew",
+          "validateIndexFiles",
+          "-Pcoordinates=com.twelvemonkeys.imageio:imageio-core"
+        ],
+        "env": {},
+        "gate": "index-file-validation",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :validateIndexFiles\n✅ metadata/com.twelvemonkeys.imageio/imageio-core/index.json: Valid\n\n[Incubating] Problems report is available at: file:///home/oracle/oracle/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10167-09800832/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 2s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      }
+    ],
+    "failure_command": null,
+    "failure_gate": null,
+    "final_commit": "6eadccb9da64cb4170a3890979b1444d4073e0e2",
+    "fixups": [],
+    "human_intervention_required": false,
+    "repo_fix_paths": [],
+    "status": "success"
+  },
+  "local_review": {
+    "changed_paths": [],
+    "decision": "approved",
+    "finding_body": "",
+    "finding_title": "",
+    "fix_note": "",
+    "model": "gpt-5.6-sol",
+    "review_comment": "Verified the diff is limited to com.twelvemonkeys.imageio:imageio-core:3.9.4, uses only reachability-metadata.json, and adds a public, version-agnostic test that exercises ColorSpaces through its public API without Native Image skips, failure tolerance, visibility bypasses, build flags, or scaffold code. The recorded dynamic-access coverage is 1/1 (100%), the reported metadata-entry total does not trigger the mismatch guardrail, and the local index gates passed. No blocking contribution-contract violation was found.",
+    "session_id": "b06d4dd0a1664122"
+  },
+  "metrics": {
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "path": "stats/com.twelvemonkeys.imageio/imageio-core/3.9.4/execution-metrics.json",
+    "summary": {
+      "cached_input_tokens_used": 810240,
+      "code_coverage_percent": 5.06,
+      "cost_usd": 1.143,
+      "generated_loc": 29,
+      "input_tokens_used": 111929,
+      "iterations": 4,
+      "metadata_entries": 21,
+      "output_tokens_used": 5945,
+      "test_only_metadata_entries": 3,
+      "tested_library_loc": 109
+    },
+    "timestamp": "2026-09-22T21:21:07.949006Z"
+  },
+  "modifiers": {
+    "chunk_final": true,
+    "chunked_dynamic_access": true,
+    "human_intervention": false
+  },
+  "producer": "kimeta",
+  "publication_id": "forge-10167-20260922212107949006-b9f5a90f7733",
+  "render": {
+    "dynamic_access": null,
+    "dynamic_access_evidence": {
+      "covered_call_sites": [
+        "[resources] java.lang.Class#getResourceAsStream(java.lang.String) <- com.twelvemonkeys.imageio.color.ColorProfiles.readProfileFromClasspathResource(ColorProfiles.java:443) (line 443)"
+      ],
+      "metadata_rules": [
+        "when `com.twelvemonkeys.imageio.color.ColorProfiles` is reached, make `java.awt.GraphicsEnvironment.isHeadless()` available for reflection",
+        "when `com.twelvemonkeys.imageio.color.ProfileDeferralActivator` is reached, make `java.awt.image.ColorConvertOp` available for reflection",
+        "when `com.twelvemonkeys.imageio.color.ColorProfiles` is reached, make `java.lang.System.load(java.lang.String)` available for reflection",
+        "when `com.twelvemonkeys.imageio.color.ICCProfileSanitizer$Factory` is reached, make `java.util.stream.Stream` available for reflection",
+        "when `com.twelvemonkeys.imageio.color.ColorProfiles` is reached, make `sun.java2d.Disposer.addRecord(java.lang.Object, long, long)` available for reflection",
+        "when `com.twelvemonkeys.imageio.color.ColorProfiles` is reached, make `sun.security.provider.MD5.<init>()` available for reflection"
+      ]
+    },
+    "library_stats": {
+      "dynamicAccess": {
+        "breakdown": {
+          "resources": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 1,
+            "totalCalls": 1
+          }
+        },
+        "coverageRatio": 1.0,
+        "coveredCalls": 1,
+        "totalCalls": 1
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 390,
+          "missed": 10554,
+          "ratio": 0.035636,
+          "total": 10944
+        },
+        "line": {
+          "covered": 109,
+          "missed": 2045,
+          "ratio": 0.050604,
+          "total": 2154
+        },
+        "method": {
+          "covered": 30,
+          "missed": 483,
+          "ratio": 0.05848,
+          "total": 513
+        }
+      },
+      "version": "3.9.4"
+    }
+  },
+  "schema_version": 1,
+  "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-sol",
+  "task_type": "library-new-request",
+  "template_type": "library-new-request",
+  "timestamp": "2026-09-22T21:21:07.949006Z"
+}

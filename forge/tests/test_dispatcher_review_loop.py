@@ -93,7 +93,7 @@ class PullRequestReviewSelectionTests(unittest.TestCase):
         approve.assert_not_called()
         enable_auto_merge.assert_not_called()
 
-    def test_unresolved_conflict_is_approved_then_withdrawn(self) -> None:
+    def test_unresolved_conflict_is_withdrawn_without_approval(self) -> None:
         state = _pull_request_state(9656, "PENDING", mergeable="CONFLICTING")
         events: list[str] = []
         with (
@@ -124,8 +124,39 @@ class PullRequestReviewSelectionTests(unittest.TestCase):
         ):
             review_loop._process_descriptor_pull_request(state, "/tmp/reachability")
 
-        self.assertEqual(["approve", "auto-merge", "resolve", "withdraw"], events)
+        self.assertEqual(["resolve", "withdraw"], events)
         validate_indexes.assert_not_called()
+
+    def test_unsettled_mergeability_is_neither_approved_nor_resolved(self) -> None:
+        state = _pull_request_state(9656, "SUCCESS", mergeable="UNKNOWN")
+        events: list[str] = []
+        with (
+                patch.object(
+                    review_loop, "validate_pull_request_publication",
+                    return_value=_validated_publication(),
+                ),
+                patch.object(
+                    review_loop, "validate_pull_request_indexes_before_merge",
+                ) as validate_indexes,
+                patch.object(
+                    review_loop, "approve_pull_request_from_descriptor",
+                    side_effect=lambda *_: events.append("approve"),
+                ),
+                patch.object(
+                    review_loop, "enable_pull_request_auto_merge",
+                    side_effect=lambda *_: events.append("auto-merge"),
+                ),
+                patch.object(
+                    review_loop, "resolve_pull_request_merge_conflict",
+                    side_effect=lambda *_: events.append("resolve") or False,
+                ),
+                patch.object(review_loop, "add_pull_request_label") as add_label,
+        ):
+            review_loop._process_descriptor_pull_request(state, "/tmp/reachability")
+
+        self.assertEqual([], events)
+        validate_indexes.assert_not_called()
+        add_label.assert_not_called()
 
     def test_human_intervention_withdraws_only_forge_approval(self) -> None:
         state = _pull_request_state(9656, "FAILURE")
@@ -361,26 +392,76 @@ class PullRequestReviewSelectionTests(unittest.TestCase):
             [20, 40],
         )
 
-    def test_pending_ci_is_approved_and_auto_merge_is_enabled(self) -> None:
-        state = _pull_request_state(9656, "PENDING")
-        validated = _validated_publication()
-        with (
-                patch.object(
-                    review_loop, "validate_pull_request_publication",
-                    return_value=validated,
-                ),
-                patch.object(review_loop, "validate_pull_request_indexes_before_merge"),
-                patch.object(review_loop, "approve_pull_request_from_descriptor") as approve,
-                patch.object(review_loop, "enable_pull_request_auto_merge") as enable_auto_merge,
-        ):
+    # The whole check rollup is the gate: nothing is spent, approved, or armed
+    # above it (§FS-automated-pr-review).
+    MERGE_READINESS_CALLS = (
+        "validate_pull_request_indexes_before_merge",
+        "approve_pull_request_from_descriptor",
+        "enable_pull_request_auto_merge",
+    )
+
+    def _review_descriptor_head(self, state: dict, *names: str) -> dict:
+        """Review one head with `names` patched, returning the mocks by name."""
+        with contextlib.ExitStack() as stack:
+            stack.enter_context(patch.object(
+                review_loop, "validate_pull_request_publication",
+                return_value=_validated_publication(),
+            ))
+            mocks = {
+                name: stack.enter_context(patch.object(review_loop, name))
+                for name in names
+            }
+            review_loop._process_descriptor_pull_request(state, "/tmp/reachability")
+        return mocks
+
+    def test_pending_ci_spends_approves_and_arms_nothing(self) -> None:
+        mocks = self._review_descriptor_head(
+            _pull_request_state(9656, "PENDING"),
+            *self.MERGE_READINESS_CALLS,
+        )
+        for name, mock in mocks.items():
+            with self.subTest(call=name):
+                mock.assert_not_called()
+
+    def test_failed_ci_is_never_approved_and_gives_up_any_arming(self) -> None:
+        state = _pull_request_state(9656, "FAILURE")
+        mocks = self._review_descriptor_head(
+            state,
+            *self.MERGE_READINESS_CALLS,
+            "disable_pull_request_auto_merge",
+            "reconcile_failed_ci_pull_request",
+        )
+        for name in self.MERGE_READINESS_CALLS:
+            with self.subTest(call=name):
+                mocks[name].assert_not_called()
+        mocks["disable_pull_request_auto_merge"].assert_called_once_with(state)
+        repair = mocks["reconcile_failed_ci_pull_request"]
+        repair.assert_called_once()
+        self.assertIs(state, repair.call_args.args[0])
+
+    def test_green_ci_validates_indexes_before_approving_and_arming(self) -> None:
+        order: list[str] = []
+        with contextlib.ExitStack() as stack:
+            stack.enter_context(patch.object(
+                review_loop, "validate_pull_request_publication",
+                return_value=_validated_publication(),
+            ))
+            for call_name in self.MERGE_READINESS_CALLS:
+                stack.enter_context(patch.object(
+                    review_loop, call_name,
+                    side_effect=lambda *_, name=call_name: order.append(name),
+                ))
+            for quiet in (
+                    "mark_pull_request_merge_follow_up_pending",
+                    "reconcile_auto_merged_pull_request_follow_ups",
+            ):
+                stack.enter_context(patch.object(review_loop, quiet))
             review_loop._process_descriptor_pull_request(
-                state,
+                _pull_request_state(9656, "SUCCESS"),
                 "/tmp/reachability",
-                maintainer_override=False,
             )
 
-        approve.assert_called_once_with(state)
-        enable_auto_merge.assert_called_once_with(state)
+        self.assertEqual(list(self.MERGE_READINESS_CALLS), order)
 
     def test_failed_ci_runs_agent_before_any_rerun(self) -> None:
         state = _pull_request_state(9656, "FAILURE")

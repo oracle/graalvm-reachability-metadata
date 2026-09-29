@@ -1,0 +1,142 @@
+{
+  "base_commit": "b58e5fcb780d6e9fe5396624d335a82d53d69001",
+  "branch": "ai/kimeta/add-lib-support-com.azure-azure-data-appconfiguration-1.8.4-forge-10070-20260921074916992641-ba291f810414",
+  "follow_ups": [],
+  "forge": {
+    "branch": "master",
+    "commit": "36568d2db2830705cecfdded8fb66f0cf58eb29f",
+    "monitored_branch": "origin/master"
+  },
+  "issue_number": 10070,
+  "library": {
+    "artifact": "azure-data-appconfiguration",
+    "coordinates": "com.azure:azure-data-appconfiguration:1.8.4",
+    "group": "com.azure",
+    "version": "1.8.4"
+  },
+  "local_ci_verification": {
+    "base_commit": "b58e5fcb780d6e9fe5396624d335a82d53d69001",
+    "commands": [
+      {
+        "command": [
+          "./gradlew",
+          "generateChangedIndexFileCoordinatesList",
+          "-PbaseCommit=origin/master",
+          "-PnewCommit=HEAD"
+        ],
+        "env": {
+          "GITHUB_OUTPUT": "/tmp/tmp52u4v2gu"
+        },
+        "gate": "changed-index-coordinates",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :generateChangedIndexFileCoordinatesList\n\n[Incubating] Problems report is available at: file:///home/oracle/oracle/metadata2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10070-2786ba9c/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 1s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      },
+      {
+        "command": [
+          "./gradlew",
+          "validateIndexFiles",
+          "-Pcoordinates=com.azure:azure-data-appconfiguration"
+        ],
+        "env": {},
+        "gate": "index-file-validation",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :validateIndexFiles\n✅ metadata/com.azure/azure-data-appconfiguration/index.json: Valid\n\n[Incubating] Problems report is available at: file:///home/oracle/oracle/metadata2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10070-2786ba9c/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 764ms\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      }
+    ],
+    "failure_command": null,
+    "failure_gate": null,
+    "final_commit": "f8298a27f758e7c9fb80964ede491dbe4e93ff80",
+    "fixups": [],
+    "human_intervention_required": false,
+    "repo_fix_paths": [],
+    "status": "success"
+  },
+  "local_review": {
+    "changed_paths": [
+      "tests/src/com.azure/azure-data-appconfiguration/1.8.4/build.gradle"
+    ],
+    "decision": "approved",
+    "finding_body": "`build.gradle` applied four class-initialization arguments to `graalvmNative.binaries.all`, contrary to the narrowest-flag requirement in `FS-test-contract.2.7`. Removing the flags reproduced image-heap failures for `NOPLoggerFactory`, `SubstituteLoggerFactory`, `Base64Variant`, and `Base64Variant$PaddingReadBehaviour`, establishing that the transitive Azure/Jackson/SLF4J paths require them; only their binary scope needed correction.",
+    "finding_title": "Native Image build flags were scoped too broadly",
+    "fix_note": "Scoped the four demonstrated class-initialization arguments from every native binary to the `test` binary, then ran the exact Forge review finalization command to a stable successful pass.",
+    "model": "gpt-5.6-sol",
+    "review_comment": "Checked the single-coordinate diff, test contract, metadata format and scope, index and rendered statistics. The tests exercise the public client API from a separate, version-independent test package with bounded execution and no Native Image skip or tolerated failure. The reported 0/0 dynamic-access result is a valid no-calls case. After the repair, Forge finalization passed all three native-test lanes, metadata validation, style checks, generated-test checks, and statistics generation without further publishable changes.",
+    "session_id": "103fa4c5ed3242d3"
+  },
+  "metrics": {
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "path": "stats/com.azure/azure-data-appconfiguration/1.8.4/execution-metrics.json",
+    "summary": {
+      "cached_input_tokens_used": 5578368,
+      "code_coverage_percent": 30.86,
+      "cost_usd": 5.3114,
+      "generated_loc": 382,
+      "input_tokens_used": 331996,
+      "iterations": 9,
+      "metadata_entries": 126,
+      "output_tokens_used": 28739,
+      "test_only_metadata_entries": 53,
+      "tested_library_loc": 979
+    },
+    "timestamp": "2026-09-21T07:49:16.992641Z"
+  },
+  "modifiers": {
+    "chunk_final": true,
+    "chunked_dynamic_access": false,
+    "human_intervention": false
+  },
+  "producer": "kimeta",
+  "publication_id": "forge-10070-20260921074916992641-ba291f810414",
+  "render": {
+    "dynamic_access": null,
+    "dynamic_access_evidence": {
+      "covered_call_sites": [],
+      "metadata_rules": [
+        "when `com.azure.data.appconfiguration.implementation.AzureAppConfigurationImpl` is reached, make `com.azure.core.annotation.UnexpectedResponseExceptionType[]` available for reflection",
+        "when `com.azure.data.appconfiguration.ConfigurationClientBuilder` is reached, make `com.azure.core.http.HttpHeaderName.<init>()` available for reflection",
+        "when `com.azure.data.appconfiguration.implementation.AzureAppConfigurationImpl` is reached, make `com.azure.core.http.HttpRequest` available for reflection",
+        "when `com.azure.data.appconfiguration.ConfigurationClientBuilder` is reached, make `com.azure.core.http.policy.HttpLogOptions` available for reflection",
+        "when `com.azure.data.appconfiguration.ConfigurationClientBuilder` is reached, make `com.azure.core.http.policy.HttpPipelinePolicy[]` available for reflection",
+        "when `com.azure.data.appconfiguration.implementation.AzureAppConfigurationImpl` is reached, make `com.azure.core.http.rest.ResponseBase.<init>(com.azure.core.http.HttpRequest, int, com.azure.core.http.HttpHeaders, java.lang.Object, java.lang.Object)` available for reflection",
+        "when `com.azure.data.appconfiguration.implementation.AzureAppConfigurationImpl` is reached, make `com.azure.core.implementation.ByteBufferCollector` available for reflection",
+        "when `com.azure.data.appconfiguration.ConfigurationClientBuilder` is reached, make `com.azure.core.implementation.MethodHandleReflectiveInvoker` available for reflection",
+        "... and 78 more"
+      ]
+    },
+    "library_stats": {
+      "dynamicAccess": {
+        "breakdown": {},
+        "coverageRatio": 1.0,
+        "coveredCalls": 0,
+        "totalCalls": 0
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 3856,
+          "missed": 12444,
+          "ratio": 0.236564,
+          "total": 16300
+        },
+        "line": {
+          "covered": 979,
+          "missed": 2193,
+          "ratio": 0.308638,
+          "total": 3172
+        },
+        "method": {
+          "covered": 294,
+          "missed": 937,
+          "ratio": 0.23883,
+          "total": 1231
+        }
+      },
+      "version": "1.8.4"
+    }
+  },
+  "schema_version": 1,
+  "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-sol",
+  "task_type": "library-new-request",
+  "template_type": "library-new-request",
+  "timestamp": "2026-09-21T07:49:16.992641Z"
+}

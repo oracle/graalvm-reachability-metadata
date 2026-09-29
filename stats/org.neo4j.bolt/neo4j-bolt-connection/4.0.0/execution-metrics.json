@@ -1,0 +1,114 @@
+{
+  "fix_javac_fail:2026-09-21": {
+    "timestamp": "2026-09-21T22:47:11.085998Z",
+    "library": "org.neo4j.bolt:neo4j-bolt-connection:4.0.0",
+    "starting_commit": "f1b930b30591f587c6965bdfe249323fe0c5f279",
+    "ending_commit": "f1608f9fc63c92fe3d73591fc5b9d38a2a277ef3",
+    "previous_library": "org.neo4j.bolt:neo4j-bolt-connection:2.0.0",
+    "strategy_name": "javac_iterative_with_coverage_sources_pi_gpt-5.6-sol",
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "status": "success",
+    "stats": {
+      "version": "4.0.0",
+      "dynamicAccess": {
+        "breakdown": {},
+        "coverageRatio": 1.0,
+        "coveredCalls": 0,
+        "totalCalls": 0
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 1733,
+          "missed": 754,
+          "ratio": 0.696823,
+          "total": 2487
+        },
+        "line": {
+          "covered": 374,
+          "missed": 165,
+          "ratio": 0.693878,
+          "total": 539
+        },
+        "method": {
+          "covered": 155,
+          "missed": 91,
+          "ratio": 0.630081,
+          "total": 246
+        }
+      }
+    },
+    "previous_library_stats": {
+      "version": "2.0.0",
+      "dynamicAccess": {
+        "breakdown": {},
+        "coverageRatio": 1.0,
+        "coveredCalls": 0,
+        "totalCalls": 0
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 1768,
+          "missed": 556,
+          "ratio": 0.760757,
+          "total": 2324
+        },
+        "line": {
+          "covered": 379,
+          "missed": 137,
+          "ratio": 0.734496,
+          "total": 516
+        },
+        "method": {
+          "covered": 151,
+          "missed": 54,
+          "ratio": 0.736585,
+          "total": 205
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "no_action",
+      "issue_number": 9389,
+      "issue_label": "fails-javac-compile",
+      "library": "org.neo4j.bolt:neo4j-bolt-connection:4.0.0",
+      "summary": "The javac failure is a pure API-surface change within org.neo4j.bolt:neo4j-bolt-connection itself (RoutingContext/DatabaseNameUtil removed, DatabaseName gained static factories, SecurityPlan/SecurityPlans signatures changed) — no new dependency, Docker image, or environment/system property is needed; the existing test is fully in-memory with no network or container usage.",
+      "deterministic_setup": [],
+      "agent_guidance": "No environment variables, system properties, or Docker services are required. The compile failure is purely API drift within the same artifact: DatabaseNameUtil is gone — use DatabaseName.defaultDatabase()/systemDatabase()/database(String) instead; RoutingContext is no longer part of this artifact and should be dropped from the test; SecurityPlans.encrypted now takes (SSLContext, boolean[, String]) and SecurityPlan exposes sslContext()/verifyHostname()/expectedHostname() instead of the old requiresEncryption()/requiresClientAuth()/requiresHostnameVerification(). Rewrite the affected assertions against the new API rather than adding setup.",
+      "risks": [],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#9389 [Automation] javac compile fails for org.neo4j.bolt:neo4j-bolt-connection:4.0.0; label=fails-javac-compile; body_chars=8015"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "6 existing test file path(s) included"
+        }
+      ],
+      "current_library": "org.neo4j.bolt:neo4j-bolt-connection:2.0.0",
+      "new_version": "4.0.0",
+      "model": "sonnet",
+      "input_tokens_used": 14,
+      "output_tokens_used": 5961
+    },
+    "metrics": {
+      "input_tokens_used": 52229,
+      "cached_input_tokens_used": 322944,
+      "output_tokens_used": 2819,
+      "iterations": 3,
+      "cost_usd": 0.5072,
+      "tested_library_loc": 374,
+      "metadata_entries": 21,
+      "test_only_metadata_entries": 20,
+      "previous_library_metadata_entries": 0,
+      "code_coverage_percent": 69.39,
+      "previous_library_coverage_percent": 73.45
+    },
+    "artifacts": {
+      "metadata_file": "metadata/org.neo4j.bolt/neo4j-bolt-connection/4.0.0/reachability-metadata.json"
+    }
+  }
+}

@@ -1,0 +1,161 @@
+{
+  "base_commit": "4eeb0d227a75cd74a259a718fb9759921bc98580",
+  "branch": "ai/kimeta/add-lib-support-com.owlike-genson-1.6-chunked-forge-10200-20260923190515445312-a09d8e00711c",
+  "follow_ups": [],
+  "forge": {
+    "branch": "master",
+    "commit": "4eeb0d227a75cd74a259a718fb9759921bc98580",
+    "monitored_branch": "origin/master"
+  },
+  "issue_number": 10200,
+  "library": {
+    "artifact": "genson",
+    "coordinates": "com.owlike:genson:1.6",
+    "group": "com.owlike",
+    "version": "1.6"
+  },
+  "local_ci_verification": {
+    "base_commit": "4eeb0d227a75cd74a259a718fb9759921bc98580",
+    "commands": [
+      {
+        "command": [
+          "./gradlew",
+          "generateChangedIndexFileCoordinatesList",
+          "-PbaseCommit=origin/master",
+          "-PnewCommit=HEAD"
+        ],
+        "env": {
+          "GITHUB_OUTPUT": "/tmp/tmpqah2mofn"
+        },
+        "gate": "changed-index-coordinates",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :generateChangedIndexFileCoordinatesList\n\n[Incubating] Problems report is available at: file:///home/oracle/oracle/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10200-4cc69aed/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 4s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      },
+      {
+        "command": [
+          "./gradlew",
+          "validateIndexFiles",
+          "-Pcoordinates=com.owlike:genson"
+        ],
+        "env": {},
+        "gate": "index-file-validation",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :validateIndexFiles\n✅ metadata/com.owlike/genson/index.json: Valid\n\n[Incubating] Problems report is available at: file:///home/oracle/oracle/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10200-4cc69aed/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 3s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      }
+    ],
+    "failure_command": null,
+    "failure_gate": null,
+    "final_commit": "888b5da437a2749fb25cdee20c647a80dc6aed5c",
+    "fixups": [],
+    "human_intervention_required": false,
+    "repo_fix_paths": [],
+    "status": "success"
+  },
+  "local_review": {
+    "changed_paths": [],
+    "decision": "approved",
+    "finding_body": "",
+    "finding_title": "",
+    "fix_note": "",
+    "model": "gpt-5.6-sol",
+    "review_comment": "Reviewed the full base-to-head diff, local gate records, resolved statistics, and every applicable library-new-request rule. The change is confined to com.owlike:genson:1.6, uses only reachability-metadata.json, and provides library-specific tests in a separate package without scaffold code, Native Image skips, tolerated failures, version-pinned assertions, compatibility overrides, or native build/run flags. Reported dynamic-access coverage is 33/36 (91.67%), above the required gate; the reported 98 total library plus test-only metadata entries do not trigger the entry-count mismatch probe. Index validation and the local pre-publication gates passed. No blocking must violation was found.",
+    "session_id": "99dbb86620004260"
+  },
+  "metrics": {
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "path": "stats/com.owlike/genson/1.6/execution-metrics.json",
+    "summary": {
+      "cached_input_tokens_used": 13308160,
+      "code_coverage_percent": 39.98,
+      "cost_usd": 12.0357,
+      "generated_loc": 656,
+      "input_tokens_used": 658282,
+      "iterations": 17,
+      "metadata_entries": 16,
+      "output_tokens_used": 69672,
+      "test_only_metadata_entries": 82,
+      "tested_library_loc": 2060
+    },
+    "timestamp": "2026-09-23T19:05:15.445312Z"
+  },
+  "modifiers": {
+    "chunk_final": true,
+    "chunked_dynamic_access": true,
+    "human_intervention": false
+  },
+  "producer": "kimeta",
+  "publication_id": "forge-10200-20260923190515445312-a09d8e00711c",
+  "render": {
+    "dynamic_access": null,
+    "dynamic_access_evidence": {
+      "covered_call_sites": [
+        "[resources] java.lang.ClassLoader#getResourceAsStream(java.lang.String) <- com.owlike.genson.reflect.ASMCreatorParameterNameResolver.read(ASMCreatorParameterNameResolver.java:59) (line 59)",
+        "[reflection] java.lang.Class#forName(java.lang.String) <- com.owlike.genson.Genson.classFor(Genson.java:516) (line 516)",
+        "[reflection] java.lang.reflect.Array#newInstance(java.lang.Class, int) <- com.owlike.genson.Operations.union(Operations.java:10) (line 10)",
+        "[reflection] java.lang.reflect.Array#newInstance(java.lang.Class, int) <- com.owlike.genson.convert.DefaultConverters$ArrayConverter.deserialize(DefaultConverters.java:287) (line 287)",
+        "[reflection] java.lang.reflect.Array#newInstance(java.lang.Class, int) <- com.owlike.genson.convert.DefaultConverters$ArrayConverter.expandArray(DefaultConverters.java:305) (line 305)",
+        "[reflection] java.lang.Class#getFields() <- com.owlike.genson.convert.DefaultConverters$EnumConverter.<init>(DefaultConverters.java:1028) (line 1028)",
+        "[reflection] java.lang.reflect.Field#get(java.lang.Object) <- com.owlike.genson.convert.DefaultConverters$EnumConverter.<init>(DefaultConverters.java:1034) (line 1034)",
+        "[reflection] java.lang.Class#getConstructor(java.lang.Class[]) <- com.owlike.genson.convert.DefaultConverters$PropertyConverterFactory.create(DefaultConverters.java:1266) (line 1266)",
+        "... and 25 more"
+      ],
+      "metadata_rules": [
+        "when `com.owlike.genson.reflect.BeanViewDescriptorProvider` is reached, make `com.owlike.genson.BeanView` available for reflection",
+        "when `com.owlike.genson.ext.jaxb.JAXBBundle` is reached, make `com.sun.org.apache.xerces.internal.jaxp.datatype.DatatypeFactoryImpl.<init>()` available for reflection",
+        "when `com.owlike.genson.reflect.ASMCreatorParameterNameResolver$NameMethodVisitor` is reached, make `java.lang.Class` available for reflection",
+        "when `com.owlike.genson.ext.jaxb.JAXBBundle` is reached, make `java.lang.Object` available for reflection",
+        "when `com.owlike.genson.Genson` is reached, make `java.lang.Object[]` available for reflection",
+        "when `com.owlike.genson.Genson` is reached, make `java.lang.String[]` available for reflection",
+        "when `com.owlike.genson.Operations` is reached, make `java.lang.String[]` available for reflection",
+        "when `com.owlike.genson.convert.DefaultConverters$ArrayConverter` is reached, make `java.lang.String[]` available for reflection",
+        "... and 5 more"
+      ]
+    },
+    "library_stats": {
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 0.969697,
+            "coveredCalls": 32,
+            "totalCalls": 33
+          },
+          "resources": {
+            "coverageRatio": 0.333333,
+            "coveredCalls": 1,
+            "totalCalls": 3
+          }
+        },
+        "coverageRatio": 0.916667,
+        "coveredCalls": 33,
+        "totalCalls": 36
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 12101,
+          "missed": 33670,
+          "ratio": 0.264381,
+          "total": 45771
+        },
+        "line": {
+          "covered": 2060,
+          "missed": 3093,
+          "ratio": 0.399767,
+          "total": 5153
+        },
+        "method": {
+          "covered": 484,
+          "missed": 1075,
+          "ratio": 0.310455,
+          "total": 1559
+        }
+      },
+      "version": "1.6"
+    }
+  },
+  "schema_version": 1,
+  "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-sol",
+  "task_type": "library-new-request",
+  "template_type": "library-new-request",
+  "timestamp": "2026-09-23T19:05:15.445312Z"
+}

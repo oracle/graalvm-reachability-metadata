@@ -1,0 +1,142 @@
+{
+  "base_commit": "f3e0c5c84a16e9f5a6cea20579fbb3dc0e3a3dca",
+  "branch": "ai/kimeta/add-lib-support-com.nimbusds-oauth2-oidc-sdk-11.9.1-chunked-forge-10066-20260921221419485217-a0f10e686fe5",
+  "follow_ups": [],
+  "forge": {
+    "branch": "master",
+    "commit": "36568d2db2830705cecfdded8fb66f0cf58eb29f",
+    "monitored_branch": "origin/master"
+  },
+  "issue_number": 10066,
+  "library": {
+    "artifact": "oauth2-oidc-sdk",
+    "coordinates": "com.nimbusds:oauth2-oidc-sdk:11.9.1",
+    "group": "com.nimbusds",
+    "version": "11.9.1"
+  },
+  "local_ci_verification": {
+    "base_commit": "f3e0c5c84a16e9f5a6cea20579fbb3dc0e3a3dca",
+    "commands": [
+      {
+        "command": [
+          "./gradlew",
+          "generateChangedIndexFileCoordinatesList",
+          "-PbaseCommit=origin/master",
+          "-PnewCommit=HEAD"
+        ],
+        "env": {
+          "GITHUB_OUTPUT": "/tmp/tmpsjprf3z9"
+        },
+        "gate": "changed-index-coordinates",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :generateChangedIndexFileCoordinatesList\n\n[Incubating] Problems report is available at: file:///home/oracle/oracle/metadata2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10066-019dfab1/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 1s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      },
+      {
+        "command": [
+          "./gradlew",
+          "validateIndexFiles",
+          "-Pcoordinates=com.nimbusds:oauth2-oidc-sdk"
+        ],
+        "env": {},
+        "gate": "index-file-validation",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :validateIndexFiles\n✅ metadata/com.nimbusds/oauth2-oidc-sdk/index.json: Valid\n\n[Incubating] Problems report is available at: file:///home/oracle/oracle/metadata2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10066-019dfab1/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 771ms\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      }
+    ],
+    "failure_command": null,
+    "failure_gate": null,
+    "final_commit": "7ac3d8f71594ef853f65602ef1d3635486ca942d",
+    "fixups": [],
+    "human_intervention_required": false,
+    "repo_fix_paths": [],
+    "status": "success"
+  },
+  "local_review": {
+    "changed_paths": [],
+    "decision": "approved",
+    "finding_body": "",
+    "finding_title": "",
+    "fix_note": "",
+    "model": "gpt-5.6-sol",
+    "review_comment": "Reviewed the specified commit range and local evidence. The diff is limited to one coordinate and the allowed metadata, stats, and test paths; it uses only reachability-metadata.json. The four public, library-specific tests are outside library packages, are version-agnostic, do not skip or tolerate Native Image failures, and map to the four reported resource-access call sites. Reported dynamic-access coverage is 4/4 (100%), above the new-library gate, and 4 covered calls versus 6 reported metadata entries does not trigger the mismatch probe. Index validation, metadata checks, Checkstyle, Spotless, JVM/native tests, and library-stats validation all passed locally. No blocking must violation was found.",
+    "session_id": "fd6897775c694c13"
+  },
+  "metrics": {
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "path": "stats/com.nimbusds/oauth2-oidc-sdk/11.9.1/execution-metrics.json",
+    "summary": {
+      "cached_input_tokens_used": 667520,
+      "code_coverage_percent": 3.54,
+      "cost_usd": 1.308,
+      "generated_loc": 81,
+      "input_tokens_used": 153085,
+      "iterations": 5,
+      "metadata_entries": 6,
+      "output_tokens_used": 6961,
+      "tested_library_loc": 603
+    },
+    "timestamp": "2026-09-21T22:14:19.485217Z"
+  },
+  "modifiers": {
+    "chunk_final": true,
+    "chunked_dynamic_access": true,
+    "human_intervention": false
+  },
+  "producer": "kimeta",
+  "publication_id": "forge-10066-20260921221419485217-a0f10e686fe5",
+  "render": {
+    "dynamic_access": null,
+    "dynamic_access_evidence": {
+      "covered_call_sites": [
+        "[resources] java.lang.ClassLoader#getResourceAsStream(java.lang.String) <- com.nimbusds.openid.connect.sdk.assurance.claims.ISO3166_1Alpha2CountryCode.getCountryName(ISO3166_1Alpha2CountryCode.java:835) (line 835)",
+        "[resources] java.lang.ClassLoader#getResourceAsStream(java.lang.String) <- com.nimbusds.openid.connect.sdk.assurance.claims.ISO3166_1Alpha3CountryCode.getCountryName(ISO3166_1Alpha3CountryCode.java:833) (line 833)",
+        "[resources] java.lang.ClassLoader#getResourceAsStream(java.lang.String) <- com.nimbusds.openid.connect.sdk.assurance.claims.ISO3166_1AlphaCountryCodeMapper.lazyLoadMap_2_3(ISO3166_1AlphaCountryCodeMapper.java:57) (line 57)",
+        "[resources] java.lang.ClassLoader#getResourceAsStream(java.lang.String) <- com.nimbusds.openid.connect.sdk.assurance.claims.ISO3166_3CountryCode.getCountryName(ISO3166_3CountryCode.java:218) (line 218)"
+      ],
+      "metadata_rules": [
+        "when `com.nimbusds.oauth2.sdk.id.Identifier` is reached, make `sun.security.provider.NativePRNG.<init>(java.security.SecureRandomParameters)` available for reflection"
+      ]
+    },
+    "library_stats": {
+      "dynamicAccess": {
+        "breakdown": {
+          "resources": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 4,
+            "totalCalls": 4
+          }
+        },
+        "coverageRatio": 1.0,
+        "coveredCalls": 4,
+        "totalCalls": 4
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 2938,
+          "missed": 71285,
+          "ratio": 0.039583,
+          "total": 74223
+        },
+        "line": {
+          "covered": 603,
+          "missed": 16412,
+          "ratio": 0.035439,
+          "total": 17015
+        },
+        "method": {
+          "covered": 28,
+          "missed": 3540,
+          "ratio": 0.007848,
+          "total": 3568
+        }
+      },
+      "version": "11.9.1"
+    }
+  },
+  "schema_version": 1,
+  "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-sol",
+  "task_type": "library-new-request",
+  "template_type": "library-new-request",
+  "timestamp": "2026-09-21T22:14:19.485217Z"
+}

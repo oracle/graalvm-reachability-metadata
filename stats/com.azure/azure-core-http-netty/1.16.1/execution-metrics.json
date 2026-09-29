@@ -1,0 +1,87 @@
+{
+  "add_new_library_support:2026-09-21": {
+    "timestamp": "2026-09-21T17:42:15.515366Z",
+    "library": "com.azure:azure-core-http-netty:1.16.1",
+    "starting_commit": "249c97fa5229e09790761175f0804372ad396d03",
+    "ending_commit": "165c24376b234323e206cfad172d87638a5640dc",
+    "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-sol",
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "status": "success",
+    "stats": {
+      "version": "1.16.1",
+      "dynamicAccess": {
+        "breakdown": {
+          "resources": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 1,
+            "totalCalls": 1
+          }
+        },
+        "coverageRatio": 1.0,
+        "coveredCalls": 1,
+        "totalCalls": 1
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 1421,
+          "missed": 2444,
+          "ratio": 0.367658,
+          "total": 3865
+        },
+        "line": {
+          "covered": 347,
+          "missed": 536,
+          "ratio": 0.392978,
+          "total": 883
+        },
+        "method": {
+          "covered": 95,
+          "missed": 162,
+          "ratio": 0.36965,
+          "total": 257
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "no_action",
+      "issue_number": 10069,
+      "issue_label": "library-new-request",
+      "library": "com.azure:azure-core-http-netty:1.16.1",
+      "summary": "azure-core-http-netty resolves cleanly with its declared deps (azure-core, netty-handler/codec/buffer, netty-tcnative-boringssl-static, reactor-netty-http); two close precedents (azure-core-http-jdk-httpclient, reactor-netty-http) achieve full HTTP-client coverage with the plain generated scaffold and a local loopback HttpServer, no Docker/extra dependency/env setup.",
+      "deterministic_setup": [],
+      "agent_guidance": "Model the test on tests/src/com.azure/azure-core-http-jdk-httpclient/1.1.4 — use an in-JVM com.sun.net.httpserver.HttpServer on loopback to exercise NettyAsyncHttpClientBuilder/NettyAsyncHttpClientProvider (send/sendSync, redirects, streaming/progress, proxy with and without non-proxy-hosts, proxy auth challenge) without needing TLS, Docker, or extra dependencies.",
+      "risks": [],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#10069 Support for com.azure:azure-core-http-netty:1.16.1; label=library-new-request; body_chars=39"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "sonnet",
+      "input_tokens_used": 28,
+      "output_tokens_used": 6672
+    },
+    "metrics": {
+      "input_tokens_used": 396146,
+      "cached_input_tokens_used": 5466496,
+      "output_tokens_used": 32218,
+      "iterations": 11,
+      "cost_usd": 5.6804,
+      "generated_loc": 357,
+      "tested_library_loc": 347,
+      "metadata_entries": 45,
+      "test_only_metadata_entries": 259,
+      "code_coverage_percent": 39.3
+    },
+    "artifacts": {
+      "metadata_file": "metadata/com.azure/azure-core-http-netty/1.16.1/reachability-metadata.json"
+    }
+  }
+}

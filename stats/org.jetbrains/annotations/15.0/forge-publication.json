@@ -1,0 +1,103 @@
+{
+  "base_commit": "3be8e51b85ccb1ccb7ac4f54aaa71c1b0ab4aa28",
+  "branch": "ai/kimeta/fix-javac-org.jetbrains-annotations-15.0-forge-9386-20260926044117620602-46fa024379de",
+  "follow_ups": [],
+  "forge": {
+    "branch": "master",
+    "commit": "3be8e51b85ccb1ccb7ac4f54aaa71c1b0ab4aa28",
+    "monitored_branch": "origin/master"
+  },
+  "issue_number": 9386,
+  "library": {
+    "artifact": "annotations",
+    "coordinates": "org.jetbrains:annotations:15.0",
+    "group": "org.jetbrains",
+    "version": "15.0"
+  },
+  "local_ci_verification": {
+    "base_commit": "3be8e51b85ccb1ccb7ac4f54aaa71c1b0ab4aa28",
+    "commands": [
+      {
+        "command": [
+          "./gradlew",
+          "generateChangedIndexFileCoordinatesList",
+          "-PbaseCommit=origin/master",
+          "-PnewCommit=HEAD"
+        ],
+        "env": {
+          "GITHUB_OUTPUT": "/tmp/tmp7hmmmbfj"
+        },
+        "gate": "changed-index-coordinates",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :generateChangedIndexFileCoordinatesList\n\n[Incubating] Problems report is available at: file:///home/oracle/oracle/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9386-160a11a3/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 2s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      },
+      {
+        "command": [
+          "./gradlew",
+          "validateIndexFiles",
+          "-Pcoordinates=org.jetbrains:annotations"
+        ],
+        "env": {},
+        "gate": "index-file-validation",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :validateIndexFiles\n✅ metadata/org.jetbrains/annotations/index.json: Valid\n\n[Incubating] Problems report is available at: file:///home/oracle/oracle/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9386-160a11a3/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 2s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      }
+    ],
+    "failure_command": null,
+    "failure_gate": null,
+    "final_commit": "1a86d4b322f2414c76c8547a018d209156a76e11",
+    "fixups": [],
+    "human_intervention_required": false,
+    "repo_fix_paths": [],
+    "status": "success"
+  },
+  "local_review": {
+    "changed_paths": [
+      "tests/src/org.jetbrains/annotations/15.0/src/test/java/org_jetbrains/annotations/AnnotationsTest.java"
+    ],
+    "decision": "approved",
+    "finding_body": "The new AnnotationsTest was declared package-private in tests/src/org.jetbrains/annotations/15.0/src/test/java/org_jetbrains/annotations/AnnotationsTest.java, while the test contract requires every top-level test class to be public. This was a contribution-local must violation repairable under contribution-contract disposition 5.1.",
+    "finding_title": "Top-level test class was not public",
+    "fix_note": "Changed AnnotationsTest to a public class so the generated test satisfies the test discovery contract, then ran the required Forge finalization command to a stable successful pass.",
+    "model": "gpt-5.6-sol",
+    "review_comment": "Reviewed the complete contribution diff and local gate evidence. The changes stay within org.jetbrains:annotations:15.0, the javac repair adds the required NotNull.exception() and Nls.capitalization() implementations and assertions without weakening coverage, and no native-image dodge, legacy metadata, security-sensitive behavior, or unrelated change is present. Dynamic-access coverage is 0/0 for both 13.0 and 15.0 with no breakdown scopes, so the ordered repair gate passes at step 1. The recorded index gates passed. After the repair, the exact Forge finalization command passed all three test lanes, metadata and style checks, generated-test validation, and statistics generation without further publishable changes.",
+    "session_id": "d09556226e7e4158"
+  },
+  "metrics": {
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "path": "stats/org.jetbrains/annotations/15.0/execution-metrics.json",
+    "summary": {
+      "cached_input_tokens_used": 187904,
+      "code_coverage_percent": 85.71,
+      "cost_usd": 0.4042,
+      "input_tokens_used": 50021,
+      "iterations": 3,
+      "metadata_entries": 0,
+      "output_tokens_used": 2005,
+      "previous_library_coverage_percent": 66.67,
+      "previous_library_metadata_entries": 0,
+      "tested_library_loc": 6
+    },
+    "timestamp": "2026-09-26T04:41:17.620602Z"
+  },
+  "modifiers": {
+    "chunk_final": true,
+    "chunked_dynamic_access": false,
+    "human_intervention": false
+  },
+  "previous_library": {
+    "artifact": "annotations",
+    "coordinates": "org.jetbrains:annotations:13.0",
+    "group": "org.jetbrains",
+    "version": "13.0"
+  },
+  "producer": "kimeta",
+  "publication_id": "forge-9386-20260926044117620602-46fa024379de",
+  "render": {},
+  "schema_version": 1,
+  "strategy_name": "javac_iterative_with_coverage_sources_pi_gpt-5.6-sol",
+  "task_type": "fixes-javac-fail",
+  "template_type": "fixes-javac-fail",
+  "timestamp": "2026-09-26T04:41:17.620602Z"
+}

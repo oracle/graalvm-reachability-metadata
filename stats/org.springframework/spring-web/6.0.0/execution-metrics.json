@@ -1,0 +1,143 @@
+{
+  "fix_javac_fail:2026-09-21": {
+    "timestamp": "2026-09-21T02:10:29.213824Z",
+    "library": "org.springframework:spring-web:6.0.0",
+    "starting_commit": "0544ed77baeed8d36321ac8ff1b7ceef7e846724",
+    "ending_commit": "3b8bb8735dcb17e457381774844c1acc9e02db5c",
+    "previous_library": "org.springframework:spring-web:5.3.32",
+    "strategy_name": "javac_iterative_with_coverage_sources_pi_gpt-5.6-sol",
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "status": "success",
+    "stats": {
+      "version": "6.0.0",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 15,
+            "totalCalls": 15
+          }
+        },
+        "coverageRatio": 1.0,
+        "coveredCalls": 15,
+        "totalCalls": 15
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 3988,
+          "missed": 91637,
+          "ratio": 0.041705,
+          "total": 95625
+        },
+        "line": {
+          "covered": 843,
+          "missed": 22130,
+          "ratio": 0.036695,
+          "total": 22973
+        },
+        "method": {
+          "covered": 201,
+          "missed": 6292,
+          "ratio": 0.030956,
+          "total": 6493
+        }
+      }
+    },
+    "previous_library_stats": {
+      "version": "5.3.32",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 0.818182,
+            "coveredCalls": 18,
+            "totalCalls": 22
+          }
+        },
+        "coverageRatio": 0.818182,
+        "coveredCalls": 18,
+        "totalCalls": 22
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 4515,
+          "missed": 93671,
+          "ratio": 0.045984,
+          "total": 98186
+        },
+        "line": {
+          "covered": 882,
+          "missed": 21773,
+          "ratio": 0.038932,
+          "total": 22655
+        },
+        "method": {
+          "covered": 221,
+          "missed": 6067,
+          "ratio": 0.035146,
+          "total": 6288
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "advisory_preparation",
+      "issue_number": 9930,
+      "issue_label": "fails-javac-compile",
+      "library": "org.springframework:spring-web:6.0.0",
+      "summary": "Spring Framework 6.0 moved servlet types to the Jakarta EE 9+ namespace; the test's hard-coded javax.servlet-api dependency must become jakarta.servlet-api, and the Hessian/HTTP-invoker tests need rewriting since those packages were removed upstream.",
+      "deterministic_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "jakarta.servlet:jakarta.servlet-api:6.0.0",
+          "scope": "testImplementation",
+          "reason": "spring-web/spring-test 6.0.0 compile their Servlet-based types (ServletContainerInitializer, WebApplicationInitializer, MockHttpServletRequest, etc.) against jakarta.servlet, not javax.servlet; the existing javax.servlet:javax.servlet-api:4.0.1 testImplementation must be replaced (version 6.0.0 matc\n...[truncated]"
+        }
+      ],
+      "agent_guidance": "Swap javax.servlet imports for jakarta.servlet in SpringServletContainerInitializerTest.java and any other test touching ServletContext/ServletException/HttpServletRequest — the API shapes are otherwise unchanged. Separately, org.springframework.remoting.httpinvoker and org.springframework.remoting.caucho (Hessian) were removed entirely from spring-web in 6.0.0 (verified: no such packages exist in the v6.0.0 source tree), so AbstractHttpInvokerRequestExecutorTest.java and HessianClientInterceptorTest.java cannot be patched — they must be deleted or replaced with coverage of surviving spring-web functionality. spring-context and spring-test in build.gradle already track the same $libraryVersion variable as spring-web, so they'll pick up 6.0.0 automatically once regenerated.",
+      "risks": [
+        "jetty-reactive-httpclient is pinned at 1.1.19 (pre-Jakarta, Jetty 9-era) while Spring Framework 6.0.0's own platform BOM uses jetty-reactive-httpclient 3.0.7 over jetty-bom 11.0.12; JettyClientHttpResponseTest may need that dependency bumped if it fails at compile or runtime once the jakarta.servlet-api fix is applied, though the current failure log does not show this yet."
+      ],
+      "applied_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "jakarta.servlet:jakarta.servlet-api:6.0.0",
+          "result": "skipped",
+          "reason": "build_gradle_absent"
+        }
+      ],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#9930 [Automation] javac compile fails for org.springframework:spring-web:6.0.0; label=fails-javac-compile; body_chars=8015"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "18 existing test file path(s) included"
+        }
+      ],
+      "current_library": "org.springframework:spring-web:5.3.32",
+      "new_version": "6.0.0",
+      "model": "sonnet",
+      "input_tokens_used": 46,
+      "output_tokens_used": 12873
+    },
+    "metrics": {
+      "input_tokens_used": 127481,
+      "cached_input_tokens_used": 1123200,
+      "output_tokens_used": 8333,
+      "iterations": 5,
+      "cost_usd": 1.449,
+      "tested_library_loc": 843,
+      "metadata_entries": 115,
+      "test_only_metadata_entries": 62,
+      "previous_library_metadata_entries": 116,
+      "previous_library_test_only_metadata_entries": 34,
+      "code_coverage_percent": 3.67,
+      "previous_library_coverage_percent": 3.89
+    },
+    "artifacts": {
+      "metadata_file": "metadata/org.springframework/spring-web/6.0.0/reachability-metadata.json"
+    }
+  }
+}

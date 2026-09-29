@@ -85,11 +85,11 @@ public class H2gisTest {
 
             try (PreparedStatement insert = connection.prepareStatement("""
                     INSERT INTO landmarks(id, name, location)
-                    VALUES (?, ?, ST_GeomFromText(?, ?))
+                    VALUES (?, ?, ST_SetSRID(ST_GeomFromGeoJSON(?), ?))
                     """)) {
                 insert.setInt(1, 7);
                 insert.setString(2, "observatory");
-                insert.setString(3, "POINT (2 3)");
+                insert.setString(3, "{\"type\":\"Point\",\"coordinates\":[2,3]}");
                 insert.setInt(4, 4326);
                 assertThat(insert.executeUpdate()).isEqualTo(1);
             }
@@ -147,9 +147,19 @@ public class H2gisTest {
                             ST_Intersects(
                                 ST_GeomFromText('LINESTRING (0 0, 4 4)'),
                                 ST_GeomFromText('LINESTRING (0 4, 4 0)')) AS intersects_lines,
+                            ST_DWithin(
+                                ST_GeomFromText('POINT (0 0)'),
+                                ST_GeomFromText('POINT (3 4)'), 5) AS within_distance,
+                            ST_Within(
+                                ST_GeomFromText('POINT (1 1)'),
+                                ST_GeomFromText(
+                                    'POLYGON ((0 0, 4 0, 4 3, 0 3, 0 0))')) AS within_polygon,
                             ST_Distance(
                                 ST_GeomFromText('POINT (0 0)'),
                                 ST_GeomFromText('POINT (3 4)')) AS distance,
+                            ST_DistanceSphere(
+                                ST_GeomFromText('POINT (0 0)', 4326),
+                                ST_GeomFromText('POINT (0 1)', 4326)) AS sphere_distance,
                             ST_Area(ST_Intersection(
                                 ST_GeomFromText('POLYGON ((0 0, 4 0, 4 3, 0 3, 0 0))'),
                                 ST_GeomFromText('POLYGON ((2 1, 5 1, 5 2, 2 2, 2 1))'))) AS overlap_area,
@@ -162,7 +172,10 @@ public class H2gisTest {
             assertThat(resultSet.getDouble("perimeter")).isEqualTo(14.0);
             assertThat(resultSet.getBoolean("contains_point")).isTrue();
             assertThat(resultSet.getBoolean("intersects_lines")).isTrue();
+            assertThat(resultSet.getBoolean("within_distance")).isTrue();
+            assertThat(resultSet.getBoolean("within_polygon")).isTrue();
             assertThat(resultSet.getDouble("distance")).isEqualTo(5.0);
+            assertThat(resultSet.getDouble("sphere_distance")).isBetween(111_000.0, 112_000.0);
             assertThat(resultSet.getDouble("overlap_area")).isEqualTo(2.0);
             assertThat(resultSet.getDouble("buffer_area")).isBetween(3.0, 4.0);
             assertThat(resultSet.getString("hull_type")).isEqualTo("POLYGON");
@@ -279,8 +292,6 @@ public class H2gisTest {
                     SELECT ST_SRID(projected) AS projected_srid,
                            ST_X(projected) AS projected_x,
                            ST_Y(projected) AS projected_y,
-                           ST_AsText(ST_GeomFromGeoJSON(
-                               '{"type":"LineString","coordinates":[[0,0],[2,2]]}')) AS geo_json_wkt,
                            ST_AsText(ST_Translate(
                                ST_GeomFromText('POINT (1 2)'), 3, 4)) AS translated_wkt,
                            ST_Length(ST_ShortestLine(
@@ -293,7 +304,6 @@ public class H2gisTest {
                 assertThat(resultSet.getInt("projected_srid")).isEqualTo(3857);
                 assertThat(resultSet.getDouble("projected_x")).isCloseTo(0.0, within(0.001));
                 assertThat(resultSet.getDouble("projected_y")).isCloseTo(0.0, within(0.001));
-                assertThat(resultSet.getString("geo_json_wkt")).isEqualTo("LINESTRING (0 0, 2 2)");
                 assertThat(resultSet.getString("translated_wkt")).isEqualTo("POINT (4 6)");
                 assertThat(resultSet.getDouble("shortest_line_length")).isEqualTo(10.0);
                 assertThat(resultSet.next()).isFalse();

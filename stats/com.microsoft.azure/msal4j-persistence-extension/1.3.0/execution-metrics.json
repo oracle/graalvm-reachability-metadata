@@ -1,0 +1,85 @@
+{
+  "add_new_library_support:2026-09-23": {
+    "timestamp": "2026-09-23T04:34:46.766176Z",
+    "library": "com.microsoft.azure:msal4j-persistence-extension:1.3.0",
+    "starting_commit": "c5f782600a694efaff236506f9cba5e65ae663ba",
+    "ending_commit": "1dfe87afd436e329ffff7a1844ca7fa8de1e0096",
+    "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-sol",
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "status": "success",
+    "stats": {
+      "version": "1.3.0",
+      "dynamicAccess": {
+        "breakdown": {},
+        "coverageRatio": 1.0,
+        "coveredCalls": 0,
+        "totalCalls": 0
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 636,
+          "missed": 1030,
+          "ratio": 0.381753,
+          "total": 1666
+        },
+        "line": {
+          "covered": 163,
+          "missed": 226,
+          "ratio": 0.419023,
+          "total": 389
+        },
+        "method": {
+          "covered": 40,
+          "missed": 41,
+          "ratio": 0.493827,
+          "total": 81
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "advisory_preparation",
+      "issue_number": 10068,
+      "issue_label": "library-new-request",
+      "library": "com.microsoft.azure:msal4j-persistence-extension:1.3.0",
+      "summary": "No missing Maven dependency or Docker image is needed, but the library's real Linux code path (KeyRingAccessor via libsecret/D-Bus) can't run in headless CI without a live, unlocked Secret Service; the constructor calls verify() eagerly and will throw without one.",
+      "deterministic_setup": [],
+      "agent_guidance": "CI runs only ubuntu-latest (ci.json), so the Windows (DPAPI) and macOS (KeyChainAccessor) branches of PersistenceTokenCacheAccessAspect can never be exercised here — don't try to cover them. On Linux, PersistenceTokenCacheAccessAspect's constructor branches on PersistenceSettings.isOnLinuxUseUnprotectedFileAsCacheStorage(): if false (i.e. PersistenceSettings.Builder.setLinuxKeyring(...) was used), it eagerly builds a KeyRingAccessor and calls verify() synchronously in the constructor, which does a real write/read/delete round-trip against the D-Bus Secret Service through libsecret-1 (ISecurityLibrary statically calls Native.load(\"libsecret-1\", ...)). libsecret-1-0, dbus-daemon/dbus-run-session, and gnome-keyring-daemon are already present on the test/CI OS image, so the native library load itself will not fail — but no D-Bus session bus or unlocked keyring is running by default in a headless test process, so the verify() call will throw KeyRingAccessException and fail both the JVM and native-image test lanes. For a reliable primary test, build PersistenceSettings with setLinuxUseUnprotectedFileAsCacheStorage(true); this still exercises PersistenceTokenCacheAccessAspect's core read/write/lock logic and CacheFileAccessor/CrossProcessCacheFileLock via the normal generated scaffold with no extra setup. If coverage of the real KeyRingAccessor/libsecret/JNA path is wanted, the test's build.gradle would need a `test.doFirst` (or equivalent) that starts an ephemeral `dbus-daemon --session --fork --print-address` plus `gnome-keyring-daemon --unlock --components=secrets` (empty passphrase via stdin) and injects the resulting DBUS_SESSION_BUS_ADDRESS/GNOME_KEYRING_CONTROL into the test JVM's environment before PersistenceTokenCacheAccessAspect is constructed with setLinuxKeyring(...) — this is inherently more fragile than the file-storage path, so treat it as best-effort/optional coverage rather than a hard requirement.",
+      "risks": [
+        "KeyRingAccessor.verify() runs inside the PersistenceTokenCacheAccessAspect constructor, so any test that reaches the real Linux keyring path will fail outright (not just skip a feature) unless a D-Bus session + unlocked Secret Service is set up first.",
+        "ISecurityLibrary.library is a static field that calls Native.load(\"libsecret-1\", ...) at class-init time, so merely referencing that class pays a native-library-load cost — currently satisfiable in this environment, but worth flagging as environment-dependent for native-image's JNA reflective-proxy generation.",
+        "Windows/macOS-specific code (KeyChainAccessor, DPAPI) is structurally unreachable in this repo's Linux-only CI matrix, so don't expect or chase coverage there."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#10068 Support for com.microsoft.azure:msal4j-persistence-extension:1.3.0; label=library-new-request; body_chars=39"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "sonnet",
+      "input_tokens_used": 46,
+      "output_tokens_used": 18741
+    },
+    "metrics": {
+      "input_tokens_used": 199972,
+      "cached_input_tokens_used": 1651968,
+      "output_tokens_used": 15039,
+      "iterations": 5,
+      "cost_usd": 2.2771,
+      "generated_loc": 151,
+      "tested_library_loc": 163,
+      "metadata_entries": 1,
+      "test_only_metadata_entries": 6,
+      "code_coverage_percent": 41.9
+    },
+    "artifacts": {
+      "metadata_file": "metadata/com.microsoft.azure/msal4j-persistence-extension/1.3.0/reachability-metadata.json"
+    }
+  }
+}

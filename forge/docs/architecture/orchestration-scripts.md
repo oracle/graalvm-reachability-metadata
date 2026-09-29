@@ -241,14 +241,9 @@ sequenceDiagram
                 W->>GH: disable auto-merge and dismiss Forge approval
                 W->>W: wait for a maintainer
             else eligible approved head
-                opt non-conflicting head changes an index
-                    W->>WT: validate current-master merge candidate
-                end
                 opt fixed override is present
                     W->>GH: clear intervention labels and stale change requests
                 end
-                W->>GH: approve exact validated head
-                W->>GH: enable auto-merge with expected head SHA
                 alt head conflicts with master
                     W->>WT: merge current master without judgment
                     alt merge resolves mechanically
@@ -259,10 +254,8 @@ sequenceDiagram
                         W->>GH: disable auto-merge and dismiss Forge approval
                         W->>GH: add human-intervention
                     end
-                else required CI is pending
-                    W->>W: leave approved auto-merge armed
-                    GH->>GH: merge automatically if every gate turns green
-                else required CI failed
+                else whole check rollup failed
+                    W->>GH: give up any auto-merge request left from an earlier pass
                     W->>WT: create exact-head repair worktree
                     W->>AG: xhigh diagnosis with checks, runs, descriptor, and rules
                     alt failure is transient
@@ -280,8 +273,15 @@ sequenceDiagram
                         WT->>GH: force-with-lease push rejected head
                         W->>GH: apply human-intervention or close action
                     end
-                else required CI is green
-                    GH->>GH: queue or merge automatically when all gates are ready
+                else whole check rollup is pending
+                    W->>W: defer to a later pass, unapproved and unarmed
+                else whole check rollup succeeded
+                    opt head changes an index
+                        W->>WT: validate current-master merge candidate
+                    end
+                    W->>GH: approve exact validated head
+                    W->>GH: enable auto-merge with expected head SHA
+                    GH->>GH: queue or merge once every repository gate is ready
                 end
             end
         end
@@ -294,7 +294,7 @@ sequenceDiagram
     end
 ```
 
-The numbered calls collapse into six stages. Each stage either reaches a terminal
+The numbered calls collapse into seven stages. Each stage either reaches a terminal
 GitHub state or deliberately waits for a later pass with no stale state carried
 forward:
 
@@ -303,8 +303,9 @@ forward:
 | Candidate discovery | Forge review worker | The PR is open and carries the configured queue label; labels select work, not trust | Candidate state is loaded from GitHub |
 | Exact-head validation | Worker and trusted publisher validator | The upstream `ai/**` head, bot authorship, publication identity, schema, route, and the one descriptor in the current PR diff all agree | A validated descriptor and its exact `approved` or `rejected` disposition |
 | Immediate rejection | Worker | A rejected decision withdraws Forge merge readiness without waiting for CI | The PR remains unapproved with `human-intervention`, or the PR and unsupported-version issue are closed |
-| Approval and auto-merge | Worker and GitHub | Index-changing mergeable heads are guarded first, then approval and auto-merge are bound to the validated SHA | GitHub owns the eventual queue or merge operation |
-| Conflict maintenance | Worker and temporary worktree | Approved conflicts are refreshed mechanically after auto-merge is armed | A refreshed head waits for another pass, or Forge withdraws approval and escalates |
+| Check-rollup gate | Worker | Forge reads the whole rollup for the exact head before spending anything on it; a pending verdict is nobody's turn yet and a failed one is diagnosis, not merge readiness | The pass defers, or continues with a rollup it has seen succeed |
+| Approval and auto-merge | Worker and GitHub | On a green rollup only, index-changing heads are guarded first, then approval and auto-merge are bound to the validated SHA | GitHub owns the eventual queue or merge operation |
+| Conflict maintenance | Worker and temporary worktree | Conflicts are refreshed mechanically with nothing approved or armed, because the push restarts the checks | A refreshed head waits for another pass, or Forge withdraws approval and escalates |
 | Failed-CI diagnosis | Worker and xhigh analysis agent | Every failure is diagnosed before any rerun; transient rerun IDs and contribution repairs are separate outcomes | Selected jobs rerun, a repaired head is pushed, or rejection is reconciled |
 | Merge follow-up | Worker and GitHub | A durable PR label identifies issue transitions pending after GitHub completes auto-merge | Linked issues are released once and the pending marker is removed |
 

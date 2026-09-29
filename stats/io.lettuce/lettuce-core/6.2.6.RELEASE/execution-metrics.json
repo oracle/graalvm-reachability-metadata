@@ -1,0 +1,117 @@
+{
+  "fix_java_run_fail:2026-09-25": {
+    "timestamp": "2026-09-25T11:18:31.052453Z",
+    "library": "io.lettuce:lettuce-core:6.2.6.RELEASE",
+    "starting_commit": "fa84f5193f0d0a83c75a788aeb3e64ea242fd194",
+    "ending_commit": "bd4b73b30dd16dbe5540a805f48c04711b2aee94",
+    "previous_library": "io.lettuce:lettuce-core:6.1.10.RELEASE",
+    "strategy_name": "java_run_iterative_with_coverage_sources_pi_gpt-5.6-sol",
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "status": "success",
+    "stats": {
+      "version": "6.2.6.RELEASE",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 0.145455,
+            "coveredCalls": 8,
+            "totalCalls": 55
+          }
+        },
+        "coverageRatio": 0.145455,
+        "coveredCalls": 8,
+        "totalCalls": 55
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 16382,
+          "missed": 107891,
+          "ratio": 0.131823,
+          "total": 124273
+        },
+        "line": {
+          "covered": 3007,
+          "missed": 20677,
+          "ratio": 0.126963,
+          "total": 23684
+        },
+        "method": {
+          "covered": 901,
+          "missed": 7714,
+          "ratio": 0.104585,
+          "total": 8615
+        }
+      }
+    },
+    "previous_library_stats": {
+      "version": "6.1.10.RELEASE",
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 15247,
+          "missed": 105084,
+          "ratio": 0.126709,
+          "total": 120331
+        },
+        "line": {
+          "covered": 2936,
+          "missed": 20111,
+          "ratio": 0.127392,
+          "total": 23047
+        },
+        "method": {
+          "covered": 878,
+          "missed": 7443,
+          "ratio": 0.105516,
+          "total": 8321
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "advisory_preparation",
+      "issue_number": 9338,
+      "issue_label": "fails-java-run",
+      "library": "io.lettuce:lettuce-core:6.2.6.RELEASE",
+      "summary": "JVM-run connection failures are caused by the test's own hand-rolled RESP fake server, not by missing infrastructure; lettuce-core's HELLO/RESP3 auto-negotiation handshake trips the naive parser under 6.2.6 and needs a test-code fix, not new Docker/dependency setup.",
+      "deterministic_setup": [],
+      "agent_guidance": "The io.lettuce:lettuce-core test uses a hand-written in-process FakeRedisServer (raw ServerSocket + minimal RESP2 parser) rather than a real Redis Docker container, matching this repo's convention for Redis-client libraries (jedis/redis4cats also avoid a Docker Redis). lettuce-core's RedisClient defaults ClientOptions.protocolVersion to null (AUTO), which makes RedisHandshake try a RESP3 handshake first (dispatches HELLO 3 ...) and falls back to RESP2 only if that attempt fails cleanly. Disassembly of io.lettuce.core.RedisHandshake in both 6.1.10.RELEASE and 6.2.6.RELEASE confirms this AUTO/HELLO-first behavior exists in both versions, but 6.2.6.RELEASE reworked credential resolution to route through RedisCredentialsProvider.resolveCredentials() (a reactive Mono resolved via thenComposeAsync) before dispatching HELLO/AUTH, changing the exact bytes/timing of what's written to the socket during the handshake. The fake server's readCommand()/handle() loop treats any RESP parsing hiccup as a fatal IOException that kills that server instance's accept thread entirely (not just the current connection), which explains why every subsequent test method in the failing run also gets 'Connection closed prematurely' once the first handshake trips the parser. Recommended fix direction for whoever regenerates/updates this test: either (a) explicitly set ClientOptions.builder().protocolVersion(ProtocolVersion.RESP2).build() on the RedisClient before connecting in each test that talks to FakeRedisServer, so the client skips the fragile HELLO/RESP3 negotiation entirely, or (b) make FakeRedisServer handle HELLO by returning a well-formed RESP2 map-shaped reply (proto/id/mode/version/role/modules) instead of relying on default '+OK'. This is a test-code correctness issue, not something addressed by an extra Maven dependency, Docker image, or environment/system property.",
+      "risks": [
+        "This is a hypothesis built from bytecode-level diffing of RedisHandshake/ClientOptions/RedisHandshakeHandler between 6.1.10.RELEASE and 6.2.6.RELEASE, not from running the reproducer locally (no Docker/network Redis was started) — the generation agent should still validate against the actual javaTest run.",
+        "If (a) protocolVersion(RESP2) does not fully resolve it, the deeper cause may be in Netty channel write ordering introduced by the async credential resolution (thenComposeAsync on ForkJoinPool.commonPool by default) racing the handshake timeout timer; that would still be a test/library-interaction nuance, not an infra gap."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#9338 [Automation] java run fails for io.lettuce:lettuce-core:6.2.6.RELEASE; label=fails-java-run; body_chars=8015"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "8 existing test file path(s) included"
+        }
+      ],
+      "current_library": "io.lettuce:lettuce-core:6.1.10.RELEASE",
+      "new_version": "6.2.6.RELEASE",
+      "model": "sonnet",
+      "input_tokens_used": 44,
+      "output_tokens_used": 20374
+    },
+    "metrics": {
+      "input_tokens_used": 53346,
+      "cached_input_tokens_used": 469760,
+      "output_tokens_used": 4158,
+      "iterations": 3,
+      "cost_usd": 0.6263,
+      "tested_library_loc": 3007,
+      "metadata_entries": 109,
+      "test_only_metadata_entries": 4,
+      "previous_library_metadata_entries": 152,
+      "code_coverage_percent": 12.7,
+      "previous_library_coverage_percent": 12.74
+    },
+    "artifacts": {
+      "metadata_file": "metadata/io.lettuce/lettuce-core/6.2.6.RELEASE/reachability-metadata.json"
+    }
+  }
+}
