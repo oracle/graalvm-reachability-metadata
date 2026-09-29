@@ -7,7 +7,7 @@
 
 Maps sampled `.iprof` stacks onto static call-graph ids and computes
 deterministic shortest semantic routes from sampled frames and public entries
-(§AR-code-coverage-improvement.3).
+(§AR-code-coverage-deep-navigation.2).
 """
 
 from __future__ import annotations
@@ -16,7 +16,7 @@ import heapq
 from dataclasses import dataclass, field
 
 from utility_scripts.code_coverage_jacoco import JacocoMethodCoverage
-from utility_scripts.code_coverage_model import MethodRef, method_ref_from_iprof
+from utility_scripts.code_coverage_model import MethodRef
 from utility_scripts.code_coverage_profile_graph import (
     CallGraph,
     format_static_id,
@@ -26,6 +26,7 @@ from utility_scripts.code_coverage_profile_graph import (
 from utility_scripts.code_coverage_profile_inputs import (
     ProfileFormatError,
     load_json_object,
+    profile_tables,
 )
 
 # Stack frames owned by these packages are runtime/harness plumbing, never a
@@ -78,21 +79,17 @@ def _parse_ctx(ctx: str) -> list[tuple[int, int]]:
     return pairs
 
 
-def _load_sampled_profile(profile_path: str, graph: CallGraph) -> SampledProfile:
-    """Parse a sampled `.iprof` and map its stacks onto static call-graph ids."""
-    document: dict = load_json_object(profile_path, "sampled profile")
+def _sampled_profile(
+        document: dict,
+        graph: CallGraph,
+        iprof_refs: dict[int, MethodRef],
+) -> SampledProfile:
+    """Map the sampled stacks of one `.iprof` onto static call-graph ids."""
     if "samplingProfiles" not in document:
         raise ProfileFormatError(
             "Profile has no samplingProfiles section. Re-collect the profile with "
-            "the PGO-sampling harness tasks (nativeTestPGOSampling/runNativeTestPGO)."
+            "the PGO harness tasks (nativeTestPGOSampling/runNativeTestPGO)."
         )
-
-    type_names = {entry["id"]: entry["name"] for entry in document.get("types", [])}
-    iprof_refs: dict[int, MethodRef] = {}
-    for record in document.get("methods", []):
-        ref = method_ref_from_iprof(record, type_names)
-        if ref is not None:
-            iprof_refs[record["id"]] = ref
 
     profile = SampledProfile()
     for context_index, sampling in enumerate(document.get("samplingProfiles") or [], start=1):
@@ -127,14 +124,29 @@ def _load_sampled_profile(profile_path: str, graph: CallGraph) -> SampledProfile
     return profile
 
 
-def load_sampled_profile(profile_path: str, graph: CallGraph) -> SampledProfile:
-    """Load a sampled profile, normalizing malformed content to one error type."""
+def sampled_profile_from_document(
+        document: dict,
+        graph: CallGraph,
+        iprof_refs: dict[int, MethodRef],
+        profile_path: str,
+) -> SampledProfile:
+    """Map an already parsed `.iprof`, normalizing malformed content to one error."""
     try:
-        return _load_sampled_profile(profile_path, graph)
+        return _sampled_profile(document, graph, iprof_refs)
     except ProfileFormatError:
         raise
     except (KeyError, TypeError, ValueError) as error:
         raise ProfileFormatError(f"Malformed sampled profile '{profile_path}'.") from error
+
+
+def load_sampled_profile(profile_path: str, graph: CallGraph) -> SampledProfile:
+    """Load a sampled profile, normalizing malformed content to one error type."""
+    document: dict = load_json_object(profile_path, "sampled profile")
+    try:
+        iprof_refs, _ = profile_tables(document)
+    except (KeyError, TypeError, ValueError) as error:
+        raise ProfileFormatError(f"Malformed sampled profile '{profile_path}'.") from error
+    return sampled_profile_from_document(document, graph, iprof_refs, profile_path)
 
 
 def _looks_like_framework_frame(ref: MethodRef) -> bool:
@@ -174,23 +186,27 @@ def _multi_source_routes(
         graph: CallGraph,
         seeds: list[tuple[int, tuple, object]],
 ) -> RouteMap:
-    """Compute deterministic shortest semantic paths from ranked source methods."""
+    """Compute deterministic shortest semantic paths from ranked source methods.
+
+    Among equally short routes, the one with fewer unobserved dispatch steps
+    wins before seed rank does (§AR-code-coverage-deep-navigation.2.1).
+    """
     routes = RouteMap()
-    best_keys: dict[int, tuple[int, tuple]] = {}
-    queue: list[tuple[int, tuple, str, int]] = []
+    best_keys: dict[int, tuple[int, int, tuple]] = {}
+    queue: list[tuple[int, int, tuple, str, int]] = []
     for static_id, seed_rank, payload in seeds:
-        candidate_key: tuple[int, tuple] = (0, seed_rank)
+        candidate_key: tuple[int, int, tuple] = (0, 0, seed_rank)
         if static_id in best_keys and best_keys[static_id] <= candidate_key:
             continue
         best_keys[static_id] = candidate_key
         routes.distance[static_id] = 0
         routes.previous[static_id] = None
         routes.payload[static_id] = payload
-        heapq.heappush(queue, (0, seed_rank, graph.methods[static_id].canonical_id, static_id))
+        heapq.heappush(queue, (0, 0, seed_rank, graph.methods[static_id].canonical_id, static_id))
 
     while queue:
-        distance, seed_rank, _, current = heapq.heappop(queue)
-        if best_keys.get(current) != (distance, seed_rank):
+        distance, unobserved, seed_rank, _, current = heapq.heappop(queue)
+        if best_keys.get(current) != (distance, unobserved, seed_rank):
             continue
         current_ref_id: str = translated_ref(current, graph).canonical_id
         for edge in graph.adjacency.get(current, []):
@@ -205,7 +221,8 @@ def _multi_source_routes(
                 != translated_ref(callee, graph).canonical_id
             )
             candidate_distance: int = distance + semantic_step
-            candidate_key = (candidate_distance, seed_rank)
+            candidate_unobserved: int = unobserved + int(edge.get("unobserved", False))
+            candidate_key = (candidate_distance, candidate_unobserved, seed_rank)
             if callee in best_keys and best_keys[callee] <= candidate_key:
                 continue
             best_keys[callee] = candidate_key
@@ -214,7 +231,13 @@ def _multi_source_routes(
             routes.payload[callee] = routes.payload[current]
             heapq.heappush(
                 queue,
-                (candidate_distance, seed_rank, graph.methods[callee].canonical_id, callee),
+                (
+                    candidate_distance,
+                    candidate_unobserved,
+                    seed_rank,
+                    graph.methods[callee].canonical_id,
+                    callee,
+                ),
             )
     return routes
 

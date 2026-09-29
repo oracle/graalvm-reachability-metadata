@@ -3,25 +3,29 @@
 # You should have received a copy of the CC0 legalcode along with this
 # work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 
-# Deep-method coverage, with JaCoCo as the only coverage authority and sampled PGO as
-# navigation: §AR-code-coverage-improvement.4.2, §AR-code-coverage-improvement.3.
+# Deep-method coverage, with JaCoCo as the only coverage authority and PGO evidence as
+# navigation: §AR-code-coverage-improvement.4.2, §AR-code-coverage-deep-navigation.
 
 """
-JaCoCo-exact deep-method report with sampled-PGO path guidance.
+JaCoCo-exact deep-method report with PGO path guidance.
 
 The analyzer selects exact library methods reported by JaCoCo but absent from
-the public API inventory. Sampled PGO and the static graph rank graph-present
+the public API inventory. PGO evidence and the static graph rank graph-present
 paths; graph-absent methods remain in full JSON but never enter prompts.
-Input loading, graph construction, routing, record building, and rendering
-live in the sibling `code_coverage_profile_*` modules.
+Input loading, graph construction, counters, control flow, routing, record
+building, miss classification, and rendering live in the sibling
+`code_coverage_profile_*` modules.
 
 Inputs:
 - `call_tree_{methods,invokes,targets}_*.csv` — the analysis call-tree CSV dump
   (`-H:+PrintAnalysisCallTree -H:PrintAnalysisCallTreeType=CSV`).
-- a sampled `.iprof` — profile `<`-chain contexts are leaf-first
-  (`callee:bci<caller:bci`), so sampled stacks read right-to-left from the root.
+- an instrumented, sampled `.iprof` — profile `<`-chain contexts are leaf-first
+  (`callee:bci<caller:bci`), so sampled stacks read right-to-left from the root;
+  a profile without counters degrades to line-level hints.
 - `api-inventory.json` — the public user-callable target universe.
 - one or more JaCoCo XML reports — exact coverage for public and deep methods.
+- the extractor's `methods.csv`, with its sibling `flow.csv` and `types.csv`
+  when present — library membership, control flow, and the type hierarchy.
 
 Usage:
   python3 utility_scripts/code_coverage_profile_report.py \
@@ -55,12 +59,17 @@ from utility_scripts.code_coverage_profile_graph import (
     is_synthetic_method,
     load_call_graph,
 )
+from utility_scripts.code_coverage_profile_history import (
+    next_attempt_counts,
+    previous_report,
+    previous_target_states,
+    progress_since,
+)
 from utility_scripts.code_coverage_profile_inputs import (
     ProfileFormatError,
     TargetState,
     effective_target_state,
     load_json_object,
-    parse_target_state,
     require_coordinate,
     target_state_to_json,
     library_owners,
@@ -68,11 +77,17 @@ from utility_scripts.code_coverage_profile_inputs import (
     load_library_methods,
     load_target_states,
 )
+from utility_scripts.code_coverage_profile_miss import classify_miss
+from utility_scripts.code_coverage_profile_navigation import (
+    NavigationEvidence,
+    load_navigation,
+    navigation_caveats,
+    navigation_summary,
+)
 from utility_scripts.code_coverage_profile_records import (
     MAX_LISTED_METHODS,
     NearCallRecord,
     build_record,
-    classify_miss,
     method_evidence,
     prompt_selection_key,
     record_rank_key,
@@ -86,7 +101,6 @@ from utility_scripts.code_coverage_profile_routes import (
     observed_methods,
     public_entry_routes,
     sample_routes,
-    load_sampled_profile,
 )
 
 
@@ -100,6 +114,7 @@ def correlate(
         target_states: dict[str, TargetState] | None = None,
         library_methods: set[str] | None = None,
         jacoco_lines: dict[str, dict[int, JacocoLineCoverage]] | None = None,
+        evidence: NavigationEvidence | None = None,
 ) -> tuple[dict, list[NearCallRecord]]:
     """Build exact public coverage and deep uncovered-method path records."""
     if max_listed <= 0:
@@ -107,6 +122,7 @@ def correlate(
     attempts: dict[str, int] = attempt_counts or {}
     states: dict[str, TargetState] = target_states or {}
     lines: dict[str, dict[int, JacocoLineCoverage]] = jacoco_lines or {}
+    navigation: NavigationEvidence = evidence or NavigationEvidence()
     inventory_refs: list[tuple[MethodRef, dict]] = []
     for target in inventory.get("targets", []):
         ref: MethodRef | None = parse_inventory_id(target.get("id", ""))
@@ -170,6 +186,13 @@ def correlate(
         )
         for coverage in deep_uncovered
     ]
+    # The diagnosis carries the reach count that breaks ranking ties, so it
+    # comes first (§AR-code-coverage-deep-navigation.2.2).
+    miss_classifications: dict[str, dict] = {}
+    for record in uncovered_records:
+        classification: dict = classify_miss(record, graph, jacoco_methods, lines, navigation)
+        miss_classifications[record.target_ref.canonical_id] = classification
+        record.reach = classification["reach"]
     uncovered_records.sort(key=record_rank_key)
     mathematical_ranks: dict[str, int] = {
         record.target_ref.canonical_id: rank
@@ -200,12 +223,6 @@ def correlate(
     prompt_records: list[NearCallRecord] = sorted(
         actionable_records, key=prompt_selection_key,
     )[:effective_limit]
-    miss_classifications: dict[str, dict] = {
-        record.target_ref.canonical_id: classify_miss(
-            record, graph, jacoco_methods, lines
-        )
-        for record in uncovered_records
-    }
     uncovered_json: list[dict] = [
         record_to_json(
             record,
@@ -260,6 +277,7 @@ def correlate(
             "sampledObservedMethods": len(profile.sample_counts),
             "totalSampleCount": profile.total_sample_count,
             "samplingContexts": profile.context_count,
+            **navigation_summary(navigation, graph),
         },
         "inventory": inventory_report,
         "targetStates": [
@@ -304,10 +322,10 @@ def correlate(
         "promptTargetIds": [record.target_ref.canonical_id for record in prompt_records],
         "bulkTargets": bulk_json,
         "caveats": [
-            "JaCoCo is the only coverage authority; sampled PGO evidence is guidance only.",
+            "JaCoCo is the only coverage authority; PGO evidence is guidance only.",
             "Absence of a sample never proves non-execution.",
             "The analysis call graph over-approximates; static paths may be infeasible.",
-        ] + ([
+        ] + navigation_caveats(navigation) + ([
             "No library method list was supplied, so the deep universe still counts "
             "every JaCoCo-reported method, including any the library's own "
             "test-classifier artifact contributes.",
@@ -321,54 +339,6 @@ def correlate(
         ] if graph.unjudged_dispatch_sites else []),
     }
     return report, prompt_records
-
-
-def _previous_report(output_dir: str, iteration: int) -> dict | None:
-    previous_path: str = os.path.join(output_dir, f"discovery-report-{iteration - 1}.json")
-    if iteration <= 0 or not os.path.isfile(previous_path):
-        return None
-    return load_json_object(previous_path, "previous discovery report")
-
-
-def _next_attempt_counts(previous: dict | None) -> dict[str, int]:
-    if previous is None:
-        return {}
-    counts: dict[str, int] = {
-        entry["id"]: int(entry.get("attemptCount", 0))
-        for entry in previous.get("uncoveredPaths", [])
-    }
-    for method_id in previous.get("promptTargetIds", []):
-        counts[method_id] = counts.get(method_id, 0) + 1
-    return counts
-
-
-def _previous_target_states(previous: dict | None) -> dict[str, TargetState]:
-    if previous is None:
-        return {}
-    entries = previous.get("targetStates", [])
-    if not isinstance(entries, list):
-        raise ProfileFormatError("Previous discovery report has invalid targetStates.")
-    states: dict[str, TargetState] = {}
-    for index, entry in enumerate(entries, start=1):
-        method_id, state = parse_target_state(entry, "previous discovery report", index)
-        if method_id in states:
-            raise ProfileFormatError(
-                f"Previous discovery report repeats target '{method_id}'."
-            )
-        states[method_id] = state
-    return states
-
-
-def _progress(previous: dict | None, report: dict) -> dict | None:
-    if previous is None:
-        return None
-    previous_uncovered: set[str] = {
-        entry["id"] for entry in previous.get("uncoveredPaths", [])
-    }
-    now_covered: set[str] = {
-        entry["id"] for entry in report["deepMethods"] if entry["status"] == "covered"
-    }
-    return {"newlyCovered": sorted(previous_uncovered & now_covered)}
 
 
 def generate_report(
@@ -402,13 +372,13 @@ def generate_report(
         line_numbers,
         library_methods,
     )
-    profile: SampledProfile = load_sampled_profile(profile_path, graph)
+    profile, evidence = load_navigation(profile_path, graph, library_methods_path, line_numbers)
     inventory: dict = load_json_object(api_inventory_path, "API inventory")
     require_coordinate(inventory, coordinate, "API inventory")
     jacoco: JacocoCoverage = load_jacoco_coverage(jacoco_xml_paths)
     jacoco_methods: dict[str, JacocoMethodCoverage] = jacoco.methods
-    previous: dict | None = _previous_report(output_dir, iteration)
-    target_states: dict[str, TargetState] = _previous_target_states(previous)
+    previous: dict | None = previous_report(output_dir, iteration)
+    target_states: dict[str, TargetState] = previous_target_states(previous)
     target_states.update(load_target_states(target_state_paths, coordinate))
     report, prompt_records = correlate(
         profile,
@@ -416,14 +386,17 @@ def generate_report(
         inventory,
         jacoco_methods,
         max_listed,
-        _next_attempt_counts(previous),
+        next_attempt_counts(previous),
         target_states,
         library_methods,
         jacoco.lines,
+        evidence,
     )
     report["coordinate"] = coordinate
     report["iteration"] = iteration
-    report["profileKind"] = "sampled-guidance"
+    report["profileKind"] = (
+        "instrumented-guidance" if evidence.counters is not None else "sampled-guidance"
+    )
 
     os.makedirs(output_dir, exist_ok=True)
     json_path: str = os.path.join(output_dir, f"discovery-report-{iteration}.json")
@@ -432,16 +405,18 @@ def generate_report(
     with open(json_path, "w", encoding="utf-8") as json_file:
         json.dump(report, json_file, indent=2)
         json_file.write("\n")
-    write_markdown(report, prompt_records, graph, coordinate, iteration, _progress(previous, report), md_path)
+    write_markdown(report, prompt_records, graph, coordinate, iteration, progress_since(previous, report), md_path)
     write_lcov(profile, graph, jacoco_methods, lcov_path)
     return report
 
 
 def main() -> None:
     parser = argparse.ArgumentParser(
-        description="Generate JaCoCo-exact deep paths with sampled-PGO guidance."
+        description="Generate JaCoCo-exact deep paths with PGO guidance."
     )
-    parser.add_argument("--profile", required=True, help="Sampled .iprof profile path.")
+    parser.add_argument(
+        "--profile", required=True, help="Instrumented and sampled .iprof profile path."
+    )
     parser.add_argument(
         "--reports-dir",
         required=True,
@@ -465,7 +440,8 @@ def main() -> None:
     parser.add_argument(
         "--library-methods",
         help="methods.csv from the bytecode call-graph extractor; restricts the deep "
-             "universe to methods the resolved library jars declare.",
+             "universe to methods the resolved library jars declare. Its sibling "
+             "flow.csv and types.csv, when present, trace forks and resolve receivers.",
     )
     parser.add_argument("--coordinate", required=True, help="group:artifact:version.")
     parser.add_argument("--iteration", type=int, default=1, help="Discovery iteration number.")

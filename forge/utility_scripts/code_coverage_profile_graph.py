@@ -18,7 +18,7 @@ import os
 from dataclasses import dataclass, field
 
 from utility_scripts.code_coverage_model import MethodRef, method_ref_from_call_tree_row
-from utility_scripts.code_coverage_profile_inputs import ProfileFormatError
+from utility_scripts.code_coverage_profile_inputs import ProfileFormatError, line_at
 
 #: Marker in the class name the image generator gives a lambda implementation.
 SYNTHETIC_LAMBDA_CLASS_MARKER = "$$Lambda"
@@ -279,12 +279,7 @@ def _source_line_for_bci(
         invoke_bci: int = int(raw_bci)
     except ValueError:
         return None
-    source_line: int | None = None
-    for start_bci, line in line_numbers.get(caller.canonical_id, ()):
-        if start_bci > invoke_bci:
-            break
-        source_line = line
-    return source_line
+    return line_at(line_numbers.get(caller.canonical_id, ()), invoke_bci)
 
 
 def _load_call_graph(
