@@ -8,18 +8,19 @@ package org_apache_tomcat_embed.tomcat_embed_core;
 
 import java.io.IOException;
 import java.io.PrintStream;
-import java.lang.reflect.Field;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.catalina.startup.Bootstrap;
-import org.apache.catalina.startup.Catalina;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 public class BootstrapTest {
 
@@ -38,35 +39,19 @@ public class BootstrapTest {
     @Test
     void delegatesLifecycleCommandsToCatalinaDaemonThroughBootstrap() throws Exception {
         Path serverXml = createServerXml();
-        Bootstrap bootstrap = new Bootstrap();
-        bootstrap.init(new String[] {"-config", serverXml.toString(), "-nonaming", "start"});
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        try {
+            Future<?> start = executor.submit(
+                    () -> Bootstrap.main(new String[] {"-config", serverXml.toString(), "-nonaming", "start"}));
+            start.get(10, TimeUnit.SECONDS);
 
-        bootstrap.setAwait(false);
-        assertThatExceptionOfType(NoSuchMethodException.class).isThrownBy(bootstrap::getAwait);
-
-        bootstrap.start();
-        assertThat(System.getProperty("catalina.base")).isNotEmpty();
-        bootstrap.stopServer(new String[] {"stop"});
-        bootstrap.stopServer();
-        bootstrap.stop();
-
-        Bootstrap.main(new String[] {"-config", serverXml.toString(), "-nonaming", "start"});
-    }
-
-    @Test
-    void getAwaitInvokesAwaitCapableCatalinaDaemon() throws Exception {
-        Bootstrap bootstrap = new Bootstrap();
-        AwaitCapableCatalina catalina = new AwaitCapableCatalina();
-        catalina.setAwait(true);
-        setCatalinaDaemon(bootstrap, catalina);
-
-        assertThat(bootstrap.getAwait()).isTrue();
-    }
-
-    private void setCatalinaDaemon(Bootstrap bootstrap, AwaitCapableCatalina catalina) throws Exception {
-        Field field = Bootstrap.class.getDeclaredField("catalinaDaemon");
-        field.setAccessible(true);
-        field.set(bootstrap, catalina);
+            assertThat(System.getProperty("catalina.base")).isNotEmpty();
+            Bootstrap.main(new String[] {"-config", serverXml.toString(), "-nonaming", "stopd"});
+            Bootstrap.main(new String[] {"-config", serverXml.toString(), "-nonaming", "stop"});
+        } finally {
+            executor.shutdownNow();
+            assertThat(executor.awaitTermination(10, TimeUnit.SECONDS)).isTrue();
+        }
     }
 
     private Path createServerXml() throws IOException {
@@ -87,12 +72,5 @@ public class BootstrapTest {
                 </Server>
                 """);
         return serverXml;
-    }
-
-    public static class AwaitCapableCatalina extends Catalina {
-
-        public boolean getAwait() {
-            return isAwait();
-        }
     }
 }

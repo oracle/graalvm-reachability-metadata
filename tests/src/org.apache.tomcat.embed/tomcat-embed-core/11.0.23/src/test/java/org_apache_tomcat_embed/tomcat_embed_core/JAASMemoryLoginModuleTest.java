@@ -46,11 +46,11 @@ public class JAASMemoryLoginModuleTest {
 
         assertThat(module.login()).isTrue();
         assertThat(module.commit()).isTrue();
-        assertThat(subject.getPrincipals().stream().map(principal -> principal.getName())).contains("alice");
+        assertThat(subject.getPrincipals().stream().map(principal -> principal.getName()))
+                .containsExactlyInAnyOrder("alice", "admin");
         assertThat(module.logout()).isTrue();
         assertThat(subject.getPrincipals().stream().map(principal -> principal.getName()))
-                .contains("admin")
-                .doesNotContain("alice");
+                .doesNotContain("alice", "admin");
     }
 
     private static void supplyCredentials(Callback[] callbacks) {

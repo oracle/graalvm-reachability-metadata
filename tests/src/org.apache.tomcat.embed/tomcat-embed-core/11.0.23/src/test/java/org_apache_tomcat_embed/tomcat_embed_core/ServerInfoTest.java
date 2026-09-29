@@ -13,6 +13,8 @@ import java.nio.file.FileVisitOption;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Optional;
+import java.util.jar.JarOutputStream;
+import java.util.jar.Manifest;
 import java.util.stream.Stream;
 
 import org.apache.catalina.util.ServerInfo;
@@ -23,6 +25,30 @@ import org.junit.jupiter.api.io.TempDir;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class ServerInfoTest {
+
+    @Test
+    void printsThirdPartyLibrariesFromCatalinaHome(@TempDir Path temporaryDirectory) throws Exception {
+        Path libDirectory = Files.createDirectories(temporaryDirectory.resolve("lib"));
+        Path library = libDirectory.resolve("example-library-1.2.3.jar");
+        try (JarOutputStream ignored = new JarOutputStream(Files.newOutputStream(library), new Manifest())) {
+            // The filename exercises ServerInfo's documented version fallback.
+        }
+
+        String originalCatalinaHome = System.getProperty("catalina.home");
+        PrintStream originalOut = System.out;
+        ByteArrayOutputStream output = new ByteArrayOutputStream();
+        try {
+            System.setProperty("catalina.home", temporaryDirectory.toString());
+            System.setOut(new PrintStream(output, true, StandardCharsets.UTF_8));
+            ServerInfo.main(new String[0]);
+        } finally {
+            System.setOut(originalOut);
+            restoreProperty("catalina.home", originalCatalinaHome);
+        }
+
+        assertThat(output.toString(StandardCharsets.UTF_8))
+                .contains("Third-party libraries:", "example-library-1.2.3.jar:", "1.2.3");
+    }
 
     @Test
     void printsRuntimeAndNativeLibraryInformation(@TempDir Path temporaryDirectory) throws Exception {
@@ -42,6 +68,14 @@ public class ServerInfoTest {
         String report = output.toString(StandardCharsets.UTF_8);
         assertThat(report).contains("Server version:", "OS Name:", "JVM Vendor:", "APR loaded:");
         assertThat(report.contains("OpenSSL (FFM):")).isEqualTo(OpenSSLStatus.isAvailable());
+    }
+
+    private static void restoreProperty(String name, String value) {
+        if (value == null) {
+            System.clearProperty(name);
+        } else {
+            System.setProperty(name, value);
+        }
     }
 
     private static void makeVersionedOpenSslDiscoverable(Path temporaryDirectory, String libraryPath)
