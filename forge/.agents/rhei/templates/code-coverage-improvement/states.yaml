@@ -162,6 +162,15 @@ states:
           print(f"[api-inventory] {message}", file=sys.stderr)
           sys.exit(code)
 
+      def finish(message: str) -> None:
+          # An exit-zero route into `completed` leaves the ticket's terminal
+          # result to this program (§AR-code-coverage-improvement.4).
+          result_path = os.environ.get("RHEI_RESULT_PATH")
+          if result_path:
+              with open(result_path, "w", encoding="utf-8") as result:
+                  result.write(message + "\n")
+          sys.exit(0)
+
       # Inventory scope is the artifact's committed allowed-packages, taken
       # whole (§AR-code-coverage-improvement.5, §root/FS-metadata).
       try:
@@ -194,9 +203,12 @@ states:
           helper += ["--include-package", package]
       print(f"[api-inventory] {' '.join(helper)}", flush=True)
       try:
-          sys.exit(subprocess.run(helper, env=dict(os.environ, PYTHONPATH=work_path)).returncode)
+          returncode = subprocess.run(helper, env=dict(os.environ, PYTHONPATH=work_path)).returncode
       except OSError as error:
           fail(2, f"the inventory helper could not run: {error}")
+      if returncode != 0:
+          sys.exit(returncode)
+      finish(f"API inventory generated for {coordinate} over every committed allowed package.")
       PY
 
   publication:
@@ -221,6 +233,15 @@ states:
       def fail(code: int, message: str) -> None:
           print(f"[publication] {message}", file=sys.stderr)
           sys.exit(code)
+
+      def finish(message: str) -> None:
+          # An exit-zero route into `completed` leaves the ticket's terminal
+          # result to this program (§AR-code-coverage-improvement.4).
+          result_path = os.environ.get("RHEI_RESULT_PATH")
+          if result_path:
+              with open(result_path, "w", encoding="utf-8") as result:
+                  result.write(message + "\n")
+          sys.exit(0)
 
       # The helper validates the finalized metrics against the coordinate and
       # owns staging, rebase, the verification gate, the descriptor, and the
@@ -272,7 +293,7 @@ states:
           "\n".join(pushed or ["Pushed (branch name not captured)"]) + "\n",
           encoding="utf-8",
       )
-      sys.exit(0)
+      finish(f"Publication branch pushed for {coordinate}: " + "; ".join(pushed or ["branch name not captured"]))
       PY
     outputs:
       - name: branch
@@ -297,6 +318,15 @@ states:
           print(f"[native-metadata] {message}", file=sys.stderr)
           sys.exit(code)
 
+      def finish(message: str) -> None:
+          # An exit-zero route into `completed` leaves the ticket's terminal
+          # result to this program (§AR-code-coverage-improvement.4).
+          result_path = os.environ.get("RHEI_RESULT_PATH")
+          if result_path:
+              with open(result_path, "w", encoding="utf-8") as result:
+                  result.write(message + "\n")
+          sys.exit(0)
+
       # The gate call, its budget, and its exit-code contract:
       # §AR-code-coverage-improvement.5 item 5, §FS-native-test-verification-gate.
       try:
@@ -318,9 +348,12 @@ states:
       ]
       print(f"[native-metadata] {' '.join(helper)}", flush=True)
       try:
-          sys.exit(subprocess.run(helper, env=dict(os.environ, PYTHONPATH=work_path)).returncode)
+          returncode = subprocess.run(helper, env=dict(os.environ, PYTHONPATH=work_path)).returncode
       except OSError as error:
           fail(2, f"the preparation helper could not run: {error}")
+      if returncode != 0:
+          sys.exit(returncode)
+      finish(f"Native metadata prepared for {coordinate}: the trace gate finalized durable metadata.")
       PY
 
   api-measure:
@@ -453,6 +486,12 @@ states:
               complete_measurement(str(validation), "api", iteration)
           except Exception as error:
               fail(4, f"the stop evaluator could not complete measurement: {error}")
+          # An exit-zero route into `completed` leaves the ticket's terminal
+          # result to this program (§AR-code-coverage-improvement.4).
+          result_path = os.environ.get("RHEI_RESULT_PATH")
+          if result_path:
+              with open(result_path, "w", encoding="utf-8") as result:
+                  result.write(f"API coverage loop completed: {summarize(stop)}\n")
           sys.exit(0)
 
       # Step 5: order the uncovered public entries by how much still-uncovered
@@ -750,6 +789,12 @@ states:
               complete_measurement(str(discovery), "deep", iteration)
           except Exception as error:
               fail(7, f"the stop evaluator could not complete measurement: {error}")
+          # An exit-zero route into `completed` leaves the ticket's terminal
+          # result to this program (§AR-code-coverage-improvement.4).
+          result_path = os.environ.get("RHEI_RESULT_PATH")
+          if result_path:
+              with open(result_path, "w", encoding="utf-8") as result:
+                  result.write(f"Deep coverage loop completed: {summarize(stop)}\n")
           sys.exit(0)
 
       # Steering: the analyzer already renders the compact Observed /
@@ -1330,6 +1375,14 @@ states:
           print("final metrics record no validation commands", file=sys.stderr)
           sys.exit(75)
       PY
+      status=$?
+      [ "$status" -eq 0 ] || exit "$status"
+      # An exit-zero route into `completed` leaves the ticket's terminal
+      # result to this program (§AR-code-coverage-improvement.4).
+      if [ -n "${RHEI_RESULT_PATH:-}" ]; then
+        printf 'Finalization verified: metrics valid, no failed targets, no human intervention.\n' \
+          > "$RHEI_RESULT_PATH"
+      fi
     program_timeout: 5m
     inputs:
       - name: final-metrics
