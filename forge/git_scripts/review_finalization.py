@@ -45,13 +45,18 @@ def _run_gradle_test(
 
 
 def publishable_tree_digest(repo_path: str) -> str:
-    """Hash committed and non-ignored uncommitted content in the review worktree."""
+    """Hash committed and non-ignored uncommitted content in the review worktree.
+
+    The diff prints full object IDs: abbreviated IDs lengthen as the object store
+    grows, so a content-identical tree would otherwise hash differently after a
+    finalization run adds objects. §FS-local-branch-review
+    """
     digest = hashlib.sha256()
     digest.update(subprocess.check_output(
         ["git", "rev-parse", "HEAD"], cwd=repo_path,
     ))
     digest.update(subprocess.check_output(
-        ["git", "diff", "--binary", "HEAD", "--"], cwd=repo_path,
+        ["git", "diff", "--binary", "--full-index", "HEAD", "--"], cwd=repo_path,
     ))
     untracked_output = subprocess.check_output(
         ["git", "ls-files", "--others", "--exclude-standard", "-z"],
