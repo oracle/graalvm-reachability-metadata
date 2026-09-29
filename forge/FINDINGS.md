@@ -3,6 +3,11 @@
 Rendered by Forge from the pre-push branch review of §FS-local-branch-review.
 Newest entry first; every non-approval is recorded, including one a repair later cleared.
 
+## 2026-09-28 — org.jetbrains.kotlin:kotlin-scripting-jvm:2.4.0 (#9385)
+
+**Native test main-class override bypasses the JUnit suite**
+
+The contribution changed the 2.3.21 baseline outside the single-version file set and configured the 2.4.0 native test binary to run JvmDependencyTest.main instead of the JUnit launcher. That made the native lane execute only a trivial classpath assertion while the Kotlin tests and their metadata remained unverified, violating the closed-file-set and Native Image execution requirements. Removing the override reproduced the concealed evidence: the full native suite found 14 tests and initially failed on missing Kotlin serialization metadata and PathUtil assertions that assumed filesystem-backed class resources. The generated suite also combined the KJvmCompiledScriptKt and KJvmCompiledScript dynamic-access targets in one file and retained test-only/no-op resource metadata.
 ## 2026-09-28 — org.hibernate.models:hibernate-models:2.0.0.Alpha1 (#9379)
 
 **Test-side reflection bypasses the annotation API**
