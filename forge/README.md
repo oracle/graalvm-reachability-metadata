@@ -153,7 +153,7 @@ project before invoking Rhei.
 §FS-forge-host-requirements §AR-code-coverage-improvement.2
 
 To inspect or execute the fixed code coverage benchmark matrix, use the
-benchmark launcher. With no selection flags it selects all 75 cells; filters
+benchmark launcher. With no selection flags it selects all 90 cells; filters
 compose and accept multiple values:
 
 ```console
