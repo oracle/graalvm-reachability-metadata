@@ -6,11 +6,12 @@
  */
 package org_apache_tomcat_embed.tomcat_embed_core;
 
-import java.util.logging.ConsoleHandler;
+import java.io.ByteArrayOutputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
-import java.util.logging.XMLFormatter;
+import java.util.logging.StreamHandler;
 
 import org.apache.juli.logging.Log;
 import org.apache.juli.logging.LogFactory;
@@ -23,44 +24,36 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class DirectJDKLogTest {
 
     @Test
-    void defaultLoggerConfiguresAndUsesJdkLogging() {
+    void loggerUsesJdkLoggingAtConfiguredLevel() {
         String loggerName = "direct-jdk-logger";
         Logger julLogger = Logger.getLogger(loggerName);
         Level originalLevel = julLogger.getLevel();
-        Logger rootLogger = Logger.getLogger("");
-        ConsoleHandler consoleHandler = new ConsoleHandler();
-        consoleHandler.setLevel(Level.OFF);
-        consoleHandler.setFormatter(new XMLFormatter());
-        rootLogger.addHandler(consoleHandler);
-
-        String configClass = System.clearProperty("java.util.logging.config.class");
-        String configFile = System.clearProperty("java.util.logging.config.file");
-        String formatter = System.setProperty("org.apache.juli.formatter", SimpleFormatter.class.getName());
+        boolean originalUseParentHandlers = julLogger.getUseParentHandlers();
+        ByteArrayOutputStream output = new ByteArrayOutputStream();
+        StreamHandler handler = new StreamHandler(output, new SimpleFormatter());
+        handler.setLevel(Level.ALL);
+        julLogger.addHandler(handler);
 
         try {
+            julLogger.setUseParentHandlers(false);
             julLogger.setLevel(Level.WARNING);
 
             Log log = LogFactory.getLog(loggerName);
 
-            assertThat(consoleHandler.getFormatter()).isInstanceOf(SimpleFormatter.class);
             assertThat(log.isWarnEnabled()).isTrue();
             assertThat(log.isDebugEnabled()).isFalse();
             log.warn("JDK logging remains operational");
+            log.debug("debug logging remains disabled");
+            handler.flush();
+
+            String logged = output.toString(StandardCharsets.UTF_8);
+            assertThat(logged).contains("JDK logging remains operational");
+            assertThat(logged).doesNotContain("debug logging remains disabled");
         } finally {
             julLogger.setLevel(originalLevel);
-            rootLogger.removeHandler(consoleHandler);
-            consoleHandler.close();
-            restoreProperty("java.util.logging.config.class", configClass);
-            restoreProperty("java.util.logging.config.file", configFile);
-            restoreProperty("org.apache.juli.formatter", formatter);
-        }
-    }
-
-    private static void restoreProperty(String name, String value) {
-        if (value == null) {
-            System.clearProperty(name);
-        } else {
-            System.setProperty(name, value);
+            julLogger.setUseParentHandlers(originalUseParentHandlers);
+            julLogger.removeHandler(handler);
+            handler.close();
         }
     }
 }
