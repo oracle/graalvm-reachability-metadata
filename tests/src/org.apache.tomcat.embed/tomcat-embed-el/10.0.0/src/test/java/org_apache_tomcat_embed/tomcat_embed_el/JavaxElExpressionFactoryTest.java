@@ -8,125 +8,43 @@ package org_apache_tomcat_embed.tomcat_embed_el;
 
 import java.util.Properties;
 
-import jakarta.el.ELContext;
 import jakarta.el.ExpressionFactory;
-import jakarta.el.MethodExpression;
-import jakarta.el.ValueExpression;
 
+import org.apache.el.ExpressionFactoryImpl;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestMethodOrder;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class JavaxElExpressionFactoryTest {
-    private static final String EXPRESSION_FACTORY_PROPERTY = "jakarta.el.ExpressionFactory";
-
     private final Thread currentThread = Thread.currentThread();
     private final ClassLoader originalContextClassLoader = currentThread.getContextClassLoader();
-    private final String originalExpressionFactoryProperty = System.getProperty(EXPRESSION_FACTORY_PROPERTY);
 
     @AfterEach
     void restoreThreadState() {
         currentThread.setContextClassLoader(originalContextClassLoader);
-        if (originalExpressionFactoryProperty == null) {
-            System.clearProperty(EXPRESSION_FACTORY_PROPERTY);
-        } else {
-            System.setProperty(EXPRESSION_FACTORY_PROPERTY, originalExpressionFactoryProperty);
-        }
     }
 
     @Test
-    @Order(1)
-    void loadsProviderSelectedBySystemPropertyWithNullContextClassLoader() {
+    void loadsBundledProviderWithFallbackClassLoadingWhenContextClassLoaderIsNull() {
         currentThread.setContextClassLoader(null);
-        System.setProperty(EXPRESSION_FACTORY_PROPERTY, ServiceExpressionFactory.class.getName());
 
         ExpressionFactory expressionFactory = ExpressionFactory.newInstance();
 
-        assertThat(expressionFactory).isInstanceOf(ServiceExpressionFactory.class);
-        ServiceExpressionFactory serviceExpressionFactory = (ServiceExpressionFactory) expressionFactory;
-        assertThat(serviceExpressionFactory.getConstructorMode()).isEqualTo("default");
-        assertThat(serviceExpressionFactory.getProperties()).isNull();
+        assertThat(expressionFactory).isInstanceOf(ExpressionFactoryImpl.class);
+        assertThat(expressionFactory.coerceToType("17", Integer.class)).isEqualTo(17);
     }
 
     @Test
-    @Order(2)
-    void loadsProviderWithFallbackClassLoadingWhenContextClassLoaderIsNull() {
-        currentThread.setContextClassLoader(null);
-        System.clearProperty(EXPRESSION_FACTORY_PROPERTY);
-
-        ExpressionFactory expressionFactory = ExpressionFactory.newInstance();
-
-        assertThat(expressionFactory).isInstanceOf(ServiceExpressionFactory.class);
-        ServiceExpressionFactory serviceExpressionFactory = (ServiceExpressionFactory) expressionFactory;
-        assertThat(serviceExpressionFactory.getConstructorMode()).isEqualTo("default");
-        assertThat(serviceExpressionFactory.getProperties()).isNull();
-    }
-
-    @Test
-    @Order(3)
-    void loadsProviderFromContextClassLoaderUsingPropertiesConstructor() {
+    void loadsBundledProviderFromContextClassLoaderWhenPropertiesAreProvided() {
         currentThread.setContextClassLoader(new DelegatingClassLoader(getClass().getClassLoader()));
-        System.clearProperty(EXPRESSION_FACTORY_PROPERTY);
-
         Properties properties = new Properties();
         properties.setProperty("jakarta.el.cacheSize", "32");
 
         ExpressionFactory expressionFactory = ExpressionFactory.newInstance(properties);
 
-        assertThat(expressionFactory).isInstanceOf(ServiceExpressionFactory.class);
-        ServiceExpressionFactory serviceExpressionFactory = (ServiceExpressionFactory) expressionFactory;
-        assertThat(serviceExpressionFactory.getConstructorMode()).isEqualTo("properties");
-        assertThat(serviceExpressionFactory.getProperties()).isSameAs(properties);
-        assertThat(serviceExpressionFactory.getProperties()).containsEntry("jakarta.el.cacheSize", "32");
-    }
-
-    public static final class ServiceExpressionFactory extends ExpressionFactory {
-        private final String constructorMode;
-        private final Properties properties;
-
-        public ServiceExpressionFactory() {
-            this.constructorMode = "default";
-            this.properties = null;
-        }
-
-        public ServiceExpressionFactory(Properties properties) {
-            this.constructorMode = "properties";
-            this.properties = properties;
-        }
-
-        public String getConstructorMode() {
-            return constructorMode;
-        }
-
-        public Properties getProperties() {
-            return properties;
-        }
-
-        @Override
-        public ValueExpression createValueExpression(ELContext context, String expression, Class<?> expectedType) {
-            return null;
-        }
-
-        @Override
-        public ValueExpression createValueExpression(Object instance, Class<?> expectedType) {
-            return null;
-        }
-
-        @Override
-        public MethodExpression createMethodExpression(
-                ELContext context, String expression, Class<?> expectedReturnType, Class<?>[] expectedParamTypes) {
-            return null;
-        }
-
-        @Override
-        public Object coerceToType(Object obj, Class<?> expectedType) {
-            return obj;
-        }
+        assertThat(expressionFactory).isInstanceOf(ExpressionFactoryImpl.class);
+        assertThat(expressionFactory.coerceToType("true", Boolean.class)).isEqualTo(true);
     }
 
     private static final class DelegatingClassLoader extends ClassLoader {

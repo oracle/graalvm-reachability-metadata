@@ -28,10 +28,4 @@ graalvmNative {
             }
         }
     }
-    binaries {
-        test {
-            // Keep Tomcat's bundled provider from shadowing the test service entry in native ServiceLoader discovery.
-            buildArgs.add('-H:ServiceLoaderFeatureExcludeServiceProviders=org.apache.el.ExpressionFactoryImpl')
-        }
-    }
 }
