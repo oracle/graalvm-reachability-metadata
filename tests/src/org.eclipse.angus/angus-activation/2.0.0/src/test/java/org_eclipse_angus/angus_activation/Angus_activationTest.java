@@ -15,16 +15,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.ServiceLoader;
 
-import com.sun.activation.registries.MailcapFile;
-import com.sun.activation.registries.MailcapRegistryProviderImpl;
-import com.sun.activation.registries.MailcapTokenizer;
-import com.sun.activation.registries.MimeTypeFile;
-import com.sun.activation.registries.MimeTypeRegistryProviderImpl;
 import jakarta.activation.MailcapRegistry;
 import jakarta.activation.MimeTypeEntry;
 import jakarta.activation.MimeTypeRegistry;
 import jakarta.activation.spi.MailcapRegistryProvider;
 import jakarta.activation.spi.MimeTypeRegistryProvider;
+import org.eclipse.angus.activation.MailcapFile;
+import org.eclipse.angus.activation.MailcapTokenizer;
+import org.eclipse.angus.activation.MimeTypeFile;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -64,7 +62,9 @@ public class Angus_activationTest {
         Path mimeTypesFile = temporaryDirectory.resolve("mime.types");
         Files.writeString(mimeTypesFile, "application/pdf pdf\n", StandardCharsets.ISO_8859_1);
 
-        MimeTypeRegistryProvider provider = new MimeTypeRegistryProviderImpl();
+        MimeTypeRegistryProvider provider = ServiceLoader.load(MimeTypeRegistryProvider.class)
+                .findFirst()
+                .orElseThrow();
         MimeTypeRegistry fromFile = provider.getByFileName(mimeTypesFile.toString());
         MimeTypeRegistry fromStream = provider.getByInputStream(streamOf("image/png png\n"));
         MimeTypeRegistry inMemory = provider.getInMemory();
@@ -158,7 +158,9 @@ public class Angus_activationTest {
                 "application/pdf; pdf-view %s; x-java-view=com.example.PdfViewer\n",
                 StandardCharsets.ISO_8859_1);
 
-        MailcapRegistryProvider provider = new MailcapRegistryProviderImpl();
+        MailcapRegistryProvider provider = ServiceLoader.load(MailcapRegistryProvider.class)
+                .findFirst()
+                .orElseThrow();
         MailcapRegistry fromFile = provider.getByFileName(mailcapFile.toString());
         MailcapRegistry fromStream = provider.getByInputStream(streamOf(
                 "image/png; png-view %s; x-java-view=com.example.PngViewer\n"));
@@ -203,21 +205,6 @@ public class Angus_activationTest {
         assertThat(MailcapTokenizer.nameForToken(MailcapTokenizer.UNKNOWN_TOKEN)).isEqualTo("unknown");
         assertThat(MailcapTokenizer.nameForToken(MailcapTokenizer.EOI_TOKEN)).isEqualTo("EOI");
         assertThat(MailcapTokenizer.nameForToken('*')).isEqualTo("really unknown");
-    }
-
-    @Test
-    void serviceLoaderDiscoversAngusRegistryProviders() {
-        List<MailcapRegistryProvider> mailcapProviders = ServiceLoader.load(MailcapRegistryProvider.class).stream()
-                .map(ServiceLoader.Provider::get)
-                .toList();
-        List<MimeTypeRegistryProvider> mimeTypeProviders = ServiceLoader.load(MimeTypeRegistryProvider.class).stream()
-                .map(ServiceLoader.Provider::get)
-                .toList();
-
-        assertThat(mailcapProviders.stream().map(Object::getClass).toList())
-                .contains(MailcapRegistryProviderImpl.class);
-        assertThat(mimeTypeProviders.stream().map(Object::getClass).toList())
-                .contains(MimeTypeRegistryProviderImpl.class);
     }
 
     private static ByteArrayInputStream streamOf(String content) {
