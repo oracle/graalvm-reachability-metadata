@@ -61,7 +61,7 @@ public class MethodMonitorRegistryTest {
 
 @RegistryMonitor
 class RegistryTarget {
-    static SynchronizedHolder<MethodMonitor> __$mm$__0;
+    @SuppressWarnings("checkstyle:StaticVariableName") static SynchronizedHolder<MethodMonitor> __$mm$__0;
 
     @RegistryMonitor
     void record() {
