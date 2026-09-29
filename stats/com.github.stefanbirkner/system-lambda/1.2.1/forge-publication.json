@@ -1,0 +1,133 @@
+{
+  "base_commit": "e8d4398ded248b2b83d8f6af535fe4a5ca13b044",
+  "branch": "ai/kimeta/add-lib-support-com.github.stefanbirkner-system-lambda-1.2.1-chunked-forge-10251-20260929191857224557-21b919d0ee24",
+  "follow_ups": [],
+  "forge": {
+    "branch": "master",
+    "commit": "e8d4398ded248b2b83d8f6af535fe4a5ca13b044",
+    "monitored_branch": "origin/master"
+  },
+  "issue_number": 10251,
+  "library": {
+    "artifact": "system-lambda",
+    "coordinates": "com.github.stefanbirkner:system-lambda:1.2.1",
+    "group": "com.github.stefanbirkner",
+    "version": "1.2.1"
+  },
+  "local_ci_verification": {
+    "base_commit": "e8d4398ded248b2b83d8f6af535fe4a5ca13b044",
+    "commands": [
+      {
+        "command": [
+          "./gradlew",
+          "generateChangedIndexFileCoordinatesList",
+          "-PbaseCommit=origin/master",
+          "-PnewCommit=HEAD"
+        ],
+        "env": {
+          "GITHUB_OUTPUT": "/tmp/tmp_f71sgj6"
+        },
+        "gate": "changed-index-coordinates",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :generateChangedIndexFileCoordinatesList\n\n[Incubating] Problems report is available at: file:///home/oracle/oracle/metadata2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10251-c642f01e/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 3s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      },
+      {
+        "command": [
+          "./gradlew",
+          "validateIndexFiles",
+          "-Pcoordinates=com.github.stefanbirkner:system-lambda"
+        ],
+        "env": {},
+        "gate": "index-file-validation",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :validateIndexFiles\n✅ metadata/com.github.stefanbirkner/system-lambda/index.json: Valid\n\n[Incubating] Problems report is available at: file:///home/oracle/oracle/metadata2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10251-c642f01e/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 2s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      }
+    ],
+    "failure_command": null,
+    "failure_gate": null,
+    "final_commit": "5da62d94a7bdb0218123551c1fd78168cadbdc59",
+    "fixups": [],
+    "human_intervention_required": false,
+    "repo_fix_paths": [],
+    "status": "success"
+  },
+  "local_review": {
+    "action": "close",
+    "changed_paths": [],
+    "decision": "rejected",
+    "finding_body": "The new-library contribution reports 0/2 dynamic-access coverage, violating §FS-contribution-contract.3. The coverage report identifies both calls as Class.getDeclaredField and Field.get in SystemLambda$WithEnvironmentVariables.getFieldValue (SystemLambda.java:1379-1381). That public path reflectively mutates System.getenv() internals. Native execution evidence shows NoSuchFieldException for field m on the substituted environment map and, with the field registered, InaccessibleObjectException for java.util.Collections$UnmodifiableMap.m because java.base does not open java.util. Thus all library dynamic access is behind JDK-internal behavior Native Image substitutes or withholds, and no metadata entry can satisfy the coverage gate. Under §FS-contribution-contract.5.4, this previously unindexed new library leaves nothing to record and must be closed.",
+    "finding_title": "System Lambda 1.2.1 dynamic access is unsupported by Native Image",
+    "fix_note": "",
+    "model": "gpt-5.6-sol",
+    "review_comment": "Reviewed the single-coordinate diff, test contract, local gate evidence, resolved statistics, and all three finalization lanes. The test is meaningful, version-agnostic, separately packaged, and passes JVM and Native Image execution, but the reported dynamic-access coverage is 0/2. Both tracked calls are in WithEnvironmentVariables.getFieldValue and exist solely to reflect into System.getenv() JDK internals. Native Image substitutes/withholds that state: runs first failed because the substituted environment map had no field m, and after registration failed with InaccessibleObjectException for java.util.Collections$UnmodifiableMap.m. Metadata cannot make this environment-mutation path supported, so the >20% new-library gate is unreachable. The artifact has no index entry in the base tree, leaving no skip record to merge; §FS-contribution-contract.5.4 therefore requires closure.",
+    "session_id": "d9403979f2c54d00"
+  },
+  "metrics": {
+    "agent": "pi",
+    "model": "gpt-5.6-luna",
+    "path": "stats/com.github.stefanbirkner/system-lambda/1.2.1/execution-metrics.json",
+    "summary": {
+      "cached_input_tokens_used": 407552,
+      "code_coverage_percent": 5.0,
+      "cost_usd": 0.1086,
+      "generated_loc": 17,
+      "input_tokens_used": 50084,
+      "iterations": 8,
+      "metadata_entries": 0,
+      "output_tokens_used": 2951,
+      "tested_library_loc": 15
+    },
+    "timestamp": "2026-09-29T19:18:57.224557Z"
+  },
+  "modifiers": {
+    "chunk_final": true,
+    "chunked_dynamic_access": true,
+    "human_intervention": false
+  },
+  "producer": "kimeta",
+  "publication_id": "forge-10251-20260929191857224557-21b919d0ee24",
+  "render": {
+    "dynamic_access": null,
+    "dynamic_access_evidence": null,
+    "library_stats": {
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 0.0,
+            "coveredCalls": 0,
+            "totalCalls": 2
+          }
+        },
+        "coverageRatio": 0.0,
+        "coveredCalls": 0,
+        "totalCalls": 2
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 49,
+          "missed": 929,
+          "ratio": 0.050102,
+          "total": 978
+        },
+        "line": {
+          "covered": 15,
+          "missed": 285,
+          "ratio": 0.05,
+          "total": 300
+        },
+        "method": {
+          "covered": 7,
+          "missed": 85,
+          "ratio": 0.076087,
+          "total": 92
+        }
+      },
+      "version": "1.2.1"
+    }
+  },
+  "schema_version": 1,
+  "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-luna",
+  "task_type": "library-new-request",
+  "template_type": "library-new-request",
+  "timestamp": "2026-09-29T19:18:57.224557Z"
+}
