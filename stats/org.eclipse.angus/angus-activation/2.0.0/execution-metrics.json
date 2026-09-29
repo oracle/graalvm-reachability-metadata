@@ -1,0 +1,117 @@
+{
+  "fix_javac_fail:2026-09-29": {
+    "timestamp": "2026-09-29T11:01:09.915791Z",
+    "library": "org.eclipse.angus:angus-activation:2.0.0",
+    "starting_commit": "f1ee138c46ab50f406fc25fbfc403dca06eedfb3",
+    "ending_commit": "b053b54370c56fad378e316fb543f42a4c226dfb",
+    "previous_library": "org.eclipse.angus:angus-activation:1.0.0",
+    "strategy_name": "javac_iterative_with_coverage_sources_pi_gpt-5.6-luna",
+    "agent": "pi",
+    "model": "gpt-5.6-luna",
+    "status": "success",
+    "stats": {
+      "version": "2.0.0",
+      "dynamicAccess": {
+        "breakdown": {},
+        "coverageRatio": 1.0,
+        "coveredCalls": 0,
+        "totalCalls": 0
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 1541,
+          "missed": 547,
+          "ratio": 0.738027,
+          "total": 2088
+        },
+        "line": {
+          "covered": 397,
+          "missed": 124,
+          "ratio": 0.761996,
+          "total": 521
+        },
+        "method": {
+          "covered": 52,
+          "missed": 20,
+          "ratio": 0.722222,
+          "total": 72
+        }
+      }
+    },
+    "previous_library_stats": {
+      "version": "1.0.0",
+      "dynamicAccess": {
+        "breakdown": {},
+        "coverageRatio": 1.0,
+        "coveredCalls": 0,
+        "totalCalls": 0
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 1544,
+          "missed": 433,
+          "ratio": 0.780981,
+          "total": 1977
+        },
+        "line": {
+          "covered": 417,
+          "missed": 94,
+          "ratio": 0.816047,
+          "total": 511
+        },
+        "method": {
+          "covered": 49,
+          "missed": 6,
+          "ratio": 0.890909,
+          "total": 55
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "no_action",
+      "issue_number": 9375,
+      "issue_label": "fails-javac-compile",
+      "library": "org.eclipse.angus:angus-activation:2.0.0",
+      "summary": "The failure is a javac 'cannot find symbol' error. The existing 1.0.0 test imports angus-activation internal classes (MailcapTokenizer, MimeTypeFile, MailcapFile and the *RegistryProviderImpl classes) that 2.0.0 does not expose under the same names or packages. That is a test-source adaptation, and no extra dependency, Docker image, or environment setup is needed.",
+      "deterministic_setup": [],
+      "agent_guidance": "Do not copy the 1.0.0 test verbatim. Before writing tests, inspect the resolved 2.0.0 angus-activation jar, for example with `jar tf` and `javap`, to see which classes are public and in which package. Adapt the imports and the test's use of internal classes to that layout. Where a class is no longer accessible, cover the same behavior through public API only: the jakarta.activation MailcapCommandMap and MimetypesFileTypeMap, the ServiceLoader-discovered MailcapRegistryProvider and MimeTypeRegistryProvider, and DataHandler/DataSource. Keep the tests under org_eclipse_angus.angus_activation, and keep the coordinates and user-code-filter.json consistent with 2.0.0.",
+      "risks": [
+        "I did not open the 2.0.0 jar. The claim that the internal classes were renamed or moved is inferred from the compile errors alone.",
+        "If 2.0.0 hides the internal classes, for example behind module encapsulation, coverage has to come from public-API routes. Reflection and resource metadata for the ServiceLoader providers and the mailcap/mime.types resources may then need to be registered."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#9375 [Automation] javac compile fails for org.eclipse.angus:angus-activation:2.0.0; label=fails-javac-compile; body_chars=8015"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "6 existing test file path(s) included"
+        }
+      ],
+      "current_library": "org.eclipse.angus:angus-activation:1.0.0",
+      "new_version": "2.0.0",
+      "model": "sonnet",
+      "input_tokens_used": 2,
+      "output_tokens_used": 1094
+    },
+    "metrics": {
+      "input_tokens_used": 55615,
+      "cached_input_tokens_used": 308224,
+      "output_tokens_used": 1381,
+      "iterations": 3,
+      "cost_usd": 0.0947,
+      "tested_library_loc": 397,
+      "metadata_entries": 0,
+      "test_only_metadata_entries": 4,
+      "previous_library_metadata_entries": 0,
+      "code_coverage_percent": 76.2,
+      "previous_library_coverage_percent": 81.6
+    },
+    "artifacts": {
+      "metadata_file": "metadata/org.eclipse.angus/angus-activation/2.0.0/reachability-metadata.json"
+    }
+  }
+}
