@@ -1,0 +1,57 @@
+{
+  "fix_ni_run:2026-09-29": {
+    "timestamp": "2026-09-29T10:29:39.051514Z",
+    "library": "org.eclipse.jetty:jetty-http:10.0.0",
+    "starting_commit": "495ad9da1bfe6e5676c820b8807aef0897c20cc3",
+    "ending_commit": "495ad9da1bfe6e5676c820b8807aef0897c20cc3",
+    "strategy_name": "library_update_optimistic_pi_gpt-5.6-luna",
+    "agent": "pi",
+    "model": "gpt-5.6-luna",
+    "status": "failure",
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "no_action",
+      "issue_number": 9376,
+      "issue_label": "fails-native-image-run",
+      "library": "org.eclipse.jetty:jetty-http:10.0.0",
+      "summary": "The existing MimeTypesTest uses only jetty-http and assertj. The issue log excerpt shows a successful native-image build and no failing operation, so it gives no concrete evidence that extra dependencies, Docker images or properties are needed.",
+      "deterministic_setup": [],
+      "agent_guidance": "",
+      "risks": [
+        "The log excerpt is truncated before the runtime failure, so the cause of the native-image run failure is unknown.",
+        "The reproducer command names 9.4.1.v20170120 while the title names 10.0.0. Jetty 10 moved to the Java 11 baseline and changed some http package internals, so tests that rely on 9.x APIs may need adjusting.",
+        "The metadata directories in the build log include jetty-util 12.0.9 and jetty-io 9.4.0.RC0, which do not match the tested version. Version-skewed transitive metadata is a possible source of the failure and should be checked when it is reproduced locally."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#9376 [Automation] native-image run fails for org.eclipse.jetty:jetty-http:10.0.0; label=fails-native-image-run; body_chars=8015"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "6 existing test file path(s) included"
+        }
+      ],
+      "current_library": "org.eclipse.jetty:jetty-http:9.4.1.v20170120",
+      "new_version": "10.0.0",
+      "model": "sonnet",
+      "input_tokens_used": 4,
+      "output_tokens_used": 708
+    },
+    "metrics": {
+      "input_tokens_used": 0,
+      "cached_input_tokens_used": 0,
+      "output_tokens_used": 0,
+      "iterations": 3,
+      "cost_usd": 0.0,
+      "generated_loc": 0,
+      "tested_library_loc": 0,
+      "metadata_entries": 0,
+      "code_coverage_percent": 0.0
+    },
+    "artifacts": {
+      "metadata_file": "None"
+    }
+  }
+}

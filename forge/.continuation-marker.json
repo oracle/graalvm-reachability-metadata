@@ -1,0 +1,80 @@
+{
+  "continueFrom": "finalization",
+  "coordinate": "org.eclipse.jetty:jetty-http:10.0.0",
+  "failure": {
+    "operand": "reporter-requested metadata",
+    "phase": "explore",
+    "step": "generate_tests()"
+  },
+  "issueNumber": 9376,
+  "label": "fails-native-image-run",
+  "libraryPreparationPreflight": {
+    "action": "no_action",
+    "agent_guidance": "",
+    "applied_setup": [],
+    "current_library": "org.eclipse.jetty:jetty-http:9.4.1.v20170120",
+    "deterministic_setup": [],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#9376 [Automation] native-image run fails for org.eclipse.jetty:jetty-http:10.0.0; label=fails-native-image-run; body_chars=8015"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "6 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 4,
+    "issue_label": "fails-native-image-run",
+    "issue_number": 9376,
+    "library": "org.eclipse.jetty:jetty-http:10.0.0",
+    "model": "sonnet",
+    "new_version": "10.0.0",
+    "output_tokens_used": 708,
+    "risks": [
+      "The log excerpt is truncated before the runtime failure, so the cause of the native-image run failure is unknown.",
+      "The reproducer command names 9.4.1.v20170120 while the title names 10.0.0. Jetty 10 moved to the Java 11 baseline and changed some http package internals, so tests that rely on 9.x APIs may need adjusting.",
+      "The metadata directories in the build log include jetty-util 12.0.9 and jetty-io 9.4.0.RC0, which do not match the tested version. Version-skewed transitive metadata is a possible source of the failure and should be checked when it is reproduced locally."
+    ],
+    "status": "completed",
+    "summary": "The existing MimeTypesTest uses only jetty-http and assertj. The issue log excerpt shows a successful native-image build and no failing operation, so it gives no concrete evidence that extra dependencies, Docker images or properties are needed."
+  },
+  "libraryUpdateRoute": null,
+  "newVersion": "10.0.0",
+  "phases": {
+    "explore": {
+      "chunkClassCount": null,
+      "chunkProcessedClassCount": 0,
+      "exhaustedClasses": [],
+      "status": "skipped"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": null,
+      "status": "completed"
+    },
+    "publication": {
+      "branch": null,
+      "coverageFollowUpIssueNumber": null,
+      "isPushed": false,
+      "publicationId": null,
+      "publicationTimestamp": null,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": true,
+      "status": "completed"
+    }
+  },
+  "preservedBranch": "ai/kimeta/human-intervention/issue-9376-fails-native-image-run-org.eclipse.jetty-jetty-http-10.0.0-a46efba8",
+  "publicationMetrics": {
+    "extras": {},
+    "library": "org.eclipse.jetty:jetty-http:10.0.0",
+    "timestamp": "2026-09-29T10:29:39.051514Z"
+  },
+  "schemaVersion": 1,
+  "strategyName": "library_update_optimistic_pi_gpt-5.6-luna"
+}
