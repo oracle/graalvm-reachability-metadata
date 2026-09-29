@@ -1,0 +1,20 @@
+## Human intervention needed
+
+The automated job failed during generated-test validation for `com.github.stefanbirkner:system-lambda:1.2.1`.
+
+Preserved work: https://github.com/oracle/graalvm-reachability-metadata/tree/ai%2Fkimeta%2Fhuman-intervention%2Fissue-10251-library-new-request-com.github.stefanbirkner-system-lambda-1.2.1-d40cf4e5
+
+The likely blocker is the generated environment-variable test. `nativeTest` repeatedly fails with `InaccessibleObjectException` because `SystemLambda$WithEnvironmentVariables` reflectively accesses `java.util.Collections$UnmodifiableMap.m`, but `java.base` does not open `java.util` in Native Image. The simpler `tapSystemOut` test passes. The final dynamic-access report still shows both reflective call sites uncovered (`0/2`), while the run metrics report failure, zero generated LOC, and zero metadata entries. The metadata iteration also stopped without adding metadata because it treated the module-access failure as already registered; the shipped `reachability-metadata.json` remains empty.
+
+Inspect:
+
+- `human-intervention-logs/com.github.stefanbirkner:system-lambda:1.2.1/gradle-test/gradle-test-2026-09-29T18-56-45-119096Z.log`
+- `human-intervention-logs/com.github.stefanbirkner:system-lambda:1.2.1/issue-requested-metadata/pi.log`
+- `human-intervention-logs/com.github.stefanbirkner:system-lambda:1.2.1/issue-requested-metadata/pi-generation-2026-09-29T18-56-06-498177Z.log`
+- `tests/src/com.github.stefanbirkner/system-lambda/1.2.1/build/reports/dynamic-access/dynamic-access-coverage.json`
+
+Manual next steps:
+
+1. Determine whether the environment-variable API can be supported on JDK 25 Native Image without module-opening or other prohibited runtime changes; otherwise replace that test with broader native-safe public API coverage.
+2. From a clean build, regenerate metadata and the dynamic-access report, confirming that any retained reflective paths are covered.
+3. Run `javaTest`, `nativeTest`, and the full coordinate-scoped `test` task before publishing the work.
