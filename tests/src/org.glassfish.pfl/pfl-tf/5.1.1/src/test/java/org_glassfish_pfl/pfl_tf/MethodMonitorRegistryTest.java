@@ -15,6 +15,8 @@ import java.lang.annotation.Target;
 
 import org.glassfish.pfl.basic.contain.SynchronizedHolder;
 import org.glassfish.pfl.tf.spi.MethodMonitor;
+import org.glassfish.pfl.tf.spi.MethodMonitorFactory;
+import org.glassfish.pfl.tf.spi.MethodMonitorFactoryDefaults;
 import org.glassfish.pfl.tf.spi.MethodMonitorRegistry;
 import org.glassfish.pfl.tf.spi.annotation.MethodMonitorGroup;
 import org.junit.jupiter.api.Test;
@@ -22,13 +24,24 @@ import org.junit.jupiter.api.Test;
 public class MethodMonitorRegistryTest {
     @Test
     void registersReflectiveClassData() {
-        MethodMonitorRegistry.registerClass(RegistryTarget.class);
+        MethodMonitorFactory factory = MethodMonitorFactoryDefaults.noOp();
+        MethodMonitorRegistry.register(RegistryMonitor.class, factory);
 
-        assertThat(RegistryTarget.__$mm$__0).isNotNull();
-        assertThat(MethodMonitorRegistry.getMethodNames(RegistryTarget.class))
-                .containsExactly("record");
-        assertThat(MethodMonitorRegistry.getMethodMonitorForClass(
-                RegistryTarget.class, RegistryMonitor.class)).isNull();
+        try {
+            MethodMonitorRegistry.registerClass(RegistryTarget.class);
+
+            assertThat(RegistryTarget.__$mm$__0).isNotNull();
+            assertThat(MethodMonitorRegistry.getMethodNames(RegistryTarget.class))
+                    .containsExactly("record");
+            assertThat(MethodMonitorRegistry.getMethodIdentifier(RegistryTarget.class, "record"))
+                    .isZero();
+            assertThat(MethodMonitorRegistry.getMethodMonitorForClass(
+                            RegistryTarget.class, RegistryMonitor.class)
+                    .factory())
+                    .isSameAs(factory);
+        } finally {
+            MethodMonitorRegistry.clear(RegistryMonitor.class);
+        }
     }
 
     @Test
@@ -36,7 +49,7 @@ public class MethodMonitorRegistryTest {
         MethodMonitorRegistry.registerAnnotationFile("org_glassfish_pfl_pfl_tf.monitors");
 
         assertThat(MethodMonitorRegistry.getMMAnnotations())
-                .contains("org.glassfish.pfl.pfl_tf.RegistryMonitor");
+                .contains("org_glassfish_pfl.pfl_tf.RegistryMonitor");
     }
 }
 
