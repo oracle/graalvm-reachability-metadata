@@ -46,13 +46,15 @@ public class JreCompatTest {
     }
 
     @Test
-    void disableCanonCachesReportsTheResultFromTheCompatibilityApi() {
-        JreCompat compat = new JreCompat();
+    void disableCanonCachesUsesTheBaseCompatibilityImplementation() {
+        JreCompat compatibility = new JreCompat();
 
-        boolean initiallyDisabled = compat.isCanonCachesDisabled();
-        boolean disabledByApi = compat.disableCanonCaches();
+        boolean initiallyDisabled = compatibility.isCanonCachesDisabled();
+        boolean disabledByApi = compatibility.disableCanonCaches();
+        boolean disabledOnSecondCall = compatibility.disableCanonCaches();
 
-        assertThat(compat.isCanonCachesDisabled()).isEqualTo(initiallyDisabled || disabledByApi);
+        assertThat(compatibility.isCanonCachesDisabled())
+                .isEqualTo(initiallyDisabled || disabledByApi || disabledOnSecondCall);
     }
 
     private static final class AwaitingTask implements Runnable {
