@@ -251,9 +251,6 @@ class CodeCoverageRheiTemplateTests(unittest.TestCase):
                     {declared["name"] for declared in verify["inputs"]},
                 )
 
-if __name__ == "__main__":
-    unittest.main()
-
     def test_programs_routing_into_a_final_state_write_the_terminal_result(self) -> None:
         """A program's exit-zero route into `completed` owns the ticket result.
 
@@ -292,7 +289,8 @@ if __name__ == "__main__":
             checked: int = 0
 
             for transition in machine["transitions"]:
-                program: str = states[transition["from"]].get("program", "")
+                # `from: "*"` (cancel any task) names no state and has no program.
+                program: str = states.get(transition["from"], {}).get("program", "")
                 if not program or transition["to"] not in final_states:
                     continue
                 checked += 1
@@ -304,3 +302,7 @@ if __name__ == "__main__":
                         f"'{transition['to']}' without writing RHEI_RESULT_PATH",
                     )
             self.assertGreater(checked, 0, states_path)
+
+
+if __name__ == "__main__":
+    unittest.main()

@@ -1018,6 +1018,12 @@ states:
               complete_measurement(str(validation), "naive", iteration)
           except Exception as error:
               fail(3, f"the stop evaluator could not complete measurement: {error}")
+          # An exit-zero route into `completed` leaves the ticket's terminal
+          # result to this program (§AR-code-coverage-improvement.4).
+          result_path = os.environ.get("RHEI_RESULT_PATH")
+          if result_path:
+              with open(result_path, "w", encoding="utf-8") as result:
+                  result.write(f"Naive baseline loop completed: {summarize(stop)}\n")
           sys.exit(0)
 
       # Step 4: fill the naive prompt with the report's numbers — the only
