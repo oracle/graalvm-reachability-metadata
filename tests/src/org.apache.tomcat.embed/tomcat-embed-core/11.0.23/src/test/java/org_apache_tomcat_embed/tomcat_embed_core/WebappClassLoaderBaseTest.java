@@ -108,7 +108,7 @@ public class WebappClassLoaderBaseTest {
                 public void run() {
                     // Keep the timer thread alive until WebappClassLoaderBase stops it.
                 }
-            }, Duration.ofMinutes(1).toMillis());
+            }, 0, Duration.ofMinutes(1).toMillis());
             return timer;
         } finally {
             thread.setContextClassLoader(original);
