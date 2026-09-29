@@ -35,6 +35,13 @@ public class Commons_weaver_privilizer_apiTest {
         assertThat(service.describe("  weaver  ")).isEqualTo("eaver:true");
     }
 
+    @Test
+    void privilizingDeclarationSupportsBlueprintMethodsFromMultipleTypes() {
+        MultipleBlueprintService service = new MultipleBlueprintService();
+
+        assertThat(service.describe("  weaver  ")).isEqualTo("WEAVER:6");
+    }
+
     public static class PrivilegedService {
         @Privileged
         public String normalize(String value) {
@@ -57,6 +64,19 @@ public class Commons_weaver_privilizer_apiTest {
         public String describe(String value) {
             String normalized = value.trim();
             return normalized.substring(1) + ":" + !normalized.isEmpty();
+        }
+    }
+
+    @Privilizing({
+        @Privilizing.CallTo(value = String.class, methods = {"trim", "toUpperCase"}),
+        @Privilizing.CallTo(value = StringBuilder.class, methods = {"append", "length", "toString"})
+    })
+    public static class MultipleBlueprintService {
+        public String describe(String value) {
+            String normalized = value.trim().toUpperCase(Locale.ROOT);
+            StringBuilder builder = new StringBuilder();
+            builder.append(normalized);
+            return builder.toString() + ":" + builder.length();
         }
     }
 }
