@@ -9,6 +9,7 @@ package org_apache_tomcat_embed.tomcat_embed_core;
 import java.util.Set;
 
 import org.apache.catalina.core.OpenSSLLifecycleListener;
+import org.apache.catalina.core.StandardServer;
 import org.apache.tomcat.util.net.openssl.OpenSSLStatus;
 import org.apache.tomcat.util.net.openssl.ciphers.Cipher;
 import org.apache.tomcat.util.net.openssl.ciphers.OpenSSLCipherConfigurationParser;
@@ -21,15 +22,21 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class OpenSSLCipherConfigurationParserTest {
 
     @Test
-    void parsesProfileAndDefaultCipherExpressions() {
-        new OpenSSLLifecycleListener();
-        boolean openSslAvailable = OpenSSLLifecycleListener.isAvailable();
+    void parsesProfileAndDefaultCipherExpressions() throws Exception {
+        StandardServer server = new StandardServer();
+        OpenSSLLifecycleListener listener = new OpenSSLLifecycleListener();
+        server.addLifecycleListener(listener);
+        try {
+            server.init();
 
-        Set<Cipher> profileCiphers = OpenSSLCipherConfigurationParser.parse("PROFILE=SYSTEM");
-        Set<Cipher> defaultCiphers = OpenSSLCipherConfigurationParser.parse("DEFAULT");
+            Set<Cipher> profileCiphers = OpenSSLCipherConfigurationParser.parse("PROFILE=SYSTEM");
+            Set<Cipher> defaultCiphers = OpenSSLCipherConfigurationParser.parse("DEFAULT");
 
-        assertThat(defaultCiphers).isNotEmpty();
-        assertThat(profileCiphers).doesNotContainNull();
-        assertThat(OpenSSLStatus.isAvailable()).isEqualTo(openSslAvailable);
+            assertThat(defaultCiphers).isNotEmpty();
+            assertThat(profileCiphers).doesNotContainNull();
+            assertThat(OpenSSLStatus.isAvailable()).isEqualTo(OpenSSLLifecycleListener.isAvailable());
+        } finally {
+            server.destroy();
+        }
     }
 }
