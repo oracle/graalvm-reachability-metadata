@@ -228,7 +228,8 @@ split into deterministic utilities plus a workflow engine:
   and call-tree CSVs are produced by the `nativeTestPGOSampling` and
   `runNativeTestPGO` harness tasks (`--pgo-sampling
   -H:PGOSamplingPeriodMicros=<micros> -H:+PrintAnalysisCallTree
-  -H:PrintAnalysisCallTreeType=CSV`; the run dumps the profile through
+  -H:PrintAnalysisCallTreeType=CSV`, the sampling period only on a
+  toolchain that advertises it (§root/AR-test-harness); the run dumps the profile through
   `-XX:ProfilesDumpFile`). Profile `<`-chain contexts are leaf-first
   (`callee:bci<caller:bci`), so sampled stacks read right-to-left from the root.
 - **Identity model** — normalizes API inventory, JaCoCo, call-tree CSV, and
@@ -576,7 +577,14 @@ failure: the run continues into the next phase exactly as a spent budget does.
 Only a completed cover-agent pass advances the yield series. When measurement
 fails after writing a report, its fix state returns to the same logical
 measurement iteration and overwrites that report; the repair retry contributes
-no additional yield.
+no additional yield. A report the measurement program did not write does not
+enter the series either: a cover agent that runs the measurement tooling on its
+own writes reports the evaluator cannot tell from measured passes, and a
+measured xhigh run lost thirteen of its fifteen API passes to two zero-yield
+entries of that kind. Measurement therefore seals the report count it closes
+with, and the next measurement sets aside every report beyond that seal before
+it opens its iteration, so the recorded series holds exactly one report per
+completed pass whatever the agent wrote in between.
 
 Three properties of the rule are deliberate, and each is a correction of a rule
 that looked reasonable and would have destroyed a measured run.
@@ -794,7 +802,12 @@ state, after which one agent-free final remeasurement refreshes JaCoCo,
 sampled PGO, call-tree, and discovery evidence before the steps re-run. A failed
 final remeasurement routes directly to human intervention; failed targets or an explicit
 human-intervention flag in the metrics, and failures that survive the fix
-budget, route to human intervention.
+budget, route to human intervention. A program whose exit code routes the
+task into a final state also owns the ticket's terminal result: Rhei writes
+none on its behalf and holds the task in its state until the file exists, so
+every such program writes a one-line summary to `RHEI_RESULT_PATH` before it
+exits zero. The runner-backed benchmark states do this through the runner;
+the inline programs do it themselves.
 
 Every fix state that can be entered more than once is a counted Rhei state and
 writes a visit-scoped output. API and deep fix states use the corresponding

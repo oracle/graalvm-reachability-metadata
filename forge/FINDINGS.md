@@ -10,6 +10,48 @@ Newest entry first; every non-approval is recorded, including one a repair later
 FS-contribution-contract.2 requires this new-library contribution to stay within org.hyperledger.fabric-chaincode-java:fabric-chaincode-shim:2.5.11 and its supporting files. The reviewed diff deletes metadata/io.grpc/grpc-netty-shaded/1.68.0/reachability-metadata.json in full (git diff --numstat reports 0 additions and 243 deletions). The local gate record confirms human_intervention_required=true and lists that path in repo_fix_paths even though the gate status is success. Under FS-contribution-contract.5.2-.5.3, restoring or otherwise changing another coordinate is not a contribution-local repair, so this branch is blocked on the shared finalization defect.
 
 Infrastructure issue: https://github.com/oracle/graalvm-reachability-metadata/issues/10229 (#10229)
+## 2026-09-29 — org.eclipse.jetty:jetty-io:9.4.19.v20190610 (#9377)
+
+**Review finalization hashes unstable abbreviated Git object IDs**
+
+The exact review finalization command repeatedly exits 1 with `Review finalization changed the publishable tree` after every substantive gate passes. `publishable_tree_digest()` hashes raw `git diff --binary HEAD --` output. During `generateLibraryStats`, Git's adaptive object abbreviation grows, changing only the diff header from `index e80d11edc3..92d6c8b6b5` (1918 bytes) to `index e80d11edc34..92d6c8b6b57` (1920 bytes); the patch body and worktree content are unchanged. Because the fix belongs in shared `forge/git_scripts/review_finalization.py`, FS-contribution-contract.5.3 requires escalation rather than a contribution-local repair.
+
+Infrastructure issue: https://github.com/oracle/graalvm-reachability-metadata/issues/10242 (#10242)
+
+## 2026-09-27 — io.lettuce:lettuce-core:6.2.6.RELEASE (#10205)
+
+**Transient CI diagnosis selected unrelated runs**
+
+The transient verdict requested workflow runs that were not failed on the exact reviewed head: 36289510984
+
+## 2026-09-26 — io.lettuce:lettuce-core:6.2.6.RELEASE (#10205)
+
+**Resource-bundle metadata entry missing a reachability condition**
+
+The added sun.util.logging.resources.logging bundle entry had no condition, violating the requirement that every shipped metadata entry be gated by condition.typeReached. Nearby reconnect logging resources were already gated on io.lettuce.core.protocol.ConnectionWatchdog, establishing the valid pre-access condition for the same behavior.
+
+## 2026-09-28 — org.jetbrains.kotlin:kotlin-scripting-jvm:2.4.0 (#9385)
+
+**Native test main-class override bypasses the JUnit suite**
+
+The contribution changed the 2.3.21 baseline outside the single-version file set and configured the 2.4.0 native test binary to run JvmDependencyTest.main instead of the JUnit launcher. That made the native lane execute only a trivial classpath assertion while the Kotlin tests and their metadata remained unverified, violating the closed-file-set and Native Image execution requirements. Removing the override reproduced the concealed evidence: the full native suite found 14 tests and initially failed on missing Kotlin serialization metadata and PathUtil assertions that assumed filesystem-backed class resources. The generated suite also combined the KJvmCompiledScriptKt and KJvmCompiledScript dynamic-access targets in one file and retained test-only/no-op resource metadata.
+## 2026-09-28 — org.hibernate.models:hibernate-models:2.0.0.Alpha1 (#9379)
+
+**Test-side reflection bypasses the annotation API**
+
+`AbstractJdkValueExtractorTest` and `OrmAnnotationDescriptorInnerJdkCreatorTest` obtained annotations by reflectively looking up and invoking `AnnotatedElement.getAnnotation`. That unnecessary test-side reflection violated the no-reflection-shortcuts rule in `FS-test-contract.2.1`; the annotation instance can be obtained through the normal public annotation API without changing the tested Hibernate Models behavior.
+
+## 2026-09-28 — org.postgresql:postgresql:42.7.13 (#9394)
+
+**Generated tests used artificial dynamic-access paths and invalid execution bounds**
+
+The generated suite violated test-contract musts: pooled-connection tests directly obtained InvocationHandlers and manually invoked Object.getClass instead of reaching reflection through ordinary library behavior; TimestampUtilsTest forced java.version to Java 8 and required --add-opens to exercise a path unavailable on the resolved JDK; generated test metadata contained unstable lambda class names as typeReached conditions; and several explicit database timeouts were below 10 seconds while Docker process waits were unbounded. These contradicted FS-test-contract.2.1, FS-test-contract.2.8, FS-test-contract.1.7, FS-test-contract.1.6, and the condition-cheating rule in FS-contribution-contract.4.
+
+## 2026-09-25 — org.apache.tomcat.embed:tomcat-embed-core:11.0.18 (#8328)
+
+**Pre-push review unavailable**
+
+Forge could not obtain a readable pre-push review verdict. This records a review availability problem, not a reviewer finding against the branch.
 
 ## 2026-09-26 — com.oracle.database.jdbc:ojdbc8:23.26.1.0.0 (#10059)
 
@@ -153,6 +195,12 @@ The contribution rewrote a test class file to preview bytecode and added --enabl
 **Generated Java test class was not public**
 
 The added Checker_qualTest top-level class was declared package-private, violating FS-test-contract.1.2, which requires every top-level test class to be public. The violation was wholly within the target coordinate's new test source and was repairable under FS-contribution-contract.5.1.
+
+## 2026-09-19 — org.springframework.boot:spring-boot-actuator-autoconfigure:4.0.0 (#10003)
+
+**Pre-push review unavailable**
+
+Forge could not obtain a readable pre-push review verdict. This records a review availability problem, not a reviewer finding against the branch.
 
 ## 2026-09-18 — org.xerial.snappy:snappy-java:1.1.0.1 (#10048)
 

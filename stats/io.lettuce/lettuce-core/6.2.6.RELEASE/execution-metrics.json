@@ -113,5 +113,90 @@
     "artifacts": {
       "metadata_file": "metadata/io.lettuce/lettuce-core/6.2.6.RELEASE/reachability-metadata.json"
     }
+  },
+  "improve_library_coverage:2026-09-26": {
+    "timestamp": "2026-09-26T09:36:17.479722Z",
+    "library": "io.lettuce:lettuce-core:6.2.6.RELEASE",
+    "starting_commit": "6df7b0d2d1066093b6340a60e6bd4d82290d8d3d",
+    "ending_commit": "817045984ff2e6500d79d2388f59f5983771b9e0",
+    "strategy_name": "library_update_optimistic_pi_gpt-5.6-sol",
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "status": "success",
+    "stats": {
+      "version": "6.2.6.RELEASE",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 0.945455,
+            "coveredCalls": 52,
+            "totalCalls": 55
+          }
+        },
+        "coverageRatio": 0.945455,
+        "coveredCalls": 52,
+        "totalCalls": 55
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 32327,
+          "missed": 91946,
+          "ratio": 0.260129,
+          "total": 124273
+        },
+        "line": {
+          "covered": 6614,
+          "missed": 17070,
+          "ratio": 0.27926,
+          "total": 23684
+        },
+        "method": {
+          "covered": 1937,
+          "missed": 6678,
+          "ratio": 0.22484,
+          "total": 8615
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "no_action",
+      "issue_number": 10205,
+      "issue_label": "library-update-request",
+      "library": "io.lettuce:lettuce-core:6.2.6.RELEASE",
+      "summary": "lettuce-core tests already avoid needing a live Redis server via an in-process FakeRedisServer (hand-rolled RESP protocol server) in the existing test suite, with no Docker image or extra dependencies beyond assertj-core (already declared). The redis.clients:jedis tests in this repo follow the same no-Docker convention. The 25 classes flagged for additional coverage (likely pub/sub, transactions, cluster/sentinel URI/option classes, codec/SSL builders) are reachable by extending this same fake-server/builder-exercise pattern without new infrastructure.",
+      "deterministic_setup": [],
+      "agent_guidance": "Extend the existing FakeRedisServer in Lettuce_coreTest.java (or a similarly scoped in-process fake) to cover additional command groups (e.g. pub/sub, MULTI/EXEC transactions) rather than introducing Testcontainers or a real Redis Docker image; classes like cluster/sentinel URIs, SSL/socket options, and codecs can be exercised via their builders without a live connection, matching how RedisURI/ClientOptions/SocketOptions are already tested without connecting.",
+      "risks": [],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#10205 Improve coverage for io.lettuce:lettuce-core:6.2.6.RELEASE; label=library-update-request; body_chars=195"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "7 existing test file path(s) included"
+        }
+      ],
+      "model": "sonnet",
+      "input_tokens_used": 14,
+      "output_tokens_used": 4073
+    },
+    "metrics": {
+      "input_tokens_used": 576340,
+      "cached_input_tokens_used": 11500160,
+      "output_tokens_used": 66206,
+      "iterations": 15,
+      "cost_usd": 10.618,
+      "generated_loc": 1665,
+      "tested_library_loc": 6614,
+      "metadata_entries": 183,
+      "test_only_metadata_entries": 60,
+      "code_coverage_percent": 27.93
+    },
+    "artifacts": {
+      "metadata_file": "metadata/io.lettuce/lettuce-core/6.2.6.RELEASE/reachability-metadata.json"
+    }
   }
 }

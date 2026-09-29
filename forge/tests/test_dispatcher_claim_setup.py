@@ -199,7 +199,7 @@ class IssueFormGateClaimOrderTests(unittest.TestCase):
         )
         cleanup.assert_called_once_with("/repo", "/worktree", "/preflight")
 
-    def test_unexpected_post_claim_failure_releases_claim_and_worktree(self) -> None:
+    def test_unexpected_post_claim_failure_labels_issue_and_releases_worktree(self) -> None:
         with patch.object(claim_setup, "refresh_issue_payload_for_claim", return_value=True), \
                 patch.object(claim_setup, "fetch_issue_base_commit", return_value="base-sha"), \
                 patch.object(claim_setup, "try_claim_issue", return_value="item-4242"), \
@@ -229,6 +229,7 @@ class IssueFormGateClaimOrderTests(unittest.TestCase):
                     side_effect=RuntimeError("invalid metadata index"),
                 ) as build_metadata, \
                 patch.object(claim_setup, "revert_issue_claim") as revert, \
+                patch.object(claim_setup, "release_claim_after_logical_setup_failure") as release, \
                 patch.object(claim_setup, "cleanup_claim_preparation_workspace") as cleanup:
             claimed_issue = forge_metadata.claim_issue_for_processing(
                 _form_issue(),
@@ -244,9 +245,13 @@ class IssueFormGateClaimOrderTests(unittest.TestCase):
             forge_metadata.LABEL_LIBRARY_NEW,
             "/worktree",
         )
-        revert.assert_called_once_with(
+        revert.assert_not_called()
+        release.assert_called_once_with(
+            unittest.mock.ANY,
+            forge_metadata.LABEL_LIBRARY_NEW,
             "item-4242",
-            4242,
+            "post-claim preparation",
+            "RuntimeError: invalid metadata index",
             "post-claim preparation failure (RuntimeError)",
         )
         cleanup.assert_called_once_with("/repo", "/worktree", "/preflight")
@@ -322,7 +327,7 @@ class IssueFormGateClaimOrderTests(unittest.TestCase):
         )
         cleanup.assert_not_called()
 
-    def test_missing_chunk_report_returns_claim_to_todo(self) -> None:
+    def test_missing_chunk_report_labels_issue_out_of_rotation(self) -> None:
         issue = _form_issue(label_names=[
             forge_metadata.LABEL_LIBRARY_NEW,
             config.LABEL_CHUNKED_DYNAMIC_ACCESS,
@@ -366,6 +371,7 @@ class IssueFormGateClaimOrderTests(unittest.TestCase):
                     side_effect=RuntimeError("missing report"),
                 ), \
                 patch.object(claim_setup, "revert_issue_claim") as revert, \
+                patch.object(claim_setup, "release_claim_after_logical_setup_failure") as release, \
                 patch.object(claim_setup, "cleanup_claim_preparation_workspace") as cleanup:
             claimed_issue = forge_metadata.claim_issue_for_processing(
                 issue,
@@ -376,9 +382,13 @@ class IssueFormGateClaimOrderTests(unittest.TestCase):
             )
 
         self.assertIsNone(claimed_issue)
-        revert.assert_called_once_with(
+        revert.assert_not_called()
+        release.assert_called_once_with(
+            issue,
+            forge_metadata.LABEL_LIBRARY_NEW,
             "item-4242",
-            4242,
+            "chunked-dynamic-access setup",
+            "RuntimeError: missing report",
             "chunked-dynamic-access setup failure (RuntimeError)",
         )
         cleanup.assert_called_once_with("/repo", "/worktree", "/preflight")

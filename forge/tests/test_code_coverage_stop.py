@@ -128,6 +128,39 @@ class CoverageStopDecisionTests(unittest.TestCase):
         module.complete_measurement(directory, "api", 1)
         self.assertEqual(module.begin_measurement(directory, "api"), 2)
 
+    def test_agent_written_reports_never_enter_the_series(self) -> None:
+        """A cover agent that ran the measurement itself adds no pass.
+
+        §AR-code-coverage-improvement.4.3
+        """
+        directory: str = self._write_reports("api", [100])
+        self.assertEqual(module.begin_measurement(directory, "api"), 1)
+        self._write_reports("api", [100, 140])
+        module.complete_measurement(directory, "api", 1)
+
+        # During the next cover pass the agent measures twice on its own.
+        self._write_reports("api", [100, 140, 150, 150])
+        self.assertEqual(module.begin_measurement(directory, "api"), 2)
+        self.assertEqual(module.covered_series(directory, "api"), [100, 140])
+        self.assertTrue(
+            os.path.isfile(os.path.join(directory, "api-cover-report-2.json.foreign"))
+        )
+
+        # The measurement then writes its own iteration 2 and seals it.
+        self._write_reports("api", [100, 140, 160])
+        module.complete_measurement(directory, "api", 2)
+        self.assertEqual(module.covered_series(directory, "api"), [100, 140, 160])
+
+    def test_foreign_reports_are_dropped_on_a_measurement_retry(self) -> None:
+        """A repair retry keeps its iteration even if the fix agent measured."""
+        directory: str = self._write_reports("api", [100, 140])
+        with open(os.path.join(directory, "api-sealed-reports.txt"), "w") as sealed:
+            sealed.write("2\n")
+        self.assertEqual(module.begin_measurement(directory, "api"), 2)
+        self._write_reports("api", [100, 140, 155, 170])
+        self.assertEqual(module.begin_measurement(directory, "api"), 2)
+        self.assertEqual(module.covered_series(directory, "api"), [100, 140, 155])
+
     def test_reads_both_phase_rosters(self) -> None:
         for phase in ("api", "deep"):
             with self.subTest(phase=phase):

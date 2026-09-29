@@ -289,7 +289,7 @@ public class Lettuce_coreTest {
         }
     }
 
-    private static final class FakeRedisServer implements Closeable {
+    static final class FakeRedisServer implements Closeable {
         private final ServerSocket serverSocket;
         private final Thread thread;
         private final CountDownLatch started = new CountDownLatch(1);
@@ -301,6 +301,7 @@ public class Lettuce_coreTest {
         private final Map<String, Map<String, Double>> sortedSets = Collections.synchronizedMap(new LinkedHashMap<>());
         private final Map<String, Map<String, GeoCoordinates>> geoIndexes = Collections.synchronizedMap(new LinkedHashMap<>());
         private volatile boolean closed;
+        private volatile Socket clientSocket;
 
         FakeRedisServer() throws Exception {
             serverSocket = new ServerSocket(0, 50, InetAddress.getLoopbackAddress());
@@ -321,6 +322,13 @@ public class Lettuce_coreTest {
             return commands;
         }
 
+        void disconnectClients() throws IOException {
+            Socket socket = clientSocket;
+            if (socket != null) {
+                socket.close();
+            }
+        }
+
         @Override
         public void close() throws IOException {
             closed = true;
@@ -336,13 +344,14 @@ public class Lettuce_coreTest {
             started.countDown();
             while (!closed) {
                 try (Socket socket = serverSocket.accept()) {
+                    clientSocket = socket;
                     socket.setSoTimeout((int) COMMAND_TIMEOUT.toMillis());
                     handle(socket);
                 } catch (SocketTimeoutException e) {
                     continue;
                 } catch (IOException e) {
-                    if (!closed) {
-                        throw new IllegalStateException(e);
+                    if (closed) {
+                        return;
                     }
                 }
             }
@@ -419,6 +428,9 @@ public class Lettuce_coreTest {
                 case "QUIT":
                     writeSimple(output, "OK");
                     break;
+                case "COMMAND":
+                    writeArray(output, Collections.emptyList());
+                    break;
                 case "SET":
                     strings.put(command.get(1), command.get(2));
                     writeSimple(output, "OK");
@@ -467,6 +479,10 @@ public class Lettuce_coreTest {
                     break;
                 case "EVAL":
                     writeEvalResponse(output, command);
+                    break;
+                case "SUBSCRIBE":
+                case "PSUBSCRIBE":
+                    writeSubscriptionResponse(output, command);
                     break;
                 default:
                     writeSimple(output, "OK");
@@ -609,6 +625,14 @@ public class Lettuce_coreTest {
             } else {
                 writeBulk(output, keys.get(0));
             }
+        }
+
+        private void writeSubscriptionResponse(OutputStream output, List<String> command) throws IOException {
+            String kind = command.get(0).toLowerCase();
+            output.write("*3\r\n".getBytes(StandardCharsets.UTF_8));
+            writeBulk(output, kind);
+            writeBulk(output, command.get(1));
+            writeInteger(output, 1);
         }
 
         private void writeSimple(OutputStream output, String value) throws IOException {

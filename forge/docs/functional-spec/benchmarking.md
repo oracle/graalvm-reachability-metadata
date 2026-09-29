@@ -148,10 +148,10 @@ silently reconciled.
 
 ## 2. Matrix selection and preparation
 
-The default matrix is the cross-product of five libraries, five agent/model
-configurations, and three thinking levels, for 75 executions:
+The default matrix is the cross-product of five libraries, six agent/model
+configurations, and three thinking levels, for 90 executions:
 
-- Pi with `gpt-5.6-sol`, `gpt-5.6-luna`, or `gpt-5.6-terra`.
+- Pi with `gpt-5.6-sol`, `gpt-5.6-luna`, `gpt-5.6-terra`, or `gpt-6-astra`.
 - Claude Code with the stable configuration names `sonnet-5` or `opus-5`.
 - `medium`, `high`, or `xhigh` thinking for every configuration.
 
@@ -159,7 +159,7 @@ The launcher accepts multiple library indexes, agents, models, and thinking
 levels as filters. Unspecified dimensions retain all configured values. Unknown,
 duplicate, and agent-incompatible selections must fail before any worktree is
 created, and the complete selected matrix must be printed before the first
-mutation. With no selection flags, the launcher selects exactly 75 executions.
+mutation. With no selection flags, the launcher selects exactly 90 executions.
 
 For each execution, the launcher must:
 
