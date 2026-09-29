@@ -1,0 +1,79 @@
+{
+  "continueFrom": "finalization",
+  "coordinate": "org.apache.httpcomponents.client5:httpclient5:5.3",
+  "failure": {
+    "operand": "reporter-requested metadata",
+    "phase": "explore",
+    "step": "generate_tests()"
+  },
+  "issueNumber": 9366,
+  "label": "fails-native-image-run",
+  "libraryPreparationPreflight": {
+    "action": "no_action",
+    "agent_guidance": "",
+    "applied_setup": [],
+    "current_library": "org.apache.httpcomponents.client5:httpclient5:5.2.1",
+    "deterministic_setup": [],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#9366 [Automation] native-image run fails for org.apache.httpcomponents.client5:httpclient5:5.3; label=fails-native-image-run; body_chars=8015"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "6 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 4,
+    "issue_label": "fails-native-image-run",
+    "issue_number": 9366,
+    "library": "org.apache.httpcomponents.client5:httpclient5:5.3",
+    "model": "sonnet",
+    "new_version": "5.3",
+    "output_tokens_used": 817,
+    "risks": [
+      "The issue log is truncated before the actual native-image run failure, so the root cause is unconfirmed. It is most likely missing reachability metadata for the 5.3 version, or serialization/reflection differences from 5.2.1, and should be resolved by running the reproducer locally.",
+      "The issue reproducer runs coordinates 5.2.1 with GVM_TCK_LV=5.3. Metadata for httpcore5 and httpcore5-h2 is pinned to 5.2, while 5.3 resolves to httpcore5 5.2.4, so the dependency metadata versions should be checked."
+    ],
+    "status": "completed",
+    "summary": "httpclient5 needs no extra dependency, Docker image or environment setup. The existing 5.2.1 test is in-memory (BasicAuthCache serialization round-trip). Wider coverage such as request building, auth schemes, cookies, URI and TLS-config helpers can use the already-declared httpclient5 artifact and its transitive httpcore5/httpcore5-h2/slf4j-api. Live HTTP tests can use a loopback server from httpcore5's own classes or the JDK's com.sun.net.httpserver. The truncated issue log shows only the native-image build banner, not a failing symbol, so it gives no evidence of a setup gap or of an unsupportable mechanism."
+  },
+  "libraryUpdateRoute": null,
+  "newVersion": "5.3",
+  "phases": {
+    "explore": {
+      "chunkClassCount": null,
+      "chunkProcessedClassCount": 0,
+      "exhaustedClasses": [],
+      "status": "skipped"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": null,
+      "status": "completed"
+    },
+    "publication": {
+      "branch": null,
+      "coverageFollowUpIssueNumber": null,
+      "isPushed": false,
+      "publicationId": null,
+      "publicationTimestamp": null,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": true,
+      "status": "completed"
+    }
+  },
+  "preservedBranch": "ai/kimeta/human-intervention/issue-9366-fails-native-image-run-org.apache.httpcomponents.client5-httpclient5-5.3-468db79e",
+  "publicationMetrics": {
+    "extras": {},
+    "library": "org.apache.httpcomponents.client5:httpclient5:5.3",
+    "timestamp": "2026-09-29T12:37:41.212109Z"
+  },
+  "schemaVersion": 1,
+  "strategyName": "library_update_optimistic_pi_gpt-5.6-luna"
+}

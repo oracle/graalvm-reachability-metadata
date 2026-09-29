@@ -1,0 +1,54 @@
+{
+  "timestamp": "2026-09-29T12:37:41.212109Z",
+  "library": "org.apache.httpcomponents.client5:httpclient5:5.3",
+  "starting_commit": "d023fac60394e497485da37c5983a938dff64f5b",
+  "ending_commit": "d023fac60394e497485da37c5983a938dff64f5b",
+  "strategy_name": "library_update_optimistic_pi_gpt-5.6-luna",
+  "agent": "pi",
+  "model": "gpt-5.6-luna",
+  "status": "failure",
+  "library_preparation_preflight": {
+    "status": "completed",
+    "action": "no_action",
+    "issue_number": 9366,
+    "issue_label": "fails-native-image-run",
+    "library": "org.apache.httpcomponents.client5:httpclient5:5.3",
+    "summary": "httpclient5 needs no extra dependency, Docker image or environment setup. The existing 5.2.1 test is in-memory (BasicAuthCache serialization round-trip). Wider coverage such as request building, auth schemes, cookies, URI and TLS-config helpers can use the already-declared httpclient5 artifact and its transitive httpcore5/httpcore5-h2/slf4j-api. Live HTTP tests can use a loopback server from httpcore5's own classes or the JDK's com.sun.net.httpserver. The truncated issue log shows only the native-image build banner, not a failing symbol, so it gives no evidence of a setup gap or of an unsupportable mechanism.",
+    "deterministic_setup": [],
+    "agent_guidance": "",
+    "risks": [
+      "The issue log is truncated before the actual native-image run failure, so the root cause is unconfirmed. It is most likely missing reachability metadata for the 5.3 version, or serialization/reflection differences from 5.2.1, and should be resolved by running the reproducer locally.",
+      "The issue reproducer runs coordinates 5.2.1 with GVM_TCK_LV=5.3. Metadata for httpcore5 and httpcore5-h2 is pinned to 5.2, while 5.3 resolves to httpcore5 5.2.4, so the dependency metadata versions should be checked."
+    ],
+    "applied_setup": [],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#9366 [Automation] native-image run fails for org.apache.httpcomponents.client5:httpclient5:5.3; label=fails-native-image-run; body_chars=8015"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "6 existing test file path(s) included"
+      }
+    ],
+    "current_library": "org.apache.httpcomponents.client5:httpclient5:5.2.1",
+    "new_version": "5.3",
+    "model": "sonnet",
+    "input_tokens_used": 4,
+    "output_tokens_used": 817
+  },
+  "metrics": {
+    "input_tokens_used": 0,
+    "cached_input_tokens_used": 0,
+    "output_tokens_used": 0,
+    "iterations": 3,
+    "cost_usd": 0.0,
+    "generated_loc": 0,
+    "tested_library_loc": 0,
+    "metadata_entries": 0,
+    "code_coverage_percent": 0.0
+  },
+  "artifacts": {
+    "metadata_file": "None"
+  }
+}
