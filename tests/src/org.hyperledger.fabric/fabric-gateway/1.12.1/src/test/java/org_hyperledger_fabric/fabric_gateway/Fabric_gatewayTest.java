@@ -151,6 +151,71 @@ public class Fabric_gatewayTest {
         }
     }
 
+    @Test
+    void evaluatesAProposalWithArgumentsAndTransientData() throws Exception {
+        String serverName = "fabric-gateway-proposal-test";
+        AtomicInteger evaluateCalls = new AtomicInteger();
+        GatewayGrpc.GatewayImplBase service = new GatewayGrpc.GatewayImplBase() {
+            @Override
+            public void evaluate(
+                    org.hyperledger.fabric.protos.gateway.EvaluateRequest request,
+                    StreamObserver<EvaluateResponse> observer) {
+                evaluateCalls.incrementAndGet();
+                observer.onNext(
+                        EvaluateResponse.newBuilder()
+                                .setResult(
+                                        Response.newBuilder()
+                                                .setStatus(200)
+                                                .setPayload(ByteString.copyFromUtf8("proposal-evaluated"))
+                                                .build())
+                                .build());
+                observer.onCompleted();
+            }
+        };
+
+        Server server = InProcessServerBuilder.forName(serverName)
+                .directExecutor()
+                .addService(service)
+                .build()
+                .start();
+        ManagedChannel channel = InProcessChannelBuilder.forName(serverName)
+                .directExecutor()
+                .build();
+        Identity identity = new Identity() {
+            @Override
+            public String getMspId() {
+                return "TestMSP";
+            }
+
+            @Override
+            public byte[] getCredentials() {
+                return "test-certificate".getBytes(java.nio.charset.StandardCharsets.UTF_8);
+            }
+        };
+        Signer signer = (byte[] data) -> sign(data);
+
+        try (Gateway gateway = Gateway.newInstance()
+                .identity(identity)
+                .signer(signer)
+                .connection(channel)
+                .connect()) {
+            Contract contract = gateway.getNetwork("test-channel").getContract("ledger");
+
+            byte[] result = contract.newProposal("read")
+                    .addArguments("asset-1")
+                    .putTransient("query-mode", "consistent")
+                    .build()
+                    .evaluate();
+
+            assertThat(result).containsExactly(
+                    "proposal-evaluated".getBytes(java.nio.charset.StandardCharsets.UTF_8));
+            assertThat(evaluateCalls).hasValue(1);
+        } finally {
+            channel.shutdownNow();
+            server.shutdownNow();
+        }
+    }
+
     private static byte[] sign(byte[] data) throws GeneralSecurityException {
         return data;
     }
