@@ -3,6 +3,12 @@
 Rendered by Forge from the pre-push branch review of §FS-local-branch-review.
 Newest entry first; every non-approval is recorded, including one a repair later cleared.
 
+## 2026-09-29 — com.github.stefanbirkner:system-lambda:1.2.1 (#10251)
+
+**System Lambda 1.2.1 dynamic access is unsupported by Native Image**
+
+The new-library contribution reports 0/2 dynamic-access coverage, violating §FS-contribution-contract.3. The coverage report identifies both calls as Class.getDeclaredField and Field.get in SystemLambda$WithEnvironmentVariables.getFieldValue (SystemLambda.java:1379-1381). That public path reflectively mutates System.getenv() internals. Native execution evidence shows NoSuchFieldException for field m on the substituted environment map and, with the field registered, InaccessibleObjectException for java.util.Collections$UnmodifiableMap.m because java.base does not open java.util. Thus all library dynamic access is behind JDK-internal behavior Native Image substitutes or withholds, and no metadata entry can satisfy the coverage gate. Under §FS-contribution-contract.5.4, this previously unindexed new library leaves nothing to record and must be closed.
+
 ## 2026-09-27 — org.hyperledger.fabric-chaincode-java:fabric-chaincode-shim:2.5.11 (#10223)
 
 **New-library finalization deletes another coordinate's metadata**
