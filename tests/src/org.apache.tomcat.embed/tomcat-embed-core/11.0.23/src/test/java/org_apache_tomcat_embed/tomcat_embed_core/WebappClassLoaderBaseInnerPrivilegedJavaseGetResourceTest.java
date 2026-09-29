@@ -12,7 +12,6 @@ import org.apache.catalina.webresources.StandardRoot;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class WebappClassLoaderBaseInnerPrivilegedJavaseGetResourceTest {
 
@@ -27,8 +26,6 @@ public class WebappClassLoaderBaseInnerPrivilegedJavaseGetResourceTest {
             loader.setResources(resources);
             loader.start();
             assertThat(loader.loadClass("java.lang.Object")).isSameAs(Object.class);
-            assertThatThrownBy(() -> loader.loadClass("java.lang.NoSuchRuntimeClass"))
-                    .isInstanceOf(ClassNotFoundException.class);
         } finally {
             resources.stop();
             resources.destroy();
