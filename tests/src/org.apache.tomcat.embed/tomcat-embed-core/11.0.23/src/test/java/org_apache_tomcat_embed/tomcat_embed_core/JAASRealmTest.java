@@ -6,6 +6,8 @@
  */
 package org_apache_tomcat_embed.tomcat_embed_core;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.security.Principal;
 import java.util.Map;
 import java.util.Objects;
@@ -20,6 +22,7 @@ import org.apache.catalina.TomcatPrincipal;
 import org.apache.catalina.realm.GenericPrincipal;
 import org.apache.catalina.realm.JAASRealm;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -28,9 +31,33 @@ public class JAASRealmTest {
     private static final String APP_NAME = "ReachabilityTest";
     private static final String RESOURCE_CONFIG = "tomcat/jaas-realm-resource.config";
 
+    @TempDir
+    private Path temporaryDirectory;
+
     @Test
     void authenticatesWithJaasConfigurationLoadedFromClasspathResource() throws Exception {
         TestableJAASRealm realm = newRealm(RESOURCE_CONFIG, "resource");
+
+        try {
+            realm.start();
+
+            Principal principal = realm.authenticate("alice", "secret");
+
+            assertAuthenticatedPrincipal(principal, "alice", "admin");
+        } finally {
+            destroy(realm);
+        }
+    }
+
+    @Test
+    void authenticatesWithJaasConfigurationLoadedFromFile() throws Exception {
+        Path configFile = temporaryDirectory.resolve("jaas.config");
+        Files.writeString(configFile, """
+                ReachabilityTest {
+                    org_apache_tomcat_embed.tomcat_embed_core.JAASRealmTest$AcceptingLoginModule required;
+                };
+                """);
+        TestableJAASRealm realm = newRealm(configFile.toString(), "file");
 
         try {
             realm.start();
