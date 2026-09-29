@@ -3,6 +3,12 @@
 Rendered by Forge from the pre-push branch review of §FS-local-branch-review.
 Newest entry first; every non-approval is recorded, including one a repair later cleared.
 
+## 2026-09-29 — org.apache.tomcat.embed:tomcat-embed-el:10.0.0 (#9371)
+
+**Test-only service provider forced by an unjustified Native Image flag**
+
+The new test project excluded org.apache.el.ExpressionFactoryImpl during Native Image service discovery solely to force a test-only provider, violating FS-test-contract.2.7 because the flag's necessity originated in test configuration rather than the library or its dependencies. The copied test metadata, filter, and new index bucket also retained javax.el entries for the Jakarta-only artifact; those typeReached conditions could never be reached, violating the condition-integrity rule in FS-contribution-contract.4.9.
+
 ## 2026-09-27 — io.lettuce:lettuce-core:6.2.6.RELEASE (#10205)
 
 **Transient CI diagnosis selected unrelated runs**
