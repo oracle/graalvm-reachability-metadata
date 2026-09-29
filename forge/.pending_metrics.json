@@ -1,0 +1,53 @@
+{
+  "timestamp": "2026-09-29T18:57:12.298541Z",
+  "library": "com.github.stefanbirkner:system-lambda:1.2.1",
+  "starting_commit": "343d17e76a424539e36a5428aa62019cc2164c0c",
+  "ending_commit": "1418edb49cb03707e9bf4b6d0220c9e2c6b84f04",
+  "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-luna",
+  "agent": "pi",
+  "model": "gpt-5.6-luna",
+  "status": "failure",
+  "library_preparation_preflight": {
+    "status": "completed",
+    "action": "advisory_preparation",
+    "issue_number": 10251,
+    "issue_label": "library-new-request",
+    "library": "com.github.stefanbirkner:system-lambda:1.2.1",
+    "summary": "system-lambda 1.2.1 has no runtime dependencies and needs no extra Maven dependency or Docker image. Several of its features fail on JDK 25 and in native image, so the tests need guidance to avoid them.",
+    "deterministic_setup": [],
+    "agent_guidance": "This is based on my knowledge of the library. I did not inspect the resolved jar or the repo in this session. Use only the plain JUnit scaffold, with no extra dependencies. The library is a single class, com.github.stefanbirkner.systemlambda.SystemLambda, and tests should call its static methods. Some methods do not work on the target JDK:\n- catchSystemExit, assertNothingWrittenToSystemErr and other System.exit tests use System.setSecurityManager. JDK 18+ deprecates that call and JDK 24+ (including JDK 25) disables it permanently, so it throws UnsupportedOperationException. Do not build test coverage on catchSystemExit or withSecurityManager. If you call them, expect the UnsupportedOperationException and assert on it deterministically, or skip them.\n- withEnvironmentVariable, restoreSystemProperties and the environment-variable helpers mutate the private java.util.Collections$UnmodifiableMap and ProcessEnvironment internals by reflection. On JDK 17+ this needs --add-opens java.base/java.util=ALL-UNNAMED and --add-opens java.base/java.lang=ALL-UNNAMED. Add these to the JVM test task's jvmArgs only if the tests use env-var mutation. In native image the reflective access to ProcessEnvironment fields will likely fail, or may need reachability metadata. Prefer tests that pass on both JVM and native, and treat env-var mutation as optional.\n- The following need no special setup and should be the core of the tests: tapSystemOut, tapSystemErr, tapSystemErrAndOut, muteSystemOut, muteSystemErr, withTextFromSystemIn (including andExceptionThrownOnInputEnd), restoreSystemProperties, and withEnvironmentVariable if it works.\nRun all checks in the same JVM by calling the Statement or Callable lambdas directly.",
+    "risks": [
+      "On JDK 25, the SecurityManager-based APIs (catchSystemExit, withSecurityManager, execute-and-check-exit) throw UnsupportedOperationException, so coverage of these paths is not achievable.",
+      "Environment-variable mutation depends on reflection into JDK internals. It may fail on JDK 25 without --add-opens and may not work in native image.",
+      "Dynamic-access coverage may be low, because most of the library is stream redirection and System.in replacement rather than reflection."
+    ],
+    "applied_setup": [],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#10251 Support for com.github.stefanbirkner:system-lambda:1.2.1; label=library-new-request; body_chars=52"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "0 existing test file path(s) included"
+      }
+    ],
+    "model": "sonnet",
+    "input_tokens_used": 2,
+    "output_tokens_used": 1296
+  },
+  "metrics": {
+    "input_tokens_used": 50084,
+    "cached_input_tokens_used": 407552,
+    "output_tokens_used": 2951,
+    "iterations": 6,
+    "cost_usd": 0.1086,
+    "generated_loc": 0,
+    "tested_library_loc": 0,
+    "metadata_entries": 0,
+    "code_coverage_percent": 0.0
+  },
+  "artifacts": {
+    "metadata_file": "None"
+  }
+}

@@ -1,0 +1,21 @@
+Implemented a native-compatible replacement:
+
+- Removed the environment-variable test, which depended on reflective mutation of JDK internals.
+- Removed its JVM-only `--add-opens` arguments.
+- Added `SystemLambdaTest.java`, exercising `tapSystemOut` through the public API.
+
+Root cause from the full native result was:
+
+```text
+java.lang.reflect.InaccessibleObjectException:
+Unable to make field java.util.Collections$UnmodifiableMap.m accessible
+```
+
+There was no nested `Caused by:` chain. The tracing launcher obscured this with a secondary `StackOverflowError`.
+
+Validation:
+
+- `./gradlew test -Pcoordinates=com.github.stefanbirkner:system-lambda:1.2.1 --stacktrace` — passed, including native execution.
+- `checkstyle` and `spotlessCheck` — passed.
+- `fissile check --staged` — passed.
+- Exact reproducer exits successfully, although the metadata-tracing launcher still emits its separate JUnit discovery `StackOverflowError`.

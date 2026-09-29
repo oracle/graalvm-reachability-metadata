@@ -1,0 +1,40 @@
+Prompt:
+You are preparing a Forge workflow for a library issue. Decide whether the library needs setup beyond the normal generated test scaffold before meaningful coverage is reachable.
+
+Research the library yourself to make this decision. Investigate the resolved artifact and its dependencies, how the library is normally used, and its documentation. The JSON context below is only a starting point, not the limit of what you may consider. Do not modify the repository or apply any setup yourself — return only the decision. Local Gradle and Native Image verification remain authoritative.
+
+The setup can be one of three things: an extra Maven dependency, a Docker image the tests need, or an environment/system property the generated tests must set. Represent dependencies and Docker images as `deterministic_setup` entries the driver can apply before generation:
+  - {"kind": "dependency", "coordinate": "group:artifact:version", "scope": "testImplementation", "reason": "..."}
+  - {"kind": "docker_image", "image": "name:tag", "slug": "short-slug", "reason": "..."}
+If a test needs a Docker image that is already pinned under `tests/tck-build-logic/src/main/resources/allowed-docker-images/`, reuse the exact tag from that `Dockerfile-<slug>` instead of introducing a new one, since the allow-list permits a single shared tag per image.
+Put environment variables, system properties, and other test-code setup in `agent_guidance`. Do not restate deterministic entries as guidance.
+
+Return a single JSON object with this shape:
+{
+  "action": "no_action" | "advisory_preparation",
+  "summary": "short reason",
+  "deterministic_setup": [ ... dependency or docker_image entries, if any ... ],
+  "agent_guidance": "environment/system property/test setup guidance, if any",
+  "risks": ["risk notes, if any"]
+}
+
+Choose no_action unless your research finds concrete evidence that extra setup is needed.
+
+Context (starting point):
+{
+  "issue": {
+    "number": 10251,
+    "title": "Support for com.github.stefanbirkner:system-lambda:1.2.1",
+    "label": "library-new-request",
+    "body": "### Reason for requesting the library\n\n_No response_",
+    "body_error": ""
+  },
+  "library": "com.github.stefanbirkner:system-lambda:1.2.1",
+  "current_library": null,
+  "new_version": null,
+  "existing_tests": {}
+}
+
+Conversation:
+{"duration_api_ms":10611,"stop_reason":"end_turn","session_id":"d0bfc1a3-e923-4ebd-aeee-54b4415b1cbe","total_cost_usd":0.0974188,"usage":{"input_tokens":2,"cache_creation_input_tokens":20602,"cache_read_input_tokens":10234,"output_tokens":1296,"output_tokens_details":{"thinking_tokens":343},"server_tool_use":{"web_search_requests":0,"web_fetch_requests":0},"service_tier":"standard","cache_creation":{"ephemeral_1h_input_tokens":20602,"ephemeral_5m_input_tokens":0},"inference_geo":"not_available","iterations":[{"input_tokens":2,"output_tokens":1296,"cache_read_input_tokens":10234,"cache_creation_input_tokens":20602,"cache_creation":{"ephemeral_5m_input_tokens":0,"ephemeral_1h_input_tokens":20602},"type":"message"}],"speed":"standard"},"modelUsage":{"claude-sonnet-5-5":{"inputTokens":2,"outputTokens":1296,"cacheReadInputTokens":10234,"cacheCreationInputTokens":20602,"webSearchRequests":0,"costUSD":0.0974188,"contextWindow":1000000,"maxOutputTokens":128000,"thinkingTokens":343,"canonicalModel":"claude-sonnet-5-5","provider":"firstParty","costBasis":"list"}},"permission_denials":[],"terminal_reason":"completed","fast_mode_state":"off","fast_mode_disabled_reason":"sdk_opt_in_required","subagent_stats":{"spawned":0,"requested":{"background":0,"foreground":0,"unset":0},"started_in_background":0,"max_depth":0,"spawned_by_subagents":0,"completed":0,"failed":0,"killed":{"parent":0,"user":0,"system":0},"refused":{"depth_limit":0,"concurrency_limit":0,"budget":0},"by_type":{}},"is_error":false,"num_turns":1,"subtype":"success","api_error_status":null,"result":"```json\n{\n  \"action\": \"advisory_preparation\",\n  \"summary\": \"system-lambda 1.2.1 has no runtime dependencies and needs no extra Maven dependency or Docker image. Several of its features fail on JDK 25 and in native image, so the tests need guidance to avoid them.\",\n  \"deterministic_setup\": [],\n  \"agent_guidance\": \"This is based on my knowledge of the library. I did not inspect the resolved jar or the repo in this session. Use only the plain JUnit scaffold, with no extra dependencies. The library is a single class, com.github.stefanbirkner.systemlambda.SystemLambda, and tests should call its static methods. Some methods do not work on the target JDK:\\n- catchSystemExit, assertNothingWrittenToSystemErr and other System.exit tests use System.setSecurityManager. JDK 18+ deprecates that call and JDK 24+ (including JDK 25) disables it permanently, so it throws UnsupportedOperationException. Do not build test coverage on catchSystemExit or withSecurityManager. If you call them, expect the UnsupportedOperationException and assert on it deterministically, or skip them.\\n- withEnvironmentVariable, restoreSystemProperties and the environment-variable helpers mutate the private java.util.Collections$UnmodifiableMap and ProcessEnvironment internals by reflection. On JDK 17+ this needs --add-opens java.base/java.util=ALL-UNNAMED and --add-opens java.base/java.lang=ALL-UNNAMED. Add these to the JVM test task's jvmArgs only if the tests use env-var mutation. In native image the reflective access to ProcessEnvironment fields will likely fail, or may need reachability metadata. Prefer tests that pass on both JVM and native, and treat env-var mutation as optional.\\n- The following need no special setup and should be the core of the tests: tapSystemOut, tapSystemErr, tapSystemErrAndOut, muteSystemOut, muteSystemErr, withTextFromSystemIn (including andExceptionThrownOnInputEnd), restoreSystemProperties, and withEnvironmentVariable if it works.\\nRun all checks in the same JVM by calling the Statement or Callable lambdas directly.\",\n  \"risks\": [\n    \"On JDK 25, the SecurityManager-based APIs (catchSystemExit, withSecurityManager, execute-and-check-exit) throw UnsupportedOperationException, so coverage of these paths is not achievable.\",\n    \"Environment-variable mutation depends on reflection into JDK internals. It may fail on JDK 25 without --add-opens and may not work in native image.\",\n    \"Dynamic-access coverage may be low, because most of the library is stream redirection and System.in replacement rather than reflection.\"\n  ]\n}\n```","ttft_ms":3378,"type":"result","duration_ms":10682,"uuid":"ef728b00-3ffb-439b-a66d-73c1b612c6d8","ttft_stream_ms":734,"time_to_request_ms":69,"first_content_frame_ms":735,"queued_turn_count":0,"result_index":0}
+
