@@ -771,7 +771,21 @@ Provider<List<String>> pgoBuildArgs = providers.provider {
         // reports/call_tree_{methods,invokes,targets}_*.csv as the static call graph.
         buildArgs.add("--pgo-sampling")
         buildArgs.add("-H:+UnlockExperimentalVMOptions")
-        buildArgs.add("-H:PGOSamplingPeriodMicros=${pgoSamplingPeriodMicros}")
+        // Released GraalVMs sample at a fixed period and reject the option, so it is
+        // passed only where native-image lists it; a non-default period the
+        // toolchain cannot honour fails the build (§AR-test-harness).
+        String expertOptions = providers.exec {
+            commandLine(nativeImageTool("native-image"), "--expert-options-all")
+            setIgnoreExitValue(true)
+        }.standardOutput.asText.get()
+        if (expertOptions.contains("PGOSamplingPeriodMicros")) {
+            buildArgs.add("-H:PGOSamplingPeriodMicros=${pgoSamplingPeriodMicros}")
+        } else if (pgoSamplingPeriodMicros != "100") {
+            throw new GradleException(
+                    "The selected native-image does not support 'pgoSamplingPeriodMicros'; " +
+                            "it samples at a fixed period, so a period of ${pgoSamplingPeriodMicros} cannot be applied."
+            )
+        }
         buildArgs.add("-H:+PrintAnalysisCallTree")
         buildArgs.add("-H:PrintAnalysisCallTreeType=CSV")
         buildArgs.add("-H:-UnlockExperimentalVMOptions")

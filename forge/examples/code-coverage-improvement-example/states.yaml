@@ -141,6 +141,12 @@ states:
       budget = min(10, max(1, baseline["summary"]["uncovered"] // 500))
       print(f"[api-measure] iteration budget {budget} from {baseline['summary']['uncovered']} baseline uncovered targets", flush=True)
       if not uncovered or iteration >= budget:
+          # An exit-zero route into `completed` leaves the ticket's terminal
+          # result to this program (§AR-code-coverage-improvement.4).
+          result_path = os.environ.get("RHEI_RESULT_PATH")
+          if result_path:
+              with open(result_path, "w", encoding="utf-8") as result:
+                  result.write(f"API coverage loop completed after {iteration} iteration(s); {len(uncovered)} uncovered target(s) remain.\n")
           sys.exit(0)
 
       # Steering: derive the next cover prompt from the report just written.
@@ -367,6 +373,12 @@ states:
       budget = min(10, max(1, baseline["summary"]["deepUncovered"] // 500))
       print(f"[deep-measure] iteration budget {budget} from {baseline['summary']['deepUncovered']} baseline uncovered methods", flush=True)
       if not prompt_target_ids or iteration >= budget:
+          # An exit-zero route into `completed` leaves the ticket's terminal
+          # result to this program (§AR-code-coverage-improvement.4).
+          result_path = os.environ.get("RHEI_RESULT_PATH")
+          if result_path:
+              with open(result_path, "w", encoding="utf-8") as result:
+                  result.write(f"Deep coverage loop completed after {iteration} iteration(s); {len(prompt_target_ids)} target(s) remain.\n")
           sys.exit(0)
 
       # Steering: the analyzer already renders the compact Observed /
@@ -619,6 +631,14 @@ states:
           print("final metrics record no validation commands", file=sys.stderr)
           sys.exit(75)
       PY
+      status=$?
+      [ "$status" -eq 0 ] || exit "$status"
+      # An exit-zero route into `completed` leaves the ticket's terminal
+      # result to this program (§AR-code-coverage-improvement.4).
+      if [ -n "${RHEI_RESULT_PATH:-}" ]; then
+        printf 'Finalization verified: metrics valid, no failed targets, no human intervention.\n' \
+          > "$RHEI_RESULT_PATH"
+      fi
     program_timeout: 5m
     inputs:
       - name: final-metrics
