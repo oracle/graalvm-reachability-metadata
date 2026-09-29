@@ -30,6 +30,13 @@ TARGET_STATE_STATUSES: frozenset[str] = frozenset({
 })
 TERMINAL_TARGET_STATUSES: frozenset[str] = frozenset({"completed", "skipped", "exhausted", "failed"})
 
+#: `profileKind` of a discovery report: what its `.iprof` carried. Both are
+#: navigation guidance only; a sampling-only profile degrades to line-level
+#: hints (§AR-code-coverage-deep-navigation.1.2).
+INSTRUMENTED_PROFILE_KIND = "instrumented-guidance"
+SAMPLED_PROFILE_KIND = "sampled-guidance"
+PROFILE_KINDS: frozenset[str] = frozenset({INSTRUMENTED_PROFILE_KIND, SAMPLED_PROFILE_KIND})
+
 
 class ProfileFormatError(RuntimeError):
     """Raised when report inputs violate the analyzer contract."""

@@ -66,6 +66,8 @@ from utility_scripts.code_coverage_profile_history import (
     progress_since,
 )
 from utility_scripts.code_coverage_profile_inputs import (
+    INSTRUMENTED_PROFILE_KIND,
+    SAMPLED_PROFILE_KIND,
     ProfileFormatError,
     TargetState,
     effective_target_state,
@@ -395,7 +397,7 @@ def generate_report(
     report["coordinate"] = coordinate
     report["iteration"] = iteration
     report["profileKind"] = (
-        "instrumented-guidance" if evidence.counters is not None else "sampled-guidance"
+        INSTRUMENTED_PROFILE_KIND if evidence.counters is not None else SAMPLED_PROFILE_KIND
     )
 
     os.makedirs(output_dir, exist_ok=True)
