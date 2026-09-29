@@ -3,6 +3,13 @@
 Rendered by Forge from the pre-push branch review of §FS-local-branch-review.
 Newest entry first; every non-approval is recorded, including one a repair later cleared.
 
+## 2026-09-27 — org.hyperledger.fabric-chaincode-java:fabric-chaincode-shim:2.5.11 (#10223)
+
+**New-library finalization deletes another coordinate's metadata**
+
+FS-contribution-contract.2 requires this new-library contribution to stay within org.hyperledger.fabric-chaincode-java:fabric-chaincode-shim:2.5.11 and its supporting files. The reviewed diff deletes metadata/io.grpc/grpc-netty-shaded/1.68.0/reachability-metadata.json in full (git diff --numstat reports 0 additions and 243 deletions). The local gate record confirms human_intervention_required=true and lists that path in repo_fix_paths even though the gate status is success. Under FS-contribution-contract.5.2-.5.3, restoring or otherwise changing another coordinate is not a contribution-local repair, so this branch is blocked on the shared finalization defect.
+
+Infrastructure issue: https://github.com/oracle/graalvm-reachability-metadata/issues/10229 (#10229)
 ## 2026-09-29 — org.eclipse.jetty:jetty-io:9.4.19.v20190610 (#9377)
 
 **Review finalization hashes unstable abbreviated Git object IDs**
