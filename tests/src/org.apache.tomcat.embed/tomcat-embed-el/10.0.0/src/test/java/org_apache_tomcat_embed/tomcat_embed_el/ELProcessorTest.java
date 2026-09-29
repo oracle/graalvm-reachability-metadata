@@ -6,10 +6,11 @@
  */
 package org_apache_tomcat_embed.tomcat_embed_el;
 
-import java.lang.reflect.Method;
-
+import jakarta.el.ELContext;
 import jakarta.el.ELProcessor;
+import jakarta.el.ValueExpression;
 
+import org.apache.el.ExpressionFactoryImpl;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -17,21 +18,18 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class ELProcessorTest {
 
     @Test
-    void definesFunctionFromBinaryClassName() throws ClassNotFoundException, NoSuchMethodException {
+    void evaluatesFunctionDefinedFromBinaryClassName() throws ClassNotFoundException, NoSuchMethodException {
         ELProcessor processor = new ELProcessor();
 
         processor.defineFunction("lib", "joinByName", FunctionLibrary.class.getName(), "join");
 
-        Method mappedMethod = processor.getELManager().getELContext().getFunctionMapper()
-                .resolveFunction("lib", "joinByName");
-        assertThat(mappedMethod).isNotNull();
-        assertThat(mappedMethod.getDeclaringClass()).isEqualTo(FunctionLibrary.class);
-        assertThat(mappedMethod.getName()).isEqualTo("join");
-        assertThat(mappedMethod.getParameterTypes()).isEmpty();
+        assertThat(evaluate(processor, "${lib:joinByName()}"))
+                .isEqualTo("joined");
     }
 
     @Test
-    void definesFunctionFromSignatureWhenOverloadsExist() throws ClassNotFoundException, NoSuchMethodException {
+    void evaluatesFunctionDefinedFromSignatureWhenOverloadsExist()
+            throws ClassNotFoundException, NoSuchMethodException {
         ELProcessor processor = new ELProcessor();
 
         processor.defineFunction(
@@ -40,12 +38,15 @@ public class ELProcessorTest {
                 FunctionLibrary.class.getName(),
                 "java.lang.String repeat(java.lang.String,int)");
 
-        Method mappedMethod = processor.getELManager().getELContext().getFunctionMapper()
-                .resolveFunction("lib", "repeatBySignature");
-        assertThat(mappedMethod).isNotNull();
-        assertThat(mappedMethod.getDeclaringClass()).isEqualTo(FunctionLibrary.class);
-        assertThat(mappedMethod.getName()).isEqualTo("repeat");
-        assertThat(mappedMethod.getParameterTypes()).containsExactly(String.class, int.class);
+        assertThat(evaluate(processor, "${lib:repeatBySignature('ha', 3)}"))
+                .isEqualTo("hahaha");
+    }
+
+    private Object evaluate(ELProcessor processor, String expression) {
+        ELContext context = processor.getELManager().getELContext();
+        ValueExpression valueExpression = new ExpressionFactoryImpl()
+                .createValueExpression(context, expression, Object.class);
+        return valueExpression.getValue(context);
     }
 
     public static final class FunctionLibrary {
