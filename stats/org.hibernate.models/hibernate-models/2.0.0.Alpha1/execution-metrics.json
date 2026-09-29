@@ -1,0 +1,141 @@
+{
+  "fix_javac_fail:2026-09-28": {
+    "timestamp": "2026-09-28T22:40:44.189179Z",
+    "library": "org.hibernate.models:hibernate-models:2.0.0.Alpha1",
+    "starting_commit": "9f630920f3d8e91d70fd1f0be65eba41de72443f",
+    "ending_commit": "23920b06024e6e73f360233c81599b6dabbee854",
+    "previous_library": "org.hibernate.models:hibernate-models:1.0.0",
+    "strategy_name": "javac_iterative_with_coverage_sources_pi_gpt-5.6-luna",
+    "agent": "pi",
+    "model": "gpt-5.6-luna",
+    "status": "success",
+    "stats": {
+      "version": "2.0.0.Alpha1",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 37,
+            "totalCalls": 37
+          },
+          "resources": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 1,
+            "totalCalls": 1
+          }
+        },
+        "coverageRatio": 1.0,
+        "coveredCalls": 38,
+        "totalCalls": 38
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 4537,
+          "missed": 10475,
+          "ratio": 0.302225,
+          "total": 15012
+        },
+        "line": {
+          "covered": 964,
+          "missed": 2507,
+          "ratio": 0.27773,
+          "total": 3471
+        },
+        "method": {
+          "covered": 280,
+          "missed": 843,
+          "ratio": 0.249332,
+          "total": 1123
+        }
+      }
+    },
+    "previous_library_stats": {
+      "version": "1.0.0",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 29,
+            "totalCalls": 29
+          },
+          "resources": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 1,
+            "totalCalls": 1
+          }
+        },
+        "coverageRatio": 1.0,
+        "coveredCalls": 30,
+        "totalCalls": 30
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 2761,
+          "missed": 7765,
+          "ratio": 0.262303,
+          "total": 10526
+        },
+        "line": {
+          "covered": 589,
+          "missed": 1934,
+          "ratio": 0.233452,
+          "total": 2523
+        },
+        "method": {
+          "covered": 202,
+          "missed": 749,
+          "ratio": 0.212408,
+          "total": 951
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "no_action",
+      "issue_number": 9379,
+      "issue_label": "fails-javac-compile",
+      "library": "org.hibernate.models:hibernate-models:2.0.0.Alpha1",
+      "summary": "The failure is a plain javac 'cannot find symbol' error. The 1.0.0 tests reference JdkClassDetails, DynamicClassDetails, DynamicFieldDetails and JdkBuilders, and those types are not available under those names or packages in 2.0.0.Alpha1. This is an API change between versions, and the tests need to be ported to the new API. It needs no extra dependency, Docker image or system property.",
+      "deterministic_setup": [],
+      "agent_guidance": "Do not copy the 1.0.0 tests unchanged. Check the 2.0.0.Alpha1 jar to see where the details and builder types now live, or what replaced them, and rewrite the tests against that API. Keep the reachability-metadata.json entries that still apply.",
+      "risks": [
+        "I did not open the 2.0.0.Alpha1 jar or its sources for this decision. It rests on the compile errors in the issue log.",
+        "The 2.0.0.Alpha1 package layout may have changed a lot, so the ported tests may need to be largely rewritten.",
+        "Some 1.0.0 metadata entries may no longer apply. The new metadata should come from the ported tests' own coverage, not be copied over."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#9379 [Automation] javac compile fails for org.hibernate.models:hibernate-models:2.0.0.Alpha1; label=fails-javac-compile; body_chars=8015"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "21 existing test file path(s) included"
+        }
+      ],
+      "current_library": "org.hibernate.models:hibernate-models:1.0.0",
+      "new_version": "2.0.0.Alpha1",
+      "model": "sonnet",
+      "input_tokens_used": 2,
+      "output_tokens_used": 635
+    },
+    "metrics": {
+      "input_tokens_used": 392416,
+      "cached_input_tokens_used": 4602880,
+      "output_tokens_used": 20058,
+      "iterations": 8,
+      "cost_usd": 0.973,
+      "tested_library_loc": 964,
+      "metadata_entries": 65,
+      "test_only_metadata_entries": 94,
+      "previous_library_metadata_entries": 66,
+      "previous_library_test_only_metadata_entries": 36,
+      "code_coverage_percent": 27.77,
+      "previous_library_coverage_percent": 23.35
+    },
+    "artifacts": {
+      "metadata_file": "metadata/org.hibernate.models/hibernate-models/2.0.0.Alpha1/reachability-metadata.json"
+    }
+  }
+}

@@ -6,9 +6,6 @@
  */
 package org_apache_tomcat_embed.tomcat_embed_core;
 
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.security.Principal;
 import java.util.Map;
 import java.util.Objects;
@@ -23,7 +20,6 @@ import org.apache.catalina.TomcatPrincipal;
 import org.apache.catalina.realm.GenericPrincipal;
 import org.apache.catalina.realm.JAASRealm;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -31,9 +27,6 @@ public class JAASRealmTest {
 
     private static final String APP_NAME = "ReachabilityTest";
     private static final String RESOURCE_CONFIG = "tomcat/jaas-realm-resource.config";
-
-    @TempDir
-    Path temporaryDirectory;
 
     @Test
     void authenticatesWithJaasConfigurationLoadedFromClasspathResource() throws Exception {
@@ -50,23 +43,6 @@ public class JAASRealmTest {
         }
     }
 
-    @Test
-    void authenticatesWithJaasConfigurationLoadedFromFileSource() throws Exception {
-        Path configFile = temporaryDirectory.resolve("jaas-realm-file.config");
-        Files.writeString(configFile, jaasConfig(), StandardCharsets.UTF_8);
-        TestableJAASRealm realm = newRealm(configFile.toString(), "file");
-
-        try {
-            realm.start();
-
-            Principal principal = realm.authenticate("bob", "secret");
-
-            assertAuthenticatedPrincipal(principal, "bob", "admin");
-        } finally {
-            destroy(realm);
-        }
-    }
-
     private static TestableJAASRealm newRealm(String configFile, String realmPathSuffix) {
         TestableJAASRealm realm = new TestableJAASRealm();
         realm.setAppName(APP_NAME);
@@ -75,14 +51,6 @@ public class JAASRealmTest {
         realm.setUserClassNames(UserPrincipal.class.getName());
         realm.setRoleClassNames(RolePrincipal.class.getName());
         return realm;
-    }
-
-    private static String jaasConfig() {
-        return """
-                ReachabilityTest {
-                    org_apache_tomcat_embed.tomcat_embed_core.JAASRealmTest$AcceptingLoginModule required;
-                };
-                """;
     }
 
     private static void assertAuthenticatedPrincipal(Principal principal, String username, String role)

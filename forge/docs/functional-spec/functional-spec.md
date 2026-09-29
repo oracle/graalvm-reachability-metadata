@@ -342,7 +342,14 @@ repository-dependent precondition run against that worktree: a `resumable`
 issue must resolve a valid continuation marker on a preserved branch
 (§FS-forge-run-continuation), and a `chunked-dynamic-access` issue must resolve
 its exhaust report (§AR-dynamic-access-exhaust-report). A failed non-terminal
-precondition removes the worktree and releases the claim back to `Todo`.
+precondition always removes the worktree and releases the claim back to `Todo`,
+and its classification decides what happens to the issue
+(§FS-human-intervention-policy). A precondition that fails on an external
+dependency takes no issue action, so a later cycle retries it. Any other failed
+precondition would fail identically on every retry, so it is logical: Forge
+posts a comment naming the failed precondition and its error, labels the issue
+`human-intervention`, and removes `resumable`, which takes the issue out of the
+queue until a maintainer resolves it.
 
 An operator may explicitly enable blocked-issue claiming for one invocation or
 worker configuration. The override is disabled by default and bypasses only the
