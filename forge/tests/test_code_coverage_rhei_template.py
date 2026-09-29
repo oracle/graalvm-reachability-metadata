@@ -251,5 +251,58 @@ class CodeCoverageRheiTemplateTests(unittest.TestCase):
                     {declared["name"] for declared in verify["inputs"]},
                 )
 
+    def test_programs_routing_into_a_final_state_write_the_terminal_result(self) -> None:
+        """A program's exit-zero route into `completed` owns the ticket result.
+
+        Rhei writes no result for a program whose exit code lands on a
+        `final: true` state and holds the task there while the file is
+        missing, so every such program must write `RHEI_RESULT_PATH` itself or
+        delegate to the benchmark runner, which does.
+        §AR-code-coverage-improvement.4
+        """
+        forge_root: str = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        states_paths: tuple[str, ...] = (
+            os.path.join(
+                forge_root,
+                ".agents",
+                "rhei",
+                "templates",
+                "code-coverage-improvement",
+                "states.yaml",
+            ),
+            os.path.join(
+                forge_root,
+                "examples",
+                "code-coverage-improvement-example",
+                "states.yaml",
+            ),
+        )
+
+        for states_path in states_paths:
+            with open(states_path, encoding="utf-8") as states_file:
+                source: str = states_file.read()
+            machine: dict = yaml.safe_load(_render_numeric_placeholders(source))
+            states: dict = machine["states"]
+            final_states: set[str] = {
+                name for name, state in states.items() if state.get("final")
+            }
+            checked: int = 0
+
+            for transition in machine["transitions"]:
+                # `from: "*"` (cancel any task) names no state and has no program.
+                program: str = states.get(transition["from"], {}).get("program", "")
+                if not program or transition["to"] not in final_states:
+                    continue
+                checked += 1
+                with self.subTest(path=states_path, state=transition["from"]):
+                    self.assertTrue(
+                        "RHEI_RESULT_PATH" in program
+                        or "code_coverage_benchmark.py" in program,
+                        f"program state '{transition['from']}' routes into "
+                        f"'{transition['to']}' without writing RHEI_RESULT_PATH",
+                    )
+            self.assertGreater(checked, 0, states_path)
+
+
 if __name__ == "__main__":
     unittest.main()

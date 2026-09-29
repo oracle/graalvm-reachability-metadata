@@ -10,7 +10,8 @@
 # library, with no dependency on a checked-in metadata coordinate.
 #
 # It mirrors exactly what the `runNativeTestPGO` harness task does
-# (`--pgo-sampling -H:PGOSamplingPeriodMicros=... -H:+PrintAnalysisCallTree
+# (`--pgo-sampling`, `-H:PGOSamplingPeriodMicros=...` where the toolchain
+# lists it, `-H:+PrintAnalysisCallTree
 # -H:PrintAnalysisCallTreeType=CSV`, then run with `-XX:ProfilesDumpFile=`),
 # then runs:
 #   1. code_coverage_api_inventory.py   (jar -> api-inventory.json)
@@ -98,8 +99,14 @@ echo "[1/5] compile + jar"
 ( cd "${WORK}/src" && "${JAVAC}" -g com/example/*.java && "${JAR}" cf "${WORK}/demo.jar" com/example/*.class )
 
 echo "[2/5] build PGO-sampling image with analysis call-tree CSV dump"
+# The sampling period is toolchain-dependent (§root/AR-test-harness): newer
+# builds sample at a fixed period and reject the option.
+SAMPLING_PERIOD_ARGS=()
+if "${NI}" --expert-options-all 2>/dev/null | grep -q "PGOSamplingPeriodMicros"; then
+    SAMPLING_PERIOD_ARGS=(-H:PGOSamplingPeriodMicros=100)
+fi
 ( cd "${WORK}/out" && "${NI}" --pgo-sampling \
-        -H:+UnlockExperimentalVMOptions -H:PGOSamplingPeriodMicros=100 \
+        -H:+UnlockExperimentalVMOptions "${SAMPLING_PERIOD_ARGS[@]}" \
         -H:+PrintAnalysisCallTree -H:PrintAnalysisCallTreeType=CSV -H:-UnlockExperimentalVMOptions \
         -cp "${WORK}/demo.jar" com.example.Demo demo >/dev/null )
 
