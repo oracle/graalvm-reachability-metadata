@@ -6,9 +6,9 @@
  */
 package org_apache_tomcat_embed.tomcat_embed_el;
 
-import javax.el.BeanELResolver;
-import javax.el.ELContext;
-import javax.el.ELManager;
+import jakarta.el.BeanELResolver;
+import jakarta.el.ELContext;
+import jakarta.el.ELManager;
 
 import org.junit.jupiter.api.Test;
 

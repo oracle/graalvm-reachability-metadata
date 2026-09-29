@@ -8,7 +8,7 @@ package org_apache_tomcat_embed.tomcat_embed_el;
 
 import java.lang.reflect.Method;
 
-import javax.el.MethodNotFoundException;
+import jakarta.el.MethodNotFoundException;
 
 import org.apache.el.util.ReflectionUtil;
 import org.junit.jupiter.api.Test;

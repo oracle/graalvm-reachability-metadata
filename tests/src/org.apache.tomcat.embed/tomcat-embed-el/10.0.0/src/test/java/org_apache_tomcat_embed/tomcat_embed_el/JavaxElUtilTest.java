@@ -6,16 +6,32 @@
  */
 package org_apache_tomcat_embed.tomcat_embed_el;
 
-import javax.el.ELClass;
-import javax.el.ELContext;
-import javax.el.ELManager;
-import javax.el.StaticFieldELResolver;
+import jakarta.el.ELClass;
+import jakarta.el.ELContext;
+import jakarta.el.ELManager;
+import jakarta.el.MethodNotFoundException;
+import jakarta.el.StaticFieldELResolver;
 
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class JavaxElUtilTest {
+
+    @Test
+    void reportsMissingStaticMethodWithLocalizedMessage() {
+        StaticFieldELResolver resolver = new StaticFieldELResolver();
+
+        assertThatThrownBy(() -> resolver.invoke(
+                newContext(),
+                new ELClass(InheritedStaticVarargsTarget.class),
+                "missingMethod",
+                null,
+                new Object[0]))
+                .isInstanceOf(MethodNotFoundException.class)
+                .hasMessageContaining("missingMethod");
+    }
 
     @Test
     void invokesInheritedStaticVarargsMethodOnNonPublicClass() {
