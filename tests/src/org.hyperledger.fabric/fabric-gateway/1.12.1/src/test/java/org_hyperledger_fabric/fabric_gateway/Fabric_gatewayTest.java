@@ -24,14 +24,24 @@ import org.hyperledger.fabric.client.Network;
 import org.hyperledger.fabric.client.Status;
 import org.hyperledger.fabric.client.identity.Identity;
 import org.hyperledger.fabric.client.identity.Signer;
+import org.hyperledger.fabric.protos.common.ChannelHeader;
+import org.hyperledger.fabric.protos.common.Envelope;
+import org.hyperledger.fabric.protos.common.Header;
+import org.hyperledger.fabric.protos.common.Payload;
 import org.hyperledger.fabric.protos.gateway.ChaincodeEventsResponse;
 import org.hyperledger.fabric.protos.gateway.CommitStatusRequest;
 import org.hyperledger.fabric.protos.gateway.CommitStatusResponse;
-import org.hyperledger.fabric.protos.gateway.SignedCommitStatusRequest;
 import org.hyperledger.fabric.protos.gateway.EvaluateResponse;
 import org.hyperledger.fabric.protos.gateway.GatewayGrpc;
+import org.hyperledger.fabric.protos.gateway.SignedCommitStatusRequest;
+import org.hyperledger.fabric.protos.peer.ChaincodeAction;
+import org.hyperledger.fabric.protos.peer.ChaincodeActionPayload;
+import org.hyperledger.fabric.protos.peer.ChaincodeEndorsedAction;
 import org.hyperledger.fabric.protos.peer.ChaincodeEvent.Builder;
+import org.hyperledger.fabric.protos.peer.ProposalResponsePayload;
 import org.hyperledger.fabric.protos.peer.Response;
+import org.hyperledger.fabric.protos.peer.Transaction;
+import org.hyperledger.fabric.protos.peer.TransactionAction;
 import org.hyperledger.fabric.protos.peer.TxValidationCode;
 import org.junit.jupiter.api.Test;
 
@@ -214,6 +224,115 @@ public class Fabric_gatewayTest {
             channel.shutdownNow();
             server.shutdownNow();
         }
+    }
+
+    @Test
+    void submitsAnEndorsedTransactionAndWaitsForCommit() throws Exception {
+        String serverName = "fabric-gateway-submit-test";
+        AtomicInteger endorseCalls = new AtomicInteger();
+        AtomicInteger submitCalls = new AtomicInteger();
+        GatewayGrpc.GatewayImplBase service = new GatewayGrpc.GatewayImplBase() {
+            @Override
+            public void endorse(
+                    org.hyperledger.fabric.protos.gateway.EndorseRequest request,
+                    StreamObserver<org.hyperledger.fabric.protos.gateway.EndorseResponse> observer) {
+                endorseCalls.incrementAndGet();
+                observer.onNext(org.hyperledger.fabric.protos.gateway.EndorseResponse.newBuilder()
+                        .setPreparedTransaction(newPreparedTransaction().build())
+                        .build());
+                observer.onCompleted();
+            }
+
+            @Override
+            public void submit(
+                    org.hyperledger.fabric.protos.gateway.SubmitRequest request,
+                    StreamObserver<org.hyperledger.fabric.protos.gateway.SubmitResponse> observer) {
+                submitCalls.incrementAndGet();
+                observer.onNext(org.hyperledger.fabric.protos.gateway.SubmitResponse.getDefaultInstance());
+                observer.onCompleted();
+            }
+
+            @Override
+            public void commitStatus(
+                    org.hyperledger.fabric.protos.gateway.SignedCommitStatusRequest request,
+                    StreamObserver<CommitStatusResponse> observer) {
+                observer.onNext(CommitStatusResponse.newBuilder()
+                        .setResult(TxValidationCode.VALID)
+                        .setBlockNumber(43)
+                        .build());
+                observer.onCompleted();
+            }
+        };
+
+        Server server = InProcessServerBuilder.forName(serverName)
+                .directExecutor()
+                .addService(service)
+                .build()
+                .start();
+        ManagedChannel channel = InProcessChannelBuilder.forName(serverName)
+                .directExecutor()
+                .build();
+        Identity identity = new Identity() {
+            @Override
+            public String getMspId() {
+                return "TestMSP";
+            }
+
+            @Override
+            public byte[] getCredentials() {
+                return "test-certificate".getBytes(java.nio.charset.StandardCharsets.UTF_8);
+            }
+        };
+        Signer signer = (byte[] data) -> sign(data);
+
+        try (Gateway gateway = Gateway.newInstance()
+                .identity(identity)
+                .signer(signer)
+                .connection(channel)
+                .connect()) {
+            Contract contract = gateway.getNetwork("test-channel").getContract("ledger");
+
+            assertThat(contract.submitTransaction("write", "asset-1"))
+                    .containsExactly("submitted".getBytes(java.nio.charset.StandardCharsets.UTF_8));
+            assertThat(endorseCalls).hasValue(1);
+            assertThat(submitCalls).hasValue(1);
+        } finally {
+            channel.shutdownNow();
+            server.shutdownNow();
+        }
+    }
+
+    private static Envelope.Builder newPreparedTransaction() {
+        ByteString result = ByteString.copyFromUtf8("submitted");
+        ChaincodeAction action = ChaincodeAction.newBuilder()
+                .setResponse(Response.newBuilder().setStatus(200).setPayload(result).build())
+                .build();
+        ProposalResponsePayload responsePayload = ProposalResponsePayload.newBuilder()
+                .setExtension(action.toByteString())
+                .build();
+        ChaincodeEndorsedAction endorsedAction = ChaincodeEndorsedAction.newBuilder()
+                .setProposalResponsePayload(responsePayload.toByteString())
+                .build();
+        ChaincodeActionPayload actionPayload = ChaincodeActionPayload.newBuilder()
+                .setAction(endorsedAction)
+                .build();
+        TransactionAction transactionAction = TransactionAction.newBuilder()
+                .setPayload(actionPayload.toByteString())
+                .build();
+        Transaction transaction = Transaction.newBuilder()
+                .addActions(transactionAction)
+                .build();
+        ChannelHeader channelHeader = ChannelHeader.newBuilder()
+                .setChannelId("test-channel")
+                .build();
+        Header header = Header.newBuilder()
+                .setChannelHeader(channelHeader.toByteString())
+                .build();
+        Payload payload = Payload.newBuilder()
+                .setHeader(header)
+                .setData(transaction.toByteString())
+                .build();
+        return Envelope.newBuilder().setPayload(payload.toByteString());
     }
 
     private static byte[] sign(byte[] data) throws GeneralSecurityException {
