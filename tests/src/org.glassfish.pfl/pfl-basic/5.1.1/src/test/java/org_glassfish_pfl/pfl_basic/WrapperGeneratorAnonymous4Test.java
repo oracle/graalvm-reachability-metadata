@@ -25,6 +25,6 @@ public class WrapperGeneratorAnonymous4Test {
     public void generatedProxyImplementsWrapperInterface() {
         Factory factory = WrapperGenerator.makeWrapper(Factory.class);
 
-        assertThat(factory.state("state")).hasMessage("state");
+        assertThat(factory.state("state")).hasMessage("WARNING: X00002: state arg0=state");
     }
 }
