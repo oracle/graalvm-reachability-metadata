@@ -13,6 +13,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
+import java.io.Serializable;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -24,6 +25,18 @@ public class ObjectInputStreamWithLoaderTest {
         String value = readWithLoader("hello", String.class, ClassLoader.getSystemClassLoader());
 
         assertEquals("hello", value);
+    }
+
+    @Test
+    void readsAnApplicationObjectUsingTheConfiguredLoader() throws Exception {
+        Payload original = new Payload("session", 42);
+        RecordingClassLoader loader = new RecordingClassLoader();
+
+        Payload restored = readWithLoader(original, Payload.class, loader);
+
+        assertEquals(Payload.class.getName(), loader.requestedClassName());
+        assertEquals(original.name(), restored.name());
+        assertEquals(original.revision(), restored.revision());
     }
 
     @Test
@@ -64,6 +77,28 @@ public class ObjectInputStreamWithLoaderTest {
             output.writeObject(value);
         }
         return bytes.toByteArray();
+    }
+
+    private record Payload(String name, int revision) implements Serializable {
+        private static final long serialVersionUID = 1L;
+    }
+}
+
+final class RecordingClassLoader extends ClassLoader {
+    private String requestedClassName;
+
+    RecordingClassLoader() {
+        super(ObjectInputStreamWithLoaderTest.class.getClassLoader());
+    }
+
+    @Override
+    public Class<?> loadClass(String name) throws ClassNotFoundException {
+        requestedClassName = name;
+        return super.loadClass(name);
+    }
+
+    String requestedClassName() {
+        return requestedClassName;
     }
 }
 
