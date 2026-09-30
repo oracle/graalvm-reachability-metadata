@@ -11,14 +11,18 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import com.sun.xml.stream.buffer.MutableXMLStreamBuffer;
 import com.sun.xml.stream.buffer.XMLStreamBuffer;
+import java.io.ByteArrayInputStream;
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.nio.charset.StandardCharsets;
+import javax.xml.parsers.SAXParserFactory;
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 import org.junit.jupiter.api.Test;
+import org.xml.sax.XMLReader;
 
 public class StreambufferTest {
     private static final String XML = "<root xmlns='urn:test' id='7'><item>payload</item></root>";
@@ -54,6 +58,26 @@ public class StreambufferTest {
         writer.writeEndElement();
         writer.writeEndElement();
         writer.close();
+
+        XMLStreamReader output = buffer.readAsXMLStreamReader();
+        assertEquals(XMLStreamConstants.START_ELEMENT, output.next());
+        assertEquals("root", output.getLocalName());
+        assertEquals("7", output.getAttributeValue(null, "id"));
+        assertEquals(XMLStreamConstants.START_ELEMENT, output.next());
+        assertEquals("item", output.getLocalName());
+        assertEquals("payload", output.getElementText());
+    }
+
+    @Test
+    void createsBufferFromSaxAndReadsItBack() throws Exception {
+        SAXParserFactory parserFactory = SAXParserFactory.newInstance();
+        parserFactory.setNamespaceAware(true);
+        XMLReader input = parserFactory.newSAXParser().getXMLReader();
+        XMLStreamBuffer buffer;
+        try (ByteArrayInputStream source =
+                new ByteArrayInputStream(XML.getBytes(StandardCharsets.UTF_8))) {
+            buffer = XMLStreamBuffer.createNewBufferFromXMLReader(input, source);
+        }
 
         XMLStreamReader output = buffer.readAsXMLStreamReader();
         assertEquals(XMLStreamConstants.START_ELEMENT, output.next());
