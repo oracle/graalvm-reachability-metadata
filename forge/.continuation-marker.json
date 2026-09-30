@@ -1,0 +1,78 @@
+{
+  "continueFrom": "explore",
+  "coordinate": "com.sun.xml.ws:policy:4.0.5",
+  "failure": {
+    "operand": "reporter-requested metadata",
+    "phase": "explore",
+    "step": "generate_tests()"
+  },
+  "issueNumber": 9942,
+  "label": "library-new-request",
+  "libraryPreparationPreflight": {
+    "action": "no_action",
+    "agent_guidance": "",
+    "applied_setup": [],
+    "deterministic_setup": [],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#9942 Support for com.sun.xml.ws:policy:4.0.5; label=library-new-request; body_chars=39"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "0 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 4,
+    "issue_label": "library-new-request",
+    "issue_number": 9942,
+    "library": "com.sun.xml.ws:policy:4.0.5",
+    "model": "sonnet",
+    "output_tokens_used": 603,
+    "risks": [
+      "jakarta.activation-api is only 'provided' in the POM, so it isn't pulled in transitively. Jaxb-runtime normally brings it in through its own dependencies. If it is missing from the test classpath, add it manually.",
+      "The library uses ServiceLoader and reflection for policy assertion creators and the policy namespace. If native-image reports missing metadata, verify with the local Gradle and Native Image run."
+    ],
+    "status": "completed",
+    "summary": "com.sun.xml.ws:policy:4.0.5 is the WS-Policy library. Its POM already brings in jaxb-runtime, jakarta.xml.ws-api, jakarta.xml.bind-api, jakarta.xml.soap-api and jakarta.annotation-api as compile dependencies. Policy assertions, policy maps and the XML policy model can all be exercised in-process. The library needs no Docker image, network service, or environment or system property."
+  },
+  "libraryUpdateRoute": null,
+  "newVersion": null,
+  "phases": {
+    "explore": {
+      "chunkClassCount": null,
+      "chunkProcessedClassCount": 0,
+      "exhaustedClasses": [],
+      "iteration": 15,
+      "status": "running"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": null,
+      "status": "skipped"
+    },
+    "publication": {
+      "branch": null,
+      "coverageFollowUpIssueNumber": null,
+      "isPushed": false,
+      "publicationId": null,
+      "publicationTimestamp": null,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": true,
+      "status": "completed"
+    }
+  },
+  "preservedBranch": "ai/kimeta/human-intervention/issue-9942-library-new-request-com.sun.xml.ws-policy-4.0.5-242f1400",
+  "publicationMetrics": {
+    "extras": {},
+    "library": "com.sun.xml.ws:policy:4.0.5",
+    "timestamp": "2026-09-30T02:13:25.305370Z"
+  },
+  "schemaVersion": 1,
+  "strategyName": "optimistic_dynamic_access_iterative_pi_gpt-5.6-luna"
+}

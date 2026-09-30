@@ -1,0 +1,54 @@
+{
+  "add_new_library_support:2026-09-30": {
+    "timestamp": "2026-09-30T02:13:25.305370Z",
+    "library": "com.sun.xml.ws:policy:4.0.5",
+    "starting_commit": "4c616c5663d552a8d17dd77f3439cfd0d3614ae8",
+    "ending_commit": "34131caaee65984f2d4a6561d6bc4439a53117fd",
+    "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-luna",
+    "agent": "pi",
+    "model": "gpt-5.6-luna",
+    "status": "failure",
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "no_action",
+      "issue_number": 9942,
+      "issue_label": "library-new-request",
+      "library": "com.sun.xml.ws:policy:4.0.5",
+      "summary": "com.sun.xml.ws:policy:4.0.5 is the WS-Policy library. Its POM already brings in jaxb-runtime, jakarta.xml.ws-api, jakarta.xml.bind-api, jakarta.xml.soap-api and jakarta.annotation-api as compile dependencies. Policy assertions, policy maps and the XML policy model can all be exercised in-process. The library needs no Docker image, network service, or environment or system property.",
+      "deterministic_setup": [],
+      "agent_guidance": "",
+      "risks": [
+        "jakarta.activation-api is only 'provided' in the POM, so it isn't pulled in transitively. Jaxb-runtime normally brings it in through its own dependencies. If it is missing from the test classpath, add it manually.",
+        "The library uses ServiceLoader and reflection for policy assertion creators and the policy namespace. If native-image reports missing metadata, verify with the local Gradle and Native Image run."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#9942 Support for com.sun.xml.ws:policy:4.0.5; label=library-new-request; body_chars=39"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "sonnet",
+      "input_tokens_used": 4,
+      "output_tokens_used": 603
+    },
+    "metrics": {
+      "input_tokens_used": 480413,
+      "cached_input_tokens_used": 5975552,
+      "output_tokens_used": 27075,
+      "iterations": 19,
+      "cost_usd": 1.2404,
+      "generated_loc": 0,
+      "tested_library_loc": 0,
+      "metadata_entries": 0,
+      "code_coverage_percent": 0.0
+    },
+    "artifacts": {
+      "metadata_file": "None"
+    }
+  }
+}

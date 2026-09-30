@@ -1,0 +1,12 @@
+```json
+{
+  "action": "no_action",
+  "summary": "com.sun.xml.ws:policy:4.0.5 is the WS-Policy library. Its POM already brings in jaxb-runtime, jakarta.xml.ws-api, jakarta.xml.bind-api, jakarta.xml.soap-api and jakarta.annotation-api as compile dependencies. Policy assertions, policy maps and the XML policy model can all be exercised in-process. The library needs no Docker image, network service, or environment or system property.",
+  "deterministic_setup": [],
+  "agent_guidance": "",
+  "risks": [
+    "jakarta.activation-api is only 'provided' in the POM, so it isn't pulled in transitively. Jaxb-runtime normally brings it in through its own dependencies. If it is missing from the test classpath, add it manually.",
+    "The library uses ServiceLoader and reflection for policy assertion creators and the policy namespace. If native-image reports missing metadata, verify with the local Gradle and Native Image run."
+  ]
+}
+```
