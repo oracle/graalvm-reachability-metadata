@@ -3,6 +3,12 @@
 Rendered by Forge from the pre-push branch review of §FS-local-branch-review.
 Newest entry first; every non-approval is recorded, including one a repair later cleared.
 
+## 2026-09-30 — org.glassfish.pfl:pfl-tf:5.1.1 (#9944)
+
+**Dynamic-access classes combined in one test file**
+
+The resolved dynamic-access evidence identifies call sites in both MethodMonitorRegistry and EnhancedClassDataReflectiveImpl, but the contribution originally placed both scenarios in MethodMonitorRegistryTest.java. This violated FS-test-contract.1.8, which requires a dedicated test file for each dynamic-access class.
+
 ## 2026-09-27 — org.hyperledger.fabric-chaincode-java:fabric-chaincode-shim:2.5.11 (#10223)
 
 **New-library finalization deletes another coordinate's metadata**
