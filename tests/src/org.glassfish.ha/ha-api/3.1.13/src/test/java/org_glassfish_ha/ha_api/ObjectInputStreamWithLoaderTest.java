@@ -29,7 +29,7 @@ public class ObjectInputStreamWithLoaderTest {
     @Test
     void readsObjectArraysUsingTheConfiguredLoader() throws Exception {
         String[] values = readWithLoader(new String[]{"one", "two"}, String[].class,
-                ClassLoader.getSystemClassLoader());
+                new RejectingClassLoader());
 
         assertArrayEquals(new String[]{"one", "two"}, values);
     }
