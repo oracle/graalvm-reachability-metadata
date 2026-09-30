@@ -28,7 +28,7 @@ from utility_scripts.code_coverage_profile_routes import Sample, SampledProfile
 
 MAX_RENDERED_DISPATCH_CANDIDATES = 12
 MAX_RENDERED_RECEIVERS = 6
-MAX_RENDERED_SUCCESSORS = 8
+MAX_RENDERED_BRANCHES = 8
 
 
 def _display_method(ref: MethodRef, qualify_owner: bool) -> str:
@@ -77,46 +77,50 @@ def _count_text(count: int | None, counted: bool) -> str:
     return f" ×{count:,}" if count is not None else " (no counter)"
 
 
-def _shown_successors(successors: list[dict]) -> tuple[list[dict], int]:
-    """Every successor that reaches the target or ran, filled up to the cap."""
-    if len(successors) <= MAX_RENDERED_SUCCESSORS:
-        return successors, 0
+def _shown_branches(items: list[dict]) -> tuple[list[dict], int]:
+    """Every branch that reaches the target or ran, filled up to the cap."""
+    if len(items) <= MAX_RENDERED_BRANCHES:
+        return items, 0
     kept: set[int] = {
-        index for index, successor in enumerate(successors)
-        if successor["reachesTarget"] or (successor["count"] or 0) > 0
+        index for index, item in enumerate(items)
+        if item["reachesTarget"] or (item["count"] or 0) > 0
     }
-    for index in range(len(successors)):
-        if len(kept) >= MAX_RENDERED_SUCCESSORS:
+    for index in range(len(items)):
+        if len(kept) >= MAX_RENDERED_BRANCHES:
             break
         kept.add(index)
-    return [successors[index] for index in sorted(kept)], len(successors) - len(kept)
+    return [items[index] for index in sorted(kept)], len(items) - len(kept)
 
 
 def _branch_lines(branches: list[dict], counted: bool) -> list[str]:
-    """One line per branch on the fork line, successors labelled by landing
-    line (§AR-code-coverage-deep-navigation.3.2)."""
-    labels: list[str] = [
-        "switch" if len(branch["successors"]) > 2 else "condition" for branch in branches
-    ]
-    if len(branches) > 1:
-        labels = [f"{label} {index}" for index, label in enumerate(labels, start=1)]
+    """One numbered line per successor of every branch instruction on the fork
+    line, labelled by landing line, so the items add up to JaCoCo's taken/total
+    (§AR-code-coverage-deep-navigation.3.2)."""
+    # A successor that lands on a later condition of the same line is named
+    # after it; with one condition on the line there is nothing to name.
     by_block: dict[int, str] = {
-        branch["blockStart"]: label for branch, label in zip(branches, labels)
-    }
+        branch["blockStart"]: f"condition {index}"
+        for index, branch in enumerate(branches, start=1)
+    } if len(branches) > 1 else {}
+    items: list[dict] = [
+        {**successor, "number": number}
+        for number, successor in enumerate(
+            (successor for branch in branches for successor in branch["successors"]),
+            start=1,
+        )
+    ]
+    shown, omitted = _shown_branches(items)
     lines: list[str] = []
-    for branch, label in zip(branches, labels):
-        shown, omitted = _shown_successors(branch["successors"])
-        parts: list[str] = []
-        for successor in shown:
-            landing: str = by_block.get(successor["bci"]) or (
-                f"line {successor['line']}" if successor["line"] is not None
-                else f"bci {successor['bci']}"
-            )
-            marker: str = " ← target" if successor["reachesTarget"] else ""
-            parts.append(f"→ {landing}{_count_text(successor['count'], counted)}{marker}")
-        if omitted:
-            parts.append(f"… {omitted} more")
-        lines.append(f"    {label}: {' · '.join(parts)}")
+    for item in shown:
+        landing: str = by_block.get(item["bci"]) or (
+            f"line {item['line']}" if item["line"] is not None else f"bci {item['bci']}"
+        )
+        marker: str = " ← target" if item["reachesTarget"] else ""
+        lines.append(
+            f"    branch {item['number']} → {landing}{_count_text(item['count'], counted)}{marker}"
+        )
+    if omitted:
+        lines.append(f"    … {omitted} more")
     return lines
 
 
