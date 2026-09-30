@@ -10,10 +10,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.Iterator;
 import java.util.Locale;
 import javax.xml.namespace.QName;
 
+import jakarta.xml.soap.AttachmentPart;
 import jakarta.xml.soap.MessageFactory;
 import jakarta.xml.soap.MimeHeaders;
 import jakarta.xml.soap.Node;
@@ -55,6 +57,29 @@ public class Saaj_implTest {
                 .getChildElements(new QName("urn:demo", "trace"));
         assertThat(traces.hasNext()).isTrue();
         assertThat(((SOAPElement) traces.next()).getValue()).isEqualTo("trace-id");
+    }
+
+    @Test
+    void roundTripsMimeAttachmentThroughMessageApi() throws Exception {
+        MessageFactory messageFactory = MessageFactory.newInstance();
+        SOAPMessage message = messageFactory.createMessage();
+        AttachmentPart attachment = message.createAttachmentPart();
+        byte[] payload = "attachment payload".getBytes(StandardCharsets.UTF_8);
+        attachment.setContentId("<payload@example.test>");
+        attachment.setRawContentBytes(payload, 0, payload.length, "text/plain");
+        message.addAttachmentPart(attachment);
+        message.saveChanges();
+
+        ByteArrayOutputStream output = new ByteArrayOutputStream();
+        message.writeTo(output);
+        SOAPMessage parsed = messageFactory.createMessage(
+                message.getMimeHeaders(), new ByteArrayInputStream(output.toByteArray()));
+
+        assertThat(parsed.countAttachments()).isEqualTo(1);
+        AttachmentPart parsedAttachment = (AttachmentPart) parsed.getAttachments().next();
+        assertThat(parsedAttachment.getContentId()).isEqualTo("<payload@example.test>");
+        assertThat(parsedAttachment.getContentType()).isEqualTo("text/plain");
+        assertThat(parsedAttachment.getRawContentBytes()).isEqualTo(payload);
     }
 
     @Test
