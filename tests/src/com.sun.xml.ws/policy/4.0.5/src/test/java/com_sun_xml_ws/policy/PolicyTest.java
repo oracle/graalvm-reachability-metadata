@@ -6,11 +6,23 @@
  */
 package com_sun_xml_ws.policy;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
+import com.sun.xml.ws.policy.AssertionSet;
+import com.sun.xml.ws.policy.Policy;
+import java.util.List;
 import org.junit.jupiter.api.Test;
 
-class PolicyTest {
+public class PolicyTest {
     @Test
-    void test() throws Exception {
-        System.out.println("This is just a placeholder, implement your test");
+    void createsAndCombinesPoliciesThroughPublicFactories() {
+        Policy empty = Policy.createEmptyPolicy("empty", "empty-policy");
+        Policy nullPolicy = Policy.createNullPolicy("null", "null-policy");
+        Policy explicit = Policy.createPolicy(List.of(AssertionSet.emptyAssertionSet()));
+
+        assertThat(empty.isEmpty()).isTrue();
+        assertThat(empty.isNull()).isFalse();
+        assertThat(nullPolicy.isNull()).isTrue();
+        assertThat(explicit.getNumberOfAssertionSets()).isEqualTo(1);
     }
 }
