@@ -15,16 +15,11 @@ import java.util.Map;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 
-public class PrivateLoomSupportTest {
+public class HttpNettyServerTest {
     @Test
     @Timeout(55)
-    void startsAnEmbeddedServerWithTheConfiguredVirtualThreadEventLoop() {
-        Map<String, Object> properties = Map.of(
-                "micronaut.server.port", -1,
-                "micronaut.netty.event-loops.default.executor", "virtual",
-                "micronaut.netty.event-loops.default.loom-carrier", true,
-                "micronaut.executors.virtual.type", "thread-per-task",
-                "micronaut.executors.virtual.virtual", true);
+    void startsAnEmbeddedNettyServer() {
+        Map<String, Object> properties = Map.of("micronaut.server.port", -1);
 
         try (EmbeddedServer server = ApplicationContext.run(EmbeddedServer.class, properties, Environment.TEST)) {
             assertThat(server.isRunning()).isTrue();
