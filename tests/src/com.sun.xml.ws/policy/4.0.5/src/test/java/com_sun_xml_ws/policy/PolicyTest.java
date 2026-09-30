@@ -25,4 +25,17 @@ public class PolicyTest {
         assertThat(nullPolicy.isNull()).isTrue();
         assertThat(explicit.getNumberOfAssertionSets()).isEqualTo(1);
     }
+
+    @Test
+    void exposesPolicyIdentityAndAlternativeContents() {
+        Policy policy =
+                Policy.createPolicy(
+                        "service-policy", "service-id", List.of(AssertionSet.emptyAssertionSet()));
+
+        assertThat(policy.getName()).isEqualTo("service-policy");
+        assertThat(policy.getId()).isEqualTo("service-id");
+        assertThat(policy.getIdOrName()).isEqualTo("service-id");
+        assertThat(policy.getVocabulary()).isEmpty();
+        assertThat(policy.iterator().next().isEmpty()).isTrue();
+    }
 }
