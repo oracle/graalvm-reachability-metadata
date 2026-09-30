@@ -38,4 +38,17 @@ public class PolicyTest {
         assertThat(policy.getVocabulary()).isEmpty();
         assertThat(policy.iterator().next().isEmpty()).isTrue();
     }
+
+    @Test
+    void comparesEquivalentPoliciesByValue() {
+        Policy first =
+                Policy.createPolicy(
+                        "service-policy", "service-id", List.of(AssertionSet.emptyAssertionSet()));
+        Policy equivalent =
+                Policy.createPolicy(
+                        "service-policy", "service-id", List.of(AssertionSet.emptyAssertionSet()));
+
+        assertThat(first).isEqualTo(equivalent);
+        assertThat(first.hashCode()).isEqualTo(equivalent.hashCode());
+    }
 }
