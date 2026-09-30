@@ -7,6 +7,8 @@
 package org_jvnet_mimepull.mimepull;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -39,6 +41,10 @@ public class FactoryFinderTest extends CleanUpExecutorFactory {
                 + "--boundary--\r\n";
 
         try {
+            CleanUpExecutorFactory configuredFactory = CleanUpExecutorFactory.newInstance();
+            assertNotNull(configuredFactory);
+            assertSame(CLEANUP_EXECUTOR, configuredFactory.getScheduledExecutorService());
+
             MIMEConfig config = new MIMEConfig();
             config.setMemoryThreshold(0);
             try (MIMEMessage mimeMessage = new MIMEMessage(
