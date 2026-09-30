@@ -1,0 +1,20 @@
+## Human intervention needed
+
+The automated job failed while repairing `org.apache.logging.log4j:log4j-slf4j2-impl:3.0.0-alpha1`.
+
+Preserved work and diagnostics: https://github.com/oracle/graalvm-reachability-metadata/tree/ai%2Fkimeta%2Fhuman-intervention%2Fissue-9369-fails-javac-compile-org.apache.logging.log4j-log4j-slf4j2-impl-3.0.0-alpha1-d30544de
+
+The original javac failure was identified as the removed `ThrowableConsumingMessageFactory` API and was repaired: later runs show `compileTestJava UP-TO-DATE`. The run ultimately failed in `explore/generate_tests()` while exercising the broader SLF4J API. Native execution repeatedly failed all seven tests in `ServiceLoaderUtil`, first with `NoSuchMethodError` for `ServiceLoader.load(Class, ClassLoader)` and later with `UnsupportedFeatureError` because `LoggingSystem` attempted to define a lambda class at runtime. Adding reflection and service-resource metadata did not resolve it. Dynamic-access coverage also remained unavailable because `nativeTestCompile` produced no dynamic-access output directory. Metrics record 5 iterations, failure status, 0 generated LOC, and identical starting/ending commits, so no converged test or metadata fix was retained.
+
+Inspect these preserved logs:
+
+- `human-intervention-logs/org.apache.logging.log4j:log4j-slf4j2-impl:3.0.0-alpha1/gradle-test/gradle-test-2026-09-30T11-51-46-221123Z.log`
+- `human-intervention-logs/org.apache.logging.log4j:log4j-slf4j2-impl:3.0.0-alpha1/issue-requested-metadata/pi-generation-2026-09-30T11-46-59-446861Z.log`
+- `human-intervention-logs/org.apache.logging.log4j:log4j-slf4j2-impl:3.0.0-alpha1/gradle/generateDynamicAccessCoverageReport-2026-09-30T11-29-28-462256Z.log`
+- `stats/org.apache.logging.log4j/log4j-slf4j2-impl/3.0.0-alpha1/execution-metrics.json`
+
+Manual next steps:
+
+1. Reconstruct the `3.0.0-alpha1` test project from commit `242fd81ba20903ffb0e57994a93d0a5c532eae25`, removing the obsolete `ThrowableConsumingMessageFactory` coverage.
+2. Determine whether Log4j 3.0.0-alpha1’s `ServiceLoaderUtil`/`LambdaMetafactory` path is supportable through reachability metadata; if not, document and skip this version.
+3. If supportable, add the smallest required metadata and run the complete coordinate test, including native execution and dynamic-access reporting.
