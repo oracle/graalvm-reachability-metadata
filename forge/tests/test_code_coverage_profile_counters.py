@@ -228,6 +228,29 @@ class DispatchRenderingTests(unittest.TestCase):
             f"`{ROW.canonical_id}` [never dispatched here]",
         ])
 
+    def test_unresolved_receiver_makes_no_claim_about_the_target(self) -> None:
+        """`targetDispatches` is `None`, not zero, so the hint must not say
+        the site never reached the target (§AR-code-coverage-deep-navigation.3.1)."""
+        lines: list[str] = classification_lines({
+            "kind": "dispatched-elsewhere",
+            "target": {"sourcePath": "org/h2/mvstore/Page.java", "line": 88,
+                       "mi": 0, "ci": 4, "mb": 0, "cb": 0},
+            "candidates": [
+                {"id": ROW.canonical_id, "coverageSuite": False, "dispatches": None},
+                {"id": VALUE.canonical_id, "coverageSuite": False, "dispatches": None},
+            ],
+            "site": {
+                "dispatches": 42,
+                "receivers": [{"type": "org.h2.PageCoverageTest$1", "count": 42}],
+                "targetDispatches": None,
+            },
+        }, counted=True)
+        self.assertEqual(lines[1:], [
+            "  no fork — site dispatched 42×",
+            "  observed receivers: PageCoverageTest.1 ×42",
+            f"  candidates: `{ROW.canonical_id}`, `{VALUE.canonical_id}`",
+        ])
+
 
 class InstrumentedReportTests(unittest.TestCase):
     """`generate_report` reads the counters and the extractor's sibling files."""

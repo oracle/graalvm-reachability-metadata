@@ -154,7 +154,9 @@ def _dispatch_lines(classification: dict) -> list[str]:
     ]
     if len(site["receivers"]) > MAX_RENDERED_RECEIVERS:
         receivers.append(f"… {len(site['receivers']) - MAX_RENDERED_RECEIVERS} more")
-    never: str = ", never to your target" if not site.get("targetDispatches") else ""
+    # `None` means a receiver did not resolve, so nothing is known about the
+    # target's share; only a proven zero earns the claim.
+    never: str = ", never to your target" if site.get("targetDispatches") == 0 else ""
     return [
         f"  no fork — site dispatched {site['dispatches']:,}×{never}",
         f"  observed receivers: {' · '.join(receivers)}",
