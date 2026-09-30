@@ -39,7 +39,7 @@
         ],
         "env": {},
         "gate": "index-file-validation",
-        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :validateIndexFiles\n✅ metadata/io.micronaut.reactor/micronaut-reactor/index.json: Valid\n\n[Incubating] Problems report is available at: file:///home/oracle/oracle/metadata2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9826-10399fc3/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 4s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :validateIndexFiles\n\u2705 metadata/io.micronaut.reactor/micronaut-reactor/index.json: Valid\n\n[Incubating] Problems report is available at: file:///home/oracle/oracle/metadata2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9826-10399fc3/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 4s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
         "returncode": 0
       }
     ],
@@ -52,14 +52,15 @@
     "status": "success"
   },
   "local_review": {
+    "action": "human-intervention",
     "changed_paths": [],
-    "decision": "approved",
-    "finding_body": "",
-    "finding_title": "",
-    "fix_note": "",
+    "decision": "rejected",
+    "finding_body": "Workflow run 36703838247 on head 6c0fa721e6586c33399a7b89ed229c10fbf3bd74 failed all three matrix jobs in Disable docker networking. Each job ran sudo apt-get install openbsd-inetd without first refreshing apt indexes, requested libevent-2.1-7t64_2.1.12-stable-9ubuntu2.1, and received 404 Not Found before checkMetadataFiles or the coordinate test task ran. Runs for unrelated contributions failed at the same shared step, and merged PR #10274 repaired .github/workflows/scripts/disable-docker.sh by running apt-get update first. This is outside the contribution's closed file set, so FS-contribution-contract.5.2 and .5.3 prohibit repairing it in this PR and require human intervention.\n\nInfrastructure issue: https://github.com/oracle/graalvm-reachability-metadata/issues/10277 (#10277)",
+    "finding_title": "Metadata CI used a stale apt index when installing openbsd-inetd",
+    "fix_note": "No contribution files were changed. Reviewed the full contribution shape and tests, then verified ./gradlew pullAllowedDockerImages checkMetadataFiles test -Pcoordinates=io.micronaut.reactor:micronaut-reactor:4.0.0 --stacktrace and GVM_TCK_NATIVE_IMAGE_MODE=future-defaults-all ./gradlew test -Pcoordinates=io.micronaut.reactor:micronaut-reactor:4.0.0 --stacktrace; both passed locally.",
     "model": "gpt-5.6-sol",
-    "review_comment": "Reviewed the eventual PR diff and local evidence. The change is scoped to one coordinate and one version, uses only reachability-metadata.json, and has a valid single latest index entry. The public, package-separated tests exercise Micronaut Reactor conversion and context propagation without scaffold code, Native Image skips or tolerated failures, version-pinned assertions, visibility bypasses, compatibility overrides, or native build/run flags. Resolved dynamic-access coverage is 0/0, which is a valid no-calls case; the percentage and entry-count mismatch checks therefore do not apply. Recorded generation status and local index gates are successful.",
-    "session_id": "25e46b337d2e45a3"
+    "review_comment": "All three metadata-test matrix jobs in workflow run 36703838247 failed in the shared Disable docker networking step before metadata validation or library tests ran. The runner's stale apt index requested libevent-2.1-7t64_2.1.12-stable-9ubuntu2.1, which the Ubuntu mirrors returned as 404; the same failure affected multiple unrelated PRs and was fixed in shared script PR #10274. The contribution diff itself remains scoped to io.micronaut.reactor:micronaut-reactor:4.0.0 and passed local metadata checks and both current-defaults and future-defaults-all test lanes. Because the CI failure can only be repaired in shared workflow infrastructure, FS-contribution-contract.5.2 and .5.3 require escalation rather than a contribution edit.",
+    "session_id": "34486fa332f44da5"
   },
   "metrics": {
     "agent": "pi",
