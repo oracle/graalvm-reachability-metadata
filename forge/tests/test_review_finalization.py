@@ -6,13 +6,39 @@
 """Focused contract tests for reviewer-owned finalization. §FS-local-branch-review"""
 
 import os
+import subprocess
+import tempfile
 import unittest
 from unittest.mock import patch
 
 from git_scripts import review_finalization
 
 
+def _git(repo_path: str, *args: str) -> None:
+    subprocess.run(["git", *args], cwd=repo_path, check=True, capture_output=True)
+
+
 class ReviewFinalizationTests(unittest.TestCase):
+    def test_tree_digest_ignores_git_abbreviation_length(self) -> None:
+        with tempfile.TemporaryDirectory() as repo_path:
+            _git(repo_path, "init", "-q")
+            _git(repo_path, "config", "user.email", "test@example.com")
+            _git(repo_path, "config", "user.name", "test")
+            tracked_path = os.path.join(repo_path, "tracked.txt")
+            with open(tracked_path, "w", encoding="utf-8") as tracked_file:
+                tracked_file.write("committed\n")
+            _git(repo_path, "add", "tracked.txt")
+            _git(repo_path, "commit", "-q", "-m", "init")
+            with open(tracked_path, "w", encoding="utf-8") as tracked_file:
+                tracked_file.write("uncommitted edit\n")
+
+            _git(repo_path, "config", "core.abbrev", "10")
+            short_digest = review_finalization.publishable_tree_digest(repo_path)
+            _git(repo_path, "config", "core.abbrev", "12")
+            long_digest = review_finalization.publishable_tree_digest(repo_path)
+
+        self.assertEqual(short_digest, long_digest)
+
     def test_complete_finalization_disables_nested_agents(self) -> None:
         with patch.dict(os.environ, {"GRAALVM_HOME_25_0": "/jdk-25"}), patch.object(
                 review_finalization,
