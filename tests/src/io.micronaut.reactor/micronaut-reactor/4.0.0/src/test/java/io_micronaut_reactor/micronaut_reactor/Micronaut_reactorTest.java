@@ -51,6 +51,19 @@ public class Micronaut_reactorTest {
     }
 
     @Test
+    void wrapsValuesAsReactorPublishersThroughMicronautConversionService() {
+        try (ApplicationContext context = ApplicationContext.run()) {
+            ConversionService conversionService = context.getBean(ConversionService.class);
+
+            Mono<String> mono = conversionService.convertRequired("reactive", Mono.class);
+            Flux<String> flux = conversionService.convertRequired("stream", Flux.class);
+
+            assertThat(mono.block(Duration.ofSeconds(10))).isEqualTo("reactive");
+            assertThat(flux.collectList().block(Duration.ofSeconds(10))).containsExactly("stream");
+        }
+    }
+
+    @Test
     void startsConfiguredReactorIntegrationInApplicationContext() {
         try (ApplicationContext context = ApplicationContext.run(
                 Map.of(
