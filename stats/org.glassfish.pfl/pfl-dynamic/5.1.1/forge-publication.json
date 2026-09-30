@@ -1,0 +1,151 @@
+{
+  "base_commit": "b55d06e6bebc8440b8d571c05c627bfd50109a30",
+  "branch": "ai/kimeta/add-lib-support-org.glassfish.pfl-pfl-dynamic-5.1.1-chunked-forge-9943-20260930003804158201-3a37cac2de80",
+  "follow_ups": [],
+  "forge": {
+    "branch": "master",
+    "commit": "e8d4398ded248b2b83d8f6af535fe4a5ca13b044",
+    "monitored_branch": "origin/master"
+  },
+  "issue_number": 9943,
+  "library": {
+    "artifact": "pfl-dynamic",
+    "coordinates": "org.glassfish.pfl:pfl-dynamic:5.1.1",
+    "group": "org.glassfish.pfl",
+    "version": "5.1.1"
+  },
+  "local_ci_verification": {
+    "base_commit": "b55d06e6bebc8440b8d571c05c627bfd50109a30",
+    "commands": [
+      {
+        "command": [
+          "./gradlew",
+          "generateChangedIndexFileCoordinatesList",
+          "-PbaseCommit=origin/master",
+          "-PnewCommit=HEAD"
+        ],
+        "env": {
+          "GITHUB_OUTPUT": "/tmp/tmp02fyenvc"
+        },
+        "gate": "changed-index-coordinates",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :generateChangedIndexFileCoordinatesList\n\n[Incubating] Problems report is available at: file:///home/oracle/oracle/metadata2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9943-c74304c9/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 3s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      },
+      {
+        "command": [
+          "./gradlew",
+          "validateIndexFiles",
+          "-Pcoordinates=org.glassfish.pfl:pfl-dynamic"
+        ],
+        "env": {},
+        "gate": "index-file-validation",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :validateIndexFiles\n✅ metadata/org.glassfish.pfl/pfl-dynamic/index.json: Valid\n\n[Incubating] Problems report is available at: file:///home/oracle/oracle/metadata2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9943-c74304c9/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 2s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      }
+    ],
+    "failure_command": null,
+    "failure_gate": null,
+    "final_commit": "b78b5138f03759f7afd4be72d3efa2e45491b67c",
+    "fixups": [],
+    "human_intervention_required": false,
+    "repo_fix_paths": [],
+    "status": "success"
+  },
+  "local_review": {
+    "changed_paths": [],
+    "decision": "approved",
+    "finding_body": "",
+    "finding_title": "",
+    "fix_note": "",
+    "model": "gpt-5.6-sol",
+    "review_comment": "Checked the single-coordinate diff, test sources and build configuration, metadata file scope and format, index and statistics evidence, and all applicable contribution and test-contract musts. The tests use public library APIs from a separate package, contain assertions, do not pin the artifact version in test code, and do not skip or tolerate Native Image failures. Reported dynamic-access coverage is 13/17 (76.47%), above the new-library gate, and 13 covered calls do not trigger the mismatch probe against 25 reported library plus test-only metadata entries. The Forge finalization command passed all three Native Image lanes, metadata validation, style checks, generated-test checks, and statistics generation without changing the publishable tree.",
+    "session_id": "eeacff094a604ba0"
+  },
+  "metrics": {
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "path": "stats/org.glassfish.pfl/pfl-dynamic/5.1.1/execution-metrics.json",
+    "summary": {
+      "cached_input_tokens_used": 4040320,
+      "code_coverage_percent": 11.45,
+      "cost_usd": 5.206,
+      "generated_loc": 256,
+      "input_tokens_used": 460287,
+      "iterations": 16,
+      "metadata_entries": 8,
+      "output_tokens_used": 29481,
+      "test_only_metadata_entries": 17,
+      "tested_library_loc": 642
+    },
+    "timestamp": "2026-09-30T00:38:04.158201Z"
+  },
+  "modifiers": {
+    "chunk_final": true,
+    "chunked_dynamic_access": true,
+    "human_intervention": false
+  },
+  "producer": "kimeta",
+  "publication_id": "forge-9943-20260930003804158201-3a37cac2de80",
+  "render": {
+    "dynamic_access": null,
+    "dynamic_access_evidence": {
+      "covered_call_sites": [
+        "[reflection] java.lang.reflect.Constructor#newInstance(java.lang.Object[]) <- org.glassfish.pfl.dynamic.copyobject.impl.ClassCopierOrdinaryImpl.createCopy(ClassCopierOrdinaryImpl.java:958) (line 958)",
+        "[reflection] java.lang.Class#getDeclaredConstructors() <- org.glassfish.pfl.dynamic.codegen.impl.ClassInfoReflectiveImpl$1.run(ClassInfoReflectiveImpl.java:84) (line 84)",
+        "[reflection] java.lang.Class#getDeclaredFields() <- org.glassfish.pfl.dynamic.codegen.impl.ClassInfoReflectiveImpl$1.run(ClassInfoReflectiveImpl.java:67) (line 67)",
+        "[reflection] java.lang.Class#getDeclaredMethods() <- org.glassfish.pfl.dynamic.codegen.impl.ClassInfoReflectiveImpl$1.run(ClassInfoReflectiveImpl.java:77) (line 77)",
+        "[reflection] java.lang.Class#forName(java.lang.String, boolean, java.lang.ClassLoader) <- org.glassfish.pfl.dynamic.codegen.spi.Type.getTypeClass(Type.java:344) (line 344)",
+        "[reflection] java.lang.reflect.Array#newInstance(java.lang.Class, int) <- org.glassfish.pfl.dynamic.copyobject.impl.ClassCopierFactoryArrayImpl$1.createCopy(ClassCopierFactoryArrayImpl.java:45) (line 45)",
+        "[reflection] java.lang.Class#getDeclaredFields() <- org.glassfish.pfl.dynamic.copyobject.impl.ClassCopierOrdinaryImpl$ClassFieldCopierUnsafeImpl.<init>(ClassCopierOrdinaryImpl.java:817) (line 817)",
+        "[reflection] java.lang.Class#getDeclaredConstructor(java.lang.Class[]) <- org.glassfish.pfl.dynamic.copyobject.impl.ClassCopierOrdinaryImpl$ConstructorFactory.getDefaultConstructor(ClassCopierOrdinaryImpl.java:125) (line 125)",
+        "... and 5 more"
+      ],
+      "metadata_rules": [
+        "when `org.glassfish.pfl.dynamic.copyobject.impl.JavaStreamObjectCopierImpl` is reached, make `java.lang.String` available for reflection",
+        "when `org.glassfish.pfl.dynamic.copyobject.impl.JavaStreamObjectCopierImpl` is reached, make `java.util.ArrayList` available for reflection",
+        "when `org.glassfish.pfl.dynamic.copyobject.impl.DefaultClassCopiers$3` is reached, make `java.util.LinkedHashMap.<init>()` available for reflection",
+        "when `org.glassfish.pfl.dynamic.copyobject.impl.ClassCopierOrdinaryImpl$1` is reached, make `sun.misc.Unsafe` available for reflection"
+      ]
+    },
+    "library_stats": {
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 0.764706,
+            "coveredCalls": 13,
+            "totalCalls": 17
+          }
+        },
+        "coverageRatio": 0.764706,
+        "coveredCalls": 13,
+        "totalCalls": 17
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 2776,
+          "missed": 25394,
+          "ratio": 0.098545,
+          "total": 28170
+        },
+        "line": {
+          "covered": 642,
+          "missed": 4964,
+          "ratio": 0.11452,
+          "total": 5606
+        },
+        "method": {
+          "covered": 185,
+          "missed": 1436,
+          "ratio": 0.114127,
+          "total": 1621
+        }
+      },
+      "version": "5.1.1"
+    }
+  },
+  "schema_version": 1,
+  "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-sol",
+  "task_type": "library-new-request",
+  "template_type": "library-new-request",
+  "timestamp": "2026-09-30T00:38:04.158201Z"
+}
