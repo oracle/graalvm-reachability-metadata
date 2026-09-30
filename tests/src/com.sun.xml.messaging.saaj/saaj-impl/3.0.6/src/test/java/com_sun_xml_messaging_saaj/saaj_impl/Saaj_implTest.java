@@ -31,7 +31,9 @@ import jakarta.xml.soap.SOAPElement;
 import jakarta.xml.soap.SOAPFactory;
 import jakarta.xml.soap.SOAPMessage;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
 
+@Timeout(60)
 public class Saaj_implTest {
     @Test
     void createsAndRoundTripsSoapMessage() throws Exception {
