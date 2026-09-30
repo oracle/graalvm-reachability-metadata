@@ -22,9 +22,6 @@ from utility_scripts.code_coverage_model import (
     parse_inventory_id,
 )
 
-#: Uncovered targets leave the prompt after this many unsuccessful attempts
-#: (§AR-code-coverage-improvement.4.2).
-MAX_UNCOVERED_ATTEMPTS = 3
 TARGET_STATE_STATUSES: frozenset[str] = frozenset({
     "pending", "selected", "attempted", "completed", "skipped", "exhausted", "failed",
 })
@@ -267,21 +264,15 @@ def effective_target_state(
         method_id: str,
         target_states: dict[str, TargetState],
         attempt_counts: dict[str, int],
-        jacoco_uncovered: bool = False,
 ) -> TargetState:
+    """The durable state with the attempt count the report history carries.
+
+    Attempts never retire a target; the count only orders the prompt, so a
+    much-attempted target rotates behind fresher ones and comes back
+    (§AR-code-coverage-improvement.4.2).
+    """
     state = target_states.get(method_id, TargetState())
     attempt_count: int = max(state.attempt_count, attempt_counts.get(method_id, 0))
-    if (
-            jacoco_uncovered
-            and not state.terminal
-            and attempt_count >= MAX_UNCOVERED_ATTEMPTS
-    ):
-        return TargetState(
-            status="exhausted",
-            attempt_count=attempt_count,
-            last_attempted_iteration=state.last_attempted_iteration,
-            reason=f"{MAX_UNCOVERED_ATTEMPTS} attempts without coverage change",
-        )
     return TargetState(
         status=state.status,
         attempt_count=attempt_count,

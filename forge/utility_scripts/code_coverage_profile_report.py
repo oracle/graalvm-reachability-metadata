@@ -167,10 +167,6 @@ def correlate(
     deep_uncovered: list[JacocoMethodCoverage] = [
         coverage for coverage in deep_coverage if not coverage.covered
     ]
-    deep_uncovered_ids: set[str] = {
-        coverage.method_ref.canonical_id for coverage in deep_uncovered
-    }
-
     sampled_routes: RouteMap = sample_routes(graph, profile)
     entry_routes: RouteMap = public_entry_routes(graph, [ref for ref, _ in inventory_refs])
     uncovered_records: list[NearCallRecord] = [
@@ -179,12 +175,7 @@ def correlate(
             graph,
             sampled_routes,
             entry_routes,
-            effective_target_state(
-                coverage.method_ref.canonical_id,
-                states,
-                attempts,
-                jacoco_uncovered=True,
-            ),
+            effective_target_state(coverage.method_ref.canonical_id, states, attempts),
         )
         for coverage in deep_uncovered
     ]
@@ -285,12 +276,7 @@ def correlate(
         "targetStates": [
             target_state_to_json(
                 method_id,
-                effective_target_state(
-                    method_id,
-                    states,
-                    attempts,
-                    jacoco_uncovered=method_id in deep_uncovered_ids,
-                ),
+                effective_target_state(method_id, states, attempts),
             )
             for method_id in sorted(set(states) | set(attempts))
         ],
