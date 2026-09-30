@@ -211,8 +211,8 @@ These emit the GitHub Actions matrices the workflows consume, all driven by
 | `codeCoverageTest` | Run the tracked `code-coverage-improvement/` extension suite of a coordinate on the JVM. |
 | `jacocoCodeCoverageReport` | Combined JaCoCo coverage over the regular and extension suites (§forge/AR-code-coverage-improvement.4.1). |
 | `generateDynamicAccessCoverageReport`, `analyzeExternalLibraryDynamicAccess` | Dynamic-access coverage reporting (§FS-repository-functional-spec.4.5). |
-| `nativeTestPGOSampling` | Build coordinate native tests with sampled PGO and the analysis call-tree CSV dump for Forge deep-coverage navigation (§forge/AR-code-coverage-improvement.4.2). |
-| `runNativeTestPGO` | Run the sampling image and write its sampled `.iprof` to the required absolute `pgoProfilePath`. |
+| `nativeTestPGOSampling` | Build coordinate native tests with instrumented and sampled PGO and the analysis call-tree CSV dump for Forge deep-coverage navigation (§forge/AR-code-coverage-deep-navigation.1). |
+| `runNativeTestPGO` | Run the profiled image and write its `.iprof` — sampled stacks plus instrumented counters — to the required absolute `pgoProfilePath`. |
 | `generateLibraryStats`, `listTopCoordinatesByMetric`, `generateTopCoordinatesByMetricMatrix`, `generateReadmeBadgeSummary`, `generateDependencyGraph` | Produce and query the stats mirror, README badge inputs, and dependency graphs that feed the coverage dashboard (§AR-publish-scheduled-coverage). Library coverage analyzes only the coordinate's unclassified main JAR and includes both the regular and tracked extension suites. |
 | `package` | Zip the `metadata/` directory into the release artifact consumed by native-build-tools (§FS-repository-functional-spec.4). |
 
@@ -260,7 +260,9 @@ uses the combined `jacocoCodeCoverageReport`, so newly added regular tests and
 tracked code-coverage extension tests are reflected in the committed
 `libraryCoverage` line, instruction, and method statistics.
 
-`nativeTestPGOSampling` builds with `--pgo-sampling`, a positive
+`nativeTestPGOSampling` builds with `--pgo-instrument` and `--pgo-sampling`
+together, so one run yields exact branch and receiver counters beside the
+sampled stacks (§forge/AR-code-coverage-deep-navigation.1.1), plus a positive
 `-H:PGOSamplingPeriodMicros=<micros>`, `-H:+PrintAnalysisCallTree`, and
 `-H:PrintAnalysisCallTreeType=CSV`. The optional Gradle property
 `pgoSamplingPeriodMicros` defaults to `100` (the Native Image minimum) and must be forwarded through the
@@ -272,8 +274,8 @@ builds provide, so passing it unconditionally fails every sampling build there. 
 default period is silently omitted, and a non-default `pgoSamplingPeriodMicros`
 fails the build, because a period the toolchain cannot honour must not be
 reported as applied.
-`runNativeTestPGO` depends on that sampling build and dumps the profile through
-`-XX:ProfilesDumpFile=<absolute path>`. A nonzero sampling-image exit fails the
-task, so a profile from a failing native suite cannot be accepted. Sampling is
-guidance only; JaCoCo remains the coverage metric
+`runNativeTestPGO` depends on that build and dumps the profile through
+`-XX:ProfilesDumpFile=<absolute path>`. A nonzero profiled-image exit fails the
+task, so a profile from a failing native suite cannot be accepted. Samples and
+counters are guidance only; JaCoCo remains the coverage metric
 (§forge/AR-code-coverage-improvement.4.2).

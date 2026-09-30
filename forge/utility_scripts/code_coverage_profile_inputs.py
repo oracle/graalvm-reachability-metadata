@@ -16,7 +16,11 @@ import csv
 import json
 from dataclasses import dataclass
 
-from utility_scripts.code_coverage_model import parse_inventory_id
+from utility_scripts.code_coverage_model import (
+    MethodRef,
+    method_ref_from_iprof,
+    parse_inventory_id,
+)
 
 #: Uncovered targets leave the prompt after this many unsuccessful attempts
 #: (§AR-code-coverage-improvement.4.2).
@@ -25,6 +29,13 @@ TARGET_STATE_STATUSES: frozenset[str] = frozenset({
     "pending", "selected", "attempted", "completed", "skipped", "exhausted", "failed",
 })
 TERMINAL_TARGET_STATUSES: frozenset[str] = frozenset({"completed", "skipped", "exhausted", "failed"})
+
+#: `profileKind` of a discovery report: what its `.iprof` carried. Both are
+#: navigation guidance only; a sampling-only profile degrades to line-level
+#: hints (§AR-code-coverage-deep-navigation.1.2).
+INSTRUMENTED_PROFILE_KIND = "instrumented-guidance"
+SAMPLED_PROFILE_KIND = "sampled-guidance"
+PROFILE_KINDS: frozenset[str] = frozenset({INSTRUMENTED_PROFILE_KIND, SAMPLED_PROFILE_KIND})
 
 
 class ProfileFormatError(RuntimeError):
@@ -42,6 +53,19 @@ def load_json_object(path: str, label: str) -> dict:
     if not isinstance(document, dict):
         raise ProfileFormatError(f"{label.capitalize()} '{path}' must contain a JSON object.")
     return document
+
+
+def profile_tables(document: dict) -> tuple[dict[int, MethodRef], dict[int, str]]:
+    """The method and type tables of one `.iprof`, keyed by profile id."""
+    type_names: dict[int, str] = {
+        entry["id"]: entry["name"] for entry in document.get("types", [])
+    }
+    method_refs: dict[int, MethodRef] = {}
+    for record in document.get("methods", []):
+        ref: MethodRef | None = method_ref_from_iprof(record, type_names)
+        if ref is not None:
+            method_refs[record["id"]] = ref
+    return method_refs, type_names
 
 
 def load_library_methods(path: str) -> set[str]:
@@ -105,6 +129,16 @@ def load_library_line_numbers(path: str) -> dict[str, tuple[tuple[int, int], ...
         if entries:
             result[method_id] = tuple(sorted(set(entries)))
     return result
+
+
+def line_at(line_numbers: tuple[tuple[int, int], ...], bci: int) -> int | None:
+    """The source line of one bytecode index, from a sorted line table."""
+    source_line: int | None = None
+    for start_bci, line in line_numbers:
+        if start_bci > bci:
+            break
+        source_line = line
+    return source_line
 
 
 def library_owners(library_methods: set[str] | None) -> set[str] | None:

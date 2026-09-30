@@ -17,7 +17,8 @@ from utility_scripts.code_coverage_jacoco import (
 from utility_scripts.code_coverage_model import MethodRef
 from utility_scripts.code_coverage_profile_graph import CallGraph
 from utility_scripts.code_coverage_profile_inputs import TargetState
-from utility_scripts.code_coverage_profile_records import NearCallRecord, classify_miss
+from utility_scripts.code_coverage_profile_miss import classify_miss
+from utility_scripts.code_coverage_profile_records import NearCallRecord
 from utility_scripts.code_coverage_profile_render import classification_lines
 
 
