@@ -77,6 +77,18 @@ public class Micronaut_data_txTest {
     }
 
     @Test
+    void convertsSupportedDefinitionToDefaultConnectionPropagation() {
+        DefaultTransactionDefinition definition = new DefaultTransactionDefinition(Propagation.SUPPORTS);
+        definition.setName("inventory-read");
+
+        ConnectionDefinition connectionDefinition = definition.getConnectionDefinition();
+
+        assertThat(connectionDefinition.getPropagationBehavior())
+                .isEqualTo(ConnectionDefinition.Propagation.REQUIRED);
+        assertThat(connectionDefinition.getName()).isEqualTo("inventory-read");
+    }
+
+    @Test
     void copiesDefinitionsWithoutSharingMutableProperties() {
         DefaultTransactionDefinition original = new DefaultTransactionDefinition();
         original.setName("original");
