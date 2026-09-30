@@ -8,6 +8,7 @@ package com_sun_xml_stream_buffer.streambuffer;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.sun.xml.stream.buffer.MutableXMLStreamBuffer;
 import com.sun.xml.stream.buffer.XMLStreamBuffer;
@@ -86,6 +87,29 @@ public class StreambufferTest {
         assertEquals(XMLStreamConstants.START_ELEMENT, output.next());
         assertEquals("item", output.getLocalName());
         assertEquals("payload", output.getElementText());
+    }
+
+    @Test
+    void buffersAndReadsXmlForest() throws Exception {
+        MutableXMLStreamBuffer buffer = new MutableXMLStreamBuffer();
+        XMLStreamWriter writer = buffer.createFromXMLStreamWriter();
+
+        writer.writeStartElement("first");
+        writer.writeCharacters("one");
+        writer.writeEndElement();
+        writer.writeStartElement("second");
+        writer.writeCharacters("two");
+        writer.writeEndElement();
+        writer.close();
+
+        assertTrue(buffer.isForest());
+        XMLStreamReader output = buffer.readAsXMLStreamReader();
+        assertEquals(XMLStreamConstants.START_ELEMENT, output.next());
+        assertEquals("first", output.getLocalName());
+        assertEquals("one", output.getElementText());
+        assertEquals(XMLStreamConstants.START_ELEMENT, output.next());
+        assertEquals("second", output.getLocalName());
+        assertEquals("two", output.getElementText());
     }
 
     @Test
