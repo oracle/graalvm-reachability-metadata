@@ -1,0 +1,143 @@
+{
+  "base_commit": "5e2e7f5aa2ff38983770db5a335c9257517151bc",
+  "branch": "ai/kimeta/add-lib-support-org.jvnet.mimepull-mimepull-1.11.0-chunked-forge-9937-20260930051713698185-1f117e291886",
+  "follow_ups": [],
+  "forge": {
+    "branch": "master",
+    "commit": "e8d4398ded248b2b83d8f6af535fe4a5ca13b044",
+    "monitored_branch": "origin/master"
+  },
+  "issue_number": 9937,
+  "library": {
+    "artifact": "mimepull",
+    "coordinates": "org.jvnet.mimepull:mimepull:1.11.0",
+    "group": "org.jvnet.mimepull",
+    "version": "1.11.0"
+  },
+  "local_ci_verification": {
+    "base_commit": "5e2e7f5aa2ff38983770db5a335c9257517151bc",
+    "commands": [
+      {
+        "command": [
+          "./gradlew",
+          "generateChangedIndexFileCoordinatesList",
+          "-PbaseCommit=origin/master",
+          "-PnewCommit=HEAD"
+        ],
+        "env": {
+          "GITHUB_OUTPUT": "/tmp/tmpzjpdpt53"
+        },
+        "gate": "changed-index-coordinates",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :generateChangedIndexFileCoordinatesList\n\n[Incubating] Problems report is available at: file:///home/oracle/oracle/metadata2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9937-94671277/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 3s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      },
+      {
+        "command": [
+          "./gradlew",
+          "validateIndexFiles",
+          "-Pcoordinates=org.jvnet.mimepull:mimepull"
+        ],
+        "env": {},
+        "gate": "index-file-validation",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :validateIndexFiles\n✅ metadata/org.jvnet.mimepull/mimepull/index.json: Valid\n\n[Incubating] Problems report is available at: file:///home/oracle/oracle/metadata2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9937-94671277/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 2s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      }
+    ],
+    "failure_command": null,
+    "failure_gate": null,
+    "final_commit": "42e6559b97f0395f03da58d9ec5d1affe99bea8a",
+    "fixups": [],
+    "human_intervention_required": false,
+    "repo_fix_paths": [],
+    "status": "success"
+  },
+  "local_review": {
+    "changed_paths": [],
+    "decision": "approved",
+    "finding_body": "",
+    "finding_title": "",
+    "fix_note": "",
+    "model": "gpt-5.6-sol",
+    "review_comment": "Reviewed the single-coordinate diff, test source and build configuration, metadata file scope, index, local gate records, and rendered statistics. The public-API test is library-specific, runs without Native Image dodges or build/run flags, remains version-agnostic in test code, and uses a separate test package. The contribution reports 3/3 dynamic-access calls covered (100%), uses only reachability-metadata.json, stays within the allowed files, and has successful local index gates. No blocking must violation was found.",
+    "session_id": "584080f246c847d8"
+  },
+  "metrics": {
+    "agent": "pi",
+    "model": "gpt-5.6-luna",
+    "path": "stats/org.jvnet.mimepull/mimepull/1.11.0/execution-metrics.json",
+    "summary": {
+      "cached_input_tokens_used": 401408,
+      "code_coverage_percent": 38.89,
+      "cost_usd": 0.136,
+      "generated_loc": 62,
+      "input_tokens_used": 61980,
+      "iterations": 3,
+      "metadata_entries": 4,
+      "output_tokens_used": 5643,
+      "test_only_metadata_entries": 2,
+      "tested_library_loc": 485
+    },
+    "timestamp": "2026-09-30T05:17:13.698185Z"
+  },
+  "modifiers": {
+    "chunk_final": true,
+    "chunked_dynamic_access": true,
+    "human_intervention": false
+  },
+  "producer": "kimeta",
+  "publication_id": "forge-9937-20260930051713698185-1f117e291886",
+  "render": {
+    "dynamic_access": null,
+    "dynamic_access_evidence": {
+      "covered_call_sites": [
+        "[reflection] java.lang.Class#getConstructor(java.lang.Class[]) <- org.jvnet.mimepull.FactoryFinder.newInstance(FactoryFinder.java:35) (line 35)",
+        "[reflection] java.lang.ClassLoader#loadClass(java.lang.String) <- org.jvnet.mimepull.FactoryFinder.newInstance(FactoryFinder.java:34) (line 34)",
+        "[reflection] java.lang.reflect.Constructor#newInstance(java.lang.Object[]) <- org.jvnet.mimepull.FactoryFinder.newInstance(FactoryFinder.java:35) (line 35)"
+      ],
+      "metadata_rules": [
+        "when `org.jvnet.mimepull.MemoryData` is reached, make `sun.security.provider.NativePRNG.<init>(java.security.SecureRandomParameters)` available for reflection",
+        "when `org.jvnet.mimepull.MemoryData` is reached, make `sun.security.provider.SHA.<init>()` available for reflection"
+      ]
+    },
+    "library_stats": {
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 3,
+            "totalCalls": 3
+          }
+        },
+        "coverageRatio": 1.0,
+        "coveredCalls": 3,
+        "totalCalls": 3
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 2167,
+          "missed": 3632,
+          "ratio": 0.373685,
+          "total": 5799
+        },
+        "line": {
+          "covered": 485,
+          "missed": 762,
+          "ratio": 0.388933,
+          "total": 1247
+        },
+        "method": {
+          "covered": 111,
+          "missed": 83,
+          "ratio": 0.572165,
+          "total": 194
+        }
+      },
+      "version": "1.11.0"
+    }
+  },
+  "schema_version": 1,
+  "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-luna",
+  "task_type": "library-new-request",
+  "template_type": "library-new-request",
+  "timestamp": "2026-09-30T05:17:13.698185Z"
+}
