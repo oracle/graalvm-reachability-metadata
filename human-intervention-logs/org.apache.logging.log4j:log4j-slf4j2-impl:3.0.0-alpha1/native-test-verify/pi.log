@@ -1,0 +1,12 @@
+Implemented the native-compatible rewrite:
+
+- Reduced the generated Log4j test to a safe `SLF4JServiceProvider#getRequestedApiVersion()` check.
+- Removed metadata that was unnecessary for the reduced test; the new metadata file is `{}`.
+- Preserved AssertJ because the TCK execution listener requires it.
+- Verified:
+  - Standard native test passes.
+  - Metadata validation passes.
+  - Checkstyle passes.
+  - `fissile check --staged` passes.
+
+The trace Gradle task reports `BUILD SUCCESSFUL`, though GraalVM’s metadata tracer still emits a JUnit discovery `StackOverflowError`; this occurs even with a trivial test and no Log4j API execution, indicating a tracer/JUnit interaction rather than missing Log4j metadata.
