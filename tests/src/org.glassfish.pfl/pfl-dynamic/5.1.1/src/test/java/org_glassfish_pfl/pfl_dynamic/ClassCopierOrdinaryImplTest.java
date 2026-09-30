@@ -29,7 +29,7 @@ public class ClassCopierOrdinaryImplTest {
         private int number;
         private String text;
 
-        public OrdinaryValue() {}
+        public OrdinaryValue() { }
 
         public OrdinaryValue(int number, String text) {
             this.number = number;

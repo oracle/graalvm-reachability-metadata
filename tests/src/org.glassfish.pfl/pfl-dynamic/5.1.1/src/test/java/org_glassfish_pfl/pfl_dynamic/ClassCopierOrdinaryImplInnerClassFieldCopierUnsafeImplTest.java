@@ -33,7 +33,7 @@ public class ClassCopierOrdinaryImplInnerClassFieldCopierUnsafeImplTest {
         private boolean enabled;
         private Object payload;
 
-        public FieldValue() {}
+        public FieldValue() { }
 
         public FieldValue(int count, long total, boolean enabled, Object payload) {
             this.count = count;

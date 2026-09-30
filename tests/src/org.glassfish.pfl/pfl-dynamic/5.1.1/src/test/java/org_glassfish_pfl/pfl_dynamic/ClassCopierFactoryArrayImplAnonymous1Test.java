@@ -29,7 +29,7 @@ public class ClassCopierFactoryArrayImplAnonymous1Test {
     public static final class ArrayValue {
         private int number;
 
-        public ArrayValue() {}
+        public ArrayValue() { }
 
         public ArrayValue(int number) {
             this.number = number;

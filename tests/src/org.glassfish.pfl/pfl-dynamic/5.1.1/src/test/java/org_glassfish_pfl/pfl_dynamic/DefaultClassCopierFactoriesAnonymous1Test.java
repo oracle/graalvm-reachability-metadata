@@ -27,7 +27,7 @@ public class DefaultClassCopierFactoriesAnonymous1Test {
     public static final class CopyableValue {
         private String value;
 
-        public CopyableValue() {}
+        public CopyableValue() { }
 
         public CopyableValue(String value) {
             this.value = value;
