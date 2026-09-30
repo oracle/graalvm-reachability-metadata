@@ -91,4 +91,28 @@ public class Micronaut_data_tx_jdbcTest {
             throw new IllegalStateException("Could not verify transaction event", exception);
         }
     }
+
+    @Test
+    void returnsResultFromWriteTransaction() {
+        int insertedRows = transactionOperations.executeWrite(status -> {
+            try (var statement = status.getConnection().prepareStatement(
+                    "INSERT INTO transaction_event (id, message) VALUES (?, ?)")) {
+                statement.setInt(1, 2);
+                statement.setString(2, "created");
+                return statement.executeUpdate();
+            } catch (SQLException exception) {
+                throw new IllegalStateException("Could not insert transaction event", exception);
+            }
+        });
+
+        assertThat(insertedRows).isEqualTo(1);
+        try (Connection connection = dataSource.getConnection();
+                var resultSet = connection.createStatement().executeQuery(
+                        "SELECT message FROM transaction_event WHERE id = 2")) {
+            resultSet.next();
+            assertThat(resultSet.getString("message")).isEqualTo("created");
+        } catch (SQLException exception) {
+            throw new IllegalStateException("Could not verify transaction event", exception);
+        }
+    }
 }
