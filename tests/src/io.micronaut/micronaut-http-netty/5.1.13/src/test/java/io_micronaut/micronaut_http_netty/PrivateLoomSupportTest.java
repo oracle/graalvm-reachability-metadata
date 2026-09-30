@@ -15,7 +15,7 @@ import java.util.Map;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 
-public class HttpNettyServerTest {
+public class PrivateLoomSupportTest {
     @Test
     @Timeout(55)
     void startsAnEmbeddedNettyServer() {
