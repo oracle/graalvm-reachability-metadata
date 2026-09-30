@@ -93,6 +93,39 @@ public class Micronaut_data_tx_jdbcTest {
     }
 
     @Test
+    void executesBatchWritesThroughManagedConnection() {
+        int[] insertedRows = transactionOperations.executeWrite(status -> {
+            try (var statement = status.getConnection().prepareStatement(
+                    "INSERT INTO transaction_event (id, message) VALUES (?, ?)")) {
+                statement.setInt(1, 3);
+                statement.setString(2, "first batch event");
+                statement.addBatch();
+                statement.setInt(1, 4);
+                statement.setString(2, "second batch event");
+                statement.addBatch();
+                return statement.executeBatch();
+            } catch (SQLException exception) {
+                throw new IllegalStateException("Could not insert transaction events", exception);
+            }
+        });
+
+        assertThat(insertedRows).containsExactly(1, 1);
+        try (Connection connection = dataSource.getConnection();
+                var resultSet = connection.createStatement().executeQuery(
+                        "SELECT id, message FROM transaction_event WHERE id IN (3, 4) ORDER BY id")) {
+            assertThat(resultSet.next()).isTrue();
+            assertThat(resultSet.getInt("id")).isEqualTo(3);
+            assertThat(resultSet.getString("message")).isEqualTo("first batch event");
+            assertThat(resultSet.next()).isTrue();
+            assertThat(resultSet.getInt("id")).isEqualTo(4);
+            assertThat(resultSet.getString("message")).isEqualTo("second batch event");
+            assertThat(resultSet.next()).isFalse();
+        } catch (SQLException exception) {
+            throw new IllegalStateException("Could not verify transaction events", exception);
+        }
+    }
+
+    @Test
     void returnsResultFromWriteTransaction() {
         int insertedRows = transactionOperations.executeWrite(status -> {
             try (var statement = status.getConnection().prepareStatement(
