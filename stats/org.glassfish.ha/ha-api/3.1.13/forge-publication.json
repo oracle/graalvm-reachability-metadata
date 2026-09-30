@@ -1,0 +1,140 @@
+{
+  "base_commit": "619168b453f4458a1d8017fedbcf9389c7128f65",
+  "branch": "ai/kimeta/add-lib-support-org.glassfish.ha-ha-api-3.1.13-chunked-forge-9936-20260930073434603959-a120905e3556",
+  "follow_ups": [],
+  "forge": {
+    "branch": "master",
+    "commit": "e8d4398ded248b2b83d8f6af535fe4a5ca13b044",
+    "monitored_branch": "origin/master"
+  },
+  "issue_number": 9936,
+  "library": {
+    "artifact": "ha-api",
+    "coordinates": "org.glassfish.ha:ha-api:3.1.13",
+    "group": "org.glassfish.ha",
+    "version": "3.1.13"
+  },
+  "local_ci_verification": {
+    "base_commit": "619168b453f4458a1d8017fedbcf9389c7128f65",
+    "commands": [
+      {
+        "command": [
+          "./gradlew",
+          "generateChangedIndexFileCoordinatesList",
+          "-PbaseCommit=origin/master",
+          "-PnewCommit=HEAD"
+        ],
+        "env": {
+          "GITHUB_OUTPUT": "/tmp/tmppqatdtxx"
+        },
+        "gate": "changed-index-coordinates",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :generateChangedIndexFileCoordinatesList\n\n[Incubating] Problems report is available at: file:///home/oracle/oracle/metadata2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9936-375799a0/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 3s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      },
+      {
+        "command": [
+          "./gradlew",
+          "validateIndexFiles",
+          "-Pcoordinates=org.glassfish.ha:ha-api"
+        ],
+        "env": {},
+        "gate": "index-file-validation",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :validateIndexFiles\n✅ metadata/org.glassfish.ha/ha-api/index.json: Valid\n\n[Incubating] Problems report is available at: file:///home/oracle/oracle/metadata2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9936-375799a0/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 2s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      }
+    ],
+    "failure_command": null,
+    "failure_gate": null,
+    "final_commit": "4c6a42390f227c76c3c0b729a5f4b5895453a226",
+    "fixups": [],
+    "human_intervention_required": false,
+    "repo_fix_paths": [],
+    "status": "success"
+  },
+  "local_review": {
+    "changed_paths": [],
+    "decision": "approved",
+    "finding_body": "",
+    "finding_title": "",
+    "fix_note": "",
+    "model": "gpt-5.6-sol",
+    "review_comment": "Approved. The diff is confined to org.glassfish.ha:ha-api:3.1.13 and uses only reachability-metadata.json. The public, version-agnostic test exercises ObjectInputStreamWithLoader through its public API in a separate test package, contains no scaffold placeholder, Native Image skip or tolerated failure, JVM override, or native build/run flag, and passes both JVM and Native Image execution. Reported dynamic-access coverage is 4/4 (100%), above the new-library gate; the reported 10 total metadata entries do not trigger the entry-count mismatch probe. Index validation evidence is green, and local checkMetadataFiles, Checkstyle, and the coordinate test lane all passed.",
+    "session_id": "565fe75a4c064a7a"
+  },
+  "metrics": {
+    "agent": "pi",
+    "model": "gpt-5.6-luna",
+    "path": "stats/org.glassfish.ha/ha-api/3.1.13/execution-metrics.json",
+    "summary": {
+      "cached_input_tokens_used": 541184,
+      "code_coverage_percent": 7.84,
+      "cost_usd": 0.1604,
+      "generated_loc": 94,
+      "input_tokens_used": 60892,
+      "iterations": 5,
+      "metadata_entries": 0,
+      "output_tokens_used": 7559,
+      "test_only_metadata_entries": 10,
+      "tested_library_loc": 21
+    },
+    "timestamp": "2026-09-30T07:34:34.603959Z"
+  },
+  "modifiers": {
+    "chunk_final": true,
+    "chunked_dynamic_access": true,
+    "human_intervention": false
+  },
+  "producer": "kimeta",
+  "publication_id": "forge-9936-20260930073434603959-a120905e3556",
+  "render": {
+    "dynamic_access": null,
+    "dynamic_access_evidence": {
+      "covered_call_sites": [
+        "[reflection] java.io.ObjectInputStream#resolveClass(java.io.ObjectStreamClass) <- org.glassfish.ha.store.spi.ObjectInputStreamWithLoader.resolveClass(ObjectInputStreamWithLoader.java:111) (line 111)",
+        "[reflection] java.lang.ClassLoader#loadClass(java.lang.String) <- org.glassfish.ha.store.spi.ObjectInputStreamWithLoader.resolveClass(ObjectInputStreamWithLoader.java:93) (line 93)",
+        "[reflection] java.lang.reflect.Array#newInstance(java.lang.Class, int[]) <- org.glassfish.ha.store.spi.ObjectInputStreamWithLoader.resolveClass(ObjectInputStreamWithLoader.java:105) (line 105)"
+      ],
+      "metadata_rules": []
+    },
+    "library_stats": {
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 4,
+            "totalCalls": 4
+          }
+        },
+        "coverageRatio": 1.0,
+        "coveredCalls": 4,
+        "totalCalls": 4
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 83,
+          "missed": 1090,
+          "ratio": 0.070759,
+          "total": 1173
+        },
+        "line": {
+          "covered": 21,
+          "missed": 247,
+          "ratio": 0.078358,
+          "total": 268
+        },
+        "method": {
+          "covered": 3,
+          "missed": 137,
+          "ratio": 0.021429,
+          "total": 140
+        }
+      },
+      "version": "3.1.13"
+    }
+  },
+  "schema_version": 1,
+  "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-luna",
+  "task_type": "library-new-request",
+  "template_type": "library-new-request",
+  "timestamp": "2026-09-30T07:34:34.603959Z"
+}
