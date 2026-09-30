@@ -8,8 +8,12 @@ package com_sun_xml_messaging_saaj.saaj_impl;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import com.sun.net.httpserver.HttpServer;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.OutputStream;
+import java.net.InetSocketAddress;
+import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.Iterator;
 import java.util.Locale;
@@ -122,5 +126,36 @@ public class Saaj_implTest {
 
         assertThat(connection).isNotNull();
         connection.close();
+    }
+
+    @Test
+    void callsSoapEndpointThroughSoapConnection() throws Exception {
+        HttpServer server = HttpServer.create(new InetSocketAddress("localhost", 0), 0);
+        server.createContext("/soap", exchange -> {
+            exchange.getRequestBody().readAllBytes();
+            byte[] response = ("<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
+                    + "<soap:Envelope xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\">"
+                    + "<soap:Body><reply xmlns=\"urn:demo\">accepted</reply></soap:Body>"
+                    + "</soap:Envelope>").getBytes(StandardCharsets.UTF_8);
+            exchange.getResponseHeaders().set("Content-Type", "text/xml; charset=utf-8");
+            exchange.sendResponseHeaders(200, response.length);
+            try (OutputStream output = exchange.getResponseBody()) {
+                output.write(response);
+            }
+        });
+        server.start();
+
+        try (SOAPConnection connection = SOAPConnectionFactory.newInstance().createConnection()) {
+            SOAPMessage request = MessageFactory.newInstance().createMessage();
+            SOAPMessage response = connection.call(
+                    request, new URL("http://localhost:" + server.getAddress().getPort() + "/soap"));
+
+            Iterator<Node> replies = response.getSOAPBody()
+                    .getChildElements(new QName("urn:demo", "reply"));
+            assertThat(replies.hasNext()).isTrue();
+            assertThat(((SOAPElement) replies.next()).getValue()).isEqualTo("accepted");
+        } finally {
+            server.stop(0);
+        }
     }
 }
