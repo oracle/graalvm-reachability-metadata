@@ -1,0 +1,153 @@
+{
+  "add_new_library_support:2026-09-30": {
+    "timestamp": "2026-09-30T09:08:32.982051Z",
+    "library": "io.micronaut:micronaut-http-netty:5.1.13",
+    "starting_commit": "f4e276044c83134ed54aeec596b466a4f48b5996",
+    "ending_commit": "0de931f8531881bdfe6089765e12e9ecf300d5d2",
+    "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-luna",
+    "agent": "pi",
+    "model": "gpt-5.6-luna",
+    "status": "success",
+    "stats": {
+      "version": "5.1.13",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 6,
+            "totalCalls": 6
+          }
+        },
+        "coverageRatio": 1.0,
+        "coveredCalls": 6,
+        "totalCalls": 6
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 622,
+          "missed": 10554,
+          "ratio": 0.055655,
+          "total": 11176
+        },
+        "line": {
+          "covered": 177,
+          "missed": 2541,
+          "ratio": 0.065121,
+          "total": 2718
+        },
+        "method": {
+          "covered": 57,
+          "missed": 671,
+          "ratio": 0.078297,
+          "total": 728
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "advisory_preparation",
+      "issue_number": 9833,
+      "issue_label": "library-new-request",
+      "library": "io.micronaut:micronaut-http-netty:5.1.13",
+      "summary": "No Docker image is needed. micronaut-http-netty is the shared Netty transport for the Micronaut HTTP client and server, and it does not bring an annotation processor or its own HTTP client or server. The sibling 5.1.13 projects, such as micronaut-http-server-netty, add a few test-only dependencies, listed below. This assessment comes from the sibling projects' build.gradle in this repo. I did not resolve the artifact's own POM.",
+      "deterministic_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "io.micronaut:micronaut-http-server-netty:5.1.13",
+          "scope": "testImplementation",
+          "reason": "micronaut-http-netty contains only shared Netty transport code. Running a real Micronaut server (an embedded server) for tests needs the server module, which also brings the runtime."
+        },
+        {
+          "kind": "dependency",
+          "coordinate": "io.micronaut:micronaut-http-client:5.1.13",
+          "scope": "testImplementation",
+          "reason": "Tests need the HTTP client to make real requests against the embedded server and exercise the client-side Netty paths. The sibling project uses this module, but at 5.1.15 in its own directory."
+        },
+        {
+          "kind": "dependency",
+          "coordinate": "io.micronaut:micronaut-jackson-databind:5.1.13",
+          "scope": "testImplementation",
+          "reason": "JSON body binding needs a Jackson-based message codec on the classpath. The sibling server project includes it."
+        },
+        {
+          "kind": "dependency",
+          "coordinate": "org.assertj:assertj-core:3.22.0",
+          "scope": "testImplementation",
+          "reason": "Assertion library used by the sibling Micronaut tests. Reuse the version they pin."
+        },
+        {
+          "kind": "dependency",
+          "coordinate": "io.micronaut:micronaut-inject-java:5.1.13",
+          "scope": "testImplementation",
+          "reason": "Micronaut beans, controllers and clients in test code are wired at compile time. Without this annotation processor no bean definitions are generated and the app context is empty."
+        }
+      ],
+      "agent_guidance": "Model the build.gradle on tests/src/io.micronaut/micronaut-http-server-netty/5.1.13. That means the plugin org.graalvm.internal.tck, the agent in conditional mode with userCodeFilterPath user-code-filter.json, and the version taken from tck.testedLibraryVersion. Write tests that use the real embedded server on a random port (micronaut.server.port=-1) and the HTTP client. Cover things like request and response handling, streaming, and the Netty pipeline customizers that the library actually loads. Do not mock the transport. Keep tests in a package that matches the user-code filter. Docker is not needed. Do not set special environment variables or system properties beyond micronaut.server.port=-1.",
+      "risks": [
+        "Micronaut app-context tests are slow to build as native images, and they may need extra reflection or resource metadata for bean definitions and Netty. Those gaps should be found by the agent and native-image runs, not guessed up front.",
+        "The client and server modules must stay on the same Micronaut version as the library. Mixing versions, for example 5.1.15 as used in the sibling client project, can produce runtime linkage errors.",
+        "I inferred the dependency list from sibling projects only. Local Gradle and Native Image verification decide whether it is complete."
+      ],
+      "applied_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "io.micronaut:micronaut-http-server-netty:5.1.13",
+          "result": "applied",
+          "target": "tests/src/io.micronaut/micronaut-http-netty/5.1.13/build.gradle"
+        },
+        {
+          "kind": "dependency",
+          "coordinate": "io.micronaut:micronaut-http-client:5.1.13",
+          "result": "applied",
+          "target": "tests/src/io.micronaut/micronaut-http-netty/5.1.13/build.gradle"
+        },
+        {
+          "kind": "dependency",
+          "coordinate": "io.micronaut:micronaut-jackson-databind:5.1.13",
+          "result": "applied",
+          "target": "tests/src/io.micronaut/micronaut-http-netty/5.1.13/build.gradle"
+        },
+        {
+          "kind": "dependency",
+          "coordinate": "org.assertj:assertj-core:3.22.0",
+          "result": "already_present",
+          "target": "tests/src/io.micronaut/micronaut-http-netty/5.1.13/build.gradle"
+        },
+        {
+          "kind": "dependency",
+          "coordinate": "io.micronaut:micronaut-inject-java:5.1.13",
+          "result": "applied",
+          "target": "tests/src/io.micronaut/micronaut-http-netty/5.1.13/build.gradle"
+        }
+      ],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#9833 Support for io.micronaut:micronaut-http-netty:5.1.13; label=library-new-request; body_chars=39"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "sonnet",
+      "input_tokens_used": 6,
+      "output_tokens_used": 1580
+    },
+    "metrics": {
+      "input_tokens_used": 184838,
+      "cached_input_tokens_used": 2426368,
+      "output_tokens_used": 9787,
+      "iterations": 8,
+      "cost_usd": 0.4861,
+      "generated_loc": 25,
+      "tested_library_loc": 177,
+      "metadata_entries": 59,
+      "test_only_metadata_entries": 63,
+      "code_coverage_percent": 6.51
+    },
+    "artifacts": {
+      "metadata_file": "metadata/io.micronaut/micronaut-http-netty/5.1.13/reachability-metadata.json"
+    }
+  }
+}
