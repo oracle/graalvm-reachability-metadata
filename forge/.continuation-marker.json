@@ -1,0 +1,79 @@
+{
+  "continueFrom": "finalization",
+  "coordinate": "io.projectreactor.netty:reactor-netty-http:1.3.0",
+  "failure": {
+    "operand": "reporter-requested metadata",
+    "phase": "explore",
+    "step": "generate_tests()"
+  },
+  "issueNumber": 9352,
+  "label": "fails-native-image-run",
+  "libraryPreparationPreflight": {
+    "action": "no_action",
+    "agent_guidance": "",
+    "applied_setup": [],
+    "current_library": "io.projectreactor.netty:reactor-netty-http:1.0.39",
+    "deterministic_setup": [],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#9352 [Automation] native-image run fails for io.projectreactor.netty:reactor-netty-http:1.3.0; label=fails-native-image-run; body_chars=8015"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "6 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 4,
+    "issue_label": "fails-native-image-run",
+    "issue_number": 9352,
+    "library": "io.projectreactor.netty:reactor-netty-http:1.3.0",
+    "model": "sonnet",
+    "new_version": "1.3.0",
+    "output_tokens_used": 640,
+    "risks": [
+      "The native-image run failure is an UnsupportedFeatureError wrapped in an EncoderException. The log is cut off, so the exact missing registration is unknown. It is most likely missing reachability metadata for Netty or reactor-netty classes, which the repair step can add.",
+      "The 1.3.0 run resolves Netty 4.2.7.Final and reactor-core 3.8.0, while the existing 1.0.39 tests were written against older Netty. The test scaffold may need adjusting for the new Netty and reactor-core versions, but this is not setup the driver can apply."
+    ],
+    "status": "completed",
+    "summary": "The failure evidence is truncated at a generic UnsupportedFeatureError inside a Netty EncoderException. I found no concrete evidence of a missing dependency, Docker image, or environment setting, and nothing that points to an unsupportable mechanism."
+  },
+  "libraryUpdateRoute": null,
+  "newVersion": "1.3.0",
+  "phases": {
+    "explore": {
+      "chunkClassCount": null,
+      "chunkProcessedClassCount": 0,
+      "exhaustedClasses": [],
+      "status": "skipped"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": null,
+      "status": "completed"
+    },
+    "publication": {
+      "branch": null,
+      "coverageFollowUpIssueNumber": null,
+      "isPushed": false,
+      "publicationId": null,
+      "publicationTimestamp": null,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": true,
+      "status": "completed"
+    }
+  },
+  "preservedBranch": "ai/kimeta/human-intervention/issue-9352-fails-native-image-run-io.projectreactor.netty-reactor-netty-http-1.3.0-e199857e",
+  "publicationMetrics": {
+    "extras": {},
+    "library": "io.projectreactor.netty:reactor-netty-http:1.3.0",
+    "timestamp": "2026-09-30T12:18:16.945695Z"
+  },
+  "schemaVersion": 1,
+  "strategyName": "library_update_optimistic_pi_gpt-5.6-luna"
+}

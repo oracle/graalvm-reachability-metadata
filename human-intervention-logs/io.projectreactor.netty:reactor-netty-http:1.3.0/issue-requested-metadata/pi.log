@@ -1,0 +1,8 @@
+Updated `Reactor_netty_httpTest.java` to configure heap-backed Netty allocators for both WebSocket server and client channels.
+
+This preserves meaningful WebSocket public-API coverage while avoiding Netty’s JDK 25 shared-arena path. The reported `SharedArenaSupport` requirement is a Native Image capability flag, not reachability metadata, so no metadata or build flags were added.
+
+Checks:
+- `git diff --check` passed.
+- `fissile check --staged` passed.
+- Tests were not run, as requested.

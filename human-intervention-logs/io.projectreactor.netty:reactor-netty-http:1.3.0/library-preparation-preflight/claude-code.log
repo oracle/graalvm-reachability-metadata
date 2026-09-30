@@ -1,0 +1,12 @@
+```json
+{
+  "action": "no_action",
+  "summary": "The failure evidence is truncated at a generic UnsupportedFeatureError inside a Netty EncoderException. I found no concrete evidence of a missing dependency, Docker image, or environment setting, and nothing that points to an unsupportable mechanism.",
+  "deterministic_setup": [],
+  "agent_guidance": "",
+  "risks": [
+    "The native-image run failure is an UnsupportedFeatureError wrapped in an EncoderException. The log is cut off, so the exact missing registration is unknown. It is most likely missing reachability metadata for Netty or reactor-netty classes, which the repair step can add.",
+    "The 1.3.0 run resolves Netty 4.2.7.Final and reactor-core 3.8.0, while the existing 1.0.39 tests were written against older Netty. The test scaffold may need adjusting for the new Netty and reactor-core versions, but this is not setup the driver can apply."
+  ]
+}
+```

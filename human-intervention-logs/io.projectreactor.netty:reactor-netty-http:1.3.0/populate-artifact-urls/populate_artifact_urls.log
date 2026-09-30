@@ -1,0 +1,45 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :populateArtifactURLs
+I couldn't update `index.json`: the Edit tool was denied because the session is in don't-ask mode. I haven't tried another way to write the file, since that would go around the denial. The file is unchanged.
+
+I checked the URLs with `curl`, and each returned HTTP 200 for version 1.3.0. This is what I would add to the `1.3.0` entry in `metadata/io.projectreactor.netty/reactor-netty-http/index.json`, right after `test-version`:
+
+```json
+"source-code-url" : "https://repo.maven.apache.org/maven2/io/projectreactor/netty/reactor-netty-http/$version$/reactor-netty-http-$version$-sources.jar",
+"repository-url" : "https://github.com/reactor/reactor-netty",
+"test-code-url" : "https://github.com/reactor/reactor-netty/tree/v$version$/reactor-netty-http/src/test",
+"documentation-url" : "https://repo.maven.apache.org/maven2/io/projectreactor/netty/reactor-netty/$version$/reactor-netty-$version$-docs.zip",
+"description" : "Reactor Netty HTTP provides reactive HTTP client, server, and WebSocket support built on Reactor and Netty. It exposes non-blocking networking APIs for building HTTP services and clients on the JVM.",
+```
+
+- **Language:** The library is not language-specific, so I would leave `language` out.
+- **Tests on Maven:** The `-test-sources.jar` for 1.3.0 returns 404, so the test URL points at the `v1.3.0` tag on GitHub instead.
+- **Existing entry:** These values match the existing `1.0.39` entry, whose templates also resolve for 1.3.0.
+
+If you allow Edit on that file, I'll apply the change. Otherwise you can paste the block in yourself.
+Ran agent for io.projectreactor.netty:reactor-netty-http:1.3.0 (exit 0). Log: /home/oracle/oracle/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9352-844bc6f6/build/agent-url-discovery-logs/io.projectreactor.netty-reactor-netty-http-1.3.0.log
+Completed populateArtifactURLs: invoked=1, prompted=0, skipped=0, overwriteExisting=false, verifyArtifactSources=false, limit=null
+
+[Incubating] Problems report is available at: file:///home/oracle/oracle/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9352-844bc6f6/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 30s
+9 actionable tasks: 1 executed, 8 up-to-date
