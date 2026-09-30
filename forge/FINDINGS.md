@@ -3,6 +3,12 @@
 Rendered by Forge from the pre-push branch review of §FS-local-branch-review.
 Newest entry first; every non-approval is recorded, including one a repair later cleared.
 
+## 2026-09-30 — io.micronaut.data:micronaut-data-runtime:5.1.3 (#9816)
+
+**Test project declares unused backend dependencies**
+
+FS-test-contract.2.9 permits build.gradle dependency changes only when the dependency is genuinely needed. StaticMetamodelInitializerTest exercises RuntimeCriteriaBuilder and a generated static metamodel but does not use micronaut-data-jdbc, micronaut-jdbc-hikari, H2, or micronaut-test-junit5. All three Native Image finalization lanes passed after those dependencies were removed, confirming they were unnecessary scope.
+
 ## 2026-09-30 — org.glassfish.pfl:pfl-tf:5.1.1 (#9944)
 
 **Dynamic-access classes combined in one test file**
