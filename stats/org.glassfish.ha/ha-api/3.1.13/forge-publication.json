@@ -39,7 +39,7 @@
         ],
         "env": {},
         "gate": "index-file-validation",
-        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :validateIndexFiles\n✅ metadata/org.glassfish.ha/ha-api/index.json: Valid\n\n[Incubating] Problems report is available at: file:///home/oracle/oracle/metadata2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9936-375799a0/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 2s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :validateIndexFiles\n\u2705 metadata/org.glassfish.ha/ha-api/index.json: Valid\n\n[Incubating] Problems report is available at: file:///home/oracle/oracle/metadata2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9936-375799a0/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 2s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
         "returncode": 0
       }
     ],
@@ -52,14 +52,15 @@
     "status": "success"
   },
   "local_review": {
+    "action": "human-intervention",
     "changed_paths": [],
-    "decision": "approved",
-    "finding_body": "",
-    "finding_title": "",
-    "fix_note": "",
+    "decision": "rejected",
+    "finding_body": "The shared `.github/workflows/scripts/disable-docker.sh` runs `sudo apt-get install openbsd-inetd` without first refreshing APT indexes. In both attempts of current-head run 36685400488, every metadata matrix job requested `libevent-2.1-7t64_2.1.12-stable-9ubuntu2.1_amd64.deb`, received `404 Not Found`, exited 100 in `Disable docker networking`, and skipped metadata validation and the coordinate test. Independent run 36703838247 for `io.micronaut.reactor:micronaut-reactor:4.0.0` later failed all three lanes at the same step with the same package 404, proving the defect is shared rather than specific to `org.glassfish.ha:ha-api:3.1.13`. Under \u00a7FS-contribution-contract.5.2\u20135.3 this must be fixed in shared infrastructure, outside this contribution.\n\nInfrastructure issue: https://github.com/oracle/graalvm-reachability-metadata/issues/10273 (#10273)",
+    "finding_title": "Docker isolation CI installs packages with stale APT indexes",
+    "fix_note": "No contribution files were changed. Reviewed the complete base-to-head diff, both attempts of run 36685400488, the same failure on independent run 36703838247, current PR checks, JSON parseability without reviewing individual metadata entries, `git diff --check`, and `fissile check --staged`.",
     "model": "gpt-5.6-sol",
-    "review_comment": "Approved. The diff is confined to org.glassfish.ha:ha-api:3.1.13 and uses only reachability-metadata.json. The public, version-agnostic test exercises ObjectInputStreamWithLoader through its public API in a separate test package, contains no scaffold placeholder, Native Image skip or tolerated failure, JVM override, or native build/run flag, and passes both JVM and Native Image execution. Reported dynamic-access coverage is 4/4 (100%), above the new-library gate; the reported 10 total metadata entries do not trigger the entry-count mismatch probe. Index validation evidence is green, and local checkMetadataFiles, Checkstyle, and the coordinate test lane all passed.",
-    "session_id": "565fe75a4c064a7a"
+    "review_comment": "Rejected for human intervention under \u00a7FS-contribution-contract.5.2\u20135.3. On exact head b4a203a76996d1164b06ad6cfcd2384519c178a0, both attempts of workflow run 36685400488 failed all three matrix jobs in the shared Disable docker networking step before metadata validation or library tests ran. The complete contribution diff remains single-coordinate, uses only reachability-metadata.json, has a public version-agnostic test in a separate package with no Native Image dodge or build/run flag, and reports 4/4 dynamic-access calls with 10 total metadata entries, so the chunked coverage and mismatch rules pass. No contribution-local edit can repair the shared CI bootstrap failure.",
+    "session_id": "3a441afa22d34dea"
   },
   "metrics": {
     "agent": "pi",
