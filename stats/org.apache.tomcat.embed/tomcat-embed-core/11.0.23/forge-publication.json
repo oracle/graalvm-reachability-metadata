@@ -1,0 +1,103 @@
+{
+  "base_commit": "619168b453f4458a1d8017fedbcf9389c7128f65",
+  "branch": "ai/kimeta/fix-javac-org.apache.tomcat.embed-tomcat-embed-core-11.0.23-forge-9370-20260930091417565335-b60b067aadca",
+  "follow_ups": [],
+  "forge": {
+    "branch": "master",
+    "commit": "e9d6c8e276d0219f30551cbed8f943c256e23c25",
+    "monitored_branch": "origin/master"
+  },
+  "issue_number": 9370,
+  "library": {
+    "artifact": "tomcat-embed-core",
+    "coordinates": "org.apache.tomcat.embed:tomcat-embed-core:11.0.23",
+    "group": "org.apache.tomcat.embed",
+    "version": "11.0.23"
+  },
+  "local_ci_verification": {
+    "base_commit": "619168b453f4458a1d8017fedbcf9389c7128f65",
+    "commands": [
+      {
+        "command": [
+          "./gradlew",
+          "generateChangedIndexFileCoordinatesList",
+          "-PbaseCommit=origin/master",
+          "-PnewCommit=HEAD"
+        ],
+        "gate": "changed-index-coordinates",
+        "returncode": 0
+      },
+      {
+        "command": [
+          "./gradlew",
+          "validateIndexFiles",
+          "-Pcoordinates=org.apache.tomcat.embed:tomcat-embed-core"
+        ],
+        "gate": "index-file-validation",
+        "returncode": 0
+      },
+      {
+        "command": [
+          "./gradlew",
+          "checkMetadataFiles",
+          "-Pcoordinates=org.apache.tomcat.embed:tomcat-embed-core:11.0.23"
+        ],
+        "gate": "metadata-file-check",
+        "returncode": 0
+      },
+      {
+        "command": [
+          "./gradlew",
+          "checkstyle",
+          "-Pcoordinates=org.apache.tomcat.embed:tomcat-embed-core:11.0.23"
+        ],
+        "gate": "checkstyle",
+        "returncode": 0
+      },
+      {
+        "command": [
+          "./gradlew",
+          "compileTestJava",
+          "-Pcoordinates=org.apache.tomcat.embed:tomcat-embed-core:11.0.23"
+        ],
+        "gate": "compile-test-java",
+        "returncode": 0
+      }
+    ],
+    "failure_command": null,
+    "failure_gate": null,
+    "final_commit": "e9d6c8e276d0219f30551cbed8f943c256e23c25",
+    "fixups": [],
+    "human_intervention_required": false,
+    "repo_fix_paths": [],
+    "status": "success"
+  },
+  "local_review": {
+    "changed_paths": [],
+    "decision": "approved",
+    "finding_body": "",
+    "finding_title": "",
+    "fix_note": "",
+    "model": "claude-opus-5",
+    "review_comment": "Manual pre-push review, performed because the generating Forge run was stopped between finalization and publication, so the automated publication phase (including its own pre-push review) never ran.\n\nReviewed the full diff against master (105 files, +22937/-35):\n- Rebased the generated branch onto 619168b453 (13 commits, no conflicts) and re-ran the repository gates afterwards: changed-index-coordinates, index-file-validation, checkMetadataFiles, checkstyle and compileTestJava all succeeded.\n- build.gradle for 11.0.23 is byte-identical to the 11.0.22 project, so the contribution introduces no new Native Image build or run flags (FS-test-contract.2 flag rule).\n- The 91 new test classes exercise public Tomcat API directly: no mocking framework, no runtime bytecode generation or class definition, no reflection helpers, no @Disabled or assumption-based skips, and no swallowed Errors (FS-test-contract.4.3, FS-test-contract.4.5).\n- Generated metadata carries 447 reflection and 1389 resource entries under 121 distinct typeReached conditions; none of them condition on a test class or a lambda type, so every condition is reachable from library code.\n- The index.json change adds the 11.0.23 bucket as the new latest entry and moves latest/auto-update off 11.0.22; the reserialized formatting matches the index files produced by merged Forge runs.\n- Native test lanes were verified during generation (latest GraalVM current defaults, latest GraalVM future defaults, and GraalVM 25 current defaults all passed, together with the native trace gate and the final repository checks). They were not re-executed after the rebase; CI covers them.\n- The predecessor is 11.0.22: the new project's build.gradle is byte-identical to that version's, and index.json moves latest/auto-update off the 11.0.22 bucket onto the new one."
+  },
+  "metrics": null,
+  "modifiers": {
+    "chunk_final": true,
+    "chunked_dynamic_access": false,
+    "human_intervention": false
+  },
+  "previous_library": {
+    "artifact": "tomcat-embed-core",
+    "coordinates": "org.apache.tomcat.embed:tomcat-embed-core:11.0.22",
+    "group": "org.apache.tomcat.embed",
+    "version": "11.0.22"
+  },
+  "producer": "kimeta",
+  "publication_id": "forge-9370-20260930091417565335-b60b067aadca",
+  "render": {},
+  "schema_version": 1,
+  "task_type": "fixes-javac-fail",
+  "template_type": "fixes-javac-fail",
+  "timestamp": "2026-09-30T09:14:17.565335Z"
+}
