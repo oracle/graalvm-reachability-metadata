@@ -9,6 +9,7 @@ import tempfile
 import unittest
 
 from utility_scripts import code_coverage_finalize as module
+from utility_scripts.code_coverage_profile_inputs import PROFILE_KINDS
 
 COORDINATE = "com.example:demo:1.0.0"
 
@@ -376,6 +377,22 @@ class FinalizerTests(unittest.TestCase):
 
         with self.assertRaises(module.FinalizationError):
             module.validate_final_metrics(metrics)
+
+    def test_accepts_every_profile_kind_the_report_writer_emits(self) -> None:
+        for kind in PROFILE_KINDS:
+            report = _deep(["covered"], 1)
+            report["profileKind"] = kind
+
+            snapshot = module._deep_snapshot(report, COORDINATE, "deep final")
+
+            self.assertEqual(snapshot["covered"], 1, kind)
+
+    def test_rejects_unknown_profile_kind(self) -> None:
+        report = _deep(["covered"], 1)
+        report["profileKind"] = "guesswork"
+
+        with self.assertRaisesRegex(module.FinalizationError, "profileKind"):
+            module._deep_snapshot(report, COORDINATE, "deep final")
 
     def test_rejects_coordinate_mismatch(self) -> None:
         report = _api(["covered"])

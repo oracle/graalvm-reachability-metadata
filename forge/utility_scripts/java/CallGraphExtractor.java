@@ -35,10 +35,12 @@ import java.util.zip.ZipFile;
 /// Bytecode call-graph extractor for the code coverage improvement workflow
 /// (§AR-code-coverage-improvement.4.1.1, §AR-code-coverage-improvement.3).
 ///
-/// Reads library jars with the JDK Class-File API and writes three CSV files:
-/// one row per declared method, one row per call edge, and one row per declared
-/// type. Method rows retain their bytecode-to-source line table for exact deep
-/// miss classification (§AR-code-coverage-improvement.4.2). Method identities
+/// Reads library jars with the JDK Class-File API and writes four CSV files:
+/// one row per declared method, one row per call edge, one row per declared
+/// type, and one control-flow row per branching method (`flow.csv`, built by
+/// `ControlFlow`). Method rows retain their bytecode-to-source line table; with
+/// the control-flow rows it lets the deep phase name the branch that decides
+/// whether a call runs (§AR-code-coverage-deep-navigation.1.3). Method identities
 /// are the canonical `owner#name(params):ret` form
 /// produced by `utility_scripts/code_coverage_model.py`, so extractor output
 /// joins directly with JaCoCo evidence and the API inventory.
@@ -59,6 +61,8 @@ import java.util.zip.ZipFile;
 ///
 /// Usage:
 ///   java --source 25 CallGraphExtractor.java --output-dir DIR JAR [JAR...]
+///
+/// Source launch compiles the sibling `ControlFlow.java` on demand.
 public final class CallGraphExtractor {
 
     /// One declared method: its canonical id and whether it carries a body.
@@ -89,6 +93,8 @@ public final class CallGraphExtractor {
     /// `owner` -> direct subtypes, inverted from `classes` after parsing.
     private final Map<String, List<String>> subtypes = new HashMap<>();
     private final Set<Edge> edges = new TreeSet<>();
+    /// Canonical id -> `ControlFlow` `branches` and `blocks` fields.
+    private final Map<String, String[]> flows = new TreeMap<>();
 
     public static void main(String[] args) throws IOException {
         Path outputDir = null;
@@ -162,6 +168,9 @@ public final class CallGraphExtractor {
             declared.add(new MethodNode(id, method.code().isPresent(), isPublicMethod,
                     method.flags().has(AccessFlag.STATIC), lineNumbers(method)));
             declaredIds.add(id);
+            method.findAttribute(Attributes.code())
+                    .map(ControlFlow::encode)
+                    .ifPresent(flow -> flows.put(id, flow));
         }
         methodsByOwner.put(owner, declared);
     }
@@ -334,8 +343,15 @@ public final class CallGraphExtractor {
                         + quote(String.join(";", node.interfaceNames()))));
         write(outputDir.resolve("types.csv"), typeRows);
 
-        System.out.printf("call graph: %d methods, %d edges, %d types%n",
-                declaredIds.size(), edges.size(), classes.size());
+        // Written last: consumers key their cache on the newest output.
+        List<String> flowRows = new ArrayList<>();
+        flowRows.add("id,branches,blocks");
+        flows.forEach((id, flow) -> flowRows.add(
+                quote(id) + "," + quote(flow[0]) + "," + quote(flow[1])));
+        write(outputDir.resolve("flow.csv"), flowRows);
+
+        System.out.printf("call graph: %d methods, %d edges, %d types, %d branching methods%n",
+                declaredIds.size(), edges.size(), classes.size(), flows.size());
     }
 
     private static String quote(String value) {

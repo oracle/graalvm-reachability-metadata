@@ -12,7 +12,7 @@
 #         (budget exhausted -> human-intervention)
 #
 # Deep coverage loop (one task): identical shape with deep-measure (JaCoCo +
-# sampled PGO + call-tree steps, exits 1-6), deep-cover, deep-fix.
+# PGO + call-tree steps, exits 1-6), deep-cover, deep-fix.
 #
 # Final verified task (finalization only):
 #   reviewed-prepared -> reviewed-execute -- 0 -> finalize-verify -- 0 -> completed
@@ -21,7 +21,7 @@
 # Measurement is a deterministic program that always writes the current
 # report to one fixed path and, when the loop continues, derives the cover
 # prompt from that report in the same step. JaCoCo is the
-# only coverage authority; sampled PGO is navigation guidance. An agent can
+# only coverage authority; PGO samples and counters are navigation guidance. An agent can
 # never claim progress: only re-measurement moves the loop forward.
 
 name: code-coverage-improvement
@@ -250,7 +250,7 @@ states:
         description: Fixes applied after a failed API measurement step.
 
   deep-measure:
-    description: JaCoCo plus sampled-PGO measurement; decides whether the deep loop continues.
+    description: JaCoCo plus instrumented and sampled PGO measurement; decides whether the deep loop continues.
     concurrent: true
     visits: 16
     program: |
@@ -311,14 +311,14 @@ states:
           fail(2, f"missing JaCoCo XML at {jacoco_xml}")
       shutil.copy(jacoco_xml, discovery / f"jacoco-deep-{iteration}.xml")
 
-      # Step 3: PGO-sampling image with the analysis call-tree CSV dump.
+      # Step 3: instrumented, PGO-sampling image with the analysis call-tree CSV dump.
       run(3, gradle + ["nativeTestPGOSampling", include_suite], cwd=worktree)
 
-      # Step 4: run the sampling image once; it dumps the .iprof on exit.
+      # Step 4: run the profiled image once; it dumps the .iprof on exit.
       profile = (discovery / f"pgo-profile-{iteration}.iprof").resolve()
       run(4, gradle + ["runNativeTestPGO", include_suite, f"-PpgoProfilePath={profile}"], cwd=worktree)
       if not profile.is_file():
-          fail(4, "sampling run wrote no .iprof")
+          fail(4, "profiled run wrote no .iprof")
 
       # Step 5: copy exactly one coherent common-suffix call-tree CSV triplet.
       reports_dir = subproject / "build/native/nativeTestCompile/reports"
@@ -340,7 +340,7 @@ states:
       for csv_path in complete[chosen].values():
           shutil.copy(csv_path, triplet_dir / csv_path.name)
 
-      # Step 6: JaCoCo-exact deep paths with sampled-PGO guidance.
+      # Step 6: JaCoCo-exact deep paths with PGO guidance.
       analyzer = [
           sys.executable, f"{work_path}/utility_scripts/code_coverage_profile_report.py",
           "--profile", profile,
@@ -420,6 +420,12 @@ states:
         §AR-code-coverage-improvement.4.2
       - `Observed:` lines are sampled guidance only; every `Uncovered paths`
         target is uncovered according to exact JaCoCo evidence.
+      - Under a `fork` line, each branch lists the line each successor lands on
+        and how often it ran; `← target` marks the successors that lead to the
+        target, so drive that condition the other way. `never dispatched here`
+        names an implementation the call site never received: hand it that
+        receiver. A zero count means the suite never went there, not that it
+        cannot. §AR-code-coverage-deep-navigation.3
       - Edit generated tests only under the tracked extension suite
         `code-coverage-improvement/src/test/java` inside the coordinate's
         indexed test project (`coverageSuiteRepoRelativePath` in
@@ -464,7 +470,7 @@ states:
         invalid - repair it from the conversion task evidence.
       - step 2: the JVM JaCoCo run failed - fix the generated coverage tests in
         the issue worktree; do not weaken or delete meaningful assertions.
-      - step 3/4: the PGO-sampling build or run failed - inspect the Gradle
+      - step 3/4: the PGO build or run failed - inspect the Gradle
         output; repair missing reachability metadata through the native
         metadata preparation helper if needed.
       - step 5/6: measurement artifacts are missing or incoherent - repair the
@@ -787,13 +793,13 @@ transitions:
     to: deep-fix
     exit_code: 3
     condition: visitCount < visits
-    description: Step 3 failed - the PGO-sampling image build failed.
+    description: Step 3 failed - the PGO image build failed.
 
   - from: deep-measure
     to: deep-fix
     exit_code: 4
     condition: visitCount < visits
-    description: Step 4 failed - the sampling run produced no profile.
+    description: Step 4 failed - the profiled run produced no profile.
 
   - from: deep-measure
     to: deep-fix
