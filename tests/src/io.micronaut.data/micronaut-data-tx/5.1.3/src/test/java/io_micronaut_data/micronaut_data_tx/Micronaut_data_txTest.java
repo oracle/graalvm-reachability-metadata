@@ -42,6 +42,16 @@ public class Micronaut_data_txTest {
     }
 
     @Test
+    void createsNamedDefinitionForTransactionTracing() {
+        TransactionDefinition definition = TransactionDefinition.named("catalog-read");
+
+        assertThat(definition.getName()).isEqualTo("catalog-read");
+        assertThat(definition.getPropagationBehavior()).isEqualTo(Propagation.REQUIRED);
+        assertThat(definition.getConnectionDefinition().getPropagationBehavior())
+                .isEqualTo(ConnectionDefinition.Propagation.REQUIRED);
+    }
+
+    @Test
     void preservesConfiguredDefinitionOptionsAndProperties() {
         DefaultTransactionDefinition definition = new DefaultTransactionDefinition(Propagation.SUPPORTS);
         definition.setIsolationLevel(Isolation.SERIALIZABLE);
