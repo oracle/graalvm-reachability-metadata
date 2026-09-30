@@ -13,6 +13,7 @@ import io.micronaut.data.annotation.Id;
 import io.micronaut.data.annotation.MappedEntity;
 import io.micronaut.data.model.jpa.criteria.PersistentEntityCriteriaQuery;
 import io.micronaut.data.model.jpa.criteria.PersistentEntityRoot;
+import io.micronaut.data.model.jpa.criteria.PersistentPropertyPath;
 import io.micronaut.data.runtime.criteria.RuntimeCriteriaBuilder;
 import jakarta.persistence.metamodel.SingularAttribute;
 import jakarta.persistence.metamodel.StaticMetamodel;
@@ -26,10 +27,10 @@ public class StaticMetamodelInitializerTest {
         PersistentEntityCriteriaQuery<CriteriaBook> query = criteriaBuilder.createQuery(CriteriaBook.class);
 
         PersistentEntityRoot<CriteriaBook> root = query.from(CriteriaBook.class);
+        PersistentPropertyPath<String> titlePath = root.get(CriteriaBook_.title);
 
-        assertThat(CriteriaBook_.title).isNotNull();
-        assertThat(CriteriaBook_.title.getName()).isEqualTo("title");
-        assertThat(root.get("title").getProperty().getName()).isEqualTo("title");
+        assertThat(titlePath.getProperty().getName()).isEqualTo("title");
+        assertThat(titlePath.getJavaType()).isEqualTo(String.class);
     }
 
     @MappedEntity
