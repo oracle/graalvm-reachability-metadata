@@ -8,7 +8,7 @@ package org_glassfish_pfl.pfl_basic;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
 
 import org.glassfish.pfl.basic.proxy.CompositeInvocationHandlerImpl;
 import org.junit.jupiter.api.Test;
@@ -19,11 +19,13 @@ public class CompositeInvocationHandlerImplTest {
     }
 
     @Test
-    public void dispatchesInvocationToRegisteredHandler() throws Throwable {
+    public void dispatchesInvocationsThroughProxy() {
         CompositeInvocationHandlerImpl handler = new CompositeInvocationHandlerImpl();
         handler.addInvocationHandler(Greeting.class, (proxy, method, args) -> "hello");
-        Method method = Greeting.class.getMethod("greet");
+        Greeting greeting = (Greeting) Proxy.newProxyInstance(
+                Greeting.class.getClassLoader(), new Class<?>[] {Greeting.class}, handler);
 
-        assertThat(handler.invoke(null, method, new Object[0])).isEqualTo("hello");
+        assertThat(greeting.greet()).isEqualTo("hello");
+        assertThat(greeting.toString()).contains("CompositeInvocationHandlerImpl");
     }
 }

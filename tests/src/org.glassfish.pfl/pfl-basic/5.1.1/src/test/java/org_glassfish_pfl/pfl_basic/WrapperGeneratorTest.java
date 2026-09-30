@@ -24,7 +24,9 @@ public class WrapperGeneratorTest {
     @Test
     public void createsExceptionWrapperThroughPublicApi() {
         Errors errors = WrapperGenerator.makeWrapper(Errors.class);
+        WrapperGenerator.MessageInfo messageInfo = (WrapperGenerator.MessageInfo) errors;
 
         assertThat(errors.invalid("detail")).isInstanceOf(IllegalArgumentException.class);
+        assertThat(messageInfo.getMessageInfo()).isNotEmpty();
     }
 }
