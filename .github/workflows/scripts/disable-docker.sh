@@ -25,7 +25,10 @@ set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-sudo apt-get install openbsd-inetd
+# Refresh the package index first: the runner image's cached index can point at
+# package builds the mirrors no longer serve, which fails the install with a 404.
+sudo apt-get update
+sudo apt-get install -y openbsd-inetd
 sudo tee -a /etc/inetd.conf < "${SCRIPT_DIR}/discard-port.conf" > /dev/null
 sudo systemctl start inetd
 sudo mkdir -p /etc/systemd/system/docker.service.d
