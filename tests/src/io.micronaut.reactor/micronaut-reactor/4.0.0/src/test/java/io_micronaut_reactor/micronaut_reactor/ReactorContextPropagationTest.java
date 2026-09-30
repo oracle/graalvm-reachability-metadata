@@ -19,22 +19,36 @@ import reactor.core.scheduler.Schedulers;
 
 public class ReactorContextPropagationTest {
     @Test
-    void propagatesMicronautContextAcrossReactorScheduler() {
+    void propagatesMicronautContextWithAutomaticContextPropagation() {
+        try (ApplicationContext context = ApplicationContext.run(
+                Map.of(
+                        "reactor.enable-automatic-context-propagation", true,
+                        "reactor.enable-schedule-hook-context-propagation", false))) {
+            assertContextPropagatesAcrossReactorScheduler("automatic-value");
+        }
+    }
+
+    @Test
+    void propagatesMicronautContextWithScheduleHook() {
         try (ApplicationContext context = ApplicationContext.run(
                 Map.of(
                         "reactor.enable-automatic-context-propagation", false,
                         "reactor.enable-schedule-hook-context-propagation", true))) {
-            ContextValue value = new ContextValue("request-value");
-            PropagatedContext propagatedContext = PropagatedContext.empty().plus(value);
+            assertContextPropagatesAcrossReactorScheduler("schedule-hook-value");
+        }
+    }
 
-            try (PropagatedContext.Scope ignored = propagatedContext.propagate()) {
-                String propagatedValue = Mono.fromCallable(
-                                () -> PropagatedContext.get().get(ContextValue.class).value())
-                        .subscribeOn(Schedulers.boundedElastic())
-                        .block(Duration.ofSeconds(10));
+    private static void assertContextPropagatesAcrossReactorScheduler(String expectedValue) {
+        ContextValue value = new ContextValue(expectedValue);
+        PropagatedContext propagatedContext = PropagatedContext.empty().plus(value);
 
-                assertThat(propagatedValue).isEqualTo("request-value");
-            }
+        try (PropagatedContext.Scope ignored = propagatedContext.propagate()) {
+            String propagatedValue = Mono.fromCallable(
+                            () -> PropagatedContext.get().get(ContextValue.class).value())
+                    .subscribeOn(Schedulers.boundedElastic())
+                    .block(Duration.ofSeconds(10));
+
+            assertThat(propagatedValue).isEqualTo(expectedValue);
         }
     }
 
