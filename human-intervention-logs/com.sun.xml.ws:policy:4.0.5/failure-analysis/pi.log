@@ -1,0 +1,16 @@
+## Human intervention needed
+
+The automated job failed during `explore/generate_tests()` for `com.sun.xml.ws:policy:4.0.5`. Preserved work is available at https://github.com/oracle/graalvm-reachability-metadata/tree/ai%2Fkimeta%2Fhuman-intervention%2Fissue-9942-library-new-request-com.sun.xml.ws-policy-4.0.5-242f1400.
+
+The generated JVM tests pass, but Native Image compilation repeatedly fails while analyzing `XmlPolicyModelMarshallerTest.roundTripsAndTranslatesPolicyXmlThroughPublicModelApis()`. `nativeTestCompile` reports that a `com.sun.xml.ws.policy.privateutil.PolicyLogger` instance is embedded in the image heap although the class is initialized at runtime. The final three Gradle attempts fail identically. This is a class-initialization problem rather than missing reachability metadata; the final generation attempt made no changes for that reason. Metrics record failure after 19 iterations, with dynamic-access coverage unavailable.
+
+Please inspect:
+- `logs/com.sun.xml.ws:policy:4.0.5/gradle-test/gradle-test-2026-09-30T02-12-54-643502Z.log`
+- `logs/com.sun.xml.ws:policy:4.0.5/gradle-test/gradle-test-2026-09-30T02-11-56-732381Z.log`
+- `logs/com.sun.xml.ws:policy:4.0.5/issue-requested-metadata/pi-generation-2026-09-30T02-12-28-861967Z.log`
+- `logs/com.sun.xml.ws:policy:4.0.5/issue-requested-metadata/pi.log`
+
+Manual next steps:
+1. Check out the preserved branch and reproduce with `./gradlew nativeTestCompile -Pcoordinates=com.sun.xml.ws:policy:4.0.5`.
+2. Use `--trace-object-instantiation=com.sun.xml.ws.policy.privateutil.PolicyLogger` to determine the safe class-initialization boundary, then either configure justified build-time initialization or revise the XML round-trip test to avoid embedding the logger.
+3. Run the full coordinate test in both current and `future-defaults-all` modes, then regenerate the dynamic-access report.
