@@ -1,0 +1,18 @@
+## Human intervention needed
+
+The automated job failed while generating tests for `com.sun.xml.stream.buffer:streambuffer:2.1.0`. Preserved work is available at https://github.com/oracle/graalvm-reachability-metadata/tree/ai%2Fkimeta%2Fhuman-intervention%2Fissue-9941-library-new-request-com.sun.xml.stream.buffer-streambuffer-2.1.0-6e033d41.
+
+The likely failing stage is Native Image compilation during iterative test generation. JVM tests completed, but `nativeTestCompile` repeatedly failed because a `com.sun.xml.stream.buffer.sax.DefaultWithLexicalHandler` instance was embedded in the image heap while its class remained runtime-initialized. The trace reaches it through `SAXBufferProcessor.<init>`. An earlier verification passed all five original native tests, suggesting the later `XMLStreamBufferAnonymous1Test` exercising `buffer.writeTo(Node)` introduced the failing path. Build-time initialization is not an acceptable repository metadata fix.
+
+The run exhausted 12 iterations and recorded failure with zero finalized generated LOC, zero metadata entries, and unavailable dynamic-access coverage. Inspect:
+
+- `human-intervention-logs/com.sun.xml.stream.buffer:streambuffer:2.1.0/gradle-test/gradle-test-2026-09-30T01-25-46-401806Z.log`
+- `human-intervention-logs/com.sun.xml.stream.buffer:streambuffer:2.1.0/native-test-verify/cycle-0-finalizedTest-2026-09-30T01-17-42-886669Z.log`
+- `human-intervention-logs/com.sun.xml.stream.buffer:streambuffer:2.1.0/issue-requested-metadata/pi-generation-2026-09-30T01-25-03-181875Z.log`
+- `human-intervention-logs/com.sun.xml.stream.buffer:streambuffer:2.1.0/issue-requested-metadata/pi.log`
+
+Manual next steps:
+
+1. Rework or remove `XMLStreamBufferAnonymous1Test` and confirm whether avoiding `XMLStreamBuffer.writeTo(Node)` restores native compilation.
+2. If that API must remain covered, trace the `SAXBufferProcessor` instantiation and determine whether a compliant runtime-initialization or upstream-library fix exists; do not add `--initialize-at-build-time`.
+3. Regenerate metadata, then rerun `checkMetadataFiles`, `test`, and `generateDynamicAccessCoverageReport` for this coordinate.
