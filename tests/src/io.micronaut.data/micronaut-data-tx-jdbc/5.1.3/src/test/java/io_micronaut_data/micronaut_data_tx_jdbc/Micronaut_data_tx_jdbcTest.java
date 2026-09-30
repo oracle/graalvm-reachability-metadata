@@ -7,10 +7,10 @@
 package io_micronaut_data.micronaut_data_tx_jdbc;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.sql.Connection;
 import java.sql.SQLException;
-import javax.sql.DataSource;
 
 import io.micronaut.context.annotation.Property;
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
@@ -20,7 +20,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 
-@MicronautTest(startApplication = false)
+@MicronautTest(startApplication = false, transactional = false)
 @Property(name = "datasources.default.url", value = "jdbc:h2:mem:read_transactions;DB_CLOSE_DELAY=-1")
 @Property(name = "datasources.default.driver-class-name", value = "org.h2.Driver")
 @Property(name = "datasources.default.username", value = "sa")
@@ -28,26 +28,23 @@ import org.junit.jupiter.api.Timeout;
 @Timeout(45)
 public class Micronaut_data_tx_jdbcTest {
 
-    @Test
-    void test() throws Exception {
-        System.out.println("This is just a placeholder, implement your test");
-    }
-
-    @Inject
-    DataSource dataSource;
-
     @Inject
     TransactionOperations<Connection> transactionOperations;
 
     @BeforeEach
-    void prepareTable() throws SQLException {
-        try (Connection connection = dataSource.getConnection()) {
-            connection.createStatement().executeUpdate("DROP TABLE IF EXISTS transaction_event");
-            connection.createStatement().executeUpdate(
-                    "CREATE TABLE transaction_event (id INT PRIMARY KEY, message VARCHAR(100))");
-            connection.createStatement().executeUpdate(
-                    "INSERT INTO transaction_event (id, message) VALUES (1, 'ready')");
-        }
+    void prepareTable() {
+        transactionOperations.executeWrite(status -> {
+            try (var statement = status.getConnection().createStatement()) {
+                statement.executeUpdate("DROP TABLE IF EXISTS transaction_event");
+                statement.executeUpdate(
+                        "CREATE TABLE transaction_event (id INT PRIMARY KEY, message VARCHAR(100))");
+                statement.executeUpdate(
+                        "INSERT INTO transaction_event (id, message) VALUES (1, 'ready')");
+                return null;
+            } catch (SQLException exception) {
+                throw new IllegalStateException("Could not prepare transaction events", exception);
+            }
+        });
     }
 
     @Test
@@ -82,14 +79,7 @@ public class Micronaut_data_tx_jdbcTest {
             }
         });
 
-        try (Connection connection = dataSource.getConnection();
-                var resultSet = connection.createStatement().executeQuery(
-                        "SELECT message FROM transaction_event WHERE id = 1")) {
-            resultSet.next();
-            assertThat(resultSet.getString("message")).isEqualTo("written");
-        } catch (SQLException exception) {
-            throw new IllegalStateException("Could not verify transaction event", exception);
-        }
+        assertThat(readMessage(1)).isEqualTo("written");
     }
 
     @Test
@@ -110,19 +100,40 @@ public class Micronaut_data_tx_jdbcTest {
         });
 
         assertThat(insertedRows).containsExactly(1, 1);
-        try (Connection connection = dataSource.getConnection();
-                var resultSet = connection.createStatement().executeQuery(
-                        "SELECT id, message FROM transaction_event WHERE id IN (3, 4) ORDER BY id")) {
-            assertThat(resultSet.next()).isTrue();
-            assertThat(resultSet.getInt("id")).isEqualTo(3);
-            assertThat(resultSet.getString("message")).isEqualTo("first batch event");
-            assertThat(resultSet.next()).isTrue();
-            assertThat(resultSet.getInt("id")).isEqualTo(4);
-            assertThat(resultSet.getString("message")).isEqualTo("second batch event");
-            assertThat(resultSet.next()).isFalse();
-        } catch (SQLException exception) {
-            throw new IllegalStateException("Could not verify transaction events", exception);
-        }
+        transactionOperations.executeRead(status -> {
+            try (var statement = status.getConnection().createStatement();
+                    var resultSet = statement.executeQuery(
+                            "SELECT id, message FROM transaction_event WHERE id IN (3, 4) ORDER BY id")) {
+                assertThat(resultSet.next()).isTrue();
+                assertThat(resultSet.getInt("id")).isEqualTo(3);
+                assertThat(resultSet.getString("message")).isEqualTo("first batch event");
+                assertThat(resultSet.next()).isTrue();
+                assertThat(resultSet.getInt("id")).isEqualTo(4);
+                assertThat(resultSet.getString("message")).isEqualTo("second batch event");
+                assertThat(resultSet.next()).isFalse();
+                return null;
+            } catch (SQLException exception) {
+                throw new IllegalStateException("Could not verify transaction events", exception);
+            }
+        });
+    }
+
+    @Test
+    void rollsBackWriteTransactionWhenCallbackFails() {
+        assertThatThrownBy(() -> transactionOperations.executeWrite(status -> {
+            try (var statement = status.getConnection().prepareStatement(
+                    "UPDATE transaction_event SET message = ? WHERE id = ?")) {
+                statement.setString(1, "rolled back");
+                statement.setInt(2, 1);
+                assertThat(statement.executeUpdate()).isEqualTo(1);
+                throw new IllegalStateException("abort transaction");
+            } catch (SQLException exception) {
+                throw new IllegalStateException("Could not update transaction event", exception);
+            }
+        })).isInstanceOf(IllegalStateException.class)
+                .hasMessage("abort transaction");
+
+        assertThat(readMessage(1)).isEqualTo("ready");
     }
 
     @Test
@@ -139,13 +150,21 @@ public class Micronaut_data_tx_jdbcTest {
         });
 
         assertThat(insertedRows).isEqualTo(1);
-        try (Connection connection = dataSource.getConnection();
-                var resultSet = connection.createStatement().executeQuery(
-                        "SELECT message FROM transaction_event WHERE id = 2")) {
-            resultSet.next();
-            assertThat(resultSet.getString("message")).isEqualTo("created");
-        } catch (SQLException exception) {
-            throw new IllegalStateException("Could not verify transaction event", exception);
-        }
+        assertThat(readMessage(2)).isEqualTo("created");
+    }
+
+    private String readMessage(int id) {
+        return transactionOperations.executeRead(status -> {
+            try (var statement = status.getConnection().prepareStatement(
+                    "SELECT message FROM transaction_event WHERE id = ?")) {
+                statement.setInt(1, id);
+                try (var resultSet = statement.executeQuery()) {
+                    assertThat(resultSet.next()).isTrue();
+                    return resultSet.getString("message");
+                }
+            } catch (SQLException exception) {
+                throw new IllegalStateException("Could not read transaction event", exception);
+            }
+        });
     }
 }
