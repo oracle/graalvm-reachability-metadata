@@ -45,6 +45,12 @@ PHASE_REPORTS: dict[str, tuple[str, str]] = {
 }
 DECISION_FILE = "stop-decision.json"
 ACTIVE_MEASUREMENT_FILE = "active-measurement.txt"
+#: Number of reports the last completed measurement left in the series. A
+#: report beyond it was not written by measurement and never enters the series
+#: (§AR-code-coverage-improvement.4.3).
+SEALED_REPORTS_FILE = "sealed-reports.txt"
+#: Suffix a set-aside foreign report keeps, so the evidence stays readable.
+FOREIGN_REPORT_SUFFIX = ".foreign"
 
 #: Why a phase ended. `None` while it continues.
 REASON_NO_TARGETS = "no-targets"
@@ -68,12 +74,24 @@ def begin_measurement(reports_dir: str, phase: str) -> int:
         stem, _ = PHASE_REPORTS[phase]
     except KeyError:
         raise StopDecisionError(f"unknown phase: {phase}") from None
+    marker_path: str = os.path.join(
+        reports_dir, f"{phase}-{ACTIVE_MEASUREMENT_FILE}"
+    )
+    # A cover agent that ran the measurement tooling itself leaves reports the
+    # series must not count; only what the last measurement sealed, plus the
+    # iteration an open marker names, is measurement's own
+    # (§AR-code-coverage-improvement.4.3).
+    keep: int | None = _sealed_report_count(reports_dir, phase)
+    if os.path.isfile(marker_path):
+        with open(marker_path, encoding="utf-8") as marker:
+            raw_open: str = marker.read().strip()
+        if raw_open.isdigit():
+            keep = int(raw_open) + 1
+    if keep is not None:
+        _set_aside_foreign_reports(reports_dir, stem, keep)
     pattern: re.Pattern[str] = re.compile(rf"^{re.escape(stem)}-(\d+)\.json$")
     report_count: int = sum(
         1 for name in os.listdir(reports_dir) if pattern.match(name)
-    )
-    marker_path: str = os.path.join(
-        reports_dir, f"{phase}-{ACTIVE_MEASUREMENT_FILE}"
     )
     if os.path.isfile(marker_path):
         with open(marker_path, encoding="utf-8") as marker:
@@ -114,6 +132,45 @@ def complete_measurement(reports_dir: str, phase: str, iteration: int) -> None:
             f"active measurement is {raw_iteration}, not {iteration}: {marker_path}"
         )
     os.remove(marker_path)
+    # Seal the series at this iteration: the next measurement discards any
+    # report written after it (§AR-code-coverage-improvement.4.3).
+    sealed_path: str = os.path.join(reports_dir, f"{phase}-{SEALED_REPORTS_FILE}")
+    with open(sealed_path, "w", encoding="utf-8") as sealed:
+        sealed.write(f"{iteration + 1}\n")
+
+
+def _sealed_report_count(reports_dir: str, phase: str) -> int | None:
+    """Reports the last completed measurement sealed, or None before any seal."""
+    sealed_path: str = os.path.join(reports_dir, f"{phase}-{SEALED_REPORTS_FILE}")
+    if not os.path.isfile(sealed_path):
+        return None
+    with open(sealed_path, encoding="utf-8") as sealed:
+        raw: str = sealed.read().strip()
+    if not raw.isdigit():
+        raise StopDecisionError(f"sealed report count is not an integer: {sealed_path}")
+    return int(raw)
+
+
+def _set_aside_foreign_reports(reports_dir: str, stem: str, keep: int) -> list[str]:
+    """Rename every numbered artifact at or beyond `keep` so it leaves the series.
+
+    The report and the artifacts measurement writes beside it under the same
+    index (JaCoCo XML, rank and report renderings) keep their content under a
+    `.foreign` suffix: the agent's own measurement stays inspectable, it just
+    no longer counts as a pass, and no later reader mistakes its JaCoCo file
+    for the phase's last measurement.
+    """
+    del stem  # every numbered sibling of the report goes with it
+    pattern: re.Pattern[str] = re.compile(r"^.+-(\d+)\.[A-Za-z0-9]+$")
+    moved: list[str] = []
+    for name in sorted(os.listdir(reports_dir)):
+        match: re.Match[str] | None = pattern.match(name)
+        source: str = os.path.join(reports_dir, name)
+        if match and int(match.group(1)) >= keep and os.path.isfile(source):
+            target: str = source + FOREIGN_REPORT_SUFFIX
+            os.replace(source, target)
+            moved.append(target)
+    return moved
 
 
 def covered_series(reports_dir: str, phase: str) -> list[int]:

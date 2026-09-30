@@ -1,0 +1,134 @@
+{
+  "base_commit": "2b3a9ee2158b8b2956602b5d19d27daa6f4bb92a",
+  "branch": "ai/kimeta/add-lib-support-com.sun.xml.ws-servlet-4.0.5-forge-9948-20260926222823459475-e5f6e0d7789f",
+  "follow_ups": [],
+  "forge": {
+    "branch": "master",
+    "commit": "2b3a9ee2158b8b2956602b5d19d27daa6f4bb92a",
+    "monitored_branch": "origin/master"
+  },
+  "issue_number": 9948,
+  "library": {
+    "artifact": "servlet",
+    "coordinates": "com.sun.xml.ws:servlet:4.0.5",
+    "group": "com.sun.xml.ws",
+    "version": "4.0.5"
+  },
+  "local_ci_verification": {
+    "base_commit": "2b3a9ee2158b8b2956602b5d19d27daa6f4bb92a",
+    "commands": [
+      {
+        "command": [
+          "./gradlew",
+          "generateChangedIndexFileCoordinatesList",
+          "-PbaseCommit=origin/master",
+          "-PnewCommit=HEAD"
+        ],
+        "env": {
+          "GITHUB_OUTPUT": "/tmp/tmpyyj1bhlu"
+        },
+        "gate": "changed-index-coordinates",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :generateChangedIndexFileCoordinatesList\n\n[Incubating] Problems report is available at: file:///home/oracle/oracle/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9948-fe8643bb/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 4s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      },
+      {
+        "command": [
+          "./gradlew",
+          "validateIndexFiles",
+          "-Pcoordinates=com.sun.xml.ws:servlet"
+        ],
+        "env": {},
+        "gate": "index-file-validation",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :validateIndexFiles\n✅ metadata/com.sun.xml.ws/servlet/index.json: Valid\n\n[Incubating] Problems report is available at: file:///home/oracle/oracle/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9948-fe8643bb/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 2s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      }
+    ],
+    "failure_command": null,
+    "failure_gate": null,
+    "final_commit": "9879fbf5df97bd4fac896f87bc15f2092b3c8150",
+    "fixups": [],
+    "human_intervention_required": false,
+    "repo_fix_paths": [],
+    "status": "success"
+  },
+  "local_review": {
+    "changed_paths": [],
+    "decision": "approved",
+    "finding_body": "",
+    "finding_title": "",
+    "fix_note": "",
+    "model": "gpt-5.6-sol",
+    "review_comment": "Confirmed the diff is limited to com.sun.xml.ws:servlet:4.0.5 and its permitted metadata, index, stats, and test files. The public test classes exercise library APIs with assertions, use a separate test package, and contain no scaffold placeholder, native-image skip or tolerated failure, hardcoded version assertion, legacy metadata, or native build/run workaround. The reported dynamic-access result is N/A (the valid no-calls case), so no percentage or entry-count mismatch gate applies. Local index gates passed, and Forge finalization completed all three test lanes, metadata routing and validation, style checks, generated-test validity, deterministic package updates, and statistics generation without changing the publishable tree.",
+    "session_id": "91e1596084924453"
+  },
+  "metrics": {
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "path": "stats/com.sun.xml.ws/servlet/4.0.5/execution-metrics.json",
+    "summary": {
+      "cached_input_tokens_used": 8525440,
+      "code_coverage_percent": 11.43,
+      "cost_usd": 8.2576,
+      "generated_loc": 695,
+      "input_tokens_used": 455270,
+      "iterations": 13,
+      "metadata_entries": 17,
+      "output_tokens_used": 57285,
+      "tested_library_loc": 63
+    },
+    "timestamp": "2026-09-26T22:28:23.459475Z"
+  },
+  "modifiers": {
+    "chunk_final": true,
+    "chunked_dynamic_access": false,
+    "human_intervention": false
+  },
+  "producer": "kimeta",
+  "publication_id": "forge-9948-20260926222823459475-e5f6e0d7789f",
+  "render": {
+    "dynamic_access": null,
+    "dynamic_access_evidence": {
+      "covered_call_sites": [],
+      "metadata_rules": [
+        "when `com.sun.xml.ws.transport.http.servlet.ServletConnectionImpl` is reached, make `com.oracle.webservices.api.message.BasePropertySet` available for reflection",
+        "when `com.sun.xml.ws.transport.http.servlet.ServletConnectionImpl` is reached, make `com.sun.xml.ws.transport.http.WSHTTPConnection` available for reflection",
+        "when `com.sun.xml.ws.transport.http.servlet.ServletConnectionImpl` is reached, make `com.sun.xml.ws.transport.http.servlet.ServletConnectionImpl.getContext()` available for reflection",
+        "when `com.sun.xml.ws.transport.http.servlet.ServletConnectionImpl` is reached, make `com.sun.xml.ws.transport.http.servlet.ServletConnectionImpl.getHaInfo()` available for reflection",
+        "when `com.sun.xml.ws.transport.http.servlet.ServletConnectionImpl` is reached, make `com.sun.xml.ws.transport.http.servlet.ServletConnectionImpl.getPathInfo()` available for reflection",
+        "when `com.sun.xml.ws.transport.http.servlet.ServletConnectionImpl` is reached, make `com.sun.xml.ws.transport.http.servlet.ServletConnectionImpl.getQueryString()` available for reflection",
+        "when `com.sun.xml.ws.transport.http.servlet.ServletConnectionImpl` is reached, make `com.sun.xml.ws.transport.http.servlet.ServletConnectionImpl.getRequest()` available for reflection",
+        "when `com.sun.xml.ws.transport.http.servlet.ServletConnectionImpl` is reached, make `com.sun.xml.ws.transport.http.servlet.ServletConnectionImpl.getRequestHeaders()` available for reflection",
+        "... and 8 more"
+      ]
+    },
+    "library_stats": {
+      "dynamicAccess": "N/A",
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 202,
+          "missed": 1882,
+          "ratio": 0.096929,
+          "total": 2084
+        },
+        "line": {
+          "covered": 63,
+          "missed": 488,
+          "ratio": 0.114338,
+          "total": 551
+        },
+        "method": {
+          "covered": 19,
+          "missed": 123,
+          "ratio": 0.133803,
+          "total": 142
+        }
+      },
+      "version": "4.0.5"
+    }
+  },
+  "schema_version": 1,
+  "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-sol",
+  "task_type": "library-new-request",
+  "template_type": "library-new-request",
+  "timestamp": "2026-09-26T22:28:23.459475Z"
+}

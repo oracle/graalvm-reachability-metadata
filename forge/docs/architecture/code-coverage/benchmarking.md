@@ -45,7 +45,7 @@ Forge path there and the pin is left holding only its input.
 
 A benchmark campaign is a matrix. Each row — a cell — pairs one suite library
 with one agent/model configuration and one thinking level, and by default the
-cross-product is 75 cells (§FS-code-coverage-benchmarking.2). Every cell runs
+cross-product is 90 cells (§FS-code-coverage-benchmarking.2). Every cell runs
 the complete workflow once and yields one preserved workspace and one
 published record, so a row of the results table is directly a row of the
 matrix. The settings a cell carries:
@@ -53,8 +53,8 @@ matrix. The settings a cell carries:
 - **Library** — one of the five fixed coordinates, chosen to spread starting
   method coverage from 2.5% to 35% (§FS-code-coverage-benchmarking.1), so a
   strategy cannot look good only where coverage is cheap.
-- **Agent and model** — `pi` driving `gpt-5.6-sol`, `gpt-5.6-luna`, or
-  `gpt-5.6-terra` through the `openai-codex` provider, or `claude-code`
+- **Agent and model** — `pi` driving `gpt-5.6-sol`, `gpt-5.6-luna`,
+  `gpt-5.6-terra`, or `gpt-6-astra` through the `openai-codex` provider, or `claude-code`
   driving `sonnet-5` or `opus-5`. The configured name is stable for
   comparison; the concrete target model is recorded separately.
 - **Thinking level** — `medium`, `high`, or `xhigh`, carried in the Rhei

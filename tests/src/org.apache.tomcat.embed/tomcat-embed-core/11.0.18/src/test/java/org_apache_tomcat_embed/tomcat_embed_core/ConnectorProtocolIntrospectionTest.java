@@ -19,15 +19,16 @@ public class ConnectorProtocolIntrospectionTest {
     @ParameterizedTest
     @ValueSource(strings = {"HTTP/1.1", "org.apache.coyote.http11.Http11NioProtocol",
             "org.apache.coyote.http11.Http11Nio2Protocol"})
-    void connectorReadsProtocolHandlerPropertiesThroughPublicApi(String protocol) throws Exception {
+    void connectorReadsAndUpdatesProtocolHandlerPropertiesThroughPublicApi(String protocol) throws Exception {
         Connector connector = new Connector(protocol);
         connector.setPort(0);
 
         try {
-            connector.getProperty("bindOnInit");
+            Object bindOnInitBeforeUpdate = connector.getProperty("bindOnInit");
             boolean bindOnInitUpdated = connector.setProperty("bindOnInit", "false");
             Object bindOnInitAfterUpdate = connector.getProperty("bindOnInit");
 
+            assertThat(bindOnInitBeforeUpdate).isNull();
             assertThat(bindOnInitUpdated).isTrue();
             assertThat(bindOnInitAfterUpdate).isEqualTo("false");
 

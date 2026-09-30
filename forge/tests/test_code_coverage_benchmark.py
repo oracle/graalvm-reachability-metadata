@@ -52,10 +52,10 @@ class CodeCoverageBenchmarkMatrixTests(unittest.TestCase):
     def setUp(self) -> None:
         self.suite = benchmark.load_suite()
 
-    def test_default_matrix_has_seventy_five_cells(self) -> None:
+    def test_default_matrix_has_ninety_cells(self) -> None:
         cells = benchmark.expand_matrix(self.suite)
 
-        self.assertEqual(75, len(cells))
+        self.assertEqual(90, len(cells))
         self.assertEqual(
             {"pi", "claude-code"},
             {cell.configuration.agent for cell in cells},

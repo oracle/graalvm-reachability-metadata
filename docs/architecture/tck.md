@@ -265,6 +265,13 @@ tracked code-coverage extension tests are reflected in the committed
 `-H:PrintAnalysisCallTreeType=CSV`. The optional Gradle property
 `pgoSamplingPeriodMicros` defaults to `100` (the Native Image minimum) and must be forwarded through the
 root coordinate fan-out for both build-only and build-and-run invocations.
+The sampling period is passed only when the selected `native-image` lists
+`PGOSamplingPeriodMicros` among its expert options: GraalVM releases and EA
+builds sample at a fixed period and reject the option, which only development
+builds provide, so passing it unconditionally fails every sampling build there. On a toolchain without the option the
+default period is silently omitted, and a non-default `pgoSamplingPeriodMicros`
+fails the build, because a period the toolchain cannot honour must not be
+reported as applied.
 `runNativeTestPGO` depends on that sampling build and dumps the profile through
 `-XX:ProfilesDumpFile=<absolute path>`. A nonzero sampling-image exit fails the
 task, so a profile from a failing native suite cannot be accepted. Sampling is

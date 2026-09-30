@@ -16,6 +16,7 @@ from utility_scripts.continuation_marker import continuation_marker_path
 from utility_scripts.continuation_marker import load_continuation_marker
 from utility_scripts.run_location import RunLocation
 from dispatcher.config import (
+    ISSUE_CLAIM_CACHE_REASON_HUMAN_INTERVENTION,
     LABEL_HUMAN_INTERVENTION,
     LABEL_RESUMABLE,
 )
@@ -33,8 +34,15 @@ from dispatcher.interrupts import is_user_interrupt_requested
 from dispatcher.issue_admin import (
     add_issue_label,
     post_issue_comment,
+    remove_issue_label,
 )
-from dispatcher.records import ClaimedIssue
+from dispatcher.issue_cache import record_issue_claim_cache_observations
+from dispatcher.issue_claiming import revert_issue_claim
+from dispatcher.issue_queue import issue_is_resumable
+from dispatcher.records import (
+    ClaimedIssue,
+    IssueClaimCacheObservation,
+)
 
 def post_human_intervention_comment_and_label(
         issue_number: int,
@@ -74,6 +82,58 @@ def post_human_intervention_comment_and_label(
                 file=sys.stderr,
             )
             traceback.print_exc()
+
+
+def release_claim_after_logical_setup_failure(
+        issue: dict,
+        label: str,
+        item_id: str,
+        failure_stage: str,
+        detail: str,
+        revert_reason: str,
+) -> None:
+    """Label a logical claim-time failure `human-intervention`, then release the claim.
+
+    The failed precondition would fail identically on every retry, so a silent
+    release would let the queue select the issue again every cycle; the label, with
+    `resumable` removed, takes it out of rotation. §FS-forge-run-requirements.2
+    """
+    issue_number: int = issue["number"]
+    post_human_intervention_comment_and_label(
+        issue_number,
+        _build_claim_setup_failure_comment(label, failure_stage, detail),
+    )
+    # `human-intervention` plus `resumable` stays claimable. §FS-forge-run-continuation.3
+    if issue_is_resumable(issue):
+        try:
+            remove_issue_label(issue_number, LABEL_RESUMABLE)
+        except Exception as exc:
+            print(
+                f"ERROR: Failed to remove '{LABEL_RESUMABLE}' label from issue #{issue_number}: {exc!r}",
+                file=sys.stderr,
+            )
+    revert_issue_claim(item_id, issue_number, revert_reason)
+    # The revert drops the issue's cache entry, so the observation must follow it.
+    record_issue_claim_cache_observations([
+        IssueClaimCacheObservation(
+            issue_number=issue_number,
+            reason=ISSUE_CLAIM_CACHE_REASON_HUMAN_INTERVENTION,
+        )
+    ])
+
+
+def _build_claim_setup_failure_comment(label: str, failure_stage: str, detail: str) -> str:
+    """Build the maintainer comment for a precondition that failed before any workflow phase."""
+    return (
+        "Human intervention needed\n\n"
+        f"Forge claimed this `{label}` issue, but its {failure_stage} failed before any "
+        "workflow phase ran:\n\n"
+        f"```text\n{detail}\n```\n\n"
+        "This precondition fails the same way on every retry, so Forge released the claim "
+        f"and labeled the issue `{LABEL_HUMAN_INTERVENTION}` to take it out of the queue. "
+        f"Remove the `{LABEL_HUMAN_INTERVENTION}` label once the cause is fixed so Forge can "
+        "claim the issue again."
+    )
 
 
 def preservation_result_has_continuation_marker(preservation_result: FailurePreservationResult | None) -> bool:
