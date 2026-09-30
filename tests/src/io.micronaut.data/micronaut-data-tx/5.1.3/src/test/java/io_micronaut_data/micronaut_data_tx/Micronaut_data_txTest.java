@@ -13,11 +13,15 @@ import java.time.Duration;
 import java.util.List;
 import java.util.Map;
 
+import io.micronaut.context.ApplicationContext;
+import io.micronaut.context.exceptions.ConfigurationException;
 import io.micronaut.data.connection.ConnectionDefinition;
 import io.micronaut.transaction.TransactionCallback;
 import io.micronaut.transaction.TransactionDefinition;
 import io.micronaut.transaction.TransactionDefinition.Isolation;
 import io.micronaut.transaction.TransactionDefinition.Propagation;
+import io.micronaut.transaction.TransactionOperations;
+import io.micronaut.transaction.TransactionOperationsRegistry;
 import io.micronaut.transaction.support.DefaultTransactionDefinition;
 import org.junit.jupiter.api.Test;
 
@@ -104,6 +108,19 @@ public class Micronaut_data_txTest {
         assertThat(original.getProperties()).containsEntry("mode", "read")
                 .doesNotContainKey("new-property");
         assertThat(copy).isNotEqualTo(original);
+    }
+
+    @Test
+    void discoversTransactionOperationsRegistryThroughMicronautContext() {
+        try (ApplicationContext context = ApplicationContext.run()) {
+            TransactionOperationsRegistry registry =
+                    context.getBean(TransactionOperationsRegistry.class);
+
+            assertThatThrownBy(
+                            () -> registry.provideSynchronous(TransactionOperations.class, null))
+                    .isInstanceOf(ConfigurationException.class)
+                    .hasMessageContaining("No backing TransactionOperations configured");
+        }
     }
 
     @Test
