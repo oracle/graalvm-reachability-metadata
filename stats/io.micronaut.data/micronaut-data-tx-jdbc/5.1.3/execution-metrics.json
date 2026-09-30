@@ -1,0 +1,134 @@
+{
+  "add_new_library_support:2026-09-30": {
+    "timestamp": "2026-09-30T12:28:20.490462Z",
+    "library": "io.micronaut.data:micronaut-data-tx-jdbc:5.1.3",
+    "starting_commit": "25ea621756bd86e276c79554e42d5670f98cba1d",
+    "ending_commit": "cdb3ebd8e432bb9b9a8188dd6d35f4f824f55a93",
+    "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-luna",
+    "agent": "pi",
+    "model": "gpt-5.6-luna",
+    "status": "success",
+    "stats": {
+      "version": "5.1.3",
+      "dynamicAccess": {
+        "breakdown": {},
+        "coverageRatio": 1.0,
+        "coveredCalls": 0,
+        "totalCalls": 0
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 148,
+          "missed": 420,
+          "ratio": 0.260563,
+          "total": 568
+        },
+        "line": {
+          "covered": 37,
+          "missed": 117,
+          "ratio": 0.24026,
+          "total": 154
+        },
+        "method": {
+          "covered": 8,
+          "missed": 24,
+          "ratio": 0.25,
+          "total": 32
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "advisory_preparation",
+      "issue_number": 9817,
+      "issue_label": "library-new-request",
+      "library": "io.micronaut.data:micronaut-data-tx-jdbc:5.1.3",
+      "summary": "micronaut-data-tx-jdbc provides DataSourceTransactionManager and related JDBC transaction support. It needs a real DataSource, which the artifact does not bring in. The sibling micronaut-data-jdbc 5.1.3 test project already uses Hikari and in-memory H2, and this library needs the same.",
+      "deterministic_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "io.micronaut.sql:micronaut-jdbc-hikari:7.1.0",
+          "scope": "testImplementation",
+          "reason": "Provides the Micronaut-managed DataSource that the JDBC transaction manager wraps. Same version as the sibling micronaut-data-jdbc 5.1.3 test project."
+        },
+        {
+          "kind": "dependency",
+          "coordinate": "com.h2database:h2:2.4.240",
+          "scope": "testImplementation",
+          "reason": "In-memory JDBC database, so no Docker is needed. Same version as the sibling micronaut-data-jdbc 5.1.3 test project."
+        },
+        {
+          "kind": "dependency",
+          "coordinate": "io.micronaut.test:micronaut-test-junit5:5.1.1",
+          "scope": "testImplementation",
+          "reason": "Starts the Micronaut ApplicationContext for tests. Same version as the sibling micronaut-data-jdbc 5.1.3 test project."
+        },
+        {
+          "kind": "dependency",
+          "coordinate": "io.micronaut:micronaut-inject-java:5.1.10",
+          "scope": "testImplementation",
+          "reason": "Annotation processor for @Transactional and bean definitions. Same version as the sibling micronaut-data-jdbc 5.1.3 test project."
+        }
+      ],
+      "agent_guidance": "I did not run any of this; it is based on reading the sibling project's build.gradle. Use the sibling tests/src/io.micronaut.data/micronaut-data-jdbc/5.1.3 project as the template, including its build.gradle, its user-code-filter.json and the graalvmNative agent conditional-mode block. Configure the datasource through ApplicationContext properties, for example `datasources.default.url=jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1`, `driverClassName=org.h2.Driver`, `username=sa` and `password=`. Then exercise the transaction manager through TransactionOperations, with `@Transactional` (jakarta.transaction or io.micronaut.transaction.annotation) on beans and with `executeWrite`/`executeRead`, covering commit and rollback. It may also need micronaut-data-processor as a testAnnotationProcessor, depending on the tests. If the tests need Micronaut Data repositories, add `io.micronaut.data:micronaut-data-processor:$libraryVersion` and micronaut-data-jdbc. micronaut-data-tx-jdbc is usually a transitive dependency of micronaut-data-jdbc, so check the resolved 5.1.3 classpath. If the tests use only tx-jdbc, keep the test scope to tx-jdbc APIs.",
+      "risks": [
+        "Micronaut-generated bean definitions and annotation processing can make the native image need extra reflection or resource metadata.",
+        "The hikari and h2 versions are copied from the sibling project. They may not be the versions that resolve alongside tx-jdbc 5.1.3, so Gradle dependency resolution could conflict.",
+        "I did not check whether this artifact's own dependency set (micronaut-data-tx, micronaut-data-connection) already brings in some of these dependencies."
+      ],
+      "applied_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "io.micronaut.sql:micronaut-jdbc-hikari:7.1.0",
+          "result": "applied",
+          "target": "tests/src/io.micronaut.data/micronaut-data-tx-jdbc/5.1.3/build.gradle"
+        },
+        {
+          "kind": "dependency",
+          "coordinate": "com.h2database:h2:2.4.240",
+          "result": "applied",
+          "target": "tests/src/io.micronaut.data/micronaut-data-tx-jdbc/5.1.3/build.gradle"
+        },
+        {
+          "kind": "dependency",
+          "coordinate": "io.micronaut.test:micronaut-test-junit5:5.1.1",
+          "result": "applied",
+          "target": "tests/src/io.micronaut.data/micronaut-data-tx-jdbc/5.1.3/build.gradle"
+        },
+        {
+          "kind": "dependency",
+          "coordinate": "io.micronaut:micronaut-inject-java:5.1.10",
+          "result": "applied",
+          "target": "tests/src/io.micronaut.data/micronaut-data-tx-jdbc/5.1.3/build.gradle"
+        }
+      ],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#9817 Support for io.micronaut.data:micronaut-data-tx-jdbc:5.1.3; label=library-new-request; body_chars=39"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "sonnet",
+      "input_tokens_used": 6,
+      "output_tokens_used": 1674
+    },
+    "metrics": {
+      "input_tokens_used": 264139,
+      "cached_input_tokens_used": 5339136,
+      "output_tokens_used": 28437,
+      "iterations": 19,
+      "cost_usd": 0.9686,
+      "generated_loc": 153,
+      "tested_library_loc": 37,
+      "metadata_entries": 0,
+      "code_coverage_percent": 24.03
+    },
+    "artifacts": {
+      "metadata_file": "metadata/io.micronaut.data/micronaut-data-tx-jdbc/5.1.3/reachability-metadata.json"
+    }
+  }
+}
