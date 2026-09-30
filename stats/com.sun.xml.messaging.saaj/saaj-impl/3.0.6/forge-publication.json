@@ -1,0 +1,133 @@
+{
+  "base_commit": "43b13290be57e8085f7fd7aa8dfb242158a3f64a",
+  "branch": "ai/kimeta/add-lib-support-com.sun.xml.messaging.saaj-saaj-impl-3.0.6-forge-9940-20260930043026706900-0adc4cc89dec",
+  "follow_ups": [],
+  "forge": {
+    "branch": "master",
+    "commit": "e8d4398ded248b2b83d8f6af535fe4a5ca13b044",
+    "monitored_branch": "origin/master"
+  },
+  "issue_number": 9940,
+  "library": {
+    "artifact": "saaj-impl",
+    "coordinates": "com.sun.xml.messaging.saaj:saaj-impl:3.0.6",
+    "group": "com.sun.xml.messaging.saaj",
+    "version": "3.0.6"
+  },
+  "local_ci_verification": {
+    "base_commit": "43b13290be57e8085f7fd7aa8dfb242158a3f64a",
+    "commands": [
+      {
+        "command": [
+          "./gradlew",
+          "generateChangedIndexFileCoordinatesList",
+          "-PbaseCommit=origin/master",
+          "-PnewCommit=HEAD"
+        ],
+        "env": {
+          "GITHUB_OUTPUT": "/tmp/tmpmz2sdvvz"
+        },
+        "gate": "changed-index-coordinates",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :generateChangedIndexFileCoordinatesList\n\n[Incubating] Problems report is available at: file:///home/oracle/oracle/metadata2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9940-7d8504c2/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 3s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      },
+      {
+        "command": [
+          "./gradlew",
+          "validateIndexFiles",
+          "-Pcoordinates=com.sun.xml.messaging.saaj:saaj-impl"
+        ],
+        "env": {},
+        "gate": "index-file-validation",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :validateIndexFiles\n✅ metadata/com.sun.xml.messaging.saaj/saaj-impl/index.json: Valid\n\n[Incubating] Problems report is available at: file:///home/oracle/oracle/metadata2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9940-7d8504c2/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 2s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      }
+    ],
+    "failure_command": null,
+    "failure_gate": null,
+    "final_commit": "f9ac83aa6d441be4554f79960131d00cca805d42",
+    "fixups": [],
+    "human_intervention_required": false,
+    "repo_fix_paths": [],
+    "status": "success"
+  },
+  "local_review": {
+    "changed_paths": [],
+    "decision": "approved",
+    "finding_body": "",
+    "finding_title": "",
+    "fix_note": "",
+    "model": "gpt-5.6-sol",
+    "review_comment": "Confirmed the diff is limited to com.sun.xml.messaging.saaj:saaj-impl:3.0.6 and uses only reachability-metadata.json. The public, version-agnostic tests exercise SAAJ behavior from a separate test package without scaffold code, Native Image skips, swallowed failures, reflection shortcuts, or compatibility overrides. Resolved statistics report dynamicAccess as N/A, so the 0/0 no-calls rule applies and no percentage or entry-count mismatch blocks approval. I also verified the narrow --enable-url-protocols=http flag: removing it made the GraalVM 25 native lane fail in SOAPConnection.call with MalformedURLException stating that HTTP was not enabled, while restoring it allowed all three native lanes to pass. The exact Forge finalization command then completed successfully with no publishable-tree changes, including metadata/style checks, generated-test validation, and regenerated library statistics.",
+    "session_id": "dac284f9b0c443fd"
+  },
+  "metrics": {
+    "agent": "pi",
+    "model": "gpt-5.6-luna",
+    "path": "stats/com.sun.xml.messaging.saaj/saaj-impl/3.0.6/execution-metrics.json",
+    "summary": {
+      "cached_input_tokens_used": 1440768,
+      "code_coverage_percent": 26.6,
+      "cost_usd": 0.3906,
+      "generated_loc": 144,
+      "input_tokens_used": 167664,
+      "iterations": 8,
+      "metadata_entries": 48,
+      "output_tokens_used": 13141,
+      "test_only_metadata_entries": 29,
+      "tested_library_loc": 2487
+    },
+    "timestamp": "2026-09-30T04:30:26.706900Z"
+  },
+  "modifiers": {
+    "chunk_final": true,
+    "chunked_dynamic_access": false,
+    "human_intervention": false
+  },
+  "producer": "kimeta",
+  "publication_id": "forge-9940-20260930043026706900-0adc4cc89dec",
+  "render": {
+    "dynamic_access": null,
+    "dynamic_access_evidence": {
+      "covered_call_sites": [],
+      "metadata_rules": [
+        "when `com.sun.xml.messaging.saaj.util.transform.EfficientStreamingTransformer` is reached, make `com.sun.org.apache.xalan.internal.xsltc.trax.TransformerFactoryImpl.<init>()` available for reflection",
+        "when `com.sun.xml.messaging.saaj.soap.SOAPDocumentImpl` is reached, make `com.sun.org.apache.xerces.internal.jaxp.DocumentBuilderFactoryImpl.<init>()` available for reflection",
+        "when `com.sun.xml.messaging.saaj.util.ParserPool` is reached, make `com.sun.org.apache.xerces.internal.jaxp.SAXParserFactoryImpl.<init>()` available for reflection",
+        "when `com.sun.xml.messaging.saaj.util.FastInfosetReflection` is reached, make `com.sun.xml.fastinfoset.dom.DOMDocumentParser` available for reflection",
+        "when `com.sun.xml.messaging.saaj.client.p2p.HttpSOAPConnection` is reached, make `com.sun.xml.messaging.saaj.soap.SAAJMetaFactoryImpl` available for reflection",
+        "when `com.sun.xml.messaging.saaj.soap.SOAPDocumentImpl` is reached, make `com.sun.xml.messaging.saaj.soap.impl.ElementImpl.<init>(com.sun.xml.messaging.saaj.soap.SOAPDocumentImpl, org.w3c.dom.Element)` available for reflection",
+        "when `com.sun.xml.messaging.saaj.soap.AttachmentPartImpl` is reached, make `org.eclipse.angus.activation.MailcapRegistryProviderImpl` available for reflection"
+      ]
+    },
+    "library_stats": {
+      "dynamicAccess": "N/A",
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 9174,
+          "missed": 28877,
+          "ratio": 0.241097,
+          "total": 38051
+        },
+        "line": {
+          "covered": 2487,
+          "missed": 6864,
+          "ratio": 0.265961,
+          "total": 9351
+        },
+        "method": {
+          "covered": 585,
+          "missed": 1381,
+          "ratio": 0.297558,
+          "total": 1966
+        }
+      },
+      "version": "3.0.6"
+    }
+  },
+  "schema_version": 1,
+  "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-luna",
+  "task_type": "library-new-request",
+  "template_type": "library-new-request",
+  "timestamp": "2026-09-30T04:30:26.706900Z"
+}
