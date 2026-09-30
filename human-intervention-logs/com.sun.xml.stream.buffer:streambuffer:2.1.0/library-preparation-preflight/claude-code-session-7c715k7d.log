@@ -1,0 +1,40 @@
+Prompt:
+You are preparing a Forge workflow for a library issue. Decide whether the library needs setup beyond the normal generated test scaffold before meaningful coverage is reachable.
+
+Research the library yourself to make this decision. Investigate the resolved artifact and its dependencies, how the library is normally used, and its documentation. The JSON context below is only a starting point, not the limit of what you may consider. Do not modify the repository or apply any setup yourself — return only the decision. Local Gradle and Native Image verification remain authoritative.
+
+The setup can be one of three things: an extra Maven dependency, a Docker image the tests need, or an environment/system property the generated tests must set. Represent dependencies and Docker images as `deterministic_setup` entries the driver can apply before generation:
+  - {"kind": "dependency", "coordinate": "group:artifact:version", "scope": "testImplementation", "reason": "..."}
+  - {"kind": "docker_image", "image": "name:tag", "slug": "short-slug", "reason": "..."}
+If a test needs a Docker image that is already pinned under `tests/tck-build-logic/src/main/resources/allowed-docker-images/`, reuse the exact tag from that `Dockerfile-<slug>` instead of introducing a new one, since the allow-list permits a single shared tag per image.
+Put environment variables, system properties, and other test-code setup in `agent_guidance`. Do not restate deterministic entries as guidance.
+
+Return a single JSON object with this shape:
+{
+  "action": "no_action" | "advisory_preparation",
+  "summary": "short reason",
+  "deterministic_setup": [ ... dependency or docker_image entries, if any ... ],
+  "agent_guidance": "environment/system property/test setup guidance, if any",
+  "risks": ["risk notes, if any"]
+}
+
+Choose no_action unless your research finds concrete evidence that extra setup is needed.
+
+Context (starting point):
+{
+  "issue": {
+    "number": 9941,
+    "title": "Support for com.sun.xml.stream.buffer:streambuffer:2.1.0",
+    "label": "library-new-request",
+    "body": "_This issue was created by automation._",
+    "body_error": ""
+  },
+  "library": "com.sun.xml.stream.buffer:streambuffer:2.1.0",
+  "current_library": null,
+  "new_version": null,
+  "existing_tests": {}
+}
+
+Conversation:
+{"duration_api_ms":7069,"stop_reason":"end_turn","session_id":"560fc57d-1410-44ff-aef9-d14cd0dd9ad2","total_cost_usd":0.1117888,"usage":{"input_tokens":2,"cache_creation_input_tokens":26052,"cache_read_input_tokens":10234,"output_tokens":553,"output_tokens_details":{"thinking_tokens":190},"server_tool_use":{"web_search_requests":0,"web_fetch_requests":0},"service_tier":"standard","cache_creation":{"ephemeral_1h_input_tokens":26052,"ephemeral_5m_input_tokens":0},"inference_geo":"not_available","iterations":[{"input_tokens":2,"output_tokens":553,"cache_read_input_tokens":10234,"cache_creation_input_tokens":26052,"cache_creation":{"ephemeral_5m_input_tokens":0,"ephemeral_1h_input_tokens":26052},"type":"message"}],"speed":"standard"},"modelUsage":{"claude-sonnet-5-5":{"inputTokens":2,"outputTokens":553,"cacheReadInputTokens":10234,"cacheCreationInputTokens":26052,"webSearchRequests":0,"costUSD":0.1117888,"contextWindow":1000000,"maxOutputTokens":128000,"thinkingTokens":190,"canonicalModel":"claude-sonnet-5-5","provider":"firstParty","costBasis":"list"}},"permission_denials":[],"terminal_reason":"completed","fast_mode_state":"off","fast_mode_disabled_reason":"sdk_opt_in_required","subagent_stats":{"spawned":0,"requested":{"background":0,"foreground":0,"unset":0},"started_in_background":0,"max_depth":0,"spawned_by_subagents":0,"completed":0,"failed":0,"killed":{"parent":0,"user":0,"system":0},"refused":{"depth_limit":0,"concurrency_limit":0,"budget":0},"by_type":{}},"is_error":false,"num_turns":1,"subtype":"success","api_error_status":null,"result":"```json\n{\n  \"action\": \"no_action\",\n  \"summary\": \"streambuffer 2.1.0 is a self-contained XML infoset buffering library. It works over the JDK's StAX, SAX and DOM APIs, and its only runtime dependency (org.jvnet.staxex:stax-ex) comes in transitively. Tests can build an XMLStreamBuffer from in-memory XML and read it back through the JDK parsers. This needs no extra dependency, Docker image, or environment or system property.\",\n  \"deterministic_setup\": [],\n  \"agent_guidance\": \"\",\n  \"risks\": [\n    \"I did not inspect the resolved artifact or its POM. This decision comes from my knowledge of the library, not a check of the 2.1.0 dependency tree.\",\n    \"The library may resolve stax-ex or other transitive dependencies differently at this version, so confirm with the local Gradle and Native Image runs.\",\n    \"Native Image may need reflection or resource metadata for the JDK's default XML parser factory lookup. That is a metadata concern, not a test-setup one.\"\n  ]\n}\n```","ttft_ms":4696,"type":"result","duration_ms":7138,"uuid":"0406b3c6-d8aa-46cc-a2d2-5b45de83da40","ttft_stream_ms":3292,"time_to_request_ms":66,"first_content_frame_ms":3293,"queued_turn_count":0,"result_index":0}
+

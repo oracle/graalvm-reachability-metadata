@@ -1,0 +1,79 @@
+{
+  "continueFrom": "explore",
+  "coordinate": "com.sun.xml.stream.buffer:streambuffer:2.1.0",
+  "failure": {
+    "operand": "reporter-requested metadata",
+    "phase": "explore",
+    "step": "generate_tests()"
+  },
+  "issueNumber": 9941,
+  "label": "library-new-request",
+  "libraryPreparationPreflight": {
+    "action": "no_action",
+    "agent_guidance": "",
+    "applied_setup": [],
+    "deterministic_setup": [],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#9941 Support for com.sun.xml.stream.buffer:streambuffer:2.1.0; label=library-new-request; body_chars=39"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "0 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 2,
+    "issue_label": "library-new-request",
+    "issue_number": 9941,
+    "library": "com.sun.xml.stream.buffer:streambuffer:2.1.0",
+    "model": "sonnet",
+    "output_tokens_used": 553,
+    "risks": [
+      "I did not inspect the resolved artifact or its POM. This decision comes from my knowledge of the library, not a check of the 2.1.0 dependency tree.",
+      "The library may resolve stax-ex or other transitive dependencies differently at this version, so confirm with the local Gradle and Native Image runs.",
+      "Native Image may need reflection or resource metadata for the JDK's default XML parser factory lookup. That is a metadata concern, not a test-setup one."
+    ],
+    "status": "completed",
+    "summary": "streambuffer 2.1.0 is a self-contained XML infoset buffering library. It works over the JDK's StAX, SAX and DOM APIs, and its only runtime dependency (org.jvnet.staxex:stax-ex) comes in transitively. Tests can build an XMLStreamBuffer from in-memory XML and read it back through the JDK parsers. This needs no extra dependency, Docker image, or environment or system property."
+  },
+  "libraryUpdateRoute": null,
+  "newVersion": null,
+  "phases": {
+    "explore": {
+      "chunkClassCount": null,
+      "chunkProcessedClassCount": 0,
+      "exhaustedClasses": [],
+      "iteration": 8,
+      "status": "running"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": null,
+      "status": "skipped"
+    },
+    "publication": {
+      "branch": null,
+      "coverageFollowUpIssueNumber": null,
+      "isPushed": false,
+      "publicationId": null,
+      "publicationTimestamp": null,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": true,
+      "status": "completed"
+    }
+  },
+  "preservedBranch": "ai/kimeta/human-intervention/issue-9941-library-new-request-com.sun.xml.stream.buffer-streambuffer-2.1.0-6e033d41",
+  "publicationMetrics": {
+    "extras": {},
+    "library": "com.sun.xml.stream.buffer:streambuffer:2.1.0",
+    "timestamp": "2026-09-30T01:26:23.057223Z"
+  },
+  "schemaVersion": 1,
+  "strategyName": "optimistic_dynamic_access_iterative_pi_gpt-5.6-luna"
+}
