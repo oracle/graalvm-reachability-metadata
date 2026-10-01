@@ -3,6 +3,12 @@
 Rendered by Forge from the pre-push branch review of §FS-local-branch-review.
 Newest entry first; every non-approval is recorded, including one a repair later cleared.
 
+## 2026-10-01 — io.opentelemetry:opentelemetry-sdk-trace:1.59.0 (#9350)
+
+**Generated repair retained test-side reflection and an unnecessary Native Image flag**
+
+The copied OpenTelemetrySdkTraceTest directly used Class.forName/getDeclaredField to manufacture reflection evidence, violating FS-test-contract.2.1 and FS-contribution-contract.4.3. The copied build.gradle also retained --allow-incomplete-classpath without evidence that every compliant test shape requires it, violating FS-test-contract.2.7. The complete current-defaults, future-defaults, and GraalVM 25 native lanes passed after both were removed.
+
 ## 2026-10-01 — jakarta.websocket:jakarta.websocket-client-api:2.3.0-M1 (#9359)
 
 **Explicit messaging timeouts below the required 10-second floor**
