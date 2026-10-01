@@ -1,0 +1,103 @@
+{
+  "base_commit": "fc2a9d8631f6dc996395668fdea6f68505a43c70",
+  "branch": "ai/kimeta/fix-javac-jakarta.persistence-jakarta.persistence-api-4.0.0-M5-forge-9356-20261001211903154883-7243ab97bc85",
+  "follow_ups": [],
+  "forge": {
+    "branch": "master",
+    "commit": "fc2a9d8631f6dc996395668fdea6f68505a43c70",
+    "monitored_branch": "origin/master"
+  },
+  "issue_number": 9356,
+  "library": {
+    "artifact": "jakarta.persistence-api",
+    "coordinates": "jakarta.persistence:jakarta.persistence-api:4.0.0-M5",
+    "group": "jakarta.persistence",
+    "version": "4.0.0-M5"
+  },
+  "local_ci_verification": {
+    "base_commit": "fc2a9d8631f6dc996395668fdea6f68505a43c70",
+    "commands": [
+      {
+        "command": [
+          "./gradlew",
+          "generateChangedIndexFileCoordinatesList",
+          "-PbaseCommit=origin/master",
+          "-PnewCommit=HEAD"
+        ],
+        "env": {
+          "GITHUB_OUTPUT": "/tmp/tmp_2tx7az5"
+        },
+        "gate": "changed-index-coordinates",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :generateChangedIndexFileCoordinatesList\n\n[Incubating] Problems report is available at: file:///home/oracle/oracle/metadata2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9356-f5ac7ff0/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 5s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      },
+      {
+        "command": [
+          "./gradlew",
+          "validateIndexFiles",
+          "-Pcoordinates=jakarta.persistence:jakarta.persistence-api"
+        ],
+        "env": {},
+        "gate": "index-file-validation",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :validateIndexFiles\n✅ metadata/jakarta.persistence/jakarta.persistence-api/index.json: Valid\n\n[Incubating] Problems report is available at: file:///home/oracle/oracle/metadata2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9356-f5ac7ff0/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 3s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      }
+    ],
+    "failure_command": null,
+    "failure_gate": null,
+    "final_commit": "9964ee36ca162250a7228f017ed1c9d37ec11792",
+    "fixups": [],
+    "human_intervention_required": false,
+    "repo_fix_paths": [],
+    "status": "success"
+  },
+  "local_review": {
+    "changed_paths": [],
+    "decision": "approved",
+    "finding_body": "",
+    "finding_title": "",
+    "fix_note": "",
+    "model": "gpt-5.6-sol",
+    "review_comment": "Reviewed the target-coordinate-only diff under the fixes-javac-fail rules and contribution disposition contract. The M5 test minimally implements and exercises the new Query and TypedQuery setParameters(Object...) API while preserving the inherited assertions and native execution. No tests, assertions, or native behavior were disabled; no legacy metadata or out-of-scope files were added. Overall dynamic-access coverage is 0/0 for both M3 and M5 with no breakdown scopes, so the ordered repair gate passes. Index validation and the recorded local gate passed, and the exact Forge finalization command completed all three test lanes, metadata validation, style checks, generated-test checks, and statistics generation without changing the publishable tree.",
+    "session_id": "a3ea6c4bd79d43e8"
+  },
+  "metrics": {
+    "agent": "pi",
+    "model": "gpt-5.6-luna",
+    "path": "stats/jakarta.persistence/jakarta.persistence-api/4.0.0-M5/execution-metrics.json",
+    "summary": {
+      "cached_input_tokens_used": 183296,
+      "code_coverage_percent": 23.18,
+      "cost_usd": 0.0712,
+      "input_tokens_used": 42397,
+      "iterations": 3,
+      "metadata_entries": 4,
+      "output_tokens_used": 1744,
+      "previous_library_coverage_percent": 23.71,
+      "previous_library_metadata_entries": 4,
+      "previous_library_test_only_metadata_entries": 7,
+      "test_only_metadata_entries": 7,
+      "tested_library_loc": 156
+    },
+    "timestamp": "2026-10-01T21:19:03.154883Z"
+  },
+  "modifiers": {
+    "chunk_final": true,
+    "chunked_dynamic_access": false,
+    "human_intervention": false
+  },
+  "previous_library": {
+    "artifact": "jakarta.persistence-api",
+    "coordinates": "jakarta.persistence:jakarta.persistence-api:4.0.0-M3",
+    "group": "jakarta.persistence",
+    "version": "4.0.0-M3"
+  },
+  "producer": "kimeta",
+  "publication_id": "forge-9356-20261001211903154883-7243ab97bc85",
+  "render": {},
+  "schema_version": 1,
+  "strategy_name": "javac_iterative_with_coverage_sources_pi_gpt-5.6-luna",
+  "task_type": "fixes-javac-fail",
+  "template_type": "fixes-javac-fail",
+  "timestamp": "2026-10-01T21:19:03.154883Z"
+}
