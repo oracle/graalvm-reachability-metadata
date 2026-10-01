@@ -36,9 +36,12 @@ pre-generation support for the failing range. Forge copies the metadata and test
 directories from the PR base commit entry that originally covered the failing
 version — using that entry's `metadata-version` and `test-version` when present —
 into `metadata/<group>/<artifact>/<failing-version>` and
-`tests/src/<group>/<artifact>/<failing-version>`. The PR then ships the new
-generated progress for the passing prefix and keeps baseline support for the
-successor range. Forge regenerates library stats for the failing version after
+`tests/src/<group>/<artifact>/<failing-version>`. The copied test directory's
+`gradle.properties` names the failing version as its library version and
+metadata directory, as every owned test directory does, so the copy reads as the
+successor's own project and not as a stale duplicate of its source. The PR then
+ships the new generated progress for the passing prefix and keeps baseline
+support for the successor range. Forge regenerates library stats for the failing version after
 creating the successor entry and publishes them under
 `stats/<group>/<artifact>/<failing-version>`.
 
@@ -73,7 +76,8 @@ version sweep does. When every consumer passes, nothing changes.
 When a consumer `F` fails, Forge splits the consumers at `F`:
 
 - it creates `tests/src/<group>/<artifact>/<F>/` from the PR base commit's copy
-  of the shared suite;
+  of the shared suite, with `gradle.properties` naming `F` as the successor
+  contents above do;
 - it removes `test-version` from `F`'s entry, so `F` runs its own directory;
 - it points every later consumer at that directory with `test-version: "<F>"`;
 - it leaves the earlier, passing consumers on the regenerated suite;
