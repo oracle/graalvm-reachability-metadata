@@ -6,7 +6,8 @@
  */
 package org_apache_curator.curator_client;
 
-import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.curator.shaded.com.google.common.base.FinalizableReferenceQueue;
 import org.apache.curator.shaded.com.google.common.base.FinalizableWeakReference;
@@ -18,17 +19,16 @@ public class FinalizerTest {
     @Test
     void cleansAnEnqueuedReferenceWhenTheQueueCloses() {
         FinalizableReferenceQueue queue = new FinalizableReferenceQueue();
-        AtomicBoolean cleaned = new AtomicBoolean();
+        CountDownLatch cleaned = new CountDownLatch(1);
         try {
             FinalizableWeakReference<Object> reference = new FinalizableWeakReference<>(new Object(), queue) {
                 @Override
                 public void finalizeReferent() {
-                    cleaned.set(true);
+                    cleaned.countDown();
                 }
             };
             reference.enqueue();
-            queue.close();
-            assertThat(cleaned.get()).isTrue();
+            assertThat(cleaned.await(10, TimeUnit.SECONDS)).isTrue();
         } finally {
             queue.close();
         }

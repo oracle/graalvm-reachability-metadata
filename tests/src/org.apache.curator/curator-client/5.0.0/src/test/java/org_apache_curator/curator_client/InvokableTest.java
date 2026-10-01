@@ -22,6 +22,6 @@ public class InvokableTest {
         Constructor<String> constructor = String.class.getConstructor(String.class);
 
         assertThat(TypeToken.of(String.class).method(length).invoke("curator")).isEqualTo(7);
-        assertThat(Invokable.from(constructor).invoke("client")).isEqualTo("client");
+        assertThat(Invokable.from(constructor).invoke(null, "client")).isEqualTo("client");
     }
 }
