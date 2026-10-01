@@ -8,6 +8,14 @@ Newest entry first; every non-approval is recorded, including one a repair later
 **Pre-push review unavailable**
 
 Forge could not obtain a readable pre-push review verdict. This records a review availability problem, not a reviewer finding against the branch.
+## 2026-09-30 — io.micronaut.reactor:micronaut-reactor:4.0.0 (#9826)
+
+**Metadata CI used a stale apt index when installing openbsd-inetd**
+
+Workflow run 36703838247 on head 6c0fa721e6586c33399a7b89ed229c10fbf3bd74 failed all three matrix jobs in Disable docker networking. Each job ran sudo apt-get install openbsd-inetd without first refreshing apt indexes, requested libevent-2.1-7t64_2.1.12-stable-9ubuntu2.1, and received 404 Not Found before checkMetadataFiles or the coordinate test task ran. Runs for unrelated contributions failed at the same shared step, and merged PR #10274 repaired .github/workflows/scripts/disable-docker.sh by running apt-get update first. This is outside the contribution's closed file set, so FS-contribution-contract.5.2 and .5.3 prohibit repairing it in this PR and require human intervention.
+
+Infrastructure issue: https://github.com/oracle/graalvm-reachability-metadata/issues/10277 (#10277)
+
 ## 2026-09-30 — org.glassfish.ha:ha-api:3.1.13 (#9936)
 
 **Docker isolation CI installs packages with stale APT indexes**
