@@ -121,8 +121,9 @@ because the marker never enters a successful run's publication staging
   Durable metrics
   remain the source for normal cost, token, coverage, and status evidence
   (§FS-forge-run-metrics); the marker carries local extras such as
-  `post_generation_intervention`, `local_ci_verification`, and
-  `library_update_alias_split` when they exist.
+  `post_generation_intervention`, `local_ci_verification`,
+  `library_update_alias_split`, `library_update_consumer_split`, and
+  `library_update_native_sweep` when they exist.
 - Improve-coverage runs write the original `.baseline-stats.json` into the
   resolved test directory during setup and include it in the setup checkpoint.
   Resume treats that committed checkpoint file as preserved state and reuses it

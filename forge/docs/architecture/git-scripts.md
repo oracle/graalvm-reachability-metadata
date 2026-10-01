@@ -333,8 +333,9 @@ references, review text, metrics summaries, and human-intervention visibility.
 It must apply the PR label that corresponds to the successful workflow result,
 not the issue queue label when those differ. A single-PR workflow links the PR
 to its claimed issue with `Fixes: #<issue>`, so merging the PR closes the issue.
-When a library-update publication splits tested versions according to
-§FS-library-update-tested-version-split, the PR body must also include a
+When a library-update publication splits tested versions or test-version
+consumers according to §FS-library-update-tested-version-split, the PR body
+must also include a
 human-visible `Refs: #<follow-up-issue>` line and a machine-readable
 `Forge-Unblocks-Issue: #<follow-up-issue>` trailer. Forge automation must use
 the trailer, not casual issue references, to release the follow-up issue after
