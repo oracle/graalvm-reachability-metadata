@@ -9,7 +9,7 @@ package jakarta_enterprise.jakarta_enterprise_cdi_api;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
-import javax.enterprise.util.AnnotationLiteral;
+import jakarta.enterprise.util.AnnotationLiteral;
 
 import org.junit.jupiter.api.Test;
 
