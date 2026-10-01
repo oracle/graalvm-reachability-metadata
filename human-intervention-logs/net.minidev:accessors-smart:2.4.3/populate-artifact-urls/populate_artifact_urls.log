@@ -1,0 +1,43 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :populateArtifactURLs
+I couldn't update `metadata/net.minidev/accessors-smart/index.json`. The Edit tool was denied because the session is in don't-ask mode, and I haven't tried to work around that. I need Edit permission, or your go-ahead to write the file another way.
+
+This is the content I would add to the `2.4.3` entry. It is the only change, and the existing `1.2` entry already uses the same source and documentation templates.
+
+```json
+"source-code-url" : "https://repo1.maven.org/maven2/net/minidev/accessors-smart/$version$/accessors-smart-$version$-sources.jar",
+"repository-url" : "https://github.com/netplex/json-smart-v2",
+"test-code-url" : "https://github.com/netplex/json-smart-v2/tree/00955f7fb9705f4ad1c5f4956f2466344ebb2eae/accessors-smart/src/test",
+"documentation-url" : "https://repo1.maven.org/maven2/net/minidev/accessors-smart/$version$/accessors-smart-$version$-javadoc.jar",
+"description" : "accessors-smart provides an ASM-based helper for generating fast bean accessors for getter, setter, constructor, and field access operations. It is used by json-smart to reduce the overhead of Java reflection when mapping and converting object properties."
+```
+
+- **Language:** The library isn't specific to Kotlin, Groovy or Scala, so the `language` field stays absent.
+- **Source and documentation URLs:** Both Maven Central jars returned HTTP 200 for 2.4.3. I did not check the `1.2` entry's rendered URLs.
+- **Test URL:** Maven Central has no tests jar. The `json-smart-v2` repo has no `2.4.3` tag, and `v2.4.3` and `2.4.2` also return 404, so I pinned the test URL to the commit "prepare a v 2.4.3". That commit has 24 files under `accessors-smart/src/test`. The URL is a fixed commit rather than a `$version$` template. That is valid because 2.4.3 is the only tested version, but it won't follow future version bumps.
+Ran agent for net.minidev:accessors-smart:2.4.3 (exit 0). Log: /home/oracle/oracle/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9361-d00fe610/build/agent-url-discovery-logs/net.minidev-accessors-smart-2.4.3.log
+Completed populateArtifactURLs: invoked=1, prompted=0, skipped=0, overwriteExisting=false, verifyArtifactSources=false, limit=null
+
+[Incubating] Problems report is available at: file:///home/oracle/oracle/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9361-d00fe610/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 15s
+9 actionable tasks: 1 executed, 8 up-to-date

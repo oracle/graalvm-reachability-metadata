@@ -1,0 +1,80 @@
+{
+  "continueFrom": "fix",
+  "coordinate": "net.minidev:accessors-smart:2.4.3",
+  "failure": {
+    "operand": "net.minidev:accessors-smart:2.4.3",
+    "phase": "fix",
+    "step": "fix_reported_failure()"
+  },
+  "issueNumber": 9361,
+  "label": "fails-javac-compile",
+  "libraryPreparationPreflight": {
+    "action": "no_action",
+    "agent_guidance": "",
+    "applied_setup": [],
+    "current_library": "net.minidev:accessors-smart:1.2",
+    "deterministic_setup": [],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#9361 [Automation] javac compile fails for net.minidev:accessors-smart:2.4.3; label=fails-javac-compile; body_chars=8015"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "8 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 6,
+    "issue_label": "fails-javac-compile",
+    "issue_number": 9361,
+    "library": "net.minidev:accessors-smart:2.4.3",
+    "model": "sonnet",
+    "new_version": "2.4.3",
+    "output_tokens_used": 1239,
+    "risks": [
+      "net.minidev:accessors-smart:2.4.3 has no binary jar on Maven Central, so the generated tests cannot compile against it. Generation for this version is likely to fail the same way regardless of setup. The maintainers should decide whether to drop or exclude 2.4.3 from the tested-versions list, or whether a different repository can supply the jar. I did not investigate either option.",
+      "This is not a skip_unsupported case. The failure was not traced to any Native Image-incompatible mechanism in the library's source, so the unsupportable criteria are not met.",
+      "The sibling versions 2.4.6 through 2.6.0 do appear in maven-metadata.xml. I did not check whether their main jars are published."
+    ],
+    "status": "completed",
+    "summary": "The failure is an artifact-availability problem, not missing test setup. Maven Central lists accessors-smart 2.4.3 with only a .pom, a -sources.jar and a -javadoc.jar, and no main jar (the direct jar URL returns HTTP 404). No extra dependency, Docker image or system property can supply the missing jar."
+  },
+  "libraryUpdateRoute": null,
+  "newVersion": "2.4.3",
+  "phases": {
+    "explore": {
+      "chunkClassCount": null,
+      "chunkProcessedClassCount": 0,
+      "exhaustedClasses": [],
+      "status": "pending"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": 6,
+      "status": "pending"
+    },
+    "publication": {
+      "branch": null,
+      "coverageFollowUpIssueNumber": null,
+      "isPushed": false,
+      "publicationId": null,
+      "publicationTimestamp": null,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": true,
+      "status": "completed"
+    }
+  },
+  "preservedBranch": "ai/kimeta/human-intervention/issue-9361-fails-javac-compile-net.minidev-accessors-smart-2.4.3-0e36b9e2",
+  "publicationMetrics": {
+    "extras": {},
+    "library": "net.minidev:accessors-smart:2.4.3",
+    "timestamp": "2026-10-01T10:13:30.073815Z"
+  },
+  "schemaVersion": 1,
+  "strategyName": "javac_iterative_with_coverage_sources_pi_gpt-5.6-luna"
+}
