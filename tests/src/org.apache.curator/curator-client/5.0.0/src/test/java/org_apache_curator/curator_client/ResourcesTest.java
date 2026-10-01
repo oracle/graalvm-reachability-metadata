@@ -9,9 +9,15 @@ package org_apache_curator.curator_client;
 import org.apache.curator.shaded.com.google.common.io.Resources;
 import org.junit.jupiter.api.Test;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class ResourcesTest {
+    @Test
+    void resolvesAClassRelativeResource() {
+        assertThat(Resources.getResource(ResourcesTest.class, "ResourcesTest.class")).isNotNull();
+    }
+
     @Test
     void rejectsMissingResources() {
         assertThatThrownBy(() -> Resources.getResource("missing-curator-resource.txt"))
