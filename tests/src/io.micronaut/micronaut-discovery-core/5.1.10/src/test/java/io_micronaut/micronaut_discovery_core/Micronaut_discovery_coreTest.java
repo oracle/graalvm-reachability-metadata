@@ -17,6 +17,7 @@ import io.micronaut.discovery.event.ServiceReadyEvent;
 import io.micronaut.discovery.event.ServiceStoppedEvent;
 import io.micronaut.discovery.registration.RegistrationConfiguration;
 import io.micronaut.health.HealthStatus;
+import io.micronaut.health.HeartbeatEvent;
 import java.net.URI;
 import java.util.List;
 import java.util.Map;
@@ -84,6 +85,15 @@ public class Micronaut_discovery_coreTest {
         assertThat(ready.getSource()).isSameAs(instance);
         assertThat(stopped.getSource()).isSameAs(instance);
         assertThat(ready).isNotEqualTo(stopped);
+    }
+
+    @Test
+    public void publishesHeartbeatEventWithCurrentHealthStatus() {
+        ServiceInstance instance = ServiceInstance.of("orders", URI.create("http://orders.example"));
+        HeartbeatEvent heartbeat = new HeartbeatEvent(instance, HealthStatus.DOWN);
+
+        assertThat(heartbeat.getSource()).isSameAs(instance);
+        assertThat(heartbeat.getStatus()).isEqualTo(HealthStatus.DOWN);
     }
 
     @Test
