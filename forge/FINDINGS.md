@@ -8,6 +8,13 @@ Newest entry first; every non-approval is recorded, including one a repair later
 **Test project declares unused backend dependencies**
 
 FS-test-contract.2.9 permits build.gradle dependency changes only when the dependency is genuinely needed. StaticMetamodelInitializerTest exercises RuntimeCriteriaBuilder and a generated static metamodel but does not use micronaut-data-jdbc, micronaut-jdbc-hikari, H2, or micronaut-test-junit5. All three Native Image finalization lanes passed after those dependencies were removed, confirming they were unnecessary scope.
+## 2026-09-30 — org.glassfish.ha:ha-api:3.1.13 (#9936)
+
+**Docker isolation CI installs packages with stale APT indexes**
+
+The shared `.github/workflows/scripts/disable-docker.sh` runs `sudo apt-get install openbsd-inetd` without first refreshing APT indexes. In both attempts of current-head run 36685400488, every metadata matrix job requested `libevent-2.1-7t64_2.1.12-stable-9ubuntu2.1_amd64.deb`, received `404 Not Found`, exited 100 in `Disable docker networking`, and skipped metadata validation and the coordinate test. Independent run 36703838247 for `io.micronaut.reactor:micronaut-reactor:4.0.0` later failed all three lanes at the same step with the same package 404, proving the defect is shared rather than specific to `org.glassfish.ha:ha-api:3.1.13`. Under §FS-contribution-contract.5.2–5.3 this must be fixed in shared infrastructure, outside this contribution.
+
+Infrastructure issue: https://github.com/oracle/graalvm-reachability-metadata/issues/10273 (#10273)
 
 ## 2026-09-29 — org.apache.tomcat.embed:tomcat-embed-el:10.0.0 (#9371)
 

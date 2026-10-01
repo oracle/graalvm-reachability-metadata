@@ -304,19 +304,19 @@ tasks.register("mergeNativeTraceMetadata", Exec) { Exec task ->
     }
 }
 
-// §forge/AR-code-coverage-improvement.4.2
+// §forge/AR-code-coverage-deep-navigation.1.1
 
 // gradle nativeTestPGOSampling -Pcoordinates=<maven-coordinates>
 tasks.register("nativeTestPGOSampling", NativeTestPGOSamplingInvocationTask.class) { task ->
-    task.setDescription("Builds PGO-sampling native tests with the analysis call-tree CSV dump for matching coordinates")
+    task.setDescription("Builds instrumented and PGO-sampling native tests with the analysis call-tree CSV dump for matching coordinates")
     task.setGroup(LifecycleBasePlugin.BUILD_GROUP)
 }
 
-// §forge/AR-code-coverage-improvement.4.2
+// §forge/AR-code-coverage-deep-navigation.1.1
 
 // gradle runNativeTestPGO -Pcoordinates=<maven-coordinates> -PpgoProfilePath=<path>
 tasks.register("runNativeTestPGO", RunNativeTestPGOInvocationTask.class) { task ->
-    task.setDescription("Runs PGO-sampling native tests once for matching coordinates and writes the .iprof profile")
+    task.setDescription("Runs the profiled native tests once for matching coordinates and writes the .iprof profile")
     task.setGroup(JavaBasePlugin.VERIFICATION_GROUP)
     task.doFirst {
         requiredAbsolutePathProperty("pgoProfilePath")

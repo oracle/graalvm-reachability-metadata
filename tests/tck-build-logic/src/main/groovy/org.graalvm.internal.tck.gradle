@@ -244,9 +244,9 @@ boolean nativeTraceImageTaskRequested = !informationalTaskRequested &&
 boolean runNativeTraceImageTaskRequested = !informationalTaskRequested && isTaskRequested("runNativeTraceImage")
 boolean nativeTestTaskRequested = !informationalTaskRequested &&
         (isTaskRequested("nativeTest") || isTaskRequested("nativeTestCompile"))
-// §AR-test-harness.8, §forge/AR-code-coverage-improvement.4.2: deep-path guidance
-// needs a PGO-sampling image plus the analysis call-tree CSV graph; JaCoCo alone
-// decides coverage.
+// §AR-test-harness.8, §forge/AR-code-coverage-deep-navigation.1.1: deep-path guidance
+// needs an instrumented, sampling image plus the analysis call-tree CSV graph;
+// JaCoCo alone decides coverage.
 boolean nativeTestPGOSamplingTaskRequested = !informationalTaskRequested &&
         (isTaskRequested("nativeTestPGOSampling") || isTaskRequested("runNativeTestPGO"))
 // Native Image requires a sampling period of at least 100 microseconds.
@@ -765,10 +765,12 @@ Provider<List<String>> pgoBuildArgs = providers.provider {
             )
         }
 
-        // Sampled profiles are guidance-only evidence: sampled stacks show where
-        // execution already runs; absence never proves non-execution (JaCoCo is
+        // Profiles are guidance-only evidence: sampled stacks show where execution
+        // already runs, and instrumented counters record every branch successor and
+        // virtual-call receiver the run took. Neither proves non-execution (JaCoCo is
         // the coverage metric). PrintAnalysisCallTreeType=CSV dumps
         // reports/call_tree_{methods,invokes,targets}_*.csv as the static call graph.
+        buildArgs.add("--pgo-instrument")
         buildArgs.add("--pgo-sampling")
         buildArgs.add("-H:+UnlockExperimentalVMOptions")
         // Released GraalVMs sample at a fixed period and reject the option, so it is
@@ -921,13 +923,13 @@ boolean disableTestAssertions = Boolean.parseBoolean(System.getenv("GVM_TCK_TEST
 
 tasks.register("nativeTestPGOSampling") { task ->
     task.inputs.property("pgoSamplingPeriodMicros", pgoSamplingPeriodMicros)
-    task.setDescription("Builds the test native image with PGO sampling and the analysis call-tree CSV dump enabled")
+    task.setDescription("Builds the test native image with PGO instrumentation, sampling, and the analysis call-tree CSV dump enabled")
     task.setGroup(LifecycleBasePlugin.BUILD_GROUP)
     task.dependsOn(tasks.named("nativeTestCompile"))
 }
 
 tasks.register("runNativeTestPGO", Exec) { Exec task ->
-    task.setDescription("Runs the PGO-sampling test native image once and writes the .iprof profile")
+    task.setDescription("Runs the profiled test native image once and writes the .iprof profile")
     task.setGroup(JavaBasePlugin.VERIFICATION_GROUP)
     task.dependsOn(tasks.named("nativeTestPGOSampling"))
     task.doFirst {
