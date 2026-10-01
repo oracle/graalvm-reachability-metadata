@@ -323,7 +323,9 @@ public class Jakarta_persistence_apiTest {
         assertThat(typedQuery.setHint("graph", "books")).isSameAs(typedQuery);
         assertThat(typedQuery.setParameter(titleParameter, "Jakarta Persistence")).isSameAs(typedQuery);
         assertThat(typedQuery.setParameter("createdBy", "test")).isSameAs(typedQuery);
-        assertThat(typedQuery.setParameter(1, 42)).isSameAs(typedQuery);
+        assertThat(typedQuery.setParameters("first", 42)).isSameAs(typedQuery);
+        assertThat(typedQuery.setParameter(3, 84)).isSameAs(typedQuery);
+        assertThat(query.setParameters("alpha", 7)).isSameAs(query);
         assertThat(typedQuery.setQueryFlushMode(QueryFlushMode.FLUSH)).isSameAs(typedQuery);
         assertThat(typedQuery.setLockMode(LockModeType.PESSIMISTIC_READ)).isSameAs(typedQuery);
         assertThat(typedQuery.setLockScope(PessimisticLockScope.EXTENDED)).isSameAs(typedQuery);
@@ -335,7 +337,11 @@ public class Jakarta_persistence_apiTest {
         assertThat(typedQuery.getFirstResult()).isEqualTo(5);
         assertThat(typedQuery.getHints()).containsEntry("graph", "books");
         assertThat(typedQuery.getParameterValue("createdBy")).isEqualTo("test");
-        assertThat(typedQuery.getParameterValue(1)).isEqualTo(42);
+        assertThat(typedQuery.getParameterValue(1)).isEqualTo("first");
+        assertThat(typedQuery.getParameterValue(2)).isEqualTo(42);
+        assertThat(typedQuery.getParameterValue(3)).isEqualTo(84);
+        assertThat(query.getParameterValue(1)).isEqualTo("alpha");
+        assertThat(query.getParameterValue(2)).isEqualTo(7);
         assertThat(typedQuery.getParameterValue(titleParameter)).isEqualTo("Jakarta Persistence");
         assertThat(typedQuery.getQueryFlushMode()).isEqualTo(QueryFlushMode.FLUSH);
         assertThat(typedQuery.getLockMode()).isEqualTo(LockModeType.PESSIMISTIC_READ);
@@ -836,6 +842,15 @@ public class Jakarta_persistence_apiTest {
         }
 
         @Override
+        public Query setParameters(Object... parameters) {
+            parameterValuesByPosition.clear();
+            for (int index = 0; index < parameters.length; index++) {
+                parameterValuesByPosition.put(index + 1, parameters[index]);
+            }
+            return this;
+        }
+
+        @Override
         public int executeUpdate() {
             return results.size();
         }
@@ -1137,6 +1152,12 @@ public class Jakarta_persistence_apiTest {
         @Override
         public T getSingleResultOrNull() {
             return typedSingleResult;
+        }
+
+        @Override
+        public TypedQuery<T> setParameters(Object... parameters) {
+            super.setParameters(parameters);
+            return this;
         }
 
         @Override
