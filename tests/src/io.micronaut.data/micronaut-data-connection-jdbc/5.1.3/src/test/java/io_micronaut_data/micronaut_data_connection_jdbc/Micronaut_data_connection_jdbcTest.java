@@ -96,20 +96,29 @@ public class Micronaut_data_connection_jdbcTest {
     }
 
     @Test
-    void executesReadThroughContextualDataSource() {
+    void usesContextualDataSourceWithoutClosingManagedConnection() {
         String message = connectionOperations.executeRead(status -> {
-            try (Connection connection = dataSource.getConnection()) {
-                try (var statement = connection.prepareStatement(
+            Connection managedConnection = status.getConnection();
+            try (Connection contextualConnection = dataSource.getConnection()) {
+                assertThat(contextualConnection).isNotSameAs(managedConnection);
+                try (var statement = contextualConnection.prepareStatement(
                         "SELECT message FROM connection_event WHERE id = ?")) {
                     statement.setInt(1, 1);
                     try (var resultSet = statement.executeQuery()) {
                         assertThat(resultSet.next()).isTrue();
-                        return resultSet.getString("message");
+                        assertThat(resultSet.getString("message")).isEqualTo("ready");
                     }
                 }
             } catch (SQLException exception) {
                 throw new IllegalStateException("Could not read through the data source", exception);
             }
+
+            try {
+                assertThat(managedConnection.isClosed()).isFalse();
+            } catch (SQLException exception) {
+                throw new IllegalStateException("Could not inspect the managed connection", exception);
+            }
+            return readMessage(status, 1);
         });
 
         assertThat(message).isEqualTo("ready");
