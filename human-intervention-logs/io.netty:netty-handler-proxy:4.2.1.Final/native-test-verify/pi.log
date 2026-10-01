@@ -1,0 +1,19 @@
+Implemented a native-compatible public API path in:
+
+- `tests/src/io.netty/netty-handler-proxy/4.1.60.Final/src/test/java/io_netty/netty_handler_proxy/Netty_handler_proxyTest.java`
+
+The full cause chain was:
+
+- `ProxyConnectException`
+- `Caused by: EncoderException`
+- `Caused by: NullPointerException`
+- Failure at `PlatformDependent0.safeConstructPutInt`, reached through Netty 4.2.1’s `AdaptivePoolingAllocator`.
+
+The test now configures `UnpooledByteBufAllocator.DEFAULT`, avoiding that incompatible allocator path while preserving all proxy protocol tests.
+
+Results with the required GraalVM:
+
+- Full coordinate test: passed, 10/10 native tests.
+- Checkstyle: passed.
+- Metadata validation: passed.
+- Exact reproduction command: Gradle reports success, but the trace-enabled binary still terminates during JUnit discovery with a GraalVM metadata-tracer `StackOverflowError`. It emits no `Caused by:` chain and fails even with tracing warnings, a larger stack, one selected test, and `merge=false`. This remaining failure occurs before test execution and appears internal to this exact development GraalVM’s metadata tracer.

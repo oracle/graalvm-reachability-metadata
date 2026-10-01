@@ -1,0 +1,14 @@
+```json
+{
+  "action": "no_action",
+  "summary": "The failure is an NPE inside Netty 4.2's default AdaptivePoolingAllocator$Chunk.<init> during native-image runs. That is repairable through metadata or test-code fixes, not through extra dependencies, Docker images, or environment properties. This is based on the issue log only; I did not inspect the Netty 4.2.1 sources or the resolved artifact.",
+  "deterministic_setup": [],
+  "agent_guidance": "",
+  "risks": [
+    "Netty 4.2 switched the default allocator to the adaptive one, so the NPE may trace to missing reachability metadata or Unsafe/ByteBuffer-related initialization rather than to the library itself. Diagnose it from the native-image run before touching the tests.",
+    "If metadata cannot cover the allocator failure, selecting a different allocator in the tests (for example via the io.netty.allocator.type system property) is an untested fallback."
+  ]
+}
+```
+
+I did not run the five unsupportability steps to completion. The log shows no runtime bytecode generation, agent attach, or class-loader mechanism. An NPE during allocator chunk setup is not a mechanism Native Image cannot support. Attempting the fix is therefore the safe default.

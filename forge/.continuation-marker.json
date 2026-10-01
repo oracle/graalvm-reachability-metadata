@@ -1,0 +1,79 @@
+{
+  "continueFrom": "finalization",
+  "coordinate": "io.netty:netty-handler-proxy:4.2.1.Final",
+  "failure": {
+    "operand": "reporter-requested metadata",
+    "phase": "explore",
+    "step": "generate_tests()"
+  },
+  "issueNumber": 9341,
+  "label": "fails-native-image-run",
+  "libraryPreparationPreflight": {
+    "action": "no_action",
+    "agent_guidance": "",
+    "applied_setup": [],
+    "current_library": "io.netty:netty-handler-proxy:4.1.60.Final",
+    "deterministic_setup": [],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#9341 [Automation] native-image run fails for io.netty:netty-handler-proxy:4.2.1.Final; label=fails-native-image-run; body_chars=8015"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "6 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 2,
+    "issue_label": "fails-native-image-run",
+    "issue_number": 9341,
+    "library": "io.netty:netty-handler-proxy:4.2.1.Final",
+    "model": "sonnet",
+    "new_version": "4.2.1.Final",
+    "output_tokens_used": 928,
+    "risks": [
+      "Netty 4.2 switched the default allocator to the adaptive one, so the NPE may trace to missing reachability metadata or Unsafe/ByteBuffer-related initialization rather than to the library itself. Diagnose it from the native-image run before touching the tests.",
+      "If metadata cannot cover the allocator failure, selecting a different allocator in the tests (for example via the io.netty.allocator.type system property) is an untested fallback."
+    ],
+    "status": "completed",
+    "summary": "The failure is an NPE inside Netty 4.2's default AdaptivePoolingAllocator$Chunk.<init> during native-image runs. That is repairable through metadata or test-code fixes, not through extra dependencies, Docker images, or environment properties. This is based on the issue log only; I did not inspect the Netty 4.2.1 sources or the resolved artifact."
+  },
+  "libraryUpdateRoute": null,
+  "newVersion": "4.2.1.Final",
+  "phases": {
+    "explore": {
+      "chunkClassCount": null,
+      "chunkProcessedClassCount": 0,
+      "exhaustedClasses": [],
+      "status": "skipped"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": null,
+      "status": "completed"
+    },
+    "publication": {
+      "branch": null,
+      "coverageFollowUpIssueNumber": null,
+      "isPushed": false,
+      "publicationId": null,
+      "publicationTimestamp": null,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": true,
+      "status": "completed"
+    }
+  },
+  "preservedBranch": "ai/kimeta/human-intervention/issue-9341-fails-native-image-run-io.netty-netty-handler-proxy-4.2.1.Final-aa82a860",
+  "publicationMetrics": {
+    "extras": {},
+    "library": "io.netty:netty-handler-proxy:4.2.1.Final",
+    "timestamp": "2026-10-01T10:49:24.899884Z"
+  },
+  "schemaVersion": 1,
+  "strategyName": "library_update_optimistic_pi_gpt-5.6-luna"
+}

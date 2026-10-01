@@ -1,0 +1,42 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :populateArtifactURLs
+I couldn't update `index.json`. The Edit tool was denied because the session is in "don't ask" mode, so nothing has been written to the file. I haven't tried another way to write it, since that would sidestep the denial.
+
+I checked that the Maven Central sources, test-sources and javadoc jars for `4.2.1.Final` exist. Each returned HTTP 200. The proposed values for the `4.2.1.Final` entry are:
+
+- **`source-code-url`:** `https://repo.maven.apache.org/maven2/io/netty/netty-handler-proxy/$version$/netty-handler-proxy-$version$-sources.jar`
+- **`repository-url`:** `https://github.com/netty/netty`
+- **`test-code-url`:** `https://repo.maven.apache.org/maven2/io/netty/netty-handler-proxy/$version$/netty-handler-proxy-$version$-test-sources.jar`
+- **`documentation-url`:** `https://repo.maven.apache.org/maven2/io/netty/netty-handler-proxy/$version$/netty-handler-proxy-$version$-javadoc.jar`
+- **`description`:** "Netty Handler Proxy adds client-side support for connecting through proxy protocols such as SOCKS and HTTP CONNECT tunneling. It provides proxy channel handlers and connection events that integrate with Netty's asynchronous networking pipeline."
+- **`language`:** absent, because this is a plain Java library.
+
+The three URL templates render correctly for the only tested version, `4.2.1.Final`. The description is the same one the `4.1.60.Final` entry already uses.
+
+To apply these, allow Edit on that file or switch to a permission mode that permits writes. I'll then insert these fields after `test-version` in the `4.2.1.Final` entry and leave the rest of the file unchanged.
+Ran agent for io.netty:netty-handler-proxy:4.2.1.Final (exit 0). Log: /home/oracle/oracle/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9341-88162120/build/agent-url-discovery-logs/io.netty-netty-handler-proxy-4.2.1.Final.log
+Completed populateArtifactURLs: invoked=1, prompted=0, skipped=0, overwriteExisting=false, verifyArtifactSources=false, limit=null
+
+[Incubating] Problems report is available at: file:///home/oracle/oracle/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9341-88162120/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 31s
+9 actionable tasks: 1 executed, 8 up-to-date
