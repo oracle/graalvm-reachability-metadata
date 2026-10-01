@@ -1,0 +1,129 @@
+{
+  "fix_javac_fail:2026-10-01": {
+    "timestamp": "2026-10-01T22:35:11.404939Z",
+    "library": "jakarta.enterprise:jakarta.enterprise.cdi-api:3.0.0",
+    "starting_commit": "88a46265118d259b557277936c881bd8c3c8a9d5",
+    "ending_commit": "c850831d86528dedaacededa980b6f5dfb28c14f",
+    "previous_library": "jakarta.enterprise:jakarta.enterprise.cdi-api:2.0.1",
+    "strategy_name": "javac_iterative_with_coverage_sources_pi_gpt-5.6-luna",
+    "agent": "pi",
+    "model": "gpt-5.6-luna",
+    "status": "success",
+    "stats": {
+      "version": "3.0.0",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 0.666667,
+            "coveredCalls": 2,
+            "totalCalls": 3
+          }
+        },
+        "coverageRatio": 0.666667,
+        "coveredCalls": 2,
+        "totalCalls": 3
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 206,
+          "missed": 2031,
+          "ratio": 0.092088,
+          "total": 2237
+        },
+        "line": {
+          "covered": 53,
+          "missed": 499,
+          "ratio": 0.096014,
+          "total": 552
+        },
+        "method": {
+          "covered": 10,
+          "missed": 192,
+          "ratio": 0.049505,
+          "total": 202
+        }
+      }
+    },
+    "previous_library_stats": {
+      "version": "2.0.1",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 0.666667,
+            "coveredCalls": 2,
+            "totalCalls": 3
+          }
+        },
+        "coverageRatio": 0.666667,
+        "coveredCalls": 2,
+        "totalCalls": 3
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 206,
+          "missed": 2021,
+          "ratio": 0.092501,
+          "total": 2227
+        },
+        "line": {
+          "covered": 53,
+          "missed": 493,
+          "ratio": 0.09707,
+          "total": 546
+        },
+        "method": {
+          "covered": 10,
+          "missed": 192,
+          "ratio": 0.049505,
+          "total": 202
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "no_action",
+      "issue_number": 9354,
+      "issue_label": "fails-javac-compile",
+      "library": "jakarta.enterprise:jakarta.enterprise.cdi-api:3.0.0",
+      "summary": "The compile failure is a Jakarta namespace migration in the test source, not a missing setup. The 2.0.1 test imports javax.enterprise.util.AnnotationLiteral, but cdi-api 3.0.0 moved that class to jakarta.enterprise.util. The existing build.gradle already depends on the version under test, and cdi-api 3.0.0 brings the jakarta.inject, interceptor and EL APIs in transitively.",
+      "deterministic_setup": [],
+      "agent_guidance": "",
+      "risks": [
+        "The test must import jakarta.enterprise.util.AnnotationLiteral for 3.0.0. The 2.0.1 test is pinned to the javax package, so the version-specific test source has to be adapted rather than reused as is.",
+        "I only read the 2.0.1 test and its build.gradle. I did not inspect the 3.0.0 artifact or its dependency tree, so the claim that the Jakarta APIs arrive transitively is unverified."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#9354 [Automation] javac compile fails for jakarta.enterprise:jakarta.enterprise.cdi-api:3.0.0; label=fails-javac-compile; body_chars=8015"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "6 existing test file path(s) included"
+        }
+      ],
+      "current_library": "jakarta.enterprise:jakarta.enterprise.cdi-api:2.0.1",
+      "new_version": "3.0.0",
+      "model": "sonnet",
+      "input_tokens_used": 4,
+      "output_tokens_used": 765
+    },
+    "metrics": {
+      "input_tokens_used": 126319,
+      "cached_input_tokens_used": 1065472,
+      "output_tokens_used": 6632,
+      "iterations": 5,
+      "cost_usd": 0.2726,
+      "tested_library_loc": 53,
+      "metadata_entries": 0,
+      "test_only_metadata_entries": 3,
+      "previous_library_metadata_entries": 0,
+      "code_coverage_percent": 9.6,
+      "previous_library_coverage_percent": 9.71
+    },
+    "artifacts": {
+      "metadata_file": "metadata/jakarta.enterprise/jakarta.enterprise.cdi-api/3.0.0/reachability-metadata.json"
+    }
+  }
+}
