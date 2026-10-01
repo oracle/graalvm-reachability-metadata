@@ -3,6 +3,12 @@
 Rendered by Forge from the pre-push branch review of §FS-local-branch-review.
 Newest entry first; every non-approval is recorded, including one a repair later cleared.
 
+## 2026-10-01 — io.micronaut:micronaut-json-core:5.1.3 (#9812)
+
+**Lockstep companion dependency pinned to the requested version**
+
+The coordinate's build.gradle hardcoded io.micronaut:micronaut-jackson-databind:5.1.3 instead of using the TCK-resolved library version. That would leave the supporting mapper implementation pinned when this version-agnostic test is reused, violating the version-pinning rule.
+
 ## 2026-09-30 — io.micronaut:micronaut-http-netty:5.1.13 (#9833)
 
 **Version-pinned companion dependencies prevent test reuse**
