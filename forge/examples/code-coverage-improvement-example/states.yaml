@@ -311,8 +311,14 @@ states:
           fail(2, f"missing JaCoCo XML at {jacoco_xml}")
       shutil.copy(jacoco_xml, discovery / f"jacoco-deep-{iteration}.xml")
 
+      # The runner, not the pinned harness, decides how the profile is collected:
+      # native-image appends NATIVE_IMAGE_OPTIONS to the harness's own flags.
+      # §AR-code-coverage-deep-navigation.1.1
+      instrumented_env = dict(os.environ, NATIVE_IMAGE_OPTIONS=" ".join(
+          filter(None, [os.environ.get("NATIVE_IMAGE_OPTIONS"), "--pgo-instrument"])))
+
       # Step 3: instrumented, PGO-sampling image with the analysis call-tree CSV dump.
-      run(3, gradle + ["nativeTestPGOSampling", include_suite], cwd=worktree)
+      run(3, gradle + ["nativeTestPGOSampling", include_suite], cwd=worktree, env=instrumented_env)
 
       # Step 4: run the profiled image once; it dumps the .iprof on exit.
       profile = (discovery / f"pgo-profile-{iteration}.iprof").resolve()
