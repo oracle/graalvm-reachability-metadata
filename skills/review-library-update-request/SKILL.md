@@ -60,6 +60,7 @@ The PR number or URL can be passed as an optional argument (for example, `1234`,
      - `tests/src/<group>/<artifact>/<requested-or-resolved-version>/**`
    - Treat generated test project files such as `.gitignore`, `build.gradle`, `gradle.properties`, `settings.gradle`, and `user-code-filter.json` as normal when they live under the target version's test directory.
    - Accept a split from an older shared metadata version to a requested-version metadata/test directory when the issue targets a newer version.
+   - Accept the shared-suite changes of §FS-contribution-contract.2 for the other versions of the same artifact that share the changed test directory — through `tested-versions` or `test-version` — such as a test directory restored from the base commit, re-pointed `test-version` fields, metadata added to an entry, or a split-off entry with its stats. Do not revert them as changes to another coordinate.
    - Be suspicious of unrelated build logic, workflows, generated sources, other libraries, broad refactors, or changes outside the target coordinate.
    - Reject legacy native-image metadata config files. Metadata for generated support and test-only metadata must use `reachability-metadata.json`.
 
