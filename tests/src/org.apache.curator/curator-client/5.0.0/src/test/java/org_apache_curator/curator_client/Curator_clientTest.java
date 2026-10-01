@@ -94,7 +94,7 @@ public class Curator_clientTest {
     void retryLoopRetriesKeeperConnectionFailuresAndRecordsTracerCounts() throws Exception {
         RetryPolicy retryTwiceWithoutSleeping = (retryCount, elapsedTimeMs, sleeper) -> retryCount < 2;
         CuratorZookeeperClient client = new CuratorZookeeperClient(
-                "ignored-host:2181", 1_000, 0, null, retryTwiceWithoutSleeping);
+                "ignored-host:2181", 10_000, 10_000, null, retryTwiceWithoutSleeping);
         RecordingTracerDriver tracer = new RecordingTracerDriver();
         client.setTracerDriver(tracer);
 
@@ -123,11 +123,11 @@ public class Curator_clientTest {
     void curatorZookeeperClientExposesConfigurationAndTracingWithoutStartingNetworkConnection() {
         RetryPolicy initialPolicy = new RetryOneTime(1);
         CuratorZookeeperClient client = new CuratorZookeeperClient(
-                new FixedEnsembleProvider("host1:2181,host2:2181"), 3_000, 250, event -> { }, initialPolicy);
+                new FixedEnsembleProvider("host1:2181,host2:2181"), 10_000, 10_000, event -> { }, initialPolicy);
         RecordingTracerDriver tracer = new RecordingTracerDriver();
 
         assertThat(client.getCurrentConnectionString()).isEqualTo("host1:2181,host2:2181");
-        assertThat(client.getConnectionTimeoutMs()).isEqualTo(250);
+        assertThat(client.getConnectionTimeoutMs()).isEqualTo(10_000);
         assertThat(client.isConnected()).isFalse();
         assertThat(client.getRetryPolicy()).isSameAs(initialPolicy);
         assertThat(client.getTracerDriver()).isInstanceOf(DefaultTracerDriver.class);
