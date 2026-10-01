@@ -11,6 +11,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.sql.Connection;
 import java.sql.SQLException;
 
+import javax.sql.DataSource;
+
 import io.micronaut.context.annotation.Property;
 import io.micronaut.data.connection.ConnectionDefinition;
 import io.micronaut.data.connection.ConnectionOperations;
@@ -35,6 +37,9 @@ public class Micronaut_data_connection_jdbcTest {
 
     @Inject
     DefaultDataSourceConnectionOperations dataSourceConnectionOperations;
+
+    @Inject
+    DataSource dataSource;
 
     @BeforeEach
     void prepareTable() {
@@ -85,6 +90,26 @@ public class Micronaut_data_connection_jdbcTest {
 
         assertThat(message).isEqualTo("ready");
         assertThat(dataSourceConnectionOperations.findConnectionStatus()).isEmpty();
+    }
+
+    @Test
+    void executesReadThroughContextualDataSource() {
+        String message = connectionOperations.executeRead(status -> {
+            try (Connection connection = dataSource.getConnection()) {
+                try (var statement = connection.prepareStatement(
+                        "SELECT message FROM connection_event WHERE id = ?")) {
+                    statement.setInt(1, 1);
+                    try (var resultSet = statement.executeQuery()) {
+                        assertThat(resultSet.next()).isTrue();
+                        return resultSet.getString("message");
+                    }
+                }
+            } catch (SQLException exception) {
+                throw new IllegalStateException("Could not read through the data source", exception);
+            }
+        });
+
+        assertThat(message).isEqualTo("ready");
     }
 
     @Test
