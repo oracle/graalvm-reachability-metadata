@@ -1,0 +1,153 @@
+{
+  "add_new_library_support:2026-09-30": {
+    "timestamp": "2026-09-30T13:44:30.281952Z",
+    "library": "io.micronaut.data:micronaut-data-runtime:5.1.3",
+    "starting_commit": "f91611408c385560619464f0188492a8f8da684a",
+    "ending_commit": "04e070765b03e96c924629709ae0d7595be1fd34",
+    "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-luna",
+    "agent": "pi",
+    "model": "gpt-5.6-luna",
+    "status": "success",
+    "stats": {
+      "version": "5.1.3",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 1,
+            "totalCalls": 1
+          }
+        },
+        "coverageRatio": 1.0,
+        "coveredCalls": 1,
+        "totalCalls": 1
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 317,
+          "missed": 39650,
+          "ratio": 0.007932,
+          "total": 39967
+        },
+        "line": {
+          "covered": 76,
+          "missed": 7970,
+          "ratio": 0.009446,
+          "total": 8046
+        },
+        "method": {
+          "covered": 27,
+          "missed": 2230,
+          "ratio": 0.011963,
+          "total": 2257
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "advisory_preparation",
+      "issue_number": 9816,
+      "issue_label": "library-new-request",
+      "library": "io.micronaut.data:micronaut-data-runtime:5.1.3",
+      "summary": "micronaut-data-runtime is the shared runtime for Micronaut Data. It has no data backend of its own and its repository interceptors need a DataOperations bean. Meaningful coverage therefore needs a backend (JDBC + in-memory H2), the Micronaut test extension, and compile-time annotation processors, none of which the default scaffold provides. This mirrors the existing tests/src/io.micronaut.data/micronaut-data-jdbc/5.1.3 project. No Docker image is needed because H2 runs in memory.",
+      "deterministic_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "io.micronaut.data:micronaut-data-jdbc:5.1.3",
+          "scope": "testImplementation",
+          "reason": "Provides a JDBC DataOperations backend, so the runtime's repository interceptors and query execution paths can run. Same version as the library under test."
+        },
+        {
+          "kind": "dependency",
+          "coordinate": "io.micronaut.sql:micronaut-jdbc-hikari:7.1.0",
+          "scope": "testImplementation",
+          "reason": "Datasource wiring for the JDBC backend. Version taken from the existing micronaut-data-jdbc test."
+        },
+        {
+          "kind": "dependency",
+          "coordinate": "com.h2database:h2:2.4.240",
+          "scope": "testImplementation",
+          "reason": "In-memory database, so no Docker image is required. Version taken from the existing micronaut-data-jdbc test."
+        },
+        {
+          "kind": "dependency",
+          "coordinate": "io.micronaut.test:micronaut-test-junit5:5.1.1",
+          "scope": "testImplementation",
+          "reason": "Provides @MicronautTest and injection into JUnit tests. Version taken from the existing micronaut-data-jdbc test."
+        },
+        {
+          "kind": "dependency",
+          "coordinate": "org.assertj:assertj-core:3.22.0",
+          "scope": "testImplementation",
+          "reason": "Assertions, as in the existing Micronaut Data test."
+        }
+      ],
+      "agent_guidance": "Add annotation processors to build.gradle, which the deterministic setup cannot express: testAnnotationProcessor \"io.micronaut:micronaut-inject-java:5.1.10\" and testAnnotationProcessor \"io.micronaut.data:micronaut-data-processor:$libraryVersion\". Without them, @JdbcRepository interfaces and @MappedEntity classes are not generated, and the test fails at runtime. Copy the layout of tests/src/io.micronaut.data/micronaut-data-jdbc/5.1.3: a @MicronautTest(startApplication = false, transactional = false) class with @Property values datasources.default.url=jdbc:h2:mem:<name>;DB_CLOSE_DELAY=-1, driver-class-name=org.h2.Driver, username=sa, empty password, schema-generate=CREATE_DROP and dialect=H2. Exercise runtime classes through @JdbcRepository CrudRepository and PageableRepository interfaces: CRUD, pagination and sorting, derived finders, @Version optimistic locking, and transactions. Set the user-code-filter.json rules to exclude everything, then include io.micronaut.data.** and the test package, and set the conditional agent mode in build.gradle as the existing project does. Do not touch metadata/io.micronaut.data unless native-image runs report missing entries.",
+      "risks": [
+        "The existing micronaut-data-jdbc 5.1.3 project already covers much of the runtime through the same backend. The new project may show heavy overlap, or shipped metadata may collide with that library's entries.",
+        "Native image may hit the tracing Class[] overflow with junit and micronaut-test. Keep test types simple.",
+        "The 5.1.3 runtime pins specific Micronaut core versions (inject-java 5.1.10). Mismatched processor and runtime versions can break bean generation."
+      ],
+      "applied_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "io.micronaut.data:micronaut-data-jdbc:5.1.3",
+          "result": "applied",
+          "target": "tests/src/io.micronaut.data/micronaut-data-runtime/5.1.3/build.gradle"
+        },
+        {
+          "kind": "dependency",
+          "coordinate": "io.micronaut.sql:micronaut-jdbc-hikari:7.1.0",
+          "result": "applied",
+          "target": "tests/src/io.micronaut.data/micronaut-data-runtime/5.1.3/build.gradle"
+        },
+        {
+          "kind": "dependency",
+          "coordinate": "com.h2database:h2:2.4.240",
+          "result": "applied",
+          "target": "tests/src/io.micronaut.data/micronaut-data-runtime/5.1.3/build.gradle"
+        },
+        {
+          "kind": "dependency",
+          "coordinate": "io.micronaut.test:micronaut-test-junit5:5.1.1",
+          "result": "applied",
+          "target": "tests/src/io.micronaut.data/micronaut-data-runtime/5.1.3/build.gradle"
+        },
+        {
+          "kind": "dependency",
+          "coordinate": "org.assertj:assertj-core:3.22.0",
+          "result": "already_present",
+          "target": "tests/src/io.micronaut.data/micronaut-data-runtime/5.1.3/build.gradle"
+        }
+      ],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#9816 Support for io.micronaut.data:micronaut-data-runtime:5.1.3; label=library-new-request; body_chars=39"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "sonnet",
+      "input_tokens_used": 8,
+      "output_tokens_used": 2262
+    },
+    "metrics": {
+      "input_tokens_used": 84859,
+      "cached_input_tokens_used": 988672,
+      "output_tokens_used": 5856,
+      "iterations": 4,
+      "cost_usd": 0.2189,
+      "generated_loc": 52,
+      "tested_library_loc": 76,
+      "metadata_entries": 9,
+      "test_only_metadata_entries": 15,
+      "code_coverage_percent": 0.94
+    },
+    "artifacts": {
+      "metadata_file": "metadata/io.micronaut.data/micronaut-data-runtime/5.1.3/reachability-metadata.json"
+    }
+  }
+}
