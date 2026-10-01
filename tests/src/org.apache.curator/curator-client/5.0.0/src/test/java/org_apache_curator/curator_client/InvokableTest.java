@@ -10,6 +10,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 
 import org.apache.curator.shaded.com.google.common.reflect.Invokable;
+import org.apache.curator.shaded.com.google.common.reflect.TypeToken;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -20,7 +21,7 @@ public class InvokableTest {
         Method length = String.class.getMethod("length");
         Constructor<String> constructor = String.class.getConstructor(String.class);
 
-        assertThat(Invokable.from(length).invoke("curator")).isEqualTo(7);
+        assertThat(TypeToken.of(String.class).method(length).invoke("curator")).isEqualTo(7);
         assertThat(Invokable.from(constructor).invoke("client")).isEqualTo("client");
     }
 }

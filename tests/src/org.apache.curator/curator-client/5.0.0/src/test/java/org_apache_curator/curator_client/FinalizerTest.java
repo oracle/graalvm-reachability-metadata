@@ -28,7 +28,7 @@ public class FinalizerTest {
             };
             reference.enqueue();
             queue.close();
-            assertThat(cleaned).hasValue(true);
+            assertThat(cleaned.get()).isTrue();
         } finally {
             queue.close();
         }
