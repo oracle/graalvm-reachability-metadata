@@ -8,6 +8,18 @@ Newest entry first; every non-approval is recorded, including one a repair later
 **Test-side reflection forces an unreachable implementation path**
 
 FS-test-contract.2.1 forbids test-side reflection that bypasses the library behavior a consumer can invoke. tests/src/org.mongodb/mongodb-driver-core/5.7.0/src/test/java/org_mongodb/mongodb_driver_core/DirectBufferDeallocatorInnerJava8DeallocatorTest.java uses getDeclaredClasses, getDeclaredField, getDeclaredMethod, setAccessible, Unsafe.allocateInstance, and direct private-field mutation to manufacture DirectBufferDeallocator$Java8Deallocator execution on the JDK 25 lanes. The normal public constructor selects the Java 9 implementation there. I could not safely rewrite the scenario without that bypass; removing it would delete an inherited passing scenario and may reduce the reported 13/13 dynamic-access coverage. A maintainer must decide how to make or retire this historical coverage without violating the contribution contract.
+## 2026-09-30 — org.apache.curator:curator-recipes:5.0.0 (#9365)
+
+**Pre-push review unavailable**
+
+Forge could not obtain a readable pre-push review verdict. This records a review availability problem, not a reviewer finding against the branch.
+## 2026-09-30 — io.micronaut.reactor:micronaut-reactor:4.0.0 (#9826)
+
+**Metadata CI used a stale apt index when installing openbsd-inetd**
+
+Workflow run 36703838247 on head 6c0fa721e6586c33399a7b89ed229c10fbf3bd74 failed all three matrix jobs in Disable docker networking. Each job ran sudo apt-get install openbsd-inetd without first refreshing apt indexes, requested libevent-2.1-7t64_2.1.12-stable-9ubuntu2.1, and received 404 Not Found before checkMetadataFiles or the coordinate test task ran. Runs for unrelated contributions failed at the same shared step, and merged PR #10274 repaired .github/workflows/scripts/disable-docker.sh by running apt-get update first. This is outside the contribution's closed file set, so FS-contribution-contract.5.2 and .5.3 prohibit repairing it in this PR and require human intervention.
+
+Infrastructure issue: https://github.com/oracle/graalvm-reachability-metadata/issues/10277 (#10277)
 
 ## 2026-09-30 — org.glassfish.ha:ha-api:3.1.13 (#9936)
 
