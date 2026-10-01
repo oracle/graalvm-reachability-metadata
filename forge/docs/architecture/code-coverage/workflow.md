@@ -444,10 +444,12 @@ Markdown and target-id list contain at most 200 methods globally. Measurement
 itself carries attempt state deterministically in the discovery-report history:
 every target it prompted gets its attempt count incremented at the next
 measurement, ranking prefers less-attempted targets, and covered targets leave
-the uncovered set. An uncovered target that reaches the configured unsuccessful
-attempt threshold becomes exhausted and leaves later prompts, while remaining
-in `bulkTargets` and the full JSON report for finalization and audit. This lets
-later iterations advance beyond repeatedly unproductive targets without any
+the uncovered set. No number of failed attempts retires a target: the count
+only orders, so a target shown three times without coverage sorts behind every
+target shown fewer times and returns to the prompt once those have had their
+turn. Each still-uncovered target thus keeps getting its round, and no run
+leaves uncovered targets it never showed again. The full JSON report keeps every
+target with its attempt count for finalization and audit, without any
 agent-written state.
 The deep phase runs for the same fixed `coverage_iterations` budget and stops
 early when no actionable target remains or when the pass yield collapses
@@ -1042,8 +1044,8 @@ A code coverage improvement run is successful only when all of these hold:
   finalization.
 - Sampled observations emitted as LCOV contain positive sample evidence only
   and are labeled guidance-only.
-- Completion, skip, and exhaustion state prevents a hard target batch from
-  starving later methods.
+- Completion and skip state, with attempt-ordered rotation, prevent a hard
+  target batch from starving later methods.
 - Existing dynamic-access coverage, metadata validity, JVM/native tests, and
   local CI-equivalent verification do not regress.
 - Metrics and PR evidence keep JaCoCo coverage results separate from PGO
