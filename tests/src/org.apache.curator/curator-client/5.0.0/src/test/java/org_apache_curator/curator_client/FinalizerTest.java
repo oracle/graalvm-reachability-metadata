@@ -17,7 +17,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class FinalizerTest {
     @Test
-    void cleansAnEnqueuedReferenceWhenTheQueueCloses() {
+    void cleansAnEnqueuedReferenceWhenTheQueueCloses() throws InterruptedException {
         FinalizableReferenceQueue queue = new FinalizableReferenceQueue();
         CountDownLatch cleaned = new CountDownLatch(1);
         try {
