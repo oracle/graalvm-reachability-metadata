@@ -3,6 +3,11 @@
 Rendered by Forge from the pre-push branch review of §FS-local-branch-review.
 Newest entry first; every non-approval is recorded, including one a repair later cleared.
 
+## 2026-10-01 — jakarta.websocket:jakarta.websocket-client-api:2.3.0-M1 (#9359)
+
+**Explicit messaging timeouts below the required 10-second floor**
+
+The new test configured WebSocket session idle and asynchronous send timeouts to 250-1000 ms. These explicit client/messaging timeouts violated FS-test-contract.1.7, which requires at least 10 seconds.
 ## 2026-10-01 — io.micronaut:micronaut-json-core:5.1.3 (#9812)
 
 **Lockstep companion dependency pinned to the requested version**
