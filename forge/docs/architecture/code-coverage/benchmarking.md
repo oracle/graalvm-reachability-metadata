@@ -16,7 +16,7 @@ implements §FS-code-coverage-benchmarking while preserving
 | `code_coverage_suite.json` | Fixed suite commit, libraries, agent/model/provider tuples, and thinking levels. |
 | `code_coverage_benchmark.py` | Matrix validation, worktrees, Rhei launch, conversion, metrics, publication, and retry. |
 | Code coverage Rhei template | Switches conversion and publication behavior through the `benchmark` input. |
-| Source worktree | Disposable checkout of the fixed `benchmarkSuiteCommit`. |
+| Source worktree | Disposable checkout of the fixed `benchmarkSuiteCommit` carrying the runner commit's harness. |
 | Rhei workspace | Permanent local record keyed by `runId` and named `code-coverage-99000`. |
 | Publication worktree | Fresh checkout of `origin/master` used to append one result and push its result-only PR branch, then removed. |
 | Trusted Actions publisher | Validates the exact result and descriptor from default-branch code and opens the benchmark-result PR. |
@@ -30,6 +30,26 @@ Two commits describe different axes:
 
 Merged coverage improvements do not move an existing benchmark input. A newer
 runner may still execute the old suite and records both identities.
+
+### 1.1 Harness overlay
+
+Every Gradle call in a run — the measurement steps, the validators, and the
+agent's own `./gradlew` — resolves its build from the worktree root it runs in.
+Redirecting each call to the runner checkout would miss the agent's calls, so
+the launcher fixes the worktree itself instead: right after creating it at the
+suite commit, it restores these paths from the runner commit, removing pinned
+files the runner no longer has:
+
+| Path | Why it is harness |
+| --- | --- |
+| `build.gradle`, `settings.gradle`, `gradle.properties` | Root build that dispatches each task to the test project. |
+| `gradlew`, `gradlew.bat`, `gradle/` | Wrapper, Gradle version, and shared build configuration. |
+| `ci.json` | Native-image arguments every test image is built with. |
+| `tests/tck-build-logic/` | The plugin that compiles, runs, instruments, and reports. |
+
+`tests/src/` and `metadata/` stay pinned: they are the input
+(§FS-code-coverage-benchmarking.1). The overlay is left uncommitted, so `HEAD`
+still names the suite commit the conversion step verifies.
 §FS-code-coverage-benchmarking.1
 
 The two identities map onto two directories, and the conversion record keeps

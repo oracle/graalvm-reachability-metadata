@@ -199,7 +199,7 @@ def _execute_cell(
     source_worktree = run_parent / "source"
     workspace = run_parent / suite.workspace_name
     try:
-        create_source_worktree(source_worktree, suite.commit)
+        create_source_worktree(source_worktree, suite.commit, runner_commit)
     except (OSError, subprocess.SubprocessError) as error:
         configuration = cell.configuration
         print(
