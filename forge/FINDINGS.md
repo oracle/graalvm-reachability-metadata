@@ -3,6 +3,12 @@
 Rendered by Forge from the pre-push branch review of §FS-local-branch-review.
 Newest entry first; every non-approval is recorded, including one a repair later cleared.
 
+## 2026-10-01 — org.apache.curator:curator-client:5.0.0 (#9364)
+
+**Zero dynamic-access coverage and unjustified native configuration**
+
+The original 5.0.0 statistics reported 0/123 dynamic-access calls overall, including 0/119 reflection and 0/4 resources, which violated the zero-covered repair gate. The test project also retained --enable-url-protocols=http after the HTTP-based Exhibitor scenarios had been removed, without evidence that any remaining test required the native flag, and Curator client configuration used explicit I/O timeouts below the 10-second minimum.
+
 ## 2026-09-25 — org.mongodb:mongodb-driver-core:5.7.0 (#9388)
 
 **Test-side reflection forces an unreachable implementation path**
