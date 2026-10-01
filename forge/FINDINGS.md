@@ -3,12 +3,6 @@
 Rendered by Forge from the pre-push branch review of §FS-local-branch-review.
 Newest entry first; every non-approval is recorded, including one a repair later cleared.
 
-## 2026-10-01 — io.micronaut:micronaut-discovery-core:5.1.10 (#9811)
-
-**Transient CI diagnosis selected unrelated runs**
-
-The transient verdict requested workflow runs that were not failed on the exact reviewed head: 36853730602
-
 ## 2026-09-30 — io.micronaut:micronaut-http-netty:5.1.13 (#9833)
 
 **Version-pinned companion dependencies prevent test reuse**

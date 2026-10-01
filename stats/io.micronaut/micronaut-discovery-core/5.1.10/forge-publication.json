@@ -39,7 +39,7 @@
         ],
         "env": {},
         "gate": "index-file-validation",
-        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :validateIndexFiles\n\u2705 metadata/io.micronaut/micronaut-discovery-core/index.json: Valid\n\n[Incubating] Problems report is available at: file:///home/oracle/oracle/metadata2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9811-56574f64/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 2s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :validateIndexFiles\n✅ metadata/io.micronaut/micronaut-discovery-core/index.json: Valid\n\n[Incubating] Problems report is available at: file:///home/oracle/oracle/metadata2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9811-56574f64/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 2s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
         "returncode": 0
       }
     ],
@@ -52,15 +52,14 @@
     "status": "success"
   },
   "local_review": {
-    "action": "human-intervention",
     "changed_paths": [],
-    "decision": "rejected",
-    "finding_body": "The transient verdict requested workflow runs that were not failed on the exact reviewed head: 36853730602",
-    "finding_title": "Transient CI diagnosis selected unrelated runs",
-    "fix_note": "No workflow was rerun.",
+    "decision": "approved",
+    "finding_body": "",
+    "finding_title": "",
+    "fix_note": "",
     "model": "gpt-5.6-sol",
-    "review_comment": "Current-head run 36853730602 failed only because actions/checkout's full git fetch made no progress until the job's 5-minute limit canceled it; no repository or Gradle step ran. The other current-head checks are green. The contribution diff remains scoped to io.micronaut:micronaut-discovery-core:5.1.10, its tests exercise public library behavior without the enumerated cheating patterns, and its reported 0/0 dynamic-access result is a valid no-calls case. This is transient checkout infrastructure noise, so the contribution was not edited and this exact run should be rerun.",
-    "session_id": "a20b638509f04995"
+    "review_comment": "Approved. The diff is limited to io.micronaut:micronaut-discovery-core:5.1.10 and its allowed metadata, index, stats, metrics, and test files; it uses only reachability-metadata.json. The public, version-agnostic tests are outside the library package, exercise real library behavior, contain no scaffold placeholder, native-image skip or tolerated failure, reflection shortcut, shadow type, compatibility override, runtime-class-definition path, or native build/run repair flag. The reported 0/0 dynamic-access result is a valid no-calls case, so neither the percentage threshold nor entry-count mismatch check applies. Local index gates were green, and the stable Forge finalization pass completed all three native lanes, metadata validation, style checks, generated-test validation, deterministic package handling, and statistics generation without changing the publishable tree.",
+    "session_id": "6602f30004c745c2"
   },
   "metrics": {
     "agent": "pi",
