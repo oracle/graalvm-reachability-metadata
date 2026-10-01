@@ -150,22 +150,31 @@ upward; a line whose branches control nothing is skipped the same way. Without a
 control-flow table for the method, the nearest covered line with a missed branch
 is the fork, as before.
 
-The hint lists every non-plumbing branch on the fork line. Successors are
-labelled by the line they land on, not by true/false or by case key: javac's
-jump sense does not map to the source condition, and enum, String, and pattern
-switches switch on synthetic keys. Each successor carries its count, and those
-that reach the invoking bci carry a target marker:
+The hint lists every successor of every non-plumbing branch instruction on
+the fork line, one numbered item per successor in bytecode order. A successor
+is what JaCoCo calls a branch, so the numbered items add up to the taken/total
+on the header line. Each item is labelled by the line it lands on, not by
+true/false or by case key: javac's jump sense does not map to the source
+condition, and enum, String, and pattern switches switch on synthetic keys. A
+successor that lands on a later branch instruction of the same line, as the
+first condition of `a && b` does, is labelled by that condition's position.
+Each item carries its count, and those that reach the invoking bci carry a
+target marker:
 
 ```text
 fork `Database.java:313` reached 40,182×, 2 of 4 branches taken
-  condition 1: → condition 2 ×40,182 · → line 320 ×0 ← target
-  condition 2: → line 314 ×40,182 · → line 320 ×0 ← target
+  branch 1 → condition 2 ×40,182
+  branch 2 → line 320 ×0 ← target
+  branch 3 → line 314 ×40,182
+  branch 4 → line 320 ×0 ← target
 ```
 
-A switch is one decision, so its successor counts sum to the fork's reach
-count. A branch's reach count is the sum of its successor counts; the fork's is
-the largest across its branches. JaCoCo's taken/total stays the authority on
-the line; the per-branch list is navigation.
+The numbers are bytecode order and carry no meaning of their own; the landing
+line, the count, and the marker do. A switch is one decision, so its successor
+counts sum to the fork's reach count. A branch instruction's reach count is the
+sum of its successor counts; the fork's is the largest across its instructions.
+JaCoCo's taken/total stays the authority on the line; the numbered list is
+navigation.
 
 ### 3.3 No fork
 
