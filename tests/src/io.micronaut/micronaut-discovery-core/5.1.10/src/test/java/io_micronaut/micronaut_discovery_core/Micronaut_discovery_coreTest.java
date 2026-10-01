@@ -66,6 +66,16 @@ public class Micronaut_discovery_coreTest {
     }
 
     @Test
+    public void protectsCredentialsWhenCreatingInstanceFromUri() {
+        ServiceInstance instance = ServiceInstance.of(
+                "orders", URI.create("https://alice:secret@orders.example:8443/api"));
+
+        assertThat(instance.getURI()).hasToString("https://alice:secret@orders.example:8443/api");
+        assertThat(instance.resolve(URI.create("/health")))
+                .hasToString("https://orders.example:8443/health");
+    }
+
+    @Test
     public void publishesServiceLifecycleEventsForAnInstance() {
         ServiceInstance instance = ServiceInstance.of("orders", URI.create("http://orders.example"));
         ServiceReadyEvent ready = new ServiceReadyEvent(instance);
