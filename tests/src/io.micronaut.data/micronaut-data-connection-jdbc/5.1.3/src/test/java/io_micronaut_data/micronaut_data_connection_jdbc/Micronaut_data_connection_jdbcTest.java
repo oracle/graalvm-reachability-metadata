@@ -10,6 +10,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.sql.DataSource;
 
@@ -17,6 +19,7 @@ import io.micronaut.context.annotation.Property;
 import io.micronaut.data.connection.ConnectionDefinition;
 import io.micronaut.data.connection.ConnectionOperations;
 import io.micronaut.data.connection.ConnectionStatus;
+import io.micronaut.data.connection.ConnectionSynchronization;
 import io.micronaut.data.connection.jdbc.operations.DefaultDataSourceConnectionOperations;
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
 import jakarta.inject.Inject;
@@ -125,6 +128,33 @@ public class Micronaut_data_connection_jdbcTest {
             assertThat(message).isEqualTo("ready");
             return null;
         });
+    }
+
+    @Test
+    void runsConnectionSynchronizationDuringConnectionLifecycle() {
+        List<String> events = new ArrayList<>();
+
+        connectionOperations.executeWrite(status -> {
+            status.registerSynchronization(new ConnectionSynchronization() {
+                @Override
+                public void executionComplete() {
+                    events.add("execution-complete");
+                }
+
+                @Override
+                public void beforeClosed() {
+                    events.add("before-closed");
+                }
+
+                @Override
+                public void afterClosed() {
+                    events.add("after-closed");
+                }
+            });
+            return readMessage(status, 1);
+        });
+
+        assertThat(events).containsExactly("execution-complete", "before-closed", "after-closed");
     }
 
     @Test
