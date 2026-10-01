@@ -35,6 +35,19 @@ BENCHMARK_DIR = Path("runtime") / "code-coverage" / "benchmark"
 RUN_RECORD = BENCHMARK_DIR / "run.json"
 RESULT_RECORD = BENCHMARK_DIR / "result.json"
 PUBLICATION_MARKER = BENCHMARK_DIR / "publication.json"
+#: The Gradle build a source worktree takes from the runner commit instead of
+#: the pin; `tests/src` and `metadata` stay pinned as the measured input
+#: (§FS-code-coverage-benchmarking.1).
+HARNESS_PATHS: tuple[str, ...] = (
+    "build.gradle",
+    "settings.gradle",
+    "gradle.properties",
+    "gradlew",
+    "gradlew.bat",
+    "gradle",
+    "ci.json",
+    "tests/tck-build-logic",
+)
 
 
 class BenchmarkError(RuntimeError):
@@ -138,13 +151,27 @@ def _remove_existing_source_worktree(
 def create_source_worktree(
         path: Path,
         suite_commit: str,
+        runner_commit: str,
         repository_root: Path = REPOSITORY_ROOT,
 ) -> None:
+    """Check out the pinned input and lay the runner's harness over it.
+
+    `restore` also deletes pinned harness files the runner no longer tracks,
+    and leaves `HEAD` on the suite commit (§AR-code-coverage-benchmarking.1.1).
+    """
     _remove_existing_source_worktree(path, repository_root)
     path.parent.mkdir(parents=True, exist_ok=True)
     subprocess.run(
         ["git", "worktree", "add", "--detach", str(path), suite_commit],
         cwd=repository_root,
+        check=True,
+    )
+    subprocess.run(
+        [
+            "git", "restore", f"--source={runner_commit}", "--staged",
+            "--worktree", "--", *HARNESS_PATHS,
+        ],
+        cwd=path,
         check=True,
     )
 
