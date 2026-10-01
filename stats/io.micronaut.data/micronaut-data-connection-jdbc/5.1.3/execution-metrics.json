@@ -1,0 +1,146 @@
+{
+  "add_new_library_support:2026-10-01": {
+    "timestamp": "2026-10-01T01:51:00.141540Z",
+    "library": "io.micronaut.data:micronaut-data-connection-jdbc:5.1.3",
+    "starting_commit": "b8db8be42ea422b9b9bdaa51965f99fd26c55077",
+    "ending_commit": "96516c63aa284f011ab8680dc870cca28b4885bc",
+    "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-luna",
+    "agent": "pi",
+    "model": "gpt-5.6-luna",
+    "status": "success",
+    "stats": {
+      "version": "5.1.3",
+      "dynamicAccess": {
+        "breakdown": {},
+        "coverageRatio": 1.0,
+        "coveredCalls": 0,
+        "totalCalls": 0
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 261,
+          "missed": 410,
+          "ratio": 0.388972,
+          "total": 671
+        },
+        "line": {
+          "covered": 66,
+          "missed": 97,
+          "ratio": 0.404908,
+          "total": 163
+        },
+        "method": {
+          "covered": 21,
+          "missed": 25,
+          "ratio": 0.456522,
+          "total": 46
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "advisory_preparation",
+      "issue_number": 9814,
+      "issue_label": "library-new-request",
+      "library": "io.micronaut.data:micronaut-data-connection-jdbc:5.1.3",
+      "summary": "micronaut-data-connection-jdbc supplies the JDBC ConnectionOperations and DataSource-backed connection management. Its tests need a real DataSource and a Micronaut ApplicationContext, and the artifact's own dependencies don't provide either. The sibling test project micronaut-data-tx-jdbc in this repo uses the same extra dependencies. I did not resolve the 5.1.3 POM, so the dependency list is inferred from that sibling and not verified against the artifact.",
+      "deterministic_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "io.micronaut.sql:micronaut-jdbc-hikari:7.1.0",
+          "scope": "testImplementation",
+          "reason": "Provides the Hikari DataSource that Micronaut wires into the JDBC connection operations. This is the same version micronaut-data-tx-jdbc uses."
+        },
+        {
+          "kind": "dependency",
+          "coordinate": "com.h2database:h2:2.4.240",
+          "scope": "testImplementation",
+          "reason": "In-memory JDBC database, so no Docker is needed. Same version as the micronaut-data-tx-jdbc tests."
+        },
+        {
+          "kind": "dependency",
+          "coordinate": "io.micronaut.test:micronaut-test-junit5:5.1.1",
+          "scope": "testImplementation",
+          "reason": "Starts an ApplicationContext for the tests via @MicronautTest."
+        },
+        {
+          "kind": "dependency",
+          "coordinate": "io.micronaut:micronaut-inject-java:5.1.10",
+          "scope": "testImplementation",
+          "reason": "Generates bean definitions for the test beans. Without it the context has no beans."
+        },
+        {
+          "kind": "dependency",
+          "coordinate": "org.assertj:assertj-core:3.22.0",
+          "scope": "testImplementation",
+          "reason": "Assertion library used by the sibling Micronaut Data tests."
+        }
+      ],
+      "agent_guidance": "Configure an H2 in-memory datasource through Micronaut properties, for example datasources.default.url=jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1, with the driver, username and password set. Use the ApplicationContext or @MicronautTest to obtain the JDBC ConnectionOperations<Connection> bean, and also exercise the DataSourceConnectionOperations path. Cover execute, executeRead, execute with a ConnectionDefinition, and nested/propagation behaviour, then run real SQL on the Connection. Follow the layout of tests/src/io.micronaut.data/micronaut-data-tx-jdbc, including the user-code-filter.json and the conditional agent mode in build.gradle. Do not use Docker. No environment variables or system properties are needed.",
+      "risks": [
+        "The 5.1.3 POM was not resolved, so the dependency set may differ from what the artifact actually needs. Gradle and native-image verification should settle it.",
+        "The sibling's dependency versions may not match micronaut-data 5.1.3 exactly. Align them if resolution conflicts appear.",
+        "Hikari, H2 and the Micronaut context may need extra native reflection or resource metadata. That metadata should come from the agent run rather than being hand-written."
+      ],
+      "applied_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "io.micronaut.sql:micronaut-jdbc-hikari:7.1.0",
+          "result": "applied",
+          "target": "tests/src/io.micronaut.data/micronaut-data-connection-jdbc/5.1.3/build.gradle"
+        },
+        {
+          "kind": "dependency",
+          "coordinate": "com.h2database:h2:2.4.240",
+          "result": "applied",
+          "target": "tests/src/io.micronaut.data/micronaut-data-connection-jdbc/5.1.3/build.gradle"
+        },
+        {
+          "kind": "dependency",
+          "coordinate": "io.micronaut.test:micronaut-test-junit5:5.1.1",
+          "result": "applied",
+          "target": "tests/src/io.micronaut.data/micronaut-data-connection-jdbc/5.1.3/build.gradle"
+        },
+        {
+          "kind": "dependency",
+          "coordinate": "io.micronaut:micronaut-inject-java:5.1.10",
+          "result": "applied",
+          "target": "tests/src/io.micronaut.data/micronaut-data-connection-jdbc/5.1.3/build.gradle"
+        },
+        {
+          "kind": "dependency",
+          "coordinate": "org.assertj:assertj-core:3.22.0",
+          "result": "already_present",
+          "target": "tests/src/io.micronaut.data/micronaut-data-connection-jdbc/5.1.3/build.gradle"
+        }
+      ],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#9814 Support for io.micronaut.data:micronaut-data-connection-jdbc:5.1.3; label=library-new-request; body_chars=39"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "sonnet",
+      "input_tokens_used": 6,
+      "output_tokens_used": 1774
+    },
+    "metrics": {
+      "input_tokens_used": 235217,
+      "cached_input_tokens_used": 2551296,
+      "output_tokens_used": 14262,
+      "iterations": 9,
+      "cost_usd": 0.5759,
+      "generated_loc": 169,
+      "tested_library_loc": 66,
+      "metadata_entries": 2,
+      "code_coverage_percent": 40.49
+    },
+    "artifacts": {
+      "metadata_file": "metadata/io.micronaut.data/micronaut-data-connection-jdbc/5.1.3/reachability-metadata.json"
+    }
+  }
+}

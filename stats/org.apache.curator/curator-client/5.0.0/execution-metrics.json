@@ -1,0 +1,128 @@
+{
+  "fix_javac_fail:2026-10-01": {
+    "timestamp": "2026-10-01T01:15:02.030285Z",
+    "library": "org.apache.curator:curator-client:5.0.0",
+    "starting_commit": "1bbfc943c1d2784b8ba2a0f8105905efe5fd06cf",
+    "ending_commit": "af0a0bad69f2e3d1f5fa30c3241a083a586f1d0b",
+    "previous_library": "org.apache.curator:curator-client:2.7.1",
+    "strategy_name": "javac_iterative_with_coverage_sources_pi_gpt-5.6-luna",
+    "agent": "pi",
+    "model": "gpt-5.6-luna",
+    "status": "success",
+    "stats": {
+      "version": "5.0.0",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 0.0,
+            "coveredCalls": 0,
+            "totalCalls": 119
+          },
+          "resources": {
+            "coverageRatio": 0.0,
+            "coveredCalls": 0,
+            "totalCalls": 4
+          }
+        },
+        "coverageRatio": 0.0,
+        "coveredCalls": 0,
+        "totalCalls": 123
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 1748,
+          "missed": 171620,
+          "ratio": 0.010083,
+          "total": 173368
+        },
+        "line": {
+          "covered": 439,
+          "missed": 37072,
+          "ratio": 0.011703,
+          "total": 37511
+        },
+        "method": {
+          "covered": 142,
+          "missed": 12598,
+          "ratio": 0.011146,
+          "total": 12740
+        }
+      }
+    },
+    "previous_library_stats": {
+      "version": "2.7.1",
+      "dynamicAccess": {
+        "breakdown": {},
+        "coverageRatio": 1.0,
+        "coveredCalls": 0,
+        "totalCalls": 0
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 1755,
+          "missed": 1555,
+          "ratio": 0.530211,
+          "total": 3310
+        },
+        "line": {
+          "covered": 424,
+          "missed": 368,
+          "ratio": 0.535354,
+          "total": 792
+        },
+        "method": {
+          "covered": 108,
+          "missed": 87,
+          "ratio": 0.553846,
+          "total": 195
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "no_action",
+      "issue_number": 9364,
+      "issue_label": "fails-javac-compile",
+      "library": "org.apache.curator:curator-client:5.0.0",
+      "summary": "The javac errors come from the 2.7.1 test source using APIs that curator-client 5.0.0 no longer has: the `org.apache.curator.ensemble.exhibitor` package, and the static `RetryLoop.shouldRetry` and `isRetryException` methods. This is a test-code API incompatibility that the repair step can fix by adapting the tests to the 5.0.0 API. I did not inspect the repository or the 5.0.0 artifact, so the cause rests on the issue's compile errors alone. Nothing in the failure points to a missing dependency, Docker image or system property, and no Native Image-unsupported mechanism is involved.",
+      "deterministic_setup": [],
+      "agent_guidance": "Port the 2.7.1 tests to the 5.0.0 API instead of copying them. Drop the Exhibitor ensemble-provider tests (`ExhibitorEnsembleProvider`, `Exhibitors`, `ExhibitorRestClient`, `DefaultExhibitorRestClient`), because that package is absent from the 5.0.0 artifact. Replace the removed static `RetryLoop.shouldRetry` and `RetryLoop.isRetryException` calls with whatever 5.0.0 exposes, for example `RetryLoop.getDefaultRetrySleeper()` or `RetryLoop.callWithRetry`. Reach retry-policy behavior through public classes such as `RetryNTimes` and `ExponentialBackoffRetry`. Check the 5.0.0 jar for the actual public API before writing code. Keep the existing ZooKeeper dependency in `build.gradle`, bumped to a version compatible with curator-client 5.0.0 (ZooKeeper 3.6.x line) if the build does not already resolve it transitively.",
+      "risks": [
+        "The 5.0.0 API removal list is inferred only from the compile errors shown in the truncated log. More missing symbols may appear after the first set is fixed.",
+        "Dropping the Exhibitor tests may reduce dynamic-access coverage relative to 2.7.1, if those tests exercised reflective access.",
+        "curator-client 5.0.0 pulls in ZooKeeper 3.6.x, which may add transitive dependencies or require reflection metadata not present for 2.7.1."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#9364 [Automation] javac compile fails for org.apache.curator:curator-client:5.0.0; label=fails-javac-compile; body_chars=8015"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "7 existing test file path(s) included"
+        }
+      ],
+      "current_library": "org.apache.curator:curator-client:2.7.1",
+      "new_version": "5.0.0",
+      "model": "sonnet",
+      "input_tokens_used": 2,
+      "output_tokens_used": 1140
+    },
+    "metrics": {
+      "input_tokens_used": 65989,
+      "cached_input_tokens_used": 628736,
+      "output_tokens_used": 4192,
+      "iterations": 4,
+      "cost_usd": 0.1541,
+      "tested_library_loc": 439,
+      "metadata_entries": 1,
+      "previous_library_metadata_entries": 1,
+      "code_coverage_percent": 1.17,
+      "previous_library_coverage_percent": 53.54
+    },
+    "artifacts": {
+      "metadata_file": "metadata/org.apache.curator/curator-client/5.0.0/reachability-metadata.json"
+    }
+  }
+}
