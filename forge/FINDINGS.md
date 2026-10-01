@@ -8,6 +8,11 @@ Newest entry first; every non-approval is recorded, including one a repair later
 **Explicit messaging timeouts below the required 10-second floor**
 
 The new test configured WebSocket session idle and asynchronous send timeouts to 250-1000 ms. These explicit client/messaging timeouts violated FS-test-contract.1.7, which requires at least 10 seconds.
+## 2026-10-01 — io.micronaut:micronaut-json-core:5.1.3 (#9812)
+
+**Lockstep companion dependency pinned to the requested version**
+
+The coordinate's build.gradle hardcoded io.micronaut:micronaut-jackson-databind:5.1.3 instead of using the TCK-resolved library version. That would leave the supporting mapper implementation pinned when this version-agnostic test is reused, violating the version-pinning rule.
 
 ## 2026-09-30 — io.micronaut:micronaut-http-netty:5.1.13 (#9833)
 
