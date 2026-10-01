@@ -1,0 +1,57 @@
+{
+  "fix_javac_fail:2026-10-01": {
+    "timestamp": "2026-10-01T17:42:23.844304Z",
+    "library": "jakarta.websocket:jakarta.websocket-api:2.3.0-M1",
+    "starting_commit": "12c7667b724389ea4f43581b27b2c7d9ab25f769",
+    "ending_commit": "12c7667b724389ea4f43581b27b2c7d9ab25f769",
+    "strategy_name": "javac_iterative_with_coverage_sources_pi_gpt-5.6-luna",
+    "agent": "pi",
+    "model": "gpt-5.6-luna",
+    "status": "failure",
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "no_action",
+      "issue_number": 9358,
+      "issue_label": "fails-javac-compile",
+      "library": "jakarta.websocket:jakarta.websocket-api:2.3.0-M1",
+      "summary": "The failure is a Maven POM resolution error: the 2.3.0-M1 POM chain references the unpublished parent org.eclipse.ee4j:project:2.0.0-SNAPSHOT. It is not a Native Image limitation, and no extra dependency, Docker image or system property is evidenced. I did not inspect the repository or the artifact's sources.",
+      "deterministic_setup": [],
+      "agent_guidance": "",
+      "risks": [
+        "jakarta.websocket-api:2.3.0-M1 and its jakarta.websocket-all dependency have a parent POM that points at a SNAPSHOT parent absent from Maven Central, so Gradle may fail to resolve them regardless of test setup. If it still fails after a normal attempt, the version may be unresolvable, which is a resolution problem and not a reason for skip_unsupported.",
+        "The reproducer coordinates use 2.1.0 with GVM_TCK_LV=2.3.0-M1, so the first run should confirm that the tested version actually resolves.",
+        "2.3.0-M2 is also listed; check that it resolves, since it may have a fixed parent POM."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#9358 [Automation] javac compile fails for jakarta.websocket:jakarta.websocket-api:2.3.0-M1; label=fails-javac-compile; body_chars=8015"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "6 existing test file path(s) included"
+        }
+      ],
+      "current_library": "jakarta.websocket:jakarta.websocket-api:2.1.0",
+      "new_version": "2.3.0-M1",
+      "model": "sonnet",
+      "input_tokens_used": 2,
+      "output_tokens_used": 683
+    },
+    "metrics": {
+      "input_tokens_used": 83273,
+      "cached_input_tokens_used": 1290240,
+      "output_tokens_used": 11268,
+      "iterations": 6,
+      "cost_usd": 0.2799,
+      "generated_loc": 0,
+      "tested_library_loc": 0,
+      "metadata_entries": 0,
+      "code_coverage_percent": 0.0
+    },
+    "artifacts": {
+      "metadata_file": "None"
+    }
+  }
+}
