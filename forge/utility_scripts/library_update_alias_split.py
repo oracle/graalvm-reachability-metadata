@@ -30,6 +30,7 @@ from utility_scripts.metrics_writer import (
     write_pending_metrics,
 )
 from utility_scripts.stage_logger import log_stage
+from utility_scripts.test_project_properties import rewrite_test_project_gradle_properties
 from utility_scripts.task_logs import build_timestamped_task_log_path, display_log_path
 
 
@@ -302,12 +303,14 @@ def _apply_alias_split(
         os.path.join("metadata", group, artifact, original_metadata_version),
         os.path.join(repo_path, "metadata", group, artifact, failed_version),
     )
+    successor_test_dir = os.path.join(repo_path, "tests", "src", group, artifact, failed_version)
     copy_tree_from_commit(
         repo_path,
         base_ref,
         os.path.join("tests", "src", group, artifact, original_test_version),
-        os.path.join(repo_path, "tests", "src", group, artifact, failed_version),
+        successor_test_dir,
     )
+    rewrite_test_project_gradle_properties(successor_test_dir, group, artifact, failed_version)
 
     entries = load_index_entries(repo_path, group, artifact) or []
     target_index = find_entry_index_by_metadata_version(entries, target_metadata_version)

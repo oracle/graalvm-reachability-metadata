@@ -37,6 +37,7 @@ from utility_scripts.metadata_index import (
     resolve_test_version,
 )
 from utility_scripts.stage_logger import log_stage
+from utility_scripts.test_project_properties import rewrite_test_project_gradle_properties
 
 
 CONSUMER_SPLIT_METRICS_KEY = "library_update_consumer_split"
@@ -149,12 +150,14 @@ def maybe_split_test_version_consumers(
     split_version = str(sweep["failed_metadata_version"])
     passing = [str(consumer["metadata-version"]) for consumer in consumers[:failed_index]]
     repointed = [str(consumer["metadata-version"]) for consumer in consumers[failed_index + 1:]]
+    split_test_dir = os.path.join(repo_path, "tests", "src", group, artifact, split_version)
     copy_tree_from_commit(
         repo_path,
         base_ref,
         os.path.join("tests", "src", group, artifact, test_version),
-        os.path.join(repo_path, "tests", "src", group, artifact, split_version),
+        split_test_dir,
     )
+    rewrite_test_project_gradle_properties(split_test_dir, group, artifact, split_version)
     entries = repoint_consumers(repo_path, group, artifact, split_version, repointed)
 
     log_stage(

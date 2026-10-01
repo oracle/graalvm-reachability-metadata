@@ -68,7 +68,10 @@ class TestVersionConsumerSplitTests(unittest.TestCase):
             return json.load(index_file)
 
     def _restore_baseline(self, *args: Any) -> None:
-        del args
+        destination = str(args[3])
+        os.makedirs(destination, exist_ok=True)
+        with open(os.path.join(destination, "gradle.properties"), "w", encoding="utf-8") as properties:
+            properties.write("library.version=4.17.0\nmetadata.dir=org.liquibase/liquibase-core/4.17.0/\n")
         self.baseline_restored = True
 
     def _run(self, failing_on_baseline: str | None = None) -> tuple[dict[str, Any] | None, MagicMock, MagicMock]:
@@ -126,6 +129,14 @@ class TestVersionConsumerSplitTests(unittest.TestCase):
             ],
             self.sweeps,
         )
+        with open(
+            os.path.join(self.repo_path, "tests", "src", GROUP, ARTIFACT, "4.20.0", "gradle.properties"),
+            encoding="utf-8",
+        ) as properties:
+            self.assertEqual(
+                "library.version = 4.20.0\nmetadata.dir = org.liquibase/liquibase-core/4.20.0/\n",
+                properties.read(),
+            )
         assert split is not None
         self.assertEqual(f"{GROUP}:{ARTIFACT}:4.20.0", split["successor_coordinates"])
         self.assertEqual("4.20.0", split["failed_version"])
