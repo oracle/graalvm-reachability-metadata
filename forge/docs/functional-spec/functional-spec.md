@@ -294,10 +294,11 @@ model, provider, and thinking level remain entirely owned by the analysis role.
 The published-PR process does not repeat that semantic review. It validates the
 descriptor on the exact pull-request head and executes its decision
 deterministically (§FS-automated-pr-review). The analysis role is invoked after
-publication only when an approved head has exhausted deterministic failed-CI
-reruns. That CI-repair turn receives the failed-check evidence, applies the same
-review and disposition contract as the pre-push reviewer, updates the descriptor
-and findings record for the resulting exact head, and pushes the result. The
+publication only when an approved head has failed CI. That CI-repair turn
+receives the failed-check evidence and applies the same review and disposition
+contract as the pre-push reviewer. Only a repair updates the descriptor and
+findings record for the resulting exact head and pushes the result; any other
+outcome is applied to the unchanged pull request (§FS-automated-pr-review). The
 shared analysis runtime continues to own invocation, logs, failures, and token
 accounting.
 

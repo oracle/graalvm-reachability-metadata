@@ -481,6 +481,61 @@ class PullRequestReviewSelectionTests(unittest.TestCase):
         repair.assert_called_once_with(state, validated, "/tmp/reachability")
         rerun.assert_not_called()
 
+    def test_rejected_ci_repair_keeps_the_head_and_its_verdict(self) -> None:
+        close = ci_repair.CIRepairOutcome(
+            decision="rejected",
+            review_verdict=ci_repair.LocalReviewVerdict(
+                decision="rejected",
+                action="close",
+                review_comment="Unsupportable.",
+                finding_title="Unfixable library",
+                finding_body="Reason.",
+                fix_note="",
+            ),
+        )
+        for outcome, action in ((None, "human-intervention"), (close, "close")):
+            with self.subTest(action):
+                state = _pull_request_state(10291, "FAILURE")
+                validated = _validated_publication()
+                with (
+                        tempfile.TemporaryDirectory() as forge_dir,
+                        patch.object(ci_repair, "FORGE_DIR", forge_dir),
+                        patch.object(
+                            ci_repair, "create_detached_worktree",
+                            side_effect=lambda _repo, path, *_args: os.makedirs(path),
+                        ),
+                        patch.object(ci_repair, "cleanup_review_workspace"),
+                        patch.object(
+                            ci_repair, "get_pull_request_workflow_runs", return_value=[],
+                        ),
+                        patch.object(ci_repair, "get_analysis_agent"),
+                        patch.object(
+                            ci_repair, "analysis_agent_run",
+                            return_value=SimpleNamespace(return_code=0, log_path="codex.log"),
+                        ),
+                        patch.object(
+                            ci_repair, "_read_ci_repair_outcome", return_value=outcome,
+                        ),
+                        patch.object(ci_repair, "_ci_repair_changed_paths", return_value=[]),
+                        patch.object(ci_repair, "_record_finding"),
+                        patch.object(ci_repair.subprocess, "run"),
+                        patch.object(ci_repair, "validate_publication_descriptor") as rewrite,
+                        patch.object(ci_repair, "run_git_transport") as push,
+                        patch.object(ci_repair, "get_issue_comments", return_value=[]),
+                        patch.object(ci_repair, "post_issue_comment") as comment,
+                        patch.object(ci_repair, "reconcile_rejected_publication") as reconcile,
+                ):
+                    ci_repair.repair_failed_ci_pull_request(
+                        state, validated, "/tmp/reachability",
+                    )
+
+                rewrite.assert_not_called()
+                push.assert_not_called()
+                self.assertIn("forge-ci-repair-rejected:head-10291", comment.call_args.args[1])
+                review = reconcile.call_args.args[1].descriptor["local_review"]
+                self.assertEqual(("rejected", action), (review["decision"], review["action"]))
+                self.assertEqual("approved", validated.descriptor["local_review"]["decision"])
+
     def test_rerun_failed_jobs_uses_only_agent_selected_current_head_runs(self) -> None:
         workflow_runs = [
             {"id": 101, "conclusion": "failure", "run_attempt": 4},

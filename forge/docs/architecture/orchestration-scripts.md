@@ -306,7 +306,7 @@ forward:
 | Check-rollup gate | Worker | Forge reads the whole rollup for the exact head before spending anything on it; a pending verdict is nobody's turn yet and a failed one is diagnosis, not merge readiness | The pass defers, or continues with a rollup it has seen succeed |
 | Approval and auto-merge | Worker and GitHub | On a green rollup only, index-changing heads are guarded first, then approval and auto-merge are bound to the validated SHA | GitHub owns the eventual queue or merge operation |
 | Conflict maintenance | Worker and temporary worktree | Conflicts are refreshed mechanically with nothing approved or armed, because the push restarts the checks | A refreshed head waits for another pass, or Forge withdraws approval and escalates |
-| Failed-CI diagnosis | Worker and xhigh analysis agent | Every failure is diagnosed before any rerun; transient rerun IDs and contribution repairs are separate outcomes | Selected jobs rerun, a repaired head is pushed, or rejection is reconciled |
+| Failed-CI diagnosis | Worker and xhigh analysis agent | Every failure is diagnosed before any rerun; transient rerun IDs and contribution repairs are separate outcomes | Selected jobs rerun, a repaired head is pushed, or rejection is reconciled on the unchanged head |
 | Merge follow-up | Worker and GitHub | A durable PR label identifies issue transitions pending after GitHub completes auto-merge | Linked issues are released once and the pending marker is removed |
 
 
@@ -352,7 +352,9 @@ local-review responsibility over the result. Trusted Forge code records
 findings, opens or reuses an infrastructure issue from structured evidence when
 required, rewrites and validates the descriptor, and pushes the same upstream
 branch. Every head-changing push first withdraws auto-merge and Forge approval
-from the old head. The next pass starts from the new exact head. No pending- or successful-CI path
+from the old head. A rejected outcome, including a turn with no readable
+verdict, pushes nothing: Forge discards the edits, comments once, and reconciles
+the rejection on the unchanged head, so the descriptor keeps the pre-push verdict. The next pass starts from the new exact head. No pending- or successful-CI path
 invokes an agent (§FS-automated-pr-review).
 
 **Auto-merge follow-up.** Before arming a PR whose body links a non-final chunk
