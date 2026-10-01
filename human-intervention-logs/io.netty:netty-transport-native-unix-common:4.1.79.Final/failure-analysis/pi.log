@@ -1,0 +1,18 @@
+## Human intervention needed
+
+The automated job failed in `explore/generate_tests()` while handling reporter-requested metadata.
+
+Preserved work: https://github.com/oracle/graalvm-reachability-metadata/tree/ai%2Fkimeta%2Fhuman-intervention%2Fissue-9344-fails-native-image-run-io.netty-netty-transport-native-unix-common-4.1.79.Final-5bd0d810
+
+The initial native-image repair completed successfully, but `generateDynamicAccessCoverageReport` then failed because the native build produced no `dynamic-access` output directory. All three fallback generation attempts edited the existing allocator test but explicitly did not run tests; the edits were subsequently rolled back. Metrics confirm 3 iterations, 0 generated LOC, and identical starting/ending commits (`7f8a51d5ba2`).
+
+Inspect:
+- `logs/io.netty:netty-transport-native-unix-common:4.1.79.Final/dynamic-access-report/generateDynamicAccessCoverageReport-2026-10-01T02-01-32-867698Z.log`
+- `logs/io.netty:netty-transport-native-unix-common:4.1.79.Final/issue-requested-metadata/pi.log`
+- The three `logs/io.netty:netty-transport-native-unix-common:4.1.79.Final/issue-requested-metadata/pi-generation-*.log` files
+- `logs/io.netty:netty-transport-native-unix-common:4.1.79.Final/native-image-run-fix/fixTestNativeImageRun-2026-10-01T01-54-34-590401Z.log`
+
+Manual next steps:
+1. Check out the preserved branch and review the generated `4.1.79.Final` metadata, especially the conditions around `AbstractByteBufAllocator`.
+2. Manually update the existing allocator test to exercise both `toLeakAwareBuffer` allocation paths, then run the coordinate’s full Gradle test.
+3. Diagnose why `TrackDynamicAccess` creates no output directory; if coverage remains unavailable, validate the metadata with native tests in both current and future-defaults modes.
