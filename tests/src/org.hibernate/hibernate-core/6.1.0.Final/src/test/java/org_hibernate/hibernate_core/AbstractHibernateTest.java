@@ -65,6 +65,10 @@ abstract class AbstractHibernateTest {
 
     protected abstract String getHibernateDialect();
 
+    protected <T> List<T> executeQuery(String query, Class<T> resultType) {
+        return entityManager.createQuery(query, resultType).getResultList();
+    }
+
     @Test
     public void testLoadStudent() {
         Student student = entityManager.find(Student.class, studentIds.get("John Smith"));
