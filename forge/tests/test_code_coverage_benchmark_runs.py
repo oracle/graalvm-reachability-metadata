@@ -46,6 +46,31 @@ def _git(repo: Path, *arguments: str) -> subprocess.CompletedProcess[str]:
     )
 
 
+def _write_harness(repo: Path, marker: str) -> None:
+    """Give a fixture repository every path the source worktree overlays."""
+    for harness_path in benchmark_common.HARNESS_PATHS:
+        target: Path = repo / harness_path
+        if "." not in harness_path and not harness_path.startswith("gradlew"):
+            target = target / "harness.txt"
+        target.parent.mkdir(parents=True, exist_ok=True)
+        target.write_text(f"{marker}\n", encoding="utf-8")
+
+
+def _commit_all(repo: Path, message: str) -> str:
+    _git(repo, "add", "-A")
+    _git(
+        repo,
+        "-c",
+        "user.name=test",
+        "-c",
+        "user.email=test@example.com",
+        "commit",
+        "-m",
+        message,
+    )
+    return _git(repo, "rev-parse", "HEAD").stdout.strip()
+
+
 class CodeCoverageBenchmarkLifecycleTests(unittest.TestCase):
 
     def setUp(self) -> None:
@@ -68,27 +93,51 @@ class CodeCoverageBenchmarkLifecycleTests(unittest.TestCase):
         repository.mkdir()
         _git(repository, "init", "-b", "master")
         (repository / "README.md").write_text("seed\n", encoding="utf-8")
-        _git(repository, "add", "README.md")
-        _git(
-            repository,
-            "-c",
-            "user.name=test",
-            "-c",
-            "user.email=test@example.com",
-            "commit",
-            "-m",
-            "seed",
-        )
-        commit = _git(repository, "rev-parse", "HEAD").stdout.strip()
+        _write_harness(repository, "seed")
+        commit = _commit_all(repository, "seed")
 
-        benchmark.create_source_worktree(source, commit, repository)
+        benchmark.create_source_worktree(source, commit, commit, repository)
         (source / "stale.txt").write_text("stale\n", encoding="utf-8")
 
-        benchmark.create_source_worktree(source, commit, repository)
+        benchmark.create_source_worktree(source, commit, commit, repository)
 
         self.assertFalse((source / "stale.txt").exists())
         self.assertEqual(commit, _git(source, "rev-parse", "HEAD").stdout.strip())
         benchmark.remove_worktree(source, repository)
+
+    def test_source_worktree_measures_the_pin_with_the_runner_harness(self) -> None:
+        """§FS-code-coverage-benchmarking.1"""
+        temporary = tempfile.TemporaryDirectory()
+        self.addCleanup(temporary.cleanup)
+        root = Path(temporary.name)
+        repository = root / "repository"
+        source = root / "run" / "source"
+        test_file = Path("tests/src/com.example/demo/1.0.0/DemoTest.java")
+        metadata_file = Path("metadata/com.example/demo/1.0.0/reachability-metadata.json")
+        retired_harness = Path("tests/tck-build-logic/retired.gradle")
+        added_harness = Path("tests/tck-build-logic/added.gradle")
+        repository.mkdir()
+        _git(repository, "init", "-b", "master")
+        _write_harness(repository, "pin")
+        for path in (test_file, metadata_file, retired_harness):
+            (repository / path).parent.mkdir(parents=True, exist_ok=True)
+            (repository / path).write_text("pin\n", encoding="utf-8")
+        suite_commit = _commit_all(repository, "pin")
+        _write_harness(repository, "runner")
+        for path in (test_file, metadata_file, added_harness):
+            (repository / path).write_text("runner\n", encoding="utf-8")
+        (repository / retired_harness).unlink()
+        runner_commit = _commit_all(repository, "runner")
+
+        benchmark.create_source_worktree(source, suite_commit, runner_commit, repository)
+        self.addCleanup(benchmark.remove_worktree, source, repository)
+
+        self.assertEqual("pin\n", (source / test_file).read_text(encoding="utf-8"))
+        self.assertEqual("pin\n", (source / metadata_file).read_text(encoding="utf-8"))
+        self.assertEqual("runner\n", (source / "ci.json").read_text(encoding="utf-8"))
+        self.assertEqual("runner\n", (source / added_harness).read_text(encoding="utf-8"))
+        self.assertFalse((source / retired_harness).exists())
+        self.assertEqual(suite_commit, _git(source, "rev-parse", "HEAD").stdout.strip())
 
     def test_removes_source_only_after_publication_marker(self) -> None:
         temporary = tempfile.TemporaryDirectory()
