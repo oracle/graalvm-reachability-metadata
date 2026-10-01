@@ -385,6 +385,7 @@ def verify_native_test_passes(
         coordinate=coordinate,
         output_dir=agent_metadata_dir,
         log_path=generate_metadata_log_path,
+        timeout_seconds=cycle_timeout_seconds,
         env=command_env,
         gradle_properties=gradle_properties,
     )

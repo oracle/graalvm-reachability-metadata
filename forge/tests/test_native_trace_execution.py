@@ -109,6 +109,36 @@ class FailureLogTailTests(unittest.TestCase):
         self.assertIn("line-349", excerpt)
 
 
+class AgentStepTimeoutTests(unittest.TestCase):
+    """The agent step runs the JVM suite under the cycle timeout, so a test JVM
+    that never shuts down fails the step instead of holding the gate
+    (§FS-native-test-verification-gate.2)."""
+
+    def test_a_hung_agent_step_times_out_as_a_failure(self) -> None:
+        received: list[int | None] = []
+
+        def _hang(cmd, cwd, env, stdout, stderr, check, timeout=None):
+            received.append(timeout)
+            raise nte.subprocess.TimeoutExpired(cmd, timeout)
+
+        with tempfile.TemporaryDirectory() as scratch:
+            log_path = os.path.join(scratch, "log.txt")
+            with patch.object(nte.subprocess, "run", side_effect=_hang):
+                returncode = nte.run_generate_metadata(
+                    reachability_repo_path=scratch,
+                    coordinate="g:a:1.0",
+                    output_dir=os.path.join(scratch, "agent"),
+                    log_path=log_path,
+                    timeout_seconds=90,
+                    env={},
+                )
+            with open(log_path, encoding="utf-8") as log_file:
+                log_text = log_file.read()
+        self.assertEqual([90], received)
+        self.assertNotEqual(0, returncode)
+        self.assertIn("Command exceeded 90s timeout", log_text)
+
+
 class GradlePropertyThreadingTests(unittest.TestCase):
     """Caller-supplied properties ride on every command and reproduction string.
 
@@ -148,6 +178,7 @@ class GradlePropertyThreadingTests(unittest.TestCase):
                     coordinate="g:a:1.0",
                     output_dir=os.path.join(scratch, "agent"),
                     log_path=log_path,
+                    timeout_seconds=60,
                     env={},
                     gradle_properties=self._PROPERTY,
                 )

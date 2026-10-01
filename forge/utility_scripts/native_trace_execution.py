@@ -43,13 +43,16 @@ def run_generate_metadata(
         coordinate: str,
         output_dir: str,
         log_path: str,
+        timeout_seconds: int,
         env: dict[str, str],
         gradle_properties: tuple[str, ...] = (),
 ) -> int:
     """Run JVM-agent metadata generation for the coordinate into a staging dir.
 
     Always the gate's first metadata action, before any native tracing
-    (§FS-native-test-verification-gate).
+    (§FS-native-test-verification-gate). It runs the JVM test suite, so it
+    carries the cycle timeout: a test JVM that hangs at shutdown must fail the
+    step, not hold the gate (§FS-native-test-verification-gate.2).
     """
     cmd = [
         "./gradlew",
@@ -63,6 +66,7 @@ def run_generate_metadata(
         reachability_repo_path=reachability_repo_path,
         cmd=cmd,
         log_path=log_path,
+        timeout_seconds=timeout_seconds,
         env=env,
     ).returncode
 
