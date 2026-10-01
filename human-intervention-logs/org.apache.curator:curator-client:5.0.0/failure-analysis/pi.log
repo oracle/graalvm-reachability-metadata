@@ -1,0 +1,17 @@
+## Human intervention needed
+
+The automated job failed during the test-generation/exploration stage for `org.apache.curator:curator-client:5.0.0`. Preserved work is available at https://github.com/oracle/graalvm-reachability-metadata/tree/ai%2Fkimeta%2Fhuman-intervention%2Fissue-10288-library-update-request-org.apache.curator-curator-client-5.0.0-d203ce91.
+
+The continuation record identifies `generate_tests()` as the failing step, and `logs/org.apache.curator:curator-client:5.0.0/improve-library-coverage/pi-generation-2026-10-01T10-58-23-251308Z.log` ends during an unfinished inspection command. Native verification initially found one failing `ClassPathTest` (`33/34` tests passed); the preserved repair removed that test and added missing `FinalizableReference.finalizeReferent()` metadata, after which all 33 ordinary native tests passed. However, the exact trace-enabled run still exits during JUnit discovery with `StackOverflowError`, although Gradle reports success because the task ignores the binary exit code. See:
+
+- `logs/org.apache.curator:curator-client:5.0.0/native-test-verify/cycle-0-test-2026-10-01T11-24-37-603781Z.log`
+- `logs/org.apache.curator:curator-client:5.0.0/native-test-verify/cycle-0-runNativeTraceImage-2026-10-01T11-27-13-787208Z.log`
+- `logs/org.apache.curator:curator-client:5.0.0/native-test-verify/pi.log`
+
+The generated dynamic-access report reached `99/123` calls (`80.49%`), but publication metrics were not finalized and the committed `stats.json` remains stale at `2/123`.
+
+Manual next steps:
+
+1. Reproduce and resolve or isolate the trace-enabled JUnit discovery `StackOverflowError`, confirming the trace binary’s actual exit status.
+2. Review the generated tests and metadata, including the removed `ClassPathTest` and reported test-package condition warnings, then rerun the coordinate’s metadata and native-test gates.
+3. Regenerate dynamic-access coverage, library statistics, and execution metrics before publication.
