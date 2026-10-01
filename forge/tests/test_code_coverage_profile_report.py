@@ -19,11 +19,8 @@ from utility_scripts.code_coverage_profile_inputs import (
     load_library_line_numbers,
     load_library_methods,
 )
-from utility_scripts.code_coverage_profile_records import (
-    MAX_LISTED_METHODS,
-    NearCallRecord,
-    edge_miss_classification,
-)
+from utility_scripts.code_coverage_profile_miss import edge_miss_classification
+from utility_scripts.code_coverage_profile_records import MAX_LISTED_METHODS, NearCallRecord
 from utility_scripts.code_coverage_profile_routes import (
     Sample,
     SampledProfile,

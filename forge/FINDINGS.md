@@ -9,6 +9,19 @@ Newest entry first; every non-approval is recorded, including one a repair later
 
 FS-test-contract.2.1 forbids test-side reflection that bypasses the library behavior a consumer can invoke. tests/src/org.mongodb/mongodb-driver-core/5.7.0/src/test/java/org_mongodb/mongodb_driver_core/DirectBufferDeallocatorInnerJava8DeallocatorTest.java uses getDeclaredClasses, getDeclaredField, getDeclaredMethod, setAccessible, Unsafe.allocateInstance, and direct private-field mutation to manufacture DirectBufferDeallocator$Java8Deallocator execution on the JDK 25 lanes. The normal public constructor selects the Java 9 implementation there. I could not safely rewrite the scenario without that bypass; removing it would delete an inherited passing scenario and may reduce the reported 13/13 dynamic-access coverage. A maintainer must decide how to make or retire this historical coverage without violating the contribution contract.
 
+## 2026-09-30 — org.glassfish.ha:ha-api:3.1.13 (#9936)
+
+**Docker isolation CI installs packages with stale APT indexes**
+
+The shared `.github/workflows/scripts/disable-docker.sh` runs `sudo apt-get install openbsd-inetd` without first refreshing APT indexes. In both attempts of current-head run 36685400488, every metadata matrix job requested `libevent-2.1-7t64_2.1.12-stable-9ubuntu2.1_amd64.deb`, received `404 Not Found`, exited 100 in `Disable docker networking`, and skipped metadata validation and the coordinate test. Independent run 36703838247 for `io.micronaut.reactor:micronaut-reactor:4.0.0` later failed all three lanes at the same step with the same package 404, proving the defect is shared rather than specific to `org.glassfish.ha:ha-api:3.1.13`. Under §FS-contribution-contract.5.2–5.3 this must be fixed in shared infrastructure, outside this contribution.
+
+Infrastructure issue: https://github.com/oracle/graalvm-reachability-metadata/issues/10273 (#10273)
+
+## 2026-09-29 — org.apache.tomcat.embed:tomcat-embed-el:10.0.0 (#9371)
+
+**Test-only service provider forced by an unjustified Native Image flag**
+
+The new test project excluded org.apache.el.ExpressionFactoryImpl during Native Image service discovery solely to force a test-only provider, violating FS-test-contract.2.7 because the flag's necessity originated in test configuration rather than the library or its dependencies. The copied test metadata, filter, and new index bucket also retained javax.el entries for the Jakarta-only artifact; those typeReached conditions could never be reached, violating the condition-integrity rule in FS-contribution-contract.4.9.
 ## 2026-09-30 — org.glassfish.pfl:pfl-tf:5.1.1 (#9944)
 
 **Dynamic-access classes combined in one test file**

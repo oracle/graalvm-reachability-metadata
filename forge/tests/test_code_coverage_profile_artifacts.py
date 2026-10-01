@@ -15,11 +15,7 @@ from utility_scripts.code_coverage_jacoco import JacocoReportError
 from utility_scripts.code_coverage_model import MethodRef
 from utility_scripts import code_coverage_profile_report as report_module
 from utility_scripts.code_coverage_profile_graph import CallGraph, load_call_graph
-from utility_scripts.code_coverage_profile_inputs import (
-    MAX_UNCOVERED_ATTEMPTS,
-    ProfileFormatError,
-    TargetState,
-)
+from utility_scripts.code_coverage_profile_inputs import ProfileFormatError, TargetState
 from utility_scripts.code_coverage_profile_records import MAX_LISTED_METHODS, NearCallRecord
 from utility_scripts.code_coverage_profile_render import write_lcov, write_markdown
 from utility_scripts.code_coverage_profile_routes import (
@@ -203,7 +199,7 @@ class ReportArtifactsTest(unittest.TestCase):
         self.assertNotIn("sibling", markdown)
         self.assertNotIn(" step(s)", markdown)
 
-    def test_target_state_is_retained_and_terminal_targets_are_not_prompted(self) -> None:
+    def test_terminal_targets_leave_the_prompt_and_attempted_ones_go_last(self) -> None:
         state_path = self._write_json("deep-cover-0.json", {
             "coordinate": "com.example:demo:1.0.0",
             "targets": [
@@ -238,55 +234,36 @@ class ReportArtifactsTest(unittest.TestCase):
         report = self._generate(iteration=0, target_state_paths=[state_path])
 
         by_id = {entry["id"]: entry for entry in report["uncoveredPaths"]}
-        self.assertEqual(report["promptTargetIds"], [RESOLVE_ID])
-        self.assertEqual(report["summary"]["terminalUncovered"], 3)
-        for method_id in (PARSE_ID, LOAD_ID, RELOAD_ID):
+        # Three failed attempts do not retire a target; they send it behind
+        # every fresher one.
+        self.assertEqual(report["promptTargetIds"], [RESOLVE_ID, RELOAD_ID])
+        self.assertEqual(report["summary"]["terminalUncovered"], 2)
+        for method_id in (PARSE_ID, LOAD_ID):
             self.assertTrue(by_id[method_id]["terminal"])
             self.assertNotIn(method_id, report["promptTargetIds"])
-        self.assertEqual(by_id[RELOAD_ID]["targetStatus"], "exhausted")
+        self.assertFalse(by_id[RELOAD_ID]["terminal"])
+        self.assertEqual(by_id[RELOAD_ID]["targetStatus"], "attempted")
         self.assertEqual(by_id[RELOAD_ID]["attemptCount"], 3)
-        self.assertEqual(
-            by_id[RELOAD_ID]["stateReason"],
-            "3 attempts without coverage change",
-        )
+        self.assertIsNone(by_id[RELOAD_ID]["stateReason"])
         bulk = {entry["id"]: entry for entry in report["bulkTargets"]}
-        self.assertEqual(bulk[RELOAD_ID]["targetStatus"], "exhausted")
+        self.assertEqual(bulk[RELOAD_ID]["targetStatus"], "attempted")
         persisted = {entry["id"]: entry for entry in report["targetStates"]}
         self.assertEqual(persisted[RESOLVE_INTEGER_ID]["status"], "completed")
         self.assertEqual(persisted[PARSE_ID]["status"], "skipped")
         self.assertEqual(persisted[LOAD_ID]["status"], "exhausted")
-        self.assertEqual(persisted[RELOAD_ID]["status"], "exhausted")
+        self.assertEqual(persisted[RELOAD_ID]["status"], "attempted")
 
-    def test_uncovered_targets_are_exhausted_after_attempt_threshold(self) -> None:
-        reports: list[dict] = [
-            self._generate(iteration=iteration)
-            for iteration in range(MAX_UNCOVERED_ATTEMPTS + 1)
-        ]
+    def test_repeatedly_unproductive_targets_stay_in_rotation(self) -> None:
+        reports: list[dict] = [self._generate(iteration=iteration) for iteration in range(5)]
 
         report: dict = reports[-1]
         bulk = {entry["id"]: entry for entry in report["bulkTargets"]}
         target = bulk[RESOLVE_ID]
-        self.assertNotIn(RESOLVE_ID, report["promptTargetIds"])
-        self.assertIn(RESOLVE_ID, {entry["id"] for entry in report["uncoveredPaths"]})
-        self.assertEqual(target["attemptCount"], MAX_UNCOVERED_ATTEMPTS)
-        self.assertEqual(target["targetStatus"], "exhausted")
-        self.assertEqual(target["stateReason"], "3 attempts without coverage change")
-
-    def test_covered_target_is_not_exhausted_before_threshold(self) -> None:
-        state_path = self._write_json("deep-cover-0.json", {
-            "coordinate": "com.example:demo:1.0.0",
-            "targets": [{
-                "id": RESOLVE_INTEGER_ID,
-                "status": "attempted",
-                "attemptCount": MAX_UNCOVERED_ATTEMPTS - 1,
-            }],
-        })
-
-        report = self._generate(iteration=0, target_state_paths=[state_path])
-
-        persisted = {entry["id"]: entry for entry in report["targetStates"]}
-        self.assertEqual(persisted[RESOLVE_INTEGER_ID]["status"], "attempted")
-        self.assertIsNone(persisted[RESOLVE_INTEGER_ID]["reason"])
+        self.assertIn(RESOLVE_ID, report["promptTargetIds"])
+        self.assertEqual(target["attemptCount"], 4)
+        self.assertFalse(target["terminal"])
+        self.assertIsNone(target["stateReason"])
+        self.assertEqual(report["summary"]["terminalUncovered"], 0)
 
     def test_target_state_rejects_unknown_status(self) -> None:
         state_path = self._write_json("bad-state.json", {

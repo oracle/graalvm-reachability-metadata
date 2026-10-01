@@ -6,8 +6,9 @@
 """Uncovered-target records for the deep-method report.
 
 Builds one record per exact JaCoCo-uncovered deep method — its best static
-route, ranking keys, miss classification from the caller's line region, and
-the JSON forms the report serializes (§AR-code-coverage-improvement.4.2).
+route, ranking keys, and the JSON forms the report serializes
+(§AR-code-coverage-deep-navigation.2). Miss classification lives in
+`code_coverage_profile_miss`.
 """
 
 from __future__ import annotations
@@ -15,7 +16,7 @@ from __future__ import annotations
 import sys
 from dataclasses import dataclass
 
-from utility_scripts.code_coverage_jacoco import JacocoLineCoverage, JacocoMethodCoverage
+from utility_scripts.code_coverage_jacoco import JacocoMethodCoverage
 from utility_scripts.code_coverage_model import MethodRef
 from utility_scripts.code_coverage_profile_graph import (
     CallGraph,
@@ -57,6 +58,9 @@ class NearCallRecord:
     sample: Sample | None
     sampled_join_path_index: int | None
     semantic_distance: int | None = None
+    #: Reach count of the target's miss diagnosis: how often its fork or
+    #: dispatch site ran (§AR-code-coverage-deep-navigation.2.2).
+    reach: int | None = None
 
     @property
     def target_ref(self) -> MethodRef:
@@ -77,6 +81,11 @@ class NearCallRecord:
     @property
     def sample_count(self) -> int:
         return self.sample.count if self.sample is not None else 0
+
+    @property
+    def unobserved_steps(self) -> list[dict]:
+        """Route edges a profiled call site never dispatched to."""
+        return [edge for edge in self.static_path_edges if edge.get("unobserved")]
 
 
 def build_record(
@@ -138,9 +147,18 @@ def build_record(
 
 
 def record_rank_key(record: NearCallRecord) -> tuple:
+    """Distance first; everything after it only breaks equal-distance ties
+    (§AR-code-coverage-deep-navigation.2.2)."""
     join_order: dict[str, int] = {"sampled": 0, "public-entry": 1, "none": 2}
     distance: int = record.distance if record.distance is not None else sys.maxsize
-    return (distance, join_order[record.join_kind], -record.sample_count, record.target_ref.canonical_id)
+    return (
+        distance,
+        len(record.unobserved_steps),
+        join_order[record.join_kind],
+        -(record.reach or 0),
+        -record.sample_count,
+        record.target_ref.canonical_id,
+    )
 
 
 def prompt_selection_key(record: NearCallRecord) -> tuple:
@@ -167,280 +185,7 @@ def _edge_to_json(edge: dict, graph: CallGraph) -> dict:
         "invokeId": edge.get("invoke_id"),
         "isDirect": edge["is_direct"],
         "kind": edge["kind"],
-    }
-
-
-def _line_to_json(
-        source_path: str,
-        line: int,
-        coverage: JacocoLineCoverage,
-) -> dict:
-    return {
-        "sourcePath": source_path,
-        "line": line,
-        "mi": coverage.mi,
-        "ci": coverage.ci,
-        "mb": coverage.mb,
-        "cb": coverage.cb,
-    }
-
-
-def _method_line_region(
-        caller: MethodRef,
-        jacoco_methods: dict[str, JacocoMethodCoverage],
-        jacoco_lines: dict[str, dict[int, JacocoLineCoverage]],
-) -> tuple[str | None, list[tuple[int, JacocoLineCoverage]]]:
-    """Return the caller's source lines, bounded by the next reported method."""
-    coverage: JacocoMethodCoverage | None = jacoco_methods.get(caller.canonical_id)
-    if (
-            coverage is None
-            or coverage.source_path is None
-            or coverage.source_line is None
-    ):
-        return None, []
-    source_lines: dict[int, JacocoLineCoverage] = jacoco_lines.get(
-        coverage.source_path, {}
-    )
-    later_starts: list[int] = sorted({
-        method.source_line
-        for method in jacoco_methods.values()
-        if method.source_path == coverage.source_path
-        and method.source_line is not None
-        and method.source_line > coverage.source_line
-    })
-    end_line: int = (
-        later_starts[0] - 1 if later_starts else max(source_lines, default=coverage.source_line)
-    )
-    return coverage.source_path, [
-        (line, line_coverage)
-        for line, line_coverage in sorted(source_lines.items())
-        if coverage.source_line <= line <= end_line
-    ]
-
-
-def _candidate_is_coverage_suite(ref: MethodRef) -> bool:
-    """Recognize generated extension-suite classes by their naming contract."""
-    owner: str = ref.owner.rsplit(".", 1)[-1].split("$", 1)[0]
-    return "CoverageTest" in owner
-
-
-def _dispatch_candidates(edge: dict, graph: CallGraph) -> list[dict]:
-    invoke_id: int | None = edge.get("invoke_id")
-    method_ids: list[int] = (
-        graph.invoke_fan_out.get(invoke_id, []) if invoke_id is not None else []
-    )
-    if not method_ids and edge.get("callee") in graph.methods:
-        method_ids = [edge["callee"]]
-    return [
-        {
-            "id": graph.methods[method_id].canonical_id,
-            "coverageSuite": _candidate_is_coverage_suite(graph.methods[method_id]),
-        }
-        for method_id in method_ids
-        if method_id in graph.methods
-    ]
-
-
-def _missed_blocks(
-        region: list[tuple[int, JacocoLineCoverage]],
-) -> list[list[tuple[int, JacocoLineCoverage]]]:
-    blocks: list[list[tuple[int, JacocoLineCoverage]]] = []
-    current: list[tuple[int, JacocoLineCoverage]] = []
-    for line_record in region:
-        _, coverage = line_record
-        if coverage.ci == 0 and coverage.mi > 0:
-            current.append(line_record)
-            continue
-        if current:
-            blocks.append(current)
-            current = []
-    if current:
-        blocks.append(current)
-    return blocks
-
-
-def _inferred_invoking_line(
-        edge: dict,
-        graph: CallGraph,
-        region: list[tuple[int, JacocoLineCoverage]],
-) -> tuple[int, JacocoLineCoverage] | None:
-    """Locate the line region containing the invoke without extra artifacts.
-
-    The class-file extractor maps the call-tree bytecode index to an explicit
-    source line. Old extractor artifacts lack that mapping, so they fall back
-    deterministically to the final uncovered block and its strongest
-    non-branch instruction signal.
-    """
-    explicit_line: int | None = edge.get("source_line")
-    if explicit_line is not None:
-        explicit: tuple[int, JacocoLineCoverage] | None = next(
-            (record for record in region if record[0] == explicit_line), None
-        )
-        if explicit is not None:
-            return explicit
-
-    blocks: list[list[tuple[int, JacocoLineCoverage]]] = _missed_blocks(region)
-    if blocks:
-        block: list[tuple[int, JacocoLineCoverage]] = blocks[-1]
-        non_branch_lines: list[tuple[int, JacocoLineCoverage]] = [
-            record for record in block if record[1].mb == 0 and record[1].cb == 0
-        ]
-        candidates_for_line: list[tuple[int, JacocoLineCoverage]] = (
-            non_branch_lines or block
-        )
-        most_instructions: int = max(
-            coverage.mi for _, coverage in candidates_for_line
-        )
-        return next(
-            record
-            for record in candidates_for_line
-            if record[1].mi == most_instructions
-        )
-
-    return next((record for record in region if record[1].covered), None)
-
-
-def edge_miss_classification(
-        edge: dict,
-        graph: CallGraph,
-        jacoco_methods: dict[str, JacocoMethodCoverage],
-        jacoco_lines: dict[str, dict[int, JacocoLineCoverage]],
-) -> dict:
-    """Classify one reverse call site from its caller's JaCoCo line region."""
-    caller: MethodRef | None = graph.methods.get(edge.get("caller"))
-    candidates: list[dict] = _dispatch_candidates(edge, graph)
-    if caller is None:
-        return {
-            "kind": "no-fork",
-            "target": None,
-            "invokingMethod": None,
-            "invokeBci": edge.get("bci"),
-            "fork": None,
-            "nearestCovered": None,
-            "candidates": candidates,
-        }
-
-    source_path, region = _method_line_region(caller, jacoco_methods, jacoco_lines)
-    target_record: tuple[int, JacocoLineCoverage] | None = _inferred_invoking_line(
-        edge, graph, region
-    )
-    target: dict | None = (
-        _line_to_json(source_path, *target_record)
-        if source_path is not None and target_record is not None
-        else None
-    )
-    base: dict = {
-        "target": target,
-        "invokingMethod": caller.canonical_id,
-        "invokeBci": edge.get("bci"),
-        "fork": None,
-        "nearestCovered": None,
-        "candidates": candidates,
-    }
-    if target_record is not None and target_record[1].covered and len(candidates) > 1:
-        return {"kind": "dispatched-elsewhere", **base}
-
-    target_index: int = (
-        region.index(target_record) if target_record is not None else len(region)
-    )
-    preceding: list[tuple[int, JacocoLineCoverage]] = region[:target_index]
-    nearest_covered: tuple[int, JacocoLineCoverage] | None = next(
-        (record for record in reversed(preceding) if record[1].covered), None
-    )
-    base["nearestCovered"] = (
-        _line_to_json(source_path, *nearest_covered)
-        if source_path is not None and nearest_covered is not None
-        else None
-    )
-
-    containing_block: list[tuple[int, JacocoLineCoverage]] = next(
-        (
-            block
-            for block in _missed_blocks(region)
-            if target_record is not None and target_record in block
-        ),
-        [],
-    )
-    exception_handler_entry: bool = bool(
-        containing_block
-        and target_record != containing_block[0]
-        and nearest_covered is not None
-        and containing_block[0][0] == nearest_covered[0] + 1
-        and containing_block[0][1].mi == 1
-        and nearest_covered[1].mb == 0
-    )
-    fork: tuple[int, JacocoLineCoverage] | None = None
-    if not exception_handler_entry:
-        fork = next(
-            (
-                record
-                for record in reversed(preceding)
-                if record[1].covered and record[1].mb > 0
-            ),
-            None,
-        )
-    if fork is not None and source_path is not None:
-        base["fork"] = _line_to_json(source_path, *fork)
-        return {"kind": "fork-not-taken", **base}
-    return {"kind": "no-fork", **base}
-
-
-def classify_miss(
-        record: NearCallRecord,
-        graph: CallGraph,
-        jacoco_methods: dict[str, JacocoMethodCoverage],
-        jacoco_lines: dict[str, dict[int, JacocoLineCoverage]],
-) -> dict:
-    """Choose the strongest diagnosis across all sites that invoke a target."""
-    if record.target_id is None:
-        edges: list[dict] = []
-    else:
-        routed_edges: list[dict] = [
-            edge
-            for edge in reversed(record.static_path_edges)
-            if edge.get("callee") == record.target_id
-        ]
-        edges = [*routed_edges, *graph.reverse_adjacency.get(record.target_id, [])]
-    unique_edges: list[dict] = []
-    seen: set[tuple[object, ...]] = set()
-    for edge in edges:
-        key: tuple[object, ...] = (
-            edge.get("invoke_id"), edge.get("caller"), edge.get("callee"), edge.get("bci")
-        )
-        if key not in seen:
-            seen.add(key)
-            unique_edges.append(edge)
-    classifications: list[dict] = [
-        edge_miss_classification(
-            edge, graph, jacoco_methods, jacoco_lines
-        )
-        for edge in unique_edges
-    ]
-    priority: dict[str, int] = {
-        "dispatched-elsewhere": 0,
-        "fork-not-taken": 1,
-        "no-fork": 2,
-    }
-    if classifications:
-        return min(
-            classifications,
-            key=lambda item: (
-                priority[item["kind"]],
-                (
-                    item["target"]["sourcePath"]
-                    if item["target"] is not None else ""
-                ),
-                item["target"]["line"] if item["target"] is not None else sys.maxsize,
-            ),
-        )
-    return {
-        "kind": "no-fork",
-        "target": None,
-        "invokingMethod": None,
-        "invokeBci": None,
-        "fork": None,
-        "nearestCovered": None,
-        "candidates": [],
+        "unobserved": bool(edge.get("unobserved")),
     }
 
 
@@ -522,6 +267,14 @@ def record_to_json(
         "graphStatus": "present" if graph_present else "not-present",
         "joinKind": record.join_kind,
         "stepsRemaining": record.distance,
+        "reach": record.reach,
+        "unobservedSteps": [
+            {
+                "caller": format_static_id(edge["caller"], graph),
+                "callee": format_static_id(edge["callee"], graph),
+            }
+            for edge in record.unobserved_steps
+        ],
         "sampleCount": record.sample_count,
         "sampleContextId": record.sample.context_id if record.sample is not None else None,
         "synthetic": is_synthetic_method(record.target_ref),

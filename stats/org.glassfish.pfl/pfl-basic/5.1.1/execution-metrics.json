@@ -1,0 +1,91 @@
+{
+  "add_new_library_support:2026-09-30": {
+    "timestamp": "2026-09-30T06:42:27.428048Z",
+    "library": "org.glassfish.pfl:pfl-basic:5.1.1",
+    "starting_commit": "df1ce6e19ee7fdb9aad1e20511c1a4f4760e6feb",
+    "ending_commit": "d2329ed9cfaaa30aa187f573d43503209c9cb653",
+    "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-luna",
+    "agent": "pi",
+    "model": "gpt-5.6-luna",
+    "status": "success",
+    "stats": {
+      "version": "5.1.1",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 0.95,
+            "coveredCalls": 19,
+            "totalCalls": 20
+          }
+        },
+        "coverageRatio": 0.95,
+        "coveredCalls": 19,
+        "totalCalls": 20
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 2734,
+          "missed": 8084,
+          "ratio": 0.252727,
+          "total": 10818
+        },
+        "line": {
+          "covered": 563,
+          "missed": 1947,
+          "ratio": 0.224303,
+          "total": 2510
+        },
+        "method": {
+          "covered": 148,
+          "missed": 523,
+          "ratio": 0.220566,
+          "total": 671
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "no_action",
+      "issue_number": 9938,
+      "issue_label": "library-new-request",
+      "library": "org.glassfish.pfl:pfl-basic:5.1.1",
+      "summary": "pfl-basic is a self-contained utility library (Eclipse GlassFish Primitive Function Library: contracts, function wrappers, graph, tuples, and similar) with no service dependencies. It needs no extra Maven dependency, Docker image or system property, so the normal generated scaffold is enough.",
+      "deterministic_setup": [],
+      "agent_guidance": "",
+      "risks": [
+        "This decision comes from my knowledge of the library. I did not open the resolved artifact or POM in this session, and I did not check the repository's allowed Docker images.",
+        "Some pfl-basic code (reflection-based helpers, and the ORB-related classes in `org.glassfish.pfl.basic.*`) may use reflection or `sun.misc.Unsafe`-style access. Tests should stick to the public API. Any missing-metadata failures should be fixed with reachability metadata, not extra setup.",
+        "Sibling PFL artifacts (pfl-tf, pfl-dynamic) were recently added. Tests can copy their patterns, but pfl-basic must not depend on those artifacts."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#9938 Support for org.glassfish.pfl:pfl-basic:5.1.1; label=library-new-request; body_chars=39"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "sonnet",
+      "input_tokens_used": 2,
+      "output_tokens_used": 525
+    },
+    "metrics": {
+      "input_tokens_used": 350927,
+      "cached_input_tokens_used": 4876288,
+      "output_tokens_used": 25850,
+      "iterations": 11,
+      "cost_usd": 0.9936,
+      "generated_loc": 350,
+      "tested_library_loc": 563,
+      "metadata_entries": 11,
+      "test_only_metadata_entries": 34,
+      "code_coverage_percent": 22.43
+    },
+    "artifacts": {
+      "metadata_file": "metadata/org.glassfish.pfl/pfl-basic/5.1.1/reachability-metadata.json"
+    }
+  }
+}
