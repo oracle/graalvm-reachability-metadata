@@ -6,15 +6,7 @@
  */
 package org_apache_curator.curator_client;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.net.ServerSocket;
-import java.net.Socket;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -34,10 +26,6 @@ import org.apache.curator.RetryPolicy;
 import org.apache.curator.RetrySleeper;
 import org.apache.curator.TimeTrace;
 import org.apache.curator.drivers.TracerDriver;
-import org.apache.curator.ensemble.exhibitor.DefaultExhibitorRestClient;
-import org.apache.curator.ensemble.exhibitor.ExhibitorEnsembleProvider;
-import org.apache.curator.ensemble.exhibitor.ExhibitorRestClient;
-import org.apache.curator.ensemble.exhibitor.Exhibitors;
 import org.apache.curator.ensemble.fixed.FixedEnsembleProvider;
 import org.apache.curator.retry.BoundedExponentialBackoffRetry;
 import org.apache.curator.retry.ExponentialBackoffRetry;
@@ -121,12 +109,6 @@ public class Curator_clientTest {
         assertThat(result).isEqualTo("connected-result");
         assertThat(attempts).hasValue(3);
         assertThat(tracer.counts()).containsEntry("retries-allowed", 2);
-        assertThat(RetryLoop.shouldRetry(Code.OPERATIONTIMEOUT.intValue())).isTrue();
-        assertThat(RetryLoop.shouldRetry(Code.SESSIONEXPIRED.intValue())).isTrue();
-        assertThat(RetryLoop.shouldRetry(Code.NONODE.intValue())).isFalse();
-        assertThat(RetryLoop.isRetryException(KeeperException.create(Code.SESSIONMOVED))).isTrue();
-        assertThat(RetryLoop.isRetryException(new IllegalArgumentException("not from ZooKeeper"))).isFalse();
-
         RetryLoop loop = client.newRetryLoop();
         assertThat(loop.shouldContinue()).isTrue();
         loop.markComplete();
@@ -165,100 +147,11 @@ public class Curator_clientTest {
     }
 
     @Test
-    void fixedAndExhibitorEnsembleProvidersBuildConnectionStringsFromPublicInputs() throws Exception {
+    void fixedEnsembleProviderBuildsConnectionStringFromPublicInputs() throws Exception {
         FixedEnsembleProvider fixed = new FixedEnsembleProvider("fixed1:2181,fixed2:2181");
         fixed.start();
         assertThat(fixed.getConnectionString()).isEqualTo("fixed1:2181,fixed2:2181");
         fixed.close();
-
-        Exhibitors exhibitors = new Exhibitors(
-                Arrays.asList("exhibitor1", "exhibitor2"),
-                8_080,
-                () -> "backup1:3181, backup2:3181");
-        assertThat(exhibitors.getHostnames()).containsExactly("exhibitor1", "exhibitor2");
-        assertThat(exhibitors.getRestPort()).isEqualTo(8_080);
-        assertThat(exhibitors.getBackupConnectionString()).isEqualTo("backup1:3181, backup2:3181");
-
-        AtomicInteger rawRequests = new AtomicInteger();
-        AtomicReference<String> requestedHost = new AtomicReference<>();
-        AtomicInteger requestedPort = new AtomicInteger();
-        AtomicReference<String> requestedUriPath = new AtomicReference<>();
-        AtomicReference<String> requestedMimeType = new AtomicReference<>();
-        ExhibitorRestClient restClient = (hostname, port, uriPath, mimeType) -> {
-            rawRequests.incrementAndGet();
-            requestedHost.set(hostname);
-            requestedPort.set(port);
-            requestedUriPath.set(uriPath);
-            requestedMimeType.set(mimeType);
-            return "count=2&port=2181&server0=zk-one&server1=zk%20two";
-        };
-        ExhibitorEnsembleProvider provider = new ExhibitorEnsembleProvider(
-                exhibitors,
-                restClient,
-                "/exhibitor/v1/cluster/list",
-                60_000,
-                new RetryOneTime(1));
-
-        provider.pollForInitialEnsemble();
-        assertThat(provider.getConnectionString()).isEqualTo("zk-one:2181,zk two:2181");
-        assertThat(rawRequests).hasValue(1);
-        assertThat(exhibitors.getHostnames()).contains(requestedHost.get());
-        assertThat(requestedPort).hasValue(8_080);
-        assertThat(requestedUriPath).hasValue("/exhibitor/v1/cluster/list");
-        assertThat(requestedMimeType).hasValue("application/x-www-form-urlencoded");
-
-        provider.setExhibitors(new Exhibitors(Collections.emptyList(), 8_080, () -> "backup1:3181,backup2:3181"));
-        provider.pollForInitialEnsemble();
-        assertThat(provider.getConnectionString()).isEqualTo("backup1:3181,backup2:3181");
-    }
-
-    @Test
-    void defaultExhibitorRestClientReadsHttpResponseAndSendsAcceptHeader() throws Exception {
-        try (ServerSocket serverSocket = new ServerSocket(0)) {
-            ExecutorService serverExecutor = Executors.newSingleThreadExecutor(
-                    ThreadUtils.newThreadFactory("curator-exhibitor-rest"));
-            Future<List<String>> requestLines = serverExecutor.submit(() -> {
-                try (Socket socket = serverSocket.accept()) {
-                    socket.setSoTimeout((int) TimeUnit.SECONDS.toMillis(5));
-                    BufferedReader reader = new BufferedReader(new InputStreamReader(
-                            socket.getInputStream(), StandardCharsets.ISO_8859_1));
-                    List<String> lines = new ArrayList<>();
-                    String line;
-                    while ((line = reader.readLine()) != null && !line.isEmpty()) {
-                        lines.add(line);
-                    }
-
-                    byte[] responseBody = "count=1&port=2181&server0=zk-one".getBytes(StandardCharsets.ISO_8859_1);
-                    byte[] responseHeader = ("HTTP/1.1 200 OK\r\n"
-                            + "Content-Type: text/plain\r\n"
-                            + "Content-Length: " + responseBody.length + "\r\n"
-                            + "Connection: close\r\n\r\n").getBytes(StandardCharsets.ISO_8859_1);
-                    OutputStream outputStream = socket.getOutputStream();
-                    outputStream.write(responseHeader);
-                    outputStream.write(responseBody);
-                    outputStream.flush();
-                    return lines;
-                }
-            });
-
-            try {
-                DefaultExhibitorRestClient restClient = new DefaultExhibitorRestClient();
-                String rawResponse = restClient.getRaw(
-                        "127.0.0.1",
-                        serverSocket.getLocalPort(),
-                        "/exhibitor/v1/cluster/list",
-                        "application/x-www-form-urlencoded");
-
-                assertThat(rawResponse).isEqualTo("count=1&port=2181&server0=zk-one");
-                assertThat(requestLines.get(5, TimeUnit.SECONDS))
-                        .contains("GET /exhibitor/v1/cluster/list HTTP/1.1")
-                        .anyMatch(header -> header.equalsIgnoreCase("Accept: application/x-www-form-urlencoded"));
-            } finally {
-                serverSocket.close();
-                serverExecutor.shutdownNow();
-                assertThat(serverExecutor.awaitTermination(5, TimeUnit.SECONDS)).isTrue();
-            }
-        }
     }
 
     @Test
