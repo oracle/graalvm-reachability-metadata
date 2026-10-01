@@ -33,6 +33,13 @@ describe the same image. The instrumented run is slower than a sampled one;
 next to a native build that already takes minutes, one slower run per deep pass
 is an acceptable price for exact counts.
 
+The build flags are measurement, not input. A benchmark pins the harness under
+test, and a pin that predates the instrumented lane would silently fall back to
+samples alone, so the deep-measure and final-measurement steps hand
+`--pgo-instrument` to the build through `NATIVE_IMAGE_OPTIONS`, which
+native-image appends to the harness's own arguments; a harness that already
+passes the flag is unaffected (§FS-code-coverage-benchmarking.1).
+
 ### 1.2 Counter semantics
 
 The compiler instruments code after inlining, so one bytecode position appears
