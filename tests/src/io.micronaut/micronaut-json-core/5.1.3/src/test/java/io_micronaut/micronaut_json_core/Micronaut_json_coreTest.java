@@ -53,6 +53,16 @@ public class Micronaut_json_coreTest {
     }
 
     @Test
+    void mapperReadsTypedValuesFromJsonTrees() throws IOException {
+        JsonNode tree = mapper.writeValueToTree(Map.of("first", 21, "second", 34));
+
+        Map<String, Integer> value = mapper.readValueFromTree(
+                tree, Argument.mapOf(String.class, Integer.class));
+
+        assertThat(value).containsEntry("first", 21).containsEntry("second", 34);
+    }
+
+    @Test
     void mapperWritesBytesStringsAndStreams() throws IOException {
         Map<String, Object> value = Map.of("message", "hello", "number", 42);
         ByteArrayOutputStream output = new ByteArrayOutputStream();
