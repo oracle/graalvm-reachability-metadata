@@ -1,0 +1,15 @@
+```json
+{
+  "action": "no_action",
+  "summary": "The issue excerpt never shows the failing operation, and nothing in it points to a missing dependency, Docker image or system property. The log shows a native image that built successfully (26.68MB). netty-transport-native-unix-common is a thin JNI/unix-socket helper whose existing 4.1.57.Final tests need no extra setup.",
+  "deterministic_setup": [],
+  "agent_guidance": "",
+  "risks": [
+    "The log excerpt is truncated before the actual native-image run failure, so the failing operation is unknown. Diagnose it from a local run of the reproducer.",
+    "The metadata list shows mixed Netty versions (netty-buffer and netty-transport at 4.1.80.Final, netty-common and netty-resolver at 4.1.79.Final). A version mismatch between these modules may be the cause, but this is unverified.",
+    "The library uses JNI native code loaded through NativeLibraryLoader, so a missing JNI or resource entry is possible. That can be repaired with reachability metadata, so it does not make the version unsupportable."
+  ]
+}
+```
+
+I did not run the skip_unsupported steps. The issue gives no failure evidence to start from (step 1), and the mechanisms it might involve (JNI and resource loading) are things reachability metadata can register. Attempting the fix is the safe default.

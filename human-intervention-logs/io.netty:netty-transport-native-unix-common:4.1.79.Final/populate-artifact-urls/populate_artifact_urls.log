@@ -1,0 +1,46 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :populateArtifactURLs
+I couldn't update `index.json`. The Edit tool was denied because the session is in don't-ask mode, so I didn't try another way to write the file. Nothing has been changed.
+
+I checked that all four URLs below return HTTP 200 for `4.1.79.Final`. They are the same templates the `4.1.57.Final` entry already uses. All three are on Maven Central, as you prefer.
+
+This is what I'd add to the `4.1.79.Final` entry, after `test-version`:
+
+```json
+"source-code-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-transport-native-unix-common/$version$/netty-transport-native-unix-common-$version$-sources.jar",
+"repository-url" : "https://github.com/netty/netty",
+"test-code-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-transport-native-unix-common-tests/$version$/netty-transport-native-unix-common-tests-$version$-sources.jar",
+"documentation-url" : "https://repo.maven.apache.org/maven2/io/netty/netty-transport-native-unix-common/$version$/netty-transport-native-unix-common-$version$-javadoc.jar",
+"description" : "Netty Transport Native Unix Common provides shared JNI-backed Unix utility classes and native support used by Netty's Unix-based transport modules. It supplies common Unix socket address, file descriptor, and native library plumbing that higher-level Netty transports build on for asynchronous network clients and servers.",
+```
+
+- **Language:** Netty is a plain Java library, so no `language` field is added.
+- **Description:** I reused the description from the existing entries, and it is two sentences.
+
+If you allow edits, I'll apply this. You can also paste the block in yourself.
+Ran agent for io.netty:netty-transport-native-unix-common:4.1.79.Final (exit 0). Log: /home/oracle/oracle/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9344-e1fb5a66/build/agent-url-discovery-logs/io.netty-netty-transport-native-unix-common-4.1.79.Final.log
+Completed populateArtifactURLs: invoked=1, prompted=0, skipped=0, overwriteExisting=false, verifyArtifactSources=false, limit=null
+
+[Incubating] Problems report is available at: file:///home/oracle/oracle/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9344-e1fb5a66/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 24s
+9 actionable tasks: 1 executed, 8 up-to-date

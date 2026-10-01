@@ -1,0 +1,55 @@
+{
+  "timestamp": "2026-10-01T02:10:04.087044Z",
+  "library": "io.netty:netty-transport-native-unix-common:4.1.79.Final",
+  "starting_commit": "7f8a51d5ba2147c27bcbbb9efbd55eff28cb24b3",
+  "ending_commit": "7f8a51d5ba2147c27bcbbb9efbd55eff28cb24b3",
+  "strategy_name": "library_update_optimistic_pi_gpt-5.6-luna",
+  "agent": "pi",
+  "model": "gpt-5.6-luna",
+  "status": "failure",
+  "library_preparation_preflight": {
+    "status": "completed",
+    "action": "no_action",
+    "issue_number": 9344,
+    "issue_label": "fails-native-image-run",
+    "library": "io.netty:netty-transport-native-unix-common:4.1.79.Final",
+    "summary": "The issue excerpt never shows the failing operation, and nothing in it points to a missing dependency, Docker image or system property. The log shows a native image that built successfully (26.68MB). netty-transport-native-unix-common is a thin JNI/unix-socket helper whose existing 4.1.57.Final tests need no extra setup.",
+    "deterministic_setup": [],
+    "agent_guidance": "",
+    "risks": [
+      "The log excerpt is truncated before the actual native-image run failure, so the failing operation is unknown. Diagnose it from a local run of the reproducer.",
+      "The metadata list shows mixed Netty versions (netty-buffer and netty-transport at 4.1.80.Final, netty-common and netty-resolver at 4.1.79.Final). A version mismatch between these modules may be the cause, but this is unverified.",
+      "The library uses JNI native code loaded through NativeLibraryLoader, so a missing JNI or resource entry is possible. That can be repaired with reachability metadata, so it does not make the version unsupportable."
+    ],
+    "applied_setup": [],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#9344 [Automation] native-image run fails for io.netty:netty-transport-native-unix-common:4.1.79.Final; label=fails-native-image-run; body_chars=8015"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "6 existing test file path(s) included"
+      }
+    ],
+    "current_library": "io.netty:netty-transport-native-unix-common:4.1.57.Final",
+    "new_version": "4.1.79.Final",
+    "model": "sonnet",
+    "input_tokens_used": 2,
+    "output_tokens_used": 683
+  },
+  "metrics": {
+    "input_tokens_used": 0,
+    "cached_input_tokens_used": 0,
+    "output_tokens_used": 0,
+    "iterations": 3,
+    "cost_usd": 0.0,
+    "generated_loc": 0,
+    "tested_library_loc": 0,
+    "metadata_entries": 0,
+    "code_coverage_percent": 0.0
+  },
+  "artifacts": {
+    "metadata_file": "None"
+  }
+}
