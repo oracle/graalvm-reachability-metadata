@@ -10,11 +10,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Task that builds PGO-sampling native test images, with the analysis
- * call-tree CSV dump enabled, on matching subprojects.
+ * Task that builds instrumented, PGO-sampling native test images, with the
+ * analysis call-tree CSV dump enabled, on matching subprojects.
  * <p>
- * Supports sampled deep-path navigation (§AR-test-harness.8,
- * §forge/AR-code-coverage-improvement.4.2).
+ * Supports deep-path navigation (§AR-test-harness.8,
+ * §forge/AR-code-coverage-deep-navigation.1.1).
  */
 @SuppressWarnings("unused")
 public abstract class NativeTestPGOSamplingInvocationTask extends AllCoordinatesExecTask {
@@ -32,7 +32,7 @@ public abstract class NativeTestPGOSamplingInvocationTask extends AllCoordinates
 
     @Override
     protected String errorMessageFor(String coordinates, int exitCode) {
-        return "PGO-sampling native image compilation failed for " + coordinates
+        return "PGO native image compilation failed for " + coordinates
                 + " with exit code " + exitCode + ".";
     }
 }
