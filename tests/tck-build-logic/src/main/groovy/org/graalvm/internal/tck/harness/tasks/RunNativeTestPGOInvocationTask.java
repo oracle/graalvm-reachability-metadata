@@ -10,11 +10,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Task that runs the PGO-sampling native test image once on matching
- * subprojects to collect the sampled {@code .iprof} profile.
+ * Task that runs the profiled native test image once on matching
+ * subprojects to collect the {@code .iprof} profile: sampled stacks plus
+ * instrumented counters.
  * <p>
- * Supports sampled deep-path navigation (§AR-test-harness.8,
- * §forge/AR-code-coverage-improvement.4.2).
+ * Supports deep-path navigation (§AR-test-harness.8,
+ * §forge/AR-code-coverage-deep-navigation.1.1).
  */
 @SuppressWarnings("unused")
 public abstract class RunNativeTestPGOInvocationTask extends AllCoordinatesExecTask {
@@ -33,7 +34,7 @@ public abstract class RunNativeTestPGOInvocationTask extends AllCoordinatesExecT
 
     @Override
     protected String errorMessageFor(String coordinates, int exitCode) {
-        return "PGO-sampling native image run failed for " + coordinates
+        return "PGO native image run failed for " + coordinates
                 + " with exit code " + exitCode + ".";
     }
 }

@@ -5,8 +5,9 @@
 
 """Build schema-validated final evidence for code coverage improvement.
 
-JaCoCo is the only coverage authority. Sampled PGO is retained only as
-navigation guidance (§AR-code-coverage-improvement).
+JaCoCo is the only coverage authority. PGO samples and counters are retained
+only as navigation guidance (§AR-code-coverage-improvement,
+§AR-code-coverage-deep-navigation).
 """
 
 from __future__ import annotations
@@ -23,6 +24,7 @@ from jsonschema import Draft202012Validator
 
 from utility_scripts.code_coverage_model import parse_inventory_id
 from utility_scripts.code_coverage_jacoco import load_jacoco_method_coverage
+from utility_scripts.code_coverage_profile_inputs import PROFILE_KINDS
 
 SCHEMA_VERSION = "1.3.0"
 
@@ -195,8 +197,10 @@ def _deep_snapshot(
         report: dict[str, Any], coordinate: str, label: str
 ) -> dict[str, Any]:
     _check_coordinate(report, coordinate, label)
-    if report.get("profileKind") != "sampled-guidance":
-        raise FinalizationError(f"{label}.profileKind must be 'sampled-guidance'.")
+    if report.get("profileKind") not in PROFILE_KINDS:
+        raise FinalizationError(
+            f"{label}.profileKind must be one of {sorted(PROFILE_KINDS)}."
+        )
     summary: dict[str, Any] = _object(report.get("summary"), f"{label}.summary")
     statuses: dict[str, str] = _coverage_statuses(
         report, "deepMethods", label, frozenset({"covered", "uncovered"})
