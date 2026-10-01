@@ -80,7 +80,7 @@ def sweep_consumers(
         artifact: str,
         consumers: list[dict[str, Any]],
 ) -> dict[str, Any]:
-    """Run `javaTest` for every consumer's tested versions; stop at the first failure."""
+    """Run the tests for every consumer's tested versions; stop at the first failure."""
     commands: list[dict[str, Any]] = []
     for index, consumer in enumerate(consumers):
         metadata_version = str(consumer["metadata-version"])

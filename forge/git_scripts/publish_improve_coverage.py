@@ -32,19 +32,12 @@ from utility_scripts.dynamic_access_exhaust_report import (
     find_dynamic_access_exhaust_report_path,
 )
 from utility_scripts.repo_path_resolver import resolve_repo_roots
-from utility_scripts.library_update_alias_split import (
-    load_alias_split_metrics,
-    maybe_split_library_update_tested_versions,
-)
+from utility_scripts.library_update_alias_split import maybe_split_library_update_tested_versions
 from utility_scripts.library_update_consumer_split import (
     CONSUMER_SPLIT_METRICS_KEY,
     maybe_split_test_version_consumers,
 )
 from utility_scripts.library_update_follow_up_issue import ensure_alias_split_follow_up_issue
-from utility_scripts.library_update_native_sweep import (
-    NATIVE_SWEEP_METRICS_KEY,
-    run_library_update_native_sweep,
-)
 
 BASELINE_STATS_FILENAME = ".baseline-stats.json"
 LIBRARY_UPDATE_TARGET_FILENAME = ".library_update_target.json"
@@ -253,12 +246,11 @@ def push_current_branch_to_origin(
         stage_and_commit(group, artifact, library_version, coordinates, repo_path)
 
     def before_verification(base_ref: str) -> None:
-        # The JVM sweeps settle which entries stay on the regenerated suite
-        # before the native sweep runs them. §FS-library-update-tested-version-split
+        # The target entry's own versions settle before its consumers are swept.
+        # §FS-library-update-tested-version-split
         for sweep in (
                 maybe_split_library_update_tested_versions,
                 maybe_split_test_version_consumers,
-                run_library_update_native_sweep,
         ):
             sweep(
                 repo_path=repo_path,
@@ -291,7 +283,7 @@ def push_current_branch_to_origin(
                 "coordinate": str(split["successor_coordinates"]),
                 "tested_version": str(split["failed_version"]),
                 "issue_number": int(split["follow_up_issue_number"]),
-                "reason": f"JVM compatibility first failed at {split['failed_version']}",
+                "reason": f"Tests first failed at {split['failed_version']}",
             })
         render = {
             "baseline_stats": baseline_snapshot.get("stats") if baseline_snapshot else None,
@@ -312,7 +304,6 @@ def push_current_branch_to_origin(
             "dynamic_access": None if exhaust_report is None else exhaust_report.to_dict(),
             "alias_split": alias_split,
             "consumer_split": consumer_split,
-            "native_sweep": load_alias_split_metrics(metrics_repo_path, NATIVE_SWEEP_METRICS_KEY),
         }
         return descriptor_input_from_pending_metrics(
             metrics_repo_path=metrics_repo_path,

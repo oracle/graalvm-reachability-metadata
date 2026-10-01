@@ -143,7 +143,6 @@ PUBLICATION_METRICS_EXTRA_KEYS: tuple[str, ...] = (
     "local_ci_verification",
     "library_update_alias_split",
     "library_update_consumer_split",
-    "library_update_native_sweep",
     "local_review",
 )
 # A workflow failure is logical (driver/core/CI-check) and gets `human-intervention`

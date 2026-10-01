@@ -690,7 +690,6 @@ Summary:
     body += _format_post_generation_intervention(descriptor)
     body += _format_alias_split_section(render.get("alias_split"))
     body += _format_consumer_split_section(render.get("consumer_split"))
-    body += _format_native_sweep_section(render.get("native_sweep"))
     body += _format_local_ci_verification_section(verification)
     return title, body
 
@@ -1409,30 +1408,6 @@ def _format_consumer_split_section(split: dict[str, Any] | None) -> str:
         f"- Consumers re-pointed to `{split.get('successor_metadata_version')}`: "
         f"{_format_version_list(split.get('repointed_consumers'))}\n"
         f"{issue_lines}"
-    )
-
-
-def _format_native_sweep_section(sweep: dict[str, Any] | None) -> str:
-    """Render native repairs on the shared suite. §forge/FS-library-update-tested-version-split.2"""
-    if not isinstance(sweep, dict) or not isinstance(sweep.get("repairs"), list):
-        return ""
-    lines = []
-    for repair in sweep["repairs"]:
-        if not isinstance(repair, dict):
-            continue
-        if repair.get("kind") == "entry_split":
-            lines.append(
-                f"- `{repair.get('failed_version')}` split from `{repair.get('metadata_version')}` "
-                f"into a new entry with {_format_version_list(repair.get('moved_versions'))}\n"
-            )
-        else:
-            lines.append(
-                f"- Metadata added to `{repair.get('metadata_version')}` for `{repair.get('failed_version')}`\n"
-            )
-    return (
-        "\n### Native Sweep of the Shared Suite\n\n"
-        f"Native tests on suite `{sweep.get('test_version')}` needed metadata repairs:\n\n"
-        + "".join(lines)
     )
 
 

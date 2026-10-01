@@ -209,35 +209,28 @@ def load_index_entries_from_commit(
     return [entry for entry in parsed if isinstance(entry, dict)]
 
 
-def run_tested_version_sweep(
-        repo_path: str,
-        coordinates: str,
-        versions: list[str],
-        gradle_task: str = "javaTest",
-) -> dict[str, Any]:
-    """Run one Gradle test task per tested version and stop at the first failure.
+def run_tested_version_sweep(repo_path: str, coordinates: str, versions: list[str]) -> dict[str, Any]:
+    """Run the JVM and native tests per tested version and stop at the first failure.
 
     Versions resolve as CI resolves them: the entry's coordinate with
-    `GVM_TCK_LV` set to the tested version.
+    `GVM_TCK_LV` set to the tested version. §FS-library-update-tested-version-split
     """
     # Operators need live CLI progress because this sweep can run many Gradle
     # commands before local CI starts. §FS-library-update-tested-version-split
     log_stage(
         ALIAS_SWEEP_STAGE,
-        f"Starting {gradle_task} sweep for {coordinates} across {len(versions)} tested-version alias(es).",
+        f"Starting test sweep for {coordinates} across {len(versions)} tested-version alias(es).",
     )
     commands: list[dict[str, Any]] = []
     for index, version in enumerate(versions):
         log_path = build_timestamped_task_log_path(
             ALIAS_SWEEP_STAGE,
             coordinates,
-            f"{gradle_task}-{version}",
+            f"test-{version}",
         )
         env = gradle_command_environment(repo_path, dict(os.environ))
         env["GVM_TCK_LV"] = version
-        if gradle_task == "javaTest":
-            env.pop("GVM_TCK_NATIVE_IMAGE_MODE", None)
-        command = ["./gradlew", "clean", gradle_task, f"-Pcoordinates={coordinates}"]
+        command = ["./gradlew", "clean", "test", f"-Pcoordinates={coordinates}"]
         display_path = display_log_path(log_path)
         log_stage(
             ALIAS_SWEEP_STAGE,

@@ -45,27 +45,8 @@ class SharedSuiteSectionTests(unittest.TestCase):
         self.assertIn("Refs: #1234\n", section)
         self.assertIn("Forge-Unblocks-Issue: #1234\n", section)
 
-    def test_native_sweep_lists_each_repair(self) -> None:
-        section = publisher._format_native_sweep_section({
-            "test_version": "1.0",
-            "repairs": [
-                {"kind": "metadata", "metadata_version": "2.0", "failed_version": "2.0"},
-                {
-                    "kind": "entry_split",
-                    "metadata_version": "1.0",
-                    "successor_metadata_version": "1.1",
-                    "failed_version": "1.1",
-                    "moved_versions": ["1.1", "1.2"],
-                },
-            ],
-        })
-
-        self.assertIn("- Metadata added to `2.0` for `2.0`\n", section)
-        self.assertIn("- `1.1` split from `1.0` into a new entry with `1.1`, `1.2`\n", section)
-
     def test_absent_records_render_nothing(self) -> None:
         self.assertEqual("", publisher._format_consumer_split_section(None))
-        self.assertEqual("", publisher._format_native_sweep_section(None))
 
 
 if __name__ == "__main__":
