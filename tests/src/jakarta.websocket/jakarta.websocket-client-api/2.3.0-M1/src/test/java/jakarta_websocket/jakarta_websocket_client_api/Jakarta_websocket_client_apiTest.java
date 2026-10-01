@@ -318,7 +318,7 @@ public class Jakarta_websocket_client_apiTest {
 
         session.addMessageHandler(String.class, wholeHandler);
         session.addMessageHandler(String.class, partialHandler);
-        session.setMaxIdleTimeout(1_000L);
+        session.setMaxIdleTimeout(10_000L);
         session.setMaxBinaryMessageBufferSize(64);
         session.setMaxTextMessageBufferSize(128);
         session.getUserProperties().put("authenticated", true);
@@ -332,7 +332,7 @@ public class Jakarta_websocket_client_apiTest {
                 .containsExactly("permessage-deflate");
         assertThat(session.isSecure()).isTrue();
         assertThat(session.isOpen()).isFalse();
-        assertThat(session.getMaxIdleTimeout()).isEqualTo(1_000L);
+        assertThat(session.getMaxIdleTimeout()).isEqualTo(10_000L);
         assertThat(session.getMaxBinaryMessageBufferSize()).isEqualTo(64);
         assertThat(session.getMaxTextMessageBufferSize()).isEqualTo(128);
         assertThat(session.getId()).isEqualTo("session-3");
@@ -368,7 +368,7 @@ public class Jakarta_websocket_client_apiTest {
         basicEndpoint.getSendStream().close();
         basicEndpoint.sendPing(ByteBuffer.wrap(new byte[] {1}));
         basicEndpoint.sendPong(ByteBuffer.wrap(new byte[] {2}));
-        asyncEndpoint.setSendTimeout(500L);
+        asyncEndpoint.setSendTimeout(10_000L);
         Future<Void> textFuture = asyncEndpoint.sendText("async-text");
         Future<Void> binaryFuture = asyncEndpoint.sendBinary(ByteBuffer.wrap(new byte[] {3}));
         Future<Void> objectFuture = asyncEndpoint.sendObject("async-object");
@@ -378,7 +378,7 @@ public class Jakarta_websocket_client_apiTest {
         basicEndpoint.flushBatch();
 
         assertThat(basicEndpoint.getBatchingAllowed()).isTrue();
-        assertThat(asyncEndpoint.getSendTimeout()).isEqualTo(500L);
+        assertThat(asyncEndpoint.getSendTimeout()).isEqualTo(10_000L);
         assertThat(textFuture.isDone()).isTrue();
         assertThat(binaryFuture.isDone()).isTrue();
         assertThat(objectFuture.isDone()).isTrue();
@@ -430,8 +430,8 @@ public class Jakarta_websocket_client_apiTest {
         RecordingEndpoint endpoint = new RecordingEndpoint();
         URI uri = URI.create("wss://example.test/chat");
 
-        container.setAsyncSendTimeout(250L);
-        container.setDefaultMaxSessionIdleTimeout(1_000L);
+        container.setAsyncSendTimeout(10_000L);
+        container.setDefaultMaxSessionIdleTimeout(10_000L);
         container.setDefaultMaxBinaryMessageBufferSize(64);
         container.setDefaultMaxTextMessageBufferSize(128);
         Session endpointSession = container.connectToServer(endpoint, config, uri);
@@ -439,8 +439,8 @@ public class Jakarta_websocket_client_apiTest {
         Session objectSession = container.connectToServer(new AnnotatedClientEndpoint(), uri);
         Session classSession = container.connectToServer(AnnotatedClientEndpoint.class, uri);
 
-        assertThat(container.getDefaultAsyncSendTimeout()).isEqualTo(250L);
-        assertThat(container.getDefaultMaxSessionIdleTimeout()).isEqualTo(1_000L);
+        assertThat(container.getDefaultAsyncSendTimeout()).isEqualTo(10_000L);
+        assertThat(container.getDefaultMaxSessionIdleTimeout()).isEqualTo(10_000L);
         assertThat(container.getDefaultMaxBinaryMessageBufferSize()).isEqualTo(64);
         assertThat(container.getDefaultMaxTextMessageBufferSize()).isEqualTo(128);
         assertThat(container.getInstalledExtensions())
