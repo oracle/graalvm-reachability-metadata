@@ -1,0 +1,17 @@
+# Human intervention needed
+
+The automated job failed in `fix/fix_reported_failure()` while repairing `net.minidev:accessors-smart:2.4.3`.
+
+Preserved work: https://github.com/oracle/graalvm-reachability-metadata/tree/ai%2Fkimeta%2Fhuman-intervention%2Fissue-9361-fails-javac-compile-net.minidev-accessors-smart-2.4.3-0e36b9e2
+
+The likely root cause is upstream artifact availability, not the generated tests. All six Gradle attempts failed at `compileTestJava` because Maven Central could not resolve `accessors-smart-2.4.3.jar`; only the POM, sources, and Javadoc appear to be published. No test code was reached. Metrics confirm failure after 6 iterations with 0 generated LOC, identical starting and ending commits (`ced1316a1704cc2ddab28e56591639fb839adcda`), and no dynamic-access coverage.
+
+Please inspect:
+- `human-intervention-logs/net.minidev:accessors-smart:2.4.3/gradle-test/gradle-test-2026-10-01T10-13-15-723316Z.log`
+- `human-intervention-logs/net.minidev:accessors-smart:2.4.3/fix-javac-fail/pi-generation-2026-10-01T10-09-47-087273Z.log`
+- `stats/net.minidev/accessors-smart/2.4.3/execution-metrics.json`
+
+Manual next steps:
+1. Confirm whether the `2.4.3` binary JAR exists in another repository that the build may legitimately use, or ask upstream to restore/publish it.
+2. If the binary is unavailable, remove or skip `2.4.3` and select an actually published version for compatibility testing.
+3. After resolving the coordinate, rerun `./gradlew compileTestJava -Pcoordinates=net.minidev:accessors-smart:<version>` before resuming test generation.
