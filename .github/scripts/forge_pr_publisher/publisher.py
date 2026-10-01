@@ -689,6 +689,7 @@ Summary:
         body += "\n" + _format_stats_before_after(baseline_stats, library_stats, coordinates)
     body += _format_post_generation_intervention(descriptor)
     body += _format_alias_split_section(render.get("alias_split"))
+    body += _format_consumer_split_section(render.get("consumer_split"))
     body += _format_local_ci_verification_section(verification)
     return title, body
 
@@ -1383,6 +1384,29 @@ def _format_alias_split_section(split: dict[str, Any] | None) -> str:
         f"{_format_version_list(split.get('successor_versions'))}\n"
         f"- Baseline metadata copied from: `{split.get('original_metadata_version')}`\n"
         f"- Baseline tests copied from: `{split.get('original_test_version')}`\n"
+        f"{issue_lines}"
+    )
+
+
+def _format_consumer_split_section(split: dict[str, Any] | None) -> str:
+    """Render the test-version consumer split. §forge/FS-library-update-tested-version-split.1"""
+    if not isinstance(split, dict):
+        return ""
+    issue_number = split.get("follow_up_issue_number")
+    issue_lines = ""
+    if isinstance(issue_number, int):
+        issue_lines = (
+            f"Refs: #{issue_number}\n"
+            f"{_format_follow_up_trailer(issue_number)}\n"
+        )
+    return (
+        "\n### Test-Version Consumer Split\n\n"
+        f"- Regenerated suite: `{split.get('test_version')}`\n"
+        f"- First failing consumer: `{split.get('successor_metadata_version')}` "
+        f"at `{split.get('failed_version')}`, moved to its own base-commit suite\n"
+        f"- Consumers kept on the regenerated suite: {_format_version_list(split.get('passing_consumers'))}\n"
+        f"- Consumers re-pointed to `{split.get('successor_metadata_version')}`: "
+        f"{_format_version_list(split.get('repointed_consumers'))}\n"
         f"{issue_lines}"
     )
 

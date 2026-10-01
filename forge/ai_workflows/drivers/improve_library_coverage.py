@@ -74,6 +74,7 @@ from utility_scripts.metadata_index import (
     resolve_version_backfill_baseline,
 )
 from utility_scripts.metrics_writer import count_metadata_entries, count_test_only_metadata_entries, create_failure_run_metrics_output
+from utility_scripts.test_project_properties import rewrite_test_project_gradle_properties
 from utility_scripts.run_location import (
     STEP_NORMAL_SETUP,
     STEP_RUN_WORKFLOW_ENGINE,
@@ -289,51 +290,6 @@ def _rewrite_text_files(root_dir: str, replacements: list[tuple[str, str]], allo
                     file.write(updated)
 
 
-def _rewrite_cloned_gradle_properties(
-        test_dir: str,
-        group: str,
-        artifact: str,
-        requested_version: str,
-) -> None:
-    """Update scaffold-owned Gradle properties after cloning a test project."""
-    gradle_properties_path = os.path.join(test_dir, "gradle.properties")
-    if not os.path.isfile(gradle_properties_path):
-        return
-
-    expected_values = {
-        "library.coordinates": f"{group}:{artifact}:{requested_version}",
-        "library.version": requested_version,
-        "metadata.dir": f"{group}/{artifact}/{requested_version}/",
-    }
-    with open(gradle_properties_path, "r", encoding="utf-8") as properties_file:
-        lines = properties_file.readlines()
-
-    updated_lines: list[str] = []
-    for line in lines:
-        line_ending = "\n" if line.endswith("\n") else ""
-        content = line[:-1] if line_ending else line
-        stripped = content.lstrip()
-        if not stripped or stripped.startswith("#"):
-            updated_lines.append(line)
-            continue
-        key_separator = "=" if "=" in stripped else ":" if ":" in stripped else None
-        if key_separator is None:
-            updated_lines.append(line)
-            continue
-        key = stripped.split(key_separator, 1)[0].strip()
-        if key not in expected_values:
-            updated_lines.append(line)
-            continue
-        indent = content[:len(content) - len(stripped)]
-        updated_lines.append(f"{indent}{key} = {expected_values[key]}{line_ending}")
-
-    updated_content = "".join(updated_lines)
-    original_content = "".join(lines)
-    if updated_content != original_content:
-        with open(gradle_properties_path, "w", encoding="utf-8") as properties_file:
-            properties_file.write(updated_content)
-
-
 def _replace_version_in_value(value: Any, old_versions: set[str], new_version: str) -> Any:
     if isinstance(value, str):
         updated = value
@@ -458,7 +414,7 @@ def clone_library_update_support(
     ]
     _rewrite_text_files(target_metadata_dir, replacements, allow_bare_versions=True)
     _rewrite_text_files(target_test_dir, replacements)
-    _rewrite_cloned_gradle_properties(target_test_dir, group, artifact, requested_version)
+    rewrite_test_project_gradle_properties(target_test_dir, group, artifact, requested_version)
     _rewrite_text_files(target_stats_dir, replacements, allow_bare_versions=True)
 
     entries = load_index_entries(repo_path, group, artifact) or []

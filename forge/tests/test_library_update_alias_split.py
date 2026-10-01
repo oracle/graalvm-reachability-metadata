@@ -41,13 +41,13 @@ class LibraryUpdateAliasSplitTests(unittest.TestCase):
             return MagicMock(returncode=0)
 
         with (
-            patch("utility_scripts.library_update_alias_split._copy_tree_from_commit"),
+            patch("utility_scripts.library_update_alias_split.copy_tree_from_commit"),
             patch(
                 "utility_scripts.library_update_alias_split.load_index_entries",
                 return_value=entries,
             ),
             patch(
-                "utility_scripts.library_update_alias_split._write_index_entries",
+                "utility_scripts.library_update_alias_split.write_index_entries",
                 side_effect=record_index_write,
             ),
             patch(

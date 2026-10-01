@@ -472,6 +472,14 @@ def is_newer_than_latest_metadata_version(
     return is_newer_parseable_metadata_version(candidate_version, current_latest)
 
 
+def compare_metadata_versions(first_version: str, second_version: str) -> int:
+    """Order metadata versions, falling back to text order for unparseable ones."""
+    comparison = _compare_parseable_metadata_versions(first_version, second_version)
+    if comparison is not None:
+        return comparison
+    return (first_version > second_version) - (first_version < second_version)
+
+
 def _compare_parseable_metadata_versions(first_version: str, second_version: str) -> int | None:
     first = _parse_metadata_version(first_version)
     second = _parse_metadata_version(second_version)
