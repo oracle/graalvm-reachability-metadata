@@ -6,10 +6,10 @@
  */
 package opentelemetry;
 
+import io.opentelemetry.api.common.AttributeKey;
 import io.opentelemetry.api.trace.Span;
 import io.opentelemetry.api.trace.Tracer;
 import io.opentelemetry.context.Context;
-import io.opentelemetry.sdk.internal.ExceptionAttributeResolver;
 import io.opentelemetry.sdk.trace.ReadWriteSpan;
 import io.opentelemetry.sdk.trace.ReadableSpan;
 import io.opentelemetry.sdk.trace.SdkTracerProvider;
@@ -25,6 +25,12 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 public class SdkTracerProviderUtilTest {
+    private static final AttributeKey<String> EXCEPTION_TYPE =
+        AttributeKey.stringKey("exception.type");
+    private static final AttributeKey<String> EXCEPTION_MESSAGE =
+        AttributeKey.stringKey("exception.message");
+    private static final AttributeKey<String> EXCEPTION_STACKTRACE =
+        AttributeKey.stringKey("exception.stacktrace");
 
     @Test
     public void setTracerConfiguratorOnBuilderAppliesConfiguredTracerBehavior() {
@@ -78,13 +84,13 @@ public class SdkTracerProviderUtilTest {
         Assertions.assertEquals("exception", exceptionEvent.getName());
         Assertions.assertEquals(
             "custom.exception.type",
-            exceptionEvent.getAttributes().get(ExceptionAttributeResolver.EXCEPTION_TYPE));
+            exceptionEvent.getAttributes().get(EXCEPTION_TYPE));
         Assertions.assertEquals(
             "custom.exception.message",
-            exceptionEvent.getAttributes().get(ExceptionAttributeResolver.EXCEPTION_MESSAGE));
+            exceptionEvent.getAttributes().get(EXCEPTION_MESSAGE));
         Assertions.assertEquals(
             "custom.exception.stacktrace",
-            exceptionEvent.getAttributes().get(ExceptionAttributeResolver.EXCEPTION_STACKTRACE));
+            exceptionEvent.getAttributes().get(EXCEPTION_STACKTRACE));
     }
 
     private static SdkTracerProvider createProviderWithBuilderConfigurator(
@@ -117,13 +123,13 @@ public class SdkTracerProviderUtilTest {
             tracerProviderBuilder,
             (attributeSetter, exception, maxAttributeLength) -> {
                 attributeSetter.setAttribute(
-                    ExceptionAttributeResolver.EXCEPTION_TYPE, "custom.exception.type"
+                    EXCEPTION_TYPE, "custom.exception.type"
                 );
                 attributeSetter.setAttribute(
-                    ExceptionAttributeResolver.EXCEPTION_MESSAGE, "custom.exception.message"
+                    EXCEPTION_MESSAGE, "custom.exception.message"
                 );
                 attributeSetter.setAttribute(
-                    ExceptionAttributeResolver.EXCEPTION_STACKTRACE,
+                    EXCEPTION_STACKTRACE,
                     "custom.exception.stacktrace"
                 );
             });
