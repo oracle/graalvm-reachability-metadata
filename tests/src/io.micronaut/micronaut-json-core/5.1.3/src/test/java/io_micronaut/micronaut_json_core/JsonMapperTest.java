@@ -23,11 +23,11 @@ import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class Micronaut_json_coreTest {
+public class JsonMapperTest {
     private final JsonMapper mapper = JsonMapper.createDefault();
 
     @Test
-    void mapperReadsAndWritesJsonTrees() throws IOException {
+    void createDefaultDiscoversMapperAndReadsAndWritesJsonTrees() throws IOException {
         JsonNode input = mapper.readValue("{\"name\":\"Ada\",\"scores\":[3,5]}", JsonNode.class);
 
         assertThat(input.get("name").getStringValue()).isEqualTo("Ada");
