@@ -1,0 +1,77 @@
+{
+  "continueFrom": "explore",
+  "coordinate": "org.apache.curator:curator-client:5.0.0",
+  "failure": {
+    "operand": "org.apache.curator:curator-client:5.0.0",
+    "phase": "explore",
+    "step": "generate_tests()"
+  },
+  "issueNumber": 10288,
+  "label": "library-update-request",
+  "libraryPreparationPreflight": {
+    "action": "no_action",
+    "agent_guidance": "",
+    "applied_setup": [],
+    "deterministic_setup": [],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#10288 Improve coverage for org.apache.curator:curator-client:5.0.0; label=library-update-request; body_chars=197"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "8 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 4,
+    "issue_label": "library-update-request",
+    "issue_number": 10288,
+    "library": "org.apache.curator:curator-client:5.0.0",
+    "model": "sonnet",
+    "output_tokens_used": 639,
+    "risks": [
+      "Coverage of ZooKeeper connection paths (CuratorZookeeperClient start, connection state handling) may stay limited without a live server. The tests should drive those paths without a real server, for example against an unreachable connect string with short timeouts.",
+      "Adding curator-test (TestingServer) or a ZooKeeper Docker image would be heavier and is not justified by the evidence found."
+    ],
+    "status": "completed",
+    "summary": "The existing scaffold already depends on curator-client:5.0.0, which brings in zookeeper and its shaded Guava transitively. The three test classes already exercise the client's retry policies, executors, ZKPaths, TimeTrace and shaded Guava Enums/Resources, with a user-code-filter covering org.apache.curator.**. I found no sign that an extra dependency, Docker image or environment property is needed. I did not run the build, so I did not confirm the 52 uncovered classes from a coverage report."
+  },
+  "libraryUpdateRoute": {
+    "baseline_coordinates": null,
+    "new_version": "5.0.0",
+    "selected_driver": "improve_library_coverage"
+  },
+  "newVersion": null,
+  "phases": {
+    "explore": {
+      "chunkClassCount": null,
+      "chunkProcessedClassCount": 0,
+      "exhaustedClasses": [],
+      "status": "running"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": null,
+      "status": "skipped"
+    },
+    "publication": {
+      "branch": null,
+      "coverageFollowUpIssueNumber": null,
+      "isPushed": false,
+      "publicationId": null,
+      "publicationTimestamp": null,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": true,
+      "status": "completed"
+    }
+  },
+  "preservedBranch": "ai/kimeta/human-intervention/issue-10288-library-update-request-org.apache.curator-curator-client-5.0.0-d203ce91",
+  "publicationMetrics": null,
+  "schemaVersion": 1,
+  "strategyName": "library_update_optimistic_pi_gpt-5.6-luna"
+}

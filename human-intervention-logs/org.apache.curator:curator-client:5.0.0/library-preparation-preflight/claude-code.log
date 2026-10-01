@@ -1,0 +1,12 @@
+```json
+{
+  "action": "no_action",
+  "summary": "The existing scaffold already depends on curator-client:5.0.0, which brings in zookeeper and its shaded Guava transitively. The three test classes already exercise the client's retry policies, executors, ZKPaths, TimeTrace and shaded Guava Enums/Resources, with a user-code-filter covering org.apache.curator.**. I found no sign that an extra dependency, Docker image or environment property is needed. I did not run the build, so I did not confirm the 52 uncovered classes from a coverage report.",
+  "deterministic_setup": [],
+  "agent_guidance": "",
+  "risks": [
+    "Coverage of ZooKeeper connection paths (CuratorZookeeperClient start, connection state handling) may stay limited without a live server. The tests should drive those paths without a real server, for example against an unreachable connect string with short timeouts.",
+    "Adding curator-test (TestingServer) or a ZooKeeper Docker image would be heavier and is not justified by the evidence found."
+  ]
+}
+```

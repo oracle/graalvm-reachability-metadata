@@ -1,0 +1,51 @@
+Prompt:
+You are preparing a Forge workflow for a library issue. Decide whether the library needs setup beyond the normal generated test scaffold before meaningful coverage is reachable.
+
+Research the library yourself to make this decision. Investigate the resolved artifact and its dependencies, how the library is normally used, and its documentation. The JSON context below is only a starting point, not the limit of what you may consider. Do not modify the repository or apply any setup yourself — return only the decision. Local Gradle and Native Image verification remain authoritative.
+
+The setup can be one of three things: an extra Maven dependency, a Docker image the tests need, or an environment/system property the generated tests must set. Represent dependencies and Docker images as `deterministic_setup` entries the driver can apply before generation:
+  - {"kind": "dependency", "coordinate": "group:artifact:version", "scope": "testImplementation", "reason": "..."}
+  - {"kind": "docker_image", "image": "name:tag", "slug": "short-slug", "reason": "..."}
+If a test needs a Docker image that is already pinned under `tests/tck-build-logic/src/main/resources/allowed-docker-images/`, reuse the exact tag from that `Dockerfile-<slug>` instead of introducing a new one, since the allow-list permits a single shared tag per image.
+Put environment variables, system properties, and other test-code setup in `agent_guidance`. Do not restate deterministic entries as guidance.
+
+Return a single JSON object with this shape:
+{
+  "action": "no_action" | "advisory_preparation",
+  "summary": "short reason",
+  "deterministic_setup": [ ... dependency or docker_image entries, if any ... ],
+  "agent_guidance": "environment/system property/test setup guidance, if any",
+  "risks": ["risk notes, if any"]
+}
+
+Choose no_action unless your research finds concrete evidence that extra setup is needed.
+
+Context (starting point):
+{
+  "issue": {
+    "number": 10288,
+    "title": "Improve coverage for org.apache.curator:curator-client:5.0.0",
+    "label": "library-update-request",
+    "body": "This issue was opened by Forge while resolving #9364 because dynamic-access generation found 52 classes to cover for `org.apache.curator:curator-client:5.0.0`, above the configured threshold of 15.",
+    "body_error": ""
+  },
+  "library": "org.apache.curator:curator-client:5.0.0",
+  "current_library": null,
+  "new_version": null,
+  "existing_tests": {
+    "org.apache.curator:curator-client:5.0.0": [
+      "tests/src/org.apache.curator/curator-client/5.0.0/.gitignore",
+      "tests/src/org.apache.curator/curator-client/5.0.0/build.gradle",
+      "tests/src/org.apache.curator/curator-client/5.0.0/gradle.properties",
+      "tests/src/org.apache.curator/curator-client/5.0.0/settings.gradle",
+      "tests/src/org.apache.curator/curator-client/5.0.0/user-code-filter.json",
+      "tests/src/org.apache.curator/curator-client/5.0.0/src/test/java/org_apache_curator/curator_client/Curator_clientTest.java",
+      "tests/src/org.apache.curator/curator-client/5.0.0/src/test/java/org_apache_curator/curator_client/EnumsTest.java",
+      "tests/src/org.apache.curator/curator-client/5.0.0/src/test/java/org_apache_curator/curator_client/ResourcesTest.java"
+    ]
+  }
+}
+
+Conversation:
+{"duration_api_ms":8038,"stop_reason":"end_turn","session_id":"15282641-9a06-4e9f-9427-e8e58eb256cd","total_cost_usd":0.13600879999999999,"usage":{"input_tokens":4,"cache_creation_input_tokens":29710,"cache_read_input_tokens":48304,"output_tokens":750,"output_tokens_details":{"thinking_tokens":222},"server_tool_use":{"web_search_requests":0,"web_fetch_requests":0},"service_tier":"standard","cache_creation":{"ephemeral_1h_input_tokens":29710,"ephemeral_5m_input_tokens":0},"inference_geo":"not_available","iterations":[{"input_tokens":2,"output_tokens":450,"cache_read_input_tokens":36260,"cache_creation_input_tokens":5494,"cache_creation":{"ephemeral_5m_input_tokens":0,"ephemeral_1h_input_tokens":5494},"type":"message"}],"speed":"standard"},"modelUsage":{"claude-sonnet-5-5":{"inputTokens":4,"outputTokens":750,"cacheReadInputTokens":48304,"cacheCreationInputTokens":29710,"webSearchRequests":0,"costUSD":0.13600879999999999,"contextWindow":1000000,"maxOutputTokens":128000,"thinkingTokens":222,"canonicalModel":"claude-sonnet-5-5","provider":"firstParty","costBasis":"list"}},"permission_denials":[],"terminal_reason":"completed","fast_mode_state":"off","fast_mode_disabled_reason":"sdk_opt_in_required","subagent_stats":{"spawned":0,"requested":{"background":0,"foreground":0,"unset":0},"started_in_background":0,"max_depth":0,"spawned_by_subagents":0,"completed":0,"failed":0,"killed":{"parent":0,"user":0,"system":0},"refused":{"depth_limit":0,"concurrency_limit":0,"budget":0},"by_type":{}},"is_error":false,"num_turns":2,"subtype":"success","api_error_status":null,"result":"```json\n{\n  \"action\": \"no_action\",\n  \"summary\": \"The existing scaffold already depends on curator-client, which pulls in zookeeper transitively. It has tests for retry policies, ZKPaths, executors, and CuratorZookeeperClient. The 52 classes to cover are in-process Curator/ZooKeeper classes that the current tests can reach. I found no evidence that an extra dependency, Docker image, or system property is needed.\",\n  \"deterministic_setup\": [],\n  \"agent_guidance\": \"\",\n  \"risks\": [\n    \"Exercising a real ZooKeeper session would need a server (a Docker image or curator-test's TestingServer). No ZooKeeper image is in the allowed-docker-images list, and none is needed for client-side coverage.\",\n    \"Keep any CuratorZookeeperClient connection attempts bounded with short timeouts so tests do not hang when no server exists.\"\n  ]\n}\n```","ttft_ms":2621,"type":"result","duration_ms":8475,"uuid":"fca70065-a10e-41ee-93f8-0d3960865716","ttft_stream_ms":1892,"time_to_request_ms":128,"first_content_frame_ms":1892,"queued_turn_count":0,"result_index":0}
+

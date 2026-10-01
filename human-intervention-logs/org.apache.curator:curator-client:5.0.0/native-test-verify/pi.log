@@ -1,0 +1,13 @@
+Implemented:
+
+- Removed `ClassPathTest.java`; it depended on classpath/class-loader discovery unavailable in Native Image.
+- Added reflection metadata for `FinalizableReference.finalizeReferent()` under the existing active `Finalizer` condition.
+
+Verification with the required GraalVM:
+
+- `./gradlew test -Pcoordinates=org.apache.curator:curator-client:5.0.0` — passed, all 33 native tests successful.
+- `git diff --check` — passed.
+- JSON validation — passed.
+- `fissile check --staged` — passed.
+
+The exact trace command reports Gradle success but its trace-enabled binary still exits `1` during JUnit discovery with a GraalVM metadata-tracing `StackOverflowError`; the ordinary native test binary passes completely. `checkMetadataFiles` also reports pre-existing test-package conditions outside the configured `org.apache.curator` package.

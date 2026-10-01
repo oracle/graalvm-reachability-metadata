@@ -1,0 +1,46 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :populateArtifactURLs
+I couldn't update `index.json`. The Edit tool was denied because the session is in don't-ask mode, so the file is unchanged. I haven't tried to get around the denial.
+
+I checked each candidate URL for 5.0.0 with `curl`. The source, javadoc, source-release and GitHub test-tree URLs all returned 200. The Maven `-tests.jar` returned 404, so I used the source-release zip for tests, as the existing 2.7.1 entry does.
+
+This is the change I intended for the `"metadata-version": "5.0.0"` entry, added after `"metadata-version"`:
+
+```json
+"source-code-url" : "https://repo.maven.apache.org/maven2/org/apache/curator/curator-client/$version$/curator-client-$version$-sources.jar",
+"repository-url" : "https://github.com/apache/curator",
+"test-code-url" : "https://archive.apache.org/dist/curator/$version$/apache-curator-$version$-source-release.zip",
+"documentation-url" : "https://repo.maven.apache.org/maven2/org/apache/curator/curator-client/$version$/curator-client-$version$-javadoc.jar",
+"description" : "Apache Curator Client is the low-level Java client library used by Apache Curator to communicate with Apache ZooKeeper. It wraps ZooKeeper connection management, retry policies, ACL helpers, watchers, and related primitives used by higher-level Curator recipes and frameworks."
+```
+
+- **Language:** this is a plain Java library, so I'm leaving `"language"` absent.
+- **Descriptions:** the description is identical to the one on the other entries in this file.
+
+If you grant Edit permission, or switch the session out of don't-ask mode, I'll apply it. You can also paste the block in yourself.
+Ran agent for org.apache.curator:curator-client:5.0.0 (exit 0). Log: /home/oracle/oracle/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10288-287b4050/build/agent-url-discovery-logs/org.apache.curator-curator-client-5.0.0.log
+Completed populateArtifactURLs: invoked=1, prompted=0, skipped=0, overwriteExisting=false, verifyArtifactSources=false, limit=null
+
+[Incubating] Problems report is available at: file:///home/oracle/oracle/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10288-287b4050/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 24s
+9 actionable tasks: 1 executed, 8 up-to-date
