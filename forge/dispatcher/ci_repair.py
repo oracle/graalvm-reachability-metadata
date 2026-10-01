@@ -421,6 +421,23 @@ def repair_failed_ci_pull_request(
         }
         if verdict.action is not None:
             descriptor["local_review"]["action"] = verdict.action
+        if verdict.decision == "rejected":
+            rejected_marker = f"<!-- forge-ci-repair-rejected:{head_sha} -->"
+            if not any(
+                    rejected_marker in str(comment.get("body") or "")
+                    for comment in get_issue_comments(pr_number)
+            ):
+                post_issue_comment(
+                    pr_number,
+                    f"Forge could not fix the failed CI by changing this contribution.\n\n"
+                    f"{verdict.review_comment}\n\n{rejected_marker}",
+                )
+            reconcile_rejected_publication(
+                pull_request,
+                SimpleNamespace(descriptor=descriptor),
+            )
+            # The head is unchanged, so its verdict stays (§FS-automated-pr-review).
+            return True
         validate_publication_descriptor(worktree_path, descriptor)
         descriptor_path = os.path.join(worktree_path, validated.descriptor_path)
         with open(descriptor_path, "w", encoding="utf-8") as descriptor_file:
@@ -444,21 +461,6 @@ def repair_failed_ci_pull_request(
             f"[Pushed CI-repair decision for PR #{pr_number}; "
             "the new exact head will be evaluated on the next pass.]"
         )
-        if verdict.decision == "rejected":
-            rejected_marker = f"<!-- forge-ci-repair-rejected:{head_sha} -->"
-            if not any(
-                    rejected_marker in str(comment.get("body") or "")
-                    for comment in get_issue_comments(pr_number)
-            ):
-                post_issue_comment(
-                    pr_number,
-                    f"Forge could not fix the failed CI by changing this contribution.\n\n"
-                    f"{verdict.review_comment}\n\n{rejected_marker}",
-                )
-            reconcile_rejected_publication(
-                pull_request,
-                SimpleNamespace(descriptor=descriptor),
-            )
         return True
     finally:
         cleanup_review_workspace(

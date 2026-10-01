@@ -3,6 +3,16 @@
 Rendered by Forge from the pre-push branch review of §FS-local-branch-review.
 Newest entry first; every non-approval is recorded, including one a repair later cleared.
 
+## 2026-09-30 — io.micronaut:micronaut-http-netty:5.1.13 (#9833)
+
+**Version-pinned companion dependencies prevent test reuse**
+
+The test build hardcoded 5.1.13 for four Micronaut companion modules. This violated the version-agnostic test requirement because a later tested version would still execute against stale 5.1.13 server, client, Jackson, and injection modules instead of the TCK-resolved library version.
+## 2026-09-30 — io.micronaut.data:micronaut-data-runtime:5.1.3 (#9816)
+
+**Test project declares unused backend dependencies**
+
+FS-test-contract.2.9 permits build.gradle dependency changes only when the dependency is genuinely needed. StaticMetamodelInitializerTest exercises RuntimeCriteriaBuilder and a generated static metamodel but does not use micronaut-data-jdbc, micronaut-jdbc-hikari, H2, or micronaut-test-junit5. All three Native Image finalization lanes passed after those dependencies were removed, confirming they were unnecessary scope.
 ## 2026-10-01 — org.apache.curator:curator-client:5.0.0 (#9364)
 
 **Zero dynamic-access coverage and unjustified native configuration**
@@ -40,6 +50,7 @@ Infrastructure issue: https://github.com/oracle/graalvm-reachability-metadata/is
 **Test-only service provider forced by an unjustified Native Image flag**
 
 The new test project excluded org.apache.el.ExpressionFactoryImpl during Native Image service discovery solely to force a test-only provider, violating FS-test-contract.2.7 because the flag's necessity originated in test configuration rather than the library or its dependencies. The copied test metadata, filter, and new index bucket also retained javax.el entries for the Jakarta-only artifact; those typeReached conditions could never be reached, violating the condition-integrity rule in FS-contribution-contract.4.9.
+
 ## 2026-09-30 — org.glassfish.pfl:pfl-tf:5.1.1 (#9944)
 
 **Dynamic-access classes combined in one test file**

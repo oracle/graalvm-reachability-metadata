@@ -477,10 +477,14 @@ failure label. Forge must apply it only when the available evidence shows that
 the work cannot be safely completed or trusted without human judgment about the
 generated code, repository automation, metadata, or library behavior.
 
-For a published generated pull request every such case must be represented by
-`local_review.decision: rejected` and
+For a published generated pull request every case found before publication
+must be represented by `local_review.decision: rejected` and
 `local_review.action: human-intervention`; no other descriptor flag or inferred
-condition may add the label. Valid cases include:
+condition may add the label. The descriptor records the pre-push review's
+verdict on the tree it describes, so an escalation found after publication — a
+merge conflict git cannot resolve, or a failed CI that cannot be repaired inside
+the contribution (§FS-automated-pr-review) — adds the label directly and leaves
+the descriptor and the head untouched. Valid cases include:
 
 - Generated tests, metadata, or workflow edits fail local verification in a way
   that points to the generated artifact or repository automation rather than a
@@ -501,7 +505,8 @@ condition may add the label. Valid cases include:
 - A CI-repair review reached the escalation of the disposition ladder: a rule
   violation it could not repair inside the contribution's file set, or a defect
   in shared repository infrastructure that the contribution must not carry and
-  that now has its own issue (§root/FS-contribution-contract.5).
+  that now has its own issue (§root/FS-contribution-contract.5) — or returned no
+  valid diagnosis at all.
 
 Forge must not use `human-intervention` for failures that are only external or
 transient infrastructure conditions. The issue-side classification is by failure
@@ -618,14 +623,22 @@ not a transient verdict.
 A contribution-local repair performs the same local-review responsibilities on
 the resulting tree, appends every new finding to `forge/FINDINGS.md`, updates
 the descriptor so its decision describes that exact tree, and pushes to the
-existing head branch. Structured infrastructure evidence causes trusted Forge
-code to open or reuse one infrastructure issue and link it before recording
-`rejected` plus `human-intervention`; an unfixable library records `rejected`
-plus `close`. Any case that cannot be fixed by changing the contribution is
-explained on the pull request. Before every repair push, Forge disables
-auto-merge and dismisses its approval for the old head; a rejected outcome also
-remains unapproved while its action is applied. A push restarts CI, and every
-later action begins again from the new exact-head descriptor.
+existing head branch. Before that push, Forge disables auto-merge and dismisses
+its approval for the old head. A push restarts CI, and every later action begins
+again from the new exact-head descriptor.
+
+**A CI failure Forge cannot repair changes nothing in the pull request.** Every
+rejected outcome — an escalation, structured infrastructure evidence, an edit
+outside the contribution, an unfixable library, or a turn that returned no valid
+diagnosis — leaves the contribution as it was, so the descriptor's decision
+still describes the head and must not be rewritten. Forge discards the agent's
+edits and pushes nothing. Structured infrastructure evidence first makes trusted
+Forge code open or reuse one infrastructure issue. Forge then explains the
+failure once on the pull request and executes the outcome's action as it would
+for a rejected head: `human-intervention` withdraws Forge approval and adds the
+label, and `close` closes the pull request and its unsupported-version issue.
+The label alone holds the pull request: once a maintainer removes it or adds
+`human-intervention-fixed`, a later pass diagnoses the same head again.
 
 Transient CI noise, GitHub status/API failures, Maven download failures, and
 other external infrastructure errors are retried or waited out and are not
