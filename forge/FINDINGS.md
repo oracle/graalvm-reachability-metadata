@@ -3,6 +3,12 @@
 Rendered by Forge from the pre-push branch review of §FS-local-branch-review.
 Newest entry first; every non-approval is recorded, including one a repair later cleared.
 
+## 2026-10-01 — net.minidev:json-smart:2.4.4 (#9362)
+
+**CI repair reviewer unavailable**
+
+The failed-CI repair turn did not return a readable decision.
+
 ## 2026-10-01 — org.apache.curator:curator-client:5.0.0 (#9364)
 
 **Zero dynamic-access coverage and unjustified native configuration**
