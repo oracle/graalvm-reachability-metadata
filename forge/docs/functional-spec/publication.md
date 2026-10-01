@@ -180,8 +180,10 @@ The outer budget is the strategy parameter
 (§FS-predefined-strategy-parameter-families). Convergence is expected within a
 handful of cycles; the default is a soft cap, not a target, and each cycle
 rebuilds the image, so wall-clock cost is dominated by build time. A per-cycle
-timeout, default 30 minutes, caps the preflight test invocation and each trace
-cycle; a timeout is treated as a non-zero exit.
+timeout, default 30 minutes, caps the agent step, the preflight test invocation,
+and each trace cycle; a timeout is treated as a non-zero exit. An agent step
+whose test JVM hangs at shutdown therefore falls through to tracing instead of
+holding the gate until its caller gives up.
 
 ### 3. The loop
 
