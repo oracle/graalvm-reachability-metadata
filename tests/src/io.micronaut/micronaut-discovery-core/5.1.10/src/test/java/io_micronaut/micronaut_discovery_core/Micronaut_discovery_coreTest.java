@@ -19,6 +19,7 @@ import io.micronaut.discovery.registration.RegistrationConfiguration;
 import io.micronaut.health.HealthStatus;
 import io.micronaut.health.HeartbeatEvent;
 import java.net.URI;
+import java.time.Duration;
 import java.util.List;
 import java.util.Map;
 import org.junit.jupiter.api.Test;
@@ -32,7 +33,11 @@ public class Micronaut_discovery_coreTest {
                 .region("region-a")
                 .group("payments")
                 .status(HealthStatus.UP)
-                .metadata(Map.of("version", "v1", "owner", "platform"))
+                .metadata(Map.of(
+                        "version", "v1",
+                        "owner", "platform",
+                        "healthy", "true",
+                        "refreshInterval", "15s"))
                 .build();
 
         assertThat(instance.getId()).isEqualTo("orders");
@@ -46,6 +51,8 @@ public class Micronaut_discovery_coreTest {
         assertThat(instance.getGroup()).contains("payments");
         assertThat(instance.getHealthStatus()).isEqualTo(HealthStatus.UP);
         assertThat(instance.getMetadata().get("version", String.class)).contains("v1");
+        assertThat(instance.getMetadata().get("healthy", Boolean.class)).contains(true);
+        assertThat(instance.getMetadata().get("refreshInterval", Duration.class)).contains(Duration.ofSeconds(15));
         assertThat(instance.resolve(URI.create("/health"))).hasToString("https://orders.example/health");
     }
 
