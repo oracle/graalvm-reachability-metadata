@@ -15,6 +15,7 @@ import io.micronaut.json.tree.JsonNode;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -76,6 +77,21 @@ public class Micronaut_json_coreTest {
                 .contains("\"message\":\"hello\"")
                 .contains("\"number\":42");
         assertThat(mapper.writeValueAsString(value)).contains("\"message\":\"hello\"");
+    }
+
+    @Test
+    void mapperUpdatesExistingValuesFromJsonTrees() throws IOException {
+        Map<String, Object> destination = new LinkedHashMap<>();
+        destination.put("name", "Ada");
+        destination.put("active", false);
+        JsonNode update = mapper.readValue("{\"active\":true,\"score\":42}", JsonNode.class);
+
+        mapper.updateValueFromTree(destination, update);
+
+        assertThat(destination)
+                .containsEntry("name", "Ada")
+                .containsEntry("active", true)
+                .containsEntry("score", 42);
     }
 
     @Test
