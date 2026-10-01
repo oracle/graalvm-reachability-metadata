@@ -3,6 +3,11 @@
 Rendered by Forge from the pre-push branch review of §FS-local-branch-review.
 Newest entry first; every non-approval is recorded, including one a repair later cleared.
 
+## 2026-09-25 — org.mongodb:mongodb-driver-core:5.7.0 (#9388)
+
+**Test-side reflection forces an unreachable implementation path**
+
+FS-test-contract.2.1 forbids test-side reflection that bypasses the library behavior a consumer can invoke. tests/src/org.mongodb/mongodb-driver-core/5.7.0/src/test/java/org_mongodb/mongodb_driver_core/DirectBufferDeallocatorInnerJava8DeallocatorTest.java uses getDeclaredClasses, getDeclaredField, getDeclaredMethod, setAccessible, Unsafe.allocateInstance, and direct private-field mutation to manufacture DirectBufferDeallocator$Java8Deallocator execution on the JDK 25 lanes. The normal public constructor selects the Java 9 implementation there. I could not safely rewrite the scenario without that bypass; removing it would delete an inherited passing scenario and may reduce the reported 13/13 dynamic-access coverage. A maintainer must decide how to make or retire this historical coverage without violating the contribution contract.
 ## 2026-09-30 — org.apache.curator:curator-recipes:5.0.0 (#9365)
 
 **Pre-push review unavailable**
