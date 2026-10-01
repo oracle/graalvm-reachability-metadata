@@ -10,12 +10,12 @@ split the entry, so the PR keeps the regenerated progress for the versions that
 still pass while the repository keeps its existing support for the rest.
 
 **Version sweep.** Before publication (§FS-local-ci-equivalent-verification),
-Forge runs a Java-only sweep. It runs `javaTest` for the changed coordinate once
-per tested version, walking the entry's `tested-versions` in order with
-`GVM_TCK_LV` set to each version, and stops at the first version that fails. The
-sweep is deliberately narrower than full CI — it skips the native-image matrix —
-because it only needs to catch JVM test code that no longer works on a later
-version.
+Forge sweeps the changed coordinate once per tested version. It runs `test` —
+the JVM and the native tests — for the changed coordinate, walking the entry's
+`tested-versions` in order with `GVM_TCK_LV` set to each version, and stops at
+the first version that fails. The sweep is narrower than full CI — it runs one
+coordinate, not the changed-metadata matrix — because it only needs to find the
+first tested version on which the regenerated suite no longer works.
 
 **Progress output.** Forge must report the sweep on the CLI: the changed
 coordinate, how many versions it will check, each version as it starts, the log
@@ -62,8 +62,8 @@ Forge extends the version sweep to those consumers before publication.
 
 After the target entry's sweep, Forge collects the consumers — every other entry
 whose `test-version` equals the regenerated directory's version — ordered by
-`metadata-version`. For each consumer it runs `javaTest` once per tested
-version, resolved as CI resolves them: the coordinate is
+`metadata-version`. For each consumer it runs `test` once per tested version,
+resolved as CI resolves them: the coordinate is
 `<group>:<artifact>:<consumer metadata-version>` and `GVM_TCK_LV` is the tested
 version. The sweep stops at the first failure and reports its progress as the
 version sweep does. When every consumer passes, nothing changes.
@@ -94,30 +94,18 @@ For a suite at `4.17.0` shared by `4.20.0` and `4.23.0`, where `4.20.0` fails:
 | `4.20.0` | `test-version: "4.17.0"` | own directory, base-commit `4.17.0` suite |
 | `4.23.0` | `test-version: "4.17.0"` | `test-version: "4.20.0"` |
 
-## 2. Native Image sweep
+## 2. Native failures
 
 A regenerated suite can pass on the JVM for a version and still fail its native
 tests, because it exercises dynamic access that version's metadata does not
-register. After the JVM sweeps, Forge runs the native tests (`test`) for every
-version still on the regenerated suite — the target entry's tested versions and
-those of every consumer that stayed on it — resolved as in
-§FS-library-update-tested-version-split.1.1. A version that fails is repaired
-through the native test verification gate (§FS-native-test-verification-gate),
-which adds the metadata the version needs, and a version the gate cannot repair
-fails publication.
+register. The sweeps therefore run the native tests as well, and a native
+failure splits exactly as a JVM failure does: the failing version and every
+later one leave the regenerated suite and keep the support the repository
+already ships.
 
-### 2.1 Failure on an entry's own version
-
-When the failing version is the entry's own `metadata-version`, Forge adds the
-missing metadata to that entry and regenerates its stats.
-
-### 2.2 Failure on a later tested version
-
-When the failing version is a later tested version inside an entry, Forge splits
-the entry the way the JVM split does: it creates a new entry whose
-`metadata-version` is the failing version, starting from the original entry's
-metadata plus what the failing version needs, and moves the failing version and
-every later tested version of the original entry to it. The new entry stays on
-the regenerated suite through `test-version`, inherits `latest` as a successor
-entry does, and gets its own stats. The sweep continues on the new entry's
-remaining versions.
+Forge does not repair the failing version's metadata during a sweep. The repair
+would change another entry's metadata inside a contribution that targets one
+coordinate, and the native test verification gate
+(§FS-native-test-verification-gate) may rewrite the suite as its last resort,
+which would invalidate every version already swept. The follow-up issue the
+split opens brings that version its own improvement run, where the gate belongs.

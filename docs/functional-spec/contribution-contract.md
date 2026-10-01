@@ -63,13 +63,13 @@ the backstop (§PRCPL-prefer-algorithmic).
 - **Shared suites.** A test directory is shared by every tested version of its
   entry and by every other entry whose `test-version` names it. A contribution
   that changes a shared directory may also carry, for the versions that share
-  it and nothing beyond them, the test, metadata, stats and `index.json` changes
-  that keep those versions passing on the changed suite or move them off it: a
-  test directory restored from the base commit for a version that leaves the
-  suite, the `test-version` and `tested-versions` edits that move it, metadata
-  added for a version the suite now needs it for, a new entry split off for
-  such a version, and the stats of each entry those changes touch
-  (§forge/FS-library-update-tested-version-split).
+  it and nothing beyond them, the test, stats and `index.json` changes that move
+  those versions off the changed suite: a test directory restored from the base
+  commit for a version that leaves the suite, the `test-version` and
+  `tested-versions` edits that move it, and the stats of each entry those
+  changes touch (§forge/FS-library-update-tested-version-split). Their metadata
+  stays what the base commit ships, copied into a new directory when an entry
+  splits.
 - **Single metadata format.** The only accepted metadata file is
   `reachability-metadata.json`. Legacy split-config files (`reflect-config.json`,
   `resource-config.json`, `proxy-config.json`, `serialization-config.json`,
