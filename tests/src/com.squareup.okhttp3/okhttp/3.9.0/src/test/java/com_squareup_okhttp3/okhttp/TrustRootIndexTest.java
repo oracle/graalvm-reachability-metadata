@@ -11,6 +11,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.security.cert.TrustAnchor;
 import java.security.cert.X509Certificate;
 import javax.net.ssl.X509TrustManager;
+import okhttp3.internal.platform.Platform;
 import okhttp3.internal.tls.TrustRootIndex;
 import org.junit.jupiter.api.Test;
 
@@ -18,7 +19,7 @@ public class TrustRootIndexTest {
     @Test
     void androidStyleTrustManagerMethodIsDiscoveredAndInvoked() {
         AndroidStyleTrustManager trustManager = new AndroidStyleTrustManager();
-        TrustRootIndex trustRootIndex = TrustRootIndex.get(trustManager);
+        TrustRootIndex trustRootIndex = Platform.get().buildTrustRootIndex(trustManager);
 
         assertThat(trustRootIndex.findByIssuerAndSignature(null)).isNull();
         assertThat(trustManager.invocationCount).isEqualTo(1);
