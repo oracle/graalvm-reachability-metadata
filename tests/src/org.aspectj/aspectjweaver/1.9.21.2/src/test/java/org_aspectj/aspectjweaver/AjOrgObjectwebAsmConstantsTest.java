@@ -13,84 +13,86 @@ import aj.org.objectweb.asm.MethodVisitor;
 import aj.org.objectweb.asm.ModuleVisitor;
 import aj.org.objectweb.asm.Opcodes;
 import aj.org.objectweb.asm.RecordComponentVisitor;
-import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class AjOrgObjectwebAsmConstantsTest {
     @Test
-    void checksExperimentalClassVisitorCallerBytecode() {
-        assertExperimentalApiRejected(ExperimentalClassApiVisitor::new);
+    void constructsExperimentalClassVisitorForPreviewCaller() {
+        assertThat(new ExperimentalClassApiVisitor().getDelegate()).isNull();
     }
 
     @Test
-    void checksExperimentalAnnotationVisitorCallerBytecode() {
-        assertExperimentalApiRejected(ExperimentalAnnotationApiVisitor::new);
+    void constructsExperimentalAnnotationVisitorForPreviewCaller() {
+        assertThat(new ExperimentalAnnotationApiVisitor().getDelegate()).isNull();
     }
 
     @Test
-    void checksExperimentalFieldVisitorCallerBytecode() {
-        assertExperimentalApiRejected(ExperimentalFieldApiVisitor::new);
+    void constructsExperimentalFieldVisitorForPreviewCaller() {
+        assertThat(new ExperimentalFieldApiVisitor().getDelegate()).isNull();
     }
 
     @Test
-    void checksExperimentalMethodVisitorCallerBytecode() {
-        assertExperimentalApiRejected(ExperimentalMethodApiVisitor::new);
+    void constructsExperimentalMethodVisitorForPreviewCaller() {
+        assertThat(new ExperimentalMethodApiVisitor().getDelegate()).isNull();
     }
 
     @Test
-    void checksExperimentalModuleVisitorCallerBytecode() {
-        assertExperimentalApiRejected(ExperimentalModuleApiVisitor::new);
+    void constructsExperimentalModuleVisitorForPreviewCaller() {
+        assertThat(new ExperimentalModuleApiVisitor().getDelegate()).isNull();
     }
 
     @Test
-    void checksExperimentalRecordComponentVisitorCallerBytecode() {
-        assertExperimentalApiRejected(ExperimentalRecordComponentApiVisitor::new);
-    }
-
-    private static void assertExperimentalApiRejected(ThrowingCallable callable) {
-        assertThatThrownBy(callable)
-                .isInstanceOf(IllegalStateException.class)
-                .satisfies(throwable -> assertThat(throwable.getMessage()).isIn(
-                        "ASM9_EXPERIMENTAL can only be used by classes compiled with --enable-preview",
-                        "Bytecode not available, can't check class version"));
+    void constructsExperimentalRecordComponentVisitorForPreviewCaller() {
+        assertThat(new ExperimentalRecordComponentApiVisitor().getDelegate()).isNull();
     }
 }
 
 final class ExperimentalClassApiVisitor extends ClassVisitor {
     ExperimentalClassApiVisitor() {
-        super(Opcodes.ASM10_EXPERIMENTAL);
+        Object api = Opcodes.ASM10_EXPERIMENTAL;
+        int experimentalApi = api instanceof int value ? value : 0;
+        super(experimentalApi);
     }
 }
 
 final class ExperimentalAnnotationApiVisitor extends AnnotationVisitor {
     ExperimentalAnnotationApiVisitor() {
-        super(Opcodes.ASM10_EXPERIMENTAL);
+        Object api = Opcodes.ASM10_EXPERIMENTAL;
+        int experimentalApi = api instanceof int value ? value : 0;
+        super(experimentalApi);
     }
 }
 
 final class ExperimentalFieldApiVisitor extends FieldVisitor {
     ExperimentalFieldApiVisitor() {
-        super(Opcodes.ASM10_EXPERIMENTAL);
+        Object api = Opcodes.ASM10_EXPERIMENTAL;
+        int experimentalApi = api instanceof int value ? value : 0;
+        super(experimentalApi);
     }
 }
 
 final class ExperimentalMethodApiVisitor extends MethodVisitor {
     ExperimentalMethodApiVisitor() {
-        super(Opcodes.ASM10_EXPERIMENTAL);
+        Object api = Opcodes.ASM10_EXPERIMENTAL;
+        int experimentalApi = api instanceof int value ? value : 0;
+        super(experimentalApi);
     }
 }
 
 final class ExperimentalModuleApiVisitor extends ModuleVisitor {
     ExperimentalModuleApiVisitor() {
-        super(Opcodes.ASM10_EXPERIMENTAL);
+        Object api = Opcodes.ASM10_EXPERIMENTAL;
+        int experimentalApi = api instanceof int value ? value : 0;
+        super(experimentalApi);
     }
 }
 
 final class ExperimentalRecordComponentApiVisitor extends RecordComponentVisitor {
     ExperimentalRecordComponentApiVisitor() {
-        super(Opcodes.ASM10_EXPERIMENTAL);
+        Object api = Opcodes.ASM10_EXPERIMENTAL;
+        int experimentalApi = api instanceof int value ? value : 0;
+        super(experimentalApi);
     }
 }

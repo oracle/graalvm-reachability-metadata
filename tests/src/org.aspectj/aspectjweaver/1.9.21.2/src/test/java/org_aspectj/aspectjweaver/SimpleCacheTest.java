@@ -58,7 +58,7 @@ public class SimpleCacheTest {
                     ORIGINAL_PARENT_BYTES,
                     loader,
                     protectionDomain
-            );
+            ).orElseThrow();
         } catch (Error error) {
             rethrowIfNotNativeImageDynamicClassLoadingError(error);
             return WOVEN_PARENT_BYTES;
