@@ -37,4 +37,16 @@ public class FastInfosetStreamSOAPCodecTest {
         assertNotSame(statefulSoap12Codec, copy);
         assertEquals(FastInfosetMIMETypes.STATEFUL_SOAP_12, copy.getMimeType());
     }
+
+    @Test
+    void createsStatefulSoap11Codec() {
+        StreamSOAPCodec soap11XmlCodec = Codecs.createSOAPEnvelopeXmlCodec(SOAPVersion.SOAP_11);
+        FastInfosetStreamSOAPCodec statefulSoap11Codec =
+                FastInfosetStreamSOAPCodec.create(soap11XmlCodec, SOAPVersion.SOAP_11, true);
+
+        assertEquals(FastInfosetMIMETypes.STATEFUL_SOAP_11, statefulSoap11Codec.getMimeType());
+        assertEquals(
+                FastInfosetMIMETypes.STATEFUL_SOAP_11,
+                statefulSoap11Codec.copy().getMimeType());
+    }
 }
