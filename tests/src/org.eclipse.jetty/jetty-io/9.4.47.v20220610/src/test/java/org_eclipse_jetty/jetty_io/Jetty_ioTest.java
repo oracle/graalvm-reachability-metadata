@@ -20,6 +20,8 @@ import java.io.StringWriter;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
+import java.nio.channels.SelectionKey;
+import java.nio.channels.Selector;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
 import java.nio.charset.StandardCharsets;
@@ -209,13 +211,18 @@ public class Jetty_ioTest {
             server.bind(new InetSocketAddress(InetAddress.getLoopbackAddress(), 0));
 
             try (SocketChannel client = SocketChannel.open((InetSocketAddress) server.getLocalAddress());
-                    SocketChannel accepted = server.accept()) {
-                ChannelEndPoint endPoint = new SocketChannelEndPoint(accepted, null, null, scheduler);
+                    SocketChannel accepted = server.accept();
+                    Selector selector = Selector.open()) {
+                accepted.configureBlocking(false);
+                SelectionKey key = accepted.register(selector, SelectionKey.OP_READ);
+                ChannelEndPoint endPoint = new SocketChannelEndPoint(accepted, null, key, scheduler);
 
                 assertTrue(client.write(BufferUtil.toBuffer("ping")) > 0);
+                assertTrue(selector.select(TimeUnit.SECONDS.toMillis(10)) > 0);
                 ByteBuffer input = BufferUtil.allocate(8);
                 assertEquals(4, endPoint.fill(input));
                 assertEquals("ping", BufferUtil.toString(input, StandardCharsets.UTF_8));
+                selector.selectedKeys().clear();
 
                 assertTrue(endPoint.flush(BufferUtil.toBuffer("pong")));
                 ByteBuffer reply = ByteBuffer.allocate(4);
@@ -224,6 +231,7 @@ public class Jetty_ioTest {
                 assertEquals("pong", StandardCharsets.UTF_8.decode(reply).toString());
 
                 client.shutdownOutput();
+                assertTrue(selector.select(TimeUnit.SECONDS.toMillis(10)) > 0);
                 assertEquals(-1, endPoint.fill(BufferUtil.allocate(1)));
                 assertTrue(endPoint.isInputShutdown());
 
