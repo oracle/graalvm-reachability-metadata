@@ -47,7 +47,7 @@
         ],
         "env": {},
         "gate": "index-file-validation",
-        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :validateIndexFiles\n✅ metadata/org.jetbrains.kotlin/kotlin-reflect/index.json: Valid\n\n[Incubating] Problems report is available at: file:///home/oracle/oracle/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10325-89f4a8f7/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 9s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :validateIndexFiles\n\u2705 metadata/org.jetbrains.kotlin/kotlin-reflect/index.json: Valid\n\n[Incubating] Problems report is available at: file:///home/oracle/oracle/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10325-89f4a8f7/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 9s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
         "returncode": 0
       }
     ],
@@ -60,14 +60,16 @@
     "status": "success"
   },
   "local_review": {
-    "changed_paths": [],
+    "changed_paths": [
+      "metadata/org.jetbrains.kotlin/kotlin-reflect/2.5.0-Beta1/reachability-metadata.json"
+    ],
     "decision": "approved",
-    "finding_body": "",
-    "finding_title": "",
-    "fix_note": "",
+    "finding_body": "The new latest metadata bucket retained only kotlin/kotlin.kotlin_builtins and omitted conditional registrations already required by Kotlin reflection. Since Spring's unlisted kotlin-reflect 2.3.21 dependency selects the latest bucket, native runs failed first with an unresolved java.util.Set and then with missing reflection access to Executable.getParameters() and Parameter.getName(). This is a contribution-local required-CI regression repairable under contribution-contract disposition 5.1.",
+    "finding_title": "Latest Kotlin reflection metadata dropped established native support",
+    "fix_note": "Restored the prior bucket's missing conditional reflection registrations and expanded the Kotlin builtins resource glob to kotlin/**/*.kotlin_builtins. Verified with checkMetadataFiles, the full org.jetbrains.kotlin:kotlin-reflect:2.5.0-Beta1 test, and passing local :data:data-jdbc-h2-kotlin and :data:data-jpa-kotlin Spring AOT native tests against the exact smoke-test commit used by CI.",
     "model": "gpt-5.6-sol",
-    "review_comment": "Reviewed the target-coordinate-only diff and local evidence. The Kotlin plugin update directly resolves the reported compiler/library metadata-version mismatch while preserving the existing public-API test and assertions; there is no test weakening, Native Image dodge, unsupported behavior, legacy metadata, or unrelated-coordinate change. Repair coverage passes in every scope because the prior N/A report is 0/0 and the new report has overall 10/101, reflection 9/100, and resources 1/1. The recorded index gates passed, and local checkMetadataFiles, Checkstyle, compilation, JVM tests, and the current-defaults Native Image test all passed.",
-    "session_id": "87f827bd643f4c23"
+    "review_comment": "The required Spring AOT jobs failed because the new latest kotlin-reflect metadata was also selected for the unlisted 2.3.21 dependency but had dropped established Kotlin reflection registrations and all builtins resources except the root file. I reviewed the complete target-coordinate diff; it remains scoped, preserves the meaningful test and Native Image execution, uses only reachability-metadata.json, and passes the repair coverage gate (prior N/A is 0/0; new overall is 10/101, reflection 9/100, and resources 1/1). The repaired metadata passed repository validation, the coordinate JVM/native test, and local reproductions of both failed Spring AOT projects.",
+    "session_id": "f0b00ced4c1c4eea"
   },
   "metrics": {
     "agent": "pi",
