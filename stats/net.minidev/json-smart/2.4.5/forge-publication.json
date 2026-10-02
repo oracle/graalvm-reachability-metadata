@@ -1,0 +1,103 @@
+{
+  "base_commit": "d3b71482f151b28e8ce6daf3a4dc1d64c67656b4",
+  "branch": "ai/kimeta/fix-javac-net.minidev-json-smart-2.4.5-forge-10316-20261002212723176634-b5e87d1ffbf8",
+  "follow_ups": [],
+  "forge": {
+    "branch": "master",
+    "commit": "96f13e7f11808d545e97b1f3aa7cb0c8b743421b",
+    "monitored_branch": "origin/master"
+  },
+  "issue_number": 10316,
+  "library": {
+    "artifact": "json-smart",
+    "coordinates": "net.minidev:json-smart:2.4.5",
+    "group": "net.minidev",
+    "version": "2.4.5"
+  },
+  "local_ci_verification": {
+    "base_commit": "d3b71482f151b28e8ce6daf3a4dc1d64c67656b4",
+    "commands": [
+      {
+        "command": [
+          "./gradlew",
+          "generateChangedIndexFileCoordinatesList",
+          "-PbaseCommit=origin/master",
+          "-PnewCommit=HEAD"
+        ],
+        "env": {
+          "GITHUB_OUTPUT": "/tmp/tmpr51rfdla"
+        },
+        "gate": "changed-index-coordinates",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :generateChangedIndexFileCoordinatesList\n\n[Incubating] Problems report is available at: file:///home/oracle/oracle/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10316-b2dc0665/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 3s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      },
+      {
+        "command": [
+          "./gradlew",
+          "validateIndexFiles",
+          "-Pcoordinates=net.minidev:json-smart"
+        ],
+        "env": {},
+        "gate": "index-file-validation",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :validateIndexFiles\n✅ metadata/net.minidev/json-smart/index.json: Valid\n\n[Incubating] Problems report is available at: file:///home/oracle/oracle/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10316-b2dc0665/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 2s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      }
+    ],
+    "failure_command": null,
+    "failure_gate": null,
+    "final_commit": "559d69add59f83f952cedced34b0607e038679c4",
+    "fixups": [],
+    "human_intervention_required": false,
+    "repo_fix_paths": [],
+    "status": "success"
+  },
+  "local_review": {
+    "changed_paths": [],
+    "decision": "approved",
+    "finding_body": "",
+    "finding_title": "",
+    "fix_note": "",
+    "model": "gpt-5.6-sol",
+    "review_comment": "Reviewed the full contribution diff and local evidence. Changes stay within net.minidev:json-smart:2.4.5, preserve the 2.4.4 test behavior, and add the targeted accessors-smart 2.4.6 dependency needed to replace the unavailable transitive 2.4.3 JAR; dependency resolution selects 2.4.6. No tests, assertions, or native execution were weakened, and no native skip, legacy metadata format, or unrelated change is present. Overall and reflection dynamic-access coverage both remain 11/11 (100%), and the recorded verification and index-validation gates succeeded.",
+    "session_id": "c3805d97db7b401e"
+  },
+  "metrics": {
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "path": "stats/net.minidev/json-smart/2.4.5/execution-metrics.json",
+    "summary": {
+      "cached_input_tokens_used": 106240,
+      "code_coverage_percent": 21.84,
+      "cost_usd": 0.2672,
+      "input_tokens_used": 35895,
+      "iterations": 3,
+      "metadata_entries": 8,
+      "output_tokens_used": 1153,
+      "previous_library_coverage_percent": 21.84,
+      "previous_library_metadata_entries": 8,
+      "previous_library_test_only_metadata_entries": 20,
+      "test_only_metadata_entries": 20,
+      "tested_library_loc": 542
+    },
+    "timestamp": "2026-10-02T21:27:23.176634Z"
+  },
+  "modifiers": {
+    "chunk_final": true,
+    "chunked_dynamic_access": false,
+    "human_intervention": false
+  },
+  "previous_library": {
+    "artifact": "json-smart",
+    "coordinates": "net.minidev:json-smart:2.4.4",
+    "group": "net.minidev",
+    "version": "2.4.4"
+  },
+  "producer": "kimeta",
+  "publication_id": "forge-10316-20261002212723176634-b5e87d1ffbf8",
+  "render": {},
+  "schema_version": 1,
+  "strategy_name": "javac_iterative_with_coverage_sources_pi_gpt-5.6-sol",
+  "task_type": "fixes-javac-fail",
+  "template_type": "fixes-javac-fail",
+  "timestamp": "2026-10-02T21:27:23.176634Z"
+}
