@@ -3,6 +3,12 @@
 Rendered by Forge from the pre-push branch review of §FS-local-branch-review.
 Newest entry first; every non-approval is recorded, including one a repair later cleared.
 
+## 2026-10-02 — org.jetbrains.kotlin:kotlin-reflect:2.5.0-Beta1 (#10325)
+
+**Latest Kotlin reflection metadata dropped established native support**
+
+The new latest metadata bucket retained only kotlin/kotlin.kotlin_builtins and omitted conditional registrations already required by Kotlin reflection. Since Spring's unlisted kotlin-reflect 2.3.21 dependency selects the latest bucket, native runs failed first with an unresolved java.util.Set and then with missing reflection access to Executable.getParameters() and Parameter.getName(). This is a contribution-local required-CI regression repairable under contribution-contract disposition 5.1.
+
 ## 2026-10-02 — org.apache.sshd:sshd-common:2.18.0 (#9957)
 
 **Generated stats omit observed dynamic-access coverage**
