@@ -1,0 +1,132 @@
+{
+  "fix_javac_fail:2026-10-02": {
+    "timestamp": "2026-10-02T17:24:59.436752Z",
+    "library": "org.jetbrains.kotlin:kotlin-scripting-common:2.5.0-Beta1",
+    "starting_commit": "79cd94a3bcb64d8b264610320cd95664e4d79843",
+    "ending_commit": "9664bfd80ae70da73da1406c61277ef06eb856e3",
+    "previous_library": "org.jetbrains.kotlin:kotlin-scripting-common:2.3.21",
+    "strategy_name": "javac_iterative_with_coverage_sources_pi_gpt-5.6-sol",
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "status": "success",
+    "stats": {
+      "version": "2.5.0-Beta1",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 0.5,
+            "coveredCalls": 6,
+            "totalCalls": 12
+          }
+        },
+        "coverageRatio": 0.5,
+        "coveredCalls": 6,
+        "totalCalls": 12
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 1043,
+          "missed": 4645,
+          "ratio": 0.183368,
+          "total": 5688
+        },
+        "line": {
+          "covered": 169,
+          "missed": 582,
+          "ratio": 0.225033,
+          "total": 751
+        },
+        "method": {
+          "covered": 97,
+          "missed": 363,
+          "ratio": 0.21087,
+          "total": 460
+        }
+      }
+    },
+    "previous_library_stats": {
+      "version": "2.3.21",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 0.5,
+            "coveredCalls": 6,
+            "totalCalls": 12
+          }
+        },
+        "coverageRatio": 0.5,
+        "coveredCalls": 6,
+        "totalCalls": 12
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 1050,
+          "missed": 4330,
+          "ratio": 0.195167,
+          "total": 5380
+        },
+        "line": {
+          "covered": 169,
+          "missed": 551,
+          "ratio": 0.234722,
+          "total": 720
+        },
+        "method": {
+          "covered": 97,
+          "missed": 352,
+          "ratio": 0.216036,
+          "total": 449
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "advisory_preparation",
+      "issue_number": 10327,
+      "issue_label": "fails-javac-compile",
+      "library": "org.jetbrains.kotlin:kotlin-scripting-common:2.5.0-Beta1",
+      "summary": "The only failure is a Kotlin toolchain mismatch. The tests are compiled by Kotlin compiler 2.3.0 (from the `libs.plugins.kotlin.jvm` catalog alias), but kotlin-scripting-common:2.5.0-Beta1 ships 2.5.0 metadata, and compiler 2.3.0 reads only up to 2.4.0. The library itself needs no extra dependency, Docker image or environment setup.",
+      "deterministic_setup": [],
+      "agent_guidance": "In the new 2.5.0-Beta1 test project, the Kotlin Gradle plugin must be at least as new as the library, or compileTestKotlin cannot read the 2.5.0-metadata classes. Do not use `alias(libs.plugins.kotlin.jvm)` here, because it resolves to the 2.3.x plugin the existing 2.3.21 project uses. Pin the plugin to 2.5.0-Beta1 explicitly, for example `id 'org.jetbrains.kotlin.jvm' version '2.5.0-Beta1'`, or add a version-catalog entry used only by this project. Leave the 2.3.21 project untouched. Keep `kotlin-reflect` and `kotlin-stdlib` aligned to the same version as the library (`$libraryVersion`). If the Beta1 plugin does not resolve from Gradle Plugin Portal or Maven Central, a fallback is `kotlinOptions.freeCompilerArgs += '-Xskip-metadata-version-check'`. Do not rely on it unless the pin fails, since newer compilers may still choke on the metadata. Beta artifacts and the Kotlin toolchain also need to run under JDK 25.",
+      "risks": [
+        "The Kotlin 2.5.0-Beta1 Gradle plugin may not resolve from the configured plugin repositories.",
+        "The Kotlin 2.5.0-Beta1 compiler may not support JDK 25 as the jvmToolchain or jvmTarget.",
+        "Changing the plugin version in the shared version catalog would affect every other Kotlin test project, so keep the pin local to this project.",
+        "Existing tests (ConfigurationFromTemplateKtTest, PropertiesCollectionTest) may hit source-level API changes between 2.3 and 2.5 that become visible only once the compile error is fixed."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#10327 [Automation] javac compile fails for org.jetbrains.kotlin:kotlin-scripting-common:2.5.0-Beta1; label=fails-javac-compile; body_chars=8015"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "8 existing test file path(s) included"
+        }
+      ],
+      "current_library": "org.jetbrains.kotlin:kotlin-scripting-common:2.3.21",
+      "new_version": "2.5.0-Beta1",
+      "model": "sonnet",
+      "input_tokens_used": 4,
+      "output_tokens_used": 1257
+    },
+    "metrics": {
+      "input_tokens_used": 203606,
+      "cached_input_tokens_used": 3047040,
+      "output_tokens_used": 11400,
+      "iterations": 6,
+      "cost_usd": 2.8835,
+      "tested_library_loc": 169,
+      "metadata_entries": 24,
+      "test_only_metadata_entries": 23,
+      "previous_library_metadata_entries": 29,
+      "previous_library_test_only_metadata_entries": 8,
+      "code_coverage_percent": 22.5,
+      "previous_library_coverage_percent": 23.47
+    },
+    "artifacts": {
+      "metadata_file": "metadata/org.jetbrains.kotlin/kotlin-scripting-common/2.5.0-Beta1/reachability-metadata.json"
+    }
+  }
+}
