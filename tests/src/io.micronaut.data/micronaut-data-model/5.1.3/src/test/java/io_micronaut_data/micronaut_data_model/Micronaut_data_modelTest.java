@@ -24,6 +24,10 @@ import io.micronaut.data.model.geo.Point;
 import io.micronaut.data.model.naming.NamingStrategies;
 import io.micronaut.data.model.vector.SparseFloatVector;
 import io.micronaut.data.model.vector.Vector;
+import io.micronaut.data.model.vector.search.Score;
+import io.micronaut.data.model.vector.search.SearchResult;
+import io.micronaut.data.model.vector.search.SearchResults;
+import io.micronaut.data.model.vector.search.Similarity;
 import org.junit.jupiter.api.Test;
 
 public class Micronaut_data_modelTest {
@@ -126,6 +130,21 @@ public class Micronaut_data_modelTest {
         assertThat(sparseVector.toDenseVector().toFloatArray())
                 .containsExactly(0.0f, 1.5f, 0.0f, -2.25f);
         assertThat(sparseVector.toDoubleArray()).containsExactly(0.0, 1.5, 0.0, -2.25);
+    }
+
+    @Test
+    void returnsVectorSearchResultsWithScoresAndSimilarities() {
+        SearchResult<String> nearest = new SearchResult<>(
+                "nearest", new Score(0.92), new Similarity(0.97));
+        SearchResult<String> next = new SearchResult<>("next", new Score(0.51));
+        SearchResults<String> results = SearchResults.of(List.of(nearest, next));
+
+        assertThat(results.results()).containsExactly(nearest, next);
+        assertThat(results).containsExactly(nearest, next);
+        assertThat(nearest.entity()).isEqualTo("nearest");
+        assertThat(nearest.score().value()).isEqualTo(0.92);
+        assertThat(nearest.similarity().value()).isEqualTo(0.97);
+        assertThat(next.similarity()).isNull();
     }
 
     @Test
