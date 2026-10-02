@@ -1,0 +1,165 @@
+{
+  "base_commit": "b58e5fcb780d6e9fe5396624d335a82d53d69001",
+  "branch": "ai/kimeta/improve-coverage-org.liquibase-liquibase-core-4.17.0-chunked-forge-3996-20260921061814331708-bf831718c6a3",
+  "follow_ups": [],
+  "forge": {
+    "branch": "master",
+    "commit": "36568d2db2830705cecfdded8fb66f0cf58eb29f",
+    "monitored_branch": "origin/master"
+  },
+  "issue_number": 3996,
+  "library": {
+    "artifact": "liquibase-core",
+    "coordinates": "org.liquibase:liquibase-core:4.17.0",
+    "group": "org.liquibase",
+    "version": "4.17.0"
+  },
+  "local_ci_verification": {
+    "base_commit": "b58e5fcb780d6e9fe5396624d335a82d53d69001",
+    "commands": [],
+    "failure_command": null,
+    "failure_gate": null,
+    "final_commit": "57cf2738f95e7ad47cf73dcbab72c9c70504eac9",
+    "fixups": [],
+    "human_intervention_required": false,
+    "repo_fix_paths": [],
+    "status": "success"
+  },
+  "local_review": {
+    "action": "human-intervention",
+    "changed_paths": [],
+    "decision": "rejected",
+    "finding_body": "FS-library-update-tested-version-split requires Forge to catch regenerated-test incompatibility before a library-update branch becomes PR-eligible. The 4.20.0 and 4.23.0 index entries both declare test-version 4.17.0, so changes under tests/src/org.liquibase/liquibase-core/4.17.0 affect both entries in CI. Forge's alias splitter inspected only the target 4.17.0 entry, whose tested-versions list contains only 4.17.0; the publication descriptor consequently records render.alias_split as null and local verification as successful. After the scoped YAML API adaptation, ./gradlew test for 4.17.0 passes, while ./gradlew test for 4.20.0 builds successfully through the JVM lane but reports 11 native-test failures, and ./gradlew checkstyle compileTestJava for 4.23.0 fails because liquibase.hub.core and liquibase.hub.model were removed. Keeping the regenerated 4.17.0 coverage while retaining the baseline suite for these downstream aliases requires changing the artifact index and creating or selecting another version's test directory. Those are outside the permitted 4.17.0 repair file set, so this is disposition 5.3 followed by 5.5 rather than a contribution-local repair.\n\nInfrastructure issue: https://github.com/oracle/graalvm-reachability-metadata/issues/10138 (#10138)",
+    "finding_title": "Forge missed downstream test-version aliases before publication",
+    "fix_note": "Adapted YamlSerializerInnerLiquibaseRepresenterTest to use YamlChangeLogSerializer's configured SnakeYAML instance instead of directly constructing the version-specific LiquibaseRepresenter. Verified 4.17.0 with the full test task, metadata and index validation, Spotless, and dynamic-access coverage (176/198); verified that 4.20.0 then compiles and passes JVM tests. The remaining reverse-alias failures cannot be repaired inside the allowed 4.17.0 files without weakening tests, so no complete repair was possible.",
+    "model": "gpt-5.6-sol",
+    "review_comment": "Reproduced the required-CI failures for every index entry that consumes the changed 4.17.0 test suite. A version-neutral YAML serializer repair makes the target 4.17.0 suite pass and lets 4.20.0 compile and pass its JVM tests, but 4.20.0 still has 11 native-test failures and 4.23.0 cannot compile because Liquibase removed the Hub APIs used by StandardHubServiceTest. Deleting or version-skipping those generated scenarios would weaken the evidence. The safe repair is to preserve the baseline suite for the downstream test-version aliases, which requires index and other-version changes outside this repair boundary. The contribution is therefore not ready to merge.",
+    "session_id": "733d25d96e174ed4"
+  },
+  "metrics": {
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "path": "stats/org.liquibase/liquibase-core/4.17.0/execution-metrics.json",
+    "summary": {
+      "cached_input_tokens_used": 14241024,
+      "code_coverage_percent": 36.0,
+      "cost_usd": 13.1369,
+      "generated_loc": 2107,
+      "input_tokens_used": 697934,
+      "iterations": 22,
+      "metadata_entries": 1050,
+      "output_tokens_used": 84225,
+      "test_only_metadata_entries": 662,
+      "tested_library_loc": 15782
+    },
+    "timestamp": "2026-09-21T06:18:14.331708Z"
+  },
+  "modifiers": {
+    "chunk_final": true,
+    "chunked_dynamic_access": true,
+    "human_intervention": false
+  },
+  "producer": "kimeta",
+  "publication_id": "forge-3996-20260921061814331708-bf831718c6a3",
+  "render": {
+    "alias_split": null,
+    "baseline_metadata_entries": 253,
+    "baseline_stats": {
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 0.252747,
+            "coveredCalls": 46,
+            "totalCalls": 182
+          },
+          "resources": {
+            "coverageRatio": 0.5625,
+            "coveredCalls": 9,
+            "totalCalls": 16
+          }
+        },
+        "coverageRatio": 0.277778,
+        "coveredCalls": 55,
+        "totalCalls": 198
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 68861,
+          "missed": 151289,
+          "ratio": 0.312791,
+          "total": 220150
+        },
+        "line": {
+          "covered": 13998,
+          "missed": 29836,
+          "ratio": 0.319341,
+          "total": 43834
+        },
+        "method": {
+          "covered": 3692,
+          "missed": 5514,
+          "ratio": 0.401043,
+          "total": 9206
+        }
+      },
+      "version": "4.17.0"
+    },
+    "baseline_test_only_entries": 10,
+    "current_metadata_entries": 1050,
+    "current_test_only_entries": 662,
+    "dynamic_access": null,
+    "library_stats": {
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 0.879121,
+            "coveredCalls": 160,
+            "totalCalls": 182
+          },
+          "resources": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 16,
+            "totalCalls": 16
+          }
+        },
+        "coverageRatio": 0.888889,
+        "coveredCalls": 176,
+        "totalCalls": 198
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 77473,
+          "missed": 142677,
+          "ratio": 0.35191,
+          "total": 220150
+        },
+        "line": {
+          "covered": 15752,
+          "missed": 28082,
+          "ratio": 0.359356,
+          "total": 43834
+        },
+        "method": {
+          "covered": 3999,
+          "missed": 5207,
+          "ratio": 0.434391,
+          "total": 9206
+        }
+      },
+      "version": "4.17.0"
+    },
+    "library_update_target": {
+      "match_type": "tested-version",
+      "matched_metadata_version": "4.17.0",
+      "matched_test_version": "4.17.0",
+      "requested_coordinate": "org.liquibase:liquibase-core:4.17.0",
+      "resolved_metadata_version": "4.17.0",
+      "resolved_test_version": "4.17.0"
+    }
+  },
+  "schema_version": 1,
+  "strategy_name": "library_update_optimistic_pi_gpt-5.6-sol",
+  "task_type": "library-update-request",
+  "template_type": "library-update-request",
+  "timestamp": "2026-09-21T06:18:14.331708Z"
+}

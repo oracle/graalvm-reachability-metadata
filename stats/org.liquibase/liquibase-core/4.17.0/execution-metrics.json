@@ -1,0 +1,109 @@
+{
+  "improve_library_coverage:2026-09-21": {
+    "timestamp": "2026-09-21T06:18:14.331708Z",
+    "library": "org.liquibase:liquibase-core:4.17.0",
+    "starting_commit": "046eace5f6c1d373100d2c0577b44b14fb6fa4e0",
+    "ending_commit": "4239bb63836867810e77334a7089d15e0d12c29b",
+    "strategy_name": "library_update_optimistic_pi_gpt-5.6-sol",
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "status": "success",
+    "stats": {
+      "version": "4.17.0",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 0.901099,
+            "coveredCalls": 164,
+            "totalCalls": 182
+          },
+          "resources": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 16,
+            "totalCalls": 16
+          }
+        },
+        "coverageRatio": 0.909091,
+        "coveredCalls": 180,
+        "totalCalls": 198
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 77606,
+          "missed": 142544,
+          "ratio": 0.352514,
+          "total": 220150
+        },
+        "line": {
+          "covered": 15782,
+          "missed": 28052,
+          "ratio": 0.36004,
+          "total": 43834
+        },
+        "method": {
+          "covered": 4009,
+          "missed": 5197,
+          "ratio": 0.435477,
+          "total": 9206
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "advisory_preparation",
+      "issue_number": 3996,
+      "issue_label": "library-update-request",
+      "library": "org.liquibase:liquibase-core:4.17.0",
+      "summary": "liquibase-core is DB-agnostic and needs no Docker/DB beyond the existing H2 in-memory setup, but the OSGi-related code path (liquibase.osgi.Activator and CustomChangeWrapper's OSGi classloader branch) is unreachable without org.osgi:osgi.core on the test classpath. This exact fix was already applied for liquibase-core 5.0.1/5.0.3 in this repo to raise coverage, and the same classes exist in 4.17.0's jar but the current 4.17.0 scaffold lacks the dependency.",
+      "deterministic_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "org.osgi:osgi.core:8.0.0",
+          "scope": "testImplementation",
+          "reason": "Needed to compile/exercise liquibase.osgi.Activator and the OSGi-classloader branch of CustomChangeWrapper.setClass, which are unreachable via plain JDBC/H2 tests. Same dependency was added for liquibase-core 5.0.1 and 5.0.3 in this repo for the identical reason."
+        }
+      ],
+      "agent_guidance": "No env vars or system properties are required; liquibase-core has no bundled JDBC drivers (it's DB-agnostic), so continue using the existing H2 in-memory database for functional coverage — do not add Docker or another DB. To exercise the OSGi path once osgi.core is available, mirror tests/src/org.liquibase/liquibase-core/5.0.1/src/test/java/org_liquibase/liquibase_core/CustomChangeWrapperTest.java: instantiate liquibase.osgi.Activator, register a test Bundle via activator.addingBundle(...), and call CustomChangeWrapper.setClass(...) inside Scope.child(Scope.Attr.osgiPlatform, true, ...) to force the OSGi classloader branch, then call activator.removedBundle(...) in a finally block. Also check whether 5.0.1's additional-entries.json reflect-config gaps (PreconditionContainer setOnSqlOutput/setOnFail/setOnError not detected by the tracing agent) still apply to 4.17.0 if those preconditions are exercised.",
+      "risks": [
+        "The OSGi Activator/BundleContext APIs may differ slightly across liquibase-core versions; verify the 5.0.1 CustomChangeWrapperTest pattern compiles against 4.17.0 before relying on it.",
+        "This is advisory only — local Gradle/Native Image verification remains authoritative on whether the added dependency and tests actually compile and pass for 4.17.0."
+      ],
+      "applied_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "org.osgi:osgi.core:8.0.0",
+          "result": "applied",
+          "target": "tests/src/org.liquibase/liquibase-core/4.17.0/build.gradle"
+        }
+      ],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#3996 Update existing library: org.liquibase:liquibase-core:4.17.0; label=library-update-request; body_chars=275"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "13 existing test file path(s) included"
+        }
+      ],
+      "model": "sonnet",
+      "input_tokens_used": 26,
+      "output_tokens_used": 6958
+    },
+    "metrics": {
+      "input_tokens_used": 697934,
+      "cached_input_tokens_used": 14241024,
+      "output_tokens_used": 84225,
+      "iterations": 22,
+      "cost_usd": 13.1369,
+      "generated_loc": 2107,
+      "tested_library_loc": 15782,
+      "metadata_entries": 1050,
+      "test_only_metadata_entries": 662,
+      "code_coverage_percent": 36.0
+    },
+    "artifacts": {
+      "metadata_file": "metadata/org.liquibase/liquibase-core/4.17.0/reachability-metadata.json"
+    }
+  }
+}

@@ -560,13 +560,13 @@ states:
       - Do not measure or claim coverage yourself: deterministic re-measurement
         runs right after this state and decides the loop.
       - Compile and run tests only from inside the issue worktree
-        (`worktreePath` in conversion.json), and always scope the build to this
-        coordinate:
-        `./gradlew compileTestJava -Pcoordinates=<coordinate> -PincludeCodeCoverageSuite=true`
-        and the same form for `javaTest`. A Gradle invocation without
-        `-Pcoordinates` configures every library in the repository, takes hours,
-        and never compiles this suite; do not pass `--no-daemon`, which pays
-        that cost again on every call.
+        (`worktreePath` in conversion.json), with the task measurement runs:
+        `./gradlew codeCoverageTest -Pcoordinates=<coordinate>`. It compiles
+        and runs this suite alone; do not run `javaTest` or the regular suite,
+        whose results never decide this pass (§AR-code-coverage-improvement.2).
+        A Gradle invocation without `-Pcoordinates` configures every library
+        in the repository, takes hours, and never compiles this suite; do not
+        pass `--no-daemon`, which pays that cost again on every call.
 
       Artifact paths in this task, including the one below, are relative to the
       Rhei workspace root: the directory holding `states.yaml` and
@@ -866,13 +866,13 @@ states:
       - Do not measure or claim coverage yourself: deterministic re-measurement
         runs right after this state and decides the loop.
       - Compile and run tests only from inside the issue worktree
-        (`worktreePath` in conversion.json), and always scope the build to this
-        coordinate:
-        `./gradlew compileTestJava -Pcoordinates=<coordinate> -PincludeCodeCoverageSuite=true`
-        and the same form for `javaTest`. A Gradle invocation without
-        `-Pcoordinates` configures every library in the repository, takes hours,
-        and never compiles this suite; do not pass `--no-daemon`, which pays
-        that cost again on every call.
+        (`worktreePath` in conversion.json), with the task measurement runs:
+        `./gradlew codeCoverageTest -Pcoordinates=<coordinate>`. It compiles
+        and runs this suite alone; do not run `javaTest` or the regular suite,
+        whose results never decide this pass (§AR-code-coverage-improvement.2).
+        A Gradle invocation without `-Pcoordinates` configures every library
+        in the repository, takes hours, and never compiles this suite; do not
+        pass `--no-daemon`, which pays that cost again on every call.
 
       Artifact paths in this task, including the one below, are relative to the
       Rhei workspace root: the directory holding `states.yaml` and
