@@ -1,0 +1,66 @@
+{
+  "timestamp": "2026-10-02T15:53:56.265616Z",
+  "library": "com.sun.xml.ws:rt-fi:4.0.5",
+  "starting_commit": "e760b89bde9e14bd2660ad2654bc4a3aadb1a118",
+  "ending_commit": "03aa79cbf1c364eb73809d545e789e6b921e7657",
+  "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-luna",
+  "agent": "pi",
+  "model": "gpt-5.6-luna",
+  "status": "failure",
+  "library_preparation_preflight": {
+    "status": "completed",
+    "action": "advisory_preparation",
+    "issue_number": 9947,
+    "issue_label": "library-new-request",
+    "library": "com.sun.xml.ws:rt-fi:4.0.5",
+    "summary": "rt-fi is a thin optional Fast Infoset codec plug-in for the JAX-WS RI core runtime; its codec classes implement rt's StreamSOAPCodec/Packet-based API, so meaningful tests need com.sun.xml.ws:rt directly on the test classpath (rt-fi is meant to sit alongside an rt/jaxws-rt install, the classic 'provided scope' bridge-module pattern). No Docker image or system property is needed - FastInfoset is pure in-memory binary XML encoding.",
+    "deterministic_setup": [
+      {
+        "kind": "dependency",
+        "coordinate": "com.sun.xml.ws:rt:4.0.5",
+        "scope": "testImplementation",
+        "reason": "rt-fi's codec classes (e.g. FastInfosetStreamSOAPCodec) implement interfaces and use types (Packet, SOAPVersion, StreamSOAPCodec) declared in com.sun.xml.ws:rt. rt-fi is an optional runtime add-on meant to sit alongside an existing rt/jaxws-rt installation, so its POM likely depends on rt with 'prov\n...[truncated]"
+      }
+    ],
+    "agent_guidance": "Test FastInfosetCodec/FastInfosetStreamSOAPCodec directly at the unit level (build a Packet/SOAP message, encode it, assert the output is Fast Infoset binary - e.g. starts with the FI magic byte 0xE0 - then decode it back) rather than attempting end-to-end HTTP content negotiation. This matches the existing unit-test style already used for the sibling com.sun.xml.ws:rt and com.sun.xml.ws:jaxws-rt artifacts in this repo and avoids needing a servlet container or Docker image. No environment variables or system properties are required.",
+    "risks": [
+      "This sandboxed environment has no network access, so the rt-fi POM's actual dependency scopes could not be directly verified; the 'rt' dependency recommendation is based on the module's architecture (it implements rt's codec SPI) and the established pattern of sibling artifacts in this repo, not a verified POM read.",
+      "If local Gradle resolution shows com.sun.xml.ws:rt already on the test classpath transitively, the extra dependency entry is harmless but unnecessary - it can be dropped."
+    ],
+    "applied_setup": [
+      {
+        "kind": "dependency",
+        "coordinate": "com.sun.xml.ws:rt:4.0.5",
+        "result": "applied",
+        "target": "tests/src/com.sun.xml.ws/rt-fi/4.0.5/build.gradle"
+      }
+    ],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#9947 Support for com.sun.xml.ws:rt-fi:4.0.5; label=library-new-request; body_chars=39"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "0 existing test file path(s) included"
+      }
+    ],
+    "model": "sonnet",
+    "input_tokens_used": 24,
+    "output_tokens_used": 21171
+  },
+  "metrics": {
+    "input_tokens_used": 1078800,
+    "cached_input_tokens_used": 26818048,
+    "output_tokens_used": 104395,
+    "iterations": 22,
+    "cost_usd": 4.387,
+    "generated_loc": 0,
+    "tested_library_loc": 0,
+    "metadata_entries": 0,
+    "code_coverage_percent": 0.0
+  },
+  "artifacts": {
+    "metadata_file": "None"
+  }
+}
