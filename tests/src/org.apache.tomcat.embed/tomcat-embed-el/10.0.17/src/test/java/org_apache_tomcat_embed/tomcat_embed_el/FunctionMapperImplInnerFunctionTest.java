@@ -6,6 +6,11 @@
  */
 package org_apache_tomcat_embed.tomcat_embed_el;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.lang.reflect.Method;
 
 import org.apache.el.lang.FunctionMapperImpl;
@@ -28,6 +33,32 @@ public class FunctionMapperImplInnerFunctionTest {
         assertThat(mappedMethod.getName()).isEqualTo("join");
         assertThat(mappedMethod.getParameterTypes()).isEmpty();
         assertThat(mappedMethod.invoke(null)).isEqualTo("joined");
+    }
+
+    @Test
+    void resolvesFunctionFromItsExternalForm() throws IOException, ReflectiveOperationException {
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        try (ObjectOutputStream output = new ObjectOutputStream(bytes)) {
+            output.writeUTF("lib");
+            output.writeUTF("join");
+            output.writeUTF(FunctionLibrary.class.getName());
+            output.writeUTF("join");
+            output.writeObject(new String[0]);
+        }
+
+        FunctionMapperImpl.Function function = new FunctionMapperImpl.Function();
+        try (ObjectInputStream input =
+                new ObjectInputStream(new ByteArrayInputStream(bytes.toByteArray()))) {
+            function.readExternal(input);
+        }
+
+        Method resolvedMethod = function.getMethod();
+
+        assertThat(resolvedMethod).isNotNull();
+        assertThat(resolvedMethod.getDeclaringClass()).isEqualTo(FunctionLibrary.class);
+        assertThat(resolvedMethod.getName()).isEqualTo("join");
+        assertThat(resolvedMethod.getParameterTypes()).isEmpty();
+        assertThat(resolvedMethod.invoke(null)).isEqualTo("joined");
     }
 
     public static final class FunctionLibrary {
