@@ -8,6 +8,11 @@ Newest entry first; every non-approval is recorded, including one a repair later
 **Latest Kotlin reflection metadata dropped established native support**
 
 The new latest metadata bucket retained only kotlin/kotlin.kotlin_builtins and omitted conditional registrations already required by Kotlin reflection. Since Spring's unlisted kotlin-reflect 2.3.21 dependency selects the latest bucket, native runs failed first with an unresolved java.util.Set and then with missing reflection access to Executable.getParameters() and Parameter.getName(). This is a contribution-local required-CI regression repairable under contribution-contract disposition 5.1.
+## 2026-10-02 — org.aspectj:aspectjweaver:1.9.21.2 (#10321)
+
+**Test-only preview configuration broadened a javac repair**
+
+The contribution added --enable-preview to Java compilation, JVM execution, and Native Image build configuration solely to support a rewritten experimental-ASM test path. That necessity originated in test code, not AspectJ or a transitive dependency, violating the native flag rule in FS-test-contract.2.7 and broadening the compile repair beyond the changed Optional-return API contrary to FS-test-contract.2.9.
 ## 2026-10-02 — com.sun.xml.ws:httpspi-servlet:4.0.5 (#9946)
 
 **Shipped metadata was not exercised by the generated tests**
