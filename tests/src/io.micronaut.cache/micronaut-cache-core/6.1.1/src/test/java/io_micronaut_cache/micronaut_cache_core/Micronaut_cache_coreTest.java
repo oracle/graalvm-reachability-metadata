@@ -97,6 +97,17 @@ public class Micronaut_cache_coreTest {
         }
     }
 
+    @Test
+    void cacheableConditionCanDisableCachingForSelectedOperation() {
+        try (ApplicationContext context = ApplicationContext.run(Map.of())) {
+            ConditionalCatalog catalog = context.getBean(ConditionalCatalog.class);
+
+            assertThat(catalog.lookup("delta")).isEqualTo("delta-1");
+            assertThat(catalog.lookup("delta")).isEqualTo("delta-2");
+            assertThat(catalog.lookupCount()).isEqualTo(2);
+        }
+    }
+
     @Singleton
     public static class CachedCatalog {
         private int syncLookupCount;
@@ -133,6 +144,24 @@ public class Micronaut_cache_coreTest {
 
         public int asyncLookupCount() {
             return asyncLookupCount;
+        }
+    }
+
+    @Singleton
+    public static class ConditionalCatalog {
+        private int lookupCount;
+
+        @Cacheable(
+                cacheNames = "core-conditional",
+                parameters = "key",
+                condition = "false")
+        public String lookup(String key) {
+            lookupCount++;
+            return key + "-" + lookupCount;
+        }
+
+        public int lookupCount() {
+            return lookupCount;
         }
     }
 }
