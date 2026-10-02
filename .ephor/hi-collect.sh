@@ -1,4 +1,9 @@
 #!/usr/bin/env bash
+# Copyright and related rights waived via CC0
+#
+# You should have received a copy of the CC0 legalcode along with this
+# work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
+
 # The drain queue's first state. §FS-maintainer-agent-queues.3
 
 # Decides, before any model is spent, whether a human-intervention pull request

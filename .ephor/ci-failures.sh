@@ -1,4 +1,9 @@
 #!/usr/bin/env bash
+# Copyright and related rights waived via CC0
+#
+# You should have received a copy of the CC0 legalcode along with this
+# work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
+
 # ephor's `failures` gate verb for this repository. §FS-maintainer-agent-queues.1
 
 # What failed on a pull request's GitHub Actions gate, read with `gh`, because
