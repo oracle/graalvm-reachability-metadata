@@ -14,11 +14,13 @@ import io.micronaut.cache.annotation.CachePut;
 import io.micronaut.cache.annotation.Cacheable;
 import io.micronaut.context.ApplicationContext;
 import jakarta.inject.Singleton;
+import java.time.Duration;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
+import reactor.core.publisher.Mono;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -98,6 +100,18 @@ public class Micronaut_cache_coreTest {
     }
 
     @Test
+    void cacheableReactiveMethodCachesSingleResult() {
+        try (ApplicationContext context = ApplicationContext.run(Map.of())) {
+            ReactiveCatalog catalog = context.getBean(ReactiveCatalog.class);
+            Duration wait = Duration.ofSeconds(WAIT_SECONDS);
+
+            assertThat(catalog.single("delta").block(wait)).isEqualTo("delta-1");
+            assertThat(catalog.single("delta").block(wait)).isEqualTo("delta-1");
+            assertThat(catalog.singleLookupCount()).isEqualTo(1);
+        }
+    }
+
+    @Test
     void cacheableMethodUsesAllSelectedParametersForItsKey() {
         try (ApplicationContext context = ApplicationContext.run(Map.of())) {
             MultiParameterCatalog catalog = context.getBean(MultiParameterCatalog.class);
@@ -157,6 +171,21 @@ public class Micronaut_cache_coreTest {
 
         public int asyncLookupCount() {
             return asyncLookupCount;
+        }
+    }
+
+    @Singleton
+    public static class ReactiveCatalog {
+        private int singleLookupCount;
+
+        @Cacheable(cacheNames = "core-reactive-single", parameters = "key")
+        public Mono<String> single(String key) {
+            singleLookupCount++;
+            return Mono.just(key + "-" + singleLookupCount);
+        }
+
+        public int singleLookupCount() {
+            return singleLookupCount;
         }
     }
 
