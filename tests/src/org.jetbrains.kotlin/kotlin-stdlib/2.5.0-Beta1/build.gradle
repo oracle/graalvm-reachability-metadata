@@ -11,7 +11,7 @@ import org.gradle.api.tasks.testing.Test
 
 plugins {
     id "org.graalvm.internal.tck"
-    alias(libs.plugins.kotlin.jvm)
+    id "org.jetbrains.kotlin.jvm" version "2.5.0-Beta1"
 }
 
 String libraryVersion = tck.testedLibraryVersion.get()
@@ -41,15 +41,10 @@ kotlin {
 
 compileTestKotlin {
     kotlinOptions.jvmTarget = testJvmVersion.toString()
-    // Use the oldest API supported by the compiler so generated coroutine metadata remains compatible.
-    kotlinOptions.apiVersion = "1.9"
-    kotlinOptions.freeCompilerArgs += ['-Xskip-metadata-version-check']
 }
 
 compileModuleNameRetrieverTestKotlin {
     kotlinOptions.jvmTarget = testJvmVersion.toString()
-    kotlinOptions.apiVersion = "1.9"
-    kotlinOptions.freeCompilerArgs += ['-Xskip-metadata-version-check']
 }
 
 TaskProvider<Jar> moduleNameRetrieverTestJar = tasks.register("moduleNameRetrieverTestJar", Jar) {
