@@ -36,29 +36,47 @@ public class FunctionMapperImplInnerFunctionTest {
     }
 
     @Test
-    void resolvesFunctionFromItsExternalForm() throws IOException, ReflectiveOperationException {
+    void resolvesFunctionFromCompatibleSerializedMapping()
+            throws IOException, ReflectiveOperationException {
+        FunctionMapperImpl mapper = new FunctionMapperImpl();
+        mapper.mapFunction("lib", "join", FunctionLibrary.class.getMethod("join"));
+
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-        try (ObjectOutputStream output = new ObjectOutputStream(bytes)) {
-            output.writeUTF("lib");
-            output.writeUTF("join");
-            output.writeUTF(FunctionLibrary.class.getName());
-            output.writeUTF("join");
-            output.writeObject(new String[0]);
+        try (ObjectOutputStream output = new CompatibleObjectOutputStream(bytes)) {
+            output.writeObject(mapper);
         }
 
-        FunctionMapperImpl.Function function = new FunctionMapperImpl.Function();
+        FunctionMapperImpl restoredMapper;
         try (ObjectInputStream input =
                 new ObjectInputStream(new ByteArrayInputStream(bytes.toByteArray()))) {
-            function.readExternal(input);
+            restoredMapper = (FunctionMapperImpl) input.readObject();
         }
-
-        Method resolvedMethod = function.getMethod();
+        Method resolvedMethod = restoredMapper.resolveFunction("lib", "join");
 
         assertThat(resolvedMethod).isNotNull();
         assertThat(resolvedMethod.getDeclaringClass()).isEqualTo(FunctionLibrary.class);
         assertThat(resolvedMethod.getName()).isEqualTo("join");
         assertThat(resolvedMethod.getParameterTypes()).isEmpty();
         assertThat(resolvedMethod.invoke(null)).isEqualTo("joined");
+    }
+
+    private static final class CompatibleObjectOutputStream extends ObjectOutputStream {
+        private CompatibleObjectOutputStream(ByteArrayOutputStream output) throws IOException {
+            super(output);
+            enableReplaceObject(true);
+        }
+
+        @Override
+        protected Object replaceObject(Object object) {
+            if (object instanceof Class<?>[] parameterTypes) {
+                String[] typeNames = new String[parameterTypes.length];
+                for (int i = 0; i < parameterTypes.length; i++) {
+                    typeNames[i] = parameterTypes[i].getName();
+                }
+                return typeNames;
+            }
+            return object;
+        }
     }
 
     public static final class FunctionLibrary {
