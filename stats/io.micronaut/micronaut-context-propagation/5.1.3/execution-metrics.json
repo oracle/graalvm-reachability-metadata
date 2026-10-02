@@ -1,0 +1,83 @@
+{
+  "add_new_library_support:2026-10-02": {
+    "timestamp": "2026-10-02T06:48:30.246331Z",
+    "library": "io.micronaut:micronaut-context-propagation:5.1.3",
+    "starting_commit": "3de4f03d6bfad9c16b2daab573b16f456079e267",
+    "ending_commit": "774e980671bcca890c87021082275c14cddbf275",
+    "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-luna",
+    "agent": "pi",
+    "model": "gpt-5.6-luna",
+    "status": "success",
+    "stats": {
+      "version": "5.1.3",
+      "dynamicAccess": {
+        "breakdown": {},
+        "coverageRatio": 1.0,
+        "coveredCalls": 0,
+        "totalCalls": 0
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 138,
+          "missed": 31,
+          "ratio": 0.816568,
+          "total": 169
+        },
+        "line": {
+          "covered": 42,
+          "missed": 9,
+          "ratio": 0.823529,
+          "total": 51
+        },
+        "method": {
+          "covered": 16,
+          "missed": 1,
+          "ratio": 0.941176,
+          "total": 17
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "no_action",
+      "issue_number": 9804,
+      "issue_label": "library-new-request",
+      "library": "io.micronaut:micronaut-context-propagation:5.1.3",
+      "summary": "micronaut-context-propagation is a pure in-JVM API bridging Micronaut's PropagatedContext to Micrometer's context-propagation SPI — no external service, and its core dependency (io.micrometer:context-propagation) is non-optional since that integration is the module's entire purpose, unlike micronaut-reactor where it's an optional add-on.",
+      "deterministic_setup": [],
+      "agent_guidance": "Tests can likely call io.micronaut.core.propagation.PropagatedContext directly without a running ApplicationContext (no DI needed), similar to the existing io.micrometer:context-propagation test project. If generated tests instead need bean-scoped propagation (e.g. through an HTTP filter or scheduled executor), follow the io.micronaut.reactor:micronaut-reactor test project's pattern: add io.micronaut:micronaut-runtime and io.micronaut:micronaut-inject-java as testImplementation (the inject-java annotation processor is already standard for every io.micronaut* scaffold in this repo).",
+      "risks": [
+        "Could not fetch the actual POM (no network access in this environment), so the 'non-optional dependency' conclusion is inferred from sibling-module conventions, not directly verified — if checkMetadataFiles/test compilation fails on a missing io.micrometer:context-propagation or reactor-core class, treat that as the concrete evidence this analysis lacked and add it as a testImplementation dependency then."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#9804 Support for io.micronaut:micronaut-context-propagation:5.1.3; label=library-new-request; body_chars=39"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "sonnet",
+      "input_tokens_used": 28,
+      "output_tokens_used": 17186
+    },
+    "metrics": {
+      "input_tokens_used": 401226,
+      "cached_input_tokens_used": 7092736,
+      "output_tokens_used": 40349,
+      "iterations": 8,
+      "cost_usd": 1.3526,
+      "generated_loc": 178,
+      "tested_library_loc": 42,
+      "metadata_entries": 0,
+      "test_only_metadata_entries": 47,
+      "code_coverage_percent": 82.35
+    },
+    "artifacts": {
+      "metadata_file": "metadata/io.micronaut/micronaut-context-propagation/5.1.3/reachability-metadata.json"
+    }
+  }
+}
