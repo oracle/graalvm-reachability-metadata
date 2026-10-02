@@ -1,0 +1,130 @@
+{
+  "fix_java_run_fail:2026-10-02": {
+    "timestamp": "2026-10-02T18:04:24.544433Z",
+    "library": "org.springframework:spring-aop:6.1.7",
+    "starting_commit": "93e142a62fe7c9e7ed5616301618150dc7a9e384",
+    "ending_commit": "b2955352ed9f2d8bb83ebf5c8bf127bbca3a0aad",
+    "previous_library": "org.springframework:spring-aop:6.1.0",
+    "strategy_name": "java_run_iterative_with_coverage_sources_pi_gpt-5.6-sol",
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "status": "success",
+    "stats": {
+      "version": "6.1.7",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 23,
+            "totalCalls": 23
+          }
+        },
+        "coverageRatio": 1.0,
+        "coveredCalls": 23,
+        "totalCalls": 23
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 4465,
+          "missed": 18469,
+          "ratio": 0.194689,
+          "total": 22934
+        },
+        "line": {
+          "covered": 1117,
+          "missed": 4330,
+          "ratio": 0.205067,
+          "total": 5447
+        },
+        "method": {
+          "covered": 309,
+          "missed": 1127,
+          "ratio": 0.215181,
+          "total": 1436
+        }
+      }
+    },
+    "previous_library_stats": {
+      "version": "6.1.0",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 23,
+            "totalCalls": 23
+          }
+        },
+        "coverageRatio": 1.0,
+        "coveredCalls": 23,
+        "totalCalls": 23
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 4351,
+          "missed": 18470,
+          "ratio": 0.190658,
+          "total": 22821
+        },
+        "line": {
+          "covered": 1077,
+          "missed": 4340,
+          "ratio": 0.198819,
+          "total": 5417
+        },
+        "method": {
+          "covered": 302,
+          "missed": 1140,
+          "ratio": 0.209431,
+          "total": 1442
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "no_action",
+      "issue_number": 10339,
+      "issue_label": "fails-java-run",
+      "library": "org.springframework:spring-aop:6.1.7",
+      "summary": "The JVM failure is a single test assertion (`rejectsAnnotationStyleAspectWithAjcCompiledMarkerField` expected `isAspect(...)` to be false, got true). Nothing in the evidence points to a missing dependency, Docker image, or environment setup. The 6.1.0 test expectation about the `ajc$` marker-field behavior most likely no longer holds on 6.1.7, so the fix is to adjust that test.",
+      "deterministic_setup": [],
+      "agent_guidance": "Only the `AbstractAspectJAdvisorFactoryTest.rejectsAnnotationStyleAspectWithAjcCompiledMarkerField` test fails; the other 17 tests pass. Compare `AbstractAspectJAdvisorFactory.compiledByAjc` / `isAspect` in 6.1.7 against 6.1.0 and make the test version-tolerant or fix it for the 6.1.7 behavior. Do not pin the test to one library version.",
+      "risks": [
+        "The failure was inferred from the issue log and the test source. I did not diff the 6.1.0 and 6.1.7 library sources.",
+        "The log is truncated, so other failures in later stages (such as native-image run) could still appear after the JVM fix."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#10339 [Automation] java run fails for org.springframework:spring-aop:6.1.7; label=fails-java-run; body_chars=8015"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "20 existing test file path(s) included"
+        }
+      ],
+      "current_library": "org.springframework:spring-aop:6.1.0",
+      "new_version": "6.1.7",
+      "model": "sonnet",
+      "input_tokens_used": 4,
+      "output_tokens_used": 861
+    },
+    "metrics": {
+      "input_tokens_used": 113593,
+      "cached_input_tokens_used": 951680,
+      "output_tokens_used": 6247,
+      "iterations": 4,
+      "cost_usd": 1.2312,
+      "tested_library_loc": 1117,
+      "metadata_entries": 58,
+      "test_only_metadata_entries": 136,
+      "previous_library_metadata_entries": 54,
+      "previous_library_test_only_metadata_entries": 24,
+      "code_coverage_percent": 20.51,
+      "previous_library_coverage_percent": 19.88
+    },
+    "artifacts": {
+      "metadata_file": "metadata/org.springframework/spring-aop/6.1.7/reachability-metadata.json"
+    }
+  }
+}
