@@ -141,6 +141,13 @@ unmeasurable — the only way to reach the run would be to move the input, which
 changes the measured library state and invalidates comparison with every earlier
 result.
 
+The test harness is measurement too. The Gradle build that compiles, runs, and
+profiles the test project decides what a measurement collects, so it must come
+from the runner commit while the test project and metadata it builds come from
+the pin. This must hold for every Gradle invocation in the run, including the
+ones the agent issues itself, so a harness change is measurable on the fixed
+input exactly like a helper change.
+
 The checked-in totals select and describe the suite; the run's own frozen JaCoCo
 method universe is authoritative in its metrics. A difference between the
 checked-in `All methods` value and the measured universe must be recorded, not
@@ -148,10 +155,10 @@ silently reconciled.
 
 ## 2. Matrix selection and preparation
 
-The default matrix is the cross-product of five libraries, five agent/model
-configurations, and three thinking levels, for 75 executions:
+The default matrix is the cross-product of five libraries, six agent/model
+configurations, and three thinking levels, for 90 executions:
 
-- Pi with `gpt-5.6-sol`, `gpt-5.6-luna`, or `gpt-5.6-terra`.
+- Pi with `gpt-5.6-sol`, `gpt-5.6-luna`, `gpt-5.6-terra`, or `gpt-6-astra`.
 - Claude Code with the stable configuration names `sonnet-5` or `opus-5`.
 - `medium`, `high`, or `xhigh` thinking for every configuration.
 
@@ -159,13 +166,14 @@ The launcher accepts multiple library indexes, agents, models, and thinking
 levels as filters. Unspecified dimensions retain all configured values. Unknown,
 duplicate, and agent-incompatible selections must fail before any worktree is
 created, and the complete selected matrix must be printed before the first
-mutation. With no selection flags, the launcher selects exactly 75 executions.
+mutation. With no selection flags, the launcher selects exactly 90 executions.
 
 For each execution, the launcher must:
 
 1. Validate that the coordinate belongs to the fixed suite.
 2. Allocate a unique run identifier and a unique parent directory.
-3. Create a disposable source worktree from the fixed suite commit.
+3. Create a disposable source worktree from the fixed suite commit and replace
+   its test harness with the runner commit's.
 4. Instantiate a Rhei workspace named `code-coverage-99000` below that unique
    parent directory. `99000` is a fixed synthetic issue number used only to
    satisfy the code coverage workspace naming contract.

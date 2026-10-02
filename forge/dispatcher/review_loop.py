@@ -39,6 +39,7 @@ from dispatcher.issue_admin import (
 )
 from dispatcher.pr_merge import (
     is_pull_request_conflicting,
+    is_pull_request_mergeability_unsettled,
     mark_pull_request_merge_follow_up_pending,
     reconcile_auto_merged_pull_request_follow_ups,
     resolve_pull_request_merge_conflict,
@@ -46,6 +47,7 @@ from dispatcher.pr_merge import (
 )
 from dispatcher.pr_publication import (
     approve_pull_request_from_descriptor,
+    disable_pull_request_auto_merge,
     enable_pull_request_auto_merge,
     ensure_pull_request_unapproved,
     publication_review_disposition,
@@ -185,14 +187,6 @@ def _process_descriptor_pull_request(
         )
         return
 
-    conflicting = is_pull_request_conflicting(pull_request)
-    if not conflicting:
-        validate_pull_request_indexes_before_merge(
-            pr_number,
-            str(pull_request["headRefOid"]),
-            reachability_metadata_path,
-        )
-
     if maintainer_override:
         dismissed_count = dismiss_requested_changes_reviews(pr_number)
         if dismissed_count:
@@ -204,15 +198,18 @@ def _process_descriptor_pull_request(
             if pull_request_has_label(pull_request, label_name):
                 remove_pull_request_label(pr_number, label_name)
 
-    mark_pull_request_merge_follow_up_pending(pull_request)
-    print(
-        f"[Approving descriptor-validated PR #{pr_number} at "
-        f"{pull_request['headRefOid']}; no semantic review agent launched.]"
-    )
-    approve_pull_request_from_descriptor(pull_request)
-    enable_pull_request_auto_merge(pull_request)
+    if is_pull_request_mergeability_unsettled(pull_request):
+        # Approving here would arm auto-merge on a head GitHub never called clean
+        # (§FS-automated-pr-review).
+        print(
+            f"[Skipping PR #{pr_number}: GitHub never settled its mergeability; "
+            f"deferring to a later pass.]"
+        )
+        return
 
-    if conflicting:
+    if is_pull_request_conflicting(pull_request):
+        # Queue maintenance, not review: the refreshed head restarts CI and earns
+        # its own exact-head approval on a later pass (§FS-automated-pr-review).
         if not resolve_pull_request_merge_conflict(
                 pull_request,
                 reachability_metadata_path,
@@ -227,7 +224,10 @@ def _process_descriptor_pull_request(
             )
         return
 
+    # Forge is the merge gate, so it approves and arms nothing until it has seen
+    # this exact head's whole check rollup succeed (§FS-automated-pr-review).
     if has_failed_pull_request_ci(pull_request):
+        disable_pull_request_auto_merge(pull_request)
         reconcile_failed_ci_pull_request(
             pull_request,
             validated,
@@ -235,8 +235,21 @@ def _process_descriptor_pull_request(
         )
         return
     if not has_successful_pull_request_ci(pull_request):
-        print(f"[Waiting for CI to complete on approved auto-merge PR #{pr_number}.]")
+        print(f"[Waiting for CI on PR #{pr_number}; nothing is approved or armed.]")
         return
+
+    validate_pull_request_indexes_before_merge(
+        pr_number,
+        str(pull_request["headRefOid"]),
+        reachability_metadata_path,
+    )
+    mark_pull_request_merge_follow_up_pending(pull_request)
+    print(
+        f"[Approving descriptor-validated PR #{pr_number} at "
+        f"{pull_request['headRefOid']}; no semantic review agent launched.]"
+    )
+    approve_pull_request_from_descriptor(pull_request)
+    enable_pull_request_auto_merge(pull_request)
 
     print(f"[Approved PR #{pr_number} is ready for GitHub auto-merge.]")
     reconcile_auto_merged_pull_request_follow_ups()

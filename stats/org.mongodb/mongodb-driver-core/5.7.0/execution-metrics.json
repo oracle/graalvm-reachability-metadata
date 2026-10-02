@@ -1,0 +1,128 @@
+{
+  "fix_javac_fail:2026-09-25": {
+    "timestamp": "2026-09-25T10:35:28.508241Z",
+    "library": "org.mongodb:mongodb-driver-core:5.7.0",
+    "starting_commit": "89713bdb1a7894ff879ff69e1f0bf093433bbb3e",
+    "ending_commit": "4b4052899875147d437209583d8904ca5f4d7f01",
+    "previous_library": "org.mongodb:mongodb-driver-core:5.2.0",
+    "strategy_name": "javac_iterative_with_coverage_sources_pi_gpt-5.6-sol",
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "status": "success",
+    "stats": {
+      "version": "5.7.0",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 13,
+            "totalCalls": 13
+          }
+        },
+        "coverageRatio": 1.0,
+        "coveredCalls": 13,
+        "totalCalls": 13
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 14874,
+          "missed": 114964,
+          "ratio": 0.114558,
+          "total": 129838
+        },
+        "line": {
+          "covered": 3538,
+          "missed": 24617,
+          "ratio": 0.125662,
+          "total": 28155
+        },
+        "method": {
+          "covered": 1125,
+          "missed": 7516,
+          "ratio": 0.130193,
+          "total": 8641
+        }
+      }
+    },
+    "previous_library_stats": {
+      "version": "5.2.0",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 13,
+            "totalCalls": 13
+          }
+        },
+        "coverageRatio": 1.0,
+        "coveredCalls": 13,
+        "totalCalls": 13
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 14524,
+          "missed": 104317,
+          "ratio": 0.122214,
+          "total": 118841
+        },
+        "line": {
+          "covered": 3444,
+          "missed": 22276,
+          "ratio": 0.133904,
+          "total": 25720
+        },
+        "method": {
+          "covered": 1112,
+          "missed": 6774,
+          "ratio": 0.141009,
+          "total": 7886
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "no_action",
+      "issue_number": 9388,
+      "issue_label": "fails-javac-compile",
+      "library": "org.mongodb:mongodb-driver-core:5.7.0",
+      "summary": "javac failure is a pure internal-API signature change in mongodb-driver-core 5.7.0 (ClusterBinding constructor and CommandReadOperation.execute now take different/additional OperationContext args); fixable by updating the two call sites in the generated test, no extra dependency/docker/env setup required.",
+      "deterministic_setup": [],
+      "agent_guidance": "When regenerating/fixing ByteBufBsonArrayTest.java for 5.7.0: construct ClusterBinding with only (Cluster, ReadPreference) — drop the ReadConcern/OperationContext args — and call operation.execute(binding, operationContext) passing the OperationContext explicitly as the second argument instead of embedding it in the binding. No other files in the existing suite reference these two signatures.",
+      "risks": [
+        "com.mongodb.internal.* is explicitly unstable API in this driver, so this signature could shift again in a future minor version."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#9388 [Automation] javac compile fails for org.mongodb:mongodb-driver-core:5.7.0; label=fails-javac-compile; body_chars=8015"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "11 existing test file path(s) included"
+        }
+      ],
+      "current_library": "org.mongodb:mongodb-driver-core:5.2.0",
+      "new_version": "5.7.0",
+      "model": "sonnet",
+      "input_tokens_used": 16,
+      "output_tokens_used": 7795
+    },
+    "metrics": {
+      "input_tokens_used": 37872,
+      "cached_input_tokens_used": 113152,
+      "output_tokens_used": 785,
+      "iterations": 3,
+      "cost_usd": 0.2696,
+      "tested_library_loc": 3538,
+      "metadata_entries": 30,
+      "test_only_metadata_entries": 15,
+      "previous_library_metadata_entries": 17,
+      "code_coverage_percent": 12.57,
+      "previous_library_coverage_percent": 13.39
+    },
+    "artifacts": {
+      "metadata_file": "metadata/org.mongodb/mongodb-driver-core/5.7.0/reachability-metadata.json"
+    }
+  }
+}

@@ -1,0 +1,84 @@
+{
+  "add_new_library_support:2026-09-20": {
+    "timestamp": "2026-09-20T23:52:24.485796Z",
+    "library": "com.azure:azure-security-keyvault-secrets:4.10.3",
+    "starting_commit": "3034f2c2194bc6ceca5a7fb2e880b655cc63348e",
+    "ending_commit": "6233ab77cb659b29a726697d96d833153ad75ebf",
+    "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-sol",
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "status": "success",
+    "stats": {
+      "version": "4.10.3",
+      "dynamicAccess": {
+        "breakdown": {},
+        "coverageRatio": 1.0,
+        "coveredCalls": 0,
+        "totalCalls": 0
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 3516,
+          "missed": 3696,
+          "ratio": 0.487521,
+          "total": 7212
+        },
+        "line": {
+          "covered": 876,
+          "missed": 715,
+          "ratio": 0.550597,
+          "total": 1591
+        },
+        "method": {
+          "covered": 291,
+          "missed": 189,
+          "ratio": 0.60625,
+          "total": 480
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "advisory_preparation",
+      "issue_number": 10072,
+      "issue_label": "library-new-request",
+      "library": "com.azure:azure-security-keyvault-secrets:4.10.3",
+      "summary": "No extra dependency or Docker image needed — azure-core (already a compile dep) provides HttpClient/TokenCredential, which SecretClientBuilder accepts directly for full request mocking, exactly like the existing azure-core-http-jdk-httpclient test.",
+      "deterministic_setup": [],
+      "agent_guidance": "Do not attempt to reach a real Azure Key Vault or require azure-identity/real credentials. Build the SecretClient/SecretAsyncClient with SecretClientBuilder.httpClient(...) pointed at a local mock server (e.g. com.sun.net.httpserver.HttpServer, following the pattern in tests/src/com.azure/azure-core-http-jdk-httpclient) and SecretClientBuilder.credential(...) using a minimal in-test TokenCredential implementation that returns a canned com.azure.core.credential.AccessToken (no network call). vaultUrl has no https-only enforcement in the builder itself, so a plain http://localhost:<port> URL works. Craft response bodies matching the Key Vault Secrets REST API JSON schema (id, value, attributes {enabled, created, updated, recoveryLevel}, contentType, tags, kid, managed) so KeyVaultSecret/SecretProperties deserialization is exercised for CRUD-style calls (setSecret, getSecret, updateSecretProperties, listPropertiesOfSecrets, beginDeleteSecret, purgeDeletedSecret, backup/restore). Cover both sync (SecretClient) and async (SecretAsyncClient) surfaces since they use separate implementation classes.",
+      "risks": [
+        "If the library's HttpPipeline default policies (e.g. retry/logging) end up requiring azure-core-http-netty's Reactor Netty client specifically rather than accepting the injected mock HttpClient, an agent may need to fall back to azure-core-http-netty's own SSL/plaintext handling — verify locally with a real nativeTestCompile/test run before assuming the mock-only approach is sufficient.",
+        "Long-running operations like beginDeleteSecret/beginRecoverDeletedSecret use polling; the mock server must handle repeated poll requests with status transitions, or tests should avoid exercising the poller to keep the scaffold simple."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#10072 Support for com.azure:azure-security-keyvault-secrets:4.10.3; label=library-new-request; body_chars=39"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "sonnet",
+      "input_tokens_used": 22,
+      "output_tokens_used": 8194
+    },
+    "metrics": {
+      "input_tokens_used": 300495,
+      "cached_input_tokens_used": 3748736,
+      "output_tokens_used": 22604,
+      "iterations": 8,
+      "cost_usd": 4.055,
+      "generated_loc": 319,
+      "tested_library_loc": 876,
+      "metadata_entries": 103,
+      "test_only_metadata_entries": 99,
+      "code_coverage_percent": 55.06
+    },
+    "artifacts": {
+      "metadata_file": "metadata/com.azure/azure-security-keyvault-secrets/4.10.3/reachability-metadata.json"
+    }
+  }
+}

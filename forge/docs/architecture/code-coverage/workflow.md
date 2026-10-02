@@ -26,10 +26,11 @@ expect from a useful support test.
 The intent is to add or improve tests for libraries that are already present in
 the reachability repo. The generated tests should drive realistic public API
 usage across the library, not only the calls that appear in a dynamic-access
-report. JaCoCo is the sole coverage metric. Sampled GraalVM PGO profiles and the
-Native Image static call graph provide a later, separate navigation signal that
-shows an agent how current execution diverges from JaCoCo-uncovered internal
-library methods; sampling never changes a coverage result.
+report. JaCoCo is the sole coverage metric. GraalVM PGO profiles — sampled
+stacks and instrumented counters — and the Native Image static call graph
+provide a later, separate navigation signal that shows an agent how current
+execution diverges from JaCoCo-uncovered internal library methods; profile
+evidence never changes a coverage result.
 
 The benchmark's naive baseline arm (§AR-code-coverage-benchmarking.3) runs
 this same pipeline with the guidance disabled: shared preparation,
@@ -182,9 +183,10 @@ split into deterministic utilities plus a workflow engine:
   `forge/utility_scripts/code_coverage_api_inventory.py`.
 - **Bytecode call-graph extractor** — reads the resolved library artifacts and
   emits every method and every call edge as CSV, using canonical identities
-  shared with the identity model. Implemented with the JDK Class-File API in
-  `forge/utility_scripts/java/CallGraphExtractor.java`, run through single-file
-  source launch so it needs no build step. It reads class files directly rather
+  shared with the identity model, plus each branching method's control-flow
+  table (§AR-code-coverage-deep-navigation.1.3). Implemented with the JDK
+  Class-File API in `forge/utility_scripts/java/CallGraphExtractor.java`, run
+  through source launch so it needs no build step. It reads class files directly rather
   than parsing `javap` output, which keeps `invokedynamic` lambda targets and
   raw descriptors exact (§AR-code-coverage-improvement.4.1.1).
 - **API target ranker** — orders JaCoCo-uncovered public entries by the amount of
@@ -205,7 +207,7 @@ split into deterministic utilities plus a workflow engine:
 - **Native metadata preparer** — runs once after the API-cover loop and before
   PGO discovery: generates reachability metadata and repairs it with the Codex
   `fix-missing-reachability-metadata` skill until a Native Image test passes, so
-  the PGO-sampling builds succeed. Once, rather than per iteration, is the point:
+  the PGO builds succeed. Once, rather than per iteration, is the point:
   the deep phase makes six collections — one baseline and five post-iteration
   reports — and each would otherwise have to rediscover and repair the same
   metadata gaps. The public JaCoCo phase stays JVM-only for the same reason, and
@@ -221,14 +223,17 @@ split into deterministic utilities plus a workflow engine:
 - **Native Image deep-path analyzer** — intersects exact JaCoCo library methods
   with the analysis call-tree CSV graph, subtracts public API inventory entries,
   restricts what remains to the methods the resolved library jars declare via
-  `--library-methods`, and uses sampled `.iprof` stacks only to navigate
-  JaCoCo-uncovered internal methods. It retains every record in JSON and emits compact `Observed` /
+  `--library-methods`, and uses the `.iprof` — sampled stacks and instrumented
+  counters — with the extractor's control-flow table only to navigate
+  JaCoCo-uncovered internal methods (§AR-code-coverage-deep-navigation). It
+  retains every record in JSON and emits compact `Observed` /
   `Uncovered paths` Markdown capped at 100 methods. Implemented in
-  `forge/utility_scripts/code_coverage_profile_report.py`; the sampling image
+  `forge/utility_scripts/code_coverage_profile_report.py`; the profiled image
   and call-tree CSVs are produced by the `nativeTestPGOSampling` and
-  `runNativeTestPGO` harness tasks (`--pgo-sampling
+  `runNativeTestPGO` harness tasks (`--pgo-instrument --pgo-sampling
   -H:PGOSamplingPeriodMicros=<micros> -H:+PrintAnalysisCallTree
-  -H:PrintAnalysisCallTreeType=CSV`; the run dumps the profile through
+  -H:PrintAnalysisCallTreeType=CSV`, the sampling period only on a
+  toolchain that advertises it (§root/AR-test-harness); the run dumps the profile through
   `-XX:ProfilesDumpFile`). Profile `<`-chain contexts are leaf-first
   (`callee:bci<caller:bci`), so sampled stacks read right-to-left from the root.
 - **Identity model** — normalizes API inventory, JaCoCo, call-tree CSV, and
@@ -274,7 +279,7 @@ split into deterministic utilities plus a workflow engine:
 
 The workflow has two ordered phases with separate targets, reports, and prompts.
 
-JaCoCo is authoritative in both phases; sampled PGO never changes whether a
+JaCoCo is authoritative in both phases; PGO evidence never changes whether a
 method is covered.
 
 ### 4.1 Public API entry coverage
@@ -428,44 +433,10 @@ classifier, so JaCoCo analyses the `test` artifact too. Narrowing it there would
 also narrow the repository's dynamic-access measurement, which may legitimately
 need metadata for classes in that artifact. The workflow defends itself instead.
 
-The Native Image analysis call-tree CSV dump and sampled PGO profile provide
-navigation for JaCoCo-uncovered internal targets. For each target, the analyzer
-uses the shortest directed static path from any sampled frame. When no sampled
-frame joins, it may use the shortest path from a public API inventory entry.
-Distance is the primary ranking key; frame quality and sample count may only
-break equal-distance ties.
-
-A target absent from the static graph remains JaCoCo-uncovered but is recorded
-as not present in the current graph. A target present in the graph without a
-sampled or public-API route remains in the full JSON report as a no-route
-candidate. Neither condition changes its JaCoCo status. Only actionable
-sampled-path and public-entry-path targets enter the agent prompt.
-
-The prompt navigation stays compact and groups paths that share a divergence:
-
-```text
-Observed:
-Parser.parse(...) → parseJson(...)
-
-Uncovered paths:
-Parser.parse(...) → parseCSV(...)
-Parser.parse(...) → parseXML(...)
-```
-
-`Observed` is sampled guidance only. Every `Uncovered paths` target is
-uncovered according to exact JaCoCo evidence. The agent must reach internal
-methods through the shown public behavior rather than invoke implementation
-methods directly.
-
-Every prompted target also carries a deterministic miss classification derived
-from JaCoCo source-line instruction and branch counters plus the target's
-reverse call-site fan-out. A covered invoking line with an uncovered target is
-`dispatched-elsewhere` and names the site's other candidate implementations,
-including candidates owned by the coverage suite. Otherwise the nearest
-covered branch above the invoking line is `fork-not-taken`; when no such branch
-exists, `no-fork` names the nearest covered line and explains that the target
-requires an exception or external event. The Markdown prompt and full JSON
-report carry the same classification. §GOAL-maximize-library-coverage
+Navigation toward these targets — the evidence sources, routes, ranking, and
+each target's miss classification — is specified in
+§AR-code-coverage-deep-navigation. It steers the agent and orders the prompt;
+it never changes a target's JaCoCo status.
 
 The full JSON report retains every uncovered internal target, its JaCoCo
 evidence, graph status, rank, sampled context, and static path. The prompt-facing
@@ -473,10 +444,12 @@ Markdown and target-id list contain at most 200 methods globally. Measurement
 itself carries attempt state deterministically in the discovery-report history:
 every target it prompted gets its attempt count incremented at the next
 measurement, ranking prefers less-attempted targets, and covered targets leave
-the uncovered set. An uncovered target that reaches the configured unsuccessful
-attempt threshold becomes exhausted and leaves later prompts, while remaining
-in `bulkTargets` and the full JSON report for finalization and audit. This lets
-later iterations advance beyond repeatedly unproductive targets without any
+the uncovered set. No number of failed attempts retires a target: the count
+only orders, so a target shown three times without coverage sorts behind every
+target shown fewer times and returns to the prompt once those have had their
+turn. Each still-uncovered target thus keeps getting its round, and no run
+leaves uncovered targets it never showed again. The full JSON report keeps every
+target with its attempt count for finalization and audit, without any
 agent-written state.
 The deep phase runs for the same fixed `coverage_iterations` budget and stops
 early when no actionable target remains or when the pass yield collapses
@@ -576,7 +549,14 @@ failure: the run continues into the next phase exactly as a spent budget does.
 Only a completed cover-agent pass advances the yield series. When measurement
 fails after writing a report, its fix state returns to the same logical
 measurement iteration and overwrites that report; the repair retry contributes
-no additional yield.
+no additional yield. A report the measurement program did not write does not
+enter the series either: a cover agent that runs the measurement tooling on its
+own writes reports the evaluator cannot tell from measured passes, and a
+measured xhigh run lost thirteen of its fifteen API passes to two zero-yield
+entries of that kind. Measurement therefore seals the report count it closes
+with, and the next measurement sets aside every report beyond that seal before
+it opens its iteration, so the recorded series holds exactly one report per
+completed pass whatever the agent wrote in between.
 
 Three properties of the rule are deliberate, and each is a correction of a rule
 that looked reasonable and would have destroyed a measured run.
@@ -656,7 +636,7 @@ The Rhei template should decompose the workflow into these phases:
    outcome is never narrated in an artifact for a later phase to trip over.
 6. **Deep coverage loop** — the same measure/cover cycle for internal
    methods. Measurement runs JaCoCo over the library-owned method set, builds
-   and runs native tests with PGO sampling, loads one coherent analysis
+   and runs native tests with PGO instrumentation and sampling, loads one coherent analysis
    call-tree CSV triplet, excludes public API inventory entries, ranks exact
    JaCoCo-uncovered internal methods by shortest sampled/static path, retains
    every record in JSON plus sampled-guidance LCOV, persists
@@ -794,7 +774,12 @@ state, after which one agent-free final remeasurement refreshes JaCoCo,
 sampled PGO, call-tree, and discovery evidence before the steps re-run. A failed
 final remeasurement routes directly to human intervention; failed targets or an explicit
 human-intervention flag in the metrics, and failures that survive the fix
-budget, route to human intervention.
+budget, route to human intervention. A program whose exit code routes the
+task into a final state also owns the ticket's terminal result: Rhei writes
+none on its behalf and holds the task in its state until the file exists, so
+every such program writes a one-line summary to `RHEI_RESULT_PATH` before it
+exits zero. The runner-backed benchmark states do this through the runner;
+the inline programs do it themselves.
 
 Every fix state that can be entered more than once is a counted Rhei state and
 writes a visit-scoped output. API and deep fix states use the corresponding
@@ -908,7 +893,7 @@ sequenceDiagram
             R->>P: deep-measure opens or resumes the iteration marker
             P->>W: jacocoCodeCoverageReport
             P->>W: nativeTestPGOSampling, then runNativeTestPGO on the .iprof
-            P->>P: map samples onto the static graph, write discovery-report-n
+            P->>P: map samples and counters onto the static graph, write discovery-report-n
             alt no actionable target, marginal yield (§3.3), or budget spent
                 P-->>R: exit 0, phase completed
             else actionable targets remain
@@ -1046,10 +1031,12 @@ A code coverage improvement run is successful only when all of these hold:
   agent to attempt the complete supplied batch.
 - Deep targets are library-owned JaCoCo methods minus public API inventory
   entries. Exact JaCoCo evidence alone determines their status.
-- Sampled PGO and the static call graph change only deep-path guidance and
-  ranking; they never change covered, uncovered, or unknown status.
+- PGO samples and counters, the control-flow table, and the static call graph
+  change only deep-path guidance and ranking; they never change covered,
+  uncovered, or unknown status.
 - Near-call distance is the shortest directed static path from a sampled frame;
-  prompt-quality and sample-count preferences only break equal-distance ties.
+  every other ranking preference only breaks equal-distance ties
+  (§AR-code-coverage-deep-navigation.2.2).
 - Full JSON retains every deep target and path record. Prompt Markdown contains
   at most 200 actionable methods and uses compact `Observed` /
   `Uncovered paths` navigation.
@@ -1057,12 +1044,12 @@ A code coverage improvement run is successful only when all of these hold:
   finalization.
 - Sampled observations emitted as LCOV contain positive sample evidence only
   and are labeled guidance-only.
-- Completion, skip, and exhaustion state prevents a hard target batch from
-  starving later methods.
+- Completion and skip state, with attempt-ordered rotation, prevent a hard
+  target batch from starving later methods.
 - Existing dynamic-access coverage, metadata validity, JVM/native tests, and
   local CI-equivalent verification do not regress.
 - Metrics and PR evidence keep JaCoCo coverage results separate from PGO
-  sampling guidance and include the validation commands.
+  guidance and include the validation commands.
 
 The checked-in Rhei example must pass:
 
@@ -1082,9 +1069,9 @@ valuable library behavior.
 
 The workflow has a runnable Rhei lane backed by deterministic Forge helpers for
 API inventory, exact JVM JaCoCo validation, native metadata preparation,
-sampled-PGO/static-path correlation, durable target state, final metrics, and
+PGO/static-path correlation, durable target state, final metrics, and
 PR publication. The `nativeTestPGOSampling` / `runNativeTestPGO` Gradle tasks
-provide the sampled profile and coherent call-tree inputs. A Forge driver or
+provide the instrumented and sampled profile and coherent call-tree inputs. A Forge driver or
 driver mode is still required before the control plane can autonomously claim
 issues and launch this lane; that missing integration does not make the Rhei
 workspace or helper chain non-executable

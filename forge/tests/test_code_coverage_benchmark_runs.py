@@ -46,6 +46,31 @@ def _git(repo: Path, *arguments: str) -> subprocess.CompletedProcess[str]:
     )
 
 
+def _write_harness(repo: Path, marker: str) -> None:
+    """Give a fixture repository every path the source worktree overlays."""
+    for harness_path in benchmark_common.HARNESS_PATHS:
+        target: Path = repo / harness_path
+        if "." not in harness_path and not harness_path.startswith("gradlew"):
+            target = target / "harness.txt"
+        target.parent.mkdir(parents=True, exist_ok=True)
+        target.write_text(f"{marker}\n", encoding="utf-8")
+
+
+def _commit_all(repo: Path, message: str) -> str:
+    _git(repo, "add", "-A")
+    _git(
+        repo,
+        "-c",
+        "user.name=test",
+        "-c",
+        "user.email=test@example.com",
+        "commit",
+        "-m",
+        message,
+    )
+    return _git(repo, "rev-parse", "HEAD").stdout.strip()
+
+
 class CodeCoverageBenchmarkLifecycleTests(unittest.TestCase):
 
     def setUp(self) -> None:
@@ -68,27 +93,51 @@ class CodeCoverageBenchmarkLifecycleTests(unittest.TestCase):
         repository.mkdir()
         _git(repository, "init", "-b", "master")
         (repository / "README.md").write_text("seed\n", encoding="utf-8")
-        _git(repository, "add", "README.md")
-        _git(
-            repository,
-            "-c",
-            "user.name=test",
-            "-c",
-            "user.email=test@example.com",
-            "commit",
-            "-m",
-            "seed",
-        )
-        commit = _git(repository, "rev-parse", "HEAD").stdout.strip()
+        _write_harness(repository, "seed")
+        commit = _commit_all(repository, "seed")
 
-        benchmark.create_source_worktree(source, commit, repository)
+        benchmark.create_source_worktree(source, commit, commit, repository)
         (source / "stale.txt").write_text("stale\n", encoding="utf-8")
 
-        benchmark.create_source_worktree(source, commit, repository)
+        benchmark.create_source_worktree(source, commit, commit, repository)
 
         self.assertFalse((source / "stale.txt").exists())
         self.assertEqual(commit, _git(source, "rev-parse", "HEAD").stdout.strip())
         benchmark.remove_worktree(source, repository)
+
+    def test_source_worktree_measures_the_pin_with_the_runner_harness(self) -> None:
+        """§FS-code-coverage-benchmarking.1"""
+        temporary = tempfile.TemporaryDirectory()
+        self.addCleanup(temporary.cleanup)
+        root = Path(temporary.name)
+        repository = root / "repository"
+        source = root / "run" / "source"
+        test_file = Path("tests/src/com.example/demo/1.0.0/DemoTest.java")
+        metadata_file = Path("metadata/com.example/demo/1.0.0/reachability-metadata.json")
+        retired_harness = Path("tests/tck-build-logic/retired.gradle")
+        added_harness = Path("tests/tck-build-logic/added.gradle")
+        repository.mkdir()
+        _git(repository, "init", "-b", "master")
+        _write_harness(repository, "pin")
+        for path in (test_file, metadata_file, retired_harness):
+            (repository / path).parent.mkdir(parents=True, exist_ok=True)
+            (repository / path).write_text("pin\n", encoding="utf-8")
+        suite_commit = _commit_all(repository, "pin")
+        _write_harness(repository, "runner")
+        for path in (test_file, metadata_file, added_harness):
+            (repository / path).write_text("runner\n", encoding="utf-8")
+        (repository / retired_harness).unlink()
+        runner_commit = _commit_all(repository, "runner")
+
+        benchmark.create_source_worktree(source, suite_commit, runner_commit, repository)
+        self.addCleanup(benchmark.remove_worktree, source, repository)
+
+        self.assertEqual("pin\n", (source / test_file).read_text(encoding="utf-8"))
+        self.assertEqual("pin\n", (source / metadata_file).read_text(encoding="utf-8"))
+        self.assertEqual("runner\n", (source / "ci.json").read_text(encoding="utf-8"))
+        self.assertEqual("runner\n", (source / added_harness).read_text(encoding="utf-8"))
+        self.assertFalse((source / retired_harness).exists())
+        self.assertEqual(suite_commit, _git(source, "rev-parse", "HEAD").stdout.strip())
 
     def test_removes_source_only_after_publication_marker(self) -> None:
         temporary = tempfile.TemporaryDirectory()
@@ -401,6 +450,35 @@ class CodeCoverageBenchmarkMetricsTests(unittest.TestCase):
         )
         self.assertEqual(-1, result["measuredAllMethodsDifference"])
 
+    def test_input_stays_disjoint_from_cached_input(self) -> None:
+        """A Rhei total that already contains the cached classes is restated.
+
+        Newer Rhei runtimes report `input.total` inclusive of cached read and
+        cache write; the record must still publish ordinary input separately
+        (§FS-code-coverage-benchmarking.4).
+        """
+        _, workspace = self._workspace()
+        self._write_run(workspace)
+        final_dir = workspace / "runtime" / "code-coverage" / "finalization"
+        final_dir.mkdir(parents=True)
+        shutil.copy2(FINAL_METRICS, final_dir / "final-metrics.json")
+        # api: total 100 = 60 cached_read + 5 cache_write + 35 ordinary.
+        self._write_invocation(workspace, "1", "api-cover", 100, 60, 7, 5)
+        # deep: an older runtime, whose total already excludes the 8 cached.
+        self._write_invocation(workspace, "2", "deep-cover", 3, 8, 9)
+
+        result = benchmark.collect_result(workspace, "success", 0)
+
+        self.assertEqual(
+            {"input": 35, "cachedInputRead": 60, "cachedInputWrite": 5, "output": 7},
+            result["api"]["tokens"],
+        )
+        self.assertEqual(
+            {"input": 3, "cachedInputRead": 8, "cachedInputWrite": 0, "output": 9},
+            result["deep"]["tokens"],
+        )
+        self.assertEqual(38, result["total"]["tokens"]["input"])
+
     def test_partial_failure_keeps_known_accounting_and_nulls(self) -> None:
         _, workspace = self._workspace()
         self._write_run(workspace)
@@ -425,6 +503,47 @@ class CodeCoverageBenchmarkMetricsTests(unittest.TestCase):
         self.assertIsNone(result["deep"]["coverPasses"])
         self.assertIsNone(result["total"]["tokens"]["input"])
         self.assertIsNone(result["total"]["coverage"]["allMethods"])
+
+    def test_unmeasured_invocation_keeps_the_measured_ones(self) -> None:
+        """A phase keeps the tokens it measured when one invocation has none.
+
+        An invocation killed on a timeout emits no usage, so Rhei records its
+        token values as unknown. The invocations that did report are still
+        valid measurements and must survive it
+        (§FS-code-coverage-benchmarking.4).
+        """
+        _, workspace = self._workspace()
+        self._write_run(workspace)
+        self._write_invocation(workspace, "1", "deep-cover", 10, 20, 3, 3)
+        self._write_invocation(workspace, "2", "deep-cover", 1, 2, 3, 1)
+        _write_json(
+            workspace
+            / "runtime"
+            / "accounting"
+            / "invocations"
+            / "3.json",
+            {
+                "state": "deep-cover",
+                "agent": "claude-code",
+                "model": "anthropic/claude-sonnet-5",
+                "extraction_status": "no-usage-emitted",
+                "tokens": {
+                    "input": {
+                        "total": {"status": "unknown"},
+                        "cached_read": {"status": "unknown"},
+                        "cache_write": {"status": "unknown"},
+                    },
+                    "output": {"total": {"status": "unknown"}},
+                },
+            },
+        )
+
+        result = benchmark.collect_result(workspace, "failure", 7)
+
+        self.assertEqual(
+            {"input": 11, "cachedInputRead": 22, "cachedInputWrite": 4, "output": 6},
+            result["deep"]["tokens"],
+        )
 
     def test_written_record_is_immutable_for_its_run_id(self) -> None:
         """A written record is returned verbatim whatever status is requested

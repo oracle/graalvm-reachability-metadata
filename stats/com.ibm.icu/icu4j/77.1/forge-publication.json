@@ -1,0 +1,135 @@
+{
+  "base_commit": "7d38dcd37945e57a1cb1ec02e7ab6fe7486ecea6",
+  "branch": "ai/kimeta/add-lib-support-com.ibm.icu-icu4j-77.1-forge-10158-20260922203236730348-aec6b2be6259",
+  "follow_ups": [],
+  "forge": {
+    "branch": "master",
+    "commit": "9932805abe145b26f05f0f247fc0aca403d760d9",
+    "monitored_branch": "origin/master"
+  },
+  "issue_number": 10158,
+  "library": {
+    "artifact": "icu4j",
+    "coordinates": "com.ibm.icu:icu4j:77.1",
+    "group": "com.ibm.icu",
+    "version": "77.1"
+  },
+  "local_ci_verification": {
+    "base_commit": "7d38dcd37945e57a1cb1ec02e7ab6fe7486ecea6",
+    "commands": [
+      {
+        "command": [
+          "./gradlew",
+          "generateChangedIndexFileCoordinatesList",
+          "-PbaseCommit=origin/master",
+          "-PnewCommit=HEAD"
+        ],
+        "env": {
+          "GITHUB_OUTPUT": "/tmp/tmpcljcand0"
+        },
+        "gate": "changed-index-coordinates",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :generateChangedIndexFileCoordinatesList\n\n[Incubating] Problems report is available at: file:///home/oracle/oracle/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10158-f3bc9d32/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 3s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      },
+      {
+        "command": [
+          "./gradlew",
+          "validateIndexFiles",
+          "-Pcoordinates=com.ibm.icu:icu4j"
+        ],
+        "env": {},
+        "gate": "index-file-validation",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :validateIndexFiles\n✅ metadata/com.ibm.icu/icu4j/index.json: Valid\n\n[Incubating] Problems report is available at: file:///home/oracle/oracle/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10158-f3bc9d32/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 2s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      }
+    ],
+    "failure_command": null,
+    "failure_gate": null,
+    "final_commit": "0a101b4c97751b34666fad378bf9e6d4272b11cd",
+    "fixups": [],
+    "human_intervention_required": false,
+    "repo_fix_paths": [],
+    "status": "success"
+  },
+  "local_review": {
+    "changed_paths": [],
+    "decision": "approved",
+    "finding_body": "",
+    "finding_title": "",
+    "fix_note": "",
+    "model": "gpt-5.6-sol",
+    "review_comment": "Reviewed the single-coordinate diff and local evidence. The contribution stays within the allowed com.ibm.icu:icu4j:77.1 files, uses only reachability-metadata.json, and provides meaningful public-API tests in a separate test package with no scaffold placeholder, Native Image skip or tolerated failure, hardcoded test version, visibility bypass, compatibility override, or native build/run flag. The resolved statistics contain no dynamic-access report with calls to which the percentage or entry-count mismatch gates apply. Index validation evidence is green, and the exact Forge finalization completed a stable no-change pass covering all three native-test lanes, metadata validation, style checks, generated-test validity, and library statistics.",
+    "session_id": "0e22b417481c4e5a"
+  },
+  "metrics": {
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "path": "stats/com.ibm.icu/icu4j/77.1/execution-metrics.json",
+    "summary": {
+      "cached_input_tokens_used": 1651968,
+      "code_coverage_percent": 22.01,
+      "cost_usd": 2.3215,
+      "generated_loc": 149,
+      "input_tokens_used": 209454,
+      "iterations": 5,
+      "metadata_entries": 98,
+      "output_tokens_used": 14940,
+      "test_only_metadata_entries": 6,
+      "tested_library_loc": 19019
+    },
+    "timestamp": "2026-09-22T20:32:36.730348Z"
+  },
+  "modifiers": {
+    "chunk_final": true,
+    "chunked_dynamic_access": false,
+    "human_intervention": false
+  },
+  "producer": "kimeta",
+  "publication_id": "forge-10158-20260922203236730348-aec6b2be6259",
+  "render": {
+    "dynamic_access": null,
+    "dynamic_access_evidence": {
+      "covered_call_sites": [],
+      "metadata_rules": [
+        "when `com.ibm.icu.text.Bidi` is reached, make `byte[]` available for reflection",
+        "when `com.ibm.icu.impl.CurrencyData` is reached, make `com.ibm.icu.impl.ICUCurrencyDisplayInfoProvider.<init>()` available for reflection",
+        "when `com.ibm.icu.text.CurrencyMetaInfo` is reached, make `com.ibm.icu.impl.ICUCurrencyMetaInfo.<init>()` available for reflection",
+        "when `com.ibm.icu.impl.LocaleDisplayNamesImpl$LangDataTables` is reached, make `com.ibm.icu.impl.ICULangDataTables.<init>()` available for reflection",
+        "when `com.ibm.icu.impl.LocaleDisplayNamesImpl$RegionDataTables` is reached, make `com.ibm.icu.impl.ICURegionDataTables.<init>()` available for reflection",
+        "when `com.ibm.icu.text.LocaleDisplayNames` is reached, make `com.ibm.icu.impl.LocaleDisplayNamesImpl.getInstance(com.ibm.icu.util.ULocale, com.ibm.icu.text.LocaleDisplayNames$DialectHandling)` available for reflection",
+        "when `com.ibm.icu.text.TimeZoneNames` is reached, make `com.ibm.icu.impl.TimeZoneNamesFactoryImpl.<init>()` available for reflection",
+        "when `com.ibm.icu.text.RuleBasedCollator` is reached, make `com.ibm.icu.impl.coll.CollationBuilder.<init>(com.ibm.icu.impl.coll.CollationTailoring)` available for reflection",
+        "... and 10 more"
+      ]
+    },
+    "library_stats": {
+      "dynamicAccess": "N/A",
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 122727,
+          "missed": 361656,
+          "ratio": 0.253368,
+          "total": 484383
+        },
+        "line": {
+          "covered": 19019,
+          "missed": 67386,
+          "ratio": 0.220115,
+          "total": 86405
+        },
+        "method": {
+          "covered": 2865,
+          "missed": 8922,
+          "ratio": 0.243064,
+          "total": 11787
+        }
+      },
+      "version": "77.1"
+    }
+  },
+  "schema_version": 1,
+  "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-sol",
+  "task_type": "library-new-request",
+  "template_type": "library-new-request",
+  "timestamp": "2026-09-22T20:32:36.730348Z"
+}

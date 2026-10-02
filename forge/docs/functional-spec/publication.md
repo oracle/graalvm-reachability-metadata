@@ -420,56 +420,6 @@ The descriptor is validated by the publisher against the schema on the default
 branch (§AR-actions-publication), which admits no unknown fields, so the schema,
 renderer, and executor must land before a run emits the new contract.
 
-## FS-library-update-tested-version-split: Library-update tested-version split
-
-A `library-update-request` entry often lists several tested versions of the same
-library at once (for example `["1.1", "1.2", "1.3"]`). When a coverage-improvement
-run regenerates the JVM tests for such an entry, the new tests can pass on the
-entry's own version yet stop compiling or running against a *later* tested
-version. Forge must catch that break before the branch becomes PR-eligible and
-split the entry, so the PR keeps the regenerated progress for the versions that
-still pass while the repository keeps its existing support for the rest.
-
-**Version sweep.** Before publication (§FS-local-ci-equivalent-verification),
-Forge runs a Java-only sweep. It runs `javaTest` for the changed coordinate once
-per tested version, walking the entry's `tested-versions` in order with
-`GVM_TCK_LV` set to each version, and stops at the first version that fails. The
-sweep is deliberately narrower than full CI — it skips the native-image matrix —
-because it only needs to catch JVM test code that no longer works on a later
-version.
-
-**Progress output.** Forge must report the sweep on the CLI: the changed
-coordinate, how many versions it will check, each version as it starts, the log
-path for that version, and whether the version passed or failed. When every
-version passes, the output must say plainly that no split is needed.
-
-**Outcome.** If the *first* version fails there is no passing prefix to keep, so
-Forge fails publication instead of splitting. If a *later* version fails, Forge
-splits the index entry at that first failing version into two entries:
-
-| | `metadata-version` | `tested-versions` | `latest` | contents |
-|---|---|---|---|---|
-| **Current entry** | unchanged | the passing prefix | kept unless it moves to the successor | the regenerated metadata and tests from this PR |
-| **Successor entry** | the first failing version | the failing version and every later one | inherited when the split entry had `latest: true` | baseline metadata and tests copied from the PR base commit |
-
-**Successor contents.** The successor entry must preserve the repository's
-pre-generation support for the failing range. Forge copies the metadata and test
-directories from the PR base commit entry that originally covered the failing
-version — using that entry's `metadata-version` and `test-version` when present —
-into `metadata/<group>/<artifact>/<failing-version>` and
-`tests/src/<group>/<artifact>/<failing-version>`. The PR then ships the new
-generated progress for the passing prefix and keeps baseline support for the
-successor range. Forge regenerates library stats for the failing version after
-creating the successor entry and publishes them under
-`stats/<group>/<artifact>/<failing-version>`.
-
-**Follow-up issue.** On every split, Forge also opens a `library-update-request`
-issue for the successor metadata version and holds it in `In Progress` so the
-queue cannot claim it early. The PR references this issue but does not close it,
-through the `Refs:` line and `Forge-Unblocks-Issue:` trailer of §AR-pr-body.
-Once the PR merges, Forge releases the issue — clearing its assignees and moving
-its project status to `Todo` — so the successor update enters normal processing.
-
 ## FS-human-intervention-policy: Human intervention policy
 
 The `human-intervention` label is a maintainer follow-up signal, not a generic
@@ -477,10 +427,14 @@ failure label. Forge must apply it only when the available evidence shows that
 the work cannot be safely completed or trusted without human judgment about the
 generated code, repository automation, metadata, or library behavior.
 
-For a published generated pull request every such case must be represented by
-`local_review.decision: rejected` and
+For a published generated pull request every case found before publication
+must be represented by `local_review.decision: rejected` and
 `local_review.action: human-intervention`; no other descriptor flag or inferred
-condition may add the label. Valid cases include:
+condition may add the label. The descriptor records the pre-push review's
+verdict on the tree it describes, so an escalation found after publication — a
+merge conflict git cannot resolve, or a failed CI that cannot be repaired inside
+the contribution (§FS-automated-pr-review) — adds the label directly and leaves
+the descriptor and the head untouched. Valid cases include:
 
 - Generated tests, metadata, or workflow edits fail local verification in a way
   that points to the generated artifact or repository automation rather than a
@@ -501,7 +455,8 @@ condition may add the label. Valid cases include:
 - A CI-repair review reached the escalation of the disposition ladder: a rule
   violation it could not repair inside the contribution's file set, or a defect
   in shared repository infrastructure that the contribution must not carry and
-  that now has its own issue (§root/FS-contribution-contract.5).
+  that now has its own issue (§root/FS-contribution-contract.5) — or returned no
+  valid diagnosis at all.
 
 Forge must not use `human-intervention` for failures that are only external or
 transient infrastructure conditions. The issue-side classification is by failure
@@ -522,7 +477,9 @@ failure is external, Forge takes no issue action: it applies no
 `human-intervention` label and posts no comment, and silently releases the issue
 claim (status back to `Todo`, assignees cleared) so the issue is retried later.
 Rate limits and shared bootstrap failures additionally stop the current run for
-a later retry.
+a later retry. The same classification applies to every issue queue, including
+the `fails-*` repair queues, and to the claim-time preconditions that run before
+any workflow phase (§FS-forge-run-requirements.2).
 
 The label can appear on issues or pull requests. On an issue, it means Forge
 could not safely produce a PR-ready result and posted enough diagnostics for a
@@ -560,16 +517,29 @@ or label alone is insufficient.
 **Approved heads are approved deterministically.** For a normal generated task,
 `local_review.decision` must be `approved`; a diff-validated benchmark-result
 head is approved by definition because it records measurements rather
-than a mergeable generated contribution. If the head changes an index file,
-Forge validates the current-base merge candidate before approval because
-enabling auto-merge on an already-green head may merge it immediately. Forge
-then submits the GitHub approval with an explicit commit ID equal to the
-validated head and immediately enables auto-merge for the pull request with the
-same expected head. Forge never directly merges an approved pull request:
-pending required checks wait, and GitHub queues or merges only after every
-required CI and repository merge gate is successful and non-blocking. A later
-push must earn a new exact-head approval rather than carrying the old approval
-forward.
+than a mergeable generated contribution.
+
+**Forge is the merge gate, so it approves and arms only what it has seen pass.**
+Forge may approve a head and enable auto-merge only after reading that exact
+head's entire check rollup as successful. It may not delegate that judgment to
+GitHub's required-status-check set: that set is a repository setting covering
+some of the gates, so a head whose required checks are green while another gate
+is red would merge the moment auto-merge is armed. A pending rollup is left
+untouched and reconsidered on a later pass — unapproved, unarmed, and without
+spending a merge-candidate validation on a head whose verdict is not in yet. A
+failed rollup enters diagnosis and gives up any auto-merge request surviving
+from an earlier pass. Requiring every gate on the default branch is a
+second, independent enforcement of the same rule
+(§root/AR-required-status-checks) and never a substitute for this one.
+
+Once the rollup is green, an index-changing head has its current-base merge
+candidate validated before approval, because arming auto-merge on an
+already-green head may merge it immediately. Forge then submits the GitHub
+approval with an explicit commit ID equal to the validated head and enables
+auto-merge for the pull request with the same expected head. Forge never
+directly merges an approved pull request: GitHub queues or merges only once
+every repository merge gate is also non-blocking. A later push must earn a new
+exact-head approval rather than carrying the old approval forward.
 
 **Rejected heads are acted on immediately.** A rejected descriptor never
 receives an approval or auto-merge request and does not wait for CI. Before
@@ -603,14 +573,22 @@ not a transient verdict.
 A contribution-local repair performs the same local-review responsibilities on
 the resulting tree, appends every new finding to `forge/FINDINGS.md`, updates
 the descriptor so its decision describes that exact tree, and pushes to the
-existing head branch. Structured infrastructure evidence causes trusted Forge
-code to open or reuse one infrastructure issue and link it before recording
-`rejected` plus `human-intervention`; an unfixable library records `rejected`
-plus `close`. Any case that cannot be fixed by changing the contribution is
-explained on the pull request. Before every repair push, Forge disables
-auto-merge and dismisses its approval for the old head; a rejected outcome also
-remains unapproved while its action is applied. A push restarts CI, and every
-later action begins again from the new exact-head descriptor.
+existing head branch. Before that push, Forge disables auto-merge and dismisses
+its approval for the old head. A push restarts CI, and every later action begins
+again from the new exact-head descriptor.
+
+**A CI failure Forge cannot repair changes nothing in the pull request.** Every
+rejected outcome — an escalation, structured infrastructure evidence, an edit
+outside the contribution, an unfixable library, or a turn that returned no valid
+diagnosis — leaves the contribution as it was, so the descriptor's decision
+still describes the head and must not be rewritten. Forge discards the agent's
+edits and pushes nothing. Structured infrastructure evidence first makes trusted
+Forge code open or reuse one infrastructure issue. Forge then explains the
+failure once on the pull request and executes the outcome's action as it would
+for a rejected head: `human-intervention` withdraws Forge approval and adds the
+label, and `close` closes the pull request and its unsupported-version issue.
+The label alone holds the pull request: once a maintainer removes it or adds
+`human-intervention-fixed`, a later pass diagnoses the same head again.
 
 Transient CI noise, GitHub status/API failures, Maven download failures, and
 other external infrastructure errors are retried or waited out and are not
@@ -637,9 +615,10 @@ resolution may never modify or drop an existing entry, and a run ID appearing
 on both sides with different content is a real disagreement that escalates
 like any other conflict. Conflict refresh is deterministic queue maintenance,
 not review: before CI state can make a pull request eligible for an agent,
-Forge first approves the validated head and enables auto-merge, then merges the
-base branch into a conflicting same-repository head and pushes the result when
-that merge left no conflict behind. A merge that still conflicts — in the
+Forge merges the base branch into a conflicting same-repository head and pushes
+the result when that merge left no conflict behind. It approves and arms
+nothing on the way, because the push restarts the checks and the refreshed head
+must earn its own exact-head approval. A merge that still conflicts — in the
 ledger or in any other file — is a real disagreement over content and takes the
 human-intervention path instead, as does a head Forge cannot push to. Before
 applying that label, Forge disables auto-merge and dismisses its approval so no
@@ -648,6 +627,14 @@ merge, Forge likewise withdraws the old head's approval and auto-merge request.
 The push restarts the pull request's checks, so evaluation belongs to a later pass:
 Forge must re-read the descriptor decision and checks after pushing rather than
 carrying pre-push state forward, and a new exact head must be approved again.
+GitHub computes mergeability lazily: a state read taken after any base-branch
+push answers `UNKNOWN` until a background recomputation settles it, and the
+read itself is what triggers that recomputation. An `UNKNOWN` answer is an
+unanswered question, never evidence of a clean head: Forge re-polls with
+bounded backoff before classifying the head as conflicting or not. An answer
+still unsettled when that backoff runs out leaves the pull request waiting for
+a later pass, approved and armed by nothing, because a head GitHub has not
+called clean has not earned the merge gate.
 
 Because GitHub may complete an armed merge between worker passes, Forge also
 reconciles the existing chunk and follow-up issue transitions from the merged

@@ -17,6 +17,269 @@ Infrastructure issue: https://github.com/oracle/graalvm-reachability-metadata/is
 
 CustomChangeWrapperTest added an OSGi Bundle/Activator scenario and org.osgi dependency specifically to exercise Liquibase's OSGi class-loader branch. FS-test-contract.4.5 forbids tests targeting OSGi class-loader paths because they depend on runtime class-loading behavior Native Image cannot support.
 
+## 2026-10-02 — io.micronaut:micronaut-context:5.1.3 (#9803)
+
+**Unnecessary compiler dependency on the runtime test classpath**
+
+The coordinate build declared io.micronaut:micronaut-inject-java:5.1.3 as testImplementation even though the compiler was already present in the required, version-aligned testAnnotationProcessor configuration. This unnecessarily broadened the test classpath and hardcoded a support-module version, contrary to the minimal-scope requirement in §root/FS-test-contract.2.9. The complete finalization pass succeeded after removal, confirming that the extra testImplementation dependency was not needed.
+
+## 2026-10-02 — com.squareup.okhttp3:okhttp:3.9.0 (#9336)
+
+**Generated repair uses a shadow Android API to manufacture coverage**
+
+The added tests/src/com.squareup.okhttp3/okhttp/3.9.0/src/test/java/android/security/NetworkSecurityPolicy.java shadowed a real Android framework type, and AndroidPlatformTest depended on that fake type to activate an Android-only library path on the desktop test runtime. The contribution also changed the inherited X509TrustManagerExtensions stub to force the desired fallback. This violates FS-test-contract.2.3 and adds unrelated synthetic coverage to a javac repair rather than narrowly adapting the failing TrustRootIndex call.
+
+## 2026-10-02 — org.hibernate:hibernate-core:6.1.0.Final (#9119)
+
+**Modified top-level test class is not public**
+
+FS-test-contract.1.2 requires every top-level test class to be public. The contribution modified AbstractHibernateTest.java but left its top-level abstract test class package-private, while newly added tests inherit its JUnit tests.
+## 2026-10-01 — io.opentelemetry:opentelemetry-sdk-trace:1.59.0 (#9350)
+
+**Generated repair retained test-side reflection and an unnecessary Native Image flag**
+
+The copied OpenTelemetrySdkTraceTest directly used Class.forName/getDeclaredField to manufacture reflection evidence, violating FS-test-contract.2.1 and FS-contribution-contract.4.3. The copied build.gradle also retained --allow-incomplete-classpath without evidence that every compliant test shape requires it, violating FS-test-contract.2.7. The complete current-defaults, future-defaults, and GraalVM 25 native lanes passed after both were removed.
+
+## 2026-10-01 — jakarta.websocket:jakarta.websocket-client-api:2.3.0-M1 (#9359)
+
+**Explicit messaging timeouts below the required 10-second floor**
+
+The new test configured WebSocket session idle and asynchronous send timeouts to 250-1000 ms. These explicit client/messaging timeouts violated FS-test-contract.1.7, which requires at least 10 seconds.
+## 2026-10-01 — io.micronaut:micronaut-json-core:5.1.3 (#9812)
+
+**Lockstep companion dependency pinned to the requested version**
+
+The coordinate's build.gradle hardcoded io.micronaut:micronaut-jackson-databind:5.1.3 instead of using the TCK-resolved library version. That would leave the supporting mapper implementation pinned when this version-agnostic test is reused, violating the version-pinning rule.
+
+## 2026-09-30 — io.micronaut:micronaut-http-netty:5.1.13 (#9833)
+
+**Version-pinned companion dependencies prevent test reuse**
+
+The test build hardcoded 5.1.13 for four Micronaut companion modules. This violated the version-agnostic test requirement because a later tested version would still execute against stale 5.1.13 server, client, Jackson, and injection modules instead of the TCK-resolved library version.
+## 2026-09-30 — io.micronaut.data:micronaut-data-runtime:5.1.3 (#9816)
+
+**Test project declares unused backend dependencies**
+
+FS-test-contract.2.9 permits build.gradle dependency changes only when the dependency is genuinely needed. StaticMetamodelInitializerTest exercises RuntimeCriteriaBuilder and a generated static metamodel but does not use micronaut-data-jdbc, micronaut-jdbc-hikari, H2, or micronaut-test-junit5. All three Native Image finalization lanes passed after those dependencies were removed, confirming they were unnecessary scope.
+## 2026-10-01 — org.apache.curator:curator-client:5.0.0 (#9364)
+
+**Zero dynamic-access coverage and unjustified native configuration**
+
+The original 5.0.0 statistics reported 0/123 dynamic-access calls overall, including 0/119 reflection and 0/4 resources, which violated the zero-covered repair gate. The test project also retained --enable-url-protocols=http after the HTTP-based Exhibitor scenarios had been removed, without evidence that any remaining test required the native flag, and Curator client configuration used explicit I/O timeouts below the 10-second minimum.
+
+## 2026-09-25 — org.mongodb:mongodb-driver-core:5.7.0 (#9388)
+
+**Test-side reflection forces an unreachable implementation path**
+
+FS-test-contract.2.1 forbids test-side reflection that bypasses the library behavior a consumer can invoke. tests/src/org.mongodb/mongodb-driver-core/5.7.0/src/test/java/org_mongodb/mongodb_driver_core/DirectBufferDeallocatorInnerJava8DeallocatorTest.java uses getDeclaredClasses, getDeclaredField, getDeclaredMethod, setAccessible, Unsafe.allocateInstance, and direct private-field mutation to manufacture DirectBufferDeallocator$Java8Deallocator execution on the JDK 25 lanes. The normal public constructor selects the Java 9 implementation there. I could not safely rewrite the scenario without that bypass; removing it would delete an inherited passing scenario and may reduce the reported 13/13 dynamic-access coverage. A maintainer must decide how to make or retire this historical coverage without violating the contribution contract.
+## 2026-09-30 — org.apache.curator:curator-recipes:5.0.0 (#9365)
+
+**Pre-push review unavailable**
+
+Forge could not obtain a readable pre-push review verdict. This records a review availability problem, not a reviewer finding against the branch.
+## 2026-09-30 — io.micronaut.reactor:micronaut-reactor:4.0.0 (#9826)
+
+**Metadata CI used a stale apt index when installing openbsd-inetd**
+
+Workflow run 36703838247 on head 6c0fa721e6586c33399a7b89ed229c10fbf3bd74 failed all three matrix jobs in Disable docker networking. Each job ran sudo apt-get install openbsd-inetd without first refreshing apt indexes, requested libevent-2.1-7t64_2.1.12-stable-9ubuntu2.1, and received 404 Not Found before checkMetadataFiles or the coordinate test task ran. Runs for unrelated contributions failed at the same shared step, and merged PR #10274 repaired .github/workflows/scripts/disable-docker.sh by running apt-get update first. This is outside the contribution's closed file set, so FS-contribution-contract.5.2 and .5.3 prohibit repairing it in this PR and require human intervention.
+
+Infrastructure issue: https://github.com/oracle/graalvm-reachability-metadata/issues/10277 (#10277)
+
+## 2026-09-30 — org.glassfish.ha:ha-api:3.1.13 (#9936)
+
+**Docker isolation CI installs packages with stale APT indexes**
+
+The shared `.github/workflows/scripts/disable-docker.sh` runs `sudo apt-get install openbsd-inetd` without first refreshing APT indexes. In both attempts of current-head run 36685400488, every metadata matrix job requested `libevent-2.1-7t64_2.1.12-stable-9ubuntu2.1_amd64.deb`, received `404 Not Found`, exited 100 in `Disable docker networking`, and skipped metadata validation and the coordinate test. Independent run 36703838247 for `io.micronaut.reactor:micronaut-reactor:4.0.0` later failed all three lanes at the same step with the same package 404, proving the defect is shared rather than specific to `org.glassfish.ha:ha-api:3.1.13`. Under §FS-contribution-contract.5.2–5.3 this must be fixed in shared infrastructure, outside this contribution.
+
+Infrastructure issue: https://github.com/oracle/graalvm-reachability-metadata/issues/10273 (#10273)
+
+## 2026-09-29 — org.apache.tomcat.embed:tomcat-embed-el:10.0.0 (#9371)
+
+**Test-only service provider forced by an unjustified Native Image flag**
+
+The new test project excluded org.apache.el.ExpressionFactoryImpl during Native Image service discovery solely to force a test-only provider, violating FS-test-contract.2.7 because the flag's necessity originated in test configuration rather than the library or its dependencies. The copied test metadata, filter, and new index bucket also retained javax.el entries for the Jakarta-only artifact; those typeReached conditions could never be reached, violating the condition-integrity rule in FS-contribution-contract.4.9.
+
+## 2026-09-30 — org.glassfish.pfl:pfl-tf:5.1.1 (#9944)
+
+**Dynamic-access classes combined in one test file**
+
+The resolved dynamic-access evidence identifies call sites in both MethodMonitorRegistry and EnhancedClassDataReflectiveImpl, but the contribution originally placed both scenarios in MethodMonitorRegistryTest.java. This violated FS-test-contract.1.8, which requires a dedicated test file for each dynamic-access class.
+
+## 2026-09-27 — org.hyperledger.fabric-chaincode-java:fabric-chaincode-shim:2.5.11 (#10223)
+
+**New-library finalization deletes another coordinate's metadata**
+
+FS-contribution-contract.2 requires this new-library contribution to stay within org.hyperledger.fabric-chaincode-java:fabric-chaincode-shim:2.5.11 and its supporting files. The reviewed diff deletes metadata/io.grpc/grpc-netty-shaded/1.68.0/reachability-metadata.json in full (git diff --numstat reports 0 additions and 243 deletions). The local gate record confirms human_intervention_required=true and lists that path in repo_fix_paths even though the gate status is success. Under FS-contribution-contract.5.2-.5.3, restoring or otherwise changing another coordinate is not a contribution-local repair, so this branch is blocked on the shared finalization defect.
+
+Infrastructure issue: https://github.com/oracle/graalvm-reachability-metadata/issues/10229 (#10229)
+## 2026-09-29 — org.eclipse.jetty:jetty-io:9.4.19.v20190610 (#9377)
+
+**Review finalization hashes unstable abbreviated Git object IDs**
+
+The exact review finalization command repeatedly exits 1 with `Review finalization changed the publishable tree` after every substantive gate passes. `publishable_tree_digest()` hashes raw `git diff --binary HEAD --` output. During `generateLibraryStats`, Git's adaptive object abbreviation grows, changing only the diff header from `index e80d11edc3..92d6c8b6b5` (1918 bytes) to `index e80d11edc34..92d6c8b6b57` (1920 bytes); the patch body and worktree content are unchanged. Because the fix belongs in shared `forge/git_scripts/review_finalization.py`, FS-contribution-contract.5.3 requires escalation rather than a contribution-local repair.
+
+Infrastructure issue: https://github.com/oracle/graalvm-reachability-metadata/issues/10242 (#10242)
+
+## 2026-09-27 — io.lettuce:lettuce-core:6.2.6.RELEASE (#10205)
+
+**Transient CI diagnosis selected unrelated runs**
+
+The transient verdict requested workflow runs that were not failed on the exact reviewed head: 36289510984
+
+## 2026-09-26 — io.lettuce:lettuce-core:6.2.6.RELEASE (#10205)
+
+**Resource-bundle metadata entry missing a reachability condition**
+
+The added sun.util.logging.resources.logging bundle entry had no condition, violating the requirement that every shipped metadata entry be gated by condition.typeReached. Nearby reconnect logging resources were already gated on io.lettuce.core.protocol.ConnectionWatchdog, establishing the valid pre-access condition for the same behavior.
+
+## 2026-09-28 — org.jetbrains.kotlin:kotlin-scripting-jvm:2.4.0 (#9385)
+
+**Native test main-class override bypasses the JUnit suite**
+
+The contribution changed the 2.3.21 baseline outside the single-version file set and configured the 2.4.0 native test binary to run JvmDependencyTest.main instead of the JUnit launcher. That made the native lane execute only a trivial classpath assertion while the Kotlin tests and their metadata remained unverified, violating the closed-file-set and Native Image execution requirements. Removing the override reproduced the concealed evidence: the full native suite found 14 tests and initially failed on missing Kotlin serialization metadata and PathUtil assertions that assumed filesystem-backed class resources. The generated suite also combined the KJvmCompiledScriptKt and KJvmCompiledScript dynamic-access targets in one file and retained test-only/no-op resource metadata.
+## 2026-09-28 — org.hibernate.models:hibernate-models:2.0.0.Alpha1 (#9379)
+
+**Test-side reflection bypasses the annotation API**
+
+`AbstractJdkValueExtractorTest` and `OrmAnnotationDescriptorInnerJdkCreatorTest` obtained annotations by reflectively looking up and invoking `AnnotatedElement.getAnnotation`. That unnecessary test-side reflection violated the no-reflection-shortcuts rule in `FS-test-contract.2.1`; the annotation instance can be obtained through the normal public annotation API without changing the tested Hibernate Models behavior.
+
+## 2026-09-28 — org.postgresql:postgresql:42.7.13 (#9394)
+
+**Generated tests used artificial dynamic-access paths and invalid execution bounds**
+
+The generated suite violated test-contract musts: pooled-connection tests directly obtained InvocationHandlers and manually invoked Object.getClass instead of reaching reflection through ordinary library behavior; TimestampUtilsTest forced java.version to Java 8 and required --add-opens to exercise a path unavailable on the resolved JDK; generated test metadata contained unstable lambda class names as typeReached conditions; and several explicit database timeouts were below 10 seconds while Docker process waits were unbounded. These contradicted FS-test-contract.2.1, FS-test-contract.2.8, FS-test-contract.1.7, FS-test-contract.1.6, and the condition-cheating rule in FS-contribution-contract.4.
+
+## 2026-09-25 — org.apache.tomcat.embed:tomcat-embed-core:11.0.18 (#8328)
+
+**Pre-push review unavailable**
+
+Forge could not obtain a readable pre-push review verdict. This records a review availability problem, not a reviewer finding against the branch.
+
+## 2026-09-26 — com.oracle.database.jdbc:ojdbc8:23.26.1.0.0 (#10059)
+
+**Generated library statistics were stale**
+
+The first review-finalization pass regenerated `stats.json`, correcting covered instruction and line counts from 92,681/12,870 to 92,680/12,869. Because the publishable tree changed, that pass exited nonzero as required; the exact finalization command then passed without further changes.
+## 2026-09-26 — com.azure:azure-json:1.5.1 (#10056)
+
+**Generated library statistics were stale**
+
+The first exact finalization run regenerated stats/com.azure/azure-json/1.5.1/stats.json and changed the covered instruction, line, and method counts from 10326/2450/486 to 10270/2435/484, then exited nonzero because the publishable tree changed. This contribution-local generated-evidence mismatch was repairable under §FS-contribution-contract.5.1.
+
+## 2026-09-26 — org.jetbrains:annotations:15.0 (#9386)
+
+**Top-level test class was not public**
+
+The new AnnotationsTest was declared package-private in tests/src/org.jetbrains/annotations/15.0/src/test/java/org_jetbrains/annotations/AnnotationsTest.java, while the test contract requires every top-level test class to be public. This was a contribution-local must violation repairable under contribution-contract disposition 5.1.
+
+## 2026-09-25 — org.apache.tomcat.embed:tomcat-embed-core:11.0.22 (#10144)
+
+**Coverage update weakened a baseline logging test and dropped required test metadata**
+
+The contribution removed the formatter setup and assertion from DirectJDKLogTest, weakening an existing passing scenario contrary to FS-test-contract.2.9. It also removed test-only serialization registrations required by unchanged CustomObjectInputStreamTest behavior: finalization reproduced a MissingReflectionRegistrationError for java.util.ArrayList on the latest lane and an UnsupportedFeatureError for java.lang.reflect.Proxy on GraalVM 25. Generated shipped metadata additionally contained test-owned or nonexistent resource entries for TomcatTests$MyServlet, synthetic LocalStrings bundles, and NoSuchRuntimeClass, contrary to the no-test-only-shipped-metadata requirement.
+
+## 2026-09-22 — org.apache.tomcat.embed:tomcat-embed-core:11.0.18 (#8328)
+
+**Transient CI diagnosis selected unrelated runs**
+
+The transient verdict requested workflow runs that were not failed on the exact reviewed head: 35797184278
+
+## 2026-09-22 — org.apache.tomcat.embed:tomcat-embed-core:11.0.18 (#8328)
+
+**Generated metadata includes test-only and machine-local resources**
+
+FS-test-contract.4.4 forbids resource metadata for temporary machine-local paths, and FS-metadata requires test-only resources to stay out of shipped metadata. The generated tree contained five /tmp/junit.../jaas-realm-file.config globs in test-only metadata and nine JUnit, Gradle-worker, or generated test-class resource globs in shipped metadata.
+
+## 2026-09-22 — org.apache.tomcat.embed:tomcat-embed-core:11.0.22 (#10144)
+
+**Transient CI diagnosis selected unrelated runs**
+
+The transient verdict requested workflow runs that were not failed on the exact reviewed head: 35792627095
+
+## 2026-09-22 — org.apache.tomcat.embed:tomcat-embed-core:11.0.22 (#10144)
+
+**Generated coverage removed an existing scenario and retained transient test metadata**
+
+The contribution deleted HostConfigTest.deploysContextDescriptorAtServerStartup, weakening an existing passing scenario contrary to FS-test-contract.2.9; marked WebappClassLoaderBase$PrivilegedJavaseGetResource complete without its required dedicated test file under FS-test-contract.1.8; and retained six HostConfig plus three JAAS /tmp/junit... resource globs, contrary to FS-test-contract.4.4. It also retained an unused RecordingLog helper with 106 unjustified test-only reflection registrations and shipped test-owned or nonexistent resource entries.
+
+## 2026-09-23 — com.azure:azure-json:1.4.0 (#10060)
+
+**New-library dynamic-access coverage is below the required threshold**
+
+The submitted stats reported 0 of 4 dynamic-access calls covered (0%), violating the requirement that a new-library contribution with calls to cover exceed 20% coverage.
+## 2026-09-23 — com.oracle.database.jdbc:ojdbc8:23.26.1.0.0 (#10059)
+
+**Completed dynamic-access classes lacked dedicated test files**
+
+The exhaust report marked oracle.jdbc.driver.DMSFactory and oracle.jdbc.driver.GeneratedPhysicalConnection$1 as completed, but the contribution had no dedicated DMSFactoryTest or GeneratedPhysicalConnectionAnonymous1Test. This violated the one-test-file-per-dynamic-access-class requirement in FS-test-contract.1.8.
+
+## 2026-09-15 — com.fasterxml.jackson.jr:jackson-jr-objects:2.21.0 (#8916)
+
+**Test-only metadata shadowed shipped registrations**
+
+The generated test-only reachability metadata duplicated shipped registrations for POJODefinition, array types, LinkedHashMap, and TreeMap behind test-class conditions, so those registrations could satisfy native tests without exercising the shipped library-conditioned entries. It also contained unstable $$Lambda/0x... conditions and nanoTime-derived missing-class targets, which are not stable valid evidence. The contribution additionally changed tracked native test-result XML even though that generated path is repository-ignored.
+## 2026-09-20 — org.apache.kafka:kafka-clients:4.2.0 (#7506)
+
+**Coverage improvement removed baseline behavior and counted an asserted failure**
+
+The contribution deleted the existing SCRAM provider behavior test from KafkaClientsTest, contrary to the no-weakening rule, and added reportsUnavailableRawMessageInfoFields, which deliberately supplied a nonexistent protobuf field and asserted the resulting RuntimeException while exercising the reflective call site. That is coverage bought by asserting breakage under FS-contribution-contract.4.4 / FS-test-contract.2.6.
+## 2026-09-22 — org.orbisgis:h2gis:2.2.5 (#10139)
+
+**Unrelated KML coverage broadened the H2GIS update**
+
+The generated contribution added STAsKmlTest and ST_AsKml method metadata even though issue #10139 requests the GeoJSON, SRID, geometry-metadata, spatial-predicate, and distance methods. This unrelated feature expansion violated the no-scope-creep requirement in FS-test-contract.2.9.
+
+## 2026-09-21 — org.apache.avro:avro:1.12.2 (#9363)
+
+**Runtime-lambda re-scope left unjustified metadata**
+
+The positive ReflectionUtil.getConstructorAsFunction scenario had been dropped after Native Image runtime lambda definition failed, but the contribution still shipped its manually added lambda registration and retained test-only ConstructedWithString metadata. That left requested metadata without the public-API test required by FS-test-contract.1.5 and FS-test-contract.2.7. The scenario itself is a valid FS-test-contract.4.3.2 re-scope: it concretely uses runtime LambdaMetafactory class definition, Native Image reports UnsupportedFeatureError, Avro catches Throwable and returns null so the refusal cannot be verified, and the remaining public-API tests still pass the repair coverage gate.
+## 2026-09-21 — io.micronaut:micronaut-websocket:5.1.15 (#10141)
+
+**Generated test dependencies pin the requested library version**
+
+The coordinate build script hardcoded version 5.1.15 for three Micronaut companion artifacts even though it already derives the tested version as libraryVersion. This violated the version-agnostic test requirement in FS-test-contract.2.5 and Review Signal #4 because the suite would keep those dependencies pinned when reused for a later tested version.
+## 2026-09-22 — io.micronaut:micronaut-http-client:5.1.15 (#10140)
+
+**Generated library statistics were stale**
+
+The first Forge finalization pass regenerated stats/io.micronaut/micronaut-http-client/5.1.15/stats.json and changed instruction coverage from 5777 to 5775 covered instructions and line coverage from 1301 to 1300 covered lines. Because the publishable tree changed, finalization correctly exited nonzero and required another pass.
+## 2026-09-22 — org.relaxng:jing:20181222 (#10162)
+
+**Stale generated library coverage statistics**
+
+The committed stats did not match deterministic generation from the contribution: the first Forge finalization pass changed instruction/line/method covered counts from 14944/3138/902 to 14986/3146/904. The resulting publishable-tree mutation proved the checked-in derived statistics were stale and required regeneration before approval.
+
+## 2026-09-22 — org.apache.tomcat.embed:tomcat-embed-core:11.0.22 (#10144)
+
+**Generated metadata captured machine-local temporary resources**
+
+The contribution added absolute /tmp/junit... resource globs for HostConfig descriptor defaults and retained stale JAAS temporary-file globs in test-only metadata. Machine-local temporary paths must use normal file APIs rather than Native Image resource metadata under FS-test-contract.4.4.
+
+## 2026-09-22 — org.apache.tomcat.embed:tomcat-embed-core:11.0.22 (#10144)
+
+**Completed dynamic-access classes lacked dedicated test files**
+
+The exhaust report marked org.apache.naming.factory.DataSourceLinkFactory$DataSourceHandler and org.apache.tomcat.util.descriptor.web.SetPublicIdRule as completed, but the original contribution had no dedicated DataSourceLinkFactoryInnerDataSourceHandlerTest or SetPublicIdRuleTest. This violated the one-file-per-dynamic-access-class requirement in §FS-test-contract.1.8.
+
+## 2026-09-21 — org.jetbrains.kotlin:kotlin-daemon-embeddable:2.4.20 (#9926)
+
+**Generated tests violated metadata-generation and bounded-wait contracts**
+
+The added build.gradle generated reflection-config.json and resource-config.json under META-INF/native-image, contrary to FS-test-contract.2.7, and the loopback socket test left accept and read operations unbounded, contrary to FS-test-contract.1.6. These were contribution-local violations. Finalization passing all three native lanes after removal also proved the generated legacy configuration placeholders were unnecessary.
+
+## 2026-09-21 — net.bytebuddy:byte-buddy-agent:1.12.4 (#9360)
+
+**Generated test shadows an optional dependency API type**
+
+The contribution declared tests/src/net.bytebuddy/byte-buddy-agent/1.12.4/src/test/java/com/ibm/tools/attach/VirtualMachine.java in the real com.ibm.tools.attach package to make the optional J9 attachment path available. This is a source shadow for a dependency API and violates FS-test-contract.2.3 and FS-contribution-contract.4.7.
+
+## 2026-09-21 — com.azure:azure-data-appconfiguration:1.8.4 (#10070)
+
+**Native Image build flags were scoped too broadly**
+
+`build.gradle` applied four class-initialization arguments to `graalvmNative.binaries.all`, contrary to the narrowest-flag requirement in `FS-test-contract.2.7`. Removing the flags reproduced image-heap failures for `NOPLoggerFactory`, `SubstituteLoggerFactory`, `Base64Variant`, and `Base64Variant$PaddingReadBehaviour`, establishing that the transitive Azure/Jackson/SLF4J paths require them; only their binary scope needed correction.
+
 ## 2026-09-20 — com.azure:azure-identity:1.18.0 (#10071)
 
 **Native-image initialization flags were scoped to all binaries**
@@ -34,6 +297,12 @@ The contribution rewrote a test class file to preview bytecode and added --enabl
 **Generated Java test class was not public**
 
 The added Checker_qualTest top-level class was declared package-private, violating FS-test-contract.1.2, which requires every top-level test class to be public. The violation was wholly within the target coordinate's new test source and was repairable under FS-contribution-contract.5.1.
+
+## 2026-09-19 — org.springframework.boot:spring-boot-actuator-autoconfigure:4.0.0 (#10003)
+
+**Pre-push review unavailable**
+
+Forge could not obtain a readable pre-push review verdict. This records a review availability problem, not a reviewer finding against the branch.
 
 ## 2026-09-18 — org.xerial.snappy:snappy-java:1.1.0.1 (#10048)
 

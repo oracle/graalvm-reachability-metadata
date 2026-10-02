@@ -1,0 +1,127 @@
+{
+  "base_commit": "3534c4133b72b1ba9d4ed5249d683cb46af48e63",
+  "branch": "ai/kimeta/fix-native-image-run-org.postgresql-postgresql-42.7.13-forge-9394-20260928180544268318-2bc71a246a6c",
+  "follow_ups": [],
+  "forge": {
+    "branch": "master",
+    "commit": "3534c4133b72b1ba9d4ed5249d683cb46af48e63",
+    "monitored_branch": "origin/master"
+  },
+  "issue_number": 9394,
+  "library": {
+    "artifact": "postgresql",
+    "coordinates": "org.postgresql:postgresql:42.7.13",
+    "group": "org.postgresql",
+    "version": "42.7.13"
+  },
+  "local_ci_verification": {
+    "base_commit": "3534c4133b72b1ba9d4ed5249d683cb46af48e63",
+    "commands": [
+      {
+        "command": [
+          "./gradlew",
+          "generateChangedIndexFileCoordinatesList",
+          "-PbaseCommit=origin/master",
+          "-PnewCommit=HEAD"
+        ],
+        "env": {
+          "GITHUB_OUTPUT": "/tmp/tmpe87veqox"
+        },
+        "gate": "changed-index-coordinates",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :generateChangedIndexFileCoordinatesList\n\n[Incubating] Problems report is available at: file:///home/oracle/oracle/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9394-ac26a230/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 3s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      },
+      {
+        "command": [
+          "./gradlew",
+          "validateIndexFiles",
+          "-Pcoordinates=org.postgresql:postgresql"
+        ],
+        "env": {},
+        "gate": "index-file-validation",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :validateIndexFiles\n✅ metadata/org.postgresql/postgresql/index.json: Valid\n\n[Incubating] Problems report is available at: file:///home/oracle/oracle/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9394-ac26a230/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 2s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      }
+    ],
+    "failure_command": null,
+    "failure_gate": null,
+    "final_commit": "f7bb321fb95957e7f4b5edf4c4b9c16613942b6b",
+    "fixups": [],
+    "human_intervention_required": false,
+    "repo_fix_paths": [],
+    "status": "success"
+  },
+  "local_review": {
+    "changed_paths": [
+      "metadata/org.postgresql/postgresql/42.7.13/reachability-metadata.json",
+      "stats/org.postgresql/postgresql/42.7.13/stats.json",
+      "tests/src/org.postgresql/postgresql/42.7.13/build.gradle",
+      "tests/src/org.postgresql/postgresql/42.7.13/src/test/java/postgresql/ArrayDecodingInnerAbstractObjectStringArrayDecoderTest.java",
+      "tests/src/org.postgresql/postgresql/42.7.13/src/test/java/postgresql/BaseDataSourceTest.java",
+      "tests/src/org.postgresql/postgresql/42.7.13/src/test/java/postgresql/PGPooledConnectionInnerConnectionHandlerTest.java",
+      "tests/src/org.postgresql/postgresql/42.7.13/src/test/java/postgresql/PGPooledConnectionInnerStatementHandlerTest.java",
+      "tests/src/org.postgresql/postgresql/42.7.13/src/test/java/postgresql/PGXAConnectionTest.java",
+      "tests/src/org.postgresql/postgresql/42.7.13/src/test/java/postgresql/PgConnectionTest.java",
+      "tests/src/org.postgresql/postgresql/42.7.13/src/test/java/postgresql/PostgresqlTests.java",
+      "tests/src/org.postgresql/postgresql/42.7.13/src/test/java/postgresql/TimestampUtilsTest.java",
+      "tests/src/org.postgresql/postgresql/42.7.13/src/test/resources/META-INF/native-image/reachability-metadata.json"
+    ],
+    "decision": "approved",
+    "finding_body": "The generated suite violated test-contract musts: pooled-connection tests directly obtained InvocationHandlers and manually invoked Object.getClass instead of reaching reflection through ordinary library behavior; TimestampUtilsTest forced java.version to Java 8 and required --add-opens to exercise a path unavailable on the resolved JDK; generated test metadata contained unstable lambda class names as typeReached conditions; and several explicit database timeouts were below 10 seconds while Docker process waits were unbounded. These contradicted FS-test-contract.2.1, FS-test-contract.2.8, FS-test-contract.1.7, FS-test-contract.1.6, and the condition-cheating rule in FS-contribution-contract.4.",
+    "finding_title": "Generated tests used artificial dynamic-access paths and invalid execution bounds",
+    "fix_note": "Removed the direct InvocationHandler calls and their stale Object.getClass metadata, removed the Java-8 simulation test, JVM override, and stale TimeZone metadata, removed unstable lambda typeReached entries, raised explicit I/O timeouts to at least 10 seconds, bounded Docker command waits, and regenerated normalized test-only metadata and statistics through Forge finalization.",
+    "model": "gpt-5.6-sol",
+    "review_comment": "The final tree is scoped to org.postgresql:postgresql:42.7.13, uses only reachability-metadata.json, preserves meaningful public-API native execution, and passes the recorded index gate. The repaired stats pass the ordered fixes-* coverage gate: overall 49/51 (96.078%) to 47/53 (88.679%) and reflection 45/47 (95.745%) to 44/49 (89.796%) each drop by less than 20 percentage points; resources 4/4 to 3/4 passes the small-report rule because covered calls drop by only one. The exact Forge finalizer then completed current-defaults, future-defaults-all, and GraalVM 25 test lanes plus metadata validation, style checks, generated-test validity, and statistics, and a second complete run made no publishable change.",
+    "session_id": "d54ef6f7ac9e4018"
+  },
+  "metrics": {
+    "agent": "pi",
+    "model": "gpt-5.6-luna",
+    "path": "stats/org.postgresql/postgresql/42.7.13/execution-metrics.json",
+    "summary": {
+      "cached_input_tokens_used": 3956736,
+      "code_coverage_percent": 20.98,
+      "cost_usd": 0.9292,
+      "input_tokens_used": 387320,
+      "iterations": 10,
+      "metadata_entries": 296,
+      "output_tokens_used": 24364,
+      "previous_library_coverage_percent": 21.39,
+      "previous_library_metadata_entries": 268,
+      "previous_library_test_only_metadata_entries": 1,
+      "test_only_metadata_entries": 96,
+      "tested_library_loc": 6406
+    },
+    "timestamp": "2026-09-28T18:05:44.268318Z"
+  },
+  "modifiers": {
+    "chunk_final": true,
+    "chunked_dynamic_access": false,
+    "human_intervention": false
+  },
+  "previous_library": {
+    "artifact": "postgresql",
+    "coordinates": "org.postgresql:postgresql:42.7.3",
+    "group": "org.postgresql",
+    "version": "42.7.3"
+  },
+  "producer": "kimeta",
+  "publication_id": "forge-9394-20260928180544268318-2bc71a246a6c",
+  "render": {
+    "baseline_metadata_entries": 268,
+    "baseline_stats": {
+      "coverage_percent": 21.389
+    },
+    "baseline_test_only_entries": 1,
+    "current_metadata_entries": 296,
+    "current_test_only_entries": 96,
+    "library_stats": {
+      "coverage_percent": 20.975099999999998
+    }
+  },
+  "schema_version": 1,
+  "strategy_name": "library_update_pi_gpt-5.6-luna",
+  "task_type": "fixes-native-image-run-fail",
+  "template_type": "fixes-native-image-run-fail",
+  "timestamp": "2026-09-28T18:05:44.268318Z"
+}

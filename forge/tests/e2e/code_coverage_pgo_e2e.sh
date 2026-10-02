@@ -5,16 +5,19 @@
 # work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 #
 # End-to-end check for the code coverage improvement helpers
-# (§AR-code-coverage-improvement.4.2). It exercises the real GraalVM
-# PGO-sampling path and exact JaCoCo correlation against a tiny throwaway
-# library, with no dependency on a checked-in metadata coordinate.
+# (§AR-code-coverage-improvement.4.2, §AR-code-coverage-deep-navigation). It
+# exercises the real GraalVM instrumented and PGO-sampling path and exact
+# JaCoCo correlation against a tiny throwaway library, with no dependency on a
+# checked-in metadata coordinate.
 #
 # It mirrors exactly what the `runNativeTestPGO` harness task does
-# (`--pgo-sampling -H:PGOSamplingPeriodMicros=... -H:+PrintAnalysisCallTree
+# (`--pgo-instrument --pgo-sampling`, `-H:PGOSamplingPeriodMicros=...` where
+# the toolchain lists it, `-H:+PrintAnalysisCallTree
 # -H:PrintAnalysisCallTreeType=CSV`, then run with `-XX:ProfilesDumpFile=`),
 # then runs:
 #   1. code_coverage_api_inventory.py   (jar -> api-inventory.json)
-#   2. code_coverage_profile_report.py  (sampled iprof + call-tree CSVs +
+#   2. CallGraphExtractor.java          (jar -> methods/flow/types CSVs)
+#   3. code_coverage_profile_report.py  (instrumented iprof + call-tree CSVs +
 #      public inventory + exact JaCoCo XML -> internal path guidance)
 #
 # Requires an Oracle GraalVM whose native-image supports `--pgo-sampling`
@@ -94,28 +97,39 @@ public class Demo {
 }
 JAVA
 
-echo "[1/5] compile + jar"
+echo "[1/6] compile + jar"
 ( cd "${WORK}/src" && "${JAVAC}" -g com/example/*.java && "${JAR}" cf "${WORK}/demo.jar" com/example/*.class )
 
-echo "[2/5] build PGO-sampling image with analysis call-tree CSV dump"
-( cd "${WORK}/out" && "${NI}" --pgo-sampling \
-        -H:+UnlockExperimentalVMOptions -H:PGOSamplingPeriodMicros=100 \
+echo "[2/6] build instrumented PGO-sampling image with analysis call-tree CSV dump"
+# The sampling period is toolchain-dependent (§root/AR-test-harness): newer
+# builds sample at a fixed period and reject the option.
+SAMPLING_PERIOD_ARGS=()
+if "${NI}" --expert-options-all 2>/dev/null | grep -q "PGOSamplingPeriodMicros"; then
+    SAMPLING_PERIOD_ARGS=(-H:PGOSamplingPeriodMicros=100)
+fi
+( cd "${WORK}/out" && "${NI}" --pgo-instrument --pgo-sampling \
+        -H:+UnlockExperimentalVMOptions "${SAMPLING_PERIOD_ARGS[@]}" \
         -H:+PrintAnalysisCallTree -H:PrintAnalysisCallTreeType=CSV -H:-UnlockExperimentalVMOptions \
         -cp "${WORK}/demo.jar" com.example.Demo demo >/dev/null )
 
-echo "[3/5] run sampling image to emit .iprof (no args -> plain branch)"
+echo "[3/6] run profiled image to emit .iprof (no args -> plain branch)"
 ( cd "${WORK}/out" && ./demo "-XX:ProfilesDumpFile=${WORK}/profile.iprof" >/dev/null )
 CALL_TREE_METHODS="$(ls "${WORK}/out/reports/"call_tree_methods_*.csv | head -1)"
 test -f "${WORK}/profile.iprof" || { echo "FAIL: no .iprof produced" >&2; exit 1; }
 test -f "${CALL_TREE_METHODS}" || { echo "FAIL: no call_tree CSV dump produced" >&2; exit 1; }
 
-echo "[4/5] generate API inventory from the jar"
+echo "[4/6] generate API inventory from the jar"
 python3 "${FORGE_DIR}/utility_scripts/code_coverage_api_inventory.py" \
     --coordinate com.example:demo:1.0.0 \
     --library-jar "${WORK}/demo.jar" \
     --include-package com.example \
     --output-dir "${WORK}/inventory" >/dev/null
 test -f "${WORK}/inventory/api-inventory.json"
+
+echo "[5/6] extract the bytecode call graph and control-flow table"
+"${JAVA_HOME}/bin/java" --source 25 "${FORGE_DIR}/utility_scripts/java/CallGraphExtractor.java" \
+    --output-dir "${WORK}/graph" "${WORK}/demo.jar" >/dev/null
+test -f "${WORK}/graph/flow.csv"
 
 # Synthesize the exact JaCoCo method evidence this branch-selecting JVM run
 # would produce. JaCoCo remains the only covered/uncovered authority.
@@ -136,16 +150,22 @@ cat > "${WORK}/jacoco.xml" <<'XML'
         <counter type="METHOD" missed="1" covered="0"/>
       </method>
     </class>
+    <sourcefile name="Greeter.java">
+      <line nr="11" mi="0" ci="4" mb="1" cb="1"/>
+      <line nr="12" mi="2" ci="0" mb="0" cb="0"/>
+      <line nr="14" mi="0" ci="2" mb="0" cb="0"/>
+    </sourcefile>
   </package>
 </report>
 XML
 
-echo "[5/5] near-call correlation: sampled profile + call-tree CSVs + inventory"
+echo "[6/6] near-call correlation: instrumented profile + call-tree CSVs + inventory"
 python3 "${FORGE_DIR}/utility_scripts/code_coverage_profile_report.py" \
     --profile "${WORK}/profile.iprof" \
     --reports-dir "${WORK}/out/reports" \
     --api-inventory "${WORK}/inventory/api-inventory.json" \
     --jacoco-xml "${WORK}/jacoco.xml" \
+    --library-methods "${WORK}/graph/methods.csv" \
     --coordinate com.example:demo:1.0.0 \
     --iteration 1 \
     --output-dir "${WORK}/discovery"
@@ -154,7 +174,9 @@ python3 - "${WORK}/discovery/discovery-report-1.json" <<'PY'
 import json, sys
 report = json.load(open(sys.argv[1]))
 summary = report["summary"]
-assert report["profileKind"] == "sampled-guidance"
+assert report["profileKind"] == "instrumented-guidance"
+assert summary["instrumentedCounters"] and summary["profiledBranches"] > 0
+assert summary["controlFlowMethods"] > 0
 assert summary["coverageSource"] == "jacoco"
 assert summary["totalSampleCount"] > 0, "sampling produced no samples"
 inventory_ids = {entry["id"] for entry in report["inventory"]}
@@ -167,8 +189,20 @@ assert internal in bulk, "uncovered internal helper must be prompt-actionable"
 record = bulk[internal]
 assert record["joinKind"] in ("sampled", "public-entry"), record
 assert record["stepsRemaining"] >= 1
+# The `if` on line 11 decides the call on line 12: control flow, not line
+# order, names it, and only the successor landing on line 12 leads there.
+miss = record["missClassification"]
+assert miss["kind"] == "fork-not-taken", miss
+fork = miss["fork"]
+assert fork["line"] == 11 and fork["evidence"] == "control-flow", fork
+landings = {
+    successor["line"]: successor["reachesTarget"]
+    for branch in fork["branches"] for successor in branch["successors"]
+}
+assert landings == {12: True, 14: False}, landings
 print(f"PASS: samples={summary['totalSampleCount']} joinKind={record['joinKind']} "
-      f"steps={record['stepsRemaining']} listed={summary['listedUncovered']}")
+      f"steps={record['stepsRemaining']} listed={summary['listedUncovered']} "
+      f"forkReach={fork['reach']}")
 PY
 
 test -f "${WORK}/discovery/coverage-1.lcov"

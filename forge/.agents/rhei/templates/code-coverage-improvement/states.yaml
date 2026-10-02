@@ -35,7 +35,7 @@
 # collapsed (§AR-code-coverage-improvement.4.3), or the budget is spent.
 #
 # Deep coverage loop (one task): identical shape with deep-measure (JaCoCo +
-# sampled PGO + call-tree steps plus the same stop decision, exits 1-7),
+# PGO + call-tree steps plus the same stop decision, exits 1-7),
 # deep-cover, deep-fix.
 #
 # Naive baseline loop (benchmark strategy "naive", one task; the same shape
@@ -53,7 +53,7 @@
 # Measurement is a deterministic program that always writes the current
 # report to one fixed path and, when the loop continues, derives the cover
 # prompt from that report in the same step. JaCoCo is the
-# only coverage authority; sampled PGO is navigation guidance. An agent can
+# only coverage authority; PGO samples and counters are navigation guidance. An agent can
 # never claim progress: only re-measurement moves the loop forward.
 
 name: code-coverage-improvement
@@ -162,6 +162,15 @@ states:
           print(f"[api-inventory] {message}", file=sys.stderr)
           sys.exit(code)
 
+      def finish(message: str) -> None:
+          # An exit-zero route into `completed` leaves the ticket's terminal
+          # result to this program (§AR-code-coverage-improvement.4).
+          result_path = os.environ.get("RHEI_RESULT_PATH")
+          if result_path:
+              with open(result_path, "w", encoding="utf-8") as result:
+                  result.write(message + "\n")
+          sys.exit(0)
+
       # Inventory scope is the artifact's committed allowed-packages, taken
       # whole (§AR-code-coverage-improvement.5, §root/FS-metadata).
       try:
@@ -194,9 +203,12 @@ states:
           helper += ["--include-package", package]
       print(f"[api-inventory] {' '.join(helper)}", flush=True)
       try:
-          sys.exit(subprocess.run(helper, env=dict(os.environ, PYTHONPATH=work_path)).returncode)
+          returncode = subprocess.run(helper, env=dict(os.environ, PYTHONPATH=work_path)).returncode
       except OSError as error:
           fail(2, f"the inventory helper could not run: {error}")
+      if returncode != 0:
+          sys.exit(returncode)
+      finish(f"API inventory generated for {coordinate} over every committed allowed package.")
       PY
 
   publication:
@@ -221,6 +233,15 @@ states:
       def fail(code: int, message: str) -> None:
           print(f"[publication] {message}", file=sys.stderr)
           sys.exit(code)
+
+      def finish(message: str) -> None:
+          # An exit-zero route into `completed` leaves the ticket's terminal
+          # result to this program (§AR-code-coverage-improvement.4).
+          result_path = os.environ.get("RHEI_RESULT_PATH")
+          if result_path:
+              with open(result_path, "w", encoding="utf-8") as result:
+                  result.write(message + "\n")
+          sys.exit(0)
 
       # The helper validates the finalized metrics against the coordinate and
       # owns staging, rebase, the verification gate, the descriptor, and the
@@ -272,7 +293,7 @@ states:
           "\n".join(pushed or ["Pushed (branch name not captured)"]) + "\n",
           encoding="utf-8",
       )
-      sys.exit(0)
+      finish(f"Publication branch pushed for {coordinate}: " + "; ".join(pushed or ["branch name not captured"]))
       PY
     outputs:
       - name: branch
@@ -297,6 +318,15 @@ states:
           print(f"[native-metadata] {message}", file=sys.stderr)
           sys.exit(code)
 
+      def finish(message: str) -> None:
+          # An exit-zero route into `completed` leaves the ticket's terminal
+          # result to this program (§AR-code-coverage-improvement.4).
+          result_path = os.environ.get("RHEI_RESULT_PATH")
+          if result_path:
+              with open(result_path, "w", encoding="utf-8") as result:
+                  result.write(message + "\n")
+          sys.exit(0)
+
       # The gate call, its budget, and its exit-code contract:
       # §AR-code-coverage-improvement.5 item 5, §FS-native-test-verification-gate.
       try:
@@ -318,9 +348,12 @@ states:
       ]
       print(f"[native-metadata] {' '.join(helper)}", flush=True)
       try:
-          sys.exit(subprocess.run(helper, env=dict(os.environ, PYTHONPATH=work_path)).returncode)
+          returncode = subprocess.run(helper, env=dict(os.environ, PYTHONPATH=work_path)).returncode
       except OSError as error:
           fail(2, f"the preparation helper could not run: {error}")
+      if returncode != 0:
+          sys.exit(returncode)
+      finish(f"Native metadata prepared for {coordinate}: the trace gate finalized durable metadata.")
       PY
 
   api-measure:
@@ -393,11 +426,11 @@ states:
       # even when this phase completes on the first measurement.
       inventory_path = Path("runtime/code-coverage/api-inventory/api-inventory.json")
       graph_dir = Path("runtime/code-coverage/graph")
-      # `types.csv` is the extractor's last output and its newest one, so its
+      # `flow.csv` is the extractor's last output and its newest one, so its
       # absence means either no graph or a graph from an extractor that predates
-      # receiver-obtainability analysis (§AR-code-coverage-improvement.4.1.2).
-      # Keying the cache on it rebuilds instead of silently ranking unfiltered.
-      if not (graph_dir / "types.csv").is_file():
+      # the control-flow table (§AR-code-coverage-deep-navigation.1.3).
+      # Keying the cache on it rebuilds instead of silently tracing no forks.
+      if not (graph_dir / "flow.csv").is_file():
           try:
               library_jars = json.load(open(inventory_path))["libraryJars"]
           except Exception as error:
@@ -453,6 +486,12 @@ states:
               complete_measurement(str(validation), "api", iteration)
           except Exception as error:
               fail(4, f"the stop evaluator could not complete measurement: {error}")
+          # An exit-zero route into `completed` leaves the ticket's terminal
+          # result to this program (§AR-code-coverage-improvement.4).
+          result_path = os.environ.get("RHEI_RESULT_PATH")
+          if result_path:
+              with open(result_path, "w", encoding="utf-8") as result:
+                  result.write(f"API coverage loop completed: {summarize(stop)}\n")
           sys.exit(0)
 
       # Step 5: order the uncovered public entries by how much still-uncovered
@@ -598,7 +637,7 @@ states:
         description: Fixes applied after a failed API measurement step.
 
   deep-measure:
-    description: JaCoCo plus sampled-PGO measurement; decides whether the deep loop continues.
+    description: JaCoCo plus instrumented and sampled PGO measurement; decides whether the deep loop continues.
     concurrent: true
     visits: {{measure_visits}}
     program: |
@@ -665,14 +704,14 @@ states:
           fail(2, f"missing JaCoCo XML at {jacoco_xml}")
       shutil.copy(jacoco_xml, discovery / f"jacoco-deep-{iteration}.xml")
 
-      # Step 3: PGO-sampling image with the analysis call-tree CSV dump.
+      # Step 3: instrumented, PGO-sampling image with the analysis call-tree CSV dump.
       run(3, gradle + ["nativeTestPGOSampling", include_suite], cwd=worktree)
 
-      # Step 4: run the sampling image once; it dumps the .iprof on exit.
+      # Step 4: run the profiled image once; it dumps the .iprof on exit.
       profile = (discovery / f"pgo-profile-{iteration}.iprof").resolve()
       run(4, gradle + ["runNativeTestPGO", include_suite, f"-PpgoProfilePath={profile}"], cwd=worktree)
       if not profile.is_file():
-          fail(4, "sampling run wrote no .iprof")
+          fail(4, "profiled run wrote no .iprof")
 
       # Step 5: copy exactly one coherent common-suffix call-tree CSV triplet.
       reports_dir = subproject / "build/native/nativeTestCompile/reports"
@@ -694,7 +733,7 @@ states:
       for csv_path in complete[chosen].values():
           shutil.copy(csv_path, triplet_dir / csv_path.name)
 
-      # Step 6: JaCoCo-exact deep paths with sampled-PGO guidance. The library
+      # Step 6: JaCoCo-exact deep paths with PGO guidance. The library
       # method list keeps the deep universe to methods the resolved jars declare;
       # a JaCoCo report also covers whatever else the test runtime classpath
       # instruments, including the library's own test-classifier artifact
@@ -750,6 +789,12 @@ states:
               complete_measurement(str(discovery), "deep", iteration)
           except Exception as error:
               fail(7, f"the stop evaluator could not complete measurement: {error}")
+          # An exit-zero route into `completed` leaves the ticket's terminal
+          # result to this program (§AR-code-coverage-improvement.4).
+          result_path = os.environ.get("RHEI_RESULT_PATH")
+          if result_path:
+              with open(result_path, "w", encoding="utf-8") as result:
+                  result.write(f"Deep coverage loop completed: {summarize(stop)}\n")
           sys.exit(0)
 
       # Steering: the analyzer already renders the compact Observed /
@@ -795,6 +840,12 @@ states:
         §AR-code-coverage-improvement.4.2
       - `Observed:` lines are sampled guidance only; every `Uncovered paths`
         target is uncovered according to exact JaCoCo evidence.
+      - Under a `fork` line, each numbered branch says the line it lands on
+        and how often it ran; `← target` marks the branches that lead to the
+        target, so drive the condition the other way. `never dispatched here`
+        names an implementation the call site never received: hand it that
+        receiver. A zero count means the suite never went there, not that it
+        cannot. §AR-code-coverage-deep-navigation.3
       - Add or edit test classes only under the tracked extension suite
         `code-coverage-improvement/src/test/java` inside the coordinate's
         indexed test project (`coverageSuiteRepoRelativePath` in
@@ -857,7 +908,7 @@ states:
         invalid - repair it from the conversion task evidence.
       - step 2: the JVM JaCoCo run failed - fix the generated coverage tests in
         the issue worktree; do not weaken or delete meaningful assertions.
-      - step 3/4: the PGO-sampling build or run failed - inspect the Gradle
+      - step 3/4: the PGO build or run failed - inspect the Gradle
         output; repair missing reachability metadata through the native
         metadata preparation helper if needed.
       - step 5/6: measurement artifacts are missing or incoherent - repair the
@@ -973,6 +1024,12 @@ states:
               complete_measurement(str(validation), "naive", iteration)
           except Exception as error:
               fail(3, f"the stop evaluator could not complete measurement: {error}")
+          # An exit-zero route into `completed` leaves the ticket's terminal
+          # result to this program (§AR-code-coverage-improvement.4).
+          result_path = os.environ.get("RHEI_RESULT_PATH")
+          if result_path:
+              with open(result_path, "w", encoding="utf-8") as result:
+                  result.write(f"Naive baseline loop completed: {summarize(stop)}\n")
           sys.exit(0)
 
       # Step 4: fill the naive prompt with the report's numbers — the only
@@ -1330,6 +1387,14 @@ states:
           print("final metrics record no validation commands", file=sys.stderr)
           sys.exit(75)
       PY
+      status=$?
+      [ "$status" -eq 0 ] || exit "$status"
+      # An exit-zero route into `completed` leaves the ticket's terminal
+      # result to this program (§AR-code-coverage-improvement.4).
+      if [ -n "${RHEI_RESULT_PATH:-}" ]; then
+        printf 'Finalization verified: metrics valid, no failed targets, no human intervention.\n' \
+          > "$RHEI_RESULT_PATH"
+      fi
     program_timeout: 5m
     inputs:
       - name: final-metrics
@@ -1472,7 +1537,7 @@ states:
           cwd=worktree,
       )
       if not profile.is_file():
-          fail(4, "sampling run wrote no .iprof")
+          fail(4, "profiled run wrote no .iprof")
 
       reports_dir = subproject / "build/native/nativeTestCompile/reports"
       triplets: dict = {}
@@ -1729,13 +1794,13 @@ transitions:
     to: deep-fix
     exit_code: 3
     condition: visitCount < visits
-    description: Step 3 failed - the PGO-sampling image build failed.
+    description: Step 3 failed - the PGO image build failed.
 
   - from: deep-measure
     to: deep-fix
     exit_code: 4
     condition: visitCount < visits
-    description: Step 4 failed - the sampling run produced no profile.
+    description: Step 4 failed - the profiled run produced no profile.
 
   - from: deep-measure
     to: deep-fix
@@ -1947,7 +2012,7 @@ transitions:
   - from: finalize-remeasure
     to: human-intervention
     exit_code: 4
-    description: Final PGO sampling run failed after a repair.
+    description: Final PGO run failed after a repair.
 
   - from: finalize-remeasure
     to: human-intervention

@@ -30,6 +30,7 @@ from utility_scripts.metrics_writer import (
     write_pending_metrics,
 )
 from utility_scripts.stage_logger import log_stage
+from utility_scripts.test_project_properties import rewrite_test_project_gradle_properties
 from utility_scripts.task_logs import build_timestamped_task_log_path, display_log_path
 
 
@@ -38,7 +39,10 @@ ALIAS_SWEEP_STAGE = "library-update-alias-sweep"
 LATEST_ONLY_FIELDS: tuple[str, ...] = ("auto-update", "high-priority")
 
 
-def load_alias_split_metrics(metrics_repo_path: str | None) -> dict[str, Any] | None:
+def load_alias_split_metrics(
+        metrics_repo_path: str | None,
+        key: str = ALIAS_SPLIT_METRICS_KEY,
+) -> dict[str, Any] | None:
     """Load recorded split metadata from pending metrics."""
     if metrics_repo_path is None:
         return None
@@ -46,11 +50,15 @@ def load_alias_split_metrics(metrics_repo_path: str | None) -> dict[str, Any] | 
     if not os.path.isfile(pending_path):
         return None
     metrics = read_pending_metrics(metrics_repo_path)
-    split = metrics.get(ALIAS_SPLIT_METRICS_KEY)
+    split = metrics.get(key)
     return split if isinstance(split, dict) else None
 
 
-def write_alias_split_metrics(metrics_repo_path: str | None, split: dict[str, Any]) -> None:
+def write_alias_split_metrics(
+        metrics_repo_path: str | None,
+        split: dict[str, Any],
+        key: str = ALIAS_SPLIT_METRICS_KEY,
+) -> None:
     """Persist split metadata for the typed publication follow-up descriptor."""
     if metrics_repo_path is None:
         raise RuntimeError("Cannot persist library-update alias split without a metrics repository path.")
@@ -58,7 +66,7 @@ def write_alias_split_metrics(metrics_repo_path: str | None, split: dict[str, An
     if not os.path.isfile(pending_path):
         raise RuntimeError(f"Cannot persist library-update alias split; missing {pending_path}.")
     metrics = read_pending_metrics(metrics_repo_path)
-    metrics[ALIAS_SPLIT_METRICS_KEY] = split
+    metrics[key] = split
     write_pending_metrics(metrics_repo_path, metrics)
 
 
@@ -81,13 +89,13 @@ def maybe_split_library_update_tested_versions(
     target_test_version = resolve_test_version(repo_path, group, artifact, requested_version)
     target_coordinates = f"{group}:{artifact}:{target_metadata_version}"
     entries = load_index_entries(repo_path, group, artifact) or []
-    target_entry = _find_entry_by_metadata_version(entries, target_metadata_version)
+    target_entry = find_entry_by_metadata_version(entries, target_metadata_version)
     if target_entry is None:
         return None
-    if not _has_changed_tests(repo_path, base_ref, group, artifact, target_test_version):
+    if not has_changed_tests(repo_path, base_ref, group, artifact, target_test_version):
         return None
 
-    tested_versions = _entry_tested_versions(target_entry)
+    tested_versions = entry_tested_versions(target_entry)
     if len(tested_versions) <= 1:
         return None
 
@@ -99,7 +107,7 @@ def maybe_split_library_update_tested_versions(
         )
         return existing_split
 
-    sweep = _run_java_alias_sweep(repo_path, target_coordinates, tested_versions)
+    sweep = run_tested_version_sweep(repo_path, target_coordinates, tested_versions)
     if sweep["failed_version"] is None:
         log_stage(
             ALIAS_SWEEP_STAGE,
@@ -115,7 +123,7 @@ def maybe_split_library_update_tested_versions(
             f"{sweep['failed_version']} for {target_coordinates}; no passing prefix can be split."
         )
 
-    base_entries = _load_index_entries_from_commit(base_ref, repo_path, group, artifact)
+    base_entries = load_index_entries_from_commit(base_ref, repo_path, group, artifact)
     original_entry = _find_entry_covering_version(base_entries, str(sweep["failed_version"]))
     if original_entry is None:
         raise RuntimeError(
@@ -149,14 +157,14 @@ def maybe_split_library_update_tested_versions(
     return split
 
 
-def _entry_tested_versions(entry: dict[str, Any]) -> list[str]:
+def entry_tested_versions(entry: dict[str, Any]) -> list[str]:
     versions = entry.get("tested-versions")
     if not isinstance(versions, list):
         return []
     return [str(version) for version in versions]
 
 
-def _find_entry_by_metadata_version(entries: list[dict[str, Any]], metadata_version: str) -> dict[str, Any] | None:
+def find_entry_by_metadata_version(entries: list[dict[str, Any]], metadata_version: str) -> dict[str, Any] | None:
     for entry in entries:
         if isinstance(entry, dict) and entry.get("metadata-version") == metadata_version:
             return entry
@@ -165,12 +173,12 @@ def _find_entry_by_metadata_version(entries: list[dict[str, Any]], metadata_vers
 
 def _find_entry_covering_version(entries: list[dict[str, Any]], version: str) -> dict[str, Any] | None:
     for entry in entries:
-        if isinstance(entry, dict) and version in _entry_tested_versions(entry):
+        if isinstance(entry, dict) and version in entry_tested_versions(entry):
             return entry
     return None
 
 
-def _has_changed_tests(repo_path: str, base_ref: str, group: str, artifact: str, test_version: str) -> bool:
+def has_changed_tests(repo_path: str, base_ref: str, group: str, artifact: str, test_version: str) -> bool:
     test_prefix = os.path.join("tests", "src", group, artifact, test_version).replace(os.sep, "/")
     result = subprocess.run(
         ["git", "diff", "--name-only", "--diff-filter=ACMRT", base_ref, "HEAD", "--", test_prefix],
@@ -182,7 +190,7 @@ def _has_changed_tests(repo_path: str, base_ref: str, group: str, artifact: str,
     return any(line.strip() for line in result.stdout.splitlines())
 
 
-def _load_index_entries_from_commit(
+def load_index_entries_from_commit(
         commit: str,
         repo_path: str,
         group: str,
@@ -202,24 +210,28 @@ def _load_index_entries_from_commit(
     return [entry for entry in parsed if isinstance(entry, dict)]
 
 
-def _run_java_alias_sweep(repo_path: str, coordinates: str, versions: list[str]) -> dict[str, Any]:
+def run_tested_version_sweep(repo_path: str, coordinates: str, versions: list[str]) -> dict[str, Any]:
+    """Run the JVM and native tests per tested version and stop at the first failure.
+
+    Versions resolve as CI resolves them: the entry's coordinate with
+    `GVM_TCK_LV` set to the tested version. §FS-library-update-tested-version-split
+    """
     # Operators need live CLI progress because this sweep can run many Gradle
     # commands before local CI starts. §FS-library-update-tested-version-split
     log_stage(
         ALIAS_SWEEP_STAGE,
-        f"Starting Java compatibility sweep for {coordinates} across {len(versions)} tested-version alias(es).",
+        f"Starting test sweep for {coordinates} across {len(versions)} tested-version alias(es).",
     )
     commands: list[dict[str, Any]] = []
     for index, version in enumerate(versions):
         log_path = build_timestamped_task_log_path(
             ALIAS_SWEEP_STAGE,
             coordinates,
-            f"javaTest-{version}",
+            f"test-{version}",
         )
         env = gradle_command_environment(repo_path, dict(os.environ))
         env["GVM_TCK_LV"] = version
-        env.pop("GVM_TCK_NATIVE_IMAGE_MODE", None)
-        command = ["./gradlew", "clean", "javaTest", f"-Pcoordinates={coordinates}"]
+        command = ["./gradlew", "clean", "test", f"-Pcoordinates={coordinates}"]
         display_path = display_log_path(log_path)
         log_stage(
             ALIAS_SWEEP_STAGE,
@@ -285,69 +297,38 @@ def _apply_alias_split(
     if not original_metadata_version or not original_test_version:
         raise RuntimeError(f"Base entry covering {failed_version} lacks metadata/test version fields.")
 
-    _copy_tree_from_commit(
+    copy_tree_from_commit(
         repo_path,
         base_ref,
         os.path.join("metadata", group, artifact, original_metadata_version),
         os.path.join(repo_path, "metadata", group, artifact, failed_version),
     )
-    _copy_tree_from_commit(
+    successor_test_dir = os.path.join(repo_path, "tests", "src", group, artifact, failed_version)
+    copy_tree_from_commit(
         repo_path,
         base_ref,
         os.path.join("tests", "src", group, artifact, original_test_version),
-        os.path.join(repo_path, "tests", "src", group, artifact, failed_version),
+        successor_test_dir,
     )
+    rewrite_test_project_gradle_properties(successor_test_dir, group, artifact, failed_version)
 
     entries = load_index_entries(repo_path, group, artifact) or []
-    target_index = _find_entry_index_by_metadata_version(entries, target_metadata_version)
+    target_index = find_entry_index_by_metadata_version(entries, target_metadata_version)
     if target_index is None:
         raise RuntimeError(f"Missing current index entry for metadata-version {target_metadata_version}")
 
     current_entry = entries[target_index]
-    split_latest = current_entry.get("latest") is True
     current_entry["tested-versions"] = passing_versions
-    if split_latest:
-        current_entry.pop("latest", None)
 
     successor_entry = copy.deepcopy(original_entry)
     successor_entry["metadata-version"] = failed_version
     successor_entry["tested-versions"] = successor_versions
     successor_entry.pop("test-version", None)
-    if split_latest:
-        successor_entry["latest"] = True
-    else:
-        successor_entry.pop("latest", None)
-
-    for entry in (current_entry, successor_entry):
-        if entry.get("latest") is not True:
-            for field in LATEST_ONLY_FIELDS:
-                entry.pop(field, None)
+    hand_over_latest(current_entry, successor_entry)
 
     entries.insert(target_index, successor_entry)
-    _write_index_entries(repo_path, group, artifact, entries)
-    successor_coordinates = f"{group}:{artifact}:{failed_version}"
-    stats_command = [
-        "./gradlew",
-        "generateLibraryStats",
-        f"-Pcoordinates={successor_coordinates}",
-    ]
-    # Keep split finalization quiet without losing its evidence.
-    # §FS-forge-run-output-legibility §FS-durable-generation-logs
-    stats_result = run_logged_command(
-        stats_command,
-        cwd=repo_path,
-        task_type="library-update-alias-split",
-        subject=successor_coordinates,
-        action="generateLibraryStats",
-        env=gradle_command_environment(repo_path),
-        stage="generate-library-stats",
-    )
-    if stats_result.returncode != 0:
-        raise subprocess.CalledProcessError(
-            stats_result.returncode,
-            stats_command,
-            output=stats_result.stdout,
-        )
+    write_index_entries(repo_path, group, artifact, entries)
+    generate_library_stats(repo_path, f"{group}:{artifact}:{failed_version}")
 
     return {
         "requested_coordinates": requested_coordinates,
@@ -364,14 +345,58 @@ def _apply_alias_split(
     }
 
 
-def _find_entry_index_by_metadata_version(entries: list[dict[str, Any]], metadata_version: str) -> int | None:
+def hand_over_latest(current_entry: dict[str, Any], successor_entry: dict[str, Any]) -> None:
+    """Move `latest` and its latest-only fields from a split entry to its successor."""
+    split_latest = current_entry.get("latest") is True
+    if split_latest:
+        current_entry.pop("latest", None)
+        successor_entry["latest"] = True
+    else:
+        successor_entry.pop("latest", None)
+    for entry in (current_entry, successor_entry):
+        if entry.get("latest") is not True:
+            for field in LATEST_ONLY_FIELDS:
+                entry.pop(field, None)
+
+
+def generate_library_stats(
+        repo_path: str,
+        coordinates: str,
+        task_type: str = "library-update-alias-split",
+) -> None:
+    """Regenerate the library stats of one index entry, failing loudly."""
+    stats_command = [
+        "./gradlew",
+        "generateLibraryStats",
+        f"-Pcoordinates={coordinates}",
+    ]
+    # Keep split finalization quiet without losing its evidence.
+    # §FS-forge-run-output-legibility §FS-durable-generation-logs
+    stats_result = run_logged_command(
+        stats_command,
+        cwd=repo_path,
+        task_type=task_type,
+        subject=coordinates,
+        action="generateLibraryStats",
+        env=gradle_command_environment(repo_path),
+        stage="generate-library-stats",
+    )
+    if stats_result.returncode != 0:
+        raise subprocess.CalledProcessError(
+            stats_result.returncode,
+            stats_command,
+            output=stats_result.stdout,
+        )
+
+
+def find_entry_index_by_metadata_version(entries: list[dict[str, Any]], metadata_version: str) -> int | None:
     for index, entry in enumerate(entries):
         if isinstance(entry, dict) and entry.get("metadata-version") == metadata_version:
             return index
     return None
 
 
-def _copy_tree_from_commit(repo_path: str, commit: str, source_rel: str, destination_abs: str) -> None:
+def copy_tree_from_commit(repo_path: str, commit: str, source_rel: str, destination_abs: str) -> None:
     source_rel = source_rel.replace(os.sep, "/")
     result = subprocess.run(
         ["git", "ls-tree", "-r", "-z", "--name-only", commit, "--", source_rel],
@@ -400,7 +425,7 @@ def _copy_tree_from_commit(repo_path: str, commit: str, source_rel: str, destina
             output_file.write(file_result.stdout)
 
 
-def _write_index_entries(repo_path: str, group: str, artifact: str, entries: list[dict[str, Any]]) -> None:
+def write_index_entries(repo_path: str, group: str, artifact: str, entries: list[dict[str, Any]]) -> None:
     path = index_path(repo_path, group, artifact)
     with open(path, "w", encoding="utf-8") as index_file:
         # Match the repository's Jackson pretty-printer (space before the colon,

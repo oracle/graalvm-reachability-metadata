@@ -1,0 +1,142 @@
+{
+  "base_commit": "ae3b96857b6c9cd9385922f5c521b19d6772cd02",
+  "branch": "ai/kimeta/add-lib-support-com.twelvemonkeys.common-common-io-3.9.4-chunked-forge-10165-20260923010226369363-4e89fc9e0b83",
+  "follow_ups": [],
+  "forge": {
+    "branch": "master",
+    "commit": "cb6ea464f9bc578cdaff46e6ab03d2400ed1c24e",
+    "monitored_branch": "origin/master"
+  },
+  "issue_number": 10165,
+  "library": {
+    "artifact": "common-io",
+    "coordinates": "com.twelvemonkeys.common:common-io:3.9.4",
+    "group": "com.twelvemonkeys.common",
+    "version": "3.9.4"
+  },
+  "local_ci_verification": {
+    "base_commit": "ae3b96857b6c9cd9385922f5c521b19d6772cd02",
+    "commands": [
+      {
+        "command": [
+          "./gradlew",
+          "generateChangedIndexFileCoordinatesList",
+          "-PbaseCommit=origin/master",
+          "-PnewCommit=HEAD"
+        ],
+        "env": {
+          "GITHUB_OUTPUT": "/tmp/tmpaz1thga_"
+        },
+        "gate": "changed-index-coordinates",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :generateChangedIndexFileCoordinatesList\n\n[Incubating] Problems report is available at: file:///home/oracle/oracle/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10165-690f0a3d/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 3s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      },
+      {
+        "command": [
+          "./gradlew",
+          "validateIndexFiles",
+          "-Pcoordinates=com.twelvemonkeys.common:common-io"
+        ],
+        "env": {},
+        "gate": "index-file-validation",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :validateIndexFiles\n✅ metadata/com.twelvemonkeys.common/common-io/index.json: Valid\n\n[Incubating] Problems report is available at: file:///home/oracle/oracle/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10165-690f0a3d/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 2s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      }
+    ],
+    "failure_command": null,
+    "failure_gate": null,
+    "final_commit": "0d419c5b532407cd1d40984e0995630109b65592",
+    "fixups": [],
+    "human_intervention_required": false,
+    "repo_fix_paths": [],
+    "status": "success"
+  },
+  "local_review": {
+    "changed_paths": [],
+    "decision": "approved",
+    "finding_body": "",
+    "finding_title": "",
+    "fix_note": "",
+    "model": "gpt-5.6-sol",
+    "review_comment": "Checked the single-coordinate diff, test contract, metadata file shape and scope, index integrity evidence, resolved statistics, and all three finalization test lanes. The public-API test is library-specific, version-agnostic, package-separated, and runs under Native Image without skips or special flags. Reported dynamic-access coverage is 2/2 (100%), the metadata-entry mismatch guardrail is not triggered, and finalization completed successfully without changing the publishable tree.",
+    "session_id": "a555c84bdbfa4b6a"
+  },
+  "metrics": {
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "path": "stats/com.twelvemonkeys.common/common-io/3.9.4/execution-metrics.json",
+    "summary": {
+      "cached_input_tokens_used": 230400,
+      "code_coverage_percent": 0.92,
+      "cost_usd": 0.3892,
+      "generated_loc": 25,
+      "input_tokens_used": 41868,
+      "iterations": 3,
+      "metadata_entries": 4,
+      "output_tokens_used": 2156,
+      "tested_library_loc": 24
+    },
+    "timestamp": "2026-09-23T01:02:26.369363Z"
+  },
+  "modifiers": {
+    "chunk_final": true,
+    "chunked_dynamic_access": true,
+    "human_intervention": false
+  },
+  "producer": "kimeta",
+  "publication_id": "forge-10165-20260923010226369363-4e89fc9e0b83",
+  "render": {
+    "dynamic_access": null,
+    "dynamic_access_evidence": {
+      "covered_call_sites": [
+        "[reflection] java.lang.Class#getMethod(java.lang.String, java.lang.Class[]) <- com.twelvemonkeys.io.FileUtil.getSpace16(FileUtil.java:996) (line 996)",
+        "[reflection] java.lang.reflect.Method#invoke(java.lang.Object, java.lang.Object[]) <- com.twelvemonkeys.io.FileUtil.getSpace16(FileUtil.java:997) (line 997)"
+      ],
+      "metadata_rules": [
+        "when `com.twelvemonkeys.io.FileUtil` is reached, make `java.io.File.getFreeSpace()` available for reflection",
+        "when `com.twelvemonkeys.io.FileUtil` is reached, make `java.io.File.getTotalSpace()` available for reflection",
+        "when `com.twelvemonkeys.io.FileUtil` is reached, make `java.io.File.getUsableSpace()` available for reflection"
+      ]
+    },
+    "library_stats": {
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 2,
+            "totalCalls": 2
+          }
+        },
+        "coverageRatio": 1.0,
+        "coveredCalls": 2,
+        "totalCalls": 2
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 91,
+          "missed": 11681,
+          "ratio": 0.00773,
+          "total": 11772
+        },
+        "line": {
+          "covered": 24,
+          "missed": 2595,
+          "ratio": 0.009164,
+          "total": 2619
+        },
+        "method": {
+          "covered": 9,
+          "missed": 525,
+          "ratio": 0.016854,
+          "total": 534
+        }
+      },
+      "version": "3.9.4"
+    }
+  },
+  "schema_version": 1,
+  "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-sol",
+  "task_type": "library-new-request",
+  "template_type": "library-new-request",
+  "timestamp": "2026-09-23T01:02:26.369363Z"
+}

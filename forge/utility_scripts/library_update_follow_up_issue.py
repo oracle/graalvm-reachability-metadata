@@ -19,6 +19,7 @@ from git_scripts.common_git import (
     gh_json,
 )
 from utility_scripts.library_update_alias_split import (
+    ALIAS_SPLIT_METRICS_KEY,
     load_alias_split_metrics,
     write_alias_split_metrics,
 )
@@ -46,14 +47,16 @@ def ensure_alias_split_follow_up_issue(
         metrics_repo_path: str | None,
         current_issue_number: int | None,
         repo: str,
+        metrics_key: str = ALIAS_SPLIT_METRICS_KEY,
 ) -> dict[str, Any] | None:
     """Create and park the successor library-update issue after local CI passes.
 
     The issue is kept `In Progress` until the current PR merges, preventing the
-    normal work queue from claiming the successor too early.
-    §FS-library-update-tested-version-split
+    normal work queue from claiming the successor too early. `metrics_key`
+    selects the recorded split: the tested-version split or the test-version
+    consumer split. §FS-library-update-tested-version-split
     """
-    split = load_alias_split_metrics(metrics_repo_path)
+    split = load_alias_split_metrics(metrics_repo_path, metrics_key)
     if split is None:
         return None
     existing_issue = split.get("follow_up_issue_number")
@@ -68,7 +71,7 @@ def ensure_alias_split_follow_up_issue(
 
     updated_split = dict(split)
     updated_split["follow_up_issue_number"] = issue_number
-    write_alias_split_metrics(metrics_repo_path, updated_split)
+    write_alias_split_metrics(metrics_repo_path, updated_split, metrics_key)
     return updated_split
 
 def _find_existing_open_issue_number(repo: str, coordinates: str) -> int | None:

@@ -1,0 +1,83 @@
+{
+  "add_new_library_support:2026-09-23": {
+    "timestamp": "2026-09-23T06:27:05.084948Z",
+    "library": "com.microsoft.azure:msal4j:1.15.0",
+    "starting_commit": "7de2e33ecf335df53618d0351682a4ba6e014d2d",
+    "ending_commit": "94a8433fa5b7137bcaf07b7582287c283deb6712",
+    "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-sol",
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "status": "success",
+    "stats": {
+      "version": "1.15.0",
+      "dynamicAccess": {
+        "breakdown": {},
+        "coverageRatio": 1.0,
+        "coveredCalls": 0,
+        "totalCalls": 0
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 7379,
+          "missed": 16834,
+          "ratio": 0.304754,
+          "total": 24213
+        },
+        "line": {
+          "covered": 1788,
+          "missed": 3627,
+          "ratio": 0.330194,
+          "total": 5415
+        },
+        "method": {
+          "covered": 523,
+          "missed": 848,
+          "ratio": 0.381473,
+          "total": 1371
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "action": "no_action",
+      "agent_guidance": "Exercise ConfidentialClientApplication/PublicClientApplication builder paths, token cache (de)serialization, and claims/authority parsing without contacting a live Azure AD tenant. If HTTP interaction needs to be exercised reflectively, stub it with an in-process com.sun.net.httpserver.HttpServer or mock the HTTP client rather than reaching out to login.microsoftonline.com; do not use real tenant credentials or introduce a live-network integration test.",
+      "applied_setup": [],
+      "deterministic_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#10067 Support for com.microsoft.azure:msal4j:1.15.0; label=library-new-request; body_chars=39"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "input_tokens_used": 20,
+      "issue_label": "library-new-request",
+      "issue_number": 10067,
+      "library": "com.microsoft.azure:msal4j:1.15.0",
+      "model": "sonnet",
+      "output_tokens_used": 5410,
+      "risks": [
+        "msal4j exposes integrated Windows auth and broker support that rely on native/OS-specific code paths (JNA, WAM broker); these are unlikely to be reachable or meaningfully testable in this Linux CI/native-image environment and may need to be left uncovered rather than forced."
+      ],
+      "status": "completed",
+      "summary": "msal4j is a token-acquisition SDK (client-credentials, auth-code, device-code, ROPC flows) used entirely in-process. Its own upstream test suite (v1.15.0 pom) tests via Mockito-mocked HTTP interactions and builder/config assertions, not live Azure AD calls or containers. The already-shipped com.azure:azure-identity tests, which wrap msal4j for the same token-acquisition purpose, follow the identical pattern in this repo — self-contained builder/credential-chaining tests with no Docker image or extra Maven dependency, only the default assertj/junit scaffold."
+    },
+    "metrics": {
+      "input_tokens_used": 447915,
+      "cached_input_tokens_used": 4156544,
+      "output_tokens_used": 31648,
+      "iterations": 18,
+      "cost_usd": 5.2673,
+      "generated_loc": 325,
+      "tested_library_loc": 1788,
+      "metadata_entries": 276,
+      "test_only_metadata_entries": 3,
+      "code_coverage_percent": 33.02
+    },
+    "artifacts": {
+      "metadata_file": "metadata/com.microsoft.azure/msal4j/1.15.0/reachability-metadata.json"
+    }
+  }
+}

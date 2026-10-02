@@ -268,6 +268,14 @@ def is_pull_request_conflicting(pull_request: dict) -> bool:
     return pull_request.get("mergeable") == "CONFLICTING"
 
 
+def is_pull_request_mergeability_unsettled(pull_request: dict) -> bool:
+    """Return True when GitHub has not yet answered whether the head merges cleanly.
+
+    An `UNKNOWN` answer that outlived its backoff is an unanswered question, not a
+    clean head, so the pull request waits for a later pass (§FS-automated-pr-review)."""
+    return pull_request.get("mergeable") == "UNKNOWN"
+
+
 _BENCHMARK_RESULTS_PATH_PATTERN = re.compile(
     r"^code-coverage-benchmarks/[^/]+/[^/]+/[^/]+\.json$"
 )

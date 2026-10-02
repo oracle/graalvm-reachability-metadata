@@ -21,6 +21,7 @@ from benchmarks import code_coverage_benchmark as benchmark
 from benchmarks import code_coverage_benchmark_common as benchmark_common
 from benchmarks import code_coverage_benchmark_conversion as benchmark_conversion
 from benchmarks import code_coverage_benchmark_publication as benchmark_publication
+from tests.test_code_coverage_benchmark_runs import _write_harness
 
 
 FORGE_ROOT = Path(__file__).resolve().parents[1]
@@ -52,10 +53,10 @@ class CodeCoverageBenchmarkMatrixTests(unittest.TestCase):
     def setUp(self) -> None:
         self.suite = benchmark.load_suite()
 
-    def test_default_matrix_has_seventy_five_cells(self) -> None:
+    def test_default_matrix_has_ninety_cells(self) -> None:
         cells = benchmark.expand_matrix(self.suite)
 
-        self.assertEqual(75, len(cells))
+        self.assertEqual(90, len(cells))
         self.assertEqual(
             {"pi", "claude-code"},
             {cell.configuration.agent for cell in cells},
@@ -185,6 +186,7 @@ class CodeCoverageBenchmarkConversionTests(unittest.TestCase):
         workspace = root / "run" / "code-coverage-99000"
         (runner / "forge").mkdir(parents=True)
         (runner / "README.md").write_text("seed\n", encoding="utf-8")
+        _write_harness(runner, "seed")
         _git(runner, "init", "-b", "master")
         _git(runner, "add", "-A")
         _git(
@@ -198,7 +200,7 @@ class CodeCoverageBenchmarkConversionTests(unittest.TestCase):
             "seed",
         )
         commit = _git(runner, "rev-parse", "HEAD").stdout.strip()
-        benchmark.create_source_worktree(source, commit, runner)
+        benchmark.create_source_worktree(source, commit, commit, runner)
         self.addCleanup(benchmark.remove_worktree, source, runner)
         test_dir = source / "tests" / "src" / "com.example" / "demo" / "1.0.0"
         test_dir.mkdir(parents=True)

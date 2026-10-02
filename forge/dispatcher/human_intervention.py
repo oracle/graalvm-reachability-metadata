@@ -151,12 +151,12 @@ def resolve_human_intervention_candidate(
     """Return follow-up data for a logical issue failure that needs human intervention.
 
     External failures are filtered out upstream (see `handle_failed_claimed_issue`),
-    so any library-issue failure that reaches here is logical (driver/core/CI check,
-    including agent timeouts) and is labeled. §FS-human-intervention-policy
+    so any failure that reaches here is logical (driver/core/CI check, including
+    agent timeouts) and is labeled on every queue, `fails-*` included. The
+    low-coverage check on a successful run applies only to library issues.
+    §FS-human-intervention-policy
     """
-    if claimed_issue.label not in {LABEL_LIBRARY_NEW, LABEL_LIBRARY_UPDATE}:
-        return None
-
+    is_library_issue: bool = claimed_issue.label in {LABEL_LIBRARY_NEW, LABEL_LIBRARY_UPDATE}
     run_metrics = load_pending_run_metrics(claimed_issue.scratch_metrics_repo_path)
     if not workflow_success:
         strategy_name = None
@@ -168,7 +168,7 @@ def resolve_human_intervention_candidate(
             coverage_snapshot = _load_dynamic_access_snapshot_from_metrics(run_metrics)
         if workflow_status in HUMAN_INTERVENTION_NON_FAILURE_STATUSES:
             return None
-        if coverage_snapshot is None:
+        if coverage_snapshot is None and is_library_issue:
             coverage_snapshot = _load_dynamic_access_snapshot_from_report(claimed_issue)
         return HumanInterventionCandidate(
             strategy_name=strategy_name,
@@ -177,7 +177,7 @@ def resolve_human_intervention_candidate(
             reason="test_generation_failed",
         )
 
-    if run_metrics is None:
+    if not is_library_issue or run_metrics is None:
         return None
 
     strategy_name = run_metrics.get("strategy_name")

@@ -33,6 +33,10 @@ from utility_scripts.dynamic_access_exhaust_report import (
 )
 from utility_scripts.repo_path_resolver import resolve_repo_roots
 from utility_scripts.library_update_alias_split import maybe_split_library_update_tested_versions
+from utility_scripts.library_update_consumer_split import (
+    CONSUMER_SPLIT_METRICS_KEY,
+    maybe_split_test_version_consumers,
+)
 from utility_scripts.library_update_follow_up_issue import ensure_alias_split_follow_up_issue
 
 BASELINE_STATS_FILENAME = ".baseline-stats.json"
@@ -242,12 +246,18 @@ def push_current_branch_to_origin(
         stage_and_commit(group, artifact, library_version, coordinates, repo_path)
 
     def before_verification(base_ref: str) -> None:
-        maybe_split_library_update_tested_versions(
-            repo_path=repo_path,
-            coordinates=coordinates,
-            base_ref=base_ref,
-            metrics_repo_path=metrics_repo_path,
-        )
+        # The target entry's own versions settle before its consumers are swept.
+        # §FS-library-update-tested-version-split
+        for sweep in (
+                maybe_split_library_update_tested_versions,
+                maybe_split_test_version_consumers,
+        ):
+            sweep(
+                repo_path=repo_path,
+                coordinates=coordinates,
+                base_ref=base_ref,
+                metrics_repo_path=metrics_repo_path,
+            )
 
     def descriptor_input():
         if issue_number is None or metrics_repo_path is None:
@@ -258,14 +268,22 @@ def push_current_branch_to_origin(
             current_issue_number=issue_number,
             repo=REPO,
         )
+        consumer_split = ensure_alias_split_follow_up_issue(
+            metrics_repo_path=metrics_repo_path,
+            current_issue_number=issue_number,
+            repo=REPO,
+            metrics_key=CONSUMER_SPLIT_METRICS_KEY,
+        )
         follow_ups = []
-        if alias_split is not None:
+        for split in (alias_split, consumer_split):
+            if split is None:
+                continue
             follow_ups.append({
                 "type": "tested_version_split",
-                "coordinate": str(alias_split["successor_coordinates"]),
-                "tested_version": str(alias_split["failed_version"]),
-                "issue_number": int(alias_split["follow_up_issue_number"]),
-                "reason": f"JVM compatibility first failed at {alias_split['failed_version']}",
+                "coordinate": str(split["successor_coordinates"]),
+                "tested_version": str(split["failed_version"]),
+                "issue_number": int(split["follow_up_issue_number"]),
+                "reason": f"Tests first failed at {split['failed_version']}",
             })
         render = {
             "baseline_stats": baseline_snapshot.get("stats") if baseline_snapshot else None,
@@ -285,6 +303,7 @@ def push_current_branch_to_origin(
             "library_update_target": load_library_update_target_sidecar(metrics_repo_path),
             "dynamic_access": None if exhaust_report is None else exhaust_report.to_dict(),
             "alias_split": alias_split,
+            "consumer_split": consumer_split,
         }
         return descriptor_input_from_pending_metrics(
             metrics_repo_path=metrics_repo_path,

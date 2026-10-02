@@ -294,10 +294,11 @@ model, provider, and thinking level remain entirely owned by the analysis role.
 The published-PR process does not repeat that semantic review. It validates the
 descriptor on the exact pull-request head and executes its decision
 deterministically (§FS-automated-pr-review). The analysis role is invoked after
-publication only when an approved head has exhausted deterministic failed-CI
-reruns. That CI-repair turn receives the failed-check evidence, applies the same
-review and disposition contract as the pre-push reviewer, updates the descriptor
-and findings record for the resulting exact head, and pushes the result. The
+publication only when an approved head has failed CI. That CI-repair turn
+receives the failed-check evidence and applies the same review and disposition
+contract as the pre-push reviewer. Only a repair updates the descriptor and
+findings record for the resulting exact head and pushes the result; any other
+outcome is applied to the unchanged pull request (§FS-automated-pr-review). The
 shared analysis runtime continues to own invocation, logs, failures, and token
 accounting.
 
@@ -342,7 +343,14 @@ repository-dependent precondition run against that worktree: a `resumable`
 issue must resolve a valid continuation marker on a preserved branch
 (§FS-forge-run-continuation), and a `chunked-dynamic-access` issue must resolve
 its exhaust report (§AR-dynamic-access-exhaust-report). A failed non-terminal
-precondition removes the worktree and releases the claim back to `Todo`.
+precondition always removes the worktree and releases the claim back to `Todo`,
+and its classification decides what happens to the issue
+(§FS-human-intervention-policy). A precondition that fails on an external
+dependency takes no issue action, so a later cycle retries it. Any other failed
+precondition would fail identically on every retry, so it is logical: Forge
+posts a comment naming the failed precondition and its error, labels the issue
+`human-intervention`, and removes `resumable`, which takes the issue out of the
+queue until a maintainer resolves it.
 
 An operator may explicitly enable blocked-issue claiming for one invocation or
 worker configuration. The override is disabled by default and bypasses only the

@@ -1,0 +1,88 @@
+{
+  "add_new_library_support:2026-09-21": {
+    "timestamp": "2026-09-21T22:14:19.485217Z",
+    "library": "com.nimbusds:oauth2-oidc-sdk:11.9.1",
+    "starting_commit": "fbdba90f56102ece598136f5f7968b7c1a9b7a71",
+    "ending_commit": "04f94d688586b437be2f7a666aa7306104828804",
+    "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-sol",
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "status": "success",
+    "stats": {
+      "version": "11.9.1",
+      "dynamicAccess": {
+        "breakdown": {
+          "resources": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 4,
+            "totalCalls": 4
+          }
+        },
+        "coverageRatio": 1.0,
+        "coveredCalls": 4,
+        "totalCalls": 4
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 2938,
+          "missed": 71285,
+          "ratio": 0.039583,
+          "total": 74223
+        },
+        "line": {
+          "covered": 603,
+          "missed": 16412,
+          "ratio": 0.035439,
+          "total": 17015
+        },
+        "method": {
+          "covered": 28,
+          "missed": 3540,
+          "ratio": 0.007848,
+          "total": 3568
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "no_action",
+      "issue_number": 10066,
+      "issue_label": "library-new-request",
+      "library": "com.nimbusds:oauth2-oidc-sdk:11.9.1",
+      "summary": "Pure protocol/message library (OAuth2/OIDC request-response construction, JWT/JWK validation, PKCE) with no external service dependency; all required deps are pulled transitively and the standard generated test scaffold (in-memory, no network) mirrors the existing com.nimbusds:nimbus-jose-jwt pattern already in this repo.",
+      "deterministic_setup": [],
+      "agent_guidance": "Write self-contained, in-memory tests (build AuthorizationRequest/TokenRequest, parse/serialize responses, validate ID tokens against a locally constructed JWKSet, exercise PKCECodeVerifier/State/Nonce/ClientAuthentication) rather than resolving a real OIDC provider or making live HTTP calls (e.g. avoid OIDCProviderMetadata.resolve(issuer) or TokenRequest.toHTTPRequest().send() against a real endpoint), since no mock server or Docker image is being provisioned. Optional library features gated behind BouncyCastle/Tink/OpenSAML are out of scope for the smoke-level scaffold.",
+      "risks": [
+        "If a reviewer wants coverage of OpenSAML-based SAML 2.0 bearer grant support or Tink-based encryption, that would require adding the corresponding optional dependency — but this isn't part of mainstream OAuth2/OIDC usage and shouldn't block initial support."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#10066 Support for com.nimbusds:oauth2-oidc-sdk:11.9.1; label=library-new-request; body_chars=39"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "sonnet",
+      "input_tokens_used": 10,
+      "output_tokens_used": 5449
+    },
+    "metrics": {
+      "input_tokens_used": 153085,
+      "cached_input_tokens_used": 667520,
+      "output_tokens_used": 6961,
+      "iterations": 5,
+      "cost_usd": 1.308,
+      "generated_loc": 81,
+      "tested_library_loc": 603,
+      "metadata_entries": 6,
+      "code_coverage_percent": 3.54
+    },
+    "artifacts": {
+      "metadata_file": "metadata/com.nimbusds/oauth2-oidc-sdk/11.9.1/reachability-metadata.json"
+    }
+  }
+}
