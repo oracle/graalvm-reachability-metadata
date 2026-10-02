@@ -9,6 +9,11 @@ Newest entry first; every non-approval is recorded, including one a repair later
 
 The contribution used CompatibleObjectOutputStream to replace Class<?>[] with String[] while serializing FunctionMapperImpl, hiding Tomcat 10.0.17's incompatible normal round trip instead of testing supported behavior; the 10.0.17 source writes Class[] while readExternal reads String[]. It also installed a test-only ExpressionFactory provider and added -H:ServiceLoaderFeatureExcludeServiceProviders solely to make that provider win in Native Image, contrary to the uniform-necessity rule for native flags. The custom provider and MessageFactory additions were unrelated expansion in a JVM runtime repair. These violated FS-test-contract.2.6, FS-test-contract.2.7, and FS-test-contract.2.9.
 
+## 2026-10-02 — org.springframework:spring-aop:6.1.7 (#10339)
+
+**Over-broad Spring AOP serialization condition breaks affected native consumers**
+
+The 6.1.7 metadata made the serializable AspectJMethodBeforeAdvice entry conditional on InstantiationModelAwarePointcutAdvisorImpl. On the CI GraalVM 25.0.4+7.1, that condition activates in Spring AOT applications where the advice type is not otherwise reachable and fails during image layout with `Type not found during analysis: ... AspectJMethodBeforeAdvice`. The exact defect previously caused PR #10119's Spring AOT matrix to fail and be reverted. Because the violation is in this contribution's own metadata, it is repaired under §FS-contribution-contract.5.1.
 ## 2026-10-02 — org.aspectj:aspectjweaver:1.9.21.2 (#10321)
 
 **Test-only preview configuration broadened a javac repair**
