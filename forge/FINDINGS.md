@@ -9,6 +9,11 @@ Newest entry first; every non-approval is recorded, including one a repair later
 
 The added tests/src/com.squareup.okhttp3/okhttp/3.9.0/src/test/java/android/security/NetworkSecurityPolicy.java shadowed a real Android framework type, and AndroidPlatformTest depended on that fake type to activate an Android-only library path on the desktop test runtime. The contribution also changed the inherited X509TrustManagerExtensions stub to force the desired fallback. This violates FS-test-contract.2.3 and adds unrelated synthetic coverage to a javac repair rather than narrowly adapting the failing TrustRootIndex call.
 
+## 2026-10-02 — org.hibernate:hibernate-core:6.1.0.Final (#9119)
+
+**Modified top-level test class is not public**
+
+FS-test-contract.1.2 requires every top-level test class to be public. The contribution modified AbstractHibernateTest.java but left its top-level abstract test class package-private, while newly added tests inherit its JUnit tests.
 ## 2026-10-01 — io.opentelemetry:opentelemetry-sdk-trace:1.59.0 (#9350)
 
 **Generated repair retained test-side reflection and an unnecessary Native Image flag**
