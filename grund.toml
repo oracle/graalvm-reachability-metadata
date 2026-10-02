@@ -67,6 +67,12 @@ folder = ".github/actions"
 citable = false
 title = "Composite actions the workflows reuse"
 
+[[kinds]]
+kind = "ephor"
+folder = ".ephor"
+citable = false
+title = "Maintainer agent queues: the ephor state machine, scripts and instructions"
+
 # Places that are listed, not walked: content that ships verbatim or is generated.
 [[kinds]]
 kind = "metadata"
@@ -109,7 +115,7 @@ citable = false
 title = "Build files and repository scripts outside a kind home"
 
 [scan]
-include = ["AGENTS.md", "README.md", "COVERAGE.md", "docs", "skills", ".github/workflows", ".github/actions", "build.gradle"]
+include = ["AGENTS.md", "README.md", "COVERAGE.md", "docs", "skills", ".github/workflows", ".github/actions", ".ephor", "build.gradle"]
 exclude = ["target", "node_modules", ".git", "dist", "build", ".venv", ".gradle", "out", "forge/.venv", "forge/**/__pycache__"]
 extensions = ["md", "html", "yml", "yaml", "gradle", "sh", "js"]
 comment_prefixes = ["//", "#", "/*", "*", "<!--"]
@@ -149,6 +155,10 @@ should = ["FS|AR"]
 
 [citations.action]
 should = ["FS|AR"]
+
+[citations.ephor]
+must = ["FS"]
+should = ["AR"]
 
 # No [citations.tck-build-logic] rule: a file here sits in two homes, `tests`
 # and `tck-build-logic`, and grund reads a nested home as ambiguity rather than

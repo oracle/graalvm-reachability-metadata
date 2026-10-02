@@ -107,6 +107,7 @@ A `§<ID>` is a pointer to a fact, not a file path. Resolve it with `grund` and 
 - [skills/](skills): Agent review and automation skills
 - [.github/workflows/](.github/workflows): CI and release workflows: the gate on GitHub
 - [.github/actions/](.github/actions): Composite actions the workflows reuse
+- [.ephor/](.ephor): Maintainer agent queues: the ephor state machine, scripts and instructions
 - [metadata/](metadata): The shipped reachability metadata, verbatim
 - [tests/](tests): Per-library test projects that justify the metadata
 - [tests/tck-build-logic/](tests/tck-build-logic): The TCK harness build logic the test projects run on
@@ -149,6 +150,7 @@ Declarations are heading lines `# FS-user-login: …` in markdown. In a code doc
 - **skills/** must cite FS; should cite AR.
 - **.github/workflows/** should cite FS or AR.
 - **.github/actions/** should cite FS or AR.
+- **.ephor/** must cite FS; should cite AR.
 - **code** (Build files and repository scripts outside a kind home) must cite FS; should cite AR.
 Unlisted kinds and pairs are fine.
 
