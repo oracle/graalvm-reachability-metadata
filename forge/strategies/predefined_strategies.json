@@ -414,6 +414,28 @@
     "persistent-instructions": "prompt_templates/persistent/dynamic_access_rules.md"
   },
   {
+    "name": "javac_iterative_with_coverage_sources_claude-code_opus",
+    "description": "Claude Code counterpart of javac_iterative_with_coverage_sources_pi_gpt-5.6-sol: same workflow, prompts, and parameters, driven by Claude Code with the `opus` model alias.",
+    "agent": "claude-code",
+    "workflow": "increase_dynamic_access_coverage",
+    "primary-workflow": "javac_iterative",
+    "model": "opus",
+    "prompts": {
+      "initial": "prompt_templates/fix-javac/initial-with-sources.md",
+      "dynamic-access-iteration": "prompt_templates/dynamic_access/dynamic-access-iteration.md"
+    },
+    "parameters": {
+      "max-test-iterations": 5,
+      "max-iterations": 2,
+      "max-class-test-iterations": 2,
+      "source-context-types": [
+        "main"
+      ]
+    },
+    "mcps": [],
+    "persistent-instructions": "prompt_templates/persistent/dynamic_access_rules.md"
+  },
+  {
     "name": "javac_iterative_with_coverage_sources_pi_gpt-5.6-luna",
     "description": "Same configuration as javac_iterative_with_coverage_sources_pi_gpt-5.6-sol, but uses gpt-5.6-luna instead.",
     "agent": "pi",
@@ -506,6 +528,28 @@
     "workflow": "increase_dynamic_access_coverage",
     "primary-workflow": "java_run_iterative",
     "model": "gpt-5.6-sol",
+    "prompts": {
+      "initial": "prompt_templates/fix-java-run/initial-with-sources.md",
+      "dynamic-access-iteration": "prompt_templates/dynamic_access/dynamic-access-iteration.md"
+    },
+    "parameters": {
+      "max-test-iterations": 5,
+      "max-iterations": 2,
+      "max-class-test-iterations": 2,
+      "source-context-types": [
+        "main"
+      ]
+    },
+    "mcps": [],
+    "persistent-instructions": "prompt_templates/persistent/dynamic_access_rules.md"
+  },
+  {
+    "name": "java_run_iterative_with_coverage_sources_claude-code_opus",
+    "description": "Claude Code counterpart of java_run_iterative_with_coverage_sources_pi_gpt-5.6-sol: same workflow, prompts, and parameters, driven by Claude Code with the `opus` model alias.",
+    "agent": "claude-code",
+    "workflow": "increase_dynamic_access_coverage",
+    "primary-workflow": "java_run_iterative",
+    "model": "opus",
     "prompts": {
       "initial": "prompt_templates/fix-java-run/initial-with-sources.md",
       "dynamic-access-iteration": "prompt_templates/dynamic_access/dynamic-access-iteration.md"
@@ -713,6 +757,31 @@
     "workflow": "increase_dynamic_access_coverage",
     "primary-workflow": "bulk_dynamic_access",
     "model": "gpt-5.6-sol",
+    "prompts": {
+      "bulk-dynamic-access-iteration": "prompt_templates/dynamic_access/bulk-dynamic-access-iteration.md",
+      "dynamic-access-iteration": "prompt_templates/dynamic_access/dynamic-access-iteration.md",
+      "issue-requested-metadata": "prompt_templates/issue_requested_metadata/issue-requested-metadata.md"
+    },
+    "parameters": {
+      "bulk-min-uncovered-classes": 5,
+      "max-iterations": 2,
+      "max-test-iterations": 5,
+      "max-class-test-iterations": 2,
+      "source-context-types": [
+        "main"
+      ],
+      "max-bulk-iterations": 3
+    },
+    "mcps": [],
+    "persistent-instructions": "prompt_templates/persistent/dynamic_access_rules.md"
+  },
+  {
+    "name": "optimistic_dynamic_access_iterative_claude-code_opus",
+    "description": "Claude Code counterpart of optimistic_dynamic_access_iterative_pi_gpt-5.6-sol: same workflow, prompts, and parameters, driven by Claude Code with the `opus` model alias.",
+    "agent": "claude-code",
+    "workflow": "increase_dynamic_access_coverage",
+    "primary-workflow": "bulk_dynamic_access",
+    "model": "opus",
     "prompts": {
       "bulk-dynamic-access-iteration": "prompt_templates/dynamic_access/bulk-dynamic-access-iteration.md",
       "dynamic-access-iteration": "prompt_templates/dynamic_access/dynamic-access-iteration.md",
@@ -994,6 +1063,26 @@
     "persistent-instructions": "prompt_templates/persistent/dynamic_access_rules.md"
   },
   {
+    "name": "library_update_claude-code_opus",
+    "description": "Claude Code counterpart of library_update_pi_gpt-5.6-sol: same workflow, prompts, and parameters, driven by Claude Code with the `opus` model alias.",
+    "agent": "claude-code",
+    "workflow": "increase_dynamic_access_coverage",
+    "model": "opus",
+    "prompts": {
+      "dynamic-access-iteration": "prompt_templates/dynamic_access/dynamic-access-iteration.md",
+      "issue-requested-metadata": "prompt_templates/issue_requested_metadata/issue-requested-metadata.md"
+    },
+    "parameters": {
+      "max-iterations": 3,
+      "max-class-test-iterations": 2,
+      "source-context-types": [
+        "main"
+      ]
+    },
+    "mcps": [],
+    "persistent-instructions": "prompt_templates/persistent/dynamic_access_rules.md"
+  },
+  {
     "name": "library_update_pi_gpt-5.6-luna",
     "description": "Same configuration as library_update_pi_gpt-5.6-sol, but uses gpt-5.6-luna instead.",
     "agent": "pi",
@@ -1040,6 +1129,31 @@
     "workflow": "increase_dynamic_access_coverage",
     "primary-workflow": "bulk_dynamic_access",
     "model": "gpt-5.6-sol",
+    "prompts": {
+      "bulk-dynamic-access-iteration": "prompt_templates/dynamic_access/bulk-dynamic-access-iteration-update.md",
+      "dynamic-access-iteration": "prompt_templates/dynamic_access/dynamic-access-iteration.md",
+      "issue-requested-metadata": "prompt_templates/issue_requested_metadata/issue-requested-metadata.md"
+    },
+    "parameters": {
+      "bulk-min-uncovered-classes": 5,
+      "max-bulk-iterations": 3,
+      "max-test-iterations": 5,
+      "max-iterations": 3,
+      "max-class-test-iterations": 2,
+      "source-context-types": [
+        "main"
+      ]
+    },
+    "mcps": [],
+    "persistent-instructions": "prompt_templates/persistent/dynamic_access_rules.md"
+  },
+  {
+    "name": "library_update_optimistic_claude-code_opus",
+    "description": "Claude Code counterpart of library_update_optimistic_pi_gpt-5.6-sol: same workflow, prompts, and parameters, driven by Claude Code with the `opus` model alias.",
+    "agent": "claude-code",
+    "workflow": "increase_dynamic_access_coverage",
+    "primary-workflow": "bulk_dynamic_access",
+    "model": "opus",
     "prompts": {
       "bulk-dynamic-access-iteration": "prompt_templates/dynamic_access/bulk-dynamic-access-iteration-update.md",
       "dynamic-access-iteration": "prompt_templates/dynamic_access/dynamic-access-iteration.md",
