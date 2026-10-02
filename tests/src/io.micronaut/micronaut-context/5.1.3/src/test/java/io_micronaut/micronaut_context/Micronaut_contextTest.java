@@ -9,6 +9,7 @@ package io_micronaut.micronaut_context;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import io.micronaut.context.ApplicationContext;
+import io.micronaut.context.annotation.ConfigurationProperties;
 import io.micronaut.context.annotation.Factory;
 import io.micronaut.context.annotation.Requires;
 import io.micronaut.context.annotation.Value;
@@ -59,6 +60,20 @@ public class Micronaut_contextTest {
             } else {
                 System.setProperty(SYSTEM_PROPERTY, previousValue);
             }
+        }
+    }
+
+    @Test
+    void bindsConfigurationPropertiesToATypedBean() {
+        Map<String, Object> properties = Map.of(
+                "context.database.url", "jdbc:example",
+                "context.database.pool-size", "4");
+
+        try (ApplicationContext context = ApplicationContext.run(properties, Environment.TEST)) {
+            DatabaseConfiguration configuration = context.getBean(DatabaseConfiguration.class);
+
+            assertThat(configuration.getUrl()).isEqualTo("jdbc:example");
+            assertThat(configuration.getPoolSize()).isEqualTo(4);
         }
     }
 
@@ -125,6 +140,28 @@ public class Micronaut_contextTest {
         @Named("fixed")
         public Clock fixedClock() {
             return Clock.fixed(Instant.parse("2025-01-15T12:00:00Z"), ZoneOffset.UTC);
+        }
+    }
+
+    @ConfigurationProperties("context.database")
+    public static class DatabaseConfiguration {
+        private String url;
+        private int poolSize;
+
+        public String getUrl() {
+            return url;
+        }
+
+        public void setUrl(String url) {
+            this.url = url;
+        }
+
+        public int getPoolSize() {
+            return poolSize;
+        }
+
+        public void setPoolSize(int poolSize) {
+            this.poolSize = poolSize;
         }
     }
 
