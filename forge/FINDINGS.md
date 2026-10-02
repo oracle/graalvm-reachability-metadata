@@ -9,6 +9,11 @@ Newest entry first; every non-approval is recorded, including one a repair later
 
 FS-test-contract.1.7 requires every explicit socket, connection, and bounded I/O wait to be at least 10 seconds. RemoteAppenderStreamClientTest, SocketNodeTest, and SocketReceiverTest each set SOCKET_TIMEOUT_MILLIS to 5,000 and used it for socket operations and related bounded waits.
 
+## 2026-10-02 — org.springframework:spring-aop:6.1.7 (#10339)
+
+**Over-broad Spring AOP serialization condition breaks affected native consumers**
+
+The 6.1.7 metadata made the serializable AspectJMethodBeforeAdvice entry conditional on InstantiationModelAwarePointcutAdvisorImpl. On the CI GraalVM 25.0.4+7.1, that condition activates in Spring AOT applications where the advice type is not otherwise reachable and fails during image layout with `Type not found during analysis: ... AspectJMethodBeforeAdvice`. The exact defect previously caused PR #10119's Spring AOT matrix to fail and be reverted. Because the violation is in this contribution's own metadata, it is repaired under §FS-contribution-contract.5.1.
 ## 2026-10-02 — org.aspectj:aspectjweaver:1.9.21.2 (#10321)
 
 **Test-only preview configuration broadened a javac repair**
