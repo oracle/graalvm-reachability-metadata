@@ -37,6 +37,17 @@ public class Httpspi_servletTest {
     }
 
     @Test
+    void preservesHeaderEntriesWithNullValues() {
+        Headers headers = new Headers();
+
+        headers.add("X-Optional", null);
+
+        assertThat(headers).containsKey("x-optional");
+        assertThat(headers.get("X-OPTIONAL")).containsExactly((String) null);
+        assertThat(headers.getFirst("x-optional")).isNull();
+    }
+
+    @Test
     void exposesEndpointContextAndValidUrlMapping() {
         EndpointAdapter adapter = new EndpointAdapter(null, "/echo/*");
         HttpContext context = adapter.getContext();
