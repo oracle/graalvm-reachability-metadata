@@ -44,7 +44,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.slf4j.LoggerFactory;
@@ -196,13 +195,20 @@ public class LogbackTests {
 
   @ParameterizedTest
   @MethodSource("converterSource")
-  void shouldRegisterConverter(String converterName, String pattern) {
-    PatternLayoutEncoder encoder = createEncoder("%" + pattern + " %n");
+  void shouldRenderEveryDefaultConverter(String pattern) {
+    PatternLayoutEncoder encoder = createEncoder("prefix %" + pattern + " suffix%n");
     ConsoleAppender<ILoggingEvent> consoleAppender = createConsoleAppender(encoder);
     Logger logger = getLogger(consoleAppender);
-    logger.error(converterName, new IllegalArgumentException("test error"));
-    assertThat(outputStreamCaptor.toString()).doesNotContain("PARSER_ERROR");
-    cleanUp(encoder, consoleAppender, logger);
+    try {
+      logger.error("test message", new IllegalArgumentException("test error"));
+
+      assertThat(outputStreamCaptor.toString())
+          .contains("prefix")
+          .contains("suffix")
+          .doesNotContain("PARSER_ERROR");
+    } finally {
+      cleanUp(encoder, consoleAppender, logger);
+    }
   }
 
   @Test
@@ -220,9 +226,8 @@ public class LogbackTests {
     }
   }
 
-  private static Stream<Arguments> converterSource() {
-    return new PatternLayout().getDefaultConverterSupplierMap().entrySet().stream()
-        .map(entry -> Arguments.of(entry.getValue().get().getClass().getName(), entry.getKey()));
+  private static Stream<String> converterSource() {
+    return new PatternLayout().getDefaultConverterSupplierMap().keySet().stream();
   }
 
   private Layout<ILoggingEvent> createLayout(String layoutName) {
