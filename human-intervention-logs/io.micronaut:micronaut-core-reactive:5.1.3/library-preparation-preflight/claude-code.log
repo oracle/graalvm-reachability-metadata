@@ -1,0 +1,27 @@
+## Research summary
+
+**io.micronaut:micronaut-core-reactive** is a module within the micronaut-core monorepo (split out in Micronaut 4+) that holds reactive-streams utility classes — `io.micronaut.core.async.publisher.Publishers`, `CompletableFuturePublisher`, `ReactiveExecutionFlow`, etc. These are plain static/utility APIs, not Micronaut beans, so unlike `io.micronaut.reactor:micronaut-reactor` (whose `ReactorConverters`/`ReactorInstrumentation` are beans that only activate inside a running `ApplicationContext`), core-reactive's code paths are reachable through direct, DI-free unit tests.
+
+Local evidence I could check:
+- No Docker, filesystem, or network interaction anywhere in this module's purpose — it's an in-JVM type-conversion/streams utility.
+- `stats/io.micronaut.reactor/micronaut-reactor/4.0.0/execution-metrics.json` confirms reactor-core is already a direct **compile**-scope dependency one layer up (micronaut-reactor), and `stats/io.micronaut/micronaut-context-propagation/5.1.3/execution-metrics.json` shows the sibling "pure in-JVM API" module in this same batch was correctly resolved as `no_action` with its core SPI dependency non-optional.
+- Network access and Gradle execution are both blocked in this session (confirmed via denied `curl`/`WebFetch`/`gradle` calls), so I could not fetch the live 5.1.3 POM directly — same limitation the context-propagation preflight hit today.
+
+No concrete evidence surfaced for an extra dependency, Docker image, or env/system property, so this stays `no_action`, with the verification caveat flagged for the build step.
+
+`★ Insight ─────────────────────────────────────`
+The repo's own `stats/*/execution-metrics.json` files are a great low-cost research source before touching the network: each prior "add new library" run records its `library_preparation_preflight` rationale, including *why* a sibling module did or didn't need extra setup. Comparing `micronaut-reactor` (DI-bean-based, needed `micronaut-runtime` + `micronaut-inject-java`) against `micronaut-context-propagation` (plain API, `no_action`) gave a precedent-based way to classify `micronaut-core-reactive` without needing POM access.
+`─────────────────────────────────────────────────`
+
+```json
+{
+  "action": "no_action",
+  "summary": "micronaut-core-reactive exposes plain static reactive-streams utilities (Publishers, ReactiveExecutionFlow, CompletableFuturePublisher) that don't require a Micronaut ApplicationContext/DI, unlike the bean-based micronaut-reactor integration module. No Docker, network, or filesystem interaction is involved, and its Reactor-based default conversion path is expected to already come in via the artifact's own transitive dependencies.",
+  "deterministic_setup": [],
+  "agent_guidance": "Exercise io.micronaut.core.async.publisher.Publishers and io.micronaut.core.execution.ReactiveExecutionFlow directly in plain JUnit tests (no ApplicationContext/bean context needed, unlike io.micronaut.reactor:micronaut-reactor). Focus on CompletableFuture<->Publisher and Reactor Flux/Mono conversions, since Reactor is the framework's default reactive type here; RxJava2/3 paths are reflection/classpath-gated and can be left unexercised. No Docker image, environment variable, or system property applies.",
+  "risks": [
+    "Could not fetch the live 5.1.3 POM/Gradle module metadata (no network access in this environment), so the assumption that reactor-core arrives as a transitive, non-optional dependency is inferred from the module's known design and sibling-module precedent, not independently verified.",
+    "If test compilation fails on a missing io.projectreactor:reactor-core class, treat that as the concrete evidence this analysis lacked, and add it as a testImplementation dependency pinned to the version used by io.micronaut.reactor:micronaut-reactor:4.0.0 for consistency."
+  ]
+}
+```

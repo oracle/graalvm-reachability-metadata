@@ -1,0 +1,52 @@
+{
+  "timestamp": "2026-10-02T09:45:01.810870Z",
+  "library": "io.micronaut:micronaut-core-reactive:5.1.3",
+  "starting_commit": "67cf892c7e87e6abb7eac7210e01779f4177450b",
+  "ending_commit": "67cf892c7e87e6abb7eac7210e01779f4177450b",
+  "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-luna",
+  "agent": "pi",
+  "model": "gpt-5.6-luna",
+  "status": "failure",
+  "library_preparation_preflight": {
+    "status": "completed",
+    "action": "no_action",
+    "issue_number": 9801,
+    "issue_label": "library-new-request",
+    "library": "io.micronaut:micronaut-core-reactive:5.1.3",
+    "summary": "micronaut-core-reactive exposes plain static reactive-streams utilities (Publishers, ReactiveExecutionFlow, CompletableFuturePublisher) that don't require a Micronaut ApplicationContext/DI, unlike the bean-based micronaut-reactor integration module. No Docker, network, or filesystem interaction is involved, and its Reactor-based default conversion path is expected to already come in via the artifact's own transitive dependencies.",
+    "deterministic_setup": [],
+    "agent_guidance": "Exercise io.micronaut.core.async.publisher.Publishers and io.micronaut.core.execution.ReactiveExecutionFlow directly in plain JUnit tests (no ApplicationContext/bean context needed, unlike io.micronaut.reactor:micronaut-reactor). Focus on CompletableFuture<->Publisher and Reactor Flux/Mono conversions, since Reactor is the framework's default reactive type here; RxJava2/3 paths are reflection/classpath-gated and can be left unexercised. No Docker image, environment variable, or system property applies.",
+    "risks": [
+      "Could not fetch the live 5.1.3 POM/Gradle module metadata (no network access in this environment), so the assumption that reactor-core arrives as a transitive, non-optional dependency is inferred from the module's known design and sibling-module precedent, not independently verified.",
+      "If test compilation fails on a missing io.projectreactor:reactor-core class, treat that as the concrete evidence this analysis lacked, and add it as a testImplementation dependency pinned to the version used by io.micronaut.reactor:micronaut-reactor:4.0.0 for consistency."
+    ],
+    "applied_setup": [],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#9801 Support for io.micronaut:micronaut-core-reactive:5.1.3; label=library-new-request; body_chars=39"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "0 existing test file path(s) included"
+      }
+    ],
+    "model": "sonnet",
+    "input_tokens_used": 34,
+    "output_tokens_used": 20327
+  },
+  "metrics": {
+    "input_tokens_used": 527162,
+    "cached_input_tokens_used": 8669184,
+    "output_tokens_used": 37851,
+    "iterations": 12,
+    "cost_usd": 1.6212,
+    "generated_loc": 0,
+    "tested_library_loc": 0,
+    "metadata_entries": 0,
+    "code_coverage_percent": 0.0
+  },
+  "artifacts": {
+    "metadata_file": "None"
+  }
+}
