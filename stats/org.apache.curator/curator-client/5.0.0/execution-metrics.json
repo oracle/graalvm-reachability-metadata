@@ -124,5 +124,97 @@
     "artifacts": {
       "metadata_file": "metadata/org.apache.curator/curator-client/5.0.0/reachability-metadata.json"
     }
+  },
+  "improve_library_coverage:2026-10-02": {
+    "timestamp": "2026-10-02T11:48:42.252132Z",
+    "library": "org.apache.curator:curator-client:5.0.0",
+    "starting_commit": "5ec396ec41a6360f125d8dc14a3be4cc55bf5a41",
+    "ending_commit": "222ff2d74f1c942fe8b51d784936516b6eae18ef",
+    "strategy_name": "library_update_optimistic_pi_gpt-5.6-sol",
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "status": "success",
+    "stats": {
+      "version": "5.0.0",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 0.966102,
+            "coveredCalls": 114,
+            "totalCalls": 118
+          },
+          "resources": {
+            "coverageRatio": 0.75,
+            "coveredCalls": 3,
+            "totalCalls": 4
+          }
+        },
+        "coverageRatio": 0.959016,
+        "coveredCalls": 117,
+        "totalCalls": 122
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 22897,
+          "missed": 150471,
+          "ratio": 0.132072,
+          "total": 173368
+        },
+        "line": {
+          "covered": 5151,
+          "missed": 32360,
+          "ratio": 0.13732,
+          "total": 37511
+        },
+        "method": {
+          "covered": 1818,
+          "missed": 10922,
+          "ratio": 0.1427,
+          "total": 12740
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "advisory_preparation",
+      "issue_number": 10288,
+      "issue_label": "library-update-request",
+      "library": "org.apache.curator:curator-client:5.0.0",
+      "summary": "curator-client needs no new dependency or Docker image; zookeeper is already transitive, and this repo's own curator-recipes tests show the proven pattern for live-session coverage.",
+      "deterministic_setup": [],
+      "agent_guidance": "If deeper coverage requires an actual ZK session/connection (e.g. ConnectionState, HandleHolder, SessionFailRetryLoop, ensemble providers that connect), do not add curator-test or a Docker image. org.apache.zookeeper:zookeeper is already a transitive dependency of curator-client, so embed an in-process server the same way tests/src/org.apache.curator/curator-recipes/5.0.0/src/test/java/org_apache_curator/curator_recipes/Curator_recipesTest.java does: start org.apache.zookeeper.server.ZooKeeperServer via NIOServerCnxnFactory bound to new InetSocketAddress(\"127.0.0.1\", 0) with temp snapshot/log directories, then connect with that ephemeral port. No system properties or env vars are needed for this pattern. Most of the 52-class gap (retry policies, path/thread utils, ensemble providers, shaded Guava helpers under org.apache.curator.shaded.**) is coverable without any live connection at all, as the existing Curator_clientTest.java already shows.",
+      "risks": [
+        "A single embedded server only covers single-node session behavior; multi-node ensemble failover or auth/TLS paths would need more than this pattern, but curator-client's own surface area doesn't appear to require those."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#10288 Improve coverage for org.apache.curator:curator-client:5.0.0; label=library-update-request; body_chars=197"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "8 existing test file path(s) included"
+        }
+      ],
+      "model": "sonnet",
+      "input_tokens_used": 16,
+      "output_tokens_used": 9376
+    },
+    "metrics": {
+      "input_tokens_used": 907825,
+      "cached_input_tokens_used": 13602688,
+      "output_tokens_used": 79586,
+      "iterations": 16,
+      "cost_usd": 13.728,
+      "generated_loc": 2320,
+      "tested_library_loc": 5151,
+      "metadata_entries": 162,
+      "test_only_metadata_entries": 153,
+      "code_coverage_percent": 13.73
+    },
+    "artifacts": {
+      "metadata_file": "metadata/org.apache.curator/curator-client/5.0.0/reachability-metadata.json"
+    }
   }
 }
