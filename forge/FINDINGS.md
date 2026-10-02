@@ -8,6 +8,11 @@ Newest entry first; every non-approval is recorded, including one a repair later
 **Latest Kotlin reflection metadata dropped established native support**
 
 The new latest metadata bucket retained only kotlin/kotlin.kotlin_builtins and omitted conditional registrations already required by Kotlin reflection. Since Spring's unlisted kotlin-reflect 2.3.21 dependency selects the latest bucket, native runs failed first with an unresolved java.util.Set and then with missing reflection access to Executable.getParameters() and Parameter.getName(). This is a contribution-local required-CI regression repairable under contribution-contract disposition 5.1.
+## 2026-10-02 — org.springframework:spring-aop:6.1.7 (#10339)
+
+**Over-broad Spring AOP serialization condition breaks affected native consumers**
+
+The 6.1.7 metadata made the serializable AspectJMethodBeforeAdvice entry conditional on InstantiationModelAwarePointcutAdvisorImpl. On the CI GraalVM 25.0.4+7.1, that condition activates in Spring AOT applications where the advice type is not otherwise reachable and fails during image layout with `Type not found during analysis: ... AspectJMethodBeforeAdvice`. The exact defect previously caused PR #10119's Spring AOT matrix to fail and be reverted. Because the violation is in this contribution's own metadata, it is repaired under §FS-contribution-contract.5.1.
 ## 2026-10-02 — org.aspectj:aspectjweaver:1.9.21.2 (#10321)
 
 **Test-only preview configuration broadened a javac repair**
