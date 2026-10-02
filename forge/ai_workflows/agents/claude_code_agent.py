@@ -1,6 +1,6 @@
 # Copyright and related rights waived via CC0
 
-"""Offline Claude Code adapter for the Forge agent API."""
+"""Claude Code adapter for the Forge agent API."""
 
 from __future__ import annotations
 
@@ -10,13 +10,16 @@ import subprocess
 import uuid
 
 from ai_workflows.agents.agent import Agent, AgentTimeoutError
-from ai_workflows.agents.agent_runtime import agent_process_environment
+from ai_workflows.agents.agent_runtime import (
+    CLAUDE_CODE_BYPASS_PERMISSIONS_FLAGS,
+    agent_process_environment,
+)
 from utility_scripts.gradle_test_runner import run_gradle_test_command
 
 
 @Agent.register("claude-code")
 class ClaudeCodeAgent(Agent):
-    """Drive Claude Code in print mode with repository-only tools."""
+    """Drive Claude Code in print mode, unattended, in the workflow worktree."""
 
     def __init__(
             self,
@@ -98,7 +101,7 @@ class ClaudeCodeAgent(Agent):
         command = [
             self._claude_command, "-p", prompt,
             "--output-format", "json",
-            "--permission-mode", "dontAsk",
+            *CLAUDE_CODE_BYPASS_PERMISSIONS_FLAGS,
             "--model", self._model_name,
         ]
         if self._thinking_level:

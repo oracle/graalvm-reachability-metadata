@@ -8,6 +8,11 @@ Newest entry first; every non-approval is recorded, including one a repair later
 **Latest Kotlin reflection metadata dropped established native support**
 
 The new latest metadata bucket retained only kotlin/kotlin.kotlin_builtins and omitted conditional registrations already required by Kotlin reflection. Since Spring's unlisted kotlin-reflect 2.3.21 dependency selects the latest bucket, native runs failed first with an unresolved java.util.Set and then with missing reflection access to Executable.getParameters() and Parameter.getName(). This is a contribution-local required-CI regression repairable under contribution-contract disposition 5.1.
+## 2026-10-02 — com.sun.xml.ws:httpspi-servlet:4.0.5 (#9946)
+
+**Shipped metadata was not exercised by the generated tests**
+
+Resolved review evidence reported metadata for reflective WstxInputFactory construction when DeploymentDescriptorParser is reached, but the original tests never invoked DeploymentDescriptorParser. The suite could therefore stay green without exercising the public library path that requires the shipped metadata, violating the meaningful public-API and metadata-justification requirements.
 
 ## 2026-10-02 — org.apache.sshd:sshd-common:2.18.0 (#9957)
 
