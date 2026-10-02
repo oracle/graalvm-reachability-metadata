@@ -8,6 +8,11 @@ Newest entry first; every non-approval is recorded, including one a repair later
 **Over-broad Spring AOP serialization condition breaks affected native consumers**
 
 The 6.1.7 metadata made the serializable AspectJMethodBeforeAdvice entry conditional on InstantiationModelAwarePointcutAdvisorImpl. On the CI GraalVM 25.0.4+7.1, that condition activates in Spring AOT applications where the advice type is not otherwise reachable and fails during image layout with `Type not found during analysis: ... AspectJMethodBeforeAdvice`. The exact defect previously caused PR #10119's Spring AOT matrix to fail and be reverted. Because the violation is in this contribution's own metadata, it is repaired under §FS-contribution-contract.5.1.
+## 2026-10-02 — org.aspectj:aspectjweaver:1.9.21.2 (#10321)
+
+**Test-only preview configuration broadened a javac repair**
+
+The contribution added --enable-preview to Java compilation, JVM execution, and Native Image build configuration solely to support a rewritten experimental-ASM test path. That necessity originated in test code, not AspectJ or a transitive dependency, violating the native flag rule in FS-test-contract.2.7 and broadening the compile repair beyond the changed Optional-return API contrary to FS-test-contract.2.9.
 ## 2026-10-02 — com.sun.xml.ws:httpspi-servlet:4.0.5 (#9946)
 
 **Shipped metadata was not exercised by the generated tests**

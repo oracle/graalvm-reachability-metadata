@@ -1,0 +1,131 @@
+{
+  "fix_java_run_fail:2026-10-02": {
+    "timestamp": "2026-10-02T21:16:28.569857Z",
+    "library": "org.apache.tomcat.embed:tomcat-embed-websocket:10.0.6",
+    "starting_commit": "fa958c13eca2982c11e5ee3428b6794ba3415b1b",
+    "ending_commit": "0d0dee91f24f5140e2fa758ebd617ad569f42bb4",
+    "previous_library": "org.apache.tomcat.embed:tomcat-embed-websocket:10.0.0",
+    "strategy_name": "java_run_iterative_with_coverage_sources_pi_gpt-5.6-sol",
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "status": "success",
+    "stats": {
+      "version": "10.0.6",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 31,
+            "totalCalls": 31
+          }
+        },
+        "coverageRatio": 1.0,
+        "coveredCalls": 31,
+        "totalCalls": 31
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 6663,
+          "missed": 15041,
+          "ratio": 0.306994,
+          "total": 21704
+        },
+        "line": {
+          "covered": 1686,
+          "missed": 3461,
+          "ratio": 0.327569,
+          "total": 5147
+        },
+        "method": {
+          "covered": 294,
+          "missed": 449,
+          "ratio": 0.395693,
+          "total": 743
+        }
+      }
+    },
+    "previous_library_stats": {
+      "version": "10.0.0",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 0.891892,
+            "coveredCalls": 33,
+            "totalCalls": 37
+          }
+        },
+        "coverageRatio": 0.891892,
+        "coveredCalls": 33,
+        "totalCalls": 37
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 4059,
+          "missed": 17020,
+          "ratio": 0.192561,
+          "total": 21079
+        },
+        "line": {
+          "covered": 1015,
+          "missed": 4000,
+          "ratio": 0.202393,
+          "total": 5015
+        },
+        "method": {
+          "covered": 165,
+          "missed": 557,
+          "ratio": 0.228532,
+          "total": 722
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "no_action",
+      "issue_number": 10320,
+      "issue_label": "fails-java-run",
+      "library": "org.apache.tomcat.embed:tomcat-embed-websocket:10.0.6",
+      "summary": "No extra dependency, Docker image or system property is needed. The two failures are in the existing test code: the pinned 10.0.0 tests expect `WsWebSocketContainer.connectToServer` to construct the endpoint before it rejects the bad URI scheme. Tomcat 10.0.6 evidently no longer does that, so the endpoint constructor never runs.",
+      "deterministic_setup": [],
+      "agent_guidance": "The failing assertions are `annotatedEndpointClassConnectionInvokesPublicConstructor` and `endpointClassConnectionInvokesPublicConstructor` in `WsWebSocketContainerTest`. Both call `connectToServer` with an `ftp://example.invalid/...` URI and assert the endpoint constructor ran once, but the count is 0. The other 17 tests pass, including `annotatedEndpointConnectionInstantiatesCustomConfigurator`.\n\nFor 10.0.6, make `connectToServer` reach the endpoint instantiation before it fails. Use an `http`/`ws` URI to an unresolvable host, as the configurator test does, and keep asserting `DeploymentException`. Alternatively, drop the dependence on the scheme-check ordering.\n\nThe tests still need to hit the same dynamic-access paths: the public no-arg constructor reflection on the endpoint class, and the configurator instantiation. Confirm the coverage by running the Gradle test and Native Image tasks locally.",
+      "risks": [
+        "I could not read the 10.0.6 source (the artifact was not in the local Gradle or Maven caches), so the explanation of the changed ordering comes from the test and the failure log, not from the library code.",
+        "If the endpoint is now created only after a successful connection handshake, there may be no offline way to reach that constructor reflection. That would need a local loopback server, which this library's test dependencies do not provide.",
+        "The reflection metadata for the endpoint constructors may need to be regenerated once the tests reach the instantiation path again."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#10320 [Automation] java run fails for org.apache.tomcat.embed:tomcat-embed-websocket:10.0.6; label=fails-java-run; body_chars=8015"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "19 existing test file path(s) included"
+        }
+      ],
+      "current_library": "org.apache.tomcat.embed:tomcat-embed-websocket:10.0.0",
+      "new_version": "10.0.6",
+      "model": "sonnet",
+      "input_tokens_used": 6,
+      "output_tokens_used": 1319
+    },
+    "metrics": {
+      "input_tokens_used": 66686,
+      "cached_input_tokens_used": 753536,
+      "output_tokens_used": 7273,
+      "iterations": 3,
+      "cost_usd": 0.9284,
+      "tested_library_loc": 1686,
+      "metadata_entries": 39,
+      "test_only_metadata_entries": 115,
+      "previous_library_metadata_entries": 24,
+      "previous_library_test_only_metadata_entries": 105,
+      "code_coverage_percent": 32.76,
+      "previous_library_coverage_percent": 20.24
+    },
+    "artifacts": {
+      "metadata_file": "metadata/org.apache.tomcat.embed/tomcat-embed-websocket/10.0.6/reachability-metadata.json"
+    }
+  }
+}
