@@ -9,6 +9,9 @@ package io_micronaut.micronaut_aop;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import io.micronaut.aop.Around;
+import io.micronaut.aop.AroundConstruct;
+import io.micronaut.aop.ConstructorInterceptor;
+import io.micronaut.aop.ConstructorInvocationContext;
 import io.micronaut.aop.InterceptorBean;
 import io.micronaut.aop.Introduction;
 import io.micronaut.aop.MethodInterceptor;
@@ -53,6 +56,15 @@ public class Micronaut_aopTest {
         }
     }
 
+    @Test
+    void appliesAnAroundConstructInterceptorDuringBeanCreation() {
+        try (ApplicationContext context = ApplicationContext.run()) {
+            ConstructedService service = context.getBean(ConstructedService.class);
+
+            assertThat(service.lifecycle()).isEqualTo("constructor:intercepted");
+        }
+    }
+
     @Singleton
     public static class GreetingService {
         @Audited
@@ -73,6 +85,30 @@ public class Micronaut_aopTest {
         }
     }
 
+    @Constructed
+    @Singleton
+    public static class ConstructedService {
+        private String lifecycle = "constructor";
+
+        public String lifecycle() {
+            return lifecycle;
+        }
+
+        public void markIntercepted() {
+            lifecycle += ":intercepted";
+        }
+    }
+
+    @InterceptorBean(Constructed.class)
+    public static class ConstructedInterceptor implements ConstructorInterceptor<Object> {
+        @Override
+        public Object intercept(ConstructorInvocationContext<Object> context) {
+            ConstructedService service = (ConstructedService) context.proceed();
+            service.markIntercepted();
+            return service;
+        }
+    }
+
     @InterceptorBean(Audited.class)
     public static class AuditedInterceptor implements MethodInterceptor<Object, Object> {
         @Override
@@ -85,6 +121,11 @@ public class Micronaut_aopTest {
                     + context.proceed();
         }
     }
+
+    @AroundConstruct
+    @Retention(RetentionPolicy.RUNTIME)
+    @Target(ElementType.TYPE)
+    public @interface Constructed {}
 
     @Around
     @Retention(RetentionPolicy.RUNTIME)
