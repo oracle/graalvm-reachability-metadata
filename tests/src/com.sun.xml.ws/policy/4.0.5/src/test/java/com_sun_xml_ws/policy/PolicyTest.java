@@ -10,6 +10,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
 
+import javax.xml.namespace.QName;
+
 import com.sun.xml.ws.policy.AssertionSet;
 import com.sun.xml.ws.policy.Policy;
 import org.junit.jupiter.api.Test;
@@ -51,5 +53,18 @@ public class PolicyTest {
 
         assertThat(first).isEqualTo(equivalent);
         assertThat(first.hashCode()).isEqualTo(equivalent.hashCode());
+    }
+
+    @Test
+    void queriesPolicyVocabularyThroughPublicApi() {
+        QName assertionName = new QName("urn:shipping", "DeliveryMode");
+        AssertionSet alternative = AssertionSet.emptyAssertionSet();
+        Policy policy = Policy.createPolicy("shipping-policy", null, List.of(alternative));
+
+        assertThat(policy.getIdOrName()).isEqualTo("shipping-policy");
+        assertThat(policy.contains(assertionName)).isFalse();
+        assertThat(policy.contains(assertionName.getNamespaceURI())).isFalse();
+        assertThat(alternative.contains(assertionName)).isFalse();
+        assertThat(alternative.get(assertionName)).isEmpty();
     }
 }
