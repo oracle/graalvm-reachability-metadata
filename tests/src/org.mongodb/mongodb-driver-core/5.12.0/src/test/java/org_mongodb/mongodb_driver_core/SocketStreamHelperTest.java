@@ -14,6 +14,7 @@ import com.mongodb.internal.connection.OperationContext;
 import com.mongodb.internal.connection.PowerOfTwoBufferPool;
 import com.mongodb.internal.connection.SocketStream;
 import com.mongodb.internal.connection.Stream;
+import com.mongodb.internal.thread.AsyncClientExecutor;
 import org.junit.jupiter.api.Test;
 
 import javax.net.SocketFactory;
@@ -40,8 +41,8 @@ public class SocketStreamHelperTest {
         final RecordingSocket socket = new RecordingSocket();
         final SocketFactory socketFactory = new SingleSocketFactory(socket);
         final SocketSettings socketSettings = SocketSettings.builder()
-                .connectTimeout(250, TimeUnit.MILLISECONDS)
-                .readTimeout(750, TimeUnit.MILLISECONDS)
+                .connectTimeout(10, TimeUnit.SECONDS)
+                .readTimeout(10, TimeUnit.SECONDS)
                 .receiveBufferSize(1024)
                 .sendBufferSize(2048)
                 .build();
@@ -50,16 +51,16 @@ public class SocketStreamHelperTest {
                 host -> Collections.singletonList(InetAddress.getByName(host)), socketSettings, sslSettings, socketFactory,
                 PowerOfTwoBufferPool.DEFAULT);
         final OperationContext operationContext = OperationContext.simpleOperationContext(
-                new TimeoutSettings(5_000, 250, 750, null, 5_000), null);
+                new TimeoutSettings(10_000, 10_000, 10_000, null, 10_000), null, AsyncClientExecutor.NO_OP);
 
         stream.open(operationContext);
         try {
             assertThat(stream.isClosed()).isFalse();
             assertThat(socket.connected).isTrue();
-            assertThat(socket.connectTimeout).isEqualTo(250);
+            assertThat(socket.connectTimeout).isEqualTo(10_000);
             assertThat(socket.tcpNoDelay).isTrue();
             assertThat(socket.keepAlive).isTrue();
-            assertThat(socket.soTimeout).isEqualTo(750);
+            assertThat(socket.soTimeout).isEqualTo(10_000);
             assertThat(socket.receiveBufferSize).isEqualTo(1024);
             assertThat(socket.sendBufferSize).isEqualTo(2048);
             assertThat(socket.extendedOptions)

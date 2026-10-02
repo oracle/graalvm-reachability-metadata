@@ -27,6 +27,7 @@ import com.mongodb.internal.connection.PowerOfTwoBufferPool;
 import com.mongodb.internal.connection.Stream;
 import com.mongodb.internal.connection.StreamFactory;
 import com.mongodb.internal.operation.CommandReadOperation;
+import com.mongodb.internal.thread.AsyncClientExecutor;
 import org.bson.BsonArray;
 import org.bson.BsonBinaryWriter;
 import org.bson.BsonBoolean;
@@ -62,13 +63,14 @@ public class ByteBufBsonArrayTest {
         final ServerAddress serverAddress = new ServerAddress("127.0.0.1", 27017);
         final RecordingCommandListener commandListener = new RecordingCommandListener();
         final RespondingStreamFactory streamFactory = new RespondingStreamFactory(serverAddress);
-        final TimeoutSettings timeoutSettings = new TimeoutSettings(5_000, 500, 5_000, null, 5_000);
-        final OperationContext operationContext = OperationContext.simpleOperationContext(timeoutSettings, null);
+        final TimeoutSettings timeoutSettings = new TimeoutSettings(10_000, 10_000, 10_000, null, 10_000);
+        final OperationContext operationContext = OperationContext.simpleOperationContext(
+                timeoutSettings, null, AsyncClientExecutor.NO_OP);
         final Cluster cluster = new DefaultClusterFactory().createCluster(
                 ClusterSettings.builder()
                         .hosts(Collections.singletonList(serverAddress))
                         .mode(ClusterConnectionMode.SINGLE)
-                        .serverSelectionTimeout(5, TimeUnit.SECONDS)
+                        .serverSelectionTimeout(10, TimeUnit.SECONDS)
                         .build(),
                 ServerSettings.builder()
                         .heartbeatFrequency(1, TimeUnit.HOURS)
@@ -82,6 +84,7 @@ public class ByteBufBsonArrayTest {
                 streamFactory,
                 timeoutSettings,
                 streamFactory,
+                AsyncClientExecutor.NO_OP,
                 null,
                 LoggerSettings.builder().build(),
                 commandListener,
