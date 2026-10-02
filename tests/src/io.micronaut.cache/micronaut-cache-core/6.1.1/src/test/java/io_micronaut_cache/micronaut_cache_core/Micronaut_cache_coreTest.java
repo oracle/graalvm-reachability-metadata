@@ -98,6 +98,19 @@ public class Micronaut_cache_coreTest {
     }
 
     @Test
+    void cacheableMethodUsesAllSelectedParametersForItsKey() {
+        try (ApplicationContext context = ApplicationContext.run(Map.of())) {
+            MultiParameterCatalog catalog = context.getBean(MultiParameterCatalog.class);
+
+            assertThat(catalog.lookup("books", 1)).isEqualTo("books-1-1");
+            assertThat(catalog.lookup("books", 1)).isEqualTo("books-1-1");
+            assertThat(catalog.lookup("books", 2)).isEqualTo("books-2-2");
+            assertThat(catalog.lookup("music", 1)).isEqualTo("music-1-3");
+            assertThat(catalog.lookupCount()).isEqualTo(3);
+        }
+    }
+
+    @Test
     void cacheableConditionCanDisableCachingForSelectedOperation() {
         try (ApplicationContext context = ApplicationContext.run(Map.of())) {
             ConditionalCatalog catalog = context.getBean(ConditionalCatalog.class);
@@ -144,6 +157,23 @@ public class Micronaut_cache_coreTest {
 
         public int asyncLookupCount() {
             return asyncLookupCount;
+        }
+    }
+
+    @Singleton
+    public static class MultiParameterCatalog {
+        private int lookupCount;
+
+        @Cacheable(
+                cacheNames = "core-multi-parameter",
+                parameters = {"category", "number"})
+        public String lookup(String category, int number) {
+            lookupCount++;
+            return category + "-" + number + "-" + lookupCount;
+        }
+
+        public int lookupCount() {
+            return lookupCount;
         }
     }
 
