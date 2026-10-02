@@ -10,7 +10,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import io.micronaut.context.ApplicationContext;
 import io.micronaut.context.annotation.ConfigurationProperties;
+import io.micronaut.context.annotation.EachBean;
+import io.micronaut.context.annotation.EachProperty;
 import io.micronaut.context.annotation.Factory;
+import io.micronaut.context.annotation.Parameter;
 import io.micronaut.context.annotation.Requires;
 import io.micronaut.context.annotation.Value;
 import io.micronaut.context.env.Environment;
@@ -131,6 +134,84 @@ public class Micronaut_contextTest {
             assertThat(context.getBean(ProgrammaticBean.class)).isSameAs(bean);
             assertThat(context.findBean(ProgrammaticBean.class)).containsSame(bean);
             assertThat(context.getBeansOfType(ProgrammaticBean.class)).containsExactly(bean);
+        }
+    }
+
+    @Test
+    void createsQualifiedBeansForEachConfigurationProperty() {
+        Map<String, Object> properties = Map.of(
+                "context.regions.primary.endpoint", "https://primary.example",
+                "context.regions.primary.retries", "2",
+                "context.regions.backup.endpoint", "https://backup.example",
+                "context.regions.backup.retries", "4");
+
+        try (ApplicationContext context = ApplicationContext.run(properties, Environment.TEST)) {
+            assertThat(context.getBeansOfType(RegionClient.class))
+                    .extracting(RegionClient::region)
+                    .containsExactlyInAnyOrder("primary", "backup");
+            assertThat(context.getBean(
+                    RegionClient.class, Qualifiers.byName("primary")).describe("health"))
+                    .isEqualTo("primary handles health at https://primary.example after 2 retries");
+            assertThat(context.getBean(
+                    RegionClient.class, Qualifiers.byName("backup")).describe("health"))
+                    .isEqualTo("backup handles health at https://backup.example after 4 retries");
+        }
+    }
+
+    @EachProperty("context.regions")
+    public static class RegionConfiguration {
+        private final String region;
+        private String endpoint;
+        private int retries;
+
+        public RegionConfiguration(@Parameter String region) {
+            this.region = region;
+        }
+
+        public String getRegion() {
+            return region;
+        }
+
+        public String getEndpoint() {
+            return endpoint;
+        }
+
+        public void setEndpoint(String endpoint) {
+            this.endpoint = endpoint;
+        }
+
+        public int getRetries() {
+            return retries;
+        }
+
+        public void setRetries(int retries) {
+            this.retries = retries;
+        }
+    }
+
+    @EachBean(RegionConfiguration.class)
+    @Singleton
+    public static class RegionClient {
+        private final RegionConfiguration configuration;
+
+        @Inject
+        public RegionClient(RegionConfiguration configuration) {
+            this.configuration = configuration;
+        }
+
+        public String region() {
+            return configuration.getRegion();
+        }
+
+        public String describe(String operation) {
+            return configuration.getRegion()
+                    + " handles "
+                    + operation
+                    + " at "
+                    + configuration.getEndpoint()
+                    + " after "
+                    + configuration.getRetries()
+                    + " retries";
         }
     }
 
