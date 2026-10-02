@@ -22,6 +22,7 @@ import io.micronaut.data.model.Slice;
 import io.micronaut.data.model.Sort;
 import io.micronaut.data.model.geo.Point;
 import io.micronaut.data.model.naming.NamingStrategies;
+import io.micronaut.data.model.naming.NamingStrategy;
 import io.micronaut.data.model.vector.SparseFloatVector;
 import io.micronaut.data.model.vector.Vector;
 import io.micronaut.data.model.vector.search.Score;
@@ -101,16 +102,18 @@ public class Micronaut_data_modelTest {
     }
 
     @Test
-    void appliesModelLimitsNamingStrategiesAndDataTypes() {
+    void appliesModelLimitsIntrospectedNamingStrategiesAndDataTypes() {
         Pageable pageable = Pageable.from(2, 25, Sort.of(Sort.Order.asc("name")));
         Limit limit = pageable.getLimit();
+        BeanIntrospection<NamingStrategies.KebabCase> introspection =
+                BeanIntrospection.getIntrospection(NamingStrategies.KebabCase.class);
+        NamingStrategy kebabCase = introspection.instantiate();
 
         assertThat(limit.isLimited()).isTrue();
         assertThat(limit.maxResults()).isEqualTo(25);
         assertThat(limit.offset()).isEqualTo(50);
         assertThat(new NamingStrategies.Raw().mappedName("BookTitle")).isEqualTo("BookTitle");
-        assertThat(new NamingStrategies.KebabCase().mappedName("bookTitle"))
-                .isEqualTo("book-title");
+        assertThat(kebabCase.mappedName("bookTitle")).isEqualTo("book-title");
         assertThat(DataType.forType(String.class)).isEqualTo(DataType.STRING);
         assertThat(DataType.forType(int[].class)).isEqualTo(DataType.INTEGER_ARRAY);
         assertThat(DataType.INTEGER.isNumeric()).isTrue();
