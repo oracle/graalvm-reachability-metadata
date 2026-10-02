@@ -3,6 +3,12 @@
 Rendered by Forge from the pre-push branch review of §FS-local-branch-review.
 Newest entry first; every non-approval is recorded, including one a repair later cleared.
 
+## 2026-10-02 — com.sun.xml.ws:httpspi-servlet:4.0.5 (#9946)
+
+**Shipped metadata was not exercised by the generated tests**
+
+Resolved review evidence reported metadata for reflective WstxInputFactory construction when DeploymentDescriptorParser is reached, but the original tests never invoked DeploymentDescriptorParser. The suite could therefore stay green without exercising the public library path that requires the shipped metadata, violating the meaningful public-API and metadata-justification requirements.
+
 ## 2026-10-02 — org.apache.sshd:sshd-common:2.18.0 (#9957)
 
 **Generated stats omit observed dynamic-access coverage**
