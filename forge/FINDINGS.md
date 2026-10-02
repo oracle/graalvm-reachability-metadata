@@ -3,6 +3,12 @@
 Rendered by Forge from the pre-push branch review of §FS-local-branch-review.
 Newest entry first; every non-approval is recorded, including one a repair later cleared.
 
+## 2026-10-02 — com.squareup.okhttp3:okhttp:3.9.0 (#9336)
+
+**Generated repair uses a shadow Android API to manufacture coverage**
+
+The added tests/src/com.squareup.okhttp3/okhttp/3.9.0/src/test/java/android/security/NetworkSecurityPolicy.java shadowed a real Android framework type, and AndroidPlatformTest depended on that fake type to activate an Android-only library path on the desktop test runtime. The contribution also changed the inherited X509TrustManagerExtensions stub to force the desired fallback. This violates FS-test-contract.2.3 and adds unrelated synthetic coverage to a javac repair rather than narrowly adapting the failing TrustRootIndex call.
+
 ## 2026-10-02 — org.hibernate:hibernate-core:6.1.0.Final (#9119)
 
 **Modified top-level test class is not public**
