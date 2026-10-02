@@ -12,6 +12,7 @@ import com.opencsv.exceptions.CsvDataTypeMismatchException;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.text.FieldPosition;
 import java.text.NumberFormat;
@@ -44,7 +45,7 @@ public class ConverterNumberTest {
     }
 
     @Test
-    void convertToWriteFormatsNumberWithLocalizedPattern() {
+    void convertToWriteFormatsNumberWithLocalizedPattern() throws Exception {
         ConverterNumber converter = numberConverter(BigDecimal.class, DECIMAL_PATTERN, DECIMAL_PATTERN);
 
         String formatted = converter.convertToWrite(new BigDecimal("1234.5"));
@@ -80,7 +81,8 @@ public class ConverterNumberTest {
                 US_LOCALE,
                 ERROR_LOCALE,
                 INTEGER_PATTERN,
-                INTEGER_PATTERN))
+                INTEGER_PATTERN,
+                RoundingMode.HALF_UP))
                 .isInstanceOf(CsvBadConverterException.class)
                 .hasMessageContaining("DecimalFormat");
     }
@@ -102,7 +104,14 @@ public class ConverterNumberTest {
 
     private static ConverterNumber numberConverter(
             Class<?> type, String readFormat, String writeFormat) {
-        return new ConverterNumber(type, US_LOCALE, US_LOCALE, ERROR_LOCALE, readFormat, writeFormat);
+        return new ConverterNumber(
+                type,
+                US_LOCALE,
+                US_LOCALE,
+                ERROR_LOCALE,
+                readFormat,
+                writeFormat,
+                RoundingMode.HALF_UP);
     }
 
     private static boolean isNativeImageRuntime() {
