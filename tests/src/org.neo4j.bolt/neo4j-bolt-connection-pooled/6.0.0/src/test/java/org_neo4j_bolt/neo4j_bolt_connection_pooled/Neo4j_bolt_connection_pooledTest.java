@@ -75,6 +75,7 @@ import org.neo4j.bolt.connection.values.IsoDuration;
 import org.neo4j.bolt.connection.values.Point;
 import org.neo4j.bolt.connection.values.Type;
 import org.neo4j.bolt.connection.values.Value;
+import org.neo4j.bolt.connection.values.Vector;
 
 public class Neo4j_bolt_connection_pooledTest {
     private static final int TEST_TIMEOUT_SECONDS = 20;
@@ -812,6 +813,11 @@ public class Neo4j_bolt_connection_pooledTest {
         @Override
         public Point asBoltPoint() {
             throw new UnsupportedOperationException("Point values are not used by these tests");
+        }
+
+        @Override
+        public Vector asBoltVector() {
+            throw new UnsupportedOperationException("Vector values are not used by these tests");
         }
 
         @Override
