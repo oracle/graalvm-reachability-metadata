@@ -1,0 +1,19 @@
+## Human intervention needed
+
+The automated job failed in `fix/fix_reported_failure()` while repairing `org.springframework.amqp:spring-rabbitmq-client:4.2.0-M2`.
+
+Preserved work: https://github.com/oracle/graalvm-reachability-metadata/tree/ai%2Fkimeta%2Fhuman-intervention%2Fissue-10337-fails-javac-compile-org.springframework.amqp-spring-rabbitmq-client-4.2.0-M2-f31e2569
+
+The most likely cause is an agent repair loop at `compileTestJava`. `Consumer.Context` appears to require both `delayedRetry(Instant)` and `delayedRetry(Instant, boolean)`, but the generated edits repeatedly replaced one overload with the other. Consequently, Gradle alternated between reporting each missing method across six failed iterations. Metrics record failure, 0 generated LOC, and identical starting/ending commits (`90200d54088ee49716aea8a1a0405476a45db9b5`); dynamic-access coverage was never reached.
+
+Inspect:
+- `logs/org.springframework.amqp:spring-rabbitmq-client:4.2.0-M2/fix-javac-fail/pi-generation-2026-10-02T01-57-27-882715Z.log`
+- `logs/org.springframework.amqp:spring-rabbitmq-client:4.2.0-M2/gradle-test/gradle-test-2026-10-02T01-59-39-472194Z.log`
+- `logs/org.springframework.amqp:spring-rabbitmq-client:4.2.0-M2/gradle-test/gradle-test-2026-10-02T02-00-43-761522Z.log`
+- `logs/org.springframework.amqp:spring-rabbitmq-client:4.2.0-M2/populate-artifact-urls/populate_artifact_urls.log` — URL discovery succeeded, but the index edit was denied and not persisted.
+- `stats/org.springframework.amqp/spring-rabbitmq-client/4.2.0-M2/execution-metrics.json`
+
+Manual next steps:
+1. Restore the prepared `4.2.0-M2` test project from commit `90200d54088ee49716aea8a1a0405476a45db9b5`, confirm the `Consumer.Context` API, and implement both required overloads without replacing either one.
+2. Persist and verify the discovered `4.2.0-M2` artifact URLs in `metadata/org.springframework.amqp/spring-rabbitmq-client/index.json`.
+3. Run `compileTestJava` first, then the full coordinate test for `org.springframework.amqp:spring-rabbitmq-client:4.2.0-M2`.
