@@ -22,6 +22,8 @@ import io.micronaut.data.model.Slice;
 import io.micronaut.data.model.Sort;
 import io.micronaut.data.model.geo.Point;
 import io.micronaut.data.model.naming.NamingStrategies;
+import io.micronaut.data.model.vector.SparseFloatVector;
+import io.micronaut.data.model.vector.Vector;
 import org.junit.jupiter.api.Test;
 
 public class Micronaut_data_modelTest {
@@ -109,6 +111,21 @@ public class Micronaut_data_modelTest {
         assertThat(DataType.forType(int[].class)).isEqualTo(DataType.INTEGER_ARRAY);
         assertThat(DataType.INTEGER.isNumeric()).isTrue();
         assertThat(DataType.STRING.isNumeric()).isFalse();
+    }
+
+    @Test
+    void createsDenseVectorsAndRoundTripsThemThroughSparseRepresentation() {
+        Vector vector = Vector.of(0.0f, 1.5f, 0.0f, -2.25f);
+        SparseFloatVector sparseVector = vector.toSparseFloatVector();
+
+        assertThat(vector.getType()).isEqualTo(float.class);
+        assertThat(vector.toFloatArray()).containsExactly(0.0f, 1.5f, 0.0f, -2.25f);
+        assertThat(sparseVector.length()).isEqualTo(4);
+        assertThat(sparseVector.indices()).containsExactly(1, 3);
+        assertThat(sparseVector.values()).containsExactly(1.5f, -2.25f);
+        assertThat(sparseVector.toDenseVector().toFloatArray())
+                .containsExactly(0.0f, 1.5f, 0.0f, -2.25f);
+        assertThat(sparseVector.toDoubleArray()).containsExactly(0.0, 1.5, 0.0, -2.25);
     }
 
     @Test
