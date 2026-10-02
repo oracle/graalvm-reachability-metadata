@@ -19,4 +19,8 @@ public final class NetworkSecurityPolicy {
     public boolean isCleartextTrafficPermitted() {
         return true;
     }
+
+    public boolean isCleartextTrafficPermitted(String hostname) {
+        return true;
+    }
 }
