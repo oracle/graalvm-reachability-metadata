@@ -99,11 +99,15 @@ produces no JaCoCo report, no ranked prompt, and no coverage figure, yet reports
 every task terminal — and publication will happily open a pull request for it.
 
 Cover states name the Gradle invocation rather than leaving the agent to infer
-it: compiling and testing happen inside the issue worktree, scoped with
-`-Pcoordinates=<coordinate> -PincludeCodeCoverageSuite=true`. An unscoped
-invocation configures every library in the repository, so it runs for hours and
-still never compiles the suite under measurement; `--no-daemon` pays that
-configuration cost again on every call. Naming the command is harness usage, not
+it: the agent verifies with the task measurement runs, `codeCoverageTest`,
+inside the issue worktree and scoped with `-Pcoordinates=<coordinate>`. That
+task compiles and runs the coverage suite alone, the same command the naive
+prompt hands its agent. Measurement alone judges a pass, so a check that also
+runs the regular suite spends the pass on failures that cannot change its
+result: a hang that needs both suites in one JVM stalls every such check while
+measurement keeps passing. An unscoped invocation configures every library in
+the repository, so it runs for hours and still never compiles the suite under
+measurement; `--no-daemon` pays that configuration cost again on every call. Naming the command is harness usage, not
 coverage guidance — it says nothing about what to cover — so an arm that needs
 it stays comparable to one that inferred the same form on its own.
 
