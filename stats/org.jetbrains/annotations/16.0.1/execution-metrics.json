@@ -1,0 +1,116 @@
+{
+  "fix_javac_fail:2026-10-02": {
+    "timestamp": "2026-10-02T05:58:11.832166Z",
+    "library": "org.jetbrains:annotations:16.0.1",
+    "starting_commit": "19f1638eb9d0da9b565a01479afb6214614506f8",
+    "ending_commit": "1b9fd3bc7bc263e399484809730a1f4cb6e512b8",
+    "previous_library": "org.jetbrains:annotations:15.0",
+    "strategy_name": "javac_iterative_with_coverage_sources_pi_gpt-5.6-luna",
+    "agent": "pi",
+    "model": "gpt-5.6-luna",
+    "status": "success",
+    "stats": {
+      "version": "16.0.1",
+      "dynamicAccess": {
+        "breakdown": {},
+        "coverageRatio": 1.0,
+        "coveredCalls": 0,
+        "totalCalls": 0
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 37,
+          "missed": 3,
+          "ratio": 0.925,
+          "total": 40
+        },
+        "line": {
+          "covered": 5,
+          "missed": 1,
+          "ratio": 0.833333,
+          "total": 6
+        },
+        "method": {
+          "covered": 2,
+          "missed": 1,
+          "ratio": 0.666667,
+          "total": 3
+        }
+      }
+    },
+    "previous_library_stats": {
+      "version": "15.0",
+      "dynamicAccess": {
+        "breakdown": {},
+        "coverageRatio": 1.0,
+        "coveredCalls": 0,
+        "totalCalls": 0
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 37,
+          "missed": 3,
+          "ratio": 0.925,
+          "total": 40
+        },
+        "line": {
+          "covered": 6,
+          "missed": 1,
+          "ratio": 0.857143,
+          "total": 7
+        },
+        "method": {
+          "covered": 2,
+          "missed": 1,
+          "ratio": 0.666667,
+          "total": 3
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "no_action",
+      "issue_number": 10333,
+      "issue_label": "fails-javac-compile",
+      "library": "org.jetbrains:annotations:16.0.1",
+      "summary": "The failure is a test-source compile error, not missing setup. The 15.0 test implements the Contract annotation anonymously, and the newer artifact adds a `mutates()` element that the anonymous class must also implement. The fix is to update the test source. No extra dependency, Docker image, or system property is needed, and nothing in the evidence points to an unsupportable mechanism.",
+      "deterministic_setup": [],
+      "agent_guidance": "",
+      "risks": [
+        "Annotation elements may have been added or changed between 15.0 and 16.0.1 in other annotations too (for example Contract.mutates). Other anonymous annotation implementations in AnnotationsTest may need the same kind of update.",
+        "The updated test should still compile against the older version if the 15.0 test project is also kept."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#10333 [Automation] javac compile fails for org.jetbrains:annotations:16.0.1; label=fails-javac-compile; body_chars=8015"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "6 existing test file path(s) included"
+        }
+      ],
+      "current_library": "org.jetbrains:annotations:15.0",
+      "new_version": "16.0.1",
+      "model": "sonnet",
+      "input_tokens_used": 2,
+      "output_tokens_used": 542
+    },
+    "metrics": {
+      "input_tokens_used": 53988,
+      "cached_input_tokens_used": 364032,
+      "output_tokens_used": 1686,
+      "iterations": 4,
+      "cost_usd": 0.1005,
+      "tested_library_loc": 5,
+      "metadata_entries": 0,
+      "previous_library_metadata_entries": 0,
+      "code_coverage_percent": 83.33,
+      "previous_library_coverage_percent": 85.71
+    },
+    "artifacts": {
+      "metadata_file": "metadata/org.jetbrains/annotations/16.0.1/reachability-metadata.json"
+    }
+  }
+}
