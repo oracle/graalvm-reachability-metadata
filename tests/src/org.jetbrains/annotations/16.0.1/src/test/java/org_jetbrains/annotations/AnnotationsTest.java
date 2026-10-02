@@ -129,6 +129,11 @@ public class AnnotationsTest {
             }
 
             @Override
+            public String mutates() {
+                return "";
+            }
+
+            @Override
             public Class<? extends Annotation> annotationType() {
                 return Contract.class;
             }
@@ -305,6 +310,7 @@ public class AnnotationsTest {
 
         assertThat(contract.value()).isEqualTo("null -> false");
         assertThat(contract.pure()).isTrue();
+        assertThat(contract.mutates()).isEmpty();
         assertThat(contract.annotationType()).isSameAs(Contract.class);
 
         assertThat(nls.capitalization()).isSameAs(Nls.Capitalization.Title);
