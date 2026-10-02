@@ -6,7 +6,7 @@
  */
 plugins {
     id "org.graalvm.internal.tck"
-    alias(libs.plugins.kotlin.jvm)
+    id "org.jetbrains.kotlin.jvm" version "2.5.0-Beta1"
 }
 
 String libraryVersion = tck.testedLibraryVersion.get()
@@ -29,6 +29,17 @@ graalvmNative {
     binaries {
         test {
             buildArgs.add('--no-fallback')
+        }
+    }
+}
+
+graalvmNative {
+    agent {
+        defaultMode = "conditional"
+        modes {
+            conditional {
+                userCodeFilterPath = "user-code-filter.json"
+            }
         }
     }
 }
