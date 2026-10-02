@@ -16,12 +16,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class CompatibilityTest {
     @Test
-    void resolvesQuorumServerHostAcrossZooKeeperAddressRepresentations() {
+    void resolvesQuorumServerHostThroughTheDirectAddressField() {
         InetSocketAddress address = new InetSocketAddress("127.0.0.1", 2888);
         QuorumPeer.QuorumServer server = new QuorumPeer.QuorumServer(1, address);
 
-        assertThat(Compatibility.hasGetReachableOrOneMethod()).isTrue();
+        assertThat(Compatibility.hasGetReachableOrOneMethod()).isFalse();
+        assertThat(Compatibility.hasAddrField()).isTrue();
         assertThat(Compatibility.getHostAddress(server)).isEqualTo("127.0.0.1");
-        assertThat(Compatibility.hasPersistentWatchers()).isTrue();
+        assertThat(Compatibility.hasPersistentWatchers()).isFalse();
     }
 }
