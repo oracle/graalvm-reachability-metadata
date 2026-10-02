@@ -30,6 +30,7 @@ import org.xml.sax.XMLReader;
 
 import com.sun.xml.stream.buffer.MutableXMLStreamBuffer;
 import com.sun.xml.stream.buffer.XMLStreamBuffer;
+import com.sun.xml.stream.buffer.stax.StreamReaderBufferProcessor;
 import org.jvnet.staxex.Base64Data;
 import org.jvnet.staxex.XMLStreamReaderEx;
 import org.jvnet.staxex.XMLStreamWriterEx;
@@ -162,6 +163,36 @@ public class StreambufferTest {
         assertThat(elementNames).containsExactly("catalog", "entry", "entry");
         assertThat(entryIds).containsExactly("first", "second");
         assertThat(text).hasToString("onetwo");
+    }
+
+    @Test
+    void extractsAnElementSubtreeWithAStreamReaderMark() throws Exception {
+        String xml = "<catalog xmlns=\"urn:catalog\"><entry id=\"first\">one</entry>"
+                + "<entry id=\"second\">two</entry></catalog>";
+        XMLStreamReader source = XMLInputFactory.newFactory().createXMLStreamReader(new StringReader(xml));
+        XMLStreamBuffer buffer = XMLStreamBuffer.createNewBufferFromXMLStreamReader(source);
+        source.close();
+
+        StreamReaderBufferProcessor reader = buffer.readAsXMLStreamReader();
+        XMLStreamBuffer catalogMark = reader.nextTagAndMark();
+        assertThat(catalogMark.isElementFragment()).isTrue();
+        XMLStreamBuffer entryMark = reader.nextTagAndMark();
+        reader.close();
+
+        assertThat(entryMark.isFragment()).isTrue();
+        assertThat(entryMark.isElementFragment()).isTrue();
+        assertThat(entryMark.getInscopeNamespaces()).containsValue("urn:catalog");
+
+        XMLStreamReader entryReader = entryMark.readAsXMLStreamReader();
+        assertThat(entryReader.next()).isEqualTo(XMLStreamConstants.START_ELEMENT);
+        assertThat(entryReader.getNamespaceURI()).isEqualTo("urn:catalog");
+        assertThat(entryReader.getLocalName()).isEqualTo("entry");
+        assertThat(entryReader.getAttributeValue(null, "id")).isEqualTo("first");
+        assertThat(entryReader.next()).isEqualTo(XMLStreamConstants.CHARACTERS);
+        assertThat(entryReader.getText()).isEqualTo("one");
+        assertThat(entryReader.next()).isEqualTo(XMLStreamConstants.END_ELEMENT);
+        assertThat(entryReader.next()).isEqualTo(XMLStreamConstants.END_DOCUMENT);
+        entryReader.close();
     }
 
     @Test
