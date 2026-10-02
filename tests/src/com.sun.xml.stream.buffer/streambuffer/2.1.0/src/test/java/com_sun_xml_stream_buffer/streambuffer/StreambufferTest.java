@@ -19,11 +19,14 @@ import java.util.List;
 
 import jakarta.activation.DataHandler;
 import jakarta.activation.DataSource;
+import javax.xml.parsers.SAXParserFactory;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 import javax.xml.stream.XMLOutputFactory;
+
+import org.xml.sax.XMLReader;
 
 import com.sun.xml.stream.buffer.MutableXMLStreamBuffer;
 import com.sun.xml.stream.buffer.XMLStreamBuffer;
@@ -122,6 +125,43 @@ public class StreambufferTest {
         output.close();
         assertThat(serialized.toString())
                 .contains(Base64.getEncoder().encodeToString(payload));
+    }
+
+    @Test
+    void createsBufferFromSaxAndReadsItThroughStax() throws Exception {
+        String xml = "<catalog xmlns=\"urn:catalog\"><entry id=\"first\">one</entry>"
+                + "<entry id=\"second\">two</entry></catalog>";
+        SAXParserFactory parserFactory = SAXParserFactory.newInstance();
+        parserFactory.setNamespaceAware(true);
+        XMLReader source = parserFactory.newSAXParser().getXMLReader();
+        XMLStreamBuffer buffer;
+        try (ByteArrayInputStream input = new ByteArrayInputStream(xml.getBytes(StandardCharsets.UTF_8))) {
+            buffer = XMLStreamBuffer.createNewBufferFromXMLReader(source, input);
+        }
+
+        XMLStreamReader bufferedReader = buffer.readAsXMLStreamReader();
+        List<String> elementNames = new ArrayList<>();
+        List<String> entryIds = new ArrayList<>();
+        StringBuilder text = new StringBuilder();
+        while (true) {
+            if (bufferedReader.getEventType() == XMLStreamConstants.START_ELEMENT) {
+                elementNames.add(bufferedReader.getLocalName());
+                if ("entry".equals(bufferedReader.getLocalName())) {
+                    entryIds.add(bufferedReader.getAttributeValue(null, "id"));
+                }
+            } else if (bufferedReader.getEventType() == XMLStreamConstants.CHARACTERS) {
+                text.append(bufferedReader.getText());
+            }
+            if (!bufferedReader.hasNext()) {
+                break;
+            }
+            bufferedReader.next();
+        }
+        bufferedReader.close();
+
+        assertThat(elementNames).containsExactly("catalog", "entry", "entry");
+        assertThat(entryIds).containsExactly("first", "second");
+        assertThat(text).hasToString("onetwo");
     }
 
     @Test
