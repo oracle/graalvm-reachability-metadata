@@ -38,7 +38,7 @@ public class SerializedModelConfiguratorTest {
     configurator.setContext(loggerContext);
     String previousModelFile = System.getProperty(ClassicConstants.MODEL_CONFIG_FILE_PROPERTY);
     try {
-      System.setProperty(ClassicConstants.MODEL_CONFIG_FILE_PROPERTY, serializedModel.toString());
+      System.setProperty(ClassicConstants.MODEL_CONFIG_FILE_PROPERTY, serializedModel.toUri().toString());
 
       Configurator.ExecutionStatus executionStatus = configurator.configure(loggerContext);
 

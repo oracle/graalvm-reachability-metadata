@@ -10,8 +10,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -19,7 +17,6 @@ import java.nio.file.Paths;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 import ch.qos.logback.classic.Logger;
@@ -224,28 +221,8 @@ public class LogbackTests {
   }
 
   private static Stream<Arguments> converterSource() {
-    if (!PatternLayout.DEFAULT_CONVERTER_MAP.isEmpty()) {
-      return PatternLayout.DEFAULT_CONVERTER_MAP.entrySet().stream()
-          .map(entry -> Arguments.of(entry.getValue(), entry.getKey()));
-    }
-    return defaultConverterSupplierMap().entrySet().stream()
+    return new PatternLayout().getDefaultConverterSupplierMap().entrySet().stream()
         .map(entry -> Arguments.of(entry.getValue().get().getClass().getName(), entry.getKey()));
-  }
-
-  @SuppressWarnings("unchecked")
-  private static Map<String, Supplier<?>> defaultConverterSupplierMap() {
-    try {
-      Method method = PatternLayout.class.getMethod("getDefaultConverterSupplierMap");
-      return (Map<String, Supplier<?>>) method.invoke(new PatternLayout());
-    } catch (ReflectiveOperationException ignored) {
-      // Fall back to the field for compatibility with older or transitional versions.
-    }
-    try {
-      Field field = PatternLayout.class.getField("DEFAULT_CONVERTER_SUPPLIER_MAP");
-      return (Map<String, Supplier<?>>) field.get(null);
-    } catch (ReflectiveOperationException ex) {
-      throw new IllegalStateException("Could not resolve the Logback default converter supplier map.", ex);
-    }
   }
 
   private Layout<ILoggingEvent> createLayout(String layoutName) {

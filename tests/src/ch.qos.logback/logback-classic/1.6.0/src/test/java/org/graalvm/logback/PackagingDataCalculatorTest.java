@@ -53,5 +53,6 @@ public class PackagingDataCalculatorTest {
     assertThat(stackTraceElementProxy.getStackTraceElement().getClassName())
         .isEqualTo(PackagingDataCalculatorTest.class.getName());
     assertThat(stackTraceElementProxy.getClassPackagingData()).isNotNull();
+    assertThat(stackTraceElementProxy.getClassPackagingData().isExact()).isFalse();
   }
 }
