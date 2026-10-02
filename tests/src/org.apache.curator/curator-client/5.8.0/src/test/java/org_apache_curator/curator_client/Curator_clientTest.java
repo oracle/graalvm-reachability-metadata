@@ -94,29 +94,32 @@ public class Curator_clientTest {
     void retryLoopRetriesKeeperConnectionFailuresAndRecordsTracerCounts() throws Exception {
         RetryPolicy retryTwiceWithoutSleeping = (retryCount, elapsedTimeMs, sleeper) -> retryCount < 2;
         CuratorZookeeperClient client = new CuratorZookeeperClient(
-                "ignored-host:2181", 10_000, 10_000, null, retryTwiceWithoutSleeping);
+                "127.0.0.1:1", 10_000, 10_000, null, retryTwiceWithoutSleeping);
         RecordingTracerDriver tracer = new RecordingTracerDriver();
         client.setTracerDriver(tracer);
+        client.start();
 
-        AtomicInteger attempts = new AtomicInteger();
-        String result = RetryLoop.callWithRetry(client, () -> {
-            if (attempts.getAndIncrement() < 2) {
-                throw KeeperException.create(Code.CONNECTIONLOSS);
-            }
-            return "connected-result";
-        });
+        try {
+            AtomicInteger attempts = new AtomicInteger();
+            String result = RetryLoop.callWithRetry(client, () -> {
+                if (attempts.getAndIncrement() < 2) {
+                    throw KeeperException.create(Code.CONNECTIONLOSS);
+                }
+                return "connected-result";
+            });
 
-        assertThat(result).isEqualTo("connected-result");
-        assertThat(attempts).hasValue(3);
-        assertThat(tracer.counts()).containsEntry("retries-allowed", 2);
-        RetryLoop loop = client.newRetryLoop();
-        assertThat(loop.shouldContinue()).isTrue();
-        loop.markComplete();
-        assertThat(loop.shouldContinue()).isFalse();
-        assertThatThrownBy(() -> client.newRetryLoop().takeException(KeeperException.create(Code.NONODE)))
-                .isInstanceOf(KeeperException.NoNodeException.class);
-
-        client.close();
+            assertThat(result).isEqualTo("connected-result");
+            assertThat(attempts).hasValue(3);
+            assertThat(tracer.counts()).containsEntry("retries-allowed", 2);
+            RetryLoop loop = client.newRetryLoop();
+            assertThat(loop.shouldContinue()).isTrue();
+            loop.markComplete();
+            assertThat(loop.shouldContinue()).isFalse();
+            assertThatThrownBy(() -> client.newRetryLoop().takeException(KeeperException.create(Code.NONODE)))
+                    .isInstanceOf(KeeperException.NoNodeException.class);
+        } finally {
+            client.close();
+        }
     }
 
     @Test

@@ -22,7 +22,7 @@ public class CompatibilityTest {
 
         assertThat(Compatibility.hasGetReachableOrOneMethod()).isTrue();
         assertThat(Compatibility.hasAddrField()).isTrue();
-        assertThat(Compatibility.getHostAddress(server)).isEqualTo("127.0.0.1");
+        assertThat(Compatibility.getHostString(server)).isEqualTo("127.0.0.1");
         assertThat(Compatibility.hasPersistentWatchers()).isTrue();
     }
 }
