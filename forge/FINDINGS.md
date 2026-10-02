@@ -3,6 +3,12 @@
 Rendered by Forge from the pre-push branch review of §FS-local-branch-review.
 Newest entry first; every non-approval is recorded, including one a repair later cleared.
 
+## 2026-10-02 — org.apache.sshd:sshd-common:2.18.0 (#9957)
+
+**Generated stats omit observed dynamic-access coverage**
+
+The committed stats reported dynamicAccess as N/A even though the local evidence identified 27 non-zero dynamic-access call sites, so the new-library coverage gate lacked credible percentage evidence. Forge finalization regenerated the report as 27/27 covered (100%; reflection 25/25 and resources 2/2).
+
 ## 2026-10-02 — org.jetbrains.kotlin:kotlin-stdlib:2.5.0-Beta1 (#10330)
 
 **Repair coverage bypasses library visibility and carries an unnecessary Native Image flag**
