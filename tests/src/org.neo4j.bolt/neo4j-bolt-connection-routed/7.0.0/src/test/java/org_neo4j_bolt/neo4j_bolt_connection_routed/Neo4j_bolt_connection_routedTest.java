@@ -694,7 +694,7 @@ public class Neo4j_bolt_connection_routedTest {
         }
 
         @Override
-        public void stop() {}
+        public void stop() { }
     }
 
     private static final class NoopHttpObservation implements HttpExchangeObservation {
@@ -714,7 +714,7 @@ public class Neo4j_bolt_connection_routedTest {
         }
 
         @Override
-        public void stop() {}
+        public void stop() { }
     }
 
     private static final class NoopLoggingProvider implements LoggingProvider {
