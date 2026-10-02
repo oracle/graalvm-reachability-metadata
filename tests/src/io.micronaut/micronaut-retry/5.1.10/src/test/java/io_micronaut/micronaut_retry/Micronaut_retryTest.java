@@ -16,6 +16,7 @@ import io.micronaut.retry.RetryOperationsFactory;
 import io.micronaut.retry.RetryPolicy;
 import io.micronaut.retry.annotation.CircuitBreaker;
 import io.micronaut.retry.annotation.DefaultRetryPredicate;
+import io.micronaut.retry.annotation.Retryable;
 import jakarta.inject.Singleton;
 import java.time.Duration;
 import java.util.List;
@@ -111,6 +112,17 @@ public class Micronaut_retryTest {
             assertThat(attempts).hasValue(3);
         } finally {
             stop(scheduler);
+        }
+    }
+
+    @Test
+    @Timeout(55)
+    void retriesAnnotatedMethodsUntilTheySucceed() {
+        try (ApplicationContext context = ApplicationContext.run()) {
+            RetryableService service = context.getBean(RetryableService.class);
+
+            assertThat(service.call()).isEqualTo("annotated success");
+            assertThat(service.attempts).hasValue(3);
         }
     }
 
@@ -219,6 +231,19 @@ public class Micronaut_retryTest {
             assertThat(attempts).hasValue(3);
         } finally {
             stop(scheduler);
+        }
+    }
+
+    @Singleton
+    public static class RetryableService {
+        private final AtomicInteger attempts = new AtomicInteger();
+
+        @Retryable(attempts = "3", delay = "0ms")
+        public String call() {
+            if (attempts.incrementAndGet() < 3) {
+                throw new IllegalStateException("transient failure");
+            }
+            return "annotated success";
         }
     }
 
