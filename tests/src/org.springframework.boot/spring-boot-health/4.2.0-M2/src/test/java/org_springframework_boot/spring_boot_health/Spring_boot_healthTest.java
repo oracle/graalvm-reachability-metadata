@@ -95,7 +95,6 @@ import reactor.core.publisher.Mono;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
 
 public class Spring_boot_healthTest {
@@ -247,6 +246,7 @@ public class Spring_boot_healthTest {
         AdditionalHealthEndpointPath parsed = AdditionalHealthEndpointPath.from("management:/livez");
         AdditionalHealthEndpointPath equivalent = AdditionalHealthEndpointPath.of(WebServerNamespace.MANAGEMENT,
             "livez");
+        AdditionalHealthEndpointPath nested = AdditionalHealthEndpointPath.from("server:/nested/path");
 
         assertThat(new SimpleStatusAggregator().getAggregateStatus(Set.of(Status.UP, Status.DOWN)))
             .isEqualTo(Status.DOWN);
@@ -257,8 +257,8 @@ public class Spring_boot_healthTest {
         assertThat(parsed).isEqualTo(equivalent);
         assertThat(parsed.hasNamespace(WebServerNamespace.MANAGEMENT)).isTrue();
         assertThat(parsed.getNamespace()).isEqualTo(WebServerNamespace.MANAGEMENT);
-        assertThatIllegalArgumentException().isThrownBy(() -> AdditionalHealthEndpointPath.from("server:/nested/path"))
-            .withMessageContaining("only one segment");
+        assertThat(nested.getNamespace()).isEqualTo(WebServerNamespace.SERVER);
+        assertThat(nested.getValue()).isEqualTo("/nested/path");
     }
 
     @Test
