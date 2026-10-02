@@ -1,0 +1,103 @@
+{
+  "base_commit": "64b39e298df2e06d80520993b3c73ded87225968",
+  "branch": "ai/kimeta/fix-java-run-org.springframework-spring-aop-6.1.7-forge-10339-20261002180424544433-5a81d6716860",
+  "follow_ups": [],
+  "forge": {
+    "branch": "master",
+    "commit": "64b39e298df2e06d80520993b3c73ded87225968",
+    "monitored_branch": "origin/master"
+  },
+  "issue_number": 10339,
+  "library": {
+    "artifact": "spring-aop",
+    "coordinates": "org.springframework:spring-aop:6.1.7",
+    "group": "org.springframework",
+    "version": "6.1.7"
+  },
+  "local_ci_verification": {
+    "base_commit": "64b39e298df2e06d80520993b3c73ded87225968",
+    "commands": [
+      {
+        "command": [
+          "./gradlew",
+          "generateChangedIndexFileCoordinatesList",
+          "-PbaseCommit=origin/master",
+          "-PnewCommit=HEAD"
+        ],
+        "env": {
+          "GITHUB_OUTPUT": "/tmp/tmp89k_558b"
+        },
+        "gate": "changed-index-coordinates",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :generateChangedIndexFileCoordinatesList\n\n[Incubating] Problems report is available at: file:///home/oracle/oracle/metadata2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10339-b348a2d4/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 3s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      },
+      {
+        "command": [
+          "./gradlew",
+          "validateIndexFiles",
+          "-Pcoordinates=org.springframework:spring-aop"
+        ],
+        "env": {},
+        "gate": "index-file-validation",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :validateIndexFiles\n✅ metadata/org.springframework/spring-aop/index.json: Valid\n\n[Incubating] Problems report is available at: file:///home/oracle/oracle/metadata2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10339-b348a2d4/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 2s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      }
+    ],
+    "failure_command": null,
+    "failure_gate": null,
+    "final_commit": "ec27d362b61ab63a2ff038fe4bb12a365d076e61",
+    "fixups": [],
+    "human_intervention_required": false,
+    "repo_fix_paths": [],
+    "status": "success"
+  },
+  "local_review": {
+    "changed_paths": [],
+    "decision": "approved",
+    "finding_body": "",
+    "finding_title": "",
+    "fix_note": "",
+    "model": "gpt-5.6-sol",
+    "review_comment": "The diff is confined to org.springframework:spring-aop:6.1.7 and uses only reachability-metadata.json. The JVM assertion change matches the verified Spring 6.1.7 source change that removed the ajc marker rejection, while preserving meaningful assertions and Native Image execution. Overall and reflection dynamic-access coverage both remain 23/23 (100%), matching 6.1.0. The exact Forge finalization command passed all three native test lanes, metadata validation, formatting, Checkstyle, generated-test checks, and statistics generation without changing the publishable tree. The contribution satisfies the fixes-java-run-fail review rules and contribution contract.",
+    "session_id": "8e46e4d22a7e4d72"
+  },
+  "metrics": {
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "path": "stats/org.springframework/spring-aop/6.1.7/execution-metrics.json",
+    "summary": {
+      "cached_input_tokens_used": 951680,
+      "code_coverage_percent": 20.51,
+      "cost_usd": 1.2312,
+      "input_tokens_used": 113593,
+      "iterations": 4,
+      "metadata_entries": 58,
+      "output_tokens_used": 6247,
+      "previous_library_coverage_percent": 19.88,
+      "previous_library_metadata_entries": 54,
+      "previous_library_test_only_metadata_entries": 24,
+      "test_only_metadata_entries": 136,
+      "tested_library_loc": 1117
+    },
+    "timestamp": "2026-10-02T18:04:24.544433Z"
+  },
+  "modifiers": {
+    "chunk_final": true,
+    "chunked_dynamic_access": false,
+    "human_intervention": false
+  },
+  "previous_library": {
+    "artifact": "spring-aop",
+    "coordinates": "org.springframework:spring-aop:6.1.0",
+    "group": "org.springframework",
+    "version": "6.1.0"
+  },
+  "producer": "kimeta",
+  "publication_id": "forge-10339-20261002180424544433-5a81d6716860",
+  "render": {},
+  "schema_version": 1,
+  "strategy_name": "java_run_iterative_with_coverage_sources_pi_gpt-5.6-sol",
+  "task_type": "fixes-java-run-fail",
+  "template_type": "fixes-java-run-fail",
+  "timestamp": "2026-10-02T18:04:24.544433Z"
+}
