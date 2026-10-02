@@ -51,48 +51,36 @@ public class AjOrgObjectwebAsmConstantsTest {
 
 final class ExperimentalClassApiVisitor extends ClassVisitor {
     ExperimentalClassApiVisitor() {
-        Object api = Opcodes.ASM10_EXPERIMENTAL;
-        int experimentalApi = api instanceof int value ? value : 0;
-        super(experimentalApi);
+        super(((Object) Opcodes.ASM10_EXPERIMENTAL) instanceof int value ? value : 0);
     }
 }
 
 final class ExperimentalAnnotationApiVisitor extends AnnotationVisitor {
     ExperimentalAnnotationApiVisitor() {
-        Object api = Opcodes.ASM10_EXPERIMENTAL;
-        int experimentalApi = api instanceof int value ? value : 0;
-        super(experimentalApi);
+        super(((Object) Opcodes.ASM10_EXPERIMENTAL) instanceof int value ? value : 0);
     }
 }
 
 final class ExperimentalFieldApiVisitor extends FieldVisitor {
     ExperimentalFieldApiVisitor() {
-        Object api = Opcodes.ASM10_EXPERIMENTAL;
-        int experimentalApi = api instanceof int value ? value : 0;
-        super(experimentalApi);
+        super(((Object) Opcodes.ASM10_EXPERIMENTAL) instanceof int value ? value : 0);
     }
 }
 
 final class ExperimentalMethodApiVisitor extends MethodVisitor {
     ExperimentalMethodApiVisitor() {
-        Object api = Opcodes.ASM10_EXPERIMENTAL;
-        int experimentalApi = api instanceof int value ? value : 0;
-        super(experimentalApi);
+        super(((Object) Opcodes.ASM10_EXPERIMENTAL) instanceof int value ? value : 0);
     }
 }
 
 final class ExperimentalModuleApiVisitor extends ModuleVisitor {
     ExperimentalModuleApiVisitor() {
-        Object api = Opcodes.ASM10_EXPERIMENTAL;
-        int experimentalApi = api instanceof int value ? value : 0;
-        super(experimentalApi);
+        super(((Object) Opcodes.ASM10_EXPERIMENTAL) instanceof int value ? value : 0);
     }
 }
 
 final class ExperimentalRecordComponentApiVisitor extends RecordComponentVisitor {
     ExperimentalRecordComponentApiVisitor() {
-        Object api = Opcodes.ASM10_EXPERIMENTAL;
-        int experimentalApi = api instanceof int value ? value : 0;
-        super(experimentalApi);
+        super(((Object) Opcodes.ASM10_EXPERIMENTAL) instanceof int value ? value : 0);
     }
 }
