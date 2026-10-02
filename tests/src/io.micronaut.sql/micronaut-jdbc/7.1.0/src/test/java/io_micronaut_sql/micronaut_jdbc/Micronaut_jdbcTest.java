@@ -10,6 +10,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import io.micronaut.configuration.jdbc.hikari.DatasourceConfiguration;
 import io.micronaut.context.ApplicationContext;
+import io.micronaut.inject.qualifiers.Qualifiers;
 import io.micronaut.jdbc.BasicJdbcConfiguration;
 import io.micronaut.jdbc.CalculatedSettings;
 import io.micronaut.jdbc.DataSourceResolver;
@@ -81,6 +82,46 @@ public class Micronaut_jdbcTest {
 
     @Test
     @Timeout(50)
+    void configuresAndSeparatesMultipleNamedDataSources() throws SQLException {
+        Map<String, Object> properties = Map.ofEntries(
+                Map.entry("datasources.primary.url", "jdbc:h2:mem:primary;DB_CLOSE_DELAY=-1"),
+                Map.entry("datasources.primary.driver-class-name", "org.h2.Driver"),
+                Map.entry("datasources.primary.username", "sa"),
+                Map.entry("datasources.primary.password", ""),
+                Map.entry("datasources.primary.connection-timeout", 10_000),
+                Map.entry("datasources.primary.validation-timeout", 10_000),
+                Map.entry("datasources.analytics.url", "jdbc:h2:mem:analytics;DB_CLOSE_DELAY=-1"),
+                Map.entry("datasources.analytics.driver-class-name", "org.h2.Driver"),
+                Map.entry("datasources.analytics.username", "sa"),
+                Map.entry("datasources.analytics.password", ""),
+                Map.entry("datasources.analytics.connection-timeout", 10_000),
+                Map.entry("datasources.analytics.validation-timeout", 10_000));
+
+        try (ApplicationContext context = ApplicationContext.builder()
+                .properties(properties)
+                .start()) {
+            assertThat(context.getBeansOfType(DataSource.class)).hasSize(2);
+            DataSource primary = context.getBean(DataSource.class, Qualifiers.byName("primary"));
+            DataSource analytics = context.getBean(DataSource.class, Qualifiers.byName("analytics"));
+
+            try (Connection connection = primary.getConnection();
+                    Statement statement = connection.createStatement()) {
+                statement.executeUpdate("CREATE TABLE records (record_value VARCHAR(100))");
+                statement.executeUpdate("INSERT INTO records (record_value) VALUES ('primary')");
+            }
+            try (Connection connection = analytics.getConnection();
+                    Statement statement = connection.createStatement()) {
+                statement.executeUpdate("CREATE TABLE records (record_value VARCHAR(100))");
+                statement.executeUpdate("INSERT INTO records (record_value) VALUES ('analytics')");
+            }
+
+            assertThat(readSingleValue(primary)).isEqualTo("primary");
+            assertThat(readSingleValue(analytics)).isEqualTo("analytics");
+        }
+    }
+
+    @Test
+    @Timeout(50)
     void calculatesEmbeddedH2SettingsThroughBasicConfiguration() {
         BasicJdbcConfiguration configuration = new DatasourceConfiguration("embedded");
         CalculatedSettings settings = new CalculatedSettings(configuration);
@@ -110,6 +151,17 @@ public class Micronaut_jdbcTest {
         assertThat(embeddedDatabase.get().getDefaultUsername()).isEqualTo("sa");
         assertThat(embeddedDatabase.get().getDefaultPassword()).isEmpty();
         assertThat(JdbcDatabaseManager.isEmbedded("org.h2.Driver")).isTrue();
+    }
+
+    private static String readSingleValue(DataSource dataSource) throws SQLException {
+        try (Connection connection = dataSource.getConnection();
+                Statement statement = connection.createStatement();
+                ResultSet rows = statement.executeQuery("SELECT record_value FROM records")) {
+            assertThat(rows.next()).isTrue();
+            String value = rows.getString(1);
+            assertThat(rows.next()).isFalse();
+            return value;
+        }
     }
 
     private static Map<String, Object> dataSourceProperties() {
