@@ -67,6 +67,22 @@ public class Httpspi_servletTest {
     }
 
     @Test
+    void exposesNormalizedMapViewsAndValueEquality() {
+        Headers headers = new Headers();
+        headers.add("X-Trace", "trace-id");
+
+        Headers equivalent = new Headers();
+        equivalent.put("x-trace", List.of("trace-id"));
+
+        assertThat(headers.size()).isEqualTo(1);
+        assertThat(headers.keySet()).containsExactly("X-trace");
+        assertThat(headers.values()).containsExactly(List.of("trace-id"));
+        assertThat(headers).isEqualTo(equivalent);
+        assertThat(headers.hashCode()).isEqualTo(equivalent.hashCode());
+        assertThat(headers.toString()).contains("X-trace", "trace-id");
+    }
+
+    @Test
     void exposesEndpointContextAndValidUrlMapping() {
         EndpointAdapter adapter = new EndpointAdapter(null, "/echo/*");
         HttpContext context = adapter.getContext();
