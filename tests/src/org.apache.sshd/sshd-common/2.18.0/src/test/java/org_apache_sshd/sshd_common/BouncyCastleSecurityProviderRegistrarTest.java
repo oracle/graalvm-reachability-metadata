@@ -13,11 +13,12 @@ import org.junit.jupiter.api.Test;
 
 public class BouncyCastleSecurityProviderRegistrarTest {
     @Test
-    void probesOptionalBouncyCastleSupport() {
+    void discoversBouncyCastleProviderThroughSupportProbe() {
         BouncyCastleSecurityProviderRegistrar registrar =
                 new BouncyCastleSecurityProviderRegistrar();
 
-        assertThat(registrar.isSupported()).isFalse();
-        assertThat(registrar.getEdDSASupport()).isEmpty();
+        assertThat(registrar.isSupported()).isTrue();
+        assertThat(registrar.getProviderName()).isEqualTo("BC");
+        assertThat(registrar.getEdDSASupport()).isPresent();
     }
 }
