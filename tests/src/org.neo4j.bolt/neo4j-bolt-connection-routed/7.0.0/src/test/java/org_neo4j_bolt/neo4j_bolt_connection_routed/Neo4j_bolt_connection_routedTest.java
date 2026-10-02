@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.Set;
@@ -28,8 +29,10 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.Supplier;
 import org.junit.jupiter.api.Test;
 import org.neo4j.bolt.connection.AccessMode;
 import org.neo4j.bolt.connection.AuthInfo;
@@ -48,6 +51,10 @@ import org.neo4j.bolt.connection.RoutedBoltConnectionParameters;
 import org.neo4j.bolt.connection.exception.BoltServiceUnavailableException;
 import org.neo4j.bolt.connection.message.Message;
 import org.neo4j.bolt.connection.message.Messages;
+import org.neo4j.bolt.connection.observation.BoltExchangeObservation;
+import org.neo4j.bolt.connection.observation.HttpExchangeObservation;
+import org.neo4j.bolt.connection.observation.ImmutableObservation;
+import org.neo4j.bolt.connection.observation.ObservationProvider;
 import org.neo4j.bolt.connection.routed.ClusterCompositionLookupResult;
 import org.neo4j.bolt.connection.routed.Rediscovery;
 import org.neo4j.bolt.connection.routed.RoutedBoltConnectionSource;
@@ -214,7 +221,7 @@ public class Neo4j_bolt_connection_routedTest {
         AtomicReference<Throwable> reportedError = new AtomicReference<>();
         Message query = Messages.run("RETURN 1", Collections.emptyMap());
 
-        await(failedConnection.writeAndFlush(reportedError::set, query));
+        await(failedConnection.writeAndFlush(reportedError::set, query, new NoopBoltObservation()));
 
         assertThat(reportedError.get())
                 .isInstanceOf(BoltServiceUnavailableException.class)
@@ -382,7 +389,8 @@ public class Neo4j_bolt_connection_routedTest {
                 Clock.systemUTC(),
                 new NoopLoggingProvider(),
                 URI.create("neo4j://localhost:7687"),
-                List.of());
+                List.of(),
+                new NoopObservationProvider());
     }
 
     @SafeVarargs
@@ -435,7 +443,8 @@ public class Neo4j_bolt_connection_routedTest {
         public CompletionStage<ClusterCompositionLookupResult> lookupClusterComposition(
                 RoutingTable routingTable,
                 Function<BoltServerAddress, BoltConnectionSource<BoltConnectionParameters>> connectionSourceGetter,
-                RoutedBoltConnectionParameters parameters) {
+                RoutedBoltConnectionParameters parameters,
+                ImmutableObservation observation) {
             lookupCount.incrementAndGet();
             lookupDatabases.add(routingTable.database());
             return CompletableFuture.completedFuture(lookupResult);
@@ -545,7 +554,8 @@ public class Neo4j_bolt_connection_routedTest {
         }
 
         @Override
-        public CompletionStage<Void> writeAndFlush(ResponseHandler handler, List<Message> messages) {
+        public CompletionStage<Void> writeAndFlush(
+                ResponseHandler handler, List<Message> messages, ImmutableObservation observation) {
             Throwable failure = flushFailures.pollFirst();
             if (failure != null) {
                 handler.onError(failure);
@@ -628,6 +638,83 @@ public class Neo4j_bolt_connection_routedTest {
         private List<Message> writtenMessages() {
             return writtenMessages;
         }
+    }
+
+    private static final class NoopObservationProvider implements ObservationProvider {
+        @Override
+        public BoltExchangeObservation boltExchange(
+                ImmutableObservation parent,
+                String host,
+                int port,
+                BoltProtocolVersion protocolVersion,
+                BiConsumer<String, String> tagConsumer) {
+            return new NoopBoltObservation();
+        }
+
+        @Override
+        public HttpExchangeObservation httpExchange(
+                ImmutableObservation parent,
+                URI uri,
+                String method,
+                String target,
+                BiConsumer<String, String> tagConsumer) {
+            return new NoopHttpObservation();
+        }
+
+        @Override
+        public ImmutableObservation scopedObservation() {
+            return new NoopBoltObservation();
+        }
+
+        @Override
+        public <T> T supplyInScope(ImmutableObservation observation, Supplier<T> supplier) {
+            return supplier.get();
+        }
+    }
+
+    private static final class NoopBoltObservation implements BoltExchangeObservation {
+        @Override
+        public BoltExchangeObservation onWrite(String message) {
+            return this;
+        }
+
+        @Override
+        public BoltExchangeObservation onRecord() {
+            return this;
+        }
+
+        @Override
+        public BoltExchangeObservation onSummary(String summary) {
+            return this;
+        }
+
+        @Override
+        public BoltExchangeObservation error(Throwable error) {
+            return this;
+        }
+
+        @Override
+        public void stop() {}
+    }
+
+    private static final class NoopHttpObservation implements HttpExchangeObservation {
+        @Override
+        public HttpExchangeObservation onHeaders(Map<String, List<String>> headers) {
+            return this;
+        }
+
+        @Override
+        public HttpExchangeObservation onResponse(HttpExchangeObservation.Response response) {
+            return this;
+        }
+
+        @Override
+        public HttpExchangeObservation error(Throwable error) {
+            return this;
+        }
+
+        @Override
+        public void stop() {}
     }
 
     private static final class NoopLoggingProvider implements LoggingProvider {
