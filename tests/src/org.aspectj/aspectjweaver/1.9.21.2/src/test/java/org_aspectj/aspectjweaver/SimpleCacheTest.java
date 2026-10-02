@@ -34,9 +34,7 @@ public class SimpleCacheTest {
         SimpleCache cache = populatedCache(cacheDirectory.resolve("loader-only"));
         DefiningClassLoader loader = new DefiningClassLoader(SimpleCacheTest.class.getClassLoader());
 
-        byte[] initializedBytes = getAndInitialize(cache, loader, null);
-
-        assertThat(initializedBytes).isEqualTo(WOVEN_PARENT_BYTES);
+        assertCachedClassInitialized(cache, loader, null);
     }
 
     @Test
@@ -45,24 +43,21 @@ public class SimpleCacheTest {
         DefiningClassLoader loader = new DefiningClassLoader(SimpleCacheTest.class.getClassLoader());
         ProtectionDomain protectionDomain = SimpleCacheTest.class.getProtectionDomain();
 
-        byte[] initializedBytes = getAndInitialize(cache, loader, protectionDomain);
-
-        assertThat(initializedBytes).isEqualTo(WOVEN_PARENT_BYTES);
+        assertCachedClassInitialized(cache, loader, protectionDomain);
     }
 
-    private static byte[] getAndInitialize(SimpleCache cache, DefiningClassLoader loader,
-            ProtectionDomain protectionDomain) {
-        try {
-            return cache.getAndInitialize(
+    private static void assertCachedClassInitialized(SimpleCache cache, DefiningClassLoader loader,
+            ProtectionDomain protectionDomain) throws Exception {
+        NativeImageSupport.runToleratingUnsupportedFeature(() -> {
+            byte[] initializedBytes = cache.getAndInitialize(
                     PARENT_CLASS_NAME,
                     ORIGINAL_PARENT_BYTES,
                     loader,
                     protectionDomain
             ).orElseThrow();
-        } catch (Error error) {
-            rethrowIfNotNativeImageDynamicClassLoadingError(error);
-            return WOVEN_PARENT_BYTES;
-        }
+
+            assertThat(initializedBytes).isEqualTo(WOVEN_PARENT_BYTES);
+        });
     }
 
     private static SimpleCache populatedCache(Path directory) throws IOException {
@@ -126,12 +121,6 @@ public class SimpleCacheTest {
         output.writeShort(0);
         output.flush();
         return bytes.toByteArray();
-    }
-
-    private static void rethrowIfNotNativeImageDynamicClassLoadingError(Error error) {
-        if (!NativeImageSupport.isUnsupportedFeatureError(error)) {
-            throw error;
-        }
     }
 
     private static final class PublicSimpleCache extends SimpleCache {
