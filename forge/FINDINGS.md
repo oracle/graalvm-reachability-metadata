@@ -3,6 +3,12 @@
 Rendered by Forge from the pre-push branch review of §FS-local-branch-review.
 Newest entry first; every non-approval is recorded, including one a repair later cleared.
 
+## 2026-10-02 — io.micronaut:micronaut-context:5.1.3 (#9803)
+
+**Unnecessary compiler dependency on the runtime test classpath**
+
+The coordinate build declared io.micronaut:micronaut-inject-java:5.1.3 as testImplementation even though the compiler was already present in the required, version-aligned testAnnotationProcessor configuration. This unnecessarily broadened the test classpath and hardcoded a support-module version, contrary to the minimal-scope requirement in §root/FS-test-contract.2.9. The complete finalization pass succeeded after removal, confirming that the extra testImplementation dependency was not needed.
+
 ## 2026-10-02 — com.squareup.okhttp3:okhttp:3.9.0 (#9336)
 
 **Generated repair uses a shadow Android API to manufacture coverage**
