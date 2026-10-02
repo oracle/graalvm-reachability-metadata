@@ -43,11 +43,33 @@ public class Micronaut_aopTest {
         }
     }
 
+    @Test
+    void appliesAnAroundInterceptorDeclaredOnAType() {
+        try (ApplicationContext context = ApplicationContext.run()) {
+            TypeAuditedService service = context.getBean(TypeAuditedService.class);
+
+            assertThat(service.greet("Lin")).isEqualTo("greet:Lin:hello Lin");
+            assertThat(service.farewell("Lin")).isEqualTo("farewell:Lin:goodbye Lin");
+        }
+    }
+
     @Singleton
     public static class GreetingService {
         @Audited
         public String greet(String name) {
             return "hello " + name;
+        }
+    }
+
+    @Audited
+    @Singleton
+    public static class TypeAuditedService {
+        public String greet(String name) {
+            return "hello " + name;
+        }
+
+        public String farewell(String name) {
+            return "goodbye " + name;
         }
     }
 
