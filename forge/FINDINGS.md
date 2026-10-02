@@ -3,6 +3,12 @@
 Rendered by Forge from the pre-push branch review of §FS-local-branch-review.
 Newest entry first; every non-approval is recorded, including one a repair later cleared.
 
+## 2026-10-02 — org.jetbrains.kotlin:kotlin-stdlib:2.5.0-Beta1 (#10330)
+
+**Repair coverage bypasses library visibility and carries an unnecessary Native Image flag**
+
+The newly added KotlinGenericDeclarationKtTest suppressed INVISIBLE_MEMBER and INVISIBLE_REFERENCE to cast to kotlin.jvm.internal.KotlinGenericDeclaration and invoke its internal API, so its coverage did not satisfy the public-API must in FS-test-contract.1.3. The copied build also passed --initialize-at-build-time=kotlin.Metadata without evidence for the uniform-necessity rule in FS-test-contract.2.7; all three native lanes pass without it.
+
 ## 2026-10-02 — io.micronaut:micronaut-context:5.1.3 (#9803)
 
 **Unnecessary compiler dependency on the runtime test classpath**
