@@ -15,22 +15,27 @@ import jakarta.el.ValueExpression;
 
 import org.apache.el.ExpressionFactoryImpl;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class JavaxElExpressionFactoryTest {
-    private final Thread currentThread = Thread.currentThread();
-    private final ClassLoader originalContextClassLoader = currentThread.getContextClassLoader();
+    private ClassLoader originalContextClassLoader;
+
+    @BeforeEach
+    void captureThreadState() {
+        originalContextClassLoader = Thread.currentThread().getContextClassLoader();
+    }
 
     @AfterEach
     void restoreThreadState() {
-        currentThread.setContextClassLoader(originalContextClassLoader);
+        Thread.currentThread().setContextClassLoader(originalContextClassLoader);
     }
 
     @Test
     void loadsServiceProviderWithFallbackClassLoadingWhenContextClassLoaderIsNull() {
-        currentThread.setContextClassLoader(null);
+        Thread.currentThread().setContextClassLoader(null);
 
         ExpressionFactory expressionFactory = ExpressionFactory.newInstance();
 
@@ -43,7 +48,8 @@ public class JavaxElExpressionFactoryTest {
 
     @Test
     void loadsServiceProviderFromContextClassLoaderUsingPropertiesConstructor() {
-        currentThread.setContextClassLoader(new DelegatingClassLoader(getClass().getClassLoader()));
+        Thread.currentThread()
+                .setContextClassLoader(new DelegatingClassLoader(getClass().getClassLoader()));
         Properties properties = new Properties();
         properties.setProperty("jakarta.el.cacheSize", "32");
 
