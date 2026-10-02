@@ -3,6 +3,12 @@
 Rendered by Forge from the pre-push branch review of §FS-local-branch-review.
 Newest entry first; every non-approval is recorded, including one a repair later cleared.
 
+## 2026-10-02 — com.opencsv:opencsv:5.9 (#9335)
+
+**Native-only assumption bypasses custom locale-provider behavior**
+
+`ConverterNumberTest.nonDecimalNumberFormatProviderIsRejectedWhenConverterIsCreated()` calls `assumeFalse(isNativeImageRuntime())`, so the asserted opencsv behavior never executes in any Native Image lane. This violates `FS-test-contract.4.1` and the `fixes-javac-fail` review rule against raw native-only skips. I removed the assumption while preserving the assertions and ran the required finalizer: current-defaults passed, but future-defaults failed because `NumberFormat.getInstance(zz-ZZ)` returned `DecimalFormat` instead of the test service provider. I restored the verified tree because neither deleting the scenario nor retaining its native bypass is a permitted repair, and the evidence does not establish a compliant alternative. The related native flags initialize and select a test-defined provider rather than demonstrating necessity originating in opencsv or a transitive dependency, so their uniform-necessity basis is also unproven. A maintainer must decide whether a compliant Native Image test shape exists or whether an evidence-backed contract disposition applies.
+
 ## 2026-10-01 — io.opentelemetry:opentelemetry-sdk-trace:1.59.0 (#9350)
 
 **Generated repair retained test-side reflection and an unnecessary Native Image flag**
