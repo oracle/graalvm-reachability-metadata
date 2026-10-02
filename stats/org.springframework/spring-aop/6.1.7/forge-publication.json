@@ -39,7 +39,7 @@
         ],
         "env": {},
         "gate": "index-file-validation",
-        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :validateIndexFiles\n✅ metadata/org.springframework/spring-aop/index.json: Valid\n\n[Incubating] Problems report is available at: file:///home/oracle/oracle/metadata2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10339-b348a2d4/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 2s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :validateIndexFiles\n\u2705 metadata/org.springframework/spring-aop/index.json: Valid\n\n[Incubating] Problems report is available at: file:///home/oracle/oracle/metadata2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10339-b348a2d4/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 2s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
         "returncode": 0
       }
     ],
@@ -52,14 +52,16 @@
     "status": "success"
   },
   "local_review": {
-    "changed_paths": [],
+    "changed_paths": [
+      "metadata/org.springframework/spring-aop/6.1.7/reachability-metadata.json"
+    ],
     "decision": "approved",
-    "finding_body": "",
-    "finding_title": "",
-    "fix_note": "",
+    "finding_body": "The 6.1.7 metadata made the serializable AspectJMethodBeforeAdvice entry conditional on InstantiationModelAwarePointcutAdvisorImpl. On the CI GraalVM 25.0.4+7.1, that condition activates in Spring AOT applications where the advice type is not otherwise reachable and fails during image layout with `Type not found during analysis: ... AspectJMethodBeforeAdvice`. The exact defect previously caused PR #10119's Spring AOT matrix to fail and be reverted. Because the violation is in this contribution's own metadata, it is repaired under \u00a7FS-contribution-contract.5.1.",
+    "finding_title": "Over-broad Spring AOP serialization condition breaks affected native consumers",
+    "fix_note": "Changed only the AspectJMethodBeforeAdvice condition in metadata/org.springframework/spring-aop/6.1.7/reachability-metadata.json to ReflectiveAspectJAdvisorFactory, matching the narrower established 6.1.0 trigger. Verified the exact Spring AOT :batch:batch reproducer changes from failure to success and ran clean, pullAllowedDockerImages, checkMetadataFiles, test, and checkstyle for org.springframework:spring-aop:6.1.7 successfully.",
     "model": "gpt-5.6-sol",
-    "review_comment": "The diff is confined to org.springframework:spring-aop:6.1.7 and uses only reachability-metadata.json. The JVM assertion change matches the verified Spring 6.1.7 source change that removed the ajc marker rejection, while preserving meaningful assertions and Native Image execution. Overall and reflection dynamic-access coverage both remain 23/23 (100%), matching 6.1.0. The exact Forge finalization command passed all three native test lanes, metadata validation, formatting, Checkstyle, generated-test checks, and statistics generation without changing the publishable tree. The contribution satisfies the fixes-java-run-fail review rules and contribution contract.",
-    "session_id": "8e46e4d22a7e4d72"
+    "review_comment": "The required Spring AOT workflow failed 74 matrix jobs on head 43897a3c17d with the same Native Image layout error for AspectJMethodBeforeAdvice; upstream smoke jobs passed, and PR #10119 previously introduced and then reverted the same spring-aop 6.1.7 regression. I reproduced the failure in :batch:batch with the workflow's Spring AOT main checkout and GraalVM 25.0.4+7.1, then verified the repaired metadata makes that exact nativeCompile/nativeAppTest lane pass. The complete resulting contribution diff remains confined to org.springframework:spring-aop:6.1.7, keeps the advisor serialization test and all native execution enabled, and preserves overall and reflection dynamic-access coverage at 23/23 (100%), equal to 6.1.0. The coordinate-scoped metadata check, Checkstyle, JVM tests, Native Image build, and all 19 native tests pass on GraalVM 25.0.4+7.1.",
+    "session_id": "45cc320213f24276"
   },
   "metrics": {
     "agent": "pi",
