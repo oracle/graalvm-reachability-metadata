@@ -9,20 +9,14 @@ plugins {
 }
 
 String libraryVersion = tck.testedLibraryVersion.get()
-int testJvmVersion = tck.testJvmVersion.get()
 
 dependencies {
     testImplementation "org.aspectj:aspectjweaver:$libraryVersion"
     testImplementation 'org.assertj:assertj-core:3.22.0'
 }
 
-tasks.withType(JavaCompile).configureEach {
-    options.release.set(testJvmVersion)
-    options.compilerArgs.add("--enable-preview")
-}
-
 tasks.withType(Test).configureEach {
-    jvmArgs "--enable-preview", "--add-opens=java.base/java.lang=ALL-UNNAMED"
+    jvmArgs "--add-opens=java.base/java.lang=ALL-UNNAMED"
 }
 
 graalvmNative {
@@ -36,7 +30,6 @@ graalvmNative {
     }
     binaries {
         all {
-            buildArgs.add("--enable-preview")
             buildArgs.add("--add-opens=java.base/java.lang=ALL-UNNAMED")
         }
     }
