@@ -1,0 +1,118 @@
+{
+  "fix_javac_fail:2026-10-02": {
+    "timestamp": "2026-10-02T06:58:18.276170Z",
+    "library": "org.jetbrains.kotlin:kotlin-stdlib-jdk8:2.5.0-Beta1",
+    "starting_commit": "cdf67ef2ca770ddd9c14500b3e580e7ddc8905b1",
+    "ending_commit": "4657ec48cc8b98edfca15c9bbc4380f7efd7ccb7",
+    "previous_library": "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.5.31",
+    "strategy_name": "javac_iterative_with_coverage_sources_pi_gpt-5.6-luna",
+    "agent": "pi",
+    "model": "gpt-5.6-luna",
+    "status": "success",
+    "stats": {
+      "version": "2.5.0-Beta1",
+      "dynamicAccess": {
+        "breakdown": {},
+        "coverageRatio": 1.0,
+        "coveredCalls": 0,
+        "totalCalls": 0
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 0,
+          "missed": 0,
+          "ratio": 1.0,
+          "total": 0
+        },
+        "line": {
+          "covered": 0,
+          "missed": 0,
+          "ratio": 1.0,
+          "total": 0
+        },
+        "method": {
+          "covered": 0,
+          "missed": 0,
+          "ratio": 1.0,
+          "total": 0
+        }
+      }
+    },
+    "previous_library_stats": {
+      "version": "1.5.31",
+      "dynamicAccess": {
+        "breakdown": {},
+        "coverageRatio": 1.0,
+        "coveredCalls": 0,
+        "totalCalls": 0
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 0,
+          "missed": 0,
+          "ratio": 1.0,
+          "total": 0
+        },
+        "line": {
+          "covered": 0,
+          "missed": 0,
+          "ratio": 1.0,
+          "total": 0
+        },
+        "method": {
+          "covered": 0,
+          "missed": 0,
+          "ratio": 1.0,
+          "total": 0
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "advisory_preparation",
+      "issue_number": 10332,
+      "issue_label": "fails-javac-compile",
+      "library": "org.jetbrains.kotlin:kotlin-stdlib-jdk8:2.5.0-Beta1",
+      "summary": "The compile failure is a toolchain mismatch. The test project's Kotlin Gradle plugin (via libs.plugins.kotlin.jvm) is 2.3.0, which reads metadata up to 2.4.0. kotlin-stdlib-jdk8:2.5.0-Beta1 pulls in kotlin-stdlib:2.5.0-Beta1, whose metadata is 2.5.0. The library itself needs no extra dependency, Docker image or runtime setup.",
+      "deterministic_setup": [],
+      "agent_guidance": "The generated tests must compile with a Kotlin compiler that can read 2.5.0 metadata. Do not change the Kotlin plugin version in the shared version catalog, because other Kotlin test projects use it. Instead, in this version's build.gradle, add the compiler flag `-Xskip-metadata-version-check` to compileTestKotlin, using `kotlinOptions.freeCompilerArgs += ['-Xskip-metadata-version-check']` alongside the existing jvmTarget setting. If that is not enough, use a project-local Kotlin plugin override of 2.5.0-Beta1 or newer. The current 1.5.31 tests use deprecated Kotlin APIs, so some code changes may also be needed. Examples are `toKotlinDuration`, which the log reports as unresolved, and `MatchResult` group access, which the log reports as an argument type mismatch. Keep the tests exercising the same kotlin-stdlib-jdk8 extension APIs (java.time Duration conversion, regex named groups, and similar) and re-verify with compileTestJava, javaTest and nativeTestCompile.",
+      "risks": [
+        "Skipping the metadata version check can hide real incompatibilities. If the 2.3.0 compiler fails on 2.5.0 stdlib class contents, a project-local Kotlin plugin bump is required.",
+        "Kotlin 2.5.0-Beta1 is a pre-release. Its stdlib APIs may have been removed or changed relative to 1.5.31, so the test source may need adapting.",
+        "I did not verify the 2.5.0-Beta1 sources or the exact Kotlin plugin version pinned in the version catalog, so the guidance rests on the compiler error text and the project's build.gradle."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#10332 [Automation] javac compile fails for org.jetbrains.kotlin:kotlin-stdlib-jdk8:2.5.0-Beta1; label=fails-javac-compile; body_chars=8015"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "6 existing test file path(s) included"
+        }
+      ],
+      "current_library": "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.5.31",
+      "new_version": "2.5.0-Beta1",
+      "model": "sonnet",
+      "input_tokens_used": 4,
+      "output_tokens_used": 1301
+    },
+    "metrics": {
+      "input_tokens_used": 97645,
+      "cached_input_tokens_used": 800256,
+      "output_tokens_used": 3623,
+      "iterations": 4,
+      "cost_usd": 0.1993,
+      "tested_library_loc": 0,
+      "metadata_entries": 1,
+      "test_only_metadata_entries": 3,
+      "previous_library_metadata_entries": 0,
+      "code_coverage_percent": 100.0,
+      "previous_library_coverage_percent": 100.0
+    },
+    "artifacts": {
+      "metadata_file": "metadata/org.jetbrains.kotlin/kotlin-stdlib-jdk8/2.5.0-Beta1/reachability-metadata.json"
+    }
+  }
+}
