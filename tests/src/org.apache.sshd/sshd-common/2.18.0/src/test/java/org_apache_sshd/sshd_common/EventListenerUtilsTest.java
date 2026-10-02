@@ -12,7 +12,6 @@ import java.io.IOException;
 import java.net.SocketAddress;
 import java.util.List;
 
-import org.apache.sshd.common.AttributeRepository;
 import org.apache.sshd.common.io.IoAcceptor;
 import org.apache.sshd.common.io.IoServiceEventListener;
 import org.apache.sshd.common.util.EventListenerUtils;
