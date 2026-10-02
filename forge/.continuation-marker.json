@@ -1,0 +1,87 @@
+{
+  "continueFrom": "explore",
+  "coordinate": "io.micronaut.sql:micronaut-jdbc:7.1.0",
+  "failure": {
+    "operand": "io.micronaut.sql:micronaut-jdbc:7.1.0",
+    "phase": "explore",
+    "step": "generate_tests()"
+  },
+  "issueNumber": 9808,
+  "label": "library-new-request",
+  "libraryPreparationPreflight": {
+    "action": "advisory_preparation",
+    "agent_guidance": "Scope reachability metadata and the user-code filter to the io.micronaut.jdbc.* core package (not io.micronaut.configuration.jdbc.hikari, which belongs to the sibling artifact). Configure a datasource via ApplicationContext.builder().properties(...) (datasources.default.url/driver-class-name/username/password), then fetch javax.sql.DataSource and io.micronaut.jdbc.metadata.DataSourcePoolMetadataProvider/DataSourcePoolMetadata beans from the context to exercise the core abstractions directly, in addition to any standalone unit tests on classes that don't need a container.",
+    "applied_setup": [],
+    "deterministic_setup": [
+      {
+        "coordinate": "io.micronaut.sql:micronaut-jdbc-hikari:7.1.0",
+        "kind": "dependency",
+        "reason": "Provides the concrete HikariCP-backed DataSource and DatasourceConfiguration beans needed to drive the core jdbc module's DataSourceResolver and pool-metadata classes through a live ApplicationContext; this repo already tests micronaut-jdbc-hikari (metadata/io.micronaut.sql/micronaut-jdbc-hikari) us\n...[truncated]",
+        "scope": "testImplementation"
+      },
+      {
+        "coordinate": "com.h2database:h2:2.1.210",
+        "kind": "dependency",
+        "reason": "In-memory JDBC driver needed to actually open pooled connections and exercise the core module's driver-detection and metadata code paths; same version already used by the sibling micronaut-jdbc-hikari test.",
+        "scope": "testImplementation"
+      }
+    ],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#9808 Support for io.micronaut.sql:micronaut-jdbc:7.1.0; label=library-new-request; body_chars=39"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "0 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 32,
+    "issue_label": "library-new-request",
+    "issue_number": 9808,
+    "library": "io.micronaut.sql:micronaut-jdbc:7.1.0",
+    "model": "sonnet",
+    "output_tokens_used": 21008,
+    "risks": [
+      "Micronaut SQL submodules are normally released in lockstep from one multi-module repo, so micronaut-jdbc-hikari:7.1.0 should exist alongside micronaut-jdbc:7.1.0, but this wasn't independently verified against Maven Central in this pass \u2014 local Gradle resolution is authoritative.",
+      "If tests only call static/standalone utility classes without a live ApplicationContext, coverage of the DI-driven classes in io.micronaut.jdbc.* will be shallow even with the pool dependency present."
+    ],
+    "status": "completed",
+    "summary": "micronaut-jdbc is the shared core/abstraction module (io.micronaut.jdbc.*: DataSourceResolver, BasicJdbcConfiguration, CalculatedSettings, pool-metadata abstractions). It registers no concrete javax.sql.DataSource bean itself \u2014 real usage always pairs it with a pool implementation (hikari/tomcat/dbcp/ucp), which are separate, non-transitive artifacts."
+  },
+  "libraryUpdateRoute": null,
+  "newVersion": null,
+  "phases": {
+    "explore": {
+      "chunkClassCount": null,
+      "chunkProcessedClassCount": 0,
+      "exhaustedClasses": [],
+      "iteration": 2,
+      "status": "running"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": null,
+      "status": "skipped"
+    },
+    "publication": {
+      "branch": null,
+      "coverageFollowUpIssueNumber": null,
+      "isPushed": false,
+      "publicationId": null,
+      "publicationTimestamp": null,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": true,
+      "status": "completed"
+    }
+  },
+  "preservedBranch": "ai/kimeta/human-intervention/issue-9808-library-new-request-io.micronaut.sql-micronaut-jdbc-7.1.0-90f99c96",
+  "publicationMetrics": null,
+  "schemaVersion": 1,
+  "strategyName": "optimistic_dynamic_access_iterative_pi_gpt-5.6-luna"
+}

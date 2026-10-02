@@ -1,0 +1,31 @@
+Based on my research, here's the decision:
+
+**Key finding:** `io.micronaut.sql:micronaut-jdbc` is the *shared abstraction* module in Micronaut SQL — it supplies `io.micronaut.jdbc.*` classes (`DataSourceResolver`, `BasicJdbcConfiguration`, `CalculatedSettings`, the `io.micronaut.jdbc.metadata.*` pool-metadata abstractions) but registers no concrete `javax.sql.DataSource` bean itself. Concrete pools live in sibling artifacts (`micronaut-jdbc-hikari`, `-tomcat`, `-dbcp`, `-ucp`), which this repo already supports — `metadata/io.micronaut.sql/micronaut-jdbc-hikari` and its test at `tests/src/io.micronaut.sql/micronaut-jdbc-hikari/7.1.2` prove the normal-usage pattern: a pool implementation + `com.h2database:h2` as an in-memory driver, wired through `ApplicationContext`, no Docker or env vars needed.
+
+Without a pool implementation on the classpath, a scaffold depending on `micronaut-jdbc` alone can't produce a live `DataSource` bean, so the DI-driven paths through the core package (`DataSourceResolver` unwrapping, pool metadata providers) would go untested — only static utility classes would be reachable. This is the same shape as a precedent I found in `stats/org.typelevel/cats-effect-std_3/3.5.2/execution-metrics.json`: a "standard library" module that needs its runtime counterpart declared explicitly since it isn't a transitive dependency.
+
+```json
+{
+  "action": "advisory_preparation",
+  "summary": "micronaut-jdbc is the shared core/abstraction module (io.micronaut.jdbc.*: DataSourceResolver, BasicJdbcConfiguration, CalculatedSettings, pool-metadata abstractions). It registers no concrete javax.sql.DataSource bean itself — real usage always pairs it with a pool implementation (hikari/tomcat/dbcp/ucp), which are separate, non-transitive artifacts.",
+  "deterministic_setup": [
+    {
+      "kind": "dependency",
+      "coordinate": "io.micronaut.sql:micronaut-jdbc-hikari:7.1.0",
+      "scope": "testImplementation",
+      "reason": "Provides the concrete HikariCP-backed DataSource and DatasourceConfiguration beans needed to drive the core jdbc module's DataSourceResolver and pool-metadata classes through a live ApplicationContext; this repo already tests micronaut-jdbc-hikari (metadata/io.micronaut.sql/micronaut-jdbc-hikari) using the same pattern, confirming it is not pulled in transitively by micronaut-jdbc."
+    },
+    {
+      "kind": "dependency",
+      "coordinate": "com.h2database:h2:2.1.210",
+      "scope": "testImplementation",
+      "reason": "In-memory JDBC driver needed to actually open pooled connections and exercise the core module's driver-detection and metadata code paths; same version already used by the sibling micronaut-jdbc-hikari test."
+    }
+  ],
+  "agent_guidance": "Scope reachability metadata and the user-code filter to the io.micronaut.jdbc.* core package (not io.micronaut.configuration.jdbc.hikari, which belongs to the sibling artifact). Configure a datasource via ApplicationContext.builder().properties(...) (datasources.default.url/driver-class-name/username/password), then fetch javax.sql.DataSource and io.micronaut.jdbc.metadata.DataSourcePoolMetadataProvider/DataSourcePoolMetadata beans from the context to exercise the core abstractions directly, in addition to any standalone unit tests on classes that don't need a container.",
+  "risks": [
+    "Micronaut SQL submodules are normally released in lockstep from one multi-module repo, so micronaut-jdbc-hikari:7.1.0 should exist alongside micronaut-jdbc:7.1.0, but this wasn't independently verified against Maven Central in this pass — local Gradle resolution is authoritative.",
+    "If tests only call static/standalone utility classes without a live ApplicationContext, coverage of the DI-driven classes in io.micronaut.jdbc.* will be shallow even with the pool dependency present."
+  ]
+}
+```

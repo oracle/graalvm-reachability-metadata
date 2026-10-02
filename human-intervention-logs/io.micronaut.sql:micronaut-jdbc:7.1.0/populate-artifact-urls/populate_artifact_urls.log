@@ -1,0 +1,64 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :populateArtifactURLs
+I found the right values, but **every mutating tool is denied in this session** (Edit, Write, and even a plain Bash write to `/tmp`) — it's running in a read-only "don't ask" permission mode, so I can't apply the change myself. Network tools (WebFetch, WebSearch, curl) are also blocked.
+
+What I was able to do instead: read the sibling file `metadata/io.micronaut.sql/micronaut-jdbc-hikari/index.json`, which already has verified URLs for the *same* GitHub repo (`micronaut-projects/micronaut-sql`) and the *same* Maven Central layout, just for the `jdbc-hikari` module. I used that as ground truth and derived the `jdbc` module's equivalents (module directory names in that repo drop the `micronaut-` prefix, e.g. `jdbc-hikari`, so `micronaut-jdbc` → `jdbc`).
+
+★ Insight ─────────────────────────────────────
+Cross-checking a sibling metadata entry in the same repo turned out to be more reliable here than a live web fetch would have been: `jdbc-hikari` is a build-time dependency of this very test module (visible in `build.gradle`), so its already-committed URLs are first-party evidence about the parent repo's layout — not a guess. I also grepped every `io.micronaut*` `documentation-url` in the repo to confirm "Maven Central javadoc jar" (not the unversioned GitHub Pages guide) is the dominant, already-accepted convention for libraries without a dedicated versioned guide site — this matters because the task explicitly forbids "latest/current" docs URLs.
+`─────────────────────────────────────────────────`
+
+Here is the block that needs to replace the current entry in `metadata/io.micronaut.sql/micronaut-jdbc/index.json`:
+
+```json
+{
+  "latest" : true,
+  "metadata-version" : "7.1.0",
+  "source-code-url" : "https://repo1.maven.org/maven2/io/micronaut/sql/micronaut-jdbc/$version$/micronaut-jdbc-$version$-sources.jar",
+  "repository-url" : "https://github.com/micronaut-projects/micronaut-sql",
+  "test-code-url" : "https://github.com/micronaut-projects/micronaut-sql/tree/v$version$/jdbc/src/test",
+  "documentation-url" : "https://repo1.maven.org/maven2/io/micronaut/sql/micronaut-jdbc/$version$/micronaut-jdbc-$version$-javadoc.jar",
+  "description" : "Micronaut JDBC provides the core Micronaut integration for configuring JDBC javax.sql.DataSource beans and exposing their driver and connection metadata. It supplies the common abstractions and dependency-injection wiring that connection-pool-specific modules, such as Micronaut JDBC Hikari, Tomcat, and DBCP, build on to manage pooled database connections.",
+  "tested-versions" : [
+    "7.1.0"
+  ],
+  "allowed-packages" : [
+    "io.micronaut.jdbc",
+    "io.micronaut.sql.info"
+  ]
+}
+```
+
+No `language` field — micronaut-jdbc is a plain Java library, not language-specific.
+
+Two things worth flagging before you apply this:
+1. I could not live-verify that `repo1.maven.org/.../micronaut-jdbc/7.1.0/...-sources.jar` and `...-javadoc.jar` actually resolve (HTTP 200), since network access is blocked here — this is inferred from the identical, already-merged pattern for `micronaut-jdbc-hikari` at the same coordinates/groupId.
+2. The test-code-url tag path (`v7.1.0/jdbc/src/test`) assumes the `jdbc` module directory name and monorepo-wide version tagging, mirrored from the `jdbc-hikari` sibling — also not independently re-verified live.
+
+Would you like me to proceed once you can grant write/network permissions, or would you rather apply this JSON yourself?
+Ran agent for io.micronaut.sql:micronaut-jdbc:7.1.0 (exit 0). Log: /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9808-892f5449/build/agent-url-discovery-logs/io.micronaut.sql-micronaut-jdbc-7.1.0.log
+Completed populateArtifactURLs: invoked=1, prompted=0, skipped=0, overwriteExisting=false, verifyArtifactSources=false, limit=null
+
+[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9808-892f5449/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 2m 30s
+9 actionable tasks: 1 executed, 8 up-to-date
