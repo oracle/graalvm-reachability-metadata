@@ -21,6 +21,7 @@ import time
 
 from ai_workflows.agents.opencode_agent import opencode_config
 from ai_workflows.agents.agent_runtime import (
+    CLAUDE_CODE_BYPASS_PERMISSIONS_FLAGS,
     CODEX_BYPASS_APPROVALS_AND_SANDBOX_FLAG,
     DEFAULT_AGENT_PROVIDER,
     agent_process_environment,
@@ -98,7 +99,8 @@ def url_fetch_agent_command() -> str:
         )
     if selection.backend == "claude-code":
         return (
-            f"{shlex.quote(selection.agent or 'claude')} -p --permission-mode dontAsk "
+            f"{shlex.quote(selection.agent or 'claude')} -p "
+            f"{' '.join(CLAUDE_CODE_BYPASS_PERMISSIONS_FLAGS)} "
             + (f"--effort {thinking} " if thinking else "")
             + f"--model {model}"
         )
