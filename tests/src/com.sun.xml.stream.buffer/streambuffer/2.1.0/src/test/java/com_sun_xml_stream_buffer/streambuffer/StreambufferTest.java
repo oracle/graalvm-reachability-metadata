@@ -6,11 +6,179 @@
  */
 package com_sun_xml_stream_buffer.streambuffer;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.StringReader;
+import java.io.StringWriter;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.Base64;
+import java.util.List;
+
+import jakarta.activation.DataHandler;
+import jakarta.activation.DataSource;
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLStreamConstants;
+import javax.xml.stream.XMLStreamReader;
+import javax.xml.stream.XMLStreamWriter;
+import javax.xml.stream.XMLOutputFactory;
+
+import com.sun.xml.stream.buffer.MutableXMLStreamBuffer;
+import com.sun.xml.stream.buffer.XMLStreamBuffer;
+import org.jvnet.staxex.Base64Data;
+import org.jvnet.staxex.XMLStreamReaderEx;
+import org.jvnet.staxex.XMLStreamWriterEx;
 import org.junit.jupiter.api.Test;
 
-class StreambufferTest {
+import static org.assertj.core.api.Assertions.assertThat;
+
+public class StreambufferTest {
+
     @Test
-    void test() throws Exception {
-        System.out.println("This is just a placeholder, implement your test");
+    void buffersStaxInfosetWithNamespacesAndMarkup() throws Exception {
+        String xml = "<?xml version=\"1.0\"?><!--before--><root xmlns=\"urn:root\" "
+                + "xmlns:p=\"urn:parts\" p:flag=\"yes\"><p:item><![CDATA[alpha < beta]]></p:item>"
+                + "<?step done?></root>";
+        XMLStreamReader source = XMLInputFactory.newFactory().createXMLStreamReader(new StringReader(xml));
+        XMLStreamBuffer buffer = XMLStreamBuffer.createNewBufferFromXMLStreamReader(source);
+        source.close();
+
+        assertThat(buffer.isCreated()).isTrue();
+        assertThat(buffer.isFragment()).isFalse();
+
+        XMLStreamReader bufferedReader = buffer.readAsXMLStreamReader();
+        List<String> elementNames = new ArrayList<>();
+        List<String> processingInstructions = new ArrayList<>();
+        StringBuilder text = new StringBuilder();
+        while (true) {
+            if (bufferedReader.getEventType() == XMLStreamConstants.START_ELEMENT) {
+                elementNames.add(bufferedReader.getLocalName());
+                if ("root".equals(bufferedReader.getLocalName())) {
+                    assertThat(bufferedReader.getNamespaceURI()).isEqualTo("urn:root");
+                    assertThat(bufferedReader.getAttributeValue("urn:parts", "flag")).isEqualTo("yes");
+                }
+            } else if (bufferedReader.getEventType() == XMLStreamConstants.CHARACTERS
+                    || bufferedReader.getEventType() == XMLStreamConstants.CDATA) {
+                text.append(bufferedReader.getText());
+            } else if (bufferedReader.getEventType() == XMLStreamConstants.PROCESSING_INSTRUCTION) {
+                processingInstructions.add(bufferedReader.getPITarget() + " " + bufferedReader.getPIData());
+            }
+            if (!bufferedReader.hasNext()) {
+                break;
+            }
+            bufferedReader.next();
+        }
+        bufferedReader.close();
+
+        assertThat(elementNames).containsExactly("root", "item");
+        assertThat(text).hasToString("alpha < beta");
+        assertThat(processingInstructions).containsExactly("step done");
+
+        StringWriter serialized = new StringWriter();
+        XMLStreamWriter output = XMLOutputFactory.newFactory().createXMLStreamWriter(serialized);
+        buffer.writeToXMLStreamWriter(output);
+        output.close();
+        assertThat(serialized.toString()).contains("<!--before-->", "<p:item>", "alpha &lt; beta", "<?step done?>");
+    }
+
+    @Test
+    void preservesBinaryContentWrittenThroughExtendedStreamWriter() throws Exception {
+        byte[] payload = "binary streambuffer payload".getBytes(StandardCharsets.UTF_8);
+        MutableXMLStreamBuffer buffer = new MutableXMLStreamBuffer();
+        XMLStreamWriter writer = buffer.createFromXMLStreamWriter();
+        XMLStreamWriterEx extendedWriter = (XMLStreamWriterEx) writer;
+        extendedWriter.writeStartDocument();
+        extendedWriter.writeStartElement("attachment");
+        extendedWriter.writeAttribute("contentType", "application/octet-stream");
+        extendedWriter.writeBinary(new DataHandler(dataSource(payload)));
+        extendedWriter.writeEndElement();
+        extendedWriter.writeEndDocument();
+        extendedWriter.close();
+
+        XMLStreamReaderEx bufferedReader = (XMLStreamReaderEx) buffer.readAsXMLStreamReader();
+        Base64Data binaryData = null;
+        while (true) {
+            if (bufferedReader.getEventType() == XMLStreamConstants.CHARACTERS
+                    && bufferedReader.getPCDATA() instanceof Base64Data) {
+                binaryData = (Base64Data) bufferedReader.getPCDATA();
+                break;
+            }
+            if (!bufferedReader.hasNext()) {
+                break;
+            }
+            bufferedReader.next();
+        }
+        bufferedReader.close();
+
+        assertThat(binaryData).isNotNull();
+        assertThat(binaryData.getExact()).containsExactly(payload);
+        assertThat(binaryData.getMimeType()).isEqualTo("application/octet-stream");
+
+        StringWriter serialized = new StringWriter();
+        XMLStreamWriter output = XMLOutputFactory.newFactory().createXMLStreamWriter(serialized);
+        buffer.writeToXMLStreamWriter(output);
+        output.close();
+        assertThat(serialized.toString())
+                .contains(Base64.getEncoder().encodeToString(payload));
+    }
+
+    @Test
+    void supportsMutableBufferReuseAfterStaxRoundTrip() throws Exception {
+        MutableXMLStreamBuffer buffer = new MutableXMLStreamBuffer();
+        XMLStreamReader source = XMLInputFactory.newFactory()
+                .createXMLStreamReader(new StringReader("<initial><value>before reset</value></initial>"));
+        buffer.createFromXMLStreamReader(source);
+        source.close();
+
+        XMLStreamReader initialReader = buffer.readAsXMLStreamReader();
+        while (initialReader.getEventType() != XMLStreamConstants.START_ELEMENT) {
+            initialReader.next();
+        }
+        assertThat(initialReader.getLocalName()).isEqualTo("initial");
+        initialReader.close();
+
+        buffer.reset();
+        XMLStreamWriter writer = buffer.createFromXMLStreamWriter();
+        writer.writeStartDocument();
+        writer.writeStartElement("replacement");
+        writer.writeCharacters("after reset");
+        writer.writeEndElement();
+        writer.writeEndDocument();
+        writer.close();
+
+        XMLStreamReader reusedReader = buffer.readAsXMLStreamReader();
+        while (reusedReader.getEventType() != XMLStreamConstants.START_ELEMENT) {
+            reusedReader.next();
+        }
+        assertThat(reusedReader.getLocalName()).isEqualTo("replacement");
+        assertThat(reusedReader.next()).isEqualTo(XMLStreamConstants.CHARACTERS);
+        assertThat(reusedReader.getText()).isEqualTo("after reset");
+        reusedReader.close();
+    }
+
+    private static DataSource dataSource(byte[] payload) {
+        return new DataSource() {
+            @Override
+            public InputStream getInputStream() {
+                return new ByteArrayInputStream(payload);
+            }
+
+            @Override
+            public OutputStream getOutputStream() throws IOException {
+                throw new UnsupportedOperationException("read-only data source");
+            }
+
+            @Override
+            public String getContentType() {
+                return "application/octet-stream";
+            }
+
+            @Override
+            public String getName() {
+                return "payload";
+            }
+        };
     }
 }
