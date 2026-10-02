@@ -1,0 +1,47 @@
+/*
+ * Copyright and related rights waived via CC0
+ *
+ * You should have received a copy of the CC0 legalcode along with this
+ * work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
+ */
+plugins {
+    id "org.graalvm.internal.tck"
+}
+
+String libraryVersion = tck.testedLibraryVersion.get()
+String localeProviders = "SPI,CLDR"
+String nonDecimalNumberFormatProvider =
+        'com_opencsv.opencsv.ConverterNumberTest$NonDecimalNumberFormatProvider'
+String javaHome = System.getenv("JAVA_HOME")
+
+dependencies {
+    testImplementation "com.opencsv:opencsv:$libraryVersion"
+    testImplementation 'org.assertj:assertj-core:3.22.0'
+}
+
+tasks.named("test", Test) {
+    jvmArgs("-Djava.locale.providers=${localeProviders}")
+}
+
+tasks.named("nativeTest") {
+    runtimeArgs.add("-Djava.home=${javaHome}")
+}
+
+graalvmNative {
+    binaries {
+        test {
+            buildArgs("-Djava.locale.providers=${localeProviders}")
+            buildArgs("--initialize-at-build-time=${nonDecimalNumberFormatProvider}")
+            runtimeArgs("-Djava.home=${javaHome}")
+            runtimeArgs("-Djava.locale.providers=${localeProviders}")
+        }
+    }
+    agent {
+        defaultMode = "conditional"
+        modes {
+            conditional {
+                userCodeFilterPath = "user-code-filter.json"
+            }
+        }
+    }
+}

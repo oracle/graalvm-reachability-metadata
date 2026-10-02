@@ -1,0 +1,140 @@
+{
+  "fix_javac_fail:2026-10-02": {
+    "timestamp": "2026-10-02T01:21:57.706551Z",
+    "library": "com.opencsv:opencsv:5.9",
+    "starting_commit": "924dfe09aa312e9de4c9361762646bc7a9b4889d",
+    "ending_commit": "fe2465f5c336485a938184be8b031860bbdbc37a",
+    "previous_library": "com.opencsv:opencsv:5.6",
+    "strategy_name": "javac_iterative_with_coverage_sources_pi_gpt-5.6-luna",
+    "agent": "pi",
+    "model": "gpt-5.6-luna",
+    "status": "success",
+    "stats": {
+      "version": "5.9",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 18,
+            "totalCalls": 18
+          },
+          "resources": {
+            "coverageRatio": 0.659341,
+            "coveredCalls": 60,
+            "totalCalls": 91
+          }
+        },
+        "coverageRatio": 0.715596,
+        "coveredCalls": 78,
+        "totalCalls": 109
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 5467,
+          "missed": 10179,
+          "ratio": 0.349418,
+          "total": 15646
+        },
+        "line": {
+          "covered": 1246,
+          "missed": 2376,
+          "ratio": 0.344009,
+          "total": 3622
+        },
+        "method": {
+          "covered": 216,
+          "missed": 544,
+          "ratio": 0.284211,
+          "total": 760
+        }
+      }
+    },
+    "previous_library_stats": {
+      "version": "5.6",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 18,
+            "totalCalls": 18
+          },
+          "resources": {
+            "coverageRatio": 0.666667,
+            "coveredCalls": 60,
+            "totalCalls": 90
+          }
+        },
+        "coverageRatio": 0.722222,
+        "coveredCalls": 78,
+        "totalCalls": 108
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 5406,
+          "missed": 10116,
+          "ratio": 0.34828,
+          "total": 15522
+        },
+        "line": {
+          "covered": 1236,
+          "missed": 2360,
+          "ratio": 0.343715,
+          "total": 3596
+        },
+        "method": {
+          "covered": 215,
+          "missed": 543,
+          "ratio": 0.283641,
+          "total": 758
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "no_action",
+      "issue_number": 9335,
+      "issue_label": "fails-javac-compile",
+      "library": "com.opencsv:opencsv:5.9",
+      "summary": "The failure is a plain API change in the opencsv 5.9 test sources, not a setup gap. ConverterNumber's constructor now takes a trailing RoundingMode argument, so ConverterNumberTest only needs its two constructor calls updated. opencsv is a pure-Java CSV library, so it needs no extra dependency, Docker image, or environment/system property.",
+      "deterministic_setup": [],
+      "agent_guidance": "",
+      "risks": [
+        "The 5.9 constructor signature is Class<?>,String,String,Locale,String,String,RoundingMode. I took it from the compiler output and did not verify it against the opencsv sources. Other constructors or APIs used by the 5.6 tests may also have changed between 5.6 and 5.9, and compileTestJava will show any that did.",
+        "The existing 5.6 NumberFormatProvider service registration and reachability-metadata.json may need small adjustments for 5.9. Local native-image verification will show whether they do."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#9335 [Automation] javac compile fails for com.opencsv:opencsv:5.9; label=fails-javac-compile; body_chars=8015"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "22 existing test file path(s) included"
+        }
+      ],
+      "current_library": "com.opencsv:opencsv:5.6",
+      "new_version": "5.9",
+      "model": "sonnet",
+      "input_tokens_used": 2,
+      "output_tokens_used": 441
+    },
+    "metrics": {
+      "input_tokens_used": 51095,
+      "cached_input_tokens_used": 522752,
+      "output_tokens_used": 2166,
+      "iterations": 4,
+      "cost_usd": 0.1164,
+      "tested_library_loc": 1246,
+      "metadata_entries": 29,
+      "test_only_metadata_entries": 111,
+      "previous_library_metadata_entries": 31,
+      "previous_library_test_only_metadata_entries": 110,
+      "code_coverage_percent": 34.4,
+      "previous_library_coverage_percent": 34.37
+    },
+    "artifacts": {
+      "metadata_file": "metadata/com.opencsv/opencsv/5.9/reachability-metadata.json"
+    }
+  }
+}
