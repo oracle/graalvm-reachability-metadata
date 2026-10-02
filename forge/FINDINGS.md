@@ -3,6 +3,12 @@
 Rendered by Forge from the pre-push branch review of §FS-local-branch-review.
 Newest entry first; every non-approval is recorded, including one a repair later cleared.
 
+## 2026-10-02 — ch.qos.logback:logback-classic:1.6.0 (#10311)
+
+**Explicit I/O timeouts below the required 10-second floor**
+
+FS-test-contract.1.7 requires every explicit socket, connection, and bounded I/O wait to be at least 10 seconds. RemoteAppenderStreamClientTest, SocketNodeTest, and SocketReceiverTest each set SOCKET_TIMEOUT_MILLIS to 5,000 and used it for socket operations and related bounded waits.
+
 ## 2026-10-02 — org.aspectj:aspectjweaver:1.9.21.2 (#10321)
 
 **Test-only preview configuration broadened a javac repair**
