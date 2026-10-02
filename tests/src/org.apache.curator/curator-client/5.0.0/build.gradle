@@ -11,11 +11,7 @@ plugins {
 String libraryVersion = tck.testedLibraryVersion.get()
 
 dependencies {
-    testImplementation("org.apache.curator:curator-client:$libraryVersion") {
-        exclude group: 'org.apache.zookeeper', module: 'zookeeper'
-    }
-    // Curator 5.0 supports ZooKeeper 3.5 through its compatibility API.
-    testImplementation 'org.apache.zookeeper:zookeeper:3.5.7'
+    testImplementation "org.apache.curator:curator-client:$libraryVersion"
     testImplementation 'org.assertj:assertj-core:3.22.0'
 }
 
