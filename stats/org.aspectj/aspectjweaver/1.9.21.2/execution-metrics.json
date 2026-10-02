@@ -1,0 +1,140 @@
+{
+  "fix_javac_fail:2026-10-02": {
+    "timestamp": "2026-10-02T20:16:42.037814Z",
+    "library": "org.aspectj:aspectjweaver:1.9.21.2",
+    "starting_commit": "910b265fb08ed9fa7d5f16e0aeb838b4027838e0",
+    "ending_commit": "eaa7b471851c58b50820293d6ad79ad90069cb90",
+    "previous_library": "org.aspectj:aspectjweaver:1.9.21.1",
+    "strategy_name": "javac_iterative_with_coverage_sources_pi_gpt-5.6-sol",
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "status": "success",
+    "stats": {
+      "version": "1.9.21.2",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 0.978571,
+            "coveredCalls": 137,
+            "totalCalls": 140
+          },
+          "resources": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 17,
+            "totalCalls": 17
+          }
+        },
+        "coverageRatio": 0.980892,
+        "coveredCalls": 154,
+        "totalCalls": 157
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 45950,
+          "missed": 225198,
+          "ratio": 0.169465,
+          "total": 271148
+        },
+        "line": {
+          "covered": 9699,
+          "missed": 49545,
+          "ratio": 0.163713,
+          "total": 59244
+        },
+        "method": {
+          "covered": 2002,
+          "missed": 7838,
+          "ratio": 0.203455,
+          "total": 9840
+        }
+      }
+    },
+    "previous_library_stats": {
+      "version": "1.9.21.1",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 0.978571,
+            "coveredCalls": 137,
+            "totalCalls": 140
+          },
+          "resources": {
+            "coverageRatio": 0.941176,
+            "coveredCalls": 16,
+            "totalCalls": 17
+          }
+        },
+        "coverageRatio": 0.974522,
+        "coveredCalls": 153,
+        "totalCalls": 157
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 45848,
+          "missed": 225675,
+          "ratio": 0.168855,
+          "total": 271523
+        },
+        "line": {
+          "covered": 9660,
+          "missed": 49688,
+          "ratio": 0.162769,
+          "total": 59348
+        },
+        "method": {
+          "covered": 1991,
+          "missed": 7929,
+          "ratio": 0.200706,
+          "total": 9920
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "no_action",
+      "issue_number": 10321,
+      "issue_label": "fails-javac-compile",
+      "library": "org.aspectj:aspectjweaver:1.9.21.2",
+      "summary": "The failure is a source-level API change, not a setup gap. SimpleCacheTest.java:56 treats the return value of SimpleCache.getAndInitialize as byte[], but in 1.9.21.2 it is Optional<byte[]>. Updating the test code fixes it, and aspectjweaver needs no extra dependency, Docker image or system property.",
+      "deterministic_setup": [],
+      "agent_guidance": "",
+      "risks": [
+        "Other 1.9.21.1 tests may also hit signature changes in 1.9.21.2 once this compile error is fixed. javac stops reporting at the first failing file in some modes, so rerun compileTestJava after each fix.",
+        "I did not open the aspectjweaver sources or check the resolved artifact. This call rests only on the compiler error in the issue log."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#10321 [Automation] javac compile fails for org.aspectj:aspectjweaver:1.9.21.2; label=fails-javac-compile; body_chars=8015"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "40 existing test file path(s) included"
+        }
+      ],
+      "current_library": "org.aspectj:aspectjweaver:1.9.21.1",
+      "new_version": "1.9.21.2",
+      "model": "sonnet",
+      "input_tokens_used": 2,
+      "output_tokens_used": 426
+    },
+    "metrics": {
+      "input_tokens_used": 337676,
+      "cached_input_tokens_used": 3756288,
+      "output_tokens_used": 22466,
+      "iterations": 8,
+      "cost_usd": 4.2405,
+      "tested_library_loc": 9699,
+      "metadata_entries": 112,
+      "test_only_metadata_entries": 79,
+      "previous_library_metadata_entries": 120,
+      "previous_library_test_only_metadata_entries": 79,
+      "code_coverage_percent": 16.37,
+      "previous_library_coverage_percent": 16.28
+    },
+    "artifacts": {
+      "metadata_file": "metadata/org.aspectj/aspectjweaver/1.9.21.2/reachability-metadata.json"
+    }
+  }
+}
