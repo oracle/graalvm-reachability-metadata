@@ -1,0 +1,21 @@
+## Human intervention needed
+
+The automated job failed during test generation for `io.micronaut.sql:micronaut-jdbc:7.1.0`.
+
+Preserved work: https://github.com/oracle/graalvm-reachability-metadata/tree/ai%2Fkimeta%2Fhuman-intervention%2Fissue-9808-library-new-request-io.micronaut.sql-micronaut-jdbc-7.1.0-90f99c96
+
+The most likely failure was termination or timeout during the second exploration iteration. The continuation marker records `generate_tests()` in phase `explore`, iteration 2, and the generation log ends abruptly during a broad Gradle-cache JAR scan without a completed tool result or final response. The generated tests themselves were repaired successfully: `gradle-test-2026-10-02T01-34-18-262234Z.log` shows a transient H2 SQL failure caused by using reserved column name `value`, while `gradle-test-2026-10-02T01-35-02-623747Z.log` shows all four JVM and native-image tests passing.
+
+Dynamic-access coverage and run metrics were never finalized. The earlier coverage attempts built the native image but produced no `dynamic-access` output directory, so `generateDynamicAccessCoverageReport` failed rather than emitting an ambiguous empty report. These attempts occurred before the final generated tests were completed, and no post-generation coverage report or `stats`/execution-metrics file exists. The preserved reachability metadata is still `{}`.
+
+Logs to inspect:
+- `logs/io.micronaut.sql:micronaut-jdbc:7.1.0/add-new-library-support/pi-generation-2026-10-02T01-18-00-279067Z.log`
+- `logs/io.micronaut.sql:micronaut-jdbc:7.1.0/gradle-test/gradle-test-2026-10-02T01-34-18-262234Z.log`
+- `logs/io.micronaut.sql:micronaut-jdbc:7.1.0/gradle-test/gradle-test-2026-10-02T01-35-02-623747Z.log`
+- `logs/io.micronaut.sql:micronaut-jdbc:7.1.0/gradle/generateDynamicAccessCoverageReport-2026-10-02T01-14-33-130309Z.log`
+- `logs/io.micronaut.sql:micronaut-jdbc:7.1.0/gradle/generateDynamicAccessCoverageReport-2026-10-02T01-17-43-117422Z.log`
+
+Manual next steps:
+1. Resume from the preserved branch and complete test-generation/finalization using the passing four-test suite.
+2. Cleanly regenerate dynamic-access coverage after the final tests, and determine whether the missing output reflects genuinely zero tracked accesses or a tracing problem.
+3. Populate the missing index URLs, generate metadata and metrics, then run the coordinate-scoped validation and JVM/native test gates.
