@@ -9,6 +9,7 @@ package com_sun_xml_ws.httpspi_servlet;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
+import java.util.Map;
 
 import com.sun.xml.ws.transport.httpspi.servlet.EndpointAdapter;
 import com.sun.xml.ws.transport.httpspi.servlet.EndpointHttpContext;
@@ -45,6 +46,24 @@ public class Httpspi_servletTest {
         assertThat(headers).containsKey("x-optional");
         assertThat(headers.get("X-OPTIONAL")).containsExactly((String) null);
         assertThat(headers.getFirst("x-optional")).isNull();
+    }
+
+    @Test
+    void appliesBulkHeaderChangesAndClearsAllEntries() {
+        Headers headers = new Headers();
+
+        headers.putAll(
+                Map.of(
+                        "accept", List.of("text/plain"),
+                        "X-Trace", List.of("trace-id", "retry")));
+
+        assertThat(headers).containsKeys("ACCEPT", "x-trace");
+        assertThat(headers.containsValue(List.of("text/plain"))).isTrue();
+        assertThat(headers.containsValue(List.of("missing"))).isFalse();
+
+        headers.clear();
+
+        assertThat(headers).isEmpty();
     }
 
     @Test
