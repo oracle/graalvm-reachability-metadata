@@ -1,0 +1,57 @@
+{
+  "fix_javac_fail:2026-10-02": {
+    "timestamp": "2026-10-02T02:04:06.887205Z",
+    "library": "org.springframework.amqp:spring-rabbitmq-client:4.2.0-M2",
+    "starting_commit": "90200d54088ee49716aea8a1a0405476a45db9b5",
+    "ending_commit": "90200d54088ee49716aea8a1a0405476a45db9b5",
+    "strategy_name": "javac_iterative_with_coverage_sources_pi_gpt-5.6-luna",
+    "agent": "pi",
+    "model": "gpt-5.6-luna",
+    "status": "failure",
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "no_action",
+      "issue_number": 10337,
+      "issue_label": "fails-javac-compile",
+      "library": "org.springframework.amqp:spring-rabbitmq-client:4.2.0-M2",
+      "summary": "The javac error is a source incompatibility in the existing test, not missing setup. In 4.2.0-M2, `Consumer.Context` gained the abstract method `delayedRetry(Instant, boolean)`. The test's `RecordingConsumerContext` and its subclass `RecordingBatchConsumerContext` must implement it. `Instant` is `java.time`, so no new dependency, Docker image or system property is needed.",
+      "deterministic_setup": [],
+      "agent_guidance": "",
+      "risks": [
+        "I did not check the 4.2.0-M2 sources or run the build. This rests on the compiler error in the issue log.",
+        "The log shows the reproducer building the 4.2.0-M1 test project with GVM_TCK_LV=4.2.0-M2. The fix goes into the new-version test project and must compile against both M1 and M2 if the project is shared. A new `delayedRetry` implementation that carries `@Override` will not compile against M1, where the method does not exist.",
+        "Other API changes in M2 may show up only after this compile error is fixed."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#10337 [Automation] javac compile fails for org.springframework.amqp:spring-rabbitmq-client:4.2.0-M2; label=fails-javac-compile; body_chars=8015"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "7 existing test file path(s) included"
+        }
+      ],
+      "current_library": "org.springframework.amqp:spring-rabbitmq-client:4.2.0-M1",
+      "new_version": "4.2.0-M2",
+      "model": "sonnet",
+      "input_tokens_used": 2,
+      "output_tokens_used": 535
+    },
+    "metrics": {
+      "input_tokens_used": 69202,
+      "cached_input_tokens_used": 773632,
+      "output_tokens_used": 3331,
+      "iterations": 6,
+      "cost_usd": 0.1666,
+      "generated_loc": 0,
+      "tested_library_loc": 0,
+      "metadata_entries": 0,
+      "code_coverage_percent": 0.0
+    },
+    "artifacts": {
+      "metadata_file": "None"
+    }
+  }
+}

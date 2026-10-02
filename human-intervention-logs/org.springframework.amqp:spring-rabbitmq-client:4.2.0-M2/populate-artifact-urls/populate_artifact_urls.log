@@ -1,0 +1,43 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :populateArtifactURLs
+I couldn't update `index.json`. The Edit tool was denied because the session is in don't-ask mode, and I didn't try another route to write the file, since that would sidestep the denial. The 4.2.0-M2 entry is still unchanged.
+
+I checked all three URLs for 4.2.0-M2 and each returned HTTP 200. These are the values I meant to add to the `"metadata-version": "4.2.0-M2"` entry, in the same form as the 4.2.0-M1 entry:
+
+```json
+"source-code-url" : "https://repo.maven.apache.org/maven2/org/springframework/amqp/spring-rabbitmq-client/$version$/spring-rabbitmq-client-$version$-sources.jar",
+"repository-url" : "https://github.com/spring-projects/spring-amqp",
+"test-code-url" : "https://github.com/spring-projects/spring-amqp/tree/v$version$/spring-rabbitmq-client/src/test",
+"documentation-url" : "https://repo.maven.apache.org/maven2/org/springframework/amqp/spring-rabbitmq-client/$version$/spring-rabbitmq-client-$version$-javadoc.jar",
+"description" : "Spring RabbitMQ Client provides Spring AMQP integration for RabbitMQ's AMQP 1.0 Java client. It supplies connection, messaging, administration, and listener support for applications using RabbitMQ's AMQP 1.0 protocol."
+```
+
+The library is a Java library, so I would leave `"language"` absent.
+
+I'd insert these lines between `"metadata-version"` and `"tested-versions"`. If you allow edits, or tell me to write the file another way, I'll apply it.
+Ran agent for org.springframework.amqp:spring-rabbitmq-client:4.2.0-M2 (exit 0). Log: /home/oracle/oracle/metadata2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10337-afa50fa3/build/agent-url-discovery-logs/org.springframework.amqp-spring-rabbitmq-client-4.2.0-M2.log
+Completed populateArtifactURLs: invoked=1, prompted=0, skipped=0, overwriteExisting=false, verifyArtifactSources=false, limit=null
+
+[Incubating] Problems report is available at: file:///home/oracle/oracle/metadata2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10337-afa50fa3/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 47s
+9 actionable tasks: 1 executed, 8 up-to-date

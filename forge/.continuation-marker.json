@@ -1,0 +1,80 @@
+{
+  "continueFrom": "fix",
+  "coordinate": "org.springframework.amqp:spring-rabbitmq-client:4.2.0-M2",
+  "failure": {
+    "operand": "org.springframework.amqp:spring-rabbitmq-client:4.2.0-M2",
+    "phase": "fix",
+    "step": "fix_reported_failure()"
+  },
+  "issueNumber": 10337,
+  "label": "fails-javac-compile",
+  "libraryPreparationPreflight": {
+    "action": "no_action",
+    "agent_guidance": "",
+    "applied_setup": [],
+    "current_library": "org.springframework.amqp:spring-rabbitmq-client:4.2.0-M1",
+    "deterministic_setup": [],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#10337 [Automation] javac compile fails for org.springframework.amqp:spring-rabbitmq-client:4.2.0-M2; label=fails-javac-compile; body_chars=8015"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "7 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 2,
+    "issue_label": "fails-javac-compile",
+    "issue_number": 10337,
+    "library": "org.springframework.amqp:spring-rabbitmq-client:4.2.0-M2",
+    "model": "sonnet",
+    "new_version": "4.2.0-M2",
+    "output_tokens_used": 535,
+    "risks": [
+      "I did not check the 4.2.0-M2 sources or run the build. This rests on the compiler error in the issue log.",
+      "The log shows the reproducer building the 4.2.0-M1 test project with GVM_TCK_LV=4.2.0-M2. The fix goes into the new-version test project and must compile against both M1 and M2 if the project is shared. A new `delayedRetry` implementation that carries `@Override` will not compile against M1, where the method does not exist.",
+      "Other API changes in M2 may show up only after this compile error is fixed."
+    ],
+    "status": "completed",
+    "summary": "The javac error is a source incompatibility in the existing test, not missing setup. In 4.2.0-M2, `Consumer.Context` gained the abstract method `delayedRetry(Instant, boolean)`. The test's `RecordingConsumerContext` and its subclass `RecordingBatchConsumerContext` must implement it. `Instant` is `java.time`, so no new dependency, Docker image or system property is needed."
+  },
+  "libraryUpdateRoute": null,
+  "newVersion": "4.2.0-M2",
+  "phases": {
+    "explore": {
+      "chunkClassCount": null,
+      "chunkProcessedClassCount": 0,
+      "exhaustedClasses": [],
+      "status": "pending"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": 6,
+      "status": "pending"
+    },
+    "publication": {
+      "branch": null,
+      "coverageFollowUpIssueNumber": null,
+      "isPushed": false,
+      "publicationId": null,
+      "publicationTimestamp": null,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": true,
+      "status": "completed"
+    }
+  },
+  "preservedBranch": "ai/kimeta/human-intervention/issue-10337-fails-javac-compile-org.springframework.amqp-spring-rabbitmq-client-4.2.0-M2-f31e2569",
+  "publicationMetrics": {
+    "extras": {},
+    "library": "org.springframework.amqp:spring-rabbitmq-client:4.2.0-M2",
+    "timestamp": "2026-10-02T02:04:06.887205Z"
+  },
+  "schemaVersion": 1,
+  "strategyName": "javac_iterative_with_coverage_sources_pi_gpt-5.6-luna"
+}
