@@ -6,11 +6,50 @@
  */
 package com_sun_xml_ws.httpspi_servlet;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.util.List;
+
+import com.sun.xml.ws.transport.httpspi.servlet.EndpointAdapter;
+import com.sun.xml.ws.transport.httpspi.servlet.EndpointHttpContext;
+import com.sun.xml.ws.transport.httpspi.servlet.Headers;
+import jakarta.xml.ws.spi.http.HttpContext;
 import org.junit.jupiter.api.Test;
 
-class Httpspi_servletTest {
+public class Httpspi_servletTest {
     @Test
-    void test() throws Exception {
-        System.out.println("This is just a placeholder, implement your test");
+    void supportsCaseInsensitiveMultiValueHeaders() {
+        Headers headers = new Headers();
+
+        headers.add("x-request-ID", "first");
+        headers.add("X-Request-id", "second");
+
+        assertThat(headers).containsKey("X-REQUEST-ID");
+        assertThat(headers.getFirst("x-request-id")).isEqualTo("first");
+        assertThat(headers.get("X-Request-ID")).containsExactly("first", "second");
+
+        headers.set("X-Request-ID", "replacement");
+        assertThat(headers.get("x-request-id")).containsExactly("replacement");
+
+        headers.put("Content-Type", List.of("text/plain"));
+        assertThat(headers.entrySet()).hasSize(2);
+        assertThat(headers.remove("CONTENT-TYPE")).containsExactly("text/plain");
+    }
+
+    @Test
+    void exposesEndpointContextAndValidUrlMapping() {
+        EndpointAdapter adapter = new EndpointAdapter(null, "/echo/*");
+        HttpContext context = adapter.getContext();
+
+        assertThat(adapter.getEndpoint()).isNull();
+        assertThat(adapter.getUrlPattern()).isEqualTo("/echo/*");
+        assertThat(adapter.getValidPath()).isEqualTo("/echo");
+        assertThat(context).isInstanceOf(EndpointHttpContext.class);
+        assertThat(context.getPath()).isEqualTo("/echo/*");
+        assertThat(context.getAttribute("missing")).isNull();
+        assertThat(context.getAttributeNames()).isNull();
+
+        EndpointAdapter exactMapping = new EndpointAdapter(null, "/exact");
+        assertThat(exactMapping.getValidPath()).isEqualTo("/exact");
     }
 }
