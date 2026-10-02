@@ -9,11 +9,14 @@ package io_micronaut.micronaut_retry;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import io.micronaut.context.ApplicationContext;
 import io.micronaut.retry.CircuitBreakerPolicy;
 import io.micronaut.retry.RetryOperations;
 import io.micronaut.retry.RetryOperationsFactory;
 import io.micronaut.retry.RetryPolicy;
+import io.micronaut.retry.annotation.CircuitBreaker;
 import io.micronaut.retry.annotation.DefaultRetryPredicate;
+import jakarta.inject.Singleton;
 import java.time.Duration;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -113,6 +116,24 @@ public class Micronaut_retryTest {
 
     @Test
     @Timeout(55)
+    void opensCircuitAfterRetryAttemptsAreExhausted() {
+        try (ApplicationContext context = ApplicationContext.run()) {
+            CircuitBreakerService service = context.getBean(CircuitBreakerService.class);
+
+            assertThatThrownBy(service::call)
+                    .isInstanceOf(IllegalStateException.class)
+                    .hasMessage("service unavailable");
+            assertThat(service.attempts).hasValue(3);
+
+            assertThatThrownBy(service::call)
+                    .isInstanceOf(IllegalStateException.class)
+                    .hasMessage("service unavailable");
+            assertThat(service.attempts).hasValue(3);
+        }
+    }
+
+    @Test
+    @Timeout(55)
     void doesNotRetryAnExceptionOutsideTheCapturedType() throws Exception {
         ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
         try {
@@ -198,6 +219,17 @@ public class Micronaut_retryTest {
             assertThat(attempts).hasValue(3);
         } finally {
             stop(scheduler);
+        }
+    }
+
+    @Singleton
+    public static class CircuitBreakerService {
+        private final AtomicInteger attempts = new AtomicInteger();
+
+        @CircuitBreaker(attempts = "2", delay = "0ms", reset = "10s")
+        public String call() {
+            attempts.incrementAndGet();
+            throw new IllegalStateException("service unavailable");
         }
     }
 
