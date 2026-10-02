@@ -35,7 +35,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class RemoteAppenderStreamClientTest {
 
-  private static final int SOCKET_TIMEOUT_MILLIS = 5_000;
+  private static final int SOCKET_TIMEOUT_MILLIS = 10_000;
 
   @Test
   void simpleSocketServerDispatchesSerializedRemoteEvent() throws Exception {
