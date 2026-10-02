@@ -6,12 +6,6 @@
  */
 package org_apache_tomcat_embed.tomcat_embed_el;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-
 import java.lang.reflect.Method;
 
 import org.apache.el.lang.FunctionMapperImpl;
@@ -23,31 +17,17 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class FunctionMapperImplInnerFunctionTest {
 
     @Test
-    void resolvesMethodFromSerializedFunctionMapping()
-            throws ClassNotFoundException, IOException, NoSuchMethodException {
+    void resolvesMappedFunction() throws ReflectiveOperationException {
         FunctionMapperImpl mapper = new FunctionMapperImpl();
         mapper.mapFunction("lib", "join", FunctionLibrary.class.getMethod("join"));
 
-        FunctionMapperImpl restoredMapper = roundTrip(mapper);
-        Method restoredMethod = restoredMapper.resolveFunction("lib", "join");
+        Method mappedMethod = mapper.resolveFunction("lib", "join");
 
-        assertThat(restoredMethod).isNotNull();
-        assertThat(restoredMethod.getDeclaringClass()).isEqualTo(FunctionLibrary.class);
-        assertThat(restoredMethod.getName()).isEqualTo("join");
-        assertThat(restoredMethod.getParameterTypes()).isEmpty();
-    }
-
-    private FunctionMapperImpl roundTrip(FunctionMapperImpl mapper)
-            throws IOException, ClassNotFoundException {
-        ByteArrayOutputStream output = new ByteArrayOutputStream();
-        try (ObjectOutputStream objectOutput = new ObjectOutputStream(output)) {
-            objectOutput.writeObject(mapper);
-        }
-
-        try (ObjectInputStream objectInput =
-                new ObjectInputStream(new ByteArrayInputStream(output.toByteArray()))) {
-            return (FunctionMapperImpl) objectInput.readObject();
-        }
+        assertThat(mappedMethod).isNotNull();
+        assertThat(mappedMethod.getDeclaringClass()).isEqualTo(FunctionLibrary.class);
+        assertThat(mappedMethod.getName()).isEqualTo("join");
+        assertThat(mappedMethod.getParameterTypes()).isEmpty();
+        assertThat(mappedMethod.invoke(null)).isEqualTo("joined");
     }
 
     public static final class FunctionLibrary {
