@@ -216,6 +216,9 @@ public class Jetty_ioTest {
                 accepted.configureBlocking(false);
                 SelectionKey key = accepted.register(selector, SelectionKey.OP_READ);
                 ChannelEndPoint endPoint = new SocketChannelEndPoint(accepted, null, key, scheduler);
+                key.attach(endPoint);
+                assertTrue(key.isValid());
+                assertSame(endPoint, key.attachment());
 
                 assertTrue(client.write(BufferUtil.toBuffer("ping")) > 0);
                 assertTrue(selector.select(TimeUnit.SECONDS.toMillis(10)) > 0);
@@ -237,8 +240,8 @@ public class Jetty_ioTest {
 
                 endPoint.shutdownOutput();
                 assertTrue(endPoint.isOutputShutdown());
-                endPoint.close();
                 assertFalse(endPoint.isOpen());
+                assertFalse(key.isValid());
             }
         } finally {
             scheduler.stop();
