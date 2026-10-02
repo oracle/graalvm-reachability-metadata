@@ -16,10 +16,12 @@ import io.micronaut.core.propagation.PropagatedContext;
 import io.micronaut.core.propagation.PropagatedContextElement;
 import io.micronaut.inject.qualifiers.Qualifiers;
 import java.util.Map;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 import org.junit.jupiter.api.Test;
@@ -87,6 +89,36 @@ public class Micronaut_context_propagationTest {
             assertThat(result.get(10, TimeUnit.SECONDS)).isEqualTo("scheduled");
             assertThat(instrumented.getTarget()).isSameAs(delegate);
         } finally {
+            shutdown(instrumented);
+        }
+    }
+
+    @Test
+    void propagatesContextThroughFixedRateScheduledTasks() throws Exception {
+        ScheduledExecutorService delegate = Executors.newSingleThreadScheduledExecutor();
+        ContextPropagatingScheduledExecutorService instrumented =
+                new ContextPropagatingScheduledExecutorService(
+                        delegate, PropagatedContext.empty().plus(new ContextValue("periodic")));
+        CountDownLatch executions = new CountDownLatch(2);
+        AtomicReference<String> propagatedValue = new AtomicReference<>();
+        ScheduledFuture<?> periodicTask = null;
+        try {
+            periodicTask = instrumented.scheduleAtFixedRate(
+                    () -> {
+                        propagatedValue.set(
+                                PropagatedContext.get().get(ContextValue.class).value());
+                        executions.countDown();
+                    },
+                    0,
+                    100,
+                    TimeUnit.MILLISECONDS);
+
+            assertThat(executions.await(10, TimeUnit.SECONDS)).isTrue();
+            assertThat(propagatedValue).hasValue("periodic");
+        } finally {
+            if (periodicTask != null) {
+                periodicTask.cancel(true);
+            }
             shutdown(instrumented);
         }
     }
