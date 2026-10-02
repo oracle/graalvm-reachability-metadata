@@ -1,21 +1,13 @@
 {
-  "base_commit": "1c5b76534d572c85ff8eca98110952073a0610fa",
-  "branch": "ai/kimeta/fix-javac-org.apache.curator-curator-client-5.0.0-forge-9364-20261001011502030285-723864633a2b",
-  "follow_ups": [
-    {
-      "class_threshold": 15,
-      "coordinate": "org.apache.curator:curator-client:5.0.0",
-      "issue_number": 10288,
-      "type": "deferred_dynamic_access_coverage",
-      "uncovered_class_count": 52
-    }
-  ],
+  "base_commit": "086d484952d9cab53aafcff4e27b3dd68d9ef41d",
+  "branch": "ai/kimeta/improve-coverage-org.apache.curator-curator-client-5.0.0-chunked-forge-10288-20261002114842252132-59b226b0bc1e",
+  "follow_ups": [],
   "forge": {
     "branch": "master",
-    "commit": "86f5f22f536dfec212667cb13f70b6769a2d6048",
+    "commit": "728b8bfeedaea9ff2bd3289f8c4e775afbfefab3",
     "monitored_branch": "origin/master"
   },
-  "issue_number": 9364,
+  "issue_number": 10288,
   "library": {
     "artifact": "curator-client",
     "coordinates": "org.apache.curator:curator-client:5.0.0",
@@ -23,37 +15,11 @@
     "version": "5.0.0"
   },
   "local_ci_verification": {
-    "base_commit": "1c5b76534d572c85ff8eca98110952073a0610fa",
-    "commands": [
-      {
-        "command": [
-          "./gradlew",
-          "generateChangedIndexFileCoordinatesList",
-          "-PbaseCommit=origin/master",
-          "-PnewCommit=HEAD"
-        ],
-        "env": {
-          "GITHUB_OUTPUT": "/tmp/tmprhkd62do"
-        },
-        "gate": "changed-index-coordinates",
-        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :generateChangedIndexFileCoordinatesList\n\n[Incubating] Problems report is available at: file:///home/oracle/oracle/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9364-20ebea82/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 5s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
-        "returncode": 0
-      },
-      {
-        "command": [
-          "./gradlew",
-          "validateIndexFiles",
-          "-Pcoordinates=org.apache.curator:curator-client"
-        ],
-        "env": {},
-        "gate": "index-file-validation",
-        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :validateIndexFiles\n✅ metadata/org.apache.curator/curator-client/index.json: Valid\n\n[Incubating] Problems report is available at: file:///home/oracle/oracle/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9364-20ebea82/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 3s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
-        "returncode": 0
-      }
-    ],
+    "base_commit": "086d484952d9cab53aafcff4e27b3dd68d9ef41d",
+    "commands": [],
     "failure_command": null,
     "failure_gate": null,
-    "final_commit": "2827d2235db0787c9fe7bafd35a22e5f93de6d54",
+    "final_commit": "ce5cd1fa72d9fd29f21a5cbf5a2a8ddb9c47b1c6",
     "fixups": [],
     "human_intervention_required": false,
     "repo_fix_paths": [],
@@ -61,55 +27,149 @@
   },
   "local_review": {
     "changed_paths": [
+      "metadata/org.apache.curator/curator-client/5.0.0/reachability-metadata.json",
       "stats/org.apache.curator/curator-client/5.0.0/stats.json",
-      "tests/src/org.apache.curator/curator-client/5.0.0/src/test/java/org_apache_curator/curator_client/Curator_clientTest.java",
-      "tests/src/org.apache.curator/curator-client/5.0.0/src/test/java/org_apache_curator/curator_client/EnumsTest.java",
-      "tests/src/org.apache.curator/curator-client/5.0.0/src/test/java/org_apache_curator/curator_client/ResourcesTest.java",
-      "tests/src/org.apache.curator/curator-client/5.0.0/src/test/resources/META-INF/native-image/org.apache.curator/curator-client-tests/native-image.properties"
+      "tests/src/org.apache.curator/curator-client/5.0.0/build.gradle",
+      "tests/src/org.apache.curator/curator-client/5.0.0/src/test/java/org_apache_curator/curator_client/ClassPathInnerClassInfoTest.java",
+      "tests/src/org.apache.curator/curator-client/5.0.0/src/test/java/org_apache_curator/curator_client/ClassPathInnerResourceInfoTest.java",
+      "tests/src/org.apache.curator/curator-client/5.0.0/src/test/java/org_apache_curator/curator_client/CompactHashMapTest.java",
+      "tests/src/org.apache.curator/curator-client/5.0.0/src/test/java/org_apache_curator/curator_client/CompactHashSetTest.java",
+      "tests/src/org.apache.curator/curator-client/5.0.0/src/test/java/org_apache_curator/curator_client/CompatibilityTest.java",
+      "tests/src/org.apache.curator/curator-client/5.0.0/src/test/resources/META-INF/native-image/reachability-metadata.json"
     ],
     "decision": "approved",
-    "finding_body": "The original 5.0.0 statistics reported 0/123 dynamic-access calls overall, including 0/119 reflection and 0/4 resources, which violated the zero-covered repair gate. The test project also retained --enable-url-protocols=http after the HTTP-based Exhibitor scenarios had been removed, without evidence that any remaining test required the native flag, and Curator client configuration used explicit I/O timeouts below the 10-second minimum.",
-    "finding_title": "Zero dynamic-access coverage and unjustified native configuration",
-    "fix_note": "Added dedicated tests that exercise reflection and resource call sites through public shaded APIs shipped in the curator-client artifact, raising every dynamic-access scope above zero; raised Curator connection/session timeouts to 10 seconds; removed the unused HTTP native-image property; and regenerated library statistics through Forge finalization.",
+    "finding_body": "CompactHashMapTest and CompactHashSetTest manufactured Java serialization streams naming inaccessible shaded implementation classes instead of reaching behavior through a public library API, violating §FS-test-contract.1.3 and §FS-test-contract.2.1. ClassPathInnerClassInfoTest and ClassPathInnerResourceInfoTest exercised temporary URLClassLoader and machine-local classpath discovery prohibited by §FS-test-contract.4.4 and §FS-test-contract.4.5. Re-scoping those ClassPath tests to the ordinary application class loader failed natively with an unverifiable NoSuchElementException, so the unsupported open-ended classpath-discovery scenarios were dropped under §FS-test-contract.4.3.2; the mechanism, failed re-scope, and surviving 109/123 covered calls satisfy the three repair bounds in §FS-contribution-contract.5.1. The contribution also overrode Curator's resolved ZooKeeper 3.6.0 dependency with 3.5.7 solely to assert the older Compatibility branch, rather than testing the target's normal dependency surface.",
+    "finding_title": "Generated coverage tests bypass supported consumer behavior",
+    "fix_note": "Removed the two serialization-shortcut tests and the two unsupported classpath-discovery tests; restored Curator's normal transitive ZooKeeper dependency; updated CompatibilityTest for the resolved supported API; regenerated and split metadata to remove entries justified only by the removed scenarios; and regenerated statistics. Final coverage is 88.6179% overall (109/123), 89.916% reflection, and 50% resources, all above the baseline ratios.",
     "model": "gpt-5.6-sol",
-    "review_comment": "Reviewed the contribution against the fixes-javac-fail rules and the contribution disposition contract. The diff remains scoped to org.apache.curator:curator-client:5.0.0, the compile repair preserves the available Curator behavior, and the omitted Exhibitor scenarios target APIs absent from the 5.0.0 artifact. After repair, dynamic access is 2/123 overall, 1/119 for reflection, and 1/4 for resources versus 0/0 in the prior version, so every scope passes the ordered repair gate. The exact Forge finalization command then completed without further publishable changes across the current-defaults, future-defaults, and GraalVM 25 test lanes, metadata and style checks, and regenerated statistics.",
-    "session_id": "ad50f0f82b4c4d07"
+    "review_comment": "Reviewed the single-coordinate diff, issue/gate evidence, generated tests, metadata formats, package placement, native-execution behavior, and coverage. The repaired tree remains scoped to org.apache.curator:curator-client:5.0.0, has no legacy metadata or Native Image dodges, and preserves strong dynamic-access coverage at 88.6179% versus the 1.626% baseline. The exact Forge finalizer then passed current-defaults, future-defaults-all, and GraalVM 25 native/JVM lanes plus metadata, style, generated-test, and statistics checks without further publishable changes.",
+    "session_id": "3845d2a6caf34d45"
   },
   "metrics": {
     "agent": "pi",
-    "model": "gpt-5.6-luna",
+    "model": "gpt-5.6-sol",
     "path": "stats/org.apache.curator/curator-client/5.0.0/execution-metrics.json",
     "summary": {
-      "cached_input_tokens_used": 628736,
-      "code_coverage_percent": 1.17,
-      "cost_usd": 0.1541,
-      "input_tokens_used": 65989,
-      "iterations": 4,
-      "metadata_entries": 1,
-      "output_tokens_used": 4192,
-      "previous_library_coverage_percent": 53.54,
-      "previous_library_metadata_entries": 1,
-      "tested_library_loc": 439
+      "cached_input_tokens_used": 13602688,
+      "code_coverage_percent": 13.73,
+      "cost_usd": 13.728,
+      "generated_loc": 2320,
+      "input_tokens_used": 907825,
+      "iterations": 16,
+      "metadata_entries": 162,
+      "output_tokens_used": 79586,
+      "test_only_metadata_entries": 153,
+      "tested_library_loc": 5151
     },
-    "timestamp": "2026-10-01T01:15:02.030285Z"
+    "timestamp": "2026-10-02T11:48:42.252132Z"
   },
   "modifiers": {
     "chunk_final": true,
-    "chunked_dynamic_access": false,
+    "chunked_dynamic_access": true,
     "human_intervention": false
   },
-  "previous_library": {
-    "artifact": "curator-client",
-    "coordinates": "org.apache.curator:curator-client:2.7.1",
-    "group": "org.apache.curator",
-    "version": "2.7.1"
-  },
   "producer": "kimeta",
-  "publication_id": "forge-9364-20261001011502030285-723864633a2b",
-  "render": {},
+  "publication_id": "forge-10288-20261002114842252132-59b226b0bc1e",
+  "render": {
+    "alias_split": null,
+    "baseline_metadata_entries": 1,
+    "baseline_stats": {
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 0.008403,
+            "coveredCalls": 1,
+            "totalCalls": 119
+          },
+          "resources": {
+            "coverageRatio": 0.25,
+            "coveredCalls": 1,
+            "totalCalls": 4
+          }
+        },
+        "coverageRatio": 0.01626,
+        "coveredCalls": 2,
+        "totalCalls": 123
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 1937,
+          "missed": 171431,
+          "ratio": 0.011173,
+          "total": 173368
+        },
+        "line": {
+          "covered": 483,
+          "missed": 37028,
+          "ratio": 0.012876,
+          "total": 37511
+        },
+        "method": {
+          "covered": 152,
+          "missed": 12588,
+          "ratio": 0.011931,
+          "total": 12740
+        }
+      },
+      "version": "5.0.0"
+    },
+    "baseline_test_only_entries": 0,
+    "consumer_split": null,
+    "current_metadata_entries": 148,
+    "current_test_only_entries": 144,
+    "dynamic_access": null,
+    "library_stats": {
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 0.89916,
+            "coveredCalls": 107,
+            "totalCalls": 119
+          },
+          "resources": {
+            "coverageRatio": 0.5,
+            "coveredCalls": 2,
+            "totalCalls": 4
+          }
+        },
+        "coverageRatio": 0.886179,
+        "coveredCalls": 109,
+        "totalCalls": 123
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 21438,
+          "missed": 151930,
+          "ratio": 0.123656,
+          "total": 173368
+        },
+        "line": {
+          "covered": 4807,
+          "missed": 32704,
+          "ratio": 0.128149,
+          "total": 37511
+        },
+        "method": {
+          "covered": 1700,
+          "missed": 11040,
+          "ratio": 0.133438,
+          "total": 12740
+        }
+      },
+      "version": "5.0.0"
+    },
+    "library_update_target": {
+      "match_type": "tested-version",
+      "matched_metadata_version": "5.0.0",
+      "matched_test_version": "5.0.0",
+      "requested_coordinate": "org.apache.curator:curator-client:5.0.0",
+      "resolved_metadata_version": "5.0.0",
+      "resolved_test_version": "5.0.0"
+    }
+  },
   "schema_version": 1,
-  "strategy_name": "javac_iterative_with_coverage_sources_pi_gpt-5.6-luna",
-  "task_type": "fixes-javac-fail",
-  "template_type": "fixes-javac-fail",
-  "timestamp": "2026-10-01T01:15:02.030285Z"
+  "strategy_name": "library_update_optimistic_pi_gpt-5.6-sol",
+  "task_type": "library-update-request",
+  "template_type": "library-update-request",
+  "timestamp": "2026-10-02T11:48:42.252132Z"
 }

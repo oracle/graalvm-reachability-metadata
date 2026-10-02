@@ -8,6 +8,12 @@ Newest entry first; every non-approval is recorded, including one a repair later
 **Repair coverage bypasses library visibility and carries an unnecessary Native Image flag**
 
 The newly added KotlinGenericDeclarationKtTest suppressed INVISIBLE_MEMBER and INVISIBLE_REFERENCE to cast to kotlin.jvm.internal.KotlinGenericDeclaration and invoke its internal API, so its coverage did not satisfy the public-API must in FS-test-contract.1.3. The copied build also passed --initialize-at-build-time=kotlin.Metadata without evidence for the uniform-necessity rule in FS-test-contract.2.7; all three native lanes pass without it.
+## 2026-10-02 — org.apache.curator:curator-client:5.0.0 (#10288)
+
+**Generated coverage tests bypass supported consumer behavior**
+
+CompactHashMapTest and CompactHashSetTest manufactured Java serialization streams naming inaccessible shaded implementation classes instead of reaching behavior through a public library API, violating §FS-test-contract.1.3 and §FS-test-contract.2.1. ClassPathInnerClassInfoTest and ClassPathInnerResourceInfoTest exercised temporary URLClassLoader and machine-local classpath discovery prohibited by §FS-test-contract.4.4 and §FS-test-contract.4.5. Re-scoping those ClassPath tests to the ordinary application class loader failed natively with an unverifiable NoSuchElementException, so the unsupported open-ended classpath-discovery scenarios were dropped under §FS-test-contract.4.3.2; the mechanism, failed re-scope, and surviving 109/123 covered calls satisfy the three repair bounds in §FS-contribution-contract.5.1. The contribution also overrode Curator's resolved ZooKeeper 3.6.0 dependency with 3.5.7 solely to assert the older Compatibility branch, rather than testing the target's normal dependency surface.
+
 ## 2026-09-21 — org.liquibase:liquibase-core:4.17.0 (#3996)
 
 **Forge missed downstream test-version aliases before publication**
