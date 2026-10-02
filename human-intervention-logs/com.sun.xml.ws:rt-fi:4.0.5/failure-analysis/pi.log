@@ -1,0 +1,11 @@
+## Human intervention needed
+
+The automated job failed during test generation/validation for `com.sun.xml.ws:rt-fi:4.0.5` after 22 iterations. Preserved work is available at https://github.com/oracle/graalvm-reachability-metadata/tree/ai%2Fkimeta%2Fhuman-intervention%2Fissue-9947-library-new-request-com.sun.xml.ws-rt-fi-4.0.5-c4be527c.
+
+The most likely failing stage is `nativeTestCompile` for the generated Fast Infoset round-trip tests. `human-intervention-logs/com.sun.xml.ws:rt-fi:4.0.5/gradle-test/gradle-test-2026-10-02T15-50-03-603558Z.log` traces the failure through `FastInfosetStreamSOAPCodecTest.assertSoapRoundTrip(...:82)` and reports runtime-initialized `LocalizableMessageFactory`/`Localizer` objects in the image heap. The final run in `gradle-test-2026-10-02T15-53-29-850327Z.log` repeats the failure through `Packet.toString()` and JUnit assertion formatting.
+
+There is also evidence of stale build output: the final logs mark `compileTestJava` and `test` as `UP-TO-DATE`, while the preserved source no longer contains the failing round-trip methods. The earlier `gradle-test-2026-10-02T15-38-25-520718Z.log` successfully built and ran the five simpler tests. Dynamic-access coverage remained unavailable because `nativeTestCompile` produced no dynamic-access input; see `human-intervention-logs/com.sun.xml.ws:rt-fi:4.0.5/gradle/generateDynamicAccessCoverageReport-2026-10-02T15-42-19-967858Z.log`. The recorded metrics in `stats/com.sun.xml.ws/rt-fi/4.0.5/execution-metrics.json` therefore report failure, zero generated LOC/metadata entries, and no usable coverage.
+
+1. Check out the preserved branch, clean the coordinate’s build outputs, and rerun the coordinate-scoped tests to distinguish stale bytecode from a current-source failure.
+2. Replace the remaining placeholder test with consumer-like Fast Infoset encode/decode coverage, avoiding assertion paths that stringify `Packet`/message objects; do not add build-time-initialization flags or `native-image.properties`.
+3. Once `test` passes from a clean build, regenerate the dynamic-access coverage report and review the resulting metadata before publication.
