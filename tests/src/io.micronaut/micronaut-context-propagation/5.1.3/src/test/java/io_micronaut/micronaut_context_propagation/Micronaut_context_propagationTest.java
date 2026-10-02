@@ -6,11 +6,142 @@
  */
 package io_micronaut.micronaut_context_propagation;
 
-import org.junit.jupiter.api.Test;
+import static org.assertj.core.api.Assertions.assertThat;
 
-class Micronaut_context_propagationTest {
+import io.micronaut.context.propagation.instrument.execution.ContextPropagatingExecutorService;
+import io.micronaut.context.propagation.instrument.execution.ContextPropagatingScheduledExecutorService;
+import io.micronaut.context.propagation.slf4j.MdcPropagationContext;
+import io.micronaut.core.propagation.PropagatedContext;
+import io.micronaut.core.propagation.PropagatedContextElement;
+import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicReference;
+import org.junit.jupiter.api.Test;
+import org.slf4j.MDC;
+
+public class Micronaut_context_propagationTest {
     @Test
-    void test() throws Exception {
-        System.out.println("This is just a placeholder, implement your test");
+    void propagatesAnExplicitContextThroughExecutorServiceTasks() throws Exception {
+        ExecutorService delegate = Executors.newSingleThreadExecutor();
+        ContextPropagatingExecutorService instrumented = new ContextPropagatingExecutorService(
+                delegate, PropagatedContext.empty().plus(new ContextValue("explicit")));
+        try {
+            Future<String> result = instrumented.submit(
+                    () -> PropagatedContext.get().get(ContextValue.class).value());
+            AtomicReference<String> runnableValue = new AtomicReference<>();
+            Future<?> runnableResult = instrumented.submit(
+                    () -> runnableValue.set(PropagatedContext.get().get(ContextValue.class).value()));
+
+            assertThat(result.get(10, TimeUnit.SECONDS)).isEqualTo("explicit");
+            assertThat(runnableResult.get(10, TimeUnit.SECONDS)).isNull();
+            assertThat(runnableValue).hasValue("explicit");
+            assertThat(instrumented.getTarget()).isSameAs(delegate);
+            assertThat(ContextPropagatingExecutorService.isInstrumented(instrumented)).isTrue();
+            assertThat(ContextPropagatingExecutorService.unwrap(instrumented))
+                    .containsSame(delegate);
+            assertThat(ContextPropagatingExecutorService.isInstrumented(delegate)).isFalse();
+            assertThat(ContextPropagatingExecutorService.unwrap(delegate)).isEmpty();
+        } finally {
+            shutdown(instrumented);
+        }
+    }
+
+    @Test
+    void capturesTheCurrentContextWhenAnExecutorTaskIsSubmitted() throws Exception {
+        ExecutorService delegate = Executors.newSingleThreadExecutor();
+        ExecutorService instrumented = new ContextPropagatingExecutorService(delegate);
+        try {
+            Future<String> result;
+            try (PropagatedContext.Scope ignored = PropagatedContext.empty()
+                    .plus(new ContextValue("current"))
+                    .propagate()) {
+                result = instrumented.submit(
+                        () -> PropagatedContext.get().get(ContextValue.class).value());
+            }
+
+            assertThat(result.get(10, TimeUnit.SECONDS)).isEqualTo("current");
+            assertThat(PropagatedContext.exists()).isFalse();
+        } finally {
+            shutdown(instrumented);
+        }
+    }
+
+    @Test
+    void propagatesAnExplicitContextThroughScheduledTasks() throws Exception {
+        ScheduledExecutorService delegate = Executors.newSingleThreadScheduledExecutor();
+        ContextPropagatingScheduledExecutorService instrumented =
+                new ContextPropagatingScheduledExecutorService(
+                        delegate, PropagatedContext.empty().plus(new ContextValue("scheduled")));
+        try {
+            Future<String> result = instrumented.schedule(
+                    () -> PropagatedContext.get().get(ContextValue.class).value(),
+                    0,
+                    TimeUnit.MILLISECONDS);
+
+            assertThat(result.get(10, TimeUnit.SECONDS)).isEqualTo("scheduled");
+            assertThat(instrumented.getTarget()).isSameAs(delegate);
+        } finally {
+            shutdown(instrumented);
+        }
+    }
+
+    @Test
+    void propagatesAndRestoresMdcState() {
+        MDC.clear();
+        try {
+            MDC.put("request", "outside");
+            MdcPropagationContext captured = new MdcPropagationContext();
+            MDC.put("request", "changed");
+
+            try (PropagatedContext.Scope ignored = PropagatedContext.empty()
+                    .plus(captured)
+                    .propagate()) {
+                assertThat(MDC.getCopyOfContextMap()).containsEntry("request", "outside");
+            }
+
+            assertThat(MDC.getCopyOfContextMap()).containsEntry("request", "changed");
+
+            MdcPropagationContext explicit = new MdcPropagationContext(
+                    Map.of("request", "explicit"));
+            try (PropagatedContext.Scope ignored = PropagatedContext.empty()
+                    .plus(explicit)
+                    .propagate()) {
+                assertThat(MDC.getCopyOfContextMap()).containsEntry("request", "explicit");
+            }
+            assertThat(MDC.getCopyOfContextMap()).containsEntry("request", "changed");
+        } finally {
+            MDC.clear();
+        }
+    }
+
+    @Test
+    void clearsMdcWhenThePropagatedStateIsEmpty() {
+        MDC.clear();
+        MDC.put("request", "outside");
+        try {
+            MdcPropagationContext empty = new MdcPropagationContext(null);
+
+            try (PropagatedContext.Scope ignored = PropagatedContext.empty()
+                    .plus(empty)
+                    .propagate()) {
+                assertThat(MDC.getCopyOfContextMap()).isNull();
+            }
+
+            assertThat(MDC.getCopyOfContextMap()).containsEntry("request", "outside");
+        } finally {
+            MDC.clear();
+        }
+    }
+
+    private static void shutdown(ExecutorService executor) throws InterruptedException {
+        executor.shutdownNow();
+        assertThat(executor.awaitTermination(10, TimeUnit.SECONDS)).isTrue();
+    }
+
+    private record ContextValue(String value) implements PropagatedContextElement {
     }
 }
