@@ -16,6 +16,7 @@ import io.micronaut.retry.RetryOperationsFactory;
 import io.micronaut.retry.RetryPolicy;
 import io.micronaut.retry.annotation.CircuitBreaker;
 import io.micronaut.retry.annotation.DefaultRetryPredicate;
+import io.micronaut.retry.annotation.RetryPredicate;
 import io.micronaut.retry.annotation.Retryable;
 import jakarta.inject.Singleton;
 import java.time.Duration;
@@ -118,11 +119,13 @@ public class Micronaut_retryTest {
     @Test
     @Timeout(55)
     void retriesAnnotatedMethodsUntilTheySucceed() {
+        TransientFailurePredicate.evaluations.set(0);
         try (ApplicationContext context = ApplicationContext.run()) {
             RetryableService service = context.getBean(RetryableService.class);
 
             assertThat(service.call()).isEqualTo("annotated success");
             assertThat(service.attempts).hasValue(3);
+            assertThat(TransientFailurePredicate.evaluations).hasValue(2);
         }
     }
 
@@ -238,12 +241,22 @@ public class Micronaut_retryTest {
     public static class RetryableService {
         private final AtomicInteger attempts = new AtomicInteger();
 
-        @Retryable(attempts = "3", delay = "0ms")
+        @Retryable(attempts = "3", delay = "0ms", predicate = TransientFailurePredicate.class)
         public String call() {
             if (attempts.incrementAndGet() < 3) {
                 throw new IllegalStateException("transient failure");
             }
             return "annotated success";
+        }
+    }
+
+    public static final class TransientFailurePredicate implements RetryPredicate {
+        private static final AtomicInteger evaluations = new AtomicInteger();
+
+        @Override
+        public boolean test(Throwable throwable) {
+            evaluations.incrementAndGet();
+            return throwable instanceof IllegalStateException;
         }
     }
 
