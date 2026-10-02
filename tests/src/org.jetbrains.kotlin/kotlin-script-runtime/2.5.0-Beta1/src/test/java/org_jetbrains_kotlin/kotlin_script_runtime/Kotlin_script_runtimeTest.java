@@ -10,8 +10,15 @@ import java.io.File;
 import java.lang.annotation.Annotation;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 
+import kotlin.Unit;
+import kotlin.jvm.functions.Function3;
+import kotlin.script.dependencies.KotlinScriptExternalDependencies;
 import kotlin.script.dependencies.ScriptContents;
+import kotlin.script.dependencies.ScriptContents.Position;
+import kotlin.script.dependencies.ScriptDependenciesResolver.ReportSeverity;
 import kotlin.script.experimental.dependencies.DependenciesResolver;
 import kotlin.script.experimental.dependencies.DependenciesResolverKt;
 import kotlin.script.experimental.dependencies.ScriptDependencies;
@@ -26,7 +33,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class Kotlin_script_runtimeTest {
+public class Kotlin_script_runtimeTest {
 
     @Test
     void standardScriptTemplatesExposeConstructionInputs() {
@@ -141,13 +148,19 @@ class Kotlin_script_runtimeTest {
     }
 
     @Test
-    void builtInDependencyResolversProduceSuccessfulResultsWithoutReports() {
+    void builtInDependencyResolversHandleCurrentAndCompatibilityApis() throws Exception {
         ScriptContents scriptContents = new TestScriptContents(
                 new File("scripts/sample.main.kts"),
                 "println(\"hello\")"
         );
         DependenciesResolver.ResolveResult.Success noDependenciesResult =
                 DependenciesResolver.NoDependencies.INSTANCE.resolve(scriptContents, Map.of());
+        Future<KotlinScriptExternalDependencies> compatibilityResult = new TestDependenciesResolver().resolve(
+                scriptContents,
+                Map.of("mode", "compatibility"),
+                (severity, message, position) -> Unit.INSTANCE,
+                null
+        );
         ScriptDependencies dependencies = new ScriptDependencies(
                 new File("java-home"),
                 List.of(new File("libs/runtime.jar")),
@@ -159,6 +172,7 @@ class Kotlin_script_runtimeTest {
 
         assertThat(noDependenciesResult.getDependencies()).isEqualTo(ScriptDependencies.Companion.getEmpty());
         assertThat(noDependenciesResult.getReports()).isEmpty();
+        assertThat(compatibilityResult.get(10, TimeUnit.SECONDS)).isNull();
         assertThat(helperResult.getDependencies()).isSameAs(dependencies);
         assertThat(helperResult.getReports()).isEmpty();
     }
@@ -241,6 +255,16 @@ class Kotlin_script_runtimeTest {
         @Override
         public ResolveResult resolve(ScriptContents scriptContents, Map<String, ? extends Object> environment) {
             return DependenciesResolver.NoDependencies.INSTANCE.resolve(scriptContents, environment);
+        }
+
+        @Override
+        public Future<KotlinScriptExternalDependencies> resolve(
+                ScriptContents scriptContents,
+                Map<String, ? extends Object> environment,
+                Function3<? super ReportSeverity, ? super String, ? super Position, Unit> report,
+                KotlinScriptExternalDependencies previousDependencies) {
+            return DependenciesResolver.NoDependencies.INSTANCE.resolve(
+                    scriptContents, environment, report, previousDependencies);
         }
     }
 
