@@ -34,8 +34,8 @@ public class ServletResourceLoaderTest {
     @Test
     @Timeout(60)
     void resolvesServletResourcesCatalogAndResourcePaths() throws MalformedURLException {
-        URL serviceDescriptor = new URL("https://example.test/WEB-INF/sun-jaxws.xml");
-        URL catalog = new URL("https://example.test/WEB-INF/jax-ws-catalog.xml");
+        URL serviceDescriptor = new URL("file:/WEB-INF/sun-jaxws.xml");
+        URL catalog = new URL("file:/WEB-INF/jax-ws-catalog.xml");
         RecordingServletContext context = new RecordingServletContext(
                 Map.of(
                         "/WEB-INF/sun-jaxws.xml", serviceDescriptor,
