@@ -17,9 +17,6 @@ public final class X509TrustManagerExtensions {
     private final X509TrustManager trustManager;
 
     public X509TrustManagerExtensions(X509TrustManager trustManager) {
-        if (trustManager.getAcceptedIssuers().length > 0) {
-            throw new IllegalArgumentException("Only empty certificate chains are supported");
-        }
         this.trustManager = trustManager;
     }
 
