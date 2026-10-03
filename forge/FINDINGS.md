@@ -8,6 +8,11 @@ Newest entry first; every non-approval is recorded, including one a repair later
 **Runtime repair masked a library serialization regression and required a test-only native build flag**
 
 The contribution used CompatibleObjectOutputStream to replace Class<?>[] with String[] while serializing FunctionMapperImpl, hiding Tomcat 10.0.17's incompatible normal round trip instead of testing supported behavior; the 10.0.17 source writes Class[] while readExternal reads String[]. It also installed a test-only ExpressionFactory provider and added -H:ServiceLoaderFeatureExcludeServiceProviders solely to make that provider win in Native Image, contrary to the uniform-necessity rule for native flags. The custom provider and MessageFactory additions were unrelated expansion in a JVM runtime repair. These violated FS-test-contract.2.6, FS-test-contract.2.7, and FS-test-contract.2.9.
+## 2026-10-03 — org.apache.curator:curator-client:5.8.0 (#10317)
+
+**Test forces an unrelated transitive dependency version**
+
+The 5.8.0 test project forced ZooKeeper from Curator 5.8.0's resolved 3.9.2 dependency to 3.5.10 solely to exercise legacy Compatibility branches. This changed the tested runtime graph and added unrelated build setup rather than adapting the test to the target version, violating the no-scope-creep requirement in FS-test-contract.2.9.
 ## 2026-10-03 — com.google.guava:guava:33.7.0-jre (#10313)
 
 **Unverifiable native class-loading tolerance and missing Finalizer metadata**
