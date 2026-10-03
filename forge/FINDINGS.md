@@ -3,6 +3,12 @@
 Rendered by Forge from the pre-push branch review of §FS-local-branch-review.
 Newest entry first; every non-approval is recorded, including one a repair later cleared.
 
+## 2026-10-03 — org.locationtech.jts:jts-core:1.20.0 (#9789)
+
+**Bundled support JAR shadows the target library**
+
+The test project added JTSTestBuilder-support.bin as a test dependency. Its embedded Maven metadata identified a jts-app 1.20.0-SNAPSHOT assembly, and the archive contained 751 org/locationtech/jts class files, including classes supplied by the target jts-core artifact. The tests could therefore execute shadow copies instead of org.locationtech.jts:jts-core:1.20.0, violating §FS-test-contract.2.3's prohibition on shadow classes for library types.
+
 ## 2026-10-03 — org.jetbrains.kotlin:kotlin-reflect:2.5.0-Beta1 (#10368)
 
 **Generated library statistics were stale**
