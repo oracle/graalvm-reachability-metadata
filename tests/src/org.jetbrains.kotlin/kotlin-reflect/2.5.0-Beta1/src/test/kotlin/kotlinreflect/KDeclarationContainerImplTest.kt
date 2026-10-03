@@ -9,6 +9,10 @@ import kotlin.reflect.full.*
 import kotlin.reflect.jvm.*
 
 class KDeclarationContainerImplTest {
+    class ReturnTypeOverloadFixture(val number: Int) {
+        fun getNumber(): String = "number:$number"
+    }
+
     @Test
     fun exercisesPublicReflectionBehavior() {
         val constructor = RichReflectionFixture::class.primaryConstructor!!
@@ -29,5 +33,13 @@ class KDeclarationContainerImplTest {
         val covariantValue = ReflectJavaFixtures.StringValue::class.members
             .single { it.name == "value" }
         assertThat(covariantValue.call(ReflectJavaFixtures.StringValue())).isEqualTo("java-value")
+    }
+
+    @Test
+    fun resolvesMethodsWithIdenticalParametersByReturnType() {
+        val fixture = ReturnTypeOverloadFixture(7)
+
+        assertThat(ReturnTypeOverloadFixture::number.getter.call(fixture)).isEqualTo(7)
+        assertThat(ReturnTypeOverloadFixture::getNumber.call(fixture)).isEqualTo("number:7")
     }
 }
