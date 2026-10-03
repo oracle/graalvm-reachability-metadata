@@ -16,12 +16,12 @@ public class AudioFactoryTest {
     @Test
     void createsAudioThroughDiscoveredFactory() {
         AudioFactory factory = AudioFactory.newInstance()
-                .setChannels(2)
+                .setChannels(1)
                 .setSampleRate(16_000)
                 .setSampleFormat(16);
         Audio audio = factory.fromData(new float[] {0.25f, -0.5f});
 
-        assertThat(factory.getChannels()).isEqualTo(2);
+        assertThat(factory.getChannels()).isEqualTo(1);
         assertThat(factory.getSampleRate()).isEqualTo(16_000);
         assertThat(factory.getSampleFormat()).isEqualTo(16);
         assertThat(audio.getData()).containsExactly(0.25f, -0.5f);

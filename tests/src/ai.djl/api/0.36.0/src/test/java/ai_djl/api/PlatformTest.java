@@ -13,10 +13,10 @@ import org.junit.jupiter.api.Test;
 
 public class PlatformTest {
     @Test
-    void detectsPlatformWhenNoEngineBundleIsPresent() {
+    void detectsPlatformFromEngineBundle() {
         Platform platform = Platform.detectPlatform("unconfigured-engine");
 
-        assertThat(platform.isPlaceholder()).isTrue();
+        assertThat(platform.isPlaceholder()).isFalse();
         assertThat(platform.getOsPrefix()).isNotBlank();
         assertThat(platform.getClassifier()).contains("-");
     }

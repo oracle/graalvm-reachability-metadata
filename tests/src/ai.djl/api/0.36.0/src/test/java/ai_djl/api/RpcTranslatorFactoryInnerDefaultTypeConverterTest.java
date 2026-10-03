@@ -29,7 +29,7 @@ public class RpcTranslatorFactoryInnerDefaultTypeConverterTest {
         Translator<String, Sam2Input> translator = new RpcTranslatorFactory()
                 .newInstance(String.class, Sam2Input.class, null, Map.of("djl_rpc_uri", "http://localhost"));
         Output output = new Output(200, "ok");
-        output.add("{\"image\":\"" + IMAGE_DATA_URI
+        output.add("{\"image_url\":\"" + IMAGE_DATA_URI
                 + "\",\"prompt\":[{\"type\":\"point\",\"data\":[0,0],\"label\":1}]}");
 
         try (Predictor.PredictorContext context = new Predictor.PredictorContext(
