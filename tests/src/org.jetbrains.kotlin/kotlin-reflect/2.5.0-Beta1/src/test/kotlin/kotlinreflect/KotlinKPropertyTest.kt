@@ -10,7 +10,8 @@ class KotlinKPropertyTest {
     @Test
     fun exercisesPublicReflectionBehavior() {
         val property = RichReflectionFixture::fieldValue
-        assertThat(property.annotations).isEmpty()
+        assertThat(property.annotations.filterIsInstance<ReflectTag>().map { it.value })
+            .containsExactly("property")
         assertThat(property.javaField?.name).isEqualTo("fieldValue")
     }
 }

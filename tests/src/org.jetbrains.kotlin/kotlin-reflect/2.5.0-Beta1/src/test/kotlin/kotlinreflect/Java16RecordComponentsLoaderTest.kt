@@ -9,8 +9,20 @@ import kotlin.reflect.jvm.*
 class Java16RecordComponentsLoaderTest {
     @Test
     fun exercisesPublicReflectionBehavior() {
-        val propertyNames = ReflectJavaFixtures.JavaRecord::class.memberProperties.map { it.name }
+        val recordType = ReflectJavaFixtures.JavaRecord::class
+        val propertyNames = recordType.memberProperties.map { it.name }
+        val constructor = recordType.constructors.single()
+        val arguments = constructor.parameters.associateWith { parameter ->
+            when (parameter.name) {
+                "name" -> "record"
+                "count" -> 3
+                else -> error(parameter.name ?: "record component")
+            }
+        }
+        val record = constructor.callBy(arguments)
+
         assertThat(propertyNames).contains("name", "count")
-        assertThat(ReflectJavaFixtures.JavaRecord("record", 3).name()).isEqualTo("record")
+        assertThat(record.name()).isEqualTo("record")
+        assertThat(record.count()).isEqualTo(3)
     }
 }

@@ -9,7 +9,12 @@ import kotlin.reflect.jvm.*
 class ReflectKCallableKtTest {
     @Test
     fun exercisesPublicReflectionBehavior() {
-        val function = RichReflectionFixture::arraySize
-        assertThat(function.call(RichReflectionFixture(), arrayOf("a", "b"))).isEqualTo(2)
+        val fixture = RichReflectionFixture()
+        val arraySize = RichReflectionFixture::arraySize
+        assertThat(arraySize.call(fixture, arrayOf("a", "b"))).isEqualTo(2)
+
+        val join = RichReflectionFixture::class.declaredMemberFunctions.single { it.name == "join" }
+        val instance = join.parameters.single { it.kind == kotlin.reflect.KParameter.Kind.INSTANCE }
+        assertThat(join.callBy(mapOf(instance to fixture))).isEqualTo("")
     }
 }

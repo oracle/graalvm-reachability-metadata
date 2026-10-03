@@ -10,11 +10,10 @@ class AnnotationConstructorCallerKtTest {
     @Test
     fun exercisesPublicReflectionBehavior() {
         val constructor = ReflectDetails::class.constructors.single()
-        val arguments = constructor.parameters.associateWith { parameter ->
-            when (parameter.name) { "name" -> "created"; "values" -> arrayOf("x", "y"); else -> error(parameter.name ?: "parameter") }
-        }
-        val annotation = constructor.callBy(arguments)
+        val nameParameter = constructor.parameters.single { it.name == "name" }
+        val annotation = constructor.callBy(mapOf(nameParameter to "created"))
+
         assertThat(annotation.name).isEqualTo("created")
-        assertThat(annotation.values).containsExactly("x", "y")
+        assertThat(annotation.values).isEmpty()
     }
 }

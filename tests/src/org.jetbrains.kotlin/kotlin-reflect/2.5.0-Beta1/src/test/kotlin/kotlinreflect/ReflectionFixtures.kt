@@ -11,12 +11,19 @@ annotation class ReflectTag(val value: String)
 @Retention(AnnotationRetention.RUNTIME)
 annotation class ReflectDetails(val name: String = "default", val values: Array<String> = [])
 
+annotation class ReflectPart(val value: String)
+
+@Target(AnnotationTarget.FUNCTION)
+@Retention(AnnotationRetention.RUNTIME)
+annotation class ReflectComposition(val parts: Array<ReflectPart>)
+
 @ReflectTag("first")
 @ReflectTag("second")
 @ReflectDetails("fixture", ["one", "two"])
 class RichReflectionFixture(val prefix: String = "hello") {
     class Nested(val value: Int)
 
+    @ReflectTag("property")
     @JvmField
     var fieldValue: String = "field"
 
@@ -27,6 +34,21 @@ class RichReflectionFixture(val prefix: String = "hello") {
     fun greet(name: String = "world"): String = "$prefix, $name"
 
     fun arraySize(values: Array<String>): Int = values.size
+
+    fun join(vararg values: String): String = values.joinToString("|")
+
+    @ReflectComposition([ReflectPart("left"), ReflectPart("right")])
+    fun composedAnnotation(): String = "composed"
+}
+
+@ReflectDetails("created")
+class DefaultDetailsFixture
+
+class CompanionFixture {
+    companion object {
+        @JvmField
+        var companionValue: String = "companion"
+    }
 }
 
 object ReflectionSingleton {

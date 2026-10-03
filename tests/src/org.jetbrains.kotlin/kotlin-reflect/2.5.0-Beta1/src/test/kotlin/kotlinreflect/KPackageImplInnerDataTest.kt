@@ -11,6 +11,11 @@ class KPackageImplInnerDataTest {
     fun exercisesPublicReflectionBehavior() {
         val function = ::packageGreeting
         assertThat(function.call("api")).isEqualTo("package:api")
+
+        val first = ::firstPackagePart.javaMethod!!.kotlinFunction!!
+        val second = ::secondPackagePart.javaMethod!!.kotlinFunction!!
+        assertThat(first.call("one")).isEqualTo("first:one")
+        assertThat(second.call("two")).isEqualTo("second:two")
         assertThat(::packageNumber.get()).isEqualTo(42)
     }
 }

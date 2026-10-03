@@ -11,6 +11,11 @@ class KDeclarationContainerImplTest {
     fun exercisesPublicReflectionBehavior() {
         val constructor = RichReflectionFixture::class.primaryConstructor!!
         val fixture = constructor.callBy(emptyMap())
+        val constructorReference = ::RichReflectionFixture
+        val javaConstructor = constructorReference.javaConstructor!!
+        val mappedFixture = javaConstructor.kotlinFunction!!.call("mapped")
+        assertThat(mappedFixture.prefix).isEqualTo("mapped")
+
         val greet = RichReflectionFixture::class.declaredMemberFunctions.single { it.name == "greet" }
         assertThat(greet.callBy(mapOf(greet.parameters[0] to fixture))).isEqualTo("hello, world")
     }

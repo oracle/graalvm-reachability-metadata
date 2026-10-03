@@ -9,7 +9,11 @@ import kotlin.reflect.jvm.*
 class ConvertFromMetadataKtTest {
     @Test
     fun exercisesPublicReflectionBehavior() {
-        val details = RichReflectionFixture::class.findAnnotations<ReflectDetails>().single()
-        assertThat(details.values.toList()).containsExactly("one", "two")
+        val function = RichReflectionFixture::class.declaredMemberFunctions
+            .single { it.name == "composedAnnotation" }
+        val composition = function.findAnnotation<ReflectComposition>()!!
+
+        assertThat(function.call(RichReflectionFixture())).isEqualTo("composed")
+        assertThat(composition.parts.map { it.value }).containsExactly("left", "right")
     }
 }

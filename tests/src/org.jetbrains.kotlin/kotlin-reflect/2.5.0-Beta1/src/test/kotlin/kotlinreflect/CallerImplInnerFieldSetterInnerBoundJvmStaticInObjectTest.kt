@@ -10,7 +10,7 @@ class CallerImplInnerFieldSetterInnerBoundJvmStaticInObjectTest {
     @Test
     fun exercisesPublicReflectionBehavior() {
         val property = ReflectionStatics::globalValue
-        property.set("static-change")
-        assertThat(property.get()).isEqualTo("static-change")
+        property.setter.call("static-change")
+        assertThat(property.getter.call()).isEqualTo("static-change")
     }
 }

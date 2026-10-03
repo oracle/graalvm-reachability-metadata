@@ -11,6 +11,6 @@ class CallerImplInnerFieldGetterInnerBoundInstanceTest {
     fun exercisesPublicReflectionBehavior() {
         val fixture = RichReflectionFixture()
         val property = fixture::fieldValue
-        assertThat(property.get()).isEqualTo("field")
+        assertThat(property.getter.call()).isEqualTo("field")
     }
 }
