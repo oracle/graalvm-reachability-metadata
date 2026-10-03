@@ -18,6 +18,12 @@ class UtilKtTest {
             .value
         assertThat(javaTags.map { it.value }).containsExactly("alpha", "beta")
 
+        val inheritedTags = ReflectJavaFixtures.TaggedChild::class.annotations
+            .filterIsInstance<ReflectJavaFixtures.InheritedJavaTags>()
+            .single()
+            .value
+        assertThat(inheritedTags.map { it.value }).containsExactly("parent-one", "parent-two")
+
         val companionProperty = CompanionFixture.Companion::companionValue
         val mappedProperty = companionProperty.javaField!!.kotlinProperty!!
         assertThat(mappedProperty.call(CompanionFixture.Companion)).isEqualTo("companion")

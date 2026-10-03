@@ -13,5 +13,7 @@ class KClassImplInnerDataTest {
         assertThat(String::class.constructors).isNotEmpty()
         assertThat(RichReflectionFixture::class.nestedClasses.map { it.simpleName }).contains("Nested")
         assertThat(ReflectionSingleton::class.objectInstance?.message).isEqualTo("singleton")
+        assertThat(CompanionFixture.Companion::class.objectInstance)
+            .isSameAs(CompanionFixture.Companion)
     }
 }

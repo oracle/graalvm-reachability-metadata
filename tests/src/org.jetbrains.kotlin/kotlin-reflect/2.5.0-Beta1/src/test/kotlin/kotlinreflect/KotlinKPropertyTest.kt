@@ -13,5 +13,10 @@ class KotlinKPropertyTest {
         assertThat(property.annotations.filterIsInstance<ReflectTag>().map { it.value })
             .containsExactly("property")
         assertThat(property.javaField?.name).isEqualTo("fieldValue")
+
+        val interfaceProperty = AnnotatedReflectionInterface::class.declaredMemberProperties
+            .single { it.name == "interfaceValue" }
+        assertThat(interfaceProperty.annotations.filterIsInstance<ReflectTag>().map { it.value })
+            .containsExactly("interface-property")
     }
 }

@@ -10,8 +10,12 @@ class ReflectClassStructureTest {
     @Test
     fun exercisesPublicReflectionBehavior() {
         val type = RichReflectionFixture::class
-        assertThat(type.constructors.flatMap { it.annotations }).isEmpty()
-        assertThat(type.declaredMemberFunctions.map { it.name }).contains("greet")
-        assertThat(type.declaredMemberProperties.map { it.name }).contains("fieldValue")
+        assertThat(type.constructors.flatMap { it.annotations }.filterIsInstance<ReflectTag>().map { it.value })
+            .contains("constructor")
+        val greet = type.declaredMemberFunctions.single { it.name == "greet" }
+        assertThat(greet.annotations.filterIsInstance<ReflectTag>().map { it.value }).contains("method")
+        val fieldValue = type.declaredMemberProperties.single { it.name == "fieldValue" }
+        assertThat(fieldValue.annotations.filterIsInstance<ReflectTag>().map { it.value })
+            .contains("property")
     }
 }

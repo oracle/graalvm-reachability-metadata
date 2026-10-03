@@ -15,5 +15,11 @@ class ConvertFromMetadataKtTest {
 
         assertThat(function.call(RichReflectionFixture())).isEqualTo("composed")
         assertThat(composition.parts.map { it.value }).containsExactly("left", "right")
+
+        val property = RichReflectionFixture::class.declaredMemberProperties
+            .single { it.name == "fieldValue" }
+        val propertyComposition = property.findAnnotation<ReflectComposition>()!!
+        assertThat(propertyComposition.parts.map { it.value })
+            .containsExactly("property-left", "property-right")
     }
 }

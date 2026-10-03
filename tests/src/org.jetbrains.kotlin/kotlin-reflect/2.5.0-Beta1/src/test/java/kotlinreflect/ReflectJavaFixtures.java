@@ -7,6 +7,7 @@
 package kotlinreflect;
 
 import java.lang.annotation.ElementType;
+import java.lang.annotation.Inherited;
 import java.lang.annotation.Repeatable;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -65,6 +66,40 @@ public final class ReflectJavaFixtures {
     }
 
     public record JavaRecord(String name, int count) {
+    }
+
+    @Inherited
+    @Retention(RetentionPolicy.RUNTIME)
+    @Target(ElementType.TYPE)
+    @Repeatable(InheritedJavaTags.class)
+    public @interface InheritedJavaTag {
+        String value();
+    }
+
+    @Inherited
+    @Retention(RetentionPolicy.RUNTIME)
+    @Target(ElementType.TYPE)
+    public @interface InheritedJavaTags {
+        InheritedJavaTag[] value();
+    }
+
+    @InheritedJavaTag("parent-one")
+    @InheritedJavaTag("parent-two")
+    public static class TaggedParent {
+    }
+
+    public static final class TaggedChild extends TaggedParent {
+    }
+
+    public interface GenericValue<T> {
+        T value();
+    }
+
+    public static final class StringValue implements GenericValue<String> {
+        @Override
+        public String value() {
+            return "java-value";
+        }
     }
 
     public sealed interface JavaSealed permits JavaSealedFirst, JavaSealedSecond {

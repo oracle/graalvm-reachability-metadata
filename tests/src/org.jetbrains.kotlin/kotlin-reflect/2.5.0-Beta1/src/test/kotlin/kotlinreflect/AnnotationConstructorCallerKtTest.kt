@@ -15,5 +15,11 @@ class AnnotationConstructorCallerKtTest {
 
         assertThat(annotation.name).isEqualTo("created")
         assertThat(annotation.values).isEmpty()
+
+        val property = RichReflectionFixture::class.declaredMemberProperties
+            .single { it.name == "fieldValue" }
+        val composition = property.findAnnotation<ReflectComposition>()!!
+        assertThat(composition.parts.map { it.value })
+            .containsExactly("property-left", "property-right")
     }
 }
