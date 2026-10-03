@@ -52,7 +52,7 @@ public class Spring_boot_data_commonsTest {
         properties.getRepository().setMetricName("repository.calls");
         properties.getRepository().getAutotime().setEnabled(false);
         properties.getRepository().getAutotime().setPercentilesHistogram(true);
-        properties.getRepository().getAutotime().setPercentiles(new double[] { 0.5, 0.95 });
+        properties.getRepository().getAutotime().setPercentiles(new double[] {0.5, 0.95 });
 
         Assertions.assertThat(properties.getRepository().getMetricName()).isEqualTo("repository.calls");
         Assertions.assertThat(properties.getRepository().getAutotime().isEnabled()).isFalse();
