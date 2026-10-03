@@ -20,13 +20,16 @@ import org.springframework.boot.data.couchbase.test.autoconfigure.DataCouchbaseT
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.FilterType;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.couchbase.core.CouchbaseTemplate;
 import org.springframework.data.couchbase.core.query.Query;
 import org.springframework.data.couchbase.core.query.QueryCriteria;
 import org.springframework.data.couchbase.core.mapping.Document;
+import org.springframework.stereotype.Component;
 import org.springframework.test.context.ContextConfiguration;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -37,11 +40,20 @@ import static org.assertj.core.api.Assertions.assertThat;
         "spring.couchbase.env.timeouts.key-value=10s",
         "spring.couchbase.env.timeouts.query=10s",
         "spring.data.couchbase.bucket-name=test-bucket"
-})
+}, includeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE,
+        classes = IncludedComponent.class))
 public class Spring_boot_data_couchbase_testTest {
 
     @Autowired
     private CouchbaseTemplate couchbaseTemplate;
+
+    @Autowired
+    private IncludedComponent includedComponent;
+
+    @Test
+    void includesComponentsSelectedByTheDataCouchbaseSlice() {
+        assertThat(this.includedComponent.value()).isEqualTo("included");
+    }
 
     @Test
     void storesFindsAndQueriesDocumentsThroughTheDataCouchbaseSlice() {
@@ -62,6 +74,7 @@ public class Spring_boot_data_couchbase_testTest {
 
     @Configuration(proxyBeanMethods = false)
     @EnableAutoConfiguration
+    @ComponentScan(basePackageClasses = IncludedComponent.class)
     @Import(CouchbaseConfiguration.class)
     static class TestApplication {
     }
@@ -111,6 +124,15 @@ public class Spring_boot_data_couchbase_testTest {
             return this.occupation;
         }
 
+    }
+
+}
+
+@Component
+class IncludedComponent {
+
+    public String value() {
+        return "included";
     }
 
 }
