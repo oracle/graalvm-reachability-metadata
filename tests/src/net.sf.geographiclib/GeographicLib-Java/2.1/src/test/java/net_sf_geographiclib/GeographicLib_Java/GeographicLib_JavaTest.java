@@ -7,6 +7,7 @@
 package net_sf_geographiclib.GeographicLib_Java;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.Assertions.within;
 
 import net.sf.geographiclib.Accumulator;
@@ -16,6 +17,7 @@ import net.sf.geographiclib.Geodesic;
 import net.sf.geographiclib.GeodesicData;
 import net.sf.geographiclib.GeodesicLine;
 import net.sf.geographiclib.GeodesicMask;
+import net.sf.geographiclib.GeographicErr;
 import net.sf.geographiclib.Gnomonic;
 import net.sf.geographiclib.GnomonicData;
 import net.sf.geographiclib.Pair;
@@ -61,6 +63,14 @@ public class GeographicLib_JavaTest {
         GeodesicData quarterEquator = sphere.Inverse(0.0, 0.0, 0.0, 90.0);
         assertThat(quarterEquator.s12)
                 .isCloseTo(Math.PI * sphere.EquatorialRadius() / 2.0, within(DISTANCE_TOLERANCE));
+    }
+
+    @Test
+    void rejectsEllipsoidsWithInvalidAxes() {
+        assertThatThrownBy(() -> new Geodesic(0.0, 0.0))
+                .isInstanceOf(GeographicErr.class);
+        assertThatThrownBy(() -> new Geodesic(Constants.WGS84_a, 1.0))
+                .isInstanceOf(GeographicErr.class);
     }
 
     @Test
