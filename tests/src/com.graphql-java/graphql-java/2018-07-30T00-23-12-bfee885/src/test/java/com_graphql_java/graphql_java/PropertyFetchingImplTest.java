@@ -6,8 +6,11 @@
  */
 package com_graphql_java.graphql_java;
 
+import graphql.execution.ExecutionContext;
+import graphql.execution.ExecutionContextBuilder;
+import graphql.execution.ExecutionId;
 import graphql.schema.DataFetchingEnvironment;
-import graphql.schema.DataFetchingEnvironmentImpl;
+import graphql.schema.DataFetchingEnvironmentBuilder;
 import graphql.schema.PropertyDataFetcher;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -20,16 +23,15 @@ public class PropertyFetchingImplTest {
   @BeforeEach
   void resetPropertyFetcher() {
     PropertyDataFetcher.clearReflectionCache();
-    PropertyDataFetcher.setUseSetAccessible(true);
-    PropertyDataFetcher.setUseNegativeCache(true);
   }
 
   @Test
-  void invokesPublicGetterWithDataFetchingEnvironmentArgument() throws Exception {
+  void invokesFunctionWithSourceObject() throws Exception {
     EnvironmentAwareSource source = new EnvironmentAwareSource();
     DataFetchingEnvironment environment = environmentFor(source);
 
-    String value = PropertyDataFetcher.<String>fetching("value").get(environment);
+    String value = PropertyDataFetcher.<String, EnvironmentAwareSource>fetching(
+        valueSource -> valueSource.getValue(environment)).get(environment);
 
     assertThat(value).isEqualTo("value from " + EnvironmentAwareSource.class.getSimpleName());
     assertThat(source.seenEnvironment).isSameAs(environment);
@@ -72,9 +74,13 @@ public class PropertyFetchingImplTest {
   }
 
   private DataFetchingEnvironment environmentFor(Object source) {
-    return DataFetchingEnvironmentImpl.newDataFetchingEnvironment()
+    ExecutionContext executionContext = ExecutionContextBuilder.newExecutionContextBuilder()
+        .executionId(ExecutionId.generate())
+        .build();
+    return DataFetchingEnvironmentBuilder.newDataFetchingEnvironment()
         .source(source)
         .fieldType(GraphQLString)
+        .executionContext(executionContext)
         .build();
   }
 
