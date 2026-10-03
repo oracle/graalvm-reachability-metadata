@@ -6,11 +6,27 @@
  */
 package gg_jte.jte_runtime;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+import gg.jte.ContentType;
+import gg.jte.TemplateEngine;
+import gg.jte.TemplateException;
+import gg.jte.output.StringOutput;
 import org.junit.jupiter.api.Test;
 
-class Jte_runtimeTest {
+public class Jte_runtimeTest {
     @Test
-    void test() throws Exception {
-        System.out.println("This is just a placeholder, implement your test");
+    void reportsPrecompiledTemplateNameWhenRenderingFails() {
+        TemplateEngine engine = TemplateEngine.createPrecompiled(
+                null, ContentType.Plain, Jte_runtimeTest.class.getClassLoader(), "gg_jte.jte_runtime");
+
+        TemplateException exception = assertThrows(
+                TemplateException.class,
+                () -> engine.render(JteJte_runtimeTestGenerated.templateName(), (Object) null, new StringOutput()));
+
+        assertThat(exception)
+                .hasMessageContaining("welcome.jte")
+                .hasCauseInstanceOf(IllegalStateException.class);
     }
 }
