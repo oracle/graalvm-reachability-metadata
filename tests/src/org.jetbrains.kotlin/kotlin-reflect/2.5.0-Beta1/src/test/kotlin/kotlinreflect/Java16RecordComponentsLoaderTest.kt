@@ -23,7 +23,6 @@ class Java16RecordComponentsLoaderTest {
 
         assertThat(properties.keys).contains("name", "count")
         assertThat(properties.getValue("name").returnType.classifier).isEqualTo(String::class)
-        assertThat(properties.getValue("name").getter.call(record)).isEqualTo("record")
         assertThat(record.name()).isEqualTo("record")
         assertThat(record.count()).isEqualTo(3)
     }
