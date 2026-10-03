@@ -1,0 +1,17 @@
+## Human intervention needed
+
+The automated job failed with `test_generation_failed`. Preserved work: https://github.com/oracle/graalvm-reachability-metadata/tree/ai%2Fkimeta%2Fhuman-intervention%2Fissue-10386-fails-javac-compile-org.eclipse.jetty-jetty-io-10.0.0-76f5df8a
+
+The likely failure occurred while handing off to the javac-fix test-generation workflow. The continuation marker records `claim/route_to_driver()` and leaves setup, fix, and finalization pending. No `10.0.0` test project, generation Gradle output, dynamic-access report, or run metrics were produced.
+
+The preflight logs show that the existing Jetty `9.4.47` tests require porting to Jetty `10.0.0`: `ChannelEndPoint` is unavailable, `Connection` requires `onClose(Throwable)`, and `IncludeExcludeConnectionStatistics.getConnectionStatisticsGroups()` no longer exists. Inspect:
+
+- `logs/org.eclipse.jetty:jetty-io:10.0.0/library-preparation-preflight/claude-code.log`
+- `logs/org.eclipse.jetty:jetty-io:10.0.0/library-preparation-preflight/claude-code-session-lkfcz9ci.log`
+- `forge/.continuation-marker.json` on the preserved branch
+
+Manual next steps:
+
+1. Verify the replacement APIs against the Jetty `10.0.0` sources/JAR and port the copied `9.4.47` tests accordingly.
+2. Run `./gradlew clean compileTestJava -Pcoordinates=org.eclipse.jetty:jetty-io:10.0.0` and resolve all remaining compilation errors.
+3. Run the coordinate’s metadata validation and full test lane, regenerating metadata and metrics if the Jetty 9.x metadata is incompatible.
