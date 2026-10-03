@@ -30,7 +30,7 @@ public class PolymorphicTypesTest {
     private static class ShapeTool {
 
         @Tool
-        public void inspect(@P(name = "shape") Shape shape) {}
+        public void inspect(@P(name = "shape") Shape shape) { }
     }
 
     private sealed interface Shape permits Circle, Square {}

@@ -39,6 +39,6 @@ public class JsonSchemaElementUtilsTest {
     private static class GenericTool<T> {
 
         @Tool
-        public void search(@P(name = "options") Options options, @P(name = "values") List<T[]> values) {}
+        public void search(@P(name = "options") Options options, @P(name = "values") List<T[]> values) { }
     }
 }
