@@ -30,8 +30,8 @@ import java.util.concurrent.CompletionStage;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.IntSupplier;
+import java.util.function.BiConsumer;
+import java.util.function.Supplier;
 
 import org.junit.jupiter.api.Test;
 import org.neo4j.bolt.connection.AccessMode;
@@ -45,9 +45,7 @@ import org.neo4j.bolt.connection.BoltConnectionProvider;
 import org.neo4j.bolt.connection.BoltConnectionState;
 import org.neo4j.bolt.connection.BoltProtocolVersion;
 import org.neo4j.bolt.connection.BoltServerAddress;
-import org.neo4j.bolt.connection.ListenerEvent;
 import org.neo4j.bolt.connection.LoggingProvider;
-import org.neo4j.bolt.connection.MetricsListener;
 import org.neo4j.bolt.connection.NotificationConfig;
 import org.neo4j.bolt.connection.ResponseHandler;
 import org.neo4j.bolt.connection.SecurityPlan;
@@ -68,8 +66,13 @@ import org.neo4j.bolt.connection.message.RollbackMessage;
 import org.neo4j.bolt.connection.message.RouteMessage;
 import org.neo4j.bolt.connection.message.RunMessage;
 import org.neo4j.bolt.connection.message.TelemetryMessage;
+import org.neo4j.bolt.connection.observation.BoltExchangeObservation;
+import org.neo4j.bolt.connection.observation.HttpExchangeObservation;
+import org.neo4j.bolt.connection.observation.ImmutableObservation;
+import org.neo4j.bolt.connection.observation.Observation;
 import org.neo4j.bolt.connection.pooled.AuthTokenManager;
 import org.neo4j.bolt.connection.pooled.PooledBoltConnectionSource;
+import org.neo4j.bolt.connection.pooled.observation.PoolObservationProvider;
 import org.neo4j.bolt.connection.summary.ResetSummary;
 import org.neo4j.bolt.connection.values.IsoDuration;
 import org.neo4j.bolt.connection.values.Point;
@@ -119,26 +122,21 @@ public class Neo4j_bolt_connection_pooledTest {
             assertThat(delegateProvider.connectCalls().get(0).routingContextAddress())
                     .isEqualTo(ROUTING_CONTEXT_ADDRESS);
             assertThat(delegateProvider.connectCalls().get(0).userAgent()).isEqualTo(USER_AGENT);
-            assertThat(metrics.inUse()).isEqualTo(1);
-            assertThat(metrics.idle()).isZero();
-
             await(first.close());
 
             assertThat(delegate.closeCount()).isZero();
             assertThat(delegate.resetCount()).isEqualTo(1);
             assertThat(delegate.flushCount()).isEqualTo(1);
-            assertThat(metrics.inUse()).isZero();
-            assertThat(metrics.idle()).isEqualTo(1);
-
             BoltConnection second = await(connect(provider, AUTH_TOKEN));
             assertThat(second).isNotSameAs(first);
             assertThat(delegateProvider.connectCalls()).hasSize(1);
             assertThat(await(second.authInfo()).authToken()).isEqualTo(AUTH_TOKEN);
-            assertThat(metrics.inUse()).isEqualTo(1);
-
             await(second.close());
-            assertThat(metrics.events()).contains("register", "beforeCreating", "afterCreated", "afterConnectionCreated",
-                    "afterConnectionReleased");
+            assertThat(metrics.events()).contains(
+                    "connectionPoolCreate",
+                    "pooledConnectionAcquire",
+                    "pooledConnectionCreate",
+                    "pooledConnectionInUse");
         } finally {
             await(provider.close());
         }
@@ -238,7 +236,7 @@ public class Neo4j_bolt_connection_pooledTest {
             assertThatThrownBy(() -> await(pending))
                     .isInstanceOf(ExecutionException.class)
                     .hasRootCauseInstanceOf(TimeoutException.class);
-            assertThat(metrics.events()).contains("afterTimedOutToAcquireOrCreate");
+            assertThat(metrics.events()).contains("pooledConnectionAcquire:error:TimeoutException");
 
             await(first.close());
         } finally {
@@ -259,7 +257,7 @@ public class Neo4j_bolt_connection_pooledTest {
 
         assertThat(firstDelegate.closeCount()).isGreaterThanOrEqualTo(1);
         assertThat(firstDelegate.forceCloseReasons()).containsExactly("test failure");
-        assertThat(metrics.events()).contains("afterClosed");
+        assertThat(metrics.events()).contains("pooledConnectionClose");
 
         BoltConnection second = await(connect(provider, AUTH_TOKEN));
         FakeBoltConnection secondDelegate = delegateProvider.connections().get(1);
@@ -270,7 +268,7 @@ public class Neo4j_bolt_connection_pooledTest {
 
         await(provider.close());
         assertThat(delegateProvider.closeCount()).isEqualTo(1);
-        assertThat(metrics.events()).contains("removePoolMetrics");
+        assertThat(metrics.events()).contains("connectionPoolClose");
 
         assertThatThrownBy(() -> await(connect(provider, AUTH_TOKEN)))
                 .isInstanceOf(ExecutionException.class)
@@ -308,9 +306,10 @@ public class Neo4j_bolt_connection_pooledTest {
     @Test
     void authorizationExpiredFlushErrorForcesReauthBeforeReuse() throws Exception {
         MutableClock clock = new MutableClock(1_000L);
+        RecordingMetricsListener metrics = new RecordingMetricsListener();
         RecordingConnectionProvider delegateProvider = new RecordingConnectionProvider(clock);
         PooledBoltConnectionSource provider = newProvider(
-                delegateProvider, new RecordingMetricsListener(), 2, 10_000L, 0L, -1L, clock);
+                delegateProvider, metrics, 2, 10_000L, 0L, -1L, clock);
 
         try {
             BoltConnection first = await(connect(provider, AUTH_TOKEN));
@@ -325,7 +324,10 @@ public class Neo4j_bolt_connection_pooledTest {
             RecordingResponseHandler responseHandler = new RecordingResponseHandler();
 
             delegate.nextFlushError(authExpired);
-            await(first.writeAndFlush(responseHandler, Messages.run("RETURN 1", Map.of())));
+            await(first.writeAndFlush(
+                    responseHandler,
+                    Messages.run("RETURN 1", Map.of()),
+                    metrics.scopedObservation()));
             await(first.close());
 
             assertThat(responseHandler.errors()).containsExactly(authExpired);
@@ -502,7 +504,8 @@ public class Neo4j_bolt_connection_pooledTest {
                 SecurityPlan securityPlan,
                 AuthToken authToken,
                 BoltProtocolVersion minVersion,
-                NotificationConfig notificationConfig) {
+                NotificationConfig notificationConfig,
+                ImmutableObservation observation) {
             ConnectCall call = new ConnectCall(uri, routingContextAddress, boltAgent, userAgent, connectTimeoutMillis,
                     securityPlan, authToken, minVersion, notificationConfig);
             connectCalls.add(call);
@@ -611,7 +614,10 @@ public class Neo4j_bolt_connection_pooledTest {
         }
 
         @Override
-        public CompletionStage<Void> writeAndFlush(ResponseHandler handler, List<Message> messages) {
+        public CompletionStage<Void> writeAndFlush(
+                ResponseHandler handler,
+                List<Message> messages,
+                ImmutableObservation observation) {
             flushCount++;
             handleMessages(messages);
             if (nextFlushError != null) {
@@ -861,106 +867,126 @@ public class Neo4j_bolt_connection_pooledTest {
         }
     }
 
-    private static final class RecordingMetricsListener implements MetricsListener {
+    private static final class RecordingMetricsListener implements PoolObservationProvider {
         private final List<String> events = new ArrayList<>();
-        private IntSupplier inUse = () -> 0;
-        private IntSupplier idle = () -> 0;
+        private final ImmutableObservation scopedObservation = new ImmutableObservation() {};
 
         private List<String> events() {
             return events;
         }
 
-        private int inUse() {
-            return inUse.getAsInt();
-        }
-
-        private int idle() {
-            return idle.getAsInt();
+        @Override
+        public Observation connectionPoolCreate(String id, URI uri, int maxSize) {
+            return observation("connectionPoolCreate");
         }
 
         @Override
-        public void beforeCreating(String id, ListenerEvent<?> event) {
-            events.add("beforeCreating");
+        public Observation connectionPoolClose(String id, URI uri) {
+            return observation("connectionPoolClose");
         }
 
         @Override
-        public void afterCreated(String id, ListenerEvent<?> event) {
-            events.add("afterCreated");
+        public Observation pooledConnectionCreate(String id, URI uri) {
+            return observation("pooledConnectionCreate");
         }
 
         @Override
-        public void afterFailedToCreate(String id) {
-            events.add("afterFailedToCreate");
+        public Observation pooledConnectionClose(String id, URI uri) {
+            return observation("pooledConnectionClose");
         }
 
         @Override
-        public void afterClosed(String id) {
-            events.add("afterClosed");
+        public Observation pooledConnectionAcquire(String id, URI uri) {
+            return observation("pooledConnectionAcquire");
         }
 
         @Override
-        public void beforeAcquiringOrCreating(String id, ListenerEvent<?> event) {
-            events.add("beforeAcquiringOrCreating");
-        }
-
-        @Override
-        public void afterAcquiringOrCreating(String id) {
-            events.add("afterAcquiringOrCreating");
-        }
-
-        @Override
-        public void afterAcquiredOrCreated(String id, ListenerEvent<?> event) {
-            events.add("afterAcquiredOrCreated");
-        }
-
-        @Override
-        public void afterTimedOutToAcquireOrCreate(String id) {
-            events.add("afterTimedOutToAcquireOrCreate");
-        }
-
-        @Override
-        public void afterConnectionCreated(String id, ListenerEvent<?> event) {
-            events.add("afterConnectionCreated");
-        }
-
-        @Override
-        public void afterConnectionReleased(String id, ListenerEvent<?> event) {
-            events.add("afterConnectionReleased");
-        }
-
-        @Override
-        public ListenerEvent<?> createListenerEvent() {
-            return new TestListenerEvent();
-        }
-
-        @Override
-        public void registerPoolMetrics(
+        public Observation pooledConnectionInUse(
+                ImmutableObservation parentObservation,
                 String id,
-                BoltServerAddress address,
-                IntSupplier inUse,
-                IntSupplier idle) {
-            events.add("register");
-            this.inUse = inUse;
-            this.idle = idle;
+                URI uri) {
+            return observation("pooledConnectionInUse");
         }
 
         @Override
-        public void removePoolMetrics(String id) {
-            events.add("removePoolMetrics");
+        public BoltExchangeObservation boltExchange(
+                ImmutableObservation parentObservation,
+                String host,
+                int port,
+                BoltProtocolVersion protocolVersion,
+                BiConsumer<String, String> setter) {
+            return new RecordingObservation("boltExchange", events);
+        }
+
+        @Override
+        public HttpExchangeObservation httpExchange(
+                ImmutableObservation parentObservation,
+                URI uri,
+                String method,
+                String uriTemplate,
+                BiConsumer<String, String> setter) {
+            return new RecordingObservation("httpExchange", events);
+        }
+
+        @Override
+        public ImmutableObservation scopedObservation() {
+            return scopedObservation;
+        }
+
+        @Override
+        public <T> T supplyInScope(ImmutableObservation observation, Supplier<T> supplier) {
+            return supplier.get();
+        }
+
+        private Observation observation(String event) {
+            events.add(event);
+            return new RecordingObservation(event, events);
         }
     }
 
-    private static final class TestListenerEvent implements ListenerEvent<Integer> {
-        private final AtomicInteger starts = new AtomicInteger();
+    private static final class RecordingObservation implements BoltExchangeObservation, HttpExchangeObservation {
+        private final String event;
+        private final List<String> events;
 
-        @Override
-        public void start() {
-            starts.incrementAndGet();
+        private RecordingObservation(String event, List<String> events) {
+            this.event = event;
+            this.events = events;
         }
 
         @Override
-        public Integer getSample() {
-            return starts.get();
+        public RecordingObservation onWrite(String message) {
+            return this;
+        }
+
+        @Override
+        public RecordingObservation onRecord() {
+            return this;
+        }
+
+        @Override
+        public RecordingObservation onSummary(String message) {
+            return this;
+        }
+
+        @Override
+        public RecordingObservation onHeaders(Map<String, List<String>> headers) {
+            return this;
+        }
+
+        @Override
+        public RecordingObservation onResponse(HttpExchangeObservation.Response response) {
+            return this;
+        }
+
+        @Override
+        public RecordingObservation error(Throwable throwable) {
+            events.add(event + ":error:" + throwable.getClass().getSimpleName());
+            return this;
+        }
+
+        @Override
+        public void stop() {
+            events.add(event + ":stop");
         }
     }
 
