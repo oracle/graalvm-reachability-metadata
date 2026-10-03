@@ -16,11 +16,14 @@ import org.springframework.boot.data.couchbase.autoconfigure.DataCouchbaseProper
 import org.springframework.boot.data.couchbase.autoconfigure.DataCouchbaseReactiveAutoConfiguration;
 import org.springframework.boot.data.couchbase.autoconfigure.DataCouchbaseReactiveRepositoriesAutoConfiguration;
 import org.springframework.boot.data.couchbase.autoconfigure.DataCouchbaseRepositoriesAutoConfiguration;
+import org.springframework.boot.persistence.autoconfigure.EntityScan;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.data.couchbase.core.convert.CouchbaseCustomConversions;
 import org.springframework.data.couchbase.core.convert.MappingCouchbaseConverter;
 import org.springframework.data.couchbase.core.convert.translation.TranslationService;
 import org.springframework.data.couchbase.core.mapping.CouchbaseMappingContext;
+import org.springframework.data.couchbase.core.mapping.Document;
 import org.springframework.data.mapping.model.SnakeCaseFieldNamingStrategy;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -80,6 +83,15 @@ public class Spring_boot_data_couchbaseTest {
     }
 
     @Test
+    void autoConfigurationDiscoversCouchbaseDocumentsFromEntityScan() {
+        this.contextRunner.withUserConfiguration(EntityScanConfiguration.class).run((context) -> {
+            CouchbaseMappingContext mappingContext = context.getBean(CouchbaseMappingContext.class);
+
+            assertThat(mappingContext.getPersistentEntity(CouchbaseTestDocument.class)).isNotNull();
+        });
+    }
+
+    @Test
     void propertiesExposeDefaultsAndSupportProgrammaticConfiguration() {
         DataCouchbaseProperties properties = new DataCouchbaseProperties();
 
@@ -100,6 +112,17 @@ public class Spring_boot_data_couchbaseTest {
         assertThat(properties.getScopeName()).isEqualTo("products");
         assertThat(properties.getFieldNamingStrategy()).isEqualTo(SnakeCaseFieldNamingStrategy.class);
         assertThat(properties.getTypeKey()).isEqualTo("documentType");
+    }
+
+    @Configuration(proxyBeanMethods = false)
+    @EntityScan(basePackageClasses = CouchbaseTestDocument.class)
+    static class EntityScanConfiguration {
+
+    }
+
+    @Document
+    static class CouchbaseTestDocument {
+
     }
 
 }
