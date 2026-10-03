@@ -17,7 +17,7 @@ import org.junit.jupiter.api.Test;
 
 public class TokenizersTest {
 
-    private static final String TOKENIZER_JSON = """
+    static final String TOKENIZER_JSON = """
             {
               "version": "1.0",
               "truncation": null,
