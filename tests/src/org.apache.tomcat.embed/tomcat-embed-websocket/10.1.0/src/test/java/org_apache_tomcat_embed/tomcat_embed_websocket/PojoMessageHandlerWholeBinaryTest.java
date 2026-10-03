@@ -10,7 +10,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URI;
 import java.nio.ByteBuffer;
 import java.util.Collections;
 import java.util.List;
@@ -26,6 +25,7 @@ import jakarta.websocket.SendHandler;
 import jakarta.websocket.SendResult;
 import jakarta.websocket.Session;
 
+import org.apache.tomcat.websocket.EndpointHolder;
 import org.apache.tomcat.websocket.WsRemoteEndpointImplBase;
 import org.apache.tomcat.websocket.WsSession;
 import org.apache.tomcat.websocket.WsWebSocketContainer;
@@ -65,17 +65,17 @@ public class PojoMessageHandlerWholeBinaryTest {
 
     private static WsSession openEndpoint(Object pojo, Class<? extends Decoder> decoder)
             throws Exception {
-        PojoEndpointClient endpoint = new PojoEndpointClient(pojo, List.of(decoder));
+        PojoEndpointClient endpoint = new PojoEndpointClient(pojo, List.of(decoder), null);
         ClientEndpointConfig config = ClientEndpointConfig.Builder.create().build();
         WsSession session = newSession(config);
         endpoint.onOpen(session, config);
         return session;
     }
 
-    private static WsSession newSession(EndpointConfig endpointConfig) throws Exception {
-        return new WsSession(new NoOpEndpoint(), new NoOpRemoteEndpoint(), new WsWebSocketContainer(),
-                URI.create("ws://localhost/test"), Collections.emptyMap(), null, null, null,
-                Collections.emptyList(), null, Collections.emptyMap(), false, endpointConfig);
+    private static WsSession newSession(ClientEndpointConfig endpointConfig) throws Exception {
+        return new WsSession(new EndpointHolder(new NoOpEndpoint()), new NoOpRemoteEndpoint(),
+                new WsWebSocketContainer(), Collections.emptyList(), null, Collections.emptyMap(), false,
+                endpointConfig);
     }
 
     public static class BinaryEndpoint {

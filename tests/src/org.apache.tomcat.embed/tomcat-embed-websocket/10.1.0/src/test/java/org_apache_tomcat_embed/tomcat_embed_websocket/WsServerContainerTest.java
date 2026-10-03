@@ -154,30 +154,7 @@ public class WsServerContainerTest {
         }
 
         @Override
-        @Deprecated
-        public Servlet getServlet(String name) throws ServletException {
-            return null;
-        }
-
-        @Override
-        @Deprecated
-        public Enumeration<Servlet> getServlets() {
-            return Collections.emptyEnumeration();
-        }
-
-        @Override
-        @Deprecated
-        public Enumeration<String> getServletNames() {
-            return Collections.emptyEnumeration();
-        }
-
-        @Override
         public void log(String msg) {
-        }
-
-        @Override
-        @Deprecated
-        public void log(Exception exception, String msg) {
         }
 
         @Override

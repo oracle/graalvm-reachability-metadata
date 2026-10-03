@@ -8,7 +8,6 @@ package org_apache_tomcat_embed.tomcat_embed_websocket;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.net.URI;
 import java.nio.ByteBuffer;
 import java.util.Collections;
 import java.util.List;
@@ -25,6 +24,7 @@ import jakarta.websocket.SendHandler;
 import jakarta.websocket.SendResult;
 import jakarta.websocket.Session;
 
+import org.apache.tomcat.websocket.EndpointHolder;
 import org.apache.tomcat.websocket.WsRemoteEndpointImplBase;
 import org.apache.tomcat.websocket.WsSession;
 import org.apache.tomcat.websocket.WsWebSocketContainer;
@@ -43,9 +43,9 @@ public class WsRemoteEndpointImplBaseTest {
                 .encoders(List.of(MessageTextEncoder.class))
                 .build();
 
-        WsSession session = new WsSession(new NoOpEndpoint(), new NoOpRemoteEndpoint(), new WsWebSocketContainer(),
-                URI.create("ws://localhost/test"), Collections.emptyMap(), null, null, null,
-                Collections.<Extension>emptyList(), null, Collections.emptyMap(), false, endpointConfig);
+        WsSession session = new WsSession(new EndpointHolder(new NoOpEndpoint()), new NoOpRemoteEndpoint(),
+                new WsWebSocketContainer(), Collections.<Extension>emptyList(), null, Collections.emptyMap(), false,
+                endpointConfig);
 
         assertThat(session).isNotNull();
         assertThat(ENCODER_CONSTRUCTED).isTrue();

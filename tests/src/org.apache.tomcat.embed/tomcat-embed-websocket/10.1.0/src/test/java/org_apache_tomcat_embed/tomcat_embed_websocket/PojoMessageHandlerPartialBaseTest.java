@@ -8,7 +8,6 @@ package org_apache_tomcat_embed.tomcat_embed_websocket;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.net.URI;
 import java.nio.ByteBuffer;
 import java.util.Collections;
 
@@ -21,6 +20,7 @@ import jakarta.websocket.SendHandler;
 import jakarta.websocket.SendResult;
 import jakarta.websocket.Session;
 
+import org.apache.tomcat.websocket.EndpointHolder;
 import org.apache.tomcat.websocket.WsRemoteEndpointImplBase;
 import org.apache.tomcat.websocket.WsSession;
 import org.apache.tomcat.websocket.WsWebSocketContainer;
@@ -49,10 +49,10 @@ public class PojoMessageHandlerPartialBaseTest {
     }
 
     private static WsSession newSession() throws DeploymentException {
-        EndpointConfig endpointConfig = ClientEndpointConfig.Builder.create().build();
-        return new WsSession(new NoOpEndpoint(), new NoOpRemoteEndpoint(), new WsWebSocketContainer(),
-                URI.create("ws://localhost/test"), Collections.emptyMap(), null, null, null, Collections.emptyList(),
-                null, Collections.emptyMap(), false, endpointConfig);
+        ClientEndpointConfig endpointConfig = ClientEndpointConfig.Builder.create().build();
+        return new WsSession(new EndpointHolder(new NoOpEndpoint()), new NoOpRemoteEndpoint(),
+                new WsWebSocketContainer(), Collections.emptyList(), null, Collections.emptyMap(), false,
+                endpointConfig);
     }
 
     public static class RecordingPartialByteArrayHandler implements MessageHandler.Partial<byte[]> {

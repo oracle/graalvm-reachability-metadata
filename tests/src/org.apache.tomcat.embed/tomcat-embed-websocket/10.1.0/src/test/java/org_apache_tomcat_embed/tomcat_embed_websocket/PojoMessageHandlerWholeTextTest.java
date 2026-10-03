@@ -10,7 +10,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.IOException;
 import java.io.Reader;
-import java.net.URI;
 import java.nio.ByteBuffer;
 import java.util.Collections;
 import java.util.List;
@@ -26,6 +25,7 @@ import jakarta.websocket.SendHandler;
 import jakarta.websocket.SendResult;
 import jakarta.websocket.Session;
 
+import org.apache.tomcat.websocket.EndpointHolder;
 import org.apache.tomcat.websocket.WsRemoteEndpointImplBase;
 import org.apache.tomcat.websocket.WsSession;
 import org.apache.tomcat.websocket.WsWebSocketContainer;
@@ -38,7 +38,7 @@ public class PojoMessageHandlerWholeTextTest {
     void textDecoderDeliversWholeMessageToPojo() throws Exception {
         TextEndpoint endpoint = new TextEndpoint();
         ClientEndpointConfig config = ClientEndpointConfig.Builder.create().build();
-        PojoEndpointClient pojoEndpoint = new PojoEndpointClient(endpoint, List.of(TextDecoder.class));
+        PojoEndpointClient pojoEndpoint = new PojoEndpointClient(endpoint, List.of(TextDecoder.class), null);
         WsSession session = newSession(config);
 
         pojoEndpoint.onOpen(session, config);
@@ -54,7 +54,7 @@ public class PojoMessageHandlerWholeTextTest {
     void textStreamDecoderDeliversWholeMessageToPojo() throws Exception {
         TextEndpoint endpoint = new TextEndpoint();
         ClientEndpointConfig config = ClientEndpointConfig.Builder.create().build();
-        PojoEndpointClient pojoEndpoint = new PojoEndpointClient(endpoint, List.of(TextStreamDecoder.class));
+        PojoEndpointClient pojoEndpoint = new PojoEndpointClient(endpoint, List.of(TextStreamDecoder.class), null);
         WsSession session = newSession(config);
 
         pojoEndpoint.onOpen(session, config);
@@ -71,10 +71,10 @@ public class PojoMessageHandlerWholeTextTest {
         return (MessageHandler.Whole<String>) handler;
     }
 
-    private static WsSession newSession(EndpointConfig endpointConfig) throws Exception {
-        return new WsSession(new NoOpEndpoint(), new NoOpRemoteEndpoint(), new WsWebSocketContainer(),
-                URI.create("ws://localhost/test"), Collections.emptyMap(), null, null, null,
-                Collections.emptyList(), null, Collections.emptyMap(), false, endpointConfig);
+    private static WsSession newSession(ClientEndpointConfig endpointConfig) throws Exception {
+        return new WsSession(new EndpointHolder(new NoOpEndpoint()), new NoOpRemoteEndpoint(),
+                new WsWebSocketContainer(), Collections.emptyList(), null, Collections.emptyMap(), false,
+                endpointConfig);
     }
 
     public static class TextEndpoint {

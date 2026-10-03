@@ -8,7 +8,6 @@ package org_apache_tomcat_embed.tomcat_embed_websocket;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.net.URI;
 import java.nio.ByteBuffer;
 import java.util.Collections;
 import java.util.List;
@@ -25,6 +24,7 @@ import jakarta.websocket.SendResult;
 import jakarta.websocket.Session;
 
 import org.apache.tomcat.websocket.DecoderEntry;
+import org.apache.tomcat.websocket.EndpointHolder;
 import org.apache.tomcat.websocket.Util;
 import org.apache.tomcat.websocket.WsRemoteEndpointImplBase;
 import org.apache.tomcat.websocket.WsSession;
@@ -36,7 +36,7 @@ public class UtilTest {
     @Test
     void getDecodersInstantiatesPublicDecoderAndResolvesGenericArrayType() throws DeploymentException {
         List<Class<? extends Decoder>> decoderClasses = List.of(StringArrayTextDecoder.class);
-        List<DecoderEntry> decoderEntries = Util.getDecoders(decoderClasses);
+        List<DecoderEntry> decoderEntries = Util.getDecoders(decoderClasses, null);
 
         assertThat(decoderEntries).hasSize(1);
         DecoderEntry entry = decoderEntries.get(0);
@@ -63,10 +63,10 @@ public class UtilTest {
     }
 
     private static WsSession newSession() throws DeploymentException {
-        EndpointConfig endpointConfig = ClientEndpointConfig.Builder.create().build();
-        return new WsSession(new NoOpEndpoint(), new NoOpRemoteEndpoint(), new WsWebSocketContainer(),
-                URI.create("ws://localhost/test"), Collections.emptyMap(), null, null, null, Collections.emptyList(),
-                null, Collections.emptyMap(), false, endpointConfig);
+        ClientEndpointConfig endpointConfig = ClientEndpointConfig.Builder.create().build();
+        return new WsSession(new EndpointHolder(new NoOpEndpoint()), new NoOpRemoteEndpoint(),
+                new WsWebSocketContainer(), Collections.emptyList(), null, Collections.emptyMap(), false,
+                endpointConfig);
     }
 
     public abstract static class ArrayTextDecoder<T> implements Decoder.Text<T[]> {
