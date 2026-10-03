@@ -10,7 +10,8 @@ class Java16RecordComponentsLoaderTest {
     @Test
     fun exercisesPublicReflectionBehavior() {
         val recordType = ReflectJavaFixtures.JavaRecord::class
-        val propertyNames = recordType.memberProperties.map { it.name }
+        val members = recordType.members.associateBy { it.name }
+        val properties = recordType.memberProperties.associateBy { it.name }
         val constructor = recordType.constructors.single()
         val arguments = constructor.parameters.associateWith { parameter ->
             when (parameter.name) {
@@ -21,7 +22,16 @@ class Java16RecordComponentsLoaderTest {
         }
         val record = constructor.callBy(arguments)
 
-        assertThat(propertyNames).contains("name", "count")
+        val nameProperty = properties.getValue("name")
+        val nameAccessor = recordType.memberFunctions.single { it.name == "name" }
+        val countAccessor = recordType.memberFunctions.single { it.name == "count" }
+        assertThat(members.keys).contains("name", "count")
+        assertThat(properties.keys).contains("name", "count")
+        assertThat(nameProperty.returnType.classifier).isEqualTo(String::class)
+        assertThat(nameAccessor.call(record)).isEqualTo("record")
+        assertThat(countAccessor.call(record)).isEqualTo(3)
+        assertThat(nameAccessor.annotations.filterIsInstance<ReflectJavaFixtures.RecordDetail>().single().value)
+            .isEqualTo("name-component")
         assertThat(record.name()).isEqualTo("record")
         assertThat(record.count()).isEqualTo(3)
     }
