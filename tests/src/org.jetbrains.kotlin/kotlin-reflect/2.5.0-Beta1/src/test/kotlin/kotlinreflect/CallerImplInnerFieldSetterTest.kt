@@ -10,8 +10,7 @@ class CallerImplInnerFieldSetterTest {
     @Test
     fun exercisesPublicReflectionBehavior() {
         val fixture = RichReflectionFixture()
-        val property = RichReflectionFixture::class.memberProperties.single { it.name == "fieldValue" }
-            as KMutableProperty1<RichReflectionFixture, String>
+        val property = RichReflectionFixture::fieldValue
         property.set(fixture, "changed")
         assertThat(fixture.fieldValue).isEqualTo("changed")
     }

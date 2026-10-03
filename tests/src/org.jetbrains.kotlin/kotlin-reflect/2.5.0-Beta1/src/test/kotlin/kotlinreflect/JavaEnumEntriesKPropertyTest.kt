@@ -9,7 +9,7 @@ import kotlin.reflect.jvm.*
 class JavaEnumEntriesKPropertyTest {
     @Test
     fun exercisesPublicReflectionBehavior() {
-        val entries = ReflectJavaFixtures.JavaEnum::class.memberProperties.single { it.name == "entries" }
+        val entries = ReflectJavaFixtures.JavaEnum::class.staticProperties.single { it.name == "entries" }
         assertThat(entries.call()).isEqualTo(ReflectJavaFixtures.JavaEnum.entries)
     }
 }
