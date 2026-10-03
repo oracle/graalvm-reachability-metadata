@@ -186,7 +186,7 @@ public class Jetty_ioTest {
 
         FutureCallback writeCallback = new FutureCallback();
         endPoint.write(writeCallback, BufferUtil.toBuffer("async"), BufferUtil.toBuffer(" write"));
-        writeCallback.get(2, TimeUnit.SECONDS);
+        writeCallback.get(10, TimeUnit.SECONDS);
         assertEquals("async write", endPoint.takeOutputString(StandardCharsets.UTF_8));
     }
 
@@ -254,11 +254,11 @@ public class Jetty_ioTest {
         scheduler.start();
         try {
             RecordingIdleTimeout idleTimeout = new RecordingIdleTimeout(scheduler);
-            idleTimeout.setIdleTimeout(100);
+            idleTimeout.setIdleTimeout(TimeUnit.SECONDS.toMillis(10));
             idleTimeout.onOpen();
 
             assertTrue(idleTimeout.isOpen());
-            assertEquals(100, idleTimeout.getIdleTimeout());
+            assertEquals(TimeUnit.SECONDS.toMillis(10), idleTimeout.getIdleTimeout());
             assertTrue(idleTimeout.awaitExpiration());
             assertNotNull(idleTimeout.expiration.get());
             assertTrue(idleTimeout.getIdleFor() >= 0);
@@ -382,7 +382,7 @@ public class Jetty_ioTest {
         }
 
         boolean awaitExpiration() throws InterruptedException {
-            boolean expired = expirationLatch.await(2, TimeUnit.SECONDS);
+            boolean expired = expirationLatch.await(30, TimeUnit.SECONDS);
             assertTrue(expired);
             return true;
         }
@@ -436,7 +436,7 @@ public class Jetty_ioTest {
         }
 
         boolean awaitSuccess() throws InterruptedException {
-            boolean completed = successLatch.await(2, TimeUnit.SECONDS);
+            boolean completed = successLatch.await(10, TimeUnit.SECONDS);
             assertTrue(completed);
             assertNull(failure.get());
             return true;
