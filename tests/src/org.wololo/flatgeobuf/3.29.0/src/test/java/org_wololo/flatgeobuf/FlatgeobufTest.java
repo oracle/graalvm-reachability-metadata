@@ -32,7 +32,9 @@ import org.wololo.flatgeobuf.GeometryConversions;
 import org.wololo.flatgeobuf.HeaderMeta;
 import org.wololo.flatgeobuf.NodeItem;
 import org.wololo.flatgeobuf.PackedRTree;
+import org.wololo.flatgeobuf.generated.Column;
 import org.wololo.flatgeobuf.generated.ColumnType;
+import org.wololo.flatgeobuf.generated.Feature;
 import org.wololo.flatgeobuf.generated.GeometryType;
 import org.wololo.flatgeobuf.generated.Header;
 
@@ -186,6 +188,50 @@ public class FlatgeobufTest {
         assertThat(header.envelopeLength()).isEqualTo(4);
         assertThat(header.envelope(0)).isEqualTo(-10.0);
         assertThat(header.envelope(3)).isEqualTo(30.0);
+    }
+
+    @Test
+    void writesAndReadsFeatureWithGeometryPropertiesAndColumns() throws IOException {
+        GeometryFactory geometryFactory = new GeometryFactory();
+        Geometry geometry = geometryFactory.createLineString(
+                new Coordinate[] {new Coordinate(1, 2), new Coordinate(3, 4)});
+        FlatBufferBuilder builder = new FlatBufferBuilder(1024);
+        int geometryOffset = GeometryConversions.serialize(
+                builder, geometry, (byte) GeometryType.LineString);
+        int propertiesOffset = Feature.createPropertiesVector(builder, new byte[] {7, 2, -1});
+        int columnNameOffset = builder.createString("population");
+        int columnOffset = Column.createColumn(
+                builder,
+                columnNameOffset,
+                ColumnType.Int,
+                0,
+                0,
+                32,
+                0,
+                0,
+                true,
+                false,
+                false,
+                0);
+        int columnsOffset = Feature.createColumnsVector(builder, new int[] {columnOffset});
+        int featureOffset = Feature.createFeature(
+                builder, geometryOffset, propertiesOffset, columnsOffset);
+        Feature.finishFeatureBuffer(builder, featureOffset);
+
+        Feature feature = Feature.getRootAsFeature(builder.dataBuffer());
+        assertThat(feature.geometry().type()).isZero();
+        assertThat(feature.geometry().xyLength()).isEqualTo(4);
+        assertThat(feature.geometry().xy(0)).isEqualTo(1.0);
+        assertThat(feature.geometry().xy(3)).isEqualTo(4.0);
+        assertThat(feature.propertiesLength()).isEqualTo(3);
+        assertThat(feature.properties(0)).isEqualTo(7);
+        assertThat(feature.properties(1)).isEqualTo(2);
+        assertThat(feature.properties(2)).isEqualTo(255);
+        assertThat(feature.columnsLength()).isEqualTo(1);
+        assertThat(feature.columns(0).name()).isEqualTo("population");
+        assertThat(feature.columns(0).type()).isEqualTo(ColumnType.Int);
+        assertThat(feature.columns(0).width()).isEqualTo(32);
+        assertThat(feature.columns(0).nullable()).isTrue();
     }
 
     @Test
