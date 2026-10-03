@@ -1,0 +1,125 @@
+{
+  "fix_javac_fail:2026-10-03": {
+    "timestamp": "2026-10-03T13:39:58.853018Z",
+    "library": "com.google.protobuf:protobuf-java-util:4.0.0-rc-1",
+    "starting_commit": "9726bc914d26c20c2a86ec66f88ab7e96d3a6254",
+    "ending_commit": "c3f960d48b4c8f38cb7cb584f11a557d2e7a3b48",
+    "previous_library": "com.google.protobuf:protobuf-java-util:3.25.9",
+    "strategy_name": "javac_iterative_with_coverage_sources_pi_gpt-5.6-sol",
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "status": "success",
+    "stats": {
+      "version": "4.0.0-rc-1",
+      "dynamicAccess": {
+        "breakdown": {},
+        "coverageRatio": 1.0,
+        "coveredCalls": 0,
+        "totalCalls": 0
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 6248,
+          "missed": 858,
+          "ratio": 0.879257,
+          "total": 7106
+        },
+        "line": {
+          "covered": 1289,
+          "missed": 139,
+          "ratio": 0.902661,
+          "total": 1428
+        },
+        "method": {
+          "covered": 244,
+          "missed": 36,
+          "ratio": 0.871429,
+          "total": 280
+        }
+      }
+    },
+    "previous_library_stats": {
+      "version": "3.25.9",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 4,
+            "totalCalls": 4
+          }
+        },
+        "coverageRatio": 1.0,
+        "coveredCalls": 4,
+        "totalCalls": 4
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 6000,
+          "missed": 502,
+          "ratio": 0.922793,
+          "total": 6502
+        },
+        "line": {
+          "covered": 1325,
+          "missed": 98,
+          "ratio": 0.931131,
+          "total": 1423
+        },
+        "method": {
+          "covered": 252,
+          "missed": 2,
+          "ratio": 0.992126,
+          "total": 254
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "advisory_preparation",
+      "issue_number": 9331,
+      "issue_label": "fails-javac-compile",
+      "library": "com.google.protobuf:protobuf-java-util:4.0.0-rc-1",
+      "summary": "The failure is a javac mismatch between the generated test protos and the protobuf-java runtime. It is not a Native Image limitation, and no extra dependency or Docker image is needed.",
+      "deterministic_setup": [],
+      "agent_guidance": "I read the existing 3.25.9 build.gradle but did not run a build or check Maven Central. `build.gradle` hardcodes `protocVersion = \"3.23.2\"`, a stale pin that does not follow the tested library version. The javac errors say `LazyStringArrayList.emptyList()` is not public. That means the generated `UnittestProto.java` calls an internal runtime API that 4.0.0-rc-1 no longer exposes publicly. The fix belongs in the new version's test project. Create `tests/src/com.google.protobuf/protobuf-java-util/4.0.0-rc-1/` and set `protocVersion` there to the artifact's own version (`com.google.protobuf:protoc:4.0.0-rc-1`, or the nearest published protoc that matches that runtime) so the generated code and the runtime come from the same release. Before relying on it, confirm that protoc artifact is published on Maven Central with the `linux-x86_64` classifier. If the matching protoc is unavailable, use the closest published protoc that generates code compatible with the 4.0.0-rc-1 runtime. In both cases, check the generated sources compile. Keep the `proto/` files, and the 3.25.9 test sources under `src/test/java`, aligned with any API changes in 4.x (for example removed or moved well-known-type helpers). Do not copy the 3.23.2 pin forward. Use `-Pcoordinates=com.google.protobuf:protobuf-java-util:4.0.0-rc-1` for the compile check.",
+      "risks": [
+        "A protoc 4.0.0-rc-1 binary may not be published for every platform. That would force a nearby protoc version.",
+        "Generated protos from a newer protoc may need protobuf-java 4.x runtime features that change which reflection entries are exercised, so the metadata may need to be regenerated.",
+        "The 3.25.9 test sources may use APIs that were removed or changed in 4.x and need adjusting."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#9331 [Automation] javac compile fails for com.google.protobuf:protobuf-java-util:4.0.0-rc-1; label=fails-javac-compile; body_chars=8015"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "17 existing test file path(s) included"
+        }
+      ],
+      "current_library": "com.google.protobuf:protobuf-java-util:3.25.9",
+      "new_version": "4.0.0-rc-1",
+      "model": "sonnet",
+      "input_tokens_used": 4,
+      "output_tokens_used": 1441
+    },
+    "metrics": {
+      "input_tokens_used": 147184,
+      "cached_input_tokens_used": 3804288,
+      "output_tokens_used": 15848,
+      "iterations": 6,
+      "cost_usd": 3.1134,
+      "tested_library_loc": 1289,
+      "metadata_entries": 84,
+      "test_only_metadata_entries": 1507,
+      "previous_library_metadata_entries": 120,
+      "previous_library_test_only_metadata_entries": 1147,
+      "code_coverage_percent": 90.27,
+      "previous_library_coverage_percent": 93.11
+    },
+    "artifacts": {
+      "metadata_file": "metadata/com.google.protobuf/protobuf-java-util/4.0.0-rc-1/reachability-metadata.json"
+    }
+  }
+}
