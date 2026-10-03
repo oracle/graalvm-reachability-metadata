@@ -3,6 +3,12 @@
 Rendered by Forge from the pre-push branch review of §FS-local-branch-review.
 Newest entry first; every non-approval is recorded, including one a repair later cleared.
 
+## 2026-10-03 — gg.jte:jte-runtime:3.2.4 (#9786)
+
+**Dynamic-access classes shared a generic test file**
+
+The original Jte_runtimeTest.java covered dynamic access in both gg.jte.runtime.RuntimeTemplateLoader and gg.jte.runtime.Template. The test contract requires each dynamic-access class to have its own dedicated test file.
+
 ## 2026-10-03 — org.locationtech.jts:jts-core:1.20.0 (#9789)
 
 **Bundled support JAR shadows the target library**
