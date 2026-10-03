@@ -1,0 +1,12 @@
+```json
+{
+  "action": "no_action",
+  "summary": "The javac errors come from tests written for jetty-io 9.4.x being compiled against 10.0.0. Jetty 10 removed or renamed ChannelEndPoint, added Connection.onClose(Throwable), and changed the IncludeExcludeConnectionStatistics API. The test code needs porting to the 10.0.0 API. No extra dependency, Docker image, or environment setup is involved.",
+  "deterministic_setup": [],
+  "agent_guidance": "Port the generated tests to the jetty-io 10.0.0 API. Do not reuse the 9.4.47 test sources unchanged. Specifically: ChannelEndPoint no longer exists in org.eclipse.jetty.io, so use SocketChannelEndPoint or the 10.x base type directly. Connection implementations must implement onClose(Throwable), and the old onClose() override no longer applies. IncludeExcludeConnectionStatistics has no getConnectionStatisticsGroups(), so check the 10.0.0 sources for the replacement accessor. Jetty 10 requires Java 11 or later, which the JDK 25 build already satisfies.",
+  "risks": [
+    "I did not open the 10.0.0 sources, so the API mapping above is inferred from the compiler errors. Verify the actual replacement symbols against the resolved jar.",
+    "The 9.4.47 reachability-metadata.json may not match Jetty 10 internals. Expect metadata regeneration to be needed after the tests compile."
+  ]
+}
+```
