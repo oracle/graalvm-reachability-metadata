@@ -22,7 +22,7 @@ import org.junit.jupiter.api.Test;
 public class RpcTranslatorFactoryInnerDefaultTypeConverterTest {
     private static final String IMAGE_DATA_URI =
             "data:image/png;base64,"
-                    + "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAIAAACQd1PeAAAADUlEQVR42mNk+M/wHwAF/gL+U6kBAAAAAElFTkSuQmCC";
+                    + "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAIAAACQd1PeAAAADElEQVR4nGNgYGAAAAAEAAH2FzhVAAAAAElFTkSuQmCC";
 
     @Test
     void convertsSuccessfulJsonOutputUsingDiscoveredConverterMethods() throws Exception {
