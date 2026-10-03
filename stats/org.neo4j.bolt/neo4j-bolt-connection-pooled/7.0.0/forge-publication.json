@@ -1,0 +1,103 @@
+{
+  "base_commit": "e6ee2b4b44cf76eab942b166ca946ff38d2cd6d5",
+  "branch": "ai/kimeta/fix-javac-org.neo4j.bolt-neo4j-bolt-connection-pooled-7.0.0-forge-10388-20261003030029473328-7d6cb79fe447",
+  "follow_ups": [],
+  "forge": {
+    "branch": "master",
+    "commit": "ce22cfccf0c3419f55d15c33e4ac0bd1dcc28938",
+    "monitored_branch": "origin/master"
+  },
+  "issue_number": 10388,
+  "library": {
+    "artifact": "neo4j-bolt-connection-pooled",
+    "coordinates": "org.neo4j.bolt:neo4j-bolt-connection-pooled:7.0.0",
+    "group": "org.neo4j.bolt",
+    "version": "7.0.0"
+  },
+  "local_ci_verification": {
+    "base_commit": "e6ee2b4b44cf76eab942b166ca946ff38d2cd6d5",
+    "commands": [
+      {
+        "command": [
+          "./gradlew",
+          "generateChangedIndexFileCoordinatesList",
+          "-PbaseCommit=origin/master",
+          "-PnewCommit=HEAD"
+        ],
+        "env": {
+          "GITHUB_OUTPUT": "/tmp/tmp75uijvzl"
+        },
+        "gate": "changed-index-coordinates",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :generateChangedIndexFileCoordinatesList\n\n[Incubating] Problems report is available at: file:///home/oracle/oracle/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10388-7856b113/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 4s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      },
+      {
+        "command": [
+          "./gradlew",
+          "validateIndexFiles",
+          "-Pcoordinates=org.neo4j.bolt:neo4j-bolt-connection-pooled"
+        ],
+        "env": {},
+        "gate": "index-file-validation",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :validateIndexFiles\n✅ metadata/org.neo4j.bolt/neo4j-bolt-connection-pooled/index.json: Valid\n\n[Incubating] Problems report is available at: file:///home/oracle/oracle/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10388-7856b113/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 2s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      }
+    ],
+    "failure_command": null,
+    "failure_gate": null,
+    "final_commit": "4063a0e5b086c15dbe270eb5209e982782bd92e8",
+    "fixups": [],
+    "human_intervention_required": false,
+    "repo_fix_paths": [],
+    "status": "success"
+  },
+  "local_review": {
+    "changed_paths": [],
+    "decision": "approved",
+    "finding_body": "",
+    "finding_title": "",
+    "fix_note": "",
+    "model": "gpt-5.6-sol",
+    "review_comment": "The diff is confined to the target coordinate and adds only the expected 7.0.0 test, metadata, index, and statistics files. The Java changes narrowly adapt the existing 6.0.0 coverage to the 7.0.0 observation APIs and required observation parameters without disabling Native Image execution or weakening the tested pooled-connection behavior. Dynamic-access coverage passes the repair gate at 0/0 for both 6.0.0 and 7.0.0, with no breakdown scopes. The Forge finalizer completed all three test lanes, metadata splitting and validation, style checks, generated-test validation, and statistics generation successfully without changing the publishable tree.",
+    "session_id": "8c9371fce9634e10"
+  },
+  "metrics": {
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "path": "stats/org.neo4j.bolt/neo4j-bolt-connection-pooled/7.0.0/execution-metrics.json",
+    "summary": {
+      "cached_input_tokens_used": 947968,
+      "code_coverage_percent": 71.91,
+      "cost_usd": 1.1113,
+      "input_tokens_used": 71206,
+      "iterations": 4,
+      "metadata_entries": 0,
+      "output_tokens_used": 9377,
+      "previous_library_coverage_percent": 73.05,
+      "previous_library_metadata_entries": 0,
+      "previous_library_test_only_metadata_entries": 2,
+      "test_only_metadata_entries": 2,
+      "tested_library_loc": 279
+    },
+    "timestamp": "2026-10-03T03:00:29.473328Z"
+  },
+  "modifiers": {
+    "chunk_final": true,
+    "chunked_dynamic_access": false,
+    "human_intervention": false
+  },
+  "previous_library": {
+    "artifact": "neo4j-bolt-connection-pooled",
+    "coordinates": "org.neo4j.bolt:neo4j-bolt-connection-pooled:6.0.0",
+    "group": "org.neo4j.bolt",
+    "version": "6.0.0"
+  },
+  "producer": "kimeta",
+  "publication_id": "forge-10388-20261003030029473328-7d6cb79fe447",
+  "render": {},
+  "schema_version": 1,
+  "strategy_name": "javac_iterative_with_coverage_sources_pi_gpt-5.6-sol",
+  "task_type": "fixes-javac-fail",
+  "template_type": "fixes-javac-fail",
+  "timestamp": "2026-10-03T03:00:29.473328Z"
+}
