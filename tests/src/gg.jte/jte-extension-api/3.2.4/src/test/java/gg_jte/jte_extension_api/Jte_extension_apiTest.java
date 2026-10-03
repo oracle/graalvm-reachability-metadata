@@ -21,6 +21,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -70,6 +71,33 @@ public class Jte_extension_apiTest {
     }
 
     @Test
+    void extensionGeneratesAReportForEveryTemplateInTheSet() {
+        Path generatedSourcesRoot = temporaryDirectory.resolve("generated-sources");
+        Path generatedResourcesRoot = temporaryDirectory.resolve("generated-resources");
+        JteConfig config = new TestJteConfig(
+                generatedSourcesRoot,
+                generatedResourcesRoot,
+                "example.application",
+                "example.templates",
+                ContentType.Html,
+                Jte_extension_apiTest.class.getClassLoader());
+        Set<TemplateDescription> templates = Set.of(
+                new TestTemplateDescription(
+                        "welcome.jte", "example.templates", "WelcomeGenerated", List.of(), List.of()),
+                new TestTemplateDescription(
+                        "invoice.jte", "example.billing", "InvoiceGenerated", List.of(), List.of()));
+
+        Collection<Path> generatedFiles = new BatchReportingExtension().generate(config, templates);
+
+        Path report = generatedResourcesRoot.resolve("reports/templates.txt");
+        assertThat(generatedFiles).containsExactly(report);
+        assertThat(report).hasContent("""
+                invoice.jte
+                welcome.jte
+                """);
+    }
+
+    @Test
     void templateDescriptionBuildsItsFullyQualifiedClassName() {
         TemplateDescription template = new TestTemplateDescription(
                 "invoice.jte",
@@ -84,6 +112,29 @@ public class Jte_extension_apiTest {
         assertThat(template.fullyQualifiedClassName()).isEqualTo("example.billing.InvoiceGenerated");
         assertThat(template.params()).isEmpty();
         assertThat(template.imports()).containsExactly("java.math.BigDecimal");
+    }
+
+    private static final class BatchReportingExtension implements JteExtension {
+        @Override
+        public String name() {
+            return "batch reporting extension";
+        }
+
+        @Override
+        public Collection<Path> generate(JteConfig config, Set<TemplateDescription> templates) {
+            String report = templates.stream()
+                    .map(TemplateDescription::name)
+                    .sorted()
+                    .collect(Collectors.joining("\n", "", "\n"));
+            Path reportPath = config.generatedResourcesRoot().resolve("reports/templates.txt");
+            try {
+                Files.createDirectories(reportPath.getParent());
+                Files.writeString(reportPath, report);
+            } catch (IOException exception) {
+                throw new UncheckedIOException(exception);
+            }
+            return List.of(reportPath);
+        }
     }
 
     private static final class ReportingExtension implements JteExtension {
