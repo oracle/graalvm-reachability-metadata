@@ -26,6 +26,7 @@ import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.EventListener;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
@@ -38,7 +39,6 @@ import javax.net.ssl.SSLEngine;
 import org.eclipse.jetty.io.ArrayByteBufferPool;
 import org.eclipse.jetty.io.ByteArrayEndPoint;
 import org.eclipse.jetty.io.ByteBufferPool;
-import org.eclipse.jetty.io.ChannelEndPoint;
 import org.eclipse.jetty.io.Connection;
 import org.eclipse.jetty.io.EndPoint;
 import org.eclipse.jetty.io.EofException;
@@ -215,7 +215,7 @@ public class Jetty_ioTest {
                     Selector selector = Selector.open()) {
                 accepted.configureBlocking(false);
                 SelectionKey key = accepted.register(selector, SelectionKey.OP_READ);
-                ChannelEndPoint endPoint = new SocketChannelEndPoint(accepted, null, key, scheduler);
+                SocketChannelEndPoint endPoint = new SocketChannelEndPoint(accepted, null, key, scheduler);
                 key.attach(endPoint);
                 assertTrue(key.isValid());
                 assertSame(endPoint, key.attachment());
@@ -294,7 +294,7 @@ public class Jetty_ioTest {
         TestConnection connection = new TestConnection(200, 80, 3, 1);
         RecordingConnectionListener listener = new RecordingConnectionListener();
 
-        connection.addListener(listener);
+        connection.addEventListener(listener);
         connection.onOpen();
         assertSame(connection, listener.opened.get());
         assertNull(listener.closed.get());
@@ -308,11 +308,11 @@ public class Jetty_ioTest {
         connection.close();
         assertSame(connection, listener.closed.get());
 
-        connection.removeListener(listener);
+        connection.removeEventListener(listener);
         listener.opened.set(null);
         listener.closed.set(null);
         connection.onOpen();
-        connection.onClose();
+        connection.onClose(null);
         assertNull(listener.opened.get());
         assertNull(listener.closed.get());
     }
@@ -450,7 +450,7 @@ public class Jetty_ioTest {
         private final long bytesOut;
         private final long messagesIn;
         private final long messagesOut;
-        private final List<Connection.Listener> listeners = new ArrayList<>();
+        private final List<EventListener> listeners = new ArrayList<>();
 
         private TestConnection(long bytesIn, long bytesOut, long messagesIn, long messagesOut) {
             this.bytesIn = bytesIn;
@@ -460,23 +460,29 @@ public class Jetty_ioTest {
         }
 
         @Override
-        public void addListener(Connection.Listener listener) {
+        public void addEventListener(EventListener listener) {
             listeners.add(listener);
         }
 
         @Override
-        public void removeListener(Connection.Listener listener) {
+        public void removeEventListener(EventListener listener) {
             listeners.remove(listener);
         }
 
         @Override
         public void onOpen() {
-            listeners.forEach(listener -> listener.onOpened(this));
+            listeners.stream()
+                    .filter(Connection.Listener.class::isInstance)
+                    .map(Connection.Listener.class::cast)
+                    .forEach(listener -> listener.onOpened(this));
         }
 
         @Override
-        public void onClose() {
-            listeners.forEach(listener -> listener.onClosed(this));
+        public void onClose(Throwable cause) {
+            listeners.stream()
+                    .filter(Connection.Listener.class::isInstance)
+                    .map(Connection.Listener.class::cast)
+                    .forEach(listener -> listener.onClosed(this));
         }
 
         @Override
@@ -486,7 +492,7 @@ public class Jetty_ioTest {
 
         @Override
         public void close() {
-            onClose();
+            onClose(null);
         }
 
         @Override

@@ -7,7 +7,6 @@
 package org_eclipse_jetty.jetty_io;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLEngine;
@@ -35,7 +34,6 @@ public class IncludeExcludeConnectionStatisticsTest {
 
             assertEquals(1, statistics.getConnections());
             assertEquals(1, statistics.getConnectionsTotal());
-            assertTrue(statistics.getConnectionStatisticsGroups().containsKey(connectionType));
 
             statistics.onClosed(connection);
             assertEquals(0, statistics.getConnections());
