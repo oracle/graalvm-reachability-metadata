@@ -120,5 +120,99 @@
     "artifacts": {
       "metadata_file": "metadata/org.jetbrains.kotlin/kotlin-reflect/2.5.0-Beta1/reachability-metadata.json"
     }
+  },
+  "improve_library_coverage:2026-10-03": {
+    "timestamp": "2026-10-03T04:58:09.486460Z",
+    "library": "org.jetbrains.kotlin:kotlin-reflect:2.5.0-Beta1",
+    "starting_commit": "8a2db1f67d04301cda0dc90448a3516759a290bf",
+    "ending_commit": "e0d42ac9b32bcf60bc4e30cc059c918cc310ebf6",
+    "strategy_name": "library_update_optimistic_pi_gpt-5.6-sol",
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "status": "chunk_ready",
+    "stats": {
+      "version": "2.5.0-Beta1",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 0.64,
+            "coveredCalls": 64,
+            "totalCalls": 100
+          },
+          "resources": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 1,
+            "totalCalls": 1
+          }
+        },
+        "coverageRatio": 0.643564,
+        "coveredCalls": 65,
+        "totalCalls": 101
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 112261,
+          "missed": 152231,
+          "ratio": 0.42444,
+          "total": 264492
+        },
+        "line": {
+          "covered": 16461,
+          "missed": 20743,
+          "ratio": 0.442452,
+          "total": 37204
+        },
+        "method": {
+          "covered": 5688,
+          "missed": 6527,
+          "ratio": 0.465657,
+          "total": 12215
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "no_action",
+      "issue_number": 10368,
+      "issue_label": "library-update-request",
+      "library": "org.jetbrains.kotlin:kotlin-reflect:2.5.0-Beta1",
+      "summary": "kotlin-reflect is a self-contained library. The existing scaffold already depends on it, adds Kotlin JVM and AssertJ, and has a conditional agent user-code-filter that includes kotlin.**, kotlin.reflect.** and kotlinreflect.**. The 38 uncovered classes come from the tests not exercising enough reflection paths (properties, constructors, functions, annotations, generics, KClass and KType APIs). This is a test-authoring gap. It needs no extra dependency, Docker image, or environment or system property.",
+      "deterministic_setup": [],
+      "agent_guidance": "",
+      "risks": [
+        "I only looked at the existing build.gradle, user-code-filter.json and test file layout. I did not run the build, the agent, or the dynamic-access report, and I did not read the library's documentation or dependency tree.",
+        "Coverage will only improve if the new tests drive many kotlin-reflect code paths: Kotlin classes with properties, constructors, functions, annotations, generics, sealed and enum classes, and companion objects. These must be declared in the test sources.",
+        "The user-code-filter already includes kotlin.**, so the agent should not need changes there. Local Gradle and native-image verification remain authoritative."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#10368 Improve coverage for org.jetbrains.kotlin:kotlin-reflect:2.5.0-Beta1; label=library-update-request; body_chars=206"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "6 existing test file path(s) included"
+        }
+      ],
+      "model": "sonnet",
+      "input_tokens_used": 4,
+      "output_tokens_used": 611
+    },
+    "metrics": {
+      "input_tokens_used": 256177,
+      "cached_input_tokens_used": 4690688,
+      "output_tokens_used": 27878,
+      "iterations": 5,
+      "cost_usd": 4.4625,
+      "generated_loc": 709,
+      "tested_library_loc": 16461,
+      "metadata_entries": 236,
+      "test_only_metadata_entries": 224,
+      "code_coverage_percent": 44.25
+    },
+    "artifacts": {
+      "metadata_file": "metadata/org.jetbrains.kotlin/kotlin-reflect/2.5.0-Beta1/reachability-metadata.json"
+    }
   }
 }
