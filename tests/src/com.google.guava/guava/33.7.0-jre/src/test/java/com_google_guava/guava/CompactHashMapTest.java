@@ -21,7 +21,7 @@ import org.junit.jupiter.api.Test;
 public class CompactHashMapTest {
     private static final String COMPACT_HASH_MAP_CLASS_NAME =
             "com.google.common.collect.CompactHashMap";
-    private static final long COMPACT_HASH_MAP_SERIAL_VERSION_UID = -344891455263807780L;
+    private static final long COMPACT_HASH_MAP_SERIAL_VERSION_UID = -3875695063200762544L;
 
     @Test
     void roundTripSerializesCompactHashMapKeysAndValues() throws Exception {
