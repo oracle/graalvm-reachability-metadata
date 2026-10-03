@@ -10,7 +10,8 @@ class SmartListTest {
         val overloads = RichReflectionFixture::class.members.toTypedArray()
         assertThat(overloads.map { it.name }).contains("greet", "arraySize", "fieldValue")
 
-        val values = SmartList("smart")
+        val values = SmartList<String>()
+        values.add("smart")
         assertThat(values.toArray(emptyArray<String>())).containsExactly("smart")
     }
 }
