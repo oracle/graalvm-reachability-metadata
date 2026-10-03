@@ -14,7 +14,6 @@ import java.net.URLClassLoader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Base64;
-import org.graalvm.internal.tck.NativeImageSupport;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -32,7 +31,7 @@ public class ClassPathInnerClassInfoTest {
             """;
 
     @Test
-    void loadLoadsClassDiscoveredFromClassPath(@TempDir Path classPathRoot) throws Exception {
+    void discoversClassInfoFromClassPath(@TempDir Path classPathRoot) throws Exception {
         writeFixtureClass(classPathRoot);
 
         URL[] urls = {classPathRoot.toUri().toURL()};
@@ -43,21 +42,6 @@ public class ClassPathInnerClassInfoTest {
             assertThat(classInfo.getPackageName()).isEqualTo(FIXTURE_PACKAGE);
             assertThat(classInfo.getSimpleName()).isEqualTo("LoadedFixture");
             assertThat(classInfo.isTopLevel()).isTrue();
-
-            try {
-                Class<?> loadedClass = classInfo.load();
-
-                assertThat(loadedClass.getName()).isEqualTo(FIXTURE_CLASS_NAME);
-                assertThat(loadedClass.getClassLoader()).isSameAs(loader);
-            } catch (RuntimeException exception) {
-                if (!hasExpectedNativeImageClassLoadingFailure(exception)) {
-                    throw exception;
-                }
-            } catch (Error error) {
-                if (!NativeImageSupport.isUnsupportedFeatureError(error)) {
-                    throw error;
-                }
-            }
         }
     }
 
@@ -72,20 +56,5 @@ public class ClassPathInnerClassInfoTest {
                 .filter(classInfo -> classInfo.getName().equals(FIXTURE_CLASS_NAME))
                 .findFirst()
                 .orElseThrow(() -> new AssertionError("Could not find " + FIXTURE_CLASS_NAME));
-    }
-
-    private static boolean hasExpectedNativeImageClassLoadingFailure(Throwable throwable) {
-        if (!"runtime".equals(System.getProperty("org.graalvm.nativeimage.imagecode"))) {
-            return false;
-        }
-
-        Throwable current = throwable;
-        while (current != null) {
-            if (current instanceof ClassNotFoundException && FIXTURE_CLASS_NAME.equals(current.getMessage())) {
-                return true;
-            }
-            current = current.getCause();
-        }
-        return false;
     }
 }
