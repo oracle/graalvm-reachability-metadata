@@ -15,6 +15,8 @@ import org.junit.jupiter.api.Test;
 import org.locationtech.jts.algorithm.Centroid;
 import org.locationtech.jts.algorithm.ConvexHull;
 import org.locationtech.jts.algorithm.MinimumBoundingCircle;
+import org.locationtech.jts.coverage.CoverageUnion;
+import org.locationtech.jts.coverage.CoverageValidator;
 import org.locationtech.jts.densify.Densifier;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Envelope;
@@ -144,6 +146,22 @@ public class TestBuilderProxyTest {
         assertThat(edges.isEmpty()).isFalse();
         assertThat(diagram.isEmpty()).isFalse();
         assertThat(diagram.getEnvelopeInternal()).isEqualTo(clip);
+    }
+
+    @Test
+    void validatesAndUnionsAdjacentPolygonCoverage() throws Exception {
+        WKTReader reader = new WKTReader(geometryFactory);
+        Geometry[] coverage = {
+            reader.read("POLYGON ((0 0, 10 0, 10 10, 0 10, 0 0))"),
+            reader.read("POLYGON ((10 0, 20 0, 20 10, 10 10, 10 0))")
+        };
+
+        Geometry union = CoverageUnion.union(coverage);
+
+        assertThat(CoverageValidator.isValid(coverage)).isTrue();
+        assertThat(union.getGeometryType()).isEqualTo("Polygon");
+        assertThat(union.getArea()).isEqualTo(200.0);
+        assertThat(union.getEnvelopeInternal()).isEqualTo(new Envelope(0, 20, 0, 10));
     }
 
     @Test
