@@ -2,9 +2,20 @@ package kotlinreflect
 
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
-import kotlin.reflect.KMutableProperty1
-import kotlin.reflect.full.*
-import kotlin.reflect.jvm.*
+import kotlin.reflect.full.declaredMemberFunctions
+
+@Target(AnnotationTarget.FUNCTION)
+@Retention(AnnotationRetention.RUNTIME)
+annotation class JavaAnnotationEnvelope(val tags: ReflectJavaFixtures.JavaTags)
+
+class DescriptorBackedCollection : ArrayList<String>() {
+    @JavaAnnotationEnvelope(
+        ReflectJavaFixtures.JavaTags(
+            value = [ReflectJavaFixtures.JavaTag("described"), ReflectJavaFixtures.JavaTag("collection")],
+        ),
+    )
+    fun describe(): String = joinToString("|")
+}
 
 class ReflectJavaClassTest {
     @Test
@@ -19,5 +30,19 @@ class ReflectJavaClassTest {
         assertThat(named.name).isEqualTo("constructed")
         assertThat(type.nestedClasses.map { it.simpleName }).contains("Nested")
         assertThat(members.keys).contains("publicField", "greet")
+    }
+
+    @Test
+    fun readsJavaAnnotationArgumentsFromDescriptorBackedMembers() {
+        val values = DescriptorBackedCollection().apply {
+            add("first")
+            add("second")
+        }
+        val describe = DescriptorBackedCollection::class.declaredMemberFunctions
+            .single { it.name == "describe" }
+        val envelope = describe.annotations.filterIsInstance<JavaAnnotationEnvelope>().single()
+
+        assertThat(envelope.tags.value.map { it.value }).containsExactly("described", "collection")
+        assertThat(describe.call(values)).isEqualTo("first|second")
     }
 }
