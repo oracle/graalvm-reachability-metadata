@@ -8,6 +8,11 @@ Newest entry first; every non-approval is recorded, including one a repair later
 **Test forces an unrelated transitive dependency version**
 
 The 5.8.0 test project forced ZooKeeper from Curator 5.8.0's resolved 3.9.2 dependency to 3.5.10 solely to exercise legacy Compatibility branches. This changed the tested runtime graph and added unrelated build setup rather than adapting the test to the target version, violating the no-scope-creep requirement in FS-test-contract.2.9.
+## 2026-10-02 — org.jetbrains.kotlin:kotlin-reflect:2.5.0-Beta1 (#10325)
+
+**Latest Kotlin reflection metadata dropped established native support**
+
+The new latest metadata bucket retained only kotlin/kotlin.kotlin_builtins and omitted conditional registrations already required by Kotlin reflection. Since Spring's unlisted kotlin-reflect 2.3.21 dependency selects the latest bucket, native runs failed first with an unresolved java.util.Set and then with missing reflection access to Executable.getParameters() and Parameter.getName(). This is a contribution-local required-CI regression repairable under contribution-contract disposition 5.1.
 ## 2026-10-02 — ch.qos.logback:logback-classic:1.6.0 (#10311)
 
 **Explicit I/O timeouts below the required 10-second floor**

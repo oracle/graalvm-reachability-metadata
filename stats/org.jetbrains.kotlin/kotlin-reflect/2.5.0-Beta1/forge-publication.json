@@ -1,0 +1,113 @@
+{
+  "base_commit": "f5c0290421d221b3981e3343381a5a8c40be9358",
+  "branch": "ai/kimeta/fix-javac-org.jetbrains.kotlin-kotlin-reflect-2.5.0-Beta1-forge-10325-20261002184527882963-5fe76f436cab",
+  "follow_ups": [
+    {
+      "class_threshold": 15,
+      "coordinate": "org.jetbrains.kotlin:kotlin-reflect:2.5.0-Beta1",
+      "issue_number": 10368,
+      "type": "deferred_dynamic_access_coverage",
+      "uncovered_class_count": 38
+    }
+  ],
+  "forge": {
+    "branch": "master",
+    "commit": "0125dee4d73f48026a1ae06e439164e8857886a7",
+    "monitored_branch": "origin/master"
+  },
+  "issue_number": 10325,
+  "library": {
+    "artifact": "kotlin-reflect",
+    "coordinates": "org.jetbrains.kotlin:kotlin-reflect:2.5.0-Beta1",
+    "group": "org.jetbrains.kotlin",
+    "version": "2.5.0-Beta1"
+  },
+  "local_ci_verification": {
+    "base_commit": "f5c0290421d221b3981e3343381a5a8c40be9358",
+    "commands": [
+      {
+        "command": [
+          "./gradlew",
+          "generateChangedIndexFileCoordinatesList",
+          "-PbaseCommit=origin/master",
+          "-PnewCommit=HEAD"
+        ],
+        "env": {
+          "GITHUB_OUTPUT": "/tmp/tmpkovvt145"
+        },
+        "gate": "changed-index-coordinates",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :generateChangedIndexFileCoordinatesList\n\n[Incubating] Problems report is available at: file:///home/oracle/oracle/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10325-89f4a8f7/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 11s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      },
+      {
+        "command": [
+          "./gradlew",
+          "validateIndexFiles",
+          "-Pcoordinates=org.jetbrains.kotlin:kotlin-reflect"
+        ],
+        "env": {},
+        "gate": "index-file-validation",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :validateIndexFiles\n\u2705 metadata/org.jetbrains.kotlin/kotlin-reflect/index.json: Valid\n\n[Incubating] Problems report is available at: file:///home/oracle/oracle/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10325-89f4a8f7/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 9s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      }
+    ],
+    "failure_command": null,
+    "failure_gate": null,
+    "final_commit": "59f79fc7822b63f3d0387841617388ead2a84c08",
+    "fixups": [],
+    "human_intervention_required": false,
+    "repo_fix_paths": [],
+    "status": "success"
+  },
+  "local_review": {
+    "changed_paths": [
+      "metadata/org.jetbrains.kotlin/kotlin-reflect/2.5.0-Beta1/reachability-metadata.json"
+    ],
+    "decision": "approved",
+    "finding_body": "The new latest metadata bucket retained only kotlin/kotlin.kotlin_builtins and omitted conditional registrations already required by Kotlin reflection. Since Spring's unlisted kotlin-reflect 2.3.21 dependency selects the latest bucket, native runs failed first with an unresolved java.util.Set and then with missing reflection access to Executable.getParameters() and Parameter.getName(). This is a contribution-local required-CI regression repairable under contribution-contract disposition 5.1.",
+    "finding_title": "Latest Kotlin reflection metadata dropped established native support",
+    "fix_note": "Restored the prior bucket's missing conditional reflection registrations and expanded the Kotlin builtins resource glob to kotlin/**/*.kotlin_builtins. Verified with checkMetadataFiles, the full org.jetbrains.kotlin:kotlin-reflect:2.5.0-Beta1 test, and passing local :data:data-jdbc-h2-kotlin and :data:data-jpa-kotlin Spring AOT native tests against the exact smoke-test commit used by CI.",
+    "model": "gpt-5.6-sol",
+    "review_comment": "The required Spring AOT jobs failed because the new latest kotlin-reflect metadata was also selected for the unlisted 2.3.21 dependency but had dropped established Kotlin reflection registrations and all builtins resources except the root file. I reviewed the complete target-coordinate diff; it remains scoped, preserves the meaningful test and Native Image execution, uses only reachability-metadata.json, and passes the repair coverage gate (prior N/A is 0/0; new overall is 10/101, reflection 9/100, and resources 1/1). The repaired metadata passed repository validation, the coordinate JVM/native test, and local reproductions of both failed Spring AOT projects.",
+    "session_id": "f0b00ced4c1c4eea"
+  },
+  "metrics": {
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "path": "stats/org.jetbrains.kotlin/kotlin-reflect/2.5.0-Beta1/execution-metrics.json",
+    "summary": {
+      "cached_input_tokens_used": 192896,
+      "code_coverage_percent": 21.53,
+      "cost_usd": 0.3815,
+      "input_tokens_used": 47418,
+      "iterations": 3,
+      "metadata_entries": 32,
+      "output_tokens_used": 1600,
+      "previous_library_coverage_percent": 28.73,
+      "previous_library_metadata_entries": 23,
+      "previous_library_test_only_metadata_entries": 5,
+      "test_only_metadata_entries": 18,
+      "tested_library_loc": 8009
+    },
+    "timestamp": "2026-10-02T18:45:27.882963Z"
+  },
+  "modifiers": {
+    "chunk_final": true,
+    "chunked_dynamic_access": false,
+    "human_intervention": false
+  },
+  "previous_library": {
+    "artifact": "kotlin-reflect",
+    "coordinates": "org.jetbrains.kotlin:kotlin-reflect:1.7.10",
+    "group": "org.jetbrains.kotlin",
+    "version": "1.7.10"
+  },
+  "producer": "kimeta",
+  "publication_id": "forge-10325-20261002184527882963-5fe76f436cab",
+  "render": {},
+  "schema_version": 1,
+  "strategy_name": "javac_iterative_with_coverage_sources_pi_gpt-5.6-sol",
+  "task_type": "fixes-javac-fail",
+  "template_type": "fixes-javac-fail",
+  "timestamp": "2026-10-02T18:45:27.882963Z"
+}
