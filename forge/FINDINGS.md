@@ -8,6 +8,11 @@ Newest entry first; every non-approval is recorded, including one a repair later
 **Explicit I/O timeouts below the required 10-second floor**
 
 FS-test-contract.1.7 requires every explicit socket, connection, and bounded I/O wait to be at least 10 seconds. RemoteAppenderStreamClientTest, SocketNodeTest, and SocketReceiverTest each set SOCKET_TIMEOUT_MILLIS to 5,000 and used it for socket operations and related bounded waits.
+## 2026-10-03 — com.nimbusds:nimbus-jose-jwt:4.0 (#9334)
+
+**Unjustified Native Image URL protocol flag**
+
+The new 4.0 test project copied `--enable-url-protocols=https` into `build.gradle` without satisfying the native-flag necessity rule. The adapted 4.0 tests use `URI` values and perform no HTTPS URL access, so the flag was not required by the library or a transitive dependency. All three Native Image lanes passed after its removal.
 
 ## 2026-10-02 — org.springframework:spring-aop:6.1.7 (#10339)
 
