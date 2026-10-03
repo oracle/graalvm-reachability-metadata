@@ -3,6 +3,12 @@
 Rendered by Forge from the pre-push branch review of §FS-local-branch-review.
 Newest entry first; every non-approval is recorded, including one a repair later cleared.
 
+## 2026-10-03 — org.eclipse.jetty:jetty-io:10.0.0 (#10386)
+
+**Jetty I/O tests used explicit timeouts below the required floor**
+
+The new Jetty 10 test project used 2-second waits for asynchronous I/O callbacks and a 100-millisecond IdleTimeout. These explicit I/O timeouts violated FS-test-contract.1.7, which requires at least 10 seconds to avoid agent and Native Image startup flakiness.
+
 ## 2026-10-02 — org.apache.tomcat.embed:tomcat-embed-el:10.0.17 (#10319)
 
 **Runtime repair masked a library serialization regression and required a test-only native build flag**
