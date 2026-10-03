@@ -52,6 +52,13 @@ public class H2gis_apiTest {
     }
 
     @Test
+    void marksDeterministicScalarFunctionsAsDeterministicByDefault() {
+        TestScalarFunction function = new TestScalarFunction();
+
+        assertThat(function.getProperty(ScalarFunction.PROP_DETERMINISTIC)).isEqualTo(true);
+    }
+
+    @Test
     void reportsProgressVisitorStateAndCancellationEvents() {
         EmptyProgressVisitor visitor = new EmptyProgressVisitor();
         List<PropertyChangeEvent> events = new ArrayList<>();
