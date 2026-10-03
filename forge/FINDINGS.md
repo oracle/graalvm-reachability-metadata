@@ -8,6 +8,11 @@ Newest entry first; every non-approval is recorded, including one a repair later
 **Runtime repair masked a library serialization regression and required a test-only native build flag**
 
 The contribution used CompatibleObjectOutputStream to replace Class<?>[] with String[] while serializing FunctionMapperImpl, hiding Tomcat 10.0.17's incompatible normal round trip instead of testing supported behavior; the 10.0.17 source writes Class[] while readExternal reads String[]. It also installed a test-only ExpressionFactory provider and added -H:ServiceLoaderFeatureExcludeServiceProviders solely to make that provider win in Native Image, contrary to the uniform-necessity rule for native flags. The custom provider and MessageFactory additions were unrelated expansion in a JVM runtime repair. These violated FS-test-contract.2.6, FS-test-contract.2.7, and FS-test-contract.2.9.
+## 2026-10-03 — com.nimbusds:nimbus-jose-jwt:4.0 (#9334)
+
+**Unjustified Native Image URL protocol flag**
+
+The new 4.0 test project copied `--enable-url-protocols=https` into `build.gradle` without satisfying the native-flag necessity rule. The adapted 4.0 tests use `URI` values and perform no HTTPS URL access, so the flag was not required by the library or a transitive dependency. All three Native Image lanes passed after its removal.
 
 ## 2026-10-02 — org.springframework:spring-aop:6.1.7 (#10339)
 
