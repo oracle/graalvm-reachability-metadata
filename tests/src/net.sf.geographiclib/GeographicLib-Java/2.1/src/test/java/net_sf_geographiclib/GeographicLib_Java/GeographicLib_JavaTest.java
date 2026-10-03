@@ -128,6 +128,18 @@ public class GeographicLib_JavaTest {
     }
 
     @Test
+    void reportsGeodesicLineDistanceInDistanceAndArcUnits() {
+        GeodesicLine line = Geodesic.WGS84.Line(10.0, 20.0, 35.0, GeodesicMask.ALL);
+        double distance = 250_000.0;
+        GeodesicData position = line.Position(distance, GeodesicMask.ALL);
+
+        line.SetDistance(distance);
+
+        assertThat(line.GenDistance(false)).isCloseTo(distance, within(DISTANCE_TOLERANCE));
+        assertThat(line.GenDistance(true)).isCloseTo(position.a12, within(ANGULAR_TOLERANCE));
+    }
+
+    @Test
     void computesPolygonsAndPolylinesFromGeodesicEdges() {
         Geodesic earth = Geodesic.WGS84;
         PolygonArea polygon = new PolygonArea(earth, false);
