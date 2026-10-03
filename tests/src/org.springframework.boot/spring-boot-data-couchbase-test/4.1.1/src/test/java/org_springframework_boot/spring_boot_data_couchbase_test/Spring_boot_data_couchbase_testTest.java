@@ -26,9 +26,10 @@ import org.springframework.context.annotation.FilterType;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.couchbase.core.CouchbaseTemplate;
+import org.springframework.data.couchbase.core.mapping.Document;
 import org.springframework.data.couchbase.core.query.Query;
 import org.springframework.data.couchbase.core.query.QueryCriteria;
-import org.springframework.data.couchbase.core.mapping.Document;
+import org.springframework.data.couchbase.repository.CouchbaseRepository;
 import org.springframework.stereotype.Component;
 import org.springframework.test.context.ContextConfiguration;
 
@@ -50,6 +51,9 @@ public class Spring_boot_data_couchbase_testTest {
     @Autowired
     private IncludedComponent includedComponent;
 
+    @Autowired
+    private PersonRepository personRepository;
+
     @Test
     void includesComponentsSelectedByTheDataCouchbaseSlice() {
         assertThat(this.includedComponent.value()).isEqualTo("included");
@@ -70,6 +74,15 @@ public class Spring_boot_data_couchbase_testTest {
                         .scanConsistency(QueryScanConsistency.REQUEST_PLUS))
                 .all();
         assertThat(engineers).extracting(Person::getId).containsExactly("ada");
+    }
+
+    @Test
+    void persistsAndRetrievesDocumentsThroughTheAutoConfiguredRepository() {
+        Person grace = this.personRepository.save(
+                new Person("grace-repository", "Grace", "scientist"));
+
+        assertThat(this.personRepository.findById(grace.getId()))
+                .hasValueSatisfying(found -> assertThat(found.getName()).isEqualTo("Grace"));
     }
 
     @Configuration(proxyBeanMethods = false)
@@ -126,6 +139,10 @@ public class Spring_boot_data_couchbase_testTest {
 
     }
 
+}
+
+interface PersonRepository
+        extends CouchbaseRepository<Spring_boot_data_couchbase_testTest.Person, String> {
 }
 
 @Component
