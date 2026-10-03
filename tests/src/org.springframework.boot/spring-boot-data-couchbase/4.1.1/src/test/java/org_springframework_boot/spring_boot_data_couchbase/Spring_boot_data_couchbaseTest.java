@@ -66,6 +66,20 @@ public class Spring_boot_data_couchbaseTest {
     }
 
     @Test
+    void autoConfigurationAppliesMappingAndConversionSettings() {
+        this.contextRunner
+                .withPropertyValues("spring.data.couchbase.auto-index=true",
+                        "spring.data.couchbase.type-key=documentType")
+                .run((context) -> {
+                    CouchbaseMappingContext mappingContext = context.getBean(CouchbaseMappingContext.class);
+                    MappingCouchbaseConverter converter = context.getBean(MappingCouchbaseConverter.class);
+
+                    assertThat(mappingContext.isAutoIndexCreation()).isTrue();
+                    assertThat(converter.getTypeKey()).isEqualTo("documentType");
+                });
+    }
+
+    @Test
     void propertiesExposeDefaultsAndSupportProgrammaticConfiguration() {
         DataCouchbaseProperties properties = new DataCouchbaseProperties();
 
