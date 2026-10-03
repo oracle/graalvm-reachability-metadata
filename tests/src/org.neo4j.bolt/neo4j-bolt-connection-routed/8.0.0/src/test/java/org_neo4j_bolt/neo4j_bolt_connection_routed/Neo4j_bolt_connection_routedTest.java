@@ -389,6 +389,7 @@ public class Neo4j_bolt_connection_routedTest {
                 Clock.systemUTC(),
                 new NoopLoggingProvider(),
                 URI.create("neo4j://localhost:7687"),
+                WAIT_TIMEOUT.toMillis(),
                 List.of(),
                 new NoopObservationProvider());
     }
