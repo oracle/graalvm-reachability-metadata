@@ -13,6 +13,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Optional;
 
+import io.micrometer.core.annotation.Timed;
 import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -121,6 +122,33 @@ public class Spring_boot_data_commonsTest {
     }
 
     @Test
+    void recordsMethodSpecificRepositoryTimer() {
+        SimpleMeterRegistry registry = new SimpleMeterRegistry();
+        try {
+            InMemoryRepositoryFactory factory = new InMemoryRepositoryFactory();
+            factory.addInvocationListener(new MetricsRepositoryMethodInvocationListener(
+                    () -> registry, new DefaultRepositoryTagsProvider(), "repository.invocations", AutoTimer.ENABLED));
+            BookRepository repository = factory.getRepository(BookRepository.class);
+            Book springBook = new Book(1L, "spring");
+            repository.save(springBook).block(Duration.ofSeconds(10));
+
+            Assertions.assertThat(repository.findByTitleWithTimer("spring").block(Duration.ofSeconds(10)))
+                    .isSameAs(springBook);
+
+            Assertions.assertThat(registry.get("repository.lookup")
+                    .tag("operation", "lookup")
+                    .tag("repository", "BookRepository")
+                    .tag("method", "findByTitleWithTimer")
+                    .tag("state", "SUCCESS")
+                    .tag("exception", "None")
+                    .timer()
+                    .count()).isEqualTo(1);
+        } finally {
+            registry.close();
+        }
+    }
+
+    @Test
     void createsReactiveRepositoryProxyAndExecutesCrudAndQueryMethods() {
         InMemoryRepositoryFactory factory = new InMemoryRepositoryFactory();
         BookRepository repository = factory.getRepository(BookRepository.class);
@@ -165,6 +193,9 @@ public class Spring_boot_data_commonsTest {
     public interface BookRepository extends ReactiveCrudRepository<Book, Long> {
 
         Mono<Book> findByTitle(String title);
+
+        @Timed(value = "repository.lookup", extraTags = { "operation", "lookup" })
+        Mono<Book> findByTitleWithTimer(String title);
     }
 
     public static final class Book {
