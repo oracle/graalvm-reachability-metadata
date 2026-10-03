@@ -9,6 +9,10 @@ import kotlin.reflect.jvm.*
 class AnnotationConstructorCallerKtTest {
     @Test
     fun exercisesPublicReflectionBehavior() {
+        val metadataParameter = MarkedParameterFixture::class.constructors.single().parameters.single()
+        val marker = metadataParameter.findAnnotation<ReflectTag>()!!
+        assertThat(marker.value).isEqualTo("metadata-parameter")
+
         val constructor = ReflectDetails::class.constructors.single()
         val nameParameter = constructor.parameters.single { it.name == "name" }
         val annotation = constructor.callBy(mapOf(nameParameter to "created"))

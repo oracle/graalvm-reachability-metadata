@@ -9,6 +9,11 @@ import kotlin.reflect.jvm.*
 class ConvertFromMetadataKtTest {
     @Test
     fun exercisesPublicReflectionBehavior() {
+        val parameter = ArrayParameterFixture::class.constructors.single().parameters.single()
+        val parameterComposition = parameter.findAnnotation<ReflectComposition>()!!
+        assertThat(parameterComposition.parts.map { it.value })
+            .containsExactly("parameter-left", "parameter-right")
+
         val function = RichReflectionFixture::class.declaredMemberFunctions
             .single { it.name == "composedAnnotation" }
         val composition = function.findAnnotation<ReflectComposition>()!!

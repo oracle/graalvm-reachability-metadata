@@ -38,6 +38,12 @@ public final class ReflectJavaFixtures {
         JavaTag[] value();
     }
 
+    @Retention(RetentionPolicy.RUNTIME)
+    @Target({ElementType.RECORD_COMPONENT, ElementType.METHOD, ElementType.PARAMETER})
+    public @interface RecordDetail {
+        String value();
+    }
+
     @JavaDetails(name = "bean", count = 2)
     @JavaTag("alpha")
     @JavaTag("beta")
@@ -65,7 +71,7 @@ public final class ReflectJavaFixtures {
         }
     }
 
-    public record JavaRecord(String name, int count) {
+    public record JavaRecord(@RecordDetail("name-component") String name, int count) {
     }
 
     @Inherited

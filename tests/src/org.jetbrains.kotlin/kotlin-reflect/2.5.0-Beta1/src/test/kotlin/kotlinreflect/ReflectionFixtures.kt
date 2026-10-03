@@ -8,6 +8,7 @@ import kotlin.properties.Delegates
     AnnotationTarget.FIELD,
     AnnotationTarget.FUNCTION,
     AnnotationTarget.PROPERTY,
+    AnnotationTarget.VALUE_PARAMETER,
 )
 @Retention(AnnotationRetention.RUNTIME)
 @Repeatable
@@ -19,14 +20,33 @@ annotation class ReflectDetails(val name: String = "default", val values: Array<
 
 annotation class ReflectPart(val value: String)
 
-@Target(AnnotationTarget.FUNCTION, AnnotationTarget.PROPERTY)
+@Target(
+    AnnotationTarget.CLASS,
+    AnnotationTarget.FUNCTION,
+    AnnotationTarget.PROPERTY,
+    AnnotationTarget.VALUE_PARAMETER,
+)
 @Retention(AnnotationRetention.RUNTIME)
 annotation class ReflectComposition(val parts: Array<ReflectPart>)
+
+annotation class ArrayParameterFixture(
+    @ReflectComposition([ReflectPart("parameter-left"), ReflectPart("parameter-right")])
+    val value: String,
+)
+
+annotation class MarkedParameterFixture(
+    @ReflectTag("metadata-parameter") val value: String,
+)
+
+@ReflectComposition([ReflectPart("class-left"), ReflectPart("class-right")])
+class ArrayAnnotationFixture
 
 @ReflectTag("first")
 @ReflectTag("second")
 @ReflectDetails("fixture", ["one", "two"])
-class RichReflectionFixture @ReflectTag("constructor") constructor(val prefix: String = "hello") {
+class RichReflectionFixture @ReflectTag("constructor") constructor(
+    @ReflectTag("parameter") val prefix: String = "hello",
+) {
     class Nested(val value: Int)
 
     @ReflectTag("property")
@@ -71,6 +91,11 @@ object ReflectionSingleton {
 @JvmInline
 value class ReflectionValue(val text: String) {
     fun decorate(suffix: String): String = "$text$suffix"
+}
+
+@JvmInline
+value class InternalReflectionValue(internal val content: String) {
+    fun render(): String = "internal:$content"
 }
 
 class ValueClassService {

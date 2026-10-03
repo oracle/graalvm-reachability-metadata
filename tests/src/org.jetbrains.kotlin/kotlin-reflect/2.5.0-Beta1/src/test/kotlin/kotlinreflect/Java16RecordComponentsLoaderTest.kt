@@ -21,8 +21,14 @@ class Java16RecordComponentsLoaderTest {
         }
         val record = constructor.callBy(arguments)
 
+        val nameProperty = properties.getValue("name")
+        val countProperty = properties.getValue("count")
         assertThat(properties.keys).contains("name", "count")
-        assertThat(properties.getValue("name").returnType.classifier).isEqualTo(String::class)
+        assertThat(nameProperty.returnType.classifier).isEqualTo(String::class)
+        assertThat(nameProperty.getter.call(record)).isEqualTo("record")
+        assertThat(countProperty.getter.call(record)).isEqualTo(3)
+        assertThat(nameProperty.annotations.filterIsInstance<ReflectJavaFixtures.RecordDetail>().single().value)
+            .isEqualTo("name-component")
         assertThat(record.name()).isEqualTo("record")
         assertThat(record.count()).isEqualTo(3)
     }

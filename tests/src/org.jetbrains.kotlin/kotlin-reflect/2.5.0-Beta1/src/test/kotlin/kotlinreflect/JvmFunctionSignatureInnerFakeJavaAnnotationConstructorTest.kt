@@ -11,6 +11,12 @@ class JvmFunctionSignatureInnerFakeJavaAnnotationConstructorTest {
     fun exercisesPublicReflectionBehavior() {
         val constructor = ReflectJavaFixtures.JavaDetails::class.constructors.single()
         assertThat(constructor.parameters.map { it.name }).containsExactlyInAnyOrder("name", "count")
+        val arguments = constructor.parameters.associateWith { parameter ->
+            if (parameter.name == "name") "signature" else 7
+        }
+        val annotation = constructor.callBy(arguments)
+        assertThat(annotation.name).isEqualTo("signature")
+        assertThat(annotation.count).isEqualTo(7)
         assertThat(constructor.toString()).contains("JavaDetails")
     }
 }

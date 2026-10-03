@@ -12,6 +12,9 @@ class UtilKtTest {
         val annotation = RichReflectionFixture::class.annotations.filterIsInstance<ReflectDetails>().single()
         assertThat(annotation.values).containsExactly("one", "two")
 
+        val arrayAnnotation = ArrayAnnotationFixture::class.findAnnotation<ReflectComposition>()!!
+        assertThat(arrayAnnotation.parts.map { it.value }).containsExactly("class-left", "class-right")
+
         val javaTags = ReflectJavaFixtures.JavaBean::class.annotations
             .filterIsInstance<ReflectJavaFixtures.JavaTags>()
             .single()
