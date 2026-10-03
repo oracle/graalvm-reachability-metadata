@@ -100,6 +100,41 @@ public class FlatgeobufTest {
     }
 
     @Test
+    void infersGeometryTypeWhenSerializing() throws IOException {
+        GeometryFactory geometryFactory = new GeometryFactory();
+        Geometry lineString = geometryFactory.createLineString(
+                new Coordinate[] {new Coordinate(0, 0), new Coordinate(2, 1)});
+        Geometry polygon = geometryFactory.createPolygon(
+                geometryFactory.createLinearRing(
+                        new Coordinate[] {
+                            new Coordinate(0, 0),
+                            new Coordinate(4, 0),
+                            new Coordinate(4, 4),
+                            new Coordinate(0, 4),
+                            new Coordinate(0, 0)
+                        }),
+                null);
+        Geometry multiPoint = geometryFactory.createMultiPointFromCoords(
+                new Coordinate[] {new Coordinate(-1, -2), new Coordinate(3, 4)});
+        Geometry multiLineString = geometryFactory.createMultiLineString(
+                new LineString[] {
+                    geometryFactory.createLineString(
+                            new Coordinate[] {new Coordinate(0, 0), new Coordinate(1, 1)}),
+                    geometryFactory.createLineString(
+                            new Coordinate[] {new Coordinate(2, 2), new Coordinate(3, 3)})
+                });
+        Geometry multiPolygon = geometryFactory.createMultiPolygon(
+                new Polygon[] {(Polygon) polygon});
+
+        assertGeometryRoundTrip(lineString, (byte) 0, GeometryType.LineString);
+        assertGeometryRoundTrip(polygon, (byte) 0, GeometryType.Polygon);
+        assertGeometryRoundTrip(multiPoint, (byte) 0, GeometryType.MultiPoint);
+        assertGeometryRoundTrip(
+                multiLineString, (byte) 0, GeometryType.MultiLineString);
+        assertGeometryRoundTrip(multiPolygon, (byte) 0, GeometryType.MultiPolygon);
+    }
+
+    @Test
     void writesAndReadsHeaderMetadataThroughBothInputForms() throws IOException {
         ColumnMeta nameColumn = new ColumnMeta();
         nameColumn.name = "name";
