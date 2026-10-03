@@ -1,0 +1,78 @@
+{
+  "continueFrom": "explore",
+  "coordinate": "org.locationtech.jts:jts-core:1.20.0",
+  "failure": {
+    "operand": "org.locationtech.jts.util.TestBuilderProxy",
+    "phase": "explore",
+    "step": "generate_tests()"
+  },
+  "issueNumber": 9789,
+  "label": "library-new-request",
+  "libraryPreparationPreflight": {
+    "action": "no_action",
+    "agent_guidance": "",
+    "applied_setup": [],
+    "deterministic_setup": [],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#9789 Support for org.locationtech.jts:jts-core:1.20.0; label=library-new-request; body_chars=39"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "0 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 2,
+    "issue_label": "library-new-request",
+    "issue_number": 9789,
+    "library": "org.locationtech.jts:jts-core:1.20.0",
+    "model": "sonnet",
+    "output_tokens_used": 2469,
+    "risks": [
+      "Could not verify the exact 1.20.0 POM or upstream docs directly in this session (outbound network tools were unavailable); the no-native/no-dependency assessment relies on well-established knowledge of JTS's architecture and should be reconfirmed by Gradle dependency resolution during generation if anything unexpected shows up.",
+      "If generated tests exercise WKT/WKB number formatting, double-check locale sensitivity in output formatting during review \u2014 JTS's WKTWriter has historically had decimal-separator behavior tied to the default Locale in some versions."
+    ],
+    "status": "completed",
+    "summary": "jts-core is a pure-Java, self-contained geometry library (the historical source JTS was ported *into* C++ GEOS, not the reverse) with no runtime dependencies, no native/JNI component, no database or Docker service, and no required env vars or system properties. The standard generated test scaffold (JUnit + testImplementation on jts-core) is sufficient to exercise its public API (GeometryFactory, PrecisionModel, spatial predicates/operations, WKT/WKB I/O)."
+  },
+  "libraryUpdateRoute": null,
+  "newVersion": null,
+  "phases": {
+    "explore": {
+      "chunkClassCount": 4,
+      "chunkProcessedClassCount": 0,
+      "exhaustedClasses": [],
+      "iteration": 2,
+      "status": "pending"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": null,
+      "status": "skipped"
+    },
+    "publication": {
+      "branch": null,
+      "coverageFollowUpIssueNumber": null,
+      "isPushed": false,
+      "publicationId": null,
+      "publicationTimestamp": null,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": true,
+      "status": "completed"
+    }
+  },
+  "preservedBranch": "ai/kimeta/human-intervention/issue-9789-library-new-request-org.locationtech.jts-jts-core-1.20.0-75365445",
+  "publicationMetrics": {
+    "extras": {},
+    "library": "org.locationtech.jts:jts-core:1.20.0",
+    "timestamp": "2026-10-03T07:23:27.256891Z"
+  },
+  "schemaVersion": 1,
+  "strategyName": "optimistic_dynamic_access_iterative_pi_gpt-5.6-luna"
+}
