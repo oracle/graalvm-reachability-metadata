@@ -35,11 +35,11 @@ public class PolymorphicTypesTest {
 
     private sealed interface Shape permits Circle, Square {}
 
-    private static final class Circle {
+    private static final class Circle implements Shape {
         public String color;
     }
 
-    private static final class Square {
+    private static final class Square implements Shape {
         public int side;
     }
 }
