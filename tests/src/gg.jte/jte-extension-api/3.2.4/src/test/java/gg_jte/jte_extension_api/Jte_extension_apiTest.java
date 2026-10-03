@@ -98,6 +98,26 @@ public class Jte_extension_apiTest {
     }
 
     @Test
+    void extensionCanReturnAConfiguredReplacementFromInitialization() {
+        Path generatedResourcesRoot = temporaryDirectory.resolve("configured-resources");
+        JteConfig config = new TestJteConfig(
+                temporaryDirectory.resolve("generated-sources"),
+                generatedResourcesRoot,
+                "example.application",
+                "example.templates",
+                ContentType.Html,
+                Jte_extension_apiTest.class.getClassLoader());
+        JteExtension extension = new ConfigurableReportingExtension();
+
+        JteExtension configuredExtension = extension.init(Map.of("reportName", "configured"));
+
+        assertThat(configuredExtension).isNotSameAs(extension);
+        Path report = generatedResourcesRoot.resolve("reports/configured.txt");
+        assertThat(configuredExtension.generate(config, Set.of())).containsExactly(report);
+        assertThat(report).hasContent("reportName=configured");
+    }
+
+    @Test
     void templateDescriptionBuildsItsFullyQualifiedClassName() {
         TemplateDescription template = new TestTemplateDescription(
                 "invoice.jte",
@@ -134,6 +154,40 @@ public class Jte_extension_apiTest {
                 throw new UncheckedIOException(exception);
             }
             return List.of(reportPath);
+        }
+    }
+
+    private static final class ConfigurableReportingExtension implements JteExtension {
+        private final String reportName;
+
+        private ConfigurableReportingExtension() {
+            this("default");
+        }
+
+        private ConfigurableReportingExtension(String reportName) {
+            this.reportName = reportName;
+        }
+
+        @Override
+        public String name() {
+            return "configurable reporting extension";
+        }
+
+        @Override
+        public Collection<Path> generate(JteConfig config, Set<TemplateDescription> templates) {
+            Path reportPath = config.generatedResourcesRoot().resolve("reports/" + reportName + ".txt");
+            try {
+                Files.createDirectories(reportPath.getParent());
+                Files.writeString(reportPath, "reportName=" + reportName);
+            } catch (IOException exception) {
+                throw new UncheckedIOException(exception);
+            }
+            return List.of(reportPath);
+        }
+
+        @Override
+        public JteExtension init(Map<String, String> values) {
+            return new ConfigurableReportingExtension(values.get("reportName"));
         }
     }
 
