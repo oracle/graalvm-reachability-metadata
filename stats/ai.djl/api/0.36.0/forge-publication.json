@@ -1,0 +1,161 @@
+{
+  "base_commit": "c7f451be378786d78005c109fc1ce07e2c7a0735",
+  "branch": "ai/kimeta/add-lib-support-ai.djl-api-0.36.0-forge-9783-20261003151351755368-7b9eeb0d2ae1",
+  "follow_ups": [],
+  "forge": {
+    "branch": "master",
+    "commit": "64b39e298df2e06d80520993b3c73ded87225968",
+    "monitored_branch": "origin/master"
+  },
+  "issue_number": 9783,
+  "library": {
+    "artifact": "api",
+    "coordinates": "ai.djl:api:0.36.0",
+    "group": "ai.djl",
+    "version": "0.36.0"
+  },
+  "local_ci_verification": {
+    "base_commit": "c7f451be378786d78005c109fc1ce07e2c7a0735",
+    "commands": [
+      {
+        "command": [
+          "./gradlew",
+          "generateChangedIndexFileCoordinatesList",
+          "-PbaseCommit=origin/master",
+          "-PnewCommit=HEAD"
+        ],
+        "env": {
+          "GITHUB_OUTPUT": "/tmp/tmptozp7dec"
+        },
+        "gate": "changed-index-coordinates",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :generateChangedIndexFileCoordinatesList\n\n[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9783-9524b78b/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 2s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      },
+      {
+        "command": [
+          "./gradlew",
+          "validateIndexFiles",
+          "-Pcoordinates=ai.djl:api"
+        ],
+        "env": {},
+        "gate": "index-file-validation",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :validateIndexFiles\n✅ metadata/ai.djl/api/index.json: Valid\n\n[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9783-9524b78b/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 1s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      }
+    ],
+    "failure_command": null,
+    "failure_gate": null,
+    "final_commit": "55d3e328ee0a74abb4c682c2915ec231eea0c8f8",
+    "fixups": [],
+    "human_intervention_required": false,
+    "repo_fix_paths": [],
+    "status": "success"
+  },
+  "local_review": {
+    "changed_paths": [],
+    "decision": "approved",
+    "finding_body": "",
+    "finding_title": "",
+    "fix_note": "",
+    "model": "gpt-5.6-sol",
+    "review_comment": "The contribution is scoped to ai.djl:api:0.36.0 and its allowed metadata, index, stats, and test files. The tests replace the scaffold with public-API behavior, use a separate test package, remain version-agnostic, do not skip or tolerate Native Image failures, add no prohibited compatibility override or native flag, and use only reachability-metadata.json. Resolved statistics report 25/25 dynamic-access calls covered (100%), above the new-library gate, and the reported 296 metadata entries do not trigger the entry-count mismatch rule. Index validation evidence is green. The Forge finalizer completed all three test lanes, metadata splitting and validation, style checks, generated-test checks, and library-stat generation without changing the publishable tree.",
+    "session_id": "a687fc66ccd64d51"
+  },
+  "metrics": {
+    "agent": "pi",
+    "model": "gpt-5.6-luna",
+    "path": "stats/ai.djl/api/0.36.0/execution-metrics.json",
+    "summary": {
+      "cached_input_tokens_used": 10454016,
+      "code_coverage_percent": 3.2,
+      "cost_usd": 1.7056,
+      "generated_loc": 256,
+      "input_tokens_used": 441294,
+      "iterations": 6,
+      "metadata_entries": 283,
+      "output_tokens_used": 36478,
+      "test_only_metadata_entries": 13,
+      "tested_library_loc": 534
+    },
+    "timestamp": "2026-10-03T15:13:51.755368Z"
+  },
+  "modifiers": {
+    "chunk_final": true,
+    "chunked_dynamic_access": false,
+    "human_intervention": false
+  },
+  "producer": "kimeta",
+  "publication_id": "forge-9783-20261003151351755368-7b9eeb0d2ae1",
+  "render": {
+    "dynamic_access": null,
+    "dynamic_access_evidence": {
+      "covered_call_sites": [
+        "[reflection] java.lang.Class#getDeclaredMethod(java.lang.String, java.lang.Class[]) <- ai.djl.engine.rpc.RpcTranslatorFactory$DefaultTypeConverter.<init>(RpcTranslatorFactory.java:103) (line 103)",
+        "[reflection] java.lang.Class#getDeclaredMethod(java.lang.String, java.lang.Class[]) <- ai.djl.engine.rpc.RpcTranslatorFactory$DefaultTypeConverter.<init>(RpcTranslatorFactory.java:108) (line 108)",
+        "[reflection] java.lang.reflect.Method#invoke(java.lang.Object, java.lang.Object[]) <- ai.djl.engine.rpc.RpcTranslatorFactory$DefaultTypeConverter.fromOutput(RpcTranslatorFactory.java:161) (line 161)",
+        "[reflection] java.lang.reflect.Method#invoke(java.lang.Object, java.lang.Object[]) <- ai.djl.engine.rpc.RpcTranslatorFactory$DefaultTypeConverter.fromOutput(RpcTranslatorFactory.java:163) (line 163)",
+        "[reflection] java.lang.Class#forName(java.lang.String) <- ai.djl.modality.audio.AudioFactory.newInstance(AudioFactory.java:52) (line 52)",
+        "[reflection] java.lang.Class#getDeclaredConstructor(java.lang.Class[]) <- ai.djl.modality.audio.AudioFactory.newInstance(AudioFactory.java:53) (line 53)",
+        "[reflection] java.lang.reflect.Constructor#newInstance(java.lang.Object[]) <- ai.djl.modality.audio.AudioFactory.newInstance(AudioFactory.java:53) (line 53)",
+        "[reflection] java.lang.Class#forName(java.lang.String) <- ai.djl.modality.cv.ImageFactory.newInstance(ImageFactory.java:57) (line 57)",
+        "... and 17 more"
+      ],
+      "metadata_rules": [
+        "when `ai.djl.modality.audio.AudioFactory` is reached, make `ai.djl.audio.FFmpegAudioFactory` available for reflection",
+        "when `ai.djl.translate.NoopServingTranslatorFactory$NoopServingTranslator` is reached, make `ai.djl.basicdataset.tabular.CsvTranslator` available for reflection",
+        "when `ai.djl.modality.audio.AudioFactory` is reached, make `ai.djl.modality.audio.SampledAudioFactory.<init>()` available for reflection",
+        "when `ai.djl.modality.cv.ImageFactory` is reached, make `ai.djl.modality.cv.BufferedImageFactory.<init>()` available for reflection",
+        "when `ai.djl.modality.cv.translator.Sam2Translator$Sam2Input` is reached, make `ai.djl.modality.cv.translator.Sam2Translator$Sam2Input$Location.<init>()` available for reflection",
+        "when `ai.djl.modality.cv.translator.Sam2Translator$Sam2Input` is reached, make `ai.djl.modality.cv.translator.Sam2Translator$Sam2Input$Location[]` available for reflection",
+        "when `ai.djl.modality.cv.translator.Sam2Translator$Sam2Input` is reached, make `ai.djl.modality.cv.translator.Sam2Translator$Sam2Input$Prompt.<init>()` available for reflection",
+        "when `ai.djl.modality.cv.ImageFactory` is reached, make `ai.djl.opencv.OpenCVImageFactory` available for reflection",
+        "... and 86 more"
+      ]
+    },
+    "library_stats": {
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 22,
+            "totalCalls": 22
+          },
+          "resources": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 3,
+            "totalCalls": 3
+          }
+        },
+        "coverageRatio": 1.0,
+        "coveredCalls": 25,
+        "totalCalls": 25
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 2193,
+          "missed": 79527,
+          "ratio": 0.026836,
+          "total": 81720
+        },
+        "line": {
+          "covered": 534,
+          "missed": 16160,
+          "ratio": 0.031988,
+          "total": 16694
+        },
+        "method": {
+          "covered": 154,
+          "missed": 3998,
+          "ratio": 0.037091,
+          "total": 4152
+        }
+      },
+      "version": "0.36.0"
+    }
+  },
+  "schema_version": 1,
+  "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-luna",
+  "task_type": "library-new-request",
+  "template_type": "library-new-request",
+  "timestamp": "2026-10-03T15:13:51.755368Z"
+}
