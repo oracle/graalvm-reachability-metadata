@@ -8,9 +8,84 @@ package org_springframework_boot.spring_boot_data_couchbase;
 
 import org.junit.jupiter.api.Test;
 
-class Spring_boot_data_couchbaseTest {
+import org.springframework.boot.autoconfigure.AutoConfiguration;
+import org.springframework.boot.autoconfigure.AutoConfigurations;
+import org.springframework.boot.context.annotation.ImportCandidates;
+import org.springframework.boot.data.couchbase.autoconfigure.DataCouchbaseAutoConfiguration;
+import org.springframework.boot.data.couchbase.autoconfigure.DataCouchbaseProperties;
+import org.springframework.boot.data.couchbase.autoconfigure.DataCouchbaseReactiveAutoConfiguration;
+import org.springframework.boot.data.couchbase.autoconfigure.DataCouchbaseReactiveRepositoriesAutoConfiguration;
+import org.springframework.boot.data.couchbase.autoconfigure.DataCouchbaseRepositoriesAutoConfiguration;
+import org.springframework.boot.test.context.runner.ApplicationContextRunner;
+import org.springframework.data.couchbase.core.convert.CouchbaseCustomConversions;
+import org.springframework.data.couchbase.core.convert.MappingCouchbaseConverter;
+import org.springframework.data.couchbase.core.convert.translation.TranslationService;
+import org.springframework.data.couchbase.core.mapping.CouchbaseMappingContext;
+import org.springframework.data.mapping.model.SnakeCaseFieldNamingStrategy;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
+public class Spring_boot_data_couchbaseTest {
+
+    private final ApplicationContextRunner contextRunner = new ApplicationContextRunner()
+            .withConfiguration(AutoConfigurations.of(DataCouchbaseAutoConfiguration.class));
+
     @Test
-    void test() throws Exception {
-        System.out.println("This is just a placeholder, implement your test");
+    void autoConfigurationIsAdvertisedForSpringBootDiscovery() {
+        ImportCandidates candidates = ImportCandidates.load(AutoConfiguration.class, getClass().getClassLoader());
+
+        assertThat(candidates.getCandidates()).contains(DataCouchbaseAutoConfiguration.class.getName(),
+                DataCouchbaseReactiveAutoConfiguration.class.getName(),
+                DataCouchbaseRepositoriesAutoConfiguration.class.getName(),
+                DataCouchbaseReactiveRepositoriesAutoConfiguration.class.getName());
     }
+
+    @Test
+    void autoConfigurationBindsPropertiesAndCreatesCouchbaseInfrastructure() {
+        this.contextRunner
+                .withPropertyValues("spring.data.couchbase.auto-index=true",
+                        "spring.data.couchbase.bucket-name=orders",
+                        "spring.data.couchbase.scope-name=fulfillment",
+                        "spring.data.couchbase.field-naming-strategy="
+                                + SnakeCaseFieldNamingStrategy.class.getName(),
+                        "spring.data.couchbase.type-key=kind")
+                .run((context) -> {
+                    assertThat(context).hasSingleBean(DataCouchbaseProperties.class);
+                    assertThat(context).hasSingleBean(CouchbaseCustomConversions.class);
+                    assertThat(context).hasSingleBean(CouchbaseMappingContext.class);
+                    assertThat(context).hasSingleBean(MappingCouchbaseConverter.class);
+                    assertThat(context).hasSingleBean(TranslationService.class);
+
+                    DataCouchbaseProperties properties = context.getBean(DataCouchbaseProperties.class);
+                    assertThat(properties.isAutoIndex()).isTrue();
+                    assertThat(properties.getBucketName()).isEqualTo("orders");
+                    assertThat(properties.getScopeName()).isEqualTo("fulfillment");
+                    assertThat(properties.getFieldNamingStrategy()).isEqualTo(SnakeCaseFieldNamingStrategy.class);
+                    assertThat(properties.getTypeKey()).isEqualTo("kind");
+                });
+    }
+
+    @Test
+    void propertiesExposeDefaultsAndSupportProgrammaticConfiguration() {
+        DataCouchbaseProperties properties = new DataCouchbaseProperties();
+
+        assertThat(properties.isAutoIndex()).isFalse();
+        assertThat(properties.getBucketName()).isNull();
+        assertThat(properties.getScopeName()).isNull();
+        assertThat(properties.getFieldNamingStrategy()).isNull();
+        assertThat(properties.getTypeKey()).isEqualTo("_class");
+
+        properties.setAutoIndex(true);
+        properties.setBucketName("catalog");
+        properties.setScopeName("products");
+        properties.setFieldNamingStrategy(SnakeCaseFieldNamingStrategy.class);
+        properties.setTypeKey("documentType");
+
+        assertThat(properties.isAutoIndex()).isTrue();
+        assertThat(properties.getBucketName()).isEqualTo("catalog");
+        assertThat(properties.getScopeName()).isEqualTo("products");
+        assertThat(properties.getFieldNamingStrategy()).isEqualTo(SnakeCaseFieldNamingStrategy.class);
+        assertThat(properties.getTypeKey()).isEqualTo("documentType");
+    }
+
 }
