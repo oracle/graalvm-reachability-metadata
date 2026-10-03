@@ -9,6 +9,11 @@ Newest entry first; every non-approval is recorded, including one a repair later
 
 The contribution directly imported and exercised kotlin.reflect.jvm.internal DescriptorKindFilter, GeneratedMessageLite, and SmartList classes instead of reaching them through the public kotlin.reflect API. It also forced kotlin.reflect.jvm.loadMetadataDirectly=true for JVM and native tests even though the issue and preparation evidence required no system property and did not establish the test-contract uniform-necessity conditions for a runtime flag. These violated the meaningful public-API and native flag requirements.
 
+## 2026-10-03 — org.eclipse.jetty:jetty-io:10.0.0 (#10386)
+
+**Jetty I/O tests used explicit timeouts below the required floor**
+
+The new Jetty 10 test project used 2-second waits for asynchronous I/O callbacks and a 100-millisecond IdleTimeout. These explicit I/O timeouts violated FS-test-contract.1.7, which requires at least 10 seconds to avoid agent and Native Image startup flakiness.
 ## 2026-10-03 — org.locationtech.jts:jts-core:1.20.0 (#9789)
 
 **Bundled support JAR shadows the target library**
