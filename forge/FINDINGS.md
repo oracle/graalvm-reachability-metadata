@@ -3,6 +3,11 @@
 Rendered by Forge from the pre-push branch review of §FS-local-branch-review.
 Newest entry first; every non-approval is recorded, including one a repair later cleared.
 
+## 2026-10-03 — org.eclipse.jetty:jetty-io:10.0.0 (#10386)
+
+**Jetty I/O tests used explicit timeouts below the required floor**
+
+The new Jetty 10 test project used 2-second waits for asynchronous I/O callbacks and a 100-millisecond IdleTimeout. These explicit I/O timeouts violated FS-test-contract.1.7, which requires at least 10 seconds to avoid agent and Native Image startup flakiness.
 ## 2026-10-03 — org.locationtech.jts:jts-core:1.20.0 (#9789)
 
 **Bundled support JAR shadows the target library**
