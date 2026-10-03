@@ -9,6 +9,11 @@ plugins {
 }
 
 String libraryVersion = tck.testedLibraryVersion.get()
+String zookeeperCompatibilityVersion = "3.5.10"
+
+configurations.configureEach {
+    resolutionStrategy.force "org.apache.zookeeper:zookeeper:$zookeeperCompatibilityVersion"
+}
 
 dependencies {
     testImplementation "org.apache.curator:curator-client:$libraryVersion"
