@@ -91,7 +91,7 @@ public class Curator_clientTest {
     }
 
     @Test
-    void retryLoopRetriesKeeperConnectionFailuresAndRecordsTracerCounts() throws Exception {
+    void retryLoopRetriesWithoutStartedConnectionAndRecordsTracerCounts() throws Exception {
         RetryPolicy retryTwiceWithoutSleeping = (retryCount, elapsedTimeMs, sleeper) -> retryCount < 2;
         CuratorZookeeperClient client = new CuratorZookeeperClient(
                 "127.0.0.1:1", 10_000, 10_000, null, retryTwiceWithoutSleeping);
@@ -99,6 +99,7 @@ public class Curator_clientTest {
         client.setTracerDriver(tracer);
 
         try {
+            assertThat(client.isConnected()).isFalse();
             AtomicInteger attempts = new AtomicInteger();
             AtomicReference<String> result = new AtomicReference<>();
             RetryLoop loop = client.newRetryLoop();
@@ -117,6 +118,7 @@ public class Curator_clientTest {
             assertThat(result).hasValue("connected-result");
             assertThat(attempts).hasValue(3);
             assertThat(tracer.counts()).containsEntry("retries-allowed", 2);
+            assertThat(client.isConnected()).isFalse();
             assertThat(loop.shouldContinue()).isFalse();
             assertThatThrownBy(() -> client.newRetryLoop().takeException(KeeperException.create(Code.NONODE)))
                     .isInstanceOf(KeeperException.NoNodeException.class);
