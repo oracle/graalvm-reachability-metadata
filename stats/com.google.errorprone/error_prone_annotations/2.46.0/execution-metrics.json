@@ -1,0 +1,96 @@
+{
+  "fix_javac_fail:2026-10-03": {
+    "timestamp": "2026-10-03T14:20:07.420914Z",
+    "library": "com.google.errorprone:error_prone_annotations:2.46.0",
+    "starting_commit": "5d518acd2dc439b91cb3147f473e3181b4daa486",
+    "ending_commit": "4e53dd3b954b0a4165b268859ca7e08c7782dcb8",
+    "previous_library": "com.google.errorprone:error_prone_annotations:2.6.0",
+    "strategy_name": "javac_iterative_with_coverage_sources_pi_gpt-5.6-sol",
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "status": "success",
+    "stats": {
+      "version": "2.46.0",
+      "dynamicAccess": {
+        "breakdown": {},
+        "coverageRatio": 1.0,
+        "coveredCalls": 0,
+        "totalCalls": 0
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 0,
+          "missed": 75,
+          "ratio": 0.0,
+          "total": 75
+        },
+        "line": {
+          "covered": 0,
+          "missed": 13,
+          "ratio": 0.0,
+          "total": 13
+        },
+        "method": {
+          "covered": 0,
+          "missed": 1,
+          "ratio": 0.0,
+          "total": 1
+        }
+      }
+    },
+    "previous_library_stats": {
+      "version": "2.6.0",
+      "dynamicAccess": {
+        "breakdown": {},
+        "coverageRatio": 1.0,
+        "coveredCalls": 0,
+        "totalCalls": 0
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "no_action",
+      "issue_number": 9329,
+      "issue_label": "fails-javac-compile",
+      "library": "com.google.errorprone:error_prone_annotations:2.46.0",
+      "summary": "The failure is a test-source compile error: the existing test uses RequiredModifiers.value() and IncompatibleModifiers.value(), which the resolved 2.46.0 annotations no longer expose. Updating the test to the 2.46.0 annotation API fixes it. error_prone_annotations is a pure annotations jar, so no extra dependency, Docker image, or environment setup is needed.",
+      "deterministic_setup": [],
+      "agent_guidance": "",
+      "risks": [
+        "I did not open the 2.46.0 jar, so the exact replacement attribute names for RequiredModifiers and IncompatibleModifiers are unconfirmed. Check them against the 2.46.0 jar. The older value() form may be gone entirely or replaced by a different attribute.",
+        "Other 2.6.0-era test code may also use APIs that changed or were removed by 2.46.0. javac stopped at these two errors, so more may appear after the fix."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#9329 [Automation] javac compile fails for com.google.errorprone:error_prone_annotations:2.46.0; label=fails-javac-compile; body_chars=8015"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "8 existing test file path(s) included"
+        }
+      ],
+      "current_library": "com.google.errorprone:error_prone_annotations:2.6.0",
+      "new_version": "2.46.0",
+      "model": "sonnet",
+      "input_tokens_used": 2,
+      "output_tokens_used": 666
+    },
+    "metrics": {
+      "input_tokens_used": 53585,
+      "cached_input_tokens_used": 348032,
+      "output_tokens_used": 1799,
+      "iterations": 4,
+      "cost_usd": 0.4959,
+      "tested_library_loc": 0,
+      "metadata_entries": 0,
+      "previous_library_metadata_entries": 0,
+      "code_coverage_percent": 0.0,
+      "previous_library_coverage_percent": 100.0
+    },
+    "artifacts": {
+      "metadata_file": "metadata/com.google.errorprone/error_prone_annotations/2.46.0/reachability-metadata.json"
+    }
+  }
+}
