@@ -3,6 +3,7 @@ package kotlinreflect
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import kotlin.reflect.KMutableProperty1
+import kotlin.reflect.KProperty2
 import kotlin.reflect.full.*
 import kotlin.reflect.jvm.*
 
@@ -30,8 +31,10 @@ class ReflectKPropertyKtTest {
         assertThat(topLevelExtension.getDelegate("receiver")).isEqualTo(::packageDelegateSource)
         assertThat(topLevelExtension.get("receiver")).isEqualTo("package-source")
 
+        @Suppress("UNCHECKED_CAST")
         val memberExtension = ExtensionDelegateFixture::class.declaredMemberExtensionProperties
             .single { it.name == "memberDelegatedExtension" }
+                as KProperty2<ExtensionDelegateFixture, String, String>
         memberExtension.isAccessible = true
         assertThat(memberExtension.getDelegate(ExtensionDelegateFixture(), "receiver"))
             .isEqualTo(::packageDelegateSource)
