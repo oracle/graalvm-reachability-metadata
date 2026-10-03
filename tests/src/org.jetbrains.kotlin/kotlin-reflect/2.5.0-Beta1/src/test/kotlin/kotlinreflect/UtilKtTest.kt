@@ -9,8 +9,12 @@ import kotlin.reflect.jvm.*
 class UtilKtTest {
     @Test
     fun exercisesPublicReflectionBehavior() {
-        val annotation = RichReflectionFixture::class.annotations.filterIsInstance<ReflectDetails>().single()
+        val type = RichReflectionFixture::class
+        val annotation = type.annotations.filterIsInstance<ReflectDetails>().single()
+        val composition = type.members.single { it.name == "composedAnnotation" }
+            .annotations.filterIsInstance<ReflectComposition>().single()
         assertThat(annotation.values).containsExactly("one", "two")
+        assertThat(composition.parts.map { it.value }).containsExactly("left", "right")
 
         val arrayAnnotation = ArrayAnnotationFixture::class.findAnnotation<ReflectComposition>()!!
         assertThat(arrayAnnotation.parts.map { it.value }).containsExactly("class-left", "class-right")

@@ -9,7 +9,9 @@ import kotlin.reflect.jvm.*
 class JvmFunctionSignatureInnerFakeJavaAnnotationConstructorTest {
     @Test
     fun exercisesPublicReflectionBehavior() {
-        val constructor = ReflectJavaFixtures.JavaDetails::class.constructors.single()
+        val annotationType = ReflectJavaFixtures.JavaDetails::class
+        assertThat(annotationType.members.map { it.name }).contains("name", "count")
+        val constructor = annotationType.constructors.single()
         assertThat(constructor.parameters.map { it.name }).containsExactlyInAnyOrder("name", "count")
         val arguments = constructor.parameters.associateWith { parameter ->
             if (parameter.name == "name") "signature" else 7

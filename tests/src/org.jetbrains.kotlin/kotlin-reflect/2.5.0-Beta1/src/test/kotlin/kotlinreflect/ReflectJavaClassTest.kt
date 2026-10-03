@@ -10,6 +10,7 @@ class ReflectJavaClassTest {
     @Test
     fun exercisesPublicReflectionBehavior() {
         val type = ReflectJavaFixtures.JavaBean::class
+        val members = type.members.associateBy { it.name }
         val constructors = type.constructors
         assertThat(constructors).hasSizeGreaterThanOrEqualTo(2)
         val noArg = constructors.single { it.parameters.isEmpty() }.call()
@@ -17,6 +18,6 @@ class ReflectJavaClassTest {
         assertThat(noArg.name).isEqualTo("default")
         assertThat(named.name).isEqualTo("constructed")
         assertThat(type.nestedClasses.map { it.simpleName }).contains("Nested")
-        assertThat(type.members.map { it.name }).contains("publicField", "greet")
+        assertThat(members.keys).contains("publicField", "greet")
     }
 }

@@ -26,7 +26,7 @@ class KDeclarationContainerImplTest {
         val greet = RichReflectionFixture::class.declaredMemberFunctions.single { it.name == "greet" }
         assertThat(greet.callBy(mapOf(greet.parameters[0] to fixture))).isEqualTo("hello, world")
 
-        val covariantValue = ReflectJavaFixtures.StringValue::class.declaredMemberFunctions
+        val covariantValue = ReflectJavaFixtures.StringValue::class.members
             .single { it.name == "value" }
         assertThat(covariantValue.call(ReflectJavaFixtures.StringValue())).isEqualTo("java-value")
     }
