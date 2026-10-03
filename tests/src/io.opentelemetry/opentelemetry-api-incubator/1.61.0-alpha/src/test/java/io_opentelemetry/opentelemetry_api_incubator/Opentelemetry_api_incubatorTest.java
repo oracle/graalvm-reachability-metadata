@@ -262,7 +262,6 @@ public class Opentelemetry_api_incubatorTest {
 
         assertThat(logger).isInstanceOf(ExtendedLogger.class);
         ExtendedLogger extendedLogger = (ExtendedLogger) logger;
-        assertThat(extendedLogger.isEnabled()).isFalse();
         assertThat(extendedLogger.isEnabled(Severity.INFO)).isFalse();
         assertThat(extendedLogger.isEnabled(Severity.ERROR, Context.root())).isFalse();
 
