@@ -18,7 +18,7 @@ import org.junit.jupiter.api.Test;
 import static graphql.Scalars.GraphQLString;
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class PropertyFetchingImplTest {
+public class PropertyDataFetcherTest {
 
   @BeforeEach
   void resetPropertyFetcher() {
