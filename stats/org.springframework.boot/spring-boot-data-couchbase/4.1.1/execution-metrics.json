@@ -1,0 +1,84 @@
+{
+  "add_new_library_support:2026-10-03": {
+    "timestamp": "2026-10-03T20:23:09.794712Z",
+    "library": "org.springframework.boot:spring-boot-data-couchbase:4.1.1",
+    "starting_commit": "1c56b3ea0050a61cf13f7037c923243a372cffae",
+    "ending_commit": "55f86211e409baf3814afeadbc44bf887f98da27",
+    "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-luna",
+    "agent": "pi",
+    "model": "gpt-5.6-luna",
+    "status": "success",
+    "stats": {
+      "version": "4.1.1",
+      "dynamicAccess": {
+        "breakdown": {},
+        "coverageRatio": 1.0,
+        "coveredCalls": 0,
+        "totalCalls": 0
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 105,
+          "missed": 79,
+          "ratio": 0.570652,
+          "total": 184
+        },
+        "line": {
+          "covered": 34,
+          "missed": 21,
+          "ratio": 0.618182,
+          "total": 55
+        },
+        "method": {
+          "covered": 17,
+          "missed": 21,
+          "ratio": 0.447368,
+          "total": 38
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "no_action",
+      "issue_number": 9753,
+      "issue_label": "library-new-request",
+      "library": "org.springframework.boot:spring-boot-data-couchbase:4.1.1",
+      "summary": "spring-boot-data-couchbase is a Spring Boot 4 split autoconfiguration module, same family as spring-boot-amqp/spring-boot-kafka which already pass in this repo with plain ApplicationContextRunner tests and no live backend, extra dependency, or Docker image.",
+      "deterministic_setup": [],
+      "agent_guidance": "CouchbaseDataAutoConfiguration is @ConditionalOnBean(Cluster.class), so its beans (CouchbaseTemplate, repositories) only activate when a Cluster bean exists in the context. Follow the spring-boot-amqp/spring-boot-kafka pattern: use ApplicationContextRunner against CouchbaseDataAutoConfiguration, supplying a mocked/stub Cluster (and CouchbaseConnectionDetails/CouchbaseDataProperties as needed) rather than a real connection, to exercise properties binding, conditional activation, and customizer application without requiring network connectivity.",
+      "risks": [
+        "If a later deep-coverage pass needs real repository CRUD execution (not just autoconfiguration wiring), a live Couchbase server would become necessary and no Docker image is currently allow-listed for it.",
+        "Not yet confirmed whether a lower-level spring-boot-couchbase Cluster bean is available/supported in this repo; the generated test may need to provide its own mock Cluster bean directly."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#9753 Support for org.springframework.boot:spring-boot-data-couchbase:4.1.1; label=library-new-request; body_chars=39"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "sonnet",
+      "input_tokens_used": 30,
+      "output_tokens_used": 26633
+    },
+    "metrics": {
+      "input_tokens_used": 313173,
+      "cached_input_tokens_used": 4950016,
+      "output_tokens_used": 33982,
+      "iterations": 9,
+      "cost_usd": 1.0121,
+      "generated_loc": 106,
+      "tested_library_loc": 34,
+      "metadata_entries": 9,
+      "test_only_metadata_entries": 155,
+      "code_coverage_percent": 61.82
+    },
+    "artifacts": {
+      "metadata_file": "metadata/org.springframework.boot/spring-boot-data-couchbase/4.1.1/reachability-metadata.json"
+    }
+  }
+}
