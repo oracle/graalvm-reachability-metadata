@@ -47,9 +47,22 @@ public class AnnotationReflectionUtilsTest {
                 .isEqualTo(String[].class);
     }
 
+    @Test
+    void resolvesNestedGenericArrayArguments() {
+        Argument<GenericContract> argument =
+                AnnotationReflectionUtils.resolveGenericToArgument(
+                        NestedArrayImplementation.class, GenericContract.class);
+
+        assertThat(argument.getType()).isEqualTo(GenericContract.class);
+        assertThat(argument.getFirstTypeVariable().orElseThrow().getType())
+                .isEqualTo(Object[][].class);
+    }
+
     interface GenericContract<T> {}
 
     interface GenericArrayContract<T> extends GenericContract<T[]> {}
+
+    interface NestedArrayContract<T> extends GenericArrayContract<T> {}
 
     static final class ArrayImplementation
             implements GenericContract<@TypeUse String @TypeUse []> {}
@@ -57,6 +70,8 @@ public class AnnotationReflectionUtilsTest {
     static final class GenericArrayImplementation<T> implements GenericContract<T[]> {}
 
     static final class InheritedArrayImplementation implements GenericArrayContract<String> {}
+
+    static final class NestedArrayImplementation<T> implements NestedArrayContract<T[]> {}
 
     @Retention(RetentionPolicy.RUNTIME)
     @Target(ElementType.TYPE_USE)
