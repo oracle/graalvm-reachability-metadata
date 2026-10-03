@@ -8,6 +8,16 @@ Newest entry first; every non-approval is recorded, including one a repair later
 **Runtime repair masked a library serialization regression and required a test-only native build flag**
 
 The contribution used CompatibleObjectOutputStream to replace Class<?>[] with String[] while serializing FunctionMapperImpl, hiding Tomcat 10.0.17's incompatible normal round trip instead of testing supported behavior; the 10.0.17 source writes Class[] while readExternal reads String[]. It also installed a test-only ExpressionFactory provider and added -H:ServiceLoaderFeatureExcludeServiceProviders solely to make that provider win in Native Image, contrary to the uniform-necessity rule for native flags. The custom provider and MessageFactory additions were unrelated expansion in a JVM runtime repair. These violated FS-test-contract.2.6, FS-test-contract.2.7, and FS-test-contract.2.9.
+## 2026-10-02 — org.jetbrains.kotlin:kotlin-reflect:2.5.0-Beta1 (#10325)
+
+**Latest Kotlin reflection metadata dropped established native support**
+
+The new latest metadata bucket retained only kotlin/kotlin.kotlin_builtins and omitted conditional registrations already required by Kotlin reflection. Since Spring's unlisted kotlin-reflect 2.3.21 dependency selects the latest bucket, native runs failed first with an unresolved java.util.Set and then with missing reflection access to Executable.getParameters() and Parameter.getName(). This is a contribution-local required-CI regression repairable under contribution-contract disposition 5.1.
+## 2026-10-02 — ch.qos.logback:logback-classic:1.6.0 (#10311)
+
+**Explicit I/O timeouts below the required 10-second floor**
+
+FS-test-contract.1.7 requires every explicit socket, connection, and bounded I/O wait to be at least 10 seconds. RemoteAppenderStreamClientTest, SocketNodeTest, and SocketReceiverTest each set SOCKET_TIMEOUT_MILLIS to 5,000 and used it for socket operations and related bounded waits.
 ## 2026-10-03 — com.nimbusds:nimbus-jose-jwt:4.0 (#9334)
 
 **Unjustified Native Image URL protocol flag**
