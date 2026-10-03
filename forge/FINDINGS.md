@@ -9,6 +9,11 @@ Newest entry first; every non-approval is recorded, including one a repair later
 
 The original Jte_runtimeTest.java covered dynamic access in both gg.jte.runtime.RuntimeTemplateLoader and gg.jte.runtime.Template. The test contract requires each dynamic-access class to have its own dedicated test file.
 
+## 2026-10-03 — org.eclipse.jetty:jetty-io:10.0.0 (#10386)
+
+**Jetty I/O tests used explicit timeouts below the required floor**
+
+The new Jetty 10 test project used 2-second waits for asynchronous I/O callbacks and a 100-millisecond IdleTimeout. These explicit I/O timeouts violated FS-test-contract.1.7, which requires at least 10 seconds to avoid agent and Native Image startup flakiness.
 ## 2026-10-03 — org.locationtech.jts:jts-core:1.20.0 (#9789)
 
 **Bundled support JAR shadows the target library**
