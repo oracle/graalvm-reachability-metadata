@@ -3,6 +3,12 @@
 Rendered by Forge from the pre-push branch review of §FS-local-branch-review.
 Newest entry first; every non-approval is recorded, including one a repair later cleared.
 
+## 2026-10-03 — com.nimbusds:nimbus-jose-jwt:4.0 (#9334)
+
+**Unjustified Native Image URL protocol flag**
+
+The new 4.0 test project copied `--enable-url-protocols=https` into `build.gradle` without satisfying the native-flag necessity rule. The adapted 4.0 tests use `URI` values and perform no HTTPS URL access, so the flag was not required by the library or a transitive dependency. All three Native Image lanes passed after its removal.
+
 ## 2026-10-02 — org.springframework:spring-aop:6.1.7 (#10339)
 
 **Over-broad Spring AOP serialization condition breaks affected native consumers**
