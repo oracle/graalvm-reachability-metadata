@@ -2,7 +2,14 @@ package kotlinreflect
 
 import kotlin.properties.Delegates
 
-@Target(AnnotationTarget.CLASS, AnnotationTarget.FUNCTION, AnnotationTarget.PROPERTY)
+@Target(
+    AnnotationTarget.CLASS,
+    AnnotationTarget.CONSTRUCTOR,
+    AnnotationTarget.FIELD,
+    AnnotationTarget.FUNCTION,
+    AnnotationTarget.PROPERTY,
+    AnnotationTarget.VALUE_PARAMETER,
+)
 @Retention(AnnotationRetention.RUNTIME)
 @Repeatable
 annotation class ReflectTag(val value: String)
@@ -13,24 +20,50 @@ annotation class ReflectDetails(val name: String = "default", val values: Array<
 
 annotation class ReflectPart(val value: String)
 
-@Target(AnnotationTarget.FUNCTION)
+@Target(
+    AnnotationTarget.CLASS,
+    AnnotationTarget.FUNCTION,
+    AnnotationTarget.PROPERTY,
+    AnnotationTarget.VALUE_PARAMETER,
+)
 @Retention(AnnotationRetention.RUNTIME)
 annotation class ReflectComposition(val parts: Array<ReflectPart>)
+
+annotation class ArrayParameterFixture(
+    @ReflectComposition([ReflectPart("parameter-left"), ReflectPart("parameter-right")])
+    val value: String,
+)
+
+annotation class MarkedParameterFixture(
+    @ReflectTag("metadata-parameter") val value: String,
+)
+
+@ReflectComposition([ReflectPart("class-left"), ReflectPart("class-right")])
+class ArrayAnnotationFixture
 
 @ReflectTag("first")
 @ReflectTag("second")
 @ReflectDetails("fixture", ["one", "two"])
-class RichReflectionFixture(val prefix: String = "hello") {
+class RichReflectionFixture @ReflectTag("constructor") constructor(
+    @ReflectTag("parameter") val prefix: String = "hello",
+) {
     class Nested(val value: Int)
 
     @ReflectTag("property")
+    @field:ReflectTag("field")
+    @ReflectComposition([ReflectPart("property-left"), ReflectPart("property-right")])
     @JvmField
     var fieldValue: String = "field"
+
+    val delegateSource: String = "$prefix-source"
+
+    val delegatedReference: String by ::delegateSource
 
     val delegatedValue: String by lazy { "$prefix-delegate" }
 
     var observedValue: String by Delegates.observable("initial") { _, _, _ -> }
 
+    @ReflectTag("method")
     fun greet(name: String = "world"): String = "$prefix, $name"
 
     fun arraySize(values: Array<String>): Int = values.size
@@ -56,7 +89,14 @@ object ReflectionSingleton {
 }
 
 @JvmInline
-value class ReflectionValue(val text: String)
+value class ReflectionValue(val text: String) {
+    fun decorate(suffix: String): String = "$text$suffix"
+}
+
+@JvmInline
+value class InternalReflectionValue(internal val content: String) {
+    fun render(): String = "internal:$content"
+}
 
 class ValueClassService {
     fun describe(value: ReflectionValue): String = "value:${value.text}"
@@ -79,6 +119,22 @@ class OuterFixture(val prefix: String) {
 object ReflectionStatics {
     @JvmField
     var globalValue: String = "global"
+}
+
+interface AnnotatedReflectionInterface {
+    @ReflectTag("interface-property")
+    val interfaceValue: String
+        get() = "interface"
+}
+
+val packageDelegateSource: String = "package-source"
+
+val packageDelegatedReference: String by ::packageDelegateSource
+
+val String.packageDelegatedExtension: String by ::packageDelegateSource
+
+class ExtensionDelegateFixture {
+    val String.memberDelegatedExtension: String by ::packageDelegateSource
 }
 
 sealed class ReflectionSealed {

@@ -16,5 +16,8 @@ class ReflectKCallableKtTest {
         val join = RichReflectionFixture::class.declaredMemberFunctions.single { it.name == "join" }
         val instance = join.parameters.single { it.kind == kotlin.reflect.KParameter.Kind.INSTANCE }
         assertThat(join.callBy(mapOf(instance to fixture))).isEqualTo("")
+
+        val boundValueFunction = ReflectionValue("inline")::decorate
+        assertThat(boundValueFunction.call("-receiver")).isEqualTo("inline-receiver")
     }
 }
