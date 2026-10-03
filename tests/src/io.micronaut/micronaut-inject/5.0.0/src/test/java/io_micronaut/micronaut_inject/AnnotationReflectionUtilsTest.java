@@ -14,6 +14,7 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 
@@ -58,6 +59,23 @@ public class AnnotationReflectionUtilsTest {
                 .isEqualTo(Object[][].class);
     }
 
+    @Test
+    void resolvesArraysWithParameterizedComponentsAndGenericOwners() {
+        Argument<GenericContract> parameterized =
+                AnnotationReflectionUtils.resolveGenericToArgument(
+                        ParameterizedArrayImplementation.class, GenericContract.class);
+        Argument<GenericContract> owner =
+                AnnotationReflectionUtils.resolveGenericToArgument(
+                        StringArrayOwnerImplementation.class, GenericContract.class);
+
+        assertThat(parameterized.getType()).isEqualTo(GenericContract.class);
+        assertThat(parameterized.getFirstTypeVariable().orElseThrow().getType())
+                .isEqualTo(List[].class);
+        assertThat(owner.getType()).isEqualTo(GenericContract.class);
+        assertThat(owner.getFirstTypeVariable().orElseThrow().getType())
+                .isEqualTo(String[][].class);
+    }
+
     interface GenericContract<T> {}
 
     interface GenericArrayContract<T> extends GenericContract<T[]> {}
@@ -72,6 +90,22 @@ public class AnnotationReflectionUtilsTest {
     static final class InheritedArrayImplementation implements GenericArrayContract<String> {}
 
     static final class NestedArrayImplementation<T> implements NestedArrayContract<T[]> {}
+
+    interface ParameterizedArrayContract<T> extends GenericContract<T[]> {}
+
+    static final class ParameterizedArrayImplementation
+            implements ParameterizedArrayContract<List<String>> {}
+
+    static class GenericOwner<T> {
+        class GenericInner implements GenericContract<T[]> {}
+    }
+
+    static final class StringArrayOwnerImplementation
+            extends GenericOwner<String[]>.GenericInner {
+        StringArrayOwnerImplementation(GenericOwner<String[]> owner) {
+            owner.super();
+        }
+    }
 
     @Retention(RetentionPolicy.RUNTIME)
     @Target(ElementType.TYPE_USE)
