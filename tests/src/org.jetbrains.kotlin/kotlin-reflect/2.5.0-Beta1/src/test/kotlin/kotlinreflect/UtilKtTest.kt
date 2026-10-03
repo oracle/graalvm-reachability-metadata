@@ -6,7 +6,36 @@ import kotlin.reflect.KMutableProperty1
 import kotlin.reflect.full.*
 import kotlin.reflect.jvm.*
 
+@Target(AnnotationTarget.TYPE)
+@Retention(AnnotationRetention.RUNTIME)
+annotation class ReflectTypeComposition(val parts: Array<ReflectPart>)
+
+class TypeAnnotationFixture(private val value: String = "typed") : CharSequence {
+    override val length: Int
+        get() = value.length
+
+    override fun get(index: Int): Char = value[index]
+
+    override fun subSequence(startIndex: Int, endIndex: Int): CharSequence =
+        value.subSequence(startIndex, endIndex)
+
+    fun annotatedValue(): @ReflectTypeComposition(
+        [ReflectPart("type-left"), ReflectPart("type-right")],
+    ) String = value
+}
+
 class UtilKtTest {
+    @Test
+    fun materializesAnnotationArraysFromKotlinTypeMetadata() {
+        val fixture = TypeAnnotationFixture()
+        val function = TypeAnnotationFixture::class.declaredMemberFunctions
+            .single { it.name == "annotatedValue" }
+        val composition = function.returnType.findAnnotation<ReflectTypeComposition>()!!
+
+        assertThat(function.call(fixture)).isEqualTo("typed")
+        assertThat(composition.parts.map { it.value }).containsExactly("type-left", "type-right")
+    }
+
     @Test
     fun exercisesPublicReflectionBehavior() {
         val type = RichReflectionFixture::class
