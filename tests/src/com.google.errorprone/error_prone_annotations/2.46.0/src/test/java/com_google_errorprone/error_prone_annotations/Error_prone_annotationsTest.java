@@ -17,6 +17,7 @@ import com.google.errorprone.annotations.FormatMethod;
 import com.google.errorprone.annotations.FormatString;
 import com.google.errorprone.annotations.Immutable;
 import com.google.errorprone.annotations.IncompatibleModifiers;
+import com.google.errorprone.annotations.Modifier;
 import com.google.errorprone.annotations.MustBeClosed;
 import com.google.errorprone.annotations.NoAllocation;
 import com.google.errorprone.annotations.RequiredModifiers;
@@ -34,7 +35,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.locks.ReentrantLock;
-import javax.lang.model.element.Modifier;
 import org.junit.jupiter.api.Test;
 
 public class Error_prone_annotationsTest {
@@ -171,8 +171,8 @@ public class Error_prone_annotationsTest {
     @Retention(RetentionPolicy.RUNTIME)
     public @interface WarnInternalUse {}
 
-    @RequiredModifiers(Modifier.PUBLIC)
-    @IncompatibleModifiers({Modifier.PRIVATE, Modifier.PROTECTED})
+    @RequiredModifiers(modifier = Modifier.PUBLIC)
+    @IncompatibleModifiers(modifier = {Modifier.PRIVATE, Modifier.PROTECTED})
     public @interface PublicApiMarker {}
 
     public @interface ContractAnnotation {}
