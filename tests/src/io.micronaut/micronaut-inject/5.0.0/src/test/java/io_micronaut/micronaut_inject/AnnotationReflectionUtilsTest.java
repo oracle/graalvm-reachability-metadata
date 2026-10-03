@@ -36,12 +36,27 @@ public class AnnotationReflectionUtilsTest {
                 .isEqualTo(Object[].class);
     }
 
+    @Test
+    void resolvesGenericArrayArgumentThroughAnInheritedContract() {
+        Argument<GenericContract> argument =
+                AnnotationReflectionUtils.resolveGenericToArgument(
+                        InheritedArrayImplementation.class, GenericContract.class);
+
+        assertThat(argument.getType()).isEqualTo(GenericContract.class);
+        assertThat(argument.getFirstTypeVariable().orElseThrow().getType())
+                .isEqualTo(String[].class);
+    }
+
     interface GenericContract<T> {}
+
+    interface GenericArrayContract<T> extends GenericContract<T[]> {}
 
     static final class ArrayImplementation
             implements GenericContract<@TypeUse String @TypeUse []> {}
 
     static final class GenericArrayImplementation<T> implements GenericContract<T[]> {}
+
+    static final class InheritedArrayImplementation implements GenericArrayContract<String> {}
 
     @Retention(RetentionPolicy.RUNTIME)
     @Target(ElementType.TYPE_USE)
