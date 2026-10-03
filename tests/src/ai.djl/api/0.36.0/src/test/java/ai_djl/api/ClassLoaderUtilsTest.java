@@ -35,4 +35,23 @@ public class ClassLoaderUtilsTest {
         assertThatThrownBy(() -> ClassLoaderUtils.nativeLoad("java.lang.System", "/missing/native/library"))
                 .isInstanceOf(IllegalArgumentException.class);
     }
+
+    @Test
+    void invokesNativeHelperThroughPublicUtility() {
+        ClassLoaderUtils.nativeLoad(NativeLoadHelper.class.getName(), "fixture-library");
+
+        assertThat(NativeLoadHelper.loadedPath()).isEqualTo("fixture-library");
+    }
+
+    public static final class NativeLoadHelper {
+        private static String loadedPath;
+
+        public static void load(String path) {
+            loadedPath = path;
+        }
+
+        public static String loadedPath() {
+            return loadedPath;
+        }
+    }
 }
