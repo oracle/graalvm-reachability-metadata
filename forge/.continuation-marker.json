@@ -1,0 +1,92 @@
+{
+  "continueFrom": "explore",
+  "coordinate": "org.springframework.boot:spring-boot-data-couchbase-test:4.1.1",
+  "failure": {
+    "operand": "org.springframework.boot:spring-boot-data-couchbase-test:4.1.1",
+    "phase": "publication",
+    "step": "publish_branch()"
+  },
+  "issueNumber": 9754,
+  "label": "library-new-request",
+  "libraryPreparationPreflight": {
+    "action": "advisory_preparation",
+    "agent_guidance": "Prefer the idiomatic pattern demonstrated in tests/src/org.springframework.boot/spring-boot-testcontainers/4.1.1: declare the CouchbaseContainer as a @Bean annotated with @ServiceConnection inside a @TestConfiguration imported by the @DataCouchbaseTest class, letting Spring's TestcontainersLifecycleApplicationContextInitializer manage start/stop (no org.testcontainers:junit-jupiter dependency needed). Create at least one bucket via BucketDefinition and allow the query/index services to come up \u2014 call waitUntilReady() if available, since full cluster bootstrap (data+index+query+fts) is slow and may need a generous container startup timeout. Before committing to a real container, double check whether Testcontainers' CouchbaseContainer requires the Enterprise image tag (some versions depend on cluster-manager REST endpoints not present in Community edition) \u2014 Enterprise free-tier is normally fine for dev/test use, but confirm no production-licensing concern applies in CI.",
+    "applied_setup": [],
+    "deterministic_setup": [
+      {
+        "coordinate": "org.testcontainers:couchbase:1.20.4",
+        "kind": "dependency",
+        "reason": "Provides CouchbaseContainer for a @Container/@ServiceConnection-backed test, mirroring the pattern already used in tests/src/org.springframework.boot/spring-boot-testcontainers/4.1.1/build.gradle (com.redis:testcontainers-redis) for a comparable technology's service-connection test. Version is an es\n...[truncated]",
+        "scope": "testImplementation"
+      },
+      {
+        "image": "couchbase/server:7.6.2",
+        "kind": "docker_image",
+        "reason": "No Couchbase image is currently pinned under allowed-docker-images/. A live cluster is required because CouchbaseAutoConfiguration/CouchbaseDataAutoConfiguration open a real Cluster/Bucket eagerly, with no embedded fallback. Tag/edition (Enterprise vs Community) is unverified due to lack of network \n...[truncated]",
+        "slug": "couchbase_server"
+      }
+    ],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#9754 Support for org.springframework.boot:spring-boot-data-couchbase-test:4.1.1; label=library-new-request; body_chars=39"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "0 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 78,
+    "issue_label": "library-new-request",
+    "issue_number": 9754,
+    "library": "org.springframework.boot:spring-boot-data-couchbase-test:4.1.1",
+    "model": "sonnet",
+    "output_tokens_used": 35114,
+    "risks": [
+      "Dependency version (org.testcontainers:couchbase) and Docker image tag/edition are best-effort estimates; this research environment had no network/Maven Central access to verify them, so local Gradle resolution and a real Docker pull are authoritative and may require adjusting the tag.",
+      "Couchbase server containers are heavier and slower to start than the other pinned images (postgres, mariadb, etc.), which may need a longer test timeout.",
+      "If local verification shows the real auto-configuration classes can be reached without a live cluster (e.g. by excluding CouchbaseAutoConfiguration and mocking the repository beans), this setup may turn out to be unnecessary \u2014 but that approach would miss coverage of the module's primary auto-configuration/import-selector classes, which is why the live-cluster path is recommended first."
+    ],
+    "status": "completed",
+    "summary": "spring-boot-data-couchbase-test is the real (non-starter) module carrying @DataCouchbaseTest's auto-configuration; Couchbase has no embedded mode, so a meaningful context-loading test needs a live cluster, which the scaffold doesn't provide and no Couchbase Docker image is yet pinned in this repo."
+  },
+  "libraryUpdateRoute": null,
+  "newVersion": null,
+  "phases": {
+    "explore": {
+      "chunkClassCount": null,
+      "chunkProcessedClassCount": 0,
+      "exhaustedClasses": [],
+      "iteration": 8,
+      "status": "running"
+    },
+    "finalization": {
+      "status": "completed"
+    },
+    "fix": {
+      "iteration": null,
+      "status": "skipped"
+    },
+    "publication": {
+      "branch": null,
+      "coverageFollowUpIssueNumber": null,
+      "isPushed": false,
+      "publicationId": null,
+      "publicationTimestamp": null,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": true,
+      "status": "completed"
+    }
+  },
+  "preservedBranch": "ai/kimeta/human-intervention/issue-9754-library-new-request-org.springframework.boot-spring-boot-data-couchbase-test-4.1.1-4c164d2a",
+  "publicationMetrics": {
+    "extras": {},
+    "library": "org.springframework.boot:spring-boot-data-couchbase-test:4.1.1",
+    "timestamp": "2026-10-03T22:51:39.920136Z"
+  },
+  "schemaVersion": 1,
+  "strategyName": "optimistic_dynamic_access_iterative_pi_gpt-5.6-luna"
+}

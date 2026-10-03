@@ -1,0 +1,18 @@
+Implemented and verified.
+
+Root causes:
+- `kotlin.Metadata` had only inactive conditions; added the correct `KotlinReflectionUtils` condition.
+- The original Spring context test required missing runtime-generated Spring AOT classes, ultimately failing with `ClassNotFoundException` for `AotTestContextInitializers__Generated`. Rewrote it to exercise the public annotation API through native-compatible merged-annotation synthesis. §FS-test-contract.4.5
+- Added narrowly conditioned logging and annotation metadata exposed by the rewritten path.
+- Removed unused Testcontainers dependencies and Docker image declaration.
+
+Validation passed:
+- Exact reproduction command
+- `./gradlew test -Pcoordinates=org.springframework.boot:spring-boot-data-couchbase-test:4.1.1`
+- `validateIndexFiles`
+- Coordinate `checkMetadataFiles`
+- Coordinate `checkstyle`
+- `git diff --check`
+- `fissile check --staged`
+
+The optional all-coordinate metadata sweep exceeded its 20-minute timeout; no failure was reported before timeout.

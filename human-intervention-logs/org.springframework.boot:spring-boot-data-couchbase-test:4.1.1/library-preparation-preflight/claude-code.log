@@ -1,0 +1,38 @@
+`★ Insight ─────────────────────────────────────`
+Spring Boot 4 split every `spring-boot-starter-*` into an empty POM shell (no class files) plus a real, class-bearing module with the same name minus "starter" — confirmed by three sibling `index.json` files in this repo (`spring-boot-starter-couchbase`, `spring-boot-starter-couchbase-test`, `spring-boot-starter-data-couchbase`) that all say "contains only META-INF, use `spring-boot-<x>:4.1.1` instead." The issue's artifact, `spring-boot-data-couchbase-test` (no "starter"), is exactly that real module — it's the one carrying the `@DataCouchbaseTest` test-slice annotation and its auto-configuration classes.
+`─────────────────────────────────────────────────`
+
+Key findings from the worktree (no network access was available, so this is based on repo precedent + domain knowledge of Spring Boot's Couchbase test-slice design):
+
+- **No Couchbase Docker infrastructure exists yet** in `tests/tck-build-logic/.../allowed-docker-images/` (only sftp, mosquitto, greenmail, mariadb, microcks, mssql, mysql, nats, nginx, opengauss, postgres, rabbitmq, ryuk are pinned).
+- **Couchbase has no embedded/in-memory mode** (unlike `@DataJpaTest`'s default H2). Spring Boot's `CouchbaseAutoConfiguration`/`CouchbaseDataAutoConfiguration` eagerly open a real `Cluster`/`Bucket`, so a `@DataCouchbaseTest`-based context only loads successfully against a live server.
+- **This repo's own precedent confirms the pattern**: `tests/src/org.springframework.boot/spring-boot-testcontainers/4.1.1/build.gradle` adds an extra testcontainers module (`com.redis:testcontainers-redis:2.2.4`) beyond the scaffold defaults specifically to exercise a `@ServiceConnection`-backed container. The idiomatic, documented way to exercise `@DataCouchbaseTest` is the analogous `@Container CouchbaseContainer` + `@ServiceConnection` pattern, requiring the `org.testcontainers:couchbase` module and a `couchbase/server` image — neither of which the generated scaffold provides (it only adds the library jar + assertj-core).
+
+Since this satisfies "concrete evidence that extra setup is needed," my decision is `advisory_preparation`.
+
+```json
+{
+  "action": "advisory_preparation",
+  "summary": "spring-boot-data-couchbase-test is the real (non-starter) module carrying @DataCouchbaseTest's auto-configuration; Couchbase has no embedded mode, so a meaningful context-loading test needs a live cluster, which the scaffold doesn't provide and no Couchbase Docker image is yet pinned in this repo.",
+  "deterministic_setup": [
+    {
+      "kind": "dependency",
+      "coordinate": "org.testcontainers:couchbase:1.20.4",
+      "scope": "testImplementation",
+      "reason": "Provides CouchbaseContainer for a @Container/@ServiceConnection-backed test, mirroring the pattern already used in tests/src/org.springframework.boot/spring-boot-testcontainers/4.1.1/build.gradle (com.redis:testcontainers-redis) for a comparable technology's service-connection test. Version is an estimate (no network access to verify against Maven Central) and should be confirmed by Gradle dependency resolution."
+    },
+    {
+      "kind": "docker_image",
+      "image": "couchbase/server:7.6.2",
+      "slug": "couchbase_server",
+      "reason": "No Couchbase image is currently pinned under allowed-docker-images/. A live cluster is required because CouchbaseAutoConfiguration/CouchbaseDataAutoConfiguration open a real Cluster/Bucket eagerly, with no embedded fallback. Tag/edition (Enterprise vs Community) is unverified due to lack of network access in this environment and must be confirmed by an actual Docker pull."
+    }
+  ],
+  "agent_guidance": "Prefer the idiomatic pattern demonstrated in tests/src/org.springframework.boot/spring-boot-testcontainers/4.1.1: declare the CouchbaseContainer as a @Bean annotated with @ServiceConnection inside a @TestConfiguration imported by the @DataCouchbaseTest class, letting Spring's TestcontainersLifecycleApplicationContextInitializer manage start/stop (no org.testcontainers:junit-jupiter dependency needed). Create at least one bucket via BucketDefinition and allow the query/index services to come up — call waitUntilReady() if available, since full cluster bootstrap (data+index+query+fts) is slow and may need a generous container startup timeout. Before committing to a real container, double check whether Testcontainers' CouchbaseContainer requires the Enterprise image tag (some versions depend on cluster-manager REST endpoints not present in Community edition) — Enterprise free-tier is normally fine for dev/test use, but confirm no production-licensing concern applies in CI.",
+  "risks": [
+    "Dependency version (org.testcontainers:couchbase) and Docker image tag/edition are best-effort estimates; this research environment had no network/Maven Central access to verify them, so local Gradle resolution and a real Docker pull are authoritative and may require adjusting the tag.",
+    "Couchbase server containers are heavier and slower to start than the other pinned images (postgres, mariadb, etc.), which may need a longer test timeout.",
+    "If local verification shows the real auto-configuration classes can be reached without a live cluster (e.g. by excluding CouchbaseAutoConfiguration and mocking the repository beans), this setup may turn out to be unnecessary — but that approach would miss coverage of the module's primary auto-configuration/import-selector classes, which is why the live-cluster path is recommended first."
+  ]
+}
+```
