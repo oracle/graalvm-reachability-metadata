@@ -133,6 +133,33 @@ public class TokenizersTest {
     }
 
     @Test
+    void padsBatchEncodingsToTheLongestSequence() throws Exception {
+        Path tokenizerDirectory = Files.createTempDirectory("djl-tokenizer");
+        Path tokenizerPath = tokenizerDirectory.resolve("tokenizer.json");
+        Files.writeString(tokenizerPath, TOKENIZER_JSON);
+
+        HuggingFaceTokenizer tokenizer = HuggingFaceTokenizer.builder()
+                .optTokenizerPath(tokenizerPath)
+                .optPadding(true)
+                .build();
+        try {
+            Encoding[] batch = tokenizer.batchEncode(List.of("hello", "hello world"));
+
+            assertThat(tokenizer.getPadding()).isEqualTo("LONGEST");
+            assertThat(batch[0].getTokens()).containsExactly("[CLS]", "hello", "[SEP]", "[PAD]");
+            assertThat(batch[0].getIds()).containsExactly(2L, 4L, 3L, 0L);
+            assertThat(batch[0].getAttentionMask()).containsExactly(1L, 1L, 1L, 0L);
+            assertThat(batch[1].getTokens()).containsExactly("[CLS]", "hello", "world", "[SEP]");
+            assertThat(batch[1].getIds()).containsExactly(2L, 4L, 5L, 3L);
+            assertThat(batch[1].getAttentionMask()).containsExactly(1L, 1L, 1L, 1L);
+        } finally {
+            tokenizer.close();
+            Files.deleteIfExists(tokenizerPath);
+            Files.deleteIfExists(tokenizerDirectory);
+        }
+    }
+
+    @Test
     void appliesTruncationConfiguredWithTheBuilder() throws Exception {
         Path tokenizerDirectory = Files.createTempDirectory("djl-tokenizer");
         Path tokenizerPath = tokenizerDirectory.resolve("tokenizer.json");
