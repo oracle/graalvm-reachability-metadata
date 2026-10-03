@@ -1,0 +1,24 @@
+## Decision
+
+**action: `no_action`**
+
+I found strong, directly-applicable evidence in this repo rather than needing to speculate: Spring Boot 4.x renamed many "starter" modules by dropping the `-starter-` infix (confirmed by `spring-boot-testcontainers`, `spring-boot-h2console`, `spring-boot-jdbc`, etc. already present in `metadata/org.springframework.boot/`). `spring-boot-data-couchbase-test` is this renaming applied to `spring-boot-starter-data-couchbase-test`.
+
+Two pieces of existing metadata make the call for me:
+- `metadata/org.springframework.boot/spring-boot-starter-data-couchbase-test/index.json` — already marked `not-for-native-image: true`: *"Artifact JAR contains no JVM class files, so there is no library code for native-image metadata."*
+- `metadata/org.springframework.boot/spring-boot-starter-couchbase-test/index.json` — the sibling non-`data` variant, **at the exact same version 4.1.1** as this issue — marked `not-for-native-image: true`: *"The published spring-boot-starter-couchbase-test-4.1.1 JAR contains only META-INF/MANIFEST.MF, LICENSE.txt, and NOTICE.txt, with no JVM class files; it is a dependency starter whose runtime classes are supplied by its dependencies."*
+
+These Spring Boot `*-test` starters are deliberately empty POM-style aggregators — their only purpose is to pull in `spring-boot-test`, `spring-boot-couchbase`, `spring-boot-testcontainers`, and `org.testcontainers:couchbase` transitively for users' own test classpaths. There's no library code in the artifact itself to drive coverage into, so no Docker image, extra Maven dependency, or environment/system-property setup can make "meaningful coverage" reachable — there's nothing to reach. The standard scaffold already has the right idiom for this (the `not-for-native-image` empty-JAR path used for the four sibling Couchbase-test artifacts), and that's what should apply here too, pending the authoritative local Gradle/Native Image check.
+
+```json
+{
+  "action": "no_action",
+  "summary": "spring-boot-data-couchbase-test is the Spring Boot 4.x renaming of spring-boot-starter-data-couchbase-test, a thin test-scope aggregator with no JVM classes of its own. The sibling spring-boot-starter-couchbase-test:4.1.1 (same version) is already documented in this repo as containing only META-INF/MANIFEST.MF, LICENSE.txt, NOTICE.txt with no classes, and spring-boot-starter-data-couchbase-test is documented the same way. No setup can produce meaningful coverage for an artifact with no library code; the standard not-for-native-image scaffold path already used for its siblings applies.",
+  "deterministic_setup": [],
+  "agent_guidance": "",
+  "risks": [
+    "Confirm via local Gradle/Native Image verification that spring-boot-data-couchbase-test:4.1.1 indeed ships no class files, the same way its sibling spring-boot-starter-couchbase-test:4.1.1 was confirmed, before finalizing a not-for-native-image metadata entry.",
+    "If actual classes are found (unlikely given the precedent), reassess for test-support needs such as testcontainers Couchbase Docker image and Spring Data Couchbase repository setup."
+  ]
+}
+```
