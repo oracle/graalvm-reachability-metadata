@@ -3,6 +3,12 @@
 Rendered by Forge from the pre-push branch review of §FS-local-branch-review.
 Newest entry first; every non-approval is recorded, including one a repair later cleared.
 
+## 2026-10-03 — org.jetbrains.kotlin:kotlin-reflect:2.5.0-Beta1 (#10368)
+
+**Coverage tests bypass the library public API and force an alternate implementation mode**
+
+The contribution directly imported and exercised kotlin.reflect.jvm.internal DescriptorKindFilter, GeneratedMessageLite, and SmartList classes instead of reaching them through the public kotlin.reflect API. It also forced kotlin.reflect.jvm.loadMetadataDirectly=true for JVM and native tests even though the issue and preparation evidence required no system property and did not establish the test-contract uniform-necessity conditions for a runtime flag. These violated the meaningful public-API and native flag requirements.
+
 ## 2026-10-03 — org.locationtech.jts:jts-core:1.20.0 (#9789)
 
 **Bundled support JAR shadows the target library**
