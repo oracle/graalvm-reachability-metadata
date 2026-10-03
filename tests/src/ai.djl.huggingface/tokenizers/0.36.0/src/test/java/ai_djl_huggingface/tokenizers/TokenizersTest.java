@@ -157,5 +157,32 @@ public class TokenizersTest {
             Files.deleteIfExists(tokenizerDirectory);
         }
     }
+
+    @Test
+    void exposesOverflowingTokensWhenConfiguredWithTheBuilder() throws Exception {
+        Path tokenizerDirectory = Files.createTempDirectory("djl-tokenizer");
+        Path tokenizerPath = tokenizerDirectory.resolve("tokenizer.json");
+        Files.writeString(tokenizerPath, TOKENIZER_JSON);
+
+        HuggingFaceTokenizer tokenizer = HuggingFaceTokenizer.builder()
+                .optTokenizerPath(tokenizerPath)
+                .optAddSpecialTokens(false)
+                .optTruncation(true)
+                .optWithOverflowingTokens(true)
+                .optMaxLength(3)
+                .build();
+        try {
+            Encoding encoding = tokenizer.encode("hello world ! hello");
+
+            assertThat(encoding.getOverflowing()).hasSize(1);
+            assertThat(encoding.getOverflowing()[0].getTokens())
+                    .containsExactly("hello", "[PAD]", "[PAD]");
+            assertThat(encoding.getOverflowing()[0].getIds()).containsExactly(4L, 0L, 0L);
+        } finally {
+            tokenizer.close();
+            Files.deleteIfExists(tokenizerPath);
+            Files.deleteIfExists(tokenizerDirectory);
+        }
+    }
 }
 
