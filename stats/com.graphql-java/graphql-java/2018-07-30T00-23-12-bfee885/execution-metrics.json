@@ -1,0 +1,135 @@
+{
+  "fix_javac_fail:2026-10-03": {
+    "timestamp": "2026-10-03T12:52:39.442141Z",
+    "library": "com.graphql-java:graphql-java:2018-07-30T00-23-12-bfee885",
+    "starting_commit": "df62b7dac4793b29363ab37a509657eaade50e8d",
+    "ending_commit": "b626e624a3a20197732bb5fd75dd63d38e0bc282",
+    "previous_library": "com.graphql-java:graphql-java:19.7",
+    "strategy_name": "javac_iterative_with_coverage_sources_pi_gpt-5.6-sol",
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "status": "success",
+    "stats": {
+      "version": "2018-07-30T00-23-12-bfee885",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 0.9,
+            "coveredCalls": 9,
+            "totalCalls": 10
+          }
+        },
+        "coverageRatio": 0.9,
+        "coveredCalls": 9,
+        "totalCalls": 10
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 24476,
+          "missed": 49338,
+          "ratio": 0.33159,
+          "total": 73814
+        },
+        "line": {
+          "covered": 5788,
+          "missed": 10647,
+          "ratio": 0.352175,
+          "total": 16435
+        },
+        "method": {
+          "covered": 1602,
+          "missed": 3239,
+          "ratio": 0.330923,
+          "total": 4841
+        }
+      }
+    },
+    "previous_library_stats": {
+      "version": "19.7",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 0.909091,
+            "coveredCalls": 10,
+            "totalCalls": 11
+          },
+          "resources": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 1,
+            "totalCalls": 1
+          }
+        },
+        "coverageRatio": 0.916667,
+        "coveredCalls": 11,
+        "totalCalls": 12
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 42419,
+          "missed": 107078,
+          "ratio": 0.283745,
+          "total": 149497
+        },
+        "line": {
+          "covered": 10223,
+          "missed": 22881,
+          "ratio": 0.308815,
+          "total": 33104
+        },
+        "method": {
+          "covered": 2959,
+          "missed": 6763,
+          "ratio": 0.304361,
+          "total": 9722
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "no_action",
+      "issue_number": 9332,
+      "issue_label": "fails-javac-compile",
+      "library": "com.graphql-java:graphql-java:2018-07-30T00-23-12-bfee885",
+      "summary": "The compile errors come from tests written for the 19.7 API (PropertyDataFetcher.setUseSetAccessible, setUseNegativeCache, DataFetchingEnvironmentImpl.newDataFetchingEnvironment(), SchemaParser.parse(InputStream)) being compiled against a much older 2018 build that lacks those methods. This is an ordinary test-code adaptation to the older API, and no extra dependency, Docker image or system property is needed.",
+      "deterministic_setup": [],
+      "agent_guidance": "Rewrite the generated tests against the 2018-07-30T00-23-12-bfee885 API instead of reusing the 19.7 tests. In that build, SchemaParser.parse accepts only File, Reader or String, so read the classpath .graphqls resource into a Reader or String. Do not call PropertyDataFetcher.setUseSetAccessible or setUseNegativeCache, and do not call the DataFetchingEnvironmentImpl.newDataFetchingEnvironment() factory. Use the DataFetchingEnvironmentImpl constructor or builder that exists in that version, or drive property fetching through an executed query. Check the actual API in the resolved jar with javap before writing calls. Keep the tests inside the library's packages and exercise the same dynamic-access paths (property fetching through reflection, schema loading from resources).",
+      "risks": [
+        "The 2018 build is a very early development snapshot, so many 19.7 API calls may be missing and the tests need a substantial rewrite.",
+        "Some dynamic-access paths used in 19.7 (the PropertyFetchingImpl reflection and negative cache) may not exist in the old build, which could lower reachable coverage for this version."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#9332 [Automation] javac compile fails for com.graphql-java:graphql-java:2018-07-30T00-23-12-bfee885; label=fails-javac-compile; body_chars=8015"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "16 existing test file path(s) included"
+        }
+      ],
+      "current_library": "com.graphql-java:graphql-java:19.7",
+      "new_version": "2018-07-30T00-23-12-bfee885",
+      "model": "sonnet",
+      "input_tokens_used": 2,
+      "output_tokens_used": 886
+    },
+    "metrics": {
+      "input_tokens_used": 260557,
+      "cached_input_tokens_used": 2226432,
+      "output_tokens_used": 16506,
+      "iterations": 7,
+      "cost_usd": 2.9112,
+      "tested_library_loc": 5788,
+      "metadata_entries": 56,
+      "test_only_metadata_entries": 21,
+      "previous_library_metadata_entries": 24,
+      "previous_library_test_only_metadata_entries": 4,
+      "code_coverage_percent": 35.22,
+      "previous_library_coverage_percent": 30.88
+    },
+    "artifacts": {
+      "metadata_file": "metadata/com.graphql-java/graphql-java/2018-07-30T00-23-12-bfee885/reachability-metadata.json"
+    }
+  }
+}
