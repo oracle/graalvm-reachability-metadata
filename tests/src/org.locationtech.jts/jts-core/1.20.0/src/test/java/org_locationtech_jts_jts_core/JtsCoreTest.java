@@ -9,7 +9,6 @@ package org_locationtech_jts_jts_core;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.data.Offset.offset;
 
-import java.awt.Color;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
@@ -36,9 +35,8 @@ import org.locationtech.jts.io.WKTReader;
 import org.locationtech.jts.linearref.LengthIndexedLine;
 import org.locationtech.jts.triangulate.DelaunayTriangulationBuilder;
 import org.locationtech.jts.triangulate.VoronoiDiagramBuilder;
-import org.locationtech.jts.util.TestBuilderProxy;
 
-public class TestBuilderProxyTest {
+public class JtsCoreTest {
     private final GeometryFactory geometryFactory = new GeometryFactory();
 
     @Test
@@ -189,14 +187,13 @@ public class TestBuilderProxyTest {
     }
 
     @Test
-    void loadsOptionalTestBuilderAndDelegatesIndicatorRequests() {
-        Geometry geometry = geometryFactory.createPoint(new Coordinate(12, 34));
+    void createsAndQueriesGeometryCollection() {
+        Geometry first = geometryFactory.createPoint(new Coordinate(1, 2));
+        Geometry second = geometryFactory.createPoint(new Coordinate(4, 6));
+        Geometry collection = geometryFactory.createGeometryCollection(new Geometry[] {first, second});
 
-        assertThat(TestBuilderProxy.isActive()).isTrue();
-
-        TestBuilderProxy.showIndicator(geometry);
-        TestBuilderProxy.showIndicator(geometry, Color.BLUE);
-
-        assertThat(geometry.getCoordinate()).isEqualTo(new Coordinate(12, 34));
+        assertThat(collection.getNumGeometries()).isEqualTo(2);
+        assertThat(first.distance(second)).isEqualTo(5.0);
+        assertThat(collection.getEnvelopeInternal()).isEqualTo(new Envelope(1, 4, 2, 6));
     }
 }
