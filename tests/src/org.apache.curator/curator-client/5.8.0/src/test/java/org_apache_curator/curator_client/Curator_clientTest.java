@@ -97,23 +97,26 @@ public class Curator_clientTest {
                 "127.0.0.1:1", 10_000, 10_000, null, retryTwiceWithoutSleeping);
         RecordingTracerDriver tracer = new RecordingTracerDriver();
         client.setTracerDriver(tracer);
-        client.start();
 
         try {
             AtomicInteger attempts = new AtomicInteger();
-            String result = RetryLoop.callWithRetry(client, () -> {
-                if (attempts.getAndIncrement() < 2) {
-                    throw KeeperException.create(Code.CONNECTIONLOSS);
+            AtomicReference<String> result = new AtomicReference<>();
+            RetryLoop loop = client.newRetryLoop();
+            while (loop.shouldContinue()) {
+                try {
+                    if (attempts.getAndIncrement() < 2) {
+                        throw KeeperException.create(Code.CONNECTIONLOSS);
+                    }
+                    result.set("connected-result");
+                    loop.markComplete();
+                } catch (KeeperException exception) {
+                    loop.takeException(exception);
                 }
-                return "connected-result";
-            });
+            }
 
-            assertThat(result).isEqualTo("connected-result");
+            assertThat(result).hasValue("connected-result");
             assertThat(attempts).hasValue(3);
             assertThat(tracer.counts()).containsEntry("retries-allowed", 2);
-            RetryLoop loop = client.newRetryLoop();
-            assertThat(loop.shouldContinue()).isTrue();
-            loop.markComplete();
             assertThat(loop.shouldContinue()).isFalse();
             assertThatThrownBy(() -> client.newRetryLoop().takeException(KeeperException.create(Code.NONODE)))
                     .isInstanceOf(KeeperException.NoNodeException.class);
