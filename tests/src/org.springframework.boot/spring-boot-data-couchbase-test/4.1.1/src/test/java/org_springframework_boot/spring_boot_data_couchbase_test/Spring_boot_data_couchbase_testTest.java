@@ -59,6 +59,20 @@ public class Spring_boot_data_couchbase_testTest {
         assertThat(annotations.isPresent(ImportAutoConfiguration.class)).isTrue();
     }
 
+    @Test
+    void dataCouchbaseTestPropagatesAutoConfigurationExclusions() {
+        ImportAutoConfiguration annotation = MergedAnnotations.from(DataCouchbaseSlice.class)
+                .get(ImportAutoConfiguration.class)
+                .synthesize();
+
+        assertThat(annotation.exclude()).containsExactly(
+                CouchbaseAutoConfiguration.class,
+                DataCouchbaseAutoConfiguration.class,
+                DataCouchbaseReactiveAutoConfiguration.class,
+                DataCouchbaseReactiveRepositoriesAutoConfiguration.class,
+                DataCouchbaseRepositoriesAutoConfiguration.class);
+    }
+
 }
 
 @DataCouchbaseTest(
