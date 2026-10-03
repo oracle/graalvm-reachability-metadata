@@ -59,6 +59,18 @@ public class H2gis_apiTest {
     }
 
     @Test
+    void replacesAnExistingFunctionPropertyValue() {
+        TestScalarFunction function = new TestScalarFunction();
+
+        function.addProperty(Function.PROP_NAME, "initial");
+        function.addProperty(Function.PROP_NAME, "updated");
+
+        assertThat(function.getProperty(Function.PROP_NAME)).isEqualTo("updated");
+        assertThat(function.removeProperty(Function.PROP_NAME)).isTrue();
+        assertThat(function.getProperty(Function.PROP_NAME)).isNull();
+    }
+
+    @Test
     void reportsProgressVisitorStateAndCancellationEvents() {
         EmptyProgressVisitor visitor = new EmptyProgressVisitor();
         List<PropertyChangeEvent> events = new ArrayList<>();
