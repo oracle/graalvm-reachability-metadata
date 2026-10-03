@@ -14,6 +14,7 @@ import org.h2gis.utilities.SpatialResultSet;
 import org.h2gis.utilities.TableLocation;
 import org.h2gis.utilities.Tuple;
 import org.h2gis.utilities.dbtypes.DBTypes;
+import org.h2gis.utilities.jts_utils.GeometryFeatureUtils;
 import org.h2gis.utilities.wrapper.SpatialResultSetImpl;
 import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Geometry;
@@ -27,6 +28,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -188,6 +190,29 @@ public class H2gis_utilitiesTest {
                         .isEqualTo("Point");
                 assertThat(spatialResultSet.getGeometry(2).getSRID()).isEqualTo(4326);
             }
+        }
+    }
+
+    @Test
+    void convertsSpatialRowsToGeoJsonFeatures() throws Exception {
+        try (Connection connection = openSpatialDatabase("geometry_features")) {
+            createSpatialTable(connection);
+
+            List<?> features = GeometryFeatureUtils.toList(
+                    connection,
+                    "SELECT NAME, AMOUNT, GEOM FROM PUBLIC.PLACES ORDER BY ID",
+                    3);
+
+            assertThat(features).hasSize(3);
+            Map<?, ?> firstFeature = (Map<?, ?>) features.get(0);
+            assertThat(firstFeature.get("type")).isEqualTo("Feature");
+            Map<?, ?> geometry = (Map<?, ?>) firstFeature.get("geometry");
+            assertThat(geometry.get("type")).isEqualTo("Point");
+            assertThat(geometry.get("coordinates")).isEqualTo(List.of(1.0, 2.0));
+            Map<?, ?> properties = (Map<?, ?>) firstFeature.get("properties");
+            assertThat(properties.get("NAME")).isEqualTo("north");
+            assertThat((BigDecimal) properties.get("AMOUNT"))
+                    .isEqualByComparingTo("12.50");
         }
     }
 
