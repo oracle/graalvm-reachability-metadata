@@ -9,6 +9,11 @@ Newest entry first; every non-approval is recorded, including one a repair later
 
 The new Jetty 10 test project used 2-second waits for asynchronous I/O callbacks and a 100-millisecond IdleTimeout. These explicit I/O timeouts violated FS-test-contract.1.7, which requires at least 10 seconds to avoid agent and Native Image startup flakiness.
 
+## 2026-10-03 — org.jetbrains.kotlin:kotlin-reflect:2.5.0-Beta1 (#10368)
+
+**Generated library statistics were stale**
+
+The first required finalization run regenerated stats.json and changed instruction coverage from 112261 to 112266 covered instructions and line coverage from 16461 to 16462 covered lines. Because the required statistics generation did not reproduce the committed file, the generated statistics were stale and needed refresh before approval.
 ## 2026-10-02 — org.apache.tomcat.embed:tomcat-embed-el:10.0.17 (#10319)
 
 **Runtime repair masked a library serialization regression and required a test-only native build flag**

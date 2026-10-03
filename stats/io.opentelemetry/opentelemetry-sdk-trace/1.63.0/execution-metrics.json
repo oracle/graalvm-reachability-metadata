@@ -1,0 +1,130 @@
+{
+  "fix_javac_fail:2026-10-03": {
+    "timestamp": "2026-10-03T07:22:49.921227Z",
+    "library": "io.opentelemetry:opentelemetry-sdk-trace:1.63.0",
+    "starting_commit": "1e00bf518639e5328b45ed7c76bb70c699a4f1d1",
+    "ending_commit": "d06a916687673d75be00e4baf38e2f90b675e293",
+    "previous_library": "io.opentelemetry:opentelemetry-sdk-trace:1.59.0",
+    "strategy_name": "javac_iterative_with_coverage_sources_pi_gpt-5.6-sol",
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "status": "success",
+    "stats": {
+      "version": "1.63.0",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 4,
+            "totalCalls": 4
+          }
+        },
+        "coverageRatio": 1.0,
+        "coveredCalls": 4,
+        "totalCalls": 4
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 2734,
+          "missed": 5774,
+          "ratio": 0.321345,
+          "total": 8508
+        },
+        "line": {
+          "covered": 773,
+          "missed": 1377,
+          "ratio": 0.359535,
+          "total": 2150
+        },
+        "method": {
+          "covered": 208,
+          "missed": 367,
+          "ratio": 0.361739,
+          "total": 575
+        }
+      }
+    },
+    "previous_library_stats": {
+      "version": "1.59.0",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 4,
+            "totalCalls": 4
+          }
+        },
+        "coverageRatio": 1.0,
+        "coveredCalls": 4,
+        "totalCalls": 4
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 1977,
+          "missed": 6460,
+          "ratio": 0.234325,
+          "total": 8437
+        },
+        "line": {
+          "covered": 571,
+          "missed": 1555,
+          "ratio": 0.268579,
+          "total": 2126
+        },
+        "method": {
+          "covered": 164,
+          "missed": 407,
+          "ratio": 0.287215,
+          "total": 571
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "no_action",
+      "issue_number": 10382,
+      "issue_label": "fails-javac-compile",
+      "library": "io.opentelemetry:opentelemetry-sdk-trace:1.63.0",
+      "summary": "The failure is a javac error in the generated test. It imports the shaded jctools class io.opentelemetry.internal.shaded.jctools.queues.atomic.MpscAtomicArrayQueue, which this 1.63.0 resolution doesn't expose. That is a test-code problem, not missing setup. I didn't confirm the exact 1.63.0 jar layout, so a check is listed under risks.",
+      "deterministic_setup": [],
+      "agent_guidance": "Don't import or instantiate internal shaded classes (io.opentelemetry.internal.shaded.*) from test code. They are implementation details and can move or disappear between releases. Replace the MpscAtomicArrayQueue usage in OpenTelemetrySdkTraceTest with public SDK API. For example, build an SdkTracerProvider with a BatchSpanProcessor or SimpleSpanProcessor and an InMemorySpanExporter-style SpanExporter. Then create spans and assert on the exported SpanData. The shaded queue is used internally by BatchSpanProcessor, so exercising that processor still reaches the same code path. Keep the tests compilable against the 1.59.0 to 1.63.0 range.",
+      "risks": [
+        "The shaded jctools package may have been relocated or removed in 1.63.0. Check the resolved opentelemetry-sdk-common and opentelemetry-sdk-trace jars before choosing replacement test code.",
+        "The runtime reflection and Unsafe field access in the shaded jctools queues, such as the fieldOffset lookups used by BatchSpanProcessor, may need reachability metadata entries that differ between versions. Verify with the Native Image run."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#10382 [Automation] javac compile fails for io.opentelemetry:opentelemetry-sdk-trace:1.63.0; label=fails-javac-compile; body_chars=8015"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "8 existing test file path(s) included"
+        }
+      ],
+      "current_library": "io.opentelemetry:opentelemetry-sdk-trace:1.59.0",
+      "new_version": "1.63.0",
+      "model": "sonnet",
+      "input_tokens_used": 2,
+      "output_tokens_used": 844
+    },
+    "metrics": {
+      "input_tokens_used": 45635,
+      "cached_input_tokens_used": 403072,
+      "output_tokens_used": 2880,
+      "iterations": 3,
+      "cost_usd": 0.5161,
+      "tested_library_loc": 773,
+      "metadata_entries": 13,
+      "test_only_metadata_entries": 3,
+      "previous_library_metadata_entries": 13,
+      "previous_library_test_only_metadata_entries": 3,
+      "code_coverage_percent": 35.95,
+      "previous_library_coverage_percent": 26.86
+    },
+    "artifacts": {
+      "metadata_file": "metadata/io.opentelemetry/opentelemetry-sdk-trace/1.63.0/reachability-metadata.json"
+    }
+  }
+}

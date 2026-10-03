@@ -1,0 +1,139 @@
+{
+  "base_commit": "77b2a5023fd3ade305b0022fdd64083ac20b6468",
+  "branch": "ai/kimeta/add-lib-support-org.tinfour-TinfourCore-2.2.0-chunked-forge-9790-20261003063737578446-e23bd1fc5417",
+  "follow_ups": [],
+  "forge": {
+    "branch": "master",
+    "commit": "64b39e298df2e06d80520993b3c73ded87225968",
+    "monitored_branch": "origin/master"
+  },
+  "issue_number": 9790,
+  "library": {
+    "artifact": "TinfourCore",
+    "coordinates": "org.tinfour:TinfourCore:2.2.0",
+    "group": "org.tinfour",
+    "version": "2.2.0"
+  },
+  "local_ci_verification": {
+    "base_commit": "77b2a5023fd3ade305b0022fdd64083ac20b6468",
+    "commands": [
+      {
+        "command": [
+          "./gradlew",
+          "generateChangedIndexFileCoordinatesList",
+          "-PbaseCommit=origin/master",
+          "-PnewCommit=HEAD"
+        ],
+        "env": {
+          "GITHUB_OUTPUT": "/tmp/tmpjqg_c17l"
+        },
+        "gate": "changed-index-coordinates",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :generateChangedIndexFileCoordinatesList\n\n[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9790-02e1850b/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 2s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      },
+      {
+        "command": [
+          "./gradlew",
+          "validateIndexFiles",
+          "-Pcoordinates=org.tinfour:TinfourCore"
+        ],
+        "env": {},
+        "gate": "index-file-validation",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :validateIndexFiles\n✅ metadata/org.tinfour/TinfourCore/index.json: Valid\n\n[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9790-02e1850b/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 1s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      }
+    ],
+    "failure_command": null,
+    "failure_gate": null,
+    "final_commit": "9b82f109f2abc4d6e96978e2c00d18c7988e8538",
+    "fixups": [],
+    "human_intervention_required": false,
+    "repo_fix_paths": [],
+    "status": "success"
+  },
+  "local_review": {
+    "changed_paths": [],
+    "decision": "approved",
+    "finding_body": "",
+    "finding_title": "",
+    "fix_note": "",
+    "model": "gpt-5.6-sol",
+    "review_comment": "The diff is scoped to org.tinfour:TinfourCore:2.2.0 and uses only reachability-metadata.json. The public, version-agnostic test exercises TinInstantiationUtility through the library API and asserts triangulation results; it is not scaffold-only, does not bypass the library package, dodge Native Image, tolerate failures, use test-side reflection, or add native/JVM override flags. Resolved statistics report 2/2 dynamic-access calls covered (100%, including reflection), above the new-library gate; the 4 reported test-only metadata entries do not trigger the entry-count mismatch guardrail. Forge's generation evidence and local index gates are successful.",
+    "session_id": "ba1640529889467b"
+  },
+  "metrics": {
+    "agent": "pi",
+    "model": "gpt-5.6-luna",
+    "path": "stats/org.tinfour/TinfourCore/2.2.0/execution-metrics.json",
+    "summary": {
+      "cached_input_tokens_used": 1183744,
+      "code_coverage_percent": 10.62,
+      "cost_usd": 0.2597,
+      "generated_loc": 46,
+      "input_tokens_used": 86281,
+      "iterations": 4,
+      "metadata_entries": 0,
+      "output_tokens_used": 9171,
+      "test_only_metadata_entries": 4,
+      "tested_library_loc": 1426
+    },
+    "timestamp": "2026-10-03T06:37:37.578446Z"
+  },
+  "modifiers": {
+    "chunk_final": true,
+    "chunked_dynamic_access": true,
+    "human_intervention": false
+  },
+  "producer": "kimeta",
+  "publication_id": "forge-9790-20261003063737578446-e23bd1fc5417",
+  "render": {
+    "dynamic_access": null,
+    "dynamic_access_evidence": {
+      "covered_call_sites": [
+        "[reflection] java.lang.Class#getDeclaredConstructors() <- org.tinfour.utils.TinInstantiationUtility.constructInstance(TinInstantiationUtility.java:163) (line 163)",
+        "[reflection] java.lang.reflect.Constructor#newInstance(java.lang.Object[]) <- org.tinfour.utils.TinInstantiationUtility.constructInstance(TinInstantiationUtility.java:184) (line 184)"
+      ],
+      "metadata_rules": []
+    },
+    "library_stats": {
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 2,
+            "totalCalls": 2
+          }
+        },
+        "coverageRatio": 1.0,
+        "coveredCalls": 2,
+        "totalCalls": 2
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 6596,
+          "missed": 54216,
+          "ratio": 0.108465,
+          "total": 60812
+        },
+        "line": {
+          "covered": 1426,
+          "missed": 11998,
+          "ratio": 0.106228,
+          "total": 13424
+        },
+        "method": {
+          "covered": 186,
+          "missed": 1201,
+          "ratio": 0.134102,
+          "total": 1387
+        }
+      },
+      "version": "2.2.0"
+    }
+  },
+  "schema_version": 1,
+  "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-luna",
+  "task_type": "library-new-request",
+  "template_type": "library-new-request",
+  "timestamp": "2026-10-03T06:37:37.578446Z"
+}
