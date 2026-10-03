@@ -20,6 +20,7 @@ public class NTv2GridShiftTransformationTest {
         double[] coordinate = {Math.toRadians(0.5), Math.toRadians(0.5)};
 
         assertThat(transformation.isLoaded()).isFalse();
+        assertThat(transformation.setMode(NTv2GridShiftTransformation.SPEED)).isTrue();
         double[] transformed = transformation.transform(coordinate);
 
         assertThat(transformation.isLoaded()).isTrue();
