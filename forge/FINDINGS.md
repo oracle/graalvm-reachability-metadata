@@ -8,6 +8,11 @@ Newest entry first; every non-approval is recorded, including one a repair later
 **Test forces an unrelated transitive dependency version**
 
 The 5.8.0 test project forced ZooKeeper from Curator 5.8.0's resolved 3.9.2 dependency to 3.5.10 solely to exercise legacy Compatibility branches. This changed the tested runtime graph and added unrelated build setup rather than adapting the test to the target version, violating the no-scope-creep requirement in FS-test-contract.2.9.
+## 2026-10-02 — ch.qos.logback:logback-classic:1.6.0 (#10311)
+
+**Explicit I/O timeouts below the required 10-second floor**
+
+FS-test-contract.1.7 requires every explicit socket, connection, and bounded I/O wait to be at least 10 seconds. RemoteAppenderStreamClientTest, SocketNodeTest, and SocketReceiverTest each set SOCKET_TIMEOUT_MILLIS to 5,000 and used it for socket operations and related bounded waits.
 ## 2026-10-03 — com.nimbusds:nimbus-jose-jwt:4.0 (#9334)
 
 **Unjustified Native Image URL protocol flag**

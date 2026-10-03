@@ -1,0 +1,103 @@
+{
+  "base_commit": "81ba718b3ee789c13489b2a88c6d57686ca7d6c0",
+  "branch": "ai/kimeta/fix-java-run-io.lettuce-lettuce-core-6.7.0.RELEASE-forge-10315-20261003015718510776-16a8aaf72099",
+  "follow_ups": [],
+  "forge": {
+    "branch": "master",
+    "commit": "0649f1f2cfe534afbd123ac3ff869e9379de59dc",
+    "monitored_branch": "origin/master"
+  },
+  "issue_number": 10315,
+  "library": {
+    "artifact": "lettuce-core",
+    "coordinates": "io.lettuce:lettuce-core:6.7.0.RELEASE",
+    "group": "io.lettuce",
+    "version": "6.7.0.RELEASE"
+  },
+  "local_ci_verification": {
+    "base_commit": "81ba718b3ee789c13489b2a88c6d57686ca7d6c0",
+    "commands": [
+      {
+        "command": [
+          "./gradlew",
+          "generateChangedIndexFileCoordinatesList",
+          "-PbaseCommit=origin/master",
+          "-PnewCommit=HEAD"
+        ],
+        "env": {
+          "GITHUB_OUTPUT": "/tmp/tmp1eot0mpz"
+        },
+        "gate": "changed-index-coordinates",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :generateChangedIndexFileCoordinatesList\n\n[Incubating] Problems report is available at: file:///home/oracle/oracle/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10315-1892945b/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 3s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      },
+      {
+        "command": [
+          "./gradlew",
+          "validateIndexFiles",
+          "-Pcoordinates=io.lettuce:lettuce-core"
+        ],
+        "env": {},
+        "gate": "index-file-validation",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :validateIndexFiles\n✅ metadata/io.lettuce/lettuce-core/index.json: Valid\n\n[Incubating] Problems report is available at: file:///home/oracle/oracle/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10315-1892945b/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 2s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      }
+    ],
+    "failure_command": null,
+    "failure_gate": null,
+    "final_commit": "aa6050c8f57cc4c6f210808aa2da2ad2f8a34280",
+    "fixups": [],
+    "human_intervention_required": false,
+    "repo_fix_paths": [],
+    "status": "success"
+  },
+  "local_review": {
+    "changed_paths": [],
+    "decision": "approved",
+    "finding_body": "",
+    "finding_title": "",
+    "fix_note": "",
+    "model": "gpt-5.6-sol",
+    "review_comment": "The diff is confined to io.lettuce:lettuce-core:6.7.0.RELEASE and its index, stats, metadata, and test project. The versioned suite preserves the prior tests and adds meaningful public-API coverage for default JSON parser loading; I found no test deletion, disabled native path, swallowed failure, version-pinned assertion, native build/run flag, or legacy metadata format. Overall and reflection dynamic-access coverage both remain 52/55 (94.5455%), satisfying the fixes-java-run repair gate. The authoritative finalization completed current-defaults and future-defaults on the latest GraalVM plus current-defaults on GraalVM 25, then passed metadata splitting/validation, style checks, generated-test validity, and stats generation without changing the publishable tree.",
+    "session_id": "191fefb8fbbd4859"
+  },
+  "metrics": {
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "path": "stats/io.lettuce/lettuce-core/6.7.0.RELEASE/execution-metrics.json",
+    "summary": {
+      "cached_input_tokens_used": 2950912,
+      "code_coverage_percent": 26.2,
+      "cost_usd": 3.4567,
+      "input_tokens_used": 304106,
+      "iterations": 8,
+      "metadata_entries": 235,
+      "output_tokens_used": 15358,
+      "previous_library_coverage_percent": 27.93,
+      "previous_library_metadata_entries": 183,
+      "previous_library_test_only_metadata_entries": 60,
+      "test_only_metadata_entries": 63,
+      "tested_library_loc": 6984
+    },
+    "timestamp": "2026-10-03T01:57:18.510776Z"
+  },
+  "modifiers": {
+    "chunk_final": true,
+    "chunked_dynamic_access": false,
+    "human_intervention": false
+  },
+  "previous_library": {
+    "artifact": "lettuce-core",
+    "coordinates": "io.lettuce:lettuce-core:6.2.6.RELEASE",
+    "group": "io.lettuce",
+    "version": "6.2.6.RELEASE"
+  },
+  "producer": "kimeta",
+  "publication_id": "forge-10315-20261003015718510776-16a8aaf72099",
+  "render": {},
+  "schema_version": 1,
+  "strategy_name": "java_run_iterative_with_coverage_sources_pi_gpt-5.6-sol",
+  "task_type": "fixes-java-run-fail",
+  "template_type": "fixes-java-run-fail",
+  "timestamp": "2026-10-03T01:57:18.510776Z"
+}
