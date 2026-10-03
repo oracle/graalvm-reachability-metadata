@@ -22,12 +22,13 @@ class Java16RecordComponentsLoaderTest {
         val record = constructor.callBy(arguments)
 
         val nameProperty = properties.getValue("name")
-        val countProperty = properties.getValue("count")
+        val nameAccessor = recordType.memberFunctions.single { it.name == "name" }
+        val countAccessor = recordType.memberFunctions.single { it.name == "count" }
         assertThat(properties.keys).contains("name", "count")
         assertThat(nameProperty.returnType.classifier).isEqualTo(String::class)
-        assertThat(nameProperty.getter.call(record)).isEqualTo("record")
-        assertThat(countProperty.getter.call(record)).isEqualTo(3)
-        assertThat(nameProperty.annotations.filterIsInstance<ReflectJavaFixtures.RecordDetail>().single().value)
+        assertThat(nameAccessor.call(record)).isEqualTo("record")
+        assertThat(countAccessor.call(record)).isEqualTo(3)
+        assertThat(nameAccessor.annotations.filterIsInstance<ReflectJavaFixtures.RecordDetail>().single().value)
             .isEqualTo("name-component")
         assertThat(record.name()).isEqualTo("record")
         assertThat(record.count()).isEqualTo(3)
