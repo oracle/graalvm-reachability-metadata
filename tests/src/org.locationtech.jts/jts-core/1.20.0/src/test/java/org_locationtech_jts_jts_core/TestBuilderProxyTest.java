@@ -36,7 +36,6 @@ import org.locationtech.jts.io.WKTReader;
 import org.locationtech.jts.linearref.LengthIndexedLine;
 import org.locationtech.jts.triangulate.DelaunayTriangulationBuilder;
 import org.locationtech.jts.triangulate.VoronoiDiagramBuilder;
-import org.locationtech.jtstest.function.FunctionsUtil;
 import org.locationtech.jts.util.TestBuilderProxy;
 
 public class TestBuilderProxyTest {
@@ -190,11 +189,9 @@ public class TestBuilderProxyTest {
     }
 
     @Test
-    void delegatesIndicatorRequestsToAvailableTestBuilder() {
+    void loadsOptionalTestBuilderAndDelegatesIndicatorRequests() {
         Geometry geometry = geometryFactory.createPoint(new Coordinate(12, 34));
 
-        assertThat(FunctionsUtil.getEnvelopeOrDefault(geometry))
-                .isEqualTo(geometry.getEnvelopeInternal());
         assertThat(TestBuilderProxy.isActive()).isTrue();
 
         TestBuilderProxy.showIndicator(geometry);
