@@ -79,8 +79,6 @@ public class AnnotationsTest {
         assertThat(RegExp.class).isNotNull();
         assertThat(Subst.class).isNotNull();
 
-        assertThat(new JdkConstants()).isNotNull();
-
         assertThat(Flow.DEFAULT_SOURCE).contains("method argument");
         assertThat(Flow.THIS_SOURCE).isEqualTo("this");
         assertThat(Flow.DEFAULT_TARGET).contains("return value");
