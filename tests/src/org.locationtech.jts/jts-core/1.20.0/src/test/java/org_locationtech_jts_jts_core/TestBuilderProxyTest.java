@@ -7,6 +7,7 @@
 package org_locationtech_jts_jts_core;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.data.Offset.offset;
 
 import java.awt.Color;
 import java.util.List;
@@ -15,6 +16,7 @@ import org.junit.jupiter.api.Test;
 import org.locationtech.jts.algorithm.Centroid;
 import org.locationtech.jts.algorithm.ConvexHull;
 import org.locationtech.jts.algorithm.MinimumBoundingCircle;
+import org.locationtech.jts.algorithm.construct.MaximumInscribedCircle;
 import org.locationtech.jts.coverage.CoverageUnion;
 import org.locationtech.jts.coverage.CoverageValidator;
 import org.locationtech.jts.densify.Densifier;
@@ -162,6 +164,20 @@ public class TestBuilderProxyTest {
         assertThat(union.getGeometryType()).isEqualTo("Polygon");
         assertThat(union.getArea()).isEqualTo(200.0);
         assertThat(union.getEnvelopeInternal()).isEqualTo(new Envelope(0, 20, 0, 10));
+    }
+
+    @Test
+    void constructsMaximumInscribedCircleInsidePolygon() throws Exception {
+        Geometry square = new WKTReader(geometryFactory).read(
+                "POLYGON ((0 0, 10 0, 10 10, 0 10, 0 0))");
+        MaximumInscribedCircle circle = new MaximumInscribedCircle(square, 0.01);
+
+        Coordinate center = circle.getCenter().getCoordinate();
+
+        assertThat(center.getX()).isCloseTo(5.0, offset(0.01));
+        assertThat(center.getY()).isCloseTo(5.0, offset(0.01));
+        assertThat(circle.getRadiusLine().getLength()).isCloseTo(5.0, offset(0.01));
+        assertThat(square.covers(circle.getCenter())).isTrue();
     }
 
     @Test
