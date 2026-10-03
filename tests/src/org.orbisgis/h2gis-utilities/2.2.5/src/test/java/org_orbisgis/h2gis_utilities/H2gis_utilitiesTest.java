@@ -10,9 +10,11 @@ import org.h2gis.functions.factory.H2GISFunctions;
 import org.h2gis.utilities.GeometryMetaData;
 import org.h2gis.utilities.GeometryTableUtilities;
 import org.h2gis.utilities.JDBCUtilities;
+import org.h2gis.utilities.SpatialResultSet;
 import org.h2gis.utilities.TableLocation;
 import org.h2gis.utilities.Tuple;
 import org.h2gis.utilities.dbtypes.DBTypes;
+import org.h2gis.utilities.wrapper.SpatialResultSetImpl;
 import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Geometry;
 
@@ -167,6 +169,25 @@ public class H2gis_utilitiesTest {
             assertThat(parsedMetadata.getDimension()).isEqualTo(3);
             assertThat(parsedMetadata.hasZ()).isTrue();
             assertThat(parsedMetadata.getSRID()).isEqualTo(3857);
+        }
+    }
+
+    @Test
+    void readsGeometryThroughWrappedSpatialResultSet() throws Exception {
+        try (Connection connection = openSpatialDatabase("spatial_result_set")) {
+            createSpatialTable(connection);
+            try (Connection wrappedConnection = JDBCUtilities.wrapConnection(connection);
+                    Statement statement = wrappedConnection.createStatement();
+                    ResultSet resultSet = statement.executeQuery(
+                            "SELECT NAME, GEOM FROM PUBLIC.PLACES WHERE NAME = 'north'")) {
+                SpatialResultSet spatialResultSet = resultSet.unwrap(SpatialResultSetImpl.class);
+
+                assertThat(spatialResultSet.next()).isTrue();
+                assertThat(spatialResultSet.getString("NAME")).isEqualTo("north");
+                assertThat(spatialResultSet.getGeometry("GEOM").getGeometryType())
+                        .isEqualTo("Point");
+                assertThat(spatialResultSet.getGeometry(2).getSRID()).isEqualTo(4326);
+            }
         }
     }
 
