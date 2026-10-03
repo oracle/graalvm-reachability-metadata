@@ -2,16 +2,17 @@ package kotlinreflect
 
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
-import kotlin.reflect.jvm.internal.impl.utils.SmartList
+import kotlin.reflect.full.memberFunctions
 
 class SmartListTest {
     @Test
-    fun exercisesPublicReflectionBehavior() {
-        val overloads = RichReflectionFixture::class.members.toTypedArray()
-        assertThat(overloads.map { it.name }).contains("greet", "arraySize", "fieldValue")
+    fun resolvesPublicMembersAndCovariantOverrides() {
+        val members = RichReflectionFixture::class.members.associateBy { it.name }
+        assertThat(members.keys).contains("greet", "arraySize", "fieldValue")
 
-        val values = SmartList<String>()
-        values.add("smart")
-        assertThat(values.toArray(emptyArray<String>())).containsExactly("smart")
+        val valueFunction = ReflectJavaFixtures.StringValue::class.memberFunctions
+            .single { it.name == "value" }
+        assertThat(valueFunction.returnType.classifier).isEqualTo(String::class)
+        assertThat(valueFunction.call(ReflectJavaFixtures.StringValue())).isEqualTo("java-value")
     }
 }

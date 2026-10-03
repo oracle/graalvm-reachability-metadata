@@ -4,8 +4,6 @@
  * You should have received a copy of the CC0 legalcode along with this
  * work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
  */
-import org.gradle.api.tasks.testing.Test
-
 plugins {
     id "org.graalvm.internal.tck"
     id "org.jetbrains.kotlin.jvm" version "2.5.0-Beta1"
@@ -13,7 +11,6 @@ plugins {
 
 String libraryVersion = tck.testedLibraryVersion.get()
 int testJvmVersion = tck.testJvmVersion.get()
-String directMetadataArgument = "-Dkotlin.reflect.jvm.loadMetadataDirectly=true"
 
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-reflect:$libraryVersion"
@@ -28,15 +25,10 @@ compileTestKotlin {
     kotlinOptions.jvmTarget = testJvmVersion.toString()
 }
 
-tasks.withType(Test).configureEach {
-    jvmArgs(directMetadataArgument)
-}
-
 graalvmNative {
     binaries {
         test {
             buildArgs.add('--no-fallback')
-            runtimeArgs.add(directMetadataArgument)
         }
     }
 }
