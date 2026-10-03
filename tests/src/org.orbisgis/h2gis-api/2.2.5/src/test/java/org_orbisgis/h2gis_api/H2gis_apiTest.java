@@ -6,7 +6,6 @@
  */
 package org_orbisgis.h2gis_api;
 
-import org.h2gis.api.AbstractFunction;
 import org.h2gis.api.DeterministicScalarFunction;
 import org.h2gis.api.DriverFunction;
 import org.h2gis.api.EmptyProgressVisitor;
