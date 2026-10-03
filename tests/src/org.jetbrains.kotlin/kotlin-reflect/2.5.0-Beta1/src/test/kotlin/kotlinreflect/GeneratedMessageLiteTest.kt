@@ -1,21 +1,30 @@
 package kotlinreflect
 
+import kotlin.reflect.jvm.internal.impl.metadata.ProtoBuf
+import kotlin.reflect.jvm.internal.impl.protobuf.GeneratedMessageLite
+import kotlin.reflect.jvm.internal.impl.protobuf.WireFormat
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
-import kotlin.reflect.KMutableProperty1
-import kotlin.reflect.full.*
-import kotlin.reflect.jvm.*
 
 class GeneratedMessageLiteTest {
     @Test
-    fun exercisesPublicReflectionBehavior() {
-        val type = RichReflectionFixture::class
-        val members = type.members.associateBy { it.name }
-        val constructor = type.primaryConstructor!!
-        val composed = members.getValue("composedAnnotation")
-        assertThat(constructor.parameters.single().isOptional).isTrue()
-        assertThat(constructor.returnType.toString()).contains("RichReflectionFixture")
-        assertThat(composed.annotations.filterIsInstance<ReflectComposition>().single().parts.map { it.value })
-            .containsExactly("left", "right")
+    fun roundTripsEnumExtensionThroughGeneratedMessageApi(): Unit {
+        val extension: GeneratedMessageLite.GeneratedExtension<ProtoBuf.Function, ProtoBuf.Visibility> =
+            GeneratedMessageLite.newSingularGeneratedExtension(
+                ProtoBuf.Function.getDefaultInstance(),
+                ProtoBuf.Visibility.PUBLIC,
+                null,
+                null,
+                199,
+                WireFormat.FieldType.ENUM,
+                ProtoBuf.Visibility::class.java,
+            )
+
+        val message: ProtoBuf.Function = ProtoBuf.Function.newBuilder()
+            .setExtension(extension, ProtoBuf.Visibility.PUBLIC)
+            .buildPartial()
+
+        assertThat(message.hasExtension(extension)).isTrue()
+        assertThat(message.getExtension(extension)).isEqualTo(ProtoBuf.Visibility.PUBLIC)
     }
 }
