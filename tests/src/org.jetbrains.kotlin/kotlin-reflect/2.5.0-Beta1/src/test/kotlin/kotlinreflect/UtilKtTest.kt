@@ -13,7 +13,9 @@ class UtilKtTest {
         assertThat(annotation.values).containsExactly("one", "two")
 
         val javaTags = ReflectJavaFixtures.JavaBean::class.annotations
-            .filterIsInstance<ReflectJavaFixtures.JavaTag>()
+            .filterIsInstance<ReflectJavaFixtures.JavaTags>()
+            .single()
+            .value
         assertThat(javaTags.map { it.value }).containsExactly("alpha", "beta")
 
         val companionProperty = CompanionFixture.Companion::companionValue
