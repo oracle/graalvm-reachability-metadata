@@ -149,6 +149,32 @@ public class Spring_boot_data_commonsTest {
     }
 
     @Test
+    void recordsTypeSpecificRepositoryTimer() {
+        SimpleMeterRegistry registry = new SimpleMeterRegistry();
+        try {
+            InMemoryRepositoryFactory factory = new InMemoryRepositoryFactory();
+            factory.addInvocationListener(new MetricsRepositoryMethodInvocationListener(
+                    () -> registry, new DefaultRepositoryTagsProvider(), "repository.invocations", AutoTimer.ENABLED));
+            TimedBookRepository repository = factory.getRepository(TimedBookRepository.class);
+            Book springBook = new Book(1L, "spring");
+
+            Assertions.assertThat(repository.save(springBook).block(Duration.ofSeconds(10))).isSameAs(springBook);
+            Assertions.assertThat(repository.findByTitle("spring").block(Duration.ofSeconds(10))).isSameAs(springBook);
+
+            Assertions.assertThat(registry.get("repository.type")
+                    .tag("operation", "type")
+                    .tag("repository", "TimedBookRepository")
+                    .tag("method", "findByTitle")
+                    .tag("state", "SUCCESS")
+                    .tag("exception", "None")
+                    .timer()
+                    .count()).isEqualTo(1);
+        } finally {
+            registry.close();
+        }
+    }
+
+    @Test
     void createsReactiveRepositoryProxyAndExecutesCrudAndQueryMethods() {
         InMemoryRepositoryFactory factory = new InMemoryRepositoryFactory();
         BookRepository repository = factory.getRepository(BookRepository.class);
@@ -196,6 +222,12 @@ public class Spring_boot_data_commonsTest {
 
         @Timed(value = "repository.lookup", extraTags = { "operation", "lookup" })
         Mono<Book> findByTitleWithTimer(String title);
+    }
+
+    @Timed(value = "repository.type", extraTags = { "operation", "type" })
+    public interface TimedBookRepository extends ReactiveCrudRepository<Book, Long> {
+
+        Mono<Book> findByTitle(String title);
     }
 
     public static final class Book {
