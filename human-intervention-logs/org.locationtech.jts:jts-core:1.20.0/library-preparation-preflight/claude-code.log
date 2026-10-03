@@ -1,0 +1,20 @@
+Both research threads point the same direction. The local-repo check found no existing JTS/GEOS/GeoTools metadata (JTS currently only appears transitively, as a dependency type used by h2gis), and confirmed the baseline scaffold is just `testImplementation` on the library plus AssertJ — nothing special. The external-research agent couldn't reach the network in this sandboxed session (web tools are denied for everyone here, not just me), but it's working from well-established knowledge of JTS that matches my own: JTS (`org.locationtech.jts:jts-core`) is a from-scratch pure-Java reimplementation of the OGC Simple Features geometry model — notably, it's GEOS (the C++ library) that was ported *from* JTS, not the other way around, so there's no native/JNI dependency to worry about. `jts-core` declares no non-test runtime dependencies, and its API (`GeometryFactory`, `PrecisionModel`, WKT/WKB readers/writers) is plain constructor/method calls with no environment or system-property configuration, no database, and no Docker service involved.
+
+`★ Insight ─────────────────────────────────────`
+A good tell for "does this library need Forge setup" is asking whether the library's own value proposition *is* wrapping something external (a native engine, a DB driver, a message broker). JTS's whole pitch is the opposite — it exists so JVM code doesn't need a native geometry engine. That's a strong structural signal pointing toward `no_action`, independent of any single dependency check.
+`─────────────────────────────────────────────────`
+
+This is a case for `no_action` — the generated scaffold (JUnit + the `jts-core` test dependency) is sufficient to reach meaningful coverage; nothing here needs deterministic Maven/Docker setup or special env/system-property guidance.
+
+```json
+{
+  "action": "no_action",
+  "summary": "jts-core is a pure-Java, self-contained geometry library (the historical source JTS was ported *into* C++ GEOS, not the reverse) with no runtime dependencies, no native/JNI component, no database or Docker service, and no required env vars or system properties. The standard generated test scaffold (JUnit + testImplementation on jts-core) is sufficient to exercise its public API (GeometryFactory, PrecisionModel, spatial predicates/operations, WKT/WKB I/O).",
+  "deterministic_setup": [],
+  "agent_guidance": "",
+  "risks": [
+    "Could not verify the exact 1.20.0 POM or upstream docs directly in this session (outbound network tools were unavailable); the no-native/no-dependency assessment relies on well-established knowledge of JTS's architecture and should be reconfirmed by Gradle dependency resolution during generation if anything unexpected shows up.",
+    "If generated tests exercise WKT/WKB number formatting, double-check locale sensitivity in output formatting during review — JTS's WKTWriter has historically had decimal-separator behavior tied to the default Locale in some versions."
+  ]
+}
+```

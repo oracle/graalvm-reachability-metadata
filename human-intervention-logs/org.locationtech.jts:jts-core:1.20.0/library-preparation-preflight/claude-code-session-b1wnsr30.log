@@ -1,0 +1,40 @@
+Prompt:
+You are preparing a Forge workflow for a library issue. Decide whether the library needs setup beyond the normal generated test scaffold before meaningful coverage is reachable.
+
+Research the library yourself to make this decision. Investigate the resolved artifact and its dependencies, how the library is normally used, and its documentation. The JSON context below is only a starting point, not the limit of what you may consider. Do not modify the repository or apply any setup yourself — return only the decision. Local Gradle and Native Image verification remain authoritative.
+
+The setup can be one of three things: an extra Maven dependency, a Docker image the tests need, or an environment/system property the generated tests must set. Represent dependencies and Docker images as `deterministic_setup` entries the driver can apply before generation:
+  - {"kind": "dependency", "coordinate": "group:artifact:version", "scope": "testImplementation", "reason": "..."}
+  - {"kind": "docker_image", "image": "name:tag", "slug": "short-slug", "reason": "..."}
+If a test needs a Docker image that is already pinned under `tests/tck-build-logic/src/main/resources/allowed-docker-images/`, reuse the exact tag from that `Dockerfile-<slug>` instead of introducing a new one, since the allow-list permits a single shared tag per image.
+Put environment variables, system properties, and other test-code setup in `agent_guidance`. Do not restate deterministic entries as guidance.
+
+Return a single JSON object with this shape:
+{
+  "action": "no_action" | "advisory_preparation",
+  "summary": "short reason",
+  "deterministic_setup": [ ... dependency or docker_image entries, if any ... ],
+  "agent_guidance": "environment/system property/test setup guidance, if any",
+  "risks": ["risk notes, if any"]
+}
+
+Choose no_action unless your research finds concrete evidence that extra setup is needed.
+
+Context (starting point):
+{
+  "issue": {
+    "number": 9789,
+    "title": "Support for org.locationtech.jts:jts-core:1.20.0",
+    "label": "library-new-request",
+    "body": "_This issue was created by automation._",
+    "body_error": ""
+  },
+  "library": "org.locationtech.jts:jts-core:1.20.0",
+  "current_library": null,
+  "new_version": null,
+  "existing_tests": {}
+}
+
+Conversation:
+{"duration_api_ms":293744,"stop_reason":"end_turn","session_id":"cba0d28b-2785-4462-939a-ad3a999b85ab","total_cost_usd":1.0585223999999998,"usage":{"input_tokens":2,"cache_creation_input_tokens":1426,"cache_read_input_tokens":64329,"output_tokens":2469,"output_tokens_details":{"thinking_tokens":1458},"server_tool_use":{"web_search_requests":0,"web_fetch_requests":0},"service_tier":"standard","cache_creation":{"ephemeral_1h_input_tokens":1426,"ephemeral_5m_input_tokens":0},"inference_geo":"not_available","iterations":[{"input_tokens":2,"output_tokens":2469,"cache_read_input_tokens":64329,"cache_creation_input_tokens":1426,"cache_creation":{"ephemeral_5m_input_tokens":0,"ephemeral_1h_input_tokens":1426},"type":"message"}],"speed":"standard"},"modelUsage":{"claude-sonnet-5":{"inputTokens":66,"outputTokens":23200,"cacheReadInputTokens":1440197,"cacheCreationInputTokens":189988,"webSearchRequests":0,"costUSD":1.0585223999999998,"contextWindow":1000000,"maxOutputTokens":64000,"thinkingTokens":12746,"canonicalModel":"claude-sonnet-5","provider":"firstParty","costBasis":"list"}},"permission_denials":[],"terminal_reason":"completed","fast_mode_state":"off","fast_mode_disabled_reason":"sdk_opt_in_required","origin":{"kind":"task-notification"},"subagent_stats":{"spawned":3,"requested":{"background":0,"foreground":1,"unset":2},"started_in_background":2,"max_depth":2,"spawned_by_subagents":1,"completed":3,"failed":0,"killed":{"parent":0,"user":0,"system":0},"refused":{"depth_limit":0,"concurrency_limit":0,"budget":0},"by_type":{"Explore":1,"general-purpose":2}},"is_error":false,"num_turns":1,"subtype":"success","api_error_status":null,"result":"Both research threads point the same direction. The local-repo check found no existing JTS/GEOS/GeoTools metadata (JTS currently only appears transitively, as a dependency type used by h2gis), and confirmed the baseline scaffold is just `testImplementation` on the library plus AssertJ — nothing special. The external-research agent couldn't reach the network in this sandboxed session (web tools are denied for everyone here, not just me), but it's working from well-established knowledge of JTS that matches my own: JTS (`org.locationtech.jts:jts-core`) is a from-scratch pure-Java reimplementation of the OGC Simple Features geometry model — notably, it's GEOS (the C++ library) that was ported *from* JTS, not the other way around, so there's no native/JNI dependency to worry about. `jts-core` declares no non-test runtime dependencies, and its API (`GeometryFactory`, `PrecisionModel`, WKT/WKB readers/writers) is plain constructor/method calls with no environment or system-property configuration, no database, and no Docker service involved.\n\n`★ Insight ─────────────────────────────────────`\nA good tell for \"does this library need Forge setup\" is asking whether the library's own value proposition *is* wrapping something external (a native engine, a DB driver, a message broker). JTS's whole pitch is the opposite — it exists so JVM code doesn't need a native geometry engine. That's a strong structural signal pointing toward `no_action`, independent of any single dependency check.\n`─────────────────────────────────────────────────`\n\nThis is a case for `no_action` — the generated scaffold (JUnit + the `jts-core` test dependency) is sufficient to reach meaningful coverage; nothing here needs deterministic Maven/Docker setup or special env/system-property guidance.\n\n```json\n{\n  \"action\": \"no_action\",\n  \"summary\": \"jts-core is a pure-Java, self-contained geometry library (the historical source JTS was ported *into* C++ GEOS, not the reverse) with no runtime dependencies, no native/JNI component, no database or Docker service, and no required env vars or system properties. The standard generated test scaffold (JUnit + testImplementation on jts-core) is sufficient to exercise its public API (GeometryFactory, PrecisionModel, spatial predicates/operations, WKT/WKB I/O).\",\n  \"deterministic_setup\": [],\n  \"agent_guidance\": \"\",\n  \"risks\": [\n    \"Could not verify the exact 1.20.0 POM or upstream docs directly in this session (outbound network tools were unavailable); the no-native/no-dependency assessment relies on well-established knowledge of JTS's architecture and should be reconfirmed by Gradle dependency resolution during generation if anything unexpected shows up.\",\n    \"If generated tests exercise WKT/WKB number formatting, double-check locale sensitivity in output formatting during review — JTS's WKTWriter has historically had decimal-separator behavior tied to the default Locale in some versions.\"\n  ]\n}\n```","ttft_ms":18934,"type":"result","duration_ms":30105,"uuid":"981a804c-2f0c-4d16-b21e-344b0e1a1134","ttft_stream_ms":1591,"time_to_request_ms":36,"first_content_frame_ms":1591,"queued_turn_count":0,"result_index":2}
+
