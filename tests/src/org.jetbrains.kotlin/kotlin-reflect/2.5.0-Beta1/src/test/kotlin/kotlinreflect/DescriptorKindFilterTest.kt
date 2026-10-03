@@ -15,5 +15,14 @@ class DescriptorKindFilterTest {
         val classifiers = DescriptorKindFilter.CLASSIFIERS.toString()
         assertThat(callables).contains("CALLABLES")
         assertThat(classifiers).contains("CLASSIFIERS")
+
+        val packagesMask = DescriptorKindFilter.PACKAGES.kindMask
+        val functionsMask = DescriptorKindFilter.FUNCTIONS.kindMask
+        val variablesMask = DescriptorKindFilter.VARIABLES.kindMask
+        val packageFunctions = DescriptorKindFilter(packagesMask or functionsMask, emptyList())
+        assertThat(packageFunctions.acceptsKinds(packagesMask)).isTrue()
+        assertThat(packageFunctions.acceptsKinds(functionsMask)).isTrue()
+        assertThat(packageFunctions.acceptsKinds(variablesMask)).isFalse()
+        assertThat(packageFunctions.toString()).startsWith("DescriptorKindFilter(")
     }
 }
