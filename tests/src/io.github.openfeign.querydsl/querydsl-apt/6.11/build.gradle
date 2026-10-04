@@ -12,7 +12,15 @@ String libraryVersion = tck.testedLibraryVersion.get()
 
 dependencies {
     testImplementation "io.github.openfeign.querydsl:querydsl-apt:$libraryVersion"
+    testAnnotationProcessor "io.github.openfeign.querydsl:querydsl-apt:$libraryVersion"
     testImplementation 'org.assertj:assertj-core:3.22.0'
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.compilerArgs += [
+            "-processor", "com.querydsl.apt.QuerydslAnnotationProcessor",
+            "-Aquerydsl.variableNameFunctionClass=com.querydsl.codegen.DefaultVariableNameFunction"
+    ]
 }
 
 graalvmNative {
