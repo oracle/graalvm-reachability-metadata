@@ -1,0 +1,171 @@
+{
+  "base_commit": "e0047dfe6f01d55e38f5dac965778bcb32c16174",
+  "branch": "ai/kimeta/add-lib-support-org.springframework.data-spring-data-couchbase-6.1.1-forge-9751-20261004120308837450-439ac65b6687",
+  "follow_ups": [],
+  "forge": {
+    "branch": "master",
+    "commit": "64b39e298df2e06d80520993b3c73ded87225968",
+    "monitored_branch": "origin/master"
+  },
+  "issue_number": 9751,
+  "library": {
+    "artifact": "spring-data-couchbase",
+    "coordinates": "org.springframework.data:spring-data-couchbase:6.1.1",
+    "group": "org.springframework.data",
+    "version": "6.1.1"
+  },
+  "local_ci_verification": {
+    "base_commit": "e0047dfe6f01d55e38f5dac965778bcb32c16174",
+    "commands": [
+      {
+        "command": [
+          "./gradlew",
+          "generateChangedIndexFileCoordinatesList",
+          "-PbaseCommit=origin/master",
+          "-PnewCommit=HEAD"
+        ],
+        "env": {
+          "GITHUB_OUTPUT": "/tmp/tmpv_7k4ao7"
+        },
+        "gate": "changed-index-coordinates",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :generateChangedIndexFileCoordinatesList\n\n[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9751-b2d960c1/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 2s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      },
+      {
+        "command": [
+          "./gradlew",
+          "validateIndexFiles",
+          "-Pcoordinates=org.springframework.data:spring-data-couchbase"
+        ],
+        "env": {},
+        "gate": "index-file-validation",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :validateIndexFiles\n✅ metadata/org.springframework.data/spring-data-couchbase/index.json: Valid\n\n[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9751-b2d960c1/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 1s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      },
+      {
+        "command": [
+          "./gradlew",
+          "checkAllowedDockerImages",
+          "--baseCommit=origin/master",
+          "--newCommit=HEAD"
+        ],
+        "env": {},
+        "gate": "docker-image-scan",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :checkAllowedDockerImages\nGenerating info for docker image: couchbase/server:community-7.6.2\n[0000]  WARN current database is invalid error=the vulnerability database was built 2 weeks ago (max allowed age is 5 days)\n[0006]  WARN error updating db error=unable to update vulnerability database: unable to download db: write /home/mihailo/.cache/grype/db/grype-db-download52089642/vulnerability.db: no space left on device\n[0009] ERROR \u001b[31m2 errors occurred:\n\t* failed to catalog: errors occurred attempting to resolve 'couchbase/server:community-7.6.2':\n  - snap: snap file \"couchbase/server:community-7.6.2\" does not exist\n  - docker: unable to save image to tar: write /tmp/stereoscope-3517288328/docker-daemon-image-2739519826/image.tar: no space left on device\n  - podman: podman not available: no host address\n  - containerd: containerd not available: failed to dial \"/run/containerd/containerd.sock\": connection error: desc = \"transport: error while dialing: dial unix /run/containerd/containerd.sock: connect: permission denied\"\n  - oci-registry: mkdir /tmp/stereoscope-3517288328/oci-registry-image-1733492690: no space left on device\n  - snap: no snap found with name 'couchbase/server:community-7.6.2'\n  - additionally, the following providers failed with file does not exist: docker-archive, oci-archive, oci-dir, singularity, local-file, local-directory\n\t* failed to load vulnerability db: the vulnerability database was built 2 weeks ago (max allowed age is 5 days)\u001b[0m\n\n[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9751-b2d960c1/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 10s\n9 actionable tasks: 1 executed, 8 up-to-date\nConsider enabling configuration cache to speed up this build: https://docs.gradle.org/9.1.0/userguide/configuration_cache_enabling.html\n",
+        "returncode": 0
+      }
+    ],
+    "failure_command": null,
+    "failure_gate": null,
+    "final_commit": "474d6ee57a0cbe25af4c0d87de87dec2d1368e75",
+    "fixups": [],
+    "human_intervention_required": true,
+    "repo_fix_paths": [
+      "tests/tck-build-logic/src/main/resources/allowed-docker-images/Dockerfile-couchbase_server"
+    ],
+    "status": "success"
+  },
+  "local_review": {
+    "action": "human-intervention",
+    "changed_paths": [],
+    "decision": "rejected",
+    "finding_body": "The contribution adds couchbase/server:community-7.6.2, but the recorded checkAllowedDockerImages run shows Grype failed to load/update its database and failed to catalog the image, while Gradle still returned 0 with BUILD SUCCESSFUL. tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/GrypeTask.java runs `grype -o json <image> | jq ...` through `/bin/sh` without pipefail or separate Grype exit-status validation, so jq's successful exit masks the scanner failure and the new image's vulnerability baseline remains unverified. This is a shared harness defect, not repairable inside the coordinate's allowed files.\n\nInfrastructure issue: https://github.com/oracle/graalvm-reachability-metadata/issues/10439 (#10439)",
+    "finding_title": "Docker image vulnerability scan passes when Grype fails",
+    "fix_note": "",
+    "model": "gpt-5.6-sol",
+    "review_comment": "The contribution is scoped to one coordinate, uses only reachability-metadata.json, has non-scaffold tests in a separate package with no native skips or version-pinned assertions, and reports 24/25 (96%) dynamic-access coverage. It cannot be approved because the required new Couchbase image was not actually vulnerability-scanned: checkAllowedDockerImages returned success after Grype failed. Under §FS-contribution-contract.5.3 and §FS-contribution-contract.5.5, this shared fail-open scanner defect requires maintainer intervention.\n\nInfrastructure issue: https://github.com/oracle/graalvm-reachability-metadata/issues/10439 (#10439)",
+    "session_id": "62d77566f4214f38"
+  },
+  "metrics": {
+    "agent": "pi",
+    "model": "gpt-5.6-luna",
+    "path": "stats/org.springframework.data/spring-data-couchbase/6.1.1/execution-metrics.json",
+    "summary": {
+      "cached_input_tokens_used": 16892928,
+      "code_coverage_percent": 33.06,
+      "cost_usd": 2.959,
+      "generated_loc": 844,
+      "input_tokens_used": 796255,
+      "iterations": 11,
+      "metadata_entries": 505,
+      "output_tokens_used": 78906,
+      "test_only_metadata_entries": 1150,
+      "tested_library_loc": 2537
+    },
+    "timestamp": "2026-10-04T12:03:08.837450Z"
+  },
+  "modifiers": {
+    "chunk_final": true,
+    "chunked_dynamic_access": false,
+    "human_intervention": true
+  },
+  "producer": "kimeta",
+  "publication_id": "forge-9751-20261004120308837450-439ac65b6687",
+  "render": {
+    "dynamic_access": null,
+    "dynamic_access_evidence": {
+      "covered_call_sites": [
+        "[reflection] java.lang.Class#getConstructor(java.lang.Class[]) <- org.springframework.data.couchbase.core.convert.CouchbasePropertyValueConverterFactory.getConverter(CouchbasePropertyValueConverterFactory.java:163) (line 163)",
+        "[reflection] java.lang.Class#getConstructors() <- org.springframework.data.couchbase.core.convert.CouchbasePropertyValueConverterFactory.maybeTypePropertyConverter(CouchbasePropertyValueConverterFactory.java:124) (line 124)",
+        "[reflection] java.lang.Class#getDeclaredMethods() <- org.springframework.data.couchbase.core.convert.CouchbasePropertyValueConverterFactory.maybeTypePropertyConverter(CouchbasePropertyValueConverterFactory.java:115) (line 115)",
+        "[reflection] java.lang.reflect.Constructor#newInstance(java.lang.Object[]) <- org.springframework.data.couchbase.core.convert.JsonValueConverter.read(JsonValueConverter.java:47) (line 47)",
+        "[reflection] java.lang.reflect.Method#invoke(java.lang.Object, java.lang.Object[]) <- org.springframework.data.couchbase.core.convert.JsonValueConverter.write(JsonValueConverter.java:61) (line 61)",
+        "[reflection] java.lang.Class#forName(java.lang.String) <- org.springframework.data.couchbase.core.convert.MappingCouchbaseConverter.getPotentiallyConvertedSimpleRead(MappingCouchbaseConverter.java:451) (line 451)",
+        "[reflection] java.lang.Class#forName(java.lang.String) <- org.springframework.data.couchbase.core.convert.OtherConverters$StringToClass.convert(OtherConverters.java:196) (line 196)",
+        "[reflection] java.lang.reflect.Proxy#newProxyInstance(java.lang.ClassLoader, java.lang.Class[], java.lang.reflect.InvocationHandler) <- org.springframework.data.couchbase.core.convert.join.N1qlJoinResolver.lambda$handleProperties$0(N1qlJoinResolver.java:237) (line 237)",
+        "... and 14 more"
+      ],
+      "metadata_rules": [
+        "when `org.springframework.data.couchbase.config.AbstractCouchbaseConfiguration` is reached, make `com.couchbase.client.core.deps.com.fasterxml.jackson.databind.deser.Deserializers[]` available for reflection",
+        "when `org.springframework.data.couchbase.config.AbstractCouchbaseConfiguration` is reached, make `com.couchbase.client.core.deps.com.fasterxml.jackson.databind.ext.Java7SupportImpl.<init>()` available for reflection",
+        "when `org.springframework.data.couchbase.config.AbstractCouchbaseConfiguration` is reached, make `com.couchbase.client.core.deps.com.fasterxml.jackson.databind.ser.Serializers[]` available for reflection",
+        "when `org.springframework.data.couchbase.config.AbstractCouchbaseConfiguration` is reached, make `com.couchbase.client.core.deps.io.netty.buffer.AbstractByteBufAllocator` available for reflection",
+        "when `org.springframework.data.couchbase.config.AbstractCouchbaseConfiguration` is reached, make `com.couchbase.client.core.deps.io.netty.buffer.AdaptivePoolingAllocator$Magazine` available for reflection",
+        "when `org.springframework.data.couchbase.config.AbstractCouchbaseConfiguration` is reached, make `com.couchbase.client.core.deps.io.netty.channel.AbstractChannelHandlerContext` available for reflection",
+        "when `org.springframework.data.couchbase.config.AbstractCouchbaseConfiguration` is reached, make `com.couchbase.client.core.deps.io.netty.channel.ChannelException` available for reflection",
+        "when `org.springframework.data.couchbase.config.AbstractCouchbaseConfiguration` is reached, make `com.couchbase.client.core.deps.io.netty.channel.ChannelOutboundBuffer` available for reflection",
+        "... and 307 more"
+      ]
+    },
+    "library_stats": {
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 0.96,
+            "coveredCalls": 24,
+            "totalCalls": 25
+          }
+        },
+        "coverageRatio": 0.96,
+        "coveredCalls": 24,
+        "totalCalls": 25
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 11874,
+          "missed": 27518,
+          "ratio": 0.301432,
+          "total": 39392
+        },
+        "line": {
+          "covered": 2537,
+          "missed": 5137,
+          "ratio": 0.330597,
+          "total": 7674
+        },
+        "method": {
+          "covered": 708,
+          "missed": 1390,
+          "ratio": 0.337464,
+          "total": 2098
+        }
+      },
+      "version": "6.1.1"
+    }
+  },
+  "schema_version": 1,
+  "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-luna",
+  "task_type": "library-new-request",
+  "template_type": "library-new-request",
+  "timestamp": "2026-10-04T12:03:08.837450Z"
+}
