@@ -65,16 +65,19 @@ public class DynamicInvocationHandlerTest {
     @Test
     void repositoryProxiesRetainOptionsAndDelegateOperations() {
         PersonRepository repository = applicationContext.getBean(PersonRepository.class);
-        PersonRepository scopedRepository = repository
-                .withOptions(UpsertOptions.upsertOptions())
+        PersonRepository writeRepository = repository
                 .withScope("_default")
+                .withOptions(UpsertOptions.upsertOptions())
                 .withCollection("_default");
-        scopedRepository.save(new Person("dynamic-ada", "Ada"));
+        writeRepository.save(new Person("dynamic-ada", "Ada"));
 
-        assertThat(scopedRepository.findById("dynamic-ada")).get()
+        PersonRepository readRepository = repository
+                .withCollection("_default")
+                .withScope("_default");
+        assertThat(readRepository.findById("dynamic-ada")).get()
                 .extracting(person -> person.name)
                 .isEqualTo("Ada");
-        scopedRepository.deleteById("dynamic-ada");
+        readRepository.deleteById("dynamic-ada");
     }
 
     @Configuration(proxyBeanMethods = false)
