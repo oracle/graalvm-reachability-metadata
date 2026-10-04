@@ -177,9 +177,11 @@ missed.
 
 ### 1. Chunking
 
-An oversized report is not explored in one run. An iterative-only run receives
-a concrete class budget before it starts. A run with a bulk phase
-receives the configured class boundary and decides after bulk: classes completed
+The control plane decides at claim whether an issue is chunked; a workflow
+receives a class boundary only for a chunked issue, and otherwise explores the
+whole report. An iterative-only chunked run receives a concrete class budget
+before it starts. A chunked run with a bulk phase receives the configured class
+boundary and decides where the chunk ends after bulk: classes completed
 by bulk count first, iterative exploration fills only the shortfall, and a final
 remainder no larger than the boundary is finished in the same run. The workflow
 returns a chunk-ready status once the resulting part passes local verification,
