@@ -24,14 +24,17 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Version;
+import org.springframework.data.convert.CustomConversions;
 import org.springframework.data.couchbase.config.AbstractCouchbaseConfiguration;
 import org.springframework.data.couchbase.core.CouchbaseTemplate;
 import org.springframework.data.couchbase.core.ReactiveCouchbaseTemplate;
+import org.springframework.data.couchbase.core.mapping.CouchbaseMappingContext;
 import org.springframework.data.couchbase.core.mapping.Document;
 import org.springframework.data.couchbase.core.query.Query;
 import org.springframework.data.couchbase.core.query.QueryCriteria;
 import org.springframework.data.couchbase.repository.CouchbaseRepository;
 import org.springframework.data.couchbase.repository.config.EnableCouchbaseRepositories;
+import org.springframework.data.mapping.model.BeanWrapperPropertyAccessorFactory;
 import org.springframework.transaction.support.TransactionTemplate;
 import org.testcontainers.couchbase.BucketDefinition;
 import org.testcontainers.couchbase.CouchbaseContainer;
@@ -197,6 +200,16 @@ public class Spring_data_couchbaseTest {
         @Override
         protected Set<Class<?>> getInitialEntitySet() {
             return Set.of(Person.class, VersionedPerson.class);
+        }
+
+        @Override
+        public CouchbaseMappingContext couchbaseMappingContext(CustomConversions customConversions)
+                throws Exception {
+            CouchbaseMappingContext mappingContext = super.couchbaseMappingContext(customConversions);
+            getInitialEntitySet().forEach(entityType -> mappingContext
+                    .getRequiredPersistentEntity(entityType)
+                    .setPersistentPropertyAccessorFactory(BeanWrapperPropertyAccessorFactory.INSTANCE));
+            return mappingContext;
         }
 
         @Override
