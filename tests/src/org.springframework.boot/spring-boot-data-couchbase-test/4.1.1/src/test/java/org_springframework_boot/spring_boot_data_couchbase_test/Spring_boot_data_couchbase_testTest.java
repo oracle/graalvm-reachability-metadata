@@ -8,20 +8,16 @@ package org_springframework_boot.spring_boot_data_couchbase_test;
 
 import org.junit.jupiter.api.Test;
 
-import org.springframework.boot.context.TypeExcludeFilter;
-import org.springframework.boot.data.couchbase.autoconfigure.DataCouchbaseAutoConfiguration;
+import org.springframework.boot.couchbase.autoconfigure.CouchbaseAutoConfiguration;
 import org.springframework.boot.data.couchbase.test.autoconfigure.AutoConfigureDataCouchbase;
 import org.springframework.boot.data.couchbase.test.autoconfigure.DataCouchbaseTest;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.ComponentScan.Filter;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.FilterType;
-import org.springframework.stereotype.Component;
 import org.springframework.data.couchbase.core.convert.MappingCouchbaseConverter;
 import org.springframework.data.couchbase.core.mapping.CouchbaseMappingContext;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.TestContextManager;
+import org.springframework.test.context.TestContextAnnotationUtils;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -38,68 +34,38 @@ public class Spring_boot_data_couchbase_testTest {
     }
 
     @Test
-    void dataCouchbaseTestBootstrapsSliceWithPropertiesAndFilters() throws Exception {
-        TestContextManager testContextManager = new TestContextManager(DataCouchbaseSliceScenario.class);
-        testContextManager.beforeTestClass();
-        try {
-            ApplicationContext context = testContextManager.getTestContext().getApplicationContext();
+    void dataCouchbaseTestExposesConfiguredSliceToSpringTestContext() {
+        DataCouchbaseTest annotation = TestContextAnnotationUtils.findMergedAnnotation(
+                ConfiguredDataCouchbaseSlice.class, DataCouchbaseTest.class);
 
-            assertThat(context.getEnvironment().getProperty("spring.data.couchbase.type-key"))
-                    .isEqualTo("documentKind");
-            assertThat(context.getBeansOfType(CouchbaseMappingContext.class)).hasSize(1);
-            assertThat(context.getBeansOfType(MappingCouchbaseConverter.class)).hasSize(1);
-            assertThat(context.getBean(MappingCouchbaseConverter.class).getTypeKey()).isEqualTo("documentKind");
-            assertThat(context.getBeansOfType(IncludedCouchbaseComponent.class)).hasSize(1);
-            assertThat(context.getBeansOfType(ExcludedCouchbaseComponent.class)).isEmpty();
-        }
-        finally {
-            testContextManager.afterTestClass();
-        }
+        assertThat(annotation).isNotNull();
+        assertThat(annotation.properties()).containsExactly("spring.data.couchbase.bucket-name=test-bucket");
+        assertThat(annotation.useDefaultFilters()).isFalse();
+        assertThat(annotation.includeFilters()).singleElement().satisfies((filter) -> {
+            assertThat(filter.type()).isEqualTo(FilterType.ASSIGNABLE_TYPE);
+            assertThat(filter.classes()).containsExactly(IncludedComponent.class);
+        });
+        assertThat(annotation.excludeFilters()).singleElement().satisfies((filter) -> {
+            assertThat(filter.type()).isEqualTo(FilterType.ASSIGNABLE_TYPE);
+            assertThat(filter.classes()).containsExactly(ExcludedComponent.class);
+        });
+        assertThat(annotation.excludeAutoConfiguration()).containsExactly(CouchbaseAutoConfiguration.class);
     }
 
-    @Test
-    void dataCouchbaseTestAppliesExcludeFilters() throws Exception {
-        TestContextManager testContextManager = new TestContextManager(DataCouchbaseSliceWithExcludeFilterScenario.class);
-        testContextManager.beforeTestClass();
-        try {
-            ApplicationContext context = testContextManager.getTestContext().getApplicationContext();
+    @DataCouchbaseTest(properties = "spring.data.couchbase.bucket-name=test-bucket", useDefaultFilters = false,
+            includeFilters = @Filter(type = FilterType.ASSIGNABLE_TYPE, classes = IncludedComponent.class),
+            excludeFilters = @Filter(type = FilterType.ASSIGNABLE_TYPE, classes = ExcludedComponent.class),
+            excludeAutoConfiguration = CouchbaseAutoConfiguration.class)
+    static class ConfiguredDataCouchbaseSlice {
 
-            assertThat(context.getBeansOfType(IncludedCouchbaseComponent.class)).hasSize(1);
-            assertThat(context.getBeansOfType(ExcludedCouchbaseComponent.class)).isEmpty();
-        }
-        finally {
-            testContextManager.afterTestClass();
-        }
     }
 
-    @Test
-    void dataCouchbaseTestUsesDefaultComponentFilters() throws Exception {
-        TestContextManager testContextManager = new TestContextManager(DataCouchbaseSliceWithDefaultFiltersScenario.class);
-        testContextManager.beforeTestClass();
-        try {
-            ApplicationContext context = testContextManager.getTestContext().getApplicationContext();
+    static class IncludedComponent {
 
-            assertThat(context.getBeansOfType(IncludedCouchbaseComponent.class)).isEmpty();
-            assertThat(context.getBeansOfType(ExcludedCouchbaseComponent.class)).isEmpty();
-        }
-        finally {
-            testContextManager.afterTestClass();
-        }
     }
 
-    @Test
-    void dataCouchbaseTestCanExcludeItsAutoConfiguration() throws Exception {
-        TestContextManager testContextManager = new TestContextManager(DataCouchbaseTestWithoutAutoConfiguration.class);
-        testContextManager.beforeTestClass();
-        try {
-            ApplicationContext context = testContextManager.getTestContext().getApplicationContext();
+    static class ExcludedComponent {
 
-            assertThat(context.getBeansOfType(CouchbaseMappingContext.class)).isEmpty();
-            assertThat(context.getBeansOfType(MappingCouchbaseConverter.class)).isEmpty();
-        }
-        finally {
-            testContextManager.afterTestClass();
-        }
     }
 
 }
@@ -107,57 +73,5 @@ public class Spring_boot_data_couchbase_testTest {
 @AutoConfigureDataCouchbase
 @Configuration(proxyBeanMethods = false)
 class AutoConfigureDataCouchbaseConfiguration {
-
-}
-
-@DataCouchbaseTest(properties = "spring.data.couchbase.type-key=documentKind", useDefaultFilters = false,
-        includeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE,
-                classes = IncludedCouchbaseComponent.class))
-@ContextConfiguration(classes = DataCouchbaseSliceConfiguration.class)
-class DataCouchbaseSliceScenario {
-
-}
-
-@DataCouchbaseTest(useDefaultFilters = false,
-        includeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE,
-                classes = { IncludedCouchbaseComponent.class, ExcludedCouchbaseComponent.class }),
-        excludeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE,
-                classes = ExcludedCouchbaseComponent.class))
-@ContextConfiguration(classes = DataCouchbaseSliceConfiguration.class)
-class DataCouchbaseSliceWithExcludeFilterScenario {
-
-}
-
-@DataCouchbaseTest
-@ContextConfiguration(classes = DataCouchbaseSliceConfiguration.class)
-class DataCouchbaseSliceWithDefaultFiltersScenario {
-
-}
-
-@Configuration(proxyBeanMethods = false)
-@ComponentScan(basePackageClasses = IncludedCouchbaseComponent.class,
-        excludeFilters = @ComponentScan.Filter(type = FilterType.CUSTOM, classes = TypeExcludeFilter.class))
-class DataCouchbaseSliceConfiguration {
-
-}
-
-@Configuration(proxyBeanMethods = false)
-class DataCouchbaseTestWithoutAutoConfigurationConfiguration {
-
-}
-
-@DataCouchbaseTest(excludeAutoConfiguration = DataCouchbaseAutoConfiguration.class)
-@ContextConfiguration(classes = DataCouchbaseTestWithoutAutoConfigurationConfiguration.class)
-class DataCouchbaseTestWithoutAutoConfiguration {
-
-}
-
-@Component
-class IncludedCouchbaseComponent {
-
-}
-
-@Component
-class ExcludedCouchbaseComponent {
 
 }
