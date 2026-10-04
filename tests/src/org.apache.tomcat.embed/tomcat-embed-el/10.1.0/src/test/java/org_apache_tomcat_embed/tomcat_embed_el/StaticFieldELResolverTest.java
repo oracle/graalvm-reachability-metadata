@@ -27,12 +27,14 @@ public class StaticFieldELResolverTest {
     }
 
     @Test
-    void resolvesPublicStaticFieldType() {
+    void reportsPublicStaticFieldAsReadOnly() {
         StaticFieldELResolver resolver = new StaticFieldELResolver();
+        ELContext context = newContext();
 
-        Class<?> type = resolver.getType(newContext(), new ELClass(StaticFieldTarget.class), "GREETING");
+        Class<?> type = resolver.getType(context, new ELClass(StaticFieldTarget.class), "GREETING");
 
-        assertThat(type).isEqualTo(String.class);
+        assertThat(type).isNull();
+        assertThat(context.isPropertyResolved()).isTrue();
     }
 
     @Test
