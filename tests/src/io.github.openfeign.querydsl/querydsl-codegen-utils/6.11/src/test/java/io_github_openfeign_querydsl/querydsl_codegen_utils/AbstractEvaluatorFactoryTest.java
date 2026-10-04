@@ -1,0 +1,40 @@
+/*
+ * Copyright and related rights waived via CC0
+ *
+ * You should have received a copy of the CC0 legalcode along with this
+ * work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
+ */
+package io_github_openfeign_querydsl.querydsl_codegen_utils;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.util.Map;
+
+import com.querydsl.codegen.utils.ECJEvaluatorFactory;
+import com.querydsl.codegen.utils.Evaluator;
+import org.graalvm.internal.tck.NativeImageSupport;
+import org.junit.jupiter.api.Test;
+
+public class AbstractEvaluatorFactoryTest {
+
+    @Test
+    void createsAndCachesAnEvaluatorForGeneratedCode() throws Exception {
+        NativeImageSupport.runToleratingUnsupportedFeature(() -> {
+            ECJEvaluatorFactory factory = new ECJEvaluatorFactory(getClass().getClassLoader());
+            Evaluator<Integer> evaluator = factory.createEvaluator(
+                    "return input + adjustment;",
+                    Integer.class,
+                    new String[] {"input"},
+                    new Class<?>[] {Integer.class},
+                    Map.<String, Object>of("adjustment", 2));
+
+            assertThat(evaluator.evaluate(4)).isEqualTo(6);
+            assertThat(factory.createEvaluator(
+                    "return input + adjustment;",
+                    Integer.class,
+                    new String[] {"input"},
+                    new Class<?>[] {Integer.class},
+                    Map.<String, Object>of("adjustment", 2)).evaluate(5)).isEqualTo(7);
+        });
+    }
+}
