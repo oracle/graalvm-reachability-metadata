@@ -790,8 +790,8 @@ tree's skip record (§FS-forge-publication-readiness).
 
 For `library-new-request` issues and `library-update-request` issues routed to
 dynamic-access coverage improvement, `forge_metadata.py` must invoke the
-matching orchestration script with the issue number and configured class
-threshold. An iterative-only workflow may use a dispatcher-refreshed report to
+matching orchestration script with the issue number and, for a chunked issue,
+its class boundary. An iterative-only workflow may use a dispatcher-refreshed report to
 reduce that value to the current remaining class count before it starts.
 
 Preparation is not the decision. Before it decides anything, `forge_metadata.py`
@@ -817,6 +817,13 @@ boundary and without an exhaust report, and its PR is never a chunk PR. A bulk
 phase only lowers the uncovered class count, so a library at or below the
 threshold can never need a later chunk. The decision is logged with the
 measured uncovered class count alongside the threshold.
+
+The label applied at claim is provisional until a chunk is published. When
+Forge releases a claim before any chunk of the issue has been published — the
+exhaust report records no chunk publication — it removes the label again, so a
+failed, interrupted, or externally aborted run does not leave a labelled issue
+without the exhaust report the next claim requires. The next claim then decides
+afresh from the prepared report.
 
 A chunked run with a bulk phase must decide where its chunk ends after the bulk
 iteration budget and its native-test gates. The bulk phase keeps its
