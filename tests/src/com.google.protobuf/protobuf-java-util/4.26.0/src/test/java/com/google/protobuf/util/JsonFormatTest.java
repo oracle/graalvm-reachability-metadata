@@ -345,7 +345,7 @@ public class JsonFormatTest {
             mergeFromJson("{\"optionalFloat\":3.5aa}", builder);
             assertWithMessage("InvalidProtocolBufferException expected.").fail();
         } catch (InvalidProtocolBufferException expected) {
-            assertThat(expected).hasMessageThat().isEqualTo("Not a float value: \"3.5aa\"");
+            assertThat(expected).hasMessageThat().isEqualTo("For input string: \"3.5aa\"");
         }
     }
 
@@ -785,7 +785,9 @@ public class JsonFormatTest {
                     builder);
             assertWithMessage("should have thrown exception for incorrect type").fail();
         } catch (InvalidProtocolBufferException expected) {
-            assertThat(expected).hasMessageThat().isEqualTo("Expect an array but found: 5");
+            assertThat(expected)
+                    .hasMessageThat()
+                    .isEqualTo("Expected an array for repeated_int32 but found 5");
         }
     }
 
@@ -885,7 +887,9 @@ public class JsonFormatTest {
             mergeFromJson(String.format("{\"timestamp_value\": %s}", incorrectTimestampString), builder);
             assertWithMessage("expected exception").fail();
         } catch (InvalidProtocolBufferException e) {
-            assertThat(e).hasMessageThat().isEqualTo("JsonObject");
+            assertThat(e)
+                    .hasMessageThat()
+                    .isEqualTo("Failed to parse timestamp: {\"seconds\":1800,\"nanos\":0}");
         }
     }
 
@@ -909,7 +913,9 @@ public class JsonFormatTest {
             mergeFromJson(String.format("{\"duration_value\": %s}", incorrectDurationString), builder);
             assertWithMessage("expected exception").fail();
         } catch (InvalidProtocolBufferException e) {
-            assertThat(e).hasMessageThat().isEqualTo("JsonObject");
+            assertThat(e)
+                    .hasMessageThat()
+                    .isEqualTo("Failed to parse duration: {\"seconds\":10,\"nanos\":500}");
         }
     }
 
@@ -1491,8 +1497,9 @@ public class JsonFormatTest {
     @Test
     public void testIncludingDefaultValueFields() throws Exception {
         TestAllTypes message = TestAllTypes.getDefaultInstance();
+        Set<FieldDescriptor> allFields = ImmutableSet.copyOf(message.getDescriptorForType().getFields());
         assertThat(JsonFormat.printer().print(message)).isEqualTo("{\n}");
-        assertThat(JsonFormat.printer().includingDefaultValueFields().print(message))
+        assertThat(JsonFormat.printer().includingDefaultValueFields(allFields).print(message))
                 .isEqualTo(
                         """
                                 {
@@ -1564,7 +1571,9 @@ public class JsonFormatTest {
                                 }""");
 
         try {
-            JsonFormat.printer().includingDefaultValueFields().includingDefaultValueFields();
+            JsonFormat.printer()
+                    .includingDefaultValueFields(allFields)
+                    .includingDefaultValueFields(allFields);
             assertWithMessage("IllegalStateException is expected.").fail();
         } catch (IllegalStateException e) {
 
@@ -1574,7 +1583,9 @@ public class JsonFormatTest {
         }
 
         try {
-            JsonFormat.printer().includingDefaultValueFields().includingDefaultValueFields(fixedFields);
+            JsonFormat.printer()
+                    .includingDefaultValueFields(allFields)
+                    .includingDefaultValueFields(fixedFields);
             assertWithMessage("IllegalStateException is expected.").fail();
         } catch (IllegalStateException e) {
 
@@ -1584,7 +1595,9 @@ public class JsonFormatTest {
         }
 
         try {
-            JsonFormat.printer().includingDefaultValueFields(fixedFields).includingDefaultValueFields();
+            JsonFormat.printer()
+                    .includingDefaultValueFields(fixedFields)
+                    .includingDefaultValueFields(allFields);
             assertWithMessage("IllegalStateException is expected.").fail();
         } catch (IllegalStateException e) {
             assertWithMessage("Exception message should mention includingDefaultValueFields.")
@@ -1640,8 +1653,9 @@ public class JsonFormatTest {
         }
 
         TestMap mapMessage = TestMap.getDefaultInstance();
+        Set<FieldDescriptor> mapFields = ImmutableSet.copyOf(mapMessage.getDescriptorForType().getFields());
         assertThat(JsonFormat.printer().print(mapMessage)).isEqualTo("{\n}");
-        assertThat(JsonFormat.printer().includingDefaultValueFields().print(mapMessage))
+        assertThat(JsonFormat.printer().includingDefaultValueFields(mapFields).print(mapMessage))
                 .isEqualTo(
                         """
                                 {
@@ -1704,13 +1718,14 @@ public class JsonFormatTest {
                                 }""");
 
         TestOneof oneofMessage = TestOneof.getDefaultInstance();
+        Set<FieldDescriptor> oneofFields = ImmutableSet.copyOf(oneofMessage.getDescriptorForType().getFields());
         assertThat(JsonFormat.printer().print(oneofMessage)).isEqualTo("{\n}");
-        assertThat(JsonFormat.printer().includingDefaultValueFields().print(oneofMessage))
+        assertThat(JsonFormat.printer().includingDefaultValueFields(oneofFields).print(oneofMessage))
                 .isEqualTo("{\n}");
 
         oneofMessage = TestOneof.newBuilder().setOneofInt32(42).build();
         assertThat(JsonFormat.printer().print(oneofMessage)).isEqualTo("{\n  \"oneofInt32\": 42\n}");
-        assertThat(JsonFormat.printer().includingDefaultValueFields().print(oneofMessage))
+        assertThat(JsonFormat.printer().includingDefaultValueFields(oneofFields).print(oneofMessage))
                 .isEqualTo("{\n  \"oneofInt32\": 42\n}");
 
         TestOneof.Builder oneofBuilder = TestOneof.newBuilder();
@@ -1721,7 +1736,7 @@ public class JsonFormatTest {
         oneofMessage = oneofBuilder.build();
         assertThat(JsonFormat.printer().print(oneofMessage))
                 .isEqualTo("{\n  \"oneofNullValue\": null\n}");
-        assertThat(JsonFormat.printer().includingDefaultValueFields().print(oneofMessage))
+        assertThat(JsonFormat.printer().includingDefaultValueFields(oneofFields).print(oneofMessage))
                 .isEqualTo("{\n  \"oneofNullValue\": null\n}");
     }
 

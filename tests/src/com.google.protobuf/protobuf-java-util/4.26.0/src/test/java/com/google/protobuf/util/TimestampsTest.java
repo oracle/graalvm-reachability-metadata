@@ -14,6 +14,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import java.text.ParseException;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -389,6 +390,18 @@ public class TimestampsTest {
         assertThat(Timestamps.isValid(timestamp)).isTrue();
         assertThat(Timestamps.toMillis(timestamp)).isAtLeast(before);
         assertThat(Timestamps.toMillis(timestamp)).isAtMost(after);
+    }
+
+    @Test
+    public void testNowReturnsCurrentTimestamp() {
+        Instant before = Instant.now();
+        Timestamp timestamp = Timestamps.now();
+        Instant after = Instant.now();
+
+        Instant actual = Instant.ofEpochSecond(timestamp.getSeconds(), timestamp.getNanos());
+        assertThat(Timestamps.isValid(timestamp)).isTrue();
+        assertThat(actual.isBefore(before)).isFalse();
+        assertThat(actual.isAfter(after)).isFalse();
     }
 
     @Test

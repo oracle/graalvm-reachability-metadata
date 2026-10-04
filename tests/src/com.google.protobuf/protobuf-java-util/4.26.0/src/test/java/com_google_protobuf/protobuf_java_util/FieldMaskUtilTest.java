@@ -173,7 +173,7 @@ public class FieldMaskUtilTest {
         FieldMask mask3 = FieldMaskUtil.fromString("bar.quz");
         FieldMask mask4 = FieldMaskUtil.fromString("foo,bar.baz");
         FieldMask result = FieldMaskUtil.subtract(mask1, mask2, mask3, mask4);
-        assertThat(FieldMaskUtil.toString(result)).isEqualTo("bar");
+        assertThat(FieldMaskUtil.toString(result)).isEmpty();
     }
 
     @Test
