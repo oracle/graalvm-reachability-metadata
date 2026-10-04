@@ -1,0 +1,15 @@
+Human intervention needed
+
+The automated `library-new-request` job failed for `org.springframework.data:spring-data-couchbase:6.1.1` after 12 iterations. Preserved work: https://github.com/oracle/graalvm-reachability-metadata/tree/ai%2Fkimeta%2Fhuman-intervention%2Fissue-9746-library-new-request-org.springframework.data-spring-data-couchbase-6.1.1-a216362f
+
+The failure is in `explore/generate_tests()` for reporter-requested metadata, not dynamic-access coverage, which reached `25/25` (100%). `MappingCouchbaseConverterTest.readsClassValuedDocumentProperties()` fails under Native Image because Spring CGLIB attempts to define `ClassDocument__Accessor_x5z3rx` at runtime. The final Gradle runs consistently report 15 of 16 tests passing and one `UnsupportedFeatureError`. The metadata agent also concluded that this is not a missing registration and cannot be repaired with ordinary reachability metadata. An earlier native repair removed this scenario and achieved 15/15 passing tests, but the reporter-requested generation step restored it.
+
+Inspect:
+- `human-intervention-logs/org.springframework.data:spring-data-couchbase:6.1.1/gradle-test/gradle-test-2026-10-04T15-51-43-497146Z.log`
+- `human-intervention-logs/org.springframework.data:spring-data-couchbase:6.1.1/issue-requested-metadata/pi-generation-2026-10-04T15-43-44-365086Z.log`
+- `human-intervention-logs/org.springframework.data:spring-data-couchbase:6.1.1/native-test-verify/pi-generation-2026-10-04T15-40-48-394957Z.log`
+
+Manual next steps:
+- Remove or rewrite `readsClassValuedDocumentProperties()` so it does not require runtime-generated CGLIB classes; do not add unrelated metadata.
+- Regenerate the dynamic-access report and run the coordinate test, confirming coverage remains `25/25` and `nativeTest` passes.
+- Commit the correction to the preserved branch and resume finalization, ensuring the reporter-requested step does not restore the unsupported test.
