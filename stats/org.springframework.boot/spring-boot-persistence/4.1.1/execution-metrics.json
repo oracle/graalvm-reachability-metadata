@@ -1,9 +1,9 @@
 {
   "add_new_library_support:2026-10-04": {
-    "timestamp": "2026-10-04T03:02:32.084175Z",
+    "timestamp": "2026-10-04T22:28:50.012763Z",
     "library": "org.springframework.boot:spring-boot-persistence:4.1.1",
-    "starting_commit": "43d5d2ba989cb89db44625efaf21d6299a324832",
-    "ending_commit": "bad22849840434550d2a0bcd03131bd56f2d386c",
+    "starting_commit": "6be69760e3466b4d3449a8b317adc359ad223626",
+    "ending_commit": "6db2921b681ad8b118652bffad4a80f64678b85a",
     "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-luna",
     "agent": "pi",
     "model": "gpt-5.6-luna",
@@ -18,15 +18,15 @@
       },
       "libraryCoverage": {
         "instruction": {
-          "covered": 356,
-          "missed": 15,
-          "ratio": 0.959569,
+          "covered": 369,
+          "missed": 2,
+          "ratio": 0.994609,
           "total": 371
         },
         "line": {
-          "covered": 84,
-          "missed": 4,
-          "ratio": 0.954545,
+          "covered": 88,
+          "missed": 0,
+          "ratio": 1.0,
           "total": 88
         },
         "method": {
@@ -40,42 +40,39 @@
     "library_preparation_preflight": {
       "status": "completed",
       "action": "no_action",
-      "issue_number": 9750,
+      "issue_number": 9745,
       "issue_label": "library-new-request",
       "library": "org.springframework.boot:spring-boot-persistence:4.1.1",
-      "summary": "spring-boot-persistence is a core/autoconfigure support module (like already-onboarded spring-boot-jdbc and spring-boot-transaction), not a thin starter. Those analogues test builder/property/customizer classes in-process with no DB, Docker, or extra dependency. No concrete evidence (POM/jar inspection was unavailable in this sandbox) that spring-boot-persistence's generated test needs anything beyond the standard scaffold.",
+      "summary": "Already shipped: PR #10437 merged this exact library+version using only the standard testImplementation scaffold (spring-boot-persistence, spring-boot-autoconfigure, assertj-core). The module exposes ORM-agnostic scanning/exception-translation infrastructure (EntityScan, EntityScanner, PersistenceExceptionTranslationAutoConfiguration) that the merged tests exercise with plain POJOs and an in-memory ApplicationContext — no datasource, persistence provider, or container involved.",
       "deterministic_setup": [],
       "agent_guidance": "",
-      "risks": [
-        "Could not inspect the resolved 4.1.1 artifact's POM or class list directly (network and Gradle execution were unavailable in this research step), so this decision rests on repo precedent and module-naming inference, not direct verification.",
-        "If the generated test ends up exercising Hibernate-specific wiring (e.g. JpaProperties/HibernateProperties building a real JpaVendorAdapter or EntityManagerFactory), Hibernate ORM may be declared optional in spring-boot-persistence's POM (Spring Boot's long-standing pattern for JPA-provider independence) and not arrive transitively — mirroring how spring-boot-h2console needed spring-boot-autoconfigure/spring-boot-test/spring-web and spring-boot-health needed spring-boot-actuator/reactor-core as extra testImplementation deps in this same repo. Local Gradle verification should catch this if it's\n...[truncated]"
-      ],
+      "risks": [],
       "applied_setup": [],
       "input_evidence": [
         {
           "name": "issue",
-          "summary": "#9750 Support for org.springframework.boot:spring-boot-persistence:4.1.1; label=library-new-request; body_chars=39"
+          "summary": "#9745 Support for org.springframework.boot:spring-boot-persistence:4.1.1; label=library-new-request; body_chars=39"
         },
         {
           "name": "existing_tests",
-          "summary": "0 existing test file path(s) included"
+          "summary": "8 existing test file path(s) included"
         }
       ],
       "model": "sonnet",
-      "input_tokens_used": 46,
-      "output_tokens_used": 26547
+      "input_tokens_used": 14,
+      "output_tokens_used": 6080
     },
     "metrics": {
-      "input_tokens_used": 264619,
-      "cached_input_tokens_used": 3755520,
-      "output_tokens_used": 30249,
-      "iterations": 7,
-      "cost_usd": 0.8217,
-      "generated_loc": 161,
-      "tested_library_loc": 84,
+      "input_tokens_used": 238933,
+      "cached_input_tokens_used": 2059776,
+      "output_tokens_used": 22845,
+      "iterations": 6,
+      "cost_usd": 0.582,
+      "generated_loc": 223,
+      "tested_library_loc": 88,
       "metadata_entries": 13,
-      "test_only_metadata_entries": 134,
-      "code_coverage_percent": 95.45
+      "test_only_metadata_entries": 160,
+      "code_coverage_percent": 100.0
     },
     "artifacts": {
       "metadata_file": "metadata/org.springframework.boot/spring-boot-persistence/4.1.1/reachability-metadata.json"
