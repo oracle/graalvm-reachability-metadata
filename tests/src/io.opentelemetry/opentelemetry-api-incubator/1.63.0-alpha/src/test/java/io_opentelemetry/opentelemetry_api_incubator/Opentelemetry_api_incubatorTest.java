@@ -13,10 +13,6 @@ import io.opentelemetry.api.common.AttributeKey;
 import io.opentelemetry.api.common.Attributes;
 import io.opentelemetry.api.common.Value;
 import io.opentelemetry.api.incubator.ExtendedOpenTelemetry;
-import io.opentelemetry.api.incubator.common.ExtendedAttributeKey;
-import io.opentelemetry.api.incubator.common.ExtendedAttributeType;
-import io.opentelemetry.api.incubator.common.ExtendedAttributes;
-import io.opentelemetry.api.incubator.common.ExtendedAttributesBuilder;
 import io.opentelemetry.api.incubator.config.ConfigProvider;
 import io.opentelemetry.api.incubator.config.DeclarativeConfigException;
 import io.opentelemetry.api.incubator.config.DeclarativeConfigProperties;
@@ -107,152 +103,6 @@ public class Opentelemetry_api_incubatorTest {
     };
 
     @Test
-    void extendedAttributeKeysConvertToAndFromStandardAttributeKeys() {
-        AttributeKey<String> serviceNameKey = AttributeKey.stringKey("service.name");
-        ExtendedAttributeKey<String> extendedServiceNameKey = ExtendedAttributeKey.fromAttributeKey(serviceNameKey);
-
-        assertThat(extendedServiceNameKey.getKey()).isEqualTo("service.name");
-        assertThat(extendedServiceNameKey.getType()).isEqualTo(ExtendedAttributeType.STRING);
-        assertThat(extendedServiceNameKey.asAttributeKey()).isEqualTo(serviceNameKey);
-        assertThat(extendedServiceNameKey).isEqualTo(ExtendedAttributeKey.stringKey("service.name"));
-        assertThat(extendedServiceNameKey.hashCode())
-                        .isEqualTo(ExtendedAttributeKey.stringKey("service.name").hashCode());
-        assertThat(extendedServiceNameKey).hasToString("service.name");
-
-        assertThat(ExtendedAttributeKey.fromAttributeKey(AttributeKey.booleanKey("enabled")).getType())
-                        .isEqualTo(ExtendedAttributeType.BOOLEAN);
-        assertThat(ExtendedAttributeKey.fromAttributeKey(AttributeKey.longKey("attempt")).getType())
-                        .isEqualTo(ExtendedAttributeType.LONG);
-        assertThat(ExtendedAttributeKey.fromAttributeKey(AttributeKey.doubleKey("ratio")).getType())
-                        .isEqualTo(ExtendedAttributeType.DOUBLE);
-        assertThat(ExtendedAttributeKey.fromAttributeKey(AttributeKey.stringArrayKey("tags")).getType())
-                        .isEqualTo(ExtendedAttributeType.STRING_ARRAY);
-        assertThat(ExtendedAttributeKey.fromAttributeKey(AttributeKey.booleanArrayKey("flags")).getType())
-                        .isEqualTo(ExtendedAttributeType.BOOLEAN_ARRAY);
-        assertThat(ExtendedAttributeKey.fromAttributeKey(AttributeKey.longArrayKey("counts")).getType())
-                        .isEqualTo(ExtendedAttributeType.LONG_ARRAY);
-        assertThat(ExtendedAttributeKey.fromAttributeKey(AttributeKey.doubleArrayKey("scores")).getType())
-                        .isEqualTo(ExtendedAttributeType.DOUBLE_ARRAY);
-
-        ExtendedAttributeKey<ExtendedAttributes> nestedKey = ExtendedAttributeKey.extendedAttributesKey("resource");
-        assertThat(nestedKey.getType()).isEqualTo(ExtendedAttributeType.EXTENDED_ATTRIBUTES);
-        assertThat(nestedKey.asAttributeKey()).isNull();
-    }
-
-    @Test
-    void extendedAttributesStoreScalarsArraysNestedValuesAndStandardViews() {
-        ExtendedAttributeKey<String> stringKey = ExtendedAttributeKey.stringKey("string.value");
-        ExtendedAttributeKey<Boolean> booleanKey = ExtendedAttributeKey.booleanKey("boolean.value");
-        ExtendedAttributeKey<Long> longKey = ExtendedAttributeKey.longKey("long.value");
-        ExtendedAttributeKey<Double> doubleKey = ExtendedAttributeKey.doubleKey("double.value");
-        ExtendedAttributeKey<List<String>> stringArrayKey = ExtendedAttributeKey.stringArrayKey("string.array");
-        ExtendedAttributeKey<List<Boolean>> booleanArrayKey = ExtendedAttributeKey.booleanArrayKey("boolean.array");
-        ExtendedAttributeKey<List<Long>> longArrayKey = ExtendedAttributeKey.longArrayKey("long.array");
-        ExtendedAttributeKey<List<Double>> doubleArrayKey = ExtendedAttributeKey.doubleArrayKey("double.array");
-        ExtendedAttributeKey<ExtendedAttributes> nestedKey = ExtendedAttributeKey.extendedAttributesKey("nested.value");
-        ExtendedAttributes nested = ExtendedAttributes.builder().put("nested.string", "inside").build();
-
-        ExtendedAttributes attributes = ExtendedAttributes.builder()
-                        .put(stringKey, "alpha")
-                        .put(booleanKey, true)
-                        .put(longKey, 42L)
-                        .put(doubleKey, 3.5D)
-                        .put(stringArrayKey, List.of("a", "b"))
-                        .put(booleanArrayKey, List.of(true, false))
-                        .put(longArrayKey, List.of(1L, 2L, 3L))
-                        .put(doubleArrayKey, List.of(1.25D, 2.5D))
-                        .put(nestedKey, nested)
-                        .build();
-
-        assertThat(attributes.isEmpty()).isFalse();
-        assertThat(attributes.size()).isEqualTo(9);
-        assertThat(attributes.get(stringKey)).isEqualTo("alpha");
-        assertThat(attributes.get(booleanKey)).isTrue();
-        assertThat(attributes.get(longKey)).isEqualTo(42L);
-        assertThat(attributes.get(doubleKey)).isEqualTo(3.5D);
-        assertThat(attributes.get(stringArrayKey)).containsExactly("a", "b");
-        assertThat(attributes.get(booleanArrayKey)).containsExactly(true, false);
-        assertThat(attributes.get(longArrayKey)).containsExactly(1L, 2L, 3L);
-        assertThat(attributes.get(doubleArrayKey)).containsExactly(1.25D, 2.5D);
-        assertThat(attributes.get(nestedKey)).isSameAs(nested);
-
-        Map<ExtendedAttributeKey<?>, Object> seen = new LinkedHashMap<>();
-        attributes.forEach(seen::put);
-        assertThat(seen).containsEntry(stringKey, "alpha").containsEntry(nestedKey, nested);
-        assertThat(attributes.asMap()).containsEntry(booleanKey, true).containsEntry(longKey, 42L);
-
-        Attributes standardAttributes = attributes.asAttributes();
-        assertThat(standardAttributes.get(AttributeKey.stringKey("string.value"))).isEqualTo("alpha");
-        assertThat(standardAttributes.get(AttributeKey.booleanKey("boolean.value"))).isTrue();
-        assertThat(standardAttributes.get(AttributeKey.longKey("long.value"))).isEqualTo(42L);
-        assertThat(standardAttributes.get(AttributeKey.doubleKey("double.value"))).isEqualTo(3.5D);
-        assertThat(standardAttributes.get(AttributeKey.stringArrayKey("string.array"))).containsExactly("a", "b");
-        assertThat(standardAttributes.size()).isEqualTo(8);
-        assertThat(attributes.asAttributes()).isSameAs(standardAttributes);
-    }
-
-    @Test
-    void extendedAttributesBuilderMergesStandardAttributesAndRemovesEntries() {
-        AttributeKey<String> standardStringKey = AttributeKey.stringKey("standard.string");
-        ExtendedAttributeKey<Long> longKey = ExtendedAttributeKey.longKey("long.value");
-        ExtendedAttributeKey<Double> doubleKey = ExtendedAttributeKey.doubleKey("double.value");
-        Attributes standardAttributes = Attributes.of(standardStringKey, "standard");
-        ExtendedAttributes extraAttributes = ExtendedAttributes.builder()
-                        .put(longKey, 10L)
-                        .put(doubleKey, 11.5D)
-                        .build();
-
-        ExtendedAttributes attributes = ExtendedAttributes.builder()
-                        .putAll(standardAttributes)
-                        .putAll(extraAttributes)
-                        .remove(standardStringKey)
-                        .removeIf(key -> key.getType() == ExtendedAttributeType.DOUBLE)
-                        .put("added", "value")
-                        .build();
-
-        assertThat(attributes.get(standardStringKey)).isNull();
-        assertThat(attributes.get(longKey)).isEqualTo(10L);
-        assertThat(attributes.get(doubleKey)).isNull();
-        assertThat(attributes.get(ExtendedAttributeKey.stringKey("added"))).isEqualTo("value");
-
-        ExtendedAttributes rebuilt = attributes.toBuilder()
-                        .remove(longKey)
-                        .put("primitive.long", 7L)
-                        .put("primitive.double", 2.25D)
-                        .put("primitive.boolean", true)
-                        .put("string.array", "x", "y")
-                        .put("long.array", 3L, 4L)
-                        .put("double.array", 4.5D, 5.5D)
-                        .put("boolean.array", true, false)
-                        .build();
-
-        assertThat(rebuilt.get(longKey)).isNull();
-        assertThat(rebuilt.get(ExtendedAttributeKey.longKey("primitive.long"))).isEqualTo(7L);
-        assertThat(rebuilt.get(ExtendedAttributeKey.doubleKey("primitive.double"))).isEqualTo(2.25D);
-        assertThat(rebuilt.get(ExtendedAttributeKey.booleanKey("primitive.boolean"))).isTrue();
-        assertThat(rebuilt.get(ExtendedAttributeKey.stringArrayKey("string.array"))).containsExactly("x", "y");
-        assertThat(rebuilt.get(ExtendedAttributeKey.longArrayKey("long.array"))).containsExactly(3L, 4L);
-        assertThat(rebuilt.get(ExtendedAttributeKey.doubleArrayKey("double.array"))).containsExactly(4.5D, 5.5D);
-        assertThat(rebuilt.get(ExtendedAttributeKey.booleanArrayKey("boolean.array"))).containsExactly(true, false);
-    }
-
-    @Test
-    void emptyAttributesAndBuilderIgnoreInvalidKeysAndNullValues() {
-        assertThat(ExtendedAttributes.empty().isEmpty()).isTrue();
-        assertThat(ExtendedAttributes.empty().size()).isZero();
-        assertThat(ExtendedAttributes.empty().asMap()).isEmpty();
-        assertThat(ExtendedAttributes.empty().asAttributes().isEmpty()).isTrue();
-
-        ExtendedAttributesBuilder builder = ExtendedAttributes.builder();
-        builder.put("", "ignored");
-        builder.put(ExtendedAttributeKey.stringKey("null.value"), null);
-        builder.put((ExtendedAttributeKey<String>) null, "ignored");
-        builder.removeIf(null);
-
-        assertThat(builder.build().isEmpty()).isTrue();
-    }
-
-    @Test
     void noopLoggerProviderExposesExtendedLoggerAndFluentLogRecordBuilder() {
         LoggerProvider loggerProvider = ExtendedDefaultLoggerProvider.getNoop();
         Logger logger = loggerProvider.loggerBuilder("integration.logger")
@@ -265,10 +115,6 @@ public class Opentelemetry_api_incubatorTest {
         assertThat(extendedLogger.isEnabled(Severity.INFO)).isFalse();
         assertThat(extendedLogger.isEnabled(Severity.ERROR, Context.root())).isFalse();
 
-        ExtendedAttributes extendedAttributes = ExtendedAttributes.builder()
-                        .put("log.extended", "attribute")
-                        .put("log.nested", ExtendedAttributes.builder().put("inner", "value").build())
-                        .build();
         ExtendedLogRecordBuilder builder = extendedLogger.logRecordBuilder();
 
         assertThat(builder.setTimestamp(123, TimeUnit.MILLISECONDS)).isSameAs(builder);
@@ -283,9 +129,7 @@ public class Opentelemetry_api_incubatorTest {
         assertThat(builder.setEventName("event.name")).isSameAs(builder);
         assertThat(builder.setAllAttributes(Attributes.of(AttributeKey.stringKey("standard"), "value")))
                         .isSameAs(builder);
-        assertThat(builder.setAllAttributes(extendedAttributes)).isSameAs(builder);
         assertThat(builder.setAttribute(AttributeKey.longKey("standard.long"), 1L)).isSameAs(builder);
-        assertThat(builder.setAttribute(ExtendedAttributeKey.stringKey("extended.string"), "value")).isSameAs(builder);
         assertThat(builder.setException(new IllegalArgumentException("boom"))).isSameAs(builder);
         builder.emit();
     }
