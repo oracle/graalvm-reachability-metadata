@@ -23,11 +23,15 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import org.springframework.boot.data.autoconfigure.metrics.DataMetricsProperties;
+import org.springframework.boot.data.autoconfigure.metrics.DataRepositoryMetricsAutoConfiguration;
 import org.springframework.boot.data.autoconfigure.metrics.PropertiesAutoTimer;
 import org.springframework.boot.data.autoconfigure.web.DataWebProperties;
 import org.springframework.boot.data.metrics.AutoTimer;
 import org.springframework.boot.data.metrics.DefaultRepositoryTagsProvider;
 import org.springframework.boot.data.metrics.MetricsRepositoryMethodInvocationListener;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 import org.springframework.data.projection.ProjectionFactory;
 import org.springframework.data.repository.core.RepositoryInformation;
 import org.springframework.data.repository.core.RepositoryMetadata;
@@ -141,6 +145,32 @@ public class Spring_boot_data_commonsTest {
             repository.save(new Book(1L, "spring")).block(Duration.ofSeconds(10));
 
             Assertions.assertThat(registry.get("repository.invocations")
+                    .tag("repository", "BookRepository")
+                    .tag("method", "save")
+                    .tag("state", "SUCCESS")
+                    .tag("exception", "None")
+                    .timer()
+                    .count()).isEqualTo(1);
+        } finally {
+            registry.close();
+        }
+    }
+
+    @Test
+    void autoConfiguresRepositoryMetricsListener() {
+        SimpleMeterRegistry registry = new SimpleMeterRegistry();
+        try (AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext()) {
+            context.registerBean(SimpleMeterRegistry.class, () -> registry);
+            context.register(DataRepositoryMetricsConfiguration.class);
+            context.refresh();
+
+            InMemoryRepositoryFactory factory = new InMemoryRepositoryFactory();
+            factory.addInvocationListener(context.getBean(MetricsRepositoryMethodInvocationListener.class));
+            BookRepository repository = factory.getRepository(BookRepository.class);
+            Book book = new Book(1L, "spring");
+
+            Assertions.assertThat(repository.save(book).block(Duration.ofSeconds(10))).isSameAs(book);
+            Assertions.assertThat(registry.get("spring.data.repository.invocations")
                     .tag("repository", "BookRepository")
                     .tag("method", "save")
                     .tag("state", "SUCCESS")
@@ -269,6 +299,11 @@ public class Spring_boot_data_commonsTest {
         repository.save(first).block(Duration.ofSeconds(10));
         repository.deleteAll().block(Duration.ofSeconds(10));
         Assertions.assertThat(repository.findAll().collectList().block(Duration.ofSeconds(10))).isEmpty();
+    }
+
+    @Configuration(proxyBeanMethods = false)
+    @Import(DataRepositoryMetricsAutoConfiguration.class)
+    static class DataRepositoryMetricsConfiguration {
     }
 
     public interface BookRepository extends ReactiveCrudRepository<Book, Long> {
