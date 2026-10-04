@@ -3,6 +3,12 @@
 Rendered by Forge from the pre-push branch review of §FS-local-branch-review.
 Newest entry first; every non-approval is recorded, including one a repair later cleared.
 
+## 2026-10-04 — org.springframework.boot:spring-boot-persistence:4.1.1 (#9745)
+
+**Library-new request duplicates an already supported version**
+
+§FS-contribution-contract.2 requires a library-new-request contribution to target one new tested version. Base commit ec82d4358ee4f70a86e5b5f6fd38ad3303cba49d already contains org.springframework.boot:spring-boot-persistence:4.1.1 in index.json, introduced by merged PR #10437 (commit e0047dfe6f01d55e38f5dac965778bcb32c16174). The reviewed diff does not add a tested version or index entry; it only modifies the already-supported coordinate's tests, test-only metadata, and statistics. This cannot be repaired into a new-library contribution within the allowed files, so §FS-contribution-contract.5.5 requires maintainer intervention.
+
 ## 2026-10-04 — ch.qos.logback:logback-classic:1.6.2 (#10425)
 
 **Runtime repair weakened an unrelated passing test**
