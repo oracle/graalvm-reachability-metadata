@@ -35,6 +35,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.data.projection.ProjectionFactory;
 import org.springframework.data.repository.core.RepositoryInformation;
 import org.springframework.data.repository.core.RepositoryMetadata;
+import org.springframework.data.repository.core.support.RepositoryFactoryBeanSupport;
 import org.springframework.data.repository.core.support.RepositoryFactorySupport;
 import org.springframework.data.repository.query.QueryLookupStrategy;
 import org.springframework.data.repository.query.QueryMethod;
@@ -167,6 +168,31 @@ public class Spring_boot_data_commonsTest {
             InMemoryRepositoryFactory factory = new InMemoryRepositoryFactory();
             factory.addInvocationListener(context.getBean(MetricsRepositoryMethodInvocationListener.class));
             BookRepository repository = factory.getRepository(BookRepository.class);
+            Book book = new Book(1L, "spring");
+
+            Assertions.assertThat(repository.save(book).block(Duration.ofSeconds(10))).isSameAs(book);
+            Assertions.assertThat(registry.get("spring.data.repository.invocations")
+                    .tag("repository", "BookRepository")
+                    .tag("method", "save")
+                    .tag("state", "SUCCESS")
+                    .tag("exception", "None")
+                    .timer()
+                    .count()).isEqualTo(1);
+        } finally {
+            registry.close();
+        }
+    }
+
+    @Test
+    void automaticallyAddsMetricsListenerToRepositoryFactoryBean() {
+        SimpleMeterRegistry registry = new SimpleMeterRegistry();
+        try (AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext()) {
+            context.registerBean(SimpleMeterRegistry.class, () -> registry);
+            context.register(DataRepositoryMetricsConfiguration.class);
+            context.registerBean(InMemoryRepositoryFactoryBean.class, InMemoryRepositoryFactoryBean::new);
+            context.refresh();
+
+            BookRepository repository = context.getBean(BookRepository.class);
             Book book = new Book(1L, "spring");
 
             Assertions.assertThat(repository.save(book).block(Duration.ofSeconds(10))).isSameAs(book);
@@ -355,6 +381,19 @@ public class Spring_boot_data_commonsTest {
         @Override
         public int hashCode() {
             return this.id.hashCode() * 31 + this.title.hashCode();
+        }
+    }
+
+    static final class InMemoryRepositoryFactoryBean
+            extends RepositoryFactoryBeanSupport<BookRepository, Book, Long> {
+
+        InMemoryRepositoryFactoryBean() {
+            super(BookRepository.class);
+        }
+
+        @Override
+        protected RepositoryFactorySupport createRepositoryFactory() {
+            return new InMemoryRepositoryFactory();
         }
     }
 
