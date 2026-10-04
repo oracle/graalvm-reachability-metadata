@@ -11,6 +11,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.nio.ByteBuffer;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import jakarta.websocket.ClientEndpoint;
 import jakarta.websocket.ClientEndpointConfig;
@@ -97,6 +99,8 @@ public class PojoEndpointBaseTest {
     }
 
     private static class NoOpRemoteEndpoint extends WsRemoteEndpointImplBase {
+        private final Lock lock = new ReentrantLock();
+
         @Override
         protected void doWrite(SendHandler handler, long blockingWriteTimeoutExpiry, ByteBuffer... data) {
             handler.onResult(new SendResult());
@@ -111,5 +115,9 @@ public class PojoEndpointBaseTest {
         protected void doClose() {
         }
 
+        @Override
+        protected Lock getLock() {
+            return lock;
+        }
     }
 }

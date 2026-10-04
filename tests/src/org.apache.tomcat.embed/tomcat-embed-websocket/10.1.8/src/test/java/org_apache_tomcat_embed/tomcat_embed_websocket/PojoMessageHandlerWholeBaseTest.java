@@ -13,6 +13,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import jakarta.websocket.ClientEndpointConfig;
 import jakarta.websocket.DecodeException;
@@ -129,6 +131,8 @@ public class PojoMessageHandlerWholeBaseTest {
     }
 
     private static class NoOpRemoteEndpoint extends WsRemoteEndpointImplBase {
+        private final Lock lock = new ReentrantLock();
+
         @Override
         protected void doWrite(SendHandler handler, long blockingWriteTimeoutExpiry, ByteBuffer... data) {
             handler.onResult(new SendResult());
@@ -143,5 +147,9 @@ public class PojoMessageHandlerWholeBaseTest {
         protected void doClose() {
         }
 
+        @Override
+        protected Lock getLock() {
+            return lock;
+        }
     }
 }
