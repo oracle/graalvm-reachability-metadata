@@ -14,6 +14,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import io.micrometer.core.annotation.Timed;
+import io.micrometer.core.instrument.Timer;
 import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -22,6 +23,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import org.springframework.boot.data.autoconfigure.metrics.DataMetricsProperties;
+import org.springframework.boot.data.autoconfigure.metrics.PropertiesAutoTimer;
 import org.springframework.boot.data.autoconfigure.web.DataWebProperties;
 import org.springframework.boot.data.metrics.AutoTimer;
 import org.springframework.boot.data.metrics.DefaultRepositoryTagsProvider;
@@ -96,29 +98,82 @@ public class Spring_boot_data_commonsTest {
     }
 
     @Test
+    void appliesConfiguredAutoTimerSettings() {
+        DataMetricsProperties properties = new DataMetricsProperties();
+        properties.getRepository().getAutotime().setEnabled(true);
+        properties.getRepository().getAutotime().setPercentilesHistogram(true);
+        properties.getRepository().getAutotime().setPercentiles(new double[] {0.5, 0.95 });
+        PropertiesAutoTimer autoTimer = new PropertiesAutoTimer(properties.getRepository().getAutotime());
+        SimpleMeterRegistry registry = new SimpleMeterRegistry();
+        try {
+            Assertions.assertThat(autoTimer.isEnabled()).isTrue();
+            Timer timer = autoTimer.builder("configured.operation").register(registry);
+            timer.record(Duration.ofMillis(1));
+            Assertions.assertThat(timer.count()).isEqualTo(1);
+            Assertions.assertThat(timer.takeSnapshot().percentileValues()).hasSize(2);
+        } finally {
+            registry.close();
+        }
+
+        properties.getRepository().getAutotime().setEnabled(false);
+        Assertions.assertThat(new PropertiesAutoTimer(properties.getRepository().getAutotime()).isEnabled()).isFalse();
+    }
+
+    @Test
     void appliesAutoTimerAndRecordsRepositoryInvocationMetrics() {
         SimpleMeterRegistry registry = new SimpleMeterRegistry();
-        Assertions.assertThat(AutoTimer.ENABLED.isEnabled()).isTrue();
-        Assertions.assertThat(AutoTimer.DISABLED.isEnabled()).isFalse();
+        try {
+            Assertions.assertThat(AutoTimer.ENABLED.isEnabled()).isTrue();
+            Assertions.assertThat(AutoTimer.DISABLED.isEnabled()).isFalse();
 
-        AutoTimer.ENABLED.builder("standalone.operation").register(registry).record(Duration.ofMillis(1));
-        Assertions.assertThat(registry.get("standalone.operation").timer().count()).isEqualTo(1);
+            AutoTimer.ENABLED.builder("standalone.operation").register(registry).record(Duration.ofMillis(1));
+            Assertions.assertThat(registry.get("standalone.operation").timer().count()).isEqualTo(1);
+            AutoTimer.ENABLED.builder(() -> Timer.builder("supplied.operation"))
+                    .register(registry)
+                    .record(Duration.ofMillis(1));
+            Assertions.assertThat(registry.get("supplied.operation").timer().count()).isEqualTo(1);
 
-        InMemoryRepositoryFactory factory = new InMemoryRepositoryFactory();
-        factory.addInvocationListener(new MetricsRepositoryMethodInvocationListener(
-                () -> registry, new DefaultRepositoryTagsProvider(), "repository.invocations", AutoTimer.ENABLED));
-        BookRepository repository = factory.getRepository(BookRepository.class);
+            InMemoryRepositoryFactory factory = new InMemoryRepositoryFactory();
+            factory.addInvocationListener(new MetricsRepositoryMethodInvocationListener(
+                    () -> registry, new DefaultRepositoryTagsProvider(), "repository.invocations", AutoTimer.ENABLED));
+            BookRepository repository = factory.getRepository(BookRepository.class);
 
-        repository.save(new Book(1L, "spring")).block(Duration.ofSeconds(10));
+            repository.save(new Book(1L, "spring")).block(Duration.ofSeconds(10));
 
-        Assertions.assertThat(registry.get("repository.invocations")
-                .tag("repository", "BookRepository")
-                .tag("method", "save")
-                .tag("state", "SUCCESS")
-                .tag("exception", "None")
-                .timer()
-                .count()).isEqualTo(1);
-        registry.close();
+            Assertions.assertThat(registry.get("repository.invocations")
+                    .tag("repository", "BookRepository")
+                    .tag("method", "save")
+                    .tag("state", "SUCCESS")
+                    .tag("exception", "None")
+                    .timer()
+                    .count()).isEqualTo(1);
+        } finally {
+            registry.close();
+        }
+    }
+
+    @Test
+    void recordsFailedRepositoryInvocation() {
+        SimpleMeterRegistry registry = new SimpleMeterRegistry();
+        try {
+            InMemoryRepositoryFactory factory = new InMemoryRepositoryFactory();
+            factory.addInvocationListener(new MetricsRepositoryMethodInvocationListener(
+                    () -> registry, new DefaultRepositoryTagsProvider(), "repository.invocations", AutoTimer.ENABLED));
+            BookRepository repository = factory.getRepository(BookRepository.class);
+
+            Assertions.assertThatThrownBy(() -> repository.findByTitleThatFails("failure").block(Duration.ofSeconds(10)))
+                    .isInstanceOf(IllegalStateException.class);
+
+            Assertions.assertThat(registry.get("repository.invocations")
+                    .tag("repository", "BookRepository")
+                    .tag("method", "findByTitleThatFails")
+                    .tag("state", "ERROR")
+                    .tag("exception", "IllegalStateException")
+                    .timer()
+                    .count()).isEqualTo(1);
+        } finally {
+            registry.close();
+        }
     }
 
     @Test
@@ -220,6 +275,8 @@ public class Spring_boot_data_commonsTest {
 
         Mono<Book> findByTitle(String title);
 
+        Mono<Book> findByTitleThatFails(String title);
+
         @Timed(value = "repository.lookup", extraTags = { "operation", "lookup" })
         Mono<Book> findByTitleWithTimer(String title);
     }
@@ -293,6 +350,9 @@ public class Spring_boot_data_commonsTest {
                 @Override
                 public Object execute(Object[] parameters) {
                     String title = (String) parameters[0];
+                    if (title.equals("failure")) {
+                        return Mono.error(new IllegalStateException("query failure"));
+                    }
                     return Mono.justOrEmpty(books.values().stream()
                             .filter(book -> book.getTitle().equals(title))
                             .findFirst());
