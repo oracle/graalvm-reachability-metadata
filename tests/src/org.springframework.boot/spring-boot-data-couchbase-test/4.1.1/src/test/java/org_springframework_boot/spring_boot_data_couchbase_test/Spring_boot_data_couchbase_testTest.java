@@ -8,6 +8,7 @@ package org_springframework_boot.spring_boot_data_couchbase_test;
 
 import org.junit.jupiter.api.Test;
 
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.context.annotation.ImportCandidates;
 import org.springframework.boot.data.couchbase.autoconfigure.DataCouchbaseRepositoriesAutoConfiguration;
 import org.springframework.boot.data.couchbase.test.autoconfigure.AutoConfigureDataCouchbase;
@@ -20,6 +21,7 @@ import org.springframework.core.annotation.MergedAnnotations;
 import org.springframework.data.couchbase.core.convert.MappingCouchbaseConverter;
 import org.springframework.data.couchbase.core.mapping.CouchbaseMappingContext;
 import org.springframework.data.couchbase.core.mapping.Document;
+import org.springframework.stereotype.Component;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestContextManager;
 
@@ -66,6 +68,20 @@ public class Spring_boot_data_couchbase_testTest {
     }
 
     @Test
+    void dataCouchbaseTestIncludesComponentsSelectedByAnIncludeFilter() throws Exception {
+        TestContextManager testContextManager = new TestContextManager(FilteredDataCouchbaseSlice.class);
+        testContextManager.beforeTestClass();
+        try {
+            ApplicationContext context = testContextManager.getTestContext().getApplicationContext();
+
+            assertThat(context.getBean(IncludedComponent.class).value()).isEqualTo("included");
+        }
+        finally {
+            testContextManager.afterTestClass();
+        }
+    }
+
+    @Test
     void autoConfigureDataCouchbaseListsItsAutoConfigurations() {
         ImportCandidates candidates = ImportCandidates.load(AutoConfigureDataCouchbase.class,
                 getClass().getClassLoader());
@@ -88,6 +104,29 @@ public class Spring_boot_data_couchbase_testTest {
 
     @Configuration(proxyBeanMethods = false)
     static class SliceConfiguration {
+
+    }
+
+    @DataCouchbaseTest(includeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE,
+            classes = IncludedComponent.class))
+    @ContextConfiguration(classes = ComponentSliceConfiguration.class)
+    static class FilteredDataCouchbaseSlice {
+
+    }
+
+    @Configuration(proxyBeanMethods = false)
+    @EnableAutoConfiguration
+    @ComponentScan(basePackageClasses = IncludedComponent.class)
+    static class ComponentSliceConfiguration {
+
+    }
+
+    @Component
+    static class IncludedComponent {
+
+        String value() {
+            return "included";
+        }
 
     }
 
