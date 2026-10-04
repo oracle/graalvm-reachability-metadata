@@ -226,7 +226,7 @@ def _create_dynamic_access_exhaust_report(
 
 
 def _strategy_has_bulk_phase(strategy_name: str | None) -> bool:
-    """Return whether the selected strategy makes the chunk decision after bulk."""
+    """Return whether the selected strategy decides where its chunk ends after bulk."""
     if not strategy_name:
         return False
     strategy: dict = require_strategy_by_name(strategy_name)
@@ -248,9 +248,9 @@ def _continuation_resumes_existing_tree(marker: ContinuationMarker | None) -> bo
 def _prepare_dispatcher_dynamic_access_report(claimed_issue: ClaimedIssue) -> bool:
     """Build the dynamic-access report input every chunk-eligible run measures.
 
-    Preparation precedes every chunk decision, including the ones deferred to a
-    bulk phase, so no workflow starts against a report that was never
-    built (§FS-forge-chunked-dynamic-access).
+    Preparation precedes the chunked-mode decision for every workflow, so no
+    workflow starts against a report that was never built
+    (§FS-forge-chunked-dynamic-access).
     """
     if _continuation_resumes_existing_tree(claimed_issue.continuation_marker):
         log_detail(
@@ -286,12 +286,13 @@ def prepare_dynamic_access_chunking(
         claimed_issue: ClaimedIssue,
         strategy_name: str | None,
 ) -> int | None:
-    """Return the iterative budget or deferred post-bulk class boundary.
+    """Decide at claim whether the issue is chunked and return its class boundary.
 
-    Every chunk-eligible run prepares the same report input. Iterative-only work
-    then keeps dispatcher-owned report selection, while a bulk phase
-    receives the configured boundary and decides after its gated bulk loop, when
-    its exact progress is known (§FS-forge-chunked-dynamic-access).
+    Every chunk-eligible run prepares the same report input, and the chunked-mode
+    decision is made here for every workflow. Iterative-only work receives the
+    remaining class budget, while a bulk phase receives the configured boundary
+    and decides where the chunk ends after its gated bulk loop
+    (§FS-forge-chunked-dynamic-access).
     """
     if claimed_issue.label not in {LABEL_LIBRARY_NEW, LABEL_LIBRARY_UPDATE}:
         return None
@@ -303,21 +304,7 @@ def prepare_dynamic_access_chunking(
     if not _prepare_dispatcher_dynamic_access_report(claimed_issue):
         return None
 
-    if _strategy_has_bulk_phase(strategy_name):
-        chunk_boundary: int = threshold
-        if active_chunk_remaining_budget is not None:
-            chunk_boundary = min(chunk_boundary, active_chunk_remaining_budget)
-        log_detail(
-            "dynamic-access-chunking",
-            "Deferring chunk selection for '{strategy}' until its bulk phase completes; "
-            "uncovered_classes={uncovered}, class_boundary={boundary}.".format(
-                strategy=strategy_name,
-                uncovered=dispatcher_uncovered_class_count(claimed_issue),
-                boundary=chunk_boundary,
-            ),
-        )
-        return chunk_boundary
-
+    has_bulk_phase: bool = _strategy_has_bulk_phase(strategy_name)
     report = _load_dispatcher_dynamic_access_report(claimed_issue)
     if report is None:
         log_detail(
@@ -357,13 +344,11 @@ def prepare_dynamic_access_chunking(
         )
         return None
 
-    current_chunk_class_count = min(threshold, len(remaining_classes))
-    active_chunk_remaining_budget = _continuation_active_chunk_remaining_budget(
-        claimed_issue.continuation_marker
-    )
+    # A bulk phase decides where the chunk ends once its progress is known.
+    current_chunk_class_count: int = threshold if has_bulk_phase else min(threshold, len(remaining_classes))
     if active_chunk_remaining_budget is not None:
         current_chunk_class_count = min(current_chunk_class_count, active_chunk_remaining_budget)
-    if current_chunk_class_count <= 0:
+    if current_chunk_class_count <= 0 and not has_bulk_phase:
         log_detail(
             "dynamic-access-chunking",
             (
@@ -389,7 +374,8 @@ def prepare_dynamic_access_chunking(
         "Chunked dynamic-access selected for issue #{issue_number}: "
         "already_chunked={already_chunked}, total_uncovered_classes={uncovered_count}, "
         "processed_classes={processed_count}, remaining_classes={remaining_count}, "
-        "threshold={threshold}, chunk_class_count={chunk_count}, exhaust_report={report_path}.".format(
+        "threshold={threshold}, chunk_class_count={chunk_count}, chunk_end={chunk_end}, "
+        "exhaust_report={report_path}.".format(
             issue_number=claimed_issue.issue["number"],
             already_chunked=already_chunked,
             uncovered_count=len(current_uncovered_classes),
@@ -397,6 +383,7 @@ def prepare_dynamic_access_chunking(
             remaining_count=len(remaining_classes),
             threshold=threshold,
             chunk_count=current_chunk_class_count,
+            chunk_end="after-bulk" if has_bulk_phase else "class-budget",
             report_path=os.path.relpath(exhaust_report_path, claimed_issue.worktree_path),
         ),
     )

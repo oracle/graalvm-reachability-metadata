@@ -790,8 +790,8 @@ tree's skip record (§FS-forge-publication-readiness).
 
 For `library-new-request` issues and `library-update-request` issues routed to
 dynamic-access coverage improvement, `forge_metadata.py` must invoke the
-matching orchestration script with the issue number and configured class
-threshold. An iterative-only workflow may use a dispatcher-refreshed report to
+matching orchestration script with the issue number and, for a chunked issue,
+its class boundary. An iterative-only workflow may use a dispatcher-refreshed report to
 reduce that value to the current remaining class count before it starts.
 
 Preparation is not the decision. Before it decides anything, `forge_metadata.py`
@@ -799,17 +799,37 @@ must prepare the same dynamic-access report input for every chunk-eligible
 issue, whichever workflow was selected: it materializes the coordinate's test
 project — scaffolding a new library, or resolving the library-update target —
 and refreshes the report from it. A run resumed on a preserved tree keeps that
-tree and only refreshes the report. Deferring the chunk decision to a bulk phase
-must not skip this preparation, so no workflow starts against a report that was
-never built (§AR-dynamic-access-fallback-and-failure). The deferral is
-logged with the prepared report's uncovered class count alongside the boundary,
-so the log records what was measured and not only what was configured.
+tree and only refreshes the report. No workflow starts against a report that
+was never built (§AR-dynamic-access-fallback-and-failure).
 
-A workflow with a bulk phase must make the chunk decision after the bulk
+Two decisions follow, and they are made at different times. Whether the issue is
+chunked is decided once, when the issue is claimed, from the prepared report and
+for every workflow alike. Where the current chunk ends is decided later, by the
+workflow, once its progress is known.
+
+The issue is chunked when it already carries the `chunked-dynamic-access` label
+or a coordinate-local exhaust report, or when the prepared report's uncovered
+class count exceeds the threshold. A newly chunked issue receives the label and
+its exhaust report at claim, before any workflow runs, so its PR is a chunk PR
+even when the whole library is finished in one run. Such a run publishes a
+single final chunk. An issue that is not chunked at claim runs without a class
+boundary and without an exhaust report, and its PR is never a chunk PR. A bulk
+phase only lowers the uncovered class count, so a library at or below the
+threshold can never need a later chunk. The decision is logged with the
+measured uncovered class count alongside the threshold.
+
+The label applied at claim is provisional until a chunk is published. When
+Forge releases a claim before any chunk of the issue has been published — the
+exhaust report records no chunk publication — it removes the label again, so a
+failed, interrupted, or externally aborted run does not leave a labelled issue
+without the exhaust report the next claim requires. The next claim then decides
+afresh from the prepared report.
+
+A chunked run with a bulk phase must decide where its chunk ends after the bulk
 iteration budget and its native-test gates. The bulk phase keeps its
 initial report as the baseline and uses the last successful iteration's already
 refreshed report as the final report; it must not run another report solely for
-the chunk decision. Classes uncovered in the baseline and covered in the final
+the chunk boundary. Classes uncovered in the baseline and covered in the final
 report are completed by bulk. The remaining set is the final report's uncovered
 classes minus the exhaust report and continuation marker's processed set.
 
