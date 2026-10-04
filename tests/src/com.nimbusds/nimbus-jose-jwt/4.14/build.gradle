@@ -11,7 +11,14 @@ plugins {
 String libraryVersion = tck.testedLibraryVersion.get()
 
 dependencies {
-    testImplementation "com.nimbusds:nimbus-jose-jwt:$libraryVersion"
+    testImplementation("com.nimbusds:nimbus-jose-jwt:$libraryVersion") {
+        if (libraryVersion == '4.14') {
+            exclude group: 'commons-io', module: 'commons-io'
+        }
+    }
+    if (libraryVersion == '4.14') {
+        testImplementation 'commons-io:commons-io:2.11.0'
+    }
     testImplementation 'org.assertj:assertj-core:3.22.0'
 }
 

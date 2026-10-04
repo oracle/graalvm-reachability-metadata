@@ -52,6 +52,8 @@ import com.nimbusds.jwt.PlainJWT;
 import com.nimbusds.jwt.SignedJWT;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.interfaces.RSAPrivateKey;
@@ -65,6 +67,7 @@ import java.util.List;
 import java.util.Map;
 import net.minidev.json.JSONObject;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 public class Nimbus_jose_jwtTest {
     private static final byte[] HMAC_SECRET = "0123456789abcdef0123456789abcdef".getBytes(StandardCharsets.UTF_8);
@@ -315,6 +318,25 @@ public class Nimbus_jose_jwtTest {
         JWKSet publicSet = parsedSet.toPublicJWKSet();
         assertNotNull(publicSet.getKeyByKeyId("rsa-sig"));
         assertNull(publicSet.getKeyByKeyId("hmac-sig"));
+    }
+
+    @Test
+    void jwkSetLoadsFromFile(@TempDir Path temporaryDirectory) throws Exception {
+        OctetSequenceKey key = new OctetSequenceKey.Builder(HMAC_SECRET)
+                .keyUse(KeyUse.SIGNATURE)
+                .algorithm(JWSAlgorithm.HS256)
+                .keyID("file-hmac")
+                .build();
+        Map<String, Object> members = new HashMap<String, Object>();
+        members.put("issuer", "file-issuer");
+        JWKSet expected = new JWKSet(Collections.<JWK>singletonList(key), members);
+        Path jwkSetFile = temporaryDirectory.resolve("jwk-set.json");
+        Files.write(jwkSetFile, expected.toJSONObject(false).toString().getBytes(StandardCharsets.UTF_8));
+
+        JWKSet loaded = JWKSet.load(jwkSetFile.toFile());
+
+        assertEquals("file-issuer", loaded.getAdditionalMembers().get("issuer"));
+        assertArrayEquals(HMAC_SECRET, ((OctetSequenceKey) loaded.getKeyByKeyId("file-hmac")).toByteArray());
     }
 
     @Test
