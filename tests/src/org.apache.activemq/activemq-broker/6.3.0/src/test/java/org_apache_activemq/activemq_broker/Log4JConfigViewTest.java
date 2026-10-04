@@ -10,6 +10,7 @@ import org.apache.activemq.broker.jmx.Log4JConfigView;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 
+import java.net.URL;
 import java.util.concurrent.TimeUnit;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -19,6 +20,9 @@ public class Log4JConfigViewTest {
 
     @Test
     void managesLog4jLevelsAndReloadsConfiguration() throws Throwable {
+        URL configuration = Log4JConfigViewTest.class.getResource("/log4j2.properties");
+        assertThat(configuration).isNotNull();
+        String originalConfiguration = System.setProperty("log4j2.configurationFile", configuration.toExternalForm());
         Log4JConfigView view = new Log4JConfigView();
         String loggerName = "org.apache.activemq.metadata.test";
 
@@ -38,6 +42,11 @@ public class Log4JConfigViewTest {
             assertThat(view.getRootLogLevel()).isNotBlank();
         } finally {
             view.setRootLogLevel(originalRootLevel);
+            if (originalConfiguration == null) {
+                System.clearProperty("log4j2.configurationFile");
+            } else {
+                System.setProperty("log4j2.configurationFile", originalConfiguration);
+            }
         }
     }
 }
