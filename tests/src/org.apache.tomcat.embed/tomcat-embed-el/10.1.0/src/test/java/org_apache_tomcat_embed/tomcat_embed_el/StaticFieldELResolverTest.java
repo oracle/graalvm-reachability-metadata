@@ -9,7 +9,9 @@ package org_apache_tomcat_embed.tomcat_embed_el;
 import jakarta.el.ELClass;
 import jakarta.el.ELContext;
 import jakarta.el.ELManager;
+import jakarta.el.ExpressionFactory;
 import jakarta.el.StaticFieldELResolver;
+import jakarta.el.ValueExpression;
 
 import org.junit.jupiter.api.Test;
 
@@ -27,14 +29,19 @@ public class StaticFieldELResolverTest {
     }
 
     @Test
-    void reportsPublicStaticFieldAsReadOnly() {
-        StaticFieldELResolver resolver = new StaticFieldELResolver();
-        ELContext context = newContext();
+    void resolvesImportedPublicStaticFieldAsReadOnlyExpression() {
+        ELManager manager = new ELManager();
+        ELContext context = manager.getELContext();
+        String className = StaticFieldTarget.class.getName();
+        String expressionName = className.substring(className.lastIndexOf('.') + 1);
+        manager.importClass(className);
+        ValueExpression expression = ExpressionFactory.newInstance()
+                .createValueExpression(context, "${" + expressionName + ".GREETING}", Object.class);
+        Object value = expression.getValue(context);
 
-        Class<?> type = resolver.getType(context, new ELClass(StaticFieldTarget.class), "GREETING");
-
-        assertThat(type).isNull();
-        assertThat(context.isPropertyResolved()).isTrue();
+        assertThat(expression.getType(context)).isNull();
+        assertThat(expression.isReadOnly(context)).isTrue();
+        assertThat(value).isEqualTo("hello");
     }
 
     @Test
