@@ -18,11 +18,15 @@ import org.springframework.boot.data.couchbase.autoconfigure.DataCouchbaseReacti
 import org.springframework.boot.data.couchbase.autoconfigure.DataCouchbaseRepositoriesAutoConfiguration;
 import org.springframework.boot.persistence.autoconfigure.EntityScan;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.convert.converter.Converter;
+import org.springframework.data.annotation.Id;
 import org.springframework.data.couchbase.CouchbaseClientFactory;
 import org.springframework.data.couchbase.core.convert.CouchbaseCustomConversions;
 import org.springframework.data.couchbase.core.convert.MappingCouchbaseConverter;
 import org.springframework.data.couchbase.core.convert.translation.TranslationService;
+import org.springframework.data.couchbase.core.mapping.CouchbaseDocument;
 import org.springframework.data.couchbase.core.mapping.CouchbaseMappingContext;
 import org.springframework.data.couchbase.core.mapping.Document;
 import org.springframework.data.couchbase.repository.CouchbaseRepository;
@@ -85,6 +89,18 @@ public class Spring_boot_data_couchbaseTest {
     }
 
     @Test
+    void autoConfigurationUsesApplicationCustomConversions() {
+        this.contextRunner.withUserConfiguration(CustomConversionsConfiguration.class).run((context) -> {
+            MappingCouchbaseConverter converter = context.getBean(MappingCouchbaseConverter.class);
+            CouchbaseDocument document = new CouchbaseDocument();
+
+            converter.write(new CustomConvertedDocument("order-1", new Price(42)), document);
+
+            assertThat(document.get("price")).isEqualTo("price-42");
+        });
+    }
+
+    @Test
     void connectionDependentAutoConfigurationsRemainInactiveWithoutClientFactory() {
         new ApplicationContextRunner()
                 .withConfiguration(AutoConfigurations.of(DataCouchbaseAutoConfiguration.class,
@@ -137,8 +153,54 @@ public class Spring_boot_data_couchbaseTest {
 
     }
 
+    @Configuration(proxyBeanMethods = false)
+    @EntityScan(basePackageClasses = CustomConvertedDocument.class)
+    static class CustomConversionsConfiguration {
+
+        @Bean
+        CouchbaseCustomConversions couchbaseCustomConversions() {
+            return CouchbaseCustomConversions.create(
+                    (adapter) -> adapter.registerConverter(new PriceToStringConverter()));
+        }
+
+    }
+
     @Document
     static class CouchbaseTestDocument {
+
+    }
+
+    @Document
+    static class CustomConvertedDocument {
+
+        @Id
+        private String id;
+
+        private Price price;
+
+        CustomConvertedDocument(String id, Price price) {
+            this.id = id;
+            this.price = price;
+        }
+
+    }
+
+    static class Price {
+
+        private final int amount;
+
+        Price(int amount) {
+            this.amount = amount;
+        }
+
+    }
+
+    static class PriceToStringConverter implements Converter<Price, String> {
+
+        @Override
+        public String convert(Price source) {
+            return "price-" + source.amount;
+        }
 
     }
 
