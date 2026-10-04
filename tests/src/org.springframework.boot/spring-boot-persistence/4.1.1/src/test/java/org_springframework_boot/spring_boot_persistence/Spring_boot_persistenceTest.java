@@ -102,6 +102,20 @@ public class Spring_boot_persistenceTest {
         }
     }
 
+    @Test
+    void persistenceExceptionTranslationBacksOffWhenPostProcessorIsProvided() {
+        try (AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext()) {
+            context.registerBean("userProvidedPersistenceExceptionTranslationPostProcessor",
+                    PersistenceExceptionTranslationPostProcessor.class,
+                    PersistenceExceptionTranslationPostProcessor::new);
+            context.register(PersistenceExceptionTranslationAutoConfiguration.class);
+            context.refresh();
+
+            assertThat(context.getBeansOfType(PersistenceExceptionTranslationPostProcessor.class))
+                    .containsOnlyKeys("userProvidedPersistenceExceptionTranslationPostProcessor");
+        }
+    }
+
     @EntityScan(basePackages = "org_springframework_boot.spring_boot_persistence",
             basePackageClasses = ScannedEntityType.class)
     @Configuration(proxyBeanMethods = false)
