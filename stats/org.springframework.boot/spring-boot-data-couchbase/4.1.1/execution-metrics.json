@@ -80,5 +80,86 @@
     "artifacts": {
       "metadata_file": "metadata/org.springframework.boot/spring-boot-data-couchbase/4.1.1/reachability-metadata.json"
     }
+  },
+  "add_new_library_support:2026-10-04": {
+    "timestamp": "2026-10-04T13:19:21.096699Z",
+    "library": "org.springframework.boot:spring-boot-data-couchbase:4.1.1",
+    "starting_commit": "b9eada97e7a4d20552796a4833f74e2de8e0fbe5",
+    "ending_commit": "1effcc30d5ab4b1bdfe17e365ffd09ffd93f13b1",
+    "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-luna",
+    "agent": "pi",
+    "model": "gpt-5.6-luna",
+    "status": "success",
+    "stats": {
+      "version": "4.1.1",
+      "dynamicAccess": {
+        "breakdown": {},
+        "coverageRatio": 1.0,
+        "coveredCalls": 0,
+        "totalCalls": 0
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 114,
+          "missed": 70,
+          "ratio": 0.619565,
+          "total": 184
+        },
+        "line": {
+          "covered": 37,
+          "missed": 18,
+          "ratio": 0.672727,
+          "total": 55
+        },
+        "method": {
+          "covered": 20,
+          "missed": 18,
+          "ratio": 0.526316,
+          "total": 38
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "no_action",
+      "issue_number": 9748,
+      "issue_label": "library-new-request",
+      "library": "org.springframework.boot:spring-boot-data-couchbase:4.1.1",
+      "summary": "spring-boot-data-couchbase only autoconfigures mapping/conversion beans (CouchbaseMappingContext, MappingCouchbaseConverter, CouchbaseCustomConversions) that don't require a live cluster; connection-dependent beans are gated behind @ConditionalOnBean(CouchbaseClientFactory) and simply stay inactive without one. The repo's existing Couchbase-related tests (metrics-micrometer, tracing-micrometer-observation) also run without Docker/Testcontainers, and there is no pinned Couchbase Docker image in the allow-list. The generated scaffold's ApplicationContextRunner-based test matches this pattern and needs no extra dependency, Docker image, or environment setup.",
+      "deterministic_setup": [],
+      "agent_guidance": "",
+      "risks": [
+        "Could not verify via WebFetch/WebSearch in this session (network tools were denied); conclusion rests on local repo precedent and the autoconfiguration's conditional bean structure, not a live resolved-jar inspection or upstream docs. Local Gradle/native-image verification should confirm before merge."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#9748 Support for org.springframework.boot:spring-boot-data-couchbase:4.1.1; label=library-new-request; body_chars=39"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "7 existing test file path(s) included"
+        }
+      ],
+      "model": "sonnet",
+      "input_tokens_used": 36,
+      "output_tokens_used": 12348
+    },
+    "metrics": {
+      "input_tokens_used": 302222,
+      "cached_input_tokens_used": 4691968,
+      "output_tokens_used": 31187,
+      "iterations": 6,
+      "cost_usd": 0.9585,
+      "generated_loc": 152,
+      "tested_library_loc": 37,
+      "metadata_entries": 9,
+      "test_only_metadata_entries": 183,
+      "code_coverage_percent": 67.27
+    },
+    "artifacts": {
+      "metadata_file": "metadata/org.springframework.boot/spring-boot-data-couchbase/4.1.1/reachability-metadata.json"
+    }
   }
 }
