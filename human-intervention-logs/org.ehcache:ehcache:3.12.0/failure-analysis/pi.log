@@ -1,0 +1,18 @@
+## Human intervention needed
+
+The automated job failed during finalization, after test generation had converged. Preserved work: https://github.com/oracle/graalvm-reachability-metadata/tree/ai%2Fkimeta%2Fhuman-intervention%2Fissue-8372-library-update-request-org.ehcache-ehcache-3.12.0-1e32b019
+
+The likely blocker is stats/coverage generation for Ehcache’s Jakarta variant. `generateLibraryStats` fails because `jacocoCodeCoverageReport` reports: “No unclassified main JAR found on the classpath for org.ehcache:ehcache:3.12.0.” The test project requires the `org.ehcache:ehcache-jakarta` capability and resolves `ehcache-3.12.0-jakarta.jar`, which the reporting task does not recognize as the main library JAR. Consequently, dynamic-access coverage is unavailable and the metrics record reports failure with zero generated/tested LOC and metadata entries.
+
+The generated suite itself appears viable: the latest Gradle logs show all 19 JVM/native tests passing on the exercised GraalVM lanes, while metadata validation, Spotless, and Checkstyle also pass.
+
+Inspect:
+- `logs/org.ehcache:ehcache:3.12.0/finalization/generateLibraryStats-2026-10-04T17-55-31-297667Z.log`
+- `logs/org.ehcache:ehcache:3.12.0/gradle-test/gradle-test-2026-10-04T17-48-41-469412Z.log`
+- `logs/org.ehcache:ehcache:3.12.0/gradle-test/gradle-test-2026-10-04T17-50-57-440994Z.log`
+- `logs/org.ehcache:ehcache:3.12.0/finalization/checkMetadataFiles-2026-10-04T17-52-36-153073Z.log`
+
+Manual next steps:
+1. Review the preserved test and metadata changes, especially the Jakarta capability selection in `tests/src/org.ehcache/ehcache/3.12.0/build.gradle`.
+2. Update or configure the JaCoCo/library-JAR discovery to treat the selected Jakarta variant as the target library JAR, then rerun `generateDynamicAccessCoverageReport` and `generateLibraryStats`.
+3. Rerun the coordinate-scoped metadata, style, JVM, and native-image checks before preparing the contribution.
