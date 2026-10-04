@@ -1,0 +1,68 @@
+/*
+ * Copyright and related rights waived via CC0
+ *
+ * You should have received a copy of the CC0 legalcode along with this
+ * work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
+ */
+package org_apache_tomcat_embed.tomcat_embed_el;
+
+import jakarta.el.ELContext;
+import jakarta.el.ELProcessor;
+import jakarta.el.ValueExpression;
+
+import org.apache.el.ExpressionFactoryImpl;
+import org.junit.jupiter.api.Test;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
+public class ELProcessorTest {
+
+    @Test
+    void evaluatesFunctionDefinedFromBinaryClassName() throws ClassNotFoundException, NoSuchMethodException {
+        ELProcessor processor = new ELProcessor();
+
+        processor.defineFunction("lib", "joinByName", FunctionLibrary.class.getName(), "join");
+
+        assertThat(evaluate(processor, "${lib:joinByName()}"))
+                .isEqualTo("joined");
+    }
+
+    @Test
+    void evaluatesFunctionDefinedFromSignatureWhenOverloadsExist()
+            throws ClassNotFoundException, NoSuchMethodException {
+        ELProcessor processor = new ELProcessor();
+
+        processor.defineFunction(
+                "lib",
+                "repeatBySignature",
+                FunctionLibrary.class.getName(),
+                "java.lang.String repeat(java.lang.String,int)");
+
+        assertThat(evaluate(processor, "${lib:repeatBySignature('ha', 3)}"))
+                .isEqualTo("hahaha");
+    }
+
+    private Object evaluate(ELProcessor processor, String expression) {
+        ELContext context = processor.getELManager().getELContext();
+        ValueExpression valueExpression = new ExpressionFactoryImpl()
+                .createValueExpression(context, expression, Object.class);
+        return valueExpression.getValue(context);
+    }
+
+    public static final class FunctionLibrary {
+        private FunctionLibrary() {
+        }
+
+        public static String join() {
+            return "joined";
+        }
+
+        public static String repeat(String value, int count) {
+            return value.repeat(count);
+        }
+
+        public static String repeat(String value) {
+            return value;
+        }
+    }
+}
