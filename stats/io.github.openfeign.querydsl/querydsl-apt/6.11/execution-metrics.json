@@ -1,9 +1,9 @@
 {
   "add_new_library_support:2026-10-04": {
-    "timestamp": "2026-10-04T05:44:49.780328Z",
+    "timestamp": "2026-10-04T22:58:44.284371Z",
     "library": "io.github.openfeign.querydsl:querydsl-apt:6.11",
-    "starting_commit": "9041b151b5e5d3d79fc13f1b448158541fd1c7a0",
-    "ending_commit": "146e1c6c54506a7fcc6300b7b6281b173ecd9eb1",
+    "starting_commit": "ec82d4358ee4f70a86e5b5f6fd38ad3303cba49d",
+    "ending_commit": "ec438c99f49f0ad5c163d7d6557dad10e0372d1b",
     "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-luna",
     "agent": "pi",
     "model": "gpt-5.6-luna",
@@ -45,38 +45,35 @@
     },
     "library_preparation_preflight": {
       "status": "completed",
-      "action": "advisory_preparation",
-      "issue_number": 9749,
+      "action": "no_action",
+      "issue_number": 9744,
       "issue_label": "library-new-request",
       "library": "io.github.openfeign.querydsl:querydsl-apt:6.11",
-      "summary": "querydsl-apt is a compile-time javax.annotation.processing.Processor bundle (generic @QueryEntity plus optional JPA/JDO/Hibernate-specific variants), not a runtime API. No extra Maven dependency, Docker image, or env var is needed for meaningful coverage — the default scaffold (library + assertj) is sufficient — but the agent needs guidance on how to exercise an annotation processor without breaking under Native Image.",
+      "summary": "querydsl-apt is a javac annotation processor whose reachability-relevant surface (DefaultConfiguration/HibernateConfiguration) is already unit-tested with mock ProcessingEnvironment/RoundEnvironment objects — no live DB, APT run, or Docker needed. The generated build.gradle already carries the only deps required (jakarta.persistence-api, hibernate-core, assertj-core as testImplementation), matching every comparable APT-only library (mapstruct, dagger, lombok) and sibling querydsl module already in this repo.",
       "deterministic_setup": [],
-      "agent_guidance": "This library runs during javac, not inside the eventual native image, so do not invoke javax.tools.JavaCompiler / ToolProvider.getSystemJavaCompiler() reflectively from test code that runs under the Native Image agent or at native-image runtime — that path is fragile/unsupported for the JDK's compiler internals. Two proven in-repo patterns instead: (1) like org.mapstruct:mapstruct/2.59.2's dagger test, wire the real processor as `testAnnotationProcessor \"io.github.openfeign.querydsl:querydsl-apt:$libraryVersion\"` plus `testImplementation` on the same coordinate, annotate a plain POJO with `@QueryEntity` (from querydsl-core, already transitive — no extra dependency needed), and let Gradle's own `compileTestJava` run annotation processing on the JVM; the test then just asserts on the generated Q-type at runtime. (2) like org.hibernate:hibernate-jpamodelgen's JpaDescriptorParserTest, unit-test the processor's internal classes directly against a minimal hand-built ProcessingEnvironment/Filer/Messager mock, avoiding a full compile pass entirely. Prefer the generic `com.querydsl.apt.QuerydslAnnotationProcessor` (`@QueryEntity`) path for baseline coverage since it needs nothing beyond querydsl-core. If the agent additionally wants to cover the JPA-specific processor (`com.querydsl.apt.jpa.JPAAnnotationProcessor`), note that querydsl-jpa's own test in this repo had to add javax.persistence-api, hibernate-core, and eclipselink as testImplementation for the same reason — those APIs are optional/provided deps of the apt module, not transitive — but this is not required for a working baseline and should only be added if generation specifically targets that processor. Also verify whether the resolved 6.11 jar registers a processor via META-INF/services/javax.annotation.processing.Processor; historically querydsl-apt does not auto-register (to avoid ServiceLoader failures when optional JPA/JDO APIs are absent), requiring an explicit `-processor com.querydsl.apt.QuerydslAnnotation\n...[truncated]",
-      "risks": [
-        "No live network access was available in this session to fetch the actual querydsl-apt:6.11 POM/jar, so the optional-dependency and ServiceLoader-registration claims above are based on documented upstream behavior and in-repo precedent (hibernate-jpamodelgen, mapstruct, querydsl-jpa), not a fresh resolution — confirm against the real resolved artifact during generation.",
-        "If generation attempts to exercise the JPA/JDO/Hibernate-specific processors without their optional annotation APIs on the classpath, expect NoClassDefFoundError at processor-load time; this is the same failure mode querydsl-jpa's test already worked around in this repo."
-      ],
+      "agent_guidance": "",
+      "risks": [],
       "applied_setup": [],
       "input_evidence": [
         {
           "name": "issue",
-          "summary": "#9749 Support for io.github.openfeign.querydsl:querydsl-apt:6.11; label=library-new-request; body_chars=39"
+          "summary": "#9744 Support for io.github.openfeign.querydsl:querydsl-apt:6.11; label=library-new-request; body_chars=39"
         },
         {
           "name": "existing_tests",
-          "summary": "0 existing test file path(s) included"
+          "summary": "8 existing test file path(s) included"
         }
       ],
       "model": "sonnet",
-      "input_tokens_used": 32,
-      "output_tokens_used": 28188
+      "input_tokens_used": 2,
+      "output_tokens_used": 2570
     },
     "metrics": {
-      "input_tokens_used": 310403,
-      "cached_input_tokens_used": 6907904,
-      "output_tokens_used": 37514,
-      "iterations": 7,
-      "cost_usd": 1.2263,
+      "input_tokens_used": 0,
+      "cached_input_tokens_used": 0,
+      "output_tokens_used": 0,
+      "iterations": 2,
+      "cost_usd": 0.0,
       "generated_loc": 175,
       "tested_library_loc": 80,
       "metadata_entries": 42,
