@@ -32,6 +32,7 @@ import org.springframework.data.couchbase.core.query.Query;
 import org.springframework.data.couchbase.core.query.QueryCriteria;
 import org.springframework.data.couchbase.repository.CouchbaseRepository;
 import org.springframework.data.couchbase.repository.config.EnableCouchbaseRepositories;
+import org.springframework.transaction.support.TransactionTemplate;
 import org.testcontainers.couchbase.BucketDefinition;
 import org.testcontainers.couchbase.CouchbaseContainer;
 import org.testcontainers.junit.jupiter.Container;
@@ -122,6 +123,30 @@ public class Spring_data_couchbaseTest {
 
         template.removeById(Person.class).one("template-rene");
         assertThat(template.findById(Person.class).one("template-rene")).isNull();
+    }
+
+    @Test
+    void transactionTemplateCommitsMultipleDocumentWrites() {
+        CouchbaseTemplate template = applicationContext.getBean(CouchbaseTemplate.class);
+        TransactionTemplate transactionTemplate =
+                applicationContext.getBean("couchbaseTransactionTemplate", TransactionTemplate.class);
+
+        List<Person> committed = transactionTemplate.execute(status -> {
+            Person ada = template.save(
+                    new Person("transaction-ada", "Ada", "engineer", List.of("math")));
+            Person grace = template.save(
+                    new Person("transaction-grace", "Grace", "engineer", List.of("compiler")));
+            return List.of(ada, grace);
+        });
+
+        assertThat(committed).extracting(Person::getName).containsExactly("Ada", "Grace");
+        assertThat(template.findById(Person.class).one("transaction-ada").getCategory())
+                .isEqualTo("engineer");
+        assertThat(template.findById(Person.class).one("transaction-grace").getInterests())
+                .containsExactly("compiler");
+
+        template.removeById(Person.class).one("transaction-ada");
+        template.removeById(Person.class).one("transaction-grace");
     }
 
     @Test
