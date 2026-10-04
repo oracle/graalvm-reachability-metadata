@@ -1,0 +1,43 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :populateArtifactURLs
+I checked the `6.3.0` entry in the index file, and compared it against the "Current URL values" you listed.
+
+**Finding: no edit is needed.**
+
+- `source-code-url`, `repository-url`, `test-code-url`, `documentation-url`, and `description` are all already populated with non-blank values. Per the task rules, a field only counts as "missing" when it's absent, null, or blank — these aren't, so they must be left untouched (even if I wanted to double check them, `source-code-url`/`test-code-url`/`documentation-url` maintenance is a separate explicit request, not what's asked here).
+- The only field that is actually absent is `language`. But `activemq-broker` is a plain Java library — Apache ActiveMQ Classic's broker module, written in Java with no Kotlin/Groovy/Scala API surface. Per the rules, `language` should only be *set* when the library is language-specific; otherwise it stays absent.
+
+So the one missing field (`language`) is correctly missing because this library doesn't qualify for it, and every other field already has a value I'm not permitted to touch. The file requires no changes.
+
+`★ Insight ─────────────────────────────────────`
+- This task's rules are deliberately idempotent: "missing" is a strict, narrow condition (absent/null/blank), which prevents an agent from "helpfully" overwriting a maintainer-verified URL with a possibly-worse guess just because it *could* find something.
+- The "language" field models a real distinction in this repo's metadata schema: it exists to flag libraries whose public API is idiomatic to a JVM guest language (Kotlin, Groovy, Scala) where metadata or test patterns might differ — not to record "what language is this JAR compiled from." Since virtually every library here is JVM bytecode, the field would be meaningless if it applied universally; it's reserved for the minority where the guest-language surface actually matters.
+`─────────────────────────────────────────────────`
+
+No file changes were made since every missing-field condition was already satisfied (either filled, or correctly left absent).
+Ran agent for org.apache.activemq:activemq-broker:6.3.0 (exit 0). Log: /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9883-a121bf84/build/agent-url-discovery-logs/org.apache.activemq-activemq-broker-6.3.0.log
+Completed populateArtifactURLs: invoked=1, prompted=0, skipped=0, overwriteExisting=false, verifyArtifactSources=false, limit=null
+
+[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9883-a121bf84/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 31s
+9 actionable tasks: 1 executed, 8 up-to-date

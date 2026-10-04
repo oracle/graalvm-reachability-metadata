@@ -1,0 +1,153 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :tckTest
+====================
+Testing library: org.apache.activemq:activemq-broker:6.3.0
+Command: `/home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9883-a121bf84/gradlew nativeTest`
+Executing test...
+-------
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+> Task :compileJava NO-SOURCE
+> Task :processResources NO-SOURCE
+> Task :classes UP-TO-DATE
+> Task :jar UP-TO-DATE
+> Task :tck-test-support:compileJava UP-TO-DATE
+> Task :checkTestTimeoutAnnotations
+> Task :tck-test-support:processResources UP-TO-DATE
+> Task :tck-test-support:classes UP-TO-DATE
+> Task :processTestResources UP-TO-DATE
+> Task :tck-test-support:jar UP-TO-DATE
+> Task :compileTestJava UP-TO-DATE
+> Task :testClasses UP-TO-DATE
+> Task :test UP-TO-DATE
+> Task :generateTestResourcesConfigFile UP-TO-DATE
+> Task :nativeTestCompile UP-TO-DATE
+
+> Task :nativeTest
+[junit-platform-native] WARNING: -djunit.platform.listeners.uid.tracking.output.dir not specified, trying to find test-ids on default Gradle/Maven locations. As this is a fallback mode, it could take a while. This should only happen if you are running tests executable manually and you didn't pass uid output directory with -djunit.platform.listeners.uid.tracking.output.dir=<path>.
+[junit-platform-native] WARNING: Using test-ids from default Gradle project location:/home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9883-a121bf84/tests/src/org.apache.activemq/activemq-broker/6.3.0/build/test-results/test/testlist
+[junit-platform-native] Running in 'test listener' mode using files matching pattern [junit-platform-unique-ids*] found in folder [/home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9883-a121bf84/tests/src/org.apache.activemq/activemq-broker/6.3.0/build/test-results/test/testlist] and its subfolders.
+JUnit Platform on Native Image - report
+----------------------------------------
+
+SLF4J(W): No SLF4J providers were found.
+SLF4J(W): Defaulting to no-operation (NOP) logger implementation
+SLF4J(W): See https://www.slf4j.org/codes.html#noProviders for further details.
+Exception in thread "JMX connector" org.graalvm.nativeimage.MissingReflectionRegistrationError: Cannot reflectively access the proxy class inheriting ['javax.management.remote.rmi.RMIServer'].
+
+The matching metadata element in the 'reflection' section of 'reachability-metadata.json' is:
+
+    {
+      "type": {
+        "proxy": [
+          "javax.management.remote.rmi.RMIServer"
+        ]
+      }
+    }
+
+The 'reachability-metadata.json' file should be located in 'META-INF/native-image/<group-id>/<artifact-id>/' of your project. For further help, see https://www.graalvm.org/latest/reference-manual/native-image/metadata/#reflection
+	at org.graalvm.nativeimage.builder/com.oracle.svm.core.reflect.MissingReflectionRegistrationUtils.reportProxyAccess(MissingReflectionRegistrationUtils.java:151)
+	at org.graalvm.nativeimage.builder/com.oracle.svm.core.reflect.proxy.DynamicProxySupport.getProxyClass(DynamicProxySupport.java:284)
+	at java.base@25.0.2/java.lang.reflect.Proxy.getProxyConstructor(Proxy.java:63)
+	at java.base@25.0.2/java.lang.reflect.Proxy.newProxyInstance(Proxy.java:924)
+	at java.rmi@25.0.2/sun.rmi.server.Util.createProxy(Util.java:139)
+	at java.rmi@25.0.2/sun.rmi.server.UnicastServerRef.exportObject(UnicastServerRef.java:215)
+	at java.management.rmi@25.0.2/javax.management.remote.rmi.RMIJRMPServerImpl.export(RMIJRMPServerImpl.java:154)
+	at java.management.rmi@25.0.2/javax.management.remote.rmi.RMIJRMPServerImpl.export(RMIJRMPServerImpl.java:136)
+	at java.management.rmi@25.0.2/javax.management.remote.rmi.RMIConnectorServer.start(RMIConnectorServer.java:454)
+	at org.apache.activemq.broker.jmx.ManagementContext$1.run(ManagementContext.java:165)
+	at org.graalvm.nativeimage.builder/com.oracle.svm.core.thread.PlatformThreads.threadStartRoutine(PlatformThreads.java:820)
+	at org.graalvm.nativeimage.builder/com.oracle.svm.core.thread.PlatformThreads.threadStartRoutine(PlatformThreads.java:796)
+org_apache_activemq.activemq_broker.ActivemqBrokerTest > testEmbeddedBrokerConnection() SUCCESSFUL
+
+org_apache_activemq.activemq_broker.AnnotatedMBeanTest > invokesAuditedMBeanOperationWithDeclaredSignature() SUCCESSFUL
+
+org_apache_activemq.activemq_broker.BrokerServiceTest > lazilyCreatesPersistentStores() SUCCESSFUL
+
+org_apache_activemq.activemq_broker.BrokerServiceTest > registersAvailableSecurityProvider() SUCCESSFUL
+
+org_apache_activemq.activemq_broker.DefaultAuthorizationMapTest > createsConfiguredGroupPrincipalTypes() SUCCESSFUL
+
+org_apache_activemq.activemq_broker.DestinationsViewFilterAnonymous2Test > sortsDestinationViewsThroughBrokerQueryApi() SUCCESSFUL
+
+org_apache_activemq.activemq_broker.JaasAuthenticationPluginTest > discoversBundledLoginConfiguration() SUCCESSFUL
+
+org_apache_activemq.activemq_broker.Log4JConfigViewTest > managesLog4jLevelsAndReloadsConfiguration() SUCCESSFUL
+
+org_apache_activemq.activemq_broker.LogWriterFinderTest > fallsBackToLibraryClassLoader() SUCCESSFUL
+
+org_apache_activemq.activemq_broker.LogWriterFinderTest > loadsBundledLogWriterThroughContextClassLoader() SUCCESSFUL
+
+org_apache_activemq.activemq_broker.ManagementContextTest > startsConnectorBackedManagementContext() SUCCESSFUL
+
+org_apache_activemq.activemq_broker.ManagementContextTest > createsMBeanServer() SUCCESSFUL
+
+org_apache_activemq.activemq_broker.PropertiesBrokerFactoryTest > createsBrokerFromClasspathProperties() SUCCESSFUL
+
+org_apache_activemq.activemq_broker.SubQueueSelectorCacheBrokerInnerSubSelectorClassObjectInputStreamTest > restoresPersistedSelectorCache() SUCCESSFUL
+
+org_apache_activemq.activemq_broker.SubQueueSelectorCacheBrokerTest > persistsCachedSelectorsWhenStopped() SUCCESSFUL
+
+
+Test run finished after 215 ms
+[        14 containers found      ]
+[         0 containers skipped    ]
+[        14 containers started    ]
+[         0 containers aborted    ]
+[        14 containers successful ]
+[         0 containers failed     ]
+[        15 tests found           ]
+[         0 tests skipped         ]
+[        15 tests started         ]
+[         0 tests aborted         ]
+[        15 tests successful      ]
+[         0 tests failed          ]
+
+
+[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9883-a121bf84/tests/src/org.apache.activemq/activemq-broker/6.3.0/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1s
+19 actionable tasks: 2 executed, 17 up-to-date
+Consider enabling configuration cache to speed up this build: https://docs.gradle.org/9.1.0/userguide/configuration_cache_enabling.html
+-------
+Test for org.apache.activemq:activemq-broker:6.3.0 passed.
+====================
+
+> Task :test
+
+[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9883-a121bf84/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 3s
+9 actionable tasks: 1 executed, 8 up-to-date

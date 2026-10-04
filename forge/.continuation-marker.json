@@ -1,0 +1,93 @@
+{
+  "continueFrom": "publication",
+  "coordinate": "org.apache.activemq:activemq-broker:6.3.0",
+  "failure": {
+    "operand": "org.apache.activemq:activemq-broker:6.3.0",
+    "phase": "publication",
+    "step": "publish_branch()"
+  },
+  "issueNumber": 9883,
+  "label": "library-update-request",
+  "libraryPreparationPreflight": {
+    "action": "no_action",
+    "agent_guidance": "",
+    "applied_setup": [],
+    "deterministic_setup": [],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#9883 Update existing library: org.apache.activemq:activemq-broker:6.3.0; label=library-update-request; body_chars=462"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "8 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 24,
+    "issue_label": "library-update-request",
+    "issue_number": 9883,
+    "library": "org.apache.activemq:activemq-broker:6.3.0",
+    "model": "sonnet",
+    "output_tokens_used": 10814,
+    "risks": [
+      "If future generation passes add JAAS-authentication or KahaDB-persistence tests (as happened on the 6.0.0-6.2.8 range), they will need additive testImplementation deps on org.apache.activemq:activemq-jaas and org.apache.activemq:activemq-kahadb-store (plus org.bouncycastle:bcprov-jdk18on for encrypted KahaDB stores) \u2014 apply those additively at that time rather than now."
+    ],
+    "status": "completed",
+    "summary": "Baseline scaffold mirrors the already-working 5.18.1 range (activemq-broker + assertj-core, non-persistent embedded broker over vm://); no Docker, dependency, or env/property setup is needed to reach it. The jaas/kahadb-store/bouncycastle deps seen on the retired 6.0.0 range were added incrementally by later deep-coverage passes for JAAS and KahaDB tests, not required for this fresh baseline."
+  },
+  "libraryUpdateRoute": {
+    "baseline_coordinates": null,
+    "new_version": "6.3.0",
+    "selected_driver": "improve_library_coverage"
+  },
+  "newVersion": null,
+  "phases": {
+    "explore": {
+      "chunkClassCount": 2,
+      "chunkProcessedClassCount": 2,
+      "exhaustedClasses": [
+        "org.apache.activemq.broker.BrokerService",
+        "org.apache.activemq.broker.PropertiesBrokerFactory",
+        "org.apache.activemq.broker.jmx.AnnotatedMBean",
+        "org.apache.activemq.broker.jmx.DestinationsViewFilter$2",
+        "org.apache.activemq.broker.jmx.Log4JConfigView",
+        "org.apache.activemq.broker.jmx.ManagementContext",
+        "org.apache.activemq.plugin.SubQueueSelectorCacheBroker",
+        "org.apache.activemq.plugin.SubQueueSelectorCacheBroker$SubSelectorClassObjectInputStream",
+        "org.apache.activemq.security.DefaultAuthorizationMap",
+        "org.apache.activemq.security.JaasAuthenticationPlugin",
+        "org.apache.activemq.util.LogWriterFinder"
+      ],
+      "iteration": 6,
+      "status": "completed"
+    },
+    "finalization": {
+      "status": "completed"
+    },
+    "fix": {
+      "iteration": null,
+      "status": "skipped"
+    },
+    "publication": {
+      "branch": "ai/kimeta/improve-coverage-org.apache.activemq-activemq-broker-6.3.0-chunked-forge-9883-20261004202254463199-4a3bfbc32f8f",
+      "coverageFollowUpIssueNumber": null,
+      "isPushed": false,
+      "publicationId": "forge-9883-20261004202254463199-4a3bfbc32f8f",
+      "publicationTimestamp": "2026-10-04T20:22:54.463199Z",
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": true,
+      "status": "completed"
+    }
+  },
+  "preservedBranch": "ai/kimeta/human-intervention/issue-9883-library-update-request-org.apache.activemq-activemq-broker-6.3.0-476a72d0",
+  "publicationMetrics": {
+    "extras": {},
+    "library": "org.apache.activemq:activemq-broker:6.3.0",
+    "timestamp": "2026-10-04T20:22:54.463199Z"
+  },
+  "schemaVersion": 1,
+  "strategyName": "library_update_optimistic_pi_gpt-5.6-sol"
+}

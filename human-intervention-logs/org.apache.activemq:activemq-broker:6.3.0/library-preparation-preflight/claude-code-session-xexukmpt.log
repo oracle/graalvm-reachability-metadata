@@ -1,0 +1,51 @@
+Prompt:
+You are preparing a Forge workflow for a library issue. Decide whether the library needs setup beyond the normal generated test scaffold before meaningful coverage is reachable.
+
+Research the library yourself to make this decision. Investigate the resolved artifact and its dependencies, how the library is normally used, and its documentation. The JSON context below is only a starting point, not the limit of what you may consider. Do not modify the repository or apply any setup yourself — return only the decision. Local Gradle and Native Image verification remain authoritative.
+
+The setup can be one of three things: an extra Maven dependency, a Docker image the tests need, or an environment/system property the generated tests must set. Represent dependencies and Docker images as `deterministic_setup` entries the driver can apply before generation:
+  - {"kind": "dependency", "coordinate": "group:artifact:version", "scope": "testImplementation", "reason": "..."}
+  - {"kind": "docker_image", "image": "name:tag", "slug": "short-slug", "reason": "..."}
+If a test needs a Docker image that is already pinned under `tests/tck-build-logic/src/main/resources/allowed-docker-images/`, reuse the exact tag from that `Dockerfile-<slug>` instead of introducing a new one, since the allow-list permits a single shared tag per image.
+Put environment variables, system properties, and other test-code setup in `agent_guidance`. Do not restate deterministic entries as guidance.
+
+Return a single JSON object with this shape:
+{
+  "action": "no_action" | "advisory_preparation",
+  "summary": "short reason",
+  "deterministic_setup": [ ... dependency or docker_image entries, if any ... ],
+  "agent_guidance": "environment/system property/test setup guidance, if any",
+  "risks": ["risk notes, if any"]
+}
+
+Choose no_action unless your research finds concrete evidence that extra setup is needed.
+
+Context (starting point):
+{
+  "issue": {
+    "number": 9883,
+    "title": "Update existing library: org.apache.activemq:activemq-broker:6.3.0",
+    "label": "library-update-request",
+    "body": "This issue tracks the successor library-update split for `org.apache.activemq:activemq-broker:6.3.0`.\n\nForge split the previous tested-version range because generated JVM tests first failed at `6.3.0`.\n\nBlocked by the current update issue #8927.\n\nSuccessor tested versions to preserve:\n- `6.3.0`\n- `6.3.1`\n- `6.3.2`\n\nThe current PR keeps the generated progress for `org.apache.activemq:activemq-broker:6.0.0`\nand copies baseline support for this successor range.",
+    "body_error": ""
+  },
+  "library": "org.apache.activemq:activemq-broker:6.3.0",
+  "current_library": null,
+  "new_version": null,
+  "existing_tests": {
+    "org.apache.activemq:activemq-broker:6.3.0": [
+      "tests/src/org.apache.activemq/activemq-broker/6.3.0/.gitignore",
+      "tests/src/org.apache.activemq/activemq-broker/6.3.0/build.gradle",
+      "tests/src/org.apache.activemq/activemq-broker/6.3.0/gradle.properties",
+      "tests/src/org.apache.activemq/activemq-broker/6.3.0/metadata-extra-filter.json",
+      "tests/src/org.apache.activemq/activemq-broker/6.3.0/metadata-user-code-filter.json",
+      "tests/src/org.apache.activemq/activemq-broker/6.3.0/settings.gradle",
+      "tests/src/org.apache.activemq/activemq-broker/6.3.0/user-code-filter.json",
+      "tests/src/org.apache.activemq/activemq-broker/6.3.0/src/test/java/org_apache_activemq/activemq_broker/ActivemqBrokerTest.java"
+    ]
+  }
+}
+
+Conversation:
+{"duration_api_ms":132788,"stop_reason":"end_turn","session_id":"a39a8de5-f67b-4799-b7f6-0f6abc1f02b4","total_cost_usd":0.47226360000000006,"usage":{"input_tokens":24,"cache_creation_input_tokens":54429,"cache_read_input_tokens":731798,"output_tokens":10814,"output_tokens_details":{"thinking_tokens":7423},"server_tool_use":{"web_search_requests":0,"web_fetch_requests":0},"service_tier":"standard","cache_creation":{"ephemeral_1h_input_tokens":54429,"ephemeral_5m_input_tokens":0},"inference_geo":"not_available","iterations":[{"input_tokens":2,"output_tokens":1536,"cache_read_input_tokens":70450,"cache_creation_input_tokens":2631,"cache_creation":{"ephemeral_5m_input_tokens":0,"ephemeral_1h_input_tokens":2631},"type":"message"}],"speed":"standard"},"modelUsage":{"claude-sonnet-5":{"inputTokens":24,"outputTokens":10814,"cacheReadInputTokens":731798,"cacheCreationInputTokens":54429,"webSearchRequests":0,"costUSD":0.47226360000000006,"contextWindow":1000000,"maxOutputTokens":64000,"thinkingTokens":7423,"canonicalModel":"claude-sonnet-5","provider":"firstParty","costBasis":"list"}},"permission_denials":[{"tool_name":"WebSearch","tool_use_id":"toolu_01TsKUhf5KoCCvAtq4ZHpy5c","tool_input":{"query":"activemq 6.3.0 release notes changes"}},{"tool_name":"WebSearch","tool_use_id":"toolu_01WHBFhBKb2oqJpT5ygeKcSD","tool_input":{"query":"activemq-broker 6.3.0 maven dependencies pom"}},{"tool_name":"Bash","tool_use_id":"toolu_013BQpm7aVebvMVGPXMz2yFR","tool_input":{"command":"curl -sS --max-time 10 \"https://repo1.maven.org/maven2/org/apache/activemq/activemq-broker/6.3.0/activemq-broker-6.3.0.pom\" | head -100"}},{"tool_name":"WebFetch","tool_use_id":"toolu_01EkaU2YU93QDgj6ZMP4xTKt","tool_input":{"url":"https://repo1.maven.org/maven2/org/apache/activemq/activemq-broker/6.3.0/activemq-broker-6.3.0.pom","prompt":"List all dependencies declared in this POM, including groupId, artifactId, version, and scope. Also note any new dependencies that look related to persistence, security/JAAS, or encryption compared to a typical minimal broker usage."}},{"tool_name":"Bash","tool_use_id":"toolu_01XX1Fmx7L4kZ8cTKn1rMGQU","tool_input":{"command":"timeout 100 ./gradlew -q :org.apache.activemq.activemq-broker.6.3.0:dependencies -Pcoordinates=org.apache.activemq:activemq-broker:6.3.0 --configuration testRuntimeClasspath 2>&1 | tail -100"}}],"terminal_reason":"completed","fast_mode_state":"off","fast_mode_disabled_reason":"sdk_opt_in_required","subagent_stats":{"spawned":0,"requested":{"background":0,"foreground":0,"unset":0},"started_in_background":0,"max_depth":0,"spawned_by_subagents":0,"completed":0,"failed":0,"killed":{"parent":0,"user":0,"system":0},"refused":{"depth_limit":0,"concurrency_limit":0,"budget":0},"by_type":{}},"is_error":false,"num_turns":14,"subtype":"success","api_error_status":null,"result":"## Decision\n\nI compared the `6.3.0` scaffold against two reference points already in the repo: the still-active `5.18.1` baseline (same minimal shape: `activemq-broker` + `assertj-core`, one non-persistent embedded-broker smoke test) and the retired `6.0.0` range, whose `build.gradle` had accumulated `activemq-jaas`, `activemq-kahadb-store`, and `bcprov-jdk18on` only because later generation passes added JAAS-plugin and KahaDB-persistence test classes (`JaasAuthenticationPluginTest`, `SubQueueSelectorCacheBrokerTest`, etc.) — not because the baseline needed them.\n\nThe `6.3.0` scaffold's single test (`ActivemqBrokerTest`) creates a `BrokerService` with `persistent=false`, `useJmx=false`, and a `vm://` transport — no disk, no JMX, no network listener, no JAAS/SSL. That's exactly the shape that already runs clean in the `5.18.1` range with zero extra setup. The issue's \"JVM tests first failed at 6.3.0\" refers to the *accumulated* 6.0.0-6.2.8 suite breaking on the version bump, which is why Forge dropped back to this fresh baseline — not evidence that the baseline itself needs anything extra. ActiveMQ's embedded broker is pure in-JVM, so there's no Docker service to stand up.\n\n```json\n{\n  \"action\": \"no_action\",\n  \"summary\": \"Baseline scaffold mirrors the already-working 5.18.1 range (activemq-broker + assertj-core, non-persistent embedded broker over vm://); no Docker, dependency, or env/property setup is needed to reach it. The jaas/kahadb-store/bouncycastle deps seen on the retired 6.0.0 range were added incrementally by later deep-coverage passes for JAAS and KahaDB tests, not required for this fresh baseline.\",\n  \"deterministic_setup\": [],\n  \"agent_guidance\": \"\",\n  \"risks\": [\n    \"If future generation passes add JAAS-authentication or KahaDB-persistence tests (as happened on the 6.0.0-6.2.8 range), they will need additive testImplementation deps on org.apache.activemq:activemq-jaas and org.apache.activemq:activemq-kahadb-store (plus org.bouncycastle:bcprov-jdk18on for encrypted KahaDB stores) — apply those additively at that time rather than now.\"\n  ]\n}\n```\n\n★ Insight ─────────────────────────────────────\nThe strongest evidence here wasn't anything I could fetch from the internet — network access (WebSearch, WebFetch, even `curl`) was denied by the sandbox's \"don't ask mode,\" and so was running `./gradlew` (consistent with the task's \"do not apply setup yourself; local Gradle remains authoritative\" instruction). The decision instead came from a *within-repo* comparison: this repo already ran the exact same experiment once, on `activemq-broker:5.18.1`, and recorded the outcome in its own `build.gradle` history. Treating sibling version ranges as natural experiments is often more reliable than fresh external research, because it reflects what actually passed CI for this library, not what should work in theory.\n─────────────────────────────────────────────────","ttft_ms":3207,"type":"result","duration_ms":134123,"uuid":"b879592d-f3c7-49bb-bcdb-dfccff7c140d","ttft_stream_ms":1781,"time_to_request_ms":86,"first_content_frame_ms":1781,"queued_turn_count":0,"result_index":0}
+
