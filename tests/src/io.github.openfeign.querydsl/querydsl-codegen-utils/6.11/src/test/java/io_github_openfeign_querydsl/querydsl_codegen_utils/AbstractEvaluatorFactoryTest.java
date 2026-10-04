@@ -37,4 +37,19 @@ public class AbstractEvaluatorFactoryTest {
                     Map.<String, Object>of("adjustment", 2)).evaluate(5)).isEqualTo(7);
         });
     }
+
+    @Test
+    void compilesASeparateExpressionThroughTheFactory() throws Exception {
+        NativeImageSupport.runToleratingUnsupportedFeature(() -> {
+            Evaluator<Integer> evaluator = new ECJEvaluatorFactory(getClass().getClassLoader())
+                    .createEvaluator(
+                            "return input * multiplier;",
+                            Integer.class,
+                            new String[] {"input"},
+                            new Class<?>[] {Integer.class},
+                            Map.<String, Object>of("multiplier", 3));
+
+            assertThat(evaluator.evaluate(4)).isEqualTo(12);
+        });
+    }
 }
