@@ -105,9 +105,10 @@ public class Jackson_annotationsTest {
     }
 
     @Test
-    void jsonFormatShapeRecognizesNumericAndStructuredKinds() {
+    void jsonFormatShapeRecognizesNaturalNumericAndStructuredKinds() {
         assertThat(JsonFormat.Shape.values()).containsExactly(
                 JsonFormat.Shape.ANY,
+                JsonFormat.Shape.NATURAL,
                 JsonFormat.Shape.SCALAR,
                 JsonFormat.Shape.ARRAY,
                 JsonFormat.Shape.OBJECT,
@@ -123,6 +124,7 @@ public class Jackson_annotationsTest {
         assertThat(JsonFormat.Shape.NUMBER_FLOAT.isNumeric()).isTrue();
         assertThat(JsonFormat.Shape.NUMBER_INT.isNumeric()).isTrue();
         assertThat(JsonFormat.Shape.ANY.isNumeric()).isFalse();
+        assertThat(JsonFormat.Shape.NATURAL.isNumeric()).isFalse();
         assertThat(JsonFormat.Shape.SCALAR.isNumeric()).isFalse();
         assertThat(JsonFormat.Shape.ARRAY.isNumeric()).isFalse();
         assertThat(JsonFormat.Shape.OBJECT.isNumeric()).isFalse();
@@ -132,6 +134,7 @@ public class Jackson_annotationsTest {
         assertThat(JsonFormat.Shape.ARRAY.isStructured()).isTrue();
         assertThat(JsonFormat.Shape.OBJECT.isStructured()).isTrue();
         assertThat(JsonFormat.Shape.ANY.isStructured()).isFalse();
+        assertThat(JsonFormat.Shape.NATURAL.isStructured()).isFalse();
         assertThat(JsonFormat.Shape.SCALAR.isStructured()).isFalse();
         assertThat(JsonFormat.Shape.NUMBER.isStructured()).isFalse();
         assertThat(JsonFormat.Shape.NUMBER_FLOAT.isStructured()).isFalse();
