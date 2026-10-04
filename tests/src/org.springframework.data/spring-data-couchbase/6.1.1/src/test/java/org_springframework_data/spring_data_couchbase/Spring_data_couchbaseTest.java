@@ -7,6 +7,7 @@
 package org_springframework_data.spring_data_couchbase;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import com.couchbase.client.java.Cluster;
 import com.couchbase.client.java.query.QueryScanConsistency;
@@ -20,7 +21,9 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Version;
 import org.springframework.data.couchbase.config.AbstractCouchbaseConfiguration;
 import org.springframework.data.couchbase.core.CouchbaseTemplate;
 import org.springframework.data.couchbase.core.ReactiveCouchbaseTemplate;
@@ -78,6 +81,27 @@ public class Spring_data_couchbaseTest {
         repository.deleteById("repository-ada");
         assertThat(repository.findById("repository-ada")).isEmpty();
         repository.deleteById("repository-grace");
+    }
+
+    @Test
+    void versionedRepositoryRejectsStaleDocumentUpdates() {
+        VersionedPersonRepository repository =
+                applicationContext.getBean(VersionedPersonRepository.class);
+        String id = "optimistic-locking-ada";
+        repository.save(new VersionedPerson(id, "Ada"));
+
+        VersionedPerson current = repository.findById(id).orElseThrow();
+        VersionedPerson stale = repository.findById(id).orElseThrow();
+        current.setName("updated Ada");
+        VersionedPerson updated = repository.save(current);
+
+        assertThat(updated.getVersion()).isGreaterThan(stale.getVersion());
+        stale.setName("stale Ada");
+        assertThatThrownBy(() -> repository.save(stale))
+                .isInstanceOf(OptimisticLockingFailureException.class);
+        assertThat(repository.findById(id).orElseThrow().getName()).isEqualTo("updated Ada");
+
+        repository.deleteById(id);
     }
 
     @Test
@@ -147,7 +171,7 @@ public class Spring_data_couchbaseTest {
 
         @Override
         protected Set<Class<?>> getInitialEntitySet() {
-            return Set.of(Person.class);
+            return Set.of(Person.class, VersionedPerson.class);
         }
 
         @Override
@@ -158,6 +182,38 @@ public class Spring_data_couchbaseTest {
 
     public interface PersonRepository extends CouchbaseRepository<Person, String> {
         List<Person> findByCategory(String category);
+    }
+
+    public interface VersionedPersonRepository extends CouchbaseRepository<VersionedPerson, String> {
+    }
+
+    @Document
+    public static class VersionedPerson {
+        @Id
+        private String id;
+        private String name;
+        @Version
+        private Long version;
+
+        public VersionedPerson() {
+        }
+
+        VersionedPerson(String id, String name) {
+            this.id = id;
+            this.name = name;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public Long getVersion() {
+            return version;
+        }
     }
 
     @Document
