@@ -1,0 +1,210 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :tckTest
+====================
+Testing library: org.springframework.data:spring-data-couchbase:6.1.1
+Command: `/home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9746-2f5acda0/gradlew nativeTest`
+Executing test...
+-------
+Starting a Gradle Daemon, 1 busy and 9 stopped Daemons could not be reused, use --status for details
+Shared read-only dependency cache is an incubating feature.
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+> Task :compileJava NO-SOURCE
+> Task :processResources NO-SOURCE
+> Task :classes UP-TO-DATE
+> Task :tck-test-support:compileJava UP-TO-DATE
+> Task :jar UP-TO-DATE
+> Task :tck-test-support:processResources UP-TO-DATE
+> Task :tck-test-support:classes UP-TO-DATE
+> Task :tck-test-support:jar UP-TO-DATE
+> Task :checkTestTimeoutAnnotations
+> Task :compileTestJava UP-TO-DATE
+> Task :processTestResources NO-SOURCE
+> Task :testClasses UP-TO-DATE
+> Task :test UP-TO-DATE
+> Task :generateTestResourcesConfigFile UP-TO-DATE
+> Task :nativeTestCompile UP-TO-DATE
+
+> Task :nativeTest FAILED
+[junit-platform-native] WARNING: -djunit.platform.listeners.uid.tracking.output.dir not specified, trying to find test-ids on default Gradle/Maven locations. As this is a fallback mode, it could take a while. This should only happen if you are running tests executable manually and you didn't pass uid output directory with -djunit.platform.listeners.uid.tracking.output.dir=<path>.
+[junit-platform-native] WARNING: Using test-ids from default Gradle project location:/home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9746-2f5acda0/tests/src/org.springframework.data/spring-data-couchbase/6.1.1/build/test-results/test/testlist
+[junit-platform-native] Running in 'test listener' mode using files matching pattern [junit-platform-unique-ids*] found in folder [/home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9746-2f5acda0/tests/src/org.springframework.data/spring-data-couchbase/6.1.1/build/test-results/test/testlist] and its subfolders.
+JUnit Platform on Native Image - report
+----------------------------------------
+
+SLF4J(W): No SLF4J providers were found.
+SLF4J(W): Defaulting to no-operation (NOP) logger implementation
+SLF4J(W): See https://www.slf4j.org/codes.html#noProviders for further details.
+org_springframework_data.spring_data_couchbase.CouchbasePropertyValueConverterFactoryTest > discoversJsonValuePropertyConverter() SUCCESSFUL
+
+org_springframework_data.spring_data_couchbase.CouchbasePropertyValueConverterFactoryTest > instantiatesPropertyAwareConverter() SUCCESSFUL
+
+org_springframework_data.spring_data_couchbase.DynamicInvocationHandlerTest > createsScopedCollectionAndOptionProxiesAndInvokesRepositoryMethods() SUCCESSFUL
+
+org_springframework_data.spring_data_couchbase.DynamicInvocationHandlerTest > rejectsTargetsThatAreNotCouchbaseRepositories() SUCCESSFUL
+
+org_springframework_data.spring_data_couchbase.DynamicProxyableTest > createsOptionsAndCollectionProxiesFromRepositoryImplementation() SUCCESSFUL
+
+org_springframework_data.spring_data_couchbase.FindMethodTest > findsMostSpecificPublicMethod() SUCCESSFUL
+
+org_springframework_data.spring_data_couchbase.FindMethodTest > findsDeclaredMethod() SUCCESSFUL
+
+org_springframework_data.spring_data_couchbase.JsonValueConverterTest > readsAndWritesJsonValueTypes() SUCCESSFUL
+
+org_springframework_data.spring_data_couchbase.MappingCouchbaseConverterTest > readsClassValuedDocumentProperties() FAILED
+
+org_springframework_data.spring_data_couchbase.MappingCouchbaseConverterTest > convertsStoredClassNames() SUCCESSFUL
+
+org_springframework_data.spring_data_couchbase.N1qlJoinResolverInnerN1qlJoinProxyTest > identifiesLazyJoinProperties() SUCCESSFUL
+
+org_springframework_data.spring_data_couchbase.N1qlJoinResolverInnerN1qlJoinProxyTest > resolvesLazyJoinWhenAListMethodIsCalled() SUCCESSFUL
+
+org_springframework_data.spring_data_couchbase.N1qlJoinResolverTest > installsLazyJoinProxyWithoutConnectingToCouchbase() SUCCESSFUL
+
+org_springframework_data.spring_data_couchbase.OptionsBuilderTest > resolvesNonDefaultAnnotationAttributes() SUCCESSFUL
+
+org_springframework_data.spring_data_couchbase.OtherConvertersInnerStringToClassTest > convertsStoredClassNameToClass() SUCCESSFUL
+
+org_springframework_data.spring_data_couchbase.UtilTest > detectsNonZeroVersionProperty() SUCCESSFUL
+
+
+Failures (1):
+  JUnit Jupiter:MappingCouchbaseConverterTest:readsClassValuedDocumentProperties()
+    MethodSource [className = 'org_springframework_data.spring_data_couchbase.MappingCouchbaseConverterTest', methodName = 'readsClassValuedDocumentProperties', methodParameterTypes = '']
+    => java.lang.RuntimeException: java.lang.IllegalStateException: org.springframework.cglib.core.CodeGenerationException: com.oracle.svm.core.jdk.UnsupportedFeatureError-->Classes cannot be defined at runtime by default when using ahead-of-time Native Image compilation. Tried to define class:
+
+    org_springframework_data/spring_data_couchbase/MappingCouchbaseConverterTest$ClassDocument__Accessor_x5z3rx
+
+To make this work, you have the following options:
+  1) Modify or reconfigure your application (or a third-party library) so that it does not generate classes at runtime or load them via non-built-in class loaders.
+  2) If the classes must be generated, try to generate them at build time in a static initializer of a dedicated class. The generated java.lang.Class objects should be stored in static fields and the dedicated class initialized by passing '--initialize-at-build-time=<class_name>' as the build argument.
+  3) If none of the above is applicable, use the tracing agent to run this application and collect predefined classes with 'java -agentlib:native-image-agent=config-output-dir=<config-dir>,experimental-class-define-support <application-arguments>'. Note that this is an experimental feature and that it does not guarantee success. Furthermore, the resulting classes can contain entries from the classpath that should be manually filtered out to reduce image size. The agent should be used only in cases where modifying the source of the project is not possible.
+
+       org.springframework.data.mapping.model.ClassGeneratingPropertyAccessorFactory.loadOrCreateAccessorClass(ClassGeneratingPropertyAccessorFactory.java:229)
+       org.springframework.data.mapping.model.ClassGeneratingPropertyAccessorFactory.potentiallyCreateAndRegisterPersistentPropertyAccessorClass(ClassGeneratingPropertyAccessorFactory.java:207)
+       org.springframework.data.mapping.model.ClassGeneratingPropertyAccessorFactory.getPropertyAccessorConstructor(ClassGeneratingPropertyAccessorFactory.java:119)
+       org.springframework.data.mapping.model.ClassGeneratingPropertyAccessorFactory.getPropertyAccessor(ClassGeneratingPropertyAccessorFactory.java:92)
+       org.springframework.data.mapping.context.ReflectionFallbackPersistentPropertyAccessorFactory.getPropertyAccessor(ReflectionFallbackPersistentPropertyAccessorFactory.java:39)
+       [...]
+     Caused by: java.lang.IllegalStateException: org.springframework.cglib.core.CodeGenerationException: com.oracle.svm.core.jdk.UnsupportedFeatureError-->Classes cannot be defined at runtime by default when using ahead-of-time Native Image compilation. Tried to define class:
+
+    org_springframework_data/spring_data_couchbase/MappingCouchbaseConverterTest$ClassDocument__Accessor_x5z3rx
+
+To make this work, you have the following options:
+  1) Modify or reconfigure your application (or a third-party library) so that it does not generate classes at runtime or load them via non-built-in class loaders.
+  2) If the classes must be generated, try to generate them at build time in a static initializer of a dedicated class. The generated java.lang.Class objects should be stored in static fields and the dedicated class initialized by passing '--initialize-at-build-time=<class_name>' as the build argument.
+  3) If none of the above is applicable, use the tracing agent to run this application and collect predefined classes with 'java -agentlib:native-image-agent=config-output-dir=<config-dir>,experimental-class-define-support <application-arguments>'. Note that this is an experimental feature and that it does not guarantee success. Furthermore, the resulting classes can contain entries from the classpath that should be manually filtered out to reduce image size. The agent should be used only in cases where modifying the source of the project is not possible.
+
+       org.springframework.data.mapping.model.ClassGeneratingPropertyAccessorFactory$PropertyAccessorClassGenerator.generateCustomAccessorClass(ClassGeneratingPropertyAccessorFactory.java:374)
+       org.springframework.data.mapping.model.ClassGeneratingPropertyAccessorFactory.loadOrCreateAccessorClass(ClassGeneratingPropertyAccessorFactory.java:227)
+       [...]
+     Caused by: org.springframework.cglib.core.CodeGenerationException: com.oracle.svm.core.jdk.UnsupportedFeatureError-->Classes cannot be defined at runtime by default when using ahead-of-time Native Image compilation. Tried to define class:
+
+    org_springframework_data/spring_data_couchbase/MappingCouchbaseConverterTest$ClassDocument__Accessor_x5z3rx
+
+To make this work, you have the following options:
+  1) Modify or reconfigure your application (or a third-party library) so that it does not generate classes at runtime or load them via non-built-in class loaders.
+  2) If the classes must be generated, try to generate them at build time in a static initializer of a dedicated class. The generated java.lang.Class objects should be stored in static fields and the dedicated class initialized by passing '--initialize-at-build-time=<class_name>' as the build argument.
+  3) If none of the above is applicable, use the tracing agent to run this application and collect predefined classes with 'java -agentlib:native-image-agent=config-output-dir=<config-dir>,experimental-class-define-support <application-arguments>'. Note that this is an experimental feature and that it does not guarantee success. Furthermore, the resulting classes can contain entries from the classpath that should be manually filtered out to reduce image size. The agent should be used only in cases where modifying the source of the project is not possible.
+
+       org.springframework.cglib.core.ReflectUtils.defineClass(ReflectUtils.java:483)
+       org.springframework.data.mapping.model.ClassGeneratingPropertyAccessorFactory$PropertyAccessorClassGenerator.generateCustomAccessorClass(ClassGeneratingPropertyAccessorFactory.java:372)
+       [...]
+     Caused by: com.oracle.svm.core.jdk.UnsupportedFeatureError: Classes cannot be defined at runtime by default when using ahead-of-time Native Image compilation. Tried to define class:
+
+    org_springframework_data/spring_data_couchbase/MappingCouchbaseConverterTest$ClassDocument__Accessor_x5z3rx
+
+To make this work, you have the following options:
+  1) Modify or reconfigure your application (or a third-party library) so that it does not generate classes at runtime or load them via non-built-in class loaders.
+  2) If the classes must be generated, try to generate them at build time in a static initializer of a dedicated class. The generated java.lang.Class objects should be stored in static fields and the dedicated class initialized by passing '--initialize-at-build-time=<class_name>' as the build argument.
+  3) If none of the above is applicable, use the tracing agent to run this application and collect predefined classes with 'java -agentlib:native-image-agent=config-output-dir=<config-dir>,experimental-class-define-support <application-arguments>'. Note that this is an experimental feature and that it does not guarantee success. Furthermore, the resulting classes can contain entries from the classpath that should be manually filtered out to reduce image size. The agent should be used only in cases where modifying the source of the project is not possible.
+
+       org.graalvm.nativeimage.shared/com.oracle.svm.shared.util.VMError.unsupportedFeature(VMError.java:122)
+       org.graalvm.nativeimage.builder/com.oracle.svm.core.hub.RuntimeClassLoading.throwNoBytecodeClasses(RuntimeClassLoading.java:167)
+       org.graalvm.nativeimage.builder/com.oracle.svm.core.hub.RuntimeClassLoading.defineClass(RuntimeClassLoading.java:148)
+       java.base@25.0.2/java.lang.ClassLoader.defineClass0(ClassLoader.java:407)
+       java.base@25.0.2/java.lang.System$1.defineClass(System.java:2050)
+       [...]
+
+Test run finished after 29 ms
+[        13 containers found      ]
+[         0 containers skipped    ]
+[        13 containers started    ]
+[         0 containers aborted    ]
+[        13 containers successful ]
+[         0 containers failed     ]
+[        16 tests found           ]
+[         0 tests skipped         ]
+[        16 tests started         ]
+[         0 tests aborted         ]
+[        15 tests successful      ]
+[         1 tests failed          ]
+
+
+[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9746-2f5acda0/tests/src/org.springframework.data/spring-data-couchbase/6.1.1/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':nativeTest'.
+> Process 'command '/home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9746-2f5acda0/tests/src/org.springframework.data/spring-data-couchbase/6.1.1/build/native/nativeTestCompile/org.springframework.data.spring-data-couchbase_tests-tests'' finished with non-zero exit value 1
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+
+BUILD FAILED in 10s
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+18 actionable tasks: 2 executed, 16 up-to-date
+
+> Task :tckTest FAILED
+
+[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9746-2f5acda0/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':tckTest'.
+> Test for org.springframework.data:spring-data-couchbase:6.1.1 failed with exit code 1.
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD FAILED in 12s
+9 actionable tasks: 1 executed, 8 up-to-date

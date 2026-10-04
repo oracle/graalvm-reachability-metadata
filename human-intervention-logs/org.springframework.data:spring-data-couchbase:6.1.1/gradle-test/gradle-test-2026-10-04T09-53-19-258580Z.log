@@ -1,0 +1,148 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :tckTest
+====================
+Testing library: org.springframework.data:spring-data-couchbase:6.1.1
+Command: `/home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9751-b2d960c1/gradlew nativeTest`
+Executing test...
+-------
+Starting a Gradle Daemon, 1 busy and 19 stopped Daemons could not be reused, use --status for details
+Shared read-only dependency cache is an incubating feature.
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+> Task :compileJava NO-SOURCE
+> Task :processResources NO-SOURCE
+> Task :classes UP-TO-DATE
+> Task :tck-test-support:compileJava UP-TO-DATE
+> Task :tck-test-support:processResources UP-TO-DATE
+> Task :jar UP-TO-DATE
+> Task :tck-test-support:classes UP-TO-DATE
+> Task :tck-test-support:jar UP-TO-DATE
+> Task :compileTestJava
+> Task :checkTestTimeoutAnnotations
+> Task :processTestResources UP-TO-DATE
+> Task :testClasses
+> Task :test
+
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::objectFieldOffset has been called by com.couchbase.client.core.deps.org.jctools.util.UnsafeAccess (file:/tmp/metadata-forge-gradle/6c511174d24457d7/worktree-homes/9751-b2d960c1-bc9208ed/caches/modules-2/files-2.1/com.couchbase.client/core-io/3.11.3/a9751cb67cf9b662032d88e62f5749ed35d1f058/core-io-3.11.3.jar)
+WARNING: Please consider reporting this to the maintainers of class com.couchbase.client.core.deps.org.jctools.util.UnsafeAccess
+WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+WARNING: A restricted method in java.lang.System has been called
+WARNING: java.lang.System::loadLibrary has been called by com.couchbase.client.core.deps.io.netty.util.internal.NativeLibraryUtil in an unnamed module (file:/tmp/metadata-forge-gradle/6c511174d24457d7/worktree-homes/9751-b2d960c1-bc9208ed/caches/modules-2/files-2.1/com.couchbase.client/core-io/3.11.3/a9751cb67cf9b662032d88e62f5749ed35d1f058/core-io-3.11.3.jar)
+WARNING: Use --enable-native-access=ALL-UNNAMED to avoid a warning for callers in this module
+WARNING: Restricted methods will be blocked in a future release unless native access is enabled
+
+
+> Task :test
+
+DynamicInvocationHandlerTest > chainedRepositoryProxiesRetainOptionsAndDelegateOperations() FAILED
+    java.lang.ClassCastException: class com.couchbase.client.java.kv.UpsertOptions cannot be cast to class com.couchbase.client.java.kv.GetOptions (com.couchbase.client.java.kv.UpsertOptions and com.couchbase.client.java.kv.GetOptions are in unnamed module of loader 'app')
+        at org.springframework.data.couchbase.core.ReactiveFindByIdOperationSupport$ReactiveFindByIdSupport.lambda$one$0(ReactiveFindByIdOperationSupport.java:126)
+        at reactor.core.publisher.MonoFlatMap$FlatMapMain.onNext(MonoFlatMap.java:132)
+        at reactor.core.publisher.MonoFlatMap$FlatMapMain.onNext(MonoFlatMap.java:158)
+        at reactor.core.publisher.Operators$ScalarSubscription.request(Operators.java:2571)
+        at reactor.core.publisher.MonoFlatMap$FlatMapMain.request(MonoFlatMap.java:194)
+        at reactor.core.publisher.MonoFlatMap$FlatMapMain.request(MonoFlatMap.java:194)
+        at reactor.core.publisher.Operators$MultiSubscriptionSubscriber.set(Operators.java:2367)
+        at reactor.core.publisher.FluxOnErrorResume$ResumeSubscriber.onSubscribe(FluxOnErrorResume.java:74)
+        at reactor.core.publisher.MonoFlatMap$FlatMapMain.onSubscribe(MonoFlatMap.java:117)
+        at reactor.core.publisher.MonoFlatMap$FlatMapMain.onSubscribe(MonoFlatMap.java:117)
+        at reactor.core.publisher.MonoJust.subscribe(MonoJust.java:55)
+        at reactor.core.publisher.MonoDeferContextual.subscribe(MonoDeferContextual.java:55)
+        at reactor.core.publisher.Mono.subscribe(Mono.java:4576)
+        at reactor.core.publisher.Mono.block(Mono.java:1778)
+        at org.springframework.data.couchbase.core.ExecutableFindByIdOperationSupport$ExecutableFindByIdSupport.one(ExecutableFindByIdOperationSupport.java:71)
+        at org.springframework.data.couchbase.repository.support.SimpleCouchbaseRepository.findById(SimpleCouchbaseRepository.java:98)
+        at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:104)
+        at java.base/java.lang.reflect.Method.invoke(Method.java:565)
+        at org.springframework.aop.support.AopUtils.invokeJoinpointUsingReflection(AopUtils.java:359)
+        at org.springframework.data.repository.core.support.RepositoryMethodInvoker$RepositoryFragmentMethodInvoker.lambda$new$0(RepositoryMethodInvoker.java:278)
+        at org.springframework.data.repository.core.support.RepositoryMethodInvoker.doInvoke(RepositoryMethodInvoker.java:169)
+        at org.springframework.data.repository.core.support.RepositoryMethodInvoker.invoke(RepositoryMethodInvoker.java:158)
+        at org.springframework.data.repository.core.support.RepositoryComposition$RepositoryFragments.invoke(RepositoryComposition.java:545)
+        at org.springframework.data.repository.core.support.RepositoryComposition.invoke(RepositoryComposition.java:290)
+        at org.springframework.data.repository.core.support.RepositoryFactorySupport$ImplementationMethodExecutionInterceptor.invoke(RepositoryFactorySupport.java:690)
+        at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:179)
+        at org.springframework.data.repository.core.support.QueryExecutorMethodInterceptor.doInvoke(QueryExecutorMethodInterceptor.java:171)
+        at org.springframework.data.repository.core.support.QueryExecutorMethodInterceptor.invoke(QueryExecutorMethodInterceptor.java:146)
+        at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:179)
+        at org.springframework.data.projection.DefaultMethodInvokingMethodInterceptor.invoke(DefaultMethodInvokingMethodInterceptor.java:69)
+        at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:179)
+        at org.springframework.data.couchbase.repository.support.CrudMethodMetadataPostProcessor$CrudMethodMetadataPopulatingMethodInterceptor.invoke(CrudMethodMetadataPostProcessor.java:173)
+        at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:179)
+        at org.springframework.aop.framework.JdkDynamicAopProxy.invoke(JdkDynamicAopProxy.java:222)
+        at jdk.proxy3/jdk.proxy3.$Proxy82.findById(Unknown Source)
+        at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:104)
+        at java.base/java.lang.reflect.Method.invoke(Method.java:565)
+        at org.springframework.data.couchbase.repository.support.DynamicInvocationHandler.invoke(DynamicInvocationHandler.java:124)
+        at jdk.proxy3/jdk.proxy3.$Proxy82.findById(Unknown Source)
+        at org_springframework_data.spring_data_couchbase.DynamicInvocationHandlerTest.chainedRepositoryProxiesRetainOptionsAndDelegateOperations(DynamicInvocationHandlerTest.java:75)
+
+
+15 tests completed, 1 failed
+> Task :test FAILED
+
+
+FAILURE: Build failed with an exception.
+[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9751-b2d960c1/tests/src/org.springframework.data/spring-data-couchbase/6.1.1/build/reports/problems/problems-report.html
+
+
+* What went wrong:
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+Execution failed for task ':test'.
+
+> There were failing tests. See the report at: file:///home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9751-b2d960c1/tests/src/org.springframework.data/spring-data-couchbase/6.1.1/build/reports/tests/test/index.html
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+* Try:
+
+> Run with --scan to generate a Build Scan (Powered by Develocity).For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+16 actionable tasks: 3 executed, 13 up-to-date
+
+BUILD FAILED in 1m 55s
+
+> Task :tckTest FAILED
+
+[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9751-b2d960c1/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':tckTest'.
+> Test for org.springframework.data:spring-data-couchbase:6.1.1 failed with exit code 1.
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD FAILED in 1m 58s
+9 actionable tasks: 1 executed, 8 up-to-date

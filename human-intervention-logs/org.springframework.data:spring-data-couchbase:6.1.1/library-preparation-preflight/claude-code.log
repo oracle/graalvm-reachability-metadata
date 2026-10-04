@@ -1,0 +1,34 @@
+## Research summary
+
+I couldn't reach the network in this environment (WebFetch/WebSearch/curl were all denied), so I grounded the decision in this repo's own prior art plus my training knowledge of Spring Data Couchbase:
+
+- **No existing precedent needs Docker for Couchbase.** `metadata/com.couchbase.client` and `tests/src/com.couchbase.client` only cover `metrics-micrometer` and `tracing-micrometer-observation` — never the core `java-client`. There is no Couchbase image pinned under `tests/tck-build-logic/src/main/resources/allowed-docker-images/`.
+- **Strong direct precedent exists for the wrapping module.** `tests/src/org.springframework.boot/spring-boot-data-couchbase/4.1.1` (already merged, commit `0377c66108`) tests `DataCouchbaseAutoConfiguration` purely via `ApplicationContextRunner` — property binding, `CouchbaseMappingContext`, `MappingCouchbaseConverter`, `CouchbaseCustomConversions`, `TranslationService` — with **no live cluster, no Docker, no extra dependencies** beyond the default scaffold (library + assertj-core). It notably never asserts on `CouchbaseTemplate`, the one bean that needs a real connection — evidence the author deliberately stayed inside the no-infra boundary.
+- `org.springframework.data:spring-data-couchbase` is the raw module behind that autoconfiguration, so the same boundary (mapping/conversion/annotation processing without a live `Cluster`) is reachable here too.
+- The one gap: if generation goes further and exercises repository-proxy creation / derived-query building (`CouchbaseRepositoryFactory`, `PartTree`-based queries) — valuable because dynamic proxies are exactly what native-image reachability metadata cares about — it needs a test double for `CouchbaseOperations`, since there's no real cluster available. This repo already has precedent for exactly this shape of problem (`kafka-streams` adds `mockito-core` as `testImplementation` to mock a collaborator it can't bring up for real).
+
+★ Insight ─────────────────────────────────────
+The preflight record is parsed by `library_preparation_preflight.py`: `agent_guidance` only reaches the downstream generation prompt when `action` is `advisory_preparation` — for `no_action` it's silently dropped. That's why steering advice (even without a hard dependency) belongs under `advisory_preparation`, not folded into a `no_action` summary.
+─────────────────────────────────────────────────
+
+## Decision
+
+```json
+{
+  "action": "advisory_preparation",
+  "summary": "Core module behind the already-merged spring-boot-data-couchbase:4.1.1; mapping/conversion/annotation-processing coverage is reachable without a live Couchbase cluster (same boundary that module's tests already proved out), but repository-proxy and query-derivation coverage needs a mocked CouchbaseOperations since no Couchbase Docker image is pinned in this repo.",
+  "deterministic_setup": [
+    {
+      "kind": "dependency",
+      "coordinate": "org.mockito:mockito-core:5.14.2",
+      "scope": "testImplementation",
+      "reason": "CouchbaseRepositoryFactory/CouchbaseTemplate and PartTree-based query derivation need a CouchbaseOperations (or Cluster/Collection) instance to construct repository proxies and build queries; mocking that interface is the only way to exercise that code without a live Couchbase server, mirroring the kafka-streams testImplementation mockito-core pattern already used in this repo."
+    }
+  ],
+  "agent_guidance": "Do not attempt to connect to a real Couchbase cluster or bring up Testcontainers' CouchbaseContainer -- no Couchbase Docker image is pinned under tests/tck-build-logic/src/main/resources/allowed-docker-images, so that path isn't available and will stall in CI. Model the suite on the already-merged org.springframework.boot:spring-boot-data-couchbase:4.1.1 tests (tests/src/org.springframework.boot/spring-boot-data-couchbase/4.1.1): exercise CouchbaseMappingContext, MappingCouchbaseConverter, CouchbaseCustomConversions, and @Document/@Field/@Id/@Version-style annotation processing directly with no live connection. For repository-level coverage (CouchbaseRepositoryFactory, derived query methods, N1QL query building), mock the CouchbaseOperations/ReactiveCouchbaseOperations interfaces with Mockito rather than the SDK's concrete classes (e.g. Cluster), which won't mock cleanly with the default mock maker.",
+  "risks": [
+    "If generation reaches for a live Couchbase connection or Testcontainers instead of mocking CouchbaseOperations, it will stall or fail in CI since no Couchbase Docker image is allow-listed in this repo.",
+    "The pinned mockito-core version is from training knowledge, not network-verified against Maven Central; if resolution fails, local Gradle verification will surface it for correction."
+  ]
+}
+```

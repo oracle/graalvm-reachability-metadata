@@ -1,0 +1,85 @@
+{
+  "continueFrom": "finalization",
+  "coordinate": "org.springframework.data:spring-data-couchbase:6.1.1",
+  "failure": {
+    "operand": "reporter-requested metadata",
+    "phase": "explore",
+    "step": "generate_tests()"
+  },
+  "issueNumber": 9746,
+  "label": "library-new-request",
+  "libraryPreparationPreflight": {
+    "action": "advisory_preparation",
+    "agent_guidance": "Do not attempt to connect to a real Couchbase cluster or bring up Testcontainers' CouchbaseContainer -- no Couchbase Docker image is pinned under tests/tck-build-logic/src/main/resources/allowed-docker-images, so that path isn't available and will stall in CI. Model the suite on the already-merged org.springframework.boot:spring-boot-data-couchbase:4.1.1 tests (tests/src/org.springframework.boot/spring-boot-data-couchbase/4.1.1): exercise CouchbaseMappingContext, MappingCouchbaseConverter, CouchbaseCustomConversions, and @Document/@Field/@Id/@Version-style annotation processing directly with no live connection. For repository-level coverage (CouchbaseRepositoryFactory, derived query methods, N1QL query building), mock the CouchbaseOperations/ReactiveCouchbaseOperations interfaces with Mockito rather than the SDK's concrete classes (e.g. Cluster), which won't mock cleanly with the default mock maker.",
+    "applied_setup": [],
+    "deterministic_setup": [
+      {
+        "coordinate": "org.mockito:mockito-core:5.14.2",
+        "kind": "dependency",
+        "reason": "CouchbaseRepositoryFactory/CouchbaseTemplate and PartTree-based query derivation need a CouchbaseOperations (or Cluster/Collection) instance to construct repository proxies and build queries; mocking that interface is the only way to exercise that code without a live Couchbase server, mirroring the \n...[truncated]",
+        "scope": "testImplementation"
+      }
+    ],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#9746 Support for org.springframework.data:spring-data-couchbase:6.1.1; label=library-new-request; body_chars=39"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "0 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 50,
+    "issue_label": "library-new-request",
+    "issue_number": 9746,
+    "library": "org.springframework.data:spring-data-couchbase:6.1.1",
+    "model": "sonnet",
+    "output_tokens_used": 26745,
+    "risks": [
+      "If generation reaches for a live Couchbase connection or Testcontainers instead of mocking CouchbaseOperations, it will stall or fail in CI since no Couchbase Docker image is allow-listed in this repo.",
+      "The pinned mockito-core version is from training knowledge, not network-verified against Maven Central; if resolution fails, local Gradle verification will surface it for correction."
+    ],
+    "status": "completed",
+    "summary": "Core module behind the already-merged spring-boot-data-couchbase:4.1.1; mapping/conversion/annotation-processing coverage is reachable without a live Couchbase cluster (same boundary that module's tests already proved out), but repository-proxy and query-derivation coverage needs a mocked CouchbaseOperations since no Couchbase Docker image is pinned in this repo."
+  },
+  "libraryUpdateRoute": null,
+  "newVersion": null,
+  "phases": {
+    "explore": {
+      "chunkClassCount": null,
+      "chunkProcessedClassCount": 0,
+      "exhaustedClasses": [],
+      "iteration": 8,
+      "status": "completed"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": null,
+      "status": "skipped"
+    },
+    "publication": {
+      "branch": null,
+      "coverageFollowUpIssueNumber": null,
+      "isPushed": false,
+      "publicationId": null,
+      "publicationTimestamp": null,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": true,
+      "status": "completed"
+    }
+  },
+  "preservedBranch": "ai/kimeta/human-intervention/issue-9746-library-new-request-org.springframework.data-spring-data-couchbase-6.1.1-a216362f",
+  "publicationMetrics": {
+    "extras": {},
+    "library": "org.springframework.data:spring-data-couchbase:6.1.1",
+    "timestamp": "2026-10-04T15:51:56.280376Z"
+  },
+  "schemaVersion": 1,
+  "strategyName": "optimistic_dynamic_access_iterative_pi_gpt-5.6-luna"
+}

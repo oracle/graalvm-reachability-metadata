@@ -1,0 +1,256 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :tckTest
+====================
+Testing library: org.springframework.data:spring-data-couchbase:6.1.1
+Command: `/home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9746-2f5acda0/gradlew nativeTest`
+Executing test...
+-------
+Starting a Gradle Daemon, 1 busy and 12 stopped Daemons could not be reused, use --status for details
+Shared read-only dependency cache is an incubating feature.
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+> Task :compileJava NO-SOURCE
+> Task :processResources NO-SOURCE
+> Task :classes UP-TO-DATE
+> Task :tck-test-support:compileJava UP-TO-DATE
+> Task :jar UP-TO-DATE
+> Task :tck-test-support:processResources UP-TO-DATE
+> Task :tck-test-support:classes UP-TO-DATE
+> Task :tck-test-support:jar UP-TO-DATE
+> Task :checkTestTimeoutAnnotations
+
+Note: Some input files use unchecked or unsafe operations.
+> Task :compileTestJava
+Note: Recompile with -Xlint:unchecked for details.
+
+> Task :processTestResources NO-SOURCE
+> Task :testClasses
+Java HotSpot(TM) 64-Bit Server VM warning: Sharing is only supported for boot loader classes because bootstrap classpath has been appended
+
+> Task :test
+
+DynamicInvocationHandlerTest > createsScopedCollectionAndOptionProxiesAndInvokesRepositoryMethods() FAILED
+    org.mockito.exceptions.base.MockitoException: 
+    Mockito cannot mock this class: interface org.springframework.data.couchbase.CouchbaseClientFactory.
+
+    If you're not sure why you're getting this error, please open an issue on GitHub.
+
+
+    Java               : 25
+    JVM vendor name    : Oracle Corporation
+    JVM vendor version : 25.0.2+10-LTS-jvmci-25.1-b17
+    JVM name           : Java HotSpot(TM) 64-Bit Server VM
+    JVM version        : 25.0.2+10-LTS-jvmci-25.1-b17
+    JVM info           : mixed mode, sharing
+    OS name            : Linux
+    OS version         : 7.0.0-31-generic
+
+
+    You are seeing this disclaimer because Mockito is configured to create inlined mocks.
+    You can learn about inline mocks and their limitations under item #39 of the Mockito class javadoc.
+
+    Underlying exception : org.mockito.exceptions.base.MockitoException: Could not modify all classes [interface java.lang.AutoCloseable, interface java.io.Closeable, interface org.springframework.data.couchbase.CouchbaseClientFactory]
+        at app//org_springframework_data.spring_data_couchbase.DynamicInvocationHandlerTest.repository(DynamicInvocationHandlerTest.java:56)
+        at app//org_springframework_data.spring_data_couchbase.DynamicInvocationHandlerTest.createsScopedCollectionAndOptionProxiesAndInvokesRepositoryMethods(DynamicInvocationHandlerTest.java:32)
+
+        Caused by:
+        org.mockito.exceptions.base.MockitoException: Could not modify all classes [interface java.lang.AutoCloseable, interface java.io.Closeable, interface org.springframework.data.couchbase.CouchbaseClientFactory]
+            at app//net.bytebuddy.TypeCache.findOrInsert(TypeCache.java:168)
+            at app//net.bytebuddy.TypeCache$WithInlineExpunction.findOrInsert(TypeCache.java:399)
+            at app//net.bytebuddy.TypeCache.findOrInsert(TypeCache.java:190)
+            at app//net.bytebuddy.TypeCache$WithInlineExpunction.findOrInsert(TypeCache.java:410)
+            ... 2 more
+
+            Caused by:
+            java.lang.IllegalStateException: 
+            Byte Buddy could not instrument all classes within the mock's type hierarchy
+
+            This problem should never occur for javac-compiled classes. This problem has been observed for classes that are:
+             - Compiled by older versions of scalac
+             - Classes that are part of the Android distribution
+                at org.mockito.internal.creation.bytebuddy.InlineBytecodeGenerator.triggerRetransformation(InlineBytecodeGenerator.java:285)
+                at org.mockito.internal.creation.bytebuddy.InlineBytecodeGenerator.mockClass(InlineBytecodeGenerator.java:218)
+                at org.mockito.internal.creation.bytebuddy.TypeCachingBytecodeGenerator.lambda$mockClass$0(TypeCachingBytecodeGenerator.java:78)
+                at net.bytebuddy.TypeCache.findOrInsert(TypeCache.java:168)
+                at net.bytebuddy.TypeCache$WithInlineExpunction.findOrInsert(TypeCache.java:399)
+                at net.bytebuddy.TypeCache.findOrInsert(TypeCache.java:190)
+                at net.bytebuddy.TypeCache$WithInlineExpunction.findOrInsert(TypeCache.java:410)
+                at org.mockito.internal.creation.bytebuddy.TypeCachingBytecodeGenerator.mockClass(TypeCachingBytecodeGenerator.java:75)
+                at org.mockito.internal.creation.bytebuddy.InlineDelegateByteBuddyMockMaker.createMockType(InlineDelegateByteBuddyMockMaker.java:408)
+                at org.mockito.internal.creation.bytebuddy.InlineDelegateByteBuddyMockMaker.doCreateMock(InlineDelegateByteBuddyMockMaker.java:367)
+                at org.mockito.internal.creation.bytebuddy.InlineDelegateByteBuddyMockMaker.createMock(InlineDelegateByteBuddyMockMaker.java:346)
+                at org.mockito.internal.creation.bytebuddy.InlineByteBuddyMockMaker.createMock(InlineByteBuddyMockMaker.java:56)
+                at org.mockito.internal.util.MockUtil.createMock(MockUtil.java:99)
+                at org.mockito.internal.MockitoCore.mock(MockitoCore.java:84)
+                at org.mockito.Mockito.mock(Mockito.java:2162)
+                at org.mockito.Mockito.mock(Mockito.java:2077)
+                ... 2 more
+
+                Caused by:
+                java.lang.IllegalArgumentException: Java 25 (69) is not supported by the current version of Byte Buddy which officially supports Java 24 (68) - update Byte Buddy or set net.bytebuddy.experimental as a VM property
+                    at net.bytebuddy.utility.OpenedClassReader.of(OpenedClassReader.java:120)
+                    at net.bytebuddy.utility.OpenedClassReader.of(OpenedClassReader.java:95)
+                    at net.bytebuddy.utility.AsmClassReader$Factory$Default.make(AsmClassReader.java:82)
+                    at net.bytebuddy.dynamic.scaffold.TypeWriter$Default$ForInlining.create(TypeWriter.java:4036)
+                    at net.bytebuddy.dynamic.scaffold.TypeWriter$Default.make(TypeWriter.java:2246)
+                    at net.bytebuddy.dynamic.DynamicType$Builder$AbstractBase$UsingTypeWriter.make(DynamicType.java:4057)
+                    at net.bytebuddy.dynamic.DynamicType$Builder$AbstractBase.make(DynamicType.java:3741)
+                    at org.mockito.internal.creation.bytebuddy.InlineBytecodeGenerator.transform(InlineBytecodeGenerator.java:402)
+                    at java.instrument/java.lang.instrument.ClassFileTransformer.transform(ClassFileTransformer.java:257)
+                    at java.instrument/sun.instrument.TransformerManager.transform(TransformerManager.java:188)
+                    at java.instrument/sun.instrument.InstrumentationImpl.transform(InstrumentationImpl.java:594)
+                    at java.instrument/sun.instrument.InstrumentationImpl.retransformClasses0(Native Method)
+                    at java.instrument/sun.instrument.InstrumentationImpl.retransformClasses(InstrumentationImpl.java:221)
+                    at org.mockito.internal.creation.bytebuddy.InlineBytecodeGenerator.triggerRetransformation(InlineBytecodeGenerator.java:281)
+                    ... 17 more
+
+N1qlJoinResolverInnerN1qlJoinProxyTest > resolvesLazyJoinWhenAListMethodIsCalled() FAILED
+    org.mockito.exceptions.base.MockitoException: 
+    Mockito cannot mock this class: class reactor.core.publisher.Flux.
+
+    If you're not sure why you're getting this error, please open an issue on GitHub.
+
+
+    Java               : 25
+    JVM vendor name    : Oracle Corporation
+    JVM vendor version : 25.0.2+10-LTS-jvmci-25.1-b17
+    JVM name           : Java HotSpot(TM) 64-Bit Server VM
+    JVM version        : 25.0.2+10-LTS-jvmci-25.1-b17
+    JVM info           : mixed mode, sharing
+    OS name            : Linux
+    OS version         : 7.0.0-31-generic
+
+
+    You are seeing this disclaimer because Mockito is configured to create inlined mocks.
+    You can learn about inline mocks and their limitations under item #39 of the Mockito class javadoc.
+
+    Underlying exception : org.mockito.exceptions.base.MockitoException: Could not modify all classes [interface org.reactivestreams.Publisher, class reactor.core.publisher.Flux, class java.lang.Object, interface reactor.core.CorePublisher]
+        at app//org_springframework_data.spring_data_couchbase.N1qlJoinResolverInnerN1qlJoinProxyTest.resolvesLazyJoinWhenAListMethodIsCalled(N1qlJoinResolverInnerN1qlJoinProxyTest.java:54)
+
+        Caused by:
+        org.mockito.exceptions.base.MockitoException: Could not modify all classes [interface org.reactivestreams.Publisher, class reactor.core.publisher.Flux, class java.lang.Object, interface reactor.core.CorePublisher]
+            at app//net.bytebuddy.TypeCache.findOrInsert(TypeCache.java:168)
+            at app//net.bytebuddy.TypeCache$WithInlineExpunction.findOrInsert(TypeCache.java:399)
+            at app//net.bytebuddy.TypeCache.findOrInsert(TypeCache.java:190)
+            at app//net.bytebuddy.TypeCache$WithInlineExpunction.findOrInsert(TypeCache.java:410)
+            ... 1 more
+
+            Caused by:
+            java.lang.IllegalStateException: 
+            Byte Buddy could not instrument all classes within the mock's type hierarchy
+
+            This problem should never occur for javac-compiled classes. This problem has been observed for classes that are:
+             - Compiled by older versions of scalac
+             - Classes that are part of the Android distribution
+                at org.mockito.internal.creation.bytebuddy.InlineBytecodeGenerator.triggerRetransformation(InlineBytecodeGenerator.java:285)
+                at org.mockito.internal.creation.bytebuddy.InlineBytecodeGenerator.mockClass(InlineBytecodeGenerator.java:218)
+                at org.mockito.internal.creation.bytebuddy.TypeCachingBytecodeGenerator.lambda$mockClass$0(TypeCachingBytecodeGenerator.java:78)
+                at net.bytebuddy.TypeCache.findOrInsert(TypeCache.java:168)
+                at net.bytebuddy.TypeCache$WithInlineExpunction.findOrInsert(TypeCache.java:399)
+                at net.bytebuddy.TypeCache.findOrInsert(TypeCache.java:190)
+                at net.bytebuddy.TypeCache$WithInlineExpunction.findOrInsert(TypeCache.java:410)
+                at org.mockito.internal.creation.bytebuddy.TypeCachingBytecodeGenerator.mockClass(TypeCachingBytecodeGenerator.java:75)
+                at org.mockito.internal.creation.bytebuddy.InlineDelegateByteBuddyMockMaker.createMockType(InlineDelegateByteBuddyMockMaker.java:408)
+                at org.mockito.internal.creation.bytebuddy.InlineDelegateByteBuddyMockMaker.doCreateMock(InlineDelegateByteBuddyMockMaker.java:367)
+                at org.mockito.internal.creation.bytebuddy.InlineDelegateByteBuddyMockMaker.createMock(InlineDelegateByteBuddyMockMaker.java:346)
+                at org.mockito.internal.creation.bytebuddy.InlineByteBuddyMockMaker.createMock(InlineByteBuddyMockMaker.java:56)
+                at org.mockito.internal.util.MockUtil.createMock(MockUtil.java:99)
+                at org.mockito.internal.MockitoCore.mock(MockitoCore.java:84)
+                at org.mockito.internal.stubbing.defaultanswers.ReturnsDeepStubs.newDeepStubMock(ReturnsDeepStubs.java:121)
+                at org.mockito.internal.stubbing.defaultanswers.ReturnsDeepStubs.deepStub(ReturnsDeepStubs.java:96)
+                at org.mockito.internal.stubbing.defaultanswers.ReturnsDeepStubs.answer(ReturnsDeepStubs.java:80)
+                at org.mockito.internal.handler.MockHandlerImpl.handle(MockHandlerImpl.java:111)
+                at org.mockito.internal.handler.NullResultGuardian.handle(NullResultGuardian.java:29)
+                at org.mockito.internal.handler.InvocationNotifierHandler.handle(InvocationNotifierHandler.java:34)
+                at org.mockito.internal.creation.bytebuddy.MockMethodInterceptor.doIntercept(MockMethodInterceptor.java:82)
+                at org.mockito.internal.creation.bytebuddy.MockMethodInterceptor.doIntercept(MockMethodInterceptor.java:56)
+                at org.mockito.internal.creation.bytebuddy.MockMethodInterceptor$DispatcherDefaultingToRealMethod.interceptAbstract(MockMethodInterceptor.java:161)
+                at org.springframework.data.couchbase.core.ReactiveFindByQueryOperation$TerminatingFindByQuery$MockitoMock$pryavlaC.all(Unknown Source)
+                ... 1 more
+
+                Caused by:
+                java.lang.IllegalArgumentException: Java 25 (69) is not supported by the current version of Byte Buddy which officially supports Java 24 (68) - update Byte Buddy or set net.bytebuddy.experimental as a VM property
+                    at net.bytebuddy.utility.OpenedClassReader.of(OpenedClassReader.java:120)
+                    at net.bytebuddy.utility.OpenedClassReader.of(OpenedClassReader.java:95)
+                    at net.bytebuddy.utility.AsmClassReader$Factory$Default.make(AsmClassReader.java:82)
+                    at net.bytebuddy.dynamic.scaffold.TypeWriter$Default$ForInlining.create(TypeWriter.java:4036)
+                    at net.bytebuddy.dynamic.scaffold.TypeWriter$Default.make(TypeWriter.java:2246)
+                    at net.bytebuddy.dynamic.DynamicType$Builder$AbstractBase$UsingTypeWriter.make(DynamicType.java:4057)
+                    at net.bytebuddy.dynamic.DynamicType$Builder$AbstractBase.make(DynamicType.java:3741)
+                    at org.mockito.internal.creation.bytebuddy.InlineBytecodeGenerator.transform(InlineBytecodeGenerator.java:402)
+                    at java.instrument/java.lang.instrument.ClassFileTransformer.transform(ClassFileTransformer.java:257)
+                    at java.instrument/sun.instrument.TransformerManager.transform(TransformerManager.java:188)
+                    at java.instrument/sun.instrument.InstrumentationImpl.transform(InstrumentationImpl.java:594)
+                    at java.instrument/sun.instrument.InstrumentationImpl.retransformClasses0(Native Method)
+                    at java.instrument/sun.instrument.InstrumentationImpl.retransformClasses(InstrumentationImpl.java:221)
+                    at org.mockito.internal.creation.bytebuddy.InlineBytecodeGenerator.triggerRetransformation(InlineBytecodeGenerator.java:281)
+                    ... 24 more
+
+14 tests completed, 2 failed
+
+> Task :test FAILED
+
+[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9746-2f5acda0/tests/src/org.springframework.data/spring-data-couchbase/6.1.1/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':test'.
+
+> There were failing tests. See the report at: file:///home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9746-2f5acda0/tests/src/org.springframework.data/spring-data-couchbase/6.1.1/build/reports/tests/test/index.html
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+
+* Try:
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.> Run with --scan to generate a Build Scan (Powered by Develocity).
+
+
+
+BUILD FAILEDFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+ in 17s
+15 actionable tasks: 3 executed, 12 up-to-date
+
+> Task :tckTest FAILED
+
+[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9746-2f5acda0/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':tckTest'.
+> Test for org.springframework.data:spring-data-couchbase:6.1.1 failed with exit code 1.
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD FAILED in 19s
+9 actionable tasks: 1 executed, 8 up-to-date

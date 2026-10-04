@@ -1,0 +1,193 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :tckTest
+====================
+Testing library: org.springframework.data:spring-data-couchbase:6.1.1
+Command: `/home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9751-b2d960c1/gradlew nativeTest`
+Executing test...
+-------
+Starting a Gradle Daemon, 1 busy and 19 stopped Daemons could not be reused, use --status for details
+Shared read-only dependency cache is an incubating feature.
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+> Task :compileJava NO-SOURCE
+> Task :processResources NO-SOURCE
+> Task :classes UP-TO-DATE
+> Task :jar UP-TO-DATE
+> Task :tck-test-support:compileJava UP-TO-DATE
+> Task :tck-test-support:processResources UP-TO-DATE
+> Task :tck-test-support:classes UP-TO-DATE
+> Task :tck-test-support:jar UP-TO-DATE
+> Task :checkTestTimeoutAnnotations
+> Task :compileTestJava
+> Task :processTestResources UP-TO-DATE
+> Task :testClasses
+> Task :test
+
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::objectFieldOffset has been called by com.couchbase.client.core.deps.org.jctools.util.UnsafeAccess (file:/tmp/metadata-forge-gradle/6c511174d24457d7/worktree-homes/9751-b2d960c1-bc9208ed/caches/modules-2/files-2.1/com.couchbase.client/core-io/3.11.3/a9751cb67cf9b662032d88e62f5749ed35d1f058/core-io-3.11.3.jar)
+WARNING: Please consider reporting this to the maintainers of class com.couchbase.client.core.deps.org.jctools.util.UnsafeAccess
+WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+WARNING: A restricted method in java.lang.System has been called
+WARNING: java.lang.System::loadLibrary has been called by com.couchbase.client.core.deps.io.netty.util.internal.NativeLibraryUtil in an unnamed module (file:/tmp/metadata-forge-gradle/6c511174d24457d7/worktree-homes/9751-b2d960c1-bc9208ed/caches/modules-2/files-2.1/com.couchbase.client/core-io/3.11.3/a9751cb67cf9b662032d88e62f5749ed35d1f058/core-io-3.11.3.jar)
+WARNING: Use --enable-native-access=ALL-UNNAMED to avoid a warning for callers in this module
+WARNING: Restricted methods will be blocked in a future release unless native access is enabled
+
+
+> Task :test
+
+DynamicInvocationHandlerTest > chainedRepositoryProxiesRetainOptionsAndDelegateOperations() FAILED
+    java.lang.ClassCastException: class com.couchbase.client.java.query.QueryOptions cannot be cast to class com.couchbase.client.java.kv.UpsertOptions (com.couchbase.client.java.query.QueryOptions and com.couchbase.client.java.kv.UpsertOptions are in unnamed module of loader 'app')
+        at org.springframework.data.couchbase.core.CouchbaseTemplate.lambda$save$0(CouchbaseTemplate.java:125)
+        at reactor.core.publisher.FluxMapFuseable$MapFuseableSubscriber.onNext(FluxMapFuseable.java:113)
+        at reactor.core.publisher.MonoFlatMap$FlatMapMain.onNext(MonoFlatMap.java:158)
+        at reactor.core.publisher.Operators$ScalarSubscription.request(Operators.java:2571)
+        at reactor.core.publisher.MonoFlatMap$FlatMapMain.request(MonoFlatMap.java:194)
+        at reactor.core.publisher.FluxMapFuseable$MapFuseableSubscriber.request(FluxMapFuseable.java:171)
+        at reactor.core.publisher.BlockingSingleSubscriber.onSubscribe(BlockingSingleSubscriber.java:54)
+        at reactor.core.publisher.FluxMapFuseable$MapFuseableSubscriber.onSubscribe(FluxMapFuseable.java:96)
+        at reactor.core.publisher.MonoFlatMap$FlatMapMain.onSubscribe(MonoFlatMap.java:117)
+        at reactor.core.publisher.MonoJust.subscribe(MonoJust.java:55)
+        at reactor.core.publisher.MonoDeferContextual.subscribe(MonoDeferContextual.java:55)
+        at reactor.core.publisher.Mono.subscribe(Mono.java:4576)
+        at reactor.core.publisher.Mono.block(Mono.java:1778)
+        at org.springframework.data.couchbase.core.CouchbaseTemplate.save(CouchbaseTemplate.java:129)
+        at org.springframework.data.couchbase.repository.support.SimpleCouchbaseRepository.save(SimpleCouchbaseRepository.java:79)
+        at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:104)
+        at java.base/java.lang.reflect.Method.invoke(Method.java:565)
+        at org.springframework.aop.support.AopUtils.invokeJoinpointUsingReflection(AopUtils.java:359)
+        at org.springframework.data.repository.core.support.RepositoryMethodInvoker$RepositoryFragmentMethodInvoker.lambda$new$0(RepositoryMethodInvoker.java:278)
+        at org.springframework.data.repository.core.support.RepositoryMethodInvoker.doInvoke(RepositoryMethodInvoker.java:169)
+        at org.springframework.data.repository.core.support.RepositoryMethodInvoker.invoke(RepositoryMethodInvoker.java:158)
+        at org.springframework.data.repository.core.support.RepositoryComposition$RepositoryFragments.invoke(RepositoryComposition.java:545)
+        at org.springframework.data.repository.core.support.RepositoryComposition.invoke(RepositoryComposition.java:290)
+        at org.springframework.data.repository.core.support.RepositoryFactorySupport$ImplementationMethodExecutionInterceptor.invoke(RepositoryFactorySupport.java:690)
+        at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:179)
+        at org.springframework.data.repository.core.support.QueryExecutorMethodInterceptor.doInvoke(QueryExecutorMethodInterceptor.java:171)
+        at org.springframework.data.repository.core.support.QueryExecutorMethodInterceptor.invoke(QueryExecutorMethodInterceptor.java:146)
+        at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:179)
+        at org.springframework.data.projection.DefaultMethodInvokingMethodInterceptor.invoke(DefaultMethodInvokingMethodInterceptor.java:69)
+        at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:179)
+        at org.springframework.data.couchbase.repository.support.CrudMethodMetadataPostProcessor$CrudMethodMetadataPopulatingMethodInterceptor.invoke(CrudMethodMetadataPostProcessor.java:173)
+        at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:179)
+        at org.springframework.aop.framework.JdkDynamicAopProxy.invoke(JdkDynamicAopProxy.java:222)
+        at jdk.proxy3/jdk.proxy3.$Proxy81.save(Unknown Source)
+        at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:104)
+        at java.base/java.lang.reflect.Method.invoke(Method.java:565)
+        at org.springframework.data.couchbase.repository.support.DynamicInvocationHandler.invoke(DynamicInvocationHandler.java:124)
+        at jdk.proxy3/jdk.proxy3.$Proxy81.save(Unknown Source)
+        at org_springframework_data.spring_data_couchbase.DynamicInvocationHandlerTest.chainedRepositoryProxiesRetainOptionsAndDelegateOperations(DynamicInvocationHandlerTest.java:73)
+
+MappingCouchbaseConverterTest > readsClassPropertiesFromStoredNames() FAILED
+    org.springframework.core.convert.ConverterNotFoundException: No converter found capable of converting from type [java.lang.StringBuilder] to type [java.lang.Class<?>]
+        at app//org.springframework.core.convert.support.GenericConversionService.handleConverterNotFound(GenericConversionService.java:289)
+        at app//org.springframework.core.convert.support.GenericConversionService.convert(GenericConversionService.java:184)
+        at app//org.springframework.data.couchbase.core.convert.MappingCouchbaseConverter.getPotentiallyConvertedSimpleRead(MappingCouchbaseConverter.java:472)
+        at app//org.springframework.data.couchbase.core.convert.MappingCouchbaseConverter.readValue(MappingCouchbaseConverter.java:1021)
+        at app//org.springframework.data.couchbase.core.convert.MappingCouchbaseConverter$CouchbasePropertyValueProvider.getPropertyValue(MappingCouchbaseConverter.java:1154)
+        at app//org.springframework.data.couchbase.core.convert.MappingCouchbaseConverter.getValueInternal(MappingCouchbaseConverter.java:363)
+        at app//org.springframework.data.couchbase.core.convert.MappingCouchbaseConverter$1.doWithPersistentProperty(MappingCouchbaseConverter.java:323)
+        at app//org.springframework.data.couchbase.core.convert.MappingCouchbaseConverter$1.doWithPersistentProperty(MappingCouchbaseConverter.java:314)
+        at app//org.springframework.data.mapping.model.BasicPersistentEntity.doWithProperties(BasicPersistentEntity.java:355)
+        at app//org.springframework.data.couchbase.core.convert.MappingCouchbaseConverter.read(MappingCouchbaseConverter.java:314)
+        at app//org.springframework.data.couchbase.core.convert.MappingCouchbaseConverter.read(MappingCouchbaseConverter.java:292)
+        at app//org.springframework.data.couchbase.core.convert.MappingCouchbaseConverter.read(MappingCouchbaseConverter.java:249)
+        at app//org_springframework_data.spring_data_couchbase.MappingCouchbaseConverterTest.readsClassPropertiesFromStoredNames(MappingCouchbaseConverterTest.java:33)
+
+N1qlJoinResolverInnerN1qlJoinProxyTest > lazilyLoadsAssociatedDocumentsThroughJoinProxy() FAILED
+    com.couchbase.client.core.error.ParsingFailureException: Parsing of the input failed {"completed":true,"coreId":"0x10d5c4c200000002","errors":[{"additional":{"line":1,"column":127},"code":3000,"message":"syntax error - line 1, column 127, near '...lks.rightKey = rks.', at: key (reserved word)","retry":false}],"httpStatus":400,"idempotent":false,"lastChannelId":"10D5C4C200000002/00000000FA22F323","lastDispatchedFrom":"127.0.0.1:39398","lastDispatchedTo":"localhost:33268","requestId":12,"requestType":"QueryRequest","retried":0,"service":{"operationId":"null","statement":"SELECT META(rks).id AS __id, META(rks).cas AS __cas, (rks).*  FROM `n1ql-join` lks JOIN `n1ql-join` rks ON lks.rightKey = rks.key AND lks.`_class` = \"org_springframework_data.spring_data_couchbase.N1qlJoinResolverInnerN1qlJoinProxyTest$Left\" AND rks.`_class` = \"org_springframework_data.spring_data_couchbase.N1qlJoinResolverInnerN1qlJoinProxyTest$Right\" WHERE META(lks).id=\"left-ada\"","type":"query"},"timeoutMs":75000,"timings":{"dispatchMicros":3770,"totalDispatchMicros":3770,"totalMicros":34811}}
+        at app//com.couchbase.client.core.io.netty.query.QueryChunkResponseParser.errorsToThrowable(QueryChunkResponseParser.java:148)
+        at app//com.couchbase.client.core.io.netty.query.QueryChunkResponseParser.lambda$error$10(QueryChunkResponseParser.java:128)
+        at java.base@25.0.2/java.util.Optional.map(Optional.java:260)
+        at app//com.couchbase.client.core.io.netty.query.QueryChunkResponseParser.error(QueryChunkResponseParser.java:128)
+        at app//com.couchbase.client.core.io.netty.chunk.ChunkedMessageHandler.lambda$maybeCompleteResponseWithFailure$1(ChunkedMessageHandler.java:288)
+        at java.base@25.0.2/java.util.Optional.orElseGet(Optional.java:364)
+        at app//com.couchbase.client.core.io.netty.chunk.ChunkedMessageHandler.maybeCompleteResponseWithFailure(ChunkedMessageHandler.java:287)
+        at app//com.couchbase.client.core.io.netty.chunk.ChunkedMessageHandler.channelRead(ChunkedMessageHandler.java:219)
+        at app//com.couchbase.client.core.deps.io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:355)
+        at app//com.couchbase.client.core.deps.io.netty.channel.CombinedChannelDuplexHandler$DelegatingChannelHandlerContext.fireChannelRead(CombinedChannelDuplexHandler.java:434)
+        at app//com.couchbase.client.core.deps.io.netty.handler.codec.ByteToMessageDecoder.fireChannelRead(ByteToMessageDecoder.java:361)
+        at app//com.couchbase.client.core.deps.io.netty.handler.codec.ByteToMessageDecoder.channelRead(ByteToMessageDecoder.java:325)
+        at app//com.couchbase.client.core.deps.io.netty.channel.CombinedChannelDuplexHandler.channelRead(CombinedChannelDuplexHandler.java:249)
+        at app//com.couchbase.client.core.deps.io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:355)
+        at app//com.couchbase.client.core.deps.io.netty.channel.DefaultChannelPipeline$HeadContext.channelRead(DefaultChannelPipeline.java:1429)
+        at app//com.couchbase.client.core.deps.io.netty.channel.DefaultChannelPipeline.fireChannelRead(DefaultChannelPipeline.java:918)
+        at app//com.couchbase.client.core.deps.io.netty.channel.epoll.AbstractEpollStreamChannel$EpollStreamUnsafe.epollInReady(AbstractEpollStreamChannel.java:804)
+        at app//com.couchbase.client.core.deps.io.netty.channel.epoll.AbstractEpollChannel$AbstractEpollUnsafe.handle(AbstractEpollChannel.java:487)
+        at app//com.couchbase.client.core.deps.io.netty.channel.epoll.EpollIoHandler$DefaultEpollIoRegistration.handle(EpollIoHandler.java:337)
+        at app//com.couchbase.client.core.deps.io.netty.channel.epoll.EpollIoHandler.processReady(EpollIoHandler.java:534)
+        at app//com.couchbase.client.core.deps.io.netty.channel.epoll.EpollIoHandler.run(EpollIoHandler.java:479)
+        at app//com.couchbase.client.core.deps.io.netty.channel.SingleThreadIoEventLoop.runIo(SingleThreadIoEventLoop.java:225)
+        at app//com.couchbase.client.core.deps.io.netty.channel.SingleThreadIoEventLoop.run(SingleThreadIoEventLoop.java:196)
+        at app//com.couchbase.client.core.deps.io.netty.util.concurrent.SingleThreadEventExecutor$5.run(SingleThreadEventExecutor.java:1195)
+        at app//com.couchbase.client.core.deps.io.netty.util.internal.ThreadExecutorMap$2.run(ThreadExecutorMap.java:74)
+        at app//com.couchbase.client.core.deps.io.netty.util.concurrent.FastThreadLocalRunnable.run(FastThreadLocalRunnable.java:30)
+        at java.base@25.0.2/java.lang.Thread.run(Thread.java:1474)
+
+15 tests completed, 3 failed
+
+> Task :test FAILED
+
+[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9751-b2d960c1/tests/src/org.springframework.data/spring-data-couchbase/6.1.1/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':test'.
+> There were failing tests. See the report at: file:///home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9751-b2d960c1/tests/src/org.springframework.data/spring-data-couchbase/6.1.1/build/reports/tests/test/index.html
+
+* Try:
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+
+
+BUILD FAILED in 1m 54s
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+16 actionable tasks: 3 executed, 13 up-to-date
+
+> Task :tckTest FAILED
+
+[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9751-b2d960c1/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':tckTest'.
+> Test for org.springframework.data:spring-data-couchbase:6.1.1 failed with exit code 1.
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD FAILED in 1m 56s
+9 actionable tasks: 1 executed, 8 up-to-date
