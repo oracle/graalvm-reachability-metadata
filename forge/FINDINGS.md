@@ -3,6 +3,14 @@
 Rendered by Forge from the pre-push branch review of §FS-local-branch-review.
 Newest entry first; every non-approval is recorded, including one a repair later cleared.
 
+## 2026-10-04 — org.springframework.data:spring-data-couchbase:6.1.1 (#9751)
+
+**Docker image vulnerability scan passes when Grype fails**
+
+The contribution adds couchbase/server:community-7.6.2, but the recorded checkAllowedDockerImages run shows Grype failed to load/update its database and failed to catalog the image, while Gradle still returned 0 with BUILD SUCCESSFUL. tests/tck-build-logic/src/main/java/org/graalvm/internal/tck/GrypeTask.java runs `grype -o json <image> | jq ...` through `/bin/sh` without pipefail or separate Grype exit-status validation, so jq's successful exit masks the scanner failure and the new image's vulnerability baseline remains unverified. This is a shared harness defect, not repairable inside the coordinate's allowed files.
+
+Infrastructure issue: https://github.com/oracle/graalvm-reachability-metadata/issues/10439 (#10439)
+
 ## 2026-10-03 — gg.jte:jte-runtime:3.2.4 (#9786)
 
 **Dynamic-access classes shared a generic test file**
