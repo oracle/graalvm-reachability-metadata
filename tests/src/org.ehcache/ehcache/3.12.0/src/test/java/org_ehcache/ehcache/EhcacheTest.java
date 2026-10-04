@@ -17,16 +17,16 @@ import org.ehcache.config.units.EntryUnit;
 import org.ehcache.config.units.MemoryUnit;
 import org.ehcache.xml.XmlConfiguration;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.nio.file.Path;
 import java.time.Duration;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
-class EhcacheTest {
+public class EhcacheTest {
     @Test
     void testProgrammaticConfiguration() {
         try (CacheManager cacheManager = CacheManagerBuilder.newCacheManagerBuilder()
@@ -55,10 +55,9 @@ class EhcacheTest {
     }
 
     @Test
-    void testStorageTiers() {
-        String dirPathString = "src/test/resources/testStorageTiersData/";
+    void testStorageTiers(@TempDir Path persistenceDirectory) {
         PersistentCacheManager persistentCacheManager = CacheManagerBuilder.newCacheManagerBuilder()
-                .with(CacheManagerBuilder.persistence(dirPathString))
+                .with(CacheManagerBuilder.persistence(persistenceDirectory.toFile()))
                 .withCache("threeTieredCache", CacheConfigurationBuilder.newCacheConfigurationBuilder(Long.class, String.class,
                         ResourcePoolsBuilder.newResourcePoolsBuilder()
                                 .heap(10, EntryUnit.ENTRIES).offheap(1, MemoryUnit.MB).disk(20, MemoryUnit.MB, true))).build(true);
@@ -67,7 +66,6 @@ class EhcacheTest {
         assertThat(threeTieredCache.get(1L)).isEqualTo("stillAvailableAfterRestart");
         persistentCacheManager.close();
         assertDoesNotThrow(persistentCacheManager::destroy);
-        assertDoesNotThrow(() -> Files.delete(Paths.get(dirPathString)));
     }
 
     @Test

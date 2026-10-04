@@ -30,7 +30,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class XMLConfigurationTest {
     @Test
-    void testXMLProgrammaticParsingAndProgrammaticConfigurationToXML() throws ClassNotFoundException, InstantiationException, IllegalAccessException {
+    void testXMLProgrammaticParsingAndProgrammaticConfigurationToXML() throws ReflectiveOperationException {
         URL resource = getClass().getResource("/template-sample.xml");
         assertThat(resource).isNotNull();
         CacheConfigurationBuilder<Long, String> configurationBuilder = new XmlConfiguration(resource)
@@ -81,7 +81,8 @@ public class XMLConfigurationTest {
         caches.put("preConfigured", CacheConfigurationBuilder.newCacheConfigurationBuilder(Long.class, String.class,
                 ResourcePoolsBuilder.heap(10L)).build());
         EhcacheCachingProvider provider = (EhcacheCachingProvider) Caching.getCachingProvider(EhcacheCachingProvider.class.getName());
-        Configuration barConfiguration = new DefaultConfiguration(caches, provider.getDefaultClassLoader());
+        Configuration barConfiguration = new DefaultConfiguration(caches, provider.getDefaultClassLoader(),
+                ResourcePoolsBuilder.newResourcePoolsBuilder().build());
         XmlMultiConfiguration multiConfiguration = XmlMultiConfiguration.fromNothing()
                 .withManager("bar", barConfiguration)
                 .withManager("foo").variant("heap", barConfiguration).variant("offHeap", barConfiguration)

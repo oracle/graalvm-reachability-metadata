@@ -18,9 +18,9 @@ import org.ehcache.config.units.EntryUnit;
 import org.ehcache.config.units.MemoryUnit;
 import org.ehcache.impl.config.store.disk.OffHeapDiskStoreConfiguration;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
-import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.nio.file.Path;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -67,10 +67,9 @@ public class TieringOptionsTest {
     }
 
     @Test
-    void testSegmentsAndDestroyPersistentTiers() {
-        String dirPathString = "src/test/resources/testSegmentsAndDestroyPersistentTiersData/";
+    void testSegmentsAndDestroyPersistentTiers(@TempDir Path persistenceDirectory) {
         PersistentCacheManager persistentCacheManager = CacheManagerBuilder.newCacheManagerBuilder()
-                .with(CacheManagerBuilder.persistence(dirPathString))
+                .with(CacheManagerBuilder.persistence(persistenceDirectory.toFile()))
                 .withCache("less-segments", CacheConfigurationBuilder.newCacheConfigurationBuilder(Long.class, String.class,
                                 ResourcePoolsBuilder.newResourcePoolsBuilder().disk(10, MemoryUnit.MB))
                         .withService(new OffHeapDiskStoreConfiguration(2))).build(true);
@@ -81,7 +80,6 @@ public class TieringOptionsTest {
         persistentCacheManager.close();
         assertDoesNotThrow(() -> persistentCacheManager.destroyCache("less-segments"));
         assertDoesNotThrow(persistentCacheManager::destroy);
-        assertDoesNotThrow(() -> Files.delete(Paths.get(dirPathString)));
     }
 
     @Test
