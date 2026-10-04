@@ -11,10 +11,18 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 
 import org.springframework.core.convert.support.DefaultConversionService;
+import org.springframework.dao.support.PersistenceExceptionTranslator;
 
 import org.springframework.data.couchbase.CouchbaseClientFactory;
 import org.springframework.data.couchbase.core.ReactiveCouchbaseTemplate;
+import org.springframework.data.couchbase.core.ReactiveFindByQueryOperation.FindByQueryConsistentWith;
+import org.springframework.data.couchbase.core.ReactiveFindByQueryOperation.FindByQueryInCollection;
+import org.springframework.data.couchbase.core.ReactiveFindByQueryOperation.FindByQueryInScope;
+import org.springframework.data.couchbase.core.ReactiveFindByQueryOperation.FindByQueryWithConsistency;
+import org.springframework.data.couchbase.core.ReactiveFindByQueryOperation.FindByQueryWithOptions;
+import org.springframework.data.couchbase.core.ReactiveFindByQueryOperation.FindByQueryWithProjection;
 import org.springframework.data.couchbase.core.ReactiveFindByQueryOperation.ReactiveFindByQuery;
+import org.springframework.data.couchbase.core.ReactiveFindByQueryOperation.TerminatingFindByQuery;
 import org.springframework.data.couchbase.core.convert.MappingCouchbaseConverter;
 import org.springframework.data.couchbase.core.convert.join.N1qlJoinResolver;
 import org.springframework.data.couchbase.core.mapping.CouchbaseMappingContext;
@@ -28,13 +36,17 @@ import org.springframework.data.mapping.PersistentPropertyAccessor;
 import org.springframework.data.mapping.model.BeanWrapperPropertyAccessorFactory;
 import org.springframework.data.mapping.model.ConvertingPropertyAccessor;
 
+import com.couchbase.client.java.Bucket;
+import com.couchbase.client.java.Cluster;
+import com.couchbase.client.java.Collection;
+import com.couchbase.client.java.Scope;
+import com.couchbase.client.java.query.QueryOptions;
+import com.couchbase.client.java.query.QueryScanConsistency;
+
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.RETURNS_DEEP_STUBS;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 public class N1qlJoinResolverInnerN1qlJoinProxyTest {
 
@@ -50,10 +62,9 @@ public class N1qlJoinResolverInnerN1qlJoinProxyTest {
 
         MappingCouchbaseConverter converter = new MappingCouchbaseConverter(mappingContext);
         converter.afterPropertiesSet();
-        ReactiveFindByQuery<JoinedDocument> query = mock(ReactiveFindByQuery.class, RETURNS_DEEP_STUBS);
-        when(query.matching(any(Query.class)).all()).thenReturn(Flux.just(new JoinedDocument()));
+        ReactiveFindByQuery<JoinedDocument> query = new FixedReactiveFindByQuery();
         ReactiveCouchbaseTemplate template = new QueryingReactiveCouchbaseTemplate(
-                mock(CouchbaseClientFactory.class), converter, query);
+                new DisconnectedClientFactory(), converter, query);
 
         N1qlJoinResolver.handleProperties(entity, accessor, template, "document-id", "sales", "orders");
 
@@ -68,6 +79,122 @@ public class N1qlJoinResolverInnerN1qlJoinProxyTest {
                 .getRequiredPersistentProperty("joined");
 
         assertThat(N1qlJoinResolver.isLazyJoin(property.findAnnotation(N1qlJoin.class))).isTrue();
+    }
+
+    private static class DisconnectedClientFactory implements CouchbaseClientFactory {
+
+        @Override
+        public Cluster getCluster() {
+            return null;
+        }
+
+        @Override
+        public Bucket getBucket() {
+            return null;
+        }
+
+        @Override
+        public Scope getScope() {
+            return null;
+        }
+
+        @Override
+        public Collection getCollection(String name) {
+            return null;
+        }
+
+        @Override
+        public Collection getDefaultCollection() {
+            return null;
+        }
+
+        @Override
+        public CouchbaseClientFactory withScope(String scopeName) {
+            return this;
+        }
+
+        @Override
+        public PersistenceExceptionTranslator getExceptionTranslator() {
+            return null;
+        }
+
+        @Override
+        public void close() {
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    private static class FixedReactiveFindByQuery implements ReactiveFindByQuery<JoinedDocument> {
+
+        @Override
+        public TerminatingFindByQuery<JoinedDocument> matching(Query query) {
+            return this;
+        }
+
+        @Override
+        public TerminatingFindByQuery<JoinedDocument> withOptions(QueryOptions options) {
+            return this;
+        }
+
+        @Override
+        public FindByQueryWithOptions<JoinedDocument> inCollection(String collection) {
+            return this;
+        }
+
+        @Override
+        public FindByQueryInCollection<JoinedDocument> inScope(String scope) {
+            return this;
+        }
+
+        @Override
+        public FindByQueryInScope<JoinedDocument> consistentWith(QueryScanConsistency scanConsistency) {
+            return this;
+        }
+
+        @Override
+        public FindByQueryConsistentWith<JoinedDocument> withConsistency(QueryScanConsistency scanConsistency) {
+            return this;
+        }
+
+        @Override
+        public <R> FindByQueryWithConsistency<R> as(Class<R> returnType) {
+            return (FindByQueryWithConsistency<R>) this;
+        }
+
+        @Override
+        public FindByQueryWithProjection<JoinedDocument> project(String[] fields) {
+            return this;
+        }
+
+        @Override
+        public FindByQueryWithProjection<JoinedDocument> distinct(String[] distinctFields) {
+            return this;
+        }
+
+        @Override
+        public Mono<JoinedDocument> one() {
+            return Mono.just(new JoinedDocument());
+        }
+
+        @Override
+        public Mono<JoinedDocument> first() {
+            return Mono.just(new JoinedDocument());
+        }
+
+        @Override
+        public Flux<JoinedDocument> all() {
+            return Flux.just(new JoinedDocument());
+        }
+
+        @Override
+        public Mono<Long> count() {
+            return Mono.just(1L);
+        }
+
+        @Override
+        public Mono<Boolean> exists() {
+            return Mono.just(true);
+        }
     }
 
     private static class QueryingReactiveCouchbaseTemplate extends ReactiveCouchbaseTemplate {

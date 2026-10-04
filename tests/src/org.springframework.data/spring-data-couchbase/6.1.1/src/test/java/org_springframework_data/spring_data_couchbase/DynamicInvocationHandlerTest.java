@@ -8,6 +8,7 @@ package org_springframework_data.spring_data_couchbase;
 
 import org.junit.jupiter.api.Test;
 
+import org.springframework.dao.support.PersistenceExceptionTranslator;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.couchbase.CouchbaseClientFactory;
 import org.springframework.data.couchbase.core.CouchbaseTemplate;
@@ -21,9 +22,13 @@ import org.springframework.data.couchbase.repository.support.DynamicInvocationHa
 import org.springframework.data.couchbase.repository.support.MappingCouchbaseEntityInformation;
 import org.springframework.data.couchbase.repository.support.SimpleCouchbaseRepository;
 
+import com.couchbase.client.java.Bucket;
+import com.couchbase.client.java.Cluster;
+import com.couchbase.client.java.Collection;
+import com.couchbase.client.java.Scope;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.Mockito.mock;
 
 public class DynamicInvocationHandlerTest {
 
@@ -53,12 +58,54 @@ public class DynamicInvocationHandlerTest {
         mappingContext.setAutoIndexCreation(false);
         MappingCouchbaseConverter converter = new MappingCouchbaseConverter(mappingContext);
         converter.afterPropertiesSet();
-        CouchbaseTemplate template = new CouchbaseTemplate(mock(CouchbaseClientFactory.class), converter);
+        CouchbaseTemplate template = new CouchbaseTemplate(new DisconnectedClientFactory(), converter);
         CouchbasePersistentEntity<RepositoryEntity> entity = (CouchbasePersistentEntity<RepositoryEntity>) mappingContext
                 .getRequiredPersistentEntity(RepositoryEntity.class);
         MappingCouchbaseEntityInformation<RepositoryEntity, String> entityInformation =
                 new MappingCouchbaseEntityInformation<>(entity);
         return new TestRepositoryImplementation(entityInformation, template);
+    }
+
+    private static class DisconnectedClientFactory implements CouchbaseClientFactory {
+
+        @Override
+        public Cluster getCluster() {
+            return null;
+        }
+
+        @Override
+        public Bucket getBucket() {
+            return null;
+        }
+
+        @Override
+        public Scope getScope() {
+            return null;
+        }
+
+        @Override
+        public Collection getCollection(String name) {
+            return null;
+        }
+
+        @Override
+        public Collection getDefaultCollection() {
+            return null;
+        }
+
+        @Override
+        public CouchbaseClientFactory withScope(String scopeName) {
+            return this;
+        }
+
+        @Override
+        public PersistenceExceptionTranslator getExceptionTranslator() {
+            return null;
+        }
+
+        @Override
+        public void close() {
+        }
     }
 
     public interface TestRepository
