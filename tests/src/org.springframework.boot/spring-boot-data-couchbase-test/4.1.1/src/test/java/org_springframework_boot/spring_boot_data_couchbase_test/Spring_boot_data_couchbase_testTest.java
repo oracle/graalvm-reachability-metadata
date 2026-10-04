@@ -12,12 +12,16 @@ import org.springframework.boot.context.annotation.ImportCandidates;
 import org.springframework.boot.data.couchbase.autoconfigure.DataCouchbaseRepositoriesAutoConfiguration;
 import org.springframework.boot.data.couchbase.test.autoconfigure.AutoConfigureDataCouchbase;
 import org.springframework.boot.data.couchbase.test.autoconfigure.DataCouchbaseTest;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.FilterType;
 import org.springframework.core.annotation.MergedAnnotations;
+import org.springframework.data.couchbase.core.convert.MappingCouchbaseConverter;
 import org.springframework.data.couchbase.core.mapping.CouchbaseMappingContext;
 import org.springframework.data.couchbase.core.mapping.Document;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestContextManager;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -45,6 +49,23 @@ public class Spring_boot_data_couchbase_testTest {
     }
 
     @Test
+    void dataCouchbaseTestBootstrapsSliceAndAppliesProperties() throws Exception {
+        TestContextManager testContextManager = new TestContextManager(ConfiguredDataCouchbaseSlice.class);
+        testContextManager.beforeTestClass();
+        try {
+            ApplicationContext context = testContextManager.getTestContext().getApplicationContext();
+
+            assertThat(context.getEnvironment().getProperty("spring.data.couchbase.type-key"))
+                    .isEqualTo("documentKind");
+            assertThat(context.getBean(CouchbaseMappingContext.class)).isNotNull();
+            assertThat(context.getBean(MappingCouchbaseConverter.class).getTypeKey()).isEqualTo("documentKind");
+        }
+        finally {
+            testContextManager.afterTestClass();
+        }
+    }
+
+    @Test
     void autoConfigureDataCouchbaseListsItsAutoConfigurations() {
         ImportCandidates candidates = ImportCandidates.load(AutoConfigureDataCouchbase.class,
                 getClass().getClassLoader());
@@ -57,6 +78,17 @@ public class Spring_boot_data_couchbase_testTest {
                 "org.springframework.boot.data.couchbase.autoconfigure.DataCouchbaseReactiveRepositoriesAutoConfiguration",
                 "org.springframework.boot.data.couchbase.autoconfigure.DataCouchbaseRepositoriesAutoConfiguration",
                 "optional:org.springframework.boot.testcontainers.service.connection.ServiceConnectionAutoConfiguration");
+    }
+
+    @DataCouchbaseTest(properties = "spring.data.couchbase.type-key=documentKind")
+    @ContextConfiguration(classes = SliceConfiguration.class)
+    static class ConfiguredDataCouchbaseSlice {
+
+    }
+
+    @Configuration(proxyBeanMethods = false)
+    static class SliceConfiguration {
+
     }
 
     @DataCouchbaseTest(properties = { "spring.data.couchbase.bucket-name=orders",
