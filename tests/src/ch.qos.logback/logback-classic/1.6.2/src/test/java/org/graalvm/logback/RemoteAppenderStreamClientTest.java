@@ -91,6 +91,7 @@ public class RemoteAppenderStreamClientTest {
 
     CapturingSimpleSocketServer(LoggerContext loggerContext) {
       super(loggerContext, 0);
+      addAllowedClientAddress(InetAddress.getLoopbackAddress().getHostAddress());
     }
 
     @Override
