@@ -1,0 +1,17 @@
+### Human intervention needed
+
+The automated job failed during test generation/validation for `org.springframework.boot:spring-boot-data-couchbase-test:4.1.1`.
+
+Preserved work: https://github.com/oracle/graalvm-reachability-metadata/tree/ai%2Fkimeta%2Fhuman-intervention%2Fissue-9754-library-new-request-org.springframework.boot-spring-boot-data-couchbase-test-4.1.1-9160b634
+
+The likely failing stage is native-image test execution. `nativeTestCompile` completed, but three tests using `TestContextManager` repeatedly failed in `nativeTest` with `ClassNotFoundException: org.springframework.test.context.aot.AotTestContextInitializers__Generated`; only the two annotation-only tests passed. Adding reflection metadata for that class did not resolve the failure because the generated AOT support class itself is absent from this coordinate’s test sources. The final agent pass then reported “No changes needed,” despite the same failure recurring. Metrics remained at `failure` after 12 iterations, with no finalized metadata/coverage results and dynamic-access coverage unavailable.
+
+Inspect:
+- `logs/org.springframework.boot:spring-boot-data-couchbase-test:4.1.1/gradle-test/gradle-test-2026-10-04T04-28-21-506976Z.log`
+- `logs/org.springframework.boot:spring-boot-data-couchbase-test:4.1.1/issue-requested-metadata/pi-generation-2026-10-04T04-23-37-170357Z.log`
+- `logs/org.springframework.boot:spring-boot-data-couchbase-test:4.1.1/issue-requested-metadata/pi-generation-2026-10-04T04-27-16-391062Z.log`
+
+Manual next steps:
+1. Rewrite the `TestContextManager` scenarios to use `ApplicationContextRunner`/annotation metadata, or add the required generated Spring AOT test support class and resources following the existing `spring-test` fixture.
+2. Clean and rerun coordinate-scoped `javaTest` and `nativeTest` to ensure the native executable is rebuilt and all tests pass.
+3. Regenerate and split metadata, then generate dynamic-access coverage and verify the new-library coverage gate before publication.
