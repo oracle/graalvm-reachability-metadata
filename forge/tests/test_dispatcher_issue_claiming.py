@@ -3,6 +3,9 @@
 # You should have received a copy of the CC0 legalcode along with this
 # work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 
+from contextlib import redirect_stdout
+from unittest.mock import MagicMock
+
 from dispatcher_test_support import *  # noqa: F401,F403 - shared dispatcher test fixtures
 
 
@@ -231,3 +234,55 @@ class IssueClaimLockTests(unittest.TestCase):
 
         clear_issue_assignees.assert_called_once_with(1412)
         self.assertIn("could not set project item", stderr.getvalue())
+
+
+class ReleaseUnpublishedChunkedLabelTests(unittest.TestCase):
+    def _claimed_issue(self, worktree_path: str, labels: list[str]) -> records.ClaimedIssue:
+        return records.ClaimedIssue(
+            issue={"number": 1412, "labels": [{"name": label} for label in labels]},
+            label=forge_metadata.LABEL_LIBRARY_NEW,
+            item_id="item-1",
+            base_reachability_metadata_path=worktree_path,
+            worktree_path=worktree_path,
+            scratch_metrics_repo_path=worktree_path,
+            issue_coordinates="org.example:lib:1.0.0",
+        )
+
+    def _revert(self, claimed_issue: records.ClaimedIssue) -> MagicMock:
+        with patch.object(issue_claiming, "remove_issue_label") as remove_issue_label, \
+                patch.object(issue_claiming, "revert_issue_claim") as revert_issue_claim, \
+                redirect_stdout(io.StringIO()):
+            issue_claiming.revert_claimed_issue(claimed_issue, "failure")
+        revert_issue_claim.assert_called_once_with("item-1", 1412, "failure")
+        return remove_issue_label
+
+    def test_revert_removes_label_applied_by_an_unpublished_claim(self) -> None:
+        # A failed first chunk leaves no report on master, so a kept label
+        # would make every later claim fail (§FS-forge-chunked-dynamic-access).
+        with tempfile.TemporaryDirectory() as worktree:
+            claimed_issue = self._claimed_issue(worktree, [config.LABEL_CHUNKED_DYNAMIC_ACCESS])
+            report = DynamicAccessExhaustReport.create(coordinate="org.example:lib:1.0.0", issue_number=1412)
+            report.save(report.default_path(worktree))
+
+            remove_issue_label = self._revert(claimed_issue)
+
+        remove_issue_label.assert_called_once_with(1412, config.LABEL_CHUNKED_DYNAMIC_ACCESS)
+        self.assertFalse(issue_queue.issue_has_label(claimed_issue.issue, config.LABEL_CHUNKED_DYNAMIC_ACCESS))
+
+    def test_revert_keeps_label_after_a_published_chunk(self) -> None:
+        with tempfile.TemporaryDirectory() as worktree:
+            claimed_issue = self._claimed_issue(worktree, [config.LABEL_CHUNKED_DYNAMIC_ACCESS])
+            report = DynamicAccessExhaustReport.create(coordinate="org.example:lib:1.0.0", issue_number=1412)
+            report.record_publication_identity("publication-1", "forge/1412-chunk-1")
+            report.save(report.default_path(worktree))
+
+            remove_issue_label = self._revert(claimed_issue)
+
+        remove_issue_label.assert_not_called()
+        self.assertTrue(issue_queue.issue_has_label(claimed_issue.issue, config.LABEL_CHUNKED_DYNAMIC_ACCESS))
+
+    def test_revert_leaves_unchunked_issue_labels_alone(self) -> None:
+        with tempfile.TemporaryDirectory() as worktree:
+            remove_issue_label = self._revert(self._claimed_issue(worktree, [forge_metadata.LABEL_LIBRARY_NEW]))
+
+        remove_issue_label.assert_not_called()

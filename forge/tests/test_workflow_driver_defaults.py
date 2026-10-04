@@ -114,18 +114,19 @@ class WorkflowDriverDefaultTests(unittest.TestCase):
                 patch.object(dynamic_access, "resolve_dynamic_access_report_path", return_value="/worktree/report.json"), \
                 patch.object(dynamic_access, "load_dynamic_access_coverage_report", return_value=_report(15)), \
                 patch.object(dynamic_access, "add_issue_label") as add_issue_label, \
+                patch.object(dynamic_access, "log_detail") as log_detail, \
                 patch.dict(os.environ, {}, clear=True):
             for strategy_name in strategies:
                 with self.subTest(strategy=strategy_name):
-                    output = io.StringIO()
-                    with redirect_stdout(output):
-                        chunk_count = dynamic_access.prepare_dynamic_access_chunking(
-                            _claimed_issue(forge_metadata.LABEL_LIBRARY_NEW),
-                            strategy_name,
-                        )
+                    log_detail.reset_mock()
+                    chunk_count = dynamic_access.prepare_dynamic_access_chunking(
+                        _claimed_issue(forge_metadata.LABEL_LIBRARY_NEW),
+                        strategy_name,
+                    )
                     self.assertIsNone(chunk_count)
-                    self.assertIn("total_uncovered_classes=15", output.getvalue())
-                    self.assertIn("threshold=15", output.getvalue())
+                    decision: str = log_detail.call_args.args[1]
+                    self.assertIn("total_uncovered_classes=15", decision)
+                    self.assertIn("threshold=15", decision)
         add_issue_label.assert_not_called()
         self.assertEqual(prepare_report.call_count, len(strategies))
         self.assertEqual(generate_report.call_count, len(strategies))
@@ -134,15 +135,14 @@ class WorkflowDriverDefaultTests(unittest.TestCase):
         with patch.object(dynamic_access, "_prepare_new_library_dynamic_access_report", return_value=True), \
                 patch.object(dynamic_access, "_generate_dispatcher_dynamic_access_report"), \
                 patch.object(dynamic_access, "resolve_dynamic_access_report_path", return_value="/worktree/report.json"), \
-                patch.object(dynamic_access, "load_dynamic_access_coverage_report", side_effect=FileNotFoundError):
-            output = io.StringIO()
-            with redirect_stdout(output):
-                chunk_count = dynamic_access.prepare_dynamic_access_chunking(
-                    _claimed_issue(forge_metadata.LABEL_LIBRARY_NEW),
-                    "dynamic_access_bulk_pi_gpt-5.6-sol",
-                )
+                patch.object(dynamic_access, "load_dynamic_access_coverage_report", side_effect=FileNotFoundError), \
+                patch.object(dynamic_access, "log_detail") as log_detail:
+            chunk_count = dynamic_access.prepare_dynamic_access_chunking(
+                _claimed_issue(forge_metadata.LABEL_LIBRARY_NEW),
+                "dynamic_access_bulk_pi_gpt-5.6-sol",
+            )
         self.assertIsNone(chunk_count)
-        self.assertIn("chunking disabled for this run", output.getvalue())
+        self.assertIn("chunking disabled for this run", log_detail.call_args.args[1])
 
     def test_bulk_new_library_outside_native_image_disables_chunking(self) -> None:
         with patch.object(dynamic_access, "_prepare_new_library_dynamic_access_report", return_value=False), \
