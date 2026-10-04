@@ -208,6 +208,11 @@ public class N1qlJoinResolverInnerN1qlJoinProxyTest {
         }
 
         @Override
+        public String getBucketName() {
+            return "bucket";
+        }
+
+        @Override
         @SuppressWarnings("unchecked")
         public <T> ReactiveFindByQuery<T> findByQuery(Class<T> domainType) {
             return (ReactiveFindByQuery<T>) query;
