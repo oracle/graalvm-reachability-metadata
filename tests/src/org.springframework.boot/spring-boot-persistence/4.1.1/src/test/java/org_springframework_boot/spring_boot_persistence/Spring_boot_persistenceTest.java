@@ -19,10 +19,17 @@ import org.springframework.boot.autoconfigure.AutoConfigurationPackages;
 import org.springframework.boot.persistence.autoconfigure.EntityScan;
 import org.springframework.boot.persistence.autoconfigure.EntityScanPackages;
 import org.springframework.boot.persistence.autoconfigure.EntityScanner;
+import org.springframework.boot.persistence.autoconfigure.PersistenceExceptionTranslationAutoConfiguration;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
+import org.springframework.dao.InvalidDataAccessApiUsageException;
+import org.springframework.dao.support.PersistenceExceptionTranslator;
+import org.springframework.stereotype.Repository;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class Spring_boot_persistenceTest {
 
@@ -67,10 +74,47 @@ public class Spring_boot_persistenceTest {
         }
     }
 
+    @Test
+    void persistenceExceptionTranslationAutoConfigurationTranslatesRepositoryExceptions() {
+        try (AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(
+                PersistenceExceptionTranslationConfiguration.class)) {
+            RepositoryOperations repository = context.getBean(RepositoryOperations.class);
+
+            assertThatThrownBy(repository::load)
+                    .isInstanceOf(InvalidDataAccessApiUsageException.class)
+                    .hasCauseInstanceOf(IllegalStateException.class);
+        }
+    }
+
     @EntityScan(basePackages = "org_springframework_boot.spring_boot_persistence",
             basePackageClasses = ScannedEntityType.class)
     @Configuration
     static class EntityScanConfiguration {
+
+    }
+
+    @Configuration
+    @Import(PersistenceExceptionTranslationAutoConfiguration.class)
+    static class PersistenceExceptionTranslationConfiguration {
+
+        @Bean
+        PersistenceExceptionTranslator persistenceExceptionTranslator() {
+            return exception -> new InvalidDataAccessApiUsageException("Translated", exception);
+        }
+
+        @Bean
+        RepositoryOperations repositoryOperations() {
+            return new RepositoryOperations();
+        }
+
+    }
+
+    @Repository
+    public static class RepositoryOperations {
+
+        public void load() {
+            throw new IllegalStateException("Database unavailable");
+        }
 
     }
 
