@@ -3,6 +3,14 @@
 Rendered by Forge from the pre-push branch review of §FS-local-branch-review.
 Newest entry first; every non-approval is recorded, including one a repair later cleared.
 
+## 2026-10-04 — io.github.openfeign.querydsl:querydsl-apt:6.11 (#9744)
+
+**Duplicate new-library run produces a metrics-only contribution**
+
+At base 3bdcb3cd7696e02d4f037d9c5baf0ce2152f93e9, metadata, index, stats, publication data, and all eight test-project files for io.github.openfeign.querydsl:querydsl-apt:6.11 already exist. Diffing that base against 78d9e9cc843c80862b04138492d820497a78d5dc changes only stats/io.github.openfeign.querydsl/querydsl-apt/6.11/execution-metrics.json; every other coordinate file has the same blob ID. Reverting that overwrite would leave no contribution, so this cannot be repaired within the coordinate into a new-library change. Under §FS-contribution-contract.5.2 and §FS-contribution-contract.5.3, prevention requires a shared Forge gate and the contribution escalates under §FS-contribution-contract.5.5.
+
+Infrastructure issue: https://github.com/oracle/graalvm-reachability-metadata/issues/10452 (#10452)
+
 ## 2026-10-04 — ch.qos.logback:logback-classic:1.6.2 (#10425)
 
 **Runtime repair weakened an unrelated passing test**
