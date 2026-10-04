@@ -8,11 +8,15 @@ package org_apache_activemq.activemq_broker;
 
 import org.apache.activemq.broker.jmx.AnnotatedMBean;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
+
+import java.util.concurrent.TimeUnit;
 
 import javax.management.ObjectName;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@Timeout(value = 50, unit = TimeUnit.SECONDS)
 public class AnnotatedMBeanTest {
 
     private static final String AUDIT_PROPERTY = "org.apache.activemq.audit";
