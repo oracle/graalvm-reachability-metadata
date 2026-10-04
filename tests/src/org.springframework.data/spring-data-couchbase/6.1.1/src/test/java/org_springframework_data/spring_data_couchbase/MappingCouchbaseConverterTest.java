@@ -6,6 +6,7 @@
  */
 package org_springframework_data.spring_data_couchbase;
 
+import java.util.Collections;
 import java.util.Map;
 
 import org.junit.jupiter.api.Test;
@@ -14,6 +15,7 @@ import org.springframework.data.couchbase.core.convert.MappingCouchbaseConverter
 import org.springframework.data.couchbase.core.mapping.CouchbaseDocument;
 import org.springframework.data.couchbase.core.mapping.CouchbaseMappingContext;
 import org.springframework.data.couchbase.core.mapping.Document;
+import org.springframework.data.convert.CustomConversions;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -21,7 +23,10 @@ public class MappingCouchbaseConverterTest {
 
     @Test
     void readsClassValuedDocumentProperties() {
-        MappingCouchbaseConverter converter = new MappingCouchbaseConverter(new CouchbaseMappingContext());
+        CustomConversions conversions = new CustomConversions(CustomConversions.StoreConversions.NONE,
+                Collections.emptyList());
+        MappingCouchbaseConverter converter = new MappingCouchbaseConverter(new CouchbaseMappingContext(), null,
+                conversions);
         CouchbaseDocument types = new CouchbaseDocument().put("target", String.class.getName());
         CouchbaseDocument source = new CouchbaseDocument().put("types", types);
 
