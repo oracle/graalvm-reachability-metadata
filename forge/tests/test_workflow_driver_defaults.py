@@ -4,9 +4,12 @@
 # work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 
 import io
+import os
+import tempfile
 import unittest
 from contextlib import redirect_stdout
 from pathlib import Path
+from unittest.mock import MagicMock
 from unittest.mock import patch
 
 import forge_metadata
@@ -15,8 +18,13 @@ from dispatcher import (
     config,
     driver_invocation,
     dynamic_access,
+    publication,
     records,
 )
+from ai_workflows.core.workflow_strategy import RUN_STATUS_CHUNK_READY
+from ai_workflows.core.workflow_strategy import RUN_STATUS_SUCCESS
+from utility_scripts.dynamic_access_exhaust_report import DynamicAccessExhaustReport
+from utility_scripts.dynamic_access_exhaust_report import find_dynamic_access_exhaust_report_path
 from utility_scripts.dynamic_access_report import DynamicAccessClass, DynamicAccessCoverageReport
 from utility_scripts.strategy_loader import load_predefined_strategies
 
@@ -45,19 +53,28 @@ def _report(uncovered_class_count: int) -> DynamicAccessCoverageReport:
 def _claimed_issue(
         label: str,
         continuation_marker: ContinuationMarker | None = None,
+        worktree_path: str = "/worktree",
+        chunked: bool = False,
 ) -> records.ClaimedIssue:
+    labels: list[dict[str, str]] = [{"name": config.LABEL_CHUNKED_DYNAMIC_ACCESS}] if chunked else []
     return records.ClaimedIssue(
-        issue={"number": 1412},
+        issue={"number": 1412, "labels": labels},
         label=label,
         item_id="item-1",
         base_reachability_metadata_path="/repo",
-        worktree_path="/worktree",
+        worktree_path=worktree_path,
         scratch_metrics_repo_path="/metrics",
         issue_coordinates="g:a:2.0",
         current_coordinates="g:a:1.0",
         new_version="2.0",
         continuation_marker=continuation_marker,
     )
+
+
+def _temporary_worktree(test_case: unittest.TestCase) -> str:
+    worktree = tempfile.TemporaryDirectory()
+    test_case.addCleanup(worktree.cleanup)
+    return worktree.name
 
 
 class WorkflowDriverDefaultTests(unittest.TestCase):
@@ -84,9 +101,9 @@ class WorkflowDriverDefaultTests(unittest.TestCase):
             script,
         )
 
-    def test_bulk_phase_strategies_prepare_report_before_deferring_selection(self) -> None:
-        # The deferred decision is the chunk boundary, not the report the bulk
-        # phase measures itself against (§FS-forge-chunked-dynamic-access).
+    def test_bulk_phase_strategies_prepare_report_and_skip_chunking_at_threshold(self) -> None:
+        # Bulk only lowers the uncovered count, so a library at or below the
+        # threshold is never chunked (§FS-forge-chunked-dynamic-access).
         strategies = (
             "dynamic_access_bulk_pi_gpt-5.6-sol",
             "optimistic_dynamic_access_iterative_pi_gpt-5.6-sol",
@@ -95,7 +112,9 @@ class WorkflowDriverDefaultTests(unittest.TestCase):
                 as prepare_report, \
                 patch.object(dynamic_access, "_generate_dispatcher_dynamic_access_report") as generate_report, \
                 patch.object(dynamic_access, "resolve_dynamic_access_report_path", return_value="/worktree/report.json"), \
-                patch.object(dynamic_access, "load_dynamic_access_coverage_report", return_value=_report(3)):
+                patch.object(dynamic_access, "load_dynamic_access_coverage_report", return_value=_report(15)), \
+                patch.object(dynamic_access, "add_issue_label") as add_issue_label, \
+                patch.dict(os.environ, {}, clear=True):
             for strategy_name in strategies:
                 with self.subTest(strategy=strategy_name):
                     output = io.StringIO()
@@ -104,12 +123,14 @@ class WorkflowDriverDefaultTests(unittest.TestCase):
                             _claimed_issue(forge_metadata.LABEL_LIBRARY_NEW),
                             strategy_name,
                         )
-                    self.assertEqual(chunk_count, 15)
-                    self.assertIn("uncovered_classes=3, class_boundary=15", output.getvalue())
+                    self.assertIsNone(chunk_count)
+                    self.assertIn("total_uncovered_classes=15", output.getvalue())
+                    self.assertIn("threshold=15", output.getvalue())
+        add_issue_label.assert_not_called()
         self.assertEqual(prepare_report.call_count, len(strategies))
         self.assertEqual(generate_report.call_count, len(strategies))
 
-    def test_bulk_deferral_names_an_unavailable_report(self) -> None:
+    def test_bulk_strategy_without_a_report_is_not_chunked(self) -> None:
         with patch.object(dynamic_access, "_prepare_new_library_dynamic_access_report", return_value=True), \
                 patch.object(dynamic_access, "_generate_dispatcher_dynamic_access_report"), \
                 patch.object(dynamic_access, "resolve_dynamic_access_report_path", return_value="/worktree/report.json"), \
@@ -120,8 +141,8 @@ class WorkflowDriverDefaultTests(unittest.TestCase):
                     _claimed_issue(forge_metadata.LABEL_LIBRARY_NEW),
                     "dynamic_access_bulk_pi_gpt-5.6-sol",
                 )
-        self.assertEqual(chunk_count, 15)
-        self.assertIn("uncovered_classes=unavailable", output.getvalue())
+        self.assertIsNone(chunk_count)
+        self.assertIn("chunking disabled for this run", output.getvalue())
 
     def test_bulk_new_library_outside_native_image_disables_chunking(self) -> None:
         with patch.object(dynamic_access, "_prepare_new_library_dynamic_access_report", return_value=False), \
@@ -133,7 +154,7 @@ class WorkflowDriverDefaultTests(unittest.TestCase):
         self.assertIsNone(chunk_count)
         generate_report.assert_not_called()
 
-    def test_library_update_preparation_precedes_the_deferred_decision(self) -> None:
+    def test_library_update_preparation_precedes_the_chunked_mode_decision(self) -> None:
         with patch.object(dynamic_access, "_prepare_library_update_dynamic_access_report") as prepare_target, \
                 patch.object(dynamic_access, "_generate_dispatcher_dynamic_access_report") as generate_report, \
                 patch.object(dynamic_access, "resolve_dynamic_access_report_path", return_value="/worktree/report.json"), \
@@ -142,7 +163,7 @@ class WorkflowDriverDefaultTests(unittest.TestCase):
                 _claimed_issue(forge_metadata.LABEL_LIBRARY_UPDATE),
                 "library_update_optimistic_pi_gpt-5.6-sol",
             )
-        self.assertEqual(chunk_count, 15)
+        self.assertIsNone(chunk_count)
         prepare_target.assert_called_once()
         generate_report.assert_called_once()
 
@@ -161,6 +182,8 @@ class WorkflowDriverDefaultTests(unittest.TestCase):
         claimed_issue = _claimed_issue(
             forge_metadata.LABEL_LIBRARY_NEW,
             continuation_marker=marker,
+            worktree_path=_temporary_worktree(self),
+            chunked=True,
         )
 
         with patch.object(dynamic_access, "_prepare_new_library_dynamic_access_report") as prepare_report, \
@@ -196,6 +219,8 @@ class WorkflowDriverDefaultTests(unittest.TestCase):
         claimed_issue = _claimed_issue(
             forge_metadata.LABEL_LIBRARY_NEW,
             continuation_marker=marker,
+            worktree_path=_temporary_worktree(self),
+            chunked=True,
         )
 
         with patch.object(dynamic_access, "_prepare_new_library_dynamic_access_report") as prepare_report, \
@@ -215,6 +240,72 @@ class WorkflowDriverDefaultTests(unittest.TestCase):
         self.assertEqual(chunk_count, 0)
         prepare_report.assert_not_called()
         generate_report.assert_called_once()
+
+    def _prepare_bulk_chunking(
+            self,
+            uncovered_class_count: int,
+            chunked: bool = False,
+    ) -> tuple[int | None, records.ClaimedIssue, list[str], MagicMock]:
+        claimed_issue = _claimed_issue(
+            forge_metadata.LABEL_LIBRARY_NEW,
+            worktree_path=_temporary_worktree(self),
+            chunked=chunked,
+        )
+        with patch.object(dynamic_access, "_prepare_new_library_dynamic_access_report", return_value=True), \
+                patch.object(dynamic_access, "_generate_dispatcher_dynamic_access_report"), \
+                patch.object(dynamic_access, "resolve_dynamic_access_report_path", return_value="/worktree/report.json"), \
+                patch.object(
+                    dynamic_access,
+                    "load_dynamic_access_coverage_report",
+                    return_value=_report(uncovered_class_count),
+                ), \
+                patch.object(dynamic_access, "add_issue_label") as add_issue_label, \
+                patch.dict(os.environ, {}, clear=True), \
+                redirect_stdout(io.StringIO()):
+            chunk_count = dynamic_access.prepare_dynamic_access_chunking(
+                claimed_issue,
+                "optimistic_dynamic_access_iterative_pi_gpt-5.6-sol",
+            )
+        exhaust_report_path = find_dynamic_access_exhaust_report_path(
+            claimed_issue.worktree_path,
+            claimed_issue.issue_coordinates,
+        )
+        pr_args = publication.build_chunked_dynamic_access_pr_args(exhaust_report_path, RUN_STATUS_SUCCESS)
+        return chunk_count, claimed_issue, pr_args, add_issue_label
+
+    def test_bulk_strategy_chunks_a_library_over_the_threshold_at_claim(self) -> None:
+        # The label and exhaust report exist before the workflow runs, so a run
+        # that finishes the whole library publishes one final chunk
+        # (§FS-forge-chunked-dynamic-access).
+        chunk_count, claimed_issue, pr_args, add_issue_label = self._prepare_bulk_chunking(16)
+
+        self.assertEqual(chunk_count, 15)
+        add_issue_label.assert_called_once_with(1412, config.LABEL_CHUNKED_DYNAMIC_ACCESS)
+        exhaust_report_path = find_dynamic_access_exhaust_report_path(
+            claimed_issue.worktree_path,
+            claimed_issue.issue_coordinates,
+        )
+        self.assertIsNotNone(exhaust_report_path)
+        self.assertEqual(DynamicAccessExhaustReport.load(exhaust_report_path).class_threshold, 15)
+        self.assertEqual(pr_args, ["--chunked-dynamic-access", "--chunk-final"])
+        self.assertEqual(
+            publication.build_chunked_dynamic_access_pr_args(exhaust_report_path, RUN_STATUS_CHUNK_READY),
+            ["--chunked-dynamic-access"],
+        )
+
+    def test_bulk_strategy_publishes_a_library_at_the_threshold_unchunked(self) -> None:
+        chunk_count, _, pr_args, add_issue_label = self._prepare_bulk_chunking(15)
+
+        self.assertIsNone(chunk_count)
+        add_issue_label.assert_not_called()
+        self.assertEqual(pr_args, [])
+
+    def test_bulk_strategy_keeps_an_already_chunked_issue_chunked(self) -> None:
+        chunk_count, _, pr_args, add_issue_label = self._prepare_bulk_chunking(3, chunked=True)
+
+        self.assertEqual(chunk_count, 15)
+        add_issue_label.assert_not_called()
+        self.assertEqual(pr_args, ["--chunked-dynamic-access", "--chunk-final"])
 
     def test_coverage_composites_declare_the_reporter_metadata_prompt(self) -> None:
         # A library-update issue body may carry reporter-requested metadata, and

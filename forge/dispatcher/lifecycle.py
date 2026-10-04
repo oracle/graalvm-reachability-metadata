@@ -57,18 +57,13 @@ from dispatcher.worktrees import cleanup_issue_workspace
 
 from utility_scripts.run_location import enter_phase
 from utility_scripts.run_location import run_step
-from dispatcher.config import LABEL_CHUNKED_DYNAMIC_ACCESS
-from dispatcher.human_intervention import load_pending_run_metrics
-from dispatcher.issue_admin import add_issue_label
 from dispatcher.publication import (
     build_publication_handoff,
     prepare_java_fix_coverage_follow_up,
     preserve_fixture_preflight_evidence,
 )
 
-from ai_workflows.core.workflow_strategy import RUN_STATUS_CHUNK_READY
 from utility_scripts.continuation_marker import PHASE_PUBLICATION
-from utility_scripts.dynamic_access_exhaust_report import find_dynamic_access_exhaust_report_path
 from utility_scripts.run_location import STEP_PUBLISH_BRANCH
 
 def preserve_failed_work_for_follow_up(claimed_issue: ClaimedIssue) -> FailurePreservationResult | None:
@@ -216,7 +211,6 @@ def handle_completed_run(run_result: WorkflowRunResult) -> bool:
                 external=is_external_failure_exception(exc),
             )
             return False
-        apply_chunked_dynamic_access_completion_follow_up(claimed_issue)
         maybe_apply_human_intervention_follow_up(
             claimed_issue,
             workflow_success=True,
@@ -335,21 +329,6 @@ def process_claimed_issue_lifecycle(
                 file=sys.stderr,
             )
             traceback.print_exc()
-
-
-def apply_chunked_dynamic_access_completion_follow_up(claimed_issue: ClaimedIssue) -> None:
-    """Apply issue labels after a chunked dynamic-access part was published."""
-    run_metrics = load_pending_run_metrics(claimed_issue.scratch_metrics_repo_path)
-    workflow_status = None if run_metrics is None else run_metrics.get("status")
-    exhaust_report_path = find_dynamic_access_exhaust_report_path(
-        claimed_issue.worktree_path,
-        claimed_issue.issue_coordinates,
-    )
-    if exhaust_report_path is None:
-        return
-    issue_number = claimed_issue.issue["number"]
-    if workflow_status == RUN_STATUS_CHUNK_READY:
-        add_issue_label(issue_number, LABEL_CHUNKED_DYNAMIC_ACCESS)
 
 
 def finalize_successful_issue(
