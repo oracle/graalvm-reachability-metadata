@@ -6,9 +6,16 @@
  */
 package org_apache_tomcat_embed.tomcat_embed_el;
 
-import java.lang.reflect.Method;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 
-import org.apache.el.lang.FunctionMapperImpl;
+import jakarta.el.ELContext;
+import jakarta.el.ELProcessor;
+import jakarta.el.ExpressionFactory;
+import jakarta.el.ValueExpression;
 
 import org.junit.jupiter.api.Test;
 
@@ -17,17 +24,31 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class FunctionMapperImplInnerFunctionTest {
 
     @Test
-    void resolvesMappedFunction() throws ReflectiveOperationException {
-        FunctionMapperImpl mapper = new FunctionMapperImpl();
-        mapper.mapFunction("lib", "join", FunctionLibrary.class.getMethod("join"));
+    void evaluatesFunctionAfterExpressionSerialization()
+            throws ClassNotFoundException, IOException, NoSuchMethodException {
+        ELProcessor processor = new ELProcessor();
+        processor.defineFunction("lib", "join", FunctionLibrary.class.getName(), "join");
+        ELContext context = processor.getELManager().getELContext();
+        ValueExpression expression = ExpressionFactory.newInstance()
+                .createValueExpression(context, "${lib:join()}", Object.class);
 
-        Method mappedMethod = mapper.resolveFunction("lib", "join");
+        ValueExpression restoredExpression = roundTrip(expression);
 
-        assertThat(mappedMethod).isNotNull();
-        assertThat(mappedMethod.getDeclaringClass()).isEqualTo(FunctionLibrary.class);
-        assertThat(mappedMethod.getName()).isEqualTo("join");
-        assertThat(mappedMethod.getParameterTypes()).isEmpty();
-        assertThat(mappedMethod.invoke(null)).isEqualTo("joined");
+        Object value = restoredExpression.getValue(context);
+        assertThat(value).isEqualTo("joined");
+    }
+
+    private static ValueExpression roundTrip(ValueExpression expression)
+            throws ClassNotFoundException, IOException {
+        ByteArrayOutputStream output = new ByteArrayOutputStream();
+        try (ObjectOutputStream objectOutput = new ObjectOutputStream(output)) {
+            objectOutput.writeObject(expression);
+        }
+
+        try (ObjectInputStream objectInput =
+                new ObjectInputStream(new ByteArrayInputStream(output.toByteArray()))) {
+            return (ValueExpression) objectInput.readObject();
+        }
     }
 
     public static final class FunctionLibrary {
