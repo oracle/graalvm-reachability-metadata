@@ -15,7 +15,7 @@ public class SimpleTypeTest {
 
     @Test
     void resolvesArrayTypeToItsJavaClass() {
-        SimpleType type = new SimpleType("java.lang.String[]");
+        SimpleType type = new SimpleType("java.lang.String[]", "java.lang", "String[]");
 
         assertThat(type.getComponentType().getJavaClass()).isEqualTo(String.class);
         assertThat(type.getJavaClass()).isEqualTo(String[].class);

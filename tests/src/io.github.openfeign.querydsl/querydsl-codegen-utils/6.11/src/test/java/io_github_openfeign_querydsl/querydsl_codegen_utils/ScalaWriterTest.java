@@ -28,7 +28,7 @@ public class ScalaWriterTest {
         writer.end();
 
         assertThat(source.toString())
-                .contains("package example.generated", "@Deprecated", "Sample");
+                .contains("package example.generated", "@java.lang.Deprecated", "Sample");
     }
 
     private static SuppressWarnings suppressWarningsAnnotation() {
