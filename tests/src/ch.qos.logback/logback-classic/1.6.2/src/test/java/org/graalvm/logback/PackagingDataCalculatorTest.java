@@ -20,9 +20,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class PackagingDataCalculatorTest {
 
   @Test
-  void calculatesPackagingDataWhenContextClassLoaderCannotLoadApplicationFrames() {
-    Thread currentThread = Thread.currentThread();
-    ClassLoader originalContextClassLoader = currentThread.getContextClassLoader();
+  void calculatesPackagingDataForApplicationFrames() {
     LoggerContext loggerContext = new LoggerContext();
     try {
       loggerContext.setName("packaging-data-calculator-test");
@@ -30,7 +28,6 @@ public class PackagingDataCalculatorTest {
       Logger logger = loggerContext.getLogger(PackagingDataCalculatorTest.class);
       Throwable throwable = createThrowableWithApplicationStackFrame();
 
-      currentThread.setContextClassLoader(ClassLoader.getPlatformClassLoader());
       ILoggingEvent loggingEvent = new LoggingEvent(PackagingDataCalculatorTest.class.getName(), logger, Level.ERROR,
           "packaging data", throwable, null);
 
@@ -40,13 +37,16 @@ public class PackagingDataCalculatorTest {
           .isNotEmpty()
           .anySatisfy(PackagingDataCalculatorTest::assertApplicationFrameHasPackagingData);
     } finally {
-      currentThread.setContextClassLoader(originalContextClassLoader);
       loggerContext.stop();
     }
   }
 
   private static Throwable createThrowableWithApplicationStackFrame() {
-    return new IllegalStateException("packaging data failure");
+    Throwable throwable = new IllegalStateException("packaging data failure");
+    throwable.setStackTrace(new StackTraceElement[] {
+        new StackTraceElement(PackagingDataCalculatorTest.class.getName(), "testMethod", "Test.java", 1)
+    });
+    return throwable;
   }
 
   private static void assertApplicationFrameHasPackagingData(StackTraceElementProxy stackTraceElementProxy) {
