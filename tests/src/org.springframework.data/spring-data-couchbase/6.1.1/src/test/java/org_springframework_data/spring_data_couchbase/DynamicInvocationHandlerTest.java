@@ -53,7 +53,7 @@ public class DynamicInvocationHandlerTest {
                 .isInstanceOf(RuntimeException.class);
     }
 
-    private static TestRepository repository() {
+    static TestRepository repository() {
         CouchbaseMappingContext mappingContext = new CouchbaseMappingContext();
         mappingContext.setAutoIndexCreation(false);
         MappingCouchbaseConverter converter = new MappingCouchbaseConverter(mappingContext);
