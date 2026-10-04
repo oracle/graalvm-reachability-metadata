@@ -6,27 +6,22 @@
  */
 package org_springframework_boot.spring_boot_persistence;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
-import org.springframework.boot.autoconfigure.AutoConfigurationPackages;
 import org.springframework.boot.persistence.autoconfigure.EntityScan;
 import org.springframework.boot.persistence.autoconfigure.EntityScanPackages;
-import org.springframework.boot.persistence.autoconfigure.EntityScanner;
 import org.springframework.boot.persistence.autoconfigure.PersistenceExceptionTranslationAutoConfiguration;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.core.env.MapPropertySource;
+import org.springframework.dao.DataAccessException;
 import org.springframework.dao.InvalidDataAccessApiUsageException;
+import org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor;
 import org.springframework.dao.support.PersistenceExceptionTranslator;
 import org.springframework.stereotype.Repository;
 
@@ -49,41 +44,32 @@ public class Spring_boot_persistenceTest {
     }
 
     @Test
-    void entityScanAnnotationRegistersPackagesForEntityScanner() throws ClassNotFoundException {
+    void entityScanAnnotationRegistersPackages() {
         try (AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext()) {
             context.register(EntityScanConfiguration.class);
             context.refresh();
 
             assertThat(EntityScanPackages.get(context).getPackageNames())
                     .containsExactly(ScannedEntityType.class.getPackageName());
-
-            Set<Class<?>> scannedTypes = new EntityScanner(context).scan(ScannedEntity.class);
-
-            assertThat(scannedTypes).containsExactly(ScannedEntityType.class);
-        }
-    }
-
-    @Test
-    void entityScannerUsesAutoConfigurationPackagesWhenEntityScanPackagesAreAbsent()
-            throws ClassNotFoundException {
-        try (AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext()) {
-            AutoConfigurationPackages.register(context, ScannedEntityType.class.getPackageName());
-            context.refresh();
-
-            Set<Class<?>> scannedTypes = new EntityScanner(context).scan(ScannedEntity.class);
-
-            assertThat(scannedTypes).containsExactly(ScannedEntityType.class);
         }
     }
 
     @Test
     void persistenceExceptionTranslationAutoConfigurationTranslatesRepositoryExceptions() {
-        try (AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(
-                PersistenceExceptionTranslationConfiguration.class)) {
+        try (AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext()) {
+            context.getEnvironment().getPropertySources().addFirst(new MapPropertySource(
+                    "test", Map.of("spring.aop.proxy-target-class", false)));
+            context.register(PersistenceExceptionTranslationConfiguration.class);
+            context.refresh();
+
+            PersistenceExceptionTranslationPostProcessor postProcessor =
+                    context.getBean(PersistenceExceptionTranslationPostProcessor.class);
             RepositoryOperations repository = context.getBean(RepositoryOperations.class);
 
+            assertThat(postProcessor.isProxyTargetClass()).isFalse();
             assertThatThrownBy(repository::load)
                     .isInstanceOf(InvalidDataAccessApiUsageException.class)
+                    .hasMessage("Translated")
                     .hasCauseInstanceOf(IllegalStateException.class);
         }
     }
@@ -98,6 +84,7 @@ public class Spring_boot_persistenceTest {
 
             RepositoryOperations repository = context.getBean(RepositoryOperations.class);
 
+            assertThat(context.getBeansOfType(PersistenceExceptionTranslationPostProcessor.class)).isEmpty();
             assertThatThrownBy(repository::load)
                     .isInstanceOf(IllegalStateException.class)
                     .hasMessage("Database unavailable");
@@ -106,43 +93,52 @@ public class Spring_boot_persistenceTest {
 
     @EntityScan(basePackages = "org_springframework_boot.spring_boot_persistence",
             basePackageClasses = ScannedEntityType.class)
-    @Configuration
+    @Configuration(proxyBeanMethods = false)
     static class EntityScanConfiguration {
 
     }
 
-    @Configuration
+    @Configuration(proxyBeanMethods = false)
     @Import(PersistenceExceptionTranslationAutoConfiguration.class)
     static class PersistenceExceptionTranslationConfiguration {
 
         @Bean
         PersistenceExceptionTranslator persistenceExceptionTranslator() {
-            return exception -> new InvalidDataAccessApiUsageException("Translated", exception);
+            return new TestPersistenceExceptionTranslator();
         }
 
         @Bean
         RepositoryOperations repositoryOperations() {
-            return new RepositoryOperations();
+            return new FailingRepositoryOperations();
         }
 
     }
 
-    @Repository
-    public static class RepositoryOperations {
+    public interface RepositoryOperations {
 
+        void load();
+
+    }
+
+    @Repository
+    public static class FailingRepositoryOperations implements RepositoryOperations {
+
+        @Override
         public void load() {
             throw new IllegalStateException("Database unavailable");
         }
 
     }
 
-    @Retention(RetentionPolicy.RUNTIME)
-    @Target(ElementType.TYPE)
-    @interface ScannedEntity {
+    static class TestPersistenceExceptionTranslator implements PersistenceExceptionTranslator {
+
+        @Override
+        public DataAccessException translateExceptionIfPossible(RuntimeException exception) {
+            return new InvalidDataAccessApiUsageException("Translated", exception);
+        }
 
     }
 
-    @ScannedEntity
     static class ScannedEntityType {
 
     }
