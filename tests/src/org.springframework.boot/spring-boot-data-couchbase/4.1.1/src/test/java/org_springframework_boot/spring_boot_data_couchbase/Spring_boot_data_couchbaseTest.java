@@ -19,11 +19,13 @@ import org.springframework.boot.data.couchbase.autoconfigure.DataCouchbaseReposi
 import org.springframework.boot.persistence.autoconfigure.EntityScan;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.couchbase.CouchbaseClientFactory;
 import org.springframework.data.couchbase.core.convert.CouchbaseCustomConversions;
 import org.springframework.data.couchbase.core.convert.MappingCouchbaseConverter;
 import org.springframework.data.couchbase.core.convert.translation.TranslationService;
 import org.springframework.data.couchbase.core.mapping.CouchbaseMappingContext;
 import org.springframework.data.couchbase.core.mapping.Document;
+import org.springframework.data.couchbase.repository.CouchbaseRepository;
 import org.springframework.data.mapping.model.SnakeCaseFieldNamingStrategy;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -79,6 +81,21 @@ public class Spring_boot_data_couchbaseTest {
 
                     assertThat(mappingContext.isAutoIndexCreation()).isTrue();
                     assertThat(converter.getTypeKey()).isEqualTo("documentType");
+                });
+    }
+
+    @Test
+    void connectionDependentAutoConfigurationsRemainInactiveWithoutClientFactory() {
+        new ApplicationContextRunner()
+                .withConfiguration(AutoConfigurations.of(DataCouchbaseAutoConfiguration.class,
+                        DataCouchbaseReactiveAutoConfiguration.class,
+                        DataCouchbaseRepositoriesAutoConfiguration.class,
+                        DataCouchbaseReactiveRepositoriesAutoConfiguration.class))
+                .run((context) -> {
+                    assertThat(context).hasSingleBean(CouchbaseMappingContext.class);
+                    assertThat(context).hasSingleBean(MappingCouchbaseConverter.class);
+                    assertThat(context).doesNotHaveBean(CouchbaseClientFactory.class);
+                    assertThat(context).doesNotHaveBean(CouchbaseRepository.class);
                 });
     }
 
