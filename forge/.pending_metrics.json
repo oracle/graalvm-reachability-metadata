@@ -1,0 +1,51 @@
+{
+  "timestamp": "2026-10-04T04:28:33.649168Z",
+  "library": "org.springframework.boot:spring-boot-data-couchbase-test:4.1.1",
+  "starting_commit": "aa7f0ebb3ecb829ef8072059f85b29b4542dc4fe",
+  "ending_commit": "f3c1b819cc34827170260e6eb4b80f9cb67445cf",
+  "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-luna",
+  "agent": "pi",
+  "model": "gpt-5.6-luna",
+  "status": "failure",
+  "library_preparation_preflight": {
+    "status": "completed",
+    "action": "no_action",
+    "issue_number": 9754,
+    "issue_label": "library-new-request",
+    "library": "org.springframework.boot:spring-boot-data-couchbase-test:4.1.1",
+    "summary": "Test-slice module (@DataCouchbaseTest) for the just-merged spring-boot-data-couchbase autoconfiguration; its beans are testable via ApplicationContextRunner/annotation metadata without a live Couchbase server, matching the sibling module's proven approach. No Couchbase Docker image is pinned in this repo and none is needed for meaningful coverage.",
+    "deterministic_setup": [],
+    "agent_guidance": "Favor ApplicationContextRunner/annotation-metadata style assertions over tests that perform real repository CRUD against Couchbase — e.g. verify @DataCouchbaseTest's imported auto-configurations, DataCouchbaseTypeExcludeFilter inclusion/exclusion behavior on sample @Document/@Repository fixtures, and annotation attribute defaults, the same way the merged spring-boot-data-couchbase test (tests/src/org.springframework.boot/spring-boot-data-couchbase/4.1.1) validated bean wiring without a live connection. Add testImplementation on org.springframework.boot:spring-boot-couchbase, spring-boot-data-couchbase, spring-boot-autoconfigure and spring-boot-test as needed, following that sibling's build.gradle.",
+    "risks": [
+      "If local Gradle/Native-Image verification shows the slice annotation eagerly requires a live connection (contradicting the Couchbase SDK's documented non-blocking connect behavior), a CouchbaseContainer Docker image would need to be added — none is currently allow-listed in tests/tck-build-logic/src/main/resources/allowed-docker-images/."
+    ],
+    "applied_setup": [],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#9754 Support for org.springframework.boot:spring-boot-data-couchbase-test:4.1.1; label=library-new-request; body_chars=39"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "0 existing test file path(s) included"
+      }
+    ],
+    "model": "sonnet",
+    "input_tokens_used": 60,
+    "output_tokens_used": 26667
+  },
+  "metrics": {
+    "input_tokens_used": 394396,
+    "cached_input_tokens_used": 6966784,
+    "output_tokens_used": 45770,
+    "iterations": 12,
+    "cost_usd": 1.3657,
+    "generated_loc": 0,
+    "tested_library_loc": 0,
+    "metadata_entries": 0,
+    "code_coverage_percent": 0.0
+  },
+  "artifacts": {
+    "metadata_file": "None"
+  }
+}

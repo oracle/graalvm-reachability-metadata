@@ -1,0 +1,77 @@
+{
+  "continueFrom": "explore",
+  "coordinate": "org.springframework.boot:spring-boot-data-couchbase-test:4.1.1",
+  "failure": {
+    "operand": "reporter-requested metadata",
+    "phase": "explore",
+    "step": "generate_tests()"
+  },
+  "issueNumber": 9754,
+  "label": "library-new-request",
+  "libraryPreparationPreflight": {
+    "action": "no_action",
+    "agent_guidance": "Favor ApplicationContextRunner/annotation-metadata style assertions over tests that perform real repository CRUD against Couchbase \u2014 e.g. verify @DataCouchbaseTest's imported auto-configurations, DataCouchbaseTypeExcludeFilter inclusion/exclusion behavior on sample @Document/@Repository fixtures, and annotation attribute defaults, the same way the merged spring-boot-data-couchbase test (tests/src/org.springframework.boot/spring-boot-data-couchbase/4.1.1) validated bean wiring without a live connection. Add testImplementation on org.springframework.boot:spring-boot-couchbase, spring-boot-data-couchbase, spring-boot-autoconfigure and spring-boot-test as needed, following that sibling's build.gradle.",
+    "applied_setup": [],
+    "deterministic_setup": [],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#9754 Support for org.springframework.boot:spring-boot-data-couchbase-test:4.1.1; label=library-new-request; body_chars=39"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "0 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 60,
+    "issue_label": "library-new-request",
+    "issue_number": 9754,
+    "library": "org.springframework.boot:spring-boot-data-couchbase-test:4.1.1",
+    "model": "sonnet",
+    "output_tokens_used": 26667,
+    "risks": [
+      "If local Gradle/Native-Image verification shows the slice annotation eagerly requires a live connection (contradicting the Couchbase SDK's documented non-blocking connect behavior), a CouchbaseContainer Docker image would need to be added \u2014 none is currently allow-listed in tests/tck-build-logic/src/main/resources/allowed-docker-images/."
+    ],
+    "status": "completed",
+    "summary": "Test-slice module (@DataCouchbaseTest) for the just-merged spring-boot-data-couchbase autoconfiguration; its beans are testable via ApplicationContextRunner/annotation metadata without a live Couchbase server, matching the sibling module's proven approach. No Couchbase Docker image is pinned in this repo and none is needed for meaningful coverage."
+  },
+  "libraryUpdateRoute": null,
+  "newVersion": null,
+  "phases": {
+    "explore": {
+      "chunkClassCount": null,
+      "chunkProcessedClassCount": 0,
+      "exhaustedClasses": [],
+      "iteration": 8,
+      "status": "running"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": null,
+      "status": "skipped"
+    },
+    "publication": {
+      "branch": null,
+      "coverageFollowUpIssueNumber": null,
+      "isPushed": false,
+      "publicationId": null,
+      "publicationTimestamp": null,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": true,
+      "status": "completed"
+    }
+  },
+  "preservedBranch": "ai/kimeta/human-intervention/issue-9754-library-new-request-org.springframework.boot-spring-boot-data-couchbase-test-4.1.1-9160b634",
+  "publicationMetrics": {
+    "extras": {},
+    "library": "org.springframework.boot:spring-boot-data-couchbase-test:4.1.1",
+    "timestamp": "2026-10-04T04:28:33.649168Z"
+  },
+  "schemaVersion": 1,
+  "strategyName": "optimistic_dynamic_access_iterative_pi_gpt-5.6-luna"
+}

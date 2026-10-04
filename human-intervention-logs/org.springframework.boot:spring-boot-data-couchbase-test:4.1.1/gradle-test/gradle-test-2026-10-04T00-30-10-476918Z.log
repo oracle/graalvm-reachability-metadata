@@ -1,0 +1,185 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :tckTest
+====================
+Testing library: org.springframework.boot:spring-boot-data-couchbase-test:4.1.1
+Command: `/home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9754-e3005f16/gradlew nativeTest`
+Executing test...
+-------
+Starting a Gradle Daemon, 1 busy and 4 stopped Daemons could not be reused, use --status for details
+Shared read-only dependency cache is an incubating feature.
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+> Task :compileJava NO-SOURCE
+> Task :processResources NO-SOURCE
+> Task :classes UP-TO-DATE
+> Task :tck-test-support:compileJava UP-TO-DATE
+> Task :tck-test-support:processResources UP-TO-DATE
+> Task :tck-test-support:classes UP-TO-DATE
+> Task :jar UP-TO-DATE
+> Task :tck-test-support:jar UP-TO-DATE
+> Task :checkTestTimeoutAnnotations
+> Task :compileTestJava
+> Task :processTestResources NO-SOURCE
+> Task :testClasses
+
+> Task :test
+
+Spring_boot_data_couchbase_testTest > dataCouchbaseTestCanExcludeItsAutoConfiguration() FAILED
+    java.lang.IllegalStateException: Failed to load ApplicationContext for [MergedContextConfiguration@885e8a0 testClass = org_springframework_boot.spring_boot_data_couchbase_test.DataCouchbaseTestWithoutAutoConfiguration, locations = [], classes = [org_springframework_boot.spring_boot_data_couchbase_test.DataCouchbaseTestWithoutAutoConfigurationConfiguration], contextInitializerClasses = [], activeProfiles = [], propertySourceDescriptors = [], propertySourceProperties = ["org.springframework.boot.data.couchbase.test.autoconfigure.DataCouchbaseTestContextBootstrapper=true"], contextCustomizers = [org.springframework.boot.test.autoconfigure.OnFailureConditionReportContextCustomizerFactory$OnFailureConditionReportContextCustomizer@1ec49439, org.springframework.boot.test.autoconfigure.OverrideAutoConfigurationContextCustomizerFactory$DisableAutoConfigurationContextCustomizer@20d5d1ae, org.springframework.boot.test.context.PropertyMappingContextCustomizer@0, org.springframework.boot.test.context.filter.ExcludeFilterContextCustomizer@58728b07, org.springframework.boot.test.context.filter.annotation.TypeExcludeFiltersContextCustomizer@34be3d80, org.springframework.boot.test.json.DuplicateJsonObjectContextCustomizerFactory$DuplicateJsonObjectContextCustomizer@4af0e5e1, org.springframework.test.context.support.DynamicPropertiesContextCustomizer@0, org.springframework.boot.test.context.SpringBootTestAnnotation@79efc698], contextLoader = org.springframework.boot.test.context.SpringBootContextLoader, parent = null]
+        at org.springframework.test.context.cache.DefaultCacheAwareContextLoaderDelegate.lambda$loadContext$0(DefaultCacheAwareContextLoaderDelegate.java:195)
+        at org.springframework.test.context.cache.DefaultContextCache.put(DefaultContextCache.java:214)
+        at org.springframework.test.context.cache.DefaultCacheAwareContextLoaderDelegate.loadContext(DefaultCacheAwareContextLoaderDelegate.java:160)
+        at org.springframework.test.context.support.DefaultTestContext.getApplicationContext(DefaultTestContext.java:128)
+        at org_springframework_boot.spring_boot_data_couchbase_test.Spring_boot_data_couchbase_testTest.dataCouchbaseTestCanExcludeItsAutoConfiguration(Spring_boot_data_couchbase_testTest.java:64)
+
+        Caused by:
+        java.lang.IllegalStateException: java.lang.NoClassDefFoundError: org/springframework/boot/autoconfigure/condition/ConditionEvaluationReport
+            at org.springframework.boot.SpringApplication.handleRunFailure(SpringApplication.java:827)
+            at org.springframework.boot.SpringApplication.run(SpringApplication.java:331)
+            at org.springframework.boot.test.context.SpringBootContextLoader.lambda$loadContext$2(SpringBootContextLoader.java:155)
+            at org.springframework.util.function.ThrowingSupplier.get(ThrowingSupplier.java:58)
+            at org.springframework.util.function.ThrowingSupplier.get(ThrowingSupplier.java:46)
+            at org.springframework.boot.SpringApplication.withHook(SpringApplication.java:1465)
+            at org.springframework.boot.test.context.SpringBootContextLoader$ContextLoaderHook.run(SpringBootContextLoader.java:600)
+            at org.springframework.boot.test.context.SpringBootContextLoader.loadContext(SpringBootContextLoader.java:155)
+            at org.springframework.boot.test.context.SpringBootContextLoader.loadContext(SpringBootContextLoader.java:114)
+            at org.springframework.test.context.cache.DefaultCacheAwareContextLoaderDelegate.loadContextInternal(DefaultCacheAwareContextLoaderDelegate.java:247)
+            at org.springframework.test.context.cache.DefaultCacheAwareContextLoaderDelegate.lambda$loadContext$0(DefaultCacheAwareContextLoaderDelegate.java:167)
+            ... 4 more
+
+            Caused by:
+            java.lang.NoClassDefFoundError: org/springframework/boot/autoconfigure/condition/ConditionEvaluationReport
+                at org.springframework.boot.test.autoconfigure.OnFailureConditionReportContextCustomizerFactory$OnFailureConditionReportContextCustomizer.customizeContext(OnFailureConditionReportContextCustomizerFactory.java:58)
+                at org.springframework.boot.test.context.SpringBootContextLoader$ContextCustomizerAdapter.initialize(SpringBootContextLoader.java:486)
+                at org.springframework.boot.SpringApplication.applyInitializers(SpringApplication.java:623)
+                at org.springframework.boot.SpringApplication.prepareContext(SpringApplication.java:393)
+                at org.springframework.boot.SpringApplication.run(SpringApplication.java:320)
+                ... 13 more
+
+                Caused by:
+                java.lang.ClassNotFoundException: org.springframework.boot.autoconfigure.condition.ConditionEvaluationReport
+                    at java.base/jdk.internal.loader.BuiltinClassLoader.loadClass(BuiltinClassLoader.java:580)
+                    at java.base/java.lang.ClassLoader.loadClass(ClassLoader.java:490)
+                    ... 18 more
+
+Spring_boot_data_couchbase_testTest > dataCouchbaseTestBootstrapsSliceWithPropertiesAndFilters() FAILED
+    java.lang.IllegalStateException: Failed to load ApplicationContext for [MergedContextConfiguration@7ce960b2 testClass = org_springframework_boot.spring_boot_data_couchbase_test.DataCouchbaseSliceScenario, locations = [], classes = [org_springframework_boot.spring_boot_data_couchbase_test.DataCouchbaseSliceConfiguration], contextInitializerClasses = [], activeProfiles = [], propertySourceDescriptors = [], propertySourceProperties = ["spring.data.couchbase.type-key=documentKind", "org.springframework.boot.data.couchbase.test.autoconfigure.DataCouchbaseTestContextBootstrapper=true"], contextCustomizers = [org.springframework.boot.test.autoconfigure.OnFailureConditionReportContextCustomizerFactory$OnFailureConditionReportContextCustomizer@1ec49439, org.springframework.boot.test.autoconfigure.OverrideAutoConfigurationContextCustomizerFactory$DisableAutoConfigurationContextCustomizer@20d5d1ae, org.springframework.boot.test.context.PropertyMappingContextCustomizer@0, org.springframework.boot.test.context.filter.ExcludeFilterContextCustomizer@58728b07, org.springframework.boot.test.context.filter.annotation.TypeExcludeFiltersContextCustomizer@a8bc9f88, org.springframework.boot.test.json.DuplicateJsonObjectContextCustomizerFactory$DuplicateJsonObjectContextCustomizer@4af0e5e1, org.springframework.test.context.support.DynamicPropertiesContextCustomizer@0, org.springframework.boot.test.context.SpringBootTestAnnotation@79efc698], contextLoader = org.springframework.boot.test.context.SpringBootContextLoader, parent = null]
+        at org.springframework.test.context.cache.DefaultCacheAwareContextLoaderDelegate.lambda$loadContext$0(DefaultCacheAwareContextLoaderDelegate.java:195)
+        at org.springframework.test.context.cache.DefaultContextCache.put(DefaultContextCache.java:214)
+        at org.springframework.test.context.cache.DefaultCacheAwareContextLoaderDelegate.loadContext(DefaultCacheAwareContextLoaderDelegate.java:160)
+        at org.springframework.test.context.support.DefaultTestContext.getApplicationContext(DefaultTestContext.java:128)
+        at org_springframework_boot.spring_boot_data_couchbase_test.Spring_boot_data_couchbase_testTest.dataCouchbaseTestBootstrapsSliceWithPropertiesAndFilters(Spring_boot_data_couchbase_testTest.java:44)
+
+        Caused by:
+        java.lang.IllegalStateException: java.lang.NoClassDefFoundError: org/springframework/boot/autoconfigure/condition/ConditionEvaluationReport
+            at org.springframework.boot.SpringApplication.handleRunFailure(SpringApplication.java:827)
+            at org.springframework.boot.SpringApplication.run(SpringApplication.java:331)
+            at org.springframework.boot.test.context.SpringBootContextLoader.lambda$loadContext$2(SpringBootContextLoader.java:155)
+            at org.springframework.util.function.ThrowingSupplier.get(ThrowingSupplier.java:58)
+            at org.springframework.util.function.ThrowingSupplier.get(ThrowingSupplier.java:46)
+            at org.springframework.boot.SpringApplication.withHook(SpringApplication.java:1465)
+            at org.springframework.boot.test.context.SpringBootContextLoader$ContextLoaderHook.run(SpringBootContextLoader.java:600)
+            at org.springframework.boot.test.context.SpringBootContextLoader.loadContext(SpringBootContextLoader.java:155)
+            at org.springframework.boot.test.context.SpringBootContextLoader.loadContext(SpringBootContextLoader.java:114)
+            at org.springframework.test.context.cache.DefaultCacheAwareContextLoaderDelegate.loadContextInternal(DefaultCacheAwareContextLoaderDelegate.java:247)
+            at org.springframework.test.context.cache.DefaultCacheAwareContextLoaderDelegate.lambda$loadContext$0(DefaultCacheAwareContextLoaderDelegate.java:167)
+            ... 4 more
+
+            Caused by:
+            java.lang.NoClassDefFoundError: org/springframework/boot/autoconfigure/condition/ConditionEvaluationReport
+                at org.springframework.boot.test.autoconfigure.OnFailureConditionReportContextCustomizerFactory$OnFailureConditionReportContextCustomizer.customizeContext(OnFailureConditionReportContextCustomizerFactory.java:58)
+                at org.springframework.boot.test.context.SpringBootContextLoader$ContextCustomizerAdapter.initialize(SpringBootContextLoader.java:486)
+                at org.springframework.boot.SpringApplication.applyInitializers(SpringApplication.java:623)
+                at org.springframework.boot.SpringApplication.prepareContext(SpringApplication.java:393)
+                at org.springframework.boot.SpringApplication.run(SpringApplication.java:320)
+                ... 13 more
+
+                Caused by:
+                java.lang.ClassNotFoundException: org.springframework.boot.autoconfigure.condition.ConditionEvaluationReport
+                    at org.springframework.boot.test.autoconfigure.OnFailureConditionReportContextCustomizerFactory$OnFailureConditionReportContextCustomizer.customizeContext(OnFailureConditionReportContextCustomizerFactory.java:58)
+                    ... 17 more
+
+Spring_boot_data_couchbase_testTest > autoConfigureDataCouchbaseProvidesCouchbaseInfrastructure() FAILED
+    java.lang.AssertionError: 
+    Expected size: 1 but was: 0 in:
+    {}
+        at org_springframework_boot.spring_boot_data_couchbase_test.Spring_boot_data_couchbase_testTest.lambda$autoConfigureDataCouchbaseProvidesCouchbaseInfrastructure$0(Spring_boot_data_couchbase_testTest.java:34)
+        at org.springframework.boot.test.context.runner.AbstractApplicationContextRunner.accept(AbstractApplicationContextRunner.java:457)
+        at org.springframework.boot.test.context.runner.AbstractApplicationContextRunner.consumeAssertableContext(AbstractApplicationContextRunner.java:371)
+        at org.springframework.boot.test.context.runner.AbstractApplicationContextRunner.lambda$run$1(AbstractApplicationContextRunner.java:349)
+        at org.springframework.boot.test.util.TestPropertyValues.lambda$applyToSystemProperties$0(TestPropertyValues.java:176)
+        at org.springframework.boot.test.util.TestPropertyValues.applyToSystemProperties(TestPropertyValues.java:190)
+        at org.springframework.boot.test.util.TestPropertyValues.applyToSystemProperties(TestPropertyValues.java:175)
+        at org.springframework.boot.test.context.runner.AbstractApplicationContextRunner.lambda$run$0(AbstractApplicationContextRunner.java:349)
+        at org.springframework.boot.test.context.runner.AbstractApplicationContextRunner.withContextClassLoader(AbstractApplicationContextRunner.java:377)
+        at org.springframework.boot.test.context.runner.AbstractApplicationContextRunner.run(AbstractApplicationContextRunner.java:348)
+        at org_springframework_boot.spring_boot_data_couchbase_test.Spring_boot_data_couchbase_testTest.autoConfigureDataCouchbaseProvidesCouchbaseInfrastructure(Spring_boot_data_couchbase_testTest.java:33)
+
+3 tests completed, 3 failed
+
+> Task :test FAILED
+
+[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9754-e3005f16/tests/src/org.springframework.boot/spring-boot-data-couchbase-test/4.1.1/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':test'.
+> There were failing tests. See the report at: file:///home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9754-e3005f16/tests/src/org.springframework.boot/spring-boot-data-couchbase-test/4.1.1/build/reports/tests/test/index.html
+
+* Try:
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+
+BUILD FAILED in 14s
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+15 actionable tasks: 3 executed, 12 up-to-date
+
+> Task :tckTest FAILED
+
+[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9754-e3005f16/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':tckTest'.
+> Test for org.springframework.boot:spring-boot-data-couchbase-test:4.1.1 failed with exit code 1.
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD FAILED in 17s
+9 actionable tasks: 1 executed, 8 up-to-date

@@ -1,0 +1,28 @@
+## Decision
+
+**Research summary:** `org.springframework.boot:spring-boot-data-couchbase-test:4.1.1` is part of Spring Boot 4.x's module split — it's the test-slice support module (holding `@DataCouchbaseTest` and its `TypeExcludeFilter`) for the sibling `spring-boot-data-couchbase` autoconfiguration module, which this repo just merged in #10423 (commit `0377c66108`). I found:
+
+- The merged `spring-boot-data-couchbase` test proved its autoconfiguration beans (`CouchbaseMappingContext`, `MappingCouchbaseConverter`, property binding, etc.) are fully testable via `ApplicationContextRunner` **without a live Couchbase server**, by deliberately excluding the core client autoconfiguration (`CouchbaseAutoConfiguration`, which lives in the separate `spring-boot-couchbase` module) from the tested slice.
+- No Docker image for Couchbase is pinned anywhere in `tests/tck-build-logic/src/main/resources/allowed-docker-images/`, and no test in this repo (including the existing `com.couchbase.client` leaf modules) connects to a live Couchbase instance — this repo has never needed one.
+- The Couchbase Java SDK's `Cluster.connect(...)` is non-blocking; it doesn't throw just because no server is reachable — failures only surface on an actual KV/N1QL operation. So even a slice-context-loading test exercising `@DataCouchbaseTest`'s imported auto-configurations is unlikely to need a live backend, as long as generated tests stick to context/metadata-level assertions (mirroring the sibling) rather than performing real repository CRUD.
+- Wiring to sibling modules (`spring-boot-couchbase`, `spring-boot-data-couchbase`, `spring-boot-autoconfigure`, `spring-boot-test`) as `testImplementation` is exactly what the sibling PR did directly in its generated `build.gradle` — ordinary, inferable groundwork the generation agent handles itself (build.gradle is editable post-scaffold), not a hard-to-infer per-library fact this preflight step exists to catch.
+
+No concrete evidence surfaced for a required Docker image, extra dependency beyond ordinary sibling wiring, or a special environment/system property.
+
+```json
+{
+  "action": "no_action",
+  "summary": "Test-slice module (@DataCouchbaseTest) for the just-merged spring-boot-data-couchbase autoconfiguration; its beans are testable via ApplicationContextRunner/annotation metadata without a live Couchbase server, matching the sibling module's proven approach. No Couchbase Docker image is pinned in this repo and none is needed for meaningful coverage.",
+  "deterministic_setup": [],
+  "agent_guidance": "Favor ApplicationContextRunner/annotation-metadata style assertions over tests that perform real repository CRUD against Couchbase — e.g. verify @DataCouchbaseTest's imported auto-configurations, DataCouchbaseTypeExcludeFilter inclusion/exclusion behavior on sample @Document/@Repository fixtures, and annotation attribute defaults, the same way the merged spring-boot-data-couchbase test (tests/src/org.springframework.boot/spring-boot-data-couchbase/4.1.1) validated bean wiring without a live connection. Add testImplementation on org.springframework.boot:spring-boot-couchbase, spring-boot-data-couchbase, spring-boot-autoconfigure and spring-boot-test as needed, following that sibling's build.gradle.",
+  "risks": [
+    "If local Gradle/Native-Image verification shows the slice annotation eagerly requires a live connection (contradicting the Couchbase SDK's documented non-blocking connect behavior), a CouchbaseContainer Docker image would need to be added — none is currently allow-listed in tests/tck-build-logic/src/main/resources/allowed-docker-images/."
+  ]
+}
+```
+
+★ Insight ─────────────────────────────────────
+Spring Boot 4 split the old monolithic `spring-boot-autoconfigure` jar into dozens of small `spring-boot-<feature>` (autoconfig) and `spring-boot-<feature>-test` (test-slice) artifacts. The `-test` modules hold the `@XxxTest` annotations and their `TypeExcludeFilter`s — pure metadata/reflection classes — while the actual client wiring lives in the separately-versioned feature module they import. That's why checking the *sibling* artifact's already-merged test was more informative than trying to fetch the new jar directly.
+
+The Couchbase Java SDK's non-blocking `Cluster.connect()` is the load-bearing fact here: unlike a JDBC `DataSource`, it won't fail context refresh just because nothing is listening on the other end, which is exactly what let the merged `spring-boot-data-couchbase` test exercise real autoconfiguration beans with zero Docker infrastructure.
+─────────────────────────────────────────────────
