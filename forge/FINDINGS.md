@@ -3,6 +3,12 @@
 Rendered by Forge from the pre-push branch review of §FS-local-branch-review.
 Newest entry first; every non-approval is recorded, including one a repair later cleared.
 
+## 2026-10-04 — org.apache.tomcat.embed:tomcat-embed-el:10.1.0 (#10432)
+
+**Java runtime repair broadened into unrelated test coverage**
+
+The generated contribution violated the no-scope-creep and fix-by-weakening boundary in §FS-test-contract.2.9 and §FS-contribution-contract.4.8: beyond adapting the failing StaticFieldELResolver type assertion, it added an unrelated EL lambda scenario, added a malformed-expression MessageFactory scenario, and rewrote the already-passing FunctionMapper scenario solely to increase dynamic-access coverage. The observed JVM failure concerned only StaticFieldELResolver.getType returning null in Tomcat 10.1.
+
 ## 2026-10-03 — gg.jte:jte-runtime:3.2.4 (#9786)
 
 **Dynamic-access classes shared a generic test file**
