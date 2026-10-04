@@ -7,7 +7,8 @@
 package io_github_openfeign_querydsl.querydsl_apt;
 
 import com.querydsl.apt.DefaultConfiguration;
-import com.querydsl.codegen.DefaultVariableNameFunction;
+import com.querydsl.codegen.EntityType;
+import com.querydsl.codegen.utils.model.ClassType;
 import com.querydsl.core.annotations.QueryEmbeddable;
 import com.querydsl.core.annotations.QueryEmbedded;
 import com.querydsl.core.annotations.QueryEntities;
@@ -42,8 +43,10 @@ public class DefaultConfigurationTest {
                 QueryEmbedded.class,
                 QueryTransient.class);
 
-        assertThat(configuration.getVariableNameFunction())
-                .isInstanceOf(DefaultVariableNameFunction.class);
+        EntityType customerType = new EntityType(new ClassType(Customer.class));
+
+        assertThat(configuration.getVariableNameFunction().apply(customerType))
+                .isEqualTo("customer");
     }
 
     private static final RoundEnvironment EMPTY_ROUND_ENVIRONMENT = new RoundEnvironment() {
