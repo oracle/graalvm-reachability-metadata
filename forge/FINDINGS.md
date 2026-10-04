@@ -3,6 +3,12 @@
 Rendered by Forge from the pre-push branch review of §FS-local-branch-review.
 Newest entry first; every non-approval is recorded, including one a repair later cleared.
 
+## 2026-10-04 — ch.qos.logback:logback-classic:1.6.2 (#10425)
+
+**Runtime repair weakened an unrelated passing test**
+
+The generated branch rewrote PackagingDataCalculatorTest by removing its platform-context-class-loader scenario and replacing the real throwable stack with a synthetic frame, even though the recorded native run showed that original test passing. That was a fix-by-weakening violation of the test scope contract, unrelated to the reported RemoteAppenderStreamClient broken-pipe failure.
+
 ## 2026-10-04 — org.apache.tomcat.embed:tomcat-embed-el:10.1.0 (#10432)
 
 **Java runtime repair broadened into unrelated test coverage**
