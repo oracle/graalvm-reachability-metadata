@@ -55,6 +55,17 @@ public class Spring_boot_persistenceTest {
     }
 
     @Test
+    void entityScanValueAliasRegistersPackages() {
+        try (AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext()) {
+            context.register(ValueEntityScanConfiguration.class);
+            context.refresh();
+
+            assertThat(EntityScanPackages.get(context).getPackageNames())
+                    .containsExactly(ScannedEntityType.class.getPackageName());
+        }
+    }
+
+    @Test
     void persistenceExceptionTranslationAutoConfigurationTranslatesRepositoryExceptions() {
         try (AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext()) {
             context.getEnvironment().getPropertySources().addFirst(new MapPropertySource(
@@ -95,6 +106,12 @@ public class Spring_boot_persistenceTest {
             basePackageClasses = ScannedEntityType.class)
     @Configuration(proxyBeanMethods = false)
     static class EntityScanConfiguration {
+
+    }
+
+    @EntityScan("org_springframework_boot.spring_boot_persistence")
+    @Configuration(proxyBeanMethods = false)
+    static class ValueEntityScanConfiguration {
 
     }
 

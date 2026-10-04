@@ -45,6 +45,18 @@ public class EntityScannerTest {
         }
     }
 
+    @Test
+    void scansTypesMatchingAnyRequestedAnnotation() throws ClassNotFoundException {
+        try (AnnotationConfigApplicationContext context =
+                new AnnotationConfigApplicationContext(EntityScanConfiguration.class)) {
+            Set<Class<?>> entities = new EntityScanner(context)
+                    .scan(ScannedEntity.class, AlternateScannedEntity.class);
+
+            assertThat(entities).containsExactlyInAnyOrder(ScannedEntityType.class,
+                    AlternateScannedEntityType.class);
+        }
+    }
+
     @EntityScan(basePackageClasses = ScannedEntityType.class)
     @Configuration(proxyBeanMethods = false)
     static class EntityScanConfiguration {
@@ -59,6 +71,17 @@ public class EntityScannerTest {
 
     @ScannedEntity
     static class ScannedEntityType {
+
+    }
+
+    @Retention(RetentionPolicy.RUNTIME)
+    @Target(ElementType.TYPE)
+    @interface AlternateScannedEntity {
+
+    }
+
+    @AlternateScannedEntity
+    static class AlternateScannedEntityType {
 
     }
 
