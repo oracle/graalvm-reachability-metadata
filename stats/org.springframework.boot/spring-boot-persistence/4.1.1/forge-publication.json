@@ -1,13 +1,13 @@
 {
-  "base_commit": "0377c6610864e49da494546bc3a3a46b66566de0",
-  "branch": "ai/kimeta/add-lib-support-org.springframework.boot-spring-boot-persistence-4.1.1-forge-9750-20261004030232084175-52f1c8c8abe4",
+  "base_commit": "ec82d4358ee4f70a86e5b5f6fd38ad3303cba49d",
+  "branch": "ai/kimeta/add-lib-support-org.springframework.boot-spring-boot-persistence-4.1.1-forge-9745-20261004222850012763-f1929bb6d9a6",
   "follow_ups": [],
   "forge": {
     "branch": "master",
     "commit": "64b39e298df2e06d80520993b3c73ded87225968",
     "monitored_branch": "origin/master"
   },
-  "issue_number": 9750,
+  "issue_number": 9745,
   "library": {
     "artifact": "spring-boot-persistence",
     "coordinates": "org.springframework.boot:spring-boot-persistence:4.1.1",
@@ -15,69 +15,44 @@
     "version": "4.1.1"
   },
   "local_ci_verification": {
-    "base_commit": "0377c6610864e49da494546bc3a3a46b66566de0",
-    "commands": [
-      {
-        "command": [
-          "./gradlew",
-          "generateChangedIndexFileCoordinatesList",
-          "-PbaseCommit=origin/master",
-          "-PnewCommit=HEAD"
-        ],
-        "env": {
-          "GITHUB_OUTPUT": "/tmp/tmphnpg7izo"
-        },
-        "gate": "changed-index-coordinates",
-        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :generateChangedIndexFileCoordinatesList\n\n[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9750-53373452/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 2s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
-        "returncode": 0
-      },
-      {
-        "command": [
-          "./gradlew",
-          "validateIndexFiles",
-          "-Pcoordinates=org.springframework.boot:spring-boot-persistence"
-        ],
-        "env": {},
-        "gate": "index-file-validation",
-        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :validateIndexFiles\n✅ metadata/org.springframework.boot/spring-boot-persistence/index.json: Valid\n\n[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9750-53373452/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 1s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
-        "returncode": 0
-      }
-    ],
+    "base_commit": "ec82d4358ee4f70a86e5b5f6fd38ad3303cba49d",
+    "commands": [],
     "failure_command": null,
     "failure_gate": null,
-    "final_commit": "388c51b56744a96415866a2242c932f4156764e9",
+    "final_commit": "da9fd316ffc62348add2184239630d82df314cf6",
     "fixups": [],
     "human_intervention_required": false,
     "repo_fix_paths": [],
     "status": "success"
   },
   "local_review": {
+    "action": "human-intervention",
     "changed_paths": [],
-    "decision": "approved",
-    "finding_body": "",
-    "finding_title": "",
+    "decision": "rejected",
+    "finding_body": "§FS-contribution-contract.2 requires a library-new-request contribution to target one new tested version. Base commit ec82d4358ee4f70a86e5b5f6fd38ad3303cba49d already contains org.springframework.boot:spring-boot-persistence:4.1.1 in index.json, introduced by merged PR #10437 (commit e0047dfe6f01d55e38f5dac965778bcb32c16174). The reviewed diff does not add a tested version or index entry; it only modifies the already-supported coordinate's tests, test-only metadata, and statistics. This cannot be repaired into a new-library contribution within the allowed files, so §FS-contribution-contract.5.5 requires maintainer intervention.",
+    "finding_title": "Library-new request duplicates an already supported version",
     "fix_note": "",
     "model": "gpt-5.6-sol",
-    "review_comment": "The diff is limited to one new coordinate and its allowed metadata, stats, and test files. The tests exercise public Spring Boot persistence APIs from a separate package without scaffold code, version pinning, Native Image skips, unsupported flags, or legacy metadata. The reported 0/0 dynamic-access result is a valid no-calls case, so percentage and entry-count mismatch gates do not apply. Forge finalization passed all three test lanes, metadata splitting and validation, style checks, generated-test validity, and library-stat regeneration without changing the publishable tree.",
-    "session_id": "0b5ea84ea4454b3f"
+    "review_comment": "The diff is confined to the target coordinate, uses only reachability-metadata.json, has non-scaffold public-API tests in a separate package with no version pinning, Native Image skip, compatibility override, or build/run flag, and the recorded 0/0 dynamic-access result is valid. The local gate record is successful. It cannot be approved as a library-new-request because the exact coordinate was already supported on the base branch.",
+    "session_id": "db6881ce3d5845ea"
   },
   "metrics": {
     "agent": "pi",
     "model": "gpt-5.6-luna",
     "path": "stats/org.springframework.boot/spring-boot-persistence/4.1.1/execution-metrics.json",
     "summary": {
-      "cached_input_tokens_used": 3755520,
-      "code_coverage_percent": 95.45,
-      "cost_usd": 0.8217,
-      "generated_loc": 161,
-      "input_tokens_used": 264619,
-      "iterations": 7,
+      "cached_input_tokens_used": 2059776,
+      "code_coverage_percent": 100.0,
+      "cost_usd": 0.582,
+      "generated_loc": 223,
+      "input_tokens_used": 238933,
+      "iterations": 6,
       "metadata_entries": 13,
-      "output_tokens_used": 30249,
-      "test_only_metadata_entries": 134,
-      "tested_library_loc": 84
+      "output_tokens_used": 22845,
+      "test_only_metadata_entries": 160,
+      "tested_library_loc": 88
     },
-    "timestamp": "2026-10-04T03:02:32.084175Z"
+    "timestamp": "2026-10-04T22:28:50.012763Z"
   },
   "modifiers": {
     "chunk_final": true,
@@ -85,7 +60,7 @@
     "human_intervention": false
   },
   "producer": "kimeta",
-  "publication_id": "forge-9750-20261004030232084175-52f1c8c8abe4",
+  "publication_id": "forge-9745-20261004222850012763-f1929bb6d9a6",
   "render": {
     "dynamic_access": null,
     "dynamic_access_evidence": {
@@ -111,15 +86,15 @@
       },
       "libraryCoverage": {
         "instruction": {
-          "covered": 356,
-          "missed": 15,
-          "ratio": 0.959569,
+          "covered": 369,
+          "missed": 2,
+          "ratio": 0.994609,
           "total": 371
         },
         "line": {
-          "covered": 84,
-          "missed": 4,
-          "ratio": 0.954545,
+          "covered": 88,
+          "missed": 0,
+          "ratio": 1.0,
           "total": 88
         },
         "method": {
@@ -136,5 +111,5 @@
   "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-luna",
   "task_type": "library-new-request",
   "template_type": "library-new-request",
-  "timestamp": "2026-10-04T03:02:32.084175Z"
+  "timestamp": "2026-10-04T22:28:50.012763Z"
 }
