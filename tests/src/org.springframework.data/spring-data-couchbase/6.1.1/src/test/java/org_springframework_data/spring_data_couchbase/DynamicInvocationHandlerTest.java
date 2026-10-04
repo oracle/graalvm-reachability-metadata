@@ -65,11 +65,11 @@ public class DynamicInvocationHandlerTest {
     @Test
     void repositoryProxiesRetainOptionsAndDelegateOperations() {
         PersonRepository repository = applicationContext.getBean(PersonRepository.class);
-        repository.withOptions(UpsertOptions.upsertOptions())
-                .save(new Person("dynamic-ada", "Ada"));
         PersonRepository scopedRepository = repository
+                .withOptions(UpsertOptions.upsertOptions())
                 .withScope("_default")
                 .withCollection("_default");
+        scopedRepository.save(new Person("dynamic-ada", "Ada"));
 
         assertThat(scopedRepository.findById("dynamic-ada")).get()
                 .extracting(person -> person.name)

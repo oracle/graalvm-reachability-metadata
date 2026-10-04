@@ -17,6 +17,7 @@ import org.springframework.data.couchbase.core.convert.MappingCouchbaseConverter
 import org.springframework.data.couchbase.core.mapping.CouchbaseDocument;
 import org.springframework.data.couchbase.core.mapping.CouchbaseMappingContext;
 import org.springframework.data.couchbase.core.mapping.Document;
+import org.springframework.data.mapping.model.BeanWrapperPropertyAccessorFactory;
 
 @Timeout(60)
 public class MappingCouchbaseConverterTest {
@@ -24,7 +25,9 @@ public class MappingCouchbaseConverterTest {
     @Test
     void readsClassPropertiesFromStoredNames() {
         CouchbaseMappingContext mappingContext = new CouchbaseMappingContext();
-        mappingContext.getRequiredPersistentEntity(ClassHolder.class);
+        mappingContext
+                .getRequiredPersistentEntity(ClassHolder.class)
+                .setPersistentPropertyAccessorFactory(BeanWrapperPropertyAccessorFactory.INSTANCE);
         MappingCouchbaseConverter converter = new MappingCouchbaseConverter(mappingContext);
         CouchbaseDocument types = new CouchbaseDocument()
                 .setContent(Map.of("value", new StringBuilder(String.class.getName())));
