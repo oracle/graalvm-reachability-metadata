@@ -46,6 +46,16 @@ public class EntityScannerTest {
     }
 
     @Test
+    void scansConfigurationPackageWhenEntityScanHasNoExplicitPackages() throws ClassNotFoundException {
+        try (AnnotationConfigApplicationContext context =
+                new AnnotationConfigApplicationContext(DefaultEntityScanConfiguration.class)) {
+            Set<Class<?>> entities = new EntityScanner(context).scan(ScannedEntity.class);
+
+            assertThat(entities).containsExactly(ScannedEntityType.class);
+        }
+    }
+
+    @Test
     void scansTypesMatchingAnyRequestedAnnotation() throws ClassNotFoundException {
         try (AnnotationConfigApplicationContext context =
                 new AnnotationConfigApplicationContext(EntityScanConfiguration.class)) {
@@ -60,6 +70,12 @@ public class EntityScannerTest {
     @EntityScan(basePackageClasses = ScannedEntityType.class)
     @Configuration(proxyBeanMethods = false)
     static class EntityScanConfiguration {
+
+    }
+
+    @EntityScan
+    @Configuration(proxyBeanMethods = false)
+    static class DefaultEntityScanConfiguration {
 
     }
 
