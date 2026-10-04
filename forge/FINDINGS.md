@@ -3,6 +3,12 @@
 Rendered by Forge from the pre-push branch review of §FS-local-branch-review.
 Newest entry first; every non-approval is recorded, including one a repair later cleared.
 
+## 2026-10-04 — io.lettuce:lettuce-core:7.0.0.RELEASE (#10430)
+
+**Compile repair removed meaningful runtime coverage**
+
+The post-generation intervention violated the fix-by-weakening rule in FS-test-contract.2.9 and failed the large-report repair coverage gate: it removed 23 inherited connection and command tests rather than preserving their behavior, reducing both overall and reflection dynamic-access coverage from 52/55 (94.5455%) to 16/55 (29.0909%). The recorded failures were caused by transitive Netty 4.2.4 reaching Arena.ofShared while Native Image shared-arena support was disabled, not by the test behavior or missing reachability metadata.
+
 ## 2026-10-04 — ch.qos.logback:logback-classic:1.6.2 (#10425)
 
 **Runtime repair weakened an unrelated passing test**

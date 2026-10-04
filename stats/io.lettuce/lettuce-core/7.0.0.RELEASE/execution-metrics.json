@@ -1,0 +1,130 @@
+{
+  "fix_javac_fail:2026-10-04": {
+    "timestamp": "2026-10-04T22:38:58.517148Z",
+    "library": "io.lettuce:lettuce-core:7.0.0.RELEASE",
+    "starting_commit": "c16899ba02e785fd9824f41914ac9f11bece53f9",
+    "ending_commit": "856655dd128ef6efee10f2515bb06f2d90b27cab",
+    "previous_library": "io.lettuce:lettuce-core:6.7.0.RELEASE",
+    "strategy_name": "javac_iterative_with_coverage_sources_pi_gpt-5.6-sol",
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "status": "success_with_intervention",
+    "stats": {
+      "version": "7.0.0.RELEASE",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 0.290909,
+            "coveredCalls": 16,
+            "totalCalls": 55
+          }
+        },
+        "coverageRatio": 0.290909,
+        "coveredCalls": 16,
+        "totalCalls": 55
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 8605,
+          "missed": 147437,
+          "ratio": 0.055145,
+          "total": 156042
+        },
+        "line": {
+          "covered": 1190,
+          "missed": 27906,
+          "ratio": 0.040899,
+          "total": 29096
+        },
+        "method": {
+          "covered": 319,
+          "missed": 10640,
+          "ratio": 0.029108,
+          "total": 10959
+        }
+      }
+    },
+    "previous_library_stats": {
+      "version": "6.7.0.RELEASE",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 0.945455,
+            "coveredCalls": 52,
+            "totalCalls": 55
+          }
+        },
+        "coverageRatio": 0.945455,
+        "coveredCalls": 52,
+        "totalCalls": 55
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 34772,
+          "missed": 106376,
+          "ratio": 0.246351,
+          "total": 141148
+        },
+        "line": {
+          "covered": 6984,
+          "missed": 19673,
+          "ratio": 0.261995,
+          "total": 26657
+        },
+        "method": {
+          "covered": 2042,
+          "missed": 7881,
+          "ratio": 0.205785,
+          "total": 9923
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "no_action",
+      "issue_number": 10430,
+      "issue_label": "fails-javac-compile",
+      "library": "io.lettuce:lettuce-core:7.0.0.RELEASE",
+      "summary": "The failure is a test-source API break, not a setup problem. Lettuce 7.0.0 removed or changed `RedisClient.setDefaultTimeout(Duration)`, which `Lettuce_coreTest.java:81` calls. The 6.7.0 tests already compile and pass with the current scaffold.",
+      "deterministic_setup": [],
+      "agent_guidance": "",
+      "risks": [
+        "I did not open the 7.0.0 sources. The replacement for `setDefaultTimeout` is most likely `ClientOptions.timeoutOptions` or `RedisURI.setTimeout`, so check the 7.0 API before choosing one.",
+        "Other 6.x APIs used by the existing tests may also have changed in 7.0. After the first compile error is fixed, further errors may surface."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#10430 [Automation] javac compile fails for io.lettuce:lettuce-core:7.0.0.RELEASE; label=fails-javac-compile; body_chars=8015"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "31 existing test file path(s) included"
+        }
+      ],
+      "current_library": "io.lettuce:lettuce-core:6.7.0.RELEASE",
+      "new_version": "7.0.0.RELEASE",
+      "model": "sonnet",
+      "input_tokens_used": 2,
+      "output_tokens_used": 387
+    },
+    "metrics": {
+      "input_tokens_used": 239193,
+      "cached_input_tokens_used": 1848960,
+      "output_tokens_used": 8828,
+      "iterations": 8,
+      "cost_usd": 2.3853,
+      "tested_library_loc": 1190,
+      "metadata_entries": 178,
+      "test_only_metadata_entries": 69,
+      "previous_library_metadata_entries": 235,
+      "previous_library_test_only_metadata_entries": 63,
+      "code_coverage_percent": 4.09,
+      "previous_library_coverage_percent": 26.2
+    },
+    "artifacts": {
+      "metadata_file": "metadata/io.lettuce/lettuce-core/7.0.0.RELEASE/reachability-metadata.json"
+    }
+  }
+}
