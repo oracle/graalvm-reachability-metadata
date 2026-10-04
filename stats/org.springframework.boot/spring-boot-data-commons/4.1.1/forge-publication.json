@@ -1,13 +1,13 @@
 {
-  "base_commit": "bc806a7b2d3e1cb7173d166cb9e9180c8af11a06",
-  "branch": "ai/kimeta/add-lib-support-org.springframework.boot-spring-boot-data-commons-4.1.1-forge-9752-20261003234808511925-1d84caa75d84",
+  "base_commit": "6be69760e3466b4d3449a8b317adc359ad223626",
+  "branch": "ai/kimeta/add-lib-support-org.springframework.boot-spring-boot-data-commons-4.1.1-forge-9747-20261004212742640127-b4a4dd58391f",
   "follow_ups": [],
   "forge": {
     "branch": "master",
     "commit": "64b39e298df2e06d80520993b3c73ded87225968",
     "monitored_branch": "origin/master"
   },
-  "issue_number": 9752,
+  "issue_number": 9747,
   "library": {
     "artifact": "spring-boot-data-commons",
     "coordinates": "org.springframework.boot:spring-boot-data-commons:4.1.1",
@@ -15,37 +15,11 @@
     "version": "4.1.1"
   },
   "local_ci_verification": {
-    "base_commit": "bc806a7b2d3e1cb7173d166cb9e9180c8af11a06",
-    "commands": [
-      {
-        "command": [
-          "./gradlew",
-          "generateChangedIndexFileCoordinatesList",
-          "-PbaseCommit=origin/master",
-          "-PnewCommit=HEAD"
-        ],
-        "env": {
-          "GITHUB_OUTPUT": "/tmp/tmpsejsf2kh"
-        },
-        "gate": "changed-index-coordinates",
-        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :generateChangedIndexFileCoordinatesList\n\n[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9752-6c933a38/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 2s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
-        "returncode": 0
-      },
-      {
-        "command": [
-          "./gradlew",
-          "validateIndexFiles",
-          "-Pcoordinates=org.springframework.boot:spring-boot-data-commons"
-        ],
-        "env": {},
-        "gate": "index-file-validation",
-        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :validateIndexFiles\n✅ metadata/org.springframework.boot/spring-boot-data-commons/index.json: Valid\n\n[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9752-6c933a38/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 1s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
-        "returncode": 0
-      }
-    ],
+    "base_commit": "6be69760e3466b4d3449a8b317adc359ad223626",
+    "commands": [],
     "failure_command": null,
     "failure_gate": null,
-    "final_commit": "f63f73716658cf127ffa3fa4ee421318126126cc",
+    "final_commit": "27d1af122520de57caca35b4d65a438ae0e8b48e",
     "fixups": [],
     "human_intervention_required": false,
     "repo_fix_paths": [],
@@ -58,26 +32,26 @@
     "finding_title": "",
     "fix_note": "",
     "model": "gpt-5.6-sol",
-    "review_comment": "The diff is scoped to one coordinate and the allowed metadata, stats, and test paths. The test is library-specific, public-API driven, version-agnostic, in a separate package, uses no Native Image skip or failure-tolerance pattern, and has no native build/run workaround. The reported 0/0 dynamic-access result is a valid no-calls case, so the percentage and entry-count mismatch probes do not apply. Index validation evidence is green, and the Forge finalization completed current-defaults/latest, future-defaults/latest, and current-defaults/GraalVM 25 test lanes plus metadata splitting/validation, style checks, and regenerated statistics without changing the publishable tree.",
-    "session_id": "b2c94128d5e74857"
+    "review_comment": "Reviewed the target-only diff and local evidence against the new-library contribution rules. The test exercises public Spring Boot Data Commons behavior from a separate package without scaffold code, version pinning, Native Image skips, visibility bypasses, prohibited reflection, unsafe external I/O, or legacy metadata files. The reported 0/0 dynamic-access result is valid, so percentage and entry-count mismatch gates do not apply. Forge finalization passed all three native test lanes, metadata validation, style checks, generated-test checks, and statistics generation without changing the publishable tree.",
+    "session_id": "c48ac00ebb5a4c0b"
   },
   "metrics": {
     "agent": "pi",
     "model": "gpt-5.6-luna",
     "path": "stats/org.springframework.boot/spring-boot-data-commons/4.1.1/execution-metrics.json",
     "summary": {
-      "cached_input_tokens_used": 7102976,
-      "code_coverage_percent": 73.14,
-      "cost_usd": 1.3277,
-      "generated_loc": 343,
-      "input_tokens_used": 369874,
-      "iterations": 6,
-      "metadata_entries": 1,
-      "output_tokens_used": 41256,
-      "test_only_metadata_entries": 80,
-      "tested_library_loc": 128
+      "cached_input_tokens_used": 4939264,
+      "code_coverage_percent": 90.29,
+      "cost_usd": 1.0166,
+      "generated_loc": 461,
+      "input_tokens_used": 325779,
+      "iterations": 5,
+      "metadata_entries": 20,
+      "output_tokens_used": 32811,
+      "test_only_metadata_entries": 175,
+      "tested_library_loc": 158
     },
-    "timestamp": "2026-10-03T23:48:08.511925Z"
+    "timestamp": "2026-10-04T21:27:42.640127Z"
   },
   "modifiers": {
     "chunk_final": true,
@@ -85,13 +59,21 @@
     "human_intervention": false
   },
   "producer": "kimeta",
-  "publication_id": "forge-9752-20261003234808511925-1d84caa75d84",
+  "publication_id": "forge-9747-20261004212742640127-b4a4dd58391f",
   "render": {
     "dynamic_access": null,
     "dynamic_access_evidence": {
       "covered_call_sites": [],
       "metadata_rules": [
-        "when `org.springframework.boot.data.metrics.TimedAnnotations` is reached, make `org.springframework.util.ConcurrentReferenceHashMap$Segment[]` available for reflection"
+        "when `org.springframework.boot.data.autoconfigure.metrics.DataRepositoryMetricsAutoConfiguration` is reached, make `javax.money.MonetaryAmount` available for reflection",
+        "when `org.springframework.boot.data.autoconfigure.metrics.DataRepositoryMetricsAutoConfiguration` is reached, make `org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean` available for reflection",
+        "when `org.springframework.boot.data.autoconfigure.metrics.DataRepositoryMetricsAutoConfiguration` is reached, make `org.springframework.boot.context.properties.BoundConfigurationProperties.<init>()` available for reflection",
+        "when `org.springframework.boot.data.autoconfigure.metrics.DataRepositoryMetricsAutoConfiguration` is reached, make `org.springframework.boot.data.autoconfigure.metrics.DataMetricsProperties.<init>()` available for reflection",
+        "when `org.springframework.boot.data.autoconfigure.metrics.DataRepositoryMetricsAutoConfiguration` is reached, make `org.springframework.boot.data.autoconfigure.metrics.DataRepositoryMetricsAutoConfiguration.<init>(org.springframework.boot.data.autoconfigure.metrics.DataMetricsProperties)` available for reflection",
+        "when `org.springframework.boot.data.autoconfigure.metrics.DataRepositoryMetricsAutoConfiguration` is reached, make `org.springframework.boot.data.autoconfigure.metrics.DataRepositoryMetricsAutoConfiguration.metricsRepositoryMethodInvocationListener(org.springframework.beans.factory.ObjectProvider, org.springframework.boot.data.metrics.RepositoryTagsProvider)` available for reflection",
+        "when `org.springframework.boot.data.autoconfigure.metrics.DataRepositoryMetricsAutoConfiguration` is reached, make `org.springframework.boot.data.autoconfigure.metrics.DataRepositoryMetricsAutoConfiguration.repositoryTagsProvider()` available for reflection",
+        "when `org.springframework.boot.data.autoconfigure.metrics.DataRepositoryMetricsAutoConfiguration` is reached, make `org.springframework.boot.data.metrics.DefaultRepositoryTagsProvider` available for reflection",
+        "... and 8 more"
       ]
     },
     "library_stats": {
@@ -103,21 +85,21 @@
       },
       "libraryCoverage": {
         "instruction": {
-          "covered": 444,
-          "missed": 187,
-          "ratio": 0.703645,
+          "covered": 552,
+          "missed": 79,
+          "ratio": 0.874802,
           "total": 631
         },
         "line": {
-          "covered": 128,
-          "missed": 47,
-          "ratio": 0.731429,
+          "covered": 158,
+          "missed": 17,
+          "ratio": 0.902857,
           "total": 175
         },
         "method": {
-          "covered": 57,
-          "missed": 19,
-          "ratio": 0.75,
+          "covered": 69,
+          "missed": 7,
+          "ratio": 0.907895,
           "total": 76
         }
       },
@@ -128,5 +110,5 @@
   "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-luna",
   "task_type": "library-new-request",
   "template_type": "library-new-request",
-  "timestamp": "2026-10-03T23:48:08.511925Z"
+  "timestamp": "2026-10-04T21:27:42.640127Z"
 }
