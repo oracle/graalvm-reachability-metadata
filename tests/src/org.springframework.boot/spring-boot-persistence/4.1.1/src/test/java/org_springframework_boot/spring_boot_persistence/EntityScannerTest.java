@@ -56,6 +56,17 @@ public class EntityScannerTest {
     }
 
     @Test
+    void returnsNoEntitiesWhenNoScanPackagesAreConfigured() throws ClassNotFoundException {
+        try (AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext()) {
+            context.refresh();
+
+            Set<Class<?>> entities = new EntityScanner(context).scan(ScannedEntity.class);
+
+            assertThat(entities).isEmpty();
+        }
+    }
+
+    @Test
     void scansTypesMatchingAnyRequestedAnnotation() throws ClassNotFoundException {
         try (AnnotationConfigApplicationContext context =
                 new AnnotationConfigApplicationContext(EntityScanConfiguration.class)) {

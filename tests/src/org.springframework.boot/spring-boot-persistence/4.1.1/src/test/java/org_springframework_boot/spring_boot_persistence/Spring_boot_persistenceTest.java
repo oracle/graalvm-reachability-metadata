@@ -36,8 +36,8 @@ public class Spring_boot_persistenceTest {
 
         assertThat(EntityScanPackages.get(beanFactory).getPackageNames()).isEmpty();
 
-        EntityScanPackages.register(beanFactory, "com.example.orders", "com.example.billing");
-        EntityScanPackages.register(beanFactory, List.of("com.example.billing", "com.example.shipping"));
+        EntityScanPackages.register(beanFactory, "", "com.example.orders", "com.example.billing");
+        EntityScanPackages.register(beanFactory, List.of(" ", "com.example.billing", "com.example.shipping"));
 
         assertThat(EntityScanPackages.get(beanFactory).getPackageNames())
                 .containsExactly("com.example.orders", "com.example.billing", "com.example.shipping");
