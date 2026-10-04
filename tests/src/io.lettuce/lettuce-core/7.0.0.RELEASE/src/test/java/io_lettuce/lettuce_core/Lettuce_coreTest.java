@@ -78,7 +78,6 @@ public class Lettuce_coreTest {
                     .build();
 
             client.setOptions(clientOptions);
-            client.setDefaultTimeout(COMMAND_TIMEOUT);
 
             assertThat(uri.getHost()).isEqualTo("localhost");
             assertThat(uri.getPort()).isEqualTo(6380);
