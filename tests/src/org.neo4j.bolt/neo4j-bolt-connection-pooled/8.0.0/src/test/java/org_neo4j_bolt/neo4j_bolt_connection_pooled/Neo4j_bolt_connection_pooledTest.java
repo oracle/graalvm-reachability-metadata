@@ -72,6 +72,7 @@ import org.neo4j.bolt.connection.observation.ImmutableObservation;
 import org.neo4j.bolt.connection.observation.Observation;
 import org.neo4j.bolt.connection.pooled.AuthTokenManager;
 import org.neo4j.bolt.connection.pooled.PooledBoltConnectionSource;
+import org.neo4j.bolt.connection.pooled.PooledBoltConnectionSource.TimeoutPolicy;
 import org.neo4j.bolt.connection.pooled.observation.PoolObservationProvider;
 import org.neo4j.bolt.connection.summary.ResetSummary;
 import org.neo4j.bolt.connection.values.IsoDuration;
@@ -122,6 +123,10 @@ public class Neo4j_bolt_connection_pooledTest {
             assertThat(delegateProvider.connectCalls().get(0).routingContextAddress())
                     .isEqualTo(ROUTING_CONTEXT_ADDRESS);
             assertThat(delegateProvider.connectCalls().get(0).userAgent()).isEqualTo(USER_AGENT);
+            assertThat(delegateProvider.connectCalls().get(0).connectTimeoutMillis())
+                    .isEqualTo(CONNECT_TIMEOUT_MILLIS);
+            assertThat(delegateProvider.connectCalls().get(0).initialisationTimeoutMillis())
+                    .isEqualTo(10_000L);
             await(first.close());
 
             assertThat(delegate.closeCount()).isZero();
@@ -460,7 +465,8 @@ public class Neo4j_bolt_connection_pooledTest {
                 AGENT,
                 USER_AGENT,
                 CONNECT_TIMEOUT_MILLIS,
-                NotificationConfig.defaultConfig());
+                NotificationConfig.defaultConfig(),
+                TimeoutPolicy.DEFAULT);
     }
 
     private static <T> T await(CompletionStage<T> stage)
@@ -501,13 +507,23 @@ public class Neo4j_bolt_connection_pooledTest {
                 BoltAgent boltAgent,
                 String userAgent,
                 int connectTimeoutMillis,
+                long initialisationTimeoutMillis,
                 SecurityPlan securityPlan,
                 AuthToken authToken,
                 BoltProtocolVersion minVersion,
                 NotificationConfig notificationConfig,
                 ImmutableObservation observation) {
-            ConnectCall call = new ConnectCall(uri, routingContextAddress, boltAgent, userAgent, connectTimeoutMillis,
-                    securityPlan, authToken, minVersion, notificationConfig);
+            ConnectCall call = new ConnectCall(
+                    uri,
+                    routingContextAddress,
+                    boltAgent,
+                    userAgent,
+                    connectTimeoutMillis,
+                    initialisationTimeoutMillis,
+                    securityPlan,
+                    authToken,
+                    minVersion,
+                    notificationConfig);
             connectCalls.add(call);
             FakeBoltConnection connection =
                     new FakeBoltConnection(new BoltServerAddress(uri), authToken, clock.millis());
@@ -528,6 +544,7 @@ public class Neo4j_bolt_connection_pooledTest {
             BoltAgent boltAgent,
             String userAgent,
             int connectTimeoutMillis,
+            long initialisationTimeoutMillis,
             SecurityPlan securityPlan,
             AuthToken authToken,
             BoltProtocolVersion minVersion,
