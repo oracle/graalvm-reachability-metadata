@@ -1,0 +1,131 @@
+{
+  "fix_javac_fail:2026-10-04": {
+    "timestamp": "2026-10-04T16:31:27.439726Z",
+    "library": "org.apache.tomcat.embed:tomcat-embed-websocket:10.1.8",
+    "starting_commit": "1f86fd1fa20bd88c790e0da208f7cf477de2a3a2",
+    "ending_commit": "53ea65dcf8589e5b544101304f7fb980bc885c55",
+    "previous_library": "org.apache.tomcat.embed:tomcat-embed-websocket:10.1.0",
+    "strategy_name": "javac_iterative_with_coverage_sources_pi_gpt-5.6-sol",
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "status": "success",
+    "stats": {
+      "version": "10.1.8",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 31,
+            "totalCalls": 31
+          }
+        },
+        "coverageRatio": 1.0,
+        "coveredCalls": 31,
+        "totalCalls": 31
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 6469,
+          "missed": 15227,
+          "ratio": 0.298166,
+          "total": 21696
+        },
+        "line": {
+          "covered": 1591,
+          "missed": 3416,
+          "ratio": 0.317755,
+          "total": 5007
+        },
+        "method": {
+          "covered": 299,
+          "missed": 463,
+          "ratio": 0.392388,
+          "total": 762
+        }
+      }
+    },
+    "previous_library_stats": {
+      "version": "10.1.0",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 31,
+            "totalCalls": 31
+          }
+        },
+        "coverageRatio": 1.0,
+        "coveredCalls": 31,
+        "totalCalls": 31
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 6474,
+          "missed": 15081,
+          "ratio": 0.300348,
+          "total": 21555
+        },
+        "line": {
+          "covered": 1652,
+          "missed": 3499,
+          "ratio": 0.320714,
+          "total": 5151
+        },
+        "method": {
+          "covered": 295,
+          "missed": 458,
+          "ratio": 0.391766,
+          "total": 753
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "no_action",
+      "issue_number": 10433,
+      "issue_label": "fails-javac-compile",
+      "library": "org.apache.tomcat.embed:tomcat-embed-websocket:10.1.8",
+      "summary": "The failure is a javac error in the existing 10.1.0 test sources. Each `NoOpRemoteEndpoint` subclass of `WsRemoteEndpointImplBase` lacks `getLock()`, which is abstract in the 10.1.8 jar. Fixing it needs only test-code changes, with no extra dependency, Docker image or system property.",
+      "deterministic_setup": [],
+      "agent_guidance": "",
+      "risks": [
+        "I did not open the 10.1.8 jar or the repository to confirm the `getLock()` signature. The diagnosis rests on the compiler errors in the issue log. In recent Tomcat 10.1.x the method is `protected abstract Lock getLock()`, but verify the exact signature and return type against 10.1.8 before copying it.",
+        "Every `NoOpRemoteEndpoint` copy (seven test classes) must implement `getLock()` for 10.1.8. Other abstract methods may differ between 10.1.0 and 10.1.8, so recompile and check for further errors.",
+        "Only seven errors were visible in the truncated log, so more compile errors may appear once these are fixed."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#10433 [Automation] javac compile fails for org.apache.tomcat.embed:tomcat-embed-websocket:10.1.8; label=fails-javac-compile; body_chars=8015"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "19 existing test file path(s) included"
+        }
+      ],
+      "current_library": "org.apache.tomcat.embed:tomcat-embed-websocket:10.1.0",
+      "new_version": "10.1.8",
+      "model": "sonnet",
+      "input_tokens_used": 2,
+      "output_tokens_used": 675
+    },
+    "metrics": {
+      "input_tokens_used": 66833,
+      "cached_input_tokens_used": 484608,
+      "output_tokens_used": 3752,
+      "iterations": 3,
+      "cost_usd": 0.6891,
+      "tested_library_loc": 1591,
+      "metadata_entries": 33,
+      "test_only_metadata_entries": 115,
+      "previous_library_metadata_entries": 33,
+      "previous_library_test_only_metadata_entries": 115,
+      "code_coverage_percent": 31.78,
+      "previous_library_coverage_percent": 32.07
+    },
+    "artifacts": {
+      "metadata_file": "metadata/org.apache.tomcat.embed/tomcat-embed-websocket/10.1.8/reachability-metadata.json"
+    }
+  }
+}
