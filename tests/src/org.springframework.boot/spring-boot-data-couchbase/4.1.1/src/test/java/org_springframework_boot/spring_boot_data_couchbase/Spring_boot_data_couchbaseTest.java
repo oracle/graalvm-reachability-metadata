@@ -101,6 +101,20 @@ public class Spring_boot_data_couchbaseTest {
     }
 
     @Test
+    void autoConfigurationUsesConfiguredTypeKeyForDocumentDiscrimination() {
+        this.contextRunner.withPropertyValues("spring.data.couchbase.type-key=documentType")
+                .withUserConfiguration(CustomConversionsConfiguration.class)
+                .run((context) -> {
+                    MappingCouchbaseConverter converter = context.getBean(MappingCouchbaseConverter.class);
+                    CouchbaseDocument document = new CouchbaseDocument();
+
+                    converter.write(new CustomConvertedDocument("order-2", new Price(7)), document);
+
+                    assertThat(document.get("documentType")).isEqualTo(CustomConvertedDocument.class.getName());
+                });
+    }
+
+    @Test
     void connectionDependentAutoConfigurationsRemainInactiveWithoutClientFactory() {
         new ApplicationContextRunner()
                 .withConfiguration(AutoConfigurations.of(DataCouchbaseAutoConfiguration.class,
