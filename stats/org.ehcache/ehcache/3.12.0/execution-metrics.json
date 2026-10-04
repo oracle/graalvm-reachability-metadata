@@ -1,0 +1,55 @@
+{
+  "fix_javac_fail:2026-10-04": {
+    "timestamp": "2026-10-04T17:56:25.624044Z",
+    "library": "org.ehcache:ehcache:3.12.0",
+    "starting_commit": "36e296e8b441960eae7237a1db149c53d877194c",
+    "ending_commit": "75b1f4891e8edb0803d2729af5a1c1069c563147",
+    "strategy_name": "javac_iterative_with_coverage_sources_pi_gpt-5.6-sol",
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "status": "failure",
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "no_action",
+      "issue_number": 8372,
+      "issue_label": "library-update-request",
+      "library": "org.ehcache:ehcache:3.12.0",
+      "summary": "The existing ehcache test project already declares everything the tests need: the ehcache jakarta capability, javax.cache:cache-api, assertj and logback. It needs no Docker image, no environment variable and no system property. A 3.12.0 update should only need the version bump in the generated scaffold. I did not check the 3.12.0 POM or Gradle module metadata, so the capability and jakarta-classifier points below are unconfirmed.",
+      "deterministic_setup": [],
+      "agent_guidance": "",
+      "risks": [
+        "The current build.gradle takes the version from tck.testedLibraryVersion and splits on '-', then requires the 'org.ehcache:ehcache-jakarta' capability. If the 3.12.0 Gradle module metadata does not publish that capability or the jakarta variant, dependency resolution fails and the build.gradle selection needs adjusting. If that happens, handle it as a test fix instead of adding setup.",
+        "The existing test dependency versions (logback 1.2.11, cache-api 1.1.1, assertj 3.22.0) were chosen for 3.10.8. If 3.12.0 needs a newer jakarta.xml.bind or slf4j, the verification run would show it as a resolution or runtime error.",
+        "Dynamic-access coverage on 3.10.8-jakarta was only 33.67%. Raising it means writing more tests that exercise the library, such as XML configuration, JSR-107, tiered and persistent caches and serializers. That is test-writing work, not setup."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#8372 Update existing library: org.ehcache:ehcache:3.12.0; label=library-update-request; body_chars=797"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "sonnet",
+      "input_tokens_used": 4,
+      "output_tokens_used": 1120
+    },
+    "metrics": {
+      "input_tokens_used": 61173,
+      "cached_input_tokens_used": 712576,
+      "output_tokens_used": 3860,
+      "iterations": 4,
+      "cost_usd": 0.778,
+      "generated_loc": 0,
+      "tested_library_loc": 0,
+      "metadata_entries": 0,
+      "code_coverage_percent": 0.0
+    },
+    "artifacts": {
+      "metadata_file": "None"
+    }
+  }
+}

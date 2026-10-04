@@ -1,0 +1,13 @@
+```json
+{
+  "action": "no_action",
+  "summary": "The existing ehcache test project already declares everything the tests need: the ehcache jakarta capability, javax.cache:cache-api, assertj and logback. It needs no Docker image, no environment variable and no system property. A 3.12.0 update should only need the version bump in the generated scaffold. I did not check the 3.12.0 POM or Gradle module metadata, so the capability and jakarta-classifier points below are unconfirmed.",
+  "deterministic_setup": [],
+  "agent_guidance": "",
+  "risks": [
+    "The current build.gradle takes the version from tck.testedLibraryVersion and splits on '-', then requires the 'org.ehcache:ehcache-jakarta' capability. If the 3.12.0 Gradle module metadata does not publish that capability or the jakarta variant, dependency resolution fails and the build.gradle selection needs adjusting. If that happens, handle it as a test fix instead of adding setup.",
+    "The existing test dependency versions (logback 1.2.11, cache-api 1.1.1, assertj 3.22.0) were chosen for 3.10.8. If 3.12.0 needs a newer jakarta.xml.bind or slf4j, the verification run would show it as a resolution or runtime error.",
+    "Dynamic-access coverage on 3.10.8-jakarta was only 33.67%. Raising it means writing more tests that exercise the library, such as XML configuration, JSR-107, tiered and persistent caches and serializers. That is test-writing work, not setup."
+  ]
+}
+```

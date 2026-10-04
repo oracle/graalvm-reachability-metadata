@@ -1,0 +1,40 @@
+Prompt:
+You are preparing a Forge workflow for a library issue. Decide whether the library needs setup beyond the normal generated test scaffold before meaningful coverage is reachable.
+
+Research the library yourself to make this decision. Investigate the resolved artifact and its dependencies, how the library is normally used, and its documentation. The JSON context below is only a starting point, not the limit of what you may consider. Do not modify the repository or apply any setup yourself — return only the decision. Local Gradle and Native Image verification remain authoritative.
+
+The setup can be one of three things: an extra Maven dependency, a Docker image the tests need, or an environment/system property the generated tests must set. Represent dependencies and Docker images as `deterministic_setup` entries the driver can apply before generation:
+  - {"kind": "dependency", "coordinate": "group:artifact:version", "scope": "testImplementation", "reason": "..."}
+  - {"kind": "docker_image", "image": "name:tag", "slug": "short-slug", "reason": "..."}
+If a test needs a Docker image that is already pinned under `tests/tck-build-logic/src/main/resources/allowed-docker-images/`, reuse the exact tag from that `Dockerfile-<slug>` instead of introducing a new one, since the allow-list permits a single shared tag per image.
+Put environment variables, system properties, and other test-code setup in `agent_guidance`. Do not restate deterministic entries as guidance.
+
+Return a single JSON object with this shape:
+{
+  "action": "no_action" | "advisory_preparation",
+  "summary": "short reason",
+  "deterministic_setup": [ ... dependency or docker_image entries, if any ... ],
+  "agent_guidance": "environment/system property/test setup guidance, if any",
+  "risks": ["risk notes, if any"]
+}
+
+Choose no_action unless your research finds concrete evidence that extra setup is needed.
+
+Context (starting point):
+{
+  "issue": {
+    "number": 8372,
+    "title": "Update existing library: org.ehcache:ehcache:3.12.0",
+    "label": "library-update-request",
+    "body": "### Full Maven coordinates\n\norg.ehcache:ehcache:3.12.0\n\n### Additional context and logs\n\nRequesting a version update for an already-supported library version that is newer than the currently tested versions in this repository. The repository currently has `org.ehcache:ehcache` support through the checked-in latest tested version, but `3.12.0` does not have a version-specific metadata/test suite yet.\n\nThis is intended to exercise the missing-version `library-update-request` routing path with a library whose checked-in dynamic-access coverage is not 100%. The existing `org.ehcache:ehcache:3.10.8-jakarta` stats currently report dynamic-access coverage of `33.67%` (`33/98` covered calls).\n\n### GraalVM version\n\nGraalVM 25.0.2\n\n### Operating system\n\nLinux\n\n### CPU architecture\n\nAMD64 (x86-64)",
+    "body_error": ""
+  },
+  "library": "org.ehcache:ehcache:3.12.0",
+  "current_library": null,
+  "new_version": null,
+  "existing_tests": {}
+}
+
+Conversation:
+{"duration_api_ms":11652,"stop_reason":"end_turn","session_id":"7162bed6-64c4-4002-9c9e-f85b0abc28c7","total_cost_usd":0.1455424,"usage":{"input_tokens":4,"cache_creation_input_tokens":31093,"cache_read_input_tokens":49812,"output_tokens":1120,"output_tokens_details":{"thinking_tokens":387},"server_tool_use":{"web_search_requests":0,"web_fetch_requests":0},"service_tier":"standard","cache_creation":{"ephemeral_1h_input_tokens":31093,"ephemeral_5m_input_tokens":0},"inference_geo":"not_available","iterations":[{"input_tokens":2,"output_tokens":895,"cache_read_input_tokens":37656,"cache_creation_input_tokens":5593,"cache_creation":{"ephemeral_5m_input_tokens":0,"ephemeral_1h_input_tokens":5593},"type":"message"}],"speed":"standard","fallback_credit":null},"modelUsage":{"claude-sonnet-5-5":{"inputTokens":4,"outputTokens":1120,"cacheReadInputTokens":49812,"cacheCreationInputTokens":31093,"webSearchRequests":0,"costUSD":0.1455424,"contextWindow":1000000,"maxOutputTokens":128000,"thinkingTokens":387,"canonicalModel":"claude-sonnet-5-5","provider":"firstParty","costBasis":"list"}},"permission_denials":[],"terminal_reason":"completed","fast_mode_state":"off","fast_mode_disabled_reason":"sdk_opt_in_required","subagent_stats":{"spawned":0,"requested":{"background":0,"foreground":0,"unset":0},"started_in_background":0,"max_depth":0,"spawned_by_subagents":0,"completed":0,"failed":0,"killed":{"parent":0,"user":0,"system":0},"refused":{"depth_limit":0,"concurrency_limit":0,"budget":0},"by_type":{}},"is_error":false,"num_turns":2,"subtype":"success","api_error_status":null,"result":"```json\n{\n  \"action\": \"no_action\",\n  \"summary\": \"The existing ehcache test project already declares everything the tests need: the ehcache jakarta capability, javax.cache:cache-api, assertj and logback. It needs no Docker image, no environment variable and no system property. A 3.12.0 update should only need the version bump in the generated scaffold. I did not check the 3.12.0 POM or Gradle module metadata, so the capability and jakarta-classifier points below are unconfirmed.\",\n  \"deterministic_setup\": [],\n  \"agent_guidance\": \"\",\n  \"risks\": [\n    \"The current build.gradle takes the version from tck.testedLibraryVersion and splits on '-', then requires the 'org.ehcache:ehcache-jakarta' capability. If the 3.12.0 Gradle module metadata does not publish that capability or the jakarta variant, dependency resolution fails and the build.gradle selection needs adjusting. If that happens, handle it as a test fix instead of adding setup.\",\n    \"The existing test dependency versions (logback 1.2.11, cache-api 1.1.1, assertj 3.22.0) were chosen for 3.10.8. If 3.12.0 needs a newer jakarta.xml.bind or slf4j, the verification run would show it as a resolution or runtime error.\",\n    \"Dynamic-access coverage on 3.10.8-jakarta was only 33.67%. Raising it means writing more tests that exercise the library, such as XML configuration, JSR-107, tiered and persistent caches and serializers. That is test-writing work, not setup.\"\n  ]\n}\n```","ttft_ms":2138,"type":"result","duration_ms":11904,"uuid":"76022f18-9241-4b99-a0b1-35518adad251","ttft_stream_ms":1884,"time_to_request_ms":124,"first_content_frame_ms":1884,"queued_turn_count":0,"result_index":0}
+

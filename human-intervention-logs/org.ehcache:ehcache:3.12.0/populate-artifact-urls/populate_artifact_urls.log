@@ -1,0 +1,38 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :populateArtifactURLs
+I filled the missing fields in the 3.12.0 entry of `metadata/org.ehcache/ehcache/index.json`. I checked that the Maven artifacts and the `v3.12.0` tag exist, but I didn't open the `integration-test/src/test` path itself. I didn't run any JSON or build checks on the edited file.
+
+- **repository-url:** `https://github.com/ehcache/ehcache3`
+- **source-code-url:** `https://repo.maven.apache.org/maven2/org/ehcache/ehcache/$version$/ehcache-$version$-sources.jar`. The Maven listing for 3.12.0 includes this sources jar.
+- **test-code-url:** `https://github.com/ehcache/ehcache3/tree/v$version$/integration-test/src/test`. Maven has no tests jar, so this points at the integration tests on the tag. The `v3.12.0` tag exists, and its top-level directories include `integration-test`.
+- **documentation-url:** `https://repo.maven.apache.org/maven2/org/ehcache/ehcache/$version$/ehcache-$version$-javadoc.jar`. The Maven listing for 3.12.0 includes this javadoc jar.
+- **description:** I reused the two-sentence description already in the 3.10.8-jakarta entry: "Ehcache is an open source, standards-based Java cache that improves performance, reduces database load, and simplifies scalability. It supports both the Ehcache API and the JSR-107 cache API, with configurations ranging from in-process caches to larger tiered deployments."
+- **language:** Left absent. Ehcache is a plain Java library, not specific to Kotlin, Groovy or Scala.
+
+All other fields are unchanged.
+Ran agent for org.ehcache:ehcache:3.12.0 (exit 0). Log: /home/oracle/oracle/metadata2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8372-90cba624/build/agent-url-discovery-logs/org.ehcache-ehcache-3.12.0.log
+Completed populateArtifactURLs: invoked=1, prompted=0, skipped=0, overwriteExisting=false, verifyArtifactSources=false, limit=null
+
+[Incubating] Problems report is available at: file:///home/oracle/oracle/metadata2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8372-90cba624/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 29s
+9 actionable tasks: 1 executed, 8 up-to-date

@@ -1,0 +1,158 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :tckTest
+====================
+Testing library: org.ehcache:ehcache:3.12.0
+Command: `/home/oracle/oracle/metadata2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8372-90cba624/gradlew nativeTest`
+Executing test...
+-------
+Starting a Gradle Daemon, 1 busy and 2 stopped Daemons could not be reused, use --status for details
+Shared read-only dependency cache is an incubating feature.
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+> Task :compileJava NO-SOURCE
+> Task :processResources NO-SOURCE
+> Task :classes UP-TO-DATE
+> Task :tck-test-support:compileJava UP-TO-DATE
+> Task :jar UP-TO-DATE
+> Task :tck-test-support:processResources UP-TO-DATE
+> Task :tck-test-support:classes UP-TO-DATE
+> Task :tck-test-support:jar UP-TO-DATE
+> Task :compileTestJava
+> Task :checkTestTimeoutAnnotations
+> Task :processTestResources
+> Task :testClasses
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::objectFieldOffset has been called by org.ehcache.impl.internal.concurrent.ThreadLocalRandomUtil (file:/tmp/metadata-forge-gradle/078137237d3cc755/worktree-homes/8372-90cba624-0ef064c2/caches/modules-2/files-2.1/org.ehcache/ehcache/3.12.0/bf2f57e7614e362ff5ed2c7388c4bb33e1d374dc/ehcache-3.12.0-jakarta.jar)
+WARNING: Please consider reporting this to the maintainers of class org.ehcache.impl.internal.concurrent.ThreadLocalRandomUtil
+WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+
+> Task :test
+
+EhcacheTest > testStorageTiers() FAILED
+    org.opentest4j.AssertionFailedError: Unexpected exception thrown: java.nio.file.DirectoryNotEmptyException: src/test/resources/testStorageTiersData
+        at app//org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:152)
+        at app//org.junit.jupiter.api.AssertDoesNotThrow.createAssertionFailedError(AssertDoesNotThrow.java:84)
+        at app//org.junit.jupiter.api.AssertDoesNotThrow.assertDoesNotThrow(AssertDoesNotThrow.java:53)
+        at app//org.junit.jupiter.api.AssertDoesNotThrow.assertDoesNotThrow(AssertDoesNotThrow.java:36)
+        at app//org.junit.jupiter.api.Assertions.assertDoesNotThrow(Assertions.java:3136)
+        at app//org_ehcache.ehcache.EhcacheTest.testStorageTiers(EhcacheTest.java:70)
+
+        Caused by:
+        java.nio.file.DirectoryNotEmptyException: src/test/resources/testStorageTiersData
+            at java.base/sun.nio.fs.UnixFileSystemProvider.implDelete(UnixFileSystemProvider.java:269)
+            at java.base/sun.nio.fs.AbstractFileSystemProvider.delete(AbstractFileSystemProvider.java:105)
+            at java.base/java.nio.file.Files.delete(Files.java:1052)
+            at org_ehcache.ehcache.EhcacheTest.lambda$testStorageTiers$0(EhcacheTest.java:70)
+            at org.junit.jupiter.api.AssertDoesNotThrow.assertDoesNotThrow(AssertDoesNotThrow.java:49)
+            ... 3 more
+
+TieringOptionsTest > testSegmentsAndDestroyPersistentTiers() FAILED
+    org.opentest4j.AssertionFailedError: Unexpected exception thrown: java.nio.file.DirectoryNotEmptyException: src/test/resources/testSegmentsAndDestroyPersistentTiersData
+        at app//org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:152)
+        at app//org.junit.jupiter.api.AssertDoesNotThrow.createAssertionFailedError(AssertDoesNotThrow.java:84)
+        at app//org.junit.jupiter.api.AssertDoesNotThrow.assertDoesNotThrow(AssertDoesNotThrow.java:53)
+        at app//org.junit.jupiter.api.AssertDoesNotThrow.assertDoesNotThrow(AssertDoesNotThrow.java:36)
+        at app//org.junit.jupiter.api.Assertions.assertDoesNotThrow(Assertions.java:3136)
+        at app//org_ehcache.ehcache.TieringOptionsTest.testSegmentsAndDestroyPersistentTiers(TieringOptionsTest.java:84)
+
+        Caused by:
+        java.nio.file.DirectoryNotEmptyException: src/test/resources/testSegmentsAndDestroyPersistentTiersData
+            at java.base/sun.nio.fs.UnixFileSystemProvider.implDelete(UnixFileSystemProvider.java:269)
+            at java.base/sun.nio.fs.AbstractFileSystemProvider.delete(AbstractFileSystemProvider.java:105)
+            at java.base/java.nio.file.Files.delete(Files.java:1052)
+            at org_ehcache.ehcache.TieringOptionsTest.lambda$testSegmentsAndDestroyPersistentTiers$1(TieringOptionsTest.java:84)
+            at org.junit.jupiter.api.AssertDoesNotThrow.assertDoesNotThrow(AssertDoesNotThrow.java:49)
+            ... 3 more
+
+XMLConfigurationTest > testBuildingXMLMultiConfigurations() FAILED
+    org.ehcache.xml.exceptions.XmlConfigurationException: Error unparsing configuration: org.ehcache.core.config.DefaultConfiguration@71839fea
+        at app//org.ehcache.xml.XmlConfiguration.<init>(XmlConfiguration.java:212)
+        at app//org.ehcache.xml.multi.XmlMultiConfiguration.unparseEhcacheConfiguration(XmlMultiConfiguration.java:236)
+        at app//org.ehcache.xml.multi.XmlMultiConfiguration$SingleConfig.unparse(XmlMultiConfiguration.java:271)
+        at app//org.ehcache.xml.multi.XmlMultiConfiguration.lambda$new$2(XmlMultiConfiguration.java:127)
+        at java.base@25.0.4.1.1/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:214)
+        at java.base@25.0.4.1.1/java.util.HashMap$EntrySpliterator.forEachRemaining(HashMap.java:1859)
+        at java.base@25.0.4.1.1/java.util.stream.AbstractPipeline.copyInto(AbstractPipeline.java:570)
+        at java.base@25.0.4.1.1/java.util.stream.AbstractPipeline.wrapAndCopyInto(AbstractPipeline.java:560)
+        at java.base@25.0.4.1.1/java.util.stream.ReduceOps$ReduceOp.evaluateSequential(ReduceOps.java:921)
+        at java.base@25.0.4.1.1/java.util.stream.AbstractPipeline.evaluate(AbstractPipeline.java:265)
+        at java.base@25.0.4.1.1/java.util.stream.ReferencePipeline.collect(ReferencePipeline.java:723)
+        at app//org.ehcache.xml.multi.XmlMultiConfiguration.<init>(XmlMultiConfiguration.java:127)
+        at app//org.ehcache.xml.multi.XmlMultiConfiguration$1.withManager(XmlMultiConfiguration.java:365)
+        at app//org_ehcache.ehcache.XMLConfigurationTest.testBuildingXMLMultiConfigurations(XMLConfigurationTest.java:86)
+
+        Caused by:
+        java.lang.NullPointerException: Cannot invoke "org.ehcache.config.ResourcePools.getResourceTypeSet()" because "resourcePools" is null
+            at org.ehcache.xml.ResourceConfigurationParser.unparse(ResourceConfigurationParser.java:180)
+            at org.ehcache.xml.ConfigurationParser.configToDocument(ConfigurationParser.java:303)
+            at org.ehcache.xml.XmlConfiguration.<init>(XmlConfiguration.java:207)
+            ... 13 more
+
+18 tests completed, 3 failed
+
+> Task :test FAILED
+
+[Incubating] Problems report is available at: file:///home/oracle/oracle/metadata2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8372-90cba624/tests/src/org.ehcache/ehcache/3.12.0/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+16 actionable tasks: 4 executed, 12 up-to-date
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':test'.
+> There were failing tests. See the report at: file:///home/oracle/oracle/metadata2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8372-90cba624/tests/src/org.ehcache/ehcache/3.12.0/build/reports/tests/test/index.html
+
+* Try:
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+
+BUILD FAILED in 58s
+
+> Task :tckTest FAILED
+
+[Incubating] Problems report is available at: file:///home/oracle/oracle/metadata2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8372-90cba624/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':tckTest'.
+> Test for org.ehcache:ehcache:3.12.0 failed with exit code 1.
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD FAILED in 1m 9s
+9 actionable tasks: 1 executed, 8 up-to-date
