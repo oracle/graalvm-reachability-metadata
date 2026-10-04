@@ -1,0 +1,131 @@
+{
+  "add_new_library_support:2026-10-04": {
+    "timestamp": "2026-10-04T12:03:08.837450Z",
+    "library": "org.springframework.data:spring-data-couchbase:6.1.1",
+    "starting_commit": "dff881a125862bfba0dde1f13f151f2362d2d4e2",
+    "ending_commit": "626fefedced9ce062be8b322b3356f68ef6dec74",
+    "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-luna",
+    "agent": "pi",
+    "model": "gpt-5.6-luna",
+    "status": "success",
+    "stats": {
+      "version": "6.1.1",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 0.96,
+            "coveredCalls": 24,
+            "totalCalls": 25
+          }
+        },
+        "coverageRatio": 0.96,
+        "coveredCalls": 24,
+        "totalCalls": 25
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 11874,
+          "missed": 27518,
+          "ratio": 0.301432,
+          "total": 39392
+        },
+        "line": {
+          "covered": 2537,
+          "missed": 5137,
+          "ratio": 0.330597,
+          "total": 7674
+        },
+        "method": {
+          "covered": 708,
+          "missed": 1390,
+          "ratio": 0.337464,
+          "total": 2098
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "advisory_preparation",
+      "issue_number": 9751,
+      "issue_label": "library-new-request",
+      "library": "org.springframework.data:spring-data-couchbase:6.1.1",
+      "summary": "spring-data-couchbase's reachable surface (CouchbaseTemplate, repository proxies, N1QL query derivation, mapping/converters) only exercises real code paths against a live Couchbase cluster -- there is no embedded/in-memory substitute. The sibling spring-boot-data-couchbase test in this repo avoids this by testing only autoconfiguration wiring, which isn't an option for the core module itself. A Couchbase Testcontainers setup is needed, mirroring spring-data-couchbase's own upstream integration-test infrastructure.",
+      "deterministic_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "org.testcontainers:testcontainers-couchbase:2.0.5",
+          "scope": "testImplementation",
+          "reason": "Provides CouchbaseContainer to start a real Couchbase Server instance; spring-data-couchbase has no embedded/mock backend, and this repo already tracks testcontainers 2.0.5 (renamed 'testcontainers-couchbase' module) for other testcontainers artifacts."
+        },
+        {
+          "kind": "dependency",
+          "coordinate": "org.testcontainers:testcontainers-junit-jupiter:2.0.5",
+          "scope": "testImplementation",
+          "reason": "JUnit 5 @Testcontainers/@Container lifecycle support is a separate artifact from the couchbase module, not pulled transitively."
+        },
+        {
+          "kind": "docker_image",
+          "image": "couchbase/server:community-7.6.2",
+          "slug": "couchbase_server",
+          "reason": "Community Edition avoids Enterprise licensing concerns in CI; no couchbase image is currently pinned under allowed-docker-images/, so a new Dockerfile-couchbase_server entry is needed. Exact tag should be re-verified against Testcontainers' documented default and a grype scan before pinning."
+        }
+      ],
+      "agent_guidance": "Core spring-data-couchbase has no Spring Boot autoconfiguration, so the test must wire a CouchbaseClientFactory/Cluster manually (e.g. extend AbstractCouchbaseConfiguration or build SimpleCouchbaseClientFactory directly) using the container's getConnectionString()/getUsername()/getPassword(). Use a BucketDefinition with withPrimaryIndex(true) so derived N1QL query methods (findByXxx) have an index to run against. Call cluster.waitUntilReady(timeout) before issuing repository operations to avoid flaky early access. Start the container once per test class via a static @Container field (not per-test) so the ~30-90s cluster/bucket/index bootstrap is amortized and individual @Test methods stay within the repo's 60-second budget. required-docker-images.txt must also list testcontainers/ryuk:0.14.0 (the exact tag already pinned in allowed-docker-images/Dockerfile-testcontainers_ryuk), matching the pattern used by the existing microcks-testcontainers test.",
+      "risks": [
+        "Couchbase Server containers are heavier and slower to initialize than typical TCK Docker images (often 30-90s for cluster/bucket/index setup), which could strain the per-test 60s and overall suite-time budgets even when amortized across a shared container.",
+        "Exact image tag and testcontainers-couchbase/testcontainers-junit-jupiter versions need re-verification at generation time -- the 2.x 'testcontainers-' artifact rename is recent and I could not confirm current Maven Central coordinates against a live resolver in this sandbox.",
+        "Couchbase Server images tend to bundle many services (indexer, query, FTS, etc.), which may surface more CVEs under checkAllowedDockerImages/grype than smaller single-purpose images; Community Edition with a pinned minor version reduces but doesn't eliminate this.",
+        "This is the first org.springframework.data coordinate and the first Couchbase server Docker usage in this repo -- no local precedent exists to copy from beyond the Testcontainers pattern used by microcks-testcontainers."
+      ],
+      "applied_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "org.testcontainers:testcontainers-couchbase:2.0.5",
+          "result": "applied",
+          "target": "tests/src/org.springframework.data/spring-data-couchbase/6.1.1/build.gradle"
+        },
+        {
+          "kind": "dependency",
+          "coordinate": "org.testcontainers:testcontainers-junit-jupiter:2.0.5",
+          "result": "applied",
+          "target": "tests/src/org.springframework.data/spring-data-couchbase/6.1.1/build.gradle"
+        },
+        {
+          "kind": "docker_image",
+          "image": "couchbase/server:community-7.6.2",
+          "slug": "couchbase_server",
+          "result": "already_present",
+          "target": "tests/tck-build-logic/src/main/resources/allowed-docker-images/Dockerfile-couchbase_server"
+        }
+      ],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#9751 Support for org.springframework.data:spring-data-couchbase:6.1.1; label=library-new-request; body_chars=39"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "sonnet",
+      "input_tokens_used": 32,
+      "output_tokens_used": 21734
+    },
+    "metrics": {
+      "input_tokens_used": 796255,
+      "cached_input_tokens_used": 16892928,
+      "output_tokens_used": 78906,
+      "iterations": 11,
+      "cost_usd": 2.959,
+      "generated_loc": 844,
+      "tested_library_loc": 2537,
+      "metadata_entries": 505,
+      "test_only_metadata_entries": 1150,
+      "code_coverage_percent": 33.06
+    },
+    "artifacts": {
+      "metadata_file": "metadata/org.springframework.data/spring-data-couchbase/6.1.1/reachability-metadata.json"
+    }
+  }
+}
