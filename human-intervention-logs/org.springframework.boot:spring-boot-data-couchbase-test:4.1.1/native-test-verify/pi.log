@@ -1,0 +1,10 @@
+Reproduced with the specified GraalVM and reviewed the full stack trace.
+
+Root cause: malformed JNI metadata at line 1202—`interfaces` was incorrectly nested under `declaringMethod`, with a missing object closure. Restoring the schema-valid lambda descriptor also restored the committed file, so the working tree is clean.
+
+Verification:
+
+- Exact reproduce command: **passed**
+- Native tests: **2/2 passed**
+- Metadata JSON parsing: **passed**
+- `fissile check --staged`: **passed**

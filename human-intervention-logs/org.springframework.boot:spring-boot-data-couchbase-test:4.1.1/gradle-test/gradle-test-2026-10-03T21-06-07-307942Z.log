@@ -1,0 +1,135 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :tckTest
+====================
+Testing library: org.springframework.boot:spring-boot-data-couchbase-test:4.1.1
+Command: `/home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9754-fb343ff5/gradlew nativeTest`
+Executing test...
+-------
+Starting a Gradle Daemon, 1 busy and 7 stopped Daemons could not be reused, use --status for details
+Shared read-only dependency cache is an incubating feature.
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+> Task :compileJava NO-SOURCE
+> Task :processResources NO-SOURCE
+> Task :classes UP-TO-DATE
+> Task :tck-test-support:compileJava UP-TO-DATE
+> Task :tck-test-support:processResources UP-TO-DATE
+> Task :jar UP-TO-DATE
+> Task :tck-test-support:classes UP-TO-DATE
+> Task :tck-test-support:jar UP-TO-DATE
+> Task :compileTestJava
+> Task :checkTestTimeoutAnnotations
+> Task :processTestResources NO-SOURCE
+> Task :testClasses
+> Task :test
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+
+WARNING: sun.misc.Unsafe::objectFieldOffset has been called by com.couchbase.client.core.deps.org.jctools.util.UnsafeAccess (file:/tmp/metadata-forge-gradle/6c511174d24457d7/worktree-homes/9754-fb343ff5-59571c7c/caches/modules-2/files-2.1/com.couchbase.client/core-io/3.11.3/a9751cb67cf9b662032d88e62f5749ed35d1f058/core-io-3.11.3.jar)
+WARNING: Please consider reporting this to the maintainers of class com.couchbase.client.core.deps.org.jctools.util.UnsafeAccess
+WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+WARNING: A restricted method in java.lang.System has been called
+WARNING: java.lang.System::loadLibrary has been called by com.couchbase.client.core.deps.io.netty.util.internal.NativeLibraryUtil in an unnamed module (file:/tmp/metadata-forge-gradle/6c511174d24457d7/worktree-homes/9754-fb343ff5-59571c7c/caches/modules-2/files-2.1/com.couchbase.client/core-io/3.11.3/a9751cb67cf9b662032d88e62f5749ed35d1f058/core-io-3.11.3.jar)
+WARNING: Use --enable-native-access=ALL-UNNAMED to avoid a warning for callers in this module
+WARNING: Restricted methods will be blocked in a future release unless native access is enabled
+
+
+> Task :test
+
+Spring_boot_data_couchbase_testTest > storesFindsAndQueriesDocumentsThroughTheDataCouchbaseSlice() FAILED
+    com.couchbase.client.core.error.ParsingFailureException: Parsing of the input failed {"completed":true,"coreId":"0x32345fd600000001","errors":[{"additional":{"line":1,"column":209},"code":3000,"message":"syntax error - line 1, column 209, near '...estTest$Person\" AND ', at: role (reserved word)","retry":false}],"httpStatus":400,"idempotent":true,"lastChannelId":"32345FD600000001/00000000FBB2486F","lastDispatchedFrom":"127.0.0.1:51380","lastDispatchedTo":"localhost:32771","requestId":6,"requestType":"QueryRequest","retried":0,"service":{"operationId":"null","statement":"SELECT `_class`, META(`test-bucket`).`id` AS __id, `name`, `role` FROM `test-bucket` WHERE `_class` = \"org_springframework_boot.spring_boot_data_couchbase_test.Spring_boot_data_couchbase_testTest$Person\" AND role = $1","type":"query"},"timeoutMs":10000,"timings":{"dispatchMicros":15545,"totalDispatchMicros":15545,"totalMicros":132831}}
+        at app//com.couchbase.client.core.io.netty.query.QueryChunkResponseParser.errorsToThrowable(QueryChunkResponseParser.java:148)
+        at app//com.couchbase.client.core.io.netty.query.QueryChunkResponseParser.lambda$error$10(QueryChunkResponseParser.java:128)
+        at java.base@25.0.2/java.util.Optional.map(Optional.java:260)
+        at app//com.couchbase.client.core.io.netty.query.QueryChunkResponseParser.error(QueryChunkResponseParser.java:128)
+        at app//com.couchbase.client.core.io.netty.chunk.ChunkedMessageHandler.lambda$maybeCompleteResponseWithFailure$1(ChunkedMessageHandler.java:288)
+        at java.base@25.0.2/java.util.Optional.orElseGet(Optional.java:364)
+        at app//com.couchbase.client.core.io.netty.chunk.ChunkedMessageHandler.maybeCompleteResponseWithFailure(ChunkedMessageHandler.java:287)
+        at app//com.couchbase.client.core.io.netty.chunk.ChunkedMessageHandler.channelRead(ChunkedMessageHandler.java:219)
+        at app//com.couchbase.client.core.deps.io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:355)
+        at app//com.couchbase.client.core.deps.io.netty.channel.CombinedChannelDuplexHandler$DelegatingChannelHandlerContext.fireChannelRead(CombinedChannelDuplexHandler.java:434)
+        at app//com.couchbase.client.core.deps.io.netty.handler.codec.ByteToMessageDecoder.fireChannelRead(ByteToMessageDecoder.java:361)
+        at app//com.couchbase.client.core.deps.io.netty.handler.codec.ByteToMessageDecoder.channelRead(ByteToMessageDecoder.java:325)
+        at app//com.couchbase.client.core.deps.io.netty.channel.CombinedChannelDuplexHandler.channelRead(CombinedChannelDuplexHandler.java:249)
+        at app//com.couchbase.client.core.deps.io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:355)
+        at app//com.couchbase.client.core.deps.io.netty.channel.DefaultChannelPipeline$HeadContext.channelRead(DefaultChannelPipeline.java:1429)
+        at app//com.couchbase.client.core.deps.io.netty.channel.DefaultChannelPipeline.fireChannelRead(DefaultChannelPipeline.java:918)
+        at app//com.couchbase.client.core.deps.io.netty.channel.epoll.AbstractEpollStreamChannel$EpollStreamUnsafe.epollInReady(AbstractEpollStreamChannel.java:804)
+        at app//com.couchbase.client.core.deps.io.netty.channel.epoll.AbstractEpollChannel$AbstractEpollUnsafe.handle(AbstractEpollChannel.java:487)
+        at app//com.couchbase.client.core.deps.io.netty.channel.epoll.EpollIoHandler$DefaultEpollIoRegistration.handle(EpollIoHandler.java:337)
+        at app//com.couchbase.client.core.deps.io.netty.channel.epoll.EpollIoHandler.processReady(EpollIoHandler.java:534)
+        at app//com.couchbase.client.core.deps.io.netty.channel.epoll.EpollIoHandler.run(EpollIoHandler.java:479)
+        at app//com.couchbase.client.core.deps.io.netty.channel.SingleThreadIoEventLoop.runIo(SingleThreadIoEventLoop.java:225)
+        at app//com.couchbase.client.core.deps.io.netty.channel.SingleThreadIoEventLoop.run(SingleThreadIoEventLoop.java:196)
+        at app//com.couchbase.client.core.deps.io.netty.util.concurrent.SingleThreadEventExecutor$5.run(SingleThreadEventExecutor.java:1195)
+        at app//com.couchbase.client.core.deps.io.netty.util.internal.ThreadExecutorMap$2.run(ThreadExecutorMap.java:74)
+        at app//com.couchbase.client.core.deps.io.netty.util.concurrent.FastThreadLocalRunnable.run(FastThreadLocalRunnable.java:30)
+        at java.base@25.0.2/java.lang.Thread.run(Thread.java:1474)
+
+
+> Task :test FAILED
+1 test completed, 1 failed
+
+
+[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9754-fb343ff5/tests/src/org.springframework.boot/spring-boot-data-couchbase-test/4.1.1/build/reports/problems/problems-report.html
+FAILURE: Build failed with an exception.
+
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+* What went wrong:
+
+Execution failed for task ':test'.
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+> 
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+There were failing tests. See the report at: file:///home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9754-fb343ff5/tests/src/org.springframework.boot/spring-boot-data-couchbase-test/4.1.1/build/reports/tests/test/index.html
+15 actionable tasks: 3 executed, 12 up-to-date
+
+* Try:
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+
+BUILD FAILED in 1m 37s
+
+> Task :tckTest FAILED
+
+[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9754-fb343ff5/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':tckTest'.
+> Test for org.springframework.boot:spring-boot-data-couchbase-test:4.1.1 failed with exit code 1.
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD FAILED in 1m 39s
+9 actionable tasks: 1 executed, 8 up-to-date

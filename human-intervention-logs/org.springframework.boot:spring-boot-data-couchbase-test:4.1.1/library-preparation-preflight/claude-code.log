@@ -1,0 +1,22 @@
+Based on local repository evidence (no internet access was available in this sandbox — network tool calls were denied), here's what I found and my decision.
+
+**Key findings:**
+- `org.springframework.boot:spring-boot-data-couchbase-test:4.1.1` is the class-bearing "test-slice support" module (home of `@DataCouchbaseTest` and its supporting autoconfiguration/exclude-filter classes) — distinct from the empty `spring-boot-starter-*-test` POM aggregators already in this repo's metadata (`spring-boot-starter-couchbase-test`, `spring-boot-starter-data-couchbase-test`), both of which are marked `not-for-native-image` because their jars contain no class files.
+- The sibling module `org.springframework.boot:spring-boot-data-couchbase:4.1.1` already has a working test (`tests/src/org.springframework.boot/spring-boot-data-couchbase/4.1.1`) that exercises `DataCouchbaseAutoConfiguration` purely through `ApplicationContextRunner` + `ImportCandidates` reflection — no live Couchbase connection, no Docker. That's because `DataCouchbaseAutoConfiguration` only wires the Spring Data mapping/conversion layer; the actual `Cluster`/connection bean lives in the separate `spring-boot-couchbase` autoconfiguration, which that test deliberately excludes.
+- This repo has never pinned a Couchbase Docker image (`tests/tck-build-logic/.../allowed-docker-images` has none), and the only existing `com.couchbase.client` tests cover micrometer metrics/tracing instrumentation, not a live cluster.
+- The same separation-of-concerns likely applies to the `-test` slice module: its own classes (the `@DataCouchbaseTest` annotation, type-exclude filter, test auto-configuration) can plausibly be exercised the same reflection/`ApplicationContextRunner` way as the sibling, without booting a connected cluster — that only becomes necessary if a generated test tries to run the *full* `@DataCouchbaseTest` slice end-to-end against a real bucket.
+
+Given no concrete evidence of required extra setup, and strong local precedent that this library family avoids live infrastructure, I'm returning `no_action`, with guidance to steer the test toward the proven pattern and a flagged risk in case verification proves otherwise.
+
+```json
+{
+  "action": "no_action",
+  "summary": "spring-boot-data-couchbase-test is the class-bearing @DataCouchbaseTest slice module (not the empty starter POM). Its sibling spring-boot-data-couchbase:4.1.1 test in this repo already proves the Spring Data Couchbase autoconfiguration/mapping layer can be exercised via ApplicationContextRunner + ImportCandidates reflection with no live cluster, because the connection-establishing CouchbaseAutoConfiguration is a separate, excluded module. No concrete evidence found that extra Maven deps, a Docker image, or env vars are required for the generated scaffold.",
+  "deterministic_setup": [],
+  "agent_guidance": "Mirror tests/src/org.springframework.boot/spring-boot-data-couchbase/4.1.1's approach: use ApplicationContextRunner with AutoConfigurations.of(...) scoped to the test-slice's own configuration/auto-configuration classes (e.g. the DataCouchbaseTest support/auto-configuration and type-exclude-filter classes), and verify @DataCouchbaseTest's meta-annotations via ImportCandidates.load(AutoConfiguration.class, ...), rather than annotating a real test class with @DataCouchbaseTest and letting SpringExtension boot the full slice — the full slice pulls in the real CouchbaseAutoConfiguration/Cluster connection bean and would require a live or containerized Couchbase cluster.",
+  "risks": [
+    "No internet access was available during this research (WebFetch/WebSearch/curl were all denied by the sandbox), so the jar's actual contents and class list could not be directly verified — this decision rests on architectural inference from the sibling spring-boot-data-couchbase module and Spring Boot's known modularization split, not a direct artifact inspection.",
+    "If local Gradle/Native Image verification shows the generated test must actually run @DataCouchbaseTest end-to-end (e.g. because the slice's bootstrapper classes aren't reachable without a live context refresh), a Testcontainers Couchbase container will be needed — this repo has no Couchbase image pinned yet under tests/tck-build-logic/src/main/resources/allowed-docker-images, so a new one would have to be added, not reused."
+  ]
+}
+```
