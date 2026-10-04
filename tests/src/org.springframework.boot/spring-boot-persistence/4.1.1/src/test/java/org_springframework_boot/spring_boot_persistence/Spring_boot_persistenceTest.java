@@ -11,6 +11,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.junit.jupiter.api.Test;
@@ -24,6 +25,7 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
+import org.springframework.core.env.MapPropertySource;
 import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.dao.support.PersistenceExceptionTranslator;
 import org.springframework.stereotype.Repository;
@@ -83,6 +85,22 @@ public class Spring_boot_persistenceTest {
             assertThatThrownBy(repository::load)
                     .isInstanceOf(InvalidDataAccessApiUsageException.class)
                     .hasCauseInstanceOf(IllegalStateException.class);
+        }
+    }
+
+    @Test
+    void persistenceExceptionTranslationCanBeDisabled() {
+        try (AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext()) {
+            context.getEnvironment().getPropertySources().addFirst(new MapPropertySource(
+                    "test", Map.of("spring.persistence.exceptiontranslation.enabled", false)));
+            context.register(PersistenceExceptionTranslationConfiguration.class);
+            context.refresh();
+
+            RepositoryOperations repository = context.getBean(RepositoryOperations.class);
+
+            assertThatThrownBy(repository::load)
+                    .isInstanceOf(IllegalStateException.class)
+                    .hasMessage("Database unavailable");
         }
     }
 
