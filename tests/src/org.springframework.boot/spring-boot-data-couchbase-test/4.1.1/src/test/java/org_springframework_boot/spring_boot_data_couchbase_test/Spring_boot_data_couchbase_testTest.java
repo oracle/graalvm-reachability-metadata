@@ -58,6 +58,21 @@ public class Spring_boot_data_couchbase_testTest {
     }
 
     @Test
+    void dataCouchbaseTestAppliesExcludeFilters() throws Exception {
+        TestContextManager testContextManager = new TestContextManager(DataCouchbaseSliceWithExcludeFilterScenario.class);
+        testContextManager.beforeTestClass();
+        try {
+            ApplicationContext context = testContextManager.getTestContext().getApplicationContext();
+
+            assertThat(context.getBeansOfType(IncludedCouchbaseComponent.class)).hasSize(1);
+            assertThat(context.getBeansOfType(ExcludedCouchbaseComponent.class)).isEmpty();
+        }
+        finally {
+            testContextManager.afterTestClass();
+        }
+    }
+
+    @Test
     void dataCouchbaseTestCanExcludeItsAutoConfiguration() throws Exception {
         TestContextManager testContextManager = new TestContextManager(DataCouchbaseTestWithoutAutoConfiguration.class);
         testContextManager.beforeTestClass();
@@ -85,6 +100,16 @@ class AutoConfigureDataCouchbaseConfiguration {
                 classes = IncludedCouchbaseComponent.class))
 @ContextConfiguration(classes = DataCouchbaseSliceConfiguration.class)
 class DataCouchbaseSliceScenario {
+
+}
+
+@DataCouchbaseTest(useDefaultFilters = false,
+        includeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE,
+                classes = { IncludedCouchbaseComponent.class, ExcludedCouchbaseComponent.class }),
+        excludeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE,
+                classes = ExcludedCouchbaseComponent.class))
+@ContextConfiguration(classes = DataCouchbaseSliceConfiguration.class)
+class DataCouchbaseSliceWithExcludeFilterScenario {
 
 }
 
