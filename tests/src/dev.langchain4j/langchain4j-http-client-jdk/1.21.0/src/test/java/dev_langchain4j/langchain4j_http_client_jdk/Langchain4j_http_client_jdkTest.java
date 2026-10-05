@@ -29,10 +29,12 @@ import dev.langchain4j.http.client.sse.ServerSentEventContext;
 import dev.langchain4j.http.client.sse.ServerSentEventListener;
 import dev.langchain4j.http.client.sse.ServerSentEventParser;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.UncheckedIOException;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
+import java.nio.ByteBuffer;
 import java.time.Duration;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -430,6 +432,78 @@ public class Langchain4j_http_client_jdkTest {
             assertThat(((HttpResponseReceived) received.get(0)).response().statusCode()).isEqualTo(200);
             assertThat(received.subList(1, 3))
                     .containsExactly(new ServerSentEvent("token", "one"), new ServerSentEvent("token", "two"));
+        }
+    }
+
+    @Test
+    void publisherExecutionUsesCustomIncrementalServerSentEventParser() throws Exception {
+        try (TestHttpServer server = TestHttpServer.create(exchange ->
+                        writeResponse(exchange, 200, "custom payload", "text/event-stream"));
+                TestClient client = TestClient.create()) {
+            ServerSentEventParser parser = new ServerSentEventParser() {
+                @Override
+                public void parse(InputStream input, ServerSentEventListener listener) {
+                    throw new UnsupportedOperationException("This parser uses incremental parsing");
+                }
+
+                @Override
+                public Incremental incremental() {
+                    return new Incremental() {
+                        private final StringBuilder body = new StringBuilder();
+
+                        @Override
+                        public List<ServerSentEvent> feed(ByteBuffer bytes) {
+                            body.append(UTF_8.decode(bytes));
+                            return List.of();
+                        }
+
+                        @Override
+                        public List<ServerSentEvent> flush() {
+                            return List.of(new ServerSentEvent("custom", body.toString()));
+                        }
+                    };
+                }
+            };
+            List<HttpStreamingEvent> received = new CopyOnWriteArrayList<>();
+            AtomicReference<Throwable> failure = new AtomicReference<>();
+            CountDownLatch completed = new CountDownLatch(1);
+
+            client.client()
+                    .stream(
+                            HttpRequest.builder()
+                                    .method(HttpMethod.GET)
+                                    .url(server.url("/custom-publisher-events"))
+                                    .build(),
+                            parser)
+                    .subscribe(new Flow.Subscriber<>() {
+                        @Override
+                        public void onSubscribe(Flow.Subscription subscription) {
+                            subscription.request(Long.MAX_VALUE);
+                        }
+
+                        @Override
+                        public void onNext(HttpStreamingEvent event) {
+                            received.add(event);
+                        }
+
+                        @Override
+                        public void onError(Throwable throwable) {
+                            failure.set(throwable);
+                            completed.countDown();
+                        }
+
+                        @Override
+                        public void onComplete() {
+                            completed.countDown();
+                        }
+                    });
+
+            assertThat(completed.await(IO_TIMEOUT.toSeconds(), TimeUnit.SECONDS)).isTrue();
+            assertThat(failure.get()).isNull();
+            assertThat(received).hasSize(2);
+            assertThat(received.get(0)).isInstanceOf(HttpResponseReceived.class);
+            assertThat(((HttpResponseReceived) received.get(0)).response().statusCode()).isEqualTo(200);
+            assertThat(received.get(1)).isEqualTo(new ServerSentEvent("custom", "custom payload"));
         }
     }
 
