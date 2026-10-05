@@ -7,10 +7,9 @@
 package org_hibernate.hibernate_core;
 
 import org.hibernate.type.descriptor.java.ArrayJavaType;
+import org.hibernate.type.descriptor.java.IntegerJavaType;
 import org.hibernate.type.descriptor.java.StringJavaType;
 import org.junit.jupiter.api.Test;
-
-import java.util.Arrays;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -24,11 +23,9 @@ public class ArrayJavaTypeTest {
                 .containsExactly("one", "two");
         assertThat(type.unwrap(new String[]{"one", "two"}, CharSequence[].class, null))
                 .containsExactly("one", "two");
-        char[][] characters = type.unwrap(new String[]{"one", "two"}, char[][].class, null);
-        assertThat(Arrays.deepEquals(
-                characters,
-                new char[][]{"one".toCharArray(), "two".toCharArray()}
-        )).isTrue();
+        ArrayJavaType<Integer> integerType = new ArrayJavaType<>(IntegerJavaType.INSTANCE);
+        assertThat(integerType.unwrap(new Integer[]{1, 2}, Long[].class, null))
+                .containsExactly(1L, 2L);
         assertThat(type.wrap(new CharSequence[]{"one", "two"}, null))
                 .containsExactly("one", "two");
     }

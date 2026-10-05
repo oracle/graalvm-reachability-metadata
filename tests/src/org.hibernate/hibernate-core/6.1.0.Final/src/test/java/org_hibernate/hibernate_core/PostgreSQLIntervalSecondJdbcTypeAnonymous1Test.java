@@ -10,6 +10,7 @@ import org.hibernate.dialect.PostgreSQLIntervalSecondJdbcType;
 import org.hibernate.type.descriptor.ValueBinder;
 import org.hibernate.type.descriptor.java.DurationJavaType;
 import org.junit.jupiter.api.Test;
+import org.postgresql.util.PGInterval;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -27,15 +28,17 @@ public class PostgreSQLIntervalSecondJdbcTypeAnonymous1Test {
                 .getBinder(DurationJavaType.INSTANCE);
 
         try (Connection connection = DriverManager.getConnection("jdbc:h2:mem:pg-interval");
-                PreparedStatement statement = connection.prepareStatement("select cast(? as varchar)")) {
+                PreparedStatement statement = connection.prepareStatement("select ?")) {
             binder.bind(statement, Duration.ofDays(2).plusHours(3).plusMinutes(4).plusSeconds(5), 1, null);
             try (ResultSet result = statement.executeQuery()) {
                 assertThat(result.next()).isTrue();
-                assertThat(result.getString(1))
-                        .contains("2 days")
-                        .contains("3 hours")
-                        .contains("4 mins")
-                        .contains("5.0 secs");
+                assertThat(result.getObject(1))
+                        .isInstanceOfSatisfying(PGInterval.class, interval -> {
+                            assertThat(interval.getDays()).isEqualTo(2);
+                            assertThat(interval.getHours()).isEqualTo(3);
+                            assertThat(interval.getMinutes()).isEqualTo(4);
+                            assertThat(interval.getWholeSeconds()).isEqualTo(5);
+                        });
             }
         }
     }

@@ -11,6 +11,7 @@ import org.hibernate.dialect.PostgreSQLPGObjectJdbcType;
 import org.hibernate.type.descriptor.ValueBinder;
 import org.hibernate.type.descriptor.java.StringJavaType;
 import org.junit.jupiter.api.Test;
+import org.postgresql.util.PGobject;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -27,11 +28,15 @@ public class PostgreSQLPGObjectJdbcTypeAnonymous1Test {
         ValueBinder<String> binder = jdbcType.getBinder(StringJavaType.INSTANCE);
 
         try (Connection connection = DriverManager.getConnection("jdbc:h2:mem:pg-object");
-                PreparedStatement statement = connection.prepareStatement("select cast(? as varchar)")) {
+                PreparedStatement statement = connection.prepareStatement("select ?")) {
             binder.bind(statement, "192.0.2.42", 1, null);
             try (ResultSet result = statement.executeQuery()) {
                 assertThat(result.next()).isTrue();
-                assertThat(result.getString(1)).contains("192.0.2.42");
+                assertThat(result.getObject(1))
+                        .isInstanceOfSatisfying(PGobject.class, object -> {
+                            assertThat(object.getType()).isEqualTo("inet");
+                            assertThat(object.getValue()).isEqualTo("192.0.2.42");
+                        });
             }
         }
     }
