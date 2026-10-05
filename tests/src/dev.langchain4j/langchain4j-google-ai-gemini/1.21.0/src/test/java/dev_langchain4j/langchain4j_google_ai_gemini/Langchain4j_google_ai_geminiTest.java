@@ -20,6 +20,7 @@ import dev.langchain4j.model.chat.response.StreamingChatResponseHandler;
 import dev.langchain4j.model.googleai.GoogleAiEmbeddingModel;
 import dev.langchain4j.model.googleai.GoogleAiGeminiChatModel;
 import dev.langchain4j.model.googleai.GoogleAiGeminiStreamingChatModel;
+import dev.langchain4j.model.googleai.GoogleAiGeminiTokenCountEstimator;
 import dev.langchain4j.model.output.Response;
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -113,6 +114,28 @@ public class Langchain4j_google_ai_geminiTest {
 
     @Test
     @Timeout(55)
+    void countsTokensAgainstLocalGeminiEndpoint() throws Exception {
+        try (GeminiServer server = GeminiServer.start()) {
+            GoogleAiGeminiTokenCountEstimator estimator = GoogleAiGeminiTokenCountEstimator.builder()
+                    .apiKey("token-api-key")
+                    .modelName(CHAT_MODEL)
+                    .baseUrl(server.baseUrl())
+                    .timeout(HTTP_TIMEOUT)
+                    .maxRetries(0)
+                    .build();
+
+            int tokenCount = estimator.estimateTokenCountInText("Count the tokens in this sentence");
+
+            assertThat(tokenCount).isEqualTo(6);
+            RequestRecord request = server.singleRequest();
+            assertThat(request.path()).isEqualTo("/models/" + CHAT_MODEL + ":countTokens");
+            assertThat(request.apiKey()).isEqualTo("token-api-key");
+            assertThat(request.body()).contains("Count the tokens in this sentence", "contents", "parts");
+        }
+    }
+
+    @Test
+    @Timeout(55)
     void createsEmbeddingsFromLocalGeminiEndpoint() throws Exception {
         try (GeminiServer server = GeminiServer.start()) {
             GoogleAiEmbeddingModel model = GoogleAiEmbeddingModel.builder()
@@ -194,6 +217,12 @@ public class Langchain4j_google_ai_geminiTest {
                     sendJson(exchange, chatResponse("Mars is known as the red planet.", "response-chat"));
                 } else if (path.endsWith(":streamGenerateContent")) {
                     sendStream(exchange);
+                } else if (path.endsWith(":countTokens")) {
+                    sendJson(exchange, """
+                            {
+                              "totalTokens": 6
+                            }
+                            """);
                 } else if (path.endsWith(":embedContent")) {
                     sendJson(exchange, """
                             {
