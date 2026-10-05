@@ -3,6 +3,14 @@
 Rendered by Forge from the pre-push branch review of §FS-local-branch-review.
 Newest entry first; every non-approval is recorded, including one a repair later cleared.
 
+## 2026-10-05 — org.hibernate:hibernate-core:6.1.0.Final (#9119)
+
+**Forge finalization publishes routed foreign metadata in the source contribution**
+
+FS-contribution-contract.2 limits this library-update contribution to org.hibernate:hibernate-core:6.1.0.Final and its supporting files. The reviewed diff changes metadata/org.hibernate.validator/hibernate-validator/7.0.4.Final/reachability-metadata.json (63 additions and 9 deletions), and .forge-local-review-4068c89f/review-evidence.json records status=success while also recording human_intervention_required=true with that exact path in repo_fix_paths. Restoring or otherwise changing Hibernate Validator would edit another coordinate, which FS-contribution-contract.5.2 forbids as a local repair; sections 5.3 and 5.5 require escalation.
+
+Infrastructure issue: https://github.com/oracle/graalvm-reachability-metadata/issues/10577 (#10577)
+
 ## 2026-10-04 — io.lettuce:lettuce-core:7.0.0.RELEASE (#10430)
 
 **Compile repair removed meaningful runtime coverage**
