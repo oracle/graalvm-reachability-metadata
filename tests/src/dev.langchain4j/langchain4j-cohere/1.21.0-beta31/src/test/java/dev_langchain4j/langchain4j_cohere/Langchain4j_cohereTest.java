@@ -97,6 +97,33 @@ public class Langchain4j_cohereTest {
 
     @Test
     @Timeout(55)
+    void batchesV2EmbeddingInputsAccordingToConfiguredLimit() throws Exception {
+        try (CohereServer server = CohereServer.start()) {
+            CohereEmbeddingModel model = CohereEmbeddingModel.builder()
+                    .apiKey("test-api-key")
+                    .modelName("embed-batch-test-model")
+                    .baseUrl(server.v1BaseUrl())
+                    .timeout(HTTP_TIMEOUT)
+                    .maxSegmentsPerBatch(1)
+                    .build();
+
+            EmbeddingResponse response = model.embed(EmbeddingRequest.builder()
+                    .inputs("first batch input", "second batch input")
+                    .inputType(EmbeddingInputType.QUERY)
+                    .build());
+
+            assertThat(response.embeddings()).hasSize(2);
+            assertThat(response.embeddings().get(0).vector()).containsExactly(0.2f, 0.3f, 0.4f);
+            assertThat(response.embeddings().get(1).vector()).containsExactly(0.5f, 0.6f, 0.7f);
+            assertThat(response.tokenUsage().totalTokenCount()).isEqualTo(12);
+            assertThat(server.paths()).containsExactly("/v2/embed", "/v2/embed");
+            assertThat(server.requestBodies().get(0)).contains("first batch input");
+            assertThat(server.requestBodies().get(1)).contains("second batch input");
+        }
+    }
+
+    @Test
+    @Timeout(55)
     void reranksDocumentsThroughCohereEndpoint() throws Exception {
         try (CohereServer server = CohereServer.start()) {
             CohereScoringModel model = CohereScoringModel.builder()
@@ -163,7 +190,7 @@ public class Langchain4j_cohereTest {
                 if ("/v1/embed".equals(path)) {
                     responseBody = legacyEmbeddingResponse();
                 } else if ("/v2/embed".equals(path)) {
-                    responseBody = multimodalEmbeddingResponse();
+                    responseBody = embeddingV2Response(requestBody);
                 } else if ("/v1/rerank".equals(path)) {
                     responseBody = rerankResponse();
                 } else {
@@ -189,12 +216,42 @@ public class Langchain4j_cohereTest {
                     """.trim();
         }
 
+        private static String embeddingV2Response(String requestBody) {
+            if (requestBody.contains("first batch input")) {
+                return firstBatchedEmbeddingResponse();
+            }
+            if (requestBody.contains("second batch input")) {
+                return secondBatchedEmbeddingResponse();
+            }
+            return multimodalEmbeddingResponse();
+        }
+
         private static String multimodalEmbeddingResponse() {
             return """
                     {
                       "id": "multimodal-embedding",
                       "embeddings": {"float": [[0.7, 0.8, 0.9]]},
                       "meta": {"billed_units": {"input_tokens": 17, "output_tokens": 0, "search_units": 0}}
+                    }
+                    """.trim();
+        }
+
+        private static String firstBatchedEmbeddingResponse() {
+            return """
+                    {
+                      "id": "first-batch-embedding",
+                      "embeddings": {"float": [[0.2, 0.3, 0.4]]},
+                      "meta": {"billed_units": {"input_tokens": 5, "output_tokens": 0, "search_units": 0}}
+                    }
+                    """.trim();
+        }
+
+        private static String secondBatchedEmbeddingResponse() {
+            return """
+                    {
+                      "id": "second-batch-embedding",
+                      "embeddings": {"float": [[0.5, 0.6, 0.7]]},
+                      "meta": {"billed_units": {"input_tokens": 7, "output_tokens": 0, "search_units": 0}}
                     }
                     """.trim();
         }
