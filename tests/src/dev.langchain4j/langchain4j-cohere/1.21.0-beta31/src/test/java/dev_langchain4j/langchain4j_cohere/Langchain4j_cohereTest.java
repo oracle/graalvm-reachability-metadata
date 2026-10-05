@@ -20,6 +20,8 @@ import dev.langchain4j.model.embedding.request.EmbeddingInputType;
 import dev.langchain4j.model.embedding.request.EmbeddingRequest;
 import dev.langchain4j.model.embedding.response.EmbeddingResponse;
 import dev.langchain4j.model.output.Response;
+import dev.langchain4j.model.scoring.request.ScoringRequest;
+import dev.langchain4j.model.scoring.response.ScoringResponse;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.charset.StandardCharsets;
@@ -143,6 +145,37 @@ public class Langchain4j_cohereTest {
             assertThat(server.paths()).containsExactly("/v1/rerank");
             assertThat(server.requestBodies().get(0))
                     .contains("rerank-test-model", "the relevant query", "first document", "second document");
+        }
+    }
+
+    @Test
+    @Timeout(55)
+    void reranksDocumentsAsynchronouslyThroughCohereEndpoint() throws Exception {
+        try (CohereServer server = CohereServer.start()) {
+            CohereScoringModel model = CohereScoringModel.builder()
+                    .apiKey("test-api-key")
+                    .modelName("rerank-async-test-model")
+                    .baseUrl(server.v1BaseUrl())
+                    .timeout(HTTP_TIMEOUT)
+                    .maxRetries(0)
+                    .build();
+
+            ScoringResponse response = model.scoreAsync(ScoringRequest.builder()
+                            .documents(List.of("first async document", "second async document"))
+                            .query("the relevant async query")
+                            .build())
+                    .get(30, TimeUnit.SECONDS);
+
+            assertThat(response.scores()).containsExactly(0.35, 0.85);
+            assertThat(response.modelName()).isEqualTo("rerank-async-test-model");
+            assertThat(response.tokenUsage().totalTokenCount()).isEqualTo(4);
+            assertThat(server.paths()).containsExactly("/v1/rerank");
+            assertThat(server.requestBodies().get(0))
+                    .contains(
+                            "rerank-async-test-model",
+                            "the relevant async query",
+                            "first async document",
+                            "second async document");
         }
     }
 
