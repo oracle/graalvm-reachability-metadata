@@ -147,10 +147,16 @@ public class Langchain4j_voyage_aiTest {
                     .maxRetries(0)
                     .build();
 
+            VoyageAiEmbeddingRequestParameters parameters = VoyageAiEmbeddingRequestParameters.builder()
+                    .inputType(EmbeddingInputType.DOCUMENT)
+                    .truncation(true)
+                    .build();
             EmbeddingResponse response = model.embed(EmbeddingRequest.builder()
                     .input(
                             TextContent.from("a voyage image caption"),
-                            ImageContent.from("https://example.com/voyage-image.png"))
+                            ImageContent.from("https://example.com/voyage-image.png"),
+                            ImageContent.from("aGVsbG8=", "image/png"))
+                    .parameters(parameters)
                     .build());
 
             assertThat(response.embeddings()).hasSize(1);
@@ -160,12 +166,23 @@ public class Langchain4j_voyage_aiTest {
             List<String> requestBodies = server.requestBodies();
             assertThat(requestBodies).hasSize(1);
             assertThat(requestBodies.get(0))
-                    .contains(MULTIMODAL_MODEL_NAME, "a voyage image caption", "image_url", "voyage-image.png");
+                    .contains(
+                            MULTIMODAL_MODEL_NAME,
+                            "a voyage image caption",
+                            "image_url",
+                            "voyage-image.png",
+                            "image_base64",
+                            "data:image/png;base64,aGVsbG8=",
+                            "input_type",
+                            "document",
+                            "truncation",
+                            "true");
         }
     }
 
     @Test
     @Timeout(55)
+    @SuppressWarnings("removal")
     void scoresAllSegmentsFromLocalVoyageResponse() throws Exception {
         try (VoyageServer server = VoyageServer.start()) {
             VoyageAiScoringModel model = VoyageAiScoringModel.builder()
@@ -174,6 +191,8 @@ public class Langchain4j_voyage_aiTest {
                     .baseUrl(server.baseUrl())
                     .timeout(HTTP_TIMEOUT)
                     .maxRetries(0)
+                    .topK(2)
+                    .truncation(false)
                     .build();
 
             Response<List<Double>> response = model.scoreAll(
@@ -185,7 +204,16 @@ public class Langchain4j_voyage_aiTest {
 
             List<String> requestBodies = server.requestBodies();
             assertThat(requestBodies).hasSize(1);
-            assertThat(requestBodies.get(0)).contains(MODEL_NAME, "first document", "second document", "voyage query");
+            assertThat(requestBodies.get(0))
+                    .contains(
+                            MODEL_NAME,
+                            "first document",
+                            "second document",
+                            "voyage query",
+                            "top_k",
+                            "2",
+                            "truncation",
+                            "false");
         }
     }
 
