@@ -79,7 +79,11 @@ uncovered method, and only a covered method may make the last call.
 The covered prefix is the shortest one from a sampled frame or, when no
 sampled frame joins, from a public API inventory entry JaCoCo reports covered.
 It may be any length: no method on it is JaCoCo-uncovered, so it only shows
-the agent how existing tests reach the caller.
+the agent how existing tests reach the caller. Only a route from a sampled
+frame enters the agent prompt: its observed path is the evidence the agent
+follows, and a public-entry route has none to show. Public-entry routes stay
+ranked in the JSON report and enter the prompt once a later run samples a
+frame on their covered prefix.
 
 A method JaCoCo does not report takes the status, and for classification the
 lines, of the source-level method it stands for
@@ -94,8 +98,8 @@ A target absent from the static graph remains JaCoCo-uncovered but is recorded
 as not present in the current graph. A target present in the graph without such
 a route remains in the full JSON report as a no-route candidate: it lies more
 than one uncovered call past executed code, and becomes routable once a pass
-covers a caller. Neither condition changes its JaCoCo status, and only routed
-targets enter the agent prompt. On a kafka-streams 3.6.2 replay the earlier
+covers a caller. Neither condition changes its JaCoCo status, and only targets
+routed from a sampled frame enter the agent prompt. On a kafka-streams 3.6.2 replay the earlier
 rule, which let a route cross uncovered methods, routed 907 internal targets,
 622 of them through an uncovered method and 658 classified `no-fork`; this rule
 routes 250 internal and 314 public targets, 45 of them `no-fork`, while
@@ -116,6 +120,11 @@ Parser.parse(...) → parseXML(...)
 uncovered according to exact JaCoCo evidence. The agent must reach internal
 methods through the shown public behavior rather than invoke implementation
 methods directly.
+
+The prompt Markdown carries this navigation and nothing else. Totals, the count
+of paths left out, and caveats about missing evidence stay in the JSON report,
+where operators read them: text the agent cannot act on only lengthens the
+prompt.
 
 ### 2.1 Unobserved dispatch steps
 
