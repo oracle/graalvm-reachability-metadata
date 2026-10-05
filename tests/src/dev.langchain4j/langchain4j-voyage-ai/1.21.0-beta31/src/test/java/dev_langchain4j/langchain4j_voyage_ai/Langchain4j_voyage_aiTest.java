@@ -11,7 +11,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpServer;
 import dev.langchain4j.data.embedding.Embedding;
+import dev.langchain4j.data.message.ImageContent;
+import dev.langchain4j.data.message.TextContent;
 import dev.langchain4j.data.segment.TextSegment;
+import dev.langchain4j.model.embedding.request.EmbeddingRequest;
+import dev.langchain4j.model.embedding.response.EmbeddingResponse;
 import dev.langchain4j.model.output.Response;
 import dev.langchain4j.model.voyageai.VoyageAiEmbeddingModel;
 import dev.langchain4j.model.voyageai.VoyageAiScoringModel;
@@ -31,6 +35,7 @@ public class Langchain4j_voyage_aiTest {
 
     private static final Duration HTTP_TIMEOUT = Duration.ofSeconds(10);
     private static final String MODEL_NAME = "voyage-test-model";
+    private static final String MULTIMODAL_MODEL_NAME = "voyage-multimodal-3.5";
 
     @Test
     @Timeout(55)
@@ -59,6 +64,35 @@ public class Langchain4j_voyage_aiTest {
             assertThat(requestBodies).hasSize(2);
             assertThat(requestBodies.get(0)).contains(MODEL_NAME, "first voyage input");
             assertThat(requestBodies.get(1)).contains(MODEL_NAME, "first voyage input", "second voyage input");
+        }
+    }
+
+    @Test
+    @Timeout(55)
+    void embedsInterleavedTextAndImageFromLocalVoyageResponse() throws Exception {
+        try (VoyageServer server = VoyageServer.start()) {
+            VoyageAiEmbeddingModel model = VoyageAiEmbeddingModel.builder()
+                    .apiKey("test-api-key")
+                    .modelName(MULTIMODAL_MODEL_NAME)
+                    .baseUrl(server.baseUrl())
+                    .timeout(HTTP_TIMEOUT)
+                    .maxRetries(0)
+                    .build();
+
+            EmbeddingResponse response = model.embed(EmbeddingRequest.builder()
+                    .input(
+                            TextContent.from("a voyage image caption"),
+                            ImageContent.from("https://example.com/voyage-image.png"))
+                    .build());
+
+            assertThat(response.embeddings()).hasSize(1);
+            assertThat(response.embeddings().get(0).vector()).containsExactly(0.7f, 0.8f, 0.9f);
+            assertThat(response.tokenUsage().totalTokenCount()).isEqualTo(17);
+
+            List<String> requestBodies = server.requestBodies();
+            assertThat(requestBodies).hasSize(1);
+            assertThat(requestBodies.get(0))
+                    .contains(MULTIMODAL_MODEL_NAME, "a voyage image caption", "image_url", "voyage-image.png");
         }
     }
 
@@ -125,6 +159,8 @@ public class Langchain4j_voyage_aiTest {
                     responseBody = requestBody.contains("second voyage input")
                             ? batchEmbeddingResponse()
                             : singleEmbeddingResponse();
+                } else if ("/multimodalembeddings".equals(path) && "POST".equals(exchange.getRequestMethod())) {
+                    responseBody = multimodalEmbeddingResponse();
                 } else if ("/rerank".equals(path) && "POST".equals(exchange.getRequestMethod())) {
                     responseBody = rerankResponse();
                 } else {
@@ -160,6 +196,17 @@ public class Langchain4j_voyage_aiTest {
                       ],
                       "model": "voyage-test-model",
                       "usage": {"total_tokens": 11}
+                    }
+                    """.trim();
+        }
+
+        private static String multimodalEmbeddingResponse() {
+            return """
+                    {
+                      "object": "list",
+                      "data": [{"object": "embedding", "embedding": [0.7, 0.8, 0.9], "index": 0}],
+                      "model": "voyage-multimodal-3.5",
+                      "usage": {"total_tokens": 17}
                     }
                     """.trim();
         }
