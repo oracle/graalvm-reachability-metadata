@@ -75,6 +75,28 @@ public class MutinyZeroTest {
     }
 
     @Test
+    void defersCompletionStageCreationUntilDemandAndPropagatesCancellation() {
+        CompletableFuture<String> future = new CompletableFuture<>();
+        AtomicInteger supplierCalls = new AtomicInteger();
+        Flow.Publisher<String> publisher = ZeroPublisher.fromCompletionStage(() -> {
+            supplierCalls.incrementAndGet();
+            return future;
+        });
+        ProbeSubscriber<String> subscriber = new ProbeSubscriber<>();
+
+        publisher.subscribe(subscriber);
+        assertThat(supplierCalls).hasValue(0);
+
+        subscriber.request(1);
+        assertThat(supplierCalls).hasValue(1);
+        assertThat(future).isNotCancelled();
+
+        subscriber.cancel();
+        assertThat(future).isCancelled();
+        assertThat(subscriber.items()).isEmpty();
+    }
+
+    @Test
     void composesTransformationSelectionSpreadingAndConcatenation() throws Exception {
         Flow.Publisher<Integer> transformed = new Transform<>(ZeroPublisher.fromItems(1, 2, 3), value -> value * 10);
         Flow.Publisher<Integer> selected = new Select<>(transformed, value -> value >= 20);
