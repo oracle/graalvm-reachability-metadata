@@ -29,6 +29,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
@@ -159,6 +161,29 @@ public class Langchain4j_http_clientTest {
 
     @Test
     @Timeout(55)
+    void logsAsynchronousRequestsAndResponsesWhileDelegatingExecution() throws Exception {
+        InMemoryHttpClient delegate = new InMemoryHttpClient();
+        RecordingLogger logger = new RecordingLogger();
+        HttpClient client = new LoggingHttpClient(delegate, true, true, logger);
+        HttpRequest request = HttpRequest.builder()
+                .method(HttpMethod.POST)
+                .url("https://localhost/messages")
+                .body("hello asynchronously")
+                .build();
+
+        SuccessfulHttpResponse response = client.executeAsync(request).get(10, TimeUnit.SECONDS);
+
+        assertThat(delegate.requests()).containsExactly(request);
+        assertThat(response.statusCode()).isEqualTo(202);
+        assertThat(response.body()).isEqualTo("accepted: hello asynchronously");
+        assertThat(logger.events()).hasSize(2);
+        assertThat(logger.events().get(0).message()).contains("HTTP request");
+        assertThat(logger.events().get(1).message()).contains("HTTP response");
+        assertThat(logger.events().get(1).arguments()).contains(202, "accepted: hello asynchronously");
+    }
+
+    @Test
+    @Timeout(55)
     void cancelsBlockingSseParsingFromListenerContext() {
         String stream = "data: first\n\ndata: second\n\n";
         List<ServerSentEvent> events = new ArrayList<>();
@@ -230,6 +255,11 @@ public class Langchain4j_http_clientTest {
                     .headers(Map.of("Content-Type", List.of("text/plain; charset=UTF-8")))
                     .body("accepted: " + request.body())
                     .build();
+        }
+
+        @Override
+        public CompletableFuture<SuccessfulHttpResponse> executeAsync(HttpRequest request) {
+            return CompletableFuture.completedFuture(execute(request));
         }
 
         @Override
