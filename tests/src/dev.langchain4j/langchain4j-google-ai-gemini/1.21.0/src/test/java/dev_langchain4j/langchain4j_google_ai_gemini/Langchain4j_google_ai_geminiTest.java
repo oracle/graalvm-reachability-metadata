@@ -19,8 +19,10 @@ import dev.langchain4j.model.chat.response.PartialResponseContext;
 import dev.langchain4j.model.chat.response.StreamingChatResponseHandler;
 import dev.langchain4j.model.googleai.GoogleAiEmbeddingModel;
 import dev.langchain4j.model.googleai.GoogleAiGeminiChatModel;
+import dev.langchain4j.model.googleai.GoogleAiGeminiChatResponseMetadata;
 import dev.langchain4j.model.googleai.GoogleAiGeminiStreamingChatModel;
 import dev.langchain4j.model.googleai.GoogleAiGeminiTokenCountEstimator;
+import dev.langchain4j.model.output.FinishReason;
 import dev.langchain4j.model.output.Response;
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -60,10 +62,60 @@ public class Langchain4j_google_ai_geminiTest {
             assertThat(response.id()).isEqualTo("response-chat");
             assertThat(response.modelName()).isEqualTo("gemini-test-chat-001");
             assertThat(response.tokenUsage().totalTokenCount()).isEqualTo(7);
+
+            GoogleAiGeminiChatResponseMetadata metadata =
+                    (GoogleAiGeminiChatResponseMetadata) response.metadata();
+            assertThat(metadata.safetyRatings()).singleElement().satisfies(rating -> {
+                assertThat(rating.category()).isEqualTo("HARM_CATEGORY_HARASSMENT");
+                assertThat(rating.probability()).isEqualTo("NEGLIGIBLE");
+                assertThat(rating.blocked()).isFalse();
+            });
+            assertThat(metadata.groundingMetadata().webSearchQueries()).containsExactly("red planet");
+            assertThat(metadata.groundingMetadata().groundingChunks().get(0).web().uri())
+                    .isEqualTo("https://example.test/mars");
+            assertThat(metadata.groundingMetadata().groundingChunks().get(1).maps().placeAnswerSources()
+                            .reviewSnippets()
+                            .get(0)
+                            .reviewId())
+                    .isEqualTo("review-1");
+            assertThat(metadata.groundingMetadata().groundingSupports().get(0).segment().text())
+                    .isEqualTo("Mars");
+            assertThat(metadata.urlContextMetadata().urlMetadata().get(0).retrievedUrl())
+                    .isEqualTo("https://example.test/mars");
+            assertThat(metadata.urlContextMetadata().urlMetadata().get(0).urlRetrievalStatus())
+                    .isEqualTo("URL_RETRIEVAL_STATUS_SUCCESS");
+
             RequestRecord request = server.singleRequest();
             assertThat(request.path()).isEqualTo("/models/" + CHAT_MODEL + ":generateContent");
             assertThat(request.apiKey()).isEqualTo("test-api-key");
             assertThat(request.body()).contains("Which planet is known as the red planet?", "candidateCount");
+        }
+    }
+
+    @Test
+    @Timeout(55)
+    void mapsBlockedPromptFeedbackFromLocalGeminiEndpoint() throws Exception {
+        try (GeminiServer server = GeminiServer.start()) {
+            GoogleAiGeminiChatModel model = GoogleAiGeminiChatModel.builder()
+                    .apiKey("test-api-key")
+                    .modelName(CHAT_MODEL)
+                    .baseUrl(server.baseUrl())
+                    .timeout(HTTP_TIMEOUT)
+                    .maxRetries(0)
+                    .build();
+
+            ChatResponse response = model.chat(UserMessage.from("Return a blocked prompt response"));
+
+            GoogleAiGeminiChatResponseMetadata metadata =
+                    (GoogleAiGeminiChatResponseMetadata) response.metadata();
+            assertThat(response.finishReason()).isEqualTo(FinishReason.CONTENT_FILTER);
+            assertThat(metadata.blockReason()).isEqualTo("SAFETY");
+            assertThat(metadata.promptSafetyRatings()).singleElement().satisfies(rating -> {
+                assertThat(rating.category()).isEqualTo("HARM_CATEGORY_DANGEROUS_CONTENT");
+                assertThat(rating.probability()).isEqualTo("HIGH");
+                assertThat(rating.blocked()).isTrue();
+            });
+            assertThat(server.singleRequest().path()).isEqualTo("/models/" + CHAT_MODEL + ":generateContent");
         }
     }
 
@@ -214,7 +266,11 @@ public class Langchain4j_google_ai_geminiTest {
 
                 String path = exchange.getRequestURI().getPath();
                 if (path.endsWith(":generateContent")) {
-                    sendJson(exchange, chatResponse("Mars is known as the red planet.", "response-chat"));
+                    if (requestBody.contains("Return a blocked prompt response")) {
+                        sendJson(exchange, blockedPromptResponse());
+                    } else {
+                        sendJson(exchange, chatResponse("Mars is known as the red planet.", "response-chat"));
+                    }
                 } else if (path.endsWith(":streamGenerateContent")) {
                     sendStream(exchange);
                 } else if (path.endsWith(":countTokens")) {
@@ -284,7 +340,15 @@ public class Langchain4j_google_ai_geminiTest {
                               "probability": "NEGLIGIBLE",
                               "blocked": false
                             }
-                          ]
+                          ],
+                          "urlContextMetadata": {
+                            "urlMetadata": [
+                              {
+                                "retrievedUrl": "https://example.test/mars",
+                                "urlRetrievalStatus": "URL_RETRIEVAL_STATUS_SUCCESS"
+                              }
+                            ]
+                          }
                         }
                       ],
                       "usageMetadata": {
@@ -293,9 +357,69 @@ public class Langchain4j_google_ai_geminiTest {
                         "totalTokenCount": 7,
                         "cachedContentTokenCount": 0,
                         "thoughtsTokenCount": 0
+                      },
+                      "groundingMetadata": {
+                        "groundingChunks": [
+                          {"web": {"uri": "https://example.test/mars", "title": "Mars reference"}},
+                          {
+                            "maps": {
+                              "uri": "https://maps.example.test/mars",
+                              "title": "Mars exhibit",
+                              "text": "A planetary exhibit",
+                              "placeId": "place-1",
+                              "placeAnswerSources": {
+                                "reviewSnippets": [
+                                  {
+                                    "reviewId": "review-1",
+                                    "googleMapsUri": "https://maps.example.test/review-1",
+                                    "title": "Planetarium review"
+                                  }
+                                ]
+                              }
+                            }
+                          }
+                        ],
+                        "groundingSupports": [
+                          {
+                            "groundingChunkIndices": [0],
+                            "confidenceScores": [0.99],
+                            "segment": {"partIndex": 0, "startIndex": 0, "endIndex": 4, "text": "Mars"}
+                          }
+                        ],
+                        "webSearchQueries": ["red planet"],
+                        "searchEntryPoint": {"renderedContent": "Mars results", "sdkBlob": "sdk-data"},
+                        "retrievalMetadata": {"googleSearchDynamicRetrievalScore": 0.98},
+                        "googleMapsWidgetContextToken": "maps-token"
                       }
                     }
                     """.formatted(responseId, text).trim();
+        }
+
+        private static String blockedPromptResponse() {
+            return """
+                    {
+                      "responseId": "response-blocked",
+                      "modelVersion": "gemini-test-chat-001",
+                      "candidates": [],
+                      "promptFeedback": {
+                        "blockReason": "SAFETY",
+                        "safetyRatings": [
+                          {
+                            "category": "HARM_CATEGORY_DANGEROUS_CONTENT",
+                            "probability": "HIGH",
+                            "blocked": true
+                          }
+                        ]
+                      },
+                      "usageMetadata": {
+                        "promptTokenCount": 5,
+                        "candidatesTokenCount": 0,
+                        "totalTokenCount": 5,
+                        "cachedContentTokenCount": 0,
+                        "thoughtsTokenCount": 0
+                      }
+                    }
+                    """;
         }
 
         @Override
