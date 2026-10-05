@@ -10,6 +10,8 @@ import org.hibernate.type.descriptor.java.ArrayJavaType;
 import org.hibernate.type.descriptor.java.StringJavaType;
 import org.junit.jupiter.api.Test;
 
+import java.util.Arrays;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class ArrayJavaTypeTest {
@@ -22,8 +24,11 @@ public class ArrayJavaTypeTest {
                 .containsExactly("one", "two");
         assertThat(type.unwrap(new String[]{"one", "two"}, CharSequence[].class, null))
                 .containsExactly("one", "two");
-        assertThat(type.unwrap(new String[]{"one", "two"}, char[][].class, null))
-                .containsExactly("one".toCharArray(), "two".toCharArray());
+        char[][] characters = type.unwrap(new String[]{"one", "two"}, char[][].class, null);
+        assertThat(Arrays.deepEquals(
+                characters,
+                new char[][]{"one".toCharArray(), "two".toCharArray()}
+        )).isTrue();
         assertThat(type.wrap(new CharSequence[]{"one", "two"}, null))
                 .containsExactly("one", "two");
     }

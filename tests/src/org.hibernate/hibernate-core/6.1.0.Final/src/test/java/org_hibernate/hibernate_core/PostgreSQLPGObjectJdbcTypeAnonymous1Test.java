@@ -6,8 +6,8 @@
  */
 package org_hibernate.hibernate_core;
 
+import org.hibernate.dialect.PostgreSQLInetJdbcType;
 import org.hibernate.dialect.PostgreSQLPGObjectJdbcType;
-import org.hibernate.type.SqlTypes;
 import org.hibernate.type.descriptor.ValueBinder;
 import org.hibernate.type.descriptor.java.StringJavaType;
 import org.junit.jupiter.api.Test;
@@ -22,16 +22,16 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class PostgreSQLPGObjectJdbcTypeAnonymous1Test {
 
     @Test
-    public void bindsAJsonValueThroughAPostgreSqlObject() throws Exception {
-        PostgreSQLPGObjectJdbcType jdbcType = new PostgreSQLPGObjectJdbcType("jsonb", SqlTypes.JSON);
+    public void bindsAnInetValueThroughAPostgreSqlObject() throws Exception {
+        PostgreSQLPGObjectJdbcType jdbcType = PostgreSQLInetJdbcType.INSTANCE;
         ValueBinder<String> binder = jdbcType.getBinder(StringJavaType.INSTANCE);
 
         try (Connection connection = DriverManager.getConnection("jdbc:h2:mem:pg-object");
                 PreparedStatement statement = connection.prepareStatement("select cast(? as varchar)")) {
-            binder.bind(statement, "{\"answer\":42}", 1, null);
+            binder.bind(statement, "192.0.2.42", 1, null);
             try (ResultSet result = statement.executeQuery()) {
                 assertThat(result.next()).isTrue();
-                assertThat(result.getString(1)).contains("answer").contains("42");
+                assertThat(result.getString(1)).contains("192.0.2.42");
             }
         }
     }
