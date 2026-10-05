@@ -9,12 +9,10 @@ package org_yaml.snakeyaml;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Date;
-import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.yaml.snakeyaml.LoaderOptions;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.Constructor;
-import org.yaml.snakeyaml.inspector.TrustedPrefixesTagInspector;
 
 public class ConstructorConstructScalarTest {
 
@@ -62,8 +60,7 @@ public class ConstructorConstructScalarTest {
         };
 
         LoaderOptions loaderOptions = new LoaderOptions();
-        loaderOptions.setTagInspector(
-                new TrustedPrefixesTagInspector(List.of(FallbackTaggedBean.class.getName())));
+        loaderOptions.setTagInspector(tag -> tag.matches(FallbackTaggedBean.class));
         Yaml yaml = new Yaml(loaderOptions);
 
         Thread.currentThread().setContextClassLoader(rejectingLoader);
