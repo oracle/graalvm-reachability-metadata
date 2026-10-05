@@ -123,6 +123,7 @@ public class Langchain4j_http_client_jdkTest {
                     .url(server.url("/upload"))
                     .addFormDataField("prompt", "describe this file")
                     .addFormDataFile("document", "notes.txt", "text/plain", "file contents".getBytes(UTF_8))
+                    .addFormDataFile("untyped", "payload.bin", null, "raw bytes".getBytes(UTF_8))
                     .build());
 
             assertThat(plainResponse.body()).isEqualTo("accepted");
@@ -139,7 +140,9 @@ public class Langchain4j_http_client_jdkTest {
                     .isEqualTo("multipart/form-data; boundary=----LangChain4j");
             assertThat(multipart.body())
                     .contains("name=\"prompt\"", "describe this file", "name=\"document\"; filename=\"notes.txt\"")
-                    .contains("Content-Type: text/plain", "file contents", "------LangChain4j--");
+                    .contains("Content-Type: text/plain", "file contents")
+                    .contains("name=\"untyped\"; filename=\"payload.bin\"\r\n\r\nraw bytes\r\n")
+                    .contains("------LangChain4j--");
         }
     }
 
@@ -504,6 +507,75 @@ public class Langchain4j_http_client_jdkTest {
             assertThat(received.get(0)).isInstanceOf(HttpResponseReceived.class);
             assertThat(((HttpResponseReceived) received.get(0)).response().statusCode()).isEqualTo(200);
             assertThat(received.get(1)).isEqualTo(new ServerSentEvent("custom", "custom payload"));
+        }
+    }
+
+    @Test
+    void publisherExecutionPropagatesIncrementalParserFailures() throws Exception {
+        try (TestHttpServer server = TestHttpServer.create(exchange ->
+                        writeResponse(exchange, 200, "unparseable payload", "text/event-stream"));
+                TestClient client = TestClient.create()) {
+            ServerSentEventParser parser = new ServerSentEventParser() {
+                @Override
+                public void parse(InputStream input, ServerSentEventListener listener) {
+                    throw new UnsupportedOperationException("This parser uses incremental parsing");
+                }
+
+                @Override
+                public Incremental incremental() {
+                    return new Incremental() {
+                        @Override
+                        public List<ServerSentEvent> feed(ByteBuffer bytes) {
+                            throw new IllegalStateException("cannot parse stream");
+                        }
+
+                        @Override
+                        public List<ServerSentEvent> flush() {
+                            return List.of();
+                        }
+                    };
+                }
+            };
+            List<HttpStreamingEvent> received = new CopyOnWriteArrayList<>();
+            AtomicReference<Throwable> failure = new AtomicReference<>();
+            CountDownLatch terminated = new CountDownLatch(1);
+
+            client.client()
+                    .stream(
+                            HttpRequest.builder()
+                                    .method(HttpMethod.GET)
+                                    .url(server.url("/parser-failure"))
+                                    .build(),
+                            parser)
+                    .subscribe(new Flow.Subscriber<>() {
+                        @Override
+                        public void onSubscribe(Flow.Subscription subscription) {
+                            subscription.request(Long.MAX_VALUE);
+                        }
+
+                        @Override
+                        public void onNext(HttpStreamingEvent event) {
+                            received.add(event);
+                        }
+
+                        @Override
+                        public void onError(Throwable throwable) {
+                            failure.set(throwable);
+                            terminated.countDown();
+                        }
+
+                        @Override
+                        public void onComplete() {
+                            terminated.countDown();
+                        }
+                    });
+
+            assertThat(terminated.await(IO_TIMEOUT.toSeconds(), TimeUnit.SECONDS)).isTrue();
+            assertThat(received).hasSize(1);
+            assertThat(received.get(0)).isInstanceOf(HttpResponseReceived.class);
+            assertThat(((HttpResponseReceived) received.get(0)).response().statusCode()).isEqualTo(200);
+            assertThat(failure.get()).isInstanceOf(IllegalStateException.class);
+            assertThat(failure.get().getMessage()).isEqualTo("cannot parse stream");
         }
     }
 
