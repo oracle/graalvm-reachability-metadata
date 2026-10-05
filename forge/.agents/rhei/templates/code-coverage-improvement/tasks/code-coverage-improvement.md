@@ -183,10 +183,11 @@
 - Fixed report location: `runtime/code-coverage/discovery/discovery-report.json`
   (iteration history stays at `discovery-report-<n>.json`).
 - Target universe: JaCoCo methods that are neither API inventory entries nor
-  absent from `runtime/code-coverage/graph/methods.csv`. The method list keeps
-  the library's own `test`-classifier classes out of the universe, since JaCoCo
-  reports them in the library's own packages
-  (§AR-code-coverage-improvement.4.2).
+  absent from `runtime/code-coverage/graph/methods.csv`, plus the inventory
+  entries JaCoCo reported uncovered when the API phase ended, frozen at the
+  phase's first report. The method list keeps the library's own
+  `test`-classifier classes out of the universe, since JaCoCo reports them in
+  the library's own packages (§AR-code-coverage-improvement.4.2).
 - Prompt location: `runtime/code-coverage/prompts/deep-cover-prompt.md`, taken
   by the measurement program from the analyzer's compact
   `Observed` / `Uncovered paths` Markdown when the loop continues.

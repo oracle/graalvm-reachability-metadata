@@ -9,12 +9,14 @@
 """
 JaCoCo-exact deep-method report with PGO path guidance.
 
-The analyzer selects exact library methods reported by JaCoCo but absent from
-the public API inventory. PGO evidence and the static graph rank graph-present
-paths; graph-absent methods remain in full JSON but never enter prompts.
-Input loading, graph construction, counters, control flow, routing, record
-building, miss classification, and rendering live in the sibling
-`code_coverage_profile_*` modules.
+The analyzer targets exact library methods reported by JaCoCo but absent from
+the public API inventory, plus the inventory entries JaCoCo reported uncovered
+when the API phase ended. PGO evidence and the static graph route a target only
+from code that ran; unrouted and graph-absent methods remain in full JSON but
+never enter prompts.
+Input loading, graph construction, the target universe, counters, control
+flow, routing, record building, miss classification, and rendering live in the
+sibling `code_coverage_profile_*` modules.
 
 Inputs:
 - `call_tree_{methods,invokes,targets}_*.csv` — the analysis call-tree CSV dump
@@ -53,13 +55,13 @@ from utility_scripts.code_coverage_jacoco import (
     JacocoReportError,
     load_jacoco_coverage,
 )
-from utility_scripts.code_coverage_model import MethodRef, parse_inventory_id
 from utility_scripts.code_coverage_profile_graph import (
     CallGraph,
     is_synthetic_method,
     load_call_graph,
 )
 from utility_scripts.code_coverage_profile_history import (
+    carried_public_targets,
     next_attempt_counts,
     previous_report,
     previous_target_states,
@@ -99,10 +101,19 @@ from utility_scripts.code_coverage_profile_render import write_lcov, write_markd
 from utility_scripts.code_coverage_profile_routes import (
     RouteMap,
     SampledProfile,
+    execution_status,
     observed_contexts,
     observed_methods,
     public_entry_routes,
     sample_routes,
+)
+from utility_scripts.code_coverage_profile_universe import (
+    DeepUniverse,
+    InventoryCoverage,
+    check_target_states,
+    deep_universe,
+    diagnostic_methods,
+    inventory_coverage,
 )
 
 
@@ -117,58 +128,43 @@ def correlate(
         library_methods: set[str] | None = None,
         jacoco_lines: dict[str, dict[int, JacocoLineCoverage]] | None = None,
         evidence: NavigationEvidence | None = None,
+        carried_public_ids: list[str] | None = None,
 ) -> tuple[dict, list[NearCallRecord]]:
-    """Build exact public coverage and deep uncovered-method path records."""
+    """Build exact public coverage and deep uncovered-method path records.
+
+    `carried_public_ids` is the public part of the deep universe as the phase's
+    first report froze it; `None` freezes it from this report
+    (§AR-code-coverage-improvement.4.2).
+    """
     if max_listed <= 0:
         raise ProfileFormatError("max_listed must be positive.")
     attempts: dict[str, int] = attempt_counts or {}
     states: dict[str, TargetState] = target_states or {}
     lines: dict[str, dict[int, JacocoLineCoverage]] = jacoco_lines or {}
     navigation: NavigationEvidence = evidence or NavigationEvidence()
-    inventory_refs: list[tuple[MethodRef, dict]] = []
-    for target in inventory.get("targets", []):
-        ref: MethodRef | None = parse_inventory_id(target.get("id", ""))
-        if ref is not None:
-            inventory_refs.append((ref, target))
-    inventory_ids: set[str] = {ref.canonical_id for ref, _ in inventory_refs}
-
-    inventory_report: list[dict] = []
-    inventory_counts: dict[str, int] = {"covered": 0, "uncovered": 0, "unknown": 0}
-    for ref, target in inventory_refs:
-        coverage: JacocoMethodCoverage | None = jacoco_methods.get(ref.canonical_id)
-        status: str = coverage.status if coverage is not None else "unknown"
-        inventory_counts[status] += 1
-        inventory_report.append({"id": ref.canonical_id, "kind": target.get("kind"), "status": status})
-
+    inventory_status: InventoryCoverage = inventory_coverage(inventory, jacoco_methods)
+    inventory_ids: set[str] = {ref.canonical_id for ref in inventory_status.refs}
     graph_ids: set[str] = set(graph.key_to_id)
     jacoco_ids: set[str] = set(jacoco_methods)
-    # A JaCoCo report covers every instrumented class on the test runtime
-    # classpath, which for libraries publishing a `test`-classifier artifact
-    # includes their own unit tests. Restrict the deep universe to methods the
-    # resolved library jars actually declare (§AR-code-coverage-improvement.4.2).
-    deep_candidate_ids: set[str] = jacoco_ids - inventory_ids
-    foreign_ids: set[str] = (
-        deep_candidate_ids - library_methods if library_methods is not None else set()
+    universe: DeepUniverse = deep_universe(
+        jacoco_methods, inventory_ids, library_methods, carried_public_ids
     )
-    deep_ids: list[str] = sorted(deep_candidate_ids - foreign_ids)
-    jacoco_only_ids: list[str] = sorted((jacoco_ids - graph_ids) - inventory_ids)
-    graph_only_ids: list[str] = sorted((graph_ids - jacoco_ids) - inventory_ids)
-    invalid_state_ids: list[str] = sorted(set(states) - set(deep_ids))
-    if invalid_state_ids:
-        raise ProfileFormatError(
-            f"Target state id '{invalid_state_ids[0]}' is not in the current deep JaCoCo universe."
-        )
-    for method_id, state in states.items():
-        if state.status == "completed" and not jacoco_methods[method_id].covered:
-            raise ProfileFormatError(
-                f"Target state '{method_id}' is completed but current JaCoCo reports it uncovered."
-            )
-    deep_coverage: list[JacocoMethodCoverage] = [jacoco_methods[method_id] for method_id in deep_ids]
+    check_target_states(states, universe, jacoco_methods)
+    deep_coverage: list[JacocoMethodCoverage] = [
+        jacoco_methods[method_id] for method_id in universe.internal_ids
+    ]
     deep_uncovered: list[JacocoMethodCoverage] = [
         coverage for coverage in deep_coverage if not coverage.covered
     ]
-    sampled_routes: RouteMap = sample_routes(graph, profile)
-    entry_routes: RouteMap = public_entry_routes(graph, [ref for ref, _ in inventory_refs])
+    public_coverage: list[JacocoMethodCoverage] = [
+        jacoco_methods[method_id] for method_id in universe.public_ids
+    ]
+    public_uncovered: list[JacocoMethodCoverage] = [
+        coverage for coverage in public_coverage if not coverage.covered
+    ]
+    executed: dict[int, bool] = execution_status(graph, jacoco_methods)
+    sampled_routes: RouteMap = sample_routes(graph, profile, executed)
+    entry_routes: RouteMap = public_entry_routes(graph, inventory_status.refs, executed)
     uncovered_records: list[NearCallRecord] = [
         build_record(
             coverage,
@@ -176,14 +172,18 @@ def correlate(
             sampled_routes,
             entry_routes,
             effective_target_state(coverage.method_ref.canonical_id, states, attempts),
+            public_api,
         )
-        for coverage in deep_uncovered
+        for coverages, public_api in ((deep_uncovered, False), (public_uncovered, True))
+        for coverage in coverages
     ]
     # The diagnosis carries the reach count that breaks ranking ties, so it
     # comes first (§AR-code-coverage-deep-navigation.2.2).
     miss_classifications: dict[str, dict] = {}
     for record in uncovered_records:
-        classification: dict = classify_miss(record, graph, jacoco_methods, lines, navigation)
+        classification: dict = classify_miss(
+            record, graph, jacoco_methods, lines, executed, navigation
+        )
         miss_classifications[record.target_ref.canonical_id] = classification
         record.reach = classification["reach"]
     uncovered_records.sort(key=record_rank_key)
@@ -237,13 +237,17 @@ def correlate(
         for record in bulk_records
     ]
 
+    def evidence_of(coverage: JacocoMethodCoverage) -> dict:
+        present: bool = coverage.method_ref.canonical_id in graph_ids
+        return method_evidence(coverage, graph_status="present" if present else "not-present")
+
     report: dict = {
         "summary": {
             "coverageSource": "jacoco",
-            "inventoryTargets": len(inventory_report),
-            "inventoryCovered": inventory_counts["covered"],
-            "inventoryUncovered": inventory_counts["uncovered"],
-            "inventoryUnknown": inventory_counts["unknown"],
+            "inventoryTargets": len(inventory_status.entries),
+            "inventoryCovered": inventory_status.counts["covered"],
+            "inventoryUncovered": inventory_status.counts["uncovered"],
+            "inventoryUnknown": inventory_status.counts["unknown"],
             "jacocoMethods": len(jacoco_methods),
             "callGraphMethods": len(graph.key_to_id),
             "graphOnlyMethods": len(graph_ids - jacoco_ids),
@@ -251,6 +255,15 @@ def correlate(
             "deepMethods": len(deep_coverage),
             "deepCovered": len(deep_coverage) - len(deep_uncovered),
             "deepUncovered": len(deep_uncovered),
+            "publicTargets": len(public_coverage),
+            "publicTargetsCovered": len(public_coverage) - len(public_uncovered),
+            "publicTargetsUncovered": len(public_uncovered),
+            # The phase's own roster, which its pass yield counts
+            # (§AR-code-coverage-improvement.4.3).
+            "rosterCovered": (
+                len(deep_coverage) - len(deep_uncovered)
+                + len(public_coverage) - len(public_uncovered)
+            ),
             "deepSyntheticMethods": sum(
                 1 for coverage in deep_coverage if is_synthetic_method(coverage.method_ref)
             ),
@@ -258,7 +271,7 @@ def correlate(
                 1 for coverage in deep_uncovered if is_synthetic_method(coverage.method_ref)
             ),
             "syntheticExcludedFromPrompt": synthetic_excluded,
-            "nonLibraryMethodsExcluded": len(foreign_ids),
+            "nonLibraryMethodsExcluded": len(universe.foreign_ids),
             "foreignDispatchSites": graph.foreign_dispatch_sites,
             "foreignDispatchEdges": graph.foreign_dispatch_edges,
             "terminalUncovered": sum(
@@ -272,7 +285,7 @@ def correlate(
             "samplingContexts": profile.context_count,
             **navigation_summary(navigation, graph),
         },
-        "inventory": inventory_report,
+        "inventory": inventory_status.entries,
         "targetStates": [
             target_state_to_json(
                 method_id,
@@ -280,30 +293,9 @@ def correlate(
             )
             for method_id in sorted(set(states) | set(attempts))
         ],
-        "deepMethods": [
-            method_evidence(
-                coverage,
-                graph_status=("present" if coverage.method_ref.canonical_id in graph_ids
-                              else "not-present"),
-            )
-            for coverage in deep_coverage
-        ],
-        "diagnosticMethods": [
-            *[
-                method_evidence(jacoco_methods[method_id], graph_status="not-present")
-                for method_id in jacoco_only_ids
-            ],
-            *[
-                {
-                    "id": method_id,
-                    "status": "not-reported",
-                    "graphStatus": "present",
-                    "sourcePath": None,
-                    "sourceLine": None,
-                }
-                for method_id in graph_only_ids
-            ],
-        ],
+        "deepMethods": [evidence_of(coverage) for coverage in deep_coverage],
+        "publicTargets": [evidence_of(coverage) for coverage in public_coverage],
+        "diagnosticMethods": diagnostic_methods(jacoco_methods, graph_ids, inventory_ids),
         "observed": observed_contexts(profile, graph),
         "observedMethods": observed_methods(profile, graph, jacoco_methods),
         "uncoveredPaths": uncovered_json,
@@ -379,6 +371,7 @@ def generate_report(
         library_methods,
         jacoco.lines,
         evidence,
+        carried_public_targets(previous),
     )
     report["coordinate"] = coordinate
     report["iteration"] = iteration

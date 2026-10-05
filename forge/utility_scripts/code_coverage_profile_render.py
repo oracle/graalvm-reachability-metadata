@@ -221,7 +221,9 @@ def _prompt_line(
 ) -> str:
     """One prompt path with its line diagnosis and synthetic-method notes."""
     note: dict = notes.get(record.target_ref.canonical_id, {})
-    suffixes: list[str] = []
+    # A public target may be called directly, unlike an internal one
+    # (§AR-code-coverage-improvement.4.2).
+    suffixes: list[str] = ["public API"] if note.get("publicApi") else []
     closures: dict | None = note.get("closures")
     if closures is not None and closures["unexecuted"]:
         suffixes.append(
@@ -284,6 +286,9 @@ def write_markdown(
         f"{summary['inventoryUncovered']} uncovered, {summary['inventoryUnknown']} unknown",
         f"- Deep methods: {summary['deepCovered']} covered, "
         f"{summary['deepUncovered']} uncovered",
+        f"- Public methods the API phase left uncovered: "
+        f"{summary['publicTargetsCovered']} covered since, "
+        f"{summary['publicTargetsUncovered']} uncovered",
         f"- Prompt list: {summary['listedUncovered']} "
         f"(omitted but retained in JSON: {summary['omittedUncovered']})",
         f"- Sampled contexts: {summary['samplingContexts']} "
@@ -298,7 +303,7 @@ def write_markdown(
 
     if progress is not None:
         newly_covered: list[str] = progress["newlyCovered"]
-        lines += ["", "## Progress", "", f"- Newly JaCoCo-covered deep methods: {len(newly_covered)}"]
+        lines += ["", "## Progress", "", f"- Newly JaCoCo-covered targets: {len(newly_covered)}"]
         lines += [f"  - `{method_id}`" for method_id in newly_covered[:20]]
 
     sampled_groups: dict[tuple[str, int], list[NearCallRecord]] = {}

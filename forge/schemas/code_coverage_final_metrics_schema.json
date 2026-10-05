@@ -10,8 +10,6 @@
     "coverageSuitePath",
     "finalMeasurementArtifacts",
     "runCoverage",
-    "apiJacoco",
-    "deepJacoco",
     "pgoGuidance",
     "targets",
     "stopDecisions",
@@ -19,7 +17,7 @@
     "needsHumanIntervention"
   ],
   "properties": {
-    "schemaVersion": {"const": "1.3.0"},
+    "schemaVersion": {"const": "2.0.0"},
     "generatedAt": {
       "type": "string",
       "format": "date-time"
@@ -39,8 +37,6 @@
       }
     },
     "runCoverage": {"$ref": "#/$defs/runCoverage"},
-    "apiJacoco": {"$ref": "#/$defs/apiEvidence"},
-    "deepJacoco": {"$ref": "#/$defs/deepEvidence"},
     "pgoGuidance": {"$ref": "#/$defs/pgoGuidance"},
     "targets": {"$ref": "#/$defs/outcomes"},
     "stopDecisions": {
@@ -161,91 +157,6 @@
         "name": {"enum": ["api", "deep"]},
         "covered": {"type": "integer"},
         "coveragePercentagePoints": {"type": "number"}
-      }
-    },
-    "apiSnapshot": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": [
-        "total",
-        "measured",
-        "covered",
-        "uncovered",
-        "notReported",
-        "coveragePercent"
-      ],
-      "properties": {
-        "total": {"type": "integer", "minimum": 0},
-        "measured": {"type": "integer", "minimum": 0},
-        "covered": {"type": "integer", "minimum": 0},
-        "uncovered": {"type": "integer", "minimum": 0},
-        "notReported": {"type": "integer", "minimum": 0},
-        "coveragePercent": {"type": "number", "minimum": 0, "maximum": 100}
-      }
-    },
-    "deepSnapshot": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": ["total", "covered", "uncovered", "coveragePercent"],
-      "properties": {
-        "total": {"type": "integer", "minimum": 0},
-        "covered": {"type": "integer", "minimum": 0},
-        "uncovered": {"type": "integer", "minimum": 0},
-        "coveragePercent": {"type": "number", "minimum": 0, "maximum": 100}
-      }
-    },
-    "apiDelta": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": [
-        "covered",
-        "uncovered",
-        "notReported",
-        "coveragePercentagePoints"
-      ],
-      "properties": {
-        "covered": {"type": "integer"},
-        "uncovered": {"type": "integer"},
-        "notReported": {"type": "integer"},
-        "coveragePercentagePoints": {
-          "type": "number",
-          "minimum": -100,
-          "maximum": 100
-        }
-      }
-    },
-    "deepDelta": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": ["covered", "uncovered", "coveragePercentagePoints"],
-      "properties": {
-        "covered": {"type": "integer"},
-        "uncovered": {"type": "integer"},
-        "coveragePercentagePoints": {
-          "type": "number",
-          "minimum": -100,
-          "maximum": 100
-        }
-      }
-    },
-    "apiEvidence": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": ["baseline", "final", "delta"],
-      "properties": {
-        "baseline": {"$ref": "#/$defs/apiSnapshot"},
-        "final": {"$ref": "#/$defs/apiSnapshot"},
-        "delta": {"$ref": "#/$defs/apiDelta"}
-      }
-    },
-    "deepEvidence": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": ["baseline", "final", "delta"],
-      "properties": {
-        "baseline": {"$ref": "#/$defs/deepSnapshot"},
-        "final": {"$ref": "#/$defs/deepSnapshot"},
-        "delta": {"$ref": "#/$defs/deepDelta"}
       }
     },
     "pgoSnapshot": {

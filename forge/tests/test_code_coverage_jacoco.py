@@ -18,6 +18,7 @@ from utility_scripts.code_coverage_model import MethodRef
 from utility_scripts.code_coverage_profile_graph import CallGraph
 from utility_scripts.code_coverage_profile_inputs import TargetState
 from utility_scripts.code_coverage_profile_miss import classify_miss
+from utility_scripts.code_coverage_profile_routes import execution_status
 from utility_scripts.code_coverage_profile_records import NearCallRecord
 from utility_scripts.code_coverage_profile_render import classification_lines
 
@@ -157,7 +158,11 @@ class JacocoLineCoverageTest(unittest.TestCase):
             sampled_join_path_index=None,
         )
         return classify_miss(
-            record, graph, self.coverage.methods, self.coverage.lines
+            record,
+            graph,
+            self.coverage.methods,
+            self.coverage.lines,
+            execution_status(graph, self.coverage.methods),
         )
 
     def test_parses_line_counters_for_all_miss_shapes(self) -> None:

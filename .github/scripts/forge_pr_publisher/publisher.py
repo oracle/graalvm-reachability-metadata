@@ -448,20 +448,10 @@ def _validate_code_coverage_render(render: dict[str, Any]) -> None:
         "coverageSuitePath",
         "needsHumanIntervention",
         "runCoverage",
-        "apiJacoco",
-        "deepJacoco",
     ):
         if key not in metrics:
             raise ValueError(f"Code coverage evidence is missing {key!r}")
     _validate_run_coverage(metrics["runCoverage"])
-    for key in ("apiJacoco", "deepJacoco"):
-        evidence = metrics[key]
-        if not isinstance(evidence, dict) or not {"baseline", "final"} <= evidence.keys():
-            raise ValueError(f"Code coverage evidence {key!r} needs baseline and final")
-        for phase in ("baseline", "final"):
-            snapshot = evidence[phase]
-            if not isinstance(snapshot, dict) or not {"total", "covered"} <= snapshot.keys():
-                raise ValueError(f"Code coverage {key!r} {phase} needs total and covered")
 
 
 def _validate_run_coverage(run: Any) -> None:

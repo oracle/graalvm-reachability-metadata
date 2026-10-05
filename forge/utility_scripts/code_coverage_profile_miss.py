@@ -20,7 +20,7 @@ from utility_scripts.code_coverage_jacoco import JacocoLineCoverage, JacocoMetho
 from utility_scripts.code_coverage_model import MethodRef
 from utility_scripts.code_coverage_profile_counters import SiteDispatch, site_dispatch
 from utility_scripts.code_coverage_profile_flow import Branch, MethodFlow
-from utility_scripts.code_coverage_profile_graph import CallGraph
+from utility_scripts.code_coverage_profile_graph import CallGraph, translated_ref
 from utility_scripts.code_coverage_profile_inputs import line_at
 from utility_scripts.code_coverage_profile_navigation import NavigationEvidence
 from utility_scripts.code_coverage_profile_records import NearCallRecord
@@ -278,7 +278,14 @@ def edge_miss_classification(
         evidence: NavigationEvidence = NavigationEvidence(),
 ) -> dict:
     """Classify one reverse call site from its caller's JaCoCo line region."""
-    caller: MethodRef | None = graph.methods.get(edge.get("caller"))
+    raw_caller: MethodRef | None = graph.methods.get(edge.get("caller"))
+    # A caller JaCoCo does not report, such as a factory stub, is judged on the
+    # lines of the method it stands for (§AR-code-coverage-deep-navigation.2).
+    caller: MethodRef | None = (
+        translated_ref(edge["caller"], graph)
+        if raw_caller is not None and raw_caller.canonical_id not in jacoco_methods
+        else raw_caller
+    )
     dispatch: SiteDispatch | None = site_dispatch(edge, graph, evidence.counters, evidence.types)
     candidates: list[dict] = _dispatch_candidates(edge, graph, dispatch)
     base: dict = {
@@ -344,13 +351,15 @@ def edge_miss_classification(
             record for record in [target_record]
             if record is not None and record[1].covered and record[1].mb > 0
         ]
+        # The invoke's bci belongs to the raw caller, so only its own control
+        # flow can trace it.
         traced = _controlling_fork(
             caller,
             edge,
             target_record[0] if target_record is not None else None,
             [*same_line, *forks_above],
             evidence,
-        )
+        ) if caller is raw_caller else None
         if traced is not None:
             fork, branches = traced
         else:
@@ -362,30 +371,64 @@ def edge_miss_classification(
     return {"kind": "no-fork", **base}
 
 
+def _invoking_sites(target_id: int, graph: CallGraph) -> list[dict]:
+    """Every call site of the target's source-level method.
+
+    A caller that stands for the target itself — a factory stub for its
+    constructor — is looked through to its own callers
+    (§AR-code-coverage-deep-navigation.3).
+    """
+    target_ref_id: str = translated_ref(target_id, graph).canonical_id
+    sites: list[dict] = []
+    pending: list[int] = [target_id]
+    visited: set[int] = {target_id}
+    while pending:
+        for edge in graph.reverse_adjacency.get(pending.pop(), []):
+            caller: int = edge["caller"]
+            if translated_ref(caller, graph).canonical_id != target_ref_id:
+                sites.append(edge)
+            elif caller not in visited:
+                visited.add(caller)
+                pending.append(caller)
+    return sites
+
+
+def _routed_last_call(record: NearCallRecord, graph: CallGraph) -> list[dict]:
+    """The route's call into the target's source-level method, if it has one."""
+    if record.target_id is None:
+        return []
+    target_ref_id: str = translated_ref(record.target_id, graph).canonical_id
+    for edge in reversed(record.static_path_edges):
+        if translated_ref(edge["caller"], graph).canonical_id != target_ref_id:
+            return [edge]
+    return []
+
+
 def classify_miss(
         record: NearCallRecord,
         graph: CallGraph,
         jacoco_methods: dict[str, JacocoMethodCoverage],
         jacoco_lines: dict[str, dict[int, JacocoLineCoverage]],
+        executed: dict[int, bool],
         evidence: NavigationEvidence = NavigationEvidence(),
 ) -> dict:
-    """Choose the strongest diagnosis across all sites that invoke a target."""
-    if record.target_id is None:
-        edges: list[dict] = []
-    else:
-        routed_edges: list[dict] = [
-            edge
-            for edge in reversed(record.static_path_edges)
-            if edge.get("callee") == record.target_id
-        ]
-        edges = [*routed_edges, *graph.reverse_adjacency.get(record.target_id, [])]
+    """Choose the strongest diagnosis across the sites whose caller ran.
+
+    A caller that never ran has no fork or dispatch to report, so only sites
+    whose caller JaCoCo reports covered are judged
+    (§AR-code-coverage-deep-navigation.3).
+    """
+    edges: list[dict] = (
+        [*_routed_last_call(record, graph), *_invoking_sites(record.target_id, graph)]
+        if record.target_id is not None else []
+    )
     unique_edges: list[dict] = []
     seen: set[tuple[object, ...]] = set()
     for edge in edges:
         key: tuple[object, ...] = (
             edge.get("invoke_id"), edge.get("caller"), edge.get("callee"), edge.get("bci")
         )
-        if key not in seen:
+        if key not in seen and executed.get(edge["caller"]) is True:
             seen.add(key)
             unique_edges.append(edge)
     classifications: list[dict] = [

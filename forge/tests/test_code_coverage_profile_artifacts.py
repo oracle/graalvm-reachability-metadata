@@ -30,7 +30,6 @@ from tests.code_coverage_profile_support import (
     JACOCO_PATH,
     LOAD_ID,
     PARSE_ID,
-    RELOAD_ID,
     RESOLVE_ID,
     RESOLVE_INTEGER_ID,
     _coverage,
@@ -87,12 +86,14 @@ class ReportArtifactsTest(unittest.TestCase):
         self.assertIn("## Uncovered paths (JaCoCo-exact, top 200)", markdown)
         expected_paths: tuple[str, ...] = (
             "`Registry.init() → resolve(...)`",
-            "`Registry.init() → resolve(...) → load(...)`",
-            "`Registry.init() → resolve(...) → load(...) → reload()`",
             "`Config.of() → parse(...)`",
         )
         for path in expected_paths:
             self.assertIn(path, markdown)
+        # `load` and `reload` lie behind the uncovered `resolve`, past the
+        # frontier (§AR-code-coverage-deep-navigation.2).
+        self.assertNotIn("load(...)`", markdown)
+        self.assertNotIn("reload()`", markdown)
         for target in report["bulkTargets"]:
             self.assertIn("missClassification", target)
             self.assertIn(
@@ -161,6 +162,8 @@ class ReportArtifactsTest(unittest.TestCase):
                 "inventoryUnknown": 0,
                 "deepCovered": 0,
                 "deepUncovered": len(records),
+                "publicTargetsCovered": 0,
+                "publicTargetsUncovered": 0,
                 "listedUncovered": len(records),
                 "omittedUncovered": 0,
                 "samplingContexts": len(records),
@@ -199,7 +202,7 @@ class ReportArtifactsTest(unittest.TestCase):
         self.assertNotIn("sibling", markdown)
         self.assertNotIn(" step(s)", markdown)
 
-    def test_terminal_targets_leave_the_prompt_and_attempted_ones_go_last(self) -> None:
+    def test_terminal_targets_leave_the_prompt_and_attempted_ones_stay(self) -> None:
         state_path = self._write_json("deep-cover-0.json", {
             "coordinate": "com.example:demo:1.0.0",
             "targets": [
@@ -223,7 +226,7 @@ class ReportArtifactsTest(unittest.TestCase):
                     "reason": "Meaningful inputs were exhausted.",
                 },
                 {
-                    "id": RELOAD_ID,
+                    "id": RESOLVE_ID,
                     "status": "attempted",
                     "attemptCount": 3,
                     "lastAttemptedIteration": 1,
@@ -234,24 +237,25 @@ class ReportArtifactsTest(unittest.TestCase):
         report = self._generate(iteration=0, target_state_paths=[state_path])
 
         by_id = {entry["id"]: entry for entry in report["uncoveredPaths"]}
-        # Three failed attempts do not retire a target; they send it behind
-        # every fresher one.
-        self.assertEqual(report["promptTargetIds"], [RESOLVE_ID, RELOAD_ID])
+        # Three failed attempts do not retire a target, while a terminal one
+        # leaves the prompt even though it has a route.
+        self.assertEqual(report["promptTargetIds"], [RESOLVE_ID])
         self.assertEqual(report["summary"]["terminalUncovered"], 2)
+        self.assertEqual(by_id[PARSE_ID]["joinKind"], "public-entry")
         for method_id in (PARSE_ID, LOAD_ID):
             self.assertTrue(by_id[method_id]["terminal"])
             self.assertNotIn(method_id, report["promptTargetIds"])
-        self.assertFalse(by_id[RELOAD_ID]["terminal"])
-        self.assertEqual(by_id[RELOAD_ID]["targetStatus"], "attempted")
-        self.assertEqual(by_id[RELOAD_ID]["attemptCount"], 3)
-        self.assertIsNone(by_id[RELOAD_ID]["stateReason"])
+        self.assertFalse(by_id[RESOLVE_ID]["terminal"])
+        self.assertEqual(by_id[RESOLVE_ID]["targetStatus"], "attempted")
+        self.assertEqual(by_id[RESOLVE_ID]["attemptCount"], 3)
+        self.assertIsNone(by_id[RESOLVE_ID]["stateReason"])
         bulk = {entry["id"]: entry for entry in report["bulkTargets"]}
-        self.assertEqual(bulk[RELOAD_ID]["targetStatus"], "attempted")
+        self.assertEqual(bulk[RESOLVE_ID]["targetStatus"], "attempted")
         persisted = {entry["id"]: entry for entry in report["targetStates"]}
         self.assertEqual(persisted[RESOLVE_INTEGER_ID]["status"], "completed")
         self.assertEqual(persisted[PARSE_ID]["status"], "skipped")
         self.assertEqual(persisted[LOAD_ID]["status"], "exhausted")
-        self.assertEqual(persisted[RELOAD_ID]["status"], "attempted")
+        self.assertEqual(persisted[RESOLVE_ID]["status"], "attempted")
 
     def test_repeatedly_unproductive_targets_stay_in_rotation(self) -> None:
         reports: list[dict] = [self._generate(iteration=iteration) for iteration in range(5)]
