@@ -1,13 +1,13 @@
 {
-  "base_commit": "8a762e74fcf075455090d2963f28fe6a9aa586f4",
-  "branch": "ai/kimeta/add-lib-support-dev.langchain4j-langchain4j-http-client-1.21.0-forge-10465-20261005163413249192-96bbf5a7f9cf",
+  "base_commit": "77a7e6dc04264f99c2f6799ec5d90e056dc38d7f",
+  "branch": "ai/kimeta/add-lib-support-dev.langchain4j-langchain4j-http-client-1.21.0-forge-10462-20261005183429713989-33c4a81690a9",
   "follow_ups": [],
   "forge": {
     "branch": "master",
-    "commit": "8a762e74fcf075455090d2963f28fe6a9aa586f4",
+    "commit": "153fc083e86e1fbb11f1b88648e96d55429f8126",
     "monitored_branch": "origin/master"
   },
-  "issue_number": 10465,
+  "issue_number": 10462,
   "library": {
     "artifact": "langchain4j-http-client",
     "coordinates": "dev.langchain4j:langchain4j-http-client:1.21.0",
@@ -15,37 +15,11 @@
     "version": "1.21.0"
   },
   "local_ci_verification": {
-    "base_commit": "8a762e74fcf075455090d2963f28fe6a9aa586f4",
-    "commands": [
-      {
-        "command": [
-          "./gradlew",
-          "generateChangedIndexFileCoordinatesList",
-          "-PbaseCommit=origin/master",
-          "-PnewCommit=HEAD"
-        ],
-        "env": {
-          "GITHUB_OUTPUT": "/tmp/tmp6xki6rfi"
-        },
-        "gate": "changed-index-coordinates",
-        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :generateChangedIndexFileCoordinatesList\n\n[Incubating] Problems report is available at: file:///home/oracle/oracle/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10465-b114afda/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 4s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
-        "returncode": 0
-      },
-      {
-        "command": [
-          "./gradlew",
-          "validateIndexFiles",
-          "-Pcoordinates=dev.langchain4j:langchain4j-http-client"
-        ],
-        "env": {},
-        "gate": "index-file-validation",
-        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :validateIndexFiles\n✅ metadata/dev.langchain4j/langchain4j-http-client/index.json: Valid\n\n[Incubating] Problems report is available at: file:///home/oracle/oracle/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10465-b114afda/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 2s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
-        "returncode": 0
-      }
-    ],
+    "base_commit": "77a7e6dc04264f99c2f6799ec5d90e056dc38d7f",
+    "commands": [],
     "failure_command": null,
     "failure_gate": null,
-    "final_commit": "4bf2189884822c1b56884206b9fd9f523768b08d",
+    "final_commit": "dbaa9019f6bee706865aaac466488f9657e8851a",
     "fixups": [],
     "human_intervention_required": false,
     "repo_fix_paths": [],
@@ -58,26 +32,26 @@
     "finding_title": "",
     "fix_note": "",
     "model": "gpt-5.6-sol",
-    "review_comment": "Verified the contribution is limited to dev.langchain4j:langchain4j-http-client:1.21.0, uses only reachability-metadata.json, has non-scaffold public-API tests in a separate package with bounded execution and no Native Image skips, version pinning, visibility bypass, or compatibility overrides, and has coherent 0/0 dynamic-access evidence. The exact Forge finalization command passed all three native test lanes, metadata validation, style checks, generated-test checks, and statistics generation without changing the publishable tree.",
-    "session_id": "4ac89e85812f4160"
+    "review_comment": "Reviewed the complete eventual diff and local review evidence. The changes stay within the single target coordinate, use only the accepted metadata format, and add public, version-agnostic tests in a separate test package that exercise request execution, asynchronous execution, streaming, SSE parsing, and logging without native-image skips, unsupported failure tolerance, runtime class definition, JVM overrides, or native flags. The resolved statistics report 0/0 dynamic-access calls, so the percentage and entry-count mismatch gates do not apply; the recorded local verification succeeded.",
+    "session_id": "43c0d3aa753f450c"
   },
   "metrics": {
     "agent": "pi",
-    "model": "gpt-5.6-sol",
+    "model": "gpt-5.6-luna",
     "path": "stats/dev.langchain4j/langchain4j-http-client/1.21.0/execution-metrics.json",
     "summary": {
-      "cached_input_tokens_used": 1767168,
-      "code_coverage_percent": 52.46,
-      "cost_usd": 2.292,
-      "generated_loc": 345,
-      "input_tokens_used": 173263,
-      "iterations": 5,
+      "cached_input_tokens_used": 4893696,
+      "code_coverage_percent": 65.1,
+      "cost_usd": 0.9821,
+      "generated_loc": 542,
+      "input_tokens_used": 307291,
+      "iterations": 6,
       "metadata_entries": 2,
-      "output_tokens_used": 18071,
+      "output_tokens_used": 30906,
       "test_only_metadata_entries": 79,
-      "tested_library_loc": 245
+      "tested_library_loc": 304
     },
-    "timestamp": "2026-10-05T16:34:13.249192Z"
+    "timestamp": "2026-10-05T18:34:29.713989Z"
   },
   "modifiers": {
     "chunk_final": true,
@@ -85,7 +59,7 @@
     "human_intervention": false
   },
   "producer": "kimeta",
-  "publication_id": "forge-10465-20261005163413249192-96bbf5a7f9cf",
+  "publication_id": "forge-10462-20261005183429713989-33c4a81690a9",
   "render": {
     "dynamic_access": null,
     "dynamic_access_evidence": {
@@ -103,21 +77,21 @@
       },
       "libraryCoverage": {
         "instruction": {
-          "covered": 1029,
-          "missed": 1027,
-          "ratio": 0.500486,
+          "covered": 1333,
+          "missed": 723,
+          "ratio": 0.648346,
           "total": 2056
         },
         "line": {
-          "covered": 245,
-          "missed": 222,
-          "ratio": 0.524625,
+          "covered": 304,
+          "missed": 163,
+          "ratio": 0.650964,
           "total": 467
         },
         "method": {
-          "covered": 70,
-          "missed": 75,
-          "ratio": 0.482759,
+          "covered": 88,
+          "missed": 57,
+          "ratio": 0.606897,
           "total": 145
         }
       },
@@ -125,8 +99,8 @@
     }
   },
   "schema_version": 1,
-  "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-sol",
+  "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-luna",
   "task_type": "library-new-request",
   "template_type": "library-new-request",
-  "timestamp": "2026-10-05T16:34:13.249192Z"
+  "timestamp": "2026-10-05T18:34:29.713989Z"
 }
