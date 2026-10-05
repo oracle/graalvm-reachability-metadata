@@ -11,6 +11,8 @@ import org.hibernate.type.descriptor.java.JavaType;
 import org.hibernate.type.spi.TypeConfiguration;
 import org.junit.jupiter.api.Test;
 
+import jakarta.xml.bind.annotation.XmlRootElement;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class JaxbXmlFormatMapperTest {
@@ -25,5 +27,24 @@ public class JaxbXmlFormatMapperTest {
         String[] result = mapper.fromString(xml, arrayType, null);
 
         assertThat(result).containsExactly("first", "second");
+    }
+
+    @Test
+    public void createsMissingArrayElementsThroughTheirDefaultConstructor() {
+        TypeConfiguration typeConfiguration = new TypeConfiguration();
+        JavaType<DefaultConstructibleValue[]> arrayType = typeConfiguration.getJavaTypeRegistry()
+                .getDescriptor(DefaultConstructibleValue[].class);
+        JaxbXmlFormatMapper mapper = JaxbXmlFormatMapper.INSTANCE;
+
+        String xml = mapper.toString(new DefaultConstructibleValue[0], arrayType, null);
+        DefaultConstructibleValue[] result = mapper.fromString(xml, arrayType, null);
+
+        assertThat(result).isEmpty();
+    }
+
+    @XmlRootElement(name = "default-constructible-value")
+    public static class DefaultConstructibleValue {
+        public DefaultConstructibleValue() {
+        }
     }
 }

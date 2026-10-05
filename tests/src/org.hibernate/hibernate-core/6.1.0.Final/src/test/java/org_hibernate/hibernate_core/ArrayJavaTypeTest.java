@@ -22,6 +22,8 @@ public class ArrayJavaTypeTest {
                 .containsExactly("one", "two");
         assertThat(type.unwrap(new String[]{"one", "two"}, CharSequence[].class, null))
                 .containsExactly("one", "two");
+        assertThat(type.unwrap(new String[]{"one", "two"}, char[][].class, null))
+                .containsExactly("one".toCharArray(), "two".toCharArray());
         assertThat(type.wrap(new CharSequence[]{"one", "two"}, null))
                 .containsExactly("one", "two");
     }
