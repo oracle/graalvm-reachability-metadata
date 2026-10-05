@@ -105,17 +105,36 @@ class ReportArtifactsTest(unittest.TestCase):
         for line in path_lines:
             self.assertNotIn("#", line)
             self.assertNotIn(":void", line)
-        instruction = (
-            "Attempt every listed uncovered path in this iteration through public API "
-            "behavior; never invoke internal targets directly."
-        )
-        self.assertEqual(markdown.count(instruction), 1)
+        # The preamble is the single public-entry obligation
+        # (§AR-code-coverage-deep-navigation.2).
+        self.assertTrue(markdown.startswith(
+            "# Deep coverage paths (iteration 1) — com.example:demo:1.0.0\n\n"
+            "Reach every target below through its public entry; never call internal "
+            "methods directly.\n\n"
+            "## Where the tests go\n"
+        ))
         self.assertNotIn("sibling", markdown)
         self.assertNotIn(" samples to ", markdown)
         self.assertNotIn(" step(s)", markdown)
         self.assertNotIn("###", markdown)
         self.assertEqual(markdown.count("additional uncovered paths are retained in JSON"), 1)
         self.assertNotIn("Detailed near-call guidance", markdown)
+
+    def test_prompt_carries_no_operator_summary_or_progress(self) -> None:
+        # A second report has history, which once rendered a progress block.
+        self._generate(iteration=0)
+        report = self._generate(iteration=1)
+        with open(os.path.join(self.output_dir, "discovery-report-1.md"), encoding="utf-8") as md_file:
+            markdown = md_file.read()
+        # The counts stay in the JSON report, where operators read them.
+        self.assertIn("listedUncovered", report["summary"])
+        for removed in (
+            "## Summary",
+            "## Progress",
+            "Newly JaCoCo-covered",
+            "JaCoCo is the coverage authority. PGO samples and counters are guidance only.",
+        ):
+            self.assertNotIn(removed, markdown)
 
     def test_markdown_shows_next_sampled_frame_and_all_selected_groups(self) -> None:
         root = MethodRef("example.CoverageTest", "run", (), "void")
@@ -180,7 +199,6 @@ class ReportArtifactsTest(unittest.TestCase):
             graph,
             "example:library:1",
             0,
-            None,
             markdown_path,
         )
 
@@ -192,8 +210,12 @@ class ReportArtifactsTest(unittest.TestCase):
             "Uncovered paths:\n"
             "`Library.dispatch() → parseAlternative0()`\n"
         )
-        self.assertIn(first_group, markdown)
+        self.assertIn("## Observed (sampled guidance only)\n\n" + first_group, markdown)
         self.assertEqual(markdown.count("Observed:\n"), 21)
+        # A thematic break separates each pair of consecutive groups, and a
+        # blank line before it keeps Markdown from reading a setext heading.
+        self.assertEqual(markdown.count("\n\n---\n\nObserved:\n"), 20)
+        self.assertEqual(markdown.count("---"), 20)
         self.assertIn(
             "`Library.dispatch() → parseAlternative20()`",
             markdown,
@@ -201,6 +223,48 @@ class ReportArtifactsTest(unittest.TestCase):
         self.assertNotIn("###", markdown)
         self.assertNotIn("sibling", markdown)
         self.assertNotIn(" step(s)", markdown)
+
+    def test_public_entry_groups_are_separated(self) -> None:
+        entries = [MethodRef("example.Config", "of", (), "void"),
+                   MethodRef("example.Store", "open", (), "void")]
+        targets = [MethodRef("example.Config", "load", (), "void"),
+                   MethodRef("example.Store", "flush", (), "void")]
+        methods = {1: entries[0], 2: entries[1], 3: targets[0], 4: targets[1]}
+        graph = CallGraph(
+            methods=methods,
+            key_to_id={ref.canonical_id: method_id for method_id, ref in methods.items()},
+        )
+        records: list[NearCallRecord] = [
+            NearCallRecord(
+                coverage=_coverage(methods[target_id]),
+                target_id=target_id,
+                target_state=TargetState(),
+                join_kind="public-entry",
+                static_path=[entry_id, target_id],
+                static_path_edges=[],
+                sample=None,
+                sampled_join_path_index=None,
+            )
+            for entry_id, target_id in ((1, 3), (2, 4))
+        ]
+        report = {"summary": {"omittedUncovered": 0}, "bulkTargets": [], "caveats": []}
+        markdown_path = os.path.join(self.output_dir, "public-entries.md")
+
+        write_markdown(report, records, graph, "example:library:1", 0, markdown_path)
+
+        with open(markdown_path, encoding="utf-8") as markdown_file:
+            markdown = markdown_file.read()
+        self.assertIn(
+            "`Config.of() → load()`\n"
+            "  target line unavailable\n"
+            "  no fork above — no covered line was available; target is reached only by an "
+            "exception or external event\n\n"
+            "---\n\n"
+            "Public entry:\n"
+            "`Store.open()`\n",
+            markdown,
+        )
+        self.assertEqual(markdown.count("---"), 1)
 
     def test_terminal_targets_leave_the_prompt_and_attempted_ones_stay(self) -> None:
         state_path = self._write_json("deep-cover-0.json", {

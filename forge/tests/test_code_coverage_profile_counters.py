@@ -169,7 +169,7 @@ class UnobservedRouteTests(unittest.TestCase):
         )
         markdown_path: str = os.path.join(tempfile.mkdtemp(prefix="unobserved-"), "prompt.md")
         self.addCleanup(shutil.rmtree, os.path.dirname(markdown_path), True)
-        write_markdown(report, records, graph, "app:api:1", 0, None, markdown_path)
+        write_markdown(report, records, graph, "app:api:1", 0, markdown_path)
         with open(markdown_path, encoding="utf-8") as handle:
             self.assertIn(
                 "route assumes `Api.run() → Unseen.step()`, a dispatch the run never made",

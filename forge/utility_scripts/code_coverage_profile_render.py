@@ -29,6 +29,9 @@ from utility_scripts.code_coverage_profile_routes import Sample, SampledProfile
 MAX_RENDERED_DISPATCH_CANDIDATES = 12
 MAX_RENDERED_RECEIVERS = 6
 MAX_RENDERED_BRANCHES = 8
+# A thematic break between consecutive route groups; a blank line always
+# precedes it, so Markdown never reads it as a setext heading underline.
+GROUP_SEPARATOR = "---"
 
 
 def _display_method(ref: MethodRef, qualify_owner: bool) -> str:
@@ -254,7 +257,6 @@ def write_markdown(
         graph: CallGraph,
         coordinate: str,
         iteration: int,
-        progress: dict | None,
         md_path: str,
 ) -> None:
     summary: dict = report["summary"]
@@ -262,9 +264,9 @@ def write_markdown(
     lines: list[str] = [
         f"# Deep coverage paths (iteration {iteration}) — {coordinate}",
         "",
-        "JaCoCo is the coverage authority. PGO samples and counters are guidance only.",
-        "Attempt every listed uncovered path in this iteration through public API "
-        "behavior; never invoke internal targets directly.",
+        # The public-entry obligation (§AR-code-coverage-deep-navigation.2).
+        "Reach every target below through its public entry; never call internal "
+        "methods directly.",
         "",
         "## Where the tests go",
         "",
@@ -279,32 +281,8 @@ def write_markdown(
         "of it than one appended to a class built for something else. Before "
         "extending an existing test class, check whether the cluster you are about "
         "to drive already has one; if not, add a class.",
-        "",
-        "## Summary",
-        "",
-        f"- Public inventory: {summary['inventoryCovered']} covered, "
-        f"{summary['inventoryUncovered']} uncovered, {summary['inventoryUnknown']} unknown",
-        f"- Deep methods: {summary['deepCovered']} covered, "
-        f"{summary['deepUncovered']} uncovered",
-        f"- Public methods the API phase left uncovered: "
-        f"{summary['publicTargetsCovered']} covered since, "
-        f"{summary['publicTargetsUncovered']} uncovered",
-        f"- Prompt list: {summary['listedUncovered']} "
-        f"(omitted but retained in JSON: {summary['omittedUncovered']})",
-        f"- Sampled contexts: {summary['samplingContexts']} "
-        f"({summary['totalSampleCount']} samples)",
     ]
     counted: bool = bool(summary.get("instrumentedCounters"))
-    if counted:
-        lines.append(
-            f"- Instrumented counters: {summary['profiledBranches']} branches, "
-            f"{summary['profiledDispatchSites']} dispatch sites"
-        )
-
-    if progress is not None:
-        newly_covered: list[str] = progress["newlyCovered"]
-        lines += ["", "## Progress", "", f"- Newly JaCoCo-covered targets: {len(newly_covered)}"]
-        lines += [f"  - `{method_id}`" for method_id in newly_covered[:20]]
 
     sampled_groups: dict[tuple[str, int], list[NearCallRecord]] = {}
     sampled_group_order: list[tuple[str, int]] = []
@@ -322,7 +300,9 @@ def write_markdown(
     lines += ["", "## Observed (sampled guidance only)", ""]
     if not sampled_group_order:
         lines.append("_No sampled context reaches an actionable uncovered path._")
-    for group_key in sampled_group_order:
+    for position, group_key in enumerate(sampled_group_order):
+        if position:
+            lines += [GROUP_SEPARATOR, ""]
         records: list[NearCallRecord] = sampled_groups[group_key]
         representative: NearCallRecord = records[0]
         assert representative.sample is not None
@@ -354,7 +334,9 @@ def write_markdown(
     lines += ["", f"## Uncovered paths (JaCoCo-exact, top {MAX_LISTED_METHODS})", ""]
     if not fallback_order:
         lines.append("_All prompt paths are paired with sampled observations above._")
-    for entry_id in fallback_order:
+    for position, entry_id in enumerate(fallback_order):
+        if position:
+            lines += [GROUP_SEPARATOR, ""]
         lines.append("Public entry:")
         lines.append(f"`{_display_path([entry_id], graph)}`")
         lines.append("")
