@@ -52,4 +52,41 @@ public class AbstractEvaluatorFactoryTest {
             assertThat(evaluator.evaluate(4)).isEqualTo(12);
         });
     }
+
+    @Test
+    void loadsAnEvaluatorAlreadyAvailableToTheFactoryLoader() throws Exception {
+        ECJEvaluatorFactory factory = new ECJEvaluatorFactory(
+                new ExistingEvaluatorClassLoader(getClass().getClassLoader()));
+
+        Evaluator<Integer> evaluator = factory.createEvaluator(
+                "return input + adjustment;",
+                Integer.class,
+                new String[] {"input"},
+                new Class<?>[] {Integer.class},
+                Map.<String, Object>of("adjustment", 2));
+
+        assertThat(evaluator.evaluate(4)).isEqualTo(6);
+    }
+
+    private static final class ExistingEvaluatorClassLoader extends ClassLoader {
+
+        private ExistingEvaluatorClassLoader(ClassLoader parent) {
+            super(parent);
+        }
+
+        @Override
+        protected Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException {
+            if (name.startsWith("Q_")) {
+                return ExistingEvaluator.class;
+            }
+            return super.loadClass(name, resolve);
+        }
+    }
+
+    public static final class ExistingEvaluator {
+
+        public static Integer eval(Integer input, Integer adjustment) {
+            return input + adjustment;
+        }
+    }
 }
