@@ -13,6 +13,7 @@ from utility_scripts.code_coverage_jacoco import (
     load_jacoco_method_coverage,
 )
 from utility_scripts.code_coverage_model import MethodRef
+from utility_scripts.code_coverage_profile_routes import Sample, SampledProfile
 
 FIXTURES = os.path.join(os.path.dirname(__file__), "fixtures", "code_coverage")
 JACOCO_PATH = os.path.join(FIXTURES, "near_call_jacoco.xml")
@@ -35,6 +36,20 @@ def _load_inventory() -> dict:
 
 def _load_jacoco() -> dict[str, JacocoMethodCoverage]:
     return load_jacoco_method_coverage([JACOCO_PATH])
+
+
+def _sampled_at(static_id: int, ref: MethodRef) -> SampledProfile:
+    """A profile with one sample sitting in `ref`, so routes from it are
+    sampled joins and reach the prompt (§AR-code-coverage-deep-navigation.2)."""
+    return SampledProfile(
+        samples=[Sample(
+            context_id=f"sample-{static_id}", raw_context="", path=[(static_id, 0)],
+            full_path=[(ref, 0)], path_full_indexes=[0], count=1,
+        )],
+        sample_counts={static_id: 1},
+        total_sample_count=1,
+        context_count=1,
+    )
 
 
 def _coverage(ref: MethodRef, covered: bool = False) -> JacocoMethodCoverage:

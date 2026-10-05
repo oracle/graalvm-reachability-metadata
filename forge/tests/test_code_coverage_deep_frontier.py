@@ -29,7 +29,7 @@ from utility_scripts.code_coverage_profile_inputs import ProfileFormatError, Tar
 from utility_scripts.code_coverage_profile_render import write_markdown
 from utility_scripts.code_coverage_profile_routes import Sample, SampledProfile
 
-from tests.code_coverage_profile_support import _coverage
+from tests.code_coverage_profile_support import _coverage, _sampled_at
 from tests.test_code_coverage_finalize import COORDINATE, _api, _deep
 
 
@@ -278,7 +278,7 @@ class PublicCarryOverTest(unittest.TestCase):
             states: dict[str, TargetState] | None = None,
     ) -> tuple[dict, list]:
         return report_module.correlate(
-            SampledProfile(), self.graph, self.inventory, self.jacoco,
+            _sampled_at(1, self.ENTRY), self.graph, self.inventory, self.jacoco,
             target_states=states, carried_public_ids=carried,
         )
 

@@ -83,13 +83,15 @@ class ReportArtifactsTest(unittest.TestCase):
         with open(os.path.join(self.output_dir, "discovery-report-1.md"), encoding="utf-8") as md_file:
             markdown = md_file.read()
         self.assertIn("## Observed (sampled guidance only)", markdown)
-        self.assertIn("## Uncovered paths (JaCoCo-exact, top 200)", markdown)
-        expected_paths: tuple[str, ...] = (
-            "`Registry.init() → resolve(...)`",
-            "`Config.of() → parse(...)`",
-        )
-        for path in expected_paths:
-            self.assertIn(path, markdown)
+        self.assertIn("`Registry.init() → resolve(...)`", markdown)
+        # `parse` is routed from a public entry only: it stays ranked in the
+        # JSON and out of the prompt (§AR-code-coverage-deep-navigation.2).
+        parse = next(entry for entry in report["uncoveredPaths"] if entry["id"] == PARSE_ID)
+        self.assertEqual(parse["joinKind"], "public-entry")
+        self.assertNotIn(PARSE_ID, report["promptTargetIds"])
+        self.assertNotIn("Config.of()", markdown)
+        self.assertNotIn("Public entry:", markdown)
+        self.assertEqual(report["summary"]["listedUncovered"], report["summary"]["sampledJoins"])
         # `load` and `reload` lie behind the uncovered `resolve`, past the
         # frontier (§AR-code-coverage-deep-navigation.2).
         self.assertNotIn("load(...)`", markdown)
@@ -100,7 +102,7 @@ class ReportArtifactsTest(unittest.TestCase):
                 target["missClassification"]["kind"],
                 {"dispatched-elsewhere", "fork-not-taken", "no-fork"},
             )
-        self.assertEqual(markdown.count("  target "), len(report["bulkTargets"]))
+        self.assertEqual(markdown.count("  target "), len(report["promptTargetIds"]))
         path_lines = [line for line in markdown.splitlines() if line.startswith("`")]
         for line in path_lines:
             self.assertNotIn("#", line)
@@ -117,7 +119,11 @@ class ReportArtifactsTest(unittest.TestCase):
         self.assertNotIn(" samples to ", markdown)
         self.assertNotIn(" step(s)", markdown)
         self.assertNotIn("###", markdown)
-        self.assertEqual(markdown.count("additional uncovered paths are retained in JSON"), 1)
+        # Omitted counts and caveats are operator data and stay in the JSON.
+        self.assertGreater(report["summary"]["omittedUncovered"], 0)
+        self.assertNotIn("retained in JSON", markdown)
+        self.assertTrue(report["caveats"])
+        self.assertNotIn("## Caveats", markdown)
         self.assertNotIn("Detailed near-call guidance", markdown)
 
     def test_prompt_carries_no_operator_summary_or_progress(self) -> None:
@@ -223,48 +229,6 @@ class ReportArtifactsTest(unittest.TestCase):
         self.assertNotIn("###", markdown)
         self.assertNotIn("sibling", markdown)
         self.assertNotIn(" step(s)", markdown)
-
-    def test_public_entry_groups_are_separated(self) -> None:
-        entries = [MethodRef("example.Config", "of", (), "void"),
-                   MethodRef("example.Store", "open", (), "void")]
-        targets = [MethodRef("example.Config", "load", (), "void"),
-                   MethodRef("example.Store", "flush", (), "void")]
-        methods = {1: entries[0], 2: entries[1], 3: targets[0], 4: targets[1]}
-        graph = CallGraph(
-            methods=methods,
-            key_to_id={ref.canonical_id: method_id for method_id, ref in methods.items()},
-        )
-        records: list[NearCallRecord] = [
-            NearCallRecord(
-                coverage=_coverage(methods[target_id]),
-                target_id=target_id,
-                target_state=TargetState(),
-                join_kind="public-entry",
-                static_path=[entry_id, target_id],
-                static_path_edges=[],
-                sample=None,
-                sampled_join_path_index=None,
-            )
-            for entry_id, target_id in ((1, 3), (2, 4))
-        ]
-        report = {"summary": {"omittedUncovered": 0}, "bulkTargets": [], "caveats": []}
-        markdown_path = os.path.join(self.output_dir, "public-entries.md")
-
-        write_markdown(report, records, graph, "example:library:1", 0, markdown_path)
-
-        with open(markdown_path, encoding="utf-8") as markdown_file:
-            markdown = markdown_file.read()
-        self.assertIn(
-            "`Config.of() → load()`\n"
-            "  target line unavailable\n"
-            "  no fork above — no covered line was available; target is reached only by an "
-            "exception or external event\n\n"
-            "---\n\n"
-            "Public entry:\n"
-            "`Store.open()`\n",
-            markdown,
-        )
-        self.assertEqual(markdown.count("---"), 1)
 
     def test_terminal_targets_leave_the_prompt_and_attempted_ones_stay(self) -> None:
         state_path = self._write_json("deep-cover-0.json", {

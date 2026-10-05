@@ -32,6 +32,7 @@ from tests.code_coverage_profile_support import (
     LOAD_ID,
     RESOLVE_ID,
     _coverage,
+    _sampled_at,
 )
 
 
@@ -238,7 +239,7 @@ class SyntheticLambdaTest(unittest.TestCase):
             for ref in self.graph.methods.values()
         }
         return report_module.correlate(
-            routes_module.SampledProfile(),
+            _sampled_at(7, self.graph.methods[7]),
             self.graph,
             {"targets": [{"id": self.INIT, "kind": "method"}]},
             jacoco,
@@ -398,7 +399,7 @@ class FactoryStubTranslationTest(unittest.TestCase):
             },
         }
         self.report, _ = report_module.correlate(
-            routes_module.SampledProfile(),
+            _sampled_at(1, self.CALLER),
             self.graph,
             {"targets": [{"id": self.CALLER.canonical_id, "kind": "method"}]},
             jacoco,

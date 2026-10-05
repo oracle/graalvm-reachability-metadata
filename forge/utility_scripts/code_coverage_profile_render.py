@@ -19,7 +19,6 @@ from utility_scripts.code_coverage_jacoco import JacocoMethodCoverage
 from utility_scripts.code_coverage_model import MethodRef, parse_inventory_id
 from utility_scripts.code_coverage_profile_graph import CallGraph
 from utility_scripts.code_coverage_profile_records import (
-    MAX_LISTED_METHODS,
     NearCallRecord,
     simple_owner,
     translated_path,
@@ -284,13 +283,11 @@ def write_markdown(
     ]
     counted: bool = bool(summary.get("instrumentedCounters"))
 
+    # Every prompted record is a sampled route (§AR-code-coverage-deep-navigation.2).
     sampled_groups: dict[tuple[str, int], list[NearCallRecord]] = {}
     sampled_group_order: list[tuple[str, int]] = []
-    fallback_records: list[NearCallRecord] = []
     for record in prompt_records:
-        if record.join_kind != "sampled" or record.sample is None or not record.static_path:
-            fallback_records.append(record)
-            continue
+        assert record.join_kind == "sampled" and record.sample is not None and record.static_path
         group_key: tuple[str, int] = (record.sample.context_id, record.static_path[0])
         if group_key not in sampled_groups:
             sampled_groups[group_key] = []
@@ -319,39 +316,8 @@ def write_markdown(
         for record in records:
             lines.append(_prompt_line(record, graph, notes, counted))
         lines.append("")
-
-    fallback_groups: dict[int, list[NearCallRecord]] = {}
-    fallback_order: list[int] = []
-    for record in fallback_records:
-        if not record.static_path:
-            continue
-        entry_id = record.static_path[0]
-        if entry_id not in fallback_groups:
-            fallback_groups[entry_id] = []
-            fallback_order.append(entry_id)
-        fallback_groups[entry_id].append(record)
-
-    lines += ["", f"## Uncovered paths (JaCoCo-exact, top {MAX_LISTED_METHODS})", ""]
-    if not fallback_order:
-        lines.append("_All prompt paths are paired with sampled observations above._")
-    for position, entry_id in enumerate(fallback_order):
-        if position:
-            lines += [GROUP_SEPARATOR, ""]
-        lines.append("Public entry:")
-        lines.append(f"`{_display_path([entry_id], graph)}`")
-        lines.append("")
-        lines.append("Uncovered paths:")
-        for record in fallback_groups[entry_id]:
-            lines.append(_prompt_line(record, graph, notes, counted))
-        lines.append("")
-    if summary["omittedUncovered"]:
-        lines.append(
-            f"_{summary['omittedUncovered']} additional uncovered paths are retained in JSON._"
-        )
-        lines.append("")
-
-    lines += ["## Caveats", ""]
-    lines += [f"- {caveat}" for caveat in report["caveats"]]
+    # Totals, omitted counts and caveats stay in the JSON report
+    # (§AR-code-coverage-deep-navigation.2).
     with open(md_path, "w", encoding="utf-8") as md_file:
         md_file.write("\n".join(lines) + "\n")
 
