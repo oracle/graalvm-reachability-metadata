@@ -22,7 +22,7 @@ public class ClassicConfigurationTest {
 
         configuration.configure(Map.of("flyway.plugins.clean.mode", "schema"));
 
-        CleanModeConfigurationExtension extension = configuration.getConfigurationExtension(
+        CleanModeConfigurationExtension extension = configuration.getPluginRegister().getPlugin(
                 CleanModeConfigurationExtension.class);
 
         assertThat(extension).isNotNull();
