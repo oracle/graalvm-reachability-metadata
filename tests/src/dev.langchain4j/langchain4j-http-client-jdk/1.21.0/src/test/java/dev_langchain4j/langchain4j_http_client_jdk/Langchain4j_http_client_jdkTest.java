@@ -177,6 +177,32 @@ public class Langchain4j_http_client_jdkTest {
     }
 
     @Test
+    void callbackExecutionReportsHttpFailures() throws Exception {
+        try (TestHttpServer server = TestHttpServer.create(exchange ->
+                        writeResponse(exchange, 503, "service unavailable", "text/plain"));
+                TestClient client = TestClient.create()) {
+            AtomicReference<Throwable> failure = new AtomicReference<>();
+            CountDownLatch failed = new CountDownLatch(1);
+
+            client.client().execute(
+                    HttpRequest.builder().method(HttpMethod.GET).url(server.url("/callback-failure")).build(),
+                    new ServerSentEventListener() {
+                        @Override
+                        public void onError(Throwable throwable) {
+                            failure.set(throwable);
+                            failed.countDown();
+                        }
+                    });
+
+            assertThat(failed.await(IO_TIMEOUT.toSeconds(), TimeUnit.SECONDS)).isTrue();
+            assertThat(failure.get()).isInstanceOf(HttpException.class);
+            HttpException exception = (HttpException) failure.get();
+            assertThat(exception.statusCode()).isEqualTo(503);
+            assertThat(exception.getMessage()).isEqualTo("service unavailable");
+        }
+    }
+
+    @Test
     void callbackExecutionParsesServerSentEventsAndClosesStream() throws Exception {
         String events = "event: message\n" + "data: first\n" + "data: second\n\n" + "data: done\n\n";
         try (TestHttpServer server = TestHttpServer.create(exchange ->
@@ -270,6 +296,74 @@ public class Langchain4j_http_client_jdkTest {
             assertThat(failure.get()).isNull();
             assertThat(opened.get().statusCode()).isEqualTo(200);
             assertThat(received).containsExactly(new ServerSentEvent("custom", "custom payload"));
+        }
+    }
+
+    @Test
+    void configuredJdkClientFollowsRedirects() throws Exception {
+        try (TestHttpServer server = TestHttpServer.create(exchange -> {
+                    if ("/redirect".equals(exchange.getRequestURI().getPath())) {
+                        String location = "http://" + exchange.getLocalAddress().getHostString() + ":"
+                                + exchange.getLocalAddress().getPort() + "/final";
+                        exchange.getResponseHeaders().set("Location", location);
+                        exchange.sendResponseHeaders(302, -1);
+                    } else {
+                        writeResponse(exchange, 200, "redirected response", "text/plain");
+                    }
+                });
+                TestClient client = TestClient.create(JdkHttpClient.builder()
+                        .httpClientBuilder(java.net.http.HttpClient.newBuilder()
+                                .followRedirects(java.net.http.HttpClient.Redirect.NORMAL)))) {
+            SuccessfulHttpResponse response = client.client().execute(HttpRequest.builder()
+                    .method(HttpMethod.GET)
+                    .url(server.url("/redirect"))
+                    .build());
+
+            assertThat(response.statusCode()).isEqualTo(200);
+            assertThat(response.body()).isEqualTo("redirected response");
+        }
+    }
+
+    @Test
+    void publisherExecutionReportsHttpFailures() throws Exception {
+        try (TestHttpServer server = TestHttpServer.create(exchange ->
+                        writeResponse(exchange, 502, "upstream unavailable", "text/plain"));
+                TestClient client = TestClient.create()) {
+            AtomicReference<Throwable> failure = new AtomicReference<>();
+            CountDownLatch terminated = new CountDownLatch(1);
+
+            client.client()
+                    .stream(HttpRequest.builder().method(HttpMethod.GET).url(server.url("/publisher-failure")).build())
+                    .subscribe(new Flow.Subscriber<>() {
+                        @Override
+                        public void onSubscribe(Flow.Subscription subscription) {
+                            subscription.request(Long.MAX_VALUE);
+                        }
+
+                        @Override
+                        public void onNext(HttpStreamingEvent event) {
+                            failure.set(new AssertionError("An unsuccessful response must not emit events"));
+                            terminated.countDown();
+                        }
+
+                        @Override
+                        public void onError(Throwable throwable) {
+                            failure.set(throwable);
+                            terminated.countDown();
+                        }
+
+                        @Override
+                        public void onComplete() {
+                            failure.set(new AssertionError("An unsuccessful response must fail the stream"));
+                            terminated.countDown();
+                        }
+                    });
+
+            assertThat(terminated.await(IO_TIMEOUT.toSeconds(), TimeUnit.SECONDS)).isTrue();
+            assertThat(failure.get()).isInstanceOf(HttpException.class);
+            HttpException exception = (HttpException) failure.get();
+            assertThat(exception.statusCode()).isEqualTo(502);
+            assertThat(exception.getMessage()).isEqualTo("upstream unavailable");
         }
     }
 
@@ -435,8 +529,12 @@ public class Langchain4j_http_client_jdkTest {
 
         private static TestClient create(JdkHttpClientBuilder builder) {
             ExecutorService executor = newDaemonExecutor("langchain4j-jdk-client");
+            java.net.http.HttpClient.Builder httpClientBuilder = builder.httpClientBuilder();
+            if (httpClientBuilder == null) {
+                httpClientBuilder = java.net.http.HttpClient.newBuilder();
+            }
             JdkHttpClient client = builder
-                    .httpClientBuilder(java.net.http.HttpClient.newBuilder().executor(executor))
+                    .httpClientBuilder(httpClientBuilder.executor(executor))
                     .connectTimeout(IO_TIMEOUT)
                     .readTimeout(IO_TIMEOUT)
                     .build();
