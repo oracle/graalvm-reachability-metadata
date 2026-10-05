@@ -82,6 +82,27 @@ public class Langchain4j_http_client_jdkTest {
     }
 
     @Test
+    void synchronousExecutionSupportsDeleteRequests() throws Exception {
+        AtomicReference<RequestSnapshot> received = new AtomicReference<>();
+        try (TestHttpServer server = TestHttpServer.create(exchange -> {
+                    received.set(RequestSnapshot.capture(exchange));
+                    writeResponse(exchange, 200, "deleted", "text/plain");
+                });
+                TestClient client = TestClient.create()) {
+            SuccessfulHttpResponse response = client.client().execute(HttpRequest.builder()
+                    .method(HttpMethod.DELETE)
+                    .url(server.url("/documents/42"))
+                    .build());
+
+            assertThat(response.statusCode()).isEqualTo(200);
+            assertThat(response.body()).isEqualTo("deleted");
+            assertThat(received.get().method()).isEqualTo("DELETE");
+            assertThat(received.get().path()).isEqualTo("/documents/42");
+            assertThat(received.get().body()).isEmpty();
+        }
+    }
+
+    @Test
     void synchronousExecutionSendsPlainAndMultipartRequestBodies() throws Exception {
         List<RequestSnapshot> received = new CopyOnWriteArrayList<>();
         try (TestHttpServer server = TestHttpServer.create(exchange -> {
