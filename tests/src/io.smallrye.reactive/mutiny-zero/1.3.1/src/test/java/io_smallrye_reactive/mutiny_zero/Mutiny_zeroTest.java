@@ -16,11 +16,17 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.Flow;
+import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
@@ -230,6 +236,50 @@ public class Mutiny_zeroTest {
         ignoreTubeReference.get().send("one").send("two").complete();
         ignoreSubscriber.awaitCompletion();
         assertEquals(List.of("one", "two"), ignoreSubscriber.items());
+    }
+
+    @Test
+    public void safelyPublishesItemsSentByConcurrentThreads() throws Exception {
+        int producerCount = 4;
+        int itemsPerProducer = 25;
+        AtomicReference<Tube<Integer>> tubeReference = new AtomicReference<>();
+        RecordingSubscriber<Integer> subscriber = subscribe(new TubeConfiguration(), tubeReference);
+        subscriber.request(Long.MAX_VALUE);
+        CountDownLatch start = new CountDownLatch(1);
+        ExecutorService executor = Executors.newFixedThreadPool(producerCount);
+
+        try {
+            List<Future<?>> producers = new ArrayList<>();
+            for (int producer = 0; producer < producerCount; producer++) {
+                int firstItem = producer * itemsPerProducer;
+                producers.add(executor.submit(() -> {
+                    if (!start.await(TIMEOUT_SECONDS, SECONDS)) {
+                        throw new IllegalStateException("Timed out waiting to send items");
+                    }
+                    for (int offset = 0; offset < itemsPerProducer; offset++) {
+                        tubeReference.get().send(firstItem + offset);
+                    }
+                    return null;
+                }));
+            }
+
+            start.countDown();
+            for (Future<?> producer : producers) {
+                producer.get(TIMEOUT_SECONDS, SECONDS);
+            }
+        } finally {
+            executor.shutdownNow();
+        }
+
+        tubeReference.get().complete();
+        subscriber.awaitCompletion();
+
+        Set<Integer> expected = new HashSet<>();
+        for (int item = 0; item < producerCount * itemsPerProducer; item++) {
+            expected.add(item);
+        }
+        assertEquals(producerCount * itemsPerProducer, subscriber.items().size());
+        assertEquals(expected, new HashSet<>(subscriber.items()));
     }
 
     @Test
