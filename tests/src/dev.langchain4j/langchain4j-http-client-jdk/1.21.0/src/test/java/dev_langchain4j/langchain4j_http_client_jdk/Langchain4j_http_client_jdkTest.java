@@ -15,6 +15,7 @@ import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
 import dev.langchain4j.exception.HttpException;
 import dev.langchain4j.http.client.HttpClient;
+import dev.langchain4j.http.client.HttpClientBuilder;
 import dev.langchain4j.http.client.HttpClientBuilderLoader;
 import dev.langchain4j.http.client.HttpMethod;
 import dev.langchain4j.http.client.HttpRequest;
@@ -154,12 +155,15 @@ public class Langchain4j_http_client_jdkTest {
 
     @Test
     void serviceProviderBuildsClientAndExecutesAsynchronousRequest() throws Exception {
+        HttpClientBuilder loadedBuilder = HttpClientBuilderLoader.loadHttpClientBuilder();
+        assertThat(loadedBuilder).isInstanceOf(JdkHttpClientBuilder.class);
+
         AtomicReference<RequestSnapshot> received = new AtomicReference<>();
         try (TestHttpServer server = TestHttpServer.create(exchange -> {
                     received.set(RequestSnapshot.capture(exchange));
                     writeResponse(exchange, 200, "loaded through spi", "text/plain");
                 });
-                TestClient client = TestClient.createFromServiceProvider()) {
+                TestClient client = TestClient.create((JdkHttpClientBuilder) loadedBuilder)) {
             SuccessfulHttpResponse response = client.client().executeAsync(HttpRequest.builder()
                             .method(HttpMethod.GET)
                             .url(server.url("/spi"))
@@ -427,11 +431,6 @@ public class Langchain4j_http_client_jdkTest {
 
         static TestClient createWithStreamingBuffer(int bufferSize) {
             return create(JdkHttpClient.builder().streamingBufferSize(bufferSize));
-        }
-
-        static TestClient createFromServiceProvider() {
-            JdkHttpClientBuilder builder = (JdkHttpClientBuilder) HttpClientBuilderLoader.loadHttpClientBuilder();
-            return create(builder);
         }
 
         private static TestClient create(JdkHttpClientBuilder builder) {
