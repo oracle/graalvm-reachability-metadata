@@ -831,7 +831,10 @@ states:
 
       Rules:
       - Attempt every listed uncovered path through its shown public entry;
-        never invoke an internal target directly.
+        never invoke an internal target directly. A path marked `public API`
+        ends in a public method the API phase left uncovered: call it directly
+        when a test can obtain its receiver, otherwise drive it like an
+        internal target. §AR-code-coverage-improvement.4.2
       - Never bypass Java visibility by declaring a test in a package that
         exists in the tested library. Use a distinct test-only package. A
         `public` member on a package-private class is not public user-callable
@@ -915,7 +918,7 @@ states:
         inputs; never hand-craft reports.
       - step 7: the stop evaluator rejected the report history - a
         `discovery-report-<n>.json` is missing, out of sequence, or has no
-        integer `summary.deepCovered`; restore the missing report from the
+        integer `summary.rosterCovered`; restore the missing report from the
         run's own history, never by writing a replacement.
 
       Fix only that cause. Measurement re-runs automatically after this state.

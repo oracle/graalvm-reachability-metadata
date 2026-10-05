@@ -140,11 +140,11 @@ class DeepCorrelationTest(unittest.TestCase):
         report, _ = self._run()
         self.assertEqual(
             [entry["id"] for entry in report["uncoveredPaths"]],
-            [RESOLVE_ID, PARSE_ID, LOAD_ID, RELOAD_ID, ORPHAN_ID, JACOCO_ONLY_ID],
+            [RESOLVE_ID, PARSE_ID, LOAD_ID, ORPHAN_ID, RELOAD_ID, JACOCO_ONLY_ID],
         )
         by_id = {entry["id"]: entry for entry in report["uncoveredPaths"]}
         self.assertEqual(by_id[RESOLVE_ID]["stepsRemaining"], 1)
-        self.assertEqual(by_id[LOAD_ID]["stepsRemaining"], 2)
+        self.assertEqual(by_id[LOAD_ID]["joinKind"], "none")
         self.assertEqual(by_id[PARSE_ID]["joinKind"], "public-entry")
         self.assertEqual(by_id[PARSE_ID]["stepsRemaining"], 1)
         self.assertEqual(by_id[ORPHAN_ID]["joinKind"], "none")
@@ -170,7 +170,26 @@ class DeepCorrelationTest(unittest.TestCase):
         report, _ = self._run()
         path = next(entry for entry in report["uncoveredPaths"] if entry["id"] == RESOLVE_ID)
         self.assertEqual(path["jacocoStatus"], "uncovered")
-        self.assertEqual(path["stepsRemaining"], 0)
+        # A sampled frame JaCoCo reports uncovered starts no route; its covered
+        # caller still makes the last call (§AR-code-coverage-deep-navigation.2).
+        self.assertEqual(path["stepsRemaining"], 1)
+        self.assertEqual(path["reachingPath"], [INIT_ID, RESOLVE_ID])
+
+    def test_route_never_crosses_an_uncovered_method(self) -> None:
+        """Only the frontier is routed, and it moves once a pass covers a caller
+        (§AR-code-coverage-deep-navigation.2)."""
+        report, _ = self._run()
+        by_id = {entry["id"]: entry for entry in report["uncoveredPaths"]}
+        self.assertEqual(by_id[LOAD_ID]["joinKind"], "none")
+        self.assertEqual(by_id[RELOAD_ID]["joinKind"], "none")
+        self.assertNotIn(LOAD_ID, report["promptTargetIds"])
+
+        self.jacoco[RESOLVE_ID] = _coverage(self.jacoco[RESOLVE_ID].method_ref, covered=True)
+        moved, _ = self._run()
+        by_id = {entry["id"]: entry for entry in moved["uncoveredPaths"]}
+        self.assertEqual(by_id[LOAD_ID]["reachingPath"], [INIT_ID, RESOLVE_ID, LOAD_ID])
+        self.assertEqual(by_id[RELOAD_ID]["joinKind"], "none")
+        self.assertIn(LOAD_ID, moved["promptTargetIds"])
 
     def test_covered_call_site_is_dispatched_elsewhere_and_never_fork(self) -> None:
         caller = MethodRef("example.Router", "route", (), "void")
@@ -300,11 +319,19 @@ class DeepCorrelationTest(unittest.TestCase):
             count=1,
         )
         profile = SampledProfile(samples=[sample])
+        # Both callers ran, so either may make the last call; only the route
+        # length differs.
         report, _ = report_module.correlate(
             profile,
             graph,
             {"targets": []},
-            {target.canonical_id: _coverage(target)},
+            {
+                target.canonical_id: _coverage(target),
+                **{
+                    ref.canonical_id: _coverage(ref, covered=True)
+                    for ref in (framework, app, bridge)
+                },
+            },
         )
         path = report["uncoveredPaths"][0]
         self.assertEqual(path["stepsRemaining"], 1)

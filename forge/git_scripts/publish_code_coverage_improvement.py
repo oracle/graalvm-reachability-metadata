@@ -38,8 +38,8 @@ TASK_TYPE = "code-coverage-improvement"
 MAX_COMMIT_SUBJECT_LENGTH = 60
 
 #: The finalized evidence the trusted coverage template renders. `runCoverage`
-#: is the whole-run accounting the body is built from; the per-phase blocks ride
-#: along as each phase's own guidance record (§AR-code-coverage-improvement.5.1).
+#: is the whole-run accounting the body is built from, and the only coverage
+#: figures the run records (§AR-code-coverage-improvement.5.1).
 #: Everything else `final-metrics.json` records — per-target rosters, sampled PGO
 #: guidance, the validation command list — stays in the finalization artifacts a
 #: reviewer reads from the run, so the descriptor holds render inputs and nothing else.
@@ -49,8 +49,6 @@ COVERAGE_RENDER_KEYS: tuple[str, ...] = (
     "coordinate",
     "coverageSuitePath",
     "runCoverage",
-    "apiJacoco",
-    "deepJacoco",
     "stopDecisions",
     "needsHumanIntervention",
 )

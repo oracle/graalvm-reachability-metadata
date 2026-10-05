@@ -38,7 +38,9 @@ SCHEMA_VERSION = "1.0.0"
 #: the phase's covered-method count on its own roster.
 PHASE_REPORTS: dict[str, tuple[str, str]] = {
     "api": ("api-cover-report", "covered"),
-    "deep": ("discovery-report", "deepCovered"),
+    # Internal methods plus the public ones the API phase left uncovered
+    # (§AR-code-coverage-improvement.4.2).
+    "deep": ("discovery-report", "rosterCovered"),
     # The benchmark baseline arm's loop, on the frozen JaCoCo method universe
     # (§AR-code-coverage-benchmarking.3, §FS-code-coverage-benchmarking.7).
     "naive": ("naive-cover-report", "covered"),

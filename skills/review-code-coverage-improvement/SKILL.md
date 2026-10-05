@@ -42,9 +42,11 @@ which finalization regenerates from the combined main-JAR-only JaCoCo report.
 gh pr diff <pr> -- 'stats/**/stats.json'
 ```
 
-The workflow's own `apiJacoco` and `deepJacoco` blocks in
-`stats/<group>/<artifact>/<version>/forge-publication.json` are per-phase
-internals. Read them for context, but gate on `libraryCoverage`.
+The workflow's own `runCoverage` block in
+`stats/<group>/<artifact>/<version>/forge-publication.json` records the run's
+checkpoints and phase gains on one method count. Read it for context, but gate
+on `libraryCoverage`. Publications from before October 2026 also carry
+per-phase `apiJacoco` and `deepJacoco` blocks; ignore them.
 
 ### 2. Metadata is added, never removed
 

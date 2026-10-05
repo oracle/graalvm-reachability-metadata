@@ -35,8 +35,13 @@ def _api(statuses: list[str]) -> dict:
     }
 
 
-def _deep(statuses: list[str], samples: int) -> dict:
+def _deep(statuses: list[str], samples: int, carried: dict[str, str] | None = None) -> dict:
+    """A discovery report; `carried` maps each public target the deep phase
+    carries from the API phase to its status in this report."""
     covered = statuses.count("covered")
+    carried_entries = [
+        {"id": method_id, "status": status} for method_id, status in (carried or {}).items()
+    ]
     return {
         "coordinate": COORDINATE,
         "profileKind": "sampled-guidance",
@@ -53,6 +58,8 @@ def _deep(statuses: list[str], samples: int) -> dict:
             {"id": f"example.Internal#m{index}():void", "status": status}
             for index, status in enumerate(statuses)
         ],
+        "publicTargets": carried_entries,
+        "inventory": [{**entry, "kind": "method"} for entry in carried_entries],
     }
 
 
@@ -302,8 +309,8 @@ class FinalizerTests(unittest.TestCase):
     def test_coverage_reports_determine_completion(self) -> None:
         metrics = self._run()
 
-        self.assertEqual(metrics["apiJacoco"]["delta"]["coveragePercentagePoints"], 50)
-        self.assertEqual(metrics["deepJacoco"]["delta"]["coveragePercentagePoints"], 20)
+        self.assertNotIn("apiJacoco", metrics)
+        self.assertNotIn("deepJacoco", metrics)
         self.assertTrue(metrics["pgoGuidance"]["guidanceOnly"])
         self.assertNotIn("coveragePercent", metrics["pgoGuidance"]["final"])
         self.assertEqual(metrics["pgoGuidance"]["final"]["sampleCount"], 84)
@@ -352,7 +359,7 @@ class FinalizerTests(unittest.TestCase):
         loaded = module.load_validated_final_metrics(
             os.path.join(output, "final-metrics.json")
         )
-        self.assertEqual(loaded["schemaVersion"], "1.3.0")
+        self.assertEqual(loaded["schemaVersion"], "2.0.0")
         self.assertTrue(loaded["finalMeasurementArtifacts"]["jacoco"].endswith("jacoco-final.xml"))
         self.assertTrue(loaded["finalMeasurementArtifacts"]["discoveryReport"].endswith("deep-5.json"))
         with open(
@@ -363,8 +370,10 @@ class FinalizerTests(unittest.TestCase):
         self.assertIn("### Failed (1)", summary)
         self.assertIn("Needs human intervention: yes", summary)
         self.assertIn("attempts: 2, last attempted iteration: 4", summary)
-        self.assertIn("## Public API JaCoCo", summary)
-        self.assertIn("## Deep-method JaCoCo", summary)
+        self.assertIn("## JaCoCo coverage of 9 library methods", summary)
+        self.assertIn("- final: 6/9 (66.67%)", summary)
+        self.assertIn("- deep phase gain: +2 methods", summary)
+        self.assertNotIn("Deep-method JaCoCo", summary)
         self.assertIn("## Sampled PGO guidance only", summary)
         self.assertIn("- api: marginal-yield after 5/15 passes", summary)
         self.assertIn("2\u00d7<10 methods after pass 4", summary)
@@ -383,23 +392,21 @@ class FinalizerTests(unittest.TestCase):
             report = _deep(["covered"], 1)
             report["profileKind"] = kind
 
-            snapshot = module._deep_snapshot(report, COORDINATE, "deep final")
-
-            self.assertEqual(snapshot["covered"], 1, kind)
+            module._check_phase_reports({"Deep final": report}, COORDINATE)
 
     def test_rejects_unknown_profile_kind(self) -> None:
         report = _deep(["covered"], 1)
         report["profileKind"] = "guesswork"
 
         with self.assertRaisesRegex(module.FinalizationError, "profileKind"):
-            module._deep_snapshot(report, COORDINATE, "deep final")
+            module._check_phase_reports({"Deep final": report}, COORDINATE)
 
     def test_rejects_coordinate_mismatch(self) -> None:
         report = _api(["covered"])
         report["coordinate"] = "com.example:other:1.0.0"
 
         with self.assertRaisesRegex(module.FinalizationError, "expected"):
-            module._api_snapshot(report, COORDINATE, "API baseline")
+            module._check_phase_reports({"API baseline": report}, COORDINATE)
 
     def test_not_reported_api_target_can_complete(self) -> None:
         completed = module._completed_transitions(
