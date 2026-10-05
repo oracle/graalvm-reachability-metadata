@@ -59,6 +59,24 @@ public class MutinyZeroTest {
     }
 
     @Test
+    void emitsIterableItemsOnlyInResponseToDemandAndStopsAfterCancellation() {
+        ProbeSubscriber<Integer> subscriber = new ProbeSubscriber<>();
+        ZeroPublisher.fromIterable(List.of(1, 2, 3, 4)).subscribe(subscriber);
+
+        assertThat(subscriber.items()).isEmpty();
+
+        subscriber.request(2);
+        assertThat(subscriber.items()).containsExactly(1, 2);
+
+        subscriber.request(1);
+        assertThat(subscriber.items()).containsExactly(1, 2, 3);
+
+        subscriber.cancel();
+        subscriber.request(1);
+        assertThat(subscriber.items()).containsExactly(1, 2, 3);
+    }
+
+    @Test
     void bridgesPublishersAndCompletionStages() throws Exception {
         Flow.Publisher<String> publisher = ZeroPublisher.fromCompletionStage(
                 () -> CompletableFuture.completedFuture("ready"));
