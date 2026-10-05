@@ -12,6 +12,7 @@ import org.hibernate.boot.model.relational.AbstractAuxiliaryDatabaseObject;
 import org.hibernate.boot.model.relational.SqlStringGenerationContext;
 import org.hibernate.boot.registry.StandardServiceRegistry;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
+import org.hibernate.cfg.AvailableSettings;
 import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayInputStream;
@@ -34,7 +35,9 @@ public class AuxiliaryDatabaseObjectBinderTest {
 
     @Test
     public void instantiatesACustomAuxiliaryObjectFromHbmXml() {
-        StandardServiceRegistry registry = new StandardServiceRegistryBuilder().build();
+        StandardServiceRegistry registry = new StandardServiceRegistryBuilder()
+                .applySetting(AvailableSettings.DIALECT, "org.hibernate.dialect.H2Dialect")
+                .build();
         try {
             Metadata metadata = new MetadataSources(registry)
                     .addInputStream(new ByteArrayInputStream(AUXILIARY_MAPPING.getBytes(StandardCharsets.UTF_8)))

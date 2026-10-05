@@ -10,6 +10,7 @@ import org.hibernate.boot.Metadata;
 import org.hibernate.boot.MetadataSources;
 import org.hibernate.boot.registry.StandardServiceRegistry;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
+import org.hibernate.cfg.AvailableSettings;
 import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayInputStream;
@@ -45,7 +46,9 @@ public class JPAXMLOverriddenAnnotationReaderTest {
 
     @Test
     public void mapsFieldAndPropertyAccessEntitiesFromJpaXml() {
-        StandardServiceRegistry registry = new StandardServiceRegistryBuilder().build();
+        StandardServiceRegistry registry = new StandardServiceRegistryBuilder()
+                .applySetting(AvailableSettings.DIALECT, "org.hibernate.dialect.H2Dialect")
+                .build();
         try {
             Metadata metadata = new MetadataSources(registry)
                     .addInputStream(new ByteArrayInputStream(ORM_MAPPING.getBytes(StandardCharsets.UTF_8)))
