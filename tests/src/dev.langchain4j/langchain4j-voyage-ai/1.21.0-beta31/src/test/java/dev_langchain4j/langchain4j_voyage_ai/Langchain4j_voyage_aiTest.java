@@ -14,16 +14,21 @@ import dev.langchain4j.data.embedding.Embedding;
 import dev.langchain4j.data.message.ImageContent;
 import dev.langchain4j.data.message.TextContent;
 import dev.langchain4j.data.segment.TextSegment;
+import dev.langchain4j.model.embedding.request.EmbeddingInputType;
 import dev.langchain4j.model.embedding.request.EmbeddingRequest;
 import dev.langchain4j.model.embedding.response.EmbeddingResponse;
 import dev.langchain4j.model.output.Response;
 import dev.langchain4j.model.voyageai.VoyageAiEmbeddingModel;
+import dev.langchain4j.model.voyageai.VoyageAiEmbeddingModelName;
+import dev.langchain4j.model.voyageai.VoyageAiEmbeddingRequestParameters;
 import dev.langchain4j.model.voyageai.VoyageAiScoringModel;
+import dev.langchain4j.model.voyageai.VoyageAiScoringModelName;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -64,6 +69,69 @@ public class Langchain4j_voyage_aiTest {
             assertThat(requestBodies).hasSize(2);
             assertThat(requestBodies.get(0)).contains(MODEL_NAME, "first voyage input");
             assertThat(requestBodies.get(1)).contains(MODEL_NAME, "first voyage input", "second voyage input");
+        }
+    }
+
+    @Test
+    @Timeout(55)
+    void embedsBase64VectorsWithVoyageRequestParameters() throws Exception {
+        try (VoyageServer server = VoyageServer.start()) {
+            VoyageAiEmbeddingModel model = VoyageAiEmbeddingModel.builder()
+                    .apiKey("test-api-key")
+                    .modelName(VoyageAiEmbeddingModelName.VOYAGE_3)
+                    .baseUrl(server.baseUrl())
+                    .timeout(HTTP_TIMEOUT)
+                    .maxRetries(0)
+                    .build();
+
+            VoyageAiEmbeddingRequestParameters parameters = VoyageAiEmbeddingRequestParameters.builder()
+                    .inputType(EmbeddingInputType.QUERY)
+                    .truncation(false)
+                    .encodingFormat("base64")
+                    .build();
+            EmbeddingResponse response = model.embed(EmbeddingRequest.builder()
+                    .input("base64 voyage input")
+                    .parameters(parameters)
+                    .build());
+
+            assertThat(response.embeddings()).hasSize(1);
+            assertThat(response.embeddings().get(0).vector()).containsExactly(1.0f, 2.0f, 3.0f);
+            assertThat(response.tokenUsage().totalTokenCount()).isEqualTo(19);
+
+            List<String> requestBodies = server.requestBodies();
+            assertThat(requestBodies).hasSize(1);
+            assertThat(requestBodies.get(0)).contains(
+                    "voyage-3",
+                    "base64 voyage input",
+                    "input_type",
+                    "query",
+                    "truncation",
+                    "false",
+                    "encoding_format",
+                    "base64");
+        }
+    }
+
+    @Test
+    @Timeout(55)
+    void sendsCustomHeadersWithNamedScoringModel() throws Exception {
+        try (VoyageServer server = VoyageServer.start()) {
+            VoyageAiScoringModel model = VoyageAiScoringModel.builder()
+                    .apiKey("test-api-key")
+                    .modelName(VoyageAiScoringModelName.RERANK_1)
+                    .baseUrl(server.baseUrl())
+                    .customHeaders(Map.of("X-Voyage-Test", "custom-header"))
+                    .timeout(HTTP_TIMEOUT)
+                    .maxRetries(0)
+                    .build();
+
+            Response<List<Double>> response = model.scoreAll(
+                    List.of(TextSegment.from("header document one"), TextSegment.from("header document two")),
+                    "header query");
+
+            assertThat(response.content()).containsExactly(0.4, 0.9);
+            assertThat(server.requestBodies().get(0)).contains("rerank-1", "header query");
+            assertThat(server.requestHeaderValues()).containsExactly("custom-header");
         }
     }
 
@@ -125,6 +193,7 @@ public class Langchain4j_voyage_aiTest {
         private final HttpServer server;
         private final ExecutorService executor;
         private final CopyOnWriteArrayList<String> requestBodies = new CopyOnWriteArrayList<>();
+        private final CopyOnWriteArrayList<String> requestHeaderValues = new CopyOnWriteArrayList<>();
 
         private VoyageServer(HttpServer server, ExecutorService executor) {
             this.server = server;
@@ -149,16 +218,25 @@ public class Langchain4j_voyage_aiTest {
             return List.copyOf(requestBodies);
         }
 
+        List<String> requestHeaderValues() {
+            return List.copyOf(requestHeaderValues);
+        }
+
         private void handle(HttpExchange exchange) throws IOException {
             try (exchange) {
                 String path = exchange.getRequestURI().getPath();
                 String requestBody = new String(exchange.getRequestBody().readAllBytes(), StandardCharsets.UTF_8);
                 requestBodies.add(requestBody);
+                requestHeaderValues.add(exchange.getRequestHeaders().getFirst("X-Voyage-Test"));
                 String responseBody;
                 if ("/embeddings".equals(path) && "POST".equals(exchange.getRequestMethod())) {
-                    responseBody = requestBody.contains("second voyage input")
-                            ? batchEmbeddingResponse()
-                            : singleEmbeddingResponse();
+                    if (requestBody.contains("second voyage input")) {
+                        responseBody = batchEmbeddingResponse();
+                    } else if (requestBody.contains("encoding_format")) {
+                        responseBody = base64EmbeddingResponse();
+                    } else {
+                        responseBody = singleEmbeddingResponse();
+                    }
                 } else if ("/multimodalembeddings".equals(path) && "POST".equals(exchange.getRequestMethod())) {
                     responseBody = multimodalEmbeddingResponse();
                 } else if ("/rerank".equals(path) && "POST".equals(exchange.getRequestMethod())) {
@@ -196,6 +274,17 @@ public class Langchain4j_voyage_aiTest {
                       ],
                       "model": "voyage-test-model",
                       "usage": {"total_tokens": 11}
+                    }
+                    """.trim();
+        }
+
+        private static String base64EmbeddingResponse() {
+            return """
+                    {
+                      "object": "list",
+                      "data": [{"object": "embedding", "embedding": "AACAPwAAAEAAAEBA", "index": 0}],
+                      "model": "voyage-3",
+                      "usage": {"total_tokens": 19}
                     }
                     """.trim();
         }
