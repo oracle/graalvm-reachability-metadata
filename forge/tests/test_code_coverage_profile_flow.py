@@ -146,7 +146,7 @@ class ExtractorControlFlowTests(unittest.TestCase):
         (condition,) = flow.branches
         body_bci: int = next(bci for bci, line in lines if line == 34)
         reaching: list[bool] = [
-            flow.reaches(successor, body_bci, condition.bci) for successor in condition.successors
+            flow.reaches(successor, body_bci, (condition.bci,)) for successor in condition.successors
         ]
         self.assertEqual(sorted(reaching), [False, True])
 
@@ -157,7 +157,7 @@ class ExtractorControlFlowTests(unittest.TestCase):
         (condition,) = flow.branches
         handler_bci: int = next(bci for bci, line in lines if line == 45)
         for successor in condition.successors:
-            self.assertTrue(flow.reaches(successor, handler_bci, condition.bci))
+            self.assertTrue(flow.reaches(successor, handler_bci, (condition.bci,)))
 
     def test_straight_line_methods_have_no_row(self) -> None:
         self.assertNotIn(f"{_OWNER}#straight():int", self._flows)
@@ -176,13 +176,13 @@ class ReachabilityTests(unittest.TestCase):
     def test_back_edge_into_the_branch_block_reaches_code_before_the_branch(self) -> None:
         # do { target(); } while (cond); target at bci 2, the branch at bci 6.
         flow: MethodFlow = _flow([(6, (0, 9))], {0: (0, 9), 9: ()})
-        self.assertTrue(flow.reaches(0, 2, 6))
-        self.assertFalse(flow.reaches(9, 2, 6))
+        self.assertTrue(flow.reaches(0, 2, (6,)))
+        self.assertFalse(flow.reaches(9, 2, (6,)))
 
     def test_block_lookup_before_the_first_block_is_absent(self) -> None:
         flow: MethodFlow = _flow([(2, (3, 5))], {1: (3, 5), 3: (), 5: ()})
         self.assertIsNone(flow.block_of(0))
-        self.assertFalse(flow.reaches(0, 3, 2))
+        self.assertFalse(flow.reaches(0, 3, (2,)))
 
 
 class ControlFlowForkTests(unittest.TestCase):
@@ -262,6 +262,39 @@ class ControlFlowForkTests(unittest.TestCase):
         self.jacoco_lines["example/Router.java"][3] = JacocoLineCoverage(mi=2, ci=3, mb=1, cb=1)
         fork: dict = self._classify()["fork"]
         self.assertEqual((fork["line"], fork["evidence"]), (3, "control-flow"))
+
+    def test_a_loop_does_not_re_enter_an_or_condition_around_its_barrier(self) -> None:
+        # h2 `Tokenizer.tokenize`: a loop headed at bci 0 holds, on line 2,
+        # `if (c2 == 'X' || c2 == 'x') { readHexNumber(); continue; }`. Block 3
+        # tests 'X', block 7 tests 'x', both jump to the call block 10, and the
+        # else side at 20 loops back through block 3, which a one-block barrier
+        # around block 7 lets it pass.
+        self.flow = _flow(
+            [(1, (3, 30)), (6, (7, 10)), (9, (10, 20))],
+            {0: (3, 30), 3: (7, 10), 7: (10, 20), 10: (0,), 20: (0,), 30: ()},
+        )
+        self.lines = {self.CALLER.canonical_id: ((0, 1), (3, 2), (10, 3), (20, 4), (30, 5))}
+        self.jacoco_lines["example/Router.java"].update({
+            1: JacocoLineCoverage(mi=0, ci=3, mb=0, cb=2),
+            2: JacocoLineCoverage(mi=0, ci=6, mb=2, cb=2),
+            5: JacocoLineCoverage(mi=0, ci=1, mb=0, cb=0),
+        })
+        counters = InstrumentedCounters(branches={
+            (self.CALLER.canonical_id, 6): {7: 54, 10: 0},
+            (self.CALLER.canonical_id, 9): {10: 0, 20: 54},
+        })
+        classification: dict = self._classify(counters)
+        self.assertEqual(classification["kind"], "fork-not-taken")
+        fork: dict = classification["fork"]
+        self.assertEqual((fork["line"], fork["evidence"]), (2, "control-flow"))
+        self.assertEqual(
+            [
+                [(successor["line"], successor["count"], successor["reachesTarget"])
+                 for successor in branch["successors"]]
+                for branch in fork["branches"]
+            ],
+            [[(2, 54, False), (3, 0, True)], [(3, 0, True), (4, 54, False)]],
+        )
 
 
 class ForkRenderingTests(unittest.TestCase):

@@ -175,6 +175,7 @@ def _branch_to_json(
         invoke_bci: int,
         lines: tuple[tuple[int, int], ...],
         counts: dict[int, int] | None,
+        barrier_bcis: tuple[int, ...],
 ) -> dict:
     """One branch with each successor's landing line, count, and target reach."""
     return {
@@ -186,7 +187,7 @@ def _branch_to_json(
                 "bci": successor,
                 "line": line_at(lines, successor),
                 "count": counts.get(successor) if counts is not None else None,
-                "reachesTarget": flow.reaches(successor, invoke_bci, branch.bci),
+                "reachesTarget": flow.reaches(successor, invoke_bci, barrier_bcis),
             }
             for successor in branch.reachable_successors
         ],
@@ -232,6 +233,13 @@ def _controlling_fork(
     if flow is None or not lines:
         return None
     for record in candidates:
+        line_branches: list[Branch] = [
+            branch for branch in flow.branches
+            if not branch.plumbing and line_at(lines, branch.bci) == record[0]
+        ]
+        # Every branch on the line bars the walk, not only the one judged
+        # (§AR-code-coverage-deep-navigation.3.2).
+        barrier_bcis: tuple[int, ...] = tuple(branch.bci for branch in line_branches)
         branches: list[dict] = [
             _branch_to_json(
                 branch,
@@ -242,12 +250,11 @@ def _controlling_fork(
                     evidence.counters.branches.get((caller.canonical_id, branch.bci))
                     if evidence.counters is not None else None
                 ),
+                barrier_bcis,
             )
-            for branch in flow.branches
-            if not branch.plumbing
-            and line_at(lines, branch.bci) == record[0]
+            for branch in line_branches
             # On the invoking line only a branch before the call can decide it.
-            and (record[0] != target_line or branch.bci < invoke_bci)
+            if record[0] != target_line or branch.bci < invoke_bci
         ]
         if any(_controls(branch) for branch in branches):
             return record, branches

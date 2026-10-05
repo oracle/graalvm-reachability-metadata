@@ -14,6 +14,7 @@ from __future__ import annotations
 
 import bisect
 import csv
+from collections.abc import Iterable
 from dataclasses import dataclass
 
 from utility_scripts.code_coverage_profile_inputs import ProfileFormatError
@@ -50,15 +51,17 @@ class MethodFlow:
         index: int = bisect.bisect_right(self.block_starts, bci) - 1
         return self.block_starts[index] if index >= 0 else None
 
-    def reaches(self, start_bci: int, target_bci: int, branch_bci: int) -> bool:
+    def reaches(self, start_bci: int, target_bci: int, barrier_bcis: Iterable[int]) -> bool:
         """Whether control entering at `start_bci` can reach `target_bci`.
 
-        The walk never passes back through the branch's own block: a successor
-        that loops to the branch would otherwise reach everything the branch
-        reaches, and a loop header would control nothing.
+        The walk never passes back through the block of any of `barrier_bcis`,
+        the fork line's branches: a successor that loops to the line would
+        otherwise reach everything the line reaches, so a loop header would
+        control nothing, and `a || b`, one block per condition, would let a
+        loop re-enter through the other one (§AR-code-coverage-deep-navigation.3.2).
         """
         target_block: int | None = self.block_of(target_bci)
-        barrier: int | None = self.block_of(branch_bci)
+        barriers: set[int | None] = {self.block_of(bci) for bci in barrier_bcis}
         start: int | None = self.block_of(start_bci)
         if target_block is None or start is None:
             return False
@@ -71,7 +74,7 @@ class MethodFlow:
             visited.add(block)
             if block == target_block:
                 return True
-            if block == barrier:
+            if block in barriers:
                 continue
             pending.extend(self.block_successors.get(block, ()))
         return False
