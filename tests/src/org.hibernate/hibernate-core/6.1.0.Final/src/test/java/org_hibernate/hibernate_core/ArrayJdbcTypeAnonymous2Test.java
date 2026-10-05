@@ -30,7 +30,8 @@ public class ArrayJdbcTypeAnonymous2Test {
                 .setProperty(AvailableSettings.DRIVER, "org.h2.Driver")
                 .setProperty(AvailableSettings.DIALECT, "org.hibernate.dialect.H2Dialect")
                 .setProperty(AvailableSettings.HBM2DDL_AUTO, "create-drop")
-                .setProperty(AvailableSettings.JAKARTA_VALIDATION_MODE, "none");
+                .setProperty(AvailableSettings.JAKARTA_VALIDATION_MODE, "none")
+                .setProperty(AvailableSettings.STATIC_METAMODEL_POPULATION, "disabled");
 
         try (SessionFactory factory = configuration.buildSessionFactory()) {
             Long id;
