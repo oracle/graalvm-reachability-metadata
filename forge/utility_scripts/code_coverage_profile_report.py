@@ -65,7 +65,6 @@ from utility_scripts.code_coverage_profile_history import (
     next_attempt_counts,
     previous_report,
     previous_target_states,
-    progress_since,
 )
 from utility_scripts.code_coverage_profile_inputs import (
     INSTRUMENTED_PROFILE_KIND,
@@ -213,8 +212,11 @@ def correlate(
         and not record.target_state.terminal
         and is_synthetic_method(record.target_ref)
     )
+    # Only a route from a sampled frame is prompted; public-entry routes stay
+    # ranked in the JSON (§AR-code-coverage-deep-navigation.2).
     prompt_records: list[NearCallRecord] = sorted(
-        actionable_records, key=prompt_selection_key,
+        (record for record in actionable_records if record.join_kind == "sampled"),
+        key=prompt_selection_key,
     )[:effective_limit]
     uncovered_json: list[dict] = [
         record_to_json(
@@ -386,7 +388,7 @@ def generate_report(
     with open(json_path, "w", encoding="utf-8") as json_file:
         json.dump(report, json_file, indent=2)
         json_file.write("\n")
-    write_markdown(report, prompt_records, graph, coordinate, iteration, progress_since(previous, report), md_path)
+    write_markdown(report, prompt_records, graph, coordinate, iteration, md_path)
     write_lcov(profile, graph, jacoco_methods, lcov_path)
     return report
 

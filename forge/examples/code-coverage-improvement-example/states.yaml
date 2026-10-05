@@ -164,8 +164,7 @@ states:
       # A longer list only dilutes one cover pass; keep the top 200 targets.
       prompt_targets = uncovered[:200]
       for entry in prompt_targets:
-          hint = entry.get("behaviorHint", "")
-          lines.append(f"- `{entry['id']}`" + (f" - {hint}" if hint else ""))
+          lines.append(f"- `{entry['id']}`")
       (prompts / "api-cover-prompt.md").write_text("\n".join(lines) + "\n")
       print(f"[api-measure] wrote prompt with {len(prompt_targets)} targets", flush=True)
       sys.exit(10)

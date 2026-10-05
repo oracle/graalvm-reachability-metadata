@@ -32,6 +32,7 @@ from tests.code_coverage_profile_support import (
     LOAD_ID,
     RESOLVE_ID,
     _coverage,
+    _sampled_at,
 )
 
 
@@ -238,7 +239,7 @@ class SyntheticLambdaTest(unittest.TestCase):
             for ref in self.graph.methods.values()
         }
         return report_module.correlate(
-            routes_module.SampledProfile(),
+            _sampled_at(7, self.graph.methods[7]),
             self.graph,
             {"targets": [{"id": self.INIT, "kind": "method"}]},
             jacoco,
@@ -299,7 +300,7 @@ class SyntheticLambdaTest(unittest.TestCase):
     def test_markdown_states_the_closure_and_the_thread_hand_off(self) -> None:
         markdown_path = os.path.join(self.directory, "deep.md")
         render_module.write_markdown(
-            self.report, self.records, self.graph, "example:library:1", 0, None, markdown_path
+            self.report, self.records, self.graph, "example:library:1", 0, markdown_path
         )
         with open(markdown_path, encoding="utf-8") as handle:
             markdown = handle.read()
@@ -308,7 +309,7 @@ class SyntheticLambdaTest(unittest.TestCase):
 
         report, records = self._correlate({self.INIT, self.DRAIN, self.RELOAD, self.BODY})
         render_module.write_markdown(
-            report, records, self.graph, "example:library:1", 0, None, markdown_path
+            report, records, self.graph, "example:library:1", 0, markdown_path
         )
         with open(markdown_path, encoding="utf-8") as handle:
             markdown = handle.read()
@@ -398,7 +399,7 @@ class FactoryStubTranslationTest(unittest.TestCase):
             },
         }
         self.report, _ = report_module.correlate(
-            routes_module.SampledProfile(),
+            _sampled_at(1, self.CALLER),
             self.graph,
             {"targets": [{"id": self.CALLER.canonical_id, "kind": "method"}]},
             jacoco,
