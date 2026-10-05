@@ -26,8 +26,10 @@ import dev.langchain4j.http.client.sse.HttpStreamingEvent;
 import dev.langchain4j.http.client.sse.ServerSentEvent;
 import dev.langchain4j.http.client.sse.ServerSentEventContext;
 import dev.langchain4j.http.client.sse.ServerSentEventListener;
+import dev.langchain4j.http.client.sse.ServerSentEventParser;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.UncheckedIOException;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.time.Duration;
@@ -214,6 +216,56 @@ public class Langchain4j_http_client_jdkTest {
             assertThat(context.get()).isNotNull();
             assertThat(received).containsExactly(
                     new ServerSentEvent("message", "first\nsecond"), new ServerSentEvent(null, "done"));
+        }
+    }
+
+    @Test
+    void callbackExecutionUsesCustomServerSentEventParser() throws Exception {
+        try (TestHttpServer server = TestHttpServer.create(exchange ->
+                        writeResponse(exchange, 200, "custom payload", "text/event-stream"));
+                TestClient client = TestClient.create()) {
+            ServerSentEventParser parser = (input, listener) -> {
+                try {
+                    listener.onEvent(new ServerSentEvent("custom", new String(input.readAllBytes(), UTF_8)));
+                } catch (IOException exception) {
+                    throw new UncheckedIOException(exception);
+                }
+            };
+            AtomicReference<SuccessfulHttpResponse> opened = new AtomicReference<>();
+            List<ServerSentEvent> received = new CopyOnWriteArrayList<>();
+            AtomicReference<Throwable> failure = new AtomicReference<>();
+            CountDownLatch closed = new CountDownLatch(1);
+
+            client.client().execute(
+                    HttpRequest.builder().method(HttpMethod.GET).url(server.url("/custom-events")).build(),
+                    parser,
+                    new ServerSentEventListener() {
+                        @Override
+                        public void onOpen(SuccessfulHttpResponse response) {
+                            opened.set(response);
+                        }
+
+                        @Override
+                        public void onEvent(ServerSentEvent event) {
+                            received.add(event);
+                        }
+
+                        @Override
+                        public void onError(Throwable throwable) {
+                            failure.set(throwable);
+                            closed.countDown();
+                        }
+
+                        @Override
+                        public void onClose() {
+                            closed.countDown();
+                        }
+                    });
+
+            assertThat(closed.await(IO_TIMEOUT.toSeconds(), TimeUnit.SECONDS)).isTrue();
+            assertThat(failure.get()).isNull();
+            assertThat(opened.get().statusCode()).isEqualTo(200);
+            assertThat(received).containsExactly(new ServerSentEvent("custom", "custom payload"));
         }
     }
 
