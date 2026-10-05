@@ -1,10 +1,10 @@
 {
-  "base_commit": "8fabb60b7d2f8e0925124924a3ce3e84c445b7f9",
-  "branch": "ai/kimeta/improve-coverage-org.hibernate-hibernate-core-6.1.0.Final-chunked-forge-9119-20261002001425992697-c0cd55fc9cc4",
+  "base_commit": "64ac79c9cbbc664ebc3203af3b0caec7596fb514",
+  "branch": "ai/kimeta/improve-coverage-org.hibernate-hibernate-core-6.1.0.Final-chunked-forge-9119-20261005201037092282-12e59c284819",
   "follow_ups": [],
   "forge": {
     "branch": "master",
-    "commit": "8ecf879a89eb6671c5d29625ac976f7dd478b884",
+    "commit": "f1059b843039a8d66cdeaa68ec42b60386c04751",
     "monitored_branch": "origin/master"
   },
   "issue_number": 9119,
@@ -15,133 +15,58 @@
     "version": "6.1.0.Final"
   },
   "local_ci_verification": {
-    "base_commit": "8fabb60b7d2f8e0925124924a3ce3e84c445b7f9",
+    "base_commit": "64ac79c9cbbc664ebc3203af3b0caec7596fb514",
     "commands": [],
     "failure_command": null,
     "failure_gate": null,
-    "final_commit": "ed9c285ef5ef1a46d2681156b87d2a56a58209a2",
+    "final_commit": "303969692e80df39c92b60b90104e7e4b6241769",
     "fixups": [],
-    "human_intervention_required": false,
-    "repo_fix_paths": [],
+    "human_intervention_required": true,
+    "repo_fix_paths": [
+      "metadata/org.hibernate.validator/hibernate-validator/7.0.4.Final/reachability-metadata.json"
+    ],
     "status": "success"
   },
   "local_review": {
-    "changed_paths": [
-      "tests/src/org.hibernate/hibernate-core/6.1.0.Final/src/test/java/org_hibernate/hibernate_core/AbstractHibernateTest.java"
-    ],
-    "decision": "approved",
-    "finding_body": "FS-test-contract.1.2 requires every top-level test class to be public. The contribution modified AbstractHibernateTest.java but left its top-level abstract test class package-private, while newly added tests inherit its JUnit tests.",
-    "finding_title": "Modified top-level test class is not public",
-    "fix_note": "Changed AbstractHibernateTest to public abstract so the modified top-level test class satisfies the test contract. The exact Forge-owned finalization command then completed successfully with a stable publishable tree.",
+    "action": "human-intervention",
+    "changed_paths": [],
+    "decision": "rejected",
+    "finding_body": "FS-contribution-contract.2 limits this library-update contribution to org.hibernate:hibernate-core:6.1.0.Final and its supporting files. The reviewed diff changes metadata/org.hibernate.validator/hibernate-validator/7.0.4.Final/reachability-metadata.json (63 additions and 9 deletions), and .forge-local-review-4068c89f/review-evidence.json records status=success while also recording human_intervention_required=true with that exact path in repo_fix_paths. Restoring or otherwise changing Hibernate Validator would edit another coordinate, which FS-contribution-contract.5.2 forbids as a local repair; sections 5.3 and 5.5 require escalation.\n\nInfrastructure issue: https://github.com/oracle/graalvm-reachability-metadata/issues/10577 (#10577)",
+    "finding_title": "Forge finalization publishes routed foreign metadata in the source contribution",
+    "fix_note": "",
     "model": "gpt-5.6-sol",
-    "review_comment": "Reviewed the full contribution diff and local evidence under the library-update rules and contribution disposition ladder. The change is confined to org.hibernate:hibernate-core:6.1.0.Final, uses only reachability-metadata.json, adds public-API Hibernate coverage without Native Image skips or tolerated failures, and reports 288 covered dynamic-access calls. Because this is a chunked dynamic-access contribution, percentage thresholds are exempt; the required nonzero covered-call gate passes. The available issue evidence records a coverage-improvement request and no specific reporter-requested metadata need. After the repair, the exact Forge finalizer passed all three native lanes, metadata validation, style checks, generated-test validity, and regenerated statistics without further publishable changes.",
-    "session_id": "287526b14a2a4d02"
+    "review_comment": "The target-coordinate tests use public Hibernate APIs, introduce no native-image skips or legacy metadata files, and the resolved chunk statistics improve dynamic-access coverage from 67.2897% (288/428) to 75.4673% (323/428). However, the branch is not scoped to the target coordinate: it also changes Hibernate Validator metadata. The local gate confirms this with human_intervention_required=true and lists metadata/org.hibernate.validator/hibernate-validator/7.0.4.Final/reachability-metadata.json in repo_fix_paths. Under FS-contribution-contract.2 and the disposition in 5.2-5.3, another coordinate cannot be repaired in this contribution, so maintainer intervention is required.\n\nInfrastructure issue: https://github.com/oracle/graalvm-reachability-metadata/issues/10577 (#10577)",
+    "session_id": "1ddc5bfb8eb04a18"
   },
   "metrics": {
     "agent": "pi",
-    "model": "gpt-5.6-luna",
+    "model": "gpt-5.6-sol",
     "path": "stats/org.hibernate/hibernate-core/6.1.0.Final/execution-metrics.json",
     "summary": {
-      "cached_input_tokens_used": 6307328,
-      "code_coverage_percent": 21.87,
-      "cost_usd": 1.3808,
-      "generated_loc": 4763,
-      "input_tokens_used": 499726,
-      "iterations": 12,
-      "metadata_entries": 934,
-      "output_tokens_used": 41730,
-      "test_only_metadata_entries": 521,
-      "tested_library_loc": 35365
+      "cached_input_tokens_used": 15592448,
+      "code_coverage_percent": 24.19,
+      "cost_usd": 14.1863,
+      "generated_loc": 5475,
+      "input_tokens_used": 813731,
+      "iterations": 18,
+      "metadata_entries": 1085,
+      "output_tokens_used": 77379,
+      "test_only_metadata_entries": 530,
+      "tested_library_loc": 39122
     },
-    "timestamp": "2026-10-02T00:14:25.992697Z"
+    "timestamp": "2026-10-05T20:10:37.092282Z"
   },
   "modifiers": {
     "chunk_final": false,
     "chunked_dynamic_access": true,
-    "human_intervention": false
+    "human_intervention": true
   },
   "producer": "kimeta",
-  "publication_id": "forge-9119-20261002001425992697-c0cd55fc9cc4",
+  "publication_id": "forge-9119-20261005201037092282-12e59c284819",
   "render": {
     "alias_split": null,
-    "baseline_metadata_entries": 842,
+    "baseline_metadata_entries": 934,
     "baseline_stats": {
-      "dynamicAccess": {
-        "breakdown": {
-          "reflection": {
-            "coverageRatio": 0.487685,
-            "coveredCalls": 198,
-            "totalCalls": 406
-          },
-          "resources": {
-            "coverageRatio": 0.909091,
-            "coveredCalls": 20,
-            "totalCalls": 22
-          }
-        },
-        "coverageRatio": 0.509346,
-        "coveredCalls": 218,
-        "totalCalls": 428
-      },
-      "libraryCoverage": {
-        "instruction": {
-          "covered": 135536,
-          "missed": 515075,
-          "ratio": 0.208321,
-          "total": 650611
-        },
-        "line": {
-          "covered": 33845,
-          "missed": 127882,
-          "ratio": 0.209272,
-          "total": 161727
-        },
-        "method": {
-          "covered": 8946,
-          "missed": 34989,
-          "ratio": 0.203619,
-          "total": 43935
-        }
-      },
-      "version": "6.1.0.Final"
-    },
-    "baseline_test_only_entries": 498,
-    "current_metadata_entries": 934,
-    "current_test_only_entries": 521,
-    "dynamic_access": {
-      "classThreshold": 15,
-      "completedClasses": [
-        "org.hibernate.dialect.HSQLDialect",
-        "org.hibernate.engine.internal.AbstractEntityEntry",
-        "org.hibernate.engine.internal.EntityEntryContext",
-        "org.hibernate.engine.internal.ImmutableEntityEntry",
-        "org.hibernate.engine.internal.MutableEntityEntry",
-        "org.hibernate.engine.spi.CollectionEntry",
-        "org.hibernate.engine.spi.CollectionKey",
-        "org.hibernate.engine.spi.EntityKey",
-        "org.hibernate.internal.AbstractSharedSessionContract",
-        "org.hibernate.internal.SessionImpl",
-        "org.hibernate.query.hql.internal.BasicDotIdentifierConsumer$BaseLocalSequencePart",
-        "org.hibernate.query.sqm.tree.expression.SqmFieldLiteral",
-        "org.hibernate.cfg.AnnotationBinder"
-      ],
-      "coordinate": "org.hibernate:hibernate-core:6.1.0.Final",
-      "currentChunkClassCount": 15,
-      "exhaustedClasses": [
-        "org.hibernate.engine.spi.EntityUniqueKey",
-        "org.hibernate.engine.internal.StatefulPersistenceContext"
-      ],
-      "failedClasses": [
-        "org.hibernate.engine.internal.StatefulPersistenceContext"
-      ],
-      "issueNumber": 9119,
-      "latestChunkBranch": "ai/kimeta/improve-coverage-org.hibernate-hibernate-core-6.1.0.Final-chunked-forge-9119-20261002001425992697-c0cd55fc9cc4",
-      "latestChunkCommit": null,
-      "latestChunkPublicationId": "forge-9119-20261002001425992697-c0cd55fc9cc4",
-      "latestChunkPullRequest": null,
-      "skippedClasses": []
-    },
-    "library_stats": {
       "dynamicAccess": {
         "breakdown": {
           "reflection": {
@@ -181,6 +106,100 @@
       },
       "version": "6.1.0.Final"
     },
+    "baseline_test_only_entries": 521,
+    "consumer_split": null,
+    "current_metadata_entries": 1085,
+    "current_test_only_entries": 530,
+    "dynamic_access": {
+      "classThreshold": 15,
+      "completedClasses": [
+        "org.hibernate.dialect.HSQLDialect",
+        "org.hibernate.engine.internal.AbstractEntityEntry",
+        "org.hibernate.engine.internal.EntityEntryContext",
+        "org.hibernate.engine.internal.ImmutableEntityEntry",
+        "org.hibernate.engine.internal.MutableEntityEntry",
+        "org.hibernate.engine.spi.CollectionEntry",
+        "org.hibernate.engine.spi.CollectionKey",
+        "org.hibernate.engine.spi.EntityKey",
+        "org.hibernate.internal.AbstractSharedSessionContract",
+        "org.hibernate.internal.SessionImpl",
+        "org.hibernate.query.hql.internal.BasicDotIdentifierConsumer$BaseLocalSequencePart",
+        "org.hibernate.query.sqm.tree.expression.SqmFieldLiteral",
+        "org.hibernate.cfg.AnnotationBinder",
+        "org.hibernate.boot.model.source.internal.hbm.AuxiliaryDatabaseObjectBinder",
+        "org.hibernate.boot.registry.classloading.internal.ClassLoaderServiceImpl",
+        "org.hibernate.cfg.annotations.reflection.internal.JPAXMLOverriddenAnnotationReader",
+        "org.hibernate.dialect.PostgreSQLIntervalSecondJdbcType$1",
+        "org.hibernate.dialect.PostgreSQLIntervalSecondJdbcType$2",
+        "org.hibernate.engine.jdbc.internal.LobCreatorBuilder",
+        "org.hibernate.internal.util.ReflectHelper",
+        "org.hibernate.mapping.Collection",
+        "org.hibernate.type.descriptor.java.ArrayJavaType",
+        "org.hibernate.engine.jdbc.connections.internal.ConnectionProviderInitiator",
+        "org.hibernate.bytecode.spi.InstrumentedClassLoader",
+        "org.hibernate.engine.transaction.jta.platform.internal.JBossStandAloneJtaPlatform"
+      ],
+      "coordinate": "org.hibernate:hibernate-core:6.1.0.Final",
+      "currentChunkClassCount": 15,
+      "exhaustedClasses": [
+        "org.hibernate.engine.spi.EntityUniqueKey",
+        "org.hibernate.engine.internal.StatefulPersistenceContext",
+        "org.hibernate.bytecode.internal.bytebuddy.BytecodeProviderImpl",
+        "org.hibernate.engine.transaction.jta.platform.internal.WildFlyStandAloneJtaPlatform",
+        "org.hibernate.cfg.beanvalidation.BeanValidationIntegrator"
+      ],
+      "failedClasses": [
+        "org.hibernate.engine.internal.StatefulPersistenceContext",
+        "org.hibernate.engine.transaction.jta.platform.internal.WildFlyStandAloneJtaPlatform",
+        "org.hibernate.cfg.beanvalidation.BeanValidationIntegrator"
+      ],
+      "issueNumber": 9119,
+      "latestChunkBranch": "ai/kimeta/improve-coverage-org.hibernate-hibernate-core-6.1.0.Final-chunked-forge-9119-20261005201037092282-12e59c284819",
+      "latestChunkCommit": null,
+      "latestChunkPublicationId": "forge-9119-20261005201037092282-12e59c284819",
+      "latestChunkPullRequest": null,
+      "skippedClasses": []
+    },
+    "library_stats": {
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 0.746305,
+            "coveredCalls": 303,
+            "totalCalls": 406
+          },
+          "resources": {
+            "coverageRatio": 0.909091,
+            "coveredCalls": 20,
+            "totalCalls": 22
+          }
+        },
+        "coverageRatio": 0.754673,
+        "coveredCalls": 323,
+        "totalCalls": 428
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 156808,
+          "missed": 493803,
+          "ratio": 0.241017,
+          "total": 650611
+        },
+        "line": {
+          "covered": 39122,
+          "missed": 122605,
+          "ratio": 0.241901,
+          "total": 161727
+        },
+        "method": {
+          "covered": 10348,
+          "missed": 33587,
+          "ratio": 0.23553,
+          "total": 43935
+        }
+      },
+      "version": "6.1.0.Final"
+    },
     "library_update_target": {
       "match_type": "tested-version",
       "matched_metadata_version": "6.1.0.Final",
@@ -191,8 +210,8 @@
     }
   },
   "schema_version": 1,
-  "strategy_name": "library_update_optimistic_pi_gpt-5.6-luna",
+  "strategy_name": "library_update_optimistic_pi_gpt-5.6-sol",
   "task_type": "library-update-request",
   "template_type": "library-update-request",
-  "timestamp": "2026-10-02T00:14:25.992697Z"
+  "timestamp": "2026-10-05T20:10:37.092282Z"
 }
