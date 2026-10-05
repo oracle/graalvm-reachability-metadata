@@ -19,3 +19,22 @@ dependencies {
     testRuntimeOnly "org.apache.logging.log4j:log4j-api:2.25.2"
     testRuntimeOnly "commons-logging:commons-logging:1.1.1"
 }
+
+tasks.named("test") {
+    environment "FLYWAY_SCHEMAS", "PUBLIC"
+}
+
+tasks.named("nativeTest") {
+    environment.put("FLYWAY_SCHEMAS", "PUBLIC")
+}
+
+graalvmNative {
+    agent {
+        defaultMode = "conditional"
+        modes {
+            conditional {
+                userCodeFilterPath = "user-code-filter.json"
+            }
+        }
+    }
+}

@@ -8,6 +8,7 @@ package org_flywaydb.flyway_core;
 
 import java.util.Map;
 
+import org.flywaydb.core.api.configuration.ClassicConfiguration;
 import org.flywaydb.core.internal.configuration.TomlUtils;
 import org.flywaydb.core.internal.configuration.models.ConfigurationModel;
 import org.junit.jupiter.api.Test;
@@ -15,6 +16,17 @@ import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class TomlUtilsTest {
+
+    @Test
+    void loadsEnvironmentPropertiesIntoTemporaryEnvironment() {
+        ConfigurationModel configuration = TomlUtils.loadConfigurationFromEnvironment();
+
+        assertThat(configuration.getEnvironments())
+                .containsKey(ClassicConfiguration.TEMP_ENVIRONMENT_NAME);
+        assertThat(configuration.getEnvironments()
+                .get(ClassicConfiguration.TEMP_ENVIRONMENT_NAME)
+                .getSchemas()).containsExactly("PUBLIC");
+    }
 
     @Test
     void convertsCommandLinePropertiesIntoConfigurationModel() {
