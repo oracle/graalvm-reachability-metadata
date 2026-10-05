@@ -20,15 +20,21 @@ public class FileLockTest {
     Path persistenceDirectory;
 
     @Test
-    void filePersistenceAcquiresAndReleasesItsClientLock() throws Exception {
+    void filePersistenceReopensAndReleasesItsClientLock() throws Exception {
         MqttDefaultFilePersistence persistence =
                 new MqttDefaultFilePersistence(persistenceDirectory.toString());
-
-        persistence.open("client-with-file-lock");
         Path clientDirectory = persistenceDirectory.resolve("client-with-file-lock");
-        assertThat(clientDirectory.resolve(".lck")).exists();
 
-        persistence.close();
+        try {
+            persistence.open("client-with-file-lock");
+            assertThat(clientDirectory.resolve(".lck")).exists();
+
+            persistence.open("client-with-file-lock");
+            assertThat(clientDirectory.resolve(".lck")).exists();
+        } finally {
+            persistence.close();
+        }
+
         assertThat(Files.exists(clientDirectory.resolve(".lck"))).isFalse();
     }
 }

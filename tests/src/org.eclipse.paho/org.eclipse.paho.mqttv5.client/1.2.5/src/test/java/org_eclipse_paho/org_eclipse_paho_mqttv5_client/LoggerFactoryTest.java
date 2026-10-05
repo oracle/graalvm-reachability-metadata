@@ -24,7 +24,7 @@ public class LoggerFactoryTest {
             logManager.readConfiguration(new ByteArrayInputStream(configuration));
             assertThat(LoggerFactory.getLoggingProperty("paho.test.logging")).isEqualTo("enabled");
         } finally {
-            logManager.readConfiguration();
+            logManager.readConfiguration(new ByteArrayInputStream(new byte[0]));
         }
     }
 }
