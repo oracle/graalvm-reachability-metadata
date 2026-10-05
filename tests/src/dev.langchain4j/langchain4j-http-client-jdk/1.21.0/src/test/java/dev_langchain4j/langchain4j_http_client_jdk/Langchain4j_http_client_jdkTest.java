@@ -262,6 +262,60 @@ public class Langchain4j_http_client_jdkTest {
         }
     }
 
+    @Test
+    void publisherExecutionBuffersEventsUntilSubscriberRequestsThem() throws Exception {
+        String events = "event: token\n" + "data: one\n\n" + "event: token\n" + "data: two\n\n";
+        CountDownLatch responseWritten = new CountDownLatch(1);
+        try (TestHttpServer server = TestHttpServer.create(exchange -> {
+                    writeResponse(exchange, 200, events, "text/event-stream");
+                    responseWritten.countDown();
+                });
+                TestClient client = TestClient.createWithStreamingBuffer(3)) {
+            List<HttpStreamingEvent> received = new CopyOnWriteArrayList<>();
+            AtomicReference<Throwable> failure = new AtomicReference<>();
+            CountDownLatch completed = new CountDownLatch(1);
+            AtomicReference<Flow.Subscription> subscriptionReference = new AtomicReference<>();
+
+            client.client()
+                    .stream(HttpRequest.builder().method(HttpMethod.GET).url(server.url("/backpressure")).build())
+                    .subscribe(new Flow.Subscriber<>() {
+                        @Override
+                        public void onSubscribe(Flow.Subscription subscription) {
+                            subscriptionReference.set(subscription);
+                        }
+
+                        @Override
+                        public void onNext(HttpStreamingEvent event) {
+                            received.add(event);
+                        }
+
+                        @Override
+                        public void onError(Throwable throwable) {
+                            failure.set(throwable);
+                            completed.countDown();
+                        }
+
+                        @Override
+                        public void onComplete() {
+                            completed.countDown();
+                        }
+                    });
+
+            assertThat(responseWritten.await(IO_TIMEOUT.toSeconds(), TimeUnit.SECONDS)).isTrue();
+            assertThat(received).isEmpty();
+            assertThat(subscriptionReference.get()).isNotNull();
+            subscriptionReference.get().request(3);
+
+            assertThat(completed.await(IO_TIMEOUT.toSeconds(), TimeUnit.SECONDS)).isTrue();
+            assertThat(failure.get()).isNull();
+            assertThat(received).hasSize(3);
+            assertThat(received.get(0)).isInstanceOf(HttpResponseReceived.class);
+            assertThat(((HttpResponseReceived) received.get(0)).response().statusCode()).isEqualTo(200);
+            assertThat(received.subList(1, 3))
+                    .containsExactly(new ServerSentEvent("token", "one"), new ServerSentEvent("token", "two"));
+        }
+    }
+
     private static void writeResponse(HttpExchange exchange, int statusCode, String body, String contentType)
             throws IOException {
         byte[] bytes = body.getBytes(UTF_8);
