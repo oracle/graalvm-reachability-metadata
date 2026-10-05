@@ -27,7 +27,7 @@ import java.util.concurrent.Callable;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class Mqttv5ClientTest {
+public class Mqttv5ClientTest {
     private static final String BROKER = "tcp://localhost:1883";
 
     private static final String CLIENT_ID = "paho" + System.nanoTime();
