@@ -175,8 +175,10 @@ reports with a missed branch and that holds a branch instruction
 **controlling** the target: some of its successors reach the invoking bci and
 some do not. The invoking line itself qualifies when a controlling branch on it
 precedes the invoke, as in a conditional expression. Reachability walks the method's control flow,
-exception edges included, without passing back through the branch, so a loop
-header does not reach everything. A branch whose target-reaching successors all
+exception edges included, without passing back through the block of any
+non-plumbing branch on the fork line, so a loop header does not reach
+everything, nor does a loop re-enter `a || b` through its other condition.
+A branch whose target-reaching successors all
 have positive counts is not why the target was missed, and the search continues
 upward; a line whose branches control nothing is skipped the same way. Without a
 control-flow table for the method, the nearest covered line with a missed branch
