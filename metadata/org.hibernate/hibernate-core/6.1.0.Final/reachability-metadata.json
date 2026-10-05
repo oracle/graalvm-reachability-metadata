@@ -1482,6 +1482,20 @@
     },
     {
       "condition" : {
+        "typeReached" : "org.hibernate.cfg.beanvalidation.BeanValidationIntegrator"
+      },
+      "type" : "org.hibernate.cfg.beanvalidation.TypeSafeActivator",
+      "methods" : [
+        {
+          "name" : "validateSuppliedFactory",
+          "parameterTypes" : [
+            "java.lang.Object"
+          ]
+        }
+      ]
+    },
+    {
+      "condition" : {
         "typeReached" : "org.hibernate.engine.internal.StatefulPersistenceContext"
       },
       "type" : "org.hibernate.collection.spi.AbstractPersistentCollection",
@@ -3653,7 +3667,7 @@
     },
     {
       "condition" : {
-        "typeReached" : "org.hibernate.jpa.boot.internal.EntityManagerFactoryBuilderImpl"
+        "typeReached" : "org.hibernate.persister.internal.PersisterFactoryImpl"
       },
       "type" : "org.hibernate.persister.collection.OneToManyPersister",
       "methods" : [
@@ -3666,12 +3680,6 @@
           ]
         }
       ]
-    },
-    {
-      "condition" : {
-        "typeReached" : "org.hibernate.persister.internal.PersisterFactoryImpl"
-      },
-      "type" : "org.hibernate.persister.collection.OneToManyPersister"
     },
     {
       "condition" : {
@@ -4376,13 +4384,64 @@
       "condition" : {
         "typeReached" : "org.hibernate.dialect.PostgreSQLIntervalSecondJdbcType"
       },
-      "type" : "org.postgresql.util.PGInterval"
+      "type" : "org.postgresql.util.PGInterval",
+      "methods" : [
+        {
+          "name" : "<init>",
+          "parameterTypes" : [
+            "int",
+            "int",
+            "int",
+            "int",
+            "int",
+            "double"
+          ]
+        },
+        {
+          "name" : "getDays",
+          "parameterTypes" : [ ]
+        },
+        {
+          "name" : "getHours",
+          "parameterTypes" : [ ]
+        },
+        {
+          "name" : "getMicroSeconds",
+          "parameterTypes" : [ ]
+        },
+        {
+          "name" : "getMinutes",
+          "parameterTypes" : [ ]
+        },
+        {
+          "name" : "getWholeSeconds",
+          "parameterTypes" : [ ]
+        }
+      ]
     },
     {
       "condition" : {
         "typeReached" : "org.hibernate.dialect.PostgreSQLPGObjectJdbcType"
       },
-      "type" : "org.postgresql.util.PGobject"
+      "type" : "org.postgresql.util.PGobject",
+      "methods" : [
+        {
+          "name" : "<init>",
+          "parameterTypes" : [ ]
+        },
+        {
+          "name" : "setType",
+          "parameterTypes" : [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name" : "setValue",
+          "parameterTypes" : [
+            "java.lang.String"
+          ]
+        }
+      ]
     },
     {
       "condition" : {

@@ -30,6 +30,7 @@ public class AnnotationBinderTest {
                 .setProperty(AvailableSettings.DRIVER, "org.h2.Driver")
                 .setProperty(AvailableSettings.DIALECT, H2Dialect.class.getName())
                 .setProperty(AvailableSettings.HBM2DDL_AUTO, "create-drop")
+                .setProperty(AvailableSettings.JAKARTA_VALIDATION_MODE, "none")
                 .buildSessionFactory();
                 Session session = factory.openSession()) {
             session.beginTransaction();

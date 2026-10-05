@@ -34,7 +34,8 @@ public class BeanValidationIntegratorTest {
                     .setProperty(AvailableSettings.URL, "jdbc:h2:mem:bean-validation")
                     .setProperty(AvailableSettings.DRIVER, "org.h2.Driver")
                     .setProperty(AvailableSettings.DIALECT, "org.hibernate.dialect.H2Dialect")
-                    .setProperty(AvailableSettings.HBM2DDL_AUTO, "create-drop");
+                    .setProperty(AvailableSettings.HBM2DDL_AUTO, "create-drop")
+                    .setProperty(AvailableSettings.JAKARTA_VALIDATION_MODE, "callback");
             configuration.getProperties().put(AvailableSettings.JAKARTA_VALIDATION_FACTORY, validatorFactory);
 
             try (SessionFactory sessionFactory = configuration.buildSessionFactory();

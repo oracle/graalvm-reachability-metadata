@@ -35,8 +35,8 @@ public class EventListenerGroupImplTest {
             FirstListener first = new FirstListener();
             SecondListener second = new SecondListener();
 
-            group.prependListener(second);
             group.appendListener(first);
+            group.prependListener(second);
 
             List<PreLoadEventListener> listeners = new ArrayList<>();
             for (PreLoadEventListener listener : group.listeners()) {

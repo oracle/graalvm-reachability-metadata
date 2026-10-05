@@ -70,7 +70,15 @@ public class ReflectHelperTest {
             return true;
         }
 
+        public static boolean isActive() {
+            return true;
+        }
+
         public boolean isReady() {
+            return true;
+        }
+
+        public static boolean getReady() {
             return true;
         }
     }
