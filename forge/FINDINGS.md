@@ -3,6 +3,12 @@
 Rendered by Forge from the pre-push branch review of §FS-local-branch-review.
 Newest entry first; every non-approval is recorded, including one a repair later cleared.
 
+## 2026-10-05 — org.flywaydb:flyway-database-postgresql:10.10.0 (#10555)
+
+**Test-only reachability metadata keys were not deterministically ordered**
+
+The initial test-only reachability-metadata.json placed the top-level resources key before reflection instead of using the repository's normalized JSON key ordering. Forge finalization detected this as a publishable-tree change and reordered the keys without changing their entries or semantics.
+
 ## 2026-10-04 — io.lettuce:lettuce-core:7.0.0.RELEASE (#10430)
 
 **Compile repair removed meaningful runtime coverage**

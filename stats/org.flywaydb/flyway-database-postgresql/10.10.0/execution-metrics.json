@@ -1,0 +1,87 @@
+{
+  "improve_library_coverage:2026-10-05": {
+    "timestamp": "2026-10-05T20:22:48.083242Z",
+    "library": "org.flywaydb:flyway-database-postgresql:10.10.0",
+    "starting_commit": "c4143652c459a62b9a82ed50add579edd2b35f38",
+    "ending_commit": "0142446d983f74a246884178ed6e3dadbd6f300f",
+    "strategy_name": "library_update_optimistic_pi_gpt-5.6-sol",
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "status": "success",
+    "stats": {
+      "version": "10.10.0",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 6,
+            "totalCalls": 6
+          }
+        },
+        "coverageRatio": 1.0,
+        "coveredCalls": 6,
+        "totalCalls": 6
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 891,
+          "missed": 2453,
+          "ratio": 0.266447,
+          "total": 3344
+        },
+        "line": {
+          "covered": 174,
+          "missed": 405,
+          "ratio": 0.300518,
+          "total": 579
+        },
+        "method": {
+          "covered": 65,
+          "missed": 114,
+          "ratio": 0.363128,
+          "total": 179
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "no_action",
+      "issue_number": 10555,
+      "issue_label": "library-update-request",
+      "library": "org.flywaydb:flyway-database-postgresql:10.10.0",
+      "summary": "The 6 uncovered dynamic accesses are all public methods/constructors on two small Lombok-generated config beans (PostgreSQLConfigurationExtension, TransactionalModel), already reachable via the running postgres:18-alpine container and the already-imported flyway-database-postgresql dependency in the generated scaffold. Closing the gap only requires the test to call more of those beans' existing getters/setters directly in Java — no new dependency, Docker image, or environment/system property is needed.",
+      "deterministic_setup": [],
+      "agent_guidance": "Expand FlywayDatabasePostgresqlTests to directly exercise the two classes named in reachability-metadata.json, beyond the single setTransactionalLock(false) call already present: call getNamespace(), getConfigurationParameterFromEnvironmentVariable(\"FLYWAY_POSTGRESQL_TRANSACTIONAL_LOCK\"), getTransactional()/setTransactional(new TransactionalModel()), equals/hashCode/toString on PostgreSQLConfigurationExtension, and getLock()/setLock() on TransactionalModel. getConfigurationParameterFromEnvironmentVariable takes the variable name as a String parameter and does a hardcoded string comparison internally — it does not read System.getenv() — so no real environment variable needs to be exported to cover it; just pass the literal name as an argument.",
+      "risks": [],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#10555 Improve coverage for org.flywaydb:flyway-database-postgresql:10.10.0; label=library-update-request; body_chars=453"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "11 existing test file path(s) included"
+        }
+      ],
+      "model": "sonnet",
+      "input_tokens_used": 24,
+      "output_tokens_used": 7509
+    },
+    "metrics": {
+      "input_tokens_used": 73590,
+      "cached_input_tokens_used": 594048,
+      "output_tokens_used": 7168,
+      "iterations": 3,
+      "cost_usd": 0.8799,
+      "generated_loc": 140,
+      "tested_library_loc": 174,
+      "metadata_entries": 95,
+      "test_only_metadata_entries": 35,
+      "code_coverage_percent": 30.05
+    },
+    "artifacts": {
+      "metadata_file": "metadata/org.flywaydb/flyway-database-postgresql/10.10.0/reachability-metadata.json"
+    }
+  }
+}
