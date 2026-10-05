@@ -90,6 +90,7 @@ public class Langchain4j_cohereTest {
                     .contains(
                             "embed-v4-test-model",
                             "search_query",
+                            "float",
                             "a caption",
                             "image_url",
                             "test-image.png",
