@@ -1,0 +1,16 @@
+## Human intervention needed
+
+The automated job failed for `net.minidev:accessors-smart:2.4.3`. Preserved work is available at https://github.com/oracle/graalvm-reachability-metadata/tree/ai%2Fkimeta%2Fhuman-intervention%2Fissue-9361-fails-javac-compile-net.minidev-accessors-smart-2.4.3-4f020739.
+
+The root cause is that Maven Central does not contain the main `accessors-smart-2.4.3.jar`. The initial compile failed with `Could not find accessors-smart-2.4.3.jar`. The preserved workaround compiles the published sources into a local JAR, allowing both JVM and Native Image tests to pass, but finalization still fails: `generateLibraryStats` reports `No eligible artifacts found on the classpath`. Dynamic-access coverage fails for the same reason. Metrics consequently report `failure`, 4 iterations, 0 generated/tested-library LOC, 0 metadata entries, and unavailable coverage.
+
+Inspect:
+- `human-intervention-logs/net.minidev:accessors-smart:2.4.3/gradle-test/gradle-test-2026-10-05T20-27-07-167582Z.log`
+- `human-intervention-logs/net.minidev:accessors-smart:2.4.3/finalization/generateLibraryStats-2026-10-05T22-48-36-474337Z.log`
+- `human-intervention-logs/net.minidev:accessors-smart:2.4.3/gradle/generateDynamicAccessCoverageReport-2026-10-05T22-26-03-771195Z.log`
+- `stats/net.minidev/accessors-smart/2.4.3/execution-metrics.json`
+
+Manual next steps:
+1. Confirm whether `2.4.3` should be treated as an unresolvable/skipped version and move compatibility testing to the next version with a published binary JAR.
+2. If `2.4.3` must remain supported, make the source-built JAR discoverable by the harness’s library-JAR, JaCoCo, and stats tasks.
+3. Re-run the coordinate-scoped metadata, coverage, stats, JVM, and Native Image gates before retaining the generated index and metadata changes.
