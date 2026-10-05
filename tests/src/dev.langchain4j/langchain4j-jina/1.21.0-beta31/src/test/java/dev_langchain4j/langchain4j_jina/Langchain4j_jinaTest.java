@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
@@ -77,6 +78,36 @@ public class Langchain4j_jinaTest {
             assertThat(response.embeddings().get(1).vector()).containsExactly(0.3f, 0.4f);
             assertThat(response.tokenUsage().inputTokenCount()).isEqualTo(7);
             assertThat(response.tokenUsage().totalTokenCount()).isEqualTo(9);
+        }
+    }
+
+    @Test
+    void embeddingRetriesAfterTransientServerFailure() throws Exception {
+        try (TestHttpServer server = TestHttpServer.start(1, """
+                {
+                  "model": "jina-embeddings-v3",
+                  "data": [
+                    {"index": 0, "object": "embedding", "embedding": [0.9, 0.8]}
+                  ],
+                  "usage": {"prompt_tokens": 3, "total_tokens": 4}
+                }
+                """)) {
+            JinaEmbeddingModel model = JinaEmbeddingModel.builder()
+                    .baseUrl(server.url())
+                    .apiKey("test-key")
+                    .modelName("jina-embeddings-v3")
+                    .maxRetries(1)
+                    .timeout(Duration.ofSeconds(10))
+                    .build();
+
+            EmbeddingResponse response = model.embed(EmbeddingRequest.builder()
+                    .input("retry document")
+                    .build());
+
+            assertThat(server.requestCount()).isEqualTo(2);
+            assertThat(response.embeddings()).hasSize(1);
+            assertThat(response.embeddings().get(0).vector()).containsExactly(0.9f, 0.8f);
+            assertThat(response.tokenUsage().totalTokenCount()).isEqualTo(4);
         }
     }
 
@@ -160,24 +191,31 @@ public class Langchain4j_jinaTest {
     private static final class TestHttpServer implements AutoCloseable {
         private final HttpServer server;
         private final ExecutorService executor;
+        private final int transientFailureCount;
+        private final AtomicInteger requestCount = new AtomicInteger();
         private final AtomicReference<String> requestMethod = new AtomicReference<>();
         private final AtomicReference<String> requestPath = new AtomicReference<>();
         private final AtomicReference<String> authorization = new AtomicReference<>();
         private final AtomicReference<String> requestBody = new AtomicReference<>();
 
-        private TestHttpServer(HttpServer server, ExecutorService executor) {
+        private TestHttpServer(HttpServer server, ExecutorService executor, int transientFailureCount) {
             this.server = server;
             this.executor = executor;
+            this.transientFailureCount = transientFailureCount;
         }
 
         private static TestHttpServer start(String responseBody) throws IOException {
+            return start(0, responseBody);
+        }
+
+        private static TestHttpServer start(int transientFailureCount, String responseBody) throws IOException {
             HttpServer server = HttpServer.create(new InetSocketAddress(InetAddress.getLoopbackAddress(), 0), 0);
             ExecutorService executor = Executors.newSingleThreadExecutor(runnable -> {
                 Thread thread = new Thread(runnable, "langchain4j-jina-test-server");
                 thread.setDaemon(true);
                 return thread;
             });
-            TestHttpServer testServer = new TestHttpServer(server, executor);
+            TestHttpServer testServer = new TestHttpServer(server, executor, transientFailureCount);
             server.createContext("/", exchange -> testServer.handle(exchange, responseBody));
             server.setExecutor(executor);
             server.start();
@@ -185,6 +223,7 @@ public class Langchain4j_jinaTest {
         }
 
         private void handle(HttpExchange exchange, String responseBody) throws IOException {
+            int requestNumber = requestCount.incrementAndGet();
             requestMethod.set(exchange.getRequestMethod());
             requestPath.set(exchange.getRequestURI().getPath());
             authorization.set(exchange.getRequestHeaders().getFirst("Authorization"));
@@ -192,9 +231,10 @@ public class Langchain4j_jinaTest {
                 requestBody.set(new String(input.readAllBytes(), StandardCharsets.UTF_8));
             }
 
-            byte[] response = responseBody.getBytes(StandardCharsets.UTF_8);
+            int statusCode = requestNumber <= transientFailureCount ? 500 : 200;
+            byte[] response = (statusCode == 200 ? responseBody : "{}").getBytes(StandardCharsets.UTF_8);
             exchange.getResponseHeaders().set("Content-Type", "application/json");
-            exchange.sendResponseHeaders(200, response.length);
+            exchange.sendResponseHeaders(statusCode, response.length);
             try (OutputStream output = exchange.getResponseBody()) {
                 output.write(response);
             } finally {
@@ -204,6 +244,10 @@ public class Langchain4j_jinaTest {
 
         private String url() {
             return "http://" + server.getAddress().getHostString() + ":" + server.getAddress().getPort();
+        }
+
+        private int requestCount() {
+            return requestCount.get();
         }
 
         private String requestMethod() {
