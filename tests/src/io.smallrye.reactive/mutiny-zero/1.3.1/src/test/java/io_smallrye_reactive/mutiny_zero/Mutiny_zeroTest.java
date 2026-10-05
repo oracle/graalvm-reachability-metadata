@@ -63,6 +63,17 @@ public class Mutiny_zeroTest {
     }
 
     @Test
+    public void rejectsNonPositiveDemand() throws Exception {
+        RecordingSubscriber<String> subscriber = new RecordingSubscriber<>();
+        ZeroPublisher.fromItems("unrequested").subscribe(subscriber);
+
+        subscriber.request(0);
+
+        assertTrue(subscriber.awaitFailure() instanceof IllegalArgumentException);
+        assertTrue(subscriber.items().isEmpty());
+    }
+
+    @Test
     public void convertsPublishersToCompletionStages() throws Exception {
         Optional<String> first = ZeroPublisher.toCompletionStage(ZeroPublisher.fromItems("first", "second"))
                 .toCompletableFuture()
