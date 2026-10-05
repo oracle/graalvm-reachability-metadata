@@ -1,7 +1,8 @@
 # AR-code-coverage-deep-navigation: Deep-phase navigation evidence
 
-The deep phase (§AR-code-coverage-improvement.4.2) prompts library-internal
-methods that JaCoCo reports uncovered. This document specifies the evidence that
+The deep phase prompts the JaCoCo-uncovered methods of its target universe:
+library-internal methods, and the public methods the API phase left uncovered
+(§AR-code-coverage-improvement.4.2). This document specifies the evidence that
 steers the agent toward them and what each piece may be used for. None of it
 changes coverage: JaCoCo is the sole metric, and every source here is
 navigation only (§GOAL-maximize-library-coverage).
@@ -68,14 +69,37 @@ successor no test can reach.
 
 ## 2. Routes and ranking
 
-For each target, the analyzer uses the shortest directed static path from any
-sampled frame. When no sampled frame joins, it may use the shortest path from a
-public API inventory entry. A target absent from the static graph remains
-JaCoCo-uncovered but is recorded as not present in the current graph. A target
-present in the graph without a sampled or public-API route remains in the full
-JSON report as a no-route candidate. Neither condition changes its JaCoCo
-status. Only actionable sampled-path and public-entry-path targets enter the
-agent prompt.
+A prompted route crosses exactly one JaCoCo-uncovered method, its target, and
+the method that calls the target on the route is one JaCoCo reports covered —
+not merely one a sampler saw. Miss classification judges that call site (§3);
+a caller that never ran leaves it judging code that never executed, with no
+fork or dispatch to name. Route search therefore never continues out of an
+uncovered method, and only a covered method may make the last call.
+
+The covered prefix is the shortest one from a sampled frame or, when no
+sampled frame joins, from a public API inventory entry JaCoCo reports covered.
+It may be any length: no method on it is JaCoCo-uncovered, so it only shows
+the agent how existing tests reach the caller.
+
+A method JaCoCo does not report takes the status, and for classification the
+lines, of the source-level method it stands for
+(§AR-code-coverage-improvement.4.2.1): a factory stub those of its constructor,
+whose body the image attributes to the stub, and a generated lambda class those
+of the method creating it. One that stands for nothing JaCoCo reports — a JDK,
+dependency, or test frame, or a bridge — has neither. A route may pass through
+it, but it never makes the last call, since classification would find no JaCoCo
+line there to judge.
+
+A target absent from the static graph remains JaCoCo-uncovered but is recorded
+as not present in the current graph. A target present in the graph without such
+a route remains in the full JSON report as a no-route candidate: it lies more
+than one uncovered call past executed code, and becomes routable once a pass
+covers a caller. Neither condition changes its JaCoCo status, and only routed
+targets enter the agent prompt. On a kafka-streams 3.6.2 replay the earlier
+rule, which let a route cross uncovered methods, routed 907 internal targets,
+622 of them through an uncovered method and 658 classified `no-fork`; this rule
+routes 250 internal and 314 public targets, 45 of them `no-fork`, while
+`fork-not-taken` moves only from 171 internal targets to 167.
 
 The prompt navigation stays compact and groups paths that share a divergence:
 
@@ -107,7 +131,10 @@ nothing there.
 
 ### 2.2 Ranking
 
-Distance is the primary ranking key. Equal-distance ties break, in order, on
+Distance is the primary ranking key. Every route has exactly one uncovered
+call, so distance counts no obstacles; it measures how far the shown evidence
+starts from the caller, and at distance 1 the caller is itself the sampled
+frame or public entry. Equal-distance ties break, in order, on
 fewer unobserved dispatch steps, a sampled join before a public-entry join, the
 higher reach count of the target's diagnosis (§3), the higher sample count, and
 the canonical id. The reach count is how often the fork ran, or how often the
@@ -120,8 +147,13 @@ it is to flip, so it only orders ties and never overrides distance.
 Every prompted target carries a deterministic miss classification derived from
 JaCoCo source-line instruction and branch counters, the target's reverse
 call-site fan-out, and — when present — the control-flow table and the counters.
-The strongest diagnosis across all sites that invoke the target wins. The
-Markdown prompt and the full JSON report carry the same classification.
+Only sites whose caller JaCoCo reports covered are judged, and the route
+guarantees at least one (§2). A site is found through the target's source-level
+method, so a constructor reached through a factory stub is judged at the stub's
+callers. A caller judged on borrowed lines (§2) is read in line order, since the
+invoke's bytecode index is its own, not the lending method's. The strongest
+diagnosis across those sites wins. The Markdown prompt
+and the full JSON report carry the same classification.
 
 ### 3.1 Dispatched elsewhere
 
@@ -186,5 +218,5 @@ the target requires an exception or external event.
 - Counters and control flow never change coverage status, the deep universe,
   or attempt state; they choose forks, label hints, and order ties.
 - A route or candidate the counters never observed is labelled, not removed;
-  the static graph still decides what may be prompted.
+  the static graph and JaCoCo still decide what may be prompted.
 - Instrumented counters are an Oracle GraalVM feature, as sampling already is.
