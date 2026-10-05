@@ -1,9 +1,9 @@
 {
   "add_new_library_support:2026-10-05": {
-    "timestamp": "2026-10-05T17:12:14.452394Z",
+    "timestamp": "2026-10-05T19:35:42.347138Z",
     "library": "dev.langchain4j:langchain4j-http-client-jdk:1.21.0",
-    "starting_commit": "dd4a2e69181008de5d1dd5c68aed3221419762bd",
-    "ending_commit": "47c3e3e8eb08b9768bb9b623ce2eb088f87fb1cf",
+    "starting_commit": "77a7e6dc04264f99c2f6799ec5d90e056dc38d7f",
+    "ending_commit": "901865a159ed5a5fdba36253860bd67316b69fb4",
     "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-luna",
     "agent": "pi",
     "model": "gpt-5.6-luna",
@@ -18,21 +18,21 @@
       },
       "libraryCoverage": {
         "instruction": {
-          "covered": 645,
-          "missed": 292,
-          "ratio": 0.688367,
+          "covered": 796,
+          "missed": 141,
+          "ratio": 0.84952,
           "total": 937
         },
         "line": {
-          "covered": 154,
-          "missed": 71,
-          "ratio": 0.684444,
+          "covered": 185,
+          "missed": 40,
+          "ratio": 0.822222,
           "total": 225
         },
         "method": {
-          "covered": 41,
-          "missed": 15,
-          "ratio": 0.732143,
+          "covered": 49,
+          "missed": 7,
+          "ratio": 0.875,
           "total": 56
         }
       }
@@ -40,10 +40,10 @@
     "library_preparation_preflight": {
       "status": "completed",
       "action": "no_action",
-      "issue_number": 10466,
+      "issue_number": 10463,
       "issue_label": "library-new-request",
       "library": "dev.langchain4j:langchain4j-http-client-jdk:1.21.0",
-      "summary": "Thin JDK java.net.http.HttpClient wrapper; same class already runs under native-image with zero extra setup via langchain4j-voyage-ai's runtime dependency. Its API uses String/URI (not java.net.URL), so the --enable-url-protocols flag needed by the superficially similar azure-core-http-jdk-httpclient test doesn't apply. All declared deps (langchain4j-core, langchain4j-http-client, mutiny-zero) resolve transitively.",
+      "summary": "Pure wrapper over java.net.http.HttpClient; only transitive compile deps (langchain4j-core, langchain4j-http-client, mutiny-zero) all resolved automatically by Gradle. Test uses a loopback com.sun.net.httpserver.HttpServer with no external services, credentials, or Docker needs — same pattern as the already-merged sibling langchain4j-http-client module.",
       "deterministic_setup": [],
       "agent_guidance": "",
       "risks": [],
@@ -51,28 +51,28 @@
       "input_evidence": [
         {
           "name": "issue",
-          "summary": "#10466 Support for dev.langchain4j:langchain4j-http-client-jdk:1.21.0; label=library-new-request; body_chars=39"
+          "summary": "#10463 Support for dev.langchain4j:langchain4j-http-client-jdk:1.21.0; label=library-new-request; body_chars=39"
         },
         {
           "name": "existing_tests",
-          "summary": "0 existing test file path(s) included"
+          "summary": "7 existing test file path(s) included"
         }
       ],
       "model": "sonnet",
-      "input_tokens_used": 52,
-      "output_tokens_used": 19288
+      "input_tokens_used": 10,
+      "output_tokens_used": 5526
     },
     "metrics": {
-      "input_tokens_used": 274860,
-      "cached_input_tokens_used": 2938368,
-      "output_tokens_used": 32314,
+      "input_tokens_used": 309065,
+      "cached_input_tokens_used": 3259392,
+      "output_tokens_used": 21529,
       "iterations": 5,
-      "cost_usd": 0.7626,
-      "generated_loc": 433,
-      "tested_library_loc": 154,
+      "cost_usd": 0.7642,
+      "generated_loc": 668,
+      "tested_library_loc": 185,
       "metadata_entries": 0,
       "test_only_metadata_entries": 167,
-      "code_coverage_percent": 68.44
+      "code_coverage_percent": 82.22
     },
     "artifacts": {
       "metadata_file": "metadata/dev.langchain4j/langchain4j-http-client-jdk/1.21.0/reachability-metadata.json"
