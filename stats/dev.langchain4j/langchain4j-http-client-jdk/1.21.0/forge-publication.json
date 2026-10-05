@@ -1,13 +1,13 @@
 {
-  "base_commit": "8a762e74fcf075455090d2963f28fe6a9aa586f4",
-  "branch": "ai/kimeta/add-lib-support-dev.langchain4j-langchain4j-http-client-jdk-1.21.0-forge-10466-20261005171214452394-3daecac4db18",
+  "base_commit": "255e2a6f26e2256b0aee2102267d5034fedfd068",
+  "branch": "ai/kimeta/add-lib-support-dev.langchain4j-langchain4j-http-client-jdk-1.21.0-forge-10463-20261005193542347138-01ed3ae1a4b7",
   "follow_ups": [],
   "forge": {
     "branch": "master",
-    "commit": "8a762e74fcf075455090d2963f28fe6a9aa586f4",
+    "commit": "153fc083e86e1fbb11f1b88648e96d55429f8126",
     "monitored_branch": "origin/master"
   },
-  "issue_number": 10466,
+  "issue_number": 10463,
   "library": {
     "artifact": "langchain4j-http-client-jdk",
     "coordinates": "dev.langchain4j:langchain4j-http-client-jdk:1.21.0",
@@ -15,37 +15,11 @@
     "version": "1.21.0"
   },
   "local_ci_verification": {
-    "base_commit": "8a762e74fcf075455090d2963f28fe6a9aa586f4",
-    "commands": [
-      {
-        "command": [
-          "./gradlew",
-          "generateChangedIndexFileCoordinatesList",
-          "-PbaseCommit=origin/master",
-          "-PnewCommit=HEAD"
-        ],
-        "env": {
-          "GITHUB_OUTPUT": "/tmp/tmpv30r4em4"
-        },
-        "gate": "changed-index-coordinates",
-        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :generateChangedIndexFileCoordinatesList\n\n[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10466-b3eb170e/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 2s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
-        "returncode": 0
-      },
-      {
-        "command": [
-          "./gradlew",
-          "validateIndexFiles",
-          "-Pcoordinates=dev.langchain4j:langchain4j-http-client-jdk"
-        ],
-        "env": {},
-        "gate": "index-file-validation",
-        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :validateIndexFiles\n✅ metadata/dev.langchain4j/langchain4j-http-client-jdk/index.json: Valid\n\n[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10466-b3eb170e/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 1s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
-        "returncode": 0
-      }
-    ],
+    "base_commit": "255e2a6f26e2256b0aee2102267d5034fedfd068",
+    "commands": [],
     "failure_command": null,
     "failure_gate": null,
-    "final_commit": "9656a86b8e3a059dbc3ff64cd1505ef31e3dc629",
+    "final_commit": "0e28bdc11be719c069029912b848a70c311c2bb2",
     "fixups": [],
     "human_intervention_required": false,
     "repo_fix_paths": [],
@@ -58,26 +32,26 @@
     "finding_title": "",
     "fix_note": "",
     "model": "gpt-5.6-sol",
-    "review_comment": "The diff is scoped to one library version and uses only reachability-metadata.json. The public, separately packaged test suite exercises synchronous, asynchronous, SPI, multipart, SSE, and backpressure behavior without scaffold code, version pinning in test code, Native Image skips, tolerated failures, compatibility overrides, or native flags. The resolved statistics report 0/0 dynamic-access calls, which is a valid no-calls case and makes the percentage and entry-count mismatch gates inapplicable. The Forge finalization command completed successfully without changing the publishable tree, including all three test lanes, metadata validation, style checks, generated-test checks, and regenerated library statistics.",
-    "session_id": "2585f00337b048b8"
+    "review_comment": "Reviewed the specified three-file diff and the coordinate's test/build context. The change stays within one coordinate, uses only the accepted metadata format, and adds meaningful public-API HTTP, SSE, callback, redirect, multipart, and reactive-stream tests in a separate test package without scaffold code, version pinning in test logic, Native Image skips, swallowed failures, reflection shortcuts, compatibility overrides, or unsupported runtime class loading. All explicit I/O waits are bounded at 10 seconds and the suite has a 60-second per-test bound. The resolved statistics report 0/0 dynamic-access calls, which is a valid no-calls case and makes the percentage and entry-count mismatch probes inapplicable. Local gate evidence reports success, and the stats and execution metrics agree with the resolved render statistics. No blocking must violation was found.",
+    "session_id": "362a481c07b74662"
   },
   "metrics": {
     "agent": "pi",
     "model": "gpt-5.6-luna",
     "path": "stats/dev.langchain4j/langchain4j-http-client-jdk/1.21.0/execution-metrics.json",
     "summary": {
-      "cached_input_tokens_used": 2938368,
-      "code_coverage_percent": 68.44,
-      "cost_usd": 0.7626,
-      "generated_loc": 433,
-      "input_tokens_used": 274860,
+      "cached_input_tokens_used": 3259392,
+      "code_coverage_percent": 82.22,
+      "cost_usd": 0.7642,
+      "generated_loc": 668,
+      "input_tokens_used": 309065,
       "iterations": 5,
       "metadata_entries": 0,
-      "output_tokens_used": 32314,
+      "output_tokens_used": 21529,
       "test_only_metadata_entries": 167,
-      "tested_library_loc": 154
+      "tested_library_loc": 185
     },
-    "timestamp": "2026-10-05T17:12:14.452394Z"
+    "timestamp": "2026-10-05T19:35:42.347138Z"
   },
   "modifiers": {
     "chunk_final": true,
@@ -85,7 +59,7 @@
     "human_intervention": false
   },
   "producer": "kimeta",
-  "publication_id": "forge-10466-20261005171214452394-3daecac4db18",
+  "publication_id": "forge-10463-20261005193542347138-01ed3ae1a4b7",
   "render": {
     "dynamic_access": null,
     "dynamic_access_evidence": null,
@@ -98,21 +72,21 @@
       },
       "libraryCoverage": {
         "instruction": {
-          "covered": 645,
-          "missed": 292,
-          "ratio": 0.688367,
+          "covered": 796,
+          "missed": 141,
+          "ratio": 0.84952,
           "total": 937
         },
         "line": {
-          "covered": 154,
-          "missed": 71,
-          "ratio": 0.684444,
+          "covered": 185,
+          "missed": 40,
+          "ratio": 0.822222,
           "total": 225
         },
         "method": {
-          "covered": 41,
-          "missed": 15,
-          "ratio": 0.732143,
+          "covered": 49,
+          "missed": 7,
+          "ratio": 0.875,
           "total": 56
         }
       },
@@ -123,5 +97,5 @@
   "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-luna",
   "task_type": "library-new-request",
   "template_type": "library-new-request",
-  "timestamp": "2026-10-05T17:12:14.452394Z"
+  "timestamp": "2026-10-05T19:35:42.347138Z"
 }
