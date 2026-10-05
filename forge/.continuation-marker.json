@@ -1,0 +1,80 @@
+{
+  "continueFrom": "explore",
+  "coordinate": "net.minidev:accessors-smart:2.4.3",
+  "failure": {
+    "operand": "net.minidev:accessors-smart:2.4.3",
+    "phase": "claim",
+    "step": "route_to_driver()"
+  },
+  "issueNumber": 9361,
+  "label": "fails-javac-compile",
+  "libraryPreparationPreflight": {
+    "action": "no_action",
+    "agent_guidance": "",
+    "applied_setup": [],
+    "current_library": "net.minidev:accessors-smart:1.2",
+    "deterministic_setup": [],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#9361 [Automation] javac compile fails for net.minidev:accessors-smart:2.4.3; label=fails-javac-compile; body_chars=8015"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "8 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 4,
+    "issue_label": "fails-javac-compile",
+    "issue_number": 9361,
+    "library": "net.minidev:accessors-smart:2.4.3",
+    "model": "sonnet",
+    "new_version": "2.4.3",
+    "output_tokens_used": 1230,
+    "risks": [
+      "The Maven Central directory for accessors-smart 2.4.3 lists the pom, sources jar, javadoc jar and the .asc signature for the main jar, but no accessors-smart-2.4.3.jar. That matches the Gradle error 'Could not find accessors-smart-2.4.3.jar'. Compilation cannot succeed for this version unless the jar is hosted elsewhere, so the driver may have to treat 2.4.3 as unresolvable and move on to the later versions (2.4.6 and up). This is an artifact-availability problem, not a Native Image limitation.",
+      "I did not trace the library source for the skip_unsupported steps. The missing jar is not one of the listed unsupportable mechanisms. The library's ASM-based runtime class definition is already handled for 1.2, 1.3, 2.3.1 and 2.4.2 in metadata/net.minidev/accessors-smart/index.json, so I treat a skip as unproven and stay with the default.",
+      "The existing 1.2 test project adds --add-opens=java.base/java.lang=ALL-UNNAMED for the JVM test run and uses an agent user-code-filter.json. Any generated tests for the new version should keep both."
+    ],
+    "status": "completed",
+    "summary": "No extra dependency, Docker image or system property would help. The failure is that net.minidev:accessors-smart:2.4.3 was published to Maven Central without its main jar, and none of the unsupportable-mechanism criteria are met."
+  },
+  "libraryUpdateRoute": null,
+  "newVersion": "2.4.3",
+  "phases": {
+    "explore": {
+      "chunkClassCount": null,
+      "chunkProcessedClassCount": 0,
+      "exhaustedClasses": [],
+      "status": "running"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": 2,
+      "status": "completed"
+    },
+    "publication": {
+      "branch": null,
+      "coverageFollowUpIssueNumber": null,
+      "isPushed": false,
+      "publicationId": null,
+      "publicationTimestamp": null,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": true,
+      "status": "completed"
+    }
+  },
+  "preservedBranch": "ai/kimeta/human-intervention/issue-9361-fails-javac-compile-net.minidev-accessors-smart-2.4.3-4f020739",
+  "publicationMetrics": {
+    "extras": {},
+    "library": "net.minidev:accessors-smart:2.4.3",
+    "timestamp": "2026-10-05T22:49:00.537949Z"
+  },
+  "schemaVersion": 1,
+  "strategyName": "javac_iterative_with_coverage_sources_pi_gpt-5.6-sol"
+}

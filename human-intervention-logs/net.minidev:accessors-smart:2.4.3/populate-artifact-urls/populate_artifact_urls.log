@@ -1,0 +1,38 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :populateArtifactURLs
+I filled in the missing fields for the `2.4.3` entry in `metadata/net.minidev/accessors-smart/index.json`. `test-code-url` is `"N/A"` because I couldn't find a verifiable test suite for 2.4.3. I didn't validate the JSON or run any Gradle checks.
+
+- **`source-code-url`:** `https://repo1.maven.org/maven2/net/minidev/accessors-smart/$version$/accessors-smart-$version$-sources.jar`. The 2.4.3 sources jar on Maven Central returns 200.
+- **`documentation-url`:** the matching `-javadoc.jar` URL on Maven Central, which also returns 200.
+- **`repository-url`:** `https://github.com/netplex/json-smart-v2`, taken from the SCM URL in the 2.4.3 POM.
+- **`description`:** the same two-sentence description already used on the `1.2` entry. It says accessors-smart is an ASM-based helper for fast bean accessors, used by json-smart to reduce reflection overhead.
+- **`language`:** left absent, since this is a plain Java library.
+- **`test-code-url`:**
+  - There is no `-tests.jar` on Maven Central for 2.4.3.
+  - The upstream repo has no 2.4.3 tag. Both `2.4.3` and `v2.4.3` return 404 under `accessors-smart/src/test`.
+Ran agent for net.minidev:accessors-smart:2.4.3 (exit 0). Log: /home/oracle/oracle/metadata2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9361-f6afa9c0/build/agent-url-discovery-logs/net.minidev-accessors-smart-2.4.3.log
+Completed populateArtifactURLs: invoked=1, prompted=0, skipped=0, overwriteExisting=false, verifyArtifactSources=false, limit=null
+
+[Incubating] Problems report is available at: file:///home/oracle/oracle/metadata2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9361-f6afa9c0/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 40s
+9 actionable tasks: 1 executed, 8 up-to-date

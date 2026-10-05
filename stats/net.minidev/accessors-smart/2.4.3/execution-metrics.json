@@ -1,0 +1,57 @@
+{
+  "fix_javac_fail:2026-10-05": {
+    "timestamp": "2026-10-05T22:49:00.537949Z",
+    "library": "net.minidev:accessors-smart:2.4.3",
+    "starting_commit": "40cff0822de5992e38977df59e9450c99468cadd",
+    "ending_commit": "0993e687dca0fc138f255ec8efedeac39b2c08a1",
+    "strategy_name": "javac_iterative_with_coverage_sources_pi_gpt-5.6-sol",
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "status": "failure",
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "no_action",
+      "issue_number": 9361,
+      "issue_label": "fails-javac-compile",
+      "library": "net.minidev:accessors-smart:2.4.3",
+      "summary": "No extra dependency, Docker image or system property would help. The failure is that net.minidev:accessors-smart:2.4.3 was published to Maven Central without its main jar, and none of the unsupportable-mechanism criteria are met.",
+      "deterministic_setup": [],
+      "agent_guidance": "",
+      "risks": [
+        "The Maven Central directory for accessors-smart 2.4.3 lists the pom, sources jar, javadoc jar and the .asc signature for the main jar, but no accessors-smart-2.4.3.jar. That matches the Gradle error 'Could not find accessors-smart-2.4.3.jar'. Compilation cannot succeed for this version unless the jar is hosted elsewhere, so the driver may have to treat 2.4.3 as unresolvable and move on to the later versions (2.4.6 and up). This is an artifact-availability problem, not a Native Image limitation.",
+        "I did not trace the library source for the skip_unsupported steps. The missing jar is not one of the listed unsupportable mechanisms. The library's ASM-based runtime class definition is already handled for 1.2, 1.3, 2.3.1 and 2.4.2 in metadata/net.minidev/accessors-smart/index.json, so I treat a skip as unproven and stay with the default.",
+        "The existing 1.2 test project adds --add-opens=java.base/java.lang=ALL-UNNAMED for the JVM test run and uses an agent user-code-filter.json. Any generated tests for the new version should keep both."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#9361 [Automation] javac compile fails for net.minidev:accessors-smart:2.4.3; label=fails-javac-compile; body_chars=8015"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "8 existing test file path(s) included"
+        }
+      ],
+      "current_library": "net.minidev:accessors-smart:1.2",
+      "new_version": "2.4.3",
+      "model": "sonnet",
+      "input_tokens_used": 4,
+      "output_tokens_used": 1230
+    },
+    "metrics": {
+      "input_tokens_used": 61945,
+      "cached_input_tokens_used": 570880,
+      "output_tokens_used": 4841,
+      "iterations": 4,
+      "cost_usd": 0.7403,
+      "generated_loc": 0,
+      "tested_library_loc": 0,
+      "metadata_entries": 0,
+      "code_coverage_percent": 0.0
+    },
+    "artifacts": {
+      "metadata_file": "None"
+    }
+  }
+}
