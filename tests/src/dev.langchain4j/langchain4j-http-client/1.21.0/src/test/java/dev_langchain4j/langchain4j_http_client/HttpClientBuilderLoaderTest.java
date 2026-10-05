@@ -22,6 +22,7 @@ import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.time.Duration;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -55,6 +56,37 @@ public class HttpClientBuilderLoaderTest {
             assertThat(builder.connectTimeout()).isEqualTo(timeout);
             assertThat(builder.readTimeout()).isEqualTo(timeout);
             assertThat(requestLine.get(10, TimeUnit.SECONDS)).isEqualTo("GET /status HTTP/1.1");
+            assertThat(response.statusCode()).isEqualTo(200);
+            assertThat(response.body()).isEqualTo("provider-ready");
+        } finally {
+            serverExecutor.shutdownNow();
+            assertThat(serverExecutor.awaitTermination(10, TimeUnit.SECONDS)).isTrue();
+        }
+    }
+
+    @Test
+    @Timeout(55)
+    void executesRequestsAsynchronouslyThroughConfiguredProvider() throws Exception {
+        ExecutorService serverExecutor = Executors.newSingleThreadExecutor();
+        try (ServerSocket serverSocket = new ServerSocket()) {
+            serverSocket.bind(new InetSocketAddress(InetAddress.getByName("127.0.0.1"), 0));
+            serverSocket.setSoTimeout(10_000);
+            Future<String> requestLine = serverExecutor.submit(() -> serveSingleRequest(serverSocket));
+            Duration timeout = Duration.ofSeconds(10);
+
+            HttpClient client = HttpClientBuilderLoader.loadHttpClientBuilder()
+                    .connectTimeout(timeout)
+                    .readTimeout(timeout)
+                    .build();
+            HttpRequest request = HttpRequest.builder()
+                    .method(HttpMethod.GET)
+                    .url("http://127.0.0.1:" + serverSocket.getLocalPort() + "/async-status")
+                    .build();
+
+            CompletableFuture<SuccessfulHttpResponse> responseFuture = client.executeAsync(request);
+            SuccessfulHttpResponse response = responseFuture.get(10, TimeUnit.SECONDS);
+
+            assertThat(requestLine.get(10, TimeUnit.SECONDS)).isEqualTo("GET /async-status HTTP/1.1");
             assertThat(response.statusCode()).isEqualTo(200);
             assertThat(response.body()).isEqualTo("provider-ready");
         } finally {
