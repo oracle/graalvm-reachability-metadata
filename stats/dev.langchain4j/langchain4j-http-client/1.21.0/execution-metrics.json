@@ -1,0 +1,84 @@
+{
+  "add_new_library_support:2026-10-05": {
+    "timestamp": "2026-10-05T16:34:13.249192Z",
+    "library": "dev.langchain4j:langchain4j-http-client:1.21.0",
+    "starting_commit": "a043fa3b2a0418de4e086fe3fed39729c802c111",
+    "ending_commit": "a28aa299f77829d1717330ca837e1b95e958ef7b",
+    "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-sol",
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "status": "success",
+    "stats": {
+      "version": "1.21.0",
+      "dynamicAccess": {
+        "breakdown": {},
+        "coverageRatio": 1.0,
+        "coveredCalls": 0,
+        "totalCalls": 0
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 1029,
+          "missed": 1027,
+          "ratio": 0.500486,
+          "total": 2056
+        },
+        "line": {
+          "covered": 245,
+          "missed": 222,
+          "ratio": 0.524625,
+          "total": 467
+        },
+        "method": {
+          "covered": 70,
+          "missed": 75,
+          "ratio": 0.482759,
+          "total": 145
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "advisory_preparation",
+      "issue_number": 10465,
+      "issue_label": "library-new-request",
+      "library": "dev.langchain4j:langchain4j-http-client:1.21.0",
+      "summary": "langchain4j-http-client is only the HttpClient SPI (HttpClient, HttpClientBuilder, HttpRequest, SuccessfulHttpResponse, ServerSentEvent parsers and listeners). It needs no extra dependency or Docker image. Tests can use an in-process JDK HttpServer, so I'm adding guidance only.",
+      "deterministic_setup": [],
+      "agent_guidance": "Do not add Docker images or extra Maven dependencies. The generated scaffold already pulls in the library and its transitive langchain4j-core. Exercise the module's own API: build HttpRequest objects (method, url, headers, body, form data) and run SuccessfulHttpResponse and ServerSentEvent parsing, including DefaultServerSentEventParser, ServerSentEventContext and the listener callbacks. Drive these with in-memory data or a local `com.sun.net.httpserver.HttpServer` bound to 127.0.0.1 on an ephemeral port. Do not depend on a real HttpClient implementation (langchain4j-http-client-jdk or -okhttp), because this artifact ships none. If a test needs a client, write a small HttpClient implementation inside the test, or call `HttpClientBuilderLoader` only if an implementation is on the classpath. The loader uses ServiceLoader, so only add a `META-INF/services` entry for a test-local builder if the test deliberately exercises that path. No environment variables or system properties are required.",
+      "risks": [
+        "If a test calls HttpClientBuilderLoader with no implementation on the classpath, it throws a 'no HTTP client implementation found' error. Provide a test-local SPI implementation or avoid that call.",
+        "ServiceLoader-based discovery may need extra reachability metadata, which local native-image verification should reveal."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#10465 Support for dev.langchain4j:langchain4j-http-client:1.21.0; label=library-new-request; body_chars=39"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "sonnet",
+      "input_tokens_used": 8,
+      "output_tokens_used": 1177
+    },
+    "metrics": {
+      "input_tokens_used": 173263,
+      "cached_input_tokens_used": 1767168,
+      "output_tokens_used": 18071,
+      "iterations": 5,
+      "cost_usd": 2.292,
+      "generated_loc": 345,
+      "tested_library_loc": 245,
+      "metadata_entries": 2,
+      "test_only_metadata_entries": 79,
+      "code_coverage_percent": 52.46
+    },
+    "artifacts": {
+      "metadata_file": "metadata/dev.langchain4j/langchain4j-http-client/1.21.0/reachability-metadata.json"
+    }
+  }
+}
