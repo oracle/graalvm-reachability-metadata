@@ -16,6 +16,7 @@ import org.junit.jupiter.api.Test;
 
 public class EnumsTest {
     @Test
+    @SuppressWarnings("checkstyle:annotationAccess")
     void locatesAnnotatedEnumConstantField() {
         Field field = Enums.getField(Operation.QUERY);
 
