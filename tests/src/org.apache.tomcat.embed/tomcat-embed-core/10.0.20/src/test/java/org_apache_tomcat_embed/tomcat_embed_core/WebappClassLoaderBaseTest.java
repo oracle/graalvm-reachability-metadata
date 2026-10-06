@@ -62,6 +62,27 @@ public class WebappClassLoaderBaseTest {
     }
 
     @Test
+    void stopsExecutorThreadsThroughClassLoaderCleanup() throws Exception {
+        try (TestWebapp webapp = new TestWebapp(temporaryDirectory)) {
+            WebappClassLoaderBase loader = webapp.getLoader();
+            loader.setClearReferencesStopThreads(true);
+
+            ThreadPoolExecutor executor = createExecutor(new TargetThreadFactory(loader));
+            CountDownLatch runningTask = new CountDownLatch(1);
+            executor.execute(new ParkingTask(runningTask));
+            assertThat(runningTask.await(5, TimeUnit.SECONDS)).isTrue();
+
+            try {
+                webapp.stopLoader();
+                executor.shutdownNow();
+                assertThat(executor.awaitTermination(10, TimeUnit.SECONDS)).isTrue();
+            } finally {
+                executor.shutdownNow();
+            }
+        }
+    }
+
+    @Test
     void stopScansThreadLocalRmiTimerAndExecutorReferences() throws Exception {
         try (TestWebapp webapp = new TestWebapp(temporaryDirectory)) {
             WebappClassLoaderBase loader = webapp.getLoader();

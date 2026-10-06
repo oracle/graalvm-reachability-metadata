@@ -7,6 +7,8 @@
 package org_apache_tomcat_embed.tomcat_embed_core;
 
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.nio.charset.StandardCharsets;
@@ -69,6 +71,18 @@ public class ClassLoaderLogManagerTest {
         public URL findResource(String name) {
             if ("logging.properties".equals(name)) {
                 return configuration;
+            }
+            return null;
+        }
+
+        @Override
+        public InputStream getResourceAsStream(String name) {
+            if ("logging.properties".equals(name)) {
+                try {
+                    return configuration.openStream();
+                } catch (IOException e) {
+                    throw new IllegalStateException(e);
+                }
             }
             return null;
         }
