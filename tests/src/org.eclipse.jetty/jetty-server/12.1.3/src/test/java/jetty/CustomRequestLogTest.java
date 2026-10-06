@@ -80,8 +80,9 @@ public class CustomRequestLogTest {
                 .GET()
                 .header("Accept", "text/plain")
                 .timeout(Duration.ofSeconds(10));
-        if (headers.length > 0)
+        if (headers.length > 0) {
             request.headers(headers);
+        }
 
         try (HttpClient client = HttpClient.newBuilder().connectTimeout(Duration.ofSeconds(10)).build()) {
             return client.send(request.build(), HttpResponse.BodyHandlers.ofString());
