@@ -1,0 +1,84 @@
+{
+  "add_new_library_support:2026-10-06": {
+    "timestamp": "2026-10-06T06:16:03.870216Z",
+    "library": "dev.langchain4j:langchain4j-mistral-ai:1.21.0",
+    "starting_commit": "98551e63c5a58f261418ba11992bf3ebc4e8bcfa",
+    "ending_commit": "497a85bfad47c82b40915f3579a18ed4defc46eb",
+    "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-sol",
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "status": "success",
+    "stats": {
+      "version": "1.21.0",
+      "dynamicAccess": {
+        "breakdown": {},
+        "coverageRatio": 1.0,
+        "coveredCalls": 0,
+        "totalCalls": 0
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 3453,
+          "missed": 7403,
+          "ratio": 0.318073,
+          "total": 10856
+        },
+        "line": {
+          "covered": 977,
+          "missed": 1701,
+          "ratio": 0.364824,
+          "total": 2678
+        },
+        "method": {
+          "covered": 334,
+          "missed": 507,
+          "ratio": 0.397146,
+          "total": 841
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "no_action",
+      "issue_number": 10458,
+      "issue_label": "library-new-request",
+      "library": "dev.langchain4j:langchain4j-mistral-ai:1.21.0",
+      "summary": "The repo already tests the sibling provider langchain4j-google-ai-gemini:1.21.0 with only the library dependency and an in-process JDK HttpServer as the fake endpoint. The Mistral AI client can be tested the same way, so no extra dependency, Docker image or environment setup is needed.",
+      "deterministic_setup": [],
+      "agent_guidance": "",
+      "risks": [
+        "I did not resolve the langchain4j-mistral-ai:1.21.0 POM, so I did not confirm that its HTTP client dependency (langchain4j-http-client-jdk) is a transitive runtime dependency. If it is missing at test time, add langchain4j-http-client-jdk:1.21.0 as a testImplementation dependency.",
+        "The issue mentions chat, streaming and embeddings. Tests should cover all three against the fake server, with Jackson serializing and deserializing the MistralAi* request and response types."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#10458 Support for dev.langchain4j:langchain4j-mistral-ai:1.21.0; label=library-new-request; body_chars=1333"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "sonnet",
+      "input_tokens_used": 8,
+      "output_tokens_used": 1097
+    },
+    "metrics": {
+      "input_tokens_used": 307395,
+      "cached_input_tokens_used": 4577408,
+      "output_tokens_used": 27107,
+      "iterations": 5,
+      "cost_usd": 4.6389,
+      "generated_loc": 425,
+      "tested_library_loc": 977,
+      "metadata_entries": 757,
+      "test_only_metadata_entries": 9,
+      "code_coverage_percent": 36.48
+    },
+    "artifacts": {
+      "metadata_file": "metadata/dev.langchain4j/langchain4j-mistral-ai/1.21.0/reachability-metadata.json"
+    }
+  }
+}
