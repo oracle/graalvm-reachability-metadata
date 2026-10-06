@@ -10,18 +10,23 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpServer;
+import dev.langchain4j.agent.tool.ToolSpecification;
 import dev.langchain4j.data.embedding.Embedding;
+import dev.langchain4j.data.image.Image;
 import dev.langchain4j.data.message.ImageContent;
 import dev.langchain4j.data.message.TextContent;
 import dev.langchain4j.data.message.UserMessage;
 import dev.langchain4j.data.segment.TextSegment;
 import dev.langchain4j.model.StreamingResponseHandler;
+import dev.langchain4j.model.chat.request.ChatRequest;
+import dev.langchain4j.model.chat.request.json.JsonObjectSchema;
 import dev.langchain4j.model.chat.response.ChatResponse;
 import dev.langchain4j.model.chat.response.PartialResponse;
 import dev.langchain4j.model.chat.response.PartialResponseContext;
 import dev.langchain4j.model.chat.response.StreamingChatResponseHandler;
 import dev.langchain4j.model.ollama.OllamaChatModel;
 import dev.langchain4j.model.ollama.OllamaEmbeddingModel;
+import dev.langchain4j.model.ollama.OllamaImageModel;
 import dev.langchain4j.model.ollama.OllamaLanguageModel;
 import dev.langchain4j.model.ollama.OllamaModel;
 import dev.langchain4j.model.ollama.OllamaModelCard;
@@ -66,8 +71,23 @@ public class Langchain4j_ollamaTest {
                     .customHeaders(Map.of("X-Ollama-Test", "chat-header"))
                     .build();
 
-            ChatResponse response = model.chat(UserMessage.from(
-                    TextContent.from("Inspect this small image"), ImageContent.from("aGVsbG8=", "image/png")));
+            ToolSpecification toolSpecification = ToolSpecification.builder()
+                    .name("record_result")
+                    .description("Records the city found in the image")
+                    .parameters(JsonObjectSchema.builder()
+                            .addStringProperty("city", "City found in the image")
+                            .addBooleanProperty("accepted", "Whether the result was accepted")
+                            .required("city")
+                            .build())
+                    .build();
+            ChatRequest chatRequest = ChatRequest.builder()
+                    .messages(UserMessage.from(
+                            TextContent.from("Inspect this small image"),
+                            ImageContent.from("aGVsbG8=", "image/png")))
+                    .toolSpecifications(toolSpecification)
+                    .build();
+
+            ChatResponse response = model.chat(chatRequest);
 
             assertThat(response.aiMessage().text()).isEqualTo("I inspected the image.");
             assertThat(response.aiMessage().thinking()).isEqualTo("Analyzing pixels");
@@ -91,6 +111,9 @@ public class Langchain4j_ollamaTest {
                             "aGVsbG8=",
                             "temperature",
                             "0.2",
+                            "record_result",
+                            "Records the city found in the image",
+                            "accepted",
                             "stream",
                             "false");
         }
@@ -175,6 +198,46 @@ public class Langchain4j_ollamaTest {
                             "second embedding input",
                             "dimensions",
                             "3");
+        }
+    }
+
+    @Test
+    @Timeout(55)
+    void generatesImageFromLocalOllamaCompletionResponse() throws Exception {
+        try (OllamaServer server = OllamaServer.start(ResponseKind.IMAGE)) {
+            OllamaImageModel model = OllamaImageModel.builder()
+                    .baseUrl(server.baseUrl())
+                    .modelName("ollama-image-test")
+                    .width(512)
+                    .height(384)
+                    .steps(20)
+                    .seed(17)
+                    .timeout(HTTP_TIMEOUT)
+                    .maxRetries(0)
+                    .customHeaders(Map.of("X-Ollama-Test", "image-header"))
+                    .build();
+
+            Response<Image> response = model.generate("Draw a blue square");
+
+            assertThat(response.content().base64Data()).isEqualTo("aW1hZ2UtYnl0ZXM=");
+            assertThat(response.content().mimeType()).isEqualTo("image/png");
+            RequestRecord request = server.singleRequest();
+            assertThat(request.path()).isEqualTo("/api/generate");
+            assertThat(request.header()).isEqualTo("image-header");
+            assertThat(request.body())
+                    .contains(
+                            "ollama-image-test",
+                            "Draw a blue square",
+                            "width",
+                            "512",
+                            "height",
+                            "384",
+                            "steps",
+                            "20",
+                            "seed",
+                            "17",
+                            "stream",
+                            "false");
         }
     }
 
@@ -287,8 +350,32 @@ public class Langchain4j_ollamaTest {
 
             OllamaModelCard modelCard = models.modelCard(availableModel).content();
             assertThat(modelCard.getLicense()).isEqualTo("Apache-2.0");
+            assertThat(modelCard.getModelfile()).isEqualTo("FROM granite-code");
+            assertThat(modelCard.getParameters()).isEqualTo("temperature 0.2");
+            assertThat(modelCard.getTemplate()).isEqualTo("{{ .Prompt }}");
+            assertThat(modelCard.getSystem()).isEqualTo("Answer concisely");
             assertThat(modelCard.getCapabilities()).containsExactly("completion", "tools");
             assertThat(modelCard.getDetails().getParameterSize()).isEqualTo("8B");
+            assertThat(modelCard.getModifiedAt()).hasToString("2026-01-02T03:05Z");
+            assertThat(modelCard.getMessages()).singleElement().satisfies(message -> {
+                assertThat(message.getRole()).isEqualTo("assistant");
+                assertThat(message.getContent()).isEqualTo("Calling the weather tool");
+                assertThat(message.getThinking()).isEqualTo("Need current weather");
+                assertThat(message.getImages()).containsExactly("aW1hZ2U=");
+                assertThat(message.getToolName()).isEqualTo("weather");
+                assertThat(message.getToolCalls()).singleElement().satisfies(toolCall -> {
+                    assertThat(toolCall.getFunction().getIndex()).isEqualTo(0);
+                    assertThat(toolCall.getFunction().getName()).isEqualTo("weather");
+                    assertThat(toolCall.getFunction().getArguments()).containsEntry("city", "Prague");
+                });
+            });
+            assertThat(modelCard.getModelInfo()).containsEntry("general.architecture", "granite");
+            assertThat(modelCard.getProjectorInfo()).containsEntry("projector.type", "clip");
+            assertThat(modelCard.getTensors()).singleElement().satisfies(tensor -> {
+                assertThat(tensor.getName()).isEqualTo("token_embd.weight");
+                assertThat(tensor.getType()).isEqualTo("F16");
+                assertThat(tensor.getShape()).containsExactly(4096L, 32000L);
+            });
 
             RunningOllamaModel runningModel = models.runningModels().content().get(0);
             assertThat(runningModel.getName()).isEqualTo("granite-code:latest");
@@ -310,6 +397,7 @@ public class Langchain4j_ollamaTest {
         STREAMING_CHAT,
         STREAMING_COMPLETION,
         EMBEDDING,
+        IMAGE,
         COMPLETION,
         MODEL_MANAGEMENT
     }
@@ -366,6 +454,7 @@ public class Langchain4j_ollamaTest {
                     case STREAMING_CHAT -> streamingChatResponse();
                     case STREAMING_COMPLETION -> streamingCompletionResponse();
                     case EMBEDDING -> embeddingResponse();
+                    case IMAGE -> imageResponse();
                     case COMPLETION -> completionResponse();
                     case MODEL_MANAGEMENT -> modelManagementResponse(requestPath);
                 };
@@ -433,6 +522,17 @@ public class Langchain4j_ollamaTest {
                     """.trim();
         }
 
+        private static String imageResponse() {
+            return """
+                    {
+                      "model": "ollama-image-test",
+                      "created_at": "2026-01-02T03:04:05Z",
+                      "image": "aW1hZ2UtYnl0ZXM=",
+                      "done": true
+                    }
+                    """.trim();
+        }
+
         private static String completionResponse() {
             return """
                     {
@@ -463,7 +563,26 @@ public class Langchain4j_ollamaTest {
                         {
                           "license":"Apache-2.0",
                           "modelfile":"FROM granite-code",
+                          "parameters":"temperature 0.2",
+                          "template":"{{ .Prompt }}",
+                          "system":"Answer concisely",
                           "details":{"family":"granite","parameter_size":"8B"},
+                          "messages":[{
+                            "role":"ASSISTANT",
+                            "content":"Calling the weather tool",
+                            "thinking":"Need current weather",
+                            "images":["aW1hZ2U="],
+                            "tool_calls":[{"function":{
+                              "index":0,
+                              "name":"weather",
+                              "arguments":{"city":"Prague"}
+                            }}],
+                            "tool_name":"weather"
+                          }],
+                          "model_info":{"general.architecture":"granite"},
+                          "projector_info":{"projector.type":"clip"},
+                          "tensors":[{"name":"token_embd.weight","type":"F16","shape":[4096,32000]}],
+                          "modified_at":"2026-01-02T03:05:00Z",
                           "capabilities":["completion","tools"]
                         }
                         """.trim();
