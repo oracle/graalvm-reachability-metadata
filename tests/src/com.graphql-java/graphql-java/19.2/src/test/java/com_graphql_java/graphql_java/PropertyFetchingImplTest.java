@@ -44,6 +44,13 @@ public class PropertyFetchingImplTest {
     }
 
     @Test
+    void invokesInterfaceGetterOnNonPublicImplementation() throws Exception {
+        assertThat(PropertyDataFetcher.<String>fetching("label")
+                        .get(environmentFor(new InterfaceBackedSource())))
+                .isEqualTo("interface value");
+    }
+
+    @Test
     void readsPublicAndPrivateFieldsFromCache() throws Exception {
         PropertyDataFetcher<String> publicFetcher = PropertyDataFetcher.fetching("publicField");
         PublicFieldSource publicSource = new PublicFieldSource();
@@ -83,6 +90,14 @@ public class PropertyFetchingImplTest {
             return "private getter value";
         }
     }
+
+    public interface LabelSource {
+        default String getLabel() {
+            return "interface value";
+        }
+    }
+
+    private static class InterfaceBackedSource implements LabelSource {}
 
     public static class PublicFieldSource {
         public final String publicField = "public field value";
