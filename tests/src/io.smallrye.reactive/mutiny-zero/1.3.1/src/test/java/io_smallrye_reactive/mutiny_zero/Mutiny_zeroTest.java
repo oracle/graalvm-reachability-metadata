@@ -172,6 +172,24 @@ public class Mutiny_zeroTest {
     }
 
     @Test
+    public void signalsTransformationFailuresToSubscribers() throws Exception {
+        IllegalStateException failure = new IllegalStateException("transformation failed");
+        Flow.Publisher<Integer> transformed = new Transform<>(ZeroPublisher.fromItems(1, 2, 3), value -> {
+            if (value == 2) {
+                throw failure;
+            }
+            return value * 10;
+        });
+        RecordingSubscriber<Integer> subscriber = new RecordingSubscriber<>();
+
+        transformed.subscribe(subscriber);
+        subscriber.request(Long.MAX_VALUE);
+
+        assertEquals(List.of(10), subscriber.items());
+        assertSame(failure, subscriber.awaitFailure());
+    }
+
+    @Test
     public void preservesDemandWhileConcatenatingPublishers() throws Exception {
         Flow.Publisher<Integer> concatenated = new Concatenate<>(List.of(
                 ZeroPublisher.fromItems(1, 2),
