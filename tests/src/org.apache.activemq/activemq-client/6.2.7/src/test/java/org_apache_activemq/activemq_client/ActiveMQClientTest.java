@@ -114,17 +114,13 @@ public class ActiveMQClientTest {
     }
 
     @AfterAll
-    void tearDown() {
+    void tearDown() throws Exception {
         if (brokerService != null) {
             logger.info("Stopping embedded ActiveMQ broker ...");
             if (!brokerService.isStopped()) {
-                try {
-                    brokerService.stop();
-                } catch (Exception ex) {
-                    logger.warn("Failed to stop embedded ActiveMQ broker", ex);
-                }
+                brokerService.stop();
             }
-            brokerService.waitUntilStopped();
+            assertThat(brokerService.isStopped()).isTrue();
             logger.info("Stopped embedded ActiveMQ broker");
         }
     }
