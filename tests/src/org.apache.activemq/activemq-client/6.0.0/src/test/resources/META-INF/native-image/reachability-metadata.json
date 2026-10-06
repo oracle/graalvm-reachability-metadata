@@ -1,18 +1,4 @@
 {
-  "resources" : [
-    {
-      "glob" : "logback-test.xml"
-    },
-    {
-      "glob" : "logback.xml"
-    },
-    {
-      "condition" : {
-        "typeReached" : "org.apache.activemq.ActiveMQSslConnectionFactory"
-      },
-      "glob" : "activemq/ssl/client-keystore.p12"
-    }
-  ],
   "reflection" : [
     {
       "condition" : {
@@ -41,6 +27,51 @@
           "parameterTypes" : [ ]
         }
       ]
+    },
+    {
+      "condition" : {
+        "typeReached" : "org.apache.activemq.util.ClassLoadingAwareObjectInputStream"
+      },
+      "type" : "org_apache_activemq.activemq_client.ClassLoadingAwareObjectInputStreamTest$Greeting"
+    },
+    {
+      "condition" : {
+        "typeReached" : "org.apache.activemq.wireformat.ObjectStreamWireFormat"
+      },
+      "type" : "org_apache_activemq.activemq_client.ClassLoadingAwareObjectInputStreamTest$GreetingHandler",
+      "serializable" : true
+    },
+    {
+      "condition" : {
+        "typeReached" : "org.apache.activemq.util.ClassLoadingAwareObjectInputStream"
+      },
+      "type" : {
+        "proxy" : [
+          "org_apache_activemq.activemq_client.ClassLoadingAwareObjectInputStreamTest$Greeting"
+        ]
+      }
+    },
+    {
+      "condition" : {
+        "typeReached" : "org.apache.activemq.wireformat.ObjectStreamWireFormat"
+      },
+      "type" : {
+        "proxy" : [
+          "org_apache_activemq.activemq_client.ClassLoadingAwareObjectInputStreamTest$Greeting"
+        ]
+      },
+      "serializable" : true
+    }
+  ],
+  "resources" : [
+    {
+      "glob" : "logback.xml"
+    },
+    {
+      "condition" : {
+        "typeReached" : "org.apache.activemq.ActiveMQSslConnectionFactory"
+      },
+      "glob" : "activemq/ssl/client-keystore.p12"
     }
   ]
 }
