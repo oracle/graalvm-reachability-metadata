@@ -3,6 +3,12 @@
 Rendered by Forge from the pre-push branch review of §FS-local-branch-review.
 Newest entry first; every non-approval is recorded, including one a repair later cleared.
 
+## 2026-10-06 — org.eclipse.paho:org.eclipse.paho.mqttv5.client:1.2.5 (#10516)
+
+**Generated test configuration exceeded timeout and module-opening limits**
+
+Mqttv5ClientTest allowed broker startup to wait 120 seconds, violating the 60-second per-test bound in FS-test-contract.1.6. The build also opened sun.nio.ch to JVM and Native Image without satisfying the uniform-necessity rule in FS-test-contract.2.7; Java testing and all three finalization lanes passed after that opening was removed. The narrower java.net opening remains justified: removing it reproducibly failed NetworkModuleServiceTest with InaccessibleObjectException in the library's NetworkModuleService.setURIField path.
+
 ## 2026-10-05 — org.flywaydb:flyway-core:10.15.0 (#10518)
 
 **Dynamic-access classes lacked dedicated test files**
