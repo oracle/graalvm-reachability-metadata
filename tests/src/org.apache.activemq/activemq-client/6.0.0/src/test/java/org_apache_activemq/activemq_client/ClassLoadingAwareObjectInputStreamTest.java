@@ -6,10 +6,10 @@
  */
 package org_apache_activemq.activemq_client;
 
-import org.apache.activemq.command.ActiveMQObjectMessage;
 import org.apache.activemq.command.ActiveMQQueue;
 import org.apache.activemq.util.ByteArrayInputStream;
 import org.apache.activemq.util.ByteSequence;
+import org.apache.activemq.util.ClassLoadingAwareObjectInputStream;
 import org.apache.activemq.wireformat.ObjectStreamWireFormat;
 import org.junit.jupiter.api.Test;
 
@@ -51,23 +51,32 @@ public class ClassLoadingAwareObjectInputStreamTest {
     }
 
     @Test
-    void restoresObjectMessageProxyWithTheLibraryClassLoader() throws Exception {
+    void restoresProxyWithTheThreadContextClassLoader() throws Exception {
+        Greeting restored = restoreProxy(ClassLoadingAwareObjectInputStreamTest.class.getClassLoader());
+
+        assertThat(restored.greet("context loader")).isEqualTo("Hello, context loader");
+    }
+
+    @Test
+    void restoresProxyWithTheInputClassLoader() throws Exception {
+        Greeting restored = restoreProxy(null);
+
+        assertThat(restored.greet("input loader")).isEqualTo("Hello, input loader");
+    }
+
+    private static Greeting restoreProxy(ClassLoader contextClassLoader) throws Exception {
         Greeting original = (Greeting) Proxy.newProxyInstance(
                 ClassLoadingAwareObjectInputStreamTest.class.getClassLoader(),
                 new Class<?>[] {Greeting.class},
                 new GreetingHandler("Hello"));
-        ActiveMQObjectMessage message = new ActiveMQObjectMessage();
-        message.setTrustAllPackages(true);
-        message.setObject(original);
-        message.storeContentAndClear();
-
+        ByteSequence encoded = new ObjectStreamWireFormat().marshal(original);
         Thread thread = Thread.currentThread();
         ClassLoader originalClassLoader = thread.getContextClassLoader();
-        try {
-            thread.setContextClassLoader(null);
-            Greeting restored = (Greeting) message.getObject();
-
-            assertThat(restored.greet("ActiveMQ")).isEqualTo("Hello, ActiveMQ");
+        try (ClassLoadingAwareObjectInputStream input =
+                new ClassLoadingAwareObjectInputStream(new ByteArrayInputStream(encoded))) {
+            input.setTrustAllPackages(true);
+            thread.setContextClassLoader(contextClassLoader);
+            return (Greeting) input.readObject();
         } finally {
             thread.setContextClassLoader(originalClassLoader);
         }
