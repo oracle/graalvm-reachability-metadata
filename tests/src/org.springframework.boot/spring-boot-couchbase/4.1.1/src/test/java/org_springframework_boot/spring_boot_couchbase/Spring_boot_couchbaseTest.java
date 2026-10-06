@@ -141,6 +141,21 @@ public class Spring_boot_couchbaseTest {
     }
 
     @Test
+    void autoConfigurationUsesUserProvidedConnectionDetailsWithoutProperties() {
+        TestCouchbaseConnectionDetails connectionDetails = new TestCouchbaseConnectionDetails();
+        try (AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext()) {
+            context.registerBean(CouchbaseConnectionDetails.class, () -> connectionDetails);
+            context.register(CouchbaseAutoConfiguration.class);
+            context.refresh();
+
+            assertThat(context.getBean(CouchbaseConnectionDetails.class)).isSameAs(connectionDetails);
+            assertThat(context.getBean(Authenticator.class)).isInstanceOf(PasswordAuthenticator.class);
+            assertThat(context.getBean(ClusterEnvironment.class)).isNotNull();
+            assertThat(context.getBean(Cluster.class)).isNotNull();
+        }
+    }
+
+    @Test
     void autoConfigurationUsesTheApplicationObjectMapperForCouchbaseDocuments() {
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.setPropertyNamingStrategy(PropertyNamingStrategies.SNAKE_CASE);
@@ -181,6 +196,25 @@ public class Spring_boot_couchbaseTest {
         assertThat(properties.getEnv().getTimeouts().getDisconnect()).isEqualTo(Duration.ofSeconds(10));
         assertThat(properties.getEnv().getTimeouts().getKeyValueDurable()).isEqualTo(Duration.ofSeconds(10));
         assertThat(properties.getEnv().getTimeouts().getQuery()).isEqualTo(Duration.ofSeconds(75));
+    }
+
+    public static final class TestCouchbaseConnectionDetails implements CouchbaseConnectionDetails {
+
+        @Override
+        public String getConnectionString() {
+            return "couchbase://127.0.0.1";
+        }
+
+        @Override
+        public String getUsername() {
+            return "service-connection";
+        }
+
+        @Override
+        public String getPassword() {
+            return "connection-secret";
+        }
+
     }
 
     public static final class CouchbaseDocument {
