@@ -18,6 +18,7 @@ from utility_scripts.code_coverage_model import MethodRef
 from utility_scripts.code_coverage_profile_counters import InstrumentedCounters
 from utility_scripts.code_coverage_profile_flow import (
     Branch,
+    DeadRegion,
     MethodFlow,
     load_library_flow,
 )
@@ -139,25 +140,33 @@ class ExtractorControlFlowTests(unittest.TestCase):
         self.assertEqual(len(switch.synthetic), 1)
         self.assertEqual(len(switch.reachable_successors), 2)
 
-    def test_loop_condition_does_not_reach_through_its_own_back_edge(self) -> None:
+    def test_a_never_entered_loop_body_forks_at_the_condition(self) -> None:
         signature: str = "loop(int):int"
         flow: MethodFlow = self._flow(signature)
         lines: tuple[tuple[int, int], ...] = self._lines[f"{_OWNER}#{signature}"]
         (condition,) = flow.branches
         body_bci: int = next(bci for bci, line in lines if line == 34)
-        reaching: list[bool] = [
-            flow.reaches(successor, body_bci, (condition.bci,)) for successor in condition.successors
-        ]
-        self.assertEqual(sorted(reaching), [False, True])
+        region: DeadRegion | None = flow.dead_region(
+            body_bci, lambda branch: None, lambda bci: line_at(lines, bci) != 34
+        )
+        assert region is not None
+        body_block: int | None = flow.block_of(body_bci)
+        self.assertEqual(region.forks, ((condition, body_block),))
+        self.assertEqual(
+            [successor in region.blocks for successor in condition.successors],
+            [successor == body_block for successor in condition.successors],
+        )
 
-    def test_exception_edges_reach_the_handler_from_both_sides(self) -> None:
+    def test_exception_edges_into_a_handler_are_not_walked(self) -> None:
         signature: str = "guarded(java.lang.String):int"
         flow: MethodFlow = self._flow(signature)
         lines: tuple[tuple[int, int], ...] = self._lines[f"{_OWNER}#{signature}"]
-        (condition,) = flow.branches
         handler_bci: int = next(bci for bci, line in lines if line == 45)
-        for successor in condition.successors:
-            self.assertTrue(flow.reaches(successor, handler_bci, (condition.bci,)))
+        region: DeadRegion | None = flow.dead_region(
+            handler_bci, lambda branch: None, lambda bci: line_at(lines, bci) != 45
+        )
+        assert region is not None
+        self.assertEqual(region.forks, ())
 
     def test_straight_line_methods_have_no_row(self) -> None:
         self.assertNotIn(f"{_OWNER}#straight():int", self._flows)
@@ -171,18 +180,72 @@ def _flow(branches: list[tuple[int, tuple[int, ...]]], blocks: dict[int, tuple[i
     )
 
 
-class ReachabilityTests(unittest.TestCase):
+class DeadRegionTests(unittest.TestCase):
+    """The backward walk on hand-built tables (§AR-code-coverage-deep-navigation.3.2)."""
 
-    def test_back_edge_into_the_branch_block_reaches_code_before_the_branch(self) -> None:
-        # do { target(); } while (cond); target at bci 2, the branch at bci 6.
-        flow: MethodFlow = _flow([(6, (0, 9))], {0: (0, 9), 9: ()})
-        self.assertTrue(flow.reaches(0, 2, (6,)))
-        self.assertFalse(flow.reaches(9, 2, (6,)))
+    # Block 0 `if` (bci 2) -> 3 or 6. Block 3 sits in a `try` whose handler
+    # starts at 12; it and the handler fall into the call block 9, block 6
+    # returns.
+    FLOW: MethodFlow = _flow(
+        [(2, (3, 6))], {0: (3, 6), 3: (9, 12), 6: (), 9: (), 12: (9,)},
+    )
+
+    def test_predecessors_invert_the_successor_table(self) -> None:
+        self.assertEqual(self.FLOW.predecessors(), {3: (0,), 6: (0,), 9: (3, 12), 12: (3,)})
+
+    def test_a_branch_that_ran_forks_into_the_dead_arm(self) -> None:
+        counts = {2: {3: 0, 6: 8}}
+        region: DeadRegion | None = self.FLOW.dead_region(
+            10, lambda branch: counts.get(branch.bci), lambda bci: None
+        )
+        assert region is not None
+        self.assertEqual(region.blocks, {9, 3, 12})
+        self.assertEqual(region.forks, ((self.FLOW.branches[0], 3),))
+
+    def test_the_handler_is_entered_only_by_an_exception_edge(self) -> None:
+        # Block 3's first successor is its normal exit; the handler is not.
+        self.assertEqual(self.FLOW.normal_successors(3), (9,))
+        region: DeadRegion | None = self.FLOW.dead_region(
+            12, lambda branch: None, lambda bci: True
+        )
+        assert region is not None
+        self.assertEqual((region.blocks, region.forks), ({12}, ()))
+
+    def test_a_positive_count_into_a_dead_block_stops_the_walk(self) -> None:
+        counts = {2: {3: 5, 6: 0}}
+        region: DeadRegion | None = self.FLOW.dead_region(
+            4, lambda branch: counts.get(branch.bci), lambda bci: None
+        )
+        assert region is not None
+        self.assertEqual((region.blocks, region.forks), ({3}, ()))
+
+    def test_a_branch_whose_every_arm_is_dead_is_no_fork(self) -> None:
+        # Both arms end in the never-run call block: the branch ran and left
+        # by an exception, so it decided nothing.
+        flow: MethodFlow = _flow([(2, (3, 6))], {0: (3, 6), 3: (9,), 6: (9,), 9: ()})
+        counts = {2: {3: 9, 6: 0}}
+        region: DeadRegion | None = flow.dead_region(
+            10, lambda branch: counts.get(branch.bci), lambda bci: None
+        )
+        assert region is not None
+        self.assertEqual((region.blocks, region.forks), ({3, 6, 9}, ()))
+
+    def test_without_a_counter_the_walk_passes_a_covered_branch_whose_arms_are_dead(self) -> None:
+        flow: MethodFlow = _flow([(2, (3, 6))], {0: (3, 6), 3: (9,), 6: (9,), 9: ()})
+        region: DeadRegion | None = flow.dead_region(10, lambda branch: None, lambda bci: True)
+        assert region is not None
+        self.assertEqual((region.blocks, region.forks), ({0, 3, 6, 9}, ()))
+
+    def test_unknown_liveness_stops_the_walk(self) -> None:
+        flow: MethodFlow = _flow([(2, (3, 6))], {0: (3, 6), 3: (9,), 6: (9,), 9: ()})
+        region: DeadRegion | None = flow.dead_region(10, lambda branch: None, lambda bci: None)
+        assert region is not None
+        self.assertEqual((region.blocks, region.forks), ({3, 6, 9}, ()))
 
     def test_block_lookup_before_the_first_block_is_absent(self) -> None:
         flow: MethodFlow = _flow([(2, (3, 5))], {1: (3, 5), 3: (), 5: ()})
         self.assertIsNone(flow.block_of(0))
-        self.assertFalse(flow.reaches(0, 3, (2,)))
+        self.assertIsNone(flow.dead_region(0, lambda branch: None, lambda bci: None))
 
 
 class ControlFlowForkTests(unittest.TestCase):
@@ -263,12 +326,12 @@ class ControlFlowForkTests(unittest.TestCase):
         fork: dict = self._classify()["fork"]
         self.assertEqual((fork["line"], fork["evidence"]), (3, "control-flow"))
 
-    def test_a_loop_does_not_re_enter_an_or_condition_around_its_barrier(self) -> None:
+    def test_a_loop_does_not_carry_the_walk_around_an_or_condition(self) -> None:
         # h2 `Tokenizer.tokenize`: a loop headed at bci 0 holds, on line 2,
         # `if (c2 == 'X' || c2 == 'x') { readHexNumber(); continue; }`. Block 3
         # tests 'X', block 7 tests 'x', both jump to the call block 10, and the
-        # else side at 20 loops back through block 3, which a one-block barrier
-        # around block 7 lets it pass.
+        # else side at 20 loops back through block 3. The walk never leaves the
+        # dead call block, so the loop cannot carry it around.
         self.flow = _flow(
             [(1, (3, 30)), (6, (7, 10)), (9, (10, 20))],
             {0: (3, 30), 3: (7, 10), 7: (10, 20), 10: (0,), 20: (0,), 30: ()},
@@ -295,6 +358,45 @@ class ControlFlowForkTests(unittest.TestCase):
             ],
             [[(2, 54, False), (3, 0, True)], [(3, 0, True), (4, 54, False)]],
         )
+
+    def test_a_conditional_argument_on_the_call_line_does_not_hide_the_guard(self) -> None:
+        # `if (ok) target(flag ? 1 : 2);` on line 3: the `if` at bci 2 and the
+        # ternary at bci 5 share the line, and only the `if` ever ran.
+        self.lines = {self.CALLER.canonical_id: ((0, 3), (20, 4))}
+        self.jacoco_lines["example/Router.java"][3] = JacocoLineCoverage(mi=6, ci=3, mb=3, cb=1)
+        counters = InstrumentedCounters(branches={
+            (self.CALLER.canonical_id, 2): {3: 0, 20: 7},
+            (self.CALLER.canonical_id, 5): {6: 0, 8: 0},
+        })
+        classification: dict = self._classify(counters)
+        self.assertEqual(classification["kind"], "fork-not-taken")
+        fork: dict = classification["fork"]
+        self.assertEqual((fork["line"], fork["evidence"], fork["reach"]), (3, "control-flow", 7))
+        self.assertEqual(
+            [
+                [(successor["line"], successor["count"], successor["reachesTarget"])
+                 for successor in branch["successors"]]
+                for branch in fork["branches"]
+            ],
+            [[(3, 0, True), (4, 7, False)], [(3, 0, True), (3, 0, True)]],
+        )
+
+    def test_a_branch_whose_arms_both_end_in_the_dead_call_is_no_fork(self) -> None:
+        # `if (c) { foo(); } else { bar(); } target();` where `foo` always
+        # threw: the `if` ran, yet neither arm avoids the never-run call.
+        self.flow = _flow([(2, (3, 6))], {0: (3, 6), 3: (9,), 6: (9,), 9: ()})
+        self.lines = {self.CALLER.canonical_id: ((0, 1), (3, 2), (6, 3), (9, 4))}
+        self.edge["bci"] = "10"
+        self.edge["source_line"] = 4
+        self.jacoco_lines["example/Router.java"] = {
+            1: JacocoLineCoverage(mi=0, ci=3, mb=1, cb=1),
+            2: JacocoLineCoverage(mi=0, ci=2, mb=0, cb=0),
+            3: JacocoLineCoverage(mi=2, ci=0, mb=0, cb=0),
+            4: JacocoLineCoverage(mi=2, ci=0, mb=0, cb=0),
+        }
+        counters = InstrumentedCounters(branches={(self.CALLER.canonical_id, 2): {3: 9, 6: 0}})
+        self.assertEqual(self._classify(counters)["kind"], "no-fork")
+        self.assertEqual(self._classify()["kind"], "no-fork")
 
 
 class ForkRenderingTests(unittest.TestCase):

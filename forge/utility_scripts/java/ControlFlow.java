@@ -161,6 +161,9 @@ final class ControlFlow {
         return plumbing;
     }
 
+    /// Basic blocks with their successors in a fixed order: jump targets, then
+    /// the fall-through, then the handlers of every `try` covering the block.
+    /// The analyzer reads a block's normal exit from that order.
     private String blocks() {
         Set<Integer> leaders = new TreeSet<>(List.of(0));
         for (Positioned positioned : instructions) {

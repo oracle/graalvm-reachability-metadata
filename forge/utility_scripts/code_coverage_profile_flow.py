@@ -6,15 +6,16 @@
 """Bytecode control-flow tables for the deep-method report.
 
 Loads the extractor's `flow.csv` and answers the one question a fork hint
-needs: which successors of a branch can still reach a given call
-(§AR-code-coverage-deep-navigation.1.3).
+needs: which branches that ran never entered the never-executed region around
+a given call (§AR-code-coverage-deep-navigation.1.3,
+§AR-code-coverage-deep-navigation.3.2).
 """
 
 from __future__ import annotations
 
 import bisect
 import csv
-from collections.abc import Iterable
+from collections.abc import Callable
 from dataclasses import dataclass
 
 from utility_scripts.code_coverage_profile_inputs import ProfileFormatError
@@ -39,45 +40,134 @@ class Branch:
 
 
 @dataclass(frozen=True)
+class DeadRegion:
+    """The never-executed blocks around an invoke, and the forks into them.
+
+    `forks` pairs each branch that ran with the successor bci through which it
+    never entered the region (§AR-code-coverage-deep-navigation.3.2).
+    """
+
+    blocks: frozenset[int]
+    forks: tuple[tuple[Branch, int], ...]
+
+
+@dataclass(frozen=True)
 class MethodFlow:
     """Branches and basic blocks of one method body."""
 
     branches: tuple[Branch, ...]
     #: Sorted block start bcis; a block covers `[start, next start)`.
     block_starts: tuple[int, ...]
+    #: Successors in the extractor's order: jump targets, then the
+    #: fall-through, then the handlers of every `try` covering the block.
     block_successors: dict[int, tuple[int, ...]]
 
     def block_of(self, bci: int) -> int | None:
         index: int = bisect.bisect_right(self.block_starts, bci) - 1
         return self.block_starts[index] if index >= 0 else None
 
-    def reaches(self, start_bci: int, target_bci: int, barrier_bcis: Iterable[int]) -> bool:
-        """Whether control entering at `start_bci` can reach `target_bci`.
+    def branch_in(self, block: int) -> Branch | None:
+        """The branch instruction that ends `block`, if any."""
+        return next((branch for branch in self.branches if self.block_of(branch.bci) == block), None)
 
-        The walk never passes back through the block of any of `barrier_bcis`,
-        the fork line's branches: a successor that loops to the line would
-        otherwise reach everything the line reaches, so a loop header would
-        control nothing, and `a || b`, one block per condition, would let a
-        loop re-enter through the other one (§AR-code-coverage-deep-navigation.3.2).
+    def normal_successors(self, block: int) -> tuple[int, ...]:
+        """Successors reached without an exception.
+
+        A block without a branch instruction leaves normally through its first
+        successor only; the rest are exception edges. A block ending in a
+        return or throw inside a `try` is read the same way, which is the
+        exception case the walk does not yet model.
         """
-        target_block: int | None = self.block_of(target_bci)
-        barriers: set[int | None] = {self.block_of(bci) for bci in barrier_bcis}
-        start: int | None = self.block_of(start_bci)
-        if target_block is None or start is None:
-            return False
-        visited: set[int] = set()
-        pending: list[int] = [start]
-        while pending:
-            block: int = pending.pop()
-            if block in visited:
-                continue
-            visited.add(block)
-            if block == target_block:
-                return True
-            if block in barriers:
-                continue
-            pending.extend(self.block_successors.get(block, ()))
-        return False
+        branch: Branch | None = self.branch_in(block)
+        if branch is not None:
+            return branch.successors
+        return self.block_successors.get(block, ())[:1]
+
+    def predecessors(self) -> dict[int, tuple[int, ...]]:
+        inverted: dict[int, list[int]] = {}
+        for block, successors in self.block_successors.items():
+            for successor in successors:
+                inverted.setdefault(successor, []).append(block)
+        return {block: tuple(sorted(blocks)) for block, blocks in inverted.items()}
+
+    def dead_region(
+            self,
+            target_bci: int,
+            branch_counts: Callable[[Branch], dict[int, int] | None],
+            line_ran: Callable[[int], bool | None],
+    ) -> DeadRegion | None:
+        """Walk backwards from `target_bci` through blocks that never executed.
+
+        A block ran when its branch counter is positive, or without a counter
+        when `line_ran` says JaCoCo covers its branch's line; a block without a
+        branch instruction is dead when its only normal exit is. The walk stops
+        at a block that ran, at contradictory evidence — a positive count into
+        a block believed dead — and at unknown liveness, and never follows an
+        exception edge. A block that ran but whose every real successor is
+        dead left by an exception and is no fork; without a counter it cannot
+        be told from a block that never ran, so the walk passes through it
+        (§AR-code-coverage-deep-navigation.3.2).
+        """
+        target: int | None = self.block_of(target_bci)
+        if target is None:
+            return None
+        predecessors: dict[int, tuple[int, ...]] = self.predecessors()
+        dead: set[int] = {target}
+        pending: list[int] = [target]
+        #: Block that ran -> the dead successors it never entered.
+        edges: dict[int, set[int]] = {}
+        #: Blocks that ran by JaCoCo's line status alone.
+        soft: set[int] = set()
+
+        def expand() -> None:
+            while pending:
+                block: int = pending.pop()
+                for predecessor in predecessors.get(block, ()):
+                    if predecessor in dead or block not in self.normal_successors(predecessor):
+                        continue
+                    branch: Branch | None = self.branch_in(predecessor)
+                    if branch is None:
+                        dead.add(predecessor)
+                        pending.append(predecessor)
+                        continue
+                    counts: dict[int, int] | None = branch_counts(branch)
+                    if counts is None:
+                        ran: bool | None = line_ran(branch.bci)
+                        if ran:
+                            soft.add(predecessor)
+                    else:
+                        ran = sum(counts.values()) > 0
+                        if ran and counts.get(block, 0) > 0:
+                            continue
+                    if ran is None:
+                        continue
+                    if not ran:
+                        dead.add(predecessor)
+                        pending.append(predecessor)
+                        continue
+                    edges.setdefault(predecessor, set()).add(block)
+
+        expand()
+        while True:
+            passable: list[int] = [
+                block for block in soft
+                if all(successor in dead for successor in self.normal_successors(block))
+            ]
+            if not passable:
+                break
+            for block in passable:
+                soft.discard(block)
+                edges.pop(block, None)
+                dead.add(block)
+                pending.append(block)
+            expand()
+        forks: list[tuple[Branch, int]] = []
+        for block in sorted(edges):
+            branch = self.branch_in(block)
+            assert branch is not None
+            if any(successor not in dead for successor in branch.reachable_successors):
+                forks.extend((branch, successor) for successor in sorted(edges[block]))
+        return DeadRegion(blocks=frozenset(dead), forks=tuple(forks))
 
 
 def _parse_branch(entry: str) -> Branch:

@@ -19,7 +19,7 @@ import sys
 from utility_scripts.code_coverage_jacoco import JacocoLineCoverage, JacocoMethodCoverage
 from utility_scripts.code_coverage_model import MethodRef
 from utility_scripts.code_coverage_profile_counters import SiteDispatch, site_dispatch
-from utility_scripts.code_coverage_profile_flow import Branch, MethodFlow
+from utility_scripts.code_coverage_profile_flow import Branch, DeadRegion, MethodFlow
 from utility_scripts.code_coverage_profile_graph import CallGraph, translated_ref
 from utility_scripts.code_coverage_profile_inputs import line_at
 from utility_scripts.code_coverage_profile_navigation import NavigationEvidence
@@ -172,12 +172,15 @@ def _inferred_invoking_line(edge: dict, region: list[LineRecord]) -> LineRecord 
 def _branch_to_json(
         branch: Branch,
         flow: MethodFlow,
-        invoke_bci: int,
+        dead: frozenset[int],
         lines: tuple[tuple[int, int], ...],
         counts: dict[int, int] | None,
-        barrier_bcis: tuple[int, ...],
 ) -> dict:
-    """One branch with each successor's landing line, count, and target reach."""
+    """One branch with each successor's landing line, count, and target reach.
+
+    A successor reaches the target when it lands in the never-executed region
+    around the invoke (§AR-code-coverage-deep-navigation.3.2).
+    """
     return {
         "bci": branch.bci,
         "blockStart": flow.block_of(branch.bci),
@@ -187,26 +190,11 @@ def _branch_to_json(
                 "bci": successor,
                 "line": line_at(lines, successor),
                 "count": counts.get(successor) if counts is not None else None,
-                "reachesTarget": flow.reaches(successor, invoke_bci, barrier_bcis),
+                "reachesTarget": flow.block_of(successor) in dead,
             }
             for successor in branch.reachable_successors
         ],
     }
-
-
-def _controls(branch: dict) -> bool:
-    """Whether a branch decides the invoke, and could be why it never ran.
-
-    Some successors must reach the invoke and some must not; a branch whose
-    target-reaching successors all ran is not the reason the target did not
-    (§AR-code-coverage-deep-navigation.3.2).
-    """
-    reaching: list[dict] = [
-        successor for successor in branch["successors"] if successor["reachesTarget"]
-    ]
-    if not reaching or len(reaching) == len(branch["successors"]):
-        return False
-    return not all((successor["count"] or 0) > 0 for successor in reaching)
 
 
 def _controlling_fork(
@@ -214,13 +202,15 @@ def _controlling_fork(
         edge: dict,
         target_line: int | None,
         candidates: list[LineRecord],
+        line_status: dict[int, JacocoLineCoverage],
         evidence: NavigationEvidence,
 ) -> tuple[LineRecord | None, list[dict]] | None:
-    """The nearest candidate line holding a branch that controls the invoke.
+    """The nearest candidate line holding a branch that forks into the dead
+    region around the invoke (§AR-code-coverage-deep-navigation.3.2).
 
     `None` when the caller has no control-flow or line table, so the fork falls
     back to line order; `(None, [])` when the table proves that no candidate
-    line controls the invoke.
+    line forks into the region.
     """
     flow: MethodFlow | None = (
         evidence.flows.get(caller.canonical_id) if evidence.flows is not None else None
@@ -232,32 +222,32 @@ def _controlling_fork(
         return None
     if flow is None or not lines:
         return None
+
+    def branch_counts(branch: Branch) -> dict[int, int] | None:
+        if evidence.counters is None:
+            return None
+        return evidence.counters.branches.get((caller.canonical_id, branch.bci))
+
+    def line_ran(bci: int) -> bool | None:
+        line: int | None = line_at(lines, bci)
+        return line_status[line].covered if line in line_status else None
+
+    region: DeadRegion | None = flow.dead_region(invoke_bci, branch_counts, line_ran)
+    if region is None:
+        return None
+    fork_bcis: set[int] = {branch.bci for branch, _ in region.forks}
     for record in candidates:
         line_branches: list[Branch] = [
             branch for branch in flow.branches
             if not branch.plumbing and line_at(lines, branch.bci) == record[0]
-        ]
-        # Every branch on the line bars the walk, not only the one judged
-        # (§AR-code-coverage-deep-navigation.3.2).
-        barrier_bcis: tuple[int, ...] = tuple(branch.bci for branch in line_branches)
-        branches: list[dict] = [
-            _branch_to_json(
-                branch,
-                flow,
-                invoke_bci,
-                lines,
-                (
-                    evidence.counters.branches.get((caller.canonical_id, branch.bci))
-                    if evidence.counters is not None else None
-                ),
-                barrier_bcis,
-            )
-            for branch in line_branches
             # On the invoking line only a branch before the call can decide it.
-            if record[0] != target_line or branch.bci < invoke_bci
+            and (record[0] != target_line or branch.bci < invoke_bci)
         ]
-        if any(_controls(branch) for branch in branches):
-            return record, branches
+        if any(branch.bci in fork_bcis for branch in line_branches):
+            return record, [
+                _branch_to_json(branch, flow, region.blocks, lines, branch_counts(branch))
+                for branch in line_branches
+            ]
     return None, []
 
 
@@ -365,6 +355,7 @@ def edge_miss_classification(
             edge,
             target_record[0] if target_record is not None else None,
             [*same_line, *forks_above],
+            dict(region),
             evidence,
         ) if caller is raw_caller else None
         if traced is not None:
