@@ -169,20 +169,34 @@ For one call site the decision runs as follows; the sections below give each
 step's rules.
 
 ```mermaid
-flowchart TD
-    S[call site of the target<br/>caller covered by JaCoCo] --> D{invoking line covered<br/>and several implementations?}
-    D -- yes --> DE[dispatched-elsewhere §3.1]
-    D -- no --> W[walk back from the invoke's block<br/>through blocks that never ran]
-    W --> E{edge into the dead region<br/>from a block that ran}
-    E -- "branch, zero count into the region" --> F[fork edge]
-    E -- "exception edge from a live try" --> C[catch boundary]
-    E -- "positive count into the region,<br/>or liveness unknown" --> X[stop, no edge]
-    F --> L{fork on a covered line with a missed branch,<br/>at or above the invoking line?}
-    L -- yes --> FT[fork-not-taken §3.2<br/>hint: that line's successors, dead ones marked]
-    L -- no --> N
-    C --> N{any catch boundary?}
-    N -- yes --> NC[no-fork §3.3<br/>hint: handler type, raising try lines with counts]
-    N -- no --> NF[no-fork §3.3<br/>hint: nearest covered line]
+sequenceDiagram
+    participant M as miss classifier
+    participant G as call graph
+    participant J as JaCoCo lines
+    participant F as control-flow table
+    participant P as PGO counters
+    M->>G: call sites of the target
+    M->>J: caller covered? invoking line status, candidate implementations
+    alt invoking line covered and several implementations
+        M-->>M: dispatched-elsewhere (§3.1)
+    else
+        M->>F: dead region around the invoke's block
+        loop each edge into the region
+            F->>P: branch counter of the source block (JaCoCo line without one)
+            Note over F,P: never ran: extend the region · zero count into it: fork edge<br/>live try, exception edge: catch boundary · positive count or unknown: stop
+        end
+        F-->>M: forks, catch boundaries, dead blocks
+        M->>J: covered lines with a missed branch, at or above the invoking line
+        alt a fork lies on such a line
+            M->>P: counts of that line's successors
+            M-->>M: fork-not-taken (§3.2), dead successors marked
+        else catch boundaries exist
+            M->>F: per-block counts of the try lines that can raise
+            M-->>M: no-fork (§3.3) with handler type and raising lines
+        else
+            M-->>M: no-fork (§3.3) with the nearest covered line
+        end
+    end
 ```
 
 ### 3.1 Dispatched elsewhere
