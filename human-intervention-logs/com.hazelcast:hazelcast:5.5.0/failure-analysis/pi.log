@@ -1,0 +1,19 @@
+# Human intervention needed
+
+The automated job failed during `explore/generate_tests()` for `com.hazelcast:hazelcast:5.5.0`.
+
+Preserved work: https://github.com/oracle/graalvm-reachability-metadata/tree/ai%2Fkimeta%2Fhuman-intervention%2Fissue-10527-library-update-request-com.hazelcast-hazelcast-5.5.0-92cf53ea
+
+The likely blocker is the generated `HazelcastDynamicAccessTest.addsClassAndNestedClassesToJetJobResources()` test. Repeated native runs reached 33/34 passing tests, but this test failed while Hazelcast’s shaded ClassGraph scanned Java modules. The latest failure is `UnsupportedFeatureError: JRT file system is disabled`; earlier runs reported `NoSuchFileException` for GraalVM module paths. The generation agent found the relevant `ModuleReference.open()` and `ModuleReader.open()/list()` reflection entries already present and correctly declined to add invalid resource metadata.
+
+The run exhausted 10 iterations and recorded failure with no finalized metadata, generated LOC, or dynamic-access coverage. Inspect:
+
+- `logs/com.hazelcast:hazelcast:5.5.0/gradle-test/gradle-test-2026-10-06T08-33-07-352829Z.log`
+- `logs/com.hazelcast:hazelcast:5.5.0/gradle-test/gradle-test-2026-10-06T08-31-55-103896Z.log`
+- `logs/com.hazelcast:hazelcast:5.5.0/issue-requested-metadata/pi-generation-2026-10-06T08-32-28-028970Z.log`
+
+Manual next steps:
+
+1. Check out the preserved branch and reproduce the coordinate-scoped native test failure.
+2. Rewrite or remove only the generated Jet class-resource test so it does not require ClassGraph to scan the disabled JRT filesystem, while retaining the other coverage-improving tests.
+3. Re-run the full coordinate test and dynamic-access coverage report, then finalize metadata and metrics only if both pass.
