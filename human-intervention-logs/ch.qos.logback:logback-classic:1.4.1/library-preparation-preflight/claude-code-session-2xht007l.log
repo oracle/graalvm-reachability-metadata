@@ -1,0 +1,55 @@
+Prompt:
+You are preparing a Forge workflow for a library issue. Decide whether the library needs setup beyond the normal generated test scaffold before meaningful coverage is reachable.
+
+Research the library yourself to make this decision. Investigate the resolved artifact and its dependencies, how the library is normally used, and its documentation. The JSON context below is only a starting point, not the limit of what you may consider. Do not modify the repository or apply any setup yourself — return only the decision. Local Gradle and Native Image verification remain authoritative.
+
+The setup can be one of three things: an extra Maven dependency, a Docker image the tests need, or an environment/system property the generated tests must set. Represent dependencies and Docker images as `deterministic_setup` entries the driver can apply before generation:
+  - {"kind": "dependency", "coordinate": "group:artifact:version", "scope": "testImplementation", "reason": "..."}
+  - {"kind": "docker_image", "image": "name:tag", "slug": "short-slug", "reason": "..."}
+If a test needs a Docker image that is already pinned under `tests/tck-build-logic/src/main/resources/allowed-docker-images/`, reuse the exact tag from that `Dockerfile-<slug>` instead of introducing a new one, since the allow-list permits a single shared tag per image.
+Put environment variables, system properties, and other test-code setup in `agent_guidance`. Do not restate deterministic entries as guidance.
+
+Return a single JSON object with this shape:
+{
+  "action": "no_action" | "advisory_preparation",
+  "summary": "short reason",
+  "deterministic_setup": [ ... dependency or docker_image entries, if any ... ],
+  "agent_guidance": "environment/system property/test setup guidance, if any",
+  "risks": ["risk notes, if any"]
+}
+
+Choose no_action unless your research finds concrete evidence that extra setup is needed.
+
+Context (starting point):
+{
+  "issue": {
+    "number": 10521,
+    "title": "Improve coverage for ch.qos.logback:logback-classic:1.4.1",
+    "label": "library-update-request",
+    "body": "### Reason for requesting the library\n\nWe want to increase dynamic access coverage. The tests for `ch.qos.logback:logback-classic:1.4.1` currently cover 0 of 10 recorded dynamic access calls (0.0%). This version was added before the dynamic access coverage process existed, so its tests never exercised most of the reflective and resource accesses the shipped metadata declares. The request is to extend the tests so they drive those accesses.",
+    "body_error": ""
+  },
+  "library": "ch.qos.logback:logback-classic:1.4.1",
+  "current_library": null,
+  "new_version": null,
+  "existing_tests": {
+    "ch.qos.logback:logback-classic:1.4.1": [
+      "tests/src/ch.qos.logback/logback-classic/1.4.1/README.md",
+      "tests/src/ch.qos.logback/logback-classic/1.4.1/access-filter.json",
+      "tests/src/ch.qos.logback/logback-classic/1.4.1/build.gradle",
+      "tests/src/ch.qos.logback/logback-classic/1.4.1/generate-metadata.sh",
+      "tests/src/ch.qos.logback/logback-classic/1.4.1/gradle.properties",
+      "tests/src/ch.qos.logback/logback-classic/1.4.1/settings.gradle",
+      "tests/src/ch.qos.logback/logback-classic/1.4.1/user-code-filter.json",
+      "tests/src/ch.qos.logback/logback-classic/1.4.1/src/test/java/org/graalvm/logback/LogbackTests.java",
+      "tests/src/ch.qos.logback/logback-classic/1.4.1/src/test/java/org/graalvm/logback/util/AppenderTags.java",
+      "tests/src/ch.qos.logback/logback-classic/1.4.1/src/test/java/org/graalvm/logback/util/LayoutTags.java",
+      "tests/src/ch.qos.logback/logback-classic/1.4.1/src/test/resources/logback.xml",
+      "tests/src/ch.qos.logback/logback-classic/1.4.1/src/test/resources/META-INF/native-image/reachability-metadata.json"
+    ]
+  }
+}
+
+Conversation:
+{"duration_api_ms":13019,"stop_reason":"end_turn","session_id":"fc2a6fd6-ec01-49fd-87b7-cfce67b555d5","total_cost_usd":0.18678000000000003,"usage":{"input_tokens":8,"cache_creation_input_tokens":37173,"cache_read_input_tokens":137310,"output_tokens":1061,"output_tokens_details":{"thinking_tokens":66},"server_tool_use":{"web_search_requests":0,"web_fetch_requests":0},"service_tier":"standard","cache_creation":{"ephemeral_1h_input_tokens":37173,"ephemeral_5m_input_tokens":0},"inference_geo":"not_available","iterations":[{"input_tokens":2,"output_tokens":386,"cache_read_input_tokens":45389,"cache_creation_input_tokens":2125,"cache_creation":{"ephemeral_5m_input_tokens":0,"ephemeral_1h_input_tokens":2125},"type":"message"}],"speed":"standard","fallback_credit":null},"modelUsage":{"claude-sonnet-5-5":{"inputTokens":8,"outputTokens":1061,"cacheReadInputTokens":137310,"cacheCreationInputTokens":37173,"webSearchRequests":0,"costUSD":0.18678000000000003,"contextWindow":1000000,"maxOutputTokens":128000,"thinkingTokens":66,"canonicalModel":"claude-sonnet-5-5","provider":"firstParty","costBasis":"list"}},"permission_denials":[],"terminal_reason":"completed","fast_mode_state":"off","fast_mode_disabled_reason":"sdk_opt_in_required","subagent_stats":{"spawned":0,"requested":{"background":0,"foreground":0,"unset":0},"started_in_background":0,"max_depth":0,"spawned_by_subagents":0,"completed":0,"failed":0,"killed":{"parent":0,"user":0,"system":0},"refused":{"depth_limit":0,"concurrency_limit":0,"budget":0},"by_type":{}},"is_error":false,"num_turns":4,"subtype":"success","api_error_status":null,"result":"All of these types ship in logback-classic and logback-core, which are already on the test classpath. Nothing outside them is needed, so I'm choosing no_action.\n\n```json\n{\n  \"action\": \"no_action\",\n  \"summary\": \"The shipped 1.4.1 metadata covers only types in logback-classic and logback-core (pattern converters, color composite converters, layouts and encoders, ConsoleAppender, FileAppender, RollingFileAppender, rolling policies). All of them are already on the test classpath. The existing scaffold has logback.xml, an access filter and a user-code filter. The remaining coverage should come from more test code that drives these accesses, with no extra dependency, Docker image or system property.\",\n  \"deterministic_setup\": [],\n  \"agent_guidance\": \"\",\n  \"risks\": [\n    \"Several of these types, such as the converters and XMLLayout, are only reached through XML configuration or custom conversion words. Tests will need extra logback XML files and programmatic JoranConfigurator runs. Add any new resources to the native-image resource config.\",\n    \"Rolling and file appenders should write to a temporary directory so the tests stay hermetic.\"\n  ]\n}\n```","ttft_ms":2252,"type":"result","duration_ms":13317,"uuid":"92ad1ab3-5466-4f71-97a1-08b3cdaae73f","ttft_stream_ms":1773,"time_to_request_ms":90,"first_content_frame_ms":1774,"queued_turn_count":0,"result_index":0}
+

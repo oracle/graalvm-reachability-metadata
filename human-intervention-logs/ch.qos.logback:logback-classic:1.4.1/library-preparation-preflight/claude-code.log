@@ -1,0 +1,14 @@
+All of these types ship in logback-classic and logback-core, which are already on the test classpath. Nothing outside them is needed, so I'm choosing no_action.
+
+```json
+{
+  "action": "no_action",
+  "summary": "The shipped 1.4.1 metadata covers only types in logback-classic and logback-core (pattern converters, color composite converters, layouts and encoders, ConsoleAppender, FileAppender, RollingFileAppender, rolling policies). All of them are already on the test classpath. The existing scaffold has logback.xml, an access filter and a user-code filter. The remaining coverage should come from more test code that drives these accesses, with no extra dependency, Docker image or system property.",
+  "deterministic_setup": [],
+  "agent_guidance": "",
+  "risks": [
+    "Several of these types, such as the converters and XMLLayout, are only reached through XML configuration or custom conversion words. Tests will need extra logback XML files and programmatic JoranConfigurator runs. Add any new resources to the native-image resource config.",
+    "Rolling and file appenders should write to a temporary directory so the tests stay hermetic."
+  ]
+}
+```

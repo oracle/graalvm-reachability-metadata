@@ -1,0 +1,52 @@
+{
+  "timestamp": "2026-10-06T09:26:00.621220Z",
+  "library": "ch.qos.logback:logback-classic:1.4.1",
+  "starting_commit": "185f4b5df99d0dac97e0821696248d4b2b64613a",
+  "ending_commit": "185f4b5df99d0dac97e0821696248d4b2b64613a",
+  "strategy_name": "library_update_optimistic_pi_gpt-5.6-sol",
+  "agent": "pi",
+  "model": "gpt-5.6-sol",
+  "status": "failure",
+  "library_preparation_preflight": {
+    "status": "completed",
+    "action": "no_action",
+    "issue_number": 10521,
+    "issue_label": "library-update-request",
+    "library": "ch.qos.logback:logback-classic:1.4.1",
+    "summary": "The shipped 1.4.1 metadata covers only types in logback-classic and logback-core (pattern converters, color composite converters, layouts and encoders, ConsoleAppender, FileAppender, RollingFileAppender, rolling policies). All of them are already on the test classpath. The existing scaffold has logback.xml, an access filter and a user-code filter. The remaining coverage should come from more test code that drives these accesses, with no extra dependency, Docker image or system property.",
+    "deterministic_setup": [],
+    "agent_guidance": "",
+    "risks": [
+      "Several of these types, such as the converters and XMLLayout, are only reached through XML configuration or custom conversion words. Tests will need extra logback XML files and programmatic JoranConfigurator runs. Add any new resources to the native-image resource config.",
+      "Rolling and file appenders should write to a temporary directory so the tests stay hermetic."
+    ],
+    "applied_setup": [],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#10521 Improve coverage for ch.qos.logback:logback-classic:1.4.1; label=library-update-request; body_chars=443"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "12 existing test file path(s) included"
+      }
+    ],
+    "model": "sonnet",
+    "input_tokens_used": 8,
+    "output_tokens_used": 1061
+  },
+  "metrics": {
+    "input_tokens_used": 122503,
+    "cached_input_tokens_used": 3264384,
+    "output_tokens_used": 19701,
+    "iterations": 6,
+    "cost_usd": 2.8357,
+    "generated_loc": 0,
+    "tested_library_loc": 0,
+    "metadata_entries": 0,
+    "code_coverage_percent": 0.0
+  },
+  "artifacts": {
+    "metadata_file": "None"
+  }
+}

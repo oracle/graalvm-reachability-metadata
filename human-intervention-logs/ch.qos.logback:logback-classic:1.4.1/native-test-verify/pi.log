@@ -1,0 +1,11 @@
+Fixed by removing the generated `PackagingDataCalculatorTest.java`, which depended on runtime class loading through a context class loader—unsupported by Native Image.
+
+Also iteratively supplied the missing serialization metadata for `String`, `HashMap`, and `Collections$EmptyMap` in the generated trace metadata.
+
+Verification:
+- Exact reproduction command passes.
+- 78 native tests passed.
+- `git diff --check` passed.
+- `fissile check --staged` passed.
+
+Pre-existing modifications to `index.json` and `user-code-filter.json` were preserved.

@@ -1,0 +1,82 @@
+{
+  "continueFrom": "finalization",
+  "coordinate": "ch.qos.logback:logback-classic:1.4.1",
+  "failure": {
+    "operand": "reporter-requested metadata",
+    "phase": "explore",
+    "step": "generate_tests()"
+  },
+  "issueNumber": 10521,
+  "label": "library-update-request",
+  "libraryPreparationPreflight": {
+    "action": "no_action",
+    "agent_guidance": "",
+    "applied_setup": [],
+    "deterministic_setup": [],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#10521 Improve coverage for ch.qos.logback:logback-classic:1.4.1; label=library-update-request; body_chars=443"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "12 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 8,
+    "issue_label": "library-update-request",
+    "issue_number": 10521,
+    "library": "ch.qos.logback:logback-classic:1.4.1",
+    "model": "sonnet",
+    "output_tokens_used": 1061,
+    "risks": [
+      "Several of these types, such as the converters and XMLLayout, are only reached through XML configuration or custom conversion words. Tests will need extra logback XML files and programmatic JoranConfigurator runs. Add any new resources to the native-image resource config.",
+      "Rolling and file appenders should write to a temporary directory so the tests stay hermetic."
+    ],
+    "status": "completed",
+    "summary": "The shipped 1.4.1 metadata covers only types in logback-classic and logback-core (pattern converters, color composite converters, layouts and encoders, ConsoleAppender, FileAppender, RollingFileAppender, rolling policies). All of them are already on the test classpath. The existing scaffold has logback.xml, an access filter and a user-code filter. The remaining coverage should come from more test code that drives these accesses, with no extra dependency, Docker image or system property."
+  },
+  "libraryUpdateRoute": {
+    "baseline_coordinates": null,
+    "new_version": "1.4.1",
+    "selected_driver": "improve_library_coverage"
+  },
+  "newVersion": null,
+  "phases": {
+    "explore": {
+      "chunkClassCount": null,
+      "chunkProcessedClassCount": 0,
+      "exhaustedClasses": [],
+      "iteration": 0,
+      "status": "completed"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": null,
+      "status": "skipped"
+    },
+    "publication": {
+      "branch": null,
+      "coverageFollowUpIssueNumber": null,
+      "isPushed": false,
+      "publicationId": null,
+      "publicationTimestamp": null,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": true,
+      "status": "completed"
+    }
+  },
+  "preservedBranch": "ai/kimeta/human-intervention/issue-10521-library-update-request-ch.qos.logback-logback-classic-1.4.1-70075600",
+  "publicationMetrics": {
+    "extras": {},
+    "library": "ch.qos.logback:logback-classic:1.4.1",
+    "timestamp": "2026-10-06T09:26:00.621220Z"
+  },
+  "schemaVersion": 1,
+  "strategyName": "library_update_optimistic_pi_gpt-5.6-sol"
+}
