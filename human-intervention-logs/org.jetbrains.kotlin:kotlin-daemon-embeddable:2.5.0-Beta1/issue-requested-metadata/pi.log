@@ -1,0 +1,11 @@
+Updated:
+
+- `tests/src/org.jetbrains.kotlin/kotlin-daemon-embeddable/2.4.20/src/test/java/org_jetbrains_kotlin/kotlin_daemon_embeddable/KotlinCompileDaemonBaseTest.java`
+
+The refined test now verifies the public daemon startup path:
+
+- Configures and writes through Kotlin daemon logging, exercising `java.util.logging.FileHandler`.
+- Loads the compiler environment, exercising the reflective VarHandle initialization reported in the failure.
+- Confirms manifest version loading and startup logging before server startup.
+
+No metadata or build files were changed. `git diff --check` and `fissile check --staged` passed. Tests were not run, as requested.

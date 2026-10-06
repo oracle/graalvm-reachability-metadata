@@ -1,0 +1,56 @@
+{
+  "fix_ni_run:2026-10-06": {
+    "timestamp": "2026-10-06T23:03:56.460415Z",
+    "library": "org.jetbrains.kotlin:kotlin-daemon-embeddable:2.5.0-Beta1",
+    "starting_commit": "d61bcf9a3deaa6f8c356043a9f1385dcea1f054f",
+    "ending_commit": "d61bcf9a3deaa6f8c356043a9f1385dcea1f054f",
+    "strategy_name": "library_update_pi_gpt-5.6-sol",
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "status": "failure",
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "no_action",
+      "issue_number": 10324,
+      "issue_label": "fails-native-image-run",
+      "library": "org.jetbrains.kotlin:kotlin-daemon-embeddable:2.5.0-Beta1",
+      "summary": "The existing 2.4.20 test project already declares the dependencies it needs (kotlin-daemon-embeddable, kotlin-compiler-embeddable and kotlin-stdlib at the tested version). Its tests build and run in-process without Docker or env/system-property setup, and the excerpt shows no failure evidence. No failing operation is shown, so there is nothing to trace and no basis for an unsupportable verdict.",
+      "deterministic_setup": [],
+      "agent_guidance": "",
+      "risks": [
+        "The log excerpt is truncated before the actual native-image run failure, so the root cause is unconfirmed. The build output shows kotlin-reflect-1.6.10 on the image classpath next to kotlin-stdlib-2.5.0-Beta1, so a Kotlin version mismatch is a possible cause. Check this when reproducing locally.",
+        "The daemon tests set CompilerSystemProperties and reset the LogManager. Verify these still behave under native image on 2.5.0-Beta1."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#10324 [Automation] native-image run fails for org.jetbrains.kotlin:kotlin-daemon-embeddable:2.5.0-Beta1; label=fails-native-image-run; body_chars=8015"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "7 existing test file path(s) included"
+        }
+      ],
+      "current_library": "org.jetbrains.kotlin:kotlin-daemon-embeddable:2.4.20",
+      "new_version": "2.5.0-Beta1",
+      "model": "sonnet",
+      "input_tokens_used": 4,
+      "output_tokens_used": 658
+    },
+    "metrics": {
+      "input_tokens_used": 0,
+      "cached_input_tokens_used": 0,
+      "output_tokens_used": 0,
+      "iterations": 3,
+      "cost_usd": 0.0,
+      "generated_loc": 0,
+      "tested_library_loc": 0,
+      "metadata_entries": 0,
+      "code_coverage_percent": 0.0
+    },
+    "artifacts": {
+      "metadata_file": "None"
+    }
+  }
+}

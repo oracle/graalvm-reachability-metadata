@@ -1,0 +1,79 @@
+{
+  "continueFrom": "finalization",
+  "coordinate": "org.jetbrains.kotlin:kotlin-daemon-embeddable:2.5.0-Beta1",
+  "failure": {
+    "operand": "reporter-requested metadata",
+    "phase": "explore",
+    "step": "generate_tests()"
+  },
+  "issueNumber": 10324,
+  "label": "fails-native-image-run",
+  "libraryPreparationPreflight": {
+    "action": "no_action",
+    "agent_guidance": "",
+    "applied_setup": [],
+    "current_library": "org.jetbrains.kotlin:kotlin-daemon-embeddable:2.4.20",
+    "deterministic_setup": [],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#10324 [Automation] native-image run fails for org.jetbrains.kotlin:kotlin-daemon-embeddable:2.5.0-Beta1; label=fails-native-image-run; body_chars=8015"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "7 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 4,
+    "issue_label": "fails-native-image-run",
+    "issue_number": 10324,
+    "library": "org.jetbrains.kotlin:kotlin-daemon-embeddable:2.5.0-Beta1",
+    "model": "sonnet",
+    "new_version": "2.5.0-Beta1",
+    "output_tokens_used": 658,
+    "risks": [
+      "The log excerpt is truncated before the actual native-image run failure, so the root cause is unconfirmed. The build output shows kotlin-reflect-1.6.10 on the image classpath next to kotlin-stdlib-2.5.0-Beta1, so a Kotlin version mismatch is a possible cause. Check this when reproducing locally.",
+      "The daemon tests set CompilerSystemProperties and reset the LogManager. Verify these still behave under native image on 2.5.0-Beta1."
+    ],
+    "status": "completed",
+    "summary": "The existing 2.4.20 test project already declares the dependencies it needs (kotlin-daemon-embeddable, kotlin-compiler-embeddable and kotlin-stdlib at the tested version). Its tests build and run in-process without Docker or env/system-property setup, and the excerpt shows no failure evidence. No failing operation is shown, so there is nothing to trace and no basis for an unsupportable verdict."
+  },
+  "libraryUpdateRoute": null,
+  "newVersion": "2.5.0-Beta1",
+  "phases": {
+    "explore": {
+      "chunkClassCount": null,
+      "chunkProcessedClassCount": 0,
+      "exhaustedClasses": [],
+      "status": "skipped"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": null,
+      "status": "completed"
+    },
+    "publication": {
+      "branch": null,
+      "coverageFollowUpIssueNumber": null,
+      "isPushed": false,
+      "publicationId": null,
+      "publicationTimestamp": null,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": true,
+      "status": "completed"
+    }
+  },
+  "preservedBranch": "ai/kimeta/human-intervention/issue-10324-fails-native-image-run-org.jetbrains.kotlin-kotlin-daemon-embeddable-2.5.0-Beta1-2f58645f",
+  "publicationMetrics": {
+    "extras": {},
+    "library": "org.jetbrains.kotlin:kotlin-daemon-embeddable:2.5.0-Beta1",
+    "timestamp": "2026-10-06T23:03:56.460415Z"
+  },
+  "schemaVersion": 1,
+  "strategyName": "library_update_pi_gpt-5.6-sol"
+}
