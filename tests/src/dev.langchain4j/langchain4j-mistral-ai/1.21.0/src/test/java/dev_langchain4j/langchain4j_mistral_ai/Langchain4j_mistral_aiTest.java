@@ -20,7 +20,9 @@ import dev.langchain4j.model.chat.response.StreamingChatResponseHandler;
 import dev.langchain4j.model.mistralai.MistralAiChatModel;
 import dev.langchain4j.model.mistralai.MistralAiChatResponseMetadata;
 import dev.langchain4j.model.mistralai.MistralAiEmbeddingModel;
+import dev.langchain4j.model.mistralai.MistralAiModerationModel;
 import dev.langchain4j.model.mistralai.MistralAiStreamingChatModel;
+import dev.langchain4j.model.moderation.Moderation;
 import dev.langchain4j.model.output.FinishReason;
 import dev.langchain4j.model.output.Response;
 import java.io.IOException;
@@ -42,6 +44,7 @@ public class Langchain4j_mistral_aiTest {
     private static final Duration HTTP_TIMEOUT = Duration.ofSeconds(10);
     private static final String CHAT_MODEL = "mistral-test-chat";
     private static final String EMBEDDING_MODEL = "mistral-test-embed";
+    private static final String MODERATION_MODEL = "mistral-test-moderation";
 
     @Test
     @Timeout(55)
@@ -168,6 +171,31 @@ public class Langchain4j_mistral_aiTest {
         }
     }
 
+    @Test
+    @Timeout(55)
+    void moderatesTextAgainstLocalMistralEndpoint() throws Exception {
+        try (MistralServer server = MistralServer.start()) {
+            MistralAiModerationModel model = MistralAiModerationModel.builder()
+                    .apiKey("moderation-api-key")
+                    .modelName(MODERATION_MODEL)
+                    .baseUrl(server.baseUrl())
+                    .timeout(HTTP_TIMEOUT)
+                    .maxRetries(0)
+                    .build();
+
+            Response<Moderation> response = model.moderate("A threatening message");
+
+            assertThat(response.content().flagged()).isTrue();
+            assertThat(response.content().flaggedText()).isEqualTo("A threatening message");
+            assertThat(model.modelName()).isEqualTo(MODERATION_MODEL);
+
+            RequestRecord request = server.singleRequest();
+            assertThat(request.path()).isEqualTo("/v1/moderations");
+            assertThat(request.authorization()).isEqualTo("Bearer moderation-api-key");
+            assertThat(request.body()).contains(MODERATION_MODEL, "A threatening message");
+        }
+    }
+
     private record RequestRecord(String path, String authorization, String body) {}
 
     private static final class MistralServer implements AutoCloseable {
@@ -215,6 +243,8 @@ public class Langchain4j_mistral_aiTest {
                     }
                 } else if (exchange.getRequestURI().getPath().equals("/v1/embeddings")) {
                     sendJson(exchange, embeddingResponse());
+                } else if (exchange.getRequestURI().getPath().equals("/v1/moderations")) {
+                    sendJson(exchange, moderationResponse());
                 } else {
                     exchange.sendResponseHeaders(404, -1);
                 }
@@ -331,6 +361,39 @@ public class Langchain4j_mistral_aiTest {
                         "completion_tokens": 0,
                         "total_tokens": 5
                       }
+                    }
+                    """;
+        }
+
+        private static String moderationResponse() {
+            return """
+                    {
+                      "id": "moderation-response-1",
+                      "model": "mistral-moderation-response-model",
+                      "results": [
+                        {
+                          "categories": {
+                            "sexual": false,
+                            "hate_and_discrimination": false,
+                            "violence_and_threats": true,
+                            "dangerous_and_criminal_content": false,
+                            "selfharm": false,
+                            "health": false,
+                            "law": false,
+                            "pii": false
+                          },
+                          "category_scores": {
+                            "sexual": 0.01,
+                            "hate_and_discrimination": 0.02,
+                            "violence_and_threats": 0.98,
+                            "dangerous_and_criminal_content": 0.03,
+                            "selfharm": 0.01,
+                            "health": 0.01,
+                            "law": 0.01,
+                            "pii": 0.01
+                          }
+                        }
+                      ]
                     }
                     """;
         }
