@@ -16,10 +16,17 @@ public class FactoryFinderInnerStandaloneObjectFactoryTest {
 
     @Test
     void discoversTheDefaultWireFormatFactoryFromItsServiceResource() throws Exception {
-        FactoryFinder finder = new FactoryFinder("META-INF/services/org/apache/activemq/wireformat/");
+        Thread thread = Thread.currentThread();
+        ClassLoader originalClassLoader = thread.getContextClassLoader();
+        try {
+            thread.setContextClassLoader(ClassLoader.getPlatformClassLoader());
+            FactoryFinder finder = new FactoryFinder("META-INF/services/org/apache/activemq/wireformat/");
 
-        Object factory = finder.newInstance("default");
+            Object factory = finder.newInstance("default");
 
-        assertThat(factory).isInstanceOf(OpenWireFormatFactory.class);
+            assertThat(factory).isInstanceOf(OpenWireFormatFactory.class);
+        } finally {
+            thread.setContextClassLoader(originalClassLoader);
+        }
     }
 }

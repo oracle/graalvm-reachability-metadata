@@ -28,4 +28,11 @@ public class JNDIReferenceFactoryTest {
         assertThat(restored.getBrokerURL()).isEqualTo(original.getBrokerURL());
         assertThat(restored.getClientID()).isEqualTo("jndi-client");
     }
+
+    @Test
+    void loadsBootstrapTypesWithoutAnObjectClassLoader() throws Exception {
+        Class<?> loaded = JNDIReferenceFactory.loadClass(new Object(), "java.util.Properties");
+
+        assertThat(loaded).isEqualTo(java.util.Properties.class);
+    }
 }
