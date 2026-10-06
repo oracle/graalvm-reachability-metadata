@@ -145,14 +145,17 @@
   `deep-measure` state.
 - Fixed report location: `runtime/code-coverage/discovery/discovery-report.json`
   (iteration history stays at `discovery-report-<n>.json`).
-- Prompt location: `runtime/code-coverage/prompts/deep-cover-prompt.md`, taken
-  by the measurement program from the analyzer's compact
-  `Observed` / `Uncovered paths` Markdown when the loop continues.
+- Prompt location: `runtime/code-coverage/prompts/deep-cover-prompt.md`, one
+  group session at a time. The analyzer renders each session of a pass under
+  `runtime/code-coverage/discovery/deep-sessions-<n>/`, measurement queues them
+  in `runtime/code-coverage/prompts/deep-session-queue.json`, and `deep-dispatch`
+  hands out the next one (§AR-code-coverage-deep-sessions).
 - Target state: measurement-owned. Attempt counts and rotation are carried
   deterministically in the `discovery-report-<n>.json` history; every target
   prompted in one iteration is deprioritized at the next. The cover agent
   writes no target state.
-- Loop: measure -> cover -> measure, exactly like the API loop.
+- Loop: measure -> dispatch -> cover -> dispatch -> ... -> measure: one
+  measurement per pass and one cover session per queued group.
   JaCoCo is the sole coverage authority; sampled PGO and the static call graph
   provide navigation only. The phase completes when no actionable target
   remains or the iteration budget is spent.

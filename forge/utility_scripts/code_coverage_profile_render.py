@@ -250,6 +250,34 @@ def _prompt_line(
     return "\n".join([path_line, *classification_lines(classification, counted)])
 
 
+def _placement(session: dict | None) -> str:
+    """Where this prompt's tests go, by the session kind
+    (§AR-code-coverage-deep-sessions.1.3)."""
+    if session is None:
+        return (
+            "Inside that suite, write one test class per subsystem you drive, not one "
+            "class per run. The targets below cluster into a few subsystems — each "
+            "public entry in the routes drives one of them — and a scenario built for "
+            "its own subsystem, with the setup that subsystem needs, reaches far more "
+            "of it than one appended to a class built for something else. Before "
+            "extending an existing test class, check whether the cluster you are about "
+            "to drive already has one; if not, add a class."
+        )
+    owners: str = ", ".join(f"`{simple_owner(owner)}`" for owner in session["entryOwners"])
+    if session["kind"] == "monolith":
+        return (
+            f"Every route below enters the library through {owners}, so one subsystem "
+            "and one setup serve them all. Drive them from one test class for that "
+            "subsystem: extend the suite's class for it if one exists, otherwise add it."
+        )
+    return (
+        f"The routes below come from several small groups entering through {owners}. "
+        "They do not share one setup, so expect to change more than one test file: "
+        "put each route in the test class for its own subsystem, extending the "
+        "suite's class where one fits and adding a class where none does."
+    )
+
+
 def write_markdown(
         report: dict,
         prompt_records: list[NearCallRecord],
@@ -257,11 +285,16 @@ def write_markdown(
         coordinate: str,
         iteration: int,
         md_path: str,
+        session: dict | None = None,
 ) -> None:
     summary: dict = report["summary"]
     notes: dict[str, dict] = {target["id"]: target for target in report["bulkTargets"]}
+    scope: str = (
+        f"iteration {iteration}, session {session['index']} of {session['count']}"
+        if session is not None else f"iteration {iteration}"
+    )
     lines: list[str] = [
-        f"# Deep coverage paths (iteration {iteration}) — {coordinate}",
+        f"# Deep coverage paths ({scope}) — {coordinate}",
         "",
         # The public-entry obligation (§AR-code-coverage-deep-navigation.2).
         "Reach every target below through its public entry; never call internal "
@@ -273,13 +306,7 @@ def write_markdown(
         "library's regular test sources are metadata-generation tests and stay "
         "untouched.",
         "",
-        "Inside that suite, write one test class per subsystem you drive, not one "
-        "class per run. The targets below cluster into a few subsystems — each "
-        "public entry in the routes drives one of them — and a scenario built for "
-        "its own subsystem, with the setup that subsystem needs, reaches far more "
-        "of it than one appended to a class built for something else. Before "
-        "extending an existing test class, check whether the cluster you are about "
-        "to drive already has one; if not, add a class.",
+        _placement(session),
     ]
     counted: bool = bool(summary.get("instrumentedCounters"))
 
