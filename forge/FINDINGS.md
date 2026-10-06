@@ -3,6 +3,12 @@
 Rendered by Forge from the pre-push branch review of §FS-local-branch-review.
 Newest entry first; every non-approval is recorded, including one a repair later cleared.
 
+## 2026-10-06 — io.smallrye.reactive:mutiny-zero:1.3.1 (#10461)
+
+**New-library contribution targets an already supported version**
+
+The contribution-shape must in §FS-contribution-contract.2 requires a library-new-request to contribute one new tested version, and §FS-test-contract.2.9 forbids broadening into duplicate already-covered features. At base commit 34b8b8128f6591f53fcfd1eb39375262f29af512, io.smallrye.reactive:mutiny-zero:1.3.1 already has its index entry, reachability-metadata.json, test project, stats.json, and execution-metrics.json. The reviewed diff only changes the documentation URL, adds tests to the existing suite, and refreshes stats/metrics; it introduces no new tested version. Reverting those changes would leave no contribution, and converting or rerouting the duplicate request cannot be completed within this contribution's allowed files, so §FS-contribution-contract.5.5 applies.
+
 ## 2026-10-06 — org.springframework:spring-test:7.0.0 (#9401)
 
 **Native-only AOT failure is accepted as test success**
