@@ -76,7 +76,22 @@ agent per session, far more than a single-session pass did. The template's
 settings therefore ask for bounds that cover the session ceiling at the default
 budget, and a machine that runs the workflow must allow at least as much.
 
-## 4. Boundaries
+## 4. Session time
+
+A session writes every test for its targets first and only then runs the
+coverage suite. It fixes whatever fails and runs the suite again until it
+passes. On the h2 benchmark a session ran the suite 3 to 11 times, about 1.5
+minutes each run, because it alternated small edits with full runs. Writing the
+whole group first turns that into one run plus the repairs it needs.
+
+A session has 45 minutes. The h2 sessions took 9 to 23 minutes, so the limit
+only stops a session that is stuck. A session that runs out of time moves on to
+the next session of the pass instead of being retried. Its tests stay in the
+worktree and the next measurement counts them. A test it left broken fails the
+next session's suite run, which repairs it, or the measurement, whose repair
+state fixes it.
+
+## 5. Boundaries
 
 - A pass is still one JaCoCo measurement and one entry in the yield series, so
   the attempt counts (§AR-code-coverage-improvement.4.2) and the marginal-yield
