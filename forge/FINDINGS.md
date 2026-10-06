@@ -3,6 +3,12 @@
 Rendered by Forge from the pre-push branch review of §FS-local-branch-review.
 Newest entry first; every non-approval is recorded, including one a repair later cleared.
 
+## 2026-10-05 — org.flywaydb:flyway-core:10.15.0 (#10518)
+
+**Dynamic-access classes lacked dedicated test files**
+
+The resolved dynamic-access report listed covered call sites in org.flywaydb.core.internal.license.VersionPrinter and org.flywaydb.core.internal.resource.classpath.ClassPathResource, but the suite had no dedicated VersionPrinterTest.java or ClassPathResourceTest.java. This violated the one-test-file-per-dynamic-access-class requirement in §FS-test-contract.1.8.
+
 ## 2026-10-05 — org.flywaydb:flyway-database-postgresql:10.10.0 (#10555)
 
 **Test-only reachability metadata keys were not deterministically ordered**
