@@ -15,6 +15,7 @@ import dev.langchain4j.data.message.ImageContent;
 import dev.langchain4j.data.message.TextContent;
 import dev.langchain4j.data.message.UserMessage;
 import dev.langchain4j.data.segment.TextSegment;
+import dev.langchain4j.model.StreamingResponseHandler;
 import dev.langchain4j.model.chat.response.ChatResponse;
 import dev.langchain4j.model.chat.response.PartialResponse;
 import dev.langchain4j.model.chat.response.PartialResponseContext;
@@ -26,6 +27,7 @@ import dev.langchain4j.model.ollama.OllamaModel;
 import dev.langchain4j.model.ollama.OllamaModelCard;
 import dev.langchain4j.model.ollama.OllamaModels;
 import dev.langchain4j.model.ollama.OllamaStreamingChatModel;
+import dev.langchain4j.model.ollama.OllamaStreamingLanguageModel;
 import dev.langchain4j.model.ollama.RunningOllamaModel;
 import dev.langchain4j.model.output.FinishReason;
 import dev.langchain4j.model.output.Response;
@@ -214,6 +216,62 @@ public class Langchain4j_ollamaTest {
 
     @Test
     @Timeout(55)
+    void streamsTextGenerationFromLocalOllamaResponse() throws Exception {
+        try (OllamaServer server = OllamaServer.start(ResponseKind.STREAMING_COMPLETION)) {
+            OllamaStreamingLanguageModel model = OllamaStreamingLanguageModel.builder()
+                    .baseUrl(server.baseUrl())
+                    .modelName("ollama-streaming-completion-test")
+                    .temperature(0.3)
+                    .stop(List.of("END"))
+                    .timeout(HTTP_TIMEOUT)
+                    .build();
+            CountDownLatch completed = new CountDownLatch(1);
+            List<String> tokens = new CopyOnWriteArrayList<>();
+            AtomicReference<Response<String>> completeResponse = new AtomicReference<>();
+            AtomicReference<Throwable> failure = new AtomicReference<>();
+
+            model.generate("Stream this completion", new StreamingResponseHandler<>() {
+                @Override
+                public void onNext(String token) {
+                    tokens.add(token);
+                }
+
+                @Override
+                public void onComplete(Response<String> response) {
+                    completeResponse.set(response);
+                    completed.countDown();
+                }
+
+                @Override
+                public void onError(Throwable error) {
+                    failure.set(error);
+                    completed.countDown();
+                }
+            });
+
+            assertThat(completed.await(HTTP_TIMEOUT.toSeconds(), TimeUnit.SECONDS)).isTrue();
+            assertThat(failure.get()).isNull();
+            assertThat(tokens).containsExactly("Streaming ", "completion.");
+            assertThat(completeResponse.get().content()).isEqualTo("Streaming completion.");
+            assertThat(completeResponse.get().tokenUsage().inputTokenCount()).isEqualTo(3);
+            assertThat(completeResponse.get().tokenUsage().outputTokenCount()).isEqualTo(2);
+
+            RequestRecord request = server.singleRequest();
+            assertThat(request.path()).isEqualTo("/api/generate");
+            assertThat(request.body())
+                    .contains(
+                            "ollama-streaming-completion-test",
+                            "Stream this completion",
+                            "temperature",
+                            "0.3",
+                            "END",
+                            "stream",
+                            "true");
+        }
+    }
+
+    @Test
+    @Timeout(55)
     void managesAvailableAndRunningModelsThroughLocalOllamaApi() throws Exception {
         try (OllamaServer server = OllamaServer.start(ResponseKind.MODEL_MANAGEMENT)) {
             OllamaModels models = OllamaModels.builder()
@@ -250,6 +308,7 @@ public class Langchain4j_ollamaTest {
     private enum ResponseKind {
         CHAT,
         STREAMING_CHAT,
+        STREAMING_COMPLETION,
         EMBEDDING,
         COMPLETION,
         MODEL_MANAGEMENT
@@ -305,6 +364,7 @@ public class Langchain4j_ollamaTest {
                 String responseBody = switch (responseKind) {
                     case CHAT -> chatResponse();
                     case STREAMING_CHAT -> streamingChatResponse();
+                    case STREAMING_COMPLETION -> streamingCompletionResponse();
                     case EMBEDDING -> embeddingResponse();
                     case COMPLETION -> completionResponse();
                     case MODEL_MANAGEMENT -> modelManagementResponse(requestPath);
@@ -314,6 +374,7 @@ public class Langchain4j_ollamaTest {
                         .set(
                                 "Content-Type",
                                 responseKind == ResponseKind.STREAMING_CHAT
+                                                || responseKind == ResponseKind.STREAMING_COMPLETION
                                         ? "application/x-ndjson"
                                         : "application/json");
                 exchange.sendResponseHeaders(200, response.length);
@@ -353,6 +414,13 @@ public class Langchain4j_ollamaTest {
                     + "\"thinking\":\"answer\",\"content\":\"from Ollama!\"},\"done\":false}\n"
                     + "{\"model\":\"ollama-chat-test\",\"message\":{\"role\":\"assistant\",\"content\":\"\"},"
                     + "\"done_reason\":\"stop\",\"done\":true,\"prompt_eval_count\":4,\"eval_count\":6}\n";
+        }
+
+        private static String streamingCompletionResponse() {
+            return "{\"model\":\"ollama-streaming-completion-test\",\"response\":\"Streaming \","
+                    + "\"done\":false}\n"
+                    + "{\"model\":\"ollama-streaming-completion-test\",\"response\":\"completion.\","
+                    + "\"done\":true,\"prompt_eval_count\":3,\"eval_count\":2}\n";
         }
 
         private static String embeddingResponse() {
