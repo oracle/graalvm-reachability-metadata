@@ -3,6 +3,12 @@
 Rendered by Forge from the pre-push branch review of §FS-local-branch-review.
 Newest entry first; every non-approval is recorded, including one a repair later cleared.
 
+## 2026-10-06 — org.apache.tomcat.embed:tomcat-embed-core:10.0.20 (#10508)
+
+**Pre-push review unavailable**
+
+Forge could not obtain a readable pre-push review verdict. This records a review availability problem, not a reviewer finding against the branch.
+
 ## 2026-10-06 — org.springframework:spring-test:7.0.0 (#9401)
 
 **Native-only AOT failure is accepted as test success**
