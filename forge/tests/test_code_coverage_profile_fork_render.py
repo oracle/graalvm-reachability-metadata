@@ -96,6 +96,21 @@ class ForkRenderingTests(unittest.TestCase):
         self.assertEqual(lines[-2], "    branch 12 → line 61 ×0 ← target")
         self.assertEqual(lines[-1], "    … 4 more")
 
+    def test_a_catch_boundary_without_counters_still_names_the_raising_lines(self) -> None:
+        lines: list[str] = classification_lines({
+            "kind": "no-fork",
+            "target": {"sourcePath": "a/P.java", "line": 46, "mi": 3, "ci": 0, "mb": 0, "cb": 0},
+            "nearestCovered": None,
+            "exception": {"handlers": [{
+                "bci": 14, "line": 45, "type": "java.lang.NumberFormatException",
+                "sources": [{"line": 44, "count": None, "calls": ["Integer.parseInt", "Integer.parseInt"]}],
+            }]},
+        }, counted=False)
+        self.assertEqual(lines[1:], [
+            "  reached only through catch (NumberFormatException) at line 45",
+            "    line 44 `Integer.parseInt` ran, never threw it",
+        ])
+
     def test_line_table_lookup_uses_the_last_entry_at_or_before_the_bci(self) -> None:
         self.assertEqual(line_at(((0, 10), (4, 11), (9, 12)), 8), 11)
         self.assertIsNone(line_at(((5, 10),), 2))

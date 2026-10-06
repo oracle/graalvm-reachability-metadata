@@ -191,6 +191,9 @@ def classification_lines(classification: dict, counted: bool = False) -> list[st
         if not branches:
             return [target_line, f"{header} — target is beyond an untaken branch"]
         return [target_line, header, *_branch_lines(branches, counted)]
+    exception: dict | None = classification.get("exception")
+    if exception:
+        return [target_line, *_catch_lines(exception["handlers"], counted)]
     nearest: dict | None = classification.get("nearestCovered")
     nearest_text: str = (
         f"nearest covered `{_line_location(nearest)}`"
@@ -202,6 +205,24 @@ def classification_lines(classification: dict, counted: bool = False) -> list[st
         f"  no fork above — {nearest_text}; target is reached only by an exception "
         "or external event",
     ]
+
+
+def _catch_lines(handlers: list[dict], counted: bool) -> list[str]:
+    """The catch boundary: each handler, then the `try` lines that ran and can
+    raise into it with their own counts (§AR-code-coverage-deep-navigation.3.3)."""
+    lines: list[str] = []
+    for handler in handlers:
+        caught: str = handler["type"].rsplit(".", 1)[-1]
+        where: str = f" at line {handler['line']}" if handler["line"] is not None else ""
+        lines.append(f"  reached only through catch ({caught}){where}")
+        for source in handler["sources"]:
+            calls: str = "".join(f" `{name}`" for name in dict.fromkeys(source["calls"]))
+            ran: str = (
+                f" ran {source['count']:,}×" if counted and source["count"] is not None
+                else " ran (no counter)" if counted else " ran"
+            )
+            lines.append(f"    line {source['line']}{calls}{ran}, never threw it")
+    return lines
 
 
 def _step_label(step: dict) -> str:

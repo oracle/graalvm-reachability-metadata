@@ -3,7 +3,7 @@
 # You should have received a copy of the CC0 legalcode along with this
 # work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 
-"""Tests for the control-flow table and control-flow fork selection.
+"""Tests for the control-flow table and the backward dead-region walk.
 
 §AR-code-coverage-deep-navigation.1.3, §AR-code-coverage-deep-navigation.3.2
 """
@@ -13,19 +13,13 @@ import subprocess
 import tempfile
 import unittest
 
-from utility_scripts.code_coverage_jacoco import JacocoLineCoverage, JacocoMethodCoverage
-from utility_scripts.code_coverage_model import MethodRef
-from utility_scripts.code_coverage_profile_counters import InstrumentedCounters
 from utility_scripts.code_coverage_profile_flow import (
     Branch,
     DeadRegion,
     MethodFlow,
     load_library_flow,
 )
-from utility_scripts.code_coverage_profile_graph import CallGraph
 from utility_scripts.code_coverage_profile_inputs import line_at, load_library_line_numbers
-from utility_scripts.code_coverage_profile_miss import edge_miss_classification
-from utility_scripts.code_coverage_profile_navigation import NavigationEvidence
 
 from tests.code_coverage_rank_test_utils import EXTRACTOR, _java_tool
 
@@ -185,6 +179,17 @@ class ExtractorControlFlowTests(unittest.TestCase):
         assert region is not None
         self.assertEqual(region.forks, ())
 
+    def test_handler_edges_carry_the_caught_type_and_raising_blocks_are_marked(self) -> None:
+        signature: str = "guarded(java.lang.String):int"
+        flow: MethodFlow = self._flow(signature)
+        lines: tuple[tuple[int, int], ...] = self._lines[f"{_OWNER}#{signature}"]
+        handler_block: int | None = flow.block_of(next(bci for bci, line in lines if line == 45))
+        self.assertEqual(flow.handler_types.get(handler_block), "java.lang.NumberFormatException")
+        parse_block: int | None = flow.block_of(next(bci for bci, line in lines if line == 44))
+        constant_block: int | None = flow.block_of(next(bci for bci, line in lines if line == 42))
+        self.assertIn(parse_block, flow.throwing_blocks)
+        self.assertNotIn(constant_block, flow.throwing_blocks)
+
     def test_a_return_inside_a_try_has_no_normal_exit(self) -> None:
         flow: MethodFlow = self._flow("thrower(boolean):int")
         throwing: list[int] = [
@@ -195,6 +200,18 @@ class ExtractorControlFlowTests(unittest.TestCase):
 
     def test_straight_line_methods_have_no_row(self) -> None:
         self.assertNotIn(f"{_OWNER}#straight():int", self._flows)
+
+
+# `try { if (text.isEmpty()) return 0; return parseInt(text); } catch (E e) {…}`:
+# block 0 tests, block 7 returns 0, block 9 parses; handler 14 hangs off all three.
+TRY: MethodFlow = MethodFlow(
+    branches=(Branch(4, (7, 9), frozenset(), False),),
+    block_starts=(0, 7, 8, 9, 13, 14),
+    block_successors={0: (9, 7, 14), 7: (8, 14), 8: (), 9: (13, 14), 13: (), 14: ()},
+    exception_successors={0: frozenset({14}), 7: frozenset({14}), 9: frozenset({14})},
+    handler_types={14: "java.lang.NumberFormatException"},
+    throwing_blocks=frozenset({0, 9}),
+)
 
 
 def _flow(
@@ -271,161 +288,54 @@ class DeadRegionTests(unittest.TestCase):
         assert region is not None
         self.assertEqual((region.blocks, region.forks), ({3, 6, 9}, ()))
 
+    def test_the_table_parses_exception_types_and_raising_marks(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            path: str = os.path.join(directory, "flow.csv")
+            with open(path, "w", encoding="utf-8") as handle:
+                handle.write('id,branches,blocks\n')
+                handle.write('"m","4>7,9","0!>9,7,14~java.lang.E;7>8,14~java.lang.E;8>;9!>13,14~java.lang.E;13>;14>"\n')
+            flow: MethodFlow = load_library_flow(path)["m"]
+        self.assertEqual(flow.block_successors[0], (9, 7, 14))
+        self.assertEqual(flow.exception_successors[0], {14})
+        self.assertEqual(flow.handler_types, {14: "java.lang.E"})
+        self.assertEqual(flow.throwing_blocks, {0, 9})
+        self.assertEqual(flow.normal_successors(9), (13,))
+
+    def test_a_handler_entered_only_from_code_that_ran_is_a_catch_boundary(self) -> None:
+        counts = {4: {7: 100, 9: 8_000_000}}
+        region: DeadRegion | None = TRY.dead_region(
+            14, lambda branch: counts.get(branch.bci), lambda bci: True
+        )
+        assert region is not None
+        self.assertEqual((region.blocks, region.forks), ({14}, ()))
+        self.assertEqual(region.catches, ((14, 0), (14, 7), (14, 9)))
+
+    def test_block_counts_follow_the_branch_counters_forward(self) -> None:
+        counts = {4: {7: 100, 9: 8_000_000}}
+        self.assertEqual(
+            TRY.block_counts(lambda branch: counts.get(branch.bci)),
+            {0: 8_000_100, 7: 100, 8: 100, 9: 8_000_000, 13: 8_000_000, 14: None},
+        )
+
+    def test_an_exception_edge_out_of_a_dead_try_is_walked_to_the_fork_above(self) -> None:
+        # `if (mode) { try { parse(x); } catch (E e) { target(); } }` with `mode`
+        # never true: the try body at block 3 never ran, so the handler was
+        # never entered from it and the fork is the `if`.
+        flow: MethodFlow = _flow(
+            [(2, (3, 20))], {0: (3, 20), 3: (20, 10), 10: (20,), 20: ()}, {3: frozenset({10})},
+        )
+        counts = {2: {3: 0, 20: 9}}
+        region: DeadRegion | None = flow.dead_region(
+            11, lambda branch: counts.get(branch.bci), lambda bci: bci >= 20
+        )
+        assert region is not None
+        self.assertEqual((region.blocks, region.catches), ({10, 3}, ()))
+        self.assertEqual(region.forks, ((flow.branches[0], 3),))
+
     def test_block_lookup_before_the_first_block_is_absent(self) -> None:
         flow: MethodFlow = _flow([(2, (3, 5))], {1: (3, 5), 3: (), 5: ()})
         self.assertIsNone(flow.block_of(0))
         self.assertIsNone(flow.dead_region(0, lambda branch: None, lambda bci: None))
-
-
-class ControlFlowForkTests(unittest.TestCase):
-    """Fork selection by control flow rather than by line order."""
-
-    CALLER = MethodRef("example.Router", "route", (), "void")
-    TARGET = MethodRef("example.Handler", "handle", (), "void")
-
-    def setUp(self) -> None:
-        # Line 1: `if (a)` at bci 2 skips to bci 20. Line 2: `x = b ? 1 : 2` at
-        # bci 5 merges again at 10. Line 3: the target call at bci 12.
-        self.flow: MethodFlow = _flow(
-            [(2, (3, 20)), (5, (6, 8))],
-            {0: (3, 20), 3: (6, 8), 6: (10,), 8: (10,), 10: (20,), 20: ()},
-        )
-        self.graph = CallGraph(methods={1: self.CALLER, 2: self.TARGET}, invoke_fan_out={10: [2]})
-        self.edge: dict = {
-            "caller": 1, "callee": 2, "bci": "12", "is_direct": "true",
-            "kind": "call", "invoke_id": 10, "source_line": 3,
-        }
-        self.jacoco_methods = {self.CALLER.canonical_id: JacocoMethodCoverage(
-            method_ref=self.CALLER, covered=True, source_path="example/Router.java",
-            source_line=1, report_paths=("fixture.xml",),
-        )}
-        self.jacoco_lines = {"example/Router.java": {
-            1: JacocoLineCoverage(mi=0, ci=3, mb=1, cb=1),
-            2: JacocoLineCoverage(mi=0, ci=4, mb=1, cb=1),
-            3: JacocoLineCoverage(mi=2, ci=0, mb=0, cb=0),
-            4: JacocoLineCoverage(mi=0, ci=1, mb=0, cb=0),
-        }}
-        self.lines: dict[str, tuple[tuple[int, int], ...]] = {
-            self.CALLER.canonical_id: ((0, 1), (3, 2), (10, 3), (20, 4)),
-        }
-
-    def _classify(self, counters: InstrumentedCounters | None = None, flows: bool = True) -> dict:
-        evidence = NavigationEvidence(
-            line_numbers=self.lines,
-            flows={self.CALLER.canonical_id: self.flow} if flows else None,
-            counters=counters,
-        )
-        return edge_miss_classification(
-            self.edge, self.graph, self.jacoco_methods, self.jacoco_lines, evidence
-        )
-
-    def test_a_merging_branch_is_skipped_for_the_one_that_decides_the_call(self) -> None:
-        classification: dict = self._classify()
-        self.assertEqual(classification["kind"], "fork-not-taken")
-        fork: dict = classification["fork"]
-        self.assertEqual((fork["line"], fork["evidence"]), (1, "control-flow"))
-        self.assertEqual(
-            [(successor["line"], successor["reachesTarget"]) for successor in fork["branches"][0]["successors"]],
-            [(2, True), (4, False)],
-        )
-
-    def test_without_a_table_the_nearest_missed_branch_line_is_the_fork(self) -> None:
-        fork: dict = self._classify(flows=False)["fork"]
-        self.assertEqual((fork["line"], fork["evidence"], fork["branches"]), (2, "line-order", None))
-
-    def test_a_branch_whose_target_side_ran_is_not_the_reason(self) -> None:
-        counters = InstrumentedCounters(branches={(self.CALLER.canonical_id, 2): {3: 9, 20: 4}})
-        classification: dict = self._classify(counters)
-        self.assertEqual(classification["kind"], "no-fork")
-
-    def test_counts_and_reach_come_from_the_counters(self) -> None:
-        counters = InstrumentedCounters(branches={(self.CALLER.canonical_id, 2): {20: 40182}})
-        classification: dict = self._classify(counters)
-        self.assertEqual(classification["reach"], 40182)
-        counts: list[int | None] = [
-            successor["count"] for successor in classification["fork"]["branches"][0]["successors"]
-        ]
-        self.assertEqual(counts, [None, 40182])
-
-    def test_a_conditional_expression_on_the_call_line_is_its_own_fork(self) -> None:
-        # `return c ? call() : 0` - the branch at bci 11 precedes the call at 12.
-        self.flow = _flow([(11, (12, 16))], {0: (12, 16), 12: (20,), 16: (20,), 20: ()})
-        self.lines = {self.CALLER.canonical_id: ((0, 3), (20, 4))}
-        self.jacoco_lines["example/Router.java"][3] = JacocoLineCoverage(mi=2, ci=3, mb=1, cb=1)
-        fork: dict = self._classify()["fork"]
-        self.assertEqual((fork["line"], fork["evidence"]), (3, "control-flow"))
-
-    def test_a_loop_does_not_carry_the_walk_around_an_or_condition(self) -> None:
-        # h2 `Tokenizer.tokenize`: a loop headed at bci 0 holds, on line 2,
-        # `if (c2 == 'X' || c2 == 'x') { readHexNumber(); continue; }`. Block 3
-        # tests 'X', block 7 tests 'x', both jump to the call block 10, and the
-        # else side at 20 loops back through block 3. The walk never leaves the
-        # dead call block, so the loop cannot carry it around.
-        self.flow = _flow(
-            [(1, (3, 30)), (6, (7, 10)), (9, (10, 20))],
-            {0: (3, 30), 3: (7, 10), 7: (10, 20), 10: (0,), 20: (0,), 30: ()},
-        )
-        self.lines = {self.CALLER.canonical_id: ((0, 1), (3, 2), (10, 3), (20, 4), (30, 5))}
-        self.jacoco_lines["example/Router.java"].update({
-            1: JacocoLineCoverage(mi=0, ci=3, mb=0, cb=2),
-            2: JacocoLineCoverage(mi=0, ci=6, mb=2, cb=2),
-            5: JacocoLineCoverage(mi=0, ci=1, mb=0, cb=0),
-        })
-        counters = InstrumentedCounters(branches={
-            (self.CALLER.canonical_id, 6): {7: 54, 10: 0},
-            (self.CALLER.canonical_id, 9): {10: 0, 20: 54},
-        })
-        classification: dict = self._classify(counters)
-        self.assertEqual(classification["kind"], "fork-not-taken")
-        fork: dict = classification["fork"]
-        self.assertEqual((fork["line"], fork["evidence"]), (2, "control-flow"))
-        self.assertEqual(
-            [
-                [(successor["line"], successor["count"], successor["reachesTarget"])
-                 for successor in branch["successors"]]
-                for branch in fork["branches"]
-            ],
-            [[(2, 54, False), (3, 0, True)], [(3, 0, True), (4, 54, False)]],
-        )
-
-    def test_a_conditional_argument_on_the_call_line_does_not_hide_the_guard(self) -> None:
-        # `if (ok) target(flag ? 1 : 2);` on line 3: the `if` at bci 2 and the
-        # ternary at bci 5 share the line, and only the `if` ever ran.
-        self.lines = {self.CALLER.canonical_id: ((0, 3), (20, 4))}
-        self.jacoco_lines["example/Router.java"][3] = JacocoLineCoverage(mi=6, ci=3, mb=3, cb=1)
-        counters = InstrumentedCounters(branches={
-            (self.CALLER.canonical_id, 2): {3: 0, 20: 7},
-            (self.CALLER.canonical_id, 5): {6: 0, 8: 0},
-        })
-        classification: dict = self._classify(counters)
-        self.assertEqual(classification["kind"], "fork-not-taken")
-        fork: dict = classification["fork"]
-        self.assertEqual((fork["line"], fork["evidence"], fork["reach"]), (3, "control-flow", 7))
-        self.assertEqual(
-            [
-                [(successor["line"], successor["count"], successor["reachesTarget"])
-                 for successor in branch["successors"]]
-                for branch in fork["branches"]
-            ],
-            [[(3, 0, True), (4, 7, False)], [(3, 0, True), (3, 0, True)]],
-        )
-
-    def test_a_branch_whose_arms_both_end_in_the_dead_call_is_no_fork(self) -> None:
-        # `if (c) { foo(); } else { bar(); } target();` where `foo` always
-        # threw: the `if` ran, yet neither arm avoids the never-run call.
-        self.flow = _flow([(2, (3, 6))], {0: (3, 6), 3: (9,), 6: (9,), 9: ()})
-        self.lines = {self.CALLER.canonical_id: ((0, 1), (3, 2), (6, 3), (9, 4))}
-        self.edge["bci"] = "10"
-        self.edge["source_line"] = 4
-        self.jacoco_lines["example/Router.java"] = {
-            1: JacocoLineCoverage(mi=0, ci=3, mb=1, cb=1),
-            2: JacocoLineCoverage(mi=0, ci=2, mb=0, cb=0),
-            3: JacocoLineCoverage(mi=2, ci=0, mb=0, cb=0),
-            4: JacocoLineCoverage(mi=2, ci=0, mb=0, cb=0),
-        }
-        counters = InstrumentedCounters(branches={(self.CALLER.canonical_id, 2): {3: 9, 6: 0}})
-        self.assertEqual(self._classify(counters)["kind"], "no-fork")
-        self.assertEqual(self._classify()["kind"], "no-fork")
 
 
 if __name__ == "__main__":

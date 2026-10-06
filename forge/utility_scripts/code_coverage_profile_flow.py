@@ -16,7 +16,7 @@ from __future__ import annotations
 import bisect
 import csv
 from collections.abc import Callable
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 from utility_scripts.code_coverage_profile_inputs import ProfileFormatError
 
@@ -41,14 +41,17 @@ class Branch:
 
 @dataclass(frozen=True)
 class DeadRegion:
-    """The never-executed blocks around an invoke, and the forks into them.
+    """The never-executed blocks around an invoke, and the edges into them.
 
     `forks` pairs each branch that ran with the successor bci through which it
-    never entered the region (§AR-code-coverage-deep-navigation.3.2).
+    never entered the region (§AR-code-coverage-deep-navigation.3.2); `catches`
+    pairs each handler block in the region with a block that ran under its
+    `try` and never raised into it (§AR-code-coverage-deep-navigation.3.3).
     """
 
     blocks: frozenset[int]
     forks: tuple[tuple[Branch, int], ...]
+    catches: tuple[tuple[int, int], ...] = ()
 
 
 @dataclass(frozen=True)
@@ -63,6 +66,10 @@ class MethodFlow:
     #: The successors entered only by an exception: the handlers of every
     #: `try` covering the block (§AR-code-coverage-deep-navigation.1.3).
     exception_successors: dict[int, frozenset[int]]
+    #: Handler block start -> the caught type, `any` for a catch-all.
+    handler_types: dict[int, str] = field(default_factory=dict)
+    #: Blocks holding a call or a `throw`, which can raise a caught exception.
+    throwing_blocks: frozenset[int] = frozenset()
 
     def block_of(self, bci: int) -> int | None:
         index: int = bisect.bisect_right(self.block_starts, bci) - 1
@@ -97,14 +104,15 @@ class MethodFlow:
         """Walk backwards from `target_bci` through blocks that never executed.
 
         A block ran when its branch counter is positive, or without a counter
-        when `line_ran` says JaCoCo covers its branch's line; a block without a
-        branch instruction is dead when its only normal exit is. The walk stops
-        at a block that ran, at contradictory evidence — a positive count into
-        a block believed dead — and at unknown liveness, and never follows an
-        exception edge. A block that ran but whose every real successor is
-        dead left by an exception and is no fork; without a counter it cannot
-        be told from a block that never ran, so the walk passes through it
-        (§AR-code-coverage-deep-navigation.3.2).
+        when `line_ran` says JaCoCo covers its line; a block without a branch
+        instruction is dead when its only normal exit is. The walk stops at a
+        block that ran, at contradictory evidence — a positive count into a
+        block believed dead — and at unknown liveness. An exception edge is
+        followed only out of a block that never ran; out of a block that ran it
+        is recorded as a catch boundary. A block that ran but whose every real
+        successor is dead left by an exception and is no fork; without a
+        counter it cannot be told from a block that never ran, so the walk
+        passes through it (§AR-code-coverage-deep-navigation.3.2).
         """
         target: int | None = self.block_of(target_bci)
         if target is None:
@@ -116,21 +124,41 @@ class MethodFlow:
         edges: dict[int, set[int]] = {}
         #: Blocks that ran by JaCoCo's line status alone.
         soft: set[int] = set()
+        #: Handler block -> blocks that ran under its `try`.
+        catches: dict[int, set[int]] = {}
+
+        def ran_status(block: int, branch: Branch | None) -> bool | None:
+            counts: dict[int, int] | None = branch_counts(branch) if branch is not None else None
+            if counts is not None:
+                return sum(counts.values()) > 0
+            return line_ran(branch.bci if branch is not None else block)
 
         def expand() -> None:
             while pending:
                 block: int = pending.pop()
                 for predecessor in predecessors.get(block, ()):
-                    if predecessor in dead or block not in self.normal_successors(predecessor):
+                    if predecessor in dead:
                         continue
                     branch: Branch | None = self.branch_in(predecessor)
+                    if block in self.exception_successors.get(predecessor, frozenset()):
+                        ran: bool | None = ran_status(predecessor, branch)
+                        if ran is None:
+                            continue
+                        if ran:
+                            catches.setdefault(block, set()).add(predecessor)
+                        else:
+                            dead.add(predecessor)
+                            pending.append(predecessor)
+                        continue
+                    if block not in self.normal_successors(predecessor):
+                        continue
                     if branch is None:
                         dead.add(predecessor)
                         pending.append(predecessor)
                         continue
                     counts: dict[int, int] | None = branch_counts(branch)
                     if counts is None:
-                        ran: bool | None = line_ran(branch.bci)
+                        ran = line_ran(branch.bci)
                         if ran:
                             soft.add(predecessor)
                     else:
@@ -165,7 +193,60 @@ class MethodFlow:
             assert branch is not None
             if any(successor not in dead for successor in branch.reachable_successors):
                 forks.extend((branch, successor) for successor in sorted(edges[block]))
-        return DeadRegion(blocks=frozenset(dead), forks=tuple(forks))
+        return DeadRegion(
+            blocks=frozenset(dead),
+            forks=tuple(forks),
+            catches=tuple(
+                (handler, source)
+                for handler in sorted(catches)
+                for source in sorted(catches[handler]) if source not in dead
+            ),
+        )
+
+    def block_counts(
+            self, branch_counts: Callable[[Branch], dict[int, int] | None],
+    ) -> dict[int, int | None]:
+        """How often each block ran, propagated forward from the branch counters.
+
+        A block ending in a branch ran as often as its counter sums; any other
+        block as often as its normal forward edges were entered, a branch edge
+        by its own count and a fall-through by its source's count. A block
+        entered by a back edge without a counter, or missing any term, has no
+        count (§AR-code-coverage-deep-navigation.3.3).
+        """
+        predecessors: dict[int, tuple[int, ...]] = self.predecessors()
+        counts: dict[int, int | None] = {}
+
+        def count_of(block: int) -> int | None:
+            if block in counts:
+                return counts[block]
+            counts[block] = None
+            branch: Branch | None = self.branch_in(block)
+            own: dict[int, int] | None = branch_counts(branch) if branch is not None else None
+            if own is not None:
+                counts[block] = sum(own.values())
+                return counts[block]
+            normal: list[int] = [
+                predecessor for predecessor in predecessors.get(block, ())
+                if block in self.normal_successors(predecessor)
+            ]
+            total: int | None = 0 if normal else None
+            for predecessor in normal:
+                source_branch: Branch | None = self.branch_in(predecessor)
+                if source_branch is not None:
+                    source_counts: dict[int, int] | None = branch_counts(source_branch)
+                    term: int | None = source_counts.get(block, 0) if source_counts is not None else None
+                elif predecessor < block:
+                    term = count_of(predecessor)
+                else:
+                    term = None
+                total = total + term if total is not None and term is not None else None
+            counts[block] = total
+            return total
+
+        for block in self.block_starts:
+            count_of(block)
+        return counts
 
 
 def _parse_branch(entry: str) -> Branch:
@@ -186,20 +267,39 @@ def _parse_branch(entry: str) -> Branch:
     )
 
 
-def _parse_blocks(
-        encoded: str,
-) -> tuple[tuple[int, ...], dict[int, tuple[int, ...]], dict[int, frozenset[int]]]:
-    """Blocks as `start>successor,...`; a `~` suffix marks an exception edge."""
+@dataclass(frozen=True)
+class _Blocks:
+    starts: tuple[int, ...]
+    successors: dict[int, tuple[int, ...]]
+    exceptional: dict[int, frozenset[int]]
+    handler_types: dict[int, str]
+    throwing: frozenset[int]
+
+
+def _parse_blocks(encoded: str) -> _Blocks:
+    """Blocks as `start>successor,...`: `bci~Type` is an exception edge to a
+    handler catching `Type`, and `start!>` marks a block that can raise."""
     successors: dict[int, tuple[int, ...]] = {}
     exceptional: dict[int, frozenset[int]] = {}
+    handler_types: dict[int, str] = {}
+    throwing: set[int] = set()
     for entry in encoded.split(";"):
         start, _, targets = entry.partition(">")
-        block: int = int(start)
-        successors[block] = tuple(int(target.rstrip("~")) for target in targets.split(",") if target)
-        exceptional[block] = frozenset(
-            int(target.rstrip("~")) for target in targets.split(",") if target.endswith("~")
-        )
-    return tuple(sorted(successors)), successors, exceptional
+        block: int = int(start.rstrip("!"))
+        if start.endswith("!"):
+            throwing.add(block)
+        normal: list[int] = []
+        handlers: set[int] = set()
+        for target in filter(None, targets.split(",")):
+            bci_text, marker, caught = target.partition("~")
+            bci: int = int(bci_text)
+            normal.append(bci)
+            if marker:
+                handlers.add(bci)
+                handler_types[bci] = caught or "any"
+        successors[block] = tuple(normal)
+        exceptional[block] = frozenset(handlers)
+    return _Blocks(tuple(sorted(successors)), successors, exceptional, handler_types, frozenset(throwing))
 
 
 def load_library_flow(path: str) -> dict[str, MethodFlow]:
@@ -208,14 +308,16 @@ def load_library_flow(path: str) -> dict[str, MethodFlow]:
     try:
         with open(path, encoding="utf-8", newline="") as handle:
             for row in csv.DictReader(handle):
-                block_starts, block_successors, exception_successors = _parse_blocks(row["blocks"])
+                blocks: _Blocks = _parse_blocks(row["blocks"])
                 flows[row["id"]] = MethodFlow(
                     branches=tuple(
                         _parse_branch(entry) for entry in row["branches"].split(";") if entry
                     ),
-                    block_starts=block_starts,
-                    block_successors=block_successors,
-                    exception_successors=exception_successors,
+                    block_starts=blocks.starts,
+                    block_successors=blocks.successors,
+                    exception_successors=blocks.exceptional,
+                    handler_types=blocks.handler_types,
+                    throwing_blocks=blocks.throwing,
                 )
     except (OSError, csv.Error, KeyError, ValueError) as error:
         raise ProfileFormatError(f"Cannot read control-flow table '{path}'.") from error
