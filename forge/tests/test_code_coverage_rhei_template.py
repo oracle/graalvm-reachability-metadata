@@ -313,7 +313,7 @@ class CodeCoverageRheiTemplateTests(unittest.TestCase):
         cover state inherits it as required from that state, and the
         instructions name every listed path a target. In the deep phase that
         state is the session dispatcher.
-        §AR-code-coverage-improvement.5.2, §AR-code-coverage-deep-sessions.2
+        §AR-code-coverage-improvement.5.2, §AR-code-coverage-deep-navigation.4
         """
         forge_root: str = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
         states_paths: tuple[str, ...] = (
@@ -377,7 +377,7 @@ class CodeCoverageRheiTemplateTests(unittest.TestCase):
         """Measurement queues the pass, the dispatcher loops over it with the
         cover state, and the visit caps sit at the session ceiling.
 
-        §AR-code-coverage-deep-sessions.2, §AR-code-coverage-deep-sessions.3
+        §AR-code-coverage-deep-navigation.4, §AR-code-coverage-deep-navigation.4
         """
         forge_root: str = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
         states_paths: tuple[str, ...] = (
@@ -417,7 +417,7 @@ class CodeCoverageRheiTemplateTests(unittest.TestCase):
                 )
                 self.assertIn(f'"{queue_path}"', states["deep-measure"]["program"])
                 self.assertIn(f'"{queue_path}"', states["deep-dispatch"]["program"])
-                # §AR-code-coverage-deep-sessions.4: a stuck session gives way
+                # §AR-code-coverage-deep-navigation.4: a stuck session gives way
                 # to the next one instead of being retried.
                 self.assertEqual(states["deep-cover"]["agent_timeout"], "45m")
                 self.assertIn(
@@ -441,7 +441,7 @@ class CodeCoverageRheiTemplateTests(unittest.TestCase):
         """Rhei bounds transitions per task and agent starts per day; a deep
         pass at the session ceiling must fit both at the default budget.
 
-        §AR-code-coverage-deep-sessions.3
+        §AR-code-coverage-deep-navigation.4
         """
         forge_root: str = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
         template_dir: str = os.path.join(

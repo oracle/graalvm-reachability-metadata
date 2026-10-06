@@ -252,7 +252,7 @@ def _prompt_line(
 
 def _placement(session: dict | None) -> str:
     """Where this prompt's tests go, by the session kind
-    (§AR-code-coverage-deep-sessions.1.3)."""
+    (§AR-code-coverage-deep-navigation.4)."""
     if session is None:
         return (
             "Inside that suite, write one test class per subsystem you drive, not one "

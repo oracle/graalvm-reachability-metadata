@@ -5,7 +5,7 @@
 
 """
 Split a deep pass's prompt into group sessions and hand them out one by one
-(§AR-code-coverage-deep-sessions).
+(§AR-code-coverage-deep-navigation.4).
 
 Measurement plans the sessions from the prompt records, renders one prompt per
 session, and writes the pass's queue. The dispatch program state pops one
@@ -35,18 +35,18 @@ from utility_scripts.code_coverage_profile_records import (
 from utility_scripts.code_coverage_profile_render import write_markdown
 
 #: A session below this size is not worth an agent session of its own
-#: (§AR-code-coverage-deep-sessions.1.2).
+#: (§AR-code-coverage-deep-navigation.4).
 MIN_SESSION_TARGETS: int = 10
 #: The most targets one agent session is asked to finish.
 MAX_SESSION_TARGETS: int = 25
 #: Every session but the last pooled one holds at least the minimum, so this
-#: bounds the sessions of one pass (§AR-code-coverage-deep-sessions.3).
+#: bounds the sessions of one pass (§AR-code-coverage-deep-navigation.4).
 MAX_SESSIONS_PER_PASS: int = MAX_LISTED_METHODS // MIN_SESSION_TARGETS + 1
 
 MONOLITH: str = "monolith"
 MIXED: str = "mixed"
 
-#: Exit codes of the dispatch state (§AR-code-coverage-deep-sessions.2).
+#: Exit codes of the dispatch state (§AR-code-coverage-deep-navigation.4).
 DISPATCH_SESSION: int = 10
 DISPATCH_PASS_SPENT: int = 0
 DISPATCH_FAILED: int = 1
@@ -66,7 +66,7 @@ class DeepSession:
     @property
     def kind(self) -> str:
         # The kind follows the routes the session holds, not the rule that
-        # formed it (§AR-code-coverage-deep-sessions.1.3).
+        # formed it (§AR-code-coverage-deep-navigation.4).
         return MONOLITH if len(self.entry_owners) == 1 else MIXED
 
 
@@ -82,7 +82,7 @@ def _package(owner: str) -> str:
 
 def group_sessions(entry_owners: list[str]) -> list[list[int]]:
     """Split prompt positions into sessions from each position's entry owner
-    (§AR-code-coverage-deep-sessions.1.2).
+    (§AR-code-coverage-deep-navigation.4).
 
     Positions are in prompt order. Returns each session's positions, sessions
     ordered by their best-ranked position.
@@ -114,7 +114,7 @@ def group_sessions(entry_owners: list[str]) -> list[list[int]]:
 
 def plan_sessions(prompt_records: list[NearCallRecord], graph: CallGraph) -> list[DeepSession]:
     """The pass's sessions, grouped by the entry owner of each prompted route
-    (§AR-code-coverage-deep-sessions.1)."""
+    (§AR-code-coverage-deep-navigation.4)."""
     owners: list[str] = [entry_owner(record, graph) for record in prompt_records]
     return [
         DeepSession(
@@ -141,7 +141,7 @@ def write_prompts(
         output_dir: str,
 ) -> list[dict]:
     """Render the pass's whole prompt and one prompt per session; return the
-    sessions the report records (§AR-code-coverage-deep-sessions.1)."""
+    sessions the report records (§AR-code-coverage-deep-navigation.4)."""
     # The whole prompt stays the pass's audit record of what it asked for.
     write_markdown(
         report,
@@ -198,7 +198,7 @@ def write_queue(report_path: str, queue_path: str) -> int:
 
 def dispatch(queue_path: str, prompt_path: str) -> int:
     """Hand out the next queued session, or report the pass spent
-    (§AR-code-coverage-deep-sessions.2)."""
+    (§AR-code-coverage-deep-navigation.4)."""
     try:
         with open(queue_path, encoding="utf-8") as queue_file:
             queue: list[dict] = json.load(queue_file)

@@ -149,7 +149,7 @@
   group session at a time. The analyzer renders each session of a pass under
   `runtime/code-coverage/discovery/deep-sessions-<n>/`, measurement queues them
   in `runtime/code-coverage/prompts/deep-session-queue.json`, and `deep-dispatch`
-  hands out the next one (§AR-code-coverage-deep-sessions).
+  hands out the next one (§AR-code-coverage-deep-navigation.4).
 - Target state: measurement-owned. Attempt counts and rotation are carried
   deterministically in the `discovery-report-<n>.json` history; every target
   prompted in one iteration is deprioritized at the next. The cover agent

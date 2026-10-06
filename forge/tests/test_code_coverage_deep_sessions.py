@@ -5,7 +5,7 @@
 
 """Tests for deep-pass group sessions: grouping, prompts, queue, and dispatch.
 
-§AR-code-coverage-deep-sessions
+§AR-code-coverage-deep-navigation.4
 """
 
 import json

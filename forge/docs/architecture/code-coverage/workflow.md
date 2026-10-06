@@ -462,7 +462,7 @@ it never changes a target's JaCoCo status.
 The full JSON report retains every uncovered target with its attempt count,
 JaCoCo evidence, graph status, rank, sampled context, and static path, for
 finalization and audit. The prompt-facing target-id list holds at most 200
-methods globally, run as group sessions (§AR-code-coverage-deep-sessions).
+methods globally, run as group sessions (§AR-code-coverage-deep-navigation.4).
 Measurement, not the agent, carries attempt state in the discovery-report
 history: every target it prompted gets its attempt count incremented at the next
 measurement, ranking prefers less-attempted targets, and covered targets leave
@@ -1009,7 +1009,7 @@ loop forward: they write the numbered report history, compute the stop decision
 inherits as required, so the agent receives the whole document in its message,
 not a path to read: an agent told to read a long file reads part of it, and
 every target it never sees is coverage the pass cannot add. A deep pass hands it
-out as group sessions (§AR-code-coverage-deep-sessions.2) and stays one
+out as group sessions (§AR-code-coverage-deep-navigation.4) and stays one
 measurement. The cover agent writes tests and returns; it records no coverage
 claim and no target state. A repair pass re-enters measurement on the same
 iteration through the active-measurement marker, so a failed measurement plus
