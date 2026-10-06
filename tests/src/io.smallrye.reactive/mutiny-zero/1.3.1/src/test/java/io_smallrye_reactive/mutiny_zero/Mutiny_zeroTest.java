@@ -116,10 +116,15 @@ public class Mutiny_zeroTest {
         CompletionStage<List<String>> collected =
                 PublisherHelpers.collectToList(ZeroPublisher.fromFailure(failure));
 
-        ExecutionException exception = assertThrows(ExecutionException.class,
+        ExecutionException collectionException = assertThrows(ExecutionException.class,
                 () -> collected.toCompletableFuture().get(TIMEOUT_SECONDS, SECONDS));
+        ExecutionException firstItemException = assertThrows(ExecutionException.class,
+                () -> ZeroPublisher.toCompletionStage(ZeroPublisher.fromFailure(failure))
+                        .toCompletableFuture()
+                        .get(TIMEOUT_SECONDS, SECONDS));
 
-        assertSame(failure, exception.getCause());
+        assertSame(failure, collectionException.getCause());
+        assertSame(failure, firstItemException.getCause());
     }
 
     @Test
@@ -190,6 +195,33 @@ public class Mutiny_zeroTest {
     }
 
     @Test
+    public void propagatesConcatenatedAndSpreadPublisherFailures() throws Exception {
+        IllegalStateException concatenationFailure = new IllegalStateException("concatenation failed");
+        Flow.Publisher<String> concatenated = new Concatenate<>(List.of(
+                ZeroPublisher.fromItems("before failure"),
+                ZeroPublisher.fromFailure(concatenationFailure),
+                ZeroPublisher.fromItems("unreachable")));
+        RecordingSubscriber<String> concatenatedSubscriber = new RecordingSubscriber<>();
+        concatenated.subscribe(concatenatedSubscriber);
+        concatenatedSubscriber.request(Long.MAX_VALUE);
+
+        assertEquals(List.of("before failure"), concatenatedSubscriber.items());
+        assertSame(concatenationFailure, concatenatedSubscriber.awaitFailure());
+
+        IllegalArgumentException innerFailure = new IllegalArgumentException("inner publisher failed");
+        Flow.Publisher<String> spread = new Spread<>(
+                ZeroPublisher.fromItems("ok", "fail"),
+                item -> "fail".equals(item) ? ZeroPublisher.fromFailure(innerFailure) : ZeroPublisher.fromItems(item),
+                1,
+                1);
+        RecordingSubscriber<String> spreadSubscriber = new RecordingSubscriber<>(Long.MAX_VALUE);
+        spread.subscribe(spreadSubscriber);
+
+        assertEquals(List.of("ok"), spreadSubscriber.items());
+        assertSame(innerFailure, spreadSubscriber.awaitFailure());
+    }
+
+    @Test
     public void preservesDemandWhileConcatenatingPublishers() throws Exception {
         Flow.Publisher<Integer> concatenated = new Concatenate<>(List.of(
                 ZeroPublisher.fromItems(1, 2),
@@ -237,6 +269,23 @@ public class Mutiny_zeroTest {
         assertEquals(List.of("eventual success"), collect(retried));
         assertEquals(3, attempts.get());
         assertTrue(Retry.always().test(new IllegalStateException("retryable")));
+    }
+
+    @Test
+    public void stopsRetryingAndPropagatesTheOriginalFailure() throws Exception {
+        IllegalStateException failure = new IllegalStateException("retries exhausted");
+        AtomicInteger attempts = new AtomicInteger();
+        Flow.Publisher<String> failingPublisher = ZeroPublisher.fromCompletionStage(() -> {
+            attempts.incrementAndGet();
+            return CompletableFuture.failedFuture(failure);
+        });
+        RecordingSubscriber<String> subscriber = new RecordingSubscriber<>();
+
+        new Retry<>(failingPublisher, Retry.atMost(2)).subscribe(subscriber);
+        subscriber.request(1);
+
+        assertSame(failure, subscriber.awaitFailure());
+        assertEquals(3, attempts.get());
     }
 
     @Test
@@ -423,12 +472,24 @@ public class Mutiny_zeroTest {
     private static final class RecordingSubscriber<T> implements Flow.Subscriber<T> {
         private final List<T> items = Collections.synchronizedList(new ArrayList<>());
         private final CompletableFuture<Void> terminated = new CompletableFuture<>();
+        private final long initialRequest;
         private volatile Flow.Subscription subscription;
         private volatile Throwable failure;
+
+        private RecordingSubscriber() {
+            this(0L);
+        }
+
+        private RecordingSubscriber(long initialRequest) {
+            this.initialRequest = initialRequest;
+        }
 
         @Override
         public void onSubscribe(Flow.Subscription newSubscription) {
             subscription = newSubscription;
+            if (initialRequest > 0L) {
+                newSubscription.request(initialRequest);
+            }
         }
 
         @Override
