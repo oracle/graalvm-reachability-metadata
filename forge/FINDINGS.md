@@ -43,6 +43,11 @@ The resolved dynamic-access report listed covered call sites in org.flywaydb.cor
 **Test-only reachability metadata keys were not deterministically ordered**
 
 The initial test-only reachability-metadata.json placed the top-level resources key before reflection instead of using the repository's normalized JSON key ordering. Forge finalization detected this as a publishable-tree change and reordered the keys without changing their entries or semantics.
+## 2026-10-05 — dev.langchain4j:langchain4j-jina:1.21.0-beta31 (#10469)
+
+**Pre-push review unavailable**
+
+Forge could not obtain a readable pre-push review verdict. This records a review availability problem, not a reviewer finding against the branch.
 
 ## 2026-10-04 — io.lettuce:lettuce-core:7.0.0.RELEASE (#10430)
 
