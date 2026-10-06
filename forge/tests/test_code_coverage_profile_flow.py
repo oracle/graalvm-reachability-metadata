@@ -317,10 +317,10 @@ class DeadRegionTests(unittest.TestCase):
             {0: 8_000_100, 7: 100, 8: 100, 9: 8_000_000, 13: 8_000_000, 14: None},
         )
 
-    def test_an_exception_edge_out_of_a_dead_try_is_walked_to_the_fork_above(self) -> None:
+    def test_an_exception_edge_out_of_a_dead_try_is_a_catch_boundary_too(self) -> None:
         # `if (mode) { try { parse(x); } catch (E e) { target(); } }` with `mode`
-        # never true: the try body at block 3 never ran, so the handler was
-        # never entered from it and the fork is the `if`.
+        # never true: the try body at block 3 never ran, and the hint reports it
+        # under the handler at zero rather than walking through it to the `if`.
         flow: MethodFlow = _flow(
             [(2, (3, 20))], {0: (3, 20), 3: (20, 10), 10: (20,), 20: ()}, {3: frozenset({10})},
         )
@@ -329,8 +329,8 @@ class DeadRegionTests(unittest.TestCase):
             11, lambda branch: counts.get(branch.bci), lambda bci: bci >= 20
         )
         assert region is not None
-        self.assertEqual((region.blocks, region.catches), ({10, 3}, ()))
-        self.assertEqual(region.forks, ((flow.branches[0], 3),))
+        self.assertEqual((region.blocks, region.forks), ({10}, ()))
+        self.assertEqual(region.catches, ((10, 3),))
 
     def test_block_lookup_before_the_first_block_is_absent(self) -> None:
         flow: MethodFlow = _flow([(2, (3, 5))], {1: (3, 5), 3: (), 5: ()})

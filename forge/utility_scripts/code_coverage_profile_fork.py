@@ -142,8 +142,8 @@ def _exception_to_json(
         branch_counts: Callable[[Branch], dict[int, int] | None],
         graph: CallGraph,
 ) -> dict:
-    """The catch boundary: each handler with the `try` lines that ran and can
-    raise into it, each with its own count (§AR-code-coverage-deep-navigation.3.3)."""
+    """The catch boundary: each handler with the `try` lines that can raise
+    into it, each with its own count (§AR-code-coverage-deep-navigation.3.3)."""
     counts: dict[int, int | None] = flow.block_counts(branch_counts)
     caller_id: int | None = graph.key_to_id.get(caller.canonical_id)
     calls_by_bci: dict[int, str] = {}

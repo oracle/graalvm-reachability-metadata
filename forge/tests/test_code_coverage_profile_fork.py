@@ -202,6 +202,62 @@ class ControlFlowForkTests(unittest.TestCase):
             "    line 44 `Integer.parseInt` ran 8,000,000×, never threw it",
         ])
 
+    def test_a_dead_arm_inside_a_try_that_ran_is_not_the_fork(self) -> None:
+        # `try { o = parse(s); if (o == null) return fallback(); return convert(o); }
+        #  catch (ParseException e) { return target(); }` where `o` was never null.
+        # The dead `fallback` arm sits under the try, yet the handler is a catch
+        # boundary: the guard is not reported as a fork, and the arm shows at zero.
+        self.flow = MethodFlow(
+            branches=(Branch(7, (10, 12), frozenset(), False),),
+            block_starts=(0, 10, 12, 20),
+            block_successors={0: (10, 12, 20), 10: (20,), 12: (20,), 20: ()},
+            exception_successors={0: frozenset({20}), 10: frozenset({20}), 12: frozenset({20})},
+            handler_types={20: "example.ParseException"},
+            throwing_blocks=frozenset({0, 10, 12}),
+        )
+        self.lines = {self.CALLER.canonical_id: (
+            (0, 42), (7, 43), (10, 44), (12, 46), (20, 47), (21, 48),
+        )}
+        self.edge["bci"] = "21"
+        self.edge["source_line"] = 48
+        parse = MethodRef("example.Parser", "parse", ("java.lang.String",), "java.lang.Object")
+        fallback = MethodRef("example.Router", "fallback", (), "java.lang.Object")
+        convert = MethodRef("example.Router", "convert", ("java.lang.Object",), "java.lang.Object")
+        self.graph = CallGraph(
+            methods={1: self.CALLER, 2: self.TARGET, 3: parse, 4: fallback, 5: convert},
+            key_to_id={self.CALLER.canonical_id: 1},
+            adjacency={1: [
+                {"caller": 1, "callee": 3, "bci": "1", "kind": "call"},
+                {"caller": 1, "callee": 4, "bci": "10", "kind": "call"},
+                {"caller": 1, "callee": 5, "bci": "13", "kind": "call"},
+                {"caller": 1, "callee": 2, "bci": "21", "kind": "call"},
+            ]},
+            invoke_fan_out={10: [2]},
+        )
+        self.jacoco_lines["example/Router.java"] = {
+            42: JacocoLineCoverage(mi=0, ci=3, mb=0, cb=0),
+            43: JacocoLineCoverage(mi=0, ci=2, mb=1, cb=1),
+            44: JacocoLineCoverage(mi=2, ci=0, mb=0, cb=0),
+            46: JacocoLineCoverage(mi=0, ci=3, mb=0, cb=0),
+            47: JacocoLineCoverage(mi=1, ci=0, mb=0, cb=0),
+            48: JacocoLineCoverage(mi=3, ci=0, mb=0, cb=0),
+        }
+        counters = InstrumentedCounters(branches={(self.CALLER.canonical_id, 7): {10: 0, 12: 500}})
+        classification: dict = self._classify(counters)
+        self.assertEqual(classification["kind"], "no-fork")
+        self.assertEqual(classification["exception"]["handlers"][0]["sources"], [
+            {"line": 42, "count": 500, "calls": ["Parser.parse"]},
+            {"line": 44, "count": 0, "calls": ["Router.fallback"]},
+            {"line": 46, "count": 500, "calls": ["Router.convert"]},
+        ])
+        self.assertEqual(classification_lines(classification, True)[1:], [
+            "  reached only through catch (ParseException) at line 47",
+            "    line 42 `Parser.parse` ran 500×, never threw it",
+            "    line 44 `Router.fallback` ran 0×, never threw it",
+            "    line 46 `Router.convert` ran 500×, never threw it",
+        ])
+        self.assertEqual(self._classify()["kind"], "no-fork")
+
     def test_a_branch_whose_arms_both_end_in_the_dead_call_is_no_fork(self) -> None:
         # `if (c) { foo(); } else { bar(); } target();` where `foo` always
         # threw: the `if` ran, yet neither arm avoids the never-run call.

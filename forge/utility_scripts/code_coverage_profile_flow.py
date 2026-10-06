@@ -45,8 +45,8 @@ class DeadRegion:
 
     `forks` pairs each branch that ran with the successor bci through which it
     never entered the region (§AR-code-coverage-deep-navigation.3.2); `catches`
-    pairs each handler block in the region with a block that ran under its
-    `try` and never raised into it (§AR-code-coverage-deep-navigation.3.3).
+    pairs each handler block in the region with a block under its `try`, which
+    never raised into it (§AR-code-coverage-deep-navigation.3.3).
     """
 
     blocks: frozenset[int]
@@ -108,11 +108,11 @@ class MethodFlow:
         instruction is dead when its only normal exit is. The walk stops at a
         block that ran, at contradictory evidence — a positive count into a
         block believed dead — and at unknown liveness. An exception edge is
-        followed only out of a block that never ran; out of a block that ran it
-        is recorded as a catch boundary. A block that ran but whose every real
-        successor is dead left by an exception and is no fork; without a
-        counter it cannot be told from a block that never ran, so the walk
-        passes through it (§AR-code-coverage-deep-navigation.3.2).
+        never followed: every block under the `try` is recorded as a catch
+        boundary. A block that ran but whose every real successor is dead left
+        by an exception and is no fork; without a counter it cannot be told
+        from a block that never ran, so the walk passes through it
+        (§AR-code-coverage-deep-navigation.3.2).
         """
         target: int | None = self.block_of(target_bci)
         if target is None:
@@ -124,14 +124,8 @@ class MethodFlow:
         edges: dict[int, set[int]] = {}
         #: Blocks that ran by JaCoCo's line status alone.
         soft: set[int] = set()
-        #: Handler block -> blocks that ran under its `try`.
+        #: Handler block -> blocks under its `try`.
         catches: dict[int, set[int]] = {}
-
-        def ran_status(block: int, branch: Branch | None) -> bool | None:
-            counts: dict[int, int] | None = branch_counts(branch) if branch is not None else None
-            if counts is not None:
-                return sum(counts.values()) > 0
-            return line_ran(branch.bci if branch is not None else block)
 
         def expand() -> None:
             while pending:
@@ -139,24 +133,16 @@ class MethodFlow:
                 for predecessor in predecessors.get(block, ()):
                     if predecessor in dead:
                         continue
-                    branch: Branch | None = self.branch_in(predecessor)
                     if block in self.exception_successors.get(predecessor, frozenset()):
-                        ran: bool | None = ran_status(predecessor, branch)
-                        if ran is None:
-                            continue
-                        if ran:
-                            catches.setdefault(block, set()).add(predecessor)
-                        else:
-                            dead.add(predecessor)
-                            pending.append(predecessor)
+                        catches.setdefault(block, set()).add(predecessor)
                         continue
-                    if block not in self.normal_successors(predecessor):
-                        continue
+                    branch: Branch | None = self.branch_in(predecessor)
                     if branch is None:
                         dead.add(predecessor)
                         pending.append(predecessor)
                         continue
                     counts: dict[int, int] | None = branch_counts(branch)
+                    ran: bool | None
                     if counts is None:
                         ran = line_ran(branch.bci)
                         if ran:
