@@ -19,7 +19,6 @@ import jakarta.security.auth.message.config.AuthConfigProvider;
 import jakarta.security.auth.message.config.ServerAuthConfig;
 import org.apache.catalina.Globals;
 import org.apache.catalina.authenticator.jaspic.AuthConfigFactoryImpl;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;

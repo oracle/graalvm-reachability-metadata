@@ -6,7 +6,6 @@
  */
 package org_apache_tomcat_embed.tomcat_embed_core;
 
-import java.io.IOException;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.nio.file.Files;

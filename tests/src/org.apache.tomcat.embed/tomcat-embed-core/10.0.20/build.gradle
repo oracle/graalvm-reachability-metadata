@@ -35,23 +35,13 @@ tasks.withType(Test).configureEach {
 tasks.named("nativeTest") {
     runtimeArgs.add("-Djava.home=${javaHome}")
     runtimeArgs.add(digesterPropertySource)
-    runtimeArgs.add('--add-opens=java.base/java.io=ALL-UNNAMED')
-    runtimeArgs.add('--add-opens=java.base/java.lang=ALL-UNNAMED')
-    runtimeArgs.add('--add-opens=java.base/java.lang.reflect=ALL-UNNAMED')
-    runtimeArgs.add('--add-opens=java.base/java.util=ALL-UNNAMED')
-    runtimeArgs.add('--add-opens=java.rmi/sun.rmi.transport=ALL-UNNAMED')
 }
 
 graalvmNative {
     binaries {
         test {
             buildArgs.add('--allow-incomplete-classpath')
-            runtimeArgs("-Djava.home=${javaHome}", digesterPropertySource,
-                    '--add-opens=java.base/java.io=ALL-UNNAMED',
-                    '--add-opens=java.base/java.lang=ALL-UNNAMED',
-                    '--add-opens=java.base/java.lang.reflect=ALL-UNNAMED',
-                    '--add-opens=java.base/java.util=ALL-UNNAMED',
-                    '--add-opens=java.rmi/sun.rmi.transport=ALL-UNNAMED')
+            runtimeArgs("-Djava.home=${javaHome}", digesterPropertySource)
         }
     }
     agent {
