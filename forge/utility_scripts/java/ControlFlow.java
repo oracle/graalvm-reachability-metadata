@@ -71,11 +71,15 @@ final class ControlFlow {
     }
 
     /// The `branches` and `blocks` fields of one method, or `null` when the
-    /// method has no conditional branch and so can hold no fork.
+    /// method has neither a conditional branch nor an exception table and so
+    /// can hold no fork and no catch boundary.
     static String[] encode(CodeAttribute code) {
         ControlFlow flow = new ControlFlow(code);
         String branches = flow.branches();
-        return branches.isEmpty() ? null : new String[]{branches, flow.blocks()};
+        if (branches.isEmpty() && code.exceptionHandlers().isEmpty()) {
+            return null;
+        }
+        return new String[]{branches, flow.blocks()};
     }
 
     private String branches() {

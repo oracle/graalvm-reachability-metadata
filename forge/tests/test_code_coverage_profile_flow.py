@@ -84,6 +84,14 @@ public class Branchy {
         }
     }
 
+    static int shielded(String text) {
+        try {
+            return Integer.parseInt(text);
+        } catch (NumberFormatException error) {
+            return -1;
+        }
+    }
+
     static int straight() {
         return 3;
     }
@@ -197,6 +205,12 @@ class ExtractorControlFlowTests(unittest.TestCase):
             if flow.exception_successors.get(block) and not flow.normal_successors(block)
         ]
         self.assertTrue(throwing, "the `throw` block leaves only through its handler")
+
+    def test_a_branch_free_try_has_a_row_with_exception_edges(self) -> None:
+        flow: MethodFlow = self._flow("shielded(java.lang.String):int")
+        self.assertEqual(flow.branches, ())
+        self.assertTrue(any(flow.exception_successors.values()))
+        self.assertEqual(set(flow.handler_types.values()), {"java.lang.NumberFormatException"})
 
     def test_straight_line_methods_have_no_row(self) -> None:
         self.assertNotIn(f"{_OWNER}#straight():int", self._flows)
