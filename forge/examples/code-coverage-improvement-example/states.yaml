@@ -149,7 +149,7 @@ states:
                   result.write(f"API coverage loop completed after {iteration} iteration(s); {len(uncovered)} uncovered target(s) remain.\n")
           # Rhei checks the declared handoff output on this zero exit, so the
           # prompt path records that no cover pass follows
-          # (§AR-code-coverage-prompt-handoff).
+          # (§AR-code-coverage-improvement.5.2).
           prompt_path = Path("runtime/code-coverage/prompts/api-cover-prompt.md")
           prompt_path.parent.mkdir(parents=True, exist_ok=True)
           prompt_path.write_text(f"No cover pass follows: {len(uncovered)} uncovered target(s) remain after {iteration} iteration(s)\n")
@@ -182,7 +182,7 @@ states:
         path: runtime/code-coverage/issues/conversion.json
     outputs:
       # The cover agent receives this file inside its message
-      # (§AR-code-coverage-prompt-handoff).
+      # (§AR-code-coverage-improvement.5.2).
       - name: prompt
         kind: handoff
         path: runtime/code-coverage/prompts/api-cover-prompt.md
@@ -194,7 +194,7 @@ states:
     concurrent: true
     visits: 10
     # Measurement's prompt arrives inside the message
-    # (§AR-code-coverage-prompt-handoff).
+    # (§AR-code-coverage-improvement.5.2).
     handoff:
       inherit:
         - from: transition.previous
@@ -403,7 +403,7 @@ states:
                   result.write(f"Deep coverage loop completed after {iteration} iteration(s); {len(prompt_target_ids)} target(s) remain.\n")
           # Rhei checks the declared handoff output on this zero exit, so the
           # prompt path records that no cover pass follows
-          # (§AR-code-coverage-prompt-handoff).
+          # (§AR-code-coverage-improvement.5.2).
           prompt_path = Path("runtime/code-coverage/prompts/deep-cover-prompt.md")
           prompt_path.parent.mkdir(parents=True, exist_ok=True)
           prompt_path.write_text(f"No cover pass follows: {len(prompt_target_ids)} target(s) remain after {iteration} iteration(s)\n")
@@ -426,7 +426,7 @@ states:
         path: runtime/code-coverage/issues/conversion.json
     outputs:
       # The cover agent receives this file inside its message
-      # (§AR-code-coverage-prompt-handoff).
+      # (§AR-code-coverage-improvement.5.2).
       - name: prompt
         kind: handoff
         path: runtime/code-coverage/prompts/deep-cover-prompt.md
@@ -438,7 +438,7 @@ states:
     concurrent: true
     visits: 10
     # Measurement's prompt arrives inside the message
-    # (§AR-code-coverage-prompt-handoff).
+    # (§AR-code-coverage-improvement.5.2).
     handoff:
       inherit:
         - from: transition.previous

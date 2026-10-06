@@ -309,7 +309,7 @@ class CodeCoverageRheiTemplateTests(unittest.TestCase):
         Measurement declares the prompt it writes as a handoff output, the
         cover state inherits it as required from the measure state it is
         entered from, and the instructions name every listed path a target.
-        §AR-code-coverage-prompt-handoff
+        §AR-code-coverage-improvement.5.2
         """
         forge_root: str = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
         states_paths: tuple[str, ...] = (

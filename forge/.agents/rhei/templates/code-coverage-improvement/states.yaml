@@ -53,7 +53,7 @@
 # Measurement is a deterministic program that always writes the current
 # report to one fixed path and, when the loop continues, derives the cover
 # prompt from that report in the same step and hands it to the cover agent
-# inside its message (§AR-code-coverage-prompt-handoff). JaCoCo is the
+# inside its message (§AR-code-coverage-improvement.5.2). JaCoCo is the
 # only coverage authority; PGO samples and counters are navigation guidance. An agent can
 # never claim progress: only re-measurement moves the loop forward.
 
@@ -495,7 +495,7 @@ states:
                   result.write(f"API coverage loop completed: {summarize(stop)}\n")
           # Rhei checks the declared handoff output on this zero exit, so the
           # prompt path records that no cover pass follows
-          # (§AR-code-coverage-prompt-handoff).
+          # (§AR-code-coverage-improvement.5.2).
           prompt_path = Path("runtime/code-coverage/prompts/api-cover-prompt.md")
           prompt_path.parent.mkdir(parents=True, exist_ok=True)
           prompt_path.write_text(f"No cover pass follows: {summarize(stop)}\n")
@@ -534,7 +534,7 @@ states:
         path: runtime/code-coverage/issues/conversion.json
     outputs:
       # The cover agent receives this file inside its message
-      # (§AR-code-coverage-prompt-handoff).
+      # (§AR-code-coverage-improvement.5.2).
       - name: prompt
         kind: handoff
         path: runtime/code-coverage/prompts/api-cover-prompt.md
@@ -546,7 +546,7 @@ states:
     concurrent: true
     visits: {{coverage_iterations}}
     # Measurement's prompt arrives inside the message
-    # (§AR-code-coverage-prompt-handoff).
+    # (§AR-code-coverage-improvement.5.2).
     handoff:
       inherit:
         - from: transition.previous
@@ -820,7 +820,7 @@ states:
                   result.write(f"Deep coverage loop completed: {summarize(stop)}\n")
           # Rhei checks the declared handoff output on this zero exit, so the
           # prompt path records that no cover pass follows
-          # (§AR-code-coverage-prompt-handoff).
+          # (§AR-code-coverage-improvement.5.2).
           prompt_path = Path("runtime/code-coverage/prompts/deep-cover-prompt.md")
           prompt_path.parent.mkdir(parents=True, exist_ok=True)
           prompt_path.write_text(f"No cover pass follows: {summarize(stop)}\n")
@@ -847,7 +847,7 @@ states:
         path: runtime/code-coverage/issues/conversion.json
     outputs:
       # The cover agent receives this file inside its message
-      # (§AR-code-coverage-prompt-handoff).
+      # (§AR-code-coverage-improvement.5.2).
       - name: prompt
         kind: handoff
         path: runtime/code-coverage/prompts/deep-cover-prompt.md
@@ -859,7 +859,7 @@ states:
     concurrent: true
     visits: {{coverage_iterations}}
     # Measurement's prompt arrives inside the message
-    # (§AR-code-coverage-prompt-handoff).
+    # (§AR-code-coverage-improvement.5.2).
     handoff:
       inherit:
         - from: transition.previous
