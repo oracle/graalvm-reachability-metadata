@@ -20,6 +20,7 @@ import dev.langchain4j.model.chat.response.StreamingChatResponseHandler;
 import dev.langchain4j.model.mistralai.MistralAiChatModel;
 import dev.langchain4j.model.mistralai.MistralAiChatResponseMetadata;
 import dev.langchain4j.model.mistralai.MistralAiEmbeddingModel;
+import dev.langchain4j.model.mistralai.MistralAiFimModel;
 import dev.langchain4j.model.mistralai.MistralAiModerationModel;
 import dev.langchain4j.model.mistralai.MistralAiStreamingChatModel;
 import dev.langchain4j.model.moderation.Moderation;
@@ -44,6 +45,7 @@ public class Langchain4j_mistral_aiTest {
     private static final Duration HTTP_TIMEOUT = Duration.ofSeconds(10);
     private static final String CHAT_MODEL = "mistral-test-chat";
     private static final String EMBEDDING_MODEL = "mistral-test-embed";
+    private static final String FIM_MODEL = "mistral-test-fim";
     private static final String MODERATION_MODEL = "mistral-test-moderation";
 
     @Test
@@ -173,6 +175,35 @@ public class Langchain4j_mistral_aiTest {
 
     @Test
     @Timeout(55)
+    void completesCodeBetweenPrefixAndSuffixAgainstLocalMistralEndpoint() throws Exception {
+        try (MistralServer server = MistralServer.start()) {
+            MistralAiFimModel model = MistralAiFimModel.builder()
+                    .apiKey("fim-api-key")
+                    .modelName(FIM_MODEL)
+                    .baseUrl(server.baseUrl())
+                    .timeout(HTTP_TIMEOUT)
+                    .maxRetries(0)
+                    .build();
+
+            Response<String> response = model.generate("int sum(int left, int right) {", "}");
+
+            assertThat(response.content()).isEqualTo("return left + right;");
+            assertThat(response.finishReason()).isEqualTo(FinishReason.STOP);
+            assertThat(response.tokenUsage().inputTokenCount()).isEqualTo(7);
+            assertThat(response.tokenUsage().outputTokenCount()).isEqualTo(4);
+            assertThat(response.tokenUsage().totalTokenCount()).isEqualTo(11);
+
+            RequestRecord request = server.singleRequest();
+            assertThat(request.path()).isEqualTo("/v1/fim/completions");
+            assertThat(request.authorization()).isEqualTo("Bearer fim-api-key");
+            assertThat(request.body()).contains(FIM_MODEL, "int sum(int left, int right) {");
+            assertThat(request.body()).containsPattern("\"suffix\"\\s*:\\s*\"}\"");
+            assertThat(request.body()).containsPattern("\"stream\"\\s*:\\s*false");
+        }
+    }
+
+    @Test
+    @Timeout(55)
     void moderatesTextAgainstLocalMistralEndpoint() throws Exception {
         try (MistralServer server = MistralServer.start()) {
             MistralAiModerationModel model = MistralAiModerationModel.builder()
@@ -241,6 +272,8 @@ public class Langchain4j_mistral_aiTest {
                     } else {
                         sendJson(exchange, chatResponse());
                     }
+                } else if (exchange.getRequestURI().getPath().equals("/v1/fim/completions")) {
+                    sendJson(exchange, fimResponse());
                 } else if (exchange.getRequestURI().getPath().equals("/v1/embeddings")) {
                     sendJson(exchange, embeddingResponse());
                 } else if (exchange.getRequestURI().getPath().equals("/v1/moderations")) {
@@ -341,6 +374,34 @@ public class Langchain4j_mistral_aiTest {
                         "prompt_tokens": 8,
                         "completion_tokens": 6,
                         "total_tokens": 14
+                      }
+                    }
+                    """;
+        }
+
+        private static String fimResponse() {
+            return """
+                    {
+                      "id": "fim-response-1",
+                      "object": "chat.completion",
+                      "created": 1720000001,
+                      "model": "mistral-fim-response-model",
+                      "choices": [
+                        {
+                          "index": 0,
+                          "message": {
+                            "role": "assistant",
+                            "content": [
+                              {"type": "text", "text": "return left + right;"}
+                            ]
+                          },
+                          "finish_reason": "stop"
+                        }
+                      ],
+                      "usage": {
+                        "prompt_tokens": 7,
+                        "completion_tokens": 4,
+                        "total_tokens": 11
                       }
                     }
                     """;
