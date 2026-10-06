@@ -1,0 +1,22 @@
+### Human intervention needed
+
+The automated job failed in `explore/generate_tests()` while trying to create a test for the reporter-requested reflection access to `PrepareScriptFilenameConfigurationExtension.getUndoFilename()`.
+
+Preserved work: https://github.com/oracle/graalvm-reachability-metadata/tree/ai%2Fkimeta%2Fhuman-intervention%2Fissue-10323-fails-native-image-run-org.flywaydb-flyway-database-postgresql-11.12.0-b78f7bc4
+
+Evidence:
+- `fixTestNativeImageRun` completed successfully and generated metadata, so the initial metadata-repair stage was not the terminal failure.
+- The dynamic-access report completed successfully and covered all 6 calls in `PostgreSQLCopyParsedStatement`, but it did not represent the reported access in the `flyway-core` class.
+- All three generation attempts proposed configuring `flyway.prepare.undoFilename`, but each transcript says tests were not run. No test changes survived: metrics record 3 iterations, 0 generated LOC, and identical starting/ending commits.
+- The setup preflight was also degraded after classifying the existing `docker run` test setup as unsafe, although setup and the initial fix still completed.
+
+Inspect:
+- `human-intervention-logs/org.flywaydb:flyway-database-postgresql:11.12.0/issue-requested-metadata/pi.log`
+- `human-intervention-logs/org.flywaydb:flyway-database-postgresql:11.12.0/issue-requested-metadata/pi-generation-2026-10-06T23-15-27-948217Z.log`
+- `human-intervention-logs/org.flywaydb:flyway-database-postgresql:11.12.0/native-image-run-fix/fixTestNativeImageRun-2026-10-06T23-06-18-015071Z.log`
+- `human-intervention-logs/org.flywaydb:flyway-database-postgresql:11.12.0/dynamic-access-report/generateDynamicAccessCoverageReport-2026-10-06T23-10-09-672665Z.log`
+
+Manual next steps:
+1. Reproduce the issue’s clean native test command for version `11.12.0` and confirm the `getUndoFilename()` failure.
+2. Add a public-API test that exercises `flyway.prepare.undoFilename`, remains compatible with the shared `11.8.1` test project, and run it on both JVM and Native Image.
+3. Regenerate and validate metadata, confirming whether the reflection entry belongs to `flyway-core` rather than `flyway-database-postgresql`.
