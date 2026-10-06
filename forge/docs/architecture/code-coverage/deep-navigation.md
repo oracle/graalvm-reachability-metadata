@@ -56,9 +56,10 @@ line-level hints, and the report says so in a caveat rather than silently.
 
 The bytecode call-graph extractor (§AR-code-coverage-improvement.3) also writes
 each method's branch instructions, their successor bcis, and its basic blocks
-with exception edges. Only this table says where a branch leads; JaCoCo reports
-per-line totals, and the profile names successor bcis without saying what lies
-behind them.
+with exception edges. A method has a row when it holds a conditional branch or
+an exception table; one with neither can hold no fork and no catch boundary.
+Only this table says where a branch leads; JaCoCo reports per-line totals, and
+the profile names successor bcis without saying what lies behind them.
 
 A block's exception edges are marked apart from its normal ones. Bytecode has no
 try/catch instruction, only an exception table of `[from, to)` ranges and their
