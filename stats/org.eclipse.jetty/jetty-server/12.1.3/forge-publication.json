@@ -1,0 +1,161 @@
+{
+  "base_commit": "c4690eb0ab87105900497ffcad504120254b9ad4",
+  "branch": "ai/kimeta/add-lib-support-org.eclipse.jetty-jetty-server-12.1.3-forge-10514-20261006003220492954-7337ef50f153",
+  "follow_ups": [],
+  "forge": {
+    "branch": "master",
+    "commit": "64ac79c9cbbc664ebc3203af3b0caec7596fb514",
+    "monitored_branch": "origin/master"
+  },
+  "issue_number": 10514,
+  "library": {
+    "artifact": "jetty-server",
+    "coordinates": "org.eclipse.jetty:jetty-server:12.1.3",
+    "group": "org.eclipse.jetty",
+    "version": "12.1.3"
+  },
+  "local_ci_verification": {
+    "base_commit": "c4690eb0ab87105900497ffcad504120254b9ad4",
+    "commands": [
+      {
+        "command": [
+          "./gradlew",
+          "generateChangedIndexFileCoordinatesList",
+          "-PbaseCommit=origin/master",
+          "-PnewCommit=HEAD"
+        ],
+        "env": {
+          "GITHUB_OUTPUT": "/tmp/tmpw1ekvki_"
+        },
+        "gate": "changed-index-coordinates",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :generateChangedIndexFileCoordinatesList\n\n[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10514-9f8aca94/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 2s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      },
+      {
+        "command": [
+          "./gradlew",
+          "validateIndexFiles",
+          "-Pcoordinates=org.eclipse.jetty:jetty-server"
+        ],
+        "env": {},
+        "gate": "index-file-validation",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :validateIndexFiles\n✅ metadata/org.eclipse.jetty/jetty-server/index.json: Valid\n\n[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10514-9f8aca94/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 1s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      }
+    ],
+    "failure_command": null,
+    "failure_gate": null,
+    "final_commit": "08f08ead97d556886f1c168be55e5110d0115ff9",
+    "fixups": [],
+    "human_intervention_required": false,
+    "repo_fix_paths": [],
+    "status": "success"
+  },
+  "local_review": {
+    "changed_paths": [],
+    "decision": "approved",
+    "finding_body": "",
+    "finding_title": "",
+    "fix_note": "",
+    "model": "gpt-5.6-sol",
+    "review_comment": "The diff stays within the single org.eclipse.jetty:jetty-server:12.1.3 coordinate and uses only the accepted metadata format. The added CookieCache and CustomRequestLog tests are public, library-specific public-API tests in a separate package, with assertions and compliant timeouts; they contain no scaffold placeholder, version pin, visibility bypass, direct dynamic-access shortcut, Native Image skip or tolerated failure, runtime class definition, JVM override, or native build/run flag. Resolved statistics report 33/33 dynamic-access calls covered (100%, including 32/32 reflection and 1/1 resources), above the new-library gate; 33 covered calls do not trigger the mismatch probe against 366 reported library-plus-test-only metadata entries. The Forge finalization completed all three test lanes, metadata splitting and validation, style checks, generated-test validity, and library-stat regeneration successfully without changing the publishable tree.",
+    "session_id": "0fe86a5a003f4ae2"
+  },
+  "metrics": {
+    "agent": "pi",
+    "model": "gpt-5.6-luna",
+    "path": "stats/org.eclipse.jetty/jetty-server/12.1.3/execution-metrics.json",
+    "summary": {
+      "cached_input_tokens_used": 2575360,
+      "code_coverage_percent": 19.29,
+      "cost_usd": 0.5819,
+      "generated_loc": 356,
+      "input_tokens_used": 189976,
+      "iterations": 4,
+      "metadata_entries": 283,
+      "output_tokens_used": 22405,
+      "test_only_metadata_entries": 83,
+      "tested_library_loc": 2387
+    },
+    "timestamp": "2026-10-06T00:32:20.492954Z"
+  },
+  "modifiers": {
+    "chunk_final": true,
+    "chunked_dynamic_access": false,
+    "human_intervention": false
+  },
+  "producer": "kimeta",
+  "publication_id": "forge-10514-20261006003220492954-7337ef50f153",
+  "render": {
+    "dynamic_access": null,
+    "dynamic_access_evidence": {
+      "covered_call_sites": [
+        "[reflection] java.lang.reflect.Array#newInstance(java.lang.Class, int) <- org.eclipse.jetty.server.CookieCache.convert(CookieCache.java:288) (line 288)",
+        "[reflection] java.lang.invoke.MethodHandles.Lookup#findStatic(java.lang.Class, java.lang.String, java.lang.invoke.MethodType) <- org.eclipse.jetty.server.CustomRequestLog.updateLogHandle(CustomRequestLog.java:707) (line 707)",
+        "[reflection] java.lang.invoke.MethodHandles.Lookup#findStatic(java.lang.Class, java.lang.String, java.lang.invoke.MethodType) <- org.eclipse.jetty.server.CustomRequestLog.updateLogHandle(CustomRequestLog.java:722) (line 722)",
+        "[reflection] java.lang.invoke.MethodHandles.Lookup#findStatic(java.lang.Class, java.lang.String, java.lang.invoke.MethodType) <- org.eclipse.jetty.server.CustomRequestLog.updateLogHandle(CustomRequestLog.java:738) (line 738)",
+        "[reflection] java.lang.invoke.MethodHandles.Lookup#findStatic(java.lang.Class, java.lang.String, java.lang.invoke.MethodType) <- org.eclipse.jetty.server.CustomRequestLog.updateLogHandle(CustomRequestLog.java:750) (line 750)",
+        "[reflection] java.lang.invoke.MethodHandles.Lookup#findStatic(java.lang.Class, java.lang.String, java.lang.invoke.MethodType) <- org.eclipse.jetty.server.CustomRequestLog.updateLogHandle(CustomRequestLog.java:762) (line 762)",
+        "[reflection] java.lang.invoke.MethodHandles.Lookup#findStatic(java.lang.Class, java.lang.String, java.lang.invoke.MethodType) <- org.eclipse.jetty.server.CustomRequestLog.updateLogHandle(CustomRequestLog.java:774) (line 774)",
+        "[reflection] java.lang.invoke.MethodHandles.Lookup#findStatic(java.lang.Class, java.lang.String, java.lang.invoke.MethodType) <- org.eclipse.jetty.server.CustomRequestLog.updateLogHandle(CustomRequestLog.java:780) (line 780)",
+        "... and 25 more"
+      ],
+      "metadata_rules": [
+        "when `org.eclipse.jetty.xml.BaseClassCatalog$CatalogReader` is reached, make `com.sun.org.apache.xerces.internal.jaxp.DocumentBuilderFactoryImpl.<init>()` available for reflection",
+        "when `org.eclipse.jetty.xml.XmlParser` is reached, make `com.sun.org.apache.xerces.internal.jaxp.SAXParserFactoryImpl.<init>()` available for reflection",
+        "when `org.eclipse.jetty.server.CookieCache` is reached, make `jakarta.servlet.http.Cookie[]` available for reflection",
+        "when `org.eclipse.jetty.util.security.SecurityUtils` is reached, make `java.lang.SecurityManager.checkPermission(java.security.Permission)` available for reflection",
+        "when `org.eclipse.jetty.ee10.webapp.StandardDescriptorProcessor` is reached, make `java.lang.String[]` available for reflection",
+        "when `org.eclipse.jetty.ee11.webapp.StandardDescriptorProcessor` is reached, make `java.lang.String[]` available for reflection",
+        "when `org.eclipse.jetty.util.security.SecurityUtils` is reached, make `java.lang.System.getSecurityManager()` available for reflection",
+        "when `org.eclipse.jetty.util.VirtualThreads` is reached, make `java.lang.Thread.isVirtual()` available for reflection",
+        "... and 164 more"
+      ]
+    },
+    "library_stats": {
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 32,
+            "totalCalls": 32
+          },
+          "resources": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 1,
+            "totalCalls": 1
+          }
+        },
+        "coverageRatio": 1.0,
+        "coveredCalls": 33,
+        "totalCalls": 33
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 9370,
+          "missed": 42978,
+          "ratio": 0.178994,
+          "total": 52348
+        },
+        "line": {
+          "covered": 2387,
+          "missed": 9989,
+          "ratio": 0.192873,
+          "total": 12376
+        },
+        "method": {
+          "covered": 582,
+          "missed": 2153,
+          "ratio": 0.212797,
+          "total": 2735
+        }
+      },
+      "version": "12.1.3"
+    }
+  },
+  "schema_version": 1,
+  "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-luna",
+  "task_type": "library-new-request",
+  "template_type": "library-new-request",
+  "timestamp": "2026-10-06T00:32:20.492954Z"
+}
