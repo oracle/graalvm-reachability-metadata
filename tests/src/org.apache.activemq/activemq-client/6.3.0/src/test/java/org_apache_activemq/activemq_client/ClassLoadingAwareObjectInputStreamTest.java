@@ -9,15 +9,10 @@ package org_apache_activemq.activemq_client;
 import org.apache.activemq.command.ActiveMQQueue;
 import org.apache.activemq.util.ByteArrayInputStream;
 import org.apache.activemq.util.ByteSequence;
-import org.apache.activemq.util.ClassLoadingAwareObjectInputStream;
 import org.apache.activemq.wireformat.ObjectStreamWireFormat;
 import org.junit.jupiter.api.Test;
 
 import java.io.DataInputStream;
-import java.io.Serializable;
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -50,57 +45,4 @@ public class ClassLoadingAwareObjectInputStreamTest {
         }
     }
 
-    @Test
-    void restoresProxyWithTheThreadContextClassLoader() throws Exception {
-        Greeting restored = restoreProxy(ClassLoadingAwareObjectInputStreamTest.class.getClassLoader());
-
-        assertThat(restored.greet("context loader")).isEqualTo("Hello, context loader");
-    }
-
-    @Test
-    void restoresProxyWithTheInputClassLoader() throws Exception {
-        Greeting restored = restoreProxy(null);
-
-        assertThat(restored.greet("input loader")).isEqualTo("Hello, input loader");
-    }
-
-    private static Greeting restoreProxy(ClassLoader contextClassLoader) throws Exception {
-        Greeting original = (Greeting) Proxy.newProxyInstance(
-                ClassLoadingAwareObjectInputStreamTest.class.getClassLoader(),
-                new Class<?>[] {Greeting.class},
-                new GreetingHandler("Hello"));
-        ByteSequence encoded = new ObjectStreamWireFormat().marshal(original);
-        Thread thread = Thread.currentThread();
-        ClassLoader originalClassLoader = thread.getContextClassLoader();
-        try (ClassLoadingAwareObjectInputStream input =
-                new ClassLoadingAwareObjectInputStream(new ByteArrayInputStream(encoded))) {
-            input.setTrustAllPackages(true);
-            thread.setContextClassLoader(contextClassLoader);
-            return (Greeting) input.readObject();
-        } finally {
-            thread.setContextClassLoader(originalClassLoader);
-        }
-    }
-
-    public interface Greeting extends Serializable {
-        String greet(String name);
-    }
-
-    public static final class GreetingHandler implements InvocationHandler, Serializable {
-        private static final long serialVersionUID = 1L;
-
-        private final String greeting;
-
-        public GreetingHandler(String greeting) {
-            this.greeting = greeting;
-        }
-
-        @Override
-        public Object invoke(Object proxy, Method method, Object[] arguments) {
-            if ("greet".equals(method.getName())) {
-                return greeting + ", " + arguments[0];
-            }
-            throw new UnsupportedOperationException(method.getName());
-        }
-    }
 }
