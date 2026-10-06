@@ -69,6 +69,22 @@ public class Mutiny_zeroTest {
     }
 
     @Test
+    public void deliversIterableItemsAccordingToDemandAndStopsAfterCancellation() {
+        RecordingSubscriber<Integer> subscriber = new RecordingSubscriber<>();
+        ZeroPublisher.fromIterable(List.of(1, 2, 3, 4)).subscribe(subscriber);
+
+        subscriber.request(2);
+        assertEquals(List.of(1, 2), subscriber.items());
+
+        subscriber.request(1);
+        assertEquals(List.of(1, 2, 3), subscriber.items());
+
+        subscriber.cancel();
+        subscriber.request(Long.MAX_VALUE);
+        assertEquals(List.of(1, 2, 3), subscriber.items());
+    }
+
+    @Test
     public void rejectsNonPositiveDemand() throws Exception {
         RecordingSubscriber<String> subscriber = new RecordingSubscriber<>();
         ZeroPublisher.fromItems("unrequested").subscribe(subscriber);
@@ -90,6 +106,29 @@ public class Mutiny_zeroTest {
 
         assertEquals(Optional.of("first"), first);
         assertEquals(Optional.empty(), empty);
+    }
+
+    @Test
+    public void completionStagePublisherIsLazyAndCancelsItsStage() {
+        AtomicInteger subscriptions = new AtomicInteger();
+        AtomicReference<CompletableFuture<String>> futureReference = new AtomicReference<>();
+        Flow.Publisher<String> publisher = ZeroPublisher.fromCompletionStage(() -> {
+            subscriptions.incrementAndGet();
+            CompletableFuture<String> future = new CompletableFuture<>();
+            futureReference.set(future);
+            return future;
+        });
+        RecordingSubscriber<String> subscriber = new RecordingSubscriber<>();
+
+        publisher.subscribe(subscriber);
+        assertEquals(0, subscriptions.get());
+
+        subscriber.request(1);
+        assertEquals(1, subscriptions.get());
+
+        subscriber.cancel();
+        assertTrue(futureReference.get().isCancelled());
+        assertTrue(subscriber.items().isEmpty());
     }
 
     @Test
@@ -119,11 +158,40 @@ public class Mutiny_zeroTest {
     }
 
     @Test
+    public void preservesDemandWhileConcatenatingPublishers() throws Exception {
+        Flow.Publisher<Integer> concatenated = new Concatenate<>(List.of(
+                ZeroPublisher.fromItems(1, 2),
+                ZeroPublisher.empty(),
+                ZeroPublisher.fromItems(3, 4)));
+        RecordingSubscriber<Integer> subscriber = new RecordingSubscriber<>();
+        concatenated.subscribe(subscriber);
+
+        subscriber.request(3);
+        assertEquals(List.of(1, 2, 3), subscriber.items());
+
+        subscriber.request(2);
+        subscriber.awaitCompletion();
+        assertEquals(List.of(1, 2, 3, 4), subscriber.items());
+    }
+
+    @Test
     public void recoversAndRetriesFailedPublishers() throws Exception {
         Flow.Publisher<String> recovered =
                 new Recover<>(ZeroPublisher.fromFailure(new IllegalArgumentException("recoverable")),
                         failure -> "fallback");
         assertEquals(List.of("fallback"), collect(recovered));
+
+        Flow.Publisher<String> completed =
+                new Recover<>(ZeroPublisher.fromFailure(new IllegalArgumentException("ignored")), failure -> null);
+        assertEquals(List.of(), collect(completed));
+
+        IllegalStateException mappingFailure = new IllegalStateException("recovery failed");
+        RecordingSubscriber<String> failedRecoverySubscriber = new RecordingSubscriber<>();
+        new Recover<>(ZeroPublisher.<String>fromFailure(new IllegalArgumentException("recoverable")), failure -> {
+            throw mappingFailure;
+        }).subscribe(failedRecoverySubscriber);
+        failedRecoverySubscriber.request(1);
+        assertSame(mappingFailure, failedRecoverySubscriber.awaitFailure());
 
         AtomicInteger attempts = new AtomicInteger();
         Flow.Publisher<String> transientFailure = ZeroPublisher.fromCompletionStage(() -> {
