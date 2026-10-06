@@ -10,6 +10,10 @@ import java.time.Duration;
 import java.util.Collection;
 import java.util.concurrent.TimeUnit;
 
+import io.opentelemetry.exporter.otlp.http.trace.OtlpHttpSpanExporter;
+import io.opentelemetry.exporter.otlp.http.trace.OtlpHttpSpanExporterBuilder;
+import io.opentelemetry.exporter.otlp.trace.OtlpGrpcSpanExporter;
+import io.opentelemetry.exporter.otlp.trace.OtlpGrpcSpanExporterBuilder;
 import io.opentelemetry.sdk.common.CompletableResultCode;
 import io.opentelemetry.sdk.trace.SdkTracerProvider;
 import io.opentelemetry.sdk.trace.SdkTracerProviderBuilder;
@@ -27,6 +31,8 @@ import org.springframework.boot.micrometer.tracing.opentelemetry.autoconfigure.O
 import org.springframework.boot.micrometer.tracing.opentelemetry.autoconfigure.SpanExporters;
 import org.springframework.boot.micrometer.tracing.opentelemetry.autoconfigure.SpanProcessors;
 import org.springframework.boot.micrometer.tracing.opentelemetry.autoconfigure.SdkTracerProviderBuilderCustomizer;
+import org.springframework.boot.micrometer.tracing.opentelemetry.autoconfigure.otlp.OtlpGrpcSpanExporterBuilderCustomizer;
+import org.springframework.boot.micrometer.tracing.opentelemetry.autoconfigure.otlp.OtlpHttpSpanExporterBuilderCustomizer;
 import org.springframework.boot.micrometer.tracing.opentelemetry.autoconfigure.otlp.OtlpTracingProperties;
 import org.springframework.boot.micrometer.tracing.opentelemetry.autoconfigure.otlp.Transport;
 
@@ -159,6 +165,41 @@ public class Spring_boot_micrometer_tracing_opentelemetryTest {
         try (SdkTracerProvider provider = builder.build()) {
             assertThat(provider.getSampler().getDescription()).isEqualTo("AlwaysOnSampler");
         }
+    }
+
+    @Test
+    void otlpExporterBuilderCustomizersConfigureHttpAndGrpcExporters() {
+        OtlpHttpSpanExporterBuilderCustomizer httpCustomizer = (builder) -> builder
+                .setEndpoint("http://collector.example.test/v1/traces")
+                .setCompression("gzip");
+        OtlpHttpSpanExporter httpExporter = buildHttpExporter(httpCustomizer);
+
+        OtlpGrpcSpanExporterBuilderCustomizer grpcCustomizer = (builder) -> builder
+                .setEndpoint("http://collector.example.test:4317")
+                .setCompression("gzip");
+        OtlpGrpcSpanExporter grpcExporter = buildGrpcExporter(grpcCustomizer);
+
+        try {
+            assertThat(httpExporter.toString())
+                    .contains("endpoint=http://collector.example.test/v1/traces", "compressorEncoding=gzip");
+            assertThat(grpcExporter.toString())
+                    .contains("endpoint=http://collector.example.test:4317", "compressorEncoding=gzip");
+        } finally {
+            httpExporter.shutdown().join(10, TimeUnit.SECONDS);
+            grpcExporter.shutdown().join(10, TimeUnit.SECONDS);
+        }
+    }
+
+    private static OtlpHttpSpanExporter buildHttpExporter(OtlpHttpSpanExporterBuilderCustomizer customizer) {
+        OtlpHttpSpanExporterBuilder builder = OtlpHttpSpanExporter.builder();
+        customizer.customize(builder);
+        return builder.build();
+    }
+
+    private static OtlpGrpcSpanExporter buildGrpcExporter(OtlpGrpcSpanExporterBuilderCustomizer customizer) {
+        OtlpGrpcSpanExporterBuilder builder = OtlpGrpcSpanExporter.builder();
+        customizer.customize(builder);
+        return builder.build();
     }
 
     private static final class RecordingSpanExporter implements SpanExporter {
