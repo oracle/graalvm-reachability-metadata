@@ -165,8 +165,7 @@ invoke's bytecode index is its own, not the lending method's. The strongest
 diagnosis across those sites wins. The Markdown prompt
 and the full JSON report carry the same classification.
 
-For one call site the decision runs as follows; the sections below give each
-step's rules.
+For one call site the decision runs as follows; the sections below give the rules.
 
 ```mermaid
 sequenceDiagram
