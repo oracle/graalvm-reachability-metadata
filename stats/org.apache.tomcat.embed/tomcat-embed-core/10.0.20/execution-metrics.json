@@ -1,0 +1,122 @@
+{
+  "add_new_library_support:2026-10-06": {
+    "timestamp": "2026-10-06T07:37:55.713221Z",
+    "library": "org.apache.tomcat.embed:tomcat-embed-core:10.0.20",
+    "starting_commit": "086a92069217685d553247e587ad5a4b4196ae6a",
+    "ending_commit": "de094ae460f9e799fd74ed21521263021e8e0033",
+    "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-luna",
+    "agent": "pi",
+    "model": "gpt-5.6-luna",
+    "status": "chunk_ready",
+    "stats": {
+      "version": "10.0.20",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 0.756148,
+            "coveredCalls": 369,
+            "totalCalls": 488
+          },
+          "resources": {
+            "coverageRatio": 0.975,
+            "coveredCalls": 39,
+            "totalCalls": 40
+          }
+        },
+        "coverageRatio": 0.772727,
+        "coveredCalls": 408,
+        "totalCalls": 528
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 90480,
+          "missed": 271118,
+          "ratio": 0.250223,
+          "total": 361598
+        },
+        "line": {
+          "covered": 20228,
+          "missed": 64037,
+          "ratio": 0.240052,
+          "total": 84265
+        },
+        "method": {
+          "covered": 3571,
+          "missed": 9079,
+          "ratio": 0.282292,
+          "total": 12650
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "advisory_preparation",
+      "issue_number": 10508,
+      "issue_label": "library-new-request",
+      "library": "org.apache.tomcat.embed:tomcat-embed-core:10.0.20",
+      "summary": "Baseline scaffold only drives JMX/MBean reflection; a prior coverage pass on the same library at a later version (11.0.18, PRs #7373/#8579/#10208) needed two testImplementation dependencies (annotation processing, in-memory JDBC) to reach realm/JNDI/digester/classloader code paths — no Docker image was ever needed, including for JNDI/JAAS realm tests.",
+      "deterministic_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "jakarta.annotation:jakarta.annotation-api:2.0.0",
+          "scope": "testImplementation",
+          "reason": "Needed to exercise @Resource/@PostConstruct-driven reflection in org.apache.catalina.core.DefaultInstanceManager / SimpleInstanceManager, confirmed necessary for the same classes in the tomcat-embed-core:11.0.18 coverage pass. Version pinned to the Jakarta EE 9 generation to match the already-pinned\n...[truncated]"
+        },
+        {
+          "kind": "dependency",
+          "coordinate": "com.h2database:h2:2.2.224",
+          "scope": "testImplementation",
+          "reason": "Needed for an in-memory JDBC connection (jdbc:h2:mem:...) to drive org.apache.catalina.valves.JDBCAccessLogValve's reflective driver-loading path, as done for tomcat-embed-core:11.0.18. Purely in-memory — no external database or Docker image involved."
+        }
+      ],
+      "agent_guidance": "Add --add-opens flags for java.base/java.io, java.base/java.lang, java.base/java.lang.reflect, java.base/java.util, and java.rmi/sun.rmi.transport to both the JVM test task and the native test run (these were required in the 11.0.18 precedent for reflective access into JDK internals exercised by classes like DirectJDKLog, CustomObjectInputStream, and ByteBufferUtilsUnsafe, plus JNDI/RMI naming internals). Also set the system property -Dorg.apache.tomcat.util.digester.PROPERTY_SOURCE=org.apache.tomcat.util.digester.SystemPropertySource (for both JVM and native test runs) if tests exercise Digester property substitution. If native-image tests hit java.home resolution issues (e.g. via Bootstrap/JRE-compat checks), pass -Djava.home=${JAVA_HOME or GRAALVM_HOME} as a runtime arg to the native test binary, as the 11.0.18 precedent did. Treat all of this as a starting hypothesis carried over from a later Tomcat version — verify empirically against 10.0.20's actual code paths rather than assuming every flag is still needed.",
+      "risks": [
+        "jakarta.annotation-api version should be verified by Gradle dependency resolution against the existing Jakarta EE 9 classpath (jakarta.servlet-api:5.0.0) rather than trusting 2.0.0 blindly — Tomcat 10.0.x bundles its own annotation-processing expectations that should be cross-checked.",
+        "The add-opens/system-property list was discovered empirically on 11.0.18's code paths three years and several Tomcat internals later; some may not apply (or others may be newly needed) for 10.0.20 — confirm via actual local Gradle/Native Image test runs rather than pre-applying the full list.",
+        "Both dependencies are testImplementation-only and shouldn't affect shipped reachability metadata, but any newly reached reflective call sites they unlock still need to be captured by the native-image agent run, not assumed from the 11.0.18 precedent's metadata."
+      ],
+      "applied_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "jakarta.annotation:jakarta.annotation-api:2.0.0",
+          "result": "applied",
+          "target": "tests/src/org.apache.tomcat.embed/tomcat-embed-core/10.0.20/build.gradle"
+        },
+        {
+          "kind": "dependency",
+          "coordinate": "com.h2database:h2:2.2.224",
+          "result": "applied",
+          "target": "tests/src/org.apache.tomcat.embed/tomcat-embed-core/10.0.20/build.gradle"
+        }
+      ],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#10508 Support for org.apache.tomcat.embed:tomcat-embed-core:10.0.20; label=library-new-request; body_chars=459"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "6 existing test file path(s) included"
+        }
+      ],
+      "model": "sonnet",
+      "input_tokens_used": 32,
+      "output_tokens_used": 16233
+    },
+    "metrics": {
+      "input_tokens_used": 2627982,
+      "cached_input_tokens_used": 65329152,
+      "output_tokens_used": 279645,
+      "iterations": 31,
+      "cost_usd": 10.8388,
+      "generated_loc": 5289,
+      "tested_library_loc": 20228,
+      "metadata_entries": 782,
+      "test_only_metadata_entries": 629,
+      "code_coverage_percent": 24.01
+    },
+    "artifacts": {
+      "metadata_file": "metadata/org.apache.tomcat.embed/tomcat-embed-core/10.0.20/reachability-metadata.json"
+    }
+  }
+}
