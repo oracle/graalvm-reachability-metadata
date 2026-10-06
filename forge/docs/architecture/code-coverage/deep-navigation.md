@@ -165,6 +165,26 @@ invoke's bytecode index is its own, not the lending method's. The strongest
 diagnosis across those sites wins. The Markdown prompt
 and the full JSON report carry the same classification.
 
+For one call site the decision runs as follows; the sections below give each
+step's rules.
+
+```mermaid
+flowchart TD
+    S[call site of the target<br/>caller covered by JaCoCo] --> D{invoking line covered<br/>and several implementations?}
+    D -- yes --> DE[dispatched-elsewhere §3.1]
+    D -- no --> W[walk back from the invoke's block<br/>through blocks that never ran]
+    W --> E{edge into the dead region<br/>from a block that ran}
+    E -- "branch, zero count into the region" --> F[fork edge]
+    E -- "exception edge from a live try" --> C[catch boundary]
+    E -- "positive count into the region,<br/>or liveness unknown" --> X[stop, no edge]
+    F --> L{fork on a covered line with a missed branch,<br/>at or above the invoking line?}
+    L -- yes --> FT[fork-not-taken §3.2<br/>hint: that line's successors, dead ones marked]
+    L -- no --> N
+    C --> N{any catch boundary?}
+    N -- yes --> NC[no-fork §3.3<br/>hint: handler type, raising try lines with counts]
+    N -- no --> NF[no-fork §3.3<br/>hint: nearest covered line]
+```
+
 ### 3.1 Dispatched elsewhere
 
 A covered invoking line with an uncovered target and more than one candidate
