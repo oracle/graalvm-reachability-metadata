@@ -459,22 +459,21 @@ each target's miss classification — is specified in
 §AR-code-coverage-deep-navigation. It steers the agent and orders the prompt;
 it never changes a target's JaCoCo status.
 
-The full JSON report retains every uncovered target, its JaCoCo
-evidence, graph status, rank, sampled context, and static path. The prompt-facing
-Markdown and target-id list contain at most 200 methods globally. Measurement
-itself carries attempt state deterministically in the discovery-report history:
-every target it prompted gets its attempt count incremented at the next
+The full JSON report retains every uncovered target with its attempt count,
+JaCoCo evidence, graph status, rank, sampled context, and static path, for
+finalization and audit. The prompt-facing target-id list holds at most 200
+methods globally, run as group sessions (§AR-code-coverage-deep-sessions).
+Measurement, not the agent, carries attempt state in the discovery-report
+history: every target it prompted gets its attempt count incremented at the next
 measurement, ranking prefers less-attempted targets, and covered targets leave
-the uncovered set. No number of failed attempts retires a target: the count
-only orders, so a target shown three times without coverage sorts behind every
-target shown fewer times and returns to the prompt once those have had their
-turn. Each still-uncovered target thus keeps getting its round, and no run
-leaves uncovered targets it never showed again. The full JSON report keeps every
-target with its attempt count for finalization and audit, without any
-agent-written state.
-The deep phase runs for the same fixed `coverage_iterations` budget and stops
-early when no actionable target remains or when the pass yield collapses
-(§3.3), on the same rule and the same thresholds as the API phase.
+the uncovered set. No number of failed attempts retires a target: the count only
+orders, so a target shown three times without coverage sorts behind every target
+shown fewer times and returns to the prompt once those have had their turn. Each
+still-uncovered target thus keeps getting its round, and no run leaves uncovered
+targets it never showed again. The deep phase runs for the same fixed
+`coverage_iterations` budget and stops early when no actionable target remains
+or when the pass yield collapses (§3.3), on the same rule and the same
+thresholds as the API phase.
 
 Sampled observations may be emitted as LCOV guidance for standard tooling. That
 artifact contains positive sample counts only, is labeled guidance-only, and is
@@ -923,10 +922,10 @@ sequenceDiagram
             alt no actionable target, marginal yield (§3.3), or budget spent
                 P-->>R: exit 0, phase completed
             else actionable targets remain
-                P-->>R: exit 10, schedule deep-cover
-                R->>A: deep-cover with observed and uncovered path groups
+                P-->>R: exit 10, write the group-session queue, schedule deep-dispatch
+                R->>A: deep-cover once per queued session, each handed out by deep-dispatch
                 A->>W: reach internal methods through public behavior
-                A-->>R: turn ends, back to deep-measure
+                P-->>R: queue empty, deep-dispatch exits 0, back to deep-measure
             else a measurement or native build step failed
                 P-->>R: exit 1-7 names the step, schedule deep-fix
                 R->>A: deep-fix repairs metadata or the suite
@@ -986,34 +985,35 @@ code of the process that just finished:
 | API inventory | deterministic program | The full public surface under every committed allowed package, as exact target ids | Exit 0 completes; nonzero parks in `human-intervention` |
 | Native metadata | deterministic program and gate analysis agent | Durable metadata that survives the gate's finalized re-run, with the coverage suite included end to end | Exit 0 completes; exit 3 parks in `human-intervention` |
 | API loop | measurement program and worker agent | Exact JaCoCo-vs-inventory truth, a ranked prompt, and a recorded stop decision every pass | Exit 0 completes the phase; 10 schedules a cover pass; 1-5 schedule a repair |
-| Deep loop | measurement program and worker agent | The same cycle over the deep target universe with sampled-PGO navigation | Exit 0 completes; 10 covers; 1-7 repair |
+| Deep loop | measurement program and worker agent | The same cycle over the deep target universe with sampled-PGO navigation | Exit 0 completes; 10 queues sessions for `deep-dispatch`; 1-7 repair |
 | Finalization | deterministic programs and fix agent | Split metadata, style, JVM suites, regenerated stats, and schema-valid final metrics | Exit 0 verifies then completes; a failed step number routes to repair and remeasurement; 75/80 gate verification |
 | Intervention parking | orchestrator | A gating state that stops the run where a person can resume it toward any phase entry, completion, or cancellation | Manual transition only |
 | Publication | deterministic program (both modes) | A pushed branch whose descriptor lets trusted Actions open the pull request, or a pushed benchmark result | Exit 0 completes; nonzero parks in `human-intervention` |
 
 **Edge selection is first-match by exit code.** A program state maps each exit
 code it can produce to one destination, so the exit code is the whole decision:
-0 always means the phase is done, 10 is the loop-continue signal, and a small
-positive code names the failed step for the repair prompt. When two edges share
-an exit code — every measure state maps its failure codes to both its fix state
-and `human-intervention` — the orchestrator takes the first whose destination
-still has visit budget, so the fix state absorbs failures until its `visits`
-cap is spent and the same exit code then parks the task. Agent (`execute`,
-cover, fix) edges carry no exit-code discriminator at all; their first edge is
-taken whenever the turn ends without a process failure, which is why an agent
-can only report a blocker in its artifacts, not choose its own transition.
+0 means the phase is done (for `deep-dispatch`, the pass), 10 is the
+loop-continue signal, and a small positive code names the failed step for the
+repair prompt. When two edges share an exit code — every measure state maps its
+failure codes to both its fix state and `human-intervention` — the orchestrator
+takes the first whose destination still has visit budget, so the fix state
+absorbs failures until its `visits` cap is spent and the same exit code then
+parks the task. Agent (`execute`, cover, fix) edges carry no exit-code
+discriminator at all; their first edge is taken whenever the turn ends without a
+process failure, which is why an agent can only report a blocker in its
+artifacts, not choose its own transition.
 
 **Measurement owns the loops.** Only `api-measure` and `deep-measure` move a
 loop forward: they write the numbered report history, compute the stop decision
-(§3.3), and render the next prompt. The prompt is an output of the measure
-program state, declared as a Rhei handoff the cover state inherits as required,
-so the agent receives the whole document in its message, not a path to read:
-an agent told to read a long file reads part of it, and every target it never
-sees is coverage the pass cannot add. The cover agent writes tests and returns;
-it records no coverage claim and no target state. A repair pass re-enters
-measurement on the same iteration through the active-measurement marker, so a
-failed measurement plus its fix can never masquerade as a zero-yield cover
-pass or spend loop budget.
+(§3.3), and render the next prompt. The prompt is a Rhei handoff the cover state
+inherits as required, so the agent receives the whole document in its message,
+not a path to read: an agent told to read a long file reads part of it, and
+every target it never sees is coverage the pass cannot add. A deep pass hands it
+out as group sessions (§AR-code-coverage-deep-sessions.2) and stays one
+measurement. The cover agent writes tests and returns; it records no coverage
+claim and no target state. A repair pass re-enters measurement on the same
+iteration through the active-measurement marker, so a failed measurement plus
+its fix can never masquerade as a zero-yield cover pass or spend loop budget.
 
 **The native-metadata phase is a program around the shared gate.** The phase
 helper calls the native test verification gate

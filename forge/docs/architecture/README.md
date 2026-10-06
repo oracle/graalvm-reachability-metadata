@@ -44,6 +44,7 @@ file rather than by prefix.
 | [§AR-chunked-dynamic-access-pr-linking](workflows.md#ar-chunked-dynamic-access-pr-linking-chunk-pr-linking) | Chunk PR linking |
 | [§AR-code-coverage-improvement](code-coverage/workflow.md#ar-code-coverage-improvement-code-coverage-improvement-workflow) | Code coverage improvement workflow |
 | [§AR-code-coverage-deep-navigation](code-coverage/deep-navigation.md#ar-code-coverage-deep-navigation-deep-phase-navigation-evidence) | Deep-phase navigation: samples, counters, control flow, routes, and miss classification |
+| [§AR-code-coverage-deep-sessions](code-coverage/deep-sessions.md#ar-code-coverage-deep-sessions-deep-pass-group-sessions) | Deep-pass group sessions: grouping, session kinds, dispatch, and visit budgets |
 | [§AR-code-coverage-benchmarking](code-coverage/benchmarking.md#ar-code-coverage-benchmarking-code-coverage-benchmark-architecture) | Fixed-input benchmark execution, metrics publication, and preserved workspaces |
 | [§AR-do-work-loop](do-work.md#ar-do-work-loop-do-work-loop-architecture) | do-work loop architecture |
 | [§AR-forge-orchestration](orchestration-scripts.md#ar-forge-orchestration-forge-orchestration-scripts) | Forge orchestration scripts |
@@ -83,6 +84,8 @@ Files:
   into a spec of its own.
 - [code-coverage/deep-navigation.md](code-coverage/deep-navigation.md) — the
   evidence that steers the deep phase and how each hint is derived from it.
+- [code-coverage/deep-sessions.md](code-coverage/deep-sessions.md) — how a deep
+  pass splits its prompt into group sessions and dispatches them one by one.
 - [code-coverage/benchmarking.md](code-coverage/benchmarking.md) — the fixed
   suite, execution sequences, metrics derivation, publishing worktree,
   workspace preservation, and the naive baseline arm.
