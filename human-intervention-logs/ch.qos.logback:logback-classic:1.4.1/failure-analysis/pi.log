@@ -1,0 +1,18 @@
+Human intervention needed
+
+The automated job failed in `explore/generate_tests()` while validating reporter-requested metadata for `ch.qos.logback:logback-classic:1.4.1`.
+
+Preserved work: https://github.com/oracle/graalvm-reachability-metadata/tree/ai%2Fkimeta%2Fhuman-intervention%2Fissue-10521-library-update-request-ch.qos.logback-logback-classic-1.4.1-70075600
+
+Dynamic-access coverage reached 10/10 (100%), but Native Image validation did not converge. The final Gradle run reports 79 tests run, 75 successful, and four serialization/socket tests failing with `MissingReflectionRegistrationError` for `LoggerContextVO.name`. Earlier retries failed successively on `LoggerContextVO.serialVersionUID` and `LoggerContextVO.birthTime`; the repair turns added one field at a time and exhausted the generation budget. Metrics record failure after 6 iterations, with identical starting and ending commits and no verified generated commit.
+
+Inspect:
+- `human-intervention-logs/ch.qos.logback:logback-classic:1.4.1/gradle-test/gradle-test-2026-10-06T09-24-43-140821Z.log`
+- `human-intervention-logs/ch.qos.logback:logback-classic:1.4.1/gradle-test/gradle-test-2026-10-06T09-22-33-194534Z.log`
+- `human-intervention-logs/ch.qos.logback:logback-classic:1.4.1/issue-requested-metadata/pi-generation-2026-10-06T09-23-51-122925Z.log`
+- `stats/ch.qos.logback/logback-classic/1.4.1/execution-metrics.json`
+
+Manual next steps:
+1. Review the preserved serialization and socket tests and retain only meaningful, deterministic coverage.
+2. Regenerate or derive complete, narrowly conditioned serialization metadata for `LoggerContextVO`, then rerun `./gradlew test -Pcoordinates=ch.qos.logback:logback-classic:1.4.1`.
+3. Once native tests pass, run metadata validation and Checkstyle before resuming publication.
