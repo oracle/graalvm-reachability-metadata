@@ -60,6 +60,13 @@ with exception edges. Only this table says where a branch leads; JaCoCo reports
 per-line totals, and the profile names successor bcis without saying what lies
 behind them.
 
+A block's exception edges are marked apart from its normal ones. Bytecode has no
+try/catch instruction, only an exception table of `[from, to)` ranges and their
+handlers; the table's range bounds and handler entries cut blocks, so every
+block lies wholly inside or outside each range and its handlers are a property
+of the block. A block that ends in a return or throw inside a `try` therefore
+has exception edges only, and no normal exit.
+
 javac plumbing is marked the way JaCoCo filters it, so the branches a hint lists
 match the ones JaCoCo counts. A String switch's `hashCode` switch and the
 `equals` checks that follow it are plumbing; the switch on the resulting case
@@ -188,8 +195,9 @@ stops there without a fork. JaCoCo's line status cannot tell such a block from
 one that never ran on a line holding several blocks, so without a counter the
 walk passes through it. A positive count into a block the walk believed dead
 is contradictory evidence, and the walk stops there without a fork. Exception
-edges are not walked. Without a control-flow table for the method, the nearest
-covered line with a missed branch is the fork, as before.
+edges, which the table marks (§AR-code-coverage-deep-navigation.1.3), are not
+walked. Without a control-flow table for the method, the nearest covered line
+with a missed branch is the fork, as before.
 
 The hint lists every successor of every non-plumbing branch instruction on
 the fork line, one numbered item per successor in bytecode order. A successor
