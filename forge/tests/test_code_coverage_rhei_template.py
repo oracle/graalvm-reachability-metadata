@@ -303,6 +303,73 @@ class CodeCoverageRheiTemplateTests(unittest.TestCase):
                     )
             self.assertGreater(checked, 0, states_path)
 
+    def test_cover_states_receive_the_prompt_as_a_handoff(self) -> None:
+        """The cover prompt reaches the agent inside its message, not by path.
+
+        Measurement declares the prompt it writes as a handoff output, the
+        cover state inherits it as required from the measure state it is
+        entered from, and the instructions name every listed path a target.
+        §AR-code-coverage-improvement.5.2
+        """
+        forge_root: str = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        states_paths: tuple[str, ...] = (
+            os.path.join(
+                forge_root,
+                ".agents",
+                "rhei",
+                "templates",
+                "code-coverage-improvement",
+                "states.yaml",
+            ),
+            os.path.join(
+                forge_root,
+                "examples",
+                "code-coverage-improvement-example",
+                "states.yaml",
+            ),
+        )
+
+        for states_path in states_paths:
+            with open(states_path, encoding="utf-8") as states_file:
+                machine: dict = yaml.safe_load(
+                    _render_numeric_placeholders(states_file.read())
+                )
+            states: dict = machine["states"]
+            transitions: list[dict] = machine["transitions"]
+
+            for phase in ("api", "deep"):
+                measure: str = f"{phase}-measure"
+                cover: str = f"{phase}-cover"
+                prompt_path: str = f"runtime/code-coverage/prompts/{phase}-cover-prompt.md"
+                with self.subTest(path=states_path, phase=phase):
+                    self.assertEqual(
+                        {t["from"] for t in transitions if t["to"] == cover},
+                        {measure},
+                        f"{cover} must be entered only from {measure}",
+                    )
+                    handoffs: list[dict] = [
+                        output
+                        for output in states[measure]["outputs"]
+                        if output.get("kind") == "handoff"
+                    ]
+                    self.assertEqual(
+                        [(h["name"], h["path"]) for h in handoffs],
+                        [("prompt", prompt_path)],
+                    )
+                    self.assertIn(
+                        f'"{prompt_path}"',
+                        states[measure]["program"],
+                        f"{measure} must write the prompt path on its zero exit",
+                    )
+                    self.assertEqual(
+                        states[cover]["handoff"]["inherit"],
+                        [{"from": "transition.previous", "name": "prompt", "required": True}],
+                    )
+                    instructions: str = " ".join(states[cover]["instructions"].split())
+                    self.assertIn(f"`## Handoff from {measure}` section below", instructions)
+                    self.assertNotIn("guidance only", instructions)
+                    self.assertNotIn("Read the prompt at", instructions)
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -147,6 +147,12 @@ states:
           if result_path:
               with open(result_path, "w", encoding="utf-8") as result:
                   result.write(f"API coverage loop completed after {iteration} iteration(s); {len(uncovered)} uncovered target(s) remain.\n")
+          # Rhei checks the declared handoff output on this zero exit, so the
+          # prompt path records that no cover pass follows
+          # (§AR-code-coverage-improvement.5.2).
+          prompt_path = Path("runtime/code-coverage/prompts/api-cover-prompt.md")
+          prompt_path.parent.mkdir(parents=True, exist_ok=True)
+          prompt_path.write_text(f"No cover pass follows: {len(uncovered)} uncovered target(s) remain after {iteration} iteration(s)\n")
           sys.exit(0)
 
       # Steering: derive the next cover prompt from the report just written.
@@ -173,17 +179,33 @@ states:
     inputs:
       - name: conversion
         path: runtime/code-coverage/issues/conversion.json
+    outputs:
+      # The cover agent receives this file inside its message
+      # (§AR-code-coverage-improvement.5.2).
+      - name: prompt
+        kind: handoff
+        path: runtime/code-coverage/prompts/api-cover-prompt.md
+        description: Ranked cover prompt for the next API pass, or the stop summary.
 
   api-cover:
     description: Generate tests for the JaCoCo-uncovered public API targets in the prompt.
     target: "pi:openai-codex/gpt-5.6-terra"
     concurrent: true
     visits: 10
+    # Measurement's prompt arrives inside the message
+    # (§AR-code-coverage-improvement.5.2).
+    handoff:
+      inherit:
+        - from: transition.previous
+          name: prompt
+          required: true
     instructions: |
       Cover uncovered public API targets for Task {task_id}: {task_title}.
 
-      Read the prompt at `{input.prompt.path}` and the resolved issue
-      worktree/coverage-suite paths from
+      The target list is the `## Handoff from api-measure` section below:
+      the cover prompt measurement rendered for this pass. Attempt every
+      target in it. The file at `{input.prompt.path}` holds the same content
+      on disk. Read the resolved issue worktree/coverage-suite paths from
       `runtime/code-coverage/issues/conversion.json`.
 
       Rules:
@@ -378,6 +400,12 @@ states:
           if result_path:
               with open(result_path, "w", encoding="utf-8") as result:
                   result.write(f"Deep coverage loop completed after {iteration} iteration(s); {len(prompt_target_ids)} target(s) remain.\n")
+          # Rhei checks the declared handoff output on this zero exit, so the
+          # prompt path records that no cover pass follows
+          # (§AR-code-coverage-improvement.5.2).
+          prompt_path = Path("runtime/code-coverage/prompts/deep-cover-prompt.md")
+          prompt_path.parent.mkdir(parents=True, exist_ok=True)
+          prompt_path.write_text(f"No cover pass follows: {len(prompt_target_ids)} target(s) remain after {iteration} iteration(s)\n")
           sys.exit(0)
 
       # Steering: the analyzer already renders the compact Observed /
@@ -395,17 +423,33 @@ states:
     inputs:
       - name: conversion
         path: runtime/code-coverage/issues/conversion.json
+    outputs:
+      # The cover agent receives this file inside its message
+      # (§AR-code-coverage-improvement.5.2).
+      - name: prompt
+        kind: handoff
+        path: runtime/code-coverage/prompts/deep-cover-prompt.md
+        description: Navigated cover prompt for the next deep pass, or the stop summary.
 
   deep-cover:
     description: Generate tests reaching uncovered internal paths through public behavior.
     target: "pi:openai-codex/gpt-5.6-terra"
     concurrent: true
     visits: 10
+    # Measurement's prompt arrives inside the message
+    # (§AR-code-coverage-improvement.5.2).
+    handoff:
+      inherit:
+        - from: transition.previous
+          name: prompt
+          required: true
     instructions: |
       Cover uncovered internal paths for Task {task_id}: {task_title}.
 
-      Read the prompt at `{input.prompt.path}` and the resolved issue
-      worktree/coverage-suite paths from
+      The target list is the `## Handoff from deep-measure` section below:
+      the cover prompt measurement rendered for this pass. Attempt every
+      target in it. The file at `{input.prompt.path}` holds the same content
+      on disk. Read the resolved issue worktree/coverage-suite paths from
       `runtime/code-coverage/issues/conversion.json`.
 
       Rules:
@@ -417,8 +461,9 @@ states:
         API. If no public user-callable API reaches an internal target, leave
         that target uncovered rather than call it directly.
         §AR-code-coverage-improvement.4.2
-      - `Observed:` lines are sampled guidance only; every `Uncovered paths`
-        target is uncovered according to exact JaCoCo evidence.
+      - Every listed path, in every section of the prompt, is a target: its
+        method is uncovered according to exact JaCoCo evidence, and the
+        sampled context beside it only shows how close the suite already got.
       - Under a `fork` line, each numbered branch says the line it lands on
         and how often it ran; `← target` marks the branches that lead to the
         target, so drive the condition the other way. `never dispatched here`

@@ -883,7 +883,7 @@ sequenceDiagram
             else uncovered targets remain and budget is left
                 P->>P: rank targets by unlocked code, render the cover prompt
                 P-->>R: exit 10, schedule api-cover
-                R->>A: api-cover with the rendered prompt
+                R->>A: api-cover with the rendered prompt in its message
                 A->>W: write behavior tests in the coverage suite
                 A-->>R: turn ends, back to api-measure
             else a measurement step failed
@@ -1005,7 +1005,11 @@ can only report a blocker in its artifacts, not choose its own transition.
 
 **Measurement owns the loops.** Only `api-measure` and `deep-measure` move a
 loop forward: they write the numbered report history, compute the stop decision
-(§3.3), and render the next prompt. The cover agent writes tests and returns;
+(§3.3), and render the next prompt. The prompt is an output of the measure
+program state, declared as a Rhei handoff the cover state inherits as required,
+so the agent receives the whole document in its message, not a path to read:
+an agent told to read a long file reads part of it, and every target it never
+sees is coverage the pass cannot add. The cover agent writes tests and returns;
 it records no coverage claim and no target state. A repair pass re-enters
 measurement on the same iteration through the active-measurement marker, so a
 failed measurement plus its fix can never masquerade as a zero-yield cover
