@@ -26,7 +26,7 @@ public class SerializationInnerFieldSetterTest {
                 (ImmutableListMultimap<String, String>) SerializationTest.roundTrip(original);
 
         assertThat(restored).isEqualTo(original);
-        assertThat(restored).hasSize(3);
+        assertThat(restored.size()).isEqualTo(3);
         assertThat(restored.get("fields")).containsExactly("id", "name");
     }
 }
