@@ -12,6 +12,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
@@ -23,6 +24,7 @@ import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Flow;
@@ -106,6 +108,18 @@ public class Mutiny_zeroTest {
 
         assertEquals(Optional.of("first"), first);
         assertEquals(Optional.empty(), empty);
+    }
+
+    @Test
+    public void reportsPublisherFailuresWhileCollectingItems() {
+        IllegalStateException failure = new IllegalStateException("collection failed");
+        CompletionStage<List<String>> collected =
+                PublisherHelpers.collectToList(ZeroPublisher.fromFailure(failure));
+
+        ExecutionException exception = assertThrows(ExecutionException.class,
+                () -> collected.toCompletableFuture().get(TIMEOUT_SECONDS, SECONDS));
+
+        assertSame(failure, exception.getCause());
     }
 
     @Test
