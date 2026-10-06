@@ -3,11 +3,14 @@
 # You should have received a copy of the CC0 legalcode along with this
 # work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 
+import json
 import os
 import re
 import unittest
 
 import yaml
+
+from utility_scripts.code_coverage_deep_sessions import MAX_SESSIONS_PER_PASS
 
 
 _TEMPLATE_NUMBERS: dict[str, int] = {
@@ -306,10 +309,11 @@ class CodeCoverageRheiTemplateTests(unittest.TestCase):
     def test_cover_states_receive_the_prompt_as_a_handoff(self) -> None:
         """The cover prompt reaches the agent inside its message, not by path.
 
-        Measurement declares the prompt it writes as a handoff output, the
-        cover state inherits it as required from the measure state it is
-        entered from, and the instructions name every listed path a target.
-        §AR-code-coverage-improvement.5.2
+        The state that writes the prompt declares it as a handoff output, the
+        cover state inherits it as required from that state, and the
+        instructions name every listed path a target. In the deep phase that
+        state is the session dispatcher.
+        §AR-code-coverage-improvement.5.2, §AR-code-coverage-deep-navigation.4
         """
         forge_root: str = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
         states_paths: tuple[str, ...] = (
@@ -337,19 +341,18 @@ class CodeCoverageRheiTemplateTests(unittest.TestCase):
             states: dict = machine["states"]
             transitions: list[dict] = machine["transitions"]
 
-            for phase in ("api", "deep"):
-                measure: str = f"{phase}-measure"
+            for phase, source in (("api", "api-measure"), ("deep", "deep-dispatch")):
                 cover: str = f"{phase}-cover"
                 prompt_path: str = f"runtime/code-coverage/prompts/{phase}-cover-prompt.md"
                 with self.subTest(path=states_path, phase=phase):
                     self.assertEqual(
                         {t["from"] for t in transitions if t["to"] == cover},
-                        {measure},
-                        f"{cover} must be entered only from {measure}",
+                        {source},
+                        f"{cover} must be entered only from {source}",
                     )
                     handoffs: list[dict] = [
                         output
-                        for output in states[measure]["outputs"]
+                        for output in states[source]["outputs"]
                         if output.get("kind") == "handoff"
                     ]
                     self.assertEqual(
@@ -358,17 +361,109 @@ class CodeCoverageRheiTemplateTests(unittest.TestCase):
                     )
                     self.assertIn(
                         f'"{prompt_path}"',
-                        states[measure]["program"],
-                        f"{measure} must write the prompt path on its zero exit",
+                        states[source]["program"],
+                        f"{source} must write the prompt path on its zero exit",
                     )
                     self.assertEqual(
                         states[cover]["handoff"]["inherit"],
                         [{"from": "transition.previous", "name": "prompt", "required": True}],
                     )
                     instructions: str = " ".join(states[cover]["instructions"].split())
-                    self.assertIn(f"`## Handoff from {measure}` section below", instructions)
+                    self.assertIn(f"`## Handoff from {source}` section below", instructions)
                     self.assertNotIn("guidance only", instructions)
                     self.assertNotIn("Read the prompt at", instructions)
+
+    def test_deep_pass_runs_as_dispatched_group_sessions(self) -> None:
+        """Measurement queues the pass, the dispatcher loops over it with the
+        cover state, and the visit caps sit at the session ceiling.
+
+        §AR-code-coverage-deep-navigation.4, §AR-code-coverage-deep-navigation.4
+        """
+        forge_root: str = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        states_paths: tuple[str, ...] = (
+            os.path.join(
+                forge_root, ".agents", "rhei", "templates", "code-coverage-improvement", "states.yaml",
+            ),
+            os.path.join(forge_root, "examples", "code-coverage-improvement-example", "states.yaml"),
+        )
+        queue_path: str = "runtime/code-coverage/prompts/deep-session-queue.json"
+
+        for states_path in states_paths:
+            with open(states_path, encoding="utf-8") as states_file:
+                machine: dict = yaml.safe_load(
+                    _render_numeric_placeholders(states_file.read())
+                )
+            states: dict = machine["states"]
+            edges: set[tuple[str, str, int | None]] = {
+                (t["from"], t["to"], t.get("exit_code"))
+                for t in machine["transitions"]
+                if "deep-dispatch" in (t["from"], t["to"])
+            }
+            with self.subTest(path=states_path):
+                self.assertEqual(edges, {
+                    ("deep-measure", "deep-dispatch", 10),
+                    ("deep-dispatch", "deep-cover", 10),
+                    ("deep-dispatch", "deep-measure", 0),
+                    ("deep-dispatch", "human-intervention", 1),
+                    ("deep-cover", "deep-dispatch", None),
+                })
+                self.assertNotIn(
+                    ("deep-cover", "deep-measure"),
+                    {(t["from"], t["to"]) for t in machine["transitions"]},
+                )
+                self.assertEqual(
+                    [output["path"] for output in states["deep-measure"]["outputs"]],
+                    [queue_path],
+                )
+                self.assertIn(f'"{queue_path}"', states["deep-measure"]["program"])
+                self.assertIn(f'"{queue_path}"', states["deep-dispatch"]["program"])
+                # §AR-code-coverage-deep-navigation.4: a stuck session gives way
+                # to the next one instead of being retried.
+                self.assertEqual(states["deep-cover"]["agent_timeout"], "45m")
+                self.assertIn(
+                    ("deep-cover", "deep-dispatch", "45m"),
+                    {(t["from"], t["to"], t.get("timeout")) for t in machine["transitions"]},
+                )
+                instructions: str = " ".join(states["deep-cover"]["instructions"].split())
+                self.assertIn(
+                    "Write every test for this session's targets first, without running "
+                    "Gradle in between.",
+                    instructions,
+                )
+                self.assertIn("run the suite again until it passes", instructions)
+                passes: int = states["api-cover"]["visits"]
+                self.assertEqual(states["deep-cover"]["visits"], passes * MAX_SESSIONS_PER_PASS)
+                self.assertEqual(
+                    states["deep-dispatch"]["visits"], passes * (MAX_SESSIONS_PER_PASS + 1)
+                )
+
+    def test_settings_ask_for_rhei_bounds_that_fit_the_session_ceiling(self) -> None:
+        """Rhei bounds transitions per task and agent starts per day; a deep
+        pass at the session ceiling must fit both at the default budget.
+
+        §AR-code-coverage-deep-navigation.4
+        """
+        forge_root: str = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        template_dir: str = os.path.join(
+            forge_root, ".agents", "rhei", "templates", "code-coverage-improvement"
+        )
+        with open(os.path.join(template_dir, "template.yaml"), encoding="utf-8") as template_file:
+            inputs: dict[str, dict] = {
+                entry["name"]: entry for entry in yaml.safe_load(template_file)["inputs"]
+            }
+        with open(os.path.join(template_dir, "settings.json"), encoding="utf-8") as settings_file:
+            defaults: dict = json.load(settings_file)["defaults"]
+        passes: int = inputs["coverage_iterations"]["default"]
+        retries: int = inputs["measure_visits"]["default"]
+        # Per pass: into dispatch, out and back per session, back to measurement;
+        # every measurement retry adds a fix round trip; a few edges frame the task.
+        deep_transitions: int = passes * (2 * MAX_SESSIONS_PER_PASS + 2) + 2 * retries + 10
+        # Deep and API cover sessions, one fix per retry in either phase, and the
+        # handful of single agent states around them.
+        agent_starts: int = passes * (MAX_SESSIONS_PER_PASS + 1) + 2 * retries + 10
+
+        self.assertGreaterEqual(defaults["transition_limit"], deep_transitions)
+        self.assertGreaterEqual(defaults["invocations_per_day"], agent_starts)
 
 
 if __name__ == "__main__":
