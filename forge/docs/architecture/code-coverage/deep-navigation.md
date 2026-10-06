@@ -155,15 +155,15 @@ it is to flip, so it only orders ties and never overrides distance.
 ## 3. Miss classification
 
 Every prompted target carries a deterministic miss classification derived from
-JaCoCo source-line instruction and branch counters, the target's reverse
-call-site fan-out, and — when present — the control-flow table and the counters.
-Only sites whose caller JaCoCo reports covered are judged, and the route
-guarantees at least one (§2). A site is found through the target's source-level
-method, so a constructor reached through a factory stub is judged at the stub's
-callers. A caller judged on borrowed lines (§2) is read in line order, since the
-invoke's bytecode index is its own, not the lending method's. The strongest
-diagnosis across those sites wins. The Markdown prompt
-and the full JSON report carry the same classification.
+JaCoCo source-line instruction and branch counters, the target's reverse call-
+site fan-out, and — when present — the control-flow table and the counters. Only
+sites whose caller JaCoCo reports covered are judged, and the route guarantees
+at least one (§2). A site is found through the target's source-level method, so
+a constructor reached through a factory stub is judged at the stub's callers. A
+caller judged on borrowed lines (§2) is read in line order, since the invoke's
+bytecode index is its own, not the lending method's. The strongest diagnosis
+across those sites wins. The Markdown prompt and the full JSON report carry the
+same classification.
 
 For one call site the decision runs as follows; the sections below give the rules.
 
