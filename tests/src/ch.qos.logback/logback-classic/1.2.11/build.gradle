@@ -12,6 +12,7 @@ String libraryVersion = tck.testedLibraryVersion.get()
 
 dependencies {
 	testImplementation "ch.qos.logback:logback-classic:${libraryVersion}"
+	testImplementation 'org.apache.groovy:groovy:4.0.27'
 	testImplementation 'org.assertj:assertj-core:3.22.0'
 }
 
@@ -19,6 +20,14 @@ graalvmNative {
 	binaries {
 		test {
 			buildArgs.add('--allow-incomplete-classpath')
+		}
+	}
+	agent {
+		defaultMode = "conditional"
+		modes {
+			conditional {
+				userCodeFilterPath = "user-code-filter.json"
+			}
 		}
 	}
 }
