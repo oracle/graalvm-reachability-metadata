@@ -19,7 +19,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class PackagingDataCalculatorTest {
 
   @Test
-  void resolvesPackagingDataForApplicationFrames() {
+  void resolvesPackagingDataForLogbackFrames() {
     Thread thread = Thread.currentThread();
     ClassLoader originalClassLoader = thread.getContextClassLoader();
     LoggerContext context = new LoggerContext();
@@ -28,12 +28,17 @@ public class PackagingDataCalculatorTest {
       Logger logger = context.getLogger(PackagingDataCalculatorTest.class);
       thread.setContextClassLoader(ClassLoader.getPlatformClassLoader());
 
+      IllegalStateException failure = new IllegalStateException("failure");
+      failure.setStackTrace(new StackTraceElement[] {
+          new StackTraceElement(Logger.class.getName(), "error", "Logger.java", 1)
+      });
       LoggingEvent event = new LoggingEvent(PackagingDataCalculatorTest.class.getName(), logger, Level.ERROR,
-          "operation failed", new IllegalStateException("failure"), null);
+          "operation failed", failure, null);
       IThrowableProxy proxy = event.getThrowableProxy();
 
       assertThat(proxy).isNotNull();
-      assertThat(proxy.getStackTraceElementProxyArray()).anySatisfy(PackagingDataCalculatorTest::assertResolvedFrame);
+      assertThat(proxy.getStackTraceElementProxyArray()).singleElement()
+          .satisfies(PackagingDataCalculatorTest::assertResolvedFrame);
     } finally {
       thread.setContextClassLoader(originalClassLoader);
       context.stop();
@@ -41,7 +46,7 @@ public class PackagingDataCalculatorTest {
   }
 
   private static void assertResolvedFrame(StackTraceElementProxy frame) {
-    assertThat(frame.getStackTraceElement().getClassName()).isEqualTo(PackagingDataCalculatorTest.class.getName());
+    assertThat(frame.getStackTraceElement().getClassName()).isEqualTo(Logger.class.getName());
     assertThat(frame.getClassPackagingData()).isNotNull();
     assertThat(frame.getClassPackagingData().getCodeLocation()).isNotBlank();
   }
