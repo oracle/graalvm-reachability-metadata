@@ -47,6 +47,16 @@ public class Spring_boot_micrometer_tracingTest {
     }
 
     @Test
+    void autoConfigurationProvidesNoopTracerWhenNoTracerIsConfigured() {
+        try (AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext()) {
+            context.register(NoopTracerAutoConfiguration.class);
+            context.refresh();
+
+            assertThat(context.getBean(Tracer.class)).isSameAs(Tracer.NOOP);
+        }
+    }
+
+    @Test
     void springApplicationCorrelatesLoggingExpectationWithTracingExportSetting() {
         try (ConfigurableApplicationContext context = new SpringApplication(Spring_boot_micrometer_tracingTest.class)
                 .run("--management.tracing.export.enabled=false")) {
