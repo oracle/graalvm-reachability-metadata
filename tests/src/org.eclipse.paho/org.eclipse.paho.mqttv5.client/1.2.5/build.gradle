@@ -16,17 +16,13 @@ dependencies {
 }
 
 tasks.withType(Test).configureEach {
-    jvmArgs += [
-        '--add-opens=java.base/java.net=ALL-UNNAMED',
-        '--add-opens=java.base/sun.nio.ch=ALL-UNNAMED'
-    ]
+    jvmArgs += '--add-opens=java.base/java.net=ALL-UNNAMED'
 }
 
 graalvmNative {
     binaries {
         test {
             buildArgs.add('--add-opens=java.base/java.net=ALL-UNNAMED')
-            buildArgs.add('--add-opens=java.base/sun.nio.ch=ALL-UNNAMED')
         }
     }
 

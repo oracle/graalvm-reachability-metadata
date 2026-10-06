@@ -52,7 +52,7 @@ public class Mqttv5ClientTest {
         waitUntil(() -> {
             client.connect();
             return true;
-        }, 120, 1);
+        }, 40, 1);
 
         System.out.println("MQTT broker started");
     }
