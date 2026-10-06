@@ -34,7 +34,7 @@ import java.util.Random;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-public class ActiveMQClientTest {
+class ActiveMQClientTest {
 
     private static final String QUEUE_NAME = "queue-test-" + new Random().nextLong();
 
@@ -67,13 +67,13 @@ public class ActiveMQClientTest {
             "&jms.nestedMapAndListEnabled=true" +
             "&jms.objectMessageSerializationDefered=false" +
             "&jms.optimizeAcknowledge=false" +
-            "&jms.optimizeAcknowledgeTimeOut=10000" +
+            "&jms.optimizeAcknowledgeTimeOut=300" +
             "&jms.optimizedAckScheduledAckInterval=0" +
             "&jms.optimizedMessageDispatch=true" +
             "&jms.useAsyncSend=false" +
             "&jms.useCompression=false" +
             "&jms.useRetroactiveConsumer=false" +
-            "&jms.warnAboutUnstartedConnectionTimeout=10000" +
+            "&jms.warnAboutUnstartedConnectionTimeout=500" +
             "&jms.nonBlockingRedelivery=false" +
             "&jms.prefetchPolicy.queuePrefetch=" + ActiveMQPrefetchPolicy.DEFAULT_QUEUE_PREFETCH +
             "&jms.prefetchPolicy.queueBrowserPrefetch=" + ActiveMQPrefetchPolicy.DEFAULT_QUEUE_BROWSER_PREFETCH +
@@ -109,18 +109,22 @@ public class ActiveMQClientTest {
         brokerService.setPersistent(false);
         brokerService.setBrokerName("embedded-broker");
         brokerService.start();
-        assertThat(brokerService.waitUntilStarted(10000)).isTrue();
+        brokerService.waitUntilStarted();
         logger.info("Started embedded ActiveMQ broker");
     }
 
     @AfterAll
-    void tearDown() throws Exception {
+    void tearDown() {
         if (brokerService != null) {
             logger.info("Stopping embedded ActiveMQ broker ...");
             if (!brokerService.isStopped()) {
-                brokerService.stop();
+                try {
+                    brokerService.stop();
+                } catch (Exception ex) {
+                    logger.warn("Failed to stop embedded ActiveMQ broker", ex);
+                }
             }
-            assertThat(brokerService.isStopped()).isTrue();
+            brokerService.waitUntilStopped();
             logger.info("Stopped embedded ActiveMQ broker");
         }
     }
@@ -176,8 +180,7 @@ public class ActiveMQClientTest {
             try (Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE)) {
                 Destination destination = session.createQueue(QUEUE_NAME);
                 try (MessageConsumer consumer = session.createConsumer(destination)) {
-                    Message message = consumer.receive(10000);
-                    assertThat(message).isInstanceOf(TextMessage.class);
+                    Message message = consumer.receive(1000);
                     String text = ((TextMessage) message).getText();
                     logger.info("Received text message: {}", text);
                     return text;

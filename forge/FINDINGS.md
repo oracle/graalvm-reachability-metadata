@@ -3,6 +3,12 @@
 Rendered by Forge from the pre-push branch review of §FS-local-branch-review.
 Newest entry first; every non-approval is recorded, including one a repair later cleared.
 
+## 2026-10-06 — org.apache.activemq:activemq-client:6.2.7 (#10593)
+
+**ActiveMQ test teardown waits indefinitely and suppresses shutdown failures**
+
+The modified ActiveMQClientTest teardown called unbounded BrokerService.waitUntilStopped() and caught and logged stop failures, violating the bounded-test requirement in FS-test-contract.1.6 and allowing cleanup failure to be hidden. This was contribution-local and repairable under FS-contribution-contract.5.1.
+
 ## 2026-10-06 — org.apache.activemq:activemq-client:6.0.0 (#10536)
 
 **Generated broker tests exceed the per-test timeout bound**
