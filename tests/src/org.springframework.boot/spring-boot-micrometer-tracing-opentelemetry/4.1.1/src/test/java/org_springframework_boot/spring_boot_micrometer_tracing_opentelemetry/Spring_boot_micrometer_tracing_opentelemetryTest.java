@@ -24,6 +24,7 @@ import io.opentelemetry.sdk.trace.export.SpanExporter;
 import io.opentelemetry.sdk.trace.samplers.Sampler;
 import org.junit.jupiter.api.Test;
 
+import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.context.properties.bind.Bindable;
 import org.springframework.boot.context.properties.bind.Binder;
 import org.springframework.boot.context.properties.source.MapConfigurationPropertySource;
@@ -33,13 +34,19 @@ import org.springframework.boot.micrometer.tracing.opentelemetry.autoconfigure.S
 import org.springframework.boot.micrometer.tracing.opentelemetry.autoconfigure.SdkTracerProviderBuilderCustomizer;
 import org.springframework.boot.micrometer.tracing.opentelemetry.autoconfigure.otlp.OtlpGrpcSpanExporterBuilderCustomizer;
 import org.springframework.boot.micrometer.tracing.opentelemetry.autoconfigure.otlp.OtlpHttpSpanExporterBuilderCustomizer;
+import org.springframework.boot.micrometer.tracing.opentelemetry.autoconfigure.otlp.OtlpTracingAutoConfiguration;
+import org.springframework.boot.micrometer.tracing.opentelemetry.autoconfigure.otlp.OtlpTracingConnectionDetails;
 import org.springframework.boot.micrometer.tracing.opentelemetry.autoconfigure.otlp.OtlpTracingProperties;
 import org.springframework.boot.micrometer.tracing.opentelemetry.autoconfigure.otlp.Transport;
+import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class Spring_boot_micrometer_tracing_opentelemetryTest {
+
+    private final ApplicationContextRunner contextRunner = new ApplicationContextRunner()
+            .withConfiguration(AutoConfigurations.of(OtlpTracingAutoConfiguration.class));
 
     @Test
     void openTelemetryTracingPropertiesExposeDefaultsAndNestedConfiguration() {
@@ -126,6 +133,24 @@ public class Spring_boot_micrometer_tracing_opentelemetryTest {
         assertThat(properties.getHeaders()).containsEntry("authorization", "Bearer test-token")
                 .containsEntry("tenant", "native-tests");
         assertThat(properties.getSsl().getBundle()).isEqualTo("collector");
+    }
+
+    @Test
+    void otlpAutoConfigurationCreatesHttpExporterFromTracingProperties() {
+        this.contextRunner
+                .withPropertyValues("management.tracing.export.otlp.enabled=true",
+                        "management.opentelemetry.tracing.export.otlp.endpoint=http://collector.example.test/v1/traces",
+                        "management.opentelemetry.tracing.export.otlp.compression=gzip")
+                .run((context) -> {
+                    assertThat(context).hasSingleBean(OtlpTracingConnectionDetails.class);
+                    assertThat(context).hasSingleBean(OtlpHttpSpanExporter.class);
+                    assertThat(context.getBean(OtlpTracingConnectionDetails.class).getUrl(Transport.HTTP))
+                            .isEqualTo("http://collector.example.test/v1/traces");
+                    assertThat(context.getBean(OtlpHttpSpanExporter.class).toString())
+                            .contains("endpoint=http://collector.example.test/v1/traces", "compressorEncoding=gzip");
+                    assertThat(context.getBean(OtlpHttpSpanExporter.class).shutdown().join(10, TimeUnit.SECONDS)
+                            .isSuccess()).isTrue();
+                });
     }
 
     @Test
