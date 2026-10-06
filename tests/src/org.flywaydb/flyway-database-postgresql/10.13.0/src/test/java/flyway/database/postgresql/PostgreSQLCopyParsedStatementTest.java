@@ -14,15 +14,13 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.Duration;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import javax.sql.DataSource;
 
 import org.awaitility.Awaitility;
 import org.flywaydb.core.Flyway;
-import org.flywaydb.core.api.configuration.Configuration;
-import org.flywaydb.core.api.configuration.FluentConfiguration;
 import org.flywaydb.core.api.output.MigrateResult;
-import org.flywaydb.database.postgresql.PostgreSQLConfigurationExtension;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -77,15 +75,12 @@ public class PostgreSQLCopyParsedStatementTest {
     void migratesCopyFromStdinData() throws SQLException {
         DataSource dataSource = getDataSource();
 
-        Configuration configuration = new FluentConfiguration()
+        Flyway flyway = Flyway.configure()
+                .configuration(Map.of("flyway.postgresql.transactional.lock", "false"))
                 .dataSource(dataSource)
                 .encoding(StandardCharsets.UTF_8)
-                .resourceProvider(new FixedResourceProvider());
-        configuration.getPluginRegister()
-                .getPlugin(PostgreSQLConfigurationExtension.class)
-                .setTransactionalLock(false);
-
-        Flyway flyway = new Flyway(configuration);
+                .resourceProvider(new FixedResourceProvider())
+                .load();
         MigrateResult migration = flyway.migrate();
 
         assertThat(migration.success).isTrue();
