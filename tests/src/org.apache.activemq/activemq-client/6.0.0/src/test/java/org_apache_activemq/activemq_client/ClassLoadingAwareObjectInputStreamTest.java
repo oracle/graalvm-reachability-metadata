@@ -6,6 +6,7 @@
  */
 package org_apache_activemq.activemq_client;
 
+import org.apache.activemq.command.ActiveMQObjectMessage;
 import org.apache.activemq.command.ActiveMQQueue;
 import org.apache.activemq.util.ByteArrayInputStream;
 import org.apache.activemq.util.ByteSequence;
@@ -13,6 +14,10 @@ import org.apache.activemq.wireformat.ObjectStreamWireFormat;
 import org.junit.jupiter.api.Test;
 
 import java.io.DataInputStream;
+import java.io.Serializable;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -42,6 +47,51 @@ public class ClassLoadingAwareObjectInputStreamTest {
             assertThat(decoded.getPhysicalName()).isEqualTo("fallback.queue");
         } finally {
             thread.setContextClassLoader(originalClassLoader);
+        }
+    }
+
+    @Test
+    void restoresObjectMessageProxyWithTheLibraryClassLoader() throws Exception {
+        Greeting original = (Greeting) Proxy.newProxyInstance(
+                ClassLoadingAwareObjectInputStreamTest.class.getClassLoader(),
+                new Class<?>[] {Greeting.class},
+                new GreetingHandler("Hello"));
+        ActiveMQObjectMessage message = new ActiveMQObjectMessage();
+        message.setTrustAllPackages(true);
+        message.setObject(original);
+        message.storeContentAndClear();
+
+        Thread thread = Thread.currentThread();
+        ClassLoader originalClassLoader = thread.getContextClassLoader();
+        try {
+            thread.setContextClassLoader(null);
+            Greeting restored = (Greeting) message.getObject();
+
+            assertThat(restored.greet("ActiveMQ")).isEqualTo("Hello, ActiveMQ");
+        } finally {
+            thread.setContextClassLoader(originalClassLoader);
+        }
+    }
+
+    public interface Greeting extends Serializable {
+        String greet(String name);
+    }
+
+    public static final class GreetingHandler implements InvocationHandler, Serializable {
+        private static final long serialVersionUID = 1L;
+
+        private final String greeting;
+
+        public GreetingHandler(String greeting) {
+            this.greeting = greeting;
+        }
+
+        @Override
+        public Object invoke(Object proxy, Method method, Object[] arguments) {
+            if ("greet".equals(method.getName())) {
+                return greeting + ", " + arguments[0];
+            }
+            throw new UnsupportedOperationException(method.getName());
         }
     }
 }
