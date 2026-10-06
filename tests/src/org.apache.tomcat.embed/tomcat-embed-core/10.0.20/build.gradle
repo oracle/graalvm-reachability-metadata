@@ -9,6 +9,7 @@ plugins {
 }
 
 String libraryVersion = tck.testedLibraryVersion.get()
+String javaHome = System.getenv('JAVA_HOME') ?: System.getenv('GRAALVM_HOME')
 
 dependencies {
 	testImplementation "org.apache.tomcat.embed:tomcat-embed-core:$libraryVersion"
@@ -19,10 +20,38 @@ dependencies {
     testImplementation "com.h2database:h2:2.2.224"
 }
 
+String digesterPropertySource =
+        '-Dorg.apache.tomcat.util.digester.PROPERTY_SOURCE=org.apache.tomcat.util.digester.SystemPropertySource'
+
+tasks.withType(Test).configureEach {
+    jvmArgs digesterPropertySource
+    jvmArgs '--add-opens=java.base/java.io=ALL-UNNAMED'
+    jvmArgs '--add-opens=java.base/java.lang=ALL-UNNAMED'
+    jvmArgs '--add-opens=java.base/java.lang.reflect=ALL-UNNAMED'
+    jvmArgs '--add-opens=java.base/java.util=ALL-UNNAMED'
+    jvmArgs '--add-opens=java.rmi/sun.rmi.transport=ALL-UNNAMED'
+}
+
+tasks.named("nativeTest") {
+    runtimeArgs.add("-Djava.home=${javaHome}")
+    runtimeArgs.add(digesterPropertySource)
+    runtimeArgs.add('--add-opens=java.base/java.io=ALL-UNNAMED')
+    runtimeArgs.add('--add-opens=java.base/java.lang=ALL-UNNAMED')
+    runtimeArgs.add('--add-opens=java.base/java.lang.reflect=ALL-UNNAMED')
+    runtimeArgs.add('--add-opens=java.base/java.util=ALL-UNNAMED')
+    runtimeArgs.add('--add-opens=java.rmi/sun.rmi.transport=ALL-UNNAMED')
+}
+
 graalvmNative {
     binaries {
         test {
             buildArgs.add('--allow-incomplete-classpath')
+            runtimeArgs("-Djava.home=${javaHome}", digesterPropertySource,
+                    '--add-opens=java.base/java.io=ALL-UNNAMED',
+                    '--add-opens=java.base/java.lang=ALL-UNNAMED',
+                    '--add-opens=java.base/java.lang.reflect=ALL-UNNAMED',
+                    '--add-opens=java.base/java.util=ALL-UNNAMED',
+                    '--add-opens=java.rmi/sun.rmi.transport=ALL-UNNAMED')
         }
     }
     agent {
