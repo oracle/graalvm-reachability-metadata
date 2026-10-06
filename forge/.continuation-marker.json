@@ -1,0 +1,83 @@
+{
+  "continueFrom": "explore",
+  "coordinate": "com.hazelcast:hazelcast:5.5.0",
+  "failure": {
+    "operand": "reporter-requested metadata",
+    "phase": "explore",
+    "step": "generate_tests()"
+  },
+  "issueNumber": 10527,
+  "label": "library-update-request",
+  "libraryPreparationPreflight": {
+    "action": "no_action",
+    "agent_guidance": "",
+    "applied_setup": [],
+    "deterministic_setup": [],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#10527 Improve coverage for com.hazelcast:hazelcast:5.5.0; label=library-update-request; body_chars=439"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "17 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 4,
+    "issue_label": "library-update-request",
+    "issue_number": 10527,
+    "library": "com.hazelcast:hazelcast:5.5.0",
+    "model": "sonnet",
+    "output_tokens_used": 742,
+    "risks": [
+      "Embedded members must disable multicast and use localhost TCP/IP join to avoid network flakiness in CI.",
+      "Optional integrations (Kafka, Hibernate, Spring, cloud discovery) would need extra dependencies, and some might need Docker. They are probably out of scope, so only add them if a specific uncovered access requires one.",
+      "I did not run Gradle or a native-image build, so this decision is not verified locally."
+    ],
+    "status": "completed",
+    "summary": "Hazelcast 5.5.0 runs embedded in the test JVM (HazelcastInstance, IMap, serialization factories, executor). It needs no Docker image or extra Maven dependency. The existing build.gradle already adds javax.cache:cache-api, awaitility and assertj, and wires in the cache-api metadata. The low coverage comes from tests not exercising more of the library's reflective paths (config loading, serializers, discovery, etc.), not from missing setup."
+  },
+  "libraryUpdateRoute": {
+    "baseline_coordinates": null,
+    "new_version": "5.5.0",
+    "selected_driver": "improve_library_coverage"
+  },
+  "newVersion": null,
+  "phases": {
+    "explore": {
+      "chunkClassCount": null,
+      "chunkProcessedClassCount": 0,
+      "exhaustedClasses": [],
+      "iteration": 6,
+      "status": "running"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": null,
+      "status": "skipped"
+    },
+    "publication": {
+      "branch": null,
+      "coverageFollowUpIssueNumber": null,
+      "isPushed": false,
+      "publicationId": null,
+      "publicationTimestamp": null,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": true,
+      "status": "completed"
+    }
+  },
+  "preservedBranch": "ai/kimeta/human-intervention/issue-10527-library-update-request-com.hazelcast-hazelcast-5.5.0-92cf53ea",
+  "publicationMetrics": {
+    "extras": {},
+    "library": "com.hazelcast:hazelcast:5.5.0",
+    "timestamp": "2026-10-06T08:33:57.983345Z"
+  },
+  "schemaVersion": 1,
+  "strategyName": "library_update_optimistic_pi_gpt-5.6-sol"
+}

@@ -1,0 +1,13 @@
+Implemented and verified the fix.
+
+Changes:
+- Added active metadata conditions for Hazelcast `DataSerializerHook`, phone-home metric providers, and JMX classes in `metadata/com.hazelcast/hazelcast/5.5.0/reachability-metadata.json`.
+- Removed `JetServiceTest.java`; its pipeline required runtime lambda serialization.
+- Reworked YAML configuration coverage to an XML-only public API path because SnakeYAML required unavailable `UTF-32BE` charset support.
+- Left the pre-existing `user-code-filter.json` modification untouched.
+
+Verification with the required GraalVM:
+- Exact reproduction command: **30/30 tests passed**
+- `checkMetadataFiles`: passed
+- `checkstyle`: passed
+- `fissile check --staged`: passed

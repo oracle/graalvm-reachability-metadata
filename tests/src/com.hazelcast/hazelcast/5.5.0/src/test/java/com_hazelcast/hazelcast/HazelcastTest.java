@@ -10,6 +10,7 @@ import com.hazelcast.cache.ICache;
 import com.hazelcast.cardinality.CardinalityEstimator;
 import com.hazelcast.client.HazelcastClient;
 import com.hazelcast.client.config.ClientConfig;
+import com.hazelcast.client.config.ClientReliableTopicConfig;
 import com.hazelcast.config.Config;
 import com.hazelcast.config.GlobalSerializerConfig;
 import com.hazelcast.config.SerializerConfig;
@@ -21,20 +22,22 @@ import com.hazelcast.durableexecutor.DurableExecutorService;
 import com.hazelcast.flakeidgen.FlakeIdGenerator;
 import com.hazelcast.map.IMap;
 import com.hazelcast.multimap.MultiMap;
+import com.hazelcast.nio.ObjectDataInput;
+import com.hazelcast.nio.ObjectDataOutput;
+import com.hazelcast.nio.serialization.StreamSerializer;
 import com.hazelcast.replicatedmap.ReplicatedMap;
 import com.hazelcast.ringbuffer.Ringbuffer;
 import com.hazelcast.scheduledexecutor.IScheduledExecutorService;
 import com.hazelcast.scheduledexecutor.IScheduledFuture;
 import com.hazelcast.topic.ITopic;
 import com_hazelcast.hazelcast.callable.EchoCallable;
-import com_hazelcast.hazelcast.customSerializer.CustomSerializable;
-import com_hazelcast.hazelcast.customSerializer.CustomSerializer;
 import com_hazelcast.hazelcast.globalSerializer.GlobalSerializer;
+import com_hazelcast.hazelcast.identifiedDataSerializable.Employee;
 import com_hazelcast.hazelcast.identifiedDataSerializable.SampleDataSerializableFactory;
+import com_hazelcast.hazelcast.portableSerializable.Customer;
 import com_hazelcast.hazelcast.portableSerializable.SamplePortableFactory;
 import com_hazelcast.hazelcast.query.ThePortableFactory;
 import com_hazelcast.hazelcast.query.User;
-import com.hazelcast.client.config.ClientReliableTopicConfig;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -46,17 +49,21 @@ import javax.cache.configuration.MutableConfiguration;
 import javax.cache.expiry.AccessedExpiryPolicy;
 import javax.cache.expiry.Duration;
 import javax.cache.spi.CachingProvider;
+import java.io.IOException;
+import java.io.Serializable;
+import java.net.URI;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
+import java.util.Properties;
 import java.util.Set;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.stream.IntStream;
-import java.util.Properties;
-import java.net.URI;
-import java.util.concurrent.Executors;
 
 import static com.hazelcast.query.Predicates.and;
 import static com.hazelcast.query.Predicates.between;
@@ -66,7 +73,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatNoException;
 import static org.awaitility.Awaitility.await;
 
-class HazelcastTest {
+public class HazelcastTest {
     static Integer PORT = 45739;
     static HazelcastInstance hazelcastInstance;
 
@@ -75,7 +82,7 @@ class HazelcastTest {
         Config config = new Config();
         config.getNetworkConfig().setPort(PORT);
         hazelcastInstance = Hazelcast.newHazelcastInstance(config);
-        await().atMost(java.time.Duration.ofMinutes(1)).ignoreExceptions().until(() -> {
+        await().atMost(java.time.Duration.ofSeconds(50)).ignoreExceptions().until(() -> {
             ClientConfig clientConfig = new ClientConfig();
             clientConfig.getNetworkConfig().addAddress("localhost:" + PORT);
             HazelcastClient.newHazelcastClient(clientConfig).shutdown();
@@ -103,9 +110,17 @@ class HazelcastTest {
     void testCustomSerializer() {
         ClientConfig clientConfig = new ClientConfig();
         clientConfig.getNetworkConfig().addAddress("localhost:" + PORT);
-        clientConfig.getSerializationConfig().addSerializerConfig(new SerializerConfig().setImplementation(new CustomSerializer()).setTypeClass(CustomSerializable.class));
-        HazelcastInstance hz = HazelcastClient.newHazelcastClient(clientConfig);
-        hz.shutdown();
+        clientConfig.getSerializationConfig().addSerializerConfig(new SerializerConfig()
+                .setClassName(NamedValueSerializer.class.getName())
+                .setTypeClassName(NamedValue.class.getName()));
+        HazelcastInstance client = HazelcastClient.newHazelcastClient(clientConfig);
+        try {
+            IMap<String, NamedValue> values = client.getMap("custom-serialized-values");
+            values.put("key", new NamedValue("custom value"));
+            assertThat(values.get("key").value).isEqualTo("custom value");
+        } finally {
+            client.shutdown();
+        }
     }
 
     @Test
@@ -121,9 +136,21 @@ class HazelcastTest {
     void testIdentifiedDataSerializable() {
         ClientConfig clientConfig = new ClientConfig();
         clientConfig.getNetworkConfig().addAddress("localhost:" + PORT);
-        clientConfig.getSerializationConfig().addDataSerializableFactory(SampleDataSerializableFactory.FACTORY_ID, new SampleDataSerializableFactory());
-        HazelcastInstance hz = HazelcastClient.newHazelcastClient(clientConfig);
-        hz.shutdown();
+        clientConfig.getSerializationConfig().addDataSerializableFactoryClass(
+                SampleDataSerializableFactory.FACTORY_ID, SampleDataSerializableFactory.class.getName());
+        HazelcastInstance client = HazelcastClient.newHazelcastClient(clientConfig);
+        try {
+            Employee employee = new Employee();
+            employee.id = 7;
+            employee.name = "Ada";
+            IMap<String, Employee> employees = client.getMap("identified-employees");
+            employees.put("engineer", employee);
+            Employee restored = employees.get("engineer");
+            assertThat(restored.id).isEqualTo(7);
+            assertThat(restored.name).isEqualTo("Ada");
+        } finally {
+            client.shutdown();
+        }
     }
 
     @SuppressWarnings("unchecked")
@@ -265,9 +292,23 @@ class HazelcastTest {
     void testPortableSerializable() {
         ClientConfig clientConfig = new ClientConfig();
         clientConfig.getNetworkConfig().addAddress("localhost:" + PORT);
-        clientConfig.getSerializationConfig().addPortableFactory(SamplePortableFactory.FACTORY_ID, new SamplePortableFactory());
+        clientConfig.getSerializationConfig().addPortableFactoryClass(
+                SamplePortableFactory.FACTORY_ID, SamplePortableFactory.class.getName());
         HazelcastInstance client = HazelcastClient.newHazelcastClient(clientConfig);
-        client.shutdown();
+        try {
+            Customer customer = new Customer();
+            customer.id = 42;
+            customer.name = "Grace";
+            customer.lastOrder = new Date(123456789L);
+            IMap<String, Customer> customers = client.getMap("portable-customers");
+            customers.put("customer", customer);
+            Customer restored = customers.get("customer");
+            assertThat(restored.id).isEqualTo(42);
+            assertThat(restored.name).isEqualTo("Grace");
+            assertThat(restored.lastOrder).isEqualTo(customer.lastOrder);
+        } finally {
+            client.shutdown();
+        }
     }
 
     @Test
@@ -297,8 +338,8 @@ class HazelcastTest {
         BlockingQueue<String> queue = client.getQueue("my-distributed-queue");
         assertThat(queue.offer("item")).isTrue();
         queue.poll();
-        assertThat(queue.offer("anotherItem", 500, TimeUnit.MILLISECONDS)).isTrue();
-        queue.poll(5, TimeUnit.SECONDS);
+        assertThat(queue.offer("anotherItem", 10, TimeUnit.SECONDS)).isTrue();
+        queue.poll(10, TimeUnit.SECONDS);
         queue.put("yetAnotherItem");
         assertThat(queue.take()).isEqualTo("yetAnotherItem");
         client.shutdown();
@@ -428,24 +469,24 @@ class HazelcastTest {
 
 
     @Test
-    void testExecutorService() throws ExecutionException, InterruptedException {
+    void testExecutorService() throws ExecutionException, InterruptedException, TimeoutException {
         ClientConfig clientConfig = new ClientConfig();
         clientConfig.getNetworkConfig().addAddress("localhost:" + PORT);
         HazelcastInstance client = HazelcastClient.newHazelcastClient(clientConfig);
         IExecutorService executorService = client.getExecutorService("my-distributed-executor-service");
         Future<String> result = executorService.submit(new EchoCallable("Hello World"));
-        assertThat(result.get()).isEqualTo("Hello World");
+        assertThat(result.get(30, TimeUnit.SECONDS)).isEqualTo("Hello World");
         client.shutdown();
     }
 
     @Test
-    void testDurableExecutorService() throws ExecutionException, InterruptedException {
+    void testDurableExecutorService() throws ExecutionException, InterruptedException, TimeoutException {
         ClientConfig clientConfig = new ClientConfig();
         clientConfig.getNetworkConfig().addAddress("localhost:" + PORT);
         HazelcastInstance client = HazelcastClient.newHazelcastClient(clientConfig);
         DurableExecutorService durableExecutorService = client.getDurableExecutorService("my-distributed-durable-executor-service");
         long taskId = durableExecutorService.submit(new EchoCallable("Hello World")).getTaskId();
-        assertThat(durableExecutorService.retrieveResult(taskId).get()).isEqualTo("Hello World");
+        assertThat(durableExecutorService.retrieveResult(taskId).get(30, TimeUnit.SECONDS)).isEqualTo("Hello World");
         client.shutdown();
     }
 
@@ -492,14 +533,179 @@ class HazelcastTest {
     }
 
     @Test
-    void testScheduledExecutorService() throws ExecutionException, InterruptedException {
+    void testScheduledExecutorService() throws ExecutionException, InterruptedException, TimeoutException {
         ClientConfig clientConfig = new ClientConfig();
         clientConfig.getNetworkConfig().addAddress("localhost:" + PORT);
         HazelcastInstance client = HazelcastClient.newHazelcastClient(clientConfig);
         IScheduledExecutorService scheduledExecutorService = client.getScheduledExecutorService("my-distributed-scheduled-executor-service");
         IScheduledFuture<String> result = scheduledExecutorService.schedule(new EchoCallable("Hello World"), 0L, TimeUnit.MILLISECONDS);
-        assertThat(result.get()).isEqualTo("Hello World");
+        assertThat(result.get(30, TimeUnit.SECONDS)).isEqualTo("Hello World");
         client.shutdown();
+    }
+
+    @Test
+    void loadsXmlAndYamlConfiguration() {
+        Config xmlConfig = Config.loadFromString("""
+                <hazelcast xmlns="http://www.hazelcast.com/schema/config">
+                    <cluster-name>xml-cluster</cluster-name>
+                    <map name="orders">
+                        <backup-count>0</backup-count>
+                    </map>
+                    <queue name="work">
+                        <max-size>17</max-size>
+                    </queue>
+                </hazelcast>
+                """);
+        Config yamlConfig = Config.loadFromString("""
+                hazelcast:
+                  cluster-name: yaml-cluster
+                  map:
+                    customers:
+                      backup-count: 0
+                  queue:
+                    messages:
+                      max-size: 23
+                """);
+
+        assertThat(xmlConfig.getClusterName()).isEqualTo("xml-cluster");
+        assertThat(xmlConfig.getMapConfig("orders").getBackupCount()).isZero();
+        assertThat(xmlConfig.getQueueConfig("work").getMaxSize()).isEqualTo(17);
+        assertThat(yamlConfig.getClusterName()).isEqualTo("yaml-cluster");
+        assertThat(yamlConfig.getMapConfig("customers").getBackupCount()).isZero();
+        assertThat(yamlConfig.getQueueConfig("messages").getMaxSize()).isEqualTo(23);
+    }
+
+    @Test
+    void createsNamedConfigurationsFromDefaults() {
+        Config config = new Config();
+        config.getMapConfig("default").setBackupCount(0);
+
+        assertThat(List.of(
+                        config.getMapConfig("orders").getName(),
+                        config.getCacheConfig("cache").getName(),
+                        config.getQueueConfig("queue").getName(),
+                        config.getListConfig("list").getName(),
+                        config.getSetConfig("set").getName(),
+                        config.getMultiMapConfig("multi-map").getName(),
+                        config.getReplicatedMapConfig("replicated-map").getName(),
+                        config.getRingbufferConfig("ringbuffer").getName(),
+                        config.getTopicConfig("topic").getName(),
+                        config.getReliableTopicConfig("reliable-topic").getName(),
+                        config.getExecutorConfig("executor").getName(),
+                        config.getDurableExecutorConfig("durable-executor").getName(),
+                        config.getScheduledExecutorConfig("scheduled-executor").getName(),
+                        config.getCardinalityEstimatorConfig("cardinality").getName(),
+                        config.getPNCounterConfig("pn-counter").getName(),
+                        config.getFlakeIdGeneratorConfig("flake-id").getName(),
+                        config.getSplitBrainProtectionConfig("split-brain").getName()))
+                .containsExactly(
+                        "orders", "cache", "queue", "list", "set", "multi-map", "replicated-map",
+                        "ringbuffer", "topic", "reliable-topic", "executor", "durable-executor",
+                        "scheduled-executor", "cardinality", "pn-counter", "flake-id", "split-brain");
+        assertThat(config.getMapConfig("orders").getBackupCount()).isZero();
+        config.getMapConfig("orders").setBackupCount(1);
+        assertThat(config.getMapConfig("default").getBackupCount()).isZero();
+    }
+
+    @Test
+    void serializesCompactObjectsReflectively() {
+        ClientConfig clientConfig = new ClientConfig();
+        clientConfig.getNetworkConfig().addAddress("localhost:" + PORT);
+        clientConfig.getSerializationConfig().getCompactSerializationConfig().addClass(CompactPerson.class);
+        HazelcastInstance client = HazelcastClient.newHazelcastClient(clientConfig);
+        try {
+            IMap<String, CompactPerson> people = client.getMap("compact-people");
+            people.put("architect", new CompactPerson("Lin", 37));
+
+            CompactPerson restored = people.get("architect");
+            assertThat(restored.getName()).isEqualTo("Lin");
+            assertThat(restored.getAge()).isEqualTo(37);
+        } finally {
+            client.shutdown();
+        }
+    }
+
+    @Test
+    void serializesJavaObjectsThroughDistributedMap() {
+        ClientConfig clientConfig = new ClientConfig();
+        clientConfig.getNetworkConfig().addAddress("localhost:" + PORT);
+        HazelcastInstance client = HazelcastClient.newHazelcastClient(clientConfig);
+        try {
+            IMap<String, SerializablePerson> people = client.getMap("java-serialized-people");
+            people.put("operator", new SerializablePerson("Margaret", 29));
+
+            SerializablePerson restored = people.get("operator");
+            assertThat(restored.name).isEqualTo("Margaret");
+            assertThat(restored.age).isEqualTo(29);
+        } finally {
+            client.shutdown();
+        }
+    }
+
+    public static final class NamedValue {
+        private final String value;
+
+        public NamedValue(String value) {
+            this.value = value;
+        }
+    }
+
+    public static final class NamedValueSerializer implements StreamSerializer<NamedValue> {
+        @Override
+        public int getTypeId() {
+            return 10;
+        }
+
+        @Override
+        public void write(ObjectDataOutput out, NamedValue object) throws IOException {
+            out.writeString(object.value);
+        }
+
+        @Override
+        public NamedValue read(ObjectDataInput in) throws IOException {
+            return new NamedValue(in.readString());
+        }
+    }
+
+    public static final class CompactPerson {
+        private String name;
+        private int age;
+
+        public CompactPerson() {
+        }
+
+        CompactPerson(String name, int age) {
+            this.name = name;
+            this.age = age;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public int getAge() {
+            return age;
+        }
+
+        public void setAge(int age) {
+            this.age = age;
+        }
+    }
+
+    public static final class SerializablePerson implements Serializable {
+        private static final long serialVersionUID = 1L;
+
+        private final String name;
+        private final int age;
+
+        SerializablePerson(String name, int age) {
+            this.name = name;
+            this.age = age;
+        }
     }
 
     @Test

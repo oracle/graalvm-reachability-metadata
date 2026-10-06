@@ -1,0 +1,13 @@
+```json
+{
+  "action": "no_action",
+  "summary": "Hazelcast 5.5.0 runs embedded in the test JVM (HazelcastInstance, IMap, serialization factories, executor). It needs no Docker image or extra Maven dependency. The existing build.gradle already adds javax.cache:cache-api, awaitility and assertj, and wires in the cache-api metadata. The low coverage comes from tests not exercising more of the library's reflective paths (config loading, serializers, discovery, etc.), not from missing setup.",
+  "deterministic_setup": [],
+  "agent_guidance": "",
+  "risks": [
+    "Embedded members must disable multicast and use localhost TCP/IP join to avoid network flakiness in CI.",
+    "Optional integrations (Kafka, Hibernate, Spring, cloud discovery) would need extra dependencies, and some might need Docker. They are probably out of scope, so only add them if a specific uncovered access requires one.",
+    "I did not run Gradle or a native-image build, so this decision is not verified locally."
+  ]
+}
+```

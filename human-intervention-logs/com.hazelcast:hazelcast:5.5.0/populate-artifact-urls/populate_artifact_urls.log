@@ -1,0 +1,34 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :populateArtifactURLs
+I made no changes to `metadata/com.hazelcast/hazelcast/index.json`. The 5.5.0 entry already has every field filled in, and all the existing values hold up.
+
+- **URLs:** I sent HEAD requests to Maven Central for the `-sources.jar`, `-tests.jar` and `-javadoc.jar` of 5.5.0, 5.6.0 and 5.7.0. All nine returned 200, so the existing `$version$` templates work for every tested-version alias and already use the preferred Maven artifacts.
+- **Repository URL:** `https://github.com/hazelcast/hazelcast` is the canonical root, with no tag or branch in the path.
+- **Description:** It is already exactly two sentences, so I left it alone.
+- **Language:** I left the field absent, because Hazelcast is a plain Java library and not specific to Kotlin, Groovy or Scala.
+Ran agent for com.hazelcast:hazelcast:5.5.0 (exit 0). Log: /home/oracle/oracle/metadata2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10527-8152858c/build/agent-url-discovery-logs/com.hazelcast-hazelcast-5.5.0.log
+Completed populateArtifactURLs: invoked=1, prompted=0, skipped=0, overwriteExisting=false, verifyArtifactSources=false, limit=null
+
+[Incubating] Problems report is available at: file:///home/oracle/oracle/metadata2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10527-8152858c/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 25s
+9 actionable tasks: 1 executed, 8 up-to-date
