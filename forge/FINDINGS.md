@@ -3,6 +3,12 @@
 Rendered by Forge from the pre-push branch review of §FS-local-branch-review.
 Newest entry first; every non-approval is recorded, including one a repair later cleared.
 
+## 2026-10-06 — org.apache.activemq:activemq-client:6.0.0 (#10536)
+
+**Generated broker tests exceed the per-test timeout bound**
+
+The newly added ActiveMQSessionTest and ProducerThreadTest called BrokerService.waitUntilStarted(), whose ActiveMQ 6.0.0 default timeout is 600000 ms, and waitUntilStopped(), which waits on the stopped latch without a timeout. This violated the 60-second per-test and bounded-wait requirements in FS-test-contract.1.6.
+
 ## 2026-10-06 — org.springframework:spring-test:7.0.0 (#9401)
 
 **Native-only AOT failure is accepted as test success**
