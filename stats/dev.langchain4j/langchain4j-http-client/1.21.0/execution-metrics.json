@@ -1,12 +1,12 @@
 {
   "add_new_library_support:2026-10-05": {
-    "timestamp": "2026-10-05T16:34:13.249192Z",
+    "timestamp": "2026-10-05T18:34:29.713989Z",
     "library": "dev.langchain4j:langchain4j-http-client:1.21.0",
-    "starting_commit": "a043fa3b2a0418de4e086fe3fed39729c802c111",
-    "ending_commit": "a28aa299f77829d1717330ca837e1b95e958ef7b",
-    "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-sol",
+    "starting_commit": "153fc083e86e1fbb11f1b88648e96d55429f8126",
+    "ending_commit": "fb79b93affdad94cd74ed381dc3809b88e078749",
+    "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-luna",
     "agent": "pi",
-    "model": "gpt-5.6-sol",
+    "model": "gpt-5.6-luna",
     "status": "success",
     "stats": {
       "version": "1.21.0",
@@ -18,21 +18,21 @@
       },
       "libraryCoverage": {
         "instruction": {
-          "covered": 1029,
-          "missed": 1027,
-          "ratio": 0.500486,
+          "covered": 1333,
+          "missed": 723,
+          "ratio": 0.648346,
           "total": 2056
         },
         "line": {
-          "covered": 245,
-          "missed": 222,
-          "ratio": 0.524625,
+          "covered": 304,
+          "missed": 163,
+          "ratio": 0.650964,
           "total": 467
         },
         "method": {
-          "covered": 70,
-          "missed": 75,
-          "ratio": 0.482759,
+          "covered": 88,
+          "missed": 57,
+          "ratio": 0.606897,
           "total": 145
         }
       }
@@ -40,42 +40,55 @@
     "library_preparation_preflight": {
       "status": "completed",
       "action": "advisory_preparation",
-      "issue_number": 10465,
+      "issue_number": 10462,
       "issue_label": "library-new-request",
       "library": "dev.langchain4j:langchain4j-http-client:1.21.0",
-      "summary": "langchain4j-http-client is only the HttpClient SPI (HttpClient, HttpClientBuilder, HttpRequest, SuccessfulHttpResponse, ServerSentEvent parsers and listeners). It needs no extra dependency or Docker image. Tests can use an in-process JDK HttpServer, so I'm adding guidance only.",
-      "deterministic_setup": [],
-      "agent_guidance": "Do not add Docker images or extra Maven dependencies. The generated scaffold already pulls in the library and its transitive langchain4j-core. Exercise the module's own API: build HttpRequest objects (method, url, headers, body, form data) and run SuccessfulHttpResponse and ServerSentEvent parsing, including DefaultServerSentEventParser, ServerSentEventContext and the listener callbacks. Drive these with in-memory data or a local `com.sun.net.httpserver.HttpServer` bound to 127.0.0.1 on an ephemeral port. Do not depend on a real HttpClient implementation (langchain4j-http-client-jdk or -okhttp), because this artifact ships none. If a test needs a client, write a small HttpClient implementation inside the test, or call `HttpClientBuilderLoader` only if an implementation is on the classpath. The loader uses ServiceLoader, so only add a `META-INF/services` entry for a test-local builder if the test deliberately exercises that path. No environment variables or system properties are required.",
-      "risks": [
-        "If a test calls HttpClientBuilderLoader with no implementation on the classpath, it throws a 'no HTTP client implementation found' error. Provide a test-local SPI implementation or avoid that call.",
-        "ServiceLoader-based discovery may need extra reachability metadata, which local native-image verification should reveal."
+      "summary": "langchain4j-http-client is an SPI-only abstraction (ServiceLoader via HttpClientBuilderFactory); HttpClientBuilderLoader throws IllegalStateException with no provider on the classpath, so the bare generated dependency alone cannot exercise the library's HttpClient path.",
+      "deterministic_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "dev.langchain4j:langchain4j-http-client-jdk:1.21.0",
+          "scope": "testImplementation",
+          "reason": "Provides the only lightweight ServiceLoader-registered HttpClientBuilderFactory (java.net.http-based) for the SPI that langchain4j-http-client's HttpClientBuilderLoader requires at runtime; without it, loadHttpClientBuilder() throws IllegalStateException. The alternative provider, langchain4j-http-c\n...[truncated]"
+        }
       ],
-      "applied_setup": [],
+      "agent_guidance": "",
+      "risks": [
+        "If any other test dependency transitively pulls in a second HttpClientBuilderFactory provider (e.g. the spring-restclient variant), HttpClientBuilderLoader throws a conflict exception unless the langchain4j.http.clientBuilderFactory system property disambiguates it."
+      ],
+      "applied_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "dev.langchain4j:langchain4j-http-client-jdk:1.21.0",
+          "result": "already_present",
+          "target": "tests/src/dev.langchain4j/langchain4j-http-client/1.21.0/build.gradle"
+        }
+      ],
       "input_evidence": [
         {
           "name": "issue",
-          "summary": "#10465 Support for dev.langchain4j:langchain4j-http-client:1.21.0; label=library-new-request; body_chars=39"
+          "summary": "#10462 Support for dev.langchain4j:langchain4j-http-client:1.21.0; label=library-new-request; body_chars=39"
         },
         {
           "name": "existing_tests",
-          "summary": "0 existing test file path(s) included"
+          "summary": "8 existing test file path(s) included"
         }
       ],
       "model": "sonnet",
-      "input_tokens_used": 8,
-      "output_tokens_used": 1177
+      "input_tokens_used": 22,
+      "output_tokens_used": 11228
     },
     "metrics": {
-      "input_tokens_used": 173263,
-      "cached_input_tokens_used": 1767168,
-      "output_tokens_used": 18071,
-      "iterations": 5,
-      "cost_usd": 2.292,
-      "generated_loc": 345,
-      "tested_library_loc": 245,
+      "input_tokens_used": 307291,
+      "cached_input_tokens_used": 4893696,
+      "output_tokens_used": 30906,
+      "iterations": 6,
+      "cost_usd": 0.9821,
+      "generated_loc": 542,
+      "tested_library_loc": 304,
       "metadata_entries": 2,
       "test_only_metadata_entries": 79,
-      "code_coverage_percent": 52.46
+      "code_coverage_percent": 65.1
     },
     "artifacts": {
       "metadata_file": "metadata/dev.langchain4j/langchain4j-http-client/1.21.0/reachability-metadata.json"

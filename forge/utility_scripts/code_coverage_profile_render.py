@@ -19,7 +19,6 @@ from utility_scripts.code_coverage_jacoco import JacocoMethodCoverage
 from utility_scripts.code_coverage_model import MethodRef, parse_inventory_id
 from utility_scripts.code_coverage_profile_graph import CallGraph
 from utility_scripts.code_coverage_profile_records import (
-    MAX_LISTED_METHODS,
     NearCallRecord,
     simple_owner,
     translated_path,
@@ -29,6 +28,9 @@ from utility_scripts.code_coverage_profile_routes import Sample, SampledProfile
 MAX_RENDERED_DISPATCH_CANDIDATES = 12
 MAX_RENDERED_RECEIVERS = 6
 MAX_RENDERED_BRANCHES = 8
+# A thematic break between consecutive route groups; a blank line always
+# precedes it, so Markdown never reads it as a setext heading underline.
+GROUP_SEPARATOR = "---"
 
 
 def _display_method(ref: MethodRef, qualify_owner: bool) -> str:
@@ -269,23 +271,55 @@ def _prompt_line(
     return "\n".join([path_line, *classification_lines(classification, counted)])
 
 
+def _placement(session: dict | None) -> str:
+    """Where this prompt's tests go, by the session kind
+    (§AR-code-coverage-deep-navigation.4)."""
+    if session is None:
+        return (
+            "Inside that suite, write one test class per subsystem you drive, not one "
+            "class per run. The targets below cluster into a few subsystems — each "
+            "public entry in the routes drives one of them — and a scenario built for "
+            "its own subsystem, with the setup that subsystem needs, reaches far more "
+            "of it than one appended to a class built for something else. Before "
+            "extending an existing test class, check whether the cluster you are about "
+            "to drive already has one; if not, add a class."
+        )
+    owners: str = ", ".join(f"`{simple_owner(owner)}`" for owner in session["entryOwners"])
+    if session["kind"] == "monolith":
+        return (
+            f"Every route below enters the library through {owners}, so one subsystem "
+            "and one setup serve them all. Drive them from one test class for that "
+            "subsystem: extend the suite's class for it if one exists, otherwise add it."
+        )
+    return (
+        f"The routes below come from several small groups entering through {owners}. "
+        "They do not share one setup, so expect to change more than one test file: "
+        "put each route in the test class for its own subsystem, extending the "
+        "suite's class where one fits and adding a class where none does."
+    )
+
+
 def write_markdown(
         report: dict,
         prompt_records: list[NearCallRecord],
         graph: CallGraph,
         coordinate: str,
         iteration: int,
-        progress: dict | None,
         md_path: str,
+        session: dict | None = None,
 ) -> None:
     summary: dict = report["summary"]
     notes: dict[str, dict] = {target["id"]: target for target in report["bulkTargets"]}
+    scope: str = (
+        f"iteration {iteration}, session {session['index']} of {session['count']}"
+        if session is not None else f"iteration {iteration}"
+    )
     lines: list[str] = [
-        f"# Deep coverage paths (iteration {iteration}) — {coordinate}",
+        f"# Deep coverage paths ({scope}) — {coordinate}",
         "",
-        "JaCoCo is the coverage authority. PGO samples and counters are guidance only.",
-        "Attempt every listed uncovered path in this iteration through public API "
-        "behavior; never invoke internal targets directly.",
+        # The public-entry obligation (§AR-code-coverage-deep-navigation.2).
+        "Reach every target below through its public entry; never call internal "
+        "methods directly.",
         "",
         "## Where the tests go",
         "",
@@ -293,47 +327,15 @@ def write_markdown(
         "library's regular test sources are metadata-generation tests and stay "
         "untouched.",
         "",
-        "Inside that suite, write one test class per subsystem you drive, not one "
-        "class per run. The targets below cluster into a few subsystems — each "
-        "public entry in the routes drives one of them — and a scenario built for "
-        "its own subsystem, with the setup that subsystem needs, reaches far more "
-        "of it than one appended to a class built for something else. Before "
-        "extending an existing test class, check whether the cluster you are about "
-        "to drive already has one; if not, add a class.",
-        "",
-        "## Summary",
-        "",
-        f"- Public inventory: {summary['inventoryCovered']} covered, "
-        f"{summary['inventoryUncovered']} uncovered, {summary['inventoryUnknown']} unknown",
-        f"- Deep methods: {summary['deepCovered']} covered, "
-        f"{summary['deepUncovered']} uncovered",
-        f"- Public methods the API phase left uncovered: "
-        f"{summary['publicTargetsCovered']} covered since, "
-        f"{summary['publicTargetsUncovered']} uncovered",
-        f"- Prompt list: {summary['listedUncovered']} "
-        f"(omitted but retained in JSON: {summary['omittedUncovered']})",
-        f"- Sampled contexts: {summary['samplingContexts']} "
-        f"({summary['totalSampleCount']} samples)",
+        _placement(session),
     ]
     counted: bool = bool(summary.get("instrumentedCounters"))
-    if counted:
-        lines.append(
-            f"- Instrumented counters: {summary['profiledBranches']} branches, "
-            f"{summary['profiledDispatchSites']} dispatch sites"
-        )
 
-    if progress is not None:
-        newly_covered: list[str] = progress["newlyCovered"]
-        lines += ["", "## Progress", "", f"- Newly JaCoCo-covered targets: {len(newly_covered)}"]
-        lines += [f"  - `{method_id}`" for method_id in newly_covered[:20]]
-
+    # Every prompted record is a sampled route (§AR-code-coverage-deep-navigation.2).
     sampled_groups: dict[tuple[str, int], list[NearCallRecord]] = {}
     sampled_group_order: list[tuple[str, int]] = []
-    fallback_records: list[NearCallRecord] = []
     for record in prompt_records:
-        if record.join_kind != "sampled" or record.sample is None or not record.static_path:
-            fallback_records.append(record)
-            continue
+        assert record.join_kind == "sampled" and record.sample is not None and record.static_path
         group_key: tuple[str, int] = (record.sample.context_id, record.static_path[0])
         if group_key not in sampled_groups:
             sampled_groups[group_key] = []
@@ -343,7 +345,9 @@ def write_markdown(
     lines += ["", "## Observed (sampled guidance only)", ""]
     if not sampled_group_order:
         lines.append("_No sampled context reaches an actionable uncovered path._")
-    for group_key in sampled_group_order:
+    for position, group_key in enumerate(sampled_group_order):
+        if position:
+            lines += [GROUP_SEPARATOR, ""]
         records: list[NearCallRecord] = sampled_groups[group_key]
         representative: NearCallRecord = records[0]
         assert representative.sample is not None
@@ -360,37 +364,8 @@ def write_markdown(
         for record in records:
             lines.append(_prompt_line(record, graph, notes, counted))
         lines.append("")
-
-    fallback_groups: dict[int, list[NearCallRecord]] = {}
-    fallback_order: list[int] = []
-    for record in fallback_records:
-        if not record.static_path:
-            continue
-        entry_id = record.static_path[0]
-        if entry_id not in fallback_groups:
-            fallback_groups[entry_id] = []
-            fallback_order.append(entry_id)
-        fallback_groups[entry_id].append(record)
-
-    lines += ["", f"## Uncovered paths (JaCoCo-exact, top {MAX_LISTED_METHODS})", ""]
-    if not fallback_order:
-        lines.append("_All prompt paths are paired with sampled observations above._")
-    for entry_id in fallback_order:
-        lines.append("Public entry:")
-        lines.append(f"`{_display_path([entry_id], graph)}`")
-        lines.append("")
-        lines.append("Uncovered paths:")
-        for record in fallback_groups[entry_id]:
-            lines.append(_prompt_line(record, graph, notes, counted))
-        lines.append("")
-    if summary["omittedUncovered"]:
-        lines.append(
-            f"_{summary['omittedUncovered']} additional uncovered paths are retained in JSON._"
-        )
-        lines.append("")
-
-    lines += ["## Caveats", ""]
-    lines += [f"- {caveat}" for caveat in report["caveats"]]
+    # Totals, omitted counts and caveats stay in the JSON report
+    # (§AR-code-coverage-deep-navigation.2).
     with open(md_path, "w", encoding="utf-8") as md_file:
         md_file.write("\n".join(lines) + "\n")
 

@@ -1,0 +1,85 @@
+{
+  "add_new_library_support:2026-10-06": {
+    "timestamp": "2026-10-06T07:40:15.831175Z",
+    "library": "dev.langchain4j:langchain4j-ollama:1.21.0",
+    "starting_commit": "41b95b63cefa58065ca11dbc51a5250e045bf3bb",
+    "ending_commit": "9ea8aaa229d643b9b8078bb661050e5900620b88",
+    "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-sol",
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "status": "success",
+    "stats": {
+      "version": "1.21.0",
+      "dynamicAccess": {
+        "breakdown": {},
+        "coverageRatio": 1.0,
+        "coveredCalls": 0,
+        "totalCalls": 0
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 4290,
+          "missed": 2529,
+          "ratio": 0.629125,
+          "total": 6819
+        },
+        "line": {
+          "covered": 1293,
+          "missed": 758,
+          "ratio": 0.630424,
+          "total": 2051
+        },
+        "method": {
+          "covered": 503,
+          "missed": 316,
+          "ratio": 0.614164,
+          "total": 819
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "no_action",
+      "issue_number": 10457,
+      "issue_label": "library-new-request",
+      "library": "dev.langchain4j:langchain4j-ollama:1.21.0",
+      "summary": "langchain4j-ollama talks to the Ollama REST API through langchain4j-http-client (the JDK client implementation) and Jackson. Tests can call it against an in-process fake HTTP endpoint, as the issue's Micronaut suite does, so no extra dependency, Docker image or system property is needed. Sibling langchain4j modules (cohere, voyage-ai, google-ai-gemini, http-client-jdk) already have tests in this repo, and no Ollama image is pinned in allowed-docker-images.",
+      "deterministic_setup": [],
+      "agent_guidance": "",
+      "risks": [
+        "I did not resolve the 1.21.0 POM or run the library. The decision rests on the issue text and the sibling modules in the repo.",
+        "Tests must not require a real Ollama server. If the library does not pull in langchain4j-http-client-jdk transitively, the Gradle run would show it, and the driver could add that dependency then.",
+        "Coverage needs chat, streaming and embeddings calls against a fake endpoint, so the Jackson request and response types (about 56, per the Micronaut metadata) get registered."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#10457 Support for dev.langchain4j:langchain4j-ollama:1.21.0; label=library-new-request; body_chars=1434"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "sonnet",
+      "input_tokens_used": 4,
+      "output_tokens_used": 735
+    },
+    "metrics": {
+      "input_tokens_used": 260028,
+      "cached_input_tokens_used": 3618176,
+      "output_tokens_used": 21833,
+      "iterations": 5,
+      "cost_usd": 3.7642,
+      "generated_loc": 558,
+      "tested_library_loc": 1293,
+      "metadata_entries": 534,
+      "test_only_metadata_entries": 9,
+      "code_coverage_percent": 63.04
+    },
+    "artifacts": {
+      "metadata_file": "metadata/dev.langchain4j/langchain4j-ollama/1.21.0/reachability-metadata.json"
+    }
+  }
+}

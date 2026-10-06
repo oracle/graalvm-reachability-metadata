@@ -1,0 +1,90 @@
+{
+  "add_new_library_support:2026-10-06": {
+    "timestamp": "2026-10-06T08:51:46.703168Z",
+    "library": "io.github.openfeign.querydsl:querydsl-core:6.11",
+    "starting_commit": "47970bc319602f4f014997dc96e16bf6e04a7cdf",
+    "ending_commit": "07c520da5064ecae81ce5200b223fa9217f715f5",
+    "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-sol",
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "status": "success",
+    "stats": {
+      "version": "6.11",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 0.981132,
+            "coveredCalls": 52,
+            "totalCalls": 53
+          }
+        },
+        "coverageRatio": 0.981132,
+        "coveredCalls": 52,
+        "totalCalls": 53
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 6406,
+          "missed": 27674,
+          "ratio": 0.187969,
+          "total": 34080
+        },
+        "line": {
+          "covered": 1187,
+          "missed": 5392,
+          "ratio": 0.180423,
+          "total": 6579
+        },
+        "method": {
+          "covered": 241,
+          "missed": 2254,
+          "ratio": 0.096593,
+          "total": 2495
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "no_action",
+      "issue_number": 9740,
+      "issue_label": "library-new-request",
+      "library": "io.github.openfeign.querydsl:querydsl-core:6.11",
+      "summary": "querydsl-core 6.11 is a plain in-process library. Its runtime dependencies (mysema-commons-lang, jakarta.annotation-api) resolve transitively. Predicates, PathBuilder, Expressions, CollQueryFactory and similar can be exercised with no Docker image, environment variable or system property. The sibling querydsl-apt, querydsl-codegen and querydsl-codegen-utils 6.11 tests already use the normal scaffold.",
+      "deterministic_setup": [],
+      "agent_guidance": "",
+      "risks": [
+        "byte-buddy and reactor-core are optional dependencies of querydsl-core. If tests exercise proxy-based (alias) or reactive features, those jars would need adding as testImplementation. Normal predicate, expression and collection-query tests do not need them.",
+        "I did not run the Gradle or native-image verification. This decision comes from the POM and the existing sibling tests only."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#9740 Support for io.github.openfeign.querydsl:querydsl-core:6.11; label=library-new-request; body_chars=39"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "sonnet",
+      "input_tokens_used": 6,
+      "output_tokens_used": 1053
+    },
+    "metrics": {
+      "input_tokens_used": 251336,
+      "cached_input_tokens_used": 1492224,
+      "output_tokens_used": 15476,
+      "iterations": 7,
+      "cost_usd": 2.4671,
+      "generated_loc": 754,
+      "tested_library_loc": 1187,
+      "metadata_entries": 34,
+      "test_only_metadata_entries": 81,
+      "code_coverage_percent": 18.04
+    },
+    "artifacts": {
+      "metadata_file": "metadata/io.github.openfeign.querydsl/querydsl-core/6.11/reachability-metadata.json"
+    }
+  }
+}

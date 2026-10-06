@@ -42,6 +42,7 @@ from tests.code_coverage_profile_support import (
     _coverage,
     _load_inventory,
     _load_jacoco,
+    _sampled_at,
 )
 
 
@@ -363,7 +364,7 @@ class DeepCorrelationTest(unittest.TestCase):
         }
         inventory = {"targets": [{"id": entry.canonical_id, "kind": "method"}]}
         first, _ = report_module.correlate(
-            SampledProfile(), graph, inventory, jacoco, max_listed=1000
+            _sampled_at(1, entry), graph, inventory, jacoco, max_listed=1000
         )
         self.assertEqual(len(first["uncoveredPaths"]), 201)
         self.assertEqual(len(first["promptTargetIds"]), 200)
@@ -376,7 +377,7 @@ class DeepCorrelationTest(unittest.TestCase):
             for method_id in first["promptTargetIds"]
         }
         second, _ = report_module.correlate(
-            SampledProfile(), graph, inventory, jacoco,
+            _sampled_at(1, entry), graph, inventory, jacoco,
             max_listed=200, target_states=attempted_states,
         )
         self.assertEqual(second["promptTargetIds"][0], omitted["id"])

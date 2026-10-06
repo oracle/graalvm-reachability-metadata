@@ -3,6 +3,52 @@
 Rendered by Forge from the pre-push branch review of §FS-local-branch-review.
 Newest entry first; every non-approval is recorded, including one a repair later cleared.
 
+## 2026-10-06 — org.apache.activemq:activemq-client:6.3.0 (#10600)
+
+**Generated statistics and test-only metadata were not fully finalized**
+
+The first required Forge finalization pass changed the publishable tree and exited nonzero: it regenerated stale library instruction/line coverage values in `stats/org.apache.activemq/activemq-client/6.3.0/stats.json` and normalized section ordering in the test-only `reachability-metadata.json`. A publishable contribution must contain the deterministic finalized outputs, so this was repaired within the allowed coordinate files under FS-contribution-contract.5.1.
+
+## 2026-10-06 — org.apache.activemq:activemq-client:6.2.7 (#10593)
+
+**ActiveMQ test teardown waits indefinitely and suppresses shutdown failures**
+
+The modified ActiveMQClientTest teardown called unbounded BrokerService.waitUntilStopped() and caught and logged stop failures, violating the bounded-test requirement in FS-test-contract.1.6 and allowing cleanup failure to be hidden. This was contribution-local and repairable under FS-contribution-contract.5.1.
+
+## 2026-10-06 — org.apache.activemq:activemq-client:6.0.0 (#10536)
+
+**Generated broker tests exceed the per-test timeout bound**
+
+The newly added ActiveMQSessionTest and ProducerThreadTest called BrokerService.waitUntilStarted(), whose ActiveMQ 6.0.0 default timeout is 600000 ms, and waitUntilStopped(), which waits on the stopped latch without a timeout. This violated the 60-second per-test and bounded-wait requirements in FS-test-contract.1.6.
+
+## 2026-10-06 — org.springframework:spring-test:7.0.0 (#9401)
+
+**Native-only AOT failure is accepted as test success**
+
+MergedContextConfigurationRuntimeHintsTest caught the library-specific IllegalStateException stating that AOT processing cannot run during AOT runtime and treated that exception as success. This made Native Image pass with behavior different from the JVM and violated FS-test-contract.4.2; it was not the sanctioned UnsupportedFeatureError proof for open-ended dynamic class loading.
+## 2026-10-06 — org.eclipse.paho:org.eclipse.paho.mqttv5.client:1.2.5 (#10516)
+
+**Generated test configuration exceeded timeout and module-opening limits**
+
+Mqttv5ClientTest allowed broker startup to wait 120 seconds, violating the 60-second per-test bound in FS-test-contract.1.6. The build also opened sun.nio.ch to JVM and Native Image without satisfying the uniform-necessity rule in FS-test-contract.2.7; Java testing and all three finalization lanes passed after that opening was removed. The narrower java.net opening remains justified: removing it reproducibly failed NetworkModuleServiceTest with InaccessibleObjectException in the library's NetworkModuleService.setURIField path.
+
+## 2026-10-05 — org.flywaydb:flyway-core:10.15.0 (#10518)
+
+**Dynamic-access classes lacked dedicated test files**
+
+The resolved dynamic-access report listed covered call sites in org.flywaydb.core.internal.license.VersionPrinter and org.flywaydb.core.internal.resource.classpath.ClassPathResource, but the suite had no dedicated VersionPrinterTest.java or ClassPathResourceTest.java. This violated the one-test-file-per-dynamic-access-class requirement in §FS-test-contract.1.8.
+
+## 2026-10-05 — org.flywaydb:flyway-database-postgresql:10.10.0 (#10555)
+
+**Test-only reachability metadata keys were not deterministically ordered**
+
+The initial test-only reachability-metadata.json placed the top-level resources key before reflection instead of using the repository's normalized JSON key ordering. Forge finalization detected this as a publishable-tree change and reordered the keys without changing their entries or semantics.
+## 2026-10-05 — dev.langchain4j:langchain4j-jina:1.21.0-beta31 (#10469)
+
+**Pre-push review unavailable**
+
+Forge could not obtain a readable pre-push review verdict. This records a review availability problem, not a reviewer finding against the branch.
+
 ## 2026-10-04 — io.lettuce:lettuce-core:7.0.0.RELEASE (#10430)
 
 **Compile repair removed meaningful runtime coverage**

@@ -69,17 +69,3 @@ def previous_target_states(previous: dict | None) -> dict[str, TargetState]:
             )
         states[method_id] = state
     return states
-
-
-def progress_since(previous: dict | None, report: dict) -> dict | None:
-    if previous is None:
-        return None
-    previous_uncovered: set[str] = {
-        entry["id"] for entry in previous.get("uncoveredPaths", [])
-    }
-    now_covered: set[str] = {
-        entry["id"]
-        for entry in [*report["deepMethods"], *report["publicTargets"]]
-        if entry["status"] == "covered"
-    }
-    return {"newlyCovered": sorted(previous_uncovered & now_covered)}

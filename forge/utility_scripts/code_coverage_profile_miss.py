@@ -35,8 +35,15 @@ def _method_line_region(
         caller: MethodRef,
         jacoco_methods: dict[str, JacocoMethodCoverage],
         jacoco_lines: dict[str, dict[int, JacocoLineCoverage]],
+        line_table: tuple[tuple[int, int], ...],
 ) -> tuple[str | None, list[LineRecord]]:
-    """Return the caller's source lines, bounded by the next reported method."""
+    """Return the caller's own source lines.
+
+    The extractor's line table names exactly the lines of the caller's
+    bytecode, so a lambda body or an anonymous or local class nested in its
+    range stays out (§AR-code-coverage-deep-navigation.3). Without a table the
+    region runs to the next method JaCoCo reports in the same file.
+    """
     coverage: JacocoMethodCoverage | None = jacoco_methods.get(caller.canonical_id)
     if (
             coverage is None
@@ -47,6 +54,13 @@ def _method_line_region(
     source_lines: dict[int, JacocoLineCoverage] = jacoco_lines.get(
         coverage.source_path, {}
     )
+    if line_table:
+        own_lines: set[int] = {line for _, line in line_table}
+        return coverage.source_path, [
+            (line, line_coverage)
+            for line, line_coverage in sorted(source_lines.items())
+            if line in own_lines
+        ]
     later_starts: list[int] = sorted({
         method.source_line
         for method in jacoco_methods.values()
@@ -192,7 +206,12 @@ def edge_miss_classification(
     if caller is None:
         return {"kind": "no-fork", **base}
 
-    source_path, region = _method_line_region(caller, jacoco_methods, jacoco_lines)
+    source_path, region = _method_line_region(
+        caller,
+        jacoco_methods,
+        jacoco_lines,
+        evidence.line_numbers.get(caller.canonical_id, ()),
+    )
     target_record: LineRecord | None = _inferred_invoking_line(edge, region)
     base["target"] = (
         line_to_json(source_path, *target_record)

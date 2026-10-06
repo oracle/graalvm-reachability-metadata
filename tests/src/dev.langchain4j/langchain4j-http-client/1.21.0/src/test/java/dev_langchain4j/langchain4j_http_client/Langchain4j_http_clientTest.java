@@ -15,6 +15,7 @@ import dev.langchain4j.http.client.HttpClient;
 import dev.langchain4j.http.client.HttpMethod;
 import dev.langchain4j.http.client.HttpRequest;
 import dev.langchain4j.http.client.SuccessfulHttpResponse;
+import dev.langchain4j.http.client.log.LoggingHttpClient;
 import dev.langchain4j.http.client.sse.DefaultServerSentEventParser;
 import dev.langchain4j.http.client.sse.ServerSentEvent;
 import dev.langchain4j.http.client.sse.ServerSentEventContext;
@@ -28,9 +29,14 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
+import org.slf4j.Marker;
+import org.slf4j.event.Level;
+import org.slf4j.helpers.AbstractLogger;
 
 public class Langchain4j_http_clientTest {
 
@@ -125,6 +131,59 @@ public class Langchain4j_http_clientTest {
 
     @Test
     @Timeout(55)
+    void logsRequestsAndResponsesWhileDelegatingHttpExecution() {
+        InMemoryHttpClient delegate = new InMemoryHttpClient();
+        RecordingLogger logger = new RecordingLogger();
+        HttpClient client = new LoggingHttpClient(delegate, true, true, logger);
+        HttpRequest request = HttpRequest.builder()
+                .method(HttpMethod.POST)
+                .url("https://localhost/messages")
+                .addHeader("Authorization", "secret-token")
+                .body("hello")
+                .build();
+
+        SuccessfulHttpResponse response = client.execute(request);
+
+        assertThat(delegate.requests()).containsExactly(request);
+        assertThat(response.statusCode()).isEqualTo(202);
+        assertThat(response.body()).isEqualTo("accepted: hello");
+        assertThat(logger.events()).hasSize(2);
+        assertThat(logger.events().get(0).level()).isEqualTo(Level.INFO);
+        assertThat(logger.events().get(0).message()).contains("HTTP request");
+        assertThat(logger.events().get(0).arguments().get(2))
+                .asString()
+                .contains("[Authorization: secre...en]")
+                .doesNotContain("secret-token");
+        assertThat(logger.events().get(1).level()).isEqualTo(Level.INFO);
+        assertThat(logger.events().get(1).message()).contains("HTTP response");
+        assertThat(logger.events().get(1).arguments()).contains(202, "accepted: hello");
+    }
+
+    @Test
+    @Timeout(55)
+    void logsAsynchronousRequestsAndResponsesWhileDelegatingExecution() throws Exception {
+        InMemoryHttpClient delegate = new InMemoryHttpClient();
+        RecordingLogger logger = new RecordingLogger();
+        HttpClient client = new LoggingHttpClient(delegate, true, true, logger);
+        HttpRequest request = HttpRequest.builder()
+                .method(HttpMethod.POST)
+                .url("https://localhost/messages")
+                .body("hello asynchronously")
+                .build();
+
+        SuccessfulHttpResponse response = client.executeAsync(request).get(10, TimeUnit.SECONDS);
+
+        assertThat(delegate.requests()).containsExactly(request);
+        assertThat(response.statusCode()).isEqualTo(202);
+        assertThat(response.body()).isEqualTo("accepted: hello asynchronously");
+        assertThat(logger.events()).hasSize(2);
+        assertThat(logger.events().get(0).message()).contains("HTTP request");
+        assertThat(logger.events().get(1).message()).contains("HTTP response");
+        assertThat(logger.events().get(1).arguments()).contains(202, "accepted: hello asynchronously");
+    }
+
+    @Test
+    @Timeout(55)
     void cancelsBlockingSseParsingFromListenerContext() {
         String stream = "data: first\n\ndata: second\n\n";
         List<ServerSentEvent> events = new ArrayList<>();
@@ -199,6 +258,11 @@ public class Langchain4j_http_clientTest {
         }
 
         @Override
+        public CompletableFuture<SuccessfulHttpResponse> executeAsync(HttpRequest request) {
+            return CompletableFuture.completedFuture(execute(request));
+        }
+
+        @Override
         public void execute(
                 HttpRequest request, ServerSentEventParser parser, ServerSentEventListener listener) {
             SuccessfulHttpResponse streamingResponse = execute(request);
@@ -264,6 +328,82 @@ public class Langchain4j_http_clientTest {
             return closed;
         }
     }
+
+    private static final class RecordingLogger extends AbstractLogger {
+
+        private final List<LogEvent> events = new ArrayList<>();
+
+        private RecordingLogger() {
+            name = "recording-logger";
+        }
+
+        @Override
+        public boolean isTraceEnabled() {
+            return false;
+        }
+
+        @Override
+        public boolean isTraceEnabled(Marker marker) {
+            return false;
+        }
+
+        @Override
+        public boolean isDebugEnabled() {
+            return false;
+        }
+
+        @Override
+        public boolean isDebugEnabled(Marker marker) {
+            return false;
+        }
+
+        @Override
+        public boolean isInfoEnabled() {
+            return true;
+        }
+
+        @Override
+        public boolean isInfoEnabled(Marker marker) {
+            return true;
+        }
+
+        @Override
+        public boolean isWarnEnabled() {
+            return true;
+        }
+
+        @Override
+        public boolean isWarnEnabled(Marker marker) {
+            return true;
+        }
+
+        @Override
+        public boolean isErrorEnabled() {
+            return true;
+        }
+
+        @Override
+        public boolean isErrorEnabled(Marker marker) {
+            return true;
+        }
+
+        @Override
+        protected String getFullyQualifiedCallerName() {
+            return getClass().getName();
+        }
+
+        @Override
+        protected void handleNormalizedLoggingCall(
+                Level level, Marker marker, String message, Object[] arguments, Throwable throwable) {
+            events.add(new LogEvent(level, message, arguments == null ? List.of() : Arrays.asList(arguments)));
+        }
+
+        List<LogEvent> events() {
+            return List.copyOf(events);
+        }
+    }
+
+    private record LogEvent(Level level, String message, List<Object> arguments) {}
 
     private static final class FailingInputStream extends InputStream {
 

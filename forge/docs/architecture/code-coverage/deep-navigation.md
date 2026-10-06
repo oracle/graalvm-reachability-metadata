@@ -90,7 +90,11 @@ uncovered method, and only a covered method may make the last call.
 The covered prefix is the shortest one from a sampled frame or, when no
 sampled frame joins, from a public API inventory entry JaCoCo reports covered.
 It may be any length: no method on it is JaCoCo-uncovered, so it only shows
-the agent how existing tests reach the caller.
+the agent how existing tests reach the caller. Only a route from a sampled
+frame enters the agent prompt: its observed path is the evidence the agent
+follows, and a public-entry route has none to show. Public-entry routes stay
+ranked in the JSON report and enter the prompt once a later run samples a
+frame on their covered prefix.
 
 A method JaCoCo does not report takes the status, and for classification the
 lines, of the source-level method it stands for
@@ -105,8 +109,8 @@ A target absent from the static graph remains JaCoCo-uncovered but is recorded
 as not present in the current graph. A target present in the graph without such
 a route remains in the full JSON report as a no-route candidate: it lies more
 than one uncovered call past executed code, and becomes routable once a pass
-covers a caller. Neither condition changes its JaCoCo status, and only routed
-targets enter the agent prompt. On a kafka-streams 3.6.2 replay the earlier
+covers a caller. Neither condition changes its JaCoCo status, and only targets
+routed from a sampled frame enter the agent prompt. On a kafka-streams 3.6.2 replay the earlier
 rule, which let a route cross uncovered methods, routed 907 internal targets,
 622 of them through an uncovered method and 658 classified `no-fork`; this rule
 routes 250 internal and 314 public targets, 45 of them `no-fork`, while
@@ -127,6 +131,11 @@ Parser.parse(...) → parseXML(...)
 uncovered according to exact JaCoCo evidence. The agent must reach internal
 methods through the shown public behavior rather than invoke implementation
 methods directly.
+
+The prompt Markdown carries this navigation and nothing else. Totals, the count
+of paths left out, and caveats about missing evidence stay in the JSON report,
+where operators read them: text the agent cannot act on only lengthens the
+prompt.
 
 ### 2.1 Unobserved dispatch steps
 
@@ -287,7 +296,42 @@ edges; a line whose count cannot be derived shows none. Calls are named from
 the call graph where it has the site. When no line in the range can raise, every
 line of the range is listed.
 
-## 4. Boundaries
+## 4. Group sessions
+
+A deep pass prompts up to 200 targets (§AR-code-coverage-improvement.4.2), and
+one agent session per pass wastes most of them: on the h2 2.1.210 benchmark a
+session touched 1 to 29 of about 100 owner classes, covering 40 to 80% of a
+group it picked up but 14% of the prompt. A pass therefore runs its prompt as
+small sessions, one after another, before it measures again, and every prompted
+target lands in exactly one session. A target's group is the owner class of the
+first method on its prompted route, where a test enters the library, so targets
+that share it share a test setup. An owner group of at least 10 targets is a
+*monolith* session, cut into sessions of at most 25 with a remainder below 10
+joining the pool; every smaller group joins the pool, which is ordered by
+package and then prompt order and packed into *mixed* sessions of at most 25;
+sessions run in the order of their best-ranked target. The kind follows the
+routes a session holds and is recorded beside it in the discovery report: a
+monolith prompt asks for one test class for its entry, a mixed prompt says to
+expect more than one. Measurement writes the sessions as an ordered queue and
+hands control to a dispatch program state, which removes the first session,
+writes its prompt as the cover handoff (§AR-code-coverage-improvement.5.2) and
+exits 10, or exits 0 on an empty queue so measurement runs again; the cover
+state returns to the dispatcher. The queue is the whole loop state, and a
+session leaves it before its agent runs, so a failed session is not repeated
+in the pass. Every session but the last mixed one holds at least 10 targets, so
+a pass has at most 200 / 10 + 1 = 21 sessions; the cover state's visit cap is
+the iteration budget times 21, the dispatcher's adds one empty-queue visit per
+pass, and the template's transition and invocation bounds cover that ceiling,
+which the machine running the workflow must allow. A session writes every test
+first, then runs the coverage suite until it passes, and is stopped after 45
+minutes, moving on to the next session rather than retrying; its tests stay in
+the worktree for the next session's suite run or the measurement's repair
+state. A pass is still one JaCoCo measurement and one entry in the yield
+series, so attempt counts and the marginal-yield stop
+(§AR-code-coverage-improvement.4.3) see what they saw before, and the API phase
+keeps one session per pass.
+
+## 5. Boundaries
 
 - Counters and control flow never change coverage status, the deep universe,
   or attempt state; they choose forks, label hints, and order ties.

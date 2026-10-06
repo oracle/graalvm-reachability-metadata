@@ -28,9 +28,14 @@ from utility_scripts.code_coverage_profile_graph import CallGraph
 from utility_scripts.code_coverage_profile_inputs import ProfileFormatError, TargetState
 from utility_scripts.code_coverage_profile_records import NearCallRecord, record_rank_key
 from utility_scripts.code_coverage_profile_render import classification_lines, write_markdown
-from utility_scripts.code_coverage_profile_routes import SampledProfile
 
-from tests.code_coverage_profile_support import FIXTURES, JACOCO_PATH, RESOLVE_ID, _coverage
+from tests.code_coverage_profile_support import (
+    FIXTURES,
+    JACOCO_PATH,
+    RESOLVE_ID,
+    _coverage,
+    _sampled_at,
+)
 
 OWNER = MethodRef("org.h2.mvstore.Page", "getMemory", (), "int")
 VALUE = MethodRef("org.h2.mvstore.type.ValueDataType", "getMemory", ("java.lang.Object",), "int")
@@ -152,7 +157,7 @@ class UnobservedRouteTests(unittest.TestCase):
             adjacency={1: [edge(1, 2, unobserved=True), edge(1, 3)], 2: [edge(2, 4)], 3: [edge(3, 4)]},
         )
         report, records = report_module.correlate(
-            SampledProfile(),
+            _sampled_at(1, entry),
             graph,
             {"targets": [{"id": entry.canonical_id, "kind": "method"}]},
             {entry.canonical_id: _coverage(entry, covered=True),
@@ -169,7 +174,7 @@ class UnobservedRouteTests(unittest.TestCase):
         )
         markdown_path: str = os.path.join(tempfile.mkdtemp(prefix="unobserved-"), "prompt.md")
         self.addCleanup(shutil.rmtree, os.path.dirname(markdown_path), True)
-        write_markdown(report, records, graph, "app:api:1", 0, None, markdown_path)
+        write_markdown(report, records, graph, "app:api:1", 0, markdown_path)
         with open(markdown_path, encoding="utf-8") as handle:
             self.assertIn(
                 "route assumes `Api.run() → Unseen.step()`, a dispatch the run never made",

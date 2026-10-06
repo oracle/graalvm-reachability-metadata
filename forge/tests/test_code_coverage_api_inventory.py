@@ -73,6 +73,13 @@ class JavapParsingTests(unittest.TestCase):
         self.assertEqual(of_target.kind, "staticMethod")
         self.assertEqual(greeter.source_path, "src/main/java/com/example/Greeter.java")
 
+    def test_inventory_entries_carry_no_behavior_hint(self) -> None:
+        # A hint derived from the name prefix never said more than the signature.
+        inventory = inventory_module.build_inventory(
+            "com.example:demo:1.0.0", inventory_module.parse_javap(JAVAP_SAMPLE))
+        self.assertTrue(inventory["targets"])
+        self.assertFalse(any("behaviorHint" in entry for entry in inventory["targets"]))
+
     def test_enum_fields_are_excluded_but_generated_methods_remain(self) -> None:
         classes = inventory_module.parse_javap(JAVAP_SAMPLE)
         mode = next(c for c in classes if c.owner == "com.example.Mode")

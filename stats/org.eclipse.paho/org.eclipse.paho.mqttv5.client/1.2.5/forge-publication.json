@@ -1,0 +1,135 @@
+{
+  "base_commit": "b4aaf12ad72ed3f71bf49cde8257f88cfd287aba",
+  "branch": "ai/kimeta/add-lib-support-org.eclipse.paho-org.eclipse.paho.mqttv5.client-1.2.5-forge-10516-20261006011752998444-ff6c65f3b4c6",
+  "follow_ups": [],
+  "forge": {
+    "branch": "master",
+    "commit": "c55444563c70fe8fe1d7f8afa8b73fe96f50300e",
+    "monitored_branch": "origin/master"
+  },
+  "issue_number": 10516,
+  "library": {
+    "artifact": "org.eclipse.paho.mqttv5.client",
+    "coordinates": "org.eclipse.paho:org.eclipse.paho.mqttv5.client:1.2.5",
+    "group": "org.eclipse.paho",
+    "version": "1.2.5"
+  },
+  "local_ci_verification": {
+    "base_commit": "b4aaf12ad72ed3f71bf49cde8257f88cfd287aba",
+    "commands": [],
+    "failure_command": null,
+    "failure_gate": null,
+    "final_commit": "aec1dc3bbb7b3fd05b1f345c890a97422daac2d0",
+    "fixups": [],
+    "human_intervention_required": false,
+    "repo_fix_paths": [],
+    "status": "success"
+  },
+  "local_review": {
+    "changed_paths": [
+      "stats/org.eclipse.paho/org.eclipse.paho.mqttv5.client/1.2.5/stats.json",
+      "tests/src/org.eclipse.paho/org.eclipse.paho.mqttv5.client/1.2.5/build.gradle",
+      "tests/src/org.eclipse.paho/org.eclipse.paho.mqttv5.client/1.2.5/src/test/java/org_eclipse_paho/org_eclipse_paho_mqttv5_client/Mqttv5ClientTest.java"
+    ],
+    "decision": "approved",
+    "finding_body": "Mqttv5ClientTest allowed broker startup to wait 120 seconds, violating the 60-second per-test bound in FS-test-contract.1.6. The build also opened sun.nio.ch to JVM and Native Image without satisfying the uniform-necessity rule in FS-test-contract.2.7; Java testing and all three finalization lanes passed after that opening was removed. The narrower java.net opening remains justified: removing it reproducibly failed NetworkModuleServiceTest with InaccessibleObjectException in the library's NetworkModuleService.setURIField path.",
+    "finding_title": "Generated test configuration exceeded timeout and module-opening limits",
+    "fix_note": "Reduced the broker-start wait from 120 to 40 seconds, removed the unnecessary sun.nio.ch JVM and Native Image openings, retained the proven-necessary java.net opening, and accepted the finalizer's refreshed statistics. Re-ran the exact Forge finalization until it exited successfully without further publishable changes.",
+    "model": "gpt-5.6-sol",
+    "review_comment": "Reviewed the single-coordinate diff, test sources, build configuration, gate evidence, and resolved statistics. The tests are library-specific, public, version-agnostic, in a separate package, and do not skip or tolerate Native Image failures; only reachability-metadata.json is used. Recomputed dynamic-access coverage is 15/18 (83.33%), above the 20% gate, and 15 covered calls versus 19 reported metadata entries does not trigger the mismatch rule. The exact Forge finalization completed successfully and stably across all three native lanes, metadata validation, style checks, generated-test checks, and statistics generation. The repaired tree satisfies the review rules and is approved.",
+    "session_id": "7c75ea3ec6d34ac3"
+  },
+  "metrics": {
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "path": "stats/org.eclipse.paho/org.eclipse.paho.mqttv5.client/1.2.5/execution-metrics.json",
+    "summary": {
+      "cached_input_tokens_used": 4435456,
+      "code_coverage_percent": 38.56,
+      "cost_usd": 5.0506,
+      "generated_loc": 269,
+      "input_tokens_used": 371677,
+      "iterations": 10,
+      "metadata_entries": 19,
+      "output_tokens_used": 32483,
+      "tested_library_loc": 2358
+    },
+    "timestamp": "2026-10-06T01:17:52.998444Z"
+  },
+  "modifiers": {
+    "chunk_final": true,
+    "chunked_dynamic_access": false,
+    "human_intervention": false
+  },
+  "producer": "kimeta",
+  "publication_id": "forge-10516-20261006011752998444-ff6c65f3b4c6",
+  "render": {
+    "dynamic_access": null,
+    "dynamic_access_evidence": {
+      "covered_call_sites": [
+        "[reflection] java.lang.Class#forName(java.lang.String) <- org.eclipse.paho.mqttv5.client.internal.ExceptionHelper.isClassAvailable(ExceptionHelper.java:52) (line 52)",
+        "[reflection] java.lang.Class#getMethod(java.lang.String, java.lang.Class[]) <- org.eclipse.paho.mqttv5.client.internal.FileLock.<init>(FileLock.java:50) (line 50)",
+        "[reflection] java.lang.Class#getMethod(java.lang.String, java.lang.Class[]) <- org.eclipse.paho.mqttv5.client.internal.FileLock.<init>(FileLock.java:52) (line 52)",
+        "[reflection] java.lang.Class#getMethod(java.lang.String, java.lang.Class[]) <- org.eclipse.paho.mqttv5.client.internal.FileLock.release(FileLock.java:75) (line 75)",
+        "[reflection] java.lang.reflect.Method#invoke(java.lang.Object, java.lang.Object[]) <- org.eclipse.paho.mqttv5.client.internal.FileLock.<init>(FileLock.java:51) (line 51)",
+        "[reflection] java.lang.reflect.Method#invoke(java.lang.Object, java.lang.Object[]) <- org.eclipse.paho.mqttv5.client.internal.FileLock.<init>(FileLock.java:53) (line 53)",
+        "[reflection] java.lang.reflect.Method#invoke(java.lang.Object, java.lang.Object[]) <- org.eclipse.paho.mqttv5.client.internal.FileLock.release(FileLock.java:76) (line 76)",
+        "[reflection] java.lang.Class#getDeclaredField(java.lang.String) <- org.eclipse.paho.mqttv5.client.internal.NetworkModuleService.setURIField(NetworkModuleService.java:150) (line 150)",
+        "... and 8 more"
+      ],
+      "metadata_rules": [
+        "when `org.eclipse.paho.mqttv5.client.internal.FileLock` is reached, make `java.io.RandomAccessFile.getChannel()` available for reflection",
+        "when `org.eclipse.paho.mqttv5.client.internal.NetworkModuleService` is reached, make `java.net.URI` available for reflection",
+        "when `org.eclipse.paho.mqttv5.client.internal.FileLock` is reached, make `java.nio.channels.FileChannel.tryLock()` available for reflection",
+        "when `org.eclipse.paho.mqttv5.client.internal.NetworkModuleService` is reached, make `org.eclipse.paho.mqttv5.client.internal.TCPNetworkModuleFactory` available for reflection",
+        "when `org.eclipse.paho.mqttv5.client.logging.LoggerFactory` is reached, make `org.eclipse.paho.mqttv5.client.logging.JSR47Logger.<init>()` available for reflection",
+        "when `org.eclipse.paho.mqttv5.client.internal.FileLock` is reached, make `sun.nio.ch.FileLockImpl.release()` available for reflection"
+      ]
+    },
+    "library_stats": {
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 0.866667,
+            "coveredCalls": 13,
+            "totalCalls": 15
+          },
+          "resources": {
+            "coverageRatio": 0.666667,
+            "coveredCalls": 2,
+            "totalCalls": 3
+          }
+        },
+        "coverageRatio": 0.833333,
+        "coveredCalls": 15,
+        "totalCalls": 18
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 9915,
+          "missed": 17474,
+          "ratio": 0.362007,
+          "total": 27389
+        },
+        "line": {
+          "covered": 2356,
+          "missed": 3759,
+          "ratio": 0.385282,
+          "total": 6115
+        },
+        "method": {
+          "covered": 428,
+          "missed": 716,
+          "ratio": 0.374126,
+          "total": 1144
+        }
+      },
+      "version": "1.2.5"
+    }
+  },
+  "schema_version": 1,
+  "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-sol",
+  "task_type": "library-new-request",
+  "template_type": "library-new-request",
+  "timestamp": "2026-10-06T01:17:52.998444Z"
+}

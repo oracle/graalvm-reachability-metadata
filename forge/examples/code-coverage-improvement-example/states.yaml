@@ -11,8 +11,11 @@
 #     +-- step failed (exit 1/2) -> api-fix -> api-measure
 #         (budget exhausted -> human-intervention)
 #
-# Deep coverage loop (one task): identical shape with deep-measure (JaCoCo +
-# PGO + call-tree steps, exits 1-6), deep-cover, deep-fix.
+# Deep coverage loop (one task): the same shape with deep-measure (JaCoCo +
+# PGO + call-tree steps, exits 1-6) and deep-fix, but a pass runs as group
+# sessions (§AR-code-coverage-deep-navigation.4):
+#   deep-measure -- 10 -> deep-dispatch -- 10 -> deep-cover -> deep-dispatch;
+#   deep-dispatch -- 0 (queue empty) -> deep-measure
 #
 # Final verified task (finalization only):
 #   reviewed-prepared -> reviewed-execute -- 0 -> finalize-verify -- 0 -> completed
@@ -147,6 +150,12 @@ states:
           if result_path:
               with open(result_path, "w", encoding="utf-8") as result:
                   result.write(f"API coverage loop completed after {iteration} iteration(s); {len(uncovered)} uncovered target(s) remain.\n")
+          # Rhei checks the declared handoff output on this zero exit, so the
+          # prompt path records that no cover pass follows
+          # (§AR-code-coverage-improvement.5.2).
+          prompt_path = Path("runtime/code-coverage/prompts/api-cover-prompt.md")
+          prompt_path.parent.mkdir(parents=True, exist_ok=True)
+          prompt_path.write_text(f"No cover pass follows: {len(uncovered)} uncovered target(s) remain after {iteration} iteration(s)\n")
           sys.exit(0)
 
       # Steering: derive the next cover prompt from the report just written.
@@ -164,8 +173,7 @@ states:
       # A longer list only dilutes one cover pass; keep the top 200 targets.
       prompt_targets = uncovered[:200]
       for entry in prompt_targets:
-          hint = entry.get("behaviorHint", "")
-          lines.append(f"- `{entry['id']}`" + (f" - {hint}" if hint else ""))
+          lines.append(f"- `{entry['id']}`")
       (prompts / "api-cover-prompt.md").write_text("\n".join(lines) + "\n")
       print(f"[api-measure] wrote prompt with {len(prompt_targets)} targets", flush=True)
       sys.exit(10)
@@ -174,17 +182,33 @@ states:
     inputs:
       - name: conversion
         path: runtime/code-coverage/issues/conversion.json
+    outputs:
+      # The cover agent receives this file inside its message
+      # (§AR-code-coverage-improvement.5.2).
+      - name: prompt
+        kind: handoff
+        path: runtime/code-coverage/prompts/api-cover-prompt.md
+        description: Ranked cover prompt for the next API pass, or the stop summary.
 
   api-cover:
     description: Generate tests for the JaCoCo-uncovered public API targets in the prompt.
     target: "pi:openai-codex/gpt-5.6-terra"
     concurrent: true
     visits: 10
+    # Measurement's prompt arrives inside the message
+    # (§AR-code-coverage-improvement.5.2).
+    handoff:
+      inherit:
+        - from: transition.previous
+          name: prompt
+          required: true
     instructions: |
       Cover uncovered public API targets for Task {task_id}: {task_title}.
 
-      Read the prompt at `{input.prompt.path}` and the resolved issue
-      worktree/coverage-suite paths from
+      The target list is the `## Handoff from api-measure` section below:
+      the cover prompt measurement rendered for this pass. Attempt every
+      target in it. The file at `{input.prompt.path}` holds the same content
+      on disk. Read the resolved issue worktree/coverage-suite paths from
       `runtime/code-coverage/issues/conversion.json`.
 
       Rules:
@@ -379,34 +403,97 @@ states:
           if result_path:
               with open(result_path, "w", encoding="utf-8") as result:
                   result.write(f"Deep coverage loop completed after {iteration} iteration(s); {len(prompt_target_ids)} target(s) remain.\n")
+          # Rhei checks the declared output on this zero exit, so an empty
+          # queue records that no cover session follows
+          # (§AR-code-coverage-deep-navigation.4).
+          queue_path = Path("runtime/code-coverage/prompts/deep-session-queue.json")
+          queue_path.parent.mkdir(parents=True, exist_ok=True)
+          queue_path.write_text("[]\n")
           sys.exit(0)
 
-      # Steering: the analyzer already renders the compact Observed /
-      # Uncovered paths Markdown next to the JSON; reuse it as the prompt.
-      markdown = discovery / f"discovery-report-{iteration}.md"
-      if not markdown.is_file():
-          fail(6, f"analyzer wrote no markdown at {markdown}")
-      prompts = Path("runtime/code-coverage/prompts")
-      prompts.mkdir(parents=True, exist_ok=True)
-      (prompts / "deep-cover-prompt.md").write_text(markdown.read_text())
-      print(f"[deep-measure] wrote prompt with {len(prompt_target_ids)} targets", flush=True)
+      # Steering: the analyzer rendered one prompt per group session; queue
+      # them for the dispatcher, which hands out one per cover visit
+      # (§AR-code-coverage-deep-navigation.4).
+      try:
+          from utility_scripts.code_coverage_deep_sessions import write_queue
+          sessions = write_queue(str(report_path), "runtime/code-coverage/prompts/deep-session-queue.json")
+      except Exception as error:
+          fail(6, f"the session queue could not be written: {error}")
+      print(f"[deep-measure] queued {sessions} sessions for {len(prompt_target_ids)} targets", flush=True)
       sys.exit(10)
       PY
     program_timeout: 120m
     inputs:
       - name: conversion
         path: runtime/code-coverage/issues/conversion.json
+    outputs:
+      - name: queue
+        path: runtime/code-coverage/prompts/deep-session-queue.json
+        description: The pass's group sessions in run order, or an empty queue when the phase stops.
+
+  deep-dispatch:
+    description: Hand the next queued group session to deep-cover, or return to measurement when the pass is spent.
+    concurrent: true
+    # One visit per session plus one empty-queue visit per pass, under the
+    # per-pass session ceiling (§AR-code-coverage-deep-navigation.4).
+    visits: 220
+    program: |
+      python3 - "$RHEI_INPUT_CONVERSION_PATH" <<'PY'
+      import json
+      import sys
+
+      try:
+          work_path = json.load(open(sys.argv[1]))["workPath"]
+      except Exception as error:
+          print(f"conversion.json missing or invalid: {error}", file=sys.stderr)
+          sys.exit(1)
+      sys.path.insert(0, work_path)
+      from utility_scripts.code_coverage_deep_sessions import dispatch
+
+      # 10 runs the next session, 0 returns to measurement, 1 parks
+      # (§AR-code-coverage-deep-navigation.4).
+      sys.exit(dispatch(
+          "runtime/code-coverage/prompts/deep-session-queue.json",
+          "runtime/code-coverage/prompts/deep-cover-prompt.md",
+      ))
+      PY
+    program_timeout: 5m
+    inputs:
+      - name: conversion
+        path: runtime/code-coverage/issues/conversion.json
+      - name: queue
+        path: runtime/code-coverage/prompts/deep-session-queue.json
+    outputs:
+      # The cover agent receives this file inside its message
+      # (§AR-code-coverage-improvement.5.2).
+      - name: prompt
+        kind: handoff
+        path: runtime/code-coverage/prompts/deep-cover-prompt.md
+        description: The next group session's cover prompt, or a note that the pass is spent.
 
   deep-cover:
     description: Generate tests reaching uncovered internal paths through public behavior.
     target: "pi:openai-codex/gpt-5.6-terra"
     concurrent: true
-    visits: 10
+    # A stuck session is stopped and the pass moves on
+    # (§AR-code-coverage-deep-navigation.4).
+    agent_timeout: 45m
+    # At most 21 sessions per pass (§AR-code-coverage-deep-navigation.4).
+    visits: 210
+    # The dispatched session's prompt arrives inside the message
+    # (§AR-code-coverage-improvement.5.2).
+    handoff:
+      inherit:
+        - from: transition.previous
+          name: prompt
+          required: true
     instructions: |
       Cover uncovered internal paths for Task {task_id}: {task_title}.
 
-      Read the prompt at `{input.prompt.path}` and the resolved issue
-      worktree/coverage-suite paths from
+      The target list is the `## Handoff from deep-dispatch` section below:
+      one group session of this pass, rendered by measurement. Attempt every
+      target in it. The file at `{input.prompt.path}` holds the same content
+      on disk. Read the resolved issue worktree/coverage-suite paths from
       `runtime/code-coverage/issues/conversion.json`.
 
       Rules:
@@ -418,8 +505,9 @@ states:
         API. If no public user-callable API reaches an internal target, leave
         that target uncovered rather than call it directly.
         §AR-code-coverage-improvement.4.2
-      - `Observed:` lines are sampled guidance only; every `Uncovered paths`
-        target is uncovered according to exact JaCoCo evidence.
+      - Every listed path, in every section of the prompt, is a target: its
+        method is uncovered according to exact JaCoCo evidence, and the
+        sampled context beside it only shows how close the suite already got.
       - Under a `fork` line, each numbered branch says the line it lands on
         and how often it ran; `← target` marks the branches that lead to the
         target, so drive the condition the other way. `never dispatched here`
@@ -430,6 +518,9 @@ states:
         `code-coverage-improvement/src/test/java` inside the coordinate's
         indexed test project (`coverageSuiteRepoRelativePath` in
         conversion.json); never touch the regular `src/test` sources.
+      - The prompt's `Where the tests go` section says whether this session
+        drives one subsystem or several: a mixed session usually changes more
+        than one test file. §AR-code-coverage-deep-navigation.4
       - Open every test file with the CC0 header the sibling tests under
         `src/test/java` already carry, and keep the whole file ASCII: checkstyle
         runs over this suite at finalization and rejects both a missing header
@@ -437,11 +528,18 @@ states:
       - Put nothing between that header and the `package` declaration, and run
         `./gradlew spotlessApply -Pcoordinates=<coordinate>` before you finish:
         Spotless enforces that layout and gates every pull request.
+      - Write every test for this session's targets first, without running
+        Gradle in between. Only when all of them are written, run
+        `./gradlew spotlessApply -Pcoordinates=<coordinate>` and then
+        `./gradlew codeCoverageTest -Pcoordinates=<coordinate>`, fix whatever
+        fails, and run the suite again until it passes. The session is stopped
+        after 45 minutes, so leave time for that loop.
+        §AR-code-coverage-deep-navigation.4
       - Do not weaken metadata-generation tests.
       - Do not write any target state: measurement tracks attempts and target
         rotation deterministically from its own report history.
       - Do not measure or claim coverage yourself: deterministic re-measurement
-        runs right after this state and decides the loop.
+        runs once this pass's sessions are done and decides the loop.
 
       Write `{output.work.path}` with:
       - paths attempted and how each public entry was driven
@@ -773,9 +871,24 @@ transitions:
     description: No actionable deep targets remain, or the iteration budget is spent.
 
   - from: deep-measure
+    to: deep-dispatch
+    exit_code: 10
+    description: Actionable deep targets remain; the pass's group sessions were queued.
+
+  - from: deep-dispatch
     to: deep-cover
     exit_code: 10
-    description: Actionable deep targets remain; the prompt was written for the cover agent.
+    description: A queued session remains; its prompt was written for the cover agent.
+
+  - from: deep-dispatch
+    to: deep-measure
+    exit_code: 0
+    description: The session queue is empty; the pass is spent and measurement re-runs.
+
+  - from: deep-dispatch
+    to: human-intervention
+    exit_code: 1
+    description: The session queue or a session prompt is unreadable.
 
   - from: deep-measure
     to: deep-fix
@@ -850,12 +963,19 @@ transitions:
     description: Step 6 still fails after the maximum fix passes.
 
   - from: deep-cover
-    to: deep-measure
-    description: Cover pass finished; re-measure deterministically.
+    to: deep-dispatch
+    description: Cover session finished; hand out the next session of the pass.
 
   - from: deep-cover
     to: human-intervention
     description: Cover pass requires a human decision.
+
+  - from: deep-cover
+    to: deep-dispatch
+    timeout: 45m
+    description: >-
+      The session ran out of time; its tests stay in the worktree and the next
+      session of the pass is handed out.
 
   - from: deep-fix
     to: deep-measure

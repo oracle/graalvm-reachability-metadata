@@ -24,15 +24,12 @@ from utility_scripts.code_coverage_profile_graph import (
     CallGraph,
     _index_factory_stubs,
 )
-from utility_scripts.code_coverage_profile_history import (
-    carried_public_targets,
-    progress_since,
-)
+from utility_scripts.code_coverage_profile_history import carried_public_targets
 from utility_scripts.code_coverage_profile_inputs import ProfileFormatError, TargetState
 from utility_scripts.code_coverage_profile_render import write_markdown
 from utility_scripts.code_coverage_profile_routes import Sample, SampledProfile
 
-from tests.code_coverage_profile_support import _coverage
+from tests.code_coverage_profile_support import _coverage, _sampled_at
 from tests.test_code_coverage_finalize import COORDINATE, _api, _deep
 
 
@@ -281,7 +278,7 @@ class PublicCarryOverTest(unittest.TestCase):
             states: dict[str, TargetState] | None = None,
     ) -> tuple[dict, list]:
         return report_module.correlate(
-            SampledProfile(), self.graph, self.inventory, self.jacoco,
+            _sampled_at(1, self.ENTRY), self.graph, self.inventory, self.jacoco,
             target_states=states, carried_public_ids=carried,
         )
 
@@ -333,7 +330,7 @@ class PublicCarryOverTest(unittest.TestCase):
         with self.assertRaisesRegex(ProfileFormatError, "deep JaCoCo universe"):
             self._correlate(states={self.ENTRY.canonical_id: attempted})
 
-    def test_history_carries_the_frozen_set_and_its_progress(self) -> None:
+    def test_history_carries_the_frozen_set(self) -> None:
         method_id: str = self.CARRIED.canonical_id
         self.assertIsNone(carried_public_targets(None))
         self.assertEqual(
@@ -342,28 +339,21 @@ class PublicCarryOverTest(unittest.TestCase):
         )
         with self.assertRaisesRegex(ProfileFormatError, "publicTargets"):
             carried_public_targets({"uncoveredPaths": []})
-        self.assertEqual(
-            progress_since(
-                {"uncoveredPaths": [{"id": method_id}]},
-                {"deepMethods": [], "publicTargets": [{"id": method_id, "status": "covered"}]},
-            ),
-            {"newlyCovered": [method_id]},
-        )
 
     def test_the_prompt_marks_public_targets(self) -> None:
         report, records = self._correlate()
         with tempfile.TemporaryDirectory(prefix="deep-frontier-") as directory:
             markdown_path: str = os.path.join(directory, "deep.md")
-            write_markdown(report, records, self.graph, "example:api:1", 0, None, markdown_path)
+            write_markdown(report, records, self.graph, "example:api:1", 0, markdown_path)
             with open(markdown_path, encoding="utf-8") as handle:
                 markdown: str = handle.read()
 
         self.assertIn("`Api.run() → helper()` — public API", markdown)
         self.assertIn("`Api.run() → Impl.work()`\n", markdown)
-        self.assertIn(
-            "- Public methods the API phase left uncovered: 0 covered since, 1 uncovered",
-            markdown,
-        )
+        # The counts are operator data: the JSON report keeps them, the prompt does not.
+        self.assertEqual(report["summary"]["publicTargetsCovered"], 0)
+        self.assertEqual(report["summary"]["publicTargetsUncovered"], 1)
+        self.assertNotIn("covered since", markdown)
 
 
 class FinalizeCarryOverTest(unittest.TestCase):

@@ -1,0 +1,95 @@
+{
+  "add_new_library_support:2026-10-06": {
+    "timestamp": "2026-10-06T04:03:49.600124Z",
+    "library": "com.graphql-java:graphql-java:19.2",
+    "starting_commit": "ea1ec2ba078053bc5396164d002e6b933b4e3407",
+    "ending_commit": "225d4966e9a1a42ea3f9e643eea9753fc7d344cf",
+    "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-sol",
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "status": "success",
+    "stats": {
+      "version": "19.2",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 0.861538,
+            "coveredCalls": 56,
+            "totalCalls": 65
+          },
+          "resources": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 1,
+            "totalCalls": 1
+          }
+        },
+        "coverageRatio": 0.863636,
+        "coveredCalls": 57,
+        "totalCalls": 66
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 49088,
+          "missed": 171000,
+          "ratio": 0.223038,
+          "total": 220088
+        },
+        "line": {
+          "covered": 11819,
+          "missed": 36083,
+          "ratio": 0.246733,
+          "total": 47902
+        },
+        "method": {
+          "covered": 3542,
+          "missed": 11976,
+          "ratio": 0.228251,
+          "total": 15518
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "no_action",
+      "issue_number": 10489,
+      "issue_label": "library-new-request",
+      "library": "com.graphql-java:graphql-java:19.2",
+      "summary": "graphql-java 19.2 runs entirely in memory. The metadata covers only graphql.relay.* default classes, graphql.schema.* types (public-method reflection), and the i18n resource bundles. All of these can be reached with the existing test dependencies, so no extra dependency, Docker image or system property is needed.",
+      "deterministic_setup": [],
+      "agent_guidance": "",
+      "risks": [
+        "Only 4 of 66 recorded dynamic accesses are covered today. The gap is in test code, not setup: the new tests need to exercise Relay Connection/Edge/PageInfo, schema-type reflection, localized error messages through the i18n.General and i18n.Parsing bundles, and schema parsing from classpath resources.",
+        "The existing build.gradle already pulls in assertj and awaitility. Awaitility is only needed if the new tests use async DataFetchers or DataLoader (java-dataloader, a transitive dependency)."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#10489 Support for com.graphql-java:graphql-java:19.2; label=library-new-request; body_chars=441"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "12 existing test file path(s) included"
+        }
+      ],
+      "model": "sonnet",
+      "input_tokens_used": 8,
+      "output_tokens_used": 1031
+    },
+    "metrics": {
+      "input_tokens_used": 483168,
+      "cached_input_tokens_used": 6250368,
+      "output_tokens_used": 44259,
+      "iterations": 15,
+      "cost_usd": 6.8688,
+      "generated_loc": 726,
+      "tested_library_loc": 11819,
+      "metadata_entries": 84,
+      "test_only_metadata_entries": 109,
+      "code_coverage_percent": 24.67
+    },
+    "artifacts": {
+      "metadata_file": "metadata/com.graphql-java/graphql-java/19.2/reachability-metadata.json"
+    }
+  }
+}
