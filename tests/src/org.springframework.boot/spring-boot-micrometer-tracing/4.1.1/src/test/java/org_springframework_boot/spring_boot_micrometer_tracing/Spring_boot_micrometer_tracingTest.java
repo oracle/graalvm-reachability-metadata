@@ -20,6 +20,7 @@ import io.micrometer.tracing.test.simple.SimpleSpan;
 import io.micrometer.tracing.test.simple.SimpleTracer;
 import org.junit.jupiter.api.Test;
 
+import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.context.annotation.ImportCandidates;
 import org.springframework.boot.micrometer.tracing.autoconfigure.MicrometerTracingAutoConfiguration;
@@ -29,6 +30,7 @@ import org.springframework.boot.micrometer.tracing.autoconfigure.TracingProperti
 import org.springframework.boot.micrometer.tracing.autoconfigure.TracingProperties.Propagation.PropagationType;
 import org.springframework.boot.micrometer.tracing.autoconfigure.otlp.OtlpExemplarsAutoConfiguration;
 import org.springframework.boot.micrometer.tracing.autoconfigure.prometheus.PrometheusExemplarsAutoConfiguration;
+import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -42,6 +44,15 @@ public class Spring_boot_micrometer_tracingTest {
         assertThat(candidates.getCandidates()).contains(MicrometerTracingAutoConfiguration.class.getName(),
                 NoopTracerAutoConfiguration.class.getName(), OtlpExemplarsAutoConfiguration.class.getName(),
                 PrometheusExemplarsAutoConfiguration.class.getName());
+    }
+
+    @Test
+    void springApplicationCorrelatesLoggingExpectationWithTracingExportSetting() {
+        try (ConfigurableApplicationContext context = new SpringApplication(Spring_boot_micrometer_tracingTest.class)
+                .run("--management.tracing.export.enabled=false")) {
+            assertThat(context.getEnvironment().getProperty("logging.expect-correlation-id", Boolean.class))
+                    .isFalse();
+        }
     }
 
     @Test
