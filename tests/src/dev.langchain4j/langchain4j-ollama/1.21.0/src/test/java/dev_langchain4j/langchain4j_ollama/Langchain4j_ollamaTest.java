@@ -22,7 +22,11 @@ import dev.langchain4j.model.chat.response.StreamingChatResponseHandler;
 import dev.langchain4j.model.ollama.OllamaChatModel;
 import dev.langchain4j.model.ollama.OllamaEmbeddingModel;
 import dev.langchain4j.model.ollama.OllamaLanguageModel;
+import dev.langchain4j.model.ollama.OllamaModel;
+import dev.langchain4j.model.ollama.OllamaModelCard;
+import dev.langchain4j.model.ollama.OllamaModels;
 import dev.langchain4j.model.ollama.OllamaStreamingChatModel;
+import dev.langchain4j.model.ollama.RunningOllamaModel;
 import dev.langchain4j.model.output.FinishReason;
 import dev.langchain4j.model.output.Response;
 import java.io.IOException;
@@ -208,14 +212,50 @@ public class Langchain4j_ollamaTest {
         }
     }
 
+    @Test
+    @Timeout(55)
+    void managesAvailableAndRunningModelsThroughLocalOllamaApi() throws Exception {
+        try (OllamaServer server = OllamaServer.start(ResponseKind.MODEL_MANAGEMENT)) {
+            OllamaModels models = OllamaModels.builder()
+                    .baseUrl(server.baseUrl())
+                    .timeout(HTTP_TIMEOUT)
+                    .maxRetries(0)
+                    .build();
+
+            OllamaModel availableModel = models.availableModels().content().get(0);
+            assertThat(availableModel.getName()).isEqualTo("granite-code:latest");
+            assertThat(availableModel.getSize()).isEqualTo(4200L);
+            assertThat(availableModel.getDetails().getFamily()).isEqualTo("granite");
+
+            OllamaModelCard modelCard = models.modelCard(availableModel).content();
+            assertThat(modelCard.getLicense()).isEqualTo("Apache-2.0");
+            assertThat(modelCard.getCapabilities()).containsExactly("completion", "tools");
+            assertThat(modelCard.getDetails().getParameterSize()).isEqualTo("8B");
+
+            RunningOllamaModel runningModel = models.runningModels().content().get(0);
+            assertThat(runningModel.getName()).isEqualTo("granite-code:latest");
+            assertThat(runningModel.getSizeVram()).isEqualTo(2048L);
+            assertThat(runningModel.getContextLength()).isEqualTo(8192);
+
+            models.deleteModel(availableModel);
+
+            assertThat(server.requests()).extracting(RequestRecord::path).containsExactly(
+                    "/api/tags", "/api/show", "/api/ps", "/api/delete");
+            assertThat(server.requests().get(1).body()).contains("granite-code:latest");
+            assertThat(server.requests().get(3).method()).isEqualTo("DELETE");
+            assertThat(server.requests().get(3).body()).contains("granite-code:latest");
+        }
+    }
+
     private enum ResponseKind {
         CHAT,
         STREAMING_CHAT,
         EMBEDDING,
-        COMPLETION
+        COMPLETION,
+        MODEL_MANAGEMENT
     }
 
-    private record RequestRecord(String path, String header, String body) {}
+    private record RequestRecord(String method, String path, String header, String body) {}
 
     private static final class OllamaServer implements AutoCloseable {
         private final HttpServer server;
@@ -248,11 +288,17 @@ public class Langchain4j_ollamaTest {
             return requests.get(0);
         }
 
+        List<RequestRecord> requests() {
+            return List.copyOf(requests);
+        }
+
         private void handle(HttpExchange exchange) throws IOException {
             try (exchange) {
                 String requestBody = new String(exchange.getRequestBody().readAllBytes(), StandardCharsets.UTF_8);
+                String requestPath = exchange.getRequestURI().getPath();
                 requests.add(new RequestRecord(
-                        exchange.getRequestURI().getPath(),
+                        exchange.getRequestMethod(),
+                        requestPath,
                         exchange.getRequestHeaders().getFirst("X-Ollama-Test"),
                         requestBody));
 
@@ -261,6 +307,7 @@ public class Langchain4j_ollamaTest {
                     case STREAMING_CHAT -> streamingChatResponse();
                     case EMBEDDING -> embeddingResponse();
                     case COMPLETION -> completionResponse();
+                    case MODEL_MANAGEMENT -> modelManagementResponse(requestPath);
                 };
                 byte[] response = responseBody.getBytes(StandardCharsets.UTF_8);
                 exchange.getResponseHeaders()
@@ -330,6 +377,43 @@ public class Langchain4j_ollamaTest {
                       "eval_count": 6
                     }
                     """.trim();
+        }
+
+        private static String modelManagementResponse(String path) {
+            return switch (path) {
+                case "/api/tags" -> """
+                        {"models":[{
+                          "name":"granite-code:latest",
+                          "model":"granite-code:latest",
+                          "modified_at":"2026-01-02T03:04:05Z",
+                          "size":4200,
+                          "digest":"sha256:available",
+                          "details":{"format":"gguf","family":"granite","parameter_size":"8B"}
+                        }]}
+                        """.trim();
+                case "/api/show" -> """
+                        {
+                          "license":"Apache-2.0",
+                          "modelfile":"FROM granite-code",
+                          "details":{"family":"granite","parameter_size":"8B"},
+                          "capabilities":["completion","tools"]
+                        }
+                        """.trim();
+                case "/api/ps" -> """
+                        {"models":[{
+                          "name":"granite-code:latest",
+                          "model":"granite-code:latest",
+                          "size":4200,
+                          "digest":"sha256:running",
+                          "details":{"family":"granite"},
+                          "expires_at":"2026-01-02T03:14:05Z",
+                          "size_vram":2048,
+                          "context_length":8192
+                        }]}
+                        """.trim();
+                case "/api/delete" -> "{}";
+                default -> throw new IllegalArgumentException("Unexpected Ollama API path: " + path);
+            };
         }
 
         @Override
