@@ -1,0 +1,17 @@
+# Human intervention needed
+
+The automated job failed while generating and validating tests for `ch.qos.logback:logback-classic:1.2.11`.
+
+Preserved work: https://github.com/oracle/graalvm-reachability-metadata/tree/ai%2Fkimeta%2Fhuman-intervention%2Fissue-10520-library-update-request-ch.qos.logback-logback-classic-1.2.11-dd25899a
+
+The likely failing stage is Native Image execution of the generated serialization/socket tests. Dynamic-access coverage reached 12/12 (100%), but the final Gradle run reported 4 of 71 tests failing with `MissingReflectionRegistrationError` for `LoggerContextVO.name`. Earlier iterations failed successively on `LoggerContextVO.serialVersionUID` and `birthTime`, indicating that field-by-field metadata updates never produced a complete serialization registration. Metrics record failure after 6 iterations, 0 generated LOC, and identical starting/ending commits.
+
+Inspect:
+- `logs/ch.qos.logback:logback-classic:1.2.11/gradle-test/gradle-test-2026-10-06T12-56-36-056171Z.log`
+- `logs/ch.qos.logback:logback-classic:1.2.11/gradle-test/gradle-test-2026-10-06T12-54-20-879938Z.log`
+- `logs/ch.qos.logback:logback-classic:1.2.11/issue-requested-metadata/pi.log`
+- `logs/ch.qos.logback:logback-classic:1.2.11/issue-requested-metadata/pi-generation-2026-10-06T12-55-36-705166Z.log`
+
+Manual next steps:
+1. Review the preserved serialization/socket tests and add a complete conditional serialization registration for `LoggerContextVO` rather than continuing with individual missing fields; newer Logback metadata versions may provide a useful model.
+2. Run `./gradlew checkMetadataFiles -Pcoordinates=ch.qos.logback:logback-classic:1.2.11` and `./gradlew test -Pcoordinates=ch.qos.logback:logback-classic:1.2.11`, then retain only the generated tests and metadata that pass both JVM and Native Image lanes.
