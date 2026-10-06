@@ -1,0 +1,12 @@
+```json
+{
+  "action": "no_action",
+  "summary": "The shipped metadata covers logback's own pattern converter classes, which are reflectively instantiated when a PatternLayout parses conversion words such as %caller, %date, %mdc, %marker, %ex and %logger. The existing test dependencies (logback-classic and assertj) are enough to exercise them with plain PatternLayout and encoder tests. No service, Docker image, extra library or special system property is needed.",
+  "deterministic_setup": [],
+  "agent_guidance": "",
+  "risks": [
+    "I only read the first part of reachability-metadata.json, which lists pattern converter reflection entries. I did not check the remaining entries, or the exact 12 recorded dynamic-access calls, against the tests. The tests may need XML or resource-based configuration, such as a logback-test.xml, a custom converter class, or a ServiceLoader lookup, to reach those calls. Any such resources would go in test code and need no new dependency.",
+    "Features like conditional <if> in XML config would need Janino, but the metadata gives no sign they are involved. Add Janino only if the Gradle and Native Image checks show it is needed."
+  ]
+}
+```
