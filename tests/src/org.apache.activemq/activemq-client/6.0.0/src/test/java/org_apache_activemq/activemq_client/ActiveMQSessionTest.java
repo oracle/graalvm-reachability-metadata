@@ -31,7 +31,7 @@ public class ActiveMQSessionTest {
         broker.setPersistent(false);
         broker.setUseJmx(false);
         broker.start();
-        broker.waitUntilStarted();
+        assertThat(broker.waitUntilStarted(10000)).isTrue();
 
         try (Connection connection = new ActiveMQConnectionFactory("vm://foreign-message-test?create=false")
                 .createConnection()) {
@@ -51,7 +51,7 @@ public class ActiveMQSessionTest {
             }
         } finally {
             broker.stop();
-            broker.waitUntilStopped();
+            assertThat(broker.isStopped()).isTrue();
         }
     }
 

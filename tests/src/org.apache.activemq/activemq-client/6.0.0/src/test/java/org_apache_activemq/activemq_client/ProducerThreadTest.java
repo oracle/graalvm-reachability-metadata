@@ -30,7 +30,7 @@ public class ProducerThreadTest {
         broker.setPersistent(false);
         broker.setUseJmx(false);
         broker.start();
-        broker.waitUntilStarted();
+        assertThat(broker.waitUntilStarted(10000)).isTrue();
 
         try (Connection connection = new ActiveMQConnectionFactory("vm://producer-thread-test?create=false")
                 .createConnection()) {
@@ -54,7 +54,7 @@ public class ProducerThreadTest {
             }
         } finally {
             broker.stop();
-            broker.waitUntilStopped();
+            assertThat(broker.isStopped()).isTrue();
         }
     }
 }
