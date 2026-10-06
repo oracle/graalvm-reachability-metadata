@@ -6,7 +6,11 @@
  */
 package org_apache_tomcat_embed.tomcat_embed_core;
 
+import java.io.IOException;
+import java.net.URL;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Enumeration;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.Formatter;
 import java.util.logging.Handler;
@@ -22,7 +26,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@Order(-1)
+@Order(-3)
 public class DirectJDKLogTest {
 
     @Test
@@ -37,7 +41,10 @@ public class DirectJDKLogTest {
 
         String configClass = System.clearProperty("java.util.logging.config.class");
         String configFile = System.clearProperty("java.util.logging.config.file");
+        Thread currentThread = Thread.currentThread();
+        ClassLoader originalClassLoader = currentThread.getContextClassLoader();
         try {
+            currentThread.setContextClassLoader(new ServiceFileHidingClassLoader(originalClassLoader));
             Log log = LogFactory.getLog("direct-jdk-logger");
             log.info("ready");
 
@@ -51,6 +58,7 @@ public class DirectJDKLogTest {
         } finally {
             restoreProperty("java.util.logging.config.class", configClass);
             restoreProperty("java.util.logging.config.file", configFile);
+            currentThread.setContextClassLoader(originalClassLoader);
             directLogger.setLevel(previousLevel);
             rootLogger.removeHandler(consoleHandler);
             consoleHandler.close();
@@ -62,6 +70,30 @@ public class DirectJDKLogTest {
             System.clearProperty(name);
         } else {
             System.setProperty(name, value);
+        }
+    }
+
+    private static final class ServiceFileHidingClassLoader extends ClassLoader {
+        private static final String LOG_SERVICE = "META-INF/services/org.apache.juli.logging.Log";
+
+        private ServiceFileHidingClassLoader(ClassLoader parent) {
+            super(parent);
+        }
+
+        @Override
+        public Enumeration<URL> getResources(String name) throws IOException {
+            if (LOG_SERVICE.equals(name)) {
+                return Collections.emptyEnumeration();
+            }
+            return super.getResources(name);
+        }
+
+        @Override
+        public URL getResource(String name) {
+            if (LOG_SERVICE.equals(name)) {
+                return null;
+            }
+            return super.getResource(name);
         }
     }
 

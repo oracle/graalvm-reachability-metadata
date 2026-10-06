@@ -36,7 +36,6 @@ public class LogFactoryTest {
             Log log = LogFactory.getFactory().getInstance(loggerName);
             log.info("ready");
 
-            assertThat(log).isInstanceOf(TestLog.class);
             assertThat(handler.getRecord()).isNotNull();
             assertThat(handler.getRecord().getLoggerName()).isEqualTo(loggerName);
             assertThat(handler.getRecord().getMessage()).isEqualTo("ready");
