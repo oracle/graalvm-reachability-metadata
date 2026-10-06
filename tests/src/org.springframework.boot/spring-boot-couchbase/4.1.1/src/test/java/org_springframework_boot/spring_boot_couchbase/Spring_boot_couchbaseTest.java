@@ -6,6 +6,7 @@
  */
 package org_springframework_boot.spring_boot_couchbase;
 
+import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -14,6 +15,8 @@ import com.couchbase.client.core.env.Authenticator;
 import com.couchbase.client.core.env.PasswordAuthenticator;
 import com.couchbase.client.java.Cluster;
 import com.couchbase.client.java.env.ClusterEnvironment;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import org.junit.jupiter.api.Test;
 
 import org.springframework.boot.autoconfigure.AutoConfiguration;
@@ -138,6 +141,32 @@ public class Spring_boot_couchbaseTest {
     }
 
     @Test
+    void autoConfigurationUsesTheApplicationObjectMapperForCouchbaseDocuments() {
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.setPropertyNamingStrategy(PropertyNamingStrategies.SNAKE_CASE);
+        try (AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext()) {
+            context.getEnvironment()
+                    .getPropertySources()
+                    .addFirst(new MapPropertySource("couchbase-jackson-test",
+                            Map.of("spring.couchbase.connection-string", "couchbase://127.0.0.1",
+                                    "spring.couchbase.username", "application", "spring.couchbase.password",
+                                    "secret")));
+            context.registerBean(ObjectMapper.class, () -> objectMapper);
+            context.register(CouchbaseAutoConfiguration.class);
+            context.refresh();
+
+            ClusterEnvironment environment = context.getBean(ClusterEnvironment.class);
+            byte[] serialized = environment.jsonSerializer().serialize(new CouchbaseDocument("Ada Lovelace"));
+            String json = new String(serialized, StandardCharsets.UTF_8);
+            CouchbaseDocument deserialized = environment.jsonSerializer().deserialize(CouchbaseDocument.class,
+                    serialized);
+
+            assertThat(json).contains("\"display_name\":\"Ada Lovelace\"");
+            assertThat(deserialized.getDisplayName()).isEqualTo("Ada Lovelace");
+        }
+    }
+
+    @Test
     void propertiesExposeDocumentedClientDefaults() {
         CouchbaseProperties properties = new CouchbaseProperties();
 
@@ -152,6 +181,27 @@ public class Spring_boot_couchbaseTest {
         assertThat(properties.getEnv().getTimeouts().getDisconnect()).isEqualTo(Duration.ofSeconds(10));
         assertThat(properties.getEnv().getTimeouts().getKeyValueDurable()).isEqualTo(Duration.ofSeconds(10));
         assertThat(properties.getEnv().getTimeouts().getQuery()).isEqualTo(Duration.ofSeconds(75));
+    }
+
+    public static final class CouchbaseDocument {
+
+        private String displayName;
+
+        public CouchbaseDocument() {
+        }
+
+        CouchbaseDocument(String displayName) {
+            this.displayName = displayName;
+        }
+
+        public String getDisplayName() {
+            return this.displayName;
+        }
+
+        public void setDisplayName(String displayName) {
+            this.displayName = displayName;
+        }
+
     }
 
 }
