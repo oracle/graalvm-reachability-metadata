@@ -22,6 +22,7 @@ import io.swagger.v3.oas.models.info.License;
 import io.swagger.v3.oas.models.links.Link;
 import io.swagger.v3.oas.models.media.ArraySchema;
 import io.swagger.v3.oas.models.media.BooleanSchema;
+import io.swagger.v3.oas.models.media.ComposedSchema;
 import io.swagger.v3.oas.models.media.Content;
 import io.swagger.v3.oas.models.media.DateSchema;
 import io.swagger.v3.oas.models.media.DateTimeSchema;
@@ -394,6 +395,29 @@ public class Swagger_modelsTest {
         assertThat(mediaType.getExtensions()).doesNotContainKey("x-oai-reserved");
         assertThat(components.getExtensions()).containsEntry("x-components-owner", "platform");
         assertThat(components.toString()).contains("class Components").contains("OrderResponse");
+    }
+
+    @Test
+    void composedSchemaConversionPreservesSchemaMetadataAndExample() {
+        Schema<?> baseSchema = new ObjectSchema()
+                .title("Order summary")
+                .name("OrderSummary")
+                .description("A summary of an order")
+                .addProperty("id", new UUIDSchema())
+                .addRequiredItem("id")
+                .example(Map.of("id", "00000000-0000-0000-0000-000000000001"));
+        baseSchema.addExtension("x-owner", "orders");
+
+        ComposedSchema composedSchema = ComposedSchema.from(baseSchema);
+
+        assertThat(composedSchema).isNotSameAs(baseSchema);
+        assertThat(composedSchema.getTitle()).isEqualTo("Order summary");
+        assertThat(composedSchema.getName()).isEqualTo("OrderSummary");
+        assertThat(composedSchema.getDescription()).isEqualTo("A summary of an order");
+        assertThat(composedSchema.getProperties()).containsEntry("id", baseSchema.getProperties().get("id"));
+        assertThat(composedSchema.getRequired()).containsExactly("id");
+        assertThat(composedSchema.getExample()).isEqualTo(baseSchema.getExample());
+        assertThat(composedSchema.getExtensions()).containsEntry("x-owner", "orders");
     }
 
     @Test
