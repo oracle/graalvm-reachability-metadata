@@ -1,27 +1,107 @@
 {
-  "reflection": [
+  "reflection" : [
     {
-      "condition": {
-        "typeReached": "org.eclipse.paho.mqttv5.client.logging.LoggerFactory"
+      "condition" : {
+        "typeReached" : "org.eclipse.paho.mqttv5.client.internal.FileLock"
       },
-      "type": "org.eclipse.paho.mqttv5.client.logging.JSR47Logger",
-      "methods": [
+      "type" : "java.io.RandomAccessFile",
+      "methods" : [
         {
-          "name": "<init>",
-          "parameterTypes": []
+          "name" : "getChannel",
+          "parameterTypes" : [ ]
+        }
+      ]
+    },
+    {
+      "condition" : {
+        "typeReached" : "org.eclipse.paho.mqttv5.client.internal.NetworkModuleService"
+      },
+      "type" : "java.net.URI",
+      "fields" : [
+        {
+          "name" : "host"
+        },
+        {
+          "name" : "port"
+        },
+        {
+          "name" : "userInfo"
+        }
+      ]
+    },
+    {
+      "condition" : {
+        "typeReached" : "org.eclipse.paho.mqttv5.client.internal.FileLock"
+      },
+      "type" : "java.nio.channels.FileChannel",
+      "methods" : [
+        {
+          "name" : "tryLock",
+          "parameterTypes" : [ ]
+        }
+      ]
+    },
+    {
+      "condition" : {
+        "typeReached" : "org.eclipse.paho.mqttv5.client.internal.NetworkModuleService"
+      },
+      "type" : "org.eclipse.paho.mqttv5.client.internal.TCPNetworkModuleFactory"
+    },
+    {
+      "condition" : {
+        "typeReached" : "org.eclipse.paho.mqttv5.client.logging.LoggerFactory"
+      },
+      "type" : "org.eclipse.paho.mqttv5.client.logging.JSR47Logger",
+      "methods" : [
+        {
+          "name" : "<init>",
+          "parameterTypes" : [ ]
+        }
+      ]
+    },
+    {
+      "condition" : {
+        "typeReached" : "org.eclipse.paho.mqttv5.client.internal.FileLock"
+      },
+      "type" : "sun.nio.ch.FileLockImpl",
+      "methods" : [
+        {
+          "name" : "release",
+          "parameterTypes" : [ ]
         }
       ]
     }
   ],
-  "resources": [
+  "resources" : [
     {
-      "condition": {
-        "typeReached": "org.eclipse.paho.mqttv5.client.internal.NetworkModuleService"
+      "condition" : {
+        "typeReached" : "org.eclipse.paho.mqttv5.client.internal.NetworkModuleService"
       },
-      "glob": "META-INF/services/org.eclipse.paho.mqttv5.client.spi.NetworkModuleFactory"
+      "glob" : "META-INF/services/org.eclipse.paho.mqttv5.client.spi.NetworkModuleFactory"
     },
     {
-      "bundle": "org.eclipse.paho.mqttv5.client.internal.nls.logcat"
+      "condition" : {
+        "typeReached" : "org.eclipse.paho.mqttv5.client.MqttAsyncClient"
+      },
+      "glob" : "org/eclipse/paho/mqttv5/client/internal/nls/logcat.properties"
+    },
+    {
+      "condition" : {
+        "typeReached" : "org.eclipse.paho.mqttv5.client.MqttAsyncClient"
+      },
+      "glob" : "org/eclipse/paho/mqttv5/client/internal/nls/logcat_en.properties"
+    },
+    {
+      "condition" : {
+        "typeReached" : "org.eclipse.paho.mqttv5.client.MqttAsyncClient"
+      },
+      "glob" : "org/eclipse/paho/mqttv5/client/internal/nls/logcat_en_US.properties"
+    },
+    {
+      "bundle" : "org.eclipse.paho.mqttv5.client.internal.nls.logcat"
+    },
+    {
+      "bundle" : "org.eclipse.paho.mqttv5.common.nls.messages"
     }
   ]
 }

@@ -11,21 +11,8 @@ plugins {
 String libraryVersion = tck.testedLibraryVersion.get()
 
 dependencies {
-    testImplementation "org.flywaydb:flyway-core:$libraryVersion"
-    testImplementation 'com.h2database:h2:2.1.210'
+    testImplementation "dev.langchain4j:langchain4j-google-ai-gemini:$libraryVersion"
     testImplementation 'org.assertj:assertj-core:3.22.0'
-    testImplementation 'org.awaitility:awaitility:4.2.0'
-    testRuntimeOnly "org.slf4j:slf4j-api:1.7.36"
-    testRuntimeOnly "org.apache.logging.log4j:log4j-api:2.25.2"
-    testRuntimeOnly "commons-logging:commons-logging:1.1.1"
-}
-
-tasks.named("test") {
-    environment "FLYWAY_SCHEMAS", "PUBLIC"
-}
-
-tasks.named("nativeTest") {
-    environment.put("FLYWAY_SCHEMAS", "PUBLIC")
 }
 
 graalvmNative {

@@ -1,0 +1,133 @@
+{
+  "add_new_library_support:2026-10-05": {
+    "timestamp": "2026-10-05T23:09:05.011501Z",
+    "library": "org.flywaydb:flyway-core:10.15.0",
+    "starting_commit": "0ed871c89a959a9cb6c7ff3a4613aff332199ea0",
+    "ending_commit": "686631d214546c107be680d66b77a84ee74c6962",
+    "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-luna",
+    "agent": "pi",
+    "model": "gpt-5.6-luna",
+    "status": "success",
+    "stats": {
+      "version": "10.15.0",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 32,
+            "totalCalls": 32
+          },
+          "resources": {
+            "coverageRatio": 0.857143,
+            "coveredCalls": 6,
+            "totalCalls": 7
+          }
+        },
+        "coverageRatio": 0.974359,
+        "coveredCalls": 38,
+        "totalCalls": 39
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 19487,
+          "missed": 26433,
+          "ratio": 0.424368,
+          "total": 45920
+        },
+        "line": {
+          "covered": 4227,
+          "missed": 5587,
+          "ratio": 0.430711,
+          "total": 9814
+        },
+        "method": {
+          "covered": 1190,
+          "missed": 1515,
+          "ratio": 0.439926,
+          "total": 2705
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "advisory_preparation",
+      "issue_number": 10518,
+      "issue_label": "library-new-request",
+      "library": "org.flywaydb:flyway-core:10.15.0",
+      "summary": "3 of 4 uncovered dynamic-access entries are flyway-core's optional pluggable logging backends (slf4j, log4j2, apache-commons), which are never pulled in by the generated scaffold. Decompiling flyway-core-10.15.0.jar confirms: these are declared <optional>true</optional> in its POM, and FeatureDetector/LogFactory only reflectively instantiate the matching LogCreator class when the corresponding API class is present on the classpath. The 4th uncovered entry (SHA2$SHA256 via JdbcUtils) has no SHA/MessageDigest reference anywhere in flyway-core's own bytecode and is reachable through the existing H2 dependency already in build.gradle — no extra setup evidence found for it.",
+      "deterministic_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "org.slf4j:slf4j-api:1.7.36",
+          "scope": "testRuntimeOnly",
+          "reason": "flyway-core reflectively instantiates Slf4jLogCreator when org.slf4j.Logger is reachable; the dependency is optional in flyway-core's POM so it is never pulled in transitively. Test code does not call slf4j APIs directly (only needs classpath presence), matching the testRuntimeOnly precedent used fo\n...[truncated]"
+        },
+        {
+          "kind": "dependency",
+          "coordinate": "org.apache.logging.log4j:log4j-api:2.25.2",
+          "scope": "testRuntimeOnly",
+          "reason": "flyway-core reflectively instantiates Log4j2LogCreator when org.apache.logging.log4j.Logger is reachable; optional dependency not pulled in by default. log4j-api alone (no log4j-core) is sufficient since LogManager falls back to its own internal SimpleLogger when no core binding is present."
+        },
+        {
+          "kind": "dependency",
+          "coordinate": "commons-logging:commons-logging:1.1.1",
+          "scope": "testRuntimeOnly",
+          "reason": "flyway-core reflectively instantiates ApacheCommonsLogCreator when org.apache.commons.logging.Log is reachable; optional dependency not pulled in by default."
+        }
+      ],
+      "agent_guidance": "To drive all three LogCreator reflection entries in a single test run, explicitly select logger names rather than relying on 'auto' detection: configuration.loggers(\"slf4j\", \"log4j2\", \"apache-commons\") on FluentConfiguration before calling migrate(). Decompiled LogFactory confirms these three exact string literals (note the hyphen in 'apache-commons') map directly via ClassUtils.instantiate(...) to the three LogCreator classes, bypassing FeatureDetector entirely. Auto-detection would only ever activate one framework (slf4j > log4j2 > apache-commons priority order) and, for slf4j specifically, additionally requires a full SLF4J binding (StaticLoggerBinder for 1.x or an SLF4JServiceProvider for 2.x) to be present — which the API-only jar above does not provide — so auto-detection would silently fail to cover slf4j even with slf4j-api on the classpath. No environment variable or system property is needed for the logging entries. For the remaining SHA2$SHA256/JdbcUtils entry, no concrete setup requirement was found; it is likely reachable by broadening the existing H2-backed test (e.g. a scenario that exercises connection retry/backoff or an additional migrate/baseline/clean operation) rather than via new setup.",
+      "risks": [
+        "The exact pinned versions for the three logging dependencies are suggestions for consistency with existing repo usage (slf4j-api 1.7.36, log4j-api 2.25.2, commons-logging 1.1.1 all already appear elsewhere in tests/src); any reasonably current stable release of each should work since only the API class needs to be classloadable.",
+        "Coverage for the SHA2$SHA256/JdbcUtils entry remains unverified — it may turn out to need a specific Flyway feature (e.g. schema-history locking retry) that the generated test doesn't naturally exercise, in which case local Gradle/Native Image verification will surface it as still missing."
+      ],
+      "applied_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "org.slf4j:slf4j-api:1.7.36",
+          "result": "applied",
+          "target": "tests/src/org.flywaydb/flyway-core/10.15.0/build.gradle"
+        },
+        {
+          "kind": "dependency",
+          "coordinate": "org.apache.logging.log4j:log4j-api:2.25.2",
+          "result": "applied",
+          "target": "tests/src/org.flywaydb/flyway-core/10.15.0/build.gradle"
+        },
+        {
+          "kind": "dependency",
+          "coordinate": "commons-logging:commons-logging:1.1.1",
+          "result": "applied",
+          "target": "tests/src/org.flywaydb/flyway-core/10.15.0/build.gradle"
+        }
+      ],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#10518 Support for org.flywaydb:flyway-core:10.15.0; label=library-new-request; body_chars=440"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "9 existing test file path(s) included"
+        }
+      ],
+      "model": "sonnet",
+      "input_tokens_used": 40,
+      "output_tokens_used": 22900
+    },
+    "metrics": {
+      "input_tokens_used": 580461,
+      "cached_input_tokens_used": 10076160,
+      "output_tokens_used": 52738,
+      "iterations": 8,
+      "cost_usd": 1.9045,
+      "generated_loc": 380,
+      "tested_library_loc": 4227,
+      "metadata_entries": 259,
+      "test_only_metadata_entries": 34,
+      "code_coverage_percent": 43.07
+    },
+    "artifacts": {
+      "metadata_file": "metadata/org.flywaydb/flyway-core/10.15.0/reachability-metadata.json"
+    }
+  }
+}

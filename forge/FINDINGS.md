@@ -8,6 +8,17 @@ Newest entry first; every non-approval is recorded, including one a repair later
 **Native-only AOT failure is accepted as test success**
 
 MergedContextConfigurationRuntimeHintsTest caught the library-specific IllegalStateException stating that AOT processing cannot run during AOT runtime and treated that exception as success. This made Native Image pass with behavior different from the JVM and violated FS-test-contract.4.2; it was not the sanctioned UnsupportedFeatureError proof for open-ended dynamic class loading.
+## 2026-10-06 — org.eclipse.paho:org.eclipse.paho.mqttv5.client:1.2.5 (#10516)
+
+**Generated test configuration exceeded timeout and module-opening limits**
+
+Mqttv5ClientTest allowed broker startup to wait 120 seconds, violating the 60-second per-test bound in FS-test-contract.1.6. The build also opened sun.nio.ch to JVM and Native Image without satisfying the uniform-necessity rule in FS-test-contract.2.7; Java testing and all three finalization lanes passed after that opening was removed. The narrower java.net opening remains justified: removing it reproducibly failed NetworkModuleServiceTest with InaccessibleObjectException in the library's NetworkModuleService.setURIField path.
+
+## 2026-10-05 — org.flywaydb:flyway-core:10.15.0 (#10518)
+
+**Dynamic-access classes lacked dedicated test files**
+
+The resolved dynamic-access report listed covered call sites in org.flywaydb.core.internal.license.VersionPrinter and org.flywaydb.core.internal.resource.classpath.ClassPathResource, but the suite had no dedicated VersionPrinterTest.java or ClassPathResourceTest.java. This violated the one-test-file-per-dynamic-access-class requirement in §FS-test-contract.1.8.
 
 ## 2026-10-05 — org.flywaydb:flyway-database-postgresql:10.10.0 (#10555)
 
