@@ -7,6 +7,7 @@
 package org_apache_activemq.activemq_client;
 
 import org.apache.activemq.ActiveMQPrefetchPolicy;
+import org.apache.activemq.command.ActiveMQQueue;
 import org.apache.activemq.util.IntrospectionSupport;
 import org.junit.jupiter.api.Test;
 
@@ -27,7 +28,8 @@ public class IntrospectionSupportTest {
         assertThat(properties).containsEntry("policy.queuePrefetch", "37");
         assertThat(IntrospectionSupport.findGetterMethod(ActiveMQPrefetchPolicy.class, "queuePrefetch").getName())
                 .isEqualTo("getQueuePrefetch");
-        assertThat(IntrospectionSupport.toString(policy, Object.class))
-                .contains("queuePrefetch = 37");
+        ActiveMQQueue queue = new ActiveMQQueue("orders");
+        assertThat(IntrospectionSupport.toString(queue, Object.class))
+                .contains("physicalName = orders");
     }
 }
