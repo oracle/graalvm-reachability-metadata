@@ -170,19 +170,26 @@ candidate unlabelled rather than guessed.
 
 ### 3.2 Fork not taken
 
-The fork is the nearest covered line above the invoking line that JaCoCo
-reports with a missed branch and that holds a branch instruction
-**controlling** the target: some of its successors reach the invoking bci and
-some do not. The invoking line itself qualifies when a controlling branch on it
-precedes the invoke, as in a conditional expression. Reachability walks the method's control flow,
-exception edges included, without passing back through the block of any
-non-plumbing branch on the fork line, so a loop header does not reach
-everything, nor does a loop re-enter `a || b` through its other condition.
-A branch whose target-reaching successors all
-have positive counts is not why the target was missed, and the search continues
-upward; a line whose branches control nothing is skipped the same way. Without a
-control-flow table for the method, the nearest covered line with a missed branch
-is the fork, as before.
+The fork is found by walking the method's control flow backwards from the
+invoking bci, through blocks that never executed. Every edge from an executed
+block into that dead region was never taken, and a branch instruction on such
+an edge is a fork: it ran, and the successor that leads to the invoke has a
+zero count. The fork line is the nearest covered line, at or above the
+invoking line, that JaCoCo reports with a missed branch and that holds a fork
+branch. The invoking line itself qualifies when a fork branch on it precedes
+the invoke, as in a conditional expression. Because the walk never enters
+executed code, a loop cannot carry it around, and `a || b` yields its two
+conditions as two forks on one line.
+
+A block executed when its branch counter is positive; without a counter, when
+JaCoCo covers its line. A block that ran but whose every normal successor
+lies in the dead region decided nothing: it left by an exception, and the walk
+stops there without a fork. JaCoCo's line status cannot tell such a block from
+one that never ran on a line holding several blocks, so without a counter the
+walk passes through it. A positive count into a block the walk believed dead
+is contradictory evidence, and the walk stops there without a fork. Exception
+edges are not walked. Without a control-flow table for the method, the nearest
+covered line with a missed branch is the fork, as before.
 
 The hint lists every successor of every non-plumbing branch instruction on
 the fork line, one numbered item per successor in bytecode order. A successor
@@ -192,8 +199,8 @@ true/false or by case key: javac's jump sense does not map to the source
 condition, and enum, String, and pattern switches switch on synthetic keys. A
 successor that lands on a later branch instruction of the same line, as the
 first condition of `a && b` does, is labelled by that condition's position.
-Each item carries its count, and those that reach the invoking bci carry a
-target marker:
+Each item carries its count, and those that land in the dead region, and so
+reach the invoking bci, carry a target marker:
 
 ```text
 fork `Database.java:313` reached 40,182×, 2 of 4 branches taken
@@ -212,8 +219,10 @@ navigation.
 
 ### 3.3 No fork
 
-When no fork exists, `no-fork` names the nearest covered line and explains that
-the target requires an exception or external event.
+When no fork exists — the dead region around the invoke is entered only by
+exception edges or from blocks that ran and left by an exception — `no-fork`
+names the nearest covered line and explains that the target requires an
+exception or external event.
 
 ## 4. Boundaries
 
