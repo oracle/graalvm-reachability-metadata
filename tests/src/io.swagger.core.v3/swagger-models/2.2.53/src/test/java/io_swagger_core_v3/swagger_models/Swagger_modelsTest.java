@@ -450,6 +450,34 @@ public class Swagger_modelsTest {
     }
 
     @Test
+    void jsonSchemaSupportsConditionalAndDependentValidationKeywords() {
+        Schema<?> condition = new ObjectSchema()
+                .addProperty("status", new StringSchema().addEnumItem("premium"));
+        Schema<?> premiumOrder = new ObjectSchema().addRequiredItem("discountCode");
+        Schema<?> standardOrder = new ObjectSchema().addRequiredItem("standardCode");
+        Map<String, Schema> dependentSchemas = Map.of(
+                "creditCard", new ObjectSchema().addRequiredItem("billingAddress"));
+        Map<String, List<String>> dependentRequired = Map.of(
+                "shippingAddress", List.of("shippingMethod"));
+
+        Schema<?> order = new ObjectSchema()
+                .specVersion(SpecVersion.V31)
+                ._if(condition)
+                .then(premiumOrder)
+                ._else(standardOrder)
+                .dependentSchemas(dependentSchemas)
+                .dependentRequired(dependentRequired)
+                .$comment("Conditional order validation");
+
+        assertThat(order.getIf()).isSameAs(condition);
+        assertThat(order.getThen()).isSameAs(premiumOrder);
+        assertThat(order.getElse()).isSameAs(standardOrder);
+        assertThat(order.getDependentSchemas()).containsEntry("creditCard", dependentSchemas.get("creditCard"));
+        assertThat(order.getDependentRequired()).containsEntry("shippingAddress", List.of("shippingMethod"));
+        assertThat(order.get$comment()).isEqualTo("Conditional order validation");
+    }
+
+    @Test
     void pathItemsSupportHttpMethodBasedOperationAccess() {
         Operation getOrder = new Operation().operationId("getOrder");
         Operation replaceOrder = new Operation().operationId("replaceOrder");
