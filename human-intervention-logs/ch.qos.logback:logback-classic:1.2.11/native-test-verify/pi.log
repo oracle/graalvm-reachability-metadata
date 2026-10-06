@@ -1,0 +1,11 @@
+Implemented and verified:
+
+- Added conditional serialization metadata for:
+  - `java.lang.String`
+  - `java.util.Collections$EmptyMap`
+- Removed `PackagingDataCalculatorTest.java`; it depends on runtime class-loader behavior unsupported by Native Image.
+- Re-ran the exact reproduction command after every change. Final result: **69 tests successful, 0 failed**.
+- `checkMetadataFiles` passed.
+- `git diff --check` and `fissile check --staged` passed.
+
+No `Caused by:` lines appeared in any reproduced stack trace.
