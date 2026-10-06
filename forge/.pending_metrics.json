@@ -1,0 +1,93 @@
+{
+  "timestamp": "2026-10-06T03:05:31.159011Z",
+  "library": "org.apache.activemq:artemis-jms-client:2.32.0",
+  "starting_commit": "dd3199f0a7949779f71217a6ee5debf9647a7d95",
+  "ending_commit": "3d253894485415abedf431f647250160b25f905c",
+  "strategy_name": "library_update_optimistic_pi_gpt-5.6-sol",
+  "agent": "pi",
+  "model": "gpt-5.6-sol",
+  "status": "success",
+  "stats": {
+    "version": "2.32.0",
+    "dynamicAccess": {
+      "breakdown": {
+        "reflection": {
+          "coverageRatio": 1.0,
+          "coveredCalls": 6,
+          "totalCalls": 6
+        },
+        "resources": {
+          "coverageRatio": 1.0,
+          "coveredCalls": 1,
+          "totalCalls": 1
+        }
+      },
+      "coverageRatio": 1.0,
+      "coveredCalls": 7,
+      "totalCalls": 7
+    },
+    "libraryCoverage": {
+      "instruction": {
+        "covered": 2781,
+        "missed": 13255,
+        "ratio": 0.173422,
+        "total": 16036
+      },
+      "line": {
+        "covered": 743,
+        "missed": 3559,
+        "ratio": 0.17271,
+        "total": 4302
+      },
+      "method": {
+        "covered": 233,
+        "missed": 873,
+        "ratio": 0.210669,
+        "total": 1106
+      }
+    }
+  },
+  "library_preparation_preflight": {
+    "status": "completed",
+    "action": "no_action",
+    "issue_number": 10539,
+    "issue_label": "library-update-request",
+    "library": "org.apache.activemq:artemis-jms-client:2.32.0",
+    "summary": "The existing test already starts an in-process embedded Artemis broker. artemis-server is already a testImplementation dependency, and the test uses no Docker or environment setup. More coverage only needs extra test code, such as extra acceptors, a journal and persistence, and more JMS features, using the same dependencies.",
+    "deterministic_setup": [],
+    "agent_guidance": "",
+    "risks": [
+      "The test binds the fixed port 61616, so new tests should reuse the single broker. Starting a second broker on that port would conflict.",
+      "The existing test project is under tests/src/org.apache.activemq/artemis-jms-client/2.28.0, while the issue targets 2.32.0. The harness maps the 2.32.0 coordinates to that directory through the metadata index, so check this when generating."
+    ],
+    "applied_setup": [],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#10539 Improve coverage for org.apache.activemq:artemis-jms-client:2.32.0; label=library-update-request; body_chars=451"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "9 existing test file path(s) included"
+      }
+    ],
+    "model": "sonnet",
+    "input_tokens_used": 6,
+    "output_tokens_used": 817
+  },
+  "metrics": {
+    "input_tokens_used": 245271,
+    "cached_input_tokens_used": 1602560,
+    "output_tokens_used": 15513,
+    "iterations": 6,
+    "cost_usd": 2.4931,
+    "generated_loc": 388,
+    "tested_library_loc": 743,
+    "metadata_entries": 356,
+    "test_only_metadata_entries": 2,
+    "code_coverage_percent": 17.27
+  },
+  "artifacts": {
+    "metadata_file": "metadata/org.apache.activemq/artemis-jms-client/2.32.0/reachability-metadata.json"
+  }
+}

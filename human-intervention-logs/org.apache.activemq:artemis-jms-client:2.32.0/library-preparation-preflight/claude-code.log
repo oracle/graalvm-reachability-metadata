@@ -1,0 +1,12 @@
+```json
+{
+  "action": "no_action",
+  "summary": "The existing test already starts an in-process embedded Artemis broker. artemis-server is already a testImplementation dependency, and the test uses no Docker or environment setup. More coverage only needs extra test code, such as extra acceptors, a journal and persistence, and more JMS features, using the same dependencies.",
+  "deterministic_setup": [],
+  "agent_guidance": "",
+  "risks": [
+    "The test binds the fixed port 61616, so new tests should reuse the single broker. Starting a second broker on that port would conflict.",
+    "The existing test project is under tests/src/org.apache.activemq/artemis-jms-client/2.28.0, while the issue targets 2.32.0. The harness maps the 2.32.0 coordinates to that directory through the metadata index, so check this when generating."
+  ]
+}
+```

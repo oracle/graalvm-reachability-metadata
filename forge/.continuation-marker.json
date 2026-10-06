@@ -1,0 +1,87 @@
+{
+  "continueFrom": "publication",
+  "coordinate": "org.apache.activemq:artemis-jms-client:2.32.0",
+  "failure": {
+    "operand": "org.apache.activemq:artemis-jms-client:2.32.0",
+    "phase": "publication",
+    "step": "publish_branch()"
+  },
+  "issueNumber": 10539,
+  "label": "library-update-request",
+  "libraryPreparationPreflight": {
+    "action": "no_action",
+    "agent_guidance": "",
+    "applied_setup": [],
+    "deterministic_setup": [],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#10539 Improve coverage for org.apache.activemq:artemis-jms-client:2.32.0; label=library-update-request; body_chars=451"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "9 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 6,
+    "issue_label": "library-update-request",
+    "issue_number": 10539,
+    "library": "org.apache.activemq:artemis-jms-client:2.32.0",
+    "model": "sonnet",
+    "output_tokens_used": 817,
+    "risks": [
+      "The test binds the fixed port 61616, so new tests should reuse the single broker. Starting a second broker on that port would conflict.",
+      "The existing test project is under tests/src/org.apache.activemq/artemis-jms-client/2.28.0, while the issue targets 2.32.0. The harness maps the 2.32.0 coordinates to that directory through the metadata index, so check this when generating."
+    ],
+    "status": "completed",
+    "summary": "The existing test already starts an in-process embedded Artemis broker. artemis-server is already a testImplementation dependency, and the test uses no Docker or environment setup. More coverage only needs extra test code, such as extra acceptors, a journal and persistence, and more JMS features, using the same dependencies."
+  },
+  "libraryUpdateRoute": {
+    "baseline_coordinates": null,
+    "new_version": "2.32.0",
+    "selected_driver": "improve_library_coverage"
+  },
+  "newVersion": null,
+  "phases": {
+    "explore": {
+      "chunkClassCount": 4,
+      "chunkProcessedClassCount": 4,
+      "exhaustedClasses": [
+        "org.apache.activemq.artemis.jms.client.ActiveMQConnectionMetaData",
+        "org.apache.activemq.artemis.jms.client.ActiveMQMessage",
+        "org.apache.activemq.artemis.jms.client.ActiveMQObjectMessage",
+        "org.apache.activemq.artemis.jndi.JNDIReferenceFactory"
+      ],
+      "iteration": 4,
+      "status": "completed"
+    },
+    "finalization": {
+      "status": "completed"
+    },
+    "fix": {
+      "iteration": null,
+      "status": "skipped"
+    },
+    "publication": {
+      "branch": "ai/kimeta/improve-coverage-org.apache.activemq-artemis-jms-client-2.32.0-forge-10539-20261006030531159011-dfe48721bd5b",
+      "coverageFollowUpIssueNumber": null,
+      "isPushed": false,
+      "publicationId": "forge-10539-20261006030531159011-dfe48721bd5b",
+      "publicationTimestamp": "2026-10-06T03:05:31.159011Z",
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": true,
+      "status": "completed"
+    }
+  },
+  "preservedBranch": "ai/kimeta/human-intervention/issue-10539-library-update-request-org.apache.activemq-artemis-jms-client-2.32.0-e6160368",
+  "publicationMetrics": {
+    "extras": {},
+    "library": "org.apache.activemq:artemis-jms-client:2.32.0",
+    "timestamp": "2026-10-06T03:05:31.159011Z"
+  },
+  "schemaVersion": 1,
+  "strategyName": "library_update_optimistic_pi_gpt-5.6-sol"
+}

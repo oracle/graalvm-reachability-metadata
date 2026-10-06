@@ -1,0 +1,14 @@
+Fixed `metadata/org.apache.activemq/artemis-jms-client/2.32.0/reachability-metadata.json` by adding conditional reflection metadata for:
+
+- `java.lang.management.LockInfo`
+- `java.lang.management.ThreadInfo`
+
+Both are conditioned on `org.apache.activemq.artemis.core.server.impl.ActiveMQServerImpl`.
+
+Verified with the required GraalVM 25.0.4 distribution:
+
+- `./gradlew test -Pcoordinates=org.apache.activemq:artemis-jms-client:2.32.0` — passed
+- `./gradlew checkMetadataFiles -Pcoordinates=org.apache.activemq:artemis-jms-client:2.32.0` — passed
+- `fissile check --staged` — passed
+
+The pre-existing modification to `metadata/org.apache.activemq/artemis-jms-client/index.json` was left untouched.

@@ -1,0 +1,52 @@
+Prompt:
+You are preparing a Forge workflow for a library issue. Decide whether the library needs setup beyond the normal generated test scaffold before meaningful coverage is reachable.
+
+Research the library yourself to make this decision. Investigate the resolved artifact and its dependencies, how the library is normally used, and its documentation. The JSON context below is only a starting point, not the limit of what you may consider. Do not modify the repository or apply any setup yourself — return only the decision. Local Gradle and Native Image verification remain authoritative.
+
+The setup can be one of three things: an extra Maven dependency, a Docker image the tests need, or an environment/system property the generated tests must set. Represent dependencies and Docker images as `deterministic_setup` entries the driver can apply before generation:
+  - {"kind": "dependency", "coordinate": "group:artifact:version", "scope": "testImplementation", "reason": "..."}
+  - {"kind": "docker_image", "image": "name:tag", "slug": "short-slug", "reason": "..."}
+If a test needs a Docker image that is already pinned under `tests/tck-build-logic/src/main/resources/allowed-docker-images/`, reuse the exact tag from that `Dockerfile-<slug>` instead of introducing a new one, since the allow-list permits a single shared tag per image.
+Put environment variables, system properties, and other test-code setup in `agent_guidance`. Do not restate deterministic entries as guidance.
+
+Return a single JSON object with this shape:
+{
+  "action": "no_action" | "advisory_preparation",
+  "summary": "short reason",
+  "deterministic_setup": [ ... dependency or docker_image entries, if any ... ],
+  "agent_guidance": "environment/system property/test setup guidance, if any",
+  "risks": ["risk notes, if any"]
+}
+
+Choose no_action unless your research finds concrete evidence that extra setup is needed.
+
+Context (starting point):
+{
+  "issue": {
+    "number": 10539,
+    "title": "Improve coverage for org.apache.activemq:artemis-jms-client:2.32.0",
+    "label": "library-update-request",
+    "body": "### Reason for requesting the library\n\nWe want to increase dynamic access coverage. The tests for `org.apache.activemq:artemis-jms-client:2.32.0` currently cover 0 of 7 recorded dynamic access calls (0.0%). This version was added before the dynamic access coverage process existed, so its tests never exercised most of the reflective and resource accesses the shipped metadata declares. The request is to extend the tests so they drive those accesses.",
+    "body_error": ""
+  },
+  "library": "org.apache.activemq:artemis-jms-client:2.32.0",
+  "current_library": null,
+  "new_version": null,
+  "existing_tests": {
+    "org.apache.activemq:artemis-jms-client:2.32.0": [
+      "tests/src/org.apache.activemq/artemis-jms-client/2.28.0/.gitignore",
+      "tests/src/org.apache.activemq/artemis-jms-client/2.28.0/build.gradle",
+      "tests/src/org.apache.activemq/artemis-jms-client/2.28.0/gradle.properties",
+      "tests/src/org.apache.activemq/artemis-jms-client/2.28.0/metadata-extra-filter.json",
+      "tests/src/org.apache.activemq/artemis-jms-client/2.28.0/metadata-user-code-filter.json",
+      "tests/src/org.apache.activemq/artemis-jms-client/2.28.0/settings.gradle",
+      "tests/src/org.apache.activemq/artemis-jms-client/2.28.0/src/test/java/org_apache_activemq/artemis_jms_client/ArtemisJmsClientTest.java",
+      "tests/src/org.apache.activemq/artemis-jms-client/2.28.0/src/test/resources/logback.xml",
+      "tests/src/org.apache.activemq/artemis-jms-client/2.28.0/src/test/resources/META-INF/native-image/reachability-metadata.json"
+    ]
+  }
+}
+
+Conversation:
+{"duration_api_ms":10205,"stop_reason":"end_turn","session_id":"fe44be8e-1919-46a3-b475-194cac06fd80","total_cost_usd":0.1673596,"usage":{"input_tokens":6,"cache_creation_input_tokens":35181,"cache_read_input_tokens":92268,"output_tokens":817,"output_tokens_details":{"thinking_tokens":165},"server_tool_use":{"web_search_requests":0,"web_fetch_requests":0},"service_tier":"standard","cache_creation":{"ephemeral_1h_input_tokens":35181,"ephemeral_5m_input_tokens":0},"inference_geo":"not_available","iterations":[{"input_tokens":2,"output_tokens":293,"cache_read_input_tokens":44163,"cache_creation_input_tokens":1359,"cache_creation":{"ephemeral_5m_input_tokens":0,"ephemeral_1h_input_tokens":1359},"type":"message"}],"speed":"standard","fallback_credit":null},"modelUsage":{"claude-sonnet-5-5":{"inputTokens":6,"outputTokens":817,"cacheReadInputTokens":92268,"cacheCreationInputTokens":35181,"webSearchRequests":0,"costUSD":0.1673596,"contextWindow":1000000,"maxOutputTokens":128000,"thinkingTokens":165,"canonicalModel":"claude-sonnet-5-5","provider":"firstParty","costBasis":"list"}},"permission_denials":[],"terminal_reason":"completed","fast_mode_state":"off","fast_mode_disabled_reason":"sdk_opt_in_required","subagent_stats":{"spawned":0,"requested":{"background":0,"foreground":0,"unset":0},"started_in_background":0,"max_depth":0,"spawned_by_subagents":0,"completed":0,"failed":0,"killed":{"parent":0,"user":0,"system":0},"refused":{"depth_limit":0,"concurrency_limit":0,"budget":0},"by_type":{}},"is_error":false,"num_turns":3,"subtype":"success","api_error_status":null,"result":"```json\n{\n  \"action\": \"no_action\",\n  \"summary\": \"The existing test already starts an in-process embedded Artemis broker. artemis-server is already a testImplementation dependency, and the test uses no Docker or environment setup. More coverage only needs extra test code, such as extra acceptors, a journal and persistence, and more JMS features, using the same dependencies.\",\n  \"deterministic_setup\": [],\n  \"agent_guidance\": \"\",\n  \"risks\": [\n    \"The test binds the fixed port 61616, so new tests should reuse the single broker. Starting a second broker on that port would conflict.\",\n    \"The existing test project is under tests/src/org.apache.activemq/artemis-jms-client/2.28.0, while the issue targets 2.32.0. The harness maps the 2.32.0 coordinates to that directory through the metadata index, so check this when generating.\"\n  ]\n}\n```","ttft_ms":1763,"type":"result","duration_ms":10467,"uuid":"2110ee40-61b0-4095-92b1-560bd3b39563","ttft_stream_ms":1338,"time_to_request_ms":93,"first_content_frame_ms":1338,"queued_turn_count":0,"result_index":0}
+
