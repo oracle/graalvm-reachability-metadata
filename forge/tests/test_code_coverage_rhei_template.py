@@ -417,6 +417,20 @@ class CodeCoverageRheiTemplateTests(unittest.TestCase):
                 )
                 self.assertIn(f'"{queue_path}"', states["deep-measure"]["program"])
                 self.assertIn(f'"{queue_path}"', states["deep-dispatch"]["program"])
+                # §AR-code-coverage-deep-sessions.4: a stuck session gives way
+                # to the next one instead of being retried.
+                self.assertEqual(states["deep-cover"]["agent_timeout"], "45m")
+                self.assertIn(
+                    ("deep-cover", "deep-dispatch", "45m"),
+                    {(t["from"], t["to"], t.get("timeout")) for t in machine["transitions"]},
+                )
+                instructions: str = " ".join(states["deep-cover"]["instructions"].split())
+                self.assertIn(
+                    "Write every test for this session's targets first, without running "
+                    "Gradle in between.",
+                    instructions,
+                )
+                self.assertIn("run the suite again until it passes", instructions)
                 passes: int = states["api-cover"]["visits"]
                 self.assertEqual(states["deep-cover"]["visits"], passes * MAX_SESSIONS_PER_PASS)
                 self.assertEqual(

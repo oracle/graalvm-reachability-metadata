@@ -475,6 +475,9 @@ states:
     description: Generate tests reaching uncovered internal paths through public behavior.
     target: "pi:openai-codex/gpt-5.6-terra"
     concurrent: true
+    # A stuck session is stopped and the pass moves on
+    # (§AR-code-coverage-deep-sessions.4).
+    agent_timeout: 45m
     # At most 21 sessions per pass (§AR-code-coverage-deep-sessions.3).
     visits: 210
     # The dispatched session's prompt arrives inside the message
@@ -525,6 +528,13 @@ states:
       - Put nothing between that header and the `package` declaration, and run
         `./gradlew spotlessApply -Pcoordinates=<coordinate>` before you finish:
         Spotless enforces that layout and gates every pull request.
+      - Write every test for this session's targets first, without running
+        Gradle in between. Only when all of them are written, run
+        `./gradlew spotlessApply -Pcoordinates=<coordinate>` and then
+        `./gradlew codeCoverageTest -Pcoordinates=<coordinate>`, fix whatever
+        fails, and run the suite again until it passes. The session is stopped
+        after 45 minutes, so leave time for that loop.
+        §AR-code-coverage-deep-sessions.4
       - Do not weaken metadata-generation tests.
       - Do not write any target state: measurement tracks attempts and target
         rotation deterministically from its own report history.
@@ -959,6 +969,13 @@ transitions:
   - from: deep-cover
     to: human-intervention
     description: Cover pass requires a human decision.
+
+  - from: deep-cover
+    to: deep-dispatch
+    timeout: 45m
+    description: >-
+      The session ran out of time; its tests stay in the worktree and the next
+      session of the pass is handed out.
 
   - from: deep-fix
     to: deep-measure
