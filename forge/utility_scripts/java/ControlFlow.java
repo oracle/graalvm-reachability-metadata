@@ -27,6 +27,7 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /// Control-flow table of one method body, for deep-phase fork hints
 /// (§AR-code-coverage-deep-navigation.1.3).
@@ -161,9 +162,9 @@ final class ControlFlow {
         return plumbing;
     }
 
-    /// Basic blocks with their successors in a fixed order: jump targets, then
-    /// the fall-through, then the handlers of every `try` covering the block.
-    /// The analyzer reads a block's normal exit from that order.
+    /// Basic blocks with their successors: jump targets, the fall-through, then
+    /// the handlers of every `try` covering the block, each handler marked `~`
+    /// as an exception edge (§AR-code-coverage-deep-navigation.1.3).
     private String blocks() {
         Set<Integer> leaders = new TreeSet<>(List.of(0));
         for (Positioned positioned : instructions) {
@@ -192,12 +193,16 @@ final class ControlFlow {
             if (!endsFlow(terminator) && !isUnconditional(terminator) && nextStart != null) {
                 successors.add(nextStart);
             }
+            Set<Integer> handlers = new LinkedHashSet<>();
             for (ExceptionCatch handler : code.exceptionHandlers()) {
                 if (bci(handler.tryStart()) <= start && start < bci(handler.tryEnd())) {
-                    successors.add(bci(handler.handler()));
+                    handlers.add(bci(handler.handler()));
                 }
             }
-            entries.add(start + ">" + successors.stream().map(String::valueOf)
+            handlers.removeAll(successors);
+            entries.add(start + ">" + Stream.concat(
+                    successors.stream().map(String::valueOf),
+                    handlers.stream().map(handler -> handler + "~"))
                     .collect(Collectors.joining(",")));
         }
         return String.join(";", entries);

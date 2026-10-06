@@ -58,9 +58,11 @@ class MethodFlow:
     branches: tuple[Branch, ...]
     #: Sorted block start bcis; a block covers `[start, next start)`.
     block_starts: tuple[int, ...]
-    #: Successors in the extractor's order: jump targets, then the
-    #: fall-through, then the handlers of every `try` covering the block.
+    #: Every successor of a block, exception edges included.
     block_successors: dict[int, tuple[int, ...]]
+    #: The successors entered only by an exception: the handlers of every
+    #: `try` covering the block (§AR-code-coverage-deep-navigation.1.3).
+    exception_successors: dict[int, frozenset[int]]
 
     def block_of(self, bci: int) -> int | None:
         index: int = bisect.bisect_right(self.block_starts, bci) - 1
@@ -71,17 +73,13 @@ class MethodFlow:
         return next((branch for branch in self.branches if self.block_of(branch.bci) == block), None)
 
     def normal_successors(self, block: int) -> tuple[int, ...]:
-        """Successors reached without an exception.
-
-        A block without a branch instruction leaves normally through its first
-        successor only; the rest are exception edges. A block ending in a
-        return or throw inside a `try` is read the same way, which is the
-        exception case the walk does not yet model.
-        """
-        branch: Branch | None = self.branch_in(block)
-        if branch is not None:
-            return branch.successors
-        return self.block_successors.get(block, ())[:1]
+        """Successors reached without an exception; empty for a block that
+        ends in a return or throw."""
+        handlers: frozenset[int] = self.exception_successors.get(block, frozenset())
+        return tuple(
+            successor for successor in self.block_successors.get(block, ())
+            if successor not in handlers
+        )
 
     def predecessors(self) -> dict[int, tuple[int, ...]]:
         inverted: dict[int, list[int]] = {}
@@ -188,12 +186,20 @@ def _parse_branch(entry: str) -> Branch:
     )
 
 
-def _parse_blocks(encoded: str) -> tuple[tuple[int, ...], dict[int, tuple[int, ...]]]:
+def _parse_blocks(
+        encoded: str,
+) -> tuple[tuple[int, ...], dict[int, tuple[int, ...]], dict[int, frozenset[int]]]:
+    """Blocks as `start>successor,...`; a `~` suffix marks an exception edge."""
     successors: dict[int, tuple[int, ...]] = {}
+    exceptional: dict[int, frozenset[int]] = {}
     for entry in encoded.split(";"):
         start, _, targets = entry.partition(">")
-        successors[int(start)] = tuple(int(target) for target in targets.split(",") if target)
-    return tuple(sorted(successors)), successors
+        block: int = int(start)
+        successors[block] = tuple(int(target.rstrip("~")) for target in targets.split(",") if target)
+        exceptional[block] = frozenset(
+            int(target.rstrip("~")) for target in targets.split(",") if target.endswith("~")
+        )
+    return tuple(sorted(successors)), successors, exceptional
 
 
 def load_library_flow(path: str) -> dict[str, MethodFlow]:
@@ -202,13 +208,14 @@ def load_library_flow(path: str) -> dict[str, MethodFlow]:
     try:
         with open(path, encoding="utf-8", newline="") as handle:
             for row in csv.DictReader(handle):
-                block_starts, block_successors = _parse_blocks(row["blocks"])
+                block_starts, block_successors, exception_successors = _parse_blocks(row["blocks"])
                 flows[row["id"]] = MethodFlow(
                     branches=tuple(
                         _parse_branch(entry) for entry in row["branches"].split(";") if entry
                     ),
                     block_starts=block_starts,
                     block_successors=block_successors,
+                    exception_successors=exception_successors,
                 )
     except (OSError, csv.Error, KeyError, ValueError) as error:
         raise ProfileFormatError(f"Cannot read control-flow table '{path}'.") from error

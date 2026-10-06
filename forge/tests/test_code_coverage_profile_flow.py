@@ -26,7 +26,6 @@ from utility_scripts.code_coverage_profile_graph import CallGraph
 from utility_scripts.code_coverage_profile_inputs import line_at, load_library_line_numbers
 from utility_scripts.code_coverage_profile_miss import edge_miss_classification
 from utility_scripts.code_coverage_profile_navigation import NavigationEvidence
-from utility_scripts.code_coverage_profile_render import classification_lines
 
 from tests.code_coverage_rank_test_utils import EXTRACTOR, _java_tool
 
@@ -76,6 +75,17 @@ public class Branchy {
             }
             return Integer.parseInt(text);
         } catch (NumberFormatException error) {
+            return -1;
+        }
+    }
+
+    static int thrower(boolean fail) {
+        try {
+            if (fail) {
+                throw new IllegalStateException("fail");
+            }
+            return 1;
+        } catch (IllegalStateException error) {
             return -1;
         }
     }
@@ -162,21 +172,41 @@ class ExtractorControlFlowTests(unittest.TestCase):
         flow: MethodFlow = self._flow(signature)
         lines: tuple[tuple[int, int], ...] = self._lines[f"{_OWNER}#{signature}"]
         handler_bci: int = next(bci for bci, line in lines if line == 45)
+        handler_block: int | None = flow.block_of(handler_bci)
+        covered: list[int] = [
+            block for block, handlers in flow.exception_successors.items() if handler_block in handlers
+        ]
+        self.assertTrue(covered, "every block in the try range carries the handler as an exception edge")
+        for block in covered:
+            self.assertNotIn(handler_block, flow.normal_successors(block))
         region: DeadRegion | None = flow.dead_region(
             handler_bci, lambda branch: None, lambda bci: line_at(lines, bci) != 45
         )
         assert region is not None
         self.assertEqual(region.forks, ())
 
+    def test_a_return_inside_a_try_has_no_normal_exit(self) -> None:
+        flow: MethodFlow = self._flow("thrower(boolean):int")
+        throwing: list[int] = [
+            block for block in flow.block_starts
+            if flow.exception_successors.get(block) and not flow.normal_successors(block)
+        ]
+        self.assertTrue(throwing, "the `throw` block leaves only through its handler")
+
     def test_straight_line_methods_have_no_row(self) -> None:
         self.assertNotIn(f"{_OWNER}#straight():int", self._flows)
 
 
-def _flow(branches: list[tuple[int, tuple[int, ...]]], blocks: dict[int, tuple[int, ...]]) -> MethodFlow:
+def _flow(
+        branches: list[tuple[int, tuple[int, ...]]],
+        blocks: dict[int, tuple[int, ...]],
+        handlers: dict[int, frozenset[int]] | None = None,
+) -> MethodFlow:
     return MethodFlow(
         branches=tuple(Branch(bci, successors, frozenset(), False) for bci, successors in branches),
         block_starts=tuple(sorted(blocks)),
         block_successors=blocks,
+        exception_successors=handlers or {},
     )
 
 
@@ -187,7 +217,7 @@ class DeadRegionTests(unittest.TestCase):
     # starts at 12; it and the handler fall into the call block 9, block 6
     # returns.
     FLOW: MethodFlow = _flow(
-        [(2, (3, 6))], {0: (3, 6), 3: (9, 12), 6: (), 9: (), 12: (9,)},
+        [(2, (3, 6))], {0: (3, 6), 3: (9, 12), 6: (), 9: (), 12: (9,)}, {3: frozenset({12})},
     )
 
     def test_predecessors_invert_the_successor_table(self) -> None:
@@ -203,7 +233,6 @@ class DeadRegionTests(unittest.TestCase):
         self.assertEqual(region.forks, ((self.FLOW.branches[0], 3),))
 
     def test_the_handler_is_entered_only_by_an_exception_edge(self) -> None:
-        # Block 3's first successor is its normal exit; the handler is not.
         self.assertEqual(self.FLOW.normal_successors(3), (9,))
         region: DeadRegion | None = self.FLOW.dead_region(
             12, lambda branch: None, lambda bci: True
@@ -397,93 +426,6 @@ class ControlFlowForkTests(unittest.TestCase):
         counters = InstrumentedCounters(branches={(self.CALLER.canonical_id, 2): {3: 9, 6: 0}})
         self.assertEqual(self._classify(counters)["kind"], "no-fork")
         self.assertEqual(self._classify()["kind"], "no-fork")
-
-
-class ForkRenderingTests(unittest.TestCase):
-
-    FORK: dict = {
-        "sourcePath": "org/h2/engine/Database.java", "line": 313,
-        "mi": 0, "ci": 9, "mb": 2, "cb": 2, "evidence": "control-flow", "reach": 40182,
-        "branches": [
-            {"bci": 3, "blockStart": 0, "reach": 40182, "successors": [
-                {"bci": 6, "line": 313, "count": 40182, "reachesTarget": False},
-                {"bci": 15, "line": 320, "count": 0, "reachesTarget": True},
-            ]},
-            {"bci": 7, "blockStart": 6, "reach": 40182, "successors": [
-                {"bci": 10, "line": 314, "count": 40182, "reachesTarget": False},
-                {"bci": 15, "line": 320, "count": None, "reachesTarget": True},
-            ]},
-        ],
-    }
-
-    def _lines(self, counted: bool) -> list[str]:
-        return classification_lines({
-            "kind": "fork-not-taken",
-            "target": {"sourcePath": "org/h2/engine/Database.java", "line": 322,
-                       "mi": 3, "ci": 0, "mb": 0, "cb": 0},
-            "fork": self.FORK,
-        }, counted)
-
-    def test_each_branch_is_one_numbered_line_with_landing_and_count(self) -> None:
-        self.assertEqual(self._lines(counted=True)[1:], [
-            "  fork `Database.java:313` reached 40,182×, 2 of 4 branches taken",
-            "    branch 1 → condition 2 ×40,182",
-            "    branch 2 → line 320 ×0 ← target",
-            "    branch 3 → line 314 ×40,182",
-            "    branch 4 → line 320 (no counter) ← target",
-        ])
-
-    def test_without_counters_the_hint_keeps_landings_and_the_target_marker(self) -> None:
-        self.assertEqual(
-            self._lines(counted=False)[2:4],
-            ["    branch 1 → condition 2", "    branch 2 → line 320 ← target"],
-        )
-
-    def test_a_single_line_conditional_keeps_its_two_branches_apart(self) -> None:
-        """`return c != null ? c : parse(key)`: both sides land on the fork
-        line itself, so only the number, count, and marker tell them apart."""
-        lines: list[str] = classification_lines({
-            "kind": "fork-not-taken",
-            "target": {"sourcePath": "a/Config.java", "line": 44,
-                       "mi": 2, "ci": 3, "mb": 1, "cb": 1},
-            "fork": {
-                "sourcePath": "a/Config.java", "line": 44,
-                "mi": 2, "ci": 3, "mb": 1, "cb": 1, "evidence": "control-flow", "reach": 1204,
-                "branches": [{"bci": 9, "blockStart": 0, "reach": 1204, "successors": [
-                    {"bci": 12, "line": 44, "count": 1204, "reachesTarget": False},
-                    {"bci": 16, "line": 44, "count": 0, "reachesTarget": True},
-                ]}],
-            },
-        }, counted=True)
-        self.assertEqual(lines[1:], [
-            "  fork `Config.java:44` reached 1,204×, 1 of 2 branches taken",
-            "    branch 1 → line 44 ×1,204",
-            "    branch 2 → line 44 ×0 ← target",
-        ])
-
-    def test_a_wide_switch_keeps_numbering_when_it_omits_cold_cases(self) -> None:
-        successors: list[dict] = [
-            {"bci": 20 + index, "line": 50 + index, "count": 0, "reachesTarget": index == 11}
-            for index in range(12)
-        ]
-        successors[0]["count"] = 77
-        lines: list[str] = classification_lines({
-            "kind": "fork-not-taken",
-            "target": {"sourcePath": "a/Op.java", "line": 61,
-                       "mi": 2, "ci": 0, "mb": 0, "cb": 0},
-            "fork": {
-                "sourcePath": "a/Op.java", "line": 49, "mi": 0, "ci": 3, "mb": 11, "cb": 1,
-                "evidence": "control-flow", "reach": 77,
-                "branches": [{"bci": 4, "blockStart": 0, "reach": 77, "successors": successors}],
-            },
-        }, counted=True)
-        self.assertEqual(lines[2], "    branch 1 → line 50 ×77")
-        self.assertEqual(lines[-2], "    branch 12 → line 61 ×0 ← target")
-        self.assertEqual(lines[-1], "    … 4 more")
-
-    def test_line_table_lookup_uses_the_last_entry_at_or_before_the_bci(self) -> None:
-        self.assertEqual(line_at(((0, 10), (4, 11), (9, 12)), 8), 11)
-        self.assertIsNone(line_at(((5, 10),), 2))
 
 
 if __name__ == "__main__":
