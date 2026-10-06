@@ -44,6 +44,15 @@ public class PropertyFetchingImplTest {
     }
 
     @Test
+    void returnsNullWhenPropertyDoesNotExist() throws Exception {
+        PropertyDataFetcher<String> fetcher = PropertyDataFetcher.fetching("missing");
+        DataFetchingEnvironment environment = environmentFor(new Object());
+
+        assertThat(fetcher.get(environment)).isNull();
+        assertThat(fetcher.get(environment)).isNull();
+    }
+
+    @Test
     void readsPublicAndPrivateFieldsFromCache() throws Exception {
         PropertyDataFetcher<String> publicFetcher = PropertyDataFetcher.fetching("publicField");
         PublicFieldSource publicSource = new PublicFieldSource();
