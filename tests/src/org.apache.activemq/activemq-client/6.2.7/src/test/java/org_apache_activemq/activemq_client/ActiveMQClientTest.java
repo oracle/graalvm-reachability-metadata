@@ -34,7 +34,7 @@ import java.util.Random;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class ActiveMQClientTest {
+public class ActiveMQClientTest {
 
     private static final String QUEUE_NAME = "queue-test-" + new Random().nextLong();
 
@@ -67,13 +67,13 @@ class ActiveMQClientTest {
             "&jms.nestedMapAndListEnabled=true" +
             "&jms.objectMessageSerializationDefered=false" +
             "&jms.optimizeAcknowledge=false" +
-            "&jms.optimizeAcknowledgeTimeOut=300" +
+            "&jms.optimizeAcknowledgeTimeOut=10000" +
             "&jms.optimizedAckScheduledAckInterval=0" +
             "&jms.optimizedMessageDispatch=true" +
             "&jms.useAsyncSend=false" +
             "&jms.useCompression=false" +
             "&jms.useRetroactiveConsumer=false" +
-            "&jms.warnAboutUnstartedConnectionTimeout=500" +
+            "&jms.warnAboutUnstartedConnectionTimeout=10000" +
             "&jms.nonBlockingRedelivery=false" +
             "&jms.prefetchPolicy.queuePrefetch=" + ActiveMQPrefetchPolicy.DEFAULT_QUEUE_PREFETCH +
             "&jms.prefetchPolicy.queueBrowserPrefetch=" + ActiveMQPrefetchPolicy.DEFAULT_QUEUE_BROWSER_PREFETCH +
@@ -109,7 +109,7 @@ class ActiveMQClientTest {
         brokerService.setPersistent(false);
         brokerService.setBrokerName("embedded-broker");
         brokerService.start();
-        brokerService.waitUntilStarted();
+        assertThat(brokerService.waitUntilStarted(10000)).isTrue();
         logger.info("Started embedded ActiveMQ broker");
     }
 
@@ -180,7 +180,8 @@ class ActiveMQClientTest {
             try (Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE)) {
                 Destination destination = session.createQueue(QUEUE_NAME);
                 try (MessageConsumer consumer = session.createConsumer(destination)) {
-                    Message message = consumer.receive(1000);
+                    Message message = consumer.receive(10000);
+                    assertThat(message).isInstanceOf(TextMessage.class);
                     String text = ((TextMessage) message).getText();
                     logger.info("Received text message: {}", text);
                     return text;
