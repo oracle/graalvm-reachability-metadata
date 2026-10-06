@@ -94,7 +94,9 @@ public class WebappClassLoaderBaseTest {
             threadLocal.set("webapp value");
             inheritableThreadLocal.set("webapp inherited value");
 
-            Timer timer = createTimerWithContextClassLoader(loader);
+            CountDownLatch timerTaskStarted = new CountDownLatch(1);
+            Timer timer = createTimerWithContextClassLoader(loader, timerTaskStarted);
+            assertThat(timerTaskStarted.await(5, TimeUnit.SECONDS)).isTrue();
             TestRemoteImpl remote = exportRemoteWithContextClassLoader(loader);
             ThreadPoolExecutor targetExecutor = createExecutor(new TargetThreadFactory(loader));
             ThreadPoolExecutor holderExecutor = createExecutor(new HolderThreadFactory(loader));
@@ -122,7 +124,7 @@ public class WebappClassLoaderBaseTest {
         }
     }
 
-    private static Timer createTimerWithContextClassLoader(ClassLoader loader) {
+    private static Timer createTimerWithContextClassLoader(ClassLoader loader, CountDownLatch taskStarted) {
         Thread thread = Thread.currentThread();
         ClassLoader original = thread.getContextClassLoader();
         thread.setContextClassLoader(loader);
@@ -131,9 +133,9 @@ public class WebappClassLoaderBaseTest {
             timer.schedule(new TimerTask() {
                 @Override
                 public void run() {
-                    // Keep the timer thread alive until WebappClassLoaderBase stops it.
+                    taskStarted.countDown();
                 }
-            }, Duration.ofMinutes(1).toMillis());
+            }, 0, Duration.ofMinutes(1).toMillis());
             return timer;
         } finally {
             thread.setContextClassLoader(original);
