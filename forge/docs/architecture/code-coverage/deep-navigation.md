@@ -180,7 +180,7 @@ sequenceDiagram
         M->>F: dead region around the invoke's block
         loop each edge into the region
             F->>P: branch counter of the source block (JaCoCo line without one)
-            Note over F,P: never ran: extend the region · zero count into it: fork edge<br/>live try, exception edge: catch boundary · positive count or unknown: stop
+            Note over F,P: never ran: extend the region · zero count into it: fork edge<br/>exception edge: catch boundary · positive count or unknown: stop
         end
         F-->>M: forks, catch boundaries, dead blocks
         M->>J: covered lines with a missed branch, at or above the invoking line
@@ -229,12 +229,12 @@ stops there without a fork. JaCoCo's line status cannot tell such a block from
 one that never ran on a line holding several blocks, so without a counter the
 walk passes through it. A positive count into a block the walk believed dead
 is contradictory evidence, and the walk stops there without a fork. An
-exception edge (§AR-code-coverage-deep-navigation.1.3) is walked only out of a
-block that never executed: a handler cannot have been entered from a `try`
-body that never ran, so the fork lies above the `try`. An exception edge out
-of a block that ran is a catch boundary (§AR-code-coverage-deep-navigation.3.3),
-not a fork. Without a control-flow table for the method, the nearest covered
-line with a missed branch is the fork, as before.
+exception edge (§AR-code-coverage-deep-navigation.1.3) is never walked: nothing
+says which block of the `try` would have raised, so every block under the
+`try` is a catch boundary (§AR-code-coverage-deep-navigation.3.3) reported with
+how often it ran, and the fork is sought along normal edges only. Without a
+control-flow table for the method, the nearest covered line with a missed
+branch is the fork, as before.
 
 The hint lists every successor of every non-plumbing branch instruction on
 the fork line, one numbered item per successor in bytecode order. A successor
@@ -269,10 +269,10 @@ exception edges or from blocks that ran and left by an exception — `no-fork`
 names the nearest covered line and explains that the target requires an
 exception or external event.
 
-When the region is entered through catch handlers from code that ran, the hint
-goes further. It names each handler's line and caught type, and under it every
-line of the `try` range that ran and can raise the exception, with its own
-count: the range's paths run different numbers of times, and only the one
+When the region is entered through catch handlers, the hint goes further. It
+names each handler's line and caught type, and under it every line of the `try`
+range that can raise the exception, with its own count, zero for a line that
+never ran: the range's paths run different numbers of times, and only the one
 holding the throwing call matters.
 
 ```text
@@ -284,7 +284,7 @@ reached only through catch (NumberFormatException) at line 8
 A line's count is propagated forward from the branch counters along normal
 edges; a line whose count cannot be derived shows none. Calls are named from
 the call graph where it has the site. When no line in the range can raise, every
-line that ran is listed.
+line of the range is listed.
 
 ## 4. Boundaries
 
