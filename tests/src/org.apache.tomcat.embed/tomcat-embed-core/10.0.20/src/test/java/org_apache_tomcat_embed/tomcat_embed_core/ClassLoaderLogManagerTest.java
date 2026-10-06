@@ -16,6 +16,7 @@ import java.util.logging.ConsoleHandler;
 import java.util.logging.Logger;
 
 import org.apache.juli.ClassLoaderLogManager;
+import org.apache.juli.WebappProperties;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -59,7 +60,7 @@ public class ClassLoaderLogManagerTest {
         }
     }
 
-    private static final class LoggingConfigurationClassLoader extends URLClassLoader {
+    private static final class LoggingConfigurationClassLoader extends URLClassLoader implements WebappProperties {
         private final URL configuration;
 
         private LoggingConfigurationClassLoader(URL configuration) {
@@ -73,6 +74,26 @@ public class ClassLoaderLogManagerTest {
                 return configuration;
             }
             return null;
+        }
+
+        @Override
+        public String getWebappName() {
+            return "logging-test";
+        }
+
+        @Override
+        public String getHostName() {
+            return "localhost";
+        }
+
+        @Override
+        public String getServiceName() {
+            return "test-service";
+        }
+
+        @Override
+        public boolean hasLoggingConfig() {
+            return true;
         }
 
         @Override

@@ -105,13 +105,12 @@ public class WebappClassLoaderBaseTest {
             assertThat(runningTasks.await(5, TimeUnit.SECONDS)).isTrue();
 
             try {
-                timer.cancel();
                 targetExecutor.shutdownNow();
                 holderExecutor.shutdownNow();
                 assertThat(targetExecutor.awaitTermination(10, TimeUnit.SECONDS)).isTrue();
                 assertThat(holderExecutor.awaitTermination(10, TimeUnit.SECONDS)).isTrue();
-                unexportRemote(remote);
                 webapp.stopLoader();
+                timer.cancel();
             } finally {
                 threadLocal.remove();
                 inheritableThreadLocal.remove();
