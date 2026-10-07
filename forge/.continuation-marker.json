@@ -1,0 +1,77 @@
+{
+  "continueFrom": "explore",
+  "coordinate": "org.springframework.boot:spring-boot-micrometer-metrics-test:4.1.1",
+  "failure": {
+    "operand": "reporter-requested metadata",
+    "phase": "explore",
+    "step": "generate_tests()"
+  },
+  "issueNumber": 9730,
+  "label": "library-new-request",
+  "libraryPreparationPreflight": {
+    "action": "no_action",
+    "agent_guidance": "This artifact only ships org.springframework.boot.micrometer.metrics.test.autoconfigure.AutoConfigureMetrics and MetricsContextCustomizerFactory (+ nested DisableMetricsExportContextCustomizer). Without @AutoConfigureMetrics on a @SpringBootTest class, the customizer forces metrics export off for that test context; with it present, CompositeMeterRegistryAutoConfiguration/MetricsAutoConfiguration/SimpleMetricsExportAutoConfiguration/ObservationAutoConfiguration are auto-imported so a MeterRegistry (e.g. SimpleMeterRegistry) is actually registered. A meaningful test pair is: (1) a minimal @SpringBootTest WITHOUT the annotation asserting no usable MeterRegistry bean / metrics export is suppressed, and (2) one WITH @AutoConfigureMetrics asserting a MeterRegistry bean is present and records a meter. The underlying toggle is the plain Spring Boot property spring.test.metrics.export (default false, from spring-configuration-metadata.json) \u2014 this is ordinary @SpringBootTest(properties=...) test code, not host environment/system-property setup, so it does not need a deterministic_setup entry.",
+    "applied_setup": [],
+    "deterministic_setup": [],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#9730 Support for org.springframework.boot:spring-boot-micrometer-metrics-test:4.1.1; label=library-new-request; body_chars=39"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "0 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 32,
+    "issue_label": "library-new-request",
+    "issue_number": 9730,
+    "library": "org.springframework.boot:spring-boot-micrometer-metrics-test:4.1.1",
+    "model": "sonnet",
+    "output_tokens_used": 14707,
+    "risks": [
+      "This is the first 'real' artifact in the spring-boot-*-test family to be onboarded here \u2014 its sibling POM-only starters (e.g. spring-boot-starter-micrometer-metrics-test) are already marked not-for-native-image with this artifact as the replacement, but there's no prior PR in this repo for a sibling like spring-boot-webmvc-test/spring-boot-restclient-test to cross-check the exact test shape against."
+    ],
+    "status": "completed",
+    "summary": "Pure test-support SPI module (one annotation + one ContextCustomizerFactory, registered via bundled META-INF/spring.factories). All classes it activates (MetricsAutoConfiguration, SimpleMetricsExportAutoConfiguration, CompositeMeterRegistryAutoConfiguration, ObservationAutoConfiguration) are already transitive compile dependencies via spring-boot-micrometer-metrics and spring-boot-micrometer-observation, declared on this artifact's own POM alongside spring-boot-test-autoconfigure and micrometer-observation-test. No Docker, external service, or environment/system property is required \u2014 it's an in-process Spring test-context customizer with zero network or native-OS surface."
+  },
+  "libraryUpdateRoute": null,
+  "newVersion": null,
+  "phases": {
+    "explore": {
+      "chunkClassCount": null,
+      "chunkProcessedClassCount": 0,
+      "exhaustedClasses": [],
+      "iteration": 8,
+      "status": "running"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": null,
+      "status": "skipped"
+    },
+    "publication": {
+      "branch": null,
+      "coverageFollowUpIssueNumber": null,
+      "isPushed": false,
+      "publicationId": null,
+      "publicationTimestamp": null,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": true,
+      "status": "completed"
+    }
+  },
+  "preservedBranch": "ai/kimeta/human-intervention/issue-9730-library-new-request-org.springframework.boot-spring-boot-micrometer-metrics-test-4.1.1-0e0886d2",
+  "publicationMetrics": {
+    "extras": {},
+    "library": "org.springframework.boot:spring-boot-micrometer-metrics-test:4.1.1",
+    "timestamp": "2026-10-07T05:25:45.353123Z"
+  },
+  "schemaVersion": 1,
+  "strategyName": "optimistic_dynamic_access_iterative_pi_gpt-5.6-luna"
+}
