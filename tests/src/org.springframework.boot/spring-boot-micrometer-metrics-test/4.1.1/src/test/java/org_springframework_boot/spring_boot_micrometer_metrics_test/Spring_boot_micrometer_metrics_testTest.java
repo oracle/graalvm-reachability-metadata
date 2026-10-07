@@ -11,6 +11,7 @@ import java.util.List;
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
+import io.micrometer.observation.Observation;
 import io.micrometer.observation.ObservationRegistry;
 import org.junit.jupiter.api.Test;
 
@@ -48,6 +49,19 @@ public class Spring_boot_micrometer_metrics_testTest {
 
             assertThat(counter.count()).isEqualTo(3.0);
         });
+    }
+
+    @Test
+    void autoConfigureMetricsRecordsObservationsAsMetrics() {
+        new ApplicationContextRunner()
+                .withUserConfiguration(AutoConfigureMetricsOnlyConfiguration.class)
+                .run((context) -> {
+                    ObservationRegistry observationRegistry = context.getBean(ObservationRegistry.class);
+                    Observation.start("application.operation", observationRegistry).stop();
+
+                    MeterRegistry meterRegistry = context.getBean(MeterRegistry.class);
+                    assertThat(meterRegistry.get("application.operation").timer().count()).isEqualTo(1);
+                });
     }
 
     @Test
