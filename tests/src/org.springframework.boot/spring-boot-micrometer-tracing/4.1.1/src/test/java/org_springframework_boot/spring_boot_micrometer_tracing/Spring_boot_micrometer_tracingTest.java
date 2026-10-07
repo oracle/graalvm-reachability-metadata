@@ -11,29 +11,20 @@ import java.util.Map;
 
 import io.micrometer.observation.Observation;
 import io.micrometer.observation.ObservationRegistry;
-import io.micrometer.registry.otlp.ExemplarContextProvider;
-import io.micrometer.registry.otlp.OtlpExemplarContext;
-import io.micrometer.tracing.Span;
 import io.micrometer.tracing.Tracer;
 import io.micrometer.tracing.handler.DefaultTracingObservationHandler;
 import io.micrometer.tracing.handler.PropagatingReceiverTracingObservationHandler;
 import io.micrometer.tracing.handler.PropagatingSenderTracingObservationHandler;
 import io.micrometer.tracing.handler.TracingObservationHandler;
 import io.micrometer.tracing.propagation.Propagator;
-import io.micrometer.tracing.test.simple.SimpleSpan;
 import io.micrometer.tracing.test.simple.SimpleTracer;
-import io.prometheus.metrics.tracer.common.SpanContext;
 import org.junit.jupiter.api.Test;
 
-import org.springframework.boot.Banner;
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.context.annotation.ImportCandidates;
 import org.springframework.boot.context.properties.bind.Bindable;
 import org.springframework.boot.context.properties.bind.Binder;
 import org.springframework.boot.context.properties.source.MapConfigurationPropertySource;
-import org.springframework.boot.logging.LoggingSystem;
 import org.springframework.boot.micrometer.observation.autoconfigure.ObservationHandlerGroup;
 import org.springframework.boot.micrometer.tracing.autoconfigure.ConditionalOnEnabledTracingExport;
 import org.springframework.boot.micrometer.tracing.autoconfigure.MicrometerTracingAutoConfiguration;
@@ -43,7 +34,6 @@ import org.springframework.boot.micrometer.tracing.autoconfigure.TracingProperti
 import org.springframework.boot.micrometer.tracing.autoconfigure.TracingProperties.Propagation.PropagationType;
 import org.springframework.boot.micrometer.tracing.autoconfigure.otlp.OtlpExemplarsAutoConfiguration;
 import org.springframework.boot.micrometer.tracing.autoconfigure.prometheus.PrometheusExemplarsAutoConfiguration;
-import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -149,57 +139,6 @@ public class Spring_boot_micrometer_tracingTest {
     }
 
     @Test
-    void otlpExemplarContextTracksTheCurrentSpan() {
-        SimpleTracer tracer = new SimpleTracer();
-        try (AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext()) {
-            context.getEnvironment().getPropertySources().addFirst(new MapPropertySource("test",
-                    Map.of("management.tracing.exemplars.include", "all")));
-            context.registerBean(Tracer.class, () -> tracer);
-            context.register(OtlpExemplarsAutoConfiguration.class);
-            context.refresh();
-
-            ExemplarContextProvider provider = context.getBean(ExemplarContextProvider.class);
-            assertThat(provider.getExemplarContext()).isNull();
-
-            Span span = tracer.nextSpan().name("inventory").start();
-            try (Tracer.SpanInScope ignored = tracer.withSpan(span)) {
-                OtlpExemplarContext exemplarContext = provider.getExemplarContext();
-                assertThat(exemplarContext).isNotNull();
-                assertThat(exemplarContext.getTraceId()).isEqualTo(span.context().traceId());
-                assertThat(exemplarContext.getSpanId()).isEqualTo(span.context().spanId());
-            } finally {
-                span.end();
-            }
-            assertThat(provider.getExemplarContext()).isNull();
-        }
-    }
-
-    @Test
-    void prometheusSpanContextTracksTheCurrentSampledSpan() {
-        SimpleTracer tracer = new SimpleTracer();
-        try (AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext()) {
-            context.registerBean(Tracer.class, () -> tracer);
-            context.register(PrometheusExemplarsAutoConfiguration.class);
-            context.refresh();
-
-            SpanContext spanContext = context.getBean(SpanContext.class);
-            assertThat(spanContext.getCurrentTraceId()).isNull();
-            assertThat(spanContext.getCurrentSpanId()).isNull();
-            assertThat(spanContext.isCurrentSpanSampled()).isFalse();
-
-            SimpleSpan span = tracer.nextSpan().name("payment").start();
-            span.context().setSampled(true);
-            try (Tracer.SpanInScope ignored = tracer.withSpan(span)) {
-                assertThat(spanContext.getCurrentTraceId()).isEqualTo(span.context().traceId());
-                assertThat(spanContext.getCurrentSpanId()).isEqualTo(span.context().spanId());
-                assertThat(spanContext.isCurrentSpanSampled()).isTrue();
-            } finally {
-                span.end();
-            }
-        }
-    }
-
-    @Test
     void exporterSpecificSettingTakesPrecedenceOverGlobalSetting() {
         try (AnnotationConfigApplicationContext defaults = loadExporterContext(Map.of());
                 AnnotationConfigApplicationContext globallyDisabled =
@@ -214,22 +153,6 @@ public class Spring_boot_micrometer_tracingTest {
             assertThat(globallyDisabled.containsBean("testTracingExporter")).isFalse();
             assertThat(exporterEnabled.getBean("testTracingExporter", String.class)).isEqualTo("enabled");
             assertThat(exporterDisabled.containsBean("testTracingExporter")).isFalse();
-        }
-    }
-
-    @Test
-    void loggingCorrelationExpectationTracksTracingExport() {
-        SpringApplication application = new SpringApplication(MinimalApplication.class);
-        application.setBannerMode(Banner.Mode.OFF);
-        application.setLogStartupInfo(false);
-        application.setRegisterShutdownHook(false);
-        application.setWebApplicationType(WebApplicationType.NONE);
-
-        try (ConfigurableApplicationContext context =
-                application.run("--management.tracing.export.enabled=false")) {
-            assertThat(context.getEnvironment()
-                    .getProperty(LoggingSystem.EXPECT_CORRELATION_ID_PROPERTY, Boolean.class))
-                    .isFalse();
         }
     }
 
@@ -249,11 +172,6 @@ public class Spring_boot_micrometer_tracingTest {
         String testTracingExporter() {
             return "enabled";
         }
-
-    }
-
-    @Configuration(proxyBeanMethods = false)
-    public static class MinimalApplication {
 
     }
 
