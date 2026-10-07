@@ -1,12 +1,12 @@
 {
   "add_new_library_support:2026-10-07": {
-    "timestamp": "2026-10-07T08:30:27.315926Z",
+    "timestamp": "2026-10-07T19:44:03.134752Z",
     "library": "org.springframework.boot:spring-boot-opentelemetry:4.1.1",
-    "starting_commit": "e0838c48a63d62480814e095d239f298b7146c18",
-    "ending_commit": "2be21a48f4a038605c1b8ccb4b25b86958c0ff32",
-    "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-luna",
+    "starting_commit": "0ec4e150783ac96a457638250a54b99d38274985",
+    "ending_commit": "c9c6372300c453a8032d66184a09e2d43c47073f",
+    "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-sol",
     "agent": "pi",
-    "model": "gpt-5.6-luna",
+    "model": "gpt-5.6-sol",
     "status": "success",
     "stats": {
       "version": "4.1.1",
@@ -18,78 +18,64 @@
       },
       "libraryCoverage": {
         "instruction": {
-          "covered": 785,
-          "missed": 2159,
-          "ratio": 0.266644,
+          "covered": 888,
+          "missed": 2056,
+          "ratio": 0.30163,
           "total": 2944
         },
         "line": {
-          "covered": 212,
-          "missed": 440,
-          "ratio": 0.325153,
+          "covered": 233,
+          "missed": 419,
+          "ratio": 0.357362,
           "total": 652
         },
         "method": {
-          "covered": 81,
-          "missed": 71,
-          "ratio": 0.532895,
+          "covered": 90,
+          "missed": 62,
+          "ratio": 0.592105,
           "total": 152
         }
       }
     },
     "library_preparation_preflight": {
-      "action": "advisory_preparation",
-      "agent_guidance": "Exercise the core SDK autoconfiguration (OpenTelemetrySdkAutoConfiguration, OpenTelemetryProperties, OpenTelemetryResourceAttributes) and the logging autoconfiguration (OtlpLoggingAutoConfiguration, OtlpLoggingProperties, OtlpGrpcLogRecordExporterBuilderCustomizer, OtlpHttpLogRecordExporterBuilderCustomizer, Transport) via ApplicationContextRunner + withPropertyValues under the management.opentelemetry.* and management.logging.export.otlp.* property namespaces, following the pattern already used in spring-boot-micrometer-tracing-opentelemetry's test. No environment variable or system property is required: management.opentelemetry.enabled and management.logging.export.enabled both default to enabled/match-if-missing, so the autoconfiguration activates with no external config. OpenTelemetryEnvironmentVariableEnvironmentPostProcessor can be tested by constructing a MockEnvironment/ConfigurableEnvironment directly in test code and invoking postProcessEnvironment, without needing real OS-level OTEL_* environment variables.",
-      "applied_setup": [
-        {
-          "kind": "dependency",
-          "coordinate": "io.opentelemetry:opentelemetry-exporter-otlp:1.62.0",
-          "result": "already_present",
-          "target": "tests/src/org.springframework.boot/spring-boot-opentelemetry/4.1.1/build.gradle"
-        }
+      "status": "completed",
+      "action": "no_action",
+      "issue_number": 9721,
+      "issue_label": "library-new-request",
+      "library": "org.springframework.boot:spring-boot-opentelemetry:4.1.1",
+      "summary": "spring-boot-opentelemetry is an autoconfiguration library that can be exercised in-process with ApplicationContextRunner. It needs no Docker image, environment variable or system property. The existing scaffold already declares the extra dependencies the tests use: spring-boot-autoconfigure, spring-boot-test, assertj and opentelemetry-exporter-otlp.",
+      "deterministic_setup": [],
+      "agent_guidance": "",
+      "risks": [
+        "I did not run Gradle or Native Image, so I did not check that the existing tests compile and pass. The test imports org.springframework.mock.env.MockEnvironment, which comes from spring-test. If that dependency is not already on the classpath transitively, it may need to be added if compilation fails.",
+        "OTLP exporter tests should use in-process configuration only. They should not make real network connections to a collector."
       ],
-      "deterministic_setup": [
-        {
-          "coordinate": "io.opentelemetry:opentelemetry-exporter-otlp:1.62.0",
-          "kind": "dependency",
-          "reason": "Required to load and exercise OtlpLoggingAutoConfiguration, OtlpGrpcLogRecordExporterBuilderCustomizer, and OtlpHttpLogRecordExporterBuilderCustomizer in org.springframework.boot.opentelemetry.autoconfigure.logging.otlp; not pulled in by spring-boot-opentelemetry's own POM (which only declares opent\n...[truncated]",
-          "scope": "testImplementation"
-        }
-      ],
+      "applied_setup": [],
       "input_evidence": [
         {
           "name": "issue",
-          "summary": "#9731 Support for org.springframework.boot:spring-boot-opentelemetry:4.1.1; label=library-new-request; body_chars=39"
+          "summary": "#9721 Support for org.springframework.boot:spring-boot-opentelemetry:4.1.1; label=library-new-request; body_chars=0"
         },
         {
           "name": "existing_tests",
-          "summary": "0 existing test file path(s) included"
+          "summary": "7 existing test file path(s) included"
         }
       ],
-      "input_tokens_used": 28,
-      "issue_label": "library-new-request",
-      "issue_number": 9731,
-      "library": "org.springframework.boot:spring-boot-opentelemetry:4.1.1",
       "model": "sonnet",
-      "output_tokens_used": 18120,
-      "risks": [
-        "Do not confuse this artifact with org.springframework.boot:spring-boot-starter-opentelemetry, which ships no class files (metadata already marks it not-for-native-image) — the issue's own title ('spring-boot-opentelemetry') is correct but the body gives no detail, so this distinction is easy to miss.",
-        "The docker.compose and testcontainers packages (OtlpLoggingDockerComposeConnectionDetailsFactory, GrafanaOtlpLoggingContainerConnectionDetailsFactory, OtelCollectorOltpLoggingContainerConnectionDetailsFactory) reference Docker images otel/opentelemetry-collector-contrib and grafana/otel-lgtm, neither currently pinned under allowed-docker-images/. The merged sibling module left its equivalent docker.compose/testcontainers packages in allowed-packages without any live container test, so this isn't treated as blocking here either — but if a future review demands exercising these specific classes,\n...[truncated]"
-      ],
-      "status": "completed",
-      "summary": "spring-boot-opentelemetry's logging.otlp package (OtlpLoggingAutoConfiguration and its gRPC/HTTP exporter customizers) references io.opentelemetry:opentelemetry-exporter-otlp types that are not a declared or transitive dependency of the library's own POM. The already-merged sibling spring-boot-micrometer-tracing-opentelemetry:4.1.1 (which itself depends on spring-boot-opentelemetry) hit the identical gap for its analogous tracing-exporter customizers and required adding this exact coordinate as testImplementation to exercise them. Without it, OtlpLoggingAutoConfiguration's @ConditionalOnClass guard silently skips activation, producing near-zero coverage on that package rather than a build failure."
+      "input_tokens_used": 4,
+      "output_tokens_used": 633
     },
     "metrics": {
-      "input_tokens_used": 765600,
-      "cached_input_tokens_used": 10974720,
-      "output_tokens_used": 61355,
-      "iterations": 17,
-      "cost_usd": 2.2311,
-      "generated_loc": 274,
-      "tested_library_loc": 212,
+      "input_tokens_used": 263583,
+      "cached_input_tokens_used": 3933440,
+      "output_tokens_used": 20951,
+      "iterations": 5,
+      "cost_usd": 3.9131,
+      "generated_loc": 408,
+      "tested_library_loc": 233,
       "metadata_entries": 66,
-      "test_only_metadata_entries": 169,
-      "code_coverage_percent": 32.52
+      "test_only_metadata_entries": 353,
+      "code_coverage_percent": 35.74
     },
     "artifacts": {
       "metadata_file": "metadata/org.springframework.boot/spring-boot-opentelemetry/4.1.1/reachability-metadata.json"
