@@ -50,6 +50,17 @@ public class Spring_boot_micrometer_metrics_testTest {
     }
 
     @Test
+    void autoConfigureMetricsImportsMetricsAutoConfiguration() {
+        new ApplicationContextRunner()
+                .withUserConfiguration(AutoConfigureMetricsOnlyConfiguration.class)
+                .run((context) -> {
+                    assertThat(context).hasSingleBean(MeterRegistry.class);
+                    assertThat(context).hasSingleBean(ObservationRegistry.class);
+                    assertThat(context.getBean(MeterRegistry.class)).isInstanceOf(SimpleMeterRegistry.class);
+                });
+    }
+
+    @Test
     void annotationDisablesExternalExportAndEnablesSimpleMetrics() {
         contextRunnerFor(MetricsExportDisabled.class).run((context) -> {
             assertThat(context.getBean(MeterRegistry.class)).isInstanceOf(SimpleMeterRegistry.class);
@@ -131,6 +142,11 @@ public class Spring_boot_micrometer_metrics_testTest {
             CompositeMeterRegistryAutoConfiguration.class, ObservationAutoConfiguration.class})
     @AutoConfigureMetrics
     static class MetricsTestConfiguration {
+    }
+
+    @Configuration(proxyBeanMethods = false)
+    @AutoConfigureMetrics
+    static class AutoConfigureMetricsOnlyConfiguration {
     }
 
     @AutoConfigureMetrics(export = false)
