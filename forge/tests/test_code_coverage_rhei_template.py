@@ -372,6 +372,14 @@ class CodeCoverageRheiTemplateTests(unittest.TestCase):
                     self.assertIn(f"`## Handoff from {source}` section below", instructions)
                     self.assertNotIn("guidance only", instructions)
                     self.assertNotIn("Read the prompt at", instructions)
+                    # §AR-code-coverage-improvement.2: the coverage suite is the
+                    # only Gradle task; finalization owns Spotless.
+                    self.assertIn(
+                        "`./gradlew codeCoverageTest -Pcoordinates=<coordinate>`",
+                        instructions,
+                    )
+                    self.assertIn("is the only Gradle task you run", instructions)
+                    self.assertNotIn("./gradlew spotlessApply", instructions)
 
     def test_deep_pass_runs_as_dispatched_group_sessions(self) -> None:
         """Measurement queues the pass, the dispatcher loops over it with the
