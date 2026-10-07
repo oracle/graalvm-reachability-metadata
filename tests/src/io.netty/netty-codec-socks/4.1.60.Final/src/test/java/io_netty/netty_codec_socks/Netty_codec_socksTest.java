@@ -10,6 +10,8 @@ import java.net.InetAddress;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
+import io.netty.buffer.UnpooledByteBufAllocator;
+import io.netty.channel.ChannelHandler;
 import io.netty.channel.embedded.EmbeddedChannel;
 import io.netty.handler.codec.socksx.SocksPortUnificationServerHandler;
 import io.netty.handler.codec.socksx.SocksVersion;
@@ -57,10 +59,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class Netty_codec_socksTest {
     @Test
     void socks4MessagesRoundTripThroughClientAndServerCodecs() {
-        EmbeddedChannel clientEncoder = new EmbeddedChannel(Socks4ClientEncoder.INSTANCE);
-        EmbeddedChannel serverDecoder = new EmbeddedChannel(new Socks4ServerDecoder());
-        EmbeddedChannel serverEncoder = new EmbeddedChannel(Socks4ServerEncoder.INSTANCE);
-        EmbeddedChannel clientDecoder = new EmbeddedChannel(new Socks4ClientDecoder());
+        EmbeddedChannel clientEncoder = newChannel(Socks4ClientEncoder.INSTANCE);
+        EmbeddedChannel serverDecoder = newChannel(new Socks4ServerDecoder());
+        EmbeddedChannel serverEncoder = newChannel(Socks4ServerEncoder.INSTANCE);
+        EmbeddedChannel clientDecoder = newChannel(new Socks4ClientDecoder());
         try {
             Socks4CommandRequest request = new DefaultSocks4CommandRequest(
                     Socks4CommandType.CONNECT, "192.0.2.10", 1080, "netty-user");
@@ -97,8 +99,8 @@ public class Netty_codec_socksTest {
 
     @Test
     void socks4aCommandRequestSupportsDomainNames() {
-        EmbeddedChannel clientEncoder = new EmbeddedChannel(Socks4ClientEncoder.INSTANCE);
-        EmbeddedChannel serverDecoder = new EmbeddedChannel(new Socks4ServerDecoder());
+        EmbeddedChannel clientEncoder = newChannel(Socks4ClientEncoder.INSTANCE);
+        EmbeddedChannel serverDecoder = newChannel(new Socks4ServerDecoder());
         try {
             Socks4CommandRequest request = new DefaultSocks4CommandRequest(
                     Socks4CommandType.BIND, "destination.example.test", 9020, "domain-user");
@@ -120,12 +122,12 @@ public class Netty_codec_socksTest {
 
     @Test
     void socks5InitialNegotiationAndPasswordAuthenticationRoundTrip() {
-        EmbeddedChannel clientEncoder = new EmbeddedChannel(Socks5ClientEncoder.DEFAULT);
-        EmbeddedChannel serverEncoder = new EmbeddedChannel(Socks5ServerEncoder.DEFAULT);
-        EmbeddedChannel initialRequestDecoder = new EmbeddedChannel(new Socks5InitialRequestDecoder());
-        EmbeddedChannel initialResponseDecoder = new EmbeddedChannel(new Socks5InitialResponseDecoder());
-        EmbeddedChannel passwordRequestDecoder = new EmbeddedChannel(new Socks5PasswordAuthRequestDecoder());
-        EmbeddedChannel passwordResponseDecoder = new EmbeddedChannel(new Socks5PasswordAuthResponseDecoder());
+        EmbeddedChannel clientEncoder = newChannel(Socks5ClientEncoder.DEFAULT);
+        EmbeddedChannel serverEncoder = newChannel(Socks5ServerEncoder.DEFAULT);
+        EmbeddedChannel initialRequestDecoder = newChannel(new Socks5InitialRequestDecoder());
+        EmbeddedChannel initialResponseDecoder = newChannel(new Socks5InitialResponseDecoder());
+        EmbeddedChannel passwordRequestDecoder = newChannel(new Socks5PasswordAuthRequestDecoder());
+        EmbeddedChannel passwordResponseDecoder = newChannel(new Socks5PasswordAuthResponseDecoder());
         try {
             Socks5InitialRequest initialRequest = new DefaultSocks5InitialRequest(
                     Socks5AuthMethod.NO_AUTH, Socks5AuthMethod.PASSWORD);
@@ -186,10 +188,10 @@ public class Netty_codec_socksTest {
 
     @Test
     void portUnificationServerHandlerSelectsSocks4AndSocks5Decoders() {
-        EmbeddedChannel socks4Encoder = new EmbeddedChannel(Socks4ClientEncoder.INSTANCE);
-        EmbeddedChannel socks4UnifiedServer = new EmbeddedChannel(new SocksPortUnificationServerHandler());
-        EmbeddedChannel socks5Encoder = new EmbeddedChannel(Socks5ClientEncoder.DEFAULT);
-        EmbeddedChannel socks5UnifiedServer = new EmbeddedChannel(new SocksPortUnificationServerHandler());
+        EmbeddedChannel socks4Encoder = newChannel(Socks4ClientEncoder.INSTANCE);
+        EmbeddedChannel socks4UnifiedServer = newChannel(new SocksPortUnificationServerHandler());
+        EmbeddedChannel socks5Encoder = newChannel(Socks5ClientEncoder.DEFAULT);
+        EmbeddedChannel socks5UnifiedServer = newChannel(new SocksPortUnificationServerHandler());
         try {
             Socks4CommandRequest socks4Request = decode(
                     socks4UnifiedServer,
@@ -229,10 +231,10 @@ public class Netty_codec_socksTest {
         Socks5AddressDecoder taggingDecoder = (addressType, in) ->
                 "decoded:" + Socks5AddressDecoder.DEFAULT.decodeAddress(addressType, in);
 
-        EmbeddedChannel clientEncoder = new EmbeddedChannel(new Socks5ClientEncoder(aliasingEncoder));
-        EmbeddedChannel serverDecoder = new EmbeddedChannel(new Socks5CommandRequestDecoder(taggingDecoder));
-        EmbeddedChannel serverEncoder = new EmbeddedChannel(new Socks5ServerEncoder(aliasingEncoder));
-        EmbeddedChannel clientDecoder = new EmbeddedChannel(new Socks5CommandResponseDecoder(taggingDecoder));
+        EmbeddedChannel clientEncoder = newChannel(new Socks5ClientEncoder(aliasingEncoder));
+        EmbeddedChannel serverDecoder = newChannel(new Socks5CommandRequestDecoder(taggingDecoder));
+        EmbeddedChannel serverEncoder = newChannel(new Socks5ServerEncoder(aliasingEncoder));
+        EmbeddedChannel clientDecoder = newChannel(new Socks5CommandResponseDecoder(taggingDecoder));
         try {
             Socks5CommandRequest request = new DefaultSocks5CommandRequest(
                     Socks5CommandType.CONNECT, Socks5AddressType.DOMAIN, "alias.example.test", 443);
@@ -265,7 +267,7 @@ public class Netty_codec_socksTest {
 
     @Test
     void replayingDecodersWaitForCompleteFramesBeforeEmittingMessages() {
-        EmbeddedChannel passwordRequestDecoder = new EmbeddedChannel(new Socks5PasswordAuthRequestDecoder());
+        EmbeddedChannel passwordRequestDecoder = newChannel(new Socks5PasswordAuthRequestDecoder());
         try {
             ByteBuf firstFragment = Unpooled.copiedBuffer(new byte[] {0x01, 0x04, 'u' });
             ByteBuf secondFragment = Unpooled.copiedBuffer(
@@ -311,8 +313,8 @@ public class Netty_codec_socksTest {
 
     private static void assertCommandRequestRoundTrip(Socks5AddressType addressType, String address, int port)
             throws Exception {
-        EmbeddedChannel clientEncoder = new EmbeddedChannel(Socks5ClientEncoder.DEFAULT);
-        EmbeddedChannel serverDecoder = new EmbeddedChannel(new Socks5CommandRequestDecoder());
+        EmbeddedChannel clientEncoder = newChannel(Socks5ClientEncoder.DEFAULT);
+        EmbeddedChannel serverDecoder = newChannel(new Socks5CommandRequestDecoder());
         try {
             Socks5CommandRequest request = new DefaultSocks5CommandRequest(
                     Socks5CommandType.CONNECT, addressType, address, port);
@@ -334,8 +336,8 @@ public class Netty_codec_socksTest {
 
     private static void assertCommandResponseRoundTrip(Socks5AddressType addressType, String address, int port)
             throws Exception {
-        EmbeddedChannel serverEncoder = new EmbeddedChannel(Socks5ServerEncoder.DEFAULT);
-        EmbeddedChannel clientDecoder = new EmbeddedChannel(new Socks5CommandResponseDecoder());
+        EmbeddedChannel serverEncoder = newChannel(Socks5ServerEncoder.DEFAULT);
+        EmbeddedChannel clientDecoder = newChannel(new Socks5CommandResponseDecoder());
         try {
             Socks5CommandResponse response = new DefaultSocks5CommandResponse(
                     Socks5CommandStatus.SUCCESS, addressType, address, port);
@@ -363,6 +365,12 @@ public class Netty_codec_socksTest {
         } else {
             assertThat(actual).isEqualTo(expected);
         }
+    }
+
+    private static EmbeddedChannel newChannel(ChannelHandler... handlers) {
+        EmbeddedChannel channel = new EmbeddedChannel(handlers);
+        channel.config().setAllocator(UnpooledByteBufAllocator.DEFAULT);
+        return channel;
     }
 
     private static ByteBuf encode(EmbeddedChannel channel, Object message) {
