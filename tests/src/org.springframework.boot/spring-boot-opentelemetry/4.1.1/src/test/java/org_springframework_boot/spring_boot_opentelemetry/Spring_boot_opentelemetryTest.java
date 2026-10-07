@@ -174,6 +174,22 @@ public class Spring_boot_opentelemetryTest {
     }
 
     @Test
+    void suppliedConnectionDetailsEnableHttpExportWithoutAnEndpointProperty() {
+        this.contextRunner
+                .withPropertyValues("management.opentelemetry.enabled=true", "management.logging.export.enabled=true",
+                        "management.logging.export.otlp.enabled=true")
+                .withBean(OtlpLoggingConnectionDetails.class,
+                        () -> (transport) -> "http://connection-details.example.test/v1/logs")
+                .run((context) -> {
+                    assertThat(context.getBean(OtlpLoggingProperties.class).getEndpoint()).isNull();
+                    assertThat(context).hasSingleBean(OtlpHttpLogRecordExporter.class);
+                    assertThat(context.getBean(OtlpHttpLogRecordExporter.class).toString())
+                            .contains("endpoint=http://connection-details.example.test/v1/logs");
+                    assertSdkShutdown(context);
+                });
+    }
+
+    @Test
     void disabledLoggingExportDoesNotCreateAnOtlpExporter() {
         this.contextRunner
                 .withPropertyValues("management.logging.export.otlp.enabled=false",
