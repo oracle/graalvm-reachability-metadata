@@ -6,9 +6,12 @@
  */
 package org_springframework_boot.spring_boot_micrometer_tracing_opentelemetry;
 
+import java.nio.charset.StandardCharsets;
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -16,6 +19,7 @@ import io.opentelemetry.api.OpenTelemetry;
 import io.opentelemetry.api.trace.Span;
 import io.opentelemetry.api.trace.SpanContext;
 import io.opentelemetry.api.trace.TraceFlags;
+import io.opentelemetry.api.trace.Tracer;
 import io.opentelemetry.api.trace.TraceState;
 import io.opentelemetry.context.Context;
 import io.opentelemetry.context.propagation.TextMapGetter;
@@ -25,6 +29,7 @@ import io.opentelemetry.exporter.otlp.http.trace.OtlpHttpSpanExporter;
 import io.opentelemetry.exporter.otlp.http.trace.OtlpHttpSpanExporterBuilder;
 import io.opentelemetry.exporter.otlp.trace.OtlpGrpcSpanExporter;
 import io.opentelemetry.exporter.otlp.trace.OtlpGrpcSpanExporterBuilder;
+import io.opentelemetry.exporter.zipkin.ZipkinSpanExporter;
 import io.opentelemetry.sdk.common.CompletableResultCode;
 import io.opentelemetry.sdk.resources.Resource;
 import io.opentelemetry.sdk.trace.SdkTracerProvider;
@@ -52,11 +57,14 @@ import org.springframework.boot.micrometer.tracing.opentelemetry.autoconfigure.o
 import org.springframework.boot.micrometer.tracing.opentelemetry.autoconfigure.otlp.OtlpTracingConnectionDetails;
 import org.springframework.boot.micrometer.tracing.opentelemetry.autoconfigure.otlp.OtlpTracingProperties;
 import org.springframework.boot.micrometer.tracing.opentelemetry.autoconfigure.otlp.Transport;
+import org.springframework.boot.micrometer.tracing.opentelemetry.autoconfigure.zipkin.ZipkinWithOpenTelemetryTracingAutoConfiguration;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
 import org.springframework.boot.testcontainers.service.connection.ServiceConnectionAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import zipkin2.reporter.BytesMessageSender;
+import zipkin2.reporter.Encoding;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -188,6 +196,30 @@ public class Spring_boot_micrometer_tracing_opentelemetryTest {
                             .contains("endpoint=http://collector.example.test:4317", "compressorEncoding=gzip");
                     assertThat(context.getBean(OtlpGrpcSpanExporter.class).shutdown().join(10, TimeUnit.SECONDS)
                             .isSuccess()).isTrue();
+                });
+    }
+
+    @Test
+    void zipkinAutoConfigurationCreatesExporterThatSendsEncodedSpans() {
+        new ApplicationContextRunner()
+                .withConfiguration(AutoConfigurations.of(ZipkinWithOpenTelemetryTracingAutoConfiguration.class))
+                .withUserConfiguration(ZipkinTestConfiguration.class)
+                .withPropertyValues("management.tracing.export.zipkin.enabled=true")
+                .run((context) -> {
+                    assertThat(context).hasSingleBean(ZipkinSpanExporter.class);
+                    RecordingZipkinSender sender = context.getBean(RecordingZipkinSender.class);
+                    ZipkinSpanExporter exporter = context.getBean(ZipkinSpanExporter.class);
+
+                    try (SdkTracerProvider provider = SdkTracerProvider.builder()
+                            .addSpanProcessor(SimpleSpanProcessor.create(exporter))
+                            .build()) {
+                        Tracer tracer = provider.get("zipkin-test");
+                        tracer.spanBuilder("operation").startSpan().end();
+                    }
+
+                    assertThat(sender.messages).hasSize(1);
+                    assertThat(new String(sender.messages.get(0), StandardCharsets.UTF_8))
+                            .contains("\"name\":\"operation\"");
                 });
     }
 
@@ -340,6 +372,21 @@ public class Spring_boot_micrometer_tracing_opentelemetryTest {
     }
 
     @Configuration(proxyBeanMethods = false)
+    static class ZipkinTestConfiguration {
+
+        @Bean
+        Encoding zipkinEncoding() {
+            return Encoding.JSON;
+        }
+
+        @Bean
+        RecordingZipkinSender zipkinSender() {
+            return new RecordingZipkinSender();
+        }
+
+    }
+
+    @Configuration(proxyBeanMethods = false)
     static class OtlpContainerConfiguration {
 
         @Bean(destroyMethod = "")
@@ -368,6 +415,30 @@ public class Spring_boot_micrometer_tracing_opentelemetryTest {
                 case 4318 -> 14318;
                 default -> throw new IllegalArgumentException("Unexpected OTLP port: " + originalPort);
             };
+        }
+
+    }
+
+    static final class RecordingZipkinSender extends BytesMessageSender.Base {
+
+        private final List<byte[]> messages = new ArrayList<>();
+
+        RecordingZipkinSender() {
+            super(Encoding.JSON);
+        }
+
+        @Override
+        public int messageMaxBytes() {
+            return Integer.MAX_VALUE;
+        }
+
+        @Override
+        public void send(List<byte[]> encodedSpans) {
+            this.messages.addAll(encodedSpans);
+        }
+
+        @Override
+        public void close() {
         }
 
     }
