@@ -14,7 +14,10 @@ import io.micrometer.observation.ObservationRegistry;
 import org.junit.jupiter.api.Test;
 
 import org.springframework.boot.context.annotation.ImportCandidates;
+import org.springframework.boot.micrometer.metrics.autoconfigure.MetricsAutoConfiguration;
+import org.springframework.boot.micrometer.metrics.autoconfigure.export.simple.SimpleMetricsExportAutoConfiguration;
 import org.springframework.boot.micrometer.metrics.test.autoconfigure.AutoConfigureMetrics;
+import org.springframework.boot.micrometer.observation.autoconfigure.ObservationAutoConfiguration;
 import org.springframework.boot.test.util.TestPropertyValues;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.support.GenericApplicationContext;
@@ -47,16 +50,16 @@ public class AutoConfigureMetricsIntegrationTest {
     }
 
     @Test
-    void annotationAllowsAnEnabledSimpleRegistryToRecordMetrics() {
+    void publishedAutoConfigurationsProvideAnEnabledSimpleRegistry() {
         try (AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext()) {
             TestPropertyValues.of("management.simple.metrics.export.enabled=true").applyTo(context);
-            context.register(MetricsEnabledConfiguration.class);
+            context.register(MetricsAutoConfiguration.class, SimpleMetricsExportAutoConfiguration.class,
+                    ObservationAutoConfiguration.class);
             context.refresh();
 
             MeterRegistry registry = context.getBean(MeterRegistry.class);
             ObservationRegistry observationRegistry = context.getBean(ObservationRegistry.class);
             Counter counter = registry.counter("test.requests", "outcome", "accepted");
-
             counter.increment(2.0);
 
             assertThat(registry.find("test.requests").tag("outcome", "accepted").counter()).isSameAs(counter);
@@ -74,6 +77,18 @@ public class AutoConfigureMetricsIntegrationTest {
                     .isEqualTo("false");
             assertThat(context.getEnvironment().getProperty("management.simple.metrics.export.enabled"))
                     .isEqualTo("true");
+        }
+    }
+
+    @Test
+    void globalPropertyEnablesMetricsForAnUnannotatedTest() {
+        try (GenericApplicationContext context = new GenericApplicationContext()) {
+            TestPropertyValues.of("spring.test.metrics.export=true").applyTo(context);
+            customizeContext(UnannotatedConfiguration.class, context);
+
+            assertThat(context.getEnvironment().getProperty("spring.test.metrics.export")).isEqualTo("true");
+            assertThat(context.getEnvironment().getProperty("management.defaults.metrics.export.enabled")).isNull();
+            assertThat(context.getEnvironment().getProperty("management.simple.metrics.export.enabled")).isNull();
         }
     }
 
