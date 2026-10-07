@@ -6,6 +6,10 @@
  */
 package org_springframework_boot.spring_boot_micrometer_metrics_test;
 
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 import java.util.List;
 
 import io.micrometer.core.instrument.Counter;
@@ -72,6 +76,23 @@ public class Spring_boot_micrometer_metrics_testTest {
 
             Counter counter = context.getBean(MeterRegistry.class)
                 .counter("application.requests", "status", "accepted");
+            counter.increment();
+
+            assertThat(counter.count()).isEqualTo(1.0);
+        });
+    }
+
+    @Test
+    void composedAnnotationDisablesExternalExportAndEnablesSimpleMetrics() {
+        contextRunnerFor(MetricsExportDisabledComposed.class).run((context) -> {
+            assertThat(context.getBean(MeterRegistry.class)).isInstanceOf(SimpleMeterRegistry.class);
+            assertThat(context.getEnvironment().getProperty("management.defaults.metrics.export.enabled"))
+                .isEqualTo("false");
+            assertThat(context.getEnvironment().getProperty("management.simple.metrics.export.enabled"))
+                .isEqualTo("true");
+
+            Counter counter = context.getBean(MeterRegistry.class)
+                .counter("application.requests", "status", "composed-annotation");
             counter.increment();
 
             assertThat(counter.count()).isEqualTo(1.0);
@@ -229,6 +250,12 @@ public class Spring_boot_micrometer_metrics_testTest {
 
     @AutoConfigureMetrics(export = false)
     static class MetricsExportDisabled {
+    }
+
+    @Target(ElementType.TYPE)
+    @Retention(RetentionPolicy.RUNTIME)
+    @AutoConfigureMetrics(export = false)
+    @interface MetricsExportDisabledComposed {
     }
 
     @AutoConfigureMetrics
