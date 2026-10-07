@@ -1,0 +1,16 @@
+```json
+{
+  "action": "no_action",
+  "summary": "zstd-jni 1.5.7-18 loads its native library the same way as the already-supported 1.5.7-x versions: it extracts a bundled JNI .so from the jar into a temp file and calls System.load. This is repairable with resource and JNI metadata, and no extra dependency, Docker image or environment setup is needed.",
+  "deterministic_setup": [],
+  "agent_guidance": "Reuse the existing 1.5.2-5 test scaffold. If the native-image run fails, check the reachability-metadata for resource entries covering /linux/<arch>/libzstd-jni-1.5.7-18.so, since the loader looks the library up by a versioned name. Also check the JNI entries for the com.github.luben.zstd classes, which are conditioned on typeReached. The failure excerpt in the issue is truncated, so the actual error is not visible.",
+  "risks": [
+    "The issue excerpt is truncated and shows no actual error. The cause (probably a resource pattern or JNI entry tied to the versioned library name) is inferred from the source, not from the failure.",
+    "The metadata directory for 1.5.7-2 currently covers 1.5.7-3 to 1.5.7-17 in index.json. 1.5.7-18 may need a resource pattern or JNI entry for its new library file name."
+  ]
+}
+```
+
+I fetched the 1.5.7-18 sources and read `Native.load` in `com.github.luben.zstd.util.Native`. I did not run the build, so the failing operation itself is unconfirmed.
+
+`Native.load` first tries `System.loadLibrary("zstd-jni-<version>")`. If that fails, it opens the jar resource `/linux/<arch>/libzstd-jni-<version>.so`, copies it to a temp file, and calls `System.load`. Native Image supports all of this: resource inclusion and JNI registration are the kind of thing reachability metadata covers. Nothing here defines classes at runtime, uses an agent or substitution, or loads classes from outside the image. Because the failure is repairable, I did not take the `skip_unsupported` path.

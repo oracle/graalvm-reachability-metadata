@@ -1,0 +1,38 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :populateArtifactURLs
+I filled in the missing fields for the `1.5.7-18` entry in `metadata/com.github.luben/zstd-jni/index.json`. I didn't run any JSON or Gradle checks on the edited file.
+
+- **`source-code-url`:** `https://repo1.maven.org/maven2/com/github/luben/zstd-jni/$version$/zstd-jni-$version$-sources.jar`. The Maven Central sources jar for 1.5.7-18 returns HTTP 200.
+- **`repository-url`:** `https://github.com/luben/zstd-jni`.
+- **`test-code-url`:** `https://github.com/luben/zstd-jni/tree/v$version$/src/test`. The `v1.5.7-18` tag exists on GitHub and the `src/test` path loads (HTTP 200). I preferred this because the tests aren't published on Maven.
+- **`documentation-url`:** `https://repo1.maven.org/maven2/com/github/luben/zstd-jni/$version$/zstd-jni-$version$-javadoc.jar`. The Maven Central javadoc jar for 1.5.7-18 returns HTTP 200.
+- **`description`:** "zstd-jni provides JNI bindings for the Zstandard compression library to Java and other JVM languages. It exposes byte-array and stream-based APIs for compressing and decompressing data using bundled native binaries."
+- **`language`:** left absent. It's a Java library, not Kotlin, Groovy or Scala specific.
+
+The only tested version is `1.5.7-18`, so each template renders correctly for every alias. The URLs and description follow the pattern already used by the neighbouring `1.5.4-2` and `1.5.5-1` entries. I changed nothing else in the file.
+Ran agent for com.github.luben:zstd-jni:1.5.7-18 (exit 0). Log: /home/oracle/oracle/metadata2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10312-99d382ac/build/agent-url-discovery-logs/com.github.luben-zstd-jni-1.5.7-18.log
+Completed populateArtifactURLs: invoked=1, prompted=0, skipped=0, overwriteExisting=false, verifyArtifactSources=false, limit=null
+
+[Incubating] Problems report is available at: file:///home/oracle/oracle/metadata2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10312-99d382ac/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 16s
+9 actionable tasks: 1 executed, 8 up-to-date

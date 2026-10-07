@@ -1,0 +1,56 @@
+{
+  "fix_ni_run:2026-10-07": {
+    "timestamp": "2026-10-07T00:27:36.858970Z",
+    "library": "com.github.luben:zstd-jni:1.5.7-18",
+    "starting_commit": "1409929783774055a7be25dcca03be75afe28fbc",
+    "ending_commit": "1409929783774055a7be25dcca03be75afe28fbc",
+    "strategy_name": "library_update_pi_gpt-5.6-sol",
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "status": "failure",
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "no_action",
+      "issue_number": 10312,
+      "issue_label": "fails-native-image-run",
+      "library": "com.github.luben:zstd-jni:1.5.7-18",
+      "summary": "zstd-jni 1.5.7-18 loads its native library the same way as the already-supported 1.5.7-x versions: it extracts a bundled JNI .so from the jar into a temp file and calls System.load. This is repairable with resource and JNI metadata, and no extra dependency, Docker image or environment setup is needed.",
+      "deterministic_setup": [],
+      "agent_guidance": "Reuse the existing 1.5.2-5 test scaffold. If the native-image run fails, check the reachability-metadata for resource entries covering /linux/<arch>/libzstd-jni-1.5.7-18.so, since the loader looks the library up by a versioned name. Also check the JNI entries for the com.github.luben.zstd classes, which are conditioned on typeReached. The failure excerpt in the issue is truncated, so the actual error is not visible.",
+      "risks": [
+        "The issue excerpt is truncated and shows no actual error. The cause (probably a resource pattern or JNI entry tied to the versioned library name) is inferred from the source, not from the failure.",
+        "The metadata directory for 1.5.7-2 currently covers 1.5.7-3 to 1.5.7-17 in index.json. 1.5.7-18 may need a resource pattern or JNI entry for its new library file name."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#10312 [Automation] native-image run fails for com.github.luben:zstd-jni:1.5.7-18; label=fails-native-image-run; body_chars=8015"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "8 existing test file path(s) included"
+        }
+      ],
+      "current_library": "com.github.luben:zstd-jni:1.5.2-5",
+      "new_version": "1.5.7-18",
+      "model": "sonnet",
+      "input_tokens_used": 8,
+      "output_tokens_used": 1548
+    },
+    "metrics": {
+      "input_tokens_used": 0,
+      "cached_input_tokens_used": 0,
+      "output_tokens_used": 0,
+      "iterations": 3,
+      "cost_usd": 0.0,
+      "generated_loc": 0,
+      "tested_library_loc": 0,
+      "metadata_entries": 0,
+      "code_coverage_percent": 0.0
+    },
+    "artifacts": {
+      "metadata_file": "None"
+    }
+  }
+}

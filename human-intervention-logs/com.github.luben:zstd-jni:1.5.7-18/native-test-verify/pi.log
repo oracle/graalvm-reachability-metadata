@@ -1,0 +1,13 @@
+Fixed `metadata/com.github.luben/zstd-jni/1.5.7-18/reachability-metadata.json`.
+
+Root cause was missing Foreign Function & Memory API downcall registrations for `ZstdBinding`, not unsupported behavior. Added five conditional downcall signatures, including both critical heap-access variants.
+
+Verification with the exact requested GraalVM and reproduce command:
+
+- 4 tests successful
+- 0 tests failed
+- `checkMetadataFiles` passed
+- `git diff --check` passed
+- `fissile check --staged` passed
+
+No `Caused by:` lines were present in the full failure outputs.

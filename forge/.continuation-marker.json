@@ -1,0 +1,79 @@
+{
+  "continueFrom": "finalization",
+  "coordinate": "com.github.luben:zstd-jni:1.5.7-18",
+  "failure": {
+    "operand": "reporter-requested metadata",
+    "phase": "explore",
+    "step": "generate_tests()"
+  },
+  "issueNumber": 10312,
+  "label": "fails-native-image-run",
+  "libraryPreparationPreflight": {
+    "action": "no_action",
+    "agent_guidance": "Reuse the existing 1.5.2-5 test scaffold. If the native-image run fails, check the reachability-metadata for resource entries covering /linux/<arch>/libzstd-jni-1.5.7-18.so, since the loader looks the library up by a versioned name. Also check the JNI entries for the com.github.luben.zstd classes, which are conditioned on typeReached. The failure excerpt in the issue is truncated, so the actual error is not visible.",
+    "applied_setup": [],
+    "current_library": "com.github.luben:zstd-jni:1.5.2-5",
+    "deterministic_setup": [],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#10312 [Automation] native-image run fails for com.github.luben:zstd-jni:1.5.7-18; label=fails-native-image-run; body_chars=8015"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "8 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 8,
+    "issue_label": "fails-native-image-run",
+    "issue_number": 10312,
+    "library": "com.github.luben:zstd-jni:1.5.7-18",
+    "model": "sonnet",
+    "new_version": "1.5.7-18",
+    "output_tokens_used": 1548,
+    "risks": [
+      "The issue excerpt is truncated and shows no actual error. The cause (probably a resource pattern or JNI entry tied to the versioned library name) is inferred from the source, not from the failure.",
+      "The metadata directory for 1.5.7-2 currently covers 1.5.7-3 to 1.5.7-17 in index.json. 1.5.7-18 may need a resource pattern or JNI entry for its new library file name."
+    ],
+    "status": "completed",
+    "summary": "zstd-jni 1.5.7-18 loads its native library the same way as the already-supported 1.5.7-x versions: it extracts a bundled JNI .so from the jar into a temp file and calls System.load. This is repairable with resource and JNI metadata, and no extra dependency, Docker image or environment setup is needed."
+  },
+  "libraryUpdateRoute": null,
+  "newVersion": "1.5.7-18",
+  "phases": {
+    "explore": {
+      "chunkClassCount": null,
+      "chunkProcessedClassCount": 0,
+      "exhaustedClasses": [],
+      "status": "skipped"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": null,
+      "status": "completed"
+    },
+    "publication": {
+      "branch": null,
+      "coverageFollowUpIssueNumber": null,
+      "isPushed": false,
+      "publicationId": null,
+      "publicationTimestamp": null,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": true,
+      "status": "completed"
+    }
+  },
+  "preservedBranch": "ai/kimeta/human-intervention/issue-10312-fails-native-image-run-com.github.luben-zstd-jni-1.5.7-18-adce36c2",
+  "publicationMetrics": {
+    "extras": {},
+    "library": "com.github.luben:zstd-jni:1.5.7-18",
+    "timestamp": "2026-10-07T00:27:36.858970Z"
+  },
+  "schemaVersion": 1,
+  "strategyName": "library_update_pi_gpt-5.6-sol"
+}

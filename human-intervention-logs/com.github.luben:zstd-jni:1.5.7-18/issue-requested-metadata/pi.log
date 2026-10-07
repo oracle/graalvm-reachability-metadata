@@ -1,0 +1,11 @@
+Updated `tests/src/com.github.luben/zstd-jni/1.5.2-5/src/test/java/com_github_luben/zstd_jni/Zstd_jniTest.java`:
+
+- Exercises the reported foreign downcall through `ZstdInputStream`.
+- Decompresses valid data produced by `Zstd.compress`.
+- Verifies the complete decompressed payload.
+- Removes swallowed I/O failures.
+- Makes the test class public.
+
+The existing `1.5.7-18` metadata already contains the requested `() -> jlong` downcall conditioned on `typeReached: com.github.luben.zstd.ZstdBinding`.
+
+Tests were not run, per instruction. `git diff --check` passes.
