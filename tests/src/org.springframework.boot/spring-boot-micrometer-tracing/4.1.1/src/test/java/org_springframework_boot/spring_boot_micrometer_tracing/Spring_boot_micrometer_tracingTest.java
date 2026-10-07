@@ -20,7 +20,9 @@ import io.micrometer.tracing.handler.PropagatingReceiverTracingObservationHandle
 import io.micrometer.tracing.handler.PropagatingSenderTracingObservationHandler;
 import io.micrometer.tracing.handler.TracingObservationHandler;
 import io.micrometer.tracing.propagation.Propagator;
+import io.micrometer.tracing.test.simple.SimpleSpan;
 import io.micrometer.tracing.test.simple.SimpleTracer;
+import io.prometheus.metrics.tracer.common.SpanContext;
 import org.junit.jupiter.api.Test;
 
 import org.springframework.boot.Banner;
@@ -169,6 +171,31 @@ public class Spring_boot_micrometer_tracingTest {
                 span.end();
             }
             assertThat(provider.getExemplarContext()).isNull();
+        }
+    }
+
+    @Test
+    void prometheusSpanContextTracksTheCurrentSampledSpan() {
+        SimpleTracer tracer = new SimpleTracer();
+        try (AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext()) {
+            context.registerBean(Tracer.class, () -> tracer);
+            context.register(PrometheusExemplarsAutoConfiguration.class);
+            context.refresh();
+
+            SpanContext spanContext = context.getBean(SpanContext.class);
+            assertThat(spanContext.getCurrentTraceId()).isNull();
+            assertThat(spanContext.getCurrentSpanId()).isNull();
+            assertThat(spanContext.isCurrentSpanSampled()).isFalse();
+
+            SimpleSpan span = tracer.nextSpan().name("payment").start();
+            span.context().setSampled(true);
+            try (Tracer.SpanInScope ignored = tracer.withSpan(span)) {
+                assertThat(spanContext.getCurrentTraceId()).isEqualTo(span.context().traceId());
+                assertThat(spanContext.getCurrentSpanId()).isEqualTo(span.context().spanId());
+                assertThat(spanContext.isCurrentSpanSampled()).isTrue();
+            } finally {
+                span.end();
+            }
         }
     }
 
