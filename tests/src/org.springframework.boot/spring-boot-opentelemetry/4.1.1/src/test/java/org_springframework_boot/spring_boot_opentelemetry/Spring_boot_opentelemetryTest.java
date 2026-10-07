@@ -7,17 +7,25 @@
 package org_springframework_boot.spring_boot_opentelemetry;
 
 import java.time.Duration;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import io.opentelemetry.api.common.AttributeKey;
+import io.opentelemetry.api.logs.Logger;
 import io.opentelemetry.exporter.otlp.http.logs.OtlpHttpLogRecordExporter;
 import io.opentelemetry.exporter.otlp.logs.OtlpGrpcLogRecordExporter;
 import io.opentelemetry.sdk.OpenTelemetrySdk;
+import io.opentelemetry.sdk.common.CompletableResultCode;
 import io.opentelemetry.sdk.logs.LogLimits;
 import io.opentelemetry.sdk.logs.SdkLoggerProvider;
+import io.opentelemetry.sdk.logs.data.LogRecordData;
+import io.opentelemetry.sdk.logs.export.LogRecordExporter;
 import io.opentelemetry.sdk.resources.Resource;
 import org.junit.jupiter.api.Test;
 
@@ -106,6 +114,27 @@ public class Spring_boot_opentelemetryTest {
                     LogLimits limits = context.getBean(LogLimits.class);
                     assertThat(limits.getMaxNumberOfAttributes()).isEqualTo(7);
                     assertThat(limits.getMaxAttributeValueLength()).isEqualTo(64);
+                    assertSdkShutdown(context);
+                });
+    }
+
+    @Test
+    void sdkLoggerProviderExportsApplicationLogRecordsThroughConfiguredExporter() {
+        RecordingLogRecordExporter exporter = new RecordingLogRecordExporter();
+        this.contextRunner
+                .withPropertyValues("management.opentelemetry.enabled=true", "management.logging.export.enabled=true")
+                .withBean(LogRecordExporter.class, () -> exporter)
+                .run((context) -> {
+                    Logger logger = context.getBean(OpenTelemetrySdk.class)
+                            .getSdkLoggerProvider()
+                            .loggerBuilder("application")
+                            .build();
+                    logger.logRecordBuilder().setBody("order accepted").emit();
+
+                    assertThat(context.getBean(SdkLoggerProvider.class).forceFlush().join(10, TimeUnit.SECONDS)
+                            .isSuccess()).isTrue();
+                    assertThat(exporter.getRecords()).hasSize(1);
+                    assertThat(exporter.getRecords().get(0).getBody().asString()).isEqualTo("order accepted");
                     assertSdkShutdown(context);
                 });
     }
@@ -233,6 +262,32 @@ public class Spring_boot_opentelemetryTest {
     private static void assertSdkShutdown(ConfigurableApplicationContext context) {
         assertThat(context.getBean(OpenTelemetrySdk.class).shutdown().join(10, TimeUnit.SECONDS)
                 .isSuccess()).isTrue();
+    }
+
+    private static final class RecordingLogRecordExporter implements LogRecordExporter {
+
+        private final List<LogRecordData> records = new ArrayList<>();
+
+        @Override
+        public CompletableResultCode export(Collection<LogRecordData> records) {
+            this.records.addAll(records);
+            return CompletableResultCode.ofSuccess();
+        }
+
+        @Override
+        public CompletableResultCode flush() {
+            return CompletableResultCode.ofSuccess();
+        }
+
+        @Override
+        public CompletableResultCode shutdown() {
+            return CompletableResultCode.ofSuccess();
+        }
+
+        private List<LogRecordData> getRecords() {
+            return Collections.unmodifiableList(this.records);
+        }
+
     }
 
 }
