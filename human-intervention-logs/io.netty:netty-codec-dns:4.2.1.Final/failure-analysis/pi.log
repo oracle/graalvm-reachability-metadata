@@ -1,0 +1,15 @@
+## Human intervention needed
+
+The automated job failed in `explore/generate_tests()` while handling reporter-requested metadata. Preserved work: https://github.com/oracle/graalvm-reachability-metadata/tree/ai%2Fkimeta%2Fhuman-intervention%2Fissue-9339-fails-native-image-run-io.netty-netty-codec-dns-4.2.1.Final-79a7f8bc
+
+The native-image repair checkpoint initially succeeded: using `UnpooledByteBufAllocator` produced 7 successful native tests. However, dynamic-access reporting then failed because `build/native/nativeTestCompile/dynamic-access` was not produced. All three subsequent generation attempts removed that allocator override to exercise `AdaptivePoolingAllocator`, but did not run tests; that path is known to fail three DNS tests with an NPE at `PlatformDependent0.safeConstructPutInt`. Metrics consequently report failure after 3 iterations, 0 generated LOC, and identical starting/ending commits.
+
+Inspect:
+- `human-intervention-logs/io.netty:netty-codec-dns:4.2.1.Final/dynamic-access-report/generateDynamicAccessCoverageReport-2026-10-07T01-56-43-146668Z.log`
+- `human-intervention-logs/io.netty:netty-codec-dns:4.2.1.Final/native-test-verify/pi-generation-2026-10-07T01-48-03-747940Z.log`
+- `human-intervention-logs/io.netty:netty-codec-dns:4.2.1.Final/issue-requested-metadata/pi-generation-2026-10-07T02-01-28-844372Z.log`
+
+Manual next steps:
+1. Re-run the issue reproducer from the preserved checkpoint and confirm the 7/7 passing `UnpooledByteBufAllocator` result.
+2. Decide whether that allocator workaround is valid or whether the `AdaptivePoolingAllocator` failure requires generated metadata owned by `netty-buffer`/`netty-common`.
+3. Repair the missing dynamic-access output/filtering, regenerate the report, and run the coordinate in both native-image modes before publication.
