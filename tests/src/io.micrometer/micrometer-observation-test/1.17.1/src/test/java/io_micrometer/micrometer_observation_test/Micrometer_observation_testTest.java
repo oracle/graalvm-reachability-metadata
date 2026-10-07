@@ -17,6 +17,11 @@ import io.micrometer.observation.tck.TestObservationRegistryAssert;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -177,6 +182,31 @@ public class Micrometer_observation_testTest {
                 .hasSingleObservationThat()
                 .hasLowCardinalityKeyValue("status", "204")
                 .hasBeenStopped();
+    }
+
+    @Test
+    void validatorRejectsClosingAScopeOnAnotherThread() {
+        TestObservationRegistry registry = TestObservationRegistry.builder()
+                .validateScopesOpenedAndClosedOnTheSameThread(true)
+                .build();
+        Observation observation = Observation.start("thread-bound.scope", registry);
+        Observation.Scope scope = observation.openScope();
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+
+        try {
+            Future<?> closeAttempt = executor.submit(scope::close);
+
+            assertThatThrownBy(() -> closeAttempt.get(10, TimeUnit.SECONDS))
+                    .isInstanceOf(ExecutionException.class)
+                    .cause()
+                    .isInstanceOf(InvalidObservationException.class)
+                    .hasMessageContaining("opened on thread")
+                    .hasMessageContaining("but closed on thread");
+        } finally {
+            scope.close();
+            observation.stop();
+            executor.shutdownNow();
+        }
     }
 
     @Test
