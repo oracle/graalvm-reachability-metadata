@@ -130,10 +130,24 @@ public class AutoConfigureMetricsIntegrationTest {
         }
     }
 
+    @Test
+    void equivalentAnnotationsProduceCacheCompatibleCustomizers() {
+        ContextCustomizer first = createContextCustomizer(MetricsEnabledConfiguration.class);
+        ContextCustomizer equivalent = createContextCustomizer(AnotherMetricsEnabledConfiguration.class);
+        ContextCustomizer different = createContextCustomizer(MetricsDisabledConfiguration.class);
+
+        assertThat(first).isEqualTo(equivalent).hasSameHashCodeAs(equivalent).isNotEqualTo(different);
+    }
+
     private static void customizeContext(Class<?> testClass, GenericApplicationContext context) {
+        ContextCustomizer customizer = createContextCustomizer(testClass);
+        customizer.customizeContext(context, new MergedContextConfiguration(testClass, null, null, null, null));
+    }
+
+    private static ContextCustomizer createContextCustomizer(Class<?> testClass) {
         ContextCustomizer customizer = metricsContextCustomizerFactory().createContextCustomizer(testClass, List.of());
         assertThat(customizer).isNotNull();
-        customizer.customizeContext(context, new MergedContextConfiguration(testClass, null, null, null, null));
+        return customizer;
     }
 
     private static ContextCustomizerFactory metricsContextCustomizerFactory() {
@@ -150,6 +164,10 @@ public class AutoConfigureMetricsIntegrationTest {
 
     @AutoConfigureMetrics
     static class MetricsEnabledConfiguration {
+    }
+
+    @AutoConfigureMetrics
+    static class AnotherMetricsEnabledConfiguration {
     }
 
     @AutoConfigureMetrics(export = false)
