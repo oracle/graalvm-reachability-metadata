@@ -3,6 +3,12 @@
 Rendered by Forge from the pre-push branch review of §FS-local-branch-review.
 Newest entry first; every non-approval is recorded, including one a repair later cleared.
 
+## 2026-10-07 — org.springframework.boot:spring-boot-micrometer-tracing-opentelemetry:4.1.1 (#9725)
+
+**Version-pinned and unused Spring Boot test dependencies**
+
+The test build hardcoded Spring Boot support modules to 4.1.1, so the suite would not keep those modules aligned with the TCK-selected tested version, and it added spring-boot-docker-compose even though no test exercised that integration. This violated the version-agnostic and minimal-scope test requirements; the successful finalization pass confirmed the unused dependency was unnecessary.
+
 ## 2026-10-06 — org.springframework.boot:spring-boot-micrometer-tracing:4.1.1 (#9732)
 ## 2026-10-07 — io.micrometer:micrometer-observation-test:1.17.1 (#9727)
 
