@@ -118,6 +118,18 @@ public class AutoConfigureMetricsIntegrationTest {
         }
     }
 
+    @Test
+    void subclassInheritsDisabledMetricsConfiguration() {
+        try (GenericApplicationContext context = new GenericApplicationContext()) {
+            customizeContext(InheritedMetricsConfiguration.class, context);
+
+            assertThat(context.getEnvironment().getProperty("management.defaults.metrics.export.enabled"))
+                    .isEqualTo("false");
+            assertThat(context.getEnvironment().getProperty("management.simple.metrics.export.enabled"))
+                    .isEqualTo("true");
+        }
+    }
+
     private static void customizeContext(Class<?> testClass, GenericApplicationContext context) {
         ContextCustomizer customizer = metricsContextCustomizerFactory().createContextCustomizer(testClass, List.of());
         assertThat(customizer).isNotNull();
@@ -142,5 +154,8 @@ public class AutoConfigureMetricsIntegrationTest {
 
     @AutoConfigureMetrics(export = false)
     static class MetricsDisabledConfiguration {
+    }
+
+    static class InheritedMetricsConfiguration extends MetricsDisabledConfiguration {
     }
 }
