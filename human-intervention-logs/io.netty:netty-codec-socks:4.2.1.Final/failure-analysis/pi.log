@@ -1,0 +1,18 @@
+## Human intervention needed
+
+The automated job failed during post-repair test generation for `io.netty:netty-codec-socks:4.2.1.Final`.
+
+Preserved work: https://github.com/oracle/graalvm-reachability-metadata/tree/ai%2Fkimeta%2Fhuman-intervention%2Fissue-9340-fails-native-image-run-io.netty-netty-codec-socks-4.2.1.Final-4a9c9c0e
+
+The native-image failure is reproducible: 7 of 8 tests throw `NullPointerException` from `PlatformDependent0.safeConstructPutInt()` through `AdaptivePoolingAllocator$Chunk`. The preserved checkpoint changes the tests to use `UnpooledByteBufAllocator`, and native verification reported all 8 tests passing. However, the subsequent test-generation stage repeatedly removed that workaround to exercise the failing allocator path and did not run validation. Metrics record `status: failure`, 3 iterations, 0 generated LOC, and identical starting/ending commit `1ea6eb3ce28c21140b6bea6200b7689716fe1868`. Dynamic-access coverage is unavailable because no `dynamic-access` output directory was produced.
+
+Inspect:
+- `human-intervention-logs/io.netty:netty-codec-socks:4.2.1.Final/native-image-run-fix/fixTestNativeImageRun-2026-10-07T00-57-08-524098Z.log`
+- `human-intervention-logs/io.netty:netty-codec-socks:4.2.1.Final/native-test-verify/pi-generation-2026-10-07T01-02-54-191244Z.log`
+- `human-intervention-logs/io.netty:netty-codec-socks:4.2.1.Final/issue-requested-metadata/pi-generation-2026-10-07T01-19-18-379588Z.log`
+- `human-intervention-logs/io.netty:netty-codec-socks:4.2.1.Final/dynamic-access-report/generateDynamicAccessCoverageReport-2026-10-07T01-13-36-630239Z.log`
+
+Manual next steps:
+1. Review whether the unpooled allocator test change is acceptable or whether metadata for Netty 4.2’s adaptive allocator must be added instead.
+2. Run the coordinate-scoped native tests for `4.2.1.Final` in both `current-defaults` and `future-defaults-all`.
+3. After native tests pass, regenerate the dynamic-access coverage report and validate the resulting metadata.
