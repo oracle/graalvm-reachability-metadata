@@ -27,6 +27,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.stereotype.Controller;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.assertj.MockMvcTester;
 import org.springframework.test.web.servlet.setup.ConfigurableMockMvcBuilder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -53,6 +54,8 @@ public class Spring_boot_webmvc_testTest {
 
     @Autowired private MockMvc mockMvc;
 
+    @Autowired private MockMvcTester mockMvcTester;
+
     @Autowired private DispatcherServlet dispatcherServlet;
 
     @Autowired private DispatcherServletPath dispatcherServletPath;
@@ -78,6 +81,16 @@ public class Spring_boot_webmvc_testTest {
         assertThat(this.springBootCustomizer.isPrintOnlyOnFailure()).isTrue();
     }
 
+    @Test
+    void webMvcSliceAutoConfiguresMockMvcTester() {
+        this.mockMvcTester
+                .get()
+                .uri("/tester")
+                .assertThat()
+                .hasStatusOk()
+                .hasBodyTextEqualTo("Tester ready");
+    }
+
     @Controller
     public static class GreetingController {
 
@@ -85,6 +98,12 @@ public class Spring_boot_webmvc_testTest {
         @ResponseBody
         public String greeting(@RequestHeader("X-Builder-Customized") String customization) {
             return "Hello " + customization;
+        }
+
+        @GetMapping("/tester")
+        @ResponseBody
+        public String tester() {
+            return "Tester ready";
         }
     }
 
