@@ -1,0 +1,40 @@
+Prompt:
+You are preparing a Forge workflow for a library issue. Decide whether the library needs setup beyond the normal generated test scaffold before meaningful coverage is reachable.
+
+Research the library yourself to make this decision. Investigate the resolved artifact and its dependencies, how the library is normally used, and its documentation. The JSON context below is only a starting point, not the limit of what you may consider. Do not modify the repository or apply any setup yourself — return only the decision. Local Gradle and Native Image verification remain authoritative.
+
+The setup can be one of three things: an extra Maven dependency, a Docker image the tests need, or an environment/system property the generated tests must set. Represent dependencies and Docker images as `deterministic_setup` entries the driver can apply before generation:
+  - {"kind": "dependency", "coordinate": "group:artifact:version", "scope": "testImplementation", "reason": "..."}
+  - {"kind": "docker_image", "image": "name:tag", "slug": "short-slug", "reason": "..."}
+If a test needs a Docker image that is already pinned under `tests/tck-build-logic/src/main/resources/allowed-docker-images/`, reuse the exact tag from that `Dockerfile-<slug>` instead of introducing a new one, since the allow-list permits a single shared tag per image.
+Put environment variables, system properties, and other test-code setup in `agent_guidance`. Do not restate deterministic entries as guidance.
+
+Return a single JSON object with this shape:
+{
+  "action": "no_action" | "advisory_preparation",
+  "summary": "short reason",
+  "deterministic_setup": [ ... dependency or docker_image entries, if any ... ],
+  "agent_guidance": "environment/system property/test setup guidance, if any",
+  "risks": ["risk notes, if any"]
+}
+
+Choose no_action unless your research finds concrete evidence that extra setup is needed.
+
+Context (starting point):
+{
+  "issue": {
+    "number": 9726,
+    "title": "Support for org.springframework.boot:spring-boot-micrometer-metrics-test:4.1.1",
+    "label": "library-new-request",
+    "body": "_This issue was created by automation._",
+    "body_error": ""
+  },
+  "library": "org.springframework.boot:spring-boot-micrometer-metrics-test:4.1.1",
+  "current_library": null,
+  "new_version": null,
+  "existing_tests": {}
+}
+
+Conversation:
+{"duration_api_ms":195332,"stop_reason":"end_turn","session_id":"56c50064-d833-44ef-93cb-cff7e21ac138","total_cost_usd":0.6470488000000001,"usage":{"input_tokens":26,"cache_creation_input_tokens":84353,"cache_read_input_tokens":939574,"output_tokens":12167,"output_tokens_details":{"thinking_tokens":6662},"server_tool_use":{"web_search_requests":0,"web_fetch_requests":0},"service_tier":"standard","cache_creation":{"ephemeral_1h_input_tokens":84353,"ephemeral_5m_input_tokens":0},"inference_geo":"not_available","iterations":[{"input_tokens":2,"output_tokens":659,"cache_read_input_tokens":102104,"cache_creation_input_tokens":901,"cache_creation":{"ephemeral_5m_input_tokens":0,"ephemeral_1h_input_tokens":901},"type":"message"}],"speed":"standard"},"modelUsage":{"claude-sonnet-5":{"inputTokens":26,"outputTokens":12167,"cacheReadInputTokens":939574,"cacheCreationInputTokens":84353,"webSearchRequests":0,"costUSD":0.6470488000000001,"contextWindow":1000000,"maxOutputTokens":64000,"thinkingTokens":6662,"canonicalModel":"claude-sonnet-5","provider":"firstParty","costBasis":"list"}},"permission_denials":[],"terminal_reason":"completed","fast_mode_state":"off","fast_mode_disabled_reason":"sdk_opt_in_required","subagent_stats":{"spawned":0,"requested":{"background":0,"foreground":0,"unset":0},"started_in_background":0,"max_depth":0,"spawned_by_subagents":0,"completed":0,"failed":0,"killed":{"parent":0,"user":0,"system":0},"refused":{"depth_limit":0,"concurrency_limit":0,"budget":0},"by_type":{}},"is_error":false,"num_turns":24,"subtype":"success","api_error_status":null,"result":"`★ Insight ─────────────────────────────────────`\nSpring Boot 4's module split means many new \"library\" issues here are really thin facade modules (an annotation + a `ContextCustomizerFactory`) rather than new functionality — their SPI registration happens via `META-INF/spring/org.springframework.test.context.ContextCustomizerFactory.imports`, picked up automatically by `SpringFactoriesLoader`, so no native-image reflection config is typically needed for this *kind* of class.\nA forge worktree directory often has a `forge/logs/<coordinate>/` trail and preserved `human-intervention` branches from earlier attempts at the *same* coordinate (even under a different issue number) — checking those first can save a full re-investigation, since Gradle test logs and `execution-metrics.json` are hard evidence, not guesses.\n`─────────────────────────────────────────────────`\n\nDecision:\n\n```json\n{\n  \"action\": \"no_action\",\n  \"summary\": \"Tiny test-support module (one annotation + one ContextCustomizerFactory, pure in-memory Spring test-context wiring, no I/O). A prior full pipeline run on this exact coordinate (issue #9730) passed all 10 tests and native-image verification using only the standard testImplementation on the library plus a same-version sibling module (spring-boot-autoconfigure) and assertj-core — the same routine pattern already used for sibling Spring Boot modules. No Docker image, env var, or system property is involved; the only test-visible property (spring.test.metrics.export) is set via Spring's TestPropertyValues API inside the test code itself.\",\n  \"deterministic_setup\": [],\n  \"agent_guidance\": \"\",\n  \"risks\": [\"The prior attempt was marked human-intervention, but the analysis in that run's pi.log attributes it to a stale failure classification / publication handoff issue after tests had already passed, not a real setup gap — worth a quick rerun confirmation rather than treating as unresolved.\"]\n}\n```","ttft_ms":16339,"type":"result","duration_ms":412029,"uuid":"8c3c4eab-a796-4748-adec-6ba914d1516e","ttft_stream_ms":12664,"time_to_request_ms":10935,"first_content_frame_ms":12664,"queued_turn_count":0,"result_index":0}
+

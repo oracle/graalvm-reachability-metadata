@@ -1,0 +1,16 @@
+`★ Insight ─────────────────────────────────────`
+Spring Boot 4's module split means many new "library" issues here are really thin facade modules (an annotation + a `ContextCustomizerFactory`) rather than new functionality — their SPI registration happens via `META-INF/spring/org.springframework.test.context.ContextCustomizerFactory.imports`, picked up automatically by `SpringFactoriesLoader`, so no native-image reflection config is typically needed for this *kind* of class.
+A forge worktree directory often has a `forge/logs/<coordinate>/` trail and preserved `human-intervention` branches from earlier attempts at the *same* coordinate (even under a different issue number) — checking those first can save a full re-investigation, since Gradle test logs and `execution-metrics.json` are hard evidence, not guesses.
+`─────────────────────────────────────────────────`
+
+Decision:
+
+```json
+{
+  "action": "no_action",
+  "summary": "Tiny test-support module (one annotation + one ContextCustomizerFactory, pure in-memory Spring test-context wiring, no I/O). A prior full pipeline run on this exact coordinate (issue #9730) passed all 10 tests and native-image verification using only the standard testImplementation on the library plus a same-version sibling module (spring-boot-autoconfigure) and assertj-core — the same routine pattern already used for sibling Spring Boot modules. No Docker image, env var, or system property is involved; the only test-visible property (spring.test.metrics.export) is set via Spring's TestPropertyValues API inside the test code itself.",
+  "deterministic_setup": [],
+  "agent_guidance": "",
+  "risks": ["The prior attempt was marked human-intervention, but the analysis in that run's pi.log attributes it to a stale failure classification / publication handoff issue after tests had already passed, not a real setup gap — worth a quick rerun confirmation rather than treating as unresolved."]
+}
+```
