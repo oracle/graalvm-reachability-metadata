@@ -98,7 +98,8 @@ def get_issue_body(issue_number: int) -> str:
         "--json", "body,author",
     )
     # `gh` reports the Actions bot as `app/github-actions`. §AR-forge-driver-queues.2.1
-    if data["author"]["login"].removeprefix("app/").startswith("github"):
+    login: str = data["author"]["login"].removeprefix("app/")
+    if login.startswith("github") or login == "graalvmbot":
         return ""
     body = data.get("body")
     return body if isinstance(body, str) else ""
