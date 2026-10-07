@@ -20,6 +20,8 @@ import org.springframework.boot.micrometer.metrics.autoconfigure.export.simple.S
 import org.springframework.boot.micrometer.metrics.test.autoconfigure.AutoConfigureMetrics;
 import org.springframework.boot.micrometer.observation.autoconfigure.ObservationAutoConfiguration;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
+import org.springframework.boot.test.util.TestPropertyValues;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.core.io.support.SpringFactoriesLoader;
@@ -86,6 +88,27 @@ public class Spring_boot_micrometer_metrics_testTest {
                 });
     }
 
+    @Test
+    void annotationEnablesMetricsExportWhenPropertyDisablesIt() {
+        try (AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext()) {
+            TestPropertyValues.of("spring.test.metrics.export=false").applyTo(context);
+            metricsContextCustomizer(MetricsExportEnabled.class).customizeContext(context, null);
+            context.register(MetricsTestConfiguration.class);
+            context.refresh();
+
+            assertThat(context.getEnvironment()
+                .containsProperty("management.defaults.metrics.export.enabled")).isFalse();
+            assertThat(context.getEnvironment()
+                .containsProperty("management.simple.metrics.export.enabled")).isFalse();
+
+            Counter counter = context.getBean(MeterRegistry.class)
+                .counter("application.requests", "status", "annotation-override");
+            counter.increment(4.0);
+
+            assertThat(counter.count()).isEqualTo(4.0);
+        }
+    }
+
     private static ApplicationContextRunner contextRunnerFor(Class<?> testClass) {
         return new ApplicationContextRunner()
                 .withInitializer((context) -> metricsContextCustomizer(testClass).customizeContext(context, null))
@@ -112,6 +135,10 @@ public class Spring_boot_micrometer_metrics_testTest {
 
     @AutoConfigureMetrics(export = false)
     static class MetricsExportDisabled {
+    }
+
+    @AutoConfigureMetrics
+    static class MetricsExportEnabled {
     }
 
     static class NoMetricsAnnotation {
