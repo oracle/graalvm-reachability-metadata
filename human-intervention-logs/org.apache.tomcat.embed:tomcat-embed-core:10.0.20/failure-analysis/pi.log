@@ -1,0 +1,15 @@
+## Human intervention needed
+
+The automated job failed in `explore/generate_tests()` during iteration 1. The generation session returned `Codex error: Our servers are currently overloaded` before producing output or edits. Metrics confirm `generated_loc: 0`, zero model tokens, and identical starting/ending commit `87f96692f4c2d5331851192480f2f30747759b9e`. The existing three native tests passed, but coverage remained 55/528 calls (10.42%). A subsequent coverage refresh also failed with missing `com/fasterxml/jackson/databind/ObjectMapper`.
+
+Preserved work: https://github.com/oracle/graalvm-reachability-metadata/tree/ai%2Fkimeta%2Fhuman-intervention%2Fissue-10508-library-update-request-org.apache.tomcat.embed-tomcat-embed-core-10.0.20-27aad1b0
+
+Inspect:
+- `logs/org.apache.tomcat.embed:tomcat-embed-core:10.0.20/improve-library-coverage/pi-generation-2026-10-07T12-54-03-623543Z.log`
+- `logs/org.apache.tomcat.embed:tomcat-embed-core:10.0.20/gradle-test/gradle-test-2026-10-07T12-54-11-578109Z.log`
+- `logs/org.apache.tomcat.embed:tomcat-embed-core:10.0.20/gradle/generateDynamicAccessCoverageReport-2026-10-07T12-59-28-830498Z.log`
+
+Manual next steps:
+1. Resume test generation from the preserved branch after the model service is available.
+2. Add/adapt tests for the Realm, Valve, naming, and `DefaultInstanceManager` paths, using the richer `11.0.x` suites as references.
+3. Re-run the coverage report with `--stacktrace`; resolve the Jackson `ObjectMapper` classpath failure if it recurs, then run the coordinate’s full test task.
