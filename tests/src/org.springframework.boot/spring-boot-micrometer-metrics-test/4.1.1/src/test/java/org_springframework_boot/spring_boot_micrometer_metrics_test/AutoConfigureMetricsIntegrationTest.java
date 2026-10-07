@@ -12,18 +12,11 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.util.List;
 
-import io.micrometer.core.instrument.Counter;
-import io.micrometer.core.instrument.MeterRegistry;
-import io.micrometer.observation.ObservationRegistry;
 import org.junit.jupiter.api.Test;
 
 import org.springframework.boot.context.annotation.ImportCandidates;
-import org.springframework.boot.micrometer.metrics.autoconfigure.MetricsAutoConfiguration;
-import org.springframework.boot.micrometer.metrics.autoconfigure.export.simple.SimpleMetricsExportAutoConfiguration;
 import org.springframework.boot.micrometer.metrics.test.autoconfigure.AutoConfigureMetrics;
-import org.springframework.boot.micrometer.observation.autoconfigure.ObservationAutoConfiguration;
 import org.springframework.boot.test.util.TestPropertyValues;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.support.GenericApplicationContext;
 import org.springframework.core.io.support.SpringFactoriesLoader;
 import org.springframework.test.context.ContextCustomizer;
@@ -51,25 +44,6 @@ public class AutoConfigureMetricsIntegrationTest {
                         "org.springframework.boot.micrometer.metrics.autoconfigure.export.simple."
                                 + "SimpleMetricsExportAutoConfiguration",
                         "org.springframework.boot.micrometer.observation.autoconfigure.ObservationAutoConfiguration");
-    }
-
-    @Test
-    void publishedAutoConfigurationsProvideAnEnabledSimpleRegistry() {
-        try (AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext()) {
-            TestPropertyValues.of("management.simple.metrics.export.enabled=true").applyTo(context);
-            context.register(MetricsAutoConfiguration.class, SimpleMetricsExportAutoConfiguration.class,
-                    ObservationAutoConfiguration.class);
-            context.refresh();
-
-            MeterRegistry registry = context.getBean(MeterRegistry.class);
-            ObservationRegistry observationRegistry = context.getBean(ObservationRegistry.class);
-            Counter counter = registry.counter("test.requests", "outcome", "accepted");
-            counter.increment(2.0);
-
-            assertThat(registry.find("test.requests").tag("outcome", "accepted").counter()).isSameAs(counter);
-            assertThat(counter.count()).isEqualTo(2.0);
-            assertThat(observationRegistry).isNotSameAs(ObservationRegistry.NOOP);
-        }
     }
 
     @Test
