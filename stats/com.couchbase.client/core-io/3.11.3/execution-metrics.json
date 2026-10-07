@@ -1,0 +1,54 @@
+{
+  "add_new_library_support:2026-10-07": {
+    "timestamp": "2026-10-07T08:43:04.180790Z",
+    "library": "com.couchbase.client:core-io:3.11.3",
+    "starting_commit": "04518ddb35a28852c830798a6a6e946be3beb046",
+    "ending_commit": "a666848eee38cd9401c1ae1b89fed8a214d5d669",
+    "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-sol",
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "status": "failure",
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "no_action",
+      "issue_number": 9736,
+      "issue_label": "library-new-request",
+      "library": "com.couchbase.client:core-io:3.11.3",
+      "summary": "I found no concrete evidence that extra setup is needed. com.couchbase.client:core-io is the low-level Couchbase SDK engine, and I did not check its published POM or documentation. I'm assuming its Netty, Jackson, reactor-core and reactive-streams dependencies come in transitively. Its public API (Core, CoreEnvironment, ConnectionString, Authenticator, retry strategies, request/response types, JSON and config parsing) can be exercised in-process without a Couchbase server. The repo has no couchbase image under allowed-docker-images. The sibling couchbase modules in the repo, metrics-micrometer and tracing-micrometer-observation, don't use one either.",
+      "deterministic_setup": [],
+      "agent_guidance": "",
+      "risks": [
+        "Tests that connect to a real Couchbase cluster would need a Couchbase Server Docker image. No couchbase image is pinned in the allow-list, so adding one would be a new entry. Prefer offline tests: build the environment, parse a connection string, decode config JSON, and construct requests and retry strategies.",
+        "Optional integrations such as micrometer and OpenTelemetry are not needed. Do not add them for core-io coverage."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#9736 Support for com.couchbase.client:core-io:3.11.3; label=library-new-request; body_chars=39"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "sonnet",
+      "input_tokens_used": 4,
+      "output_tokens_used": 842
+    },
+    "metrics": {
+      "input_tokens_used": 247696,
+      "cached_input_tokens_used": 4255360,
+      "output_tokens_used": 18048,
+      "iterations": 6,
+      "cost_usd": 3.9076,
+      "generated_loc": 0,
+      "tested_library_loc": 0,
+      "metadata_entries": 0,
+      "code_coverage_percent": 0.0
+    },
+    "artifacts": {
+      "metadata_file": "None"
+    }
+  }
+}

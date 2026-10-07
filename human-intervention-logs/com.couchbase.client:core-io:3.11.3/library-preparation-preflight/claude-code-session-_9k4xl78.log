@@ -1,0 +1,40 @@
+Prompt:
+You are preparing a Forge workflow for a library issue. Decide whether the library needs setup beyond the normal generated test scaffold before meaningful coverage is reachable.
+
+Research the library yourself to make this decision. Investigate the resolved artifact and its dependencies, how the library is normally used, and its documentation. The JSON context below is only a starting point, not the limit of what you may consider. Do not modify the repository or apply any setup yourself — return only the decision. Local Gradle and Native Image verification remain authoritative.
+
+The setup can be one of three things: an extra Maven dependency, a Docker image the tests need, or an environment/system property the generated tests must set. Represent dependencies and Docker images as `deterministic_setup` entries the driver can apply before generation:
+  - {"kind": "dependency", "coordinate": "group:artifact:version", "scope": "testImplementation", "reason": "..."}
+  - {"kind": "docker_image", "image": "name:tag", "slug": "short-slug", "reason": "..."}
+If a test needs a Docker image that is already pinned under `tests/tck-build-logic/src/main/resources/allowed-docker-images/`, reuse the exact tag from that `Dockerfile-<slug>` instead of introducing a new one, since the allow-list permits a single shared tag per image.
+Put environment variables, system properties, and other test-code setup in `agent_guidance`. Do not restate deterministic entries as guidance.
+
+Return a single JSON object with this shape:
+{
+  "action": "no_action" | "advisory_preparation",
+  "summary": "short reason",
+  "deterministic_setup": [ ... dependency or docker_image entries, if any ... ],
+  "agent_guidance": "environment/system property/test setup guidance, if any",
+  "risks": ["risk notes, if any"]
+}
+
+Choose no_action unless your research finds concrete evidence that extra setup is needed.
+
+Context (starting point):
+{
+  "issue": {
+    "number": 9736,
+    "title": "Support for com.couchbase.client:core-io:3.11.3",
+    "label": "library-new-request",
+    "body": "_This issue was created by automation._",
+    "body_error": ""
+  },
+  "library": "com.couchbase.client:core-io:3.11.3",
+  "current_library": null,
+  "new_version": null,
+  "existing_tests": {}
+}
+
+Conversation:
+{"duration_api_ms":10192,"stop_reason":"end_turn","session_id":"ab5fc7df-f045-47d1-adc0-cfcb89f5fad4","total_cost_usd":0.13778300000000002,"usage":{"input_tokens":4,"cache_creation_input_tokens":29886,"cache_read_input_tokens":49055,"output_tokens":842,"output_tokens_details":{"thinking_tokens":218},"server_tool_use":{"web_search_requests":0,"web_fetch_requests":0},"service_tier":"standard","cache_creation":{"ephemeral_1h_input_tokens":29886,"ephemeral_5m_input_tokens":0},"inference_geo":"not_available","iterations":[{"input_tokens":2,"output_tokens":565,"cache_read_input_tokens":36904,"cache_creation_input_tokens":5133,"cache_creation":{"ephemeral_5m_input_tokens":0,"ephemeral_1h_input_tokens":5133},"type":"message"}],"speed":"standard","fallback_credit":null},"modelUsage":{"claude-sonnet-5-5":{"inputTokens":4,"outputTokens":842,"cacheReadInputTokens":49055,"cacheCreationInputTokens":29886,"webSearchRequests":0,"costUSD":0.13778300000000002,"contextWindow":1000000,"maxOutputTokens":128000,"thinkingTokens":218,"canonicalModel":"claude-sonnet-5-5","provider":"firstParty","costBasis":"list"}},"permission_denials":[],"terminal_reason":"completed","fast_mode_state":"off","fast_mode_disabled_reason":"sdk_opt_in_required","subagent_stats":{"spawned":0,"requested":{"background":0,"foreground":0,"unset":0},"started_in_background":0,"max_depth":0,"spawned_by_subagents":0,"completed":0,"failed":0,"killed":{"parent":0,"user":0,"system":0},"refused":{"depth_limit":0,"concurrency_limit":0,"budget":0},"by_type":{}},"is_error":false,"num_turns":2,"subtype":"success","api_error_status":null,"result":"```json\n{\n  \"action\": \"no_action\",\n  \"summary\": \"I found no concrete evidence that extra setup is needed. com.couchbase.client:core-io is the low-level Couchbase SDK engine, and I did not check its published POM or documentation. I'm assuming its Netty, Jackson, reactor-core and reactive-streams dependencies come in transitively. Its public API (Core, CoreEnvironment, ConnectionString, Authenticator, retry strategies, request/response types, JSON and config parsing) can be exercised in-process without a Couchbase server. The repo has no couchbase image under allowed-docker-images. The sibling couchbase modules in the repo, metrics-micrometer and tracing-micrometer-observation, don't use one either.\",\n  \"deterministic_setup\": [],\n  \"agent_guidance\": \"\",\n  \"risks\": [\n    \"Tests that connect to a real Couchbase cluster would need a Couchbase Server Docker image. No couchbase image is pinned in the allow-list, so adding one would be a new entry. Prefer offline tests: build the environment, parse a connection string, decode config JSON, and construct requests and retry strategies.\",\n    \"Optional integrations such as micrometer and OpenTelemetry are not needed. Do not add them for core-io coverage.\"\n  ]\n}\n```","ttft_ms":2828,"type":"result","duration_ms":10346,"uuid":"3557407a-8918-4845-8904-fb64e701a344","ttft_stream_ms":1664,"time_to_request_ms":87,"first_content_frame_ms":1664,"queued_turn_count":0,"result_index":0}
+
