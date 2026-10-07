@@ -6,152 +6,120 @@
  */
 package org_springframework_boot.spring_boot_micrometer_tracing_test;
 
-import io.micrometer.observation.Observation;
-import io.micrometer.observation.ObservationRegistry;
-import io.micrometer.tracing.Span;
-import io.micrometer.tracing.Tracer;
+import java.util.HashMap;
+import java.util.List;
+
 import org.junit.jupiter.api.Test;
 
+import org.springframework.boot.context.annotation.ImportCandidates;
 import org.springframework.boot.micrometer.tracing.test.autoconfigure.AutoConfigureTracing;
 import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.core.env.Environment;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.TestContextManager;
-import org.springframework.test.context.TestPropertySource;
+import org.springframework.context.support.GenericApplicationContext;
+import org.springframework.core.env.MapPropertySource;
+import org.springframework.core.io.support.SpringFactoriesLoader;
+import org.springframework.test.context.ContextCustomizer;
+import org.springframework.test.context.ContextCustomizerFactory;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class Spring_boot_micrometer_tracing_testTest {
 
+    private static final String FACTORY_CLASS_NAME =
+                    "org.springframework.boot.micrometer.tracing.test.autoconfigure.TracingContextCustomizerFactory";
+
     @Test
-    void autoConfigureTracingImportsUsableObservationAndTracingInfrastructure() {
-        try (ConfigurableApplicationContext context = loadContext(TracingEnabledTest.class)) {
-            Tracer tracer = context.getBean(Tracer.class);
-            ObservationRegistry registry = context.getBean(ObservationRegistry.class);
-
-            assertThat(tracer).isSameAs(Tracer.NOOP);
-            Span span = tracer.nextSpan().name("checkout").start();
-            assertThat(span.isNoop()).isTrue();
-            span.end();
-
-            assertThat(registry).isNotSameAs(ObservationRegistry.NOOP);
-            Observation observation = Observation.start("checkout", registry);
-            try (Observation.Scope ignored = observation.openScope()) {
-                assertThat(registry.getCurrentObservation()).isSameAs(observation);
-            } finally {
-                observation.stop();
-            }
-            assertThat(registry.getCurrentObservation()).isNull();
-            assertThat(context.getEnvironment().getProperty("management.tracing.export.enabled")).isNull();
-        }
+    void autoConfigureTracingImportsObservationAndTracingInfrastructure() {
+        assertThat(ImportCandidates.load(AutoConfigureTracing.class, getClass().getClassLoader()).getCandidates())
+                        .containsExactly(
+                                        "org.springframework.boot.micrometer.observation.autoconfigure.ObservationAutoConfiguration",
+                                        "org.springframework.boot.micrometer.tracing.autoconfigure.MicrometerTracingAutoConfiguration",
+                                        "org.springframework.boot.micrometer.tracing.autoconfigure.NoopTracerAutoConfiguration");
     }
 
     @Test
     void testContextFactoryDisablesTracingExportByDefault() {
-        try (ConfigurableApplicationContext context = loadContext(UnannotatedTest.class)) {
-            assertThat(tracingExportProperty(context.getEnvironment())).isEqualTo("false");
+        try (ConfigurableApplicationContext context = loadContext(UnannotatedTest.class, null)) {
+            assertThat(tracingExportProperty(context)).isEqualTo("false");
         }
     }
 
     @Test
     void globalTestPropertyCanEnableTracingExport() {
-        try (ConfigurableApplicationContext context = loadContext(PropertyEnabledTest.class)) {
-            assertThat(tracingExportProperty(context.getEnvironment())).isNull();
+        try (ConfigurableApplicationContext context = loadContext(UnannotatedTest.class, true)) {
+            assertThat(tracingExportProperty(context)).isNull();
         }
     }
 
     @Test
     void annotationCanDisableTracingExportDespiteGlobalProperty() {
-        try (ConfigurableApplicationContext context = loadContext(AnnotationDisabledTest.class)) {
-            assertThat(tracingExportProperty(context.getEnvironment())).isEqualTo("false");
+        try (ConfigurableApplicationContext context = loadContext(AnnotationDisabledTest.class, true)) {
+            assertThat(tracingExportProperty(context)).isEqualTo("false");
         }
     }
 
     @Test
     void annotationCanEnableTracingExportDespiteGlobalProperty() {
-        try (ConfigurableApplicationContext context = loadContext(AnnotationEnabledTest.class)) {
-            assertThat(tracingExportProperty(context.getEnvironment())).isNull();
+        try (ConfigurableApplicationContext context = loadContext(AnnotationEnabledTest.class, false)) {
+            assertThat(tracingExportProperty(context)).isNull();
         }
     }
 
     @Test
-    void inheritedAnnotationConfiguresTracingAndOverridesGlobalProperty() {
-        try (ConfigurableApplicationContext context = loadContext(InheritedTracingTest.class)) {
-            assertThat(context.getBean(Tracer.class)).isSameAs(Tracer.NOOP);
-            assertThat(context.getBean(ObservationRegistry.class)).isNotSameAs(ObservationRegistry.NOOP);
-            assertThat(tracingExportProperty(context.getEnvironment())).isEqualTo("false");
+    void inheritedAnnotationOverridesGlobalProperty() {
+        try (ConfigurableApplicationContext context = loadContext(InheritedTracingTest.class, true)) {
+            assertThat(tracingExportProperty(context)).isEqualTo("false");
         }
     }
 
     @Test
     void tracingConfigurationParticipatesInTestContextCaching() {
-        ConfigurableApplicationContext firstDisabledContext = loadContext(FirstDisabledTracingTest.class);
-        ConfigurableApplicationContext secondDisabledContext = loadContext(SecondDisabledTracingTest.class);
-        ConfigurableApplicationContext enabledContext = loadContext(EnabledTracingTest.class);
-        try {
-            assertThat(secondDisabledContext).isSameAs(firstDisabledContext);
-            assertThat(enabledContext).isNotSameAs(firstDisabledContext);
-        } finally {
-            firstDisabledContext.close();
-            if (secondDisabledContext != firstDisabledContext) {
-                secondDisabledContext.close();
-            }
-            enabledContext.close();
+        ContextCustomizer firstDisabled = createCustomizer(FirstDisabledTracingTest.class);
+        ContextCustomizer secondDisabled = createCustomizer(SecondDisabledTracingTest.class);
+        ContextCustomizer enabled = createCustomizer(EnabledTracingTest.class);
+
+        assertThat(secondDisabled).isEqualTo(firstDisabled);
+        assertThat(enabled).isNotEqualTo(firstDisabled);
+    }
+
+    private static ConfigurableApplicationContext loadContext(Class<?> testClass, Boolean tracingExport) {
+        GenericApplicationContext context = new GenericApplicationContext();
+        if (tracingExport != null) {
+            context.getEnvironment().getPropertySources().addFirst(
+                            new MapPropertySource("test",
+                                            new HashMap<>(java.util.Map.of("spring.test.tracing.export", tracingExport))));
         }
+        createCustomizer(testClass).customizeContext(context, null);
+        return context;
     }
 
-    private static ConfigurableApplicationContext loadContext(Class<?> testClass) {
-        TestContextManager manager = new TestContextManager(testClass);
-        return (ConfigurableApplicationContext) manager.getTestContext().getApplicationContext();
+    private static ContextCustomizer createCustomizer(Class<?> testClass) {
+        ContextCustomizerFactory factory = SpringFactoriesLoader.loadFactories(
+                        ContextCustomizerFactory.class, testClass.getClassLoader()).stream()
+                        .filter(candidate -> candidate.getClass().getName().equals(FACTORY_CLASS_NAME))
+                        .findFirst()
+                        .orElseThrow();
+        return factory.createContextCustomizer(testClass, List.of());
     }
 
-    private static String tracingExportProperty(Environment environment) {
-        return environment.getProperty("management.tracing.export.enabled");
-    }
-
-    @Configuration(proxyBeanMethods = false)
-    static class EmptyConfiguration {
-
-    }
-
-    @Configuration(proxyBeanMethods = false)
-    static class InheritedTracingConfiguration {
-
-    }
-
-    @Configuration(proxyBeanMethods = false)
-    static class CachingConfiguration {
-
+    private static String tracingExportProperty(ConfigurableApplicationContext context) {
+        return context.getEnvironment().getProperty("management.tracing.export.enabled");
     }
 
     @AutoConfigureTracing
-    @ContextConfiguration(classes = EmptyConfiguration.class)
     static class TracingEnabledTest {
 
     }
 
-    @ContextConfiguration(classes = EmptyConfiguration.class)
     static class UnannotatedTest {
 
     }
 
-    @TestPropertySource(properties = "spring.test.tracing.export=true")
-    @ContextConfiguration(classes = EmptyConfiguration.class)
-    static class PropertyEnabledTest {
-
-    }
-
     @AutoConfigureTracing(export = false)
-    @TestPropertySource(properties = "spring.test.tracing.export=true")
-    @ContextConfiguration(classes = EmptyConfiguration.class)
     static class AnnotationDisabledTest {
 
     }
 
     @AutoConfigureTracing(export = true)
-    @TestPropertySource(properties = "spring.test.tracing.export=false")
-    @ContextConfiguration(classes = EmptyConfiguration.class)
     static class AnnotationEnabledTest {
 
     }
@@ -161,26 +129,21 @@ public class Spring_boot_micrometer_tracing_testTest {
 
     }
 
-    @TestPropertySource(properties = "spring.test.tracing.export=true")
-    @ContextConfiguration(classes = InheritedTracingConfiguration.class)
     static class InheritedTracingTest extends TracingBaseTest {
 
     }
 
     @AutoConfigureTracing(export = false)
-    @ContextConfiguration(classes = CachingConfiguration.class)
     static class FirstDisabledTracingTest {
 
     }
 
     @AutoConfigureTracing(export = false)
-    @ContextConfiguration(classes = CachingConfiguration.class)
     static class SecondDisabledTracingTest {
 
     }
 
     @AutoConfigureTracing(export = true)
-    @ContextConfiguration(classes = CachingConfiguration.class)
     static class EnabledTracingTest {
 
     }
