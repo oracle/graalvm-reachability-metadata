@@ -63,13 +63,37 @@ public class TypeExcludeFiltersContextCustomizerTest {
                 throws IOException {
             return metadataReader.getClassMetadata().getClassName().equals(ExcludedMarker.class.getName());
         }
+
+        @Override
+        public boolean equals(Object other) {
+            return other != null && getClass() == other.getClass();
+        }
+
+        @Override
+        public int hashCode() {
+            return getClass().hashCode();
+        }
     }
 
     public static final class TestClassFilter extends TypeExcludeFilter {
         static Class<?> testClass;
 
+        private final Class<?> source;
+
         public TestClassFilter(Class<?> testClass) {
             TestClassFilter.testClass = testClass;
+            this.source = testClass;
+        }
+
+        @Override
+        public boolean equals(Object other) {
+            return this == other
+                    || (other instanceof TestClassFilter filter && this.source.equals(filter.source));
+        }
+
+        @Override
+        public int hashCode() {
+            return this.source.hashCode();
         }
     }
 }
