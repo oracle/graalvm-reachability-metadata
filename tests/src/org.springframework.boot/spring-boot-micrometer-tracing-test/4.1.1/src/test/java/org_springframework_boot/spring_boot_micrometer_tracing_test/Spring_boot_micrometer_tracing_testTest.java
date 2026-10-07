@@ -84,6 +84,23 @@ public class Spring_boot_micrometer_tracing_testTest {
         }
     }
 
+    @Test
+    void tracingConfigurationParticipatesInTestContextCaching() {
+        ConfigurableApplicationContext firstDisabledContext = loadContext(FirstDisabledTracingTest.class);
+        ConfigurableApplicationContext secondDisabledContext = loadContext(SecondDisabledTracingTest.class);
+        ConfigurableApplicationContext enabledContext = loadContext(EnabledTracingTest.class);
+        try {
+            assertThat(secondDisabledContext).isSameAs(firstDisabledContext);
+            assertThat(enabledContext).isNotSameAs(firstDisabledContext);
+        } finally {
+            firstDisabledContext.close();
+            if (secondDisabledContext != firstDisabledContext) {
+                secondDisabledContext.close();
+            }
+            enabledContext.close();
+        }
+    }
+
     private static ConfigurableApplicationContext loadContext(Class<?> testClass) {
         TestContextManager manager = new TestContextManager(testClass);
         return (ConfigurableApplicationContext) manager.getTestContext().getApplicationContext();
@@ -100,6 +117,11 @@ public class Spring_boot_micrometer_tracing_testTest {
 
     @Configuration(proxyBeanMethods = false)
     static class InheritedTracingConfiguration {
+
+    }
+
+    @Configuration(proxyBeanMethods = false)
+    static class CachingConfiguration {
 
     }
 
@@ -142,6 +164,24 @@ public class Spring_boot_micrometer_tracing_testTest {
     @TestPropertySource(properties = "spring.test.tracing.export=true")
     @ContextConfiguration(classes = InheritedTracingConfiguration.class)
     static class InheritedTracingTest extends TracingBaseTest {
+
+    }
+
+    @AutoConfigureTracing(export = false)
+    @ContextConfiguration(classes = CachingConfiguration.class)
+    static class FirstDisabledTracingTest {
+
+    }
+
+    @AutoConfigureTracing(export = false)
+    @ContextConfiguration(classes = CachingConfiguration.class)
+    static class SecondDisabledTracingTest {
+
+    }
+
+    @AutoConfigureTracing(export = true)
+    @ContextConfiguration(classes = CachingConfiguration.class)
+    static class EnabledTracingTest {
 
     }
 }
