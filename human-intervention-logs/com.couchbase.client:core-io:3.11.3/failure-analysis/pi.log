@@ -1,0 +1,15 @@
+# Human intervention needed
+
+The automated job failed for `com.couchbase.client:core-io:3.11.3`. Preserved work is available at https://github.com/oracle/graalvm-reachability-metadata/tree/ai%2Fkimeta%2Fhuman-intervention%2Fissue-9736-library-new-request-com.couchbase.client-core-io-3.11.3-ed227803.
+
+Although the failure was classified as `test_generation_failed`, the strongest evidence points to the final statistics/dynamic-access reporting stage: `generateLibraryStats` failed with `java.lang.OutOfMemoryError: Java heap space`. Repeated `generateDynamicAccessCoverageReport` attempts failed for the same reason, leaving dynamic-access coverage unavailable and metrics at zero. The generated suite itself reached 10 passing JVM and native tests; metadata validation, Checkstyle, and Spotless also passed.
+
+Inspect:
+- `logs/com.couchbase.client:core-io:3.11.3/finalization/generateLibraryStats-2026-10-07T08-37-36-446543Z.log`
+- `logs/com.couchbase.client:core-io:3.11.3/gradle/generateDynamicAccessCoverageReport-2026-10-07T08-19-00-645584Z.log`
+- `logs/com.couchbase.client:core-io:3.11.3/gradle-test/gradle-test-2026-10-07T08-34-03-040904Z.log`
+
+Manual next steps:
+1. Check out the preserved branch and rerun dynamic-access reporting and `generateLibraryStats` with sufficient Gradle heap.
+2. Review the generated tests and large reachability metadata file, then rerun the coordinate-scoped metadata and test gates.
+3. Regenerate `stats.json` and coverage metrics before continuing publication.
