@@ -3,6 +3,7 @@
 Rendered by Forge from the pre-push branch review of §FS-local-branch-review.
 Newest entry first; every non-approval is recorded, including one a repair later cleared.
 
+## 2026-10-06 — org.springframework.boot:spring-boot-micrometer-tracing:4.1.1 (#9732)
 ## 2026-10-07 — io.micrometer:micrometer-observation-test:1.17.1 (#9727)
 
 **Pre-push review unavailable**
