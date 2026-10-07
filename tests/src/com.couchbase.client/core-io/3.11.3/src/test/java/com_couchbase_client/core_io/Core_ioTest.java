@@ -15,6 +15,7 @@ import com.couchbase.client.core.env.IoConfig;
 import com.couchbase.client.core.env.NetworkResolution;
 import com.couchbase.client.core.env.PasswordAuthenticator;
 import com.couchbase.client.core.env.PropertyLoader;
+import com.couchbase.client.core.env.SecurityConfig;
 import com.couchbase.client.core.env.TimeoutConfig;
 import com.couchbase.client.core.env.UsernameAndPassword;
 import com.couchbase.client.core.json.Mapper;
@@ -28,6 +29,7 @@ import org.junit.jupiter.api.Test;
 
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
+import java.security.cert.X509Certificate;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
@@ -108,6 +110,27 @@ public class Core_ioTest {
         } finally {
             environment.shutdown(Duration.ofSeconds(10));
         }
+    }
+
+    @Test
+    void configuresTlsWithTheBundledCapellaCertificateAuthority() {
+        List<X509Certificate> capellaCertificates = SecurityConfig.capellaCaCertificates();
+        CoreEnvironment.Builder<?> builder = CoreEnvironment.builder()
+                .securityConfig(config -> config
+                        .enableTls(true)
+                        .enableNativeTls(false)
+                        .trustCertificates(capellaCertificates));
+
+        SecurityConfig security = builder.securityConfig().build();
+
+        assertThat(security.tlsEnabled()).isTrue();
+        assertThat(security.nativeTlsEnabled()).isFalse();
+        assertThat(security.trustCertificates()).containsExactlyElementsOf(capellaCertificates);
+        assertThat(security.trustCertificates())
+                .allSatisfy(certificate -> {
+                    assertThat(certificate.getType()).isEqualTo("X.509");
+                    assertThat(certificate.getPublicKey().getEncoded()).isNotEmpty();
+                });
     }
 
     @Test
