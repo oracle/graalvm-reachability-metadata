@@ -1,0 +1,95 @@
+{
+  "continueFrom": "explore",
+  "coordinate": "org.apache.tomcat.embed:tomcat-embed-core:10.0.20",
+  "failure": {
+    "operand": "org.apache.tomcat.embed:tomcat-embed-core:10.0.20",
+    "phase": "explore",
+    "step": "generate_tests()"
+  },
+  "issueNumber": 10508,
+  "label": "library-update-request",
+  "libraryPreparationPreflight": {
+    "action": "advisory_preparation",
+    "agent_guidance": "No Docker image or real directory/LDAP/database server is required: JNDIRealm tests mock SSL hostname verification rather than contacting a real LDAP server, JAASRealm tests use a local tomcat/jaas-realm-resource.config test resource, and JDBC-backed tests use an in-memory H2 URL. If tests are added that exercise JreCompat/classloader-leak-prevention/digester-system-property paths (mirroring JreCompatTest, JreMemoryLeakPreventionListenerTest, DigesterTest in the 11.0.x suites), add these JVM args to the javaTest task: --add-opens=java.base/java.io=ALL-UNNAMED, --add-opens=java.base/java.lang=ALL-UNNAMED, --add-opens=java.base/java.lang.reflect=ALL-UNNAMED, --add-opens=java.base/java.util=ALL-UNNAMED, --add-opens=java.rmi/sun.rmi.transport=ALL-UNNAMED, and the system property -Dorg.apache.tomcat.util.digester.PROPERTY_SOURCE=org.apache.tomcat.util.digester.SystemPropertySource. Only add the specific flags a given new test actually needs rather than copying all of them speculatively. If any such test runs under nativeTest, also set runtime arg -Djava.home=<JAVA_HOME or GRAALVM_HOME>.",
+    "applied_setup": [],
+    "deterministic_setup": [
+      {
+        "coordinate": "com.h2database:h2:2.2.224",
+        "kind": "dependency",
+        "reason": "In-memory JDBC driver used by JDBCAccessLogValve/DataSource-backed naming-resource tests (jdbc:h2:mem: URL) - no container needed. Version matches what's already proven for this library's 11.0.18/11.0.22/11.0.23 suites.",
+        "scope": "testImplementation"
+      },
+      {
+        "coordinate": "jakarta.annotation:jakarta.annotation-api:3.0.0",
+        "kind": "dependency",
+        "reason": "Supplies @Resource/@PostConstruct/@PreDestroy types needed to drive DefaultInstanceManager's annotation-based reflective injection path. Same coordinate used across this library's newer sibling test suites.",
+        "scope": "testImplementation"
+      }
+    ],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#10508 Improve coverage for org.apache.tomcat.embed:tomcat-embed-core:10.0.20; label=library-update-request; body_chars=459"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "6 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 22,
+    "issue_label": "library-update-request",
+    "issue_number": 10508,
+    "library": "org.apache.tomcat.embed:tomcat-embed-core:10.0.20",
+    "model": "sonnet",
+    "output_tokens_used": 17769,
+    "risks": [
+      "jakarta.annotation-api 3.0.0 targets Jakarta EE 11 while 10.0.20 otherwise pins jakarta.servlet-api 5.0.0 (EE9); it's additive and compiles fine (confirmed by the 11.0.x precedent), but a stricter EE-generation match would be 2.0.0/2.1.1 if that's preferred.",
+      "Precedent is based on later Tomcat versions (11.0.x); confirm via local checkMetadataFiles/test runs that the same Realm/Valve/naming classes are structurally unchanged in 10.0.20 before relying on it, since local Gradle and Native Image verification remain authoritative."
+    ],
+    "status": "completed",
+    "summary": "Broadening coverage requires exercising Realm/Valve/naming subsystems (JNDIRealm, JAASRealm, DefaultInstanceManager, JDBCAccessLogValve, DataSourceLinkFactory, etc.) that the current single TomcatTests.java never reaches. The sibling 11.0.18/11.0.22/11.0.23 test suites for this same library already did this and needed two extra testImplementation dependencies, but no Docker image or external service - JNDI/JAAS/JDBC realms are all exercised with in-memory/mocked substitutes."
+  },
+  "libraryUpdateRoute": {
+    "baseline_coordinates": null,
+    "new_version": "10.0.20",
+    "selected_driver": "improve_library_coverage"
+  },
+  "newVersion": null,
+  "phases": {
+    "explore": {
+      "chunkClassCount": null,
+      "chunkProcessedClassCount": 0,
+      "exhaustedClasses": [],
+      "iteration": 1,
+      "status": "pending"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": null,
+      "status": "skipped"
+    },
+    "publication": {
+      "branch": null,
+      "coverageFollowUpIssueNumber": null,
+      "isPushed": false,
+      "publicationId": null,
+      "publicationTimestamp": null,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": true,
+      "status": "completed"
+    }
+  },
+  "preservedBranch": "ai/kimeta/human-intervention/issue-10508-library-update-request-org.apache.tomcat.embed-tomcat-embed-core-10.0.20-27aad1b0",
+  "publicationMetrics": {
+    "extras": {},
+    "library": "org.apache.tomcat.embed:tomcat-embed-core:10.0.20",
+    "timestamp": "2026-10-07T13:08:07.630725Z"
+  },
+  "schemaVersion": 1,
+  "strategyName": "library_update_optimistic_pi_gpt-5.6-sol"
+}
