@@ -65,11 +65,37 @@ def _display_path(static_path: list[int], graph: CallGraph, limit: int = 6) -> s
     return " → ".join(labels)
 
 
-def _line_location(evidence: dict | None) -> str:
+class SourceRoot:
+    """The extracted library sources a prompt's locations resolve against
+    (§AR-code-coverage-deep-navigation.3.2).
+
+    A location is the JaCoCo source path when that file exists under the root,
+    else the file name alone; `resolved` records whether any location used the
+    root, so a prompt states the root only when it is needed.
+    """
+
+    def __init__(self, path: str | None) -> None:
+        self.path: str | None = (
+            os.path.abspath(path) if path and os.path.isdir(path) else None
+        )
+        self.resolved: bool = False
+
+    def location(self, source_path: str) -> str:
+        if self.path is not None and os.path.isfile(os.path.join(self.path, source_path)):
+            self.resolved = True
+            return source_path
+        return os.path.basename(source_path)
+
+
+def _line_location(evidence: dict | None, sources: SourceRoot | None) -> str:
     if evidence is None:
         return "unknown invoking line"
     source_path: str = evidence["sourcePath"]
-    return f"{os.path.basename(source_path)}:{evidence['line']}"
+    shown: str = (
+        sources.location(source_path) if sources is not None
+        else os.path.basename(source_path)
+    )
+    return f"{shown}:{evidence['line']}"
 
 
 def _count_text(count: int | None, counted: bool) -> str:
@@ -170,13 +196,17 @@ def _dispatch_lines(classification: dict) -> list[str]:
     ]
 
 
-def classification_lines(classification: dict, counted: bool = False) -> list[str]:
+def classification_lines(
+        classification: dict,
+        counted: bool = False,
+        sources: SourceRoot | None = None,
+) -> list[str]:
     target: dict | None = classification.get("target")
     if target is None:
         target_line: str = "  target line unavailable"
     else:
         status: str = "RAN" if target["ci"] > 0 else "never ran"
-        target_line = f"  target `{_line_location(target)}` {status}"
+        target_line = f"  target `{_line_location(target, sources)}` {status}"
     kind: str = classification["kind"]
     if kind == "dispatched-elsewhere":
         return [target_line, *_dispatch_lines(classification)]
@@ -186,7 +216,7 @@ def classification_lines(classification: dict, counted: bool = False) -> list[st
         reach: int | None = fork.get("reach")
         ran: str = f"reached {reach:,}×" if reach is not None else "ran"
         header: str = (
-            f"  fork `{_line_location(fork)}` {ran}, {fork['cb']} of "
+            f"  fork `{_line_location(fork, sources)}` {ran}, {fork['cb']} of "
             f"{total_branches} branches taken"
         )
         branches: list[dict] | None = fork.get("branches")
@@ -198,7 +228,7 @@ def classification_lines(classification: dict, counted: bool = False) -> list[st
         return [target_line, *_catch_lines(exception["handlers"], counted)]
     nearest: dict | None = classification.get("nearestCovered")
     nearest_text: str = (
-        f"nearest covered `{_line_location(nearest)}`"
+        f"nearest covered `{_line_location(nearest, sources)}`"
         if nearest is not None
         else "no covered line was available"
     )
@@ -241,6 +271,7 @@ def _prompt_line(
         graph: CallGraph,
         notes: dict[str, dict],
         counted: bool,
+        sources: SourceRoot,
 ) -> str:
     """One prompt path with its line diagnosis and synthetic-method notes."""
     note: dict = notes.get(record.target_ref.canonical_id, {})
@@ -268,7 +299,7 @@ def _prompt_line(
         "nearestCovered": None,
         "candidates": [],
     })
-    return "\n".join([path_line, *classification_lines(classification, counted)])
+    return "\n".join([path_line, *classification_lines(classification, counted, sources)])
 
 
 def _placement(session: dict | None) -> str:
@@ -307,6 +338,7 @@ def write_markdown(
         iteration: int,
         md_path: str,
         session: dict | None = None,
+        source_root: str | None = None,
 ) -> None:
     summary: dict = report["summary"]
     notes: dict[str, dict] = {target["id"]: target for target in report["bulkTargets"]}
@@ -321,6 +353,10 @@ def write_markdown(
         "Reach every target below through its public entry; never call internal "
         "methods directly.",
         "",
+    ]
+    # Filled once the routes are rendered and known to use the root.
+    root_line_index: int = len(lines)
+    lines += [
         "## Where the tests go",
         "",
         "All of them belong in the dedicated coverage suite, and nowhere else: the "
@@ -330,6 +366,7 @@ def write_markdown(
         _placement(session),
     ]
     counted: bool = bool(summary.get("instrumentedCounters"))
+    sources: SourceRoot = SourceRoot(source_root)
 
     # Every prompted record is a sampled route (§AR-code-coverage-deep-navigation.2).
     sampled_groups: dict[tuple[str, int], list[NearCallRecord]] = {}
@@ -362,8 +399,16 @@ def write_markdown(
         lines.append("")
         lines.append("Uncovered paths:")
         for record in records:
-            lines.append(_prompt_line(record, graph, notes, counted))
+            lines.append(_prompt_line(record, graph, notes, counted, sources))
         lines.append("")
+    # Locations are relative to the stated source root, which only a prompt
+    # with a resolved location states (§AR-code-coverage-deep-navigation.3.2).
+    if sources.resolved:
+        lines[root_line_index:root_line_index] = [
+            f"Library sources: `{sources.path}`; the source locations below are "
+            "relative to it.",
+            "",
+        ]
     # Totals, omitted counts and caveats stay in the JSON report
     # (§AR-code-coverage-deep-navigation.2).
     with open(md_path, "w", encoding="utf-8") as md_file:
