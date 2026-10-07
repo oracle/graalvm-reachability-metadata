@@ -1,0 +1,14 @@
+Implemented the fix.
+
+- Added missing conditional Tomcat metadata for MBeans, XML bootstrap configuration, and logging resources.
+- Added test-only metadata for JUnit ordering, serialization proxies, and servlet class resources.
+- Removed `ContextConfigTest.java` because it depended on runtime class definition through Tomcat’s custom webapp class loader, which is unsupported in Native Image.
+
+Verification with the exact reproduce command and required GraalVM:
+
+- **116 tests successful**
+- **0 tests failed**
+- `checkMetadataFiles` passed.
+- JSON validation, `git diff --check`, and `fissile check --staged` passed.
+
+`checkstyle` still reports unused imports in three unchanged files: `AuthConfigFactoryImplTest.java`, `Jre9CompatTest.java`, and `BootstrapTest.java`.
