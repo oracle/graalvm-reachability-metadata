@@ -100,6 +100,63 @@ public class Spring_boot_micrometer_metrics_testTest {
     }
 
     @Test
+    void propertyDisablesMetricsExportWhenAnnotationIsAbsent() {
+        new ApplicationContextRunner()
+                .withPropertyValues("spring.test.metrics.export=false")
+                .withInitializer((context) -> metricsContextCustomizer(NoMetricsAnnotation.class)
+                    .customizeContext(context, null))
+                .withUserConfiguration(MetricsTestConfiguration.class)
+                .run((context) -> {
+                    assertThat(context.getEnvironment()
+                        .getProperty("management.defaults.metrics.export.enabled")).isEqualTo("false");
+                    assertThat(context.getEnvironment()
+                        .getProperty("management.simple.metrics.export.enabled")).isEqualTo("true");
+                    assertThat(context.getBean(MeterRegistry.class)).isInstanceOf(SimpleMeterRegistry.class);
+
+                    Counter counter = context.getBean(MeterRegistry.class)
+                        .counter("application.requests", "status", "property-disabled");
+                    counter.increment(2.0);
+
+                    assertThat(counter.count()).isEqualTo(2.0);
+                });
+    }
+
+    @Test
+    void annotationSettingTakesPrecedenceOverExportProperty() {
+        new ApplicationContextRunner()
+                .withPropertyValues("spring.test.metrics.export=true")
+                .withInitializer((context) -> metricsContextCustomizer(MetricsExportDisabled.class)
+                    .customizeContext(context, null))
+                .withUserConfiguration(MetricsTestConfiguration.class)
+                .run((context) -> {
+                    assertThat(context.getEnvironment()
+                        .getProperty("management.defaults.metrics.export.enabled")).isEqualTo("false");
+                    assertThat(context.getEnvironment()
+                        .getProperty("management.simple.metrics.export.enabled")).isEqualTo("true");
+                    assertThat(context.getBean(MeterRegistry.class)).isInstanceOf(SimpleMeterRegistry.class);
+                });
+    }
+
+    @Test
+    void contextCustomizersCompareByMergedAnnotation() {
+        ContextCustomizer disabled = metricsContextCustomizer(MetricsExportDisabled.class);
+        ContextCustomizer sameDisabled = metricsContextCustomizer(MetricsExportDisabled.class);
+        ContextCustomizer enabled = metricsContextCustomizer(MetricsExportEnabled.class);
+        ContextCustomizer withoutAnnotation = metricsContextCustomizer(NoMetricsAnnotation.class);
+        ContextCustomizer sameWithoutAnnotation = metricsContextCustomizer(NoMetricsAnnotation.class);
+
+        assertThat(disabled).isEqualTo(disabled);
+        assertThat(disabled).isEqualTo(sameDisabled);
+        assertThat(disabled.hashCode()).isEqualTo(sameDisabled.hashCode());
+        assertThat(disabled).isNotEqualTo(enabled);
+        assertThat(disabled).isNotEqualTo(withoutAnnotation);
+        assertThat(disabled).isNotEqualTo(null);
+        assertThat(disabled).isNotEqualTo(new Object());
+        assertThat(withoutAnnotation).isEqualTo(sameWithoutAnnotation);
+        assertThat(withoutAnnotation.hashCode()).isEqualTo(sameWithoutAnnotation.hashCode());
+    }
+
+    @Test
     void annotationEnablesMetricsExportWhenPropertyDisablesIt() {
         try (AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext()) {
             TestPropertyValues.of("spring.test.metrics.export=false").applyTo(context);
