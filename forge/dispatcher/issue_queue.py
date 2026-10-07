@@ -97,7 +97,7 @@ def get_issue_body(issue_number: int) -> str:
         "--repo", REPO,
         "--json", "body,author",
     )
-    # `gh` reports the Actions bot as `app/github-actions`. §forge/AR-forge-drivers.2.1
+    # `gh` reports the Actions bot as `app/github-actions`. §AR-forge-driver-queues.2.1
     if data["author"]["login"].removeprefix("app/").startswith("github"):
         return ""
     body = data.get("body")
