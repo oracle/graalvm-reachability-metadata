@@ -47,15 +47,23 @@ public class Spring_boot_opentelemetryTest {
                     OpenTelemetryLoggingAutoConfiguration.class, OtlpLoggingAutoConfiguration.class));
 
     @Test
-    void sdkAutoConfigurationBindsPropertiesAndBuildsLoggingProvider() {
+    void sdkAutoConfigurationUsesDefaultsAndBuildsLoggingProvider() {
         this.contextRunner
-                .withPropertyValues("management.opentelemetry.enabled=true",
-                        "spring.application.name=orders", "spring.application.group=commerce",
-                        "management.opentelemetry.resource-attributes.deployment.environment=test",
-                        "management.logging.export.enabled=true")
+                .withPropertyValues("spring.application.name=orders", "spring.application.group=commerce",
+                        "management.opentelemetry.resource-attributes.deployment.environment=test")
                 .run((context) -> {
                     assertThat(context).hasSingleBean(OpenTelemetryProperties.class);
-                    assertThat(context.getBean(OpenTelemetryProperties.class).isEnabled()).isTrue();
+                    OpenTelemetryProperties properties = context.getBean(OpenTelemetryProperties.class);
+                    assertThat(properties.isEnabled()).isTrue();
+                    assertThat(properties.getResourceAttributes()).containsEntry("deployment.environment", "test");
+                    assertThat(context).hasSingleBean(OtlpLoggingProperties.class);
+                    OtlpLoggingProperties loggingProperties = context.getBean(OtlpLoggingProperties.class);
+                    assertThat(loggingProperties.getEndpoint()).isNull();
+                    assertThat(loggingProperties.getTimeout()).isEqualTo(Duration.ofSeconds(10));
+                    assertThat(loggingProperties.getConnectTimeout()).isEqualTo(Duration.ofSeconds(10));
+                    assertThat(loggingProperties.getTransport()).isEqualTo(Transport.HTTP);
+                    assertThat(loggingProperties.getCompression()).isEqualTo(OtlpLoggingProperties.Compression.NONE);
+                    assertThat(loggingProperties.getHeaders()).isEmpty();
                     assertThat(context).hasSingleBean(Resource.class);
                     assertThat(context).hasSingleBean(SdkLoggerProvider.class);
                     assertThat(context).hasSingleBean(OpenTelemetrySdk.class);
@@ -107,6 +115,7 @@ public class Spring_boot_opentelemetryTest {
         AtomicBoolean customizerInvoked = new AtomicBoolean();
         this.contextRunner
                 .withPropertyValues("management.opentelemetry.enabled=true", "management.logging.export.enabled=true",
+                        "management.logging.export.otlp.enabled=true",
                         "management.opentelemetry.logging.export.otlp.endpoint=http://collector.example.test/v1/logs",
                         "management.opentelemetry.logging.export.otlp.timeout=15s",
                         "management.opentelemetry.logging.export.otlp.connect-timeout=12s",
@@ -143,6 +152,7 @@ public class Spring_boot_opentelemetryTest {
         AtomicBoolean customizerInvoked = new AtomicBoolean();
         this.contextRunner
                 .withPropertyValues("management.opentelemetry.enabled=true", "management.logging.export.enabled=true",
+                        "management.logging.export.otlp.enabled=true",
                         "management.opentelemetry.logging.export.otlp.endpoint=http://collector.example.test:4317",
                         "management.opentelemetry.logging.export.otlp.transport=grpc",
                         "management.opentelemetry.logging.export.otlp.compression=gzip")
@@ -159,6 +169,19 @@ public class Spring_boot_opentelemetryTest {
                     assertThat(context.getBean(OtlpGrpcLogRecordExporter.class).toString())
                             .contains("endpoint=http://custom-collector.example.test:4317", "compressorEncoding=gzip");
                     assertThat(customizerInvoked).isTrue();
+                    assertSdkShutdown(context);
+                });
+    }
+
+    @Test
+    void disabledLoggingExportDoesNotCreateAnOtlpExporter() {
+        this.contextRunner
+                .withPropertyValues("management.logging.export.otlp.enabled=false",
+                        "management.opentelemetry.logging.export.otlp.endpoint=http://collector.example.test/v1/logs")
+                .run((context) -> {
+                    assertThat(context).hasSingleBean(OtlpLoggingConnectionDetails.class);
+                    assertThat(context).doesNotHaveBean(OtlpHttpLogRecordExporter.class);
+                    assertThat(context).doesNotHaveBean(OtlpGrpcLogRecordExporter.class);
                     assertSdkShutdown(context);
                 });
     }
