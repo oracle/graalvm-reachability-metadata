@@ -1,0 +1,93 @@
+Prompt:
+You are preparing a Forge workflow for a library issue. Decide whether the library needs setup beyond the normal generated test scaffold before meaningful coverage is reachable.
+
+Research the library yourself to make this decision. Investigate the resolved artifact and its dependencies, how the library is normally used, and its documentation. The JSON context below is only a starting point, not the limit of what you may consider. Do not modify the repository or apply any setup yourself — return only the decision. Local Gradle and Native Image verification remain authoritative.
+
+The setup can be one of three things: an extra Maven dependency, a Docker image the tests need, or an environment/system property the generated tests must set. Represent dependencies and Docker images as `deterministic_setup` entries the driver can apply before generation:
+  - {"kind": "dependency", "coordinate": "group:artifact:version", "scope": "testImplementation", "reason": "..."}
+  - {"kind": "docker_image", "image": "name:tag", "slug": "short-slug", "reason": "..."}
+If a test needs a Docker image that is already pinned under `tests/tck-build-logic/src/main/resources/allowed-docker-images/`, reuse the exact tag from that `Dockerfile-<slug>` instead of introducing a new one, since the allow-list permits a single shared tag per image.
+Put environment variables, system properties, and other test-code setup in `agent_guidance`. Do not restate deterministic entries as guidance.
+
+Return a single JSON object with this shape:
+{
+  "action": "no_action" | "advisory_preparation",
+  "summary": "short reason",
+  "deterministic_setup": [ ... dependency or docker_image entries, if any ... ],
+  "agent_guidance": "environment/system property/test setup guidance, if any",
+  "risks": ["risk notes, if any"]
+}
+
+Choose no_action unless your research finds concrete evidence that extra setup is needed.
+
+Separately, decide whether this library version can be supported under GraalVM Native Image at all. A version is unsupportable only when covering its dynamic-access calls requires behavior Native Image does not support: runtime bytecode generation or class definition, runtime lambda definition, Java agent self-attach, class redefinition or instrumentation, native-image substitution paths, or URL/plugin/OSGi class loader paths that introduce classes not in the image.
+
+Run these steps in order. An unsupportable verdict requires ALL of them; stay with the two actions above the moment one fails:
+1. FAILURE: state the failing operation from the issue's failure evidence alone.
+2. TRACE: follow the failing symbol into the library's own source and quote the code performing the operation.
+3. CLASSIFY: show the operation is in the list above. Anything reachability metadata can register is repairable.
+4. SOLE PATH: prove every public API route the metadata would justify passes through this operation, with no configuration, property, or fallback branch around it. One viable fallback means repairable.
+5. RANGE: list newer released versions whose sources you verified share the same mechanism. Include only versions you actually verified; when you cannot verify newer versions, record only 6.0.4.
+
+On an unsupportable verdict, return instead:
+{
+  "action": "skip_unsupported",
+  "summary": "one sentence naming the mechanism and why the image cannot perform it",
+  "skipped_versions": [{"version": "...", "reason": "mechanism sentence; later versions: '; unchanged from <first>'"}, ...]
+}
+skipped_versions must include 6.0.4; reasons are published verbatim in index.json and the pull request, so write them for a reader who has not seen this analysis. Never base the verdict on a red test, a library's own error type, or its error message — only on the mechanism you traced in the library's source. Any uncertainty at any step means repairable: attempting the fix is the safe default, a wrong skip freezes versions that were never attempted.
+
+Context (starting point):
+{
+  "issue": {
+    "number": 9929,
+    "title": "[Automation] native-image run fails for org.springframework:spring-context:6.0.4",
+    "label": "fails-native-image-run",
+    "body": "",
+    "body_error": ""
+  },
+  "library": "org.springframework:spring-context:6.0.4",
+  "current_library": "org.springframework:spring-context:6.0.2",
+  "new_version": "6.0.4",
+  "existing_tests": {
+    "org.springframework:spring-context:6.0.2": [
+      "tests/src/org.springframework/spring-context/6.0.2/.gitignore",
+      "tests/src/org.springframework/spring-context/6.0.2/build.gradle",
+      "tests/src/org.springframework/spring-context/6.0.2/gradle.properties",
+      "tests/src/org.springframework/spring-context/6.0.2/settings.gradle",
+      "tests/src/org.springframework/spring-context/6.0.2/user-code-filter.json",
+      "tests/src/org.springframework/spring-context/6.0.2/src/test/java/org/jboss/modules/JLIClassTransformer.java",
+      "tests/src/org.springframework/spring-context/6.0.2/src/test/java/org/jboss/as/server/deployment/module/DelegatingClassFileTransformer.java",
+      "tests/src/org.springframework/spring-context/6.0.2/src/test/java/org_springframework/spring_context/AbstractReflectiveMBeanInfoAssemblerTest.java",
+      "tests/src/org.springframework/spring-context/6.0.2/src/test/java/org_springframework/spring_context/AnnotationJmxAttributeSourceTest.java",
+      "tests/src/org.springframework/spring-context/6.0.2/src/test/java/org_springframework/spring_context/ApplicationListenerMethodAdapterTest.java",
+      "tests/src/org.springframework/spring-context/6.0.2/src/test/java/org_springframework/spring_context/ComponentScanBeanDefinitionParserTest.java",
+      "tests/src/org.springframework/spring-context/6.0.2/src/test/java/org_springframework/spring_context/ConfigurationClassBeanDefinitionReaderTest.java",
+      "tests/src/org.springframework/spring-context/6.0.2/src/test/java/org_springframework/spring_context/ConfigurationClassEnhancerInnerBeanMethodInterceptorTest.java",
+      "tests/src/org.springframework/spring-context/6.0.2/src/test/java/org_springframework/spring_context/ConfigurationClassPostProcessorInnerConfigurationClassProxyBeanRegistrationCodeFragmentsTest.java",
+      "tests/src/org.springframework/spring-context/6.0.2/src/test/java/org_springframework/spring_context/EventPublicationInterceptorTest.java",
+      "tests/src/org.springframework/spring-context/6.0.2/src/test/java/org_springframework/spring_context/GenericApplicationContextInnerClassDerivedBeanDefinitionTest.java",
+      "tests/src/org.springframework/spring-context/6.0.2/src/test/java/org_springframework/spring_context/GlassFishLoadTimeWeaverTest.java",
+      "tests/src/org.springframework/spring-context/6.0.2/src/test/java/org_springframework/spring_context/InterfaceBasedMBeanInfoAssemblerTest.java",
+      "tests/src/org.springframework/spring-context/6.0.2/src/test/java/org_springframework/spring_context/JBossLoadTimeWeaverTest.java",
+      "tests/src/org.springframework/spring-context/6.0.2/src/test/java/org_springframework/spring_context/LoadTimeWeaverBeanDefinitionParserTest.java",
+      "tests/src/org.springframework/spring-context/6.0.2/src/test/java/org_springframework/spring_context/LoadTimeWeavingConfigurationTest.java",
+      "tests/src/org.springframework/spring-context/6.0.2/src/test/java/org_springframework/spring_context/MBeanClientInterceptorTest.java",
+      "tests/src/org.springframework/spring-context/6.0.2/src/test/java/org_springframework/spring_context/ParserStrategyUtilsTest.java",
+      "tests/src/org.springframework/spring-context/6.0.2/src/test/java/org_springframework/spring_context/PredefinedCglibProxyClassesGenerator.java",
+      "tests/src/org.springframework/spring-context/6.0.2/src/test/java/org_springframework/spring_context/ResourceBundleMessageSourceInnerMessageSourceControlTest.java",
+      "tests/src/org.springframework/spring-context/6.0.2/src/test/java/org_springframework/spring_context/ResourceBundleMessageSourceTest.java",
+      "tests/src/org.springframework/spring-context/6.0.2/src/test/java/org_springframework/spring_context/ScheduledMethodRunnableTest.java",
+      "tests/src/org.springframework/spring-context/6.0.2/src/test/java/org_springframework/spring_context/ShadowingClassLoaderTest.java",
+      "tests/src/org.springframework/spring-context/6.0.2/src/test/java/org_springframework/spring_context/StandardScriptFactoryTest.java",
+      "tests/src/org.springframework/spring-context/6.0.2/src/test/java/org_springframework/spring_context/TomcatLoadTimeWeaverTest.java",
+      "tests/src/org.springframework/spring-context/6.0.2/src/test/resources/org_springframework/spring_context/resource_bundle_control_messages.properties",
+      "tests/src/org.springframework/spring-context/6.0.2/src/test/resources/org_springframework/spring_context/resource_bundle_plain_messages.properties",
+      "tests/src/org.springframework/spring-context/6.0.2/src/test/resources/META-INF/native-image/reachability-metadata.json"
+    ]
+  }
+}
+
+Conversation:
+{"duration_api_ms":9529,"stop_reason":"end_turn","session_id":"3c578dd2-7705-49ab-ae6d-a0e7f329a978","total_cost_usd":0.156155,"usage":{"input_tokens":4,"cache_creation_input_tokens":34295,"cache_read_input_tokens":52135,"output_tokens":854,"output_tokens_details":{"thinking_tokens":289},"server_tool_use":{"web_search_requests":0,"web_fetch_requests":0},"service_tier":"standard","cache_creation":{"ephemeral_1h_input_tokens":34295,"ephemeral_5m_input_tokens":0},"inference_geo":"not_available","iterations":[{"input_tokens":2,"output_tokens":611,"cache_read_input_tokens":39979,"cache_creation_input_tokens":6472,"cache_creation":{"ephemeral_5m_input_tokens":0,"ephemeral_1h_input_tokens":6472},"type":"message"}],"speed":"standard","fallback_credit":null},"modelUsage":{"claude-sonnet-5-5":{"inputTokens":4,"outputTokens":854,"cacheReadInputTokens":52135,"cacheCreationInputTokens":34295,"webSearchRequests":0,"costUSD":0.156155,"contextWindow":1000000,"maxOutputTokens":128000,"thinkingTokens":289,"canonicalModel":"claude-sonnet-5-5","provider":"firstParty","costBasis":"list"}},"permission_denials":[],"terminal_reason":"completed","fast_mode_state":"off","fast_mode_disabled_reason":"sdk_opt_in_required","subagent_stats":{"spawned":0,"requested":{"background":0,"foreground":0,"unset":0},"started_in_background":0,"max_depth":0,"spawned_by_subagents":0,"completed":0,"failed":0,"killed":{"parent":0,"user":0,"system":0},"refused":{"depth_limit":0,"concurrency_limit":0,"budget":0},"by_type":{}},"is_error":false,"num_turns":2,"subtype":"success","api_error_status":null,"result":"```json\n{\n  \"action\": \"no_action\",\n  \"summary\": \"The issue has no failure evidence, and the existing 6.0.2 tests already set up what the library needs: the javax.ejb and assertj test dependencies, spring.objenesis.ignore, and the predefined CGLIB proxy generator. 6.0.4 is a patch release of the same line, so no new dependency, Docker image or property is evident.\",\n  \"deterministic_setup\": [],\n  \"agent_guidance\": \"Carry over the 6.0.2 test setup unchanged: testImplementation org.glassfish:javax.ejb:3.1 and org.assertj:assertj-core:3.22.0; -Dspring.objenesis.ignore=true for both the JVM test task and nativeTest; and the generatePredefinedCglibProxyClasses task wired before nativeTestCompile and nativeTraceImage. Fix any native-image failure by repairing metadata against the 6.0.4 failure output.\",\n  \"risks\": [\n    \"The issue body is empty, so the native-image failure cause is unknown and was not traced.\",\n    \"The 6.0.4 sources were not checked for new dynamic-access paths. Local Native Image verification is authoritative.\"\n  ]\n}\n```","ttft_ms":3406,"type":"result","duration_ms":9718,"uuid":"bb6202bc-49e6-46fa-87dd-cacf54621058","ttft_stream_ms":2475,"time_to_request_ms":120,"first_content_frame_ms":2476,"queued_turn_count":0,"result_index":0}
+

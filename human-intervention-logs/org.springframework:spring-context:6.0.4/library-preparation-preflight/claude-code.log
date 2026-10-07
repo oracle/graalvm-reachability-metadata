@@ -1,0 +1,12 @@
+```json
+{
+  "action": "no_action",
+  "summary": "The issue has no failure evidence, and the existing 6.0.2 tests already set up what the library needs: the javax.ejb and assertj test dependencies, spring.objenesis.ignore, and the predefined CGLIB proxy generator. 6.0.4 is a patch release of the same line, so no new dependency, Docker image or property is evident.",
+  "deterministic_setup": [],
+  "agent_guidance": "Carry over the 6.0.2 test setup unchanged: testImplementation org.glassfish:javax.ejb:3.1 and org.assertj:assertj-core:3.22.0; -Dspring.objenesis.ignore=true for both the JVM test task and nativeTest; and the generatePredefinedCglibProxyClasses task wired before nativeTestCompile and nativeTraceImage. Fix any native-image failure by repairing metadata against the 6.0.4 failure output.",
+  "risks": [
+    "The issue body is empty, so the native-image failure cause is unknown and was not traced.",
+    "The 6.0.4 sources were not checked for new dynamic-access paths. Local Native Image verification is authoritative."
+  ]
+}
+```

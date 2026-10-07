@@ -1,0 +1,75 @@
+{
+  "continueFrom": "setup",
+  "coordinate": "org.springframework:spring-context:6.0.4",
+  "failure": {
+    "operand": "org.springframework:spring-context:6.0.4",
+    "phase": "setup",
+    "step": "normal_setup()"
+  },
+  "issueNumber": 9929,
+  "label": "fails-native-image-run",
+  "libraryPreparationPreflight": {
+    "action": "no_action",
+    "agent_guidance": "Carry over the 6.0.2 test setup unchanged: testImplementation org.glassfish:javax.ejb:3.1 and org.assertj:assertj-core:3.22.0; -Dspring.objenesis.ignore=true for both the JVM test task and nativeTest; and the generatePredefinedCglibProxyClasses task wired before nativeTestCompile and nativeTraceImage. Fix any native-image failure by repairing metadata against the 6.0.4 failure output.",
+    "applied_setup": [],
+    "current_library": "org.springframework:spring-context:6.0.2",
+    "deterministic_setup": [],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#9929 [Automation] native-image run fails for org.springframework:spring-context:6.0.4; label=fails-native-image-run; body_chars=0"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "33 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 4,
+    "issue_label": "fails-native-image-run",
+    "issue_number": 9929,
+    "library": "org.springframework:spring-context:6.0.4",
+    "model": "sonnet",
+    "new_version": "6.0.4",
+    "output_tokens_used": 854,
+    "risks": [
+      "The issue body is empty, so the native-image failure cause is unknown and was not traced.",
+      "The 6.0.4 sources were not checked for new dynamic-access paths. Local Native Image verification is authoritative."
+    ],
+    "status": "completed",
+    "summary": "The issue has no failure evidence, and the existing 6.0.2 tests already set up what the library needs: the javax.ejb and assertj test dependencies, spring.objenesis.ignore, and the predefined CGLIB proxy generator. 6.0.4 is a patch release of the same line, so no new dependency, Docker image or property is evident."
+  },
+  "libraryUpdateRoute": null,
+  "newVersion": "6.0.4",
+  "phases": {
+    "explore": {
+      "chunkClassCount": null,
+      "chunkProcessedClassCount": 0,
+      "exhaustedClasses": [],
+      "status": "pending"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": null,
+      "status": "pending"
+    },
+    "publication": {
+      "branch": null,
+      "coverageFollowUpIssueNumber": null,
+      "isPushed": false,
+      "publicationId": null,
+      "publicationTimestamp": null,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": false,
+      "status": "running"
+    }
+  },
+  "preservedBranch": "ai/kimeta/human-intervention/issue-9929-fails-native-image-run-org.springframework-spring-context-6.0.4-7b26602f",
+  "publicationMetrics": null,
+  "schemaVersion": 1,
+  "strategyName": "library_update_pi_gpt-5.6-sol"
+}

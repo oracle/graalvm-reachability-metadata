@@ -1,0 +1,17 @@
+## Human intervention needed
+
+The automated job failed during `setup/normal_setup()` while preparing the existing `6.0.2` test suite for `org.springframework:spring-context:6.0.4`; it did not reach test generation, native-image repair, or metrics collection.
+
+Preserved work: https://github.com/oracle/graalvm-reachability-metadata/tree/ai%2Fkimeta%2Fhuman-intervention%2Fissue-9929-fails-native-image-run-org.springframework-spring-context-6.0.4-18918875
+
+The likely blocker is the metadata-generation setup task. `fixTestNativeImageRun` invokes `generatePredefinedCglibProxyClasses`, but that Java task is instrumented by the Native Image agent. Spring then treats the JVM as image code and throws `UnsupportedOperationException: CGLIB runtime enhancement not supported on native image` while trying to generate `ConfigurationClassEnhancerInnerBeanMethodInterceptorTest$CglibProxyConfiguration$$SpringCGLIB$$0`. No `6.0.4` test project, metadata, publication metrics, or dynamic-access coverage was produced.
+
+Inspect:
+- `logs/org.springframework:spring-context:6.0.4/native-image-run-fix/fixTestNativeImageRun-2026-10-07T00-54-25-830997Z.log`
+- `logs/org.springframework:spring-context:6.0.4/library-preparation-preflight/claude-code.log`
+- `logs/org.springframework:spring-context:6.0.4/library-preparation-preflight/claude-code-session-or9bp1e9.log`
+
+Manual next steps:
+1. Reproduce the logged `fixTestNativeImageRun` command and adjust the CGLIB pre-generation task so it runs as a normal JVM process rather than under Native Image agent instrumentation.
+2. Rerun the `6.0.4` coordinate through metadata generation and the full native test to expose and diagnose the original runtime failure.
+3. Once tests pass, regenerate and validate metadata, dynamic-access coverage, and execution metrics before publication.
