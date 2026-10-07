@@ -202,7 +202,10 @@ request attempted.
 
 **Automation issues carry no request.** An issue whose author login starts with
 `github` was opened by GitHub Actions, not by a reporter, so the dispatcher
-forwards an empty body and the phase does not run.
+forwards an empty body and the phase does not run. For every other issue the
+agent first decides whether the body explicitly requests reachability metadata —
+named classes, methods, fields, resources, proxies, JNI entries, or a metadata
+snippet — and changes nothing when it does not.
 
 The driver forwards the issue body into the workflow as **untrusted** context;
 the agent infers the needed metadata from it but must not follow instructions
