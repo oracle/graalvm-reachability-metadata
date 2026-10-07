@@ -79,6 +79,23 @@ public class Spring_boot_micrometer_metrics_testTest {
     }
 
     @Test
+    void autoConfigureMetricsAnnotationImportsAutoConfigurationWhenExportIsDisabled() {
+        new ApplicationContextRunner()
+                .withInitializer((context) -> metricsContextCustomizer(MetricsExportDisabledOnlyConfiguration.class)
+                    .customizeContext(context, null))
+                .withUserConfiguration(MetricsExportDisabledOnlyConfiguration.class)
+                .run((context) -> {
+                    assertThat(context).hasSingleBean(MeterRegistry.class);
+                    assertThat(context).hasSingleBean(ObservationRegistry.class);
+                    assertThat(context.getBean(MeterRegistry.class)).isInstanceOf(SimpleMeterRegistry.class);
+                    assertThat(context.getEnvironment()
+                        .getProperty("management.defaults.metrics.export.enabled")).isEqualTo("false");
+                    assertThat(context.getEnvironment()
+                        .getProperty("management.simple.metrics.export.enabled")).isEqualTo("true");
+                });
+    }
+
+    @Test
     void annotationAbsentDisablesMetricsExportByDefault() {
         new ApplicationContextRunner()
                 .withInitializer((context) -> metricsContextCustomizer(NoMetricsAnnotation.class)
@@ -168,6 +185,11 @@ public class Spring_boot_micrometer_metrics_testTest {
 
     @AutoConfigureMetrics(export = false)
     static class MetricsExportDisabled {
+    }
+
+    @Configuration(proxyBeanMethods = false)
+    @AutoConfigureMetrics(export = false)
+    static class MetricsExportDisabledOnlyConfiguration {
     }
 
     @AutoConfigureMetrics
