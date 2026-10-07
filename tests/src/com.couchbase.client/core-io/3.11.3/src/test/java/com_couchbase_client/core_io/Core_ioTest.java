@@ -7,6 +7,7 @@
 package com_couchbase_client.core_io;
 
 import com.couchbase.client.core.compression.snappy.SnappyCodec;
+import com.couchbase.client.core.config.ClusterCapabilities;
 import com.couchbase.client.core.config.GlobalConfig;
 import com.couchbase.client.core.config.GlobalConfigParser;
 import com.couchbase.client.core.env.CompressionConfig;
@@ -149,10 +150,22 @@ public class Core_ioTest {
                         "kv": 11210,
                         "kvSSL": 11207,
                         "n1ql": 8093
+                      },
+                      "alternateAddresses": {
+                        "external": {
+                          "hostname": "public.example",
+                          "ports": {
+                            "mgmt": 18091,
+                            "kvSSL": 11207
+                          }
+                        }
                       }
                     }
                   ],
-                  "clusterCapabilities": {}
+                  "clusterCapabilities": {
+                    "n1ql": ["enhancedPreparedStatements"],
+                    "search": ["scopedSearchIndex", "vectorSearch"]
+                  }
                 }
                 """;
 
@@ -170,6 +183,18 @@ public class Core_ioTest {
         assertThat(config.portInfos().get(0).sslPorts())
                 .containsEntry(ServiceType.MANAGER, 18091)
                 .containsEntry(ServiceType.KV, 11207);
+        assertThat(config.portInfos().get(0).alternateAddresses().get("external").hostname())
+                .isEqualTo("public.example");
+        assertThat(config.portInfos().get(0).alternateAddresses().get("external").services())
+                .containsEntry(ServiceType.MANAGER, 18091);
+        assertThat(config.portInfos().get(0).alternateAddresses().get("external").sslServices())
+                .containsEntry(ServiceType.KV, 11207);
+        assertThat(config.clusterCapabilities().get(ServiceType.QUERY))
+                .containsExactly(ClusterCapabilities.ENHANCED_PREPARED_STATEMENTS);
+        assertThat(config.clusterCapabilities().get(ServiceType.SEARCH))
+                .containsExactlyInAnyOrder(
+                        ClusterCapabilities.SCOPED_SEARCH_INDEX,
+                        ClusterCapabilities.VECTOR_SEARCH);
     }
 
     @Test
