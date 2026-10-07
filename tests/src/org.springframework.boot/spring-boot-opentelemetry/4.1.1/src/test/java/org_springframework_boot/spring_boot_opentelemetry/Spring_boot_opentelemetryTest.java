@@ -16,6 +16,7 @@ import io.opentelemetry.api.common.AttributeKey;
 import io.opentelemetry.exporter.otlp.http.logs.OtlpHttpLogRecordExporter;
 import io.opentelemetry.exporter.otlp.logs.OtlpGrpcLogRecordExporter;
 import io.opentelemetry.sdk.OpenTelemetrySdk;
+import io.opentelemetry.sdk.logs.LogLimits;
 import io.opentelemetry.sdk.logs.SdkLoggerProvider;
 import io.opentelemetry.sdk.resources.Resource;
 import org.junit.jupiter.api.Test;
@@ -69,6 +70,21 @@ public class Spring_boot_opentelemetryTest {
                             .isSameAs(context.getBean(SdkLoggerProvider.class));
                     assertThat(context.getBean(OpenTelemetrySdk.class).shutdown().join(10, TimeUnit.SECONDS)
                             .isSuccess()).isTrue();
+                });
+    }
+
+    @Test
+    void loggingLimitsConfigureSdkLoggerProvider() {
+        this.contextRunner
+                .withPropertyValues("management.opentelemetry.enabled=true", "management.logging.export.enabled=true",
+                        "management.opentelemetry.logging.limits.max-attributes=7",
+                        "management.opentelemetry.logging.limits.max-attribute-value-length=64")
+                .run((context) -> {
+                    assertThat(context).hasSingleBean(LogLimits.class);
+                    LogLimits limits = context.getBean(LogLimits.class);
+                    assertThat(limits.getMaxNumberOfAttributes()).isEqualTo(7);
+                    assertThat(limits.getMaxAttributeValueLength()).isEqualTo(64);
+                    assertSdkShutdown(context);
                 });
     }
 
