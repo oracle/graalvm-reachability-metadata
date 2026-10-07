@@ -1,0 +1,57 @@
+{
+  "fix_ni_run:2026-10-07": {
+    "timestamp": "2026-10-07T02:15:01.651735Z",
+    "library": "io.jsonwebtoken:jjwt-gson:0.12.7",
+    "starting_commit": "72f0639d00fec6707d89c5c5670bba19b1296b91",
+    "ending_commit": "72f0639d00fec6707d89c5c5670bba19b1296b91",
+    "strategy_name": "library_update_pi_gpt-5.6-sol",
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "status": "failure",
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "no_action",
+      "issue_number": 9337,
+      "issue_label": "fails-native-image-run",
+      "library": "io.jsonwebtoken:jjwt-gson:0.12.7",
+      "summary": "The issue log is truncated and shows the native image building successfully, so it gives no evidence of a missing dependency, Docker image or environment setting. The existing 0.12.0 scaffold already declares jjwt-api, jjwt-impl, jjwt-gson, assertj, the sun.security.util export and the java.io open. jjwt-gson is a pure in-memory JSON serializer, so it needs no external service. I did not verify the failure in a local Gradle or Native Image run.",
+      "deterministic_setup": [],
+      "agent_guidance": "",
+      "risks": [
+        "The excerpt cuts off before the actual native-image run failure, so its cause is not confirmed. Treat it as ordinary metadata or test repair and rely on local Gradle and Native Image verification.",
+        "The log shows gson-2.11.0 on the code-area list while the metadata classpath lists gson 2.14.0. The version mismatch could affect Gson reflection metadata, but it is a metadata matter and not a setup need.",
+        "The existing test pins its jjwt-api and jjwt-impl versions to the tested library version. Keep them aligned with 0.12.7 when generating tests for the new version."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#9337 [Automation] native-image run fails for io.jsonwebtoken:jjwt-gson:0.12.7; label=fails-native-image-run; body_chars=8015"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "6 existing test file path(s) included"
+        }
+      ],
+      "current_library": "io.jsonwebtoken:jjwt-gson:0.12.0",
+      "new_version": "0.12.7",
+      "model": "sonnet",
+      "input_tokens_used": 4,
+      "output_tokens_used": 761
+    },
+    "metrics": {
+      "input_tokens_used": 0,
+      "cached_input_tokens_used": 0,
+      "output_tokens_used": 0,
+      "iterations": 3,
+      "cost_usd": 0.0,
+      "generated_loc": 0,
+      "tested_library_loc": 0,
+      "metadata_entries": 0,
+      "code_coverage_percent": 0.0
+    },
+    "artifacts": {
+      "metadata_file": "None"
+    }
+  }
+}
