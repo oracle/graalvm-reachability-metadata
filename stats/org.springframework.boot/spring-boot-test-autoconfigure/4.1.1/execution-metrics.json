@@ -1,0 +1,90 @@
+{
+  "add_new_library_support:2026-10-07": {
+    "timestamp": "2026-10-07T10:10:57.266582Z",
+    "library": "org.springframework.boot:spring-boot-test-autoconfigure:4.1.1",
+    "starting_commit": "8f60474b9288e3a6580bbbf73787c06387d2ddf8",
+    "ending_commit": "c4fc7a8050e586a9cfff4ad475f364056efba57a",
+    "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-sol",
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "status": "success",
+    "stats": {
+      "version": "4.1.1",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 2,
+            "totalCalls": 2
+          }
+        },
+        "coverageRatio": 1.0,
+        "coveredCalls": 2,
+        "totalCalls": 2
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 72,
+          "missed": 387,
+          "ratio": 0.156863,
+          "total": 459
+        },
+        "line": {
+          "covered": 16,
+          "missed": 80,
+          "ratio": 0.166667,
+          "total": 96
+        },
+        "method": {
+          "covered": 4,
+          "missed": 32,
+          "ratio": 0.111111,
+          "total": 36
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "no_action",
+      "issue_number": 9729,
+      "issue_label": "library-new-request",
+      "library": "org.springframework.boot:spring-boot-test-autoconfigure:4.1.1",
+      "summary": "Sibling Spring Boot 4.x modules in tests/src/org.springframework.boot (for example spring-boot-actuator-autoconfigure) use only the library itself plus assertj-core, so the normal scaffold is enough. I did not resolve this artifact's POM or check what it pulls in transitively. Its test-slice and AutoConfigure* annotations can be exercised with ApplicationContextRunner or SpringBootTest-style contexts, with no Docker image, environment variable or system property needed.",
+      "deterministic_setup": [],
+      "agent_guidance": "",
+      "risks": [
+        "Tests that use a slice annotation such as @AutoConfigureMockMvc or @DataJpaTest would need the matching web or data starters, which are not part of this artifact. Keep tests to what the artifact's own transitive dependencies support.",
+        "If the artifact's transitive dependencies turn out not to include spring-test or JUnit, a dependency may need to be added after local Gradle verification."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#9729 Support for org.springframework.boot:spring-boot-test-autoconfigure:4.1.1; label=library-new-request; body_chars=39"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "sonnet",
+      "input_tokens_used": 6,
+      "output_tokens_used": 1074
+    },
+    "metrics": {
+      "input_tokens_used": 78717,
+      "cached_input_tokens_used": 641536,
+      "output_tokens_used": 10075,
+      "iterations": 3,
+      "cost_usd": 1.0167,
+      "generated_loc": 36,
+      "tested_library_loc": 16,
+      "metadata_entries": 0,
+      "test_only_metadata_entries": 8,
+      "code_coverage_percent": 16.67
+    },
+    "artifacts": {
+      "metadata_file": "metadata/org.springframework.boot/spring-boot-test-autoconfigure/4.1.1/reachability-metadata.json"
+    }
+  }
+}

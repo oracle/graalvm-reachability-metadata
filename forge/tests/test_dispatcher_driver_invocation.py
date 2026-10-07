@@ -221,11 +221,26 @@ class LibraryUpdateIssueTests(unittest.TestCase):
         self.assertNotIn("body", gh_json.call_args.args[-1])
 
     def test_issue_body_fetch_is_explicit_for_reporter_metadata_context(self) -> None:
-        with patch.object(issue_queue, "gh_json", return_value={"body": "Missing reflection metadata"}) as gh_json:
+        payload = {"body": "Missing reflection metadata", "author": {"login": "kimeta"}}
+        with patch.object(issue_queue, "gh_json", return_value=payload) as gh_json:
             body = issue_queue.get_issue_body(1412)
 
         self.assertEqual(body, "Missing reflection metadata")
-        self.assertEqual(gh_json.call_args.args[-1], "body")
+        self.assertEqual(gh_json.call_args.args[-1], "body,author")
+
+    def test_issue_body_is_empty_for_github_actions_author(self) -> None:
+        payload = {"body": "CI log", "author": {"login": "app/github-actions"}}
+        with patch.object(issue_queue, "gh_json", return_value=payload):
+            body = issue_queue.get_issue_body(1412)
+
+        self.assertEqual(body, "")
+
+    def test_issue_body_is_empty_for_graalvmbot_author(self) -> None:
+        payload = {"body": "CI log", "author": {"login": "graalvmbot"}}
+        with patch.object(issue_queue, "gh_json", return_value=payload):
+            body = issue_queue.get_issue_body(1412)
+
+        self.assertEqual(body, "")
 
     def test_library_update_uses_title_coordinate_when_body_mentions_other_coordinates(self) -> None:
         issue = {

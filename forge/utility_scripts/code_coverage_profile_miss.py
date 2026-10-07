@@ -19,25 +19,17 @@ import sys
 from utility_scripts.code_coverage_jacoco import JacocoLineCoverage, JacocoMethodCoverage
 from utility_scripts.code_coverage_model import MethodRef
 from utility_scripts.code_coverage_profile_counters import SiteDispatch, site_dispatch
-from utility_scripts.code_coverage_profile_flow import Branch, MethodFlow
+from utility_scripts.code_coverage_profile_fork import (
+    ForkTrace,
+    LineRecord,
+    fork_to_json,
+    line_to_json,
+    trace_fork,
+)
 from utility_scripts.code_coverage_profile_graph import CallGraph, translated_ref
 from utility_scripts.code_coverage_profile_inputs import line_at
 from utility_scripts.code_coverage_profile_navigation import NavigationEvidence
 from utility_scripts.code_coverage_profile_records import NearCallRecord
-
-LineRecord = tuple[int, JacocoLineCoverage]
-
-
-def _line_to_json(source_path: str, line: int, coverage: JacocoLineCoverage) -> dict:
-    return {
-        "sourcePath": source_path,
-        "line": line,
-        "mi": coverage.mi,
-        "ci": coverage.ci,
-        "mb": coverage.mb,
-        "cb": coverage.cb,
-    }
-
 
 def _method_line_region(
         caller: MethodRef,
@@ -183,107 +175,6 @@ def _inferred_invoking_line(edge: dict, region: list[LineRecord]) -> LineRecord 
     return next((record for record in region if record[1].covered), None)
 
 
-def _branch_to_json(
-        branch: Branch,
-        flow: MethodFlow,
-        invoke_bci: int,
-        lines: tuple[tuple[int, int], ...],
-        counts: dict[int, int] | None,
-) -> dict:
-    """One branch with each successor's landing line, count, and target reach."""
-    return {
-        "bci": branch.bci,
-        "blockStart": flow.block_of(branch.bci),
-        "reach": sum(counts.values()) if counts is not None else None,
-        "successors": [
-            {
-                "bci": successor,
-                "line": line_at(lines, successor),
-                "count": counts.get(successor) if counts is not None else None,
-                "reachesTarget": flow.reaches(successor, invoke_bci, branch.bci),
-            }
-            for successor in branch.reachable_successors
-        ],
-    }
-
-
-def _controls(branch: dict) -> bool:
-    """Whether a branch decides the invoke, and could be why it never ran.
-
-    Some successors must reach the invoke and some must not; a branch whose
-    target-reaching successors all ran is not the reason the target did not
-    (§AR-code-coverage-deep-navigation.3.2).
-    """
-    reaching: list[dict] = [
-        successor for successor in branch["successors"] if successor["reachesTarget"]
-    ]
-    if not reaching or len(reaching) == len(branch["successors"]):
-        return False
-    return not all((successor["count"] or 0) > 0 for successor in reaching)
-
-
-def _controlling_fork(
-        caller: MethodRef,
-        edge: dict,
-        target_line: int | None,
-        candidates: list[LineRecord],
-        evidence: NavigationEvidence,
-) -> tuple[LineRecord | None, list[dict]] | None:
-    """The nearest candidate line holding a branch that controls the invoke.
-
-    `None` when the caller has no control-flow or line table, so the fork falls
-    back to line order; `(None, [])` when the table proves that no candidate
-    line controls the invoke.
-    """
-    flow: MethodFlow | None = (
-        evidence.flows.get(caller.canonical_id) if evidence.flows is not None else None
-    )
-    lines: tuple[tuple[int, int], ...] = evidence.line_numbers.get(caller.canonical_id, ())
-    try:
-        invoke_bci: int = int(edge.get("bci", ""))
-    except ValueError:
-        return None
-    if flow is None or not lines:
-        return None
-    for record in candidates:
-        branches: list[dict] = [
-            _branch_to_json(
-                branch,
-                flow,
-                invoke_bci,
-                lines,
-                (
-                    evidence.counters.branches.get((caller.canonical_id, branch.bci))
-                    if evidence.counters is not None else None
-                ),
-            )
-            for branch in flow.branches
-            if not branch.plumbing
-            and line_at(lines, branch.bci) == record[0]
-            # On the invoking line only a branch before the call can decide it.
-            and (record[0] != target_line or branch.bci < invoke_bci)
-        ]
-        if any(_controls(branch) for branch in branches):
-            return record, branches
-    return None, []
-
-
-def _fork_to_json(
-        source_path: str,
-        fork: LineRecord,
-        branches: list[dict] | None,
-) -> dict:
-    reaches: list[int] = [
-        branch["reach"] for branch in branches or [] if branch["reach"] is not None
-    ]
-    return {
-        **_line_to_json(source_path, *fork),
-        "evidence": "control-flow" if branches is not None else "line-order",
-        "reach": max(reaches) if reaches else None,
-        "branches": branches,
-    }
-
-
 def edge_miss_classification(
         edge: dict,
         graph: CallGraph,
@@ -323,7 +214,7 @@ def edge_miss_classification(
     )
     target_record: LineRecord | None = _inferred_invoking_line(edge, region)
     base["target"] = (
-        _line_to_json(source_path, *target_record)
+        line_to_json(source_path, *target_record)
         if source_path is not None and target_record is not None
         else None
     )
@@ -339,7 +230,7 @@ def edge_miss_classification(
         (record for record in reversed(preceding) if record[1].covered), None
     )
     base["nearestCovered"] = (
-        _line_to_json(source_path, *nearest_covered)
+        line_to_json(source_path, *nearest_covered)
         if source_path is not None and nearest_covered is not None
         else None
     )
@@ -360,34 +251,38 @@ def edge_miss_classification(
         and containing_block[0][1].mi == 1
         and nearest_covered[1].mb == 0
     )
+    forks_above: list[LineRecord] = [
+        record for record in reversed(preceding) if record[1].covered and record[1].mb > 0
+    ]
+    same_line: list[LineRecord] = [
+        record for record in [target_record]
+        if record is not None and record[1].covered and record[1].mb > 0
+    ]
+    # The invoke's bci belongs to the raw caller, so only its own control
+    # flow can trace it.
+    traced: ForkTrace | None = trace_fork(
+        caller,
+        edge,
+        target_record[0] if target_record is not None else None,
+        [*same_line, *forks_above],
+        dict(region),
+        graph,
+        evidence,
+    ) if caller is raw_caller else None
     fork: LineRecord | None = None
     branches: list[dict] | None = None
-    if not exception_handler_entry:
-        forks_above: list[LineRecord] = [
-            record for record in reversed(preceding) if record[1].covered and record[1].mb > 0
-        ]
-        same_line: list[LineRecord] = [
-            record for record in [target_record]
-            if record is not None and record[1].covered and record[1].mb > 0
-        ]
-        # The invoke's bci belongs to the raw caller, so only its own control
-        # flow can trace it.
-        traced = _controlling_fork(
-            caller,
-            edge,
-            target_record[0] if target_record is not None else None,
-            [*same_line, *forks_above],
-            evidence,
-        ) if caller is raw_caller else None
-        if traced is not None:
-            fork, branches = traced
-        else:
-            fork = next(iter(forks_above), None)
+    exception: dict | None = None
+    if traced is not None:
+        fork, branches, exception = traced.fork, traced.branches, traced.exception
+    elif not exception_handler_entry:
+        # Without a control-flow table, line order is all there is: the nearest
+        # missed branch above, unless the lines read as a catch entry.
+        fork = next(iter(forks_above), None)
     if fork is not None and source_path is not None:
-        base["fork"] = _fork_to_json(source_path, fork, branches)
+        base["fork"] = fork_to_json(source_path, fork, branches)
         base["reach"] = base["fork"]["reach"]
         return {"kind": "fork-not-taken", **base}
-    return {"kind": "no-fork", **base}
+    return {"kind": "no-fork", **base, "exception": exception}
 
 
 def _invoking_sites(target_id: int, graph: CallGraph) -> list[dict]:

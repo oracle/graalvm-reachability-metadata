@@ -149,12 +149,13 @@ jobs:
               per_page: 100
             });
 
-            const duplicateIssue = openIssues.find((issue) => {
-              if (issue.pull_request || issue.number === issue_number) {
-                return false;
-              }
-              return issue.title === exactTitle || extractCoordinatesFromTitle(issue.title) === coords;
-            });
+            // Only a lower-numbered open request counts as the original, so concurrent
+            // triage runs for a burst of identical requests converge on the lowest number
+            // instead of closing each other (§AR-triage-new-issues).
+            const duplicateIssue = openIssues
+              .filter((issue) => !issue.pull_request && issue.number < issue_number)
+              .filter((issue) => issue.title === exactTitle || extractCoordinatesFromTitle(issue.title) === coords)
+              .sort((left, right) => left.number - right.number)[0];
 
             if (!duplicateIssue) {
               core.setOutput("duplicate", "false");
@@ -173,7 +174,7 @@ jobs:
             ].join("\n");
 
             await github.rest.issues.createComment({ owner, repo, issue_number, body });
-            await github.rest.issues.update({ owner, repo, issue_number, state: "closed" });
+            await github.rest.issues.update({ owner, repo, issue_number, state: "closed", state_reason: "not_planned" });
 
       - name: "Check whether the request is already covered by the repository"
         if: ${{ steps.classify.outputs.should_triage == 'true' && steps.validate.outputs.invalid != 'true' && steps.duplicate.outputs.duplicate != 'true' }}

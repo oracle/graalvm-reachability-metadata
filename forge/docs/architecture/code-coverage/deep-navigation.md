@@ -56,9 +56,20 @@ line-level hints, and the report says so in a caveat rather than silently.
 
 The bytecode call-graph extractor (§AR-code-coverage-improvement.3) also writes
 each method's branch instructions, their successor bcis, and its basic blocks
-with exception edges. Only this table says where a branch leads; JaCoCo reports
-per-line totals, and the profile names successor bcis without saying what lies
-behind them.
+with exception edges. A method has a row when it holds a conditional branch or
+an exception table; one with neither can hold no fork and no catch boundary.
+Only this table says where a branch leads; JaCoCo reports per-line totals, and
+the profile names successor bcis without saying what lies behind them.
+
+A block's exception edges are marked apart from its normal ones. Bytecode has no
+try/catch instruction, only an exception table of `[from, to)` ranges and their
+handlers; the table's range bounds and handler entries cut blocks, so every
+block lies wholly inside or outside each range and its handlers are a property
+of the block. A block that ends in a return or throw inside a `try` therefore
+has exception edges only, and no normal exit. Each exception edge names the
+handler's caught type, `any` for a catch-all, and a block holding an
+instruction that can raise a caught exception — a call or a `throw` — is
+marked, so a hint can say where the exception has to come from.
 
 javac plumbing is marked the way JaCoCo filters it, so the branches a hint lists
 match the ones JaCoCo counts. A String switch's `hashCode` switch and the
@@ -154,15 +165,46 @@ it is to flip, so it only orders ties and never overrides distance.
 ## 3. Miss classification
 
 Every prompted target carries a deterministic miss classification derived from
-JaCoCo source-line instruction and branch counters, the target's reverse
-call-site fan-out, and — when present — the control-flow table and the counters.
-Only sites whose caller JaCoCo reports covered are judged, and the route
-guarantees at least one (§2). A site is found through the target's source-level
-method, so a constructor reached through a factory stub is judged at the stub's
-callers. A caller judged on borrowed lines (§2) is read in line order, since the
-invoke's bytecode index is its own, not the lending method's. The strongest
-diagnosis across those sites wins. The Markdown prompt
-and the full JSON report carry the same classification.
+JaCoCo source-line instruction and branch counters, the target's reverse call-
+site fan-out, and — when present — the control-flow table and the counters. Only
+sites whose caller JaCoCo reports covered are judged, and the route guarantees
+at least one (§2). A site is found through the target's source-level method, so
+a constructor reached through a factory stub is judged at the stub's callers. A
+caller judged on borrowed lines (§2) is read in line order, since the invoke's
+bytecode index is its own, not the lending method's. The strongest diagnosis
+across those sites wins. The Markdown prompt and the full JSON report carry the
+same classification.
+
+```mermaid
+sequenceDiagram
+    participant M as miss classifier
+    participant G as call graph
+    participant J as JaCoCo lines
+    participant F as control-flow table
+    participant P as PGO counters
+    M->>G: call sites of the target
+    M->>J: caller covered? invoking line status, candidate implementations
+    alt invoking line covered and several implementations
+        M-->>M: dispatched-elsewhere (§3.1)
+    else
+        M->>F: dead region around the invoke's block
+        loop each edge into the region
+            F->>P: branch counter of the source block (JaCoCo line without one)
+            Note over F,P: never ran: extend the region · zero count into it: fork edge<br/>exception edge: catch boundary · positive count or unknown: stop
+        end
+        F-->>M: forks, catch boundaries, dead blocks
+        M->>J: covered lines with a missed branch, at or above the invoking line
+        alt a fork lies on such a line
+            M->>P: counts of that line's successors
+            M-->>M: fork-not-taken (§3.2), dead successors marked
+        else catch boundaries exist
+            M->>F: per-block counts of the try lines that can raise
+            M-->>M: no-fork (§3.3) with handler type and raising lines
+        else
+            M-->>M: no-fork (§3.3) with the nearest covered line
+        end
+    end
+```
 
 ### 3.1 Dispatched elsewhere
 
@@ -179,17 +221,30 @@ candidate unlabelled rather than guessed.
 
 ### 3.2 Fork not taken
 
-The fork is the nearest covered line above the invoking line that JaCoCo
-reports with a missed branch and that holds a branch instruction
-**controlling** the target: some of its successors reach the invoking bci and
-some do not. The invoking line itself qualifies when a controlling branch on it
-precedes the invoke, as in a conditional expression. Reachability walks the method's control flow,
-exception edges included, without passing back through the branch, so a loop
-header does not reach everything. A branch whose target-reaching successors all
-have positive counts is not why the target was missed, and the search continues
-upward; a line whose branches control nothing is skipped the same way. Without a
-control-flow table for the method, the nearest covered line with a missed branch
-is the fork, as before.
+The fork is found by walking the method's control flow backwards from the
+invoking bci, through blocks that never executed. Every edge from an executed
+block into that dead region was never taken, and a branch instruction on such
+an edge is a fork: it ran, and the successor that leads to the invoke has a
+zero count. The fork line is the nearest covered line, at or above the
+invoking line, that JaCoCo reports with a missed branch and that holds a fork
+branch. The invoking line itself qualifies when a fork branch on it precedes
+the invoke, as in a conditional expression. Because the walk never enters
+executed code, a loop cannot carry it around, and `a || b` yields its two
+conditions as two forks on one line.
+
+A block executed when its branch counter is positive; without a counter, when
+JaCoCo covers its line. A block that ran but whose every normal successor
+lies in the dead region decided nothing: it left by an exception, and the walk
+stops there without a fork. JaCoCo's line status cannot tell such a block from
+one that never ran on a line holding several blocks, so without a counter the
+walk passes through it. A positive count into a block the walk believed dead
+is contradictory evidence, and the walk stops there without a fork. An
+exception edge (§AR-code-coverage-deep-navigation.1.3) is never walked: nothing
+says which block of the `try` would have raised, so every block under the
+`try` is a catch boundary (§AR-code-coverage-deep-navigation.3.3) reported with
+how often it ran, and the fork is sought along normal edges only. Without a
+control-flow table for the method, the nearest covered line with a missed
+branch is the fork, as before.
 
 The hint lists every successor of every non-plumbing branch instruction on
 the fork line, one numbered item per successor in bytecode order. A successor
@@ -199,8 +254,8 @@ true/false or by case key: javac's jump sense does not map to the source
 condition, and enum, String, and pattern switches switch on synthetic keys. A
 successor that lands on a later branch instruction of the same line, as the
 first condition of `a && b` does, is labelled by that condition's position.
-Each item carries its count, and those that reach the invoking bci carry a
-target marker:
+Each item carries its count, and those that land in the dead region, and so
+reach the invoking bci, carry a target marker:
 
 ```text
 fork `Database.java:313` reached 40,182×, 2 of 4 branches taken
@@ -219,8 +274,27 @@ navigation.
 
 ### 3.3 No fork
 
-When no fork exists, `no-fork` names the nearest covered line and explains that
-the target requires an exception or external event.
+When no fork exists — the dead region around the invoke is entered only by
+exception edges or from blocks that ran and left by an exception — `no-fork`
+names the nearest covered line and explains that the target requires an
+exception or external event.
+
+When the region is entered through catch handlers, the hint goes further. It
+names each handler's line and caught type, and under it every line of the `try`
+range that can raise the exception, with its own count, zero for a line that
+never ran: the range's paths run different numbers of times, and only the one
+holding the throwing call matters.
+
+```text
+reached only through catch (NumberFormatException) at line 8
+  line 4 `String.isEmpty` ran 8,000,100×, never threw it
+  line 7 `Integer.parseInt` ran 8,000,000×, never threw it
+```
+
+A line's count is propagated forward from the branch counters along normal
+edges; a line whose count cannot be derived shows none. Calls are named from
+the call graph where it has the site. When no line in the range can raise, every
+line of the range is listed.
 
 ## 4. Group sessions
 
