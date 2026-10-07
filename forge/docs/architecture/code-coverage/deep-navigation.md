@@ -255,10 +255,14 @@ condition, and enum, String, and pattern switches switch on synthetic keys. A
 successor that lands on a later branch instruction of the same line, as the
 first condition of `a && b` does, is labelled by that condition's position.
 Each item carries its count, and those that land in the dead region, and so
-reach the invoking bci, carry a target marker:
+reach the invoking bci, carry a target marker. A location is the JaCoCo source
+path relative to the library source root, which the prompt states once near
+its top as an absolute path, so the agent opens the file without fetching the
+sources again; when the root or the file under it is missing, the location is
+the file name alone, and a prompt none of whose locations resolve states no root:
 
 ```text
-fork `Database.java:313` reached 40,182×, 2 of 4 branches taken
+fork `org/h2/engine/Database.java:313` reached 40,182×, 2 of 4 branches taken
   branch 1 → condition 2 ×40,182
   branch 2 → line 320 ×0 ← target
   branch 3 → line 314 ×40,182
