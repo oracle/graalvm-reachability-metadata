@@ -878,6 +878,10 @@ class WorkflowStrategy(ABC):
                 return self._fail_issue_requested_metadata_phase(
                     checkpoint, iterations, "analysis_agent_turn_failed",
                 )
+            # No edits means the issue explicitly requested no metadata.
+            if self._worktree_unchanged_since(checkpoint):
+                self._print_issue_requested_metadata_message("result: no explicit metadata request, skipping")
+                return True, iterations
             # The engine owns every Gradle command; the agent only edits.
             # §forge/AR-forge-strategy-agent-boundary
             last_generate_output: str = ""
@@ -1106,6 +1110,15 @@ class WorkflowStrategy(ABC):
             location=RunLocation(RUN_PHASE_EXPLORE, STEP_GENERATE_TESTS, "reporter-requested metadata"),
         )
         return False, iterations
+
+    def _worktree_unchanged_since(self, checkpoint: str) -> bool:
+        """Return whether `HEAD` is still `checkpoint` and the worktree is clean."""
+        status: str = subprocess.check_output(
+            ["git", "status", "--porcelain"],
+            cwd=self.reachability_repo_path,
+            text=True,
+        )
+        return self._current_head_commit() == checkpoint and not status.strip()
 
     def _current_head_commit(self) -> str:
         """Return the current `HEAD` SHA of the reachability worktree."""
