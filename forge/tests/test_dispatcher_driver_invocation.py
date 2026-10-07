@@ -235,6 +235,13 @@ class LibraryUpdateIssueTests(unittest.TestCase):
 
         self.assertEqual(body, "")
 
+    def test_issue_body_is_empty_for_graalvmbot_author(self) -> None:
+        payload = {"body": "CI log", "author": {"login": "graalvmbot"}}
+        with patch.object(issue_queue, "gh_json", return_value=payload):
+            body = issue_queue.get_issue_body(1412)
+
+        self.assertEqual(body, "")
+
     def test_library_update_uses_title_coordinate_when_body_mentions_other_coordinates(self) -> None:
         issue = {
             "number": 1412,
