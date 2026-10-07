@@ -1,16 +1,18 @@
 ### Human intervention needed
 
-The automated job failed in `explore/generate_tests()` while handling reporter-requested metadata. Preserved work: https://github.com/oracle/graalvm-reachability-metadata/tree/ai%2Fkimeta%2Fhuman-intervention%2Fissue-9730-library-new-request-org.springframework.boot-spring-boot-micrometer-metrics-test-4.1.1-0e0886d2
+The automated job failed with `test_generation_failed`. Preserved work: https://github.com/oracle/graalvm-reachability-metadata/tree/ai%2Fkimeta%2Fhuman-intervention%2Fissue-9730-library-new-request-org.springframework.boot-spring-boot-micrometer-metrics-test-4.1.1-86827e70
 
-The likely blocker is Spring Test AOT handling. The latest Gradle run built the native image, but all 4 tests failed at runtime with `ClassNotFoundException: org.springframework.test.context.aot.AotTestContextInitializers__Generated`. The metadata agent then made no change because the issue body requested no specific metadata and classified this generated class as test infrastructure rather than library metadata. An earlier checkpoint did pass 5/5 native tests, indicating that a later test variant or stale Gradle/native output introduced the failure. Metrics ended as `failure` after 12 iterations with finalization still pending and no coverage result; dynamic-access reporting also failed because its output directory was not produced.
+The original failure occurred during `explore/generate_tests()` when an earlier native test variant failed on missing Spring Test AOT class `AotTestContextInitializers__Generated`. However, the resumed run appears to have resolved that test failure: the latest Gradle logs report all 10 tests successful under both future defaults and GraalVM 25, and metadata validation, Spotless, Checkstyle, and statistics generation all succeeded. The preserved `execution-metrics.json` is also marked `success`, with 66.67% line coverage and `0/0` dynamic-access calls. `generateLibraryStats` notes that no dynamic-access output directory was produced, explaining the unavailable top-level coverage summary, but this is a valid no-calls result rather than a test failure.
+
+This points to a stale failure classification or a post-generation publication/status handoff failure rather than a remaining Gradle test failure.
 
 Inspect:
 - `human-intervention-logs/org.springframework.boot:spring-boot-micrometer-metrics-test:4.1.1/gradle-test/gradle-test-2026-10-07T05-24-36-243697Z.log`
-- `human-intervention-logs/org.springframework.boot:spring-boot-micrometer-metrics-test:4.1.1/issue-requested-metadata/pi.log`
-- `human-intervention-logs/org.springframework.boot:spring-boot-micrometer-metrics-test:4.1.1/native-test-verify/cycle-0-finalizedTest-2026-10-07T04-53-50-525887Z.log`
-- `human-intervention-logs/org.springframework.boot:spring-boot-micrometer-metrics-test:4.1.1/gradle/generateDynamicAccessCoverageReport-2026-10-07T05-04-52-350867Z.log`
+- `human-intervention-logs/org.springframework.boot:spring-boot-micrometer-metrics-test:4.1.1/gradle-test/gradle-test-2026-10-07T10-56-07-651184Z.log`
+- `human-intervention-logs/org.springframework.boot:spring-boot-micrometer-metrics-test:4.1.1/gradle-test/gradle-test-2026-10-07T11-01-40-136852Z.log`
+- `human-intervention-logs/org.springframework.boot:spring-boot-micrometer-metrics-test:4.1.1/finalization/generateLibraryStats-2026-10-07T11-20-19-008270Z.log`
 
 Manual next steps:
-1. Compare checkpoint `b806c425826b829eb140e9bb9677215f475ae75f` with the later failing test variant and retain the 5-test implementation that passed native verification.
-2. Clean the coordinate’s build outputs and rerun its full test task; if `TestContextManager` remains necessary, wire Spring Test AOT generation into the test setup rather than adding unrelated hand-written metadata.
-3. Regenerate the dynamic-access coverage report and metrics after native tests pass.
+1. Review the preserved 10-test suite and confirm the earlier Spring Test AOT-dependent variant is no longer present.
+2. Clean the coordinate’s outputs and rerun the complete coordinate test and validation lanes to confirm the preserved tree remains green.
+3. If those checks pass, regenerate or repair the publication handoff and metrics status instead of treating this as an unresolved test-generation failure.
