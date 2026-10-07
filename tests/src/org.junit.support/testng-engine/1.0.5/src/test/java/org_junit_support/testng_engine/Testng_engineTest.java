@@ -10,6 +10,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.platform.engine.discovery.DiscoverySelectors.selectClass;
 import static org.junit.platform.engine.discovery.DiscoverySelectors.selectMethod;
 import static org.junit.platform.launcher.EngineFilter.includeEngines;
+import static org.junit.platform.launcher.TagFilter.excludeTags;
+import static org.junit.platform.launcher.TagFilter.includeTags;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,6 +34,7 @@ public class Testng_engineTest {
     void resetFixtures() {
         LifecycleFixture.reset();
         ConfiguredFixture.reset();
+        TagFixture.reset();
         RecordingListener.reset();
     }
 
@@ -78,6 +81,20 @@ public class Testng_engineTest {
         assertThat(summary.getTotalFailureCount()).isZero();
         assertThat(ConfiguredFixture.executedMethods).containsExactly("selectedReturningTest");
         assertThat(RecordingListener.successfulMethods).containsExactly("selectedReturningTest");
+    }
+
+    @Test
+    void exposesTestNgGroupsAsJUnitPlatformTags() {
+        LauncherDiscoveryRequest request = requestFor(TagFixture.class)
+                .filters(includeTags("fast"), excludeTags("quarantined"))
+                .build();
+
+        TestExecutionSummary summary = execute(request);
+
+        assertThat(summary.getTestsFoundCount()).isEqualTo(1);
+        assertThat(summary.getTestsSucceededCount()).isEqualTo(1);
+        assertThat(summary.getTotalFailureCount()).isZero();
+        assertThat(TagFixture.executedMethods).containsExactly("fastTest");
     }
 
     private static TestExecutionSummary execute(Class<?> testClass) {
@@ -169,6 +186,29 @@ public class Testng_engineTest {
         @org.testng.annotations.Test(groups = "excluded")
         public void excludedTest() {
             executedMethods.add("excludedTest");
+        }
+    }
+
+    public static class TagFixture {
+        static final List<String> executedMethods = new ArrayList<>();
+
+        static void reset() {
+            executedMethods.clear();
+        }
+
+        @org.testng.annotations.Test(groups = "fast")
+        public void fastTest() {
+            executedMethods.add("fastTest");
+        }
+
+        @org.testng.annotations.Test(groups = {"fast", "quarantined"})
+        public void quarantinedFastTest() {
+            executedMethods.add("quarantinedFastTest");
+        }
+
+        @org.testng.annotations.Test
+        public void untaggedTest() {
+            executedMethods.add("untaggedTest");
         }
     }
 
