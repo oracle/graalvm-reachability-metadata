@@ -6,6 +6,10 @@
  */
 package org_springframework_boot.spring_boot_micrometer_metrics_test;
 
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 import java.util.List;
 
 import io.micrometer.core.instrument.Counter;
@@ -131,6 +135,18 @@ public class AutoConfigureMetricsIntegrationTest {
     }
 
     @Test
+    void composedAnnotationDisablesMetricsExport() {
+        try (GenericApplicationContext context = new GenericApplicationContext()) {
+            customizeContext(ComposedMetricsDisabledConfiguration.class, context);
+
+            assertThat(context.getEnvironment().getProperty("management.defaults.metrics.export.enabled"))
+                    .isEqualTo("false");
+            assertThat(context.getEnvironment().getProperty("management.simple.metrics.export.enabled"))
+                    .isEqualTo("true");
+        }
+    }
+
+    @Test
     void equivalentAnnotationsProduceCacheCompatibleCustomizers() {
         ContextCustomizer first = createContextCustomizer(MetricsEnabledConfiguration.class);
         ContextCustomizer equivalent = createContextCustomizer(AnotherMetricsEnabledConfiguration.class);
@@ -175,5 +191,15 @@ public class AutoConfigureMetricsIntegrationTest {
     }
 
     static class InheritedMetricsConfiguration extends MetricsDisabledConfiguration {
+    }
+
+    @ComposedMetricsDisabled
+    static class ComposedMetricsDisabledConfiguration {
+    }
+
+    @Target(ElementType.TYPE)
+    @Retention(RetentionPolicy.RUNTIME)
+    @AutoConfigureMetrics(export = false)
+    @interface ComposedMetricsDisabled {
     }
 }
