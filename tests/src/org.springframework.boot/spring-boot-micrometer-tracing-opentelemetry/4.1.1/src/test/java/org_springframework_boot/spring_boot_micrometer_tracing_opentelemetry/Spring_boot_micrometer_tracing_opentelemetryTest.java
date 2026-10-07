@@ -8,13 +8,25 @@ package org_springframework_boot.spring_boot_micrometer_tracing_opentelemetry;
 
 import java.time.Duration;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import io.opentelemetry.api.OpenTelemetry;
+import io.opentelemetry.api.trace.Span;
+import io.opentelemetry.api.trace.SpanContext;
+import io.opentelemetry.api.trace.TraceFlags;
+import io.opentelemetry.api.trace.TraceState;
+import io.opentelemetry.context.Context;
+import io.opentelemetry.context.propagation.TextMapGetter;
+import io.opentelemetry.context.propagation.TextMapPropagator;
+import io.opentelemetry.context.propagation.TextMapSetter;
 import io.opentelemetry.exporter.otlp.http.trace.OtlpHttpSpanExporter;
 import io.opentelemetry.exporter.otlp.http.trace.OtlpHttpSpanExporterBuilder;
 import io.opentelemetry.exporter.otlp.trace.OtlpGrpcSpanExporter;
 import io.opentelemetry.exporter.otlp.trace.OtlpGrpcSpanExporterBuilder;
 import io.opentelemetry.sdk.common.CompletableResultCode;
+import io.opentelemetry.sdk.resources.Resource;
 import io.opentelemetry.sdk.trace.SdkTracerProvider;
 import io.opentelemetry.sdk.trace.SdkTracerProviderBuilder;
 import io.opentelemetry.sdk.trace.SpanProcessor;
@@ -29,6 +41,7 @@ import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.context.properties.bind.Bindable;
 import org.springframework.boot.context.properties.bind.Binder;
 import org.springframework.boot.context.properties.source.MapConfigurationPropertySource;
+import org.springframework.boot.micrometer.tracing.opentelemetry.autoconfigure.OpenTelemetryTracingAutoConfiguration;
 import org.springframework.boot.micrometer.tracing.opentelemetry.autoconfigure.OpenTelemetryTracingProperties;
 import org.springframework.boot.micrometer.tracing.opentelemetry.autoconfigure.SpanExporters;
 import org.springframework.boot.micrometer.tracing.opentelemetry.autoconfigure.SpanProcessors;
@@ -179,6 +192,48 @@ public class Spring_boot_micrometer_tracing_opentelemetryTest {
     }
 
     @Test
+    void openTelemetryAutoConfigurationPropagatesW3cTraceContext() {
+        new ApplicationContextRunner()
+                .withConfiguration(AutoConfigurations.of(OpenTelemetryTracingAutoConfiguration.class))
+                .withUserConfiguration(OpenTelemetryTestConfiguration.class)
+                .withPropertyValues("management.tracing.propagation.type=w3c",
+                        "management.tracing.baggage.enabled=false")
+                .run((context) -> {
+                    TextMapPropagator propagator = context.getBean(TextMapPropagator.class);
+                    SpanContext spanContext = SpanContext.create(
+                            "4bf92f3577b34da6a3ce929d0e0e4736",
+                            "00f067aa0ba902b7",
+                            TraceFlags.getSampled(), TraceState.getDefault());
+                    Context spanContextCarrier = Context.root().with(Span.wrap(spanContext));
+                    Map<String, String> carrier = new HashMap<>();
+                    TextMapSetter<Map<String, String>> setter = Map::put;
+                    TextMapGetter<Map<String, String>> getter = new TextMapGetter<>() {
+
+                        @Override
+                        public Iterable<String> keys(Map<String, String> carrier) {
+                            return carrier.keySet();
+                        }
+
+                        @Override
+                        public String get(Map<String, String> carrier, String key) {
+                            return carrier.get(key);
+                        }
+
+                    };
+
+                    propagator.inject(spanContextCarrier, carrier, setter);
+                    assertThat(carrier).containsEntry("traceparent",
+                            "00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01");
+
+                    SpanContext extracted = Span.fromContext(propagator.extract(Context.root(), carrier, getter))
+                            .getSpanContext();
+                    assertThat(extracted.getTraceId()).isEqualTo(spanContext.getTraceId());
+                    assertThat(extracted.getSpanId()).isEqualTo(spanContext.getSpanId());
+                    assertThat(extracted.isRemote()).isTrue();
+                });
+    }
+
+    @Test
     void testcontainersCollectorProvidesOtlpConnectionDetails() {
         this.contextRunner
                 .withConfiguration(AutoConfigurations.of(ServiceConnectionAutoConfiguration.class))
@@ -267,6 +322,21 @@ public class Spring_boot_micrometer_tracing_opentelemetryTest {
         OtlpGrpcSpanExporterBuilder builder = OtlpGrpcSpanExporter.builder();
         customizer.customize(builder);
         return builder.build();
+    }
+
+    @Configuration(proxyBeanMethods = false)
+    static class OpenTelemetryTestConfiguration {
+
+        @Bean
+        OpenTelemetry openTelemetry() {
+            return OpenTelemetry.noop();
+        }
+
+        @Bean
+        Resource resource() {
+            return Resource.empty();
+        }
+
     }
 
     @Configuration(proxyBeanMethods = false)
