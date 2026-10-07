@@ -1,0 +1,20 @@
+## Human intervention needed
+
+The automated job failed during reporter-requested test/metadata generation, after the native-image repair stage. Preserved work is available at https://github.com/oracle/graalvm-reachability-metadata/tree/ai%2Fkimeta%2Fhuman-intervention%2Fissue-10318-fails-native-image-run-org.apache.pulsar-pulsar-client-api-5.0.0-M2-ef379795.
+
+Evidence:
+- The continuation marker identifies `generate_tests()` in the `explore` phase as the failure point.
+- All 3 generation iterations ended without a retained change: metrics report `generated_loc: 0`, status `failure`, and identical starting/ending commit `a120de9dbc4574bfa3eb0f744eaaf8aef90a0134`.
+- The native verification had already isolated the original failure to `ReflectionUtilsTest.loadsClassWithThreadContextClassLoaderWhenDefaultLoaderCannotFindIt()`, which attempted to load the synthetic shaded `ContextOnly` class. After removing that unsupported test, `native-test-verify/pi.log` reports 4 native tests passing.
+- The later generation attempts proposed replacing internal stubs with a public `PulsarClient.builder()` test and a `pulsar-client` dependency, but explicitly did not compile or run those changes, and they were not preserved.
+
+Please inspect:
+- `logs/org.apache.pulsar:pulsar-client-api:5.0.0-M2/issue-requested-metadata/pi.log`
+- `logs/org.apache.pulsar:pulsar-client-api:5.0.0-M2/issue-requested-metadata/pi-generation-2026-10-07T00-00-42-625629Z.log`
+- `logs/org.apache.pulsar:pulsar-client-api:5.0.0-M2/native-test-verify/pi.log`
+- `logs/org.apache.pulsar:pulsar-client-api:5.0.0-M2/native-test-verify/cycle-1-runNativeTraceImage-2026-10-06T23-49-16-481709Z.log`
+
+Manual next steps:
+1. Review and apply the proposed public-API test update from the generation logs, or confirm that the checkpoint’s four-test suite is the intended coverage.
+2. Run the coordinate-scoped metadata checks and full JVM/native test lane for `org.apache.pulsar:pulsar-client-api:5.0.0-M2`, including the required native-image modes.
+3. Regenerate dynamic-access coverage and execution metrics, then verify they are nonzero and recorded before publication.
