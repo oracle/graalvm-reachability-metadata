@@ -8,6 +8,7 @@ package org_junit_support.testng_engine;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.platform.engine.discovery.DiscoverySelectors.selectClass;
+import static org.junit.platform.engine.discovery.DiscoverySelectors.selectMethod;
 import static org.junit.platform.launcher.EngineFilter.includeEngines;
 
 import java.util.ArrayList;
@@ -43,6 +44,22 @@ public class Testng_engineTest {
         assertThat(summary.getTotalFailureCount()).isZero();
         assertThat(LifecycleFixture.beforeMethodInvocations).isEqualTo(5);
         assertThat(LifecycleFixture.values).containsExactlyInAnyOrder("alpha", "beta", "dependent", "first", "second");
+    }
+
+    @Test
+    void executesOnlyTheSelectedTestNgMethod() {
+        MethodSelectionFixture.executedMethods.clear();
+        LauncherDiscoveryRequest request = LauncherDiscoveryRequestBuilder.request()
+                .selectors(selectMethod(MethodSelectionFixture.class, "selectedTest"))
+                .filters(includeEngines("testng"))
+                .build();
+
+        TestExecutionSummary summary = execute(request);
+
+        assertThat(summary.getTestsFoundCount()).isEqualTo(1);
+        assertThat(summary.getTestsSucceededCount()).isEqualTo(1);
+        assertThat(summary.getTotalFailureCount()).isZero();
+        assertThat(MethodSelectionFixture.executedMethods).containsExactly("selectedTest");
     }
 
     @Test
@@ -119,6 +136,20 @@ public class Testng_engineTest {
         public void second() {
             assertThat(values).contains("first");
             values.add("second");
+        }
+    }
+
+    public static class MethodSelectionFixture {
+        static final List<String> executedMethods = new ArrayList<>();
+
+        @org.testng.annotations.Test
+        public void selectedTest() {
+            executedMethods.add("selectedTest");
+        }
+
+        @org.testng.annotations.Test
+        public void otherTest() {
+            executedMethods.add("otherTest");
         }
     }
 
