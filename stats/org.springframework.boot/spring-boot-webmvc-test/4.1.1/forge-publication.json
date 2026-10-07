@@ -1,0 +1,129 @@
+{
+  "base_commit": "a8d85695717f037841e031b50723f63cd0ecec3f",
+  "branch": "ai/kimeta/add-lib-support-org.springframework.boot-spring-boot-webmvc-test-4.1.1-forge-9717-20261007212031386831-f8dde9657030",
+  "follow_ups": [],
+  "forge": {
+    "branch": "master",
+    "commit": "0ec4e150783ac96a457638250a54b99d38274985",
+    "monitored_branch": "origin/master"
+  },
+  "issue_number": 9717,
+  "library": {
+    "artifact": "spring-boot-webmvc-test",
+    "coordinates": "org.springframework.boot:spring-boot-webmvc-test:4.1.1",
+    "group": "org.springframework.boot",
+    "version": "4.1.1"
+  },
+  "local_ci_verification": {
+    "base_commit": "a8d85695717f037841e031b50723f63cd0ecec3f",
+    "commands": [
+      {
+        "command": [
+          "./gradlew",
+          "generateChangedIndexFileCoordinatesList",
+          "-PbaseCommit=origin/master",
+          "-PnewCommit=HEAD"
+        ],
+        "env": {
+          "GITHUB_OUTPUT": "/tmp/tmp89c5vknt"
+        },
+        "gate": "changed-index-coordinates",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :generateChangedIndexFileCoordinatesList\n\n[Incubating] Problems report is available at: file:///home/oracle/oracle/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9717-7f481b16/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 8s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      },
+      {
+        "command": [
+          "./gradlew",
+          "validateIndexFiles",
+          "-Pcoordinates=org.springframework.boot:spring-boot-webmvc-test"
+        ],
+        "env": {},
+        "gate": "index-file-validation",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :validateIndexFiles\n✅ metadata/org.springframework.boot/spring-boot-webmvc-test/index.json: Valid\n\n[Incubating] Problems report is available at: file:///home/oracle/oracle/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9717-7f481b16/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 5s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      }
+    ],
+    "failure_command": null,
+    "failure_gate": null,
+    "final_commit": "4902621c2f72d6c266fccd7e41d6b071f116be6f",
+    "fixups": [],
+    "human_intervention_required": true,
+    "repo_fix_paths": [
+      "metadata/org.junit.jupiter/junit-jupiter-engine/5.8.2/reachability-metadata.json"
+    ],
+    "status": "success"
+  },
+  "local_review": {
+    "action": "human-intervention",
+    "changed_paths": [],
+    "decision": "rejected",
+    "finding_body": "The closed-file-set and one-library rules in §FS-contribution-contract.2 are violated: the diff for org.springframework.boot:spring-boot-webmvc-test:4.1.1 modifies metadata/org.junit.jupiter/junit-jupiter-engine/5.8.2/reachability-metadata.json. The local gate record independently reports human_intervention_required=true with that exact repo_fix_path. A complete correction cannot stay within the target contribution's allowed files, and this review is forbidden from editing another coordinate, so §FS-contribution-contract.5.5 requires maintainer intervention.",
+    "finding_title": "Contribution modifies JUnit metadata outside the target coordinate",
+    "fix_note": "",
+    "model": "gpt-5.6-sol",
+    "review_comment": "Reviewed the eventual PR diff, test contract, metadata file presence and scope, index, resolved 0/0 dynamic-access statistics, and local gate evidence. The target test is public, version-agnostic, in a separate package, exercises the library public API without Native Image skips or flags, and 0/0 is a valid no-calls result. The contribution cannot be approved because it also changes another coordinate.",
+    "session_id": "fb9c9ee65d4d48ba"
+  },
+  "metrics": {
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "path": "stats/org.springframework.boot/spring-boot-webmvc-test/4.1.1/execution-metrics.json",
+    "summary": {
+      "cached_input_tokens_used": 5319296,
+      "code_coverage_percent": 3.99,
+      "cost_usd": 4.8487,
+      "generated_loc": 42,
+      "input_tokens_used": 261053,
+      "iterations": 13,
+      "metadata_entries": 0,
+      "output_tokens_used": 29459,
+      "tested_library_loc": 11
+    },
+    "timestamp": "2026-10-07T21:20:31.386831Z"
+  },
+  "modifiers": {
+    "chunk_final": true,
+    "chunked_dynamic_access": false,
+    "human_intervention": true
+  },
+  "producer": "kimeta",
+  "publication_id": "forge-9717-20261007212031386831-f8dde9657030",
+  "render": {
+    "dynamic_access": null,
+    "dynamic_access_evidence": null,
+    "library_stats": {
+      "dynamicAccess": {
+        "breakdown": {},
+        "coverageRatio": 1.0,
+        "coveredCalls": 0,
+        "totalCalls": 0
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 57,
+          "missed": 1069,
+          "ratio": 0.050622,
+          "total": 1126
+        },
+        "line": {
+          "covered": 11,
+          "missed": 265,
+          "ratio": 0.039855,
+          "total": 276
+        },
+        "method": {
+          "covered": 4,
+          "missed": 84,
+          "ratio": 0.045455,
+          "total": 88
+        }
+      },
+      "version": "4.1.1"
+    }
+  },
+  "schema_version": 1,
+  "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-sol",
+  "task_type": "library-new-request",
+  "template_type": "library-new-request",
+  "timestamp": "2026-10-07T21:20:31.386831Z"
+}
