@@ -1,0 +1,333 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :tckTest
+====================
+Testing library: org.springframework.boot:spring-boot-micrometer-metrics-test:4.1.1
+Command: `/home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9730-c2ce3f6d/gradlew nativeTest`
+Executing test...
+-------
+Starting a Gradle Daemon, 1 busy and 7 stopped Daemons could not be reused, use --status for details
+Shared read-only dependency cache is an incubating feature.
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+> Task :compileJava NO-SOURCE
+> Task :processResources NO-SOURCE
+> Task :classes UP-TO-DATE
+> Task :tck-test-support:compileJava UP-TO-DATE
+> Task :jar UP-TO-DATE
+> Task :tck-test-support:processResources UP-TO-DATE
+> Task :tck-test-support:classes UP-TO-DATE
+> Task :tck-test-support:jar UP-TO-DATE
+> Task :compileTestJava
+> Task :checkTestTimeoutAnnotations
+> Task :processTestResources NO-SOURCE
+> Task :testClasses
+
+> Task :test
+
+Spring_boot_micrometer_metrics_testTest > propertyEnablesMetricsExportWhenAnnotationIsAbsent() FAILED
+    java.lang.IllegalStateException: Unstarted application context org.springframework.boot.test.context.assertj.AssertableApplicationContext[startupFailure=org.springframework.beans.factory.BeanDefinitionStoreException] failed to start
+        at org.springframework.boot.test.context.assertj.AssertProviderApplicationContextInvocationHandler.getStartedApplicationContext(AssertProviderApplicationContextInvocationHandler.java:159)
+        at org.springframework.boot.test.context.assertj.AssertProviderApplicationContextInvocationHandler.invokeApplicationContextMethod(AssertProviderApplicationContextInvocationHandler.java:150)
+        at org.springframework.boot.test.context.assertj.AssertProviderApplicationContextInvocationHandler.invoke(AssertProviderApplicationContextInvocationHandler.java:87)
+        at jdk.proxy3/jdk.proxy3.$Proxy27.getEnvironment(Unknown Source)
+        at org_springframework_boot.spring_boot_micrometer_metrics_test.Spring_boot_micrometer_metrics_testTest.lambda$propertyEnablesMetricsExportWhenAnnotationIsAbsent$1(Spring_boot_micrometer_metrics_testTest.java:76)
+        at org.springframework.boot.test.context.runner.AbstractApplicationContextRunner.accept(AbstractApplicationContextRunner.java:457)
+        at org.springframework.boot.test.context.runner.AbstractApplicationContextRunner.consumeAssertableContext(AbstractApplicationContextRunner.java:371)
+        at org.springframework.boot.test.context.runner.AbstractApplicationContextRunner.lambda$run$1(AbstractApplicationContextRunner.java:349)
+        at org.springframework.boot.test.util.TestPropertyValues.lambda$applyToSystemProperties$0(TestPropertyValues.java:176)
+        at org.springframework.boot.test.util.TestPropertyValues.applyToSystemProperties(TestPropertyValues.java:190)
+        at org.springframework.boot.test.util.TestPropertyValues.applyToSystemProperties(TestPropertyValues.java:175)
+        at org.springframework.boot.test.context.runner.AbstractApplicationContextRunner.lambda$run$0(AbstractApplicationContextRunner.java:349)
+        at org.springframework.boot.test.context.runner.AbstractApplicationContextRunner.withContextClassLoader(AbstractApplicationContextRunner.java:377)
+        at org.springframework.boot.test.context.runner.AbstractApplicationContextRunner.run(AbstractApplicationContextRunner.java:348)
+        at org_springframework_boot.spring_boot_micrometer_metrics_test.Spring_boot_micrometer_metrics_testTest.propertyEnablesMetricsExportWhenAnnotationIsAbsent(Spring_boot_micrometer_metrics_testTest.java:75)
+
+        Caused by:
+        org.springframework.beans.factory.BeanDefinitionStoreException: Failed to process import candidates for configuration class [org.springframework.boot.micrometer.metrics.autoconfigure.CompositeMeterRegistryAutoConfiguration]: Unresolvable class definition for class [org.springframework.boot.micrometer.metrics.autoconfigure.CompositeMeterRegistryConfiguration$MultipleNonPrimaryMeterRegistriesCondition]
+            at app//org.springframework.context.annotation.ConfigurationClassParser.processImports(ConfigurationClassParser.java:646)
+            at app//org.springframework.context.annotation.ConfigurationClassParser.doProcessConfigurationClass(ConfigurationClassParser.java:364)
+            at app//org.springframework.context.annotation.ConfigurationClassParser.processConfigurationClass(ConfigurationClassParser.java:285)
+            at app//org.springframework.context.annotation.ConfigurationClassParser.processImports(ConfigurationClassParser.java:636)
+            at app//org.springframework.context.annotation.ConfigurationClassParser.doProcessConfigurationClass(ConfigurationClassParser.java:364)
+            at app//org.springframework.context.annotation.ConfigurationClassParser.processConfigurationClass(ConfigurationClassParser.java:285)
+            at app//org.springframework.context.annotation.ConfigurationClassParser.parse(ConfigurationClassParser.java:206)
+            at app//org.springframework.context.annotation.ConfigurationClassParser.parse(ConfigurationClassParser.java:174)
+            at app//org.springframework.context.annotation.ConfigurationClassPostProcessor.processConfigBeanDefinitions(ConfigurationClassPostProcessor.java:452)
+            at app//org.springframework.context.annotation.ConfigurationClassPostProcessor.postProcessBeanDefinitionRegistry(ConfigurationClassPostProcessor.java:316)
+            at app//org.springframework.context.support.PostProcessorRegistrationDelegate.invokeBeanDefinitionRegistryPostProcessors(PostProcessorRegistrationDelegate.java:349)
+            at app//org.springframework.context.support.PostProcessorRegistrationDelegate.invokeBeanFactoryPostProcessors(PostProcessorRegistrationDelegate.java:118)
+            at app//org.springframework.context.support.AbstractApplicationContext.invokeBeanFactoryPostProcessors(AbstractApplicationContext.java:795)
+            at app//org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:603)
+            at app//org.springframework.boot.test.context.runner.AbstractApplicationContextRunner.configureContext(AbstractApplicationContextRunner.java:444)
+            at app//org.springframework.boot.test.context.runner.AbstractApplicationContextRunner.createAndLoadContext(AbstractApplicationContextRunner.java:414)
+            at app//org.springframework.boot.test.context.runner.AbstractApplicationContextRunner.lambda$createAssertableContext$0(AbstractApplicationContextRunner.java:399)
+            at app//org.springframework.boot.test.context.assertj.AssertProviderApplicationContextInvocationHandler.getContextOrStartupFailure(AssertProviderApplicationContextInvocationHandler.java:63)
+            at app//org.springframework.boot.test.context.assertj.AssertProviderApplicationContextInvocationHandler.<init>(AssertProviderApplicationContextInvocationHandler.java:50)
+            at app//org.springframework.boot.test.context.assertj.ApplicationContextAssertProvider.get(ApplicationContextAssertProvider.java:137)
+            at app//org.springframework.boot.test.context.runner.AbstractApplicationContextRunner.createAssertableContext(AbstractApplicationContextRunner.java:399)
+            at app//org.springframework.boot.test.context.runner.AbstractApplicationContextRunner.consumeAssertableContext(AbstractApplicationContextRunner.java:370)
+            ... 8 more
+
+            Caused by:
+            java.lang.IllegalArgumentException: Unresolvable class definition for class [org.springframework.boot.micrometer.metrics.autoconfigure.CompositeMeterRegistryConfiguration$MultipleNonPrimaryMeterRegistriesCondition]
+                at org.springframework.util.ClassUtils.resolveClassName(ClassUtils.java:356)
+                at org.springframework.context.annotation.ConditionEvaluator.getCondition(ConditionEvaluator.java:138)
+                at org.springframework.context.annotation.ConditionEvaluator.collectConditions(ConditionEvaluator.java:122)
+                at org.springframework.context.annotation.ConditionEvaluator.shouldSkip(ConditionEvaluator.java:94)
+                at org.springframework.context.annotation.ConfigurationClassParser.processConfigurationClass(ConfigurationClassParser.java:249)
+                at org.springframework.context.annotation.ConfigurationClassParser.processImports(ConfigurationClassParser.java:636)
+                ... 29 more
+
+                Caused by:
+                java.lang.NoClassDefFoundError: org/springframework/boot/autoconfigure/condition/NoneNestedConditions
+                    at java.base/java.lang.ClassLoader.defineClass1(Native Method)
+                    at java.base/java.lang.ClassLoader.defineClass(ClassLoader.java:962)
+                    at java.base/java.security.SecureClassLoader.defineClass(SecureClassLoader.java:144)
+                    at java.base/jdk.internal.loader.BuiltinClassLoader.defineClass(BuiltinClassLoader.java:776)
+                    at java.base/jdk.internal.loader.BuiltinClassLoader.findClassOnClassPathOrNull(BuiltinClassLoader.java:691)
+                    at java.base/jdk.internal.loader.BuiltinClassLoader.loadClassOrNull(BuiltinClassLoader.java:620)
+                    at java.base/jdk.internal.loader.BuiltinClassLoader.loadClass(BuiltinClassLoader.java:578)
+                    at java.base/java.lang.ClassLoader.loadClass(ClassLoader.java:490)
+                    at java.base/java.lang.Class.forName0(Native Method)
+                    at java.base/java.lang.Class.forName(Class.java:547)
+                    at org.springframework.util.ClassUtils.forName(ClassUtils.java:308)
+                    at org.springframework.util.ClassUtils.resolveClassName(ClassUtils.java:349)
+                    ... 34 more
+
+                    Caused by:
+                    java.lang.ClassNotFoundException: org.springframework.boot.autoconfigure.condition.NoneNestedConditions
+                        at java.base/jdk.internal.loader.BuiltinClassLoader.loadClass(BuiltinClassLoader.java:580)
+                        at java.base/java.lang.ClassLoader.loadClass(ClassLoader.java:490)
+                        ... 46 more
+
+Spring_boot_micrometer_metrics_testTest > annotationDisablesExternalExportAndEnablesSimpleMetrics() FAILED
+    java.lang.IllegalStateException: Unstarted application context org.springframework.boot.test.context.assertj.AssertableApplicationContext[startupFailure=org.springframework.beans.factory.BeanDefinitionStoreException] failed to start
+        at org.springframework.boot.test.context.assertj.AssertProviderApplicationContextInvocationHandler.getStartedApplicationContext(AssertProviderApplicationContextInvocationHandler.java:159)
+        at org.springframework.boot.test.context.assertj.AssertProviderApplicationContextInvocationHandler.invokeApplicationContextMethod(AssertProviderApplicationContextInvocationHandler.java:150)
+        at org.springframework.boot.test.context.assertj.AssertProviderApplicationContextInvocationHandler.invoke(AssertProviderApplicationContextInvocationHandler.java:87)
+        at jdk.proxy3/jdk.proxy3.$Proxy27.getBean(Unknown Source)
+        at org_springframework_boot.spring_boot_micrometer_metrics_test.Spring_boot_micrometer_metrics_testTest.lambda$annotationDisablesExternalExportAndEnablesSimpleMetrics$0(Spring_boot_micrometer_metrics_testTest.java:53)
+        at org.springframework.boot.test.context.runner.AbstractApplicationContextRunner.accept(AbstractApplicationContextRunner.java:457)
+        at org.springframework.boot.test.context.runner.AbstractApplicationContextRunner.consumeAssertableContext(AbstractApplicationContextRunner.java:371)
+        at org.springframework.boot.test.context.runner.AbstractApplicationContextRunner.lambda$run$1(AbstractApplicationContextRunner.java:349)
+        at org.springframework.boot.test.util.TestPropertyValues.lambda$applyToSystemProperties$0(TestPropertyValues.java:176)
+        at org.springframework.boot.test.util.TestPropertyValues.applyToSystemProperties(TestPropertyValues.java:190)
+        at org.springframework.boot.test.util.TestPropertyValues.applyToSystemProperties(TestPropertyValues.java:175)
+        at org.springframework.boot.test.context.runner.AbstractApplicationContextRunner.lambda$run$0(AbstractApplicationContextRunner.java:349)
+        at org.springframework.boot.test.context.runner.AbstractApplicationContextRunner.withContextClassLoader(AbstractApplicationContextRunner.java:377)
+        at org.springframework.boot.test.context.runner.AbstractApplicationContextRunner.run(AbstractApplicationContextRunner.java:348)
+        at org_springframework_boot.spring_boot_micrometer_metrics_test.Spring_boot_micrometer_metrics_testTest.annotationDisablesExternalExportAndEnablesSimpleMetrics(Spring_boot_micrometer_metrics_testTest.java:52)
+
+        Caused by:
+        org.springframework.beans.factory.BeanDefinitionStoreException: Failed to process import candidates for configuration class [org.springframework.boot.micrometer.metrics.autoconfigure.CompositeMeterRegistryAutoConfiguration]: Unresolvable class definition for class [org.springframework.boot.micrometer.metrics.autoconfigure.CompositeMeterRegistryConfiguration$MultipleNonPrimaryMeterRegistriesCondition]
+            at app//org.springframework.context.annotation.ConfigurationClassParser.processImports(ConfigurationClassParser.java:646)
+            at app//org.springframework.context.annotation.ConfigurationClassParser.doProcessConfigurationClass(ConfigurationClassParser.java:364)
+            at app//org.springframework.context.annotation.ConfigurationClassParser.processConfigurationClass(ConfigurationClassParser.java:285)
+            at app//org.springframework.context.annotation.ConfigurationClassParser.processImports(ConfigurationClassParser.java:636)
+            at app//org.springframework.context.annotation.ConfigurationClassParser.doProcessConfigurationClass(ConfigurationClassParser.java:364)
+            at app//org.springframework.context.annotation.ConfigurationClassParser.processConfigurationClass(ConfigurationClassParser.java:285)
+            at app//org.springframework.context.annotation.ConfigurationClassParser.parse(ConfigurationClassParser.java:206)
+            at app//org.springframework.context.annotation.ConfigurationClassParser.parse(ConfigurationClassParser.java:174)
+            at app//org.springframework.context.annotation.ConfigurationClassPostProcessor.processConfigBeanDefinitions(ConfigurationClassPostProcessor.java:452)
+            at app//org.springframework.context.annotation.ConfigurationClassPostProcessor.postProcessBeanDefinitionRegistry(ConfigurationClassPostProcessor.java:316)
+            at app//org.springframework.context.support.PostProcessorRegistrationDelegate.invokeBeanDefinitionRegistryPostProcessors(PostProcessorRegistrationDelegate.java:349)
+            at app//org.springframework.context.support.PostProcessorRegistrationDelegate.invokeBeanFactoryPostProcessors(PostProcessorRegistrationDelegate.java:118)
+            at app//org.springframework.context.support.AbstractApplicationContext.invokeBeanFactoryPostProcessors(AbstractApplicationContext.java:795)
+            at app//org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:603)
+            at app//org.springframework.boot.test.context.runner.AbstractApplicationContextRunner.configureContext(AbstractApplicationContextRunner.java:444)
+            at app//org.springframework.boot.test.context.runner.AbstractApplicationContextRunner.createAndLoadContext(AbstractApplicationContextRunner.java:414)
+            at app//org.springframework.boot.test.context.runner.AbstractApplicationContextRunner.lambda$createAssertableContext$0(AbstractApplicationContextRunner.java:399)
+            at app//org.springframework.boot.test.context.assertj.AssertProviderApplicationContextInvocationHandler.getContextOrStartupFailure(AssertProviderApplicationContextInvocationHandler.java:63)
+            at app//org.springframework.boot.test.context.assertj.AssertProviderApplicationContextInvocationHandler.<init>(AssertProviderApplicationContextInvocationHandler.java:50)
+            at app//org.springframework.boot.test.context.assertj.ApplicationContextAssertProvider.get(ApplicationContextAssertProvider.java:137)
+            at app//org.springframework.boot.test.context.runner.AbstractApplicationContextRunner.createAssertableContext(AbstractApplicationContextRunner.java:399)
+            at app//org.springframework.boot.test.context.runner.AbstractApplicationContextRunner.consumeAssertableContext(AbstractApplicationContextRunner.java:370)
+            ... 8 more
+
+            Caused by:
+            java.lang.IllegalArgumentException: Unresolvable class definition for class [org.springframework.boot.micrometer.metrics.autoconfigure.CompositeMeterRegistryConfiguration$MultipleNonPrimaryMeterRegistriesCondition]
+                at org.springframework.util.ClassUtils.resolveClassName(ClassUtils.java:356)
+                at org.springframework.context.annotation.ConditionEvaluator.getCondition(ConditionEvaluator.java:138)
+                at org.springframework.context.annotation.ConditionEvaluator.collectConditions(ConditionEvaluator.java:122)
+                at org.springframework.context.annotation.ConditionEvaluator.shouldSkip(ConditionEvaluator.java:94)
+                at org.springframework.context.annotation.ConfigurationClassParser.processConfigurationClass(ConfigurationClassParser.java:249)
+                at org.springframework.context.annotation.ConfigurationClassParser.processImports(ConfigurationClassParser.java:636)
+                ... 29 more
+
+                Caused by:
+                java.lang.NoClassDefFoundError: org/springframework/boot/autoconfigure/condition/NoneNestedConditions
+                    at java.base/java.lang.ClassLoader.defineClass1(Native Method)
+                    at java.base/java.lang.ClassLoader.defineClass(ClassLoader.java:962)
+                    at java.base/java.security.SecureClassLoader.defineClass(SecureClassLoader.java:144)
+                    at java.base/jdk.internal.loader.BuiltinClassLoader.defineClass(BuiltinClassLoader.java:776)
+                    at java.base/jdk.internal.loader.BuiltinClassLoader.findClassOnClassPathOrNull(BuiltinClassLoader.java:691)
+                    at java.base/jdk.internal.loader.BuiltinClassLoader.loadClassOrNull(BuiltinClassLoader.java:620)
+                    at java.base/jdk.internal.loader.BuiltinClassLoader.loadClass(BuiltinClassLoader.java:578)
+                    at java.base/java.lang.ClassLoader.loadClass(ClassLoader.java:490)
+                    at java.base/java.lang.Class.forName0(Native Method)
+                    at java.base/java.lang.Class.forName(Class.java:547)
+                    at org.springframework.util.ClassUtils.forName(ClassUtils.java:308)
+                    at org.springframework.util.ClassUtils.resolveClassName(ClassUtils.java:349)
+                    ... 34 more
+
+                    Caused by:
+                    java.lang.ClassNotFoundException: org.springframework.boot.autoconfigure.condition.NoneNestedConditions
+                        at java.base/jdk.internal.loader.BuiltinClassLoader.loadClass(BuiltinClassLoader.java:580)
+                        at java.base/java.lang.ClassLoader.loadClass(ClassLoader.java:490)
+                        ... 46 more
+
+Spring_boot_micrometer_metrics_testTest > autoConfigureMetricsProvidesRegistriesAndRecordsMetrics() FAILED
+    java.lang.AssertionError: 
+    Expecting:
+     <Unstarted application context org.springframework.boot.test.context.assertj.AssertableApplicationContext[startupFailure=org.springframework.beans.factory.BeanDefinitionStoreException]>
+    to have a single bean of type:
+     <io.micrometer.core.instrument.MeterRegistry>:
+    but context failed to start:
+     org.springframework.beans.factory.BeanDefinitionStoreException: Failed to process import candidates for configuration class [org.springframework.boot.micrometer.metrics.autoconfigure.CompositeMeterRegistryAutoConfiguration]: Unresolvable class definition for class [org.springframework.boot.micrometer.metrics.autoconfigure.CompositeMeterRegistryConfiguration$MultipleNonPrimaryMeterRegistriesCondition]
+     	at org.springframework.context.annotation.ConfigurationClassParser.processImports(ConfigurationClassParser.java:646)
+     	at org.springframework.context.annotation.ConfigurationClassParser.doProcessConfigurationClass(ConfigurationClassParser.java:364)
+     	at org.springframework.context.annotation.ConfigurationClassParser.processConfigurationClass(ConfigurationClassParser.java:285)
+     	at org.springframework.context.annotation.ConfigurationClassParser.processImports(ConfigurationClassParser.java:636)
+     	at org.springframework.context.annotation.ConfigurationClassParser.doProcessConfigurationClass(ConfigurationClassParser.java:364)
+     	at org.springframework.context.annotation.ConfigurationClassParser.processConfigurationClass(ConfigurationClassParser.java:285)
+     	at org.springframework.context.annotation.ConfigurationClassParser.parse(ConfigurationClassParser.java:206)
+     	at org.springframework.context.annotation.ConfigurationClassParser.parse(ConfigurationClassParser.java:174)
+     	at org.springframework.context.annotation.ConfigurationClassPostProcessor.processConfigBeanDefinitions(ConfigurationClassPostProcessor.java:452)
+     	at org.springframework.context.annotation.ConfigurationClassPostProcessor.postProcessBeanDefinitionRegistry(ConfigurationClassPostProcessor.java:316)
+     	at org.springframework.context.support.PostProcessorRegistrationDelegate.invokeBeanDefinitionRegistryPostProcessors(PostProcessorRegistrationDelegate.java:349)
+     	at org.springframework.context.support.PostProcessorRegistrationDelegate.invokeBeanFactoryPostProcessors(PostProcessorRegistrationDelegate.java:118)
+     	at org.springframework.context.support.AbstractApplicationContext.invokeBeanFactoryPostProcessors(AbstractApplicationContext.java:795)
+     	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:603)
+     	at org.springframework.boot.test.context.runner.AbstractApplicationContextRunner.configureContext(AbstractApplicationContextRunner.java:444)
+     	at org.springframework.boot.test.context.runner.AbstractApplicationContextRunner.createAndLoadContext(AbstractApplicationContextRunner.java:414)
+     	at org.springframework.boot.test.context.runner.AbstractApplicationContextRunner.lambda$createAssertableContext$0(AbstractApplicationContextRunner.java:399)
+     	at org.springframework.boot.test.context.assertj.AssertProviderApplicationContextInvocationHandler.getContextOrStartupFailure(AssertProviderApplicationContextInvocationHandler.java:63)
+     	at org.springframework.boot.test.context.assertj.AssertProviderApplicationContextInvocationHandler.<init>(AssertProviderApplicationContextInvocationHandler.java:50)
+     	at org.springframework.boot.test.context.assertj.ApplicationContextAssertProvider.get(ApplicationContextAssertProvider.java:137)
+     	at org.springframework.boot.test.context.runner.AbstractApplicationContextRunner.createAssertableContext(AbstractApplicationContextRunner.java:399)
+     	at org.springframework.boot.test.context.runner.AbstractApplicationContextRunner.consumeAssertableContext(AbstractApplicationContextRunner.java:370)
+     	at org.springframework.boot.test.context.runner.AbstractApplicationContextRunner.lambda$run$1(AbstractApplicationContextRunner.java:349)
+     	at org.springframework.boot.test.util.TestPropertyValues.lambda$applyToSystemProperties$0(TestPropertyValues.java:176)
+     	at org.springframework.boot.test.util.TestPropertyValues.applyToSystemProperties(TestPropertyValues.java:190)
+     	at org.springframework.boot.test.util.TestPropertyValues.applyToSystemProperties(TestPropertyValues.java:175)
+     	at org.springframework.boot.test.context.runner.AbstractApplicationContextRunner.lambda$run$0(AbstractApplicationContextRunner.java:349)
+     	at org.springframework.boot.test.context.runner.AbstractApplicationContextRunner.withContextClassLoader(AbstractApplicationContextRunner.java:377)
+     	at org.springframework.boot.test.context.runner.AbstractApplicationContextRunner.run(AbstractApplicationContextRunner.java:348)
+     	at org_springframework_boot.spring_boot_micrometer_metrics_test.Spring_boot_micrometer_metrics_testTest.autoConfigureMetricsProvidesRegistriesAndRecordsMetrics(Spring_boot_micrometer_metrics_testTest.java:38)
+     	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:104)
+     	at java.base/java.lang.reflect.Method.invoke(Method.java:565)
+     	at org.junit.platform.commons.util.ReflectionUtils.invokeMethod(ReflectionUtils.java:786)
+     	at org.junit.platform.commons.support.ReflectionSupport.invokeMethod(ReflectionSupport.java:514)
+     	at org.junit.jupiter.engine.execution.MethodInvocation.proceed(MethodInvocation.java:60)
+     	at org.junit.jupiter.engine.execution.InvocationInterceptorChain$ValidatingInvocation.proceed(InvocationInterceptorChain.java:131)
+     	at org.junit.jupiter.api.AssertTimeoutPreemptively.lambda$submitTask$3(AssertTimeoutPreemptively.java:95)
+     	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:328)
+     	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1090)
+     	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:614)
+     	at java.base/java.lang.Thread.run(Thread.java:1474)
+     Caused by: java.lang.IllegalArgumentException: Unresolvable class definition for class [org.springframework.boot.micrometer.metrics.autoconfigure.CompositeMeterRegistryConfiguration$MultipleNonPrimaryMeterRegistriesCondition]
+     	at org.springframework.util.ClassUtils.resolveClassName(ClassUtils.java:356)
+     	at org.springframework.context.annotation.ConditionEvaluator.getCondition(ConditionEvaluator.java:138)
+     	at org.springframework.context.annotation.ConditionEvaluator.collectConditions(ConditionEvaluator.java:122)
+     	at org.springframework.context.annotation.ConditionEvaluator.shouldSkip(ConditionEvaluator.java:94)
+     	at org.springframework.context.annotation.ConfigurationClassParser.processConfigurationClass(ConfigurationClassParser.java:249)
+     	at org.springframework.context.annotation.ConfigurationClassParser.processImports(ConfigurationClassParser.java:636)
+     	... 40 more
+     Caused by: java.lang.NoClassDefFoundError: org/springframework/boot/autoconfigure/condition/NoneNestedConditions
+     	at java.base/java.lang.ClassLoader.defineClass1(Native Method)
+     	at java.base/java.lang.ClassLoader.defineClass(ClassLoader.java:962)
+     	at java.base/java.security.SecureClassLoader.defineClass(SecureClassLoader.java:144)
+     	at java.base/jdk.internal.loader.BuiltinClassLoader.defineClass(BuiltinClassLoader.java:776)
+     	at java.base/jdk.internal.loader.BuiltinClassLoader.findClassOnClassPathOrNull(BuiltinClassLoader.java:691)
+     	at java.base/jdk.internal.loader.BuiltinClassLoader.loadClassOrNull(BuiltinClassLoader.java:620)
+     	at java.base/jdk.internal.loader.BuiltinClassLoader.loadClass(BuiltinClassLoader.java:578)
+     	at java.base/java.lang.ClassLoader.loadClass(ClassLoader.java:490)
+     	at java.base/java.lang.Class.forName0(Native Method)
+     	at java.base/java.lang.Class.forName(Class.java:547)
+     	at org.springframework.util.ClassUtils.forName(ClassUtils.java:308)
+     	at org.springframework.util.ClassUtils.resolveClassName(ClassUtils.java:349)
+     	... 45 more
+     Caused by: java.lang.ClassNotFoundException: org.springframework.boot.autoconfigure.condition.NoneNestedConditions
+     	at java.base/jdk.internal.loader.BuiltinClassLoader.loadClass(BuiltinClassLoader.java:580)
+     	at java.base/java.lang.ClassLoader.loadClass(ClassLoader.java:490)
+     	... 57 more
+        at org_springframework_boot.spring_boot_micrometer_metrics_test.Spring_boot_micrometer_metrics_testTest.lambda$autoConfigureMetricsProvidesRegistriesAndRecordsMetrics$0(Spring_boot_micrometer_metrics_testTest.java:39)
+        at org.springframework.boot.test.context.runner.AbstractApplicationContextRunner.accept(AbstractApplicationContextRunner.java:457)
+        at org.springframework.boot.test.context.runner.AbstractApplicationContextRunner.consumeAssertableContext(AbstractApplicationContextRunner.java:371)
+        at org.springframework.boot.test.context.runner.AbstractApplicationContextRunner.lambda$run$1(AbstractApplicationContextRunner.java:349)
+        at org.springframework.boot.test.util.TestPropertyValues.lambda$applyToSystemProperties$0(TestPropertyValues.java:176)
+        at org.springframework.boot.test.util.TestPropertyValues.applyToSystemProperties(TestPropertyValues.java:190)
+        at org.springframework.boot.test.util.TestPropertyValues.applyToSystemProperties(TestPropertyValues.java:175)
+        at org.springframework.boot.test.context.runner.AbstractApplicationContextRunner.lambda$run$0(AbstractApplicationContextRunner.java:349)
+        at org.springframework.boot.test.context.runner.AbstractApplicationContextRunner.withContextClassLoader(AbstractApplicationContextRunner.java:377)
+        at org.springframework.boot.test.context.runner.AbstractApplicationContextRunner.run(AbstractApplicationContextRunner.java:348)
+        at org_springframework_boot.spring_boot_micrometer_metrics_test.Spring_boot_micrometer_metrics_testTest.autoConfigureMetricsProvidesRegistriesAndRecordsMetrics(Spring_boot_micrometer_metrics_testTest.java:38)
+
+3 tests completed, 3 failed
+
+> Task :test FAILED
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':test'.
+> There were failing tests. See the report at: file:///home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9730-c2ce3f6d/tests/src/org.springframework.boot/spring-boot-micrometer-metrics-test/4.1.1/build/reports/tests/test/index.html
+
+* Try:
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+
+BUILD FAILED in 1m 7s
+
+[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9730-c2ce3f6d/tests/src/org.springframework.boot/spring-boot-micrometer-metrics-test/4.1.1/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+15 actionable tasks: 3 executed, 12 up-to-date
+
+> Task :tckTest FAILED
+
+[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9730-c2ce3f6d/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':tckTest'.
+> Test for org.springframework.boot:spring-boot-micrometer-metrics-test:4.1.1 failed with exit code 1.
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD FAILED in 1m 18s
+9 actionable tasks: 1 executed, 8 up-to-date
