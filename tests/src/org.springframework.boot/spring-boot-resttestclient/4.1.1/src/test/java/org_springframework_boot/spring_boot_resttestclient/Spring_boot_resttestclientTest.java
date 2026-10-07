@@ -23,8 +23,11 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.http.converter.autoconfigure.ClientHttpMessageConvertersCustomizer;
 import org.springframework.boot.restclient.RestTemplateBuilder;
 import org.springframework.boot.resttestclient.TestRestTemplate;
+import org.springframework.boot.resttestclient.autoconfigure.AutoConfigureRestTestClient;
 import org.springframework.boot.resttestclient.autoconfigure.RestTestClientBuilderCustomizer;
 import org.springframework.boot.resttestclient.autoconfigure.SpringBootRestTestClientBuilderCustomizer;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
@@ -32,7 +35,13 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.http.converter.StringHttpMessageConverter;
+import org.springframework.mock.web.MockServletContext;
+import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.client.RestTestClient;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 
 public class Spring_boot_resttestclientTest {
     private static final Duration HTTP_TIMEOUT = Duration.ofSeconds(10);
@@ -106,6 +115,23 @@ public class Spring_boot_resttestclientTest {
         }
     }
 
+    @Test
+    void autoConfigurationCreatesMockMvcBoundRestTestClient() {
+        try (AnnotationConfigWebApplicationContext context = new AnnotationConfigWebApplicationContext()) {
+            context.setServletContext(new MockServletContext());
+            context.register(MockMvcClientConfiguration.class);
+            context.refresh();
+
+            RestTestClient client = context.getBean(RestTestClient.class);
+            client.get()
+                    .uri("/auto-configured")
+                    .exchange()
+                    .expectStatus().isOk()
+                    .expectBody(String.class)
+                    .isEqualTo("created by auto-configuration");
+        }
+    }
+
     private static SimpleClientHttpRequestFactory requestFactory() {
         SimpleClientHttpRequestFactory requestFactory = new SimpleClientHttpRequestFactory();
         requestFactory.setConnectTimeout(HTTP_TIMEOUT);
@@ -147,6 +173,23 @@ public class Spring_boot_resttestclientTest {
         exchange.sendResponseHeaders(status.value(), responseBody.length);
         exchange.getResponseBody().write(responseBody);
         exchange.close();
+    }
+
+    @Configuration(proxyBeanMethods = false)
+    @AutoConfigureRestTestClient
+    public static class MockMvcClientConfiguration {
+        @Bean
+        MockMvc mockMvc() {
+            return MockMvcBuilders.standaloneSetup(new AutoConfiguredController()).build();
+        }
+    }
+
+    @RestController
+    public static class AutoConfiguredController {
+        @GetMapping("/auto-configured")
+        String autoConfigured() {
+            return "created by auto-configuration";
+        }
     }
 
     private static final class TestHttpServer implements AutoCloseable {
