@@ -1,0 +1,37 @@
+Research complete. I compared this request against the existing, much richer test suites for the *same* library's later versions (11.0.18/11.0.22/11.0.23) already in this repo — these already solved an equivalent coverage-expansion problem for tomcat-embed-core, so they're strong precedent for what setup is actually needed.
+
+**Key findings:**
+- The 11.0.x suites cover JNDIRealm, JAASRealm, DefaultInstanceManager, JDBCAccessLogValve, DataSourceLinkFactory, WebdavServlet, and ~15 other Catalina subsystems that 10.0.20's current single-class `TomcatTests.java` never touches — these are exactly the kind of `typeReached`-gated JMX/reflection paths the shipped metadata encodes, so exercising them is what would move the needle on the 528-call gap.
+- None of that richer suite needs Docker or a real external service: `JNDIRealmTest` mocks SSL hostname verification instead of hitting a real LDAP server, `JAASRealmTest` uses a local `.config` resource file, and `JDBCAccessLogValveTest`/`DataSourceLinkFactoryTest` use an **in-memory H2** JDBC URL (`jdbc:h2:mem:...`) or a hand-rolled `RecordingDataSource` — never a container.
+- Two test dependencies not in 10.0.20's current `build.gradle` are present in those richer suites: `com.h2database:h2:2.2.224` and `jakarta.annotation:jakarta.annotation-api:3.0.0` (needed for `DefaultInstanceManager`'s `@Resource`/`@PostConstruct`/`@PreDestroy` reflective injection path).
+- Those suites also add JVM args (`--add-opens` for several JDK modules, a Digester system property, and `-Djava.home=...` for native-test runtime) to exercise JRE-compat and classloader-leak-prevention classes — these are test-code/runtime setup, not deterministic Maven/Docker setup.
+
+★ Insight ─────────────────────────────────────
+This repo's own metadata/tests directories across versions act as a natural experiment log: when a coverage effort already succeeded for a newer version of the identical artifact, its `build.gradle` diff *is* the ground truth for what infra was actually required — far more reliable than guessing from documentation, since it already passed this repo's native-image verification gate.
+─────────────────────────────────────────────────
+
+```json
+{
+  "action": "advisory_preparation",
+  "summary": "Broadening coverage requires exercising Realm/Valve/naming subsystems (JNDIRealm, JAASRealm, DefaultInstanceManager, JDBCAccessLogValve, DataSourceLinkFactory, etc.) that the current single TomcatTests.java never reaches. The sibling 11.0.18/11.0.22/11.0.23 test suites for this same library already did this and needed two extra testImplementation dependencies, but no Docker image or external service - JNDI/JAAS/JDBC realms are all exercised with in-memory/mocked substitutes.",
+  "deterministic_setup": [
+    {
+      "kind": "dependency",
+      "coordinate": "com.h2database:h2:2.2.224",
+      "scope": "testImplementation",
+      "reason": "In-memory JDBC driver used by JDBCAccessLogValve/DataSource-backed naming-resource tests (jdbc:h2:mem: URL) - no container needed. Version matches what's already proven for this library's 11.0.18/11.0.22/11.0.23 suites."
+    },
+    {
+      "kind": "dependency",
+      "coordinate": "jakarta.annotation:jakarta.annotation-api:3.0.0",
+      "scope": "testImplementation",
+      "reason": "Supplies @Resource/@PostConstruct/@PreDestroy types needed to drive DefaultInstanceManager's annotation-based reflective injection path. Same coordinate used across this library's newer sibling test suites."
+    }
+  ],
+  "agent_guidance": "No Docker image or real directory/LDAP/database server is required: JNDIRealm tests mock SSL hostname verification rather than contacting a real LDAP server, JAASRealm tests use a local tomcat/jaas-realm-resource.config test resource, and JDBC-backed tests use an in-memory H2 URL. If tests are added that exercise JreCompat/classloader-leak-prevention/digester-system-property paths (mirroring JreCompatTest, JreMemoryLeakPreventionListenerTest, DigesterTest in the 11.0.x suites), add these JVM args to the javaTest task: --add-opens=java.base/java.io=ALL-UNNAMED, --add-opens=java.base/java.lang=ALL-UNNAMED, --add-opens=java.base/java.lang.reflect=ALL-UNNAMED, --add-opens=java.base/java.util=ALL-UNNAMED, --add-opens=java.rmi/sun.rmi.transport=ALL-UNNAMED, and the system property -Dorg.apache.tomcat.util.digester.PROPERTY_SOURCE=org.apache.tomcat.util.digester.SystemPropertySource. Only add the specific flags a given new test actually needs rather than copying all of them speculatively. If any such test runs under nativeTest, also set runtime arg -Djava.home=<JAVA_HOME or GRAALVM_HOME>.",
+  "risks": [
+    "jakarta.annotation-api 3.0.0 targets Jakarta EE 11 while 10.0.20 otherwise pins jakarta.servlet-api 5.0.0 (EE9); it's additive and compiles fine (confirmed by the 11.0.x precedent), but a stricter EE-generation match would be 2.0.0/2.1.1 if that's preferred.",
+    "Precedent is based on later Tomcat versions (11.0.x); confirm via local checkMetadataFiles/test runs that the same Realm/Valve/naming classes are structurally unchanged in 10.0.20 before relying on it, since local Gradle and Native Image verification remain authoritative."
+  ]
+}
+```

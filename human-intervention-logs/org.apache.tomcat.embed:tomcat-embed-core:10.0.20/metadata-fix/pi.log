@@ -1,0 +1,13 @@
+Implemented the metadata fix for `org.apache.tomcat.embed:tomcat-embed-core:10.0.20`.
+
+Changes:
+- Replaced late test-class serialization conditions with Tomcat library conditions.
+- Moved test-only `UserPrincipal` serialization metadata into test resources.
+- Removed duplicate test-only serialization entries and unstable generated lambda conditions.
+- Removed unsupported `--add-opens` arguments from native-test runtime configuration.
+
+Verification using the required GraalVM 25.0.3:
+- Clean coordinate build and `./gradlew test -Pcoordinates=org.apache.tomcat.embed:tomcat-embed-core:10.0.20` passed.
+- All 122 native tests passed.
+- `spotlessCheck` passed.
+- `fissile check --staged` passed.

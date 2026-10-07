@@ -1,0 +1,43 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :populateArtifactURLs
+I've confirmed the current state of the `10.0.20` entry in the file. Here's what I found:
+
+**All five content fields are already non-blank:**
+- `source-code-url`, `repository-url`, `test-code-url`, `documentation-url`, `description` — all populated.
+- `language` — absent (not present as a key at all).
+
+Per the instructions, I may only fill fields that are **missing** (absent/null/blank) and must leave already-populated fields untouched. The only candidate here is `language`.
+
+**Is tomcat-embed-core language-specific?** No. It's the embedded Tomcat servlet container core, written in plain Java with no Kotlin/Groovy/Scala binding or dependency. The spec is explicit: "Set missing 'language' only when the library is language-specific; otherwise leave the field absent." Since it isn't language-specific, the correct value is to leave it absent — which is exactly its current state.
+
+**Conclusion: no edit is needed.** The entry already satisfies every requirement in the task (correct non-blank URLs/description, and `language` correctly absent for a non-language-specific library), so I'm not modifying the file.
+
+`★ Insight ─────────────────────────────────────`
+This task template is shared across many metadata entries in bulk automation (used for both "fill in missing field" runs and "URL maintenance" runs). The two instruction blocks you saw — one about filling only missing fields, another about treating existing URLs as templates to re-verify "when URL maintenance is requested" — are conditionally relevant depending on which mode triggered the task. Nothing in this invocation said URL maintenance was being requested, so the unconditional "do not modify non-blank fields" rule governs, and the pre-filled URLs (Maven Central sources jar, GitHub repo root, GitHub tree paths for test/docs) are left as-is even though I could independently confirm they look reasonable for Tomcat's versioning scheme.
+`─────────────────────────────────────────────────`
+Ran agent for org.apache.tomcat.embed:tomcat-embed-core:10.0.20 (exit 0). Log: /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10508-4a05b067/build/agent-url-discovery-logs/org.apache.tomcat.embed-tomcat-embed-core-10.0.20.log
+Completed populateArtifactURLs: invoked=1, prompted=0, skipped=0, overwriteExisting=false, verifyArtifactSources=false, limit=null
+
+[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10508-4a05b067/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 27s
+9 actionable tasks: 1 executed, 8 up-to-date
