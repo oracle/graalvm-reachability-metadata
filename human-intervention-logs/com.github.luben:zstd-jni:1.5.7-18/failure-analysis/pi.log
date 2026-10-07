@@ -1,0 +1,16 @@
+## Human intervention needed
+
+The automated job failed during `explore/generate_tests()` in the reporter-requested metadata phase. Preserved work: https://github.com/oracle/graalvm-reachability-metadata/tree/ai%2Fkimeta%2Fhuman-intervention%2Fissue-10312-fails-native-image-run-com.github.luben-zstd-jni-1.5.7-18-adce36c2
+
+The likely cause is a shared-test-version resolution bug: `index.json` maps `1.5.7-18` to test version `1.5.2-5`, but `generateMetadata` looked for the nonexistent `tests/src/com.github.luben/zstd-jni/1.5.7-18/build.gradle`. This failure appears in:
+
+- `logs/com.github.luben:zstd-jni:1.5.7-18/issue-requested-metadata/pi-generation-2026-10-07T00-25-09-293572Z.log`
+- `logs/com.github.luben:zstd-jni:1.5.7-18/issue-requested-metadata/pi-generation-2026-10-07T00-26-14-425639Z.log`
+
+The underlying metadata repair appears promising: `native-test-verify/pi.log` reports five missing FFM downcall registrations added and four native tests passing, while `dynamic-access-report/generateDynamicAccessCoverageReport-2026-10-07T00-21-08-394865Z.log` completed successfully with all 3 tracked calls covered. However, all three generation attempts were reverted; metrics record failure, 3 iterations, 0 generated LOC, and identical starting/ending commits.
+
+Manual next steps:
+
+1. Fix or bypass `generateMetadata` so coordinate `1.5.7-18` resolves and uses the shared `1.5.2-5` test project.
+2. Reapply/review the attempted `ZstdInputStream` test refinement from the issue-requested-metadata logs and retain the generated FFM downcall metadata.
+3. Run the full coordinate-scoped metadata validation and JVM/native test lanes before preparing the repair PR.
