@@ -1,0 +1,39 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :populateArtifactURLs
+I checked the file — it already matches the "Current URL values" shown in the task: `source-code-url`, `repository-url`, `test-code-url`, `documentation-url`, and `description` are all present and non-blank. The only field that's actually absent is `language`.
+
+Since spring-boot-opentelemetry is a Java auto-configuration module (core Spring Boot OpenTelemetry SDK integration, part of the `module/spring-boot-opentelemetry` subproject introduced in Spring Boot 4.x's modularized layout — the same layout used by the sibling `spring-boot-micrometer-tracing-opentelemetry:4.1.1` entry merged in commit `5a109f4b16`), it is **not language-specific**: it's plain Java, consumable from Kotlin/Groovy/Scala equally, with no Kotlin extensions or language-specific API surface. So the `language` field correctly stays absent rather than being filled.
+
+Per the instructions — "Fill only missing fields" and "Do not modify fields that already contain a non-blank value" — there is nothing to write here. All populated fields stay as-is, and the one missing field (`language`) is intentionally left absent because the library doesn't qualify. No edit to `index.json` is needed.
+
+`★ Insight ─────────────────────────────────────`
+- Spring Boot 4.x restructured the monorepo into a `module/` directory per auto-configuration concern (e.g., `module/spring-boot-opentelemetry`, `module/spring-boot-micrometer-tracing-opentelemetry`) — this is why the existing `test-code-url` template already points at `module/spring-boot-opentelemetry/src/test` instead of the older flat `spring-boot-actuator-autoconfigure`-style layout used pre-4.0.
+- The `language` field in this schema is reserved for libraries whose entire API is only usable from one JVM language (e.g., a Kotlin coroutines wrapper, a Groovy DSL). A Java auto-configuration class is callable from any JVM language, so it's never "language-specific" even when the consuming app happens to be Kotlin or Groovy.
+- The "fill only missing fields" + "don't touch non-blank values" guardrail exists precisely to make idempotent re-runs of this kind of maintenance task safe — rerunning it against an already-complete entry is a no-op rather than silently overwriting a previously-verified URL with a possibly-worse guess.
+`─────────────────────────────────────────────────`
+Ran agent for org.springframework.boot:spring-boot-opentelemetry:4.1.1 (exit 0). Log: /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9731-a4f09320/build/agent-url-discovery-logs/org.springframework.boot-spring-boot-opentelemetry-4.1.1.log
+Completed populateArtifactURLs: invoked=1, prompted=0, skipped=0, overwriteExisting=false, verifyArtifactSources=false, limit=null
+
+[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9731-a4f09320/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 16s
+9 actionable tasks: 1 executed, 8 up-to-date

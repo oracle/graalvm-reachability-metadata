@@ -1,0 +1,25 @@
+`★ Insight ─────────────────────────────────────`
+The POM's declared `<dependencies>` only capture compile-scope types a class's *field/method signatures* need to load. A class can still reference a type from an undeclared artifact in its method bodies (here, `OtlpGrpcLogRecordExporterBuilderCustomizer` implementing a `ConfigurationPropertiesCustomizer<OtlpGrpcLogRecordExporterBuilder>` from the exporter artifact) — Spring Boot guards activation with `@ConditionalOnClass`, so the autoconfiguration simply no-ops if that jar is absent, silently producing zero coverage instead of a build failure. That's why POM inspection alone wasn't enough; I had to decompile the sources and cross-reference the only prior sibling that depends on this exact artifact.
+`─────────────────────────────────────────────────`
+
+Decision:
+
+```json
+{
+  "action": "advisory_preparation",
+  "summary": "spring-boot-opentelemetry's logging.otlp package (OtlpLoggingAutoConfiguration and its gRPC/HTTP exporter customizers) references io.opentelemetry:opentelemetry-exporter-otlp types that are not a declared or transitive dependency of the library's own POM. The already-merged sibling spring-boot-micrometer-tracing-opentelemetry:4.1.1 (which itself depends on spring-boot-opentelemetry) hit the identical gap for its analogous tracing-exporter customizers and required adding this exact coordinate as testImplementation to exercise them. Without it, OtlpLoggingAutoConfiguration's @ConditionalOnClass guard silently skips activation, producing near-zero coverage on that package rather than a build failure.",
+  "deterministic_setup": [
+    {
+      "kind": "dependency",
+      "coordinate": "io.opentelemetry:opentelemetry-exporter-otlp:1.62.0",
+      "scope": "testImplementation",
+      "reason": "Required to load and exercise OtlpLoggingAutoConfiguration, OtlpGrpcLogRecordExporterBuilderCustomizer, and OtlpHttpLogRecordExporterBuilderCustomizer in org.springframework.boot.opentelemetry.autoconfigure.logging.otlp; not pulled in by spring-boot-opentelemetry's own POM (which only declares opentelemetry-api/opentelemetry-sdk:1.62.0). Version matches the library's pinned OTel SDK version and mirrors the dependency already shipped for the sibling module spring-boot-micrometer-tracing-opentelemetry:4.1.1 (PR #10608) for the same class of customizer."
+    }
+  ],
+  "agent_guidance": "Exercise the core SDK autoconfiguration (OpenTelemetrySdkAutoConfiguration, OpenTelemetryProperties, OpenTelemetryResourceAttributes) and the logging autoconfiguration (OtlpLoggingAutoConfiguration, OtlpLoggingProperties, OtlpGrpcLogRecordExporterBuilderCustomizer, OtlpHttpLogRecordExporterBuilderCustomizer, Transport) via ApplicationContextRunner + withPropertyValues under the management.opentelemetry.* and management.logging.export.otlp.* property namespaces, following the pattern already used in spring-boot-micrometer-tracing-opentelemetry's test. No environment variable or system property is required: management.opentelemetry.enabled and management.logging.export.enabled both default to enabled/match-if-missing, so the autoconfiguration activates with no external config. OpenTelemetryEnvironmentVariableEnvironmentPostProcessor can be tested by constructing a MockEnvironment/ConfigurableEnvironment directly in test code and invoking postProcessEnvironment, without needing real OS-level OTEL_* environment variables.",
+  "risks": [
+    "Do not confuse this artifact with org.springframework.boot:spring-boot-starter-opentelemetry, which ships no class files (metadata already marks it not-for-native-image) — the issue's own title ('spring-boot-opentelemetry') is correct but the body gives no detail, so this distinction is easy to miss.",
+    "The docker.compose and testcontainers packages (OtlpLoggingDockerComposeConnectionDetailsFactory, GrafanaOtlpLoggingContainerConnectionDetailsFactory, OtelCollectorOltpLoggingContainerConnectionDetailsFactory) reference Docker images otel/opentelemetry-collector-contrib and grafana/otel-lgtm, neither currently pinned under allowed-docker-images/. The merged sibling module left its equivalent docker.compose/testcontainers packages in allowed-packages without any live container test, so this isn't treated as blocking here either — but if a future review demands exercising these specific classes, a docker_image deterministic_setup entry for one of those images would need to be added and allow-listed first."
+  ]
+}
+```
