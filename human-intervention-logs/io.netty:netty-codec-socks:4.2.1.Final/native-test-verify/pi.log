@@ -1,0 +1,12 @@
+Fixed the native test failure.
+
+- Full stack trace showed `AdaptivePoolingAllocator$Chunk` failing in `PlatformDependent0.safeConstructPutInt()` because Netty’s adaptive allocator relies on unavailable `Unsafe` behavior under Native Image.
+- Reworked `Netty_codec_socksTest.java` to configure `EmbeddedChannel` through the public API with `UnpooledByteBufAllocator.DEFAULT`, preserving all codec assertions while avoiding the unsupported allocator path.
+- Exact reproduction command now passes all 8 tests.
+
+Additional checks passed:
+
+- `checkstyle`
+- `checkMetadataFiles`
+- `git diff --check`
+- `fissile check --staged`
