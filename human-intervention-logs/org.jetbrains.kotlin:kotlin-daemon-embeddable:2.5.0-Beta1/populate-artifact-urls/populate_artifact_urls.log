@@ -1,0 +1,38 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :populateArtifactURLs
+I filled the five missing fields in the `2.5.0-Beta1` entry of `metadata/org.jetbrains.kotlin/kotlin-daemon-embeddable/index.json`. I didn't run JSON validation or any Gradle checks.
+
+- **Fields set:** `source-code-url`, `repository-url`, `test-code-url`, `documentation-url` and `description`. They use the same values as the neighbouring `2.4.20` entry.
+- **Language:** the existing `language` field (Kotlin 2.4) was already set, so I left it alone.
+- **URLs checked:** I fetched the Maven sources jar, the Maven javadoc jar and the GitHub `v2.5.0-Beta1` test directory, and all three returned HTTP 200. I filled in the Maven sources and javadoc URLs with `$version$`.
+- **Description:** "This artifact packages the Kotlin compiler daemon implementation for use with the embeddable compiler. It runs compilation work in a separate process so build tools and IDE integrations can invoke Kotlin compilation out of process."
+
+The `test-code-url` is a GitHub directory, not a Maven jar. I didn't check whether a tests jar exists on Maven for this artifact.
+
+The Gmail, Google Calendar, Google Drive and the design and marketing plugin MCP servers need authorization before they can be used. This session can't run the OAuth flow, so authorize them through your claude.ai connector settings, or `/mcp` in an interactive session. Nothing here needed them.
+Ran agent for org.jetbrains.kotlin:kotlin-daemon-embeddable:2.5.0-Beta1 (exit 0). Log: /home/oracle/oracle/metadata2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10324-7a719aa3/build/agent-url-discovery-logs/org.jetbrains.kotlin-kotlin-daemon-embeddable-2.5.0-Beta1.log
+Completed populateArtifactURLs: invoked=1, prompted=0, skipped=0, overwriteExisting=false, verifyArtifactSources=false, limit=null
+
+[Incubating] Problems report is available at: file:///home/oracle/oracle/metadata2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10324-7a719aa3/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 28s
+9 actionable tasks: 1 executed, 8 up-to-date
