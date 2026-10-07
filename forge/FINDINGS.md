@@ -3,6 +3,12 @@
 Rendered by Forge from the pre-push branch review of §FS-local-branch-review.
 Newest entry first; every non-approval is recorded, including one a repair later cleared.
 
+## 2026-10-07 — org.springframework.boot:spring-boot-webmvc-test:4.1.1 (#9717)
+
+**Contribution modifies JUnit metadata outside the target coordinate**
+
+The closed-file-set and one-library rules in §FS-contribution-contract.2 are violated: the diff for org.springframework.boot:spring-boot-webmvc-test:4.1.1 modifies metadata/org.junit.jupiter/junit-jupiter-engine/5.8.2/reachability-metadata.json. The local gate record independently reports human_intervention_required=true with that exact repo_fix_path. A complete correction cannot stay within the target contribution's allowed files, and this review is forbidden from editing another coordinate, so §FS-contribution-contract.5.5 requires maintainer intervention.
+
 ## 2026-10-06 — org.springframework.boot:spring-boot-micrometer-tracing:4.1.1 (#9732)
 ## 2026-10-07 — io.micrometer:micrometer-observation-test:1.17.1 (#9727)
 
