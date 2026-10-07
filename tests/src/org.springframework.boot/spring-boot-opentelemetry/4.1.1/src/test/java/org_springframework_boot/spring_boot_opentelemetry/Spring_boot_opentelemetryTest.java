@@ -46,6 +46,7 @@ import org.springframework.boot.opentelemetry.autoconfigure.logging.otlp.OtlpLog
 import org.springframework.boot.opentelemetry.autoconfigure.logging.otlp.OtlpLoggingConnectionDetails;
 import org.springframework.boot.opentelemetry.autoconfigure.logging.otlp.OtlpLoggingProperties;
 import org.springframework.boot.opentelemetry.autoconfigure.logging.otlp.Transport;
+import org.springframework.boot.ssl.SslBundle;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.mock.env.MockEnvironment;
@@ -257,6 +258,25 @@ public class Spring_boot_opentelemetryTest {
     }
 
     @Test
+    void httpLoggingExporterUsesSslBundleFromConnectionDetails() {
+        SslBundle sslBundle = SslBundle.systemDefault();
+        SslOtlpLoggingConnectionDetails connectionDetails = new SslOtlpLoggingConnectionDetails(
+                "https://collector.example.test/v1/logs", sslBundle);
+
+        this.contextRunner
+                .withPropertyValues("management.opentelemetry.enabled=true", "management.logging.export.enabled=true",
+                        "management.logging.export.otlp.enabled=true")
+                .withBean(OtlpLoggingConnectionDetails.class, () -> connectionDetails)
+                .run((context) -> {
+                    assertThat(context).hasSingleBean(OtlpHttpLogRecordExporter.class);
+                    assertThat(context.getBean(OtlpHttpLogRecordExporter.class).toString())
+                            .contains("endpoint=https://collector.example.test/v1/logs");
+                    assertThat(connectionDetails.wasSslBundleRequested()).isTrue();
+                    assertSdkShutdown(context);
+                });
+    }
+
+    @Test
     void disabledLoggingExportBindsPropertiesWithoutCreatingAnOtlpExporter() {
         this.contextRunner
                 .withPropertyValues("management.logging.export.otlp.enabled=false",
@@ -304,6 +324,36 @@ public class Spring_boot_opentelemetryTest {
     private static void assertSdkShutdown(ConfigurableApplicationContext context) {
         assertThat(context.getBean(OpenTelemetrySdk.class).shutdown().join(10, TimeUnit.SECONDS)
                 .isSuccess()).isTrue();
+    }
+
+    private static final class SslOtlpLoggingConnectionDetails implements OtlpLoggingConnectionDetails {
+
+        private final String url;
+
+        private final SslBundle sslBundle;
+
+        private boolean sslBundleRequested;
+
+        private SslOtlpLoggingConnectionDetails(String url, SslBundle sslBundle) {
+            this.url = url;
+            this.sslBundle = sslBundle;
+        }
+
+        @Override
+        public String getUrl(Transport transport) {
+            return this.url;
+        }
+
+        @Override
+        public SslBundle getSslBundle() {
+            this.sslBundleRequested = true;
+            return this.sslBundle;
+        }
+
+        private boolean wasSslBundleRequested() {
+            return this.sslBundleRequested;
+        }
+
     }
 
     private static final class RecordingLogRecordExporter implements LogRecordExporter {
