@@ -23,6 +23,7 @@ import io.opentelemetry.sdk.trace.export.SimpleSpanProcessor;
 import io.opentelemetry.sdk.trace.export.SpanExporter;
 import io.opentelemetry.sdk.trace.samplers.Sampler;
 import org.junit.jupiter.api.Test;
+import org.testcontainers.containers.GenericContainer;
 
 import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.context.properties.bind.Bindable;
@@ -39,6 +40,10 @@ import org.springframework.boot.micrometer.tracing.opentelemetry.autoconfigure.o
 import org.springframework.boot.micrometer.tracing.opentelemetry.autoconfigure.otlp.OtlpTracingProperties;
 import org.springframework.boot.micrometer.tracing.opentelemetry.autoconfigure.otlp.Transport;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
+import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
+import org.springframework.boot.testcontainers.service.connection.ServiceConnectionAutoConfiguration;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -154,6 +159,43 @@ public class Spring_boot_micrometer_tracing_opentelemetryTest {
     }
 
     @Test
+    void otlpAutoConfigurationCreatesGrpcExporterFromTracingProperties() {
+        this.contextRunner
+                .withPropertyValues("management.tracing.export.otlp.enabled=true",
+                        "management.opentelemetry.tracing.export.otlp.endpoint=http://collector.example.test:4317",
+                        "management.opentelemetry.tracing.export.otlp.transport=grpc",
+                        "management.opentelemetry.tracing.export.otlp.compression=gzip")
+                .run((context) -> {
+                    assertThat(context).hasSingleBean(OtlpTracingConnectionDetails.class);
+                    assertThat(context).hasSingleBean(OtlpGrpcSpanExporter.class);
+                    assertThat(context).doesNotHaveBean(OtlpHttpSpanExporter.class);
+                    assertThat(context.getBean(OtlpTracingConnectionDetails.class).getUrl(Transport.GRPC))
+                            .isEqualTo("http://collector.example.test:4317");
+                    assertThat(context.getBean(OtlpGrpcSpanExporter.class).toString())
+                            .contains("endpoint=http://collector.example.test:4317", "compressorEncoding=gzip");
+                    assertThat(context.getBean(OtlpGrpcSpanExporter.class).shutdown().join(10, TimeUnit.SECONDS)
+                            .isSuccess()).isTrue();
+                });
+    }
+
+    @Test
+    void testcontainersCollectorProvidesOtlpConnectionDetails() {
+        this.contextRunner
+                .withConfiguration(AutoConfigurations.of(ServiceConnectionAutoConfiguration.class))
+                .withUserConfiguration(OtlpContainerConfiguration.class)
+                .withPropertyValues("management.tracing.export.otlp.enabled=true")
+                .run((context) -> {
+                    assertThat(context).hasSingleBean(OtlpTracingConnectionDetails.class);
+                    OtlpTracingConnectionDetails connectionDetails = context
+                            .getBean(OtlpTracingConnectionDetails.class);
+                    assertThat(connectionDetails.getUrl(Transport.HTTP))
+                            .isEqualTo("http://collector.example.test:14318/v1/traces");
+                    assertThat(connectionDetails.getUrl(Transport.GRPC))
+                            .isEqualTo("http://collector.example.test:14317/v1/traces");
+                });
+    }
+
+    @Test
     void spanExportersKeepAnImmutableConsumerFacingCollection() {
         RecordingSpanExporter first = new RecordingSpanExporter();
         RecordingSpanExporter second = new RecordingSpanExporter();
@@ -225,6 +267,39 @@ public class Spring_boot_micrometer_tracing_opentelemetryTest {
         OtlpGrpcSpanExporterBuilder builder = OtlpGrpcSpanExporter.builder();
         customizer.customize(builder);
         return builder.build();
+    }
+
+    @Configuration(proxyBeanMethods = false)
+    static class OtlpContainerConfiguration {
+
+        @Bean(destroyMethod = "")
+        @ServiceConnection(name = "otel/opentelemetry-collector-contrib")
+        RecordingOtlpContainer otlpContainer() {
+            return new RecordingOtlpContainer();
+        }
+
+    }
+
+    static final class RecordingOtlpContainer extends GenericContainer<RecordingOtlpContainer> {
+
+        RecordingOtlpContainer() {
+            super("otel/opentelemetry-collector-contrib");
+        }
+
+        @Override
+        public String getHost() {
+            return "collector.example.test";
+        }
+
+        @Override
+        public Integer getMappedPort(int originalPort) {
+            return switch (originalPort) {
+                case 4317 -> 14317;
+                case 4318 -> 14318;
+                default -> throw new IllegalArgumentException("Unexpected OTLP port: " + originalPort);
+            };
+        }
+
     }
 
     private static final class RecordingSpanExporter implements SpanExporter {
