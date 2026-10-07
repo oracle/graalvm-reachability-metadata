@@ -75,6 +75,15 @@ public class Spring_boot_micrometer_tracing_testTest {
         }
     }
 
+    @Test
+    void inheritedAnnotationConfiguresTracingAndOverridesGlobalProperty() {
+        try (ConfigurableApplicationContext context = loadContext(InheritedTracingTest.class)) {
+            assertThat(context.getBean(Tracer.class)).isSameAs(Tracer.NOOP);
+            assertThat(context.getBean(ObservationRegistry.class)).isNotSameAs(ObservationRegistry.NOOP);
+            assertThat(tracingExportProperty(context.getEnvironment())).isEqualTo("false");
+        }
+    }
+
     private static ConfigurableApplicationContext loadContext(Class<?> testClass) {
         TestContextManager manager = new TestContextManager(testClass);
         return (ConfigurableApplicationContext) manager.getTestContext().getApplicationContext();
@@ -86,6 +95,11 @@ public class Spring_boot_micrometer_tracing_testTest {
 
     @Configuration(proxyBeanMethods = false)
     static class EmptyConfiguration {
+
+    }
+
+    @Configuration(proxyBeanMethods = false)
+    static class InheritedTracingConfiguration {
 
     }
 
@@ -117,6 +131,17 @@ public class Spring_boot_micrometer_tracing_testTest {
     @TestPropertySource(properties = "spring.test.tracing.export=false")
     @ContextConfiguration(classes = EmptyConfiguration.class)
     static class AnnotationEnabledTest {
+
+    }
+
+    @AutoConfigureTracing(export = false)
+    static class TracingBaseTest {
+
+    }
+
+    @TestPropertySource(properties = "spring.test.tracing.export=true")
+    @ContextConfiguration(classes = InheritedTracingConfiguration.class)
+    static class InheritedTracingTest extends TracingBaseTest {
 
     }
 }
