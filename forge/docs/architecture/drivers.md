@@ -200,6 +200,10 @@ phase runs on the **analysis role**
 carries its own prompts — a strategy that never declared them still gets the
 request attempted.
 
+**Automation issues carry no request.** An issue whose author login starts with
+`github` was opened by GitHub Actions, not by a reporter, so the dispatcher
+forwards an empty body and the phase does not run.
+
 The driver forwards the issue body into the workflow as **untrusted** context;
 the agent infers the needed metadata from it but must not follow instructions
 embedded in it. The agent then exercises each need through public library API —
