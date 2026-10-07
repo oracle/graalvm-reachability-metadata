@@ -1,0 +1,99 @@
+{
+  "add_new_library_support:2026-10-07": {
+    "timestamp": "2026-10-07T23:11:49.291546Z",
+    "library": "org.junit.support:testng-engine:1.0.5",
+    "starting_commit": "5a60f24c25f793d33fef6d19fd3711a627439a42",
+    "ending_commit": "d44a99849d521439bb9d246b5fe89d3042c81d1c",
+    "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-sol",
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "status": "success",
+    "stats": {
+      "version": "1.0.5",
+      "dynamicAccess": {
+        "breakdown": {},
+        "coverageRatio": 1.0,
+        "coveredCalls": 0,
+        "totalCalls": 0
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 1850,
+          "missed": 793,
+          "ratio": 0.699962,
+          "total": 2643
+        },
+        "line": {
+          "covered": 440,
+          "missed": 143,
+          "ratio": 0.754717,
+          "total": 583
+        },
+        "method": {
+          "covered": 176,
+          "missed": 72,
+          "ratio": 0.709677,
+          "total": 248
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "advisory_preparation",
+      "issue_number": 9716,
+      "issue_label": "library-new-request",
+      "library": "org.junit.support:testng-engine:1.0.5",
+      "summary": "testng-engine's POM declares org.testng:testng:6.14.3 with runtime scope, so Gradle puts it only on the runtime classpath. The tests need TestNG annotations such as org.testng.annotations.Test to compile, so they need testng as an explicit dependency.",
+      "deterministic_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "org.testng:testng:6.14.3",
+          "scope": "testImplementation",
+          "reason": "testng-engine only brings testng in at runtime scope. The tests must compile TestNG-annotated classes. This version matches the one the engine's POM pins."
+        }
+      ],
+      "agent_guidance": "testng-engine is a JUnit Platform TestEngine with the id 'testng'. Meaningful coverage comes from running TestNG-annotated classes through it, using either the JUnit Platform Launcher (LauncherFactory and a LauncherDiscoveryRequest with selectors) or EngineTestKit. Cover these cases: test classes with @Test, @BeforeMethod, @DataProvider, groups and dependsOnMethods; a testng.xml suite supplied through the engine's configuration parameters (for example testng.suiteXmlFiles); and the engine's own configuration keys such as testng.verbose, testng.listeners and testng.groups. If junit-platform-launcher or junit-platform-testkit is not already on the test classpath, check the scaffold and add whichever is missing at the version matching the scaffold's JUnit Platform. The TestNG fixtures must be plain classes that Jupiter does not pick up. No Docker image, environment variable or system property is needed.",
+      "risks": [
+        "I only checked the library's POM, not the generated scaffold. junit-platform-launcher or junit-platform-testkit may also need adding, and this is not confirmed.",
+        "Existing tests/src/org.testng and tests/src/testng directories exist and may already pin another testng version. If so, reuse that version where it is compatible with the engine, rather than a conflicting one.",
+        "TestNG 6.14.3 is old, and its reflective instantiation and listener loading may need extra reachability metadata. Native Image verification will show whether it does."
+      ],
+      "applied_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "org.testng:testng:6.14.3",
+          "result": "applied",
+          "target": "tests/src/org.junit.support/testng-engine/1.0.5/build.gradle"
+        }
+      ],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#9716 Support for org.junit.support:testng-engine:1.0.5; label=library-new-request; body_chars=0"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "sonnet",
+      "input_tokens_used": 4,
+      "output_tokens_used": 1386
+    },
+    "metrics": {
+      "input_tokens_used": 185371,
+      "cached_input_tokens_used": 1798144,
+      "output_tokens_used": 15552,
+      "iterations": 3,
+      "cost_usd": 2.2926,
+      "generated_loc": 186,
+      "tested_library_loc": 440,
+      "metadata_entries": 5,
+      "test_only_metadata_entries": 14,
+      "code_coverage_percent": 75.47
+    },
+    "artifacts": {
+      "metadata_file": "metadata/org.junit.support/testng-engine/1.0.5/reachability-metadata.json"
+    }
+  }
+}
