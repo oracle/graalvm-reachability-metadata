@@ -20,6 +20,8 @@
 //
 // Behavior notes:
 //   - Existing open issues are matched by requested Maven coordinates in the issue title
+//   - After creating issues, the run pauses briefly and re-lists; an issue it created is closed
+//     again as a duplicate when a lower-numbered open issue for the same library appeared meanwhile
 //   - When a reusable issue targets a newer version, automation rewrites it to the older version
 //     requested by the current plan so blocker creation stays conservative
 //   - Duplicate "blocked by" links are treated as a successful no-op
@@ -28,6 +30,8 @@ const path = require('path');
 
 const MAX_NEW_ISSUES = 100;
 const MAX_SKIPPED_ISSUES_IN_COMMENT = 50;
+// Pause before re-listing so an issue a concurrent run created moments earlier is visible.
+const DUPLICATE_CHECK_SETTLE_MS = 5_000;
 
 /**
  * Resolves the workspace directory used to read repository files and helper scripts.
@@ -787,7 +791,11 @@ module.exports = async function openDependencyIssuesAndLinkBlockers({ github, co
   const gaIssue = new Map([[rootGA, sourceIssueNumber]]);
   let createdCount = 0;
   const skippedIssueCreations = [];
+  const createdIssues = [];
 
+  // Issues opened after this listing by a concurrent triage run are found again once all
+  // issues are created (see findLowerNumberedOpenIssue); the margin absorbs clock skew.
+  const listedOpenIssuesSince = new Date(Date.now() - 60_000).toISOString();
   const openIssues = await github.paginate(github.rest.issues.listForRepo, {
     owner,
     repo,
@@ -815,39 +823,89 @@ module.exports = async function openDependencyIssuesAndLinkBlockers({ github, co
     }
   }
 
+  /**
+   * Lists the open requests opened or touched since the initial listing, with their parsed coordinates.
+   */
+  async function listRecentOpenRequests() {
+    const recentOpenIssues = await github.paginate(github.rest.issues.listForRepo, {
+      owner,
+      repo,
+      state: 'open',
+      since: listedOpenIssuesSince,
+      per_page: 100
+    });
+
+    return recentOpenIssues
+      .filter((issue) => !issue.pull_request)
+      .map((issue) => ({ issue, requestedCoordinates: parseRequestedCoordinatesFromIssue(issue) }))
+      .filter((candidate) => Boolean(candidate.requestedCoordinates));
+  }
+
+  // Lowest-numbered open request for `ga` below `issueNumber`; the run holding the higher
+  // number yields to it. §AR-triage-new-issues
+  function findLowerNumberedOpenIssue(recentOpenRequests, ga, issueNumber) {
+    return (
+      recentOpenRequests
+        .filter((candidate) => candidate.issue.number < issueNumber && candidate.requestedCoordinates.ga === ga)
+        .sort((left, right) => left.issue.number - right.issue.number)[0] || null
+    );
+  }
+
+  /**
+   * Closes a request this run opened once a lower-numbered open request for the same library turned up.
+   */
+  async function closeAsDuplicate(issueNumber, canonicalIssueNumber) {
+    const body = [
+      `Automated triage: A request for the same library was already open in #${canonicalIssueNumber} when this issue was created.`,
+      '',
+      'Closing this issue as a duplicate.'
+    ].join('\n');
+    await github.rest.issues.createComment({ owner, repo, issue_number: issueNumber, body });
+    await github.rest.issues.update({
+      owner,
+      repo,
+      issue_number: issueNumber,
+      state: 'closed',
+      state_reason: 'not_planned'
+    });
+  }
+
+  /**
+   * Rewrites a reused request to the older version the current plan asks for.
+   */
+  async function alignReusedIssueVersion(reusableIssue, ga, version) {
+    const issueNumber = reusableIssue.issue.number;
+    const existingVersion = reusableIssue.requestedCoordinates.version;
+
+    if (compareVersions(version, existingVersion) < 0) {
+      const title = buildIssueTitle(ga, version);
+      await github.rest.issues.update({
+        owner,
+        repo,
+        issue_number: issueNumber,
+        title
+      });
+      reusableIssue.issue.title = title;
+      reusableIssue.requestedCoordinates = parseGAV(`${ga}:${version}`);
+      console.log(
+        `Reused issue #${issueNumber} for ${ga} and updated it from version ${existingVersion} to older version ${version}.`
+      );
+    } else {
+      console.log(
+        `Reused existing open issue #${issueNumber} for ${ga} without changing its version (${existingVersion}).`
+      );
+    }
+  }
+
   for (const ga of creationOrder) {
     if (ga === rootGA || !toCreate.has(ga)) {
       continue;
     }
 
     const version = toCreate.get(ga);
-    const title = buildIssueTitle(ga, version);
-    const body = buildIssueBody();
-    const reusableIssue = reusableIssueByGA.get(ga);
-    let issueNumber = null;
+    let reusableIssue = reusableIssueByGA.get(ga);
 
-    if (reusableIssue) {
-      issueNumber = reusableIssue.issue.number;
-      const existingVersion = reusableIssue.requestedCoordinates.version;
-
-      if (compareVersions(version, existingVersion) < 0) {
-        await github.rest.issues.update({
-          owner,
-          repo,
-          issue_number: issueNumber,
-          title
-        });
-        reusableIssue.issue.title = title;
-        reusableIssue.requestedCoordinates = parseGAV(`${ga}:${version}`);
-        console.log(
-          `Reused issue #${issueNumber} for ${ga} and updated it from version ${existingVersion} to older version ${version}.`
-        );
-      } else {
-        console.log(
-          `Reused existing open issue #${issueNumber} for ${ga} without changing its version (${existingVersion}).`
-        );
-      }
-    } else {
+    if (!reusableIssue) {
       if (createdCount >= MAX_NEW_ISSUES) {
         skippedIssueCreations.push(`${ga}:${version}`);
         console.log(
@@ -859,19 +917,43 @@ module.exports = async function openDependencyIssuesAndLinkBlockers({ github, co
       const created = await github.rest.issues.create({
         owner,
         repo,
-        title,
-        body,
+        title: buildIssueTitle(ga, version),
+        body: buildIssueBody(),
         labels: ['library-new-request']
       });
-      issueNumber = created.data.number;
       createdCount++;
-      reusableIssueByGA.set(ga, {
+      console.log(`Created issue #${created.data.number} for ${ga}:${version}.`);
+      reusableIssue = {
         issue: created.data,
         requestedCoordinates: parseGAV(`${ga}:${version}`)
-      });
+      };
+      reusableIssueByGA.set(ga, reusableIssue);
+      createdIssues.push({ ga, version, issueNumber: created.data.number });
+    } else {
+      await alignReusedIssueVersion(reusableIssue, ga, version);
     }
 
-    gaIssue.set(ga, issueNumber);
+    gaIssue.set(ga, reusableIssue.issue.number);
+  }
+
+  if (createdIssues.length > 0) {
+    await new Promise((resolve) => setTimeout(resolve, DUPLICATE_CHECK_SETTLE_MS));
+    const recentOpenRequests = await listRecentOpenRequests();
+
+    for (const { ga, version, issueNumber } of createdIssues) {
+      const canonicalIssue = findLowerNumberedOpenIssue(recentOpenRequests, ga, issueNumber);
+      if (!canonicalIssue) {
+        continue;
+      }
+
+      await closeAsDuplicate(issueNumber, canonicalIssue.issue.number);
+      console.log(
+        `Closed #${issueNumber} for ${ga} as a duplicate of concurrently opened #${canonicalIssue.issue.number}.`
+      );
+      await alignReusedIssueVersion(canonicalIssue, ga, version);
+      reusableIssueByGA.set(ga, canonicalIssue);
+      gaIssue.set(ga, canonicalIssue.issue.number);
+    }
   }
 
   if (skippedIssueCreations.length > 0) {

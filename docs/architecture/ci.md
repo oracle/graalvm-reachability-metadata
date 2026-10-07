@@ -373,6 +373,27 @@ them as blockers. Newly created transitive dependency issues do not receive
 is defined in
 §FS-repository-functional-spec.4.
 
+Duplicate detection converges without a lock. Requests opened seconds apart,
+as a native-build-tools run or a batch of transitive expansions produces them,
+are triaged by concurrent runs, each of which lists open issues before any
+other run has created its own; a `concurrency` group is no remedy because it
+cancels the queued run whenever a third request arrives. The rule that makes
+concurrent runs agree is that for one `groupId:artifactId` the lowest-numbered
+open request is canonical: a request is closed as a duplicate only when an open
+request with a lower number exists. The lowest-numbered request can therefore
+never be closed by this rule, and because issue numbers follow creation order,
+the run that holds the higher number sees the lower one as soon as the lower
+one is visible to reads at all. This workflow lists seconds after the request
+was opened, which is long past that point. The dependency script applies the
+same rule to the issues it opens, but it lists right after creating them, so it
+first pauses for a few seconds to let the concurrent run's creation become
+visible, then re-lists the requests opened since its own listing once for all
+the issues it created and, where a lower-numbered open request for the same
+coordinate appeared meanwhile, closes its own as a duplicate and links the lower
+one as the blocker instead. The script must do this itself because issues it
+opens with the workflow token raise no `issues: opened` event and never reach
+this workflow's duplicate check.
+
 ## Composite actions
 
 ### AR-detect-file-changes: detect-file-changes action
