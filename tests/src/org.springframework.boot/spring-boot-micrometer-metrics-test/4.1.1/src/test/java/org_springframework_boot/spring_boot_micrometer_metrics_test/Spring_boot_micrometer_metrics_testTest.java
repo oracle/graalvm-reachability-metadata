@@ -40,6 +40,7 @@ public class Spring_boot_micrometer_metrics_testTest {
         this.contextRunner.run((context) -> {
             assertThat(context).hasSingleBean(MeterRegistry.class);
             assertThat(context).hasSingleBean(ObservationRegistry.class);
+            assertThat(context.getBean(MeterRegistry.class)).isInstanceOf(SimpleMeterRegistry.class);
 
             MeterRegistry meterRegistry = context.getBean(MeterRegistry.class);
             Counter counter = meterRegistry.counter("application.requests", "status", "ok");
@@ -58,6 +59,23 @@ public class Spring_boot_micrometer_metrics_testTest {
                     assertThat(context).hasSingleBean(ObservationRegistry.class);
                     assertThat(context.getBean(MeterRegistry.class)).isInstanceOf(SimpleMeterRegistry.class);
                 });
+    }
+
+    @Test
+    void metricsExportIsDisabledByDefaultWithoutAnnotation() {
+        contextRunnerFor(NoMetricsAnnotation.class).run((context) -> {
+            assertThat(context.getEnvironment().getProperty("management.defaults.metrics.export.enabled"))
+                .isEqualTo("false");
+            assertThat(context.getEnvironment().getProperty("management.simple.metrics.export.enabled"))
+                .isEqualTo("true");
+            assertThat(context.getBean(MeterRegistry.class)).isInstanceOf(SimpleMeterRegistry.class);
+
+            Counter counter = context.getBean(MeterRegistry.class)
+                .counter("application.requests", "status", "defaulted");
+            counter.increment(5.0);
+
+            assertThat(counter.count()).isEqualTo(5.0);
+        });
     }
 
     @Test
@@ -100,6 +118,28 @@ public class Spring_boot_micrometer_metrics_testTest {
     }
 
     @Test
+    void propertyDisablesMetricsExportWhenAnnotationIsAbsent() {
+        new ApplicationContextRunner()
+                .withPropertyValues("spring.test.metrics.export=false")
+                .withInitializer((context) -> metricsContextCustomizer(NoMetricsAnnotation.class)
+                    .customizeContext(context, null))
+                .withUserConfiguration(MetricsTestConfiguration.class)
+                .run((context) -> {
+                    assertThat(context.getEnvironment()
+                        .getProperty("management.defaults.metrics.export.enabled")).isEqualTo("false");
+                    assertThat(context.getEnvironment()
+                        .getProperty("management.simple.metrics.export.enabled")).isEqualTo("true");
+                    assertThat(context.getBean(MeterRegistry.class)).isInstanceOf(SimpleMeterRegistry.class);
+
+                    Counter counter = context.getBean(MeterRegistry.class)
+                        .counter("application.requests", "status", "property-override");
+                    counter.increment(7.0);
+
+                    assertThat(counter.count()).isEqualTo(7.0);
+                });
+    }
+
+    @Test
     void annotationEnablesMetricsExportWhenPropertyDisablesIt() {
         try (AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext()) {
             TestPropertyValues.of("spring.test.metrics.export=false").applyTo(context);
@@ -118,6 +158,28 @@ public class Spring_boot_micrometer_metrics_testTest {
 
             assertThat(counter.count()).isEqualTo(4.0);
         }
+    }
+
+    @Test
+    void annotationDisablesMetricsExportWhenPropertyEnablesIt() {
+        new ApplicationContextRunner()
+                .withPropertyValues("spring.test.metrics.export=true")
+                .withInitializer((context) -> metricsContextCustomizer(MetricsExportDisabled.class)
+                    .customizeContext(context, null))
+                .withUserConfiguration(MetricsTestConfiguration.class)
+                .run((context) -> {
+                    assertThat(context.getEnvironment()
+                        .getProperty("management.defaults.metrics.export.enabled")).isEqualTo("false");
+                    assertThat(context.getEnvironment()
+                        .getProperty("management.simple.metrics.export.enabled")).isEqualTo("true");
+                    assertThat(context.getBean(MeterRegistry.class)).isInstanceOf(SimpleMeterRegistry.class);
+
+                    Counter counter = context.getBean(MeterRegistry.class)
+                        .counter("application.requests", "status", "annotation-override");
+                    counter.increment(6.0);
+
+                    assertThat(counter.count()).isEqualTo(6.0);
+                });
     }
 
     private static ApplicationContextRunner contextRunnerFor(Class<?> testClass) {
