@@ -79,6 +79,23 @@ public class Spring_boot_micrometer_metrics_testTest {
     }
 
     @Test
+    void annotationAbsentDisablesMetricsExportByDefault() {
+        new ApplicationContextRunner()
+                .withInitializer((context) -> metricsContextCustomizer(NoMetricsAnnotation.class)
+                    .customizeContext(context, null))
+                .withUserConfiguration(MetricsTestConfiguration.class)
+                .run((context) -> {
+                    assertThat(context.getEnvironment()
+                        .getProperty("management.defaults.metrics.export.enabled")).isEqualTo("false");
+                    assertThat(context).hasSingleBean(MeterRegistry.class);
+                    Counter counter = context.getBean(MeterRegistry.class)
+                        .counter("application.requests", "status", "defaulted");
+                    counter.increment();
+                    assertThat(counter.count()).isEqualTo(1.0);
+                });
+    }
+
+    @Test
     void propertyEnablesMetricsExportWhenAnnotationIsAbsent() {
         new ApplicationContextRunner()
                 .withPropertyValues("spring.test.metrics.export=true")
