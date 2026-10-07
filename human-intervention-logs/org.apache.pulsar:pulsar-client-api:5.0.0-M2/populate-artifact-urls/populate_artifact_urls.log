@@ -1,0 +1,38 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :populateArtifactURLs
+I filled in the missing fields for the `5.0.0-M2` entry in `metadata/org.apache.pulsar/pulsar-client-api/index.json`. I checked the rendered 5.0.0-M2 URLs for sources, javadoc and the Git tag with `curl`, and each returned HTTP 200. I didn't run any Gradle checks on the file.
+
+- **source-code-url:** the Maven Central `pulsar-client-api-$version$-sources.jar`.
+- **repository-url:** `https://github.com/apache/pulsar`.
+- **test-code-url:** `https://github.com/apache/pulsar/tree/v$version$/pulsar-client/src/test/java/org/apache/pulsar/client/api`. I only checked that this path exists at the `v5.0.0-M2` tag.
+- **documentation-url:** the Maven Central `pulsar-client-api-$version$-javadoc.jar`.
+- **description:** I reused the two-sentence description from the existing 4.2.1 entry.
+- **language:** left absent, since this is a plain Java library.
+
+The 4.2.1 entry already had the same URL templates, so the new entry matches it.
+Ran agent for org.apache.pulsar:pulsar-client-api:5.0.0-M2 (exit 0). Log: /home/oracle/oracle/metadata2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10318-97802973/build/agent-url-discovery-logs/org.apache.pulsar-pulsar-client-api-5.0.0-M2.log
+Completed populateArtifactURLs: invoked=1, prompted=0, skipped=0, overwriteExisting=false, verifyArtifactSources=false, limit=null
+
+[Incubating] Problems report is available at: file:///home/oracle/oracle/metadata2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10318-97802973/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 22s
+9 actionable tasks: 1 executed, 8 up-to-date

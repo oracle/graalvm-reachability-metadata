@@ -1,0 +1,55 @@
+{
+  "timestamp": "2026-10-07T00:02:14.792303Z",
+  "library": "org.apache.pulsar:pulsar-client-api:5.0.0-M2",
+  "starting_commit": "a120de9dbc4574bfa3eb0f744eaaf8aef90a0134",
+  "ending_commit": "a120de9dbc4574bfa3eb0f744eaaf8aef90a0134",
+  "strategy_name": "library_update_pi_gpt-5.6-sol",
+  "agent": "pi",
+  "model": "gpt-5.6-sol",
+  "status": "failure",
+  "library_preparation_preflight": {
+    "status": "completed",
+    "action": "no_action",
+    "issue_number": 10318,
+    "issue_label": "fails-native-image-run",
+    "library": "org.apache.pulsar:pulsar-client-api:5.0.0-M2",
+    "summary": "Nothing beyond the generated scaffold is needed. The 5.0.0-M2 jar has the same internal reflection mechanism as 4.2.1, and the existing test stubs already supply the dependency-free pieces. The failure looks repairable with metadata or test adjustments.",
+    "deterministic_setup": [],
+    "agent_guidance": "",
+    "risks": [
+      "The issue log was truncated before the actual failure message, so the exact native-image run failure was not seen. This conclusion rests on comparing the 4.2.1 and 5.0.0-M2 jars. The signatures of PulsarClientImplementationBinding and ReflectionUtils are identical in both. DefaultImplementation loads org.apache.pulsar.client.impl.PulsarClientImplementationBindingImpl through ReflectionUtils.newClassInstance and Class.getConstructor().newInstance(), as before.",
+      "The 5.0.0-M2 jar adds MemoryLimitConfig, MessageIdAdv, OpenTelemetryConfig and Socks5ProxyScope, and drops the package-info classes. If the 4.2.1 test stubs or reachability-metadata.json refer to anything that changed, the fix is a metadata or test update, not extra setup.",
+      "No skip_unsupported verdict: the traced mechanism is ordinary reflection, which reachability metadata can register."
+    ],
+    "applied_setup": [],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#10318 [Automation] native-image run fails for org.apache.pulsar:pulsar-client-api:5.0.0-M2; label=fails-native-image-run; body_chars=8015"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "12 existing test file path(s) included"
+      }
+    ],
+    "current_library": "org.apache.pulsar:pulsar-client-api:4.2.1",
+    "new_version": "5.0.0-M2",
+    "model": "sonnet",
+    "input_tokens_used": 10,
+    "output_tokens_used": 1903
+  },
+  "metrics": {
+    "input_tokens_used": 0,
+    "cached_input_tokens_used": 0,
+    "output_tokens_used": 0,
+    "iterations": 3,
+    "cost_usd": 0.0,
+    "generated_loc": 0,
+    "tested_library_loc": 0,
+    "metadata_entries": 0,
+    "code_coverage_percent": 0.0
+  },
+  "artifacts": {
+    "metadata_file": "None"
+  }
+}

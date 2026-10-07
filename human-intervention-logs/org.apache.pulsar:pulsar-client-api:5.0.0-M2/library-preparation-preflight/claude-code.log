@@ -1,0 +1,13 @@
+```json
+{
+  "action": "no_action",
+  "summary": "Nothing beyond the generated scaffold is needed. The 5.0.0-M2 jar has the same internal reflection mechanism as 4.2.1, and the existing test stubs already supply the dependency-free pieces. The failure looks repairable with metadata or test adjustments.",
+  "deterministic_setup": [],
+  "agent_guidance": "",
+  "risks": [
+    "The issue log was truncated before the actual failure message, so the exact native-image run failure was not seen. This conclusion rests on comparing the 4.2.1 and 5.0.0-M2 jars. The signatures of PulsarClientImplementationBinding and ReflectionUtils are identical in both. DefaultImplementation loads org.apache.pulsar.client.impl.PulsarClientImplementationBindingImpl through ReflectionUtils.newClassInstance and Class.getConstructor().newInstance(), as before.",
+    "The 5.0.0-M2 jar adds MemoryLimitConfig, MessageIdAdv, OpenTelemetryConfig and Socks5ProxyScope, and drops the package-info classes. If the 4.2.1 test stubs or reachability-metadata.json refer to anything that changed, the fix is a metadata or test update, not extra setup.",
+    "No skip_unsupported verdict: the traced mechanism is ordinary reflection, which reachability metadata can register."
+  ]
+}
+```
