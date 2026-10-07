@@ -18,6 +18,7 @@ import com.couchbase.client.core.env.PropertyLoader;
 import com.couchbase.client.core.env.TimeoutConfig;
 import com.couchbase.client.core.env.UsernameAndPassword;
 import com.couchbase.client.core.json.Mapper;
+import com.couchbase.client.core.json.stream.JsonStreamParser;
 import com.couchbase.client.core.projections.JsonPathParser;
 import com.couchbase.client.core.projections.PathArray;
 import com.couchbase.client.core.projections.PathObjectOrField;
@@ -25,8 +26,10 @@ import com.couchbase.client.core.service.ServiceType;
 import com.couchbase.client.core.util.ConnectionString;
 import org.junit.jupiter.api.Test;
 
+import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
@@ -174,6 +177,29 @@ public class Core_ioTest {
                         new PathArray("orders", 2),
                         new PathArray("items", 1),
                         new PathObjectOrField("sku"));
+    }
+
+    @Test
+    void extractsJsonPointerValuesFromChunkedInput() {
+        List<String> skus = new ArrayList<>();
+        List<Long> quantities = new ArrayList<>();
+        byte[] json = """
+                {"orders":[{"sku":"coffee","quantity":2},{"sku":"tea","quantity":5}]}
+                """
+                .getBytes(StandardCharsets.UTF_8);
+
+        try (JsonStreamParser parser = JsonStreamParser.builder()
+                .doOnValue("/orders/-/sku", value -> skus.add(value.readString()))
+                .doOnValue("/orders/-/quantity", value -> quantities.add(value.readLong()))
+                .build()) {
+            for (int offset = 0; offset < json.length; offset += 7) {
+                parser.feed(ByteBuffer.wrap(json, offset, Math.min(7, json.length - offset)));
+            }
+            parser.endOfInput();
+        }
+
+        assertThat(skus).containsExactly("coffee", "tea");
+        assertThat(quantities).containsExactly(2L, 5L);
     }
 
     @Test
