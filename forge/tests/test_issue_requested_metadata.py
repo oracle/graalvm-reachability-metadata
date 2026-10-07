@@ -135,6 +135,21 @@ class IssueRequestedMetadataPhaseTests(unittest.TestCase):
         )
         self.assertEqual(strategy.committed, ["Issue-requested metadata coverage for org.example:lib:1.0.0"])
 
+    def test_phase_passes_without_gradle_when_agent_changes_nothing(self) -> None:
+        strategy = _RecordingStrategy(
+            [],
+            issue_requested_metadata_context=self.REPORTER_CONTEXT,
+        )
+
+        with patch.object(strategy, "_worktree_unchanged_since", return_value=True):
+            (phase_ok, iterations), prompts = self._run_phase(strategy)
+
+        self.assertTrue(phase_ok)
+        self.assertEqual(iterations, 1)
+        self.assertEqual(prompts, [ISSUE_REQUESTED_METADATA_PROMPT_KEY])
+        self.assertEqual(strategy.commands, [])
+        self.assertEqual(strategy.committed, [])
+
     def test_reaching_native_test_is_not_success(self) -> None:
         strategy = _RecordingStrategy(
             ["> Task :nativeTest FAILED"] * ISSUE_REQUESTED_METADATA_TEST_ITERATIONS,
