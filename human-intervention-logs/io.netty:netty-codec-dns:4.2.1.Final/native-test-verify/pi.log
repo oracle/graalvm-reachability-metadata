@@ -1,0 +1,19 @@
+Implemented a native-compatible test path in:
+
+- `tests/src/io.netty/netty-codec-dns/4.1.74.Final/src/test/java/io_netty/netty_codec_dns/Netty_codec_dnsTest.java`
+
+Diagnosis from the complete native XML stack trace:
+
+- `EncoderException`
+- Caused by `NullPointerException`
+- Rooted at `PlatformDependent0.safeConstructPutInt`
+- Triggered by Netty 4.2’s `AdaptivePoolingAllocator`
+
+The three encoder/decoder tests now configure `UnpooledByteBufAllocator.DEFAULT`, preserving public DNS codec coverage while avoiding the unsupported allocator path.
+
+Verification:
+
+- Exact reproduction command passed.
+- 7 tests successful, 0 failed.
+- `git diff --check` passed.
+- `fissile check --staged` passed.

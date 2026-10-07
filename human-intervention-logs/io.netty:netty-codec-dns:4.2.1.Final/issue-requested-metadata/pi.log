@@ -1,0 +1,5 @@
+Updated `Netty_codec_dnsTest.java` to stop overriding `EmbeddedChannel` with `UnpooledByteBufAllocator`.
+
+The DNS query, datagram response, and TCP response round trips now use Netty’s default adaptive allocator, exercising the reported `AdaptivePoolingAllocator` reflection path through public codec APIs.
+
+No metadata or build files were changed. Tests were not run, per instruction. `git diff --check` passes.

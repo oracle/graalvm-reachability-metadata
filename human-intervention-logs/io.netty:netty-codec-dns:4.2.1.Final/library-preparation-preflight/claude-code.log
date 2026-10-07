@@ -1,0 +1,13 @@
+```json
+{
+  "action": "no_action",
+  "summary": "The existing 4.1.74.Final test only uses in-memory netty-codec-dns encoders, decoders, records and EmbeddedChannel, so it needs no extra dependency, Docker image or system property. The 4.2.1.Final image built successfully, and the run failure is most likely missing reachability metadata for netty-common/netty-buffer/netty-transport 4.2.x, which the normal metadata repair can add. I did not run the build or see the run-failure text, because the issue log excerpt cuts off before it.",
+  "deterministic_setup": [],
+  "agent_guidance": "",
+  "risks": [
+    "The run-failure text was truncated from the issue log, so the exact failing symbol is unconfirmed. Reproduce locally with GVM_TCK_LV=4.2.1.Final before editing.",
+    "The native-image classpath mixes netty-common 4.1.115.Final metadata with netty-buffer 4.1.80.Final, and the image contains the 4.2.1.Final jars. 4.2.x internals such as the adaptive allocator and reworked buffer or unsafe paths may need metadata in the transitive netty modules, not only in netty-codec-dns.",
+    "The 4.1.74.Final test's `allowed-packages` and `user-code-filter.json` cover only io.netty.handler.codec.dns. The index.json entry for the newest bucket also lists io.netty.buffer, so the filter may need to include it."
+  ]
+}
+```

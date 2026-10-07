@@ -1,0 +1,80 @@
+{
+  "continueFrom": "finalization",
+  "coordinate": "io.netty:netty-codec-dns:4.2.1.Final",
+  "failure": {
+    "operand": "reporter-requested metadata",
+    "phase": "explore",
+    "step": "generate_tests()"
+  },
+  "issueNumber": 9339,
+  "label": "fails-native-image-run",
+  "libraryPreparationPreflight": {
+    "action": "no_action",
+    "agent_guidance": "",
+    "applied_setup": [],
+    "current_library": "io.netty:netty-codec-dns:4.1.74.Final",
+    "deterministic_setup": [],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#9339 [Automation] native-image run fails for io.netty:netty-codec-dns:4.2.1.Final; label=fails-native-image-run; body_chars=8015"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "6 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 4,
+    "issue_label": "fails-native-image-run",
+    "issue_number": 9339,
+    "library": "io.netty:netty-codec-dns:4.2.1.Final",
+    "model": "sonnet",
+    "new_version": "4.2.1.Final",
+    "output_tokens_used": 1043,
+    "risks": [
+      "The run-failure text was truncated from the issue log, so the exact failing symbol is unconfirmed. Reproduce locally with GVM_TCK_LV=4.2.1.Final before editing.",
+      "The native-image classpath mixes netty-common 4.1.115.Final metadata with netty-buffer 4.1.80.Final, and the image contains the 4.2.1.Final jars. 4.2.x internals such as the adaptive allocator and reworked buffer or unsafe paths may need metadata in the transitive netty modules, not only in netty-codec-dns.",
+      "The 4.1.74.Final test's `allowed-packages` and `user-code-filter.json` cover only io.netty.handler.codec.dns. The index.json entry for the newest bucket also lists io.netty.buffer, so the filter may need to include it."
+    ],
+    "status": "completed",
+    "summary": "The existing 4.1.74.Final test only uses in-memory netty-codec-dns encoders, decoders, records and EmbeddedChannel, so it needs no extra dependency, Docker image or system property. The 4.2.1.Final image built successfully, and the run failure is most likely missing reachability metadata for netty-common/netty-buffer/netty-transport 4.2.x, which the normal metadata repair can add. I did not run the build or see the run-failure text, because the issue log excerpt cuts off before it."
+  },
+  "libraryUpdateRoute": null,
+  "newVersion": "4.2.1.Final",
+  "phases": {
+    "explore": {
+      "chunkClassCount": null,
+      "chunkProcessedClassCount": 0,
+      "exhaustedClasses": [],
+      "status": "skipped"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": null,
+      "status": "completed"
+    },
+    "publication": {
+      "branch": null,
+      "coverageFollowUpIssueNumber": null,
+      "isPushed": false,
+      "publicationId": null,
+      "publicationTimestamp": null,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": true,
+      "status": "completed"
+    }
+  },
+  "preservedBranch": "ai/kimeta/human-intervention/issue-9339-fails-native-image-run-io.netty-netty-codec-dns-4.2.1.Final-79a7f8bc",
+  "publicationMetrics": {
+    "extras": {},
+    "library": "io.netty:netty-codec-dns:4.2.1.Final",
+    "timestamp": "2026-10-07T02:03:13.194983Z"
+  },
+  "schemaVersion": 1,
+  "strategyName": "library_update_pi_gpt-5.6-sol"
+}
