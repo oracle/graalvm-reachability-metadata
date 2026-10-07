@@ -97,6 +97,22 @@ public class Spring_boot_micrometer_metrics_testTest {
     }
 
     @Test
+    void inheritedAnnotationDisablesMetricsExport() {
+        contextRunnerFor(InheritedMetricsExportDisabled.class).run((context) -> {
+            assertThat(context.getEnvironment()
+                .getProperty("management.defaults.metrics.export.enabled")).isEqualTo("false");
+            assertThat(context.getEnvironment()
+                .getProperty("management.simple.metrics.export.enabled")).isEqualTo("true");
+
+            Counter counter = context.getBean(MeterRegistry.class)
+                .counter("application.requests", "status", "inherited-annotation");
+            counter.increment(8.0);
+
+            assertThat(counter.count()).isEqualTo(8.0);
+        });
+    }
+
+    @Test
     void propertyEnablesMetricsExportWhenAnnotationIsAbsent() {
         new ApplicationContextRunner()
                 .withPropertyValues("spring.test.metrics.export=true")
@@ -213,6 +229,9 @@ public class Spring_boot_micrometer_metrics_testTest {
 
     @AutoConfigureMetrics(export = false)
     static class MetricsExportDisabled {
+    }
+
+    static class InheritedMetricsExportDisabled extends MetricsExportDisabled {
     }
 
     @AutoConfigureMetrics
