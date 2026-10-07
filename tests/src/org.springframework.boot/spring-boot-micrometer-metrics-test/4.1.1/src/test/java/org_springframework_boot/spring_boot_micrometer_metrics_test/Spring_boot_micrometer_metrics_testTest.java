@@ -134,6 +134,19 @@ public class Spring_boot_micrometer_metrics_testTest {
     }
 
     @Test
+    void contextCustomizerUsesAnnotationConfigurationForEquality() {
+        ContextCustomizer enabled = metricsContextCustomizer(MetricsExportEnabled.class);
+        ContextCustomizer equivalentEnabled = metricsContextCustomizer(MetricsExportEnabledCopy.class);
+        ContextCustomizer disabled = metricsContextCustomizer(MetricsExportDisabled.class);
+
+        assertThat(enabled).isEqualTo(equivalentEnabled);
+        assertThat(enabled.hashCode()).isEqualTo(equivalentEnabled.hashCode());
+        assertThat(enabled).isNotEqualTo(disabled);
+        assertThat(enabled).isNotEqualTo(null);
+        assertThat(enabled).isNotEqualTo(new Object());
+    }
+
+    @Test
     void annotationEnablesMetricsExportWhenPropertyDisablesIt() {
         try (AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext()) {
             TestPropertyValues.of("spring.test.metrics.export=false").applyTo(context);
@@ -194,6 +207,10 @@ public class Spring_boot_micrometer_metrics_testTest {
 
     @AutoConfigureMetrics
     static class MetricsExportEnabled {
+    }
+
+    @AutoConfigureMetrics
+    static class MetricsExportEnabledCopy {
     }
 
     static class NoMetricsAnnotation {
