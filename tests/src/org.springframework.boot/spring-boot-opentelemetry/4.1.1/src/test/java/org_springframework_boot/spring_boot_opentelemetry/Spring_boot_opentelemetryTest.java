@@ -74,6 +74,20 @@ public class Spring_boot_opentelemetryTest {
     }
 
     @Test
+    void disabledOpenTelemetryCreatesSdkWithoutLoggingProvider() {
+        this.contextRunner
+                .withPropertyValues("management.opentelemetry.enabled=false")
+                .run((context) -> {
+                    assertThat(context).hasSingleBean(OpenTelemetryProperties.class);
+                    assertThat(context.getBean(OpenTelemetryProperties.class).isEnabled()).isFalse();
+                    assertThat(context).hasSingleBean(OpenTelemetrySdk.class);
+                    assertThat(context).doesNotHaveBean(SdkLoggerProvider.class);
+                    assertThat(context.getBean(OpenTelemetrySdk.class).shutdown().join(10, TimeUnit.SECONDS)
+                            .isSuccess()).isTrue();
+                });
+    }
+
+    @Test
     void loggingLimitsConfigureSdkLoggerProvider() {
         this.contextRunner
                 .withPropertyValues("management.opentelemetry.enabled=true", "management.logging.export.enabled=true",
