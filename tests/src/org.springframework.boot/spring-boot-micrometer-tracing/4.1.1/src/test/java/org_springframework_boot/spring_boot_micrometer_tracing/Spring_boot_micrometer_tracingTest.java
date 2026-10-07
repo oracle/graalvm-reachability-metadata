@@ -11,6 +11,9 @@ import java.util.Map;
 
 import io.micrometer.observation.Observation;
 import io.micrometer.observation.ObservationRegistry;
+import io.micrometer.registry.otlp.ExemplarContextProvider;
+import io.micrometer.registry.otlp.OtlpExemplarContext;
+import io.micrometer.tracing.Span;
 import io.micrometer.tracing.Tracer;
 import io.micrometer.tracing.handler.DefaultTracingObservationHandler;
 import io.micrometer.tracing.handler.PropagatingReceiverTracingObservationHandler;
@@ -140,6 +143,32 @@ public class Spring_boot_micrometer_tracingTest {
                     .observe(() -> assertThat(tracer.currentSpan()).isNotNull());
 
             assertThat(tracer.onlySpan().getName()).isEqualTo("checkout");
+        }
+    }
+
+    @Test
+    void otlpExemplarContextTracksTheCurrentSpan() {
+        SimpleTracer tracer = new SimpleTracer();
+        try (AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext()) {
+            context.getEnvironment().getPropertySources().addFirst(new MapPropertySource("test",
+                    Map.of("management.tracing.exemplars.include", "all")));
+            context.registerBean(Tracer.class, () -> tracer);
+            context.register(OtlpExemplarsAutoConfiguration.class);
+            context.refresh();
+
+            ExemplarContextProvider provider = context.getBean(ExemplarContextProvider.class);
+            assertThat(provider.getExemplarContext()).isNull();
+
+            Span span = tracer.nextSpan().name("inventory").start();
+            try (Tracer.SpanInScope ignored = tracer.withSpan(span)) {
+                OtlpExemplarContext exemplarContext = provider.getExemplarContext();
+                assertThat(exemplarContext).isNotNull();
+                assertThat(exemplarContext.getTraceId()).isEqualTo(span.context().traceId());
+                assertThat(exemplarContext.getSpanId()).isEqualTo(span.context().spanId());
+            } finally {
+                span.end();
+            }
+            assertThat(provider.getExemplarContext()).isNull();
         }
     }
 
