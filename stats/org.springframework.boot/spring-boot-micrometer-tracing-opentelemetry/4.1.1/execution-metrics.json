@@ -76,5 +76,125 @@
     "artifacts": {
       "metadata_file": "metadata/org.springframework.boot/spring-boot-micrometer-tracing-opentelemetry/4.1.1/reachability-metadata.json"
     }
+  },
+  "add_new_library_support:2026-10-07": {
+    "timestamp": "2026-10-07T18:03:58.507042Z",
+    "library": "org.springframework.boot:spring-boot-micrometer-tracing-opentelemetry:4.1.1",
+    "starting_commit": "d39c065373133353307092b61775fee27b27b675",
+    "ending_commit": "75607b68c11dd8b5933db3f16049ad5474790b42",
+    "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-luna",
+    "agent": "pi",
+    "model": "gpt-5.6-luna",
+    "status": "success",
+    "stats": {
+      "version": "4.1.1",
+      "dynamicAccess": {
+        "breakdown": {},
+        "coverageRatio": 1.0,
+        "coveredCalls": 0,
+        "totalCalls": 0
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 1241,
+          "missed": 334,
+          "ratio": 0.787937,
+          "total": 1575
+        },
+        "line": {
+          "covered": 325,
+          "missed": 71,
+          "ratio": 0.820707,
+          "total": 396
+        },
+        "method": {
+          "covered": 132,
+          "missed": 26,
+          "ratio": 0.835443,
+          "total": 158
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "advisory_preparation",
+      "issue_number": 9725,
+      "issue_label": "library-new-request",
+      "library": "org.springframework.boot:spring-boot-micrometer-tracing-opentelemetry:4.1.1",
+      "summary": "Core autoconfiguration (OtlpTracingAutoConfiguration, properties, exporters, event publisher) is already meaningfully covered by the generated scaffold with no extra setup. The scaffold's user-code-filter.json also scopes in two optional SPI packages (docker.compose.otlp, testcontainers.otlp) whose package-private connection-details factories need types that aren't pulled in transitively by the main artifact.",
+      "deterministic_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "org.springframework.boot:spring-boot-testcontainers:4.1.1",
+          "scope": "testImplementation",
+          "reason": "Provides ContainerConnectionDetailsFactory/ContainerConnectionSource/ServiceConnection needed to reference OpenTelemetryTracingContainerConnectionDetailsFactory and GrafanaOpenTelemetryTracingContainerConnectionDetailsFactory; not a transitive dependency of the main artifact (confirmed empty optiona\n...[truncated]"
+        },
+        {
+          "kind": "dependency",
+          "coordinate": "org.springframework.boot:spring-boot-docker-compose:4.1.1",
+          "scope": "testImplementation",
+          "reason": "Provides DockerComposeConnectionDetailsFactory/DockerComposeConnectionSource/RunningService needed to reference OpenTelemetryTracingDockerComposeConnectionDetailsFactory; also not transitively pulled in."
+        },
+        {
+          "kind": "dependency",
+          "coordinate": "org.testcontainers:grafana:2.0.5",
+          "scope": "testImplementation",
+          "reason": "GrafanaOpenTelemetryTracingContainerConnectionDetailsFactory matches on org.testcontainers.grafana.LgtmStackContainer; version 2.0.5 matches the Testcontainers BOM Spring Boot 4.1.1 itself pins, and matches this repo's existing org.testcontainers/testcontainers-junit-jupiter/2.0.5 test directory."
+        }
+      ],
+      "agent_guidance": "The three docker.compose.otlp/testcontainers.otlp factory classes are package-private, so they cannot be instantiated or called directly from test code in a different package — they can only be exercised indirectly through Spring's own SPI loading (ServiceConnectionAutoConfiguration + a @ServiceConnection-annotated container bean for the testcontainers factories; the DockerComposeConnectionDetailsFactory SPI for the compose factory). No live Docker container or docker-compose run is required to do this: follow the pattern already used in tests/src/org.springframework.boot/spring-boot-testcontainers/4.1.1's own test (its RecordingContainer), i.e. subclass GenericContainer/LgtmStackContainer and override getHost()/getMappedPort()/getOtlpHttpUrl()/getOtlpGrpcUrl() to fixed values instead of starting a real container, and supply a fake/mock org.springframework.boot.docker.compose.core.RunningService for the compose factory. Treat this as optional, edge-case coverage, not a blocker: Spring Boot's own upstream test suite for this module has no dedicated tests for these three classes either, and the scaffold's existing tests already give meaningful coverage of the library's primary tracing/export behavior without any of this.",
+      "risks": [
+        "Testcontainers 2.0.5 (grafana module) must stay aligned with whatever testcontainers core version other dependencies in the test module resolve to, to avoid classpath conflicts.",
+        "Exercising the two testcontainers-based factories and the docker-compose factory requires going through Spring's full SPI/autoconfiguration wiring rather than direct instantiation, which is more involved than a typical unit test; the generation agent may reasonably decide the marginal coverage isn't worth the complexity and leave those packages uncovered."
+      ],
+      "applied_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "org.springframework.boot:spring-boot-testcontainers:4.1.1",
+          "result": "applied",
+          "target": "tests/src/org.springframework.boot/spring-boot-micrometer-tracing-opentelemetry/4.1.1/build.gradle"
+        },
+        {
+          "kind": "dependency",
+          "coordinate": "org.springframework.boot:spring-boot-docker-compose:4.1.1",
+          "result": "applied",
+          "target": "tests/src/org.springframework.boot/spring-boot-micrometer-tracing-opentelemetry/4.1.1/build.gradle"
+        },
+        {
+          "kind": "dependency",
+          "coordinate": "org.testcontainers:grafana:2.0.5",
+          "result": "applied",
+          "target": "tests/src/org.springframework.boot/spring-boot-micrometer-tracing-opentelemetry/4.1.1/build.gradle"
+        }
+      ],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#9725 Support for org.springframework.boot:spring-boot-micrometer-tracing-opentelemetry:4.1.1; label=library-new-request; body_chars=0"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "8 existing test file path(s) included"
+        }
+      ],
+      "model": "sonnet",
+      "input_tokens_used": 40,
+      "output_tokens_used": 29231
+    },
+    "metrics": {
+      "input_tokens_used": 415101,
+      "cached_input_tokens_used": 8272896,
+      "output_tokens_used": 43005,
+      "iterations": 6,
+      "cost_usd": 1.5004,
+      "generated_loc": 452,
+      "tested_library_loc": 325,
+      "metadata_entries": 192,
+      "test_only_metadata_entries": 355,
+      "code_coverage_percent": 82.07
+    },
+    "artifacts": {
+      "metadata_file": "metadata/org.springframework.boot/spring-boot-micrometer-tracing-opentelemetry/4.1.1/reachability-metadata.json"
+    }
   }
 }
