@@ -1,0 +1,110 @@
+{
+  "add_new_library_support:2026-10-07": {
+    "timestamp": "2026-10-07T21:20:31.386831Z",
+    "library": "org.springframework.boot:spring-boot-webmvc-test:4.1.1",
+    "starting_commit": "88cca5565a4870b182ee98d56ad3b0efadd32e3d",
+    "ending_commit": "0f5147708fcd2cea37fd346a53054d7561fd19a6",
+    "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-sol",
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "status": "success",
+    "stats": {
+      "version": "4.1.1",
+      "dynamicAccess": {
+        "breakdown": {},
+        "coverageRatio": 1.0,
+        "coveredCalls": 0,
+        "totalCalls": 0
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 57,
+          "missed": 1069,
+          "ratio": 0.050622,
+          "total": 1126
+        },
+        "line": {
+          "covered": 11,
+          "missed": 265,
+          "ratio": 0.039855,
+          "total": 276
+        },
+        "method": {
+          "covered": 4,
+          "missed": 84,
+          "ratio": 0.045455,
+          "total": 88
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "advisory_preparation",
+      "issue_number": 9717,
+      "issue_label": "library-new-request",
+      "library": "org.springframework.boot:spring-boot-webmvc-test:4.1.1",
+      "summary": "spring-boot-webmvc-test only pulls in spring-boot-test-autoconfigure and spring-boot-webmvc. @WebMvcTest, MockMvc and a servlet container need spring-test and the servlet API, and neither comes in transitively.",
+      "deterministic_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "org.springframework:spring-test:7.0.9",
+          "scope": "testImplementation",
+          "reason": "MockMvc, MockMvcBuilders and the SpringExtension/TestContext framework that @WebMvcTest and its customizers rely on. Not a transitive dependency of spring-boot-webmvc-test. 7.0.9 is the Spring Framework version managed by Boot 4.1.1."
+        },
+        {
+          "kind": "dependency",
+          "coordinate": "jakarta.servlet:jakarta.servlet-api:6.1.0",
+          "scope": "testImplementation",
+          "reason": "spring-boot-servlet and spring-webmvc do not bring the servlet API on the classpath. DispatcherServlet and MockHttpServletRequest need it. 6.1.0 is the version managed by Boot 4.1.1."
+        }
+      ],
+      "agent_guidance": "Use the existing scaffold conventions from sibling spring-boot-* test projects: testedLibraryVersion, assertj, and a conditional agent with a user-code-filter.json for org.springframework.boot packages. Prefer a programmatic setup that avoids needing a full Spring Boot application. Use AnnotationConfigWebApplicationContext or AnnotationConfigServletWebApplicationContext with a small @Controller, and exercise WebMvcTypeExcludeFilter, WebMvcTestContextBootstrapper, MockMvcAutoConfiguration, MockMvcBuilderCustomizer and the SpringBootMockMvcBuilderCustomizer classes. If a @WebMvcTest or @SpringBootTest slice is attempted, a @SpringBootConfiguration class and the JUnit Platform and SpringExtension wiring are needed. A Jackson 3 JSON converter is only available if tools.jackson is on the classpath. spring-boot-http-converter is a runtime dependency, so no extra JSON dependency should be required unless the tests assert on JSON bodies. No Docker image or environment/system property is needed.",
+      "risks": [
+        "Jackson 3 (tools.jackson) and Jackson 2 converter detection is classpath-dependent. Adding extra JSON libraries can change which metadata is exercised.",
+        "The full @WebMvcTest context bootstrap is reflection-heavy. If it fails under native-image, fall back to a manually assembled MockMvc setup.",
+        "The jakarta.servlet-api version may conflict if a tomcat-embed dependency is added later. Keep only one servlet API provider."
+      ],
+      "applied_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "org.springframework:spring-test:7.0.9",
+          "result": "applied",
+          "target": "tests/src/org.springframework.boot/spring-boot-webmvc-test/4.1.1/build.gradle"
+        },
+        {
+          "kind": "dependency",
+          "coordinate": "jakarta.servlet:jakarta.servlet-api:6.1.0",
+          "result": "applied",
+          "target": "tests/src/org.springframework.boot/spring-boot-webmvc-test/4.1.1/build.gradle"
+        }
+      ],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#9717 Support for org.springframework.boot:spring-boot-webmvc-test:4.1.1; label=library-new-request; body_chars=0"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "sonnet",
+      "input_tokens_used": 14,
+      "output_tokens_used": 2605
+    },
+    "metrics": {
+      "input_tokens_used": 261053,
+      "cached_input_tokens_used": 5319296,
+      "output_tokens_used": 29459,
+      "iterations": 13,
+      "cost_usd": 4.8487,
+      "generated_loc": 42,
+      "tested_library_loc": 11,
+      "metadata_entries": 0,
+      "code_coverage_percent": 3.99
+    },
+    "artifacts": {
+      "metadata_file": "metadata/org.springframework.boot/spring-boot-webmvc-test/4.1.1/reachability-metadata.json"
+    }
+  }
+}
