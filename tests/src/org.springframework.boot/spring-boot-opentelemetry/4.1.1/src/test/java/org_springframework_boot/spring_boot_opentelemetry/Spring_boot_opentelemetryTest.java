@@ -25,6 +25,7 @@ import io.opentelemetry.sdk.common.CompletableResultCode;
 import io.opentelemetry.sdk.logs.LogLimits;
 import io.opentelemetry.sdk.logs.SdkLoggerProvider;
 import io.opentelemetry.sdk.logs.data.LogRecordData;
+import io.opentelemetry.sdk.logs.export.BatchLogRecordProcessor;
 import io.opentelemetry.sdk.logs.export.LogRecordExporter;
 import io.opentelemetry.sdk.resources.Resource;
 import org.junit.jupiter.api.Test;
@@ -36,6 +37,7 @@ import org.springframework.boot.opentelemetry.autoconfigure.OpenTelemetryPropert
 import org.springframework.boot.opentelemetry.autoconfigure.OpenTelemetryResourceAttributes;
 import org.springframework.boot.opentelemetry.autoconfigure.OpenTelemetrySdkAutoConfiguration;
 import org.springframework.boot.opentelemetry.autoconfigure.logging.OpenTelemetryLoggingAutoConfiguration;
+import org.springframework.boot.opentelemetry.autoconfigure.logging.OpenTelemetryLoggingProperties;
 import org.springframework.boot.opentelemetry.autoconfigure.logging.otlp.OtlpGrpcLogRecordExporterBuilderCustomizer;
 import org.springframework.boot.opentelemetry.autoconfigure.logging.otlp.OtlpHttpLogRecordExporterBuilderCustomizer;
 import org.springframework.boot.opentelemetry.autoconfigure.logging.otlp.OtlpLoggingAutoConfiguration;
@@ -104,12 +106,24 @@ public class Spring_boot_opentelemetryTest {
     }
 
     @Test
-    void loggingLimitsConfigureSdkLoggerProvider() {
+    void loggingPropertiesConfigureBatchProcessorAndSdkLoggerProvider() {
         this.contextRunner
                 .withPropertyValues("management.opentelemetry.enabled=true", "management.logging.export.enabled=true",
+                        "management.opentelemetry.logging.export.timeout=20s",
+                        "management.opentelemetry.logging.export.max-batch-size=8",
+                        "management.opentelemetry.logging.export.max-queue-size=16",
+                        "management.opentelemetry.logging.export.schedule-delay=2s",
                         "management.opentelemetry.logging.limits.max-attributes=7",
                         "management.opentelemetry.logging.limits.max-attribute-value-length=64")
                 .run((context) -> {
+                    assertThat(context).hasSingleBean(OpenTelemetryLoggingProperties.class);
+                    OpenTelemetryLoggingProperties properties = context.getBean(OpenTelemetryLoggingProperties.class);
+                    assertThat(properties.getExport().getTimeout()).isEqualTo(Duration.ofSeconds(20));
+                    assertThat(properties.getExport().getMaxBatchSize()).isEqualTo(8);
+                    assertThat(properties.getExport().getMaxQueueSize()).isEqualTo(16);
+                    assertThat(properties.getExport().getScheduleDelay()).isEqualTo(Duration.ofSeconds(2));
+                    assertThat(context).hasSingleBean(BatchLogRecordProcessor.class);
+
                     assertThat(context).hasSingleBean(LogLimits.class);
                     LogLimits limits = context.getBean(LogLimits.class);
                     assertThat(limits.getMaxNumberOfAttributes()).isEqualTo(7);
