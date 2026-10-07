@@ -1,0 +1,15 @@
+## Human intervention needed
+
+The automated job failed in `explore/generate_tests()` while handling the reporter-requested metadata. Preserved work: https://github.com/oracle/graalvm-reachability-metadata/tree/ai%2Fkimeta%2Fhuman-intervention%2Fissue-9337-fails-native-image-run-io.jsonwebtoken-jjwt-gson-0.12.7-0cf22873
+
+The metadata repair itself succeeded: `logs/io.jsonwebtoken:jjwt-gson:0.12.7/native-image-run-fix/fixTestNativeImageRun-2026-10-07T02-05-54-427705Z.log` reports `BUILD SUCCESSFUL` and produced the `0.12.7` metadata checkpoint. The subsequent dynamic-access report failed because `build/native/nativeTestCompile/dynamic-access` was not generated. After falling back to test generation, all three iterations made only transient test edits and did not produce a verified result; metrics record 3 iterations, 0 generated LOC, and identical starting/ending commits.
+
+Please inspect:
+- `logs/io.jsonwebtoken:jjwt-gson:0.12.7/dynamic-access-report/generateDynamicAccessCoverageReport-2026-10-07T02-09-47-375627Z.log`
+- `logs/io.jsonwebtoken:jjwt-gson:0.12.7/issue-requested-metadata/pi-generation-2026-10-07T02-13-10-838808Z.log`
+- `logs/io.jsonwebtoken:jjwt-gson:0.12.7/issue-requested-metadata/pi.log`
+
+Manual next steps:
+1. Diagnose why the dynamic-access-enabled native build creates no `dynamic-access` output directory.
+2. Review and manually apply the proposed `Jjwt_gsonTest` coverage for the `Jwts.header()`, `Jwts.claims()`, `Jwts.builder()`, and `Jwts.parser()` supplier paths.
+3. Run the issue reproducer under both `current-defaults` and `future-defaults-all`, then validate the generated `0.12.7` metadata.
