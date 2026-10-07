@@ -405,8 +405,8 @@ def write_markdown(
     # with a resolved location states (§AR-code-coverage-deep-navigation.3.2).
     if sources.resolved:
         lines[root_line_index:root_line_index] = [
-            f"Library sources: `{sources.path}`; the source locations below are "
-            "relative to it.",
+            f"Library sources: `{sources.path}`; a location with a directory is "
+            "relative to it, a bare file name was not found under it.",
             "",
         ]
     # Totals, omitted counts and caveats stay in the JSON report

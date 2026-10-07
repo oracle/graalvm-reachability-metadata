@@ -772,6 +772,9 @@ states:
           f"{work_path}/local_repositories/source_context/"
           f"{group}/{artifact}/{version}/main/extracted"
       )
+      if not Path(source_root).is_dir():
+          print(f"deep-measure: no library sources at {source_root}; "
+                "prompt locations fall back to file names", file=sys.stderr)
       analyzer = [
           sys.executable, f"{work_path}/utility_scripts/code_coverage_profile_report.py",
           "--profile", profile,
