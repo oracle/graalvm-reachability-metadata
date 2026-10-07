@@ -577,7 +577,7 @@ states:
         runs over this suite at finalization and rejects both a missing header
         and any non-ASCII character, the grund `§` marker included.
       - Put nothing between that header and the `package` declaration;
-        finalization runs Spotless (§AR-code-coverage-improvement.5.2).
+        finalization runs Spotless (§AR-code-coverage-improvement.5).
       - Target meaningful public user-callable behavior with real assertions,
         not superficial coverage hits.
       - Do not weaken metadata-generation tests.
@@ -585,10 +585,11 @@ states:
         runs right after this state and decides the loop.
       - Write every test for the prompt's targets first, without running
         Gradle in between. Then, from inside the issue worktree (`worktreePath`
-        in conversion.json), run the task measurement runs:
+        in conversion.json), run the same task measurement runs:
         `./gradlew codeCoverageTest -Pcoordinates=<coordinate>`. Fix whatever
-        fails and run the suite again until it passes; delete a test that
-        cannot pass on the JVM.
+        fails and run the suite again until it passes. As a last resort, delete
+        a test method you wrote that cannot pass on the JVM; repair, never
+        delete, a failing test an earlier session left.
       - `codeCoverageTest` compiles and runs this suite alone and is the only
         Gradle task you run: no `spotlessApply`, no `javaTest` or regular suite,
         no native task (§AR-code-coverage-improvement.2). A Gradle invocation
@@ -956,14 +957,15 @@ states:
         runs over this suite at finalization and rejects both a missing header
         and any non-ASCII character, the grund `§` marker included.
       - Put nothing between that header and the `package` declaration;
-        finalization runs Spotless (§AR-code-coverage-improvement.5.2).
+        finalization runs Spotless (§AR-code-coverage-improvement.5).
       - Write every test for this session's targets first, without running
         Gradle in between. Then, from inside the issue worktree (`worktreePath`
-        in conversion.json), run the task measurement runs:
+        in conversion.json), run the same task measurement runs:
         `./gradlew codeCoverageTest -Pcoordinates=<coordinate>`. Fix whatever
-        fails and run the suite again until it passes; delete a test that
-        cannot pass on the JVM. The session is stopped after 45 minutes, so
-        leave time for that loop. §AR-code-coverage-deep-navigation.4
+        fails and run the suite again until it passes. As a last resort, delete
+        a test method you wrote that cannot pass on the JVM; repair, never
+        delete, a failing test an earlier session left. The session is stopped
+        after 45 minutes, so leave time for that loop. §AR-code-coverage-deep-navigation.4
       - `codeCoverageTest` compiles and runs this suite alone and is the only
         Gradle task you run: no `spotlessApply`, no `javaTest` or regular suite,
         no native task (§AR-code-coverage-improvement.2). A Gradle invocation
