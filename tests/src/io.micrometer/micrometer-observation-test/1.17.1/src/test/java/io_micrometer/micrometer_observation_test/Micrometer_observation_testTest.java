@@ -8,7 +8,6 @@ package io_micrometer.micrometer_observation_test;
 
 import io.micrometer.common.KeyValue;
 import io.micrometer.observation.Observation;
-import io.micrometer.observation.ObservationRegistry;
 import io.micrometer.observation.tck.InvalidObservationException;
 import io.micrometer.observation.tck.ObservationContextAssert;
 import io.micrometer.observation.tck.ObservationRegistryAssert;
