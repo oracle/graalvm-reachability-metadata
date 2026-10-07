@@ -3,6 +3,14 @@
 Rendered by Forge from the pre-push branch review of §FS-local-branch-review.
 Newest entry first; every non-approval is recorded, including one a repair later cleared.
 
+## 2026-10-07 — org.springframework.boot:spring-boot-micrometer-tracing:4.1.1 (#9723)
+
+**Stale new-library branch modifies an already-supported coordinate**
+
+The library-new-request contribution violates the one-library, one-new-tested-version shape in §root/FS-contribution-contract.2. At base commit 18ce0bc7047de60953a60859c8879de4975e19dd, metadata/org.springframework.boot/spring-boot-micrometer-tracing/index.json already records 4.1.1 as latest and tested, and all six paths changed by the branch already exist. The base also contains forge-publication.json for issue 9732, while this run is for issue 9723. The diff changes tests, metadata, and stats but adds neither an index entry nor a new tested version. Reverting those edits would leave no contribution, and changing shared publication/claim behavior is outside this coordinate, so §root/FS-contribution-contract.5.2, 5.3, and 5.5 require escalation.
+
+Infrastructure issue: https://github.com/oracle/graalvm-reachability-metadata/issues/10627 (#10627)
+
 ## 2026-10-06 — org.springframework.boot:spring-boot-micrometer-tracing:4.1.1 (#9732)
 ## 2026-10-07 — io.micrometer:micrometer-observation-test:1.17.1 (#9727)
 
