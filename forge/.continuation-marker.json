@@ -1,0 +1,76 @@
+{
+  "continueFrom": "setup",
+  "coordinate": "org.springframework:spring-context:6.0.4",
+  "failure": {
+    "operand": "org.springframework:spring-context:6.0.4",
+    "phase": "setup",
+    "step": "normal_setup()"
+  },
+  "issueNumber": 9929,
+  "label": "fails-native-image-run",
+  "libraryPreparationPreflight": {
+    "action": "no_action",
+    "agent_guidance": "",
+    "applied_setup": [],
+    "current_library": "org.springframework:spring-context:6.0.2",
+    "deterministic_setup": [],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#9929 [Automation] native-image run fails for org.springframework:spring-context:6.0.4; label=fails-native-image-run; body_chars=8015"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "33 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 2,
+    "issue_label": "fails-native-image-run",
+    "issue_number": 9929,
+    "library": "org.springframework:spring-context:6.0.4",
+    "model": "sonnet",
+    "new_version": "6.0.4",
+    "output_tokens_used": 497,
+    "risks": [
+      "The log excerpt is truncated before the run phase, so the actual native-image run failure is not visible. It may be a missing-metadata or test-level error that the repair step should diagnose from a fresh local run.",
+      "The reproducer uses the 6.0.2 test project with GVM_TCK_LV=6.0.4. Existing tests touch load-time weavers, CGLIB predefined proxies and ShadowingClassLoader, so differences in spring-context 6.0.4 internals may need metadata or test adjustments.",
+      "I did not trace the library source, so I cannot support a skip_unsupported verdict. The failure step requires a named failing operation and none is available."
+    ],
+    "status": "completed",
+    "summary": "The log excerpt shows the native image building successfully with no failing operation, and the existing 6.0.2 test project already uses the standard scaffold. It shows no sign that extra dependencies, Docker images or properties are missing."
+  },
+  "libraryUpdateRoute": null,
+  "newVersion": "6.0.4",
+  "phases": {
+    "explore": {
+      "chunkClassCount": null,
+      "chunkProcessedClassCount": 0,
+      "exhaustedClasses": [],
+      "status": "pending"
+    },
+    "finalization": {
+      "status": "pending"
+    },
+    "fix": {
+      "iteration": null,
+      "status": "pending"
+    },
+    "publication": {
+      "branch": null,
+      "coverageFollowUpIssueNumber": null,
+      "isPushed": false,
+      "publicationId": null,
+      "publicationTimestamp": null,
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": false,
+      "status": "running"
+    }
+  },
+  "preservedBranch": "ai/kimeta/human-intervention/issue-9929-fails-native-image-run-org.springframework-spring-context-6.0.4-18918875",
+  "publicationMetrics": null,
+  "schemaVersion": 1,
+  "strategyName": "library_update_pi_gpt-5.6-sol"
+}
