@@ -770,6 +770,15 @@ states:
       library_methods = Path("runtime/code-coverage/graph/methods.csv")
       if not library_methods.is_file():
           fail(6, f"the API phase left no library method list at {library_methods}")
+      # The sources preparation extracted, as api-inventory reads them; prompt
+      # locations resolve against them (§AR-code-coverage-deep-navigation.3.2).
+      source_root = (
+          f"{work_path}/local_repositories/source_context/"
+          f"{group}/{artifact}/{version}/main/extracted"
+      )
+      if not Path(source_root).is_dir():
+          print(f"deep-measure: no library sources at {source_root}; "
+                "prompt locations fall back to file names", file=sys.stderr)
       analyzer = [
           sys.executable, f"{work_path}/utility_scripts/code_coverage_profile_report.py",
           "--profile", profile,
@@ -777,6 +786,7 @@ states:
           "--api-inventory", "runtime/code-coverage/api-inventory/api-inventory.json",
           "--jacoco-xml", discovery / f"jacoco-deep-{iteration}.xml",
           "--library-methods", library_methods,
+          "--source-root", source_root,
           "--coordinate", coordinate,
           "--iteration", iteration,
           "--output-dir", discovery,
