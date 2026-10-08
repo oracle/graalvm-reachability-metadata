@@ -84,8 +84,7 @@ public class Spring_boot_batchTest {
             assertThat(execution.getExitStatus()).isEqualTo(ExitStatus.COMPLETED);
             assertThat(context.getBean(JobExecutionExitCodeGenerator.class).getExitCode())
                     .isEqualTo(BatchStatus.COMPLETED.ordinal());
-        }
-        finally {
+        } finally {
             context.close();
         }
     }
@@ -111,8 +110,7 @@ public class Spring_boot_batchTest {
                     .getLastJobExecution("registeredJob", new JobParameters());
             assertThat(execution).isNotNull();
             assertThat(execution.getStatus()).isEqualTo(BatchStatus.COMPLETED);
-        }
-        finally {
+        } finally {
             context.close();
         }
     }
@@ -145,8 +143,7 @@ public class Spring_boot_batchTest {
 
             assertThat(execution.getStatus()).isEqualTo(BatchStatus.COMPLETED);
             assertThat(capture.stoppedObservations).contains("spring.batch.job", "spring.batch.step");
-        }
-        finally {
+        } finally {
             context.close();
         }
     }
