@@ -30,6 +30,18 @@ public class Graphql_dgs_reactiveTest {
         assertThat(executor.lastQuery).isEqualTo(query)
     }
 
+    @Test
+    public fun classConvenienceMethodConvertsJsonPathObjects() {
+        val executor: RecordingExecutor = RecordingExecutor()
+        val query: String = "{ books { title pages } }"
+
+        val title: String? = executor
+            .executeAndExtractJsonPathAsObject(query, "$.books[0].title", String::class.java)
+            .block()
+
+        assertThat(title).isEqualTo("Dune")
+    }
+
     private class RecordingExecutor : DgsReactiveQueryExecutor {
         var lastQuery: String? = null
         var lastVariables: Map<String, Any>? = null
