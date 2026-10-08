@@ -27,6 +27,7 @@ import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+import org.springframework.web.bind.annotation.RequestHeader
 import java.nio.charset.StandardCharsets
 import java.security.MessageDigest
 
@@ -54,6 +55,17 @@ public class Graphql_dgs_spring_graphqlServletTest {
                 ),
         ).andExpect(status().isOk)
             .andExpect(jsonPath("$.data.greeting").value("Hello, Ada"))
+    }
+
+    @Test
+    public fun servletResolvesRequestHeaderArgument() {
+        mockMvc.perform(
+            post("/graphql")
+                .header("X-Request-ID", "request-123")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("""{"query": "{ headerValue }"}"""),
+        ).andExpect(status().isOk)
+            .andExpect(jsonPath("$.data.headerValue").value("request-123"))
     }
 }
 
@@ -155,6 +167,7 @@ public class DgsSchemaTestConfiguration {
             """
             type Query {
                 greeting(name: String!): String!
+                headerValue: String!
             }
             """.trimIndent(),
         )
@@ -164,6 +177,9 @@ public class DgsSchemaTestConfiguration {
 public class GreetingDataFetcher {
     @DgsQuery
     public fun greeting(@InputArgument("name") name: String): String = "Hello, $name"
+
+    @DgsQuery
+    public fun headerValue(@RequestHeader("X-Request-ID") requestId: String): String = requestId
 }
 
 @Configuration(proxyBeanMethods = false)
