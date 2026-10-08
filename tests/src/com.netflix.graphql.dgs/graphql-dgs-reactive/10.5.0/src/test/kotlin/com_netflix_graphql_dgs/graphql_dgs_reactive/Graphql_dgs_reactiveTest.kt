@@ -19,6 +19,30 @@ import reactor.core.publisher.Mono
 
 public class Graphql_dgs_reactiveTest {
     @Test
+    public fun executeConvenienceMethodPassesVariablesAndOperationName() {
+        val executor: RecordingExecutor = RecordingExecutor()
+        val query: String = "query Books { books { title } }"
+        val variables: Map<String, Any> = mapOf("language" to "en")
+
+        val result: ExecutionResult? = executor.execute(query, variables, "Books").block()
+
+        assertThat(result?.getData<Any>()).isEqualTo(
+            mapOf(
+                "book" to mapOf("title" to "Dune"),
+                "books" to listOf(
+                    mapOf("title" to "Dune", "pages" to 412),
+                    mapOf("title" to "Foundation", "pages" to 255),
+                ),
+            ),
+        )
+        assertThat(executor.lastQuery).isEqualTo(query)
+        assertThat(executor.lastVariables).isEqualTo(variables)
+        assertThat(executor.lastOperationName).isEqualTo("Books")
+        assertThat(executor.lastExtensions).isNull()
+        assertThat(executor.lastHeaders).isNull()
+    }
+
+    @Test
     public fun documentContextConvenienceMethodExtractsNestedValues() {
         val executor: RecordingExecutor = RecordingExecutor()
         val query: String = "{ books { title pages } }"
@@ -51,11 +75,11 @@ public class Graphql_dgs_reactiveTest {
 
         override fun execute(
             query: String,
-            variables: MutableMap<String, Any>,
-            extensions: MutableMap<String, Any>,
-            headers: HttpHeaders,
-            operationName: String,
-            serverRequest: ServerRequest,
+            variables: MutableMap<String, Any>?,
+            extensions: MutableMap<String, Any>?,
+            headers: HttpHeaders?,
+            operationName: String?,
+            serverRequest: ServerRequest?,
         ): Mono<ExecutionResult> {
             lastQuery = query
             lastVariables = variables
