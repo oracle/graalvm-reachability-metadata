@@ -7,6 +7,7 @@
 package com_netflix_graphql_dgs.graphql_dgs_client;
 
 import com.netflix.graphql.dgs.client.GraphQLClient;
+import com.netflix.graphql.dgs.client.GraphQLClientException;
 import com.netflix.graphql.dgs.client.GraphQLRequestOptions;
 import com.netflix.graphql.dgs.client.GraphQLResponse;
 import com.netflix.graphql.dgs.client.HttpResponse;
@@ -22,6 +23,7 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class Graphql_dgs_clientTest {
     @Test
@@ -90,6 +92,19 @@ public class Graphql_dgs_clientTest {
                 .contains("name")
                 .contains("Ada")
                 .contains("query Greeting"));
+    }
+
+    @Test
+    void customClientRejectsHttpErrorsWithTransportDetails() {
+        GraphQLClient client = GraphQLClient.createCustom(
+                "https://graphql.example.test",
+                (url, headers, body) -> new HttpResponse(503, "service unavailable"));
+
+        assertThatThrownBy(() -> client.executeQuery("{ greeting }"))
+                .isInstanceOf(GraphQLClientException.class)
+                .hasMessageContaining("status code 503")
+                .hasMessageContaining("service unavailable")
+                .hasMessageContaining("{ greeting }");
     }
 
     @Test
