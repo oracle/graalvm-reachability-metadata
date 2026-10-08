@@ -3,6 +3,12 @@
 Rendered by Forge from the pre-push branch review of §FS-local-branch-review.
 Newest entry first; every non-approval is recorded, including one a repair later cleared.
 
+## 2026-10-08 — com.netflix.graphql.dgs:graphql-dgs-spring-graphql:10.5.0 (#8973)
+
+**Version-pinned companion artifact in generated test project**
+
+The test project's `build.gradle` pinned `com.netflix.graphql.dgs:graphql-dgs:10.5.0`. That tied the suite's companion DGS module to the initial tested release instead of allowing the shared test to follow later tested versions, violating the version-agnostic test requirement in §FS-test-contract.2.5 and Review Signal #4.
+
 ## 2026-10-08 — org.springframework.batch:spring-batch-core:6.0.4 (#9286)
 
 **New-library contribution modifies another coordinate**
