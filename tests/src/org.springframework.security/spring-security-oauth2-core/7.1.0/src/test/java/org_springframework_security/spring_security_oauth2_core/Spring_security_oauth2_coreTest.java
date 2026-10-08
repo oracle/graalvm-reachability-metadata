@@ -9,6 +9,7 @@ package org_springframework_security.spring_security_oauth2_core;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -28,6 +29,7 @@ import org.springframework.security.oauth2.core.endpoint.DefaultOAuth2AccessToke
 import org.springframework.security.oauth2.core.endpoint.OAuth2AccessTokenResponse;
 import org.springframework.security.oauth2.core.endpoint.OAuth2AuthorizationRequest;
 import org.springframework.security.oauth2.core.endpoint.OAuth2AuthorizationResponse;
+import org.springframework.security.oauth2.core.endpoint.OAuth2DeviceAuthorizationResponse;
 import org.springframework.security.oauth2.core.oidc.OidcIdToken;
 import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
 import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
@@ -61,6 +63,24 @@ public class Spring_security_oauth2_coreTest {
         assertThat(ClientAuthenticationMethod.valueOf("client_secret_basic"))
                 .isEqualTo(ClientAuthenticationMethod.CLIENT_SECRET_BASIC);
         assertThat(new ClientAuthenticationMethod("custom_method").getValue()).isEqualTo("custom_method");
+    }
+
+    @Test
+    void deviceAuthorizationResponseBuilderPreservesDeviceGrantParameters() {
+        OAuth2DeviceAuthorizationResponse response = OAuth2DeviceAuthorizationResponse.with("device-code",
+                "user-code").verificationUri("https://issuer.example.test/device").verificationUriComplete(
+                        "https://issuer.example.test/device?user_code=user-code").expiresIn(600).interval(5)
+                .additionalParameters(Map.of("custom_parameter", "custom-value")).build();
+
+        assertThat(response.getDeviceCode().getTokenValue()).isEqualTo("device-code");
+        assertThat(response.getUserCode().getTokenValue()).isEqualTo("user-code");
+        assertThat(response.getVerificationUri()).isEqualTo("https://issuer.example.test/device");
+        assertThat(response.getVerificationUriComplete())
+                .isEqualTo("https://issuer.example.test/device?user_code=user-code");
+        assertThat(ChronoUnit.SECONDS.between(response.getDeviceCode().getIssuedAt(),
+                response.getDeviceCode().getExpiresAt())).isEqualTo(600);
+        assertThat(response.getInterval()).isEqualTo(5);
+        assertThat(response.getAdditionalParameters()).containsEntry("custom_parameter", "custom-value");
     }
 
     @Test
