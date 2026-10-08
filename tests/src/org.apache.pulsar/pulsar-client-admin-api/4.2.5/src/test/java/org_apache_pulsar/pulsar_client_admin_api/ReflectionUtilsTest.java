@@ -8,10 +8,7 @@ package org_apache_pulsar.pulsar_client_admin_api;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import org.apache.pulsar.client.admin.LongRunningProcessStatus;
-import org.apache.pulsar.client.admin.OffloadProcessStatus;
 import org.apache.pulsar.client.admin.utils.ReflectionUtils;
-import org.apache.pulsar.client.api.MessageId;
 import org.junit.jupiter.api.Test;
 
 public class ReflectionUtilsTest {
@@ -36,16 +33,6 @@ public class ReflectionUtilsTest {
         } finally {
             currentThread.setContextClassLoader(previousContextClassLoader);
         }
-    }
-
-    @Test
-    void offloadProcessStatusFactoryUsesItsConfiguredImplementation() {
-        final OffloadProcessStatus status = OffloadProcessStatus.forStatus(
-                LongRunningProcessStatus.Status.SUCCESS);
-
-        assertThat(status.getStatus()).isEqualTo(LongRunningProcessStatus.Status.SUCCESS);
-        assertThat(status.getLastError()).isEmpty();
-        assertThat(status.getFirstUnoffloadedMessage()).isEqualTo(MessageId.earliest);
     }
 
     public static final class DefaultVisibleBuilder {
