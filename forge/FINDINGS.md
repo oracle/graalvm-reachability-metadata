@@ -3,6 +3,12 @@
 Rendered by Forge from the pre-push branch review of §FS-local-branch-review.
 Newest entry first; every non-approval is recorded, including one a repair later cleared.
 
+## 2026-10-08 — com.netflix.graphql.dgs:graphql-dgs:10.5.0 (#8967)
+
+**Test bypasses Kotlin internal visibility with @file:Suppress(INVISIBLE_MEMBER) to call a library-internal method**
+
+FS-test-contract.2.2 and FS-contribution-contract.4.6 (visibility bypass): DefaultDgsDataLoaderProviderTest.kt carried @file:Suppress("INVISIBLE_REFERENCE", "INVISIBLE_MEMBER") so that it could call DefaultDgsDataLoaderProvider.findDataLoaders(). In graphql-dgs 10.5.0 that method is Kotlin `internal` (annotated @PostConstruct), so no consumer can call it directly. The covered dynamic-access call sites (addDataLoaderComponents/addDataLoaderFields reflection) were therefore reached through access nobody ships. Evidence: sources jar DefaultDgsDataLoaderProvider.kt line 106-107 `@PostConstruct internal fun findDataLoaders()`.
+
 ## 2026-10-08 — com.netflix.graphql.dgs:graphql-dgs-spring-graphql:10.5.0 (#8973)
 
 **Version-pinned companion artifact in generated test project**
