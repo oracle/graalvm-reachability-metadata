@@ -30,6 +30,15 @@ public class JdbcJobExecutionDaoTest {
         try {
             JdbcTemplate jdbcTemplate = new JdbcTemplate(database);
             jdbcTemplate.update(
+                    "INSERT INTO BATCH_JOB_INSTANCE (JOB_INSTANCE_ID, VERSION, JOB_NAME, JOB_KEY) "
+                            + "VALUES (?, ?, ?, ?)",
+                    11L, 0L, "importJob", "importJobKey");
+            jdbcTemplate.update(
+                    "INSERT INTO BATCH_JOB_EXECUTION "
+                            + "(JOB_EXECUTION_ID, VERSION, JOB_INSTANCE_ID, CREATE_TIME) "
+                            + "VALUES (?, ?, ?, CURRENT_TIMESTAMP)",
+                    31L, 0L, 11L);
+            jdbcTemplate.update(
                     "INSERT INTO BATCH_JOB_EXECUTION_PARAMS "
                             + "(JOB_EXECUTION_ID, PARAMETER_NAME, PARAMETER_TYPE, PARAMETER_VALUE, IDENTIFYING) "
                             + "VALUES (?, ?, ?, ?, ?)",

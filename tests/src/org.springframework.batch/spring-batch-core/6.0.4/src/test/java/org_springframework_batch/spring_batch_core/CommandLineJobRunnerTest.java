@@ -40,7 +40,8 @@ public class CommandLineJobRunnerTest {
         TASKLET_RUNS.set(0);
         CommandLineJobRunner.presetSystemExiter(systemExiter);
 
-        CommandLineJobRunner.main(new String[] {BatchConfiguration.class.getName(), "sampleJob"});
+        CommandLineJobRunner.main(
+                new String[] {BatchConfiguration.class.getName(), "sampleJob", "request=coverage"});
 
         assertEquals(0, systemExiter.exitCode);
         assertEquals(1, TASKLET_RUNS.get());
