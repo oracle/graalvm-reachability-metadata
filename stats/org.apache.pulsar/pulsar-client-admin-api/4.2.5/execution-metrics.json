@@ -1,0 +1,90 @@
+{
+  "add_new_library_support:2026-10-08": {
+    "timestamp": "2026-10-08T12:36:43.827579Z",
+    "library": "org.apache.pulsar:pulsar-client-admin-api:4.2.5",
+    "starting_commit": "33a8afae1fafed1c133679726c8daaad297d330d",
+    "ending_commit": "18c5314c354a59fdff9d6ff7f2c36db97f3d3a67",
+    "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-luna",
+    "agent": "pi",
+    "model": "gpt-5.6-luna",
+    "status": "success",
+    "stats": {
+      "version": "4.2.5",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 8,
+            "totalCalls": 8
+          }
+        },
+        "coverageRatio": 1.0,
+        "coveredCalls": 8,
+        "totalCalls": 8
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 143,
+          "missed": 4343,
+          "ratio": 0.031877,
+          "total": 4486
+        },
+        "line": {
+          "covered": 27,
+          "missed": 965,
+          "ratio": 0.027218,
+          "total": 992
+        },
+        "method": {
+          "covered": 15,
+          "missed": 370,
+          "ratio": 0.038961,
+          "total": 385
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "no_action",
+      "issue_number": 10644,
+      "issue_label": "library-new-request",
+      "library": "org.apache.pulsar:pulsar-client-admin-api:4.2.5",
+      "summary": "Pure API module; only dynamic behavior is a reflection-based admin-builder factory (DefaultImplementation/ReflectionUtils), same pattern already proven for pulsar-client-api. A prior full run on v4.2.1 (preserved branch for issue #4823) reached 100% dynamic-access coverage and 4/4 native tests with only the standard testImplementation + assertj-core scaffold — no Docker image, dependency, or env/system property was needed. 4.2.5 jar is structurally identical to 4.2.1.",
+      "deterministic_setup": [],
+      "agent_guidance": "",
+      "risks": [
+        "The prior 4.2.1 run needed several native-image trace/repair cycles before reflection registration converged (cycle 6 of 6) — expect the same iterative repair loop here, not a sign of missing setup.",
+        "If PulsarAdmin.builder() default-implementation lookup pulls in a different concrete class at runtime than in 4.2.1, re-verify reflection metadata for the new constructor; otherwise behavior should match."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#10644 Support for org.apache.pulsar:pulsar-client-admin-api:4.2.5; label=library-new-request; body_chars=0"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "sonnet",
+      "input_tokens_used": 24,
+      "output_tokens_used": 9659
+    },
+    "metrics": {
+      "input_tokens_used": 213280,
+      "cached_input_tokens_used": 2957312,
+      "output_tokens_used": 22731,
+      "iterations": 2,
+      "cost_usd": 0.6454,
+      "generated_loc": 94,
+      "tested_library_loc": 27,
+      "metadata_entries": 22,
+      "test_only_metadata_entries": 6,
+      "code_coverage_percent": 2.72
+    },
+    "artifacts": {
+      "metadata_file": "metadata/org.apache.pulsar/pulsar-client-admin-api/4.2.5/reachability-metadata.json"
+    }
+  }
+}
