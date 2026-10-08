@@ -135,6 +135,19 @@ public class Graphql_error_typesTest {
     }
 
     @Test
+    void serializesUnauthenticatedErrorsWithoutOptionalGraphQlFields() {
+        TypedGraphQLError error = TypedGraphQLError.newBuilder()
+                .message("Authentication is required")
+                .errorType(ErrorType.UNAUTHENTICATED)
+                .build();
+
+        assertThat(error.toSpecification())
+                .containsExactlyInAnyOrderEntriesOf(Map.of(
+                        "message", "Authentication is required",
+                        "extensions", Map.of("errorType", "UNAUTHENTICATED")));
+    }
+
+    @Test
     void directConstructionAndGraphQlEqualityPreserveErrorData() {
         List<SourceLocation> locations = List.of(new SourceLocation(2, 4));
         List<Object> path = List.of("viewer", "name");
