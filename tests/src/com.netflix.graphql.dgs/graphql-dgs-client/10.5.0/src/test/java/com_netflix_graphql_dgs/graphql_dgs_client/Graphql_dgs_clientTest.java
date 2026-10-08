@@ -7,12 +7,17 @@
 package com_netflix_graphql_dgs.graphql_dgs_client;
 
 import com.netflix.graphql.dgs.client.GraphQLClient;
+import com.netflix.graphql.dgs.client.GraphQLRequestOptions;
 import com.netflix.graphql.dgs.client.GraphQLResponse;
 import com.netflix.graphql.dgs.client.HttpResponse;
 import com.netflix.graphql.dgs.client.RequestDetails;
+import graphql.GraphQLContext;
+import graphql.schema.Coercing;
 import org.junit.jupiter.api.Test;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -87,9 +92,43 @@ public class Graphql_dgs_clientTest {
                 .contains("query Greeting"));
     }
 
+    @Test
+    void customScalarOptionsSerializeVariablesAndDeserializeResponseValues() {
+        Coercing<Money, String> scalar = new Coercing<>() {
+            @Override
+            public String serialize(Object input, GraphQLContext context, Locale locale) {
+                return "serialized:" + ((Money) input).value();
+            }
+
+            @Override
+            public Money parseValue(Object input, GraphQLContext context, Locale locale) {
+                return new Money("parsed:" + input);
+            }
+        };
+        Map<Class<?>, Coercing<?, ?>> scalars = new HashMap<>();
+        scalars.put(Money.class, scalar);
+        GraphQLRequestOptions options = new GraphQLRequestOptions(scalars);
+        AtomicReference<String> requestBody = new AtomicReference<>();
+        GraphQLClient client = GraphQLClient.createCustom("https://graphql.example.test", (url, headers, body) -> {
+            requestBody.set(body);
+            return new HttpResponse(200, "{\"data\":{\"amount\":\"42\"}}");
+        }, options);
+
+        GraphQLResponse response = client.executeQuery(
+                "query Amount($amount: Money!) { amount }",
+                Map.of("amount", new Money("42")),
+                "Amount");
+
+        assertThat(response.extractValueAsObject("amount", Money.class)).isEqualTo(new Money("parsed:42"));
+        assertThat(requestBody).hasValueSatisfying(body -> assertThat(body).contains("serialized:42"));
+    }
+
     public record Data(Viewer viewer, List<Integer> numbers, RequestDetails gatewayRequestDetails) {
     }
 
     public record Viewer(String id, String name) {
+    }
+
+    public record Money(String value) {
     }
 }
