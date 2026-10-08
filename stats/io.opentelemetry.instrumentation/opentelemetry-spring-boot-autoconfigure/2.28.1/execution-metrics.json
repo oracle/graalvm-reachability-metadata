@@ -1,0 +1,98 @@
+{
+  "add_new_library_support:2026-10-08": {
+    "timestamp": "2026-10-08T20:40:48.127032Z",
+    "library": "io.opentelemetry.instrumentation:opentelemetry-spring-boot-autoconfigure:2.28.1",
+    "starting_commit": "f6043d3dbc9609cdcf01df524b2eb54610245f99",
+    "ending_commit": "b8de3bb0a57fb3fb6ce0801453657546b54fb095",
+    "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-luna",
+    "agent": "pi",
+    "model": "gpt-5.6-luna",
+    "status": "success",
+    "stats": {
+      "version": "2.28.1",
+      "dynamicAccess": {
+        "breakdown": {},
+        "coverageRatio": 1.0,
+        "coveredCalls": 0,
+        "totalCalls": 0
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 374,
+          "missed": 12190,
+          "ratio": 0.029768,
+          "total": 12564
+        },
+        "line": {
+          "covered": 107,
+          "missed": 3280,
+          "ratio": 0.031591,
+          "total": 3387
+        },
+        "method": {
+          "covered": 36,
+          "missed": 1070,
+          "ratio": 0.03255,
+          "total": 1106
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "advisory_preparation",
+      "issue_number": 8548,
+      "issue_label": "library-new-request",
+      "library": "io.opentelemetry.instrumentation:opentelemetry-spring-boot-autoconfigure:2.28.1",
+      "summary": "opentelemetry-spring-boot-autoconfigure declares spring-boot-autoconfigure (and the rest of Spring Boot) as compileOnly; this is invisible to Gradle Module Metadata, so the generated scaffold cannot auto-resolve it. Without it, the @AutoConfiguration entry points cannot load, so coverage would be near zero. This mirrors the existing pattern in sibling modules (opentelemetry-spring-webmvc-5.3, -spring-web-3.1, -spring-webflux-5.3, -spring-kafka-2.7, -micrometer-1.5), each of which had its compileOnly peer framework added manually as testImplementation. No Docker image is required: the conditional sub-configurations (Kafka, Mongo, JDBC, R2DBC, Micrometer, WebMVC/WebFlux) only check for a class on the classpath, not a live connection, and upstream's own tests back the JDBC/R2DBC paths with in-memory H2 rather than containers.",
+      "deterministic_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "org.springframework.boot:spring-boot-starter-test:3.2.4",
+          "scope": "testImplementation",
+          "reason": "spring-boot-autoconfigure (and spring-context/spring-test) are compileOnly dependencies of the library under test and are not published in its Gradle Module Metadata or POM, so the generated scaffold has no way to pull them in automatically. Without Spring Boot on the test classpath, OpenTelemetryAu\n...[truncated]"
+        }
+      ],
+      "agent_guidance": "Use the standard Spring Boot autoconfigure test idiom (ApplicationContextRunner / AutoConfigurations.of(OpenTelemetryAutoConfiguration.class, ...)) to exercise the conditional configuration classes without needing a full running application. The default OTLP exporter properties (otel.exporter.otlp.endpoint, protocol http/protobuf) are unset but still active by default, so a fully-wired OpenTelemetry bean may attempt background network export; set otel.sdk.disabled=true or otel.traces.exporter=none / otel.metrics.exporter=none / otel.logs.exporter=none as test properties to keep tests hermetic and avoid noisy export attempts. The nested auto-configurations for Kafka, Mongo, JDBC, R2DBC, Micrometer, WebMVC and WebFlux are each gated behind @ConditionalOnClass for their respective peer library (e.g. org.springframework.kafka:spring-kafka, io.micrometer:micrometer-core, org.springframework:spring-webmvc) — only add one of those as an additional test dependency if the test suite intends to exercise that specific integration; otherwise Spring Boot's conditional evaluation will harmlessly skip it.",
+      "risks": [
+        "The jar also ships separate 'SpringBoot4'-suffixed auto-configuration classes (Kafka producer customizer, Mongo client, JDBC, Micrometer bridge, WebClient/RestClient) that only become eligible with Spring Boot 4.x on the classpath. Pairing with Spring Boot 3.2.4 as recommended will not exercise those classes; a follow-up pass pairing with Spring Boot 4.x would be needed to cover them, and may also change which of the non-suffixed classes remain active.",
+        "Upstream's own CI validates the shared/default code paths against Spring Boot 2.7.18 specifically (their compileOnly/testLibrary pin); 3.2.4 is a reasonable, currently-supported choice but has not been verified upstream bit-for-bit against every conditional branch."
+      ],
+      "applied_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "org.springframework.boot:spring-boot-starter-test:3.2.4",
+          "result": "applied",
+          "target": "tests/src/io.opentelemetry.instrumentation/opentelemetry-spring-boot-autoconfigure/2.28.1/build.gradle"
+        }
+      ],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#8548 Support for io.opentelemetry.instrumentation:opentelemetry-spring-boot-autoconfigure:2.28.1; label=library-new-request; body_chars=0"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "sonnet",
+      "input_tokens_used": 44,
+      "output_tokens_used": 27755
+    },
+    "metrics": {
+      "input_tokens_used": 448087,
+      "cached_input_tokens_used": 8620032,
+      "output_tokens_used": 45421,
+      "iterations": 4,
+      "cost_usd": 1.5826,
+      "generated_loc": 95,
+      "tested_library_loc": 107,
+      "metadata_entries": 9,
+      "test_only_metadata_entries": 36,
+      "code_coverage_percent": 3.16
+    },
+    "artifacts": {
+      "metadata_file": "metadata/io.opentelemetry.instrumentation/opentelemetry-spring-boot-autoconfigure/2.28.1/reachability-metadata.json"
+    }
+  }
+}
