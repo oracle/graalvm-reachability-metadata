@@ -34,19 +34,29 @@ import java.util.concurrent.atomic.AtomicReference;
 import jakarta.servlet.AsyncContext;
 import jakarta.servlet.Filter;
 import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.junit.jupiter.api.Test;
+import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.core.Ordered;
 import org.springframework.mock.web.MockFilterConfig;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
+import org.springframework.mock.web.MockServletConfig;
 import org.springframework.mock.web.MockServletContext;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.context.support.GenericWebApplicationContext;
+import org.springframework.web.servlet.DispatcherServlet;
+import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 
 public class Opentelemetry_spring_webmvc_6_0Test {
+    private static final AttributeKey<String> HTTP_ROUTE = AttributeKey.stringKey("http.route");
     private static final AttributeKey<String> REQUEST_URI =
             AttributeKey.stringKey("test.request_uri");
     private static final AttributeKey<Long> RESPONSE_STATUS =
@@ -180,6 +190,43 @@ public class Opentelemetry_spring_webmvc_6_0Test {
     }
 
     @Test
+    void createServletFilterAddsMatchingSpringControllerRouteToServerSpan() throws Exception {
+        MockServletContext servletContext = new MockServletContext();
+        try (TelemetryFixture fixture = TelemetryFixture.create();
+                GenericWebApplicationContext applicationContext =
+                        createRouteApplicationContext(servletContext)) {
+            DispatcherServlet dispatcherServlet =
+                    applicationContext.getBean(DispatcherServlet.class);
+            dispatcherServlet.init(new MockServletConfig(servletContext, "dispatcher"));
+            servletContext.setAttribute(
+                    WebApplicationContext.ROOT_WEB_APPLICATION_CONTEXT_ATTRIBUTE,
+                    applicationContext);
+
+            Filter filter =
+                    SpringWebMvcTelemetry.create(fixture.openTelemetry()).createServletFilter();
+            try {
+                init(filter, servletContext);
+                applicationContext.publishEvent(new ContextRefreshedEvent(applicationContext));
+
+                MockHttpServletRequest request =
+                        new MockHttpServletRequest("GET", "/shop/orders/42");
+                request.setContextPath("/shop");
+                request.setServletPath("/orders/42");
+                request.setServerName("example.test");
+                MockHttpServletResponse response = new MockHttpServletResponse();
+
+                filter.doFilter(request, response, (chainRequest, chainResponse) -> {});
+            } finally {
+                filter.destroy();
+                dispatcherServlet.destroy();
+            }
+
+            SpanData span = onlyFinishedSpan(fixture);
+            assertThat(span.getAttributes().get(HTTP_ROUTE)).isEqualTo("/shop/orders/{id}");
+        }
+    }
+
+    @Test
     void createServletFilterReturnsOrderedFilterWithNoopOpenTelemetry() throws Exception {
         Filter filter = SpringWebMvcTelemetry.create(OpenTelemetry.noop()).createServletFilter();
         init(filter);
@@ -198,6 +245,25 @@ public class Opentelemetry_spring_webmvc_6_0Test {
         filter.init(new MockFilterConfig(new MockServletContext(), "otelSpringWebMvc"));
     }
 
+    private static void init(Filter filter, ServletContext servletContext) throws ServletException {
+        filter.init(new MockFilterConfig(servletContext, "otelSpringWebMvc"));
+    }
+
+    private static GenericWebApplicationContext createRouteApplicationContext(
+            ServletContext servletContext) {
+        GenericWebApplicationContext applicationContext =
+                new GenericWebApplicationContext();
+        applicationContext.setServletContext(servletContext);
+        applicationContext.registerBean(RouteController.class);
+        applicationContext.registerBean(RequestMappingHandlerMapping.class);
+        applicationContext.registerBean(
+                "dispatcherServlet",
+                DispatcherServlet.class,
+                () -> new DispatcherServlet(applicationContext));
+        applicationContext.refresh();
+        return applicationContext;
+    }
+
     private static FilterChain throwingChain(RuntimeException failure) {
         return new FilterChain() {
             @Override
@@ -212,6 +278,12 @@ public class Opentelemetry_spring_webmvc_6_0Test {
         List<SpanData> spans = fixture.spanExporter().getFinishedSpanItems();
         assertThat(spans).hasSize(1);
         return spans.get(0);
+    }
+
+    @RestController
+    private static final class RouteController {
+        @GetMapping("/orders/{id}")
+        public void order() {}
     }
 
     private static final class RequestResponseAttributesExtractor
