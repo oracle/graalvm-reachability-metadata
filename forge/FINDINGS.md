@@ -3,6 +3,12 @@
 Rendered by Forge from the pre-push branch review of §FS-local-branch-review.
 Newest entry first; every non-approval is recorded, including one a repair later cleared.
 
+## 2026-10-08 — org.eclipse.jetty:jetty-http:10.0.0 (#9376)
+
+**Pre-push review unavailable**
+
+Forge could not obtain a readable pre-push review verdict. This records a review availability problem, not a reviewer finding against the branch.
+
 ## 2026-10-08 — com.netflix.graphql.dgs:graphql-dgs-spring-graphql:10.5.0 (#8973)
 
 **Version-pinned companion artifact in generated test project**
