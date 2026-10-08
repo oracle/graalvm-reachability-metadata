@@ -3,6 +3,11 @@
 Rendered by Forge from the pre-push branch review of §FS-local-branch-review.
 Newest entry first; every non-approval is recorded, including one a repair later cleared.
 
+## 2026-10-08 — org.springframework.batch:spring-batch-core:6.0.4 (#9286)
+
+**New-library contribution modifies another coordinate**
+
+§FS-contribution-contract.2 limits this contribution to org.springframework.batch:spring-batch-core:6.0.4 and its supporting files, but the diff modifies metadata/org.hsqldb/hsqldb/2.7.3/reachability-metadata.json. The local review evidence independently flags that same path in repo_fix_paths and requires human intervention. I checked whether this could be repaired within the Spring Batch file set, but the change belongs to the HSQLDB dependency coordinate; removing, relocating, or landing it requires an edit or separate contribution for another coordinate. Under §FS-contribution-contract.5.2 and §FS-contribution-contract.5.5, a maintainer must split or land the HSQLDB metadata update separately, then rebase or regenerate this contribution.
 ## 2026-10-08 — org.springframework.boot:spring-boot-resttestclient:4.1.1 (#9713)
 
 **Supporting dependency pins the target library version**
