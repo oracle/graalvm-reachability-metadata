@@ -9,13 +9,23 @@ plugins {
 }
 
 String libraryVersion = tck.testedLibraryVersion.get()
+String javaHome = System.getenv("JAVA_HOME")
 
 dependencies {
     testImplementation "com.opencsv:opencsv:$libraryVersion"
     testImplementation 'org.assertj:assertj-core:3.22.0'
 }
 
+tasks.named("nativeTest") {
+    runtimeArgs.add("-Djava.home=${javaHome}")
+}
+
 graalvmNative {
+    binaries {
+        test {
+            runtimeArgs("-Djava.home=${javaHome}")
+        }
+    }
     agent {
         defaultMode = "conditional"
         modes {
