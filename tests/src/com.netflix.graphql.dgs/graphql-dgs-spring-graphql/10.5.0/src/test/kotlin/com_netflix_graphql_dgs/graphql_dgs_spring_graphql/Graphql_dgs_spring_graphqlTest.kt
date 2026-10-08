@@ -27,6 +27,8 @@ import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+import java.nio.charset.StandardCharsets
+import java.security.MessageDigest
 
 @SpringBootTest(
     classes = [ServletTestApplication::class],
@@ -84,6 +86,67 @@ public class Graphql_dgs_spring_graphqlReactiveTest {
     }
 }
 
+@SpringBootTest(
+    classes = [PersistedQueryTestApplication::class],
+    webEnvironment = SpringBootTest.WebEnvironment.MOCK,
+    properties = ["dgs.graphql.apq.enabled=true"],
+)
+@AutoConfigureMockMvc
+public class Graphql_dgs_spring_graphqlPersistedQueryTest {
+    @Autowired
+    private lateinit var mockMvc: MockMvc
+
+    @Test
+    public fun persistedQueryCanBeReusedWithoutSendingQueryText() {
+        val query: String = "{__typename}"
+        val hash: String = sha256(query)
+        val extensions: String =
+            """
+            "extensions": {
+              "persistedQuery": {
+                "version": 1,
+                "sha256Hash": "$hash"
+              }
+            }
+            """.trimIndent()
+
+        mockMvc.perform(
+            post("/graphql")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(
+                    """
+                    {
+                      "query": "$query",
+                      $extensions
+                    }
+                    """.trimIndent(),
+                ),
+        ).andExpect(status().isOk)
+            .andExpect(jsonPath("$.data.__typename").value("Query"))
+
+        mockMvc.perform(
+            post("/graphql")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(
+                    """
+                    {
+                      $extensions
+                    }
+                    """.trimIndent(),
+                ),
+        ).andExpect(status().isOk)
+            .andExpect(jsonPath("$.data.__typename").value("Query"))
+    }
+
+    private fun sha256(value: String): String {
+        val digest: ByteArray = MessageDigest.getInstance("SHA-256")
+            .digest(value.toByteArray(StandardCharsets.UTF_8))
+        return digest.joinToString(separator = "") { byte: Byte ->
+            (byte.toInt() and 0xff).toString(16).padStart(2, '0')
+        }
+    }
+}
+
 @TestConfiguration(proxyBeanMethods = false)
 public class DgsSchemaTestConfiguration {
     @Bean
@@ -112,3 +175,8 @@ public class ServletTestApplication
 @EnableAutoConfiguration
 @Import(DgsSchemaTestConfiguration::class, GreetingDataFetcher::class)
 public class ReactiveTestApplication
+
+@Configuration(proxyBeanMethods = false)
+@EnableAutoConfiguration
+@Import(DgsSchemaTestConfiguration::class, GreetingDataFetcher::class)
+public class PersistedQueryTestApplication
