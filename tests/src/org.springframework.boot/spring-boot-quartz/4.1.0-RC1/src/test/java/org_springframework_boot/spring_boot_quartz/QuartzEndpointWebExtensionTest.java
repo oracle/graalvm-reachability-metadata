@@ -110,8 +110,7 @@ public class QuartzEndpointWebExtensionTest {
                     JOB_KEY.getName(), "running");
             assertThat(triggerResponse.getStatus()).isEqualTo(WebEndpointResponse.STATUS_OK);
             assertThat(triggerResponse.getBody()).isInstanceOf(QuartzJobTriggerDescriptor.class);
-        }
-        finally {
+        } finally {
             scheduler.shutdown(true);
         }
     }

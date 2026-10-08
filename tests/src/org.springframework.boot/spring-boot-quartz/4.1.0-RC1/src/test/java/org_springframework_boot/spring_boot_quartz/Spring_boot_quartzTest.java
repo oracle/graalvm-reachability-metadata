@@ -92,8 +92,7 @@ public class Spring_boot_quartzTest {
             assertThat(triggeredJob.getName()).isEqualTo(JOB_KEY.getName());
             assertThat(triggeredJob.getClassName()).isEqualTo(EndpointJob.class.getName());
             assertThat(triggeredJob.getTriggerTime()).isNotNull();
-        }
-        finally {
+        } finally {
             scheduler.shutdown(true);
         }
     }
