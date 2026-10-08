@@ -274,6 +274,17 @@ class Reactor_kotlin_extensionsTest {
             .verify(Duration.ofSeconds(10))
     }
 
+    @Test
+    fun verifiesDelayedPublishersWithVirtualTime() {
+        {
+            Flux.interval(Duration.ofHours(1)).take(2)
+        }.testUsingVirtualTime()
+            .thenAwait(Duration.ofHours(2))
+            .expectNext(0L, 1L)
+            .expectComplete()
+            .verify(Duration.ofSeconds(10))
+    }
+
     private fun <T> Mono<T>.await(): T? = block(timeout)
 
     private fun <T> Flux<T>.awaitList(): List<T> = collectList().block(timeout) ?: error("Flux did not complete")
