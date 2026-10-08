@@ -42,6 +42,7 @@ import reactor.kotlin.extra.bool.*
 import reactor.kotlin.extra.math.*
 import reactor.kotlin.extra.retry.*
 import reactor.kotlin.test.*
+import java.math.BigDecimal
 import java.math.BigInteger
 import java.time.Duration
 import java.util.concurrent.Callable
@@ -220,6 +221,20 @@ class Reactor_kotlin_extensionsTest {
         assertThat(Flux.just("one", "two").sumAll { it.length }.await()).isEqualTo(6)
         assertThat(Flux.just("one", "two").min { left, right -> left.length - right.length }.await())
             .isEqualTo("one")
+    }
+
+    @Test
+    fun calculatesBigDecimalMathResults() {
+        assertThat(
+            Flux.just(BigDecimal("1.25"), BigDecimal("2.75"))
+                .sumAsBigDecimal()
+                .await()
+        ).isEqualByComparingTo(BigDecimal("4.00"))
+        assertThat(
+            Flux.just(BigDecimal("1.25"), BigDecimal("2.75"))
+                .averageAsBigDecimal()
+                .await()
+        ).isEqualByComparingTo(BigDecimal("2.00"))
     }
 
     @Test
