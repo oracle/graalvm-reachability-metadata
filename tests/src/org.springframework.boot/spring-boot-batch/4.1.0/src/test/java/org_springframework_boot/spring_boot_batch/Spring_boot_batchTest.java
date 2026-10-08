@@ -6,10 +6,15 @@
  */
 package org_springframework_boot.spring_boot_batch;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import io.micrometer.observation.Observation;
+import io.micrometer.observation.ObservationHandler;
+import io.micrometer.observation.ObservationRegistry;
 import org.junit.jupiter.api.Test;
 
 import org.springframework.batch.core.BatchStatus;
@@ -19,6 +24,7 @@ import org.springframework.batch.core.job.JobExecution;
 import org.springframework.batch.core.job.JobInstance;
 import org.springframework.batch.core.job.builder.JobBuilder;
 import org.springframework.batch.core.job.parameters.JobParameters;
+import org.springframework.batch.core.launch.JobOperator;
 import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.step.Step;
 import org.springframework.batch.core.step.StepContribution;
@@ -33,6 +39,7 @@ import org.springframework.boot.batch.autoconfigure.BatchTaskExecutor;
 import org.springframework.boot.batch.autoconfigure.JobExecutionEvent;
 import org.springframework.boot.batch.autoconfigure.JobExecutionExitCodeGenerator;
 import org.springframework.boot.batch.autoconfigure.JobLauncherApplicationRunner;
+import org.springframework.boot.batch.autoconfigure.observation.BatchObservationAutoConfiguration;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
@@ -94,6 +101,26 @@ public class Spring_boot_batchTest {
         assertThat(generator.getExitCode()).isEqualTo(BatchStatus.FAILED.ordinal());
     }
 
+    @Test
+    void observationAutoConfigurationRecordsCompletedJobAndStep() throws Exception {
+        AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext();
+        context.register(BatchObservationConfiguration.class);
+
+        try {
+            context.refresh();
+
+            JobExecution execution = context.getBean(JobOperator.class)
+                    .start(context.getBean(Job.class), new JobParameters());
+            ObservationCapture capture = context.getBean(ObservationCapture.class);
+
+            assertThat(execution.getStatus()).isEqualTo(BatchStatus.COMPLETED);
+            assertThat(capture.stoppedObservations).contains("spring.batch.job", "spring.batch.step");
+        }
+        finally {
+            context.close();
+        }
+    }
+
     @Configuration(proxyBeanMethods = false)
     @ImportAutoConfiguration({ BatchAutoConfiguration.class, BatchJobLauncherAutoConfiguration.class })
     static class BatchIntegrationConfiguration {
@@ -127,6 +154,69 @@ public class Spring_boot_batchTest {
         @Bean
         Job skippedJob(JobRepository repository, @Qualifier("skippedStep") Step skippedStep) {
             return new JobBuilder("skippedJob", repository).start(skippedStep).build();
+        }
+
+    }
+
+    @Configuration(proxyBeanMethods = false)
+    @ImportAutoConfiguration({ BatchAutoConfiguration.class, BatchObservationAutoConfiguration.class })
+    static class BatchObservationConfiguration {
+
+        @Bean
+        ObservationCapture observationCapture() {
+            return new ObservationCapture();
+        }
+
+        @Bean
+        ObservationRegistry observationRegistry(ObservationCapture capture) {
+            ObservationRegistry registry = ObservationRegistry.create();
+            registry.observationConfig().observationHandler(new RecordingObservationHandler(capture));
+            return registry;
+        }
+
+        @Bean
+        Step observedStep(JobRepository repository) {
+            return new StepBuilder("observedStep", repository).tasklet(new ObservationTasklet()).build();
+        }
+
+        @Bean
+        Job observedJob(JobRepository repository, Step observedStep) {
+            return new JobBuilder("observedJob", repository).start(observedStep).build();
+        }
+
+    }
+
+    static final class ObservationCapture {
+
+        private final List<String> stoppedObservations = new ArrayList<>();
+
+    }
+
+    static final class RecordingObservationHandler implements ObservationHandler<Observation.Context> {
+
+        private final ObservationCapture capture;
+
+        RecordingObservationHandler(ObservationCapture capture) {
+            this.capture = capture;
+        }
+
+        @Override
+        public void onStop(Observation.Context context) {
+            this.capture.stoppedObservations.add(context.getName());
+        }
+
+        @Override
+        public boolean supportsContext(Observation.Context context) {
+            return true;
+        }
+
+    }
+
+    static final class ObservationTasklet implements Tasklet {
+
+        @Override
+        public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) {
+            return RepeatStatus.FINISHED;
         }
 
     }
