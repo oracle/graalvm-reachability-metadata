@@ -1,0 +1,49 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :populateArtifactURLs
+I couldn't update `index.json`: the Edit tool was denied because the session is in don't-ask mode. I haven't tried another way to write the file, since that would sidestep the denial.
+
+This is the entry I was going to add to the `metadata-version` `10.0.0` block in `metadata/org.eclipse.jetty/jetty-http/index.json`:
+
+```json
+"source-code-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-http/$version$/jetty-http-$version$-sources.jar",
+"repository-url" : "https://github.com/jetty/jetty.project",
+"test-code-url" : "https://github.com/jetty/jetty.project/tree/jetty-$version$/jetty-http/src/test",
+"documentation-url" : "https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-http/$version$/jetty-http-$version$-javadoc.jar",
+"description" : "Jetty HTTP provides core HTTP utilities for Eclipse Jetty, including request and response metadata, headers, cookies, MIME types, and URI handling. It is used by Jetty server and client components to parse, represent, and generate HTTP protocol data."
+```
+
+I left `language` absent because Jetty is a plain Java library. The fields go right after `test-version`.
+
+I checked the URLs with `curl`:
+- **Sources:** the Maven Central sources jar for 10.0.0 returns 200.
+- **Javadoc:** the Maven Central javadoc jar for 10.0.0 returns 200.
+- **Tests:** there is no tests jar on Maven Central for 10.0.0 (404). I used the GitHub tag `jetty-10.0.0` instead, which returns 200 for `jetty-http/src/test`.
+- **Repository:** `github.com/jetty/jetty.project` is the canonical root. The `eclipse/jetty.project` URL used in other entries redirects to it (301).
+
+Allow Edit, or tell me to apply the change another way, and I'll write it.
+Ran agent for org.eclipse.jetty:jetty-http:10.0.0 (exit 0). Log: /home/oracle/oracle/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9376-404dc7fd/build/agent-url-discovery-logs/org.eclipse.jetty-jetty-http-10.0.0.log
+Completed populateArtifactURLs: invoked=1, prompted=0, skipped=0, overwriteExisting=false, verifyArtifactSources=false, limit=null
+
+[Incubating] Problems report is available at: file:///home/oracle/oracle/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9376-404dc7fd/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 21s
+9 actionable tasks: 1 executed, 8 up-to-date
