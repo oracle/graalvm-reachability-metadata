@@ -142,6 +142,36 @@ public class Opentelemetry_log4j_appender_2_17Test {
     }
 
     @Test
+    void capturesAllContextDataAttributes() {
+        try (TestTelemetry telemetry = TestTelemetry.create()) {
+            StringMap contextData = new SortedArrayStringMap();
+            contextData.putValue("request.id", "request-456");
+            contextData.putValue("tenant", "acme");
+            contextData.putValue("otel.event.name", "order.completed");
+            OpenTelemetryAppender appender = OpenTelemetryAppender.builder()
+                    .setName("all-context-data-appender")
+                    .setOpenTelemetry(telemetry.openTelemetry)
+                    .setCaptureContextDataAttributes("*")
+                    .build();
+
+            appender.append(event(
+                    new SimpleMessage("order completed"),
+                    Level.INFO,
+                    null,
+                    null,
+                    contextData,
+                    null));
+
+            LogRecordData record = telemetry.singleRecord();
+            assertThat(record.getEventName()).isEqualTo("order.completed");
+            assertThat(record.getAttributes().get(stringKey("request.id")))
+                    .isEqualTo("request-456");
+            assertThat(record.getAttributes().get(stringKey("tenant"))).isEqualTo("acme");
+            assertThat(record.getAttributes().get(stringKey("otel.event.name"))).isNull();
+        }
+    }
+
+    @Test
     void replaysEventsCapturedBeforeOpenTelemetryIsInstalled() {
         try (TestTelemetry telemetry = TestTelemetry.create()) {
             OpenTelemetryAppender appender = OpenTelemetryAppender.builder()
