@@ -9,12 +9,22 @@ package io_opentelemetry_instrumentation.opentelemetry_spring_boot_autoconfigure
 import static org.assertj.core.api.Assertions.assertThat;
 
 import io.opentelemetry.api.OpenTelemetry;
+import io.opentelemetry.api.common.AttributeKey;
 import io.opentelemetry.api.trace.Span;
 import io.opentelemetry.context.Context;
 import io.opentelemetry.context.Scope;
 import io.opentelemetry.context.propagation.TextMapSetter;
 import io.opentelemetry.instrumentation.spring.autoconfigure.OpenTelemetryAutoConfiguration;
+import io.opentelemetry.sdk.autoconfigure.spi.AutoConfigurationCustomizer;
+import io.opentelemetry.sdk.autoconfigure.spi.AutoConfigurationCustomizerProvider;
+import io.opentelemetry.sdk.common.CompletableResultCode;
+import io.opentelemetry.sdk.trace.data.SpanData;
+import io.opentelemetry.sdk.trace.export.SimpleSpanProcessor;
+import io.opentelemetry.sdk.trace.export.SpanExporter;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
@@ -113,6 +123,42 @@ public class Opentelemetry_spring_boot_autoconfigureTest {
                 });
     }
 
+    @Test
+    void appliesSpringResourceAttributesToExportedSpan() {
+        RecordingSpanExporter exporter = new RecordingSpanExporter();
+
+        contextRunner()
+                .withBean(
+                        AutoConfigurationCustomizerProvider.class,
+                        () -> new AutoConfigurationCustomizerProvider() {
+                            @Override
+                            public void customize(AutoConfigurationCustomizer customizer) {
+                                customizer.addTracerProviderCustomizer(
+                                        (builder, properties) -> builder.addSpanProcessor(
+                                                SimpleSpanProcessor.create(exporter)));
+                            }
+                        })
+                .withPropertyValues(
+                        "otel.traces.sampler=always_on",
+                        "otel.resource.attributes=deployment.environment=testing")
+                .run(context -> {
+                    OpenTelemetry openTelemetry = context.getBean(OpenTelemetry.class);
+                    Span span = openTelemetry.getTracer("orders")
+                            .spanBuilder("checkout")
+                            .startSpan();
+                    try {
+                        assertThat(span.getSpanContext().isValid()).isTrue();
+                    } finally {
+                        span.end();
+                    }
+
+                    assertThat(exporter.finishedSpans).hasSize(1);
+                    assertThat(exporter.finishedSpans.get(0).getResource()
+                            .getAttribute(AttributeKey.stringKey("deployment.environment")))
+                            .isEqualTo("testing");
+                });
+    }
+
     private static ApplicationContextRunner contextRunner() {
         return new ApplicationContextRunner()
                 .withConfiguration(AutoConfigurations.of(OpenTelemetryAutoConfiguration.class))
@@ -120,5 +166,25 @@ public class Opentelemetry_spring_boot_autoconfigureTest {
                         "otel.traces.exporter=none",
                         "otel.metrics.exporter=none",
                         "otel.logs.exporter=none");
+    }
+
+    private static final class RecordingSpanExporter implements SpanExporter {
+        private final List<SpanData> finishedSpans = new ArrayList<>();
+
+        @Override
+        public CompletableResultCode export(Collection<SpanData> spans) {
+            finishedSpans.addAll(spans);
+            return CompletableResultCode.ofSuccess();
+        }
+
+        @Override
+        public CompletableResultCode flush() {
+            return CompletableResultCode.ofSuccess();
+        }
+
+        @Override
+        public CompletableResultCode shutdown() {
+            return CompletableResultCode.ofSuccess();
+        }
     }
 }
