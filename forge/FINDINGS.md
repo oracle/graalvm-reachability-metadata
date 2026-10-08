@@ -8,6 +8,11 @@ Newest entry first; every non-approval is recorded, including one a repair later
 **Contribution modifies JUnit metadata outside the target coordinate**
 
 The closed-file-set and one-library rules in §FS-contribution-contract.2 are violated: the diff for org.springframework.boot:spring-boot-webmvc-test:4.1.1 modifies metadata/org.junit.jupiter/junit-jupiter-engine/5.8.2/reachability-metadata.json. The local gate record independently reports human_intervention_required=true with that exact repo_fix_path. A complete correction cannot stay within the target contribution's allowed files, and this review is forbidden from editing another coordinate, so §FS-contribution-contract.5.5 requires maintainer intervention.
+## 2026-10-08 — org.springframework.batch:spring-batch-core:6.0.4 (#9286)
+
+**New-library contribution modifies another coordinate**
+
+§FS-contribution-contract.2 limits this contribution to org.springframework.batch:spring-batch-core:6.0.4 and its supporting files, but the diff modifies metadata/org.hsqldb/hsqldb/2.7.3/reachability-metadata.json. The local review evidence independently flags that same path in repo_fix_paths and requires human intervention. I checked whether this could be repaired within the Spring Batch file set, but the change belongs to the HSQLDB dependency coordinate; removing, relocating, or landing it requires an edit or separate contribution for another coordinate. Under §FS-contribution-contract.5.2 and §FS-contribution-contract.5.5, a maintainer must split or land the HSQLDB metadata update separately, then rebase or regenerate this contribution.
 ## 2026-10-08 — org.springframework.boot:spring-boot-resttestclient:4.1.1 (#9713)
 
 **Supporting dependency pins the target library version**
