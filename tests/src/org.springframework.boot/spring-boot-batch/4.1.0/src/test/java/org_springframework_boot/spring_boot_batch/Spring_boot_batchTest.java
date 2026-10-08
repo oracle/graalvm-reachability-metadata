@@ -19,6 +19,9 @@ import org.junit.jupiter.api.Test;
 
 import org.springframework.batch.core.BatchStatus;
 import org.springframework.batch.core.ExitStatus;
+import org.springframework.batch.core.configuration.DuplicateJobException;
+import org.springframework.batch.core.configuration.JobRegistry;
+import org.springframework.batch.core.configuration.support.MapJobRegistry;
 import org.springframework.batch.core.job.Job;
 import org.springframework.batch.core.job.JobExecution;
 import org.springframework.batch.core.job.JobInstance;
@@ -81,6 +84,33 @@ public class Spring_boot_batchTest {
             assertThat(execution.getExitStatus()).isEqualTo(ExitStatus.COMPLETED);
             assertThat(context.getBean(JobExecutionExitCodeGenerator.class).getExitCode())
                     .isEqualTo(BatchStatus.COMPLETED.ordinal());
+        }
+        finally {
+            context.close();
+        }
+    }
+
+    @Test
+    void runnerLaunchesJobFoundOnlyInJobRegistry() throws Exception {
+        AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext();
+        context.getEnvironment().getPropertySources().addFirst(new MapPropertySource("registered-job-test",
+                Map.of("spring.batch.job.name", "registeredJob")));
+        context.register(RegisteredJobConfiguration.class);
+
+        try {
+            context.refresh();
+
+            assertThat(context.getBeansOfType(Job.class)).isEmpty();
+            assertThat(context.getBean(JobRegistry.class).getJobNames()).containsExactly("registeredJob");
+
+            context.getBean(JobLauncherApplicationRunner.class).run();
+
+            RegistryExecutionCapture capture = context.getBean(RegistryExecutionCapture.class);
+            assertThat(capture.jobRan).isTrue();
+            JobExecution execution = context.getBean(JobRepository.class)
+                    .getLastJobExecution("registeredJob", new JobParameters());
+            assertThat(execution).isNotNull();
+            assertThat(execution.getStatus()).isEqualTo(BatchStatus.COMPLETED);
         }
         finally {
             context.close();
@@ -159,6 +189,29 @@ public class Spring_boot_batchTest {
     }
 
     @Configuration(proxyBeanMethods = false)
+    @ImportAutoConfiguration({ BatchAutoConfiguration.class, BatchJobLauncherAutoConfiguration.class })
+    static class RegisteredJobConfiguration {
+
+        @Bean
+        RegistryExecutionCapture registryExecutionCapture() {
+            return new RegistryExecutionCapture();
+        }
+
+        @Bean
+        Step registeredStep(JobRepository repository, RegistryExecutionCapture capture) {
+            return new StepBuilder("registeredStep", repository).tasklet(new RegisteredJobTasklet(capture)).build();
+        }
+
+        @Bean
+        JobRegistry jobRegistry(JobRepository repository, Step registeredStep) throws DuplicateJobException {
+            MapJobRegistry registry = new MapJobRegistry();
+            registry.register(new JobBuilder("registeredJob", repository).start(registeredStep).build());
+            return registry;
+        }
+
+    }
+
+    @Configuration(proxyBeanMethods = false)
     @ImportAutoConfiguration({ BatchAutoConfiguration.class, BatchObservationAutoConfiguration.class })
     static class BatchObservationConfiguration {
 
@@ -182,6 +235,28 @@ public class Spring_boot_batchTest {
         @Bean
         Job observedJob(JobRepository repository, Step observedStep) {
             return new JobBuilder("observedJob", repository).start(observedStep).build();
+        }
+
+    }
+
+    static final class RegistryExecutionCapture {
+
+        private final AtomicBoolean jobRan = new AtomicBoolean();
+
+    }
+
+    static final class RegisteredJobTasklet implements Tasklet {
+
+        private final RegistryExecutionCapture capture;
+
+        RegisteredJobTasklet(RegistryExecutionCapture capture) {
+            this.capture = capture;
+        }
+
+        @Override
+        public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) {
+            this.capture.jobRan.set(true);
+            return RepeatStatus.FINISHED;
         }
 
     }
