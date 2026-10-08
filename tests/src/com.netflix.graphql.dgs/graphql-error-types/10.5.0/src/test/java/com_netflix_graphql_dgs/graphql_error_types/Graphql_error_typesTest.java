@@ -9,6 +9,7 @@ package com_netflix_graphql_dgs.graphql_error_types;
 import com.netflix.graphql.types.errors.ErrorDetail;
 import com.netflix.graphql.types.errors.ErrorType;
 import com.netflix.graphql.types.errors.TypedGraphQLError;
+import graphql.ErrorClassification;
 import graphql.execution.ResultPath;
 import graphql.language.SourceLocation;
 import org.junit.jupiter.api.Test;
@@ -77,6 +78,18 @@ public class Graphql_error_typesTest {
                 .containsEntry("errorDetail", "CONFLICT");
         assertThat(ErrorDetail.Common.CONFLICT.toSpecification(error))
                 .isEqualTo("FAILED_PRECONDITION.CONFLICT");
+    }
+
+    @Test
+    void supportsCustomGraphQlErrorClassifications() {
+        ErrorClassification classification = ErrorClassification.errorClassification("RATE_LIMITED");
+        TypedGraphQLError error = TypedGraphQLError.newBuilder()
+                .errorType(classification)
+                .build();
+
+        assertThat(error.getMessage()).isEqualTo("RATE_LIMITED");
+        assertThat(error.getErrorType()).isSameAs(classification);
+        assertThat(error.getExtensions()).containsEntry("classification", "RATE_LIMITED");
     }
 
     @Test
