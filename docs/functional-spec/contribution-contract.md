@@ -58,8 +58,19 @@ the backstop (§PRCPL-prefer-algorithmic).
   entry only when the test requires it. A Forge-generated contribution may also
   update `forge/FINDINGS.md` when it records that contribution's local review
   finding (§forge/FS-local-branch-review). No other Forge path belongs in the
-  contribution. Build logic, workflows, other coordinates, and generated
-  sources outside the target test directory do not belong in the contribution.
+  contribution. Build logic, workflows, other coordinates beyond the routed
+  owner metadata below, and generated sources outside the target test
+  directory do not belong in the contribution.
+- **Routed owner metadata.** When the ownership routing of §FS-metadata.2
+  relocates an entry into a dependency the repository already hosts, the
+  contribution may also carry that owner's
+  `metadata/<group>/<artifact>/<version>/reachability-metadata.json`, with
+  entries added and none removed or changed and every added entry conditioned
+  on the owner's own `allowed-packages`, plus the owner's `index.json` when
+  routing split a bucket and the owner's regenerated
+  `stats/<group>/<artifact>/<version>/`. Nothing else of the owner. In exactly
+  this shape the diff is one library's contribution, not a second library, for
+  every reviewer and gate that enforces this section.
 - **Shared suites.** A test directory is shared by every tested version of its
   entry and by every other entry whose `test-version` names it. A contribution
   that changes a shared directory may also carry, for the versions that share
@@ -268,7 +279,8 @@ The closed file set of §FS-contribution-contract.2 bounds the repair exactly as
 it bounds the contribution. A fix that can only be made by editing build logic,
 the test harness, workflows, the allowed-image scanning machinery — as distinct
 from the single allowed-Docker-image entry §FS-contribution-contract.2 admits
-when the test requires it — or another coordinate is not a repair; it is
+when the test requires it — or another coordinate beyond the routed owner
+metadata §FS-contribution-contract.2 admits is not a repair; it is
 §FS-contribution-contract.5.3. The versions that share a changed suite are not
 another coordinate: a repair may make, for them, the changes the shared-suite
 allowance of §FS-contribution-contract.2 admits, and nothing beyond them.

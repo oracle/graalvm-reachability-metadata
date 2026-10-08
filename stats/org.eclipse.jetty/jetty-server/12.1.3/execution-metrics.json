@@ -1,0 +1,96 @@
+{
+  "add_new_library_support:2026-10-06": {
+    "timestamp": "2026-10-06T00:32:20.492954Z",
+    "library": "org.eclipse.jetty:jetty-server:12.1.3",
+    "starting_commit": "c4690eb0ab87105900497ffcad504120254b9ad4",
+    "ending_commit": "dc3f8ed7a53f88da857ea786291c69032a4dd49b",
+    "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-luna",
+    "agent": "pi",
+    "model": "gpt-5.6-luna",
+    "status": "success",
+    "stats": {
+      "version": "12.1.3",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 32,
+            "totalCalls": 32
+          },
+          "resources": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 1,
+            "totalCalls": 1
+          }
+        },
+        "coverageRatio": 1.0,
+        "coveredCalls": 33,
+        "totalCalls": 33
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 9370,
+          "missed": 42978,
+          "ratio": 0.178994,
+          "total": 52348
+        },
+        "line": {
+          "covered": 2387,
+          "missed": 9989,
+          "ratio": 0.192873,
+          "total": 12376
+        },
+        "method": {
+          "covered": 582,
+          "missed": 2153,
+          "ratio": 0.212797,
+          "total": 2735
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "advisory_preparation",
+      "issue_number": 10514,
+      "issue_label": "library-new-request",
+      "library": "org.eclipse.jetty:jetty-server:12.1.3",
+      "summary": "No new Maven dependency or Docker image is needed — every referenced class is already on the test classpath (jetty-security, which now hosts JAASLoginService, comes in transitively via jetty-ee10/ee11-servlet) and all 33 entries are pure in-JVM Jetty behavior. Meaningful gains come from richer test scenarios, not extra setup. Two entries are permanently unreachable on this repo's JDK 25 toolchain.",
+      "deterministic_setup": [],
+      "agent_guidance": "To raise coverage, extend JettyTests.java with scenarios that exercise paths the current tests skip — all achievable with existing dependencies:\n- Add a real WEB-INF/web.xml descriptor (via WebAppContext.setDescriptor(...)) with <filter>, <filter-mapping>, <listener>, <context-param>, <session-config>, <mime-mapping>, <welcome-file-list>, <error-page>, <security-constraint>, and <login-config> elements to drive org.eclipse.jetty.ee10(/ee11).webapp.StandardDescriptorProcessor's visit* methods (the current tests register servlets purely programmatically, so the descriptor parser is never invoked).\n- Register a ServletContextListener so ListenerHolder constructs IntrospectorCleaner.\n- Enable HTTP sessions (SessionHandler / request.getSession(true)) to drive DefaultSessionIdManager's lazy SecureRandom construction (hits sun.security.provider.NativePRNG and SecureRandomParameters).\n- Configure the Server's ThreadPool with a virtual-thread executor (e.g. QueuedThreadPool.setVirtualThreadsExecutor(VirtualThreads.getDefaultVirtualThreadsExecutor())) to hit Thread.isVirtual/Executors.newVirtualThreadPerTaskExecutor — stable on JDK 25, no preview flags or system properties required.\n- Wrap the handler chain in org.eclipse.jetty.server.handler.StatisticsHandler to exercise SampleStatistic/Striped64 fields.\n- Extend the forwardHeaders test with X-Forwarded-Proto, X-Forwarded-Server, an RFC 7239 'Forwarded:' header, and ssl-session-id/cipher-suite style forwarded headers to cover the remaining ForwardedRequestCustomizer$Forwarded.handle* methods.\n- Configure a LoginService (e.g. HashLoginService with an inline test realm) plus a <security-constraint>/BASIC authenticator to exercise ConstraintSecurityHandler construction in both ee10 and ee11.\n- Do not bother setting a SecurityManager system property: System.getSecurityManager()/checkPermission() in SecurityUtils are unreachable on JDK 25 regardless, since JEP 486 permanently disabled the SecurityManager.",
+      "risks": [
+        "javax.security.auth.Subject.doAs(Subject, PrivilegedAction) and SecurityUtils.callableToPrivilegedAction (2 of the 33 entries) are only reached via SecurityUtils's pre-JDK-18 fallback path. On JDK 25, SecurityUtils.lookupCallAs() always resolves the modern Subject.callAs(Subject, Callable) handle first, so that fallback — and these two entries — can never execute. Realistic ceiling is 31/33 (~94%), not 100%.",
+        "The only Jetty code path invoking SecurityUtils.callAs/doPrivileged at all is SPNEGOLoginService (Kerberos/Negotiate auth); standing up Kerberos test infrastructure (embedded MiniKdc or a KDC Docker image) would still not reach the two dead entries above, so it is not worth the infrastructure cost for this issue.",
+        "org.eclipse.jetty.ee10.servlets.PushCacheFilter is a legacy HTTP/2 server-push mechanism now largely unsupported by browsers — verify with local Gradle/Native Image runs whether it's still reachable via ServletsConfiguration's default wiring before investing test-writing effort there."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#10514 Support for org.eclipse.jetty:jetty-server:12.1.3; label=library-new-request; body_chars=444"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "9 existing test file path(s) included"
+        }
+      ],
+      "model": "sonnet",
+      "input_tokens_used": 50,
+      "output_tokens_used": 35341
+    },
+    "metrics": {
+      "input_tokens_used": 189976,
+      "cached_input_tokens_used": 2575360,
+      "output_tokens_used": 22405,
+      "iterations": 4,
+      "cost_usd": 0.5819,
+      "generated_loc": 356,
+      "tested_library_loc": 2387,
+      "metadata_entries": 283,
+      "test_only_metadata_entries": 83,
+      "code_coverage_percent": 19.29
+    },
+    "artifacts": {
+      "metadata_file": "metadata/org.eclipse.jetty/jetty-server/12.1.3/reachability-metadata.json"
+    }
+  }
+}

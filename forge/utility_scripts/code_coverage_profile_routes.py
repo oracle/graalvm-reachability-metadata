@@ -182,19 +182,47 @@ class RouteMap:
     payload: dict[int, object] = field(default_factory=dict)
 
 
+def execution_status(
+        graph: CallGraph,
+        jacoco_methods: dict[str, JacocoMethodCoverage],
+) -> dict[int, bool]:
+    """Whether JaCoCo reports each graph method covered; absent when it cannot say.
+
+    A method JaCoCo does not report takes the status of the source-level method
+    it stands for — a factory stub its constructor's, a generated lambda class
+    its creator's (§AR-code-coverage-deep-navigation.2).
+    """
+    executed: dict[int, bool] = {}
+    for static_id, ref in graph.methods.items():
+        coverage: JacocoMethodCoverage | None = (
+            jacoco_methods.get(ref.canonical_id)
+            or jacoco_methods.get(translated_ref(static_id, graph).canonical_id)
+        )
+        if coverage is not None:
+            executed[static_id] = coverage.covered
+    return executed
+
+
 def _multi_source_routes(
         graph: CallGraph,
         seeds: list[tuple[int, tuple, object]],
+        executed: dict[int, bool],
 ) -> RouteMap:
     """Compute deterministic shortest semantic paths from ranked source methods.
 
-    Among equally short routes, the one with fewer unobserved dispatch steps
-    wins before seed rank does (§AR-code-coverage-deep-navigation.2.1).
+    A route crosses one uncovered method, its last, and a covered method makes
+    that last call (§AR-code-coverage-deep-navigation.2). A step that stays
+    inside one source-level method, such as a factory stub reaching its
+    constructor, is judged as part of that method. Among equally short routes,
+    the one with fewer unobserved dispatch steps wins before seed rank does
+    (§AR-code-coverage-deep-navigation.2.1).
     """
     routes = RouteMap()
     best_keys: dict[int, tuple[int, int, tuple]] = {}
     queue: list[tuple[int, int, tuple, str, int]] = []
     for static_id, seed_rank, payload in seeds:
+        if executed.get(static_id) is False:
+            continue
         candidate_key: tuple[int, int, tuple] = (0, 0, seed_rank)
         if static_id in best_keys and best_keys[static_id] <= candidate_key:
             continue
@@ -209,6 +237,7 @@ def _multi_source_routes(
         if best_keys.get(current) != (distance, unobserved, seed_rank):
             continue
         current_ref_id: str = translated_ref(current, graph).canonical_id
+        current_status: bool | None = executed.get(current)
         for edge in graph.adjacency.get(current, []):
             # A functional-interface call site names no callee of its own, so
             # routing through it invents a reachability claim
@@ -220,6 +249,10 @@ def _multi_source_routes(
                 current_ref_id
                 != translated_ref(callee, graph).canonical_id
             )
+            if semantic_step and current_status is False:
+                continue
+            if semantic_step and executed.get(callee) is False and current_status is not True:
+                continue
             candidate_distance: int = distance + semantic_step
             candidate_unobserved: int = unobserved + int(edge.get("unobserved", False))
             candidate_key = (candidate_distance, candidate_unobserved, seed_rank)
@@ -242,7 +275,11 @@ def _multi_source_routes(
     return routes
 
 
-def sample_routes(graph: CallGraph, profile: SampledProfile) -> RouteMap:
+def sample_routes(
+        graph: CallGraph,
+        profile: SampledProfile,
+        executed: dict[int, bool],
+) -> RouteMap:
     seeds: list[tuple[int, tuple, object]] = []
     for sample in profile.samples:
         test_index: int | None = _existing_test_frame_index(sample.full_path)
@@ -260,19 +297,27 @@ def sample_routes(graph: CallGraph, profile: SampledProfile) -> RouteMap:
                 path_index,
             )
             seeds.append((static_id, seed_rank, (sample, path_index)))
-    return _multi_source_routes(graph, seeds)
+    return _multi_source_routes(graph, seeds, executed)
 
 
-def public_entry_routes(graph: CallGraph, inventory_refs: list[MethodRef]) -> RouteMap:
+def public_entry_routes(
+        graph: CallGraph,
+        inventory_refs: list[MethodRef],
+        executed: dict[int, bool],
+) -> RouteMap:
+    """Routes from the public entries existing tests already run.
+
+    §AR-code-coverage-deep-navigation.2
+    """
     seeds: list[tuple[int, tuple, object]] = []
     seen: set[int] = set()
     for ref in inventory_refs:
         static_id: int | None = resolve_graph_id(graph, ref)
-        if static_id is None or static_id in seen:
+        if static_id is None or static_id in seen or executed.get(static_id) is not True:
             continue
         seen.add(static_id)
         seeds.append((static_id, (ref.canonical_id,), static_id))
-    return _multi_source_routes(graph, seeds)
+    return _multi_source_routes(graph, seeds, executed)
 
 
 def route_to(target_id: int, routes: RouteMap) -> tuple[list[int], list[dict]]:

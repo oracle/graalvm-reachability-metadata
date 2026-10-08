@@ -12,6 +12,8 @@ import sys
 import time
 from typing import Optional
 
+from utility_scripts.dynamic_access_exhaust_report import DynamicAccessExhaustReport
+from utility_scripts.dynamic_access_exhaust_report import find_dynamic_access_exhaust_report_path
 from utility_scripts.run_location import PHASE_CLAIM, STEP_CLAIM_ISSUE, log_step_progress, pipeline_step
 from utility_scripts.stage_logger import log_debug, log_stage
 
@@ -25,6 +27,7 @@ from dispatcher.config import (
     ISSUE_CLAIM_CACHE_REASON_IN_PROGRESS,
     ISSUE_CLAIM_CACHE_REASON_MISSING_PROJECT_ITEM,
     ISSUE_CLAIM_CACHE_REASON_NON_TODO,
+    LABEL_CHUNKED_DYNAMIC_ACCESS,
     PROJECT_NUMBER,
     STATUS_IN_PROGRESS,
     STATUS_TODO,
@@ -32,13 +35,13 @@ from dispatcher.config import (
 from dispatcher.fixture_support import is_fixture_testing_enabled
 from dispatcher.github_api import format_github_exception_details, gh_json
 from dispatcher.interrupts import is_interrupt_exception
-from dispatcher.issue_admin import clear_issue_assignees, get_issue_assignees, set_issue_assignee
+from dispatcher.issue_admin import clear_issue_assignees, get_issue_assignees, remove_issue_label, set_issue_assignee
 from dispatcher.issue_cache import (
     invalidate_issue_claim_cache_entry,
     record_issue_claim_cache_observations,
     try_acquire_issue_claim_lock,
 )
-from dispatcher.issue_queue import is_assigned_only_to_authenticated_user
+from dispatcher.issue_queue import is_assigned_only_to_authenticated_user, issue_has_label
 from dispatcher.project_board import get_item_status, get_project_item_state, set_item_status
 from dispatcher.records import ClaimedIssue, IssueClaimCacheObservation
 
@@ -113,8 +116,53 @@ def revert_issue_claim(item_id: str, issue_number: int, reason: str) -> None:
     )
 
 
+def _has_published_dynamic_access_chunk(claimed_issue: ClaimedIssue) -> bool:
+    """Return whether the issue's exhaust report records a published chunk."""
+    report_path: str | None = find_dynamic_access_exhaust_report_path(
+        claimed_issue.worktree_path,
+        claimed_issue.issue_coordinates,
+    )
+    if report_path is None:
+        return False
+    try:
+        report: DynamicAccessExhaustReport = DynamicAccessExhaustReport.load(report_path)
+    except (OSError, ValueError):
+        # Removing the label is safe: a published chunk's report on master relabels the next claim.
+        return False
+    return any((
+        report.latest_chunk_publication_id,
+        report.latest_chunk_branch,
+        report.latest_chunk_pull_request,
+    ))
+
+
+def release_unpublished_chunked_dynamic_access_label(claimed_issue: ClaimedIssue) -> None:
+    """Drop the claim-time chunked label when no chunk of the issue was published.
+
+    Without a published chunk master holds no exhaust report, and a labelled
+    issue without one cannot be claimed again (§FS-forge-chunked-dynamic-access).
+    """
+    if not issue_has_label(claimed_issue.issue, LABEL_CHUNKED_DYNAMIC_ACCESS):
+        return
+    if _has_published_dynamic_access_chunk(claimed_issue):
+        return
+    issue_number: int = claimed_issue.issue["number"]
+    remove_issue_label(issue_number, LABEL_CHUNKED_DYNAMIC_ACCESS)
+    claimed_issue.issue["labels"] = [
+        label
+        for label in claimed_issue.issue.get("labels", [])
+        if not (isinstance(label, dict) and label.get("name") == LABEL_CHUNKED_DYNAMIC_ACCESS)
+    ]
+    log_stage(
+        "chunked-dynamic-access",
+        f"Removed the provisional '{LABEL_CHUNKED_DYNAMIC_ACCESS}' label from issue #{issue_number}; "
+        "no chunk was published.",
+    )
+
+
 def revert_claimed_issue(claimed_issue: ClaimedIssue, reason: str) -> None:
     """Reset a failed claimed issue back to Todo and clear its assignment."""
+    release_unpublished_chunked_dynamic_access_label(claimed_issue)
     revert_issue_claim(claimed_issue.item_id, claimed_issue.issue["number"], reason)
 
 

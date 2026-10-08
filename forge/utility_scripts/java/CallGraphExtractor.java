@@ -37,7 +37,7 @@ import java.util.zip.ZipFile;
 ///
 /// Reads library jars with the JDK Class-File API and writes four CSV files:
 /// one row per declared method, one row per call edge, one row per declared
-/// type, and one control-flow row per branching method (`flow.csv`, built by
+/// type, and one control-flow row per method with a branch or a `try` (`flow.csv`, built by
 /// `ControlFlow`). Method rows retain their bytecode-to-source line table; with
 /// the control-flow rows it lets the deep phase name the branch that decides
 /// whether a call runs (§AR-code-coverage-deep-navigation.1.3). Method identities
@@ -350,7 +350,7 @@ public final class CallGraphExtractor {
                 quote(id) + "," + quote(flow[0]) + "," + quote(flow[1])));
         write(outputDir.resolve("flow.csv"), flowRows);
 
-        System.out.printf("call graph: %d methods, %d edges, %d types, %d branching methods%n",
+        System.out.printf("call graph: %d methods, %d edges, %d types, %d flow rows%n",
                 declaredIds.size(), edges.size(), classes.size(), flows.size());
     }
 

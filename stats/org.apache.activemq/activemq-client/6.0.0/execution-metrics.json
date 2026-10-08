@@ -1,0 +1,96 @@
+{
+  "improve_library_coverage:2026-10-06": {
+    "timestamp": "2026-10-06T05:33:25.102006Z",
+    "library": "org.apache.activemq:activemq-client:6.0.0",
+    "starting_commit": "56e8c939b4e295aa70ecf2a66d5c9b74fce2a260",
+    "ending_commit": "c7c3adce0ef48367533ad38d6604145cd616dba0",
+    "strategy_name": "library_update_optimistic_pi_gpt-5.6-sol",
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "status": "success",
+    "stats": {
+      "version": "6.0.0",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 65,
+            "totalCalls": 65
+          },
+          "resources": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 4,
+            "totalCalls": 4
+          }
+        },
+        "coverageRatio": 1.0,
+        "coveredCalls": 69,
+        "totalCalls": 69
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 34983,
+          "missed": 105623,
+          "ratio": 0.248802,
+          "total": 140606
+        },
+        "line": {
+          "covered": 9073,
+          "missed": 25841,
+          "ratio": 0.259867,
+          "total": 34914
+        },
+        "method": {
+          "covered": 2681,
+          "missed": 5521,
+          "ratio": 0.326871,
+          "total": 8202
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "no_action",
+      "issue_number": 10536,
+      "issue_label": "library-update-request",
+      "library": "org.apache.activemq:activemq-client:6.0.0",
+      "summary": "The existing test project already declares activemq-client, activemq-broker, jakarta/javax JMS API, assertj and logback. It runs an embedded BrokerService over tcp://localhost:61616, so no Docker image or extra Maven dependency is needed. The uncovered accesses are reflective calls inside activemq-client: URI property setters, transport and wire-format factory lookups, and serialization. Test code can reach those through the embedded broker.",
+      "deterministic_setup": [],
+      "agent_guidance": "",
+      "risks": [
+        "I only read the build.gradle and the start of ActiveMQClientTest.java. I did not run the coverage report or look at the uncovered entries one by one.",
+        "Some uncovered accesses may sit behind optional transports or dependencies (for example http, mqtt, ssl, or ObjectMessage serialization limited by the trusted-packages setting). If so, the agent may need extra test code. It may also need system properties such as org.apache.activemq.SERIALIZABLE_PACKAGES, or in-JVM transport URLs such as vm://, which avoid fixed-port conflicts.",
+        "The existing test uses the fixed port 61616. Extra brokers with the same port, or tests that run in parallel, could conflict. Prefer vm:// or ephemeral ports."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#10536 Improve coverage for org.apache.activemq:activemq-client:6.0.0; label=library-update-request; body_chars=450"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "9 existing test file path(s) included"
+        }
+      ],
+      "model": "sonnet",
+      "input_tokens_used": 4,
+      "output_tokens_used": 885
+    },
+    "metrics": {
+      "input_tokens_used": 403971,
+      "cached_input_tokens_used": 7233280,
+      "output_tokens_used": 50932,
+      "iterations": 9,
+      "cost_usd": 7.1645,
+      "generated_loc": 955,
+      "tested_library_loc": 9073,
+      "metadata_entries": 254,
+      "test_only_metadata_entries": 13,
+      "code_coverage_percent": 25.99
+    },
+    "artifacts": {
+      "metadata_file": "metadata/org.apache.activemq/activemq-client/6.0.0/reachability-metadata.json"
+    }
+  }
+}

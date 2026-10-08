@@ -1,0 +1,106 @@
+{
+  "add_new_library_support:2026-10-08": {
+    "timestamp": "2026-10-08T06:29:01.013412Z",
+    "library": "org.springframework.batch:spring-batch-core:6.0.4",
+    "starting_commit": "655bfca303f09f2f54bf434af3c57f81a2df9ab5",
+    "ending_commit": "7a8d0c0a6c013c50c51d6e71be5a461a71e6ba57",
+    "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-sol",
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "status": "success",
+    "stats": {
+      "version": "6.0.4",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 11,
+            "totalCalls": 11
+          }
+        },
+        "coverageRatio": 1.0,
+        "coveredCalls": 11,
+        "totalCalls": 11
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 6490,
+          "missed": 37375,
+          "ratio": 0.147954,
+          "total": 43865
+        },
+        "line": {
+          "covered": 1676,
+          "missed": 8794,
+          "ratio": 0.160076,
+          "total": 10470
+        },
+        "method": {
+          "covered": 456,
+          "missed": 2090,
+          "ratio": 0.179104,
+          "total": 2546
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "advisory_preparation",
+      "issue_number": 9286,
+      "issue_label": "library-new-request",
+      "library": "org.springframework.batch:spring-batch-core:6.0.4",
+      "summary": "spring-batch-core 6.0.4 pulls in spring-jdbc, spring-tx, spring-context and micrometer transitively. Its JDBC-backed JobRepository (the schema SQL scripts, the DAOs) needs an embedded database, which is not on the classpath by default.",
+      "deterministic_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "org.hsqldb:hsqldb:2.7.3",
+          "scope": "testImplementation",
+          "reason": "Spring Batch's JDBC JobRepository, job explorer and job operator need a DataSource. The core artifact ships schema-hsqldb.sql, and embedded HSQLDB is the lightest in-process option. Version 2.7.3 matches the version already tested in this repo (tests/src/org.hsqldb/hsqldb/2.7.3)."
+        }
+      ],
+      "agent_guidance": "No Docker image, environment variable or system property is needed. Build the DataSource with EmbeddedDatabaseBuilder (spring-jdbc, already transitive) using EmbeddedDatabaseType.HSQL. Load the schema from classpath:/org/springframework/batch/core/schema-hsqldb.sql (check the exact path inside the 6.0.4 jar). Then create the JobRepository through JdbcJobRepositoryFactoryBean or @EnableBatchProcessing with a DataSourceTransactionManager. Also exercise ResourcelessJobRepository, which needs no database. Cover Job and Step builders (JobBuilder, StepBuilder with tasklet and chunk-oriented steps), a JobOperator or JobLauncher run, listeners, ExecutionContext serialization (the Jackson-based serializer needs jackson-databind, which is an optional dependency, so add it only if it is not already available), and the SpEL-based late binding of step-scope and job-scope parameters. Do not add the optional integrations (MongoDB, AspectJ) unless a test needs them.",
+      "risks": [
+        "Spring Batch 6 changed its default configuration, so the schema script path and the @EnableBatchProcessing defaults (resourceless versus JDBC) should be checked against the 6.0.4 jar.",
+        "The JDBC job repository and the Jackson ExecutionContext serializer use reflection, resource loading and proxies. Native Image may need extra metadata, and that is what the generated tests should surface.",
+        "HSQLDB itself needs reflection and resource metadata. The repo already has an hsqldb entry, so check whether it covers what is needed. I did not check that.",
+        "I did not run any Gradle or Native Image verification. The recommendation comes from the 6.0.4 POM and the repo's existing tests."
+      ],
+      "applied_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "org.hsqldb:hsqldb:2.7.3",
+          "result": "applied",
+          "target": "tests/src/org.springframework.batch/spring-batch-core/6.0.4/build.gradle"
+        }
+      ],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#9286 Support for org.springframework.batch:spring-batch-core:6.0.4; label=library-new-request; body_chars=0"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "sonnet",
+      "input_tokens_used": 10,
+      "output_tokens_used": 2272
+    },
+    "metrics": {
+      "input_tokens_used": 275395,
+      "cached_input_tokens_used": 4408832,
+      "output_tokens_used": 25973,
+      "iterations": 4,
+      "cost_usd": 4.3606,
+      "generated_loc": 408,
+      "tested_library_loc": 1676,
+      "metadata_entries": 214,
+      "test_only_metadata_entries": 117,
+      "code_coverage_percent": 16.01
+    },
+    "artifacts": {
+      "metadata_file": "metadata/org.springframework.batch/spring-batch-core/6.0.4/reachability-metadata.json"
+    }
+  }
+}

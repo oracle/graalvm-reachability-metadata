@@ -1,0 +1,133 @@
+{
+  "base_commit": "b3ec67c311b017dc14029d069a19ecba3c99fa10",
+  "branch": "ai/kimeta/add-lib-support-org.orbisgis-h2gis-utilities-2.2.5-forge-9793-20261003035618053517-c9803287b717",
+  "follow_ups": [],
+  "forge": {
+    "branch": "master",
+    "commit": "64b39e298df2e06d80520993b3c73ded87225968",
+    "monitored_branch": "origin/master"
+  },
+  "issue_number": 9793,
+  "library": {
+    "artifact": "h2gis-utilities",
+    "coordinates": "org.orbisgis:h2gis-utilities:2.2.5",
+    "group": "org.orbisgis",
+    "version": "2.2.5"
+  },
+  "local_ci_verification": {
+    "base_commit": "b3ec67c311b017dc14029d069a19ecba3c99fa10",
+    "commands": [
+      {
+        "command": [
+          "./gradlew",
+          "generateChangedIndexFileCoordinatesList",
+          "-PbaseCommit=origin/master",
+          "-PnewCommit=HEAD"
+        ],
+        "env": {
+          "GITHUB_OUTPUT": "/tmp/tmp1164m8e5"
+        },
+        "gate": "changed-index-coordinates",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :generateChangedIndexFileCoordinatesList\n\n[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9793-1ec40b2e/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 2s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      },
+      {
+        "command": [
+          "./gradlew",
+          "validateIndexFiles",
+          "-Pcoordinates=org.orbisgis:h2gis-utilities"
+        ],
+        "env": {},
+        "gate": "index-file-validation",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :validateIndexFiles\n✅ metadata/org.orbisgis/h2gis-utilities/index.json: Valid\n\n[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9793-1ec40b2e/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 1s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      }
+    ],
+    "failure_command": null,
+    "failure_gate": null,
+    "final_commit": "cf91e62ef5af65eefff4bdb08542567107dc5dc8",
+    "fixups": [],
+    "human_intervention_required": false,
+    "repo_fix_paths": [],
+    "status": "success"
+  },
+  "local_review": {
+    "changed_paths": [],
+    "decision": "approved",
+    "finding_body": "",
+    "finding_title": "",
+    "fix_note": "",
+    "model": "gpt-5.6-sol",
+    "review_comment": "The diff is limited to the single org.orbisgis:h2gis-utilities:2.2.5 coordinate and its allowed metadata, stats, and test files. The tests exercise the public API from a separate package, are not scaffold-only or version-pinned, do not skip or tolerate Native Image failures, and add no legacy metadata format or native build/run workaround. The resolved report is a valid 0/0 dynamic-access case, so the percentage and entry-count mismatch checks do not apply. The Forge finalizer completed all three test lanes, metadata and style checks, generated-test validation, and statistics generation, then exited successfully without changing the publishable tree.",
+    "session_id": "096523ddfe434e64"
+  },
+  "metrics": {
+    "agent": "pi",
+    "model": "gpt-5.6-luna",
+    "path": "stats/org.orbisgis/h2gis-utilities/2.2.5/execution-metrics.json",
+    "summary": {
+      "cached_input_tokens_used": 3855360,
+      "code_coverage_percent": 21.11,
+      "cost_usd": 0.8817,
+      "generated_loc": 260,
+      "input_tokens_used": 318412,
+      "iterations": 8,
+      "metadata_entries": 4,
+      "output_tokens_used": 29631,
+      "test_only_metadata_entries": 249,
+      "tested_library_loc": 832
+    },
+    "timestamp": "2026-10-03T03:56:18.053517Z"
+  },
+  "modifiers": {
+    "chunk_final": true,
+    "chunked_dynamic_access": false,
+    "human_intervention": false
+  },
+  "producer": "kimeta",
+  "publication_id": "forge-9793-20261003035618053517-c9803287b717",
+  "render": {
+    "dynamic_access": null,
+    "dynamic_access_evidence": {
+      "covered_call_sites": [],
+      "metadata_rules": [
+        "when `org.h2gis.utilities.GeometryTableUtilities` is reached, make `org.h2gis.functions.spatial.metadata.FindGeometryMetadata.extractMetadata(java.sql.Connection, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String)` available for reflection",
+        "when `org.h2gis.utilities.GeometryTableUtilities` is reached, make `org.h2gis.functions.spatial.properties.ST_Extent.<init>()` available for reflection"
+      ]
+    },
+    "library_stats": {
+      "dynamicAccess": {
+        "breakdown": {},
+        "coverageRatio": 1.0,
+        "coveredCalls": 0,
+        "totalCalls": 0
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 4273,
+          "missed": 13904,
+          "ratio": 0.235077,
+          "total": 18177
+        },
+        "line": {
+          "covered": 832,
+          "missed": 3109,
+          "ratio": 0.211114,
+          "total": 3941
+        },
+        "method": {
+          "covered": 140,
+          "missed": 618,
+          "ratio": 0.184697,
+          "total": 758
+        }
+      },
+      "version": "2.2.5"
+    }
+  },
+  "schema_version": 1,
+  "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-luna",
+  "task_type": "library-new-request",
+  "template_type": "library-new-request",
+  "timestamp": "2026-10-03T03:56:18.053517Z"
+}

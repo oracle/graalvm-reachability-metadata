@@ -32,6 +32,7 @@ from tests.code_coverage_profile_support import (
     LOAD_ID,
     RESOLVE_ID,
     _coverage,
+    _sampled_at,
 )
 
 
@@ -229,18 +230,25 @@ class SyntheticLambdaTest(unittest.TestCase):
                     handle.write(f"{invoke_id},{target}\n")
 
         self.graph = graph_module.load_call_graph(self.directory)
-        covered: set[str] = {self.INIT, self.DRAIN}
-        self.jacoco = {
+        self.report, self.records = self._correlate({self.INIT, self.DRAIN})
+        self.paths = {entry["id"]: entry for entry in self.report["uncoveredPaths"]}
+
+    def _correlate(self, covered: set[str]) -> tuple[dict, list]:
+        jacoco = {
             ref.canonical_id: _coverage(ref, covered=ref.canonical_id in covered)
             for ref in self.graph.methods.values()
         }
-        self.report, self.records = report_module.correlate(
-            routes_module.SampledProfile(),
+        return report_module.correlate(
+            _sampled_at(7, self.graph.methods[7]),
             self.graph,
             {"targets": [{"id": self.INIT, "kind": "method"}]},
-            self.jacoco,
+            jacoco,
         )
-        self.paths = {entry["id"]: entry for entry in self.report["uncoveredPaths"]}
+
+    def _closure_ran(self) -> dict[str, dict]:
+        """`reload` ran and so did its closure; only `persist` did not."""
+        report, _ = self._correlate({self.INIT, self.DRAIN, self.RELOAD, self.BODY})
+        return {entry["id"]: entry for entry in report["uncoveredPaths"]}
 
     def test_lambda_body_stays_in_the_denominator_but_never_reaches_the_prompt(self) -> None:
         self.assertIn(self.BODY, {entry["id"] for entry in self.report["deepMethods"]})
@@ -255,8 +263,14 @@ class SyntheticLambdaTest(unittest.TestCase):
         self.assertEqual(reload_entry["closures"], {"total": 1, "unexecuted": 1})
         self.assertIsNone(self.paths[self.PERSIST]["closures"])
 
+    def test_an_unexecuted_closure_is_a_second_uncovered_call(self) -> None:
+        """`persist` lies behind `reload` and a closure that never ran, so it is
+        not on the frontier (§AR-code-coverage-deep-navigation.2)."""
+        self.assertEqual(self.paths[self.PERSIST]["joinKind"], "none")
+        self.assertNotIn(self.PERSIST, self.report["promptTargetIds"])
+
     def test_prompt_paths_carry_no_compiler_owned_name(self) -> None:
-        persist = self.paths[self.PERSIST]
+        persist = self._closure_ran()[self.PERSIST]
         self.assertEqual(persist["reachingPath"], [self.INIT, self.RELOAD, self.PERSIST])
         self.assertIn(self.BODY, persist["reachingPathRaw"])
         rendered = render_module._display_path(
@@ -267,7 +281,7 @@ class SyntheticLambdaTest(unittest.TestCase):
         self.assertNotIn("$$Lambda", rendered)
 
     def test_route_uses_the_creation_edge_and_reports_the_hand_off(self) -> None:
-        persist = self.paths[self.PERSIST]
+        persist = self._closure_ran()[self.PERSIST]
         self.assertEqual(
             [edge["kind"] for edge in persist["edges"]], ["call", "creation", "call"]
         )
@@ -286,11 +300,19 @@ class SyntheticLambdaTest(unittest.TestCase):
     def test_markdown_states_the_closure_and_the_thread_hand_off(self) -> None:
         markdown_path = os.path.join(self.directory, "deep.md")
         render_module.write_markdown(
-            self.report, self.records, self.graph, "example:library:1", 0, None, markdown_path
+            self.report, self.records, self.graph, "example:library:1", 0, markdown_path
         )
         with open(markdown_path, encoding="utf-8") as handle:
             markdown = handle.read()
         self.assertIn("1 closures, 1 never executed", markdown)
+        self.assertNotIn("lambda$", markdown)
+
+        report, records = self._correlate({self.INIT, self.DRAIN, self.RELOAD, self.BODY})
+        render_module.write_markdown(
+            report, records, self.graph, "example:library:1", 0, markdown_path
+        )
+        with open(markdown_path, encoding="utf-8") as handle:
+            markdown = handle.read()
         self.assertIn("runs on another thread via `Executor.submit`", markdown)
         self.assertNotIn("lambda$", markdown)
 
@@ -364,12 +386,20 @@ class FactoryStubTranslationTest(unittest.TestCase):
             self.ZULU_CONSTRUCTOR.canonical_id,
         }
         graph_module._index_factory_stubs(self.graph, library_methods)
+        # The entry ran and built both objects, so the targets are one uncovered
+        # call past executed code (§AR-code-coverage-deep-navigation.2).
         jacoco: dict[str, JacocoMethodCoverage] = {
-            ref.canonical_id: _coverage(ref)
-            for ref in (self.ALPHA_TARGET, self.ZULU_TARGET)
+            **{
+                ref.canonical_id: _coverage(ref)
+                for ref in (self.ALPHA_TARGET, self.ZULU_TARGET)
+            },
+            **{
+                ref.canonical_id: _coverage(ref, covered=True)
+                for ref in (self.CALLER, self.ALPHA_CONSTRUCTOR, self.ZULU_CONSTRUCTOR)
+            },
         }
         self.report, _ = report_module.correlate(
-            routes_module.SampledProfile(),
+            _sampled_at(1, self.CALLER),
             self.graph,
             {"targets": [{"id": self.CALLER.canonical_id, "kind": "method"}]},
             jacoco,
@@ -457,7 +487,8 @@ class FactoryStubTranslationTest(unittest.TestCase):
             {first_constructor.canonical_id, second_constructor.canonical_id},
         )
 
-        routes = routes_module.public_entry_routes(graph, [self.CALLER])
+        executed: dict[int, bool] = {static_id: static_id != 9 for static_id in graph.methods}
+        routes = routes_module.public_entry_routes(graph, [self.CALLER], executed)
         selected, _ = routes_module.route_to(9, routes)
 
         self.assertEqual(selected, semantic_path)

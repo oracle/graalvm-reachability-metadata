@@ -1,0 +1,101 @@
+{
+  "base_commit": "9fa5dfbf1b26fe183bc1894b3bec176b0bc36bd7",
+  "branch": "ai/kimeta/fix-java-run-com.fasterxml.jackson.core-jackson-annotations-2.8.0-forge-10426-20261004171531808905-a0a6b3b4feb9",
+  "follow_ups": [],
+  "forge": {
+    "branch": "master",
+    "commit": "b9eada97e7a4d20552796a4833f74e2de8e0fbe5",
+    "monitored_branch": "origin/master"
+  },
+  "issue_number": 10426,
+  "library": {
+    "artifact": "jackson-annotations",
+    "coordinates": "com.fasterxml.jackson.core:jackson-annotations:2.8.0",
+    "group": "com.fasterxml.jackson.core",
+    "version": "2.8.0"
+  },
+  "local_ci_verification": {
+    "base_commit": "9fa5dfbf1b26fe183bc1894b3bec176b0bc36bd7",
+    "commands": [
+      {
+        "command": [
+          "./gradlew",
+          "generateChangedIndexFileCoordinatesList",
+          "-PbaseCommit=origin/master",
+          "-PnewCommit=HEAD"
+        ],
+        "env": {
+          "GITHUB_OUTPUT": "/tmp/tmp0ugwl3e6"
+        },
+        "gate": "changed-index-coordinates",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :generateChangedIndexFileCoordinatesList\n\n[Incubating] Problems report is available at: file:///home/oracle/oracle/metadata2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10426-0b0753de/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 11s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      },
+      {
+        "command": [
+          "./gradlew",
+          "validateIndexFiles",
+          "-Pcoordinates=com.fasterxml.jackson.core:jackson-annotations"
+        ],
+        "env": {},
+        "gate": "index-file-validation",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :validateIndexFiles\n✅ metadata/com.fasterxml.jackson.core/jackson-annotations/index.json: Valid\n\n[Incubating] Problems report is available at: file:///home/oracle/oracle/metadata2/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10426-0b0753de/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 6s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      }
+    ],
+    "failure_command": null,
+    "failure_gate": null,
+    "final_commit": "ab462bed2b8c31f5f2ee54303be031f3fbbfa31e",
+    "fixups": [],
+    "human_intervention_required": false,
+    "repo_fix_paths": [],
+    "status": "success"
+  },
+  "local_review": {
+    "changed_paths": [],
+    "decision": "approved",
+    "finding_body": "",
+    "finding_title": "",
+    "fix_note": "",
+    "model": "gpt-5.6-sol",
+    "review_comment": "The diff is confined to com.fasterxml.jackson.core:jackson-annotations:2.8.0 support files and its index entry. The test change narrowly accounts for JsonFormat.Shape.NATURAL while preserving the complete 2.6.0 test behavior and assertions; it does not swallow the JVM failure, skip Native Image, pin the artifact version in test logic, add prohibited flags, or use legacy metadata. The generated metadata is exercised by the UUIDGenerator public-API test. Both old and new dynamic-access reports are 0/0 with no breakdown scopes, so the ordered fixes-* coverage gate passes at step 1. The recorded generation status and local index gates are successful, and the index retains one latest entry with valid version buckets. No contribution-contract must violation was found.",
+    "session_id": "f166f05da21b4809"
+  },
+  "metrics": {
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "path": "stats/com.fasterxml.jackson.core/jackson-annotations/2.8.0/execution-metrics.json",
+    "summary": {
+      "cached_input_tokens_used": 314112,
+      "code_coverage_percent": 35.88,
+      "cost_usd": 0.5366,
+      "input_tokens_used": 67872,
+      "iterations": 3,
+      "metadata_entries": 4,
+      "output_tokens_used": 1337,
+      "previous_library_coverage_percent": 62.98,
+      "previous_library_metadata_entries": 4,
+      "tested_library_loc": 169
+    },
+    "timestamp": "2026-10-04T17:15:31.808905Z"
+  },
+  "modifiers": {
+    "chunk_final": true,
+    "chunked_dynamic_access": false,
+    "human_intervention": false
+  },
+  "previous_library": {
+    "artifact": "jackson-annotations",
+    "coordinates": "com.fasterxml.jackson.core:jackson-annotations:2.6.0",
+    "group": "com.fasterxml.jackson.core",
+    "version": "2.6.0"
+  },
+  "producer": "kimeta",
+  "publication_id": "forge-10426-20261004171531808905-a0a6b3b4feb9",
+  "render": {},
+  "schema_version": 1,
+  "strategy_name": "java_run_iterative_with_coverage_sources_pi_gpt-5.6-sol",
+  "task_type": "fixes-java-run-fail",
+  "template_type": "fixes-java-run-fail",
+  "timestamp": "2026-10-04T17:15:31.808905Z"
+}

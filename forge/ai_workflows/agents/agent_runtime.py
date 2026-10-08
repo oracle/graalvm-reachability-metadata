@@ -34,9 +34,12 @@ DEFAULT_AGENT_BY_BACKEND = {
     "codex": "codex",
     "opencode": "opencode",
 }
-# Codex runs unattended with the writable tool access required by Forge.
+# Codex and Claude Code run unattended with the writable tool access required
+# by Forge. Claude Code's `dontAsk` mode would deny every tool that is not
+# pre-allowed in settings, and Forge worktrees allow none.
 # §FS-forge-host-requirements
 CODEX_BYPASS_APPROVALS_AND_SANDBOX_FLAG = "--dangerously-bypass-approvals-and-sandbox"
+CLAUDE_CODE_BYPASS_PERMISSIONS_FLAGS = ("--permission-mode", "bypassPermissions")
 GITHUB_CREDENTIAL_ENV_VARS = (
     "GH_TOKEN",
     "GITHUB_TOKEN",

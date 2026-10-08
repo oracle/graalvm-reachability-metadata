@@ -29,7 +29,7 @@ import java.util.Map;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-abstract class AbstractHibernateTest {
+public abstract class AbstractHibernateTest {
 
     private EntityManagerFactory entityManagerFactory;
     private EntityManager entityManager;
@@ -64,6 +64,10 @@ abstract class AbstractHibernateTest {
     protected abstract String getJdbcUrl();
 
     protected abstract String getHibernateDialect();
+
+    protected <T> List<T> executeQuery(String query, Class<T> resultType) {
+        return entityManager.createQuery(query, resultType).getResultList();
+    }
 
     @Test
     public void testLoadStudent() {

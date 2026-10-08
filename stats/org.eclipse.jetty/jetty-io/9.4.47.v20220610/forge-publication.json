@@ -1,0 +1,103 @@
+{
+  "base_commit": "6a90d89a600a0152925c676c262ae39ad52787e7",
+  "branch": "ai/kimeta/fix-java-run-org.eclipse.jetty-jetty-io-9.4.47.v20220610-forge-10322-20261002194543118455-c797d1ee1729",
+  "follow_ups": [],
+  "forge": {
+    "branch": "master",
+    "commit": "0125dee4d73f48026a1ae06e439164e8857886a7",
+    "monitored_branch": "origin/master"
+  },
+  "issue_number": 10322,
+  "library": {
+    "artifact": "jetty-io",
+    "coordinates": "org.eclipse.jetty:jetty-io:9.4.47.v20220610",
+    "group": "org.eclipse.jetty",
+    "version": "9.4.47.v20220610"
+  },
+  "local_ci_verification": {
+    "base_commit": "6a90d89a600a0152925c676c262ae39ad52787e7",
+    "commands": [
+      {
+        "command": [
+          "./gradlew",
+          "generateChangedIndexFileCoordinatesList",
+          "-PbaseCommit=origin/master",
+          "-PnewCommit=HEAD"
+        ],
+        "env": {
+          "GITHUB_OUTPUT": "/tmp/tmp24woxsqs"
+        },
+        "gate": "changed-index-coordinates",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :generateChangedIndexFileCoordinatesList\n\n[Incubating] Problems report is available at: file:///home/oracle/oracle/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10322-229d99b9/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 6s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      },
+      {
+        "command": [
+          "./gradlew",
+          "validateIndexFiles",
+          "-Pcoordinates=org.eclipse.jetty:jetty-io"
+        ],
+        "env": {},
+        "gate": "index-file-validation",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :validateIndexFiles\n✅ metadata/org.eclipse.jetty/jetty-io/index.json: Valid\n\n[Incubating] Problems report is available at: file:///home/oracle/oracle/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10322-229d99b9/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 4s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      }
+    ],
+    "failure_command": null,
+    "failure_gate": null,
+    "final_commit": "229c62b385529502d96756e756c28fb39ea95c27",
+    "fixups": [],
+    "human_intervention_required": false,
+    "repo_fix_paths": [],
+    "status": "success"
+  },
+  "local_review": {
+    "changed_paths": [],
+    "decision": "approved",
+    "finding_body": "",
+    "finding_title": "",
+    "fix_note": "",
+    "model": "gpt-5.6-sol",
+    "review_comment": "Reviewed the base-to-head diff and local evidence for org.eclipse.jetty:jetty-io:9.4.47.v20220610. The contribution stays within the target coordinate, preserves the existing endpoint behavior while fixing the JVM failure by registering the accepted non-blocking channel with a real Selector and SelectionKey, contains no test weakening, Native Image dodge, legacy metadata, version-pinned assertion, or unrelated infrastructure change, and keeps meaningful public-API assertions. The fixes-* coverage gate passes overall (0/0 to 1/1) and for reflection (0/0 to 1/1). The recorded generation and local CI verification succeeded, and index validation also passes in this worktree. No contribution-contract violation was found, so the first matching disposition is approval.",
+    "session_id": "4954bf0bfb124330"
+  },
+  "metrics": {
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "path": "stats/org.eclipse.jetty/jetty-io/9.4.47.v20220610/execution-metrics.json",
+    "summary": {
+      "cached_input_tokens_used": 1209856,
+      "code_coverage_percent": 23.65,
+      "cost_usd": 1.4059,
+      "input_tokens_used": 109461,
+      "iterations": 5,
+      "metadata_entries": 11,
+      "output_tokens_used": 8456,
+      "previous_library_coverage_percent": 25.23,
+      "previous_library_metadata_entries": 8,
+      "previous_library_test_only_metadata_entries": 77,
+      "test_only_metadata_entries": 162,
+      "tested_library_loc": 779
+    },
+    "timestamp": "2026-10-02T19:45:43.118455Z"
+  },
+  "modifiers": {
+    "chunk_final": true,
+    "chunked_dynamic_access": false,
+    "human_intervention": false
+  },
+  "previous_library": {
+    "artifact": "jetty-io",
+    "coordinates": "org.eclipse.jetty:jetty-io:9.4.19.v20190610",
+    "group": "org.eclipse.jetty",
+    "version": "9.4.19.v20190610"
+  },
+  "producer": "kimeta",
+  "publication_id": "forge-10322-20261002194543118455-c797d1ee1729",
+  "render": {},
+  "schema_version": 1,
+  "strategy_name": "java_run_iterative_with_coverage_sources_pi_gpt-5.6-sol",
+  "task_type": "fixes-java-run-fail",
+  "template_type": "fixes-java-run-fail",
+  "timestamp": "2026-10-02T19:45:43.118455Z"
+}

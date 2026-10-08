@@ -5,7 +5,7 @@
 
 """Uncovered-target records for the deep-method report.
 
-Builds one record per exact JaCoCo-uncovered deep method — its best static
+Builds one record per exact JaCoCo-uncovered deep target — its best static
 route, ranking keys, and the JSON forms the report serializes
 (§AR-code-coverage-deep-navigation.2). Miss classification lives in
 `code_coverage_profile_miss`.
@@ -57,6 +57,9 @@ class NearCallRecord:
     static_path_edges: list[dict]
     sample: Sample | None
     sampled_join_path_index: int | None
+    #: Whether the target is a public method the API phase left uncovered
+    #: (§AR-code-coverage-improvement.4.2).
+    public_api: bool = False
     semantic_distance: int | None = None
     #: Reach count of the target's miss diagnosis: how often its fork or
     #: dispatch site ran (§AR-code-coverage-deep-navigation.2.2).
@@ -94,6 +97,7 @@ def build_record(
         sampled_routes: RouteMap,
         entry_routes: RouteMap,
         target_state: TargetState,
+        public_api: bool,
 ) -> NearCallRecord:
     target_id: int | None = graph.key_to_id.get(coverage.method_ref.canonical_id)
     if target_id is None:
@@ -106,6 +110,7 @@ def build_record(
             static_path_edges=[],
             sample=None,
             sampled_join_path_index=None,
+            public_api=public_api,
         )
     if target_id in sampled_routes.distance:
         path, edges = route_to(target_id, sampled_routes)
@@ -119,6 +124,7 @@ def build_record(
             static_path_edges=edges,
             sample=sample,
             sampled_join_path_index=path_index,
+            public_api=public_api,
             semantic_distance=_path_distance(path, graph),
         )
     if target_id in entry_routes.distance:
@@ -132,6 +138,7 @@ def build_record(
             static_path_edges=edges,
             sample=None,
             sampled_join_path_index=None,
+            public_api=public_api,
             semantic_distance=_path_distance(path, graph),
         )
     return NearCallRecord(
@@ -143,6 +150,7 @@ def build_record(
         static_path_edges=[],
         sample=None,
         sampled_join_path_index=None,
+        public_api=public_api,
     )
 
 
@@ -258,6 +266,7 @@ def record_to_json(
         "sourceLine": record.coverage.source_line,
         "jacocoReportPaths": list(record.coverage.report_paths),
         "jacocoStatus": "uncovered",
+        "publicApi": record.public_api,
         "rank": rank,
         "attemptCount": record.attempt_count,
         "targetStatus": record.target_state.status,

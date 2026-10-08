@@ -1,0 +1,121 @@
+{
+  "base_commit": "d3b71482f151b28e8ce6daf3a4dc1d64c67656b4",
+  "branch": "ai/kimeta/add-lib-support-com.sun.xml.ws-policy-4.0.5-forge-9942-20261002215840263988-af426df43b6a",
+  "follow_ups": [],
+  "forge": {
+    "branch": "master",
+    "commit": "64b39e298df2e06d80520993b3c73ded87225968",
+    "monitored_branch": "origin/master"
+  },
+  "issue_number": 9942,
+  "library": {
+    "artifact": "policy",
+    "coordinates": "com.sun.xml.ws:policy:4.0.5",
+    "group": "com.sun.xml.ws",
+    "version": "4.0.5"
+  },
+  "local_ci_verification": {
+    "base_commit": "d3b71482f151b28e8ce6daf3a4dc1d64c67656b4",
+    "commands": [
+      {
+        "command": [
+          "./gradlew",
+          "generateChangedIndexFileCoordinatesList",
+          "-PbaseCommit=origin/master",
+          "-PnewCommit=HEAD"
+        ],
+        "env": {
+          "GITHUB_OUTPUT": "/tmp/tmpaovnxqcj"
+        },
+        "gate": "changed-index-coordinates",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :generateChangedIndexFileCoordinatesList\n\n[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9942-3e1fef59/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 2s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      },
+      {
+        "command": [
+          "./gradlew",
+          "validateIndexFiles",
+          "-Pcoordinates=com.sun.xml.ws:policy"
+        ],
+        "env": {},
+        "gate": "index-file-validation",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :validateIndexFiles\n✅ metadata/com.sun.xml.ws/policy/index.json: Valid\n\n[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9942-3e1fef59/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 1s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      }
+    ],
+    "failure_command": null,
+    "failure_gate": null,
+    "final_commit": "908d806f68c0b2d3c2f8578501de89e73d1aea8e",
+    "fixups": [],
+    "human_intervention_required": false,
+    "repo_fix_paths": [],
+    "status": "success"
+  },
+  "local_review": {
+    "changed_paths": [],
+    "decision": "approved",
+    "finding_body": "",
+    "finding_title": "",
+    "fix_note": "",
+    "model": "gpt-5.6-sol",
+    "review_comment": "Reviewed the single-coordinate diff and local evidence. The contribution stays within the allowed metadata, stats, and test paths; uses only reachability-metadata.json; and provides public, version-agnostic tests in a separate package with no scaffold body, Native Image skip, failure tolerance, JVM override, or native build/run flag. The resolved statistics report no dynamic-access calls, so the 0/0-equivalent case passes without a percentage or entry-count mismatch gate. Index validation evidence is green, and the exact Forge finalization completed all three test lanes, metadata splitting and validation, style checks, generated-test checks, and statistics generation without changing the publishable tree.",
+    "session_id": "67fe1e10bce64fe3"
+  },
+  "metrics": {
+    "agent": "pi",
+    "model": "gpt-5.6-luna",
+    "path": "stats/com.sun.xml.ws/policy/4.0.5/execution-metrics.json",
+    "summary": {
+      "cached_input_tokens_used": 14998016,
+      "code_coverage_percent": 5.69,
+      "cost_usd": 2.5539,
+      "generated_loc": 103,
+      "input_tokens_used": 650771,
+      "iterations": 15,
+      "metadata_entries": 0,
+      "output_tokens_used": 67212,
+      "tested_library_loc": 153
+    },
+    "timestamp": "2026-10-02T21:58:40.263988Z"
+  },
+  "modifiers": {
+    "chunk_final": true,
+    "chunked_dynamic_access": false,
+    "human_intervention": false
+  },
+  "producer": "kimeta",
+  "publication_id": "forge-9942-20261002215840263988-af426df43b6a",
+  "render": {
+    "dynamic_access": null,
+    "dynamic_access_evidence": null,
+    "library_stats": {
+      "dynamicAccess": "N/A",
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 847,
+          "missed": 12164,
+          "ratio": 0.065099,
+          "total": 13011
+        },
+        "line": {
+          "covered": 153,
+          "missed": 2535,
+          "ratio": 0.05692,
+          "total": 2688
+        },
+        "method": {
+          "covered": 51,
+          "missed": 683,
+          "ratio": 0.069482,
+          "total": 734
+        }
+      },
+      "version": "4.0.5"
+    }
+  },
+  "schema_version": 1,
+  "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-luna",
+  "task_type": "library-new-request",
+  "template_type": "library-new-request",
+  "timestamp": "2026-10-02T21:58:40.263988Z"
+}

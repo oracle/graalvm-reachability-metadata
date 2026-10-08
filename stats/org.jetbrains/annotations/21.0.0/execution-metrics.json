@@ -1,0 +1,116 @@
+{
+  "fix_javac_fail:2026-10-03": {
+    "timestamp": "2026-10-03T03:51:44.914660Z",
+    "library": "org.jetbrains:annotations:21.0.0",
+    "starting_commit": "287703d9236e87504bf2b0bd21acd1f26ad2612e",
+    "ending_commit": "a3341c6711541c32b9eb84be32bf3bf0c3317692",
+    "previous_library": "org.jetbrains:annotations:16.0.1",
+    "strategy_name": "javac_iterative_with_coverage_sources_pi_gpt-5.6-sol",
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "status": "success",
+    "stats": {
+      "version": "21.0.0",
+      "dynamicAccess": {
+        "breakdown": {},
+        "coverageRatio": 1.0,
+        "coveredCalls": 0,
+        "totalCalls": 0
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 34,
+          "missed": 31,
+          "ratio": 0.523077,
+          "total": 65
+        },
+        "line": {
+          "covered": 4,
+          "missed": 9,
+          "ratio": 0.307692,
+          "total": 13
+        },
+        "method": {
+          "covered": 1,
+          "missed": 5,
+          "ratio": 0.166667,
+          "total": 6
+        }
+      }
+    },
+    "previous_library_stats": {
+      "version": "16.0.1",
+      "dynamicAccess": {
+        "breakdown": {},
+        "coverageRatio": 1.0,
+        "coveredCalls": 0,
+        "totalCalls": 0
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 37,
+          "missed": 3,
+          "ratio": 0.925,
+          "total": 40
+        },
+        "line": {
+          "covered": 5,
+          "missed": 1,
+          "ratio": 0.833333,
+          "total": 6
+        },
+        "method": {
+          "covered": 2,
+          "missed": 1,
+          "ratio": 0.666667,
+          "total": 3
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "no_action",
+      "issue_number": 10387,
+      "issue_label": "fails-javac-compile",
+      "library": "org.jetbrains:annotations:21.0.0",
+      "summary": "The failure is a test-source compile error: the existing 16.0.1 test calls `new JdkConstants()`, and that constructor is private in 21.0.0. It needs a test-code fix, not extra dependencies, Docker images, or properties. org.jetbrains:annotations is a pure annotations jar with no runtime dependencies or external services.",
+      "deterministic_setup": [],
+      "agent_guidance": "",
+      "risks": [
+        "The copied 16.0.1 test must not instantiate JdkConstants directly, because its constructor is private in 21.0.0. Remove or adapt that assertion.",
+        "I did not open the repository or the 21.0.0 jar. This conclusion rests on the compiler error in the log and on what I know of the library."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#10387 [Automation] javac compile fails for org.jetbrains:annotations:21.0.0; label=fails-javac-compile; body_chars=8015"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "6 existing test file path(s) included"
+        }
+      ],
+      "current_library": "org.jetbrains:annotations:16.0.1",
+      "new_version": "21.0.0",
+      "model": "sonnet",
+      "input_tokens_used": 2,
+      "output_tokens_used": 422
+    },
+    "metrics": {
+      "input_tokens_used": 40007,
+      "cached_input_tokens_used": 157696,
+      "output_tokens_used": 790,
+      "iterations": 3,
+      "cost_usd": 0.3025,
+      "tested_library_loc": 4,
+      "metadata_entries": 0,
+      "previous_library_metadata_entries": 0,
+      "code_coverage_percent": 30.77,
+      "previous_library_coverage_percent": 83.33
+    },
+    "artifacts": {
+      "metadata_file": "metadata/org.jetbrains/annotations/21.0.0/reachability-metadata.json"
+    }
+  }
+}

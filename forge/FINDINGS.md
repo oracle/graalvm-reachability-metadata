@@ -9,6 +9,223 @@ Newest entry first; every non-approval is recorded, including one a repair later
 
 `ConverterNumberTest.nonDecimalNumberFormatProviderIsRejectedWhenConverterIsCreated()` calls `assumeFalse(isNativeImageRuntime())`, so the asserted opencsv behavior never executes in any Native Image lane. This violates `FS-test-contract.4.1` and the `fixes-javac-fail` review rule against raw native-only skips. I removed the assumption while preserving the assertions and ran the required finalizer: current-defaults passed, but future-defaults failed because `NumberFormat.getInstance(zz-ZZ)` returned `DecimalFormat` instead of the test service provider. I restored the verified tree because neither deleting the scenario nor retaining its native bypass is a permitted repair, and the evidence does not establish a compliant alternative. The related native flags initialize and select a test-defined provider rather than demonstrating necessity originating in opencsv or a transitive dependency, so their uniform-necessity basis is also unproven. A maintainer must decide whether a compliant Native Image test shape exists or whether an evidence-backed contract disposition applies.
 
+## 2026-10-08 — com.netflix.graphql.dgs:graphql-dgs:10.5.0 (#8967)
+
+**Test bypasses Kotlin internal visibility with @file:Suppress(INVISIBLE_MEMBER) to call a library-internal method**
+
+FS-test-contract.2.2 and FS-contribution-contract.4.6 (visibility bypass): DefaultDgsDataLoaderProviderTest.kt carried @file:Suppress("INVISIBLE_REFERENCE", "INVISIBLE_MEMBER") so that it could call DefaultDgsDataLoaderProvider.findDataLoaders(). In graphql-dgs 10.5.0 that method is Kotlin `internal` (annotated @PostConstruct), so no consumer can call it directly. The covered dynamic-access call sites (addDataLoaderComponents/addDataLoaderFields reflection) were therefore reached through access nobody ships. Evidence: sources jar DefaultDgsDataLoaderProvider.kt line 106-107 `@PostConstruct internal fun findDataLoaders()`.
+
+## 2026-10-08 — com.netflix.graphql.dgs:graphql-dgs-spring-graphql:10.5.0 (#8973)
+
+**Version-pinned companion artifact in generated test project**
+
+The test project's `build.gradle` pinned `com.netflix.graphql.dgs:graphql-dgs:10.5.0`. That tied the suite's companion DGS module to the initial tested release instead of allowing the shared test to follow later tested versions, violating the version-agnostic test requirement in §FS-test-contract.2.5 and Review Signal #4.
+
+## 2026-10-08 — org.springframework.batch:spring-batch-core:6.0.4 (#9286)
+
+**New-library contribution modifies another coordinate**
+
+§FS-contribution-contract.2 limits this contribution to org.springframework.batch:spring-batch-core:6.0.4 and its supporting files, but the diff modifies metadata/org.hsqldb/hsqldb/2.7.3/reachability-metadata.json. The local review evidence independently flags that same path in repo_fix_paths and requires human intervention. I checked whether this could be repaired within the Spring Batch file set, but the change belongs to the HSQLDB dependency coordinate; removing, relocating, or landing it requires an edit or separate contribution for another coordinate. Under §FS-contribution-contract.5.2 and §FS-contribution-contract.5.5, a maintainer must split or land the HSQLDB metadata update separately, then rebase or regenerate this contribution.
+## 2026-10-08 — org.springframework.boot:spring-boot-resttestclient:4.1.1 (#9713)
+
+**Supporting dependency pins the target library version**
+
+The test project's `build.gradle` pinned `org.springframework.boot:spring-boot-restclient` to `4.1.1`, so the suite would not follow the TCK-selected Spring Boot version, violating the version-agnostic test requirement.
+
+## 2026-10-06 — org.springframework.boot:spring-boot-micrometer-tracing:4.1.1 (#9732)
+## 2026-10-07 — io.micrometer:micrometer-observation-test:1.17.1 (#9727)
+
+**Pre-push review unavailable**
+
+Forge could not obtain a readable pre-push review verdict. This records a review availability problem, not a reviewer finding against the branch.
+
+## 2026-10-06 — org.apache.activemq:activemq-client:6.3.0 (#10600)
+
+**Generated statistics and test-only metadata were not fully finalized**
+
+The first required Forge finalization pass changed the publishable tree and exited nonzero: it regenerated stale library instruction/line coverage values in `stats/org.apache.activemq/activemq-client/6.3.0/stats.json` and normalized section ordering in the test-only `reachability-metadata.json`. A publishable contribution must contain the deterministic finalized outputs, so this was repaired within the allowed coordinate files under FS-contribution-contract.5.1.
+
+## 2026-10-06 — org.apache.activemq:activemq-client:6.2.7 (#10593)
+
+**ActiveMQ test teardown waits indefinitely and suppresses shutdown failures**
+
+The modified ActiveMQClientTest teardown called unbounded BrokerService.waitUntilStopped() and caught and logged stop failures, violating the bounded-test requirement in FS-test-contract.1.6 and allowing cleanup failure to be hidden. This was contribution-local and repairable under FS-contribution-contract.5.1.
+
+## 2026-10-06 — org.apache.activemq:activemq-client:6.0.0 (#10536)
+
+**Generated broker tests exceed the per-test timeout bound**
+
+The newly added ActiveMQSessionTest and ProducerThreadTest called BrokerService.waitUntilStarted(), whose ActiveMQ 6.0.0 default timeout is 600000 ms, and waitUntilStopped(), which waits on the stopped latch without a timeout. This violated the 60-second per-test and bounded-wait requirements in FS-test-contract.1.6.
+
+## 2026-10-06 — org.springframework:spring-test:7.0.0 (#9401)
+
+**Native-only AOT failure is accepted as test success**
+
+MergedContextConfigurationRuntimeHintsTest caught the library-specific IllegalStateException stating that AOT processing cannot run during AOT runtime and treated that exception as success. This made Native Image pass with behavior different from the JVM and violated FS-test-contract.4.2; it was not the sanctioned UnsupportedFeatureError proof for open-ended dynamic class loading.
+## 2026-10-06 — org.eclipse.paho:org.eclipse.paho.mqttv5.client:1.2.5 (#10516)
+
+**Generated test configuration exceeded timeout and module-opening limits**
+
+Mqttv5ClientTest allowed broker startup to wait 120 seconds, violating the 60-second per-test bound in FS-test-contract.1.6. The build also opened sun.nio.ch to JVM and Native Image without satisfying the uniform-necessity rule in FS-test-contract.2.7; Java testing and all three finalization lanes passed after that opening was removed. The narrower java.net opening remains justified: removing it reproducibly failed NetworkModuleServiceTest with InaccessibleObjectException in the library's NetworkModuleService.setURIField path.
+
+## 2026-10-05 — org.flywaydb:flyway-core:10.15.0 (#10518)
+
+**Dynamic-access classes lacked dedicated test files**
+
+The resolved dynamic-access report listed covered call sites in org.flywaydb.core.internal.license.VersionPrinter and org.flywaydb.core.internal.resource.classpath.ClassPathResource, but the suite had no dedicated VersionPrinterTest.java or ClassPathResourceTest.java. This violated the one-test-file-per-dynamic-access-class requirement in §FS-test-contract.1.8.
+
+## 2026-10-05 — org.flywaydb:flyway-database-postgresql:10.10.0 (#10555)
+
+**Test-only reachability metadata keys were not deterministically ordered**
+
+The initial test-only reachability-metadata.json placed the top-level resources key before reflection instead of using the repository's normalized JSON key ordering. Forge finalization detected this as a publishable-tree change and reordered the keys without changing their entries or semantics.
+## 2026-10-05 — dev.langchain4j:langchain4j-jina:1.21.0-beta31 (#10469)
+
+**Pre-push review unavailable**
+
+Forge could not obtain a readable pre-push review verdict. This records a review availability problem, not a reviewer finding against the branch.
+
+## 2026-10-04 — io.lettuce:lettuce-core:7.0.0.RELEASE (#10430)
+
+**Compile repair removed meaningful runtime coverage**
+
+The post-generation intervention violated the fix-by-weakening rule in FS-test-contract.2.9 and failed the large-report repair coverage gate: it removed 23 inherited connection and command tests rather than preserving their behavior, reducing both overall and reflection dynamic-access coverage from 52/55 (94.5455%) to 16/55 (29.0909%). The recorded failures were caused by transitive Netty 4.2.4 reaching Arena.ofShared while Native Image shared-arena support was disabled, not by the test behavior or missing reachability metadata.
+
+## 2026-10-04 — ch.qos.logback:logback-classic:1.6.2 (#10425)
+
+**Runtime repair weakened an unrelated passing test**
+
+The generated branch rewrote PackagingDataCalculatorTest by removing its platform-context-class-loader scenario and replacing the real throwable stack with a synthetic frame, even though the recorded native run showed that original test passing. That was a fix-by-weakening violation of the test scope contract, unrelated to the reported RemoteAppenderStreamClient broken-pipe failure.
+
+## 2026-10-04 — org.apache.tomcat.embed:tomcat-embed-el:10.1.0 (#10432)
+
+**Java runtime repair broadened into unrelated test coverage**
+
+The generated contribution violated the no-scope-creep and fix-by-weakening boundary in §FS-test-contract.2.9 and §FS-contribution-contract.4.8: beyond adapting the failing StaticFieldELResolver type assertion, it added an unrelated EL lambda scenario, added a malformed-expression MessageFactory scenario, and rewrote the already-passing FunctionMapper scenario solely to increase dynamic-access coverage. The observed JVM failure concerned only StaticFieldELResolver.getType returning null in Tomcat 10.1.
+
+## 2026-10-03 — gg.jte:jte-runtime:3.2.4 (#9786)
+
+**Dynamic-access classes shared a generic test file**
+
+The original Jte_runtimeTest.java covered dynamic access in both gg.jte.runtime.RuntimeTemplateLoader and gg.jte.runtime.Template. The test contract requires each dynamic-access class to have its own dedicated test file.
+## 2026-10-03 — org.jetbrains.kotlin:kotlin-reflect:2.5.0-Beta1 (#10368)
+
+**Coverage tests bypass the library public API and force an alternate implementation mode**
+
+The contribution directly imported and exercised kotlin.reflect.jvm.internal DescriptorKindFilter, GeneratedMessageLite, and SmartList classes instead of reaching them through the public kotlin.reflect API. It also forced kotlin.reflect.jvm.loadMetadataDirectly=true for JVM and native tests even though the issue and preparation evidence required no system property and did not establish the test-contract uniform-necessity conditions for a runtime flag. These violated the meaningful public-API and native flag requirements.
+
+## 2026-10-03 — org.eclipse.jetty:jetty-io:10.0.0 (#10386)
+
+**Jetty I/O tests used explicit timeouts below the required floor**
+
+The new Jetty 10 test project used 2-second waits for asynchronous I/O callbacks and a 100-millisecond IdleTimeout. These explicit I/O timeouts violated FS-test-contract.1.7, which requires at least 10 seconds to avoid agent and Native Image startup flakiness.
+## 2026-10-03 — org.locationtech.jts:jts-core:1.20.0 (#9789)
+
+**Bundled support JAR shadows the target library**
+
+The test project added JTSTestBuilder-support.bin as a test dependency. Its embedded Maven metadata identified a jts-app 1.20.0-SNAPSHOT assembly, and the archive contained 751 org/locationtech/jts class files, including classes supplied by the target jts-core artifact. The tests could therefore execute shadow copies instead of org.locationtech.jts:jts-core:1.20.0, violating §FS-test-contract.2.3's prohibition on shadow classes for library types.
+
+## 2026-10-03 — org.jetbrains.kotlin:kotlin-reflect:2.5.0-Beta1 (#10368)
+
+**Generated library statistics were stale**
+
+The first required finalization run regenerated stats.json and changed instruction coverage from 112261 to 112266 covered instructions and line coverage from 16461 to 16462 covered lines. Because the required statistics generation did not reproduce the committed file, the generated statistics were stale and needed refresh before approval.
+## 2026-10-02 — org.apache.tomcat.embed:tomcat-embed-el:10.0.17 (#10319)
+
+**Runtime repair masked a library serialization regression and required a test-only native build flag**
+
+The contribution used CompatibleObjectOutputStream to replace Class<?>[] with String[] while serializing FunctionMapperImpl, hiding Tomcat 10.0.17's incompatible normal round trip instead of testing supported behavior; the 10.0.17 source writes Class[] while readExternal reads String[]. It also installed a test-only ExpressionFactory provider and added -H:ServiceLoaderFeatureExcludeServiceProviders solely to make that provider win in Native Image, contrary to the uniform-necessity rule for native flags. The custom provider and MessageFactory additions were unrelated expansion in a JVM runtime repair. These violated FS-test-contract.2.6, FS-test-contract.2.7, and FS-test-contract.2.9.
+## 2026-10-03 — org.apache.curator:curator-client:5.8.0 (#10317)
+
+**Test forces an unrelated transitive dependency version**
+
+The 5.8.0 test project forced ZooKeeper from Curator 5.8.0's resolved 3.9.2 dependency to 3.5.10 solely to exercise legacy Compatibility branches. This changed the tested runtime graph and added unrelated build setup rather than adapting the test to the target version, violating the no-scope-creep requirement in FS-test-contract.2.9.
+## 2026-10-03 — com.google.guava:guava:33.7.0-jre (#10313)
+
+**Unverifiable native class-loading tolerance and missing Finalizer metadata**
+
+ClassPathInnerClassInfoTest accepted ClassInfo.load() failures by checking the native-image runtime property and a library-wrapped ClassNotFoundException instead of positively proving GraalVM's UnsupportedFeatureError. The attempted operation loads generated bytecode from a runtime-created temporary class path after the native executable is built, so it is unsupported open-ended dynamic class loading; the library-level ClassNotFoundException leaves the refusal unverifiable. Re-scoping the test to ClassPath's public discovery API preserves meaningful native-compatible assertions and keeps the remaining shipped metadata justified. Finalization also reproduced a MissingReflectionRegistrationError for Finalizer.startFinalizer; the prior tested version contained the two FinalizableReference/Finalizer registrations required by this unchanged library behavior.
+
+## 2026-10-02 — org.jetbrains.kotlin:kotlin-reflect:2.5.0-Beta1 (#10325)
+
+**Latest Kotlin reflection metadata dropped established native support**
+
+The new latest metadata bucket retained only kotlin/kotlin.kotlin_builtins and omitted conditional registrations already required by Kotlin reflection. Since Spring's unlisted kotlin-reflect 2.3.21 dependency selects the latest bucket, native runs failed first with an unresolved java.util.Set and then with missing reflection access to Executable.getParameters() and Parameter.getName(). This is a contribution-local required-CI regression repairable under contribution-contract disposition 5.1.
+## 2026-10-02 — ch.qos.logback:logback-classic:1.6.0 (#10311)
+
+**Explicit I/O timeouts below the required 10-second floor**
+
+FS-test-contract.1.7 requires every explicit socket, connection, and bounded I/O wait to be at least 10 seconds. RemoteAppenderStreamClientTest, SocketNodeTest, and SocketReceiverTest each set SOCKET_TIMEOUT_MILLIS to 5,000 and used it for socket operations and related bounded waits.
+## 2026-10-03 — com.nimbusds:nimbus-jose-jwt:4.0 (#9334)
+
+**Unjustified Native Image URL protocol flag**
+
+The new 4.0 test project copied `--enable-url-protocols=https` into `build.gradle` without satisfying the native-flag necessity rule. The adapted 4.0 tests use `URI` values and perform no HTTPS URL access, so the flag was not required by the library or a transitive dependency. All three Native Image lanes passed after its removal.
+
+## 2026-10-02 — org.springframework:spring-aop:6.1.7 (#10339)
+
+**Over-broad Spring AOP serialization condition breaks affected native consumers**
+
+The 6.1.7 metadata made the serializable AspectJMethodBeforeAdvice entry conditional on InstantiationModelAwarePointcutAdvisorImpl. On the CI GraalVM 25.0.4+7.1, that condition activates in Spring AOT applications where the advice type is not otherwise reachable and fails during image layout with `Type not found during analysis: ... AspectJMethodBeforeAdvice`. The exact defect previously caused PR #10119's Spring AOT matrix to fail and be reverted. Because the violation is in this contribution's own metadata, it is repaired under §FS-contribution-contract.5.1.
+## 2026-10-02 — org.aspectj:aspectjweaver:1.9.21.2 (#10321)
+
+**Test-only preview configuration broadened a javac repair**
+
+The contribution added --enable-preview to Java compilation, JVM execution, and Native Image build configuration solely to support a rewritten experimental-ASM test path. That necessity originated in test code, not AspectJ or a transitive dependency, violating the native flag rule in FS-test-contract.2.7 and broadening the compile repair beyond the changed Optional-return API contrary to FS-test-contract.2.9.
+## 2026-10-02 — com.sun.xml.ws:httpspi-servlet:4.0.5 (#9946)
+
+**Shipped metadata was not exercised by the generated tests**
+
+Resolved review evidence reported metadata for reflective WstxInputFactory construction when DeploymentDescriptorParser is reached, but the original tests never invoked DeploymentDescriptorParser. The suite could therefore stay green without exercising the public library path that requires the shipped metadata, violating the meaningful public-API and metadata-justification requirements.
+
+## 2026-10-02 — org.apache.sshd:sshd-common:2.18.0 (#9957)
+
+**Generated stats omit observed dynamic-access coverage**
+
+The committed stats reported dynamicAccess as N/A even though the local evidence identified 27 non-zero dynamic-access call sites, so the new-library coverage gate lacked credible percentage evidence. Forge finalization regenerated the report as 27/27 covered (100%; reflection 25/25 and resources 2/2).
+
+## 2026-10-02 — org.jetbrains.kotlin:kotlin-stdlib:2.5.0-Beta1 (#10330)
+
+**Repair coverage bypasses library visibility and carries an unnecessary Native Image flag**
+
+The newly added KotlinGenericDeclarationKtTest suppressed INVISIBLE_MEMBER and INVISIBLE_REFERENCE to cast to kotlin.jvm.internal.KotlinGenericDeclaration and invoke its internal API, so its coverage did not satisfy the public-API must in FS-test-contract.1.3. The copied build also passed --initialize-at-build-time=kotlin.Metadata without evidence for the uniform-necessity rule in FS-test-contract.2.7; all three native lanes pass without it.
+## 2026-10-02 — org.apache.curator:curator-client:5.0.0 (#10288)
+
+**Generated coverage tests bypass supported consumer behavior**
+
+CompactHashMapTest and CompactHashSetTest manufactured Java serialization streams naming inaccessible shaded implementation classes instead of reaching behavior through a public library API, violating §FS-test-contract.1.3 and §FS-test-contract.2.1. ClassPathInnerClassInfoTest and ClassPathInnerResourceInfoTest exercised temporary URLClassLoader and machine-local classpath discovery prohibited by §FS-test-contract.4.4 and §FS-test-contract.4.5. Re-scoping those ClassPath tests to the ordinary application class loader failed natively with an unverifiable NoSuchElementException, so the unsupported open-ended classpath-discovery scenarios were dropped under §FS-test-contract.4.3.2; the mechanism, failed re-scope, and surviving 109/123 covered calls satisfy the three repair bounds in §FS-contribution-contract.5.1. The contribution also overrode Curator's resolved ZooKeeper 3.6.0 dependency with 3.5.7 solely to assert the older Compatibility branch, rather than testing the target's normal dependency surface.
+
+## 2026-09-21 — org.liquibase:liquibase-core:4.17.0 (#3996)
+
+**Forge missed downstream test-version aliases before publication**
+
+FS-library-update-tested-version-split requires Forge to catch regenerated-test incompatibility before a library-update branch becomes PR-eligible. The 4.20.0 and 4.23.0 index entries both declare test-version 4.17.0, so changes under tests/src/org.liquibase/liquibase-core/4.17.0 affect both entries in CI. Forge's alias splitter inspected only the target 4.17.0 entry, whose tested-versions list contains only 4.17.0; the publication descriptor consequently records render.alias_split as null and local verification as successful. After the scoped YAML API adaptation, ./gradlew test for 4.17.0 passes, while ./gradlew test for 4.20.0 builds successfully through the JVM lane but reports 11 native-test failures, and ./gradlew checkstyle compileTestJava for 4.23.0 fails because liquibase.hub.core and liquibase.hub.model were removed. Keeping the regenerated 4.17.0 coverage while retaining the baseline suite for these downstream aliases requires changing the artifact index and creating or selecting another version's test directory. Those are outside the permitted 4.17.0 repair file set, so this is disposition 5.3 followed by 5.5 rather than a contribution-local repair.
+
+Infrastructure issue: https://github.com/oracle/graalvm-reachability-metadata/issues/10138 (#10138)
+
+## 2026-09-21 — org.liquibase:liquibase-core:4.17.0 (#3996)
+
+**Generated tests exercise prohibited OSGi class-loader behavior**
+
+CustomChangeWrapperTest added an OSGi Bundle/Activator scenario and org.osgi dependency specifically to exercise Liquibase's OSGi class-loader branch. FS-test-contract.4.5 forbids tests targeting OSGi class-loader paths because they depend on runtime class-loading behavior Native Image cannot support.
+
+## 2026-10-02 — io.micronaut:micronaut-context:5.1.3 (#9803)
+
+**Unnecessary compiler dependency on the runtime test classpath**
+
+The coordinate build declared io.micronaut:micronaut-inject-java:5.1.3 as testImplementation even though the compiler was already present in the required, version-aligned testAnnotationProcessor configuration. This unnecessarily broadened the test classpath and hardcoded a support-module version, contrary to the minimal-scope requirement in §root/FS-test-contract.2.9. The complete finalization pass succeeded after removal, confirming that the extra testImplementation dependency was not needed.
+
+## 2026-10-02 — com.squareup.okhttp3:okhttp:3.9.0 (#9336)
+
+**Generated repair uses a shadow Android API to manufacture coverage**
+
+The added tests/src/com.squareup.okhttp3/okhttp/3.9.0/src/test/java/android/security/NetworkSecurityPolicy.java shadowed a real Android framework type, and AndroidPlatformTest depended on that fake type to activate an Android-only library path on the desktop test runtime. The contribution also changed the inherited X509TrustManagerExtensions stub to force the desired fallback. This violates FS-test-contract.2.3 and adds unrelated synthetic coverage to a javac repair rather than narrowly adapting the failing TrustRootIndex call.
+
+## 2026-10-02 — org.hibernate:hibernate-core:6.1.0.Final (#9119)
+
+**Modified top-level test class is not public**
+
+FS-test-contract.1.2 requires every top-level test class to be public. The contribution modified AbstractHibernateTest.java but left its top-level abstract test class package-private, while newly added tests inherit its JUnit tests.
 ## 2026-10-01 — io.opentelemetry:opentelemetry-sdk-trace:1.59.0 (#9350)
 
 **Generated repair retained test-side reflection and an unnecessary Native Image flag**

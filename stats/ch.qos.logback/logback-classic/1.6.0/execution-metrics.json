@@ -1,0 +1,141 @@
+{
+  "fix_javac_fail:2026-10-02": {
+    "timestamp": "2026-10-02T22:45:50.558016Z",
+    "library": "ch.qos.logback:logback-classic:1.6.0",
+    "starting_commit": "a1dda076d45d5676e733f5cfda5b5e021c79b231",
+    "ending_commit": "0aefd8018a870c186db4da2c921a73f801d9d270",
+    "previous_library": "ch.qos.logback:logback-classic:1.5.29",
+    "strategy_name": "javac_iterative_with_coverage_sources_pi_gpt-5.6-sol",
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "status": "success",
+    "stats": {
+      "version": "1.6.0",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 15,
+            "totalCalls": 15
+          },
+          "resources": {
+            "coverageRatio": 0.5,
+            "coveredCalls": 1,
+            "totalCalls": 2
+          }
+        },
+        "coverageRatio": 0.941176,
+        "coveredCalls": 16,
+        "totalCalls": 17
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 5941,
+          "missed": 12321,
+          "ratio": 0.32532,
+          "total": 18262
+        },
+        "line": {
+          "covered": 1608,
+          "missed": 3427,
+          "ratio": 0.319364,
+          "total": 5035
+        },
+        "method": {
+          "covered": 388,
+          "missed": 723,
+          "ratio": 0.349235,
+          "total": 1111
+        }
+      }
+    },
+    "previous_library_stats": {
+      "version": "1.5.29",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 15,
+            "totalCalls": 15
+          },
+          "resources": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 1,
+            "totalCalls": 1
+          }
+        },
+        "coverageRatio": 1.0,
+        "coveredCalls": 16,
+        "totalCalls": 16
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 5910,
+          "missed": 12623,
+          "ratio": 0.318891,
+          "total": 18533
+        },
+        "line": {
+          "covered": 1604,
+          "missed": 3511,
+          "ratio": 0.313587,
+          "total": 5115
+        },
+        "method": {
+          "covered": 385,
+          "missed": 740,
+          "ratio": 0.342222,
+          "total": 1125
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "no_action",
+      "issue_number": 10311,
+      "issue_label": "fails-javac-compile",
+      "library": "ch.qos.logback:logback-classic:1.6.0",
+      "summary": "The javac failure is a test-source API incompatibility, not missing setup. The 1.5.29 tests reference `PatternLayout.DEFAULT_CONVERTER_MAP` (LogbackTests.java:227-228), and that symbol is not in logback-classic 1.6.0. The fix is to rewrite those test lines against the 1.6.0 API, for example by using the converter registration mechanism that replaced the static map. No extra dependency, Docker image or system property is needed, and nothing in the failure points to a Native Image limitation.",
+      "deterministic_setup": [],
+      "agent_guidance": "",
+      "risks": [
+        "I did not read the 1.6.0 sources, so the replacement for `DEFAULT_CONVERTER_MAP` still has to be found. Check how 1.6.0 exposes the default converter map, for example a `ConverterRegistry` or a getter on `PatternLayout`, before rewriting.",
+        "1.6.0 is a minor-version bump with possible further API removals. Once the first compile error is fixed, other compile or runtime errors may appear in the other test classes, such as the socket, serialized-model and context-selector tests.",
+        "The reachability metadata in reachability-metadata.json may need adjusting if 1.6.0 renamed or moved classes that are registered reflectively, such as converters, appenders and models."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#10311 [Automation] javac compile fails for ch.qos.logback:logback-classic:1.6.0; label=fails-javac-compile; body_chars=8015"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "21 existing test file path(s) included"
+        }
+      ],
+      "current_library": "ch.qos.logback:logback-classic:1.5.29",
+      "new_version": "1.6.0",
+      "model": "sonnet",
+      "input_tokens_used": 2,
+      "output_tokens_used": 716
+    },
+    "metrics": {
+      "input_tokens_used": 191253,
+      "cached_input_tokens_used": 1390336,
+      "output_tokens_used": 11376,
+      "iterations": 6,
+      "cost_usd": 1.9928,
+      "tested_library_loc": 1608,
+      "metadata_entries": 36,
+      "test_only_metadata_entries": 78,
+      "previous_library_metadata_entries": 241,
+      "previous_library_test_only_metadata_entries": 74,
+      "code_coverage_percent": 31.94,
+      "previous_library_coverage_percent": 31.36
+    },
+    "artifacts": {
+      "metadata_file": "metadata/ch.qos.logback/logback-classic/1.6.0/reachability-metadata.json"
+    }
+  }
+}

@@ -1,0 +1,85 @@
+{
+  "add_new_library_support:2026-10-05": {
+    "timestamp": "2026-10-05T22:46:50.301628Z",
+    "library": "dev.langchain4j:langchain4j-google-ai-gemini:1.21.0",
+    "starting_commit": "ac66c869ecbedc593b988bd8f3a15d4844623deb",
+    "ending_commit": "c7134df1067566f38d6754738361672655197a50",
+    "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-sol",
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "status": "success",
+    "stats": {
+      "version": "1.21.0",
+      "dynamicAccess": {
+        "breakdown": {},
+        "coverageRatio": 1.0,
+        "coveredCalls": 0,
+        "totalCalls": 0
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 3758,
+          "missed": 7384,
+          "ratio": 0.337282,
+          "total": 11142
+        },
+        "line": {
+          "covered": 810,
+          "missed": 1670,
+          "ratio": 0.326613,
+          "total": 2480
+        },
+        "method": {
+          "covered": 250,
+          "missed": 476,
+          "ratio": 0.344353,
+          "total": 726
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "no_action",
+      "issue_number": 10459,
+      "issue_label": "library-new-request",
+      "library": "dev.langchain4j:langchain4j-google-ai-gemini:1.21.0",
+      "summary": "The sibling langchain4j provider tests (e.g. langchain4j-voyage-ai) need only the library dependency plus assertj. For Gemini, the tests can run chat, streaming and embeddings against a local fake HTTP endpoint, which needs no extra Maven dependency, Docker image or environment variable.",
+      "deterministic_setup": [],
+      "agent_guidance": "",
+      "risks": [
+        "The Gemini builders need an API key and a base URL override. Tests should set a dummy key and point the base URL at a local JDK com.sun.net.httpserver fake that returns canned JSON.",
+        "Coverage should include chat, streaming (SSE) and embeddings so that all the Jackson-mapped request and response types are exercised. The Micronaut metadata (117 types) is a useful cross-check.",
+        "I did not verify this against the resolved 1.21.0 artifact. I checked only the repo's sibling langchain4j provider tests and the library's usual fake-endpoint pattern. Local Gradle and Native Image verification remain authoritative."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#10459 Support for dev.langchain4j:langchain4j-google-ai-gemini:1.21.0; label=library-new-request; body_chars=1476"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "sonnet",
+      "input_tokens_used": 8,
+      "output_tokens_used": 1010
+    },
+    "metrics": {
+      "input_tokens_used": 203854,
+      "cached_input_tokens_used": 3373440,
+      "output_tokens_used": 22609,
+      "iterations": 8,
+      "cost_usd": 3.3843,
+      "generated_loc": 393,
+      "tested_library_loc": 810,
+      "metadata_entries": 907,
+      "test_only_metadata_entries": 9,
+      "code_coverage_percent": 32.66
+    },
+    "artifacts": {
+      "metadata_file": "metadata/dev.langchain4j/langchain4j-google-ai-gemini/1.21.0/reachability-metadata.json"
+    }
+  }
+}

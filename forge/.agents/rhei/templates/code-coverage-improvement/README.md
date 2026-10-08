@@ -53,8 +53,10 @@ methods (§AR-code-coverage-improvement.4.3). Public
 API prompts contain 400 methods the latest exact JaCoCo report marks uncovered,
 ordered by how much still-uncovered code each one unlocks over a bytecode call
 graph rather than by identifier (§AR-code-coverage-improvement.4.1.1). Deep
-prompts list at most 200 JaCoCo-uncovered internal methods using compact
-`Observed` / `Uncovered paths` navigation. Measurement owns target rotation:
+prompts list at most 200 JaCoCo-uncovered internal methods and public methods
+the API phase left uncovered, each one uncovered call past code that ran, using
+compact `Observed` / `Uncovered paths` navigation
+(§AR-code-coverage-deep-navigation.2). Measurement owns target rotation:
 attempt counts are carried deterministically in the discovery-report history
 and previously prompted methods are deprioritized; the cover agent writes no
 target state.

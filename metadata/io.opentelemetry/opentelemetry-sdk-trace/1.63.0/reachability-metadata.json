@@ -1,0 +1,89 @@
+{
+  "reflection" : [
+    {
+      "condition" : {
+        "typeReached" : "io.opentelemetry.api.metrics.DefaultMeterProvider"
+      },
+      "type" : "io.opentelemetry.api.incubator.metrics.ExtendedDefaultMeterProvider"
+    },
+    {
+      "condition" : {
+        "typeReached" : "io.opentelemetry.api.trace.DefaultTracerProvider"
+      },
+      "type" : "io.opentelemetry.api.incubator.trace.ExtendedDefaultTracerProvider"
+    },
+    {
+      "condition" : {
+        "typeReached" : "io.opentelemetry.sdk.trace.SdkTracer"
+      },
+      "type" : "io.opentelemetry.api.incubator.trace.ExtendedDefaultTracerProvider"
+    },
+    {
+      "condition" : {
+        "typeReached" : "io.opentelemetry.sdk.trace.internal.SdkTracerProviderUtil"
+      },
+      "type" : "io.opentelemetry.sdk.trace.SdkTracerProvider",
+      "methods" : [
+        {
+          "name" : "setTracerConfigurator",
+          "parameterTypes" : [
+            "io.opentelemetry.sdk.common.internal.ScopeConfigurator"
+          ]
+        }
+      ]
+    },
+    {
+      "condition" : {
+        "typeReached" : "io.opentelemetry.sdk.trace.internal.SdkTracerProviderUtil"
+      },
+      "type" : "io.opentelemetry.sdk.trace.SdkTracerProviderBuilder",
+      "methods" : [
+        {
+          "name" : "addTracerConfiguratorCondition",
+          "parameterTypes" : [
+            "java.util.function.Predicate",
+            "io.opentelemetry.sdk.trace.internal.TracerConfig"
+          ]
+        },
+        {
+          "name" : "setExceptionAttributeResolver",
+          "parameterTypes" : [
+            "io.opentelemetry.sdk.common.internal.ExceptionAttributeResolver"
+          ]
+        },
+        {
+          "name" : "setTracerConfigurator",
+          "parameterTypes" : [
+            "io.opentelemetry.sdk.common.internal.ScopeConfigurator"
+          ]
+        }
+      ]
+    },
+    {
+      "condition" : {
+        "typeReached" : "io.opentelemetry.sdk.trace.internal.shaded.jctools.queues.atomic.MpscAtomicArrayQueueConsumerIndexField"
+      },
+      "type" : "io.opentelemetry.sdk.trace.internal.shaded.jctools.queues.atomic.MpscAtomicArrayQueueConsumerIndexField"
+    },
+    {
+      "condition" : {
+        "typeReached" : "io.opentelemetry.sdk.trace.internal.shaded.jctools.queues.atomic.MpscAtomicArrayQueueProducerIndexField"
+      },
+      "type" : "io.opentelemetry.sdk.trace.internal.shaded.jctools.queues.atomic.MpscAtomicArrayQueueProducerIndexField"
+    },
+    {
+      "condition" : {
+        "typeReached" : "io.opentelemetry.sdk.trace.internal.shaded.jctools.queues.atomic.MpscAtomicArrayQueueProducerLimitField"
+      },
+      "type" : "io.opentelemetry.sdk.trace.internal.shaded.jctools.queues.atomic.MpscAtomicArrayQueueProducerLimitField"
+    }
+  ],
+  "resources" : [
+    {
+      "condition" : {
+        "typeReached" : "io.opentelemetry.context.LazyStorage"
+      },
+      "glob" : "META-INF/services/io.opentelemetry.context.ContextStorageProvider"
+    }
+  ]
+}

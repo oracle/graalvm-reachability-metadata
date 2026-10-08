@@ -1,0 +1,49 @@
+/*
+ * Copyright and related rights waived via CC0
+ *
+ * You should have received a copy of the CC0 legalcode along with this
+ * work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
+ */
+plugins {
+    id "org.graalvm.internal.tck"
+}
+
+String libraryVersion = tck.testedLibraryVersion.get()
+
+sourceSets {
+    jdkUnsupportedPatch {
+        java.srcDir 'src/test/java-patch'
+    }
+}
+
+dependencies {
+    testImplementation "com.google.guava:guava:$libraryVersion"
+    testImplementation 'org.assertj:assertj-core:3.22.0'
+}
+
+tasks.named('compileJdkUnsupportedPatchJava') {
+    options.compilerArgs += ['--patch-module', "jdk.unsupported=${projectDir}/src/test/java-patch"]
+}
+
+tasks.withType(Test).configureEach {
+    dependsOn tasks.named('compileJdkUnsupportedPatchJava')
+    jvmArgs '--add-opens=java.base/java.lang=ALL-UNNAMED',
+            "--patch-module=jdk.unsupported=${sourceSets.jdkUnsupportedPatch.output.classesDirs.asPath}"
+}
+
+graalvmNative {
+    agent {
+        defaultMode = "conditional"
+        modes {
+            conditional {
+                userCodeFilterPath = "user-code-filter.json"
+                extraFilterPath = "metadata-extra-filter.json"
+            }
+        }
+    }
+    binaries {
+        all {
+            buildArgs.add('--add-opens=java.base/java.lang=ALL-UNNAMED')
+        }
+    }
+}

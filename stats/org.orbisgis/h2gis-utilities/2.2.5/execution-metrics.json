@@ -1,0 +1,98 @@
+{
+  "add_new_library_support:2026-10-03": {
+    "timestamp": "2026-10-03T03:56:18.053517Z",
+    "library": "org.orbisgis:h2gis-utilities:2.2.5",
+    "starting_commit": "c5c3d1d20d2a81d6f71810b4193fa3c87ee3b1de",
+    "ending_commit": "f13f52633641fc385eb9db129af77490169e909b",
+    "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-luna",
+    "agent": "pi",
+    "model": "gpt-5.6-luna",
+    "status": "success",
+    "stats": {
+      "version": "2.2.5",
+      "dynamicAccess": {
+        "breakdown": {},
+        "coverageRatio": 1.0,
+        "coveredCalls": 0,
+        "totalCalls": 0
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 4273,
+          "missed": 13904,
+          "ratio": 0.235077,
+          "total": 18177
+        },
+        "line": {
+          "covered": 832,
+          "missed": 3109,
+          "ratio": 0.211114,
+          "total": 3941
+        },
+        "method": {
+          "covered": 140,
+          "missed": 618,
+          "ratio": 0.184697,
+          "total": 758
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "advisory_preparation",
+      "issue_number": 9793,
+      "issue_label": "library-new-request",
+      "library": "org.orbisgis:h2gis-utilities:2.2.5",
+      "summary": "h2gis-utilities is a DB-agnostic metadata layer (JDBCUtilities, GeometryTableUtilities, TableLocation) that reads geometry_columns/spatial_ref_sys catalog views; those only exist once H2GIS's spatial extension is loaded via H2GISFunctions, which lives in the sibling org.orbisgis:h2gis artifact, not in h2gis-utilities itself.",
+      "deterministic_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "org.orbisgis:h2gis:2.2.5",
+          "scope": "testImplementation",
+          "reason": "Supplies H2GISFunctions.load(connection) plus the transitive H2 JDBC driver, so tests can open a spatial-enabled H2 connection with real GEOMETRY columns and geometry_columns/spatial_ref_sys rows for JDBCUtilities/GeometryTableUtilities/TableLocation to introspect. Already verified to work this way \n...[truncated]"
+        }
+      ],
+      "agent_guidance": "Before exercising org.h2gis.utilities classes, open an H2 in-memory connection and call org.h2gis.functions.factory.H2GISFunctions.load(connection) (same pattern as H2gisTest in tests/src/org.orbisgis/h2gis/2.2.5) so there is an actual spatial schema (GEOMETRY-typed columns, geometry_columns, spatial_ref_sys) for JDBCUtilities/GeometryTableUtilities/TableLocation to read. Without this, the generated tests would only have a bare relational H2 database with nothing spatial to introspect, and most of the library's logic would go unreached.",
+      "risks": [
+        "No network access was available in this session to directly confirm h2gis-utilities' POM dependencies on Maven Central; the recommendation is based on strong structural evidence from the already-shipped sibling h2gis test rather than a direct POM read — verify dependency resolution during generateMetadata.",
+        "PostgreSQL/PostGIS-specific branches (DBTypes.POSTGRESQL/POSTGIS detection) won't be exercised via the H2-only path above. No PostGIS Docker image is currently pinned in allowed-docker-images (only plain postgres:18-alpine), so adding one would be a new allow-list entry; left out here since H2GIS's catalog-view emulation should already cover most of the utility logic and no concrete evidence of a hard requirement was found."
+      ],
+      "applied_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "org.orbisgis:h2gis:2.2.5",
+          "result": "applied",
+          "target": "tests/src/org.orbisgis/h2gis-utilities/2.2.5/build.gradle"
+        }
+      ],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#9793 Support for org.orbisgis:h2gis-utilities:2.2.5; label=library-new-request; body_chars=39"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "sonnet",
+      "input_tokens_used": 36,
+      "output_tokens_used": 19322
+    },
+    "metrics": {
+      "input_tokens_used": 318412,
+      "cached_input_tokens_used": 3855360,
+      "output_tokens_used": 29631,
+      "iterations": 8,
+      "cost_usd": 0.8817,
+      "generated_loc": 260,
+      "tested_library_loc": 832,
+      "metadata_entries": 4,
+      "test_only_metadata_entries": 249,
+      "code_coverage_percent": 21.11
+    },
+    "artifacts": {
+      "metadata_file": "metadata/org.orbisgis/h2gis-utilities/2.2.5/reachability-metadata.json"
+    }
+  }
+}

@@ -1,0 +1,140 @@
+{
+  "fix_java_run_fail:2026-10-03": {
+    "timestamp": "2026-10-03T01:40:51.526742Z",
+    "library": "org.apache.curator:curator-client:5.8.0",
+    "starting_commit": "82ad1dede6f4bbac6f13844c9344dd26a34a11d9",
+    "ending_commit": "78066ce7e7116132797db3194ca0b84faf247f7c",
+    "previous_library": "org.apache.curator:curator-client:5.0.0",
+    "strategy_name": "java_run_iterative_with_coverage_sources_pi_gpt-5.6-sol",
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "status": "success",
+    "stats": {
+      "version": "5.8.0",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 0.965812,
+            "coveredCalls": 113,
+            "totalCalls": 117
+          },
+          "resources": {
+            "coverageRatio": 0.5,
+            "coveredCalls": 2,
+            "totalCalls": 4
+          }
+        },
+        "coverageRatio": 0.950413,
+        "coveredCalls": 115,
+        "totalCalls": 121
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 23143,
+          "missed": 162894,
+          "ratio": 0.1244,
+          "total": 186037
+        },
+        "line": {
+          "covered": 5292,
+          "missed": 34709,
+          "ratio": 0.132297,
+          "total": 40001
+        },
+        "method": {
+          "covered": 1828,
+          "missed": 11416,
+          "ratio": 0.138025,
+          "total": 13244
+        }
+      }
+    },
+    "previous_library_stats": {
+      "version": "5.0.0",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 0.89916,
+            "coveredCalls": 107,
+            "totalCalls": 119
+          },
+          "resources": {
+            "coverageRatio": 0.5,
+            "coveredCalls": 2,
+            "totalCalls": 4
+          }
+        },
+        "coverageRatio": 0.886179,
+        "coveredCalls": 109,
+        "totalCalls": 123
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 21438,
+          "missed": 151930,
+          "ratio": 0.123656,
+          "total": 173368
+        },
+        "line": {
+          "covered": 4807,
+          "missed": 32704,
+          "ratio": 0.128149,
+          "total": 37511
+        },
+        "method": {
+          "covered": 1700,
+          "missed": 11040,
+          "ratio": 0.133438,
+          "total": 12740
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "no_action",
+      "issue_number": 10317,
+      "issue_label": "fails-java-run",
+      "library": "org.apache.curator:curator-client:5.8.0",
+      "summary": "The failure is a JVM-level IllegalStateException ('Client is not started or has been closed') thrown from CuratorZookeeperClient.internalBlockUntilConnectedOrTimedOut. It comes from a lifecycle state check, and the test most likely fails because it calls RetryLoop.callWithRetry without starting the client. This is a test-code fix, not missing setup. It needs no extra dependency, Docker image, or system property, and nothing in it points to an unsupported Native Image mechanism.",
+      "deterministic_setup": [],
+      "agent_guidance": "",
+      "risks": [
+        "I did not read the test source or the 5.8.0 library source for this decision. The diagnosis comes from the failure log alone. The generated test may need to call CuratorZookeeperClient.start() before RetryLoop.callWithRetry. In 5.8.0, blockUntilConnectedOrTimedOut checks that the client is started and not closed.",
+        "The reproducer command runs the 5.0.0 test project with GVM_TCK_LV=5.8.0. The repair may therefore need to keep the test compatible with both versions."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#10317 [Automation] java run fails for org.apache.curator:curator-client:5.8.0; label=fails-java-run; body_chars=8015"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "40 existing test file path(s) included"
+        }
+      ],
+      "current_library": "org.apache.curator:curator-client:5.0.0",
+      "new_version": "5.8.0",
+      "model": "sonnet",
+      "input_tokens_used": 2,
+      "output_tokens_used": 644
+    },
+    "metrics": {
+      "input_tokens_used": 840536,
+      "cached_input_tokens_used": 8701056,
+      "output_tokens_used": 52328,
+      "iterations": 15,
+      "cost_usd": 10.123,
+      "tested_library_loc": 5292,
+      "metadata_entries": 230,
+      "test_only_metadata_entries": 153,
+      "previous_library_metadata_entries": 148,
+      "previous_library_test_only_metadata_entries": 144,
+      "code_coverage_percent": 13.23,
+      "previous_library_coverage_percent": 12.81
+    },
+    "artifacts": {
+      "metadata_file": "metadata/org.apache.curator/curator-client/5.8.0/reachability-metadata.json"
+    }
+  }
+}

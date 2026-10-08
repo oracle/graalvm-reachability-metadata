@@ -22,6 +22,7 @@ from ai_workflows.agents.pi_agent import PiAgent
 from ai_workflows.agents.pi_rpc_client import PromptResult
 from ai_workflows.agents.agent_runtime import PROVIDER_AWARE_BACKENDS, resolve_provider
 from ai_workflows.agents.agent_runtime import (
+    CLAUDE_CODE_BYPASS_PERMISSIONS_FLAGS,
     CODEX_BYPASS_APPROVALS_AND_SANDBOX_FLAG,
     AgentSelection,
     DEFAULT_AGENT,
@@ -387,6 +388,24 @@ class AgentRuntimeTests(unittest.TestCase):
         self.assertNotIn("--ignore-user-config", command)
         self.assertFalse(any("approval_policy" in argument for argument in command))
         self.assertFalse(any("sandbox_mode" in argument for argument in command))
+
+    def test_claude_code_runs_unattended_with_permissions_bypassed(self) -> None:
+        with tempfile.TemporaryDirectory() as work_dir:
+            claude = ClaudeCodeAgent(model_name="sonnet", working_dir=work_dir)
+            command = claude._build_command("prompt")  # noqa: SLF001
+        for flag in CLAUDE_CODE_BYPASS_PERMISSIONS_FLAGS:
+            self.assertIn(flag, command)
+        self.assertNotIn("dontAsk", command)
+
+        with patch.dict(
+                os.environ,
+                {"FORGE_SETUP_FAMILY": "claude-code", "FORGE_SETUP_MODEL": "sonnet"},
+                clear=True,
+        ):
+            url_command = shlex.split(url_fetch_agent_command())
+        for flag in CLAUDE_CODE_BYPASS_PERMISSIONS_FLAGS:
+            self.assertIn(flag, url_command)
+        self.assertNotIn("dontAsk", url_command)
 
     def test_url_discovery_uses_the_role_agent_executable(self) -> None:
         with patch.dict(

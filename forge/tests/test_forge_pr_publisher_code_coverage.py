@@ -52,8 +52,6 @@ def _coverage_evidence(**overrides: Any) -> dict[str, Any]:
             "coordinate",
             "coverageSuitePath",
             "runCoverage",
-            "apiJacoco",
-            "deepJacoco",
             "stopDecisions",
             "needsHumanIntervention",
         )
@@ -329,7 +327,11 @@ class CoveragePublisherTemplateTests(unittest.TestCase):
 
     def test_render_validation_rejects_a_half_built_phase(self) -> None:
         evidence = _coverage_evidence()
-        evidence["deepJacoco"] = {"baseline": evidence["deepJacoco"]["baseline"]}
+        evidence["runCoverage"] = dict(evidence["runCoverage"])
+        evidence["runCoverage"]["phases"] = [
+            {"name": phase["name"], "covered": phase["covered"]}
+            for phase in evidence["runCoverage"]["phases"]
+        ]
 
         with self.assertRaises(ValueError):
             publisher._validate_render_inputs(_descriptor(code_coverage=evidence))

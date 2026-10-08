@@ -26,7 +26,7 @@ from utility_scripts.code_coverage_model import parse_inventory_id
 from utility_scripts.code_coverage_jacoco import load_jacoco_method_coverage
 from utility_scripts.code_coverage_profile_inputs import PROFILE_KINDS
 
-SCHEMA_VERSION = "1.3.0"
+SCHEMA_VERSION = "2.0.0"
 
 #: Run checkpoints, in run order. Each is one JaCoCo report, and each phase
 #: begins at the checkpoint the previous phase ended on
@@ -144,95 +144,17 @@ def _percent(covered: int, denominator: int) -> float:
     return round(100.0 * covered / denominator, 2) if denominator else 0.0
 
 
-def _api_snapshot(
-        report: dict[str, Any], coordinate: str, label: str
-) -> dict[str, Any]:
-    _check_coordinate(report, coordinate, label)
-    summary: dict[str, Any] = _object(report.get("summary"), f"{label}.summary")
-    statuses: dict[str, str] = _coverage_statuses(
-        report, "targets", label, frozenset({"covered", "uncovered", "not-reported"})
-    )
-    counts: dict[str, int] = {
-        status: list(statuses.values()).count(status)
-        for status in ("covered", "uncovered", "not-reported")
-    }
-    total: int = _integer(summary.get("total"), f"{label}.summary.total")
-    measured: int = _integer(summary.get("measured"), f"{label}.summary.measured")
-    covered: int = _integer(summary.get("covered"), f"{label}.summary.covered")
-    uncovered: int = _integer(
-        summary.get("uncovered"), f"{label}.summary.uncovered"
-    )
-    not_reported: int = _integer(
-        summary.get("notReported"), f"{label}.summary.notReported"
-    )
-    actual: tuple[int, ...] = (
-        total,
-        measured,
-        covered,
-        uncovered,
-        not_reported,
-    )
-    expected: tuple[int, ...] = (
-        len(statuses),
-        counts["covered"] + counts["uncovered"],
-        counts["covered"],
-        counts["uncovered"],
-        counts["not-reported"],
-    )
-    if actual != expected:
-        raise FinalizationError(
-            f"{label}.summary counts do not match its target statuses."
-        )
-    return {
-        "total": total,
-        "measured": measured,
-        "covered": covered,
-        "uncovered": uncovered,
-        "notReported": not_reported,
-        "coveragePercent": _percent(covered, measured),
-    }
-
-
-def _deep_snapshot(
-        report: dict[str, Any], coordinate: str, label: str
-) -> dict[str, Any]:
-    _check_coordinate(report, coordinate, label)
-    if report.get("profileKind") not in PROFILE_KINDS:
-        raise FinalizationError(
-            f"{label}.profileKind must be one of {sorted(PROFILE_KINDS)}."
-        )
-    summary: dict[str, Any] = _object(report.get("summary"), f"{label}.summary")
-    statuses: dict[str, str] = _coverage_statuses(
-        report, "deepMethods", label, frozenset({"covered", "uncovered"})
-    )
-    counts: dict[str, int] = {
-        status: list(statuses.values()).count(status)
-        for status in ("covered", "uncovered")
-    }
-    total: int = _integer(
-        summary.get("deepMethods"), f"{label}.summary.deepMethods"
-    )
-    covered: int = _integer(
-        summary.get("deepCovered"), f"{label}.summary.deepCovered"
-    )
-    uncovered: int = _integer(
-        summary.get("deepUncovered"), f"{label}.summary.deepUncovered"
-    )
-    if (
-        total != len(statuses)
-        or covered != counts["covered"]
-        or uncovered != counts["uncovered"]
-        or covered + uncovered != total
-    ):
-        raise FinalizationError(
-            f"{label}.summary counts do not match its deepMethods statuses."
-        )
-    return {
-        "total": total,
-        "covered": covered,
-        "uncovered": uncovered,
-        "coveragePercent": _percent(covered, total),
-    }
+def _check_phase_reports(
+        reports: dict[str, dict[str, Any]], coordinate: str
+) -> None:
+    """Every phase report belongs to this run's coordinate; deep reports say
+    which profile navigated them."""
+    for label, report in reports.items():
+        _check_coordinate(report, coordinate, label)
+        if label.startswith("Deep") and report.get("profileKind") not in PROFILE_KINDS:
+            raise FinalizationError(
+                f"{label}.profileKind must be one of {sorted(PROFILE_KINDS)}."
+            )
 
 
 def _universe_ids(
@@ -329,11 +251,11 @@ def _run_coverage(
 ) -> dict[str, Any]:
     """Whole-run coverage: one denominator, one routine, sequential checkpoints.
 
-    The per-phase blocks record each phase against its own roster, which is what
-    a phase's own guidance is ranked on. This block is the run as a reader sees
-    it: every checkpoint a share of the same complete method count, so a phase's
-    gain is the distance from the previous checkpoint and the phase gains sum to
-    the run's gain (§AR-code-coverage-improvement.5.1).
+    These are the only coverage figures the run records: every checkpoint a
+    share of the same complete method count, so a phase's gain is the distance
+    from the previous checkpoint and the phase gains sum to the run's gain. A
+    public method the deep phase covers therefore counts toward the deep phase
+    (§AR-code-coverage-improvement.5.1).
     """
     run_start_coverage: dict[str, Any] = load_jacoco_method_coverage(
         [jacoco_paths[0]]
@@ -417,23 +339,6 @@ def _pgo_snapshot(report: dict[str, Any], label: str) -> dict[str, int]:
         output_name: _integer(summary.get(input_name), f"{label}.summary.{input_name}")
         for output_name, input_name in fields
     }
-
-
-def _delta(
-        baseline: dict[str, Any],
-        final: dict[str, Any],
-        include_not_reported: bool,
-) -> dict[str, Any]:
-    result: dict[str, Any] = {
-        "covered": final["covered"] - baseline["covered"],
-        "uncovered": final["uncovered"] - baseline["uncovered"],
-        "coveragePercentagePoints": round(
-            final["coveragePercent"] - baseline["coveragePercent"], 2
-        ),
-    }
-    if include_not_reported:
-        result["notReported"] = final["notReported"] - baseline["notReported"]
-    return result
 
 
 def _generated_at() -> str:
@@ -603,23 +508,48 @@ def _target_outcomes(
         "Deep final",
         frozenset({"covered", "uncovered"}),
     )
-    invalid_state_ids: list[str] = sorted(set(states) - set(deep_final))
+    # The public methods the API phase left uncovered are deep targets too. The
+    # phase froze them at its first report; a final remeasurement freezes its own
+    # set, so their outcome is read from the final inventory statuses
+    # (§AR-code-coverage-improvement.4.2).
+    public_baseline: dict[str, str] = _coverage_statuses(
+        deep_baseline_report,
+        "publicTargets",
+        "Deep baseline",
+        frozenset({"covered", "uncovered"}),
+    )
+    inventory_final: dict[str, str] = _coverage_statuses(
+        deep_final_report,
+        "inventory",
+        "Deep final",
+        frozenset({"covered", "uncovered", "unknown"}),
+    )
+    unlisted: list[str] = sorted(set(public_baseline) - set(inventory_final))
+    if unlisted:
+        raise FinalizationError(
+            f"Deep final.inventory does not list carried public target '{unlisted[0]}'."
+        )
+    public_final: dict[str, str] = {
+        method_id: inventory_final[method_id] for method_id in public_baseline
+    }
+    deep_targets_final: dict[str, str] = {**deep_final, **public_final}
+    invalid_state_ids: list[str] = sorted(set(states) - set(deep_targets_final))
     if invalid_state_ids:
         raise FinalizationError(
             f"Target state id '{invalid_state_ids[0]}' is not in the current "
             "deep JaCoCo universe."
         )
     for method_id, state in states.items():
-        if state["status"] == "completed" and deep_final[method_id] != "covered":
+        if state["status"] == "completed" and deep_targets_final[method_id] != "covered":
             raise FinalizationError(
                 f"Target state '{method_id}' is completed but final JaCoCo "
                 "reports it uncovered."
             )
 
-
     completed: list[dict[str, Any]] = [
         *_completed_transitions(api_baseline, api_final, "api"),
         *_completed_transitions(deep_baseline, deep_final, "deep", states),
+        *_completed_transitions(public_baseline, public_final, "deep", states),
     ]
     result: dict[str, list[dict[str, Any]]] = {
         "completed": sorted(
@@ -633,7 +563,7 @@ def _target_outcomes(
         status: str = state["status"]
         if (
                 status not in TERMINAL_NEGATIVE_STATUSES
-                or deep_final.get(method_id) == "covered"
+                or deep_targets_final.get(method_id) == "covered"
         ):
             continue
         result[status].append({
@@ -706,8 +636,7 @@ def _target_lines(targets: list[dict[str, Any]]) -> list[str]:
 
 
 def _write_summary(metrics: dict[str, Any], path: str) -> None:
-    api: dict[str, Any] = metrics["apiJacoco"]
-    deep: dict[str, Any] = metrics["deepJacoco"]
+    run: dict[str, Any] = metrics["runCoverage"]
     pgo: dict[str, Any] = metrics["pgoGuidance"]
     lines: list[str] = [
         f"# Code coverage finalization — {metrics['coordinate']}",
@@ -716,21 +645,18 @@ def _write_summary(metrics: dict[str, Any], path: str) -> None:
         "- Coverage authority: JaCoCo",
         f"- Needs human intervention: {'yes' if metrics['needsHumanIntervention'] else 'no'}",
         "",
-        "## Public API JaCoCo",
+        f"## JaCoCo coverage of {run['universe']} library methods",
         "",
-        f"- Baseline: {api['baseline']['covered']}/{api['baseline']['measured']} "
-        f"({api['baseline']['coveragePercent']}%)",
-        f"- Final: {api['final']['covered']}/{api['final']['measured']} "
-        f"({api['final']['coveragePercent']}%)",
-        f"- Delta: {_signed(api['delta']['coveragePercentagePoints'])}pp",
-        "",
-        "## Deep-method JaCoCo",
-        "",
-        f"- Baseline: {deep['baseline']['covered']}/{deep['baseline']['total']} "
-        f"({deep['baseline']['coveragePercent']}%)",
-        f"- Final: {deep['final']['covered']}/{deep['final']['total']} "
-        f"({deep['final']['coveragePercent']}%)",
-        f"- Delta: {_signed(deep['delta']['coveragePercentagePoints'])}pp",
+        *[
+            f"- {checkpoint['name']}: {checkpoint['covered']}/{run['universe']} "
+            f"({checkpoint['coveragePercent']}%)"
+            for checkpoint in run["checkpoints"]
+        ],
+        *[
+            f"- {phase['name']} phase gain: {_signed(phase['covered'])} methods "
+            f"({_signed(phase['coveragePercentagePoints'])}pp)"
+            for phase in run["phases"]
+        ],
         "",
         "## Sampled PGO guidance only",
         "",
@@ -790,17 +716,14 @@ def finalize_coverage(
         deep_baseline_path, "Deep baseline"
     )
     deep_final_report: dict[str, Any] = _read_object(deep_final_path, "Deep final")
-    api_baseline: dict[str, Any] = _api_snapshot(
-        api_baseline_report, coordinate, "API baseline"
-    )
-    api_final: dict[str, Any] = _api_snapshot(
-        api_final_report, coordinate, "API final"
-    )
-    deep_baseline: dict[str, Any] = _deep_snapshot(
-        deep_baseline_report, coordinate, "Deep baseline"
-    )
-    deep_final: dict[str, Any] = _deep_snapshot(
-        deep_final_report, coordinate, "Deep final"
+    _check_phase_reports(
+        {
+            "API baseline": api_baseline_report,
+            "API final": api_final_report,
+            "Deep baseline": deep_baseline_report,
+            "Deep final": deep_final_report,
+        },
+        coordinate,
     )
     target_outcomes: dict[str, list[dict[str, Any]]] = _target_outcomes(
         target_state_paths,
@@ -822,16 +745,6 @@ def finalize_coverage(
         "runCoverage": _run_coverage(
             api_baseline_report, deep_baseline_report, jacoco_paths
         ),
-        "apiJacoco": {
-            "baseline": api_baseline,
-            "final": api_final,
-            "delta": _delta(api_baseline, api_final, True),
-        },
-        "deepJacoco": {
-            "baseline": deep_baseline,
-            "final": deep_final,
-            "delta": _delta(deep_baseline, deep_final, False),
-        },
         "pgoGuidance": {
             "guidanceOnly": True,
             "note": (
@@ -959,10 +872,11 @@ def main() -> int:
     except (FinalizationError, OSError) as error:
         print(f"ERROR: {error}", file=sys.stderr)
         return 2
+    run: dict[str, Any] = metrics["runCoverage"]
+    final: dict[str, Any] = run["checkpoints"][-1]
     print(
-        f"Finalized {metrics['coordinate']}: "
-        f"API JaCoCo {metrics['apiJacoco']['final']['coveragePercent']}%, "
-        f"deep JaCoCo {metrics['deepJacoco']['final']['coveragePercent']}%."
+        f"Finalized {metrics['coordinate']}: JaCoCo {final['covered']}/"
+        f"{run['universe']} library methods ({final['coveragePercent']}%)."
     )
     return 0
 

@@ -1,0 +1,103 @@
+{
+  "base_commit": "815b28b7a56ede3745828ae5ad7c33b6df98fbe3",
+  "branch": "ai/kimeta/fix-javac-io.opentelemetry-opentelemetry-sdk-trace-1.63.0-forge-10382-20261003072249921227-acd802d93722",
+  "follow_ups": [],
+  "forge": {
+    "branch": "master",
+    "commit": "815b28b7a56ede3745828ae5ad7c33b6df98fbe3",
+    "monitored_branch": "origin/master"
+  },
+  "issue_number": 10382,
+  "library": {
+    "artifact": "opentelemetry-sdk-trace",
+    "coordinates": "io.opentelemetry:opentelemetry-sdk-trace:1.63.0",
+    "group": "io.opentelemetry",
+    "version": "1.63.0"
+  },
+  "local_ci_verification": {
+    "base_commit": "815b28b7a56ede3745828ae5ad7c33b6df98fbe3",
+    "commands": [
+      {
+        "command": [
+          "./gradlew",
+          "generateChangedIndexFileCoordinatesList",
+          "-PbaseCommit=origin/master",
+          "-PnewCommit=HEAD"
+        ],
+        "env": {
+          "GITHUB_OUTPUT": "/tmp/tmpxmu865de"
+        },
+        "gate": "changed-index-coordinates",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :generateChangedIndexFileCoordinatesList\n\n[Incubating] Problems report is available at: file:///home/oracle/oracle/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10382-ac59b159/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 3s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      },
+      {
+        "command": [
+          "./gradlew",
+          "validateIndexFiles",
+          "-Pcoordinates=io.opentelemetry:opentelemetry-sdk-trace"
+        ],
+        "env": {},
+        "gate": "index-file-validation",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :validateIndexFiles\n✅ metadata/io.opentelemetry/opentelemetry-sdk-trace/index.json: Valid\n\n[Incubating] Problems report is available at: file:///home/oracle/oracle/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10382-ac59b159/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 2s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      }
+    ],
+    "failure_command": null,
+    "failure_gate": null,
+    "final_commit": "80bd1aafca1170529f6f04f9cae73010dd8e6e88",
+    "fixups": [],
+    "human_intervention_required": false,
+    "repo_fix_paths": [],
+    "status": "success"
+  },
+  "local_review": {
+    "changed_paths": [],
+    "decision": "approved",
+    "finding_body": "",
+    "finding_title": "",
+    "fix_note": "",
+    "model": "gpt-5.6-sol",
+    "review_comment": "Reviewed the complete target-coordinate diff and local gate evidence. The javac repair replaces the unavailable shaded queue API with public BatchSpanProcessor behavior while preserving meaningful assertions and native execution. The contribution stays within the allowed files, uses only reachability-metadata.json, keeps a valid single latest index entry, and introduces no skips, swallowed failures, version-pinned tests, compatibility overrides, or unrelated changes. Overall and reflection dynamic-access coverage are both preserved at 4/4 (100%). The required Forge finalizer passed all three test lanes, metadata validation, style checks, generated-test checks, and statistics generation without changing the publishable tree.",
+    "session_id": "567bb3c1bf674206"
+  },
+  "metrics": {
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "path": "stats/io.opentelemetry/opentelemetry-sdk-trace/1.63.0/execution-metrics.json",
+    "summary": {
+      "cached_input_tokens_used": 403072,
+      "code_coverage_percent": 35.95,
+      "cost_usd": 0.5161,
+      "input_tokens_used": 45635,
+      "iterations": 3,
+      "metadata_entries": 13,
+      "output_tokens_used": 2880,
+      "previous_library_coverage_percent": 26.86,
+      "previous_library_metadata_entries": 13,
+      "previous_library_test_only_metadata_entries": 3,
+      "test_only_metadata_entries": 3,
+      "tested_library_loc": 773
+    },
+    "timestamp": "2026-10-03T07:22:49.921227Z"
+  },
+  "modifiers": {
+    "chunk_final": true,
+    "chunked_dynamic_access": false,
+    "human_intervention": false
+  },
+  "previous_library": {
+    "artifact": "opentelemetry-sdk-trace",
+    "coordinates": "io.opentelemetry:opentelemetry-sdk-trace:1.59.0",
+    "group": "io.opentelemetry",
+    "version": "1.59.0"
+  },
+  "producer": "kimeta",
+  "publication_id": "forge-10382-20261003072249921227-acd802d93722",
+  "render": {},
+  "schema_version": 1,
+  "strategy_name": "javac_iterative_with_coverage_sources_pi_gpt-5.6-sol",
+  "task_type": "fixes-javac-fail",
+  "template_type": "fixes-javac-fail",
+  "timestamp": "2026-10-03T07:22:49.921227Z"
+}

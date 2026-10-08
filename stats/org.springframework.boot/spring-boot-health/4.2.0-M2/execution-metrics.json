@@ -1,0 +1,117 @@
+{
+  "fix_java_run_fail:2026-10-02": {
+    "timestamp": "2026-10-02T18:01:22.307329Z",
+    "library": "org.springframework.boot:spring-boot-health:4.2.0-M2",
+    "starting_commit": "cb2c2fd8b69477837d9996e38ac84c98519ba953",
+    "ending_commit": "311e33f1203f60581d6d68da8dd16f86e09efc01",
+    "previous_library": "org.springframework.boot:spring-boot-health:4.0.6",
+    "strategy_name": "java_run_iterative_with_coverage_sources_pi_gpt-5.6-sol",
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "status": "success",
+    "stats": {
+      "version": "4.2.0-M2",
+      "dynamicAccess": {
+        "breakdown": {},
+        "coverageRatio": 1.0,
+        "coveredCalls": 0,
+        "totalCalls": 0
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 2753,
+          "missed": 2171,
+          "ratio": 0.559098,
+          "total": 4924
+        },
+        "line": {
+          "covered": 628,
+          "missed": 443,
+          "ratio": 0.586368,
+          "total": 1071
+        },
+        "method": {
+          "covered": 249,
+          "missed": 184,
+          "ratio": 0.575058,
+          "total": 433
+        }
+      }
+    },
+    "previous_library_stats": {
+      "version": "4.0.6",
+      "dynamicAccess": {
+        "breakdown": {},
+        "coverageRatio": 1.0,
+        "coveredCalls": 0,
+        "totalCalls": 0
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 2791,
+          "missed": 2012,
+          "ratio": 0.581095,
+          "total": 4803
+        },
+        "line": {
+          "covered": 633,
+          "missed": 427,
+          "ratio": 0.59717,
+          "total": 1060
+        },
+        "method": {
+          "covered": 248,
+          "missed": 175,
+          "ratio": 0.586288,
+          "total": 423
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "no_action",
+      "issue_number": 10338,
+      "issue_label": "fails-java-run",
+      "library": "org.springframework.boot:spring-boot-health:4.2.0-M2",
+      "summary": "The issue's log excerpt is cut off before the java run failure, so I found no concrete evidence of a missing dependency, Docker image, or system property. The existing 4.0.6 test already declares the BOM, spring-boot-health, spring-boot-actuator, reactor-core and assertj. It compiled against 4.2.0-M2 without error, so dependency resolution works. This is most likely a test or API-compatibility problem for the repair step to find. I did not trace the library source or verify any 4.2.0-M2 behaviour.",
+      "deterministic_setup": [],
+      "agent_guidance": "",
+      "risks": [
+        "The failure message was truncated, so the cause of the java run failure is unconfirmed. It may be a behaviour change in 4.2.0-M2 that the 4.0.6 test does not account for, for example in the deprecated SimpleStatusAggregator and SimpleHttpCodeStatusMapper classes, which are marked for removal.",
+        "4.2.0-M2 is a milestone release, so dependencies resolved through the BOM may differ from 4.0.6."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#10338 [Automation] java run fails for org.springframework.boot:spring-boot-health:4.2.0-M2; label=fails-java-run; body_chars=8015"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "6 existing test file path(s) included"
+        }
+      ],
+      "current_library": "org.springframework.boot:spring-boot-health:4.0.6",
+      "new_version": "4.2.0-M2",
+      "model": "sonnet",
+      "input_tokens_used": 4,
+      "output_tokens_used": 938
+    },
+    "metrics": {
+      "input_tokens_used": 59321,
+      "cached_input_tokens_used": 780544,
+      "output_tokens_used": 3113,
+      "iterations": 3,
+      "cost_usd": 0.7803,
+      "tested_library_loc": 628,
+      "metadata_entries": 30,
+      "test_only_metadata_entries": 25,
+      "previous_library_metadata_entries": 0,
+      "code_coverage_percent": 58.64,
+      "previous_library_coverage_percent": 59.72
+    },
+    "artifacts": {
+      "metadata_file": "metadata/org.springframework.boot/spring-boot-health/4.2.0-M2/reachability-metadata.json"
+    }
+  }
+}

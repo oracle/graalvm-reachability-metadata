@@ -1,0 +1,84 @@
+{
+  "add_new_library_support:2026-10-06": {
+    "timestamp": "2026-10-06T10:58:54.438724Z",
+    "library": "org.springframework.boot:spring-boot-couchbase:4.1.1",
+    "starting_commit": "9bf1345d4e62925aa34ab7771bb896ff259e844d",
+    "ending_commit": "b24af2a9f53fa5b17b10eaae6400822dac32b57c",
+    "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-sol",
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "status": "success",
+    "stats": {
+      "version": "4.1.1",
+      "dynamicAccess": {
+        "breakdown": {},
+        "coverageRatio": 1.0,
+        "coveredCalls": 0,
+        "totalCalls": 0
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 281,
+          "missed": 549,
+          "ratio": 0.338554,
+          "total": 830
+        },
+        "line": {
+          "covered": 98,
+          "missed": 139,
+          "ratio": 0.413502,
+          "total": 237
+        },
+        "method": {
+          "covered": 58,
+          "missed": 44,
+          "ratio": 0.568627,
+          "total": 102
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "no_action",
+      "issue_number": 9738,
+      "issue_label": "library-new-request",
+      "library": "org.springframework.boot:spring-boot-couchbase:4.1.1",
+      "summary": "spring-boot-couchbase 4.1.1 needs no setup beyond the normal scaffold. Its POM declares com.couchbase.client:java-client:3.11.3 at compile scope, so the client arrives transitively. The sibling tests for spring-boot-data-couchbase 4.1.1 and the Couchbase client run without Docker or system properties, and the allowed-docker-images directory has no Couchbase image.",
+      "deterministic_setup": [],
+      "agent_guidance": "",
+      "risks": [
+        "The module holds auto-configuration (CouchbaseAutoConfiguration, ClusterEnvironment customizers and properties). Tests probably need spring-boot-autoconfigure and spring-boot-test as testImplementation dependencies, as the sibling spring-boot-data-couchbase test project adds them. They may also need assertj. Add these if compilation fails; the build will show it.",
+        "Cluster connections need a live Couchbase server. Tests should stay on ApplicationContextRunner, properties binding and ClusterEnvironment/ClusterOptions customizer code paths, and should not call Cluster.connect against a real server."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#9738 Support for org.springframework.boot:spring-boot-couchbase:4.1.1; label=library-new-request; body_chars=39"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "sonnet",
+      "input_tokens_used": 8,
+      "output_tokens_used": 1656
+    },
+    "metrics": {
+      "input_tokens_used": 204808,
+      "cached_input_tokens_used": 2770176,
+      "output_tokens_used": 22254,
+      "iterations": 6,
+      "cost_usd": 3.0767,
+      "generated_loc": 92,
+      "tested_library_loc": 98,
+      "metadata_entries": 2,
+      "test_only_metadata_entries": 54,
+      "code_coverage_percent": 41.35
+    },
+    "artifacts": {
+      "metadata_file": "metadata/org.springframework.boot/spring-boot-couchbase/4.1.1/reachability-metadata.json"
+    }
+  }
+}

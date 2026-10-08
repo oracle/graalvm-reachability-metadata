@@ -1,0 +1,144 @@
+{
+  "fix_javac_fail:2026-10-02": {
+    "timestamp": "2026-10-02T21:27:23.176634Z",
+    "library": "net.minidev:json-smart:2.4.5",
+    "starting_commit": "62db1b4c487816f779cb8a1515dbb8e3e1137d33",
+    "ending_commit": "d3777be0a149b6c4b0b43da5cf253ff440b4a202",
+    "previous_library": "net.minidev:json-smart:2.4.4",
+    "strategy_name": "javac_iterative_with_coverage_sources_pi_gpt-5.6-sol",
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "status": "success",
+    "stats": {
+      "version": "2.4.5",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 11,
+            "totalCalls": 11
+          }
+        },
+        "coverageRatio": 1.0,
+        "coveredCalls": 11,
+        "totalCalls": 11
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 2475,
+          "missed": 8091,
+          "ratio": 0.234242,
+          "total": 10566
+        },
+        "line": {
+          "covered": 542,
+          "missed": 1940,
+          "ratio": 0.218372,
+          "total": 2482
+        },
+        "method": {
+          "covered": 139,
+          "missed": 354,
+          "ratio": 0.281947,
+          "total": 493
+        }
+      }
+    },
+    "previous_library_stats": {
+      "version": "2.4.4",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 11,
+            "totalCalls": 11
+          }
+        },
+        "coverageRatio": 1.0,
+        "coveredCalls": 11,
+        "totalCalls": 11
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 2475,
+          "missed": 8091,
+          "ratio": 0.234242,
+          "total": 10566
+        },
+        "line": {
+          "covered": 542,
+          "missed": 1940,
+          "ratio": 0.218372,
+          "total": 2482
+        },
+        "method": {
+          "covered": 139,
+          "missed": 354,
+          "ratio": 0.281947,
+          "total": 493
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "advisory_preparation",
+      "issue_number": 10316,
+      "issue_label": "fails-javac-compile",
+      "library": "net.minidev:json-smart:2.4.5",
+      "summary": "json-smart 2.4.5 depends on net.minidev:accessors-smart:2.4.3. That version has a POM on Maven Central but no JAR (the JAR URL returns 404), so testCompileClasspath cannot resolve. Adding accessors-smart 2.4.6 as a test dependency wins Gradle's highest-version conflict resolution and resolves to a published JAR.",
+      "deterministic_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "net.minidev:accessors-smart:2.4.6",
+          "scope": "testImplementation",
+          "reason": "accessors-smart:2.4.3, which json-smart 2.4.5 pulls in transitively, was published without a JAR. Declaring 2.4.6 directly makes Gradle resolve that version in its place."
+        }
+      ],
+      "agent_guidance": "No environment variables, system properties or Docker images are needed. Keep the existing 2.4.4 tests unchanged. Check that the test build resolves accessors-smart to 2.4.6, not 2.4.3. If the transitive 2.4.3 still wins, force the version with a resolutionStrategy or constraint in the test build.gradle, or exclude accessors-smart from json-smart and declare 2.4.6 explicitly. accessors-smart 2.4.6 uses asm 9.1, and accessors-smart 2.4.6 is the version json-smart 2.4.6 uses.",
+      "risks": [
+        "accessors-smart 2.4.6 differs slightly from the 2.4.3 that json-smart 2.4.5 declares. The 2.4.5 tests then run against a different accessors-smart than the POM specifies, though it is API-compatible.",
+        "If Gradle still selects 2.4.3 because of the dependency mediation setup, the resolution failure will persist until the version is forced."
+      ],
+      "applied_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "net.minidev:accessors-smart:2.4.6",
+          "result": "skipped",
+          "reason": "build_gradle_absent"
+        }
+      ],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#10316 [Automation] javac compile fails for net.minidev:json-smart:2.4.5; label=fails-javac-compile; body_chars=8015"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "12 existing test file path(s) included"
+        }
+      ],
+      "current_library": "net.minidev:json-smart:2.4.4",
+      "new_version": "2.4.5",
+      "model": "sonnet",
+      "input_tokens_used": 6,
+      "output_tokens_used": 1765
+    },
+    "metrics": {
+      "input_tokens_used": 35895,
+      "cached_input_tokens_used": 106240,
+      "output_tokens_used": 1153,
+      "iterations": 3,
+      "cost_usd": 0.2672,
+      "tested_library_loc": 542,
+      "metadata_entries": 8,
+      "test_only_metadata_entries": 20,
+      "previous_library_metadata_entries": 8,
+      "previous_library_test_only_metadata_entries": 20,
+      "code_coverage_percent": 21.84,
+      "previous_library_coverage_percent": 21.84
+    },
+    "artifacts": {
+      "metadata_file": "metadata/net.minidev/json-smart/2.4.5/reachability-metadata.json"
+    }
+  }
+}

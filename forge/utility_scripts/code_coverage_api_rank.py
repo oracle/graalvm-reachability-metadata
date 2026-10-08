@@ -426,13 +426,11 @@ def rank(
     index: dict[str, int] = {method_id: number for number, method_id in enumerate(ids)}
 
     inventory_ids: set[str] = set()
-    hints: dict[str, str] = {}
     for target in inventory.get("targets", []):
         target_id: str = target.get("id", "")
         if parse_inventory_id(target_id) is None:
             continue
         inventory_ids.add(target_id)
-        hints[target_id] = target.get("behaviorHint", "")
     if not inventory_ids:
         raise ApiRankError("API inventory contains no parseable target ids.")
 
@@ -507,7 +505,6 @@ def rank(
             "unlocks": unlocks,
             "reachableUncovered": reach[node].bit_count(),
             "targetVia": via[ids[node]],
-            "behaviorHint": hints.get(ids[node], ""),
             "closures": len(bodies),
             "closuresUnexecuted": sum(1 for body in bodies if body not in covered_ids),
         })
@@ -531,8 +528,9 @@ def render_prompt(report: dict) -> str:
     """Render the API-cover prompt, grouped by owner class.
 
     Grouping by owner keeps one class's source reading amortised across all of
-    its selected entries, and the per-group unlock count tells the agent which
-    groups repay extra construction effort.
+    its selected entries. Groups and entries keep the unlock order
+    (§AR-code-coverage-improvement.4.1.1), but the count itself is not shown:
+    it says nothing about how to write the test.
     """
     groups: dict[str, list[dict]] = {}
     for target in report["targets"]:
@@ -544,14 +542,13 @@ def render_prompt(report: dict) -> str:
         "# Uncovered public API targets",
         "",
         f"{summary['selected']} targets, selected from {summary['uncoveredCandidates']} "
-        f"uncovered public entries a test can reach because together they put "
-        f"{summary['totalUnlocked']} currently-uncovered methods within reach.",
+        "uncovered public entries a test can reach.",
         "",
         "Write meaningful behavior tests for every target below. Each id is an",
         "exact JaCoCo-uncovered public method or constructor; use realistic public",
         "API usage with real assertions, never superficial coverage-only",
-        "invocation. Cover every target, including the ones listed last: an entry",
-        "worth 1 is still an uncovered public method this phase is measured on.",
+        "invocation. Cover every target, including the ones listed last: each is",
+        "still an uncovered public method this phase is measured on.",
         "",
         "## Where the tests go",
         "",
@@ -576,10 +573,6 @@ def render_prompt(report: dict) -> str:
         "and a collaborator are usually the same subsystem and belong in one test",
         "class together.",
         "",
-        "`unlocks N` is how many currently-uncovered methods that entry newly puts",
-        "within reach, counting the entry itself. It is static navigation guidance,",
-        "not a coverage measurement.",
-        "",
         "`N closures of which M never run` means the method builds lambdas whose",
         "bodies no test has executed. Calling the method is not enough: drive the",
         "behavior that invokes those closures.",
@@ -593,19 +586,15 @@ def render_prompt(report: dict) -> str:
     for owner in sorted(groups, key=lambda name: (-sum(
             target["unlocks"] for target in groups[name]), name)):
         entries: list[dict] = sorted(groups[owner], key=lambda target: target["rank"])
-        unlocked: int = sum(target["unlocks"] for target in entries)
-        lines.append(f"## `{owner}` — {len(entries)} targets, unlocks {unlocked}")
+        lines.append(f"## `{owner}` — {len(entries)} targets")
         lines.append("")
         for target in entries:
             member: str = target["id"].split("#", 1)[1]
-            hint: str = f" - {target['behaviorHint']}" if target["behaviorHint"] else ""
-            route: str = ", via supertype" if target.get("targetVia") == "override" else ""
+            notes: list[str] = ["via supertype"] if target.get("targetVia") == "override" else []
             unexecuted: int = target.get("closuresUnexecuted", 0)
-            closures: str = (
-                f", {target['closures']} closures of which {unexecuted} never run"
-                if unexecuted else ""
-            )
-            lines.append(f"- `{member}` (unlocks {target['unlocks']}{route}{closures}){hint}")
+            if unexecuted:
+                notes.append(f"{target['closures']} closures of which {unexecuted} never run")
+            lines.append(f"- `{member}` ({', '.join(notes)})" if notes else f"- `{member}`")
         lines.append("")
     return "\n".join(lines) + "\n"
 

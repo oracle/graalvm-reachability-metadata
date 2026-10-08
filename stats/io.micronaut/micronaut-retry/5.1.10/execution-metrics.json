@@ -1,0 +1,83 @@
+{
+  "add_new_library_support:2026-10-02": {
+    "timestamp": "2026-10-02T00:56:08.656709Z",
+    "library": "io.micronaut:micronaut-retry:5.1.10",
+    "starting_commit": "f50442234a53d41a4a4ecfe4a9079785cb4d923e",
+    "ending_commit": "66a50a86c7a87fb69c84483aa819f91e1f716948",
+    "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-luna",
+    "agent": "pi",
+    "model": "gpt-5.6-luna",
+    "status": "success",
+    "stats": {
+      "version": "5.1.10",
+      "dynamicAccess": {
+        "breakdown": {},
+        "coverageRatio": 1.0,
+        "coveredCalls": 0,
+        "totalCalls": 0
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 1547,
+          "missed": 1203,
+          "ratio": 0.562545,
+          "total": 2750
+        },
+        "line": {
+          "covered": 359,
+          "missed": 272,
+          "ratio": 0.568938,
+          "total": 631
+        },
+        "method": {
+          "covered": 112,
+          "missed": 73,
+          "ratio": 0.605405,
+          "total": 185
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "no_action",
+      "issue_number": 9809,
+      "issue_label": "library-new-request",
+      "library": "io.micronaut:micronaut-retry:5.1.10",
+      "summary": "micronaut-retry exposes a plain-Java SimpleRetry/DefaultRetryPredicate API usable without DI, Docker, or extra env setup, matching the no-extra-setup pattern already used by sibling io.micronaut test modules (http-client, cache-caffeine, security) in this repo.",
+      "deterministic_setup": [],
+      "agent_guidance": "Favor testing the library's plain-Java surface — io.micronaut.retry.simple.SimpleRetry, io.micronaut.retry.annotation.DefaultRetryPredicate, io.micronaut.retry.exception.CircuitOpenException — driven directly without an ApplicationContext, rather than wiring up @Retryable/@CircuitBreaker on DI-managed beans, which would need micronaut-inject-java as an annotation processor and @MicronautTest. This mirrors how micronaut-http-client's test calls HttpClient.create() directly instead of going through DI.",
+      "risks": [
+        "If the generated test instead tries to exercise @Retryable/@CircuitBreaker via annotation-processed beans, it will silently no-op without an annotationProcessor dependency on micronaut-inject-java — compilation succeeds but retry logic never triggers at runtime, so this should be caught in local Gradle/Native Image verification if attempted."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#9809 Support for io.micronaut:micronaut-retry:5.1.10; label=library-new-request; body_chars=39"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "sonnet",
+      "input_tokens_used": 36,
+      "output_tokens_used": 16419
+    },
+    "metrics": {
+      "input_tokens_used": 310724,
+      "cached_input_tokens_used": 3770880,
+      "output_tokens_used": 27576,
+      "iterations": 6,
+      "cost_usd": 0.8533,
+      "generated_loc": 280,
+      "tested_library_loc": 359,
+      "metadata_entries": 2,
+      "test_only_metadata_entries": 33,
+      "code_coverage_percent": 56.89
+    },
+    "artifacts": {
+      "metadata_file": "metadata/io.micronaut/micronaut-retry/5.1.10/reachability-metadata.json"
+    }
+  }
+}

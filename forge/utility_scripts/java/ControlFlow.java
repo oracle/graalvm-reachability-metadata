@@ -20,13 +20,16 @@ import java.lang.classfile.instruction.SwitchCase;
 import java.lang.classfile.instruction.TableSwitchInstruction;
 import java.lang.classfile.instruction.ThrowInstruction;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.NavigableMap;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /// Control-flow table of one method body, for deep-phase fork hints
 /// (§AR-code-coverage-deep-navigation.1.3).
@@ -68,11 +71,15 @@ final class ControlFlow {
     }
 
     /// The `branches` and `blocks` fields of one method, or `null` when the
-    /// method has no conditional branch and so can hold no fork.
+    /// method has neither a conditional branch nor an exception table and so
+    /// can hold no fork and no catch boundary.
     static String[] encode(CodeAttribute code) {
         ControlFlow flow = new ControlFlow(code);
         String branches = flow.branches();
-        return branches.isEmpty() ? null : new String[]{branches, flow.blocks()};
+        if (branches.isEmpty() && code.exceptionHandlers().isEmpty()) {
+            return null;
+        }
+        return new String[]{branches, flow.blocks()};
     }
 
     private String branches() {
@@ -161,6 +168,11 @@ final class ControlFlow {
         return plumbing;
     }
 
+    /// Basic blocks with their successors: jump targets, the fall-through, then
+    /// the handlers of every `try` covering the block, each written `bci~Type`
+    /// as an exception edge with its caught type (`any` for a catch-all). A
+    /// block holding a call or a `throw`, which can raise a caught exception, is
+    /// written `bci!>` (§AR-code-coverage-deep-navigation.1.3).
     private String blocks() {
         Set<Integer> leaders = new TreeSet<>(List.of(0));
         for (Positioned positioned : instructions) {
@@ -189,12 +201,21 @@ final class ControlFlow {
             if (!endsFlow(terminator) && !isUnconditional(terminator) && nextStart != null) {
                 successors.add(nextStart);
             }
+            Map<Integer, String> handlers = new LinkedHashMap<>();
             for (ExceptionCatch handler : code.exceptionHandlers()) {
-                if (bci(handler.tryStart()) <= start && start < bci(handler.tryEnd())) {
-                    successors.add(bci(handler.handler()));
+                int handlerBci = bci(handler.handler());
+                if (bci(handler.tryStart()) <= start && start < bci(handler.tryEnd())
+                        && !successors.contains(handlerBci)) {
+                    handlers.putIfAbsent(handlerBci, handler.catchType()
+                            .map(type -> type.asInternalName().replace('/', '.'))
+                            .orElse("any"));
                 }
             }
-            entries.add(start + ">" + successors.stream().map(String::valueOf)
+            boolean canThrow = byBci.subMap(start, last + 1).values().stream()
+                    .anyMatch(ControlFlow::canRaise);
+            entries.add(start + (canThrow ? "!" : "") + ">" + Stream.concat(
+                    successors.stream().map(String::valueOf),
+                    handlers.entrySet().stream().map(entry -> entry.getKey() + "~" + entry.getValue()))
                     .collect(Collectors.joining(",")));
         }
         return String.join(";", entries);
@@ -218,6 +239,13 @@ final class ControlFlow {
             }
         }
         return targets;
+    }
+
+    /// Whether the instruction can raise an exception a `catch` is written for:
+    /// a call or a `throw`. Implicit exceptions of other instructions are not
+    /// modelled.
+    private static boolean canRaise(Instruction instruction) {
+        return instruction instanceof InvokeInstruction || instruction instanceof ThrowInstruction;
     }
 
     /// Whether control never falls through to the next instruction.

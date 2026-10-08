@@ -1,0 +1,92 @@
+{
+  "add_new_library_support:2026-10-02": {
+    "timestamp": "2026-10-02T23:13:47.437831Z",
+    "library": "com.sun.xml.stream.buffer:streambuffer:2.1.0",
+    "starting_commit": "e6298f47073f0e3d3d08d97c1ae5514f49669907",
+    "ending_commit": "3c192485a90b2131507775aa086ba7840326c4d3",
+    "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-luna",
+    "agent": "pi",
+    "model": "gpt-5.6-luna",
+    "status": "success",
+    "stats": {
+      "version": "2.1.0",
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 2777,
+          "missed": 5289,
+          "ratio": 0.344285,
+          "total": 8066
+        },
+        "line": {
+          "covered": 717,
+          "missed": 1294,
+          "ratio": 0.356539,
+          "total": 2011
+        },
+        "method": {
+          "covered": 151,
+          "missed": 256,
+          "ratio": 0.371007,
+          "total": 407
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "advisory_preparation",
+      "issue_number": 9941,
+      "issue_label": "library-new-request",
+      "library": "com.sun.xml.stream.buffer:streambuffer:2.1.0",
+      "summary": "streambuffer (Eclipse Metro, same jakartified release train as stax-ex 2.0.0 and istack-commons-runtime 4.0.0, both already in this repo) builds its binary/attachment-preserving buffering on stax-ex's XMLStreamReaderEx/Base64Data/StreamingDataHandler, which reference jakarta.activation.DataHandler. That type is optional/provided upstream and is not pulled in transitively, which is exactly why both sibling libraries' scaffolds needed it added explicitly.",
+      "deterministic_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "jakarta.activation:jakarta.activation-api:2.0.1",
+          "scope": "testImplementation",
+          "reason": "streambuffer's binary-data-preserving buffering path exercises stax-ex's XMLStreamReaderEx/Base64Data/StreamingDataHandler API, which references jakarta.activation.DataHandler/DataSource. That dependency is optional/provided in stax-ex's own POM and is not pulled in transitively; the sibling librari\n...[truncated]"
+        }
+      ],
+      "agent_guidance": "To get meaningful coverage beyond a trivial text round-trip, prefer a test that exercises streambuffer's distinguishing feature: creating a MutableXMLStreamBuffer from an XMLStreamReader that implements org.jvnet.staxex.XMLStreamReaderEx (or similar binary-preserving path) and asserting the buffered content round-trips through a jakarta.activation.DataHandler/Base64Data without re-encoding. If the test only reads/writes plain XML via StAX/SAX/DOM, the extra dependency may be unused and can be dropped.",
+      "risks": [
+        "Network access and filesystem access outside this worktree were unavailable in this session, so streambuffer's POM/dependency graph could not be fetched directly from Maven Central; this conclusion is based on architectural knowledge of the Metro codebase plus concrete precedent from two sibling libraries in the same release family already in this repo.",
+        "If generated tests end up exercising only the plain StAX/SAX/DOM buffering path (no binary/attachment handling), the extra dependency is harmless but unnecessary — local Gradle/Native Image verification should confirm actual need."
+      ],
+      "applied_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "jakarta.activation:jakarta.activation-api:2.0.1",
+          "result": "applied",
+          "target": "tests/src/com.sun.xml.stream.buffer/streambuffer/2.1.0/build.gradle"
+        }
+      ],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#9941 Support for com.sun.xml.stream.buffer:streambuffer:2.1.0; label=library-new-request; body_chars=39"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "sonnet",
+      "input_tokens_used": 32,
+      "output_tokens_used": 20871
+    },
+    "metrics": {
+      "input_tokens_used": 311553,
+      "cached_input_tokens_used": 3805696,
+      "output_tokens_used": 34614,
+      "iterations": 7,
+      "cost_usd": 0.8999,
+      "generated_loc": 225,
+      "tested_library_loc": 717,
+      "metadata_entries": 0,
+      "test_only_metadata_entries": 9,
+      "code_coverage_percent": 35.65
+    },
+    "artifacts": {
+      "metadata_file": "metadata/com.sun.xml.stream.buffer/streambuffer/2.1.0/reachability-metadata.json"
+    }
+  }
+}

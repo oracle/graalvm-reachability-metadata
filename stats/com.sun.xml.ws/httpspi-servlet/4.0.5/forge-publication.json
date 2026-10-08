@@ -1,0 +1,131 @@
+{
+  "base_commit": "6a90d89a600a0152925c676c262ae39ad52787e7",
+  "branch": "ai/kimeta/add-lib-support-com.sun.xml.ws-httpspi-servlet-4.0.5-forge-9946-20261002202322828633-dcaeedb8c074",
+  "follow_ups": [],
+  "forge": {
+    "branch": "master",
+    "commit": "64b39e298df2e06d80520993b3c73ded87225968",
+    "monitored_branch": "origin/master"
+  },
+  "issue_number": 9946,
+  "library": {
+    "artifact": "httpspi-servlet",
+    "coordinates": "com.sun.xml.ws:httpspi-servlet:4.0.5",
+    "group": "com.sun.xml.ws",
+    "version": "4.0.5"
+  },
+  "local_ci_verification": {
+    "base_commit": "6a90d89a600a0152925c676c262ae39ad52787e7",
+    "commands": [
+      {
+        "command": [
+          "./gradlew",
+          "generateChangedIndexFileCoordinatesList",
+          "-PbaseCommit=origin/master",
+          "-PnewCommit=HEAD"
+        ],
+        "env": {
+          "GITHUB_OUTPUT": "/tmp/tmphc40ytlr"
+        },
+        "gate": "changed-index-coordinates",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :generateChangedIndexFileCoordinatesList\n\n[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9946-967ebbc0/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 2s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      },
+      {
+        "command": [
+          "./gradlew",
+          "validateIndexFiles",
+          "-Pcoordinates=com.sun.xml.ws:httpspi-servlet"
+        ],
+        "env": {},
+        "gate": "index-file-validation",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :validateIndexFiles\n✅ metadata/com.sun.xml.ws/httpspi-servlet/index.json: Valid\n\n[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9946-967ebbc0/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 1s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      }
+    ],
+    "failure_command": null,
+    "failure_gate": null,
+    "final_commit": "30f9fc2f0bbf07690acc7417c476440f9b74184f",
+    "fixups": [],
+    "human_intervention_required": false,
+    "repo_fix_paths": [],
+    "status": "success"
+  },
+  "local_review": {
+    "changed_paths": [
+      "stats/com.sun.xml.ws/httpspi-servlet/4.0.5/stats.json",
+      "tests/src/com.sun.xml.ws/httpspi-servlet/4.0.5/build.gradle",
+      "tests/src/com.sun.xml.ws/httpspi-servlet/4.0.5/src/test/java/com_sun_xml_ws/httpspi_servlet/DeploymentDescriptorParserTest.java"
+    ],
+    "decision": "approved",
+    "finding_body": "Resolved review evidence reported metadata for reflective WstxInputFactory construction when DeploymentDescriptorParser is reached, but the original tests never invoked DeploymentDescriptorParser. The suite could therefore stay green without exercising the public library path that requires the shipped metadata, violating the meaningful public-API and metadata-justification requirements.",
+    "finding_title": "Shipped metadata was not exercised by the generated tests",
+    "fix_note": "Added a DeploymentDescriptorParser public-API test that parses an in-memory deployment descriptor and asserts the adapter result. The first finalization run reproduced the library-originated native build failure: DeploymentDescriptorParser's static XMLInputFactory embedded a runtime-initialized WstxInputFactory in the image heap. Added the narrow required --initialize-at-run-time=com.sun.xml.ws.transport.httpspi.servlet.DeploymentDescriptorParser build argument, then accepted Forge's regenerated coverage statistics. A subsequent exact finalization run passed unchanged.",
+    "model": "gpt-5.6-sol",
+    "review_comment": "Reviewed the single-coordinate diff against every new-library rule: file scope and index shape are correct; tests are public, non-scaffold, version-agnostic, in a separate package, and run under Native Image without skips; no legacy metadata format or JVM override is present. The reported dynamic-access result is N/A, so the no-calls rule applies and the entry-count mismatch probe does not. After repair, the exact Forge finalization passed all three test lanes plus metadata, style, generated-test, routing, and statistics gates without further publishable changes.",
+    "session_id": "a2f97f065d774dba"
+  },
+  "metrics": {
+    "agent": "pi",
+    "model": "gpt-5.6-luna",
+    "path": "stats/com.sun.xml.ws/httpspi-servlet/4.0.5/execution-metrics.json",
+    "summary": {
+      "cached_input_tokens_used": 33521664,
+      "code_coverage_percent": 12.88,
+      "cost_usd": 5.4671,
+      "generated_loc": 380,
+      "input_tokens_used": 1318968,
+      "iterations": 30,
+      "metadata_entries": 2,
+      "output_tokens_used": 132673,
+      "test_only_metadata_entries": 1,
+      "tested_library_loc": 72
+    },
+    "timestamp": "2026-10-02T20:23:22.828633Z"
+  },
+  "modifiers": {
+    "chunk_final": true,
+    "chunked_dynamic_access": false,
+    "human_intervention": false
+  },
+  "producer": "kimeta",
+  "publication_id": "forge-9946-20261002202322828633-dcaeedb8c074",
+  "render": {
+    "dynamic_access": null,
+    "dynamic_access_evidence": {
+      "covered_call_sites": [],
+      "metadata_rules": [
+        "when `com.sun.xml.ws.transport.httpspi.servlet.DeploymentDescriptorParser` is reached, make `com.ctc.wstx.stax.WstxInputFactory` available for reflection"
+      ]
+    },
+    "library_stats": {
+      "dynamicAccess": "N/A",
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 587,
+          "missed": 1526,
+          "ratio": 0.277804,
+          "total": 2113
+        },
+        "line": {
+          "covered": 147,
+          "missed": 412,
+          "ratio": 0.26297,
+          "total": 559
+        },
+        "method": {
+          "covered": 47,
+          "missed": 112,
+          "ratio": 0.295597,
+          "total": 159
+        }
+      },
+      "version": "4.0.5"
+    }
+  },
+  "schema_version": 1,
+  "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-luna",
+  "task_type": "library-new-request",
+  "template_type": "library-new-request",
+  "timestamp": "2026-10-02T20:23:22.828633Z"
+}

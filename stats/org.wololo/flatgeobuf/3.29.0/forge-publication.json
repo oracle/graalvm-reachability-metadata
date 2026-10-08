@@ -1,0 +1,126 @@
+{
+  "base_commit": "ce22cfccf0c3419f55d15c33e4ac0bd1dcc28938",
+  "branch": "ai/kimeta/add-lib-support-org.wololo-flatgeobuf-3.29.0-forge-9794-20261003023706872589-a8449296b7d1",
+  "follow_ups": [],
+  "forge": {
+    "branch": "master",
+    "commit": "64b39e298df2e06d80520993b3c73ded87225968",
+    "monitored_branch": "origin/master"
+  },
+  "issue_number": 9794,
+  "library": {
+    "artifact": "flatgeobuf",
+    "coordinates": "org.wololo:flatgeobuf:3.29.0",
+    "group": "org.wololo",
+    "version": "3.29.0"
+  },
+  "local_ci_verification": {
+    "base_commit": "ce22cfccf0c3419f55d15c33e4ac0bd1dcc28938",
+    "commands": [
+      {
+        "command": [
+          "./gradlew",
+          "generateChangedIndexFileCoordinatesList",
+          "-PbaseCommit=origin/master",
+          "-PnewCommit=HEAD"
+        ],
+        "env": {
+          "GITHUB_OUTPUT": "/tmp/tmpo74vci14"
+        },
+        "gate": "changed-index-coordinates",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :generateChangedIndexFileCoordinatesList\n\n[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9794-119da8d2/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 5s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      },
+      {
+        "command": [
+          "./gradlew",
+          "validateIndexFiles",
+          "-Pcoordinates=org.wololo:flatgeobuf"
+        ],
+        "env": {},
+        "gate": "index-file-validation",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :validateIndexFiles\n✅ metadata/org.wololo/flatgeobuf/index.json: Valid\n\n[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/9794-119da8d2/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 2s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      }
+    ],
+    "failure_command": null,
+    "failure_gate": null,
+    "final_commit": "204dea4b498722ed348b1dea0c9595e4af55dbc0",
+    "fixups": [],
+    "human_intervention_required": false,
+    "repo_fix_paths": [],
+    "status": "success"
+  },
+  "local_review": {
+    "changed_paths": [],
+    "decision": "approved",
+    "finding_body": "",
+    "finding_title": "",
+    "fix_note": "",
+    "model": "gpt-5.6-sol",
+    "review_comment": "The diff is scoped to org.wololo:flatgeobuf:3.29.0 and uses only reachability-metadata.json. The library-specific tests exercise public APIs from a separate test package, contain assertions, do not pin the artifact version, skip Native Image, tolerate failures, bypass visibility, add fake types, or use native build/run flags. The resolved statistics report 0/0 dynamic-access calls, so the no-calls coverage case passes and the entry-count mismatch check does not apply. Index validation evidence was green, and Forge finalization completed all three test lanes, metadata splitting and validation, style checks, generated-test validity, deterministic package handling, foreign-metadata routing, and statistics generation without changing the publishable tree.",
+    "session_id": "edc4072cff29420f"
+  },
+  "metrics": {
+    "agent": "pi",
+    "model": "gpt-5.6-luna",
+    "path": "stats/org.wololo/flatgeobuf/3.29.0/execution-metrics.json",
+    "summary": {
+      "cached_input_tokens_used": 4732928,
+      "code_coverage_percent": 76.56,
+      "cost_usd": 1.0273,
+      "generated_loc": 342,
+      "input_tokens_used": 347329,
+      "iterations": 8,
+      "metadata_entries": 0,
+      "output_tokens_used": 34451,
+      "tested_library_loc": 725
+    },
+    "timestamp": "2026-10-03T02:37:06.872589Z"
+  },
+  "modifiers": {
+    "chunk_final": true,
+    "chunked_dynamic_access": false,
+    "human_intervention": false
+  },
+  "producer": "kimeta",
+  "publication_id": "forge-9794-20261003023706872589-a8449296b7d1",
+  "render": {
+    "dynamic_access": null,
+    "dynamic_access_evidence": null,
+    "library_stats": {
+      "dynamicAccess": {
+        "breakdown": {},
+        "coverageRatio": 1.0,
+        "coveredCalls": 0,
+        "totalCalls": 0
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 4038,
+          "missed": 1688,
+          "ratio": 0.705204,
+          "total": 5726
+        },
+        "line": {
+          "covered": 725,
+          "missed": 222,
+          "ratio": 0.765576,
+          "total": 947
+        },
+        "method": {
+          "covered": 176,
+          "missed": 151,
+          "ratio": 0.538226,
+          "total": 327
+        }
+      },
+      "version": "3.29.0"
+    }
+  },
+  "schema_version": 1,
+  "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-luna",
+  "task_type": "library-new-request",
+  "template_type": "library-new-request",
+  "timestamp": "2026-10-03T02:37:06.872589Z"
+}

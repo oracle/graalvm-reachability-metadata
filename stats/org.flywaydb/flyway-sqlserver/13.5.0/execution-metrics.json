@@ -1,0 +1,119 @@
+{
+  "fix_ni_run:2026-10-07": {
+    "timestamp": "2026-10-07T16:58:17.087636Z",
+    "library": "org.flywaydb:flyway-sqlserver:13.5.0",
+    "starting_commit": "7fcd192f24c673071adb3a114e41a3f124daf0aa",
+    "ending_commit": "049d3f2ece1c68194d1c992089fe221685f1844b",
+    "previous_library": "org.flywaydb:flyway-sqlserver:11.8.1",
+    "strategy_name": "library_update_pi_gpt-5.6-sol",
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "status": "success",
+    "stats": {
+      "version": "13.5.0",
+      "dynamicAccess": {
+        "breakdown": {},
+        "coverageRatio": 1.0,
+        "coveredCalls": 0,
+        "totalCalls": 0
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 1156,
+          "missed": 3437,
+          "ratio": 0.251687,
+          "total": 4593
+        },
+        "line": {
+          "covered": 201,
+          "missed": 618,
+          "ratio": 0.245421,
+          "total": 819
+        },
+        "method": {
+          "covered": 72,
+          "missed": 176,
+          "ratio": 0.290323,
+          "total": 248
+        }
+      }
+    },
+    "previous_library_stats": {
+      "version": "11.8.1",
+      "dynamicAccess": {
+        "breakdown": {},
+        "coverageRatio": 1.0,
+        "coveredCalls": 0,
+        "totalCalls": 0
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 1154,
+          "missed": 3167,
+          "ratio": 0.267068,
+          "total": 4321
+        },
+        "line": {
+          "covered": 197,
+          "missed": 514,
+          "ratio": 0.277075,
+          "total": 711
+        },
+        "method": {
+          "covered": 79,
+          "missed": 148,
+          "ratio": 0.348018,
+          "total": 227
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "no_action",
+      "issue_number": 9843,
+      "issue_label": "fails-native-image-run",
+      "library": "org.flywaydb:flyway-sqlserver:13.5.0",
+      "summary": "The existing 11.8.1 scaffold already pins the SQL Server image (mcr.microsoft.com/mssql/server:2022-CU14-ubuntu-22.04) and its JDBC driver. I found no concrete evidence that 13.5.0 needs extra setup. I did not resolve the 13.5.0 artifact or its POM, and I did not check the 13.5.0 sources, so this is based on the 11.8.1 tests only.",
+      "deterministic_setup": [],
+      "agent_guidance": "",
+      "risks": [
+        "The issue body is empty, so there is no failure evidence to trace. The native-image run failure is most likely missing or changed reachability metadata for 13.5.0, which the normal fix flow handles.",
+        "The inherited test pins mssql-jdbc 12.2.0.jre11 and the Docker image tag. If 13.5.0 needs a newer driver, a different image, or extra native-image build args, Gradle and Native Image verification will show it.",
+        "If a newer image is ever needed, it would have to be added to the allowed-docker-images allow-list."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#9843 [Automation] native-image run fails for org.flywaydb:flyway-sqlserver:13.5.0; label=fails-native-image-run; body_chars=0"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "11 existing test file path(s) included"
+        }
+      ],
+      "current_library": "org.flywaydb:flyway-sqlserver:11.8.1",
+      "new_version": "13.5.0",
+      "model": "sonnet",
+      "input_tokens_used": 4,
+      "output_tokens_used": 889
+    },
+    "metrics": {
+      "input_tokens_used": 0,
+      "cached_input_tokens_used": 0,
+      "output_tokens_used": 0,
+      "iterations": 0,
+      "cost_usd": 0.0,
+      "tested_library_loc": 201,
+      "metadata_entries": 113,
+      "test_only_metadata_entries": 97,
+      "previous_library_metadata_entries": 118,
+      "previous_library_test_only_metadata_entries": 97,
+      "code_coverage_percent": 24.54,
+      "previous_library_coverage_percent": 27.71
+    },
+    "artifacts": {
+      "metadata_file": "metadata/org.flywaydb/flyway-sqlserver/13.5.0/reachability-metadata.json"
+    }
+  }
+}

@@ -1,0 +1,110 @@
+{
+  "add_new_library_support:2026-10-08": {
+    "timestamp": "2026-10-08T21:30:14.728512Z",
+    "library": "io.opentelemetry.instrumentation:opentelemetry-log4j-appender-2.17:2.28.1-alpha",
+    "starting_commit": "12bd2129484477e78139b6fcf495d5220fef7205",
+    "ending_commit": "d057c81eeb14e38ac65cc94565d874424760b795",
+    "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-luna",
+    "agent": "pi",
+    "model": "gpt-5.6-luna",
+    "status": "success",
+    "stats": {
+      "version": "2.28.1-alpha",
+      "dynamicAccess": {
+        "breakdown": {},
+        "coverageRatio": 1.0,
+        "coveredCalls": 0,
+        "totalCalls": 0
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 877,
+          "missed": 186,
+          "ratio": 0.825024,
+          "total": 1063
+        },
+        "line": {
+          "covered": 238,
+          "missed": 66,
+          "ratio": 0.782895,
+          "total": 304
+        },
+        "method": {
+          "covered": 42,
+          "missed": 22,
+          "ratio": 0.65625,
+          "total": 64
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "advisory_preparation",
+      "issue_number": 8544,
+      "issue_label": "library-new-request",
+      "library": "io.opentelemetry.instrumentation:opentelemetry-log4j-appender-2.17:2.28.1-alpha",
+      "summary": "Artifact's POM confirms it has no log4j-core dependency (it's a library-instrumentation module meant to be hosted by the consuming app's own log4j-core), so the generated scaffold can't even compile a test against OpenTelemetryAppender without it. The sibling log4j-context-data-2.17-autoconfigure module (same OTel release) hit the identical gap and fixed it the same way; the sibling logback-appender-1.0 module (same appender-bridge pattern) additionally needed opentelemetry-sdk-testing to verify emitted log records.",
+      "deterministic_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "org.apache.logging.log4j:log4j-core:2.25.1",
+          "scope": "testImplementation",
+          "reason": "OpenTelemetryAppender extends org.apache.logging.log4j.core.appender.AbstractAppender; the artifact's POM has no compile/runtime dependency on log4j-core, so it must be added to even construct, register, or append through the appender. Version matches the existing log4j-context-data-2.17-autoconfigu\n...[truncated]"
+        },
+        {
+          "kind": "dependency",
+          "coordinate": "io.opentelemetry:opentelemetry-sdk-testing:1.62.0",
+          "scope": "testImplementation",
+          "reason": "Meaningful coverage of the appender requires verifying it actually emits LogRecords through the OpenTelemetry Logs Bridge API, which needs an SdkLoggerProvider/LogRecordExporter from the SDK. Version matches opentelemetry-api 1.62.0 pulled transitively by this artifact's POM and mirrors the opentele\n...[truncated]"
+        }
+      ],
+      "agent_guidance": "Build the appender via OpenTelemetryAppender.builder().setOpenTelemetry(...).build() (or OpenTelemetryAppender.install(openTelemetry)) and call append(LogEvent) directly against an in-memory SdkLoggerProvider/LogRecordExporter, the same way the opentelemetry-logback-appender-1.0 test exercises LoggingEventMapper — no log4j2.xml/properties config file or system properties are needed to drive the appender itself. If exercising builder options (setCaptureExperimentalAttributes, setCaptureCodeAttributes, setCaptureMapMessageAttributes, setCaptureMarkerAttribute, setCaptureContextDataAttributes, setNumLogsCapturedBeforeOtelInstall), set them directly on the builder rather than via system properties.",
+      "risks": [
+        "log4j-core version (2.25.1) is pinned to match the sibling test rather than independently verified against this module's own compatibility range; confirm via the normal test/checkMetadataFiles run.",
+        "No Docker image is needed since the module only bridges to the in-process OTel Logs Bridge API (no OTLP/collector export path is exercised here)."
+      ],
+      "applied_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "org.apache.logging.log4j:log4j-core:2.25.1",
+          "result": "applied",
+          "target": "tests/src/io.opentelemetry.instrumentation/opentelemetry-log4j-appender-2.17/2.28.1-alpha/build.gradle"
+        },
+        {
+          "kind": "dependency",
+          "coordinate": "io.opentelemetry:opentelemetry-sdk-testing:1.62.0",
+          "result": "applied",
+          "target": "tests/src/io.opentelemetry.instrumentation/opentelemetry-log4j-appender-2.17/2.28.1-alpha/build.gradle"
+        }
+      ],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#8544 Support for io.opentelemetry.instrumentation:opentelemetry-log4j-appender-2.17:2.28.1-alpha; label=library-new-request; body_chars=0"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "sonnet",
+      "input_tokens_used": 30,
+      "output_tokens_used": 11904
+    },
+    "metrics": {
+      "input_tokens_used": 304272,
+      "cached_input_tokens_used": 5201920,
+      "output_tokens_used": 31258,
+      "iterations": 4,
+      "cost_usd": 1.012,
+      "generated_loc": 279,
+      "tested_library_loc": 238,
+      "metadata_entries": 1,
+      "test_only_metadata_entries": 20,
+      "code_coverage_percent": 78.29
+    },
+    "artifacts": {
+      "metadata_file": "metadata/io.opentelemetry.instrumentation/opentelemetry-log4j-appender-2.17/2.28.1-alpha/reachability-metadata.json"
+    }
+  }
+}

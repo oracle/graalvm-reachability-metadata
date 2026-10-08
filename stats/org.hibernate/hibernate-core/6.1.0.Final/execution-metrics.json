@@ -242,5 +242,98 @@
     "artifacts": {
       "metadata_file": "metadata/org.hibernate/hibernate-core/6.1.0.Final/reachability-metadata.json"
     }
+  },
+  "improve_library_coverage:2026-10-02": {
+    "timestamp": "2026-10-02T00:14:25.992697Z",
+    "library": "org.hibernate:hibernate-core:6.1.0.Final",
+    "starting_commit": "9bca8e5750ed3857a80f1b550a4c2104de0cd9ce",
+    "ending_commit": "fad39f96e29ce88c8749da27a3e2cf801ab239f7",
+    "strategy_name": "library_update_optimistic_pi_gpt-5.6-luna",
+    "agent": "pi",
+    "model": "gpt-5.6-luna",
+    "status": "chunk_ready",
+    "stats": {
+      "version": "6.1.0.Final",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 0.660099,
+            "coveredCalls": 268,
+            "totalCalls": 406
+          },
+          "resources": {
+            "coverageRatio": 0.909091,
+            "coveredCalls": 20,
+            "totalCalls": 22
+          }
+        },
+        "coverageRatio": 0.672897,
+        "coveredCalls": 288,
+        "totalCalls": 428
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 141385,
+          "missed": 509226,
+          "ratio": 0.217311,
+          "total": 650611
+        },
+        "line": {
+          "covered": 35365,
+          "missed": 126362,
+          "ratio": 0.218671,
+          "total": 161727
+        },
+        "method": {
+          "covered": 9230,
+          "missed": 34705,
+          "ratio": 0.210083,
+          "total": 43935
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "no_action",
+      "issue_number": 9119,
+      "issue_label": "library-update-request",
+      "library": "org.hibernate:hibernate-core:6.1.0.Final",
+      "summary": "The existing hibernate-core 6.1.0.Final test project already has the setup it needs: H2, Jakarta Persistence, validation-api, logback, jboss-logging, and the PostgreSQL and Oracle JDBC drivers used by dialect initialization. It already has about 105 test classes and a conditions filter. The 150 uncovered classes are a breadth problem, not a missing-setup problem. In-memory H2 runs the tests without Docker, so no Docker image is needed. I did not find anything in the project that needs an extra environment variable or system property.",
+      "deterministic_setup": [],
+      "agent_guidance": "",
+      "risks": [
+        "I did not run the tests, so this decision comes from reading the build.gradle only. Reaching more of the 150 classes will mean adding tests for more Hibernate internals (dialects, bytecode enhancement, and similar). Some of those may need extra optional dependencies, such as other JDBC drivers, which Gradle and native-image runs would show.",
+        "The existing build.gradle has a custom updateGeneratedMetadata task that rewrites typeReachable conditions. New test classes that produce reflection entries may need the same rewrite."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#9119 Improve coverage for org.hibernate:hibernate-core:6.1.0.Final; label=library-update-request; body_chars=198"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "40 existing test file path(s) included"
+        }
+      ],
+      "model": "sonnet",
+      "input_tokens_used": 4,
+      "output_tokens_used": 590
+    },
+    "metrics": {
+      "input_tokens_used": 499726,
+      "cached_input_tokens_used": 6307328,
+      "output_tokens_used": 41730,
+      "iterations": 12,
+      "cost_usd": 1.3808,
+      "generated_loc": 4763,
+      "tested_library_loc": 35365,
+      "metadata_entries": 934,
+      "test_only_metadata_entries": 521,
+      "code_coverage_percent": 21.87
+    },
+    "artifacts": {
+      "metadata_file": "metadata/org.hibernate/hibernate-core/6.1.0.Final/reachability-metadata.json"
+    }
   }
 }

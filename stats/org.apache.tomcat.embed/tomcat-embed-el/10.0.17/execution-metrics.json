@@ -1,0 +1,141 @@
+{
+  "fix_java_run_fail:2026-10-02": {
+    "timestamp": "2026-10-02T22:48:53.763116Z",
+    "library": "org.apache.tomcat.embed:tomcat-embed-el:10.0.17",
+    "starting_commit": "4dd471a9cf279d5b35e12ad82d86298275971e44",
+    "ending_commit": "03fd096ed10df74e49570dcd5e7df54a5c25df58",
+    "previous_library": "org.apache.tomcat.embed:tomcat-embed-el:10.0.0",
+    "strategy_name": "java_run_iterative_with_coverage_sources_pi_gpt-5.6-sol",
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "status": "success",
+    "stats": {
+      "version": "10.0.17",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 41,
+            "totalCalls": 41
+          },
+          "resources": {
+            "coverageRatio": 0.75,
+            "coveredCalls": 3,
+            "totalCalls": 4
+          }
+        },
+        "coverageRatio": 0.977778,
+        "coveredCalls": 44,
+        "totalCalls": 45
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 10217,
+          "missed": 22885,
+          "ratio": 0.308652,
+          "total": 33102
+        },
+        "line": {
+          "covered": 2268,
+          "missed": 5453,
+          "ratio": 0.293744,
+          "total": 7721
+        },
+        "method": {
+          "covered": 390,
+          "missed": 683,
+          "ratio": 0.363467,
+          "total": 1073
+        }
+      }
+    },
+    "previous_library_stats": {
+      "version": "10.0.0",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 0.926829,
+            "coveredCalls": 38,
+            "totalCalls": 41
+          },
+          "resources": {
+            "coverageRatio": 0.5,
+            "coveredCalls": 2,
+            "totalCalls": 4
+          }
+        },
+        "coverageRatio": 0.888889,
+        "coveredCalls": 40,
+        "totalCalls": 45
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 10150,
+          "missed": 22424,
+          "ratio": 0.311598,
+          "total": 32574
+        },
+        "line": {
+          "covered": 2231,
+          "missed": 5205,
+          "ratio": 0.300027,
+          "total": 7436
+        },
+        "method": {
+          "covered": 388,
+          "missed": 671,
+          "ratio": 0.366383,
+          "total": 1059
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "no_action",
+      "issue_number": 10319,
+      "issue_label": "fails-java-run",
+      "library": "org.apache.tomcat.embed:tomcat-embed-el:10.0.17",
+      "summary": "The failure is a JVM-mode `javaTest` failure in one test, `FunctionMapperImplInnerFunctionTest`, which round-trips a `FunctionMapperImpl` through Java serialization. No extra dependency, Docker image, or environment property is indicated. Fixing the test or the metadata is enough.",
+      "deterministic_setup": [],
+      "agent_guidance": "Only the serialization round trip in FunctionMapperImplInnerFunctionTest failed; the other 23 tests passed. The top of the stack trace was truncated, so I could not see the exception type. Reproduce locally and read the exception thrown from `FunctionMapperImpl$Function.readExternal`, which is called from `ObjectInputStream.readExternalData`. That method rebuilds the mapped `Method` from the serialized owner class name, method name, and parameter type names, so a `ClassNotFoundException` or `NoSuchMethodException` there would point at the owner or parameter class lookup. Then adjust the test. For example, the nested public class `FunctionLibrary` may need to be loadable by the class loader the library uses, or the test may need to change how it creates the mapping. Add any missing reflection or serialization entries to the metadata only if the fix needs them. Keep the metadata independent of the pinned library version.",
+      "risks": [
+        "The exception type was not visible in the truncated log, so the root cause is unconfirmed until reproduced locally.",
+        "I did not compare the sources of 10.0.0 and 10.0.17, so I do not know whether `FunctionMapperImpl.Function.readExternal` changed between them.",
+        "I found nothing suggesting an unsupportable mechanism. The failing operation is ordinary Java deserialization and reflective method lookup, which reachability metadata can register, so I did not trace it further."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#10319 [Automation] java run fails for org.apache.tomcat.embed:tomcat-embed-el:10.0.17; label=fails-java-run; body_chars=8015"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "18 existing test file path(s) included"
+        }
+      ],
+      "current_library": "org.apache.tomcat.embed:tomcat-embed-el:10.0.0",
+      "new_version": "10.0.17",
+      "model": "sonnet",
+      "input_tokens_used": 4,
+      "output_tokens_used": 1265
+    },
+    "metrics": {
+      "input_tokens_used": 381446,
+      "cached_input_tokens_used": 4291840,
+      "output_tokens_used": 32572,
+      "iterations": 11,
+      "cost_usd": 5.0303,
+      "tested_library_loc": 2268,
+      "metadata_entries": 56,
+      "test_only_metadata_entries": 65,
+      "previous_library_metadata_entries": 46,
+      "previous_library_test_only_metadata_entries": 53,
+      "code_coverage_percent": 29.37,
+      "previous_library_coverage_percent": 30.0
+    },
+    "artifacts": {
+      "metadata_file": "metadata/org.apache.tomcat.embed/tomcat-embed-el/10.0.17/reachability-metadata.json"
+    }
+  }
+}

@@ -1,0 +1,148 @@
+{
+  "base_commit": "d9475e21b8ff4f6f9bb1d24ddab3c7d5a9c0a73f",
+  "branch": "ai/kimeta/add-lib-support-io.opentelemetry.instrumentation-opentelemetry-reactor-3.1-2.28.1-alpha-forge-8537-20261008221933371779-45a43e5fe8dc",
+  "follow_ups": [],
+  "forge": {
+    "branch": "master",
+    "commit": "d9475e21b8ff4f6f9bb1d24ddab3c7d5a9c0a73f",
+    "monitored_branch": "origin/master"
+  },
+  "issue_number": 8537,
+  "library": {
+    "artifact": "opentelemetry-reactor-3.1",
+    "coordinates": "io.opentelemetry.instrumentation:opentelemetry-reactor-3.1:2.28.1-alpha",
+    "group": "io.opentelemetry.instrumentation",
+    "version": "2.28.1-alpha"
+  },
+  "local_ci_verification": {
+    "base_commit": "d9475e21b8ff4f6f9bb1d24ddab3c7d5a9c0a73f",
+    "commands": [
+      {
+        "command": [
+          "./gradlew",
+          "generateChangedIndexFileCoordinatesList",
+          "-PbaseCommit=origin/master",
+          "-PnewCommit=HEAD"
+        ],
+        "env": {
+          "GITHUB_OUTPUT": "/tmp/tmpkalczd0m"
+        },
+        "gate": "changed-index-coordinates",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :generateChangedIndexFileCoordinatesList\n\n[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8537-ff40b42d/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 2s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      },
+      {
+        "command": [
+          "./gradlew",
+          "validateIndexFiles",
+          "-Pcoordinates=io.opentelemetry.instrumentation:opentelemetry-reactor-3.1"
+        ],
+        "env": {},
+        "gate": "index-file-validation",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :validateIndexFiles\n✅ metadata/io.opentelemetry.instrumentation/opentelemetry-reactor-3.1/index.json: Valid\n\n[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8537-ff40b42d/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 1s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      }
+    ],
+    "failure_command": null,
+    "failure_gate": null,
+    "final_commit": "99ba994e394df459b65988d1ad3e02f18fe07a4f",
+    "fixups": [],
+    "human_intervention_required": false,
+    "repo_fix_paths": [],
+    "status": "success"
+  },
+  "local_review": {
+    "changed_paths": [],
+    "decision": "approved",
+    "finding_body": "",
+    "finding_title": "",
+    "fix_note": "",
+    "model": "gpt-5.6-sol",
+    "review_comment": "Reviewed the complete contribution diff and local evidence. The change is scoped to one coordinate and uses only the accepted metadata format. The public, version-agnostic test exercises ContextPropagationOperator through Mono and Flux without Native Image skips, tolerated failures, visibility bypasses, reflection shortcuts, build/run flags, or scaffold code. Resolved statistics report 50% dynamic-access coverage (1/2), above the new-library gate; the reported 18 total metadata entries do not trigger the entry-count mismatch guardrail. Index validation and the recorded local verification succeeded.",
+    "session_id": "3a2f2b09bddb4509"
+  },
+  "metrics": {
+    "agent": "pi",
+    "model": "gpt-5.6-luna",
+    "path": "stats/io.opentelemetry.instrumentation/opentelemetry-reactor-3.1/2.28.1-alpha/execution-metrics.json",
+    "summary": {
+      "cached_input_tokens_used": 2009088,
+      "code_coverage_percent": 59.07,
+      "cost_usd": 0.4791,
+      "generated_loc": 60,
+      "input_tokens_used": 135094,
+      "iterations": 2,
+      "metadata_entries": 12,
+      "output_tokens_used": 23843,
+      "test_only_metadata_entries": 6,
+      "tested_library_loc": 127
+    },
+    "timestamp": "2026-10-08T22:19:33.371779Z"
+  },
+  "modifiers": {
+    "chunk_final": true,
+    "chunked_dynamic_access": false,
+    "human_intervention": false
+  },
+  "producer": "kimeta",
+  "publication_id": "forge-8537-20261008221933371779-45a43e5fe8dc",
+  "render": {
+    "dynamic_access": null,
+    "dynamic_access_evidence": {
+      "covered_call_sites": [
+        "[reflection] java.lang.invoke.MethodHandles.Lookup#findVirtual(java.lang.Class, java.lang.String, java.lang.invoke.MethodType) <- io.opentelemetry.instrumentation.reactor.v3_1.ContextPropagationOperator.getContextWriteMethod(ContextPropagationOperator.java:86) (line 86)"
+      ],
+      "metadata_rules": [
+        "when `io.opentelemetry.instrumentation.reactor.v3_1.ContextPropagationOperator` is reached, make `reactor.core.publisher.Flux.contextWrite(java.util.function.Function)` available for reflection",
+        "when `io.opentelemetry.instrumentation.reactor.v3_1.ContextPropagationOperator$ScalarPropagatingFlux` is reached, make `reactor.core.publisher.FluxFlatMap$FlatMapInner` available for reflection",
+        "when `io.opentelemetry.instrumentation.reactor.v3_1.TracingSubscriber` is reached, make `reactor.core.publisher.FluxRetry$RetrySubscriber` available for reflection",
+        "when `io.opentelemetry.instrumentation.reactor.v3_1.TracingSubscriber` is reached, make `reactor.core.publisher.FluxRetryWhen$RetryWhenMainSubscriber` available for reflection",
+        "when `io.opentelemetry.instrumentation.reactor.v3_1.ContextPropagationOperator` is reached, make `reactor.core.publisher.Mono.contextWrite(java.util.function.Function)` available for reflection",
+        "when `io.opentelemetry.instrumentation.reactor.v3_1.TracingSubscriber` is reached, make `reactor.core.publisher.Operators$MultiSubscriptionSubscriber` available for reflection",
+        "when `io.opentelemetry.instrumentation.reactor.v3_1.ContextPropagationOperator$ScalarPropagatingMono` is reached, make `reactor.core.publisher.Operators$ScalarSubscription` available for reflection",
+        "when `io.opentelemetry.instrumentation.reactor.v3_1.ContextPropagationOperator` is reached, make `reactor.core.scheduler.Schedulers.onScheduleHook(java.lang.String, java.util.function.Function)` available for reflection",
+        "... and 1 more"
+      ]
+    },
+    "library_stats": {
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 0.5,
+            "coveredCalls": 1,
+            "totalCalls": 2
+          }
+        },
+        "coverageRatio": 0.5,
+        "coveredCalls": 1,
+        "totalCalls": 2
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 408,
+          "missed": 304,
+          "ratio": 0.573034,
+          "total": 712
+        },
+        "line": {
+          "covered": 127,
+          "missed": 88,
+          "ratio": 0.590698,
+          "total": 215
+        },
+        "method": {
+          "covered": 50,
+          "missed": 22,
+          "ratio": 0.694444,
+          "total": 72
+        }
+      },
+      "version": "2.28.1-alpha"
+    }
+  },
+  "schema_version": 1,
+  "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-luna",
+  "task_type": "library-new-request",
+  "template_type": "library-new-request",
+  "timestamp": "2026-10-08T22:19:33.371779Z"
+}

@@ -1,0 +1,109 @@
+{
+  "add_new_library_support:2026-10-03": {
+    "timestamp": "2026-10-03T01:39:12.463944Z",
+    "library": "io.micronaut:micronaut-inject:5.0.0",
+    "starting_commit": "7ece76853fa8e331f75e52235ab592bacd7bc932",
+    "ending_commit": "2b080750835a0ab0d7862a6713d424c4c05bf513",
+    "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-luna",
+    "agent": "pi",
+    "model": "gpt-5.6-luna",
+    "status": "success",
+    "stats": {
+      "version": "5.0.0",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 0.882353,
+            "coveredCalls": 15,
+            "totalCalls": 17
+          },
+          "resources": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 3,
+            "totalCalls": 3
+          }
+        },
+        "coverageRatio": 0.9,
+        "coveredCalls": 18,
+        "totalCalls": 20
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 13743,
+          "missed": 49329,
+          "ratio": 0.217894,
+          "total": 63072
+        },
+        "line": {
+          "covered": 3159,
+          "missed": 10585,
+          "ratio": 0.229846,
+          "total": 13744
+        },
+        "method": {
+          "covered": 822,
+          "missed": 2639,
+          "ratio": 0.237504,
+          "total": 3461
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "advisory_preparation",
+      "issue_number": 9800,
+      "issue_label": "library-new-request",
+      "library": "io.micronaut:micronaut-inject:5.0.0",
+      "summary": "micronaut-inject ships only the compile-time DI SPI; no bean gets generated or wired without the inject-java processor and no runtime BeanContext exists without micronaut-context, matching this repo's own micronaut-core/micronaut-context scaffolds.",
+      "deterministic_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "io.micronaut:micronaut-context:5.0.0",
+          "scope": "testImplementation",
+          "reason": "micronaut-inject defines only BeanDefinition/ExecutableMethod-style interfaces and the io.micronaut.context.annotation.* annotations; the only ApplicationContext/BeanContext implementation that can load and run generated bean definitions lives in micronaut-context, so a test cannot exercise DI behav\n...[truncated]"
+        }
+      ],
+      "agent_guidance": "Add `testAnnotationProcessor \"io.micronaut:micronaut-inject-java:5.0.0\"` to the generated build.gradle's dependencies block (same version as the resolved artifact). Micronaut's DI is driven entirely by compile-time annotation processing: without this processor, classes annotated with @Inject/@Singleton/@Factory/@ConfigurationProperties compile but produce no generated BeanDefinition/BeanIntrospection classes, so micronaut-inject's SPI types are never implemented and no reachability metadata would ever be hit. This mirrors the existing io.micronaut:micronaut-core and io.micronaut:micronaut-context test scaffolds in tests/src/io.micronaut/, which both declare this exact testAnnotationProcessor dependency for the same reason.",
+      "risks": [
+        "The deterministic-setup schema only accepts testImplementation/testRuntimeOnly/implementation/runtimeOnly scopes, so the testAnnotationProcessor addition cannot be applied automatically by the driver and depends on the generation step following this guidance verbatim — verify the final build.gradle actually declares it before trusting a green local Gradle/Native Image run.",
+        "io.micronaut:micronaut-context:5.0.0 and io.micronaut:micronaut-inject-java:5.0.0 are assumed to exist as lockstep siblings of the already-supported io.micronaut:micronaut-core:5.0.0 in this repo; confirm resolution during generateMetadata/pullAllowedDockerImages since this sandbox had no network access to verify directly against Maven Central."
+      ],
+      "applied_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "io.micronaut:micronaut-context:5.0.0",
+          "result": "applied",
+          "target": "tests/src/io.micronaut/micronaut-inject/5.0.0/build.gradle"
+        }
+      ],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#9800 Support for io.micronaut:micronaut-inject:5.0.0; label=library-new-request; body_chars=39"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "sonnet",
+      "input_tokens_used": 34,
+      "output_tokens_used": 22001
+    },
+    "metrics": {
+      "input_tokens_used": 737733,
+      "cached_input_tokens_used": 20817408,
+      "output_tokens_used": 85174,
+      "iterations": 10,
+      "cost_usd": 3.3304,
+      "generated_loc": 486,
+      "tested_library_loc": 3159,
+      "metadata_entries": 125,
+      "test_only_metadata_entries": 43,
+      "code_coverage_percent": 22.98
+    },
+    "artifacts": {
+      "metadata_file": "metadata/io.micronaut/micronaut-inject/5.0.0/reachability-metadata.json"
+    }
+  }
+}

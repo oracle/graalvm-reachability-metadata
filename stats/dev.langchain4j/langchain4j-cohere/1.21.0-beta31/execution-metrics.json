@@ -1,0 +1,81 @@
+{
+  "add_new_library_support:2026-10-05": {
+    "timestamp": "2026-10-05T15:58:20.794796Z",
+    "library": "dev.langchain4j:langchain4j-cohere:1.21.0-beta31",
+    "starting_commit": "24f0c8045470ae39225e935f7c54745bebbb1454",
+    "ending_commit": "993c10cf05c1b8ca3003cba99b692b7986e63b6d",
+    "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-luna",
+    "agent": "pi",
+    "model": "gpt-5.6-luna",
+    "status": "success",
+    "stats": {
+      "version": "1.21.0-beta31",
+      "dynamicAccess": {
+        "breakdown": {},
+        "coverageRatio": 1.0,
+        "coveredCalls": 0,
+        "totalCalls": 0
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 1328,
+          "missed": 338,
+          "ratio": 0.797119,
+          "total": 1666
+        },
+        "line": {
+          "covered": 345,
+          "missed": 80,
+          "ratio": 0.811765,
+          "total": 425
+        },
+        "method": {
+          "covered": 122,
+          "missed": 27,
+          "ratio": 0.818792,
+          "total": 149
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "no_action",
+      "issue_number": 10468,
+      "issue_label": "library-new-request",
+      "library": "dev.langchain4j:langchain4j-cohere:1.21.0-beta31",
+      "summary": "langchain4j-cohere mirrors the already-merged langchain4j-voyage-ai pattern: an embedding + scoring model over an overridable baseUrl HTTP client. All POM dependencies (langchain4j-core, langchain4j-http-client, langchain4j-http-client-jdk, jackson-annotations) are transitive and resolve via the normal testImplementation on the library coordinate. Tests can run fully offline against an in-process com.sun.net.httpserver.HttpServer fake with a dummy API key, as langchain4j-voyage-ai's test already demonstrates — no Docker image, no extra Maven coordinate, no environment/system property needed.",
+      "deterministic_setup": [],
+      "agent_guidance": "Point CohereEmbeddingModel/CohereScoringModel builders at a local com.sun.net.httpserver.HttpServer (baseUrl(...)) with a dummy apiKey(\"test-api-key\"), following tests/src/dev.langchain4j/langchain4j-voyage-ai/1.21.0-beta31's test as the template — no real network calls or credentials required.",
+      "risks": [],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#10468 Support for dev.langchain4j:langchain4j-cohere:1.21.0-beta31; label=library-new-request; body_chars=1216"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "sonnet",
+      "input_tokens_used": 16,
+      "output_tokens_used": 5760
+    },
+    "metrics": {
+      "input_tokens_used": 276896,
+      "cached_input_tokens_used": 2951680,
+      "output_tokens_used": 29572,
+      "iterations": 5,
+      "cost_usd": 0.7495,
+      "generated_loc": 277,
+      "tested_library_loc": 345,
+      "metadata_entries": 175,
+      "test_only_metadata_entries": 86,
+      "code_coverage_percent": 81.18
+    },
+    "artifacts": {
+      "metadata_file": "metadata/dev.langchain4j/langchain4j-cohere/1.21.0-beta31/reachability-metadata.json"
+    }
+  }
+}

@@ -1,0 +1,171 @@
+{
+  "base_commit": "18dd29d28032209c412ce69dd79444d9080ddd83",
+  "branch": "ai/kimeta/improve-coverage-org.jetbrains.kotlin-kotlin-reflect-2.5.0-Beta1-chunked-forge-10368-20261003105313393146-6e104168a270",
+  "follow_ups": [],
+  "forge": {
+    "branch": "master",
+    "commit": "815b28b7a56ede3745828ae5ad7c33b6df98fbe3",
+    "monitored_branch": "origin/master"
+  },
+  "issue_number": 10368,
+  "library": {
+    "artifact": "kotlin-reflect",
+    "coordinates": "org.jetbrains.kotlin:kotlin-reflect:2.5.0-Beta1",
+    "group": "org.jetbrains.kotlin",
+    "version": "2.5.0-Beta1"
+  },
+  "local_ci_verification": {
+    "base_commit": "18dd29d28032209c412ce69dd79444d9080ddd83",
+    "commands": [],
+    "failure_command": null,
+    "failure_gate": null,
+    "final_commit": "1d0b7572d90b4ae4d85ee4995e055dad7b778726",
+    "fixups": [],
+    "human_intervention_required": false,
+    "repo_fix_paths": [],
+    "status": "success"
+  },
+  "local_review": {
+    "changed_paths": [
+      "stats/org.jetbrains.kotlin/kotlin-reflect/2.5.0-Beta1/stats.json",
+      "tests/src/org.jetbrains.kotlin/kotlin-reflect/2.5.0-Beta1/build.gradle",
+      "tests/src/org.jetbrains.kotlin/kotlin-reflect/2.5.0-Beta1/src/test/kotlin/kotlinreflect/DescriptorKindFilterTest.kt",
+      "tests/src/org.jetbrains.kotlin/kotlin-reflect/2.5.0-Beta1/src/test/kotlin/kotlinreflect/GeneratedMessageLiteTest.kt",
+      "tests/src/org.jetbrains.kotlin/kotlin-reflect/2.5.0-Beta1/src/test/kotlin/kotlinreflect/SmartListTest.kt"
+    ],
+    "decision": "approved",
+    "finding_body": "The contribution directly imported and exercised kotlin.reflect.jvm.internal DescriptorKindFilter, GeneratedMessageLite, and SmartList classes instead of reaching them through the public kotlin.reflect API. It also forced kotlin.reflect.jvm.loadMetadataDirectly=true for JVM and native tests even though the issue and preparation evidence required no system property and did not establish the test-contract uniform-necessity conditions for a runtime flag. These violated the meaningful public-API and native flag requirements.",
+    "finding_title": "Coverage tests bypass the library public API and force an alternate implementation mode",
+    "fix_note": "Removed the unjustified loadMetadataDirectly JVM/native runtime argument, replaced the three internal-implementation tests with meaningful public kotlin.reflect behavior, and regenerated stats. The finalizer confirmed the repaired suite in current-defaults, future-defaults, and GraalVM 25 lanes without further publishable changes.",
+    "model": "gpt-5.6-sol",
+    "review_comment": "Reviewed the complete coordinate-scoped diff and local evidence. The issue requests chunked dynamic-access coverage improvement and no specific reporter metadata. The repaired tests exercise kotlin-reflect through public APIs, introduce no native skips, legacy metadata files, unsafe I/O, or unrelated-coordinate changes. Final dynamic-access coverage is 87/101 (86.1386%), above the 65/101 (64.3564%) base, and the exact Forge finalizer completed all three native lanes plus metadata, style, generated-test, and statistics checks with a stable publishable tree.",
+    "session_id": "a6f71186e859418b"
+  },
+  "metrics": {
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "path": "stats/org.jetbrains.kotlin/kotlin-reflect/2.5.0-Beta1/execution-metrics.json",
+    "summary": {
+      "cached_input_tokens_used": 26687360,
+      "code_coverage_percent": 49.56,
+      "cost_usd": 23.4925,
+      "generated_loc": 992,
+      "input_tokens_used": 1243024,
+      "iterations": 35,
+      "metadata_entries": 310,
+      "output_tokens_used": 131122,
+      "test_only_metadata_entries": 444,
+      "tested_library_loc": 18439
+    },
+    "timestamp": "2026-10-03T10:53:13.393146Z"
+  },
+  "modifiers": {
+    "chunk_final": true,
+    "chunked_dynamic_access": true,
+    "human_intervention": false
+  },
+  "producer": "kimeta",
+  "publication_id": "forge-10368-20261003105313393146-6e104168a270",
+  "render": {
+    "alias_split": null,
+    "baseline_metadata_entries": 236,
+    "baseline_stats": {
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 0.64,
+            "coveredCalls": 64,
+            "totalCalls": 100
+          },
+          "resources": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 1,
+            "totalCalls": 1
+          }
+        },
+        "coverageRatio": 0.643564,
+        "coveredCalls": 65,
+        "totalCalls": 101
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 112266,
+          "missed": 152226,
+          "ratio": 0.424459,
+          "total": 264492
+        },
+        "line": {
+          "covered": 16462,
+          "missed": 20742,
+          "ratio": 0.442479,
+          "total": 37204
+        },
+        "method": {
+          "covered": 5688,
+          "missed": 6527,
+          "ratio": 0.465657,
+          "total": 12215
+        }
+      },
+      "version": "2.5.0-Beta1"
+    },
+    "baseline_test_only_entries": 224,
+    "consumer_split": null,
+    "current_metadata_entries": 310,
+    "current_test_only_entries": 444,
+    "dynamic_access": null,
+    "library_stats": {
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 0.86,
+            "coveredCalls": 86,
+            "totalCalls": 100
+          },
+          "resources": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 1,
+            "totalCalls": 1
+          }
+        },
+        "coverageRatio": 0.861386,
+        "coveredCalls": 87,
+        "totalCalls": 101
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 125347,
+          "missed": 139145,
+          "ratio": 0.473916,
+          "total": 264492
+        },
+        "line": {
+          "covered": 18216,
+          "missed": 18988,
+          "ratio": 0.489625,
+          "total": 37204
+        },
+        "method": {
+          "covered": 6293,
+          "missed": 5922,
+          "ratio": 0.515186,
+          "total": 12215
+        }
+      },
+      "version": "2.5.0-Beta1"
+    },
+    "library_update_target": {
+      "match_type": "tested-version",
+      "matched_metadata_version": "2.5.0-Beta1",
+      "matched_test_version": "2.5.0-Beta1",
+      "requested_coordinate": "org.jetbrains.kotlin:kotlin-reflect:2.5.0-Beta1",
+      "resolved_metadata_version": "2.5.0-Beta1",
+      "resolved_test_version": "2.5.0-Beta1"
+    }
+  },
+  "schema_version": 1,
+  "strategy_name": "library_update_optimistic_pi_gpt-5.6-sol",
+  "task_type": "library-update-request",
+  "template_type": "library-update-request",
+  "timestamp": "2026-10-03T10:53:13.393146Z"
+}

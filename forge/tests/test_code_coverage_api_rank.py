@@ -251,29 +251,39 @@ class LoadGraphTests(unittest.TestCase):
 
 class PromptTests(unittest.TestCase):
 
-    def test_prompt_groups_targets_by_owner_and_shows_unlock_counts(self) -> None:
-        report = {
-            "summary": {"selected": 2, "uncoveredCandidates": 9, "totalUnlocked": 12},
-            "targets": [
-                {"id": "com.example.A#one():void", "rank": 1, "unlocks": 10,
-                 "reachableUncovered": 10, "behaviorHint": "Public factory."},
-                {"id": "com.example.B#two():void", "rank": 2, "unlocks": 2,
-                 "reachableUncovered": 5, "behaviorHint": ""},
-            ],
-        }
-        prompt = rank_module.render_prompt(report)
-        self.assertIn("## `com.example.A` — 1 targets, unlocks 10", prompt)
-        self.assertIn("- `one():void` (unlocks 10) - Public factory.", prompt)
-        self.assertIn("- `two():void` (unlocks 2)", prompt)
+    REPORT: dict = {
+        "summary": {"selected": 3, "uncoveredCandidates": 9, "totalUnlocked": 13},
+        "targets": [
+            {"id": "com.example.A#one():void", "rank": 1, "unlocks": 10,
+             "reachableUncovered": 10, "targetVia": "override",
+             "closures": 3, "closuresUnexecuted": 2},
+            {"id": "com.example.B#two():void", "rank": 2, "unlocks": 2,
+             "reachableUncovered": 5, "targetVia": "own"},
+            {"id": "com.example.A#three():void", "rank": 3, "unlocks": 1,
+             "reachableUncovered": 1, "targetVia": "own"},
+        ],
+    }
+
+    def test_prompt_groups_targets_by_owner_in_rank_order(self) -> None:
+        prompt = rank_module.render_prompt(self.REPORT)
+        self.assertIn("## `com.example.A` — 2 targets\n", prompt)
+        self.assertIn("## `com.example.B` — 1 targets\n", prompt)
+        self.assertIn(
+            "- `one():void` (via supertype, 3 closures of which 2 never run)\n"
+            "- `three():void`\n",
+            prompt,
+        )
+        self.assertIn("- `two():void`\n", prompt)
         # The higher-yield owner must come first so the agent starts there.
         self.assertLess(prompt.index("com.example.A"), prompt.index("com.example.B"))
 
-    def test_prompt_labels_unlock_counts_as_guidance_not_measurement(self) -> None:
-        report = {
-            "summary": {"selected": 0, "uncoveredCandidates": 0, "totalUnlocked": 0},
-            "targets": [],
-        }
-        self.assertIn("not a coverage measurement", rank_module.render_prompt(report))
+    def test_prompt_renders_no_unlock_count(self) -> None:
+        # The count orders the list (§AR-code-coverage-improvement.4.1.1) but
+        # tells the agent nothing about how to write the test.
+        prompt = rank_module.render_prompt(self.REPORT)
+        self.assertNotIn("unlock", prompt)
+        self.assertNotIn("within reach", prompt)
+        self.assertIn("3 targets, selected from 9 uncovered public entries a test can reach.\n", prompt)
 
 
 # `entry` delegates to `core`, and `overload` delegates to `entry`, so the two

@@ -1,0 +1,295 @@
+{
+  "base_commit": "e120c5b68cbee9a9eef57870f76f38f24a355c2c",
+  "branch": "ai/kimeta/improve-coverage-org.flywaydb-flyway-database-postgresql-10.10.0-forge-10555-20261005202248083242-8e6aece215be",
+  "follow_ups": [
+    {
+      "coordinate": "org.flywaydb:flyway-database-postgresql:10.13.0",
+      "issue_number": 10578,
+      "reason": "Tests first failed at 10.13.0",
+      "tested_version": "10.13.0",
+      "type": "tested_version_split"
+    }
+  ],
+  "forge": {
+    "branch": "master",
+    "commit": "64ac79c9cbbc664ebc3203af3b0caec7596fb514",
+    "monitored_branch": "origin/master"
+  },
+  "issue_number": 10555,
+  "library": {
+    "artifact": "flyway-database-postgresql",
+    "coordinates": "org.flywaydb:flyway-database-postgresql:10.10.0",
+    "group": "org.flywaydb",
+    "version": "10.10.0"
+  },
+  "local_ci_verification": {
+    "base_commit": "e120c5b68cbee9a9eef57870f76f38f24a355c2c",
+    "commands": [
+      {
+        "command": [
+          "./gradlew",
+          "generateChangedIndexFileCoordinatesList",
+          "-PbaseCommit=origin/master",
+          "-PnewCommit=HEAD"
+        ],
+        "env": {
+          "GITHUB_OUTPUT": "/tmp/tmpv5wcx54d"
+        },
+        "gate": "changed-index-coordinates",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :generateChangedIndexFileCoordinatesList\n\n[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10555-1f0e4cb4/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 2s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      },
+      {
+        "command": [
+          "./gradlew",
+          "validateIndexFiles",
+          "-Pcoordinates=org.flywaydb:flyway-database-postgresql"
+        ],
+        "env": {},
+        "gate": "index-file-validation",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :validateIndexFiles\n✅ metadata/org.flywaydb/flyway-database-postgresql/index.json: Valid\n\n[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10555-1f0e4cb4/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 1s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      }
+    ],
+    "failure_command": null,
+    "failure_gate": null,
+    "final_commit": "b039526d182ee9d7ab326f0c15dafa559497ad6c",
+    "fixups": [],
+    "human_intervention_required": false,
+    "repo_fix_paths": [],
+    "status": "success"
+  },
+  "local_review": {
+    "changed_paths": [
+      "tests/src/org.flywaydb/flyway-database-postgresql/10.10.0/src/test/resources/META-INF/native-image/reachability-metadata.json"
+    ],
+    "decision": "approved",
+    "finding_body": "The initial test-only reachability-metadata.json placed the top-level resources key before reflection instead of using the repository's normalized JSON key ordering. Forge finalization detected this as a publishable-tree change and reordered the keys without changing their entries or semantics.",
+    "finding_title": "Test-only reachability metadata keys were not deterministically ordered",
+    "fix_note": "Ran the required Forge finalization pass, which normalized the top-level key order in the target coordinate's test-only reachability metadata. A second exact finalization run exited successfully with no further publishable changes.",
+    "model": "gpt-5.6-sol",
+    "review_comment": "Reviewed the exact contribution diff and local evidence. The changes stay within the target artifact plus the permitted 10.13.0 shared-suite split; the generated test exercises Flyway's PostgreSQL COPY migration path through public APIs without version pinning, native-image dodging, legacy metadata, or other enumerated cheating patterns. Dynamic-access coverage improves from 0/6 (0%) to 6/6 (100%). The exact Forge finalization passed all three test lanes, metadata and style checks, generated-test validation, and statistics generation; its final successful run made no further publishable change.",
+    "session_id": "ea46ac84e6304494"
+  },
+  "metrics": {
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "path": "stats/org.flywaydb/flyway-database-postgresql/10.10.0/execution-metrics.json",
+    "summary": {
+      "cached_input_tokens_used": 594048,
+      "code_coverage_percent": 30.05,
+      "cost_usd": 0.8799,
+      "generated_loc": 140,
+      "input_tokens_used": 73590,
+      "iterations": 3,
+      "metadata_entries": 95,
+      "output_tokens_used": 7168,
+      "test_only_metadata_entries": 35,
+      "tested_library_loc": 174
+    },
+    "timestamp": "2026-10-05T20:22:48.083242Z"
+  },
+  "modifiers": {
+    "chunk_final": true,
+    "chunked_dynamic_access": false,
+    "human_intervention": false
+  },
+  "producer": "kimeta",
+  "publication_id": "forge-10555-20261005202248083242-8e6aece215be",
+  "render": {
+    "alias_split": null,
+    "baseline_metadata_entries": 6,
+    "baseline_stats": {
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 0.0,
+            "coveredCalls": 0,
+            "totalCalls": 6
+          }
+        },
+        "coverageRatio": 0.0,
+        "coveredCalls": 0,
+        "totalCalls": 6
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 735,
+          "missed": 2609,
+          "ratio": 0.219797,
+          "total": 3344
+        },
+        "line": {
+          "covered": 142,
+          "missed": 437,
+          "ratio": 0.24525,
+          "total": 579
+        },
+        "method": {
+          "covered": 61,
+          "missed": 118,
+          "ratio": 0.340782,
+          "total": 179
+        }
+      },
+      "version": "10.10.0"
+    },
+    "baseline_test_only_entries": 2,
+    "consumer_split": {
+      "commands": [
+        {
+          "command": "./gradlew clean test -Pcoordinates=org.flywaydb:flyway-database-postgresql:10.13.0",
+          "log_path": "logs/org.flywaydb:flyway-database-postgresql:10.13.0/library-update-alias-sweep/test-10.13.0-2026-10-05T20-30-26-498026Z.log",
+          "returncode": 1,
+          "version": "10.13.0"
+        },
+        {
+          "command": "./gradlew clean test -Pcoordinates=org.flywaydb:flyway-database-postgresql:10.13.0",
+          "log_path": "logs/org.flywaydb:flyway-database-postgresql:10.13.0/library-update-alias-sweep/test-10.13.0-2026-10-05T20-31-46-243076Z.log",
+          "returncode": 0,
+          "version": "10.13.0"
+        },
+        {
+          "command": "./gradlew clean test -Pcoordinates=org.flywaydb:flyway-database-postgresql:10.13.0",
+          "log_path": "logs/org.flywaydb:flyway-database-postgresql:10.13.0/library-update-alias-sweep/test-10.14.0-2026-10-05T20-33-04-495709Z.log",
+          "returncode": 0,
+          "version": "10.14.0"
+        },
+        {
+          "command": "./gradlew clean test -Pcoordinates=org.flywaydb:flyway-database-postgresql:10.13.0",
+          "log_path": "logs/org.flywaydb:flyway-database-postgresql:10.13.0/library-update-alias-sweep/test-10.15.0-2026-10-05T20-34-23-476699Z.log",
+          "returncode": 0,
+          "version": "10.15.0"
+        },
+        {
+          "command": "./gradlew clean test -Pcoordinates=org.flywaydb:flyway-database-postgresql:10.13.0",
+          "log_path": "logs/org.flywaydb:flyway-database-postgresql:10.13.0/library-update-alias-sweep/test-10.15.2-2026-10-05T20-35-42-097481Z.log",
+          "returncode": 0,
+          "version": "10.15.2"
+        },
+        {
+          "command": "./gradlew clean test -Pcoordinates=org.flywaydb:flyway-database-postgresql:10.13.0",
+          "log_path": "logs/org.flywaydb:flyway-database-postgresql:10.13.0/library-update-alias-sweep/test-10.16.0-2026-10-05T20-37-00-063289Z.log",
+          "returncode": 0,
+          "version": "10.16.0"
+        },
+        {
+          "command": "./gradlew clean test -Pcoordinates=org.flywaydb:flyway-database-postgresql:10.13.0",
+          "log_path": "logs/org.flywaydb:flyway-database-postgresql:10.13.0/library-update-alias-sweep/test-10.17.0-2026-10-05T20-38-21-438260Z.log",
+          "returncode": 0,
+          "version": "10.17.0"
+        },
+        {
+          "command": "./gradlew clean test -Pcoordinates=org.flywaydb:flyway-database-postgresql:10.13.0",
+          "log_path": "logs/org.flywaydb:flyway-database-postgresql:10.13.0/library-update-alias-sweep/test-10.17.1-2026-10-05T20-39-56-144549Z.log",
+          "returncode": 0,
+          "version": "10.17.1"
+        },
+        {
+          "command": "./gradlew clean test -Pcoordinates=org.flywaydb:flyway-database-postgresql:10.13.0",
+          "log_path": "logs/org.flywaydb:flyway-database-postgresql:10.13.0/library-update-alias-sweep/test-10.17.2-2026-10-05T20-41-24-805911Z.log",
+          "returncode": 0,
+          "version": "10.17.2"
+        },
+        {
+          "command": "./gradlew clean test -Pcoordinates=org.flywaydb:flyway-database-postgresql:10.13.0",
+          "log_path": "logs/org.flywaydb:flyway-database-postgresql:10.13.0/library-update-alias-sweep/test-10.17.3-2026-10-05T20-42-57-367523Z.log",
+          "returncode": 0,
+          "version": "10.17.3"
+        },
+        {
+          "command": "./gradlew clean test -Pcoordinates=org.flywaydb:flyway-database-postgresql:10.13.0",
+          "log_path": "logs/org.flywaydb:flyway-database-postgresql:10.13.0/library-update-alias-sweep/test-10.18.0-2026-10-05T20-44-31-793942Z.log",
+          "returncode": 0,
+          "version": "10.18.0"
+        },
+        {
+          "command": "./gradlew clean test -Pcoordinates=org.flywaydb:flyway-database-postgresql:10.13.0",
+          "log_path": "logs/org.flywaydb:flyway-database-postgresql:10.13.0/library-update-alias-sweep/test-10.18.1-2026-10-05T20-46-00-934693Z.log",
+          "returncode": 0,
+          "version": "10.18.1"
+        },
+        {
+          "command": "./gradlew clean test -Pcoordinates=org.flywaydb:flyway-database-postgresql:10.13.0",
+          "log_path": "logs/org.flywaydb:flyway-database-postgresql:10.13.0/library-update-alias-sweep/test-10.18.2-2026-10-05T20-47-34-926326Z.log",
+          "returncode": 0,
+          "version": "10.18.2"
+        }
+      ],
+      "current_coordinates": "org.flywaydb:flyway-database-postgresql:10.10.0",
+      "failed_version": "10.13.0",
+      "follow_up_issue_number": 10578,
+      "passing_consumers": [],
+      "repointed_consumers": [],
+      "requested_coordinates": "org.flywaydb:flyway-database-postgresql:10.10.0",
+      "successor_coordinates": "org.flywaydb:flyway-database-postgresql:10.13.0",
+      "successor_metadata_version": "10.13.0",
+      "successor_versions": [
+        "10.13.0",
+        "10.14.0",
+        "10.15.0",
+        "10.15.2",
+        "10.16.0",
+        "10.17.0",
+        "10.17.1",
+        "10.17.2",
+        "10.17.3",
+        "10.18.0",
+        "10.18.1",
+        "10.18.2"
+      ],
+      "test_version": "10.10.0"
+    },
+    "current_metadata_entries": 95,
+    "current_test_only_entries": 35,
+    "dynamic_access": null,
+    "library_stats": {
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 6,
+            "totalCalls": 6
+          }
+        },
+        "coverageRatio": 1.0,
+        "coveredCalls": 6,
+        "totalCalls": 6
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 891,
+          "missed": 2453,
+          "ratio": 0.266447,
+          "total": 3344
+        },
+        "line": {
+          "covered": 174,
+          "missed": 405,
+          "ratio": 0.300518,
+          "total": 579
+        },
+        "method": {
+          "covered": 65,
+          "missed": 114,
+          "ratio": 0.363128,
+          "total": 179
+        }
+      },
+      "version": "10.10.0"
+    },
+    "library_update_target": {
+      "match_type": "tested-version",
+      "matched_metadata_version": "10.10.0",
+      "matched_test_version": "10.10.0",
+      "requested_coordinate": "org.flywaydb:flyway-database-postgresql:10.10.0",
+      "resolved_metadata_version": "10.10.0",
+      "resolved_test_version": "10.10.0"
+    }
+  },
+  "schema_version": 1,
+  "strategy_name": "library_update_optimistic_pi_gpt-5.6-sol",
+  "task_type": "library-update-request",
+  "template_type": "library-update-request",
+  "timestamp": "2026-10-05T20:22:48.083242Z"
+}

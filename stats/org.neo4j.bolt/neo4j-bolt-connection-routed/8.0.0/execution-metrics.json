@@ -1,0 +1,116 @@
+{
+  "fix_javac_fail:2026-10-03": {
+    "timestamp": "2026-10-03T02:48:54.097291Z",
+    "library": "org.neo4j.bolt:neo4j-bolt-connection-routed:8.0.0",
+    "starting_commit": "fac0696bad0f15c31c95150a06e88130ec57a50b",
+    "ending_commit": "7836c06d456017313e27ebf81f0734b71b2429e8",
+    "previous_library": "org.neo4j.bolt:neo4j-bolt-connection-routed:7.0.0",
+    "strategy_name": "javac_iterative_with_coverage_sources_pi_gpt-5.6-sol",
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "status": "success",
+    "stats": {
+      "version": "8.0.0",
+      "dynamicAccess": {
+        "breakdown": {},
+        "coverageRatio": 1.0,
+        "coveredCalls": 0,
+        "totalCalls": 0
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 1974,
+          "missed": 1824,
+          "ratio": 0.519747,
+          "total": 3798
+        },
+        "line": {
+          "covered": 468,
+          "missed": 402,
+          "ratio": 0.537931,
+          "total": 870
+        },
+        "method": {
+          "covered": 118,
+          "missed": 107,
+          "ratio": 0.524444,
+          "total": 225
+        }
+      }
+    },
+    "previous_library_stats": {
+      "version": "7.0.0",
+      "dynamicAccess": {
+        "breakdown": {},
+        "coverageRatio": 1.0,
+        "coveredCalls": 0,
+        "totalCalls": 0
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 1910,
+          "missed": 1798,
+          "ratio": 0.515102,
+          "total": 3708
+        },
+        "line": {
+          "covered": 455,
+          "missed": 397,
+          "ratio": 0.534038,
+          "total": 852
+        },
+        "method": {
+          "covered": 114,
+          "missed": 106,
+          "ratio": 0.518182,
+          "total": 220
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "no_action",
+      "issue_number": 10389,
+      "issue_label": "fails-javac-compile",
+      "library": "org.neo4j.bolt:neo4j-bolt-connection-routed:8.0.0",
+      "summary": "The failure is a source-level API change: the `RoutedBoltConnectionSource` constructor in 8.0.0 takes `long` and `List<Class<? extends Throwable>>` parameters where the 7.0.0 test passes `int` and `List<Object>`. The existing 7.0.0 test needs to be adapted to the new signature. No extra dependency, Docker image, or system property is involved, and nothing points to a Native Image limitation.",
+      "deterministic_setup": [],
+      "agent_guidance": "",
+      "risks": [
+        "I did not inspect the 8.0.0 sources or the 7.0.0 test file. This decision rests on the compiler error in the issue, which shows the constructor signature changed. Other 8.0.0 signatures the test uses may have changed too, so expect further compile errors after this one is fixed.",
+        "The 8.0.0 constructor has a new `long` parameter and a typed `List<Class<? extends Throwable>>` parameter. The test must pass correctly typed arguments, such as an empty typed list and `long` values."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#10389 [Automation] javac compile fails for org.neo4j.bolt:neo4j-bolt-connection-routed:8.0.0; label=fails-javac-compile; body_chars=8015"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "6 existing test file path(s) included"
+        }
+      ],
+      "current_library": "org.neo4j.bolt:neo4j-bolt-connection-routed:7.0.0",
+      "new_version": "8.0.0",
+      "model": "sonnet",
+      "input_tokens_used": 2,
+      "output_tokens_used": 481
+    },
+    "metrics": {
+      "input_tokens_used": 67558,
+      "cached_input_tokens_used": 431744,
+      "output_tokens_used": 1846,
+      "iterations": 3,
+      "cost_usd": 0.6091,
+      "tested_library_loc": 468,
+      "metadata_entries": 0,
+      "previous_library_metadata_entries": 0,
+      "code_coverage_percent": 53.79,
+      "previous_library_coverage_percent": 53.4
+    },
+    "artifacts": {
+      "metadata_file": "metadata/org.neo4j.bolt/neo4j-bolt-connection-routed/8.0.0/reachability-metadata.json"
+    }
+  }
+}

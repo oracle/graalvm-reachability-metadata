@@ -1,0 +1,153 @@
+{
+  "base_commit": "cccdc28de2c09c4d31c50cfc82b1b5e13f2f1e92",
+  "branch": "ai/kimeta/add-lib-support-org.springframework.graphql-spring-graphql-1.4.1-forge-8968-20261008160813370877-fc6c8eb32679",
+  "follow_ups": [],
+  "forge": {
+    "branch": "master",
+    "commit": "aaf062964b7b5de5d1df43593225fbd7fd6997c5",
+    "monitored_branch": "origin/master"
+  },
+  "issue_number": 8968,
+  "library": {
+    "artifact": "spring-graphql",
+    "coordinates": "org.springframework.graphql:spring-graphql:1.4.1",
+    "group": "org.springframework.graphql",
+    "version": "1.4.1"
+  },
+  "local_ci_verification": {
+    "base_commit": "cccdc28de2c09c4d31c50cfc82b1b5e13f2f1e92",
+    "commands": [
+      {
+        "command": [
+          "./gradlew",
+          "generateChangedIndexFileCoordinatesList",
+          "-PbaseCommit=origin/master",
+          "-PnewCommit=HEAD"
+        ],
+        "env": {
+          "GITHUB_OUTPUT": "/tmp/tmpxa8ktfl7"
+        },
+        "gate": "changed-index-coordinates",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :generateChangedIndexFileCoordinatesList\n\n[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8968-d661c997/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 2s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      },
+      {
+        "command": [
+          "./gradlew",
+          "validateIndexFiles",
+          "-Pcoordinates=org.springframework.graphql:spring-graphql"
+        ],
+        "env": {},
+        "gate": "index-file-validation",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :validateIndexFiles\n✅ metadata/org.springframework.graphql/spring-graphql/index.json: Valid\n\n[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8968-d661c997/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 1s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      }
+    ],
+    "failure_command": null,
+    "failure_gate": null,
+    "final_commit": "a004b73310a6944f94614f2eae4a26a27fb4361e",
+    "fixups": [],
+    "human_intervention_required": false,
+    "repo_fix_paths": [],
+    "status": "success"
+  },
+  "local_review": {
+    "changed_paths": [],
+    "decision": "approved",
+    "finding_body": "",
+    "finding_title": "",
+    "fix_note": "",
+    "model": "gpt-5.6-sol",
+    "review_comment": "Reviewed the complete base-to-head contribution against the new-library rules and contribution contract. The diff is limited to one coordinate and its allowed metadata, index, stats, and test files; it uses only reachability-metadata.json. The public, library-specific tests are not scaffold placeholders, stay outside the library package, are version-agnostic, exercise Spring GraphQL public APIs with observable assertions, and contain no Native Image skips, tolerated failures, runtime-class-definition behavior, compatibility overrides, or native build/run flags. The resolved statistics report 6/6 dynamic-access calls covered (100%), above the new-library gate, and the 6 covered calls do not trigger the mismatch probe against 58 reported library plus test-only metadata entries. Local gate evidence reports successful changed-index coordinate generation and index validation. No blocking must violation was found.",
+    "session_id": "0462f29cab6a4d60"
+  },
+  "metrics": {
+    "agent": "pi",
+    "model": "gpt-5.6-luna",
+    "path": "stats/org.springframework.graphql/spring-graphql/1.4.1/execution-metrics.json",
+    "summary": {
+      "cached_input_tokens_used": 6080000,
+      "code_coverage_percent": 8.37,
+      "cost_usd": 1.3126,
+      "generated_loc": 302,
+      "input_tokens_used": 410610,
+      "iterations": 9,
+      "metadata_entries": 30,
+      "output_tokens_used": 48994,
+      "test_only_metadata_entries": 28,
+      "tested_library_loc": 531
+    },
+    "timestamp": "2026-10-08T16:08:13.370877Z"
+  },
+  "modifiers": {
+    "chunk_final": true,
+    "chunked_dynamic_access": false,
+    "human_intervention": false
+  },
+  "producer": "kimeta",
+  "publication_id": "forge-8968-20261008160813370877-fc6c8eb32679",
+  "render": {
+    "dynamic_access": null,
+    "dynamic_access_evidence": {
+      "covered_call_sites": [
+        "[reflection] java.lang.Class#getMethods() <- org.springframework.graphql.data.method.HandlerMethod.getInterfaceParameterAnnotations(HandlerMethod.java:266) (line 266)",
+        "[reflection] java.lang.reflect.Method#invoke(java.lang.Object, java.lang.Object[]) <- org.springframework.graphql.data.method.InvocableHandlerMethodSupport.doInvoke(InvocableHandlerMethodSupport.java:117) (line 117)",
+        "[reflection] java.lang.reflect.Method#invoke(java.lang.Object, java.lang.Object[]) <- org.springframework.graphql.data.method.InvocableHandlerMethodSupport.lambda$doInvoke$0(InvocableHandlerMethodSupport.java:113) (line 113)",
+        "[reflection] java.lang.Class#getDeclaredMethods() <- org.springframework.graphql.execution.SchemaMappingInspector.getRecordLikeMethod(SchemaMappingInspector.java:292) (line 292)",
+        "[reflection] java.lang.Class#getField(java.lang.String) <- org.springframework.graphql.execution.SchemaMappingInspector.getField(SchemaMappingInspector.java:281) (line 281)",
+        "[reflection] java.lang.Class#forName(java.lang.String) <- org.springframework.graphql.execution.SchemaMappingInspector$ReflectionClassResolver.resolveClass(SchemaMappingInspector.java:512) (line 512)"
+      ],
+      "metadata_rules": [
+        "when `org.springframework.graphql.execution.ReactiveAdapterRegistryHelper` is reached, make `io.micrometer.context.ContextRegistry` available for reflection",
+        "when `org.springframework.graphql.execution.ReactiveAdapterRegistryHelper` is reached, make `io.micrometer.context.ContextSnapshotFactory` available for reflection",
+        "when `org.springframework.graphql.execution.ReactiveAdapterRegistryHelper` is reached, make `io.micrometer.context.ThreadLocalAccessor` available for reflection",
+        "when `org.springframework.graphql.execution.ContextPropagationHelper` is reached, make `io.micrometer.observation.contextpropagation.ObservationThreadLocalAccessor` available for reflection",
+        "when `org.springframework.graphql.data.GraphQlArgumentBinder$ArgumentsBindingResult` is reached, make `io.reactivex.rxjava3.core.Flowable` available for reflection",
+        "when `org.springframework.graphql.data.GraphQlArgumentBinder$ArgumentsBindingResult` is reached, make `io.smallrye.mutiny.Multi` available for reflection",
+        "when `org.springframework.graphql.data.GraphQlArgumentBinder$ArgumentsBindingResult` is reached, make `kotlinx.coroutines.reactor.MonoKt` available for reflection",
+        "when `org.springframework.graphql.data.method.HandlerMethod` is reached, make `org.apache.logging.log4j.spi.ExtendedLogger` available for reflection",
+        "... and 16 more"
+      ]
+    },
+    "library_stats": {
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 6,
+            "totalCalls": 6
+          }
+        },
+        "coverageRatio": 1.0,
+        "coveredCalls": 6,
+        "totalCalls": 6
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 2279,
+          "missed": 25664,
+          "ratio": 0.081559,
+          "total": 27943
+        },
+        "line": {
+          "covered": 531,
+          "missed": 5812,
+          "ratio": 0.083714,
+          "total": 6343
+        },
+        "method": {
+          "covered": 144,
+          "missed": 1843,
+          "ratio": 0.072471,
+          "total": 1987
+        }
+      },
+      "version": "1.4.1"
+    }
+  },
+  "schema_version": 1,
+  "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-luna",
+  "task_type": "library-new-request",
+  "template_type": "library-new-request",
+  "timestamp": "2026-10-08T16:08:13.370877Z"
+}

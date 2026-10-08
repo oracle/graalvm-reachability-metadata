@@ -1,0 +1,135 @@
+{
+  "fix_ni_run:2026-10-07": {
+    "timestamp": "2026-10-07T16:11:00.016388Z",
+    "library": "com.github.luben:zstd-jni:1.5.7-18",
+    "starting_commit": "bbab392cd4f6a240179aa55f42c44ee2196089a9",
+    "ending_commit": "6adcbb688f2bb962fe2c415bb126d7f8a5479e1a",
+    "previous_library": "com.github.luben:zstd-jni:1.5.2-5",
+    "strategy_name": "library_update_pi_gpt-5.6-sol",
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "status": "success",
+    "stats": {
+      "version": "1.5.7-18",
+      "dynamicAccess": {
+        "breakdown": {
+          "foreign": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 2,
+            "totalCalls": 2
+          },
+          "resources": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 1,
+            "totalCalls": 1
+          }
+        },
+        "coverageRatio": 1.0,
+        "coveredCalls": 3,
+        "totalCalls": 3
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 2319,
+          "missed": 5456,
+          "ratio": 0.298264,
+          "total": 7775
+        },
+        "line": {
+          "covered": 608,
+          "missed": 1317,
+          "ratio": 0.315844,
+          "total": 1925
+        },
+        "method": {
+          "covered": 132,
+          "missed": 282,
+          "ratio": 0.318841,
+          "total": 414
+        }
+      }
+    },
+    "previous_library_stats": {
+      "version": "1.5.2-5",
+      "dynamicAccess": {
+        "breakdown": {
+          "resources": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 1,
+            "totalCalls": 1
+          }
+        },
+        "coverageRatio": 1.0,
+        "coveredCalls": 1,
+        "totalCalls": 1
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 1549,
+          "missed": 3130,
+          "ratio": 0.331054,
+          "total": 4679
+        },
+        "line": {
+          "covered": 426,
+          "missed": 733,
+          "ratio": 0.367558,
+          "total": 1159
+        },
+        "method": {
+          "covered": 90,
+          "missed": 170,
+          "ratio": 0.346154,
+          "total": 260
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "no_action",
+      "issue_number": 10312,
+      "issue_label": "fails-native-image-run",
+      "library": "com.github.luben:zstd-jni:1.5.7-18",
+      "summary": "zstd-jni needs no extra dependency, Docker image or system property. It loads its bundled JNI library from jar resources, and that resource and JNI access can be registered in reachability metadata.",
+      "deterministic_setup": [],
+      "agent_guidance": "",
+      "risks": [
+        "I did not read the library source or the failing run. This decision rests on how zstd-jni 1.5.x loads its native library, as I remember it, plus the existing 1.5.2-5 test scaffold.",
+        "Native.load() tries System.loadLibrary first, then extracts /<os>/<arch>/libzstd-jni-<version>.<ext> from the jar to a temp file and calls System.load. The new version's versioned resource path (libzstd-jni-1.5.7-18) must be registered as a resource in the metadata, and the JNI field and method entries may need updating for the new version.",
+        "The 1.5.7 JNI classes may have new or changed native methods and fields. Metadata generated from the 1.5.2-5 tests may be missing these entries, which would explain the native-image run failure.",
+        "This is not an unsupportable-mechanism case. Resource extraction and System.load of a native library are repairable through metadata, and the library has a loadLibrary fallback path."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#10312 [Automation] native-image run fails for com.github.luben:zstd-jni:1.5.7-18; label=fails-native-image-run; body_chars=0"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "8 existing test file path(s) included"
+        }
+      ],
+      "current_library": "com.github.luben:zstd-jni:1.5.2-5",
+      "new_version": "1.5.7-18",
+      "model": "sonnet",
+      "input_tokens_used": 2,
+      "output_tokens_used": 673
+    },
+    "metrics": {
+      "input_tokens_used": 0,
+      "cached_input_tokens_used": 0,
+      "output_tokens_used": 0,
+      "iterations": 0,
+      "cost_usd": 0.0,
+      "tested_library_loc": 608,
+      "metadata_entries": 24,
+      "previous_library_metadata_entries": 41,
+      "code_coverage_percent": 31.58,
+      "previous_library_coverage_percent": 36.76
+    },
+    "artifacts": {
+      "metadata_file": "metadata/com.github.luben/zstd-jni/1.5.7-18/reachability-metadata.json"
+    }
+  }
+}

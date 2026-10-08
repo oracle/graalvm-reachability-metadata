@@ -1,0 +1,128 @@
+{
+  "fix_ni_run:2026-10-07": {
+    "timestamp": "2026-10-07T13:44:04.447352Z",
+    "library": "org.jetbrains.kotlin:kotlin-daemon-embeddable:2.5.0-Beta1",
+    "starting_commit": "e1109617e7cd9472f2a54a05e4c9195e0262b642",
+    "ending_commit": "687a1aa4d32de3cd06beda9c57f4ddc60062bf28",
+    "previous_library": "org.jetbrains.kotlin:kotlin-daemon-embeddable:2.4.20",
+    "strategy_name": "library_update_pi_gpt-5.6-sol",
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "status": "success",
+    "stats": {
+      "version": "2.5.0-Beta1",
+      "dynamicAccess": {
+        "breakdown": {
+          "resources": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 1,
+            "totalCalls": 1
+          }
+        },
+        "coverageRatio": 1.0,
+        "coveredCalls": 1,
+        "totalCalls": 1
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 2522,
+          "missed": 9057,
+          "ratio": 0.217808,
+          "total": 11579
+        },
+        "line": {
+          "covered": 367,
+          "missed": 1651,
+          "ratio": 0.181863,
+          "total": 2018
+        },
+        "method": {
+          "covered": 134,
+          "missed": 523,
+          "ratio": 0.203957,
+          "total": 657
+        }
+      }
+    },
+    "previous_library_stats": {
+      "version": "2.4.20",
+      "dynamicAccess": {
+        "breakdown": {
+          "resources": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 1,
+            "totalCalls": 1
+          }
+        },
+        "coverageRatio": 1.0,
+        "coveredCalls": 1,
+        "totalCalls": 1
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 2520,
+          "missed": 9245,
+          "ratio": 0.214195,
+          "total": 11765
+        },
+        "line": {
+          "covered": 367,
+          "missed": 1688,
+          "ratio": 0.178589,
+          "total": 2055
+        },
+        "method": {
+          "covered": 134,
+          "missed": 536,
+          "ratio": 0.2,
+          "total": 670
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "action": "no_action",
+      "agent_guidance": "",
+      "applied_setup": [],
+      "current_library": "org.jetbrains.kotlin:kotlin-daemon-embeddable:2.4.20",
+      "deterministic_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#10324 [Automation] native-image run fails for org.jetbrains.kotlin:kotlin-daemon-embeddable:2.5.0-Beta1; label=fails-native-image-run; body_chars=8015"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "7 existing test file path(s) included"
+        }
+      ],
+      "input_tokens_used": 8,
+      "issue_label": "fails-native-image-run",
+      "issue_number": 10324,
+      "library": "org.jetbrains.kotlin:kotlin-daemon-embeddable:2.5.0-Beta1",
+      "model": "sonnet",
+      "new_version": "2.5.0-Beta1",
+      "output_tokens_used": 862,
+      "risks": [
+        "The issue log is truncated before the actual run-time failure, so the cause is unconfirmed. It is most likely missing reachability metadata for 2.5.0-Beta1, which fixTestNativeImageRun should repair.",
+        "The tests use the Kotlin compile daemon, which may need metadata for reflection, RMI or process spawning, and the 2.5.0-Beta1 compiler may also need different dependency versions. All of this is repairable with metadata."
+      ],
+      "status": "completed",
+      "summary": "The existing 2.4.20 tests build with only kotlin-daemon-embeddable, kotlin-compiler-embeddable, kotlin-stdlib and assertj. They use no Docker images, environment variables or system properties. The 2.5.0-Beta1 native image built successfully and failed only at run time, and nothing shows that a missing dependency or setting caused that. No unsupportable mechanism was traced in the library source."
+    },
+    "metrics": {
+      "input_tokens_used": 0,
+      "cached_input_tokens_used": 0,
+      "output_tokens_used": 0,
+      "iterations": 3,
+      "cost_usd": 0.0,
+      "tested_library_loc": 367,
+      "metadata_entries": 19,
+      "previous_library_metadata_entries": 23,
+      "code_coverage_percent": 18.19,
+      "previous_library_coverage_percent": 17.86
+    },
+    "artifacts": {
+      "metadata_file": "metadata/org.jetbrains.kotlin/kotlin-daemon-embeddable/2.5.0-Beta1/reachability-metadata.json"
+    }
+  }
+}

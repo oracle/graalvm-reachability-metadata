@@ -98,14 +98,18 @@ the task reaches `completed`, and no measurement program ever runs. The run
 produces no JaCoCo report, no ranked prompt, and no coverage figure, yet reports
 every task terminal — and publication will happily open a pull request for it.
 
-Cover states name the Gradle invocation rather than leaving the agent to infer
-it: compiling and testing happen inside the issue worktree, scoped with
-`-Pcoordinates=<coordinate> -PincludeCodeCoverageSuite=true`. An unscoped
-invocation configures every library in the repository, so it runs for hours and
-still never compiles the suite under measurement; `--no-daemon` pays that
-configuration cost again on every call. Naming the command is harness usage, not
-coverage guidance — it says nothing about what to cover — so an arm that needs
-it stays comparable to one that inferred the same form on its own.
+Cover states name the Gradle invocation rather than leaving the agent to infer it: a cover
+session runs one Gradle task, the `codeCoverageTest` measurement runs, inside the issue
+worktree with `-Pcoordinates=<coordinate>`; it compiles and runs the coverage suite alone, the
+same command the naive prompt hands its agent. The session writes every test before its first
+run and reruns until the suite passes; as a last resort it deletes a test it wrote that cannot
+pass on the JVM, and repairs rather than deletes one an earlier session left. Measurement alone
+judges a pass, so running the regular suite too spends the pass on failures that cannot change
+its result. Spotless stays with finalization (§AR-code-coverage-improvement.5): `-Pcoordinates`
+does not scope it, so each call walks the whole repository. An unscoped invocation configures
+every library for hours and never compiles the suite; `--no-daemon` pays that on every call.
+Naming the command is harness usage, not coverage guidance, so an arm that needs it stays
+comparable to one that inferred the same form on its own.
 
 The tests produced by this workflow must be a separate test suite from the
 tests used to generate or validate reachability metadata. Code coverage tests
@@ -220,12 +224,13 @@ split into deterministic utilities plus a workflow engine:
   exhausts its budget the run is flagged `needsHumanIntervention` so the reviewed
   Rhei task routes to a human. Implemented in
   `forge/utility_scripts/code_coverage_prepare_native_metadata.py`.
-- **Native Image deep-path analyzer** — intersects exact JaCoCo library methods
-  with the analysis call-tree CSV graph, subtracts public API inventory entries,
-  restricts what remains to the methods the resolved library jars declare via
-  `--library-methods`, and uses the `.iprof` — sampled stacks and instrumented
-  counters — with the extractor's control-flow table only to navigate
-  JaCoCo-uncovered internal methods (§AR-code-coverage-deep-navigation). It
+- **Native Image deep-path analyzer** — builds the deep target universe
+  (§AR-code-coverage-improvement.4.2) from exact JaCoCo library methods,
+  restricted to the methods the resolved library jars declare via
+  `--library-methods`, joins it with the analysis call-tree CSV graph, and uses
+  the `.iprof` — sampled stacks and instrumented counters — with the
+  extractor's control-flow table only to navigate its JaCoCo-uncovered targets
+  (§AR-code-coverage-deep-navigation). It
   retains every record in JSON and emits compact `Observed` /
   `Uncovered paths` Markdown capped at 100 methods. Implemented in
   `forge/utility_scripts/code_coverage_profile_report.py`; the profiled image
@@ -412,9 +417,25 @@ subsystem; what they are not is something an agent can be asked to target.
 ### 4.2 Deep implementation coverage
 
 The second phase starts only after public API coverage and native metadata
-preparation. Its target universe is library-owned methods reported by JaCoCo
-that are not public API inventory entries. JaCoCo remains the sole coverage
-metric for these internal methods.
+preparation. Its target universe has two parts: the library-owned methods
+JaCoCo reports that are not public API inventory entries, and the inventory
+entries JaCoCo reports uncovered when the API phase ends. JaCoCo remains the
+sole coverage metric for both.
+
+The second part exists because the API phase ends with public methods still
+uncovered, and many are not entry points but methods library code calls. Left
+out of the universe, they still sit on deep routes, which then cross them to
+reach an internal method behind them; a measured h2 run ended its API phase
+with 2,581 such methods that neither phase targeted. The set is read from the
+deep phase's first report, the API/deep boundary
+(§AR-code-coverage-improvement.5.1), and frozen for the rest of the phase: it
+is part of the roster the phase's pass yield counts
+(§AR-code-coverage-improvement.4.3) and its target states may name. What makes
+a public method promptable here is the same frontier route as for an internal
+one (§AR-code-coverage-deep-navigation.2), not receiver obtainability
+(§AR-code-coverage-improvement.4.1.2). Its accounting does not move: it stays
+an inventory entry in the run universe, and covering it counts toward the deep
+phase's gain because that gain is the distance between checkpoints.
 
 "Library-owned" is decided by the resolved library jars, not by the JaCoCo
 report alone. A JaCoCo report covers every instrumented class on the test
@@ -438,22 +459,21 @@ each target's miss classification — is specified in
 §AR-code-coverage-deep-navigation. It steers the agent and orders the prompt;
 it never changes a target's JaCoCo status.
 
-The full JSON report retains every uncovered internal target, its JaCoCo
-evidence, graph status, rank, sampled context, and static path. The prompt-facing
-Markdown and target-id list contain at most 200 methods globally. Measurement
-itself carries attempt state deterministically in the discovery-report history:
-every target it prompted gets its attempt count incremented at the next
+The full JSON report retains every uncovered target with its attempt count,
+JaCoCo evidence, graph status, rank, sampled context, and static path, for
+finalization and audit. The prompt-facing target-id list holds at most 200
+methods globally, run as group sessions (§AR-code-coverage-deep-navigation.4).
+Measurement, not the agent, carries attempt state in the discovery-report
+history: every target it prompted gets its attempt count incremented at the next
 measurement, ranking prefers less-attempted targets, and covered targets leave
-the uncovered set. No number of failed attempts retires a target: the count
-only orders, so a target shown three times without coverage sorts behind every
-target shown fewer times and returns to the prompt once those have had their
-turn. Each still-uncovered target thus keeps getting its round, and no run
-leaves uncovered targets it never showed again. The full JSON report keeps every
-target with its attempt count for finalization and audit, without any
-agent-written state.
-The deep phase runs for the same fixed `coverage_iterations` budget and stops
-early when no actionable target remains or when the pass yield collapses
-(§3.3), on the same rule and the same thresholds as the API phase.
+the uncovered set. No number of failed attempts retires a target: the count only
+orders, so a target shown three times without coverage sorts behind every target
+shown fewer times and returns to the prompt once those have had their turn. Each
+still-uncovered target thus keeps getting its round, and no run leaves uncovered
+targets it never showed again. The deep phase runs for the same fixed
+`coverage_iterations` budget and stops early when no actionable target remains
+or when the pass yield collapses (§3.3), on the same rule and the same
+thresholds as the API phase.
 
 Sampled observations may be emitted as LCOV guidance for standard tooling. That
 artifact contains positive sample counts only, is labeled guidance-only, and is
@@ -634,11 +654,12 @@ The Rhei template should decompose the workflow into these phases:
    removal. The program's exit code is the transition: success completes the
    phase, and an unrepaired gate failure routes to human intervention — the
    outcome is never narrated in an artifact for a later phase to trip over.
-6. **Deep coverage loop** — the same measure/cover cycle for internal
-   methods. Measurement runs JaCoCo over the library-owned method set, builds
-   and runs native tests with PGO instrumentation and sampling, loads one coherent analysis
-   call-tree CSV triplet, excludes public API inventory entries, ranks exact
-   JaCoCo-uncovered internal methods by shortest sampled/static path, retains
+6. **Deep coverage loop** — the same measure/cover cycle for the deep target
+   universe (§AR-code-coverage-improvement.4.2). Measurement runs JaCoCo over
+   the library-owned method set, builds and runs native tests with PGO
+   instrumentation and sampling, loads one coherent analysis call-tree CSV
+   triplet, routes exact JaCoCo-uncovered targets one uncovered call past
+   executed code (§AR-code-coverage-deep-navigation.2), retains
    every record in JSON plus sampled-guidance LCOV, persists
    `discovery-report-<n>` history and one fixed-location report, and decides
    the loop with the same fixed `coverage_iterations` budget and the same
@@ -697,8 +718,8 @@ The Rhei template should decompose the workflow into these phases:
    opens nothing itself (§AR-forge-verification-publication-boundary).
 
    The descriptor carries the render inputs and only those: coordinate, coverage
-   suite path, the whole-run coverage checkpoints and phase gains, the per-phase
-   JaCoCo records, the human-intervention flag, the generating model and thinking
+   suite path, the whole-run coverage checkpoints and phase gains, the
+   human-intervention flag, the generating model and thinking
    level, and per-phase token usage read from the Rhei accounting directory. The body links
    its issue with `Fixes:`, never conditionally: one run publishes one pull
    request, so merging it closes
@@ -759,9 +780,13 @@ public API methods the deep phase covered after the API phase's last report.
 
 Each phase's gain is then the distance between consecutive checkpoints, the
 phase gains sum to the run's gain, and no separate combined figure is needed.
-The per-phase `apiJacoco` and `deepJacoco` blocks remain in the finalization
-artifacts, since each phase's own guidance is ranked against its own roster;
-they are phase records, not run figures.
+These are the only coverage figures finalization records, as in the benchmark
+(§FS-code-coverage-benchmarking.4): absolute coverage at each checkpoint and
+each phase's gain on the one denominator. No phase keeps a ratio on a roster of
+its own. Once the deep phase also targets the public methods the API phase left
+uncovered (§AR-code-coverage-improvement.4.2), such a ratio loses them: the API
+roster's last report precedes their coverage, and the internal roster never
+holds them.
 
 The pipeline tasks run unreviewed: deterministic helpers, schema-validated
 artifacts, and zero-exit validation gates decide their completion. The
@@ -857,7 +882,7 @@ sequenceDiagram
             else uncovered targets remain and budget is left
                 P->>P: rank targets by unlocked code, render the cover prompt
                 P-->>R: exit 10, schedule api-cover
-                R->>A: api-cover with the rendered prompt
+                R->>A: api-cover with the rendered prompt in its message
                 A->>W: write behavior tests in the coverage suite
                 A-->>R: turn ends, back to api-measure
             else a measurement step failed
@@ -897,10 +922,10 @@ sequenceDiagram
             alt no actionable target, marginal yield (§3.3), or budget spent
                 P-->>R: exit 0, phase completed
             else actionable targets remain
-                P-->>R: exit 10, schedule deep-cover
-                R->>A: deep-cover with observed and uncovered path groups
+                P-->>R: exit 10, write the group-session queue, schedule deep-dispatch
+                R->>A: deep-cover once per queued session, each handed out by deep-dispatch
                 A->>W: reach internal methods through public behavior
-                A-->>R: turn ends, back to deep-measure
+                P-->>R: queue empty, deep-dispatch exits 0, back to deep-measure
             else a measurement or native build step failed
                 P-->>R: exit 1-7 names the step, schedule deep-fix
                 R->>A: deep-fix repairs metadata or the suite
@@ -960,30 +985,35 @@ code of the process that just finished:
 | API inventory | deterministic program | The full public surface under every committed allowed package, as exact target ids | Exit 0 completes; nonzero parks in `human-intervention` |
 | Native metadata | deterministic program and gate analysis agent | Durable metadata that survives the gate's finalized re-run, with the coverage suite included end to end | Exit 0 completes; exit 3 parks in `human-intervention` |
 | API loop | measurement program and worker agent | Exact JaCoCo-vs-inventory truth, a ranked prompt, and a recorded stop decision every pass | Exit 0 completes the phase; 10 schedules a cover pass; 1-5 schedule a repair |
-| Deep loop | measurement program and worker agent | The same cycle over library-internal methods with sampled-PGO navigation | Exit 0 completes; 10 covers; 1-7 repair |
+| Deep loop | measurement program and worker agent | The same cycle over the deep target universe with sampled-PGO navigation | Exit 0 completes; 10 queues sessions for `deep-dispatch`; 1-7 repair |
 | Finalization | deterministic programs and fix agent | Split metadata, style, JVM suites, regenerated stats, and schema-valid final metrics | Exit 0 verifies then completes; a failed step number routes to repair and remeasurement; 75/80 gate verification |
 | Intervention parking | orchestrator | A gating state that stops the run where a person can resume it toward any phase entry, completion, or cancellation | Manual transition only |
 | Publication | deterministic program (both modes) | A pushed branch whose descriptor lets trusted Actions open the pull request, or a pushed benchmark result | Exit 0 completes; nonzero parks in `human-intervention` |
 
 **Edge selection is first-match by exit code.** A program state maps each exit
 code it can produce to one destination, so the exit code is the whole decision:
-0 always means the phase is done, 10 is the loop-continue signal, and a small
-positive code names the failed step for the repair prompt. When two edges share
-an exit code — every measure state maps its failure codes to both its fix state
-and `human-intervention` — the orchestrator takes the first whose destination
-still has visit budget, so the fix state absorbs failures until its `visits`
-cap is spent and the same exit code then parks the task. Agent (`execute`,
-cover, fix) edges carry no exit-code discriminator at all; their first edge is
-taken whenever the turn ends without a process failure, which is why an agent
-can only report a blocker in its artifacts, not choose its own transition.
+0 means the phase is done (for `deep-dispatch`, the pass), 10 is the
+loop-continue signal, and a small positive code names the failed step for the
+repair prompt. When two edges share an exit code — every measure state maps its
+failure codes to both its fix state and `human-intervention` — the orchestrator
+takes the first whose destination still has visit budget, so the fix state
+absorbs failures until its `visits` cap is spent and the same exit code then
+parks the task. Agent (`execute`, cover, fix) edges carry no exit-code
+discriminator at all; their first edge is taken whenever the turn ends without a
+process failure, which is why an agent can only report a blocker in its
+artifacts, not choose its own transition.
 
 **Measurement owns the loops.** Only `api-measure` and `deep-measure` move a
 loop forward: they write the numbered report history, compute the stop decision
-(§3.3), and render the next prompt. The cover agent writes tests and returns;
-it records no coverage claim and no target state. A repair pass re-enters
-measurement on the same iteration through the active-measurement marker, so a
-failed measurement plus its fix can never masquerade as a zero-yield cover
-pass or spend loop budget.
+(§3.3), and render the next prompt. The prompt is a Rhei handoff the cover state
+inherits as required, so the agent receives the whole document in its message,
+not a path to read: an agent told to read a long file reads part of it, and
+every target it never sees is coverage the pass cannot add. A deep pass hands it
+out as group sessions (§AR-code-coverage-deep-navigation.4) and stays one
+measurement. The cover agent writes tests and returns; it records no coverage
+claim and no target state. A repair pass re-enters measurement on the same
+iteration through the active-measurement marker, so a failed measurement plus
+its fix can never masquerade as a zero-yield cover pass or spend loop budget.
 
 **The native-metadata phase is a program around the shared gate.** The phase
 helper calls the native test verification gate
@@ -1029,14 +1059,16 @@ A code coverage improvement run is successful only when all of these hold:
   iteration is followed by exact JaCoCo correlation.
 - API prompts contain only exact JaCoCo-uncovered public targets and ask the
   agent to attempt the complete supplied batch.
-- Deep targets are library-owned JaCoCo methods minus public API inventory
-  entries. Exact JaCoCo evidence alone determines their status.
+- Deep targets are library-owned JaCoCo methods outside the API inventory,
+  plus the inventory entries JaCoCo reports uncovered when the API phase ends.
+  Exact JaCoCo evidence alone determines their status.
 - PGO samples and counters, the control-flow table, and the static call graph
   change only deep-path guidance and ranking; they never change covered,
   uncovered, or unknown status.
-- Near-call distance is the shortest directed static path from a sampled frame;
-  every other ranking preference only breaks equal-distance ties
-  (§AR-code-coverage-deep-navigation.2.2).
+- A prompted route's only uncovered method is its target, called from a method
+  JaCoCo reports covered (§AR-code-coverage-deep-navigation.2). Distance is the
+  shortest such route from a sampled frame; every other ranking preference
+  only breaks equal-distance ties (§AR-code-coverage-deep-navigation.2.2).
 - Full JSON retains every deep target and path record. Prompt Markdown contains
   at most 200 actionable methods and uses compact `Observed` /
   `Uncovered paths` navigation.

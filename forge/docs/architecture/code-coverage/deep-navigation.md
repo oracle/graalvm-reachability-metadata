@@ -1,7 +1,8 @@
 # AR-code-coverage-deep-navigation: Deep-phase navigation evidence
 
-The deep phase (§AR-code-coverage-improvement.4.2) prompts library-internal
-methods that JaCoCo reports uncovered. This document specifies the evidence that
+The deep phase prompts the JaCoCo-uncovered methods of its target universe:
+library-internal methods, and the public methods the API phase left uncovered
+(§AR-code-coverage-improvement.4.2). This document specifies the evidence that
 steers the agent toward them and what each piece may be used for. None of it
 changes coverage: JaCoCo is the sole metric, and every source here is
 navigation only (§GOAL-maximize-library-coverage).
@@ -55,9 +56,20 @@ line-level hints, and the report says so in a caveat rather than silently.
 
 The bytecode call-graph extractor (§AR-code-coverage-improvement.3) also writes
 each method's branch instructions, their successor bcis, and its basic blocks
-with exception edges. Only this table says where a branch leads; JaCoCo reports
-per-line totals, and the profile names successor bcis without saying what lies
-behind them.
+with exception edges. A method has a row when it holds a conditional branch or
+an exception table; one with neither can hold no fork and no catch boundary.
+Only this table says where a branch leads; JaCoCo reports per-line totals, and
+the profile names successor bcis without saying what lies behind them.
+
+A block's exception edges are marked apart from its normal ones. Bytecode has no
+try/catch instruction, only an exception table of `[from, to)` ranges and their
+handlers; the table's range bounds and handler entries cut blocks, so every
+block lies wholly inside or outside each range and its handlers are a property
+of the block. A block that ends in a return or throw inside a `try` therefore
+has exception edges only, and no normal exit. Each exception edge names the
+handler's caught type, `any` for a catch-all, and a block holding an
+instruction that can raise a caught exception — a call or a `throw` — is
+marked, so a hint can say where the exception has to come from.
 
 javac plumbing is marked the way JaCoCo filters it, so the branches a hint lists
 match the ones JaCoCo counts. A String switch's `hashCode` switch and the
@@ -68,14 +80,41 @@ successor no test can reach.
 
 ## 2. Routes and ranking
 
-For each target, the analyzer uses the shortest directed static path from any
-sampled frame. When no sampled frame joins, it may use the shortest path from a
-public API inventory entry. A target absent from the static graph remains
-JaCoCo-uncovered but is recorded as not present in the current graph. A target
-present in the graph without a sampled or public-API route remains in the full
-JSON report as a no-route candidate. Neither condition changes its JaCoCo
-status. Only actionable sampled-path and public-entry-path targets enter the
-agent prompt.
+A prompted route crosses exactly one JaCoCo-uncovered method, its target, and
+the method that calls the target on the route is one JaCoCo reports covered —
+not merely one a sampler saw. Miss classification judges that call site (§3);
+a caller that never ran leaves it judging code that never executed, with no
+fork or dispatch to name. Route search therefore never continues out of an
+uncovered method, and only a covered method may make the last call.
+
+The covered prefix is the shortest one from a sampled frame or, when no
+sampled frame joins, from a public API inventory entry JaCoCo reports covered.
+It may be any length: no method on it is JaCoCo-uncovered, so it only shows
+the agent how existing tests reach the caller. Only a route from a sampled
+frame enters the agent prompt: its observed path is the evidence the agent
+follows, and a public-entry route has none to show. Public-entry routes stay
+ranked in the JSON report and enter the prompt once a later run samples a
+frame on their covered prefix.
+
+A method JaCoCo does not report takes the status, and for classification the
+lines, of the source-level method it stands for
+(§AR-code-coverage-improvement.4.2.1): a factory stub those of its constructor,
+whose body the image attributes to the stub, and a generated lambda class those
+of the method creating it. One that stands for nothing JaCoCo reports — a JDK,
+dependency, or test frame, or a bridge — has neither. A route may pass through
+it, but it never makes the last call, since classification would find no JaCoCo
+line there to judge.
+
+A target absent from the static graph remains JaCoCo-uncovered but is recorded
+as not present in the current graph. A target present in the graph without such
+a route remains in the full JSON report as a no-route candidate: it lies more
+than one uncovered call past executed code, and becomes routable once a pass
+covers a caller. Neither condition changes its JaCoCo status, and only targets
+routed from a sampled frame enter the agent prompt. On a kafka-streams 3.6.2 replay the earlier
+rule, which let a route cross uncovered methods, routed 907 internal targets,
+622 of them through an uncovered method and 658 classified `no-fork`; this rule
+routes 250 internal and 314 public targets, 45 of them `no-fork`, while
+`fork-not-taken` moves only from 171 internal targets to 167.
 
 The prompt navigation stays compact and groups paths that share a divergence:
 
@@ -93,6 +132,11 @@ uncovered according to exact JaCoCo evidence. The agent must reach internal
 methods through the shown public behavior rather than invoke implementation
 methods directly.
 
+The prompt Markdown carries this navigation and nothing else. Totals, the count
+of paths left out, and caveats about missing evidence stay in the JSON report,
+where operators read them: text the agent cannot act on only lengthens the
+prompt.
+
 ### 2.1 Unobserved dispatch steps
 
 A virtual call site with a receiver histogram ran in the instrumented image. An
@@ -107,7 +151,10 @@ nothing there.
 
 ### 2.2 Ranking
 
-Distance is the primary ranking key. Equal-distance ties break, in order, on
+Distance is the primary ranking key. Every route has exactly one uncovered
+call, so distance counts no obstacles; it measures how far the shown evidence
+starts from the caller, and at distance 1 the caller is itself the sampled
+frame or public entry. Equal-distance ties break, in order, on
 fewer unobserved dispatch steps, a sampled join before a public-entry join, the
 higher reach count of the target's diagnosis (§3), the higher sample count, and
 the canonical id. The reach count is how often the fork ran, or how often the
@@ -118,10 +165,46 @@ it is to flip, so it only orders ties and never overrides distance.
 ## 3. Miss classification
 
 Every prompted target carries a deterministic miss classification derived from
-JaCoCo source-line instruction and branch counters, the target's reverse
-call-site fan-out, and — when present — the control-flow table and the counters.
-The strongest diagnosis across all sites that invoke the target wins. The
-Markdown prompt and the full JSON report carry the same classification.
+JaCoCo source-line instruction and branch counters, the target's reverse call-
+site fan-out, and — when present — the control-flow table and the counters. Only
+sites whose caller JaCoCo reports covered are judged, and the route guarantees
+at least one (§2). A site is found through the target's source-level method, so
+a constructor reached through a factory stub is judged at the stub's callers. A
+caller judged on borrowed lines (§2) is read in line order, since the invoke's
+bytecode index is its own, not the lending method's. The strongest diagnosis
+across those sites wins. The Markdown prompt and the full JSON report carry the
+same classification.
+
+```mermaid
+sequenceDiagram
+    participant M as miss classifier
+    participant G as call graph
+    participant J as JaCoCo lines
+    participant F as control-flow table
+    participant P as PGO counters
+    M->>G: call sites of the target
+    M->>J: caller covered? invoking line status, candidate implementations
+    alt invoking line covered and several implementations
+        M-->>M: dispatched-elsewhere (§3.1)
+    else
+        M->>F: dead region around the invoke's block
+        loop each edge into the region
+            F->>P: branch counter of the source block (JaCoCo line without one)
+            Note over F,P: never ran: extend the region · zero count into it: fork edge<br/>exception edge: catch boundary · positive count or unknown: stop
+        end
+        F-->>M: forks, catch boundaries, dead blocks
+        M->>J: covered lines with a missed branch, at or above the invoking line
+        alt a fork lies on such a line
+            M->>P: counts of that line's successors
+            M-->>M: fork-not-taken (§3.2), dead successors marked
+        else catch boundaries exist
+            M->>F: per-block counts of the try lines that can raise
+            M-->>M: no-fork (§3.3) with handler type and raising lines
+        else
+            M-->>M: no-fork (§3.3) with the nearest covered line
+        end
+    end
+```
 
 ### 3.1 Dispatched elsewhere
 
@@ -138,17 +221,30 @@ candidate unlabelled rather than guessed.
 
 ### 3.2 Fork not taken
 
-The fork is the nearest covered line above the invoking line that JaCoCo
-reports with a missed branch and that holds a branch instruction
-**controlling** the target: some of its successors reach the invoking bci and
-some do not. The invoking line itself qualifies when a controlling branch on it
-precedes the invoke, as in a conditional expression. Reachability walks the method's control flow,
-exception edges included, without passing back through the branch, so a loop
-header does not reach everything. A branch whose target-reaching successors all
-have positive counts is not why the target was missed, and the search continues
-upward; a line whose branches control nothing is skipped the same way. Without a
-control-flow table for the method, the nearest covered line with a missed branch
-is the fork, as before.
+The fork is found by walking the method's control flow backwards from the
+invoking bci, through blocks that never executed. Every edge from an executed
+block into that dead region was never taken, and a branch instruction on such
+an edge is a fork: it ran, and the successor that leads to the invoke has a
+zero count. The fork line is the nearest covered line, at or above the
+invoking line, that JaCoCo reports with a missed branch and that holds a fork
+branch. The invoking line itself qualifies when a fork branch on it precedes
+the invoke, as in a conditional expression. Because the walk never enters
+executed code, a loop cannot carry it around, and `a || b` yields its two
+conditions as two forks on one line.
+
+A block executed when its branch counter is positive; without a counter, when
+JaCoCo covers its line. A block that ran but whose every normal successor
+lies in the dead region decided nothing: it left by an exception, and the walk
+stops there without a fork. JaCoCo's line status cannot tell such a block from
+one that never ran on a line holding several blocks, so without a counter the
+walk passes through it. A positive count into a block the walk believed dead
+is contradictory evidence, and the walk stops there without a fork. An
+exception edge (§AR-code-coverage-deep-navigation.1.3) is never walked: nothing
+says which block of the `try` would have raised, so every block under the
+`try` is a catch boundary (§AR-code-coverage-deep-navigation.3.3) reported with
+how often it ran, and the fork is sought along normal edges only. Without a
+control-flow table for the method, the nearest covered line with a missed
+branch is the fork, as before.
 
 The hint lists every successor of every non-plumbing branch instruction on
 the fork line, one numbered item per successor in bytecode order. A successor
@@ -158,11 +254,15 @@ true/false or by case key: javac's jump sense does not map to the source
 condition, and enum, String, and pattern switches switch on synthetic keys. A
 successor that lands on a later branch instruction of the same line, as the
 first condition of `a && b` does, is labelled by that condition's position.
-Each item carries its count, and those that reach the invoking bci carry a
-target marker:
+Each item carries its count, and those that land in the dead region, and so
+reach the invoking bci, carry a target marker. A location is the JaCoCo source
+path relative to the library source root, which the prompt states once near
+its top as an absolute path, so the agent opens the file without fetching the
+sources again; when the root or the file under it is missing, the location is
+the file name alone, and a prompt none of whose locations resolve states no root:
 
 ```text
-fork `Database.java:313` reached 40,182×, 2 of 4 branches taken
+fork `org/h2/engine/Database.java:313` reached 40,182×, 2 of 4 branches taken
   branch 1 → condition 2 ×40,182
   branch 2 → line 320 ×0 ← target
   branch 3 → line 314 ×40,182
@@ -178,13 +278,67 @@ navigation.
 
 ### 3.3 No fork
 
-When no fork exists, `no-fork` names the nearest covered line and explains that
-the target requires an exception or external event.
+When no fork exists — the dead region around the invoke is entered only by
+exception edges or from blocks that ran and left by an exception — `no-fork`
+names the nearest covered line and explains that the target requires an
+exception or external event.
 
-## 4. Boundaries
+When the region is entered through catch handlers, the hint goes further. It
+names each handler's line and caught type, and under it every line of the `try`
+range that can raise the exception, with its own count, zero for a line that
+never ran: the range's paths run different numbers of times, and only the one
+holding the throwing call matters.
+
+```text
+reached only through catch (NumberFormatException) at line 8
+  line 4 `String.isEmpty` ran 8,000,100×, never threw it
+  line 7 `Integer.parseInt` ran 8,000,000×, never threw it
+```
+
+A line's count is propagated forward from the branch counters along normal
+edges; a line whose count cannot be derived shows none. Calls are named from
+the call graph where it has the site. When no line in the range can raise, every
+line of the range is listed.
+
+## 4. Group sessions
+
+A deep pass prompts up to 200 targets (§AR-code-coverage-improvement.4.2), and
+one agent session per pass wastes most of them: on the h2 2.1.210 benchmark a
+session touched 1 to 29 of about 100 owner classes, covering 40 to 80% of a
+group it picked up but 14% of the prompt. A pass therefore runs its prompt as
+small sessions, one after another, before it measures again, and every prompted
+target lands in exactly one session. A target's group is the owner class of the
+first method on its prompted route, where a test enters the library, so targets
+that share it share a test setup. An owner group of at least 10 targets is a
+*monolith* session, cut into sessions of at most 25 with a remainder below 10
+joining the pool; every smaller group joins the pool, which is ordered by
+package and then prompt order and packed into *mixed* sessions of at most 25;
+sessions run in the order of their best-ranked target. The kind follows the
+routes a session holds and is recorded beside it in the discovery report: a
+monolith prompt asks for one test class for its entry, a mixed prompt says to
+expect more than one. Measurement writes the sessions as an ordered queue and
+hands control to a dispatch program state, which removes the first session,
+writes its prompt as the cover handoff (§AR-code-coverage-improvement.5.2) and
+exits 10, or exits 0 on an empty queue so measurement runs again; the cover
+state returns to the dispatcher. The queue is the whole loop state, and a
+session leaves it before its agent runs, so a failed session is not repeated
+in the pass. Every session but the last mixed one holds at least 10 targets, so
+a pass has at most 200 / 10 + 1 = 21 sessions; the cover state's visit cap is
+the iteration budget times 21, the dispatcher's adds one empty-queue visit per
+pass, and the template's transition and invocation bounds cover that ceiling,
+which the machine running the workflow must allow. A session writes every test
+first, then runs the coverage suite until it passes, and is stopped after 45
+minutes, moving on to the next session rather than retrying; its tests stay in
+the worktree for the next session's suite run or the measurement's repair
+state. A pass is still one JaCoCo measurement and one entry in the yield
+series, so attempt counts and the marginal-yield stop
+(§AR-code-coverage-improvement.4.3) see what they saw before, and the API phase
+keeps one session per pass.
+
+## 5. Boundaries
 
 - Counters and control flow never change coverage status, the deep universe,
   or attempt state; they choose forks, label hints, and order ties.
 - A route or candidate the counters never observed is labelled, not removed;
-  the static graph still decides what may be prompted.
+  the static graph and JaCoCo still decide what may be prompted.
 - Instrumented counters are an Oracle GraalVM feature, as sampling already is.

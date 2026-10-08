@@ -30,7 +30,6 @@ from tests.code_coverage_profile_support import (
     JACOCO_PATH,
     LOAD_ID,
     PARSE_ID,
-    RELOAD_ID,
     RESOLVE_ID,
     RESOLVE_INTEGER_ID,
     _coverage,
@@ -84,37 +83,64 @@ class ReportArtifactsTest(unittest.TestCase):
         with open(os.path.join(self.output_dir, "discovery-report-1.md"), encoding="utf-8") as md_file:
             markdown = md_file.read()
         self.assertIn("## Observed (sampled guidance only)", markdown)
-        self.assertIn("## Uncovered paths (JaCoCo-exact, top 200)", markdown)
-        expected_paths: tuple[str, ...] = (
-            "`Registry.init() → resolve(...)`",
-            "`Registry.init() → resolve(...) → load(...)`",
-            "`Registry.init() → resolve(...) → load(...) → reload()`",
-            "`Config.of() → parse(...)`",
-        )
-        for path in expected_paths:
-            self.assertIn(path, markdown)
+        self.assertIn("`Registry.init() → resolve(...)`", markdown)
+        # `parse` is routed from a public entry only: it stays ranked in the
+        # JSON and out of the prompt (§AR-code-coverage-deep-navigation.2).
+        parse = next(entry for entry in report["uncoveredPaths"] if entry["id"] == PARSE_ID)
+        self.assertEqual(parse["joinKind"], "public-entry")
+        self.assertNotIn(PARSE_ID, report["promptTargetIds"])
+        self.assertNotIn("Config.of()", markdown)
+        self.assertNotIn("Public entry:", markdown)
+        self.assertEqual(report["summary"]["listedUncovered"], report["summary"]["sampledJoins"])
+        # `load` and `reload` lie behind the uncovered `resolve`, past the
+        # frontier (§AR-code-coverage-deep-navigation.2).
+        self.assertNotIn("load(...)`", markdown)
+        self.assertNotIn("reload()`", markdown)
         for target in report["bulkTargets"]:
             self.assertIn("missClassification", target)
             self.assertIn(
                 target["missClassification"]["kind"],
                 {"dispatched-elsewhere", "fork-not-taken", "no-fork"},
             )
-        self.assertEqual(markdown.count("  target "), len(report["bulkTargets"]))
+        self.assertEqual(markdown.count("  target "), len(report["promptTargetIds"]))
         path_lines = [line for line in markdown.splitlines() if line.startswith("`")]
         for line in path_lines:
             self.assertNotIn("#", line)
             self.assertNotIn(":void", line)
-        instruction = (
-            "Attempt every listed uncovered path in this iteration through public API "
-            "behavior; never invoke internal targets directly."
-        )
-        self.assertEqual(markdown.count(instruction), 1)
+        # The preamble is the single public-entry obligation
+        # (§AR-code-coverage-deep-navigation.2).
+        self.assertTrue(markdown.startswith(
+            "# Deep coverage paths (iteration 1) — com.example:demo:1.0.0\n\n"
+            "Reach every target below through its public entry; never call internal "
+            "methods directly.\n\n"
+            "## Where the tests go\n"
+        ))
         self.assertNotIn("sibling", markdown)
         self.assertNotIn(" samples to ", markdown)
         self.assertNotIn(" step(s)", markdown)
         self.assertNotIn("###", markdown)
-        self.assertEqual(markdown.count("additional uncovered paths are retained in JSON"), 1)
+        # Omitted counts and caveats are operator data and stay in the JSON.
+        self.assertGreater(report["summary"]["omittedUncovered"], 0)
+        self.assertNotIn("retained in JSON", markdown)
+        self.assertTrue(report["caveats"])
+        self.assertNotIn("## Caveats", markdown)
         self.assertNotIn("Detailed near-call guidance", markdown)
+
+    def test_prompt_carries_no_operator_summary_or_progress(self) -> None:
+        # A second report has history, which once rendered a progress block.
+        self._generate(iteration=0)
+        report = self._generate(iteration=1)
+        with open(os.path.join(self.output_dir, "discovery-report-1.md"), encoding="utf-8") as md_file:
+            markdown = md_file.read()
+        # The counts stay in the JSON report, where operators read them.
+        self.assertIn("listedUncovered", report["summary"])
+        for removed in (
+            "## Summary",
+            "## Progress",
+            "Newly JaCoCo-covered",
+            "JaCoCo is the coverage authority. PGO samples and counters are guidance only.",
+        ):
+            self.assertNotIn(removed, markdown)
 
     def test_markdown_shows_next_sampled_frame_and_all_selected_groups(self) -> None:
         root = MethodRef("example.CoverageTest", "run", (), "void")
@@ -161,6 +187,8 @@ class ReportArtifactsTest(unittest.TestCase):
                 "inventoryUnknown": 0,
                 "deepCovered": 0,
                 "deepUncovered": len(records),
+                "publicTargetsCovered": 0,
+                "publicTargetsUncovered": 0,
                 "listedUncovered": len(records),
                 "omittedUncovered": 0,
                 "samplingContexts": len(records),
@@ -177,7 +205,6 @@ class ReportArtifactsTest(unittest.TestCase):
             graph,
             "example:library:1",
             0,
-            None,
             markdown_path,
         )
 
@@ -189,8 +216,12 @@ class ReportArtifactsTest(unittest.TestCase):
             "Uncovered paths:\n"
             "`Library.dispatch() → parseAlternative0()`\n"
         )
-        self.assertIn(first_group, markdown)
+        self.assertIn("## Observed (sampled guidance only)\n\n" + first_group, markdown)
         self.assertEqual(markdown.count("Observed:\n"), 21)
+        # A thematic break separates each pair of consecutive groups, and a
+        # blank line before it keeps Markdown from reading a setext heading.
+        self.assertEqual(markdown.count("\n\n---\n\nObserved:\n"), 20)
+        self.assertEqual(markdown.count("---"), 20)
         self.assertIn(
             "`Library.dispatch() → parseAlternative20()`",
             markdown,
@@ -199,7 +230,7 @@ class ReportArtifactsTest(unittest.TestCase):
         self.assertNotIn("sibling", markdown)
         self.assertNotIn(" step(s)", markdown)
 
-    def test_terminal_targets_leave_the_prompt_and_attempted_ones_go_last(self) -> None:
+    def test_terminal_targets_leave_the_prompt_and_attempted_ones_stay(self) -> None:
         state_path = self._write_json("deep-cover-0.json", {
             "coordinate": "com.example:demo:1.0.0",
             "targets": [
@@ -223,7 +254,7 @@ class ReportArtifactsTest(unittest.TestCase):
                     "reason": "Meaningful inputs were exhausted.",
                 },
                 {
-                    "id": RELOAD_ID,
+                    "id": RESOLVE_ID,
                     "status": "attempted",
                     "attemptCount": 3,
                     "lastAttemptedIteration": 1,
@@ -234,24 +265,25 @@ class ReportArtifactsTest(unittest.TestCase):
         report = self._generate(iteration=0, target_state_paths=[state_path])
 
         by_id = {entry["id"]: entry for entry in report["uncoveredPaths"]}
-        # Three failed attempts do not retire a target; they send it behind
-        # every fresher one.
-        self.assertEqual(report["promptTargetIds"], [RESOLVE_ID, RELOAD_ID])
+        # Three failed attempts do not retire a target, while a terminal one
+        # leaves the prompt even though it has a route.
+        self.assertEqual(report["promptTargetIds"], [RESOLVE_ID])
         self.assertEqual(report["summary"]["terminalUncovered"], 2)
+        self.assertEqual(by_id[PARSE_ID]["joinKind"], "public-entry")
         for method_id in (PARSE_ID, LOAD_ID):
             self.assertTrue(by_id[method_id]["terminal"])
             self.assertNotIn(method_id, report["promptTargetIds"])
-        self.assertFalse(by_id[RELOAD_ID]["terminal"])
-        self.assertEqual(by_id[RELOAD_ID]["targetStatus"], "attempted")
-        self.assertEqual(by_id[RELOAD_ID]["attemptCount"], 3)
-        self.assertIsNone(by_id[RELOAD_ID]["stateReason"])
+        self.assertFalse(by_id[RESOLVE_ID]["terminal"])
+        self.assertEqual(by_id[RESOLVE_ID]["targetStatus"], "attempted")
+        self.assertEqual(by_id[RESOLVE_ID]["attemptCount"], 3)
+        self.assertIsNone(by_id[RESOLVE_ID]["stateReason"])
         bulk = {entry["id"]: entry for entry in report["bulkTargets"]}
-        self.assertEqual(bulk[RELOAD_ID]["targetStatus"], "attempted")
+        self.assertEqual(bulk[RESOLVE_ID]["targetStatus"], "attempted")
         persisted = {entry["id"]: entry for entry in report["targetStates"]}
         self.assertEqual(persisted[RESOLVE_INTEGER_ID]["status"], "completed")
         self.assertEqual(persisted[PARSE_ID]["status"], "skipped")
         self.assertEqual(persisted[LOAD_ID]["status"], "exhausted")
-        self.assertEqual(persisted[RELOAD_ID]["status"], "attempted")
+        self.assertEqual(persisted[RESOLVE_ID]["status"], "attempted")
 
     def test_repeatedly_unproductive_targets_stay_in_rotation(self) -> None:
         reports: list[dict] = [self._generate(iteration=iteration) for iteration in range(5)]

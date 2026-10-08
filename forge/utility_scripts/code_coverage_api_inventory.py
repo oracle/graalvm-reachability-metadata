@@ -56,7 +56,6 @@ class ApiTarget:
     target_id: str
     kind: str
     source_path: str
-    behavior_hint: str
     is_static: bool = False
 
 
@@ -110,27 +109,6 @@ def _split_params(param_text: str) -> tuple[str, ...]:
     if current.strip():
         parts.append(current)
     return tuple(_normalize_param(_strip_generics(part)) for part in parts)
-
-
-def _behavior_hint(name: str, kind: str) -> str:
-    lowered = name.lower()
-    if kind == "constructor":
-        return "Constructs an instance through a public constructor."
-    if kind == "enumConstant":
-        return "Public enum constant."
-    if name in ("values", "valueOf"):
-        return "Generated enum accessor."
-    if lowered.startswith(("get", "is", "has")):
-        return "Public accessor."
-    if lowered.startswith(("set", "with")):
-        return "Public mutator/configuration method."
-    if lowered.startswith(("build", "create", "of", "new", "from")):
-        return "Public factory/builder method."
-    if "parse" in lowered or "read" in lowered or "decode" in lowered:
-        return "Public parsing/decoding method."
-    if "write" in lowered or "serialize" in lowered or "encode" in lowered or "format" in lowered:
-        return "Public serialization/formatting method."
-    return "Public user-callable method."
 
 
 def parse_javap(text: str, source_root: str = "") -> list[ClassInfo]:
@@ -222,16 +200,14 @@ def _parse_member(body: str, owner_class: ClassInfo) -> ApiTarget | None:
         head_tokens = head.split()
         if len(head_tokens) == 1 and head_tokens[0] == owner:
             ref = MethodRef(owner=owner, name="<init>", params=params, return_type="void")
-            return ApiTarget(ref, ref.canonical_id, "constructor", owner_class.source_path,
-                             _behavior_hint("<init>", "constructor"), is_static)
+            return ApiTarget(ref, ref.canonical_id, "constructor", owner_class.source_path, is_static)
         if len(head_tokens) < 2:
             return None
         name = head_tokens[-1]
         return_type = normalize_type_name(" ".join(head_tokens[:-1]))
         ref = MethodRef(owner=owner, name=name, params=params, return_type=return_type)
         kind = "staticMethod" if is_static else "method"
-        return ApiTarget(ref, ref.canonical_id, kind, owner_class.source_path,
-                         _behavior_hint(name, kind), is_static)
+        return ApiTarget(ref, ref.canonical_id, kind, owner_class.source_path, is_static)
 
     # §AR-code-coverage-improvement.4.1: fields are not callable entry targets.
     return None
@@ -308,7 +284,6 @@ def build_inventory(coordinate: str, classes: list[ClassInfo], jar_paths: list[s
                 "sourcePath": target.source_path,
                 "kind": target.kind,
                 "status": "pending",
-                "behaviorHint": target.behavior_hint,
                 "evidence": ["bytecode"],
             }
             targets.append(entry)
@@ -340,7 +315,7 @@ def write_markdown(inventory: dict, md_path: str) -> None:
         lines.append(f"| {kind} | {by_kind[kind]} |")
     lines += ["", "## Targets", ""]
     for target in targets:
-        lines.append(f"- `{target['id']}` ({target['kind']}) — {target['behaviorHint']}")
+        lines.append(f"- `{target['id']}` ({target['kind']})")
     with open(md_path, "w", encoding="utf-8") as md_file:
         md_file.write("\n".join(lines) + "\n")
 

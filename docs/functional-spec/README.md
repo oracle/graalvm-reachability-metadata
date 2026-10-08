@@ -17,6 +17,7 @@ it, neither of which is about how the build produces either.
 | [§FS-contribution-contract](contribution-contract.md#fs-contribution-contract-test-and-metadata-contribution-contract) | Test and metadata contribution contract |
 | [§FS-test-contract](test-contract.md#fs-test-contract-the-test-contract) | The test contract |
 | [§FS-repository-status-report](repository-status.md#fs-repository-status-report-repository-issue-progress-and-state) | Repository issue progress and state |
+| [§FS-maintainer-agent-queues](maintainer-agent-queues.md#fs-maintainer-agent-queues-maintainer-agent-queues) | Maintainer agent queues |
 | [§FS-metadata](metadata.md#fs-metadata-the-metadata-suite) | The `metadata/` suite |
 | [§FS-tests](tests.md#fs-tests-the-tests-suite) | The `tests/` suite |
 
@@ -33,6 +34,8 @@ Files:
   metadata it justifies.
 - [repository-status.md](repository-status.md) — how repository issue progress
   and state are reported.
+- [maintainer-agent-queues.md](maintainer-agent-queues.md) — the agent queues a
+  maintainer can adopt through ephor, and what the repository ships for them.
 - [metadata.md](metadata.md) — the `metadata/` suite: its layout, its additive
   invariants, and where each entry comes from.
 - [tests.md](tests.md) — the `tests/` suite: the per-coordinate test projects
