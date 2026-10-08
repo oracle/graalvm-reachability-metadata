@@ -1,0 +1,130 @@
+{
+  "fix_ni_run:2026-10-07": {
+    "timestamp": "2026-10-07T15:09:48.423041Z",
+    "library": "org.apache.pulsar:pulsar-client-api:5.0.0-M2",
+    "starting_commit": "1bd660a140e1448deee830592735fc08aecfd195",
+    "ending_commit": "6ec8ec288f3de55d0d56ce9d804c33fb4ebb50f9",
+    "previous_library": "org.apache.pulsar:pulsar-client-api:4.2.1",
+    "strategy_name": "library_update_pi_gpt-5.6-sol",
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "status": "success",
+    "stats": {
+      "version": "5.0.0-M2",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 5,
+            "totalCalls": 5
+          }
+        },
+        "coverageRatio": 1.0,
+        "coveredCalls": 5,
+        "totalCalls": 5
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 89,
+          "missed": 3842,
+          "ratio": 0.022641,
+          "total": 3931
+        },
+        "line": {
+          "covered": 17,
+          "missed": 1014,
+          "ratio": 0.016489,
+          "total": 1031
+        },
+        "method": {
+          "covered": 5,
+          "missed": 342,
+          "ratio": 0.014409,
+          "total": 347
+        }
+      }
+    },
+    "previous_library_stats": {
+      "version": "4.2.1",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 5,
+            "totalCalls": 5
+          }
+        },
+        "coverageRatio": 1.0,
+        "coveredCalls": 5,
+        "totalCalls": 5
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 44,
+          "missed": 3699,
+          "ratio": 0.011755,
+          "total": 3743
+        },
+        "line": {
+          "covered": 14,
+          "missed": 981,
+          "ratio": 0.01407,
+          "total": 995
+        },
+        "method": {
+          "covered": 5,
+          "missed": 333,
+          "ratio": 0.014793,
+          "total": 338
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "no_action",
+      "issue_number": 10318,
+      "issue_label": "fails-native-image-run",
+      "library": "org.apache.pulsar:pulsar-client-api:5.0.0-M2",
+      "summary": "The 4.2.1 tests already cover this API using only the pulsar-client-api artifact and in-test stubs, such as the PulsarClientImplementationBindingImpl stub. I found no evidence of a missing dependency, Docker image, or system property. I did not download or inspect the 5.0.0-M2 jar, and I did not look for the failure evidence behind the issue, so this decision rests on the 4.2.1 test layout only.",
+      "deterministic_setup": [],
+      "agent_guidance": "",
+      "risks": [
+        "I did not inspect the 5.0.0-M2 sources. DefaultImplementation or ReflectionUtils may have changed, so the native-image failure may need updated reflection metadata or test stubs. Local Gradle and native-image runs are authoritative for that.",
+        "No unsupportable mechanism was traced. The existing tests use reflection-based loading, which reachability metadata can register, so skip_unsupported is not justified."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#10318 [Automation] native-image run fails for org.apache.pulsar:pulsar-client-api:5.0.0-M2; label=fails-native-image-run; body_chars=0"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "12 existing test file path(s) included"
+        }
+      ],
+      "current_library": "org.apache.pulsar:pulsar-client-api:4.2.1",
+      "new_version": "5.0.0-M2",
+      "model": "sonnet",
+      "input_tokens_used": 4,
+      "output_tokens_used": 676
+    },
+    "metrics": {
+      "input_tokens_used": 0,
+      "cached_input_tokens_used": 0,
+      "output_tokens_used": 0,
+      "iterations": 0,
+      "cost_usd": 0.0,
+      "tested_library_loc": 17,
+      "metadata_entries": 2,
+      "test_only_metadata_entries": 3,
+      "previous_library_metadata_entries": 2,
+      "previous_library_test_only_metadata_entries": 3,
+      "code_coverage_percent": 1.65,
+      "previous_library_coverage_percent": 1.41
+    },
+    "artifacts": {
+      "metadata_file": "metadata/org.apache.pulsar/pulsar-client-api/5.0.0-M2/reachability-metadata.json"
+    }
+  }
+}
