@@ -13,7 +13,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 import io.opentelemetry.api.OpenTelemetry;
 import io.opentelemetry.api.logs.LoggerProvider;
 import io.opentelemetry.api.logs.Severity;
+import io.opentelemetry.api.trace.Span;
+import io.opentelemetry.api.trace.SpanContext;
+import io.opentelemetry.api.trace.TraceFlags;
+import io.opentelemetry.api.trace.TraceState;
 import io.opentelemetry.api.trace.TracerProvider;
+import io.opentelemetry.context.Scope;
 import io.opentelemetry.context.propagation.ContextPropagators;
 import io.opentelemetry.instrumentation.log4j.appender.v2_17.OpenTelemetryAppender;
 import io.opentelemetry.sdk.common.CompletableResultCode;
@@ -60,6 +65,29 @@ public class Opentelemetry_log4j_appender_2_17Test {
                     .isEqualTo(IllegalStateException.class.getName());
             assertThat(record.getAttributes().get(stringKey("exception.message")))
                     .isEqualTo("payment unavailable");
+        }
+    }
+
+    @Test
+    void associatesLogRecordWithCurrentSpan() {
+        SpanContext spanContext = SpanContext.create(
+                "0123456789abcdef0123456789abcdef",
+                "0123456789abcdef",
+                TraceFlags.getSampled(),
+                TraceState.getDefault());
+        try (TestTelemetry telemetry = TestTelemetry.create();
+                Scope ignored = Span.wrap(spanContext).makeCurrent()) {
+            OpenTelemetryAppender appender = newAppender(telemetry.openTelemetry);
+
+            appender.append(event(
+                    new SimpleMessage("trace-correlated log"),
+                    Level.INFO,
+                    null,
+                    null,
+                    new SortedArrayStringMap(),
+                    null));
+
+            assertThat(telemetry.singleRecord().getSpanContext()).isEqualTo(spanContext);
         }
     }
 
