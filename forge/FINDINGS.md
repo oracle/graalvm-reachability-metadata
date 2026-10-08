@@ -8,6 +8,11 @@ Newest entry first; every non-approval is recorded, including one a repair later
 **Contribution modifies JUnit metadata outside the target coordinate**
 
 The closed-file-set and one-library rules in §FS-contribution-contract.2 are violated: the diff for org.springframework.boot:spring-boot-webmvc-test:4.1.1 modifies metadata/org.junit.jupiter/junit-jupiter-engine/5.8.2/reachability-metadata.json. The local gate record independently reports human_intervention_required=true with that exact repo_fix_path. A complete correction cannot stay within the target contribution's allowed files, and this review is forbidden from editing another coordinate, so §FS-contribution-contract.5.5 requires maintainer intervention.
+## 2026-10-08 — org.springframework.boot:spring-boot-resttestclient:4.1.1 (#9713)
+
+**Supporting dependency pins the target library version**
+
+The test project's `build.gradle` pinned `org.springframework.boot:spring-boot-restclient` to `4.1.1`, so the suite would not follow the TCK-selected Spring Boot version, violating the version-agnostic test requirement.
 
 ## 2026-10-06 — org.springframework.boot:spring-boot-micrometer-tracing:4.1.1 (#9732)
 ## 2026-10-07 — io.micrometer:micrometer-observation-test:1.17.1 (#9727)

@@ -139,6 +139,7 @@ def write_prompts(
         coordinate: str,
         iteration: int,
         output_dir: str,
+        source_root: str | None = None,
 ) -> list[dict]:
     """Render the pass's whole prompt and one prompt per session; return the
     sessions the report records (§AR-code-coverage-deep-navigation.4)."""
@@ -150,6 +151,7 @@ def write_prompts(
         coordinate,
         iteration,
         os.path.join(output_dir, f"discovery-report-{iteration}.md"),
+        source_root=source_root,
     )
     directory: str = session_directory(output_dir, iteration)
     shutil.rmtree(directory, ignore_errors=True)
@@ -173,6 +175,7 @@ def write_prompts(
             iteration,
             os.path.join(output_dir, entry["prompt"]),
             session={**entry, "count": len(sessions)},
+            source_root=source_root,
         )
         entries.append(entry)
     return entries

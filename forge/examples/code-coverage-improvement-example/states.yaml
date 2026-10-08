@@ -221,14 +221,26 @@ states:
         `src/test/java` already carry, and keep the whole file ASCII: checkstyle
         runs over this suite at finalization and rejects both a missing header
         and any non-ASCII character, the grund `§` marker included.
-      - Put nothing between that header and the `package` declaration, and run
-        `./gradlew spotlessApply -Pcoordinates=<coordinate>` before you finish:
-        Spotless enforces that layout and gates every pull request.
+      - Put nothing between that header and the `package` declaration;
+        finalization runs Spotless (§AR-code-coverage-improvement.5).
       - Target meaningful public user-callable behavior with real assertions,
         not superficial coverage hits.
       - Do not weaken metadata-generation tests.
       - Do not measure or claim coverage yourself: deterministic re-measurement
         runs right after this state and decides the loop.
+      - Write every test for the prompt's targets first, without running
+        Gradle in between. Then, from inside the issue worktree (`worktreePath`
+        in conversion.json), run the same task measurement runs:
+        `./gradlew codeCoverageTest -Pcoordinates=<coordinate>`. Fix whatever
+        fails and run the suite again until it passes. As a last resort, delete
+        a test method you wrote that cannot pass on the JVM; repair, never
+        delete, a failing test an earlier session left.
+      - `codeCoverageTest` compiles and runs this suite alone and is the only
+        Gradle task you run: no `spotlessApply`, no `javaTest` or regular suite,
+        no native task (§AR-code-coverage-improvement.2). A Gradle invocation
+        without `-Pcoordinates` configures every library in the repository,
+        takes hours, and never compiles this suite; do not pass `--no-daemon`,
+        which pays that cost again on every call.
 
       Write `{output.work.path}` with:
       - targets attempted and how each was exercised
@@ -525,16 +537,22 @@ states:
         `src/test/java` already carry, and keep the whole file ASCII: checkstyle
         runs over this suite at finalization and rejects both a missing header
         and any non-ASCII character, the grund `§` marker included.
-      - Put nothing between that header and the `package` declaration, and run
-        `./gradlew spotlessApply -Pcoordinates=<coordinate>` before you finish:
-        Spotless enforces that layout and gates every pull request.
+      - Put nothing between that header and the `package` declaration;
+        finalization runs Spotless (§AR-code-coverage-improvement.5).
       - Write every test for this session's targets first, without running
-        Gradle in between. Only when all of them are written, run
-        `./gradlew spotlessApply -Pcoordinates=<coordinate>` and then
-        `./gradlew codeCoverageTest -Pcoordinates=<coordinate>`, fix whatever
-        fails, and run the suite again until it passes. The session is stopped
-        after 45 minutes, so leave time for that loop.
-        §AR-code-coverage-deep-navigation.4
+        Gradle in between. Then, from inside the issue worktree (`worktreePath`
+        in conversion.json), run the same task measurement runs:
+        `./gradlew codeCoverageTest -Pcoordinates=<coordinate>`. Fix whatever
+        fails and run the suite again until it passes. As a last resort, delete
+        a test method you wrote that cannot pass on the JVM; repair, never
+        delete, a failing test an earlier session left. The session is stopped
+        after 45 minutes, so leave time for that loop. §AR-code-coverage-deep-navigation.4
+      - `codeCoverageTest` compiles and runs this suite alone and is the only
+        Gradle task you run: no `spotlessApply`, no `javaTest` or regular suite,
+        no native task (§AR-code-coverage-improvement.2). A Gradle invocation
+        without `-Pcoordinates` configures every library in the repository,
+        takes hours, and never compiles this suite; do not pass `--no-daemon`,
+        which pays that cost again on every call.
       - Do not weaken metadata-generation tests.
       - Do not write any target state: measurement tracks attempts and target
         rotation deterministically from its own report history.

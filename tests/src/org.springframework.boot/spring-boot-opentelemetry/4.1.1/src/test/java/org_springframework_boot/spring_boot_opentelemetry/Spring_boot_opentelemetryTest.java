@@ -16,6 +16,7 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import io.opentelemetry.api.OpenTelemetry;
 import io.opentelemetry.api.common.AttributeKey;
 import io.opentelemetry.api.logs.Logger;
 import io.opentelemetry.exporter.otlp.http.logs.OtlpHttpLogRecordExporter;
@@ -38,12 +39,14 @@ import org.springframework.boot.opentelemetry.autoconfigure.OpenTelemetryResourc
 import org.springframework.boot.opentelemetry.autoconfigure.OpenTelemetrySdkAutoConfiguration;
 import org.springframework.boot.opentelemetry.autoconfigure.logging.OpenTelemetryLoggingAutoConfiguration;
 import org.springframework.boot.opentelemetry.autoconfigure.logging.OpenTelemetryLoggingProperties;
+import org.springframework.boot.opentelemetry.autoconfigure.logging.SdkLoggerProviderBuilderCustomizer;
 import org.springframework.boot.opentelemetry.autoconfigure.logging.otlp.OtlpGrpcLogRecordExporterBuilderCustomizer;
 import org.springframework.boot.opentelemetry.autoconfigure.logging.otlp.OtlpHttpLogRecordExporterBuilderCustomizer;
 import org.springframework.boot.opentelemetry.autoconfigure.logging.otlp.OtlpLoggingAutoConfiguration;
 import org.springframework.boot.opentelemetry.autoconfigure.logging.otlp.OtlpLoggingConnectionDetails;
 import org.springframework.boot.opentelemetry.autoconfigure.logging.otlp.OtlpLoggingProperties;
 import org.springframework.boot.opentelemetry.autoconfigure.logging.otlp.Transport;
+import org.springframework.boot.ssl.SslBundle;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.mock.env.MockEnvironment;
@@ -106,6 +109,20 @@ public class Spring_boot_opentelemetryTest {
     }
 
     @Test
+    void userProvidedOpenTelemetryBeanMakesSdkAutoConfigurationBackOff() {
+        OpenTelemetry openTelemetry = OpenTelemetry.noop();
+
+        this.contextRunner
+                .withBean(OpenTelemetry.class, () -> openTelemetry)
+                .run((context) -> {
+                    assertThat(context).hasSingleBean(OpenTelemetry.class);
+                    assertThat(context.getBean(OpenTelemetry.class)).isSameAs(openTelemetry);
+                    assertThat(context).doesNotHaveBean(OpenTelemetrySdk.class);
+                    assertThat(context).hasSingleBean(SdkLoggerProvider.class);
+                });
+    }
+
+    @Test
     void loggingPropertiesConfigureBatchProcessorAndSdkLoggerProvider() {
         this.contextRunner
                 .withPropertyValues("management.opentelemetry.enabled=true", "management.logging.export.enabled=true",
@@ -133,11 +150,16 @@ public class Spring_boot_opentelemetryTest {
     }
 
     @Test
-    void sdkLoggerProviderExportsApplicationLogRecordsThroughConfiguredExporter() {
+    void sdkLoggerProviderExportsApplicationLogRecordsAndAppliesProviderCustomizer() {
         RecordingLogRecordExporter exporter = new RecordingLogRecordExporter();
+        Resource customizedResource = Resource.builder()
+                .put("deployment.environment", "customized")
+                .build();
         this.contextRunner
                 .withPropertyValues("management.opentelemetry.enabled=true", "management.logging.export.enabled=true")
                 .withBean(LogRecordExporter.class, () -> exporter)
+                .withBean(SdkLoggerProviderBuilderCustomizer.class,
+                        () -> (builder) -> builder.setResource(customizedResource))
                 .run((context) -> {
                     Logger logger = context.getBean(OpenTelemetrySdk.class)
                             .getSdkLoggerProvider()
@@ -148,7 +170,10 @@ public class Spring_boot_opentelemetryTest {
                     assertThat(context.getBean(SdkLoggerProvider.class).forceFlush().join(10, TimeUnit.SECONDS)
                             .isSuccess()).isTrue();
                     assertThat(exporter.getRecords()).hasSize(1);
-                    assertThat(exporter.getRecords().get(0).getBody().asString()).isEqualTo("order accepted");
+                    LogRecordData record = exporter.getRecords().get(0);
+                    assertThat(record.getBody().asString()).isEqualTo("order accepted");
+                    assertThat(record.getResource().getAttribute(AttributeKey.stringKey("deployment.environment")))
+                            .isEqualTo("customized");
                     assertSdkShutdown(context);
                 });
     }
@@ -233,12 +258,35 @@ public class Spring_boot_opentelemetryTest {
     }
 
     @Test
-    void disabledLoggingExportDoesNotCreateAnOtlpExporter() {
+    void httpLoggingExporterUsesSslBundleFromConnectionDetails() {
+        SslBundle sslBundle = SslBundle.systemDefault();
+        SslOtlpLoggingConnectionDetails connectionDetails = new SslOtlpLoggingConnectionDetails(
+                "https://collector.example.test/v1/logs", sslBundle);
+
+        this.contextRunner
+                .withPropertyValues("management.opentelemetry.enabled=true", "management.logging.export.enabled=true",
+                        "management.logging.export.otlp.enabled=true")
+                .withBean(OtlpLoggingConnectionDetails.class, () -> connectionDetails)
+                .run((context) -> {
+                    assertThat(context).hasSingleBean(OtlpHttpLogRecordExporter.class);
+                    assertThat(context.getBean(OtlpHttpLogRecordExporter.class).toString())
+                            .contains("endpoint=https://collector.example.test/v1/logs");
+                    assertThat(connectionDetails.wasSslBundleRequested()).isTrue();
+                    assertSdkShutdown(context);
+                });
+    }
+
+    @Test
+    void disabledLoggingExportBindsPropertiesWithoutCreatingAnOtlpExporter() {
         this.contextRunner
                 .withPropertyValues("management.logging.export.otlp.enabled=false",
-                        "management.opentelemetry.logging.export.otlp.endpoint=http://collector.example.test/v1/logs")
+                        "management.opentelemetry.logging.export.otlp.endpoint=http://collector.example.test/v1/logs",
+                        "management.opentelemetry.logging.export.otlp.ssl.bundle=collector")
                 .run((context) -> {
                     assertThat(context).hasSingleBean(OtlpLoggingConnectionDetails.class);
+                    OtlpLoggingProperties properties = context.getBean(OtlpLoggingProperties.class);
+                    assertThat(properties.getEndpoint()).isEqualTo("http://collector.example.test/v1/logs");
+                    assertThat(properties.getSsl().getBundle()).isEqualTo("collector");
                     assertThat(context).doesNotHaveBean(OtlpHttpLogRecordExporter.class);
                     assertThat(context).doesNotHaveBean(OtlpGrpcLogRecordExporter.class);
                     assertSdkShutdown(context);
@@ -276,6 +324,36 @@ public class Spring_boot_opentelemetryTest {
     private static void assertSdkShutdown(ConfigurableApplicationContext context) {
         assertThat(context.getBean(OpenTelemetrySdk.class).shutdown().join(10, TimeUnit.SECONDS)
                 .isSuccess()).isTrue();
+    }
+
+    private static final class SslOtlpLoggingConnectionDetails implements OtlpLoggingConnectionDetails {
+
+        private final String url;
+
+        private final SslBundle sslBundle;
+
+        private boolean sslBundleRequested;
+
+        private SslOtlpLoggingConnectionDetails(String url, SslBundle sslBundle) {
+            this.url = url;
+            this.sslBundle = sslBundle;
+        }
+
+        @Override
+        public String getUrl(Transport transport) {
+            return this.url;
+        }
+
+        @Override
+        public SslBundle getSslBundle() {
+            this.sslBundleRequested = true;
+            return this.sslBundle;
+        }
+
+        private boolean wasSslBundleRequested() {
+            return this.sslBundleRequested;
+        }
+
     }
 
     private static final class RecordingLogRecordExporter implements LogRecordExporter {

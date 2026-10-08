@@ -1,0 +1,90 @@
+{
+  "add_new_library_support:2026-10-07": {
+    "timestamp": "2026-10-07T22:16:56.187790Z",
+    "library": "io.kotest:kotest-framework-api-jvm:5.9.1",
+    "starting_commit": "40d86800d4e8d4b29efd48b7050901e4073d17fe",
+    "ending_commit": "120ac1fec08f77f716041c68a2c7037593779ee5",
+    "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-sol",
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "status": "success",
+    "stats": {
+      "version": "5.9.1",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 1,
+            "totalCalls": 1
+          }
+        },
+        "coverageRatio": 1.0,
+        "coveredCalls": 1,
+        "totalCalls": 1
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 199,
+          "missed": 15264,
+          "ratio": 0.012869,
+          "total": 15463
+        },
+        "line": {
+          "covered": 27,
+          "missed": 1908,
+          "ratio": 0.013953,
+          "total": 1935
+        },
+        "method": {
+          "covered": 6,
+          "missed": 1731,
+          "ratio": 0.003454,
+          "total": 1737
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "no_action",
+      "issue_number": 9718,
+      "issue_label": "library-new-request",
+      "library": "io.kotest:kotest-framework-api-jvm:5.9.1",
+      "summary": "kotest-framework-api-jvm:5.9.1 is a pure in-process library. Its POM pulls in kotest-common, kotest-assertions-shared, kotlinx-coroutines-core and -test, kotlin-stdlib and kotlin-reflect (runtime) transitively, so the tests need no extra dependency. It needs no Docker image or external service. The sibling kotest projects under tests/src/io.kotest (for example kotest-extensions-jvm) already use the Kotlin plugin and the TCK scaffold, so the normal generated scaffold is enough.",
+      "deterministic_setup": [],
+      "agent_guidance": "",
+      "risks": [
+        "The sibling kotest projects (for example kotest-extensions-jvm) add --add-opens=java.base/java.util=ALL-UNNAMED and --add-opens=java.base/java.lang=ALL-UNNAMED to the JVM test task and to the native-image buildArgs. If kotlin-reflect or coroutines hit illegal-access errors, copy that setup from them.",
+        "I did not run Gradle or Native Image, so this decision rests only on the POM and the sibling build files. Local verification remains authoritative."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#9718 Support for io.kotest:kotest-framework-api-jvm:5.9.1; label=library-new-request; body_chars=0"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "sonnet",
+      "input_tokens_used": 6,
+      "output_tokens_used": 1138
+    },
+    "metrics": {
+      "input_tokens_used": 74022,
+      "cached_input_tokens_used": 495616,
+      "output_tokens_used": 4110,
+      "iterations": 1,
+      "cost_usd": 0.7412,
+      "generated_loc": 24,
+      "tested_library_loc": 27,
+      "metadata_entries": 21,
+      "test_only_metadata_entries": 2,
+      "code_coverage_percent": 1.4
+    },
+    "artifacts": {
+      "metadata_file": "metadata/io.kotest/kotest-framework-api-jvm/5.9.1/reachability-metadata.json"
+    }
+  }
+}

@@ -38,6 +38,7 @@ Usage:
     --coordinate group:artifact:version \
     --iteration 0 \
     [--target-state <deep-cover-N.json>] \
+    [--source-root <extracted library sources>] \
     --output-dir runtime/code-coverage/discovery
 """
 
@@ -335,6 +336,7 @@ def generate_report(
         max_listed: int = MAX_LISTED_METHODS,
         target_state_paths: list[str] | None = None,
         library_methods_path: str | None = None,
+        source_root: str | None = None,
 ) -> dict:
     if not isinstance(coordinate, str) or not coordinate.strip():
         raise ProfileFormatError("coordinate must be non-empty.")
@@ -383,7 +385,8 @@ def generate_report(
     )
 
     os.makedirs(output_dir, exist_ok=True)
-    report["deepSessions"] = write_prompts(report, prompt_records, graph, coordinate, iteration, output_dir)
+    report["deepSessions"] = write_prompts(
+        report, prompt_records, graph, coordinate, iteration, output_dir, source_root)
     json_path: str = os.path.join(output_dir, f"discovery-report-{iteration}.json")
     lcov_path: str = os.path.join(output_dir, f"coverage-{iteration}.lcov")
     with open(json_path, "w", encoding="utf-8") as json_file:
@@ -426,6 +429,8 @@ def main() -> None:
              "universe to methods the resolved library jars declare. Its sibling "
              "flow.csv and types.csv, when present, trace forks and resolve receivers.",
     )
+    parser.add_argument("--source-root", help="Extracted library sources that prompt "
+                        "locations resolve against (§AR-code-coverage-deep-navigation.3.2).")
     parser.add_argument("--coordinate", required=True, help="group:artifact:version.")
     parser.add_argument("--iteration", type=int, default=1, help="Discovery iteration number.")
     parser.add_argument("--output-dir", required=True, help="Directory for discovery artifacts.")
@@ -449,6 +454,7 @@ def main() -> None:
             max_listed=args.max_listed_methods,
             target_state_paths=args.target_state_paths,
             library_methods_path=args.library_methods,
+            source_root=args.source_root,
         )
     except (ProfileFormatError, JacocoReportError) as error:
         print(f"ERROR: {error}", file=sys.stderr)

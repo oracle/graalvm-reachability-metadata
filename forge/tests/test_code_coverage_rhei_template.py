@@ -373,6 +373,44 @@ class CodeCoverageRheiTemplateTests(unittest.TestCase):
                     self.assertNotIn("guidance only", instructions)
                     self.assertNotIn("Read the prompt at", instructions)
 
+    def test_cover_states_run_only_the_coverage_suite(self) -> None:
+        """A cover session runs `codeCoverageTest` alone and leaves Spotless to
+        finalization, which formats before checkstyle reads the suite.
+
+        §AR-code-coverage-improvement.2, §AR-code-coverage-improvement.5
+        """
+        forge_root: str = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        template_path: str = os.path.join(
+            forge_root, ".agents", "rhei", "templates", "code-coverage-improvement", "states.yaml",
+        )
+        example_path: str = os.path.join(
+            forge_root, "examples", "code-coverage-improvement-example", "states.yaml",
+        )
+
+        for states_path in (template_path, example_path):
+            with open(states_path, encoding="utf-8") as states_file:
+                machine: dict = yaml.safe_load(
+                    _render_numeric_placeholders(states_file.read())
+                )
+            for cover in ("api-cover", "deep-cover"):
+                with self.subTest(path=states_path, cover=cover):
+                    instructions: str = " ".join(machine["states"][cover]["instructions"].split())
+                    self.assertIn(
+                        "`./gradlew codeCoverageTest -Pcoordinates=<coordinate>`",
+                        instructions,
+                    )
+                    self.assertIn("is the only Gradle task you run", instructions)
+                    self.assertIn("delete a test method you wrote", instructions)
+                    self.assertNotIn("./gradlew spotlessApply", instructions)
+
+            if states_path == template_path:
+                finalization: str = machine["states"]["reviewed-execute"]["program"]
+                self.assertLess(
+                    finalization.index('"spotlessApply", "spotlessCheck"'),
+                    finalization.index('"checkstyle"'),
+                    "finalization must format before checkstyle reads the cover suite",
+                )
+
     def test_deep_pass_runs_as_dispatched_group_sessions(self) -> None:
         """Measurement queues the pass, the dispatcher loops over it with the
         cover state, and the visit caps sit at the session ceiling.
