@@ -1,0 +1,84 @@
+{
+  "add_new_library_support:2026-10-08": {
+    "timestamp": "2026-10-08T13:16:44.938424Z",
+    "library": "org.springframework.security:spring-security-oauth2-core:7.1.0",
+    "starting_commit": "b2b7f3c16c7efdf08ea682b2ff57c2595b830f7b",
+    "ending_commit": "12fba1c9045fb359225f5b8bea7fdf8d3dc468db",
+    "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-luna",
+    "agent": "pi",
+    "model": "gpt-5.6-luna",
+    "status": "success",
+    "stats": {
+      "version": "7.1.0",
+      "dynamicAccess": {
+        "breakdown": {},
+        "coverageRatio": 1.0,
+        "coveredCalls": 0,
+        "totalCalls": 0
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 1980,
+          "missed": 3478,
+          "ratio": 0.36277,
+          "total": 5458
+        },
+        "line": {
+          "covered": 510,
+          "missed": 829,
+          "ratio": 0.380881,
+          "total": 1339
+        },
+        "method": {
+          "covered": 186,
+          "missed": 261,
+          "ratio": 0.416107,
+          "total": 447
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "no_action",
+      "issue_number": 9229,
+      "issue_label": "library-new-request",
+      "library": "org.springframework.security:spring-security-oauth2-core:7.1.0",
+      "summary": "spring-security-oauth2-core is a plain in-process library of OAuth2 value types (tokens, OAuth2Error, DefaultOAuth2User, authorization grant types, converters and validators). I did not fetch its POM or the repo's existing tests. I'm judging from what I know of the 7.x line. It needs no Docker image, service, environment variable or system property. Its mandatory dependencies, spring-security-core, spring-core and spring-web, come in transitively.",
+      "deterministic_setup": [],
+      "agent_guidance": "",
+      "risks": [
+        "I did not check the artifact's POM, so any optional dependencies are unconfirmed. If the generated tests exercise HTTP message converters such as OAuth2AccessTokenResponseHttpMessageConverter or OAuth2ErrorHttpMessageConverter, the Spring HTTP converter classes may need a Jackson (JSON) implementation on the test classpath. Those are declared optional. If tests fail with a missing-JSON-library error, add the matching Jackson dependency then, at the version Spring Security 7.1 / Spring Framework 7 expects.",
+        "Local Gradle and Native Image runs remain authoritative."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#9229 Support for org.springframework.security:spring-security-oauth2-core:7.1.0; label=library-new-request; body_chars=0"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "sonnet",
+      "input_tokens_used": 2,
+      "output_tokens_used": 800
+    },
+    "metrics": {
+      "input_tokens_used": 180554,
+      "cached_input_tokens_used": 1673216,
+      "output_tokens_used": 11763,
+      "iterations": 4,
+      "cost_usd": 0.4185,
+      "generated_loc": 170,
+      "tested_library_loc": 510,
+      "metadata_entries": 17,
+      "test_only_metadata_entries": 2,
+      "code_coverage_percent": 38.09
+    },
+    "artifacts": {
+      "metadata_file": "metadata/org.springframework.security/spring-security-oauth2-core/7.1.0/reachability-metadata.json"
+    }
+  }
+}
