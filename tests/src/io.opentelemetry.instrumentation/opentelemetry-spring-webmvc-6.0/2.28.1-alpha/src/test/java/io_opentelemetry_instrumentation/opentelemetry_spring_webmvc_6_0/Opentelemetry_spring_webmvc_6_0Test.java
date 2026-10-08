@@ -109,6 +109,34 @@ public class Opentelemetry_spring_webmvc_6_0Test {
     }
 
     @Test
+    void builderCapturesConfiguredRequestAndResponseHeaders() throws Exception {
+        try (TelemetryFixture fixture = TelemetryFixture.create()) {
+            Filter filter = SpringWebMvcTelemetry.builder(fixture.openTelemetry())
+                    .setCapturedRequestHeaders(List.of("X-Request-Id"))
+                    .setCapturedResponseHeaders(List.of("X-Response-Id"))
+                    .build()
+                    .createServletFilter();
+            init(filter);
+            MockHttpServletRequest request = new MockHttpServletRequest("GET", "/headers");
+            request.setServerName("example.test");
+            request.addHeader("X-Request-Id", "request-123");
+            MockHttpServletResponse response = new MockHttpServletResponse();
+
+            filter.doFilter(request, response, (chainRequest, chainResponse) ->
+                    ((HttpServletResponse) chainResponse).addHeader(
+                            "X-Response-Id", "response-456"));
+
+            SpanData span = onlyFinishedSpan(fixture);
+            assertThat(span.getAttributes().get(
+                            AttributeKey.stringArrayKey("http.request.header.x-request-id")))
+                    .containsExactly("request-123");
+            assertThat(span.getAttributes().get(
+                            AttributeKey.stringArrayKey("http.response.header.x-response-id")))
+                    .containsExactly("response-456");
+        }
+    }
+
+    @Test
     void createServletFilterFinishesSpanWhenAsyncRequestCompletes() throws Exception {
         try (TelemetryFixture fixture = TelemetryFixture.create()) {
             Filter filter = SpringWebMvcTelemetry.create(fixture.openTelemetry())
