@@ -8,6 +8,11 @@ Newest entry first; every non-approval is recorded, including one a repair later
 **New-library contribution modifies another coordinate**
 
 §FS-contribution-contract.2 limits this contribution to org.springframework.batch:spring-batch-core:6.0.4 and its supporting files, but the diff modifies metadata/org.hsqldb/hsqldb/2.7.3/reachability-metadata.json. The local review evidence independently flags that same path in repo_fix_paths and requires human intervention. I checked whether this could be repaired within the Spring Batch file set, but the change belongs to the HSQLDB dependency coordinate; removing, relocating, or landing it requires an edit or separate contribution for another coordinate. Under §FS-contribution-contract.5.2 and §FS-contribution-contract.5.5, a maintainer must split or land the HSQLDB metadata update separately, then rebase or regenerate this contribution.
+## 2026-10-08 — org.springframework.boot:spring-boot-resttestclient:4.1.1 (#9713)
+
+**Supporting dependency pins the target library version**
+
+The test project's `build.gradle` pinned `org.springframework.boot:spring-boot-restclient` to `4.1.1`, so the suite would not follow the TCK-selected Spring Boot version, violating the version-agnostic test requirement.
 
 ## 2026-10-06 — org.springframework.boot:spring-boot-micrometer-tracing:4.1.1 (#9732)
 ## 2026-10-07 — io.micrometer:micrometer-observation-test:1.17.1 (#9727)

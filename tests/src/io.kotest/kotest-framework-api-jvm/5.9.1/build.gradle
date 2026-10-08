@@ -6,18 +6,23 @@
  */
 plugins {
     id "org.graalvm.internal.tck"
+    alias(libs.plugins.kotlin.jvm)
 }
 
 String libraryVersion = tck.testedLibraryVersion.get()
+int testJvmVersion = tck.testJvmVersion.get()
 
 dependencies {
-    testImplementation "org.springframework.boot:spring-boot-opentelemetry:$libraryVersion"
-    testImplementation "org.springframework.boot:spring-boot-autoconfigure:$libraryVersion"
-    testImplementation "org.springframework.boot:spring-boot-test:$libraryVersion"
-    testImplementation "org.springframework.boot:spring-boot-testcontainers:$libraryVersion"
+    testImplementation "io.kotest:kotest-framework-api-jvm:$libraryVersion"
     testImplementation 'org.assertj:assertj-core:3.22.0'
-    testImplementation 'org.testcontainers:testcontainers:2.0.5'
-    testImplementation "io.opentelemetry:opentelemetry-exporter-otlp:1.62.0"
+}
+
+kotlin {
+    jvmToolchain(testJvmVersion)
+}
+
+compileTestKotlin {
+    kotlinOptions.jvmTarget = testJvmVersion.toString()
 }
 
 graalvmNative {
