@@ -10,14 +10,22 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import io.opentelemetry.api.OpenTelemetry;
 import io.opentelemetry.api.common.AttributeKey;
+import io.opentelemetry.api.metrics.LongCounter;
 import io.opentelemetry.api.trace.Span;
 import io.opentelemetry.context.Context;
 import io.opentelemetry.context.Scope;
 import io.opentelemetry.context.propagation.TextMapSetter;
 import io.opentelemetry.instrumentation.spring.autoconfigure.OpenTelemetryAutoConfiguration;
+import io.opentelemetry.sdk.OpenTelemetrySdk;
 import io.opentelemetry.sdk.autoconfigure.spi.AutoConfigurationCustomizer;
 import io.opentelemetry.sdk.autoconfigure.spi.AutoConfigurationCustomizerProvider;
 import io.opentelemetry.sdk.common.CompletableResultCode;
+import io.opentelemetry.sdk.metrics.InstrumentType;
+import io.opentelemetry.sdk.metrics.data.AggregationTemporality;
+import io.opentelemetry.sdk.metrics.data.LongPointData;
+import io.opentelemetry.sdk.metrics.data.MetricData;
+import io.opentelemetry.sdk.metrics.export.CollectionRegistration;
+import io.opentelemetry.sdk.metrics.export.MetricReader;
 import io.opentelemetry.sdk.trace.data.SpanData;
 import io.opentelemetry.sdk.trace.export.SimpleSpanProcessor;
 import io.opentelemetry.sdk.trace.export.SpanExporter;
@@ -26,6 +34,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
@@ -87,6 +96,36 @@ public class Opentelemetry_spring_boot_autoconfigureTest {
                     } finally {
                         span.end();
                     }
+                });
+    }
+
+    @Test
+    void customizesMeterProviderAndExportsCounter() {
+        RecordingMetricReader reader = new RecordingMetricReader();
+
+        contextRunner()
+                .withBean(
+                        AutoConfigurationCustomizerProvider.class,
+                        () -> customizer -> customizer.addMeterProviderCustomizer(
+                                (builder, properties) -> builder.registerMetricReader(reader)))
+                .run(context -> {
+                    OpenTelemetrySdk openTelemetry =
+                            (OpenTelemetrySdk) context.getBean(OpenTelemetry.class);
+                    LongCounter counter = openTelemetry.getMeter("orders")
+                            .counterBuilder("orders.processed")
+                            .build();
+                    counter.add(3);
+
+                    assertThat(openTelemetry.getSdkMeterProvider().forceFlush()
+                            .join(10, TimeUnit.SECONDS).isSuccess()).isTrue();
+
+                    MetricData metric = reader.metrics.stream()
+                            .filter(data -> data.getName().equals("orders.processed"))
+                            .findFirst()
+                            .orElseThrow();
+                    assertThat(metric.getLongSumData().getPoints()).hasSize(1);
+                    LongPointData point = metric.getLongSumData().getPoints().iterator().next();
+                    assertThat(point.getValue()).isEqualTo(3);
                 });
     }
 
@@ -166,6 +205,32 @@ public class Opentelemetry_spring_boot_autoconfigureTest {
                         "otel.traces.exporter=none",
                         "otel.metrics.exporter=none",
                         "otel.logs.exporter=none");
+    }
+
+    private static final class RecordingMetricReader implements MetricReader {
+        private final List<MetricData> metrics = new ArrayList<>();
+        private CollectionRegistration collectionRegistration;
+
+        @Override
+        public void register(CollectionRegistration collectionRegistration) {
+            this.collectionRegistration = collectionRegistration;
+        }
+
+        @Override
+        public AggregationTemporality getAggregationTemporality(InstrumentType instrumentType) {
+            return AggregationTemporality.CUMULATIVE;
+        }
+
+        @Override
+        public CompletableResultCode forceFlush() {
+            metrics.addAll(collectionRegistration.collectAllMetrics());
+            return CompletableResultCode.ofSuccess();
+        }
+
+        @Override
+        public CompletableResultCode shutdown() {
+            return CompletableResultCode.ofSuccess();
+        }
     }
 
     private static final class RecordingSpanExporter implements SpanExporter {
