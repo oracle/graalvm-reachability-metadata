@@ -107,8 +107,9 @@ re-run and never by the agent's account of what it repaired
 failed check and does not reach this repair; §FS-local-branch-review states what
 answers it, and re-runs this gate when it has. After the gate passes, Forge must
 algorithmically compare the final PR diff with the expected library-scoped
-paths. The verification metrics and PR description must list any shared
-repository paths, and the local reviewer must treat those paths as disposition
+paths; the routed owner metadata §root/FS-contribution-contract.2 admits is
+part of those paths, not a shared repository path. The verification metrics
+and PR description must list any shared repository paths, and the local reviewer must treat those paths as disposition
 evidence. Publication may add `human-intervention` only when the resulting
 review decision is `rejected` with action `human-intervention`, following
 §FS-human-intervention-policy.
@@ -447,6 +448,8 @@ the descriptor and the head untouched. Valid cases include:
   follow-up.
 - Local CI-equivalent verification passes only after shared repository files
   changed, so a maintainer must review repository-level effects before merge.
+  The routed owner metadata §root/FS-contribution-contract.2 admits is not a
+  shared file and does not raise this case.
 - Publication detects a severe metadata, test, or coverage anomaly that makes
   the PR unsafe to auto-review as a normal generated result.
 - The pre-push review found something it could not correct, or its repair did
