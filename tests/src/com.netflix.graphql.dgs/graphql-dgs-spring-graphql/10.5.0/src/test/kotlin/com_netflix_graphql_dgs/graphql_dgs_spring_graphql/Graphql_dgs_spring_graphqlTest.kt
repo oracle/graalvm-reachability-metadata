@@ -6,11 +6,109 @@
  */
 package com_netflix_graphql_dgs.graphql_dgs_spring_graphql
 
+import com.netflix.graphql.dgs.DgsComponent
+import com.netflix.graphql.dgs.DgsQuery
+import com.netflix.graphql.dgs.InputArgument
+import graphql.schema.idl.SchemaParser
+import graphql.schema.idl.TypeDefinitionRegistry
 import org.junit.jupiter.api.Test
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration
+import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
+import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.boot.test.context.TestConfiguration
+import org.springframework.context.annotation.Bean
+import org.springframework.context.annotation.Configuration
+import org.springframework.context.annotation.Import
+import org.springframework.http.MediaType
+import org.springframework.test.web.reactive.server.WebTestClient
+import org.springframework.test.web.servlet.MockMvc
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
-class Graphql_dgs_spring_graphqlTest {
+@SpringBootTest(
+    classes = [ServletTestApplication::class],
+    webEnvironment = SpringBootTest.WebEnvironment.MOCK,
+)
+@AutoConfigureMockMvc
+public class Graphql_dgs_spring_graphqlServletTest {
+    @Autowired
+    private lateinit var mockMvc: MockMvc
+
     @Test
-    fun test() {
-        println("This is just a placeholder, implement your test")
+    public fun servletInterceptorExecutesDgsQueryWithVariables() {
+        mockMvc.perform(
+            post("/graphql")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(
+                    """
+                    {
+                      "query": "query Greeting(\u0024name: String!) { greeting(name: \u0024name) }",
+                      "variables": {"name": "Ada"}
+                    }
+                    """.trimIndent(),
+                ),
+        ).andExpect(status().isOk)
+            .andExpect(jsonPath("$.data.greeting").value("Hello, Ada"))
     }
 }
+
+@SpringBootTest(
+    classes = [ReactiveTestApplication::class],
+    webEnvironment = SpringBootTest.WebEnvironment.MOCK,
+    properties = ["spring.main.web-application-type=reactive"],
+)
+@AutoConfigureWebTestClient
+public class Graphql_dgs_spring_graphqlReactiveTest {
+    @Autowired
+    private lateinit var webTestClient: WebTestClient
+
+    @Test
+    public fun reactiveInterceptorExecutesDgsQueryWithVariables() {
+        webTestClient.post()
+            .uri("/graphql")
+            .contentType(MediaType.APPLICATION_JSON)
+            .bodyValue(
+                """
+                {
+                  "query": "query Greeting(\u0024name: String!) { greeting(name: \u0024name) }",
+                  "variables": {"name": "Grace"}
+                }
+                """.trimIndent(),
+            ).exchange()
+            .expectStatus().isOk
+            .expectBody()
+            .jsonPath("$.data.greeting").isEqualTo("Hello, Grace")
+    }
+}
+
+@TestConfiguration(proxyBeanMethods = false)
+public class DgsSchemaTestConfiguration {
+    @Bean
+    public fun schemaRegistry(): TypeDefinitionRegistry =
+        SchemaParser().parse(
+            """
+            type Query {
+                greeting(name: String!): String!
+            }
+            """.trimIndent(),
+        )
+}
+
+@DgsComponent
+public class GreetingDataFetcher {
+    @DgsQuery
+    public fun greeting(@InputArgument("name") name: String): String = "Hello, $name"
+}
+
+@Configuration(proxyBeanMethods = false)
+@EnableAutoConfiguration
+@Import(DgsSchemaTestConfiguration::class, GreetingDataFetcher::class)
+public class ServletTestApplication
+
+@Configuration(proxyBeanMethods = false)
+@EnableAutoConfiguration
+@Import(DgsSchemaTestConfiguration::class, GreetingDataFetcher::class)
+public class ReactiveTestApplication
