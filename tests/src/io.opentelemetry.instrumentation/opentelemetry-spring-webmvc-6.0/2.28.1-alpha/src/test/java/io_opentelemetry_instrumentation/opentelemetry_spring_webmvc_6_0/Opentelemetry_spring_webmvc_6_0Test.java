@@ -243,7 +243,7 @@ public class Opentelemetry_spring_webmvc_6_0Test {
                 request.setServerName("example.test");
                 MockHttpServletResponse response = new MockHttpServletResponse();
 
-                filter.doFilter(request, response, (chainRequest, chainResponse) -> {});
+                filter.doFilter(request, response, (chainRequest, chainResponse) -> { });
             } finally {
                 filter.destroy();
                 dispatcherServlet.destroy();
@@ -311,7 +311,7 @@ public class Opentelemetry_spring_webmvc_6_0Test {
     @RestController
     private static final class RouteController {
         @GetMapping("/orders/{id}")
-        public void order() {}
+        public void order() { }
     }
 
     private static final class RequestResponseAttributesExtractor
