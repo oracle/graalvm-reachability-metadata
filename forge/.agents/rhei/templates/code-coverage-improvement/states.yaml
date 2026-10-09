@@ -779,6 +779,8 @@ states:
       if not Path(source_root).is_dir():
           print(f"deep-measure: no library sources at {source_root}; "
                 "prompt locations fall back to file names", file=sys.stderr)
+      # Step 2 compiled the test project's suites; each group names the test
+      # that reaches it from them (§AR-code-coverage-deep-navigation.2).
       analyzer = [
           sys.executable, f"{work_path}/utility_scripts/code_coverage_profile_report.py",
           "--profile", profile,
@@ -787,6 +789,7 @@ states:
           "--jacoco-xml", discovery / f"jacoco-deep-{iteration}.xml",
           "--library-methods", library_methods,
           "--source-root", source_root,
+          "--test-project", subproject,
           "--coordinate", coordinate,
           "--iteration", iteration,
           "--output-dir", discovery,

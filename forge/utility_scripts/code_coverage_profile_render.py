@@ -7,8 +7,9 @@
 
 Turns the correlated report and prompt records into the compact prompt
 markdown and the guidance-only LCOV file (§AR-code-coverage-improvement.3):
-each group's routes, then its miss classifications in one section per cause
-(§AR-code-coverage-deep-navigation.3.3).
+each group's observed chain and routes, its miss classifications in one
+section per cause (§AR-code-coverage-deep-navigation.3.3), and the test that
+reaches it (§AR-code-coverage-deep-navigation.2).
 """
 
 from __future__ import annotations
@@ -28,26 +29,22 @@ from utility_scripts.code_coverage_profile_records import (
     translated_path,
 )
 from utility_scripts.code_coverage_profile_routes import Sample, SampledProfile
+from utility_scripts.code_coverage_profile_trace import (
+    GroupTrace,
+    SampleTrace,
+    called_from_test_lines,
+)
 
 # A thematic break between consecutive route groups; a blank line always
 # precedes it, so Markdown never reads it as a setext heading underline.
 GROUP_SEPARATOR = "---"
 
 
-def _display_path(static_path: list[int], graph: CallGraph, limit: int = 6) -> str:
-    # Generated lambda classes and extracted bodies carry compiler-chosen names;
-    # the agent can only act on the method that creates them
-    # (§AR-code-coverage-improvement.4.2.1).
-    path: list[MethodRef] = translated_path(static_path, graph)
-    selected: list[MethodRef | None]
-    if len(path) <= limit:
-        selected = list(path)
-    else:
-        selected = [*path[:2], None, *path[-3:]]
-
+def _display_refs(path: list[MethodRef | None]) -> str:
+    """Names joined by arrows, the owner only where it changes; `None` is a gap."""
     labels: list[str] = []
     previous_owner: str | None = None
-    for ref in selected:
+    for ref in path:
         if ref is None:
             labels.append("…")
             previous_owner = None
@@ -55,6 +52,16 @@ def _display_path(static_path: list[int], graph: CallGraph, limit: int = 6) -> s
         labels.append(display_method(ref, ref.owner != previous_owner))
         previous_owner = ref.owner
     return " → ".join(labels)
+
+
+def _display_path(static_path: list[int], graph: CallGraph, limit: int = 6) -> str:
+    # Generated lambda classes and extracted bodies carry compiler-chosen names;
+    # the agent can only act on the method that creates them
+    # (§AR-code-coverage-improvement.4.2.1).
+    path: list[MethodRef] = translated_path(static_path, graph)
+    if len(path) <= limit:
+        return _display_refs(list(path))
+    return _display_refs([*path[:2], None, *path[-3:]])
 
 
 def _step_label(step: dict) -> str:
@@ -144,6 +151,7 @@ def write_markdown(
         md_path: str,
         session: dict | None = None,
         source_root: str | None = None,
+        trace: SampleTrace | None = None,
 ) -> None:
     notes: dict[str, dict] = {target["id"]: target for target in report["bulkTargets"]}
     scope: str = (
@@ -170,6 +178,7 @@ def write_markdown(
         _placement(session),
     ]
     sources: SourceRoot = SourceRoot(source_root)
+    tested: bool = False
 
     # Every prompted record is a sampled route (§AR-code-coverage-deep-navigation.2).
     sampled_groups: dict[tuple[str, int], list[NearCallRecord]] = {}
@@ -193,12 +202,18 @@ def write_markdown(
         assert representative.sample is not None
         sample: Sample = representative.sample
         join_index: int = representative.sampled_join_path_index or 0
-        observed_path: list[int] = [
+        divergence: list[int] = [
             static_id
             for static_id, _ in sample.path[join_index:join_index + 2]
         ]
+        # The most frequent stack that reaches the divergence, from the test's
+        # call down (§AR-code-coverage-deep-navigation.2).
+        group: GroupTrace = (
+            trace.group(tuple(divergence)) if trace is not None
+            else GroupTrace(translated_path(divergence, graph))
+        )
         lines.append("Observed:")
-        lines.append(f"`{_display_path(observed_path, graph)}`")
+        lines.append(f"`{_display_refs(list(group.chain))}`")
         lines.append("")
         lines.append("Uncovered paths:")
         for record in records:
@@ -208,6 +223,9 @@ def write_markdown(
         lines += diagnosis_lines(
             [_diagnosis(record, graph, notes) for record in records], sources,
         )
+        test_block: list[str] = called_from_test_lines(group)
+        lines += ["", *test_block] if test_block else []
+        tested = tested or bool(test_block)
         lines.append("")
     # Locations are relative to the stated source root, which only a prompt
     # with a resolved location states (§AR-code-coverage-deep-navigation.3.2).
@@ -215,6 +233,15 @@ def write_markdown(
         lines[root_line_index:root_line_index] = [
             f"Library sources: `{sources.path}`; a location with a directory is "
             "relative to it, a bare file name was not found under it.",
+            "",
+        ]
+    # Test files are relative to the test project, stated once when a group
+    # names its test (§AR-code-coverage-deep-navigation.2).
+    if tested:
+        assert trace is not None and trace.test_project is not None
+        position: int = root_line_index + (2 if sources.resolved else 0)
+        lines[position:position] = [
+            f"Test project: `{trace.test_project.path}`; test files are relative to it.",
             "",
         ]
     # Totals, omitted counts and caveats stay in the JSON report
