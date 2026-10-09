@@ -8,6 +8,11 @@ package org_springframework_ai.spring_ai_autoconfigure_model_tool;
 
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
+
+import io.micrometer.observation.Observation;
+import io.micrometer.observation.ObservationHandler;
+import io.micrometer.observation.ObservationRegistry;
 
 import org.junit.jupiter.api.Test;
 
@@ -29,6 +34,8 @@ import org.springframework.ai.tool.definition.ToolDefinition;
 import org.springframework.ai.tool.execution.ToolExecutionException;
 import org.springframework.ai.tool.execution.ToolExecutionExceptionProcessor;
 import org.springframework.ai.tool.observation.ToolCallingContentObservationFilter;
+import org.springframework.ai.tool.observation.ToolCallingObservationContext;
+import org.springframework.ai.tool.observation.ToolCallingObservationConvention;
 import org.springframework.ai.tool.resolution.ToolCallbackResolver;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.Bean;
@@ -123,6 +130,36 @@ public class Spring_ai_autoconfigure_model_toolTest {
     }
 
     @Test
+    void appliesApplicationObservationConventionToToolCalls() {
+        try (AnnotationConfigApplicationContext context = openContext(Map.of(), ObservationConfiguration.class)) {
+            AssistantMessage assistantMessage = AssistantMessage.builder()
+                    .content("")
+                    .toolCalls(List.of(new AssistantMessage.ToolCall("observed-id", "function", "observed-tool",
+                            "{\"value\":\"three\"}")))
+                    .build();
+            Prompt prompt = new Prompt(new UserMessage("Use the observed tool"),
+                    ToolCallingChatOptions.builder()
+                            .toolContext("requestId", "request-43")
+                            .build());
+
+            ToolExecutionResult result = context.getBean(ToolCallingManager.class)
+                    .executeToolCalls(prompt, new ChatResponse(List.of(new Generation(assistantMessage))));
+
+            RecordingToolCallingObservationHandler handler = context
+                    .getBean(RecordingToolCallingObservationHandler.class);
+            assertThat(result.conversationHistory()).hasSize(3);
+            assertThat(handler.observationContext).isNotNull();
+            assertThat(handler.observationContext.getName()).isEqualTo("test.tool.call");
+            assertThat(handler.observationContext.getToolDefinition().name()).isEqualTo("observed-tool");
+            assertThat(handler.observationContext.getToolCallArguments()).isEqualTo("{\"value\":\"three\"}");
+            assertThat(handler.observationContext.getToolCallResult())
+                    .isEqualTo("observed-tool:{\"value\":\"three\"}:request-43");
+            assertThat(context.getBean(RecordingToolCallingObservationConvention.class).contextualNames)
+                    .hasValue(1);
+        }
+    }
+
+    @Test
     void backsOffWhenTheApplicationProvidesToolCallingManager() {
         ToolCallingManager customManager = new ToolCallingManager() {
             @Override
@@ -184,6 +221,33 @@ public class Spring_ai_autoconfigure_model_toolTest {
     }
 
     @Configuration(proxyBeanMethods = false)
+    public static class ObservationConfiguration {
+
+        @Bean
+        public ToolCallback observedTool() {
+            return new ContextAwareToolCallback("observed-tool");
+        }
+
+        @Bean
+        public RecordingToolCallingObservationHandler observationHandler() {
+            return new RecordingToolCallingObservationHandler();
+        }
+
+        @Bean
+        public ObservationRegistry observationRegistry(RecordingToolCallingObservationHandler handler) {
+            ObservationRegistry registry = ObservationRegistry.create();
+            registry.observationConfig().observationHandler(handler);
+            return registry;
+        }
+
+        @Bean
+        public RecordingToolCallingObservationConvention toolCallingObservationConvention() {
+            return new RecordingToolCallingObservationConvention();
+        }
+
+    }
+
+    @Configuration(proxyBeanMethods = false)
     public static class FailingToolConfiguration {
 
         @Bean
@@ -218,6 +282,45 @@ public class Spring_ai_autoconfigure_model_toolTest {
         @Override
         public String call(String toolInput, ToolContext toolContext) {
             return this.name + ":" + toolInput + ":" + toolContext.getContext().get("requestId");
+        }
+
+    }
+
+    public static final class RecordingToolCallingObservationHandler
+            implements ObservationHandler<ToolCallingObservationContext> {
+
+        private ToolCallingObservationContext observationContext;
+
+        @Override
+        public boolean supportsContext(Observation.Context context) {
+            return context instanceof ToolCallingObservationContext;
+        }
+
+        @Override
+        public void onStop(ToolCallingObservationContext context) {
+            this.observationContext = context;
+        }
+
+    }
+
+    public static final class RecordingToolCallingObservationConvention implements ToolCallingObservationConvention {
+
+        private final AtomicInteger contextualNames = new AtomicInteger();
+
+        @Override
+        public boolean supportsContext(Observation.Context context) {
+            return context instanceof ToolCallingObservationContext;
+        }
+
+        @Override
+        public String getName() {
+            return "test.tool.call";
+        }
+
+        @Override
+        public String getContextualName(ToolCallingObservationContext context) {
+            this.contextualNames.incrementAndGet();
+            return context.getToolDefinition().name();
         }
 
     }
