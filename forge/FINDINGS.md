@@ -3,6 +3,12 @@
 Rendered by Forge from the pre-push branch review of §FS-local-branch-review.
 Newest entry first; every non-approval is recorded, including one a repair later cleared.
 
+## 2026-10-09 — org.springframework.boot:spring-boot-webclient:4.1.0-RC1 (#8432)
+
+**Companion test dependency pinned to the requested library version**
+
+The test build declared org.springframework.boot:spring-boot-http-codec:4.1.0-RC1 directly. This violated the version-agnostic test requirement because the shared test would retain that exact companion version when the tested Spring Boot version advances.
+
 ## 2026-10-02 — com.opencsv:opencsv:5.9 (#9335)
 
 **Native-only assumption bypasses custom locale-provider behavior**
