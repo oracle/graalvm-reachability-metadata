@@ -15,11 +15,13 @@ import org.springframework.boot.test.context.runner.WebApplicationContextRunner;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.boot.webmvc.autoconfigure.WebMvcAutoConfiguration;
 import org.springframework.boot.webmvc.test.autoconfigure.MockMvcAutoConfiguration;
+import org.springframework.boot.webmvc.test.autoconfigure.MockMvcBuilderCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.assertj.MockMvcTester;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -74,6 +76,33 @@ public class Spring_boot_webmvc_testTest {
         });
     }
 
+    @Test
+    void customMockMvcBuilderCustomizerAppliesDefaultRequestValues() {
+        this.contextRunner.withUserConfiguration(MockMvcBuilderConfiguration.class).run((context) -> {
+            MockMvc mockMvc = context.getBean(MockMvc.class);
+
+            mockMvc.perform(get("/customized-greeting"))
+                    .andExpect(status().isOk())
+                    .andExpect(content().string("default-value"));
+        });
+    }
+
+    @Configuration(proxyBeanMethods = false)
+    static class MockMvcBuilderConfiguration {
+
+        @Bean
+        MockMvcBuilderCustomizer defaultRequestValue() {
+            return (builder) -> builder.defaultRequest(get("/customized-greeting")
+                    .header("X-Default-Value", "default-value"));
+        }
+
+        @Bean
+        CustomizerController customizerController() {
+            return new CustomizerController();
+        }
+
+    }
+
     @Configuration(proxyBeanMethods = false)
     static class MvcConfiguration {
 
@@ -101,6 +130,16 @@ public class Spring_boot_webmvc_testTest {
         @GetMapping("/greeting")
         public String greeting(@RequestParam(name = "name", defaultValue = "World") String name) {
             return "Hello, " + name + "!";
+        }
+
+    }
+
+    @RestController
+    static class CustomizerController {
+
+        @GetMapping("/customized-greeting")
+        public String greeting(@RequestHeader("X-Default-Value") String value) {
+            return value;
         }
 
     }
