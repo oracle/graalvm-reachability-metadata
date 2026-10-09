@@ -25,7 +25,7 @@ public class Spring_boot_liquibaseTest {
 
         SpringLiquibase liquibase = new SpringLiquibase();
         liquibase.setDataSource(dataSource);
-        liquibase.setChangeLog("classpath:db/changelog/endpoint-changelog.xml");
+        liquibase.setChangeLog("classpath:db/changelog/endpoint-changelog.sql");
         liquibase.setDatabaseChangeLogTable("DATABASECHANGELOG");
         liquibase.setDatabaseChangeLogLockTable("DATABASECHANGELOGLOCK");
 
@@ -45,7 +45,7 @@ public class Spring_boot_liquibaseTest {
             assertThat(changeSet.getId()).isEqualTo("create-account");
             assertThat(changeSet.getAuthor()).isEqualTo("test");
             assertThat(changeSet.getExecType()).isEqualTo(ExecType.EXECUTED);
-            assertThat(changeSet.getChangeLog()).endsWith("endpoint-changelog.xml");
+            assertThat(changeSet.getChangeLog()).endsWith("endpoint-changelog.sql");
         }
     }
 
