@@ -60,3 +60,17 @@ def _coverage(ref: MethodRef, covered: bool = False) -> JacocoMethodCoverage:
         source_line=1,
         report_paths=("fixture.xml",),
     )
+
+
+def route_lines(markdown: str) -> list[str]:
+    """The prompt's route lines: one per prompted target, under `Uncovered paths`."""
+    routes: list[str] = []
+    inside: bool = False
+    for line in markdown.splitlines():
+        if line == "Uncovered paths:":
+            inside = True
+        elif not line:
+            inside = False
+        elif inside:
+            routes.append(line)
+    return routes

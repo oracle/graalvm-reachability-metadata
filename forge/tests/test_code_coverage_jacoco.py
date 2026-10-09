@@ -20,7 +20,7 @@ from utility_scripts.code_coverage_profile_inputs import TargetState
 from utility_scripts.code_coverage_profile_miss import classify_miss
 from utility_scripts.code_coverage_profile_routes import execution_status
 from utility_scripts.code_coverage_profile_records import NearCallRecord
-from utility_scripts.code_coverage_profile_render import classification_lines
+from utility_scripts.code_coverage_profile_diagnoses import Diagnosis, diagnosis_lines
 
 
 JACOCO_XML = """\
@@ -201,9 +201,9 @@ class JacocoLineCoverageTest(unittest.TestCase):
         self.assertEqual(classification["target"]["line"], 137)
         self.assertEqual(classification["fork"]["line"], 129)
         self.assertEqual((classification["fork"]["mb"], classification["fork"]["cb"]), (2, 2))
-        rendered: str = "\n".join(classification_lines(classification))
-        self.assertIn("CacheInterceptor.java:137` never ran", rendered)
-        self.assertIn("CacheInterceptor.java:129` ran, 2 of 4 branches taken", rendered)
+        rendered: str = "\n".join(diagnosis_lines([Diagnosis("Cache.1.remove()", classification)]))
+        self.assertIn("Branches not taken:\n  `CacheInterceptor.java:129` (2 of 4 taken)", rendered)
+        self.assertIn(": Cache.1.remove() at line 137", rendered)
 
     def test_classifies_no_fork_exception_path(self) -> None:
         classification: dict = self._classification(
@@ -226,9 +226,12 @@ class JacocoLineCoverageTest(unittest.TestCase):
         self.assertEqual(classification["target"]["line"], 40)
         self.assertEqual(classification["nearestCovered"]["line"], 37)
         self.assertIsNone(classification["fork"])
-        rendered: str = "\n".join(classification_lines(classification))
-        self.assertIn("FaultHidingSink.java:37", rendered)
-        self.assertIn("reached only by an exception or external event", rendered)
+        rendered: str = "\n".join(diagnosis_lines([Diagnosis("onException()", classification)]))
+        self.assertIn(
+            "Reached only through an exception:\n"
+            "  `FaultHidingSink.java:40`: onException(), no fork above; nearest covered line 37",
+            rendered,
+        )
 
     def test_covered_call_site_dispatches_elsewhere_before_fork(self) -> None:
         classification: dict = self._classification(
@@ -257,8 +260,13 @@ class JacocoLineCoverageTest(unittest.TestCase):
             if candidate["coverageSuite"]
         ]
         self.assertEqual(len(suite_candidates), 3)
-        rendered: str = "\n".join(classification_lines(classification))
-        self.assertIn("Http2Connection.java:834` RAN", rendered)
+        rendered: str = "\n".join(
+            diagnosis_lines([Diagnosis("PushObserver.1.onData()", classification)])
+        )
+        self.assertIn(
+            "Dispatched elsewhere:\n  `Http2Connection.java:834`: PushObserver.1.onData()",
+            rendered,
+        )
         self.assertIn("different implementation answered", rendered)
         self.assertEqual(rendered.count("[coverage suite]"), 3)
 

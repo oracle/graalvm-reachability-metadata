@@ -33,6 +33,7 @@ from utility_scripts.code_coverage_profile_records import (
     translated_path,
 )
 from utility_scripts.code_coverage_profile_render import write_markdown
+from utility_scripts.code_coverage_profile_trace import SampleTrace
 
 #: A session below this size is not worth an agent session of its own
 #: (§AR-code-coverage-deep-navigation.4).
@@ -140,6 +141,7 @@ def write_prompts(
         iteration: int,
         output_dir: str,
         source_root: str | None = None,
+        trace: SampleTrace | None = None,
 ) -> list[dict]:
     """Render the pass's whole prompt and one prompt per session; return the
     sessions the report records (§AR-code-coverage-deep-navigation.4)."""
@@ -152,6 +154,7 @@ def write_prompts(
         iteration,
         os.path.join(output_dir, f"discovery-report-{iteration}.md"),
         source_root=source_root,
+        trace=trace,
     )
     directory: str = session_directory(output_dir, iteration)
     shutil.rmtree(directory, ignore_errors=True)
@@ -176,6 +179,7 @@ def write_prompts(
             os.path.join(output_dir, entry["prompt"]),
             session={**entry, "count": len(sessions)},
             source_root=source_root,
+            trace=trace,
         )
         entries.append(entry)
     return entries
