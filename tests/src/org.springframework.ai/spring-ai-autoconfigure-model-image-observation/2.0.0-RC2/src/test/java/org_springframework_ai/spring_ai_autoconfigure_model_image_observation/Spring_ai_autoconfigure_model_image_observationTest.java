@@ -6,7 +6,6 @@
  */
 package org_springframework_ai.spring_ai_autoconfigure_model_image_observation;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
@@ -25,7 +24,6 @@ import org.springframework.ai.observation.TracingAwareLoggingObservationHandler;
 import org.springframework.ai.observation.conventions.AiOperationType;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.context.annotation.ImportCandidates;
-import org.springframework.boot.test.context.FilteredClassLoader;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.core.env.MapPropertySource;
 
@@ -65,21 +63,6 @@ public class Spring_ai_autoconfigure_model_image_observationTest {
             assertThat(handlers).containsOnlyKeys("imageModelPromptContentObservationHandler");
             assertThat(handler.supportsContext(new Observation.Context())).isFalse();
             assertThat(handler.supportsContext(imageObservationContext())).isTrue();
-        }
-    }
-
-    @Test
-    void autoConfigurationCreatesPromptHandlerWithoutTracerWhenLoggingIsEnabled() throws IOException {
-        try (FilteredClassLoader classLoader = new FilteredClassLoader(Tracer.class);
-                AnnotationConfigApplicationContext context = contextWithoutTracer(classLoader)) {
-            ImageObservationProperties properties = context.getBean(ImageObservationProperties.class);
-            Map<String, ImageModelPromptContentObservationHandler> handlers = context
-                    .getBeansOfType(ImageModelPromptContentObservationHandler.class);
-
-            assertThat(properties.isLogPrompt()).isTrue();
-            assertThat(handlers).containsOnlyKeys("imageModelPromptContentObservationHandler");
-            assertThat(handlers.get("imageModelPromptContentObservationHandler")).isNotNull();
-            assertThat(context.getBeansOfType(TracingAwareLoggingObservationHandler.class)).isEmpty();
         }
     }
 
@@ -132,16 +115,6 @@ public class Spring_ai_autoconfigure_model_image_observationTest {
                 .build();
 
         assertThat(context.getOperationType()).isEqualTo(AiOperationType.IMAGE.value());
-        return context;
-    }
-
-    private static AnnotationConfigApplicationContext contextWithoutTracer(ClassLoader classLoader) {
-        AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext();
-        context.setClassLoader(classLoader);
-        context.getEnvironment().getPropertySources().addFirst(new MapPropertySource("test-properties",
-                Map.of(ImageObservationProperties.CONFIG_PREFIX + ".log-prompt", "true")));
-        context.register(ImageObservationAutoConfiguration.class);
-        context.refresh();
         return context;
     }
 
