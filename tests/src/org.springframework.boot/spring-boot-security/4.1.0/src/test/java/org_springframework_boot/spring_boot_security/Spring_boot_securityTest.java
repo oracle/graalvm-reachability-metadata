@@ -6,6 +6,7 @@
  */
 package org_springframework_boot.spring_boot_security;
 
+import java.time.Duration;
 import java.util.List;
 
 import jakarta.servlet.DispatcherType;
@@ -13,12 +14,14 @@ import jakarta.servlet.DispatcherType;
 import org.junit.jupiter.api.Test;
 
 import org.springframework.boot.autoconfigure.AutoConfigurations;
+import org.springframework.boot.security.autoconfigure.ReactiveUserDetailsServiceAutoConfiguration;
 import org.springframework.boot.security.autoconfigure.SecurityAutoConfiguration;
 import org.springframework.boot.security.autoconfigure.SecurityProperties;
 import org.springframework.boot.security.autoconfigure.UserDetailsServiceAutoConfiguration;
 import org.springframework.boot.security.autoconfigure.web.servlet.SecurityFilterAutoConfiguration;
 import org.springframework.boot.security.autoconfigure.web.servlet.ServletWebSecurityAutoConfiguration;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
+import org.springframework.boot.test.context.runner.ReactiveWebApplicationContextRunner;
 import org.springframework.boot.test.context.runner.WebApplicationContextRunner;
 import org.springframework.boot.web.servlet.DelegatingFilterProxyRegistrationBean;
 import org.springframework.context.ApplicationEventPublisher;
@@ -28,6 +31,8 @@ import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.security.authentication.AuthenticationEventPublisher;
 import org.springframework.security.authentication.DefaultAuthenticationEventPublisher;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.MapReactiveUserDetailsService;
+import org.springframework.security.core.userdetails.ReactiveUserDetailsService;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -47,6 +52,10 @@ public class Spring_boot_securityTest {
     private final WebApplicationContextRunner userDetailsContextRunner = new WebApplicationContextRunner()
             .withConfiguration(AutoConfigurations.of(SecurityAutoConfiguration.class,
                     UserDetailsServiceAutoConfiguration.class));
+
+    private final ReactiveWebApplicationContextRunner reactiveUserDetailsContextRunner =
+            new ReactiveWebApplicationContextRunner()
+                    .withConfiguration(AutoConfigurations.of(ReactiveUserDetailsServiceAutoConfiguration.class));
 
     private final WebApplicationContextRunner servletSecurityContextRunner = new WebApplicationContextRunner()
             .withConfiguration(AutoConfigurations.of(ServletWebSecurityAutoConfiguration.class,
@@ -137,6 +146,25 @@ public class Spring_boot_securityTest {
                     assertThat(context).hasSingleBean(InMemoryUserDetailsManager.class);
 
                     UserDetails user = context.getBean(UserDetailsService.class).loadUserByUsername("alice");
+                    assertThat(user.getUsername()).isEqualTo("alice");
+                    assertThat(user.getPassword()).isEqualTo("{noop}secret");
+                    assertThat(user.getAuthorities()).extracting(GrantedAuthority::getAuthority)
+                            .containsExactlyInAnyOrder("ROLE_USER", "ROLE_ADMIN");
+                });
+    }
+
+    @Test
+    void reactiveUserDetailsServiceAutoConfigurationCreatesConfiguredInMemoryUser() {
+        this.reactiveUserDetailsContextRunner
+                .withPropertyValues("spring.security.user.name=alice", "spring.security.user.password={noop}secret",
+                        "spring.security.user.roles=USER,ADMIN")
+                .run((context) -> {
+                    assertThat(context).hasSingleBean(ReactiveUserDetailsService.class);
+                    assertThat(context).hasSingleBean(MapReactiveUserDetailsService.class);
+
+                    UserDetails user = context.getBean(ReactiveUserDetailsService.class)
+                            .findByUsername("alice").block(Duration.ofSeconds(10));
+                    assertThat(user).isNotNull();
                     assertThat(user.getUsername()).isEqualTo("alice");
                     assertThat(user.getPassword()).isEqualTo("{noop}secret");
                     assertThat(user.getAuthorities()).extracting(GrantedAuthority::getAuthority)
