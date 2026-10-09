@@ -12,12 +12,14 @@ import org.junit.jupiter.api.Test;
 
 import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.test.context.runner.WebApplicationContextRunner;
+import org.springframework.boot.web.servlet.FilterRegistration;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.boot.webmvc.autoconfigure.WebMvcAutoConfiguration;
 import org.springframework.boot.webmvc.test.autoconfigure.MockMvcAutoConfiguration;
 import org.springframework.boot.webmvc.test.autoconfigure.MockMvcBuilderCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.assertj.MockMvcTester;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -85,6 +87,32 @@ public class Spring_boot_webmvc_testTest {
                     .andExpect(status().isOk())
                     .andExpect(content().string("default-value"));
         });
+    }
+
+    @Test
+    void autoConfigurationRegistersAnnotatedFilterBeans() {
+        this.contextRunner.withUserConfiguration(AnnotatedFilterConfiguration.class).run((context) -> {
+            MockMvc mockMvc = context.getBean(MockMvc.class);
+
+            mockMvc.perform(get("/greeting"))
+                    .andExpect(status().isOk())
+                    .andExpect(header().string("X-Annotated-Filter", "applied"));
+        });
+    }
+
+    @Configuration(proxyBeanMethods = false)
+    static class AnnotatedFilterConfiguration {
+
+        @Bean
+        @FilterRegistration(urlPatterns = "/*")
+        @Order(1)
+        Filter annotatedResponseHeaderFilter() {
+            return (request, response, chain) -> {
+                ((HttpServletResponse) response).setHeader("X-Annotated-Filter", "applied");
+                chain.doFilter(request, response);
+            };
+        }
+
     }
 
     @Configuration(proxyBeanMethods = false)
