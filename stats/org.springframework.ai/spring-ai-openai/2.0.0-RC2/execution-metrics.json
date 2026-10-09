@@ -1,0 +1,83 @@
+{
+  "add_new_library_support:2026-10-09": {
+    "timestamp": "2026-10-09T07:21:16.514581Z",
+    "library": "org.springframework.ai:spring-ai-openai:2.0.0-RC2",
+    "starting_commit": "a0df8f6703e5cb03ccbbd1fe8de4000cd487a9da",
+    "ending_commit": "8a166285dfd7f841233267274f5088ac9ad36bb9",
+    "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-luna",
+    "agent": "pi",
+    "model": "gpt-5.6-luna",
+    "status": "success",
+    "stats": {
+      "version": "2.0.0-RC2",
+      "dynamicAccess": {
+        "breakdown": {},
+        "coverageRatio": 1.0,
+        "coveredCalls": 0,
+        "totalCalls": 0
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 1213,
+          "missed": 9781,
+          "ratio": 0.110333,
+          "total": 10994
+        },
+        "line": {
+          "covered": 240,
+          "missed": 2220,
+          "ratio": 0.097561,
+          "total": 2460
+        },
+        "method": {
+          "covered": 86,
+          "missed": 446,
+          "ratio": 0.161654,
+          "total": 532
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "no_action",
+      "issue_number": 8431,
+      "issue_label": "library-new-request",
+      "library": "org.springframework.ai:spring-ai-openai:2.0.0-RC2",
+      "summary": "Artifact and all transitive deps (openai-java-core, okhttp, micrometer, azure-identity, spring-context-support) resolve directly from Maven Central — no custom repo, extra dependency, Docker image, or env var needed. Sibling module spring-ai-autoconfigure-model-openai already depends on spring-ai-openai as testImplementation and its (passing) tests never make a real OpenAI call; they only exercise property binding and the Options/builder classes that live in org.springframework.ai.openai. The standard generated scaffold (testImplementation on spring-ai-openai + assertj-core) matches every sibling spring-ai test project and is sufficient.",
+      "deterministic_setup": [],
+      "agent_guidance": "Mirror the spring-ai-autoconfigure-model-openai test's approach: exercise OpenAiChatOptions/OpenAiEmbeddingOptions/OpenAiImageOptions/OpenAiAudioSpeechOptions/OpenAiAudioTranscriptionOptions/OpenAiModerationOptions builders and Model class construction/configuration directly. Pass a placeholder API key string (e.g. \"test-key\") when constructing models/clients — the library takes it as a plain argument, not from an env var — and avoid invoking methods that perform real OpenAI HTTP calls (call/stream/image/audio/moderation requests), since no API credentials or network egress exist in this test environment.",
+      "risks": [
+        "Restricting coverage to Options/builder construction (no live calls) likely leaves the deeper request/response record classes and the underlying openai-java-core SDK call path under-exercised; this repo has no WireMock/MockWebServer/Testcontainers pattern for OpenAI-like API clients to close that gap, so it's an accepted limitation shared with the sibling autoconfigure module rather than something to introduce here."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#8431 Support for org.springframework.ai:spring-ai-openai:2.0.0-RC2; label=library-new-request; body_chars=0"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "sonnet",
+      "input_tokens_used": 30,
+      "output_tokens_used": 17160
+    },
+    "metrics": {
+      "input_tokens_used": 384479,
+      "cached_input_tokens_used": 6407680,
+      "output_tokens_used": 29220,
+      "iterations": 4,
+      "cost_usd": 1.2006,
+      "generated_loc": 161,
+      "tested_library_loc": 240,
+      "metadata_entries": 25,
+      "test_only_metadata_entries": 5,
+      "code_coverage_percent": 9.76
+    },
+    "artifacts": {
+      "metadata_file": "metadata/org.springframework.ai/spring-ai-openai/2.0.0-RC2/reachability-metadata.json"
+    }
+  }
+}
