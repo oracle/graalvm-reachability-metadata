@@ -1,0 +1,144 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :tckTest
+====================
+Testing library: com.openai:openai-java-core:4.38.0
+Command: `/home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8426-267b4c76/gradlew nativeTest`
+Executing test...
+-------
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+> Task :checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :compileKotlin NO-SOURCE
+> Task :compileJava NO-SOURCE
+> Task :processResources NO-SOURCE
+> Task :classes UP-TO-DATE
+> Task :jar UP-TO-DATE
+> Task :tck-test-support:compileJava UP-TO-DATE
+> Task :tck-test-support:processResources UP-TO-DATE
+> Task :checkTestTimeoutAnnotations
+> Task :tck-test-support:classes UP-TO-DATE
+> Task :processTestResources NO-SOURCE
+> Task :tck-test-support:jar UP-TO-DATE
+
+> Task :compileTestKotlin
+w: file:///home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8426-267b4c76/tests/src/com.openai/openai-java-core/4.38.0/src/test/kotlin/com_openai/openai_java_core/Openai_java_coreTest.kt:190:52 The corresponding parameter in the supertype 'HttpClient' is named 'requestOptions'. This may cause problems when calling this function with named arguments.
+w: file:///home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8426-267b4c76/tests/src/com.openai/openai-java-core/4.38.0/src/test/kotlin/com_openai/openai_java_core/Openai_java_coreTest.kt:204:13 The corresponding parameter in the supertype 'HttpClient' is named 'requestOptions'. This may cause problems when calling this function with named arguments.
+
+> Task :compileTestJava NO-SOURCE
+> Task :testClasses UP-TO-DATE
+
+> Task :test
+
+Openai_java_coreTest > serializesEmbeddingRequestsAndParsesEmbeddingResponses() FAILED
+    com.fasterxml.jackson.module.kotlin.MissingKotlinParameterException: Instantiation of [simple type, class com.openai.models.embeddings.EmbeddingCreateParams] value failed for JSON property body due to missing (therefore NULL) value for creator parameter body which is a non-nullable type
+     at [Source: REDACTED (`StreamReadFeature.INCLUDE_SOURCE_IN_LOCATION` disabled); line: 1, column: 2] (through reference chain: com.openai.models.embeddings.EmbeddingCreateParams["body"])
+        at app//com.fasterxml.jackson.module.kotlin.KotlinValueInstantiator.createFromObjectWith(KotlinValueInstantiator.kt:97)
+        at app//com.fasterxml.jackson.databind.deser.impl.PropertyBasedCreator.build(PropertyBasedCreator.java:214)
+        at app//com.fasterxml.jackson.databind.deser.BeanDeserializer._deserializeUsingPropertyBased(BeanDeserializer.java:541)
+        at app//com.fasterxml.jackson.databind.deser.BeanDeserializerBase.deserializeFromObjectUsingNonDefault(BeanDeserializerBase.java:1497)
+        at app//com.fasterxml.jackson.databind.deser.BeanDeserializer.deserializeFromObject(BeanDeserializer.java:348)
+        at app//com.fasterxml.jackson.databind.deser.BeanDeserializer.deserialize(BeanDeserializer.java:185)
+        at app//com.fasterxml.jackson.databind.deser.DefaultDeserializationContext.readRootValue(DefaultDeserializationContext.java:342)
+        at app//com.fasterxml.jackson.databind.ObjectMapper._readMapAndClose(ObjectMapper.java:4917)
+        at app//com.fasterxml.jackson.databind.ObjectMapper.readValue(ObjectMapper.java:3860)
+        at app//com.fasterxml.jackson.databind.ObjectMapper.readValue(ObjectMapper.java:3828)
+        at app//com_openai.openai_java_core.Openai_java_coreTest.serializesEmbeddingRequestsAndParsesEmbeddingResponses(Openai_java_coreTest.kt:132)
+
+Openai_java_coreTest > roundTripsResponsesRequestUnionsAndAdditionalParameters() FAILED
+    com.fasterxml.jackson.module.kotlin.MissingKotlinParameterException: Instantiation of [simple type, class com.openai.models.responses.ResponseCreateParams] value failed for JSON property body due to missing (therefore NULL) value for creator parameter body which is a non-nullable type
+     at [Source: REDACTED (`StreamReadFeature.INCLUDE_SOURCE_IN_LOCATION` disabled); line: 1, column: 2] (through reference chain: com.openai.models.responses.ResponseCreateParams["body"])
+        at app//com.fasterxml.jackson.module.kotlin.KotlinValueInstantiator.createFromObjectWith(KotlinValueInstantiator.kt:97)
+        at app//com.fasterxml.jackson.databind.deser.impl.PropertyBasedCreator.build(PropertyBasedCreator.java:214)
+        at app//com.fasterxml.jackson.databind.deser.BeanDeserializer._deserializeUsingPropertyBased(BeanDeserializer.java:541)
+        at app//com.fasterxml.jackson.databind.deser.BeanDeserializerBase.deserializeFromObjectUsingNonDefault(BeanDeserializerBase.java:1497)
+        at app//com.fasterxml.jackson.databind.deser.BeanDeserializer.deserializeFromObject(BeanDeserializer.java:348)
+        at app//com.fasterxml.jackson.databind.deser.BeanDeserializer.deserialize(BeanDeserializer.java:185)
+        at app//com.fasterxml.jackson.databind.deser.DefaultDeserializationContext.readRootValue(DefaultDeserializationContext.java:342)
+        at app//com.fasterxml.jackson.databind.ObjectMapper._readMapAndClose(ObjectMapper.java:4917)
+        at app//com.fasterxml.jackson.databind.ObjectMapper.readValue(ObjectMapper.java:3860)
+        at app//com.fasterxml.jackson.databind.ObjectMapper.readValue(ObjectMapper.java:3828)
+        at app//com_openai.openai_java_core.Openai_java_coreTest.roundTripsResponsesRequestUnionsAndAdditionalParameters(Openai_java_coreTest.kt:166)
+
+Openai_java_coreTest > serializesChatRequestsAndParsesSynchronousAndAsynchronousResponses() FAILED
+    com.fasterxml.jackson.module.kotlin.MissingKotlinParameterException: Instantiation of [simple type, class com.openai.models.chat.completions.ChatCompletionCreateParams] value failed for JSON property body due to missing (therefore NULL) value for creator parameter body which is a non-nullable type
+     at [Source: REDACTED (`StreamReadFeature.INCLUDE_SOURCE_IN_LOCATION` disabled); line: 1, column: 2] (through reference chain: com.openai.models.chat.completions.ChatCompletionCreateParams["body"])
+        at app//com.fasterxml.jackson.module.kotlin.KotlinValueInstantiator.createFromObjectWith(KotlinValueInstantiator.kt:97)
+        at app//com.fasterxml.jackson.databind.deser.impl.PropertyBasedCreator.build(PropertyBasedCreator.java:214)
+        at app//com.fasterxml.jackson.databind.deser.BeanDeserializer._deserializeUsingPropertyBased(BeanDeserializer.java:541)
+        at app//com.fasterxml.jackson.databind.deser.BeanDeserializerBase.deserializeFromObjectUsingNonDefault(BeanDeserializerBase.java:1497)
+        at app//com.fasterxml.jackson.databind.deser.BeanDeserializer.deserializeFromObject(BeanDeserializer.java:348)
+        at app//com.fasterxml.jackson.databind.deser.BeanDeserializer.deserialize(BeanDeserializer.java:185)
+        at app//com.fasterxml.jackson.databind.deser.DefaultDeserializationContext.readRootValue(DefaultDeserializationContext.java:342)
+        at app//com.fasterxml.jackson.databind.ObjectMapper._readMapAndClose(ObjectMapper.java:4917)
+        at app//com.fasterxml.jackson.databind.ObjectMapper.readValue(ObjectMapper.java:3860)
+        at app//com.fasterxml.jackson.databind.ObjectMapper.readValue(ObjectMapper.java:3828)
+        at app//com_openai.openai_java_core.Openai_java_coreTest.serializesChatRequestsAndParsesSynchronousAndAsynchronousResponses(Openai_java_coreTest.kt:72)
+
+3 tests completed, 3 failed
+
+> Task :test FAILED
+
+[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8426-267b4c76/tests/src/com.openai/openai-java-core/4.38.0/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':test'.
+> There were failing tests. See the report at: file:///home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8426-267b4c76/tests/src/com.openai/openai-java-core/4.38.0/build/reports/tests/test/index.html
+
+* Try:
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+15 actionable tasks: 3 executed, 12 up-to-date
+
+BUILD FAILED in 8s
+
+> Task :tckTest FAILED
+
+[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/8426-267b4c76/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':tckTest'.
+> Test for com.openai:openai-java-core:4.38.0 failed with exit code 1.
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD FAILED in 10s
+9 actionable tasks: 1 executed, 8 up-to-date

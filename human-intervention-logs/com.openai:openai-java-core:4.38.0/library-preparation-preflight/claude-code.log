@@ -1,0 +1,32 @@
+Research done. Here's the decision.
+
+## Findings
+
+`com.openai:openai-java-core:4.38.0` is the **transport-less core** of the official OpenAI Java SDK. Confirmed via the POM and SDK source:
+
+- **Dependencies are all local/serialization-only**: Jackson (core/databind/annotations/jdk8/jsr310/module-kotlin), `kotlin-stdlib-jdk8`, `swagger-annotations`, `error_prone_annotations`, plus `victools` JSON-schema generators. No HTTP client library anywhere in the tree.
+- `com.openai.core.http.HttpClient` is just an **interface** in this jar — no default implementation ships here. The sibling artifact `openai-java-client-okhttp` (not a dependency of core) is what the SDK's own docs point to: *"Use the one published in `openai-java-client-okhttp` or implement your own."*
+- `ClientOptions.Builder.build()` **requires** `.httpClient(...)` to be set (`checkRequired`) — there's no way to construct a working client from this jar alone without supplying one. `apiKey` is not strictly required by the builder itself.
+- `jackson-module-kotlin`'s own POM pulls `kotlin-reflect` as a `compile`-scope dependency, which Gradle will resolve transitively — no extra coordinate needed for that.
+
+This repo's own convention for exactly this shape of module (an SDK's transport-less SPI layer) already exists: `software.amazon.awssdk:http-client-spi` is tested with **zero network, zero Docker, zero extra dependencies** — by hand-implementing the SPI interfaces with small in-test "recording" fakes and exercising request/response builders directly. The repo's test spec also explicitly bans live network calls except through pre-pulled, network-disabled Docker images (`docs/functional-spec/tests.md:58-59`), which rules out hitting the real OpenAI API outright.
+
+★ Insight ─────────────────────────────────────
+This is a case where the risk isn't "missing setup" but **wrong setup**: a naive test generator might assume an SDK-shaped artifact needs a live API key or the sibling `-client-okhttp` module, and either call would violate this repo's network-isolation rule and fail. The fix is purely architectural knowledge (implement the interface yourself), not a pinned dependency or container — exactly mirroring how `aws-core`/`http-client-spi` tests work here.
+─────────────────────────────────────────────────
+
+## Decision
+
+```json
+{
+  "action": "advisory_preparation",
+  "summary": "openai-java-core ships only models, builders, and HTTP interfaces — no transport implementation. httpClient() is a required ClientOptions field with no default in this jar; the real implementation lives in the separate openai-java-client-okhttp artifact, which must NOT be pulled in to make live calls since this repo's tests may not reach the real network.",
+  "deterministic_setup": [],
+  "agent_guidance": "Do not add com.openai:openai-java-client-okhttp and do not attempt to call api.openai.com. ClientOptions.Builder.build() requires httpClient(); supply a small hand-written test implementation of com.openai.core.http.HttpClient returning canned HttpResponse objects (mirroring how tests/src/software.amazon.awssdk/http-client-spi fakes SdkAsyncHttpResponseHandler/SdkHttpContentPublisher in this repo) so the real request-building and Jackson response-parsing pipeline runs end-to-end without any socket. Pass a placeholder key via ClientOptions.builder().apiKey(\"test-key\") directly in code rather than relying on the OPENAI_API_KEY or OPENAI_BASE_URL environment variables, since no live endpoint is available. Most reachability-relevant surface is the Jackson-driven request/response model builders (ChatCompletionCreateParams, etc.) — exercising those via direct serialization round-trips, in addition to the fake-HttpClient path, is the main source of meaningful coverage.",
+  "risks": [
+    "A test generator unfamiliar with the core/transport split may try to construct OpenAIOkHttpClient or call fromEnv(), which doesn't exist in this jar and isn't configured here — leading to a compile failure or an attempted live network call.",
+    "jackson-module-kotlin resolves kotlin-reflect transitively for deserializing Kotlin data classes; kotlin-reflect has known friction with GraalVM native-image reflection metadata, which may need extra reachability-metadata entries discovered only once nativeTestCompile/test actually runs.",
+    "Local Gradle and Native Image verification remain authoritative — this assessment is based on SDK architecture research, not an actual test run."
+  ]
+}
+```

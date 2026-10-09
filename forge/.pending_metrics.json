@@ -1,0 +1,53 @@
+{
+  "timestamp": "2026-10-09T08:32:14.060872Z",
+  "library": "com.openai:openai-java-core:4.38.0",
+  "starting_commit": "0c0a30605f1d8548817c55f99e2c1a02a9515c54",
+  "ending_commit": "37ce9b9c0280e5c31919adfb401671507867136a",
+  "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-luna",
+  "agent": "pi",
+  "model": "gpt-5.6-luna",
+  "status": "failure",
+  "library_preparation_preflight": {
+    "status": "completed",
+    "action": "advisory_preparation",
+    "issue_number": 8426,
+    "issue_label": "library-new-request",
+    "library": "com.openai:openai-java-core:4.38.0",
+    "summary": "openai-java-core ships only models, builders, and HTTP interfaces — no transport implementation. httpClient() is a required ClientOptions field with no default in this jar; the real implementation lives in the separate openai-java-client-okhttp artifact, which must NOT be pulled in to make live calls since this repo's tests may not reach the real network.",
+    "deterministic_setup": [],
+    "agent_guidance": "Do not add com.openai:openai-java-client-okhttp and do not attempt to call api.openai.com. ClientOptions.Builder.build() requires httpClient(); supply a small hand-written test implementation of com.openai.core.http.HttpClient returning canned HttpResponse objects (mirroring how tests/src/software.amazon.awssdk/http-client-spi fakes SdkAsyncHttpResponseHandler/SdkHttpContentPublisher in this repo) so the real request-building and Jackson response-parsing pipeline runs end-to-end without any socket. Pass a placeholder key via ClientOptions.builder().apiKey(\"test-key\") directly in code rather than relying on the OPENAI_API_KEY or OPENAI_BASE_URL environment variables, since no live endpoint is available. Most reachability-relevant surface is the Jackson-driven request/response model builders (ChatCompletionCreateParams, etc.) — exercising those via direct serialization round-trips, in addition to the fake-HttpClient path, is the main source of meaningful coverage.",
+    "risks": [
+      "A test generator unfamiliar with the core/transport split may try to construct OpenAIOkHttpClient or call fromEnv(), which doesn't exist in this jar and isn't configured here — leading to a compile failure or an attempted live network call.",
+      "jackson-module-kotlin resolves kotlin-reflect transitively for deserializing Kotlin data classes; kotlin-reflect has known friction with GraalVM native-image reflection metadata, which may need extra reachability-metadata entries discovered only once nativeTestCompile/test actually runs.",
+      "Local Gradle and Native Image verification remain authoritative — this assessment is based on SDK architecture research, not an actual test run."
+    ],
+    "applied_setup": [],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#8426 Support for com.openai:openai-java-core:4.38.0; label=library-new-request; body_chars=0"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "0 existing test file path(s) included"
+      }
+    ],
+    "model": "sonnet",
+    "input_tokens_used": 32,
+    "output_tokens_used": 24043
+  },
+  "metrics": {
+    "input_tokens_used": 400127,
+    "cached_input_tokens_used": 8718848,
+    "output_tokens_used": 35391,
+    "iterations": 6,
+    "cost_usd": 1.4843,
+    "generated_loc": 0,
+    "tested_library_loc": 0,
+    "metadata_entries": 0,
+    "code_coverage_percent": 0.0
+  },
+  "artifacts": {
+    "metadata_file": "None"
+  }
+}
