@@ -1,0 +1,16 @@
+## Human intervention needed
+
+The automated job failed for `com.openai:openai-java-core:4.38.0`. Preserved work is available at https://github.com/oracle/graalvm-reachability-metadata/tree/ai%2Fkimeta%2Fhuman-intervention%2Fissue-8426-library-new-request-com.openai-openai-java-core-4.38.0-5f4c0c58.
+
+The most likely failing stage is dynamic-access coverage/stat generation during finalization, rather than test generation itself. The generated suite reached five tests, and both final Gradle runs completed successfully with all five passing in JVM and native-image modes. Metadata validation, Checkstyle, and Spotless also passed. However, `generateDynamicAccessCoverageReport` repeatedly failed with `java.lang.OutOfMemoryError: Java heap space`, and final `generateLibraryStats` failed with `Java heap space` after producing the dynamic-access report. The generated JaCoCo XML is approximately 64 MB, which likely exhausts the reporting task’s heap. This explains why dynamic-access coverage is unavailable and why the failure metrics contain zero generated LOC/metadata entries and no metadata artifact despite preserved generated files.
+
+Inspect:
+- `logs/com.openai:openai-java-core:4.38.0/finalization/generateLibraryStats-2026-10-09T08-27-21-977954Z.log`
+- `logs/com.openai:openai-java-core:4.38.0/gradle/generateDynamicAccessCoverageReport-2026-10-09T07-43-43-107649Z.log`
+- `logs/com.openai:openai-java-core:4.38.0/gradle-test/gradle-test-2026-10-09T08-22-27-336247Z.log`
+- `logs/com.openai:openai-java-core:4.38.0/finalization/checkMetadataFiles-2026-10-09T08-24-49-267892Z.log`
+
+Manual next steps:
+1. Check out the preserved branch and rerun `generateDynamicAccessCoverageReport` and `generateLibraryStats` with a larger Gradle heap; profile the report processing if it still fails.
+2. Review the resulting dynamic-access coverage and generated metadata, ensuring the new-library coverage gate is met.
+3. Rerun the coordinate-scoped metadata, style, JVM, and native-image gates before publishing the work.
