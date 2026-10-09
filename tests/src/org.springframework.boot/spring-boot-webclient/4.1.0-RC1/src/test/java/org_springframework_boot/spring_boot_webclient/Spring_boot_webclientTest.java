@@ -154,6 +154,37 @@ public class Spring_boot_webclientTest {
     }
 
     @Test
+    void reactiveHttpServicePropertiesApplyConfiguredDefaultHeader() throws IOException {
+        AtomicReference<String> receivedHeader = new AtomicReference<>();
+        try (TestHttpServer server = TestHttpServer.start(exchange -> {
+            receivedHeader.set(exchange.getRequestHeaders().getFirst("X-Request-Mode"));
+            send(exchange, 200, "ok");
+        }); AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext()) {
+            context.getEnvironment().getPropertySources().addFirst(new MapPropertySource("test",
+                    Map.of("spring.http.serviceclient.orders.base-url", server.url("/headers"),
+                            "spring.http.serviceclient.orders.default-header.X-Request-Mode[0]", "configured")));
+            context.registerBean(HttpServiceProxyRegistry.class, EmptyHttpServiceProxyRegistry::new);
+            context.registerBean(SslBundles.class, TestSslBundles::new);
+            context.registerBean(ClientHttpConnector.class,
+                    () -> ClientHttpConnectorBuilder.jdk().build(HttpClientSettings.defaults()
+                            .withTimeouts(REQUEST_TIMEOUT, REQUEST_TIMEOUT)));
+            context.register(HttpServiceClientPropertiesAutoConfiguration.class,
+                    WebClientAutoConfiguration.class, ReactiveHttpServiceClientAutoConfiguration.class);
+            context.refresh();
+
+            List<WebClientHttpServiceGroupConfigurer> configurers = new ArrayList<>(
+                    context.getBeansOfType(WebClientHttpServiceGroupConfigurer.class).values());
+            RecordingGroups groups = new RecordingGroups();
+            configurers.forEach((configurer) -> configurer.configureGroups(groups));
+
+            String response = groups.builder.build().get().retrieve().bodyToMono(String.class).block(REQUEST_TIMEOUT);
+
+            assertThat(response).isEqualTo("ok");
+            assertThat(receivedHeader).hasValue("configured");
+        }
+    }
+
+    @Test
     void reactiveHttpServicePropertiesInsertConfiguredApiVersionHeader() throws IOException {
         AtomicReference<String> receivedApiVersion = new AtomicReference<>();
         try (TestHttpServer server = TestHttpServer.start(exchange -> {
