@@ -105,6 +105,26 @@ public class Spring_ai_autoconfigure_retryTest {
     }
 
     @Test
+    void retryTemplateRetriesResourceAccessFailures() throws RetryException {
+        try (AnnotationConfigApplicationContext context = contextWithProperties(Map.of(
+                "spring.ai.retry.max-attempts", "2",
+                "spring.ai.retry.backoff.initial-interval", "0ms"))) {
+            RetryTemplate retryTemplate = context.getBean(RetryTemplate.class);
+            AtomicInteger attempts = new AtomicInteger();
+
+            String result = retryTemplate.execute(() -> {
+                if (attempts.getAndIncrement() == 0) {
+                    throw new ResourceAccessException("temporary connection failure");
+                }
+                return "success";
+            });
+
+            assertThat(result).isEqualTo("success");
+            assertThat(attempts).hasValue(2);
+        }
+    }
+
+    @Test
     void retryTemplateStopsForNonTransientFailures() {
         try (AnnotationConfigApplicationContext context = contextWithProperties(Map.of(
                 "spring.ai.retry.backoff.initial-interval", "0ms"))) {
