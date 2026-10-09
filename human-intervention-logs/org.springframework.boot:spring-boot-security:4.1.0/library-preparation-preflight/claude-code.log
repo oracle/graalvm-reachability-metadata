@@ -1,0 +1,25 @@
+Based on my research, I'm confident in a decision. Here's the reasoning:
+
+**What `spring-boot-security:4.1.0` actually is:** it's one of Spring Boot 4.x's new split autoconfigure modules (the "fat starter → thin starter + dedicated module" restructuring). Its POM declares direct compile dependencies on `spring-boot`, `spring-security-config`, and `spring-security-web` (both 7.1.0). It contains `SecurityAutoConfiguration`, `UserDetailsServiceAutoConfiguration`, `SecurityProperties`, plus `.web` and `.rsocket` sub-packages — this is the module that gives you the familiar "default user + generated password + everything requires auth" behavior.
+
+**Why no extra setup is needed:**
+- No external service (DB, broker, etc.) is involved — it's pure in-JVM Spring context configuration — so no Docker image applies.
+- No environment variable or system property is required to activate the default behavior; overrides like `spring.security.user.name` are ordinary `application.properties` test config, not external environment setup.
+- Official Spring Boot docs show the standard test pattern is just `@SpringBootTest` + `@AutoConfigureMockMvc` + MockMvc assertions, or plain `ApplicationContextRunner` bean-presence tests — nothing exotic.
+- I checked sibling Spring Boot 4.x split modules already in this repo (`spring-boot-web-server`, `spring-boot-servlet`, `spring-boot-health`, `spring-boot-jackson2`, `spring-boot-security-oauth2-resource-server`). None needed Docker or env vars; each just added ordinary `testImplementation` lines (`jakarta.servlet-api`, `spring-test`, `spring-boot-autoconfigure`, `spring-boot-test`, `assertj-core`) directly in their `build.gradle` as part of normal test generation — proving the generation pipeline already handles this class of dependency-discovery on its own, without needing it pre-pinned as deterministic setup.
+
+`★ Insight ─────────────────────────────────────`
+Spring Boot 4.0 broke up the old monolithic `spring-boot-autoconfigure` + `spring-boot-starter-security` into focused modules like this one. The giveaway that a "new library" issue is actually one of these split modules (rather than a truly new third-party library) is the `org.springframework.boot` group ID paired with a name that drops "starter" — e.g. `spring-boot-security` vs `spring-boot-starter-security`. The starter artifact itself usually ends up as a `not-for-native-image` shell (see the `spring-boot-starter-security` index.json I found: "contains only META-INF files"), while the real classes — and the real reachability-metadata work — live in the non-starter module.
+`─────────────────────────────────────────────────`
+
+Decision:
+
+```json
+{
+  "action": "no_action",
+  "summary": "Pure in-JVM Spring Security autoconfiguration module (SecurityAutoConfiguration, UserDetailsServiceAutoConfiguration); no external service, env var, or system property is needed. Required extra test dependencies (jakarta.servlet-api, spring-test, spring-boot-test/-autoconfigure, assertj-core) match the standard pattern already used unassisted for sibling Spring Boot 4.x split modules (spring-boot-web-server, spring-boot-servlet, spring-boot-health) in this repo, so the normal generated scaffold is sufficient.",
+  "deterministic_setup": [],
+  "agent_guidance": "",
+  "risks": []
+}
+```
