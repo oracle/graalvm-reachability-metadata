@@ -106,6 +106,31 @@ public class Spring_ai_autoconfigure_model_toolTest {
     }
 
     @Test
+    void resolvesCallbacksFromIndividualProviderBeansWhenExecutingToolCalls() {
+        try (AnnotationConfigApplicationContext context = openContext(Map.of(), DirectProviderConfiguration.class)) {
+            AssistantMessage assistantMessage = AssistantMessage.builder()
+                    .content("")
+                    .toolCalls(List.of(new AssistantMessage.ToolCall("standalone-provider-id", "function",
+                            "standalone-provider-tool", "{\"value\":\"three\"}")))
+                    .build();
+            Prompt prompt = new Prompt(new UserMessage("Use the standalone provider tool"),
+                    ToolCallingChatOptions.builder()
+                            .toolContext("requestId", "request-44")
+                            .build());
+
+            ToolExecutionResult result = context.getBean(ToolCallingManager.class)
+                    .executeToolCalls(prompt, new ChatResponse(List.of(new Generation(assistantMessage))));
+
+            ToolResponseMessage toolResponses = (ToolResponseMessage) result.conversationHistory().get(2);
+            assertThat(toolResponses.getResponses()).singleElement().satisfies(response -> {
+                assertThat(response.name()).isEqualTo("standalone-provider-tool");
+                assertThat(response.responseData())
+                        .isEqualTo("standalone-provider-tool:{\"value\":\"three\"}:request-44");
+            });
+        }
+    }
+
+    @Test
     void convertsToolErrorsToToolResponsesByDefault() {
         try (AnnotationConfigApplicationContext context = openContext(Map.of(), FailingToolConfiguration.class)) {
             ToolExecutionResult result = executeFailingTool(context.getBean(ToolCallingManager.class));
@@ -216,6 +241,16 @@ public class Spring_ai_autoconfigure_model_toolTest {
         @Bean
         public List<ToolCallbackProvider> callbackProviders() {
             return List.of(ToolCallbackProvider.from(new ContextAwareToolCallback("provider-tool")));
+        }
+
+    }
+
+    @Configuration(proxyBeanMethods = false)
+    public static class DirectProviderConfiguration {
+
+        @Bean
+        public ToolCallbackProvider standaloneCallbackProvider() {
+            return ToolCallbackProvider.from(new ContextAwareToolCallback("standalone-provider-tool"));
         }
 
     }
