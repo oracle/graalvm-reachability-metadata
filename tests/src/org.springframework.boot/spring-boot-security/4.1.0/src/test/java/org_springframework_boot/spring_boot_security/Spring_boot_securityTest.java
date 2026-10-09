@@ -18,6 +18,8 @@ import org.springframework.boot.security.autoconfigure.ReactiveUserDetailsServic
 import org.springframework.boot.security.autoconfigure.SecurityAutoConfiguration;
 import org.springframework.boot.security.autoconfigure.SecurityProperties;
 import org.springframework.boot.security.autoconfigure.UserDetailsServiceAutoConfiguration;
+import org.springframework.boot.security.autoconfigure.web.StaticResourceLocation;
+import org.springframework.boot.security.autoconfigure.web.reactive.PathRequest;
 import org.springframework.boot.security.autoconfigure.web.servlet.SecurityFilterAutoConfiguration;
 import org.springframework.boot.security.autoconfigure.web.servlet.ServletWebSecurityAutoConfiguration;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
@@ -27,7 +29,9 @@ import org.springframework.boot.web.servlet.DelegatingFilterProxyRegistrationBea
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.mock.http.server.reactive.MockServerHttpRequest;
 import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.mock.web.server.MockServerWebExchange;
 import org.springframework.security.authentication.AuthenticationEventPublisher;
 import org.springframework.security.authentication.DefaultAuthenticationEventPublisher;
 import org.springframework.security.core.GrantedAuthority;
@@ -41,6 +45,7 @@ import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
+import org.springframework.security.web.server.util.matcher.ServerWebExchangeMatcher;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -134,6 +139,23 @@ public class Spring_boot_securityTest {
                     assertThat(registration.determineDispatcherTypes())
                             .containsExactlyInAnyOrder(DispatcherType.REQUEST, DispatcherType.ERROR);
                 });
+    }
+
+    @Test
+    void reactivePathRequestMatchesSelectedStaticResources() {
+        ServerWebExchangeMatcher matcher = PathRequest.toStaticResources()
+                .at(StaticResourceLocation.CSS, StaticResourceLocation.FAVICON);
+
+        MockServerWebExchange favicon = MockServerWebExchange.from(
+                MockServerHttpRequest.get("/favicon.ico").build());
+        MockServerWebExchange stylesheet = MockServerWebExchange.from(
+                MockServerHttpRequest.get("/css/application.css").build());
+        MockServerWebExchange application = MockServerWebExchange.from(
+                MockServerHttpRequest.get("/api/users").build());
+
+        assertThat(matcher.matches(favicon).block(Duration.ofSeconds(10)).isMatch()).isTrue();
+        assertThat(matcher.matches(stylesheet).block(Duration.ofSeconds(10)).isMatch()).isTrue();
+        assertThat(matcher.matches(application).block(Duration.ofSeconds(10)).isMatch()).isFalse();
     }
 
     @Test
