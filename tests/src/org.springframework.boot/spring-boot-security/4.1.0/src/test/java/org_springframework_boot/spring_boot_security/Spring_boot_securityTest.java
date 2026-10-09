@@ -31,6 +31,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
@@ -156,6 +157,26 @@ public class Spring_boot_securityTest {
     }
 
     @Test
+    void userDetailsServiceAutoConfigurationAddsNoopPrefixToPlaintextPassword() {
+        this.userDetailsContextRunner.withPropertyValues("spring.security.user.password=secret").run((context) -> {
+            UserDetails user = context.getBean(UserDetailsService.class).loadUserByUsername("user");
+
+            assertThat(user.getPassword()).isEqualTo("{noop}secret");
+        });
+    }
+
+    @Test
+    void userDetailsServiceAutoConfigurationPreservesPasswordWhenPasswordEncoderIsAvailable() {
+        this.userDetailsContextRunner.withUserConfiguration(PasswordEncoderConfiguration.class)
+                .withPropertyValues("spring.security.user.password=encoded-secret")
+                .run((context) -> {
+                    UserDetails user = context.getBean(UserDetailsService.class).loadUserByUsername("user");
+
+                    assertThat(user.getPassword()).isEqualTo("encoded-secret");
+                });
+    }
+
+    @Test
     void userDetailsServiceAutoConfigurationBacksOffForExistingUserDetailsService() {
         this.userDetailsContextRunner.withUserConfiguration(ExistingUserDetailsServiceConfiguration.class)
                 .run((context) -> {
@@ -187,6 +208,30 @@ public class Spring_boot_securityTest {
         UserDetailsService existingUserDetailsService() {
             return new InMemoryUserDetailsManager(
                     User.withUsername("provided").password("{noop}provided-secret").roles("OPERATOR").build());
+        }
+
+    }
+
+    @Configuration(proxyBeanMethods = false)
+    static class PasswordEncoderConfiguration {
+
+        @Bean
+        PasswordEncoder passwordEncoder() {
+            return new TestPasswordEncoder();
+        }
+
+    }
+
+    static final class TestPasswordEncoder implements PasswordEncoder {
+
+        @Override
+        public String encode(CharSequence rawPassword) {
+            return "encoded-" + rawPassword;
+        }
+
+        @Override
+        public boolean matches(CharSequence rawPassword, String encodedPassword) {
+            return encode(rawPassword).contentEquals(encodedPassword);
         }
 
     }
