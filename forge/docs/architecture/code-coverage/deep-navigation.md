@@ -125,6 +125,11 @@ Parser.parse(...) → parseJson(...)
 Uncovered paths:
 Parser.parse(...) → parseCSV(...)
 Parser.parse(...) → parseXML(...)
+
+Branches not taken:
+  `com/example/Parser.java:40` (1 of 3 taken)
+    branch 2 at line 43: parseCSV(...) at line 43
+    branch 3 at line 45: parseXML(...) at line 45
 ```
 
 `Observed` is sampled guidance only. Every `Uncovered paths` target is
@@ -241,40 +246,46 @@ walk passes through it. A positive count into a block the walk believed dead
 is contradictory evidence, and the walk stops there without a fork. An
 exception edge (§AR-code-coverage-deep-navigation.1.3) is never walked: nothing
 says which block of the `try` would have raised, so every block under the
-`try` is a catch boundary (§AR-code-coverage-deep-navigation.3.3) reported with
-how often it ran, and the fork is sought along normal edges only. Without a
+`try` is a catch boundary (§AR-code-coverage-deep-navigation.3.3), reported as
+the calls in the `try` range that ran, each at its own line, without counts, and
+the fork is sought along normal edges only. Without a
 control-flow table for the method, the nearest covered line with a missed
 branch is the fork, as before.
 
-The hint lists every successor of every non-plumbing branch instruction on
-the fork line, one numbered item per successor in bytecode order. A successor
-is what JaCoCo calls a branch, so the numbered items add up to the taken/total
-on the header line. Each item is labelled by the line it lands on, not by
-true/false or by case key: javac's jump sense does not map to the source
-condition, and enum, String, and pattern switches switch on synthetic keys. A
-successor that lands on a later branch instruction of the same line, as the
-first condition of `a && b` does, is labelled by that condition's position.
-Each item carries its count, and those that land in the dead region, and so
-reach the invoking bci, carry a target marker. A location is the JaCoCo source
-path relative to the library source root, which the prompt states once near
-its top as an absolute path, so the agent opens the file without fetching the
-sources again; when the root or the file under it is missing, the location is
-the file name alone, and a prompt none of whose locations resolve states no root:
+The prompt lists a fork once per `Observed` group, after the group's routes
+(§AR-code-coverage-deep-navigation.3.3), under its location and JaCoCo's
+taken/total for the line, with no reach or successor counts. Under it come only
+the branches that lead to a target: successors of the line's non-plumbing
+branch instructions that land in the dead region, and so reach the invoking
+bci. Each reads
+`branch <n> at line <landing line>: <uncovered method> at line <call line>`,
+which says both which branch to drive and which call waits behind it, and two
+branches leading to the same call are both listed. A successor is what JaCoCo
+calls a branch, and `<n>` is its position among every successor of the line's
+instructions in bytecode order. A branch is labelled by the line it lands on,
+not by true/false or by case key: javac's jump sense does not map to the source
+condition, and enum, String, and pattern switches switch on synthetic keys. One
+that lands on a later branch instruction of the same line, as the first
+condition of `a && b` does, reads `branch 1 at condition 2 of line 313: …`. A
+location is the JaCoCo source path relative to the library source root, which
+the prompt states once near its top as an absolute path, so the agent opens the
+file without fetching the sources again; when the root or the file under it is
+missing, the location is the file name alone, and a prompt none of whose
+locations resolve states no root:
 
 ```text
-fork `org/h2/engine/Database.java:313` reached 40,182×, 2 of 4 branches taken
-  branch 1 → condition 2 ×40,182
-  branch 2 → line 320 ×0 ← target
-  branch 3 → line 314 ×40,182
-  branch 4 → line 320 ×0 ← target
+Branches not taken:
+  `org/h2/engine/Database.java:313` (2 of 4 taken)
+    branch 2 at line 320: deleteOldTempFiles() at line 320
+    branch 4 at line 320: deleteOldTempFiles() at line 320
 ```
 
 The numbers are bytecode order and carry no meaning of their own; the landing
-line, the count, and the marker do. A switch is one decision, so its successor
-counts sum to the fork's reach count. A branch instruction's reach count is the
-sum of its successor counts; the fork's is the largest across its instructions.
-JaCoCo's taken/total stays the authority on the line; the numbered list is
-navigation.
+line and the call do. The JSON report keeps every successor with its count. A
+switch is one decision, so its successor counts sum to the fork's reach count.
+A branch instruction's reach count is the sum of its successor counts; the
+fork's is the largest across its instructions. JaCoCo's taken/total stays the
+authority on the line; the listed branches are navigation.
 
 ### 3.3 No fork
 
@@ -283,22 +294,33 @@ exception edges or from blocks that ran and left by an exception — `no-fork`
 names the nearest covered line and explains that the target requires an
 exception or external event.
 
-When the region is entered through catch handlers, the hint goes further. It
-names each handler's line and caught type, and under it every line of the `try`
-range that can raise the exception, with its own count, zero for a line that
-never ran: the range's paths run different numbers of times, and only the one
-holding the throwing call matters.
+When the region is entered through catch handlers, the hint goes further. Its
+item names the call and the handler it waits behind, with the handler's line
+and caught type. Below it comes one line per call in that handler's `try` range
+that executed: the call's own line, from its bci through the line table, not
+the line where its bytecode block starts, since one block can span lines. A
+call executed when its block's count, propagated forward from the branch
+counters along normal edges, is above zero, or, for a block without a count,
+when JaCoCo covers the call's line. The lines carry no counts, and a block
+without a call is not listed: a call that ran is where the exception could have
+come from. Calls are named from the call graph where it has the site, and the
+JSON report keeps each `try` line with its count as well.
 
 ```text
-reached only through catch (NumberFormatException) at line 8
-  line 4 `String.isEmpty` ran 8,000,100×, never threw it
-  line 7 `Integer.parseInt` ran 8,000,000×, never threw it
+Reached only through an exception:
+  `org/h2/command/Command.java:208`: Database.shutdownImmediately() in catch (OutOfMemoryError) at line 202
+    line 190: CommandList.query(...) never threw it
+    line 191: SimpleResult.isLazy() never threw it
 ```
 
-A line's count is propagated forward from the branch counters along normal
-edges; a line whose count cannot be derived shows none. Calls are named from
-the call graph where it has the site. When no line in the range can raise, every
-line of the range is listed.
+A group lists its routes first, under `Uncovered paths`, and its diagnoses
+after them in one section per cause: `Branches not taken`
+(§AR-code-coverage-deep-navigation.3.2), then
+`Reached only through an exception`, which holds every `no-fork` target, then
+`Dispatched elsewhere` (§AR-code-coverage-deep-navigation.3.1). Each item starts with the call's
+location and method, so it is clear which route it belongs to. A
+`dispatched-elsewhere` item keeps its receiver and candidate lines with their
+counts, since the receiver histogram is what the agent acts on.
 
 ## 4. Group sessions
 

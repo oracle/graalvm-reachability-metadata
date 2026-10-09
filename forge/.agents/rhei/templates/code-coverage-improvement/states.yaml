@@ -946,12 +946,12 @@ states:
       - Every listed path, in every section of the prompt, is a target: its
         method is uncovered according to exact JaCoCo evidence, and the
         sampled context beside it only shows how close the suite already got.
-      - Under a `fork` line, each numbered branch says the line it lands on
-        and how often it ran; `← target` marks the branches that lead to the
-        target, so drive the condition the other way. `never dispatched here`
-        names an implementation the call site never received: hand it that
-        receiver. A zero count means the suite never went there, not that it
-        cannot. §AR-code-coverage-deep-navigation.3
+      - Under `Branches not taken`, each line is a branch the suite never took:
+        `branch <n> at line <y>: <method> at line <z>`. Drive the condition on
+        that branch's line the other way so execution lands on line y and
+        reaches the call at line z. `never dispatched here` names an
+        implementation the call site never received: hand it that receiver.
+        §AR-code-coverage-deep-navigation.3
       - Add or edit test classes only under the tracked extension suite
         `code-coverage-improvement/src/test/java` inside the coordinate's
         indexed test project (`coverageSuiteRepoRelativePath` in
