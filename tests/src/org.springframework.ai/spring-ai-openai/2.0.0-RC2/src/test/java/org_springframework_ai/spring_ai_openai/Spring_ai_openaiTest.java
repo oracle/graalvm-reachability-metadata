@@ -26,6 +26,8 @@ import org.springframework.ai.openai.OpenAiChatModel;
 import org.springframework.ai.openai.OpenAiChatOptions;
 import org.springframework.ai.openai.OpenAiEmbeddingOptions;
 import org.springframework.ai.openai.OpenAiImageOptions;
+import org.springframework.ai.openai.setup.OpenAiSetup;
+import org.springframework.ai.openai.setup.OpenAiSetup.ModelProvider;
 import org.springframework.ai.util.JacksonUtils;
 
 public class Spring_ai_openaiTest {
@@ -168,6 +170,20 @@ public class Spring_ai_openaiTest {
             assertThat(choice.isAuto()).isTrue();
             assertThat(choice.auto()).hasValueSatisfying(auto -> assertThat(auto.asString()).isEqualTo(mode));
         }
+    }
+
+    @Test
+    void detectsSupportedModelProvidersFromConfiguration() {
+        assertThat(OpenAiSetup.detectModelProvider(true, false, null, null, null))
+                .isEqualTo(ModelProvider.MICROSOFT_FOUNDRY);
+        assertThat(OpenAiSetup.detectModelProvider(false, true, null, null, null))
+                .isEqualTo(ModelProvider.GITHUB_MODELS);
+        assertThat(OpenAiSetup.detectModelProvider(false, false, "https://tenant.openai.azure.com/", null, null))
+                .isEqualTo(ModelProvider.MICROSOFT_FOUNDRY);
+        assertThat(OpenAiSetup.detectModelProvider(false, false, "https://models.github.ai/inference", null, null))
+                .isEqualTo(ModelProvider.GITHUB_MODELS);
+        assertThat(OpenAiSetup.detectModelProvider(false, false, "https://api.openai.com/v1", null, null))
+                .isEqualTo(ModelProvider.OPEN_AI);
     }
 
 }
