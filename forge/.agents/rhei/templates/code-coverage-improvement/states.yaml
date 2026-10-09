@@ -946,6 +946,11 @@ states:
       - Every listed path, in every section of the prompt, is a target: its
         method is uncovered according to exact JaCoCo evidence, and the
         sampled context beside it only shows how close the suite already got.
+      - `Observed` is the library call chain an existing test already drives,
+        from the test's own call down to where the paths split, and `Called
+        from test` names that test and the lines in its source that make the
+        call. Start from that test's setup and change its input rather than
+        building the scenario from nothing. §AR-code-coverage-deep-navigation.2
       - Under `Branches not taken`, each line is a branch the suite never took:
         `branch <n> at line <y>: <method> at line <z>`. Drive the condition on
         that branch's line the other way so execution lands on line y and

@@ -88,13 +88,38 @@ fork or dispatch to name. Route search therefore never continues out of an
 uncovered method, and only a covered method may make the last call.
 
 The covered prefix is the shortest one from a sampled frame or, when no
-sampled frame joins, from a public API inventory entry JaCoCo reports covered.
-It may be any length: no method on it is JaCoCo-uncovered, so it only shows
-the agent how existing tests reach the caller. Only a route from a sampled
-frame enters the agent prompt: its observed path is the evidence the agent
-follows, and a public-entry route has none to show. Public-entry routes stay
-ranked in the JSON report and enter the prompt once a later run samples a
-frame on their covered prefix.
+sampled frame joins, from a public API inventory entry JaCoCo reports covered,
+and it governs routing and ranking only. It may be any length: no method on it
+is JaCoCo-uncovered, so it only shows the agent how existing tests reach the
+caller. Only a route from a sampled frame enters the agent prompt: its observed
+path is the evidence the agent follows, and a public-entry route has none to
+show. Public-entry routes stay ranked in the JSON report and enter the prompt
+once a later run samples a frame on their covered prefix.
+
+`Observed` shows every library frame of the group's most frequent sampled
+stack, from the frame the test calls directly down to the group's divergence,
+the route's first method and its observed callee. It names frames without
+lines, repeats the owner only when it changes, reads a constructor as
+`Type(...)`, and drops synthetic frames: factory stubs, lambda forms, and
+reflection accessors. The group ends with the test frames that make that call,
+under `Called from test`. Its header names the test method JUnit invoked and
+its file, relative to the indexed test project the prompt states once near its
+top. One step follows per test frame in call order, `line N: method()`, or
+`line N: lambda` for a lambda body, each indented one level deeper than the
+step that calls it; a frame in another file adds `in <file>`. A frame is a test
+frame when its source file exists in a test suite, not by its package, since a
+coverage test may live in a test-only package. The stack is the most frequent
+one that reaches the group, a coverage-suite test preferred: a regular-suite
+test is shown only when no coverage-suite test reaches the group, and a second
+test, if shown, gets its own block. A group whose samples have no test frame
+keeps the chain from the stack's outermost library frame and gets no test
+block. A step's line comes from the sample's bci through the line table of the
+compiled test class `codeCoverageTest` leaves in the worktree build output, and
+is shown only if the instruction at that bci still invokes the frame the sample
+shows next; otherwise the step reads `line ?`. A resource closed by
+try-with-resources resolves to the line javac attributes the implicit `close()`
+to. The block says that the test reached the observed frame, not necessarily
+the branch line below it, which comes from JaCoCo counters.
 
 A method JaCoCo does not report takes the status, and for classification the
 lines, of the source-level method it stands for
@@ -120,7 +145,7 @@ The prompt navigation stays compact and groups paths that share a divergence:
 
 ```text
 Observed:
-Parser.parse(...) → parseJson(...)
+JsonApi.read(...) → Parser.parse(...) → parseJson(...)
 
 Uncovered paths:
 Parser.parse(...) → parseCSV(...)
@@ -130,6 +155,10 @@ Branches not taken:
   `com/example/Parser.java:40` (1 of 3 taken)
     branch 2 at line 43: parseCSV(...) at line 43
     branch 3 at line 45: parseXML(...) at line 45
+
+Called from test `JsonApiTest.readsObjects()` in `src/test/java/com/example/JsonApiTest.java`:
+  line 31: readsObjects()
+      line 52: readAll()
 ```
 
 `Observed` is sampled guidance only. Every `Uncovered paths` target is
