@@ -18,6 +18,9 @@ import com.openai.models.ChatModel
 import com.openai.models.chat.completions.ChatCompletionCreateParams
 import com.openai.models.embeddings.EmbeddingCreateParams
 import com.openai.models.embeddings.EmbeddingModel
+import com.openai.models.files.FileCreateParams
+import com.openai.models.files.FileObject
+import com.openai.models.files.FilePurpose
 import com.openai.models.responses.ResponseCreateParams
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
@@ -214,6 +217,57 @@ class Openai_java_coreTest {
         } finally {
             client.close()
         }
+    }
+
+    @Test
+    fun uploadsMultipartFileAndParsesFileMetadata(): Unit {
+        val response = """
+            {
+              "id": "file-fixture",
+              "object": "file",
+              "bytes": 20,
+              "created_at": 1700000000,
+              "filename": "training.jsonl",
+              "purpose": "assistants",
+              "status": "processed",
+              "expires_at": 1700086400
+            }
+        """.trimIndent()
+        val httpClient = RecordingHttpClient(listOf(response))
+        val client = OpenAIClientImpl(clientOptions(httpClient))
+
+        try {
+            val params = FileCreateParams.builder()
+                .file("{\"prompt\":\"fixture\"}\n".toByteArray(StandardCharsets.UTF_8))
+                .purpose(FilePurpose.ASSISTANTS)
+                .expiresAfter(
+                    FileCreateParams.ExpiresAfter.builder()
+                        .seconds(86_400L)
+                        .build(),
+                )
+                .build()
+            val file: FileObject = client.files().create(params)
+
+            assertThat(file.id()).isEqualTo("file-fixture")
+            assertThat(file.bytes()).isEqualTo(20L)
+            assertThat(file.filename()).isEqualTo("training.jsonl")
+            assertThat(file.purpose()).isEqualTo(FileObject.Purpose.ASSISTANTS)
+            assertThat(file.expiresAt()).contains(1700086400L)
+            assertThat(file.isValid()).isTrue()
+        } finally {
+            client.close()
+        }
+
+        assertThat(httpClient.requests.single().url()).isEqualTo("https://example.test/files")
+        assertThat(httpClient.requestBodies.single())
+            .contains(
+                "Content-Disposition: form-data; name=\"file\"",
+                "{\"prompt\":\"fixture\"}",
+                "Content-Disposition: form-data; name=\"purpose\"",
+                "assistants",
+                "Content-Disposition: form-data; name=\"expires_after[seconds]\"",
+                "86400",
+            )
     }
 
     private fun clientOptions(httpClient: HttpClient): ClientOptions =
