@@ -178,6 +178,44 @@ class Openai_java_coreTest {
         }
     }
 
+    @Test
+    fun streamsChatCompletionChunksUntilDone(): Unit {
+        val streamResponse = """
+            data: {"id":"chatcmpl-stream","object":"chat.completion.chunk","created":1700000000,"model":"gpt-4o-mini","choices":[{"index":0,"delta":{"role":"assistant","content":"Fixture"},"finish_reason":null}]}
+
+            data: {"id":"chatcmpl-stream","object":"chat.completion.chunk","created":1700000000,"model":"gpt-4o-mini","choices":[{"index":0,"delta":{"content":" response"},"finish_reason":"stop"}]}
+
+            data: [DONE]
+
+        """.trimIndent()
+        val httpClient = RecordingHttpClient(listOf(streamResponse))
+        val client = OpenAIClientImpl(clientOptions(httpClient))
+        val params = ChatCompletionCreateParams.builder()
+            .addUserMessage("Stream this fixture")
+            .model(ChatModel.GPT_4O_MINI)
+            .build()
+
+        try {
+            client.chat().completions().createStreaming(params).use { response ->
+                val chunks = response.stream().toList()
+
+                assertThat(chunks).hasSize(2)
+                assertThat(chunks.map { chunk -> chunk.id() }).containsOnly("chatcmpl-stream")
+                assertThat(chunks.map { chunk -> chunk.choices().single().delta().content().get() })
+                    .containsExactly("Fixture", " response")
+                assertThat(chunks.last().choices().single().finishReason().get().asString())
+                    .isEqualTo("stop")
+            }
+            assertThat(httpClient.requests.single().url())
+                .isEqualTo("https://example.test/chat/completions")
+            assertThat(httpClient.requests.single().headers.values("Accept"))
+                .containsExactly("text/event-stream")
+            assertThat(httpClient.requestBodies.single()).contains("\"stream\":true")
+        } finally {
+            client.close()
+        }
+    }
+
     private fun clientOptions(httpClient: HttpClient): ClientOptions =
         ClientOptions.builder()
             .httpClient(httpClient)
