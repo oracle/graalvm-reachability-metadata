@@ -12,12 +12,16 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import java.util.List;
 import java.util.Map;
 
+import com.openai.models.audio.AudioResponseFormat;
+import com.openai.models.audio.transcriptions.TranscriptionCreateParams.TimestampGranularity;
 import com.openai.models.chat.completions.ChatCompletionAudioParam;
 import com.openai.models.embeddings.EmbeddingCreateParams;
 import com.openai.models.images.ImageGenerateParams;
 import org.junit.jupiter.api.Test;
 
 import org.springframework.ai.image.ImagePrompt;
+import org.springframework.ai.openai.OpenAiAudioSpeechOptions;
+import org.springframework.ai.openai.OpenAiAudioTranscriptionOptions;
 import org.springframework.ai.openai.OpenAiChatModel;
 import org.springframework.ai.openai.OpenAiChatOptions;
 import org.springframework.ai.openai.OpenAiEmbeddingOptions;
@@ -85,6 +89,44 @@ public class Spring_ai_openaiTest {
         assertThatThrownBy(() -> options.toOpenAiImageGenerateParams(new ImagePrompt(List.of(), options)))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("Image prompt instructions cannot be empty");
+    }
+
+    @Test
+    void audioSpeechOptionsConfigureTextToSpeechRequest() {
+        OpenAiAudioSpeechOptions options = OpenAiAudioSpeechOptions.builder()
+                .model("gpt-4o-mini-tts")
+                .input("Read this sentence aloud")
+                .voice(OpenAiAudioSpeechOptions.Voice.NOVA)
+                .responseFormat(OpenAiAudioSpeechOptions.AudioResponseFormat.WAV)
+                .speed(0.85)
+                .build();
+
+        assertThat(options.getModel()).isEqualTo("gpt-4o-mini-tts");
+        assertThat(options.getInput()).isEqualTo("Read this sentence aloud");
+        assertThat(options.getVoice()).isEqualTo("nova");
+        assertThat(options.getResponseFormat()).isEqualTo("wav");
+        assertThat(options.getFormat()).isEqualTo("wav");
+        assertThat(options.getSpeed()).isEqualTo(0.85);
+    }
+
+    @Test
+    void audioTranscriptionOptionsConfigureTranscriptionRequest() {
+        OpenAiAudioTranscriptionOptions options = OpenAiAudioTranscriptionOptions.builder()
+                .model("whisper-1")
+                .responseFormat(AudioResponseFormat.VERBOSE_JSON)
+                .prompt("Technical meeting")
+                .language("en")
+                .temperature(0.2f)
+                .timestampGranularities(List.of(TimestampGranularity.WORD, TimestampGranularity.SEGMENT))
+                .build();
+
+        assertThat(options.getModel()).isEqualTo("whisper-1");
+        assertThat(options.getResponseFormat()).isEqualTo(AudioResponseFormat.VERBOSE_JSON);
+        assertThat(options.getPrompt()).isEqualTo("Technical meeting");
+        assertThat(options.getLanguage()).isEqualTo("en");
+        assertThat(options.getTemperature()).isEqualTo(0.2f);
+        assertThat(options.getTimestampGranularities())
+                .containsExactly(TimestampGranularity.WORD, TimestampGranularity.SEGMENT);
     }
 
     @Test
