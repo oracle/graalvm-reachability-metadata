@@ -80,6 +80,21 @@ public class Spring_ai_autoconfigure_model_image_observationTest {
     }
 
     @Test
+    void autoConfigurationBacksOffWhenUserSuppliesTracingAwarePromptHandler() {
+        TracingAwareLoggingObservationHandler<ImageModelObservationContext> userHandler =
+                new TracingAwareLoggingObservationHandler<>(new ImageModelPromptContentObservationHandler(),
+                        Tracer.NOOP);
+        try (AnnotationConfigApplicationContext context = contextWithTracerAndTracingAwareHandler(true, userHandler)) {
+            Map<String, TracingAwareLoggingObservationHandler> handlers = context
+                    .getBeansOfType(TracingAwareLoggingObservationHandler.class);
+
+            assertThat(handlers).containsOnlyKeys("imageModelPromptContentObservationHandler");
+            assertThat(handlers.get("imageModelPromptContentObservationHandler")).isSameAs(userHandler);
+            assertThat(context.getBeansOfType(ImageModelPromptContentObservationHandler.class)).isEmpty();
+        }
+    }
+
+    @Test
     void promptHandlerRecognizesImageObservationContexts() {
         ImageModelPromptContentObservationHandler handler = new ImageModelPromptContentObservationHandler();
         ImageModelObservationContext observationContext = imageObservationContext();
@@ -116,6 +131,18 @@ public class Spring_ai_autoconfigure_model_image_observationTest {
         if (userHandler != null) {
             context.getBeanFactory().registerSingleton("userImageModelPromptContentObservationHandler", userHandler);
         }
+        context.register(ImageObservationAutoConfiguration.class);
+        context.refresh();
+        return context;
+    }
+
+    private static AnnotationConfigApplicationContext contextWithTracerAndTracingAwareHandler(boolean logPrompt,
+            TracingAwareLoggingObservationHandler<ImageModelObservationContext> userHandler) {
+        AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext();
+        context.getEnvironment().getPropertySources().addFirst(new MapPropertySource("test-properties",
+                Map.of(ImageObservationProperties.CONFIG_PREFIX + ".log-prompt", Boolean.toString(logPrompt))));
+        context.getBeanFactory().registerSingleton("tracer", Tracer.NOOP);
+        context.getBeanFactory().registerSingleton("imageModelPromptContentObservationHandler", userHandler);
         context.register(ImageObservationAutoConfiguration.class);
         context.refresh();
         return context;
