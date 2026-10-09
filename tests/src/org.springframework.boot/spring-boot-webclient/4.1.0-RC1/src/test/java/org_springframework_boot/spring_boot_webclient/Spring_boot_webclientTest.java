@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
 
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
@@ -149,6 +150,38 @@ public class Spring_boot_webclientTest {
             String response = groups.builder.build().get().retrieve().bodyToMono(String.class).block(REQUEST_TIMEOUT);
 
             assertThat(response).isEqualTo("/configured " + "applied");
+        }
+    }
+
+    @Test
+    void reactiveHttpServicePropertiesInsertConfiguredApiVersionHeader() throws IOException {
+        AtomicReference<String> receivedApiVersion = new AtomicReference<>();
+        try (TestHttpServer server = TestHttpServer.start(exchange -> {
+            receivedApiVersion.set(exchange.getRequestHeaders().getFirst("X-API-Version"));
+            send(exchange, 200, "ok");
+        }); AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext()) {
+            context.getEnvironment().getPropertySources().addFirst(new MapPropertySource("test",
+                    Map.of("spring.http.serviceclient.orders.base-url", server.url("/versioned"),
+                            "spring.http.serviceclient.orders.apiversion.default", "v2",
+                            "spring.http.serviceclient.orders.apiversion.insert.header", "X-API-Version")));
+            context.registerBean(HttpServiceProxyRegistry.class, EmptyHttpServiceProxyRegistry::new);
+            context.registerBean(SslBundles.class, TestSslBundles::new);
+            context.registerBean(ClientHttpConnector.class,
+                    () -> ClientHttpConnectorBuilder.jdk().build(HttpClientSettings.defaults()
+                            .withTimeouts(REQUEST_TIMEOUT, REQUEST_TIMEOUT)));
+            context.register(HttpServiceClientPropertiesAutoConfiguration.class,
+                    WebClientAutoConfiguration.class, ReactiveHttpServiceClientAutoConfiguration.class);
+            context.refresh();
+
+            List<WebClientHttpServiceGroupConfigurer> configurers = new ArrayList<>(
+                    context.getBeansOfType(WebClientHttpServiceGroupConfigurer.class).values());
+            RecordingGroups groups = new RecordingGroups();
+            configurers.forEach((configurer) -> configurer.configureGroups(groups));
+
+            String response = groups.builder.build().get().retrieve().bodyToMono(String.class).block(REQUEST_TIMEOUT);
+
+            assertThat(response).isEqualTo("ok");
+            assertThat(receivedApiVersion).hasValue("v2");
         }
     }
 
