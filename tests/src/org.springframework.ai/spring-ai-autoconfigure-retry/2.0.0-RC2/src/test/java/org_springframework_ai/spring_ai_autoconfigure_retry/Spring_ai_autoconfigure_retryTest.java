@@ -141,6 +141,23 @@ public class Spring_ai_autoconfigure_retryTest {
     }
 
     @Test
+    void retryTemplateExhaustsTransientFailuresAfterConfiguredRetries() {
+        try (AnnotationConfigApplicationContext context = contextWithProperties(Map.of(
+                "spring.ai.retry.max-attempts", "3",
+                "spring.ai.retry.backoff.initial-interval", "0ms"))) {
+            RetryTemplate retryTemplate = context.getBean(RetryTemplate.class);
+            AtomicInteger attempts = new AtomicInteger();
+
+            assertThatThrownBy(() -> retryTemplate.execute(() -> {
+                attempts.incrementAndGet();
+                throw new TransientAiException("temporary");
+            })).isInstanceOf(RetryException.class)
+                    .hasCauseInstanceOf(TransientAiException.class);
+            assertThat(attempts).hasValue(4);
+        }
+    }
+
+    @Test
     void responseErrorHandlerClassifiesDefaultHttpErrors() throws IOException {
         try (AnnotationConfigApplicationContext context = contextWithProperties(Map.of())) {
             ResponseErrorHandler handler = context.getBean(ResponseErrorHandler.class);
