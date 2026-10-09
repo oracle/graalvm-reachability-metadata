@@ -165,15 +165,15 @@ it is to flip, so it only orders ties and never overrides distance.
 ## 3. Miss classification
 
 Every prompted target carries a deterministic miss classification derived from
-JaCoCo source-line instruction and branch counters, the target's reverse call-
-site fan-out, and — when present — the control-flow table and the counters. Only
-sites whose caller JaCoCo reports covered are judged, and the route guarantees
-at least one (§2). A site is found through the target's source-level method, so
-a constructor reached through a factory stub is judged at the stub's callers. A
-caller judged on borrowed lines (§2) is read in line order, since the invoke's
-bytecode index is its own, not the lending method's. The strongest diagnosis
-across those sites wins. The Markdown prompt and the full JSON report carry the
-same classification.
+JaCoCo source-line instruction and branch counters, the fan-out of the route's
+call into the target, and — when present — the control-flow table and the
+counters. Classification judges the one call the route makes into the target,
+whose caller §2 guarantees is covered; when the route reaches a constructor
+through a factory stub, that is the route's call into the stub. No other call
+site of the target is consulted, so the prompt's route and its diagnosis always
+describe the same call. A caller judged on borrowed lines (§2) is read in line
+order, since the invoke's bytecode index is its own, not the lending method's.
+The Markdown prompt and the full JSON report carry the same classification.
 
 ```mermaid
 sequenceDiagram
@@ -182,7 +182,7 @@ sequenceDiagram
     participant J as JaCoCo lines
     participant F as control-flow table
     participant P as PGO counters
-    M->>G: call sites of the target
+    M->>G: the route's call into the target
     M->>J: caller covered? invoking line status, candidate implementations
     alt invoking line covered and several implementations
         M-->>M: dispatched-elsewhere (§3.1)
