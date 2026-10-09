@@ -1,0 +1,15 @@
+## Human intervention needed
+
+The automated job failed during `explore/generate_tests()` for `org.springframework.boot:spring-boot-security:4.1.0`. Preserved work is available at https://github.com/oracle/graalvm-reachability-metadata/tree/ai%2Fkimeta%2Fhuman-intervention%2Fissue-8464-library-new-request-org.springframework.boot-spring-boot-security-4.1.0-9b26005d.
+
+The generated suite passes all 7 JVM tests, and Native Image compilation succeeds, but `nativeTest` fails at runtime. The first attempt failed 6/6 native tests and the second failed 7/7 with `FileNotFoundException: class path resource [org/springframework/boot/security/autoconfigure/SecurityAutoConfiguration.class] cannot be opened because it does not exist`. This suggests that Spring’s runtime metadata inspection needs the class file packaged as a native-image resource. A third generation attempt ended mid-investigation without producing another edit. Dynamic-access coverage is unavailable because both report attempts found no `build/native/nativeTestCompile/dynamic-access` output and failed rather than writing an empty report.
+
+Inspect:
+- `logs/org.springframework.boot:spring-boot-security:4.1.0/gradle-test/gradle-test-2026-10-09T03-13-44-683866Z.log`
+- `logs/org.springframework.boot:spring-boot-security:4.1.0/add-new-library-support/pi-generation-2026-10-09T02-56-57-414285Z.log`
+- `logs/org.springframework.boot:spring-boot-security:4.1.0/gradle/generateDynamicAccessCoverageReport-2026-10-09T02-56-49-395807Z.log`
+
+Manual next steps:
+1. Check out the preserved branch and reproduce the JVM/native difference with `./gradlew test -Pcoordinates=org.springframework.boot:spring-boot-security:4.1.0`.
+2. Determine whether the `SecurityAutoConfiguration.class` resource should be captured through the repository’s metadata-generation tooling or whether the context-runner test must be reworked without skipping native execution.
+3. After `nativeTest` passes, rerun `generateDynamicAccessCoverageReport` and complete the metadata, coverage, and repository validation gates.
