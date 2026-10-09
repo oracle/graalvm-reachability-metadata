@@ -22,11 +22,12 @@ from utility_scripts import code_coverage_profile_report as report_module
 from utility_scripts.code_coverage_deep_sessions import write_prompts
 from utility_scripts.code_coverage_model import MethodRef
 from utility_scripts.code_coverage_profile_graph import CallGraph
-from utility_scripts.code_coverage_profile_render import (
+from utility_scripts.code_coverage_profile_diagnoses import (
+    Diagnosis,
     SourceRoot,
-    classification_lines,
-    write_markdown,
+    diagnosis_lines,
 )
+from utility_scripts.code_coverage_profile_render import write_markdown
 
 from tests.code_coverage_profile_support import FIXTURES, JACOCO_PATH, _coverage, _sampled_at
 
@@ -36,6 +37,7 @@ CLASSIFICATION: dict = {
     "target": {"sourcePath": DATABASE, "line": 322, "mi": 3, "ci": 0, "mb": 0, "cb": 0},
     "fork": {"sourcePath": DATABASE, "line": 313, "mi": 0, "ci": 9, "mb": 2, "cb": 2},
 }
+DIAGNOSIS: Diagnosis = Diagnosis("open()", CLASSIFICATION)
 
 
 class SourceRootTests(unittest.TestCase):
@@ -54,19 +56,22 @@ class SourceRootTests(unittest.TestCase):
         self._add_source(DATABASE)
         sources: SourceRoot = SourceRoot(self.root)
 
-        lines: list[str] = classification_lines(CLASSIFICATION, sources=sources)
+        lines: list[str] = diagnosis_lines([DIAGNOSIS], sources)
+        no_fork: list[str] = diagnosis_lines([Diagnosis("open()", {
+            "kind": "no-fork", "target": CLASSIFICATION["target"], "nearestCovered": None,
+        })], sources)
 
-        self.assertEqual(lines[0], f"  target `{DATABASE}:322` never ran")
-        self.assertTrue(lines[1].startswith(f"  fork `{DATABASE}:313` ran"))
+        self.assertEqual(lines[1:3], ["Branches not taken:", f"  `{DATABASE}:313` (2 of 4 taken)"])
+        self.assertTrue(no_fork[2].startswith(f"  `{DATABASE}:322`: open()"))
         self.assertTrue(sources.resolved)
         self.assertEqual(sources.path, os.path.abspath(self.root))
 
     def test_a_missing_root_keeps_the_file_name(self) -> None:
         sources: SourceRoot = SourceRoot(os.path.join(self.root, "absent"))
 
-        lines: list[str] = classification_lines(CLASSIFICATION, sources=sources)
+        lines: list[str] = diagnosis_lines([DIAGNOSIS], sources)
 
-        self.assertEqual(lines[0], "  target `Database.java:322` never ran")
+        self.assertEqual(lines[2], "  `Database.java:313` (2 of 4 taken)")
         self.assertIsNone(sources.path)
         self.assertFalse(sources.resolved)
 
@@ -74,9 +79,9 @@ class SourceRootTests(unittest.TestCase):
         self._add_source("org/h2/engine/Session.java")
         sources: SourceRoot = SourceRoot(self.root)
 
-        lines: list[str] = classification_lines(CLASSIFICATION, sources=sources)
+        lines: list[str] = diagnosis_lines([DIAGNOSIS], sources)
 
-        self.assertTrue(lines[1].startswith("  fork `Database.java:313` ran"))
+        self.assertEqual(lines[2], "  `Database.java:313` (2 of 4 taken)")
         self.assertFalse(sources.resolved)
 
 
@@ -134,7 +139,7 @@ class PromptRootLineTests(unittest.TestCase):
         )
         self.assertEqual(markdown.count(root_line), 1)
         self.assertLess(markdown.index(root_line), markdown.index("## Where the tests go"))
-        self.assertIn(f"  fork `{DATABASE}:313`", markdown)
+        self.assertIn(f"  `{DATABASE}:313` (2 of 4 taken)", markdown)
 
     def test_without_a_resolved_location_no_root_is_stated(self) -> None:
         for source_root in (None, self.root):
@@ -142,7 +147,7 @@ class PromptRootLineTests(unittest.TestCase):
                 markdown: str = self._prompt(source_root)
 
                 self.assertNotIn("Library sources", markdown)
-                self.assertIn("  fork `Database.java:313`", markdown)
+                self.assertIn("  `Database.java:313` (2 of 4 taken)", markdown)
 
 
     def test_every_prompt_of_a_pass_states_the_root(self) -> None:

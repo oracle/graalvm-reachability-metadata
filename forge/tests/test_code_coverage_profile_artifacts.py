@@ -34,6 +34,7 @@ from tests.code_coverage_profile_support import (
     RESOLVE_INTEGER_ID,
     _coverage,
     _load_jacoco,
+    route_lines,
 )
 
 
@@ -102,7 +103,13 @@ class ReportArtifactsTest(unittest.TestCase):
                 target["missClassification"]["kind"],
                 {"dispatched-elsewhere", "fork-not-taken", "no-fork"},
             )
-        self.assertEqual(markdown.count("  target "), len(report["promptTargetIds"]))
+        self.assertEqual(len(route_lines(markdown)), len(report["promptTargetIds"]))
+        # Diagnoses follow the routes, one section per cause
+        # (§AR-code-coverage-deep-navigation.3.3).
+        self.assertRegex(
+            markdown, r"\n\n(Branches not taken|Reached only through an exception|"
+                      r"Dispatched elsewhere):\n",
+        )
         path_lines = [line for line in markdown.splitlines() if line.startswith("`")]
         for line in path_lines:
             self.assertNotIn("#", line)

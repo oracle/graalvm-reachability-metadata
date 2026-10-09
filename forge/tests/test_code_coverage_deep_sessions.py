@@ -31,7 +31,7 @@ from utility_scripts.code_coverage_deep_sessions import (
 from utility_scripts.code_coverage_profile_records import MAX_LISTED_METHODS
 from utility_scripts.code_coverage_profile_render import write_markdown
 
-from tests.code_coverage_profile_support import FIXTURES, JACOCO_PATH
+from tests.code_coverage_profile_support import FIXTURES, JACOCO_PATH, route_lines
 
 
 class GroupSessionsTest(unittest.TestCase):
@@ -146,7 +146,7 @@ class SessionPromptTest(unittest.TestCase):
             self.assertIn(session["kind"], {MONOLITH, MIXED})
             self.assertEqual(session["kind"] == MONOLITH, len(session["entryOwners"]) == 1)
             with open(os.path.join(self.output_dir, session["prompt"]), encoding="utf-8") as md_file:
-                self.assertEqual(md_file.read().count("  target "), len(session["targetIds"]))
+                self.assertEqual(len(route_lines(md_file.read())), len(session["targetIds"]))
         with open(os.path.join(self.output_dir, "discovery-report-1.json"), encoding="utf-8") as json_file:
             self.assertEqual(json.load(json_file)["deepSessions"], sessions)
 
