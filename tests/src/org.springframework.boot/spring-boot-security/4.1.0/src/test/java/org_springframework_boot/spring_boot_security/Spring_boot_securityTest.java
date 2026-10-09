@@ -8,17 +8,23 @@ package org_springframework_boot.spring_boot_security;
 
 import java.util.List;
 
+import jakarta.servlet.DispatcherType;
+
 import org.junit.jupiter.api.Test;
 
 import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.security.autoconfigure.SecurityAutoConfiguration;
 import org.springframework.boot.security.autoconfigure.SecurityProperties;
 import org.springframework.boot.security.autoconfigure.UserDetailsServiceAutoConfiguration;
+import org.springframework.boot.security.autoconfigure.web.servlet.SecurityFilterAutoConfiguration;
+import org.springframework.boot.security.autoconfigure.web.servlet.ServletWebSecurityAutoConfiguration;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 import org.springframework.boot.test.context.runner.WebApplicationContextRunner;
+import org.springframework.boot.web.servlet.DelegatingFilterProxyRegistrationBean;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.security.authentication.AuthenticationEventPublisher;
 import org.springframework.security.authentication.DefaultAuthenticationEventPublisher;
 import org.springframework.security.core.GrantedAuthority;
@@ -26,6 +32,9 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -37,6 +46,10 @@ public class Spring_boot_securityTest {
     private final WebApplicationContextRunner userDetailsContextRunner = new WebApplicationContextRunner()
             .withConfiguration(AutoConfigurations.of(SecurityAutoConfiguration.class,
                     UserDetailsServiceAutoConfiguration.class));
+
+    private final WebApplicationContextRunner servletSecurityContextRunner = new WebApplicationContextRunner()
+            .withConfiguration(AutoConfigurations.of(ServletWebSecurityAutoConfiguration.class,
+                    SecurityFilterAutoConfiguration.class));
 
     @Test
     void securityPropertiesExposeDefaultsAndRetainConfiguredUserValues() {
@@ -85,6 +98,31 @@ public class Spring_boot_securityTest {
                     assertThat(context).hasSingleBean(AuthenticationEventPublisher.class);
                     assertThat(context).hasBean("existingAuthenticationEventPublisher");
                     assertThat(context).doesNotHaveBean("authenticationEventPublisher");
+                });
+    }
+
+    @Test
+    void servletWebSecurityAutoConfigurationCreatesAuthenticatedFilterChainAndRegistersIt() {
+        this.servletSecurityContextRunner
+                .withUserConfiguration(ExistingUserDetailsServiceConfiguration.class)
+                .withPropertyValues("spring.security.filter.order=123",
+                        "spring.security.filter.dispatcher-types=REQUEST,ERROR")
+                .run((context) -> {
+                    assertThat(context).hasSingleBean(SecurityFilterChain.class);
+                    assertThat(context).hasSingleBean(DelegatingFilterProxyRegistrationBean.class);
+
+                    SecurityFilterChain filterChain = context.getBean(SecurityFilterChain.class);
+                    MockHttpServletRequest request = new MockHttpServletRequest();
+                    request.setRequestURI("/secured");
+                    assertThat(filterChain.matches(request)).isTrue();
+                    assertThat(filterChain.getFilters()).extracting(Object::getClass)
+                            .contains(UsernamePasswordAuthenticationFilter.class, BasicAuthenticationFilter.class);
+
+                    DelegatingFilterProxyRegistrationBean registration =
+                            context.getBean(DelegatingFilterProxyRegistrationBean.class);
+                    assertThat(registration.getOrder()).isEqualTo(123);
+                    assertThat(registration.determineDispatcherTypes())
+                            .containsExactlyInAnyOrder(DispatcherType.REQUEST, DispatcherType.ERROR);
                 });
     }
 
