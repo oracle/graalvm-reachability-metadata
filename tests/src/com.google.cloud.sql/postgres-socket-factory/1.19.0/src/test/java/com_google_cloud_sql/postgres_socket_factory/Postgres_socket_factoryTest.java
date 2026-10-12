@@ -10,6 +10,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 
 import com.google.cloud.sql.ConnectorRegistry;
+import com.google.cloud.sql.postgres.SocketFactory;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -38,6 +39,17 @@ public class Postgres_socket_factoryTest {
               }
             }
             """.formatted(WORKLOAD_IDENTITY_AUDIENCE);
+
+    @Test
+    void constructorTranslatesDeprecatedSocketFactoryArgument() {
+        String instanceConnectionName = "sample-project:us-central1:legacy-instance";
+        Properties properties = new Properties();
+        properties.setProperty("SocketFactoryArg", instanceConnectionName);
+
+        new SocketFactory(properties);
+
+        assertThat(properties.getProperty("cloudSqlInstance")).isEqualTo(instanceConnectionName);
+    }
 
     @Test
     @Timeout(55)
