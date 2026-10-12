@@ -99,6 +99,22 @@ public class Spring_modulith_events_apiTest {
     }
 
     @Test
+    void annotationAndEventAwareRouterBuildsTargetFromBothInputs() {
+        ShipmentDispatched event = new ShipmentDispatched("shipment-23");
+
+        EventExternalizationConfiguration configuration = EventExternalizationConfiguration.externalizing()
+                .selectAndRoute(Destination.class, (candidate, destination) -> {
+                    ShipmentDispatched shipment = (ShipmentDispatched) candidate;
+                    return RoutingTarget.forTarget(destination.value()).andKey(shipment.shipmentId());
+                })
+                .build();
+
+        assertThat(configuration.supports(event)).isTrue();
+        assertThat(configuration.determineTarget(event))
+                .isEqualTo(RoutingTarget.forTarget("shipments").andKey("shipment-23"));
+    }
+
+    @Test
     void optionalTypeRoutingFallsBackToGeneralRoute() {
         PriorityEvent priority = new PriorityEvent("high");
         UnannotatedEvent ordinary = new UnannotatedEvent("ordinary");
@@ -264,6 +280,9 @@ public class Spring_modulith_events_apiTest {
 
     @Destination("invoices::#{#this.invoiceId}")
     public record InvoiceIssued(String invoiceId) {}
+
+    @Destination("shipments")
+    public record ShipmentDispatched(String shipmentId) {}
 
     @ApplicationModuleListener(
             readOnlyTransaction = true,
