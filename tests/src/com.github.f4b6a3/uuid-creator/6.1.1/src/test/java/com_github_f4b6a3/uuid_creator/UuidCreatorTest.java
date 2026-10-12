@@ -29,6 +29,8 @@ import com.github.f4b6a3.uuid.enums.UuidLocalDomain;
 import com.github.f4b6a3.uuid.enums.UuidNamespace;
 import com.github.f4b6a3.uuid.enums.UuidVariant;
 import com.github.f4b6a3.uuid.exception.InvalidUuidException;
+import com.github.f4b6a3.uuid.factory.function.NodeIdFunction;
+import com.github.f4b6a3.uuid.factory.function.impl.HashNodeIdFunction;
 import com.github.f4b6a3.uuid.factory.nonstandard.PrefixCombFactory;
 import com.github.f4b6a3.uuid.factory.nonstandard.SuffixCombFactory;
 import com.github.f4b6a3.uuid.factory.standard.RandomBasedFactory;
@@ -158,6 +160,22 @@ public class UuidCreatorTest {
         assertVersion(version4, 4);
         assertVersion(version6, 6);
         assertVersion(version7, 7);
+    }
+
+    @Test
+    void hashBasedGeneratorsEmbedTheMachineFingerprintAsAMulticastNodeIdentifier() {
+        long expectedNodeIdentifier = new HashNodeIdFunction().getAsLong();
+        UUID timeBased = UuidCreator.getTimeBasedWithHash();
+        UUID dceSecurity = UuidCreator.getDceSecurityWithHash(UuidLocalDomain.LOCAL_DOMAIN_PERSON, 1001);
+        UUID timeOrdered = UuidCreator.getTimeOrderedWithHash();
+
+        assertThat(NodeIdFunction.isMulticast(expectedNodeIdentifier)).isTrue();
+        assertThat(List.of(timeBased, dceSecurity, timeOrdered))
+                .extracting(UuidUtil::getNodeIdentifier)
+                .containsOnly(expectedNodeIdentifier);
+        assertThat(timeBased.version()).isEqualTo(1);
+        assertThat(dceSecurity.version()).isEqualTo(2);
+        assertThat(timeOrdered.version()).isEqualTo(6);
     }
 
     @Test
