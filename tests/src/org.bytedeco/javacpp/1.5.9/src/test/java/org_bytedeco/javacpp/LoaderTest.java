@@ -14,7 +14,9 @@ import java.util.Properties;
 import org.junit.jupiter.api.Test;
 
 import org.bytedeco.javacpp.Loader;
+import org.bytedeco.javacpp.Pointer;
 import org.bytedeco.javacpp.annotation.Platform;
+import org.bytedeco.javacpp.presets.javacpp;
 
 @Platform(executable = "missing-javacpp-test-command")
 public class LoaderTest {
@@ -35,6 +37,14 @@ public class LoaderTest {
         assertThat(Loader.getVersion("org.bytedeco", "javacpp", Loader.class)).isNotBlank();
         assertThat(directResource).isNotNull();
         assertThat(searchedResources).isNotEmpty();
+    }
+
+    @Test
+    public void loadsPackagedNativeRuntimeAndRegistersPointerSize() {
+        String loadedLibrary = Loader.load(javacpp.class);
+
+        assertThat(loadedLibrary).isNotBlank();
+        assertThat(Loader.sizeof(Pointer.class)).isPositive();
     }
 
     @Test
