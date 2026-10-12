@@ -78,6 +78,21 @@ public class Spring_modulith_events_jacksonTest {
         }
     }
 
+    @Test
+    void backsOffForApplicationProvidedEventSerializer() {
+        try (ConfigurableApplicationContext context = start(CustomSerializerApplication.class)) {
+            EventSerializer serializer = context.getBean(EventSerializer.class);
+
+            Object serialized = serializer.serialize("customer-41");
+            String restored = serializer.deserialize(serialized, String.class);
+
+            assertThat(serializer).isInstanceOf(ApplicationEventSerializer.class);
+            assertThat(context.getBeansOfType(EventSerializer.class)).hasSize(1);
+            assertThat(serialized).isEqualTo("customer-41");
+            assertThat(restored).isEqualTo("customer-41");
+        }
+    }
+
     private ConfigurableApplicationContext start(Class<?> applicationClass) {
         return SpringApplication.run(applicationClass,
                 "--spring.main.web-application-type=none",
@@ -117,6 +132,30 @@ public class Spring_modulith_events_jacksonTest {
             return JsonMapper.builder()
                     .propertyNamingStrategy(PropertyNamingStrategies.SNAKE_CASE)
                     .build();
+        }
+    }
+
+    @SpringBootConfiguration(proxyBeanMethods = false)
+    @EnableAutoConfiguration(exclude = {
+            EventExternalizationAutoConfiguration.class,
+            EventPublicationAutoConfiguration.class
+    })
+    public static class CustomSerializerApplication {
+        @Bean
+        public EventSerializer applicationEventSerializer() {
+            return new ApplicationEventSerializer();
+        }
+    }
+
+    public static final class ApplicationEventSerializer implements EventSerializer {
+        @Override
+        public Object serialize(Object event) {
+            return event;
+        }
+
+        @Override
+        public <T> T deserialize(Object serialized, Class<T> type) {
+            return type.cast(serialized);
         }
     }
 
