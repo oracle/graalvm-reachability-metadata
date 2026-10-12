@@ -10,6 +10,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Properties;
 import java.util.zip.Deflater;
 
@@ -50,8 +53,11 @@ public class LoaderTest {
     }
 
     @Test
-    public void loadsSystemLibraryForRequestedClassLoaderScope() {
+    public void loadsSystemLibraryForRequestedClassLoaderScope() throws Exception {
+        Path zipLibrary = findJdkLibrary("zip");
         String loadedLibrary = Loader.loadLibrary(Deflater.class, new URL[0], "zip");
+        String loadedFromUrl = Loader.loadLibrary(
+                Deflater.class, new URL[] {zipLibrary.toUri().toURL()}, "zip#zip-explicit");
         Deflater deflater = new Deflater();
         try {
             byte[] input = "JavaCPP native loading".getBytes(StandardCharsets.UTF_8);
@@ -60,6 +66,7 @@ public class LoaderTest {
             deflater.finish();
 
             assertThat(loadedLibrary).isEqualTo("zip");
+            assertThat(loadedFromUrl).isIn(zipLibrary.toString(), "zip");
             assertThat(deflater.deflate(compressed)).isPositive();
             assertThat(deflater.finished()).isTrue();
         } finally {
@@ -83,6 +90,21 @@ public class LoaderTest {
             restoreProperty("org.bytedeco.javacpp.loadlibraries", oldLowerCase);
             restoreProperty("org.bytedeco.javacpp.loadLibraries", oldCamelCase);
         }
+    }
+
+    private static Path findJdkLibrary(String name) {
+        Path javaHome = Paths.get(System.getProperty("java.home"));
+        String mappedName = System.mapLibraryName(name);
+        Path[] candidates = {
+            javaHome.resolve("lib").resolve(mappedName),
+            javaHome.resolve("bin").resolve(mappedName)
+        };
+        for (Path candidate : candidates) {
+            if (Files.isRegularFile(candidate)) {
+                return candidate.toAbsolutePath().normalize();
+            }
+        }
+        throw new IllegalStateException("JDK library not found: " + mappedName);
     }
 
     private static void restoreProperty(String name, String value) {
