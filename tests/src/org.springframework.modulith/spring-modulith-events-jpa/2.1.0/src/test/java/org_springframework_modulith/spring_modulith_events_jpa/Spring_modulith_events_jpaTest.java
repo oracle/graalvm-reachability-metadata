@@ -9,6 +9,8 @@ package org_springframework_modulith.spring_modulith_events_jpa;
 import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
+import java.util.stream.IntStream;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
@@ -145,6 +147,41 @@ public class Spring_modulith_events_jpaTest {
                     List<TargetEventPublication> incompleteAfterDelete = transactions
                             .execute((status) -> repository.findIncompletePublications());
                     assertThat(incompleteAfterDelete).isEmpty();
+                });
+    }
+
+    @Test
+    void deletesPublicationsAcrossMultipleBatches() {
+        contextRunner("batch-deletion")
+                .run((context) -> {
+                    assertThat(context).hasNotFailed();
+
+                    EventPublicationRepository repository = context.getBean(EventPublicationRepository.class);
+                    TransactionTemplate transactions = new TransactionTemplate(
+                            context.getBean(PlatformTransactionManager.class));
+                    PublicationTargetIdentifier target = PublicationTargetIdentifier.of("batch-listener");
+                    Instant publishedAt = Instant.parse("2025-04-05T13:40:00Z");
+                    int publicationCount = 101;
+                    List<TargetEventPublication> publications = IntStream.range(0, publicationCount)
+                            .mapToObj((index) -> TargetEventPublication.of(
+                                    new SampleEvent("batch-" + index), target, publishedAt.plusSeconds(index)))
+                            .toList();
+
+                    transactions.executeWithoutResult(
+                            (status) -> publications.forEach(repository::create));
+                    List<TargetEventPublication> stored = transactions
+                            .execute((status) -> repository.findIncompletePublications());
+                    assertThat(stored).hasSize(publicationCount);
+
+                    List<UUID> identifiers = publications.stream()
+                            .map(TargetEventPublication::getIdentifier)
+                            .toList();
+                    transactions.executeWithoutResult(
+                            (status) -> repository.deletePublications(identifiers));
+
+                    List<TargetEventPublication> remaining = transactions
+                            .execute((status) -> repository.findIncompletePublications());
+                    assertThat(remaining).isEmpty();
                 });
     }
 
