@@ -19,21 +19,28 @@ import static org.bytedeco.librealsense.global.RealSense.RS_FORMAT_Z16;
 import static org.bytedeco.librealsense.global.RealSense.RS_PRESET_BEST_QUALITY;
 import static org.bytedeco.librealsense.global.RealSense.RS_SOURCE_VIDEO;
 import static org.bytedeco.librealsense.global.RealSense.RS_STREAM_DEPTH;
+import static org.bytedeco.librealsense.global.RealSense.rs_create_context;
 import static org.bytedeco.librealsense.global.RealSense.rs_distortion_to_string;
 import static org.bytedeco.librealsense.global.RealSense.rs_event_to_string;
 import static org.bytedeco.librealsense.global.RealSense.rs_format_to_string;
+import static org.bytedeco.librealsense.global.RealSense.rs_free_error;
 import static org.bytedeco.librealsense.global.RealSense.rs_get_api_version;
+import static org.bytedeco.librealsense.global.RealSense.rs_get_error_message;
+import static org.bytedeco.librealsense.global.RealSense.rs_get_failed_args;
+import static org.bytedeco.librealsense.global.RealSense.rs_get_failed_function;
 import static org.bytedeco.librealsense.global.RealSense.rs_preset_to_string;
 import static org.bytedeco.librealsense.global.RealSense.rs_source_to_string;
 import static org.bytedeco.librealsense.global.RealSense.rs_stream_to_string;
 
 import org.bytedeco.javacpp.BytePointer;
+import org.bytedeco.javacpp.Pointer;
 import org.bytedeco.librealsense.context;
 import org.bytedeco.librealsense.extrinsics;
 import org.bytedeco.librealsense.float2;
 import org.bytedeco.librealsense.float3;
 import org.bytedeco.librealsense.intrinsics;
 import org.bytedeco.librealsense.motion_data;
+import org.bytedeco.librealsense.rs_context;
 import org.bytedeco.librealsense.rs_error;
 import org.bytedeco.librealsense.rs_timestamp_data;
 import org.bytedeco.librealsense.timestamp_data;
@@ -56,6 +63,30 @@ public class LibrealsenseTest {
         try (context realSenseContext = new context()) {
             assertThat(realSenseContext.isNull()).isFalse();
             assertThat(realSenseContext.get_device_count()).isZero();
+        }
+    }
+
+    @Test
+    void reportsDiagnosticDetailsForIncompatibleApiVersions() {
+        int incompatibleVersion =
+                (RS_API_MAJOR_VERSION + 1) * 10_000
+                        + RS_API_MINOR_VERSION * 100
+                        + RS_API_PATCH_VERSION;
+
+        try (rs_error failure = new rs_error()) {
+            rs_context rejectedContext = rs_create_context(incompatibleVersion, failure);
+            try {
+                assertThat(Pointer.isNull(rejectedContext)).isTrue();
+                assertThat(Pointer.isNull(failure)).isFalse();
+                assertThat(readNativeString(rs_get_failed_function(failure)))
+                        .isEqualTo("rs_create_context");
+                assertThat(readNativeString(rs_get_failed_args(failure)))
+                        .contains("api_version", Integer.toString(incompatibleVersion));
+                assertThat(readNativeString(rs_get_error_message(failure)))
+                        .contains("API version mismatch");
+            } finally {
+                rs_free_error(failure);
+            }
         }
     }
 
