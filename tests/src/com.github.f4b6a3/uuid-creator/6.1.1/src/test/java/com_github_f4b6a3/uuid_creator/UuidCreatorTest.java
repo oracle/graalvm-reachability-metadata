@@ -34,16 +34,21 @@ import com.github.f4b6a3.uuid.factory.nonstandard.SuffixCombFactory;
 import com.github.f4b6a3.uuid.factory.standard.RandomBasedFactory;
 import com.github.f4b6a3.uuid.factory.standard.TimeOrderedEpochFactory;
 import com.github.f4b6a3.uuid.util.CombUtil;
+import com.github.f4b6a3.uuid.util.MachineId;
 import com.github.f4b6a3.uuid.util.UuidBuilder;
 import com.github.f4b6a3.uuid.util.UuidComparator;
 import com.github.f4b6a3.uuid.util.UuidTime;
 import com.github.f4b6a3.uuid.util.UuidUtil;
 import com.github.f4b6a3.uuid.util.UuidValidator;
 import java.net.URI;
+import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.time.Clock;
 import java.time.Instant;
 import java.time.ZoneOffset;
+import java.util.HexFormat;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -299,6 +304,26 @@ public class UuidCreatorTest {
         assertThat(GUID.NIL.compareTo(GUID.MAX)).isNegative();
         assertThat(GUID.MAX.compareTo(GUID.NIL)).isPositive();
         assertThat(GUID.valid("not-a-guid")).isFalse();
+    }
+
+    @Test
+    void machineFingerprintExposesConsistentHashNumberAndUuidRepresentations()
+            throws NoSuchAlgorithmException {
+        String machineString = MachineId.getMachineString();
+        byte[] machineHash = MachineId.getMachineHash();
+        byte[] expectedHash = MessageDigest.getInstance("SHA-256")
+                .digest(machineString.getBytes(StandardCharsets.UTF_8));
+        ByteBuffer hashBytes = ByteBuffer.wrap(machineHash);
+        long expectedMostSignificantBits = (hashBytes.getLong() & 0xffffffffffff0fffL) | 0x4000L;
+        long expectedLeastSignificantBits = (hashBytes.getLong() & 0x3fffffffffffffffL)
+                | 0x8000000000000000L;
+
+        assertThat(machineString).isNotBlank();
+        assertThat(machineHash).containsExactly(expectedHash);
+        assertThat(MachineId.getMachineHexa()).isEqualTo(HexFormat.of().formatHex(machineHash));
+        assertThat(MachineId.getMachineId()).isEqualTo(ByteBuffer.wrap(machineHash).getLong());
+        assertThat(MachineId.getMachineUuid())
+                .isEqualTo(new UUID(expectedMostSignificantBits, expectedLeastSignificantBits));
     }
 
     private static void assertVersion(List<UUID> uuids, int version) {
