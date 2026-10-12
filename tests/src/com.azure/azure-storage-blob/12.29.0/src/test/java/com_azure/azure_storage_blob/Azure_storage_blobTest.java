@@ -27,6 +27,7 @@ import com.azure.storage.blob.models.BlobItem;
 import com.azure.storage.blob.models.BlobListDetails;
 import com.azure.storage.blob.models.BlobProperties;
 import com.azure.storage.blob.models.BlobRange;
+import com.azure.storage.blob.models.BlobRequestConditions;
 import com.azure.storage.blob.models.BlobStorageException;
 import com.azure.storage.blob.models.BlockList;
 import com.azure.storage.blob.models.BlockListType;
@@ -38,6 +39,7 @@ import com.azure.storage.blob.models.StorageAccountInfo;
 import com.azure.storage.blob.sas.BlobSasPermission;
 import com.azure.storage.blob.sas.BlobServiceSasSignatureValues;
 import com.azure.storage.blob.specialized.AppendBlobClient;
+import com.azure.storage.blob.specialized.BlobClientBase;
 import com.azure.storage.blob.specialized.BlobLeaseClient;
 import com.azure.storage.blob.specialized.BlobLeaseClientBuilder;
 import com.azure.storage.blob.specialized.BlockBlobClient;
@@ -221,6 +223,33 @@ public class Azure_storage_blobTest {
                 .contains("<Value>integration</Value>");
         assertThat(decodedQuery(httpClient.requests().get(5))).contains("comp=tags");
         assertRequest(httpClient.requests().get(6), HttpMethod.DELETE, encodedBlobPath(), null);
+    }
+
+    @Test
+    void createsBlobSnapshotWithMetadataAndRequestConditions() {
+        String snapshotId = "2024-05-01T12:30:00.0000000Z";
+        RecordingHttpClient httpClient = new RecordingHttpClient(MockResponse.empty(201)
+                .withHeader("ETag", "\"snapshot-etag\"")
+                .withHeader("Last-Modified", LAST_MODIFIED)
+                .withHeader("x-ms-snapshot", snapshotId)
+                .withHeader("x-ms-request-server-encrypted", "true"));
+        BlobClient blobClient = newBlobClient(httpClient, BLOB_NAME);
+        BlobRequestConditions conditions = new BlobRequestConditions().setIfMatch("\"blob-etag\"");
+
+        Response<BlobClientBase> response = blobClient.createSnapshotWithResponse(
+                Map.of("owner", "archive-team"), conditions, IO_TIMEOUT, Context.NONE);
+        BlobClientBase snapshotClient = response.getValue();
+
+        assertThat(response.getStatusCode()).isEqualTo(201);
+        assertThat(snapshotClient.isSnapshot()).isTrue();
+        assertThat(snapshotClient.getSnapshotId()).isEqualTo(snapshotId);
+        assertThat(snapshotClient.getContainerName()).isEqualTo(CONTAINER_NAME);
+        assertThat(snapshotClient.getBlobName()).isEqualTo(BLOB_NAME);
+        assertThat(httpClient.requests()).hasSize(1);
+        HttpRequest request = httpClient.requests().get(0);
+        assertRequest(request, HttpMethod.PUT, encodedBlobPath(), "comp=snapshot");
+        assertThat(request.getHeaders().getValue("x-ms-meta-owner")).isEqualTo("archive-team");
+        assertThat(request.getHeaders().getValue("If-Match")).isEqualTo("\"blob-etag\"");
     }
 
     @Test
