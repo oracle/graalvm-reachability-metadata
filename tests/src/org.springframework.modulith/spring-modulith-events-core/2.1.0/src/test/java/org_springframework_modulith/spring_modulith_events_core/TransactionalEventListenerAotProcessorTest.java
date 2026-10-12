@@ -46,7 +46,7 @@ public class TransactionalEventListenerAotProcessorTest {
     public static class TransactionalListener {
 
         @TransactionalEventListener
-        public void on(DomainEvent event) {}
+        public void on(DomainEvent event) { }
     }
 
     public static class DomainEvent {}
