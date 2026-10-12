@@ -11,25 +11,35 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.util.ArrayList;
 import java.util.List;
 import org.bytedeco.javacv.FrameGrabber;
+import org.bytedeco.javacv.OpenCVFrameGrabber;
 import org.junit.jupiter.api.Test;
 
 public class FrameGrabberTest {
     @Test
-    void resolvesAndSelectsTheOpenCvBackend() throws Exception {
+    void initializesResolvesAndSelectsTheOpenCvBackend() throws Exception {
         List<String> originalBackends = new ArrayList<>(FrameGrabber.list);
         try {
             FrameGrabber.list.clear();
-            FrameGrabber.list.add("OpenCVFrameGrabber");
+            FrameGrabber.list.add("OpenCV");
 
-            Class<? extends FrameGrabber> resolved = FrameGrabber.get("OpenCVFrameGrabber");
-            assertThat(resolved.getName()).isEqualTo("org.bytedeco.javacv.OpenCVFrameGrabber");
+            FrameGrabber.init();
+
+            Class<? extends FrameGrabber> resolved = FrameGrabber.get("OpenCV");
+            assertThat(resolved).isEqualTo(OpenCVFrameGrabber.class);
 
             Class<? extends FrameGrabber> selected = FrameGrabber.getDefault();
-            assertThat(selected).isNotNull();
-            assertThat(selected.getName()).isEqualTo(resolved.getName());
+            assertThat(selected).isEqualTo(resolved);
         } finally {
             FrameGrabber.list.clear();
             FrameGrabber.list.addAll(originalBackends);
+        }
+    }
+
+    @Test
+    void createsTheOpenCvBackendThroughTheNamedFactory() throws Exception {
+        try (FrameGrabber grabber = FrameGrabber.create("OpenCV", 3)) {
+            assertThat(grabber).isInstanceOf(OpenCVFrameGrabber.class);
+            assertThat(grabber.getGamma()).isEqualTo(2.2);
         }
     }
 }
