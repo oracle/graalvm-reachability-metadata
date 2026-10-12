@@ -8,11 +8,24 @@ package org_bytedeco.javacpp;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.lang.management.ManagementFactory;
+
+import javax.management.ObjectName;
+
 import org.junit.jupiter.api.Test;
 
 import org.bytedeco.javacpp.Pointer;
 
 public class PointerTest {
+
+    @Test
+    public void initializationRegistersPointerBufferPoolMxBean() throws Exception {
+        Pointer.maxBytes();
+
+        ObjectName pointerPool = new ObjectName("java.nio:type=BufferPool,name=javacpp");
+
+        assertThat(ManagementFactory.getPlatformMBeanServer().isRegistered(pointerPool)).isTrue();
+    }
 
     @Test
     public void getPointerConstructsAndOffsetsRequestedPointerType() {

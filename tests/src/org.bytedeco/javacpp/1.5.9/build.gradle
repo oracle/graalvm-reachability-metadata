@@ -9,10 +9,19 @@ plugins {
 }
 
 String libraryVersion = tck.testedLibraryVersion.get()
+String pointerMxBeanProperty = "org.bytedeco.javacpp.mxbean"
 
 dependencies {
     testImplementation "org.bytedeco:javacpp:$libraryVersion"
     testImplementation 'org.assertj:assertj-core:3.22.0'
+}
+
+tasks.withType(Test).configureEach {
+    systemProperty pointerMxBeanProperty, "true"
+}
+
+tasks.named("nativeTest") {
+    runtimeArgs.add("-D$pointerMxBeanProperty=true")
 }
 
 graalvmNative {
