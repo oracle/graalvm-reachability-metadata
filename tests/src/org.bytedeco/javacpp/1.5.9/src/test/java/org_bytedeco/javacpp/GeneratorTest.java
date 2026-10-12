@@ -26,7 +26,7 @@ public class GeneratorTest {
 
     @Platform(include = "<string>", library = "javacpp_generator_test")
     public static class GeneratedBindings extends Pointer {
-        public GeneratedBindings() {}
+        public GeneratedBindings() { }
 
         public GeneratedBindings(Pointer pointer) {
             super(pointer);
@@ -36,7 +36,7 @@ public class GeneratorTest {
                 @StdString String text, NativeCode code, NativeCallback callback);
 
         public static class NestedPointer extends Pointer {
-            public NestedPointer() {}
+            public NestedPointer() { }
 
             public NestedPointer(Pointer pointer) {
                 super(pointer);
@@ -46,7 +46,7 @@ public class GeneratorTest {
         }
 
         public static class NativeCallback extends FunctionPointer {
-            public NativeCallback() {}
+            public NativeCallback() { }
 
             public native int call(int value);
         }
