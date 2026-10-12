@@ -14,9 +14,10 @@ import org.junit.jupiter.api.Test;
 
 public class ProjectorDeviceTest {
     @Test
-    void rejectsUnavailableScreenWhenCreatingCanvasFrame() {
+    void rejectsUnavailableScreenWhenCreatingStandardCanvasFrame() {
         ProjectorDevice projector = new ProjectorDevice("Calibration projector");
         ProjectorDevice.Settings settings = (ProjectorDevice.Settings) projector.getSettings();
+        settings.setUseOpenGL(false);
         settings.setScreenNumber(Integer.MAX_VALUE);
 
         assertThatExceptionOfType(CanvasFrame.Exception.class)
