@@ -76,6 +76,7 @@ public class Azure_storage_blobTest {
     private static final String BLOB_NAME = "reports/current report.txt";
     private static final String CONTENT = "native image blob data";
     private static final String LAST_MODIFIED = "Wed, 01 May 2024 12:30:00 GMT";
+    private static final PublicAccessType CONTAINER_ACCESS = PublicAccessType.CONTAINER;
     private static final StorageSharedKeyCredential CREDENTIAL = new StorageSharedKeyCredential(
             ACCOUNT_NAME, Base64.getEncoder().encodeToString("integration-secret-key".getBytes(UTF_8)));
 
@@ -91,7 +92,7 @@ public class Azure_storage_blobTest {
         BlobServiceClient serviceClient = newServiceClient(httpClient);
 
         Response<BlobContainerClient> created = serviceClient.createBlobContainerWithResponse(
-                CONTAINER_NAME, Map.of("owner", "platform"), PublicAccessType.CONTAINER, Context.NONE);
+                CONTAINER_NAME, Map.of("owner", "platform"), CONTAINER_ACCESS, Context.NONE);
         List<BlobContainerItem> containers = serviceClient.listBlobContainers().stream().toList();
         StorageAccountInfo accountInfo = serviceClient.getAccountInfo();
 
@@ -252,7 +253,7 @@ public class Azure_storage_blobTest {
                 .stream()
                 .toList();
 
-        assertThat(policies.getBlobAccessType()).isEqualTo(PublicAccessType.CONTAINER);
+        assertThat(policies.getBlobAccessType()).isEqualTo(CONTAINER_ACCESS);
         assertThat(policies.getIdentifiers()).singleElement().satisfies(identifier -> {
             assertThat(identifier.getId()).isEqualTo("read-policy");
             assertThat(identifier.getAccessPolicy().getStartsOn())
