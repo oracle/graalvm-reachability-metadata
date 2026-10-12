@@ -1,0 +1,98 @@
+{
+  "add_new_library_support:2026-10-12": {
+    "timestamp": "2026-10-12T15:11:40.058317Z",
+    "library": "com.google.cloud.sql:postgres-socket-factory:1.19.0",
+    "starting_commit": "d3802227036d7c6709170c50b9a110489c5b2e4d",
+    "ending_commit": "efafa6e8dae4d65bbe9cbb038431de2f2a45ab76",
+    "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-sol",
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "status": "success",
+    "stats": {
+      "version": "1.19.0",
+      "dynamicAccess": {
+        "breakdown": {},
+        "coverageRatio": 1.0,
+        "coveredCalls": 0,
+        "totalCalls": 0
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 40,
+          "missed": 46,
+          "ratio": 0.465116,
+          "total": 86
+        },
+        "line": {
+          "covered": 12,
+          "missed": 13,
+          "ratio": 0.48,
+          "total": 25
+        },
+        "method": {
+          "covered": 3,
+          "missed": 6,
+          "ratio": 0.333333,
+          "total": 9
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "advisory_preparation",
+      "issue_number": 10684,
+      "issue_label": "library-new-request",
+      "library": "com.google.cloud.sql:postgres-socket-factory:1.19.0",
+      "summary": "postgres-socket-factory declares org.postgresql:postgresql as scope=provided (not transitive); Google's docs explicitly require adding it separately so any connection attempt can be constructed at all.",
+      "deterministic_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "org.postgresql:postgresql:42.7.3",
+          "scope": "testImplementation",
+          "reason": "postgres-socket-factory's POM marks org.postgresql:postgresql as scope=provided, so it is not pulled in transitively; Google's own setup docs explicitly instruct adding it, and without it there is no JDBC driver class to even attempt a Connection through the socket factory. 42.7.3 matches the versio\n...[truncated]"
+        }
+      ],
+      "agent_guidance": "postgres-socket-factory authenticates to one specific, real Cloud SQL instance via Google's SQL Admin API and mTLS certs issued for that instance; it cannot connect to an arbitrary local Postgres server, so the postgres:18-alpine container already used by org.postgresql:postgresql's own tests is not usable here, and there is no official Cloud SQL emulator or GCP-specific image in this repo's Docker allow-list. Follow the pattern already used by this repo's other GCP client-library tests (e.g. google-cloud-pubsub's test, which builds its client with NoCredentialsProvider.create() against a fake localhost:1 endpoint that nothing listens on, and google-cloud-firestore's test, which points FirestoreOptions at setEmulatorHost(\"localhost:8080\") with no emulator actually running): register the driver via a JDBC URL like jdbc:postgresql:///<db>?cloudSqlInstance=<project>:<region>:<instance>&socketFactory=com.google.cloud.sql.postgres.SocketFactory with a syntactically valid but fake instance identifier and no real credentials, and assert on the expected failure (an IOException/SQLException from the failed Admin API lookup or auth step) rather than a successful connection. This still exercises credential-loading, HTTP client, and JSON-parsing code paths relevant to native-image reachability, consistent with how every other GCP client library in this repo is tested offline.",
+      "risks": [
+        "Meaningful connection-level reachability coverage is inherently capped without live GCP credentials/instance; local Gradle and Native Image verification remain authoritative on how much of the library can actually be exercised.",
+        "jdbc-socket-factory-core (the transitive core) pulls in google-auth-library, google-api-client, google-api-services-sqladmin, and gax — overlapping surface with other already-supported Google client libraries in this repo, which may limit the marginal new coverage this library's own tests contribute."
+      ],
+      "applied_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "org.postgresql:postgresql:42.7.3",
+          "result": "applied",
+          "target": "tests/src/com.google.cloud.sql/postgres-socket-factory/1.19.0/build.gradle"
+        }
+      ],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#10684 Support for com.google.cloud.sql:postgres-socket-factory:1.19.0; label=library-new-request; body_chars=39"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "sonnet",
+      "input_tokens_used": 4,
+      "output_tokens_used": 2275
+    },
+    "metrics": {
+      "input_tokens_used": 308505,
+      "cached_input_tokens_used": 4855680,
+      "output_tokens_used": 34733,
+      "iterations": 5,
+      "cost_usd": 5.0123,
+      "generated_loc": 94,
+      "tested_library_loc": 12,
+      "metadata_entries": 133,
+      "test_only_metadata_entries": 27,
+      "code_coverage_percent": 48.0
+    },
+    "artifacts": {
+      "metadata_file": "metadata/com.google.cloud.sql/postgres-socket-factory/1.19.0/reachability-metadata.json"
+    }
+  }
+}
