@@ -3,6 +3,11 @@
 Rendered by Forge from the pre-push branch review of §FS-local-branch-review.
 Newest entry first; every non-approval is recorded, including one a repair later cleared.
 
+## 2026-10-12 — org.springframework.boot:spring-boot-security:4.1.0 (#8464)
+
+**Optional reflection targets break Spring AOT consumers with partial classpaths**
+
+Both failed Spring AOT jobs reported `Type not found during analysis` for `LoginUrlAuthenticationEntryPoint`; after that registration was removed, local JDK 25 reproduction identified the same layout failure for `ServletContextAware`. These optional types are absent from affected consumers' classpaths, while the coordinate's own fully populated test classpath masked the problem. The defect is confined to the contribution's metadata and is repairable under §FS-contribution-contract.5.1.
 ## 2026-10-09 — org.springframework.boot:spring-boot-webclient:4.1.0-RC1 (#8432)
 
 **Companion test dependency pinned to the requested library version**
