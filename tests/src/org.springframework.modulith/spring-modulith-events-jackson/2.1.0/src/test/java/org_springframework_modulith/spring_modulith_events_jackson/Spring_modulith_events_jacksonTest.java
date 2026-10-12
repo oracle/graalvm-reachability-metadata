@@ -11,13 +11,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.SpringBootConfiguration;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
-import org.springframework.modulith.events.config.EventExternalizationAutoConfiguration;
-import org.springframework.modulith.events.config.EventPublicationAutoConfiguration;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.modulith.events.core.EventSerializer;
 
 import tools.jackson.databind.JacksonModule;
@@ -94,25 +90,16 @@ public class Spring_modulith_events_jacksonTest {
     }
 
     private ConfigurableApplicationContext start(Class<?> applicationClass) {
-        return SpringApplication.run(applicationClass,
-                "--spring.main.web-application-type=none",
-                "--spring.main.banner-mode=off",
-                "--logging.level.root=OFF");
+        return ApplicationContexts.start(applicationClass);
     }
 
-    @SpringBootConfiguration(proxyBeanMethods = false)
-    @EnableAutoConfiguration(exclude = {
-            EventExternalizationAutoConfiguration.class,
-            EventPublicationAutoConfiguration.class
-    })
+    @Configuration(proxyBeanMethods = false)
+    @EnableJacksonEventSerialization
     public static class DefaultMapperApplication {
     }
 
-    @SpringBootConfiguration(proxyBeanMethods = false)
-    @EnableAutoConfiguration(exclude = {
-            EventExternalizationAutoConfiguration.class,
-            EventPublicationAutoConfiguration.class
-    })
+    @Configuration(proxyBeanMethods = false)
+    @EnableJacksonEventSerialization
     public static class ModuleApplication {
         @Bean
         public JacksonModule shippingModule() {
@@ -121,11 +108,8 @@ public class Spring_modulith_events_jacksonTest {
         }
     }
 
-    @SpringBootConfiguration(proxyBeanMethods = false)
-    @EnableAutoConfiguration(exclude = {
-            EventExternalizationAutoConfiguration.class,
-            EventPublicationAutoConfiguration.class
-    })
+    @Configuration(proxyBeanMethods = false)
+    @EnableJacksonEventSerialization
     public static class CustomMapperApplication {
         @Bean
         public JsonMapper jsonMapper() {
@@ -135,11 +119,8 @@ public class Spring_modulith_events_jacksonTest {
         }
     }
 
-    @SpringBootConfiguration(proxyBeanMethods = false)
-    @EnableAutoConfiguration(exclude = {
-            EventExternalizationAutoConfiguration.class,
-            EventPublicationAutoConfiguration.class
-    })
+    @Configuration(proxyBeanMethods = false)
+    @EnableJacksonEventSerialization
     public static class CustomSerializerApplication {
         @Bean
         public EventSerializer applicationEventSerializer() {

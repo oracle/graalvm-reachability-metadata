@@ -9,21 +9,14 @@ package org_springframework_modulith.spring_modulith_events_jackson;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.SpringBootConfiguration;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.modulith.events.config.EventExternalizationAutoConfiguration;
-import org.springframework.modulith.events.config.EventPublicationAutoConfiguration;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.modulith.events.core.EventSerializer;
 
 public class Jackson2EventSerializerTest {
     @Test
     void autoConfiguresJackson2CompatibilitySerializer() {
-        try (ConfigurableApplicationContext context = SpringApplication.run(Jackson2Application.class,
-                "--spring.main.web-application-type=none",
-                "--spring.main.banner-mode=off",
-                "--logging.level.root=OFF")) {
+        try (ConfigurableApplicationContext context = ApplicationContexts.start(Jackson2Application.class)) {
             EventSerializer serializer = context.getBean(EventSerializer.class);
             LegacyOrder event = new LegacyOrder("legacy-23", true);
 
@@ -40,13 +33,8 @@ public class Jackson2EventSerializerTest {
         }
     }
 
-    @SpringBootConfiguration(proxyBeanMethods = false)
-    @EnableAutoConfiguration(
-            exclude = {
-                    EventExternalizationAutoConfiguration.class,
-                    EventPublicationAutoConfiguration.class
-            },
-            excludeName = "org.springframework.modulith.events.jackson.JacksonEventSerializationConfiguration")
+    @Configuration(proxyBeanMethods = false)
+    @EnableJackson2EventSerialization
     public static class Jackson2Application {
     }
 
