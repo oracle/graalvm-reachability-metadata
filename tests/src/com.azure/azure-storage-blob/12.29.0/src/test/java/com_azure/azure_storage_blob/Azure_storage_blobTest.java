@@ -38,6 +38,8 @@ import com.azure.storage.blob.models.StorageAccountInfo;
 import com.azure.storage.blob.sas.BlobSasPermission;
 import com.azure.storage.blob.sas.BlobServiceSasSignatureValues;
 import com.azure.storage.blob.specialized.AppendBlobClient;
+import com.azure.storage.blob.specialized.BlobLeaseClient;
+import com.azure.storage.blob.specialized.BlobLeaseClientBuilder;
 import com.azure.storage.blob.specialized.BlockBlobClient;
 import com.azure.storage.blob.specialized.PageBlobClient;
 import com.azure.storage.common.StorageSharedKeyCredential;
@@ -301,6 +303,46 @@ public class Azure_storage_blobTest {
     }
 
     @Test
+    void acquiresRenewsChangesAndReleasesBlobLease() {
+        String proposedLeaseId = "11111111-1111-1111-1111-111111111111";
+        String changedLeaseId = "22222222-2222-2222-2222-222222222222";
+        RecordingHttpClient httpClient = new RecordingHttpClient(
+                MockResponse.empty(201).withHeader("x-ms-lease-id", proposedLeaseId),
+                MockResponse.empty(200).withHeader("x-ms-lease-id", proposedLeaseId),
+                MockResponse.empty(200).withHeader("x-ms-lease-id", changedLeaseId),
+                MockResponse.empty(200));
+        BlobLeaseClient leaseClient = new BlobLeaseClientBuilder()
+                .blobClient(newBlobClient(httpClient, BLOB_NAME))
+                .leaseId(proposedLeaseId)
+                .buildClient();
+
+        assertThat(leaseClient.acquireLease(15)).isEqualTo(proposedLeaseId);
+        assertThat(leaseClient.getLeaseId()).isEqualTo(proposedLeaseId);
+        assertThat(leaseClient.renewLease()).isEqualTo(proposedLeaseId);
+        assertThat(leaseClient.changeLease(changedLeaseId)).isEqualTo(changedLeaseId);
+        assertThat(leaseClient.getLeaseId()).isEqualTo(changedLeaseId);
+        leaseClient.releaseLease();
+
+        assertThat(httpClient.requests()).hasSize(4);
+        assertLeaseRequest(httpClient.requests().get(0), "acquire");
+        assertThat(httpClient.requests().get(0).getHeaders().getValue("x-ms-lease-duration"))
+                .isEqualTo("15");
+        assertThat(httpClient.requests().get(0).getHeaders().getValue("x-ms-proposed-lease-id"))
+                .isEqualTo(proposedLeaseId);
+        assertLeaseRequest(httpClient.requests().get(1), "renew");
+        assertThat(httpClient.requests().get(1).getHeaders().getValue("x-ms-lease-id"))
+                .isEqualTo(proposedLeaseId);
+        assertLeaseRequest(httpClient.requests().get(2), "change");
+        assertThat(httpClient.requests().get(2).getHeaders().getValue("x-ms-lease-id"))
+                .isEqualTo(proposedLeaseId);
+        assertThat(httpClient.requests().get(2).getHeaders().getValue("x-ms-proposed-lease-id"))
+                .isEqualTo(changedLeaseId);
+        assertLeaseRequest(httpClient.requests().get(3), "release");
+        assertThat(httpClient.requests().get(3).getHeaders().getValue("x-ms-lease-id"))
+                .isEqualTo(changedLeaseId);
+    }
+
+    @Test
     void generatesSignedSasAndMapsStorageErrors() {
         RecordingHttpClient httpClient = new RecordingHttpClient(MockResponse.xml(404, errorXml()));
         BlobClient blobClient = newBlobClient(httpClient, BLOB_NAME);
@@ -347,6 +389,11 @@ public class Azure_storage_blobTest {
     private static String decodedQuery(HttpRequest request) {
         String query = request.getUrl().getQuery();
         return query == null ? "" : URLDecoder.decode(query, UTF_8);
+    }
+
+    private static void assertLeaseRequest(HttpRequest request, String action) {
+        assertRequest(request, HttpMethod.PUT, encodedBlobPath(), "comp=lease");
+        assertThat(request.getHeaders().getValue("x-ms-lease-action")).isEqualTo(action);
     }
 
     private static String encodedBlobPath() {
