@@ -360,6 +360,27 @@ public class Azure_storage_blobTest {
     }
 
     @Test
+    void copiesBlobContentFromUrl() {
+        String sourceUrl = ENDPOINT + "/archive/source-report.txt?versionid=source-version";
+        String copyId = "copy-operation-1";
+        RecordingHttpClient httpClient = new RecordingHttpClient(MockResponse.empty(202)
+                .withHeader("ETag", "\"copied-etag\"")
+                .withHeader("Last-Modified", LAST_MODIFIED)
+                .withHeader("x-ms-copy-id", copyId)
+                .withHeader("x-ms-copy-status", "success")
+                .withHeader("x-ms-version-id", "destination-version"));
+        BlobClient blobClient = newBlobClient(httpClient, BLOB_NAME);
+
+        assertThat(blobClient.copyFromUrl(sourceUrl)).isEqualTo(copyId);
+
+        assertThat(httpClient.requests()).hasSize(1);
+        HttpRequest request = httpClient.requests().get(0);
+        assertRequest(request, HttpMethod.PUT, encodedBlobPath(), null);
+        assertThat(request.getHeaders().getValue("x-ms-copy-source")).isEqualTo(sourceUrl);
+        assertThat(request.getHeaders().getValue("x-ms-requires-sync")).isEqualTo("true");
+    }
+
+    @Test
     void stagesCommitsAndListsBlocks() {
         String blockId = Base64.getEncoder().encodeToString("block-0001".getBytes(UTF_8));
         RecordingHttpClient httpClient = new RecordingHttpClient(
