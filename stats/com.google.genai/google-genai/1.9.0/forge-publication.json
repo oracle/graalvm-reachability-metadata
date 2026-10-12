@@ -1,0 +1,150 @@
+{
+  "base_commit": "25e6118a35035b9757b30d3585830fae12d95890",
+  "branch": "ai/kimeta/add-lib-support-com.google.genai-google-genai-1.9.0-forge-10685-20261012134345361765-10f5c7c797c9",
+  "follow_ups": [],
+  "forge": {
+    "branch": "master",
+    "commit": "fbf96fca05693fa8fd4f29898cf0a9e61d3c0d89",
+    "monitored_branch": "origin/master"
+  },
+  "issue_number": 10685,
+  "library": {
+    "artifact": "google-genai",
+    "coordinates": "com.google.genai:google-genai:1.9.0",
+    "group": "com.google.genai",
+    "version": "1.9.0"
+  },
+  "local_ci_verification": {
+    "base_commit": "25e6118a35035b9757b30d3585830fae12d95890",
+    "commands": [
+      {
+        "command": [
+          "./gradlew",
+          "generateChangedIndexFileCoordinatesList",
+          "-PbaseCommit=origin/master",
+          "-PnewCommit=HEAD"
+        ],
+        "env": {
+          "GITHUB_OUTPUT": "/tmp/tmp3ufryexd"
+        },
+        "gate": "changed-index-coordinates",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :generateChangedIndexFileCoordinatesList\n\n[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata-copy/forge/local_repositories/forge_worktrees/10685-4ae7f8b6/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 2s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      },
+      {
+        "command": [
+          "./gradlew",
+          "validateIndexFiles",
+          "-Pcoordinates=com.google.genai:google-genai"
+        ],
+        "env": {},
+        "gate": "index-file-validation",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :validateIndexFiles\n✅ metadata/com.google.genai/google-genai/index.json: Valid\n\n[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata-copy/forge/local_repositories/forge_worktrees/10685-4ae7f8b6/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 1s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      }
+    ],
+    "failure_command": null,
+    "failure_gate": null,
+    "final_commit": "feea1d0ec7cd69840f397c2ae814be85eb3c72a6",
+    "fixups": [],
+    "human_intervention_required": false,
+    "repo_fix_paths": [],
+    "status": "success"
+  },
+  "local_review": {
+    "changed_paths": [],
+    "decision": "approved",
+    "finding_body": "",
+    "finding_title": "",
+    "fix_note": "",
+    "model": "gpt-5.6-sol",
+    "review_comment": "Confirmed the diff is limited to com.google.genai:google-genai:1.9.0 and its allowed metadata, stats, and test files. The public-API tests are library-specific, version-agnostic, separately packaged, bounded, and run under Native Image without skips, tolerated failures, or native build/run flags. Only reachability-metadata.json is used. Reported dynamic-access coverage is 3/3 (100%), and 3 covered calls do not trigger the entry-count mismatch investigation against 529 reported metadata entries. Local index gates passed, and the exact Forge finalization command completed all three test lanes, metadata/style checks, generated-test validation, and statistics generation without changing the publishable tree.",
+    "session_id": "38afef39a8294047"
+  },
+  "metrics": {
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "path": "stats/com.google.genai/google-genai/1.9.0/execution-metrics.json",
+    "summary": {
+      "cached_input_tokens_used": 798464,
+      "code_coverage_percent": 5.93,
+      "cost_usd": 1.5201,
+      "generated_loc": 271,
+      "input_tokens_used": 158140,
+      "iterations": 4,
+      "metadata_entries": 471,
+      "output_tokens_used": 11006,
+      "test_only_metadata_entries": 58,
+      "tested_library_loc": 1173
+    },
+    "timestamp": "2026-10-12T13:43:45.361765Z"
+  },
+  "modifiers": {
+    "chunk_final": true,
+    "chunked_dynamic_access": false,
+    "human_intervention": false
+  },
+  "producer": "kimeta",
+  "publication_id": "forge-10685-20261012134345361765-10f5c7c797c9",
+  "render": {
+    "dynamic_access": null,
+    "dynamic_access_evidence": {
+      "covered_call_sites": [
+        "[reflection] java.lang.reflect.Method#invoke(java.lang.Object, java.lang.Object[]) <- com.google.genai.AfcUtil.getFunctionResponse(AfcUtil.java:228) (line 228)",
+        "[reflection] java.lang.Class#getDeclaredMethod(java.lang.String, java.lang.Class[]) <- com.google.genai.ResponseStream$ResponseStreamIterator.<init>(ResponseStream.java:62) (line 62)",
+        "[reflection] java.lang.reflect.Method#invoke(java.lang.Object, java.lang.Object[]) <- com.google.genai.ResponseStream$ResponseStreamIterator.next(ResponseStream.java:100) (line 100)"
+      ],
+      "metadata_rules": [
+        "when `com.google.genai.AfcUtil` is reached, make `byte[]` available for reflection",
+        "when `com.google.genai.JsonSerializable` is reached, make `com.fasterxml.jackson.databind.deser.BeanDeserializerModifier[]` available for reflection",
+        "when `com.google.genai.JsonSerializable` is reached, make `com.fasterxml.jackson.databind.deser.Deserializers[]` available for reflection",
+        "when `com.google.genai.JsonSerializable` is reached, make `com.fasterxml.jackson.databind.deser.KeyDeserializers[]` available for reflection",
+        "when `com.google.genai.JsonSerializable` is reached, make `com.fasterxml.jackson.databind.deser.ValueInstantiators[]` available for reflection",
+        "when `com.google.genai.JsonSerializable` is reached, make `com.fasterxml.jackson.databind.ext.Java7SupportImpl.<init>()` available for reflection",
+        "when `com.google.genai.JsonSerializable` is reached, make `com.fasterxml.jackson.databind.ser.BeanSerializerModifier[]` available for reflection",
+        "when `com.google.genai.JsonSerializable` is reached, make `com.fasterxml.jackson.databind.ser.Serializers[]` available for reflection",
+        "... and 409 more"
+      ]
+    },
+    "library_stats": {
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 3,
+            "totalCalls": 3
+          }
+        },
+        "coverageRatio": 1.0,
+        "coveredCalls": 3,
+        "totalCalls": 3
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 4465,
+          "missed": 80034,
+          "ratio": 0.052841,
+          "total": 84499
+        },
+        "line": {
+          "covered": 1173,
+          "missed": 18621,
+          "ratio": 0.05926,
+          "total": 19794
+        },
+        "method": {
+          "covered": 355,
+          "missed": 6323,
+          "ratio": 0.05316,
+          "total": 6678
+        }
+      },
+      "version": "1.9.0"
+    }
+  },
+  "schema_version": 1,
+  "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-sol",
+  "task_type": "library-new-request",
+  "template_type": "library-new-request",
+  "timestamp": "2026-10-12T13:43:45.361765Z"
+}
