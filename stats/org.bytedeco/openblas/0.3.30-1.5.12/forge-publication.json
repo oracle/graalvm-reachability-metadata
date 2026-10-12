@@ -1,0 +1,139 @@
+{
+  "base_commit": "39195a3c797e77ea47b8810f8472141a71f17b61",
+  "branch": "ai/kimeta/add-lib-support-org.bytedeco-openblas-0.3.30-1.5.12-forge-10688-20261012065329243100-5eb230485b6b",
+  "follow_ups": [],
+  "forge": {
+    "branch": "master",
+    "commit": "39195a3c797e77ea47b8810f8472141a71f17b61",
+    "monitored_branch": "origin/master"
+  },
+  "issue_number": 10688,
+  "library": {
+    "artifact": "openblas",
+    "coordinates": "org.bytedeco:openblas:0.3.30-1.5.12",
+    "group": "org.bytedeco",
+    "version": "0.3.30-1.5.12"
+  },
+  "local_ci_verification": {
+    "base_commit": "39195a3c797e77ea47b8810f8472141a71f17b61",
+    "commands": [
+      {
+        "command": [
+          "./gradlew",
+          "generateChangedIndexFileCoordinatesList",
+          "-PbaseCommit=origin/master",
+          "-PnewCommit=HEAD"
+        ],
+        "env": {
+          "GITHUB_OUTPUT": "/tmp/tmp76i9ou2n"
+        },
+        "gate": "changed-index-coordinates",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :generateChangedIndexFileCoordinatesList\n\n[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10688-41ef2e59/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 2s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      },
+      {
+        "command": [
+          "./gradlew",
+          "validateIndexFiles",
+          "-Pcoordinates=org.bytedeco:openblas"
+        ],
+        "env": {},
+        "gate": "index-file-validation",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :validateIndexFiles\n✅ metadata/org.bytedeco/openblas/index.json: Valid\n\n[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10688-41ef2e59/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 1s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      }
+    ],
+    "failure_command": null,
+    "failure_gate": null,
+    "final_commit": "0376c29da020c6fc70d2d9e96d38a3d129dc8636",
+    "fixups": [],
+    "human_intervention_required": false,
+    "repo_fix_paths": [],
+    "status": "success"
+  },
+  "local_review": {
+    "changed_paths": [],
+    "decision": "approved",
+    "finding_body": "",
+    "finding_title": "",
+    "fix_note": "",
+    "model": "gpt-5.6-sol",
+    "review_comment": "Verified the diff is limited to one new org.bytedeco:openblas:0.3.30-1.5.12 contribution, uses only reachability-metadata.json, and has a public, version-agnostic test in a package separate from the library that exercises and asserts real OpenBLAS JNI matrix multiplication without Native Image skips, tolerated failures, compatibility overrides, or native flags. The resolved 0/0 dynamic-access report is a valid no-calls case, so neither the percentage gate nor metadata-entry mismatch probe applies. Local gate records report successful changed-index detection and index validation, and the rendered run evidence reports successful generation with consistent stats. No repair was needed.",
+    "session_id": "a8b980519f644f49"
+  },
+  "metrics": {
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "path": "stats/org.bytedeco/openblas/0.3.30-1.5.12/execution-metrics.json",
+    "summary": {
+      "cached_input_tokens_used": 679040,
+      "code_coverage_percent": 21.2,
+      "cost_usd": 0.8784,
+      "generated_loc": 36,
+      "input_tokens_used": 68876,
+      "iterations": 5,
+      "metadata_entries": 247,
+      "output_tokens_used": 6484,
+      "tested_library_loc": 39
+    },
+    "timestamp": "2026-10-12T06:53:29.243100Z"
+  },
+  "modifiers": {
+    "chunk_final": true,
+    "chunked_dynamic_access": false,
+    "human_intervention": false
+  },
+  "producer": "kimeta",
+  "publication_id": "forge-10688-20261012065329243100-5eb230485b6b",
+  "render": {
+    "dynamic_access": null,
+    "dynamic_access_evidence": {
+      "covered_call_sites": [],
+      "metadata_rules": [
+        "when `org.bytedeco.openblas.global.openblas` is reached, make `java.lang.NullPointerException` available for reflection",
+        "when `org.bytedeco.openblas.global.openblas_nolapack` is reached, make `java.lang.NullPointerException` available for reflection",
+        "when `org.bytedeco.openblas.global.openblas` is reached, make `java.lang.Object.toString()` available for reflection",
+        "when `org.bytedeco.openblas.global.openblas_nolapack` is reached, make `java.lang.Object.toString()` available for reflection",
+        "when `org.bytedeco.openblas.global.openblas_nolapack` is reached, make `java.lang.RuntimeException` available for reflection",
+        "when `org.bytedeco.openblas.global.openblas` is reached, make `java.lang.String.<init>(byte[])` available for reflection",
+        "when `org.bytedeco.openblas.global.openblas` is reached, make `java.lang.String.getBytes()` available for reflection",
+        "when `org.bytedeco.openblas.global.openblas_nolapack` is reached, make `java.lang.String.<init>(byte[])` available for reflection",
+        "... and 78 more"
+      ]
+    },
+    "library_stats": {
+      "dynamicAccess": {
+        "breakdown": {},
+        "coverageRatio": 1.0,
+        "coveredCalls": 0,
+        "totalCalls": 0
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 172,
+          "missed": 1812,
+          "ratio": 0.086694,
+          "total": 1984
+        },
+        "line": {
+          "covered": 39,
+          "missed": 145,
+          "ratio": 0.211957,
+          "total": 184
+        },
+        "method": {
+          "covered": 8,
+          "missed": 87,
+          "ratio": 0.084211,
+          "total": 95
+        }
+      },
+      "version": "0.3.30-1.5.12"
+    }
+  },
+  "schema_version": 1,
+  "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-sol",
+  "task_type": "library-new-request",
+  "template_type": "library-new-request",
+  "timestamp": "2026-10-12T06:53:29.243100Z"
+}
