@@ -14,6 +14,8 @@ import static org.bytedeco.librealsense2.global.realsense2.RS2_DISTORTION_NONE;
 import static org.bytedeco.librealsense2.global.realsense2.RS2_EXCEPTION_TYPE_INVALID_VALUE;
 import static org.bytedeco.librealsense2.global.realsense2.RS2_EXTENSION_DECIMATION_FILTER;
 import static org.bytedeco.librealsense2.global.realsense2.RS2_FORMAT_Z16;
+import static org.bytedeco.librealsense2.global.realsense2.RS2_LOG_SEVERITY_DEBUG;
+import static org.bytedeco.librealsense2.global.realsense2.RS2_LOG_SEVERITY_INFO;
 import static org.bytedeco.librealsense2.global.realsense2.RS2_PRODUCT_LINE_DEPTH;
 import static org.bytedeco.librealsense2.global.realsense2.RS2_STREAM_DEPTH;
 import static org.bytedeco.librealsense2.global.realsense2.rs2_config_can_resolve;
@@ -40,12 +42,20 @@ import static org.bytedeco.librealsense2.global.realsense2.rs2_get_failed_args;
 import static org.bytedeco.librealsense2.global.realsense2.rs2_get_failed_function;
 import static org.bytedeco.librealsense2.global.realsense2.rs2_get_librealsense_exception_type;
 import static org.bytedeco.librealsense2.global.realsense2.rs2_is_processing_block_extendable_to;
+import static org.bytedeco.librealsense2.global.realsense2.rs2_log;
+import static org.bytedeco.librealsense2.global.realsense2.rs2_log_to_file;
 import static org.bytedeco.librealsense2.global.realsense2.rs2_project_point_to_pixel;
 import static org.bytedeco.librealsense2.global.realsense2.rs2_query_devices;
 import static org.bytedeco.librealsense2.global.realsense2.rs2_query_devices_ex;
+import static org.bytedeco.librealsense2.global.realsense2.rs2_reset_logger;
 import static org.bytedeco.librealsense2.global.realsense2.rs2_transform_point_to_point;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 import org.bytedeco.javacpp.Pointer;
 import org.bytedeco.librealsense2.rs2_config;
@@ -225,6 +235,27 @@ public class Librealsense2Test {
                 rs2_delete_processing_block(decimationFilter);
             }
         }
+    }
+
+    @Test
+    void writesApplicationMessagesToConfiguredLogFile(@TempDir Path temporaryDirectory) throws IOException {
+        rs2_error error = new rs2_error();
+        Path logFile = temporaryDirectory.resolve("librealsense.log");
+        String message = "application message from the librealsense test";
+
+        try {
+            rs2_log_to_file(RS2_LOG_SEVERITY_DEBUG, logFile.toString(), error);
+            assertNoError(error);
+            rs2_log(RS2_LOG_SEVERITY_INFO, message, error);
+            assertNoError(error);
+        } finally {
+            rs2_error resetError = new rs2_error();
+            rs2_reset_logger(resetError);
+            assertNoError(resetError);
+        }
+
+        assertThat(logFile).exists();
+        assertThat(Files.readString(logFile)).contains(message);
     }
 
     @Test
