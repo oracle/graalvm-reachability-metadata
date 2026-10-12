@@ -3,6 +3,12 @@
 Rendered by Forge from the pre-push branch review of §FS-local-branch-review.
 Newest entry first; every non-approval is recorded, including one a repair later cleared.
 
+## 2026-10-12 — org.bytedeco:javacv:1.5.12 (#10687)
+
+**Avoid host GUI dependencies in JavaCV backend-selection tests**
+
+All three required JavaCV matrix jobs failed in javaTest because tests selected an OpenCV backend whose native highgui library required libgtk-x11-2.0.so.0, while the projector scenario assumed a headful graphics environment. Coordinate tests must pass the required lanes while preserving meaningful public-API behavior. §FS-repository-functional-spec.5.2 §FS-test-contract.1.3
+
 ## 2026-10-12 — org.springframework.boot:spring-boot-security:4.1.0 (#8464)
 
 **Optional reflection targets break Spring AOT consumers with partial classpaths**
