@@ -8,14 +8,42 @@ package org_bytedeco.javacv;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.ArrayList;
+import java.util.List;
 import org.bytedeco.javacv.FrameRecorder;
+import org.bytedeco.javacv.OpenCVFrameRecorder;
 import org.junit.jupiter.api.Test;
 
 public class FrameRecorderTest {
     @Test
-    void resolvesTheOpenCvBackend() throws Exception {
-        Class<? extends FrameRecorder> resolved = FrameRecorder.get("OpenCVFrameRecorder");
+    void initializesResolvesAndSelectsTheOpenCvBackend() throws Exception {
+        List<String> originalBackends = new ArrayList<>(FrameRecorder.list);
+        try {
+            FrameRecorder.list.clear();
+            FrameRecorder.list.add("OpenCV");
 
-        assertThat(resolved.getName()).isEqualTo("org.bytedeco.javacv.OpenCVFrameRecorder");
+            FrameRecorder.init();
+
+            Class<? extends FrameRecorder> directlyResolved = FrameRecorder.get("OpenCVFrameRecorder");
+            Class<? extends FrameRecorder> conventionallyResolved = FrameRecorder.get("OpenCV");
+            assertThat(directlyResolved).isEqualTo(OpenCVFrameRecorder.class);
+            assertThat(conventionallyResolved).isEqualTo(directlyResolved);
+
+            Class<? extends FrameRecorder> selected = FrameRecorder.getDefault();
+            assertThat(selected).isEqualTo(directlyResolved);
+        } finally {
+            FrameRecorder.list.clear();
+            FrameRecorder.list.addAll(originalBackends);
+        }
+    }
+
+    @Test
+    void createsTheOpenCvBackendThroughTheNamedFactory() throws Exception {
+        try (FrameRecorder recorder = FrameRecorder.create("OpenCV", "recording.avi", 320, 240)) {
+            assertThat(recorder).isInstanceOf(OpenCVFrameRecorder.class);
+            assertThat(recorder.getImageWidth()).isEqualTo(320);
+            assertThat(recorder.getImageHeight()).isEqualTo(240);
+            assertThat(recorder.getFrameRate()).isEqualTo(30.0);
+        }
     }
 }
