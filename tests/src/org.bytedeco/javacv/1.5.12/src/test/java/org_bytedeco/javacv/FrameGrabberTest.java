@@ -20,15 +20,17 @@ public class FrameGrabberTest {
         List<String> originalBackends = new ArrayList<>(FrameGrabber.list);
         try {
             FrameGrabber.list.clear();
-            FrameGrabber.list.add("OpenCV");
+            FrameGrabber.list.add("OpenCVFrameGrabber");
 
             FrameGrabber.init();
 
-            Class<? extends FrameGrabber> resolved = FrameGrabber.get("OpenCV");
-            assertThat(resolved).isEqualTo(OpenCVFrameGrabber.class);
+            Class<? extends FrameGrabber> directlyResolved = FrameGrabber.get("OpenCVFrameGrabber");
+            Class<? extends FrameGrabber> conventionallyResolved = FrameGrabber.get("OpenCV");
+            assertThat(directlyResolved).isEqualTo(OpenCVFrameGrabber.class);
+            assertThat(conventionallyResolved).isEqualTo(directlyResolved);
 
             Class<? extends FrameGrabber> selected = FrameGrabber.getDefault();
-            assertThat(selected).isEqualTo(resolved);
+            assertThat(selected).isEqualTo(directlyResolved);
         } finally {
             FrameGrabber.list.clear();
             FrameGrabber.list.addAll(originalBackends);
