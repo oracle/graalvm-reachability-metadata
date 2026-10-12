@@ -66,7 +66,10 @@ import org.bytedeco.librealsense2.rs2_extrinsics;
 import org.bytedeco.librealsense2.rs2_frame_queue;
 import org.bytedeco.librealsense2.rs2_intrinsics;
 import org.bytedeco.librealsense2.rs2_pipeline;
+import org.bytedeco.librealsense2.rs2_pose;
 import org.bytedeco.librealsense2.rs2_processing_block;
+import org.bytedeco.librealsense2.rs2_quaternion;
+import org.bytedeco.librealsense2.rs2_vector;
 
 public class Librealsense2Test {
     @Test
@@ -200,6 +203,43 @@ public class Librealsense2Test {
             assertThat(transformed[0]).isCloseTo(1.5f, within(0.0001f));
             assertThat(transformed[1]).isCloseTo(1.0f, within(0.0001f));
             assertThat(transformed[2]).isCloseTo(6.0f, within(0.0001f));
+        }
+    }
+
+    @Test
+    void representsTrackedPoseWithMotionAndConfidence() {
+        try (rs2_pose pose = new rs2_pose();
+                rs2_vector translation = new rs2_vector();
+                rs2_vector velocity = new rs2_vector();
+                rs2_vector angularVelocity = new rs2_vector();
+                rs2_quaternion rotation = new rs2_quaternion()) {
+            translation.x(1.25f).y(-2.5f).z(3.75f);
+            velocity.x(0.5f).y(1.5f).z(-0.25f);
+            angularVelocity.x(-0.1f).y(0.2f).z(0.3f);
+            rotation.x(0.0f).y(0.3826834f).z(0.0f).w(0.9238795f);
+
+            pose.translation(translation)
+                    .velocity(velocity)
+                    .angular_velocity(angularVelocity)
+                    .rotation(rotation)
+                    .tracker_confidence(3)
+                    .mapper_confidence(2);
+
+            assertThat(pose.translation().x()).isEqualTo(1.25f);
+            assertThat(pose.translation().y()).isEqualTo(-2.5f);
+            assertThat(pose.translation().z()).isEqualTo(3.75f);
+            assertThat(pose.velocity().x()).isEqualTo(0.5f);
+            assertThat(pose.velocity().y()).isEqualTo(1.5f);
+            assertThat(pose.velocity().z()).isEqualTo(-0.25f);
+            assertThat(pose.angular_velocity().x()).isEqualTo(-0.1f);
+            assertThat(pose.angular_velocity().y()).isEqualTo(0.2f);
+            assertThat(pose.angular_velocity().z()).isEqualTo(0.3f);
+            assertThat(pose.rotation().x()).isZero();
+            assertThat(pose.rotation().y()).isEqualTo(0.3826834f);
+            assertThat(pose.rotation().z()).isZero();
+            assertThat(pose.rotation().w()).isEqualTo(0.9238795f);
+            assertThat(pose.tracker_confidence()).isEqualTo(3);
+            assertThat(pose.mapper_confidence()).isEqualTo(2);
         }
     }
 
