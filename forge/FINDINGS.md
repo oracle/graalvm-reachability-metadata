@@ -3,6 +3,12 @@
 Rendered by Forge from the pre-push branch review of §FS-local-branch-review.
 Newest entry first; every non-approval is recorded, including one a repair later cleared.
 
+## 2026-10-12 — org.bytedeco:tesseract:5.5.1-1.5.12 (#10722)
+
+**Version-pinned companion runtime dependency**
+
+`tests/src/org.bytedeco/tesseract/5.5.1-1.5.12/build.gradle` hardcoded `org.bytedeco:tesseract-platform:5.5.1-1.5.12`. That made the suite use 5.5.1 native binaries when the harness tests another Tesseract version, violating the version-agnostic test requirement in §FS-test-contract.2.5.
+
 ## 2026-10-12 — org.springframework.boot:spring-boot-security:4.1.0 (#8464)
 
 **Optional reflection targets break Spring AOT consumers with partial classpaths**
