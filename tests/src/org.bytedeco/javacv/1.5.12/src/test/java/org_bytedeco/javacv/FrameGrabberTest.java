@@ -10,23 +10,24 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.bytedeco.javacv.FFmpegFrameGrabber;
 import org.bytedeco.javacv.FrameGrabber;
 import org.bytedeco.javacv.OpenCVFrameGrabber;
 import org.junit.jupiter.api.Test;
 
 public class FrameGrabberTest {
     @Test
-    void initializesResolvesAndSelectsTheOpenCvBackend() throws Exception {
+    void initializesResolvesAndSelectsTheFfmpegBackend() throws Exception {
         List<String> originalBackends = new ArrayList<>(FrameGrabber.list);
         try {
             FrameGrabber.list.clear();
-            FrameGrabber.list.add("OpenCVFrameGrabber");
+            FrameGrabber.list.add("FFmpegFrameGrabber");
 
             FrameGrabber.init();
 
-            Class<? extends FrameGrabber> directlyResolved = FrameGrabber.get("OpenCVFrameGrabber");
-            Class<? extends FrameGrabber> conventionallyResolved = FrameGrabber.get("OpenCV");
-            assertThat(directlyResolved).isEqualTo(OpenCVFrameGrabber.class);
+            Class<? extends FrameGrabber> directlyResolved = FrameGrabber.get("FFmpegFrameGrabber");
+            Class<? extends FrameGrabber> conventionallyResolved = FrameGrabber.get("FFmpeg");
+            assertThat(directlyResolved).isEqualTo(FFmpegFrameGrabber.class);
             assertThat(conventionallyResolved).isEqualTo(directlyResolved);
 
             Class<? extends FrameGrabber> selected = FrameGrabber.getDefault();

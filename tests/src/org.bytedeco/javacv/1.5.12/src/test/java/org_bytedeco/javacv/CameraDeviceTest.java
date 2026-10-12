@@ -11,32 +11,33 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.io.File;
 import org.bytedeco.javacv.CameraDevice;
 import org.bytedeco.javacv.FrameGrabber;
-import org.bytedeco.javacv.OpenCVFrameGrabber;
 import org.junit.jupiter.api.Test;
 
 public class CameraDeviceTest {
     @Test
-    void createsOpenCvGrabbersForEachDeviceSelector() throws Exception {
-        CameraDevice camera = cameraUsing(OpenCVFrameGrabber.class);
+    void createsGrabbersForEachDeviceSelector() throws Exception {
+        CameraDevice camera = cameraUsing(IntegerFrameGrabber.class);
         CameraDevice.Settings settings = (CameraDevice.Settings) camera.getSettings();
 
-        settings.setDeviceFile(new File("camera-input.avi"));
-        assertConfiguredOpenCvGrabber(camera.createFrameGrabber());
-
-        settings.setDevicePath("camera-input.avi");
-        assertConfiguredOpenCvGrabber(camera.createFrameGrabber());
-
-        settings.setDeviceNumber(3);
-        assertConfiguredOpenCvGrabber(camera.createFrameGrabber());
-    }
-
-    @Test
-    void createsGrabberWithBoxedDeviceNumberConstructor() throws Exception {
-        CameraDevice camera = cameraUsing(IntegerFrameGrabber.class);
-
+        File deviceFile = new File("camera-input.avi");
+        settings.setDeviceFile(deviceFile);
         try (FrameGrabber grabber = camera.createFrameGrabber()) {
             assertThat(grabber).isInstanceOf(IntegerFrameGrabber.class);
-            assertThat(((IntegerFrameGrabber) grabber).getDeviceNumber()).isZero();
+            assertThat(((IntegerFrameGrabber) grabber).getDeviceFile()).isEqualTo(deviceFile);
+            assertConfiguration(grabber);
+        }
+
+        settings.setDevicePath("camera-input.avi");
+        try (FrameGrabber grabber = camera.createFrameGrabber()) {
+            assertThat(grabber).isInstanceOf(IntegerFrameGrabber.class);
+            assertThat(((IntegerFrameGrabber) grabber).getDevicePath()).isEqualTo("camera-input.avi");
+            assertConfiguration(grabber);
+        }
+
+        settings.setDeviceNumber(3);
+        try (FrameGrabber grabber = camera.createFrameGrabber()) {
+            assertThat(grabber).isInstanceOf(IntegerFrameGrabber.class);
+            assertThat(((IntegerFrameGrabber) grabber).getDeviceNumber()).isEqualTo(3);
             assertConfiguration(grabber);
         }
     }
@@ -56,13 +57,6 @@ public class CameraDeviceTest {
         settings.setResponseGamma(1.8);
         settings.setDeinterlace(true);
         return new CameraDevice(settings);
-    }
-
-    private static void assertConfiguredOpenCvGrabber(FrameGrabber grabber) throws Exception {
-        try (grabber) {
-            assertThat(grabber).isInstanceOf(OpenCVFrameGrabber.class);
-            assertConfiguration(grabber);
-        }
     }
 
     private static void assertConfiguration(FrameGrabber grabber) {

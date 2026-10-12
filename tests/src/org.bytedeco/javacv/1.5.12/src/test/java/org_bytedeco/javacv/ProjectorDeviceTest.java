@@ -8,6 +8,8 @@ package org_bytedeco.javacv;
 
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
+import java.awt.GraphicsEnvironment;
+import java.awt.HeadlessException;
 import org.bytedeco.javacv.CanvasFrame;
 import org.bytedeco.javacv.ProjectorDevice;
 import org.junit.jupiter.api.Test;
@@ -15,13 +17,18 @@ import org.junit.jupiter.api.Test;
 public class ProjectorDeviceTest {
     @Test
     void rejectsUnavailableScreenWhenCreatingStandardCanvasFrame() {
-        ProjectorDevice projector = new ProjectorDevice("Calibration projector");
-        ProjectorDevice.Settings settings = (ProjectorDevice.Settings) projector.getSettings();
-        settings.setUseOpenGL(false);
-        settings.setScreenNumber(Integer.MAX_VALUE);
+        if (GraphicsEnvironment.isHeadless()) {
+            assertThatExceptionOfType(HeadlessException.class)
+                    .isThrownBy(() -> new ProjectorDevice("Calibration projector"));
+        } else {
+            ProjectorDevice projector = new ProjectorDevice("Calibration projector");
+            ProjectorDevice.Settings settings = (ProjectorDevice.Settings) projector.getSettings();
+            settings.setUseOpenGL(false);
+            settings.setScreenNumber(Integer.MAX_VALUE);
 
-        assertThatExceptionOfType(CanvasFrame.Exception.class)
-                .isThrownBy(projector::createCanvasFrame)
-                .withMessageContaining("Screen number " + Integer.MAX_VALUE + " not found");
+            assertThatExceptionOfType(CanvasFrame.Exception.class)
+                    .isThrownBy(projector::createCanvasFrame)
+                    .withMessageContaining("Screen number " + Integer.MAX_VALUE + " not found");
+        }
     }
 }
