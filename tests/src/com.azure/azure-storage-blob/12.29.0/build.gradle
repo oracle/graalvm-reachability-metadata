@@ -16,6 +16,14 @@ dependencies {
 }
 
 graalvmNative {
+    binaries {
+        test {
+            buildArgs.add('--initialize-at-build-time=com.fasterxml.jackson.core.Base64Variant,'
+                    + 'com.fasterxml.jackson.core.Base64Variant$PaddingReadBehaviour,'
+                    + 'org.slf4j.helpers.NOPLoggerFactory,org.slf4j.helpers.SubstituteLoggerFactory')
+        }
+    }
+
     agent {
         defaultMode = "conditional"
         modes {
