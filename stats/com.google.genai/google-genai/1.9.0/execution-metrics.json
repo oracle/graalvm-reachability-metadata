@@ -1,0 +1,90 @@
+{
+  "add_new_library_support:2026-10-12": {
+    "timestamp": "2026-10-12T13:43:45.361765Z",
+    "library": "com.google.genai:google-genai:1.9.0",
+    "starting_commit": "ee0eb3b3089fc7a1af16f359ef293948a59809d7",
+    "ending_commit": "f9dc5f5f319840730881a27730d4dca6f6fda896",
+    "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-sol",
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "status": "success",
+    "stats": {
+      "version": "1.9.0",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 3,
+            "totalCalls": 3
+          }
+        },
+        "coverageRatio": 1.0,
+        "coveredCalls": 3,
+        "totalCalls": 3
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 4465,
+          "missed": 80034,
+          "ratio": 0.052841,
+          "total": 84499
+        },
+        "line": {
+          "covered": 1173,
+          "missed": 18621,
+          "ratio": 0.05926,
+          "total": 19794
+        },
+        "method": {
+          "covered": 355,
+          "missed": 6323,
+          "ratio": 0.05316,
+          "total": 6678
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "advisory_preparation",
+      "issue_number": 10685,
+      "issue_label": "library-new-request",
+      "library": "com.google.genai:google-genai:1.9.0",
+      "summary": "No extra dependency/Docker image needed; tests must avoid hitting the real Gemini API by using Client.builder().apiKey(...).httpOptions(baseUrl=local server) instead of relying on GOOGLE_API_KEY/ADC.",
+      "deterministic_setup": [],
+      "agent_guidance": "Construct the Client with Client.builder().apiKey(\"test-api-key\").httpOptions(HttpOptions.builder().baseUrl(localServerBaseUrl).build()).build(), backed by an in-process com.sun.net.httpserver.HttpServer that serves canned JSON responses for endpoints like /models/{model}:generateContent, :streamGenerateContent, :countTokens, :embedContent. This mirrors the existing dev.langchain4j:langchain4j-google-ai-gemini test in this repo, which wraps the same Gemini Developer API. Do not rely on the GOOGLE_API_KEY or GOOGLE_GENAI_USE_VERTEXAI/GOOGLE_CLOUD_PROJECT/GOOGLE_CLOUD_LOCATION environment variables, and do not attempt the Vertex AI backend (vertexAI(true)) since it requires real Google Cloud ADC credentials that aren't available in CI and can't be meaningfully mocked without extra credential-mocking infrastructure.",
+      "risks": [
+        "The Live/bidirectional streaming API (AsyncLive, com.google.genai.AsyncLive$GenAiWebSocketClient) is backed by org.java-websocket rather than plain HTTP; the local-HttpServer mock pattern above won't exercise it. Treat that surface as out of scope for baseline coverage unless a WebSocket test server is set up separately.",
+        "If generated tests default to `new Client()` or omit httpOptions, they will attempt to call the real googleapis.com endpoint and either hang/fail or require a live API key — this is the main failure mode advisory guidance is meant to prevent."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#10685 Support for com.google.genai:google-genai:1.9.0; label=library-new-request; body_chars=39"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "sonnet",
+      "input_tokens_used": 24,
+      "output_tokens_used": 9431
+    },
+    "metrics": {
+      "input_tokens_used": 158140,
+      "cached_input_tokens_used": 798464,
+      "output_tokens_used": 11006,
+      "iterations": 4,
+      "cost_usd": 1.5201,
+      "generated_loc": 271,
+      "tested_library_loc": 1173,
+      "metadata_entries": 471,
+      "test_only_metadata_entries": 58,
+      "code_coverage_percent": 5.93
+    },
+    "artifacts": {
+      "metadata_file": "metadata/com.google.genai/google-genai/1.9.0/reachability-metadata.json"
+    }
+  }
+}
