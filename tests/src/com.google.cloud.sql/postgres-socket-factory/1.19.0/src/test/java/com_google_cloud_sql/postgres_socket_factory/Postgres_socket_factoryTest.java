@@ -7,8 +7,12 @@
 package com_google_cloud_sql.postgres_socket_factory;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.Assertions.catchThrowable;
 
+import com.google.auth.oauth2.AccessToken;
+import com.google.auth.oauth2.GoogleCredentials;
+import com.google.cloud.sql.ConnectorConfig;
 import com.google.cloud.sql.ConnectorRegistry;
 import com.google.cloud.sql.postgres.SocketFactory;
 import java.io.IOException;
@@ -49,6 +53,30 @@ public class Postgres_socket_factoryTest {
         new SocketFactory(properties);
 
         assertThat(properties.getProperty("cloudSqlInstance")).isEqualTo(instanceConnectionName);
+    }
+
+    @Test
+    @Timeout(55)
+    void closedNamedConnectorIsRejectedBySocketFactory() {
+        String connectorName = "reporting-database";
+        ConnectorConfig connectorConfig = new ConnectorConfig.Builder()
+                .withGoogleCredentials(GoogleCredentials.create(new AccessToken("offline-access-token", null)))
+                .build();
+        Properties properties = new Properties();
+        properties.setProperty("cloudSqlInstance", "sample-project:us-central1:sample-instance");
+        properties.setProperty("cloudSqlNamedConnector", connectorName);
+
+        try {
+            ConnectorRegistry.register(connectorName, connectorConfig);
+            SocketFactory socketFactory = new SocketFactory(properties);
+            ConnectorRegistry.close(connectorName);
+
+            assertThatThrownBy(socketFactory::createSocket)
+                    .isInstanceOf(IllegalArgumentException.class)
+                    .hasMessage("Named connection " + connectorName + " does not exist.");
+        } finally {
+            ConnectorRegistry.reset();
+        }
     }
 
     @Test
