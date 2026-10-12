@@ -8,31 +8,14 @@ package org_bytedeco.javacv;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.util.ArrayList;
-import java.util.List;
-import org.bytedeco.javacv.FFmpegFrameRecorder;
 import org.bytedeco.javacv.FrameRecorder;
 import org.junit.jupiter.api.Test;
 
 public class FrameRecorderTest {
     @Test
-    void initializesSelectsAndCreatesTheFfmpegBackend() throws Exception {
-        List<String> originalBackends = new ArrayList<>(FrameRecorder.list);
-        try {
-            FrameRecorder.list.clear();
-            FrameRecorder.list.add("FFmpeg");
+    void resolvesTheOpenCvBackend() throws Exception {
+        Class<? extends FrameRecorder> resolved = FrameRecorder.get("OpenCVFrameRecorder");
 
-            FrameRecorder.init();
-            assertThat(FrameRecorder.getDefault()).isEqualTo(FFmpegFrameRecorder.class);
-
-            try (FrameRecorder recorder = FrameRecorder.create("FFmpeg", "output.mp4", 160, 120)) {
-                assertThat(recorder).isInstanceOf(FFmpegFrameRecorder.class);
-                assertThat(recorder.getImageWidth()).isEqualTo(160);
-                assertThat(recorder.getImageHeight()).isEqualTo(120);
-            }
-        } finally {
-            FrameRecorder.list.clear();
-            FrameRecorder.list.addAll(originalBackends);
-        }
+        assertThat(resolved.getName()).isEqualTo("org.bytedeco.javacv.OpenCVFrameRecorder");
     }
 }

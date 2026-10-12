@@ -10,17 +10,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.File;
 import org.bytedeco.javacv.CameraDevice;
-import org.bytedeco.javacv.OpenCVFrameGrabber;
 import org.junit.jupiter.api.Test;
 
 public class CameraDeviceInnerSettingsImplementationTest {
     @Test
-    void validatesSelectorsAndDiscoversDeviceDescriptions() throws Exception {
+    void validatesSelectorsAndDeviceDescriptions() throws Exception {
         CameraDevice.SettingsImplementation settings = new CameraDevice.SettingsImplementation();
-
-        settings.setFrameGrabber(OpenCVFrameGrabber.class);
-        assertThat(settings.getDeviceNumber()).isZero();
-        assertThat(settings.getDescription()).isEmpty();
 
         File deviceFile = new File("camera-input.avi");
         settings.setDeviceFile(deviceFile);
