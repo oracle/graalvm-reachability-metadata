@@ -22,12 +22,15 @@ import com.azure.storage.blob.BlobClient;
 import com.azure.storage.blob.BlobContainerClient;
 import com.azure.storage.blob.BlobServiceClient;
 import com.azure.storage.blob.BlobServiceClientBuilder;
+import com.azure.storage.blob.models.BlobContainerAccessPolicies;
 import com.azure.storage.blob.models.BlobContainerItem;
 import com.azure.storage.blob.models.BlobItem;
 import com.azure.storage.blob.models.BlobListDetails;
 import com.azure.storage.blob.models.BlobProperties;
 import com.azure.storage.blob.models.BlobRange;
 import com.azure.storage.blob.models.BlobRequestConditions;
+import com.azure.storage.blob.models.BlobServiceProperties;
+import com.azure.storage.blob.models.BlobServiceStatistics;
 import com.azure.storage.blob.models.BlobStorageException;
 import com.azure.storage.blob.models.BlockList;
 import com.azure.storage.blob.models.BlockListType;
@@ -36,6 +39,8 @@ import com.azure.storage.blob.models.PageList;
 import com.azure.storage.blob.models.PageRange;
 import com.azure.storage.blob.models.PublicAccessType;
 import com.azure.storage.blob.models.StorageAccountInfo;
+import com.azure.storage.blob.models.TaggedBlobItem;
+import com.azure.storage.blob.models.UserDelegationKey;
 import com.azure.storage.blob.sas.BlobSasPermission;
 import com.azure.storage.blob.sas.BlobServiceSasSignatureValues;
 import com.azure.storage.blob.specialized.AppendBlobClient;
@@ -118,6 +123,64 @@ public class Azure_storage_blobTest {
     }
 
     @Test
+    void readsUpdatesAndInspectsServiceConfiguration() {
+        RecordingHttpClient httpClient = new RecordingHttpClient(
+                MockResponse.xml(200, servicePropertiesXml()),
+                MockResponse.empty(202),
+                MockResponse.xml(200, serviceStatisticsXml()),
+                MockResponse.xml(200, userDelegationKeyXml()));
+        BlobServiceClient serviceClient = newServiceClient(httpClient);
+
+        BlobServiceProperties properties = serviceClient.getProperties();
+        properties.getStaticWebsite().setIndexDocument("home.html");
+        serviceClient.setProperties(properties);
+        BlobServiceStatistics statistics = serviceClient.getStatistics();
+        OffsetDateTime keyStart = OffsetDateTime.parse("2024-05-01T11:30:00Z");
+        OffsetDateTime keyExpiry = OffsetDateTime.parse("2024-05-01T13:30:00Z");
+        UserDelegationKey delegationKey = serviceClient.getUserDelegationKey(keyStart, keyExpiry);
+
+        assertThat(properties.getLogging().getVersion()).isEqualTo("1.0");
+        assertThat(properties.getLogging().isRead()).isTrue();
+        assertThat(properties.getLogging().isWrite()).isFalse();
+        assertThat(properties.getLogging().getRetentionPolicy().getDays()).isEqualTo(7);
+        assertThat(properties.getHourMetrics().isEnabled()).isTrue();
+        assertThat(properties.getHourMetrics().isIncludeApis()).isTrue();
+        assertThat(properties.getCors()).singleElement().satisfies(rule -> {
+            assertThat(rule.getAllowedOrigins()).isEqualTo("https://portal.example");
+            assertThat(rule.getAllowedMethods()).isEqualTo("GET,PUT");
+            assertThat(rule.getMaxAgeInSeconds()).isEqualTo(600);
+        });
+        assertThat(properties.getDefaultServiceVersion()).isEqualTo("2023-11-03");
+        assertThat(properties.getDeleteRetentionPolicy().getDays()).isEqualTo(14);
+        assertThat(properties.getStaticWebsite().getIndexDocument()).isEqualTo("home.html");
+        assertThat(statistics.getGeoReplication().getStatus().toString()).isEqualTo("live");
+        assertThat(statistics.getGeoReplication().getLastSyncTime())
+                .isEqualTo(OffsetDateTime.parse("2024-05-01T12:15:00Z"));
+        assertThat(delegationKey.getSignedObjectId()).isEqualTo("object-id");
+        assertThat(delegationKey.getSignedTenantId()).isEqualTo("tenant-id");
+        assertThat(delegationKey.getSignedStart()).isEqualTo(keyStart);
+        assertThat(delegationKey.getSignedExpiry()).isEqualTo(keyExpiry);
+        assertThat(delegationKey.getSignedService()).isEqualTo("b");
+        assertThat(delegationKey.getValue()).isEqualTo("c2lnbmluZy1rZXk=");
+
+        assertThat(httpClient.requests()).hasSize(4);
+        assertRequest(httpClient.requests().get(0), HttpMethod.GET, "", "comp=properties");
+        HttpRequest updateRequest = httpClient.requests().get(1);
+        assertRequest(updateRequest, HttpMethod.PUT, "", "comp=properties");
+        assertThat(updateRequest.getBodyAsBinaryData().toString())
+                .contains("<IndexDocument>home.html</IndexDocument>")
+                .contains("<AllowedOrigins>https://portal.example</AllowedOrigins>");
+        assertRequest(httpClient.requests().get(2), HttpMethod.GET, "", "comp=stats");
+        HttpRequest delegationRequest = httpClient.requests().get(3);
+        assertRequest(delegationRequest, HttpMethod.POST, "", "restype=service");
+        assertThat(decodedQuery(delegationRequest)).contains("comp=userdelegationkey");
+        assertThat(delegationRequest.getBodyAsBinaryData().toString())
+                .contains("<KeyInfo>")
+                .contains("<Start>2024-05-01T11:30:00Z</Start>")
+                .contains("<Expiry>2024-05-01T13:30:00Z</Expiry>");
+    }
+
+    @Test
     void readsContainerPropertiesAndListsBlobHierarchy() {
         RecordingHttpClient httpClient = new RecordingHttpClient(
                 MockResponse.empty(200)
@@ -171,6 +234,50 @@ public class Azure_storage_blobTest {
                 .contains("delimiter=/")
                 .contains("maxresults=10")
                 .contains("include=metadata,tags,versions");
+    }
+
+    @Test
+    void managesContainerAccessPoliciesAndFindsTaggedBlobs() {
+        RecordingHttpClient httpClient = new RecordingHttpClient(
+                MockResponse.xml(200, accessPolicyXml()).withHeader("x-ms-blob-public-access", "container"),
+                MockResponse.empty(200),
+                MockResponse.xml(200, taggedBlobsXml()));
+        BlobServiceClient serviceClient = newServiceClient(httpClient);
+        BlobContainerClient containerClient = serviceClient.getBlobContainerClient(CONTAINER_NAME);
+
+        BlobContainerAccessPolicies policies = containerClient.getAccessPolicy();
+        containerClient.setAccessPolicy(PublicAccessType.BLOB, policies.getIdentifiers());
+        List<TaggedBlobItem> taggedBlobs = serviceClient
+                .findBlobsByTags("owner = 'platform'")
+                .stream()
+                .toList();
+
+        assertThat(policies.getBlobAccessType()).isEqualTo(PublicAccessType.CONTAINER);
+        assertThat(policies.getIdentifiers()).singleElement().satisfies(identifier -> {
+            assertThat(identifier.getId()).isEqualTo("read-policy");
+            assertThat(identifier.getAccessPolicy().getStartsOn())
+                    .isEqualTo(OffsetDateTime.parse("2024-05-01T00:00:00Z"));
+            assertThat(identifier.getAccessPolicy().getExpiresOn())
+                    .isEqualTo(OffsetDateTime.parse("2030-05-01T00:00:00Z"));
+            assertThat(identifier.getAccessPolicy().getPermissions()).isEqualTo("rl");
+        });
+        assertThat(taggedBlobs).singleElement().satisfies(blob -> {
+            assertThat(blob.getContainerName()).isEqualTo(CONTAINER_NAME);
+            assertThat(blob.getName()).isEqualTo(BLOB_NAME);
+            assertThat(blob.getTags()).containsEntry("owner", "platform").containsEntry("tier", "reports");
+        });
+
+        assertThat(httpClient.requests()).hasSize(3);
+        assertRequest(httpClient.requests().get(0), HttpMethod.GET, "/" + CONTAINER_NAME, "comp=acl");
+        HttpRequest setPolicyRequest = httpClient.requests().get(1);
+        assertRequest(setPolicyRequest, HttpMethod.PUT, "/" + CONTAINER_NAME, "comp=acl");
+        assertThat(setPolicyRequest.getHeaders().getValue("x-ms-blob-public-access")).isEqualTo("blob");
+        assertThat(setPolicyRequest.getBodyAsBinaryData().toString())
+                .contains("<Id>read-policy</Id>")
+                .contains("<Permission>rl</Permission>");
+        HttpRequest findRequest = httpClient.requests().get(2);
+        assertRequest(findRequest, HttpMethod.GET, "", "comp=blobs");
+        assertThat(decodedQuery(findRequest)).contains("where=owner = 'platform'");
     }
 
     @Test
@@ -462,6 +569,61 @@ public class Azure_storage_blobTest {
         return blobMutationResponse(status, etag).withHeader("x-ms-blob-sequence-number", sequenceNumber);
     }
 
+    private static String servicePropertiesXml() {
+        return """
+                <?xml version="1.0" encoding="utf-8"?>
+                <StorageServiceProperties>
+                  <Logging>
+                    <Version>1.0</Version><Delete>true</Delete><Read>true</Read><Write>false</Write>
+                    <RetentionPolicy><Enabled>true</Enabled><Days>7</Days></RetentionPolicy>
+                  </Logging>
+                  <HourMetrics>
+                    <Version>1.0</Version><Enabled>true</Enabled><IncludeAPIs>true</IncludeAPIs>
+                    <RetentionPolicy><Enabled>true</Enabled><Days>7</Days></RetentionPolicy>
+                  </HourMetrics>
+                  <MinuteMetrics>
+                    <Version>1.0</Version><Enabled>false</Enabled><IncludeAPIs>false</IncludeAPIs>
+                    <RetentionPolicy><Enabled>false</Enabled></RetentionPolicy>
+                  </MinuteMetrics>
+                  <Cors><CorsRule>
+                    <AllowedOrigins>https://portal.example</AllowedOrigins>
+                    <AllowedMethods>GET,PUT</AllowedMethods><AllowedHeaders>*</AllowedHeaders>
+                    <ExposedHeaders>x-ms-request-id</ExposedHeaders><MaxAgeInSeconds>600</MaxAgeInSeconds>
+                  </CorsRule></Cors>
+                  <DefaultServiceVersion>2023-11-03</DefaultServiceVersion>
+                  <DeleteRetentionPolicy><Enabled>true</Enabled><Days>14</Days></DeleteRetentionPolicy>
+                  <StaticWebsite>
+                    <Enabled>true</Enabled><IndexDocument>index.html</IndexDocument>
+                    <ErrorDocument404Path>404.html</ErrorDocument404Path>
+                  </StaticWebsite>
+                </StorageServiceProperties>
+                """;
+    }
+
+    private static String serviceStatisticsXml() {
+        return """
+                <?xml version="1.0" encoding="utf-8"?>
+                <StorageServiceStats>
+                  <GeoReplication>
+                    <Status>live</Status><LastSyncTime>Wed, 01 May 2024 12:15:00 GMT</LastSyncTime>
+                  </GeoReplication>
+                </StorageServiceStats>
+                """;
+    }
+
+    private static String userDelegationKeyXml() {
+        return """
+                <?xml version="1.0" encoding="utf-8"?>
+                <UserDelegationKey>
+                  <SignedOid>object-id</SignedOid><SignedTid>tenant-id</SignedTid>
+                  <SignedStart>2024-05-01T11:30:00Z</SignedStart>
+                  <SignedExpiry>2024-05-01T13:30:00Z</SignedExpiry>
+                  <SignedService>b</SignedService><SignedVersion>2023-11-03</SignedVersion>
+                  <Value>c2lnbmluZy1rZXk=</Value>
+                </UserDelegationKey>
+                """;
+    }
+
     private static String containerListXml() {
         return """
                 <?xml version="1.0" encoding="utf-8"?>
@@ -507,6 +669,38 @@ public class Azure_storage_blobTest {
                     </Blob>
                     <BlobPrefix><Name>reports/archive/</Name></BlobPrefix>
                   </Blobs>
+                  <NextMarker></NextMarker>
+                </EnumerationResults>
+                """;
+    }
+
+    private static String accessPolicyXml() {
+        return """
+                <?xml version="1.0" encoding="utf-8"?>
+                <SignedIdentifiers>
+                  <SignedIdentifier>
+                    <Id>read-policy</Id>
+                    <AccessPolicy>
+                      <Start>2024-05-01T00:00:00Z</Start><Expiry>2030-05-01T00:00:00Z</Expiry>
+                      <Permission>rl</Permission>
+                    </AccessPolicy>
+                  </SignedIdentifier>
+                </SignedIdentifiers>
+                """;
+    }
+
+    private static String taggedBlobsXml() {
+        return """
+                <?xml version="1.0" encoding="utf-8"?>
+                <EnumerationResults ServiceEndpoint="https://integrationaccount.blob.core.windows.net/">
+                  <Where>owner = 'platform'</Where>
+                  <Blobs><Blob>
+                    <Name>reports/current report.txt</Name><ContainerName>documents</ContainerName>
+                    <Tags><TagSet>
+                      <Tag><Key>owner</Key><Value>platform</Value></Tag>
+                      <Tag><Key>tier</Key><Value>reports</Value></Tag>
+                    </TagSet></Tags>
+                  </Blob></Blobs>
                   <NextMarker></NextMarker>
                 </EnumerationResults>
                 """;
