@@ -8,6 +8,11 @@ Newest entry first; every non-approval is recorded, including one a repair later
 **Optional reflection targets break Spring AOT consumers with partial classpaths**
 
 Both failed Spring AOT jobs reported `Type not found during analysis` for `LoginUrlAuthenticationEntryPoint`; after that registration was removed, local JDK 25 reproduction identified the same layout failure for `ServletContextAware`. These optional types are absent from affected consumers' classpaths, while the coordinate's own fully populated test classpath masked the problem. The defect is confined to the contribution's metadata and is repairable under §FS-contribution-contract.5.1.
+## 2026-10-09 — org.springframework.boot:spring-boot-webclient:4.1.0-RC1 (#8432)
+
+**Companion test dependency pinned to the requested library version**
+
+The test build declared org.springframework.boot:spring-boot-http-codec:4.1.0-RC1 directly. This violated the version-agnostic test requirement because the shared test would retain that exact companion version when the tested Spring Boot version advances.
 
 ## 2026-10-02 — com.opencsv:opencsv:5.9 (#9335)
 
