@@ -1,0 +1,52 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :populateArtifactURLs
+I checked the entry — it already has non-blank values for `source-code-url`, `repository-url`, `test-code-url`, `documentation-url`, and `description`, so per the strict "don't modify already-filled fields" rule, those stay untouched. The only field that was actually missing was `"language"`.
+
+**Determination:** `azure-storage-blob` is a plain Java client library (part of the Azure SDK for Java monorepo) — it is not Kotlin, Groovy, or Scala specific. So per the instructions, the `"language"` field should remain absent rather than being set to some value.
+
+**Result: no edit needed.** The file already satisfies every requirement:
+
+| Field | Value |
+|---|---|
+| repository-url | `https://github.com/Azure/azure-sdk-for-java` |
+| source-code-url | `https://github.com/Azure/azure-sdk-for-java/tree/azure-storage-blob_$version$/sdk/storage/azure-storage-blob/src/main/java` |
+| test-code-url | `https://github.com/Azure/azure-sdk-for-java/tree/azure-storage-blob_$version$/sdk/storage/azure-storage-blob/src/test/java` |
+| documentation-url | `https://github.com/Azure/azure-sdk-for-java/blob/azure-storage-blob_$version$/sdk/storage/azure-storage-blob/README.md` |
+| description | *(already present, accurate two-sentence description)* |
+| language | *(correctly absent — not a language-specific artifact)* |
+
+These templates use the Azure SDK for Java's per-package release-tag convention (`<artifact>_<version>`), which correctly resolves for the `12.29.0` tested-version alias.
+
+`★ Insight ─────────────────────────────────────`
+- **Monorepo tag convention**: Azure SDK for Java tags releases per-package rather than per-repo (e.g. `azure-storage-blob_12.29.0`), since dozens of independently versioned artifacts ship from one repo. That's why the `$version$` template embeds the artifact name alongside the version — a plain `v$version$` tag wouldn't disambiguate which package's release it refers to.
+- **"Missing" is a precise predicate here**: the task defines missing strictly as absent/null/blank, which is why a field holding a *plausible-looking but unverified* value isn't eligible for a rewrite in this pass — that asymmetry (verify when filling, but never touch what's already populated) protects previously-reviewed data from accidental churn by a later automated pass.
+- **Language field semantics**: this registry only tags a library's language when the *library itself* is written in/for a JVM guest language (Kotlin/Groovy/Scala) that needs special reachability handling — not when its *implementation* happens to be Java, which is the default and thus the "absent" case.
+`─────────────────────────────────────────────────`
+
+No file changes were made since all genuinely-missing data already resolved to "leave absent."
+Ran agent for com.azure:azure-storage-blob:12.29.0 (exit 0). Log: /home/mihailo/git/graalvm-reachability-metadata-copy/forge/local_repositories/forge_worktrees/10682-825db58e/build/agent-url-discovery-logs/com.azure-azure-storage-blob-12.29.0.log
+Completed populateArtifactURLs: invoked=1, prompted=0, skipped=0, overwriteExisting=false, verifyArtifactSources=false, limit=null
+
+[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata-copy/forge/local_repositories/forge_worktrees/10682-825db58e/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 39s
+9 actionable tasks: 1 executed, 8 up-to-date
