@@ -1,0 +1,174 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :tckTest
+====================
+Testing library: com.azure:azure-storage-blob:12.29.0
+Command: `/home/mihailo/git/graalvm-reachability-metadata-copy/forge/local_repositories/forge_worktrees/10682-825db58e/gradlew nativeTest`
+Executing test...
+-------
+Starting a Gradle Daemon, 1 busy and 18 stopped Daemons could not be reused, use --status for details
+Shared read-only dependency cache is an incubating feature.
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+> Task :compileJava NO-SOURCE
+> Task :processResources NO-SOURCE
+> Task :classes UP-TO-DATE
+> Task :tck-test-support:compileJava UP-TO-DATE
+> Task :jar UP-TO-DATE
+> Task :tck-test-support:processResources UP-TO-DATE
+> Task :tck-test-support:classes UP-TO-DATE
+> Task :tck-test-support:jar UP-TO-DATE
+> Task :compileTestJava UP-TO-DATE
+> Task :checkTestTimeoutAnnotations
+> Task :processTestResources NO-SOURCE
+> Task :testClasses UP-TO-DATE
+> Task :test UP-TO-DATE
+> Task :generateTestResourcesConfigFile UP-TO-DATE
+> Task :nativeTestCompile UP-TO-DATE
+
+> Task :nativeTest FAILED
+[junit-platform-native] WARNING: -djunit.platform.listeners.uid.tracking.output.dir not specified, trying to find test-ids on default Gradle/Maven locations. As this is a fallback mode, it could take a while. This should only happen if you are running tests executable manually and you didn't pass uid output directory with -djunit.platform.listeners.uid.tracking.output.dir=<path>.
+[junit-platform-native] WARNING: Using test-ids from default Gradle project location:/home/mihailo/git/graalvm-reachability-metadata-copy/forge/local_repositories/forge_worktrees/10682-825db58e/tests/src/com.azure/azure-storage-blob/12.29.0/build/test-results/test/testlist
+[junit-platform-native] Running in 'test listener' mode using files matching pattern [junit-platform-unique-ids*] found in folder [/home/mihailo/git/graalvm-reachability-metadata-copy/forge/local_repositories/forge_worktrees/10682-825db58e/tests/src/com.azure/azure-storage-blob/12.29.0/build/test-results/test/testlist] and its subfolders.
+JUnit Platform on Native Image - report
+----------------------------------------
+
+com_azure.azure_storage_blob.Azure_storage_blobTest > createsAndListsContainersAndReadsAccountInformation() SUCCESSFUL
+
+com_azure.azure_storage_blob.Azure_storage_blobTest > stagesCommitsAndListsBlocks() SUCCESSFUL
+
+com_azure.azure_storage_blob.Azure_storage_blobTest > performsBlobContentMetadataAndTagLifecycle() SUCCESSFUL
+
+com_azure.azure_storage_blob.Azure_storage_blobTest > generatesSignedSasAndMapsStorageErrors() FAILED
+
+com_azure.azure_storage_blob.Azure_storage_blobTest > createsBlobSnapshotWithMetadataAndRequestConditions() SUCCESSFUL
+
+com_azure.azure_storage_blob.Azure_storage_blobTest > acquiresRenewsChangesAndReleasesBlobLease() SUCCESSFUL
+
+com_azure.azure_storage_blob.Azure_storage_blobTest > readsContainerPropertiesAndListsBlobHierarchy() SUCCESSFUL
+
+com_azure.azure_storage_blob.Azure_storage_blobTest > usesAppendAndPageBlobSpecializedClients() SUCCESSFUL
+
+
+Failures (1):
+  JUnit Jupiter:Azure_storage_blobTest:generatesSignedSasAndMapsStorageErrors()
+    MethodSource [className = 'com_azure.azure_storage_blob.Azure_storage_blobTest', methodName = 'generatesSignedSasAndMapsStorageErrors', methodParameterTypes = '']
+    => java.lang.AssertionError: 
+Expecting actual throwable to be an instance of:
+  com.azure.storage.blob.models.BlobStorageException
+but was:
+  java.lang.RuntimeException
+	at com.azure.storage.common.implementation.StorageImplUtils.sendRequest(StorageImplUtils.java:511)
+	at com.azure.storage.blob.specialized.BlobClientBase.getPropertiesWithResponse(BlobClientBase.java:1760)
+	at com.azure.storage.blob.specialized.BlobClientBase.getProperties(BlobClientBase.java:1721)
+	at org.assertj.core.api.ThrowableAssert.catchThrowable(ThrowableAssert.java:63)
+	at org.assertj.core.api.AssertionsForClassTypes.catchThrowable(AssertionsForClassTypes.java:878)
+	at org.assertj.core.api.Assertions.catchThrowable(Assertions.java:1337)
+	at org.assertj.core.api.Assertions.assertThatThrownBy(Assertions.java:1181)
+	at com_azure.azure_storage_blob.Azure_storage_blobTest.generatesSignedSasAndMapsStorageErrors(Azure_storage_blobTest.java:388)
+	at java.base@25.0.2/java.lang.reflect.Method.invoke(Method.java:565)
+	at org.junit.platform.commons.util.ReflectionUtils.invokeMethod(ReflectionUtils.java:727)
+	at org.junit.jupiter.engine.execution.MethodInvocation.proceed(MethodInvocation.java:60)
+	at org.junit.jupiter.engine.execution.InvocationInterceptorChain$ValidatingInvocation.proceed(InvocationInterceptorChain.java:131)
+	at org.junit.jupiter.api.AssertTimeoutPreemptively.lambda$submitTask$3(AssertTimeoutPreemptively.java:95)
+	at java.base@25.0.2/java.util.concurrent.FutureTask.run(FutureTask.java:328)
+	at java.base@25.0.2/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1090)
+	at java.base@25.0.2/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:614)
+	at java.base@25.0.2/java.lang.Thread.runWith(Thread.java:1487)
+	at java.base@25.0.2/java.lang.Thread.run(Thread.java:1474)
+	at org.graalvm.nativeimage.builder/com.oracle.svm.core.thread.PlatformThreads.threadStartRoutine(PlatformThreads.java:820)
+	at org.graalvm.nativeimage.builder/com.oracle.svm.core.thread.PlatformThreads.threadStartRoutine(PlatformThreads.java:796)
+
+       com_azure.azure_storage_blob.Azure_storage_blobTest.generatesSignedSasAndMapsStorageErrors(Azure_storage_blobTest.java:389)
+       java.base@25.0.2/java.lang.reflect.Method.invoke(Method.java:565)
+       org.junit.platform.commons.util.ReflectionUtils.invokeMethod(ReflectionUtils.java:727)
+       org.junit.jupiter.engine.execution.MethodInvocation.proceed(MethodInvocation.java:60)
+       org.junit.jupiter.engine.execution.InvocationInterceptorChain$ValidatingInvocation.proceed(InvocationInterceptorChain.java:131)
+       org.junit.jupiter.api.AssertTimeoutPreemptively.lambda$submitTask$3(AssertTimeoutPreemptively.java:95)
+       java.base@25.0.2/java.util.concurrent.FutureTask.run(FutureTask.java:328)
+       java.base@25.0.2/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1090)
+       java.base@25.0.2/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:614)
+       java.base@25.0.2/java.lang.Thread.runWith(Thread.java:1487)
+       [...]
+
+Test run finished after 78 ms
+[         3 containers found      ]
+[         0 containers skipped    ]
+[         3 containers started    ]
+[         0 containers aborted    ]
+[         3 containers successful ]
+[         0 containers failed     ]
+[         8 tests found           ]
+[         0 tests skipped         ]
+[         8 tests started         ]
+[         0 tests aborted         ]
+[         7 tests successful      ]
+[         1 tests failed          ]
+
+
+
+FAILURE: Build failed with an exception.
+[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata-copy/forge/local_repositories/forge_worktrees/10682-825db58e/tests/src/com.azure/azure-storage-blob/12.29.0/build/reports/problems/problems-report.html
+
+* What went wrong:
+Execution failed for task ':nativeTest'.
+> Process 'command '/home/mihailo/git/graalvm-reachability-metadata-copy/forge/local_repositories/forge_worktrees/10682-825db58e/tests/src/com.azure/azure-storage-blob/12.29.0/build/native/nativeTestCompile/com.azure.azure-storage-blob_tests-tests'' finished with non-zero exit value 1
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+18 actionable tasks: 2 executed, 16 up-to-date
+BUILD FAILED in 13s
+
+
+> Task :tckTest FAILED
+
+[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata-copy/forge/local_repositories/forge_worktrees/10682-825db58e/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':tckTest'.
+> Test for com.azure:azure-storage-blob:12.29.0 failed with exit code 1.
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD FAILED in 16s
+9 actionable tasks: 1 executed, 8 up-to-date
