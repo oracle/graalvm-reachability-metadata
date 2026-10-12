@@ -25,6 +25,7 @@ import org.bytedeco.javacpp.BytePointer;
 import org.bytedeco.leptonica.PIX;
 import org.bytedeco.tesseract.ResultIterator;
 import org.bytedeco.tesseract.TessBaseAPI;
+import org.bytedeco.tesseract.TessTextRenderer;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -72,6 +73,36 @@ public class TesseractTest {
 
                     verifyThresholdedImage(api);
                     verifyWordIterator(api, recognizedText);
+                } finally {
+                    api.End();
+                }
+            }
+        } finally {
+            pixDestroy(image);
+        }
+    }
+
+    @Test
+    void rendersRecognizedPageAsPlainTextDocument() throws IOException {
+        Path tessdataDirectory = materializeTrainedData();
+        Path outputBase = temporaryDirectory.resolve("recognized-page");
+        PIX image = createWordImage();
+
+        try {
+            try (TessBaseAPI api = new TessBaseAPI();
+                    TessTextRenderer renderer = new TessTextRenderer(outputBase.toAbsolutePath().toString())) {
+                try {
+                    assertThat(api.Init(tessdataDirectory.toAbsolutePath().toString(), "eng")).isZero();
+                    assertThat(api.SetVariable("tessedit_char_whitelist", "TEST")).isTrue();
+                    api.SetPageSegMode(PSM_SINGLE_WORD);
+
+                    assertThat(renderer.BeginDocument("Synthetic OCR document")).isTrue();
+                    assertThat(api.ProcessPage(image, 0, "synthetic-word", "", 10_000, renderer)).isTrue();
+                    assertThat(renderer.EndDocument()).isTrue();
+
+                    Path renderedDocument = Path.of(outputBase + ".txt");
+                    assertThat(renderedDocument).isRegularFile();
+                    assertThat(Files.readString(renderedDocument).trim()).isNotBlank().matches("[TEST]+");
                 } finally {
                     api.End();
                 }
