@@ -149,6 +149,38 @@ public class Spring_modulith_events_jpaTest {
     }
 
     @Test
+    void deleteCompletionRemovesPublication() {
+        contextRunner("deleting")
+                .withPropertyValues("spring.modulith.events.completion-mode=DELETE")
+                .run((context) -> {
+                    assertThat(context).hasNotFailed();
+
+                    EventPublicationRepository repository = context.getBean(EventPublicationRepository.class);
+                    TransactionTemplate transactions = new TransactionTemplate(
+                            context.getBean(PlatformTransactionManager.class));
+                    PublicationTargetIdentifier target = PublicationTargetIdentifier.of("shipping-listener");
+                    SampleEvent event = new SampleEvent("shipment-3");
+                    Instant publishedAt = Instant.parse("2025-03-04T12:30:00Z");
+                    TargetEventPublication publication = TargetEventPublication.of(event, target, publishedAt);
+
+                    transactions.executeWithoutResult((status) -> repository.create(publication));
+                    Optional<TargetEventPublication> stored = transactions.execute((status) -> repository
+                            .findIncompletePublicationsByEventAndTargetIdentifier(event, target));
+                    assertThat(stored).isPresent();
+
+                    transactions.executeWithoutResult((status) -> repository.markCompleted(
+                            publication.getIdentifier(), publishedAt.plusSeconds(15)));
+
+                    List<TargetEventPublication> incompleteAfterCompletion = transactions
+                            .execute((status) -> repository.findIncompletePublications());
+                    List<TargetEventPublication> completedAfterCompletion = transactions
+                            .execute((status) -> repository.findCompletedPublications());
+                    assertThat(incompleteAfterCompletion).isEmpty();
+                    assertThat(completedAfterCompletion).isEmpty();
+                });
+    }
+
+    @Test
     void archiveCompletionMovesPublicationToArchivedEntity() {
         contextRunner("archiving")
                 .withPropertyValues("spring.modulith.events.completion-mode=ARCHIVE")
