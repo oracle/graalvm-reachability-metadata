@@ -1,0 +1,19 @@
+## Human intervention needed
+
+The automated `library-new-request` job for `com.azure:azure-storage-blob:12.29.0` failed after 10 iterations during native test verification.
+
+Preserved work: https://github.com/oracle/graalvm-reachability-metadata/tree/ai%2Fkimeta%2Fhuman-intervention%2Fissue-10682-library-new-request-com.azure-azure-storage-blob-12.29.0-cdf824a4
+
+The likely failing stage is `nativeTest` runtime, not compilation. `logs/com.azure:azure-storage-blob:12.29.0/gradle-test/gradle-test-2026-10-12T16-33-35-076181Z.log` shows the native image was already built, but `generatesSignedSasAndMapsStorageErrors()` failed: 7/8 tests passed, while the failing test expected `BlobStorageException` and received `RuntimeException` from `StorageImplUtils.sendRequest`.
+
+The preserved native-trace logs provide stronger evidence of missing or inactive reflection metadata:
+
+- `human-intervention-logs/com.azure:azure-storage-blob:12.29.0/native-test-verify/cycle-0-runNativeTraceImage-2026-10-12T16-11-41-244625Z.log` reports missing reflective access to `BlobStorageExceptionInternal#getValue()`.
+- `human-intervention-logs/com.azure:azure-storage-blob:12.29.0/native-test-verify/cycle-1-runNativeTraceImage-2026-10-12T16-13-22-766540Z.log` reports inactive `BoundMethodHandle$Species_L#argL0` metadata because its conditions were not reached before static `StorageSharedKeyCredential` initialization.
+- `logs/com.azure:azure-storage-blob:12.29.0/issue-requested-metadata/pi.log` confirms the final repair step made no changes because the issue body named no explicit metadata entry. Metrics consequently ended in failure with dynamic-access coverage unavailable.
+
+Manual next steps:
+
+1. Check out the preserved branch and reproduce with `./gradlew test -Pcoordinates=com.azure:azure-storage-blob:12.29.0`.
+2. Correct the credential/condition initialization order and regenerate or merge the traced metadata needed for `BlobStorageExceptionInternal`, then confirm the error-mapping test passes natively.
+3. Run `checkMetadataFiles`, the full coordinate test, and `generateDynamicAccessCoverageReport` before publishing the work.
