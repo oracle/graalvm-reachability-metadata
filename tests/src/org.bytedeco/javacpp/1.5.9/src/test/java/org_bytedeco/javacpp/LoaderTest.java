@@ -9,7 +9,9 @@ package org_bytedeco.javacpp;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.Properties;
+import java.util.zip.Deflater;
 
 import org.junit.jupiter.api.Test;
 
@@ -45,6 +47,24 @@ public class LoaderTest {
 
         assertThat(loadedLibrary).isNotBlank();
         assertThat(Loader.sizeof(Pointer.class)).isPositive();
+    }
+
+    @Test
+    public void loadsSystemLibraryForRequestedClassLoaderScope() {
+        String loadedLibrary = Loader.loadLibrary(Deflater.class, new URL[0], "zip");
+        Deflater deflater = new Deflater();
+        try {
+            byte[] input = "JavaCPP native loading".getBytes(StandardCharsets.UTF_8);
+            byte[] compressed = new byte[64];
+            deflater.setInput(input);
+            deflater.finish();
+
+            assertThat(loadedLibrary).isEqualTo("zip");
+            assertThat(deflater.deflate(compressed)).isPositive();
+            assertThat(deflater.finished()).isTrue();
+        } finally {
+            deflater.end();
+        }
     }
 
     @Test

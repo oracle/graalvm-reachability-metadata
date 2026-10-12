@@ -19,6 +19,8 @@ dependencies {
 
 tasks.withType(Test).configureEach {
     systemProperty pointerMxBeanProperty, "true"
+    // JavaCPP reflects into Runtime.loadLibrary0 for class-loader-scoped native loading.
+    jvmArgs "--add-opens=java.base/java.lang=ALL-UNNAMED"
 }
 
 tasks.named("nativeTest") {
