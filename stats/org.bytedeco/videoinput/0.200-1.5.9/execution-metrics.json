@@ -1,0 +1,84 @@
+{
+  "add_new_library_support:2026-10-12": {
+    "timestamp": "2026-10-12T21:49:27.312826Z",
+    "library": "org.bytedeco:videoinput:0.200-1.5.9",
+    "starting_commit": "f086edf6bf901f05218a68ea87f92442d8440554",
+    "ending_commit": "3107ae55408c1d1f5942d4e3fdcb73f1595f301b",
+    "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-sol",
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "status": "success",
+    "stats": {
+      "version": "0.200-1.5.9",
+      "dynamicAccess": {
+        "breakdown": {},
+        "coverageRatio": 1.0,
+        "coveredCalls": 0,
+        "totalCalls": 0
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 110,
+          "missed": 403,
+          "ratio": 0.214425,
+          "total": 513
+        },
+        "line": {
+          "covered": 8,
+          "missed": 73,
+          "ratio": 0.098765,
+          "total": 81
+        },
+        "method": {
+          "covered": 3,
+          "missed": 55,
+          "ratio": 0.051724,
+          "total": 58
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "advisory_preparation",
+      "issue_number": 10721,
+      "issue_label": "library-new-request",
+      "library": "org.bytedeco:videoinput:0.200-1.5.9",
+      "summary": "videoinput wraps a Windows-only DirectShow webcam-capture library (ofTheo/videoInput); Maven Central ships only windows-x86/windows-x86_64 native classifiers for 0.200-1.5.9, so no dependency, Docker image, or env var can make native calls succeed on this repo's Linux CI.",
+      "deterministic_setup": [],
+      "agent_guidance": "Do not expect the normal testRuntimeOnly \"org.bytedeco:videoinput-platform:$libraryVersion\" scaffold to provide a usable native library here — that -platform POM only resolves to windows-x86/windows-x86_64 artifacts, none of which load on the ubuntu-22.04/ubuntu-latest runners this repo uses. Any test path that actually calls into the native videoInput API (enumerating capture devices, opening a device, grabbing a frame) will throw UnsatisfiedLinkError or org.bytedeco.javacpp.Loader$UnsupportedPlatformException at both javaTest and nativeTest time, independent of setup. Meaningful reachability coverage is likely limited to Java-side code that doesn't trigger native loading (e.g. constant/enum classes, configuration objects, pure-Java helper methods) — tests should be designed to avoid asserting real capture behavior, or to explicitly expect/catch the unsupported-platform failure rather than treat it as a bug to fix.",
+      "risks": [
+        "The underlying videoInput library is Windows-only by design (DirectShow-based); this is a platform constraint of the upstream project, not a missing build-setup gap, so no combination of dependency/docker_image/env setup resolves it.",
+        "If the generated tests cannot exercise any meaningful native-backed behavior on Linux, this issue may be better resolved by flagging it back for human review (e.g. accept Java-only reachability scope, or decide the library is out of scope for this Linux-CI-based repository) rather than proceeding as a normal new-library addition."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#10721 Support for org.bytedeco:videoinput:0.200-1.5.9; label=library-new-request; body_chars=0"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "sonnet",
+      "input_tokens_used": 16,
+      "output_tokens_used": 9671
+    },
+    "metrics": {
+      "input_tokens_used": 279795,
+      "cached_input_tokens_used": 2768640,
+      "output_tokens_used": 25772,
+      "iterations": 4,
+      "cost_usd": 3.5565,
+      "generated_loc": 127,
+      "tested_library_loc": 8,
+      "metadata_entries": 2,
+      "test_only_metadata_entries": 70,
+      "code_coverage_percent": 9.88
+    },
+    "artifacts": {
+      "metadata_file": "metadata/org.bytedeco/videoinput/0.200-1.5.9/reachability-metadata.json"
+    }
+  }
+}
