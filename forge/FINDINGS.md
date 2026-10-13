@@ -8,6 +8,32 @@ Newest entry first; every non-approval is recorded, including one a repair later
 **Avoid host GUI dependencies in JavaCV backend-selection tests**
 
 All three required JavaCV matrix jobs failed in javaTest because tests selected an OpenCV backend whose native highgui library required libgtk-x11-2.0.so.0, while the projector scenario assumed a headful graphics environment. Coordinate tests must pass the required lanes while preserving meaningful public-API behavior. §FS-repository-functional-spec.5.2 §FS-test-contract.1.3
+## 2026-10-08 — org.eclipse.jetty:jetty-http:10.0.0 (#9376)
+
+**Pre-push review unavailable**
+
+Forge could not obtain a readable pre-push review verdict. This records a review availability problem, not a reviewer finding against the branch.
+## 2026-10-13 — org.bytedeco:librealsense:1.12.4-1.5.9 (#10719)
+
+**Hardware-dependent USB context test fails on USB-less CI hosts**
+
+The JDK 25 current-defaults, latest-EA current-defaults, and latest-EA future-defaults-all jobs all failed in LibrealsenseTest.loadsMatchingNativeApiAndReportsNoConnectedDevices() when context construction returned libusb_init(...) returned LIBUSB_ERROR_OTHER. A required test must exercise meaningful public API behavior consistently on the JVM and under Native Image rather than depend on host USB initialization. §FS-test-contract.1.3 §FS-test-contract.4
+## 2026-10-13 — org.springframework.modulith:spring-modulith-apt:2.1.0 (#10711)
+
+**Machine-local classpath read through Native Image resource metadata**
+
+All three tests loaded the generated external-compiler-classpath.txt with Class.getResourceAsStream even though the file carries build- and machine-local classpath paths. That made the native tests depend on resource metadata for machine-local paths, violating §FS-test-contract.4.4.
+## 2026-10-13 — org.bytedeco:libfreenect2:0.2.0-1.5.9 (#10718)
+
+**Avoid libfreenect2 default-device probes in headless tests**
+
+The current-defaults lanes on JDK 25 and latest EA and the future-defaults-all lane all showed libfreenect2 selecting `OpenGLDepthPacketProcessor`, reporting that `DISPLAY` was missing, and terminating the JVM/native test process with exit 255. The failing `openDefaultDevice()` assertion exercised a known-broken environmental path in a test premised on having no Kinect attached, contrary to §FS-test-contract.2.6; stable enumeration and serial-number behavior should be tested instead.
+## 2026-10-13 — org.bytedeco:ffmpeg:7.1.1-1.5.12 (#10713)
+
+**Companion runtime dependency is pinned to one library version**
+
+The coordinate's build.gradle hardcoded org.bytedeco:ffmpeg-platform:7.1.1-1.5.12 while the tested org.bytedeco:ffmpeg dependency follows the TCK-resolved library version. Reusing this suite for a newer tested version would pair it with stale native binaries, violating the version-agnostic test requirement in §FS-test-contract.2.5.
+
 ## 2026-10-13 — org.bytedeco:librealsense2:2.53.1-1.5.9 (#10720)
 
 **Headless RealSense context creation crashes the test process**
