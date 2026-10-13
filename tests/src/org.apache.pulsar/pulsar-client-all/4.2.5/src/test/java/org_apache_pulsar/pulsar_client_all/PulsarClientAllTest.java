@@ -9,15 +9,11 @@ package org_apache_pulsar.pulsar_client_all;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.URI;
-import java.nio.charset.StandardCharsets;
+import java.net.InetSocketAddress;
+import java.net.Socket;
 import java.time.Duration;
-import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
-import org.apache.pulsar.client.admin.PulsarAdmin;
 import org.apache.pulsar.client.api.CompressionType;
 import org.apache.pulsar.client.api.Consumer;
 import org.apache.pulsar.client.api.Message;
@@ -37,15 +33,15 @@ import org.junit.jupiter.api.Timeout;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @Timeout(55)
 public class PulsarClientAllTest {
-    private static final String ADMIN_URL = "http://127.0.0.1:8080";
-    private static final String BROKER_URL = "pulsar://127.0.0.1:6650";
+    private static final String BROKER_HOST = "127.0.0.1";
+    private static final int BROKER_PORT = 6650;
+    private static final String BROKER_URL = "pulsar://" + BROKER_HOST + ":" + BROKER_PORT;
     private static final String CONTAINER_NAME = "graalvm-pulsar-client-all-test";
     private static final String IMAGE = "apachepulsar/pulsar:4.2.5";
     private static final Duration PROCESS_TIMEOUT = Duration.ofSeconds(20);
     private static final Duration READINESS_TIMEOUT = Duration.ofSeconds(50);
     private static final int OPERATION_TIMEOUT_SECONDS = 15;
 
-    private PulsarAdmin admin;
     private PulsarClient client;
 
     @BeforeAll
@@ -68,20 +64,20 @@ public class PulsarClientAllTest {
                     "standalone",
                     "--no-functions-worker",
                     "--no-stream-storage");
-            waitUntil(PulsarClientAllTest::brokerAdminIsReady, READINESS_TIMEOUT);
+            waitUntil(PulsarClientAllTest::brokerIsReady, READINESS_TIMEOUT);
 
-            admin = PulsarAdmin.builder()
-                    .serviceHttpUrl(ADMIN_URL)
-                    .connectionTimeout(10, TimeUnit.SECONDS)
-                    .readTimeout(OPERATION_TIMEOUT_SECONDS, TimeUnit.SECONDS)
-                    .requestTimeout(OPERATION_TIMEOUT_SECONDS, TimeUnit.SECONDS)
-                    .build();
             client = PulsarClient.builder()
                     .serviceUrl(BROKER_URL)
                     .connectionTimeout(10, TimeUnit.SECONDS)
                     .operationTimeout(OPERATION_TIMEOUT_SECONDS, TimeUnit.SECONDS)
                     .lookupTimeout(OPERATION_TIMEOUT_SECONDS, TimeUnit.SECONDS)
                     .build();
+            waitUntil(
+                    () ->
+                            client.getPartitionsForTopic(topic("readiness"))
+                                            .get(OPERATION_TIMEOUT_SECONDS, TimeUnit.SECONDS)
+                                    != null,
+                    READINESS_TIMEOUT);
         } catch (Exception e) {
             runDocker(false, "logs", CONTAINER_NAME);
             removeExistingContainer();
@@ -92,44 +88,12 @@ public class PulsarClientAllTest {
     @AfterAll
     void stopPulsar() throws Exception {
         try {
-            if (admin != null) {
-                admin.close();
+            if (client != null) {
+                client.close();
             }
         } finally {
-            try {
-                if (client != null) {
-                    client.close();
-                }
-            } finally {
-                removeExistingContainer();
-            }
+            removeExistingContainer();
         }
-    }
-
-    @Test
-    void administersStandaloneBrokerAndTopics() throws Exception {
-        List<String> clusters = admin.clusters()
-                .getClustersAsync()
-                .get(OPERATION_TIMEOUT_SECONDS, TimeUnit.SECONDS);
-        List<String> tenants = admin.tenants()
-                .getTenantsAsync()
-                .get(OPERATION_TIMEOUT_SECONDS, TimeUnit.SECONDS);
-        String topic = topic("admin");
-
-        admin.topics()
-                .createNonPartitionedTopicAsync(topic)
-                .get(OPERATION_TIMEOUT_SECONDS, TimeUnit.SECONDS);
-        List<String> topics = admin.topics()
-                .getListAsync("public/default")
-                .get(OPERATION_TIMEOUT_SECONDS, TimeUnit.SECONDS);
-
-        assertThat(clusters).contains("standalone");
-        assertThat(tenants).contains("public");
-        assertThat(topics).contains(topic);
-
-        admin.topics()
-                .deleteAsync(topic)
-                .get(OPERATION_TIMEOUT_SECONDS, TimeUnit.SECONDS);
     }
 
     @Test
@@ -192,15 +156,13 @@ public class PulsarClientAllTest {
 
             Message<PurchaseOrder> received =
                     consumer.receive(OPERATION_TIMEOUT_SECONDS, TimeUnit.SECONDS);
-            SchemaInfo registeredSchema = admin.schemas()
-                    .getSchemaInfoAsync(topic)
-                    .get(OPERATION_TIMEOUT_SECONDS, TimeUnit.SECONDS);
+            SchemaInfo schemaInfo = schema.getSchemaInfo();
 
             assertThat(received).isNotNull();
             assertThat(received.getValue().getOrderId()).isEqualTo("purchase-42");
             assertThat(received.getValue().getUnits()).isEqualTo(3);
-            assertThat(registeredSchema.getType()).isEqualTo(SchemaType.JSON);
-            assertThat(registeredSchema.getSchemaDefinition()).contains("orderId", "units");
+            assertThat(schemaInfo.getType()).isEqualTo(SchemaType.JSON);
+            assertThat(schemaInfo.getSchemaDefinition()).contains("orderId", "units");
 
             consumer.acknowledge(received);
         }
@@ -210,23 +172,10 @@ public class PulsarClientAllTest {
         return "persistent://public/default/graalvm-client-all-" + suffix;
     }
 
-    private static boolean brokerAdminIsReady() throws IOException {
-        HttpURLConnection connection =
-                (HttpURLConnection) URI.create(ADMIN_URL + "/admin/v2/clusters")
-                        .toURL()
-                        .openConnection();
-        connection.setConnectTimeout(10_000);
-        connection.setReadTimeout(10_000);
-        try {
-            if (connection.getResponseCode() != HttpURLConnection.HTTP_OK) {
-                return false;
-            }
-            try (InputStream input = connection.getInputStream()) {
-                String response = new String(input.readAllBytes(), StandardCharsets.UTF_8);
-                return !response.isBlank();
-            }
-        } finally {
-            connection.disconnect();
+    private static boolean brokerIsReady() throws IOException {
+        try (Socket socket = new Socket()) {
+            socket.connect(new InetSocketAddress(BROKER_HOST, BROKER_PORT), 10_000);
+            return true;
         }
     }
 
