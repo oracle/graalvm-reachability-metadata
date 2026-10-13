@@ -9,6 +9,8 @@ package org_springframework_modulith.spring_modulith_api;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.Test;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.core.annotation.AnnotatedElementUtils;
 import org.springframework.modulith.ApplicationModule;
 import org.springframework.modulith.ApplicationModule.Type;
 import org.springframework.modulith.ApplicationModuleInitializer;
@@ -82,6 +84,18 @@ public class Spring_modulith_apiTest {
         assertThat(defaults.useFullyQualifiedModuleNames()).isFalse();
         assertThat(defaults.sharedModules()).isEmpty();
         assertThat(defaults.additionalPackages()).isEmpty();
+    }
+
+    @Test
+    void modulithComposesSpringBootAndModulithicMetadata() {
+        Modulithic modulithic = AnnotatedElementUtils.findMergedAnnotation(OrderApplication.class, Modulithic.class);
+
+        assertThat(modulithic).isNotNull();
+        assertThat(modulithic.systemName()).isEqualTo("Orders");
+        assertThat(modulithic.useFullyQualifiedModuleNames()).isTrue();
+        assertThat(modulithic.sharedModules()).containsExactly("shared-kernel");
+        assertThat(modulithic.additionalPackages()).containsExactly("example.orders");
+        assertThat(AnnotatedElementUtils.hasAnnotation(OrderApplication.class, SpringBootApplication.class)).isTrue();
     }
 
     @Test
