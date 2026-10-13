@@ -48,7 +48,8 @@ import org.springframework.modulith.aptk.tools.AnnotationUtils;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class AnnotationUtilsTest {
-    private static final String EXTERNAL_COMPILER_CLASSPATH_RESOURCE = "/external-compiler-classpath.txt";
+    private static final Path EXTERNAL_COMPILER_CLASSPATH_FILE =
+            Path.of("build", "resources", "test", "external-compiler-classpath.txt");
     private static final Duration EXTERNAL_COMPILER_TIMEOUT = Duration.ofSeconds(55);
     private static final String SOURCE = """
             package sample;
@@ -173,9 +174,8 @@ public class AnnotationUtilsTest {
         addClasspathEntry(entries, Path.of("build", "classes", "java", "test"));
         addClasspathEntry(entries, Path.of("build", "resources", "test"));
 
-        try (InputStream inputStream = AnnotationUtilsTest.class
-                .getResourceAsStream(EXTERNAL_COMPILER_CLASSPATH_RESOURCE)) {
-            if (inputStream != null) {
+        if (Files.isRegularFile(EXTERNAL_COMPILER_CLASSPATH_FILE)) {
+            try (InputStream inputStream = Files.newInputStream(EXTERNAL_COMPILER_CLASSPATH_FILE)) {
                 new String(inputStream.readAllBytes(), StandardCharsets.UTF_8)
                         .lines()
                         .map(String::trim)
