@@ -19,7 +19,6 @@ import org.bytedeco.libfreenect2.DataCallback;
 import org.bytedeco.libfreenect2.DepthPacketProcessor;
 import org.bytedeco.libfreenect2.Frame;
 import org.bytedeco.libfreenect2.Freenect2;
-import org.bytedeco.libfreenect2.Freenect2Device;
 import org.bytedeco.libfreenect2.Freenect2Device.ColorCameraParams;
 import org.bytedeco.libfreenect2.Freenect2Device.Config;
 import org.bytedeco.libfreenect2.Freenect2Device.IrCameraParams;
@@ -51,9 +50,6 @@ public class Libfreenect2Test {
                 assertThat(pointerString(invalidSerial)).isEmpty();
             }
 
-            try (Freenect2Device device = freenect2.openDefaultDevice()) {
-                assertThat(device == null || device.isNull()).isTrue();
-            }
         }
     }
 

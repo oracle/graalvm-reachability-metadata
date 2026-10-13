@@ -39,7 +39,7 @@
         ],
         "env": {},
         "gate": "index-file-validation",
-        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :validateIndexFiles\n✅ metadata/org.bytedeco/libfreenect2/index.json: Valid\n\n[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10718-cac18e51/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 1s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :validateIndexFiles\n\u2705 metadata/org.bytedeco/libfreenect2/index.json: Valid\n\n[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10718-cac18e51/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 1s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
         "returncode": 0
       }
     ],
@@ -52,14 +52,16 @@
     "status": "success"
   },
   "local_review": {
-    "changed_paths": [],
+    "changed_paths": [
+      "tests/src/org.bytedeco/libfreenect2/0.2.0-1.5.9/src/test/java/org_bytedeco/libfreenect2/Libfreenect2Test.java"
+    ],
     "decision": "approved",
-    "finding_body": "",
-    "finding_title": "",
-    "fix_note": "",
+    "finding_body": "The current-defaults lanes on JDK 25 and latest EA and the future-defaults-all lane all showed libfreenect2 selecting `OpenGLDepthPacketProcessor`, reporting that `DISPLAY` was missing, and terminating the JVM/native test process with exit 255. The failing `openDefaultDevice()` assertion exercised a known-broken environmental path in a test premised on having no Kinect attached, contrary to \u00a7FS-test-contract.2.6; stable enumeration and serial-number behavior should be tested instead.",
+    "finding_title": "Avoid libfreenect2 default-device probes in headless tests",
+    "fix_note": "Removed the `openDefaultDevice()` no-hardware probe and its unused import from `Libfreenect2Test`. Verified headlessly with `javaTest`, full current-defaults tests on latest EA and GraalVM 25, and full `future-defaults-all` tests on latest EA. Also passed coordinate Checkstyle, Spotless, metadata validation, index validation, library-stats generation/validation, `git diff --check`, and `fissile check --staged`.",
     "model": "gpt-5.6-sol",
-    "review_comment": "Verified the single-coordinate diff and allowed file set; the tests exercise public libfreenect2 APIs from a separate package without scaffold code, version pinning in test logic, Native Image skips, tolerated failures, compatibility overrides, or build/run flags. The resolved 0/0 dynamic-access result is a valid no-calls case, so percentage and entry-count mismatch checks do not apply. Index validation evidence was green, and the Forge finalizer completed all three test lanes, metadata validation, style checks, generated-test validity, and statistics generation without changing the publishable tree.",
-    "session_id": "676b894197f5428c"
+    "review_comment": "All three required metadata-test lanes failed reproducibly because the no-device test called `openDefaultDevice()`, which selected libfreenect2's default OpenGL pipeline and terminated the headless test process when `DISPLAY` was unavailable. I removed that broken environmental probe while retaining the test's public no-device enumeration and serial-number assertions. I reviewed the complete single-coordinate diff under the new-library rules: the tests remain non-scaffold public-API tests in a separate package with no version-pinned test logic, Native Image dodge, build/run flag, legacy metadata file, or coverage-gate violation; the reported 0/0 dynamic-access result remains a valid no-calls case. The repaired tree passes all affected lanes and is approved.",
+    "session_id": "1a78661b910a428d"
   },
   "metrics": {
     "agent": "pi",
