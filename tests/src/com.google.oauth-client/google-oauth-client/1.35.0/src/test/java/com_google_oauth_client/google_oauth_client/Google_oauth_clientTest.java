@@ -9,6 +9,12 @@ package com_google_oauth_client.google_oauth_client;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.fail;
 
+import com.google.api.client.auth.oauth.OAuthAuthorizeTemporaryTokenUrl;
+import com.google.api.client.auth.oauth.OAuthCallbackUrl;
+import com.google.api.client.auth.oauth.OAuthCredentialsResponse;
+import com.google.api.client.auth.oauth.OAuthGetAccessToken;
+import com.google.api.client.auth.oauth.OAuthGetTemporaryToken;
+import com.google.api.client.auth.oauth.OAuthHmacSigner;
 import com.google.api.client.auth.oauth2.AuthorizationCodeFlow;
 import com.google.api.client.auth.oauth2.AuthorizationCodeRequestUrl;
 import com.google.api.client.auth.oauth2.AuthorizationCodeTokenRequest;
@@ -320,6 +326,71 @@ public class Google_oauth_clientTest {
         assertThat(parsed.getPayload().getSubject()).isEqualTo("subject-1");
         assertThat(verifier.verifyOrThrow(parsed)).isTrue();
         assertThat(transport.requests.get(1).url).isEqualTo("https://issuer.example/keys");
+    }
+
+    @Test
+    void completesOAuthOneTemporaryTokenAndAccessTokenExchange() throws Exception {
+        RecordingTransport transport = new RecordingTransport();
+        transport.enqueue(
+                200,
+                "oauth_token=temporary-token&oauth_token_secret=temporary-secret"
+                        + "&oauth_callback_confirmed=true");
+        transport.enqueue(200, "oauth_token=access-token&oauth_token_secret=access-secret");
+
+        OAuthHmacSigner temporaryTokenSigner = new OAuthHmacSigner();
+        temporaryTokenSigner.clientSharedSecret = "consumer-secret";
+        OAuthGetTemporaryToken temporaryTokenRequest =
+                new OAuthGetTemporaryToken("https://issuer.example/request-token");
+        temporaryTokenRequest.transport = transport;
+        temporaryTokenRequest.consumerKey = "consumer-key";
+        temporaryTokenRequest.signer = temporaryTokenSigner;
+        temporaryTokenRequest.callback = "https://app.example/oauth/callback";
+
+        OAuthCredentialsResponse temporaryCredentials = temporaryTokenRequest.execute();
+        OAuthAuthorizeTemporaryTokenUrl authorizationUrl =
+                new OAuthAuthorizeTemporaryTokenUrl("https://issuer.example/authorize");
+        authorizationUrl.temporaryToken = temporaryCredentials.token;
+        OAuthCallbackUrl callbackUrl =
+                new OAuthCallbackUrl(
+                        "https://app.example/oauth/callback?oauth_token=temporary-token"
+                                + "&oauth_verifier=verification-code");
+
+        OAuthHmacSigner accessTokenSigner = new OAuthHmacSigner();
+        accessTokenSigner.clientSharedSecret = "consumer-secret";
+        accessTokenSigner.tokenSharedSecret = temporaryCredentials.tokenSecret;
+        OAuthGetAccessToken accessTokenRequest =
+                new OAuthGetAccessToken("https://issuer.example/access-token");
+        accessTokenRequest.transport = transport;
+        accessTokenRequest.consumerKey = "consumer-key";
+        accessTokenRequest.signer = accessTokenSigner;
+        accessTokenRequest.temporaryToken = callbackUrl.token;
+        accessTokenRequest.verifier = callbackUrl.verifier;
+
+        OAuthCredentialsResponse accessCredentials = accessTokenRequest.execute();
+
+        assertThat(temporaryCredentials.token).isEqualTo("temporary-token");
+        assertThat(temporaryCredentials.tokenSecret).isEqualTo("temporary-secret");
+        assertThat(temporaryCredentials.callbackConfirmed).isTrue();
+        assertThat(authorizationUrl.build()).contains("oauth_token=temporary-token");
+        assertThat(callbackUrl.token).isEqualTo("temporary-token");
+        assertThat(callbackUrl.verifier).isEqualTo("verification-code");
+        assertThat(accessCredentials.token).isEqualTo("access-token");
+        assertThat(accessCredentials.tokenSecret).isEqualTo("access-secret");
+
+        String temporaryAuthorization = transport.requests.get(0).header("Authorization");
+        assertThat(temporaryAuthorization)
+                .startsWith("OAuth ")
+                .contains("oauth_consumer_key=\"consumer-key\"")
+                .contains("oauth_callback=\"https%3A%2F%2Fapp.example%2Foauth%2Fcallback\"")
+                .contains("oauth_signature_method=\"HMAC-SHA1\"")
+                .contains("oauth_signature=\"");
+        String accessAuthorization = transport.requests.get(1).header("Authorization");
+        assertThat(accessAuthorization)
+                .startsWith("OAuth ")
+                .contains("oauth_token=\"temporary-token\"")
+                .contains("oauth_verifier=\"verification-code\"")
+                .contains("oauth_signature_method=\"HMAC-SHA1\"")
+                .contains("oauth_signature=\"");
     }
 
     private static String tokenJson(String accessToken, String refreshToken) {
