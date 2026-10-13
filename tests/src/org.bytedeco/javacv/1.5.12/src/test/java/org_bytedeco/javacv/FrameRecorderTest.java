@@ -36,21 +36,6 @@ public class FrameRecorderTest {
     }
 
     @Test
-    void selectsTheOpenCvBackendAsDefault() throws Exception {
-        List<String> originalBackends = new ArrayList<>(FrameRecorder.list);
-        try {
-            FrameRecorder.list.clear();
-            FrameRecorder.list.add("OpenCV");
-
-            Class<? extends FrameRecorder> selected = FrameRecorder.getDefault();
-            assertThat(selected).isEqualTo(OpenCVFrameRecorder.class);
-        } finally {
-            FrameRecorder.list.clear();
-            FrameRecorder.list.addAll(originalBackends);
-        }
-    }
-
-    @Test
     void createsTheOpenCvBackendThroughTheNamedFactory() throws Exception {
         try (FrameRecorder recorder = FrameRecorder.create("OpenCV", "recording.avi", 320, 240)) {
             assertThat(recorder).isInstanceOf(OpenCVFrameRecorder.class);

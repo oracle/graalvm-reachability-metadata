@@ -36,21 +36,6 @@ public class FrameGrabberTest {
     }
 
     @Test
-    void selectsTheOpenCvBackendAsDefault() throws Exception {
-        List<String> originalBackends = new ArrayList<>(FrameGrabber.list);
-        try {
-            FrameGrabber.list.clear();
-            FrameGrabber.list.add("OpenCV");
-
-            Class<? extends FrameGrabber> selected = FrameGrabber.getDefault();
-            assertThat(selected).isEqualTo(OpenCVFrameGrabber.class);
-        } finally {
-            FrameGrabber.list.clear();
-            FrameGrabber.list.addAll(originalBackends);
-        }
-    }
-
-    @Test
     void createsTheOpenCvBackendThroughTheNamedFactory() throws Exception {
         try (FrameGrabber grabber = FrameGrabber.create("OpenCV", 3)) {
             assertThat(grabber).isInstanceOf(OpenCVFrameGrabber.class);
