@@ -1,0 +1,11 @@
+## Human intervention needed
+
+The automated job failed for `org.apache.pulsar:pulsar-client-all:4.2.5` (reported as `test_generation_failed`). Preserved work is available at https://github.com/oracle/graalvm-reachability-metadata/tree/ai%2Fkimeta%2Fhuman-intervention%2Fissue-10642-library-new-request-org.apache.pulsar-pulsar-client-all-4.2.5-12612776.
+
+The most likely terminal failure was finalization/statistics generation, not the final test lane. `human-intervention-logs/org.apache.pulsar:pulsar-client-all:4.2.5/finalization/generateLibraryStats-2026-10-13T23-08-44-432166Z.log` ends with `generateLibraryStats FAILED` and `Java heap space` after building a 282.75 MiB dynamic-access image. In contrast, `human-intervention-logs/org.apache.pulsar:pulsar-client-all:4.2.5/style-checks/test-2026-10-13T23-06-31-322976Z.log` shows all four generated tests passing on Native Image, and the final Checkstyle run also passes.
+
+Dynamic-access coverage remains unavailable because repeated `generateDynamicAccessCoverageReport` attempts failed with `Some project locks have not been unlocked`; inspect `human-intervention-logs/org.apache.pulsar:pulsar-client-all:4.2.5/gradle/generateDynamicAccessCoverageReport-2026-10-13T22-45-31-730162Z.log`. Consequently, `stats/org.apache.pulsar/pulsar-client-all/4.2.5/execution-metrics.json` records failure after 5 iterations with zeroed LOC, metadata, and coverage fields.
+
+1. Resolve the Gradle project-lock/daemon issue and rerun `generateDynamicAccessCoverageReport` until it produces the coverage JSON.
+2. Rerun `generateLibraryStats` with sufficient Gradle heap, or diagnose its memory usage for this large shaded artifact, and confirm valid nonzero stats.
+3. Review the preserved generated tests and metadata, then rerun coordinate-scoped `checkMetadataFiles`, `checkstyle`, `spotlessCheck`, and `test` before publication.
