@@ -15,6 +15,7 @@ import org.springframework.modulith.ApplicationModuleInitializer;
 import org.springframework.modulith.Modulith;
 import org.springframework.modulith.Modulithic;
 import org.springframework.modulith.NamedInterface;
+import org.springframework.modulith.PackageInfo;
 
 public class Spring_modulith_apiTest {
 
@@ -93,6 +94,14 @@ public class Spring_modulith_apiTest {
         assertThat(initializer.invocationCount).isEqualTo(2);
     }
 
+    @Test
+    void packageInfoMarksAlternativePackageMetadataTypesAtRuntime() {
+        PackageInfo packageInfo = AlternativePackageMetadata.class.getAnnotation(PackageInfo.class);
+
+        assertThat(packageInfo).isNotNull();
+        assertThat(packageInfo.annotationType()).isEqualTo(PackageInfo.class);
+    }
+
     @ApplicationModule(
             id = "orders",
             displayName = "Order Management",
@@ -131,6 +140,9 @@ public class Spring_modulith_apiTest {
 
     @Modulith
     public static class DefaultModulithApplication {}
+
+    @PackageInfo
+    public static class AlternativePackageMetadata {}
 
     public static class RecordingInitializer implements ApplicationModuleInitializer {
 
