@@ -8,6 +8,11 @@ Newest entry first; every non-approval is recorded, including one a repair later
 **Version-specific native-image flag applied to a shared test suite**
 
 The contribution added -H:+SharedArenaSupport to the 1.0.39 suite shared by 61 older tested versions, although that baseline suite previously passed without the option. Native flags require uniform necessity. The target 1.3.0 WebSocket server path does require the narrow option: without it Netty 4.2.7's WebSocketServerHandshaker releases an unpooled direct response through CleanerJava25 and reaches disabled Arena.ofShared; default epoll, NIO, preferred-heap, and direct-to-heap allocator variants all reproduced that mechanism.
+## 2026-10-13 — org.bytedeco:libfreenect2:0.2.0-1.5.9 (#10718)
+
+**Avoid libfreenect2 default-device probes in headless tests**
+
+The current-defaults lanes on JDK 25 and latest EA and the future-defaults-all lane all showed libfreenect2 selecting `OpenGLDepthPacketProcessor`, reporting that `DISPLAY` was missing, and terminating the JVM/native test process with exit 255. The failing `openDefaultDevice()` assertion exercised a known-broken environmental path in a test premised on having no Kinect attached, contrary to §FS-test-contract.2.6; stable enumeration and serial-number behavior should be tested instead.
 ## 2026-10-13 — org.bytedeco:ffmpeg:7.1.1-1.5.12 (#10713)
 
 **Companion runtime dependency is pinned to one library version**
