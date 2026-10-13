@@ -1,0 +1,40 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :populateArtifactURLs
+I checked the entry at `metadata/org.apache.pulsar/pulsar-client-all/index.json` (metadata-version 4.2.5) against the live URLs:
+
+| Field | Status |
+|---|---|
+| `repository-url` | `https://github.com/apache/pulsar` — already set, canonical root, correct |
+| `source-code-url` | `https://repo.maven.apache.org/.../pulsar-client-all/$version$/pulsar-client-all-$version$-sources.jar` — already set; renders to a 200 for 4.2.5 |
+| `test-code-url` | `https://github.com/apache/pulsar/tree/v$version$/pulsar-client/src/test` — already set; renders to a 200 for v4.2.5 |
+| `documentation-url` | `"N/A"` — already set, and correctly so: Pulsar's docs site only versions by minor line (`https://pulsar.apache.org/docs/4.2.x/`, 200), not exact patch (`.../4.2.5/` → 404), so no version-faithful template exists |
+| `description` | already set, accurate two-sentence summary |
+| `language` | absent — correctly, since `pulsar-client-all` is a plain Java artifact (the shaded Pulsar Java client), not Kotlin/Groovy/Scala-specific |
+
+Every field that was genuinely missing (absent/null/blank) per the task's definition is just `language`, and it's correctly left absent because this library isn't language-specific. `documentation-url` holds `"N/A"` (a non-blank, deliberate value) and is accurate given no patch-level-versioned docs exist, so per the "do not modify non-blank fields" rule I left it untouched. **No edit to the file was needed** — it already satisfies all the requirements.
+Ran agent for org.apache.pulsar:pulsar-client-all:4.2.5 (exit 0). Log: /home/mihailo/git/graalvm-reachability-metadata-worker3/forge/local_repositories/forge_worktrees/10642-c4655eef/build/agent-url-discovery-logs/org.apache.pulsar-pulsar-client-all-4.2.5.log
+Completed populateArtifactURLs: invoked=1, prompted=0, skipped=0, overwriteExisting=false, verifyArtifactSources=false, limit=null
+
+[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata-worker3/forge/local_repositories/forge_worktrees/10642-c4655eef/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 40s
+9 actionable tasks: 1 executed, 8 up-to-date

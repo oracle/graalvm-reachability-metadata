@@ -1,0 +1,12 @@
+Implemented and reproduced successfully.
+
+Changes:
+- Removed the Pulsar Admin/Jersey/HK2 path that relied on URL/plugin/OSGi-style runtime behavior.
+- Reworked readiness and tests to use the native-compatible Pulsar client API.
+- Preserved message, compression, and JSON schema coverage.
+- Added traced metadata fixes and split test-only metadata into test resources.
+
+Verification:
+- Exact reproduction command: **passed**, 4/4 tests successful.
+- `spotlessCheck`: passed.
+- `checkstyle`: still reports two pre-existing empty-constructor whitespace violations in `AvroSchemaTest.java` and `PulsarClientAllTest.java`.

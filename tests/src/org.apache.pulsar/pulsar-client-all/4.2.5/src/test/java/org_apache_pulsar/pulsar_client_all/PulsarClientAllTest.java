@@ -233,7 +233,7 @@ public class PulsarClientAllTest {
         private String orderId;
         private int units;
 
-        public PurchaseOrder() {}
+        public PurchaseOrder() { }
 
         public PurchaseOrder(String orderId, int units) {
             this.orderId = orderId;
