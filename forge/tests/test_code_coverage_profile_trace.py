@@ -204,6 +204,11 @@ class TestTraceTests(unittest.TestCase):
         alone: GroupTrace = self._trace([(regular, 50)]).group((self._id(FLUSH), self._id(WRITE)))
         self.assertEqual([step.source for step in alone.steps], ["src/test/java/org/lib/StoreTest.java"])
 
+    def test_a_jdk_frame_between_the_test_and_the_library_stays_in_the_chain(self) -> None:
+        stack: list[tuple[MethodRef, int]] = [(JUNIT, 9), (FLUSHES, 3), (THREAD, 2), (FLUSH, 4), (WRITE, 0)]
+        trace: GroupTrace = self._trace([(stack, 1)]).group((self._id(FLUSH), self._id(WRITE)))
+        self.assertEqual(trace.chain, [THREAD, FLUSH, WRITE])
+
     def test_a_stack_without_a_test_starts_at_its_outermost_library_frame(self) -> None:
         stack: list[tuple[MethodRef, int]] = [(THREAD, 2), (WORKER, 7), (FLUSH, 4), (WRITE, 0)]
         trace: GroupTrace = self._trace([(stack, 1)], {"org.lib.Worker", "org.lib.Store"}).group(

@@ -7,8 +7,9 @@
 
 The sampled stacks run from the sampled library frame up to the JUnit test
 method. For each group this module picks the most frequent stack that reaches
-its divergence and splits it at the test: the library frames from the test's
-call down to the divergence become the `Observed` chain, and the test frames
+its divergence and splits it at the test: the frames from the test's call
+down to the divergence, JDK ones included, become the `Observed` chain, and
+the test frames
 become the `Called from test` block, each step at the line its compiled class
 attributes to the sampled bci (§AR-code-coverage-deep-navigation.2).
 """
@@ -132,8 +133,8 @@ class TestStep:
 class GroupTrace:
     """One group's most frequent stack, split at the test."""
 
-    #: Library frames, from the test's call down to the divergence, named as
-    #: routes name them.
+    #: Frames from the test's call down to the divergence, JDK ones included,
+    #: named as routes name them.
     chain: list[MethodRef]
     #: Test frames in call order; empty when the stack holds no test frame.
     steps: list[TestStep] = field(default_factory=list)
