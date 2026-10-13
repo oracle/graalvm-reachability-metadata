@@ -36,7 +36,7 @@ public class ViolationStoreFactoryTest {
     }
 
     public static final class RecordingViolationStore implements ViolationStore {
-        public RecordingViolationStore() {}
+        public RecordingViolationStore() { }
 
         @Override
         public void initialize(Properties properties) {
@@ -49,7 +49,7 @@ public class ViolationStoreFactoryTest {
         }
 
         @Override
-        public void save(ArchRule rule, List<String> violations) {}
+        public void save(ArchRule rule, List<String> violations) { }
 
         @Override
         public List<String> getViolations(ArchRule rule) {

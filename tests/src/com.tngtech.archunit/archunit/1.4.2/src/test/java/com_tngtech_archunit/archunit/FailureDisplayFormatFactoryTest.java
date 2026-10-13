@@ -36,7 +36,7 @@ public class FailureDisplayFormatFactoryTest {
     }
 
     public static final class CompactFailureFormat implements FailureDisplayFormat {
-        public CompactFailureFormat() {}
+        public CompactFailureFormat() { }
 
         @Override
         public String formatFailure(

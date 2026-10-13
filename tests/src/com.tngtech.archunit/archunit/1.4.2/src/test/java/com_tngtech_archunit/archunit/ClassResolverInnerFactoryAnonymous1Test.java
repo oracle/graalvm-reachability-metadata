@@ -39,7 +39,7 @@ public class ClassResolverInnerFactoryAnonymous1Test {
         }
 
         @Override
-        public void setClassUriImporter(ClassUriImporter classUriImporter) {}
+        public void setClassUriImporter(ClassUriImporter classUriImporter) { }
 
         @Override
         public Optional<JavaClass> tryResolve(String typeName) {

@@ -32,7 +32,7 @@ public class PluginLoaderInnerPluginSupplierTest {
     }
 
     public static final class DefaultGreetingPlugin implements GreetingPlugin {
-        public DefaultGreetingPlugin() {}
+        public DefaultGreetingPlugin() { }
 
         @Override
         public String greeting() {

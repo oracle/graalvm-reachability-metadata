@@ -40,10 +40,10 @@ public class ClassResolverInnerFactoryTest {
     }
 
     public static final class DefaultConstructorResolver implements ClassResolver {
-        public DefaultConstructorResolver() {}
+        public DefaultConstructorResolver() { }
 
         @Override
-        public void setClassUriImporter(ClassUriImporter classUriImporter) {}
+        public void setClassUriImporter(ClassUriImporter classUriImporter) { }
 
         @Override
         public Optional<JavaClass> tryResolve(String typeName) {
