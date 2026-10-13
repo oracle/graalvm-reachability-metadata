@@ -1,0 +1,83 @@
+{
+  "add_new_library_support:2026-10-13": {
+    "timestamp": "2026-10-13T00:23:34.961189Z",
+    "library": "org.bytedeco:libdc1394:2.2.6-1.5.9",
+    "starting_commit": "df19ad6a903bf089579957414c3557512a4b0fcb",
+    "ending_commit": "c247f05bc9accd03ccf7e216eff39c3572ed6e6c",
+    "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-sol",
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "status": "success",
+    "stats": {
+      "version": "2.2.6-1.5.9",
+      "dynamicAccess": {
+        "breakdown": {},
+        "coverageRatio": 1.0,
+        "coveredCalls": 0,
+        "totalCalls": 0
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 57,
+          "missed": 615,
+          "ratio": 0.084821,
+          "total": 672
+        },
+        "line": {
+          "covered": 13,
+          "missed": 99,
+          "ratio": 0.116071,
+          "total": 112
+        },
+        "method": {
+          "covered": 13,
+          "missed": 95,
+          "ratio": 0.12037,
+          "total": 108
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "no_action",
+      "issue_number": 10716,
+      "issue_label": "library-new-request",
+      "library": "org.bytedeco:libdc1394:2.2.6-1.5.9",
+      "summary": "Standard JavaCPP preset: only Maven dependency is org.bytedeco:javacpp (per resolved POM), matching the openblas/tesseract pattern already in this repo (testImplementation + testRuntimeOnly '<lib>-platform'). No FireWire hardware is needed for meaningful coverage: dc1394_new()/dc1394_camera_enumerate() are documented to degrade gracefully (NULL context / num==0 camera list) when no bus is present, so the no-camera-found path is itself valid native-image reachability coverage. No Docker image applies (no way to emulate a FireWire bus) and no env var/system property is documented as required.",
+      "deterministic_setup": [],
+      "agent_guidance": "libdc1394 has no camera hardware in CI. Write tests around the documented no-hardware-found behavior: dc1394_new() may return NULL if no FireWire transport is available, and dc1394_camera_enumerate() on a valid context returns a dc1394camera_list_t with num == 0 rather than erroring — handle both as expected outcomes, not failures. Follow the openblas/tesseract build.gradle precedent: testImplementation \"org.bytedeco:libdc1394:$libraryVersion\" plus testRuntimeOnly \"org.bytedeco:libdc1394-platform:$libraryVersion\" (version-variable, not hardcoded — see 2026-10-12 tesseract finding in forge/FINDINGS.md for why hardcoding broke version-agnostic testing).",
+      "risks": [
+        "Low-confidence risk: if the libdc1394-platform native binary dynamically links a system libraw1394/libusb rather than bundling it statically, a container without those system libs could raise UnsatisfiedLinkError at native load time rather than failing gracefully at the dc1394_new() call. No concrete evidence found either way; local Gradle/Native Image verification remains authoritative on this."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#10716 Support for org.bytedeco:libdc1394:2.2.6-1.5.9; label=library-new-request; body_chars=0"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "sonnet",
+      "input_tokens_used": 26,
+      "output_tokens_used": 12682
+    },
+    "metrics": {
+      "input_tokens_used": 272916,
+      "cached_input_tokens_used": 3690112,
+      "output_tokens_used": 29819,
+      "iterations": 3,
+      "cost_usd": 4.1043,
+      "generated_loc": 305,
+      "tested_library_loc": 13,
+      "metadata_entries": 116,
+      "test_only_metadata_entries": 47,
+      "code_coverage_percent": 11.61
+    },
+    "artifacts": {
+      "metadata_file": "metadata/org.bytedeco/libdc1394/2.2.6-1.5.9/reachability-metadata.json"
+    }
+  }
+}
