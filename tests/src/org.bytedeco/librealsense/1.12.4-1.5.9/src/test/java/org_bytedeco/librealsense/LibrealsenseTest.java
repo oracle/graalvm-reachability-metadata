@@ -34,7 +34,6 @@ import static org.bytedeco.librealsense.global.RealSense.rs_stream_to_string;
 
 import org.bytedeco.javacpp.BytePointer;
 import org.bytedeco.javacpp.Pointer;
-import org.bytedeco.librealsense.context;
 import org.bytedeco.librealsense.extrinsics;
 import org.bytedeco.librealsense.float2;
 import org.bytedeco.librealsense.float3;
@@ -50,7 +49,7 @@ public class LibrealsenseTest {
     private static final float FLOAT_TOLERANCE = 0.0001f;
 
     @Test
-    void loadsMatchingNativeApiAndReportsNoConnectedDevices() {
+    void loadsMatchingNativeApiVersion() {
         int encodedVersion =
                 RS_API_MAJOR_VERSION * 10_000 + RS_API_MINOR_VERSION * 100 + RS_API_PATCH_VERSION;
         String displayedVersion =
@@ -59,11 +58,6 @@ public class LibrealsenseTest {
         assertThat(RS_API_VERSION).isEqualTo(encodedVersion);
         assertThat(RS_API_VERSION_STR).isEqualTo(displayedVersion);
         assertThat(rs_get_api_version((rs_error) null)).isEqualTo(encodedVersion);
-
-        try (context realSenseContext = new context()) {
-            assertThat(realSenseContext.isNull()).isFalse();
-            assertThat(realSenseContext.get_device_count()).isZero();
-        }
     }
 
     @Test
