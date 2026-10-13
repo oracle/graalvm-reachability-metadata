@@ -3,6 +3,12 @@
 Rendered by Forge from the pre-push branch review of §FS-local-branch-review.
 Newest entry first; every non-approval is recorded, including one a repair later cleared.
 
+## 2026-10-13 — io.projectreactor.netty:reactor-netty-http:1.3.0 (#9352)
+
+**Version-specific native-image flag applied to a shared test suite**
+
+The contribution added -H:+SharedArenaSupport to the 1.0.39 suite shared by 61 older tested versions, although that baseline suite previously passed without the option. Native flags require uniform necessity. The target 1.3.0 WebSocket server path does require the narrow option: without it Netty 4.2.7's WebSocketServerHandshaker releases an unpooled direct response through CleanerJava25 and reaches disabled Arena.ofShared; default epoll, NIO, preferred-heap, and direct-to-heap allocator variants all reproduced that mechanism.
+
 ## 2026-10-13 — org.bytedeco:librealsense2:2.53.1-1.5.9 (#10720)
 
 **Headless RealSense context creation crashes the test process**
