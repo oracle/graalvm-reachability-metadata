@@ -10,6 +10,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.within;
 import static org.bytedeco.leptonica.global.leptonica.IFF_PNG;
 import static org.bytedeco.leptonica.global.leptonica.L_COPY;
+import static org.bytedeco.leptonica.global.leptonica.REMOVE_CMAP_TO_FULL_COLOR;
 import static org.bytedeco.leptonica.global.leptonica.SEL_HIT;
 import static org.bytedeco.leptonica.global.leptonica.boxContains;
 import static org.bytedeco.leptonica.global.leptonica.boxCreate;
@@ -50,12 +51,18 @@ import static org.bytedeco.leptonica.global.leptonica.pixGetResolution;
 import static org.bytedeco.leptonica.global.leptonica.pixInvert;
 import static org.bytedeco.leptonica.global.leptonica.pixRankFilter;
 import static org.bytedeco.leptonica.global.leptonica.pixRead;
+import static org.bytedeco.leptonica.global.leptonica.pixRemoveColormap;
 import static org.bytedeco.leptonica.global.leptonica.pixScale;
 import static org.bytedeco.leptonica.global.leptonica.pixSetAllArbitrary;
+import static org.bytedeco.leptonica.global.leptonica.pixSetColormap;
 import static org.bytedeco.leptonica.global.leptonica.pixSetPixel;
 import static org.bytedeco.leptonica.global.leptonica.pixSetResolution;
 import static org.bytedeco.leptonica.global.leptonica.pixThresholdToBinary;
 import static org.bytedeco.leptonica.global.leptonica.pixWrite;
+import static org.bytedeco.leptonica.global.leptonica.pixcmapAddColor;
+import static org.bytedeco.leptonica.global.leptonica.pixcmapCreate;
+import static org.bytedeco.leptonica.global.leptonica.pixcmapDestroy;
+import static org.bytedeco.leptonica.global.leptonica.pixcmapGetCount;
 import static org.bytedeco.leptonica.global.leptonica.ptaAddPt;
 import static org.bytedeco.leptonica.global.leptonica.ptaCreate;
 import static org.bytedeco.leptonica.global.leptonica.ptaDestroy;
@@ -74,6 +81,7 @@ import org.bytedeco.leptonica.L_KERNEL;
 import org.bytedeco.leptonica.NUMA;
 import org.bytedeco.leptonica.PIX;
 import org.bytedeco.leptonica.PIXA;
+import org.bytedeco.leptonica.PIXCMAP;
 import org.bytedeco.leptonica.PTA;
 import org.bytedeco.leptonica.SEL;
 import org.junit.jupiter.api.Test;
@@ -173,6 +181,39 @@ public class LeptonicaTest {
             destroy(scaled);
             destroy(binary);
             destroy(grayscale);
+        }
+    }
+
+    @Test
+    void expandsIndexedColorImageFromPalette() {
+        PIX indexed = null;
+        PIX expanded = null;
+        PIXCMAP palette = null;
+        try {
+            indexed = requireImage(pixCreate(3, 2, 2));
+            palette = pixcmapCreate(2);
+            assertThat(palette).isNotNull();
+            assertThat(palette.isNull()).isFalse();
+            assertThat(pixcmapAddColor(palette, 240, 10, 20)).isZero();
+            assertThat(pixcmapAddColor(palette, 30, 220, 40)).isZero();
+            assertThat(pixcmapAddColor(palette, 50, 60, 230)).isZero();
+            assertThat(pixcmapGetCount(palette)).isEqualTo(3);
+
+            assertThat(pixSetColormap(indexed, palette)).isZero();
+            palette = null;
+            assertThat(pixSetPixel(indexed, 0, 0, 0)).isZero();
+            assertThat(pixSetPixel(indexed, 1, 0, 1)).isZero();
+            assertThat(pixSetPixel(indexed, 2, 0, 2)).isZero();
+
+            expanded = requireImage(pixRemoveColormap(indexed, REMOVE_CMAP_TO_FULL_COLOR));
+            assertThat(dimensionsOf(expanded)).containsExactly(3, 2, 32);
+            assertThat(rgbAt(expanded, 0, 0)).containsExactly(240, 10, 20);
+            assertThat(rgbAt(expanded, 1, 0)).containsExactly(30, 220, 40);
+            assertThat(rgbAt(expanded, 2, 0)).containsExactly(50, 60, 230);
+        } finally {
+            destroy(palette);
+            destroy(expanded);
+            destroy(indexed);
         }
     }
 
@@ -365,6 +406,14 @@ public class LeptonicaTest {
         return value[0];
     }
 
+    private static int[] rgbAt(PIX image, int x, int y) {
+        int[] red = new int[1];
+        int[] green = new int[1];
+        int[] blue = new int[1];
+        assertThat(pixGetRGBPixel(image, x, y, red, green, blue)).isZero();
+        return new int[] {red[0], green[0], blue[0]};
+    }
+
     private static int[] dimensionsOf(PIX image) {
         int[] width = new int[1];
         int[] height = new int[1];
@@ -393,6 +442,12 @@ public class LeptonicaTest {
     private static void destroy(BOX box) {
         if (box != null && !box.isNull()) {
             boxDestroy(box);
+        }
+    }
+
+    private static void destroy(PIXCMAP colorMap) {
+        if (colorMap != null && !colorMap.isNull()) {
+            pixcmapDestroy(colorMap);
         }
     }
 
