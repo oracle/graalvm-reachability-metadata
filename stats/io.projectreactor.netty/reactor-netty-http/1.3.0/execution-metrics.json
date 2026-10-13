@@ -1,0 +1,118 @@
+{
+  "fix_ni_run:2026-10-13": {
+    "timestamp": "2026-10-13T02:39:12.623221Z",
+    "library": "io.projectreactor.netty:reactor-netty-http:1.3.0",
+    "starting_commit": "4c94fd27ce05cc6b058109d0e127ce4e32e5d1be",
+    "ending_commit": "3341b4e908fe7657a961331dd56709a73c97f733",
+    "previous_library": "io.projectreactor.netty:reactor-netty-http:1.0.39",
+    "strategy_name": "library_update_pi_gpt-5.6-sol",
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "status": "success",
+    "stats": {
+      "version": "1.3.0",
+      "dynamicAccess": {
+        "breakdown": {},
+        "coverageRatio": 1.0,
+        "coveredCalls": 0,
+        "totalCalls": 0
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 7475,
+          "missed": 34922,
+          "ratio": 0.17631,
+          "total": 42397
+        },
+        "line": {
+          "covered": 1881,
+          "missed": 7689,
+          "ratio": 0.196552,
+          "total": 9570
+        },
+        "method": {
+          "covered": 439,
+          "missed": 1770,
+          "ratio": 0.198732,
+          "total": 2209
+        }
+      }
+    },
+    "previous_library_stats": {
+      "version": "1.0.39",
+      "dynamicAccess": {
+        "breakdown": {},
+        "coverageRatio": 1.0,
+        "coveredCalls": 0,
+        "totalCalls": 0
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 6694,
+          "missed": 20543,
+          "ratio": 0.245769,
+          "total": 27237
+        },
+        "line": {
+          "covered": 1674,
+          "missed": 4718,
+          "ratio": 0.26189,
+          "total": 6392
+        },
+        "method": {
+          "covered": 409,
+          "missed": 1045,
+          "ratio": 0.281293,
+          "total": 1454
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "advisory_preparation",
+      "issue_number": 9352,
+      "issue_label": "fails-native-image-run",
+      "library": "io.projectreactor.netty:reactor-netty-http:1.3.0",
+      "summary": "reactor-netty-http 1.3.0 pulls in Netty 4.2.7.Final, whose CleanerJava25 frees direct buffers via Arena.ofShared(); Native Image disables shared-arena support by default, so the generated test will fail with 'Support for Arena.ofShared is not active' unless the build enables it.",
+      "deterministic_setup": [],
+      "agent_guidance": "Add the native-image build argument -H:+SharedArenaSupport to the generated test's build.gradle, e.g.:\n\ngraalvmNative {\n    binaries {\n        test {\n            buildArgs.add('-H:+SharedArenaSupport')\n        }\n    }\n    agent { ... }\n}\n\nThis is the same root cause and fix already applied in this repo for io.lettuce:lettuce-core:7.0.0.RELEASE (PR #10454), which also transitively pulled Netty 4.2.x. Netty only added automatic feature-detection/fallback for this in 4.2.8.Final (netty/netty#15762); reactor-netty-http:1.3.0 depends on 4.2.7.Final, one patch release too early, so the flag is needed rather than a dependency bump.",
+      "risks": [
+        "-H:+SharedArenaSupport is still experimental in GraalVM 25.0.x and is documented upstream as incompatible with -H:+VectorAPISupport; no conflict was observed in the lettuce-core precedent, but local Native Image verification should confirm this build's default flags don't enable Vector API support.",
+        "If a later reactor-netty-http version in this family upgrades its transitive Netty dependency to 4.2.8.Final or newer, the flag becomes unnecessary (Netty will auto-detect and fall back) but should remain harmless to keep."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#9352 [Automation] native-image run fails for io.projectreactor.netty:reactor-netty-http:1.3.0; label=fails-native-image-run; body_chars=0"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "6 existing test file path(s) included"
+        }
+      ],
+      "current_library": "io.projectreactor.netty:reactor-netty-http:1.0.39",
+      "new_version": "1.3.0",
+      "model": "sonnet",
+      "input_tokens_used": 38,
+      "output_tokens_used": 19257
+    },
+    "metrics": {
+      "input_tokens_used": 0,
+      "cached_input_tokens_used": 0,
+      "output_tokens_used": 0,
+      "iterations": 0,
+      "cost_usd": 0.0,
+      "tested_library_loc": 1881,
+      "metadata_entries": 82,
+      "test_only_metadata_entries": 107,
+      "previous_library_metadata_entries": 0,
+      "previous_library_test_only_metadata_entries": 107,
+      "code_coverage_percent": 19.66,
+      "previous_library_coverage_percent": 26.19
+    },
+    "artifacts": {
+      "metadata_file": "metadata/io.projectreactor.netty/reactor-netty-http/1.3.0/reachability-metadata.json"
+    }
+  }
+}
