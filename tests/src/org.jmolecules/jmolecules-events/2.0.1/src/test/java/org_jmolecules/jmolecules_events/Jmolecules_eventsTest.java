@@ -28,6 +28,7 @@ import org.jmolecules.event.annotation.Externalized;
 import org.jmolecules.stereotype.Stereotype;
 import org.junit.jupiter.api.Test;
 
+@SuppressWarnings("checkstyle:annotationAccess")
 public class Jmolecules_eventsTest {
     @Test
     void markerInterfacesCarryEventsThroughConsumerCode() {
