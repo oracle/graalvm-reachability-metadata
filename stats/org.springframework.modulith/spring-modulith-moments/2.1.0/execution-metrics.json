@@ -1,0 +1,97 @@
+{
+  "add_new_library_support:2026-10-13": {
+    "timestamp": "2026-10-13T05:25:49.517447Z",
+    "library": "org.springframework.modulith:spring-modulith-moments:2.1.0",
+    "starting_commit": "fa3b0532dc3b9592b8de75ba82220520c5ac2ec2",
+    "ending_commit": "3d66116175ccf079864d3c4c49397ff1c8921387",
+    "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-sol",
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "status": "success",
+    "stats": {
+      "version": "2.1.0",
+      "dynamicAccess": {
+        "breakdown": {},
+        "coverageRatio": 1.0,
+        "coveredCalls": 0,
+        "totalCalls": 0
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 834,
+          "missed": 474,
+          "ratio": 0.637615,
+          "total": 1308
+        },
+        "line": {
+          "covered": 190,
+          "missed": 96,
+          "ratio": 0.664336,
+          "total": 286
+        },
+        "method": {
+          "covered": 64,
+          "missed": 56,
+          "ratio": 0.533333,
+          "total": 120
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "advisory_preparation",
+      "issue_number": 10709,
+      "issue_label": "library-new-request",
+      "library": "org.springframework.modulith:spring-modulith-moments:2.1.0",
+      "summary": "Moments/TimeMachine need org.springframework.context.ApplicationEventPublisher, but spring-context is absent from spring-modulith-moments's own POM (normally supplied transitively via spring-boot-starter when consumed through spring-modulith-starter-core); a standalone test won't compile without it.",
+      "deterministic_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "org.springframework:spring-context:7.0.8",
+          "scope": "testImplementation",
+          "reason": "Moments/TimeMachine constructors require org.springframework.context.ApplicationEventPublisher and org.springframework.scheduling.annotation.Scheduled; spring-modulith-moments:2.1.0's POM does not declare spring-context (even as optional), unlike sibling module spring-modulith-events-core which pins\n...[truncated]"
+        }
+      ],
+      "agent_guidance": "Exercise the module via org.springframework.modulith.moments.support.TimeMachine, which is the public, test-facing subclass of Moments (shiftBy(Duration) and reset() are public overrides specifically meant for tests; on Moments itself they are package-private). Construct it with Clock.fixed(...), a simple test ApplicationEventPublisher (a List-collecting lambda/anonymous implementation is enough — no Mockito needed), and MomentsProperties.DEFAULTS (its constructors are private, but DEFAULTS is a public static field, so no Spring Boot config-binding machinery is required). Call shiftBy(Duration) with values crossing hour/day/week/month/quarter/year boundaries and assert the published event types (HourHasPassed, DayHasPassed, WeekHasPassed, MonthHasPassed, QuarterHasPassed, YearHasPassed). No database, Docker image, environment variable, or system property is needed — this module is a pure in-memory time/event abstraction.",
+      "risks": [
+        "The missing spring-context dependency appears to be a gap/quirk in the published POM for this module rather than intentional design; worth a quick sanity check against a newer patch version in case upstream fixes it, though 2.1.0 is the version requested here.",
+        "Local Gradle compilation and the native-image agent run remain authoritative — if compileTestJava succeeds without the added dependency for some unforeseen transitive reason, drop it rather than keeping unused setup."
+      ],
+      "applied_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "org.springframework:spring-context:7.0.8",
+          "result": "applied",
+          "target": "tests/src/org.springframework.modulith/spring-modulith-moments/2.1.0/build.gradle"
+        }
+      ],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#10709 Support for org.springframework.modulith:spring-modulith-moments:2.1.0; label=library-new-request; body_chars=0"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "sonnet",
+      "input_tokens_used": 34,
+      "output_tokens_used": 19030
+    },
+    "metrics": {
+      "input_tokens_used": 220598,
+      "cached_input_tokens_used": 2639616,
+      "output_tokens_used": 30414,
+      "iterations": 3,
+      "cost_usd": 3.3352,
+      "generated_loc": 91,
+      "tested_library_loc": 190,
+      "metadata_entries": 0,
+      "code_coverage_percent": 66.43
+    },
+    "artifacts": {
+      "metadata_file": "metadata/org.springframework.modulith/spring-modulith-moments/2.1.0/reachability-metadata.json"
+    }
+  }
+}
