@@ -1005,12 +1005,9 @@ artifacts, not choose its own transition.
 
 **Measurement owns the loops.** Only `api-measure` and `deep-measure` move a
 loop forward: they write the numbered report history, compute the stop decision
-(§3.3), and render the next prompt. The prompt is a Rhei handoff the cover state
-inherits as required, so the agent receives the whole document in its message,
-not a path to read: an agent told to read a long file reads part of it, and
-every target it never sees is coverage the pass cannot add. A deep pass hands it
-out as group sessions (§AR-code-coverage-deep-navigation.4) and stays one
-measurement. The cover agent writes tests and returns; it records no coverage
+(§3.3), and render the next prompt, which reaches the cover agent as a handoff
+(§AR-code-coverage-prompts.3). A deep pass hands it out as group sessions
+(§AR-code-coverage-deep-navigation.4) and stays one measurement. The cover agent writes tests and returns; it records no coverage
 claim and no target state. A repair pass re-enters measurement on the same
 iteration through the active-measurement marker, so a failed measurement plus
 its fix can never masquerade as a zero-yield cover pass or spend loop budget.

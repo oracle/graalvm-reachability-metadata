@@ -372,7 +372,7 @@ routes a session holds and is recorded beside it in the discovery report: a
 monolith prompt asks for one test class for its entry, a mixed prompt says to
 expect more than one. Measurement writes the sessions as an ordered queue and
 hands control to a dispatch program state, which removes the first session,
-writes its prompt as the cover handoff (§AR-code-coverage-improvement.5.2) and
+writes its prompt as the cover handoff (§AR-code-coverage-prompts.3) and
 exits 10, or exits 0 on an empty queue so measurement runs again; the cover
 state returns to the dispatcher. The queue is the whole loop state, and a
 session leaves it before its agent runs, so a failed session is not repeated

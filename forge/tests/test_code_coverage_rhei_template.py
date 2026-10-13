@@ -313,7 +313,7 @@ class CodeCoverageRheiTemplateTests(unittest.TestCase):
         cover state inherits it as required from that state, and the
         instructions name every listed path a target. In the deep phase that
         state is the session dispatcher.
-        §AR-code-coverage-improvement.5.2, §AR-code-coverage-deep-navigation.4
+        §AR-code-coverage-prompts.3, §AR-code-coverage-deep-navigation.4
         """
         forge_root: str = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
         states_paths: tuple[str, ...] = (
