@@ -8,6 +8,11 @@ Newest entry first; every non-approval is recorded, including one a repair later
 **Machine-local classpath read through Native Image resource metadata**
 
 All three tests loaded the generated external-compiler-classpath.txt with Class.getResourceAsStream even though the file carries build- and machine-local classpath paths. That made the native tests depend on resource metadata for machine-local paths, violating §FS-test-contract.4.4.
+## 2026-10-13 — org.bytedeco:ffmpeg:7.1.1-1.5.12 (#10713)
+
+**Companion runtime dependency is pinned to one library version**
+
+The coordinate's build.gradle hardcoded org.bytedeco:ffmpeg-platform:7.1.1-1.5.12 while the tested org.bytedeco:ffmpeg dependency follows the TCK-resolved library version. Reusing this suite for a newer tested version would pair it with stale native binaries, violating the version-agnostic test requirement in §FS-test-contract.2.5.
 
 ## 2026-10-13 — org.bytedeco:librealsense2:2.53.1-1.5.9 (#10720)
 
