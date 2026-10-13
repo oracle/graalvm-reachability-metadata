@@ -39,7 +39,7 @@
         ],
         "env": {},
         "gate": "index-file-validation",
-        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :validateIndexFiles\n✅ metadata/org.bytedeco/opencv/index.json: Valid\n\n[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10689-a8e067ca/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 1s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :validateIndexFiles\n\u2705 metadata/org.bytedeco/opencv/index.json: Valid\n\n[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10689-a8e067ca/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 1s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
         "returncode": 0
       }
     ],
@@ -52,14 +52,16 @@
     "status": "success"
   },
   "local_review": {
-    "changed_paths": [],
+    "changed_paths": [
+      "tests/src/org.bytedeco/opencv/4.11.0-1.5.12/build.gradle"
+    ],
     "decision": "approved",
-    "finding_body": "",
-    "finding_title": "",
-    "fix_note": "",
+    "finding_body": "The latest-EA current-defaults and future-defaults-all jobs each exceeded the five-minute native-image limit while scanning artifacts for Android, iOS, Linux, macOS, and Windows supplied by org.bytedeco:opencv-platform. The test exercises Loader.loadProperties and does not load OpenCV native binaries, so the aggregate runtime dependency was unnecessary. This is a contribution-local build-file defect repairable under FS-contribution-contract.5.1.",
+    "finding_title": "Avoid aggregate Bytedeco platform artifacts in metadata-only preset tests",
+    "fix_note": "Removed testRuntimeOnly org.bytedeco:opencv-platform from the contribution's build.gradle while preserving the test and all assertions. Verified ./gradlew clean test in current-defaults and future-defaults-all modes; native-image builds completed in about 55 seconds and the native test passed. Also verified checkMetadataFiles, checkstyle, spotlessCheck, git diff --check, and fissile check --staged.",
     "model": "gpt-5.6-sol",
-    "review_comment": "Confirmed the diff is limited to one coordinate and its allowed metadata, stats, and test files; it uses only reachability-metadata.json. The public, version-agnostic test exercises OpenCV preset loading from a separate test package without native-image skips, tolerated failures, runtime-definition behavior, JVM overrides, or native build/run flags. Resolved statistics report 0/0 dynamic-access calls, so the new-library percentage and entry-count mismatch checks are not applicable. Forge finalization passed all three test lanes, metadata and style checks, generated-test validity, deterministic metadata routing, and library-stat generation without changing the publishable tree.",
-    "session_id": "93baf73c4b154e88"
+    "review_comment": "Both required latest-EA metadata-test lanes timed out after the aggregate opencv-platform dependency put every supported platform artifact on the native-image classpath; the logs showed roughly 60,000 scanned entries and 1.44 GiB of registered resources. I removed that unnecessary runtime aggregate, reviewed the complete single-coordinate diff under the library-new-request rules, and found no remaining blocking issue. Current-defaults and future-defaults-all native tests now pass, as do metadata validation, Checkstyle, Spotless, diff checks, and fissile.",
+    "session_id": "71541513e39c4bc2"
   },
   "metrics": {
     "agent": "pi",
