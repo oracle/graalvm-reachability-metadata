@@ -3,6 +3,12 @@
 Rendered by Forge from the pre-push branch review of §FS-local-branch-review.
 Newest entry first; every non-approval is recorded, including one a repair later cleared.
 
+## 2026-10-13 — com.google.cloud.sql:jdbc-socket-factory-core:1.19.0 (#10704)
+
+**Dynamic-access class lacked a dedicated test file**
+
+The resolved evidence identified dynamic-access call sites in both CredentialFactoryProvider and InternalConnectorRegistry, but the contribution originally provided only CredentialFactoryProviderTest.java. InternalConnectorRegistry therefore lacked the dedicated test file required by §root/FS-test-contract.1.8.
+
 ## 2026-10-13 — org.springframework.modulith:spring-modulith-apt:2.1.0 (#10711)
 
 **Machine-local classpath read through Native Image resource metadata**
