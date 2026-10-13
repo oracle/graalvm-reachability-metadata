@@ -3,6 +3,14 @@
 Rendered by Forge from the pre-push branch review of §FS-local-branch-review.
 Newest entry first; every non-approval is recorded, including one a repair later cleared.
 
+## 2026-10-13 — org.springframework.modulith:spring-modulith-starter-jpa:2.1.0 (#10691)
+
+**Not-for-native-image review repairs leave stale descriptor guidance**
+
+The replacement calls org.springframework.modulith:spring-modulith-starter-core:2.1.0 a class-bearing dependency, but its Maven Central JAR contains zero `.class` files and `metadata/org.springframework.modulith/spring-modulith-starter-core/index.json` already marks it not-for-native-image. Removing it from this contribution's marker would not complete the repair: `publish_not_for_native_image.py` snapshots `reason` and `replacement` before local review and passes a non-callable descriptor input, which `branch_publication.py` reuses after reviewer edits. The eventual descriptor and PR body would therefore retain the false guidance. The contribution cannot be safely repaired without changing shared publication infrastructure.
+
+Infrastructure issue: https://github.com/oracle/graalvm-reachability-metadata/issues/10775 (#10775)
+
 ## 2026-10-08 — org.eclipse.jetty:jetty-http:10.0.0 (#9376)
 
 **Pre-push review unavailable**
