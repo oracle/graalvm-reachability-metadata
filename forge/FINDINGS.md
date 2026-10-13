@@ -8,6 +8,11 @@ Newest entry first; every non-approval is recorded, including one a repair later
 **Version-specific native-image flag applied to a shared test suite**
 
 The contribution added -H:+SharedArenaSupport to the 1.0.39 suite shared by 61 older tested versions, although that baseline suite previously passed without the option. Native flags require uniform necessity. The target 1.3.0 WebSocket server path does require the narrow option: without it Netty 4.2.7's WebSocketServerHandshaker releases an unpooled direct response through CleanerJava25 and reaches disabled Arena.ofShared; default epoll, NIO, preferred-heap, and direct-to-heap allocator variants all reproduced that mechanism.
+## 2026-10-13 — org.springframework.modulith:spring-modulith-apt:2.1.0 (#10711)
+
+**Machine-local classpath read through Native Image resource metadata**
+
+All three tests loaded the generated external-compiler-classpath.txt with Class.getResourceAsStream even though the file carries build- and machine-local classpath paths. That made the native tests depend on resource metadata for machine-local paths, violating §FS-test-contract.4.4.
 ## 2026-10-13 — org.bytedeco:libfreenect2:0.2.0-1.5.9 (#10718)
 
 **Avoid libfreenect2 default-device probes in headless tests**

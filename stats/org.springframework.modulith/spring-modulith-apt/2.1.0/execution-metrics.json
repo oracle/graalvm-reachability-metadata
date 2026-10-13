@@ -1,0 +1,89 @@
+{
+  "add_new_library_support:2026-10-13": {
+    "timestamp": "2026-10-13T04:32:17.928346Z",
+    "library": "org.springframework.modulith:spring-modulith-apt:2.1.0",
+    "starting_commit": "134ae6c6ae719a35a6150e5f5f398e75a6b7be41",
+    "ending_commit": "52fb9e4bc6b33aa3aec53e845bb2f8466cb9d27e",
+    "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-sol",
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "status": "success",
+    "stats": {
+      "version": "2.1.0",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 8,
+            "totalCalls": 8
+          }
+        },
+        "coverageRatio": 1.0,
+        "coveredCalls": 8,
+        "totalCalls": 8
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 591,
+          "missed": 13750,
+          "ratio": 0.041211,
+          "total": 14341
+        },
+        "line": {
+          "covered": 130,
+          "missed": 2673,
+          "ratio": 0.046379,
+          "total": 2803
+        },
+        "method": {
+          "covered": 50,
+          "missed": 1078,
+          "ratio": 0.044326,
+          "total": 1128
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "no_action",
+      "issue_number": 10711,
+      "issue_label": "library-new-request",
+      "library": "org.springframework.modulith:spring-modulith-apt:2.1.0",
+      "summary": "spring-modulith-apt is a javac annotation processor (processes \"*\", Javadoc-to-JSON at compile time); its own and its shaded aptk-tooling classes only run inside javac and are unreachable from a native image. The only runtime-usable surface is plain classes (TypeMetadata, MethodMetadata records; BuildSystemUtils, which auto-detects Gradle output without configuration) shipped in the same jar. Its only compile-scope deps (jspecify, spring-boot) resolve transitively via the normal testImplementation dependency. This mirrors the existing querydsl-apt/sundr-adapter-apt pattern in this repo, which needed no extra setup either.",
+      "deterministic_setup": [],
+      "agent_guidance": "",
+      "risks": [
+        "Because the processor and its aptk-tooling classes execute exclusively inside javac (never inside the built native image), meaningful reachability coverage is inherently thin — expect the shipped metadata to cover only the plain runtime classes (TypeMetadata, MethodMetadata, BuildSystemUtils), same as querydsl-apt's metadata. A thin metadata file here is expected, not a sign of incomplete test generation."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#10711 Support for org.springframework.modulith:spring-modulith-apt:2.1.0; label=library-new-request; body_chars=0"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "sonnet",
+      "input_tokens_used": 24,
+      "output_tokens_used": 14342
+    },
+    "metrics": {
+      "input_tokens_used": 295736,
+      "cached_input_tokens_used": 3362944,
+      "output_tokens_used": 38287,
+      "iterations": 3,
+      "cost_usd": 4.3088,
+      "generated_loc": 840,
+      "tested_library_loc": 130,
+      "metadata_entries": 8,
+      "test_only_metadata_entries": 31,
+      "code_coverage_percent": 4.64
+    },
+    "artifacts": {
+      "metadata_file": "metadata/org.springframework.modulith/spring-modulith-apt/2.1.0/reachability-metadata.json"
+    }
+  }
+}
