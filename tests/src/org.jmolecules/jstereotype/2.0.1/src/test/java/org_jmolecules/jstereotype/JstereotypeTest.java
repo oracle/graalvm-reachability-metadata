@@ -72,6 +72,17 @@ public class JstereotypeTest {
     }
 
     @Test
+    void runtimeStereotypesHaveValueBasedIdentityAcrossAnnotatedTypes() {
+        Stereotype first = requireAnnotation(InventoryAggregate.class, Stereotype.class);
+        Stereotype equivalent = requireAnnotation(InventorySnapshot.class, Stereotype.class);
+        Stereotype different = requireAnnotation(ShippingAggregate.class, Stereotype.class);
+
+        assertThat(first).isEqualTo(equivalent);
+        assertThat(first.hashCode()).isEqualTo(equivalent.hashCode());
+        assertThat(first).isNotEqualTo(different);
+    }
+
+    @Test
     void schemaCatalogAdvertisesBothConfigurationDocuments() throws IOException {
         String catalog = readLibraryResource("jmolecules-catalog.json");
 
@@ -125,6 +136,18 @@ public class JstereotypeTest {
 
     @Stereotype
     private static final class DefaultStereotype {
+    }
+
+    @Stereotype(name = "Aggregate", id = "inventory.aggregate", groups = "domain-driven-design", priority = 5)
+    private static final class InventoryAggregate {
+    }
+
+    @Stereotype(name = "Aggregate", id = "inventory.aggregate", groups = "domain-driven-design", priority = 5)
+    private static final class InventorySnapshot {
+    }
+
+    @Stereotype(name = "Aggregate", id = "shipping.aggregate", groups = "domain-driven-design", priority = 5)
+    private static final class ShippingAggregate {
     }
 
     @Stereotype(
