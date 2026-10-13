@@ -25,6 +25,14 @@ import static org.bytedeco.ffmpeg.global.avformat.av_read_frame;
 import static org.bytedeco.ffmpeg.global.avformat.avformat_close_input;
 import static org.bytedeco.ffmpeg.global.avformat.avformat_find_stream_info;
 import static org.bytedeco.ffmpeg.global.avformat.avformat_open_input;
+import static org.bytedeco.ffmpeg.global.avfilter.av_buffersink_get_frame;
+import static org.bytedeco.ffmpeg.global.avfilter.av_buffersrc_add_frame;
+import static org.bytedeco.ffmpeg.global.avfilter.avfilter_get_by_name;
+import static org.bytedeco.ffmpeg.global.avfilter.avfilter_graph_alloc;
+import static org.bytedeco.ffmpeg.global.avfilter.avfilter_graph_config;
+import static org.bytedeco.ffmpeg.global.avfilter.avfilter_graph_create_filter;
+import static org.bytedeco.ffmpeg.global.avfilter.avfilter_graph_free;
+import static org.bytedeco.ffmpeg.global.avfilter.avfilter_link;
 import static org.bytedeco.ffmpeg.global.avutil.AVMEDIA_TYPE_VIDEO;
 import static org.bytedeco.ffmpeg.global.avutil.AV_PIX_FMT_BGR24;
 import static org.bytedeco.ffmpeg.global.avutil.AV_PIX_FMT_RGB24;
@@ -60,6 +68,9 @@ import org.bytedeco.ffmpeg.avcodec.AVCodecParameters;
 import org.bytedeco.ffmpeg.avcodec.AVPacket;
 import org.bytedeco.ffmpeg.avformat.AVFormatContext;
 import org.bytedeco.ffmpeg.avformat.AVStream;
+import org.bytedeco.ffmpeg.avfilter.AVFilter;
+import org.bytedeco.ffmpeg.avfilter.AVFilterContext;
+import org.bytedeco.ffmpeg.avfilter.AVFilterGraph;
 import org.bytedeco.ffmpeg.avutil.AVChannelLayout;
 import org.bytedeco.ffmpeg.avutil.AVDictionary;
 import org.bytedeco.ffmpeg.avutil.AVFrame;
@@ -225,6 +236,95 @@ public class FfmpegTest {
             }
         } finally {
             sws_freeContext(scaleContext);
+        }
+    }
+
+    @Test
+    void flipsVideoFramesThroughAFilterGraph() {
+        int width = 3;
+        int height = 2;
+        byte[] sourcePixels = {
+            (byte) 255, 0, 0,
+            0, (byte) 255, 0,
+            0, 0, (byte) 255,
+            (byte) 255, (byte) 255, 0,
+            0, (byte) 255, (byte) 255,
+            (byte) 255, 0, (byte) 255
+        };
+        AVFilterGraph filterGraph = null;
+        AVFrame inputFrame = null;
+        AVFrame outputFrame = null;
+
+        try {
+            AVFilter bufferSource = assertAllocated(avfilter_get_by_name("buffer"));
+            AVFilter horizontalFlip = assertAllocated(avfilter_get_by_name("hflip"));
+            AVFilter bufferSink = assertAllocated(avfilter_get_by_name("buffersink"));
+            filterGraph = assertAllocated(avfilter_graph_alloc());
+
+            AVFilterContext sourceContext = new AVFilterContext((Pointer) null);
+            AVFilterContext flipContext = new AVFilterContext((Pointer) null);
+            AVFilterContext sinkContext = new AVFilterContext((Pointer) null);
+            String sourceArguments = "video_size=" + width + "x" + height
+                    + ":pix_fmt=" + AV_PIX_FMT_RGB24
+                    + ":time_base=1/25:pixel_aspect=1/1";
+
+            assertThat(avfilter_graph_create_filter(
+                            sourceContext, bufferSource, "source", sourceArguments, null, filterGraph))
+                    .isZero();
+            assertThat(avfilter_graph_create_filter(
+                            flipContext, horizontalFlip, "flip", (String) null, null, filterGraph))
+                    .isZero();
+            assertThat(avfilter_graph_create_filter(
+                            sinkContext, bufferSink, "sink", (String) null, null, filterGraph))
+                    .isZero();
+            assertThat(avfilter_link(sourceContext, 0, flipContext, 0)).isZero();
+            assertThat(avfilter_link(flipContext, 0, sinkContext, 0)).isZero();
+            assertThat(avfilter_graph_config(filterGraph, null)).isZero();
+            assertThat(filterGraph.nb_filters()).isEqualTo(3);
+
+            inputFrame = assertAllocated(av_frame_alloc());
+            inputFrame.width(width).height(height).format(AV_PIX_FMT_RGB24).pts(7);
+            assertThat(av_frame_get_buffer(inputFrame, 32)).isZero();
+            assertThat(av_frame_make_writable(inputFrame)).isZero();
+            BytePointer inputData = inputFrame.data(0);
+            for (int y = 0; y < height; y++) {
+                for (int x = 0; x < width; x++) {
+                    int sourceOffset = (y * width + x) * 3;
+                    long frameOffset = (long) y * inputFrame.linesize(0) + (long) x * 3;
+                    inputData.put(frameOffset, sourcePixels[sourceOffset]);
+                    inputData.put(frameOffset + 1, sourcePixels[sourceOffset + 1]);
+                    inputData.put(frameOffset + 2, sourcePixels[sourceOffset + 2]);
+                }
+            }
+
+            assertThat(av_buffersrc_add_frame(sourceContext, inputFrame)).isZero();
+            outputFrame = assertAllocated(av_frame_alloc());
+            assertThat(av_buffersink_get_frame(sinkContext, outputFrame)).isZero();
+            assertThat(outputFrame.width()).isEqualTo(width);
+            assertThat(outputFrame.height()).isEqualTo(height);
+            assertThat(outputFrame.format()).isEqualTo(AV_PIX_FMT_RGB24);
+            assertThat(outputFrame.pts()).isEqualTo(7);
+
+            BytePointer outputData = outputFrame.data(0);
+            for (int y = 0; y < height; y++) {
+                for (int x = 0; x < width; x++) {
+                    int expectedOffset = (y * width + (width - x - 1)) * 3;
+                    long frameOffset = (long) y * outputFrame.linesize(0) + (long) x * 3;
+                    assertThat(outputData.get(frameOffset)).isEqualTo(sourcePixels[expectedOffset]);
+                    assertThat(outputData.get(frameOffset + 1)).isEqualTo(sourcePixels[expectedOffset + 1]);
+                    assertThat(outputData.get(frameOffset + 2)).isEqualTo(sourcePixels[expectedOffset + 2]);
+                }
+            }
+        } finally {
+            if (isAllocated(outputFrame)) {
+                av_frame_free(outputFrame);
+            }
+            if (isAllocated(inputFrame)) {
+                av_frame_free(inputFrame);
+            }
+            if (isAllocated(filterGraph)) {
+                avfilter_graph_free(filterGraph);
+            }
         }
     }
 
