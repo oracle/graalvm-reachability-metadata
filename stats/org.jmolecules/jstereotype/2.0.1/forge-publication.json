@@ -1,0 +1,112 @@
+{
+  "base_commit": "f4c9a00d101ef829eb6fe8aab0b2c643207d67da",
+  "branch": "ai/kimeta/add-lib-support-org.jmolecules-jstereotype-2.0.1-forge-10705-20261013063526591979-8f0f3db7243a",
+  "follow_ups": [],
+  "forge": {
+    "branch": "master",
+    "commit": "f4c9a00d101ef829eb6fe8aab0b2c643207d67da",
+    "monitored_branch": "origin/master"
+  },
+  "issue_number": 10705,
+  "library": {
+    "artifact": "jstereotype",
+    "coordinates": "org.jmolecules:jstereotype:2.0.1",
+    "group": "org.jmolecules",
+    "version": "2.0.1"
+  },
+  "local_ci_verification": {
+    "base_commit": "f4c9a00d101ef829eb6fe8aab0b2c643207d67da",
+    "commands": [
+      {
+        "command": [
+          "./gradlew",
+          "generateChangedIndexFileCoordinatesList",
+          "-PbaseCommit=origin/master",
+          "-PnewCommit=HEAD"
+        ],
+        "env": {
+          "GITHUB_OUTPUT": "/tmp/tmpuxkdm4fr"
+        },
+        "gate": "changed-index-coordinates",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :generateChangedIndexFileCoordinatesList\n\n[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10705-085acf90/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 6s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      },
+      {
+        "command": [
+          "./gradlew",
+          "validateIndexFiles",
+          "-Pcoordinates=org.jmolecules:jstereotype"
+        ],
+        "env": {},
+        "gate": "index-file-validation",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :validateIndexFiles\n✅ metadata/org.jmolecules/jstereotype/index.json: Valid\n\n[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10705-085acf90/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 6s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      }
+    ],
+    "failure_command": null,
+    "failure_gate": null,
+    "final_commit": "b81950a9eb087f5db1f4234bb7fc13f02f4d1138",
+    "fixups": [],
+    "human_intervention_required": false,
+    "repo_fix_paths": [],
+    "status": "success"
+  },
+  "local_review": {
+    "changed_paths": [],
+    "decision": "approved",
+    "finding_body": "",
+    "finding_title": "",
+    "fix_note": "",
+    "model": "gpt-5.6-sol",
+    "review_comment": "Confirmed the diff is limited to one coordinate and the allowed metadata, stats, and test files; only reachability-metadata.json is used. The public, version-agnostic tests use a separate package, exercise the annotation and bundled resources without native-image skips or failure tolerance, and are not scaffold-only. Resolved statistics report 0/0 dynamic-access calls, so the no-calls coverage case is valid and the entry-count mismatch probe does not apply. The Forge-owned finalization completed all three test lanes, metadata splitting and validation, style checks, generated-test checks, and statistics generation successfully without changing the publishable tree.",
+    "session_id": "af0a5e252c0f42ca"
+  },
+  "metrics": {
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "path": "stats/org.jmolecules/jstereotype/2.0.1/execution-metrics.json",
+    "summary": {
+      "cached_input_tokens_used": 1115520,
+      "code_coverage_percent": 100.0,
+      "cost_usd": 1.8958,
+      "generated_loc": 142,
+      "input_tokens_used": 165831,
+      "iterations": 3,
+      "metadata_entries": 0,
+      "output_tokens_used": 16961,
+      "test_only_metadata_entries": 3,
+      "tested_library_loc": 0
+    },
+    "timestamp": "2026-10-13T06:35:26.591979Z"
+  },
+  "modifiers": {
+    "chunk_final": true,
+    "chunked_dynamic_access": false,
+    "human_intervention": false
+  },
+  "producer": "kimeta",
+  "publication_id": "forge-10705-20261013063526591979-8f0f3db7243a",
+  "render": {
+    "dynamic_access": null,
+    "dynamic_access_evidence": null,
+    "library_stats": {
+      "dynamicAccess": {
+        "breakdown": {},
+        "coverageRatio": 1.0,
+        "coveredCalls": 0,
+        "totalCalls": 0
+      },
+      "libraryCoverage": {
+        "instruction": "N/A",
+        "line": "N/A",
+        "method": "N/A"
+      },
+      "version": "2.0.1"
+    }
+  },
+  "schema_version": 1,
+  "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-sol",
+  "task_type": "library-new-request",
+  "template_type": "library-new-request",
+  "timestamp": "2026-10-13T06:35:26.591979Z"
+}
