@@ -11,6 +11,10 @@ import com.tngtech.archunit.thirdparty.org.objectweb.asm.Opcodes;
 
 public final class ExperimentalClassVisitorFixture extends ClassVisitor {
     public ExperimentalClassVisitorFixture() {
-        super(Opcodes.ASM10_EXPERIMENTAL);
+        super(previewApi(Opcodes.ASM10_EXPERIMENTAL));
+    }
+
+    private static int previewApi(long api) {
+        return api instanceof int value ? value : 0;
     }
 }
