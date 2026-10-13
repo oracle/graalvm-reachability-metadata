@@ -96,12 +96,15 @@ path is the evidence the agent follows, and a public-entry route has none to
 show. Public-entry routes stay ranked in the JSON report and enter the prompt
 once a later run samples a frame on their covered prefix.
 
-`Observed` shows every library frame of the group's most frequent sampled
-stack, from the frame the test calls directly down to the group's divergence,
-the route's first method and its observed callee. It names frames without
-lines, repeats the owner only when it changes, reads a constructor as
-`Type(...)`, and drops synthetic frames: factory stubs, lambda forms, and
-reflection accessors. The group ends with the test frames that make that call,
+`Observed` shows every frame of the group's most frequent sampled stack,
+from the frame the test calls directly down to the group's divergence, the
+route's first method and its observed callee. A JDK frame stays in the chain,
+since it is evidence of how the library was reached: `DriverManager` ahead of
+the driver's `connect`, or a stream pipeline between a library method and the
+lambda it hands the stream. The chain names frames without lines, repeats the
+owner only when it changes, reads a constructor as `Type(...)`, and drops
+synthetic frames: factory stubs, lambda forms, and reflection accessors. The
+group ends with the test frames that make that call,
 under `Called from test`. Its header names the test method JUnit invoked and
 its file, relative to the indexed test project the prompt states once near its
 top. One step follows per test frame in call order, `line N: method()`, or
