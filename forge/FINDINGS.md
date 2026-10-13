@@ -8,6 +8,11 @@ Newest entry first; every non-approval is recorded, including one a repair later
 **Pre-push review unavailable**
 
 Forge could not obtain a readable pre-push review verdict. This records a review availability problem, not a reviewer finding against the branch.
+## 2026-10-13 — org.bytedeco:librealsense:1.12.4-1.5.9 (#10719)
+
+**Hardware-dependent USB context test fails on USB-less CI hosts**
+
+The JDK 25 current-defaults, latest-EA current-defaults, and latest-EA future-defaults-all jobs all failed in LibrealsenseTest.loadsMatchingNativeApiAndReportsNoConnectedDevices() when context construction returned libusb_init(...) returned LIBUSB_ERROR_OTHER. A required test must exercise meaningful public API behavior consistently on the JVM and under Native Image rather than depend on host USB initialization. §FS-test-contract.1.3 §FS-test-contract.4
 ## 2026-10-13 — org.springframework.modulith:spring-modulith-apt:2.1.0 (#10711)
 
 **Machine-local classpath read through Native Image resource metadata**
