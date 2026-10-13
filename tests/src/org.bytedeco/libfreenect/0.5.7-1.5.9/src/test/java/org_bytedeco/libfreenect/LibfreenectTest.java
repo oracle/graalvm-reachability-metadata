@@ -26,6 +26,7 @@ import static org.bytedeco.libfreenect.global.freenect.freenect_get_video_mode;
 import static org.bytedeco.libfreenect.global.freenect.freenect_get_video_mode_count;
 import static org.bytedeco.libfreenect.global.freenect.freenect_init;
 import static org.bytedeco.libfreenect.global.freenect.freenect_num_devices;
+import static org.bytedeco.libfreenect.global.freenect.freenect_process_events_timeout;
 import static org.bytedeco.libfreenect.global.freenect.freenect_select_subdevices;
 import static org.bytedeco.libfreenect.global.freenect.freenect_set_log_level;
 import static org.bytedeco.libfreenect.global.freenect.freenect_shutdown;
@@ -42,6 +43,7 @@ import org.bytedeco.libfreenect.freenect_reg_info;
 import org.bytedeco.libfreenect.freenect_reg_pad_info;
 import org.bytedeco.libfreenect.freenect_registration;
 import org.bytedeco.libfreenect.freenect_zero_plane_info;
+import org.bytedeco.libfreenect.presets.freenect.timeval;
 import org.junit.jupiter.api.Test;
 
 public class LibfreenectTest {
@@ -170,6 +172,20 @@ public class LibfreenectTest {
                 freenect_select_subdevices(context, FREENECT_DEVICE_CAMERA);
                 assertThat(freenect_enabled_subdevices(context)).isEqualTo(FREENECT_DEVICE_CAMERA);
                 assertThat(freenect_num_devices(context)).isNotNegative();
+            } finally {
+                assertThat(freenect_shutdown(context)).isZero();
+            }
+        }
+    }
+
+    @Test
+    void processesUsbEventsWithABoundedTimeout() {
+        try (freenect_context context = new freenect_context();
+                timeval timeout = new timeval()) {
+            assertThat(freenect_init(context, null)).isZero();
+            try {
+                timeout.tv_sec(10).tv_usec(0);
+                assertThat(freenect_process_events_timeout(context, timeout)).isZero();
             } finally {
                 assertThat(freenect_shutdown(context)).isZero();
             }
