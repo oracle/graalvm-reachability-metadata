@@ -1,0 +1,95 @@
+{
+  "add_new_library_support:2026-10-13": {
+    "timestamp": "2026-10-13T09:24:12.318429Z",
+    "library": "com.google.cloud.sql:jdbc-socket-factory-core:1.19.0",
+    "starting_commit": "fe3ba75503a0430758f76a57a887eabf0d3c120e",
+    "ending_commit": "8c36333b9f65328d7ba9534cf0a8527428066f84",
+    "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-sol",
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "status": "success",
+    "stats": {
+      "version": "1.19.0",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 3,
+            "totalCalls": 3
+          },
+          "resources": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 1,
+            "totalCalls": 1
+          }
+        },
+        "coverageRatio": 1.0,
+        "coveredCalls": 4,
+        "totalCalls": 4
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 554,
+          "missed": 4525,
+          "ratio": 0.109077,
+          "total": 5079
+        },
+        "line": {
+          "covered": 178,
+          "missed": 1105,
+          "ratio": 0.138737,
+          "total": 1283
+        },
+        "method": {
+          "covered": 44,
+          "missed": 210,
+          "ratio": 0.173228,
+          "total": 254
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "no_action",
+      "issue_number": 10704,
+      "issue_label": "library-new-request",
+      "library": "com.google.cloud.sql:jdbc-socket-factory-core:1.19.0",
+      "summary": "Core connector logic is already proven hermetic one layer up: the sibling postgres-socket-factory:1.19.0 test in this repo (which pulls in jdbc-socket-factory-core transitively) exercises ConnectorRegistry/ConnectorConfig/SocketFactory entirely offline, with no Docker image, extra dependency, or env var. jdbc-socket-factory-core's own POM only adds standard transitive deps Gradle resolves automatically, and upstream's unit tests for this exact module use in-process fakes, not Testcontainers/Docker. No JDBC driver is even needed since core has no java.sql.* code.",
+      "deterministic_setup": [],
+      "agent_guidance": "Exercise the core artifact's own public API directly (ConnectorRegistry, ConnectorConfig.Builder, CredentialFactory implementations such as FileCredentialFactory/SupplierCredentialFactory) rather than adding a JDBC driver dependency — jdbc-socket-factory-core has no java.sql.* code of its own. Keep tests hermetic like the existing postgres-socket-factory test (tests/src/com.google.cloud.sql/postgres-socket-factory/1.19.0): construct offline/fake GoogleCredentials (e.g. a fabricated external_account credentials file or an offline AccessToken) and point any admin/API URL config at an unreachable local address instead of relying on ambient Application Default Credentials, so tests don't depend on real GCP connectivity or accidentally pick up ambient ADC in CI. Add @Timeout to any test that triggers a real socket/TLS handshake attempt so it fails fast on the expected IOException instead of hanging.",
+      "risks": [
+        "jnr-unixsocket/jnr-enxio are compile-scope transitive deps used for Unix domain socket support; if the agent writes tests touching that code path, extra reachability-metadata entries may surface for native-image but no extra test setup is implied.",
+        "conscrypt-openjdk-uber is pulled in only via a Maven profile not normally activated on a standard Linux JVM/native-image build; confirm it doesn't unexpectedly activate if the agent's generated build.gradle resolves dependencies differently than the sibling project."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#10704 Support for com.google.cloud.sql:jdbc-socket-factory-core:1.19.0; label=library-new-request; body_chars=0"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "sonnet",
+      "input_tokens_used": 22,
+      "output_tokens_used": 10987
+    },
+    "metrics": {
+      "input_tokens_used": 123920,
+      "cached_input_tokens_used": 254976,
+      "output_tokens_used": 6031,
+      "iterations": 1,
+      "cost_usd": 0.928,
+      "generated_loc": 61,
+      "tested_library_loc": 178,
+      "metadata_entries": 83,
+      "test_only_metadata_entries": 2,
+      "code_coverage_percent": 13.87
+    },
+    "artifacts": {
+      "metadata_file": "metadata/com.google.cloud.sql/jdbc-socket-factory-core/1.19.0/reachability-metadata.json"
+    }
+  }
+}
