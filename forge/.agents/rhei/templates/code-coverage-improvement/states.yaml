@@ -55,7 +55,7 @@
 # Measurement is a deterministic program that always writes the current
 # report to one fixed path and, when the loop continues, derives the cover
 # prompt from that report in the same step and hands it to the cover agent
-# inside its message (§AR-code-coverage-improvement.5.2). JaCoCo is the
+# inside its message (§AR-code-coverage-prompts.3). JaCoCo is the
 # only coverage authority; PGO samples and counters are navigation guidance. An agent can
 # never claim progress: only re-measurement moves the loop forward.
 
@@ -123,13 +123,6 @@ states:
       - If metadata generation or Native Image validation cannot be resolved
         automatically, write the work artifact with the blocker and request
         `human-intervention`.
-
-      Artifact paths in this task, including the one below, are relative to the
-      Rhei workspace root: the directory holding `states.yaml` and
-      `index.rhei.md`, which is `{{workspace_path}}`
-      from your working directory. Resolve every artifact path against that
-      directory. Do not prefix it with the workspace directory name alone, and
-      do not guess a prefix from your working directory.
 
       Write `{output.work.path}` with:
       - source issue URL
@@ -497,7 +490,7 @@ states:
                   result.write(f"API coverage loop completed: {summarize(stop)}\n")
           # Rhei checks the declared handoff output on this zero exit, so the
           # prompt path records that no cover pass follows
-          # (§AR-code-coverage-improvement.5.2).
+          # (§AR-code-coverage-prompts.3).
           prompt_path = Path("runtime/code-coverage/prompts/api-cover-prompt.md")
           prompt_path.parent.mkdir(parents=True, exist_ok=True)
           prompt_path.write_text(f"No cover pass follows: {summarize(stop)}\n")
@@ -536,7 +529,7 @@ states:
         path: runtime/code-coverage/issues/conversion.json
     outputs:
       # The cover agent receives this file inside its message
-      # (§AR-code-coverage-improvement.5.2).
+      # (§AR-code-coverage-prompts.3).
       - name: prompt
         kind: handoff
         path: runtime/code-coverage/prompts/api-cover-prompt.md
@@ -548,7 +541,7 @@ states:
     concurrent: true
     visits: {{coverage_iterations}}
     # Measurement's prompt arrives inside the message
-    # (§AR-code-coverage-improvement.5.2).
+    # (§AR-code-coverage-prompts.3).
     handoff:
       inherit:
         - from: transition.previous
@@ -583,9 +576,6 @@ states:
         finalization runs Spotless (§AR-code-coverage-improvement.5).
       - Target meaningful public user-callable behavior with real assertions,
         not superficial coverage hits.
-      - Do not weaken metadata-generation tests.
-      - Do not measure or claim coverage yourself: deterministic re-measurement
-        runs right after this state and decides the loop.
       - Write every test for the prompt's targets first, without running
         Gradle in between. Then, from inside the issue worktree (`worktreePath`
         in conversion.json), run the same task measurement runs:
@@ -599,13 +589,6 @@ states:
         without `-Pcoordinates` configures every library in the repository,
         takes hours, and never compiles this suite; do not pass `--no-daemon`,
         which pays that cost again on every call.
-
-      Artifact paths in this task, including the one below, are relative to the
-      Rhei workspace root: the directory holding `states.yaml` and
-      `index.rhei.md`, which is `{{workspace_path}}`
-      from your working directory. Resolve every artifact path against that
-      directory. Do not prefix it with the workspace directory name alone, and
-      do not guess a prefix from your working directory.
 
       Write `{output.work.path}` with:
       - targets attempted and how each was exercised
@@ -647,13 +630,6 @@ states:
         the cover prompt.
 
       Fix only that cause. Measurement re-runs automatically after this state.
-
-      Artifact paths in this task, including the one below, are relative to the
-      Rhei workspace root: the directory holding `states.yaml` and
-      `index.rhei.md`, which is `{{workspace_path}}`
-      from your working directory. Resolve every artifact path against that
-      directory. Do not prefix it with the workspace directory name alone, and
-      do not guess a prefix from your working directory.
 
       Write `{output.fix.path}` with:
       - failure addressed
@@ -906,7 +882,7 @@ states:
         path: runtime/code-coverage/prompts/deep-session-queue.json
     outputs:
       # The cover agent receives this file inside its message
-      # (§AR-code-coverage-improvement.5.2).
+      # (§AR-code-coverage-prompts.3).
       - name: prompt
         kind: handoff
         path: runtime/code-coverage/prompts/deep-cover-prompt.md
@@ -922,7 +898,7 @@ states:
     # At most 21 sessions per pass (§AR-code-coverage-deep-navigation.4).
     visits: {{coverage_iterations * 21}}
     # The dispatched session's prompt arrives inside the message
-    # (§AR-code-coverage-improvement.5.2).
+    # (§AR-code-coverage-prompts.3).
     handoff:
       inherit:
         - from: transition.previous
@@ -996,18 +972,6 @@ states:
         without `-Pcoordinates` configures every library in the repository,
         takes hours, and never compiles this suite; do not pass `--no-daemon`,
         which pays that cost again on every call.
-      - Do not weaken metadata-generation tests.
-      - Do not write any target state: measurement tracks attempts and target
-        rotation deterministically from its own report history.
-      - Do not measure or claim coverage yourself: deterministic re-measurement
-        runs once this pass's sessions are done and decides the loop.
-
-      Artifact paths in this task, including the one below, are relative to the
-      Rhei workspace root: the directory holding `states.yaml` and
-      `index.rhei.md`, which is `{{workspace_path}}`
-      from your working directory. Resolve every artifact path against that
-      directory. Do not prefix it with the workspace directory name alone, and
-      do not guess a prefix from your working directory.
 
       Write `{output.work.path}` with:
       - paths attempted and how each public entry was driven
@@ -1047,13 +1011,6 @@ states:
         run's own history, never by writing a replacement.
 
       Fix only that cause. Measurement re-runs automatically after this state.
-
-      Artifact paths in this task, including the one below, are relative to the
-      Rhei workspace root: the directory holding `states.yaml` and
-      `index.rhei.md`, which is `{{workspace_path}}`
-      from your working directory. Resolve every artifact path against that
-      directory. Do not prefix it with the workspace directory name alone, and
-      do not guess a prefix from your working directory.
 
       Write `{output.fix.path}` with:
       - failure addressed
@@ -1205,13 +1162,6 @@ states:
       - Compile and run tests only from inside the worktree the prompt names,
         with the exact command it gives.
 
-      Artifact paths in this task, including the one below, are relative to
-      the Rhei workspace root: the directory holding `states.yaml` and
-      `index.rhei.md`, which is `{{workspace_path}}`
-      from your working directory. Resolve every artifact path against that
-      directory. Do not prefix it with the workspace directory name alone, and
-      do not guess a prefix from your working directory.
-
       Write `{output.work.path}` with:
       - files changed
       - commands run and results
@@ -1249,13 +1199,6 @@ states:
         record it named; never hand-write the cover prompt.
 
       Fix only that cause. Measurement re-runs automatically after this state.
-
-      Artifact paths in this task, including the one below, are relative to
-      the Rhei workspace root: the directory holding `states.yaml` and
-      `index.rhei.md`, which is `{{workspace_path}}`
-      from your working directory. Resolve every artifact path against that
-      directory. Do not prefix it with the workspace directory name alone, and
-      do not guess a prefix from your working directory.
 
       Write `{output.fix.path}` with:
       - failure addressed
@@ -1570,13 +1513,6 @@ states:
       Fix only that cause. The finalization steps re-run automatically after
       this state, so do not run the finalize helper to hand-craft final
       artifacts.
-
-      Artifact paths in this task, including the one below, are relative to the
-      Rhei workspace root: the directory holding `states.yaml` and
-      `index.rhei.md`, which is `{{workspace_path}}`
-      from your working directory. Resolve every artifact path against that
-      directory. Do not prefix it with the workspace directory name alone, and
-      do not guess a prefix from your working directory.
 
       Write `{output.fix.path}` with:
       - failure addressed

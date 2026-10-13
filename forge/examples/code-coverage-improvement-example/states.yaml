@@ -152,7 +152,7 @@ states:
                   result.write(f"API coverage loop completed after {iteration} iteration(s); {len(uncovered)} uncovered target(s) remain.\n")
           # Rhei checks the declared handoff output on this zero exit, so the
           # prompt path records that no cover pass follows
-          # (§AR-code-coverage-improvement.5.2).
+          # (§AR-code-coverage-prompts.3).
           prompt_path = Path("runtime/code-coverage/prompts/api-cover-prompt.md")
           prompt_path.parent.mkdir(parents=True, exist_ok=True)
           prompt_path.write_text(f"No cover pass follows: {len(uncovered)} uncovered target(s) remain after {iteration} iteration(s)\n")
@@ -184,7 +184,7 @@ states:
         path: runtime/code-coverage/issues/conversion.json
     outputs:
       # The cover agent receives this file inside its message
-      # (§AR-code-coverage-improvement.5.2).
+      # (§AR-code-coverage-prompts.3).
       - name: prompt
         kind: handoff
         path: runtime/code-coverage/prompts/api-cover-prompt.md
@@ -196,7 +196,7 @@ states:
     concurrent: true
     visits: 10
     # Measurement's prompt arrives inside the message
-    # (§AR-code-coverage-improvement.5.2).
+    # (§AR-code-coverage-prompts.3).
     handoff:
       inherit:
         - from: transition.previous
@@ -225,9 +225,6 @@ states:
         finalization runs Spotless (§AR-code-coverage-improvement.5).
       - Target meaningful public user-callable behavior with real assertions,
         not superficial coverage hits.
-      - Do not weaken metadata-generation tests.
-      - Do not measure or claim coverage yourself: deterministic re-measurement
-        runs right after this state and decides the loop.
       - Write every test for the prompt's targets first, without running
         Gradle in between. Then, from inside the issue worktree (`worktreePath`
         in conversion.json), run the same task measurement runs:
@@ -477,7 +474,7 @@ states:
         path: runtime/code-coverage/prompts/deep-session-queue.json
     outputs:
       # The cover agent receives this file inside its message
-      # (§AR-code-coverage-improvement.5.2).
+      # (§AR-code-coverage-prompts.3).
       - name: prompt
         kind: handoff
         path: runtime/code-coverage/prompts/deep-cover-prompt.md
@@ -493,7 +490,7 @@ states:
     # At most 21 sessions per pass (§AR-code-coverage-deep-navigation.4).
     visits: 210
     # The dispatched session's prompt arrives inside the message
-    # (§AR-code-coverage-improvement.5.2).
+    # (§AR-code-coverage-prompts.3).
     handoff:
       inherit:
         - from: transition.previous
@@ -553,11 +550,6 @@ states:
         without `-Pcoordinates` configures every library in the repository,
         takes hours, and never compiles this suite; do not pass `--no-daemon`,
         which pays that cost again on every call.
-      - Do not weaken metadata-generation tests.
-      - Do not write any target state: measurement tracks attempts and target
-        rotation deterministically from its own report history.
-      - Do not measure or claim coverage yourself: deterministic re-measurement
-        runs once this pass's sessions are done and decides the loop.
 
       Write `{output.work.path}` with:
       - paths attempted and how each public entry was driven
