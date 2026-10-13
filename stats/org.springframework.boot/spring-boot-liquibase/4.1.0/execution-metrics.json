@@ -1,0 +1,98 @@
+{
+  "add_new_library_support:2026-10-09": {
+    "timestamp": "2026-10-09T01:35:18.757176Z",
+    "library": "org.springframework.boot:spring-boot-liquibase:4.1.0",
+    "starting_commit": "8b6789dee736ea5c67f0956b9b15f7735f4de098",
+    "ending_commit": "b37191eb36ac332ba1359006f9ae75de0533d1f3",
+    "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-luna",
+    "agent": "pi",
+    "model": "gpt-5.6-luna",
+    "status": "success",
+    "stats": {
+      "version": "4.1.0",
+      "dynamicAccess": {
+        "breakdown": {},
+        "coverageRatio": 1.0,
+        "coveredCalls": 0,
+        "totalCalls": 0
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 359,
+          "missed": 685,
+          "ratio": 0.34387,
+          "total": 1044
+        },
+        "line": {
+          "covered": 109,
+          "missed": 200,
+          "ratio": 0.352751,
+          "total": 309
+        },
+        "method": {
+          "covered": 39,
+          "missed": 95,
+          "ratio": 0.291045,
+          "total": 134
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "advisory_preparation",
+      "issue_number": 8466,
+      "issue_label": "library-new-request",
+      "library": "org.springframework.boot:spring-boot-liquibase:4.1.0",
+      "summary": "LiquibaseAutoConfiguration's central bean only activates when a DataSource/JdbcConnectionDetails/liquibase.url is present; spring-boot-liquibase ships no JDBC driver (only spring-boot, spring-boot-jdbc, liquibase-core:5.0.3), so the generated test needs an embedded driver to exercise real migration execution, matching the existing org.liquibase:liquibase-core test precedent.",
+      "deterministic_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "com.h2database:h2:2.4.240",
+          "scope": "testImplementation",
+          "reason": "LiquibaseAutoConfiguration$LiquibaseDataSourceCondition requires a real DataSource/JdbcConnectionDetails/liquibase.url before it creates the SpringLiquibase bean; without a JDBC driver the autoconfiguration never activates and liquibase-core's execution path is unreached. H2 2.4.240 is the current c\n...[truncated]"
+        }
+      ],
+      "agent_guidance": "Register an in-memory H2 DataSource bean (e.g. jdbc:h2:mem:<unique-name>;DB_CLOSE_DELAY=-1) in the test's application context so LiquibaseDataSourceCondition is satisfied and LiquibaseAutoConfiguration actually creates/runs a SpringLiquibase bean. Provide a minimal changelog on the test classpath (default path is db/changelog/db.changelog-master.yaml, or set spring.liquibase.change-log to a test resource) since SpringLiquibase.afterPropertiesSet() fails fast if no changelog is resolvable. No Docker image or system property is required — the actuate LiquibaseEndpoint class additionally needs spring-boot-actuator on the classpath, but that's optional bonus coverage, not required for the core autoconfiguration path.",
+      "risks": [
+        "The actuate endpoint (LiquibaseEndpoint) and the docker-compose/testcontainers connection-details factories in this jar are only reachable if spring-boot-actuator / spring-boot-docker-compose / spring-boot-testcontainers are also on the test classpath; those were left out of deterministic_setup since they're optional enrichments, not blockers for core coverage — local verification may still reveal additional gaps.",
+        "H2 version 2.4.240 was chosen by matching the most recent precedent in the repo rather than confirming compatibility against Spring Boot 4.1.0 and liquibase-core 5.0.3 directly; Gradle/native-image verification should confirm no incompatibility."
+      ],
+      "applied_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "com.h2database:h2:2.4.240",
+          "result": "applied",
+          "target": "tests/src/org.springframework.boot/spring-boot-liquibase/4.1.0/build.gradle"
+        }
+      ],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#8466 Support for org.springframework.boot:spring-boot-liquibase:4.1.0; label=library-new-request; body_chars=0"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "sonnet",
+      "input_tokens_used": 26,
+      "output_tokens_used": 14733
+    },
+    "metrics": {
+      "input_tokens_used": 457104,
+      "cached_input_tokens_used": 12854784,
+      "output_tokens_used": 59717,
+      "iterations": 11,
+      "cost_usd": 2.1009,
+      "generated_loc": 96,
+      "tested_library_loc": 109,
+      "metadata_entries": 8,
+      "test_only_metadata_entries": 584,
+      "code_coverage_percent": 35.28
+    },
+    "artifacts": {
+      "metadata_file": "metadata/org.springframework.boot/spring-boot-liquibase/4.1.0/reachability-metadata.json"
+    }
+  }
+}

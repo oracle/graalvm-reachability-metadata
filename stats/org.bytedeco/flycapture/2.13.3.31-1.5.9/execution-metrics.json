@@ -1,0 +1,84 @@
+{
+  "add_new_library_support:2026-10-13": {
+    "timestamp": "2026-10-13T01:16:21.776324Z",
+    "library": "org.bytedeco:flycapture:2.13.3.31-1.5.9",
+    "starting_commit": "a00f117b6ad75a133cd84bf5b43c149fdae8a255",
+    "ending_commit": "48a43ff83ce695024ee8ef0d995672f13e4c63fd",
+    "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-sol",
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "status": "success",
+    "stats": {
+      "version": "2.13.3.31-1.5.9",
+      "dynamicAccess": {
+        "breakdown": {},
+        "coverageRatio": 1.0,
+        "coveredCalls": 0,
+        "totalCalls": 0
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 116,
+          "missed": 3566,
+          "ratio": 0.031505,
+          "total": 3682
+        },
+        "line": {
+          "covered": 12,
+          "missed": 598,
+          "ratio": 0.019672,
+          "total": 610
+        },
+        "method": {
+          "covered": 4,
+          "missed": 587,
+          "ratio": 0.006768,
+          "total": 591
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "advisory_preparation",
+      "issue_number": 10714,
+      "issue_label": "library-new-request",
+      "library": "org.bytedeco:flycapture:2.13.3.31-1.5.9",
+      "summary": "Published flycapture jar only bundles the JNI shim; it links against libflycapture.so.2/libflycapturevideo.so.2/libmultisync.so.2 (and -c variants) from FLIR's proprietary, EULA-gated SDK, which is not redistributable via Maven or any public Docker image. Any FlyCapture2 class touch will throw UnsatisfiedLinkError at class-init time, with or without a camera attached.",
+      "deterministic_setup": [],
+      "agent_guidance": "Do not expect the normal testImplementation \"org.bytedeco:flycapture:$libraryVersion\" + testRuntimeOnly \"org.bytedeco:flycapture-platform:$libraryVersion\" scaffold to run successfully on its own. Verified via `ldd` on the linux-x86_64 classifier jar that libjniFlyCapture2.so and libjniFlyCapture2_C.so have unresolved NEEDED entries for libflycapture.so.2, libflycapturevideo.so.2, libmultisync.so.2, libflycapture-c.so.2, libflycapturevideo-c.so.2, and libmultisync-c.so.2 — none of which ship in the artifact. These come only from FLIR's licensed FlyCapture SDK installer (per javacpp-presets' own cppbuild.sh, which assumes a manual install under /usr/include/flycapture/ rather than fetching anything). Since Loader.load() runs in a static initializer, simply loading any org.bytedeco.flycapture.FlyCapture2 class fails immediately — there is no reachable code path (not even bus-enumeration calls) that avoids this. There is no env var, system property, or test-code workaround that substitutes for the missing native libraries; the only real fix (installing FLIR's licensed SDK on the test host) falls outside Maven dependencies and Docker images this driver can apply. Expect this to end in human-intervention rather than a passing generated test, and flag it as such rather than iterating on test code when the UnsatisfiedLinkError appears.",
+      "risks": [
+        "FlyCapture's runtime libraries are proprietary and EULA-gated by FLIR; no deterministic_setup (dependency or Docker image) can legally supply them.",
+        "This issue is listed as blocking #10687 (javacv:1.5.12) and blocked by #10686 (javacpp:1.5.9) — javacv coverage will inherit the same native-linkage blocker for any FlyCapture2FrameGrabber-related code paths."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#10714 Support for org.bytedeco:flycapture:2.13.3.31-1.5.9; label=library-new-request; body_chars=0"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "sonnet",
+      "input_tokens_used": 32,
+      "output_tokens_used": 13665
+    },
+    "metrics": {
+      "input_tokens_used": 273831,
+      "cached_input_tokens_used": 5287936,
+      "output_tokens_used": 30677,
+      "iterations": 4,
+      "cost_usd": 4.9335,
+      "generated_loc": 60,
+      "tested_library_loc": 12,
+      "metadata_entries": 2,
+      "test_only_metadata_entries": 49,
+      "code_coverage_percent": 1.97
+    },
+    "artifacts": {
+      "metadata_file": "metadata/org.bytedeco/flycapture/2.13.3.31-1.5.9/reachability-metadata.json"
+    }
+  }
+}

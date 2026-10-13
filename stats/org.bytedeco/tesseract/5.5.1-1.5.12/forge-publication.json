@@ -1,0 +1,142 @@
+{
+  "base_commit": "08967097c2a019b2518e512bb8da23b9d6c40450",
+  "branch": "ai/kimeta/add-lib-support-org.bytedeco-tesseract-5.5.1-1.5.12-forge-10722-20261012211352744419-f487cb04d620",
+  "follow_ups": [],
+  "forge": {
+    "branch": "master",
+    "commit": "2f450ab4503d4d0434a07759f9c90acac23be163",
+    "monitored_branch": "origin/master"
+  },
+  "issue_number": 10722,
+  "library": {
+    "artifact": "tesseract",
+    "coordinates": "org.bytedeco:tesseract:5.5.1-1.5.12",
+    "group": "org.bytedeco",
+    "version": "5.5.1-1.5.12"
+  },
+  "local_ci_verification": {
+    "base_commit": "08967097c2a019b2518e512bb8da23b9d6c40450",
+    "commands": [
+      {
+        "command": [
+          "./gradlew",
+          "generateChangedIndexFileCoordinatesList",
+          "-PbaseCommit=origin/master",
+          "-PnewCommit=HEAD"
+        ],
+        "env": {
+          "GITHUB_OUTPUT": "/tmp/tmp0gb4ulmy"
+        },
+        "gate": "changed-index-coordinates",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :generateChangedIndexFileCoordinatesList\n\n[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata-copy/forge/local_repositories/forge_worktrees/10722-e62a9c15/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 2s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      },
+      {
+        "command": [
+          "./gradlew",
+          "validateIndexFiles",
+          "-Pcoordinates=org.bytedeco:tesseract"
+        ],
+        "env": {},
+        "gate": "index-file-validation",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :validateIndexFiles\n✅ metadata/org.bytedeco/tesseract/index.json: Valid\n\n[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata-copy/forge/local_repositories/forge_worktrees/10722-e62a9c15/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 1s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      }
+    ],
+    "failure_command": null,
+    "failure_gate": null,
+    "final_commit": "4030bd6ff1d2a2f45e9755a2a13ebf77d097175c",
+    "fixups": [],
+    "human_intervention_required": false,
+    "repo_fix_paths": [],
+    "status": "success"
+  },
+  "local_review": {
+    "changed_paths": [
+      "tests/src/org.bytedeco/tesseract/5.5.1-1.5.12/build.gradle"
+    ],
+    "decision": "approved",
+    "finding_body": "`tests/src/org.bytedeco/tesseract/5.5.1-1.5.12/build.gradle` hardcoded `org.bytedeco:tesseract-platform:5.5.1-1.5.12`. That made the suite use 5.5.1 native binaries when the harness tests another Tesseract version, violating the version-agnostic test requirement in §FS-test-contract.2.5.",
+    "finding_title": "Version-pinned companion runtime dependency",
+    "fix_note": "Changed the companion `tesseract-platform` runtime dependency to use the harness-provided `$libraryVersion`, matching the tested Tesseract artifact and existing JavaCPP platform-test practice. The exact Forge finalization command then passed cleanly.",
+    "model": "gpt-5.6-sol",
+    "review_comment": "Approved after repair. I verified the diff is limited to one new coordinate and its metadata, index, stats, and test project; the tests are library-specific public-API tests in a separate package, contain no scaffold, native-image skip or tolerated failure, prohibited build flag, visibility bypass, reflection shortcut, or legacy metadata format. The resolved 0/0 dynamic-access result is a valid no-calls case, so the percentage and entry-count mismatch gates do not apply. Local index gates were green, and the exact Forge finalization command completed successfully across all three native lanes, metadata validation, style checks, generated-test checks, and regenerated statistics without a further publishable change.",
+    "session_id": "eaa80e0de4bc46f7"
+  },
+  "metrics": {
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "path": "stats/org.bytedeco/tesseract/5.5.1-1.5.12/execution-metrics.json",
+    "summary": {
+      "cached_input_tokens_used": 2519424,
+      "code_coverage_percent": 9.0,
+      "cost_usd": 3.3914,
+      "generated_loc": 222,
+      "input_tokens_used": 217254,
+      "iterations": 4,
+      "metadata_entries": 316,
+      "output_tokens_used": 34846,
+      "test_only_metadata_entries": 72,
+      "tested_library_loc": 26
+    },
+    "timestamp": "2026-10-12T21:13:52.744419Z"
+  },
+  "modifiers": {
+    "chunk_final": true,
+    "chunked_dynamic_access": false,
+    "human_intervention": false
+  },
+  "producer": "kimeta",
+  "publication_id": "forge-10722-20261012211352744419-f487cb04d620",
+  "render": {
+    "dynamic_access": null,
+    "dynamic_access_evidence": {
+      "covered_call_sites": [],
+      "metadata_rules": [
+        "when `org.bytedeco.tesseract.StringVector` is reached, make `java.lang.NullPointerException` available for reflection",
+        "when `org.bytedeco.tesseract.global.tesseract` is reached, make `java.lang.NullPointerException` available for reflection",
+        "when `org.bytedeco.tesseract.StringVector` is reached, make `java.lang.Object.toString()` available for reflection",
+        "when `org.bytedeco.tesseract.global.tesseract` is reached, make `java.lang.Object.toString()` available for reflection",
+        "when `org.bytedeco.tesseract.global.tesseract` is reached, make `java.lang.RuntimeException` available for reflection",
+        "when `org.bytedeco.tesseract.StringVector` is reached, make `java.lang.String.<init>(byte[])` available for reflection",
+        "when `org.bytedeco.tesseract.StringVector` is reached, make `java.lang.String.getBytes()` available for reflection",
+        "when `org.bytedeco.tesseract.global.tesseract` is reached, make `java.lang.String.<init>(byte[])` available for reflection",
+        "... and 182 more"
+      ]
+    },
+    "library_stats": {
+      "dynamicAccess": {
+        "breakdown": {},
+        "coverageRatio": 1.0,
+        "coveredCalls": 0,
+        "totalCalls": 0
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 128,
+          "missed": 2200,
+          "ratio": 0.054983,
+          "total": 2328
+        },
+        "line": {
+          "covered": 26,
+          "missed": 263,
+          "ratio": 0.089965,
+          "total": 289
+        },
+        "method": {
+          "covered": 20,
+          "missed": 185,
+          "ratio": 0.097561,
+          "total": 205
+        }
+      },
+      "version": "5.5.1-1.5.12"
+    }
+  },
+  "schema_version": 1,
+  "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-sol",
+  "task_type": "library-new-request",
+  "template_type": "library-new-request",
+  "timestamp": "2026-10-12T21:13:52.744419Z"
+}

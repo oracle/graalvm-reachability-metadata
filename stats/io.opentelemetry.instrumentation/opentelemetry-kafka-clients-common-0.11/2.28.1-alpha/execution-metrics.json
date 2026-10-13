@@ -1,0 +1,104 @@
+{
+  "add_new_library_support:2026-10-08": {
+    "timestamp": "2026-10-08T22:56:38.282830Z",
+    "library": "io.opentelemetry.instrumentation:opentelemetry-kafka-clients-common-0.11:2.28.1-alpha",
+    "starting_commit": "c4d0996a41c19ce01b26b900abbf9ffdc65305a3",
+    "ending_commit": "ada04a0e55bbfb84c7852b0e84df1883b9cdc2d6",
+    "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-luna",
+    "agent": "pi",
+    "model": "gpt-5.6-luna",
+    "status": "success",
+    "stats": {
+      "version": "2.28.1-alpha",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 1,
+            "totalCalls": 1
+          }
+        },
+        "coverageRatio": 1.0,
+        "coveredCalls": 1,
+        "totalCalls": 1
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 66,
+          "missed": 2792,
+          "ratio": 0.023093,
+          "total": 2858
+        },
+        "line": {
+          "covered": 23,
+          "missed": 737,
+          "ratio": 0.030263,
+          "total": 760
+        },
+        "method": {
+          "covered": 3,
+          "missed": 238,
+          "ratio": 0.012448,
+          "total": 241
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "advisory_preparation",
+      "issue_number": 8535,
+      "issue_label": "library-new-request",
+      "library": "io.opentelemetry.instrumentation:opentelemetry-kafka-clients-common-0.11:2.28.1-alpha",
+      "summary": "Internal shared Kafka tracing module; org.apache.kafka:kafka-clients is compileOnly upstream (absent from the published POM) even though the bytecode references Consumer/Producer/ConsumerRecord types, so the generated test module won't compile without it. No Docker or real broker is needed — the sibling opentelemetry-kafka-clients-2.6 module at the same 2.28.1-alpha version proved this exact class of API is tested with MockProducer/MockConsumer only.",
+      "deterministic_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "org.apache.kafka:kafka-clients:2.6.0",
+          "scope": "testImplementation",
+          "reason": "org.apache.kafka:kafka-clients is compileOnly in opentelemetry-kafka-clients-common-0.11's published POM (not a transitive dependency), yet the module's public internal API (KafkaConsumerAttributesExtractor, KafkaProducerAttributesExtractor, KafkaConsumerRecordGetter, TracingList/TracingIterator, et\n...[truncated]"
+        }
+      ],
+      "agent_guidance": "All public classes live under the `...kafkaclients.common.v0_11.internal` package — this is an internal, non-API-stable shared module consumed by opentelemetry-kafka-clients-2.6, opentelemetry-kafka-clients-streams-0.11, and opentelemetry-spring-kafka-2.7. Write tests directly against these internal classes using Kafka's MockProducer/MockConsumer and plain ConsumerRecord/ProducerRecord/RecordHeaders instances (see tests/src/io.opentelemetry.instrumentation/opentelemetry-kafka-clients-2.6/2.28.1-alpha for the established pattern: KafkaTelemetry.create(OpenTelemetry.noop()) style, assertj-core assertions, no SDK span exporter wiring needed). No environment variables, system properties, or Docker services are required.",
+      "risks": [
+        "The module's classes are explicitly named 'internal' by the upstream project and carry no API-stability guarantee; a future OpenTelemetry release could rename or remove them without notice.",
+        "If the generation agent instead resolves a different kafka-clients test version, verify MockConsumer/MockProducer constructor signatures still match (they have changed across major Kafka versions)."
+      ],
+      "applied_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "org.apache.kafka:kafka-clients:2.6.0",
+          "result": "applied",
+          "target": "tests/src/io.opentelemetry.instrumentation/opentelemetry-kafka-clients-common-0.11/2.28.1-alpha/build.gradle"
+        }
+      ],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#8535 Support for io.opentelemetry.instrumentation:opentelemetry-kafka-clients-common-0.11:2.28.1-alpha; label=library-new-request; body_chars=0"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "sonnet",
+      "input_tokens_used": 18,
+      "output_tokens_used": 11204
+    },
+    "metrics": {
+      "input_tokens_used": 67350,
+      "cached_input_tokens_used": 564736,
+      "output_tokens_used": 6436,
+      "iterations": 2,
+      "cost_usd": 0.1624,
+      "generated_loc": 27,
+      "tested_library_loc": 23,
+      "metadata_entries": 7,
+      "test_only_metadata_entries": 111,
+      "code_coverage_percent": 3.03
+    },
+    "artifacts": {
+      "metadata_file": "metadata/io.opentelemetry.instrumentation/opentelemetry-kafka-clients-common-0.11/2.28.1-alpha/reachability-metadata.json"
+    }
+  }
+}

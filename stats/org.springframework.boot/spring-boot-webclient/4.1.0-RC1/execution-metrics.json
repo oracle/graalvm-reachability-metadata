@@ -1,0 +1,98 @@
+{
+  "add_new_library_support:2026-10-09": {
+    "timestamp": "2026-10-09T05:45:42.437031Z",
+    "library": "org.springframework.boot:spring-boot-webclient:4.1.0-RC1",
+    "starting_commit": "895ee6ccd9cf1a7bb59445834b32503e87731df4",
+    "ending_commit": "29feb82bd78a10eff0079547ec932299a64ad8f2",
+    "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-luna",
+    "agent": "pi",
+    "model": "gpt-5.6-luna",
+    "status": "success",
+    "stats": {
+      "version": "4.1.0-RC1",
+      "dynamicAccess": {
+        "breakdown": {},
+        "coverageRatio": 1.0,
+        "coveredCalls": 0,
+        "totalCalls": 0
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 40,
+          "missed": 284,
+          "ratio": 0.123457,
+          "total": 324
+        },
+        "line": {
+          "covered": 13,
+          "missed": 63,
+          "ratio": 0.171053,
+          "total": 76
+        },
+        "method": {
+          "covered": 6,
+          "missed": 31,
+          "ratio": 0.162162,
+          "total": 37
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "advisory_preparation",
+      "issue_number": 8432,
+      "issue_label": "library-new-request",
+      "library": "org.springframework.boot:spring-boot-webclient:4.1.0-RC1",
+      "summary": "WebClient autoconfiguration itself needs nothing extra (JDK HttpClient connector is the automatic fallback, no reactor-netty required), but WebClientCodecCustomizer/WebClientAutoConfiguration$WebClientCodecsConfiguration reference org.springframework.boot.http.codec.CodecCustomizer, which spring-boot-webclient only declares as a runtime-scope dependency (not on the test-compile classpath) — the same situation spring-boot-restclient already solves by adding spring-boot-http-converter explicitly.",
+      "deterministic_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "org.springframework.boot:spring-boot-http-codec:4.1.0-RC1",
+          "scope": "testImplementation",
+          "reason": "WebClientCodecCustomizer and WebClientAutoConfiguration$WebClientCodecsConfiguration take a List<CodecCustomizer>; CodecCustomizer lives in spring-boot-http-codec, which spring-boot-webclient's POM declares as scope=runtime only, so it is absent from the Gradle test-compile classpath unless added di\n...[truncated]"
+        }
+      ],
+      "agent_guidance": "No reactor-netty dependency is needed: ClientHttpConnectorBuilder.detect() falls back to JdkClientHttpConnectorBuilder (java.net.http.HttpClient) when no reactor-netty/Jetty/HttpComponents connector is on the classpath, so WebClientAutoConfiguration and ReactiveHttpClientAutoConfiguration activate fully from just spring-boot-webclient + its transitive spring-webflux/spring-boot-http-client. For coverage, exercise: WebClientAutoConfiguration (webClientBuilder bean, webClientHttpConnectorCustomizer via a bound ClientHttpConnector), WebClientObservationAutoConfiguration, AutoConfiguredWebClientSsl/WebClientSsl, ReactiveHttpServiceClientAutoConfiguration + PropertiesWebClientHttpServiceGroupConfigurer/WebClientCustomizerHttpServiceGroupConfigurer, and WebClientCodecCustomizer (needs the added dependency). Use a simple loopback com.sun.net.httpserver.HttpServer as the target, exactly like spring-boot-restclient's existing test, and remember WebClient calls are reactive — block() with a short timeout to get deterministic test results.",
+      "risks": [
+        "4.1.0-RC1 is a pre-GA release candidate; verify the dependency coordinate and package paths still match once 4.1.0 GA ships (other 4.1.0-RC1 Spring Boot modules, e.g. spring-boot-quartz, have already landed in this repo without issue on the same train).",
+        "Gradle's resolution of the published Gradle module metadata (not just the raw Maven POM scope) ultimately decides what lands on the test-compile classpath — confirm with an actual ./gradlew compileTestJava run that spring-boot-http-codec is indeed required and sufficient, rather than relying solely on POM scope inspection."
+      ],
+      "applied_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "org.springframework.boot:spring-boot-http-codec:4.1.0-RC1",
+          "result": "applied",
+          "target": "tests/src/org.springframework.boot/spring-boot-webclient/4.1.0-RC1/build.gradle"
+        }
+      ],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#8432 Support for org.springframework.boot:spring-boot-webclient:4.1.0-RC1; label=library-new-request; body_chars=0"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "sonnet",
+      "input_tokens_used": 36,
+      "output_tokens_used": 15730
+    },
+    "metrics": {
+      "input_tokens_used": 364435,
+      "cached_input_tokens_used": 6972416,
+      "output_tokens_used": 42614,
+      "iterations": 6,
+      "cost_usd": 1.3173,
+      "generated_loc": 104,
+      "tested_library_loc": 13,
+      "metadata_entries": 0,
+      "test_only_metadata_entries": 138,
+      "code_coverage_percent": 17.11
+    },
+    "artifacts": {
+      "metadata_file": "metadata/org.springframework.boot/spring-boot-webclient/4.1.0-RC1/reachability-metadata.json"
+    }
+  }
+}
