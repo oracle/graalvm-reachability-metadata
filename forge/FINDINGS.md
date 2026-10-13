@@ -3,6 +3,12 @@
 Rendered by Forge from the pre-push branch review of §FS-local-branch-review.
 Newest entry first; every non-approval is recorded, including one a repair later cleared.
 
+## 2026-10-13 — io.projectreactor.netty:reactor-netty-core:1.3.0 (#9351)
+
+**Pre-push review unavailable**
+
+Forge could not obtain a readable pre-push review verdict. This records a review availability problem, not a reviewer finding against the branch.
+
 ## 2026-10-13 — org.bytedeco:libfreenect2:0.2.0-1.5.9 (#10718)
 
 **Avoid libfreenect2 default-device probes in headless tests**
