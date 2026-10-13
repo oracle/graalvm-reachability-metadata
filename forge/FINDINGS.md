@@ -8,6 +8,23 @@ Newest entry first; every non-approval is recorded, including one a repair later
 **Avoid libfreenect2 default-device probes in headless tests**
 
 The current-defaults lanes on JDK 25 and latest EA and the future-defaults-all lane all showed libfreenect2 selecting `OpenGLDepthPacketProcessor`, reporting that `DISPLAY` was missing, and terminating the JVM/native test process with exit 255. The failing `openDefaultDevice()` assertion exercised a known-broken environmental path in a test premised on having no Kinect attached, contrary to §FS-test-contract.2.6; stable enumeration and serial-number behavior should be tested instead.
+## 2026-10-13 — org.bytedeco:ffmpeg:7.1.1-1.5.12 (#10713)
+
+**Companion runtime dependency is pinned to one library version**
+
+The coordinate's build.gradle hardcoded org.bytedeco:ffmpeg-platform:7.1.1-1.5.12 while the tested org.bytedeco:ffmpeg dependency follows the TCK-resolved library version. Reusing this suite for a newer tested version would pair it with stale native binaries, violating the version-agnostic test requirement in §FS-test-contract.2.5.
+
+## 2026-10-13 — org.bytedeco:librealsense2:2.53.1-1.5.9 (#10720)
+
+**Headless RealSense context creation crashes the test process**
+
+The required `javaTest` lane terminated with exit 134 in all three matrix jobs. The crash report identified `rs2_create_context` from `configuresPipelineForUnavailableDeviceWithoutStartingCapture`, and isolated reproduction showed that both full context-creation scenarios SIGSEGV in `pthread_mutex_lock` when no USB subsystem is available. Required tests must pass every configured Java and Native Image lane under §FS-repository-functional-spec.5.2; because the defect was confined to this contribution's tests, it was repaired under §FS-contribution-contract.5.1.
+
+## 2026-10-12 — org.bytedeco:librealsense2:2.53.1-1.5.9 (#10720)
+
+**Companion runtime dependency pins the tested library version**
+
+The test build hardcoded `org.bytedeco:librealsense2-platform:2.53.1-1.5.9` even though the tested library version is TCK-resolved. This version-pinned dependency would keep a reused suite on the old native runtime and violates the version-agnostic test requirement in §FS-test-contract.2.5.
 
 ## 2026-10-12 — org.bytedeco:tesseract:5.5.1-1.5.12 (#10722)
 

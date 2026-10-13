@@ -1,0 +1,142 @@
+{
+  "base_commit": "9de475dc3827988b7e83d7347fbd6794aaf131b9",
+  "branch": "ai/kimeta/add-lib-support-org.bytedeco-librealsense2-2.53.1-1.5.9-forge-10720-20261012222229998559-24c5ba499a3a",
+  "follow_ups": [],
+  "forge": {
+    "branch": "master",
+    "commit": "08967097c2a019b2518e512bb8da23b9d6c40450",
+    "monitored_branch": "origin/master"
+  },
+  "issue_number": 10720,
+  "library": {
+    "artifact": "librealsense2",
+    "coordinates": "org.bytedeco:librealsense2:2.53.1-1.5.9",
+    "group": "org.bytedeco",
+    "version": "2.53.1-1.5.9"
+  },
+  "local_ci_verification": {
+    "base_commit": "9de475dc3827988b7e83d7347fbd6794aaf131b9",
+    "commands": [
+      {
+        "command": [
+          "./gradlew",
+          "generateChangedIndexFileCoordinatesList",
+          "-PbaseCommit=origin/master",
+          "-PnewCommit=HEAD"
+        ],
+        "env": {
+          "GITHUB_OUTPUT": "/tmp/tmpbp7j986z"
+        },
+        "gate": "changed-index-coordinates",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :generateChangedIndexFileCoordinatesList\n\n[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata-copy/forge/local_repositories/forge_worktrees/10720-ee06d019/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 3s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      },
+      {
+        "command": [
+          "./gradlew",
+          "validateIndexFiles",
+          "-Pcoordinates=org.bytedeco:librealsense2"
+        ],
+        "env": {},
+        "gate": "index-file-validation",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :validateIndexFiles\n\u2705 metadata/org.bytedeco/librealsense2/index.json: Valid\n\n[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata-copy/forge/local_repositories/forge_worktrees/10720-ee06d019/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 1s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      }
+    ],
+    "failure_command": null,
+    "failure_gate": null,
+    "final_commit": "03b277d185160e0884bfd77b5782cd4434244f42",
+    "fixups": [],
+    "human_intervention_required": false,
+    "repo_fix_paths": [],
+    "status": "success"
+  },
+  "local_review": {
+    "changed_paths": [
+      "tests/src/org.bytedeco/librealsense2/2.53.1-1.5.9/src/test/java/org_bytedeco/librealsense2/Librealsense2Test.java"
+    ],
+    "decision": "approved",
+    "finding_body": "The required `javaTest` lane terminated with exit 134 in all three matrix jobs. The crash report identified `rs2_create_context` from `configuresPipelineForUnavailableDeviceWithoutStartingCapture`, and isolated reproduction showed that both full context-creation scenarios SIGSEGV in `pthread_mutex_lock` when no USB subsystem is available. Required tests must pass every configured Java and Native Image lane under \u00a7FS-repository-functional-spec.5.2; because the defect was confined to this contribution's tests, it was repaired under \u00a7FS-contribution-contract.5.1.",
+    "finding_title": "Headless RealSense context creation crashes the test process",
+    "fix_note": "Replaced the two hardware-discovery context scenarios with device-independent public-API coverage: native enum-to-string conversion and stream/device configuration on an `rs2_config` object. No test was disabled, skipped, or made native-only, and the suite still contains eight meaningful tests. Verified with headless Ubuntu 22.04 JVM and full current-defaults Native Image tests, a full future-defaults-all test on the available latest-EA GraalVM, and coordinate-scoped index, metadata, style, formatting, and stats checks. `generateLibraryStats` produced no committed stats change.",
+    "model": "gpt-5.6-sol",
+    "review_comment": "All three required metadata-test jobs failed in the Java lane because the two tests that created a RealSense context triggered a native SIGSEGV in `pthread_mutex_lock` on headless Ubuntu. I reproduced the crash in a clean Ubuntu 22.04 container, isolated both context-creation scenarios, repaired the contribution locally, and reviewed the full single-coordinate diff against the new-library rules. The repaired eight-test suite passes JVM and Native Image execution in headless `current-defaults` and passes the `future-defaults-all` lane on the available latest-EA GraalVM; index, metadata, Checkstyle, Spotless, and stats validation also pass. The contribution is ready.",
+    "session_id": "c09b61dad7a74f0b"
+  },
+  "metrics": {
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "path": "stats/org.bytedeco/librealsense2/2.53.1-1.5.9/execution-metrics.json",
+    "summary": {
+      "cached_input_tokens_used": 3176832,
+      "code_coverage_percent": 6.1,
+      "cost_usd": 3.9921,
+      "generated_loc": 295,
+      "input_tokens_used": 309132,
+      "iterations": 3,
+      "metadata_entries": 157,
+      "output_tokens_used": 28600,
+      "test_only_metadata_entries": 47,
+      "tested_library_loc": 15
+    },
+    "timestamp": "2026-10-12T22:22:29.998559Z"
+  },
+  "modifiers": {
+    "chunk_final": true,
+    "chunked_dynamic_access": false,
+    "human_intervention": false
+  },
+  "producer": "kimeta",
+  "publication_id": "forge-10720-20261012222229998559-24c5ba499a3a",
+  "render": {
+    "dynamic_access": null,
+    "dynamic_access_evidence": {
+      "covered_call_sites": [],
+      "metadata_rules": [
+        "when `org.bytedeco.librealsense2.global.realsense2` is reached, make `java.lang.NullPointerException` available for reflection",
+        "when `org.bytedeco.librealsense2.global.realsense2` is reached, make `java.lang.Object.toString()` available for reflection",
+        "when `org.bytedeco.librealsense2.global.realsense2` is reached, make `java.lang.RuntimeException` available for reflection",
+        "when `org.bytedeco.librealsense2.global.realsense2` is reached, make `java.lang.String.<init>(byte[])` available for reflection",
+        "when `org.bytedeco.librealsense2.global.realsense2` is reached, make `java.lang.String.getBytes()` available for reflection",
+        "when `org.bytedeco.librealsense2.global.realsense2` is reached, make `java.lang.UnsatisfiedLinkError` available for reflection",
+        "when `org.bytedeco.librealsense2.global.realsense2` is reached, make `java.nio.Buffer.array()` available for reflection",
+        "when `org.bytedeco.librealsense2.global.realsense2` is reached, make `java.nio.Buffer.arrayOffset()` available for reflection",
+        "... and 87 more"
+      ]
+    },
+    "library_stats": {
+      "dynamicAccess": {
+        "breakdown": {},
+        "coverageRatio": 1.0,
+        "coveredCalls": 0,
+        "totalCalls": 0
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 67,
+          "missed": 1293,
+          "ratio": 0.049265,
+          "total": 1360
+        },
+        "line": {
+          "covered": 15,
+          "missed": 231,
+          "ratio": 0.060976,
+          "total": 246
+        },
+        "method": {
+          "covered": 13,
+          "missed": 225,
+          "ratio": 0.054622,
+          "total": 238
+        }
+      },
+      "version": "2.53.1-1.5.9"
+    }
+  },
+  "schema_version": 1,
+  "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-sol",
+  "task_type": "library-new-request",
+  "template_type": "library-new-request",
+  "timestamp": "2026-10-12T22:22:29.998559Z"
+}
