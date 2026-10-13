@@ -1,0 +1,11 @@
+## Human intervention needed
+
+The automated job failed for `io.netty:netty-buffer:4.1.79.Final`. Preserved work: https://github.com/oracle/graalvm-reachability-metadata/tree/ai%2Fkimeta%2Fhuman-intervention%2Fissue-10767-library-update-request-io.netty-netty-buffer-4.1.79.Final-8524820b
+
+Although classified as `test_generation_failed`, the failure occurred earlier in `claim/route_to_driver()`. `logs/do-work-20261013-234805.log` lines 1616–1637 report that no compatible version-backfill baseline could be resolved. `metadata/io.netty/netty-buffer/index.json` lists `4.1.80.Final`, but neither `4.1.79.Final` nor `4.1.80.Final` has the required `netty-buffer` metadata and test directories. Consequently, no test generation or Gradle validation ran, no coordinate-specific logs were created, and metrics/dynamic-access coverage are unavailable. The preserved branch contains no changes relative to `master`.
+
+Manual next steps:
+
+1. Review `logs/do-work-20261013-234805.log` and determine whether `netty-buffer` metadata is intended to be owned by another Netty artifact or needs its own suite.
+2. Correct the ownership/index mapping or restore/create a compatible `netty-buffer` test and metadata baseline at or before `4.1.79.Final`.
+3. Rerun the library-update workflow and verify `checkMetadataFiles` and `test` for `io.netty:netty-buffer:4.1.79.Final`.
