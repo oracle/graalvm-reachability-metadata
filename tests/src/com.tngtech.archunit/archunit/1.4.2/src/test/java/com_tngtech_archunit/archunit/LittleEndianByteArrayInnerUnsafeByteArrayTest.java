@@ -14,18 +14,18 @@ import org.junit.jupiter.api.Test;
 
 public class LittleEndianByteArrayInnerUnsafeByteArrayTest {
     @Test
-    void murmurHashReadsLongBlocksWithLittleEndianSemantics() {
-        byte[] input = new byte[32];
+    void farmHashReadsLongBlocksWithLittleEndianSemantics() {
+        byte[] input = new byte[64];
         for (int index = 0; index < input.length; index++) {
             input[index] = (byte) (index * 3 + 1);
         }
 
-        HashCode first = Hashing.murmur3_128().hashBytes(input);
-        input[16]++;
-        HashCode second = Hashing.murmur3_128().hashBytes(input);
+        HashCode first = Hashing.farmHashFingerprint64().hashBytes(input);
+        input[32]++;
+        HashCode second = Hashing.farmHashFingerprint64().hashBytes(input);
 
-        assertThat(first.asBytes()).hasSize(16);
-        assertThat(second.asBytes()).hasSize(16);
+        assertThat(first.asBytes()).hasSize(8);
+        assertThat(Hashing.farmHashFingerprint64().hashBytes(input)).isEqualTo(second);
         assertThat(second).isNotEqualTo(first);
     }
 }

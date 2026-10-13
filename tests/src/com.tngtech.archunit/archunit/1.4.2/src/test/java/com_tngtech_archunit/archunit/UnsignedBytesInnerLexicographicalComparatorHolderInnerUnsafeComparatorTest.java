@@ -17,10 +17,16 @@ public class UnsignedBytesInnerLexicographicalComparatorHolderInnerUnsafeCompara
     void lexicographicalComparatorUsesUnsignedLongBlockOrdering() {
         Comparator<byte[]> comparator = UnsignedBytes.lexicographicalComparator();
 
-        assertThat(comparator.compare(bytes(0x00, 0x7F), bytes(0x00, 0x80))).isNegative();
-        assertThat(comparator.compare(bytes(0x00, 0xFF), bytes(0x01, 0x00))).isNegative();
-        assertThat(comparator.compare(bytes(0x01, 0x00), bytes(0x00, 0xFF))).isPositive();
-        assertThat(comparator.compare(bytes(0x01, 0x02), bytes(0x01, 0x02))).isZero();
+        byte[] lower = bytes(
+                0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x7F,
+                0x08, 0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F);
+        byte[] higher = bytes(
+                0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x80,
+                0x08, 0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F);
+
+        assertThat(comparator.compare(lower, higher)).isNegative();
+        assertThat(comparator.compare(higher, lower)).isPositive();
+        assertThat(comparator.compare(lower, lower.clone())).isZero();
     }
 
     private static byte[] bytes(int... values) {
