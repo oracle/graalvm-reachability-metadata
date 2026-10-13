@@ -112,9 +112,9 @@ top. One step follows per test frame in call order, `line N: method()`, or
 step that calls it; a frame in another file adds `in <file>`. A frame is a test
 frame when its source file exists in a test suite, not by its package, since a
 coverage test may live in a test-only package. The stack is the most frequent
-one that reaches the group, a coverage-suite test preferred: a regular-suite
-test is shown only when no coverage-suite test reaches the group, and a second
-test, if shown, gets its own block. A group whose samples have no test frame
+one with a test frame that reaches the group, whichever suite the test is in:
+the test that drives the code most is the one to start from. A second test, if
+shown, gets its own block. A group whose samples have no test frame
 keeps the chain from the stack's outermost library frame and gets no test
 block. A step's line comes from the sample's bci through the line table of the
 compiled test class `codeCoverageTest` leaves in the worktree build output, and
