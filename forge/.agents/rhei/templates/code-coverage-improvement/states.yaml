@@ -62,6 +62,36 @@
 name: code-coverage-improvement
 version: 1.0.0
 
+# Each loop's pass yield, recorded per pass by Rhei and rendered to
+# runtime/reports/metrics-summary.md; the value is the covered count the stop
+# rule reads, so a row's delta is that pass's yield
+# (§AR-code-coverage-trajectory.1).
+metrics:
+  api-coverage:
+    label: API coverage (covered public methods)
+    measured_by: [api-measure]
+    drivers: [api-cover]
+    artifact: runtime/code-coverage/validation/api-cover-report-{iteration}.json
+    pointer: /summary/covered
+    detail: "of {/summary/total}"
+    goal: increase
+  deep-coverage:
+    label: Deep coverage (covered roster methods)
+    measured_by: [deep-measure]
+    drivers: [deep-cover]
+    artifact: runtime/code-coverage/discovery/discovery-report-{iteration}.json
+    pointer: /summary/rosterCovered
+    detail: "internal {/summary/deepCovered}/{/summary/deepMethods}, public {/summary/publicTargetsCovered}/{/summary/publicTargets}"
+    goal: increase
+  naive-coverage:
+    label: Naive coverage (covered library methods)
+    measured_by: [naive-measure]
+    drivers: [naive-cover]
+    artifact: runtime/code-coverage/validation/naive-cover-report-{iteration}.json
+    pointer: /summary/covered
+    detail: "of {/summary/total}"
+    goal: increase
+
 states:
   prepared:
     description: Pipeline task is generated and ready for execution.
