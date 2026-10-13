@@ -1,0 +1,89 @@
+{
+  "add_new_library_support:2026-10-13": {
+    "timestamp": "2026-10-13T23:52:22.595513Z",
+    "library": "com.google.api-client:google-api-client:2.5.0",
+    "starting_commit": "b4aad068c9f350b46d5a14f1824054b7cc450949",
+    "ending_commit": "6de8d32e766a88e43b4dee0a42098df89ecb20c2",
+    "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-sol",
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "status": "success",
+    "stats": {
+      "version": "2.5.0",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 7,
+            "totalCalls": 7
+          }
+        },
+        "coverageRatio": 1.0,
+        "coveredCalls": 7,
+        "totalCalls": 7
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 332,
+          "missed": 8972,
+          "ratio": 0.035684,
+          "total": 9304
+        },
+        "line": {
+          "covered": 71,
+          "missed": 2291,
+          "ratio": 0.030059,
+          "total": 2362
+        },
+        "method": {
+          "covered": 24,
+          "missed": 740,
+          "ratio": 0.031414,
+          "total": 764
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "no_action",
+      "issue_number": 10702,
+      "issue_label": "library-new-request",
+      "library": "com.google.api-client:google-api-client:2.5.0",
+      "summary": "Based on my knowledge of the library, I did not inspect the repo or the resolved artifact. google-api-client is a client-side HTTP/JSON library for Google APIs. It brings in google-oauth-client, google-http-client (with the gson and apache-v2 modules) and guava as transitive dependencies. Tests can use the bundled MockHttpTransport/MockLowLevelHttpResponse or an in-process com.sun.net.httpserver.HttpServer. They need no extra Maven dependency, Docker image or environment setup.",
+      "deterministic_setup": [],
+      "agent_guidance": "",
+      "risks": [
+        "Tests must not call real Google endpoints or need real credentials. Use MockHttpTransport or a local HttpServer, and fake credentials where needed.",
+        "Some classes, such as GoogleCredential and the Android and App Engine helpers, were removed or are optional in 2.x. Cover only what the resolved 2.5.0 jar actually contains."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#10702 Support for com.google.api-client:google-api-client:2.5.0; label=library-new-request; body_chars=0"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "sonnet",
+      "input_tokens_used": 2,
+      "output_tokens_used": 601
+    },
+    "metrics": {
+      "input_tokens_used": 60238,
+      "cached_input_tokens_used": 687744,
+      "output_tokens_used": 7205,
+      "iterations": 1,
+      "cost_usd": 0.8612,
+      "generated_loc": 58,
+      "tested_library_loc": 71,
+      "metadata_entries": 30,
+      "code_coverage_percent": 3.01
+    },
+    "artifacts": {
+      "metadata_file": "metadata/com.google.api-client/google-api-client/2.5.0/reachability-metadata.json"
+    }
+  }
+}
