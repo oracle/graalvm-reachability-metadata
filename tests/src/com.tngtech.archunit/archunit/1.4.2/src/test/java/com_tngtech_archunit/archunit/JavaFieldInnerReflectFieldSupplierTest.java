@@ -9,14 +9,13 @@ package com_tngtech_archunit.archunit;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.tngtech.archunit.core.domain.JavaClass;
-import com.tngtech.archunit.core.importer.ClassFileImporter;
 import java.lang.reflect.Field;
 import org.junit.jupiter.api.Test;
 
 public class JavaFieldInnerReflectFieldSupplierTest {
     @Test
     void reflectsAnImportedFieldFromItsDomainModel() {
-        JavaClass importedClass = new ClassFileImporter().importClass(AnnotatedFixture.class);
+        JavaClass importedClass = TestClassImporter.importClass(AnnotatedFixture.class);
 
         Field field = importedClass.getField("value").reflect();
 

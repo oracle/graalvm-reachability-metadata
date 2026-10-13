@@ -10,7 +10,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import com.tngtech.archunit.ArchConfiguration;
 import com.tngtech.archunit.core.domain.JavaClass;
-import com.tngtech.archunit.core.importer.ClassFileImporter;
 import com.tngtech.archunit.core.importer.resolvers.ClassResolver;
 import java.util.List;
 import java.util.Optional;
@@ -26,7 +25,8 @@ public class ClassResolverInnerFactoryAnonymous1Test {
             configuration.setClassResolver(ListConstructorResolver.class);
             configuration.setClassResolverArguments("first", "second");
 
-            JavaClass imported = new ClassFileImporter().importClass(AnnotatedFixture.class);
+            JavaClass imported =
+                    TestClassImporter.importClassWithConfiguredResolver(AnnotatedFixture.class);
 
             assertThat(imported.getName()).isEqualTo(AnnotatedFixture.class.getName());
             assertThat(RECEIVED_ARGUMENTS.get()).containsExactly("first", "second");

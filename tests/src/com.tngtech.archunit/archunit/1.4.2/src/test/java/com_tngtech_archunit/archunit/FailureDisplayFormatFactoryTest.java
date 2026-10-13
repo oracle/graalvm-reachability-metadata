@@ -12,7 +12,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import com.tngtech.archunit.ArchConfiguration;
 import com.tngtech.archunit.base.HasDescription;
 import com.tngtech.archunit.core.domain.JavaClasses;
-import com.tngtech.archunit.core.importer.ClassFileImporter;
 import com.tngtech.archunit.lang.FailureDisplayFormat;
 import com.tngtech.archunit.lang.FailureMessages;
 import com.tngtech.archunit.lang.Priority;
@@ -23,8 +22,7 @@ public class FailureDisplayFormatFactoryTest {
     void failureReportUsesConfiguredDisplayFormat() {
         ArchConfiguration.withThreadLocalScope(configuration -> {
             configuration.setProperty("failureDisplayFormat", CompactFailureFormat.class.getName());
-            JavaClasses classesToCheck =
-                    new ClassFileImporter().importClasses(AnnotatedFixture.class);
+            JavaClasses classesToCheck = TestClassImporter.importClasses(AnnotatedFixture.class);
 
             String report = classes()
                     .should()

@@ -10,13 +10,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import com.tngtech.archunit.core.domain.JavaAnnotation;
 import com.tngtech.archunit.core.domain.JavaClass;
-import com.tngtech.archunit.core.importer.ClassFileImporter;
 import org.junit.jupiter.api.Test;
 
 public class JavaClassProcessorInnerAnnotationArrayProcessorInnerArrayValueBuilderTest {
     @Test
     void importsAnnotationArraysWithTheirCompleteElementTypes() {
-        JavaClass importedClass = new ClassFileImporter().importClass(AnnotatedFixture.class);
+        JavaClass importedClass = TestClassImporter.importClass(AnnotatedFixture.class);
         JavaAnnotation<?> annotation =
                 importedClass.getAnnotationOfType(ImportedAnnotation.class.getName());
 
