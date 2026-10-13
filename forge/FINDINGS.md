@@ -8,6 +8,11 @@ Newest entry first; every non-approval is recorded, including one a repair later
 **Version-specific native-image flag applied to a shared test suite**
 
 The contribution added -H:+SharedArenaSupport to the 1.0.39 suite shared by 61 older tested versions, although that baseline suite previously passed without the option. Native flags require uniform necessity. The target 1.3.0 WebSocket server path does require the narrow option: without it Netty 4.2.7's WebSocketServerHandshaker releases an unpooled direct response through CleanerJava25 and reaches disabled Arena.ofShared; default epoll, NIO, preferred-heap, and direct-to-heap allocator variants all reproduced that mechanism.
+## 2026-10-13 — org.bytedeco:ffmpeg:7.1.1-1.5.12 (#10713)
+
+**Companion runtime dependency is pinned to one library version**
+
+The coordinate's build.gradle hardcoded org.bytedeco:ffmpeg-platform:7.1.1-1.5.12 while the tested org.bytedeco:ffmpeg dependency follows the TCK-resolved library version. Reusing this suite for a newer tested version would pair it with stale native binaries, violating the version-agnostic test requirement in §FS-test-contract.2.5.
 
 ## 2026-10-13 — org.bytedeco:librealsense2:2.53.1-1.5.9 (#10720)
 
