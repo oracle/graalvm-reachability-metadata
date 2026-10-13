@@ -1,0 +1,15 @@
+## Human intervention needed
+
+The automated job failed before test generation completed. Preserved work is available at https://github.com/oracle/graalvm-reachability-metadata/tree/ai%2Fkimeta%2Fhuman-intervention%2Fissue-10701-library-new-request-com.google.oauth-client-google-oauth-client-1.35.0-1cb1c028.
+
+The likely failing stage is setup/scaffolding, not library-specific test generation. Gradle’s `:scaffold` task ran for 1h 7m and failed while resolving `com.google.oauth-client:google-oauth-client:1.35.0`: requests to both Maven Central and Confluent failed with `Temporary failure in name resolution`. Artifact discovery and preparation preflight had already succeeded, but no metadata, tests, stats, coverage, or publication metrics were produced.
+
+Relevant logs:
+- `human-intervention-logs/com.google.oauth-client:google-oauth-client:1.35.0/scaffold/scaffold-2026-10-13T11-17-51-537133Z.log`
+- `human-intervention-logs/com.google.oauth-client:google-oauth-client:1.35.0/discover-artifact-metadata/discover_artifact_metadata.log`
+- `human-intervention-logs/com.google.oauth-client:google-oauth-client:1.35.0/library-preparation-preflight/claude-code.log`
+
+Manual next steps:
+1. Retry scaffolding in an environment with working DNS and Maven repository access, confirming the `1.35.0` POM and JAR resolve.
+2. Generate tests using `MockHttpTransport` and `MockLowLevelHttpResponse` to exercise OAuth token flows without external network access.
+3. Run the coordinate-scoped JVM/native tests and dynamic-access reporting, then generate and validate the missing metadata and metrics.
