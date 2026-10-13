@@ -20,4 +20,18 @@ public class ClassLoadersTest {
         assertThat(ClassLoaders.getCurrentClassLoader(loaded))
                 .isSameAs(Thread.currentThread().getContextClassLoader());
     }
+
+    @Test
+    void fallsBackToTheDefiningLoaderWhenTheContextCannotLoadTheClass() throws Exception {
+        Thread thread = Thread.currentThread();
+        ClassLoader originalContextLoader = thread.getContextClassLoader();
+        thread.setContextClassLoader(ClassLoader.getPlatformClassLoader());
+        try {
+            Class<?> loaded = ClassLoaders.loadClass(AnnotatedFixture.class.getName());
+
+            assertThat(loaded).isSameAs(AnnotatedFixture.class);
+        } finally {
+            thread.setContextClassLoader(originalContextLoader);
+        }
+    }
 }
