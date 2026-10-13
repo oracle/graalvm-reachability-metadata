@@ -8,6 +8,8 @@ package org_jmolecules.jmolecules_events;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.lang.annotation.Annotation;
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -15,6 +17,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.lang.reflect.Method;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import org.jmolecules.event.annotation.DomainEvent;
@@ -115,6 +118,29 @@ public class Jmolecules_eventsTest {
         assertThat(publisherDescriptor.type()).isEqualTo(PublisherType.EXTERNAL);
         assertThat(endpoints.handle(event)).isEqualTo("handled:order-11");
         assertThat(endpoints.publish(event)).isEqualTo("published:order-11");
+    }
+
+    @Test
+    void stereotypeCatalogDescribesEventConceptsForExternalTools() throws IOException {
+        try (InputStream input = DomainEvent.class.getResourceAsStream("/META-INF/jmolecules-stereotypes.json")) {
+            assertThat(input).isNotNull();
+
+            String catalog = new String(input.readAllBytes(), StandardCharsets.UTF_8);
+
+            assertThat(catalog)
+                    .contains(
+                            "\"events.DomainEvent\"",
+                            "\"@org.jmolecules.event.annotation.DomainEvent\"",
+                            "\"org.jmolecules.event.types.DomainEvent\"")
+                    .contains(
+                            "\"events.DomainEventHandler\"",
+                            "\"@org.jmolecules.event.annotation.DomainEventHandler\"")
+                    .contains(
+                            "\"events.Externalized\"",
+                            "\"@org.jmolecules.event.annotation.Externalized\"",
+                            "\"org.jmolecules.event.types.Externalized\"")
+                    .contains("\"events\"", "\"displayName\" : \"Events\"", "\"type\" : \"design\"");
+        }
     }
 
     @Test
