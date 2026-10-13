@@ -3,6 +3,18 @@
 Rendered by Forge from the pre-push branch review of §FS-local-branch-review.
 Newest entry first; every non-approval is recorded, including one a repair later cleared.
 
+## 2026-10-13 — org.bytedeco:librealsense2:2.53.1-1.5.9 (#10720)
+
+**Headless RealSense context creation crashes the test process**
+
+The required `javaTest` lane terminated with exit 134 in all three matrix jobs. The crash report identified `rs2_create_context` from `configuresPipelineForUnavailableDeviceWithoutStartingCapture`, and isolated reproduction showed that both full context-creation scenarios SIGSEGV in `pthread_mutex_lock` when no USB subsystem is available. Required tests must pass every configured Java and Native Image lane under §FS-repository-functional-spec.5.2; because the defect was confined to this contribution's tests, it was repaired under §FS-contribution-contract.5.1.
+
+## 2026-10-12 — org.bytedeco:librealsense2:2.53.1-1.5.9 (#10720)
+
+**Companion runtime dependency pins the tested library version**
+
+The test build hardcoded `org.bytedeco:librealsense2-platform:2.53.1-1.5.9` even though the tested library version is TCK-resolved. This version-pinned dependency would keep a reused suite on the old native runtime and violates the version-agnostic test requirement in §FS-test-contract.2.5.
+
 ## 2026-10-12 — org.bytedeco:tesseract:5.5.1-1.5.12 (#10722)
 
 **Version-pinned companion runtime dependency**
