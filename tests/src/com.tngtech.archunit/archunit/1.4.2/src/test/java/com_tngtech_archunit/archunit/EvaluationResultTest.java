@@ -10,15 +10,13 @@ import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.classes;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.tngtech.archunit.core.domain.JavaClasses;
-import com.tngtech.archunit.core.importer.ClassFileImporter;
 import com.tngtech.archunit.lang.EvaluationResult;
 import org.junit.jupiter.api.Test;
 
 public class EvaluationResultTest {
     @Test
     void evaluationLoadsIgnorePatternsBeforeReportingViolations() {
-        JavaClasses importedClasses =
-                new ClassFileImporter().importClasses(AnnotatedFixture.class);
+        JavaClasses importedClasses = TestClassImporter.importClasses(AnnotatedFixture.class);
 
         EvaluationResult result = classes()
                 .should()

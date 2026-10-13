@@ -9,14 +9,13 @@ package com_tngtech_archunit.archunit;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.tngtech.archunit.core.domain.JavaClass;
-import com.tngtech.archunit.core.importer.ClassFileImporter;
 import java.lang.reflect.Method;
 import org.junit.jupiter.api.Test;
 
 public class JavaMethodInnerReflectMethodSupplierTest {
     @Test
     void reflectsAnImportedMethodWithItsParameterTypes() {
-        JavaClass importedClass = new ClassFileImporter().importClass(AnnotatedFixture.class);
+        JavaClass importedClass = TestClassImporter.importClass(AnnotatedFixture.class);
 
         Method method = importedClass.getMethod("greet", String.class).reflect();
 

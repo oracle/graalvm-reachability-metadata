@@ -9,13 +9,12 @@ package com_tngtech_archunit.archunit;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.tngtech.archunit.core.domain.JavaClass;
-import com.tngtech.archunit.core.importer.ClassFileImporter;
 import org.junit.jupiter.api.Test;
 
 public class AnnotationProxyInnerToStringHandlerTest {
     @Test
     void formatsAllPropertiesOfAnImportedAnnotationProxy() {
-        JavaClass importedClass = new ClassFileImporter().importClass(AnnotatedFixture.class);
+        JavaClass importedClass = TestClassImporter.importClass(AnnotatedFixture.class);
         ImportedAnnotation annotation = importedClass.getAnnotationOfType(ImportedAnnotation.class);
 
         String description = annotation.toString();

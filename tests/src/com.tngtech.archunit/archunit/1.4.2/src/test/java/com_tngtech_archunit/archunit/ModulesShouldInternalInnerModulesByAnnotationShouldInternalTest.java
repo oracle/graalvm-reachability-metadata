@@ -12,7 +12,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import com_tngtech_archunit.archunit.moduleone.ModuleOneRoot;
 import com_tngtech_archunit.archunit.moduletwo.ModuleTwoRoot;
 import com.tngtech.archunit.core.domain.JavaClasses;
-import com.tngtech.archunit.core.importer.ClassFileImporter;
 import com.tngtech.archunit.lang.EvaluationResult;
 import com.tngtech.archunit.library.modules.syntax.ModuleDependencyScope;
 import org.junit.jupiter.api.Test;
@@ -21,7 +20,7 @@ public class ModulesShouldInternalInnerModulesByAnnotationShouldInternalTest {
     @Test
     void readsAllowedModuleNamesFromAnnotationProperty() {
         JavaClasses importedClasses =
-                new ClassFileImporter().importClasses(ModuleOneRoot.class, ModuleTwoRoot.class);
+                TestClassImporter.importClasses(ModuleOneRoot.class, ModuleTwoRoot.class);
 
         EvaluationResult result = modules()
                 .definedByAnnotation(ImportedAnnotation.class)

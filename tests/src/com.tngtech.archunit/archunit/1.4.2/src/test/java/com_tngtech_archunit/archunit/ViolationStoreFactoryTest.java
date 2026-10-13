@@ -11,7 +11,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import com.tngtech.archunit.ArchConfiguration;
 import com.tngtech.archunit.core.domain.JavaClasses;
-import com.tngtech.archunit.core.importer.ClassFileImporter;
 import com.tngtech.archunit.lang.ArchRule;
 import com.tngtech.archunit.library.freeze.FreezingArchRule;
 import com.tngtech.archunit.library.freeze.ViolationStore;
@@ -28,8 +27,7 @@ public class ViolationStoreFactoryTest {
         INITIALIZED.set(false);
         ArchConfiguration.withThreadLocalScope(configuration -> {
             configuration.setProperty("freeze.store", RecordingViolationStore.class.getName());
-            JavaClasses importedClasses =
-                    new ClassFileImporter().importClasses(AnnotatedFixture.class);
+            JavaClasses importedClasses = TestClassImporter.importClasses(AnnotatedFixture.class);
             FreezingArchRule rule = FreezingArchRule.freeze(classes().should().bePublic());
 
             assertThat(rule.evaluate(importedClasses).hasViolation()).isFalse();
