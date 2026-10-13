@@ -17,7 +17,7 @@ import org.junit.jupiter.api.Test;
 
 public class FrameRecorderTest {
     @Test
-    void initializesResolvesAndSelectsTheFfmpegBackend() throws Exception {
+    void initializesAndResolvesTheFfmpegBackend() throws Exception {
         List<String> originalBackends = new ArrayList<>(FrameRecorder.list);
         try {
             FrameRecorder.list.clear();
@@ -29,9 +29,21 @@ public class FrameRecorderTest {
             Class<? extends FrameRecorder> conventionallyResolved = FrameRecorder.get("FFmpeg");
             assertThat(directlyResolved).isEqualTo(FFmpegFrameRecorder.class);
             assertThat(conventionallyResolved).isEqualTo(directlyResolved);
+        } finally {
+            FrameRecorder.list.clear();
+            FrameRecorder.list.addAll(originalBackends);
+        }
+    }
+
+    @Test
+    void selectsTheOpenCvBackendAsDefault() throws Exception {
+        List<String> originalBackends = new ArrayList<>(FrameRecorder.list);
+        try {
+            FrameRecorder.list.clear();
+            FrameRecorder.list.add("OpenCV");
 
             Class<? extends FrameRecorder> selected = FrameRecorder.getDefault();
-            assertThat(selected).isEqualTo(directlyResolved);
+            assertThat(selected).isEqualTo(OpenCVFrameRecorder.class);
         } finally {
             FrameRecorder.list.clear();
             FrameRecorder.list.addAll(originalBackends);

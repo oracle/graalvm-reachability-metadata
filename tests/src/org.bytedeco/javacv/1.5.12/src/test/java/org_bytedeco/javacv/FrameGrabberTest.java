@@ -17,7 +17,7 @@ import org.junit.jupiter.api.Test;
 
 public class FrameGrabberTest {
     @Test
-    void initializesResolvesAndSelectsTheFfmpegBackend() throws Exception {
+    void initializesAndResolvesTheFfmpegBackend() throws Exception {
         List<String> originalBackends = new ArrayList<>(FrameGrabber.list);
         try {
             FrameGrabber.list.clear();
@@ -29,9 +29,21 @@ public class FrameGrabberTest {
             Class<? extends FrameGrabber> conventionallyResolved = FrameGrabber.get("FFmpeg");
             assertThat(directlyResolved).isEqualTo(FFmpegFrameGrabber.class);
             assertThat(conventionallyResolved).isEqualTo(directlyResolved);
+        } finally {
+            FrameGrabber.list.clear();
+            FrameGrabber.list.addAll(originalBackends);
+        }
+    }
+
+    @Test
+    void selectsTheOpenCvBackendAsDefault() throws Exception {
+        List<String> originalBackends = new ArrayList<>(FrameGrabber.list);
+        try {
+            FrameGrabber.list.clear();
+            FrameGrabber.list.add("OpenCV");
 
             Class<? extends FrameGrabber> selected = FrameGrabber.getDefault();
-            assertThat(selected).isEqualTo(directlyResolved);
+            assertThat(selected).isEqualTo(OpenCVFrameGrabber.class);
         } finally {
             FrameGrabber.list.clear();
             FrameGrabber.list.addAll(originalBackends);
