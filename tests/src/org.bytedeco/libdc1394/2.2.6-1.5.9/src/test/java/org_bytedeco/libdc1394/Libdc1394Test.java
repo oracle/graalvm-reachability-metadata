@@ -16,6 +16,7 @@ import static org.bytedeco.libdc1394.global.dc1394.DC1394_COLOR_FILTER_BGGR;
 import static org.bytedeco.libdc1394.global.dc1394.DC1394_FALSE;
 import static org.bytedeco.libdc1394.global.dc1394.DC1394_FEATURE_GAIN;
 import static org.bytedeco.libdc1394.global.dc1394.DC1394_FRAMERATE_30;
+import static org.bytedeco.libdc1394.global.dc1394.DC1394_LOG_WARNING;
 import static org.bytedeco.libdc1394.global.dc1394.DC1394_SUCCESS;
 import static org.bytedeco.libdc1394.global.dc1394.DC1394_TRUE;
 import static org.bytedeco.libdc1394.global.dc1394.DC1394_VIDEO_MODE_640x480_RGB8;
@@ -38,12 +39,16 @@ import static org.bytedeco.libdc1394.global.dc1394.dc1394_get_image_size_from_vi
 import static org.bytedeco.libdc1394.global.dc1394.dc1394_is_color;
 import static org.bytedeco.libdc1394.global.dc1394.dc1394_is_same_camera;
 import static org.bytedeco.libdc1394.global.dc1394.dc1394_is_video_mode_scalable;
+import static org.bytedeco.libdc1394.global.dc1394.dc1394_log_register_handler;
+import static org.bytedeco.libdc1394.global.dc1394.dc1394_log_set_default_handler;
+import static org.bytedeco.libdc1394.global.dc1394.dc1394_log_warning;
 import static org.bytedeco.libdc1394.global.dc1394.dc1394_new;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import org.bytedeco.javacpp.BytePointer;
 import org.bytedeco.javacpp.Pointer;
+import org.bytedeco.libdc1394.Log_handler_int_String_Pointer;
 import org.bytedeco.libdc1394.dc1394_t;
 import org.bytedeco.libdc1394.dc1394camera_id_t;
 import org.bytedeco.libdc1394.dc1394camera_list_t;
@@ -246,6 +251,34 @@ public class Libdc1394Test {
 
             second.unit((short) 3);
             assertThat(dc1394_is_same_camera(first, second)).isEqualTo(DC1394_FALSE);
+        }
+    }
+
+    @Test
+    void dispatchesWarningsToRegisteredLogHandler() {
+        try (CapturingLogHandler handler = new CapturingLogHandler()) {
+            assertThat(dc1394_log_register_handler(DC1394_LOG_WARNING, handler, null))
+                    .isEqualTo(DC1394_SUCCESS);
+            try {
+                dc1394_log_warning("camera bus bandwidth is limited");
+
+                assertThat(handler.logType).isEqualTo(DC1394_LOG_WARNING);
+                assertThat(handler.message).isEqualTo("camera bus bandwidth is limited");
+            } finally {
+                assertThat(dc1394_log_set_default_handler(DC1394_LOG_WARNING))
+                        .isEqualTo(DC1394_SUCCESS);
+            }
+        }
+    }
+
+    private static final class CapturingLogHandler extends Log_handler_int_String_Pointer {
+        private int logType;
+        private String message;
+
+        @Override
+        public void call(int type, String text, Pointer userData) {
+            logType = type;
+            message = text;
         }
     }
 }
