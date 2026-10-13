@@ -165,7 +165,7 @@ class TestTraceTests(unittest.TestCase):
     def test_a_test_frame_is_one_whose_source_is_in_a_suite_not_its_package(self) -> None:
         project = TestProject(self.project)
         self.assertEqual(project.source_of(f"{TEST_OWNER}$Inner").source, COVERAGE_SOURCE)
-        self.assertEqual(project.source_of("org.lib.StoreTest").suite, 1)
+        self.assertEqual(project.source_of("org.lib.StoreTest").source, "src/test/java/org/lib/StoreTest.java")
         self.assertIsNone(project.source_of("org.lib.Store"))
         self.assertIsNone(project.source_of("org.lib.ReplayTest"))
 
@@ -196,13 +196,16 @@ class TestTraceTests(unittest.TestCase):
         trace: GroupTrace = self._trace([(stack, 1)]).group((self._id(FLUSH), self._id(WRITE)))
         self.assertEqual(called_from_test_lines(trace)[1], "  line ?: flushes()")
 
-    def test_a_coverage_suite_test_wins_over_a_more_frequent_regular_one(self) -> None:
+    def test_the_most_frequent_test_stack_wins_whatever_its_suite(self) -> None:
         regular: list[tuple[MethodRef, int]] = [(JUNIT, 9), (REGULAR, 3), (FLUSH, 4), (WRITE, 0)]
-        trace: GroupTrace = self._trace([(regular, 50), (self._through_lambda(), 1)]).group(
+        untested: list[tuple[MethodRef, int]] = [(THREAD, 2), (WORKER, 7), (FLUSH, 4), (WRITE, 0)]
+        trace: GroupTrace = self._trace(
+            [(regular, 50), (self._through_lambda(), 1), (untested, 500)]
+        ).group((self._id(FLUSH), self._id(WRITE)))
+        self.assertEqual([step.source for step in trace.steps], ["src/test/java/org/lib/StoreTest.java"])
+        coverage: GroupTrace = self._trace([(regular, 1), (self._through_lambda(), 50)]).group(
             (self._id(FLUSH), self._id(WRITE)))
-        self.assertEqual(trace.steps[0].ref, FLUSHES)
-        alone: GroupTrace = self._trace([(regular, 50)]).group((self._id(FLUSH), self._id(WRITE)))
-        self.assertEqual([step.source for step in alone.steps], ["src/test/java/org/lib/StoreTest.java"])
+        self.assertEqual(coverage.steps[0].ref, FLUSHES)
 
     def test_a_jdk_frame_between_the_test_and_the_library_stays_in_the_chain(self) -> None:
         stack: list[tuple[MethodRef, int]] = [(JUNIT, 9), (FLUSHES, 3), (THREAD, 2), (FLUSH, 4), (WRITE, 0)]

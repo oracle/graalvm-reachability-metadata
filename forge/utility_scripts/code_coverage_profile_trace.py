@@ -37,8 +37,8 @@ from utility_scripts.code_coverage_profile_routes import (
 from utility_scripts.java_class_file import ClassFileError, MethodCode, read_class_file
 
 #: A test project's suites: the sources and the classes the measurement's
-#: Gradle run compiles them to. The coverage suite comes first, since its tests
-#: are preferred (§AR-code-coverage-deep-navigation.2).
+#: Gradle run compiles them to. A test frame may come from either; the suite
+#: never ranks it (§AR-code-coverage-deep-navigation.2).
 TEST_SUITES: tuple[tuple[str, str], ...] = (
     ("code-coverage-improvement/src/test/java", "build/classes/java/codeCoverage"),
     ("src/test/java", "build/classes/java/test"),
@@ -60,9 +60,8 @@ def _is_synthetic(ref: MethodRef) -> bool:
 
 @dataclass(frozen=True)
 class TestSource:
-    """Where a test class lives: its suite's rank, source, and class file."""
+    """Where a test class lives: its source and its class file."""
 
-    suite: int
     source: str
     class_file: str
 
@@ -84,11 +83,10 @@ class TestProject:
             outer: str = owner.split("$", 1)[0].replace(".", os.sep) + ".java"
             self._sources[owner] = next((
                 TestSource(
-                    rank,
                     os.path.join(sources, outer),
                     os.path.join(self.path, classes, owner.replace(".", os.sep) + ".class"),
                 )
-                for rank, (sources, classes) in enumerate(TEST_SUITES)
+                for sources, classes in TEST_SUITES
                 if os.path.isfile(os.path.join(self.path, sources, outer))
             ), None)
         return self._sources[owner]
@@ -216,14 +214,14 @@ class SampleTrace:
             else:
                 stacks[key] = candidate
 
-        def preference(candidate: _Candidate) -> tuple[int, int]:
-            # A coverage-suite test first, then a regular one, then none; the
-            # most frequent stack within each.
-            sources: list[TestSource] = [
-                source for ref, _ in candidate.sample.full_path[:candidate.start]
-                if (source := self._test_source(ref)) is not None
-            ]
-            return (sources[0].suite if sources else len(TEST_SUITES), -candidate.count)
+        def preference(candidate: _Candidate) -> tuple[bool, int]:
+            # A stack with a test frame before one without, whichever suite
+            # the test is in; the most frequent stack within each.
+            tested: bool = any(
+                self._test_source(ref) is not None
+                for ref, _ in candidate.sample.full_path[:candidate.start]
+            )
+            return (not tested, -candidate.count)
 
         if not stacks:
             return GroupTrace(translated_path(list(divergence), self.graph))
