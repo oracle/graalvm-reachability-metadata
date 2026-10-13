@@ -6,12 +6,15 @@
  */
 package org_jmolecules.jstereotype;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.lang.annotation.Annotation;
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import java.nio.charset.StandardCharsets;
 
 import org.jmolecules.stereotype.Stereotype;
 import org.junit.jupiter.api.Test;
@@ -66,6 +69,42 @@ public class JstereotypeTest {
         assertThat(retention.value()).isEqualTo(RetentionPolicy.RUNTIME);
         assertThat(target.value()).containsExactlyInAnyOrder(ElementType.TYPE, ElementType.ANNOTATION_TYPE);
         assertThat(Stereotype.class.isAnnotationPresent(Documented.class)).isTrue();
+    }
+
+    @Test
+    void schemaCatalogAdvertisesBothConfigurationDocuments() throws IOException {
+        String catalog = readLibraryResource("jmolecules-catalog.json");
+
+        assertThat(catalog)
+                .contains("https://json.schemastore.org/schema-catalog.json")
+                .contains("jmolecules-stereotype-groups.json")
+                .contains("https://schemas.jmolecules.org/jmolecules-stereotype-groups.schema.json")
+                .contains("jmolecules-stereotypes.json")
+                .contains("https://schemas.jmolecules.org/jmolecules-stereotypes.schema.json");
+    }
+
+    @Test
+    void bundledSchemasDescribeStereotypesAndTheirGroups() throws IOException {
+        String groupSchema = readLibraryResource("jmolecules-stereotype-groups.schema.json");
+        String stereotypeSchema = readLibraryResource("jmolecules-stereotypes.schema.json");
+
+        assertThat(groupSchema)
+                .contains("Configuration for jMolecules stereotype groups")
+                .contains("\"required\": [\"groups\"]")
+                .contains("\"displayName\"")
+                .contains("\"architecture\", \"design\", \"technical\"");
+        assertThat(stereotypeSchema)
+                .contains("Configuration for jMolecules stereotypes")
+                .contains("\"required\": [\"stereotypes\"]")
+                .contains("\"required\": [\"assignments\", \"groups\"]")
+                .contains("jmolecules-stereotype-groups.schema.json#/properties/groups");
+    }
+
+    private static String readLibraryResource(String name) throws IOException {
+        try (InputStream input = Stereotype.class.getResourceAsStream("/META-INF/" + name)) {
+            assertThat(input).as("library resource %s", name).isNotNull();
+            return new String(input.readAllBytes(), StandardCharsets.UTF_8);
+        }
     }
 
     private static <A extends Annotation> A requireAnnotation(Class<?> element, Class<A> annotationType) {
