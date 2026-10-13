@@ -23,8 +23,8 @@ public class Spring_modulith_apiTest {
 
     @Test
     void applicationModuleRetainsConfigurationAndSuppliesClosedDefaults() {
-        ApplicationModule configured = OrdersModule.class.getAnnotation(ApplicationModule.class);
-        ApplicationModule defaults = DefaultModule.class.getAnnotation(ApplicationModule.class);
+        ApplicationModule configured = AnnotatedElementUtils.findMergedAnnotation(OrdersModule.class, ApplicationModule.class);
+        ApplicationModule defaults = AnnotatedElementUtils.findMergedAnnotation(DefaultModule.class, ApplicationModule.class);
 
         assertThat(configured.id()).isEqualTo("orders");
         assertThat(configured.displayName()).isEqualTo("Order Management");
@@ -39,14 +39,14 @@ public class Spring_modulith_apiTest {
 
     @Test
     void namedInterfaceRetainsBothNamesAndPropagationPolicy() {
-        NamedInterface byValue = CustomerInterfaces.class.getAnnotation(NamedInterface.class);
-        NamedInterface byName = BillingInterface.class.getAnnotation(NamedInterface.class);
-        NamedInterface defaults = DefaultNamedInterface.class.getAnnotation(NamedInterface.class);
+        NamedInterface byValue = AnnotatedElementUtils.findMergedAnnotation(CustomerInterfaces.class, NamedInterface.class);
+        NamedInterface byName = AnnotatedElementUtils.findMergedAnnotation(BillingInterface.class, NamedInterface.class);
+        NamedInterface defaults = AnnotatedElementUtils.findMergedAnnotation(DefaultNamedInterface.class, NamedInterface.class);
 
         assertThat(byValue.value()).containsExactly("api", "events");
-        assertThat(byValue.name()).isEmpty();
+        assertThat(byValue.name()).containsExactly("api", "events");
         assertThat(byValue.propagate()).isFalse();
-        assertThat(byName.value()).isEmpty();
+        assertThat(byName.value()).containsExactly("billing");
         assertThat(byName.name()).containsExactly("billing");
         assertThat(byName.propagate()).isTrue();
         assertThat(defaults.value()).isEmpty();
@@ -56,8 +56,8 @@ public class Spring_modulith_apiTest {
 
     @Test
     void modulithicRetainsApplicationStructureAndSuppliesDefaults() {
-        Modulithic configured = InventoryApplication.class.getAnnotation(Modulithic.class);
-        Modulithic defaults = DefaultModulithicApplication.class.getAnnotation(Modulithic.class);
+        Modulithic configured = AnnotatedElementUtils.findMergedAnnotation(InventoryApplication.class, Modulithic.class);
+        Modulithic defaults = AnnotatedElementUtils.findMergedAnnotation(DefaultModulithicApplication.class, Modulithic.class);
 
         assertThat(configured.systemName()).isEqualTo("Inventory");
         assertThat(configured.useFullyQualifiedModuleNames()).isTrue();
@@ -72,8 +72,8 @@ public class Spring_modulith_apiTest {
 
     @Test
     void modulithRetainsApplicationStructureAndSuppliesDefaults() {
-        Modulith configured = OrderApplication.class.getAnnotation(Modulith.class);
-        Modulith defaults = DefaultModulithApplication.class.getAnnotation(Modulith.class);
+        Modulith configured = AnnotatedElementUtils.findMergedAnnotation(OrderApplication.class, Modulith.class);
+        Modulith defaults = AnnotatedElementUtils.findMergedAnnotation(DefaultModulithApplication.class, Modulith.class);
 
         assertThat(configured.systemName()).isEqualTo("Orders");
         assertThat(configured.useFullyQualifiedModuleNames()).isTrue();
@@ -110,7 +110,7 @@ public class Spring_modulith_apiTest {
 
     @Test
     void packageInfoMarksAlternativePackageMetadataTypesAtRuntime() {
-        PackageInfo packageInfo = AlternativePackageMetadata.class.getAnnotation(PackageInfo.class);
+        PackageInfo packageInfo = AnnotatedElementUtils.findMergedAnnotation(AlternativePackageMetadata.class, PackageInfo.class);
 
         assertThat(packageInfo).isNotNull();
         assertThat(packageInfo.annotationType()).isEqualTo(PackageInfo.class);
