@@ -8,21 +8,13 @@ package com_tngtech_archunit.archunit;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import com.tngtech.archunit.thirdparty.org.objectweb.asm.ClassVisitor;
-import com.tngtech.archunit.thirdparty.org.objectweb.asm.Opcodes;
 import org.junit.jupiter.api.Test;
 
 public class ConstantsTest {
     @Test
     void rejectsExperimentalAsmForANonPreviewCaller() {
-        assertThatThrownBy(ExperimentalClassVisitor::new)
+        assertThatThrownBy(ExperimentalClassVisitorFixture::new)
                 .isInstanceOf(IllegalStateException.class)
                 .hasMessageContaining("can only be used by classes compiled with --enable-preview");
-    }
-
-    private static final class ExperimentalClassVisitor extends ClassVisitor {
-        private ExperimentalClassVisitor() {
-            super(Opcodes.ASM10_EXPERIMENTAL);
-        }
     }
 }
