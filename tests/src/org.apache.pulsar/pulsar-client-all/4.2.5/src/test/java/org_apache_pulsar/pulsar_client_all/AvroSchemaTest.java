@@ -45,7 +45,7 @@ public class AvroSchemaTest {
         private Instant occurredAt;
         private int severity;
 
-        public AuditEvent() {}
+        public AuditEvent() { }
 
         public AuditEvent(String eventId, Instant occurredAt, int severity) {
             this.eventId = eventId;
