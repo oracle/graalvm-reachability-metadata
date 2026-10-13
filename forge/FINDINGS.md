@@ -8,11 +8,13 @@ Newest entry first; every non-approval is recorded, including one a repair later
 **Avoid host GUI dependencies in JavaCV backend-selection tests**
 
 All three required JavaCV matrix jobs failed in javaTest because tests selected an OpenCV backend whose native highgui library required libgtk-x11-2.0.so.0, while the projector scenario assumed a headful graphics environment. Coordinate tests must pass the required lanes while preserving meaningful public-API behavior. §FS-repository-functional-spec.5.2 §FS-test-contract.1.3
+## 2026-10-13 — com.github.jnr:jnr-unixsocket:0.38.22 (#10700)
 ## 2026-10-08 — org.eclipse.jetty:jetty-http:10.0.0 (#9376)
 
 **Pre-push review unavailable**
 
 Forge could not obtain a readable pre-push review verdict. This records a review availability problem, not a reviewer finding against the branch.
+
 ## 2026-10-13 — org.bytedeco:librealsense:1.12.4-1.5.9 (#10719)
 
 **Hardware-dependent USB context test fails on USB-less CI hosts**

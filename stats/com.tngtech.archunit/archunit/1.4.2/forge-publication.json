@@ -1,0 +1,161 @@
+{
+  "base_commit": "27d3f35a3378a4cabb0c1ade4df8369bfe10627b",
+  "branch": "ai/kimeta/add-lib-support-com.tngtech.archunit-archunit-1.4.2-chunked-forge-10707-20261013181538890824-67e05235da38",
+  "follow_ups": [],
+  "forge": {
+    "branch": "master",
+    "commit": "edf26098f22e36b60b958bbc4569254e5d1a1f3b",
+    "monitored_branch": "origin/master"
+  },
+  "issue_number": 10707,
+  "library": {
+    "artifact": "archunit",
+    "coordinates": "com.tngtech.archunit:archunit:1.4.2",
+    "group": "com.tngtech.archunit",
+    "version": "1.4.2"
+  },
+  "local_ci_verification": {
+    "base_commit": "27d3f35a3378a4cabb0c1ade4df8369bfe10627b",
+    "commands": [
+      {
+        "command": [
+          "./gradlew",
+          "generateChangedIndexFileCoordinatesList",
+          "-PbaseCommit=origin/master",
+          "-PnewCommit=HEAD"
+        ],
+        "env": {
+          "GITHUB_OUTPUT": "/tmp/tmpgxb0sy1q"
+        },
+        "gate": "changed-index-coordinates",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :generateChangedIndexFileCoordinatesList\n\n[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata-worker3/forge/local_repositories/forge_worktrees/10707-e3591033/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 2s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      },
+      {
+        "command": [
+          "./gradlew",
+          "validateIndexFiles",
+          "-Pcoordinates=com.tngtech.archunit:archunit"
+        ],
+        "env": {},
+        "gate": "index-file-validation",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :validateIndexFiles\n✅ metadata/com.tngtech.archunit/archunit/index.json: Valid\n\n[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata-worker3/forge/local_repositories/forge_worktrees/10707-e3591033/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 1s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      }
+    ],
+    "failure_command": null,
+    "failure_gate": null,
+    "final_commit": "bd0f2c77222e760ff29ff0142a71a22f92798ac2",
+    "fixups": [],
+    "human_intervention_required": false,
+    "repo_fix_paths": [],
+    "status": "success"
+  },
+  "local_review": {
+    "changed_paths": [],
+    "decision": "approved",
+    "finding_body": "",
+    "finding_title": "",
+    "fix_note": "",
+    "model": "gpt-5.6-sol",
+    "review_comment": "Reviewed the single-coordinate diff, test sources and build configuration, local gate records, and resolved render statistics against the library-new-request rules and contribution contract. The tests exercise ArchUnit and its shipped shaded APIs from a separate, version-agnostic test package without scaffold code, Native Image skips, tolerated failures, or legacy metadata. The narrowly scoped preview flags are required by the ASM experimental-API preview-caller scenario. Dynamic-access coverage is 134/151 (88.7417%), above the 20% gate, and the 134 covered calls do not trigger the mismatch probe against the reported 186 library plus 193 test-only metadata entries. The recorded verification and index-validation gates succeeded; the contribution is approved.",
+    "session_id": "05d5be1f92cd4c5b"
+  },
+  "metrics": {
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "path": "stats/com.tngtech.archunit/archunit/1.4.2/execution-metrics.json",
+    "summary": {
+      "cached_input_tokens_used": 37186176,
+      "code_coverage_percent": 16.12,
+      "cost_usd": 37.0012,
+      "generated_loc": 2705,
+      "input_tokens_used": 2496153,
+      "iterations": 29,
+      "metadata_entries": 186,
+      "output_tokens_used": 197576,
+      "test_only_metadata_entries": 193,
+      "tested_library_loc": 8828
+    },
+    "timestamp": "2026-10-13T18:15:38.890824Z"
+  },
+  "modifiers": {
+    "chunk_final": true,
+    "chunked_dynamic_access": true,
+    "human_intervention": false
+  },
+  "producer": "kimeta",
+  "publication_id": "forge-10707-20261013181538890824-67e05235da38",
+  "render": {
+    "dynamic_access": null,
+    "dynamic_access_evidence": {
+      "covered_call_sites": [
+        "[reflection] java.lang.Class#getDeclaredConstructor(java.lang.Class[]) <- com.tngtech.archunit.core.importer.resolvers.ClassResolver$Factory.accessibleConstructor(ClassResolver.java:174) (line 174)",
+        "[reflection] java.lang.Class#getMethod(java.lang.String, java.lang.Class[]) <- com.tngtech.archunit.thirdparty.com.google.common.base.internal.Finalizer.getFinalizeReferentMethod(Finalizer.java:226) (line 226)",
+        "[reflection] java.lang.reflect.Constructor#newInstance(java.lang.Object[]) <- com.tngtech.archunit.thirdparty.com.google.common.base.internal.Finalizer.startFinalizer(Finalizer.java:86) (line 86)",
+        "[reflection] java.lang.reflect.Method#invoke(java.lang.Object, java.lang.Object[]) <- com.tngtech.archunit.thirdparty.com.google.common.base.internal.Finalizer.finalizeReference(Finalizer.java:206) (line 206)",
+        "[resources] java.lang.ClassLoader#getResource(java.lang.String) <- com.tngtech.archunit.ArchConfiguration.readProperties(ArchConfiguration.java:87) (line 87)",
+        "[reflection] java.lang.Class#forName(java.lang.String) <- com.tngtech.archunit.base.ClassLoaders.loadClass(ClassLoaders.java:35) (line 35)",
+        "[reflection] java.lang.Class#forName(java.lang.String, boolean, java.lang.ClassLoader) <- com.tngtech.archunit.base.ClassLoaders.loadClass(ClassLoaders.java:31) (line 31)",
+        "[reflection] java.lang.Class#getDeclaredConstructor(java.lang.Class[]) <- com.tngtech.archunit.base.ReflectionUtils.newInstanceOf(ReflectionUtils.java:30) (line 30)",
+        "... and 126 more"
+      ],
+      "metadata_rules": [
+        "when `com.tngtech.archunit.core.domain.DomainPlugin$Loader` is reached, make `com.tngtech.archunit.core.domain.Java21DomainPlugin.<init>()` available for reflection",
+        "when `com.tngtech.archunit.core.importer.ImportPlugin$Loader` is reached, make `com.tngtech.archunit.core.importer.ModuleImportPlugin.<init>()` available for reflection",
+        "when `com.tngtech.archunit.thirdparty.com.google.common.base.internal.Finalizer` is reached, make `com.tngtech.archunit.thirdparty.com.google.common.base.FinalizableReference.finalizeReferent()` available for reflection",
+        "when `com.tngtech.archunit.thirdparty.com.google.common.base.FinalizableReferenceQueue` is reached, make `com.tngtech.archunit.thirdparty.com.google.common.base.internal.Finalizer.startFinalizer(java.lang.Class, java.lang.ref.ReferenceQueue, java.lang.ref.PhantomReference)` available for reflection",
+        "when `com.tngtech.archunit.thirdparty.com.google.common.base.FinalizableReferenceQueue$SystemLoader` is reached, make `com.tngtech.archunit.thirdparty.com.google.common.base.internal.Finalizer` available for reflection",
+        "when `com.tngtech.archunit.thirdparty.com.google.common.collect.AbstractBiMap$Inverse` is reached, make `com.tngtech.archunit.thirdparty.com.google.common.collect.AbstractBiMap` available for reflection",
+        "when `com.tngtech.archunit.thirdparty.com.google.common.collect.Serialization` is reached, make `com.tngtech.archunit.thirdparty.com.google.common.collect.AbstractSortedMultiset` available for reflection",
+        "when `com.tngtech.archunit.thirdparty.com.google.common.collect.TreeMultiset` is reached, make `com.tngtech.archunit.thirdparty.com.google.common.collect.AbstractSortedMultiset` available for reflection",
+        "... and 102 more"
+      ]
+    },
+    "library_stats": {
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 0.893617,
+            "coveredCalls": 126,
+            "totalCalls": 141
+          },
+          "resources": {
+            "coverageRatio": 0.8,
+            "coveredCalls": 8,
+            "totalCalls": 10
+          }
+        },
+        "coverageRatio": 0.887417,
+        "coveredCalls": 134,
+        "totalCalls": 151
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 38455,
+          "missed": 219368,
+          "ratio": 0.149153,
+          "total": 257823
+        },
+        "line": {
+          "covered": 8828,
+          "missed": 45920,
+          "ratio": 0.161248,
+          "total": 54748
+        },
+        "method": {
+          "covered": 3182,
+          "missed": 15218,
+          "ratio": 0.172935,
+          "total": 18400
+        }
+      },
+      "version": "1.4.2"
+    }
+  },
+  "schema_version": 1,
+  "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-sol",
+  "task_type": "library-new-request",
+  "template_type": "library-new-request",
+  "timestamp": "2026-10-13T18:15:38.890824Z"
+}

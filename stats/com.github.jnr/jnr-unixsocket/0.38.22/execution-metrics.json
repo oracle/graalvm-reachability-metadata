@@ -1,0 +1,89 @@
+{
+  "add_new_library_support:2026-10-13": {
+    "timestamp": "2026-10-13T09:36:51.948409Z",
+    "library": "com.github.jnr:jnr-unixsocket:0.38.22",
+    "starting_commit": "973291c8f2550c49782584d687d89a7bfe145b1a",
+    "ending_commit": "4c16720b0253e53f499ac7b8be610125a0ac86ab",
+    "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-sol",
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "status": "success",
+    "stats": {
+      "version": "0.38.22",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 2,
+            "totalCalls": 2
+          }
+        },
+        "coverageRatio": 1.0,
+        "coveredCalls": 2,
+        "totalCalls": 2
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 144,
+          "missed": 3462,
+          "ratio": 0.039933,
+          "total": 3606
+        },
+        "line": {
+          "covered": 40,
+          "missed": 815,
+          "ratio": 0.046784,
+          "total": 855
+        },
+        "method": {
+          "covered": 16,
+          "missed": 229,
+          "ratio": 0.065306,
+          "total": 245
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "no_action",
+      "issue_number": 10700,
+      "issue_label": "library-new-request",
+      "library": "com.github.jnr:jnr-unixsocket:0.38.22",
+      "summary": "jnr-unixsocket is self-contained: all native deps (jffi native classifier, jnr-ffi/posix/constants/enxio) resolve transitively via its own POM, Unix domain sockets work locally in-process on the Linux CI runner, and the repo already has a working precedent (docker-java-transport's UnixSocketTest) needing no Docker image, extra dependency, or env/system property.",
+      "deterministic_setup": [],
+      "agent_guidance": "",
+      "risks": [
+        "jnr-ffi/jffi relies on runtime ASM-generated native stub classes and JNI-loaded native libraries; this is a known friction area for GraalVM Native Image and may require reflect-config/jni-config/resource-config entries once generateMetadata and fixTestNativeImageRun run against the real test, but that's metadata coverage work, not pre-generation setup."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#10700 Support for com.github.jnr:jnr-unixsocket:0.38.22; label=library-new-request; body_chars=0"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "sonnet",
+      "input_tokens_used": 28,
+      "output_tokens_used": 9484
+    },
+    "metrics": {
+      "input_tokens_used": 62918,
+      "cached_input_tokens_used": 588032,
+      "output_tokens_used": 4738,
+      "iterations": 1,
+      "cost_usd": 0.7507,
+      "generated_loc": 34,
+      "tested_library_loc": 40,
+      "metadata_entries": 24,
+      "test_only_metadata_entries": 4,
+      "code_coverage_percent": 4.68
+    },
+    "artifacts": {
+      "metadata_file": "metadata/com.github.jnr/jnr-unixsocket/0.38.22/reachability-metadata.json"
+    }
+  }
+}

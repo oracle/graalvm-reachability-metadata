@@ -20,7 +20,7 @@ from dataclasses import dataclass
 from utility_scripts.code_coverage_jacoco import JacocoLineCoverage
 from utility_scripts.code_coverage_model import MethodRef
 from utility_scripts.code_coverage_profile_flow import Branch, DeadRegion, MethodFlow
-from utility_scripts.code_coverage_profile_graph import CallGraph
+from utility_scripts.code_coverage_profile_graph import SYNTHETIC_LAMBDA_CLASS_MARKER, CallGraph
 from utility_scripts.code_coverage_profile_inputs import line_at
 from utility_scripts.code_coverage_profile_navigation import NavigationEvidence
 
@@ -131,7 +131,9 @@ def trace_fork(
             ], None)
     if not region.catches:
         return ForkTrace(None, [], None)
-    return ForkTrace(None, [], _exception_to_json(caller, flow, region, lines, branch_counts, graph))
+    return ForkTrace(None, [], _exception_to_json(
+        caller, flow, region, lines, branch_counts, line_ran, graph,
+    ))
 
 
 def _exception_to_json(
@@ -140,13 +142,15 @@ def _exception_to_json(
         region: DeadRegion,
         lines: tuple[tuple[int, int], ...],
         branch_counts: Callable[[Branch], dict[int, int] | None],
+        line_ran: Callable[[int], bool | None],
         graph: CallGraph,
 ) -> dict:
-    """The catch boundary: each handler with the `try` lines that can raise
-    into it, each with its own count (§AR-code-coverage-deep-navigation.3.3)."""
+    """The catch boundary: each handler with the calls in its `try` range, each
+    at its own line and marked by whether it ran, beside the `try` lines with
+    their counts (§AR-code-coverage-deep-navigation.3.3)."""
     counts: dict[int, int | None] = flow.block_counts(branch_counts)
     caller_id: int | None = graph.key_to_id.get(caller.canonical_id)
-    calls_by_bci: dict[int, str] = {}
+    callees: dict[int, tuple[MethodRef, int]] = {}
     for call in graph.adjacency.get(caller_id, []) if caller_id is not None else []:
         callee: MethodRef | None = graph.methods.get(call.get("callee"))
         try:
@@ -154,12 +158,13 @@ def _exception_to_json(
         except ValueError:
             continue
         if call.get("kind") == "call" and callee is not None:
-            calls_by_bci[bci] = f"{callee.owner.rsplit('.', 1)[-1]}.{callee.name}"
+            callees[bci] = (callee, call["callee"])
     handlers: list[dict] = []
     for handler in sorted({handler for handler, _ in region.catches}):
         sources: list[int] = [source for h, source in region.catches if h == handler]
         raising: list[int] = [source for source in sources if source in flow.throwing_blocks]
         by_line: dict[int | None, dict] = {}
+        calls: list[dict] = []
         for block in raising or sources:
             end: int = next((start for start in flow.block_starts if start > block), sys.maxsize)
             line: int | None = line_at(lines, block)
@@ -167,12 +172,29 @@ def _exception_to_json(
             count: int | None = counts.get(block)
             if count is not None and (entry["count"] is None or count > entry["count"]):
                 entry["count"] = count
-            entry["calls"] += [name for bci, name in sorted(calls_by_bci.items()) if block <= bci < end]
+            in_block: list[tuple[int, MethodRef, int]] = [
+                (bci, callee, callee_id)
+                for bci, (callee, callee_id) in sorted(callees.items()) if block <= bci < end
+            ]
+            entry["calls"] += [
+                f"{callee.owner.rsplit('.', 1)[-1]}.{callee.name}" for _, callee, _ in in_block
+            ]
+            # A call ran when its block did; a block without a count falls back
+            # to JaCoCo's status of the call's own line. A lambda capture is no
+            # call, and a factory stub stands for its constructor.
+            calls += [{
+                "bci": bci,
+                "line": line_at(lines, bci),
+                "callee": graph.path_aliases.get(callee_id, callee).canonical_id,
+                "ran": count > 0 if count is not None else line_ran(bci) is True,
+            } for bci, callee, callee_id in in_block
+                if SYNTHETIC_LAMBDA_CLASS_MARKER not in callee.owner]
         handlers.append({
             "bci": handler,
             "line": line_at(lines, handler),
             "type": flow.handler_types.get(handler, "any"),
             "sources": [by_line[line] for line in sorted(by_line, key=lambda value: value or 0)],
+            "calls": sorted(calls, key=lambda call: call["bci"]),
         })
     return {"handlers": handlers}
 

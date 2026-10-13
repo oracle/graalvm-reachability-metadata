@@ -55,12 +55,42 @@
 # Measurement is a deterministic program that always writes the current
 # report to one fixed path and, when the loop continues, derives the cover
 # prompt from that report in the same step and hands it to the cover agent
-# inside its message (§AR-code-coverage-improvement.5.2). JaCoCo is the
+# inside its message (§AR-code-coverage-prompts.3). JaCoCo is the
 # only coverage authority; PGO samples and counters are navigation guidance. An agent can
 # never claim progress: only re-measurement moves the loop forward.
 
 name: code-coverage-improvement
 version: 1.0.0
+
+# Each loop's pass yield, recorded per pass by Rhei and rendered to
+# runtime/reports/metrics-summary.md; the value is the covered count the stop
+# rule reads, so a row's delta is that pass's yield
+# (§AR-code-coverage-trajectory.1).
+metrics:
+  api-coverage:
+    label: API coverage (covered public methods)
+    measured_by: [api-measure]
+    drivers: [api-cover]
+    artifact: runtime/code-coverage/validation/api-cover-report-{iteration}.json
+    pointer: /summary/covered
+    detail: "of {/summary/total}"
+    goal: increase
+  deep-coverage:
+    label: Deep coverage (covered roster methods)
+    measured_by: [deep-measure]
+    drivers: [deep-cover]
+    artifact: runtime/code-coverage/discovery/discovery-report-{iteration}.json
+    pointer: /summary/rosterCovered
+    detail: "internal {/summary/deepCovered}/{/summary/deepMethods}, public {/summary/publicTargetsCovered}/{/summary/publicTargets}"
+    goal: increase
+  naive-coverage:
+    label: Naive coverage (covered library methods)
+    measured_by: [naive-measure]
+    drivers: [naive-cover]
+    artifact: runtime/code-coverage/validation/naive-cover-report-{iteration}.json
+    pointer: /summary/covered
+    detail: "of {/summary/total}"
+    goal: increase
 
 states:
   prepared:
@@ -123,13 +153,6 @@ states:
       - If metadata generation or Native Image validation cannot be resolved
         automatically, write the work artifact with the blocker and request
         `human-intervention`.
-
-      Artifact paths in this task, including the one below, are relative to the
-      Rhei workspace root: the directory holding `states.yaml` and
-      `index.rhei.md`, which is `{{workspace_path}}`
-      from your working directory. Resolve every artifact path against that
-      directory. Do not prefix it with the workspace directory name alone, and
-      do not guess a prefix from your working directory.
 
       Write `{output.work.path}` with:
       - source issue URL
@@ -497,7 +520,7 @@ states:
                   result.write(f"API coverage loop completed: {summarize(stop)}\n")
           # Rhei checks the declared handoff output on this zero exit, so the
           # prompt path records that no cover pass follows
-          # (§AR-code-coverage-improvement.5.2).
+          # (§AR-code-coverage-prompts.3).
           prompt_path = Path("runtime/code-coverage/prompts/api-cover-prompt.md")
           prompt_path.parent.mkdir(parents=True, exist_ok=True)
           prompt_path.write_text(f"No cover pass follows: {summarize(stop)}\n")
@@ -536,7 +559,7 @@ states:
         path: runtime/code-coverage/issues/conversion.json
     outputs:
       # The cover agent receives this file inside its message
-      # (§AR-code-coverage-improvement.5.2).
+      # (§AR-code-coverage-prompts.3).
       - name: prompt
         kind: handoff
         path: runtime/code-coverage/prompts/api-cover-prompt.md
@@ -548,7 +571,7 @@ states:
     concurrent: true
     visits: {{coverage_iterations}}
     # Measurement's prompt arrives inside the message
-    # (§AR-code-coverage-improvement.5.2).
+    # (§AR-code-coverage-prompts.3).
     handoff:
       inherit:
         - from: transition.previous
@@ -568,7 +591,10 @@ states:
       - Add or edit test classes only under the tracked extension suite
         `code-coverage-improvement/src/test/java` inside the coordinate's
         indexed test project (`coverageSuiteRepoRelativePath` in
-        conversion.json); never touch the regular `src/test` sources.
+        conversion.json); never touch the regular `src/test` sources, and
+        do not extend or call into its test classes: every coverage test class
+        and method tests functionality on its own.
+        §AR-code-coverage-improvement.2
       - Hold one test class per subsystem the suite drives. Add a class when the
         group of classes you are covering has none, rather than growing a class
         built for something else.
@@ -580,9 +606,6 @@ states:
         finalization runs Spotless (§AR-code-coverage-improvement.5).
       - Target meaningful public user-callable behavior with real assertions,
         not superficial coverage hits.
-      - Do not weaken metadata-generation tests.
-      - Do not measure or claim coverage yourself: deterministic re-measurement
-        runs right after this state and decides the loop.
       - Write every test for the prompt's targets first, without running
         Gradle in between. Then, from inside the issue worktree (`worktreePath`
         in conversion.json), run the same task measurement runs:
@@ -596,13 +619,6 @@ states:
         without `-Pcoordinates` configures every library in the repository,
         takes hours, and never compiles this suite; do not pass `--no-daemon`,
         which pays that cost again on every call.
-
-      Artifact paths in this task, including the one below, are relative to the
-      Rhei workspace root: the directory holding `states.yaml` and
-      `index.rhei.md`, which is `{{workspace_path}}`
-      from your working directory. Resolve every artifact path against that
-      directory. Do not prefix it with the workspace directory name alone, and
-      do not guess a prefix from your working directory.
 
       Write `{output.work.path}` with:
       - targets attempted and how each was exercised
@@ -644,13 +660,6 @@ states:
         the cover prompt.
 
       Fix only that cause. Measurement re-runs automatically after this state.
-
-      Artifact paths in this task, including the one below, are relative to the
-      Rhei workspace root: the directory holding `states.yaml` and
-      `index.rhei.md`, which is `{{workspace_path}}`
-      from your working directory. Resolve every artifact path against that
-      directory. Do not prefix it with the workspace directory name alone, and
-      do not guess a prefix from your working directory.
 
       Write `{output.fix.path}` with:
       - failure addressed
@@ -779,6 +788,8 @@ states:
       if not Path(source_root).is_dir():
           print(f"deep-measure: no library sources at {source_root}; "
                 "prompt locations fall back to file names", file=sys.stderr)
+      # Step 2 compiled the test project's suites; each group names the test
+      # that reaches it from them (§AR-code-coverage-deep-navigation.2).
       analyzer = [
           sys.executable, f"{work_path}/utility_scripts/code_coverage_profile_report.py",
           "--profile", profile,
@@ -787,6 +798,7 @@ states:
           "--jacoco-xml", discovery / f"jacoco-deep-{iteration}.xml",
           "--library-methods", library_methods,
           "--source-root", source_root,
+          "--test-project", subproject,
           "--coordinate", coordinate,
           "--iteration", iteration,
           "--output-dir", discovery,
@@ -900,7 +912,7 @@ states:
         path: runtime/code-coverage/prompts/deep-session-queue.json
     outputs:
       # The cover agent receives this file inside its message
-      # (§AR-code-coverage-improvement.5.2).
+      # (§AR-code-coverage-prompts.3).
       - name: prompt
         kind: handoff
         path: runtime/code-coverage/prompts/deep-cover-prompt.md
@@ -916,7 +928,7 @@ states:
     # At most 21 sessions per pass (§AR-code-coverage-deep-navigation.4).
     visits: {{coverage_iterations * 21}}
     # The dispatched session's prompt arrives inside the message
-    # (§AR-code-coverage-improvement.5.2).
+    # (§AR-code-coverage-prompts.3).
     handoff:
       inherit:
         - from: transition.previous
@@ -946,16 +958,24 @@ states:
       - Every listed path, in every section of the prompt, is a target: its
         method is uncovered according to exact JaCoCo evidence, and the
         sampled context beside it only shows how close the suite already got.
-      - Under a `fork` line, each numbered branch says the line it lands on
-        and how often it ran; `← target` marks the branches that lead to the
-        target, so drive the condition the other way. `never dispatched here`
-        names an implementation the call site never received: hand it that
-        receiver. A zero count means the suite never went there, not that it
-        cannot. §AR-code-coverage-deep-navigation.3
+      - `Observed` is the call chain an existing test already drives, from
+        the test's own call down to where the paths split, JDK frames
+        included, and `Called from test` names that test and the lines in its
+        source that make the call. Start from that test's setup and change its input rather than
+        building the scenario from nothing. §AR-code-coverage-deep-navigation.2
+      - Under `Branches not taken`, each line is a branch the suite never took:
+        `branch <n> at line <y>: <method> at line <z>`. Drive the condition on
+        that branch's line the other way so execution lands on line y and
+        reaches the call at line z. `never dispatched here` names an
+        implementation the call site never received: hand it that receiver.
+        §AR-code-coverage-deep-navigation.3
       - Add or edit test classes only under the tracked extension suite
         `code-coverage-improvement/src/test/java` inside the coordinate's
         indexed test project (`coverageSuiteRepoRelativePath` in
-        conversion.json); never touch the regular `src/test` sources.
+        conversion.json); never touch the regular `src/test` sources, and
+        do not extend or call into its test classes: every coverage test class
+        and method tests functionality on its own.
+        §AR-code-coverage-improvement.2
       - Hold one test class per subsystem the suite drives. Add a class when the
         group of classes you are covering has none, rather than growing a class
         built for something else. The prompt's `Where the tests go` section says
@@ -982,18 +1002,6 @@ states:
         without `-Pcoordinates` configures every library in the repository,
         takes hours, and never compiles this suite; do not pass `--no-daemon`,
         which pays that cost again on every call.
-      - Do not weaken metadata-generation tests.
-      - Do not write any target state: measurement tracks attempts and target
-        rotation deterministically from its own report history.
-      - Do not measure or claim coverage yourself: deterministic re-measurement
-        runs once this pass's sessions are done and decides the loop.
-
-      Artifact paths in this task, including the one below, are relative to the
-      Rhei workspace root: the directory holding `states.yaml` and
-      `index.rhei.md`, which is `{{workspace_path}}`
-      from your working directory. Resolve every artifact path against that
-      directory. Do not prefix it with the workspace directory name alone, and
-      do not guess a prefix from your working directory.
 
       Write `{output.work.path}` with:
       - paths attempted and how each public entry was driven
@@ -1033,13 +1041,6 @@ states:
         run's own history, never by writing a replacement.
 
       Fix only that cause. Measurement re-runs automatically after this state.
-
-      Artifact paths in this task, including the one below, are relative to the
-      Rhei workspace root: the directory holding `states.yaml` and
-      `index.rhei.md`, which is `{{workspace_path}}`
-      from your working directory. Resolve every artifact path against that
-      directory. Do not prefix it with the workspace directory name alone, and
-      do not guess a prefix from your working directory.
 
       Write `{output.fix.path}` with:
       - failure addressed
@@ -1191,13 +1192,6 @@ states:
       - Compile and run tests only from inside the worktree the prompt names,
         with the exact command it gives.
 
-      Artifact paths in this task, including the one below, are relative to
-      the Rhei workspace root: the directory holding `states.yaml` and
-      `index.rhei.md`, which is `{{workspace_path}}`
-      from your working directory. Resolve every artifact path against that
-      directory. Do not prefix it with the workspace directory name alone, and
-      do not guess a prefix from your working directory.
-
       Write `{output.work.path}` with:
       - files changed
       - commands run and results
@@ -1235,13 +1229,6 @@ states:
         record it named; never hand-write the cover prompt.
 
       Fix only that cause. Measurement re-runs automatically after this state.
-
-      Artifact paths in this task, including the one below, are relative to
-      the Rhei workspace root: the directory holding `states.yaml` and
-      `index.rhei.md`, which is `{{workspace_path}}`
-      from your working directory. Resolve every artifact path against that
-      directory. Do not prefix it with the workspace directory name alone, and
-      do not guess a prefix from your working directory.
 
       Write `{output.fix.path}` with:
       - failure addressed
@@ -1556,13 +1543,6 @@ states:
       Fix only that cause. The finalization steps re-run automatically after
       this state, so do not run the finalize helper to hand-craft final
       artifacts.
-
-      Artifact paths in this task, including the one below, are relative to the
-      Rhei workspace root: the directory holding `states.yaml` and
-      `index.rhei.md`, which is `{{workspace_path}}`
-      from your working directory. Resolve every artifact path against that
-      directory. Do not prefix it with the workspace directory name alone, and
-      do not guess a prefix from your working directory.
 
       Write `{output.fix.path}` with:
       - failure addressed
