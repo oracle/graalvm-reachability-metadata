@@ -1,0 +1,121 @@
+{
+  "add_new_library_support:2026-10-12": {
+    "timestamp": "2026-10-12T18:28:04.039529Z",
+    "library": "org.springframework.modulith:spring-modulith-events-jpa:2.1.0",
+    "starting_commit": "c2f8401727d0fccf1cf615dd6c9ec60204a962cc",
+    "ending_commit": "c64bc531ec051e7a98ef2cff47f680c01e43cc7e",
+    "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-sol",
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "status": "success",
+    "stats": {
+      "version": "2.1.0",
+      "dynamicAccess": {
+        "breakdown": {},
+        "coverageRatio": 1.0,
+        "coveredCalls": 0,
+        "totalCalls": 0
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 87,
+          "missed": 761,
+          "ratio": 0.102594,
+          "total": 848
+        },
+        "line": {
+          "covered": 23,
+          "missed": 185,
+          "ratio": 0.110577,
+          "total": 208
+        },
+        "method": {
+          "covered": 5,
+          "missed": 51,
+          "ratio": 0.089286,
+          "total": 56
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "advisory_preparation",
+      "issue_number": 10729,
+      "issue_label": "library-new-request",
+      "library": "org.springframework.modulith:spring-modulith-events-jpa:2.1.0",
+      "summary": "spring-boot-hibernate is an optional dependency of spring-modulith-events-jpa, so no JPA provider or database resolves by default; upstream's own test suite for this module pulls in Spring Data JPA, Spring Boot test support, and an embedded HSQLDB database to exercise JpaEventPublicationRepository and its auto-configuration.",
+      "deterministic_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "org.springframework.boot:spring-boot-starter-data-jpa:4.1.0",
+          "scope": "testImplementation",
+          "reason": "spring-modulith-events-jpa declares org.springframework.boot:spring-boot-hibernate as an optional compile dependency, so Gradle will not resolve a JPA provider (Hibernate) transitively. spring-boot-starter-data-jpa pulls in spring-boot-hibernate -> hibernate-core:7.4.1.Final + spring-orm, plus Sprin\n...[truncated]"
+        },
+        {
+          "kind": "dependency",
+          "coordinate": "org.hsqldb:hsqldb:2.7.3",
+          "scope": "testImplementation",
+          "reason": "JpaEventPublicationRepository needs a real relational database to persist/query event publications. Upstream's own test suite for spring-modulith-events-jpa 2.1.0 uses HSQLDB (not H2) as the embedded in-memory database; version 2.7.3 matches the hsqldb.version pinned in the matching spring-boot-depe\n...[truncated]"
+        },
+        {
+          "kind": "dependency",
+          "coordinate": "org.springframework.boot:spring-boot-starter-test:4.1.0",
+          "scope": "testImplementation",
+          "reason": "The module's primary classes are Spring Boot @AutoConfiguration classes (JpaEventPublicationAutoConfiguration, ArchivingAutoConfiguration). Exercising auto-configuration meaningfully needs Spring's test context support (e.g. ApplicationContextRunner/@SpringBootTest) and AssertJ, which this repo's TC\n...[truncated]"
+        }
+      ],
+      "agent_guidance": "Exercise org.springframework.modulith.events.jpa.JpaEventPublicationRepository, JpaEventPublicationRepository$JpaEventPublicationAdapter, JpaEventPublicationConfiguration/JpaEventPublicationAutoConfiguration, and the archiving/updating subpackages (ArchivingAutoConfiguration, ArchivedJpaEventPublication, DefaultJpaEventPublication) by wiring a minimal JPA EntityManagerFactory backed by an in-memory HSQLDB connection (e.g. jdbc:hsqldb:mem:<name>) through Spring's ApplicationContextRunner or @DataJpaTest, letting Hibernate create the schema automatically (no bundled SQL scripts ship in the jar, so rely on hbm2ddl auto-create). No environment variables, system properties, or external services are required beyond this in-memory setup.",
+      "risks": [
+        "Native-image reflection/proxy metadata for Hibernate's generated entity proxies and JPA metamodel will only be captured by the tracing agent if the generated tests actually persist and query JpaEventPublication/ArchivedJpaEventPublication entities end-to-end; a shallow test that only instantiates classes without hitting the EntityManager will under-report metadata.",
+        "spring-boot-hibernate is pinned to 4.1.0 (hibernate-core 7.4.1.Final) specifically to match spring-modulith-events-jpa 2.1.0's own optional dependency version; this pairing should be revisited if a newer spring-modulith version is requested later."
+      ],
+      "applied_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "org.springframework.boot:spring-boot-starter-data-jpa:4.1.0",
+          "result": "applied",
+          "target": "tests/src/org.springframework.modulith/spring-modulith-events-jpa/2.1.0/build.gradle"
+        },
+        {
+          "kind": "dependency",
+          "coordinate": "org.hsqldb:hsqldb:2.7.3",
+          "result": "applied",
+          "target": "tests/src/org.springframework.modulith/spring-modulith-events-jpa/2.1.0/build.gradle"
+        },
+        {
+          "kind": "dependency",
+          "coordinate": "org.springframework.boot:spring-boot-starter-test:4.1.0",
+          "result": "applied",
+          "target": "tests/src/org.springframework.modulith/spring-modulith-events-jpa/2.1.0/build.gradle"
+        }
+      ],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#10729 Support for org.springframework.modulith:spring-modulith-events-jpa:2.1.0; label=library-new-request; body_chars=0"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "sonnet",
+      "input_tokens_used": 32,
+      "output_tokens_used": 20878
+    },
+    "metrics": {
+      "input_tokens_used": 374351,
+      "cached_input_tokens_used": 5167232,
+      "output_tokens_used": 36674,
+      "iterations": 7,
+      "cost_usd": 5.5556,
+      "generated_loc": 41,
+      "tested_library_loc": 23,
+      "metadata_entries": 0,
+      "code_coverage_percent": 11.06
+    },
+    "artifacts": {
+      "metadata_file": "metadata/org.springframework.modulith/spring-modulith-events-jpa/2.1.0/reachability-metadata.json"
+    }
+  }
+}

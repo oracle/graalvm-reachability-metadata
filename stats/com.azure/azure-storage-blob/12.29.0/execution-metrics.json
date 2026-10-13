@@ -1,0 +1,83 @@
+{
+  "add_new_library_support:2026-10-12": {
+    "timestamp": "2026-10-12T18:04:44.924933Z",
+    "library": "com.azure:azure-storage-blob:12.29.0",
+    "starting_commit": "d397870b6554cdd2ab97e6c1db7e5c4746ff33ee",
+    "ending_commit": "81c8a2650a2185c587e5a8c409cf33f072cc6891",
+    "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-sol",
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "status": "success",
+    "stats": {
+      "version": "12.29.0",
+      "dynamicAccess": {
+        "breakdown": {},
+        "coverageRatio": 1.0,
+        "coveredCalls": 0,
+        "totalCalls": 0
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 17701,
+          "missed": 72350,
+          "ratio": 0.196566,
+          "total": 90051
+        },
+        "line": {
+          "covered": 4219,
+          "missed": 16261,
+          "ratio": 0.206006,
+          "total": 20480
+        },
+        "method": {
+          "covered": 1077,
+          "missed": 4908,
+          "ratio": 0.17995,
+          "total": 5985
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "action": "no_action",
+      "agent_guidance": "Follow the same fake-HttpClient pattern used in tests/src/com.azure/azure-security-keyvault-secrets and azure-data-appconfiguration: build BlobServiceClient/BlobContainerClient/BlobClient via their builders' .httpClient(HttpClient) hook with a dummy StorageSharedKeyCredential (fake account name + base64 key — no real auth is checked by the mock). Note the Storage Blob REST API returns XML (not JSON) for list/metadata operations (e.g. ListBlobsFlatSegmentResponse), so canned responses need XML bodies, not JSON. Expect the usual --initialize-at-build-time flags for org.slf4j.helpers.NOPLoggerFactory/SubstituteLoggerFactory and com.fasterxml.jackson.core.Base64Variant seen in sibling azure-core-http-netty-based tests; the normal native-image fix loop will surface and add these if missing.",
+      "applied_setup": [],
+      "deterministic_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#10682 Support for com.azure:azure-storage-blob:12.29.0; label=library-new-request; body_chars=39"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "input_tokens_used": 30,
+      "issue_label": "library-new-request",
+      "issue_number": 10682,
+      "library": "com.azure:azure-storage-blob:12.29.0",
+      "model": "sonnet",
+      "output_tokens_used": 9976,
+      "risks": [
+        "azure-storage-internal-avro (used for blob change-feed/query features) pulls Apache Avro, which has had reflection-heavy native-image compatibility issues in other projects — if the generated test exercises change-feed/query APIs, extra native-image reflect-config may surface during the fix loop; this is a compile/run-fix concern, not a pre-setup blocker."
+      ],
+      "status": "completed",
+      "summary": "azure-storage-blob:12.29.0's dependencies (azure-xml, azure-core, azure-core-http-netty, azure-storage-common, azure-storage-internal-avro) resolve transitively via the single generated testImplementation line. This repo's established pattern for Azure/cloud-storage SDKs (azure-security-keyvault-secrets, azure-data-appconfiguration, software.amazon.awssdk:s3) is to test with a hand-written fake HttpClient returning canned REST responses and a dummy StorageSharedKeyCredential, never a Docker emulator or live account — no Azurite/testcontainers precedent exists anywhere in tests/src or allowed-docker-images/. No required env var or system property was found."
+    },
+    "metrics": {
+      "input_tokens_used": 753279,
+      "cached_input_tokens_used": 11191424,
+      "output_tokens_used": 68144,
+      "iterations": 15,
+      "cost_usd": 11.4065,
+      "generated_loc": 919,
+      "tested_library_loc": 4219,
+      "metadata_entries": 416,
+      "test_only_metadata_entries": 101,
+      "code_coverage_percent": 20.6
+    },
+    "artifacts": {
+      "metadata_file": "metadata/com.azure/azure-storage-blob/12.29.0/reachability-metadata.json"
+    }
+  }
+}
