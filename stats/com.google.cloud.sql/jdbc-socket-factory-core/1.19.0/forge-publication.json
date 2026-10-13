@@ -1,0 +1,161 @@
+{
+  "base_commit": "cedaaab1c7be5b85fd98837afe346cb4c4bbd498",
+  "branch": "ai/kimeta/add-lib-support-com.google.cloud.sql-jdbc-socket-factory-core-1.19.0-forge-10704-20261013092412318429-fa815a085760",
+  "follow_ups": [],
+  "forge": {
+    "branch": "master",
+    "commit": "edf26098f22e36b60b958bbc4569254e5d1a1f3b",
+    "monitored_branch": "origin/master"
+  },
+  "issue_number": 10704,
+  "library": {
+    "artifact": "jdbc-socket-factory-core",
+    "coordinates": "com.google.cloud.sql:jdbc-socket-factory-core:1.19.0",
+    "group": "com.google.cloud.sql",
+    "version": "1.19.0"
+  },
+  "local_ci_verification": {
+    "base_commit": "cedaaab1c7be5b85fd98837afe346cb4c4bbd498",
+    "commands": [
+      {
+        "command": [
+          "./gradlew",
+          "generateChangedIndexFileCoordinatesList",
+          "-PbaseCommit=origin/master",
+          "-PnewCommit=HEAD"
+        ],
+        "env": {
+          "GITHUB_OUTPUT": "/tmp/tmp7cwxwduc"
+        },
+        "gate": "changed-index-coordinates",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :generateChangedIndexFileCoordinatesList\n\n[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10704-d03466c7/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 2s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      },
+      {
+        "command": [
+          "./gradlew",
+          "validateIndexFiles",
+          "-Pcoordinates=com.google.cloud.sql:jdbc-socket-factory-core"
+        ],
+        "env": {},
+        "gate": "index-file-validation",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :validateIndexFiles\n✅ metadata/com.google.cloud.sql/jdbc-socket-factory-core/index.json: Valid\n\n[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10704-d03466c7/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 1s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      }
+    ],
+    "failure_command": null,
+    "failure_gate": null,
+    "final_commit": "6000853584c88a8ba8b344ed4b171df8b52db1d1",
+    "fixups": [],
+    "human_intervention_required": true,
+    "repo_fix_paths": [
+      ".github/workflows/test-affected-spring-aot-main.yml"
+    ],
+    "status": "success"
+  },
+  "local_review": {
+    "changed_paths": [
+      "stats/com.google.cloud.sql/jdbc-socket-factory-core/1.19.0/stats.json",
+      "tests/src/com.google.cloud.sql/jdbc-socket-factory-core/1.19.0/src/test/java/com_google_cloud_sql/jdbc_socket_factory_core/InternalConnectorRegistryTest.java"
+    ],
+    "decision": "approved",
+    "finding_body": "The resolved evidence identified dynamic-access call sites in both CredentialFactoryProvider and InternalConnectorRegistry, but the contribution originally provided only CredentialFactoryProviderTest.java. InternalConnectorRegistry therefore lacked the dedicated test file required by §root/FS-test-contract.1.8.",
+    "finding_title": "Dynamic-access class lacked a dedicated test file",
+    "fix_note": "Added InternalConnectorRegistryTest.java with a public-API registry scenario using offline credentials, then ran Forge finalization to regenerate the affected library coverage statistics and verify the repaired tree.",
+    "model": "gpt-5.6-sol",
+    "review_comment": "Validated the single-coordinate closed file set, accepted metadata format and presence, public version-agnostic package-separated tests, absence of Native Image skips or unjustified flags, and the reported 4/4 (100%) dynamic-access coverage. The entry-count mismatch probe does not trigger for 4 covered calls against 85 reported library-plus-test-only entries. After repair, the exact Forge finalizer passed all three test lanes, metadata and style checks, generated-test validity, and stable statistics without further publishable changes.",
+    "session_id": "92e5c3dbd6024411"
+  },
+  "metrics": {
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "path": "stats/com.google.cloud.sql/jdbc-socket-factory-core/1.19.0/execution-metrics.json",
+    "summary": {
+      "cached_input_tokens_used": 254976,
+      "code_coverage_percent": 13.87,
+      "cost_usd": 0.928,
+      "generated_loc": 61,
+      "input_tokens_used": 123920,
+      "iterations": 1,
+      "metadata_entries": 83,
+      "output_tokens_used": 6031,
+      "test_only_metadata_entries": 2,
+      "tested_library_loc": 178
+    },
+    "timestamp": "2026-10-13T09:24:12.318429Z"
+  },
+  "modifiers": {
+    "chunk_final": true,
+    "chunked_dynamic_access": false,
+    "human_intervention": true
+  },
+  "producer": "kimeta",
+  "publication_id": "forge-10704-20261013092412318429-fa815a085760",
+  "render": {
+    "dynamic_access": null,
+    "dynamic_access_evidence": {
+      "covered_call_sites": [
+        "[reflection] java.lang.Class#forName(java.lang.String) <- com.google.cloud.sql.core.CredentialFactoryProvider.createDefaultCredentialFactory(CredentialFactoryProvider.java:51) (line 51)",
+        "[reflection] java.lang.Class#getDeclaredConstructor(java.lang.Class[]) <- com.google.cloud.sql.core.CredentialFactoryProvider.createDefaultCredentialFactory(CredentialFactoryProvider.java:53) (line 53)",
+        "[reflection] java.lang.reflect.Constructor#newInstance(java.lang.Object[]) <- com.google.cloud.sql.core.CredentialFactoryProvider.createDefaultCredentialFactory(CredentialFactoryProvider.java:54) (line 54)",
+        "[resources] java.lang.ClassLoader#getResourceAsStream(java.lang.String) <- com.google.cloud.sql.core.InternalConnectorRegistry.getVersion(InternalConnectorRegistry.java:223) (line 223)"
+      ],
+      "metadata_rules": [
+        "when `com.google.cloud.sql.core.InternalConnectorRegistry` is reached, make `com.google.common.util.concurrent.AbstractFuture` available for reflection",
+        "when `com.google.cloud.sql.core.InternalConnectorRegistry` is reached, make `com.google.common.util.concurrent.AbstractFuture$Waiter` available for reflection",
+        "when `com.google.cloud.sql.core.DefaultConnectionInfoRepositoryFactory` is reached, make `com.sun.crypto.provider.AESCipher$General.<init>()` available for reflection",
+        "when `com.google.cloud.sql.core.DefaultConnectionInfoRepositoryFactory` is reached, make `com.sun.crypto.provider.ARCFOURCipher.<init>()` available for reflection",
+        "when `com.google.cloud.sql.core.DefaultConnectionInfoRepositoryFactory` is reached, make `com.sun.crypto.provider.ChaCha20Cipher$ChaCha20Poly1305.<init>()` available for reflection",
+        "when `com.google.cloud.sql.core.DefaultConnectionInfoRepositoryFactory` is reached, make `com.sun.crypto.provider.DESCipher.<init>()` available for reflection",
+        "when `com.google.cloud.sql.core.DefaultConnectionInfoRepositoryFactory` is reached, make `com.sun.crypto.provider.DESedeCipher.<init>()` available for reflection",
+        "when `com.google.cloud.sql.core.DefaultConnectionInfoRepositoryFactory` is reached, make `com.sun.crypto.provider.GaloisCounterMode$AESGCM.<init>()` available for reflection",
+        "... and 27 more"
+      ]
+    },
+    "library_stats": {
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 3,
+            "totalCalls": 3
+          },
+          "resources": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 1,
+            "totalCalls": 1
+          }
+        },
+        "coverageRatio": 1.0,
+        "coveredCalls": 4,
+        "totalCalls": 4
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 609,
+          "missed": 4470,
+          "ratio": 0.119905,
+          "total": 5079
+        },
+        "line": {
+          "covered": 191,
+          "missed": 1092,
+          "ratio": 0.14887,
+          "total": 1283
+        },
+        "method": {
+          "covered": 50,
+          "missed": 204,
+          "ratio": 0.19685,
+          "total": 254
+        }
+      },
+      "version": "1.19.0"
+    }
+  },
+  "schema_version": 1,
+  "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-sol",
+  "task_type": "library-new-request",
+  "template_type": "library-new-request",
+  "timestamp": "2026-10-13T09:24:12.318429Z"
+}
