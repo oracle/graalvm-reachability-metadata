@@ -126,9 +126,9 @@ The operator launcher rejects a coordinate without that exact-version test
 project before Rhei starts; it must not silently resolve another indexed test
 project, because CI compiles the suite against the directory that owns it. The
 issue must instead be retitled to a version with its own project. The workflow
-may read the metadata-generation tests as context, but generated code coverage
-tests must not be placed in the metadata-generation suite, and the regular
-`src/test` sources are read-only for this workflow.
+may read the metadata-generation tests as context and nothing more: generated
+tests never live in that suite, never extend or call into its classes, and
+leave `src/test` untouched, so every coverage test class stands on its own.
 
 The suite root must contain `src/test/java` and may contain
 `src/test/resources` and a `suite.json` recording the true coordinate being
