@@ -14,6 +14,8 @@ import com.google.api.client.testing.http.MockLowLevelHttpResponse;
 import com.google.api.services.sqladmin.SQLAdmin;
 import com.google.api.services.sqladmin.SQLAdminRequestInitializer;
 import com.google.api.services.sqladmin.model.Database;
+import com.google.api.services.sqladmin.model.GenerateEphemeralCertRequest;
+import com.google.api.services.sqladmin.model.GenerateEphemeralCertResponse;
 import com.google.api.services.sqladmin.model.ImportContext;
 import com.google.api.services.sqladmin.model.ImportContext.BakImportOptions;
 import com.google.api.services.sqladmin.model.ImportContext.BakImportOptions.EncryptionOptions;
@@ -166,6 +168,61 @@ public class Google_api_services_sqladminTest {
                 .contains("\"collation\":\"en_US.UTF8\"")
                 .contains("\"compatibilityLevel\":150")
                 .contains("\"recoveryModel\":\"FULL\"");
+    }
+
+    @Test
+    public void generateEphemeralCertificateSerializesRequestAndParsesCertificate()
+            throws IOException {
+        MockHttpTransport transport = transportReturning("""
+                {
+                  "ephemeralCert": {
+                    "cert": "-----BEGIN CERTIFICATE-----\\nclient-cert\\n-----END CERTIFICATE-----",
+                    "certSerialNumber": "42",
+                    "commonName": "client.example",
+                    "createTime": "2024-05-21T10:15:30Z",
+                    "expirationTime": "2024-05-21T11:15:30Z",
+                    "instance": "primary",
+                    "kind": "sql#sslCert",
+                    "sha1Fingerprint": "AA:BB:CC"
+                  }
+                }
+                """);
+        SQLAdmin client = newClient(transport, null);
+        String publicKey = """
+                -----BEGIN PUBLIC KEY-----
+                client-key
+                -----END PUBLIC KEY-----
+                """;
+        GenerateEphemeralCertRequest request = new GenerateEphemeralCertRequest()
+                .setPublicKey(publicKey)
+                .setReadTime("2024-05-21T10:15:30Z")
+                .setValidDuration("3600s");
+
+        GenerateEphemeralCertResponse response = client.connect()
+                .generateEphemeralCert("sample-project", "primary", request)
+                .execute();
+
+        assertThat(response.getEphemeralCert().getCert()).contains("client-cert");
+        assertThat(response.getEphemeralCert().getCertSerialNumber()).isEqualTo("42");
+        assertThat(response.getEphemeralCert().getCommonName()).isEqualTo("client.example");
+        assertThat(response.getEphemeralCert().getCreateTime())
+                .isEqualTo("2024-05-21T10:15:30Z");
+        assertThat(response.getEphemeralCert().getExpirationTime())
+                .isEqualTo("2024-05-21T11:15:30Z");
+        assertThat(response.getEphemeralCert().getInstance()).isEqualTo("primary");
+        assertThat(response.getEphemeralCert().getKind()).isEqualTo("sql#sslCert");
+        assertThat(response.getEphemeralCert().getSha1Fingerprint()).isEqualTo("AA:BB:CC");
+
+        MockLowLevelHttpRequest lowLevelRequest = transport.getLowLevelHttpRequest();
+        GenericUrl requestUrl = new GenericUrl(lowLevelRequest.getUrl());
+        assertThat(requestUrl.getRawPath())
+                .isEqualTo("/sql/v1beta4/projects/sample-project/instances/"
+                        + "primary:generateEphemeralCert");
+        assertThat(lowLevelRequest.getContentAsString())
+                .contains("\"public_key\":")
+                .contains("client-key")
+                .contains("\"readTime\":\"2024-05-21T10:15:30Z\"")
+                .contains("\"validDuration\":\"3600s\"");
     }
 
     @Test
