@@ -1,0 +1,155 @@
+{
+  "base_commit": "7d98e21a29eae3ab7274270e12535584748a683c",
+  "branch": "ai/kimeta/add-lib-support-org.springframework.modulith-spring-modulith-apt-2.1.0-forge-10711-20261013043217928346-60c65a05c72d",
+  "follow_ups": [],
+  "forge": {
+    "branch": "master",
+    "commit": "3ad4165841667519b29ba00e141ea28192287e48",
+    "monitored_branch": "origin/master"
+  },
+  "issue_number": 10711,
+  "library": {
+    "artifact": "spring-modulith-apt",
+    "coordinates": "org.springframework.modulith:spring-modulith-apt:2.1.0",
+    "group": "org.springframework.modulith",
+    "version": "2.1.0"
+  },
+  "local_ci_verification": {
+    "base_commit": "7d98e21a29eae3ab7274270e12535584748a683c",
+    "commands": [
+      {
+        "command": [
+          "./gradlew",
+          "generateChangedIndexFileCoordinatesList",
+          "-PbaseCommit=origin/master",
+          "-PnewCommit=HEAD"
+        ],
+        "env": {
+          "GITHUB_OUTPUT": "/tmp/tmpcfb7mx1u"
+        },
+        "gate": "changed-index-coordinates",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :generateChangedIndexFileCoordinatesList\n\n[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata-worker3/forge/local_repositories/forge_worktrees/10711-5703c8cb/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 2s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      },
+      {
+        "command": [
+          "./gradlew",
+          "validateIndexFiles",
+          "-Pcoordinates=org.springframework.modulith:spring-modulith-apt"
+        ],
+        "env": {},
+        "gate": "index-file-validation",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :validateIndexFiles\n✅ metadata/org.springframework.modulith/spring-modulith-apt/index.json: Valid\n\n[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata-worker3/forge/local_repositories/forge_worktrees/10711-5703c8cb/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 1s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      }
+    ],
+    "failure_command": null,
+    "failure_gate": null,
+    "final_commit": "856a605c7f849ece8e91444916462dff4bac7aae",
+    "fixups": [],
+    "human_intervention_required": false,
+    "repo_fix_paths": [],
+    "status": "success"
+  },
+  "local_review": {
+    "changed_paths": [
+      "tests/src/org.springframework.modulith/spring-modulith-apt/2.1.0/src/test/java/org_springframework_modulith/spring_modulith_apt/AnnotationUtilsTest.java",
+      "tests/src/org.springframework.modulith/spring-modulith-apt/2.1.0/src/test/java/org_springframework_modulith/spring_modulith_apt/AnnotationValueUtilsTest.java",
+      "tests/src/org.springframework.modulith/spring-modulith-apt/2.1.0/src/test/java/org_springframework_modulith/spring_modulith_apt/ElementWrapperTest.java"
+    ],
+    "decision": "approved",
+    "finding_body": "All three tests loaded the generated external-compiler-classpath.txt with Class.getResourceAsStream even though the file carries build- and machine-local classpath paths. That made the native tests depend on resource metadata for machine-local paths, violating §FS-test-contract.4.4.",
+    "finding_title": "Machine-local classpath read through Native Image resource metadata",
+    "fix_note": "Changed all three tests to read the generated classpath file from build/resources/test through normal Files APIs. This preserves the annotation-processor behavior and assertions while removing the forbidden Native Image resource dependency.",
+    "model": "gpt-5.6-sol",
+    "review_comment": "Confirmed the diff is scoped to one coordinate and uses only reachability-metadata.json; reviewed the tests for scaffold code, package and version pinning, Native Image dodges, unsupported runtime class definition, unsafe I/O/process behavior, and build/run flags. The reported dynamic-access coverage is 8/8 (100%), above the new-library gate, and 8 covered calls versus 39 reported library-plus-test metadata entries does not trigger the mismatch probe. The repaired tree passed the exact Forge finalization command, including all three native lanes, metadata validation, style checks, and regenerated statistics, with no further publishable change.",
+    "session_id": "8c2641c3d5ef495a"
+  },
+  "metrics": {
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "path": "stats/org.springframework.modulith/spring-modulith-apt/2.1.0/execution-metrics.json",
+    "summary": {
+      "cached_input_tokens_used": 3362944,
+      "code_coverage_percent": 4.64,
+      "cost_usd": 4.3088,
+      "generated_loc": 840,
+      "input_tokens_used": 295736,
+      "iterations": 3,
+      "metadata_entries": 8,
+      "output_tokens_used": 38287,
+      "test_only_metadata_entries": 31,
+      "tested_library_loc": 130
+    },
+    "timestamp": "2026-10-13T04:32:17.928346Z"
+  },
+  "modifiers": {
+    "chunk_final": true,
+    "chunked_dynamic_access": false,
+    "human_intervention": false
+  },
+  "producer": "kimeta",
+  "publication_id": "forge-10711-20261013043217928346-60c65a05c72d",
+  "render": {
+    "dynamic_access": null,
+    "dynamic_access_evidence": {
+      "covered_call_sites": [
+        "[reflection] java.lang.Class#forName(java.lang.String) <- org.springframework.modulith.aptk.tools.AnnotationUtils.getRepeatableAnnotationWrapperClass(AnnotationUtils.java:414) (line 414)",
+        "[reflection] java.lang.Class#forName(java.lang.String) <- org.springframework.modulith.aptk.tools.AnnotationValueUtils.getClassValue(AnnotationValueUtils.java:258) (line 258)",
+        "[reflection] java.lang.reflect.Array#newInstance(java.lang.Class, int) <- org.springframework.modulith.aptk.tools.AnnotationValueUtils.convertAndCastAttributeValueListToArray(AnnotationValueUtils.java:388) (line 388)",
+        "[reflection] java.lang.Class#forName(java.lang.String) <- org.springframework.modulith.aptk.tools.wrapper.ElementWrapper.hasMethod(ElementWrapper.java:807) (line 807)",
+        "[reflection] java.lang.Class#forName(java.lang.String) <- org.springframework.modulith.aptk.tools.wrapper.ElementWrapper.invokeParameterlessMethodOfElement(ElementWrapper.java:796) (line 796)",
+        "[reflection] java.lang.Class#getMethod(java.lang.String, java.lang.Class[]) <- org.springframework.modulith.aptk.tools.wrapper.ElementWrapper.hasMethod(ElementWrapper.java:808) (line 808)",
+        "[reflection] java.lang.Class#getMethod(java.lang.String, java.lang.Class[]) <- org.springframework.modulith.aptk.tools.wrapper.ElementWrapper.invokeParameterlessMethodOfElement(ElementWrapper.java:797) (line 797)",
+        "[reflection] java.lang.reflect.Method#invoke(java.lang.Object, java.lang.Object[]) <- org.springframework.modulith.aptk.tools.wrapper.ElementWrapper.invokeParameterlessMethodOfElement(ElementWrapper.java:797) (line 797)"
+      ],
+      "metadata_rules": [
+        "when `org.springframework.modulith.aptk.tools.AnnotationValueUtils` is reached, make `java.lang.String` available for reflection",
+        "when `org.springframework.modulith.aptk.tools.AnnotationValueUtils` is reached, make `java.lang.String[]` available for reflection",
+        "when `org.springframework.modulith.aptk.tools.AnnotationUtils` is reached, make `java.lang.annotation.Repeatable` available for reflection",
+        "when `org.springframework.modulith.aptk.tools.AnnotationValueUtils` is reached, make `javax.lang.model.element.AnnotationMirror[]` available for reflection",
+        "when `org.springframework.modulith.aptk.tools.wrapper.ElementWrapper` is reached, make `javax.lang.model.element.TypeElement.getPermittedSubclasses()` available for reflection"
+      ]
+    },
+    "library_stats": {
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 8,
+            "totalCalls": 8
+          }
+        },
+        "coverageRatio": 1.0,
+        "coveredCalls": 8,
+        "totalCalls": 8
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 591,
+          "missed": 13750,
+          "ratio": 0.041211,
+          "total": 14341
+        },
+        "line": {
+          "covered": 130,
+          "missed": 2673,
+          "ratio": 0.046379,
+          "total": 2803
+        },
+        "method": {
+          "covered": 50,
+          "missed": 1078,
+          "ratio": 0.044326,
+          "total": 1128
+        }
+      },
+      "version": "2.1.0"
+    }
+  },
+  "schema_version": 1,
+  "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-sol",
+  "task_type": "library-new-request",
+  "template_type": "library-new-request",
+  "timestamp": "2026-10-13T04:32:17.928346Z"
+}
