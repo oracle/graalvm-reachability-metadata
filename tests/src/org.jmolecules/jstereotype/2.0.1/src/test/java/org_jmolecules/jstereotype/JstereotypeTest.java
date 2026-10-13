@@ -62,6 +62,7 @@ public class JstereotypeTest {
     }
 
     @Test
+    @SuppressWarnings("checkstyle:annotationAccess")
     void stereotypeDeclaresItsRuntimeUsageContract() {
         Retention retention = requireAnnotation(Stereotype.class, Retention.class);
         Target target = requireAnnotation(Stereotype.class, Target.class);
@@ -118,6 +119,7 @@ public class JstereotypeTest {
         }
     }
 
+    @SuppressWarnings("checkstyle:annotationAccess")
     private static <A extends Annotation> A requireAnnotation(Class<?> element, Class<A> annotationType) {
         A annotation = element.getAnnotation(annotationType);
         assertThat(annotation).as("%s annotation on %s", annotationType.getSimpleName(), element.getName()).isNotNull();
