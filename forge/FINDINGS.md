@@ -3,6 +3,12 @@
 Rendered by Forge from the pre-push branch review of §FS-local-branch-review.
 Newest entry first; every non-approval is recorded, including one a repair later cleared.
 
+## 2026-10-13 — org.bytedeco:libfreenect2:0.2.0-1.5.9 (#10718)
+
+**Avoid libfreenect2 default-device probes in headless tests**
+
+The current-defaults lanes on JDK 25 and latest EA and the future-defaults-all lane all showed libfreenect2 selecting `OpenGLDepthPacketProcessor`, reporting that `DISPLAY` was missing, and terminating the JVM/native test process with exit 255. The failing `openDefaultDevice()` assertion exercised a known-broken environmental path in a test premised on having no Kinect attached, contrary to §FS-test-contract.2.6; stable enumeration and serial-number behavior should be tested instead.
+
 ## 2026-10-12 — org.bytedeco:tesseract:5.5.1-1.5.12 (#10722)
 
 **Version-pinned companion runtime dependency**
