@@ -1,0 +1,140 @@
+{
+  "base_commit": "043bd70264ce16b9c6e5f6e8eb866f2b431d23cd",
+  "branch": "ai/kimeta/add-lib-support-com.google.cloud.sql-postgres-socket-factory-1.19.0-forge-10684-20261012151140058317-6ea897b10b49",
+  "follow_ups": [],
+  "forge": {
+    "branch": "master",
+    "commit": "25e6118a35035b9757b30d3585830fae12d95890",
+    "monitored_branch": "origin/master"
+  },
+  "issue_number": 10684,
+  "library": {
+    "artifact": "postgres-socket-factory",
+    "coordinates": "com.google.cloud.sql:postgres-socket-factory:1.19.0",
+    "group": "com.google.cloud.sql",
+    "version": "1.19.0"
+  },
+  "local_ci_verification": {
+    "base_commit": "043bd70264ce16b9c6e5f6e8eb866f2b431d23cd",
+    "commands": [
+      {
+        "command": [
+          "./gradlew",
+          "generateChangedIndexFileCoordinatesList",
+          "-PbaseCommit=origin/master",
+          "-PnewCommit=HEAD"
+        ],
+        "env": {
+          "GITHUB_OUTPUT": "/tmp/tmpq82gh0tk"
+        },
+        "gate": "changed-index-coordinates",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :generateChangedIndexFileCoordinatesList\n\n[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata-copy/forge/local_repositories/forge_worktrees/10684-54cecad1/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 2s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      },
+      {
+        "command": [
+          "./gradlew",
+          "validateIndexFiles",
+          "-Pcoordinates=com.google.cloud.sql:postgres-socket-factory"
+        ],
+        "env": {},
+        "gate": "index-file-validation",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :validateIndexFiles\n✅ metadata/com.google.cloud.sql/postgres-socket-factory/index.json: Valid\n\n[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata-copy/forge/local_repositories/forge_worktrees/10684-54cecad1/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 1s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      }
+    ],
+    "failure_command": null,
+    "failure_gate": null,
+    "final_commit": "84cd602d6507311515b36ba00a8ce5d062c7051f",
+    "fixups": [],
+    "human_intervention_required": false,
+    "repo_fix_paths": [],
+    "status": "success"
+  },
+  "local_review": {
+    "changed_paths": [],
+    "decision": "approved",
+    "finding_body": "",
+    "finding_title": "",
+    "fix_note": "",
+    "model": "gpt-5.6-sol",
+    "review_comment": "The diff is limited to one new coordinate and its allowed metadata, stats, and test files. The tests exercise the library through public APIs, remain version-agnostic and separate from library packages, use bounded timeouts, and do not skip or tolerate Native Image failures. Only reachability-metadata.json is present; the reported 0/0 dynamic-access result is a valid no-calls case, so no percentage or entry-count mismatch gate applies. Index validation evidence was green, and the stable Forge finalization pass completed all three test lanes, metadata splitting and validation, style checks, generated-test checks, and statistics generation without changing the publishable tree.",
+    "session_id": "f82cffd3b29f4d60"
+  },
+  "metrics": {
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "path": "stats/com.google.cloud.sql/postgres-socket-factory/1.19.0/execution-metrics.json",
+    "summary": {
+      "cached_input_tokens_used": 4855680,
+      "code_coverage_percent": 48.0,
+      "cost_usd": 5.0123,
+      "generated_loc": 94,
+      "input_tokens_used": 308505,
+      "iterations": 5,
+      "metadata_entries": 133,
+      "output_tokens_used": 34733,
+      "test_only_metadata_entries": 27,
+      "tested_library_loc": 12
+    },
+    "timestamp": "2026-10-12T15:11:40.058317Z"
+  },
+  "modifiers": {
+    "chunk_final": true,
+    "chunked_dynamic_access": false,
+    "human_intervention": false
+  },
+  "producer": "kimeta",
+  "publication_id": "forge-10684-20261012151140058317-6ea897b10b49",
+  "render": {
+    "dynamic_access": null,
+    "dynamic_access_evidence": {
+      "covered_call_sites": [],
+      "metadata_rules": [
+        "when `com.google.cloud.sql.postgres.SocketFactory` is reached, make `com.google.api.client.googleapis.services.AbstractGoogleClientRequest` available for reflection",
+        "when `com.google.cloud.sql.postgres.SocketFactory` is reached, make `com.google.api.client.googleapis.services.json.AbstractGoogleJsonClientRequest` available for reflection",
+        "when `com.google.cloud.sql.postgres.SocketFactory` is reached, make `com.google.api.client.http.GenericUrl` available for reflection",
+        "when `com.google.cloud.sql.postgres.SocketFactory` is reached, make `com.google.api.client.http.HttpHeaders` available for reflection",
+        "when `com.google.cloud.sql.postgres.SocketFactory` is reached, make `com.google.api.client.json.GenericJson.<init>()` available for reflection",
+        "when `com.google.cloud.sql.postgres.SocketFactory` is reached, make `com.google.api.client.util.ArrayMap` available for reflection",
+        "when `com.google.cloud.sql.postgres.SocketFactory` is reached, make `com.google.api.client.util.GenericData` available for reflection",
+        "when `com.google.cloud.sql.postgres.SocketFactory` is reached, make `com.google.api.services.sqladmin.SQLAdmin$Connect$Get` available for reflection",
+        "... and 40 more"
+      ]
+    },
+    "library_stats": {
+      "dynamicAccess": {
+        "breakdown": {},
+        "coverageRatio": 1.0,
+        "coveredCalls": 0,
+        "totalCalls": 0
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 40,
+          "missed": 46,
+          "ratio": 0.465116,
+          "total": 86
+        },
+        "line": {
+          "covered": 12,
+          "missed": 13,
+          "ratio": 0.48,
+          "total": 25
+        },
+        "method": {
+          "covered": 3,
+          "missed": 6,
+          "ratio": 0.333333,
+          "total": 9
+        }
+      },
+      "version": "1.19.0"
+    }
+  },
+  "schema_version": 1,
+  "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-sol",
+  "task_type": "library-new-request",
+  "template_type": "library-new-request",
+  "timestamp": "2026-10-12T15:11:40.058317Z"
+}

@@ -8,6 +8,11 @@ Newest entry first; every non-approval is recorded, including one a repair later
 **Avoid host GUI dependencies in JavaCV backend-selection tests**
 
 All three required JavaCV matrix jobs failed in javaTest because tests selected an OpenCV backend whose native highgui library required libgtk-x11-2.0.so.0, while the projector scenario assumed a headful graphics environment. Coordinate tests must pass the required lanes while preserving meaningful public-API behavior. §FS-repository-functional-spec.5.2 §FS-test-contract.1.3
+## 2026-10-12 — org.bytedeco:tesseract:5.5.1-1.5.12 (#10722)
+
+**Version-pinned companion runtime dependency**
+
+`tests/src/org.bytedeco/tesseract/5.5.1-1.5.12/build.gradle` hardcoded `org.bytedeco:tesseract-platform:5.5.1-1.5.12`. That made the suite use 5.5.1 native binaries when the harness tests another Tesseract version, violating the version-agnostic test requirement in §FS-test-contract.2.5.
 
 ## 2026-10-12 — org.springframework.boot:spring-boot-security:4.1.0 (#8464)
 
