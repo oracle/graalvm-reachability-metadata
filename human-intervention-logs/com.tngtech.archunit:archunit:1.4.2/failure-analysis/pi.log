@@ -1,0 +1,15 @@
+Human intervention needed
+
+The automated `library-new-request` job failed for `com.tngtech.archunit:archunit:1.4.2`. Preserved work is available at https://github.com/oracle/graalvm-reachability-metadata/tree/ai%2Fkimeta%2Fhuman-intervention%2Fissue-10707-library-new-request-com.tngtech.archunit-archunit-1.4.2-44af8f0e.
+
+The failure occurred during `explore/generate_tests()` for `com.tngtech.archunit.thirdparty.org.objectweb.asm.Constants`. The continuation marker records that location, and the generation log concludes that the remaining resource lookup cannot be made runtime-observable without prohibited dynamic class definition. The last valid coverage report was `133/151` (88.08%); the subsequent report refresh failed with missing `com/fasterxml/jackson/databind/ObjectMapper`. The generated suite is also not PR-ready: the latest native test ran 72 tests with 14 failures, primarily because `ModuleImportPlugin` was unavailable and `resources-classloader.txt` could not be resolved.
+
+Inspect these preserved logs:
+- `human-intervention-logs/com.tngtech.archunit:archunit:1.4.2/add-new-library-support/pi-generation-2026-10-13T05-57-38-039833Z.log`
+- `human-intervention-logs/com.tngtech.archunit:archunit:1.4.2/gradle/generateDynamicAccessCoverageReport-2026-10-13T12-35-31-848142Z.log`
+- `human-intervention-logs/com.tngtech.archunit:archunit:1.4.2/gradle-test/gradle-test-2026-10-13T12-34-17-420036Z.log`
+
+Manual next steps:
+- Reproduce and correct the `generateDynamicAccessCoverageReport` classpath failure involving Jackson.
+- Review the ASM `Constants` call site and mark it exhausted if it cannot be covered without violating the test contract.
+- Regenerate/trace metadata for `ModuleImportPlugin` and the missing test resource, then rerun the coordinate-scoped native test and coverage report.
