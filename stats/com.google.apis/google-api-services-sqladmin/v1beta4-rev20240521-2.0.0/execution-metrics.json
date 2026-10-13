@@ -1,0 +1,81 @@
+{
+  "add_new_library_support:2026-10-13": {
+    "timestamp": "2026-10-13T08:12:45.578246Z",
+    "library": "com.google.apis:google-api-services-sqladmin:v1beta4-rev20240521-2.0.0",
+    "starting_commit": "d9029db9e1cfa8a18f6b177acf237eae1b5039a5",
+    "ending_commit": "1b90e5c0f99e7bb93113cb727688517a4383073c",
+    "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-sol",
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "status": "success",
+    "stats": {
+      "version": "v1beta4-rev20240521-2.0.0",
+      "dynamicAccess": {
+        "breakdown": {},
+        "coverageRatio": 1.0,
+        "coveredCalls": 0,
+        "totalCalls": 0
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 1034,
+          "missed": 11874,
+          "ratio": 0.080105,
+          "total": 12908
+        },
+        "line": {
+          "covered": 340,
+          "missed": 3221,
+          "ratio": 0.095479,
+          "total": 3561
+        },
+        "method": {
+          "covered": 207,
+          "missed": 2321,
+          "ratio": 0.081883,
+          "total": 2528
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "no_action",
+      "issue_number": 10703,
+      "issue_label": "library-new-request",
+      "library": "com.google.apis:google-api-services-sqladmin:v1beta4-rev20240521-2.0.0",
+      "summary": "Generated GenericJson REST client; only dependency (google-api-client) resolves transitively via normal Gradle resolution, no GCP emulator exists for Cloud SQL Admin, and this repo's precedent for the same client family (google-http-client) tests purely offline against model/request-builder classes with no network calls.",
+      "deterministic_setup": [],
+      "agent_guidance": "Write tests as offline unit tests against com.google.api.services.sqladmin.model.* (GenericJson field reflection) and the SQLAdmin.Builder/request classes — do not attempt live GCP calls or require credentials/ADC. If round-trip serialization against an HTTP transport is useful, google-api-client already bundles offline mocking helpers (e.g. com.google.api.client.googleapis.testing.services.json.MockGoogleJsonClient, com.google.api.client.testing.http.MockHttpTransport from the transitively-resolved google-http-client) — no extra test dependency is needed for that.",
+      "risks": [],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#10703 Support for com.google.apis:google-api-services-sqladmin:v1beta4-rev20240521-2.0.0; label=library-new-request; body_chars=0"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "sonnet",
+      "input_tokens_used": 6,
+      "output_tokens_used": 2044
+    },
+    "metrics": {
+      "input_tokens_used": 234433,
+      "cached_input_tokens_used": 2613248,
+      "output_tokens_used": 30136,
+      "iterations": 3,
+      "cost_usd": 3.3829,
+      "generated_loc": 363,
+      "tested_library_loc": 340,
+      "metadata_entries": 53,
+      "test_only_metadata_entries": 299,
+      "code_coverage_percent": 9.55
+    },
+    "artifacts": {
+      "metadata_file": "metadata/com.google.apis/google-api-services-sqladmin/v1beta4-rev20240521-2.0.0/reachability-metadata.json"
+    }
+  }
+}
