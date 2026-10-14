@@ -3,6 +3,12 @@
 Rendered by Forge from the pre-push branch review of §FS-local-branch-review.
 Newest entry first; every non-approval is recorded, including one a repair later cleared.
 
+## 2026-10-14 — com.github.jnr:jnr-ffi:2.2.16 (#10697)
+
+**Generated library statistics were stale**
+
+The first required Forge finalization pass changed stats/com.github.jnr/jnr-ffi/2.2.16/stats.json, including line coverage from 1681 to 1678 covered lines and method coverage from 455 to 454 covered methods. This showed that the committed generated statistics did not match the finalized test tree.
+
 ## 2026-10-13 — com.google.oauth-client:google-oauth-client:1.35.0 (#10701)
 
 **Native Image flag was bundled as test metadata**
