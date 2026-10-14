@@ -31,7 +31,7 @@ public class AuthConfigFactoryImplTest {
             "org.apache.catalina.authenticator.jaspic.SimpleAuthConfigProvider";
 
     @TempDir
-    Path catalinaBase;
+    static Path catalinaBase;
 
     private String previousCatalinaBase;
     private ClassLoader previousContextClassLoader;
