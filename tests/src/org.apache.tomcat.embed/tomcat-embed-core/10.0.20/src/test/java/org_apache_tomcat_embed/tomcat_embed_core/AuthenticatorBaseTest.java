@@ -21,7 +21,6 @@ import jakarta.security.auth.message.config.ClientAuthConfig;
 import jakarta.security.auth.message.config.RegistrationListener;
 import jakarta.security.auth.message.config.ServerAuthConfig;
 import jakarta.security.auth.message.config.ServerAuthContext;
-import jakarta.security.auth.message.module.ServerAuthModule;
 import org.apache.catalina.authenticator.BasicAuthenticator;
 import org.apache.catalina.authenticator.Constants;
 import org.apache.catalina.connector.Connector;
@@ -76,8 +75,10 @@ public class AuthenticatorBaseTest {
         Connector connector = new Connector();
         org.apache.coyote.Request coyoteRequest = new org.apache.coyote.Request();
         org.apache.coyote.Response coyoteResponse = new org.apache.coyote.Response();
-        Request request = new Request(connector, coyoteRequest);
-        Response response = new Response(coyoteResponse);
+        Request request = new Request(connector);
+        request.setCoyoteRequest(coyoteRequest);
+        Response response = new Response();
+        response.setCoyoteResponse(coyoteResponse);
         request.setResponse(response);
         response.setRequest(request);
         return request;
@@ -96,9 +97,10 @@ public class AuthenticatorBaseTest {
             return new TestAuthConfigProvider(serverAuthConfig);
         }
 
+        @SuppressWarnings("rawtypes")
         @Override
-        public String registerConfigProvider(String className, Map<String, String> properties, String layer,
-                String appContext, String description) {
+        public String registerConfigProvider(String className, Map properties, String layer, String appContext,
+                String description) {
             throw new UnsupportedOperationException();
         }
 
@@ -131,16 +133,6 @@ public class AuthenticatorBaseTest {
         @Override
         public void refresh() {
             // No cached registration state.
-        }
-
-        @Override
-        public String registerServerAuthModule(ServerAuthModule serverAuthModule, Object context) {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
-        public void removeServerAuthModule(Object context) {
-            // No registered modules.
         }
     }
 
@@ -178,9 +170,9 @@ public class AuthenticatorBaseTest {
             this.serverAuthContext = new TestServerAuthContext(cleanSubjectCalled);
         }
 
+        @SuppressWarnings("rawtypes")
         @Override
-        public ServerAuthContext getAuthContext(String authContextID, Subject serviceSubject,
-                Map<String, Object> properties) {
+        public ServerAuthContext getAuthContext(String authContextID, Subject serviceSubject, Map properties) {
             return serverAuthContext;
         }
 
@@ -221,6 +213,11 @@ public class AuthenticatorBaseTest {
         @Override
         public AuthStatus validateRequest(MessageInfo messageInfo, Subject clientSubject, Subject serviceSubject)
                 throws AuthException {
+            return AuthStatus.SUCCESS;
+        }
+
+        @Override
+        public AuthStatus secureResponse(MessageInfo messageInfo, Subject serviceSubject) {
             return AuthStatus.SUCCESS;
         }
 
