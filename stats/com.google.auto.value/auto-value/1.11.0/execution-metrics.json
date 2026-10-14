@@ -1,0 +1,111 @@
+{
+  "add_new_library_support:2026-10-14": {
+    "timestamp": "2026-10-14T11:08:50.392953Z",
+    "library": "com.google.auto.value:auto-value:1.11.0",
+    "starting_commit": "82e044fe3eb1fa4cf64cbd74ea478e9e73657ab5",
+    "ending_commit": "069582d2a36e585e106dac83fcc27e16ce17d554",
+    "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-sol",
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "status": "success",
+    "stats": {
+      "version": "1.11.0",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 0.663366,
+            "coveredCalls": 67,
+            "totalCalls": 101
+          },
+          "resources": {
+            "coverageRatio": 0.5,
+            "coveredCalls": 2,
+            "totalCalls": 4
+          }
+        },
+        "coverageRatio": 0.657143,
+        "coveredCalls": 69,
+        "totalCalls": 105
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 12362,
+          "missed": 146075,
+          "ratio": 0.078025,
+          "total": 158437
+        },
+        "line": {
+          "covered": 2827,
+          "missed": 29804,
+          "ratio": 0.086635,
+          "total": 32631
+        },
+        "method": {
+          "covered": 860,
+          "missed": 8618,
+          "ratio": 0.090736,
+          "total": 9478
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "advisory_preparation",
+      "issue_number": 10694,
+      "issue_label": "library-new-request",
+      "library": "com.google.auto.value:auto-value:1.11.0",
+      "summary": "auto-value is the AutoValue annotation processor, not a runtime library. The generated tests can only reach meaningful coverage if they invoke the processor, and the scaffold may not put auto-value-annotations on the test classpath.",
+      "deterministic_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "com.google.auto.value:auto-value-annotations:1.11.0",
+          "scope": "testImplementation",
+          "reason": "Test sources and the in-test compilation need the @AutoValue annotations. The existing auto-value-annotations 1.9 and 1.10 test projects declare it the same way. I could not confirm whether auto-value 1.11.0's pom already pulls it in, so this pin makes sure it is present."
+        }
+      ],
+      "agent_guidance": "auto-value 1.11.0 is an annotation processor (com.google.auto.value.processor.AutoValueProcessor, registered through META-INF/services). Putting it on testImplementation does not run it. Use javax.tools.ToolProvider.getSystemJavaCompiler() inside the tests, with in-memory JavaFileObject sources such as an abstract class annotated @AutoValue with a Builder, @AutoValue.CopyAnnotations, @Memoized, AutoOneOf and AutoAnnotation. Run it with processors set explicitly via task.setProcessors(List.of(new AutoValueProcessor())) or with ServiceLoader discovery of Processor. Set the compile classpath explicitly from System.getProperty(\"java.class.path\"), because the in-test compiler does not inherit it. Write the output to a temp directory and assert that the AutoValue_* classes were generated. Use only the public processor APIs and avoid relying on javac internals. Because javac must be present at runtime, check that it is available in the native image. If it is not, guard the call with a null check on getSystemJavaCompiler(). Keep tests tied to the tested library version and do not hard-code the version. Copy the build.gradle and user-code-filter.json structure from tests/src/com.google.auto.value/auto-value-annotations/1.10. The user-code-filter should allow packages under com.google.auto.value. The 1.10 project also used the conditional agent mode.",
+      "risks": [
+        "The processor depends on javac (jdk.compiler) at runtime, so running it inside a native image may not work. Native Image tests could fail or need a guard or different coverage.",
+        "auto-value shades its dependencies (guava, javapoet, escapevelocity and others) under autovalue.shaded.*, so dynamic-access coverage may be small or dominated by reflection and resource loading in the shaded classes.",
+        "Whether auto-value-annotations arrives transitively was not verified, because the pom was not in the local Gradle or Maven caches. The explicit dependency is harmless if it does.",
+        "The existing tests/src/com.google.auto.value directory only covers auto-value-annotations, so there is no prior auto-value test project to copy from."
+      ],
+      "applied_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "com.google.auto.value:auto-value-annotations:1.11.0",
+          "result": "applied",
+          "target": "tests/src/com.google.auto.value/auto-value/1.11.0/build.gradle"
+        }
+      ],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#10694 Support for com.google.auto.value:auto-value:1.11.0; label=library-new-request; body_chars=0"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "sonnet",
+      "input_tokens_used": 8,
+      "output_tokens_used": 1911
+    },
+    "metrics": {
+      "input_tokens_used": 788486,
+      "cached_input_tokens_used": 10637568,
+      "output_tokens_used": 74640,
+      "iterations": 18,
+      "cost_usd": 11.5004,
+      "generated_loc": 709,
+      "tested_library_loc": 2827,
+      "metadata_entries": 91,
+      "test_only_metadata_entries": 91,
+      "code_coverage_percent": 8.66
+    },
+    "artifacts": {
+      "metadata_file": "metadata/com.google.auto.value/auto-value/1.11.0/reachability-metadata.json"
+    }
+  }
+}
