@@ -1,0 +1,99 @@
+{
+  "add_new_library_support:2026-10-13": {
+    "timestamp": "2026-10-13T23:02:42.800979Z",
+    "library": "com.google.oauth-client:google-oauth-client:1.35.0",
+    "starting_commit": "18984537029eee20f9d6565e7c12b391ce7d4530",
+    "ending_commit": "eeaa85cdf93ba4414aee90af44289d62f2240975",
+    "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-sol",
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "status": "success",
+    "stats": {
+      "version": "1.35.0",
+      "dynamicAccess": {
+        "breakdown": {},
+        "coverageRatio": 1.0,
+        "coveredCalls": 0,
+        "totalCalls": 0
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 2639,
+          "missed": 1553,
+          "ratio": 0.629532,
+          "total": 4192
+        },
+        "line": {
+          "covered": 681,
+          "missed": 402,
+          "ratio": 0.628809,
+          "total": 1083
+        },
+        "method": {
+          "covered": 217,
+          "missed": 192,
+          "ratio": 0.530562,
+          "total": 409
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "advisory_preparation",
+      "issue_number": 10701,
+      "issue_label": "library-new-request",
+      "library": "com.google.oauth-client:google-oauth-client:1.35.0",
+      "summary": "google-oauth-client needs a JsonFactory implementation to reach its main paths: TokenResponse parsing, TokenRequest.execute, and the AuthorizationCodeFlow and credential flows. Its transitive google-http-client dependency has none; the JSON factories ship as separate artifacts. No Docker image is needed.",
+      "deterministic_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "com.google.http-client:google-http-client-gson:1.42.3",
+          "scope": "testImplementation",
+          "reason": "Supplies GsonFactory, a JsonFactory/JsonObjectParser backend. Version 1.42.3 matches the google-http-client version that google-oauth-client 1.35.0 depends on. A google-http-client-gson test already exists in the repo, at version 1.42.2."
+        }
+      ],
+      "agent_guidance": "Tests should run offline with no environment variables or system properties. Use an in-process HttpTransport: subclass HttpTransport and LowLevelHttpRequest/LowLevelHttpResponse, or use a local com.sun.net.httpserver.HttpServer on localhost. Do not use MockHttpTransport, because it is in the google-http-client test artifact and not in the main jar. Cover these areas: TokenRequest subclasses (AuthorizationCodeTokenRequest, RefreshTokenRequest, ClientCredentialsTokenRequest, PasswordTokenRequest), TokenResponse and TokenErrorResponse parsing via GsonFactory, AuthorizationCodeFlow with MemoryDataStoreFactory, Credential, ClientParametersAuthentication and BasicAuthentication, AuthorizationRequestUrl and AuthorizationCodeRequestUrl, and IdTokenVerifier/IdTokenResponse. Avoid the extras artifacts (the servlet, Jetty, Jackson and Java 6 modules) and LocalServerReceiver, which is not part of this artifact. Avoid anything that opens a browser.",
+      "risks": [
+        "Without a JsonFactory, tests are likely to cover only URL, parameter and builder classes, so the reflective JSON paths would be missed.",
+        "The google-http-client-gson version must be 1.42.3 so the resolved google-http-client does not drift from what the library resolves.",
+        "I did not run the Gradle resolution, so the transitive version is taken from memory of the library's POM and should be confirmed locally."
+      ],
+      "applied_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "com.google.http-client:google-http-client-gson:1.42.3",
+          "result": "applied",
+          "target": "tests/src/com.google.oauth-client/google-oauth-client/1.35.0/build.gradle"
+        }
+      ],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#10701 Support for com.google.oauth-client:google-oauth-client:1.35.0; label=library-new-request; body_chars=0"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "sonnet",
+      "input_tokens_used": 4,
+      "output_tokens_used": 1714
+    },
+    "metrics": {
+      "input_tokens_used": 194210,
+      "cached_input_tokens_used": 2294016,
+      "output_tokens_used": 19393,
+      "iterations": 3,
+      "cost_usd": 2.6998,
+      "generated_loc": 572,
+      "tested_library_loc": 681,
+      "metadata_entries": 276,
+      "test_only_metadata_entries": 59,
+      "code_coverage_percent": 62.88
+    },
+    "artifacts": {
+      "metadata_file": "metadata/com.google.oauth-client/google-oauth-client/1.35.0/reachability-metadata.json"
+    }
+  }
+}

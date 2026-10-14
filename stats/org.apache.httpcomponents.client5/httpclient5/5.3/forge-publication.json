@@ -1,0 +1,112 @@
+{
+  "base_commit": "9de475dc3827988b7e83d7347fbd6794aaf131b9",
+  "branch": "ai/kimeta/fix-native-image-run-org.apache.httpcomponents.client5-httpclient5-5.3-forge-9366-20261013000552843879-81ec5b81cc83",
+  "follow_ups": [],
+  "forge": {
+    "branch": "master",
+    "commit": "9de475dc3827988b7e83d7347fbd6794aaf131b9",
+    "monitored_branch": "origin/master"
+  },
+  "issue_number": 9366,
+  "library": {
+    "artifact": "httpclient5",
+    "coordinates": "org.apache.httpcomponents.client5:httpclient5:5.3",
+    "group": "org.apache.httpcomponents.client5",
+    "version": "5.3"
+  },
+  "local_ci_verification": {
+    "base_commit": "9de475dc3827988b7e83d7347fbd6794aaf131b9",
+    "commands": [
+      {
+        "command": [
+          "./gradlew",
+          "generateChangedIndexFileCoordinatesList",
+          "-PbaseCommit=origin/master",
+          "-PnewCommit=HEAD"
+        ],
+        "env": {
+          "GITHUB_OUTPUT": "/tmp/tmppwilbqax"
+        },
+        "gate": "changed-index-coordinates",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :generateChangedIndexFileCoordinatesList\n\n[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata-worker3/forge/local_repositories/forge_worktrees/9366-c69983ab/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 5s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      },
+      {
+        "command": [
+          "./gradlew",
+          "validateIndexFiles",
+          "-Pcoordinates=org.apache.httpcomponents.client5:httpclient5"
+        ],
+        "env": {},
+        "gate": "index-file-validation",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :validateIndexFiles\n✅ metadata/org.apache.httpcomponents.client5/httpclient5/index.json: Valid\n\n[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata-worker3/forge/local_repositories/forge_worktrees/9366-c69983ab/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 3s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      }
+    ],
+    "failure_command": null,
+    "failure_gate": null,
+    "final_commit": "6e200d0eb3836be65316695d0e21e023a00b5ef7",
+    "fixups": [],
+    "human_intervention_required": false,
+    "repo_fix_paths": [],
+    "status": "success"
+  },
+  "local_review": {
+    "changed_paths": [],
+    "decision": "approved",
+    "finding_body": "",
+    "finding_title": "",
+    "fix_note": "",
+    "model": "gpt-5.6-sol",
+    "review_comment": "Reviewed the full contribution diff and the fixes-native-image-run rules. The change is confined to httpclient5:5.3 metadata, index, and mirrored statistics; it adds no legacy metadata format, test weakening, native-image dodge, build flag, or unrelated coordinate change. The inherited BasicAuthCache public-API test still exercises serialization and restoration under JVM and Native Image. Native tracing and all three native-test lanes completed successfully, and metadata, index, style, and statistics gates passed. Overall dynamic access and the reflection breakdown both remain 2/2 (100%) from 5.2.1 to 5.3, so every repair-coverage comparison passes.",
+    "session_id": "add2ca3619b14325"
+  },
+  "metrics": {
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "path": "stats/org.apache.httpcomponents.client5/httpclient5/5.3/execution-metrics.json",
+    "summary": {
+      "cached_input_tokens_used": 0,
+      "code_coverage_percent": 1.42,
+      "cost_usd": 0.0,
+      "input_tokens_used": 0,
+      "iterations": 0,
+      "metadata_entries": 15,
+      "output_tokens_used": 0,
+      "previous_library_coverage_percent": 1.45,
+      "previous_library_metadata_entries": 8,
+      "tested_library_loc": 173
+    },
+    "timestamp": "2026-10-13T00:05:52.843879Z"
+  },
+  "modifiers": {
+    "chunk_final": true,
+    "chunked_dynamic_access": false,
+    "human_intervention": false
+  },
+  "previous_library": {
+    "artifact": "httpclient5",
+    "coordinates": "org.apache.httpcomponents.client5:httpclient5:5.2.1",
+    "group": "org.apache.httpcomponents.client5",
+    "version": "5.2.1"
+  },
+  "producer": "kimeta",
+  "publication_id": "forge-9366-20261013000552843879-81ec5b81cc83",
+  "render": {
+    "baseline_metadata_entries": 8,
+    "baseline_stats": {
+      "coverage_percent": 1.4487
+    },
+    "baseline_test_only_entries": 0,
+    "current_metadata_entries": 15,
+    "current_test_only_entries": 0,
+    "library_stats": {
+      "coverage_percent": 1.422
+    }
+  },
+  "schema_version": 1,
+  "strategy_name": "library_update_pi_gpt-5.6-sol",
+  "task_type": "fixes-native-image-run-fail",
+  "template_type": "fixes-native-image-run-fail",
+  "timestamp": "2026-10-13T00:05:52.843879Z"
+}
