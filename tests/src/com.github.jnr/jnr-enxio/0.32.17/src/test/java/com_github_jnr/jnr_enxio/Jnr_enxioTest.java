@@ -114,6 +114,29 @@ public class Jnr_enxioTest {
     }
 
     @Test
+    void updatesSelectionInterestFromWritableToReadable() throws Exception {
+        int[] descriptors = openSocketPair();
+        try (NativeSocketChannel selectedChannel = new NativeSocketChannel(descriptors[0]);
+                NativeSocketChannel peerChannel = new NativeSocketChannel(descriptors[1]);
+                Selector selector = NativeSelectorProvider.getInstance().openSelector()) {
+            selectedChannel.configureBlocking(false);
+            SelectionKey key = selectedChannel.register(selector, SelectionKey.OP_WRITE);
+
+            assertThat(selector.select(10_000)).isOne();
+            assertThat(key.isWritable()).isTrue();
+            selector.selectedKeys().clear();
+
+            assertThat(key.interestOps(SelectionKey.OP_READ)).isSameAs(key);
+            assertThat(key.interestOps()).isEqualTo(SelectionKey.OP_READ);
+            assertThat(peerChannel.write(ByteBuffer.wrap(new byte[] {7}))).isOne();
+
+            assertThat(selector.select(10_000)).isOne();
+            assertThat(key.isReadable()).isTrue();
+            assertThat(key.isWritable()).isFalse();
+        }
+    }
+
+    @Test
     void transfersAndShutsDownSocketPair() throws Exception {
         int[] descriptors = openSocketPair();
         try (NativeSocketChannel left = new NativeSocketChannel(descriptors[0]);
