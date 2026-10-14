@@ -1,0 +1,84 @@
+{
+  "add_new_library_support:2026-10-14": {
+    "timestamp": "2026-10-14T01:55:22.735178Z",
+    "library": "com.github.jnr:jnr-enxio:0.32.17",
+    "starting_commit": "50375a671995100c0c842960857067d525ef7d07",
+    "ending_commit": "f29e5b6e3fcca09ffeb871e244d6e6cc6d0b9086",
+    "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-sol",
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "status": "success",
+    "stats": {
+      "version": "0.32.17",
+      "dynamicAccess": {
+        "breakdown": {},
+        "coverageRatio": 1.0,
+        "coveredCalls": 0,
+        "totalCalls": 0
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 16,
+          "missed": 2423,
+          "ratio": 0.00656,
+          "total": 2439
+        },
+        "line": {
+          "covered": 4,
+          "missed": 532,
+          "ratio": 0.007463,
+          "total": 536
+        },
+        "method": {
+          "covered": 1,
+          "missed": 143,
+          "ratio": 0.006944,
+          "total": 144
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "no_action",
+      "issue_number": 10698,
+      "issue_label": "library-new-request",
+      "library": "com.github.jnr:jnr-enxio:0.32.17",
+      "summary": "jnr-enxio is a native-I/O channel and selector library built on jnr-ffi and jnr-constants, which Maven resolves transitively. Tests can get file descriptors from a jnr-ffi libc binding (pipe/socketpair) or from files. They need no extra dependency, Docker image or environment setting. I did not run any commands for this decision.",
+      "deterministic_setup": [],
+      "agent_guidance": "",
+      "risks": [
+        "The library calls native libc through jnr-ffi, so native-image coverage may need FFI and JNI metadata. The Forge flow can generate that metadata.",
+        "Tests should create file descriptors with a jnr-ffi libc binding (e.g. pipe) and avoid platform-specific paths."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#10698 Support for com.github.jnr:jnr-enxio:0.32.17; label=library-new-request; body_chars=0"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "sonnet",
+      "input_tokens_used": 2,
+      "output_tokens_used": 477
+    },
+    "metrics": {
+      "input_tokens_used": 224718,
+      "cached_input_tokens_used": 1977472,
+      "output_tokens_used": 15261,
+      "iterations": 4,
+      "cost_usd": 2.5701,
+      "generated_loc": 28,
+      "tested_library_loc": 4,
+      "metadata_entries": 17,
+      "test_only_metadata_entries": 17,
+      "code_coverage_percent": 0.75
+    },
+    "artifacts": {
+      "metadata_file": "metadata/com.github.jnr/jnr-enxio/0.32.17/reachability-metadata.json"
+    }
+  }
+}
