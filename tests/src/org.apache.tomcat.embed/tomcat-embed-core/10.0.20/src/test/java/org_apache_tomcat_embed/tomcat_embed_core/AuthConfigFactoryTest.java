@@ -45,9 +45,10 @@ public class AuthConfigFactoryTest {
             return null;
         }
 
+        @SuppressWarnings("rawtypes")
         @Override
-        public String registerConfigProvider(String className, Map<String, String> properties, String layer,
-                String appContext, String description) {
+        public String registerConfigProvider(String className, Map properties, String layer, String appContext,
+                String description) {
             return null;
         }
 
