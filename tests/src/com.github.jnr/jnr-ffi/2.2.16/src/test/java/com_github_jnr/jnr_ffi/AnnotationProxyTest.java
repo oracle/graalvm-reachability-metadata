@@ -25,6 +25,7 @@ public class AnnotationProxyTest {
     }
 
     @Test
+    @SuppressWarnings("annotationAccess")
     void proxyBehavesLikeADeclaredAnnotation() {
         AnnotationProxy<Label> proxy = AnnotationProxy.newProxy(Label.class);
         proxy.setProperty("value", "configured");
