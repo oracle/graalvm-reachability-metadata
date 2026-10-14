@@ -1,0 +1,91 @@
+{
+  "add_new_library_support:2026-10-14": {
+    "timestamp": "2026-10-14T00:46:52.506328Z",
+    "library": "com.github.jnr:jnr-posix:3.1.19",
+    "starting_commit": "4636a82b36154286f84bf10c26ced5850157df78",
+    "ending_commit": "798bd0179b92681984b28031fc55344f877d7398",
+    "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-sol",
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "status": "success",
+    "stats": {
+      "version": "3.1.19",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 0.894737,
+            "coveredCalls": 17,
+            "totalCalls": 19
+          }
+        },
+        "coverageRatio": 0.894737,
+        "coveredCalls": 17,
+        "totalCalls": 19
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 638,
+          "missed": 29143,
+          "ratio": 0.021423,
+          "total": 29781
+        },
+        "line": {
+          "covered": 139,
+          "missed": 4674,
+          "ratio": 0.02888,
+          "total": 4813
+        },
+        "method": {
+          "covered": 31,
+          "missed": 1932,
+          "ratio": 0.015792,
+          "total": 1963
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "no_action",
+      "issue_number": 10699,
+      "issue_label": "library-new-request",
+      "library": "com.github.jnr:jnr-posix:3.1.19",
+      "summary": "I found no concrete evidence that extra setup is needed. jnr-posix is a self-contained POSIX wrapper. Its dependencies (jnr-ffi, jnr-constants, jffi with bundled native stubs, jnr-a64asm, asm) are pulled in transitively. Tests can call local POSIX functions such as getpid, stat, getcwd and environment access directly. They need no external services, Docker images, or environment or system properties.",
+      "deterministic_setup": [],
+      "agent_guidance": "",
+      "risks": [
+        "This decision comes from my knowledge of the library, not from a run in this worktree. I did not inspect the resolved artifact or run Gradle or Native Image.",
+        "jnr-ffi generates stubs at runtime with ASM and loads native libraries through jffi. Native Image runs may need extra reachability metadata for these, and the agent-driven metadata generation should surface it.",
+        "Results depend on the host OS and architecture, because jffi ships per-platform native stubs. Tests should stick to portable POSIX calls."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#10699 Support for com.github.jnr:jnr-posix:3.1.19; label=library-new-request; body_chars=0"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "sonnet",
+      "input_tokens_used": 2,
+      "output_tokens_used": 497
+    },
+    "metrics": {
+      "input_tokens_used": 268258,
+      "cached_input_tokens_used": 1893376,
+      "output_tokens_used": 16098,
+      "iterations": 4,
+      "cost_usd": 2.7709,
+      "generated_loc": 152,
+      "tested_library_loc": 139,
+      "metadata_entries": 29,
+      "test_only_metadata_entries": 10,
+      "code_coverage_percent": 2.89
+    },
+    "artifacts": {
+      "metadata_file": "metadata/com.github.jnr/jnr-posix/3.1.19/reachability-metadata.json"
+    }
+  }
+}
