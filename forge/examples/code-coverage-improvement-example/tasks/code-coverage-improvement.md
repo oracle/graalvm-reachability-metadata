@@ -94,21 +94,6 @@
 **State:** api-measure
 **Prior:** Task code-coverage-api-inventory
 
-- Measurement program: `forge/utility_scripts/code_coverage_validate.py`
-  (JVM JaCoCo run plus exact API-inventory correlation), driven by the
-  `api-measure` state.
-- Fixed report location: `runtime/code-coverage/validation/api-cover-report.json`
-  (iteration history stays at `api-cover-report-<n>.json`).
-- Prompt location: `runtime/code-coverage/prompts/api-cover-prompt.md`, derived
-  by the measurement program from the fixed report when the loop continues.
-- Loop: measure -> cover -> measure. Measurement always writes the
-  report to the fixed location and lists only exact JaCoCo-uncovered
-  public targets in the prompt; the cover agent generates meaningful behavior tests in the
-  dedicated coverage suite and always returns to measurement. The phase
-  completes when no uncovered public target remains or the iteration budget is
-  spent. Only re-measurement moves the loop forward; the agent cannot claim
-  coverage.
-
 ### Task code-coverage-prepare-native-metadata: Prepare native metadata
 **State:** prepared
 **Prior:** Task code-coverage-api-coverage
@@ -137,28 +122,6 @@
 ### Task code-coverage-deep-coverage: Deep coverage loop
 **State:** deep-measure
 **Prior:** Task code-coverage-prepare-native-metadata
-
-- Measurement program: `jacocoCodeCoverageReport`, `nativeTestPGOSampling`,
-  `runNativeTestPGO` (both native tasks with `-PincludeCodeCoverageSuite=true`),
-  one coherent call-tree CSV triplet, then
-  `forge/utility_scripts/code_coverage_profile_report.py`, driven by the
-  `deep-measure` state.
-- Fixed report location: `runtime/code-coverage/discovery/discovery-report.json`
-  (iteration history stays at `discovery-report-<n>.json`).
-- Prompt location: `runtime/code-coverage/prompts/deep-cover-prompt.md`, one
-  group session at a time. The analyzer renders each session of a pass under
-  `runtime/code-coverage/discovery/deep-sessions-<n>/`, measurement queues them
-  in `runtime/code-coverage/prompts/deep-session-queue.json`, and `deep-dispatch`
-  hands out the next one (§AR-code-coverage-deep-navigation.4).
-- Target state: measurement-owned. Attempt counts and rotation are carried
-  deterministically in the `discovery-report-<n>.json` history; every target
-  prompted in one iteration is deprioritized at the next. The cover agent
-  writes no target state.
-- Loop: measure -> dispatch -> cover -> dispatch -> ... -> measure: one
-  measurement per pass and one cover session per queued group.
-  JaCoCo is the sole coverage authority; sampled PGO and the static call graph
-  provide navigation only. The phase completes when no actionable target
-  remains or the iteration budget is spent.
 
 ### Task code-coverage-finalization: Finalize validation and metrics
 **State:** reviewed-prepared

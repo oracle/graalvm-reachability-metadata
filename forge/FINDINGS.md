@@ -9,6 +9,74 @@ Newest entry first; every non-approval is recorded, including one a repair later
 
 The latest-EA current-defaults and future-defaults-all jobs each exceeded the five-minute native-image limit while scanning artifacts for Android, iOS, Linux, macOS, and Windows supplied by org.bytedeco:opencv-platform. The test exercises Loader.loadProperties and does not load OpenCV native binaries, so the aggregate runtime dependency was unnecessary. This is a contribution-local build-file defect repairable under FS-contribution-contract.5.1.
 
+## 2026-10-14 — com.github.jnr:jnr-ffi:2.2.16 (#10697)
+
+**Generated library statistics were stale**
+
+The first required Forge finalization pass changed stats/com.github.jnr/jnr-ffi/2.2.16/stats.json, including line coverage from 1681 to 1678 covered lines and method coverage from 455 to 454 covered methods. This showed that the committed generated statistics did not match the finalized test tree.
+
+## 2026-10-13 — com.google.oauth-client:google-oauth-client:1.35.0 (#10701)
+
+**Native Image flag was bundled as test metadata**
+
+The contribution put `--enable-url-protocols=https` in `src/test/resources/META-INF/native-image/.../native-image.properties`, violating the test contract's prohibition on test-authored Native Image configuration files. Removing it reproduced the underlying need in the GraalVM 25 lane: every OAuth scenario using the dependency's `GenericUrl` HTTPS path failed with `MalformedURLException` requesting that exact protocol option, while the non-URL HMAC test passed.
+
+## 2026-10-12 — org.bytedeco:javacv:1.5.12 (#10687)
+
+**Avoid host GUI dependencies in JavaCV backend-selection tests**
+
+All three required JavaCV matrix jobs failed in javaTest because tests selected an OpenCV backend whose native highgui library required libgtk-x11-2.0.so.0, while the projector scenario assumed a headful graphics environment. Coordinate tests must pass the required lanes while preserving meaningful public-API behavior. §FS-repository-functional-spec.5.2 §FS-test-contract.1.3
+## 2026-10-13 — com.github.jnr:jnr-unixsocket:0.38.22 (#10700)
+## 2026-10-08 — org.eclipse.jetty:jetty-http:10.0.0 (#9376)
+
+**Pre-push review unavailable**
+
+Forge could not obtain a readable pre-push review verdict. This records a review availability problem, not a reviewer finding against the branch.
+
+## 2026-10-13 — org.bytedeco:librealsense:1.12.4-1.5.9 (#10719)
+
+**Hardware-dependent USB context test fails on USB-less CI hosts**
+
+The JDK 25 current-defaults, latest-EA current-defaults, and latest-EA future-defaults-all jobs all failed in LibrealsenseTest.loadsMatchingNativeApiAndReportsNoConnectedDevices() when context construction returned libusb_init(...) returned LIBUSB_ERROR_OTHER. A required test must exercise meaningful public API behavior consistently on the JVM and under Native Image rather than depend on host USB initialization. §FS-test-contract.1.3 §FS-test-contract.4
+## 2026-10-13 — org.springframework.modulith:spring-modulith-apt:2.1.0 (#10711)
+
+**Machine-local classpath read through Native Image resource metadata**
+
+All three tests loaded the generated external-compiler-classpath.txt with Class.getResourceAsStream even though the file carries build- and machine-local classpath paths. That made the native tests depend on resource metadata for machine-local paths, violating §FS-test-contract.4.4.
+## 2026-10-13 — org.bytedeco:libfreenect2:0.2.0-1.5.9 (#10718)
+
+**Avoid libfreenect2 default-device probes in headless tests**
+
+The current-defaults lanes on JDK 25 and latest EA and the future-defaults-all lane all showed libfreenect2 selecting `OpenGLDepthPacketProcessor`, reporting that `DISPLAY` was missing, and terminating the JVM/native test process with exit 255. The failing `openDefaultDevice()` assertion exercised a known-broken environmental path in a test premised on having no Kinect attached, contrary to §FS-test-contract.2.6; stable enumeration and serial-number behavior should be tested instead.
+## 2026-10-13 — org.bytedeco:ffmpeg:7.1.1-1.5.12 (#10713)
+
+**Companion runtime dependency is pinned to one library version**
+
+The coordinate's build.gradle hardcoded org.bytedeco:ffmpeg-platform:7.1.1-1.5.12 while the tested org.bytedeco:ffmpeg dependency follows the TCK-resolved library version. Reusing this suite for a newer tested version would pair it with stale native binaries, violating the version-agnostic test requirement in §FS-test-contract.2.5.
+
+## 2026-10-13 — org.bytedeco:librealsense2:2.53.1-1.5.9 (#10720)
+
+**Headless RealSense context creation crashes the test process**
+
+The required `javaTest` lane terminated with exit 134 in all three matrix jobs. The crash report identified `rs2_create_context` from `configuresPipelineForUnavailableDeviceWithoutStartingCapture`, and isolated reproduction showed that both full context-creation scenarios SIGSEGV in `pthread_mutex_lock` when no USB subsystem is available. Required tests must pass every configured Java and Native Image lane under §FS-repository-functional-spec.5.2; because the defect was confined to this contribution's tests, it was repaired under §FS-contribution-contract.5.1.
+
+## 2026-10-12 — org.bytedeco:librealsense2:2.53.1-1.5.9 (#10720)
+
+**Companion runtime dependency pins the tested library version**
+
+The test build hardcoded `org.bytedeco:librealsense2-platform:2.53.1-1.5.9` even though the tested library version is TCK-resolved. This version-pinned dependency would keep a reused suite on the old native runtime and violates the version-agnostic test requirement in §FS-test-contract.2.5.
+
+## 2026-10-12 — org.bytedeco:tesseract:5.5.1-1.5.12 (#10722)
+
+**Version-pinned companion runtime dependency**
+
+`tests/src/org.bytedeco/tesseract/5.5.1-1.5.12/build.gradle` hardcoded `org.bytedeco:tesseract-platform:5.5.1-1.5.12`. That made the suite use 5.5.1 native binaries when the harness tests another Tesseract version, violating the version-agnostic test requirement in §FS-test-contract.2.5.
+
+## 2026-10-12 — org.springframework.boot:spring-boot-security:4.1.0 (#8464)
+
+**Optional reflection targets break Spring AOT consumers with partial classpaths**
+
+Both failed Spring AOT jobs reported `Type not found during analysis` for `LoginUrlAuthenticationEntryPoint`; after that registration was removed, local JDK 25 reproduction identified the same layout failure for `ServletContextAware`. These optional types are absent from affected consumers' classpaths, while the coordinate's own fully populated test classpath masked the problem. The defect is confined to the contribution's metadata and is repairable under §FS-contribution-contract.5.1.
 ## 2026-10-09 — org.springframework.boot:spring-boot-webclient:4.1.0-RC1 (#8432)
 
 **Companion test dependency pinned to the requested library version**

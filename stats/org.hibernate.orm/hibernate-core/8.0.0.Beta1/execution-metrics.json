@@ -1,0 +1,139 @@
+{
+  "fix_javac_fail:2026-10-12": {
+    "timestamp": "2026-10-12T03:21:51.399013Z",
+    "library": "org.hibernate.orm:hibernate-core:8.0.0.Beta1",
+    "starting_commit": "4880656cb28fc95ef3a521db47f732351885b627",
+    "ending_commit": "96f14b10ff6cce76e6c7d681e28ca146dad37a80",
+    "previous_library": "org.hibernate.orm:hibernate-core:7.1.0.Final",
+    "strategy_name": "javac_iterative_with_coverage_sources_claude-code_opus",
+    "agent": "claude-code",
+    "model": "claude-opus-5-5",
+    "status": "success",
+    "stats": {
+      "version": "8.0.0.Beta1",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 0.521226,
+            "coveredCalls": 221,
+            "totalCalls": 424
+          },
+          "resources": {
+            "coverageRatio": 0.454545,
+            "coveredCalls": 10,
+            "totalCalls": 22
+          }
+        },
+        "coverageRatio": 0.517937,
+        "coveredCalls": 231,
+        "totalCalls": 446
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 244262,
+          "missed": 802688,
+          "ratio": 0.233308,
+          "total": 1046950
+        },
+        "line": {
+          "covered": 61335,
+          "missed": 193948,
+          "ratio": 0.240263,
+          "total": 255283
+        },
+        "method": {
+          "covered": 17613,
+          "missed": 50592,
+          "ratio": 0.258236,
+          "total": 68205
+        }
+      }
+    },
+    "previous_library_stats": {
+      "version": "7.1.0.Final",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 0.117647,
+            "coveredCalls": 46,
+            "totalCalls": 391
+          },
+          "resources": {
+            "coverageRatio": 0.409091,
+            "coveredCalls": 9,
+            "totalCalls": 22
+          }
+        },
+        "coverageRatio": 0.133172,
+        "coveredCalls": 55,
+        "totalCalls": 413
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 160772,
+          "missed": 750683,
+          "ratio": 0.17639,
+          "total": 911455
+        },
+        "line": {
+          "covered": 40447,
+          "missed": 182709,
+          "ratio": 0.18125,
+          "total": 223156
+        },
+        "method": {
+          "covered": 12268,
+          "missed": 48303,
+          "ratio": 0.202539,
+          "total": 60571
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "no_action",
+      "issue_number": 9380,
+      "issue_label": "fails-javac-compile",
+      "library": "org.hibernate.orm:hibernate-core:8.0.0.Beta1",
+      "summary": "The javac failure is a test-source update, not missing setup: `org.hibernate.generator.internal.SourceGeneration` was removed and `org.hibernate.sql.results.graph.embeddable.EmbeddableLoadingLogger` was folded into `org.hibernate.sql.results.LoadingLogger` in 8.0.0.Beta1 (verified against the 8.0.0.Beta1 sources jar). The dialect tests use in-memory H2 compatibility modes, so no Docker image is needed.",
+      "deterministic_setup": [],
+      "agent_guidance": "",
+      "risks": [
+        "The inherited test project forces Hibernate's `none` bytecode provider in native images through Graal substitutions; removing them makes Byte Buddy define classes at run time."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#9380 [Automation] javac compile fails for org.hibernate.orm:hibernate-core:8.0.0.Beta1; label=fails-javac-compile"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "32 existing test file path(s) included"
+        }
+      ],
+      "current_library": "org.hibernate.orm:hibernate-core:7.1.0.Final",
+      "new_version": "8.0.0.Beta1",
+      "model": "claude-opus-5-5",
+      "input_tokens_used": 0,
+      "output_tokens_used": 0
+    },
+    "metrics": {
+      "input_tokens_used": 758329,
+      "cached_input_tokens_used": 145545930,
+      "output_tokens_used": 341070,
+      "iterations": 15,
+      "cost_usd": 443.0056,
+      "tested_library_loc": 61335,
+      "metadata_entries": 4471,
+      "test_only_metadata_entries": 625,
+      "previous_library_metadata_entries": 3022,
+      "previous_library_test_only_metadata_entries": 34,
+      "code_coverage_percent": 24.03,
+      "previous_library_coverage_percent": 18.12
+    },
+    "artifacts": {
+      "metadata_file": "metadata/org.hibernate.orm/hibernate-core/8.0.0.Beta1/reachability-metadata.json"
+    }
+  }
+}

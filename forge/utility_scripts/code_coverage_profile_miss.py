@@ -5,16 +5,14 @@
 
 """Miss classification for the deep-method report.
 
-Explains why each uncovered target did not run, from its callers' JaCoCo line
-regions and — when present — the extractor's control-flow table and the
-instrumented counters: a different implementation answered, a covered fork went
-the other way, or no fork precedes the call at all
-(§AR-code-coverage-deep-navigation.3).
+Explains why each uncovered target did not run, from the JaCoCo line region of
+the method that makes the route's call into it and — when present — the
+extractor's control-flow table and the instrumented counters: a different
+implementation answered, a covered fork went the other way, or no fork precedes
+the call at all (§AR-code-coverage-deep-navigation.3).
 """
 
 from __future__ import annotations
-
-import sys
 
 from utility_scripts.code_coverage_jacoco import JacocoLineCoverage, JacocoMethodCoverage
 from utility_scripts.code_coverage_model import MethodRef
@@ -285,37 +283,20 @@ def edge_miss_classification(
     return {"kind": "no-fork", **base, "exception": exception}
 
 
-def _invoking_sites(target_id: int, graph: CallGraph) -> list[dict]:
-    """Every call site of the target's source-level method.
+def _routed_last_call(record: NearCallRecord, graph: CallGraph) -> dict | None:
+    """The route's call into the target's source-level method, if it has one.
 
-    A caller that stands for the target itself — a factory stub for its
-    constructor — is looked through to its own callers
+    A step that stays inside the target, such as a factory stub reaching its
+    constructor, is looked through to the stub's caller on the route
     (§AR-code-coverage-deep-navigation.3).
     """
-    target_ref_id: str = translated_ref(target_id, graph).canonical_id
-    sites: list[dict] = []
-    pending: list[int] = [target_id]
-    visited: set[int] = {target_id}
-    while pending:
-        for edge in graph.reverse_adjacency.get(pending.pop(), []):
-            caller: int = edge["caller"]
-            if translated_ref(caller, graph).canonical_id != target_ref_id:
-                sites.append(edge)
-            elif caller not in visited:
-                visited.add(caller)
-                pending.append(caller)
-    return sites
-
-
-def _routed_last_call(record: NearCallRecord, graph: CallGraph) -> list[dict]:
-    """The route's call into the target's source-level method, if it has one."""
     if record.target_id is None:
-        return []
+        return None
     target_ref_id: str = translated_ref(record.target_id, graph).canonical_id
     for edge in reversed(record.static_path_edges):
         if translated_ref(edge["caller"], graph).canonical_id != target_ref_id:
-            return [edge]
-    return []
+            return edge
+    return None
 
 
 def classify_miss(
@@ -326,46 +307,17 @@ def classify_miss(
         executed: dict[int, bool],
         evidence: NavigationEvidence = NavigationEvidence(),
 ) -> dict:
-    """Choose the strongest diagnosis across the sites whose caller ran.
+    """Judge the one call the route makes into the target.
 
-    A caller that never ran has no fork or dispatch to report, so only sites
-    whose caller JaCoCo reports covered are judged
-    (§AR-code-coverage-deep-navigation.3).
+    No other call site of the target is consulted, so the route and its
+    diagnosis describe the same call; a route call without a fork above it is
+    `no-fork` there (§AR-code-coverage-deep-navigation.3).
     """
-    edges: list[dict] = (
-        [*_routed_last_call(record, graph), *_invoking_sites(record.target_id, graph)]
-        if record.target_id is not None else []
-    )
-    unique_edges: list[dict] = []
-    seen: set[tuple[object, ...]] = set()
-    for edge in edges:
-        key: tuple[object, ...] = (
-            edge.get("invoke_id"), edge.get("caller"), edge.get("callee"), edge.get("bci")
-        )
-        if key not in seen and executed.get(edge["caller"]) is True:
-            seen.add(key)
-            unique_edges.append(edge)
-    classifications: list[dict] = [
-        edge_miss_classification(edge, graph, jacoco_methods, jacoco_lines, evidence)
-        for edge in unique_edges
-    ]
-    priority: dict[str, int] = {
-        "dispatched-elsewhere": 0,
-        "fork-not-taken": 1,
-        "no-fork": 2,
-    }
-    if classifications:
-        return min(
-            classifications,
-            key=lambda item: (
-                priority[item["kind"]],
-                (
-                    item["target"]["sourcePath"]
-                    if item["target"] is not None else ""
-                ),
-                item["target"]["line"] if item["target"] is not None else sys.maxsize,
-            ),
-        )
+    edge: dict | None = _routed_last_call(record, graph)
+    # Route search lets only a covered method make the last call
+    # (§AR-code-coverage-deep-navigation.2).
+    if edge is not None and executed.get(edge["caller"]) is True:
+        return edge_miss_classification(edge, graph, jacoco_methods, jacoco_lines, evidence)
     return {
         "kind": "no-fork",
         "target": None,
