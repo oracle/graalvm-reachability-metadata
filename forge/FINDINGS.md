@@ -3,6 +3,7 @@
 Rendered by Forge from the pre-push branch review of §FS-local-branch-review.
 Newest entry first; every non-approval is recorded, including one a repair later cleared.
 
+## 2026-10-13 — io.projectreactor.netty:reactor-netty-core:1.3.0 (#9351)
 ## 2026-10-13 — org.bytedeco:opencv:4.11.0-1.5.12 (#10689)
 
 **Avoid aggregate Bytedeco platform artifacts in metadata-only preset tests**
