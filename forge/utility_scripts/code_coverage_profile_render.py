@@ -65,7 +65,7 @@ def _display_path(static_path: list[int], graph: CallGraph, limit: int = 6) -> s
 
 
 def _step_label(step: dict) -> str:
-    """`Caller.m() → Impl.m()` for one unobserved dispatch step."""
+    """`Caller.m() → Impl.m()` for one unobserved step."""
     labels: list[str] = []
     for method_id in (step["caller"], step["callee"]):
         ref: MethodRef | None = parse_inventory_id(method_id)
@@ -100,9 +100,12 @@ def _prompt_line(
     unobserved: list[dict] = note.get("unobservedSteps") or []
     if unobserved:
         more: str = f" (+{len(unobserved) - 1} more)" if len(unobserved) > 1 else ""
-        suffixes.append(
-            f"route assumes `{_step_label(unobserved[0])}`, a dispatch the run never made{more}"
+        # §AR-code-coverage-deep-navigation.2.1
+        claim: str = (
+            "a call on a line JaCoCo reports uncovered"
+            if unobserved[0].get("kind") == "call" else "a dispatch the run never made"
         )
+        suffixes.append(f"route assumes `{_step_label(unobserved[0])}`, {claim}{more}")
     path: str = f"`{_display_path(record.static_path, graph)}`"
     return f"{path} — {'; '.join(suffixes)}" if suffixes else path
 

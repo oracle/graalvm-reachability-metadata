@@ -95,6 +95,10 @@ def navigation_summary(evidence: NavigationEvidence, graph: CallGraph) -> dict:
         "unobservedDispatchEdges": sum(
             1 for edges in graph.adjacency.values() for edge in edges if edge.get("unobserved")
         ),
+        "unobservedCallEdges": sum(
+            1 for edges in graph.adjacency.values() for edge in edges
+            if edge.get("unobserved_call")
+        ),
         "controlFlowMethods": len(evidence.flows) if evidence.flows is not None else 0,
     }
 

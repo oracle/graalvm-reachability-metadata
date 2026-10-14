@@ -104,6 +104,7 @@ from utility_scripts.code_coverage_profile_routes import (
     RouteMap,
     SampledProfile,
     execution_status,
+    mark_unobserved_calls,
     observed_contexts,
     observed_methods,
     public_entry_routes,
@@ -166,6 +167,7 @@ def correlate(
         coverage for coverage in public_coverage if not coverage.covered
     ]
     executed: dict[int, bool] = execution_status(graph, jacoco_methods)
+    mark_unobserved_calls(graph, jacoco_methods, lines, executed)
     sampled_routes: RouteMap = sample_routes(graph, profile, executed)
     entry_routes: RouteMap = public_entry_routes(graph, inventory_status.refs, executed)
     uncovered_records: list[NearCallRecord] = [

@@ -174,17 +174,38 @@ of paths left out, and caveats about missing evidence stay in the JSON report,
 where operators read them: text the agent cannot act on only lengthens the
 prompt.
 
-### 2.1 Unobserved dispatch steps
+### 2.1 Unobserved steps
+
+A route step that the evidence shows existing tests do not make is an
+**unobserved step**. There are two kinds.
 
 A virtual call site with a receiver histogram ran in the instrumented image. An
 edge from that site to an implementation no observed receiver resolves to
 (§3.1) is an **unobserved dispatch step**: the static graph allows it, the run
-shows it never happened there. Route search prefers, among equally short routes,
-the one with fewer unobserved steps. A route that still needs one keeps it — the
-agent may yet make the site dispatch there — but the prompt names the step, so
-the route stops claiming the run went that way. A site without a histogram makes
-no claim: the compiler devirtualizes a site it proves monomorphic and profiles
-nothing there.
+shows it never happened there. A site without a histogram makes no claim: the
+compiler devirtualizes a site it proves monomorphic and profiles nothing there.
+
+A step from one covered method to another, through a call whose source line
+JaCoCo reports with no covered instruction, is an **unobserved call step**.
+Method coverage cannot say which caller covered the callee: one covered from
+elsewhere leaves the static edge offering a path no test took. The call's line
+is the evidence for that one call, and it is exact: JaCoCo runs on the JVM,
+unaffected by the native image's inlining, and the call tree keeps each invoke
+at its own bytecode position. A covered line says the call ran; an uncovered
+line is weaker, since JaCoCo marks an instruction covered only once a later
+probe runs, so a call that throws leaves its own line uncovered too. A step
+without a line, from a method with no line table or one JaCoCo does not report,
+makes no claim. The last call is never one: an uncovered line there is what
+miss classification expects (§3). On a commons-compress 1.23.0 replay, 28 of 57
+prompted routes held a step between covered methods that no sample showed; of
+those 49 steps, 31 sat on a covered line, 9 on an uncovered one, and 9 had no
+line. Preferring covered lines moved one route onto them, and the seven routes
+still needing such a step now name it.
+
+Route search prefers, among equally short routes, the one with fewer unobserved
+steps. A route that still needs one keeps it — the agent may yet make the site
+dispatch there, and the call may have run and thrown — but the prompt names the
+step, so the route stops claiming the run went that way.
 
 ### 2.2 Ranking
 
@@ -192,7 +213,7 @@ Distance is the primary ranking key. Every route has exactly one uncovered
 call, so distance counts no obstacles; it measures how far the shown evidence
 starts from the caller, and at distance 1 the caller is itself the sampled
 frame or public entry. Equal-distance ties break, in order, on
-fewer unobserved dispatch steps, a sampled join before a public-entry join, the
+fewer unobserved steps (§2.1), a sampled join before a public-entry join, the
 higher reach count of the target's diagnosis (§3), the higher sample count, and
 the canonical id. The reach count is how often the fork ran, or how often the
 dispatch site ran: how much existing test traffic arrives where the target

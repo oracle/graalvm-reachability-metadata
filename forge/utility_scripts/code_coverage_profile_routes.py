@@ -15,7 +15,7 @@ from __future__ import annotations
 import heapq
 from dataclasses import dataclass, field
 
-from utility_scripts.code_coverage_jacoco import JacocoMethodCoverage
+from utility_scripts.code_coverage_jacoco import JacocoLineCoverage, JacocoMethodCoverage
 from utility_scripts.code_coverage_model import MethodRef
 from utility_scripts.code_coverage_profile_graph import (
     CallGraph,
@@ -203,6 +203,56 @@ def execution_status(
     return executed
 
 
+def is_unobserved_step(edge: dict) -> bool:
+    """Whether the evidence shows existing tests do not make this route step
+    (§AR-code-coverage-deep-navigation.2.1)."""
+    return bool(edge.get("unobserved") or edge.get("unobserved_call"))
+
+
+def mark_unobserved_calls(
+        graph: CallGraph,
+        jacoco_methods: dict[str, JacocoMethodCoverage],
+        jacoco_lines: dict[str, dict[int, JacocoLineCoverage]],
+        executed: dict[int, bool],
+) -> int:
+    """Flag steps between covered methods whose call line JaCoCo reports uncovered.
+
+    Method coverage cannot say which caller covered the callee, so such a step
+    may offer a path no test took. The last call into an uncovered target is
+    left alone, and a step without a line makes no claim
+    (§AR-code-coverage-deep-navigation.2.1).
+    """
+    marked: int = 0
+    for caller, edges in graph.adjacency.items():
+        if executed.get(caller) is not True:
+            continue
+        caller_ref_id: str = translated_ref(caller, graph).canonical_id
+        coverage: JacocoMethodCoverage | None = (
+            jacoco_methods.get(graph.methods[caller].canonical_id)
+            or jacoco_methods.get(caller_ref_id)
+        )
+        if coverage is None or coverage.source_path is None:
+            continue
+        lines: dict[int, JacocoLineCoverage] = jacoco_lines.get(coverage.source_path, {})
+        for edge in edges:
+            source_line: int | None = edge.get("source_line")
+            line: JacocoLineCoverage | None = (
+                lines.get(source_line) if source_line is not None else None
+            )
+            if (
+                    edge["kind"] != "call"
+                    or edge.get("unobserved")
+                    or executed.get(edge["callee"]) is not True
+                    or translated_ref(edge["callee"], graph).canonical_id == caller_ref_id
+                    or line is None
+                    or line.covered
+            ):
+                continue
+            edge["unobserved_call"] = True
+            marked += 1
+    return marked
+
+
 def _multi_source_routes(
         graph: CallGraph,
         seeds: list[tuple[int, tuple, object]],
@@ -214,7 +264,7 @@ def _multi_source_routes(
     that last call (§AR-code-coverage-deep-navigation.2). A step that stays
     inside one source-level method, such as a factory stub reaching its
     constructor, is judged as part of that method. Among equally short routes,
-    the one with fewer unobserved dispatch steps wins before seed rank does
+    the one with fewer unobserved steps wins before seed rank does
     (§AR-code-coverage-deep-navigation.2.1).
     """
     routes = RouteMap()
@@ -254,7 +304,7 @@ def _multi_source_routes(
             if semantic_step and executed.get(callee) is False and current_status is not True:
                 continue
             candidate_distance: int = distance + semantic_step
-            candidate_unobserved: int = unobserved + int(edge.get("unobserved", False))
+            candidate_unobserved: int = unobserved + int(is_unobserved_step(edge))
             candidate_key = (candidate_distance, candidate_unobserved, seed_rank)
             if callee in best_keys and best_keys[callee] <= candidate_key:
                 continue
