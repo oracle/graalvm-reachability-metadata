@@ -1,0 +1,150 @@
+{
+  "base_commit": "1bfc2eb9ebcaab9a55e0914e85dedc07b4aff540",
+  "branch": "ai/kimeta/add-lib-support-com.github.jnr-jnr-constants-0.10.4-forge-10695-20261014082252228785-ab421e1e3f41",
+  "follow_ups": [],
+  "forge": {
+    "branch": "master",
+    "commit": "1bfc2eb9ebcaab9a55e0914e85dedc07b4aff540",
+    "monitored_branch": "origin/master"
+  },
+  "issue_number": 10695,
+  "library": {
+    "artifact": "jnr-constants",
+    "coordinates": "com.github.jnr:jnr-constants:0.10.4",
+    "group": "com.github.jnr",
+    "version": "0.10.4"
+  },
+  "local_ci_verification": {
+    "base_commit": "1bfc2eb9ebcaab9a55e0914e85dedc07b4aff540",
+    "commands": [
+      {
+        "command": [
+          "./gradlew",
+          "generateChangedIndexFileCoordinatesList",
+          "-PbaseCommit=origin/master",
+          "-PnewCommit=HEAD"
+        ],
+        "env": {
+          "GITHUB_OUTPUT": "/tmp/tmpcytqjx_4"
+        },
+        "gate": "changed-index-coordinates",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :generateChangedIndexFileCoordinatesList\n\n[Incubating] Problems report is available at: file:///home/oracle/oracle/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10695-27b19b45/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 3s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      },
+      {
+        "command": [
+          "./gradlew",
+          "validateIndexFiles",
+          "-Pcoordinates=com.github.jnr:jnr-constants"
+        ],
+        "env": {},
+        "gate": "index-file-validation",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :validateIndexFiles\n✅ metadata/com.github.jnr/jnr-constants/index.json: Valid\n\n[Incubating] Problems report is available at: file:///home/oracle/oracle/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10695-27b19b45/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 2s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      }
+    ],
+    "failure_command": null,
+    "failure_gate": null,
+    "final_commit": "37ef8062062796f26165af8b8abc72f856cee1b6",
+    "fixups": [],
+    "human_intervention_required": false,
+    "repo_fix_paths": [],
+    "status": "success"
+  },
+  "local_review": {
+    "changed_paths": [],
+    "decision": "approved",
+    "finding_body": "",
+    "finding_title": "",
+    "fix_note": "",
+    "model": "gpt-5.6-sol",
+    "review_comment": "Verified the contribution is scoped to com.github.jnr:jnr-constants:0.10.4, uses only reachability-metadata.json, and includes non-scaffold, version-agnostic public-API tests in a separate package with no Native Image skips, tolerated failures, compatibility overrides, or native build/run flags. The reported 6/6 dynamic-access coverage exceeds the new-library gate, and 6 covered calls do not trigger the mismatch guardrail against 7 reported metadata entries. The exact Forge finalization command passed all three native-test lanes, metadata validation, style checks, generated-test checks, and regenerated statistics without changing the publishable tree.",
+    "session_id": "3b3abd35c81d4427"
+  },
+  "metrics": {
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "path": "stats/com.github.jnr/jnr-constants/0.10.4/execution-metrics.json",
+    "summary": {
+      "cached_input_tokens_used": 604416,
+      "code_coverage_percent": 0.88,
+      "cost_usd": 1.0063,
+      "generated_loc": 48,
+      "input_tokens_used": 110102,
+      "iterations": 2,
+      "metadata_entries": 7,
+      "output_tokens_used": 5121,
+      "tested_library_loc": 247
+    },
+    "timestamp": "2026-10-14T08:22:52.228785Z"
+  },
+  "modifiers": {
+    "chunk_final": true,
+    "chunked_dynamic_access": false,
+    "human_intervention": false
+  },
+  "producer": "kimeta",
+  "publication_id": "forge-10695-20261014082252228785-ab421e1e3f41",
+  "render": {
+    "dynamic_access": null,
+    "dynamic_access_evidence": {
+      "covered_call_sites": [
+        "[reflection] java.lang.Class#forName(java.lang.String, boolean, java.lang.ClassLoader) <- jnr.constants.ConstantSet.getEnumClass(ConstantSet.java:143) (line 143)",
+        "[reflection] java.lang.Class#getField(java.lang.String) <- jnr.constants.ConstantSet.getLongField(ConstantSet.java:219) (line 219)",
+        "[reflection] java.lang.reflect.Field#get(java.lang.Object) <- jnr.constants.ConstantSet.getLongField(ConstantSet.java:220) (line 220)",
+        "[resources] java.lang.ClassLoader#getResource(java.lang.String) <- jnr.constants.ConstantSet.getEnumClass(ConstantSet.java:135) (line 135)",
+        "[resources] java.lang.ClassLoader#getResource(java.lang.String) <- jnr.constants.ConstantSet$1.run(ConstantSet.java:58) (line 58)",
+        "[reflection] java.lang.reflect.Array#newInstance(java.lang.Class, int) <- jnr.constants.platform.ConstantResolver.valueOf(ConstantResolver.java:211) (line 211)"
+      ],
+      "metadata_rules": [
+        "when `jnr.constants.platform.ConstantResolver` is reached, make `jnr.constants.platform.Signal[]` available for reflection",
+        "when `jnr.constants.ConstantSet` is reached, make `jnr.constants.platform.linux.Signal` available for reflection"
+      ]
+    },
+    "library_stats": {
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 4,
+            "totalCalls": 4
+          },
+          "resources": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 2,
+            "totalCalls": 2
+          }
+        },
+        "coverageRatio": 1.0,
+        "coveredCalls": 6,
+        "totalCalls": 6
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 1578,
+          "missed": 205680,
+          "ratio": 0.007614,
+          "total": 207258
+        },
+        "line": {
+          "covered": 247,
+          "missed": 27838,
+          "ratio": 0.008795,
+          "total": 28085
+        },
+        "method": {
+          "covered": 46,
+          "missed": 5324,
+          "ratio": 0.008566,
+          "total": 5370
+        }
+      },
+      "version": "0.10.4"
+    }
+  },
+  "schema_version": 1,
+  "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-sol",
+  "task_type": "library-new-request",
+  "template_type": "library-new-request",
+  "timestamp": "2026-10-14T08:22:52.228785Z"
+}
