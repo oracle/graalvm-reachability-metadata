@@ -47,7 +47,7 @@ public class TomcatStringManagerTest {
     void loadsAndFormatsTomcatMessages() {
         StringManager manager = StringManager.getManager("org.apache.tomcat.util");
 
-        assertThat(manager.getString("diagnostics.setPropertyFail", "name", "expected", "actual"))
+        assertThat(manager.getString("introspectionUtils.setPropertyError", "name", "expected", "actual"))
                 .contains("name", "expected", "actual");
     }
 
