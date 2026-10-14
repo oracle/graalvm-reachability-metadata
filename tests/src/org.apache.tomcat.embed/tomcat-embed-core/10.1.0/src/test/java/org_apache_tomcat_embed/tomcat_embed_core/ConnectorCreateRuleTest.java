@@ -13,7 +13,7 @@ import org.apache.catalina.connector.Connector;
 import org.apache.catalina.core.StandardService;
 import org.apache.catalina.core.StandardThreadExecutor;
 import org.apache.catalina.startup.ConnectorCreateRule;
-import org.apache.coyote.http11.AbstractHttp11Protocol;
+import org.apache.coyote.http11.AbstractHttp11JsseProtocol;
 import org.apache.tomcat.util.digester.Digester;
 import org.junit.jupiter.api.Test;
 
@@ -42,7 +42,7 @@ public class ConnectorCreateRuleTest {
         assertThat(service.findConnectors()).hasSize(1);
         Connector connector = service.findConnectors()[0];
         assertThat(connector.getProtocolHandler().getExecutor()).isSameAs(executor);
-        assertThat(((AbstractHttp11Protocol<?>) connector.getProtocolHandler()).getSslImplementationName())
+        assertThat(((AbstractHttp11JsseProtocol<?>) connector.getProtocolHandler()).getSslImplementationName())
                 .isEqualTo("example.ssl.Implementation");
     }
 }

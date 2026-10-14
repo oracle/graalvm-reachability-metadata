@@ -16,7 +16,8 @@ public class ServletResponseWrapperTest {
 
     @Test
     void delegatesContentTypeToWrappedCatalinaResponse() {
-        Response response = new Response(new org.apache.coyote.Response());
+        Response response = new Response();
+        response.setCoyoteResponse(new org.apache.coyote.Response());
         ServletResponseWrapper wrapper = new ServletResponseWrapper(response);
 
         wrapper.setContentType("text/plain");

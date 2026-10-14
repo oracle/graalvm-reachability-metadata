@@ -27,8 +27,10 @@ public class RequestTest {
     void createsInternalUpgradeHandlerAndSwitchesProtocols() throws Exception {
         org.apache.coyote.Request coyoteRequest = new org.apache.coyote.Request();
         org.apache.coyote.Response coyoteResponse = new org.apache.coyote.Response();
-        Request request = new Request(null, coyoteRequest);
-        Response response = new Response(coyoteResponse);
+        Request request = new Request(null);
+        request.setCoyoteRequest(coyoteRequest);
+        Response response = new Response();
+        response.setCoyoteResponse(coyoteResponse);
         StandardContext context = new StandardContext();
         context.setName("upgrade-test");
         context.setPath("/upgrade-test");

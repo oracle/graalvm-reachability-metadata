@@ -76,8 +76,10 @@ public class AuthenticatorBaseTest {
         Connector connector = new Connector();
         org.apache.coyote.Request coyoteRequest = new org.apache.coyote.Request();
         org.apache.coyote.Response coyoteResponse = new org.apache.coyote.Response();
-        Request request = new Request(connector, coyoteRequest);
-        Response response = new Response(coyoteResponse);
+        Request request = new Request(connector);
+        request.setCoyoteRequest(coyoteRequest);
+        Response response = new Response();
+        response.setCoyoteResponse(coyoteResponse);
         request.setResponse(response);
         response.setRequest(request);
         return request;

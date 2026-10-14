@@ -55,7 +55,7 @@ public class CatalinaBaseConfigurationSourceTest {
         try (Resource resource = source.getServerXml()) {
             String content = readUtf8(resource);
 
-            assertThat(resource.getURI().toString()).contains(CatalinaBaseConfigurationSource.LEGACY_SERVER_EMBED_XML);
+            assertThat(resource.getURI().toString()).contains("server-embed.xml");
             assertThat(content).contains("<Server");
             assertThat(content).contains("shutdown=\"SHUTDOWN\"");
         }

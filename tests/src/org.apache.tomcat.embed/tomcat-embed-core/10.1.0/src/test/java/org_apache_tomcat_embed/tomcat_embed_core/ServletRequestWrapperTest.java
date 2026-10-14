@@ -17,7 +17,8 @@ public class ServletRequestWrapperTest {
 
     @Test
     void delegatesAttributesToWrappedCatalinaRequest() {
-        Request request = new Request(new Connector(), new org.apache.coyote.Request());
+        Request request = new Request(new Connector());
+        request.setCoyoteRequest(new org.apache.coyote.Request());
         ServletRequestWrapper wrapper = new ServletRequestWrapper(request);
 
         wrapper.setAttribute("component", "tomcat");

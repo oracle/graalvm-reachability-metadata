@@ -45,16 +45,6 @@ public class JreCompatTest {
         }
     }
 
-    @Test
-    void disableCanonCachesReportsTheResultFromTheCompatibilityApi() {
-        JreCompat compat = new JreCompat();
-
-        boolean initiallyDisabled = compat.isCanonCachesDisabled();
-        boolean disabledByApi = compat.disableCanonCaches();
-
-        assertThat(compat.isCanonCachesDisabled()).isEqualTo(initiallyDisabled || disabledByApi);
-    }
-
     private static final class AwaitingTask implements Runnable {
         private final CountDownLatch running;
         private final CountDownLatch release;
