@@ -1,82 +1,18 @@
 # Rhei: Code Coverage Improvement
 **States:** code-coverage-improvement
 
-## Overview
+## Rules
 
-{% if benchmark %}
-This workspace benchmarks `{{coordinate}}` from fixed commit
-`{{benchmark_suite_commit}}` as run `{{benchmark_run_id}}`. It performs no
-GitHub issue or Project operation and publishes only compact metrics.
-{% else %}
-This workspace converts `{{repo}}` issue `#{{issue_number}}` into a bounded
-code coverage improvement workflow for one already-supported library. The issue
-must carry `{{issue_label}}` and identify a Maven coordinate in
-`group:artifact:version` form unless `{{coordinate}}` is provided.
-{% endif %}
-
-The workflow keeps generated code coverage tests under the dedicated suite path
-`tests/src/<group>/<artifact>/<test-version>/code-coverage-improvement` (a tracked
-extension suite inside the indexed test project), writes runtime evidence under
-`runtime/code-coverage/`, and runs two separately measured phases
-§AR-code-coverage-improvement. The first gives the agent 400 exact
-JaCoCo-uncovered public API entries, ordered by how much still-uncovered code
-each one unlocks over a bytecode call graph
-(§AR-code-coverage-improvement.4.1.1). The second gives it at most 200
-JaCoCo-uncovered internal methods as compact paths derived from sampled PGO and
-the Native Image static call graph. Each phase has an editing-pass budget of
-`coverage_iterations` passes, every pass is followed by a fresh JaCoCo result,
-and a phase ends early once two consecutive passes each cover fewer than
-`stop_threshold` methods (§AR-code-coverage-improvement.4.3).
-
-## Source
-
-{% if benchmark %}
-| Field | Value |
-|---|---|
-| Coordinate | `{{coordinate}}` |
-| Run ID | `{{benchmark_run_id}}` |
-| Fixed suite commit | `{{benchmark_suite_commit}}` |
-| Runner commit | `{{benchmark_runner_commit}}` |
-| Source worktree | `{{benchmark_source_worktree}}` |
-| Agent | `{{benchmark_agent}}` |
-| Configured model | `{{benchmark_model}}` |
-| Thinking | `{{benchmark_thinking}}` |
-{% else %}
-| Field | Value |
-|---|---|
-| Repository | `{{repo}}` |
-| Issue | `#{{issue_number}}` |
-| Required label | `{{issue_label}}` |
-| Coordinate override | `{{coordinate}}` |
-| Source checkout | `{{repo_checkout}}` |
-| Worktree root | `{{worktree_root}}` |
-| Work subdirectory | `{{work_subdir}}` |
-| Project owner | `{{project_owner}}` |
-| Project number | `{{project_number}}` |
-| TODO status | `{{todo_status}}` |
-| In-progress status | `{{in_progress_status}}` |
-{% endif %}
-
-## Verification
-
-The pipeline tasks run unreviewed: deterministic helpers, schema-validated
-artifacts, and zero-exit validation gates decide their completion. The coverage
-loops are measurement-driven: a deterministic measurement program
-(JaCoCo correlation; for the deep loop also sampled PGO and the static call
-graph) always writes the current report to one fixed location, decides
-whether the loop continues, and derives the cover prompt from that report in
-the same step; the cover agent always returns to
-measurement — a per-phase budget of `{{coverage_iterations}}` cover passes,
-ending early on `{{stop_window}}` consecutive passes below `{{stop_threshold}}`
-newly covered methods once `{{stop_floor}}` passes have run, with measurement
-step failures repaired through a bounded fix state. The
-finalization task runs as a deterministic program of numbered steps (read the
-conversion record, run checkstyle, run the JVM tests with the coverage
-suite, finalize
-metrics); a nonzero exit code is the number of the failed step and routes to
-`finalize-fix`, after which final evidence is remeasured and the steps re-run. `finalize-verify`
-then accepts the artifacts only on presence, schema validation of
-`final-metrics.json`, and metrics outcomes — never on an agent's own claim.
-Fixable failures are bounded by `{{fix_passes}}` pass(es); failed targets or an
-explicit `needsHumanIntervention` flag route directly to `human-intervention`.
-Finalization runs no Native Image validation at this stage.
+- Every turn is headless: your turn ending is the process exiting, and no
+  later turn wakes up to collect anything. Run every Gradle command in the
+  foreground with a timeout long enough to finish it; never start one in the
+  background and end the turn to wait for it.
+- Write the output your state names before your final message. A turn that
+  ends with it unwritten discards the whole invocation.
+- Relative artifact paths are relative to the Rhei workspace root, the
+  directory holding `states.yaml` and `index.rhei.md`, which is
+  `{{workspace_path}}` from your working directory. Resolve each against
+  it; never prefix one with the workspace directory name alone or guess a
+  prefix from your working directory.
+- Never edit `index.rhei.md`, `states.yaml`, or anything under `tasks/`: Rhei
+  owns the plan, and your state's output file is your only report.

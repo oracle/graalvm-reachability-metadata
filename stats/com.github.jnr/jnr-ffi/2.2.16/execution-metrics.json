@@ -1,0 +1,96 @@
+{
+  "add_new_library_support:2026-10-14": {
+    "timestamp": "2026-10-14T03:42:23.221152Z",
+    "library": "com.github.jnr:jnr-ffi:2.2.16",
+    "starting_commit": "8108897b143f98e7bd1e34a0cef01da3c77e6f40",
+    "ending_commit": "5d8ee788f0136af9cc47b3ecbb3d9bab0d1c51cc",
+    "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-sol",
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "status": "chunk_ready",
+    "stats": {
+      "version": "2.2.16",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 0.619048,
+            "coveredCalls": 52,
+            "totalCalls": 84
+          },
+          "resources": {
+            "coverageRatio": 0.0,
+            "coveredCalls": 0,
+            "totalCalls": 1
+          }
+        },
+        "coverageRatio": 0.611765,
+        "coveredCalls": 52,
+        "totalCalls": 85
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 8568,
+          "missed": 43874,
+          "ratio": 0.16338,
+          "total": 52442
+        },
+        "line": {
+          "covered": 1681,
+          "missed": 9041,
+          "ratio": 0.15678,
+          "total": 10722
+        },
+        "method": {
+          "covered": 455,
+          "missed": 2366,
+          "ratio": 0.16129,
+          "total": 2821
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "no_action",
+      "issue_number": 10697,
+      "issue_label": "library-new-request",
+      "library": "com.github.jnr:jnr-ffi:2.2.16",
+      "summary": "jnr-ffi is a pure-Java FFI layer over jffi, with asm and jnr-a64asm/x86asm/constants as transitive dependencies. Its tests can call libc functions such as getpid, strlen and abs through the normal scaffold, so no extra dependency, Docker image or environment setup is needed. The repo already carries sibling jnr tests (jnr-a64asm, jnr-x86asm, jnr-unixsocket) that use the standard scaffold.",
+      "deterministic_setup": [],
+      "agent_guidance": "",
+      "risks": [
+        "I did not run the tests or a native-image build. The no_action call rests on reading the library's dependencies and the sibling jnr tests already in the repo.",
+        "Native-image runs may need reflection and JNI metadata for jffi's native stubs and for the generated or ASM-based library loading. If so, the Gradle and native-image verification should catch it. It is not setup this decision can supply.",
+        "Tests should stick to libc symbols that exist on the Linux CI host."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#10697 Support for com.github.jnr:jnr-ffi:2.2.16; label=library-new-request; body_chars=0"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "sonnet",
+      "input_tokens_used": 4,
+      "output_tokens_used": 611
+    },
+    "metrics": {
+      "input_tokens_used": 270873,
+      "cached_input_tokens_used": 5264896,
+      "output_tokens_used": 29794,
+      "iterations": 6,
+      "cost_usd": 4.8806,
+      "generated_loc": 610,
+      "tested_library_loc": 1681,
+      "metadata_entries": 42,
+      "test_only_metadata_entries": 41,
+      "code_coverage_percent": 15.68
+    },
+    "artifacts": {
+      "metadata_file": "metadata/com.github.jnr/jnr-ffi/2.2.16/reachability-metadata.json"
+    }
+  }
+}
