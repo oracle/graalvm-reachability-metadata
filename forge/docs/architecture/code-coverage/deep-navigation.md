@@ -96,33 +96,41 @@ path is the evidence the agent follows, and a public-entry route has none to
 show. Public-entry routes stay ranked in the JSON report and enter the prompt
 once a later run samples a frame on their covered prefix.
 
-`Observed` shows every frame of the group's most frequent sampled stack,
-from the frame the test calls directly down to the group's divergence, the
-route's first method and its observed callee. A JDK frame stays in the chain,
-since it is evidence of how the library was reached: `DriverManager` ahead of
-the driver's `connect`, or a stream pipeline between a library method and the
-lambda it hands the stream. The chain names frames without lines, repeats the
-owner only when it changes, reads a constructor as `Type(...)`, and drops
-synthetic frames: factory stubs, lambda forms, and reflection accessors. The
-group ends with the test frames that make that call,
-under `Called from test`. Its header names the test method JUnit invoked and
-its file, relative to the indexed test project the prompt states once near its
-top. One step follows per test frame in call order, `line N: method()`, or
-`line N: lambda` for a lambda body, each indented one level deeper than the
-step that calls it; a frame in another file adds `in <file>`. A frame is a test
-frame when its source file exists in a test suite, not by its package, since a
-coverage test may live in a test-only package. The stack is the most frequent
-one with a test frame that reaches the group, whichever suite the test is in:
-the test that drives the code most is the one to start from. A second test, if
-shown, gets its own block. A group whose samples have no test frame
-keeps the chain from the stack's outermost library frame and gets no test
-block. A step's line comes from the sample's bci through the line table of the
+`Observed` is one chain: every frame of the group's most frequent sampled
+stack, from the test method JUnit invoked down to the group's divergence, the
+route's first method and its observed callee. Nothing between them is left out
+or moved aside, so the chain reads in the order the code ran: the test's own
+helpers and lambdas, an assertion library that runs a lambda for the test, a
+JDK frame such as `DriverManager` ahead of the driver's `connect` or a stream
+pipeline between a library method and the lambda it hands the stream. A route
+may start at the test frame itself when the test calls the library directly;
+the chain is the same. Splitting test frames from library frames was dropped
+after a commons-compress run showed both ways it misleads: 28 of 244 groups
+lost their test because the route started at it, and a lambda AssertJ ran
+appeared as the test method called from AssertJ.
+
+The chain repeats the owner only when it changes, reads a constructor as
+`Type(...)`, and drops synthetic frames: factory stubs, lambda forms, and
+reflection accessors. A test lambda reads `lambda`, whether the stack holds its
+body or only the generated class that runs it. A test frame carries its line,
+`flushes() (line 8)`, and the group names each test file under the chain,
+relative to the indexed test project the prompt states once near its top. A
+frame is a test frame when its source file exists in a test suite, not by its
+package, since a coverage test may live in a test-only package. The stack is
+the most frequent one with a test frame that reaches the group, whichever suite
+the test is in: the test that drives the code most is the one to start from. A
+group whose samples have no test frame starts the chain at the stack's
+outermost library frame.
+
+A test frame's line comes from the sample's bci through the line table of the
 compiled test class `codeCoverageTest` leaves in the worktree build output, and
 is shown only if the instruction at that bci still invokes the frame the sample
-shows next; otherwise the step reads `line ?`. A resource closed by
+shows next. A lambda seen only through its generated class has no bci of its
+own: its line is the one line of the test class's lambda bodies that invokes
+the next frame, shown only when exactly one does. A resource closed by
 try-with-resources resolves to the line javac attributes the implicit `close()`
-to. The block says that the test reached the observed frame, not necessarily
-the branch line below it, which comes from JaCoCo counters.
+to. A line says that the test reached the observed frame, not necessarily the
+branch line below it, which comes from JaCoCo counters.
 
 A method JaCoCo does not report takes the status, and for classification the
 lines, of the source-level method it stands for
@@ -148,7 +156,8 @@ The prompt navigation stays compact and groups paths that share a divergence:
 
 ```text
 Observed:
-JsonApi.read(...) → Parser.parse(...) → parseJson(...)
+JsonApiTest.readsObjects() (line 31) → readAll() (line 52) → JsonApi.read(...) → Parser.parse(...) → parseJson(...)
+Test file: src/test/java/com/example/JsonApiTest.java
 
 Uncovered paths:
 Parser.parse(...) → parseCSV(...)
@@ -158,10 +167,6 @@ Branches not taken:
   `com/example/Parser.java:40` (1 of 3 taken)
     branch 2 at line 43: parseCSV(...) at line 43
     branch 3 at line 45: parseXML(...) at line 45
-
-Called from test `JsonApiTest.readsObjects()` in `src/test/java/com/example/JsonApiTest.java`:
-  line 31: readsObjects()
-      line 52: readAll()
 ```
 
 `Observed` is sampled guidance only. Every `Uncovered paths` target is
