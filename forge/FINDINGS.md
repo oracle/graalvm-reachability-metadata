@@ -3,6 +3,12 @@
 Rendered by Forge from the pre-push branch review of §FS-local-branch-review.
 Newest entry first; every non-approval is recorded, including one a repair later cleared.
 
+## 2026-10-13 — com.google.oauth-client:google-oauth-client:1.35.0 (#10701)
+
+**Native Image flag was bundled as test metadata**
+
+The contribution put `--enable-url-protocols=https` in `src/test/resources/META-INF/native-image/.../native-image.properties`, violating the test contract's prohibition on test-authored Native Image configuration files. Removing it reproduced the underlying need in the GraalVM 25 lane: every OAuth scenario using the dependency's `GenericUrl` HTTPS path failed with `MalformedURLException` requesting that exact protocol option, while the non-URL HMAC test passed.
+
 ## 2026-10-12 — org.bytedeco:javacv:1.5.12 (#10687)
 
 **Avoid host GUI dependencies in JavaCV backend-selection tests**
