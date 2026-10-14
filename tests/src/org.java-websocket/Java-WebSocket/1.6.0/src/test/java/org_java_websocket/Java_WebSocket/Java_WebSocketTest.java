@@ -7,8 +7,10 @@
 package org_java_websocket.Java_WebSocket;
 
 import java.io.ByteArrayInputStream;
+import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.URI;
+import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.security.KeyFactory;
@@ -31,6 +33,7 @@ import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManagerFactory;
 
 import org.java_websocket.WebSocket;
+import org.java_websocket.client.DnsResolver;
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.drafts.Draft;
 import org.java_websocket.drafts.Draft_6455;
@@ -135,6 +138,39 @@ public class Java_WebSocketTest {
 
     @Test
     @Timeout(value = 55)
+    void clientConnectsThroughCustomDnsResolver() throws Exception {
+        RecordingServer server = new RecordingServer();
+        RecordingClient client = null;
+        try {
+            server.start();
+            assertThat(server.started.await(WAIT_SECONDS, TimeUnit.SECONDS)).isTrue();
+            assertThat(server.error.get()).isNull();
+
+            URI endpoint = URI.create("ws://websocket.invalid:" + server.getPort() + "/resolved");
+            RecordingDnsResolver resolver = new RecordingDnsResolver();
+            client = new RecordingClient(endpoint);
+            client.setDnsResolver(resolver);
+
+            assertThat(client.connectBlocking(WAIT_SECONDS, TimeUnit.SECONDS)).isTrue();
+            assertThat(server.opened.await(WAIT_SECONDS, TimeUnit.SECONDS)).isTrue();
+            assertThat(resolver.resolvedUri.get()).isEqualTo(endpoint);
+
+            client.send("dns-resolved-message");
+            assertThat(client.textMessages.poll(WAIT_SECONDS, TimeUnit.SECONDS))
+                    .isEqualTo("echo:dns-resolved-message");
+            assertThat(client.error.get()).isNull();
+            assertThat(server.error.get()).isNull();
+        } finally {
+            if (client != null && !client.isClosed()) {
+                client.close();
+                client.closed.await(WAIT_SECONDS, TimeUnit.SECONDS);
+            }
+            server.stop(NETWORK_TIMEOUT_MILLIS);
+        }
+    }
+
+    @Test
+    @Timeout(value = 55)
     void clientAndServerExchangeMessagesOverTls() throws Exception {
         SecureServer server = new SecureServer(serverSslContext());
         SecureClient client = null;
@@ -212,6 +248,16 @@ public class Java_WebSocketTest {
         byte[] bytes = new byte[copy.remaining()];
         copy.get(bytes);
         return bytes;
+    }
+
+    private static final class RecordingDnsResolver implements DnsResolver {
+        private final AtomicReference<URI> resolvedUri = new AtomicReference<>();
+
+        @Override
+        public InetAddress resolve(URI uri) throws UnknownHostException {
+            resolvedUri.set(uri);
+            return InetAddress.getByAddress(new byte[] {127, 0, 0, 1});
+        }
     }
 
     private static final class SecureServer extends WebSocketServer {
