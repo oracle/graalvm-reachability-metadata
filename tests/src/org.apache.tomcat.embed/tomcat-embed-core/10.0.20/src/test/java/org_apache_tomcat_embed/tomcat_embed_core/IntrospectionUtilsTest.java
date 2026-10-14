@@ -17,20 +17,41 @@ public class IntrospectionUtilsTest {
     void setsNamedAndFallbackPropertiesAndCallsMethods() throws Exception {
         ConfigurableComponent component = new ConfigurableComponent();
         VoidFallbackComponent voidFallback = new VoidFallbackComponent();
+        BooleanFallbackComponent booleanFallback = new BooleanFallbackComponent();
 
         boolean namedPropertySet = IntrospectionUtils.setProperty(component, "port", "8080");
         boolean fallbackPropertySet = IntrospectionUtils.setProperty(component, "mode", "strict");
         boolean voidFallbackPropertySet = IntrospectionUtils.setProperty(voidFallback, "mode", "lenient");
+        boolean booleanFallbackPropertySet = IntrospectionUtils.setProperty(booleanFallback, "mode", "safe");
         Object description = IntrospectionUtils.callMethodN(component, "describe",
                 new Object[] {"server", Integer.valueOf(2) }, new Class<?>[] {String.class, Integer.class });
 
         assertThat(namedPropertySet).isTrue();
         assertThat(fallbackPropertySet).isTrue();
         assertThat(voidFallbackPropertySet).isTrue();
+        assertThat(booleanFallbackPropertySet).isTrue();
         assertThat(component.getPort()).isEqualTo(8080);
         assertThat(component.getMode()).isEqualTo("strict");
         assertThat(voidFallback.getMode()).isEqualTo("lenient");
+        assertThat(booleanFallback.getProperty("mode")).isEqualTo("safe");
+        assertThat(IntrospectionUtils.getProperty(booleanFallback, "mode")).isEqualTo("safe");
         assertThat(description).isEqualTo("server-2");
+    }
+
+    public static final class BooleanFallbackComponent {
+        private String mode;
+
+        public boolean setProperty(String name, String value) {
+            if (!"mode".equals(name)) {
+                return false;
+            }
+            mode = value;
+            return true;
+        }
+
+        public String getProperty(String name) {
+            return "mode".equals(name) ? mode : null;
+        }
     }
 
     public static final class VoidFallbackComponent {

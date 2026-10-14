@@ -18,9 +18,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class BaseModelMBeanTest extends BaseModelMBean {
-
-    private String localText = "local";
+public class BaseModelMBeanTest {
 
     @Test
     void invokesManagedBeanAndResourceMethodsThroughDynamicMBeanApi() throws Exception {
@@ -57,22 +55,10 @@ public class BaseModelMBeanTest extends BaseModelMBean {
         assertThat(resourceMBean.getAttribute("resourceText")).isEqualTo("resolvedByClassForName");
     }
 
-    public String getLocalText() {
-        return localText;
-    }
-
-    public void setLocalText(String localText) {
-        this.localText = localText;
-    }
-
-    public String describeLocal(String prefix) {
-        return prefix + ':' + localText;
-    }
-
     private static DynamicMBean createMBean(Object resource, AttributeInfo attribute, OperationInfo operation)
             throws Exception {
         ManagedBean managedBean = new ManagedBean();
-        managedBean.setClassName(BaseModelMBeanTest.class.getName());
+        managedBean.setClassName(LocalModelMBean.class.getName());
         managedBean.setName("testBean");
         managedBean.setDescription("Test managed bean");
         managedBean.addAttribute(attribute);
@@ -119,6 +105,22 @@ public class BaseModelMBeanTest extends BaseModelMBean {
         parameter.setDescription("Operation parameter");
         parameter.setType(type);
         return parameter;
+    }
+
+    public static class LocalModelMBean extends BaseModelMBean {
+        private String localText = "local";
+
+        public String getLocalText() {
+            return localText;
+        }
+
+        public void setLocalText(String localText) {
+            this.localText = localText;
+        }
+
+        public String describeLocal(String prefix) {
+            return prefix + ':' + localText;
+        }
     }
 
     public static class ManagedResource {
