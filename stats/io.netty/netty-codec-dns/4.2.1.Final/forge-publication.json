@@ -1,0 +1,119 @@
+{
+  "base_commit": "b0aa9e895ed0da4eeb8477253f179fbcce7e0208",
+  "branch": "ai/kimeta/fix-native-image-run-io.netty-netty-codec-dns-4.2.1.Final-forge-9339-20261013202844105313-340a46b49a29",
+  "follow_ups": [],
+  "forge": {
+    "branch": "master",
+    "commit": "b0aa9e895ed0da4eeb8477253f179fbcce7e0208",
+    "monitored_branch": "origin/master"
+  },
+  "issue_number": 9339,
+  "library": {
+    "artifact": "netty-codec-dns",
+    "coordinates": "io.netty:netty-codec-dns:4.2.1.Final",
+    "group": "io.netty",
+    "version": "4.2.1.Final"
+  },
+  "local_ci_verification": {
+    "base_commit": "b0aa9e895ed0da4eeb8477253f179fbcce7e0208",
+    "commands": [
+      {
+        "command": [
+          "./gradlew",
+          "generateChangedIndexFileCoordinatesList",
+          "-PbaseCommit=origin/master",
+          "-PnewCommit=HEAD"
+        ],
+        "env": {
+          "GITHUB_OUTPUT": "/tmp/tmp2o45mm32"
+        },
+        "gate": "changed-index-coordinates",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :generateChangedIndexFileCoordinatesList\n\n[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata-worker3/forge/local_repositories/forge_worktrees/9339-4cb21c24/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 2s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      },
+      {
+        "command": [
+          "./gradlew",
+          "validateIndexFiles",
+          "-Pcoordinates=io.netty:netty-codec-dns io.netty:netty-common io.netty:netty-transport"
+        ],
+        "env": {},
+        "gate": "index-file-validation",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :validateIndexFiles\n✅ metadata/io.netty/netty-codec-dns/index.json: Valid\n✅ metadata/io.netty/netty-common/index.json: Valid\n✅ metadata/io.netty/netty-transport/index.json: Valid\n\n[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata-worker3/forge/local_repositories/forge_worktrees/9339-4cb21c24/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 1s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      }
+    ],
+    "failure_command": null,
+    "failure_gate": null,
+    "final_commit": "6be9cf32cdebafd10ce8735ff8b610a8c48cb5d8",
+    "fixups": [],
+    "human_intervention_required": true,
+    "repo_fix_paths": [
+      "metadata/io.netty/netty-common/4.2.1.Final/reachability-metadata.json",
+      "metadata/io.netty/netty-common/index.json",
+      "metadata/io.netty/netty-transport/4.2.1.Final/reachability-metadata.json",
+      "metadata/io.netty/netty-transport/index.json",
+      "stats/io.netty/netty-common/4.2.1.Final/stats.json",
+      "stats/io.netty/netty-transport/4.2.1.Final/stats.json"
+    ],
+    "status": "success"
+  },
+  "local_review": {
+    "changed_paths": [],
+    "decision": "approved",
+    "finding_body": "",
+    "finding_title": "",
+    "fix_note": "",
+    "model": "gpt-5.6-sol",
+    "review_comment": "Reviewed the full contribution against the fixes-native-image-run-fail rules. The Netty 4.2.1 default AdaptivePoolingAllocator failure is addressed by selecting the public unpooled allocator while preserving all DNS encode/decode assertions; JVM, current-defaults, future-defaults, and latest-GraalVM runs passed. The netty-common and netty-transport changes are permitted routed-owner bucket splits: inherited entries are unchanged, additions use owner allowed-package conditions, and matching indexes and stats are present. Index and metadata validation passed, no legacy metadata or Native Image dodging was introduced, and dynamic-access coverage passes because both versions report 0 total calls. The resolved line coverage changes only from 56.212% to 55.804% and is not a blocking fixes-* gate.",
+    "session_id": "dfa6a3459e604943"
+  },
+  "metrics": {
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "path": "stats/io.netty/netty-codec-dns/4.2.1.Final/execution-metrics.json",
+    "summary": {
+      "cached_input_tokens_used": 0,
+      "code_coverage_percent": 55.8,
+      "cost_usd": 0.0,
+      "input_tokens_used": 0,
+      "iterations": 0,
+      "metadata_entries": 25,
+      "output_tokens_used": 0,
+      "previous_library_coverage_percent": 56.21,
+      "previous_library_metadata_entries": 37,
+      "tested_library_loc": 649
+    },
+    "timestamp": "2026-10-13T20:28:44.105313Z"
+  },
+  "modifiers": {
+    "chunk_final": true,
+    "chunked_dynamic_access": false,
+    "human_intervention": true
+  },
+  "previous_library": {
+    "artifact": "netty-codec-dns",
+    "coordinates": "io.netty:netty-codec-dns:4.1.74.Final",
+    "group": "io.netty",
+    "version": "4.1.74.Final"
+  },
+  "producer": "kimeta",
+  "publication_id": "forge-9339-20261013202844105313-340a46b49a29",
+  "render": {
+    "baseline_metadata_entries": 37,
+    "baseline_stats": {
+      "coverage_percent": 56.211999999999996
+    },
+    "baseline_test_only_entries": 0,
+    "current_metadata_entries": 25,
+    "current_test_only_entries": 0,
+    "library_stats": {
+      "coverage_percent": 55.803999999999995
+    }
+  },
+  "schema_version": 1,
+  "strategy_name": "library_update_pi_gpt-5.6-sol",
+  "task_type": "fixes-native-image-run-fail",
+  "template_type": "fixes-native-image-run-fail",
+  "timestamp": "2026-10-13T20:28:44.105313Z"
+}

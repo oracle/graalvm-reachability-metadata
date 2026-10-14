@@ -1,0 +1,115 @@
+{
+  "fix_ni_run:2026-10-13": {
+    "timestamp": "2026-10-13T20:28:44.105313Z",
+    "library": "io.netty:netty-codec-dns:4.2.1.Final",
+    "starting_commit": "de5d2d57eb656bed9719d4243352e23a3a252f50",
+    "ending_commit": "22537344417d6b3368dee627880507f7cdc36d58",
+    "previous_library": "io.netty:netty-codec-dns:4.1.74.Final",
+    "strategy_name": "library_update_pi_gpt-5.6-sol",
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "status": "success",
+    "stats": {
+      "version": "4.2.1.Final",
+      "dynamicAccess": {
+        "breakdown": {},
+        "coverageRatio": 1.0,
+        "coveredCalls": 0,
+        "totalCalls": 0
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 2989,
+          "missed": 2060,
+          "ratio": 0.591998,
+          "total": 5049
+        },
+        "line": {
+          "covered": 649,
+          "missed": 514,
+          "ratio": 0.55804,
+          "total": 1163
+        },
+        "method": {
+          "covered": 195,
+          "missed": 100,
+          "ratio": 0.661017,
+          "total": 295
+        }
+      }
+    },
+    "previous_library_stats": {
+      "version": "4.1.74.Final",
+      "dynamicAccess": {
+        "breakdown": {},
+        "coverageRatio": 1.0,
+        "coveredCalls": 0,
+        "totalCalls": 0
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 2942,
+          "missed": 2011,
+          "ratio": 0.593983,
+          "total": 4953
+        },
+        "line": {
+          "covered": 647,
+          "missed": 504,
+          "ratio": 0.56212,
+          "total": 1151
+        },
+        "method": {
+          "covered": 194,
+          "missed": 98,
+          "ratio": 0.664384,
+          "total": 292
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "no_action",
+      "issue_number": 9339,
+      "issue_label": "fails-native-image-run",
+      "library": "io.netty:netty-codec-dns:4.2.1.Final",
+      "summary": "netty-codec-dns is a pure in-memory DNS codec exercised via EmbeddedChannel; its 4.2.x POM pulls netty-common/buffer/transport/codec-base as ordinary transitive compile deps, matching already-integrated 4.2.x Netty libraries (netty-pkitesting 4.2.1/4.2.2.Final, netty-transport-classes-io_uring 4.2.1/4.2.3.Final) which needed no extra dependency, Docker image, or env/system-property setup under the standard scaffold. No Netty-DNS-specific setup precedent exists in docs or sibling test configs.",
+      "deterministic_setup": [],
+      "agent_guidance": "",
+      "risks": [
+        "The issue carries no failure evidence (empty body/body_error), so the actual native-image run failure cause is unknown; it may be a reachability-metadata gap or a 4.1→4.2 API shape difference the generated test needs to adapt to, not an infrastructure/setup gap. Treat this as a normal generate-and-fix iteration."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#9339 [Automation] native-image run fails for io.netty:netty-codec-dns:4.2.1.Final; label=fails-native-image-run; body_chars=0"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "6 existing test file path(s) included"
+        }
+      ],
+      "current_library": "io.netty:netty-codec-dns:4.1.74.Final",
+      "new_version": "4.2.1.Final",
+      "model": "sonnet",
+      "input_tokens_used": 28,
+      "output_tokens_used": 10736
+    },
+    "metrics": {
+      "input_tokens_used": 0,
+      "cached_input_tokens_used": 0,
+      "output_tokens_used": 0,
+      "iterations": 0,
+      "cost_usd": 0.0,
+      "tested_library_loc": 649,
+      "metadata_entries": 25,
+      "previous_library_metadata_entries": 37,
+      "code_coverage_percent": 55.8,
+      "previous_library_coverage_percent": 56.21
+    },
+    "artifacts": {
+      "metadata_file": "metadata/io.netty/netty-codec-dns/4.2.1.Final/reachability-metadata.json"
+    }
+  }
+}
