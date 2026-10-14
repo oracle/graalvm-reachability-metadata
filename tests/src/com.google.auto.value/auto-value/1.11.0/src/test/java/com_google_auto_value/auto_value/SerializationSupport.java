@@ -13,7 +13,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
 public final class SerializationSupport {
-    private SerializationSupport() {}
+    private SerializationSupport() { }
 
     @SuppressWarnings("unchecked")
     public static <T> T roundTrip(T value) throws IOException, ClassNotFoundException {

@@ -17,7 +17,8 @@ import org.junit.jupiter.api.Test;
 public class AnnotationSpecTest {
     @Test
     void rendersRuntimeAnnotationMembers() {
-        Label label = AnnotationSpecTest.class.getAnnotation(Label.class);
+        Class<AnnotationSpecTest> annotationSpecTestAnnotationAccess = AnnotationSpecTest.class;
+        Label label = annotationSpecTestAnnotationAccess.getAnnotation(Label.class);
 
         AnnotationSpec spec = AnnotationSpec.get(label);
 
