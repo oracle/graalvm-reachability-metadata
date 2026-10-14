@@ -6,10 +6,18 @@
  */
 package org_java_websocket.Java_WebSocket;
 
+import java.io.ByteArrayInputStream;
 import java.net.InetSocketAddress;
 import java.net.URI;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
+import java.security.KeyFactory;
+import java.security.KeyStore;
+import java.security.PrivateKey;
+import java.security.cert.Certificate;
+import java.security.cert.CertificateFactory;
+import java.security.spec.PKCS8EncodedKeySpec;
+import java.util.Base64;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.BlockingQueue;
@@ -17,6 +25,10 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
+
+import javax.net.ssl.KeyManagerFactory;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManagerFactory;
 
 import org.java_websocket.WebSocket;
 import org.java_websocket.client.WebSocketClient;
@@ -29,6 +41,7 @@ import org.java_websocket.framing.Framedata;
 import org.java_websocket.handshake.ClientHandshake;
 import org.java_websocket.handshake.ServerHandshake;
 import org.java_websocket.protocols.Protocol;
+import org.java_websocket.server.DefaultSSLWebSocketServerFactory;
 import org.java_websocket.server.WebSocketServer;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
@@ -38,6 +51,21 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class Java_WebSocketTest {
     private static final long WAIT_SECONDS = 10;
     private static final int NETWORK_TIMEOUT_MILLIS = 10_000;
+    private static final char[] KEY_PASSWORD = "websocket-test".toCharArray();
+    private static final String PRIVATE_KEY =
+            "MIGHAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBG0wawIBAQQgnHZDTVkJLNJfiEJhsA3t"
+                    + "fh60vSzIJv2TN8B8IViUP2ShRANCAASkKLbnxbZ8A55rjkfuFxhkUiR4zu0c4HJz"
+                    + "+ojUWXvNzHHSrCMCXd97CB2aj2Rvcf/wAWtXgbz1mXeIie+U53Qr";
+    private static final String CERTIFICATE =
+            "MIIBmjCCAUGgAwIBAgIUDJtdSyrNhdJXhV4FnC+2gLt1OkQwCgYIKoZIzj0EAwIwFDES"
+                    + "MBAGA1UEAwwJbG9jYWxob3N0MCAXDTI2MTAxNDAyMTM1MloYDzIxMjYwOTIwMDIxMz"
+                    + "UyWjAUMRIwEAYDVQQDDAlsb2NhbGhvc3QwWTATBgcqhkjOPQIBBggqhkjOPQMBBwNC"
+                    + "AASkKLbnxbZ8A55rjkfuFxhkUiR4zu0c4HJz+ojUWXvNzHHSrCMCXd97CB2aj2Rvcf"
+                    + "/wAWtXgbz1mXeIie+U53Qro28wbTAdBgNVHQ4EFgQUwY960J17JcA1xn8LtgTISjDn"
+                    + "b34wHwYDVR0jBBgwFoAUwY960J17JcA1xn8LtgTISjDnb34wDwYDVR0TAQH/BAUwAw"
+                    + "EB/zAaBgNVHREEEzARgglsb2NhbGhvc3SHBH8AAAEwCgYIKoZIzj0EAwIDRwAwRAIg"
+                    + "N3vWT5Y5SzmqmE9VARkU5+QkW+BHy4BPeNVbsiSXfoUCIDyMYpaFRb0UZCQFBU34EF"
+                    + "oN64e51MHRWr4JywIJSzbP";
 
     @Test
     @Timeout(value = 55)
@@ -105,6 +133,74 @@ public class Java_WebSocketTest {
         }
     }
 
+    @Test
+    @Timeout(value = 55)
+    void clientAndServerExchangeMessagesOverTls() throws Exception {
+        SecureServer server = new SecureServer(serverSslContext());
+        SecureClient client = null;
+        try {
+            server.start();
+            assertThat(server.started.await(WAIT_SECONDS, TimeUnit.SECONDS)).isTrue();
+            assertThat(server.error.get()).isNull();
+
+            URI endpoint = URI.create("wss://127.0.0.1:" + server.getPort() + "/secure");
+            client = new SecureClient(endpoint, clientSslContext());
+            assertThat(client.connectBlocking(WAIT_SECONDS, TimeUnit.SECONDS)).isTrue();
+            assertThat(client.opened.await(WAIT_SECONDS, TimeUnit.SECONDS)).isTrue();
+            assertThat(server.opened.await(WAIT_SECONDS, TimeUnit.SECONDS)).isTrue();
+
+            assertThat(client.hasSSLSupport()).isTrue();
+            assertThat(client.getSSLSession().getProtocol()).startsWith("TLS");
+            assertThat(server.connection.get().hasSSLSupport()).isTrue();
+            assertThat(server.connection.get().getSSLSession().getProtocol()).startsWith("TLS");
+
+            client.send("confidential-message");
+            assertThat(client.messages.poll(WAIT_SECONDS, TimeUnit.SECONDS))
+                    .isEqualTo("secure-ack:confidential-message");
+            assertThat(client.error.get()).isNull();
+            assertThat(server.error.get()).isNull();
+        } finally {
+            if (client != null && !client.isClosed()) {
+                client.close();
+                client.closed.await(WAIT_SECONDS, TimeUnit.SECONDS);
+            }
+            server.stop(NETWORK_TIMEOUT_MILLIS);
+        }
+    }
+
+    private static SSLContext serverSslContext() throws Exception {
+        Certificate certificate = certificate();
+        PrivateKey privateKey = KeyFactory.getInstance("EC")
+                .generatePrivate(new PKCS8EncodedKeySpec(Base64.getDecoder().decode(PRIVATE_KEY)));
+        KeyStore keyStore = KeyStore.getInstance(KeyStore.getDefaultType());
+        keyStore.load(null, null);
+        keyStore.setKeyEntry("server", privateKey, KEY_PASSWORD, new Certificate[] {certificate});
+
+        KeyManagerFactory keyManagerFactory = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
+        keyManagerFactory.init(keyStore, KEY_PASSWORD);
+        SSLContext context = SSLContext.getInstance("TLS");
+        context.init(keyManagerFactory.getKeyManagers(), null, null);
+        return context;
+    }
+
+    private static SSLContext clientSslContext() throws Exception {
+        KeyStore trustStore = KeyStore.getInstance(KeyStore.getDefaultType());
+        trustStore.load(null, null);
+        trustStore.setCertificateEntry("server", certificate());
+
+        TrustManagerFactory trustManagerFactory =
+                TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
+        trustManagerFactory.init(trustStore);
+        SSLContext context = SSLContext.getInstance("TLS");
+        context.init(null, trustManagerFactory.getTrustManagers(), null);
+        return context;
+    }
+
+    private static Certificate certificate() throws Exception {
+        byte[] encoded = Base64.getDecoder().decode(CERTIFICATE);
+        return CertificateFactory.getInstance("X.509").generateCertificate(new ByteArrayInputStream(encoded));
+    }
+
     private static Draft compressedChatDraft() {
         PerMessageDeflateExtension extension = new PerMessageDeflateExtension();
         extension.setThreshold(64);
@@ -116,6 +212,79 @@ public class Java_WebSocketTest {
         byte[] bytes = new byte[copy.remaining()];
         copy.get(bytes);
         return bytes;
+    }
+
+    private static final class SecureServer extends WebSocketServer {
+        private final CountDownLatch started = new CountDownLatch(1);
+        private final CountDownLatch opened = new CountDownLatch(1);
+        private final AtomicReference<WebSocket> connection = new AtomicReference<>();
+        private final AtomicReference<Exception> error = new AtomicReference<>();
+
+        private SecureServer(SSLContext context) {
+            super(new InetSocketAddress("127.0.0.1", 0));
+            setWebSocketFactory(new DefaultSSLWebSocketServerFactory(context));
+        }
+
+        @Override
+        public void onStart() {
+            started.countDown();
+        }
+
+        @Override
+        public void onOpen(WebSocket socket, ClientHandshake handshake) {
+            connection.set(socket);
+            opened.countDown();
+        }
+
+        @Override
+        public void onMessage(WebSocket socket, String message) {
+            socket.send("secure-ack:" + message);
+        }
+
+        @Override
+        public void onClose(WebSocket socket, int code, String reason, boolean remote) {
+            connection.compareAndSet(socket, null);
+        }
+
+        @Override
+        public void onError(WebSocket socket, Exception exception) {
+            error.compareAndSet(null, exception);
+            started.countDown();
+            opened.countDown();
+        }
+    }
+
+    private static final class SecureClient extends WebSocketClient {
+        private final BlockingQueue<String> messages = new LinkedBlockingQueue<>();
+        private final CountDownLatch opened = new CountDownLatch(1);
+        private final CountDownLatch closed = new CountDownLatch(1);
+        private final AtomicReference<Exception> error = new AtomicReference<>();
+
+        private SecureClient(URI endpoint, SSLContext context) {
+            super(endpoint);
+            setSocketFactory(context.getSocketFactory());
+        }
+
+        @Override
+        public void onOpen(ServerHandshake handshake) {
+            opened.countDown();
+        }
+
+        @Override
+        public void onMessage(String message) {
+            messages.add(message);
+        }
+
+        @Override
+        public void onClose(int code, String reason, boolean remote) {
+            closed.countDown();
+        }
+
+        @Override
+        public void onError(Exception exception) {
+            error.compareAndSet(null, exception);
+            opened.countDown();
+        }
     }
 
     private static final class RecordingServer extends WebSocketServer {
