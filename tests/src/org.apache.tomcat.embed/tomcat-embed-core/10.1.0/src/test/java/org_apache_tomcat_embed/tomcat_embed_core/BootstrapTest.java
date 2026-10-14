@@ -6,10 +6,13 @@
  */
 package org_apache_tomcat_embed.tomcat_embed_core;
 
+import java.io.IOException;
+import java.io.PrintStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
 import org.apache.catalina.startup.Bootstrap;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
@@ -19,11 +22,47 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Order(2)
 public class BootstrapTest {
 
+    private final PrintStream originalOut = System.out;
+    private final PrintStream originalErr = System.err;
+
     @TempDir
     private Path temporaryDirectory;
 
+    @AfterEach
+    void restoreStandardStreams() {
+        System.setOut(originalOut);
+        System.setErr(originalErr);
+    }
+
     @Test
-    void initializesLoadsStartsAndStopsCatalinaDaemon() throws Exception {
+    void delegatesSupportedLifecycleCommandsToCatalina() throws Exception {
+        Path serverXml = createServerXml();
+        String[] startArguments = {"-config", serverXml.toString(), "-nonaming", "start"};
+
+        Bootstrap.main(startArguments);
+        assertThat(System.getProperty("catalina.useNaming")).isEqualTo("false");
+
+        Bootstrap lifecycle = new Bootstrap();
+        lifecycle.init(startArguments);
+        lifecycle.setAwait(false);
+        try {
+            lifecycle.start();
+            assertThat(Bootstrap.getCatalinaBaseFile()).isDirectory();
+            assertThat(Bootstrap.getCatalinaHomeFile()).isDirectory();
+        } finally {
+            lifecycle.stop();
+        }
+
+        Bootstrap stopWithArguments = new Bootstrap();
+        stopWithArguments.init(startArguments);
+        stopWithArguments.stopServer(new String[] {"stop"});
+
+        Bootstrap stopWithoutArguments = new Bootstrap();
+        stopWithoutArguments.init(startArguments);
+        stopWithoutArguments.stopServer();
+    }
+
+    private Path createServerXml() throws IOException {
         Path serverXml = temporaryDirectory.resolve("server.xml");
         Files.writeString(serverXml, """
                 <?xml version="1.0" encoding="UTF-8"?>
@@ -35,17 +74,6 @@ public class BootstrapTest {
                   </Service>
                 </Server>
                 """);
-
-        System.setProperty("catalina.base", Path.of("").toAbsolutePath().toString());
-        Bootstrap bootstrap = new Bootstrap();
-        bootstrap.init(new String[] {"-config", serverXml.toString(), "-nonaming", "start"});
-        bootstrap.setAwait(false);
-
-        try {
-            bootstrap.start();
-            assertThat(Bootstrap.getCatalinaBaseFile()).isDirectory();
-        } finally {
-            bootstrap.stop();
-        }
+        return serverXml;
     }
 }
