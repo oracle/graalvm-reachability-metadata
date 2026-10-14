@@ -25,7 +25,12 @@ from utility_scripts.code_coverage_profile_graph import (
     translated_ref,
 )
 from utility_scripts.code_coverage_profile_inputs import TargetState
-from utility_scripts.code_coverage_profile_routes import RouteMap, Sample, route_to
+from utility_scripts.code_coverage_profile_routes import (
+    RouteMap,
+    Sample,
+    is_unobserved_step,
+    route_to,
+)
 
 MAX_LISTED_METHODS = 200
 
@@ -87,8 +92,9 @@ class NearCallRecord:
 
     @property
     def unobserved_steps(self) -> list[dict]:
-        """Route edges a profiled call site never dispatched to."""
-        return [edge for edge in self.static_path_edges if edge.get("unobserved")]
+        """Route edges the evidence shows existing tests do not take
+        (§AR-code-coverage-deep-navigation.2.1)."""
+        return [edge for edge in self.static_path_edges if is_unobserved_step(edge)]
 
 
 def build_record(
@@ -193,7 +199,7 @@ def _edge_to_json(edge: dict, graph: CallGraph) -> dict:
         "invokeId": edge.get("invoke_id"),
         "isDirect": edge["is_direct"],
         "kind": edge["kind"],
-        "unobserved": bool(edge.get("unobserved")),
+        "unobserved": is_unobserved_step(edge),
     }
 
 
@@ -281,6 +287,7 @@ def record_to_json(
             {
                 "caller": format_static_id(edge["caller"], graph),
                 "callee": format_static_id(edge["callee"], graph),
+                "kind": "call" if edge.get("unobserved_call") else "dispatch",
             }
             for edge in record.unobserved_steps
         ],

@@ -171,7 +171,7 @@ class UnobservedRouteTests(unittest.TestCase):
         self.assertEqual(by_id[target.canonical_id]["unobservedSteps"], [])
         self.assertEqual(
             by_id[via_unseen.canonical_id]["unobservedSteps"],
-            [{"caller": entry.canonical_id, "callee": via_unseen.canonical_id}],
+            [{"caller": entry.canonical_id, "callee": via_unseen.canonical_id, "kind": "dispatch"}],
         )
         markdown_path: str = os.path.join(tempfile.mkdtemp(prefix="unobserved-"), "prompt.md")
         self.addCleanup(shutil.rmtree, os.path.dirname(markdown_path), True)
