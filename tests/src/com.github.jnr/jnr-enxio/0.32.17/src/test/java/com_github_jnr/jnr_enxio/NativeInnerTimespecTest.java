@@ -9,13 +9,16 @@ package com_github_jnr.jnr_enxio;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import jnr.enxio.channels.Native;
+import jnr.ffi.Runtime;
 import jnr.ffi.Struct;
 import org.junit.jupiter.api.Test;
 
 public class NativeInnerTimespecTest {
     @Test
     void representsNativeTimeoutValues() {
-        Native.Timespec timeout = new Native.Timespec(12, 345_000_000);
+        Native.Timespec timeout = new Native.Timespec(Runtime.getSystemRuntime());
+        timeout.tv_sec.set(12);
+        timeout.tv_nsec.set(345_000_000);
 
         assertThat(timeout.tv_sec.get()).isEqualTo(12);
         assertThat(timeout.tv_nsec.get()).isEqualTo(345_000_000);
