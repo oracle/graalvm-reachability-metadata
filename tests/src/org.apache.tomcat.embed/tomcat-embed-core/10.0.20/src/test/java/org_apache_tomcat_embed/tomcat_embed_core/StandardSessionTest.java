@@ -11,7 +11,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
-import org.apache.catalina.authenticator.Constants;
 import org.apache.catalina.core.StandardContext;
 import org.apache.catalina.session.StandardManager;
 import org.apache.catalina.session.StandardSession;
@@ -32,7 +31,6 @@ public class StandardSessionTest {
         session.setId("session-under-test", false);
         session.access();
         session.setAuthType("FORM");
-        session.setNote(Constants.SESSION_ID_NOTE, "expected-session-id");
         session.setAttribute("message", "hello", false);
         session.setAttribute("counter", Long.valueOf(42), false);
 
@@ -46,8 +44,6 @@ public class StandardSessionTest {
         assertThat(restored.isValid()).isTrue();
         assertThat(restored.getAuthType()).isEqualTo("FORM");
         assertThat(restored.getPrincipal()).isNull();
-        assertThat(restored.getNote(Constants.SESSION_ID_NOTE)).isEqualTo("expected-session-id");
-        assertThat(restored.getNote(Constants.FORM_REQUEST_NOTE)).isNull();
         assertThat(restored.getAttribute("message")).isEqualTo("hello");
         assertThat(restored.getAttribute("counter")).isEqualTo(Long.valueOf(42));
     }

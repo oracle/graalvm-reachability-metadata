@@ -48,6 +48,7 @@ public class BeanFactoryTest {
 
     private static ConfigurableResource createConfiguredResource() throws Exception {
         ResourceRef reference = new ResourceRef(ConfigurableResource.class.getName(), null, null, null, true);
+        reference.add(new StringRefAddr("forceString", "endpoint"));
         reference.add(new StringRefAddr("name", "configured-resource"));
         reference.add(new StringRefAddr("port", "8080"));
         reference.add(new StringRefAddr("enabled", "true"));
