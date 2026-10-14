@@ -1,0 +1,16 @@
+## Human intervention needed
+
+The automated job failed before test generation, during `claim/route_to_driver()`. The router could not find a compatible version-backfill baseline for `org.eclipse.jetty:jetty-util:10.0.0`: the index contains only the `12.0.9` metadata/test baseline, and Forge rejects a newer-major suite for a historical `10.x` backfill.
+
+Preserved work branch: https://github.com/oracle/graalvm-reachability-metadata/tree/ai%2Fkimeta%2Fhuman-intervention%2Fissue-10661-library-update-request-org.eclipse.jetty-jetty-util-10.0.0-5823b8f9
+
+No preservation commit or branch diff was created, no `10.0.0` tests or run metrics exist, and dynamic-access coverage is therefore unavailable. The only issue-scoped Gradle log is a successful setup probe; no coordinate-specific Gradle test task ran.
+
+Inspect:
+- `logs/do-work-20261013-234805.log`
+- `logs/10661-79a17d64/gradle-cache/gradle_help-2026-10-14T01-08-08-164136Z.log`
+
+Manual next steps:
+1. Restore or create a compatible Jetty `10.x` metadata and test baseline for `jetty-util`, rather than reusing the `12.x` suite.
+2. Re-run compilation, JVM, and native tests for `org.eclipse.jetty:jetty-util:10.0.0`, then generate metadata and coverage metrics.
+3. Requeue the issue once the compatible baseline is available.
