@@ -55,13 +55,10 @@ public class AuthConfigFactoryImplTest {
     }
 
     @Test
-    void registersNamedAuthConfigProviderThroughContextClassLoader() throws Exception {
+    void registersNamedAuthConfigProviderThroughBothClassLoadingPaths() throws Exception {
         Thread.currentThread().setContextClassLoader(AuthConfigFactoryImplTest.class.getClassLoader());
         assertRegistersNamedAuthConfigProvider();
-    }
 
-    @Test
-    void registersNamedAuthConfigProviderThroughFactoryClassLoadingFallback() throws Exception {
         Thread.currentThread().setContextClassLoader(new RejectingClassLoader(SIMPLE_PROVIDER_CLASS_NAME));
         assertRegistersNamedAuthConfigProvider();
     }
