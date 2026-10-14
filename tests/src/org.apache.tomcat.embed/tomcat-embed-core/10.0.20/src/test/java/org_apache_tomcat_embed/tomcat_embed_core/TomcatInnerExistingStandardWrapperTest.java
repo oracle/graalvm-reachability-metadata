@@ -12,8 +12,8 @@ import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.SingleThreadModel;
 import jakarta.servlet.http.HttpServlet;
-import org.apache.catalina.Wrapper;
 import org.apache.catalina.core.StandardContext;
+import org.apache.catalina.core.StandardWrapper;
 import org.apache.catalina.startup.Tomcat;
 import org.junit.jupiter.api.Test;
 
@@ -28,7 +28,7 @@ public class TomcatInnerExistingStandardWrapperTest {
         CountingServlet suppliedServlet = new CountingServlet();
         StandardContext context = new StandardContext();
         context.setName("existing-servlet-context");
-        Wrapper wrapper = Tomcat.addServlet(context, "counting", suppliedServlet);
+        StandardWrapper wrapper = (StandardWrapper) Tomcat.addServlet(context, "counting", suppliedServlet);
 
         CountingServlet loadedServlet = (CountingServlet) wrapper.loadServlet();
 
