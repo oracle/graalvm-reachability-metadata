@@ -15,10 +15,18 @@ import org.junit.jupiter.api.Test;
 
 public class LittleEndianByteArrayInnerUnsafeByteArrayTest {
     @Test
-    void hashesBytesWithTheLittleEndianImplementation() {
-        HashCode hash = Hashing.murmur3_128().hashBytes("auto-value".getBytes(StandardCharsets.UTF_8));
+    void fingerprintsBytesWithTheLittleEndianImplementation() {
+        byte[] input =
+                "AutoValue generates immutable value types from concise declarations"
+                        .getBytes(StandardCharsets.UTF_8);
 
-        assertThat(hash.bits()).isEqualTo(128);
-        assertThat(hash.asBytes()).hasSize(16);
+        HashCode fingerprint = Hashing.farmHashFingerprint64().hashBytes(input);
+
+        assertThat(fingerprint.bits()).isEqualTo(64);
+        assertThat(fingerprint)
+                .isEqualTo(Hashing.farmHashFingerprint64().hashBytes(input))
+                .isNotEqualTo(
+                        Hashing.farmHashFingerprint64()
+                                .hashBytes("a different declaration".getBytes(StandardCharsets.UTF_8)));
     }
 }

@@ -19,7 +19,7 @@ public class ThrowablesTest {
 
         List<StackTraceElement> stackTrace = Throwables.lazyStackTrace(failure);
 
-        assertThat(stackTrace).isNotEmpty();
-        assertThat(stackTrace.get(0).getClassName()).isEqualTo(getClass().getName());
+        assertThat(stackTrace.size()).isEqualTo(failure.getStackTrace().length);
+        assertThat(stackTrace.get(0)).isEqualTo(failure.getStackTrace()[0]);
     }
 }
