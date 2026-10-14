@@ -18,6 +18,8 @@ public class TypeSpecInnerBuilderTest {
         assertThat(result.successful()).as(result.diagnostics()).isTrue();
         assertThat(result.generatedSource("AutoValue_Person"))
                 .content()
-                .contains("extends Person", "class Builder extends Person.Builder");
+                .contains(
+                        "final class AutoValue_Person extends $AutoValue_Person",
+                        "displayName = super.displayName()");
     }
 }

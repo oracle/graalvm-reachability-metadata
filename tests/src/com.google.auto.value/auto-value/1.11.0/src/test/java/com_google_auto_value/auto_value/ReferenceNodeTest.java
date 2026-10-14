@@ -16,8 +16,8 @@ public class ReferenceNodeTest {
         ProcessorCompilation.Result result = ProcessorCompilation.result();
 
         assertThat(result.successful()).as(result.diagnostics()).isTrue();
-        assertThat(result.generatedSource("AutoValue_Person"))
+        assertThat(result.generatedSource("$AutoValue_Person"))
                 .content()
-                .contains("String name()", "int age()", "static final class Builder");
+                .contains("String name()", "int age()", "static class Builder extends Person.Builder");
     }
 }
