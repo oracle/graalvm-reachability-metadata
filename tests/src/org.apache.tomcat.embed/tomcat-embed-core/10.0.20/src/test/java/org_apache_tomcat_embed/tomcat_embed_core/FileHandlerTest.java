@@ -53,7 +53,7 @@ public class FileHandlerTest {
             assertThat(Files.readString(logFile)).isEqualTo("formatted:accepted message" + System.lineSeparator());
         } finally {
             handler.close();
-            LogManager.getLogManager().readConfiguration();
+            LogManager.getLogManager().reset();
         }
     }
 
