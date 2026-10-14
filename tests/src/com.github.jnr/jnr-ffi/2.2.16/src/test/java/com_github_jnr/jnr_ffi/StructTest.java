@@ -21,6 +21,16 @@ public class StructTest {
         }
     }
 
+    public static class CompositeStruct extends Struct {
+        public final Signed16[] words = array(new Signed16[2]);
+        public final NumberStruct[] numbers = array(new NumberStruct[2]);
+        public final NumberStruct nested = inner(NumberStruct.class);
+
+        public CompositeStruct(Runtime runtime) {
+            super(runtime);
+        }
+    }
+
     @Test
     void createsContiguousStructArrayAndComputesItsSize() {
         Runtime runtime = Runtime.getSystemRuntime();
@@ -32,5 +42,20 @@ public class StructTest {
         assertThat(structs).extracting(struct -> struct.value.get()).containsExactly(17, 29);
         assertThat(Struct.getMemory(structs[1]).address() - Struct.getMemory(structs[0]).address())
                 .isEqualTo(Struct.size(structs[0]));
+    }
+
+    @Test
+    void constructsMemberAndNestedStructArraysAndDescribesTheirValues() {
+        CompositeStruct composite = new CompositeStruct(Runtime.getSystemRuntime());
+        composite.words[0].set(5);
+        composite.words[1].set(8);
+        composite.numbers[0].value.set(13);
+        composite.numbers[1].value.set(21);
+        composite.nested.value.set(34);
+
+        assertThat(composite.words).extracting(Struct.Signed16::get).containsExactly((short) 5, (short) 8);
+        assertThat(composite.numbers).extracting(number -> number.value.get()).containsExactly(13, 21);
+        assertThat(composite.nested.value.get()).isEqualTo(34);
+        assertThat(composite.toString()).contains("words =", "numbers =", "nested =");
     }
 }

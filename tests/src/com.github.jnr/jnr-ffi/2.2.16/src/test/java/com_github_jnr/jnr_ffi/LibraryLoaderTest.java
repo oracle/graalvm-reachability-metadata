@@ -19,6 +19,7 @@ public class LibraryLoaderTest {
 
     @Test
     void delaysALibraryLoadFailureUntilProxyInvocation() {
+        System.setProperty("jnr.ffi.asm.enabled", "false");
         MissingLibrary library = LibraryLoader.create(MissingLibrary.class)
                 .option(LibraryOption.LoadNow, true)
                 .load("jnr_ffi_intentionally_missing_library");
