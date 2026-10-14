@@ -374,7 +374,9 @@ expect more than one. Measurement writes the sessions as an ordered queue and
 hands control to a dispatch program state, which removes the first session,
 writes its prompt as the cover handoff (§AR-code-coverage-prompts.3) and
 exits 10, or exits 0 on an empty queue so measurement runs again; the cover
-state returns to the dispatcher. The queue is the whole loop state, and a
+state returns to the dispatcher, which first counts the coverage the returned
+session left (§AR-code-coverage-trajectory.4). The queue is the whole loop
+state, and a
 session leaves it before its agent runs, so a failed session is not repeated
 in the pass. Every session but the last mixed one holds at least 10 targets, so
 a pass has at most 200 / 10 + 1 = 21 sessions; the cover state's visit cap is
