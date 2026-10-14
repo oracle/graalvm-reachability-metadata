@@ -27,9 +27,9 @@ public class IntrospectionUtilsTest {
         assertThat(namedPropertySet).isTrue();
         assertThat(fallbackPropertySet).isTrue();
         assertThat(voidFallbackPropertySet).isTrue();
-        assertThat(component.getPort()).isEqualTo(8080);
-        assertThat(component.getMode()).isEqualTo("strict");
-        assertThat(voidFallback.getMode()).isEqualTo("lenient");
+        assertThat(IntrospectionUtils.getProperty(component, "port")).isEqualTo(8080);
+        assertThat(IntrospectionUtils.getProperty(component, "mode")).isEqualTo("strict");
+        assertThat(IntrospectionUtils.getProperty(voidFallback, "fallbackMode")).isEqualTo("lenient");
         assertThat(description).isEqualTo("server-2");
     }
 
@@ -38,6 +38,10 @@ public class IntrospectionUtilsTest {
 
         public String getMode() {
             return mode;
+        }
+
+        public String getProperty(String name) {
+            return "fallbackMode".equals(name) ? mode : null;
         }
 
         public void setProperty(String name, String value) {

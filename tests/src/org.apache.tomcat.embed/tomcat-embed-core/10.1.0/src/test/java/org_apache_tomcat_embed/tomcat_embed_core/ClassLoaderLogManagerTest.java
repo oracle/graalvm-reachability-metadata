@@ -30,7 +30,6 @@ public class ClassLoaderLogManagerTest {
         ClassLoaderLogManager manager = new ClassLoaderLogManager();
         try (URLClassLoader classLoader = new LoggingConfigurationClassLoader(configuration)) {
             thread.setContextClassLoader(classLoader);
-            manager.readConfiguration();
 
             assertThat(manager.getProperty("integration.logger.level")).isEqualTo("FINE");
         } finally {

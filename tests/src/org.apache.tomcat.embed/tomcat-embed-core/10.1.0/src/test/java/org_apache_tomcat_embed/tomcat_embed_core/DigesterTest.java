@@ -10,20 +10,24 @@ import java.io.ByteArrayInputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.concurrent.atomic.AtomicReference;
 
+import org.apache.tomcat.util.IntrospectionUtils;
 import org.apache.tomcat.util.digester.Digester;
 import org.apache.tomcat.util.digester.Rule;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.xml.sax.Attributes;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@Order(-1)
 public class DigesterTest {
+
+    private static final String PROPERTY_SOURCE = "org.apache.tomcat.util.digester.PROPERTY_SOURCE";
 
     @Test
     void parsesXmlUsingConfiguredPropertySource() throws Exception {
-        String propertyName = "tomcat.test.digester.message";
-        String originalValue = System.getProperty(propertyName);
-        System.setProperty(propertyName, "resolved-message");
+        String originalSource = System.getProperty(PROPERTY_SOURCE);
+        System.setProperty(PROPERTY_SOURCE, TestPropertySource.class.getName());
 
         AtomicReference<String> parsedMessage = new AtomicReference<>();
         Digester digester = new Digester();
@@ -35,16 +39,23 @@ public class DigesterTest {
         });
 
         try {
-            String xml = "<message text=\"${" + propertyName + "}\"/>";
+            String xml = "<message text=\"${message}\"/>";
             digester.parse(new ByteArrayInputStream(xml.getBytes(StandardCharsets.UTF_8)));
         } finally {
-            if (originalValue == null) {
-                System.clearProperty(propertyName);
+            if (originalSource == null) {
+                System.clearProperty(PROPERTY_SOURCE);
             } else {
-                System.setProperty(propertyName, originalValue);
+                System.setProperty(PROPERTY_SOURCE, originalSource);
             }
         }
 
         assertThat(parsedMessage.get()).isEqualTo("resolved-message");
+    }
+
+    public static final class TestPropertySource implements IntrospectionUtils.PropertySource {
+        @Override
+        public String getProperty(String key) {
+            return "message".equals(key) ? "resolved-message" : null;
+        }
     }
 }
