@@ -18,7 +18,6 @@ import jakarta.servlet.ServletContainerInitializer;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.HandlesTypes;
-import jakarta.servlet.http.HttpServlet;
 import org.apache.catalina.Context;
 import org.apache.catalina.LifecycleException;
 import org.apache.catalina.LifecycleState;
@@ -103,7 +102,7 @@ public class ContextConfigTest {
     public interface TrackedServlet {
     }
 
-    public static class MatchingServlet extends HttpServlet implements TrackedServlet {
+    public static class MatchingServlet implements TrackedServlet {
     }
 
     @HandlesTypes(TrackedServlet.class)

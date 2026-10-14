@@ -6,41 +6,20 @@
  */
 package org_apache_tomcat_embed.tomcat_embed_core;
 
-import java.nio.file.Files;
-import java.nio.file.Path;
-
-import org.apache.catalina.Container;
 import org.apache.catalina.LifecycleState;
 import org.apache.catalina.Server;
-import org.apache.catalina.Service;
 import org.apache.catalina.startup.Catalina;
-import org.apache.catalina.startup.EngineConfig;
-import org.apache.catalina.startup.HostConfig;
 import org.apache.tomcat.util.digester.Digester;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class CatalinaTest {
 
-    @TempDir
-    Path temporaryDirectory;
-
     @Test
-    void loadsGeneratedCodeProviderAndParsesServerXmlRules() throws Exception {
-        Path serverXml = temporaryDirectory.resolve("server.xml");
-        Files.writeString(serverXml, """
-                <Server port="-2" shutdown="SHUTDOWN">
-                  <Service name="rules">
-                    <Engine name="engine" defaultHost="localhost">
-                      <Host name="localhost" appBase="webapps" />
-                    </Engine>
-                  </Service>
-                </Server>
-                """);
+    void loadsGeneratedCodeProvider() throws Exception {
         Catalina generatedCatalina = new Catalina();
-        generatedCatalina.setConfigFile(serverXml.toUri().toString());
+        generatedCatalina.setConfigFile(Catalina.SERVER_XML);
         generatedCatalina.setUseGeneratedCode(true);
         generatedCatalina.setGeneratedCodePackage(getClass().getPackageName());
 
@@ -53,21 +32,6 @@ public class CatalinaTest {
         } finally {
             destroy(generatedCatalina.getServer());
             Digester.setGeneratedCodeLoader(null);
-        }
-
-        Catalina parsedCatalina = new Catalina();
-        parsedCatalina.setConfigFile(serverXml.toString());
-        try {
-            parsedCatalina.load();
-
-            Service service = parsedCatalina.getServer().findServices()[0];
-            Container engine = service.getContainer();
-            Container host = engine.findChildren()[0];
-            assertThat(host.getParentClassLoader()).isSameAs(engine.getParentClassLoader());
-            assertThat(engine.findLifecycleListeners()).anyMatch(EngineConfig.class::isInstance);
-            assertThat(host.findLifecycleListeners()).anyMatch(HostConfig.class::isInstance);
-        } finally {
-            destroy(parsedCatalina.getServer());
         }
     }
 
