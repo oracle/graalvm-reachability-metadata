@@ -3,6 +3,12 @@
 Rendered by Forge from the pre-push branch review of §FS-local-branch-review.
 Newest entry first; every non-approval is recorded, including one a repair later cleared.
 
+## 2026-10-13 — org.bytedeco:opencv:4.11.0-1.5.12 (#10689)
+
+**Avoid aggregate Bytedeco platform artifacts in metadata-only preset tests**
+
+The latest-EA current-defaults and future-defaults-all jobs each exceeded the five-minute native-image limit while scanning artifacts for Android, iOS, Linux, macOS, and Windows supplied by org.bytedeco:opencv-platform. The test exercises Loader.loadProperties and does not load OpenCV native binaries, so the aggregate runtime dependency was unnecessary. This is a contribution-local build-file defect repairable under FS-contribution-contract.5.1.
+
 ## 2026-10-14 — com.github.jnr:jnr-ffi:2.2.16 (#10697)
 
 **Generated library statistics were stale**
