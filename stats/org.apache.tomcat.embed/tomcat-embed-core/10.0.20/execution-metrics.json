@@ -76,5 +76,113 @@
     "artifacts": {
       "metadata_file": "None"
     }
+  },
+  "improve_library_coverage:2026-10-14": {
+    "timestamp": "2026-10-14T06:03:54.706274Z",
+    "library": "org.apache.tomcat.embed:tomcat-embed-core:10.0.20",
+    "starting_commit": "7651a2a198555120c45935d2b7fb932fd984ed2e",
+    "ending_commit": "f8b96a8fd8de16878ce5829ac8eaadecccc6f9e8",
+    "strategy_name": "library_update_optimistic_pi_gpt-5.6-sol",
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "status": "chunk_ready",
+    "stats": {
+      "version": "10.0.20",
+      "dynamicAccess": {
+        "breakdown": {},
+        "coverageRatio": 1.0,
+        "coveredCalls": 0,
+        "totalCalls": 0
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 18023,
+          "missed": 343575,
+          "ratio": 0.049843,
+          "total": 361598
+        },
+        "line": {
+          "covered": 4669,
+          "missed": 79596,
+          "ratio": 0.055409,
+          "total": 84265
+        },
+        "method": {
+          "covered": 840,
+          "missed": 11810,
+          "ratio": 0.066403,
+          "total": 12650
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "action": "advisory_preparation",
+      "agent_guidance": "No Docker image or real directory/LDAP/database server is required: JNDIRealm tests mock SSL hostname verification rather than contacting a real LDAP server, JAASRealm tests use a local tomcat/jaas-realm-resource.config test resource, and JDBC-backed tests use an in-memory H2 URL. If tests are added that exercise JreCompat/classloader-leak-prevention/digester-system-property paths (mirroring JreCompatTest, JreMemoryLeakPreventionListenerTest, DigesterTest in the 11.0.x suites), add these JVM args to the javaTest task: --add-opens=java.base/java.io=ALL-UNNAMED, --add-opens=java.base/java.lang=ALL-UNNAMED, --add-opens=java.base/java.lang.reflect=ALL-UNNAMED, --add-opens=java.base/java.util=ALL-UNNAMED, --add-opens=java.rmi/sun.rmi.transport=ALL-UNNAMED, and the system property -Dorg.apache.tomcat.util.digester.PROPERTY_SOURCE=org.apache.tomcat.util.digester.SystemPropertySource. Only add the specific flags a given new test actually needs rather than copying all of them speculatively. If any such test runs under nativeTest, also set runtime arg -Djava.home=<JAVA_HOME or GRAALVM_HOME>.",
+      "applied_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "com.h2database:h2:2.2.224",
+          "result": "already_present",
+          "target": "tests/src/org.apache.tomcat.embed/tomcat-embed-core/10.0.20/build.gradle"
+        },
+        {
+          "kind": "dependency",
+          "coordinate": "jakarta.annotation:jakarta.annotation-api:3.0.0",
+          "result": "already_present",
+          "target": "tests/src/org.apache.tomcat.embed/tomcat-embed-core/10.0.20/build.gradle"
+        }
+      ],
+      "deterministic_setup": [
+        {
+          "coordinate": "com.h2database:h2:2.2.224",
+          "kind": "dependency",
+          "reason": "In-memory JDBC driver used by JDBCAccessLogValve/DataSource-backed naming-resource tests (jdbc:h2:mem: URL) - no container needed. Version matches what's already proven for this library's 11.0.18/11.0.22/11.0.23 suites.",
+          "scope": "testImplementation"
+        },
+        {
+          "coordinate": "jakarta.annotation:jakarta.annotation-api:3.0.0",
+          "kind": "dependency",
+          "reason": "Supplies @Resource/@PostConstruct/@PreDestroy types needed to drive DefaultInstanceManager's annotation-based reflective injection path. Same coordinate used across this library's newer sibling test suites.",
+          "scope": "testImplementation"
+        }
+      ],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#10508 Improve coverage for org.apache.tomcat.embed:tomcat-embed-core:10.0.20; label=library-update-request; body_chars=459"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "6 existing test file path(s) included"
+        }
+      ],
+      "input_tokens_used": 22,
+      "issue_label": "library-update-request",
+      "issue_number": 10508,
+      "library": "org.apache.tomcat.embed:tomcat-embed-core:10.0.20",
+      "model": "sonnet",
+      "output_tokens_used": 17769,
+      "risks": [
+        "jakarta.annotation-api 3.0.0 targets Jakarta EE 11 while 10.0.20 otherwise pins jakarta.servlet-api 5.0.0 (EE9); it's additive and compiles fine (confirmed by the 11.0.x precedent), but a stricter EE-generation match would be 2.0.0/2.1.1 if that's preferred.",
+        "Precedent is based on later Tomcat versions (11.0.x); confirm via local checkMetadataFiles/test runs that the same Realm/Valve/naming classes are structurally unchanged in 10.0.20 before relying on it, since local Gradle and Native Image verification remain authoritative."
+      ],
+      "status": "completed",
+      "summary": "Broadening coverage requires exercising Realm/Valve/naming subsystems (JNDIRealm, JAASRealm, DefaultInstanceManager, JDBCAccessLogValve, DataSourceLinkFactory, etc.) that the current single TomcatTests.java never reaches. The sibling 11.0.18/11.0.22/11.0.23 test suites for this same library already did this and needed two extra testImplementation dependencies, but no Docker image or external service - JNDI/JAAS/JDBC realms are all exercised with in-memory/mocked substitutes."
+    },
+    "metrics": {
+      "input_tokens_used": 411263,
+      "cached_input_tokens_used": 14055552,
+      "output_tokens_used": 44945,
+      "iterations": 9,
+      "cost_usd": 10.4324,
+      "generated_loc": 4347,
+      "tested_library_loc": 4669,
+      "metadata_entries": 346,
+      "test_only_metadata_entries": 27,
+      "code_coverage_percent": 5.54
+    },
+    "artifacts": {
+      "metadata_file": "metadata/org.apache.tomcat.embed/tomcat-embed-core/10.0.20/reachability-metadata.json"
+    }
   }
 }
