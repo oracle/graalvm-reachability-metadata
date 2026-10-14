@@ -1,0 +1,83 @@
+{
+  "add_new_library_support:2026-10-09": {
+    "timestamp": "2026-10-09T02:33:00.609599Z",
+    "library": "org.springframework.boot:spring-boot-webmvc-test:4.1.1",
+    "starting_commit": "9309113e6e68c1bac4a6f472d9065a857d444ac8",
+    "ending_commit": "c1c6107a7d64911102104e0480f2934439f89173",
+    "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-luna",
+    "agent": "pi",
+    "model": "gpt-5.6-luna",
+    "status": "success",
+    "stats": {
+      "version": "4.1.1",
+      "dynamicAccess": {
+        "breakdown": {},
+        "coverageRatio": 1.0,
+        "coveredCalls": 0,
+        "totalCalls": 0
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 323,
+          "missed": 803,
+          "ratio": 0.286856,
+          "total": 1126
+        },
+        "line": {
+          "covered": 87,
+          "missed": 189,
+          "ratio": 0.315217,
+          "total": 276
+        },
+        "method": {
+          "covered": 26,
+          "missed": 62,
+          "ratio": 0.295455,
+          "total": 88
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "no_action",
+      "issue_number": 9717,
+      "issue_label": "library-new-request",
+      "library": "org.springframework.boot:spring-boot-webmvc-test:4.1.1",
+      "summary": "Pure in-process MockMvc/@WebMvcTest slice-test support; all dependencies are plain non-optional Spring Boot modules (spring-boot-webmvc, spring-boot-test-autoconfigure -> spring-test) resolved transitively. No DB/broker/Docker involved, matching the two already-onboarded sibling '-test' modules (spring-boot-restclient-test, spring-boot-micrometer-metrics-test) which needed no special setup.",
+      "deterministic_setup": [],
+      "agent_guidance": "Exercise the autoconfigure classes in org.springframework.boot.webmvc.test.autoconfigure (e.g. via ApplicationContextRunner or a minimal @WebMvcTest controller + MockMvc), following the pattern used in spring-boot-restclient-test and spring-boot-micrometer-metrics-test tests.",
+      "risks": [
+        "@WebMvcTest's optional HtmlUnit WebClient and Selenium WebDriver integration support is conditional on those libraries being on the classpath; they are not declared dependencies of this artifact, so that narrow code path won't be covered without adding htmlunit/selenium testImplementation deps separately — not required for meaningful core coverage."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#9717 Support for org.springframework.boot:spring-boot-webmvc-test:4.1.1; label=library-new-request; body_chars=0"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "sonnet",
+      "input_tokens_used": 20,
+      "output_tokens_used": 12849
+    },
+    "metrics": {
+      "input_tokens_used": 318285,
+      "cached_input_tokens_used": 5072384,
+      "output_tokens_used": 35547,
+      "iterations": 5,
+      "cost_usd": 1.0388,
+      "generated_loc": 142,
+      "tested_library_loc": 87,
+      "metadata_entries": 3,
+      "test_only_metadata_entries": 372,
+      "code_coverage_percent": 31.52
+    },
+    "artifacts": {
+      "metadata_file": "metadata/org.springframework.boot/spring-boot-webmvc-test/4.1.1/reachability-metadata.json"
+    }
+  }
+}
