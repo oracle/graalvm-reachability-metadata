@@ -121,29 +121,6 @@
 **State:** api-measure
 **Prior:** Task code-coverage-api-inventory
 
-- Measurement programs, driven by the `api-measure` state in numbered steps:
-  - `forge/utility_scripts/code_coverage_validate.py` — JVM JaCoCo run plus
-    exact API-inventory correlation (step 2).
-  - `forge/utility_scripts/java/CallGraphExtractor.java` — bytecode call graph,
-    built once from `libraryJars` and cached under
-    `runtime/code-coverage/graph/` (step 3).
-  - `forge/utility_scripts/code_coverage_api_rank.py` — orders the uncovered
-    public entries by how much still-uncovered code each unlocks and renders the
-    prompt, filled to its 400-target cap (step 4).
-- Fixed report location: `runtime/code-coverage/validation/api-cover-report.json`
-  (iteration history stays at `api-cover-report-<n>.json`); ranking evidence
-  stays at `api-rank-<n>.json`.
-- Prompt location: `runtime/code-coverage/prompts/api-cover-prompt.md`, derived
-  by the measurement program from the fixed report when the loop continues.
-- Loop: measure -> cover -> measure. Measurement always writes the report to the
-  fixed location and lists only exact JaCoCo-uncovered public targets in the
-  prompt, ordered by unlocked internal code rather than by identifier
-  (§AR-code-coverage-improvement.4.1.1); the cover agent generates meaningful
-  behavior tests in the dedicated coverage suite and always returns to
-  measurement. The phase completes when no uncovered public target remains or
-  the iteration budget is spent. Only re-measurement moves the loop forward;
-  the agent cannot claim coverage.
-
 ### Task code-coverage-prepare-native-metadata: Prepare native metadata
 **State:** native-metadata
 **Prior:** Task code-coverage-api-coverage
@@ -174,42 +151,6 @@
 ### Task code-coverage-deep-coverage: Deep coverage loop
 **State:** deep-measure
 **Prior:** Task code-coverage-prepare-native-metadata
-
-- Measurement program: `jacocoCodeCoverageReport`, `nativeTestPGOSampling`,
-  `runNativeTestPGO` (both native tasks with `-PincludeCodeCoverageSuite=true`),
-  one coherent call-tree CSV triplet, then
-  `forge/utility_scripts/code_coverage_profile_report.py`, driven by the
-  `deep-measure` state.
-- Fixed report location: `runtime/code-coverage/discovery/discovery-report.json`
-  (iteration history stays at `discovery-report-<n>.json`).
-- Target universe: JaCoCo methods that are neither API inventory entries nor
-  absent from `runtime/code-coverage/graph/methods.csv`, plus the inventory
-  entries JaCoCo reported uncovered when the API phase ended, frozen at the
-  phase's first report. The method list keeps the library's own
-  `test`-classifier classes out of the universe, since JaCoCo reports them in
-  the library's own packages (§AR-code-coverage-improvement.4.2).
-- Prompt location: `runtime/code-coverage/prompts/deep-cover-prompt.md`, one
-  group session at a time. The analyzer renders each session of a pass under
-  `runtime/code-coverage/discovery/deep-sessions-<n>/`, measurement queues them
-  in `runtime/code-coverage/prompts/deep-session-queue.json`, and `deep-dispatch`
-  hands out the next one (§AR-code-coverage-deep-navigation.4).
-- Target state: measurement-owned. Attempt counts and rotation are carried
-  deterministically in the `discovery-report-<n>.json` history; every target
-  prompted in one iteration is deprioritized at the next. The cover agent
-  writes no target state.
-- Loop: measure -> dispatch -> cover -> dispatch -> ... -> measure: one
-  measurement per pass and one cover session per queued group.
-  JaCoCo is the sole coverage authority; sampled PGO and the static call graph
-  provide navigation only. The phase completes when no actionable target
-  remains or the iteration budget is spent.
-- Run every Gradle command in the foreground with a timeout long enough to
-  finish it. Never start one as a background task and end your turn to wait for
-  it: this invocation is headless, your turn ending is the process exiting, and
-  there is no later turn to wake up in. A native image build can take many
-  minutes; wait for it inside this turn.
-- Write your required state output before your final message. Ending the turn
-  with the report unwritten discards the whole invocation, however much work
-  preceded it.
 
 ### Task code-coverage-finalization: Finalize validation and metrics
 **State:** reviewed-prepared
@@ -274,22 +215,6 @@
 ### Task code-coverage-naive-coverage: Naive baseline coverage loop
 **State:** naive-measure
 **Prior:** Task code-coverage-prepare
-
-- Benchmark-only baseline arm (§AR-code-coverage-benchmarking.3). Measurement
-  programs, driven by the `naive-measure` state in numbered steps:
-  - `forge/utility_scripts/code_coverage_naive.py measure` — JVM JaCoCo run
-    summarized straight from the frozen JaCoCo method universe; no
-    API-inventory join, ranking, or call-graph input (step 2).
-  - `forge/utility_scripts/code_coverage_naive.py render` — fills
-    `prompt_templates/code_coverage/naive-baseline-iteration.md` with the
-    report's numbers (step 4).
-- Fixed report location: `runtime/code-coverage/validation/naive-cover-report.json`
-  (iteration history stays at `naive-cover-report-<n>.json`).
-- Prompt location: `runtime/code-coverage/prompts/naive-cover-prompt.md`.
-- Loop: measure -> cover -> measure, budget {{naive_iterations}} passes with
-  the shared marginal-yield stop rule (§FS-code-coverage-benchmarking.7). The
-  cover agent receives only the rendered naive prompt. Only re-measurement
-  moves the loop forward; the agent cannot claim coverage.
 
 {% endif %}
 {% if benchmark %}

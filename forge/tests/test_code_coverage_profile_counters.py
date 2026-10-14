@@ -27,7 +27,8 @@ from utility_scripts.code_coverage_profile_counters import (
 from utility_scripts.code_coverage_profile_graph import CallGraph
 from utility_scripts.code_coverage_profile_inputs import ProfileFormatError, TargetState
 from utility_scripts.code_coverage_profile_records import NearCallRecord, record_rank_key
-from utility_scripts.code_coverage_profile_render import classification_lines, write_markdown
+from utility_scripts.code_coverage_profile_diagnoses import Diagnosis, diagnosis_lines
+from utility_scripts.code_coverage_profile_render import write_markdown
 
 from tests.code_coverage_profile_support import (
     FIXTURES,
@@ -209,7 +210,7 @@ class UnobservedRouteTests(unittest.TestCase):
 class DispatchRenderingTests(unittest.TestCase):
 
     def test_receivers_and_candidate_labels_are_named(self) -> None:
-        lines: list[str] = classification_lines({
+        lines: list[str] = diagnosis_lines([Diagnosis("RowDataType.getMemory(...)", {
             "kind": "dispatched-elsewhere",
             "target": {"sourcePath": "org/h2/mvstore/Page.java", "line": 88,
                        "mi": 0, "ci": 4, "mb": 0, "cb": 0},
@@ -225,18 +226,21 @@ class DispatchRenderingTests(unittest.TestCase):
                 ],
                 "targetDispatches": 0,
             },
-        }, counted=True)
-        self.assertEqual(lines[1:], [
-            "  no fork — site dispatched 15,094×, never to your target",
-            "  observed receivers: ValueDataType ×14,203 · LongDataType ×891",
-            f"  candidates: `{VALUE.canonical_id}` [dispatched ×14,203], "
+        })])
+        self.assertEqual(lines, [
+            "",
+            "Dispatched elsewhere:",
+            "  `Page.java:88`: RowDataType.getMemory(...) — site dispatched 15,094×, "
+            "never to your target",
+            "    observed receivers: ValueDataType ×14,203 · LongDataType ×891",
+            f"    candidates: `{VALUE.canonical_id}` [dispatched ×14,203], "
             f"`{ROW.canonical_id}` [never dispatched here]",
         ])
 
     def test_unresolved_receiver_makes_no_claim_about_the_target(self) -> None:
         """`targetDispatches` is `None`, not zero, so the hint must not say
         the site never reached the target (§AR-code-coverage-deep-navigation.3.1)."""
-        lines: list[str] = classification_lines({
+        lines: list[str] = diagnosis_lines([Diagnosis("RowDataType.getMemory(...)", {
             "kind": "dispatched-elsewhere",
             "target": {"sourcePath": "org/h2/mvstore/Page.java", "line": 88,
                        "mi": 0, "ci": 4, "mb": 0, "cb": 0},
@@ -249,11 +253,11 @@ class DispatchRenderingTests(unittest.TestCase):
                 "receivers": [{"type": "org.h2.PageCoverageTest$1", "count": 42}],
                 "targetDispatches": None,
             },
-        }, counted=True)
-        self.assertEqual(lines[1:], [
-            "  no fork — site dispatched 42×",
-            "  observed receivers: PageCoverageTest.1 ×42",
-            f"  candidates: `{ROW.canonical_id}`, `{VALUE.canonical_id}`",
+        })])
+        self.assertEqual(lines[2:], [
+            "  `Page.java:88`: RowDataType.getMemory(...) — site dispatched 42×",
+            "    observed receivers: PageCoverageTest.1 ×42",
+            f"    candidates: `{ROW.canonical_id}`, `{VALUE.canonical_id}`",
         ])
 
 

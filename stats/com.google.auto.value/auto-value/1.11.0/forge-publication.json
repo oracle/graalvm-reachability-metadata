@@ -1,0 +1,161 @@
+{
+  "base_commit": "d1b72d576c8d8e3f1adadcd37a8adbb3f908eb7e",
+  "branch": "ai/kimeta/add-lib-support-com.google.auto.value-auto-value-1.11.0-chunked-forge-10694-20261014110850392953-d6b75c9d34ea",
+  "follow_ups": [],
+  "forge": {
+    "branch": "master",
+    "commit": "1bfc2eb9ebcaab9a55e0914e85dedc07b4aff540",
+    "monitored_branch": "origin/master"
+  },
+  "issue_number": 10694,
+  "library": {
+    "artifact": "auto-value",
+    "coordinates": "com.google.auto.value:auto-value:1.11.0",
+    "group": "com.google.auto.value",
+    "version": "1.11.0"
+  },
+  "local_ci_verification": {
+    "base_commit": "d1b72d576c8d8e3f1adadcd37a8adbb3f908eb7e",
+    "commands": [
+      {
+        "command": [
+          "./gradlew",
+          "generateChangedIndexFileCoordinatesList",
+          "-PbaseCommit=origin/master",
+          "-PnewCommit=HEAD"
+        ],
+        "env": {
+          "GITHUB_OUTPUT": "/tmp/tmpg85b_521"
+        },
+        "gate": "changed-index-coordinates",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :generateChangedIndexFileCoordinatesList\n\n[Incubating] Problems report is available at: file:///home/oracle/oracle/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10694-f6f655a5/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 4s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      },
+      {
+        "command": [
+          "./gradlew",
+          "validateIndexFiles",
+          "-Pcoordinates=com.google.auto.value:auto-value"
+        ],
+        "env": {},
+        "gate": "index-file-validation",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :validateIndexFiles\n✅ metadata/com.google.auto.value/auto-value/index.json: Valid\n\n[Incubating] Problems report is available at: file:///home/oracle/oracle/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10694-f6f655a5/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 2s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      }
+    ],
+    "failure_command": null,
+    "failure_gate": null,
+    "final_commit": "7a16a55010a67053205bdaf918ff54b2d7127bc1",
+    "fixups": [],
+    "human_intervention_required": false,
+    "repo_fix_paths": [],
+    "status": "success"
+  },
+  "local_review": {
+    "changed_paths": [],
+    "decision": "approved",
+    "finding_body": "",
+    "finding_title": "",
+    "fix_note": "",
+    "model": "gpt-5.6-sol",
+    "review_comment": "Reviewed the exact base-to-head diff and local evidence. The change is limited to one coordinate and its allowed metadata, stats, and test files; it uses only reachability-metadata.json; and the tests contain no scaffold placeholder, Native Image skip or tolerated failure, target-version pin in test code, library-package visibility bypass, legacy metadata, JVM override, or native build/run flag. The tests exercise public APIs from the target artifact (including its shipped shaded types) and assert observable behavior. Reported dynamic-access coverage is 69/105 (65.7143%), above the new-library threshold; the entry-count mismatch guardrail is not triggered using the reported library and test-only counts. The recorded run succeeded, both local index gates passed, and the index and metadata JSON are present and valid.",
+    "session_id": "4e0467912ec64c7d"
+  },
+  "metrics": {
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "path": "stats/com.google.auto.value/auto-value/1.11.0/execution-metrics.json",
+    "summary": {
+      "cached_input_tokens_used": 10637568,
+      "code_coverage_percent": 8.66,
+      "cost_usd": 11.5004,
+      "generated_loc": 709,
+      "input_tokens_used": 788486,
+      "iterations": 18,
+      "metadata_entries": 91,
+      "output_tokens_used": 74640,
+      "test_only_metadata_entries": 91,
+      "tested_library_loc": 2827
+    },
+    "timestamp": "2026-10-14T11:08:50.392953Z"
+  },
+  "modifiers": {
+    "chunk_final": true,
+    "chunked_dynamic_access": true,
+    "human_intervention": false
+  },
+  "producer": "kimeta",
+  "publication_id": "forge-10694-20261014110850392953-d6b75c9d34ea",
+  "render": {
+    "dynamic_access": null,
+    "dynamic_access_evidence": {
+      "covered_call_sites": [
+        "[reflection] java.io.ObjectInputStream#readObject() <- autovalue.shaded.com.google.common.collect.Serialization.populateMultiset(Serialization.java:133) (line 133)",
+        "[reflection] java.io.ObjectOutputStream#writeObject(java.lang.Object) <- autovalue.shaded.com.google.common.collect.Serialization.writeMultimap(Serialization.java:151) (line 151)",
+        "[reflection] java.io.ObjectOutputStream#writeObject(java.lang.Object) <- autovalue.shaded.com.google.common.collect.Serialization.writeMultimap(Serialization.java:154) (line 154)",
+        "[reflection] java.io.ObjectOutputStream#writeObject(java.lang.Object) <- autovalue.shaded.com.google.common.collect.Serialization.writeMultiset(Serialization.java:108) (line 108)",
+        "[reflection] java.lang.Class#getDeclaredField(java.lang.String) <- autovalue.shaded.com.google.common.collect.Serialization.getFieldSetter(Serialization.java:194) (line 194)",
+        "[reflection] java.lang.Class#getMethod(java.lang.String, java.lang.Class[]) <- autovalue.shaded.com.google.escapevelocity.MethodFinder.<clinit>(MethodFinder.java:164) (line 164)",
+        "[reflection] java.lang.Class#getMethods() <- autovalue.shaded.com.google.escapevelocity.MethodFinder.uncachedPublicMethodsWithName(MethodFinder.java:77) (line 77)",
+        "[reflection] java.lang.reflect.Method#invoke(java.lang.Object, java.lang.Object[]) <- autovalue.shaded.com.google.escapevelocity.MethodFinder.classIsExported(MethodFinder.java:148) (line 148)",
+        "... and 61 more"
+      ],
+      "metadata_rules": [
+        "when `autovalue.shaded.com.google.common.collect.ImmutableMultimap$FieldSettersHolder` is reached, make `autovalue.shaded.com.google.common.collect.ImmutableMultimap` available for reflection",
+        "when `autovalue.shaded.com.google.common.collect.Serialization$FieldSetter` is reached, make `autovalue.shaded.com.google.common.collect.ImmutableMultimap` available for reflection",
+        "when `autovalue.shaded.com.google.common.collect.ImmutableSetMultimap` is reached, make `autovalue.shaded.com.google.common.collect.ImmutableSetMultimap` available for reflection",
+        "when `autovalue.shaded.com.google.common.collect.ImmutableSetMultimap$SetFieldSettersHolder` is reached, make `autovalue.shaded.com.google.common.collect.ImmutableSetMultimap` available for reflection",
+        "when `autovalue.shaded.com.google.common.primitives.UnsignedBytes$LexicographicalComparatorHolder` is reached, make `autovalue.shaded.com.google.common.primitives.UnsignedBytes$LexicographicalComparatorHolder$UnsafeComparator` available for reflection",
+        "when `com.google.auto.value.processor.SimpleServiceLoader` is reached, make `com.google.auto.value.extension.memoized.processor.MemoizedValidator.<init>()` available for reflection",
+        "when `com.google.auto.value.processor.SimpleServiceLoader` is reached, make `com.google.auto.value.extension.toprettystring.processor.ToPrettyStringValidator.<init>()` available for reflection",
+        "when `com.google.auto.value.processor.SimpleServiceLoader` is reached, make `com.google.auto.value.processor.AutoAnnotationProcessor.<init>()` available for reflection",
+        "... and 40 more"
+      ]
+    },
+    "library_stats": {
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 0.663366,
+            "coveredCalls": 67,
+            "totalCalls": 101
+          },
+          "resources": {
+            "coverageRatio": 0.5,
+            "coveredCalls": 2,
+            "totalCalls": 4
+          }
+        },
+        "coverageRatio": 0.657143,
+        "coveredCalls": 69,
+        "totalCalls": 105
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 12362,
+          "missed": 146075,
+          "ratio": 0.078025,
+          "total": 158437
+        },
+        "line": {
+          "covered": 2827,
+          "missed": 29804,
+          "ratio": 0.086635,
+          "total": 32631
+        },
+        "method": {
+          "covered": 860,
+          "missed": 8618,
+          "ratio": 0.090736,
+          "total": 9478
+        }
+      },
+      "version": "1.11.0"
+    }
+  },
+  "schema_version": 1,
+  "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-sol",
+  "task_type": "library-new-request",
+  "template_type": "library-new-request",
+  "timestamp": "2026-10-14T11:08:50.392953Z"
+}

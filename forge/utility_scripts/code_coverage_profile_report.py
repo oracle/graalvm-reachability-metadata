@@ -39,6 +39,7 @@ Usage:
     --iteration 0 \
     [--target-state <deep-cover-N.json>] \
     [--source-root <extracted library sources>] \
+    [--test-project <indexed test project>] \
     --output-dir runtime/code-coverage/discovery
 """
 
@@ -86,8 +87,8 @@ from utility_scripts.code_coverage_profile_miss import classify_miss
 from utility_scripts.code_coverage_profile_navigation import (
     NavigationEvidence,
     load_navigation,
-    navigation_caveats,
     navigation_summary,
+    report_caveats,
 )
 from utility_scripts.code_coverage_profile_records import (
     MAX_LISTED_METHODS,
@@ -108,6 +109,7 @@ from utility_scripts.code_coverage_profile_routes import (
     public_entry_routes,
     sample_routes,
 )
+from utility_scripts.code_coverage_profile_trace import SampleTrace, TestProject
 from utility_scripts.code_coverage_profile_universe import (
     DeepUniverse,
     InventoryCoverage,
@@ -305,22 +307,7 @@ def correlate(
         "uncoveredPaths": uncovered_json,
         "promptTargetIds": [record.target_ref.canonical_id for record in prompt_records],
         "bulkTargets": bulk_json,
-        "caveats": [
-            "JaCoCo is the only coverage authority; PGO evidence is guidance only.",
-            "Absence of a sample never proves non-execution.",
-            "The analysis call graph over-approximates; static paths may be infeasible.",
-        ] + navigation_caveats(navigation) + ([
-            "No library method list was supplied, so the deep universe still counts "
-            "every JaCoCo-reported method, including any the library's own "
-            "test-classifier artifact contributes.",
-            "Without that list, virtual call sites declaring a foreign type still "
-            "route, so a path may rest on an edge class-hierarchy analysis could "
-            "not rule out.",
-        ] if library_methods is None else []) + ([
-            f"{graph.unjudged_dispatch_sites} virtual call sites carry no declared "
-            "target in the call-tree dump; they still route, so a path may rest on "
-            "an edge class-hierarchy analysis could not rule out."
-        ] if graph.unjudged_dispatch_sites else []),
+        "caveats": report_caveats(navigation, graph, library_methods is not None),
     }
     return report, prompt_records
 
@@ -337,6 +324,7 @@ def generate_report(
         target_state_paths: list[str] | None = None,
         library_methods_path: str | None = None,
         source_root: str | None = None,
+        test_project: str | None = None,
 ) -> dict:
     if not isinstance(coordinate, str) or not coordinate.strip():
         raise ProfileFormatError("coordinate must be non-empty.")
@@ -351,12 +339,8 @@ def generate_report(
         load_library_line_numbers(library_methods_path)
         if library_methods_path else {}
     )
-    graph: CallGraph = load_call_graph(
-        reports_dir,
-        library_owners(library_methods),
-        line_numbers,
-        library_methods,
-    )
+    owners: set[str] | None = library_owners(library_methods)
+    graph: CallGraph = load_call_graph(reports_dir, owners, line_numbers, library_methods)
     profile, evidence = load_navigation(profile_path, graph, library_methods_path, line_numbers)
     inventory: dict = load_json_object(api_inventory_path, "API inventory")
     require_coordinate(inventory, coordinate, "API inventory")
@@ -385,8 +369,11 @@ def generate_report(
     )
 
     os.makedirs(output_dir, exist_ok=True)
+    # Each group shows the test that reaches it (§AR-code-coverage-deep-navigation.2).
+    trace: SampleTrace = SampleTrace(
+        profile, graph, TestProject(test_project) if test_project else None, owners)
     report["deepSessions"] = write_prompts(
-        report, prompt_records, graph, coordinate, iteration, output_dir, source_root)
+        report, prompt_records, graph, coordinate, iteration, output_dir, source_root, trace)
     json_path: str = os.path.join(output_dir, f"discovery-report-{iteration}.json")
     lcov_path: str = os.path.join(output_dir, f"coverage-{iteration}.lcov")
     with open(json_path, "w", encoding="utf-8") as json_file:
@@ -431,6 +418,8 @@ def main() -> None:
     )
     parser.add_argument("--source-root", help="Extracted library sources that prompt "
                         "locations resolve against (§AR-code-coverage-deep-navigation.3.2).")
+    parser.add_argument("--test-project", help="Indexed test project whose compiled suites "
+                        "name each group's test (§AR-code-coverage-deep-navigation.2).")
     parser.add_argument("--coordinate", required=True, help="group:artifact:version.")
     parser.add_argument("--iteration", type=int, default=1, help="Discovery iteration number.")
     parser.add_argument("--output-dir", required=True, help="Directory for discovery artifacts.")
@@ -455,6 +444,7 @@ def main() -> None:
             target_state_paths=args.target_state_paths,
             library_methods_path=args.library_methods,
             source_root=args.source_root,
+            test_project=args.test_project,
         )
     except (ProfileFormatError, JacocoReportError) as error:
         print(f"ERROR: {error}", file=sys.stderr)
