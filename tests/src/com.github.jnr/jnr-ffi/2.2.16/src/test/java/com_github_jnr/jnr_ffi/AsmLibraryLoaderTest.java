@@ -8,9 +8,9 @@ package com_github_jnr.jnr_ffi;
 
 import org.junit.jupiter.api.Test;
 
-class Jnr_ffiTest {
+public class AsmLibraryLoaderTest {
     @Test
-    void test() throws Exception {
-        System.out.println("This is just a placeholder, implement your test");
+    void generatesAndInvokesAStandardCLibraryBinding() {
+        JnrFfiFixtures.assertNativeInvocation();
     }
 }
