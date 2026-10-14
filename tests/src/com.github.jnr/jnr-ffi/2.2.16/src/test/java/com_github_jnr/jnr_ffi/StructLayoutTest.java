@@ -27,6 +27,6 @@ public class StructLayoutTest {
 
         assertThat(layout.values).hasSize(3);
         assertThat(layout.values[1].offset()).isGreaterThan(layout.values[0].offset());
-        assertThat(layout.toString()).contains("VectorLayout", "values");
+        assertThat(layout.toString()).startsWith("VectorLayout { ").endsWith("}\n");
     }
 }
