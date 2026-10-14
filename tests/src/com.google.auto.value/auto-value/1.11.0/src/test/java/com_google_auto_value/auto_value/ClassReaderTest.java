@@ -14,9 +14,9 @@ import org.junit.jupiter.api.Test;
 public class ClassReaderTest {
     @Test
     void readsAClassFromTheSystemClassLoader() throws Exception {
-        ClassReader reader = new ClassReader("java.lang.String");
+        ClassReader reader = new ClassReader("com.google.auto.value.processor.AutoValueProcessor");
 
-        assertThat(reader.getClassName()).isEqualTo("java/lang/String");
-        assertThat(reader.getSuperName()).isEqualTo("java/lang/Object");
+        assertThat(reader.getClassName()).isEqualTo("com/google/auto/value/processor/AutoValueProcessor");
+        assertThat(reader.getSuperName()).isEqualTo("com/google/auto/value/processor/AutoValueishProcessor");
     }
 }

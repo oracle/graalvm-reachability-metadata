@@ -15,12 +15,17 @@ import org.junit.jupiter.api.Test;
 public class MapMakerInternalMapInnerAbstractSerializationProxyTest {
     @Test
     void restoresWeakKeyMapEntries() throws Exception {
-        ConcurrentMap<String, Integer> values = new MapMaker().weakKeys().makeMap();
-        values.put(new String("answer"), 42);
+        ConcurrentMap<Key, Integer> values = new MapMaker().weakKeys().makeMap();
+        values.put(Key.ANSWER, 42);
 
-        ConcurrentMap<String, Integer> restored = SerializationSupport.roundTrip(values);
+        ConcurrentMap<Key, Integer> restored = SerializationSupport.roundTrip(values);
 
-        assertThat(restored).containsEntry("answer", 42);
-        assertThat(restored.putIfAbsent("next", 43)).isNull();
+        assertThat(restored).containsEntry(Key.ANSWER, 42);
+        assertThat(restored.putIfAbsent(Key.NEXT, 43)).isNull();
+    }
+
+    private enum Key {
+        ANSWER,
+        NEXT
     }
 }
