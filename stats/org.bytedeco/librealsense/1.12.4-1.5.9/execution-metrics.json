@@ -1,0 +1,98 @@
+{
+  "add_new_library_support:2026-10-12": {
+    "timestamp": "2026-10-12T23:23:16.553148Z",
+    "library": "org.bytedeco:librealsense:1.12.4-1.5.9",
+    "starting_commit": "5d69694f1d1e4a85321bf4bfa53a8c5ac312a49e",
+    "ending_commit": "58666b92429c8de859e634240b7d6dcb7e4ea636",
+    "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-sol",
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "status": "success",
+    "stats": {
+      "version": "1.12.4-1.5.9",
+      "dynamicAccess": {
+        "breakdown": {},
+        "coverageRatio": 1.0,
+        "coveredCalls": 0,
+        "totalCalls": 0
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 126,
+          "missed": 945,
+          "ratio": 0.117647,
+          "total": 1071
+        },
+        "line": {
+          "covered": 30,
+          "missed": 152,
+          "ratio": 0.164835,
+          "total": 182
+        },
+        "method": {
+          "covered": 29,
+          "missed": 141,
+          "ratio": 0.170588,
+          "total": 170
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "advisory_preparation",
+      "issue_number": 10719,
+      "issue_label": "library-new-request",
+      "library": "org.bytedeco:librealsense:1.12.4-1.5.9",
+      "summary": "JavaCPP presets split native binaries into a sibling '-platform' artifact (repo convention for all org.bytedeco libs); also, librealsense v1 is a physical USB RealSense camera driver with no documented software-only/mock-device mode, so CI coverage is inherently capped to no-device/error paths.",
+      "deterministic_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "org.bytedeco:librealsense-platform:1.12.4-1.5.9",
+          "scope": "testRuntimeOnly",
+          "reason": "Base artifact contains only JNI glue, no native binaries; every bytedeco preset (see openblas, tesseract in this repo) needs the matching '-platform' artifact at test runtime or native-image run fails with UnsatisfiedLinkError."
+        }
+      ],
+      "agent_guidance": "This library wraps the legacy librealsense (v1) SDK for Intel RealSense depth cameras; context.get_device_count() will return 0 and context.get_device(n) is unusable in CI since no physical USB camera is attached. Write tests around context construction, device-count/no-device-found paths, and any pure API surface (error codes, enum/constant access) that doesn't require an actual connected device. Do not write tests that assume a device is present — they will fail deterministically in this environment, not flakily.",
+      "risks": [
+        "Coverage ceiling is low and setup cannot raise it: no Docker image or env var can simulate a physical USB RealSense camera, so real frame-capture/streaming code paths are permanently unreachable here.",
+        "librealsense v1 is superseded upstream by librealsense2, which does support recording/playback pseudo-devices; this older API lacks that option, so there's no in-library fallback for hardware-free testing."
+      ],
+      "applied_setup": [
+        {
+          "kind": "dependency",
+          "coordinate": "org.bytedeco:librealsense-platform:1.12.4-1.5.9",
+          "result": "applied",
+          "target": "tests/src/org.bytedeco/librealsense/1.12.4-1.5.9/build.gradle"
+        }
+      ],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#10719 Support for org.bytedeco:librealsense:1.12.4-1.5.9; label=library-new-request; body_chars=0"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "sonnet",
+      "input_tokens_used": 22,
+      "output_tokens_used": 12971
+    },
+    "metrics": {
+      "input_tokens_used": 255913,
+      "cached_input_tokens_used": 2692992,
+      "output_tokens_used": 29814,
+      "iterations": 3,
+      "cost_usd": 3.5205,
+      "generated_loc": 271,
+      "tested_library_loc": 30,
+      "metadata_entries": 195,
+      "test_only_metadata_entries": 47,
+      "code_coverage_percent": 16.48
+    },
+    "artifacts": {
+      "metadata_file": "metadata/org.bytedeco/librealsense/1.12.4-1.5.9/reachability-metadata.json"
+    }
+  }
+}

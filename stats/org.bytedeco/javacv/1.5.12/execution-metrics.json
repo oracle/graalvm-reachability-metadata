@@ -1,0 +1,90 @@
+{
+  "add_new_library_support:2026-10-12": {
+    "timestamp": "2026-10-12T14:42:22.963037Z",
+    "library": "org.bytedeco:javacv:1.5.12",
+    "starting_commit": "bfc06fe2938b962da1319c7590cee8ffcd46b88d",
+    "ending_commit": "36a365422a73bc95f0a952a6dc8fc2f6129860a4",
+    "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-sol",
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "status": "success",
+    "stats": {
+      "version": "1.5.12",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 0.926829,
+            "coveredCalls": 38,
+            "totalCalls": 41
+          }
+        },
+        "coverageRatio": 0.926829,
+        "coveredCalls": 38,
+        "totalCalls": 41
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 2292,
+          "missed": 68873,
+          "ratio": 0.032207,
+          "total": 71165
+        },
+        "line": {
+          "covered": 482,
+          "missed": 11842,
+          "ratio": 0.039111,
+          "total": 12324
+        },
+        "method": {
+          "covered": 134,
+          "missed": 1849,
+          "ratio": 0.067574,
+          "total": 1983
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "advisory_preparation",
+      "issue_number": 10687,
+      "issue_label": "library-new-request",
+      "library": "org.bytedeco:javacv:1.5.12",
+      "summary": "javacv ships zero native binaries; its wrapper classes load natives in static initializers, so any real use (even trivial construction of FFmpegFrameGrabber/OpenCVFrameConverter-style classes) needs classified native jars for opencv/ffmpeg/openblas on the test classpath or it fails with UnsatisfiedLinkError under both JVM and Native Image.",
+      "deterministic_setup": [],
+      "agent_guidance": "javacv's own Maven coordinate carries no native binaries by design (see bytedeco/javacv README: use javacv-platform or add classified deps / -Djavacpp.platform). Keep generated tests inside the functionality covered by the three natives pre-added above (video/image grab, decode, Mat<->BufferedImage conversion, e.g. via FFmpegFrameGrabber, OpenCVFrameConverter, Java2DFrameConverter). Avoid classes tied to submodules whose native jars are NOT present: flycapture, libdc1394, libfreenect/libfreenect2, librealsense/librealsense2, videoinput, artoolkitplus (hardware camera drivers, unusable in CI anyway) and leptonica/tesseract (OCR) — exercising those will hit the same UnsatisfiedLinkError pattern unless their linux-x86_64 classifiers are added too. A small bundled test resource (short video or image file) will likely be needed as input for FrameGrabber-style tests since there's no camera/display in CI.",
+      "risks": [
+        "This assessment is based on POM/README research, not a local Gradle/Native Image run; if the eventual generated test ends up needing tesseract/leptonica or a different native module, the missing classifier will surface the same way and need the identical fix (add that module's linux-x86_64 classified testImplementation dependency).",
+        "Native Image may additionally need javacpp's bundled shared libraries registered as resources (they ship under classpath paths like /org/bytedeco/<module>/linux-x86_64/); local native-image verification is authoritative on whether extra resource-config is needed beyond the dependency itself."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#10687 Support for org.bytedeco:javacv:1.5.12; label=library-new-request; body_chars=39"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "0 existing test file path(s) included"
+        }
+      ],
+      "model": "sonnet",
+      "input_tokens_used": 26,
+      "output_tokens_used": 14884
+    },
+    "metrics": {
+      "input_tokens_used": 603328,
+      "cached_input_tokens_used": 8541952,
+      "output_tokens_used": 70368,
+      "iterations": 11,
+      "cost_usd": 9.3986,
+      "generated_loc": 243,
+      "tested_library_loc": 482,
+      "metadata_entries": 1684,
+      "test_only_metadata_entries": 16,
+      "code_coverage_percent": 3.91
+    },
+    "artifacts": {
+      "metadata_file": "metadata/org.bytedeco/javacv/1.5.12/reachability-metadata.json"
+    }
+  }
+}
