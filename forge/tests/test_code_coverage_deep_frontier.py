@@ -6,8 +6,8 @@
 """Tests for the deep coverage frontier and the public methods it carries.
 
 Routes cross one uncovered method, made by a caller that ran
-(§AR-code-coverage-deep-navigation.2), classification judges only such callers
-(§AR-code-coverage-deep-navigation.3), and the deep universe carries the public
+(§AR-code-coverage-deep-navigation.2), classification judges only the route's
+own call (§AR-code-coverage-deep-navigation.3), and the deep universe carries the public
 methods the API phase left uncovered (§AR-code-coverage-improvement.4.2).
 """
 
@@ -144,10 +144,10 @@ class FrontierRouteTest(unittest.TestCase):
         self.assertEqual(unreported[target.canonical_id]["joinKind"], "none")
         self.assertEqual(ran[target.canonical_id]["joinKind"], "public-entry")
 
-    def test_a_constructor_behind_a_factory_stub_is_judged_at_every_stub_caller(self) -> None:
+    def test_a_constructor_behind_a_factory_stub_is_judged_at_the_routes_stub_call(self) -> None:
         """The route runs through `Api.start`, which has no fork; `Builder.make`
-        reaches the same constructor through the same stub, and its fork is
-        the diagnosis."""
+        reaches the same constructor through the same stub and has one, but it
+        is not on the route, so it is not consulted."""
         routed = MethodRef("example.Api", "start", (), "void")
         other = MethodRef("example.Builder", "make", (), "void")
         factory = MethodRef(FACTORY_METHOD_HOLDER, "Widget_generated", (), "example.Widget")
@@ -179,9 +179,45 @@ class FrontierRouteTest(unittest.TestCase):
         path: dict = _paths(report)[constructor.canonical_id]
         self.assertEqual(path["reachingPath"], [routed.canonical_id, constructor.canonical_id])
         classification: dict = path["missClassification"]
-        self.assertEqual(classification["invokingMethod"], other.canonical_id)
-        self.assertEqual(classification["kind"], "fork-not-taken")
-        self.assertEqual(classification["fork"]["line"], 2)
+        self.assertEqual(classification["invokingMethod"], routed.canonical_id)
+        self.assertEqual(classification["kind"], "no-fork")
+        self.assertEqual(classification["target"]["line"], 3)
+
+    def test_only_the_routes_call_is_judged(self) -> None:
+        """`Api.start` routes to `Store.flush` through a call with no fork above
+        it; `Other.sync` also calls `flush`, behind a fork, and is covered. The
+        diagnosis stays on the route's call and never borrows the other one."""
+        entry = MethodRef("example.Api", "start", (), "void")
+        other = MethodRef("example.Other", "sync", (), "void")
+        target = MethodRef("example.Store", "flush", (), "void")
+        graph = _graph({1: entry, 2: other, 3: target}, [(1, 3, 3), (2, 3, 3)])
+        reached = JacocoLineCoverage(mi=0, ci=2, mb=0, cb=0)
+        missed = JacocoLineCoverage(mi=4, ci=0, mb=0, cb=0)
+
+        report, _ = report_module.correlate(
+            SampledProfile(),
+            graph,
+            {"targets": [{"id": entry.canonical_id, "kind": "method"}]},
+            {
+                **{ref.canonical_id: _coverage(ref, covered=True) for ref in (entry, other)},
+                target.canonical_id: _coverage(target),
+            },
+            jacoco_lines={
+                "example/Api.java": {1: reached, 3: missed},
+                "example/Other.java": {
+                    1: reached, 2: JacocoLineCoverage(mi=0, ci=3, mb=1, cb=1), 3: missed,
+                },
+            },
+        )
+
+        path: dict = _paths(report)[target.canonical_id]
+        self.assertEqual(path["reachingPath"], [entry.canonical_id, target.canonical_id])
+        classification: dict = path["missClassification"]
+        self.assertEqual(
+            (classification["kind"], classification["invokingMethod"]),
+            ("no-fork", entry.canonical_id),
+        )
+        self.assertEqual(classification["nearestCovered"]["line"], 1)
 
     def test_a_stub_caller_is_judged_on_its_constructor_lines(self) -> None:
         """The image attributes a call inside a constructor body to its factory

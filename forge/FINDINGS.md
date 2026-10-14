@@ -3,11 +3,36 @@
 Rendered by Forge from the pre-push branch review of §FS-local-branch-review.
 Newest entry first; every non-approval is recorded, including one a repair later cleared.
 
+## 2026-10-13 — org.bytedeco:opencv:4.11.0-1.5.12 (#10689)
+
+**Avoid aggregate Bytedeco platform artifacts in metadata-only preset tests**
+
+The latest-EA current-defaults and future-defaults-all jobs each exceeded the five-minute native-image limit while scanning artifacts for Android, iOS, Linux, macOS, and Windows supplied by org.bytedeco:opencv-platform. The test exercises Loader.loadProperties and does not load OpenCV native binaries, so the aggregate runtime dependency was unnecessary. This is a contribution-local build-file defect repairable under FS-contribution-contract.5.1.
+
+## 2026-10-14 — com.github.jnr:jnr-ffi:2.2.16 (#10697)
+
+**Generated library statistics were stale**
+
+The first required Forge finalization pass changed stats/com.github.jnr/jnr-ffi/2.2.16/stats.json, including line coverage from 1681 to 1678 covered lines and method coverage from 455 to 454 covered methods. This showed that the committed generated statistics did not match the finalized test tree.
+
+## 2026-10-13 — com.google.oauth-client:google-oauth-client:1.35.0 (#10701)
+
+**Native Image flag was bundled as test metadata**
+
+The contribution put `--enable-url-protocols=https` in `src/test/resources/META-INF/native-image/.../native-image.properties`, violating the test contract's prohibition on test-authored Native Image configuration files. Removing it reproduced the underlying need in the GraalVM 25 lane: every OAuth scenario using the dependency's `GenericUrl` HTTPS path failed with `MalformedURLException` requesting that exact protocol option, while the non-URL HMAC test passed.
+
+## 2026-10-12 — org.bytedeco:javacv:1.5.12 (#10687)
+
+**Avoid host GUI dependencies in JavaCV backend-selection tests**
+
+All three required JavaCV matrix jobs failed in javaTest because tests selected an OpenCV backend whose native highgui library required libgtk-x11-2.0.so.0, while the projector scenario assumed a headful graphics environment. Coordinate tests must pass the required lanes while preserving meaningful public-API behavior. §FS-repository-functional-spec.5.2 §FS-test-contract.1.3
+## 2026-10-13 — com.github.jnr:jnr-unixsocket:0.38.22 (#10700)
 ## 2026-10-08 — org.eclipse.jetty:jetty-http:10.0.0 (#9376)
 
 **Pre-push review unavailable**
 
 Forge could not obtain a readable pre-push review verdict. This records a review availability problem, not a reviewer finding against the branch.
+
 ## 2026-10-13 — org.bytedeco:librealsense:1.12.4-1.5.9 (#10719)
 
 **Hardware-dependent USB context test fails on USB-less CI hosts**

@@ -1,0 +1,156 @@
+{
+  "base_commit": "bf247b1e6e6c0b89780fe1b2481681165377c323",
+  "branch": "ai/kimeta/add-lib-support-com.github.jnr-jnr-posix-3.1.19-forge-10699-20261014004652506328-37c474143db3",
+  "follow_ups": [],
+  "forge": {
+    "branch": "master",
+    "commit": "b0aa9e895ed0da4eeb8477253f179fbcce7e0208",
+    "monitored_branch": "origin/master"
+  },
+  "issue_number": 10699,
+  "library": {
+    "artifact": "jnr-posix",
+    "coordinates": "com.github.jnr:jnr-posix:3.1.19",
+    "group": "com.github.jnr",
+    "version": "3.1.19"
+  },
+  "local_ci_verification": {
+    "base_commit": "bf247b1e6e6c0b89780fe1b2481681165377c323",
+    "commands": [
+      {
+        "command": [
+          "./gradlew",
+          "generateChangedIndexFileCoordinatesList",
+          "-PbaseCommit=origin/master",
+          "-PnewCommit=HEAD"
+        ],
+        "env": {
+          "GITHUB_OUTPUT": "/tmp/tmp7js4ky3z"
+        },
+        "gate": "changed-index-coordinates",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :generateChangedIndexFileCoordinatesList\n\n[Incubating] Problems report is available at: file:///home/oracle/oracle/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10699-b9965d2f/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 3s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      },
+      {
+        "command": [
+          "./gradlew",
+          "validateIndexFiles",
+          "-Pcoordinates=com.github.jnr:jnr-posix"
+        ],
+        "env": {},
+        "gate": "index-file-validation",
+        "output_excerpt": "> Task :tck-build-logic:extractPluginRequests UP-TO-DATE\n> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE\n> Task :tck-build-logic:compileJava UP-TO-DATE\n> Task :tck-build-logic:compileGroovy UP-TO-DATE\n> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE\n> Task :tck-build-logic:pluginDescriptors UP-TO-DATE\n> Task :tck-build-logic:processResources UP-TO-DATE\n> Task :tck-build-logic:classes UP-TO-DATE\n> Task :tck-build-logic:jar UP-TO-DATE\n\n> Configure project :\nGraalVM Reachability Metadata TCK\n---------------------------------\n\n> Task :validateIndexFiles\n✅ metadata/com.github.jnr/jnr-posix/index.json: Valid\n\n[Incubating] Problems report is available at: file:///home/oracle/oracle/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10699-b9965d2f/build/reports/problems/problems-report.html\n\nDeprecated Gradle features were used in this build, making it incompatible with Gradle 10.\n\nYou can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.\n\nFor more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.\n\nBUILD SUCCESSFUL in 2s\n9 actionable tasks: 1 executed, 8 up-to-date\n",
+        "returncode": 0
+      }
+    ],
+    "failure_command": null,
+    "failure_gate": null,
+    "final_commit": "40633f1597bc32e6c25107247d85df2caa903788",
+    "fixups": [],
+    "human_intervention_required": false,
+    "repo_fix_paths": [],
+    "status": "success"
+  },
+  "local_review": {
+    "changed_paths": [],
+    "decision": "approved",
+    "finding_body": "",
+    "finding_title": "",
+    "fix_note": "",
+    "model": "gpt-5.6-sol",
+    "review_comment": "Verified the single-coordinate diff shape, meaningful public-API tests in a separate package, absence of scaffold/native-skip/version-pinning/legacy-config patterns, metadata presence and scope, index integrity, and resolved statistics. Dynamic-access coverage is 17/19 (89.47%), above the new-library gate, and 17 covered calls do not trigger the 39-entry mismatch threshold. The narrow java.io and sun.nio.ch opens are required by JavaLibCHelper's reflection into JDK descriptor/channel internals: removing them reproduced three native runtime failures. The exact Forge finalizer then passed all three native lanes, metadata splitting and validation, style checks, generated-test checks, and statistics generation with no publishable changes.",
+    "session_id": "3614456c5fa748dc"
+  },
+  "metrics": {
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "path": "stats/com.github.jnr/jnr-posix/3.1.19/execution-metrics.json",
+    "summary": {
+      "cached_input_tokens_used": 1893376,
+      "code_coverage_percent": 2.89,
+      "cost_usd": 2.7709,
+      "generated_loc": 152,
+      "input_tokens_used": 268258,
+      "iterations": 4,
+      "metadata_entries": 29,
+      "output_tokens_used": 16098,
+      "test_only_metadata_entries": 10,
+      "tested_library_loc": 139
+    },
+    "timestamp": "2026-10-14T00:46:52.506328Z"
+  },
+  "modifiers": {
+    "chunk_final": true,
+    "chunked_dynamic_access": false,
+    "human_intervention": false
+  },
+  "producer": "kimeta",
+  "publication_id": "forge-10699-20261014004652506328-37c474143db3",
+  "render": {
+    "dynamic_access": null,
+    "dynamic_access_evidence": {
+      "covered_call_sites": [
+        "[reflection] java.lang.Class#getMethod(java.lang.String, java.lang.Class[]) <- jnr.posix.JavaLibCHelper.getDescriptorFromChannel(JavaLibCHelper.java:159) (line 159)",
+        "[reflection] java.lang.reflect.Field#get(java.lang.Object) <- jnr.posix.JavaLibCHelper.getDescriptorFromChannel(JavaLibCHelper.java:150) (line 150)",
+        "[reflection] java.lang.reflect.Field#getInt(java.lang.Object) <- jnr.posix.JavaLibCHelper.getfdFromDescriptor(JavaLibCHelper.java:218) (line 218)",
+        "[reflection] java.lang.reflect.Field#set(java.lang.Object, java.lang.Object) <- jnr.posix.JavaLibCHelper.getDescriptorFromChannel(JavaLibCHelper.java:160) (line 160)",
+        "[reflection] java.lang.reflect.Field#set(java.lang.Object, java.lang.Object) <- jnr.posix.JavaLibCHelper.toFileDescriptor(JavaLibCHelper.java:422) (line 422)",
+        "[reflection] java.lang.reflect.Method#invoke(java.lang.Object, java.lang.Object[]) <- jnr.posix.JavaLibCHelper.getDescriptorFromChannel(JavaLibCHelper.java:143) (line 143)",
+        "[reflection] java.lang.reflect.Method#invoke(java.lang.Object, java.lang.Object[]) <- jnr.posix.JavaLibCHelper.getDescriptorFromChannel(JavaLibCHelper.java:160) (line 160)",
+        "[reflection] java.lang.reflect.Method#invoke(java.lang.Object, java.lang.Object[]) <- jnr.posix.JavaLibCHelper.getpid(JavaLibCHelper.java:262) (line 262)",
+        "... and 9 more"
+      ],
+      "metadata_rules": [
+        "when `jnr.posix.HANDLE` is reached, make `com.kenai.jffi.Version` available for reflection",
+        "when `jnr.posix.HANDLE` is reached, make `com.kenai.jffi.internal.StubLoader.isLoaded()` available for reflection",
+        "when `jnr.posix.util.Chmod` is reached, make `java.io.File.setExecutable(boolean, boolean)` available for reflection",
+        "when `jnr.posix.util.Chmod` is reached, make `java.io.File.setReadable(boolean, boolean)` available for reflection",
+        "when `jnr.posix.util.Chmod` is reached, make `java.io.File.setWritable(boolean, boolean)` available for reflection",
+        "when `jnr.posix.JavaLibCHelper` is reached, make `java.io.FileDescriptor` available for reflection",
+        "when `jnr.posix.JavaLibCHelper$ReflectiveAccess` is reached, make `java.io.FileDescriptor` available for reflection",
+        "when `jnr.posix.JavaLibCHelper` is reached, make `java.lang.ProcessHandle.current()` available for reflection",
+        "... and 8 more"
+      ]
+    },
+    "library_stats": {
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 0.894737,
+            "coveredCalls": 17,
+            "totalCalls": 19
+          }
+        },
+        "coverageRatio": 0.894737,
+        "coveredCalls": 17,
+        "totalCalls": 19
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 638,
+          "missed": 29143,
+          "ratio": 0.021423,
+          "total": 29781
+        },
+        "line": {
+          "covered": 139,
+          "missed": 4674,
+          "ratio": 0.02888,
+          "total": 4813
+        },
+        "method": {
+          "covered": 31,
+          "missed": 1932,
+          "ratio": 0.015792,
+          "total": 1963
+        }
+      },
+      "version": "3.1.19"
+    }
+  },
+  "schema_version": 1,
+  "strategy_name": "optimistic_dynamic_access_iterative_pi_gpt-5.6-sol",
+  "task_type": "library-new-request",
+  "template_type": "library-new-request",
+  "timestamp": "2026-10-14T00:46:52.506328Z"
+}
