@@ -12,13 +12,9 @@ from __future__ import annotations
 
 import json
 import os
-import re
 from dataclasses import asdict, dataclass, field
 from typing import Any
 
-COORDINATE_PATTERN: re.Pattern[str] = re.compile(
-    r"^[A-Za-z0-9_.-]+:[A-Za-z0-9_.-]+:[A-Za-z0-9_.+-]+$"
-)
 RUNTIME_DIR: str = os.path.join("runtime", "real-use")
 TEST_LOCAL_METADATA: str = os.path.join(
     "src", "test", "resources", "META-INF", "native-image", "reachability-metadata.json"
@@ -32,6 +28,8 @@ class RunState:
     """Everything a later program needs to know about the run so far."""
 
     coordinate: str
+    # The real-use-test issue the run resolves (§FS-real-use-test-generation.1).
+    issue_number: int
     repo_checkout: str
     worktree: str
     branch: str

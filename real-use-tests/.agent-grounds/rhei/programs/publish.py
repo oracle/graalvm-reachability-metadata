@@ -80,6 +80,7 @@ def _push(workspace: str, state: RunState, facts_path: str) -> int:
         os.path.join(state.repo_checkout, PUBLISH_ROUTE),
         "--repo-path", state.worktree,
         "--coordinates", state.coordinate,
+        "--issue-number", str(state.issue_number),
         "--timestamp", state.started_at,
         "--render-json", facts_path,
     ]

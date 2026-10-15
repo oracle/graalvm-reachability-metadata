@@ -37,7 +37,7 @@ SEVERE_METADATA_DROP_RATIO = 0.25
 DYNAMIC_ACCESS_METADATA_ENTRY_NOTE_RATIO = 1.75
 PUBLISHER_LOGIN = "graalvmbot"
 PUBLICATION_ID_SUFFIX = re.compile(
-    r"(forge-(?:\d+|benchmark|real-use)-\d{14,20}-[0-9a-f]{12})$"
+    r"(forge-(?:\d+|benchmark)-\d{14,20}-[0-9a-f]{12})$"
 )
 BENCHMARK_RESULT_SCHEMA_PATH = (
     Path(__file__).resolve().parents[3] / "forge/schemas/code_coverage_benchmark_result_schema.json"
@@ -51,11 +51,8 @@ ROUTE_LABELS = {
     "not-for-native-image": ["GenAI", "library-new-request", "not-for-native-image"],
     "code-coverage-benchmark-result": ["GenAI", "code-coverage-improvement", "rhei"],
     "code-coverage-improvement": ["GenAI", "code-coverage-improvement", "rhei"],
-    "real-use-tests": ["GenAI", "real-use-tests", "rhei"],
+    "real-use-tests": ["GenAI", "real-use-test", "rhei"],
 }
-# Routes no issue backs, each with the ID prefix that replaces the issue number
-# (§forge/AR-real-use-tests-publication); mirrors the local descriptor writer.
-ISSUE_LESS_PREFIXES = {"real-use-tests": "real-use"}
 
 
 @dataclass(frozen=True)
@@ -305,13 +302,6 @@ def _build_publication_id(descriptor: dict[str, Any]) -> str:
             "task_type": descriptor["task_type"],
         }
         prefix = "benchmark"
-    elif descriptor["task_type"] in ISSUE_LESS_PREFIXES:
-        identity_fields = {
-            "timestamp": descriptor["timestamp"],
-            "coordinates": descriptor["library"]["coordinates"],
-            "task_type": descriptor["task_type"],
-        }
-        prefix = ISSUE_LESS_PREFIXES[descriptor["task_type"]]
     else:
         identity_fields = {
             "issue_number": descriptor["issue_number"],
@@ -910,14 +900,16 @@ def _render_real_use_tests(
 ) -> tuple[str, str]:
     """Report the real-use run's scenarios, removals, and test-local entries.
 
-    No issue backs the run, so the body carries no `Fixes:` line, and no Forge
-    strategy produced it, so it omits the revision block (§forge/AR-real-use-tests-publication).
+    The run resolves its `real-use-test` issue; no Forge strategy produced it, so
+    the body omits the revision block (§forge/AR-real-use-tests-publication).
     """
     coordinates = descriptor["library"]["coordinates"]
     real_use = descriptor["render"]["real_use"]
     title = f"[GenAI] Add real-use tests for {coordinates}"
     lines = [
         "## Real-use tests",
+        "",
+        _issue_reference(descriptor),
         "",
         f"Real-use tests for `{coordinates}`: each scenario uses one subsystem of the library "
         "the way an application does and passes on the JVM and on Native Image against the "

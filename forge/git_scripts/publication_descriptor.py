@@ -31,9 +31,6 @@ DESCRIPTOR_SCHEMA_RELATIVE_PATH: str = os.path.join(
     ".github", "scripts", "forge_pr_publisher", "schema.json",
 )
 SCHEMA_VERSION: int = 1
-# Routes no issue backs, each with the publication ID prefix that replaces the
-# issue number (§AR-real-use-tests-publication).
-ISSUE_LESS_PREFIXES: dict[str, str] = {"real-use-tests": "real-use"}
 ELIGIBLE_STATUSES: set[str] = {"success", "success_with_intervention", "chunk_ready"}
 
 
@@ -41,7 +38,7 @@ ELIGIBLE_STATUSES: set[str] = {"success", "success_with_intervention", "chunk_re
 class PublicationDescriptorInput:
     """Workflow-owned facts needed to create one publication descriptor."""
 
-    issue_number: int | None
+    issue_number: int
     task_type: str
     template_type: str
     status: str
@@ -98,19 +95,10 @@ def build_publication_id(
         benchmark_run_id: str | None = None,
 ) -> str:
     """Build a stable ID from durable run facts so continuation reuses it."""
-    if issue_number is None and task_type in ISSUE_LESS_PREFIXES:
-        if benchmark_run_id is not None:
-            raise ValueError("Issue-less route publication must not carry a benchmark run ID")
-        identity_fields: dict[str, Any] = {
-            "timestamp": timestamp,
-            "coordinates": coordinates,
-            "task_type": task_type,
-        }
-        prefix = ISSUE_LESS_PREFIXES[task_type]
-    elif issue_number is None:
+    if issue_number is None:
         if not benchmark_run_id:
             raise ValueError("Issue-less publication requires a benchmark run ID")
-        identity_fields = {
+        identity_fields: dict[str, Any] = {
             "benchmark_run_id": benchmark_run_id,
             "timestamp": timestamp,
             "coordinates": coordinates,
@@ -208,6 +196,7 @@ def write_publication_descriptor(
         "branch": branch,
         "producer": producer,
         "base_commit": _resolve_commit(repo_path, base_commit),
+        "issue_number": descriptor_input.issue_number,
         "library": _library_payload(group, artifact, version),
         "task_type": descriptor_input.task_type,
         "template_type": descriptor_input.template_type,
@@ -226,8 +215,6 @@ def write_publication_descriptor(
         "follow_ups": copy.deepcopy(descriptor_input.follow_ups),
         "render": copy.deepcopy(descriptor_input.render),
     }
-    if descriptor_input.issue_number is not None:
-        descriptor["issue_number"] = descriptor_input.issue_number
     if local_review is not None:
         descriptor["local_review"] = copy.deepcopy(local_review)
     if descriptor_input.previous_coordinates:

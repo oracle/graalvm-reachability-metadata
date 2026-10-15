@@ -28,7 +28,7 @@ states:
     initial: true
     program: >-
       python3 "{{repo_checkout}}/real-use-tests/.agent-grounds/rhei/programs/real_use.py" prepare
-      --coordinate "{{coordinate}}"
+      --issue-number {{issue_number}}
       --scenario-passes {{scenario_passes}}
       --repo-checkout "{{repo_checkout}}"
       --worktree-root "{{worktree_root}}"
@@ -37,22 +37,30 @@ states:
       - name: state
         path: runtime/real-use/state.json
         description: The run state every later program reads.
+      - name: run
+        path: runtime/real-use/run.md
+        description: The issue, coordinate, and project every agent state reads first.
 
   preflight:
     description: Declare the supporting libraries and Docker images the scenarios will need.
     target: "{{worker_agent}}"
+    inputs:
+      - name: run
+        path: runtime/real-use/run.md
     instructions: |
-      You prepare the real-use project for `{{coordinate}}`
+      Read `{input.run.path}` first: it names the issue this run resolves, the
+      coordinate (written `<coordinate>` below), and the coordinate project.
+
+      You prepare the real-use project for `<coordinate>`
       (§FS-real-use-test-generation.2.2). {{scenario_passes}} scenario passes
       follow, each adding one scenario that uses a different subsystem of the
       target library the way an application does. None of them can change what
       you declare, so declare now everything those scenarios will need beside
       the target.
 
-      Your working directory is the run worktree. The coordinate project is
-      `real-use-tests/src/{{ coordinate | replace(":", "/") }}/`.
+      Your working directory is the run worktree.
 
-      - Inspect the target: `./gradlew -q listLibraryJars -Pcoordinates={{coordinate}}`
+      - Inspect the target: `./gradlew -q listLibraryJars -Pcoordinates=<coordinate>`
         prints its JARs, and `metadata/<group>/<artifact>/index.json` lists its
         `allowed-packages`.
       - Declare in the project's `build.gradle` each supporting library a
@@ -66,7 +74,7 @@ states:
       - Change only those two files and write no scenario; a program reverts
         every other edit.
       - Confirm the libraries resolve from the worktree root, in the foreground,
-        with `./gradlew generateRealUseFilter -Pcoordinates={{coordinate}}`.
+        with `./gradlew generateRealUseFilter -Pcoordinates=<coordinate>`.
 
       Before your final message, write `{output.report.path}` as JSON:
       `{"libraries": [{"coordinate": "<group:artifact:version>", "why": "<use>"}], "dockerImages": ["<image>"]}`.
@@ -84,17 +92,22 @@ states:
     description: Write one scenario for an uncovered subsystem and make it pass on the JVM.
     target: "{{worker_agent}}"
     visits: {{scenario_passes}}
+    inputs:
+      - name: run
+        path: runtime/real-use/run.md
     instructions: |
-      You write one real-use scenario for `{{coordinate}}`: a test that uses the
+      Read `{input.run.path}` first: it names the issue this run resolves, the
+      coordinate (written `<coordinate>` below), and the coordinate project.
+
+      You write one real-use scenario for `<coordinate>`: a test that uses the
       library the way an application does (§FS-real-use-test-generation.2.3).
       This is pass {visit_count} of {visits}.
 
-      Your working directory is the run worktree. The coordinate project is
-      `real-use-tests/src/{{ coordinate | replace(":", "/") }}/`. Read its
+      Your working directory is the run worktree. Read the coordinate project's
       existing scenarios under `src/test/java/`: the first sentence of each
       class doc comment names the subsystem it covers. Pick a subsystem of the
       target that none of them covers; you may inspect the library JARs
-      (`./gradlew -q listLibraryJars -Pcoordinates={{coordinate}}`).
+      (`./gradlew -q listLibraryJars -Pcoordinates=<coordinate>`).
 
       Rules (§FS-real-use-test-contract):
       - One scenario per test class and one class per file. Nest every helper
@@ -118,7 +131,7 @@ states:
       - Write only under the project's `src/test/`, never the test-local
         metadata under `src/test/resources/META-INF/native-image/`.
       - From the worktree root, in the foreground, run
-        `./gradlew realUseJavaTest -Pcoordinates={{coordinate}}` and fix the
+        `./gradlew realUseJavaTest -Pcoordinates=<coordinate>` and fix the
         scenario until it passes. Run no native task; style is checked before
         publication.
 
@@ -148,20 +161,25 @@ states:
     description: Only when the native run still fails after the collected entries - make the native task pass with test-local metadata, deleting scenarios metadata cannot save.
     target: "{{worker_agent}}"
     agent_timeout: 2h
+    inputs:
+      - name: run
+        path: runtime/real-use/run.md
     handoff:
       inherit:
         - from: transition.previous
           name: prompt
           required: true
     instructions: |
-      You make the native run of the real-use project for `{{coordinate}}` pass
+      You make the native run of the real-use project for `<coordinate>` pass
       (§FS-real-use-test-generation.2.5). The handoff section below holds the
       failing output, the test-local metadata file, and the packages a
       condition may name.
+      Read `{input.run.path}` first: it names the issue this run resolves, the
+      coordinate (written `<coordinate>` below), and the coordinate project.
 
       Your working directory is the run worktree. From the worktree root, in
       the foreground, run
-      `./gradlew realUseNativeTest -Pcoordinates={{coordinate}} -Ptck.realUse.exactReachability=true`,
+      `./gradlew realUseNativeTest -Pcoordinates=<coordinate> -Ptck.realUse.exactReachability=true`,
       which names each missing registration, and repeat until it passes.
 
       Rules (§FS-real-use-tests.2.2):
@@ -197,25 +215,31 @@ states:
   agent-publication-fix:
     description: Only when a style check fails - fix what it reports without changing what a scenario does.
     target: "{{worker_agent}}"
+    inputs:
+      - name: run
+        path: runtime/real-use/run.md
     handoff:
       inherit:
         - from: transition.previous
           name: prompt
           required: true
     instructions: |
-      You make the real-use project for `{{coordinate}}` pass the repository's
+      You make the real-use project for `<coordinate>` pass the repository's
       style checks before it is published (§FS-real-use-test-generation.2.7).
       The handoff section below holds the output of each failing check.
+      Read `{input.run.path}` first: it names the issue this run resolves, the
+      coordinate (written `<coordinate>` below), and the coordinate project.
+
 
       Your working directory is the run worktree. From the worktree root, in
       the foreground:
       - run `./gradlew spotlessApply`, which adds missing CC0 headers and
         formats JSON;
       - then run `./gradlew spotlessCheck` and
-        `./gradlew checkstyle -Pcoordinates={{coordinate}}`, and fix what they
+        `./gradlew checkstyle -Pcoordinates=<coordinate>`, and fix what they
         still report until both pass.
 
-      Edit only files under `real-use-tests/src/{{ coordinate | replace(":", "/") }}/`,
+      Edit only files under the coordinate project,
       and revert any change `spotlessApply` makes elsewhere. Fix style only:
       never change what a scenario does, delete a scenario, or edit the
       test-local metadata beyond formatting.

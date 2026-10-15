@@ -3,11 +3,13 @@
 # You should have received a copy of the CC0 legalcode along with this
 # work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 
-"""The `prepare` program: verify inputs, spawn and attach the run worktree, scaffold.
+"""The `prepare` program: read the issue, spawn and attach the run worktree, scaffold.
 
 §FS-real-use-test-generation.2.1. Inputs are verified before anything runs
-(§root/PRCPL-verify-inputs); the worktree is branched from the checkout's HEAD
-so the template and harness the run uses are the ones it was started from.
+(§root/PRCPL-verify-inputs), including the issue the run resolves and the
+coordinate its title names (§FS-real-use-test-generation.1); the worktree is
+branched from the checkout's HEAD so the template and harness the run uses are
+the ones it was started from.
 """
 from __future__ import annotations
 
@@ -18,9 +20,10 @@ import sys
 from datetime import datetime, timezone
 from typing import Any
 
+import issue
 from build_tools import checkpoint, git, run_gradle
 from exit_codes import BAD_INPUT, INFRASTRUCTURE, OK
-from run_state import COORDINATE_PATTERN, RunState, read_json, runtime_path, save
+from run_state import RunState, read_json, runtime_path, save
 
 
 def _resolve(workspace: str, path: str) -> str:
@@ -68,16 +71,32 @@ def _attach_worktree(workspace: str, worktree: str) -> None:
         handle.write(f"path: {worktree}\n")
 
 
+def _write_run_note(workspace: str, state: RunState) -> None:
+    """The note every agent state reads first: the template renders before the issue is read.
+
+    §AR-real-use-test-workflow.1
+    """
+    with open(runtime_path(workspace, "run.md"), "w", encoding="utf-8") as handle:
+        handle.write(
+            f"# Real-use run for issue #{state.issue_number}\n\n"
+            f"- Coordinate: `{state.coordinate}`\n"
+            f"- Coordinate project, from the worktree root: `{state.project_dir}/`\n"
+            f"- Run worktree: `{state.worktree}`\n"
+        )
+
+
 def run(args: argparse.Namespace) -> int:
     workspace: str = os.path.abspath(args.workspace)
-    if not COORDINATE_PATTERN.match(args.coordinate):
-        print(f"ERROR: '{args.coordinate}' is not group:artifact:version.", file=sys.stderr)
-        return BAD_INPUT
     if args.scenario_passes < 1:
         print("ERROR: scenario passes must be positive.", file=sys.stderr)
         return BAD_INPUT
     repo: str = _resolve(workspace, args.repo_checkout)
-    group, artifact, version = args.coordinate.split(":")
+    try:
+        coordinate: str = issue.coordinate_of(issue.read_issue(args.issue_number, repo))
+    except ValueError as error:
+        print(f"ERROR: issue #{args.issue_number}: {error}", file=sys.stderr)
+        return BAD_INPUT
+    group, artifact, version = coordinate.split(":")
 
     # Resolved like git's own top-level path, which the worktree ref must name.
     worktree: str = os.path.realpath(
@@ -90,7 +109,8 @@ def run(args: argparse.Namespace) -> int:
         print(f"ERROR: worktree: {error}", file=sys.stderr)
         return BAD_INPUT
     state: RunState = RunState(
-        coordinate=args.coordinate,
+        coordinate=coordinate,
+        issue_number=args.issue_number,
         repo_checkout=repo,
         worktree=worktree,
         branch=branch,
@@ -110,5 +130,6 @@ def run(args: argparse.Namespace) -> int:
     state.base_commit = checkpoint(worktree, [state.project_dir], f"Scaffold real-use project for {artifact}")
     _attach_worktree(workspace, worktree)
     save(workspace, state)
+    _write_run_note(workspace, state)
     print(f"[prepare] worktree {worktree} on {branch}, checkpoint {state.base_commit}")
     return OK

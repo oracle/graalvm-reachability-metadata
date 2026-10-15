@@ -38,7 +38,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser: argparse.ArgumentParser = argparse.ArgumentParser(description=__doc__)
     commands = parser.add_subparsers(dest="step", required=True)
     prepare_parser: argparse.ArgumentParser = commands.add_parser("prepare")
-    prepare_parser.add_argument("--coordinate", required=True)
+    prepare_parser.add_argument("--issue-number", type=int, required=True)
     prepare_parser.add_argument("--scenario-passes", type=int, required=True)
     prepare_parser.add_argument("--repo-checkout", required=True)
     prepare_parser.add_argument("--worktree-root", required=True)

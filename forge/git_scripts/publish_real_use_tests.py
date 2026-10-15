@@ -5,9 +5,9 @@
 
 """Push a real-use generation run's project through the shared publication pipeline.
 
-The issue-less `real-use-tests` route (§AR-real-use-tests-publication): the run
-already committed its coordinate project, so staging only picks up what is left,
-and the trusted publisher opens the pull request from the descriptor.
+The `real-use-tests` route (§AR-real-use-tests-publication): the run resolves one
+`real-use-test` issue and already committed its coordinate project, so staging
+only picks up what is left, and the trusted publisher opens the pull request.
 """
 
 import argparse
@@ -22,10 +22,14 @@ from git_scripts.publication_descriptor import PublicationDescriptorInput
 TASK_TYPE: str = "real-use-tests"
 
 
-def build_descriptor_input(timestamp: str, real_use: dict[str, Any]) -> PublicationDescriptorInput:
-    """The descriptor input: no issue, and the facts the trusted template reports."""
+def build_descriptor_input(
+        issue_number: int,
+        timestamp: str,
+        real_use: dict[str, Any],
+) -> PublicationDescriptorInput:
+    """The descriptor input: the run's issue and the facts the trusted template reports."""
     return PublicationDescriptorInput(
-        issue_number=None,
+        issue_number=issue_number,
         task_type=TASK_TYPE,
         template_type=TASK_TYPE,
         status="success",
@@ -34,7 +38,13 @@ def build_descriptor_input(timestamp: str, real_use: dict[str, Any]) -> Publicat
     )
 
 
-def push_real_use_branch(repo_path: str, coordinates: str, timestamp: str, real_use: dict[str, Any]) -> str:
+def push_real_use_branch(
+        repo_path: str,
+        coordinates: str,
+        issue_number: int,
+        timestamp: str,
+        real_use: dict[str, Any],
+) -> str:
     """Stage the real-use project, verify, write the descriptor, and push."""
     group, artifact, version = parse_coordinate_parts(coordinates)
     project = os.path.join("real-use-tests", "src", group, artifact, version)
@@ -43,7 +53,7 @@ def push_real_use_branch(repo_path: str, coordinates: str, timestamp: str, real_
         branch_suffix=f"real-use-{artifact}-{version}",
         coordinates=coordinates,
         stage=lambda: stage_and_commit([project], f"Add real-use tests for {artifact} {version}", cwd=repo_path),
-        descriptor_input=build_descriptor_input(timestamp, real_use),
+        descriptor_input=build_descriptor_input(issue_number, timestamp, real_use),
     )
     return branch
 
@@ -55,6 +65,7 @@ def build_parser() -> argparse.ArgumentParser:
     )
     parser.add_argument("--repo-path", required=True, help="The run worktree holding the committed project")
     parser.add_argument("--coordinates", required=True, help="Coordinates in group:artifact:version form")
+    parser.add_argument("--issue-number", type=int, required=True, help="The real-use-test issue the run resolves")
     parser.add_argument("--timestamp", required=True, help="The run's start time, its durable identity")
     parser.add_argument("--render-json", required=True, help="JSON file with the facts the template reports")
     return parser
@@ -65,7 +76,7 @@ def main(argv: list[str] | None = None) -> None:
     with open(args.render_json, "r", encoding="utf-8") as handle:
         real_use: dict[str, Any] = json.load(handle)
     ensure_gh_authenticated()
-    branch = push_real_use_branch(args.repo_path, args.coordinates, args.timestamp, real_use)
+    branch = push_real_use_branch(args.repo_path, args.coordinates, args.issue_number, args.timestamp, real_use)
     print(f"Pushed {branch} for {args.coordinates}.")
 
 

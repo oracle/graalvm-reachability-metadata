@@ -9,9 +9,9 @@ run it:
 
 ```console
 rhei instantiate real-use-tests \
-  --set coordinate=org.postgresql:postgresql:42.7.12 \
-  --output runs/real-use-postgresql
-rhei run runs/real-use-postgresql
+  --set issue_number=10900 \
+  --output runs/real-use-10900
+rhei run runs/real-use-10900
 ```
 
 The defaults assume that layout: the source checkout is `../../..` from the

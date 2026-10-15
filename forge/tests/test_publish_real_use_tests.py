@@ -3,7 +3,7 @@
 # You should have received a copy of the CC0 legalcode along with this
 # work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 
-"""Cover the issue-less real-use publication route end to end (§AR-real-use-tests-publication)."""
+"""Cover the real-use publication route end to end (§AR-real-use-tests-publication)."""
 
 import importlib.util
 import json
@@ -25,6 +25,7 @@ PUBLISHER_PATH = os.path.join(REPOSITORY_ROOT, ".github", "scripts", "forge_pr_p
 SCHEMA_PATH = os.path.join(REPOSITORY_ROOT, ".github", "scripts", "forge_pr_publisher", "schema.json")
 COORDINATES = "com.example:demo:1.0.0"
 TIMESTAMP = "2026-10-15T10:15:30+00:00"
+ISSUE = 10900
 
 
 def _load_publisher():
@@ -50,7 +51,7 @@ def _real_use() -> dict[str, Any]:
 
 
 def _descriptor() -> dict[str, Any]:
-    publication_id = build_publication_id(None, TIMESTAMP, COORDINATES, "real-use-tests")
+    publication_id = build_publication_id(ISSUE, TIMESTAMP, COORDINATES, "real-use-tests")
     return {
         "schema_version": 1,
         "publication_id": publication_id,
@@ -58,6 +59,7 @@ def _descriptor() -> dict[str, Any]:
         "branch": f"ai/octocat/real-use-demo-1.0.0-{publication_id}",
         "producer": "octocat",
         "base_commit": "0" * 40,
+        "issue_number": ISSUE,
         "library": {"group": "com.example", "artifact": "demo", "version": "1.0.0", "coordinates": COORDINATES},
         "task_type": "real-use-tests",
         "template_type": "real-use-tests",
@@ -85,12 +87,12 @@ def _validator() -> Draft202012Validator:
 
 class RealUseDescriptorTests(unittest.TestCase):
 
-    def test_issue_less_descriptor_is_schema_valid(self) -> None:
+    def test_descriptor_is_schema_valid(self) -> None:
         _validator().validate(_descriptor())
 
-    def test_real_use_descriptor_rejects_an_issue_a_review_or_missing_facts(self) -> None:
+    def test_real_use_descriptor_rejects_no_issue_a_review_or_missing_facts(self) -> None:
         for mutate in (
-                lambda d: d.update(issue_number=1),
+                lambda d: d.pop("issue_number"),
                 lambda d: d.update(local_review={"decision": "approved"}),
                 lambda d: d["render"].pop("real_use"),
                 lambda d: d.update(template_type="library-new-request"),
@@ -100,25 +102,18 @@ class RealUseDescriptorTests(unittest.TestCase):
             with self.assertRaises(ValidationError):
                 _validator().validate(descriptor)
 
-    def test_other_routes_still_require_an_issue(self) -> None:
+    def test_local_and_trusted_identity_agree_and_labels_match_the_issue(self) -> None:
         descriptor = _descriptor()
-        descriptor.update(task_type="not-for-native-image", template_type="not-for-native-image")
-        descriptor["render"] = {"reason": "not a target"}
-        with self.assertRaisesRegex(ValidationError, "issue_number"):
-            _validator().validate(descriptor)
-
-    def test_local_and_trusted_identity_agree_on_the_real_use_prefix(self) -> None:
-        descriptor = _descriptor()
-        self.assertTrue(descriptor["publication_id"].startswith("forge-real-use-20261015101530"))
+        self.assertTrue(descriptor["publication_id"].startswith("forge-10900-20261015101530"))
         self.assertEqual(descriptor["publication_id"], publisher._build_publication_id(descriptor))
         self.assertIsNotNone(publisher.PUBLICATION_ID_SUFFIX.search(descriptor["branch"]))
-        self.assertEqual(["GenAI", "real-use-tests", "rhei"], publisher.ROUTE_LABELS["real-use-tests"])
+        self.assertEqual(["GenAI", "real-use-test", "rhei"], publisher.ROUTE_LABELS["real-use-tests"])
 
-    def test_template_reports_scenarios_removals_and_entries_without_an_issue(self) -> None:
+    def test_template_resolves_the_issue_and_reports_scenarios_removals_and_entries(self) -> None:
         title, body = publisher.render_publication(_descriptor())
 
         self.assertEqual("[GenAI] Add real-use tests for com.example:demo:1.0.0", title)
-        self.assertNotIn("Fixes:", body)
+        self.assertIn("Fixes: #10900", body)
         self.assertIn("| `realuse.demo.OrderRoundTripTest` | Serializes orders |", body)
         self.assertIn("| `src/test/java/realuse/demo/ProxyTest.java` | defines classes at run time |", body)
         self.assertIn("#### Target library", body)
@@ -127,7 +122,7 @@ class RealUseDescriptorTests(unittest.TestCase):
 
 class PublishRealUseTestsTests(unittest.TestCase):
 
-    def test_push_skips_the_review_and_publishes_without_an_issue(self) -> None:
+    def test_push_skips_the_review_and_carries_the_issue(self) -> None:
         result = LocalCIVerificationResult(status="success", base_commit="FETCH_HEAD")
         events: list[str] = []
         written: dict[str, Any] = {}
@@ -164,16 +159,16 @@ class PublishRealUseTestsTests(unittest.TestCase):
                              side_effect=AssertionError("the real-use route has no pre-push review")), \
                 patch.object(branch_publication, "run_git_transport", side_effect=fake_run_git_transport), \
                 patch.object(branch_publication.subprocess, "run", side_effect=fake_subprocess_run):
-            branch = publish_real_use_tests.push_real_use_branch("/repo", COORDINATES, TIMESTAMP, _real_use())
+            branch = publish_real_use_tests.push_real_use_branch("/repo", COORDINATES, ISSUE, TIMESTAMP, _real_use())
 
-        self.assertTrue(branch.startswith("ai/octocat/real-use-demo-1.0.0-forge-real-use-"), branch)
+        self.assertTrue(branch.startswith("ai/octocat/real-use-demo-1.0.0-forge-10900-"), branch)
         self.assertEqual(["rebase", "local-ci", "push"], events)
         stage.assert_called_once_with(
             [os.path.join("real-use-tests", "src", "com.example", "demo", "1.0.0")],
             "Add real-use tests for demo 1.0.0",
             cwd="/repo",
         )
-        self.assertIsNone(written["descriptor_input"].issue_number)
+        self.assertEqual(ISSUE, written["descriptor_input"].issue_number)
         self.assertIsNone(written["local_review"])
         self.assertEqual({"real_use": _real_use()}, written["descriptor_input"].render)
 

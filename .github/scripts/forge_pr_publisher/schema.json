@@ -11,6 +11,7 @@
     "branch",
     "producer",
     "base_commit",
+    "issue_number",
     "library",
     "task_type",
     "template_type",
@@ -309,15 +310,10 @@
         "required": ["task_type"]
       },
       "then": {
-        "not": {"required": ["issue_number"]},
-        "required": ["render"],
         "properties": {
           "template_type": {"const": "real-use-tests"},
           "render": {"required": ["real_use"]}
         }
-      },
-      "else": {
-        "required": ["issue_number"]
       }
     },
     {

@@ -110,6 +110,18 @@ json.dump(args, open(os.environ["FAKE_PUBLISH_RECORD"], "w"))
 print("Pushed ai/octocat/real-use-lib-1.0.0-forge-real-use-1 for org.example:lib:1.0.0.")
 '''
 
+# The fake `gh`: serves the control file's `issue` for `gh issue view`.
+FAKE_GH: str = r'''#!/usr/bin/env python3
+import json, os, sys
+issue = json.load(open(os.environ["FAKE_GRADLE_CONTROL"])).get("issue")
+if sys.argv[1:3] != ["issue", "view"] or issue is None:
+    print("issue not found", file=sys.stderr)
+    sys.exit(1)
+print(json.dumps(issue))
+'''
+ISSUE: dict = {"title": "Real-use tests for org.example:lib:1.0.0", "state": "OPEN",
+               "labels": [{"name": "real-use-test"}]}
+
 SCENARIO: str = """/*
  * Copyright and related rights waived via CC0
  */
@@ -166,10 +178,20 @@ class WorkflowTest(unittest.TestCase):
         self.control({})
         os.environ["FAKE_GRADLE_CONTROL"] = self.control_path
         os.environ["FAKE_PUBLISH_RECORD"] = os.path.join(self.tmp, "publish.json")
+        bin_dir: str = os.path.join(self.tmp, "bin")
+        os.makedirs(bin_dir)
+        fake_gh: str = os.path.join(bin_dir, "gh")
+        with open(fake_gh, "w") as handle:
+            handle.write(FAKE_GH)
+        os.chmod(fake_gh, os.stat(fake_gh).st_mode | stat.S_IEXEC)
+        self.saved_path: str = os.environ["PATH"]
+        os.environ["PATH"] = bin_dir + os.pathsep + self.saved_path
+        self.control({"issue": ISSUE})
         os.environ["RHEI_TASK_ID"] = "ws.real-use"
         os.environ["RHEI_RESULT_PATH"] = os.path.join(self.workspace, "runtime", "results", "ws.real-use.md")
 
     def tearDown(self) -> None:
+        os.environ["PATH"] = self.saved_path
         shutil.rmtree(self.tmp, ignore_errors=True)
 
     def control(self, values: dict) -> None:
@@ -185,9 +207,9 @@ class WorkflowTest(unittest.TestCase):
         with working_directory(self.workspace):
             return real_use.main(list(argv))
 
-    def prepare(self, coordinate: str = COORDINATE, passes: str = "2") -> int:
+    def prepare(self, passes: str = "2") -> int:
         return self.step(
-            "prepare", "--coordinate", coordinate, "--scenario-passes", passes,
+            "prepare", "--issue-number", "10900", "--scenario-passes", passes,
             "--repo-checkout", "../../repo", "--worktree-root", "../worktrees",
         )
 
@@ -275,9 +297,9 @@ class WorkflowTest(unittest.TestCase):
         self.assertEqual([], facts["removed"])
         self.assertEqual("Target library", facts["test_local_metadata"][0]["library"])
         pushed: list[str] = json.loads(self.read(os.environ["FAKE_PUBLISH_RECORD"]))
-        self.assertEqual(["--repo-path", state.worktree, "--coordinates", COORDINATE,
+        self.assertEqual(["--repo-path", state.worktree, "--coordinates", COORDINATE, "--issue-number", "10900",
                           "--timestamp", state.started_at, "--render-json", self.runtime("publication", "render.json")],
-                         pushed[:8])
+                         pushed[:10])
         self.assertIn("Pushed ai/octocat/", self.read(self.runtime("publication", "branch.md")))
         self.assertIn("publish exited 0", self.read(os.environ["RHEI_RESULT_PATH"]))
 
@@ -343,8 +365,25 @@ class WorkflowTest(unittest.TestCase):
         self.assertEqual(INFRASTRUCTURE, self.step("apply-preflight"))
 
     def test_malformed_input_is_a_bad_input(self) -> None:
-        self.assertEqual(BAD_INPUT, self.prepare(coordinate="not-a-coordinate"))
         self.assertEqual(BAD_INPUT, self.prepare(passes="0"))
+        for issue in (
+                dict(ISSUE, state="CLOSED"),
+                dict(ISSUE, labels=[{"name": "library-new-request"}]),
+                dict(ISSUE, title="Real-use tests for gson"),
+                dict(ISSUE, title="Compare org.example:lib:1.0.0 and org.example:lib:2.0.0"),
+                None,
+        ):
+            self.control({"issue": issue})
+            self.assertEqual(BAD_INPUT, self.prepare(), issue)
+
+    def test_prepare_reads_the_coordinate_from_the_issue(self) -> None:
+        self.assertEqual(OK, self.prepare())
+        state = load(self.workspace)
+        self.assertEqual((COORDINATE, 10900), (state.coordinate, state.issue_number))
+        note: str = self.read(self.runtime("run.md"))
+        self.assertIn("issue #10900", note)
+        self.assertIn(f"`{COORDINATE}`", note)
+        self.assertIn(f"`{PROJECT}/`", note)
 
 
 class UnitTest(unittest.TestCase):

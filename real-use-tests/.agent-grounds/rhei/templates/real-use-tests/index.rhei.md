@@ -1,4 +1,4 @@
-# Rhei: Real-use tests for {{coordinate}}
+# Rhei: Real-use tests for issue #{{issue_number}}
 **States:** real-use-tests
 
 ## Rules
