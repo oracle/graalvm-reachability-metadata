@@ -38,7 +38,7 @@ public class FactoryBaseTest {
 
     private static ResourceRef reference() {
         ResourceRef reference = new ResourceRef("javax.sql.DataSource", null, null, null, true);
-        reference.add(new StringRefAddr("factory", ResourceFactoryTest.class.getName()));
+        reference.add(new StringRefAddr("factory", ResourceFactoryTest.TestObjectFactory.class.getName()));
         return reference;
     }
 }

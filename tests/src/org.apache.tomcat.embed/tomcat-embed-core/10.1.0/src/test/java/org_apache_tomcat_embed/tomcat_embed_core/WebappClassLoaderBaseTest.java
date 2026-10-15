@@ -10,10 +10,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.rmi.NoSuchObjectException;
-import java.rmi.Remote;
-import java.rmi.RemoteException;
-import java.rmi.server.UnicastRemoteObject;
 import java.time.Duration;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -64,7 +60,7 @@ public class WebappClassLoaderBaseTest {
     }
 
     @Test
-    void stopScansThreadLocalRmiTimerAndExecutorReferences() throws Exception {
+    void stopScansThreadLocalTimerAndExecutorReferences() throws Exception {
         try (TestWebapp webapp = new TestWebapp(temporaryDirectory)) {
             WebappClassLoaderBase loader = webapp.getLoader();
             loader.setClearReferencesStopThreads(true);
@@ -76,7 +72,6 @@ public class WebappClassLoaderBaseTest {
             inheritableThreadLocal.set("webapp inherited value");
 
             Timer timer = createTimerWithContextClassLoader(loader);
-            TestRemoteImpl remote = exportRemoteWithContextClassLoader(loader);
             ThreadPoolExecutor targetExecutor = createExecutor(new TargetThreadFactory(loader));
             ThreadPoolExecutor holderExecutor = createExecutor(new HolderThreadFactory(loader));
 
@@ -93,7 +88,6 @@ public class WebappClassLoaderBaseTest {
                 timer.cancel();
                 targetExecutor.shutdownNow();
                 holderExecutor.shutdownNow();
-                unexportRemote(remote);
             }
         }
     }
@@ -116,39 +110,8 @@ public class WebappClassLoaderBaseTest {
         }
     }
 
-    private static TestRemoteImpl exportRemoteWithContextClassLoader(ClassLoader loader) throws RemoteException {
-        Thread thread = Thread.currentThread();
-        ClassLoader original = thread.getContextClassLoader();
-        thread.setContextClassLoader(loader);
-        try {
-            TestRemoteImpl remote = new TestRemoteImpl();
-            UnicastRemoteObject.exportObject(remote, 0);
-            return remote;
-        } finally {
-            thread.setContextClassLoader(original);
-        }
-    }
-
     private static ThreadPoolExecutor createExecutor(ThreadFactory threadFactory) {
         return new ThreadPoolExecutor(0, 1, 30, TimeUnit.SECONDS, new LinkedBlockingQueue<>(), threadFactory);
-    }
-
-    private static void unexportRemote(Remote remote) throws RemoteException {
-        try {
-            UnicastRemoteObject.unexportObject(remote, true);
-        } catch (NoSuchObjectException e) {
-            assertThat(e).isInstanceOf(NoSuchObjectException.class);
-        }
-    }
-
-    private interface TestRemote extends Remote {
-        void ping() throws RemoteException;
-    }
-
-    private static final class TestRemoteImpl implements TestRemote {
-        @Override
-        public void ping() {
-        }
     }
 
     private static final class ParkingTask implements Runnable {

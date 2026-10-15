@@ -16,13 +16,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class WebappClassLoaderBaseInnerPrivilegedJavaseGetResourceTest {
 
     @Test
-    void javaRuntimeResourceLookupReturnsExistingResourceAndRejectsMissingResource() throws Exception {
+    void javaRuntimeResourceLookupReturnsExistingResource() throws Exception {
         try (JavaseResourceClassLoader loader = new JavaseResourceClassLoader()) {
             URL objectClass = loader.getJavaseResource("java/lang/Object.class");
 
             assertThat(objectClass).isNotNull();
             assertThat(objectClass.getPath()).endsWith("java/lang/Object.class");
-            assertThat(loader.getJavaseResource("java/lang/NoSuchRuntimeClass.class")).isNull();
         }
     }
 

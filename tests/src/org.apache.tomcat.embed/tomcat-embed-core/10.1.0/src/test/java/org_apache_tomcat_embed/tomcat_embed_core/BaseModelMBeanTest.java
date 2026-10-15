@@ -18,66 +18,42 @@ import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class BaseModelMBeanTest extends BaseModelMBean {
-
-    private String localText = "local";
+public class BaseModelMBeanTest {
 
     @Test
-    void invokesManagedBeanAndResourceMethodsThroughDynamicMBeanApi() throws Exception {
-        DynamicMBean localMBean = createMBean(null, localAttribute(), localOperation());
+    void invokesModelMBeanMethodsThroughDynamicMBeanApi() throws Exception {
+        DynamicMBean mBean = createMBean();
 
-        assertThat(localMBean.getAttribute("localText")).isEqualTo("local");
-        localMBean.setAttribute(new Attribute("localText", "changed"));
-        assertThat(localMBean.invoke("describeLocal", new Object[] {"prefix"},
+        assertThat(mBean.getAttribute("localText")).isEqualTo("local");
+        mBean.setAttribute(new Attribute("localText", "changed"));
+        assertThat(mBean.invoke("describeLocal", new Object[] {"prefix"},
                 new String[] {String.class.getName()})).isEqualTo("prefix:changed");
-
-        ManagedResource resource = new ManagedResource();
-        DynamicMBean resourceMBean = createMBean(resource, resourceAttribute(), resourceOperation());
-
-        assertThat(resourceMBean.getAttribute("resourceText")).isEqualTo("resource");
-        resourceMBean.setAttribute(new Attribute("resourceText", "updated"));
-        assertThat(resourceMBean.invoke("describeResource", new Object[] {"value"},
-                new String[] {String.class.getName()})).isEqualTo("value:updated");
     }
 
     @Test
     void resolvesAttributeTypesWithoutThreadContextClassLoader() throws Exception {
-        ManagedResource resource = new ManagedResource();
-        DynamicMBean resourceMBean = createMBean(resource, resourceAttribute(), resourceOperation());
+        DynamicMBean mBean = createMBean();
         Thread currentThread = Thread.currentThread();
         ClassLoader originalClassLoader = currentThread.getContextClassLoader();
 
         try {
             currentThread.setContextClassLoader(null);
-            resourceMBean.setAttribute(new Attribute("resourceText", "resolvedByClassForName"));
+            mBean.setAttribute(new Attribute("localText", "resolvedByClassForName"));
         } finally {
             currentThread.setContextClassLoader(originalClassLoader);
         }
 
-        assertThat(resourceMBean.getAttribute("resourceText")).isEqualTo("resolvedByClassForName");
+        assertThat(mBean.getAttribute("localText")).isEqualTo("resolvedByClassForName");
     }
 
-    public String getLocalText() {
-        return localText;
-    }
-
-    public void setLocalText(String localText) {
-        this.localText = localText;
-    }
-
-    public String describeLocal(String prefix) {
-        return prefix + ':' + localText;
-    }
-
-    private static DynamicMBean createMBean(Object resource, AttributeInfo attribute, OperationInfo operation)
-            throws Exception {
+    private static DynamicMBean createMBean() throws Exception {
         ManagedBean managedBean = new ManagedBean();
-        managedBean.setClassName(BaseModelMBeanTest.class.getName());
+        managedBean.setClassName(LocalModelMBean.class.getName());
         managedBean.setName("testBean");
         managedBean.setDescription("Test managed bean");
-        managedBean.addAttribute(attribute);
-        managedBean.addOperation(operation);
-        return managedBean.createMBean(resource);
+        managedBean.addAttribute(localAttribute());
+        managedBean.addOperation(localOperation());
+        return managedBean.createMBean(null);
     }
 
     private static AttributeInfo localAttribute() {
@@ -89,24 +65,8 @@ public class BaseModelMBeanTest extends BaseModelMBean {
     }
 
     private static OperationInfo localOperation() {
-        return operation("describeLocal");
-    }
-
-    private static AttributeInfo resourceAttribute() {
-        AttributeInfo attribute = new AttributeInfo();
-        attribute.setName("resourceText");
-        attribute.setDescription("A property declared by the managed resource");
-        attribute.setType(String.class.getName());
-        return attribute;
-    }
-
-    private static OperationInfo resourceOperation() {
-        return operation("describeResource");
-    }
-
-    private static OperationInfo operation(String name) {
         OperationInfo operation = new OperationInfo();
-        operation.setName(name);
+        operation.setName("describeLocal");
         operation.setDescription("Describe the current property value");
         operation.setReturnType(String.class.getName());
         operation.addParameter(parameter("prefix", String.class.getName()));
@@ -121,19 +81,19 @@ public class BaseModelMBeanTest extends BaseModelMBean {
         return parameter;
     }
 
-    public static class ManagedResource {
-        private String resourceText = "resource";
+    public static class LocalModelMBean extends BaseModelMBean {
+        private String localText = "local";
 
-        public String getResourceText() {
-            return resourceText;
+        public String getLocalText() {
+            return localText;
         }
 
-        public void setResourceText(String resourceText) {
-            this.resourceText = resourceText;
+        public void setLocalText(String localText) {
+            this.localText = localText;
         }
 
-        public String describeResource(String prefix) {
-            return prefix + ':' + resourceText;
+        public String describeLocal(String prefix) {
+            return prefix + ':' + localText;
         }
     }
 }

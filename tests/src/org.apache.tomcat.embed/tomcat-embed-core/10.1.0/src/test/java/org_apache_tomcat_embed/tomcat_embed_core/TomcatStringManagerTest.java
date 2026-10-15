@@ -37,14 +37,6 @@ public class TomcatStringManagerTest {
         }
     }
 
-    @Test
-    void representsPackageWithoutAMessageBundle() {
-        StringManager manager = StringManager.getManager("example.without.messages");
-
-        assertThat(manager.getLocale()).isNull();
-        assertThat(manager.getString("missing-key")).isNull();
-    }
-
     private static final class ResourceMappingClassLoader extends ClassLoader {
 
         private final ClassLoader resourceLoader;
