@@ -130,12 +130,11 @@ states:
          - Never skip or tolerate Native Image: no `@DisabledInNativeImage`,
            no `assumeFalse`, no native-runtime checks, no catch of
            unsupported-feature errors.
-         - Every test finishes in under 60 seconds with bounded waits and
-           closes what it opens.
          - Open every file with the CC0 header the scaffolded files carry and
            keep it ASCII.
-         - Write only under the project's `src/test/`, never the test-local
-           metadata under `src/test/resources/META-INF/native-image/`.
+         - Write only under the scenario directory at the absolute path
+           `{input.run.path}` gives, never the test-local metadata file it
+           also names.
 
       3. Run the scenario on the JVM. Only once the scenario is written, run
          `./gradlew realUseJavaTest -Pcoordinates=<coordinate>` from the
