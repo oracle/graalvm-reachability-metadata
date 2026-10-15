@@ -19,6 +19,7 @@ import org.springframework.ai.model.chat.memory.autoconfigure.ChatMemoryAutoConf
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.context.annotation.ImportCandidates;
+import org.springframework.boot.test.context.FilteredClassLoader;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -33,6 +34,14 @@ public class Spring_ai_autoconfigure_model_chat_memoryTest {
 
         assertThat(ImportCandidates.load(AutoConfiguration.class, classLoader).getCandidates())
                 .contains(ChatMemoryAutoConfiguration.class.getName());
+    }
+
+    @Test
+    void doesNotConfigureMemoryWhenChatMemoryApiIsUnavailable() {
+        this.contextRunner.withClassLoader(new FilteredClassLoader(ChatMemoryRepository.class)).run(context -> {
+            assertThat(context).doesNotHaveBean(ChatMemoryRepository.class);
+            assertThat(context).doesNotHaveBean(ChatMemory.class);
+        });
     }
 
     @Test
