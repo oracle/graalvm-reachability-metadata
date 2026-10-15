@@ -31,8 +31,8 @@ public final class RealUseUtils {
     private RealUseUtils() {
     }
 
-    /// The JARs of the libraries `build.gradle` declares; the harness's own JUnit and
-    /// test-support libraries are not declarations.
+    /// The JARs of the libraries `build.gradle` declares; the harness's own JUnit, AssertJ,
+    /// and test-support libraries are not declarations.
     public static List<File> declaredLibraryJars(Configuration declarations, Configuration runtimeClasspath) {
         Set<String> declared = declarations.getAllDependencies().stream()
                 .filter(dependency -> dependency.getGroup() != null)
@@ -78,6 +78,7 @@ public final class RealUseUtils {
 
     private static boolean isHarnessLibrary(Dependency dependency) {
         return dependency.getGroup().startsWith("org.junit")
+                || dependency.getGroup().equals("org.assertj")
                 || (dependency.getGroup().equals("org.graalvm") && dependency.getName().equals("tck-test-support"));
     }
 }

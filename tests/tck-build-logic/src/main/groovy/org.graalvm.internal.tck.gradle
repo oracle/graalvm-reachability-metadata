@@ -704,6 +704,10 @@ boolean realUseExactReachability = realUseProject && providers.gradleProperty("t
         .getOrElse(false)
 
 if (realUseProject) {
+    // §real-use-tests/AR-real-use-test-harness.1: test tooling a scenario never declares.
+    dependencies {
+        testImplementation "org.assertj:assertj-core:3.22.0"
+    }
     // §real-use-tests/AR-real-use-test-harness.2
     tasks.register("generateRealUseFilter") { task ->
         task.setDescription("Writes user-code-filter.json covering every package of the declared libraries")
