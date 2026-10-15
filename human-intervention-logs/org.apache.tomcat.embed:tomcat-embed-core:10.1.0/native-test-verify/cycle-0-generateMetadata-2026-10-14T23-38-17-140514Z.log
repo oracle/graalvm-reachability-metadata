@@ -1,0 +1,505 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :generateMetadata
+[34m[INFO] Generating user-code-filter.json...[0m
+[34m[INFO] Configuring agent block in: build.gradle...[0m
+[34m[INFO] Agent block already present in: build.gradle - skipping...[0m
+[34m[INFO] Generating metadata...[0m
+
+> Task :generateMetadata FAILED
+
+[Incubating] Problems report is available at: file:///home/oracle/oracle/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10788-8f117644/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':generateMetadata'.
+> Cannot generate metadata. See output:
+  Starting a Gradle Daemon, 1 busy and 9 stopped Daemons could not be reused, use --status for details
+  Shared read-only dependency cache is an incubating feature.
+  > Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+  > Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+  > Task :tck-build-logic:compileJava UP-TO-DATE
+  > Task :tck-build-logic:compileGroovy UP-TO-DATE
+  > Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+  > Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+  > Task :tck-build-logic:processResources UP-TO-DATE
+  > Task :tck-build-logic:classes UP-TO-DATE
+  > Task :tck-build-logic:jar UP-TO-DATE
+  > Task :tck-test-support:compileJava UP-TO-DATE
+  > Task :tck-test-support:processResources UP-TO-DATE
+  > Task :tck-test-support:classes UP-TO-DATE
+  > Task :tck-test-support:jar UP-TO-DATE
+  > Task :checkTestTimeoutAnnotations
+  > Task :compileJava NO-SOURCE
+  > Task :processResources NO-SOURCE
+  > Task :classes UP-TO-DATE
+  > Task :compileTestJava UP-TO-DATE
+  > Task :processTestResources UP-TO-DATE
+  > Task :testClasses UP-TO-DATE
+  
+  > Task :test
+  [native-image-plugin] Instrumenting task with the native-image-agent: test
+  [1,408s][warning][jni,resolve] Re-registering of platform native method: jdk.internal.misc.Unsafe.allocateInstance(Ljava/lang/Class;)Ljava/lang/Object; from code in a different classloader
+  
+  DirectJDKLogTest > defaultLoggerConfiguresAndUsesJdkLogging() FAILED
+      java.lang.AssertionError: 
+      Expecting actual:
+        java.util.logging.XMLFormatter@5e08ce87
+      to be an instance of:
+        java.util.logging.SimpleFormatter
+      but was instance of:
+        java.util.logging.XMLFormatter
+          at org_apache_tomcat_embed.tomcat_embed_core.DirectJDKLogTest.defaultLoggerConfiguresAndUsesJdkLogging(DirectJDKLogTest.java:45)
+  
+  BootstrapTest > delegatesSupportedLifecycleCommandsToCatalina() FAILED
+      java.util.concurrent.TimeoutException: delegatesSupportedLifecycleCommandsToCatalina() timed out after 60 seconds
+          at org.junit.jupiter.engine.extension.TimeoutExceptionFactory.create(TimeoutExceptionFactory.java:29)
+          at org.junit.jupiter.engine.extension.SeparateThreadTimeoutInvocation.lambda$proceed$0(SeparateThreadTimeoutInvocation.java:40)
+          at org.junit.jupiter.api.AssertTimeoutPreemptively.resolveFutureAndHandleException(AssertTimeoutPreemptively.java:116)
+          at org.junit.jupiter.api.AssertTimeoutPreemptively.assertTimeoutPreemptively(AssertTimeoutPreemptively.java:82)
+          at org.junit.jupiter.api.Assertions.assertTimeoutPreemptively(Assertions.java:3556)
+          at org.junit.jupiter.engine.extension.SeparateThreadTimeoutInvocation.proceed(SeparateThreadTimeoutInvocation.java:38)
+          at org.junit.jupiter.engine.extension.TimeoutExtension.intercept(TimeoutExtension.java:156)
+          at org.junit.jupiter.engine.extension.TimeoutExtension.interceptTestableMethod(TimeoutExtension.java:147)
+          at org.junit.jupiter.engine.extension.TimeoutExtension.interceptTestMethod(TimeoutExtension.java:86)
+          at org.junit.jupiter.engine.execution.InterceptingExecutableInvoker$ReflectiveInterceptorCall.lambda$ofVoidMethod$0(InterceptingExecutableInvoker.java:103)
+          at org.junit.jupiter.engine.execution.InterceptingExecutableInvoker.lambda$invoke$0(InterceptingExecutableInvoker.java:93)
+          at org.junit.jupiter.engine.execution.InvocationInterceptorChain$InterceptedInvocation.proceed(InvocationInterceptorChain.java:106)
+          at org.junit.jupiter.engine.execution.InvocationInterceptorChain.proceed(InvocationInterceptorChain.java:64)
+          at org.junit.jupiter.engine.execution.InvocationInterceptorChain.chainAndInvoke(InvocationInterceptorChain.java:45)
+          at org.junit.jupiter.engine.execution.InvocationInterceptorChain.invoke(InvocationInterceptorChain.java:37)
+          at org.junit.jupiter.engine.execution.InterceptingExecutableInvoker.invoke(InterceptingExecutableInvoker.java:92)
+          at org.junit.jupiter.engine.execution.InterceptingExecutableInvoker.invoke(InterceptingExecutableInvoker.java:86)
+          at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.lambda$invokeTestMethod$7(TestMethodTestDescriptor.java:217)
+          at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+          at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.invokeTestMethod(TestMethodTestDescriptor.java:213)
+          at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.execute(TestMethodTestDescriptor.java:138)
+          at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.execute(TestMethodTestDescriptor.java:68)
+          at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$6(NodeTestTask.java:151)
+          at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+          at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$8(NodeTestTask.java:141)
+          at org.junit.platform.engine.support.hierarchical.Node.around(Node.java:137)
+          at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$9(NodeTestTask.java:139)
+          at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+          at org.junit.platform.engine.support.hierarchical.NodeTestTask.executeRecursively(NodeTestTask.java:138)
+          at org.junit.platform.engine.support.hierarchical.NodeTestTask.execute(NodeTestTask.java:95)
+          at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+          at org.junit.platform.engine.support.hierarchical.SameThreadHierarchicalTestExecutorService.invokeAll(SameThreadHierarchicalTestExecutorService.java:41)
+          at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$6(NodeTestTask.java:155)
+          at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+          at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$8(NodeTestTask.java:141)
+          at org.junit.platform.engine.support.hierarchical.Node.around(Node.java:137)
+          at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$9(NodeTestTask.java:139)
+          at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+          at org.junit.platform.engine.support.hierarchical.NodeTestTask.executeRecursively(NodeTestTask.java:138)
+          at org.junit.platform.engine.support.hierarchical.NodeTestTask.execute(NodeTestTask.java:95)
+          at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+          at org.junit.platform.engine.support.hierarchical.SameThreadHierarchicalTestExecutorService.invokeAll(SameThreadHierarchicalTestExecutorService.java:41)
+          at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$6(NodeTestTask.java:155)
+          at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+          at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$8(NodeTestTask.java:141)
+          at org.junit.platform.engine.support.hierarchical.Node.around(Node.java:137)
+          at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$9(NodeTestTask.java:139)
+          at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+          at org.junit.platform.engine.support.hierarchical.NodeTestTask.executeRecursively(NodeTestTask.java:138)
+          at org.junit.platform.engine.support.hierarchical.NodeTestTask.execute(NodeTestTask.java:95)
+          at org.junit.platform.engine.support.hierarchical.SameThreadHierarchicalTestExecutorService.submit(SameThreadHierarchicalTestExecutorService.java:35)
+          at org.junit.platform.engine.support.hierarchical.HierarchicalTestExecutor.execute(HierarchicalTestExecutor.java:57)
+          at org.junit.platform.engine.support.hierarchical.HierarchicalTestEngine.execute(HierarchicalTestEngine.java:54)
+          at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:147)
+          at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:127)
+          at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:90)
+          at org.junit.platform.launcher.core.EngineExecutionOrchestrator.lambda$execute$0(EngineExecutionOrchestrator.java:55)
+          at org.junit.platform.launcher.core.EngineExecutionOrchestrator.withInterceptedStreams(EngineExecutionOrchestrator.java:102)
+          at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:54)
+          at org.junit.platform.launcher.core.DefaultLauncher.execute(DefaultLauncher.java:114)
+          at org.junit.platform.launcher.core.DefaultLauncher.execute(DefaultLauncher.java:86)
+          at org.junit.platform.launcher.core.DefaultLauncherSession$DelegatingLauncher.execute(DefaultLauncherSession.java:86)
+          at org.gradle.api.internal.tasks.testing.junitplatform.JUnitPlatformTestClassProcessor$CollectAllTestClassesExecutor.processAllTestClasses(JUnitPlatformTestClassProcessor.java:135)
+          at org.gradle.api.internal.tasks.testing.junitplatform.JUnitPlatformTestClassProcessor$CollectAllTestClassesExecutor.access$000(JUnitPlatformTestClassProcessor.java:110)
+          at org.gradle.api.internal.tasks.testing.junitplatform.JUnitPlatformTestClassProcessor.stop(JUnitPlatformTestClassProcessor.java:104)
+          at org.gradle.api.internal.tasks.testing.SuiteTestClassProcessor.stop(SuiteTestClassProcessor.java:64)
+          at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:104)
+          at java.base/java.lang.reflect.Method.invoke(Method.java:565)
+          at org.gradle.internal.dispatch.ReflectionDispatch.dispatch(ReflectionDispatch.java:36)
+          at org.gradle.internal.dispatch.ReflectionDispatch.dispatch(ReflectionDispatch.java:24)
+          at org.gradle.internal.dispatch.ContextClassLoaderDispatch.dispatch(ContextClassLoaderDispatch.java:33)
+          at org.gradle.internal.dispatch.ProxyDispatchAdapter$DispatchingInvocationHandler.invoke(ProxyDispatchAdapter.java:92)
+          at jdk.proxy3/jdk.proxy3.$Proxy19.stop(Unknown Source)
+          at org.gradle.api.internal.tasks.testing.worker.TestWorker$3.run(TestWorker.java:194)
+          at org.gradle.api.internal.tasks.testing.worker.TestWorker.executeAndMaintainThreadName(TestWorker.java:126)
+          at org.gradle.api.internal.tasks.testing.worker.TestWorker.execute(TestWorker.java:103)
+          at org.gradle.api.internal.tasks.testing.worker.TestWorker.execute(TestWorker.java:63)
+          at org.gradle.process.internal.worker.child.ActionExecutionWorker.execute(ActionExecutionWorker.java:56)
+          at org.gradle.process.internal.worker.child.SystemApplicationClassLoaderWorker.call(SystemApplicationClassLoaderWorker.java:122)
+          at org.gradle.process.internal.worker.child.SystemApplicationClassLoaderWorker.call(SystemApplicationClassLoaderWorker.java:72)
+          at worker.org.gradle.process.internal.worker.GradleWorkerMain.run(GradleWorkerMain.java:69)
+          at worker.org.gradle.process.internal.worker.GradleWorkerMain.main(GradleWorkerMain.java:74)
+  
+          Caused by:
+          org.junit.jupiter.api.AssertTimeoutPreemptively$ExecutionTimeoutException: Execution timed out in thread junit-timeout-thread-7
+              at java.base@25.0.4.1.1/java.lang.reflect.Method.invoke(Method.java:546)
+              at app//org.apache.tomcat.util.IntrospectionUtils.setProperty(IntrospectionUtils.java:82)
+              at app//org.apache.tomcat.util.digester.SetPropertiesRule.begin(SetPropertiesRule.java:101)
+              at app//org.apache.tomcat.util.digester.Digester.startElement(Digester.java:1264)
+              at java.xml@25.0.4.1.1/com.sun.org.apache.xerces.internal.parsers.AbstractSAXParser.startElement(AbstractSAXParser.java:519)
+              at java.xml@25.0.4.1.1/com.sun.org.apache.xerces.internal.impl.dtd.XMLDTDValidator.startElement(XMLDTDValidator.java:731)
+              at java.xml@25.0.4.1.1/com.sun.org.apache.xerces.internal.impl.XMLDocumentFragmentScannerImpl.scanStartElement(XMLDocumentFragmentScannerImpl.java:1417)
+              at java.xml@25.0.4.1.1/com.sun.org.apache.xerces.internal.impl.XMLDocumentFragmentScannerImpl$FragmentContentDriver.next(XMLDocumentFragmentScannerImpl.java:2736)
+              at java.xml@25.0.4.1.1/com.sun.org.apache.xerces.internal.impl.XMLDocumentScannerImpl.next(XMLDocumentScannerImpl.java:635)
+              at java.xml@25.0.4.1.1/com.sun.org.apache.xerces.internal.impl.XMLDocumentFragmentScannerImpl.scanDocument(XMLDocumentFragmentScannerImpl.java:551)
+              at java.xml@25.0.4.1.1/com.sun.org.apache.xerces.internal.parsers.XML11Configuration.parse(XML11Configuration.java:890)
+              at java.xml@25.0.4.1.1/com.sun.org.apache.xerces.internal.parsers.XML11Configuration.parse(XML11Configuration.java:826)
+              at java.xml@25.0.4.1.1/com.sun.org.apache.xerces.internal.parsers.XMLParser.parse(XMLParser.java:137)
+              at java.xml@25.0.4.1.1/com.sun.org.apache.xerces.internal.parsers.AbstractSAXParser.parse(AbstractSAXParser.java:1225)
+              at java.xml@25.0.4.1.1/com.sun.org.apache.xerces.internal.jaxp.SAXParserImpl$JAXPSAXParser.parse(SAXParserImpl.java:629)
+              at app//org.apache.tomcat.util.digester.Digester.parse(Digester.java:1539)
+              at app//org.apache.tomcat.util.modeler.modules.MbeansDescriptorsDigesterSource.execute(MbeansDescriptorsDigesterSource.java:167)
+              at app//org.apache.tomcat.util.modeler.modules.MbeansDescriptorsDigesterSource.loadDescriptors(MbeansDescriptorsDigesterSource.java:146)
+              at app//org.apache.tomcat.util.modeler.Registry.load(Registry.java:610)
+              at app//org.apache.tomcat.util.modeler.Registry.loadDescriptors(Registry.java:687)
+              at app//org.apache.catalina.mbeans.MBeanUtils.createRegistry(MBeanUtils.java:585)
+              at app//org.apache.catalina.mbeans.MBeanUtils.<clinit>(MBeanUtils.java:80)
+              at app//org.apache.catalina.mbeans.MBeanFactory.<clinit>(MBeanFactory.java:64)
+              at app//org.apache.catalina.core.StandardServer.initInternal(StandardServer.java:1006)
+              at app//org.apache.catalina.util.LifecycleBase.init(LifecycleBase.java:136)
+              at app//org.apache.catalina.startup.Catalina.load(Catalina.java:747)
+              at app//org.apache.catalina.startup.Catalina.load(Catalina.java:769)
+              at java.base@25.0.4.1.1/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:104)
+              at java.base@25.0.4.1.1/java.lang.reflect.Method.invoke(Method.java:565)
+              at app//org.apache.catalina.startup.Bootstrap.load(Bootstrap.java:305)
+              at app//org.apache.catalina.startup.Bootstrap.main(Bootstrap.java:475)
+              at app//org_apache_tomcat_embed.tomcat_embed_core.BootstrapTest.delegatesSupportedLifecycleCommandsToCatalina(BootstrapTest.java:42)
+  
+  WARNING: A restricted method in java.lang.System has been called
+  WARNING: java.lang.System::load has been called by org.apache.tomcat.jni.Library in an unnamed module (file:/tmp/metadata-forge-gradle/dc7946488e7e4c64/worktree-homes/10788-8f117644-bac9f083/caches/modules-2/files-2.1/org.apache.tomcat.embed/tomcat-embed-core/10.1.0/d1feb9f90a805b29e96a795fc672691637d16040/tomcat-embed-core-10.1.0.jar)
+  WARNING: Use --enable-native-access=ALL-UNNAMED to avoid a warning for callers in this module
+  WARNING: Restricted methods will be blocked in a future release unless native access is enabled
+  
+  WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+  WARNING: sun.misc.Unsafe::invokeCleaner has been called by org.apache.tomcat.util.buf.ByteBufferUtils (file:/tmp/metadata-forge-gradle/dc7946488e7e4c64/worktree-homes/10788-8f117644-bac9f083/caches/modules-2/files-2.1/org.apache.tomcat.embed/tomcat-embed-core/10.1.0/d1feb9f90a805b29e96a795fc672691637d16040/tomcat-embed-core-10.1.0.jar)
+  WARNING: Please consider reporting this to the maintainers of class org.apache.tomcat.util.buf.ByteBufferUtils
+  WARNING: sun.misc.Unsafe::invokeCleaner will be removed in a future release
+  
+  > Task :test
+  
+  ContextConfigTest > startsWebappWithAuthenticatorAndHandlesTypesScanning(Path) FAILED
+      java.util.concurrent.TimeoutException: startsWebappWithAuthenticatorAndHandlesTypesScanning(java.nio.file.Path) timed out after 60 seconds
+          at org.junit.jupiter.engine.extension.TimeoutExceptionFactory.create(TimeoutExceptionFactory.java:29)
+          at org.junit.jupiter.engine.extension.SeparateThreadTimeoutInvocation.lambda$proceed$0(SeparateThreadTimeoutInvocation.java:40)
+          at org.junit.jupiter.api.AssertTimeoutPreemptively.resolveFutureAndHandleException(AssertTimeoutPreemptively.java:116)
+          at org.junit.jupiter.api.AssertTimeoutPreemptively.assertTimeoutPreemptively(AssertTimeoutPreemptively.java:82)
+          at org.junit.jupiter.api.Assertions.assertTimeoutPreemptively(Assertions.java:3556)
+          at org.junit.jupiter.engine.extension.SeparateThreadTimeoutInvocation.proceed(SeparateThreadTimeoutInvocation.java:38)
+          at org.junit.jupiter.engine.extension.TimeoutExtension.intercept(TimeoutExtension.java:156)
+          at org.junit.jupiter.engine.extension.TimeoutExtension.interceptTestableMethod(TimeoutExtension.java:147)
+          at org.junit.jupiter.engine.extension.TimeoutExtension.interceptTestMethod(TimeoutExtension.java:86)
+          at org.junit.jupiter.engine.execution.InterceptingExecutableInvoker$ReflectiveInterceptorCall.lambda$ofVoidMethod$0(InterceptingExecutableInvoker.java:103)
+          at org.junit.jupiter.engine.execution.InterceptingExecutableInvoker.lambda$invoke$0(InterceptingExecutableInvoker.java:93)
+          at org.junit.jupiter.engine.execution.InvocationInterceptorChain$InterceptedInvocation.proceed(InvocationInterceptorChain.java:106)
+          at org.junit.jupiter.engine.execution.InvocationInterceptorChain.proceed(InvocationInterceptorChain.java:64)
+          at org.junit.jupiter.engine.execution.InvocationInterceptorChain.chainAndInvoke(InvocationInterceptorChain.java:45)
+          at org.junit.jupiter.engine.execution.InvocationInterceptorChain.invoke(InvocationInterceptorChain.java:37)
+          at org.junit.jupiter.engine.execution.InterceptingExecutableInvoker.invoke(InterceptingExecutableInvoker.java:92)
+          at org.junit.jupiter.engine.execution.InterceptingExecutableInvoker.invoke(InterceptingExecutableInvoker.java:86)
+          at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.lambda$invokeTestMethod$7(TestMethodTestDescriptor.java:217)
+          at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+          at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.invokeTestMethod(TestMethodTestDescriptor.java:213)
+          at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.execute(TestMethodTestDescriptor.java:138)
+          at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.execute(TestMethodTestDescriptor.java:68)
+          at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$6(NodeTestTask.java:151)
+          at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+          at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$8(NodeTestTask.java:141)
+          at org.junit.platform.engine.support.hierarchical.Node.around(Node.java:137)
+          at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$9(NodeTestTask.java:139)
+          at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+          at org.junit.platform.engine.support.hierarchical.NodeTestTask.executeRecursively(NodeTestTask.java:138)
+          at org.junit.platform.engine.support.hierarchical.NodeTestTask.execute(NodeTestTask.java:95)
+          at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+          at org.junit.platform.engine.support.hierarchical.SameThreadHierarchicalTestExecutorService.invokeAll(SameThreadHierarchicalTestExecutorService.java:41)
+          at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$6(NodeTestTask.java:155)
+          at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+          at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$8(NodeTestTask.java:141)
+          at org.junit.platform.engine.support.hierarchical.Node.around(Node.java:137)
+          at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$9(NodeTestTask.java:139)
+          at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+          at org.junit.platform.engine.support.hierarchical.NodeTestTask.executeRecursively(NodeTestTask.java:138)
+          at org.junit.platform.engine.support.hierarchical.NodeTestTask.execute(NodeTestTask.java:95)
+          at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+          at org.junit.platform.engine.support.hierarchical.SameThreadHierarchicalTestExecutorService.invokeAll(SameThreadHierarchicalTestExecutorService.java:41)
+          at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$6(NodeTestTask.java:155)
+          at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+          at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$8(NodeTestTask.java:141)
+          at org.junit.platform.engine.support.hierarchical.Node.around(Node.java:137)
+          at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$9(NodeTestTask.java:139)
+          at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+          at org.junit.platform.engine.support.hierarchical.NodeTestTask.executeRecursively(NodeTestTask.java:138)
+          at org.junit.platform.engine.support.hierarchical.NodeTestTask.execute(NodeTestTask.java:95)
+          at org.junit.platform.engine.support.hierarchical.SameThreadHierarchicalTestExecutorService.submit(SameThreadHierarchicalTestExecutorService.java:35)
+          at org.junit.platform.engine.support.hierarchical.HierarchicalTestExecutor.execute(HierarchicalTestExecutor.java:57)
+          at org.junit.platform.engine.support.hierarchical.HierarchicalTestEngine.execute(HierarchicalTestEngine.java:54)
+          at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:147)
+          at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:127)
+          at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:90)
+          at org.junit.platform.launcher.core.EngineExecutionOrchestrator.lambda$execute$0(EngineExecutionOrchestrator.java:55)
+          at org.junit.platform.launcher.core.EngineExecutionOrchestrator.withInterceptedStreams(EngineExecutionOrchestrator.java:102)
+          at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:54)
+          at org.junit.platform.launcher.core.DefaultLauncher.execute(DefaultLauncher.java:114)
+          at org.junit.platform.launcher.core.DefaultLauncher.execute(DefaultLauncher.java:86)
+          at org.junit.platform.launcher.core.DefaultLauncherSession$DelegatingLauncher.execute(DefaultLauncherSession.java:86)
+          at org.gradle.api.internal.tasks.testing.junitplatform.JUnitPlatformTestClassProcessor$CollectAllTestClassesExecutor.processAllTestClasses(JUnitPlatformTestClassProcessor.java:135)
+          at org.gradle.api.internal.tasks.testing.junitplatform.JUnitPlatformTestClassProcessor$CollectAllTestClassesExecutor.access$000(JUnitPlatformTestClassProcessor.java:110)
+          at org.gradle.api.internal.tasks.testing.junitplatform.JUnitPlatformTestClassProcessor.stop(JUnitPlatformTestClassProcessor.java:104)
+          at org.gradle.api.internal.tasks.testing.SuiteTestClassProcessor.stop(SuiteTestClassProcessor.java:64)
+          at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:104)
+          at java.base/java.lang.reflect.Method.invoke(Method.java:565)
+          at org.gradle.internal.dispatch.ReflectionDispatch.dispatch(ReflectionDispatch.java:36)
+          at org.gradle.internal.dispatch.ReflectionDispatch.dispatch(ReflectionDispatch.java:24)
+          at org.gradle.internal.dispatch.ContextClassLoaderDispatch.dispatch(ContextClassLoaderDispatch.java:33)
+          at org.gradle.internal.dispatch.ProxyDispatchAdapter$DispatchingInvocationHandler.invoke(ProxyDispatchAdapter.java:92)
+          at jdk.proxy3/jdk.proxy3.$Proxy19.stop(Unknown Source)
+          at org.gradle.api.internal.tasks.testing.worker.TestWorker$3.run(TestWorker.java:194)
+          at org.gradle.api.internal.tasks.testing.worker.TestWorker.executeAndMaintainThreadName(TestWorker.java:126)
+          at org.gradle.api.internal.tasks.testing.worker.TestWorker.execute(TestWorker.java:103)
+          at org.gradle.api.internal.tasks.testing.worker.TestWorker.execute(TestWorker.java:63)
+          at org.gradle.process.internal.worker.child.ActionExecutionWorker.execute(ActionExecutionWorker.java:56)
+          at org.gradle.process.internal.worker.child.SystemApplicationClassLoaderWorker.call(SystemApplicationClassLoaderWorker.java:122)
+          at org.gradle.process.internal.worker.child.SystemApplicationClassLoaderWorker.call(SystemApplicationClassLoaderWorker.java:72)
+          at worker.org.gradle.process.internal.worker.GradleWorkerMain.run(GradleWorkerMain.java:69)
+          at worker.org.gradle.process.internal.worker.GradleWorkerMain.main(GradleWorkerMain.java:74)
+  
+          Caused by:
+          org.junit.jupiter.api.AssertTimeoutPreemptively$ExecutionTimeoutException: Execution timed out in thread junit-timeout-thread-35
+              at java.base@25.0.4.1.1/java.lang.ClassLoader.getResource(ClassLoader.java:1341)
+              at java.base@25.0.4.1.1/java.lang.ClassLoader.getResource(ClassLoader.java:1344)
+              at java.base@25.0.4.1.1/java.lang.ClassLoader.getResourceAsStream(ClassLoader.java:1680)
+              at app//org.apache.catalina.loader.WebappClassLoaderBase.getResourceAsStream(WebappClassLoaderBase.java:1141)
+              at app//org.apache.catalina.startup.ContextConfig.populateJavaClassCache(ContextConfig.java:2496)
+              at app//org.apache.catalina.startup.ContextConfig.populateJavaClassCache(ContextConfig.java:2485)
+              at app//org.apache.catalina.startup.ContextConfig.checkHandlesTypes(ContextConfig.java:2389)
+              at app//org.apache.catalina.startup.ContextConfig.processAnnotationsStream(ContextConfig.java:2333)
+              at app//org.apache.catalina.startup.ContextConfig.processAnnotationsJar(ContextConfig.java:2285)
+              at app//org.apache.catalina.startup.ContextConfig.processAnnotationsUrl(ContextConfig.java:2255)
+              at app//org.apache.catalina.startup.ContextConfig.scanWebXmlFragment(ContextConfig.java:2163)
+              at app//org.apache.catalina.startup.ContextConfig.processAnnotations(ContextConfig.java:2143)
+              at app//org.apache.catalina.startup.ContextConfig.processClasses(ContextConfig.java:1408)
+              at app//org.apache.catalina.startup.ContextConfig.webConfig(ContextConfig.java:1303)
+              at app//org.apache.catalina.startup.ContextConfig.configureStart(ContextConfig.java:986)
+              at app//org.apache.catalina.startup.ContextConfig.lifecycleEvent(ContextConfig.java:303)
+              at app//org.apache.catalina.util.LifecycleBase.fireLifecycleEvent(LifecycleBase.java:123)
+              at app//org.apache.catalina.core.StandardContext.startInternal(StandardContext.java:5069)
+              at app//org.apache.catalina.util.LifecycleBase.start(LifecycleBase.java:183)
+              at app//org.apache.catalina.core.ContainerBase$StartChild.call(ContainerBase.java:1396)
+              at app//org.apache.catalina.core.ContainerBase$StartChild.call(ContainerBase.java:1386)
+              at java.base@25.0.4.1.1/java.util.concurrent.FutureTask.run(FutureTask.java:328)
+              at app//org.apache.tomcat.util.threads.InlineExecutorService.execute(InlineExecutorService.java:75)
+              at java.base@25.0.4.1.1/java.util.concurrent.AbstractExecutorService.submit(AbstractExecutorService.java:149)
+              at app//org.apache.catalina.core.ContainerBase.startInternal(ContainerBase.java:919)
+              at app//org.apache.catalina.core.StandardHost.startInternal(StandardHost.java:886)
+              at app//org.apache.catalina.util.LifecycleBase.start(LifecycleBase.java:183)
+              at app//org.apache.catalina.core.ContainerBase$StartChild.call(ContainerBase.java:1396)
+              at app//org.apache.catalina.core.ContainerBase$StartChild.call(ContainerBase.java:1386)
+              at java.base@25.0.4.1.1/java.util.concurrent.FutureTask.run(FutureTask.java:328)
+              at app//org.apache.tomcat.util.threads.InlineExecutorService.execute(InlineExecutorService.java:75)
+              at java.base@25.0.4.1.1/java.util.concurrent.AbstractExecutorService.submit(AbstractExecutorService.java:149)
+              at app//org.apache.catalina.core.ContainerBase.startInternal(ContainerBase.java:919)
+              at app//org.apache.catalina.core.StandardEngine.startInternal(StandardEngine.java:252)
+              at app//org.apache.catalina.util.LifecycleBase.start(LifecycleBase.java:183)
+              at app//org.apache.catalina.core.StandardService.startInternal(StandardService.java:432)
+              at app//org.apache.catalina.util.LifecycleBase.start(LifecycleBase.java:183)
+              at app//org.apache.catalina.core.StandardServer.startInternal(StandardServer.java:926)
+              at app//org.apache.catalina.util.LifecycleBase.start(LifecycleBase.java:183)
+              at app//org.apache.catalina.startup.Tomcat.start(Tomcat.java:485)
+              at app//org_apache_tomcat_embed.tomcat_embed_core.ContextConfigTest.startsWebappWithAuthenticatorAndHandlesTypesScanning(ContextConfigTest.java:59)
+  
+  HostConfigTest > deploysWarAtServerStartup() FAILED
+      java.util.concurrent.TimeoutException: deploysWarAtServerStartup() timed out after 60 seconds
+          at org.junit.jupiter.engine.extension.TimeoutExceptionFactory.create(TimeoutExceptionFactory.java:29)
+          at org.junit.jupiter.engine.extension.SeparateThreadTimeoutInvocation.lambda$proceed$0(SeparateThreadTimeoutInvocation.java:40)
+          at org.junit.jupiter.api.AssertTimeoutPreemptively.resolveFutureAndHandleException(AssertTimeoutPreemptively.java:116)
+          at org.junit.jupiter.api.AssertTimeoutPreemptively.assertTimeoutPreemptively(AssertTimeoutPreemptively.java:82)
+          at org.junit.jupiter.api.Assertions.assertTimeoutPreemptively(Assertions.java:3556)
+          at org.junit.jupiter.engine.extension.SeparateThreadTimeoutInvocation.proceed(SeparateThreadTimeoutInvocation.java:38)
+          at org.junit.jupiter.engine.extension.TimeoutExtension.intercept(TimeoutExtension.java:156)
+          at org.junit.jupiter.engine.extension.TimeoutExtension.interceptTestableMethod(TimeoutExtension.java:147)
+          at org.junit.jupiter.engine.extension.TimeoutExtension.interceptTestMethod(TimeoutExtension.java:86)
+          at org.junit.jupiter.engine.execution.InterceptingExecutableInvoker$ReflectiveInterceptorCall.lambda$ofVoidMethod$0(InterceptingExecutableInvoker.java:103)
+          at org.junit.jupiter.engine.execution.InterceptingExecutableInvoker.lambda$invoke$0(InterceptingExecutableInvoker.java:93)
+          at org.junit.jupiter.engine.execution.InvocationInterceptorChain$InterceptedInvocation.proceed(InvocationInterceptorChain.java:106)
+          at org.junit.jupiter.engine.execution.InvocationInterceptorChain.proceed(InvocationInterceptorChain.java:64)
+          at org.junit.jupiter.engine.execution.InvocationInterceptorChain.chainAndInvoke(InvocationInterceptorChain.java:45)
+          at org.junit.jupiter.engine.execution.InvocationInterceptorChain.invoke(InvocationInterceptorChain.java:37)
+          at org.junit.jupiter.engine.execution.InterceptingExecutableInvoker.invoke(InterceptingExecutableInvoker.java:92)
+          at org.junit.jupiter.engine.execution.InterceptingExecutableInvoker.invoke(InterceptingExecutableInvoker.java:86)
+          at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.lambda$invokeTestMethod$7(TestMethodTestDescriptor.java:217)
+          at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+          at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.invokeTestMethod(TestMethodTestDescriptor.java:213)
+          at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.execute(TestMethodTestDescriptor.java:138)
+          at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.execute(TestMethodTestDescriptor.java:68)
+          at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$6(NodeTestTask.java:151)
+          at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+          at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$8(NodeTestTask.java:141)
+          at org.junit.platform.engine.support.hierarchical.Node.around(Node.java:137)
+          at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$9(NodeTestTask.java:139)
+          at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+          at org.junit.platform.engine.support.hierarchical.NodeTestTask.executeRecursively(NodeTestTask.java:138)
+          at org.junit.platform.engine.support.hierarchical.NodeTestTask.execute(NodeTestTask.java:95)
+          at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+          at org.junit.platform.engine.support.hierarchical.SameThreadHierarchicalTestExecutorService.invokeAll(SameThreadHierarchicalTestExecutorService.java:41)
+          at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$6(NodeTestTask.java:155)
+          at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+          at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$8(NodeTestTask.java:141)
+          at org.junit.platform.engine.support.hierarchical.Node.around(Node.java:137)
+          at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$9(NodeTestTask.java:139)
+          at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+          at org.junit.platform.engine.support.hierarchical.NodeTestTask.executeRecursively(NodeTestTask.java:138)
+          at org.junit.platform.engine.support.hierarchical.NodeTestTask.execute(NodeTestTask.java:95)
+          at java.base/java.util.ArrayList.forEach(ArrayList.java:1604)
+          at org.junit.platform.engine.support.hierarchical.SameThreadHierarchicalTestExecutorService.invokeAll(SameThreadHierarchicalTestExecutorService.java:41)
+          at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$6(NodeTestTask.java:155)
+          at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+          at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$8(NodeTestTask.java:141)
+          at org.junit.platform.engine.support.hierarchical.Node.around(Node.java:137)
+          at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$9(NodeTestTask.java:139)
+          at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+          at org.junit.platform.engine.support.hierarchical.NodeTestTask.executeRecursively(NodeTestTask.java:138)
+          at org.junit.platform.engine.support.hierarchical.NodeTestTask.execute(NodeTestTask.java:95)
+          at org.junit.platform.engine.support.hierarchical.SameThreadHierarchicalTestExecutorService.submit(SameThreadHierarchicalTestExecutorService.java:35)
+          at org.junit.platform.engine.support.hierarchical.HierarchicalTestExecutor.execute(HierarchicalTestExecutor.java:57)
+          at org.junit.platform.engine.support.hierarchical.HierarchicalTestEngine.execute(HierarchicalTestEngine.java:54)
+          at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:147)
+          at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:127)
+          at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:90)
+          at org.junit.platform.launcher.core.EngineExecutionOrchestrator.lambda$execute$0(EngineExecutionOrchestrator.java:55)
+          at org.junit.platform.launcher.core.EngineExecutionOrchestrator.withInterceptedStreams(EngineExecutionOrchestrator.java:102)
+          at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:54)
+          at org.junit.platform.launcher.core.DefaultLauncher.execute(DefaultLauncher.java:114)
+          at org.junit.platform.launcher.core.DefaultLauncher.execute(DefaultLauncher.java:86)
+          at org.junit.platform.launcher.core.DefaultLauncherSession$DelegatingLauncher.execute(DefaultLauncherSession.java:86)
+          at org.gradle.api.internal.tasks.testing.junitplatform.JUnitPlatformTestClassProcessor$CollectAllTestClassesExecutor.processAllTestClasses(JUnitPlatformTestClassProcessor.java:135)
+          at org.gradle.api.internal.tasks.testing.junitplatform.JUnitPlatformTestClassProcessor$CollectAllTestClassesExecutor.access$000(JUnitPlatformTestClassProcessor.java:110)
+          at org.gradle.api.internal.tasks.testing.junitplatform.JUnitPlatformTestClassProcessor.stop(JUnitPlatformTestClassProcessor.java:104)
+          at org.gradle.api.internal.tasks.testing.SuiteTestClassProcessor.stop(SuiteTestClassProcessor.java:64)
+          at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:104)
+          at java.base/java.lang.reflect.Method.invoke(Method.java:565)
+          at org.gradle.internal.dispatch.ReflectionDispatch.dispatch(ReflectionDispatch.java:36)
+          at org.gradle.internal.dispatch.ReflectionDispatch.dispatch(ReflectionDispatch.java:24)
+          at org.gradle.internal.dispatch.ContextClassLoaderDispatch.dispatch(ContextClassLoaderDispatch.java:33)
+          at org.gradle.internal.dispatch.ProxyDispatchAdapter$DispatchingInvocationHandler.invoke(ProxyDispatchAdapter.java:92)
+          at jdk.proxy3/jdk.proxy3.$Proxy19.stop(Unknown Source)
+          at org.gradle.api.internal.tasks.testing.worker.TestWorker$3.run(TestWorker.java:194)
+          at org.gradle.api.internal.tasks.testing.worker.TestWorker.executeAndMaintainThreadName(TestWorker.java:126)
+          at org.gradle.api.internal.tasks.testing.worker.TestWorker.execute(TestWorker.java:103)
+          at org.gradle.api.internal.tasks.testing.worker.TestWorker.execute(TestWorker.java:63)
+          at org.gradle.process.internal.worker.child.ActionExecutionWorker.execute(ActionExecutionWorker.java:56)
+          at org.gradle.process.internal.worker.child.SystemApplicationClassLoaderWorker.call(SystemApplicationClassLoaderWorker.java:122)
+          at org.gradle.process.internal.worker.child.SystemApplicationClassLoaderWorker.call(SystemApplicationClassLoaderWorker.java:72)
+          at worker.org.gradle.process.internal.worker.GradleWorkerMain.run(GradleWorkerMain.java:69)
+          at worker.org.gradle.process.internal.worker.GradleWorkerMain.main(GradleWorkerMain.java:74)
+  
+          Caused by:
+          org.junit.jupiter.api.AssertTimeoutPreemptively$ExecutionTimeoutException: Execution timed out in thread junit-timeout-thread-52
+              at java.base@25.0.4.1.1/java.util.zip.ZipFile.getEntry(ZipFile.java:287)
+              at java.base@25.0.4.1.1/java.util.jar.JarFile.getEntry(JarFile.java:501)
+              at java.base@25.0.4.1.1/java.util.jar.JarFile.getJarEntry(JarFile.java:460)
+              at app//org.apache.tomcat.util.scan.JarFileUrlJar.nextEntry(JarFileUrlJar.java:169)
+              at app//org.apache.catalina.startup.ContextConfig.processResourceJARs(ContextConfig.java:1907)
+              at app//org.apache.catalina.startup.ContextConfig.webConfig(ContextConfig.java:1353)
+              at app//org.apache.catalina.startup.ContextConfig.configureStart(ContextConfig.java:986)
+              at app//org.apache.catalina.startup.ContextConfig.lifecycleEvent(ContextConfig.java:303)
+              at app//org.apache.catalina.util.LifecycleBase.fireLifecycleEvent(LifecycleBase.java:123)
+              at app//org.apache.catalina.core.StandardContext.startInternal(StandardContext.java:5069)
+              at app//org.apache.catalina.util.LifecycleBase.start(LifecycleBase.java:183)
+              at app//org.apache.catalina.core.ContainerBase.addChildInternal(ContainerBase.java:726)
+              at app//org.apache.catalina.core.ContainerBase.addChild(ContainerBase.java:698)
+              at app//org.apache.catalina.core.StandardHost.addChild(StandardHost.java:747)
+              at app//org.apache.catalina.startup.HostConfig.deployWAR(HostConfig.java:976)
+              at app//org.apache.catalina.startup.HostConfig$DeployWar.run(HostConfig.java:1950)
+              at java.base@25.0.4.1.1/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:545)
+              at java.base@25.0.4.1.1/java.util.concurrent.FutureTask.run(FutureTask.java:328)
+              at app//org.apache.tomcat.util.threads.InlineExecutorService.execute(InlineExecutorService.java:75)
+              at java.base@25.0.4.1.1/java.util.concurrent.AbstractExecutorService.submit(AbstractExecutorService.java:125)
+              at app//org.apache.catalina.startup.HostConfig.deployWARs(HostConfig.java:777)
+              at app//org.apache.catalina.startup.HostConfig.deployApps(HostConfig.java:427)
+              at app//org.apache.catalina.startup.HostConfig.start(HostConfig.java:1657)
+              at app//org.apache.catalina.startup.HostConfig.lifecycleEvent(HostConfig.java:310)
+              at app//org.apache.catalina.util.LifecycleBase.fireLifecycleEvent(LifecycleBase.java:123)
+              at app//org.apache.catalina.util.LifecycleBase.setStateInternal(LifecycleBase.java:423)
+              at app//org.apache.catalina.util.LifecycleBase.setState(LifecycleBase.java:366)
+              at app//org.apache.catalina.core.ContainerBase.startInternal(ContainerBase.java:946)
+              at app//org.apache.catalina.core.StandardHost.startInternal(StandardHost.java:886)
+              at app//org.apache.catalina.util.LifecycleBase.start(LifecycleBase.java:183)
+              at app//org.apache.catalina.core.ContainerBase$StartChild.call(ContainerBase.java:1396)
+              at app//org.apache.catalina.core.ContainerBase$StartChild.call(ContainerBase.java:1386)
+              at java.base@25.0.4.1.1/java.util.concurrent.FutureTask.run(FutureTask.java:328)
+              at app//org.apache.tomcat.util.threads.InlineExecutorService.execute(InlineExecutorService.java:75)
+              at java.base@25.0.4.1.1/java.util.concurrent.AbstractExecutorService.submit(AbstractExecutorService.java:149)
+              at app//org.apache.catalina.core.ContainerBase.startInternal(ContainerBase.java:919)
+              at app//org.apache.catalina.core.StandardEngine.startInternal(StandardEngine.java:252)
+              at app//org.apache.catalina.util.LifecycleBase.start(LifecycleBase.java:183)
+              at app//org.apache.catalina.core.StandardService.startInternal(StandardService.java:432)
+              at app//org.apache.catalina.util.LifecycleBase.start(LifecycleBase.java:183)
+              at app//org.apache.catalina.core.StandardServer.startInternal(StandardServer.java:926)
+              at app//org.apache.catalina.util.LifecycleBase.start(LifecycleBase.java:183)
+              at app//org.apache.catalina.startup.Tomcat.start(Tomcat.java:485)
+              at app//org_apache_tomcat_embed.tomcat_embed_core.HostConfigTest.deploysWarAtServerStartup(HostConfigTest.java:98)
+  
+  JDBCAccessLogValveTest > recordsCompletedRequestsUsingConfiguredJdbcDriver(Path) FAILED
+      org.opentest4j.AssertionFailedError: 
+      Expecting value to be true but was false
+          at java.base@25.0.4.1.1/jdk.internal.reflect.DirectConstructorHandleAccessor.newInstance(DirectConstructorHandleAccessor.java:62)
+          at java.base@25.0.4.1.1/java.lang.reflect.Constructor.newInstanceWithCaller(Constructor.java:499)
+          at app//org_apache_tomcat_embed.tomcat_embed_core.JDBCAccessLogValveTest.recordsCompletedRequestsUsingConfiguredJdbcDriver(JDBCAccessLogValveTest.java:59)
+  
+  111 tests completed, 5 failed
+  
+  > Task :test FAILED
+  
+  [Incubating] Problems report is available at: file:///home/oracle/oracle/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10788-8f117644/tests/src/org.apache.tomcat.embed/tomcat-embed-core/10.1.0/build/reports/problems/problems-report.html
+  
+  Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+  
+  You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+  
+  For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+  15 actionable tasks: 2 executed, 13 up-to-date
+  
+  FAILURE: Build failed with an exception.
+  
+  * What went wrong:
+  Execution failed for task ':test'.
+  > There were failing tests. See the report at: file:///home/oracle/oracle/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10788-8f117644/tests/src/org.apache.tomcat.embed/tomcat-embed-core/10.1.0/build/reports/tests/test/index.html
+  
+  * Try:
+  > Run with --scan to generate a Build Scan (Powered by Develocity).
+  
+  BUILD FAILED in 14m 38s
+
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD FAILED in 15m
+9 actionable tasks: 1 executed, 8 up-to-date

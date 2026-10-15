@@ -1,0 +1,171 @@
+{
+  "continueFrom": "publication",
+  "coordinate": "org.apache.tomcat.embed:tomcat-embed-core:10.1.0",
+  "failure": {
+    "operand": "org.apache.tomcat.embed:tomcat-embed-core:10.1.0",
+    "phase": "publication",
+    "step": "publish_branch()"
+  },
+  "issueNumber": 10788,
+  "label": "library-update-request",
+  "libraryPreparationPreflight": {
+    "action": "no_action",
+    "agent_guidance": "",
+    "applied_setup": [],
+    "deterministic_setup": [],
+    "input_evidence": [
+      {
+        "name": "issue",
+        "summary": "#10788 Update existing library: org.apache.tomcat.embed:tomcat-embed-core:10.1.0; label=library-update-request; body_chars=1174"
+      },
+      {
+        "name": "existing_tests",
+        "summary": "6 existing test file path(s) included"
+      }
+    ],
+    "input_tokens_used": 4,
+    "issue_label": "library-update-request",
+    "issue_number": 10788,
+    "library": "org.apache.tomcat.embed:tomcat-embed-core:10.1.0",
+    "model": "sonnet",
+    "output_tokens_used": 803,
+    "risks": [
+      "The 10.0.20 test pins jakarta.servlet:jakarta.servlet-api:5.0.0, which is the Servlet 5.0 API. Tomcat 10.1 and 11 implement Servlet 6.0 and 6.1. If 10.1.0 fails on the pinned API, compare it with the build.gradle in the 11.0.x sibling projects before adding anything.",
+      "The test binds fixed port 8080. A busy port in CI could fail it.",
+      "The Http11Nio2Protocol parameter case may behave differently on 11.0.x. I did not check this."
+    ],
+    "status": "completed",
+    "summary": "The existing 10.0.20 scaffold already starts an embedded Tomcat on port 8080 and makes an HTTP request. Its build.gradle supplies servlet-api, assertj and jakartaee-migration. The 10.1.x and 11.0.x lines have sibling test projects (11.0.18, 11.0.22, 11.0.23) that use the same approach. I found no Docker image, environment variable or system property that needs setup. I did not run any Gradle or Native Image verification."
+  },
+  "libraryUpdateRoute": {
+    "baseline_coordinates": null,
+    "new_version": "10.1.0",
+    "selected_driver": "improve_library_coverage"
+  },
+  "newVersion": null,
+  "phases": {
+    "explore": {
+      "chunkClassCount": 11,
+      "chunkProcessedClassCount": 11,
+      "exhaustedClasses": [
+        "jakarta.security.auth.message.config.AuthConfigFactory",
+        "jakarta.servlet.HttpConstraintElement",
+        "jakarta.servlet.HttpMethodConstraintElement",
+        "jakarta.servlet.ServletOutputStream",
+        "jakarta.servlet.ServletRequestWrapper",
+        "jakarta.servlet.ServletResponseWrapper",
+        "jakarta.servlet.http.Cookie",
+        "jakarta.servlet.http.CookieNameValidator",
+        "jakarta.servlet.http.HttpServlet",
+        "jakarta.servlet.http.HttpServlet$NoBodyOutputStream",
+        "jakarta.servlet.http.HttpServlet$TomcatHack",
+        "org.apache.catalina.authenticator.AuthenticatorBase",
+        "org.apache.catalina.authenticator.SingleSignOnEntry",
+        "org.apache.catalina.authenticator.jaspic.AuthConfigFactoryImpl",
+        "org.apache.catalina.authenticator.jaspic.SimpleServerAuthConfig",
+        "org.apache.catalina.connector.Request",
+        "org.apache.catalina.core.ApplicationContextFacade",
+        "org.apache.catalina.core.ApplicationContextFacade$PrivilegedExecuteMethod",
+        "org.apache.catalina.core.AprLifecycleListener",
+        "org.apache.catalina.core.DefaultInstanceManager",
+        "org.apache.catalina.core.DefaultInstanceManager$PrivilegedGetField",
+        "org.apache.catalina.core.DefaultInstanceManager$PrivilegedGetMethod",
+        "org.apache.catalina.core.JreMemoryLeakPreventionListener",
+        "org.apache.catalina.core.NamingContextListener",
+        "org.apache.catalina.core.StandardContext",
+        "org.apache.catalina.core.StandardWrapper",
+        "org.apache.catalina.deploy.NamingResourcesImpl",
+        "org.apache.catalina.filters.CsrfPreventionFilterBase",
+        "org.apache.catalina.loader.WebappClassLoaderBase",
+        "org.apache.catalina.loader.WebappClassLoaderBase$PrivilegedJavaseGetResource",
+        "org.apache.catalina.loader.WebappLoader",
+        "org.apache.catalina.manager.util.SessionUtils",
+        "org.apache.catalina.mbeans.BaseCatalinaMBean",
+        "org.apache.catalina.mbeans.MBeanFactory",
+        "org.apache.catalina.realm.JAASMemoryLoginModule",
+        "org.apache.catalina.realm.JAASRealm",
+        "org.apache.catalina.realm.JNDIRealm",
+        "org.apache.catalina.realm.RealmBase",
+        "org.apache.catalina.security.SecurityClassLoad",
+        "org.apache.catalina.security.SecurityUtil",
+        "org.apache.catalina.session.ManagerBase",
+        "org.apache.catalina.session.StandardManager",
+        "org.apache.catalina.session.StandardSession",
+        "org.apache.catalina.startup.Bootstrap",
+        "org.apache.catalina.startup.Catalina",
+        "org.apache.catalina.startup.CatalinaBaseConfigurationSource",
+        "org.apache.catalina.startup.ConnectorCreateRule",
+        "org.apache.catalina.startup.ContextConfig",
+        "org.apache.catalina.startup.CopyParentClassLoaderRule",
+        "org.apache.catalina.startup.HostConfig",
+        "org.apache.catalina.startup.LifecycleListenerRule",
+        "org.apache.catalina.startup.Tomcat",
+        "org.apache.catalina.startup.Tool",
+        "org.apache.catalina.startup.UserConfig",
+        "org.apache.catalina.startup.WebappServiceLoader",
+        "org.apache.catalina.util.CustomObjectInputStream",
+        "org.apache.catalina.util.SessionIdGeneratorBase",
+        "org.apache.catalina.valves.JDBCAccessLogValve",
+        "org.apache.catalina.valves.rewrite.RewriteValve",
+        "org.apache.catalina.webresources.ClasspathURLStreamHandler",
+        "org.apache.juli.ClassLoaderLogManager",
+        "org.apache.juli.FileHandler",
+        "org.apache.juli.logging.DirectJDKLog",
+        "org.apache.juli.logging.LogFactory",
+        "org.apache.naming.NamingContext",
+        "org.apache.naming.StringManager",
+        "org.apache.naming.factory.BeanFactory",
+        "org.apache.naming.factory.DataSourceLinkFactory",
+        "org.apache.naming.factory.DataSourceLinkFactory$DataSourceHandler",
+        "org.apache.naming.factory.EjbFactory",
+        "org.apache.naming.factory.FactoryBase",
+        "org.apache.naming.factory.LookupFactory",
+        "org.apache.naming.factory.ResourceFactory",
+        "org.apache.naming.factory.ResourceLinkFactory",
+        "org.apache.tomcat.SimpleInstanceManager",
+        "org.apache.tomcat.util.buf.ByteBufferUtils",
+        "org.apache.tomcat.util.compat.Jre16Compat",
+        "org.apache.tomcat.util.compat.Jre19Compat",
+        "org.apache.tomcat.util.compat.JreCompat",
+        "org.apache.tomcat.util.descriptor.DigesterFactory",
+        "org.apache.tomcat.util.descriptor.web.SetPublicIdRule",
+        "org.apache.tomcat.util.digester.Digester",
+        "org.apache.tomcat.util.modeler.BaseModelMBean",
+        "org.apache.tomcat.util.modeler.ManagedBean",
+        "org.apache.tomcat.util.net.SSLImplementation",
+        "org.apache.tomcat.util.net.SSLUtilBase",
+        "org.apache.tomcat.util.res.StringManager"
+      ],
+      "iteration": 28,
+      "status": "completed"
+    },
+    "finalization": {
+      "status": "completed"
+    },
+    "fix": {
+      "iteration": null,
+      "status": "skipped"
+    },
+    "publication": {
+      "branch": "ai/kimeta/improve-coverage-org.apache.tomcat.embed-tomcat-embed-core-10.1.0-chunked-forge-10788-20261015092248345063-e8b6cb7e0a33",
+      "coverageFollowUpIssueNumber": null,
+      "isPushed": false,
+      "publicationId": "forge-10788-20261015092248345063-e8b6cb7e0a33",
+      "publicationTimestamp": "2026-10-15T09:22:48.345063Z",
+      "status": "pending"
+    },
+    "setup": {
+      "preflightDone": true,
+      "setupDone": true,
+      "status": "completed"
+    }
+  },
+  "preservedBranch": "ai/kimeta/human-intervention/issue-10788-library-update-request-org.apache.tomcat.embed-tomcat-embed-core-10.1.0-1a79ad6c",
+  "publicationMetrics": {
+    "extras": {},
+    "library": "org.apache.tomcat.embed:tomcat-embed-core:10.1.0",
+    "timestamp": "2026-10-15T09:22:48.345063Z"
+  },
+  "schemaVersion": 1,
+  "strategyName": "library_update_optimistic_pi_gpt-5.6-sol"
+}

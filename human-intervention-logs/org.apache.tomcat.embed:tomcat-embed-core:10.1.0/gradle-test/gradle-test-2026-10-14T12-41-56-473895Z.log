@@ -1,0 +1,167 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :tckTest
+====================
+Testing library: org.apache.tomcat.embed:tomcat-embed-core:10.1.0
+Command: `/home/oracle/oracle/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10788-8f117644/gradlew nativeTest`
+Executing test...
+-------
+Starting a Gradle Daemon, 1 busy and 4 stopped Daemons could not be reused, use --status for details
+Shared read-only dependency cache is an incubating feature.
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+> Task :compileJava NO-SOURCE
+> Task :processResources NO-SOURCE
+> Task :classes UP-TO-DATE
+> Task :tck-test-support:compileJava UP-TO-DATE
+> Task :jar UP-TO-DATE
+> Task :tck-test-support:processResources UP-TO-DATE
+> Task :tck-test-support:classes UP-TO-DATE
+> Task :tck-test-support:jar UP-TO-DATE
+
+> Task :compileTestJava
+/home/oracle/oracle/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10788-8f117644/tests/src/org.apache.tomcat.embed/tomcat-embed-core/10.1.0/src/test/java/org_apache_tomcat_embed/tomcat_embed_core/HttpServletInnerNoBodyOutputStreamTest.java:26: warning: [removal] LEGACY_DO_HEAD in HttpServlet has been deprecated and marked for removal
+            server.addServletInitParameter(HttpServlet.LEGACY_DO_HEAD, Boolean.TRUE.toString());
+                                                      ^
+Note: /home/oracle/oracle/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10788-8f117644/tests/src/org.apache.tomcat.embed/tomcat-embed-core/10.1.0/src/test/java/org_apache_tomcat_embed/tomcat_embed_core/ClasspathURLStreamHandlerTest.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: Some input files use unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+1 warning
+
+> Task :checkTestTimeoutAnnotations
+> Task :processTestResources
+> Task :testClasses
+
+> Task :test
+
+AuthConfigFactoryImplTest > registersNamedAuthConfigProviderThroughContextClassLoader() FAILED
+    java.lang.SecurityException: java.io.FileNotFoundException: /tmp/junit9718834860315867861/conf/jaspic-providers.xml.new (No such file or directory)
+        at org.apache.catalina.authenticator.jaspic.PersistentProviderRegistrations.writeProviders(PersistentProviderRegistrations.java:149)
+        at org.apache.catalina.authenticator.jaspic.AuthConfigFactoryImpl.savePersistentRegistrations(AuthConfigFactoryImpl.java:414)
+        at org.apache.catalina.authenticator.jaspic.AuthConfigFactoryImpl.registerConfigProvider(AuthConfigFactoryImpl.java:107)
+        at org_apache_tomcat_embed.tomcat_embed_core.AuthConfigFactoryImplTest.assertRegistersNamedAuthConfigProvider(AuthConfigFactoryImplTest.java:72)
+        at org_apache_tomcat_embed.tomcat_embed_core.AuthConfigFactoryImplTest.registersNamedAuthConfigProviderThroughContextClassLoader(AuthConfigFactoryImplTest.java:60)
+
+        Caused by:
+        java.io.FileNotFoundException: /tmp/junit9718834860315867861/conf/jaspic-providers.xml.new (No such file or directory)
+            at java.base/java.io.FileOutputStream.open0(Native Method)
+            at java.base/java.io.FileOutputStream.open(FileOutputStream.java:255)
+            at java.base/java.io.FileOutputStream.<init>(FileOutputStream.java:210)
+            at java.base/java.io.FileOutputStream.<init>(FileOutputStream.java:171)
+            at org.apache.catalina.authenticator.jaspic.PersistentProviderRegistrations.writeProviders(PersistentProviderRegistrations.java:117)
+            ... 4 more
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+
+WARNING: sun.misc.Unsafe::invokeCleaner has been called by org.apache.tomcat.util.buf.ByteBufferUtils (file:/tmp/metadata-forge-gradle/dc7946488e7e4c64/worktree-homes/10788-8f117644-bac9f083/caches/modules-2/files-2.1/org.apache.tomcat.embed/tomcat-embed-core/10.1.0/d1feb9f90a805b29e96a795fc672691637d16040/tomcat-embed-core-10.1.0.jar)
+WARNING: Please consider reporting this to the maintainers of class org.apache.tomcat.util.buf.ByteBufferUtils
+WARNING: sun.misc.Unsafe::invokeCleaner will be removed in a future release
+
+> Task :test
+
+CatalinaBaseConfigurationSourceTest > getServerXmlFallsBackToLegacyClasspathResourceWhenServerXmlIsAbsent() FAILED
+    java.io.FileNotFoundException: /tmp/junit724906911761718146/conf/server.xml (No such file or directory)
+        at java.base/java.io.FileInputStream.open0(Native Method)
+        at java.base/java.io.FileInputStream.open(FileInputStream.java:185)
+        at java.base/java.io.FileInputStream.<init>(FileInputStream.java:139)
+        at java.base/java.io.FileInputStream.<init>(FileInputStream.java:109)
+        at java.base/sun.net.www.protocol.file.FileURLConnection.connect(FileURLConnection.java:86)
+        at java.base/sun.net.www.protocol.file.FileURLConnection.getInputStream(FileURLConnection.java:183)
+        at org.apache.catalina.startup.CatalinaBaseConfigurationSource.getResource(CatalinaBaseConfigurationSource.java:118)
+        at org.apache.tomcat.util.file.ConfigurationSource.getConfResource(ConfigurationSource.java:150)
+        at org.apache.tomcat.util.file.ConfigurationSource.getServerXml(ConfigurationSource.java:127)
+        at org.apache.catalina.startup.CatalinaBaseConfigurationSource.getServerXml(CatalinaBaseConfigurationSource.java:52)
+        at org_apache_tomcat_embed.tomcat_embed_core.CatalinaBaseConfigurationSourceTest.getServerXmlFallsBackToLegacyClasspathResourceWhenServerXmlIsAbsent(CatalinaBaseConfigurationSourceTest.java:55)
+
+ClasspathURLStreamHandlerTest > fallsBackToHandlerClassResource() FAILED
+    java.io.FileNotFoundException: Unable to load the resource [classpath:/server-embed.xml] using the thread context class loader or the current class's class loader
+        at org.apache.catalina.webresources.ClasspathURLStreamHandler.openConnection(ClasspathURLStreamHandler.java:45)
+        at java.base/java.net.URL.openConnection(URL.java:1209)
+        at java.base/java.net.URL.openStream(URL.java:1263)
+        at org_apache_tomcat_embed.tomcat_embed_core.ClasspathURLStreamHandlerTest.fallsBackToHandlerClassResource(ClasspathURLStreamHandlerTest.java:35)
+
+ClasspathURLStreamHandlerTest > opensResourceThroughContextClassLoader() FAILED
+    java.io.FileNotFoundException: Unable to load the resource [classpath:server-embed.xml] using the thread context class loader or the current class's class loader
+        at org.apache.catalina.webresources.ClasspathURLStreamHandler.openConnection(ClasspathURLStreamHandler.java:45)
+        at java.base/java.net.URL.openConnection(URL.java:1209)
+        at java.base/java.net.URL.openStream(URL.java:1263)
+        at org_apache_tomcat_embed.tomcat_embed_core.ClasspathURLStreamHandlerTest.opensResourceThroughContextClassLoader(ClasspathURLStreamHandlerTest.java:23)
+
+JAASRealmTest > authenticatesWithJaasConfigurationLoadedFromClasspathResource() FAILED
+    java.lang.AssertionError: 
+    Expecting actual not to be null
+        at org_apache_tomcat_embed.tomcat_embed_core.JAASRealmTest.assertAuthenticatedPrincipal(JAASRealmTest.java:58)
+        at org_apache_tomcat_embed.tomcat_embed_core.JAASRealmTest.authenticatesWithJaasConfigurationLoadedFromClasspathResource(JAASRealmTest.java:40)
+
+WebappLoaderTest > startsConfiguredWebApplicationClassLoader() FAILED
+    java.lang.AssertionError: 
+    Expecting actual not to be null
+        at org_apache_tomcat_embed.tomcat_embed_core.WebappLoaderTest.startsConfiguredWebApplicationClassLoader(WebappLoaderTest.java:59)
+
+107 tests completed, 6 failed
+
+
+> Task :test FAILED
+
+[Incubating] Problems report is available at: file:///home/oracle/oracle/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10788-8f117644/tests/src/org.apache.tomcat.embed/tomcat-embed-core/10.1.0/build/reports/problems/problems-report.html
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':test'.
+> There were failing tests. See the report at: file:///home/oracle/oracle/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10788-8f117644/tests/src/org.apache.tomcat.embed/tomcat-embed-core/10.1.0/build/reports/tests/test/index.html
+
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+* Try:
+
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+16 actionable tasks: 4 executed, 12 up-to-date
+
+BUILD FAILED in 34s
+
+> Task :tckTest FAILED
+
+[Incubating] Problems report is available at: file:///home/oracle/oracle/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10788-8f117644/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':tckTest'.
+> Test for org.apache.tomcat.embed:tomcat-embed-core:10.1.0 failed with exit code 1.
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to generate a Build Scan (Powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD FAILED in 37s
+9 actionable tasks: 1 executed, 8 up-to-date

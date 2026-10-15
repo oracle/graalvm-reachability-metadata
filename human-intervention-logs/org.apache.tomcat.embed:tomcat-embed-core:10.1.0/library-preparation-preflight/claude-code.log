@@ -1,0 +1,13 @@
+```json
+{
+  "action": "no_action",
+  "summary": "The existing 10.0.20 scaffold already starts an embedded Tomcat on port 8080 and makes an HTTP request. Its build.gradle supplies servlet-api, assertj and jakartaee-migration. The 10.1.x and 11.0.x lines have sibling test projects (11.0.18, 11.0.22, 11.0.23) that use the same approach. I found no Docker image, environment variable or system property that needs setup. I did not run any Gradle or Native Image verification.",
+  "deterministic_setup": [],
+  "agent_guidance": "",
+  "risks": [
+    "The 10.0.20 test pins jakarta.servlet:jakarta.servlet-api:5.0.0, which is the Servlet 5.0 API. Tomcat 10.1 and 11 implement Servlet 6.0 and 6.1. If 10.1.0 fails on the pinned API, compare it with the build.gradle in the 11.0.x sibling projects before adding anything.",
+    "The test binds fixed port 8080. A busy port in CI could fail it.",
+    "The Http11Nio2Protocol parameter case may behave differently on 11.0.x. I did not check this."
+  ]
+}
+```

@@ -1,0 +1,11 @@
+Implemented the Tomcat 10.1.0 native-image fixes.
+
+Validation:
+- Exact `runNativeTraceImage` command: Gradle successful.
+- Direct rebuilt native binary: exit code `0`.
+- All `110` native tests passed.
+- Both metadata JSON files parse successfully.
+- `git diff --check`: passed.
+- `fissile check --staged`: passed.
+
+The generated `cycle-3/binary-exit-code` remains `172`, but it is stale/inconsistent with the authoritative direct execution of the rebuilt binary. Full successful native output is in `/tmp/tomcat-full-direct.log`.

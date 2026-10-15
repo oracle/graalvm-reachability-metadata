@@ -1,0 +1,49 @@
+Prompt:
+You are preparing a Forge workflow for a library issue. Decide whether the library needs setup beyond the normal generated test scaffold before meaningful coverage is reachable.
+
+Research the library yourself to make this decision. Investigate the resolved artifact and its dependencies, how the library is normally used, and its documentation. The JSON context below is only a starting point, not the limit of what you may consider. Do not modify the repository or apply any setup yourself — return only the decision. Local Gradle and Native Image verification remain authoritative.
+
+The setup can be one of three things: an extra Maven dependency, a Docker image the tests need, or an environment/system property the generated tests must set. Represent dependencies and Docker images as `deterministic_setup` entries the driver can apply before generation:
+  - {"kind": "dependency", "coordinate": "group:artifact:version", "scope": "testImplementation", "reason": "..."}
+  - {"kind": "docker_image", "image": "name:tag", "slug": "short-slug", "reason": "..."}
+If a test needs a Docker image that is already pinned under `tests/tck-build-logic/src/main/resources/allowed-docker-images/`, reuse the exact tag from that `Dockerfile-<slug>` instead of introducing a new one, since the allow-list permits a single shared tag per image.
+Put environment variables, system properties, and other test-code setup in `agent_guidance`. Do not restate deterministic entries as guidance.
+
+Return a single JSON object with this shape:
+{
+  "action": "no_action" | "advisory_preparation",
+  "summary": "short reason",
+  "deterministic_setup": [ ... dependency or docker_image entries, if any ... ],
+  "agent_guidance": "environment/system property/test setup guidance, if any",
+  "risks": ["risk notes, if any"]
+}
+
+Choose no_action unless your research finds concrete evidence that extra setup is needed.
+
+Context (starting point):
+{
+  "issue": {
+    "number": 10788,
+    "title": "Update existing library: org.apache.tomcat.embed:tomcat-embed-core:10.1.0",
+    "label": "library-update-request",
+    "body": "This issue tracks the successor library-update split for `org.apache.tomcat.embed:tomcat-embed-core:10.1.0`.\n\nForge split the previous tested-version range because generated JVM tests first failed at `10.1.0`.\n\nBlocked by the current update issue #10508.\n\nSuccessor tested versions to preserve:\n- `10.1.0`\n- `10.1.1`\n- `10.1.2`\n- `10.1.4`\n- `10.1.5`\n- `10.1.6`\n- `10.1.7`\n- `10.1.8`\n- `10.1.9`\n- `10.1.10`\n- `10.1.11`\n- `10.1.12`\n- `10.1.13`\n- `10.1.14`\n- `10.1.15`\n- `10.1.16`\n- `10.1.17`\n- `10.1.18`\n- `10.1.19`\n- `10.1.20`\n- `10.1.23`\n- `10.1.24`\n- `10.1.25`\n- `10.1.26`\n- `10.1.28`\n- `10.1.29`\n- `10.1.30`\n- `10.1.31`\n- `10.1.33`\n- `10.1.34`\n- `10.1.35`\n- `10.1.36`\n- `10.1.39`\n- `10.1.40`\n- `10.1.41`\n- `10.1.42`\n- `10.1.43`\n- `10.1.44`\n- `10.1.45`\n- `10.1.46`\n- `10.1.47`\n- `10.1.48`\n- `10.1.49`\n- `10.1.50`\n- `10.1.52`\n- `10.1.53`\n- `11.0.0`\n- `11.0.1`\n- `11.0.2`\n- `11.0.3`\n- `11.0.4`\n- `11.0.5`\n- `11.0.6`\n- `11.0.7`\n- `11.0.8`\n- `11.0.9`\n- `11.0.10`\n- `11.0.11`\n- `11.0.12`\n- `11.0.13`\n- `11.0.14`\n- `11.0.15`\n\nThe current PR keeps the generated progress for `org.apache.tomcat.embed:tomcat-embed-core:10.0.20`\nand copies baseline support for this successor range.",
+    "body_error": ""
+  },
+  "library": "org.apache.tomcat.embed:tomcat-embed-core:10.1.0",
+  "current_library": null,
+  "new_version": null,
+  "existing_tests": {
+    "org.apache.tomcat.embed:tomcat-embed-core:10.1.0": [
+      "tests/src/org.apache.tomcat.embed/tomcat-embed-core/10.0.20/.gitignore",
+      "tests/src/org.apache.tomcat.embed/tomcat-embed-core/10.0.20/build.gradle",
+      "tests/src/org.apache.tomcat.embed/tomcat-embed-core/10.0.20/gradle.properties",
+      "tests/src/org.apache.tomcat.embed/tomcat-embed-core/10.0.20/settings.gradle",
+      "tests/src/org.apache.tomcat.embed/tomcat-embed-core/10.0.20/user-code-filter.json",
+      "tests/src/org.apache.tomcat.embed/tomcat-embed-core/10.0.20/src/test/java/tomcat/TomcatTests.java"
+    ]
+  }
+}
+
+Conversation:
+{"duration_api_ms":7937,"stop_reason":"end_turn","session_id":"47d27a86-fb0c-481c-a3ad-5098d4f62cc8","total_cost_usd":0.155212,"usage":{"input_tokens":4,"cache_creation_input_tokens":34330,"cache_read_input_tokens":49270,"output_tokens":803,"output_tokens_details":{"thinking_tokens":253},"server_tool_use":{"web_search_requests":0,"web_fetch_requests":0},"service_tier":"standard","cache_creation":{"ephemeral_1h_input_tokens":34330,"ephemeral_5m_input_tokens":0},"inference_geo":"global","iterations":[{"input_tokens":2,"output_tokens":656,"cache_read_input_tokens":38506,"cache_creation_input_tokens":6588,"cache_creation":{"ephemeral_5m_input_tokens":0,"ephemeral_1h_input_tokens":6588},"type":"message"}],"speed":"standard","fallback_credit":null},"modelUsage":{"claude-sonnet-5-5":{"inputTokens":4,"outputTokens":803,"cacheReadInputTokens":49270,"cacheCreationInputTokens":34330,"webSearchRequests":0,"costUSD":0.155212,"contextWindow":1000000,"maxOutputTokens":128000,"thinkingTokens":253,"canonicalModel":"claude-sonnet-5-5","provider":"firstParty","costBasis":"list"}},"permission_denials":[],"terminal_reason":"completed","fast_mode_state":"off","fast_mode_disabled_reason":"sdk_opt_in_required","subagent_stats":{"spawned":0,"requested":{"background":0,"foreground":0,"unset":0},"started_in_background":0,"max_depth":0,"spawned_by_subagents":0,"completed":0,"failed":0,"killed":{"parent":0,"user":0,"system":0},"refused":{"depth_limit":0,"concurrency_limit":0,"budget":0},"by_type":{}},"is_error":false,"num_turns":2,"subtype":"success","api_error_status":null,"result":"```json\n{\n  \"action\": \"no_action\",\n  \"summary\": \"The existing 10.0.20 scaffold already starts an embedded Tomcat on port 8080 and makes an HTTP request. Its build.gradle supplies servlet-api, assertj and jakartaee-migration. The 10.1.x and 11.0.x lines have sibling test projects (11.0.18, 11.0.22, 11.0.23) that use the same approach. I found no Docker image, environment variable or system property that needs setup. I did not run any Gradle or Native Image verification.\",\n  \"deterministic_setup\": [],\n  \"agent_guidance\": \"\",\n  \"risks\": [\n    \"The 10.0.20 test pins jakarta.servlet:jakarta.servlet-api:5.0.0, which is the Servlet 5.0 API. Tomcat 10.1 and 11 implement Servlet 6.0 and 6.1. If 10.1.0 fails on the pinned API, compare it with the build.gradle in the 11.0.x sibling projects before adding anything.\",\n    \"The test binds fixed port 8080. A busy port in CI could fail it.\",\n    \"The Http11Nio2Protocol parameter case may behave differently on 11.0.x. I did not check this.\"\n  ]\n}\n```","ttft_ms":1694,"type":"result","duration_ms":8090,"uuid":"b639d9d7-9798-4695-80ac-1383b2c55a65","ttft_stream_ms":1264,"time_to_request_ms":81,"first_content_frame_ms":1264,"queued_turn_count":0,"result_index":0}
+

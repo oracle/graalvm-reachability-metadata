@@ -1,0 +1,13 @@
+Fixed reachability metadata for `org.apache.tomcat.embed:tomcat-embed-core:10.1.0`.
+
+Key fixes:
+- Corrected conditional serialization metadata to avoid late runtime conditions.
+- Added serialization support for `SingleSignOnEntry` and related JDK types.
+- Added `StandardSession`-conditioned `Boolean` serialization metadata.
+- Replaced invalid conditional record serialization with canonical-constructor reflection metadata.
+
+Verification using the required GraalVM `25.0.4+7.1`:
+- `./gradlew test -Pcoordinates=org.apache.tomcat.embed:tomcat-embed-core:10.1.0` — passed, 110/110 tests.
+- `./gradlew checkMetadataFiles ...` — passed.
+- JSON validation and `git diff --check` — passed.
+- `fissile check --staged` — passed.
