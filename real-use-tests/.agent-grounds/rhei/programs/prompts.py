@@ -7,9 +7,12 @@
 
 The agent states' instructions carry the fixed rules; the renderers add only
 what this run observed: the failing output and, for the native fix, the
-packages a condition may name (§AR-real-use-test-workflow.3).
+build file that takes native-image options and the packages a condition may
+name (§AR-real-use-test-workflow.3).
 """
 from __future__ import annotations
+
+import os
 
 from run_state import RunState
 
@@ -23,6 +26,7 @@ def native_fix(state: RunState, prefixes: list[str], tail: str) -> str:
         f"- Worktree: `{state.worktree}`",
         f"- Coordinate project: `{state.project_path}`",
         f"- Test-local metadata file: `{state.metadata_path}`",
+        f"- Build file, for native-image options: `{os.path.join(state.project_path, 'build.gradle')}`",
         "",
         "Conditions may name types from these packages or the test's own packages: "
         + ", ".join(f"`{prefix.rstrip('.')}`" for prefix in prefixes),

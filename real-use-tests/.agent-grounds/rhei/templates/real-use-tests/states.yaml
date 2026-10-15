@@ -165,7 +165,7 @@ states:
         description: The failing native output the native fix agent receives.
 
   native-agent-fix:
-    description: Only when the native run still fails after the collected entries - make the native task pass with test-local metadata, deleting scenarios metadata cannot save.
+    description: Only when the native run still fails after the collected entries - make the native task pass with test-local metadata and native-image options, deleting scenarios neither can save.
     target: "{{worker_agent}}"
     agent_timeout: 2h
     inputs:
@@ -179,35 +179,49 @@ states:
     instructions: |
       You make the native run of the real-use project for `<coordinate>` pass
       (§FS-real-use-test-generation.2.5). The handoff section below holds the
-      failing output, the absolute path of the test-local metadata file you
-      edit, and the packages a condition may name.
+      failing output, the absolute paths of the test-local metadata file and
+      the build file you edit, and the packages a condition may name.
       Read `{input.run.path}` first: it names the issue this run resolves, the
       coordinate (written `<coordinate>` below), and the coordinate project.
 
       Your working directory is the run worktree. From the worktree root, in
       the foreground, run
       `./gradlew realUseNativeTest -Pcoordinates=<coordinate> -Ptck.realUse.exactReachability=true`,
-      which names each missing registration, and repeat until it passes.
+      which names each missing registration, and repeat until it passes. Fix
+      each failure the way a consumer would, in this order:
 
-      Rules (§FS-real-use-tests.2.2):
-      - Add missing entries only to the test-local metadata file the handoff
-        names, which already holds what the native-image agent collected on the
-        JVM, whichever library they describe. Never edit `metadata/`, a
-        scenario, `build.gradle`, or a filter.
-      - Use the single-file format of
-        `metadata/schemas/reachability-metadata-schema-v1.2.0.json`. Give every
-        entry a `"condition": {"typeReached": "<type>"}` naming a type from the
-        packages the handoff lists or from the test's own package.
-      - Delete, as a whole file, a scenario metadata cannot save: one that
-        generates bytecode or defines classes at run time, or relies on a
-        feature Native Image does not support. Never work around it.
+      1. A missing registration: add the entry to the test-local metadata
+         file the handoff names, which already holds what the native-image
+         agent collected on the JVM, whichever library it describes
+         (§FS-real-use-tests.2.2). Use the single-file format of
+         `metadata/schemas/reachability-metadata-schema-v1.2.0.json`. Give
+         every entry a `"condition": {"typeReached": "<type>"}` naming a type
+         from the packages the handoff lists or from the test's own package.
+      2. A failure a consumer fixes with a native-image option, not with
+         metadata, such as a URL protocol or a feature that is off by
+         default: add the option to the build file the handoff names, as a
+         build-time argument of the native test image or a run-time argument
+         of it, inside the `graalvmNative` block:
+         `binaries { test { buildArgs.add("--enable-url-protocols=http") } }`
+         or `binaries { test { runtimeArgs.add("-Dkey=value") } }`.
+         Try at most three options for one failure and keep only the ones
+         that make the run pass. Never add an option that silences a check or
+         defers a failure to run time: nothing that reports unsupported
+         elements at run time, allows an incomplete classpath, or turns off
+         missing-registration errors. Never pass metadata as an option.
+      3. Delete, as a whole file, a scenario neither saves: one that
+         generates bytecode or defines classes at run time, at once; one
+         whose failure survives three options, then. Never work around it.
+
+      Never edit `metadata/`, a scenario's code, or a filter, and change the
+      build file only to add native-image options.
 
       Before your final message, write `{output.report.path}` as JSON:
-      `{"entriesAdded": <count>, "deleted": [{"class": "<fully qualified scenario class>", "reason": "<why>"}]}`.
+      `{"entriesAdded": <count>, "options": [{"option": "<argument>", "phase": "build" | "run", "fixes": "<the failure>"}], "deleted": [{"class": "<fully qualified scenario class>", "reason": "<why>"}]}`.
     outputs:
       - name: report
         path: runtime/real-use/reports/native-agent-fix.json
-        description: Entries added and scenarios deleted, each with the reason.
+        description: Entries and options added, and scenarios deleted, each with the reason.
 
   style-check:
     description: Run the repository's style checks once over the coordinate project.
