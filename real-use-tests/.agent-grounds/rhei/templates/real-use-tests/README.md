@@ -4,8 +4,15 @@ This Rhei template generates the real-use project for one supported library
 version (§FS-real-use-test-generation); its states, programs, and exit codes
 are §AR-real-use-test-workflow.
 
-From `real-use-tests/`, render a workspace under the ignored `runs/` folder and
-run it:
+From `real-use-tests/`, check the host, claim the next queued `real-use-test`
+issue, and run it with the dashboard (§AR-real-use-test-launcher):
+
+```console
+./run-real-use-tests.sh
+```
+
+To run a specific issue without claiming it, render a workspace under the
+ignored `runs/` folder and run it:
 
 ```console
 rhei instantiate real-use-tests \
