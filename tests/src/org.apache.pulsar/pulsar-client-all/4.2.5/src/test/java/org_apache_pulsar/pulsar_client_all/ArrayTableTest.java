@@ -24,7 +24,7 @@ public class ArrayTableTest {
 
         String[][] values = table.toArray(String.class);
 
-        assertThat(values).hasSize(2);
+        assertThat(values.length).isEqualTo(2);
         assertThat(values[0]).containsExactly("a", null);
         assertThat(values[1]).containsExactly(null, "b");
     }

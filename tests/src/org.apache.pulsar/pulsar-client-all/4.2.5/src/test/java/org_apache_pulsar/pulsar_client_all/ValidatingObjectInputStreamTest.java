@@ -25,7 +25,7 @@ public class ValidatingObjectInputStreamTest {
         try (ValidatingObjectInputStream input = new ValidatingObjectInputStream(
                 new ByteArrayInputStream(bytes))) {
             input.accept(ArrayList.class, String.class);
-            ArrayList<?> restored = input.readObjectCast();
+            ArrayList<String> restored = input.readObjectCast();
 
             assertThat(restored).containsExactly("orders", "payments");
         }

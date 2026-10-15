@@ -8,8 +8,8 @@ package org_apache_pulsar.pulsar_client_all;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import org.apache.pulsar.shade.com.fasterxml.jackson.annotation.JsonAlias;
-import org.apache.pulsar.shade.com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonAlias;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.apache.pulsar.shade.com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
