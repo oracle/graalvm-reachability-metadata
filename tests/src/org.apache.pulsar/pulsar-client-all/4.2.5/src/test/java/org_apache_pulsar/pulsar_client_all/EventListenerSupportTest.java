@@ -8,8 +8,11 @@ package org_apache_pulsar.pulsar_client_all;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.EventListener;
 import java.util.List;
+import org.apache.pulsar.shade.org.apache.commons.lang3.SerializationUtils;
 import org.apache.pulsar.shade.org.apache.commons.lang3.event.EventListenerSupport;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
@@ -32,7 +35,29 @@ public class EventListenerSupportTest {
         assertThat(support.getListeners()).hasSize(2);
     }
 
-    public interface StateListener {
+    @Test
+    void serializesSerializableListenersAndRestoresEventDispatch() {
+        EventListenerSupport<StateListener> support =
+                EventListenerSupport.create(StateListener.class);
+        support.addListener(new RecordingListener());
+
+        EventListenerSupport<StateListener> restored = SerializationUtils.roundtrip(support);
+        restored.fire().stateChanged("restored");
+
+        RecordingListener listener = (RecordingListener) restored.getListeners()[0];
+        assertThat(listener.events).containsExactly("restored");
+    }
+
+    public interface StateListener extends EventListener, Serializable {
         void stateChanged(String state);
+    }
+
+    public static final class RecordingListener implements StateListener {
+        private final List<String> events = new ArrayList<>();
+
+        @Override
+        public void stateChanged(String state) {
+            events.add(state);
+        }
     }
 }
