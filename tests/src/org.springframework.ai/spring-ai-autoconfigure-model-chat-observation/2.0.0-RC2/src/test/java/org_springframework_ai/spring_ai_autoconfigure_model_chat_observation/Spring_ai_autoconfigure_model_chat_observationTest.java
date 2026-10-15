@@ -25,6 +25,7 @@ import org.springframework.ai.chat.metadata.DefaultUsage;
 import org.springframework.ai.chat.model.ChatModel;
 import org.springframework.ai.chat.model.ChatResponse;
 import org.springframework.ai.chat.model.Generation;
+import org.springframework.ai.chat.observation.ChatModelCompletionObservationHandler;
 import org.springframework.ai.chat.observation.ChatModelMeterObservationHandler;
 import org.springframework.ai.chat.observation.ChatModelObservationContext;
 import org.springframework.ai.chat.observation.ChatModelPromptContentObservationHandler;
@@ -44,6 +45,7 @@ import org.springframework.ai.observation.conventions.AiTokenType;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.context.annotation.ImportCandidates;
+import org.springframework.boot.test.context.FilteredClassLoader;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -155,6 +157,26 @@ public class Spring_ai_autoconfigure_model_chat_observationTest {
                     assertThat(context.getBeansOfType(ChatModelPromptContentObservationHandler.class)).isEmpty();
                     assertThat(context.getBeansOfType(ErrorLoggingObservationHandler.class)).isEmpty();
                 });
+    }
+
+    @Test
+    void loggingPropertiesCreateContentHandlersWhenTracingIsNotOnTheClasspath() throws Exception {
+        try (FilteredClassLoader classLoader = new FilteredClassLoader(Tracer.class)) {
+            this.contextRunner.withClassLoader(classLoader)
+                    .withPropertyValues("spring.ai.chat.observations.log-prompt=true",
+                            "spring.ai.chat.observations.log-completion=true")
+                    .run(context -> {
+                        ChatModelObservationContext observationContext = chatObservationContext();
+                        ChatModelPromptContentObservationHandler promptHandler = context
+                                .getBean(ChatModelPromptContentObservationHandler.class);
+                        ChatModelCompletionObservationHandler completionHandler = context
+                                .getBean(ChatModelCompletionObservationHandler.class);
+
+                        assertThat(promptHandler.supportsContext(observationContext)).isTrue();
+                        assertThat(completionHandler.supportsContext(observationContext)).isTrue();
+                        assertThat(context.getBeansOfType(TracingAwareLoggingObservationHandler.class)).isEmpty();
+                    });
+        }
     }
 
     @Test
