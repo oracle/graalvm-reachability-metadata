@@ -12,11 +12,14 @@ tasks does.
 
 ## 1. Inputs
 
-The run takes the coordinate `group:artifact:version`, the number of scenario
-passes, and the worker agent. The run is only started
-for a library the repository already supports (§FS-real-use-tests.1), so the
-coordinate is not checked against the index again. The pass count is verified
-before anything else runs (§root/PRCPL-verify-inputs).
+The run takes the number of an open issue labeled `real-use-test`, the number
+of scenario passes, and the worker agent. The issue asks for real-use tests of
+one coordinate and names it as `group:artifact:version` in its title; the run
+resolves that issue. Before anything else runs, a program verifies the pass
+count, that the issue is open and labeled, and that its title names exactly one
+coordinate (§root/PRCPL-verify-inputs). Such issues are opened only for a
+library the repository already supports (§FS-real-use-tests.1), so the
+coordinate is not checked against the index again.
 
 ## 2. Phases
 
@@ -99,8 +102,8 @@ changes what a scenario does nor deletes one. A program then commits the
 coordinate project's changes as they stand, on top of the run's earlier
 commits, and publishes that project through the repository's shared
 publication pipeline, which opens the pull request
-(§forge/AR-real-use-tests-publication). No issue backs the run, so the pull
-request closes none. The description lists:
+(§forge/AR-real-use-tests-publication). The pull request resolves the run's
+issue, and its description lists:
 
 - each scenario with the subsystem it covers;
 - each scenario the native fix removed, with the reason;

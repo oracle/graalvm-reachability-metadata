@@ -17,20 +17,26 @@ final state belong to one run. Workspaces and worktrees live under the ignored
 ```console
 cd real-use-tests
 rhei instantiate real-use-tests \
-  --set coordinate=org.postgresql:postgresql:42.7.12 \
-  --output runs/real-use-postgresql
-rhei run runs/real-use-postgresql
+  --set issue_number=10900 \
+  --output runs/real-use-10900
+rhei run runs/real-use-10900
 ```
 
 ## 1. Template inputs
 
 | Input | Default | Meaning |
 | --- | --- | --- |
-| `coordinate` | — | `group:artifact:version` of a library already in `metadata/`; not re-checked. |
+| `issue_number` | — | An open `real-use-test` issue whose title names the coordinate; the run resolves it. |
 | `scenario_passes` | `5` | Scenario passes: the `visits` of `generate`, each adding one scenario. |
 | `repo_checkout` | `../../..` | The checkout the run branches from and runs its programs from. |
 | `worktree_root` | `../worktrees` | Where the run worktree is created. |
 | `worker_agent` | `pi[high]:openai-codex/gpt-5.6-luna` | Agent target for the four agent states. |
+
+The coordinate is not a template input, because the template renders before
+the issue is read: `prepare` reads it from the issue and writes
+`runtime/real-use/run.md`, naming the coordinate, the issue, and the project
+directory, and every agent state declares that file as an input and reads it
+first.
 
 ## 2. State machine
 
@@ -236,7 +242,7 @@ a final state requires one.
 
 | State | Does | Exit |
 | --- | --- | --- |
-| `prepare` | Verifies the numbers, spawns and attaches the worktree, runs `scaffoldRealUseTest` when needed, checkpoints. | `0`, `2`, `3` |
+| `prepare` | Verifies the pass count and the issue (`gh issue view`: open, labeled `real-use-test`, one coordinate in the title), writes `run.md`, spawns and attaches the worktree, runs `scaffoldRealUseTest` when needed, checkpoints. | `0`, `2`, `3` |
 | `apply-preflight` | Reverts edits outside the two declaration files, runs `generateRealUseFilter`, checkpoints. | `0`, `3` |
 | `native` | `realUseNativeTest` once, without extra flags. | `0`, `10`, `20` |
 | `collect-metadata` | Restores the test-local file to the checkpoint, runs `realUseJavaTest` with `tck.realUse.agentOutput` into a temporary directory, copies every entry that holds to §FS-real-use-tests.2.2 into the test-local file, `realUseNativeTest` again; writes the fix prompt. | `0`, `10`, `3` |
@@ -258,12 +264,12 @@ Nothing under it is committed.
 one commit after the run's checkpoints, and writes the description facts of
 §FS-real-use-test-generation.2.7 to `runtime/real-use/publication/render.json`.
 It then runs Forge's `git_scripts/publish_real_use_tests.py` from the source
-checkout with the worktree, the coordinate, and the run's start time, which is
-the publication's durable identity. That route
+checkout with the worktree, the coordinate, the issue number, and the run's
+start time, which with the issue is the publication's durable identity. That route
 (§forge/AR-real-use-tests-publication) moves the branch to
 `ai/<producer>/real-use-<artifact>-<version>-<publication id>`, rebases it onto
-upstream `master`, runs the pre-publication gate, commits the issue-less
-descriptor carrying the facts, and pushes; the trusted publisher renders the
+upstream `master`, runs the pre-publication gate, commits the descriptor
+carrying the issue and the facts, and pushes; the trusted publisher renders the
 description and opens the pull request
 (§forge/AR-shared-publication-pipeline). The push needs the producer's `gh`
 login, and a failed push ends the run in `failed`.
