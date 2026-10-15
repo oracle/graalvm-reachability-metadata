@@ -16,7 +16,9 @@ import org.springframework.ai.chat.messages.Message;
 import org.springframework.ai.chat.messages.SystemMessage;
 import org.springframework.ai.chat.messages.UserMessage;
 import org.springframework.ai.model.chat.memory.autoconfigure.ChatMemoryAutoConfiguration;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
+import org.springframework.boot.context.annotation.ImportCandidates;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -24,6 +26,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class Spring_ai_autoconfigure_model_chat_memoryTest {
     private final ApplicationContextRunner contextRunner = new ApplicationContextRunner()
             .withConfiguration(AutoConfigurations.of(ChatMemoryAutoConfiguration.class));
+
+    @Test
+    void registersAutoConfigurationForSpringBootDiscovery() {
+        ClassLoader classLoader = ChatMemoryAutoConfiguration.class.getClassLoader();
+
+        assertThat(ImportCandidates.load(AutoConfiguration.class, classLoader).getCandidates())
+                .contains(ChatMemoryAutoConfiguration.class.getName());
+    }
 
     @Test
     void createsDefaultMemoryAndInMemoryRepository() {
