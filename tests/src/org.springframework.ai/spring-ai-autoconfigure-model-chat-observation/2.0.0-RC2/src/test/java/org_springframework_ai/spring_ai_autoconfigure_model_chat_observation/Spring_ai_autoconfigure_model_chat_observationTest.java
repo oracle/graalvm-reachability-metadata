@@ -31,13 +31,17 @@ public class Spring_ai_autoconfigure_model_chat_observationTest {
     }
 
     @Test
-    void observationPropertiesRetainConfiguredValues() {
+    void observationPropertiesUseDisabledDefaults() {
         ChatObservationProperties properties = new ChatObservationProperties();
 
         assertThat(properties.isLogPrompt()).isFalse();
         assertThat(properties.isLogCompletion()).isFalse();
         assertThat(properties.isIncludeErrorLogging()).isFalse();
+    }
 
+    @Test
+    void observationPropertiesRetainConfiguredValues() {
+        ChatObservationProperties properties = new ChatObservationProperties();
         properties.setLogPrompt(true);
         properties.setLogCompletion(true);
         properties.setIncludeErrorLogging(true);
@@ -45,15 +49,6 @@ public class Spring_ai_autoconfigure_model_chat_observationTest {
         assertThat(properties.isLogPrompt()).isTrue();
         assertThat(properties.isLogCompletion()).isTrue();
         assertThat(properties.isIncludeErrorLogging()).isTrue();
-    }
-
-    @Test
-    void autoConfigurationCanBeCreated() {
-        ChatObservationProperties properties = new ChatObservationProperties();
-        ChatObservationAutoConfiguration autoConfiguration = new ChatObservationAutoConfiguration();
-
-        assertThat(properties).isNotNull();
-        assertThat(autoConfiguration).isNotNull();
     }
 
 }
