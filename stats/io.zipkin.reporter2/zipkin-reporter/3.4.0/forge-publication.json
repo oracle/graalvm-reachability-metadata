@@ -1,0 +1,77 @@
+{
+  "base_commit": "2ad393910ecaf6196f76187d683b85202bcdc27e",
+  "branch": "ai/kimeta/real-use-zipkin-reporter-3.4.0-forge-9452-202610152112530000-05322ac4be0b",
+  "follow_ups": [],
+  "forge": {
+    "branch": "master",
+    "commit": "2ad393910ecaf6196f76187d683b85202bcdc27e",
+    "monitored_branch": "master"
+  },
+  "issue_number": 9452,
+  "library": {
+    "artifact": "zipkin-reporter",
+    "coordinates": "io.zipkin.reporter2:zipkin-reporter:3.4.0",
+    "group": "io.zipkin.reporter2",
+    "version": "3.4.0"
+  },
+  "local_ci_verification": {
+    "base_commit": "2ad393910ecaf6196f76187d683b85202bcdc27e",
+    "commands": [],
+    "failure_command": null,
+    "failure_gate": null,
+    "final_commit": "8452485ba7a61e36c9688dc84176d1b25a086204",
+    "fixups": [],
+    "human_intervention_required": false,
+    "repo_fix_paths": [],
+    "status": "success"
+  },
+  "metrics": null,
+  "modifiers": {
+    "chunk_final": true,
+    "chunked_dynamic_access": false,
+    "human_intervention": false
+  },
+  "producer": "kimeta",
+  "publication_id": "forge-9452-202610152112530000-05322ac4be0b",
+  "render": {
+    "real_use": {
+      "removed": [
+        {
+          "reason": "Its application sender posts through java.net.URL/HttpURLConnection over http, a URL protocol Native Image disables unless the image is built with --enable-url-protocols=http; reachability metadata cannot enable it, so all three tests fail with MalformedURLException (one surfaces as a missing upload because the async reporter swallows the failure).",
+          "scenario": "real-use-tests/src/io.zipkin.reporter2/zipkin-reporter/3.4.0/src/test/java/io_zipkin_reporter2/zipkin_reporter/HttpSenderCollectorTest.java"
+        }
+      ],
+      "scenarios": [
+        {
+          "class": "io_zipkin_reporter2.zipkin_reporter.ApplicationEventEncoderTest",
+          "subsystem": "Reports an application-defined event type through an `AsyncReporter` built with a custom `BytesEncoder`, bounded by the reporter's queue and message size limits"
+        },
+        {
+          "class": "io_zipkin_reporter2.zipkin_reporter.AsyncSpanBatchingTest",
+          "subsystem": "Batches the spans of a traced request through an `AsyncReporter` into JSON messages delivered by an application-defined transport"
+        },
+        {
+          "class": "io_zipkin_reporter2.zipkin_reporter.LegacySenderCallTest",
+          "subsystem": "Uploads Thrift-encoded spans through an application `Sender` whose uploads are `Call` objects that the application executes, enqueues with a `Callback`, composes, and health-checks"
+        },
+        {
+          "class": "io_zipkin_reporter2.zipkin_reporter.MessageFramingTest",
+          "subsystem": "Frames encoded spans into size-bounded transport messages with `BytesMessageEncoder`, sized ahead of time through `Encoding` list-size accounting"
+        }
+      ],
+      "test_local_metadata": [
+        {
+          "entries": [
+            "reflection java.io.IOException when `zipkin2.reporter.BaseHttpSender` is reached",
+            "resources META-INF/services/java.net.spi.URLStreamHandlerProvider when `zipkin2.reporter.BaseHttpSender` is reached"
+          ],
+          "library": "Target library"
+        }
+      ]
+    }
+  },
+  "schema_version": 1,
+  "task_type": "real-use-tests",
+  "template_type": "real-use-tests",
+  "timestamp": "2026-10-15T21:12:53+00:00"
+}
