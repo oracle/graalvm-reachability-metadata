@@ -30,7 +30,7 @@ issue after claiming it.
 | Input | Default | Meaning |
 | --- | --- | --- |
 | `issue_number` | — | An open `real-use-test` issue whose title names the coordinate; the run resolves it. |
-| `scenario_passes` | `5` | Scenario passes: the `visits` of `generate`, each adding one scenario. |
+| `scenario_passes` | `10` | Scenario passes: the `visits` of `generate`, each adding one scenario. |
 | `repo_checkout` | `../../..` | The checkout the run branches from and runs its programs from. |
 | `worktree_root` | `../worktrees` | Where the run worktree is created. |
 | `worker_agent` | `pi[high]:openai-codex/gpt-5.6-luna` | Agent target for the four agent states; the agent is `pi` or `claude-code`, as in `claude-code[high]:opus`. |
