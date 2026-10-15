@@ -3,6 +3,12 @@
 Rendered by Forge from the pre-push branch review of §FS-local-branch-review.
 Newest entry first; every non-approval is recorded, including one a repair later cleared.
 
+## 2026-10-15 — com.azure:azure-storage-internal-avro:12.14.0 (#10693)
+
+**Grund citation under the ASCII-only test tree**
+
+The contributed `tests/src/com.azure/azure-storage-internal-avro/12.14.0/build.gradle` contained the non-ASCII `§FS-test-contract.2.7` marker. Repository instructions prohibit grund citations anywhere under `tests/src` because that suite is ASCII-only.
+
 ## 2026-10-13 — io.projectreactor.netty:reactor-netty-http:1.3.0 (#9352)
 
 **Version-specific native-image flag applied to a shared test suite**
