@@ -57,6 +57,14 @@ class RealUseTasksTests {
     }
 
     @Test
+    void jacocoReportRunsTheProjectReport() throws IOException {
+        Project project = createProject();
+        RealUseJacocoReportInvocationTask task = project.getTasks().create("realUseJacocoReport", RealUseJacocoReportInvocationTask.class);
+
+        assertThat(task.commandFor("com.example:demo:1.0.0")).endsWith("jacocoTestReport");
+    }
+
+    @Test
     void nativeTestForwardsExactReachability() throws IOException {
         Project project = createProject();
         project.getExtensions().getExtraProperties().set("tck.realUse.exactReachability", "true");

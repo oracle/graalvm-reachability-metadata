@@ -34,6 +34,7 @@ project yet.
 | --- | --- |
 | `realUseJavaTest` | Run the selected real-use projects on the JVM. |
 | `realUseNativeTest` | Build the native test image and run it. |
+| `realUseJacocoReport` | Run the selected real-use projects on the JVM and write the JaCoCo XML report of the target library's classes to the project's `build/reports/jacoco/test/jacocoTestReport.xml`; the generation workflow reads its totals (§FS-real-use-test-generation.2.7). |
 | `scaffoldRealUseTest` | Create a coordinate project from the real-use template. |
 | `generateChangedRealUseMatrix` | The CI matrix of the real-use projects changed between `-PbaseCommit` and `-PnewCommit` (§AR-real-use-test-harness.4). |
 | `generateRealUseFilter` | Write `user-code-filter.json` covering every package in the JARs of the target and of the libraries `build.gradle` declares, one `<package>.**` rule per package not nested in another; the harness's own JUnit and test-support libraries are not declarations. |
@@ -69,7 +70,8 @@ The `tests/` resolver is rooted at `tests/src/` and the real-use resolver at
 runs a `tests/` test (§FS-real-use-tests.3). The style checks run no tests and
 cover both suites, so `checkstyle`, `testAllInfra`, and the checkstyle CI
 matrix also check changed real-use projects. Stats, coverage, and
-dynamic-access reports read only `tests/`.
+dynamic-access reports read only `tests/`; `realUseJacocoReport` reports a
+real-use project's coverage to the generation workflow and feeds no stats.
 
 ## 4. CI job
 

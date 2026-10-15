@@ -3,13 +3,14 @@
 # You should have received a copy of the CC0 legalcode along with this
 # work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 
-"""The `publish` program: record the native fix's deletions, commit, and push.
+"""The `publish` program: record the native fix's deletions, commit, measure, and push.
 
 Publication checks nothing itself: `style-check` and the optional publication
-fix ran before it (§FS-real-use-test-generation.2.7). Only the coordinate
-project is staged (§FS-real-use-test-contract.2.2), the commit goes on top of
-the run's checkpoints, and Forge's real-use route pushes the branch for the
-trusted publisher, which renders the description from the facts written here
+fix ran before it, and the coverage run after the commit only measures
+(§FS-real-use-test-generation.2.7). Only the coordinate project is staged
+(§FS-real-use-test-contract.2.2), the commit goes on top of the run's
+checkpoints, and Forge's real-use route pushes the branch for the trusted
+publisher, which renders the description from the facts written here
 (§AR-real-use-test-workflow.6).
 """
 from __future__ import annotations
@@ -19,9 +20,9 @@ import subprocess
 import sys
 from typing import Any
 
-import local_metadata
+import run_summary
 import scenarios
-from build_tools import git
+from build_tools import TaskResult, git, run_gradle
 from exit_codes import INFRASTRUCTURE, NO_SCENARIO_LEFT, OK
 from run_state import RunState, load, read_json, runtime_path, save, write_json
 
@@ -50,24 +51,22 @@ def _record_native_removals(workspace: str, state: RunState) -> None:
             state.record_removal(os.path.relpath(path, state.worktree), item.get("reason", ""))
 
 
-def render_facts(state: RunState, files: list[str]) -> dict[str, Any]:
-    """What the description reports: scenarios, removals, and test-local entries by library."""
-    groups: dict[str, list[str]] = local_metadata.grouped_entries(
-        state.metadata_path,
-        state.allowed_packages,
-        local_metadata.filter_prefixes(state.filter_path),
-        scenarios.test_packages(state.test_java_path),
-    )
+def render_facts(workspace: str, state: RunState) -> dict[str, Any]:
+    """What the description reports: coverage, tokens, iterations, and removals.
+
+    §FS-real-use-test-generation.2.7
+    """
+    tokens, iterations = run_summary.agent_cost(workspace)
     return {
-        "scenarios": [
-            {"class": scenarios.class_name(state.test_java_path, path), "subsystem": scenarios.subsystem(path)}
-            for path in files
-        ],
+        "library_coverage": run_summary.library_coverage(
+            os.path.join(state.project_path, run_summary.JACOCO_REPORT)
+        ),
+        "tokens": tokens,
+        "iterations": iterations,
         "removed": [
             {"scenario": removal["scenario"], "reason": removal["reason"][:MAX_REASON]}
             for removal in state.removals
         ],
-        "test_local_metadata": [{"library": group, "entries": entries} for group, entries in groups.items()],
     }
 
 
@@ -109,8 +108,6 @@ def publish(workspace: str) -> int:
     state: RunState = load(workspace)
     _record_native_removals(workspace, state)
     save(workspace, state)
-    facts_path: str = runtime_path(workspace, "publication", "render.json")
-    write_json(facts_path, render_facts(state, scenarios.scenario_files(state.test_java_path)))
     git(state.worktree, "add", "-A", "--", state.project_dir)
     if git(state.worktree, "diff", "--cached", "--name-only"):
         git(state.worktree, "commit", "--quiet", "-m", _subject(state))
@@ -119,4 +116,12 @@ def publish(workspace: str) -> int:
         # A retried publish finds its own commit and pushes again; otherwise nothing changed.
         print("[publish] the coordinate project is unchanged; nothing to publish")
         return NO_SCENARIO_LEFT
+    coverage: TaskResult = run_gradle(
+        state.worktree, "realUseJacocoReport", state.coordinate, runtime_path(workspace, "logs", "realUseJacocoReport.log")
+    )
+    if not coverage.ok:
+        print(f"ERROR: the coverage run failed; see {coverage.log_path}:\n{coverage.tail}", file=sys.stderr)
+        return INFRASTRUCTURE
+    facts_path: str = runtime_path(workspace, "publication", "render.json")
+    write_json(facts_path, render_facts(workspace, state))
     return _push(workspace, state, facts_path)

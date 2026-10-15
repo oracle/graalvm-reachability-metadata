@@ -42,11 +42,14 @@ publisher = _load_publisher()
 
 def _real_use() -> dict[str, Any]:
     return {
-        "scenarios": [{"class": "realuse.demo.OrderRoundTripTest", "subsystem": "Serializes orders"}],
+        "library_coverage": {
+            "line": {"covered": 15, "total": 20, "ratio": 0.75},
+            "instruction": {"covered": 1234, "total": 2000, "ratio": 0.617},
+            "method": "N/A",
+        },
+        "tokens": {"input": 198, "cached_input": 5497490, "cache_write_input": 475763, "output": None},
+        "iterations": 8,
         "removed": [{"scenario": "src/test/java/realuse/demo/ProxyTest.java", "reason": "defines classes at run time"}],
-        "test_local_metadata": [
-            {"library": "Target library", "entries": ["reflection demo.Order when `demo.Codec` is reached"]},
-        ],
     }
 
 
@@ -95,6 +98,10 @@ class RealUseDescriptorTests(unittest.TestCase):
                 lambda d: d.pop("issue_number"),
                 lambda d: d.update(local_review={"decision": "approved"}),
                 lambda d: d["render"].pop("real_use"),
+                lambda d: d["render"]["real_use"].pop("library_coverage"),
+                lambda d: d["render"]["real_use"]["library_coverage"].update(line={"covered": 1}),
+                lambda d: d["render"]["real_use"]["tokens"].pop("cache_write_input"),
+                lambda d: d["render"]["real_use"].update(scenarios=[]),
                 lambda d: d.update(template_type="library-new-request"),
         ):
             descriptor = _descriptor()
@@ -109,15 +116,36 @@ class RealUseDescriptorTests(unittest.TestCase):
         self.assertIsNotNone(publisher.PUBLICATION_ID_SUFFIX.search(descriptor["branch"]))
         self.assertEqual(["GenAI", "real-use-test", "rhei"], publisher.ROUTE_LABELS["real-use-tests"])
 
-    def test_template_resolves_the_issue_and_reports_scenarios_removals_and_entries(self) -> None:
+    def test_template_leads_with_coverage_and_cost_then_removals(self) -> None:
         title, body = publisher.render_publication(_descriptor())
 
         self.assertEqual("[GenAI] Add real-use tests for com.example:demo:1.0.0", title)
         self.assertIn("Fixes: #10900", body)
-        self.assertIn("| `realuse.demo.OrderRoundTripTest` | Serializes orders |", body)
+        summary = (
+            "- Library coverage: 61.70%\n"
+            "- Lines: 15/20 (75.00%)\n"
+            "- Instructions: 1234/2000 (61.70%)\n"
+            "- Methods: N/A\n"
+            "- Input tokens: 198\n"
+            "- Cached input tokens: 5,497,490\n"
+            "- Cache-write input tokens: 475,763\n"
+            "- Output tokens: n/a\n"
+            "- Iterations: 8\n"
+        )
+        self.assertIn("shipped metadata.\n\n" + summary, body)
+        self.assertIn("### Tests removed by the native fix", body)
         self.assertIn("| `src/test/java/realuse/demo/ProxyTest.java` | defines classes at run time |", body)
-        self.assertIn("#### Target library", body)
+        for dropped in ("### Scenarios", "### Test-local metadata", "Local CI Verification"):
+            self.assertNotIn(dropped, body)
         self.assertIn(f"Forge-Publication-ID: {_descriptor()['publication_id']}", body)
+
+    def test_template_omits_the_removals_section_when_nothing_was_removed(self) -> None:
+        descriptor = _descriptor()
+        descriptor["render"]["real_use"]["removed"] = []
+
+        _title, body = publisher.render_publication(descriptor)
+
+        self.assertNotIn("### Tests removed by the native fix", body)
 
 
 class PublishRealUseTestsTests(unittest.TestCase):

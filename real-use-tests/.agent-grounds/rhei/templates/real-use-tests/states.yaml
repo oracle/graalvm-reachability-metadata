@@ -259,7 +259,7 @@ states:
         description: The files the fix changed.
 
   publish:
-    description: Commit the coordinate project on top of the checkpoints and push it through Forge's real-use route.
+    description: Commit the coordinate project on top of the checkpoints, measure its coverage, and push it through Forge's real-use route.
     program: python3 "{{repo_checkout}}/real-use-tests/.agent-grounds/rhei/programs/real_use.py" publish
     program_timeout: 30m
 
@@ -391,7 +391,7 @@ transitions:
   - from: publish
     to: failed
     exit_code: nonzero
-    description: The commit or the push through Forge's real-use route failed.
+    description: The commit, the coverage run, or the push through Forge's real-use route failed.
 
   - from: "*"
     to: cancelled
