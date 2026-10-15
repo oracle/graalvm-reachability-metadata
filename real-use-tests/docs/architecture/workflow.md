@@ -22,6 +22,9 @@ rhei instantiate real-use-tests \
 rhei run runs/real-use-10900
 ```
 
+The launcher (§AR-real-use-test-launcher) does this for the next queued
+issue after claiming it.
+
 ## 1. Template inputs
 
 | Input | Default | Meaning |
@@ -273,3 +276,4 @@ carrying the issue and the facts, and pushes; the trusted publisher renders the
 description and opens the pull request
 (§forge/AR-shared-publication-pipeline). The push needs the producer's `gh`
 login, and a failed push ends the run in `failed`.
+

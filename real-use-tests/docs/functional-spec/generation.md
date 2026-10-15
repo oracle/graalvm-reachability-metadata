@@ -21,6 +21,21 @@ coordinate (§root/PRCPL-verify-inputs). Such issues are opened only for a
 library the repository already supports (§FS-real-use-tests.1), so the
 coordinate is not checked against the index again.
 
+An operator starts a run with the launcher, which picks the issue itself.
+Before it reads the queue it verifies the host the way Forge's code-coverage
+launcher does (§forge/FS-forge-host-requirements): `gh` new enough to read
+project items and logged in, one GraalVM of JDK 25 or newer with Native Image,
+and the worker agent. `JAVA_HOME` and `GRAALVM_HOME` must name that same
+GraalVM, because Gradle and the native-image agent run on `JAVA_HOME`. It then
+takes the most urgent open, unassigned, unblocked `real-use-test` issue in
+project status `Todo` whose title names exactly one coordinate, and claims it
+the way Forge claims an issue (§forge/FS-forge-run-requirements.2): it re-reads
+the issue, sets itself as the sole assignee, waits a random few seconds,
+re-reads the assignees, and only while it is still the sole assignee moves the
+issue to `In Progress`. A lost claim moves on to the next candidate. When the
+run's workspace cannot then be created, the launcher releases the claim back to
+`Todo`.
+
 ## 2. Phases
 
 ### 2.1 Prepare
