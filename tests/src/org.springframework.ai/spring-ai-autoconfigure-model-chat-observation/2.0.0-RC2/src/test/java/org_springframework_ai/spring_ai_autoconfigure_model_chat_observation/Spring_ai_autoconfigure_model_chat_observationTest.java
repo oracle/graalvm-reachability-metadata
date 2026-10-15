@@ -16,6 +16,9 @@ import io.micrometer.observation.ObservationRegistry;
 import io.micrometer.tracing.Tracer;
 import org.junit.jupiter.api.Test;
 
+import org.springframework.ai.chat.client.ChatClientRequest;
+import org.springframework.ai.chat.client.advisor.observation.AdvisorObservationContext;
+import org.springframework.ai.chat.client.observation.ChatClientObservationContext;
 import org.springframework.ai.chat.messages.AssistantMessage;
 import org.springframework.ai.chat.metadata.ChatResponseMetadata;
 import org.springframework.ai.chat.metadata.DefaultUsage;
@@ -26,6 +29,11 @@ import org.springframework.ai.chat.observation.ChatModelMeterObservationHandler;
 import org.springframework.ai.chat.observation.ChatModelObservationContext;
 import org.springframework.ai.chat.observation.ChatModelPromptContentObservationHandler;
 import org.springframework.ai.chat.prompt.Prompt;
+import org.springframework.ai.embedding.EmbeddingOptions;
+import org.springframework.ai.embedding.EmbeddingRequest;
+import org.springframework.ai.embedding.observation.EmbeddingModelObservationContext;
+import org.springframework.ai.image.ImagePrompt;
+import org.springframework.ai.image.observation.ImageModelObservationContext;
 import org.springframework.ai.model.chat.observation.autoconfigure.ChatObservationAutoConfiguration;
 import org.springframework.ai.model.chat.observation.autoconfigure.ChatObservationProperties;
 import org.springframework.ai.model.observation.ErrorLoggingObservationHandler;
@@ -103,6 +111,21 @@ public class Spring_ai_autoconfigure_model_chat_observationTest {
     }
 
     @Test
+    void errorHandlerSupportsClientAdvisorEmbeddingAndImageObservations() {
+        this.contextRunner.withBean(Tracer.class, () -> Tracer.NOOP)
+                .withPropertyValues("spring.ai.chat.observations.include-error-logging=true")
+                .run(context -> {
+                    ErrorLoggingObservationHandler errorHandler = context
+                            .getBean(ErrorLoggingObservationHandler.class);
+
+                    assertThat(errorHandler.supportsContext(chatClientObservationContext())).isTrue();
+                    assertThat(errorHandler.supportsContext(advisorObservationContext())).isTrue();
+                    assertThat(errorHandler.supportsContext(embeddingObservationContext())).isTrue();
+                    assertThat(errorHandler.supportsContext(imageObservationContext())).isTrue();
+                });
+    }
+
+    @Test
     void meterHandlerRecordsTokenUsageFromAChatResponse() {
         this.contextRunner.run(context -> {
             SimpleMeterRegistry meterRegistry = context.getBean(SimpleMeterRegistry.class);
@@ -154,6 +177,43 @@ public class Spring_ai_autoconfigure_model_chat_observationTest {
                 .prompt(new Prompt("How are observations configured?"))
                 .provider("test-provider")
                 .streaming(false)
+                .build();
+    }
+
+    private static ChatClientObservationContext chatClientObservationContext() {
+        return ChatClientObservationContext.builder()
+                .request(chatClientRequest())
+                .advisors(List.of())
+                .stream(false)
+                .build();
+    }
+
+    private static AdvisorObservationContext advisorObservationContext() {
+        return AdvisorObservationContext.builder()
+                .advisorName("test-advisor")
+                .chatClientRequest(chatClientRequest())
+                .order(0)
+                .build();
+    }
+
+    private static EmbeddingModelObservationContext embeddingObservationContext() {
+        EmbeddingRequest request = new EmbeddingRequest(List.of("observation"), EmbeddingOptions.builder().build());
+        return EmbeddingModelObservationContext.builder()
+                .embeddingRequest(request)
+                .provider("test-provider")
+                .build();
+    }
+
+    private static ImageModelObservationContext imageObservationContext() {
+        return ImageModelObservationContext.builder()
+                .imagePrompt(new ImagePrompt("observation"))
+                .provider("test-provider")
+                .build();
+    }
+
+    private static ChatClientRequest chatClientRequest() {
+        return ChatClientRequest.builder()
+                .prompt(new Prompt("Explain observation auto-configuration."))
                 .build();
     }
 
