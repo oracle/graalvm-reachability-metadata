@@ -33,7 +33,7 @@ issue after claiming it.
 | `scenario_passes` | `5` | Scenario passes: the `visits` of `generate`, each adding one scenario. |
 | `repo_checkout` | `../../..` | The checkout the run branches from and runs its programs from. |
 | `worktree_root` | `../worktrees` | Where the run worktree is created. |
-| `worker_agent` | `pi[high]:openai-codex/gpt-5.6-luna` | Agent target for the four agent states. |
+| `worker_agent` | `pi[high]:openai-codex/gpt-5.6-luna` | Agent target for the four agent states; the agent is `pi` or `claude-code`, as in `claude-code[high]:opus`. |
 
 The coordinate is not a template input, because the template renders before
 the issue is read: `prepare` reads it from the issue and writes

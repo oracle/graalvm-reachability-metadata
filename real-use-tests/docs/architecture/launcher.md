@@ -6,7 +6,15 @@
 preflight, `forge/utility_scripts/rhei_launcher_host.sh`, which the
 code-coverage launcher sources too: it checks `gh` 2.39.0 or newer, `python3`,
 and `rhei`, then runs Forge's host gate in its coverage mode
-(§forge/FS-forge-host-requirements) for the template's default worker agent.
+(§forge/FS-forge-host-requirements) for the worker agent.
+
+The worker agent is the launcher's `--worker-agent` Rhei target, by default
+the template's `pi[high]:openai-codex/gpt-5.6-luna`, and the launcher passes
+it to the run unchanged. It reads the agent and the model from the target and
+rejects any agent but `pi` and `claude-code` before the gate. The gate then
+checks that agent as Forge checks its analysis agent: `pi` on the path and
+logged in to the target's provider, or `claude` on the path with a passing
+`claude auth status`; neither probe invokes a model.
 Before that gate the launcher fills whichever of `JAVA_HOME` and
 `GRAALVM_HOME` is unset from the other and rejects two different
 installations.

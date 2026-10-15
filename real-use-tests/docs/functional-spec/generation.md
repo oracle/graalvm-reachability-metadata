@@ -19,13 +19,15 @@ resolves that issue. Before anything else runs, a program verifies the pass
 count, that the issue is open and labeled, and that its title names exactly one
 coordinate (§root/PRCPL-verify-inputs). Such issues are opened only for a
 library the repository already supports (§FS-real-use-tests.1), so the
-coordinate is not checked against the index again.
+coordinate is not checked against the index again. The worker agent is Pi or
+Claude Code; the run accepts no other agent.
 
 An operator starts a run with the launcher, which picks the issue itself.
 Before it reads the queue it verifies the host the way Forge's code-coverage
 launcher does (§forge/FS-forge-host-requirements): `gh` new enough to read
 project items and logged in, one GraalVM of JDK 25 or newer with Native Image,
-and the worker agent. `JAVA_HOME` and `GRAALVM_HOME` must name that same
+and the chosen worker agent: Pi or Claude Code installed and logged in, checked
+without invoking a model. `JAVA_HOME` and `GRAALVM_HOME` must name that same
 GraalVM, because Gradle and the native-image agent run on `JAVA_HOME`. It then
 takes the most urgent open, unassigned, unblocked `real-use-test` issue in
 project status `Todo` whose title names exactly one coordinate, and claims it
