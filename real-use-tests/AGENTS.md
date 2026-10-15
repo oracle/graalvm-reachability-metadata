@@ -23,6 +23,38 @@ Guidelines for agents working in the real-use tests project.
 - Cite repository facts as `§root/<ID>` and Forge facts as `§forge/<ID>`, and
   run `grund check` from the repository root.
 
+## Running a generation
+
+The entry point is the launcher, run from this directory. It checks the host,
+claims the most urgent unassigned `Todo` issue labeled `real-use-test`, renders
+the Rhei workspace under `runs/real-use-<issue>`, and runs it with the
+dashboard (§AR-real-use-test-launcher):
+
+```console
+./run-real-use-tests.sh
+```
+
+The worker agent for the agent states is the `--worker-agent` Rhei target, as
+`<agent>[<mode>]:<provider>/<model>` with agent `pi` or `claude-code`
+(§FS-real-use-test-generation.1). The default is
+`pi[high]:openai-codex/gpt-5.6-luna`; for example, to run on sol:
+
+```console
+./run-real-use-tests.sh --worker-agent 'pi[high]:openai-codex/gpt-5.6-sol'
+```
+
+Options after `--` go to `rhei run`. To run one issue without claiming it,
+render and run the workspace directly:
+
+```console
+rhei instantiate real-use-tests issue_number=<n> \
+  'worker_agent=pi[high]:openai-codex/gpt-5.6-sol' --output runs/real-use-<n>
+rhei run runs/real-use-<n>
+```
+
+The template, its inputs, and the per-state programs are described in
+[.agent-grounds/rhei/templates/real-use-tests/README.md](.agent-grounds/rhei/templates/real-use-tests/README.md).
+
 <!-- BEGIN GRUND MANAGED BLOCK -->
 ## Grounding with grund (v7)
 
