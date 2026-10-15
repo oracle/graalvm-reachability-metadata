@@ -1,0 +1,367 @@
+# State machine of the real-use generation workflow (§AR-real-use-test-workflow.2).
+#
+#   prepare -- 0 --> preflight --> apply-preflight -- 0 --> generate
+#   generate --> generate while passes remain, one scenario per pass
+#   generate --> native once every pass is spent
+#   native -- 0 --> style-check; 20 (no scenario) --> nothing-to-publish
+#   native -- 10 --> collect-metadata              (optional fix, step 1)
+#   collect-metadata -- 0 --> style-check; 10 --> native-agent-fix --> style-check
+#   style-check -- 0 --> publish; 10 --> agent-publication-fix --> publish  (optional)
+#   style-check -- 20 (no scenario) --> nothing-to-publish
+#   publish -- 0 --> completed; 20 (nothing changed) --> nothing-to-publish
+#   every program -- 2 (bad input), 3 (infrastructure), or a crash --> failed
+#
+# preflight, generate, native-agent-fix, and agent-publication-fix are agent
+# states; every other state is a program whose exit code is the whole decision
+# (§FS-real-use-test-generation).
+# The generate loop is generate's own counted loop, so no program runs between
+# its passes; style is checked once, by style-check. Programs
+# run from the source checkout's programs/ directory with the Rhei workspace as
+# their working directory.
+
+name: real-use-tests
+version: 1.0.0
+
+states:
+  prepare:
+    description: Verify inputs, spawn and attach the run worktree, scaffold the project.
+    initial: true
+    program: >-
+      python3 "{{repo_checkout}}/real-use-tests/.agent-grounds/rhei/programs/real_use.py" prepare
+      --coordinate "{{coordinate}}"
+      --scenario-passes {{scenario_passes}}
+      --repo-checkout "{{repo_checkout}}"
+      --worktree-root "{{worktree_root}}"
+    program_timeout: 60m
+    outputs:
+      - name: state
+        path: runtime/real-use/state.json
+        description: The run state every later program reads.
+
+  preflight:
+    description: Declare the supporting libraries and Docker images the scenarios will need.
+    target: "{{worker_agent}}"
+    instructions: |
+      You prepare the real-use project for `{{coordinate}}`
+      (§FS-real-use-test-generation.2.2). {{scenario_passes}} scenario passes
+      follow, each adding one scenario that uses a different subsystem of the
+      target library the way an application does. None of them can change what
+      you declare, so declare now everything those scenarios will need beside
+      the target.
+
+      Your working directory is the run worktree. The coordinate project is
+      `real-use-tests/src/{{ coordinate | replace(":", "/") }}/`.
+
+      - Inspect the target: `./gradlew -q listLibraryJars -Pcoordinates={{coordinate}}`
+        prints its JARs, and `metadata/<group>/<artifact>/index.json` lists its
+        `allowed-packages`.
+      - Declare in the project's `build.gradle` each supporting library a
+        realistic application of the target's main subsystems uses with it,
+        pinned to a version compatible with the target
+        (§FS-real-use-test-contract.1.4). Declare only what the scenarios will
+        use: the target stays the subject (§FS-real-use-test-contract.1.2).
+      - List every Docker image the scenarios will need in the project's
+        `required-docker-images.txt`, choosing only from
+        `tests/tck-build-logic/src/main/resources/allowed-docker-images/`.
+      - Change only those two files and write no scenario; a program reverts
+        every other edit.
+      - Confirm the libraries resolve from the worktree root, in the foreground,
+        with `./gradlew generateRealUseFilter -Pcoordinates={{coordinate}}`.
+
+      Before your final message, write `{output.report.path}` as JSON:
+      `{"libraries": [{"coordinate": "<group:artifact:version>", "why": "<use>"}], "dockerImages": ["<image>"]}`.
+    outputs:
+      - name: report
+        path: runtime/real-use/reports/preflight.json
+        description: The declared libraries and images, each with its use.
+
+  apply-preflight:
+    description: Revert edits outside the declarations, write the filter from every declared JAR, and checkpoint both.
+    program: python3 "{{repo_checkout}}/real-use-tests/.agent-grounds/rhei/programs/real_use.py" apply-preflight
+    program_timeout: 30m
+
+  generate:
+    description: Write one scenario for an uncovered subsystem and make it pass on the JVM.
+    target: "{{worker_agent}}"
+    visits: {{scenario_passes}}
+    instructions: |
+      You write one real-use scenario for `{{coordinate}}`: a test that uses the
+      library the way an application does (§FS-real-use-test-generation.2.3).
+      This is pass {visit_count} of {visits}.
+
+      Your working directory is the run worktree. The coordinate project is
+      `real-use-tests/src/{{ coordinate | replace(":", "/") }}/`. Read its
+      existing scenarios under `src/test/java/`: the first sentence of each
+      class doc comment names the subsystem it covers. Pick a subsystem of the
+      target that none of them covers; you may inspect the library JARs
+      (`./gradlew -q listLibraryJars -Pcoordinates={{coordinate}}`).
+
+      Rules (§FS-real-use-test-contract):
+      - One scenario per test class and one class per file. Nest every helper
+        type the scenario needs inside that class; never add a shared helper
+        file. Start the class doc comment with one sentence naming the
+        subsystem the scenario exercises.
+      - The target library is the subject: the class uses types from the
+        target's allowed packages and asserts on what an application would
+        observe. Use only the libraries and Docker images the project already
+        declares, and supporting libraries only as far as the scenario needs.
+      - Write application code against the documented public API: no
+        reflection shortcuts, no stubs or fakes of real packages, no code in
+        the library's packages, no mocking or other runtime class definition.
+      - Never skip or tolerate Native Image: no `@DisabledInNativeImage`, no
+        `assumeFalse`, no native-runtime checks, no catch of unsupported-feature
+        errors.
+      - Every test finishes in under 60 seconds with bounded waits and closes
+        what it opens.
+      - Open every file with the CC0 header the scaffolded files carry and keep
+        it ASCII.
+      - Write only under the project's `src/test/`, never the test-local
+        metadata under `src/test/resources/META-INF/native-image/`.
+      - From the worktree root, in the foreground, run
+        `./gradlew realUseJavaTest -Pcoordinates={{coordinate}}` and fix the
+        scenario until it passes. Run no native task; style is checked before
+        publication.
+
+      Before your final message, write `{output.report.path}` as JSON:
+      `{"subsystem": "<the subsystem>", "scenarioClass": "<fully qualified class>"}`.
+    outputs:
+      - name: report
+        path: runtime/real-use/reports/generate-{visit_count}.json
+        description: The subsystem and scenario class this pass added.
+
+  native:
+    description: Run the native task once, built as a consumer builds it.
+    program: python3 "{{repo_checkout}}/real-use-tests/.agent-grounds/rhei/programs/real_use.py" native
+    program_timeout: 120m
+
+  collect-metadata:
+    description: Only after a native failure - run the JVM tests once with the native-image agent into a temporary directory, copy the collected entries test-local, and run the native task again.
+    program: python3 "{{repo_checkout}}/real-use-tests/.agent-grounds/rhei/programs/real_use.py" collect-metadata
+    program_timeout: 120m
+    outputs:
+      - name: prompt
+        kind: handoff
+        path: runtime/real-use/prompts/native-fix.md
+        description: The failing native output the native fix agent receives.
+
+  native-agent-fix:
+    description: Only when the native run still fails after the collected entries - make the native task pass with test-local metadata, deleting scenarios metadata cannot save.
+    target: "{{worker_agent}}"
+    agent_timeout: 2h
+    handoff:
+      inherit:
+        - from: transition.previous
+          name: prompt
+          required: true
+    instructions: |
+      You make the native run of the real-use project for `{{coordinate}}` pass
+      (§FS-real-use-test-generation.2.5). The handoff section below holds the
+      failing output, the test-local metadata file, and the packages a
+      condition may name.
+
+      Your working directory is the run worktree. From the worktree root, in
+      the foreground, run
+      `./gradlew realUseNativeTest -Pcoordinates={{coordinate}} -Ptck.realUse.exactReachability=true`,
+      which names each missing registration, and repeat until it passes.
+
+      Rules (§FS-real-use-tests.2.2):
+      - Add missing entries only to the test-local metadata file the handoff
+        names, which already holds what the native-image agent collected on the
+        JVM, whichever library they describe. Never edit `metadata/`, a
+        scenario, `build.gradle`, or a filter.
+      - Use the single-file format of
+        `metadata/schemas/reachability-metadata-schema-v1.2.0.json`. Give every
+        entry a `"condition": {"typeReached": "<type>"}` naming a type from the
+        packages the handoff lists or from the test's own package.
+      - Delete, as a whole file, a scenario metadata cannot save: one that
+        generates bytecode or defines classes at run time, or relies on a
+        feature Native Image does not support. Never work around it.
+
+      Before your final message, write `{output.report.path}` as JSON:
+      `{"entriesAdded": <count>, "deleted": [{"class": "<fully qualified scenario class>", "reason": "<why>"}]}`.
+    outputs:
+      - name: report
+        path: runtime/real-use/reports/native-agent-fix.json
+        description: Entries added and scenarios deleted, each with the reason.
+
+  style-check:
+    description: Run the repository's style checks once over the coordinate project.
+    program: python3 "{{repo_checkout}}/real-use-tests/.agent-grounds/rhei/programs/real_use.py" style-check
+    program_timeout: 60m
+    outputs:
+      - name: prompt
+        kind: handoff
+        path: runtime/real-use/prompts/publication-fix.md
+        description: The failing style checks' output the publication fix agent receives.
+
+  agent-publication-fix:
+    description: Only when a style check fails - fix what it reports without changing what a scenario does.
+    target: "{{worker_agent}}"
+    handoff:
+      inherit:
+        - from: transition.previous
+          name: prompt
+          required: true
+    instructions: |
+      You make the real-use project for `{{coordinate}}` pass the repository's
+      style checks before it is published (§FS-real-use-test-generation.2.7).
+      The handoff section below holds the output of each failing check.
+
+      Your working directory is the run worktree. From the worktree root, in
+      the foreground:
+      - run `./gradlew spotlessApply`, which adds missing CC0 headers and
+        formats JSON;
+      - then run `./gradlew spotlessCheck` and
+        `./gradlew checkstyle -Pcoordinates={{coordinate}}`, and fix what they
+        still report until both pass.
+
+      Edit only files under `real-use-tests/src/{{ coordinate | replace(":", "/") }}/`,
+      and revert any change `spotlessApply` makes elsewhere. Fix style only:
+      never change what a scenario does, delete a scenario, or edit the
+      test-local metadata beyond formatting.
+
+      Before your final message, write `{output.report.path}` as JSON:
+      `{"changed": ["<path relative to the worktree>"]}`.
+    outputs:
+      - name: report
+        path: runtime/real-use/reports/agent-publication-fix.json
+        description: The files the fix changed.
+
+  publish:
+    description: Commit the coordinate project on top of the checkpoints and push it through Forge's real-use route.
+    program: python3 "{{repo_checkout}}/real-use-tests/.agent-grounds/rhei/programs/real_use.py" publish
+    program_timeout: 30m
+
+  completed:
+    description: The scenarios are pushed for the trusted publisher to open the pull request.
+    final: true
+
+  nothing-to-publish:
+    description: Every scenario was removed or nothing changed; there is nothing to publish.
+    final: true
+
+  failed:
+    description: A program step failed - a bad input, the worktree, scaffolding, or the build.
+    final: true
+
+  cancelled:
+    description: The run was cancelled by hand.
+    final: true
+    role: cancellation
+
+transitions:
+  - from: prepare
+    to: preflight
+    exit_code: 0
+    description: Inputs verified, worktree attached, project scaffolded.
+
+  - from: prepare
+    to: failed
+    exit_code: nonzero
+    description: A bad input, a worktree conflict, or a failed scaffold.
+
+  - from: preflight
+    to: apply-preflight
+    description: The libraries are declared; a program checks and fixes them.
+
+  - from: apply-preflight
+    to: generate
+    exit_code: 0
+    description: Libraries and filter are checkpointed; the scenario passes start.
+
+  - from: apply-preflight
+    to: failed
+    exit_code: nonzero
+    description: The declared libraries do not resolve.
+
+  - from: generate
+    to: generate
+    condition: visitCount < visits
+    description: The next scenario pass, in a fresh agent session.
+
+  - from: generate
+    to: native
+    condition: visitCount >= visits
+    description: Every scenario pass is spent; the native run follows.
+
+  - from: native
+    to: style-check
+    exit_code: 0
+    description: Every scenario passes on Native Image.
+
+  - from: native
+    to: collect-metadata
+    exit_code: 10
+    description: The native run fails; the optional fix starts with an agent run on the JVM.
+
+  - from: native
+    to: nothing-to-publish
+    exit_code: 20
+    description: No scenario is left to run.
+
+  - from: native
+    to: failed
+    exit_code: nonzero
+    description: The native run could not be evaluated.
+
+  - from: collect-metadata
+    to: style-check
+    exit_code: 0
+    description: The collected entries make every scenario pass.
+
+  - from: collect-metadata
+    to: native-agent-fix
+    exit_code: 10
+    description: The native run still fails; the native fix agent follows.
+
+  - from: collect-metadata
+    to: failed
+    exit_code: nonzero
+    description: The collection itself could not run.
+
+  - from: native-agent-fix
+    to: style-check
+    description: The agent's turn ended; publication follows.
+
+  - from: style-check
+    to: publish
+    exit_code: 0
+    description: The style checks pass.
+
+  - from: style-check
+    to: agent-publication-fix
+    exit_code: 10
+    description: A style check fails; the publication fix agent follows.
+
+  - from: style-check
+    to: nothing-to-publish
+    exit_code: 20
+    description: No scenario is left to publish.
+
+  - from: style-check
+    to: failed
+    exit_code: nonzero
+    description: The style checks could not run.
+
+  - from: agent-publication-fix
+    to: publish
+    description: The agent's turn ended; the project is committed as it stands.
+
+  - from: publish
+    to: completed
+    exit_code: 0
+    description: The branch is pushed; the trusted publisher opens the pull request.
+
+  - from: publish
+    to: nothing-to-publish
+    exit_code: 20
+    description: The coordinate project is unchanged.
+
+  - from: publish
+    to: failed
+    exit_code: nonzero
+    description: The commit or the push through Forge's real-use route failed.
+
+  - from: "*"
+    to: cancelled
+    description: Cancel any non-final task by hand.
