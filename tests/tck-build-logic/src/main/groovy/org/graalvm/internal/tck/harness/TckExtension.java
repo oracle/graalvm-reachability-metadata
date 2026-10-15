@@ -7,6 +7,7 @@
 package org.graalvm.internal.tck.harness;
 
 import groovy.json.JsonSlurper;
+import org.graalvm.internal.tck.utils.CoordinateUtils;
 import org.gradle.api.Project;
 import org.gradle.api.file.Directory;
 import org.gradle.api.file.DirectoryProperty;
@@ -158,6 +159,38 @@ public abstract class TckExtension {
     }
 
     /**
+     * Returns the coordinate's real-use project, if it has one.
+     *
+     * A real-use project is named by the exact coordinate under `real-use-tests/src/`
+     * (§real-use-tests/FS-real-use-tests.1), so no index lookup applies.
+     */
+    public Optional<Path> getRealUseTestDir(String coordinates) {
+        List<String> parts = splitCoordinates(coordinates);
+        Path dir = repoRoot().resolve("real-use-tests").resolve("src")
+                .resolve(parts.get(0)).resolve(parts.get(1)).resolve(parts.get(2));
+        return Files.isDirectory(dir) ? Optional.of(dir) : Optional.empty();
+    }
+
+    /**
+     * Returns the coordinates the filter selects that have a real-use project, sorted.
+     *
+     * The filter is the standard `-Pcoordinates=` one, a `k/n` shard splitting the real-use set;
+     * a selected coordinate without a project is skipped (§real-use-tests/AR-real-use-test-harness.2).
+     */
+    public List<String> getMatchingRealUseCoordinates(String coordinateFilter) {
+        boolean shard = CoordinateUtils.isFractionalBatch(coordinateFilter);
+        List<String> withProject = getMatchingCoordinates(shard ? "all" : coordinateFilter).stream()
+                .filter(coordinates -> getRealUseTestDir(coordinates).isPresent())
+                .sorted()
+                .toList();
+        if (!shard) {
+            return withProject;
+        }
+        int[] fraction = CoordinateUtils.parseFraction(coordinateFilter);
+        return CoordinateUtils.computeBatchedCoordinates(withProject, fraction[0], fraction[1]);
+    }
+
+    /**
      * Returns a list of coordinates that match changed files between baseCommit and newCommit.
      *
      * @return List of coordinates
@@ -222,6 +255,22 @@ public abstract class TckExtension {
                 .map(path -> repoRoot().relativize(path).toString().replace('\\', '/'))
                 .map(relativePath -> diffIndexTestedVersionsEntry(baseCommit, newCommit, relativePath))
                 .filter(Objects::nonNull)
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * Returns the sorted coordinates of the real-use projects changed between baseCommit and newCommit
+     * that still exist at newCommit's checkout (§real-use-tests/AR-real-use-test-harness.4).
+     */
+    public List<String> diffRealUseCoordinates(String baseCommit, String newCommit) {
+        Path realUseRoot = repoRoot().resolve("real-use-tests").resolve("src");
+        return diffFiles(baseCommit, newCommit, "ACMRTD").stream()
+                .filter(path -> path.startsWith(realUseRoot) && realUseRoot.relativize(path).getNameCount() > 3)
+                .map(path -> realUseRoot.relativize(path))
+                .map(relative -> relative.getName(0) + ":" + relative.getName(1) + ":" + relative.getName(2))
+                .distinct()
+                .filter(coordinates -> getRealUseTestDir(coordinates).isPresent())
+                .sorted()
                 .collect(Collectors.toList());
     }
 
