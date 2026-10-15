@@ -59,7 +59,8 @@ code-coverage route stages the dedicated coverage suite, the coordinate's test
 directory, and the metadata that suite justified; the not-for-native-image route
 (§AR-not-for-native-image-publication) stages the marker
 `metadata/<group>/<artifact>/index.json`, its stats publication path, and the
-descriptor. Shared repository edits are allowed only when local verification
+descriptor; the real-use route (§AR-real-use-tests-publication) stages the
+coordinate's real-use project and the descriptor. Shared repository edits are allowed only when local verification
 (§FS-local-ci-equivalent-verification) proved them necessary, and those paths
 must be listed in descriptor verification evidence for maintainer review.
 
@@ -83,7 +84,8 @@ The descriptor contains data, never GitHub instructions:
 
 - `schema_version`, the stable `publication_id`, UTC `timestamp`, unique
   `branch`, producer login, upstream base commit, issue number, target library,
-  and optional previous library;
+  and optional previous library; only the issue-less real-use route
+  (§AR-real-use-tests-publication) omits the issue number;
 - `task_type`, which selects the trusted primary label, and `template_type`,
   which selects a compatible trusted renderer when a library-update request was
   repaired through a Java or Native Image route;
@@ -109,7 +111,9 @@ commit.
 
 Publication identity is derived from durable run inputs so a resumed
 publication recreates the same ID, descriptor, and branch. A fresh run for the
-same issue gets a distinct identity. The producer must equal the authenticated
+same issue gets a distinct identity. An issue-less real-use publication keys
+its identity on the run's start time, coordinate, and task type under the
+`real-use` prefix instead of an issue number. The producer must equal the authenticated
 login that owns the `ai/<producer>/...` branch.
 
 ## AR-actions-publication: Trusted GitHub Actions publisher
@@ -313,6 +317,16 @@ that block names nothing that produced the run. The publication ID trailer and
 the model in the head branch identify it instead. The descriptor still records
 the Forge revision, so the evidence survives even though the body drops it.
 
+### Real-use tests
+
+The trusted `real-use-tests` template follows §AR-real-use-tests-publication.
+Its title names the coordinate. Its body lists the scenarios with the subsystem
+each covers, the scenarios the native fix removed with the reason, and every
+test-local metadata entry grouped by library, the target library's first, as
+promotion candidates for `metadata/`. It has no `Fixes:` line, because no issue
+backs the run, and it omits the Forge revision block for the same reason as the
+coverage template; it ends with the local CI-equivalent verification section.
+
 Per-target rosters, sampled PGO evidence, and the validation command list are
 deliberately absent. The counts restate what the coverage figures already say,
 and the commands embed the run's own absolute worktree paths, which no reader of
@@ -380,3 +394,25 @@ with `Fixes: #<issue>`, and applies the fixed `GenAI`,
 verification evidence lists shared repository changes, it also applies
 `human-intervention` and includes those paths for maintainer review
 (§FS-human-intervention-policy).
+
+## AR-real-use-tests-publication: Real-use tests publication
+
+The `real-use-tests` route publishes the real-use project a real-use generation
+run produced (§real-use-tests/FS-real-use-test-generation.2.7). That workflow is
+started for a coordinate, not claimed from an issue, so the route is the one
+issue-less descriptor route: its descriptor carries no issue number, its
+publication ID uses the `real-use` prefix (§AR-publication-descriptor), and its
+body has no `Fixes:` line. Local finalization stages
+`real-use-tests/src/<group>/<artifact>/<version>/` and the descriptor, then runs
+the same verification and push boundary as every route; the real-use project is
+the route's expected output, so it is not a shared repository edit.
+
+Like coverage publication, the route skips the pre-push review
+(§FS-local-branch-review): the generation workflow's own programs already ran
+every scenario on the JVM and on Native Image and the repository's style checks
+before publication. The descriptor's `render.real_use` object carries the facts
+the trusted `real-use-tests` template reports: each scenario with its subsystem,
+each scenario the native fix removed with the reason, and every test-local
+metadata entry grouped by library. The publisher applies the fixed `GenAI`,
+`real-use-tests`, and `rhei` labels.
+

@@ -106,6 +106,7 @@ Do not create a namespace for a regular module or component that still belongs t
 Cross-project citations use §alias/<ID>.
 
 - [`forge`](AGENTS.md): Automation subproject that turns labeled issues into reviewed metadata pull requests
+- [`real-use-tests`](../real-use-tests/AGENTS.md): Realistic library scenarios run on the JVM and Native Image against the shipped metadata
 - [`root`](../AGENTS.md): Repository for shared GraalVM reachability metadata, tests, and release infrastructure
 
 ### Declarations and citations

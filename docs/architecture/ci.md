@@ -65,6 +65,16 @@ artifact-level index diffs, pulls allowed Docker images, disables Docker
 networking, validates config, and runs only that batch (§FS-metadata,
 §FS-tests).
 
+### AR-test-changed-real-use: Test changed real-use projects
+
+Triggers on PRs touching `real-use-tests/`. Runs `generateChangedRealUseMatrix`
+with the PR base/head SHAs, then `realUseJavaTest` and `realUseNativeTest` for
+each changed real-use project on the `generateChangedMetadataTestMatrix` JDK and
+OS matrix, after pulling allowed Docker images and disabling Docker networking.
+It is one of the gates of §FS-repository-functional-spec.5.3, for the suite of
+§real-use-tests/FS-real-use-tests.3; the job itself is specified in
+§real-use-tests/AR-real-use-test-harness.4.
+
 ### AR-test-changed-infrastructure: Test changed infrastructure
 
 Triggers on PRs touching `tests/tck-build-logic/`, `gradle/`, `build.gradle`,
@@ -104,11 +114,12 @@ schema. Validates and sorts the master supported-library list against its schema
 
 ### AR-grund-check: Validate grund citations
 
-Triggers on PRs touching either project's scanned roots — `docs/`, `skills/`,
-the workflows and composite actions, the top-level Markdown, or a `grund.toml`.
-Installs a pinned `grund` release and runs `grund check` once from the
-repository root, which is the only scope where the workspace alias table
-resolves `§forge/<ID>`, so the run covers both namespaces. It fails on a
+Triggers on PRs touching any project's scanned roots — `docs/`, `skills/`,
+the workflows and composite actions, the top-level Markdown, a member's docs
+and agent instructions, or a `grund.toml`. Installs a pinned `grund` release
+and runs `grund check` once from the repository root, which is the only scope
+where the workspace alias table resolves `§forge/<ID>` and
+`§real-use-tests/<ID>`, so the run covers every namespace. It fails on a
 citation that no longer resolves, on an `AGENTS.md` managed block that has
 drifted from its `grund.toml`, and on a `must`-level citation direction that is
 not met (§FS-repository-functional-spec.5.6).
