@@ -313,24 +313,31 @@ class WorkflowTest(unittest.TestCase):
                       "nativeUnfixable": ["com.example.realuse.BytecodeTest"]})
         self.assertEqual(NATIVE_FAILED, self.step("native"))
         self.assertEqual(NATIVE_FAILED, self.step("collect-metadata"))
-        self.assertIn("Last lines of the failing native run", self.read(self.runtime("prompts", "native-fix.md")))
+        prompt: str = self.read(self.runtime("prompts", "native-fix.md"))
+        self.assertIn("Last lines of the failing native run", prompt)
+        self.assertIn(f"`{os.path.join(load(self.workspace).project_path, 'build.gradle')}`", prompt)
 
     def test_native_agent_fix_keeps_test_local_metadata_and_records_deletions(self) -> None:
         self.native_agent_fix_turn()
-        # The agent: a test-local entry, the bytecode scenario deleted, and a stray metadata/ edit.
+        # The agent: a test-local entry, an option, the bytecode scenario deleted, and a stray metadata/ edit.
         self.write(self.project(METADATA), json.dumps({"reflection": [
             {"type": "java.util.ArrayList", "condition": {"typeReached": "org.example.lib.Client"}}]}))
+        self.write(self.project("build.gradle"), self.read(self.project("build.gradle"))
+                   + "graalvmNative { binaries { test { buildArgs.add('--enable-url-protocols=http') } } }\n")
         os.remove(self.scenario_path("BytecodeTest"))
         stray: str = os.path.join("metadata", "org.example", "lib", "1.0.0", "x.json")
         self.write(os.path.join(load(self.workspace).worktree, stray), "{}")
-        self.write(self.runtime("reports", "native-agent-fix.json"), json.dumps({"entriesAdded": 1, "deleted": [
-            {"class": "com.example.realuse.BytecodeTest", "reason": "generates bytecode at run time"}]}))
+        self.write(self.runtime("reports", "native-agent-fix.json"), json.dumps({
+            "entriesAdded": 1,
+            "options": [{"option": "--enable-url-protocols=http", "phase": "build", "fixes": "MalformedURLException"}],
+            "deleted": [{"class": "com.example.realuse.BytecodeTest", "reason": "generates bytecode at run time"}]}))
         self.assertEqual(OK, self.step("style-check"))
         self.assertIn("no publication fix runs", self.read(self.runtime("prompts", "publication-fix.md")))
         self.assertEqual(OK, self.step("publish"))
         committed: list[str] = build_tools.git(load(self.workspace).worktree, "show", "--name-only", "--format=", "HEAD").splitlines()
         self.assertNotIn(stray, committed)
         self.assertIn(os.path.join(PROJECT, METADATA), committed)
+        self.assertIn(os.path.join(PROJECT, "build.gradle"), committed)
         facts: dict = json.loads(self.read(self.runtime("publication", "render.json")))
         self.assertEqual([{"scenario": os.path.join(PROJECT, "src", "test", "java", "com", "example", "realuse",
                                                     "BytecodeTest.java"),

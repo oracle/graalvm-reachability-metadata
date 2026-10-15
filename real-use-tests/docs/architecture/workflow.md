@@ -224,9 +224,10 @@ edit elsewhere is published (§FS-real-use-test-contract.2.2).
   (§FS-real-use-test-generation.2.3).
 - `native-agent-fix` receives the failure after the collected entries as a required
   handoff and has two hours: it runs the native task until it passes, edits
-  only the test-local metadata file, and deletes whole the scenarios metadata
-  cannot save; its report lists the entries added and each deleted scenario
-  with the reason (§FS-real-use-test-generation.2.5).
+  only the test-local metadata file and the build file's native-image
+  options, and deletes whole the scenarios neither saves; its report lists
+  the entries and options added and each deleted scenario with the reason
+  (§FS-real-use-test-generation.2.5).
 - `agent-publication-fix` receives the style findings as a required handoff:
   it runs `spotlessApply`, then fixes what `spotlessCheck` and
   `checkstyle -Pcoordinates=` still report until both pass, editing only the
