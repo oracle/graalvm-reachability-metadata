@@ -37,9 +37,9 @@ issue after claiming it.
 
 The coordinate is not a template input, because the template renders before
 the issue is read: `prepare` reads it from the issue and writes
-`runtime/real-use/run.md`, naming the coordinate, the issue, and the project
-directory, and every agent state declares that file as an input and reads it
-first.
+`runtime/real-use/run.md`, naming the coordinate, the issue, the project
+directory, and the absolute path of each file an agent state edits, and every
+agent state declares that file as an input and reads it first.
 
 ## 2. State machine
 
