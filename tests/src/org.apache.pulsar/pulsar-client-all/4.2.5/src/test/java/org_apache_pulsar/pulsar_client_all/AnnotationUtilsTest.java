@@ -17,9 +17,12 @@ import org.junit.jupiter.api.Timeout;
 @Timeout(55)
 public class AnnotationUtilsTest {
     @Test
+    @SuppressWarnings("checkstyle:annotationAccess")
     void comparesHashesAndFormatsAnnotationMembers() {
+        // Checkstyle: allow direct annotation access
         Service first = FirstService.class.getAnnotation(Service.class);
         Service second = SecondService.class.getAnnotation(Service.class);
+        // Checkstyle: disallow direct annotation access
 
         assertThat(AnnotationUtils.equals(first, second)).isTrue();
         assertThat(AnnotationUtils.hashCode(first)).isEqualTo(AnnotationUtils.hashCode(second));
