@@ -120,12 +120,23 @@ coordinate project's changes as they stand, on top of the run's earlier
 commits, and publishes that project through the repository's shared
 publication pipeline, which opens the pull request
 (§forge/AR-real-use-tests-publication). The pull request resolves the run's
-issue, and its description lists:
+issue. Its description opens with what the run achieved and what it cost,
+so a reviewer sees the numbers before the diff:
 
-- each scenario with the subsystem it covers;
-- each scenario the native fix removed, with the reason;
-- every test-local metadata entry, grouped by library, the target library's
-  apart from the supporting libraries' (§FS-real-use-tests.2.3).
+- the target library's coverage on the JVM as JaCoCo measures it over the
+  published scenarios: the total, then lines, instructions, and methods,
+  each as covered of total;
+- the tokens the run's agent invocations spent, split as the other
+  generation workflows report them: input, cached input, cache-write input,
+  and output;
+- the number of iterations, each one agent invocation of the run.
+
+Measuring the coverage is one more JVM run over the published scenarios, not a
+check: it gates nothing.
+
+It then lists each scenario the native fix removed, with the reason. The
+scenarios themselves and the test-local metadata entries are read in the
+diff (§FS-real-use-tests.2.3).
 
 ## 3. Outcomes
 
