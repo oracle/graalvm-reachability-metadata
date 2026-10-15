@@ -67,6 +67,8 @@ MAX_INLINE_TEST_DIFF_CHARS: int = 12_000
 PR_BODY_REQUIRED_TAIL_CHARS: int = 12_000
 LOCAL_REVIEW_EXCLUDED_TASK_TYPES: frozenset[str] = frozenset({
     "code-coverage-improvement",
+    # §AR-real-use-tests-publication
+    "real-use-tests",
 })
 
 

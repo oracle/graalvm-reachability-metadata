@@ -37,7 +37,7 @@ SEVERE_METADATA_DROP_RATIO = 0.25
 DYNAMIC_ACCESS_METADATA_ENTRY_NOTE_RATIO = 1.75
 PUBLISHER_LOGIN = "graalvmbot"
 PUBLICATION_ID_SUFFIX = re.compile(
-    r"(forge-(?:\d+|benchmark)-\d{14,20}-[0-9a-f]{12})$"
+    r"(forge-(?:\d+|benchmark|real-use)-\d{14,20}-[0-9a-f]{12})$"
 )
 BENCHMARK_RESULT_SCHEMA_PATH = (
     Path(__file__).resolve().parents[3] / "forge/schemas/code_coverage_benchmark_result_schema.json"
@@ -51,7 +51,11 @@ ROUTE_LABELS = {
     "not-for-native-image": ["GenAI", "library-new-request", "not-for-native-image"],
     "code-coverage-benchmark-result": ["GenAI", "code-coverage-improvement", "rhei"],
     "code-coverage-improvement": ["GenAI", "code-coverage-improvement", "rhei"],
+    "real-use-tests": ["GenAI", "real-use-tests", "rhei"],
 }
+# Routes no issue backs, each with the ID prefix that replaces the issue number
+# (§forge/AR-real-use-tests-publication); mirrors the local descriptor writer.
+ISSUE_LESS_PREFIXES = {"real-use-tests": "real-use"}
 
 
 @dataclass(frozen=True)
@@ -301,6 +305,13 @@ def _build_publication_id(descriptor: dict[str, Any]) -> str:
             "task_type": descriptor["task_type"],
         }
         prefix = "benchmark"
+    elif descriptor["task_type"] in ISSUE_LESS_PREFIXES:
+        identity_fields = {
+            "timestamp": descriptor["timestamp"],
+            "coordinates": descriptor["library"]["coordinates"],
+            "task_type": descriptor["task_type"],
+        }
+        prefix = ISSUE_LESS_PREFIXES[descriptor["task_type"]]
     else:
         identity_fields = {
             "issue_number": descriptor["issue_number"],
@@ -893,6 +904,52 @@ Reason:
     return title, body
 
 
+def _render_real_use_tests(
+        descriptor: dict[str, Any],
+        validated: ValidatedPublication | None,
+) -> tuple[str, str]:
+    """Report the real-use run's scenarios, removals, and test-local entries.
+
+    No issue backs the run, so the body carries no `Fixes:` line, and no Forge
+    strategy produced it, so it omits the revision block (§forge/AR-real-use-tests-publication).
+    """
+    coordinates = descriptor["library"]["coordinates"]
+    real_use = descriptor["render"]["real_use"]
+    title = f"[GenAI] Add real-use tests for {coordinates}"
+    lines = [
+        "## Real-use tests",
+        "",
+        f"Real-use tests for `{coordinates}`: each scenario uses one subsystem of the library "
+        "the way an application does and passes on the JVM and on Native Image against the "
+        "shipped metadata.",
+        "",
+        "### Scenarios",
+        "",
+        "| Scenario | Subsystem |",
+        "| --- | --- |",
+    ]
+    lines += [
+        f"| `{scenario['class']}` | {scenario['subsystem'] or 'not named'} |"
+        for scenario in real_use["scenarios"]
+    ]
+    if real_use["removed"]:
+        lines += ["", "### Removed by the native fix", "", "| Scenario | Why |", "| --- | --- |"]
+        lines += [f"| `{removal['scenario']}` | {removal['reason']} |" for removal in real_use["removed"]]
+    lines += ["", "### Test-local metadata", ""]
+    if not real_use["test_local_metadata"]:
+        lines.append("None: the shipped metadata was enough for every scenario.")
+    else:
+        lines.append(
+            "Entries the scenarios needed beyond the shipped metadata. They stay test-local; each is "
+            "a candidate for `metadata/` only through a separate change backed by a test in `tests/`."
+        )
+        for group in real_use["test_local_metadata"]:
+            lines += ["", f"#### {group['library']}", ""] + [f"- {entry}" for entry in group["entries"]]
+    body = "\n".join(lines) + "\n"
+    body += _format_local_ci_verification_section(descriptor["local_ci_verification"])
+    return title, body
+
+
 def _signed(value: int | float) -> str:
     return f"{'+' if value > 0 else ''}{value}"
 
@@ -1242,6 +1299,7 @@ _TEMPLATE_BUILDERS = {
     "not-for-native-image": _render_not_for_native_image,
     "code-coverage-improvement": _render_code_coverage_improvement,
     "code-coverage-benchmark-result": _render_code_coverage_benchmark_result,
+    "real-use-tests": _render_real_use_tests,
 }
 
 

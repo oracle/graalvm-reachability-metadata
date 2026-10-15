@@ -11,7 +11,6 @@
     "branch",
     "producer",
     "base_commit",
-    "issue_number",
     "library",
     "task_type",
     "template_type",
@@ -63,7 +62,8 @@
         "fixes-java-run-fail",
         "fixes-native-image-run-fail",
         "not-for-native-image",
-        "code-coverage-improvement"
+        "code-coverage-improvement",
+        "real-use-tests"
       ]
     },
     "template_type": {
@@ -74,7 +74,8 @@
         "fixes-java-run-fail",
         "fixes-native-image-run-fail",
         "not-for-native-image",
-        "code-coverage-improvement"
+        "code-coverage-improvement",
+        "real-use-tests"
       ]
     },
     "strategy_name": {
@@ -303,7 +304,26 @@
     {
       "if": {
         "properties": {
-          "task_type": {"const": "code-coverage-improvement"}
+          "task_type": {"const": "real-use-tests"}
+        },
+        "required": ["task_type"]
+      },
+      "then": {
+        "not": {"required": ["issue_number"]},
+        "required": ["render"],
+        "properties": {
+          "template_type": {"const": "real-use-tests"},
+          "render": {"required": ["real_use"]}
+        }
+      },
+      "else": {
+        "required": ["issue_number"]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "task_type": {"enum": ["code-coverage-improvement", "real-use-tests"]}
         },
         "required": ["task_type"]
       },
@@ -463,6 +483,56 @@
     }
   ],
   "$defs": {
+    "real_use": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["scenarios", "removed", "test_local_metadata"],
+      "properties": {
+        "scenarios": {
+          "type": "array",
+          "maxItems": 500,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["class", "subsystem"],
+            "properties": {
+              "class": {"type": "string", "minLength": 1, "maxLength": 300},
+              "subsystem": {"type": ["string", "null"], "maxLength": 500}
+            }
+          }
+        },
+        "removed": {
+          "type": "array",
+          "maxItems": 500,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["scenario", "reason"],
+            "properties": {
+              "scenario": {"type": "string", "minLength": 1, "maxLength": 400},
+              "reason": {"type": "string", "maxLength": 2000}
+            }
+          }
+        },
+        "test_local_metadata": {
+          "type": "array",
+          "maxItems": 100,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["library", "entries"],
+            "properties": {
+              "library": {"type": "string", "minLength": 1, "maxLength": 300},
+              "entries": {
+                "type": "array",
+                "maxItems": 2000,
+                "items": {"type": "string", "maxLength": 1000}
+              }
+            }
+          }
+        }
+      }
+    },
     "commit": {
       "type": "string",
       "pattern": "^[0-9a-f]{40}$"
@@ -740,6 +810,9 @@
             "object",
             "null"
           ]
+        },
+        "real_use": {
+          "$ref": "#/$defs/real_use"
         },
         "token_usage": {
           "type": [
