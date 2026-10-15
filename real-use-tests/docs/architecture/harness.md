@@ -62,10 +62,14 @@ real-use project a pull request changes (§root/AR-checkstyle).
 ## 3. Separation from the `tests/` lanes
 
 The `tests/` resolver is rooted at `tests/src/` and the real-use resolver at
-`real-use-tests/src/`, so `test`, `javaTest`, `nativeTest`, `testAllInfra`,
-`diff`, and the `tests/` CI matrices never select a real-use project, and the
-`realUse*` tasks never select a `tests/` project (§FS-real-use-tests.3). Stats,
-coverage, and dynamic-access reports read only `tests/`.
+`real-use-tests/src/`, so each suite's test tasks run only its own projects:
+`test`, `javaTest`, and `nativeTest` never run a real-use test, and the
+`realUse*` tasks never run a `tests/` test. CI keeps the same split: the
+`tests/` test jobs never run a real-use test, and the real-use job of §4 never
+runs a `tests/` test (§FS-real-use-tests.3). The style checks run no tests and
+cover both suites, so `checkstyle`, `testAllInfra`, and the checkstyle CI
+matrix also check changed real-use projects. Stats, coverage, and
+dynamic-access reports read only `tests/`.
 
 ## 4. CI job
 

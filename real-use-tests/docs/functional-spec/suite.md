@@ -71,8 +71,9 @@ not metadata: moving one into `metadata/` is a separate change held to
 
 - The suite runs only through its own tasks, one for the JVM and one for
   Native Image, with the standard `-Pcoordinates=` filter
-  (§AR-real-use-test-harness.2). The `tests/` lanes and bundles never run a
-  real-use project, and the real-use tasks never run a `tests/` project.
+  (§AR-real-use-test-harness.2). In CI, the `tests/` jobs never run a
+  real-use test, and the real-use job never runs a `tests/` test. Style
+  checks run no tests, so they cover both suites.
 - Locally, real-use tests are run to verify the suite: by a contributor before
   opening a pull request, and by the generation workflow before it publishes,
   each scenario on the JVM as it is written and the whole project on Native
