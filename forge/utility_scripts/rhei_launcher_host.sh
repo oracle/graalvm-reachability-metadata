@@ -20,16 +20,19 @@ version_at_least() {
             && 10#$current_patch >= 10#$required_patch) ))
 }
 
-# Usage: require_rhei_launcher_host WORKFLOW FORGE_DIR REPO_ROOT AGENT MODEL PROVIDER
+# Usage: require_rhei_launcher_host WORKFLOW FORGE_DIR REPO_ROOT FAMILY EXECUTABLE MODEL [PROVIDER]
+# FAMILY is a Forge agent backend (pi, claude-code, ...); PROVIDER only applies to pi and opencode.
 # Exits the caller when gh, python3, or rhei is missing, gh is too old to read
 # --json projectItems, or the coverage-mode host gate fails.
 require_rhei_launcher_host() {
     local workflow="$1"
     local forge_dir="$2"
     local repo_root="$3"
-    local agent="$4"
-    local model="$5"
-    local provider="$6"
+    local family="$4"
+    local executable="$5"
+    local model="$6"
+    local provider="${7:-}"
+    local provider_arguments=()
     local min_gh_version="2.39.0"
     local gh_version_output gh_version
 
@@ -60,13 +63,14 @@ require_rhei_launcher_host() {
         exit 1
     fi
 
+    [[ -z "$provider" ]] || provider_arguments=(--analysis-provider "$provider")
     printf 'Validating %s host requirements.\n' "$workflow"
     python3 "$forge_dir/utility_scripts/host_requirements.py" \
         --forge-dir "$forge_dir" \
         --reachability-metadata-path "$repo_root" \
         --mode coverage \
-        --analysis-agent "$agent" \
-        --analysis-family "$agent" \
+        --analysis-agent "$executable" \
+        --analysis-family "$family" \
         --analysis-model "$model" \
-        --analysis-provider "$provider"
+        "${provider_arguments[@]}"
 }

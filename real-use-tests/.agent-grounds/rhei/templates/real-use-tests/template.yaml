@@ -28,8 +28,10 @@ inputs:
   - name: worker_agent
     description: >-
       Rhei target for the preflight, generate, native-agent-fix, and
-      agent-publication-fix states, as <agent>[<mode>]:<model>; the mode
-      selects the reasoning level from the agent profiles in this template's
-      settings.json.
+      agent-publication-fix states, as <agent>[<mode>]:<model>, where the
+      agent is pi or claude-code (for example claude-code[high]:opus); the
+      mode selects the reasoning level from the agent profiles in this
+      template's settings.json.
     type: string
     default: pi[high]:openai-codex/gpt-5.6-luna
+    validate: "(pi|claude-code)(\\[[A-Za-z0-9_-]+\\])?:.+"

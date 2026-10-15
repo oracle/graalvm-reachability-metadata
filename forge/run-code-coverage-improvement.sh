@@ -57,7 +57,7 @@ esac
 # shellcheck source=utility_scripts/rhei_launcher_host.sh
 source "$SCRIPT_DIR/utility_scripts/rhei_launcher_host.sh"
 require_rhei_launcher_host code-coverage "$SCRIPT_DIR" "$REPO_ROOT" \
-    "$COVERAGE_AGENT" "$COVERAGE_AGENT_MODEL" "$COVERAGE_AGENT_PROVIDER"
+    "$COVERAGE_AGENT" "$COVERAGE_AGENT" "$COVERAGE_AGENT_MODEL" "$COVERAGE_AGENT_PROVIDER"
 
 issue_number="$(
     gh issue list \
