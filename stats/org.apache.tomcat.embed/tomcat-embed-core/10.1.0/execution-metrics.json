@@ -1,0 +1,96 @@
+{
+  "improve_library_coverage:2026-10-15": {
+    "timestamp": "2026-10-15T09:22:48.345063Z",
+    "library": "org.apache.tomcat.embed:tomcat-embed-core:10.1.0",
+    "starting_commit": "979a09b1712075c1b250ee37c596abc20f106815",
+    "ending_commit": "91dd5fafd0ce4e33c1629b32ff1de61aacc904f7",
+    "strategy_name": "library_update_optimistic_pi_gpt-5.6-sol",
+    "agent": "pi",
+    "model": "gpt-5.6-sol",
+    "status": "chunk_ready",
+    "stats": {
+      "version": "10.1.0",
+      "dynamicAccess": {
+        "breakdown": {
+          "reflection": {
+            "coverageRatio": 0.703625,
+            "coveredCalls": 330,
+            "totalCalls": 469
+          },
+          "resources": {
+            "coverageRatio": 1.0,
+            "coveredCalls": 40,
+            "totalCalls": 40
+          }
+        },
+        "coverageRatio": 0.726916,
+        "coveredCalls": 370,
+        "totalCalls": 509
+      },
+      "libraryCoverage": {
+        "instruction": {
+          "covered": 85657,
+          "missed": 252792,
+          "ratio": 0.253087,
+          "total": 338449
+        },
+        "line": {
+          "covered": 19753,
+          "missed": 61505,
+          "ratio": 0.24309,
+          "total": 81258
+        },
+        "method": {
+          "covered": 3526,
+          "missed": 8713,
+          "ratio": 0.288095,
+          "total": 12239
+        }
+      }
+    },
+    "library_preparation_preflight": {
+      "status": "completed",
+      "action": "no_action",
+      "issue_number": 10788,
+      "issue_label": "library-update-request",
+      "library": "org.apache.tomcat.embed:tomcat-embed-core:10.1.0",
+      "summary": "The existing 10.0.20 scaffold already starts an embedded Tomcat on port 8080 and makes an HTTP request. Its build.gradle supplies servlet-api, assertj and jakartaee-migration. The 10.1.x and 11.0.x lines have sibling test projects (11.0.18, 11.0.22, 11.0.23) that use the same approach. I found no Docker image, environment variable or system property that needs setup. I did not run any Gradle or Native Image verification.",
+      "deterministic_setup": [],
+      "agent_guidance": "",
+      "risks": [
+        "The 10.0.20 test pins jakarta.servlet:jakarta.servlet-api:5.0.0, which is the Servlet 5.0 API. Tomcat 10.1 and 11 implement Servlet 6.0 and 6.1. If 10.1.0 fails on the pinned API, compare it with the build.gradle in the 11.0.x sibling projects before adding anything.",
+        "The test binds fixed port 8080. A busy port in CI could fail it.",
+        "The Http11Nio2Protocol parameter case may behave differently on 11.0.x. I did not check this."
+      ],
+      "applied_setup": [],
+      "input_evidence": [
+        {
+          "name": "issue",
+          "summary": "#10788 Update existing library: org.apache.tomcat.embed:tomcat-embed-core:10.1.0; label=library-update-request; body_chars=1174"
+        },
+        {
+          "name": "existing_tests",
+          "summary": "6 existing test file path(s) included"
+        }
+      ],
+      "model": "sonnet",
+      "input_tokens_used": 4,
+      "output_tokens_used": 803
+    },
+    "metrics": {
+      "input_tokens_used": 1262404,
+      "cached_input_tokens_used": 16627584,
+      "output_tokens_used": 85897,
+      "iterations": 33,
+      "cost_usd": 17.2027,
+      "generated_loc": 4823,
+      "tested_library_loc": 19753,
+      "metadata_entries": 401,
+      "test_only_metadata_entries": 64,
+      "code_coverage_percent": 24.31
+    },
+    "artifacts": {
+      "metadata_file": "metadata/org.apache.tomcat.embed/tomcat-embed-core/10.1.0/reachability-metadata.json"
+    }
+  }
+}
