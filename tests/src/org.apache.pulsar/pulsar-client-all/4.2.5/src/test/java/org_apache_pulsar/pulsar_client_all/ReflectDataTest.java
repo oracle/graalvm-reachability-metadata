@@ -16,6 +16,7 @@ import org.apache.pulsar.shade.org.apache.avro.io.Encoder;
 import org.apache.avro.reflect.AvroEncode;
 import org.apache.pulsar.shade.org.apache.avro.reflect.CustomEncoding;
 import org.apache.pulsar.shade.org.apache.avro.reflect.ReflectData;
+import org.apache.pulsar.shade.org.apache.avro.util.ClassSecurityValidator;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 
@@ -23,22 +24,31 @@ import org.junit.jupiter.api.Timeout;
 public class ReflectDataTest {
     @Test
     void derivesDefaultsArraysProtocolsAndCustomEncodings() {
-        ReflectData reflectData = new ReflectData().setDefaultsGenerated(true);
+        ClassSecurityValidator.ClassSecurityPredicate previousValidator =
+                ClassSecurityValidator.getGlobal();
+        ClassSecurityValidator.setGlobal(ClassSecurityValidator.composite(
+                previousValidator,
+                ClassSecurityValidator.builder().add(EncodedValue.class).build()));
+        try {
+            ReflectData reflectData = new ReflectData().setDefaultsGenerated(true);
 
-        Schema defaultsSchema = reflectData.getSchema(DefaultValues.class);
-        Schema arraySchema = reflectData.getSchema(String[].class);
-        Protocol protocol = reflectData.getProtocol(GreetingService.class);
-        Schema encodedSchema = reflectData.getSchema(EncodedValue.class);
-        Schema containerSchema = reflectData.getSchema(EncodedContainer.class);
+            Schema defaultsSchema = reflectData.getSchema(DefaultValues.class);
+            Schema arraySchema = reflectData.getSchema(String[].class);
+            Protocol protocol = reflectData.getProtocol(GreetingService.class);
+            Schema encodedSchema = reflectData.getSchema(EncodedValue.class);
+            Schema containerSchema = reflectData.getSchema(EncodedContainer.class);
 
-        assertThat(defaultsSchema.getField("state").defaultVal()).isEqualTo("ready");
-        assertThat(reflectData.getClass(arraySchema)).isEqualTo(String[].class);
-        assertThat(protocol.getMessages()).containsKey("greet");
-        assertThat(encodedSchema.getType()).isEqualTo(Schema.Type.STRING);
-        assertThat(reflectData.getCustomEncoding(encodedSchema))
-                .isInstanceOf(EncodedValueEncoding.class);
-        assertThat(containerSchema.getField("value").schema().getType())
-                .isEqualTo(Schema.Type.STRING);
+            assertThat(defaultsSchema.getField("state").defaultVal()).isEqualTo("ready");
+            assertThat(reflectData.getClass(arraySchema)).isEqualTo(String[].class);
+            assertThat(protocol.getMessages()).containsKey("greet");
+            assertThat(encodedSchema.getType()).isEqualTo(Schema.Type.STRING);
+            assertThat(reflectData.getCustomEncoding(encodedSchema))
+                    .isInstanceOf(EncodedValueEncoding.class);
+            assertThat(containerSchema.getField("value").schema().getType())
+                    .isEqualTo(Schema.Type.STRING);
+        } finally {
+            ClassSecurityValidator.setGlobal(previousValidator);
+        }
     }
 
     public interface GreetingService {

@@ -31,7 +31,7 @@ public class MethodUtilsTest {
                 .isEqualTo("number:4");
         assertThat(MethodUtils.invokeMethod(operations, true, "hidden", "metadata"))
                 .isEqualTo("hidden:metadata");
-        assertThat(MethodUtils.invokeMethod(new GreetingImpl(), "greet", "Pulsar"))
+        assertThat(MethodUtils.invokeExactMethod(new GreetingImpl(), "greet", "Pulsar"))
                 .isEqualTo("Hello Pulsar");
         assertThat(MethodUtils.invokeStaticMethod(Operations.class, "sum", 1, 2, 3))
                 .isEqualTo(6);
