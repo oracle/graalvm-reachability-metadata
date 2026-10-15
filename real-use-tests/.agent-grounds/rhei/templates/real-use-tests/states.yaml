@@ -49,7 +49,8 @@ states:
         path: runtime/real-use/run.md
     instructions: |
       Read `{input.run.path}` first: it names the issue this run resolves, the
-      coordinate (written `<coordinate>` below), and the coordinate project.
+      coordinate (written `<coordinate>` below), the coordinate project, and the
+      absolute path of each file you edit.
 
       You prepare the real-use project for `<coordinate>`
       (§FS-real-use-test-generation.2.2). {{scenario_passes}} scenario passes
@@ -63,16 +64,16 @@ states:
       - Inspect the target: `./gradlew -q listLibraryJars -Pcoordinates=<coordinate>`
         prints its JARs, and `metadata/<group>/<artifact>/index.json` lists its
         `allowed-packages`.
-      - Declare in the project's `build.gradle` each supporting library a
-        realistic application of the target's main subsystems uses with it,
-        pinned to a version compatible with the target
-        (§FS-real-use-test-contract.1.4). Declare only what the scenarios will
-        use: the target stays the subject (§FS-real-use-test-contract.1.2).
+      - Declare in the project's `build.gradle`, at the absolute path
+        `{input.run.path}` gives, each supporting library a realistic
+        application of the target's main subsystems uses with it, pinned to a
+        version compatible with the target (§FS-real-use-test-contract.1.4).
+        Declare only what the scenarios will use: the target stays the subject
+        (§FS-real-use-test-contract.1.2).
       - List every Docker image the scenarios will need in the project's
-        `required-docker-images.txt`, choosing only from
+        `required-docker-images.txt`, at the absolute path `{input.run.path}`
+        gives, choosing only from
         `tests/tck-build-logic/src/main/resources/allowed-docker-images/`.
-      - Change only those two files and write no scenario; a program reverts
-        every other edit.
       - Confirm the libraries resolve from the worktree root, in the foreground,
         with `./gradlew generateRealUseFilter -Pcoordinates=<coordinate>`.
 
@@ -97,46 +98,53 @@ states:
         path: runtime/real-use/run.md
     instructions: |
       Read `{input.run.path}` first: it names the issue this run resolves, the
-      coordinate (written `<coordinate>` below), and the coordinate project.
+      coordinate (written `<coordinate>` below), the coordinate project, and the
+      absolute path of the scenario directory you write to.
 
       You write one real-use scenario for `<coordinate>`: a test that uses the
       library the way an application does (§FS-real-use-test-generation.2.3).
-      This is pass {visit_count} of {visits}.
+      Your working directory is the run worktree. Work in this order, and do
+      not start a step before the one before it is done.
 
-      Your working directory is the run worktree. Read the coordinate project's
-      existing scenarios under `src/test/java/`: the first sentence of each
-      class doc comment names the subsystem it covers. Pick a subsystem of the
-      target that none of them covers; you may inspect the library JARs
-      (`./gradlew -q listLibraryJars -Pcoordinates=<coordinate>`).
+      1. Pick the subsystem. Read the coordinate project's existing scenarios
+         in the scenario directory: the first sentence of each class doc
+         comment names the subsystem it covers. Pick a subsystem of the target
+         that none of them covers; you may inspect the library JARs
+         (`./gradlew -q listLibraryJars -Pcoordinates=<coordinate>`).
 
-      Rules (§FS-real-use-test-contract):
-      - One scenario per test class and one class per file. Nest every helper
-        type the scenario needs inside that class; never add a shared helper
-        file. Start the class doc comment with one sentence naming the
-        subsystem the scenario exercises.
-      - The target library is the subject: the class uses types from the
-        target's allowed packages and asserts on what an application would
-        observe. Use only the libraries and Docker images the project already
-        declares, and supporting libraries only as far as the scenario needs.
-      - Write application code against the documented public API: no
-        reflection shortcuts, no stubs or fakes of real packages, no code in
-        the library's packages, no mocking or other runtime class definition.
-      - Never skip or tolerate Native Image: no `@DisabledInNativeImage`, no
-        `assumeFalse`, no native-runtime checks, no catch of unsupported-feature
-        errors.
-      - Every test finishes in under 60 seconds with bounded waits and closes
-        what it opens.
-      - Open every file with the CC0 header the scaffolded files carry and keep
-        it ASCII.
-      - Write only under the project's `src/test/`, never the test-local
-        metadata under `src/test/resources/META-INF/native-image/`.
-      - From the worktree root, in the foreground, run
-        `./gradlew realUseJavaTest -Pcoordinates=<coordinate>` and fix the
-        scenario until it passes. Run no native task; style is checked before
-        publication.
+      2. Write the scenario, following the contract
+         (§FS-real-use-test-contract):
+         - One scenario per test class and one class per file. Nest every
+           helper type the scenario needs inside that class; never add a
+           shared helper file. Start the class doc comment with one sentence
+           naming the subsystem the scenario exercises.
+         - The target library is the subject: the class uses types from the
+           target's allowed packages and asserts on what an application would
+           observe. Use only the libraries and Docker images the project
+           already declares, and supporting libraries only as far as the
+           scenario needs.
+         - Write application code against the documented public API: no
+           reflection shortcuts, no stubs or fakes of real packages, no code
+           in the library's packages, no mocking or other runtime class
+           definition.
+         - Never skip or tolerate Native Image: no `@DisabledInNativeImage`,
+           no `assumeFalse`, no native-runtime checks, no catch of
+           unsupported-feature errors.
+         - Every test finishes in under 60 seconds with bounded waits and
+           closes what it opens.
+         - Open every file with the CC0 header the scaffolded files carry and
+           keep it ASCII.
+         - Write only under the project's `src/test/`, never the test-local
+           metadata under `src/test/resources/META-INF/native-image/`.
 
-      Before your final message, write `{output.report.path}` as JSON:
-      `{"subsystem": "<the subsystem>", "scenarioClass": "<fully qualified class>"}`.
+      3. Run the scenario on the JVM. Only once the scenario is written, run
+         `./gradlew realUseJavaTest -Pcoordinates=<coordinate>` from the
+         worktree root, in the foreground, and fix the scenario until it
+         passes. Run no native task; style is checked before publication.
+
+      4. Report. Only after `realUseJavaTest` has passed, write
+         `{output.report.path}` as JSON before your final message:
+         `{"subsystem": "<the subsystem>", "scenarioClass": "<fully qualified class>"}`.
     outputs:
       - name: report
         path: runtime/real-use/reports/generate-{visit_count}.json
@@ -172,8 +180,8 @@ states:
     instructions: |
       You make the native run of the real-use project for `<coordinate>` pass
       (§FS-real-use-test-generation.2.5). The handoff section below holds the
-      failing output, the test-local metadata file, and the packages a
-      condition may name.
+      failing output, the absolute path of the test-local metadata file you
+      edit, and the packages a condition may name.
       Read `{input.run.path}` first: it names the issue this run resolves, the
       coordinate (written `<coordinate>` below), and the coordinate project.
 

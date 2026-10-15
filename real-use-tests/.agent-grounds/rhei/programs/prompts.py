@@ -21,8 +21,8 @@ def native_fix(state: RunState, prefixes: list[str], tail: str) -> str:
         "",
         f"- Coordinate: `{state.coordinate}`",
         f"- Worktree: `{state.worktree}`",
-        f"- Coordinate project: `{state.project_dir}`",
-        f"- Test-local metadata file: `{state.metadata_repo_path}`",
+        f"- Coordinate project: `{state.project_path}`",
+        f"- Test-local metadata file: `{state.metadata_path}`",
         "",
         "Conditions may name types from these packages or the test's own packages: "
         + ", ".join(f"`{prefix.rstrip('.')}`" for prefix in prefixes),
@@ -47,7 +47,7 @@ def publication_fix(state: RunState, failures: dict[str, str]) -> str:
         "",
         f"- Coordinate: `{state.coordinate}`",
         f"- Worktree: `{state.worktree}`",
-        f"- Coordinate project: `{state.project_dir}`",
+        f"- Coordinate project: `{state.project_path}`",
         "",
     ]
     for task, tail in failures.items():

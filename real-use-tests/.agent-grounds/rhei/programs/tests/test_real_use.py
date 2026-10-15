@@ -384,6 +384,8 @@ class WorkflowTest(unittest.TestCase):
         self.assertIn("issue #10900", note)
         self.assertIn(f"`{COORDINATE}`", note)
         self.assertIn(f"`{PROJECT}/`", note)
+        self.assertIn(f"`{os.path.join(state.project_path, 'build.gradle')}`", note)
+        self.assertIn(f"`{state.metadata_path}`", note)
 
 
 class UnitTest(unittest.TestCase):

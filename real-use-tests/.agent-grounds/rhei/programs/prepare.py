@@ -81,7 +81,12 @@ def _write_run_note(workspace: str, state: RunState) -> None:
             f"# Real-use run for issue #{state.issue_number}\n\n"
             f"- Coordinate: `{state.coordinate}`\n"
             f"- Coordinate project, from the worktree root: `{state.project_dir}/`\n"
-            f"- Run worktree: `{state.worktree}`\n"
+            f"- Run worktree: `{state.worktree}`\n\n"
+            "Files an agent state edits, by absolute path:\n\n"
+            f"- Build file: `{os.path.join(state.project_path, 'build.gradle')}`\n"
+            f"- Docker image list: `{os.path.join(state.project_path, 'required-docker-images.txt')}`\n"
+            f"- Scenario directory: `{state.test_java_path}/`\n"
+            f"- Test-local metadata file: `{state.metadata_path}`\n"
         )
 
 
