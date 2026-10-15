@@ -1,9 +1,10 @@
 # fissile configuration.
 #
 # Scoped to the hand-written infrastructure only: forge/ (Python automation),
-# tests/tck-build-logic/ (Java/Groovy/Gradle harness build logic), and the
-# repository docs. Everything else — shipped metadata, per-library test
-# projects, generated stats — is deliberately outside the budget system.
+# tests/tck-build-logic/ (Java/Groovy/Gradle harness build logic), the
+# repository docs, and the real-use-tests docs and Rhei template. Everything
+# else — shipped metadata, per-library and real-use test projects, generated
+# stats — is deliberately outside the budget system.
 
 fissile_config_version = 1
 
@@ -12,7 +13,7 @@ fissile_config_version = 1
 # set from git. Both honor `exclude` and `.gitignore`. The default walks the
 # whole repository so adoption needs no layout guess; narrow it to specific
 # roots once you know which directories are worth auditing.
-include = ["forge", "tests/tck-build-logic", "docs"]
+include = ["forge", "tests/tck-build-logic", "docs", "real-use-tests/docs", "real-use-tests/.agent-grounds"]
 exclude = [
   # Transient agent-run workspaces and their generated reports live under
   # forge/ but are outputs, not hand-written infrastructure.
@@ -131,7 +132,7 @@ fissile exception add <path> --severity hard --rule {rule} --kind <kind>
 
 [[rules]]
 id = "large-file-default"
-include = ["forge/**/*", "tests/tck-build-logic/**/*", "docs/**/*"]
+include = ["forge/**/*", "tests/tck-build-logic/**/*", "docs/**/*", "real-use-tests/docs/**/*", "real-use-tests/.agent-grounds/**/*"]
 unit = "bytes"
 soft = 524288
 hard = 1048576
@@ -147,6 +148,7 @@ hard_message = "large-file-hard"
 id = "source"
 include = [
   "forge/**/*.py",
+  "real-use-tests/.agent-grounds/**/*.py",
   "tests/tck-build-logic/**/*.java",
   "tests/tck-build-logic/**/*.groovy",
   "tests/tck-build-logic/**/*.gradle",
@@ -161,7 +163,7 @@ hard_message = "split-source-hard"
 
 [[rules]]
 id = "markdown-docs"
-include = ["docs/**/*.md", "forge/**/*.md", "tests/tck-build-logic/**/*.md"]
+include = ["docs/**/*.md", "forge/**/*.md", "tests/tck-build-logic/**/*.md", "real-use-tests/docs/**/*.md", "real-use-tests/.agent-grounds/**/*.md"]
 unit = "lines"
 soft = 250
 hard = 500

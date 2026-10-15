@@ -1,0 +1,110 @@
+# Per-PR real-use gate: generateChangedRealUseMatrix, then realUseJavaTest and realUseNativeTest.
+# §AR-test-changed-real-use, §real-use-tests/AR-real-use-test-harness.4;
+# exercises §real-use-tests/FS-real-use-tests.3.
+name: "Test changed real-use projects"
+
+on:
+  pull_request:
+    branches:
+      - master
+
+permissions:
+  contents: read
+
+concurrency:
+  group: "workflow = ${{ github.workflow }}, ref = ${{ github.event.ref }}, pr = ${{ github.event.pull_request.id }}"
+  cancel-in-progress: true
+
+jobs:
+  get-changed-real-use:
+    name: "📋 Get a list of all changed real-use projects"
+    runs-on: "ubuntu-22.04"
+    timeout-minutes: 5
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+      none-found: ${{ steps.set-matrix.outputs.none-found }}
+      relevant-files-changed: ${{ steps.filter.outputs.changed }}
+    steps:
+      - name: "☁️ Checkout repository"
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+        with:
+          fetch-depth: 0
+
+      # A change under metadata/ alone does not start the suite
+      # (§real-use-tests/FS-real-use-tests.3).
+      - name: "🔎 Detect relevant file changes"
+        id: filter
+        uses: ./.github/actions/detect-file-changes
+        with:
+          file-patterns: |
+            - 'real-use-tests/**'
+
+      - name: "🔧 Setup Java"
+        if: steps.filter.outputs.changed == 'true'
+        uses: actions/setup-java@c1e323688fd81a25caa38c78aa6df2d33d3e20d9 # v4
+        with:
+          distribution: 'graalvm'
+          java-version: '25'
+
+      - name: "🕸️ Populate matrix"
+        id: set-matrix
+        if: steps.filter.outputs.changed == 'true'
+        run: |
+          ./gradlew generateChangedRealUseMatrix -PbaseCommit=${{ github.event.pull_request.base.sha }} -PnewCommit=${{ github.event.pull_request.head.sha }}
+
+  test-changed-real-use:
+    name: "🧪 ${{ matrix.coordinates }} [${{ matrix.nativeImageMode }}] (GraalVM for JDK ${{ matrix.version }} @ ${{ matrix.os }})"
+    if: needs.get-changed-real-use.outputs.relevant-files-changed == 'true' && needs.get-changed-real-use.result == 'success' && needs.get-changed-real-use.outputs.none-found != 'true' && github.repository == 'oracle/graalvm-reachability-metadata'
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 120
+    needs: get-changed-real-use
+    env:
+      GVM_TCK_NATIVE_IMAGE_MODE: ${{ matrix.nativeImageMode }}
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJson(needs.get-changed-real-use.outputs.matrix) }}
+    steps:
+      - name: "☁️ Checkout repository"
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+
+      - name: "🛠️ Setup latest native-build-tools snapshot"
+        uses: ./.github/actions/setup-native-build-tools
+
+      - name: "🔧 Download GraalVM for real-use testing"
+        uses: graalvm/setup-graalvm@60c26726de13f8b90771df4bc1641a52a3159994 # v1
+        with:
+          distribution: 'graalvm'
+          java-version: ${{ matrix.version }}
+          set-java-home: 'true'
+          native-image-job-reports: 'true'
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: "Pull allowed docker images"
+        run: |
+          ./gradlew pullAllowedDockerImages -Pcoordinates=${{ matrix.coordinates }}
+
+      - name: "Disable docker networking"
+        run: bash ./.github/workflows/scripts/disable-docker.sh
+
+      - name: "🧪 Run '${{ matrix.coordinates }}' real-use tests on the JVM"
+        run: |
+          ./gradlew realUseJavaTest -Pcoordinates=${{ matrix.coordinates }} --console=plain
+
+      - name: "🧪 Run '${{ matrix.coordinates }}' real-use tests on Native Image"
+        run: |
+          ./gradlew realUseNativeTest -Pcoordinates=${{ matrix.coordinates }} --console=plain
+
+  all-real-use-passed:
+    name: "🧪 All real-use tests have passed"
+    runs-on: "ubuntu-22.04"
+    timeout-minutes: 1
+    needs: [get-changed-real-use, test-changed-real-use]
+    if: always()
+    steps:
+      - name: "All tests passed"
+        if: needs.test-changed-real-use.result == 'success' || needs.get-changed-real-use.outputs.relevant-files-changed == 'false' || needs.get-changed-real-use.outputs.none-found == 'true'
+        run: exit 0
+
+      - name: "Some tests failed"
+        if: needs.test-changed-real-use.result != 'success' && needs.get-changed-real-use.outputs.relevant-files-changed != 'false' && needs.get-changed-real-use.outputs.none-found != 'true'
+        run: exit 1
