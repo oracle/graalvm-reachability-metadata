@@ -10,7 +10,9 @@ wiring.
 
 A real-use project applies the same per-coordinate convention plugin as a
 `tests/` project (§root/AR-build-infrastructure.2), so it compiles, runs JUnit, and
-builds its native test image the same way. That plugin enables the
+builds its native test image the same way. The plugin also puts AssertJ on a
+real-use project's test classpath, because a scenario declares libraries it
+uses, never test tooling. That plugin enables the
 native-build-tools metadata repository rooted at the repository's `metadata/`
 directory, which is what makes the native build consumer-like: every library on
 the classpath gets its shipped metadata (§FS-real-use-tests.2.1). The project's
@@ -36,7 +38,7 @@ project yet.
 | `realUseNativeTest` | Build the native test image and run it. |
 | `scaffoldRealUseTest` | Create a coordinate project from the real-use template. |
 | `generateChangedRealUseMatrix` | The CI matrix of the real-use projects changed between `-PbaseCommit` and `-PnewCommit` (§AR-real-use-test-harness.4). |
-| `generateRealUseFilter` | Write `user-code-filter.json` covering every package in the JARs of the target and of the libraries `build.gradle` declares, one `<package>.**` rule per package not nested in another; the harness's own JUnit and test-support libraries are not declarations. |
+| `generateRealUseFilter` | Write `user-code-filter.json` covering every package in the JARs of the target and of the libraries `build.gradle` declares, one `<package>.**` rule per package not nested in another; the harness's own JUnit, AssertJ, and test-support libraries are not declarations. |
 
 `realUseNativeTest` accepts `-Ptck.realUse.exactReachability=true`, which adds
 `--exact-reachability-metadata` to the native build as the trace image does
