@@ -73,8 +73,9 @@ subsystem and the scenario class.
 ### 2.4 Run on Native Image
 
 Once every pass is spent, a program runs the native real-use task on the whole
-project, built as a consumer builds it, with shipped metadata resolved the way a
-consumer resolves it (§FS-real-use-tests.2.1). Success leads to publication;
+project, built as a consumer builds it, with the native-image options the
+project's build file names and shipped metadata resolved the way a consumer
+resolves it (§FS-real-use-tests.2.1). Success leads to publication;
 failure leads to the fix of §FS-real-use-test-generation.2.5. Native tracing
 never runs, because its cost does not fit the workflow; the fix runs the JVM
 agent once.
@@ -91,12 +92,26 @@ each only when the one before did not make the native run pass.
    §FS-real-use-tests.2.2 and runs the native task again. An entry the shipped
    metadata already has is copied anyway; the duplicate changes nothing.
 2. One agent invocation, limited to two hours, runs the native task until it
-   passes. It adds the entries still missing to the project's test-local
-   metadata file (§FS-real-use-tests.2.2), whichever library they describe, and
-   edits nothing else, except that it deletes, whole, a scenario metadata
-   cannot save: one that generates bytecode or defines classes at run time
-   (§root/FS-test-contract.4.5), or relies on an unsupported feature. Its report
-   lists the entries it added and each scenario it deleted with the reason.
+   passes, fixing each failure the way a consumer would, in this order:
+   - A missing registration is an entry added to the project's test-local
+     metadata file (§FS-real-use-tests.2.2), whichever library it describes.
+   - A failure a consumer fixes with a native-image option rather than
+     metadata, such as a URL protocol or a feature that is off by default, is
+     an option added to the project's build file: a build-time argument of
+     the native test image, or a run-time argument of it. The agent tries at
+     most three options for one failure and keeps only the ones that make the
+     run pass. An option that silences a check or defers a failure to run
+     time is never added: nothing that reports unsupported elements at run
+     time, allows an incomplete classpath, or turns off missing-registration
+     errors. Metadata is never passed as an option, because the test-local
+     file holds it.
+   - A scenario neither saves is deleted, whole: one that generates bytecode
+     or defines classes at run time (§root/FS-test-contract.4.5) at once, and
+     one whose failure survives the option attempts then.
+
+   It edits nothing else. Its report lists the entries it added, each option
+   it added with the failure it fixes, and each scenario it deleted with the
+   reason.
 
 Publication follows either way (§FS-real-use-test-generation.2.7).
 
@@ -104,7 +119,8 @@ Publication follows either way (§FS-real-use-test-generation.2.7).
 
 The unit of removal is a whole scenario: its source file is deleted
 (§FS-real-use-test-contract.1.1). Only the native fix agent removes scenarios,
-the ones metadata cannot save (§FS-real-use-test-generation.2.5). Each removal
+the ones neither metadata nor a native-image option can save
+(§FS-real-use-test-generation.2.5). Each removal
 is recorded with its reason, and no failing scenario routes the run to a human.
 
 ### 2.7 Publish
