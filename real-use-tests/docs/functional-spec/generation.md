@@ -54,9 +54,10 @@ target's JARs, and it writes only `build.gradle` and
 `required-docker-images.txt`. A program then reverts any other edit, resolves
 the declared libraries, and writes `user-code-filter.json` listing every package
 present in the target's and the supporting libraries' JARs
-(§FS-real-use-tests.1). From here on the build file, the image list, and the
-filter are fixed for the rest of the run; a scenario uses only what preflight
-declared.
+(§FS-real-use-tests.1). From here on the declared libraries, the image list,
+and the filter are fixed for the rest of the run; a scenario uses only what
+preflight declared. The build file changes again only when the native fix adds
+native-image options (§FS-real-use-test-generation.2.5).
 
 ### 2.3 Generate one scenario per pass
 
@@ -104,7 +105,8 @@ each only when the one before did not make the native run pass.
      time is never added: nothing that reports unsupported elements at run
      time, allows an incomplete classpath, or turns off missing-registration
      errors. Metadata is never passed as an option, because the test-local
-     file holds it.
+     file holds it. This overrides the flag rule of §root/FS-test-contract.2.7
+     (§FS-real-use-test-contract.3).
    - A scenario neither saves is deleted, whole: one that generates bytecode
      or defines classes at run time (§root/FS-test-contract.4.5) at once, and
      one whose failure survives the option attempts then.

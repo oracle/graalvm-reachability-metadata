@@ -101,12 +101,19 @@ These points of §root/FS-test-contract apply to every real-use test unchanged:
 | §root/FS-test-contract.2.3 | No stubs, fakes, or shadow classes for real packages. |
 | §root/FS-test-contract.2.5 | No hardcoded versions of the target artifact. |
 | §root/FS-test-contract.2.6 | No asserting known-broken behavior. |
-| §root/FS-test-contract.2.7 | Its native build and run flag rule only; metadata is §FS-real-use-test-contract.2.3. |
 | §root/FS-test-contract.2.8 | No JVM toolchain or compatibility overrides. |
 | §root/FS-test-contract.3.3 | Upstream sources as guidance, not as source code. |
 | §root/FS-test-contract.4.4 | No dependence on machine-local resource paths. |
 | §root/FS-test-contract.4.5 | No behavior that requires runtime class definition. |
 | §root/FS-test-contract.4.6 | Budget for slow native startup. |
+
+§root/FS-test-contract.2.7 is overridden, not inherited. Its native build and
+run flag rule never lets a flag repair a run, because in `tests/` a flag would
+hide a missing metadata entry. A real-use project instead shows the build an
+application ships, and that build carries the native-image options a consumer
+of the library sets, so the native fix may add such an option to make the run
+pass (§FS-real-use-test-generation.2.5). Its metadata rule is replaced by
+§FS-real-use-test-contract.2.3.
 
 The determinism and Docker rules of §root/FS-repository-functional-spec.6 apply as
 they do to `tests/`.
