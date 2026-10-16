@@ -7,6 +7,7 @@
 plugins {
     id "org.graalvm.internal.tck"
     alias(libs.plugins.kotlin.jvm)
+    id "org.jetbrains.kotlin.plugin.serialization" version "2.3.20"
 }
 
 String libraryVersion = tck.testedLibraryVersion.get()
@@ -14,6 +15,15 @@ int testJvmVersion = tck.testJvmVersion.get()
 
 dependencies {
     testImplementation "org.jetbrains.kotlinx:kotlinx-serialization-cbor-jvm:$libraryVersion"
+    testImplementation "org.jetbrains.kotlinx:kotlinx-serialization-json-jvm:1.9.0"
+    testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:1.10.2"
+    testImplementation "org.jetbrains.kotlinx:kotlinx-datetime-jvm:0.7.1"
+    testImplementation "io.ktor:ktor-server-cio-jvm:3.3.3"
+    testImplementation "io.ktor:ktor-server-content-negotiation-jvm:3.3.3"
+    testImplementation "io.ktor:ktor-client-cio-jvm:3.3.3"
+    testImplementation "io.ktor:ktor-client-content-negotiation-jvm:3.3.3"
+    testImplementation "io.ktor:ktor-serialization-kotlinx-cbor-jvm:3.3.3"
+    testImplementation "com.h2database:h2:2.3.232"
 }
 
 kotlin {
