@@ -8,6 +8,7 @@
 plugins {
     id "org.graalvm.internal.tck"
     alias(libs.plugins.kotlin.jvm)
+    id "org.jetbrains.kotlin.plugin.serialization" version "2.3.20"
 }
 
 String libraryVersion = tck.testedLibraryVersion.get()
@@ -15,6 +16,13 @@ int testJvmVersion = tck.testJvmVersion.get()
 
 dependencies {
     testImplementation "org.jetbrains.exposed:exposed-json:$libraryVersion"
+    testImplementation "org.jetbrains.exposed:exposed-jdbc:$libraryVersion"
+    testImplementation "org.jetbrains.exposed:exposed-dao:$libraryVersion"
+    testImplementation "org.jetbrains.kotlinx:kotlinx-serialization-json-jvm:1.9.0"
+    testImplementation "org.postgresql:postgresql:42.7.7"
+    testImplementation "com.h2database:h2:2.3.232"
+    testImplementation "com.zaxxer:HikariCP:6.3.0"
+    testImplementation "com.fasterxml.jackson.module:jackson-module-kotlin:2.19.2"
 }
 
 kotlin {
