@@ -6,7 +6,7 @@
 """The scripted `gradlew` and `gh` the workflow tests install in a fake repository.
 
 They stand in for the harness (§AR-real-use-test-harness.2) and GitHub, driven by a
-control file the test writes.
+control file the test writes, so the workflow tests can check §FS-real-use-test-generation.
 """
 from __future__ import annotations
 
