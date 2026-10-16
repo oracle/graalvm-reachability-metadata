@@ -139,6 +139,9 @@ public class TcpSocketOptionsRollingRestartTest {
                 oldServer.close()
                 oldAcceptor.join()
                 assertThat(oldServer.isClosed).isTrue()
+                // NIO keeps the old listener open until the selector deregisters it, so a client
+                // could still be routed to it; this round trip runs the selector past that point.
+                assertThat(longLived.send("still here")).isEqualTo("v1: still here")
                 val newWorker: Worker = Worker("v2", newServer, connectionScope)
                 newWorker.start()
 
@@ -150,7 +153,6 @@ public class TcpSocketOptionsRollingRestartTest {
                 )
                 clients += fresh.socket
                 assertThat(fresh.send("hello")).isEqualTo("v2: hello")
-                assertThat(longLived.send("still here")).isEqualTo("v1: still here")
 
                 val probe: Client = Client(
                     aSocket(selector).tcp().connect(InetSocketAddress("127.0.0.1", port)) {
