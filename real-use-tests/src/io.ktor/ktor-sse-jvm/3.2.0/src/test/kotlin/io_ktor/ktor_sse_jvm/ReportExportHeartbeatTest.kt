@@ -18,6 +18,7 @@ import io.ktor.server.sse.heartbeat
 import io.ktor.server.sse.sse
 import io.ktor.sse.ServerSentEvent
 import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.flow.transformWhile
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withTimeout
 import org.junit.jupiter.api.AfterEach
@@ -94,7 +95,12 @@ public class ReportExportHeartbeatTest {
         server.stop(gracePeriodMillis = 0L, timeoutMillis = 10_000L)
     }
 
-    /** Follows the export stream, finishing the job after [heartbeatsBeforeFinish] heartbeats. */
+    /**
+     * Follows the export stream up to the ready event, finishing the job after [heartbeatsBeforeFinish] heartbeats.
+     *
+     * Reading stops at the ready event: the server cancels its heartbeat only after the handler
+     * returns, so one heartbeat can still race onto the wire behind the ready event.
+     */
     private suspend fun followExport(
         client: HttpClient,
         path: String,
@@ -105,7 +111,10 @@ public class ReportExportHeartbeatTest {
         var heartbeats: Int = 0
         withTimeout(30.seconds) {
             client.sse(host = "127.0.0.1", port = port, path = path) {
-                incoming.collect { event: ServerSentEvent ->
+                incoming.transformWhile { event: ServerSentEvent ->
+                    emit(event)
+                    event.event != readyEvent.event
+                }.collect { event: ServerSentEvent ->
                     observed.add(
                         Observed(event = event.event, id = event.id, data = event.data, comments = event.comments),
                     )
