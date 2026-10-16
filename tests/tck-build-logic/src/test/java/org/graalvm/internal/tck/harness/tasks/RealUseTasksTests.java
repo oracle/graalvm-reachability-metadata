@@ -106,6 +106,8 @@ class RealUseTasksTests {
 
         Path realUse = tempDir.resolve("real-use-tests/src/com.example/demo/1.0.1");
         assertThat(Files.readString(realUse.resolve("build.gradle")))
+                // spotless puts the license header directly before the plugins block.
+                .contains(" */\nplugins {")
                 .contains("alias(libs.plugins.kotlin.jvm)")
                 .contains("testImplementation \"com.example:demo:$libraryVersion\"")
                 .contains("userCodeFilterPath = \"user-code-filter.json\"")
