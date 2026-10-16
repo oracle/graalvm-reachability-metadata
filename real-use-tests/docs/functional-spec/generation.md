@@ -139,13 +139,14 @@ coordinate project. They are the license header
 every file opens with, the file formatting, and checkstyle. When they fail, one
 agent invocation fixes what they report, adding a missing header, reformatting
 a file, or fixing a checkstyle finding, and edits nothing else; it neither
-changes what a scenario does nor deletes one. A program then commits the
-coordinate project's changes as they stand, on top of the run's earlier
-commits, and publishes that project through the repository's shared
-publication pipeline, which opens the pull request
-(§forge/AR-real-use-tests-publication). The pull request resolves the run's
-issue. Its description opens with what the run achieved and what it cost,
-so a reviewer sees the numbers before the diff:
+changes what a scenario does nor deletes one. A program then writes the run's
+stats record (§FS-real-use-tests.1), commits it with the coordinate project's
+changes as they stand, on top of the run's earlier commits, and pushes the
+branch. The record is everything the pull request needs beyond the diff, so the
+trusted publisher opens the pull request from it and no other publication
+file (§forge/AR-real-use-tests-publication). The pull request resolves the
+run's issue. Its description opens with what the run achieved and what it
+cost, so a reviewer sees the numbers before the diff:
 
 - the target library's coverage on the JVM as JaCoCo measures it over the
   published scenarios: the total, then lines, instructions, and methods,
@@ -153,7 +154,8 @@ so a reviewer sees the numbers before the diff:
 - the tokens the run's agent invocations spent, split as the other
   generation workflows report them: input, cached input, cache-write input,
   and output;
-- the number of iterations, each one agent invocation of the run.
+- the number of iterations: the scenario passes the run made
+  (§FS-real-use-test-generation.1).
 
 Measuring the coverage is one more JVM run over the published scenarios, not a
 check: it gates nothing.

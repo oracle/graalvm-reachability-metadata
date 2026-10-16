@@ -59,8 +59,7 @@ code-coverage route stages the dedicated coverage suite, the coordinate's test
 directory, and the metadata that suite justified; the not-for-native-image route
 (§AR-not-for-native-image-publication) stages the marker
 `metadata/<group>/<artifact>/index.json`, its stats publication path, and the
-descriptor; the real-use route (§AR-real-use-tests-publication) stages the
-coordinate's real-use project and the descriptor. Shared repository edits are allowed only when local verification
+descriptor. Shared repository edits are allowed only when local verification
 (§FS-local-ci-equivalent-verification) proved them necessary, and those paths
 must be listed in descriptor verification evidence for maintainer review.
 
@@ -69,11 +68,12 @@ must be listed in descriptor verification evidence for maintainer review.
 Local finalization writes schema version `1` to
 `stats/<group>/<artifact>/<version>/forge-publication.json` and validates it
 against `.github/scripts/forge_pr_publisher/schema.json` before the
-publication commit. Benchmark-result publications carry no descriptor at all:
-their branch diff is the handoff (§FS-code-coverage-benchmarking.3). The
-readiness workflow's path filter lists the descriptor path and the benchmark
-results tree, since a push the filter does not match starts no run and the
-branch is never published.
+publication commit. Benchmark-result and real-use publications carry no
+descriptor at all: their branch diff is the handoff
+(§FS-code-coverage-benchmarking.3, §AR-real-use-tests-publication). The
+readiness workflow's path filter lists the descriptor path, the benchmark
+results tree, and the real-use stats records, since a push the filter does not
+match starts no run and the branch is never published.
 Exactly one descriptor path may change in a publication diff. The file
 remains after merge; a later publication for the coordinate replaces the
 current file while Git history retains prior provenance. Committing it is what
@@ -316,12 +316,13 @@ the Forge revision, so the evidence survives even though the body drops it.
 
 ### Real-use tests
 
-The trusted `real-use-tests` template follows §AR-real-use-tests-publication.
-Its title names the coordinate. Its body links the run's issue with `Fixes:`,
-then opens with the run's summary: the target library's JaCoCo coverage (the
-instruction ratio as the total, then lines, instructions, and methods as
-covered of total), the input, cached input, cache-write input, and output
-tokens, and the iterations. It then lists the scenarios the native fix
+The trusted `real-use-tests` template follows §AR-real-use-tests-publication
+and reads only the run's stats record. Its title names the coordinate. Its body
+links the run's issue with `Fixes:`, then opens with the run's summary: the
+target library's JaCoCo coverage (the instruction ratio as the total, then
+lines, instructions, and methods as covered of total), the input, cached input,
+cache-write input, and output tokens, and the iterations, which are the run's
+scenario passes. It then lists the scenarios the native fix
 removed with the reason (§real-use-tests/FS-real-use-test-generation.2.7). It
 omits the Forge revision block for the same reason as the coverage template,
 and the local CI-equivalent verification section, since the run's own
@@ -397,22 +398,32 @@ verification evidence lists shared repository changes, it also applies
 
 ## AR-real-use-tests-publication: Real-use tests publication
 
-The `real-use-tests` route publishes the real-use project a real-use generation
-run produced (§real-use-tests/FS-real-use-test-generation.2.7). Each run resolves
-one issue labeled `real-use-test`, so its descriptor carries that issue number
-like every route's (§AR-publication-descriptor), and the body links it with
-`Fixes: #<issue>` (§AR-issue-linking). Local finalization stages
-`real-use-tests/src/<group>/<artifact>/<version>/` and the descriptor, then runs
-the same verification and push boundary as every route; the real-use project is
-the route's expected output, so it is not a shared repository edit.
+Real-use publication has no Forge route and no descriptor. The real-use
+workflow's publish program (§real-use-tests/FS-real-use-test-generation.2.7)
+commits the coordinate's real-use project together with its stats record,
+`real-use-tests/stats/<group>/<artifact>/<version>/stats.json`, rebases onto
+upstream `master`, and pushes
+`ai/<producer>/real-use-<artifact>-<version>-<publication id>`. The publication
+ID is built as every route builds it, from the issue, the run's start time, the
+coordinate, and the `real-use-tests` task type, so the existing-publication
+check of §AR-actions-publication recognizes the branch.
+
+Like a benchmark result (§FS-code-coverage-benchmarking.3), the branch diff
+against its merge base with `master` is the handoff. The trusted publisher
+accepts a diff that changes exactly one stats record and otherwise only that
+coordinate's `real-use-tests/src/<group>/<artifact>/<version>/`. It validates
+the record against `real-use-tests/schemas/stats-schema.json` from its own
+trusted checkout, requires the branch to belong to the triggering actor and to
+end with the publication ID rebuilt from the record, and renders the body from
+the record alone: the issue, linked with `Fixes: #<issue>` (§AR-issue-linking),
+the target library's coverage in the `stats/` `libraryCoverage` shape, the
+run's tokens by class, its scenario passes as the iterations, and each scenario
+the native fix removed with the reason. The publisher applies the fixed
+`GenAI`, `real-use-test`, and `rhei` labels; `real-use-test` is also the
+issue's label.
 
 Like coverage publication, the route skips the pre-push review
-(§FS-local-branch-review): the generation workflow's own programs already ran
-every scenario on the JVM and on Native Image and the repository's style checks
-before publication. The descriptor's `render.real_use` object carries the facts
-the trusted `real-use-tests` template reports: the target library's coverage in
-the `stats/` `libraryCoverage` shape, the run's tokens by class, its
-iterations, and each scenario the native fix removed with the reason. The
-publisher applies the fixed `GenAI`,
-`real-use-test`, and `rhei` labels; `real-use-test` is also the issue's label.
+(§FS-local-branch-review) and Forge's pre-publication gate: the generation
+workflow's own programs already ran every scenario on the JVM and on Native
+Image and the repository's style checks before publication.
 
