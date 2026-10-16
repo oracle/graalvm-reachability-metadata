@@ -26,13 +26,16 @@ import java.util.stream.Collectors;
 /// (§real-use-tests/AR-real-use-test-harness.2).
 public final class RealUseUtils {
 
+    private static final Set<String> SCALA_TOOLCHAIN = Set.of(
+            "scala-library", "scala-compiler", "scala-reflect", "scala3-library_3", "scala3-compiler_3");
     private static final String AGENT_METADATA = "native/agent-output/test/reachability-metadata.json";
 
     private RealUseUtils() {
     }
 
     /// The JARs of the libraries `build.gradle` declares; the harness's own JUnit, AssertJ,
-    /// and test-support libraries are not declarations.
+    /// and test-support libraries, and the Kotlin or Scala runtime and compiler a language's
+    /// project declares, are not declarations (§real-use-tests/FS-real-use-tests.1).
     public static List<File> declaredLibraryJars(Configuration declarations, Configuration runtimeClasspath) {
         Set<String> declared = declarations.getAllDependencies().stream()
                 .filter(dependency -> dependency.getGroup() != null)
@@ -76,9 +79,21 @@ public final class RealUseUtils {
         Files.copy(source, target, StandardCopyOption.REPLACE_EXISTING);
     }
 
-    private static boolean isHarnessLibrary(Dependency dependency) {
+    static boolean isHarnessLibrary(Dependency dependency) {
         return dependency.getGroup().startsWith("org.junit")
                 || dependency.getGroup().equals("org.assertj")
-                || (dependency.getGroup().equals("org.graalvm") && dependency.getName().equals("tck-test-support"));
+                || (dependency.getGroup().equals("org.graalvm") && dependency.getName().equals("tck-test-support"))
+                || isLanguageToolchain(dependency);
+    }
+
+    /// The Kotlin standard library and test support the Kotlin plugin adds, and the Scala library and
+    /// compiler a Scala project declares.
+    private static boolean isLanguageToolchain(Dependency dependency) {
+        String name = dependency.getName();
+        return switch (dependency.getGroup()) {
+            case "org.jetbrains.kotlin" -> name.startsWith("kotlin-stdlib") || name.startsWith("kotlin-test");
+            case "org.scala-lang" -> SCALA_TOOLCHAIN.contains(name);
+            default -> false;
+        };
     }
 }

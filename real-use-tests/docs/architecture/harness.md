@@ -37,9 +37,9 @@ project yet.
 | `realUseJavaTest` | Run the selected real-use projects on the JVM. |
 | `realUseNativeTest` | Build the native test image and run it. |
 | `realUseJacocoReport` | Run the selected real-use projects on the JVM and write the JaCoCo XML report of the target library's classes to the project's `build/reports/jacoco/test/jacocoTestReport.xml`; the generation workflow reads its totals (§FS-real-use-test-generation.2.7). |
-| `scaffoldRealUseTest` | Create a coordinate project from the real-use template. |
+| `scaffoldRealUseTest` | Create a coordinate project with the build file and `src/test/<language>` directory of a `tests/` project in the language of the coordinate's `index.json` entry, Java when it names none (§FS-real-use-test-contract.1.5). |
 | `generateChangedRealUseMatrix` | The CI matrix of the real-use projects changed between `-PbaseCommit` and `-PnewCommit` (§AR-real-use-test-harness.4). |
-| `generateRealUseFilter` | Write `user-code-filter.json` covering every package in the JARs of the target and of the libraries `build.gradle` declares, one `<package>.**` rule per package not nested in another; the harness's own JUnit, AssertJ, and test-support libraries are not declarations. |
+| `generateRealUseFilter` | Write `user-code-filter.json` covering every package in the JARs of the target and of the libraries `build.gradle` declares, one `<package>.**` rule per package not nested in another; the harness's own JUnit, AssertJ, and test-support libraries, the Kotlin standard library and test support, and the Scala library and compiler are not declarations. |
 
 `realUseNativeTest` accepts `-Ptck.realUse.exactReachability=true`, which adds
 `--exact-reachability-metadata` to the native build as the trace image does

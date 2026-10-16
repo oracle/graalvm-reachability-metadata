@@ -19,7 +19,6 @@ RUNTIME_DIR: str = os.path.join("runtime", "real-use")
 TEST_LOCAL_METADATA: str = os.path.join(
     "src", "test", "resources", "META-INF", "native-image", "reachability-metadata.json"
 )
-TEST_JAVA_DIR: str = os.path.join("src", "test", "java")
 USER_CODE_FILTER: str = "user-code-filter.json"
 
 
@@ -39,6 +38,8 @@ class RunState:
     # UTC start of the run: the publication's durable identity (§AR-real-use-test-workflow.6).
     started_at: str
     removals: list[dict[str, str]] = field(default_factory=list)
+    # The scenarios' `src/test/<language>`, relative to the project, fixed once it is scaffolded.
+    test_source_dir: str = os.path.join("src", "test", "java")
 
     @property
     def group(self) -> str:
@@ -62,8 +63,9 @@ class RunState:
         return os.path.join(self.worktree, self.project_dir)
 
     @property
-    def test_java_path(self) -> str:
-        return os.path.join(self.project_path, TEST_JAVA_DIR)
+    def test_source_path(self) -> str:
+        """The scenarios' `src/test/<language>` directory (§FS-real-use-test-contract.1.5)."""
+        return os.path.join(self.project_path, self.test_source_dir)
 
     @property
     def metadata_path(self) -> str:

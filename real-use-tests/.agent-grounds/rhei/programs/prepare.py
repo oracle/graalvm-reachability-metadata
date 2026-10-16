@@ -20,6 +20,7 @@ import sys
 from datetime import datetime, timezone
 
 import issue
+import scenarios
 from build_tools import checkpoint, git, run_gradle
 from exit_codes import BAD_INPUT, INFRASTRUCTURE, OK
 from run_state import RunState, runtime_path, save
@@ -73,7 +74,8 @@ def _write_run_note(workspace: str, state: RunState) -> None:
             "Files an agent state edits, by absolute path:\n\n"
             f"- Build file: `{os.path.join(state.project_path, 'build.gradle')}`\n"
             f"- Docker image list: `{os.path.join(state.project_path, 'required-docker-images.txt')}`\n"
-            f"- Scenario directory: `{state.test_java_path}/`\n"
+            f"- Scenario directory, for {scenarios.language(state.test_source_path)} sources: "
+            f"`{state.test_source_path}/`\n"
             f"- Test-local metadata file: `{state.metadata_path}`\n"
         )
 
@@ -119,6 +121,8 @@ def run(args: argparse.Namespace) -> int:
         if not scaffold.ok or not os.path.isdir(state.project_path):
             print(f"ERROR: scaffolding failed:\n{scaffold.tail}", file=sys.stderr)
             return INFRASTRUCTURE
+    # Git keeps no empty directory, so the scaffolded language is read once, here.
+    state.test_source_dir = os.path.relpath(scenarios.test_source_path(state.project_path), state.project_path)
     state.base_commit = checkpoint(worktree, [state.project_dir], f"Scaffold real-use project for {artifact}")
     _attach_worktree(workspace, worktree)
     save(workspace, state)
