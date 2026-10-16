@@ -79,7 +79,9 @@ def run_agent(repo: str, target: str, number: int, branch: str, head: str) -> No
         checkout: str = os.path.join(parent, "checkout")
         subprocess.run(["git", "-C", repo, "worktree", "add", "--quiet", "--detach", checkout, head], check=True)
         try:
-            subprocess.run(agent_command(target, prompt(number, branch, head)), cwd=checkout, check=False)
+            # stdout lists the branches to retry, so the agent's narration goes to stderr.
+            subprocess.run(agent_command(target, prompt(number, branch, head)), cwd=checkout, check=False,
+                           stdout=sys.stderr)
         finally:
             subprocess.run(["git", "-C", repo, "worktree", "remove", "--force", checkout], check=False)
 
