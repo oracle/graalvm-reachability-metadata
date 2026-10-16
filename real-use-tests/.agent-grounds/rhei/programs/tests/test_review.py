@@ -12,6 +12,7 @@ from __future__ import annotations
 import io
 import os
 import sys
+import tempfile
 import unittest
 from contextlib import redirect_stderr
 from typing import Any
@@ -48,6 +49,14 @@ class ReviewTest(unittest.TestCase):
             review.agent_command("pi[high]:openai-codex/gpt-5.6-luna", "go"))
         with self.assertRaises(ValueError):
             review.agent_command("codex:gpt", "go")
+
+    def test_the_agent_writes_to_stderr_so_stdout_lists_only_branches(self) -> None:
+        with patch.object(review.subprocess, "run") as run, tempfile.TemporaryDirectory() as repo:
+            review.run_agent(repo, "claude-code[high]:opus", 7, "ai/x/branch", "abc")
+
+        agent_calls = [call for call in run.call_args_list if call.args[0][0] == "claude"]
+        self.assertEqual(1, len(agent_calls))
+        self.assertIs(sys.stderr, agent_calls[0].kwargs["stdout"])
 
     def test_approved_merged_and_closed_pull_requests_are_skipped_without_an_agent(self) -> None:
         found: dict[str, dict[str, Any]] = {
