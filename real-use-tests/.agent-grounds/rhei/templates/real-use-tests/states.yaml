@@ -130,6 +130,13 @@ states:
          - Never skip or tolerate Native Image: no `@DisabledInNativeImage`,
            no `assumeFalse`, no native-runtime checks, no catch of
            unsupported-feature errors.
+         - Make the outcome deterministic (§root/FS-repository-functional-spec.6):
+           it must not depend on timing or on when garbage collection runs,
+           and Native Image frees unreachable objects sooner than the JVM.
+           Hold a reference to every object whose state you read back through
+           something that holds it weakly, such as a Micrometer gauge, until
+           the last assertion that reads it. Wait for an asynchronous result
+           with a latch or a bounded poll, never a fixed sleep.
          - Open every file with the CC0 header the scaffolded files carry and
            keep it ASCII.
          - Write only under the scenario directory at the absolute path
