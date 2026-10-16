@@ -1,0 +1,46 @@
+Prompt:
+Reproduce the failure first and read the FULL stack trace, including every `Caused by:`
+line, to find the real cause before changing anything.
+- If the cause is missing or inactive-condition for metadata, fix that condition.
+- If the cause is native-image-unsupported behavior (dynamic class loading, runtime bytecode
+  or class definition, runtime lambda definition, URL/plugin/OSGi class-loader assumptions,
+  or a class reachable only through a custom class loader), Remove the
+  generated test that exercises it, or rewrite it to a native-compatible public-API path that
+  still validates metadata.
+Re-run the reproduce command after each change and keep running until the test passes.
+Do not use any skill for this.
+
+Use this exact GraalVM for every command; do not switch to another that appears on PATH:
+- GRAALVM_HOME=/home/mihailo/.sdkman/candidates/java/25.4.4+1-graal
+- JAVA_HOME=/home/mihailo/.sdkman/candidates/java/25.4.4+1-graal
+
+Reproduce with:
+./gradlew runNativeTraceImage -Pcoordinates=org.apache.pulsar:pulsar-client-all:4.2.5 -PtraceMetadataPath=/home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10642-d127577a/tests/src/org.apache.pulsar/pulsar-client-all/4.2.5/build/natively-collected/runs/cycle-0 -PtraceMetadataConditionPackages=com.scurrilous.circe,org.apache.avro.reflect,org.apache.pulsar -PmetadataConfigDirs=/home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10642-d127577a/tests/src/org.apache.pulsar/pulsar-client-all/4.2.5/build/natively-collected/_global_/agent
+
+Failure output excerpt:
+```text
+    at java.util.Arrays.copyOf(Arrays.java:3478)
+    at com.oracle.svm.core.configure.RuntimeDynamicAccessMetadata.canonicalConditions(RuntimeDynamicAccessMetadata.java:247)
+    at com.oracle.svm.core.configure.RuntimeDynamicAccessMetadata.<init>(RuntimeDynamicAccessMetadata.java:234)
+    at com.oracle.svm.core.configure.RuntimeDynamicAccessMetadata.createDecoded(RuntimeDynamicAccessMetadata.java:172)
+    at com.oracle.svm.core.code.RuntimeMetadataDecoderImpl.decodeDynamicAccessMetadata(RuntimeMetadataDecoderImpl.java:488)
+    at com.oracle.svm.core.code.RuntimeMetadataDecoderImpl.parseDynamicAccessMetadata(RuntimeMetadataDecoderImpl.java:314)
+    at com.oracle.svm.core.hub.ImageReflectionMetadataEncoding.getDynamicAccessMetadata(ImageReflectionMetadataEncoding.java:165)
+    at com.oracle.svm.core.hub.ImageReflectionMetadata.getDynamicAccessMetadata(ImageReflectionMetadata.java:94)
+Fatal error: Failed to create the main Isolate. (code 13)
+
+[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10642-d127577a/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 21s
+9 actionable tasks: 1 executed, 8 up-to-date
+```
+
+Conversation:
+{"duration_api_ms":745178,"stop_reason":"end_turn","session_id":"329848f6-bdf0-4637-8e01-4de0eda6f064","total_cost_usd":2.4695878,"usage":{"input_tokens":118,"cache_creation_input_tokens":153243,"cache_read_input_tokens":6338949,"output_tokens":58859,"output_tokens_details":{"thinking_tokens":43802},"server_tool_use":{"web_search_requests":0,"web_fetch_requests":0},"service_tier":"standard","cache_creation":{"ephemeral_1h_input_tokens":153243,"ephemeral_5m_input_tokens":0},"inference_geo":"global","iterations":[{"input_tokens":2,"output_tokens":1210,"cache_read_input_tokens":175920,"cache_creation_input_tokens":1331,"cache_creation":{"ephemeral_5m_input_tokens":0,"ephemeral_1h_input_tokens":1331},"type":"message"}],"speed":"standard"},"modelUsage":{"claude-sonnet-5":{"inputTokens":118,"outputTokens":58859,"cacheReadInputTokens":6338949,"cacheCreationInputTokens":153243,"webSearchRequests":0,"costUSD":2.4695878,"contextWindow":1000000,"maxOutputTokens":64000,"thinkingTokens":43802,"canonicalModel":"claude-sonnet-5","provider":"firstParty","costBasis":"list"}},"permission_denials":[],"terminal_reason":"completed","fast_mode_state":"off","fast_mode_disabled_reason":"sdk_opt_in_required","subagent_stats":{"spawned":0,"requested":{"background":0,"foreground":0,"unset":0},"started_in_background":0,"max_depth":0,"spawned_by_subagents":0,"completed":0,"failed":0,"killed":{"parent":0,"user":0,"system":0},"refused":{"depth_limit":0,"concurrency_limit":0,"budget":0},"by_type":{}},"is_error":false,"num_turns":59,"subtype":"success","api_error_status":null,"result":"Only the pre-existing changes remain — nothing I touched is tracked by git, since all my experiments were on build-output JSON, which I've restored.\n\n## Findings\n\nI reproduced the failure and traced the **full** recursive stack (not just the repeating excerpt) to its true start. The key detail the excerpt hides: the crash is a `java.lang.StackOverflowError` thrown during **isolate initialization**, before any Pulsar test code ever runs:\n\n```\nUncaught exception while running isolate initialization hooks:\njava.lang.StackOverflowError\n```\n\nThe cycle is:\n`RuntimeDynamicAccessMetadata.canonicalConditions` → `Arrays.copyOf` on a `Class[]`-typed conditions array → `Array.newInstance(Class.class, …)` → the tracer's `shouldTraceReflectionArrayType(Class.class)` → `Class.class.getDynamicAccessMetadata()` → which re-enters the *same* decode path for `java.lang.Class` → `canonicalConditions` again → forever.\n\n`★ Insight ─────────────────────────────────────`\n`runNativeTraceImage` builds the image with two **experimental** flags together: `-H:+MetadataTracingSupport` (traces every reflective array creation) and `--exact-reachability-metadata` (every type's dynamic-access metadata is condition-gated and lazily decoded). The tracer's array-creation hook needs to know whether `Class[]` creation should be traced, which means decoding `java.lang.Class`'s own metadata — but that decode itself needs to create a `Class[]` array to canonicalize its conditions, re-entering the same not-yet-cached decode. It's a non-reentrant decode racing against itself.\n`─────────────────────────────────────────────────`\n\nI ruled out a Pulsar-specific cause with two experiments (then reverted both — the agent-collected JSON is back to its original 239 entries):\n1. **Removed the two `java.lang.Class` reflect entries** (from Jackson/Gson record-detection, used by `JDK14UtilInnerRecordAccessorTest`/`ReflectionHelperInnerRecordSupportedHelperTest`) and force-rebuilt the trace image — identical crash, same line numbers.\n2. **Pointed `metadataConfigDirs` at an empty `{}`** and force-rebuilt — isolate init now succeeds, but the *same* `StackOverflowError` resurfaces moments later while JUnit Platform Native tries to report a (now-expected) test-discovery failure, because printing that exception's stack trace creates a `StackTraceElement[]` and hits the identical recursive path.\n\nSo this isn't a missing/inactive metadata condition, and it isn't native-image-unsupported test behavior (dynamic proxies, classloaders, etc.) — it's a recursion bug inside GraalVM 25.4.4's own experimental tracer/exact-metadata combination that any sufficiently populated reachability metadata (even JUnit's own bundled config) will trigger. Neither of the two remedies I was given — fix a metadata condition, or rewrite/remove a generated test — can address a VM-internal non-reentrant decode.\n\nSince I'm pinned to this exact GraalVM build and told not to switch, I haven't tried a different version to confirm whether it's fixed upstream. How would you like to proceed — report this as a GraalVM bug and park this PR, or do you want me to check whether a different installed GraalVM candidate (e.g. `26.ea.13-graal`) avoids this, as a diagnostic (not a replacement for the pinned build)?","ttft_ms":5231,"type":"result","duration_ms":1302221,"uuid":"f0091b9d-f16e-41bd-b16c-db230c2d41b0","ttft_stream_ms":1888,"time_to_request_ms":142,"first_content_frame_ms":1888,"queued_turn_count":0,"result_index":0}
+

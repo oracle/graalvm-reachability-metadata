@@ -1,0 +1,13 @@
+The fix is complete and verified. Summary of what happened and what I changed:
+
+**Root cause:** 8 reflection entries had `condition.typeReached` set to a raw JVM hidden-class name for a lambda (e.g. `...MethodUtils$$Lambda/0x000000001b493bb0`). The schema's `typeReached` only accepts either a plain class name (regex-validated, no `/` allowed) or a structured `{"lambda": {...}}` descriptor — a bare hidden-class string matches neither, which is exactly what the captured errors showed (`does not match the regex pattern`, `string found, object expected`).
+
+**Fix:** Stripped the `$$Lambda/0x<address>` suffix down to the enclosing class name, matching the convention already used elsewhere in the same file (e.g. line 328/348/5151 already reference `MethodUtils`/`RandomUtils` without a lambda suffix). This made the entries schema-valid.
+
+That surfaced a second-order issue: since the JVM assigns each lambda a different random address per run, the 4 `MethodUtils` entries and 5 `RandomUtils` entries collapsed into exact duplicates of each other once normalized. I removed the redundant copies, keeping one of each.
+
+`./gradlew checkMetadataFiles -Pcoordinates=org.apache.pulsar:pulsar-client-all:4.2.5` now passes.
+
+★ Insight ─────────────────────────────────────
+JDK lambdas are compiled to *hidden classes* at runtime with synthetic names like `Outer$$Lambda/0x<heap-address>` — the hex suffix is not stable across JVM runs (it changes with class-loading order/ASLR-like allocation). A native-image tracing agent that naively records "what class was reached" for reflective access performed inside a lambda will capture this throwaway name verbatim. GraalVM's metadata schema anticipated this by giving lambdas their own structured descriptor (`declaringClass` + `interfaces`) instead of treating them as nameable types — but populating that correctly requires knowing the functional interface the lambda implements, which a condition-tracking agent doesn't always retain. Falling back to the enclosing class is the standard, information-preserving degradation: the reflection access conceptually becomes reachable once the enclosing class is reached, lambda or not.
+─────────────────────────────────────────────────

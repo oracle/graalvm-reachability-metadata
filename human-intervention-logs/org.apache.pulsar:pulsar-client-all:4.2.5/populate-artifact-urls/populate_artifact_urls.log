@@ -1,0 +1,36 @@
+> Task :tck-build-logic:extractPluginRequests UP-TO-DATE
+> Task :tck-build-logic:generatePluginAdapters UP-TO-DATE
+> Task :tck-build-logic:compileJava UP-TO-DATE
+> Task :tck-build-logic:compileGroovy UP-TO-DATE
+> Task :tck-build-logic:compileGroovyPlugins UP-TO-DATE
+> Task :tck-build-logic:pluginDescriptors UP-TO-DATE
+> Task :tck-build-logic:processResources UP-TO-DATE
+> Task :tck-build-logic:classes UP-TO-DATE
+> Task :tck-build-logic:jar UP-TO-DATE
+
+> Configure project :
+GraalVM Reachability Metadata TCK
+---------------------------------
+
+> Task :populateArtifactURLs
+Updated `metadata/org.apache.pulsar/pulsar-client-all/index.json`: filled the missing `documentation-url` with `https://pulsar.apache.org/docs/4.2.x/`, the version-pinned docs portal for the 4.2.x release line containing 4.2.5 (verified via WebFetch — explicit "Version: 4.2.x" selector, not a `latest`/`next` redirect).
+
+`★ Insight ─────────────────────────────────────`
+- I didn't templatize the docs URL with `$version$` even though the task prefers templates: Pulsar's doc site groups releases by minor line (`4.2.x`), not by exact patch version, so the tested-version alias `4.2.5` never appears as a literal substring in the URL. Substituting `$version$` → `4.2.5` would produce a broken `.../docs/4.2.5/` path. The task's own rule — "only when that template is valid for every alias" — is exactly the guardrail that rules this out, so a literal, non-templated URL is the correct choice here.
+- `language` stayed absent rather than being set to `"N/A"`: the two sentinels mean different things. `"N/A"` says "I looked for this and couldn't confirm it", which fits URLs/description. `language` is different — it's conditionally applicable (only for Kotlin/Scala/Groovy artifacts), so "not applicable" is correctly expressed by omitting the key entirely, not by writing a value into it.
+`─────────────────────────────────────────────────`
+
+The other four fields (`source-code-url`, `repository-url`, `test-code-url`, `description`) already held non-blank values, so per the instructions I left them untouched — including `test-code-url`, which still points at `pulsar-client/src/test` rather than `pulsar-client-all` (the shaded packaging module has no distinct test suite of its own; that's a pre-existing editorial choice, not something this task asked me to fix).
+Ran agent for org.apache.pulsar:pulsar-client-all:4.2.5 (exit 0). Log: /home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10642-d127577a/build/agent-url-discovery-logs/org.apache.pulsar-pulsar-client-all-4.2.5.log
+Completed populateArtifactURLs: invoked=1, prompted=0, skipped=0, overwriteExisting=false, verifyArtifactSources=false, limit=null
+
+[Incubating] Problems report is available at: file:///home/mihailo/git/graalvm-reachability-metadata/forge/local_repositories/forge_worktrees/10642-d127577a/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.1.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 21s
+9 actionable tasks: 1 executed, 8 up-to-date

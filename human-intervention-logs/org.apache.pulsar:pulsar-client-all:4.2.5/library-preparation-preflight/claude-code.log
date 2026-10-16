@@ -1,0 +1,30 @@
+`pulsar-client-all` is Pulsar's shaded fat jar — unlike the already-tracked `pulsar-client-api` (interfaces only), it bundles the real client implementation *and* `pulsar-client-admin`. I confirmed:
+
+- The upstream project itself only tests this client meaningfully against a live broker — Apache Pulsar ships an official `apachepulsar/pulsar` Docker image for standalone mode, and `testcontainers-java` has a dedicated `PulsarContainer` module built on that same image specifically for client testing.
+- `apachepulsar/pulsar:4.2.5` exists on Docker Hub and matches the requested client version exactly (Pulsar releases client and broker from the same train).
+- This repo has direct precedent: `com.rabbitmq.client:amqp-client:0.8.0` (also a real-connection client, not just an API jar) spins up its broker via a raw `docker run` + readiness-poll in `ClientPropertiesTest.java`, declared through `required-docker-images.txt` and pinned in `tests/tck-build-logic/.../allowed-docker-images/Dockerfile-rabbitmq`. No Pulsar image is pinned there yet.
+- No extra Maven dependency is needed — `pulsar-client-all` already shades in admin support, so nothing beyond the generated scaffold's `testImplementation` is required.
+
+★ Insight ─────────────────────────────────────
+The repo's Docker convention isn't "testcontainers library as a dependency" — it's a raw `docker run`/`ProcessBuilder` lifecycle hook in the test itself, with the image only declared (not orchestrated) via `required-docker-images.txt`. That's why the deterministic-setup schema only has room for `image` + `slug`, not startup flags — those belong in test code, which is exactly where `agent_guidance` is meant to carry them.
+─────────────────────────────────────────────────
+
+```json
+{
+  "action": "advisory_preparation",
+  "summary": "pulsar-client-all is the real producer/consumer/admin implementation (not just the API jar already tracked), so meaningful reachability coverage needs a live Pulsar broker, matching the amqp-client precedent for real-connection clients.",
+  "deterministic_setup": [
+    {
+      "kind": "docker_image",
+      "image": "apachepulsar/pulsar:4.2.5",
+      "slug": "apachepulsar_pulsar",
+      "reason": "pulsar-client-all's producer/consumer/admin code paths (connection setup, auth plugin loading, admin REST, schema handling) only execute against a real broker; apachepulsar/pulsar is the official image and the version matches the client exactly."
+    }
+  ],
+  "agent_guidance": "Launch the broker like the com.rabbitmq.client:amqp-client:0.8.0 ClientPropertiesTest does: a lifecycle hook that runs `docker run --rm -p 6650:6650 -p 8080:8080 apachepulsar/pulsar:4.2.5 bin/pulsar standalone --no-functions-worker --no-stream-storage --advertised-address localhost`, polls until a PulsarClient can connect, and tears the container down afterward. The `--no-functions-worker --no-stream-storage` flags are the standard way to keep standalone startup fast and low-memory for tests. Default client/admin URLs are pulsar://localhost:6650 and http://localhost:8080.",
+  "risks": [
+    "Standalone Pulsar startup is slow (tens of seconds to ~1-2 minutes) and memory-hungry even with the lightweight flags; the readiness-wait timeout should be generous.",
+    "apachepulsar/pulsar is not yet in the allowed-docker-images list, so this is a new pinned image, not a reuse of an existing tag."
+  ]
+}
+```

@@ -1,0 +1,18 @@
+All 74 tests pass and the build succeeded — `BUILD SUCCESSFUL`, "Test for org.apache.pulsar:pulsar-client-all:4.2.5 passed." The single missing reflection field registration was the root cause for all 5 failures, since they all chained from the same `PlatformDependent0` static-initializer failure.
+
+## Summary
+
+**Root cause (layer 1):** The reproduce command's top-level failure ("No matching coordinates found") wasn't a test bug — the scaffold commit (`3c66e96f01`) had only added `metadata/org.apache.pulsar/pulsar-client-all/index.json`, never the `metadata/org.apache.pulsar/pulsar-client-all/4.2.5/` directory itself. The harness's coordinate resolver requires that directory to exist on disk before it'll run anything for that version.
+
+**Fix:** Ran `./gradlew generateMetadata -Pcoordinates=org.apache.pulsar:pulsar-client-all:4.2.5`, which re-ran the JVM test suite with the native-image agent attached and merged the collected metadata into the durable directory.
+
+**Root cause (layer 2):** With coordinates now resolving, the native-image test ran and failed 5 tests, all with the same underlying cause via `Caused by:` chains — Netty's `PlatformDependent0` static initializer calls `Unsafe.staticFieldOffset` on the private field `java.nio.Bits.UNALIGNED`. The generated metadata registered the `java.nio.Bits` type for reachability but not that specific field, so GraalVM threw `MissingReflectionRegistrationError` (an `Error`, not caught by Netty's narrower `catch (Exception)` fallback), which cascaded into `NoClassDefFoundError` everywhere `PlatformDependent` was touched.
+
+**Fix:** `io.grpc:grpc-netty-shaded:1.68.0` has the identical Netty `PlatformDependent0$6` condition in its own metadata, correctly including the `UNALIGNED` field registration — confirming this is a known, legitimate reflective-field entry, not a native-image-unsupported pattern. Added the matching `"fields": [{"name": "UNALIGNED"}]` entry to the `java.nio.Bits` reflection record in `metadata/org.apache.pulsar/pulsar-client-all/4.2.5/reachability-metadata.json`.
+
+Re-running the exact reproduce command now reports `BUILD SUCCESSFUL` with 74/74 tests passing.
+
+★ Insight ─────────────────────────────────────
+- The native-image agent runs on HotSpot during `-Pagent test`, but HotSpot and native-image diverge on *how* a denied Unsafe field-offset lookup surfaces: HotSpot raises something Netty's `catch (Exception)` swallows, while native-image raises `MissingReflectionRegistrationError`, which `extends Error` and sails right past that same catch block. That asymmetry is why the agent can "see" a reflective access attempt yet still produce metadata that's incomplete for native-image's stricter closed-world model — a recurring class of bug whenever Unsafe-based offset computation is on the hot path (common in Netty-derived libraries).
+- Comparing against `grpc-netty-shaded`'s metadata for the exact same `PlatformDependent0$6` condition was decisive here — rather than guessing at the right JSON shape, finding a sibling library that bundles the same Netty internals and already has the correct, working entry turned "what should this look like" into "copy this."
+─────────────────────────────────────────────────

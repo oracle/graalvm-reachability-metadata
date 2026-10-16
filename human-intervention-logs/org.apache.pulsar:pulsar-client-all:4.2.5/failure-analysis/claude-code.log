@@ -1,0 +1,24 @@
+Based on the logs, the job actually ran through two full generation cycles on 2026-10-15. Here's what the evidence shows:
+
+**Timeline:** A first pass (~08:53–09:43 UTC) completed cleanly. A second pass (~20:16 onward) hit a real test-generation failure, went through several automated fix cycles, and technically got everything green again by ~22:16 — yet the run still ended in human-intervention with `test_generation_failed`, and dynamic-access coverage was never finalized. That gap between "later logs look green" and "still escalated" is exactly what a maintainer needs to understand before deciding whether to just re-run or dig deeper.
+
+I now have concrete evidence for the comment (compile error details, the specific failing test classes, the shaded-class reflection failures, and the fix commits that followed). Let me post the drafted comment.
+
+---
+
+## Human intervention needed
+
+The automated metadata-generation job for `org.apache.pulsar:pulsar-client-all:4.2.5` failed and needs manual follow-up. Preserved work branch: https://github.com/oracle/graalvm-reachability-metadata/tree/ai%2Fkimeta%2Fhuman-intervention%2Fissue-10642-library-new-request-org.apache.pulsar-pulsar-client-all-4.2.5-bdc4a5a1
+
+**Most likely failing stage:** generated-test compilation/execution (matches the reported `test_generation_failed` reason).
+
+- `logs/org.apache.pulsar:pulsar-client-all:4.2.5/gradle-test/gradle-test-2026-10-15T20-25-33-915178Z.log` shows `compileTestJava FAILED` with three `cannot find symbol` errors in `ReflectDataTest.java` (lines 16, 54, 64) — the generated test referenced imports/types that don't resolve (shaded Jackson annotations and an inaccessible package-private class, per the later fix commit).
+- After that was patched, `logs/org.apache.pulsar:pulsar-client-all:4.2.5/gradle-test/gradle-test-2026-10-15T21-20-27-124621Z.log` shows the native-image test run itself failing: roughly 20 generated tests (e.g. `ClassUtilsTest`, `SerializationUtilsTest`, `EnumBiMapTest`, `TreeMultimapTest`, `ValidatingObjectInputStreamTest`) throw `MissingReflectionRegistrationUtils` / `NoSuchMethodException` / `ClassNotFoundException` against `org.apache.pulsar.shade.*` classes — the generated serialization tests exercise shaded Guava/commons-lang3 classes that aren't registered for reflection.
+- A metadata-schema problem compounded this: reflection entries had `condition.typeReached` set to raw JVM lambda hidden-class names (e.g. `...MethodUtils$$Lambda/0x...`), which fails schema validation — see `logs/org.apache.pulsar:pulsar-client-all:4.2.5/checkstyle/claude-code.log` and the `check-metadata-fix` logs for the fix applied.
+
+By ~22:14–22:16 UTC, subsequent reruns of test, checkstyle, and `generateLibraryStats` all report `BUILD SUCCESSFUL` (see the three logs listed in the issue), and commit `892c102409` ("Fix Pulsar dynamic-access test compilation") on the preserved branch addresses the compile error. However, the run still terminated in human-intervention status and dynamic-access coverage metrics were never published, so the fixes were not independently re-verified end-to-end before escalation.
+
+**Suggested manual next steps:**
+1. Check out the preserved branch and run `./gradlew test -Pcoordinates=org.apache.pulsar:pulsar-client-all:4.2.5` followed by `./gradlew checkMetadataFiles -Pcoordinates=org.apache.pulsar:pulsar-client-all:4.2.5` to confirm the compile fix and metadata-schema fix both hold together, since they were applied and verified in separate cycles rather than one combined run.
+2. Review whether the shaded-class reflection entries added for `ClassUtilsTest`/`SerializationUtilsTest`/etc. are correct and intentional, or whether those generated tests should instead be scoped to avoid exercising Pulsar's shaded Guava/commons-lang3 internals directly.
+3. Re-run `./gradlew generateDynamicAccessCoverageReport -Pcoordinates=org.apache.pulsar:pulsar-client-all:4.2.5` to produce the missing dynamic-access coverage numbers before deciding whether this is ready to resubmit as a PR.
