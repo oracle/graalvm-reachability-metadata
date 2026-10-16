@@ -20,6 +20,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 /**
  * Creates the real-use project of one supported coordinate from the real-use template.
@@ -40,6 +41,9 @@ public abstract class ScaffoldRealUseTestTask extends SingleCoordinateTask {
             ".gitignore", "/scaffold/.gitignore.template"
     );
 
+    /// The AssertJ dependency line every `tests/` build template declares.
+    private static final Pattern ASSERTJ_DECLARATION = Pattern.compile("(?m)^\\s*testImplementation ['\"]org\\.assertj:assertj-core:[^'\"]+['\"]\\R");
+
     @TaskAction
     public void scaffold() throws IOException {
         String coordinates = resolveSingleCoordinate();
@@ -51,7 +55,10 @@ public abstract class ScaffoldRealUseTestTask extends SingleCoordinateTask {
             throw new GradleException("The real-use project for " + coordinates + " already exists: " + project);
         }
         ScaffoldFlavor flavor = ScaffoldFlavor.fromLanguage(indexEntry(repoRoot, parsed).language());
-        write(project.resolve("build.gradle"), flavor.buildTemplatePath(), parsed);
+        String build = CoordinateUtils.replace(loadResource(flavor.buildTemplatePath()), parsed);
+        Files.createDirectories(project);
+        // The plugin supplies AssertJ; build.gradle lists libraries (§real-use-tests/FS-real-use-tests.1).
+        Files.writeString(project.resolve("build.gradle"), ASSERTJ_DECLARATION.matcher(build).replaceAll(""), StandardCharsets.UTF_8);
         for (Map.Entry<String, String> file : FILES.entrySet()) {
             write(project.resolve(file.getKey()), file.getValue(), parsed);
         }

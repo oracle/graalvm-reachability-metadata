@@ -85,7 +85,8 @@ class RealUseTasksTests {
         Path realUse = tempDir.resolve("real-use-tests/src/com.example/demo/1.0.1");
         assertThat(Files.readString(realUse.resolve("build.gradle")))
                 .contains("testImplementation \"com.example:demo:$libraryVersion\"")
-                .contains("userCodeFilterPath = \"user-code-filter.json\"");
+                .contains("userCodeFilterPath = \"user-code-filter.json\"")
+                .doesNotContain("assertj");
         assertThat(Files.readString(realUse.resolve("settings.gradle"))).contains("../../../../../tests/tck-build-logic");
         assertThat(Files.readString(realUse.resolve("gradle.properties"))).contains("library.version = 1.0.1");
         assertThat(realUse.resolve(".gitignore")).isRegularFile();
@@ -107,7 +108,8 @@ class RealUseTasksTests {
         assertThat(Files.readString(realUse.resolve("build.gradle")))
                 .contains("alias(libs.plugins.kotlin.jvm)")
                 .contains("testImplementation \"com.example:demo:$libraryVersion\"")
-                .contains("userCodeFilterPath = \"user-code-filter.json\"");
+                .contains("userCodeFilterPath = \"user-code-filter.json\"")
+                .doesNotContain("assertj");
         assertThat(realUse.resolve("src/test/kotlin")).isDirectory();
         assertThat(realUse.resolve("src/test/java")).doesNotExist();
     }
@@ -125,7 +127,8 @@ class RealUseTasksTests {
         Path realUse = tempDir.resolve("real-use-tests/src/com.example/demo/1.0.0");
         assertThat(Files.readString(realUse.resolve("build.gradle")))
                 .contains("id \"scala\"")
-                .contains("scala3-library_3");
+                .contains("scala3-library_3")
+                .doesNotContain("assertj");
         assertThat(realUse.resolve("src/test/scala")).isDirectory();
     }
 
