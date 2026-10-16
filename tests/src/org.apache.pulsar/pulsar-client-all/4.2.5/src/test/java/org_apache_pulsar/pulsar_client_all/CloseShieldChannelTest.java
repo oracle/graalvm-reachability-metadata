@@ -9,6 +9,7 @@ package org_apache_pulsar.pulsar_client_all;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.nio.channels.Pipe;
+import java.nio.channels.WritableByteChannel;
 
 import org.apache.pulsar.shade.org.apache.commons.io.channels.CloseShieldChannel;
 import org.junit.jupiter.api.Test;
@@ -18,7 +19,7 @@ public class CloseShieldChannelTest {
     void shieldsTheUnderlyingChannelFromClose() throws Exception {
         final Pipe pipe = Pipe.open();
         try (Pipe.SourceChannel source = pipe.source(); Pipe.SinkChannel sink = pipe.sink()) {
-            final Pipe.SinkChannel shield = CloseShieldChannel.wrap(sink);
+            final WritableByteChannel shield = CloseShieldChannel.wrap((WritableByteChannel) sink);
             assertThat(shield.isOpen()).isTrue();
 
             shield.close();

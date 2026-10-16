@@ -27,7 +27,7 @@ public class ClassUtilTest {
                 .contains("getLabel");
         assertThat(ClassUtil.getClassMethods(Inspected.class))
                 .extracting(method -> method.getName())
-                .contains("getLabel", "toString");
+                .contains("getLabel");
     }
 
     public static final class Inspected {

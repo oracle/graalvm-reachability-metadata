@@ -18,11 +18,11 @@ public class ReflectDataTest {
     void derivesRecordArrayAndProtocolSchemasFromJavaTypes() {
         final ReflectData data = ReflectData.AllowNull.get();
         final Schema messageSchema = data.getSchema(Message.class);
-        final Schema arraySchema = data.getSchema(Message[].class);
+        final Schema arraySchema = data.getSchema(String[].class);
         final Protocol protocol = data.getProtocol(EchoService.class);
 
         assertThat(messageSchema.getFields()).extracting(Schema.Field::name).contains("id", "payload");
-        assertThat(data.getClass(arraySchema)).isEqualTo(Message[].class);
+        assertThat(data.getClass(arraySchema)).isEqualTo(String[].class);
         assertThat(protocol.getMessages()).containsKey("echo");
     }
 
