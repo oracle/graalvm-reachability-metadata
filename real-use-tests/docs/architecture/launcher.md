@@ -27,17 +27,17 @@ and calls Forge's `try_claim_issue` on each in turn; that call holds Forge's
 local per-issue lock across the assign, wait, and verify, so a Forge worker on
 the same host cannot take the issue at the same time. The first claimed issue
 is instantiated into `runs/real-use-<issue>` and run with the dashboard, and the
-launcher then claims the next one. When the program finds nothing to claim,
-the launcher sleeps ten minutes and claims again; a third failed run in a row
-ends it. A
-failed instantiation runs the program's `--release`, which returns the issue to
+launcher then claims the next one. Every iteration starts with the host gate,
+so a host that broke since the last run, such as an expired `gh` login, a
+stopped Docker daemon, or a logged-out agent, ends the launcher before it
+claims. When the program finds nothing to claim, the launcher sleeps ten
+minutes and claims again. A failed instantiation runs the program's `--release`, which returns the issue to
 `Todo` only while the launcher's account is still its sole assignee.
 
 A run that pushes a branch records it in
 `runtime/real-use/publication/branch.md`, and the launcher collects those
-branches. After every third run, when the queue is empty, and before it stops
-on failures, it hands the collected branches to the `review` program
-(§FS-real-use-test-generation.4). For each branch the program reads the pull
+branches. After every third run, and when the queue is empty, it hands them to
+the `review` program (§FS-real-use-test-generation.4). For each branch the program reads the pull
 request once with `gh pr list --head`; a branch without one yet goes back to
 the launcher for the next batch. It skips a pull request that is approved,
 merged, or closed. For any other pull request it adds a detached worktree of the head

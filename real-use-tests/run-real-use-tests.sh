@@ -89,8 +89,6 @@ fi
 
 # shellcheck source=../forge/utility_scripts/rhei_launcher_host.sh
 source "$FORGE_DIR/utility_scripts/rhei_launcher_host.sh"
-require_rhei_launcher_host real-use "$FORGE_DIR" "$REPO_ROOT" \
-    "$agent_family" "$agent_executable" "$agent_model" "$agent_provider"
 
 python="$FORGE_DIR/.venv/bin/python"
 [[ -x "$python" ]] || python="python3"
@@ -104,12 +102,10 @@ review() {
 
 # §FS-real-use-test-generation.1: run until stopped; §FS-real-use-test-generation.4: review every third run.
 readonly IDLE_SECONDS=600
-readonly MAX_FAILED_IN_A_ROW=3
 readonly REVIEW_EVERY=3
 cd "$SCRIPT_DIR"
 pending=()
 runs=0
-failed_in_a_row=0
 review_pending() {
     (( ${#pending[@]} > 0 )) || return 0
     local moved
@@ -121,6 +117,9 @@ review_pending() {
     fi
 }
 while true; do
+    # A failed host check exits here, before the claim (§FS-real-use-test-generation.1).
+    require_rhei_launcher_host real-use "$FORGE_DIR" "$REPO_ROOT" \
+        "$agent_family" "$agent_executable" "$agent_model" "$agent_provider"
     if ! issue_number="$(claim)"; then
         review_pending
         printf 'No issue to claim; looking again in %s seconds.\n' "$IDLE_SECONDS"
@@ -143,17 +142,7 @@ while true; do
     if (( status == 0 )) && [[ -f "$branch_record" ]]; then
         pending+=("$(awk '{print $2; exit}' "$branch_record")")
     fi
-    if (( status == 0 )); then
-        failed_in_a_row=0
-    else
-        failed_in_a_row=$((failed_in_a_row + 1))
-        printf 'ERROR: The run for issue #%s failed (%s in a row).\n' "$issue_number" "$failed_in_a_row" >&2
-        if (( failed_in_a_row >= MAX_FAILED_IN_A_ROW )); then
-            review_pending
-            printf 'ERROR: %s failed runs in a row; stopping.\n' "$failed_in_a_row" >&2
-            exit 1
-        fi
-    fi
+    (( status == 0 )) || printf 'ERROR: The run for issue #%s failed.\n' "$issue_number" >&2
 
     runs=$((runs + 1))
     (( runs % REVIEW_EVERY != 0 )) || review_pending
