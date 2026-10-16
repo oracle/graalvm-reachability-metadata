@@ -10,15 +10,16 @@ readonly SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 readonly REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 readonly FORGE_DIR="$REPO_ROOT/forge"
 readonly PROGRAMS="$SCRIPT_DIR/.agent-grounds/rhei/programs"
-# The template's default worker_agent.
+# The template's default worker_agent and scenario_passes.
 readonly DEFAULT_WORKER_AGENT="pi[high]:openai-codex/gpt-5.6-luna"
+readonly DEFAULT_SCENARIO_PASSES=15
 
 # Claim and run real-use-test issues until stopped, reviewing their pull requests in batches.
 # §FS-real-use-test-generation.1 §AR-real-use-test-launcher
 
 usage() {
     cat <<USAGE
-Usage: $0 [--worker-agent TARGET] [-- RHEI_RUN_OPTIONS...]
+Usage: $0 [--worker-agent TARGET] [--scenario-passes N] [-- RHEI_RUN_OPTIONS...]
 
 Purpose:
   Check the host, then until stopped: claim the most urgent eligible
@@ -33,12 +34,16 @@ Options:
       Rhei target for the agent states, with agent pi or claude-code.
       Default: $DEFAULT_WORKER_AGENT
       Example: claude-code[high]:opus
+  --scenario-passes N
+      Scenario passes of every run; each pass adds one scenario.
+      Default: $DEFAULT_SCENARIO_PASSES
   -- RHEI_RUN_OPTIONS...
       Forward options to rhei run. The dashboard is always enabled.
 USAGE
 }
 
 worker_agent="$DEFAULT_WORKER_AGENT"
+scenario_passes="$DEFAULT_SCENARIO_PASSES"
 while (( $# > 0 )); do
     case "$1" in
         -h|--help)
@@ -53,6 +58,14 @@ while (( $# > 0 )); do
             worker_agent="$2"
             shift 2
             ;;
+        --scenario-passes)
+            if (( $# < 2 )); then
+                printf 'ERROR: --scenario-passes needs a count.\n' >&2
+                exit 2
+            fi
+            scenario_passes="$2"
+            shift 2
+            ;;
         --)
             shift
             break
@@ -64,6 +77,12 @@ while (( $# > 0 )); do
             ;;
     esac
 done
+
+# The template validates scenario_passes with the same pattern.
+if [[ ! "$scenario_passes" =~ ^[1-9][0-9]*$ ]]; then
+    printf 'ERROR: --scenario-passes %s: the count must be a positive integer.\n' "$scenario_passes" >&2
+    exit 2
+fi
 
 # <agent>[<mode>]:[<provider>/]<model>; Rhei splits the provider off at the last slash.
 if [[ ! "$worker_agent" =~ ^(pi|claude-code)(\[[A-Za-z0-9_-]+\])?:((.*)/)?([^/]+)$ ]]; then
@@ -130,7 +149,8 @@ while true; do
 
     workspace="runs/real-use-$issue_number"
     status=0
-    if ! rhei instantiate real-use-tests "issue_number=$issue_number" "worker_agent=$worker_agent" --output "$workspace"; then
+    if ! rhei instantiate real-use-tests "issue_number=$issue_number" "worker_agent=$worker_agent" \
+            "scenario_passes=$scenario_passes" --output "$workspace"; then
         printf 'ERROR: Cannot create %s; releasing issue #%s.\n' "$workspace" "$issue_number" >&2
         claim --release "$issue_number" || printf 'WARNING: Could not release issue #%s.\n' "$issue_number" >&2
         status=1

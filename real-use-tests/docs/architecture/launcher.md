@@ -15,6 +15,9 @@ rejects any agent but `pi` and `claude-code` before the gate. The gate then
 checks that agent as Forge checks its analysis agent: `pi` on the path and
 logged in to the target's provider, or `claude` on the path with a passing
 `claude auth status`; neither probe invokes a model.
+Its `--scenario-passes` option, by default the template's 15, is every run's
+`scenario_passes`: the launcher rejects a count that is not a positive
+integer, as the template does, and passes it to `rhei instantiate`.
 Before that gate the launcher fills whichever of `JAVA_HOME` and
 `GRAALVM_HOME` is unset from the other and rejects two different
 installations.
