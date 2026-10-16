@@ -265,8 +265,14 @@ Nothing under it is committed.
 ## 6. Publication
 
 `publish` commits only `real-use-tests/src/<group>/<artifact>/<version>/`, in
-one commit after the run's checkpoints, and writes the description facts of
-§FS-real-use-test-generation.2.7 to `runtime/real-use/publication/render.json`.
+one commit after the run's checkpoints. It then runs `realUseJacocoReport` and
+writes the description facts of §FS-real-use-test-generation.2.7 to
+`runtime/real-use/publication/render.json`: the totals of the project's JaCoCo
+report, and the tokens and iterations of Rhei's accounting records under
+`runtime/accounting/invocations/`, one written after each agent invocation.
+Input tokens exclude the cached read and cache-write classes, which are
+reported apart. A failed coverage run fails the run, like a failed push; the
+commit stays, so a retried `publish` measures and pushes it again.
 It then runs Forge's `git_scripts/publish_real_use_tests.py` from the source
 checkout with the worktree, the coordinate, the issue number, and the run's
 start time, which with the issue is the publication's durable identity. That route

@@ -23,6 +23,7 @@ import org.graalvm.internal.tck.TestedVersionUpdaterTask
 import org.graalvm.internal.tck.harness.tasks.TestInvocationTask
 import org.graalvm.internal.tck.harness.tasks.CheckstyleInvocationTask
 import org.graalvm.internal.tck.harness.tasks.GenerateRealUseFilterInvocationTask
+import org.graalvm.internal.tck.harness.tasks.RealUseJacocoReportInvocationTask
 import org.graalvm.internal.tck.harness.tasks.RealUseJavaTestInvocationTask
 import org.graalvm.internal.tck.harness.tasks.RealUseNativeTestInvocationTask
 import org.graalvm.internal.tck.harness.tasks.ScaffoldRealUseTestTask
@@ -177,6 +178,12 @@ tasks.register("checkstyle", CheckstyleInvocationTask.class) { task ->
 // gradle realUseJavaTest -Pcoordinates=<filter> [-Ptck.realUse.agentOutput=<absolute dir>]
 tasks.register("realUseJavaTest", RealUseJavaTestInvocationTask.class) { task ->
     task.setDescription("Runs the selected real-use projects on the JVM")
+    task.setGroup(JavaBasePlugin.VERIFICATION_GROUP)
+}
+
+// gradle realUseJacocoReport -Pcoordinates=<filter>
+tasks.register("realUseJacocoReport", RealUseJacocoReportInvocationTask.class) { task ->
+    task.setDescription("Runs the selected real-use projects on the JVM and writes the target library's JaCoCo report")
     task.setGroup(JavaBasePlugin.VERIFICATION_GROUP)
 }
 

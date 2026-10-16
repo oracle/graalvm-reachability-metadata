@@ -35,7 +35,6 @@ class RunState:
     branch: str
     # The latest checkpoint; preflight's scope and the metadata reset measure against it.
     base_commit: str
-    allowed_packages: list[str]
     scenario_passes: int
     # UTC start of the run: the publication's durable identity (§AR-real-use-test-workflow.6).
     started_at: str

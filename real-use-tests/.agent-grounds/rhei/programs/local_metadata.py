@@ -3,17 +3,17 @@
 # You should have received a copy of the CC0 legalcode along with this
 # work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 
-"""Copying collected entries into a project's test-local metadata, and reporting them.
+"""Copying collected entries into a project's test-local metadata.
 
 An entry is copied only under the rules of §FS-real-use-tests.2.2: conditioned
 on `typeReached`, naming a type the project's filter includes or the test's own
-code. Grouping for the pull request is §FS-real-use-tests.2.3.
+code.
 """
 from __future__ import annotations
 
 import json
 import os
-from typing import Any, Iterator
+from typing import Any
 
 from run_state import read_json
 
@@ -25,20 +25,6 @@ def filter_prefixes(filter_path: str) -> list[str]:
         if pattern:
             prefixes.append(pattern.rstrip("*").rstrip(".") + ".")
     return prefixes
-
-
-def _entries(metadata: dict[str, Any]) -> Iterator[tuple[str, dict[str, Any]]]:
-    for section in ("reflection", "resources"):
-        for entry in metadata.get(section, []):
-            yield section, entry
-    for section, entries in metadata.get("foreign", {}).items():
-        for entry in entries:
-            yield f"foreign.{section}", entry
-
-
-def _describe(section: str, entry: dict[str, Any]) -> str:
-    subject: Any = entry.get("type") or entry.get("glob") or entry.get("bundle") or entry.get("returnType")
-    return f"{section} {subject}"
 
 
 def _owned_by(type_name: str, prefixes: list[str]) -> bool:
@@ -84,30 +70,3 @@ def copy_collected(collected_path: str, metadata_path: str, prefixes: list[str],
             handle.write("\n")
     return added
 
-
-def grouped_entries(
-        metadata_path: str,
-        allowed_packages: list[str],
-        prefixes: list[str],
-        test_packages: set[str],
-) -> dict[str, list[str]]:
-    """Entries grouped by the library their condition names, target first.
-
-    §FS-real-use-tests.2.3
-    """
-    groups: dict[str, list[str]] = {}
-    if not os.path.exists(metadata_path):
-        return groups
-    target: list[str] = [package + "." for package in allowed_packages]
-    tests: list[str] = [package + "." for package in test_packages]
-    for section, entry in _entries(read_json(metadata_path)):
-        reached: str = str((entry.get("condition") or {}).get("typeReached", ""))
-        if _owned_by(reached, target):
-            group: str = "Target library"
-        elif _owned_by(reached, tests):
-            group = "Test code"
-        else:
-            owner: str = next((prefix for prefix in prefixes if reached.startswith(prefix)), reached)
-            group = f"Supporting library `{owner.rstrip('.')}`"
-        groups.setdefault(group, []).append(f"{_describe(section, entry)} when `{reached}` is reached")
-    return dict(sorted(groups.items(), key=lambda item: item[0] != "Target library"))

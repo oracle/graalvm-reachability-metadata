@@ -482,21 +482,30 @@
     "real_use": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["scenarios", "removed", "test_local_metadata"],
+      "required": ["library_coverage", "tokens", "iterations", "removed"],
       "properties": {
-        "scenarios": {
-          "type": "array",
-          "maxItems": 500,
-          "items": {
-            "type": "object",
-            "additionalProperties": false,
-            "required": ["class", "subsystem"],
-            "properties": {
-              "class": {"type": "string", "minLength": 1, "maxLength": 300},
-              "subsystem": {"type": ["string", "null"], "maxLength": 500}
-            }
+        "library_coverage": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["line", "instruction", "method"],
+          "properties": {
+            "line": {"$ref": "#/$defs/real_use_coverage_metric"},
+            "instruction": {"$ref": "#/$defs/real_use_coverage_metric"},
+            "method": {"$ref": "#/$defs/real_use_coverage_metric"}
           }
         },
+        "tokens": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["input", "cached_input", "cache_write_input", "output"],
+          "properties": {
+            "input": {"type": ["integer", "null"], "minimum": 0},
+            "cached_input": {"type": ["integer", "null"], "minimum": 0},
+            "cache_write_input": {"type": ["integer", "null"], "minimum": 0},
+            "output": {"type": ["integer", "null"], "minimum": 0}
+          }
+        },
+        "iterations": {"type": "integer", "minimum": 0},
         "removed": {
           "type": "array",
           "maxItems": 500,
@@ -509,25 +518,23 @@
               "reason": {"type": "string", "maxLength": 2000}
             }
           }
-        },
-        "test_local_metadata": {
-          "type": "array",
-          "maxItems": 100,
-          "items": {
-            "type": "object",
-            "additionalProperties": false,
-            "required": ["library", "entries"],
-            "properties": {
-              "library": {"type": "string", "minLength": 1, "maxLength": 300},
-              "entries": {
-                "type": "array",
-                "maxItems": 2000,
-                "items": {"type": "string", "maxLength": 1000}
-              }
-            }
-          }
         }
       }
+    },
+    "real_use_coverage_metric": {
+      "oneOf": [
+        {"const": "N/A"},
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["covered", "total", "ratio"],
+          "properties": {
+            "covered": {"type": "integer", "minimum": 0},
+            "total": {"type": "integer", "minimum": 0},
+            "ratio": {"type": "number", "minimum": 0, "maximum": 1}
+          }
+        }
+      ]
     },
     "commit": {
       "type": "string",

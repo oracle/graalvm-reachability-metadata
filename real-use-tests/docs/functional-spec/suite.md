@@ -61,9 +61,9 @@ maintainer later promotes it.
 
 ### 2.3 Promotion is a separate change
 
-Every test-local entry is listed in the pull request that adds it, grouped by
-library, with the target library's entries apart from the supporting
-libraries' (§FS-real-use-test-generation.2.7). Those entries are candidates,
+Every test-local entry is reviewed in the diff of the pull request that adds
+it; the description reports the run's coverage and cost, not the entries
+(§FS-real-use-test-generation.2.7). Those entries are candidates,
 not metadata: moving one into `metadata/` is a separate change held to
 §root/FS-tests, so a test in `tests/` must justify it.
 

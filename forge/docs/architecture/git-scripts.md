@@ -317,12 +317,15 @@ the Forge revision, so the evidence survives even though the body drops it.
 ### Real-use tests
 
 The trusted `real-use-tests` template follows §AR-real-use-tests-publication.
-Its title names the coordinate. Its body lists the scenarios with the subsystem
-each covers, the scenarios the native fix removed with the reason, and every
-test-local metadata entry grouped by library, the target library's first, as
-promotion candidates for `metadata/`. It links the run's issue with `Fixes:`,
+Its title names the coordinate. Its body links the run's issue with `Fixes:`,
+then opens with the run's summary: the target library's JaCoCo coverage (the
+instruction ratio as the total, then lines, instructions, and methods as
+covered of total), the input, cached input, cache-write input, and output
+tokens, and the iterations. It then lists the scenarios the native fix
+removed with the reason (§real-use-tests/FS-real-use-test-generation.2.7). It
 omits the Forge revision block for the same reason as the coverage template,
-and ends with the local CI-equivalent verification section.
+and the local CI-equivalent verification section, since the run's own
+programs verified the project before publication.
 
 Per-target rosters, sampled PGO evidence, and the validation command list are
 deliberately absent. The counts restate what the coverage figures already say,
@@ -407,8 +410,9 @@ Like coverage publication, the route skips the pre-push review
 (§FS-local-branch-review): the generation workflow's own programs already ran
 every scenario on the JVM and on Native Image and the repository's style checks
 before publication. The descriptor's `render.real_use` object carries the facts
-the trusted `real-use-tests` template reports: each scenario with its subsystem,
-each scenario the native fix removed with the reason, and every test-local
-metadata entry grouped by library. The publisher applies the fixed `GenAI`,
+the trusted `real-use-tests` template reports: the target library's coverage in
+the `stats/` `libraryCoverage` shape, the run's tokens by class, its
+iterations, and each scenario the native fix removed with the reason. The
+publisher applies the fixed `GenAI`,
 `real-use-test`, and `rhei` labels; `real-use-test` is also the issue's label.
 

@@ -898,14 +898,20 @@ def _render_real_use_tests(
         descriptor: dict[str, Any],
         validated: ValidatedPublication | None,
 ) -> tuple[str, str]:
-    """Report the real-use run's scenarios, removals, and test-local entries.
+    """Report the real-use run's coverage, cost, and removals.
 
     The run resolves its `real-use-test` issue; no Forge strategy produced it, so
     the body omits the revision block (§forge/AR-real-use-tests-publication).
+    The scenarios and test-local entries are read in the diff
+    (§real-use-tests/FS-real-use-test-generation.2.7).
     """
     coordinates = descriptor["library"]["coordinates"]
     real_use = descriptor["render"]["real_use"]
+    coverage = real_use["library_coverage"]
+    tokens = real_use["tokens"]
     title = f"[GenAI] Add real-use tests for {coordinates}"
+    instruction = coverage["instruction"]
+    total = "N/A" if instruction == "N/A" else f"{instruction['ratio'] * 100:.2f}%"
     lines = [
         "## Real-use tests",
         "",
@@ -915,31 +921,20 @@ def _render_real_use_tests(
         "the way an application does and passes on the JVM and on Native Image against the "
         "shipped metadata.",
         "",
-        "### Scenarios",
-        "",
-        "| Scenario | Subsystem |",
-        "| --- | --- |",
-    ]
-    lines += [
-        f"| `{scenario['class']}` | {scenario['subsystem'] or 'not named'} |"
-        for scenario in real_use["scenarios"]
+        f"- Library coverage: {total}",
+        f"- Lines: {_format_coverage_entry(coverage['line'])}",
+        f"- Instructions: {_format_coverage_entry(instruction)}",
+        f"- Methods: {_format_coverage_entry(coverage['method'])}",
+        f"- Input tokens: {_benchmark_metric(tokens['input'])}",
+        f"- Cached input tokens: {_benchmark_metric(tokens['cached_input'])}",
+        f"- Cache-write input tokens: {_benchmark_metric(tokens['cache_write_input'])}",
+        f"- Output tokens: {_benchmark_metric(tokens['output'])}",
+        f"- Iterations: {real_use['iterations']}",
     ]
     if real_use["removed"]:
-        lines += ["", "### Removed by the native fix", "", "| Scenario | Why |", "| --- | --- |"]
+        lines += ["", "### Tests removed by the native fix", "", "| Scenario | Why |", "| --- | --- |"]
         lines += [f"| `{removal['scenario']}` | {removal['reason']} |" for removal in real_use["removed"]]
-    lines += ["", "### Test-local metadata", ""]
-    if not real_use["test_local_metadata"]:
-        lines.append("None: the shipped metadata was enough for every scenario.")
-    else:
-        lines.append(
-            "Entries the scenarios needed beyond the shipped metadata. They stay test-local; each is "
-            "a candidate for `metadata/` only through a separate change backed by a test in `tests/`."
-        )
-        for group in real_use["test_local_metadata"]:
-            lines += ["", f"#### {group['library']}", ""] + [f"- {entry}" for entry in group["entries"]]
-    body = "\n".join(lines) + "\n"
-    body += _format_local_ci_verification_section(descriptor["local_ci_verification"])
-    return title, body
+    return title, "\n".join(lines) + "\n"
 
 
 def _signed(value: int | float) -> str:

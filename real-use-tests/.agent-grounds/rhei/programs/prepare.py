@@ -18,12 +18,11 @@ import os
 import subprocess
 import sys
 from datetime import datetime, timezone
-from typing import Any
 
 import issue
 from build_tools import checkpoint, git, run_gradle
 from exit_codes import BAD_INPUT, INFRASTRUCTURE, OK
-from run_state import RunState, read_json, runtime_path, save
+from run_state import RunState, runtime_path, save
 
 
 def _resolve(workspace: str, path: str) -> str:
@@ -47,17 +46,6 @@ def _spawn_worktree(repo: str, path: str, branch: str) -> None:
         git(repo, "worktree", "add", path, branch)
     else:
         git(repo, "worktree", "add", "-b", branch, path, "HEAD")
-
-
-def allowed_packages(repo: str, group: str, artifact: str, version: str) -> list[str]:
-    """The `allowed-packages` of the `index.json` entry whose `tested-versions` lists `version`.
-
-    The run only targets a library the repository already supports
-    (§FS-real-use-test-generation.1), so the entry exists.
-    """
-    index: list[dict[str, Any]] = read_json(os.path.join(repo, "metadata", group, artifact, "index.json"))
-    entry: dict[str, Any] = next(entry for entry in index if version in entry.get("tested-versions", []))
-    return list(entry["allowed-packages"])
 
 
 def _attach_worktree(workspace: str, worktree: str) -> None:
@@ -101,7 +89,7 @@ def run(args: argparse.Namespace) -> int:
     except ValueError as error:
         print(f"ERROR: issue #{args.issue_number}: {error}", file=sys.stderr)
         return BAD_INPUT
-    group, artifact, version = coordinate.split(":")
+    _, artifact, version = coordinate.split(":")
 
     # Resolved like git's own top-level path, which the worktree ref must name.
     worktree: str = os.path.realpath(
@@ -120,7 +108,6 @@ def run(args: argparse.Namespace) -> int:
         worktree=worktree,
         branch=branch,
         base_commit=git(worktree, "rev-parse", "HEAD").strip(),
-        allowed_packages=allowed_packages(repo, group, artifact, version),
         scenario_passes=args.scenario_passes,
         started_at=datetime.now(timezone.utc).replace(microsecond=0).isoformat(),
     )

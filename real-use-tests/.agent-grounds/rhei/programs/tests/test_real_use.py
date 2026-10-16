@@ -29,7 +29,7 @@ sys.path.insert(0, PROGRAMS)
 import build_tools  # noqa: E402
 import local_metadata  # noqa: E402
 import real_use  # noqa: E402
-import scenarios  # noqa: E402
+import run_summary  # noqa: E402
 from exit_codes import BAD_INPUT, INFRASTRUCTURE, NATIVE_FAILED, NO_SCENARIO_LEFT, OK, STYLE_FAILED  # noqa: E402
 from run_state import load  # noqa: E402
 
@@ -41,7 +41,8 @@ METADATA: str = os.path.join("src", "test", "resources", "META-INF", "native-ima
 # spotlessFailing (a file spotless reports), checkstyleFailing (classes checkstyle
 # rejects), nativeNeeds
 # (class -> typeReached it needs), nativeUnfixable, collected (the entries the
-# native-image agent writes when realUseJavaTest runs with an agent output).
+# native-image agent writes when realUseJavaTest runs with an agent output),
+# jacocoFails (the coverage run fails).
 FAKE_GRADLEW: str = r'''#!/usr/bin/env python3
 import glob, json, os, sys
 task = next(arg for arg in sys.argv[1:] if not arg.startswith("-"))
@@ -96,6 +97,17 @@ elif task == "checkstyle":
     sys.exit(1 if failing else 0)
 elif task == "realUseNativeTest":
     sys.exit(report("test-native", native_failing()))
+elif task == "realUseJacocoReport":
+    if control.get("jacocoFails"):
+        sys.exit(1)
+    out = os.path.join(project, "build", "reports", "jacoco", "test")
+    os.makedirs(out, exist_ok=True)
+    open(os.path.join(out, "jacocoTestReport.xml"), "w").write(
+        '<report name="lib"><package name="org/example/lib">'
+        '<counter type="LINE" missed="1" covered="1"/></package>'
+        '<counter type="INSTRUCTION" missed="30" covered="70"/>'
+        '<counter type="LINE" missed="5" covered="15"/>'
+        '<counter type="METHOD" missed="2" covered="8"/></report>')
 '''
 
 # The fake Forge real-use route: records its arguments and prints the pushed branch,
@@ -121,6 +133,14 @@ print(json.dumps(issue))
 '''
 ISSUE: dict = {"title": "Real-use tests for org.example:lib:1.0.0", "state": "OPEN",
                "labels": [{"name": "real-use-test"}]}
+
+# The record Rhei writes after each agent invocation, as `runtime/accounting/invocations/<id>.json`.
+INVOCATION: str = """{{"agent": "claude-code", "state": "{state}",
+ "token_convention": "input-total-includes-cache",
+ "tokens": {{"input": {{"total": {{"value": {total}}}, "cached_read": {{"value": {read}}},
+                       "cache_write": {{"value": {write}}}}},
+            "output": {{"total": {{"value": {output}}}}}}}}}
+"""
 
 SCENARIO: str = """/*
  * Copyright and related rights waived via CC0
@@ -234,6 +254,11 @@ class WorkflowTest(unittest.TestCase):
     def runtime(self, *parts: str) -> str:
         return os.path.join(self.workspace, "runtime", "real-use", *parts)
 
+    def invocation(self, name: str, state: str, total: int, read: int, write: int, output: int) -> None:
+        """Play Rhei: record one agent invocation's token usage."""
+        self.write(os.path.join(self.workspace, "runtime", "accounting", "invocations", f"{name}.json"),
+                   INVOCATION.format(state=state, total=total, read=read, write=write, output=output))
+
     def preflight(self) -> None:
         """Play the preflight agent, then run its program."""
         self.write(self.project("build.gradle"), "// scaffold\n// supporting: com.example:pool:2.0\n")
@@ -282,6 +307,8 @@ class WorkflowTest(unittest.TestCase):
         self.assertTrue(os.path.exists(self.scenario_path("BrokenStyleTest")))
 
         # The agent fixes the style; publish commits on top of the checkpoints, nothing folded.
+        self.invocation("a", "generate", total=1010, read=900, write=100, output=40)
+        self.invocation("b", "agent-publication-fix", total=820, read=600, write=200, output=30)
         self.control({"checkstyleFailing": [], "spotlessFailing": ""})
         self.write(os.path.join(state.worktree, "OUTSIDE.md"), "an agent edit outside the project\n")
         self.assertEqual(OK, self.step("publish"))
@@ -292,10 +319,13 @@ class WorkflowTest(unittest.TestCase):
         self.assertIn(os.path.join(PROJECT, METADATA), committed)
         self.assertIn(os.path.join(PROJECT, "src", "test", "java", "com", "example", "realuse", "BrokenStyleTest.java"), committed)
         facts: dict = json.loads(self.read(self.runtime("publication", "render.json")))
-        self.assertIn({"class": "com.example.realuse.ClientRoundTripTest",
-                       "subsystem": "Sends requests through the client"}, facts["scenarios"])
+        self.assertEqual({"line": {"covered": 15, "total": 20, "ratio": 0.75},
+                          "instruction": {"covered": 70, "total": 100, "ratio": 0.7},
+                          "method": {"covered": 8, "total": 10, "ratio": 0.8}}, facts["library_coverage"])
+        self.assertEqual({"input": 30, "cached_input": 1500, "cache_write_input": 300, "output": 70},
+                         facts["tokens"])
+        self.assertEqual(2, facts["iterations"])
         self.assertEqual([], facts["removed"])
-        self.assertEqual("Target library", facts["test_local_metadata"][0]["library"])
         pushed: list[str] = json.loads(self.read(os.environ["FAKE_PUBLISH_RECORD"]))
         self.assertEqual(["--repo-path", state.worktree, "--coordinates", COORDINATE, "--issue-number", "10900",
                           "--timestamp", state.started_at, "--render-json", self.runtime("publication", "render.json")],
@@ -342,7 +372,7 @@ class WorkflowTest(unittest.TestCase):
         self.assertEqual([{"scenario": os.path.join(PROJECT, "src", "test", "java", "com", "example", "realuse",
                                                     "BytecodeTest.java"),
                            "reason": "generates bytecode at run time"}], facts["removed"])
-        self.assertEqual("Target library", facts["test_local_metadata"][0]["library"])
+        self.assertEqual(0, facts["iterations"])
 
     def test_no_scenario_left_ends_before_publication(self) -> None:
         self.native_agent_fix_turn()
@@ -360,6 +390,16 @@ class WorkflowTest(unittest.TestCase):
         self.control({"pushFails": False})
         self.assertEqual(OK, self.step("publish"))
         self.assertEqual(head, build_tools.git(load(self.workspace).worktree, "rev-parse", "HEAD").strip())
+
+    def test_failed_coverage_run_fails_the_run_after_the_commit(self) -> None:
+        self.assertEqual(OK, self.prepare(passes="1"))
+        self.preflight()
+        self.write_scenario("ClientRoundTripTest", "Sends requests through the client")
+        self.control({"jacocoFails": True})
+        self.assertEqual(INFRASTRUCTURE, self.step("publish"))
+        self.assertFalse(os.path.exists(os.environ["FAKE_PUBLISH_RECORD"]))
+        self.control({"jacocoFails": False})
+        self.assertEqual(OK, self.step("publish"))
 
     def test_unchanged_project_has_nothing_to_publish(self) -> None:
         self.assertEqual(OK, self.prepare(passes="1"))
@@ -398,20 +438,34 @@ class WorkflowTest(unittest.TestCase):
 class UnitTest(unittest.TestCase):
     """The parsing the programs rely on, checked in isolation."""
 
-    def test_subsystem_from_javadoc_and_markdown_comments(self) -> None:
+    def test_agent_cost_keeps_input_disjoint_from_cache_and_never_invents_a_zero(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
-            javadoc: str = os.path.join(tmp, "A.java")
-            with open(javadoc, "w") as handle:
-                handle.write(SCENARIO.format(name="A", subsystem="Pools connections"))
-            self.assertEqual("Pools connections", scenarios.subsystem(javadoc))
-            markdown: str = os.path.join(tmp, "B.java")
-            with open(markdown, "w") as handle:
-                handle.write("package p;\n\n/// Streams rows lazily. More.\n@Deprecated\npublic final class B {}\n")
-            self.assertEqual("Streams rows lazily", scenarios.subsystem(markdown))
-            bare: str = os.path.join(tmp, "C.java")
-            with open(bare, "w") as handle:
-                handle.write("package p;\npublic class C {}\n")
-            self.assertIsNone(scenarios.subsystem(bare))
+            invocations: str = os.path.join(tmp, "runtime", "accounting", "invocations")
+            os.makedirs(invocations)
+            records: dict = {
+                "a": {"token_convention": "input-total-includes-cache",
+                      "tokens": {"input": {"total": {"value": 110}, "cached_read": {"value": 100}},
+                                 "output": {"total": {"value": 5}}}},
+                "b": {"token_convention": "input-total-excludes-cache",
+                      "tokens": {"input": {"total": {"value": 7}, "cached_read": {"value": 50}},
+                                 "output": {"total": {"value": 3}}}},
+                # Killed before it reported usage: an iteration, but no tokens.
+                "c": {"tokens": {"input": {"total": {"status": "missing"}}}},
+            }
+            for name, record in records.items():
+                with open(os.path.join(invocations, f"{name}.json"), "w") as handle:
+                    json.dump(record, handle)
+            tokens, iterations = run_summary.agent_cost(tmp)
+        self.assertEqual({"input": 17, "cached_input": 150, "cache_write_input": None, "output": 8}, tokens)
+        self.assertEqual(3, iterations)
+
+    def test_library_coverage_reads_the_report_totals(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            report: str = os.path.join(tmp, "jacocoTestReport.xml")
+            with open(report, "w") as handle:
+                handle.write('<report name="lib"><counter type="LINE" missed="0" covered="0"/></report>')
+            self.assertEqual({"line": {"covered": 0, "total": 0, "ratio": 1.0}, "instruction": "N/A",
+                              "method": "N/A"}, run_summary.library_coverage(report))
 
     def test_copy_collected_keeps_conforming_new_entries_only(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
