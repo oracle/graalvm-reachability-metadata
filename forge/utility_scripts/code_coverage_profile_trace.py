@@ -3,21 +3,20 @@
 # You should have received a copy of the CC0 legalcode along with this
 # work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 
-"""Which test reaches each observed group of a deep prompt.
+"""The `Observed` chain of each group of a deep prompt.
 
 The sampled stacks run from the sampled library frame up to the JUnit test
 method. For each group this module picks the most frequent stack that reaches
-its divergence and splits it at the test: the frames from the test's call
-down to the divergence, JDK ones included, become the `Observed` chain, and
-the test frames
-become the `Called from test` block, each step at the line its compiled class
-attributes to the sampled bci (§AR-code-coverage-deep-navigation.2).
+its divergence and keeps it whole from the test method down to the
+divergence, assertion-library and JDK frames included. Each test frame carries
+the line its compiled class attributes to the sampled bci
+(§AR-code-coverage-deep-navigation.2).
 """
 
 from __future__ import annotations
 
 import os
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 
 from utility_scripts.code_coverage_model import MethodRef
 from utility_scripts.code_coverage_profile_graph import (
@@ -28,7 +27,7 @@ from utility_scripts.code_coverage_profile_graph import (
     translated_ref,
 )
 from utility_scripts.code_coverage_profile_inputs import line_at
-from utility_scripts.code_coverage_profile_records import simple_owner, translated_path
+from utility_scripts.code_coverage_profile_records import translated_path
 from utility_scripts.code_coverage_profile_routes import (
     FRAMEWORK_TYPE_PREFIXES,
     Sample,
@@ -56,6 +55,16 @@ SYNTHETIC_FRAME_MARKERS: tuple[str, ...] = (
 
 def _is_synthetic(ref: MethodRef) -> bool:
     return any(marker in ref.owner for marker in SYNTHETIC_FRAME_MARKERS)
+
+
+def _is_lambda_class(ref: MethodRef) -> bool:
+    return SYNTHETIC_LAMBDA_CLASS_MARKER in ref.owner
+
+
+def _invoked_name(callee: MethodRef) -> str:
+    """The name the caller's bytecode invokes: a factory stub stands for the
+    constructor."""
+    return "<init>" if callee.owner == FACTORY_METHOD_HOLDER else callee.name
 
 
 @dataclass(frozen=True)
@@ -91,14 +100,17 @@ class TestProject:
             ), None)
         return self._sources[owner]
 
-    def _method(self, ref: MethodRef, class_file: str) -> MethodCode | None:
+    def _methods(self, class_file: str) -> list[MethodCode]:
         if class_file not in self._classes:
             try:
                 self._classes[class_file] = read_class_file(class_file)
             except (OSError, ClassFileError):
                 self._classes[class_file] = []
+        return self._classes[class_file]
+
+    def _method(self, ref: MethodRef, class_file: str) -> MethodCode | None:
         named: list[MethodCode] = [
-            method for method in self._classes[class_file] if method.name == ref.name
+            method for method in self._methods(class_file) if method.name == ref.name
         ]
         exact: MethodCode | None = next(
             (method for method in named if method.params == ref.params), None
@@ -113,29 +125,60 @@ class TestProject:
         if method is None or callee is None:
             return None
         invoked: tuple[str, str] | None = method.invokes.get(bci)
-        # A factory stub stands for the constructor the bytecode invokes.
-        expected: str = "<init>" if callee.owner == FACTORY_METHOD_HOLDER else callee.name
-        if invoked is None or invoked[1] != expected:
+        if invoked is None or invoked[1] != _invoked_name(callee):
             return None
         return line_at(method.line_numbers, bci)
 
+    def lambda_line(self, ref: MethodRef, callee: MethodRef | None) -> int | None:
+        """The line of a lambda seen only through its generated class: the one
+        line of the declaring class's lambda bodies that invokes the callee."""
+        declaring: str = ref.owner.split(SYNTHETIC_LAMBDA_CLASS_MARKER, 1)[0]
+        source: TestSource | None = self.source_of(declaring)
+        if source is None or callee is None:
+            return None
+        lines: set[int | None] = {
+            line_at(method.line_numbers, bci)
+            for method in self._methods(source.class_file)
+            if method.name.startswith("lambda$")
+            for bci, (_, name) in method.invokes.items()
+            if name == _invoked_name(callee)
+        }
+        return lines.pop() if len(lines) == 1 else None
+
 
 @dataclass(frozen=True)
-class TestStep:
+class ObservedFrame:
+    """One frame of a group's `Observed` chain."""
+
+    #: The frame as routes name it; a test lambda's owner is its declaring class.
     ref: MethodRef
-    line: int | None
-    source: str
+    #: The test file holding the frame; `None` for any other frame.
+    source: str | None = None
+    #: The test frame's line, when the compiled class confirms it.
+    line: int | None = None
+    is_lambda: bool = False
 
 
 @dataclass(frozen=True)
 class GroupTrace:
-    """One group's most frequent stack, split at the test."""
+    """One group's most frequent stack, from the test method down to the
+    divergence."""
 
-    #: Frames from the test's call down to the divergence, JDK ones included,
-    #: named as routes name them.
-    chain: list[MethodRef]
-    #: Test frames in call order; empty when the stack holds no test frame.
-    steps: list[TestStep] = field(default_factory=list)
+    chain: list[ObservedFrame]
+
+    @property
+    def test_files(self) -> list[str]:
+        """The chain's test files, in call order."""
+        files: list[str] = []
+        for frame in self.chain:
+            if frame.source is not None and frame.source not in files:
+                files.append(frame.source)
+        return files
+
+
+def untraced(refs: list[MethodRef]) -> GroupTrace:
+    """A chain of route frames alone, for a group no stack traces."""
+    return GroupTrace([ObservedFrame(ref) for ref in refs])
 
 
 @dataclass
@@ -165,7 +208,9 @@ class SampleTrace:
         self._occurrences: dict[int, list[tuple[Sample, int]]] | None = None
 
     def _test_source(self, ref: MethodRef) -> TestSource | None:
-        if self.test_project is None or _is_synthetic(ref):
+        # A test lambda's generated class is the only frame some stacks keep
+        # of it, so it stays a test frame.
+        if self.test_project is None or (_is_synthetic(ref) and not _is_lambda_class(ref)):
             return None
         return self.test_project.source_of(ref.owner)
 
@@ -216,18 +261,19 @@ class SampleTrace:
 
         def preference(candidate: _Candidate) -> tuple[bool, int]:
             # A stack with a test frame before one without, whichever suite
-            # the test is in; the most frequent stack within each.
+            # the test is in; the most frequent stack within each. The route
+            # may start at the test frame itself.
             tested: bool = any(
                 self._test_source(ref) is not None
-                for ref, _ in candidate.sample.full_path[:candidate.start]
+                for ref, _ in candidate.sample.full_path[:candidate.start + 1]
             )
             return (not tested, -candidate.count)
 
         if not stacks:
-            return GroupTrace(translated_path(list(divergence), self.graph))
+            return untraced(translated_path(list(divergence), self.graph))
         # `stacks` keeps sample order, so equal preferences resolve the same way
         # on every run.
-        return self._split(min(stacks.values(), key=preference))
+        return self._chain(min(stacks.values(), key=preference))
 
     def _shown(self, ref: MethodRef) -> MethodRef | None:
         """A library frame as a route names it: a lambda body or class by its
@@ -237,52 +283,54 @@ class SampleTrace:
         shown: MethodRef = translated_ref(static_id, self.graph) if static_id is not None else ref
         return None if _is_synthetic(shown) else shown
 
-    def _split(self, candidate: _Candidate) -> GroupTrace:
+    def _test_frame(
+            self,
+            ref: MethodRef,
+            bci: int,
+            callee: MethodRef | None,
+            source: TestSource,
+    ) -> ObservedFrame | None:
+        """A test frame with its line; a lambda by its declaring class."""
+        assert self.test_project is not None
+        if _is_lambda_class(ref):
+            # The body frame, when the stack keeps it, carries the line.
+            if callee is not None and callee.name.startswith("lambda$") \
+                    and self._test_source(callee) is not None:
+                return None
+            declaring: str = ref.owner.split(SYNTHETIC_LAMBDA_CLASS_MARKER, 1)[0]
+            return ObservedFrame(
+                MethodRef(declaring, "lambda", (), "void"), source.source,
+                self.test_project.lambda_line(ref, callee), True,
+            )
+        line: int | None = self.test_project.step_line(ref, bci, callee)
+        if ref.name.startswith("lambda$"):
+            return ObservedFrame(MethodRef(ref.owner, "lambda", (), "void"), source.source, line, True)
+        return ObservedFrame(ref, source.source, line)
+
+    def _chain(self, candidate: _Candidate) -> GroupTrace:
+        """The stack from its outermost test frame, or without one from its
+        outermost library frame, down to the divergence."""
         frames: list[tuple[MethodRef, int]] = candidate.sample.full_path
-        tests: list[int] = [
-            index for index in range(candidate.start)
-            if self._test_source(frames[index][0]) is not None
-        ]
-        first: int = tests[-1] + 1 if tests else next(
-            (index for index in range(candidate.start)
-             if self._is_library(frames[index][0]) and not _is_synthetic(frames[index][0])),
-            candidate.start,
+        first: int = next(
+            (index for index in range(candidate.start + 1)
+             if self._test_source(frames[index][0]) is not None),
+            next(
+                (index for index in range(candidate.start)
+                 if self._is_library(frames[index][0]) and not _is_synthetic(frames[index][0])),
+                candidate.start,
+            ),
         )
-        chain: list[MethodRef] = []
-        for ref, _ in frames[first:candidate.end + 1]:
-            shown: MethodRef | None = self._shown(ref)
-            if shown is not None and (not chain or chain[-1] != shown):
-                chain.append(shown)
-        steps: list[TestStep] = []
-        for index in tests:
+        chain: list[ObservedFrame] = []
+        for index in range(first, candidate.end + 1):
             ref, bci = frames[index]
-            source: TestSource | None = self._test_source(ref)
-            assert source is not None and self.test_project is not None
             callee: MethodRef | None = frames[index + 1][0] if index + 1 < len(frames) else None
-            line: int | None = self.test_project.step_line(ref, bci, callee)
-            steps.append(TestStep(ref, line, source.source))
-        return GroupTrace(chain, steps)
-
-
-def _step_label(ref: MethodRef) -> str:
-    if ref.name.startswith("lambda$"):
-        return "lambda"
-    return f"{simple_owner(ref.owner)}()" if ref.name == "<init>" else f"{ref.name}()"
-
-
-def called_from_test_lines(trace: GroupTrace) -> list[str]:
-    """`Called from test`: the test JUnit invoked, then one step per test
-    frame, each one level deeper than its caller (§AR-code-coverage-deep-navigation.2)."""
-    if not trace.steps:
-        return []
-    head: TestStep = trace.steps[0]
-    lines: list[str] = [
-        f"Called from test `{simple_owner(head.ref.owner)}.{_step_label(head.ref)}` "
-        f"in `{head.source}`:"
-    ]
-    for depth, step in enumerate(trace.steps):
-        line: str = f"line {step.line}" if step.line is not None else "line ?"
-        where: str = f" in `{step.source}`" if step.source != head.source else ""
-        lines.append(f"  {'    ' * depth}{line}{where}: {_step_label(step.ref)}")
-    return lines
-
+            source: TestSource | None = self._test_source(ref)
+            frame: ObservedFrame | None
+            if source is not None:
+                frame = self._test_frame(ref, bci, callee, source)
+            else:
+                shown: MethodRef | None = self._shown(ref)
+                frame = ObservedFrame(shown) if shown is not None else None
+            if frame is not None and (not chain or chain[-1] != frame):
+                chain.append(frame)
+        return GroupTrace(chain)

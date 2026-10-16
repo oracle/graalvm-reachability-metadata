@@ -24,6 +24,7 @@ import json
 import os
 import shutil
 import sys
+from collections.abc import Callable
 from dataclasses import dataclass
 
 from utility_scripts.code_coverage_profile_graph import CallGraph
@@ -203,9 +204,15 @@ def write_queue(report_path: str, queue_path: str) -> int:
     return len(queue)
 
 
-def dispatch(queue_path: str, prompt_path: str) -> int:
+def dispatch(
+        queue_path: str,
+        prompt_path: str,
+        on_session: Callable[[dict], None] | None = None,
+) -> int:
     """Hand out the next queued session, or report the pass spent
-    (§AR-code-coverage-deep-navigation.4)."""
+    (§AR-code-coverage-deep-navigation.4). `on_session` receives the session
+    handed out, so its coverage can be counted once it returns
+    (§AR-code-coverage-trajectory.4)."""
     try:
         with open(queue_path, encoding="utf-8") as queue_file:
             queue: list[dict] = json.load(queue_file)
@@ -231,6 +238,8 @@ def dispatch(queue_path: str, prompt_path: str) -> int:
         print(f"[deep-dispatch] session prompt unavailable: {error}", file=sys.stderr)
         return DISPATCH_FAILED
     _write_json(queue_path, queue)
+    if on_session is not None:
+        on_session(session)
     print(
         f"[deep-dispatch] session {session.get('index')} ({session.get('kind')}, "
         f"{session.get('targets')} targets); {len(queue)} left",
