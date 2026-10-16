@@ -50,7 +50,8 @@ its runs opened (§FS-real-use-test-generation.4).
 ### 2.1 Prepare
 
 A program creates the run's worktree and branch and scaffolds the coordinate
-project when it does not exist yet.
+project, in the target library's language (§FS-real-use-test-contract.1.5),
+when it does not exist yet.
 
 ### 2.2 Preflight: declare the libraries
 

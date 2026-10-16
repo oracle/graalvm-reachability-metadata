@@ -57,6 +57,26 @@ alongside the target, pinned to a version compatible with the target version.
 Each supporting library is the real artifact, and its packages are included in
 the project's `user-code-filter.json` (§FS-real-use-tests.1).
 
+### 1.5 In the target library's language
+
+A scenario is written in the target library's language: the `language` of the
+`metadata/<groupId>/<artifactId>/index.json` entry whose `tested-versions`
+lists the coordinate's version, or Java when that entry names none. An
+application calls a Kotlin or Scala library from Kotlin or Scala, and the
+calling language decides which of the library's dynamic-access paths run, such
+as Kotlin companion lookups, Scala module singletons, or serializers a
+compiler plugin generates. A Java scenario would exercise paths no consumer
+takes. The project is set up as a `tests/` project of that language
+(§root/FS-test-contract.1.1).
+
+```text
+Good: exposed-json 1.2.0, whose entry names kotlin: a Kotlin class under
+      src/test/kotlin/ declares a table with a json column as the Exposed
+      documentation shows.
+Bad:  the same scenario in Java, calling the static accessors Kotlin
+      generates.
+```
+
 ## 2. What a real-use test must not do
 
 ### 2.1 No coverage chasing
