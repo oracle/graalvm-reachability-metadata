@@ -3,7 +3,7 @@
 # You should have received a copy of the CC0 legalcode along with this
 # work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 
-"""Tests for the launcher's worker-agent check.
+"""Tests for the launcher's worker-agent and scenario-pass checks.
 
 §FS-real-use-test-generation.1 allows Pi and Claude Code; §AR-real-use-test-launcher
 maps the target onto Forge's host gate. A fake host gate records its arguments
@@ -73,6 +73,22 @@ class LauncherTest(unittest.TestCase):
         self.assertEqual(
             ["--analysis-agent", "claude", "--analysis-family", "claude-code", "--analysis-model", "opus"],
             self._agent_arguments(recorded))
+
+    def test_a_scenario_pass_count_keeps_the_agent_check(self) -> None:
+        result, recorded = self._launch("--scenario-passes", "20", "--worker-agent", "claude-code[high]:opus")
+
+        self.assertEqual(1, result.returncode, result.stderr)
+        self.assertEqual(
+            ["--analysis-agent", "claude", "--analysis-family", "claude-code", "--analysis-model", "opus"],
+            self._agent_arguments(recorded))
+
+    def test_a_count_that_is_not_positive_is_rejected_before_the_host_gate(self) -> None:
+        for count in ("0", "-3", "ten"):
+            result, recorded = self._launch("--scenario-passes", count)
+
+            self.assertEqual(2, result.returncode, count)
+            self.assertIn("the count must be a positive integer", result.stderr)
+            self.assertIsNone(recorded)
 
     def test_other_agents_are_rejected_before_the_host_gate(self) -> None:
         result, recorded = self._launch("--worker-agent", "codex[high]:gpt-5.6-luna")
