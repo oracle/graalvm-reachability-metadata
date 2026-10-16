@@ -127,6 +127,7 @@ Do not create a namespace for a regular module or component that still belongs t
 Cross-project citations use §alias/<ID>.
 
 - [`forge`](forge/AGENTS.md): Automation subproject that turns labeled issues into reviewed metadata pull requests
+- [`real-use-tests`](real-use-tests/AGENTS.md): Realistic library scenarios run on the JVM and Native Image against the shipped metadata
 - [`root`](AGENTS.md): Repository for shared GraalVM reachability metadata, tests, and release infrastructure
 
 ### Declarations and citations
@@ -174,6 +175,13 @@ documented in [forge/AGENTS.md](forge/AGENTS.md). Inside `forge/`, cite Forge
 facts as `§<ID>`; from repository docs, cite them as `§forge/<ID>` — for example
 `§forge/GOAL-forge-direction`. Run `grund check` from the repository root, which
 is the only place the workspace alias table is in scope.
+
+`real-use-tests` is a second workspace member with its own namespace and kinds
+(`KIND ∈ {GRUND, GOAL, FS, AR}`), documented in
+[real-use-tests/AGENTS.md](real-use-tests/AGENTS.md). It holds the suite of
+realistic library scenarios that run against the shipped metadata without
+changing it. Cite its facts from repository docs as `§real-use-tests/<ID>` —
+for example `§real-use-tests/FS-real-use-tests`.
 
 ### Additional rules
 

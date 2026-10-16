@@ -16,9 +16,13 @@ see [../README.md](../README.md), [CONTRIBUTING.md](CONTRIBUTING.md),
 The repository root is the `root` grund namespace. Forge is a separate
 namespace (an independently checked subproject) declared as a workspace member;
 it owns its own motivation, goals, spec, and architecture under
-[../forge/docs/](../forge/docs). Cite root facts as `§<ID>` here and as
-`§root/<ID>` from Forge; cite Forge facts as `§forge/<ID>` from here. Run
-`grund check` from the repository root to validate both.
+[../forge/docs/](../forge/docs). The real-use tests project is a second
+member, with its documentation under
+[../real-use-tests/docs/](../real-use-tests/docs/README.md): realistic library
+scenarios that run against the shipped metadata without changing it. Cite root
+facts as `§<ID>` here and as `§root/<ID>` from a member; cite member facts as
+`§forge/<ID>` and `§real-use-tests/<ID>` from here. Run `grund check` from the
+repository root to validate every namespace.
 
 ## Directory structure
 

@@ -61,6 +61,7 @@ file rather than by prefix.
 | [§AR-issue-linking](git-scripts.md#ar-issue-linking-issue-linking-and-labels) | Issue linking and labels |
 | [§AR-chunked-linking](git-scripts.md#ar-chunked-linking-chunked-dynamic-access-pr-linking) | Chunked dynamic-access PR linking |
 | [§AR-not-for-native-image-publication](git-scripts.md#ar-not-for-native-image-publication-not-for-native-image-publication) | Not-for-native-image publication |
+| [§AR-real-use-tests-publication](git-scripts.md#ar-real-use-tests-publication-real-use-tests-publication) | Real-use tests publication |
 
 This index is navigational. Cite the specific declaration ID rather than this
 file.

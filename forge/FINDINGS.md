@@ -8,6 +8,11 @@ Newest entry first; every non-approval is recorded, including one a repair later
 **Grund citation under the ASCII-only test tree**
 
 The contributed `tests/src/com.azure/azure-storage-internal-avro/12.14.0/build.gradle` contained the non-ASCII `§FS-test-contract.2.7` marker. Repository instructions prohibit grund citations anywhere under `tests/src` because that suite is ASCII-only.
+## 2026-10-15 — org.springframework.ai:spring-ai-autoconfigure-model-chat-observation:2.0.0-RC2 (#8416)
+
+**Generated test used trivial assertions and pinned a companion artifact version**
+
+The generated autoConfigurationCanBeCreated test only constructed target types and asserted that they were non-null, which did not exercise observable library behavior as required by FS-test-contract.1.3. The build also pinned org.springframework.ai:spring-ai-model to 2.0.0-RC2 instead of the TCK-resolved tested library version, making the suite version-specific contrary to FS-test-contract.2.5.
 
 ## 2026-10-13 — io.projectreactor.netty:reactor-netty-http:1.3.0 (#9352)
 

@@ -51,6 +51,7 @@ ROUTE_LABELS = {
     "not-for-native-image": ["GenAI", "library-new-request", "not-for-native-image"],
     "code-coverage-benchmark-result": ["GenAI", "code-coverage-improvement", "rhei"],
     "code-coverage-improvement": ["GenAI", "code-coverage-improvement", "rhei"],
+    "real-use-tests": ["GenAI", "real-use-test", "rhei"],
 }
 
 
@@ -893,6 +894,49 @@ Reason:
     return title, body
 
 
+def _render_real_use_tests(
+        descriptor: dict[str, Any],
+        validated: ValidatedPublication | None,
+) -> tuple[str, str]:
+    """Report the real-use run's coverage, cost, and removals.
+
+    The run resolves its `real-use-test` issue; no Forge strategy produced it, so
+    the body omits the revision block (§forge/AR-real-use-tests-publication).
+    The scenarios and test-local entries are read in the diff
+    (§real-use-tests/FS-real-use-test-generation.2.7).
+    """
+    coordinates = descriptor["library"]["coordinates"]
+    real_use = descriptor["render"]["real_use"]
+    coverage = real_use["library_coverage"]
+    tokens = real_use["tokens"]
+    title = f"[GenAI] Add real-use tests for {coordinates}"
+    instruction = coverage["instruction"]
+    total = "N/A" if instruction == "N/A" else f"{instruction['ratio'] * 100:.2f}%"
+    lines = [
+        "## Real-use tests",
+        "",
+        _issue_reference(descriptor),
+        "",
+        f"Real-use tests for `{coordinates}`: each scenario uses one subsystem of the library "
+        "the way an application does and passes on the JVM and on Native Image against the "
+        "shipped metadata.",
+        "",
+        f"- Library coverage: {total}",
+        f"- Lines: {_format_coverage_entry(coverage['line'])}",
+        f"- Instructions: {_format_coverage_entry(instruction)}",
+        f"- Methods: {_format_coverage_entry(coverage['method'])}",
+        f"- Input tokens: {_benchmark_metric(tokens['input'])}",
+        f"- Cached input tokens: {_benchmark_metric(tokens['cached_input'])}",
+        f"- Cache-write input tokens: {_benchmark_metric(tokens['cache_write_input'])}",
+        f"- Output tokens: {_benchmark_metric(tokens['output'])}",
+        f"- Iterations: {real_use['iterations']}",
+    ]
+    if real_use["removed"]:
+        lines += ["", "### Tests removed by the native fix", "", "| Scenario | Why |", "| --- | --- |"]
+        lines += [f"| `{removal['scenario']}` | {removal['reason']} |" for removal in real_use["removed"]]
+    return title, "\n".join(lines) + "\n"
+
+
 def _signed(value: int | float) -> str:
     return f"{'+' if value > 0 else ''}{value}"
 
@@ -1242,6 +1286,7 @@ _TEMPLATE_BUILDERS = {
     "not-for-native-image": _render_not_for_native_image,
     "code-coverage-improvement": _render_code_coverage_improvement,
     "code-coverage-benchmark-result": _render_code_coverage_benchmark_result,
+    "real-use-tests": _render_real_use_tests,
 }
 
 

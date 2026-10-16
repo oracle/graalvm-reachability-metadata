@@ -10,6 +10,7 @@ import org.graalvm.internal.tck.utils.DynamicAccessUtils
 import org.graalvm.internal.tck.utils.BaseLayerUtils
 import org.graalvm.internal.tck.utils.JarUtils
 import org.graalvm.internal.tck.utils.NativeImageConfigUtils
+import org.graalvm.internal.tck.utils.RealUseUtils
 
 import org.graalvm.buildtools.gradle.tasks.BuildNativeImageTask
 import org.graalvm.buildtools.gradle.tasks.NativeRunTask
@@ -695,6 +696,43 @@ tasks.register("listLibraryJars") { task ->
     }
 }
 
+// A real-use project (§real-use-tests/AR-real-use-test-harness.1) builds with this same plugin;
+// only the tasks and flags below are its own.
+boolean realUseProject = projectDir.toPath().startsWith(tck.repoRoot.get().asFile.toPath().resolve("real-use-tests"))
+boolean realUseExactReachability = realUseProject && providers.gradleProperty("tck.realUse.exactReachability")
+        .map { String value -> value.toBoolean() }
+        .getOrElse(false)
+
+if (realUseProject) {
+    // §real-use-tests/AR-real-use-test-harness.1: test tooling a scenario never declares.
+    dependencies {
+        testImplementation "org.assertj:assertj-core:3.22.0"
+    }
+    // §real-use-tests/AR-real-use-test-harness.2
+    tasks.register("generateRealUseFilter") { task ->
+        task.setDescription("Writes user-code-filter.json covering every package of the declared libraries")
+        task.setGroup(JavaBasePlugin.VERIFICATION_GROUP)
+        task.doLast {
+            List<File> jars = RealUseUtils.declaredLibraryJars(configurations.testImplementation, configurations.testRuntimeClasspath)
+            jars.addAll(resolveTestedLibraryJars())
+            int rules = RealUseUtils.writeUserCodeFilter(file("user-code-filter.json"), jars)
+            logger.lifecycle("Wrote user-code-filter.json with ${rules} package rules")
+        }
+    }
+
+    // `-Pagent test` merges the session into one file; this copies it once the tests ran.
+    // NBT's metadataCopy snapshots the agent output at configuration time, so in the same
+    // build as the test run it would copy nothing.
+    tasks.register("copyRealUseAgentMetadata") { task ->
+        task.setDescription("Copies the native-image agent's merged test metadata to -Ptck.realUse.agentOutput")
+        task.setGroup(JavaBasePlugin.VERIFICATION_GROUP)
+        task.mustRunAfter("test")
+        task.doLast {
+            RealUseUtils.copyAgentMetadata(layout.buildDirectory.get().asFile, requiredAbsolutePathProperty("tck.realUse.agentOutput"))
+        }
+    }
+}
+
 tasks.register("listRuntimeDependencyArtifacts") { task ->
     task.setDescription("Lists resolved tested-library dependency artifacts for metadata ownership routing")
     task.setGroup(JavaBasePlugin.VERIFICATION_GROUP)
@@ -1105,6 +1143,10 @@ graalvmNative {
                 excludeConfig.put(libraryGAV, [".*"])
             }
             buildArgs.addAll(nativeImageArgs)
+            if (realUseExactReachability) {
+                // §real-use-tests/AR-real-use-test-harness.2: name each missing registration.
+                buildArgs.add("--exact-reachability-metadata")
+            }
             buildArgs.addAll(nativeTraceBuildArgs)
             buildArgs.addAll(pgoBuildArgs)
             if (dedicatedLayer) {

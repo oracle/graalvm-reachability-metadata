@@ -40,10 +40,12 @@ spotless {
         target(
                 tck.metadataRoot.map { it.toString() + '/**/*.json' }.get(),
                 tck.testRoot.map { it.toString() + '/**/*.json' }.get(),
+                tck.repoRoot.map { it.toString() + '/real-use-tests/src/**/*.json' }.get(),
                 tck.repoRoot.map { it.toString() + '/stats/**/*.json' }.get()
         )
         targetExclude(
                 tck.testRoot.map { it.toString() + '/**/build/**/*.json' }.get(),
+                tck.repoRoot.map { it.toString() + '/real-use-tests/src/**/build/**/*.json' }.get(),
                 tck.repoRoot.map { it.toString() + '/.github/**/*.json' }.get()
         )
         gson()
