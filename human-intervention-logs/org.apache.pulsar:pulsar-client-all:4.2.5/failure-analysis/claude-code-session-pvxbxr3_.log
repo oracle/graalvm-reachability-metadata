@@ -1,0 +1,57 @@
+Prompt:
+Read-only analysis task. Do not modify files, create commits, run fix commands, or open a PR.
+
+Project issue details:
+- Issue number: 10642
+- Library: org.apache.pulsar:pulsar-client-all:4.2.5
+- Pipeline label: library-new-request
+- Workflow status: failure
+- Human-intervention reason: test_generation_failed
+- Dynamic-access coverage: 258/989 (26.09%) from report
+
+Preserved work:
+- Preserved work branch: https://github.com/oracle/graalvm-reachability-metadata/tree/ai%2Fkimeta%2Fhuman-intervention%2Fissue-10642-library-new-request-org.apache.pulsar-pulsar-client-all-4.2.5-672de1db
+- Branch name: `ai/kimeta/human-intervention/issue-10642-library-new-request-org.apache.pulsar-pulsar-client-all-4.2.5-672de1db`
+- Preservation commit created: True
+
+Run metrics summary:
+- Metrics status: failure
+- Strategy: optimistic_dynamic_access_iterative_pi_gpt-5.6-sol
+- Agent: pi
+- Model: gpt-5.6-sol
+- Iterations: 15
+- Generated LOC: 0
+- Starting commit: 3c66e96f01339a3841334b212e2e4d46668e2521
+- Ending commit: dafe65285fdfe54ac28dd6b6b742c911fab83a7a
+
+Relevant log paths:
+- logs/org.apache.pulsar:pulsar-client-all:4.2.5/post-gen/claude-code.log
+- logs/org.apache.pulsar:pulsar-client-all:4.2.5/post-gen/claude-code-session-c0lr9of8.log
+- logs/org.apache.pulsar:pulsar-client-all:4.2.5/metadata-fix/claude-code.log
+- logs/org.apache.pulsar:pulsar-client-all:4.2.5/metadata-fix/claude-code-session-xn8b456_.log
+- logs/org.apache.pulsar:pulsar-client-all:4.2.5/gradle-test/gradle-test-2026-10-16T13-06-35-793422Z.log
+- logs/org.apache.pulsar:pulsar-client-all:4.2.5/gradle-test/gradle-test-2026-10-16T13-04-59-486899Z.log
+- logs/org.apache.pulsar:pulsar-client-all:4.2.5/gradle-test/gradle-test-2026-10-16T13-03-21-139201Z.log
+- logs/org.apache.pulsar:pulsar-client-all:4.2.5/native-test-verify/claude-code.log
+
+Generated project paths to inspect if present:
+- Current reachability-metadata worktree
+- Scratch metrics repository for this run
+
+Task:
+Inspect the available logs, generated tests, Gradle output, and metrics. Write the exact GitHub issue comment that should be posted for human follow-up.
+
+Comment requirements:
+- Start with the heading `Human intervention needed`.
+- State that the automated job failed.
+- Include the preserved work branch URL when it is available.
+- Explain the most likely failing stage and the concrete evidence from logs or metrics.
+- Mention specific log paths that a maintainer should inspect.
+- End with 2 or 3 specific manual next steps.
+- Keep the comment concise but detailed enough to act on.
+- Do not use code fences.
+- Do not mention being an AI.
+
+Conversation:
+{"duration_api_ms":159421,"stop_reason":"end_turn","session_id":"a9b6a814-d5ef-4dc0-87a9-8c1dc0650701","total_cost_usd":0.7717024,"usage":{"input_tokens":36,"cache_creation_input_tokens":85749,"cache_read_input_tokens":1490072,"output_tokens":13062,"output_tokens_details":{"thinking_tokens":7307},"server_tool_use":{"web_search_requests":0,"web_fetch_requests":0},"service_tier":"standard","cache_creation":{"ephemeral_1h_input_tokens":85749,"ephemeral_5m_input_tokens":0},"inference_geo":"global","iterations":[{"input_tokens":2,"output_tokens":3856,"cache_read_input_tokens":108841,"cache_creation_input_tokens":916,"cache_creation":{"ephemeral_5m_input_tokens":0,"ephemeral_1h_input_tokens":916},"type":"message"}],"speed":"standard"},"modelUsage":{"claude-sonnet-5":{"inputTokens":36,"outputTokens":13062,"cacheReadInputTokens":1490072,"cacheCreationInputTokens":85749,"webSearchRequests":0,"costUSD":0.7717024,"contextWindow":1000000,"maxOutputTokens":64000,"thinkingTokens":7307,"canonicalModel":"claude-sonnet-5","provider":"firstParty","costBasis":"list"}},"permission_denials":[],"terminal_reason":"completed","fast_mode_state":"off","fast_mode_disabled_reason":"sdk_opt_in_required","subagent_stats":{"spawned":0,"requested":{"background":0,"foreground":0,"unset":0},"started_in_background":0,"max_depth":0,"spawned_by_subagents":0,"completed":0,"failed":0,"killed":{"parent":0,"user":0,"system":0},"refused":{"depth_limit":0,"concurrency_limit":0,"budget":0},"by_type":{}},"is_error":false,"num_turns":24,"subtype":"success","api_error_status":null,"result":"Based on the logs, I traced the failure to a specific stage. Here's what happened: the JVM test suite actually passed cleanly (74/74, two separate `BUILD SUCCESSFUL` runs), but the later native-image build step failed on an unrelated GraalVM analysis limitation, and the two automated recovery agents (`metadata_fix`, `post_gen`) both timed out trying to handle it, which is why the job escalated without ever producing a proper root-cause report.\n\nHere is the exact comment to post:\n\n---\n\n## Human intervention needed\n\nThe automated metadata-generation job for `org.apache.pulsar:pulsar-client-all:4.2.5` failed and needs manual follow-up.\n\nPreserved work branch: https://github.com/oracle/graalvm-reachability-metadata/tree/ai%2Fkimeta%2Fhuman-intervention%2Fissue-10642-library-new-request-org.apache.pulsar-pulsar-client-all-4.2.5-672de1db\n\nMost likely failing stage: the native-image test build in finalization (operand `org.apache.pulsar:pulsar-client-all:4.2.5 current-defaults GraalVM 25 test`, step `agent_fix()` per `forge/.continuation-marker.json`), not the JVM tests themselves. The JVM suite passed cleanly (74/74 tests, `BUILD SUCCESSFUL`) in `logs/org.apache.pulsar:pulsar-client-all:4.2.5/gradle-test/gradle-test-2026-10-16T13-03-21-139201Z.log` and the following `...13-04-59...` log, so this is not a generated-test compile/assert bug. The real failure shows up in `logs/org.apache.pulsar:pulsar-client-all:4.2.5/post-gen/claude-code-session-c0lr9of8.log`: `nativeTestCompile FAILED` with `UnsupportedFeatureException: Type not found during analysis: AnalysisType<X509CertInfo...>`, reached while scanning an embedded `sun.security.x509.X509CertImpl` constant via `MultiLayeredImageSingleton.getAllLayers`. The dynamic-access coverage JSON shows an uncovered call site at `org.apache.pulsar.shade.io.netty.handler.ssl.util.OpenJdkSelfSignedCertGenerator.generate(...)`, which is almost certainly the origin: a generated test exercises Netty's self-signed cert generator, baking JDK-internal X.509 objects into the image heap in a way the closed-world analysis can't resolve.\n\nBoth automated recovery steps then gave up before producing a fix or report: `logs/org.apache.pulsar:pulsar-client-all:4.2.5/metadata-fix/claude-code.log` reads \"Agent metadata_fix() timed out after 20:00\", and `logs/org.apache.pulsar:pulsar-client-all:4.2.5/post-gen/claude-code.log` reads \"Agent post_gen() timed out after 10:00\" — so the usual fallback (deleting the offending generated test) never ran, and dynamic-access coverage (258/989, 26.09%) reflects the snapshot from just before this native-image failure, not a final state.\n\nSuggested next steps:\n1. Check out the preserved branch and reproduce with `./gradlew test -Pcoordinates=org.apache.pulsar:pulsar-client-all:4.2.5`, then isolate the test(s) that trigger `OpenJdkSelfSignedCertGenerator`/self-signed cert generation to confirm it's the cause of the `X509CertInfo` analysis failure.\n2. Since this looks like a native-image-unsupported pattern (embedding a generated X.509 cert as an image-heap constant) rather than missing metadata, remove or rescope the generated test(s) that exercise that path instead of adding more reflection entries.\n3. Re-run `./gradlew generateDynamicAccessCoverageReport -Pcoordinates=org.apache.pulsar:pulsar-client-all:4.2.5` once the native-image build passes to get a trustworthy coverage number before resubmitting.","ttft_ms":2887,"type":"result","duration_ms":162478,"uuid":"bda7ea7d-176b-41cc-bca9-ebd1c5181a9c","ttft_stream_ms":2084,"time_to_request_ms":108,"first_content_frame_ms":2085,"queued_turn_count":0,"result_index":0}
+
