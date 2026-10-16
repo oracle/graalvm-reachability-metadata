@@ -266,8 +266,6 @@ def classify_repo_fix_paths(repo_path: str, base_commit: str, coordinates: str) 
         f"metadata/{group}/{artifact}/",
         f"tests/src/{group}/{artifact}/",
         f"stats/{group}/{artifact}/",
-        # The real-use route's own output (§AR-real-use-tests-publication).
-        f"real-use-tests/src/{group}/{artifact}/",
     )
     repo_fix_paths: list[str] = []
     for path in _changed_files(repo_path, base_commit, "HEAD", diff_filter="ACMRTD"):

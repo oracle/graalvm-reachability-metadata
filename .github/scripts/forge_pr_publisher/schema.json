@@ -63,8 +63,7 @@
         "fixes-java-run-fail",
         "fixes-native-image-run-fail",
         "not-for-native-image",
-        "code-coverage-improvement",
-        "real-use-tests"
+        "code-coverage-improvement"
       ]
     },
     "template_type": {
@@ -75,8 +74,7 @@
         "fixes-java-run-fail",
         "fixes-native-image-run-fail",
         "not-for-native-image",
-        "code-coverage-improvement",
-        "real-use-tests"
+        "code-coverage-improvement"
       ]
     },
     "strategy_name": {
@@ -305,21 +303,7 @@
     {
       "if": {
         "properties": {
-          "task_type": {"const": "real-use-tests"}
-        },
-        "required": ["task_type"]
-      },
-      "then": {
-        "properties": {
-          "template_type": {"const": "real-use-tests"},
-          "render": {"required": ["real_use"]}
-        }
-      }
-    },
-    {
-      "if": {
-        "properties": {
-          "task_type": {"enum": ["code-coverage-improvement", "real-use-tests"]}
+          "task_type": {"const": "code-coverage-improvement"}
         },
         "required": ["task_type"]
       },
@@ -479,63 +463,6 @@
     }
   ],
   "$defs": {
-    "real_use": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": ["library_coverage", "tokens", "iterations", "removed"],
-      "properties": {
-        "library_coverage": {
-          "type": "object",
-          "additionalProperties": false,
-          "required": ["line", "instruction", "method"],
-          "properties": {
-            "line": {"$ref": "#/$defs/real_use_coverage_metric"},
-            "instruction": {"$ref": "#/$defs/real_use_coverage_metric"},
-            "method": {"$ref": "#/$defs/real_use_coverage_metric"}
-          }
-        },
-        "tokens": {
-          "type": "object",
-          "additionalProperties": false,
-          "required": ["input", "cached_input", "cache_write_input", "output"],
-          "properties": {
-            "input": {"type": ["integer", "null"], "minimum": 0},
-            "cached_input": {"type": ["integer", "null"], "minimum": 0},
-            "cache_write_input": {"type": ["integer", "null"], "minimum": 0},
-            "output": {"type": ["integer", "null"], "minimum": 0}
-          }
-        },
-        "iterations": {"type": "integer", "minimum": 0},
-        "removed": {
-          "type": "array",
-          "maxItems": 500,
-          "items": {
-            "type": "object",
-            "additionalProperties": false,
-            "required": ["scenario", "reason"],
-            "properties": {
-              "scenario": {"type": "string", "minLength": 1, "maxLength": 400},
-              "reason": {"type": "string", "maxLength": 2000}
-            }
-          }
-        }
-      }
-    },
-    "real_use_coverage_metric": {
-      "oneOf": [
-        {"const": "N/A"},
-        {
-          "type": "object",
-          "additionalProperties": false,
-          "required": ["covered", "total", "ratio"],
-          "properties": {
-            "covered": {"type": "integer", "minimum": 0},
-            "total": {"type": "integer", "minimum": 0},
-            "ratio": {"type": "number", "minimum": 0, "maximum": 1}
-          }
-        }
-      ]
-    },
     "commit": {
       "type": "string",
       "pattern": "^[0-9a-f]{40}$"
@@ -813,9 +740,6 @@
             "object",
             "null"
           ]
-        },
-        "real_use": {
-          "$ref": "#/$defs/real_use"
         },
         "token_usage": {
           "type": [
