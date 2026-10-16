@@ -79,12 +79,14 @@ public class PipeEventBridgeTest {
             if (!closed.compareAndSet(false, true)) {
                 return
             }
-            channel.close()
             interests.set(0)
+            // Release waiters before closing: a late selector registration on the closed
+            // channel would otherwise resume them with a raw ClosedChannelException.
             for (interest in SelectInterest.entries) {
                 suspensions.removeSuspension(interest)
                     ?.resumeWithException(ClosedChannelCancellationException())
             }
+            channel.close()
             selector.notifyClosed(this)
         }
 
