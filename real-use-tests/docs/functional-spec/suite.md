@@ -61,8 +61,9 @@ maintainer later promotes it.
 
 ### 2.3 Promotion is a separate change
 
-Every test-local entry is reviewed in the diff of the pull request that adds
-it; the description reports the run's coverage and cost, not the entries
+Every test-local entry is in the diff of the pull request that adds it, which
+merges once its checks pass (§FS-real-use-test-generation.4); the description
+reports the run's coverage and cost, not the entries
 (§FS-real-use-test-generation.2.7). Those entries are candidates,
 not metadata: moving one into `metadata/` is a separate change held to
 §root/FS-tests, so a test in `tests/` must justify it.

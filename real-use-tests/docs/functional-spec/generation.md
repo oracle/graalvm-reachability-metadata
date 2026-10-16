@@ -4,8 +4,8 @@ A Rhei workflow generates the real-use project for one coordinate and publishes
 it as a pull request (§FS-real-use-tests). Judgment is used only where it
 cannot be replaced by an algorithm (§root/PRCPL-prefer-algorithmic): choosing
 the supporting libraries, writing scenarios, fixing a native failure the
-shipped metadata cannot, and fixing what the style checks report are agent
-work, and every other phase is a
+shipped metadata cannot, fixing what the style checks report, and reviewing
+a published pull request are agent work, and every other phase is a
 deterministic program whose result decides what runs next. No agent's report
 counts as evidence that a test passes; only a program's run of the real-use
 tasks does.
@@ -37,6 +37,12 @@ re-reads the assignees, and only while it is still the sole assignee moves the
 issue to `In Progress`. A lost claim moves on to the next candidate. When the
 run's workspace cannot then be created, the launcher releases the claim back to
 `Todo`.
+
+The launcher keeps going until the operator stops it: after each run it claims
+the next issue, and when none can be claimed it waits ten minutes and looks
+again. Three failed runs in a row stop it, so a broken host cannot claim and
+fail its way through the queue. Every third run it reviews the pull requests
+its runs opened (§FS-real-use-test-generation.4).
 
 ## 2. Phases
 
@@ -163,3 +169,24 @@ diff (§FS-real-use-tests.2.3).
 | Published | At least one scenario remains, and the branch is pushed for the pipeline to open the pull request. |
 | Nothing to publish | Every scenario was removed; no pull request is opened and the run records why. |
 | Failed | A program step itself failed: a bad input, scaffolding, resolving the declared libraries, the build, the commit, or the push. |
+
+## 4. Approval and merge
+
+A published pull request merges without waiting for a person. Every third
+run, the launcher takes the branches the last three runs published, together
+with any branch a previous review left for later. A branch whose pull request
+the trusted publisher has not opened yet waits for the next review; a pull
+request that is already approved, merged, or closed is skipped. Each other pull
+request gets one agent invocation, given only its number, its branch, and its
+head commit, which never waits for running checks:
+
+- The agent looks for a real-use test that can fail intermittently, from
+  timing or garbage collection, by reading the tests and any check that has
+  already failed. It makes the smallest fix that keeps every assertion and
+  pushes it to the branch, which the next review sees as a new head.
+- When it finds none and no check has failed, it approves that head and
+  enables auto-merge for it, so a later push is never merged under this
+  approval.
+- Otherwise it changes nothing, and the pull request is left for a human.
+
+The agent edits only the coordinate project (§FS-real-use-test-contract.2.2).
