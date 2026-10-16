@@ -40,8 +40,9 @@ run's workspace cannot then be created, the launcher releases the claim back to
 
 The launcher keeps going until the operator stops it: after each run it claims
 the next issue, and when none can be claimed it waits ten minutes and looks
-again. Three failed runs in a row stop it, so a broken host cannot claim and
-fail its way through the queue. Every third run it reviews the pull requests
+again. It verifies the host again before every claim, and a failed check stops
+it, so a host that broke during the loop cannot claim and fail its way through
+the queue. Every third run it reviews the pull requests
 its runs opened (§FS-real-use-test-generation.4).
 
 ## 2. Phases
