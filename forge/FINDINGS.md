@@ -3,6 +3,11 @@
 Rendered by Forge from the pre-push branch review of §FS-local-branch-review.
 Newest entry first; every non-approval is recorded, including one a repair later cleared.
 
+## 2026-10-15 — com.azure:azure-storage-internal-avro:12.14.0 (#10693)
+
+**Grund citation under the ASCII-only test tree**
+
+The contributed `tests/src/com.azure/azure-storage-internal-avro/12.14.0/build.gradle` contained the non-ASCII `§FS-test-contract.2.7` marker. Repository instructions prohibit grund citations anywhere under `tests/src` because that suite is ASCII-only.
 ## 2026-10-15 — org.springframework.ai:spring-ai-autoconfigure-model-chat-observation:2.0.0-RC2 (#8416)
 
 **Generated test used trivial assertions and pinned a companion artifact version**
