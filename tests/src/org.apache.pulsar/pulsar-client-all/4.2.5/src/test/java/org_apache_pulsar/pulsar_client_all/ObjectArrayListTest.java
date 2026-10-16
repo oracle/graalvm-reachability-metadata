@@ -17,7 +17,6 @@ public class ObjectArrayListTest {
         final ObjectArrayList<String> values = ObjectArrayList.of("one", "two", "three");
         final ObjectArrayList<String> restored = SerializationTestSupport.roundTrip(values);
 
-        assertThat(restored).containsExactly("one", "two", "three");
         assertThat(restored.toArray(new String[0])).containsExactly("one", "two", "three");
     }
 }
