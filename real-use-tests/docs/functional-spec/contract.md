@@ -69,7 +69,8 @@ site. The coverage points of §root/FS-test-contract — 1.3, 1.5, 1.8, 3.1, and
 
 Work on a real-use project changes only files under its
 `real-use-tests/src/<groupId>/<artifactId>/<version>/` directory: never
-`metadata/`, `tests/`, another real-use project, or the harness.
+`metadata/`, `tests/`, another real-use project, or the harness. Publication
+alone also writes the coordinate's stats record (§FS-real-use-tests.1).
 
 ### 2.3 No metadata outside the test-local file
 

@@ -3,13 +3,13 @@
 # You should have received a copy of the CC0 legalcode along with this
 # work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 
-"""What the run achieved and cost: the target's JaCoCo coverage, tokens, and iterations.
+"""What the run achieved and cost: the target's JaCoCo coverage and tokens.
 
 The pull-request description opens with these numbers
 (§FS-real-use-test-generation.2.7). Coverage comes from the project's JaCoCo
 report, which covers only the target library's classes
-(§AR-real-use-test-harness.2); tokens and iterations come from the record Rhei
-writes after each agent invocation (§AR-real-use-test-workflow.6).
+(§AR-real-use-test-harness.2); tokens come from the record Rhei writes after
+each agent invocation (§AR-real-use-test-workflow.6).
 """
 from __future__ import annotations
 
@@ -62,13 +62,12 @@ def _sum(values: list[int | None]) -> int | None:
     return sum(measured) if measured else None
 
 
-def agent_cost(workspace: str) -> tuple[dict[str, int | None], int]:
-    """Tokens summed over every agent invocation of the run, and the invocation count.
+def agent_tokens(workspace: str) -> dict[str, int | None]:
+    """Tokens summed over every agent invocation of the run.
 
     Input is ordinary input, disjoint from the two cached classes, as the
-    other generation workflows report it. An invocation killed before it
-    reported usage still counts as an iteration; a class no invocation
-    measured stays `None` rather than a zero.
+    other generation workflows report it. A class no invocation measured
+    stays `None` rather than a zero.
     """
     records: list[dict[str, Any]] = [
         read_json(path) for path in sorted(glob.glob(os.path.join(workspace, ACCOUNTING_INVOCATIONS, "*.json")))
@@ -80,10 +79,9 @@ def agent_cost(workspace: str) -> tuple[dict[str, int | None], int]:
         if total is not None and record.get("token_convention") != INPUT_EXCLUDES_CACHE:
             total -= cached
         ordinary.append(total)
-    tokens: dict[str, int | None] = {
+    return {
         "input": _sum(ordinary),
         "cached_input": _sum([_measured(record, "input", "cached_read") for record in records]),
         "cache_write_input": _sum([_measured(record, "input", "cache_write") for record in records]),
         "output": _sum([_measured(record, "output", "total") for record in records]),
     }
-    return tokens, len(records)

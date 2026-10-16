@@ -13,7 +13,7 @@ readonly PROGRAMS="$SCRIPT_DIR/.agent-grounds/rhei/programs"
 # The template's default worker_agent.
 readonly DEFAULT_WORKER_AGENT="pi[high]:openai-codex/gpt-5.6-luna"
 
-# Claim the next real-use-test issue and run its workflow with the Rhei dashboard.
+# Claim and run real-use-test issues until stopped, reviewing their pull requests in batches.
 # §FS-real-use-test-generation.1 §AR-real-use-test-launcher
 
 usage() {
@@ -21,8 +21,10 @@ usage() {
 Usage: $0 [--worker-agent TARGET] [-- RHEI_RUN_OPTIONS...]
 
 Purpose:
-  Check the host, claim the most urgent eligible real-use-test issue, and run
-  its Rhei workspace with the browser dashboard.
+  Check the host, then until stopped: claim the most urgent eligible
+  real-use-test issue and run its Rhei workspace with the browser dashboard.
+  Every third run, review the pull requests the runs opened: approve and
+  auto-merge a green one, or fix a flaky test in it.
 
 Options:
   -h, --help
@@ -87,8 +89,6 @@ fi
 
 # shellcheck source=../forge/utility_scripts/rhei_launcher_host.sh
 source "$FORGE_DIR/utility_scripts/rhei_launcher_host.sh"
-require_rhei_launcher_host real-use "$FORGE_DIR" "$REPO_ROOT" \
-    "$agent_family" "$agent_executable" "$agent_model" "$agent_provider"
 
 python="$FORGE_DIR/.venv/bin/python"
 [[ -x "$python" ]] || python="python3"
@@ -96,14 +96,54 @@ claim() {
     PYTHONPATH="$FORGE_DIR" "$python" "$PROGRAMS/claim.py" "$@"
 }
 
-issue_number="$(claim)"
-printf 'Claimed real-use-test issue #%s.\n' "$issue_number"
+review() {
+    PYTHONPATH="$FORGE_DIR" "$python" "$PROGRAMS/review.py" --repo "$REPO_ROOT" --worker-agent "$worker_agent" "$@"
+}
 
-workspace="runs/real-use-$issue_number"
+# §FS-real-use-test-generation.1: run until stopped; §FS-real-use-test-generation.4: review every third run.
+readonly IDLE_SECONDS=600
+readonly REVIEW_EVERY=3
 cd "$SCRIPT_DIR"
-if ! rhei instantiate real-use-tests "issue_number=$issue_number" "worker_agent=$worker_agent" --output "$workspace"; then
-    printf 'ERROR: Cannot create %s; releasing issue #%s.\n' "$workspace" "$issue_number" >&2
-    claim --release "$issue_number"
-    exit 1
-fi
-exec rhei run "$workspace" --dashboard "$@"
+pending=()
+runs=0
+review_pending() {
+    (( ${#pending[@]} > 0 )) || return 0
+    local moved
+    if moved="$(review "${pending[@]}")"; then
+        pending=()
+        [[ -z "$moved" ]] || mapfile -t pending <<<"$moved"
+    else
+        printf 'WARNING: The review failed; its branches wait for the next batch.\n' >&2
+    fi
+}
+while true; do
+    # A failed host check exits here, before the claim (§FS-real-use-test-generation.1).
+    require_rhei_launcher_host real-use "$FORGE_DIR" "$REPO_ROOT" \
+        "$agent_family" "$agent_executable" "$agent_model" "$agent_provider"
+    if ! issue_number="$(claim)"; then
+        review_pending
+        printf 'No issue to claim; looking again in %s seconds.\n' "$IDLE_SECONDS"
+        sleep "$IDLE_SECONDS"
+        continue
+    fi
+    printf 'Claimed real-use-test issue #%s.\n' "$issue_number"
+
+    workspace="runs/real-use-$issue_number"
+    status=0
+    if ! rhei instantiate real-use-tests "issue_number=$issue_number" "worker_agent=$worker_agent" --output "$workspace"; then
+        printf 'ERROR: Cannot create %s; releasing issue #%s.\n' "$workspace" "$issue_number" >&2
+        claim --release "$issue_number" || printf 'WARNING: Could not release issue #%s.\n' "$issue_number" >&2
+        status=1
+    else
+        rhei run "$workspace" --dashboard "$@" || status=$?
+    fi
+
+    branch_record="$workspace/runtime/real-use/publication/branch.md"
+    if (( status == 0 )) && [[ -f "$branch_record" ]]; then
+        pending+=("$(awk '{print $2; exit}' "$branch_record")")
+    fi
+    (( status == 0 )) || printf 'ERROR: The run for issue #%s failed.\n' "$issue_number" >&2
+
+    runs=$((runs + 1))
+    (( runs % REVIEW_EVERY != 0 )) || review_pending
+done

@@ -28,6 +28,7 @@ sys.path.insert(0, PROGRAMS)
 
 import build_tools  # noqa: E402
 import local_metadata  # noqa: E402
+import publish  # noqa: E402
 import real_use  # noqa: E402
 import run_summary  # noqa: E402
 from exit_codes import BAD_INPUT, INFRASTRUCTURE, NATIVE_FAILED, NO_SCENARIO_LEFT, OK, STYLE_FAILED  # noqa: E402
@@ -35,6 +36,9 @@ from run_state import load  # noqa: E402
 
 COORDINATE: str = "org.example:lib:1.0.0"
 PROJECT: str = os.path.join("real-use-tests", "src", "org.example", "lib", "1.0.0")
+STATS: str = os.path.join("real-use-tests", "stats", "org.example", "lib", "1.0.0", "stats.json")
+STATS_SCHEMA: str = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "..", "..", "schemas",
+                                 "stats-schema.json")
 METADATA: str = os.path.join("src", "test", "resources", "META-INF", "native-image", "reachability-metadata.json")
 
 # The scripted harness. Control file keys: unresolvable (the filter task fails),
@@ -110,22 +114,18 @@ elif task == "realUseJacocoReport":
         '<counter type="METHOD" missed="2" covered="8"/></report>')
 '''
 
-# The fake Forge real-use route: records its arguments and prints the pushed branch,
-# or fails when the control file says so.
-FAKE_PUBLISH_ROUTE: str = r'''import json, os, sys
-control = json.load(open(os.environ["FAKE_GRADLE_CONTROL"]))
-if control.get("pushFails"):
-    print("gh: not authenticated")
-    sys.exit(1)
-args = sys.argv[1:]
-json.dump(args, open(os.environ["FAKE_PUBLISH_RECORD"], "w"))
-print("Pushed ai/octocat/real-use-lib-1.0.0-forge-real-use-1 for org.example:lib:1.0.0.")
-'''
-
-# The fake `gh`: serves the control file's `issue` for `gh issue view`.
+# The fake `gh`: serves the control file's `issue` for `gh issue view` and the
+# login for `gh api user`, which fails when the control file says so.
 FAKE_GH: str = r'''#!/usr/bin/env python3
 import json, os, sys
-issue = json.load(open(os.environ["FAKE_GRADLE_CONTROL"])).get("issue")
+control = json.load(open(os.environ["FAKE_GRADLE_CONTROL"]))
+if sys.argv[1:3] == ["api", "user"]:
+    if control.get("loginFails"):
+        print("gh: not authenticated", file=sys.stderr)
+        sys.exit(1)
+    print("octocat")
+    sys.exit(0)
+issue = control.get("issue")
 if sys.argv[1:3] != ["issue", "view"] or issue is None:
     print("issue not found", file=sys.stderr)
     sys.exit(1)
@@ -185,19 +185,19 @@ class WorkflowTest(unittest.TestCase):
         with open(gradlew, "w") as handle:
             handle.write(FAKE_GRADLEW)
         os.chmod(gradlew, os.stat(gradlew).st_mode | stat.S_IEXEC)
-        route: str = os.path.join(self.repo, "forge", "git_scripts", "publish_real_use_tests.py")
-        os.makedirs(os.path.dirname(route))
-        with open(route, "w") as handle:
-            handle.write(FAKE_PUBLISH_ROUTE)
         with open(os.path.join(self.repo, ".gitignore"), "w") as handle:
             handle.write("build/\n")
         for command in (["init", "-q", "-b", "master"], ["config", "user.email", "t@example.com"],
                         ["config", "user.name", "Test"], ["add", "-A"], ["commit", "-q", "-m", "base"]):
             subprocess.run(["git", *command], cwd=self.repo, check=True)
+        # The upstream the publication branch is pushed to.
+        self.remote: str = os.path.join(self.tmp, "upstream.git")
+        subprocess.run(["git", "init", "-q", "--bare", self.remote], check=True)
+        for command in (["remote", "add", "origin", self.remote], ["push", "-q", "origin", "master"]):
+            subprocess.run(["git", *command], cwd=self.repo, check=True)
         self.control_path: str = os.path.join(self.tmp, "control.json")
         self.control({})
         os.environ["FAKE_GRADLE_CONTROL"] = self.control_path
-        os.environ["FAKE_PUBLISH_RECORD"] = os.path.join(self.tmp, "publish.json")
         bin_dir: str = os.path.join(self.tmp, "bin")
         os.makedirs(bin_dir)
         fake_gh: str = os.path.join(bin_dir, "gh")
@@ -247,6 +247,12 @@ class WorkflowTest(unittest.TestCase):
     def read(self, path: str) -> str:
         with open(path) as handle:
             return handle.read()
+
+    def assertValidStats(self, record: dict) -> None:
+        """The record holds to the schema the trusted publisher validates it against."""
+        from jsonschema import Draft202012Validator
+
+        Draft202012Validator(json.loads(self.read(STATS_SCHEMA))).validate(record)
 
     def write_scenario(self, name: str, subsystem: str) -> None:
         self.write(self.scenario_path(name), SCENARIO.format(name=name, subsystem=subsystem))
@@ -312,13 +318,15 @@ class WorkflowTest(unittest.TestCase):
         self.control({"checkstyleFailing": [], "spotlessFailing": ""})
         self.write(os.path.join(state.worktree, "OUTSIDE.md"), "an agent edit outside the project\n")
         self.assertEqual(OK, self.step("publish"))
-        self.assertEqual(declared, build_tools.git(state.worktree, "rev-parse", "HEAD~1").strip())
-        self.assertIn("Add real-use tests for lib 1.0.0", build_tools.git(state.worktree, "log", "-1", "--format=%s"))
-        committed: list[str] = build_tools.git(state.worktree, "show", "--name-only", "--format=", "HEAD").splitlines()
+        self.assertEqual(declared, build_tools.git(state.worktree, "rev-parse", "HEAD~2").strip())
+        self.assertIn("Add real-use tests for lib 1.0.0", build_tools.git(state.worktree, "log", "-1", "--format=%s", "HEAD~1"))
+        committed: list[str] = build_tools.git(state.worktree, "show", "--name-only", "--format=", "HEAD~1").splitlines()
         self.assertTrue(all(path.startswith(PROJECT + os.sep) for path in committed))
         self.assertIn(os.path.join(PROJECT, METADATA), committed)
         self.assertIn(os.path.join(PROJECT, "src", "test", "java", "com", "example", "realuse", "BrokenStyleTest.java"), committed)
-        facts: dict = json.loads(self.read(self.runtime("publication", "render.json")))
+        # The stats record is the last commit, alone, and the branch carries it upstream.
+        self.assertEqual([STATS], build_tools.git(state.worktree, "show", "--name-only", "--format=", "HEAD").splitlines())
+        facts: dict = json.loads(self.read(os.path.join(state.worktree, STATS)))
         self.assertEqual({"line": {"covered": 15, "total": 20, "ratio": 0.75},
                           "instruction": {"covered": 70, "total": 100, "ratio": 0.7},
                           "method": {"covered": 8, "total": 10, "ratio": 0.8}}, facts["library_coverage"])
@@ -326,11 +334,13 @@ class WorkflowTest(unittest.TestCase):
                          facts["tokens"])
         self.assertEqual(2, facts["iterations"])
         self.assertEqual([], facts["removed"])
-        pushed: list[str] = json.loads(self.read(os.environ["FAKE_PUBLISH_RECORD"]))
-        self.assertEqual(["--repo-path", state.worktree, "--coordinates", COORDINATE, "--issue-number", "10900",
-                          "--timestamp", state.started_at, "--render-json", self.runtime("publication", "render.json")],
-                         pushed[:10])
-        self.assertIn("Pushed ai/octocat/", self.read(self.runtime("publication", "branch.md")))
+        self.assertEqual((10900, state.started_at), (facts["issue_number"], facts["timestamp"]))
+        branch: str = f"ai/octocat/real-use-lib-1.0.0-{publish.publication_id(state)}"
+        self.assertRegex(branch, r"-forge-10900-\d{14,20}-[0-9a-f]{12}$")
+        self.assertEqual(build_tools.git(state.worktree, "rev-parse", "HEAD").strip(),
+                         build_tools.git(self.remote, "rev-parse", branch).strip())
+        self.assertEqual(f"Pushed {branch} for {COORDINATE}.\n", self.read(self.runtime("publication", "branch.md")))
+        self.assertValidStats(facts)
         self.assertIn("publish exited 0", self.read(os.environ["RHEI_RESULT_PATH"]))
 
     def native_agent_fix_turn(self) -> None:
@@ -364,15 +374,15 @@ class WorkflowTest(unittest.TestCase):
         self.assertEqual(OK, self.step("style-check"))
         self.assertIn("no publication fix runs", self.read(self.runtime("prompts", "publication-fix.md")))
         self.assertEqual(OK, self.step("publish"))
-        committed: list[str] = build_tools.git(load(self.workspace).worktree, "show", "--name-only", "--format=", "HEAD").splitlines()
+        committed: list[str] = build_tools.git(load(self.workspace).worktree, "show", "--name-only", "--format=", "HEAD~1").splitlines()
         self.assertNotIn(stray, committed)
         self.assertIn(os.path.join(PROJECT, METADATA), committed)
         self.assertIn(os.path.join(PROJECT, "build.gradle"), committed)
-        facts: dict = json.loads(self.read(self.runtime("publication", "render.json")))
+        facts: dict = json.loads(self.read(os.path.join(load(self.workspace).worktree, STATS)))
         self.assertEqual([{"scenario": os.path.join(PROJECT, "src", "test", "java", "com", "example", "realuse",
                                                     "BytecodeTest.java"),
                            "reason": "generates bytecode at run time"}], facts["removed"])
-        self.assertEqual(0, facts["iterations"])
+        self.assertEqual(1, facts["iterations"])
 
     def test_no_scenario_left_ends_before_publication(self) -> None:
         self.native_agent_fix_turn()
@@ -384,10 +394,10 @@ class WorkflowTest(unittest.TestCase):
         self.assertEqual(OK, self.prepare(passes="1"))
         self.preflight()
         self.write_scenario("ClientRoundTripTest", "Sends requests through the client")
-        self.control({"pushFails": True})
+        self.control({"loginFails": True})
         self.assertEqual(INFRASTRUCTURE, self.step("publish"))
         head: str = build_tools.git(load(self.workspace).worktree, "rev-parse", "HEAD").strip()
-        self.control({"pushFails": False})
+        self.control({"loginFails": False})
         self.assertEqual(OK, self.step("publish"))
         self.assertEqual(head, build_tools.git(load(self.workspace).worktree, "rev-parse", "HEAD").strip())
 
@@ -397,7 +407,7 @@ class WorkflowTest(unittest.TestCase):
         self.write_scenario("ClientRoundTripTest", "Sends requests through the client")
         self.control({"jacocoFails": True})
         self.assertEqual(INFRASTRUCTURE, self.step("publish"))
-        self.assertFalse(os.path.exists(os.environ["FAKE_PUBLISH_RECORD"]))
+        self.assertFalse(os.path.exists(self.runtime("publication", "branch.md")))
         self.control({"jacocoFails": False})
         self.assertEqual(OK, self.step("publish"))
 
@@ -449,15 +459,14 @@ class UnitTest(unittest.TestCase):
                 "b": {"token_convention": "input-total-excludes-cache",
                       "tokens": {"input": {"total": {"value": 7}, "cached_read": {"value": 50}},
                                  "output": {"total": {"value": 3}}}},
-                # Killed before it reported usage: an iteration, but no tokens.
+                # Killed before it reported usage: no tokens.
                 "c": {"tokens": {"input": {"total": {"status": "missing"}}}},
             }
             for name, record in records.items():
                 with open(os.path.join(invocations, f"{name}.json"), "w") as handle:
                     json.dump(record, handle)
-            tokens, iterations = run_summary.agent_cost(tmp)
+            tokens = run_summary.agent_tokens(tmp)
         self.assertEqual({"input": 17, "cached_input": 150, "cache_write_input": None, "output": 8}, tokens)
-        self.assertEqual(3, iterations)
 
     def test_library_coverage_reads_the_report_totals(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:

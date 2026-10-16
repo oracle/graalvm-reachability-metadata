@@ -23,5 +23,5 @@ Files:
   their separation from the `tests/` lanes, the CI job, and repository wiring.
 - [workflow.md](workflow.md) — the Rhei template: inputs, state machine, agent
   and program states, run artifacts, and publication.
-- [launcher.md](launcher.md) — host checks, issue selection, and the claim
-  that start one run.
+- [launcher.md](launcher.md) — host checks, issue selection, the claim loop,
+  and the batched review that approves and auto-merges published runs.

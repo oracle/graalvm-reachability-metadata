@@ -175,7 +175,7 @@ sequenceDiagram
         end
         R->>P: publish
         P->>W: commit the coordinate project on top of the checkpoints
-        P->>W: Forge's real-use route: rebase, verify, descriptor, push
+        P->>W: commit the stats record, rebase onto master, push
         alt pushed
             P-->>R: exit 0, completed
         else nothing changed
@@ -251,7 +251,7 @@ a final state requires one.
 | `native` | `realUseNativeTest` once, without extra flags. | `0`, `10`, `20` |
 | `collect-metadata` | Restores the test-local file to the checkpoint, runs `realUseJavaTest` with `tck.realUse.agentOutput` into a temporary directory, copies every entry that holds to §FS-real-use-tests.2.2 into the test-local file, `realUseNativeTest` again; writes the fix prompt. | `0`, `10`, `3` |
 | `style-check` | `spotlessCheck` and `checkstyle -Pcoordinates=` (§AR-real-use-test-harness.2); writes the findings as the publication fix prompt. | `0`, `10`, `20`, `3` |
-| `publish` | Records the native fix's deletions, commits the coordinate project, and pushes it through Forge's real-use route (§AR-real-use-test-workflow.6). | `0`, `20`, `3` |
+| `publish` | Records the native fix's deletions, commits the coordinate project and its stats record, and pushes the publication branch (§AR-real-use-test-workflow.6). | `0`, `20`, `3` |
 
 A crash in any program exits `3`.
 
@@ -259,28 +259,26 @@ A crash in any program exits `3`.
 
 Run state lives under `runtime/real-use/` in the Rhei workspace: `state.json`,
 one report per agent invocation, the two fix prompts, the Gradle logs, and
-the publication record: the description facts and the pushed branch.
+the pushed branch.
 Nothing under it is committed.
 
 ## 6. Publication
 
 `publish` commits only `real-use-tests/src/<group>/<artifact>/<version>/`, in
 one commit after the run's checkpoints. It then runs `realUseJacocoReport` and
-writes the description facts of §FS-real-use-test-generation.2.7 to
-`runtime/real-use/publication/render.json`: the totals of the project's JaCoCo
-report, and the tokens and iterations of Rhei's accounting records under
-`runtime/accounting/invocations/`, one written after each agent invocation.
-Input tokens exclude the cached read and cache-write classes, which are
-reported apart. A failed coverage run fails the run, like a failed push; the
-commit stays, so a retried `publish` measures and pushes it again.
-It then runs Forge's `git_scripts/publish_real_use_tests.py` from the source
-checkout with the worktree, the coordinate, the issue number, and the run's
-start time, which with the issue is the publication's durable identity. That route
-(§forge/AR-real-use-tests-publication) moves the branch to
-`ai/<producer>/real-use-<artifact>-<version>-<publication id>`, rebases it onto
-upstream `master`, runs the pre-publication gate, commits the descriptor
-carrying the issue and the facts, and pushes; the trusted publisher renders the
-description and opens the pull request
-(§forge/AR-shared-publication-pipeline). The push needs the producer's `gh`
-login, and a failed push ends the run in `failed`.
+commits the stats record of §FS-real-use-tests.1, whose schema is
+`real-use-tests/schemas/stats-schema.json`: the issue, the run's start time,
+the JaCoCo report's totals, the tokens of Rhei's accounting records under
+`runtime/accounting/invocations/` (input excludes the cached read and
+cache-write classes, reported apart), `scenario_passes` as the iterations, and
+the native fix's removals. A failed coverage run fails the run, like a failed
+push; the commits stay, so a retried `publish` measures and pushes them again.
+The issue and start time are the publication's durable identity: `publish`
+builds the publication ID from them, the coordinate, and the `real-use-tests`
+task type exactly as the trusted publisher rebuilds it, rebases onto upstream
+`master` (the remote whose URL names the repository), and pushes
+`ai/<gh login>/real-use-<artifact>-<version>-<publication id>`. The push is the
+whole handoff, with no descriptor and no Forge route: the trusted publisher
+validates the diff and renders the description from the stats record
+(§forge/AR-real-use-tests-publication). A failed push ends the run in `failed`.
 

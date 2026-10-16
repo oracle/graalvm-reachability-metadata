@@ -35,6 +35,14 @@ deserves to ship (§GOAL-reviewable-metadata-gaps).
 - `src/test/resources/META-INF/native-image/reachability-metadata.json` — the
   project's test-local metadata (§FS-real-use-tests.2.2), when it needs any.
 
+Beside the project, `real-use-tests/stats/<groupId>/<artifactId>/<version>/stats.json`
+records the generation run that last published it: the issue it resolved, when
+it started, the target library's coverage, the tokens it spent, its scenario
+passes, and the scenarios its native fix removed
+(§FS-real-use-test-generation.2.7). One record per coordinate keeps two runs'
+pull requests from touching the same file, and the record stays after merge as
+the run's provenance.
+
 ## 2. Metadata
 
 ### 2.1 Shipped metadata is consumed, never changed
@@ -61,8 +69,9 @@ maintainer later promotes it.
 
 ### 2.3 Promotion is a separate change
 
-Every test-local entry is reviewed in the diff of the pull request that adds
-it; the description reports the run's coverage and cost, not the entries
+Every test-local entry is in the diff of the pull request that adds it, which
+merges once its checks pass (§FS-real-use-test-generation.4); the description
+reports the run's coverage and cost, not the entries
 (§FS-real-use-test-generation.2.7). Those entries are candidates,
 not metadata: moving one into `metadata/` is a separate change held to
 §root/FS-tests, so a test in `tests/` must justify it.

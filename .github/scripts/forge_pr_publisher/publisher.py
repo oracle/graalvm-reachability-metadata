@@ -42,6 +42,12 @@ PUBLICATION_ID_SUFFIX = re.compile(
 BENCHMARK_RESULT_SCHEMA_PATH = (
     Path(__file__).resolve().parents[3] / "forge/schemas/code_coverage_benchmark_result_schema.json"
 )
+REAL_USE_STATS_SCHEMA_PATH = (
+    Path(__file__).resolve().parents[3] / "real-use-tests/schemas/stats-schema.json"
+)
+REAL_USE_STATS_PATH_PATTERN = re.compile(
+    r"real-use-tests/stats/([^/]+)/([^/]+)/([^/]+)/stats\.json"
+)
 ROUTE_LABELS = {
     "library-new-request": ["GenAI", "library-new-request"],
     "library-update-request": ["GenAI", "library-update-request"],
@@ -200,6 +206,17 @@ def validate_publication(
         return _validate_benchmark_diff_publication(
             head_sha=head_sha,
             merge_base=merge_base,
+            changed_paths=merge_base_paths,
+            branch=branch,
+            actor=actor,
+        )
+    # A real-use head carries no descriptor either: its stats record is the
+    # handoff (§forge/AR-real-use-tests-publication).
+    if merge_base_paths and all(
+            path.startswith("real-use-tests/") for path in merge_base_paths
+    ):
+        return _validate_real_use_diff_publication(
+            head_sha=head_sha,
             changed_paths=merge_base_paths,
             branch=branch,
             actor=actor,
@@ -436,6 +453,68 @@ def _validate_benchmark_diff_publication(
     if not branch.endswith(f"-{descriptor['publication_id']}"):
         raise ValueError("Event branch does not carry the benchmark publication ID")
     return ValidatedPublication(descriptor, result_path, head_sha)
+
+def _validate_real_use_diff_publication(
+        *,
+        head_sha: str,
+        changed_paths: list[str],
+        branch: str,
+        actor: str,
+) -> ValidatedPublication:
+    """Validate a descriptor-free real-use head from its diff.
+
+    The branch must change exactly one schema-valid stats record and otherwise
+    only that coordinate's real-use project; the record is everything the pull
+    request renders (§forge/AR-real-use-tests-publication).
+    """
+    stats_paths = [path for path in changed_paths if REAL_USE_STATS_PATH_PATTERN.fullmatch(path)]
+    if len(stats_paths) != 1:
+        raise ValueError("Real-use publication must change exactly one stats record")
+    stats_path = stats_paths[0]
+    group, artifact, version = REAL_USE_STATS_PATH_PATTERN.fullmatch(stats_path).groups()
+    project = f"real-use-tests/src/{group}/{artifact}/{version}/"
+    strays = [path for path in changed_paths if path != stats_path and not path.startswith(project)]
+    if strays:
+        raise ValueError(f"Real-use publication changes paths outside {project}: {strays}")
+
+    record = _json_value_at_commit(head_sha, stats_path)
+    if not REAL_USE_STATS_SCHEMA_PATH.is_file():
+        raise ValueError("Trusted real-use stats schema is unavailable")
+    with REAL_USE_STATS_SCHEMA_PATH.open(encoding="utf-8") as schema_file:
+        stats_schema = json.load(schema_file)
+    Draft202012Validator(stats_schema, format_checker=FormatChecker()).validate(record)
+    if not branch.startswith(f"ai/{actor}/"):
+        raise ValueError("Event branch does not belong to the triggering actor")
+
+    descriptor: dict[str, Any] = {
+        "task_type": "real-use-tests",
+        "template_type": "real-use-tests",
+        "branch": branch,
+        "producer": actor,
+        "issue_number": record["issue_number"],
+        "timestamp": record["timestamp"],
+        "library": {
+            "group": group,
+            "artifact": artifact,
+            "version": version,
+            "coordinates": f"{group}:{artifact}:{version}",
+        },
+        "modifiers": {
+            "chunked_dynamic_access": False,
+            "chunk_final": True,
+            "human_intervention": False,
+        },
+        "render": {
+            "real_use": {
+                key: record[key] for key in ("library_coverage", "tokens", "iterations", "removed")
+            },
+        },
+    }
+    descriptor["publication_id"] = _build_publication_id(descriptor)
+    if not branch.endswith(f"-{descriptor['publication_id']}"):
+        raise ValueError("Event branch does not carry the real-use publication ID")
+    return ValidatedPublication(descriptor, stats_path, head_sha)
+
 
 def _validate_code_coverage_render(render: dict[str, Any]) -> None:
     """Require the finalized coverage evidence the coverage template reads."""
@@ -900,8 +979,9 @@ def _render_real_use_tests(
 ) -> tuple[str, str]:
     """Report the real-use run's coverage, cost, and removals.
 
-    The run resolves its `real-use-test` issue; no Forge strategy produced it, so
-    the body omits the revision block (§forge/AR-real-use-tests-publication).
+    The run resolves its `real-use-test` issue, and its stats record is the
+    whole input; no Forge strategy produced it, so the body omits the revision
+    block (§forge/AR-real-use-tests-publication).
     The scenarios and test-local entries are read in the diff
     (§real-use-tests/FS-real-use-test-generation.2.7).
     """

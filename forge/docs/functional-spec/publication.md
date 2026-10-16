@@ -317,8 +317,8 @@ point, so a contribution-local finding can be corrected before publication.
 The shared publication pipeline implements this phase before it writes the
 descriptor. Coverage publication remains a deterministic descriptor route, and
 benchmark publication a deterministic diff-validated route
-(§FS-code-coverage-benchmarking.3), and real-use publication a route whose
-workflow ran every scenario natively before it publishes
+(§FS-code-coverage-benchmarking.3), and real-use publication a diff-validated
+route whose workflow ran every scenario natively before it publishes
 (§AR-real-use-tests-publication), rather than semantic code-review subjects.
 
 **Placement.** The review runs inside publication, after the pre-publication
