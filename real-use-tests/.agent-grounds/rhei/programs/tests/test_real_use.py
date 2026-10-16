@@ -3,7 +3,7 @@
 # You should have received a copy of the CC0 legalcode along with this
 # work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 
-"""End-to-end and unit tests for the real-use workflow programs.
+"""End-to-end tests for the real-use workflow programs.
 
 A fake repository with a scripted `gradlew` stands in for the harness, and the
 test plays the agent, so each program's exit code can be checked against the
@@ -25,13 +25,13 @@ from typing import Iterator
 
 PROGRAMS: str = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, PROGRAMS)
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 import build_tools  # noqa: E402
-import local_metadata  # noqa: E402
 import publish  # noqa: E402
 import real_use  # noqa: E402
-import run_summary  # noqa: E402
 from exit_codes import BAD_INPUT, INFRASTRUCTURE, NATIVE_FAILED, NO_SCENARIO_LEFT, OK, STYLE_FAILED  # noqa: E402
+from fake_harness import FAKE_GH, FAKE_GRADLEW  # noqa: E402
 from run_state import load  # noqa: E402
 
 COORDINATE: str = "org.example:lib:1.0.0"
@@ -41,96 +41,6 @@ STATS_SCHEMA: str = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..
                                  "stats-schema.json")
 METADATA: str = os.path.join("src", "test", "resources", "META-INF", "native-image", "reachability-metadata.json")
 
-# The scripted harness. Control file keys: unresolvable (the filter task fails),
-# spotlessFailing (a file spotless reports), checkstyleFailing (classes checkstyle
-# rejects), nativeNeeds
-# (class -> typeReached it needs), nativeUnfixable, collected (the entries the
-# native-image agent writes when realUseJavaTest runs with an agent output),
-# jacocoFails (the coverage run fails).
-FAKE_GRADLEW: str = r'''#!/usr/bin/env python3
-import glob, json, os, sys
-task = next(arg for arg in sys.argv[1:] if not arg.startswith("-"))
-control = json.load(open(os.environ["FAKE_GRADLE_CONTROL"]))
-root = os.path.dirname(os.path.abspath(__file__))
-project = os.path.join(root, "real-use-tests", "src", "org.example", "lib", "1.0.0")
-java = os.path.join(project, "src", "test", "java")
-def present():
-    names = []
-    for path in glob.glob(os.path.join(java, "**", "*.java"), recursive=True):
-        names.append(os.path.relpath(path, java)[:-5].replace(os.sep, "."))
-    return names
-def report(lane, failing):
-    out = os.path.join(project, "build", "test-results", lane)
-    os.makedirs(out, exist_ok=True)
-    cases = "".join(
-        '<testcase classname="%s" name="t">%s</testcase>' % (name, "<failure/>" if name in failing else "")
-        for name in present())
-    open(os.path.join(out, "TEST-all.xml"), "w").write("<testsuite>%s</testsuite>" % cases)
-    return 1 if failing else 0
-agent_output = next((arg.split("=", 1)[1] for arg in sys.argv[1:]
-                     if arg.startswith("-Ptck.realUse.agentOutput=")), None)
-def native_failing():
-    local = os.path.join(project, "src", "test", "resources", "META-INF", "native-image", "reachability-metadata.json")
-    reached = set()
-    if os.path.exists(local):
-        for entry in json.load(open(local)).get("reflection", []):
-            reached.add(entry["condition"]["typeReached"])
-    needs = control.get("nativeNeeds", {})
-    return [name for name in present()
-            if name in control.get("nativeUnfixable", []) or (name in needs and needs[name] not in reached)]
-if task == "scaffoldRealUseTest":
-    os.makedirs(java, exist_ok=True)
-    open(os.path.join(project, "build.gradle"), "w").write("// scaffold\n")
-elif task == "generateRealUseFilter":
-    if control.get("unresolvable"):
-        sys.exit(1)
-    rules = [{"excludeClasses": "**"}, {"includeClasses": "org.example.lib.**"}]
-    open(os.path.join(project, "user-code-filter.json"), "w").write(json.dumps({"rules": rules}))
-elif task == "realUseJavaTest":
-    if agent_output:
-        out = open(os.path.join(agent_output, "reachability-metadata.json"), "w")
-        out.write(json.dumps({"reflection": control.get("collected", [])}))
-elif task == "spotlessCheck":
-    if control.get("spotlessFailing"):
-        print("The following files had format violations: %s" % control["spotlessFailing"])
-        sys.exit(1)
-elif task == "checkstyle":
-    failing = [n for n in present() if n in control.get("checkstyleFailing", [])]
-    for name in failing:
-        print("[ERROR] %s.java:1: bad style" % os.path.join(java, *name.split(".")))
-    sys.exit(1 if failing else 0)
-elif task == "realUseNativeTest":
-    sys.exit(report("test-native", native_failing()))
-elif task == "realUseJacocoReport":
-    if control.get("jacocoFails"):
-        sys.exit(1)
-    out = os.path.join(project, "build", "reports", "jacoco", "test")
-    os.makedirs(out, exist_ok=True)
-    open(os.path.join(out, "jacocoTestReport.xml"), "w").write(
-        '<report name="lib"><package name="org/example/lib">'
-        '<counter type="LINE" missed="1" covered="1"/></package>'
-        '<counter type="INSTRUCTION" missed="30" covered="70"/>'
-        '<counter type="LINE" missed="5" covered="15"/>'
-        '<counter type="METHOD" missed="2" covered="8"/></report>')
-'''
-
-# The fake `gh`: serves the control file's `issue` for `gh issue view` and the
-# login for `gh api user`, which fails when the control file says so.
-FAKE_GH: str = r'''#!/usr/bin/env python3
-import json, os, sys
-control = json.load(open(os.environ["FAKE_GRADLE_CONTROL"]))
-if sys.argv[1:3] == ["api", "user"]:
-    if control.get("loginFails"):
-        print("gh: not authenticated", file=sys.stderr)
-        sys.exit(1)
-    print("octocat")
-    sys.exit(0)
-issue = control.get("issue")
-if sys.argv[1:3] != ["issue", "view"] or issue is None:
-    print("issue not found", file=sys.stderr)
-    sys.exit(1)
-print(json.dumps(issue))
-'''
 ISSUE: dict = {"title": "Real-use tests for org.example:lib:1.0.0", "state": "OPEN",
                "labels": [{"name": "real-use-test"}]}
 
@@ -443,51 +353,17 @@ class WorkflowTest(unittest.TestCase):
         self.assertIn(f"`{PROJECT}/`", note)
         self.assertIn(f"`{os.path.join(state.project_path, 'build.gradle')}`", note)
         self.assertIn(f"`{state.metadata_path}`", note)
+        self.assertIn(f"for Java sources: `{state.test_source_path}/`", note)
 
-
-class UnitTest(unittest.TestCase):
-    """The parsing the programs rely on, checked in isolation."""
-
-    def test_agent_cost_keeps_input_disjoint_from_cache_and_never_invents_a_zero(self) -> None:
-        with tempfile.TemporaryDirectory() as tmp:
-            invocations: str = os.path.join(tmp, "runtime", "accounting", "invocations")
-            os.makedirs(invocations)
-            records: dict = {
-                "a": {"token_convention": "input-total-includes-cache",
-                      "tokens": {"input": {"total": {"value": 110}, "cached_read": {"value": 100}},
-                                 "output": {"total": {"value": 5}}}},
-                "b": {"token_convention": "input-total-excludes-cache",
-                      "tokens": {"input": {"total": {"value": 7}, "cached_read": {"value": 50}},
-                                 "output": {"total": {"value": 3}}}},
-                # Killed before it reported usage: no tokens.
-                "c": {"tokens": {"input": {"total": {"status": "missing"}}}},
-            }
-            for name, record in records.items():
-                with open(os.path.join(invocations, f"{name}.json"), "w") as handle:
-                    json.dump(record, handle)
-            tokens = run_summary.agent_tokens(tmp)
-        self.assertEqual({"input": 17, "cached_input": 150, "cache_write_input": None, "output": 8}, tokens)
-
-    def test_library_coverage_reads_the_report_totals(self) -> None:
-        with tempfile.TemporaryDirectory() as tmp:
-            report: str = os.path.join(tmp, "jacocoTestReport.xml")
-            with open(report, "w") as handle:
-                handle.write('<report name="lib"><counter type="LINE" missed="0" covered="0"/></report>')
-            self.assertEqual({"line": {"covered": 0, "total": 0, "ratio": 1.0}, "instruction": "N/A",
-                              "method": "N/A"}, run_summary.library_coverage(report))
-
-    def test_copy_collected_keeps_conforming_new_entries_only(self) -> None:
-        with tempfile.TemporaryDirectory() as tmp:
-            kept: dict = {"type": "a.b.Open", "condition": {"typeReached": "a.b.Client"}}
-            collected: str = os.path.join(tmp, "collected.json")
-            with open(collected, "w") as handle:
-                json.dump({"reflection": [kept, {"type": "a.b.Bare"},
-                                          {"type": "c.D", "condition": {"typeReached": "c.Outside"}}]}, handle)
-            target: str = os.path.join(tmp, "out", "reachability-metadata.json")
-            self.assertEqual(1, local_metadata.copy_collected(collected, target, ["a.b."], set()))
-            self.assertEqual(0, local_metadata.copy_collected(collected, target, ["a.b."], set()))
-            with open(target) as handle:
-                self.assertEqual({"reflection": [kept]}, json.load(handle))
+    def test_prepare_keeps_the_language_the_scaffold_chose(self) -> None:
+        self.control({"scaffoldLanguage": "kotlin"})
+        self.assertEqual(OK, self.prepare())
+        state = load(self.workspace)
+        self.assertEqual(os.path.join("src", "test", "kotlin"), state.test_source_dir)
+        self.assertIn(f"for Kotlin sources: `{state.test_source_path}/`", self.read(self.runtime("run.md")))
+        # Git keeps no empty directory; the recorded language survives its loss.
+        os.rmdir(state.test_source_path)
+        self.assertEqual(os.path.join(state.project_path, "src", "test", "kotlin"), load(self.workspace).test_source_path)
 
 
 if __name__ == "__main__":

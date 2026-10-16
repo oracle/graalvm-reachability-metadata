@@ -21,12 +21,16 @@ deserves to ship (§GOAL-reviewable-metadata-gaps).
   project (§root/FS-tests.1). The coordinate must be a supported library version:
   one listed in the `tested-versions` of its
   `metadata/<groupId>/<artifactId>/index.json`.
-- `src/test/java/` — the scenarios, one JUnit test class each
-  (§FS-real-use-test-contract.1.1).
-- `build.gradle` — the target library plus every supporting library the
+- `src/test/<language>/` — the scenarios, one JUnit test class each
+  (§FS-real-use-test-contract.1.1), under `java`, `kotlin`, `scala`, or
+  `groovy` by the target library's language (§FS-real-use-test-contract.1.5).
+- `build.gradle` — the language plugin and runtime a `tests/` project of that
+  language declares, the target library, and every supporting library the
   scenarios use (§FS-real-use-test-contract.1.4).
 - `user-code-filter.json` — the same filter a `tests/` project carries, scoped
-  to the target library and the supporting libraries `build.gradle` declares.
+  to the target library and the supporting libraries `build.gradle` declares;
+  the test framework and the language's runtime and compiler are not
+  supporting libraries.
   It bounds which libraries the project's test-local metadata may describe
   (§FS-real-use-tests.2.2). The other filter files a `tests/` project may carry
   are allowed with the same meaning.

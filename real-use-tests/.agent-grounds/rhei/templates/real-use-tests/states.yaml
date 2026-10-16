@@ -99,7 +99,7 @@ states:
     instructions: |
       Read `{input.run.path}` first: it names the issue this run resolves, the
       coordinate (written `<coordinate>` below), the coordinate project, and the
-      absolute path of the scenario directory you write to.
+      absolute path and language of the scenario directory you write to.
 
       You write one real-use scenario for `<coordinate>`: a test that uses the
       library the way an application does (§FS-real-use-test-generation.2.3).
@@ -114,6 +114,11 @@ states:
 
       2. Write the scenario, following the contract
          (§FS-real-use-test-contract):
+         - Write it in the scenario directory's language, as idiomatic
+           application code in that language: a Kotlin or Scala library is
+           called the way Kotlin or Scala code calls it, never through the
+           accessors those compilers generate for Java callers
+           (§FS-real-use-test-contract.1.5).
          - One scenario per test class and one class per file. Nest every
            helper type the scenario needs inside that class; never add a
            shared helper file. Start the class doc comment with one sentence

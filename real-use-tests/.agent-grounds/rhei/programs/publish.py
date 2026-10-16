@@ -55,7 +55,7 @@ def _record_native_removals(workspace: str, state: RunState) -> None:
     if not os.path.isfile(report_path):
         return
     for item in read_json(report_path).get("deleted", []):
-        path: str = scenarios.class_file(state.test_java_path, item.get("class", ""))
+        path: str = scenarios.class_file(state.test_source_path, item.get("class", ""))
         if item.get("class") and not os.path.exists(path):
             state.record_removal(os.path.relpath(path, state.worktree), item.get("reason", ""))
 
