@@ -115,8 +115,8 @@ class PaymentStatusEngineRequestTimeoutTest {
     private fun statusUrl(id: String): String = "http://127.0.0.1:$port/payments/$id/status"
 
     private companion object {
-        const val ENGINE_TIMEOUT_MILLIS: Long = 500
-        const val ACQUIRER_DELAY_MILLIS: Long = 1_500
+        const val ENGINE_TIMEOUT_MILLIS: Long = 2_000
+        const val ACQUIRER_DELAY_MILLIS: Long = 5_000
         const val RECONCILIATION_TIMEOUT_MILLIS: Long = 60_000
     }
 }
