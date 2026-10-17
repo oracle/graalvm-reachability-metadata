@@ -7,6 +7,7 @@
 plugins {
     id "org.graalvm.internal.tck"
     alias(libs.plugins.kotlin.jvm)
+    id "org.jetbrains.kotlin.plugin.serialization" version "2.3.20"
 }
 
 String libraryVersion = tck.testedLibraryVersion.get()
@@ -14,6 +15,16 @@ int testJvmVersion = tck.testJvmVersion.get()
 
 dependencies {
     testImplementation "io.ktor:ktor-server-status-pages-jvm:$libraryVersion"
+    testImplementation "io.ktor:ktor-server-cio-jvm:$libraryVersion"
+    testImplementation "io.ktor:ktor-server-test-host-jvm:$libraryVersion"
+    testImplementation "io.ktor:ktor-client-cio-jvm:$libraryVersion"
+    testImplementation "io.ktor:ktor-server-content-negotiation-jvm:$libraryVersion"
+    testImplementation "io.ktor:ktor-serialization-kotlinx-json-jvm:$libraryVersion"
+    testImplementation "io.ktor:ktor-server-auth-jvm:$libraryVersion"
+    testImplementation "io.ktor:ktor-server-request-validation-jvm:$libraryVersion"
+    testImplementation "io.ktor:ktor-server-html-builder-jvm:$libraryVersion"
+    testImplementation "io.ktor:ktor-server-call-logging-jvm:$libraryVersion"
+    testImplementation 'org.slf4j:slf4j-simple:2.0.17'
 }
 
 kotlin {
