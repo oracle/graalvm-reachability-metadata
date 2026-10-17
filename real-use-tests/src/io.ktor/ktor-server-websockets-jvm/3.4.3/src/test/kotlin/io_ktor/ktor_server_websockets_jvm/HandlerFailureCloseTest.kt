@@ -53,7 +53,7 @@ class HandlerFailureCloseTest {
         val log = DeskLog()
         installOrderDesk(log)
 
-        val view: ClientView = placeOrders(listOf("order 2 apples", "refund everything"))
+        val view: ClientView = placeOrders(listOf("order 2 apples", "refund everything"), repliesBeforeLast = 1)
 
         assertEquals(listOf("accepted 2 apples"), view.replies)
         assertEquals(ABNORMAL_CLOSURE, view.closeReason?.code)
@@ -81,8 +81,11 @@ class HandlerFailureCloseTest {
         assertTrue(!log.failure.isCompleted)
     }
 
-    /** Sends each command, collects text replies until the server closes, and reads its reason. */
-    private suspend fun ApplicationTestBuilder.placeOrders(commands: List<String>): ClientView {
+    /**
+     * Sends each command, collects text replies until the server closes, and reads its reason.
+     * The last command waits for [repliesBeforeLast] replies, since a failing handler drops queued ones.
+     */
+    private suspend fun ApplicationTestBuilder.placeOrders(commands: List<String>, repliesBeforeLast: Int = 0): ClientView {
         val client: HttpClient = createClient {
             install(ClientWebSockets)
         }
@@ -91,15 +94,22 @@ class HandlerFailureCloseTest {
         var incomingDrained = false
 
         client.webSocket("/orders") {
-            for (command: String in commands) {
+            suspend fun receiveReply() {
+                val frame: Frame = incoming.receive()
+                if (frame is Frame.Text) {
+                    replies += frame.readText()
+                }
+            }
+            for (command: String in commands.dropLast(1)) {
                 send(Frame.Text(command))
             }
+            while (replies.size < repliesBeforeLast) {
+                receiveReply()
+            }
+            send(Frame.Text(commands.last()))
             try {
                 while (true) {
-                    val frame: Frame = incoming.receive()
-                    if (frame is Frame.Text) {
-                        replies += frame.readText()
-                    }
+                    receiveReply()
                 }
             } catch (closed: ClosedReceiveChannelException) {
                 incomingDrained = true
