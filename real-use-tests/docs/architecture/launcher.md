@@ -37,16 +37,28 @@ claims. When the program finds nothing to claim, the launcher sleeps ten
 minutes and claims again. A failed instantiation runs the program's `--release`, which returns the issue to
 `Todo` only while the launcher's account is still its sole assignee.
 
-A run that pushes a branch records it in
-`runtime/real-use/publication/branch.md`, and the launcher collects those
-branches. After every third run, and when the queue is empty, it hands them to
-the `review` program (§FS-real-use-test-generation.4). For each branch the program reads the pull
-request once with `gh pr list --head`; a branch without one yet goes back to
-the launcher for the next batch. It skips a pull request that is approved,
-merged, or closed. For any other pull request it adds a detached worktree of the head
-commit and runs the worker agent once in it, non-interactively: `claude -p`,
-with the target's model and effort, or `pi -p`, with its provider, model, and
-thinking level. The prompt names only the pull request number, branch, and
-head, and it never waits for running checks. The worktree is removed
-afterwards. A branch whose head moved during the review goes back to the
-launcher too, because the agent pushed a fix the next batch must see.
+After every third run, and when the program finds nothing to claim, the
+launcher runs the `review` program with no arguments
+(§FS-real-use-test-generation.4); a failed review prints a warning and the
+launcher goes on. The program keeps nothing between reviews: it lists the open
+pull requests labeled `real-use-test` with `gh pr list` and walks their
+numbers by creation time, oldest first. Each one is read again with
+`gh pr view` just before it is judged, so a label, approval, merge, or push
+that landed while an earlier agent ran is seen. It skips one that is no
+longer open, one whose review decision is `APPROVED`, and one that carries
+the `in-review` label unless the latest
+`labeled` event for that label in the issue timeline is more than three hours
+old. For any other pull request it adds `in-review`, adds a detached worktree
+of the head commit, and runs the worker agent once in it, non-interactively:
+`claude -p`, with the target's model and effort, or `pi -p`, with its
+provider, model, and thinking level. The prompt names only the pull request
+number, branch, and head, and it never waits for running checks. The worktree
+is removed afterwards, and the label is removed as a plain step once the agent
+process has returned, so a launcher killed mid-review leaves a label that goes
+stale after three hours. The program stops after three reviewed pull requests
+or at the end of the list, and does not check what the agent did.
+
+The label keeps concurrent launchers off the same pull request. Adding it is
+not atomic, so two launchers reading one pull request at once can both
+review it; that rare double review is accepted, because a second approval changes nothing
+and a second push is rejected as non-fast-forward.
