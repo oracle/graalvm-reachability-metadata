@@ -42,8 +42,8 @@ The launcher keeps going until the operator stops it: after each run it claims
 the next issue, and when none can be claimed it waits ten minutes and looks
 again. It verifies the host again before every claim, and a failed check stops
 it, so a host that broke during the loop cannot claim and fail its way through
-the queue. Every third run it reviews the pull requests
-its runs opened (§FS-real-use-test-generation.4).
+the queue. Every third run, and whenever no issue can be claimed, it reviews
+the open real-use pull requests (§FS-real-use-test-generation.4).
 
 ## 2. Phases
 
@@ -177,20 +177,33 @@ diff (§FS-real-use-tests.2.3).
 ## 4. Approval and merge
 
 A published pull request merges without waiting for a person. Every third
-run, the launcher takes the branches the last three runs published, together
-with any branch a previous review left for later. A branch whose pull request
-the trusted publisher has not opened yet waits for the next review; a pull
-request that is already approved, merged, or closed is skipped. Each other pull
-request gets one agent invocation, given only its number, its branch, and its
-head commit, which never waits for running checks:
+run, and whenever no issue can be claimed, the launcher reviews the open pull
+requests labeled `real-use-test`. It reads them from GitHub rather than
+remembering what its own runs pushed, so a review sees the pull requests of
+every launcher and of earlier sessions, and nothing is lost when a launcher
+stops. It takes them oldest first, so the longest wait is served first, and
+stops once it has reviewed three, so a review never holds the queue for long;
+a pull request it skips does not count.
+
+It skips a pull request that is already approved, and one that another review
+holds. A review holds a pull request by marking it `in-review` before its
+agent starts and clearing the mark once the agent has stopped. A mark set more
+than three hours ago belongs to a review that died, and the next review takes
+the pull request over.
+
+Each other pull request gets one agent invocation, given only its number, its
+branch, and its head commit, which never waits for running checks:
 
 - The agent looks for a real-use test that can fail intermittently, from
   timing or garbage collection, by reading the tests and any check that has
-  already failed. It makes the smallest fix that keeps every assertion and
-  pushes it to the branch, which the next review sees as a new head.
-- When it finds none and no check has failed, it approves that head and
-  enables auto-merge for it, so a later push is never merged under this
-  approval.
-- Otherwise it changes nothing, and the pull request is left for a human.
+  already failed. When it finds one, it makes the smallest fix that keeps
+  every assertion, pushes it to the branch, then approves the new head it
+  pushed and enables auto-merge for that head.
+- When it finds none and no check has failed, it approves the head it was
+  given and enables auto-merge for it.
+- Otherwise it changes nothing, and the pull request is left for a human;
+  while it stays open and unapproved, later reviews see it again.
 
+Auto-merge is always pinned to the head that was approved, so a later push is
+never merged under that approval, and it still waits for that head's checks.
 The agent edits only the coordinate project (§FS-real-use-test-contract.2.2).
