@@ -17,7 +17,7 @@ import sys
 import unittest
 from contextlib import redirect_stderr
 from datetime import datetime, timedelta, timezone
-from typing import Any
+from typing import Any, Callable
 from unittest.mock import patch
 
 PROGRAMS: str = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -37,27 +37,37 @@ def _pr(number: int, created_hours_ago: int, decision: str = "REVIEW_REQUIRED",
     """A listed pull request; `labeled_hours_ago` puts `in-review` on it that long ago."""
     labels: list[dict[str, str]] = [{"name": "real-use-test"}]
     labels += [{"name": review.IN_REVIEW}] if labeled_hours_ago is not None else []
-    return {"number": number, "headRefName": f"ai/kimeta/real-use-{number}", "headRefOid": f"head{number}",
+    return {"number": number, "state": "OPEN", "headRefName": f"ai/kimeta/real-use-{number}",
+            "headRefOid": f"head{number}",
             "reviewDecision": decision, "labels": labels,
             "createdAt": _stamp(NOW - timedelta(hours=created_hours_ago)),
             "labeledAt": None if labeled_hours_ago is None else _stamp(NOW - timedelta(hours=labeled_hours_ago))}
 
 
 class FakeGitHub:
-    """Stands in for `review.gh` and `review.run_agent`, logging both in one ordered list."""
+    """Stands in for `review.gh` and `review.run_agent`, logging both in one ordered list.
 
-    def __init__(self, pulls: list[dict[str, Any]]) -> None:
+    `during_agent` maps a pull request number to a change applied to the table while its agent runs.
+    """
+
+    def __init__(self, pulls: list[dict[str, Any]],
+                 during_agent: dict[int, Callable[[dict[int, dict[str, Any]]], None]] | None = None) -> None:
         self.pulls: dict[int, dict[str, Any]] = {pull["number"]: pull for pull in pulls}
         self.listed: list[dict[str, Any]] = pulls
+        self.during_agent: dict[int, Callable[[dict[int, dict[str, Any]]], None]] = during_agent or {}
         self.log: list[tuple[Any, ...]] = []
 
     def gh(self, arguments: list[str], action: str) -> str:
         if arguments[:2] == ["pr", "list"]:
             self.log.append(("list", arguments))
-            return json.dumps([{key: value for key, value in pull.items() if key != "labeledAt"}
-                               for pull in self.listed])
+            return json.dumps([{"number": pull["number"], "createdAt": pull["createdAt"]} for pull in self.listed])
+        if arguments[:2] == ["pr", "view"]:
+            number: int = int(arguments[2])
+            self.log.append(("view", number))
+            return json.dumps({key: value for key, value in self.pulls[number].items()
+                               if key not in ("labeledAt", "createdAt")})
         if arguments[0] == "api":
-            number: int = int(arguments[2].split("/")[-2])
+            number = int(arguments[2].split("/")[-2])
             self.log.append(("timeline", number))
             stamp: str | None = self.pulls[number]["labeledAt"]
             older: str = _stamp(NOW - timedelta(days=2))
@@ -70,6 +80,7 @@ class FakeGitHub:
 
     def run_agent(self, repo: str, target: str, number: int, branch: str, head: str) -> None:
         self.log.append(("agent", number, branch, head))
+        self.during_agent.get(number, lambda pulls: None)(self.pulls)
 
     def run(self) -> int:
         with patch.object(review, "gh", side_effect=self.gh), \
@@ -124,8 +135,7 @@ class ReviewTest(unittest.TestCase):
         self.assertEqual("open", arguments[arguments.index("--state") + 1])
         self.assertEqual(review.issue.REPOSITORY, arguments[arguments.index("--repo") + 1])
         self.assertEqual(
-            {"number", "headRefName", "headRefOid", "reviewDecision", "labels", "createdAt"},
-            set(arguments[arguments.index("--json") + 1].split(",")))
+            {"number", "createdAt"}, set(arguments[arguments.index("--json") + 1].split(",")))
 
     def test_pull_requests_are_reviewed_oldest_first(self) -> None:
         github: FakeGitHub = FakeGitHub([_pr(3, 1), _pr(1, 30), _pr(2, 5)])
@@ -138,7 +148,8 @@ class ReviewTest(unittest.TestCase):
 
         github.run()
         self.assertEqual(
-            [("--add-label", 7), ("agent", 7, "ai/kimeta/real-use-7", "head7"), ("--remove-label", 7)],
+            [("view", 7), ("--add-label", 7), ("agent", 7, "ai/kimeta/real-use-7", "head7"),
+             ("--remove-label", 7)],
             github.log[1:])
 
     def test_approved_and_freshly_held_pull_requests_are_skipped_without_an_agent(self) -> None:
@@ -155,7 +166,7 @@ class ReviewTest(unittest.TestCase):
 
         self.assertEqual(1, github.run())
         self.assertEqual(
-            [("timeline", 4), ("--add-label", 4), ("agent", 4, "ai/kimeta/real-use-4", "head4"),
+            [("view", 4), ("timeline", 4), ("--add-label", 4), ("agent", 4, "ai/kimeta/real-use-4", "head4"),
              ("--remove-label", 4)],
             github.log[1:])
 
@@ -177,6 +188,22 @@ class ReviewTest(unittest.TestCase):
         self.assertEqual(3, github.run())
         self.assertEqual([2, 4, 5], github.agents())
         self.assertNotIn(("--add-label", 6), github.log)
+        self.assertNotIn(("view", 6), github.log)
+
+    def test_each_pull_request_is_judged_as_it_is_after_the_earlier_agents(self) -> None:
+        def meanwhile(pulls: dict[int, dict[str, Any]]) -> None:
+            pulls[2]["labels"].append({"name": review.IN_REVIEW})
+            pulls[2]["labeledAt"] = _stamp(NOW - timedelta(minutes=30))
+            pulls[3]["state"] = "MERGED"
+            pulls[4]["reviewDecision"] = "APPROVED"
+            pulls[5]["headRefOid"] = "pushed5"
+
+        github: FakeGitHub = FakeGitHub([_pr(1, 10), _pr(2, 9), _pr(3, 8), _pr(4, 7), _pr(5, 6)],
+                                        during_agent={1: meanwhile})
+
+        self.assertEqual(2, github.run())
+        self.assertEqual([1, 5], github.agents())
+        self.assertIn(("agent", 5, "ai/kimeta/real-use-5", "pushed5"), github.log)
 
     def test_the_label_is_removed_after_the_agent_whatever_it_did(self) -> None:
         github: FakeGitHub = FakeGitHub([_pr(8, 1)])

@@ -75,13 +75,21 @@ def parse_time(text: str) -> datetime:
     return datetime.fromisoformat(text.replace("Z", "+00:00"))
 
 
-def open_pull_requests() -> list[dict[str, Any]]:
-    """The open `real-use-test` pull requests, oldest first (§FS-real-use-test-generation.4)."""
+def open_pull_requests() -> list[int]:
+    """The numbers of the open `real-use-test` pull requests, oldest first (§FS-real-use-test-generation.4)."""
     found: list[dict[str, Any]] = json.loads(gh(
         ["pr", "list", "--repo", issue.REPOSITORY, "--label", issue.LABEL, "--state", "open", "--limit", "1000",
-         "--json", "number,headRefName,headRefOid,reviewDecision,labels,createdAt"],
+         "--json", "number,createdAt"],
         "list the open real-use pull requests"))
-    return sorted(found, key=lambda pull: parse_time(pull["createdAt"]))
+    return [pull["number"] for pull in sorted(found, key=lambda pull: parse_time(pull["createdAt"]))]
+
+
+def pull_request(number: int) -> dict[str, Any]:
+    """Pull request `number` as it is now, read just before it is judged (§AR-real-use-test-launcher)."""
+    return json.loads(gh(
+        ["pr", "view", str(number), "--repo", issue.REPOSITORY,
+         "--json", "number,state,headRefName,headRefOid,reviewDecision,labels"],
+        f"read #{number}"))
 
 
 def label_added_at(number: int) -> datetime:
@@ -97,6 +105,8 @@ def label_added_at(number: int) -> datetime:
 
 def skip_reason(pull: dict[str, Any], now: datetime) -> str | None:
     """Why the review skips `pull`, or `None` when it reviews it, taking over a stale label."""
+    if pull["state"] != "OPEN":
+        return pull["state"].lower()
     if pull.get("reviewDecision") == "APPROVED":
         return "approved"
     if IN_REVIEW in {label["name"] for label in pull["labels"]}:
@@ -128,13 +138,13 @@ def run_agent(repo: str, target: str, number: int, branch: str, head: str) -> No
 
 def review(repo: str, target: str, now: datetime | None = None) -> int:
     """Review up to `REVIEW_LIMIT` pull requests of the queue; return how many got an agent."""
-    started: datetime = now or datetime.now(timezone.utc)
     reviewed: int = 0
-    for pull in open_pull_requests():
+    for number in open_pull_requests():
         if reviewed == REVIEW_LIMIT:
             break
-        number: int = pull["number"]
-        reason: str | None = skip_reason(pull, started)
+        # Read again: an earlier agent may have run for an hour while another review labeled this one.
+        pull: dict[str, Any] = pull_request(number)
+        reason: str | None = skip_reason(pull, now or datetime.now(timezone.utc))
         if reason is not None:
             print(f"[review] #{number} is {reason}; skipping", file=sys.stderr)
             continue
