@@ -1,0 +1,34 @@
+{
+  "issue_number": 10868,
+  "iterations": 15,
+  "library_coverage": {
+    "instruction": {
+      "covered": 1483,
+      "ratio": 0.7441043652784747,
+      "total": 1993
+    },
+    "line": {
+      "covered": 251,
+      "ratio": 0.7770897832817337,
+      "total": 323
+    },
+    "method": {
+      "covered": 73,
+      "ratio": 0.7156862745098039,
+      "total": 102
+    }
+  },
+  "removed": [
+    {
+      "reason": "Timing race, not a missing registration: AcceptAllCookiesStorage evicts a Max-Age=0 cookie only when createdAt + 0 < now (strict), and the native image performs the logout and the next cookie lookup within the same millisecond, so the expired session cookie is still returned. No metadata entry or native-image option changes the clock comparison.",
+      "scenario": "real-use-tests/src/io.ktor/ktor-client-okhttp-jvm/3.4.3/src/test/kotlin/io_ktor/ktor_client_okhttp_jvm/ShopSessionCookiesTest.kt"
+    }
+  ],
+  "timestamp": "2026-10-17T22:18:48+00:00",
+  "tokens": {
+    "cache_write_input": 1063434,
+    "cached_input": 12140035,
+    "input": 404,
+    "output": 166650
+  }
+}
