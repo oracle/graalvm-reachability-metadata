@@ -1,0 +1,30 @@
+/*
+ * Copyright and related rights waived via CC0
+ *
+ * You should have received a copy of the CC0 legalcode along with this
+ * work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
+ */
+plugins {
+    id "org.graalvm.internal.tck"
+}
+
+String libraryVersion = tck.testedLibraryVersion.get()
+
+dependencies {
+    testImplementation "io.micrometer:micrometer-observation:$libraryVersion"
+    testImplementation "io.micrometer:micrometer-core:$libraryVersion"
+    testImplementation "io.micrometer:context-propagation:1.2.1"
+    testImplementation "org.springframework:spring-aop:6.2.15"
+    testImplementation "org.aspectj:aspectjweaver:1.9.21.2"
+}
+
+graalvmNative {
+    agent {
+        defaultMode = "conditional"
+        modes {
+            conditional {
+                userCodeFilterPath = "user-code-filter.json"
+            }
+        }
+    }
+}
