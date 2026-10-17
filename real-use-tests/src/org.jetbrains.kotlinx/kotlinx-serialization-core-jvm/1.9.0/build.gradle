@@ -1,0 +1,49 @@
+/*
+ * Copyright and related rights waived via CC0
+ *
+ * You should have received a copy of the CC0 legalcode along with this
+ * work. If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
+ */
+plugins {
+    id "org.graalvm.internal.tck"
+    alias(libs.plugins.kotlin.jvm)
+    id "org.jetbrains.kotlin.plugin.serialization" version "2.3.20"
+}
+
+String libraryVersion = tck.testedLibraryVersion.get()
+int testJvmVersion = tck.testJvmVersion.get()
+
+dependencies {
+    testImplementation "org.jetbrains.kotlinx:kotlinx-serialization-core-jvm:$libraryVersion"
+    testImplementation "org.jetbrains.kotlinx:kotlinx-serialization-json-jvm:1.9.0"
+    testImplementation "org.jetbrains.kotlinx:kotlinx-serialization-cbor-jvm:1.9.0"
+    testImplementation "org.jetbrains.kotlinx:kotlinx-serialization-protobuf-jvm:1.9.0"
+    testImplementation "org.jetbrains.kotlinx:kotlinx-serialization-properties-jvm:1.9.0"
+    testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:1.10.2"
+    testImplementation "org.jetbrains.kotlinx:kotlinx-datetime-jvm:0.7.1"
+    testImplementation "io.ktor:ktor-server-cio-jvm:3.3.3"
+    testImplementation "io.ktor:ktor-server-content-negotiation-jvm:3.3.3"
+    testImplementation "io.ktor:ktor-client-cio-jvm:3.3.3"
+    testImplementation "io.ktor:ktor-client-content-negotiation-jvm:3.3.3"
+    testImplementation "io.ktor:ktor-serialization-kotlinx-json-jvm:3.3.3"
+    testImplementation "com.h2database:h2:2.3.232"
+}
+
+kotlin {
+    jvmToolchain(testJvmVersion)
+}
+
+compileTestKotlin {
+    kotlinOptions.jvmTarget = testJvmVersion.toString()
+}
+
+graalvmNative {
+    agent {
+        defaultMode = "conditional"
+        modes {
+            conditional {
+                userCodeFilterPath = "user-code-filter.json"
+            }
+        }
+    }
+}
