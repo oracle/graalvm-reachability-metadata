@@ -140,10 +140,10 @@ public class ShippingQuoteTimeoutRetryTest {
             client.use {
                 val failure: HttpRequestTimeoutException = assertThrows<HttpRequestTimeoutException> {
                     client.get("rates/freight") {
-                        timeout { requestTimeoutMillis = 300 }
+                        timeout { requestTimeoutMillis = 10_000 }
                     }
                 }
-                assertThat(failure.message).contains("/rates/freight").contains("300")
+                assertThat(failure.message).contains("/rates/freight").contains("10000")
 
                 // The client stays usable for requests that complete within the default timeout.
                 val health: HttpResponse = client.get("health")
