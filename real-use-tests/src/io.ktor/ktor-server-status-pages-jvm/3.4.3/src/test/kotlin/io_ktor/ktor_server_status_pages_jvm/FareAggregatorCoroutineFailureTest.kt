@@ -18,6 +18,7 @@ import io.ktor.server.routing.routing
 import io.ktor.server.testing.ApplicationTestBuilder
 import io.ktor.server.testing.testApplication
 import java.util.concurrent.ConcurrentLinkedQueue
+import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.TimeoutCancellationException
@@ -43,14 +44,25 @@ public class FareAggregatorCoroutineFailureTest {
     /** An airline whose fare service refused the lookup. */
     private class AirlineUnavailable(val airline: String) : RuntimeException("$airline is unavailable")
 
-    /** The airlines' fare services, recording which lookups were cancelled. */
-    private class FareDesk {
+    /**
+     * The airlines' fare services, recording which lookups were cancelled.
+     *
+     * With [skylineFailsAfterAeroParks], skyline refuses only once aero's lookup is parked, so
+     * the failure cancels a running sibling rather than one that has not started yet.
+     */
+    private class FareDesk(private val skylineFailsAfterAeroParks: Boolean = false) {
         val cancelled: ConcurrentLinkedQueue<String> = ConcurrentLinkedQueue()
+        private val aeroParked: CompletableDeferred<Unit> = CompletableDeferred()
 
         /** The fare [airline] quotes for [route], looked up off the call's dispatcher. */
         suspend fun quote(airline: String, route: String): Int = withContext(Dispatchers.Default) {
             when (airline to route) {
-                "skyline" to "BEG-LIS" -> throw AirlineUnavailable(airline)
+                "skyline" to "BEG-LIS" -> {
+                    if (skylineFailsAfterAeroParks) {
+                        aeroParked.await()
+                    }
+                    throw AirlineUnavailable(airline)
+                }
                 "aero" to "BEG-LIS", "aero" to "BEG-OSL" -> parkUntilCancelled(airline)
                 else -> FARES.getValue(airline) + route.length
             }
@@ -58,6 +70,7 @@ public class FareAggregatorCoroutineFailureTest {
 
         private suspend fun parkUntilCancelled(airline: String): Nothing {
             try {
+                aeroParked.complete(Unit)
                 awaitCancellation()
             } finally {
                 cancelled.add(airline)
@@ -131,7 +144,7 @@ public class FareAggregatorCoroutineFailureTest {
 
     @Test
     fun failedAsyncChildCancelsItsSiblingsAndReachesItsHandler() = testApplication {
-        val desk: FareDesk = FareDesk()
+        val desk: FareDesk = FareDesk(skylineFailsAfterAeroParks = true)
         aggregator(desk)
 
         val response: HttpResponse = client.get("/fares/BEG-LIS")
