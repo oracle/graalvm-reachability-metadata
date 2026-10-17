@@ -282,8 +282,9 @@ public class CustomerDashboardWideParZipTest {
         val cancelled: AtomicInteger = AtomicInteger()
 
         suspend fun slowCard(): Nothing {
-            waiting.arrive()
             try {
+                // A branch woken at the rendezvous can be cancelled before it resumes.
+                waiting.arrive()
                 awaitCancellation()
             } catch (cancellation: CancellationException) {
                 cancelled.incrementAndGet()
