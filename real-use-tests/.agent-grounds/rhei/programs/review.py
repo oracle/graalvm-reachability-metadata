@@ -76,7 +76,7 @@ def parse_time(text: str) -> datetime:
 
 
 def open_pull_requests() -> list[int]:
-    """The numbers of the open `real-use-test` pull requests, oldest first (§FS-real-use-test-generation.4)."""
+    """Open real-use pull request numbers, oldest first (§FS-real-use-test-generation.4)."""
     found: list[dict[str, Any]] = json.loads(gh(
         ["pr", "list", "--repo", issue.REPOSITORY, "--label", issue.LABEL, "--state", "open", "--limit", "1000",
          "--json", "number,createdAt"],
@@ -85,7 +85,7 @@ def open_pull_requests() -> list[int]:
 
 
 def pull_request(number: int) -> dict[str, Any]:
-    """Pull request `number` as it is now, read just before it is judged (§AR-real-use-test-launcher)."""
+    """Pull request `number` as it is now, read before judging it (§AR-real-use-test-launcher)."""
     return json.loads(gh(
         ["pr", "view", str(number), "--repo", issue.REPOSITORY,
          "--json", "number,state,headRefName,headRefOid,reviewDecision,labels"],
