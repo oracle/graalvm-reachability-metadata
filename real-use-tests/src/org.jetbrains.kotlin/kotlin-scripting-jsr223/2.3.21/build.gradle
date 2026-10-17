@@ -14,6 +14,10 @@ int testJvmVersion = tck.testJvmVersion.get()
 
 dependencies {
     testImplementation "org.jetbrains.kotlin:kotlin-scripting-jsr223:$libraryVersion"
+    testImplementation "org.jetbrains.kotlin:kotlin-compiler-embeddable:$libraryVersion"
+    testImplementation "org.jetbrains.kotlin:kotlin-scripting-jvm:$libraryVersion"
+    testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:1.10.2"
+    testImplementation "com.fasterxml.jackson.module:jackson-module-kotlin:2.19.2"
 }
 
 kotlin {
@@ -24,7 +28,22 @@ compileTestKotlin {
     kotlinOptions.jvmTarget = testJvmVersion.toString()
 }
 
+String findRuntimeClasspathJar(String prefix) {
+    File match = sourceSets.test.runtimeClasspath.files.find { File candidate ->
+        candidate.name.startsWith(prefix) && candidate.name.endsWith(".jar")
+    }
+    return match?.absolutePath ?: ""
+}
+
 graalvmNative {
+    binaries {
+        test {
+            // The engine compiles scripts against these JARs, which a native image has no path to.
+            runtimeArgs("-Djava.home=${System.getenv('JAVA_HOME')}")
+            runtimeArgs("-Djava.class.path=${sourceSets.test.runtimeClasspath.asPath}")
+            runtimeArgs("-Dkotlin.java.stdlib.jar=${findRuntimeClasspathJar('kotlin-stdlib-')}")
+        }
+    }
     agent {
         defaultMode = "conditional"
         modes {
