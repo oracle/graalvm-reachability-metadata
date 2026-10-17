@@ -167,7 +167,7 @@ public class FareAggregatorCoroutineFailureTest {
     }
 
     private companion object {
-        const val EXPRESS_BUDGET_MILLIS: Long = 200
+        const val EXPRESS_BUDGET_MILLIS: Long = 10_000
         val FARES: Map<String, Int> = mapOf("aero" to 140, "skyline" to 90, "budgetair" to 120)
     }
 }

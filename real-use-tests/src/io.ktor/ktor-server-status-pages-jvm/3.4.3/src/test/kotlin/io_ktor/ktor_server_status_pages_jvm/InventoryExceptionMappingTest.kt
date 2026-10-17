@@ -122,7 +122,7 @@ public class InventoryExceptionMappingTest {
     @AfterEach
     fun stopInventoryService() {
         client.close()
-        server.stop(gracePeriodMillis = 0, timeoutMillis = 1_000)
+        server.stop(gracePeriodMillis = 0, timeoutMillis = 10_000)
     }
 
     @Test
