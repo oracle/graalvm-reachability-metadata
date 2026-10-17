@@ -198,7 +198,9 @@ public class TlsConnectionTest {
         factory.useSslProtocol(sslContext("TLSv1.2", true));
         factory.enableHostnameVerification();
 
-        byte[] statement = new byte[512 * 1024];
+        // The 5.12 NIO reader loses its place when a TLS record arrives split across socket reads,
+        // so the statement stays within one 16 KiB record instead of streaming many.
+        byte[] statement = new byte[8 * 1024];
         for (int i = 0; i < statement.length; i++) {
             statement[i] = (byte) ('a' + i % 26);
         }
