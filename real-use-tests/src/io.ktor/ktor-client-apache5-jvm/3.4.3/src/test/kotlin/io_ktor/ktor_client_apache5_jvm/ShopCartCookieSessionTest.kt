@@ -25,6 +25,7 @@ import io.ktor.server.response.respondText
 import io.ktor.server.routing.get
 import io.ktor.server.routing.post
 import io.ktor.server.routing.routing
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -143,6 +144,11 @@ class ShopCartCookieSessionTest {
             assertEquals("step=cart items=2", client.get("$shop/checkout/summary").bodyAsText())
 
             assertEquals("bye", client.post("$shop/logout").bodyAsText())
+            // The storage drops a `maxAge = 0` cookie only once its millisecond clock has moved on.
+            val loggedOutAt: Long = System.currentTimeMillis()
+            while (System.currentTimeMillis() <= loggedOutAt) {
+                delay(1)
+            }
             val remaining: List<Cookie> = client.cookies("$shop/cart")
             assertNull(remaining.firstOrNull { it.name == "SHOP_SESSION" })
             assertEquals("EUR", remaining.single { it.name == "CURRENCY" }.value)
