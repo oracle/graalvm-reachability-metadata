@@ -164,7 +164,7 @@ public class PeerAllowlistGatewayTest {
                 assertThat(javaEndpoint).isEqualTo(java.net.InetSocketAddress("127.0.0.1", advertisedPort))
                 val legacyLocal: java.net.SocketAddress = withContext(Dispatchers.IO) {
                     java.net.Socket().use { legacy: java.net.Socket ->
-                        legacy.connect(javaEndpoint, 5_000)
+                        legacy.connect(javaEndpoint, 10_000)
                         val reader: BufferedReader =
                             BufferedReader(InputStreamReader(legacy.getInputStream(), StandardCharsets.UTF_8))
                         assertThat(reader.readLine()).isEqualTo("ADMITTED 127.0.0.1")

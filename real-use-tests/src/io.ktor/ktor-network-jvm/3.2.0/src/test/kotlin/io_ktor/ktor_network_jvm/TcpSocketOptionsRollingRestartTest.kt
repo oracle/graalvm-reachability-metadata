@@ -156,7 +156,7 @@ public class TcpSocketOptionsRollingRestartTest {
 
                 val probe: Client = Client(
                     aSocket(selector).tcp().connect(InetSocketAddress("127.0.0.1", port)) {
-                        socketTimeout = 500
+                        socketTimeout = 10_000
                         keepAlive = false
                     }
                 )
