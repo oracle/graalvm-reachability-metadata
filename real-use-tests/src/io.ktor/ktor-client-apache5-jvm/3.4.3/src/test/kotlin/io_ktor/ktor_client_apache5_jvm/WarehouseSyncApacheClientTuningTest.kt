@@ -89,15 +89,16 @@ class WarehouseSyncApacheClientTuningTest {
                 }
                 post("/stock/{sku}") {
                     log.enter(call.request.local.remotePort)
-                    try {
-                        val quantity: String = call.receiveText()
-                        call.respondText(
-                            "${call.parameters["sku"]}=$quantity seq=${call.request.headers["X-Request-Sequence"]}",
-                            status = HttpStatusCode.Accepted,
-                        )
+                    // Leave before responding: the response frees the pooled connection for the next update.
+                    val quantity: String = try {
+                        call.receiveText()
                     } finally {
                         log.leave()
                     }
+                    call.respondText(
+                        "${call.parameters["sku"]}=$quantity seq=${call.request.headers["X-Request-Sequence"]}",
+                        status = HttpStatusCode.Accepted,
+                    )
                 }
                 get("/reconcile") {
                     holdArrived.complete(Unit)
