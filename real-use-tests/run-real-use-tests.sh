@@ -14,7 +14,7 @@ readonly PROGRAMS="$SCRIPT_DIR/.agent-grounds/rhei/programs"
 readonly DEFAULT_WORKER_AGENT="pi[high]:openai-codex/gpt-5.6-luna"
 readonly DEFAULT_SCENARIO_PASSES=15
 
-# Claim and run real-use-test issues until stopped, reviewing their pull requests in batches.
+# Claim and run real-use-test issues until stopped, reviewing the open real-use pull requests.
 # §FS-real-use-test-generation.1 §AR-real-use-test-launcher
 
 usage() {
@@ -24,8 +24,9 @@ Usage: $0 [--worker-agent TARGET] [--scenario-passes N] [-- RHEI_RUN_OPTIONS...]
 Purpose:
   Check the host, then until stopped: claim the most urgent eligible
   real-use-test issue and run its Rhei workspace with the browser dashboard.
-  Every third run, review the pull requests the runs opened: approve and
-  auto-merge a green one, or fix a flaky test in it.
+  Every third run, and when no issue can be claimed, review up to three
+  open real-use-test pull requests, oldest first: fix a flaky test in one,
+  and approve and auto-merge it when it is green.
 
 Options:
   -h, --help
@@ -116,31 +117,22 @@ claim() {
 }
 
 review() {
-    PYTHONPATH="$FORGE_DIR" "$python" "$PROGRAMS/review.py" --repo "$REPO_ROOT" --worker-agent "$worker_agent" "$@"
+    PYTHONPATH="$FORGE_DIR" "$python" "$PROGRAMS/review.py" --repo "$REPO_ROOT" --worker-agent "$worker_agent" \
+        || printf 'WARNING: The review failed; the next review reads the queue again.\n' >&2
 }
 
-# §FS-real-use-test-generation.1: run until stopped; §FS-real-use-test-generation.4: review every third run.
+# §FS-real-use-test-generation.1: run until stopped; §FS-real-use-test-generation.4: review every third run
+# and when no issue can be claimed, taking the queue from GitHub each time.
 readonly IDLE_SECONDS=600
 readonly REVIEW_EVERY=3
 cd "$SCRIPT_DIR"
-pending=()
 runs=0
-review_pending() {
-    (( ${#pending[@]} > 0 )) || return 0
-    local moved
-    if moved="$(review "${pending[@]}")"; then
-        pending=()
-        [[ -z "$moved" ]] || mapfile -t pending <<<"$moved"
-    else
-        printf 'WARNING: The review failed; its branches wait for the next batch.\n' >&2
-    fi
-}
 while true; do
     # A failed host check exits here, before the claim (§FS-real-use-test-generation.1).
     require_rhei_launcher_host real-use "$FORGE_DIR" "$REPO_ROOT" \
         "$agent_family" "$agent_executable" "$agent_model" "$agent_provider"
     if ! issue_number="$(claim)"; then
-        review_pending
+        review
         printf 'No issue to claim; looking again in %s seconds.\n' "$IDLE_SECONDS"
         sleep "$IDLE_SECONDS"
         continue
@@ -158,12 +150,8 @@ while true; do
         rhei run "$workspace" --dashboard "$@" || status=$?
     fi
 
-    branch_record="$workspace/runtime/real-use/publication/branch.md"
-    if (( status == 0 )) && [[ -f "$branch_record" ]]; then
-        pending+=("$(awk '{print $2; exit}' "$branch_record")")
-    fi
     (( status == 0 )) || printf 'ERROR: The run for issue #%s failed.\n' "$issue_number" >&2
 
     runs=$((runs + 1))
-    (( runs % REVIEW_EVERY != 0 )) || review_pending
+    (( runs % REVIEW_EVERY != 0 )) || review
 done
