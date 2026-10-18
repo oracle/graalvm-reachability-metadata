@@ -1,0 +1,34 @@
+{
+  "issue_number": 10858,
+  "iterations": 15,
+  "library_coverage": {
+    "instruction": {
+      "covered": 428,
+      "ratio": 0.22597676874340022,
+      "total": 1894
+    },
+    "line": {
+      "covered": 37,
+      "ratio": 0.7708333333333334,
+      "total": 48
+    },
+    "method": {
+      "covered": 67,
+      "ratio": 0.28879310344827586,
+      "total": 232
+    }
+  },
+  "removed": [
+    {
+      "reason": "With --exact-reachability-metadata the first WebSocket session hangs until the 60 s JUnit timeout: zio-http's server send waits forever on its handshakeCompleted promise. Running with -XX:MissingRegistrationReportingMode=Exit/Warn reports no missing registration, so metadata cannot fix it. The hang survived three run-time options (-Dio.netty.transport.noNative=true, -XX:ActiveProcessorCount=2, plus the reporting-mode check) across 6 exact runs, and the same scenario also hangs on the JVM under the native-image agent. It passes only on the plain JVM and on images built without the exact-reachability flag.",
+      "scenario": "real-use-tests/src/com.softwaremill.sttp.tapir/tapir-zio_3/1.13.18/src/test/scala/com_softwaremill_sttp_tapir/tapir_zio_3/CheckoutTillZioWebSocketTest.scala"
+    }
+  ],
+  "timestamp": "2026-10-18T14:47:26+00:00",
+  "tokens": {
+    "cache_write_input": 1195512,
+    "cached_input": 20258530,
+    "input": 570,
+    "output": 247507
+  }
+}
