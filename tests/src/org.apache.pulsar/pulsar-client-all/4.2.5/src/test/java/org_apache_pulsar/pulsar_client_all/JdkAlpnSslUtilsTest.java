@@ -36,7 +36,7 @@ public class JdkAlpnSslUtilsTest {
         final SSLEngine engine = context.newEngine(UnpooledByteBufAllocator.DEFAULT, "localhost", 443);
         try {
             assertThat(engine.getSSLParameters().getApplicationProtocols()).containsExactly("h2", "http/1.1");
-            assertThat(engine.getApplicationProtocol()).isEmpty();
+            assertThat(engine.getApplicationProtocol()).isNull();
             assertThat(engine.getHandshakeApplicationProtocol()).isNull();
         } finally {
             engine.closeOutbound();
